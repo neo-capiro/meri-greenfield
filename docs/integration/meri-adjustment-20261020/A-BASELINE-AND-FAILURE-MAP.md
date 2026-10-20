@@ -10,8 +10,15 @@ Labels used throughout:
 - **[I] inference**.
 - **[U] unknown**.
 
-The companion file [A-FAILED-ATTEMPT-READONLY.sql](A-FAILED-ATTEMPT-READONLY.sql) holds the read-only durable-state queries
-for the shipper.
+Ownership changed at about 04:00Z. Neo directed: "Leave dot out of this . You Can deploy . This will be all of Claude". The
+Claude orchestrator session is now the single AWS operator and shipper; dot is no longer involved. Earlier mentions of dot below
+are historical records only.
+
+Companion files, used by the read packet in §4:
+- [A-FAILED-ATTEMPT-READONLY.sql](A-FAILED-ATTEMPT-READONLY.sql): the read-only durable-state queries.
+- [A-FAILED-ATTEMPT-READ-RUNNER.cjs](A-FAILED-ATTEMPT-READ-RUNNER.cjs): the in-task runner.
+- [A-FAILED-ATTEMPT-READ.overrides.json](A-FAILED-ATTEMPT-READ.overrides.json): the RunTask overrides built from the two files
+  above.
 
 ## 0. Summary
 
@@ -31,12 +38,14 @@ for the shipper.
    transport reports as `UNKNOWN`. This is demonstrated in source but is **not proven** to be the live cause.
 5. **Failure became 12 minutes of waiting [R].** After the 01:41:02 failure, the `executeConversation` activity kept
    heartbeating every 48 s until the allocation lease expired at 01:53:19.753. Containment then began at 01:53:20.
-6. **Durable state is unread.** There is no existing read channel to the Meri DB or Temporal history that this session may use
-   without new access or secrets. Exact read-only SQL is supplied. [I] The conversation may stay blocked for new allocations
-   until its allocation is `RETIRED` with a recorded stop proof (query 6b checks this).
+6. **Durable state is unread; a read packet is ready for the orchestrator.** The existing task definition
+   `meri-product-preview-d2-migrate:6` already holds the least-privilege DB logins. One RunTask with the supplied overrides runs
+   read-only SQL derived from the real schema (§4). It creates nothing new and reads no secret value outside the task. [I] The
+   conversation may stay blocked for new allocations until its allocation is `RETIRED` with a recorded stop proof (Q3 checks
+   this).
 7. **Rollback.** Every predecessor task-definition revision is INACTIVE (deregistered by `jump-cli`), and the rendered material
-   pins exact task-definition ARNs. A rollback is therefore a re-registration plus re-render and staged rollout by dot and
-   Neo, not an `UpdateService`. No revision has ever completed a chat, so there is no known-good chat baseline.
+   pins exact task-definition ARNs. A rollback is therefore a re-registration plus a private re-render and a staged rollout, not
+   an `UpdateService`. No revision has ever completed a chat, so there is no known-good chat baseline.
 
 ## 1. Deployed baseline
 
@@ -233,61 +242,101 @@ Two further points:
 - The 13 + 6 target 4xx during startup are also unattributed.
 
 The repaired failure codes (package B), or ALB access logs on `meri-preview-control-private`, would separate these readings. Both
-are shipper decisions.
+are decisions for the orchestrator.
 
-## 4. Durable state
+## 4. Durable state: read packet for the orchestrator
 
 ### 4.1 Read access
 
-**No authorized read channel exists for this session [R/I].** The reasons:
-- **Meri DB.** The Aurora cluster `capiro-dev-data-aurora…` (DB `capiro`, roles `meri_control_runtime` and
-  `meri_model_budget_owner`) is reachable only with credentials in rendered material or Secrets Manager.
-- **Temporal history.** It needs the mTLS client identity plus an issuer JWT (audience `meri-temporal`), which exist only in the
-  control and worker task material.
-- **New access is out of scope.** RDS Data API, ECS Exec or a one-off in-VPC task would each create access or run a task, and the
-  brief excludes both.
-- **Browser reconnect is unsafe.** Reading through the product UI is possible in principle, but plan §7 D3 has not yet verified
-  that a refresh or reconnect never relaunches the request.
+This session has no read channel of its own and makes no AWS mutations. The orchestrator, now the single AWS operator, can run
+the read with one RunTask on an **existing** task definition. It registers no new resource and reads no secret value outside the
+task. Nothing in the packet contains a secret.
 
-The shipper's existing reader (jumpbox evidence `runner-diagnostic-one-chat-E-20261020/`) may already contain the answers.
+| Item | Value |
+| --- | --- |
+| Task definition | `meri-product-preview-d2-migrate:6` (ACTIVE, registered 10-18 07:08Z, X86_64, 0.25 vCPU / 0.5 GB). Execution role `MeriPreview-migrator-execution`; **no task role**, so no AWS API access from inside. Read-only root; `/run/meri` volume |
+| Image | `qualification-worker@sha256:5534edfe…` (ECR tag `product-176a8811…`, still in ECR). It contains `node` and `pg` 8.23.1 under `apps/runtime/node_modules`, which `first-chat-migrate.mjs` uses. A RunTask cannot change the image; only Node and `pg` are used |
+| Secrets the task already injects | Aurora master (`PGUSER`/`PGPASSWORD`), the per-role logins from `meri/preview/migrator/logins` version `90031867…` (AWSCURRENT), and the RDS CA. The override's shell **unsets** the master, issuer and temporal migrator/primary credentials before Node starts. **The master login is never used** |
+| DB logins used | `meri_control_runtime` (SELECT on every `meri_conversations` table read here, and on budget `runs`/`grants`/`tenant_*`). `meri_model_budget_owner` (SELECT on `meri_product_budget.requests`). `meri_temporal_visibility_runtime` (SELECT on `temporal_visibility.public.executions_visibility`). Grants: `infra/product-preview/first-chat-database.sql:240-300`, `existing-database-grants.sql:201` |
+| Read-only enforcement | Connection option `default_transaction_read_only=on`, each section in `BEGIN TRANSACTION READ ONLY … ROLLBACK`, `statement_timeout` 15 s, SELECT statements only. Postgres refuses any write inside a read-only transaction even though these runtime roles hold INSERT/UPDATE grants |
+| Network | subnet `subnet-0920665f91c905f01` (us-east-1a); SGs `sg-0c9f0505c552ce469` (meri-preview-migrator) and `sg-0d5b5286baf28242e` (meri-preview-dbclient). Same as the earlier d2-migrate measurement runs (`docs/integration/scripts/measure-n21.sh`) |
+| Output | CloudWatch `/meri/product-preview/migrator`, stream `d2/d2-migrate/<task-id>`. One JSON line per SELECT, then `{"complete":true}` (exit 0). A failed statement prints `{"error":…}` and the run continues; a connection failure exits 2. Strings over 160 characters are truncated and byte values replaced by their length, so prompts, transcripts and blobs do not enter the log |
+| Cost | One Fargate task of about 0.25 vCPU for under a minute. No model request |
 
-### 4.2 Queries for dot
+Temporal event history (beyond the visibility row) would need the Temporal frontend with an authorized mTLS + issuer-JWT
+client identity. No existing task definition provides that, so it is left out rather than creating new access. Q2 and Q10 cover
+ordering and terminal status.
 
-Run [A-FAILED-ATTEMPT-READONLY.sql](A-FAILED-ATTEMPT-READONLY.sql): SELECT only, in READ ONLY transactions that are rolled back.
-For Temporal, with an existing authorized client identity only:
+### 4.2 Commands (orchestrator only)
 
+Run from a checkout of this branch:
+
+```bash
+aws ecs run-task --profile capiro-dev --region us-east-1 --cluster capiro-dev --launch-type FARGATE --platform-version 1.4.0 --count 1 --task-definition meri-product-preview-d2-migrate:6 --started-by adj-a-durable-read --network-configuration 'awsvpcConfiguration={subnets=[subnet-0920665f91c905f01],securityGroups=[sg-0c9f0505c552ce469,sg-0d5b5286baf28242e],assignPublicIp=DISABLED}' --overrides file://docs/integration/meri-adjustment-20261020/A-FAILED-ATTEMPT-READ.overrides.json --query 'tasks[0].taskArn' --output text
 ```
-temporal workflow describe --namespace meri --workflow-id 'meri:17b63099-bc0f-4ac5-b596-496161e9481e:13865b0a-b0d0-41de-8c97-c2a2058fa222:c3af3d1d-66bb-46ed-94fc-5a7a87e97ade' --run-id 01a156f6-711a-7c83-b5fe-82693a966bc5
-temporal workflow show     --namespace meri --workflow-id '<same>' --run-id 01a156f6-711a-7c83-b5fe-82693a966bc5 --output json
+
+```bash
+aws ecs wait tasks-stopped --profile capiro-dev --region us-east-1 --cluster capiro-dev --tasks <task-arn>
 ```
+
+```bash
+MSYS_NO_PATHCONV=1 aws logs get-log-events --profile capiro-dev --region us-east-1 --log-group-name /meri/product-preview/migrator --log-stream-name d2/d2-migrate/<task-id> --query 'events[].message' --output text
+```
+
+Overrides shape, with the SQL and JS values abbreviated (8,131 bytes in total, under the 8,192-byte limit):
+
+```json
+{"containerOverrides":[{"name":"d2-migrate",
+  "command":["set -euo pipefail; umask 077; printf \"%s\" \"$MERI_D2_RDS_CA_PEM\" > /run/meri/rds-ca.pem; unset MERI_D2_RDS_CA_PEM PGUSER PGPASSWORD MERI_D2_ISSUER_PASSWORD MERI_D2_TEMPORAL_MIGRATOR_PASSWORD MERI_D2_TEMPORAL_PRIMARY_PASSWORD; printf \"%s  /run/meri/rds-ca.pem\\n\" \"$MERI_D2_RDS_CA_SHA256\" | sha256sum -c - >/dev/null; exec node -e \"$MERI_A_READ_JS\""],
+  "environment":[{"name":"MERI_A_READ_SQL","value":"<A-FAILED-ATTEMPT-READONLY.sql without comment lines>"},
+                 {"name":"MERI_A_READ_JS","value":"<A-FAILED-ATTEMPT-READ-RUNNER.cjs without comment lines>"}]}]}
+```
+
+The overrides file is generated from the `.sql` and `.cjs` files: comment lines are dropped (`-- @login` markers kept),
+whitespace is collapsed, and the result is checked against the 8,192-byte limit. Regenerate it after editing either file.
+The command was dry-run locally with a stubbed `pg` client, which exercised:
+- the three login sections (12, 3 and 3 statements) and variable substitution;
+- read-only connection options;
+- recovery from a failed statement;
+- output shortening.
+
+It has not been run against the real database.
 
 ### 4.3 What each answer decides
 
+Q-numbers refer to the `.sql` file.
+
 | Read | Decides |
 | --- | --- |
-| Q1 `runs.projection.state` and binding | Whether the run is terminal (failed, settled) or still non-terminal, and its exact attemptId, workerId and writerFence, the fencing generation needed for any reconciliation |
-| Q2 run events (ordered by `sequence`) | **The only durable ordered history in this schema.** Whether a "started" or provider-visible event exists, so whether any assistant output reached durable state |
-| Q3 `native_allocations` | Current allocation state and `launchBinding.state`. `RETIRED` with `physicalStopProven=true` closes the attempt. `UNKNOWN` or `ADMITTED` means the attempt is unresolved and Q6b may block the conversation. The table holds **current state only**: the trigger (`0008`) enforces the transition graph (PREPARED→CLAIMED→STARTED/UNKNOWN) but keeps no history, so a label alone does not prove when the launch happened |
+| Q1 `runs.projection.state` and binding | Whether the run is terminal or still non-terminal. Gives its exact attemptId, workerId and writerFence: the fencing generation any reconciliation must use |
+| Q2 run events (ordered by `sequence`) | **The only durable ordered history in this schema.** Whether a started or assistant-output event exists, so whether any output reached durable state |
+| Q3 `native_allocations` (all rows of the conversation) | Current allocation and `launchBinding.state`. `RETIRED` with `physicalStopProven=true` closes the attempt. `UNKNOWN` or `ADMITTED` leaves it unresolved; any such row makes the preparation journal refuse a new allocation (`NATIVE_PREPARATION_CONVERSATION_BUSY`), i.e. the next chat in this conversation. **Current state only**: the trigger (`0008`) enforces PREPARED→CLAIMED→STARTED/UNKNOWN but keeps no history, so a label alone does not date the launch |
 | Q4 `native_executions.phase` / `native` | Whether the broker recorded the launch as `started` (with `native.taskId`), `unknown` or `retired` |
 | Q5 task and model issuances | Whether a model grant was ISSUED (provider reach possible) or only CLAIMED |
-| Q6 / Q6b | SDK session mirror rows (any SDK transcript written), checkpoints, and other live allocations blocking the conversation |
-| Q7 `meri_product_budget.requests` | **The provider-reach decider.** No row means no proxy-recorded dispatch. `UNKNOWN` means a held, unresolved request; leave it unresolved. `SETTLED` / `NO_DISPATCH` give actual cost. Grants and runs carry attempt and fence |
-| Q8 tenant reservation | Whether the run's hold is HELD (it occupies a concurrency slot), RELEASED (cost unresolved), SETTLED or NOT_DISPATCHED |
-| Temporal history | Activity schedule, start and heartbeat details, timeouts and last failure for events 5 and 11; whether cancellation was requested; the exact failure chain |
+| Q6 binding, SDK mirror, controls, checkpoints | Whether any SDK transcript was mirrored (entries and bytes), and whether a stop control or checkpoint was recorded |
+| Q7 budget `runs` / `grants` | The model-budget fence and attempt, and whether the grant is ACTIVE or REVOKED |
+| Q8 tenant reservation | Whether the hold is HELD (it occupies a concurrency slot), RELEASED (cost unresolved), SETTLED or NOT_DISPATCHED |
+| Q9 `meri_product_budget.requests` | **The provider-reach decider.** No row means no proxy-recorded dispatch. `UNKNOWN` means a held, unresolved request; leave it unresolved. `SETTLED` / `NO_DISPATCH` give the actual cost |
+| Q10 Temporal visibility row | Workflow close status, close time and history length |
 
-Rules: no row mutation, no reset, no reservation release, no replay. CLAIMED, UNKNOWN or STARTED labels without ordered events do
-not prove that a process existed or that nothing was spent (plan §4, §9).
+Rules:
+- No row mutation, reset, reservation release or replay.
+- CLAIMED, UNKNOWN or STARTED labels without ordered events do not prove that a process existed or that nothing was spent (plan
+  §4, §9).
+- If Q3 shows a non-retired allocation, use a new conversation for the next acceptance attempt. Do not clear the row.
 
 ## 5. Ownership, rollback and authority
 
 ### 5.1 Ownership
 
-- **AWS and shipping: dot.** Ownership was handed over in PR #121 comment 6274410983 (10-19 18:33Z) and reaffirmed in 6282402238
-  (10-20 03:07Z).
-- **Private render and upload: Neo** on neomart.
-- **Fable:** source work on separate branches. Package B owns `pinned-native-transport.mjs` and `runner-runtime-diagnostics.mjs`
-  on `fable/pinned-transport-failure-codes-20261020`. Package C owns the startup budget on `fable/adj-c-startup-budget-20261020`.
-- [U] Whether any dot lane is editing those files: requested in 6282402238, no answer yet.
+- **AWS and shipping: the Claude orchestrator session** (Neo's direction, about 04:00Z on 10-20). This supersedes the dot handoff
+  recorded in PR #121 comments 6274410983 (10-19 18:33Z) and 6282402238 (10-20 03:07Z). dot is not involved.
+- **Private render inputs** (PKI, Core identity, DB logins) live outside Git on the operator host, neomart. Any re-render uses them
+  there.
+- **Package sessions:** source work on separate branches; no AWS mutations.
+  - Package B owns `pinned-native-transport.mjs` and `runner-runtime-diagnostics.mjs` on
+    `fable/pinned-transport-failure-codes-20261020`.
+  - Package C owns the startup budget on `fable/adj-c-startup-budget-20261020`.
 
 ### 5.2 Rollback target
 
@@ -298,7 +347,7 @@ not prove that a process existed or that nothing was spent (plan §4, §9).
 - **All three images are still in ECR:** `f5a7abc9`, `ea0e9ad4`, `9bff84ba`.
 - **Rendered material pins exact task-definition ARNs** (`render-material.mjs`: `issuerRolePin` and `pairPin` use
   `s.taskDefinitions[role]`). Re-registering any predecessor therefore produces new revision numbers. That requires a fresh
-  re-render by Neo, then upload, then the MODEL → ISSUER → APP sequence.
+  private re-render on the operator host, then upload, then the MODEL → ISSUER → APP sequence.
 - **Rollback is not an `UpdateService` to an old revision.** It is a forward deployment of an older image. The secret labels
   `FIRST_CHAT_20261019C` and `FIRST_CHAT_20261019D` exist, but their bytes pin the deregistered ARNs.
 - **Safest operational state** [I]: the current release E with no chat traffic. It is healthy (1/1 everywhere), and leaving it in
@@ -321,9 +370,10 @@ not prove that a process existed or that nothing was spent (plan §4, §9).
   "short failure became many minutes" case.
 - **Package B.** Nothing in the deployed configuration changes its scope. A repaired code on the next attempt separates the
   readings in §3.3.
-- **dot.**
-  - Run §4 with the existing reader.
+- **Orchestrator (AWS operator).**
+  - Run the §4 read packet.
   - Consider enabling access logs on `meri-preview-control-private` (both readings in §3.3 need per-request attribution).
-  - Note that rollback needs a re-render.
+  - Note that rollback needs a private re-render.
+  - If Q3 shows a non-retired allocation, run the next acceptance attempt in a new conversation.
 - **Package F.** The frontend's stale runtime labels; and the INACTIVE-predecessor plus ARN-pinned material property, which makes
   rollback a full forward deployment.
