@@ -23,7 +23,7 @@ export function createTaskRouterApplication(configuration){
    const info=Object.fromEntries(Object.entries(getters).map(([key,get])=>[key,get.call(request)])),url=new URL(info.url);
    if(!url.pathname.startsWith('/v1/native-task/'))return null;
    assertIngress(marker);if(!enabled||closed)return reply(503);
-   const operation=taskRouterOperation(url.pathname.slice('/v1/native-task/'.length));record=createExchangeRecord({event:'runtime.task-router.exchange',boundary:'task-router',effectPhase:'send',now,report});record.operation(operation);routedOperation=operation;if(info.method!=='POST'||url.search||url.hash)throw taskRouterFault();nativeSignal(info.signal);
+   const operation=taskRouterOperation(url.pathname.slice('/v1/native-task/'.length));record=createExchangeRecord({event:'runtime.task-router.exchange',boundary:'task-router',effectPhase:'send',report});record.operation(operation);routedOperation=operation;if(info.method!=='POST'||url.search||url.hash)throw taskRouterFault();nativeSignal(info.signal);
    const header=name=>Headers.prototype.get.call(info.headers,name),authorization=header('authorization');
    if(typeof authorization!=='string'||!/^Bearer \S{1,8192}$/u.test(authorization)||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||header('content-encoding')!==null)throw taskRouterFault();
    const declared=header('content-length');if(declared!==null&&!/^(0|[1-9][0-9]*)$/u.test(declared))throw taskRouterFault();

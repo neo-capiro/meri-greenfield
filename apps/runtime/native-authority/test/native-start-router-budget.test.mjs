@@ -205,7 +205,7 @@ test('reproduction: the deployed eight-second router enclosure cuts start inside
   const record = startRecord(x.routerLog);
   assert.deepEqual({outcome: record.outcome, phase: record.phase, category: record.category, certainty: record.certainty, cleanup: record.cleanup},
     {outcome: 'refused', phase: 'send', category: 'DEADLINE', certainty: 'effect-uncertain', cleanup: 'closed'});
-  assert.ok(record.elapsedMs > 6500 && record.elapsedMs < 9500, String(record.elapsedMs));
+  assert.ok(record.elapsedMs >= 8000 && record.elapsedMs < 9500, String(record.elapsedMs));
   assert.equal(record.remainingMs, 0);
   const started = x.preparationLog.find(entry => entry.operation === 'started');
   assert.deepEqual({outcome: started.outcome, phase: started.phase, category: started.category, certainty: started.certainty},

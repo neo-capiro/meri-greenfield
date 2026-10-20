@@ -6,8 +6,10 @@
 const categories=new Set(['DEADLINE','CANCELLED','REFUSED','DOWNSTREAM_REFUSED']);
 const correlation=value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value)?value.slice(0,16):null;
 export const writeEventLine=line=>{process.stderr.write(line);};
-export function createExchangeRecord({event,boundary,effectPhase,now,report=writeEventLine}){
- const began=now();let phase='request',operation=null,executionKey,first,effect=false,answered=false,finished=false;
+/** `elapsedMs` is a local duration on the monotonic clock, so a wall-clock step cannot distort it; the caller computes
+ * `remainingMs` from its lifetime's deadline on that lifetime's own clock. */
+export function createExchangeRecord({event,boundary,effectPhase,report=writeEventLine}){
+ const began=performance.now();let phase='request',operation=null,executionKey,first,effect=false,answered=false,finished=false;
  return Object.freeze({
   phase(name){phase=name;if(name===effectPhase)effect=true;},
   /** Called only with an operation name the boundary has already validated against its fixed set. */
@@ -19,7 +21,7 @@ export function createExchangeRecord({event,boundary,effectPhase,now,report=writ
   finish({outcome,remainingMs,cleanup='none'}){
    if(finished)return;finished=true;
    const record={event,boundary,operation,correlation:correlation(executionKey),outcome,
-    phase:first?.phase??phase,category:first?.category??null,elapsedMs:Math.max(0,now()-began),
+    phase:first?.phase??phase,category:first?.category??null,elapsedMs:Math.max(0,Math.round(performance.now()-began)),
     remainingMs:Number.isSafeInteger(remainingMs)?Math.max(0,remainingMs):null,
     certainty:!effect?'before-effect':answered?'effect-answered':'effect-uncertain',cleanup};
    try{report(JSON.stringify(record)+'\n');}catch{}
