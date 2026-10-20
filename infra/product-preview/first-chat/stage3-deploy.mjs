@@ -6,15 +6,17 @@
  *   stage3-input      latest task-definition ARNs (TSV) -> stage3.json for render-material.mjs --stage3
  *   core-values       Core membership response + bearer path -> core.json for render-material.mjs --core
  *   tenant-budget     core.json -> ECS RunTask overrides that insert the tenant_budgets row as meri_product_migrator
- *   bindings          rendered directory + secret VersionIds -> the three bindings, the three templates and the deploy plan
+ *   upload-plan       rendered directory + a new version label -> the exact PutSecretValue commands (fixed idempotency tokens)
+ *   bindings          rendered directory + secret VersionIds + live app template -> the three bindings, templates and deploy plan
  *   verify-outputs    deployed stack outputs -> refuses unless every task definition ARN equals the rendered one
  *
  * Exit 0 done; 2 refused (one STAGE3_* line on stderr). Importing this module performs no IO. */
 import {readFile,writeFile,mkdir,lstat} from 'node:fs/promises';
+import {randomUUID} from 'node:crypto';
 import {resolve,join,isAbsolute,relative} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {ROLES,parseCoreValues,SOURCE_ROOT} from './render-material.mjs';
-import {STAGE3_FAMILIES,STAGE3_STACKS,TEMPLATE_BUCKET,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,fail} from './stage3-bindings.mjs';
+import {STAGE3_FAMILIES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS,TEMPLATE_BUCKET,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,fail} from './stage3-bindings.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const ADMITTED_ROLES=new Set(['standard_user','user_admin','capiro_admin']);
@@ -103,6 +105,23 @@ export function tenantBudgetOverrides(core,{containerName}){
   environment:[{name:'MERI_TENANT_ID',value:core.tenantId},{name:'MERI_STAGE3_PROGRAM',value:TENANT_BUDGET_PROGRAM}]}]};
 }
 
+const RESERVED_STAGES=new Set(['AWSCURRENT','AWSPREVIOUS','AWSPENDING']);
+/** One new secret version per role, staged under a fresh label only: AWSCURRENT and every earlier label stay where they are (task
+ * definitions reference exact VersionIds). Each role gets a fixed idempotency token, so a retry after an uncertain outcome sends the
+ * same token with the same bytes and can never create a second version. Bundles are referenced by path; nothing here reads them. */
+export function uploadPlan({deployment,renderedDirectory,label,newToken=randomUUID}){
+ if(typeof label!=='string'||!/^[A-Za-z0-9_]{1,64}$/u.test(label)||RESERVED_STAGES.has(label))fail('--label must be a new custom staging label');
+ return ROLES.map(role=>{
+  const secretArn=deployment?.secrets?.[MATERIAL_SECRET_KEYS[role]];
+  if(typeof secretArn!=='string'||!/^arn:aws:secretsmanager:us-east-1:967807252336:secret:meri\/preview\/[a-z]+\/material-[A-Za-z0-9]{6}$/u.test(secretArn))fail(`deployment.secrets.${MATERIAL_SECRET_KEYS[role]}`);
+  const bundleFile=join(renderedDirectory,role,'bundle.json'),clientRequestToken=newToken();
+  return {role,secretArn,bundleFile,clientRequestToken,
+   command:['aws','secretsmanager','put-secret-value','--region','us-east-1','--secret-id',secretArn,'--client-request-token',clientRequestToken,
+    '--version-stages',label,'--secret-string',`file://${bundleFile}`,'--query','VersionId','--output','text'],
+   readback:['aws','secretsmanager','list-secret-version-ids','--region','us-east-1','--secret-id',secretArn,'--include-deprecated','--max-results','100']};
+ });
+}
+
 /** `role<TAB>VersionId` lines from the PutSecretValue loop -> {role: VersionId}. */
 export function parseVersionsTsv(text){
  const out={};
@@ -120,13 +139,15 @@ export function outputsObject(value){
  fail('stack outputs');
 }
 
+/** One change set per stack, in STAGE3_DEPLOY_ORDER: create it, review it, execute the ARN it printed, wait, then gate. */
 export function deployPlan(sizes,directory){
- return Object.fromEntries(Object.entries(STAGE3_STACKS).map(([key,stack])=>{
-  const file=join(directory,`${key}.template.json`),viaS3=sizes[key].viaS3;
+ return Object.fromEntries(STAGE3_DEPLOY_ORDER.map(key=>{
+  const stack=STAGE3_STACKS[key],file=join(directory,`${key}.template.json`),viaS3=sizes[key].viaS3;
   return [key,{stack,templateFile:file,bytes:sizes[key].bytes,viaS3,
    command:['aws','cloudformation','deploy','--region','us-east-1','--stack-name',stack,'--template-file',file,
     ...(key==='model'?['--capabilities','CAPABILITY_IAM']:[]),...(viaS3?['--s3-bucket',TEMPLATE_BUCKET.bucket,'--s3-prefix',TEMPLATE_BUCKET.prefix]:[]),
-    '--no-execute-changeset','--no-fail-on-empty-changeset']}];
+    '--no-execute-changeset','--no-fail-on-empty-changeset'],
+   wait:['aws','cloudformation','wait','stack-update-complete','--region','us-east-1','--stack-name',stack]}];
  }));
 }
 
@@ -151,8 +172,9 @@ const USAGE=`Usage: node infra/product-preview/first-chat/stage3-deploy.mjs <com
   stage3-input   --deployment-inputs F --foundation-outputs F --latest latest.tsv --out stage3.json
   core-values    --membership membership.json --identity <bearer file> --frontend-origin URL [--client-id UUID] --out core.json
   tenant-budget  --core core.json --container <migrate container name> --out overrides.json
+  upload-plan    --deployment-inputs F --rendered DIR --label NEW_LABEL --out upload-plan.json
   bindings       --deployment-inputs F --foundation-outputs F --private-edge-outputs F --rendered DIR --secret-versions versions.tsv
-                 --image-scans scans.json --out NEW_DIR
+                 --image-scans scans.json --live-app-template app.live.template.json --out NEW_DIR
   verify-outputs --bindings DIR --app F --model F --issuer F
   probe-task     --deployment-inputs F --foundation-outputs F --rendered DIR --out probe-task-definition.json`;
 
@@ -183,17 +205,25 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
    await writeNew(await outsideRepository(a.out),JSON.stringify(overrides)+'\n');
    out(JSON.stringify({status:'STAGE3_TENANT_BUDGET_OVERRIDES_WRITTEN',out:resolve(a.out),...TENANT_BUDGET})+'\n');return 0;
   }
+  if(command==='upload-plan'){
+   need('deployment-inputs','rendered','label','out');
+   const rendered=resolve(a.rendered);
+   for(const role of ROLES)await lstat(join(rendered,role,'bundle.json'));
+   const plan=uploadPlan({deployment:await json(a['deployment-inputs']),renderedDirectory:rendered,label:a.label});
+   await writeNew(await outsideRepository(a.out),JSON.stringify({schemaVersion:1,label:a.label,roles:plan},null,1)+'\n');
+   out(JSON.stringify({status:'STAGE3_UPLOAD_PLAN_WRITTEN',out:resolve(a.out),label:a.label,roles:plan.map(p=>p.role)})+'\n');return 0;
+  }
   if(command==='bindings'){
-   need('deployment-inputs','foundation-outputs','private-edge-outputs','rendered','secret-versions','image-scans','out');
+   need('deployment-inputs','foundation-outputs','private-edge-outputs','rendered','secret-versions','image-scans','live-app-template','out');
    const rendered=resolve(a.rendered),renderedExpected={};
    for(const role of ROLES)renderedExpected[role]=await json(join(rendered,role,'expected.json'));
    const bindings=buildStage3Bindings({deployment:await json(a['deployment-inputs']),foundationOutputs:outputsObject(await json(a['foundation-outputs'])),
     privateEdgeOutputs:outputsObject(await json(a['private-edge-outputs'])),renderSummary:await json(join(rendered,'summary.json')),renderedExpected,
-    secretVersions:parseVersionsTsv(await readFile(a['secret-versions'],'utf8')),imageScans:await json(a['image-scans'])});
+    secretVersions:parseVersionsTsv(await readFile(a['secret-versions'],'utf8')),imageScans:await json(a['image-scans']),liveAppTemplate:await json(a['live-app-template'])});
    const {bodies,sizes}=synthesizeStage3(bindings),dir=await outsideRepository(a.out);
    await mkdir(dir,{recursive:false,mode:0o700});
    for(const key of ['app','model','issuer']){await writeNew(join(dir,`${key}.binding.json`),JSON.stringify(bindings[key],null,1)+'\n');await writeNew(join(dir,`${key}.template.json`),bodies[key]);}
-   const plan={stacks:deployPlan(sizes,dir),expectedTaskDefinitions:bindings.expectedTaskDefinitions,services:bindings.services};
+   const plan={order:[...STAGE3_DEPLOY_ORDER],stacks:deployPlan(sizes,dir),expectedTaskDefinitions:bindings.expectedTaskDefinitions,services:bindings.services};
    await writeNew(join(dir,'deploy-plan.json'),JSON.stringify(plan,null,1)+'\n');
    out(JSON.stringify({status:'STAGE3_BINDINGS_WRITTEN',out:dir,...plan})+'\n');return 0;
   }

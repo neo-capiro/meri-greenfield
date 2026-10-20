@@ -11,8 +11,8 @@ import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {PATHS,ROLES,writeRendered} from './render-material.mjs';
-import {STAGE3_FAMILIES,STAGE3_EXISTING,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3} from './stage3-bindings.mjs';
-import {parseLatestTsv,coreValuesFromMembership,tenantBudgetOverrides,TENANT_BUDGET_PROGRAM,parseVersionsTsv,outputsObject,deployPlan,verifyOutputs,probeTaskDefinition,PROBE_PROGRAM,main} from './stage3-deploy.mjs';
+import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup} from './stage3-bindings.mjs';
+import {parseLatestTsv,coreValuesFromMembership,tenantBudgetOverrides,TENANT_BUDGET_PROGRAM,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,verifyOutputs,probeTaskDefinition,PROBE_PROGRAM,main} from './stage3-deploy.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
@@ -22,6 +22,10 @@ test.after(()=>fixture.cleanup());
 const fakeVersion=n=>`${String(n).repeat(8)}-aaaa-4bbb-8ccc-${String(n).repeat(12)}`;
 const SECRET_VERSIONS=Object.fromEntries(ROLES.map((role,i)=>[role,fakeVersion(i+1)]));
 const SCANS={proxy:'c'.repeat(64),nodeRuntime:'d'.repeat(64)};
+/** The live app stack's control service as `get-template --stage Original` returns it: public 8080 and private 8082 groups. */
+const PUBLIC_TG='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c';
+const LIVE_APP={Resources:{controlService:{Type:'AWS::ECS::Service',Properties:{LoadBalancers:[{ContainerName:'control',ContainerPort:8080,TargetGroupArn:PUBLIC_TG},
+ {ContainerName:'control',ContainerPort:8082,TargetGroupArn:'arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759'}]}}}};
 const LATEST=[...Object.values(STAGE3_FAMILIES).flatMap(f=>[`${f}\tNone`,`${f}\tNone`])].join('\n').replace(
  'meri-product-preview-temporal-issuer\tNone','meri-product-preview-temporal-issuer\tarn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:3')+'\n';
 
@@ -35,7 +39,7 @@ async function setup(){
  const privateEdgeOutputs={ControlPrivateOrigin:inputs.deployment.privateEdge.controlPrivateOrigin,
   ControlPrivateTargetGroupArn:inputs.deployment.privateEdge.controlPrivateTargetGroupArn,PrivateAlbSecurityGroupId:inputs.deployment.privateEdge.privateAlbSecurityGroupId};
  const args={deployment:inputs.deployment,foundationOutputs,privateEdgeOutputs,renderSummary:rendered.summary,
-  renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),secretVersions:SECRET_VERSIONS,imageScans:SCANS};
+  renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),secretVersions:SECRET_VERSIONS,imageScans:SCANS,liveAppTemplate:LIVE_APP};
  const bindings=buildStage3Bindings(structuredClone(args));
  state={inputs,foundationOutputs,revisions,stage3,rendered,args,bindings,synth:synthesizeStage3(bindings)};
  return state;
@@ -68,8 +72,8 @@ test('all three bindings pass their renderers: app (control, worker, runner), mo
  assert.equal(task('meri-product-preview-runner').ExecutionRoleArn,'arn:aws:iam::967807252336:role/MeriPreview-runner-execution');
  assert.equal(task('meri-product-preview-control').TaskRoleArn,f.ControlTaskRoleArn);
  const control=services.find(s=>s.ServiceName==='meri-product-preview-control');
- assert.deepEqual(control.LoadBalancers,[{ContainerName:'control',ContainerPort:8082,TargetGroupArn:inputs.deployment.privateEdge.controlPrivateTargetGroupArn}]);
- assert.equal(JSON.stringify(t.app).includes(f.ControlTargetGroupArn),false,'the public 8080 target group is Stage 6');
+ assert.deepEqual(control.LoadBalancers,[{ContainerName:'control',ContainerPort:8080,TargetGroupArn:f.ControlTargetGroupArn},
+  {ContainerName:'control',ContainerPort:8082,TargetGroupArn:inputs.deployment.privateEdge.controlPrivateTargetGroupArn}],'the live public group and the private one');
  sameSet(control.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.ControlSecurityGroupId,f.IssuerClientSecurityGroupId,f.DbClientSecurityGroupId]);
  sameSet(services.find(s=>s.ServiceName==='meri-product-preview-temporal-worker').NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.WorkerSecurityGroupId,f.IssuerClientSecurityGroupId]);
  assert.equal(t.app.Outputs.RunnerSecurityGroupIds.Value,f.RunnerSecurityGroupId);
@@ -184,6 +188,8 @@ test('deploy plumbing: core values from a membership receipt, tenant budget over
  assert.deepEqual(parseVersionsTsv(ROLES.map(r=>`${r}\t${SECRET_VERSIONS[r]}`).join('\n')),SECRET_VERSIONS);
  assert.throws(()=>parseVersionsTsv('control\ta\ncontrol\tb'),/STAGE3_BINDING_REFUSED/u);
  const plan=deployPlan(synth.sizes,'/w/b');
+ assert.deepEqual(Object.keys(plan),['model','issuer','app'],'owner/proxy, then the issuer gate, then the app');
+ for(const key of STAGE3_DEPLOY_ORDER)assert.deepEqual(plan[key].wait.slice(0,4),['aws','cloudformation','wait','stack-update-complete']);
  assert.equal(plan.model.command.includes('CAPABILITY_IAM'),true);assert.equal(plan.app.command.includes('--no-execute-changeset'),true);
  for(const key of ['app','model','issuer'])assert.equal(plan[key].command.includes('--s3-bucket'),synth.sizes[key].viaS3);
  // The private readiness probe: runner execution role and log group, the Node runtime image, no secret, no task role.
@@ -209,17 +215,61 @@ test('CLI writes stage3.json, bindings, templates and the deploy plan outside th
   assert.equal(r.code,0,r.text);assert.deepEqual(JSON.parse(await readFile(join(work,'stage3.json'),'utf8')),(await setup()).stage3);
   const out=await writeRendered(join(work,'rendered'),rendered);
   await writeFile(join(work,'versions.tsv'),ROLES.map(role=>`${role}\t${SECRET_VERSIONS[role]}`).join('\n')+'\n');
-  await writeFile(join(work,'scans.json'),JSON.stringify(SCANS));
+  await writeFile(join(work,'scans.json'),JSON.stringify(SCANS));await writeFile(join(work,'app.live.json'),JSON.stringify(LIVE_APP));
   await writeFile(join(work,'edge.json'),JSON.stringify(Object.entries(args.privateEdgeOutputs).map(([OutputKey,OutputValue])=>({OutputKey,OutputValue}))));
   r=await quiet(['bindings','--deployment-inputs',join(work,'deployment.json'),'--foundation-outputs',foundation,'--private-edge-outputs',join(work,'edge.json'),
-   '--rendered',out,'--secret-versions',join(work,'versions.tsv'),'--image-scans',join(work,'scans.json'),'--out',join(work,'bindings')]);
+   '--rendered',out,'--secret-versions',join(work,'versions.tsv'),'--image-scans',join(work,'scans.json'),'--live-app-template',join(work,'app.live.json'),'--out',join(work,'bindings')]);
   assert.equal(r.code,0,r.text);assert.match(r.text,/STAGE3_BINDINGS_WRITTEN/u);
   for(const key of ['app','model','issuer'])assert.deepEqual(JSON.parse(await readFile(join(work,'bindings',`${key}.binding.json`),'utf8')),(await setup()).bindings[key]);
   // The output carries no secret: no bundle bytes, password or identity credential.
   const text=r.text+await readFile(join(work,'bindings','app.template.json'),'utf8');
   for(const secret of ['synthetic-control','synthetic-core-identity-bearer-not-real','PRIVATE KEY'])assert.equal(text.includes(secret),false,secret);
   r=await quiet(['bindings','--deployment-inputs',join(work,'deployment.json'),'--foundation-outputs',foundation,'--private-edge-outputs',join(work,'edge.json'),
-   '--rendered',out,'--secret-versions',join(work,'versions.tsv'),'--image-scans',join(work,'scans.json'),'--out',join(here,'should-not-exist')]);
+   '--rendered',out,'--secret-versions',join(work,'versions.tsv'),'--image-scans',join(work,'scans.json'),'--live-app-template',join(work,'app.live.json'),'--out',join(here,'should-not-exist')]);
   assert.equal(r.code,2);assert.match(r.text,/outside the repository/u);
+  r=await quiet(['upload-plan','--deployment-inputs',join(work,'deployment.json'),'--rendered',out,'--label','FIRST_CHAT_20261021A','--out',join(work,'upload-plan.json')]);
+  assert.equal(r.code,0,r.text);
+  const upload=await readFile(join(work,'upload-plan.json'),'utf8');assert.equal(JSON.parse(upload).roles.length,ROLES.length);
+  for(const secret of ['synthetic-control','synthetic-core-identity-bearer-not-real','PRIVATE KEY'])assert.equal(upload.includes(secret),false,secret);
  }finally{await rm(work,{recursive:true,force:true});}
+});
+
+test('live stacks: every update keeps owner, proxy, control and worker serving, control one task at a time after the runner',async()=>{
+ const {synth:{templates:t},bindings,args}=await setup();
+ const svc=(template,id)=>template.Resources[id];
+ for(const [template,id] of [[t.app,'controlService'],[t.app,'temporalWorkerService'],[t.model,'ModelOwnerService'],[t.model,'ModelProxyService'],[t.issuer,'TemporalIssuerService']])
+  assert.equal(svc(template,id).Properties.DesiredCount,1,id);
+ const control=svc(t.app,'controlService');
+ assert.deepEqual(control.Properties.DeploymentConfiguration,{MaximumPercent:100,MinimumHealthyPercent:0});
+ assert.equal(control.Properties.AvailabilityZoneRebalancing,'DISABLED','ECS refuses max 100 while AZ rebalancing is ENABLED');
+ assert.deepEqual(control.DependsOn,['runnerTask']);
+ assert.equal(svc(t.app,'temporalWorkerService').Properties.AvailabilityZoneRebalancing,undefined,'only control changes deployment shape');
+ // Control keeps the live public 8080 group and the private 8082 group.
+ assert.equal(bindings.app.controlTargetGroupArn,PUBLIC_TG);
+ assert.deepEqual(control.Properties.LoadBalancers.map(l=>l.ContainerPort).sort(),[8080,8082]);
+ // The profile is the only difference from the renderers' create-time templates.
+ const created=JSON.parse(JSON.stringify(t));
+ for(const id of ['controlService','temporalWorkerService'])created.app.Resources[id].Properties.DesiredCount=0;
+ for(const id of ['ModelOwnerService','ModelProxyService'])created.model.Resources[id].Properties.DesiredCount=0;
+ assert.deepEqual(JSON.parse(JSON.stringify(applyLiveServiceProfile(created))),JSON.parse(JSON.stringify(t)));
+ // Fail closed without exactly one live public group.
+ assert.throws(()=>liveControlTargetGroup({Resources:{}}),/public 8080 target group/u);
+ assert.throws(()=>liveControlTargetGroup({Resources:{controlService:{Properties:{LoadBalancers:[...LIVE_APP.Resources.controlService.Properties.LoadBalancers,
+  {ContainerPort:8080,TargetGroupArn:PUBLIC_TG}]}}}}),/public 8080 target group/u);
+ assert.throws(()=>buildStage3Bindings({...structuredClone(args),liveAppTemplate:undefined}),/public 8080 target group/u);
+});
+
+test('secret upload plan: one new version per role under a fresh label, fixed idempotency token, bundles by path only',async()=>{
+ const {inputs}=await setup();let n=0;
+ const plan=uploadPlan({deployment:inputs.deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',newToken:()=>`token-${++n}`});
+ assert.deepEqual(plan.map(p=>p.role),ROLES);
+ for(const [i,p] of plan.entries()){
+  assert.equal(p.command[p.command.indexOf('--version-stages')+1],'FIRST_CHAT_20261021A','never AWSCURRENT: task definitions pin exact VersionIds');
+  assert.equal(p.command[p.command.indexOf('--client-request-token')+1],`token-${i+1}`);
+  assert.equal(p.command[p.command.indexOf('--secret-string')+1],`file://${join('/w/rendered',p.role,'bundle.json')}`);
+  assert.equal(p.command[p.command.indexOf('--secret-id')+1],p.secretArn);
+ }
+ for(const label of ['AWSCURRENT','AWSPREVIOUS','AWSPENDING','','bad label'])assert.throws(()=>uploadPlan({deployment:inputs.deployment,renderedDirectory:'/w',label}),/new custom staging label/u);
+ const broken=structuredClone(inputs.deployment);broken.secrets['owner/material']='arn:aws:secretsmanager:us-east-1:111111111111:secret:x';
+ assert.throws(()=>uploadPlan({deployment:broken,renderedDirectory:'/w',label:'L'}),/owner\/material/u);
 });
