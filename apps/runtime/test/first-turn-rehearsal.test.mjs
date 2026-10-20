@@ -102,9 +102,9 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
   preparationIntent:{workspace:join(root,binding.conversationId),configParentDirectory:join(root,'config'),secureStorageDirectory:join(root,'secure'),
    launchTemplate:{command:'/opt/claude',args:[],env:{CLAUDE_SECURESTORAGE_CONFIG_DIR:join(root,'secure')}},executableSha256:'a'.repeat(64),imageSha256:'b'.repeat(64),
    runnerSha256:'c'.repeat(64),sdkOptionsSha256:'d'.repeat(64),authoritySha256:'f'.repeat(64)}};
- // remote-conversation-runner.mjs gives runner/load the startup budget's load stage; every other call passes its own allowance.
+ // remote-conversation-runner.mjs gives each runner/load attempt the load stage's attempt allowance; every other call passes its own.
  const startup=runnerStartupBudget({requestMs:25000,shutdownMs:1000,originalExpiresAtMs:remoteTask.original.expiresAtMs}).stages;
- const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',loadMaxRequestMs:startup.load.maxMs,
+ const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',loadMaxRequestMs:startup.load.attemptMs,
   fetch:async(url,init)=>{const name=new URL(url).pathname.slice('/v1/'.length),op=name.slice('runner/'.length);calls[name]??={requests:0,core:0};calls[name].requests++;
    if(!Object.hasOwn(runOwnerOperations,op))return Response.json(await outside(name));
    const begun=performance.now();
