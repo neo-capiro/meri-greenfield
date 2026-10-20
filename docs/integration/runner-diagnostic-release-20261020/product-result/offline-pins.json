@@ -1,0 +1,81 @@
+{
+  "status": "OFFLINE_PINS_ONLY_IMMUTABLE_VERSIONS_PENDING",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "sourceCheckout": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\meri-runner-transport-diagnostic",
+  "attempt": "8779200aa033c25aad8cfdde1c1c3ec9",
+  "imageTag": "product-2b4421f612f9fbb728d6da52927aac228d712d40-8779200aa033c25aad8cfdde1c1c3ec9",
+  "resultPrefix": "results/product-image/2b4421f612f9fbb728d6da52927aac228d712d40/8779200aa033c25aad8cfdde1c1c3ec9",
+  "archive": {
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "inputs/product-runtime/2b4421f612f9fbb728d6da52927aac228d712d40/product-source.zip",
+    "versionId": null,
+    "sha256": "1c7d59d2419c00e4f74e02b0d0d0754819cf547a3224ee1d8673b376a65006f3",
+    "bytes": 277007966,
+    "checksumSHA256": "HH1Z0kGcAOT3TgKw0NB1SBnPVHoyJO4dhnOzdqZQBvM=",
+    "serverSideEncryption": "aws:kms",
+    "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  },
+  "manifest": {
+    "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "key": "inputs/product-runtime/2b4421f612f9fbb728d6da52927aac228d712d40/product-source-members.json",
+    "versionId": null,
+    "sha256": "a986c0a4bf026cffc76b0eb689c95501c59d3369e652e71b37a496004e15f656",
+    "bytes": 4126760,
+    "checksumSHA256": "qYbApL8CbP/Haw62iclVAcWdM2nmUucbN6SWAE4V9lY=",
+    "serverSideEncryption": "aws:kms",
+    "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  },
+  "filePins": {
+    "dockerfileSha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022",
+    "runtimePackagesSha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+    "runnerSha256": "166742d9e0068ebd193d330c5a06799791d2f8219f312a285e1b3dd687dc96f5",
+    "verifierSha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d",
+    "producerSha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8"
+  },
+  "canonicalFiles": {
+    "apps/runtime/Dockerfile": {
+      "sha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022",
+      "bytes": 10482
+    },
+    "infra/product-preview/runtime-packages.lock.json": {
+      "sha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+      "bytes": 16159
+    },
+    "apps/runtime/conversation-runner.mjs": {
+      "sha256": "166742d9e0068ebd193d330c5a06799791d2f8219f312a285e1b3dd687dc96f5",
+      "bytes": 17250
+    },
+    "infra/product-preview/image-build-source.py": {
+      "sha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d",
+      "bytes": 19742
+    },
+    "infra/product-preview/image-build-producer.py": {
+      "sha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8",
+      "bytes": 37171
+    },
+    "infra/product-preview/image-build-recipe.mjs": {
+      "sha256": "d04b6fe75b7e04cf632c664077bae600f7ff05dc8bcdfc956b02622a41b342c9",
+      "bytes": 30057
+    },
+    "docs/handover/20261017/fable-shipping/scripts/check-product-buildspec.mjs": {
+      "sha256": "313efe3aa54a965420c07d0a33273492ca25b3409bd4a49f5db075ec790b4583",
+      "bytes": 789
+    }
+  },
+  "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+  "nodeVersion": "v24.21.0",
+  "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "runtimeUser": "1000:1000",
+  "codeBuildProjectArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
+  "ecrRepositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+  "requiredProject": {
+    "environmentType": "LINUX_CONTAINER",
+    "computeType": "BUILD_GENERAL1_SMALL",
+    "image": "aws/codebuild/standard:7.0",
+    "privilegedMode": true,
+    "concurrentBuildLimit": 1,
+    "timeoutInMinutes": 30,
+    "queuedTimeoutInMinutes": 5,
+    "autoRetryLimit": 0
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "attempt": "3b688443246cea103e06faecd8204b5d",
+  "planSha256": "7c4fc7de9f82fe646b6ffac5a924baf1c54e860432c2f41b9c6418b93074756b",
+  "wrapperSha256": "15e28b2515dfd2c7667693647ca108447db83e88233e1d716201d6267813cda4",
+  "payloadSha256": "7307c6fecc020589a84cee159584f2ebf57bfe2a3970c6bcaed5f1effd16316b",
+  "payloadBytes": 76918,
+  "payloadBucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+  "payloadKey": "inputs/launch-measurement/2b4421f612f9fbb728d6da52927aac228d712d40/3b688443246cea103e06faecd8204b5d/measurement-payload.json",
+  "enabledCapabilityProfile": false,
+  "activeReadSubset": false,
+  "payloadPinSha256": "9845d760804e9a06598a61e49e4e42bdd718798e817de596cafd27abffe09bab",
+  "buildspecSha256": "e5fca7c5061c939737f1b492edc06d83a81a19590cf9451d73c1132ee0371843",
+  "buildspecBytes": 3867,
+  "startRequestSha256": "4f140a15d74b4d396788a406dddb7c9ef4f813b3ededaf045881a94aa8e1b078"
+}

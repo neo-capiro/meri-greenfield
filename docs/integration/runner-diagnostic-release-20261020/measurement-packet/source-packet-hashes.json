@@ -1,0 +1,161 @@
+{
+  "schema": "meri.runner-diagnostic-measurement-helper-pins.v1",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "previousSourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "files": [
+    {
+      "name": "prepare-measurement.mjs",
+      "bytes": 7814,
+      "sha256": "f9de66d0184a8d247a25217ecf48314baf530423f5bca6fd37fafd920f0d61e1",
+      "previousSha256": "f9de66d0184a8d247a25217ecf48314baf530423f5bca6fd37fafd920f0d61e1",
+      "change": "byte-identical"
+    },
+    {
+      "name": "finalize-measurement.mjs",
+      "bytes": 2388,
+      "sha256": "1a9b8385bc6209febd336a58d9c9135159abe00d3fc6c3c1317367e714b365e4",
+      "previousSha256": "1a9b8385bc6209febd336a58d9c9135159abe00d3fc6c3c1317367e714b365e4",
+      "change": "byte-identical"
+    },
+    {
+      "name": "verify-measurement.mjs",
+      "bytes": 6158,
+      "sha256": "6397bf5b3a788f4937561766ae5d51688753d825291f2e86bf5bcbd94ec1e459",
+      "previousSha256": "6397bf5b3a788f4937561766ae5d51688753d825291f2e86bf5bcbd94ec1e459",
+      "change": "byte-identical"
+    },
+    {
+      "name": "receipt-joins.mjs",
+      "bytes": 11645,
+      "sha256": "dafd107910a7739e6c8d3aba3a0ed712c568189b57e8a70e5ad6b87752128bdd",
+      "previousSha256": "eeaeedab4c44aa8138fc3060d4acf5814ae678d424115d6106c10b5af551ef17",
+      "change": "exact source pin only"
+    },
+    {
+      "name": "measurement-payload.mjs",
+      "bytes": 5868,
+      "sha256": "3a175c37092a21e128d3286e7ce611fc90621b3b972ed2281c4443140119e5aa",
+      "previousSha256": "3a175c37092a21e128d3286e7ce611fc90621b3b972ed2281c4443140119e5aa",
+      "change": "byte-identical"
+    },
+    {
+      "name": "measurement-build-wrapper.py",
+      "bytes": 15386,
+      "sha256": "15e28b2515dfd2c7667693647ca108447db83e88233e1d716201d6267813cda4",
+      "previousSha256": "8afb2093090a80c92f50f6988e21d182cf8a98fce61d5923674bb60db2d5d93c",
+      "change": "exact source pin only"
+    },
+    {
+      "name": "payload-bootstrap-check.py",
+      "bytes": 3985,
+      "sha256": "e3563be778c6f563579198cec780d90055606d8078abd5c3269023fa33bf397d",
+      "previousSha256": "e3563be778c6f563579198cec780d90055606d8078abd5c3269023fa33bf397d",
+      "change": "byte-identical"
+    },
+    {
+      "name": "receipt-joins.test.mjs",
+      "bytes": 9925,
+      "sha256": "1a6fa2e5fa647d130c3ece325e5e341d1da2013dc66219f54a3f398e81f5dd40",
+      "previousSha256": "1a6fa2e5fa647d130c3ece325e5e341d1da2013dc66219f54a3f398e81f5dd40",
+      "change": "byte-identical"
+    },
+    {
+      "name": "measurement-payload.test.mjs",
+      "bytes": 3317,
+      "sha256": "afaf500c6eb61683dd2519d336c057b2054953444cfd377efb17c4491247b3a2",
+      "previousSha256": "afaf500c6eb61683dd2519d336c057b2054953444cfd377efb17c4491247b3a2",
+      "change": "byte-identical"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 9688,
+      "sha256": "1b990995df4cca9bb73aeca15682b4900dcdd9f724aa7f2ebdbab78823ad9367",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/image-build-source.py",
+      "bytes": 19742,
+      "sha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/image-build-producer.py",
+      "bytes": 37171,
+      "sha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/image-build-recipe.mjs",
+      "bytes": 30057,
+      "sha256": "d04b6fe75b7e04cf632c664077bae600f7ff05dc8bcdfc956b02622a41b342c9",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/image-build-test-reporter.mjs",
+      "bytes": 7938,
+      "sha256": "7bc9543d22d849b8ac16db97f96475b1e2ddaddd0d755834550d4815cc2cc51b",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/image-build-linux-checks.py",
+      "bytes": 6687,
+      "sha256": "18659b8942b21f9369d709857a15a76b47e899a4cb9528d9a489cfc2766cf3a7",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "bytes": 10482,
+      "sha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": ".dockerignore",
+      "bytes": 2943,
+      "sha256": "c0de50b754c988b8dfca0b29863a5539399886dbffebe20f09a235d0739359ef",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "apps/runtime/build/first-chat-launch-measurement.mjs",
+      "bytes": 19339,
+      "sha256": "0cc9d6c62b51b308e3a97ad60754587017369c002fb8d73b4c6903f16fc62d2b",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "bytes": 17250,
+      "sha256": "166742d9e0068ebd193d330c5a06799791d2f8219f312a285e1b3dd687dc96f5",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/first-chat/runtime-values.mjs",
+      "bytes": 28426,
+      "sha256": "620e4b1bdb44c5cd943c9012249b3a2e9091b6f1d81f5b9233dda7f44d39a113",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/first-chat/render-material.mjs",
+      "bytes": 90666,
+      "sha256": "bdab4d3b1b8e98a81937be2f71d7d4238524e229702d8fc97c7b7b6e67c9496d",
+      "unchangedFromPriorSource": true
+    },
+    {
+      "path": "infra/product-preview/runtime-packages.lock.json",
+      "bytes": 16159,
+      "sha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+      "unchangedFromPriorSource": true
+    }
+  ],
+  "publicBaseline": {
+    "commit": "5a42ec962677e70e76db5433330b52fd34db5bcd",
+    "path": "docs/shipping/20261019/a16cc40d-public-render/deployment-inputs.candidate.json",
+    "sha256": "0232304892929be91435889b33d86032f0febf178eb2d407a62079f8d092bb88"
+  }
+}

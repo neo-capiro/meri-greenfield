@@ -1,0 +1,33 @@
+{
+  "builds": [
+    {
+      "id": "meri-greenfield-qualification-build:aaab4ac1-53a1-48f5-b257-cdace47dfad9",
+      "buildStatus": "SUCCEEDED",
+      "buildComplete": true,
+      "timeoutInMinutes": 10,
+      "queuedTimeoutInMinutes": 5,
+      "projectName": "meri-greenfield-qualification-build",
+      "serviceRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+      "sourceVersion": "S7yMsSHfvstrG6OmgQjWsVHEuVg9zW0Y",
+      "source": {
+        "type": "S3",
+        "location": "meri-greenfield-qual-build-967807252336-us-east-1/inputs/product-runtime/2b4421f612f9fbb728d6da52927aac228d712d40/product-source.zip",
+        "buildspec": "{\"version\":0.2,\"phases\":{\"build\":{\"on-failure\":\"ABORT\",\"commands\":[\"python3 -I -B -S - <<'MERI_MEASURE_BOOTSTRAP'\\nphase='PRECHECK'\\ntry:\\n import base64,hashlib,importlib.util,json,os,pathlib,subprocess,tempfile,time\\n deadline=time.monotonic()+540\\n def need(v):\\n  if not v:raise ValueError('MEASUREMENT_PAYLOAD_REFUSED')\\n pin=json.loads(base64.b64decode('eyJidWNrZXQiOiJtZXJpLWdyZWVuZmllbGQtcXVhbC1idWlsZC05Njc4MDcyNTIzMzYtdXMtZWFzdC0xIiwia2V5IjoiaW5wdXRzL2xhdW5jaC1tZWFzdXJlbWVudC8yYjQ0MjFmNjEyZjlmYmI3MjhkNmRhNTI5MjdhYWMyMjhkNzEyZDQwLzNiNjg4NDQzMjQ2Y2VhMTAzZTA2ZmFlY2Q4MjA0YjVkL21lYXN1cmVtZW50LXBheWxvYWQuanNvbiIsInZlcnNpb25JZCI6IkF3TUdlVzUwYzNqMkExMzh4NWl4T0lnemFaS0F5cmJOIiwiYnl0ZXMiOjc2OTE4LCJzaGEyNTYiOiI3MzA3YzZmZWNjMDIwNTg5YTg0Y2VlMTU5NTg0ZjJlYmY1N2JmZTJhMzk3MGM2YmNhZWQ1ZjFlZmZkMTYzMTZiIiwiY2hlY2tzdW1TaGEyNTYiOiJjd2ZHL3N3Q0JZbW9UTzRWbFlUeTYvVjcvaW81Y01hOHJ0WHg3LzBXTVdzPSIsInNlcnZlclNpZGVFbmNyeXB0aW9uIjoiYXdzOmttcyIsImttc0tleUFybiI6ImFybjphd3M6a21zOnVzLWVhc3QtMTo5Njc4MDcyNTIzMzY6a2V5LzFjY2E3NGZjLWQ5YWUtNDNhNi04YmZkLWI5MzEwN2U5MDA0MiJ9',validate=True))\\n phase='SOURCE_VERIFY'\\n verifier=pathlib.Path(os.environ['CODEBUILD_SRC_DIR'])/'infra/product-preview/image-build-source.py'\\n need(verifier.is_file() and not verifier.is_symlink() and verifier.stat().st_size<=1048576)\\n need(hashlib.sha256(verifier.read_bytes()).hexdigest()=='c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d')\\n spec=importlib.util.spec_from_file_location('meri_payload_source',verifier);source=importlib.util.module_from_spec(spec);spec.loader.exec_module(source)\\n os.environ.update(AWS_PAGER='',AWS_MAX_ATTEMPTS='1',AWS_RETRY_MODE='standard')\\n def aws(args):\\n  remaining=min(20,deadline-time.monotonic());need(remaining>0)\\n  code,raw=source.bounded_command(['aws','--region','us-east-1','--no-cli-pager','s3api',*args,'--output','json'],timeout=remaining)\\n  need(code==0 and len(raw)<=2097152);return source.decode(raw)\\n with tempfile.TemporaryDirectory(prefix='meri-measure-bootstrap-') as directory:\\n  d=pathlib.Path(directory);d.chmod(0o700)\\n  phase='PAYLOAD_HEAD'\\n  head=aws(['head-object','--bucket',pin['bucket'],'--key',pin['key'],'--version-id',pin['versionId']])\\n  need(head.get('VersionId')==pin['versionId'] and type(head.get('ContentLength')) is int and head['ContentLength']==pin['bytes'] and 0<pin['bytes']<=1048576)\\n  need(head.get('ServerSideEncryption')=='aws:kms' and head.get('SSEKMSKeyId')==pin['kmsKeyArn'])\\n  phase='PAYLOAD_GET'\\n  target=d/'payload.json';got=aws(['get-object','--bucket',pin['bucket'],'--key',pin['key'],'--version-id',pin['versionId'],str(target)])\\n  need(got.get('VersionId')==pin['versionId'] and target.stat().st_size==pin['bytes'] and source.file_sha(target,1048576)==pin['sha256'])\\n  phase='PAYLOAD_DECODE'\\n  p=source.decode(target.read_bytes());need(p.get('schema')=='meri.operator-launch-measurement-payload.v1')\\n  for key,expected,size in (('plan','7c4fc7de9f82fe646b6ffac5a924baf1c54e860432c2f41b9c6418b93074756b',42088),('wrapper','15e28b2515dfd2c7667693647ca108447db83e88233e1d716201d6267813cda4',15386)):\\n   v=base64.b64decode(p[key],validate=True)\\n   need(len(v)==size and p[key+'Bytes']==size and p[key+'Sha256']==expected and hashlib.sha256(v).hexdigest()==expected)\\n   f=d/(key+'.'+('py' if key=='wrapper' else 'json'));f.write_bytes(v);f.chmod(0o600)\\n  phase='WRAPPER'\\n  remaining=deadline-time.monotonic();need(remaining>=500)\\n  r=subprocess.run(['python3','-I','-B','-S',str(d/'wrapper.py'),'--plan',str(d/'plan.json')],timeout=remaining)\\n  raise SystemExit(r.returncode)\\nexcept Exception:\\n print('MEASUREMENT_BOOTSTRAP_REFUSED phase='+phase)\\n raise SystemExit(2)\\nMERI_MEASURE_BOOTSTRAP\"]}},\"artifacts\":{\"files\":[\"launch-measurement.json\",\"launch-readback.json\",\"runtime-native.json\",\"runtime-packages.json\",\"measurement-provenance.json\",\"measurement-diagnostic.json\"]}}\n"
+      },
+      "environment": {
+        "type": "LINUX_CONTAINER",
+        "privilegedMode": true,
+        "computeType": "BUILD_GENERAL1_SMALL",
+        "image": "aws/codebuild/standard:7.0"
+      },
+      "autoRetryConfig": {
+        "autoRetryLimit": 0,
+        "autoRetryNumber": 0
+      },
+      "artifacts": {
+        "location": "arn:aws:s3:::meri-greenfield-qual-build-967807252336-us-east-1/results/launch-measurement/2b4421f612f9fbb728d6da52927aac228d712d40/3b688443246cea103e06faecd8204b5d"
+      }
+    }
+  ],
+  "buildsNotFound": []
+}

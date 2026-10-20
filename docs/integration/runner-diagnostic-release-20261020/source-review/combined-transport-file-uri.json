@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "exitCode": 0,
+  "args": [
+    "--experimental-test-module-mocks",
+    "--import",
+    "file:///C:/Users/Administrator/Documents/Codex/2026-10-18/task-2/runner-diagnostic-operator/windows-config-mock.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=^(stdout completion:|control task ports|startup prepare and start|startup stage cutoff|timed out fetch|client close during prepare|client ignores late stdout|stdout refusal during close|stdin refusal)",
+    "apps/runtime/native-authority/test/remote-task.test.mjs"
+  ],
+  "rerunReason": "Prior test runner rejected absolute Windows --import path before running tests; changed it to file URL. No source or assertion change."
+}

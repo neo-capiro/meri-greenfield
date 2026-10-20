@@ -1,0 +1,26 @@
+✔ canonical activity preserves activity-load before generic failure (10.6553ms)
+✔ canonical activity preserves activity-starting before generic failure (9.9741ms)
+✔ canonical activity preserves activity-running before generic failure (2.4266ms)
+✔ canonical activity preserves activity-query before generic failure (1.5902ms)
+✔ canonical activity preserves activity-stream before generic failure (1.68ms)
+✔ canonical activity preserves activity-output before generic failure (1.5753ms)
+✔ canonical activity preserves activity-finalize before generic failure (1.172ms)
+✔ canonical activity preserves activity-complete before generic failure (1.2906ms)
+✔ canonical activity preserves activity-cleanup before generic failure and cleanup uncertainty (1.227ms)
+✔ canonical activity preserves activity-stream before generic failure and cleanup uncertainty (1.5095ms)
+✔ successful activity remains silent and publishes starting, running, completed in order (1.3385ms)
+✔ diagnostic observer throws and rejections do not replace activity failure or prevent cleanup (1.5388ms)
+✔ cleanup observers cannot change failed cleanup into success or replace its bounded result (0.2833ms)
+✔ runtime preparation retains its stage and allowed code through generic activity failure, before any claim or Query (18.0148ms)
+✔ first failure survives cleanup replacement without emitting error text, dynamic codes, getters or stacks (0.4889ms)
+✔ concurrent task contexts remain independent and successful completion emits nothing (0.4485ms)
+✔ CLI retains exit 3 and RUNTIME_UNAVAILABLE while adding the preflight diagnostic (26.4119ms)
+✔ diagnostic write failure cannot change the original rejection (0.3249ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3744.6041

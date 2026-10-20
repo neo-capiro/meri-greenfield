@@ -1,0 +1,28 @@
+{
+  "status": "PRODUCT_RECEIPTS_AUTHENTICATED",
+  "checkedAt": "2026-10-20T00:15:01.708463+00:00",
+  "buildId": "meri-greenfield-qualification-build:04e83f76-34b4-4d4a-be39-d75e34697173",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f5a7abc9940ef8f5092bbfa9db9c3345874d448de2d7d7712645f8aad9db5ff7",
+  "scanStatus": "COMPLETE",
+  "findingSeverityCounts": {},
+  "cleanup": "OK",
+  "receiptFiles": [
+    {
+      "file": "product-image-receipt.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/product-image/2b4421f612f9fbb728d6da52927aac228d712d40/8779200aa033c25aad8cfdde1c1c3ec9/product-image-receipt.json",
+      "versionId": "hdVQ0pVucvEj_MRz40N51EVQCPSnVbCY",
+      "bytes": 2479,
+      "sha256": "d74a4a3bb22322aaf244887b45718a0bdb8f6ac8ad53b172b5b12bea41b20a2f"
+    },
+    {
+      "file": "product-image-diagnostic.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/product-image/2b4421f612f9fbb728d6da52927aac228d712d40/8779200aa033c25aad8cfdde1c1c3ec9/product-image-diagnostic.json",
+      "versionId": "uKZIaaueRkPC1d9QrSpi6rwMxO23el0b",
+      "bytes": 192,
+      "sha256": "082058cacad6ea8b528bd258d46ef4ceb2d363a21f19b88779ec02558e085e54"
+    }
+  ]
+}

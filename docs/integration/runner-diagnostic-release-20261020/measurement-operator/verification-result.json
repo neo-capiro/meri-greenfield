@@ -1,0 +1,12 @@
+{
+  "status": "MEASUREMENT_VERIFIED_AND_ASSEMBLED",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f5a7abc9940ef8f5092bbfa9db9c3345874d448de2d7d7712645f8aad9db5ff7",
+  "measurementBuildId": "meri-greenfield-qualification-build:aaab4ac1-53a1-48f5-b257-cdace47dfad9",
+  "enabledCapabilityProfile": false,
+  "activeReadSubset": false,
+  "out": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-18\\task-2\\runner-diagnostic-runtime-values.measured.json",
+  "runtimeSha256": "46a04439273a9a26b90472b4fab28f9d13068187e033ad41d12e7045d48f4e0d",
+  "features": "REUSED_C_ABSENT_NO_EXPANSION",
+  "measurementOnly": true
+}

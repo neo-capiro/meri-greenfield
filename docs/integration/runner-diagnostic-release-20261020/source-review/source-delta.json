@@ -1,0 +1,86 @@
+{
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "previousSourceCommit": "5b395d4ce9218b872b21c420dc00a3af31739824",
+  "files": [
+    {
+      "path": "apps/runtime/native-authority/remote-task-client.mjs",
+      "classification": "production",
+      "change": "modified",
+      "previousSha256": "3bb6fac71ed17ada40fa30dc1a709ad00d851fa96db2998853dc4bf847c9ea84",
+      "sha256": "5c3eb53a2f706398b07c7cef052759c6dbe31f64a2132fe476a5a8d79417394f",
+      "bytes": 12099
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-task-http.mjs",
+      "classification": "production",
+      "change": "modified",
+      "previousSha256": "6f2a13323c9da4b2c0d2bee8161de42faf1cb153107f62657488b845e746bb8d",
+      "sha256": "6ab06add0ea97cc8e870659996f7caca1e090028e7d4a53a812cb8e7d2ebd690",
+      "bytes": 16411
+    },
+    {
+      "path": "apps/runtime/native-authority/sdk-query-preparation.mjs",
+      "classification": "production",
+      "change": "modified",
+      "previousSha256": "5f72e7043bf947943e8b8360dbadf3609fe739020e2f82a14a19c7847e57625e",
+      "sha256": "bc26aa4b1620f4355cb26129e4a40f4581f12c96ac1288a5f4728632741a1258",
+      "bytes": 3890
+    },
+    {
+      "path": "apps/runtime/native-authority/test/remote-task.test.mjs",
+      "classification": "regression",
+      "change": "modified",
+      "previousSha256": "9d00d4a2fc3c147aca6f890bbdbfdfdceee1f3f47cd82008ab011cff1024dec9",
+      "sha256": "e27679acfcfb55b64dc172f9905541e1bfa4f5fe6c5bc63bb53216bc86643691",
+      "bytes": 37897
+    },
+    {
+      "path": "apps/runtime/runner-runtime-diagnostics.mjs",
+      "classification": "production",
+      "change": "modified",
+      "previousSha256": "0144f5e0a4ec25b573ffe9316acf9ce6b897a5dd395cc58a69aa03da6074df40",
+      "sha256": "e7a5216fe888e93d98c214d08e6466b8f9518c4f544d111ba68c702ad601e2f4",
+      "bytes": 4071
+    },
+    {
+      "path": "apps/runtime/test/activity-runtime-diagnostics.test.mjs",
+      "classification": "regression",
+      "change": "modified",
+      "previousSha256": "92f5a244cf2d28b80351215f6d9a42d7ffae8c52dd3ae02c007dad6fd6c8c405",
+      "sha256": "8721467cd435fd83f009b12f2c71a4b3d738fd0e29395015c34eba5366a0931c",
+      "bytes": 6047
+    },
+    {
+      "path": "apps/runtime/test/runner-first-failure.test.mjs",
+      "classification": "regression",
+      "change": "added",
+      "previousSha256": null,
+      "sha256": "2789a5dba107992d8cb60534e688cc8e89fc55d4ba57acc33a6b9a639bf1cf06",
+      "bytes": 16447
+    },
+    {
+      "path": "apps/runtime/test/runner-kickoff-diagnostic.test.mjs",
+      "classification": "regression",
+      "change": "modified",
+      "previousSha256": "2dd51064015ff0b7683e773997325081f1a83221575fe8a051b7e1bc54ddad24",
+      "sha256": "1b2620daf3c84da8220856aac704fd9382aff51f90cd99d2e5c8252bd3ca8097",
+      "bytes": 851
+    },
+    {
+      "path": "apps/runtime/test/runner-runtime-diagnostics.test.mjs",
+      "classification": "regression",
+      "change": "modified",
+      "previousSha256": "f8e956b1a856d212d88989eb803c1f13c2fe8ec295fec9f444ca6c4faecd3e82",
+      "sha256": "3868bd4f1f8374046bb9764c5d2ab0c4883a5ce1c88ac406c2704da44dd1d465",
+      "bytes": 5346
+    },
+    {
+      "path": "docs/integration/RUNNER-FIRST-FAILURE-20261019.md",
+      "classification": "documentation",
+      "change": "added",
+      "previousSha256": null,
+      "sha256": "85b05ebacb57118e2760d9b7ddcf94bc338e6367c5a56a3a0d120b7005f9b83c",
+      "bytes": 5773
+    }
+  ]
+}

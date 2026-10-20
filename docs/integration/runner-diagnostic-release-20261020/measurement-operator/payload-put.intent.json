@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-20T00:15:46.256516+00:00",
+  "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+  "key": "inputs/launch-measurement/2b4421f612f9fbb728d6da52927aac228d712d40/3b688443246cea103e06faecd8204b5d/measurement-payload.json",
+  "bytes": 76918,
+  "sha256": "7307c6fecc020589a84cee159584f2ebf57bfe2a3970c6bcaed5f1effd16316b",
+  "conditionalCreateOnly": true
+}

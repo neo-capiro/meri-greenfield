@@ -1,0 +1,46 @@
+{
+  "status": "OFFLINE_PACKET_READY_NOT_SUBMITTED",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "attempt": "8779200aa033c25aad8cfdde1c1c3ec9",
+  "imageTag": "product-2b4421f612f9fbb728d6da52927aac228d712d40-8779200aa033c25aad8cfdde1c1c3ec9",
+  "resultPrefix": "results/product-image/2b4421f612f9fbb728d6da52927aac228d712d40/8779200aa033c25aad8cfdde1c1c3ec9",
+  "sourceCheck": {
+    "archiveSha256": "1c7d59d2419c00e4f74e02b0d0d0754819cf547a3224ee1d8673b376a65006f3",
+    "fileCount": 20256,
+    "runnerBytes": 17250,
+    "runtimePackagesSha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea",
+    "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+    "sourceManifestSha256": "a986c0a4bf026cffc76b0eb689c95501c59d3369e652e71b37a496004e15f656",
+    "status": "VERIFIED_SOURCE_ONLY"
+  },
+  "buildspecCheck": {
+    "status": "OFFLINE_SIZE_ONLY",
+    "buildspecBytes": 25495,
+    "limitBytes": 25600,
+    "buildspecSha256": "09d3287df87b6e7b5adfc6e99821e2428c7eaa990f7db8e0d702a0243681ac82",
+    "requestSha256": "4c02529f218ed3eeec969cd85942d79e3f6798f7539b590223fcddba665b2437"
+  },
+  "archiveReceipt": {
+    "putReceiptSha256": "509edfcf2254504418bc7d93a9e8d32562f800f69e18dbe187dd57309945d393",
+    "headReceiptSha256": "8b1b4fe5a5eedd307259ec74b0cc04c41c78ea6381c14d502d15466ba763ae6e",
+    "versionId": "S7yMsSHfvstrG6OmgQjWsVHEuVg9zW0Y",
+    "checksumSHA256": "HH1Z0kGcAOT3TgKw0NB1SBnPVHoyJO4dhnOzdqZQBvM=",
+    "bytes": 277007966,
+    "serverSideEncryption": "aws:kms",
+    "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  },
+  "manifestReceipt": {
+    "putReceiptSha256": "6db4c6c5f452e4dff00d297083add4c589b4a34202c103c1a66c6258345ca526",
+    "headReceiptSha256": "5565c86812241efd11d12a4f72063501e78007278c773b24fa338bd8ff51be04",
+    "versionId": "lncRwK1qmByghPnOfj_cFFT78v.MO2SX",
+    "checksumSHA256": "qYbApL8CbP/Haw62iclVAcWdM2nmUucbN6SWAE4V9lY=",
+    "bytes": 4126760,
+    "serverSideEncryption": "aws:kms",
+    "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  },
+  "requestFileSha256": "4ef74b44c3b139959b348d0210f8ce8d86c8bde4765ce90f1789bb381955e395",
+  "recipeRequestSha256": "4c02529f218ed3eeec969cd85942d79e3f6798f7539b590223fcddba665b2437",
+  "buildspecSha256": "09d3287df87b6e7b5adfc6e99821e2428c7eaa990f7db8e0d702a0243681ac82",
+  "startBuildRequestSha256": "4646c679c5a7f7b221fae73e9fc9a60ddeb30d35f87016076779141ca1254d42",
+  "buildSubmitted": false
+}

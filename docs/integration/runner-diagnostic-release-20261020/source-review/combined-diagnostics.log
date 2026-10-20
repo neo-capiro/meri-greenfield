@@ -1,0 +1,79 @@
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (2.0484ms)
+✔ close before first iteration retires transport without preparing a Query (0.3193ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (1.9658ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (0.5633ms)
+✔ actual adopted SDK MCP server prototype close is admitted effect-free (100.0087ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@aws-sdk/client-ecs' imported from C:\Users\Administrator\Documents\Codex\2026-10-18\task-2\meri-runner-transport-diagnostic\apps\runtime\native-authority\task-allocator.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps\runtime\test\activity-runtime-diagnostics.test.mjs (1744.9613ms)
+(node:15204) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15204) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ native prepare refusal is visible before held cleanup and keeps its original rejection (32.536ms)
+✔ native start refusal is visible before held cleanup and keeps its original rejection (3.6673ms)
+✔ SDK no-launch refusal is captured by actual preparation before rethrow (0.9654ms)
+✔ preparation refusal or already assembled aggregate is rethrown without inspecting inner errors (1.81ms)
+✔ held SDK cleanup preserves the first code and passes the same aggregate to the caller (1.0928ms)
+✔ successful preparation retains start, stop and SDK-close order without diagnostics (4.0848ms)
+✔ intentional close during preparation has no native first-failure record or late start (1.9171ms)
+✔ intentional abort during preparation has no native first-failure record or late start (1.3696ms)
+✔ expired preparation deadline still refuses before start and records native-prepare (1.5707ms)
+✔ first record is immediate, immutable and emitted once despite later capture and cleanup (0.2948ms)
+✔ only fixed SDK codes are emitted and hostile errors/origins are never inspected (0.7605ms)
+✔ failed diagnostic writes cannot alter rejection or cause a duplicate first-line attempt (0.1764ms)
+✔ kickoff diagnostics retain the exact prefixed execution fault without private error text (1.9315ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@aws-sdk/client-ecs' imported from C:\Users\Administrator\Documents\Codex\2026-10-18\task-2\meri-runner-transport-diagnostic\apps\runtime\native-authority\task-allocator.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps\runtime\test\runner-runtime-diagnostics.test.mjs (403.9588ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 18
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5431.1295
+
+✖ failing tests:
+
+test at apps\runtime\test\activity-runtime-diagnostics.test.mjs:1:1
+✖ apps\runtime\test\activity-runtime-diagnostics.test.mjs (1744.9613ms)
+  'test failed'
+
+test at apps\runtime\test\runner-runtime-diagnostics.test.mjs:1:1
+✖ apps\runtime\test\runner-runtime-diagnostics.test.mjs (403.9588ms)
+  'test failed'

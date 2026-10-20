@@ -1,0 +1,74 @@
+{
+  "builds": [
+    {
+      "id": "meri-greenfield-qualification-build:aaab4ac1-53a1-48f5-b257-cdace47dfad9",
+      "status": "SUCCEEDED",
+      "complete": true,
+      "phase": "COMPLETED",
+      "startTime": "2026-10-20T00:18:01.916000+00:00",
+      "endTime": "2026-10-20T00:19:27.434000+00:00",
+      "phases": [
+        {
+          "phase": "SUBMITTED",
+          "status": "SUCCEEDED",
+          "durationSeconds": 0
+        },
+        {
+          "phase": "QUEUED",
+          "status": "SUCCEEDED",
+          "durationSeconds": 0
+        },
+        {
+          "phase": "PROVISIONING",
+          "status": "SUCCEEDED",
+          "durationSeconds": 7
+        },
+        {
+          "phase": "DOWNLOAD_SOURCE",
+          "status": "SUCCEEDED",
+          "durationSeconds": 7
+        },
+        {
+          "phase": "INSTALL",
+          "status": "SUCCEEDED",
+          "durationSeconds": 0
+        },
+        {
+          "phase": "PRE_BUILD",
+          "status": "SUCCEEDED",
+          "durationSeconds": 0
+        },
+        {
+          "phase": "BUILD",
+          "status": "SUCCEEDED",
+          "durationSeconds": 68
+        },
+        {
+          "phase": "POST_BUILD",
+          "status": "SUCCEEDED",
+          "durationSeconds": 0
+        },
+        {
+          "phase": "UPLOAD_ARTIFACTS",
+          "status": "SUCCEEDED",
+          "durationSeconds": 0
+        },
+        {
+          "phase": "FINALIZING",
+          "status": "SUCCEEDED",
+          "durationSeconds": 0
+        },
+        {
+          "phase": "COMPLETED",
+          "status": null,
+          "durationSeconds": null
+        }
+      ],
+      "retry": {
+        "autoRetryLimit": 0,
+        "autoRetryNumber": 0
+      }
+    }
+  ],
+  "missing": []
+}

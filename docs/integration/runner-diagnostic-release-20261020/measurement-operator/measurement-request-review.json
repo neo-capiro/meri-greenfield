@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "at": "2026-10-20T00:17:53.094941+00:00",
+  "reviewer": "binding_tests",
+  "requestSha256": "4f140a15d74b4d396788a406dddb7c9ef4f813b3ededaf045881a94aa8e1b078",
+  "buildspecBytes": 3867,
+  "limits": {
+    "executionMinutes": 10,
+    "queueMinutes": 5,
+    "automaticRetries": 0
+  },
+  "findings": [],
+  "scope": "Actual canonical buildspec/request reconstruction; immutable payload PUT/HEAD/GET and raw bytes; product/source/image joins; twelve sealed source pins; unchanged C policy/allocation/launch command/max3turns/1tool/absent features; wrapper source-only delta."
+}

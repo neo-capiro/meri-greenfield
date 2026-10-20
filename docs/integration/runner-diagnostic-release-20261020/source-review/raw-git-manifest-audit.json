@@ -1,0 +1,659 @@
+{
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "sourceTree": "3912782fd7d5c3f62c28b27ca29b1cb35bed033e",
+  "status": "RAW_GIT_BLOBS_AND_CANONICAL_MANIFEST_VERIFIED",
+  "gitNoLazyFetch": "1",
+  "gitProtocolAllow": "never",
+  "fileCount": 20256,
+  "rawMemberBytes": 410041429,
+  "gitBlobHashAlgorithm": "SHA1(blob <byte length> NUL <raw bytes>)",
+  "blobHashVerifications": 20256,
+  "sha256Measurements": 20256,
+  "canonicalManifest": {
+    "contract": "meri.source-members.v1",
+    "bytes": 4126760,
+    "sha256": "a986c0a4bf026cffc76b0eb689c95501c59d3369e652e71b37a496004e15f656",
+    "serialization": "JSON keys sorted lexicographically; compact comma/colon separators; ASCII strings; sorted file paths; terminal LF"
+  },
+  "missingGitObjects": [],
+  "sourcePinInputs": [
+    {
+      "bytes": 10482,
+      "mode": "100644",
+      "path": "apps/runtime/Dockerfile",
+      "sha256": "e7e0427aca562ba0747ca0874ff284915af2ce40f32f4d5330857824e8d43022"
+    },
+    {
+      "bytes": 17250,
+      "mode": "100644",
+      "path": "apps/runtime/conversation-runner.mjs",
+      "sha256": "166742d9e0068ebd193d330c5a06799791d2f8219f312a285e1b3dd687dc96f5"
+    },
+    {
+      "bytes": 19742,
+      "mode": "100644",
+      "path": "infra/product-preview/image-build-source.py",
+      "sha256": "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d"
+    },
+    {
+      "bytes": 37171,
+      "mode": "100644",
+      "path": "infra/product-preview/image-build-producer.py",
+      "sha256": "a1002c79952fb8c5f3ee81443ca645ee9bce58d074bfd93bbcd83518947cdae8"
+    },
+    {
+      "bytes": 16159,
+      "mode": "100644",
+      "path": "infra/product-preview/runtime-packages.lock.json",
+      "sha256": "5dc3b335d8dc7f0377c75852c28addc1a2517bb4bcc05e2125d0e1e31a97bdea"
+    },
+    {
+      "bytes": 2221,
+      "mode": "100644",
+      "path": "infra/product-preview/runtime-wheels.lock.json",
+      "sha256": "a184b63b70dba919f3192e7ff7de7e6487cf3a444445dada53f04f92242d3d2d"
+    },
+    {
+      "bytes": 174560,
+      "mode": "100644",
+      "path": "apps/runtime/certs/rds-global-bundle.pem",
+      "sha256": "90a6f1a7978a1b1b096dca6c57511ca48d3b8cf052f8e704baf358f34ea2f21b"
+    },
+    {
+      "bytes": 580,
+      "mode": "100644",
+      "path": "apps/runtime/certs/rds-global-bundle.lock.json",
+      "sha256": "37a5796b5cf246e9232e99a8c5f6438999b6336022a3acf2307b61c549c8987f"
+    },
+    {
+      "bytes": 2943,
+      "mode": "100644",
+      "path": ".dockerignore",
+      "sha256": "c0de50b754c988b8dfca0b29863a5539399886dbffebe20f09a235d0739359ef"
+    },
+    {
+      "bytes": 2001,
+      "mode": "100644",
+      "path": "package.json",
+      "sha256": "a1b1ff7f036e6c570f352e811263323305c1a72059166f50debb91584cfc5ef1"
+    },
+    {
+      "bytes": 23122,
+      "mode": "100644",
+      "path": "package-lock.json",
+      "sha256": "4a18a2e5eeb672758df381eba55653da2dc0d9e9ab26e3f6f7943ad19120753c"
+    }
+  ],
+  "architecture": {
+    "platform": "linux/amd64",
+    "runtimeImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+    "nodeVersion": "v24.21.0",
+    "glibcVersion": "2.44",
+    "repositoryIndex": {
+      "file": "APKINDEX.tar.gz",
+      "url": "https://packages.wolfi.dev/os/x86_64/APKINDEX.tar.gz",
+      "sha256": "01398efd4ae98d03bf5cb2c9c5fe397399bca61b81c8cb0cb36bd90e230137c6",
+      "bytes": 10635138,
+      "signingKeySha256": "f0031424cf46f7db780ce63a45f0fd6aa6f85f601e6bb3b7a91fe3d4d5b7d2cc"
+    },
+    "basePackages": 19,
+    "additionalPackages": 44,
+    "requiredPaths": 20
+  },
+  "gitAttributes": [
+    {
+      "path": ".gitattributes",
+      "contents": "* text=auto eol=lf\n*.docx binary\n"
+    },
+    {
+      "path": "apps/artifacts/storage/.gitattributes",
+      "contents": "test/evidence/*.bin binary\n"
+    },
+    {
+      "path": "apps/gateway/sources/public-data/test/evidence/.gitattributes",
+      "contents": "# Preserve new mode evidence exactly.\nmode-*.txt -text -whitespace\nmode-*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-legislation/test/evidence/.gitattributes",
+      "contents": "# Preserve raw process evidence and diagnostic whitespace exactly.\nsearch-completion-initial.txt -text -whitespace\nsearch-completion-initial.json -text whitespace=cr-at-eol\nsearch-completion-frozen-files.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "apps/gateway/sources/state-status-votes/test/evidence/.gitattributes",
+      "contents": "# Preserve raw process evidence and diagnostic whitespace exactly.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "apps/proxy/product/runtime-packages/.gitattributes",
+      "contents": "x86_64/* -text\nSHA256SUMS -text\n"
+    },
+    {
+      "path": "apps/runtime/artifacts/.gitattributes",
+      "contents": "test/evidence/*.bin binary\n"
+    },
+    {
+      "path": "apps/runtime/build/.gitattributes",
+      "contents": "# Preserve the exact helper bytes observed in the approved Linux diagnostic.\n*.mjs -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "apps/runtime/evidence/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "apps/runtime/selected/evidence/.gitattributes",
+      "contents": "*.bin -text -diff\n"
+    },
+    {
+      "path": "docs/coordination/audits/control-ca-trust-20261018/.gitattributes",
+      "contents": "# Raw test output retains its captured bytes, including the failure history.\n*.tap -text -diff\n"
+    },
+    {
+      "path": "docs/coordination/audits/meri-package4-qualification-20261016/.gitattributes",
+      "contents": "# Raw test output retains its captured bytes; generated JSON uses LF text.\n*.tap -text -diff\n*.json text eol=lf\n"
+    },
+    {
+      "path": "docs/coordination/audits/meri-package4-qualification-20261016/accepted-followup-closure/.gitattributes",
+      "contents": "* -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/audits/meri-package4-qualification-20261016/combined-loading/.gitattributes",
+      "contents": "*.receipt.json -text whitespace=cr-at-eol\n*.tap -text\n*.stderr -text\n"
+    },
+    {
+      "path": "docs/coordination/audits/meri-package4-qualification-20261016/integrated-types/.gitattributes",
+      "contents": "*.txt -text whitespace=cr-at-eol\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/audits/meri-package4-qualification-20261016/recovery-closure/.gitattributes",
+      "contents": "* -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/handoffs/meri-read-tools-final-20261017/.gitattributes",
+      "contents": "packets/*.patch -text\npackets/*.json -text\n"
+    },
+    {
+      "path": "docs/coordination/ledgers/.gitattributes",
+      "contents": "TOOL-COVERAGE-96.csv -text -whitespace\n"
+    },
+    {
+      "path": "docs/coordination/reports/governed-next-20261017/.gitattributes",
+      "contents": "# Preserve captured Windows test output, including assertion diff whitespace.\n*.txt -text -whitespace\n"
+    },
+    {
+      "path": "docs/coordination/reports/kb-completion-20261017/.gitattributes",
+      "contents": "# Process receipts retain exact bytes across machines; diagnostic spaces are evidence.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/reports/native-mode-20261017/.gitattributes",
+      "contents": "# Preserve raw process evidence exactly.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/reports/native-mode-sdk-20261017/.gitattributes",
+      "contents": "# Preserve raw process evidence exactly.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/reports/outreach-name-correction-20261017/.gitattributes",
+      "contents": "# Preserve raw process evidence exactly.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/reports/read-completion-next-20261017/.gitattributes",
+      "contents": "# Preserve raw process evidence and diagnostic whitespace exactly.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/reports/read-installation-20261017/.gitattributes",
+      "contents": "# Preserve raw process evidence and diagnostic whitespace exactly.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/reports/read-mode-reader-20261017/.gitattributes",
+      "contents": "# Preserve raw process evidence exactly.\n*.txt -text -whitespace\n*.json -text whitespace=cr-at-eol\n"
+    },
+    {
+      "path": "docs/coordination/reports/stored-next-20261016/.gitattributes",
+      "contents": "# Preserve raw Windows runner output, including whitespace in failed JSON assertion diffs.\n*.txt -text -whitespace\n"
+    },
+    {
+      "path": "docs/handover/20261012/context-helpers/.gitattributes",
+      "contents": "* -text\n"
+    },
+    {
+      "path": "docs/handover/20261012/inputs/.gitattributes",
+      "contents": "*.original.* -text\n"
+    },
+    {
+      "path": "docs/handover/20261017/fable-shipping/runtime-package-inputs/.gitattributes",
+      "contents": "x86_64/* -text\npublic-signing-key.txt -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/.gitattributes",
+      "contents": "*.stdout.bin binary\n*.stderr.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/.gitattributes",
+      "contents": "*.bin binary\n*.tgz binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/integration/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/.gitattributes",
+      "contents": "*.bin -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/review/.gitattributes",
+      "contents": "*.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/reviewer/.gitattributes",
+      "contents": "*.stdout.bin -diff -text\n*.stderr.bin -diff -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/.gitattributes",
+      "contents": "**/*.stdout* -whitespace\n**/*.stderr* -whitespace\n"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/.gitattributes",
+      "contents": "# Retain exact historical failing bytes; current authored tests keep whitespace checks.\nfinal-test-before-whitespace.mjs.txt -whitespace\n"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/.gitattributes",
+      "contents": "# Raw command streams are immutable evidence, including whitespace failures.\n# Authored source, tests, reports and JSON remain subject to whitespace checks.\n**/*.stdout* -whitespace\n**/*.stderr* -whitespace\n"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-successor-20261012/action-review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/consolidation-closeout-20261011/.gitattributes",
+      "contents": "*.bin -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/dot-handoff-context-20261015/.gitattributes",
+      "contents": "# Preserve exact reviewed draft bytes and their historical manifest hashes.\nimage-base-source-candidates/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol\nimage-runtime-source-proposal/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol\n"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-native-tests-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-native-tests-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/.gitattributes",
+      "contents": "*.bin -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-runtime-owner-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-runtime-owner-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/.gitattributes",
+      "contents": "# Preserve raw process output bytes, including assertion-renderer whitespace.\n*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-independent-resume-20261012/.gitattributes",
+      "contents": "# Preserve exact process streams, including assertion reporter whitespace.\n*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/.gitattributes",
+      "contents": "*.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/image-patch-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/image-patch-20261012/licenses/.gitattributes",
+      "contents": "# Preserve exact public metadata, notices and raw command outputs as evidence.\nnotices/** binary\nmetadata/** binary\n*.txt binary\n*.stderr binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/image-patch-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/.gitattributes",
+      "contents": "*.stdout.bin binary\n*.stderr.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-independent-resume-20261012/.gitattributes",
+      "contents": "*.bin -diff -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-policy-alignment-20261012/author/.gitattributes",
+      "contents": "# Exact owned process evidence, including failure-renderer whitespace.\n*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-policy-alignment-20261012/independent/.gitattributes",
+      "contents": "# Exact scrubbed process streams; preserve assertion formatting.\n*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n*.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-proposals-20261012/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/author/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-read-binding-20261012/independent/.gitattributes",
+      "contents": "*.bin -diff -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/memory-timestamp-repair-20261012/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/.gitattributes",
+      "contents": "*.bin -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/.gitattributes",
+      "contents": "*.bin binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/.gitattributes",
+      "contents": "# Preserve raw process bytes; do not normalize captured streams.\n*.bin binary\nauthor/typecheck.stdout.txt binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/.gitattributes",
+      "contents": "# Preserve exact raw failure bytes; source/docs whitespace checking stays active.\nalias-regression-before-repair.stdout.bin -text -diff\nwhitespace-before.stdout.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/rel02-canonical-composition-20261011/.gitattributes",
+      "contents": "*.stdout -diff\n*.stderr -diff\n*.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/.gitattributes",
+      "contents": "*.bin -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-review/.gitattributes",
+      "contents": "resolver-repaired.stdout.bin -text -diff\nwhitespace-before.stdout.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/temporal-recovery-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/temporal-recovery-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/trusted-composition-20261011/.gitattributes",
+      "contents": "# Retain captured process streams byte-for-byte, including original whitespace.\nstdout binary\nstderr binary\n*.stdout binary\n*.stderr binary\n"
+    },
+    {
+      "path": "docs/qualification/candidates/trusted-memory-context-20261012/author/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/trusted-memory-context-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-review/.gitattributes",
+      "contents": "# Preserve raw process streams byte-for-byte, including assertion whitespace.\n*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-author/.gitattributes",
+      "contents": "*.stdout.bin -text -diff\n*.stderr.bin -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/test-continuation-review/.gitattributes",
+      "contents": "independent-forward.patch -text -diff\nindependent-inverse.patch -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/.gitattributes",
+      "contents": "*.stdout.bin -diff\n*.stderr.bin -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/author/.gitattributes",
+      "contents": "*.bin -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/integration/.gitattributes",
+      "contents": "*.bin -text\n"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/.gitattributes",
+      "contents": "*.stdout.txt -text -diff\n*.stderr.txt -text -diff\n"
+    },
+    {
+      "path": "infra/product-preview/runtime-packages/.gitattributes",
+      "contents": "x86_64/* -text\nwheels/* -text\n"
+    },
+    {
+      "path": "packages/contracts/conversation-history/evidence/.gitattributes",
+      "contents": "# Qualification receipts/profiles retain their exact observed byte hashes.\ntooling/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol\n"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/.gitattributes",
+      "contents": "# Qualification seals bind exact bytes, including the preserved source manifest.\n*.mjs -text\n*.py -text\n*.json -text whitespace=cr-at-eol\n"
+    }
+  ],
+  "archiveCreated": false,
+  "scope": "Independent raw Git measurement only. Does not create a ZIP or establish image, build, upload, runtime or activation acceptance."
+}

@@ -1,0 +1,27 @@
+(node:25036) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25036) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch (165.5297ms)
+✔ startup prepare and start have separate bounded allowances while ordinary transport remains eight seconds (4.8653ms)
+✔ startup stage cutoff and SDK cancellation refuse a late preparation response before start (5.6429ms)
+✔ timed out fetch retires a late response body without extending deadline (158.9602ms)
+✔ client ignores late stdout exit until its close receipt proves closure (109.9959ms)
+✔ client close during prepare prevents a late start RPC (108.4338ms)
+✔ stdout refusal during close cannot emit SDK error before positive closure (109.9257ms)
+✔ stdin refusal withholds write callback and SDK error until original stop is proven (110.8516ms)
+✔ stdout completion: exit before final bytes waits for EOF and delivers the final SDK result (113.6634ms)
+✔ stdout completion: EOF before exit delivers bytes without inventing terminal status (111.5042ms)
+✔ stdout completion: exit and EOF drain every queued frame and preserve sequence replay (111.0296ms)
+✔ stdout completion: proven stop drains queued bytes without requiring natural EOF (109.7949ms)
+✔ stdout completion: missing stop proof never publishes terminal output (109.7925ms)
+✔ stdout completion: premature stream error refuses clean completion (111.3033ms)
+✔ stdout completion: premature stream close refuses clean completion (110.0284ms)
+✔ stdout completion: cancellation and original expiry still bound incomplete output (110.3118ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2335.9721

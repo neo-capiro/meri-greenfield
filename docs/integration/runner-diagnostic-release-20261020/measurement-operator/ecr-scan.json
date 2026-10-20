@@ -1,0 +1,17 @@
+{
+  "imageScanFindings": {
+    "findings": [],
+    "imageScanCompletedAt": "2026-10-20T00:13:38+00:00",
+    "vulnerabilitySourceUpdatedAt": "2026-10-20T00:13:38+00:00",
+    "findingSeverityCounts": {}
+  },
+  "registryId": "967807252336",
+  "repositoryName": "meri-greenfield/qualification-worker",
+  "imageId": {
+    "imageDigest": "sha256:f5a7abc9940ef8f5092bbfa9db9c3345874d448de2d7d7712645f8aad9db5ff7"
+  },
+  "imageScanStatus": {
+    "status": "COMPLETE",
+    "description": "The scan was completed successfully."
+  }
+}

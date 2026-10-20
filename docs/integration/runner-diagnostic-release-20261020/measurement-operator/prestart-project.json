@@ -1,0 +1,20 @@
+{
+  "projects": [
+    {
+      "name": "meri-greenfield-qualification-build",
+      "serviceRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+      "environment": {
+        "type": "LINUX_CONTAINER",
+        "computeType": "BUILD_GENERAL1_SMALL",
+        "image": "aws/codebuild/standard:7.0",
+        "privilegedMode": true
+      },
+      "timeout": 30,
+      "queueTimeout": 5,
+      "concurrency": 1,
+      "encryptionKey": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+      "vpcConfig": null
+    }
+  ],
+  "missing": []
+}

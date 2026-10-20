@@ -1,0 +1,21 @@
+{
+  "schema": "meri.offline.proof-check-receipt/1",
+  "status": "PASSED_SOURCE_ONLY",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "candidateSha256": "b9af435fb9f41e576aa81b282a22f8737d2e6a4e934cc4185ab1da6f108823fa",
+  "workingDirectory": "proof-workspace",
+  "executable": "C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+  "arguments": ["--test", "generate-pr193-candidate.test.mjs", "source-proof.test.mjs", "frozen-candidate.test.mjs"],
+  "executionSession": 57873,
+  "exitCode": 0,
+  "tests": 23,
+  "passed": 23,
+  "failed": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "todo": 0,
+  "durationMs": 6587.7685,
+  "imageAdmission": false,
+  "liveAdmission": false,
+  "note": "Records the completed local tool result; no product tests, Docker or cloud execution are represented."
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "reviewer": "binding_tests",
+  "at": "2026-10-20T00:22:50.460399+00:00",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f5a7abc9940ef8f5092bbfa9db9c3345874d448de2d7d7712645f8aad9db5ff7",
+  "measurementBuildId": "meri-greenfield-qualification-build:aaab4ac1-53a1-48f5-b257-cdace47dfad9",
+  "runtimeSha256": "46a04439273a9a26b90472b4fab28f9d13068187e033ad41d12e7045d48f4e0d",
+  "artifactDownloadsSha256": "32269016b3fb7b6cc8cb963dbf335e3ef985585c237332d061f2fc3bb7eafe3f",
+  "findings": [],
+  "scope": "Six raw artifacts/selected-version HEAD/GET metadata/buildARN/KMS/CRC/ETag; pure receipt joins including terminal identity and seven gates; exact diagnostic success/cleanup; canonical pure assembly equals runtime object; unchanged absent capabilities and 3turns/1tool budgets. No AWS/network, edits or suite rerun."
+}
