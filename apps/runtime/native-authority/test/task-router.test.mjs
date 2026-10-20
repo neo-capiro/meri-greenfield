@@ -37,6 +37,12 @@ test('authenticated stop has a reserved saturation slot, cancels in-flight work 
  const f=fixture({maxConcurrent:1,maxBufferedBytes:8388608}),entered=Promise.withResolvers();f.onSend(async input=>{if(input.operation==='stop')return {status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))};entered.resolve();return new Promise((resolve,reject)=>{input.signal.addEventListener('abort',()=>reject(Error('stopped')),{once:true});});});
  const pending=f.post();await entered.promise;const stopped=await f.post('stop',f.taskCredential);assert.equal(stopped.status,200);assert.equal((await pending).status,403);assert.equal((await f.post()).status,403);assert.equal(f.counts.send,2);f.router.close();
 });
+test('the runner\'s own stop and control\'s final stop for the same original are both forwarded, neither cancels the other',async()=>{
+ const f=fixture(),sent=[],first=Promise.withResolvers();f.onSend(async input=>{sent.push(input.authorization);if(sent.length===1){await first.promise;if(input.signal.aborted)throw Error('cancelled');}return {status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))};});
+ const runnerStop=f.post('stop',f.taskCredential);while(sent.length===0)await new Promise(resolve=>setImmediate(resolve));
+ const controlStop=await f.post('stop',f.controlCredential);first.resolve();
+ assert.equal(controlStop.status,200);assert.equal((await runnerStop).status,200);assert.deepEqual(sent,['Bearer '+f.taskCredential,'Bearer '+f.controlCredential]);assert.equal((await f.post()).status,403);f.router.close();
+});
 test('oversized request and foreign downstream response are refused without successful release',async()=>{
  const f=fixture(),request=new Request('https://router.invalid/v1/native-task/inspect',{method:'POST',headers:{authorization:'Bearer '+f.controlCredential,'content-type':'application/json','content-length':'2097153'},body:JSON.stringify({original:f.original})});
  assert.equal((await f.router.privateApplication.handle(request,{ingress:f.ingress})).status,403);assert.equal(f.counts.connect,0);
