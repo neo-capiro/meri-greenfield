@@ -19,6 +19,7 @@ import {createProductServiceTaskLeaseReader} from './service-task-leases.mjs';
 import {parseProductServicePairConfiguration} from './service-pair-discovery.mjs';
 import {createProductOwnerServiceGate} from './owner-channel.mjs';
 import {createProductOwnerHttpsServer} from './owner-https.mjs';
+import {createOwnerDiagnostics,createDiagnosticPool} from './owner-diagnostics.mjs';
 
 const fail=()=>{throw Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE');};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -146,7 +147,7 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   const c=validateProductOwnerConfiguration(raw);
   if(!c.enabled)return frozenDisabled();
   closeMs=c.limits.maxRequestMs;
-  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','fetchImpl','sleep']),
+  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','fetchImpl','sleep','writeDiagnostic']),
    readMaterial=d.readMaterial??readSecret,createPool=d.createPool??defaultPool,
    createAwsClients=d.createAwsClients??defaultClients,createServer=d.createServer??createProductOwnerHttpsServer,
    now=d.now??Date.now,fetchImpl=d.fetchImpl??fetch,sleep=d.sleep??defaultSleep;
@@ -168,14 +169,16 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   if(candidate?.multiRun?.dynamicInitialRuns!==true||candidate.identity.commandContext.clientResolution.clientId!==c.clientPolicy.selectedClientId)fail();
   const connectionBytes=await material(control.database.connectionFile),options=databaseOptions(connectionBytes,c.limits.maxRequestMs);
   pool=createPool(options);if(typeof pool?.connect!=='function'||typeof pool?.end!=='function')fail();
+  // Every refused statement and placement/currentness decision leaves one bounded line (owner-diagnostics.mjs).
+  const diagnostics=createOwnerDiagnostics({...(d.writeDiagnostic?{write:d.writeDiagnostic}:{}),now});pool=createDiagnosticPool(pool,diagnostics);
   clients=createAwsClients(awsOptions);own(clients,['ecsClient','ec2Client']);
   if([clients.ecsClient,clients.ec2Client].some(client=>typeof client?.send!=='function'||typeof client?.destroy!=='function'))fail();
   const limits={maxRequestMs:c.limits.maxRequestMs,maxFactBytes:c.limits.maxFactBytes},
    persistedFacts=createProductProxyPersistedFacts({pool,selectedClientId:c.clientPolicy.selectedClientId,now,limits,enabled:true}),
    initialBindings=createInitialRunBindingJournal({pool,now}),
-   placement=createProductOwnerPlacement({configuration:control,pool,persistedFacts,initialBindings,now,limits,enabled:true});
+   placement=createProductOwnerPlacement({configuration:control,pool,persistedFacts,initialBindings,now,limits,enabled:true,report:diagnostics.refused});
   nativeCurrentness=createProductOwnerNativeCurrentness({configuration:control,pool,credentialFileSha256:c.nativeCredentialFileSha256,
-   now,limits,fetchImpl,enabled:true},{readMaterial});
+   now,limits,fetchImpl,enabled:true,report:diagnostics.refused},{readMaterial});
   const taskLeaseReader=await life.run(()=>createProductServiceTaskLeaseReader({ecsClient:clients.ecsClient,ec2Client:clients.ec2Client,
    configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true}));
   const ca=await material(c.tls.caFile),cert=await material(c.tls.certFile),key=await material(c.tls.keyFile);
