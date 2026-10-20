@@ -240,34 +240,55 @@ The ADR states this openly rather than calling it "independent".
 | Phase | Gate to start | Work | Rollback |
 | --- | --- | --- | --- |
 | 0. Baseline | Now | Use the existing stage markers (`markRunnerStage`, activity `diagnostic`) to emit per-stage durations. In the qualification owner's Linux real-transport harness, count HTTP, TLS, DB, AWS and Core calls for one start and one chunk on the current transport. This turns §2.3 [E] into measurements | None needed (diagnostic only) |
-| 1. Local owner behind a switch | First chat (D) accepted on the current transport, **or** the §6.4 exception | Add `local-process-client.mjs` and the control broker/started change. Add `runner.executionTransport: 'remote' \| 'local'` to the existing validated runner configuration that control delivers through poststart, default `remote`. Add the runner lease check loop | Set the switch to `remote` (configuration re-render only; same image) |
+| 1. Local owner behind a switch | First chat (D) accepted on the current transport, **or** the §6.4 exception | Add `local-process-client.mjs` and the control broker/started change. Add the execution switch to the existing validated configuration that control delivers to the runner, default forwarded (implemented as `nativeCandidate.executionTransport: 'forwarded' \| 'local'`, see §6.6). Add the runner lease check loop | Set the switch back to `forwarded` (configuration re-render only; same image) |
 | 2. Parity qualification | Phase 1 merged | Run the same inputs on both switch values: two-turn with SessionStore resume; stop before, during and after start and mid-stream; two concurrent conversations plus second-turn exclusion; lost start acknowledgement, crash after launch, restart retirement; revocation mid-turn; diagnostics codes. Rerun the I1-I10 suites in `adj-reports/adj-e-notes/REVIEW-CHECKLIST-B-C.md` on both | Switch stays available |
 | 3. Default local | Phase 2 passes with measured criteria (§6.5) | Flip the default to `local` on preview; D3 authenticated acceptance repeated | Flip back |
 | 4. Retire old transport | Phase 3 has held through the agreed observation window | Delete everything in §6.3 in one reviewed PR | Revert that PR. The image keeps the old code until then |
 
 ### 6.3 What gets deleted in phase 4, so no dead path survives
 
-- **Runner modules:**
-  - `native-authority/remote-task-client.mjs`;
-  - in `remote-task-http.mjs`, the `prepare`, `start`, `stdin`, `stdout`, `launch` and `registration` handlers
-    (and the whole file if `stop` moves to the control-side stop below);
-  - the frame and stream limits in `remote-task-boundary.mjs`;
-  - `deferred-process-transport.mjs` (the local hook returns a real process after prepare and claim complete);
-  - the HTTPS :8080 listener and its TLS material path, if no route remains.
+This list is written against the phase 1 implementation (§6.6). Nothing is deleted before phase 4.
+
+- **Runner, the forwarded SDK byte path:**
+  - `native-authority/remote-task-client.mjs`: `createRemoteSdkProcessClient` (its stdin frames, stdout pump and
+    start/prepare calls). `createRemoteNativeTaskController` stays while control still reaches the runner (§6.6).
+  - `native-authority/runner-query.mjs`: `createRemoteRunnerQuery`.
+  - `native-authority/remote-task-http.mjs`: the HTTP `prepare`, `start`, `stdin` and `stdout` handlers and everything
+    only they use: the stdout frame queue and waiters, input/output sequences and replay receipts, pending
+    reader/writer guards, the task-role `worker` set, and the `executionTransport` option (local becomes the only
+    behaviour, so the `local` facet becomes the receiver's task interface).
+  - `native-authority/remote-task-boundary.mjs`: `decodeBytes` and the frame limit `maxFrameBytes` once no frame is
+    decoded; `maxBufferedBytes` stays as the local pre-start input bound.
+  - `native-authority/remote-composition.mjs` and `remote-conversation-runner.mjs`: the `processTransport` plumbing
+    into the worker (keep the task-capability binding check by passing the credential digest directly).
 - **Control:**
-  - the task-router operations prepare, start, stdin, stdout, launch and registration;
+  - the task-router operations `prepare`, `start`, `stdin` and `stdout` (`task-router-boundary.mjs` fields and task
+    operations);
+  - the router startup allowance (`startupOperations`, `startupMaxRequestMs`) and
+    `RUNNER_NATIVE_STARTUP_ROUTER_MS`, which only exist for forwarded prepare/start;
   - the stream byte budgets in `task-router.mjs`;
-  - `runner-tls-client.mjs` and `task-router-network*.mjs`, if graceful stop is done with grant revocation plus ECS
-    `StopTask` (decide on phase 2 stop-latency evidence). Otherwise only the `stop` operation survives.
+  - only after the broker change in §6.6 lands: the `launch` and `registration` operations; and
+    `runner-tls-client.mjs`/`task-router-network*.mjs` if graceful stop moves to grant revocation plus ECS `StopTask`
+    (decide on phase 2 stop-latency evidence). Otherwise `stop`, `inspect`, `retire`, `binding-read` and `capture`
+    keep the router.
 - **Configuration:**
-  - `executionTransport` (the switch itself);
-  - `processOrigin`;
+  - the switch itself: `nativeCandidate.executionTransport` (`prepared-candidate-config.mjs`), `candidateTransport` and
+    the optional field in `parseTransport` (`prepared-run-issuance.mjs`), the configuration-hash term
+    (`prepared-run-configuration.mjs`), the bootstrap binding field (`prepared-candidate.mjs`,
+    `prepared-run-registry.mjs`) and `remoteTask.executionTransport` (`config.mjs`, `task-bootstrap.mjs`,
+    `remote-conversation-runner.mjs`);
+  - `remoteTask.processOrigin`;
   - router stream sizing;
-  - runner certificate issuance, the runner CA and the control → runner 8080 security-group pair, if the listener
-    is gone.
-- **Tests:** the stdin/stdout/launch cases in `remote-task.test.mjs`, `deferred-process-independent.test.mjs` and
-  the stream cases in `task-router.test.mjs`. Their invariants (one-use launch, no retry, lost acknowledgement
-  leads to UNKNOWN, stop proof) move to the local owner's tests **before** deletion.
+  - runner certificate issuance, the runner CA and the control → runner 8080 security-group pair, only if no
+    control → runner route remains.
+- **Kept, contrary to the first draft of this list:** `deferred-process-transport.mjs`. The SDK spawn hook is
+  synchronous and must return a process before prepare and the start claim complete, so the local client's facade is
+  this module.
+- **Tests:** the forwarded stdin/stdout/prepare/start cases in `remote-task.test.mjs`, the forwarded cases in
+  `sdk-initialization-milestones.test.mjs` and `native-start-router-budget.test.mjs`, and the stream cases in
+  `task-router.test.mjs`. Their invariants (one-use launch, no retry, lost acknowledgement leads to UNKNOWN, stop
+  proof) are already asserted for the local owner in `local-process-client.test.mjs` and the local cases of
+  `sdk-initialization-milestones.test.mjs`.
 - **Docs:** this ADR's "current" sections become historical. Update `native-authority/README.md`,
   `SESSION-LAUNCHER.md` and `task-route.md` to the one owner.
 
@@ -297,6 +318,41 @@ Removing services is not a criterion.
 4. **Behaviour.** Two-turn, stop, concurrency and recovery tests pass (phase 2 list) on Linux with the real
    transport.
 5. **Reversibility.** The switch round-trips on preview without an image change.
+
+### 6.6 Phase 1 as implemented (branch `fable/adj-local-execution-20261020`, switch off by default)
+
+Implemented under the §6.4 exception as a prepared change. Activation is a separate decision.
+
+- **Switch.** `nativeCandidate.executionTransport: 'forwarded' | 'local'` in control's candidate configuration.
+  Absent and `'forwarded'` are identical: only `'local'` enters the issuance transport facts, the prepared-run
+  configuration hash and the runner's bootstrap binding (`remoteTask.executionTransport`). Turning it on is a
+  re-render only; render inputs were not changed.
+- **Runner.** `native-authority/local-process-client.mjs` sits behind the existing query injection point
+  (`createLocalRunnerQuery` beside `createRemoteRunnerQuery`). It calls the receiver's in-process `local` facet in
+  `remote-task-http.mjs`, which runs the **same** prepare and start owner, the same authority calls to control
+  (`runner/native/prepare`, `start`, `started`, `verify`), the same lifetimes and the same one-use state machine as
+  the forwarded routes, and returns the prepared task's real stdio. The task is the existing
+  `independent-task.mjs`/supervisor/launcher/process-lifetime chain. In local mode the receiver refuses the task-role
+  byte routes over HTTP.
+- **Revocation while running.** The per-frame `fresh()` is replaced by a lease recheck every 5 s through the same
+  `verify` authority. A refusal stops the task and surfaces an error to the SDK.
+- **Control is unchanged in phase 1.** Prepare, the one-use claim, started, stop, fencing and budgets stay direct run
+  commands as before. The broker still launches the supervisor and inspects it through the router
+  (control → runner), so local startup has two control-initiated router forwards and zero runner-initiated ones.
+  The §6.5 target of 0 router forwards needs the broker change of §6.1 (consume the claim, record `launching`, take
+  native facts from P1's `started` report), a journal-semantics change left for a reviewed follow-up.
+- **Measured locally (Linux image, pinned SDK 0.3.295 / CLI 2.1.295, loopback provider), one-word turn:** forwarded
+  16–18 byte frames and 35–39 authority verifications; local 0 frames and 3 verifications, same milestones and
+  result. At live latency (≈2.5 s and ~5 Core + 6 AWS calls per forwarded frame) that is the difference between
+  ≈40 s and ≈0 s of per-frame overhead for the turn.
+- **Parity tests** (local and forwarded where both apply): milestones and deferred input; at-most-once start and no
+  replay; refused or lost start acknowledgement; lease revocation; natural completion waiting for exit and stdout
+  EOF; control stop mid-request with physical-stop proof; two concurrent runs; cancellation before start; two-turn
+  resume from a transcript restored into the run's config directory; switch validation and configuration identity.
+- **Finding for the second-turn work (both transports).** With a `sessionStore`, the SDK's own resume materializes
+  the transcript into `/tmp/claude-resume-<uuid>` and passes that as `CLAUDE_CONFIG_DIR`. The descriptor policy
+  (`dirname(CLAUDE_CONFIG_DIR)` must be the configured parent) refuses it on either transport. Resume works when the
+  transcript is restored into the run's own config directory first.
 
 ## 7. Recovery owners: existing guarantees and demonstrated gaps (plan §9)
 
