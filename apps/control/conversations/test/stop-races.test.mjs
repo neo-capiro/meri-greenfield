@@ -19,7 +19,7 @@ async function stopFixture({cancelJournal,cancelWorkflow,stopOriginal,maxRequest
  const store={...f.store,lifecycle:{...journal,cancel:(...args)=>cancelJournal?cancelJournal(journal,...args):journal.cancel(...args)}};
  const dispatcher={...f.dispatcher,async signal(){},async continued(){},async cancel(input){calls.cancels.push(input.binding.runId);return cancelWorkflow?cancelWorkflow(input):{workflow:'CANCEL_REQUESTED'};}};
  const native={async call(operation,input,{signal}){calls.native.push({operation,input});assert.equal(signal.aborted,false);assert.ok(['completed','failed','cancelled'].includes((await f.store.read(binding,{after:0,limit:1},()=>{})).run.state),'native cleanup follows the durable terminal fence');return stopOriginal?stopOriginal(input,signal):{...input,expiresAtMs:1};}};
- const make=()=>createConversationLifecycleService({service:f.service,store,dispatcher,reconcileOriginal:createOriginalReconciler({native,timeoutMs:maxRequestMs}),maxRequestMs,checkpoints:{async read(){throw Error('unused');}},sessions:f.sessions,newId:()=>id(n++)});
+ const make=()=>createConversationLifecycleService({retention:null,service:f.service,store,dispatcher,reconcileOriginal:createOriginalReconciler({native,timeoutMs:maxRequestMs}),maxRequestMs,checkpoints:{async read(){throw Error('unused');}},sessions:f.sessions,newId:()=>id(n++)});
  const publish=state=>f.service.publish({credential:f.credential,binding,event:status(n++,state)});
  async function running(){await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});await publish('starting');await publish('running');}
  const read=async()=>{const saved=await f.store.read(binding,{after:0,limit:100},()=>{});return {state:saved.run.state,cancelled:saved.events.filter(e=>e.data?.reasonCode==='USER_CANCELLED').length};};
@@ -118,7 +118,7 @@ test('uncommitted cancellation with revoked session cannot authorize stop-only c
 
 test('the lifecycle owner refuses composition without journal or dispatcher cancellation',async()=>{
  const f=await applicationFixture({transitions:true,initialInput:true});
- try{const base={service:f.service,checkpoints:{async read(){}},sessions:f.sessions,reconcileOriginal:async()=>({state:'reconciled'})};
+ try{const base={service:f.service,checkpoints:{async read(){}},sessions:f.sessions,retention:null,reconcileOriginal:async()=>({state:'reconciled'})};
   const journal={...f.store.lifecycle};delete journal.cancel;
   assert.throws(()=>createConversationLifecycleService({...base,store:{...f.store,lifecycle:journal},dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
   const noFence={...f.store.lifecycle};delete noFence.readStopFence;

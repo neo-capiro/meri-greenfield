@@ -100,7 +100,7 @@ async function composedStartup({latencyMs=300,originalExpiresAtMs=Date.now()+900
    async execution(){return null;},continuation:unused,cancel:unused,readStopFence:unused}};
  const dispatcher={start:unused,cancel:unused,signal:unused};
  const basic=createConversationService({sessions,store,dispatcher,versions,maxRequestMs:serverMs});
- const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,maxRequestMs:serverMs,reconcileOriginal:unused,checkpoints:{read:unused}});
+ const service=createConversationLifecycleService({retention:null,service:basic,store,dispatcher,sessions,maxRequestMs:serverMs,reconcileOriginal:unused,checkpoints:{read:unused}});
  const authority={async call(operation,input,{signal}={}){
   if(operation!=='worker/authorize')throw Error('unexpected native operation');counts.authorization++;
   const verified=await verifierContext.verifyIdentity({credential:'synthetic-native',deadlineMs:Date.now()+serverMs,signal});

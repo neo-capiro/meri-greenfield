@@ -43,7 +43,7 @@ async function composition(){
  const dispatcher={async start(v){calls.starts.push(v.binding);},async cancel(){},async continued(v){calls.continued.push(v.input);},async signal(){calls.signals++;}};
  const basic=createConversationService({sessions,store,dispatcher,versions,newId:()=>id(n++)});
  const approvals={async read({proposalId}){if(proposalId!==f.proposal.proposalId)throw Object.assign(Error('APPROVAL_REFUSED'),{code:'APPROVAL_REFUSED'});return structuredClone(f.proposal);},readDecision:v=>forwarder.readDecision(v)};
- const service=createConversationLifecycleService({service:basic,store,dispatcher,checkpoints:f.checkpoints,nativeAdmission:authority.continuationAdmission,approvals,sessions,newId:()=>id(n++)});
+ const service=createConversationLifecycleService({retention:null,service:basic,store,dispatcher,checkpoints:f.checkpoints,nativeAdmission:authority.continuationAdmission,approvals,sessions,newId:()=>id(n++)});
  const control=input=>service.control({credential,input});
  async function waiting(){
   await basic.allocateInput({credential,input:f.input});await basic.submit({credential,input:f.input});allocation=await allocateOriginal(base,binding);

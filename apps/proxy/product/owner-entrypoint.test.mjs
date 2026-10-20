@@ -11,6 +11,7 @@ import {createProductOwnerAdmissionChannel} from './owner-channel.mjs';
 import {validateProductOwnerConfiguration,startProductOwner,runProductOwnerMain,
  PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS} from './owner-entrypoint.mjs';
 import {servicePairFixture} from './test/service-pair-fixture.mjs';
+import {OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/model-proxy/product-envelope.mjs';
 
 const sha=v=>createHash('sha256').update(v).digest('hex'),id=n=>'11111111-1111-4111-8111-'+String(n).padStart(12,'0');
@@ -96,9 +97,10 @@ test('runtime schema is closed and joins reviewed server/client/service/pricing 
   c=>{c.clientPolicy.selectedClientId='other';},c=>{c.serviceTasks.proxy.taskArn='prelaunch-task';},
   c=>{c.clientPolicy.ownerTaskArn='prelaunch-task';},c=>{c.serviceTasks.schemaVersion=1;},
   c=>{c.serviceTasks.ownerCertSha256='f'.repeat(64);},c=>{c.serviceTasks.proxy.vpcId='vpc-ffffffff';},
-  c=>{c.pricing.maxOutputTokens=PRODUCT_MAX_OUTPUT_TOKENS+1;},c=>{c.pricing.maxInputTokens=PRODUCT_MAX_INPUT_TOKENS+1;},c=>{c.limits.maxLeaseMs=30001;},c=>{c.serviceTasks.proxy.endpoint='https://foreign.invalid';},
+  c=>{c.pricing.maxOutputTokens=PRODUCT_MAX_OUTPUT_TOKENS+1;},c=>{c.pricing.maxInputTokens=PRODUCT_MAX_INPUT_TOKENS+1;},c=>{c.limits.maxLeaseMs=30001;},c=>{c.limits.maxRequestMs=OWNER_MAX_REQUEST_MS+1;},c=>{c.serviceTasks.proxy.endpoint='https://foreign.invalid';},
  ]){const f=fixture();change(f.runtime);await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);assert.deepEqual(f.reads,[]);assert.deepEqual(f.lifecycle,[]);}
  const f=fixture(),v=validateProductOwnerConfiguration(f.runtime);assert.ok(Object.isFrozen(v.tls));assert.ok(Object.isFrozen(v.serviceTasks.proxy.securityGroupIds));
+ const budget=fixture();budget.runtime.limits.maxRequestMs=OWNER_MAX_REQUEST_MS;assert.equal(validateProductOwnerConfiguration(budget.runtime).limits.maxRequestMs,15000,'one owner exchange may take 15 s');
 });
 
 test('whole original control raw bytes are pinned before parsing, including independently committed VPC',async()=>{
@@ -117,7 +119,7 @@ test('verify-full-only DSN refuses duplicate and alternate parser controls befor
 
 test('actual assembly mounts genuine canonical owners against one pool and freshly joins native Core context',async()=>{
  const f=fixture(),runtime=await startProductOwner(f.runtime,f.dependencies),ports=f.captured();
- assert.equal(runtime.available,true);assert.equal(f.calls.length,0);assert.equal(f.fetches.length,0);assert.equal(f.awsCalls.length,10);assert.equal(ports.ownerPorts.pool,f.pool);
+ assert.equal(runtime.available,true);assert.equal(f.calls.length,0);assert.equal(f.fetches.length,0);assert.equal(f.awsCalls.length,10);assert.notEqual(ports.ownerPorts.pool,f.pool);assert.ok(Object.isFrozen(ports.ownerPorts.pool),'owners share the diagnostic pool over the one created pool (its end is the pool.end below)');
  assert.equal(ports.clientPolicy.ownerTaskArn,f.pair.id('owner'));assert.equal(ports.clientPolicy.proxyTaskArn,f.pair.id('proxy'));
  assert.equal('ownerTaskArn' in f.runtime.clientPolicy,false,'raw policy never contains observed task IDs');
  assert.equal(ports.serviceGate.available,true);assert.equal(ports.nativeCurrentness.available,true);assert.equal(ports.placement.available,true);assert.equal(ports.taskLeaseReader.available,true);
@@ -221,7 +223,7 @@ test('peer (or own) service not yet RUNNING is re-read in full until the pair is
   f.pair.change('DescribeServicesCommand',reply=>denials-->0?notRunning(role)(reply):reply);
   const runtime=await startProductOwner(f.runtime,f.dependencies),ports=f.captured();
   assert.equal(runtime.available,true);assert.deepEqual(clock.sleeps,[PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS]);
-  assert.equal(f.awsCalls.length,2+10,'each denied attempt stops at its first service read; the admitted one is a full read');
+  assert.equal(f.awsCalls.length,2*5+10,'each denied attempt stops after its first phase (services, members, definitions); the admitted one is a full read');
   assert.equal(ports.clientPolicy.ownerTaskArn,f.pair.id('owner'));assert.equal(ports.clientPolicy.proxyTaskArn,f.pair.id('proxy'));
   assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));
   await runtime.start();await runtime.close();assert.deepEqual(f.lifecycle.slice(-4),['server.close','pool.end','ecs.destroy','ec2.destroy']);
@@ -279,11 +281,11 @@ test('quarantined reader (unsettled AWS work) and stop requests end the wait at 
  const f=fixture(),clock=retryClock(f);f.runtime.limits.maxRequestMs=200;
  f.pair.change('DescribeServicesCommand',()=>new Promise(()=>{}));
  await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);
- assert.deepEqual(clock.sleeps,[],'a quarantined reader is never retried');assert.equal(kinds(f).length,1);
+ assert.deepEqual(clock.sleeps,[],'a quarantined reader is never retried');assert.equal(kinds(f).length,5,'only the first phase was started');
  assert.deepEqual(f.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
  const g=fixture(),stop=retryClock(g);g.pair.change('DescribeServicesCommand',notRunning('proxy'));
  const sleep=g.dependencies.sleep;g.dependencies.sleep=async(ms,signal)=>{await sleep(ms);process.emit('SIGTERM');assert.equal(signal.aborted,true);};
  const path=resolve('synthetic-stopped-runtime.json'),bytes=Buffer.from(JSON.stringify(g.runtime));g.material.set(path,bytes);
  assert.equal(await runProductOwnerMain(['--config',path],{MERI_PRODUCT_OWNER_REQUIRED:'1',MERI_PRODUCT_OWNER_CONFIG_SHA256:sha(bytes)},g.dependencies),3);
- assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,1);assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
+ assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,5,'one denied first phase, then the stop');assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
 });

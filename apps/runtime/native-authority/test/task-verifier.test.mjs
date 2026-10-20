@@ -6,6 +6,7 @@ import {createAdmittedSessionSupervisor} from '../admitted-supervisor.mjs';
 import {createNativeTaskAuthority} from '../task-authority.mjs';import {createNativeCapabilityClient} from '../../native-client.mjs';
 import {createDurableSdkSessionOwner} from '../session-owner.mjs';import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createNativeSdkSessionClient} from '../session-client.mjs';import {createNativeSdkSessionApplication} from '../session-http.mjs';
+import {isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex'),control='synthetic-existing-control';
 async function setup(t,{enabled=true,operations=['load','runner/session/register','runner/session/append','runner/session/load'],lease=NOW+8000}={}){
  const r=await resources(),root=await mkdtemp(join(tmpdir(),'meri-task-author-')),workspace=join(root,'workspace'),configDirectory=join(root,'config');await Promise.all([mkdir(workspace),mkdir(configDirectory)]);
@@ -24,6 +25,15 @@ test('actual native authorization HTTP/client returns canonical task receipt wit
  assert.deepEqual(receipt.binding,x.binding);assert.equal(receipt.identityCredential,x.identity.credential);assert.equal(receipt.expiresAtMs,NOW+8000,'request1000ms must not shorten original authority lease');
  assert.equal(receipt.scopes[0].resourceId,x.clientId);assert.ok(x.reads.filter(s=>s.startsWith('BEGIN ISOLATION')).length>=4);assert.equal(x.reads.some(s=>s.includes('FOR UPDATE')),false);assert.equal(x.f.commands.length,0,'verification has no writes/locking transaction');
  const worker=await fetch(listener.origin+'/v1/worker/authorize',{method:'POST',headers:{authorization:'Bearer '+x.f.credential,'content-type':'application/json'},body:JSON.stringify({capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:'a'.repeat(64)})});assert.equal(worker.status,403);assert.equal((await worker.text()).includes(x.identity.credential),false);
+});
+test('a Core read that did not answer reaches control as transient; a refused task stays refused',async t=>{
+ const x=await setup(t),listener=await listenFetch(x.supervisor.application);t.after(()=>listener.close());
+ const native=createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,now:x.f.now});
+ const authority=createNativeTaskAuthority({native,enabled:true,now:x.f.now,maxRequestMs:1000}),input={capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:hash({binding:x.binding})};
+ x.setHook(()=>{throw new TypeError('fetch failed');});
+ await assert.rejects(authority.verify(input),e=>e.code==='WORKER_AUTHORITY_UNAVAILABLE'&&isAuthorityUnavailable(e));
+ x.setHook(()=>{});x.f.state().grant.state='REVOKED';
+ await assert.rejects(authority.verify(input),e=>e.code==='WORKER_AUTHORITY_REFUSED'&&!isAuthorityUnavailable(e));
 });
 test('foreign capability/binding, unsupported operation and hostile input refuse before SQL/native reads',async t=>{
  const x=await setup(t);for(const extra of [{capability:'wrong'},{binding:{...x.binding,writerFence:9}},{operation:'publish'},{inputSha256:'x'}])await assert.rejects(verify(x,extra));

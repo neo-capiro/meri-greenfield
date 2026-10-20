@@ -156,7 +156,9 @@ class DiscoveryTests(unittest.TestCase):
                 {'taskArns': []} if mode == 'empty' else {'taskArns': [], 'nextToken': 'repeat'} if mode == 'repeated-token' else {'taskArns': ['foreign']})
             with self.assertRaises(Exception):
                 f.reader().read(deadline_ms=f.at+1000)
-            self.assertLessEqual(len(f.calls), 3)
+            # One snapshot phase only: services, both task definitions and at most two pages per member.
+            self.assertLessEqual(len(f.calls), 7)
+            self.assertLessEqual({m for m, _ in f.calls}, {'describe_services', 'list_tasks', 'describe_task_definition'})
 
     def test_replacement_drift_and_reversed_clock_never_restore_old_pair(self):
         f = fixture(); r = f.reader(); r.read(deadline_ms=f.at+1000); f.ids['proxy'] = '3'
@@ -213,9 +215,66 @@ class DiscoveryTests(unittest.TestCase):
         worker = threading.Thread(target=run)
         try:
             worker.start(); self.assertTrue(entered.wait(.5)); r.abort(); release.set(); worker.join(.5)
-            self.assertFalse(worker.is_alive()); self.assertTrue(errors); self.assertEqual(len(f.calls), 1); self.assertFalse(r.available)
+            self.assertFalse(worker.is_alive()); self.assertTrue(errors); self.assertFalse(r.available)
+            # Only the snapshot phase can have started; abort prevents every later phase.
+            self.assertLessEqual({m for m, _ in f.calls}, {'describe_services', 'list_tasks', 'describe_task_definition'})
+            self.assertLessEqual(len(f.calls), 5); self.assertEqual(r._active, 0)
         finally:
             release.set(); worker.join(1)
+
+    def test_independent_reads_run_together_in_four_phases(self):
+        f = fixture(); order, lock = [], threading.Lock()
+        snapshot, recheck = threading.Barrier(5, timeout=2), threading.Barrier(3, timeout=2)
+        def meet(v, _):
+            with lock:
+                index = len(order); order.append(index)
+            # Sequential reads would break these barriers: the first phase is five reads at once, the last three.
+            if index < 5:
+                snapshot.wait()
+            elif index >= 7:
+                recheck.wait()
+            return v
+        for method in ('describe_services', 'list_tasks', 'describe_task_definition', 'describe_tasks', 'describe_network_interfaces'):
+            f.changes[method] = meet
+        lease = f.reader().read(deadline_ms=f.at+2000)
+        self.assertEqual((lease['owner']['taskArn'], lease['proxy']['taskArn']), (f.task_id('owner'), f.task_id('proxy')))
+        methods = [m for m, _ in f.calls]
+        self.assertEqual(sorted(methods[:5]), ['describe_services', 'describe_task_definition', 'describe_task_definition', 'list_tasks', 'list_tasks'])
+        self.assertEqual(methods[5:7], ['describe_tasks', 'describe_network_interfaces'])
+        self.assertEqual(sorted(methods[7:]), ['describe_services', 'list_tasks', 'list_tasks'])
+
+    def test_a_phase_settles_every_read_before_refusing(self):
+        f = fixture(); finished = []
+        def slow(v, _):
+            time.sleep(.2); finished.append('list_tasks'); return v
+        f.changes['list_tasks'] = slow
+        f.changes['describe_task_definition'] = lambda v, _: v.update(taskDefinition={}) or v
+        r = f.reader()
+        with self.assertRaisesRegex(Exception, 'PRODUCT_SERVICE_PAIR_DENIED'):
+            r.read(deadline_ms=f.at+2000)
+        self.assertEqual(finished, ['list_tasks', 'list_tasks'], 'no SDK call outlives the refused read')
+        self.assertEqual(r._active, 0)
+        self.assertNotIn('describe_tasks', [m for m, _ in f.calls])
+
+    def test_refusal_names_its_phase_and_the_exchange_budget_cap_is_15000(self):
+        from apps.proxy.product import refusal_diagnostics as diagnostics
+        lines = []; diagnostics.install(write=lambda data: lines.append(data.decode('ascii')))
+        try:
+            f = fixture(); f.changes['describe_services'] = lambda v, _: v['services'][1].update(pendingCount=1) or v
+            with self.assertRaises(Exception):
+                f.reader().read(deadline_ms=f.at+1000)
+            f = fixture(); f.changes['describe_network_interfaces'] = lambda v, _: v['NetworkInterfaces'][0].update(Status='available') or v
+            with self.assertRaises(Exception):
+                f.reader().read(deadline_ms=f.at+1000)
+        finally:
+            diagnostics.uninstall()
+        self.assertEqual(lines, ['PRODUCT_PROXY_REFUSED gate=pair step=snapshot code=REFUSED\n',
+                                 'PRODUCT_PROXY_REFUSED gate=pair step=network code=REFUSED\n'])
+        template = peer_template(); template['max_exchange_ms'] = 15000
+        self.assertEqual(parse_owner_peer_template(template)['max_exchange_ms'], 15000)
+        template['max_exchange_ms'] = 15001
+        with self.assertRaises(Exception):
+            parse_owner_peer_template(template)
 
 if __name__ == '__main__':
     unittest.main()

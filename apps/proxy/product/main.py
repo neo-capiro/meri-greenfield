@@ -23,6 +23,7 @@ import threading
 import time
 
 from ..qualification.state.pricing import PRICING_REVISION, StateDenied
+from . import refusal_diagnostics as diagnostics
 from .owner_channel import OwnerPeerPolicy
 from .startup_config import (ProductProxyConfiguration, parse_product_proxy_startup,
                              read_reviewed_file, _environment)
@@ -358,7 +359,8 @@ async def run_product_proxy(configuration):
 @contextmanager
 def _quiet_native_output():
     # Native logging/tracebacks must not expose request bodies or task creds.
-    # The executable emits only one fixed terminal status outside this scope.
+    # The executable emits only one fixed terminal status outside this scope,
+    # plus refusal_diagnostics' fixed-vocabulary lines on the stderr kept by main().
     with open(os.devnull, "w", encoding="utf-8") as sink:
         with redirect_stdout(sink), redirect_stderr(sink):
             yield
@@ -376,6 +378,7 @@ def main(argv=None):
         configuration = parse_product_proxy_startup(raw, args.config_sha256)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+        diagnostics.install_stderr()
         with _quiet_native_output():
             loop.run_until_complete(run_product_proxy(configuration))
         return 0

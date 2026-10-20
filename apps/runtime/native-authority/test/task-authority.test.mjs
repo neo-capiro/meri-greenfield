@@ -1,5 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createNativeTaskAuthority} from '../task-authority.mjs';
+import {createNativeTaskVerifierApplication} from '../task-verifier-http.mjs';import {capabilityDigest} from '../task-verifier.mjs';
+import {createNativeCapabilityClient} from '../../native-client.mjs';
+import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 import {fixture,NOW} from './fixture.mjs';
 const digest='a'.repeat(64);
 function setup(change,options={}){const f=fixture(),calls=[],native={marker:true,async call(path,input,limits){assert.equal(this.marker,true);calls.push({path,input,limits});let result={binding:f.binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-native-identity',scopes:[{tenantId:f.binding.tenantId,kind:'client',resourceId:f.key.sessionId,policyRevision:'policy'}],selectedClientId:f.key.sessionId,policyRevision:'policy',authorizationDecisionId:'synthetic-decision',checkedAtMs:NOW,expiresAtMs:NOW+1000};return change?change(result):result;}};
@@ -14,3 +17,16 @@ test('foreign operation/hash/binding/client/scope and expired/future/boolean rec
 test('native refusal is not retried or exposed, even with active error fields',async()=>{let attempts=0,getters=0;const f=setup(()=>{attempts++;throw {get code(){getters++;throw Error('private');},message:'private'};});await assert.rejects(f.authority.verify(f.input),{code:'WORKER_AUTHORITY_REFUSED'});assert.equal(attempts,1);assert.equal(getters,0);});
 test('parked native verifier is bounded and aborts its supplied signal',async()=>{let signal;const f=setup(undefined,{maxRequestMs:20,native:{call(_path,_input,limits){signal=limits.signal;return new Promise(()=>{});}}});await assert.rejects(f.authority.verify(f.input),{code:'WORKER_AUTHORITY_REFUSED'});assert.equal(signal.aborted,true);});
 test('already cancelled verification never dispatches a capability',async()=>{const f=setup(),controller=new AbortController();controller.abort();await assert.rejects(f.authority.verify({...f.input,signal:controller.signal}));assert.equal(f.calls.length,0);});
+test('a verifier that did not answer stays transient across the worker/authorize wire; a refusal stays a refusal',async()=>{
+ for(const [thrown,code,transient] of [[markAuthorityUnavailable(Error('NATIVE_UNAVAILABLE')),'WORKER_AUTHORITY_UNAVAILABLE',true],[Error('NATIVE_UNAVAILABLE'),'WORKER_AUTHORITY_REFUSED',false]]){
+  const f=setup(()=>{throw thrown;});await assert.rejects(f.authority.verify(f.input),e=>e.code===code&&isAuthorityUnavailable(e)===transient);}
+ // The receiving boundary answers 503 NATIVE_TASK_AUTHORITY_UNAVAILABLE, which control's native client marks transient.
+ const caller='synthetic-control-capability',statuses=[];
+ for(const [failure,code,transient,status] of [[markAuthorityUnavailable(Error('NATIVE_AUTHORITY_UNAVAILABLE')),'WORKER_AUTHORITY_UNAVAILABLE',true,503],[Error('NATIVE_TASK_REFUSED'),'WORKER_AUTHORITY_REFUSED',false,403]]){
+  const application=createNativeTaskVerifierApplication({verifier:{async verify(){throw failure;}},callerCapabilitySha256:capabilityDigest(caller),taskCapabilitySha256:digest,enabled:true});
+  const native=createNativeCapabilityClient({configuration:{origin:'https://native.synthetic.invalid',maxResponseBytes:131072},credential:caller,
+   fetch:async(url,init)=>{const response=await application.handle(new Request(url,init));statuses.push(response.status);return response;}});
+  const {authority,input}=setup(undefined,{native,now:Date.now,maxRequestMs:1000});
+  await assert.rejects(authority.verify(input),e=>e.code===code&&isAuthorityUnavailable(e)===transient);assert.equal(statuses.at(-1),status);
+ }
+});

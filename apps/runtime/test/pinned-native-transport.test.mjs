@@ -1,5 +1,6 @@
 // The real apps/runtime/pinned-native-transport.mjs over local TLS listeners: classification, every failure class, cancellation and
-// deadline, abort/response races, redaction and socket/listener/timer cleanup. No provider, SDK process or credential.
+// deadline, abort/response races, redaction and socket/listener/timer cleanup, and the native client's run-owner replay through it
+// (control's answers stored by the real conversation store). No provider, SDK process or credential.
 // CA file: on Linux/POSIX the transport opens a real 0600 file owned by this uid (no mock, no security-check bypass) and the
 // ownership/mode refusals are exercised against the real filesystem. On Windows only, the POSIX uid/mode check cannot
 // pass, so the CA bytes are presented through an inert handle (needs --experimental-test-module-mocks); that run is named
@@ -16,10 +17,13 @@ import {createHash} from 'node:crypto';
 import {inspect} from 'node:util';
 import {getEventListeners} from 'node:events';
 import {createRunnerTlsCertificateFixture} from '../native-authority/test/runner-tls-fixture.mjs';
-import {withRunnerDiagnostics, markRunnerStage, captureRunnerFailure, PINNED_NATIVE_FAILURE_CODES} from '../runner-runtime-diagnostics.mjs';
+import {withRunnerDiagnostics, markRunnerStage, captureRunnerFailure, PINNED_NATIVE_FAILURE_CODES, classifyPinnedStatus} from '../runner-runtime-diagnostics.mjs';
 import {createRemoteSdkProcessClient} from '../native-authority/remote-task-client.mjs';
+import {createNativeCapabilityClient} from '../native-client.mjs';
+import {isAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
+import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
-import {binding, versions} from '../../control/conversations/test/store-fixture.mjs';
+import {binding, versions, scopes, id, storeFixture} from '../../control/conversations/test/store-fixture.mjs';
 import {withoutDetail} from './runner-diagnostic-lines.mjs';
 
 const realSetTimeout = globalThis.setTimeout;
@@ -45,7 +49,7 @@ if (posixCa) {
     stat: async () => ({isFile: () => true, size: trusted.ca.length, uid: 0, mode: 0o100600}), readFile: async () => trusted.ca, close: async () => {}})}});
   process.getuid ??= () => 0;
 }
-const {createPinnedNativeFetch, classifyPinnedStatus, classifyPinnedRequestError} = await import('../pinned-native-transport.mjs');
+const {createPinnedNativeFetch, classifyPinnedRequestError} = await import('../pinned-native-transport.mjs');
 
 const SECRET = {credential: 'SECRETCREDENTIAL0123', prompt: 'SECRET-PROMPT-7f3a', body: 'SECRET-BODY-91c2', header: 'SECRET-HEADER-55e1',
   status: 'SECRET-STATUS-TEXT', cn: 'ignored-cn', ca: 'synthetic-test-ca'};
@@ -62,6 +66,7 @@ function control(req, res) {
   req.on('end', () => {
     const text = Buffer.concat(chunks).toString('utf8'), operation = req.url.split('/').at(-1);
     seen.push({method: req.method, url: req.url, headers: {...req.headers}, text});
+    if (req.url.startsWith('/v1/runner/')) return runner(req, res, text);
     const {original} = JSON.parse(text);
     if (operation === 'prepare') return json(res, 200, {original, descriptorSha256: hash(descriptor)});
     if (operation === 'stop') return json(res, 200, {original, receipt: {physicalStopProven: false, notAllocated: true}});
@@ -79,6 +84,9 @@ function control(req, res) {
       case 's500': return secretReply(res, 500);
       case 's502': return secretReply(res, 502);
       case 's302': res.writeHead(302, {location: 'https://localhost:1/v1/elsewhere', 'content-length': '0'}); res.end(); return;
+      case 's503-oversize': res.writeHead(503, {'content-type': 'application/json'}); res.end(JSON.stringify({error: SECRET.body, pad: 'x'.repeat(5000)})); return;
+      case 's403-truncated': res.writeHead(403, {'content-type': 'application/json', 'content-length': '64'}); res.write('{"error":'); realSetTimeout(() => req.socket.destroy(), 20); return;
+      case 's500-gzip': return json(res, 500, {error: SECRET.body}, {'content-encoding': 'gzip'});
       case 'located-200': return json(res, 200, {original}, {location: 'https://localhost:1/'});
       case 'gzip-200': return json(res, 200, {original}, {'content-encoding': 'gzip'});
       case 'oversize-declared': return json(res, 200, {original, pad: 'x'.repeat(64)});
@@ -94,6 +102,17 @@ function control(req, res) {
       default: throw Error('unknown mode');
     }
   });
+}
+// Control's run-owner answers: each queued answer once, then the publish stored by the real Postgres conversation store (over
+// the in-memory pool), so a replayed eventId is stored exactly as control stores it. 'stored-then-reset' stores, then drops the
+// connection before any head: control did the work but its answer never arrives.
+let runnerStore, runnerAnswers = [];
+async function runner(req, res, text) {
+  const answer = runnerAnswers.shift() ?? 'stored', {binding: b, event} = JSON.parse(text);
+  if (typeof answer === 'object') return json(res, answer.status, {error: {code: answer.code}});
+  const stored = await runnerStore.append(b, event, () => {});
+  if (answer === 'stored-then-reset') return req.socket.destroy();
+  json(res, 200, stored);
 }
 const listen = async server => {track(server); await new Promise(resolve => server.listen(0, 'localhost', resolve)); test.after(() => {for (const s of open) s.destroy(); server.close();}); return `https://localhost:${server.address().port}`;};
 const origin = await listen(createServer({key: leaf.key, cert: leaf.cert}, control));
@@ -203,10 +222,24 @@ test(`${label} 200 resolves a fully buffered Response and sends exactly the pinn
     await quiesce(baseline);
   }
 });
-for (const [selected, code] of [['s403', 'PINNED_NATIVE_STATUS_403'], ['s400', 'PINNED_NATIVE_STATUS_4XX'], ['s404', 'PINNED_NATIVE_STATUS_4XX'],
-  ['s429', 'PINNED_NATIVE_STATUS_4XX'], ['s503', 'PINNED_NATIVE_STATUS_503'], ['s500', 'PINNED_NATIVE_STATUS_5XX'], ['s502', 'PINNED_NATIVE_STATUS_5XX'],
-  ['s302', 'PINNED_NATIVE_STATUS_OTHER']]) {
-  test(`${label} ${selected.slice(1)} status is ${code}; body, header and status text never escape`, async () => {
+for (const selected of ['s403', 's400', 's404', 's429', 's503', 's500', 's502']) {
+  test(`${label} a ${selected.slice(1)} answer resolves with only its status, content type and bounded body`, async () => {
+    mode = selected; seen = [];
+    const baseline = await snapshot(), controller = new AbortController(), fetchImpl = await fetchFor();
+    const response = await fetchImpl(startUrl(origin), request(controller.signal));
+    assert.ok(response instanceof Response); assert.equal(response.status, Number(selected.slice(1)));
+    assert.equal(response.statusText, '', 'the status text never escapes');
+    assert.deepEqual([...response.headers.keys()], ['content-type'], 'no other header escapes');
+    assert.deepEqual(JSON.parse(await response.text()), {error: SECRET.body});
+    assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
+    assert.equal(seen.length, 1, 'no retry');
+    await quiesce(baseline);
+  });
+}
+// A non-200 whose bounded body cannot be read whole keeps its fixed status class.
+for (const [selected, code] of [['s302', 'PINNED_NATIVE_STATUS_OTHER'], ['s503-oversize', 'PINNED_NATIVE_STATUS_503'],
+  ['s403-truncated', 'PINNED_NATIVE_STATUS_403'], ['s500-gzip', 'PINNED_NATIVE_STATUS_5XX']]) {
+  test(`${label} ${selected} is ${code}; body, header and status text never escape`, async () => {
     await expectClass(selected, code);
     assert.equal(seen.length, 1, 'no retry and no redirect follow');
   });
@@ -355,17 +388,25 @@ async function driveStart(selected, {base = origin, startupBudget} = {}) {
   const original = {binding, versions, executionKey, executionId: executionKey, planSha256: hash(descriptor), expiresAtMs: Date.now() + 120000};
   const fetchImpl = await fetchFor(base);
   const client = createRemoteSdkProcessClient({original, origin: base, credential: SECRET.credential, fetchImpl, ...(startupBudget ? {startupBudget: startupBudget(original)} : {})});
-  const lines = [];
+  const lines = [], raw = [];
   const failure = await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); client.spawnClaudeCodeProcess(descriptor); await client.startPreparedProcess();},
-    {write: line => lines.push(withoutDetail(line))}).then(() => null, error => error);
+    {write: line => {raw.push(line); lines.push(withoutDetail(line));}}).then(() => null, error => error);
   await client.close().catch(() => {});
   await quiesce(baseline);
-  return {lines, failure};
+  return {lines, raw, failure};
 }
-for (const [selected, code, base] of [['s403', 'PINNED_NATIVE_STATUS_403'], ['s400', 'PINNED_NATIVE_STATUS_4XX'], ['s503', 'PINNED_NATIVE_STATUS_503'],
-  ['s502', 'PINNED_NATIVE_STATUS_5XX'], ['reset-before-headers', 'PINNED_NATIVE_SOCKET'], ['truncated-length', 'PINNED_NATIVE_RESPONSE']]) {
+for (const [selected, code] of [['s403', 'PINNED_NATIVE_STATUS_403'], ['s400', 'PINNED_NATIVE_STATUS_4XX'], ['s503', 'PINNED_NATIVE_STATUS_503'], ['s502', 'PINNED_NATIVE_STATUS_5XX']]) {
+  test(`${label} native-start ${selected} is REMOTE_TASK_REFUSED with only the fixed class ${code} as cause`, async () => {
+    const {lines, raw, failure} = await driveStart(selected);
+    assert.equal(failure.code, 'REMOTE_TASK_REFUSED');
+    assertSanitized(failure.cause, code);
+    assert.deepEqual(lines, ['RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=REMOTE_TASK_REFUSED class=ERROR exit=none signal=none\n', 'RUNNER_RUNTIME_FAILED stage=activity-stream code=REMOTE_TASK_REFUSED\n']);
+    assert.match(raw[0], new RegExp(` cause=${code} `, 'u'));
+  });
+}
+for (const [selected, code] of [['reset-before-headers', 'PINNED_NATIVE_SOCKET'], ['truncated-length', 'PINNED_NATIVE_RESPONSE']]) {
   test(`${label} native-start ${selected} prints only the fixed class ${code}`, async () => {
-    const {lines, failure} = await driveStart(selected, {base});
+    const {lines, failure} = await driveStart(selected);
     assertSanitized(failure, code);
     assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=${code} class=ERROR exit=none signal=none\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
   });
@@ -378,4 +419,35 @@ test(`${label} the client's native-start lifetime deadline wins as REMOTE_TASK_R
   const {lines, failure} = await driveStart('hang', {startupBudget: budget});
   assert.equal(failure.code, 'REMOTE_TASK_REFUSED');
   assert.equal(lines[0], 'RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=REMOTE_TASK_REFUSED class=ERROR exit=none signal=none\n');
+});
+
+// --- run-owner replay through this transport (native-client.mjs) -----------------------------------------------------
+async function publishThroughPinned(answers) {
+  mode = 'ok'; seen = []; runnerAnswers = [...answers]; runnerStore = createPostgresConversationStore(storeFixture());
+  const at = new Date().toISOString(), policyRevision = scopes[0].policyRevision;
+  await runnerStore.accept({run: {binding, state: 'queued', scopes, createdAt: at, policyRevision, versions}, request: {requestId: id(6), prompt: 'Synthetic only', skill: null, window: null},
+    conversation: {conversationId: binding.conversationId, owner: {tenantId: binding.tenantId, actorId: binding.actorId}, scopes, createdAt: at, policyRevision},
+    event: {contractVersion: '0.1.0', eventId: id(7), binding, sequence: 1, createdAt: at, scopes, type: 'run.status', data: {state: 'queued', reasonCode: null}}}, () => {});
+  const baseline = await snapshot(), client = createNativeCapabilityClient({configuration: {origin, maxResponseBytes: 131072}, credential: SECRET.credential, fetch: await fetchFor()});
+  const event = {eventId: id(88), createdAt: at, type: 'run.status', data: {state: 'starting', reasonCode: null}};
+  const outcome = await client.call('runner/publish', {binding, event}, {deadlineMs: Date.now() + 10000, maxRequestMs: 5000}).then(value => ({value}), error => ({error}));
+  const stored = (await runnerStore.read(binding, {after: 0, limit: 10}, () => {})).events.map(e => e.eventId);
+  await quiesce(baseline);
+  return {...outcome, requests: seen.filter(entry => entry.url === '/v1/runner/publish').length, stored};
+}
+for (const [status, code] of [[403, 'WORKER_REQUEST_REFUSED'], [401, 'NATIVE_GATEWAY_REFUSED'], [408, 'DEADLINE'], [503, 'NATIVE_EXECUTION_UNAVAILABLE']]) {
+  test(`${label} control's ${status} ${code} reaches the native client as an answer: sent once, definitive, status class as cause`, async () => {
+    const {error, requests, stored} = await publishThroughPinned([{status, code}]);
+    assert.equal(error?.code, 'NATIVE_UNAVAILABLE'); assert.equal(isAuthorityUnavailable(error), false);
+    assertSanitized(error.cause, classifyPinnedStatus(status));
+    assert.equal(requests, 1); assert.deepEqual(stored, [id(7)]);
+  });
+}
+test(`${label} 503 WORKER_AUTHORITY_UNAVAILABLE is sent again and the next answer stores the event`, async () => {
+  const {value, requests, stored} = await publishThroughPinned([{status: 503, code: 'WORKER_AUTHORITY_UNAVAILABLE'}]);
+  assert.equal(value?.eventId, id(88)); assert.equal(requests, 2); assert.deepEqual(stored, [id(7), id(88)]);
+});
+test(`${label} a reset after control stored the publish is sent again and the event is stored once`, async () => {
+  const {value, requests, stored} = await publishThroughPinned(['stored-then-reset']);
+  assert.equal(value?.eventId, id(88)); assert.equal(value.sequence, 2); assert.equal(requests, 2); assert.deepEqual(stored, [id(7), id(88)]);
 });

@@ -31,7 +31,7 @@ registerHooks({resolve(specifier,context,nextResolve){
 const imported=async path=>import(pathToFileURL(resolve(repo,path)).href);
 const [{createNativeIdentityContext},{createCoreMembershipGate},{createActionSessionOwner},
   {createConversationService,loadWithLifecycle},{createConversationLifecycleService},{createWorkerRunApplication},
-  {createNativeCapabilityClient},{createConversationActivity},{assembleConversationRunner},{runnerLoadBudget},{binding,scopes,versions,id},{canonicalSha256:hash}]=await Promise.all([
+  {createNativeCapabilityClient},{createConversationActivity},{assembleConversationRunner},{runnerLoadBudget},{binding,scopes,versions,id,storeFixture},{canonicalSha256:hash},{createPostgresConversationStore}]=await Promise.all([
   'apps/runtime/native-authority/identity-context.mjs',
   'apps/control/product-access/core-membership.mjs',
   'apps/control/action-host/session/owner.mjs',
@@ -44,6 +44,7 @@ const [{createNativeIdentityContext},{createCoreMembershipGate},{createActionSes
   'packages/runtime/runner-load-budget.mjs',
   'apps/control/conversations/test/store-fixture.mjs',
   'packages/contracts/validate.mjs',
+  'apps/control/conversations/postgres-store.mjs',
 ].map(imported));
 
 const delay=(ms,signal)=>new Promise((done,fail)=>{
@@ -53,7 +54,7 @@ const delay=(ms,signal)=>new Promise((done,fail)=>{
   signal?.addEventListener('abort',aborted,{once:true});
 });
 const gate=()=>({started:Promise.withResolvers(),release:Promise.withResolvers()});
-async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,loadNativeMs=nativeMs,callMs,signal,duringJournal,duringFinalRead,beforeInitialRead,duringTaskAuthorization,journalDelayMs=0,coreGate,storeReadGate,nextTurn=false,journalExtra=true,foreignStoredBinding=false,legacySessions=false}={}){
+async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,loadNativeMs=nativeMs,callMs,signal,duringJournal,duringFinalRead,beforeInitialRead,duringTaskAuthorization,journalDelayMs=0,coreGate,storeReadGate,nextTurn=false,journalExtra=true,foreignStoredBinding=false,legacySessions=false,coreStatus,store:replayStore}={}){
   const started=performance.now(),counts={identity:0,context:0,membership:0,taskAuthorization:0,currentRun:0,read:0,append:0,journalExecution:0,retention:0,controls:0};
   const principal={tenantId:binding.tenantId,actorId:binding.actorId};
   const commandBinding=mode==='dynamic'?{...binding,conversationId:id(901),runId:id(902)}:binding;
@@ -66,6 +67,8 @@ async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,lo
     counts[route]++;
     if(coreGate&&route==='identity'&&counts.identity===1){coreGate.started.resolve();await coreGate.release.promise;}
     await delay(typeof latencyMs==='function'?latencyMs(route,counts[route]):latencyMs,init.signal);
+    // coreStatus answers chosen Core calls with an error status instead (503: did not answer; 401: refused).
+    const failure=coreStatus?.(route,counts[route]);if(failure)return Response.json({error:'synthetic'},{status:failure});
     const at=Date.now(),body=JSON.parse(init.body);
     if(route==='identity')return state.identityRevoked?Response.json({error:'refused'},{status:403}):Response.json({principal,identityRevision:state.identityRevision,checkedAtMs:at,expiresAtMs:expiry()});
     if(route==='membership')return Response.json({...principal,status:state.membershipStatus,role:'standard_user',permissions:[],clientIds:[clientId],membershipRevision:state.membershipRevision,checkedAtMs:at,expiresAtMs:expiry()});
@@ -89,7 +92,7 @@ async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,lo
   const saved={run:{binding,state:'queued',scopes,versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request:{requestId:id(6),prompt:'Synthetic only',skill:null,window:null,windowRequest:null},lastSequence:1};
   if(foreignStoredBinding)saved.run.binding={...binding,tenantId:'other-tenant'};
   const stub=async()=>{throw Error('unused');};
-  const store={accept:stub,async append(){counts.append++;return {scopes};},async read(){counts.read++;if(counts.read===2)duringFinalRead?.({state,saved});if(storeReadGate&&counts.read===1){storeReadGate.started.resolve();await storeReadGate.release.promise;}return structuredClone(saved);},
+  const store=replayStore??{accept:stub,async append(){counts.append++;return {scopes};},async read(){counts.read++;if(counts.read===2)duringFinalRead?.({state,saved});if(storeReadGate&&counts.read===1){storeReadGate.started.resolve();await storeReadGate.release.promise;}return structuredClone(saved);},
     ...(nextTurn?{nextRuns:{async execution(){return {nextTurn:{fixtureMarker:'new-turn'}};}}}:{}),
     lifecycle:{begin:stub,change:stub,get:stub,async controls(){counts.controls++;return [];},claim:stub,checkpoint:stub,readCheckpoint:stub,async execution(){counts.journalExecution++;duringJournal?.({state,saved});await delay(journalDelayMs);return journalExtra?{fixtureMarker:'journal-read'}:null;},continuation:stub,cancel:stub,readStopFence:stub}};
   const dispatcher={start:stub,cancel:stub,signal:stub};
@@ -104,10 +107,10 @@ async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,lo
     const at=Date.now();return {binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-native',scopes,selectedClientId:clientId,
       policyRevision:scopes[0].policyRevision,authorizationDecisionId:'synthetic-decision',checkedAtMs:at,expiresAtMs:expiry()};}};
   const app=createWorkerRunApplication({service,sessions:sessionPort,native,configuration:{limits:{requestMs:serverMs,requestBytes:131072}},now:Date.now});
-  let responseStatus;
+  let responseStatus;const statuses=[];
   const pendingServer=[];
   const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',now:Date.now,maxRequestMs:nativeMs,loadMaxRequestMs:loadNativeMs,
-    fetch:async(url,init)=>{const request=app.handle(new Request(url.replace('/v1/runner/'+route,'/internal/conversations/'+route),init));pendingServer.push(request);const response=await request;responseStatus=response.status;return response;}});
+    fetch:async(url,init)=>{const request=app.handle(new Request(url.replace('/v1/runner/'+route,'/internal/conversations/'+route),init));pendingServer.push(request);const response=await request;responseStatus=response.status;statuses.push(response.status);return response;}});
   let outcome,value,serverSettled;
   const input=route==='load'?{binding}:route==='next-controls'?{binding,after:0}:{binding,event:{eventId:id(88),createdAt:new Date().toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}}};
   const transport=client.call('runner/'+route,input,{deadlineMs:Date.now()+serverMs,signal,...(callMs===undefined?{}:{maxRequestMs:callMs})});
@@ -115,7 +118,7 @@ async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,lo
   catch(error){outcome=error?.code??error?.message??'error';}
   finally{if(coreGate||storeReadGate){coreGate?.release.resolve();storeReadGate?.release.resolve();const timeout=new AbortController();
     serverSettled=await Promise.race([Promise.allSettled(pendingServer).then(()=>true),delay(1000,timeout.signal).then(()=>false,()=>false)]);timeout.abort();}sessions.close();}
-  return {mode,latencyMs,serverMs,nativeMs,outcome,value,responseStatus,serverSettled,durationMs:Math.round(performance.now()-started),coreCalls:counts.identity+counts.context+counts.membership,counts};
+  return {mode,latencyMs,serverMs,nativeMs,outcome,value,responseStatus,statuses,serverSettled,durationMs:Math.round(performance.now()-started),coreCalls:counts.identity+counts.context+counts.membership,counts};
 }
 
 test('fused runner/load keeps the original authority gates with bounded Core fanout',async()=>{
@@ -124,10 +127,11 @@ test('fused runner/load keeps the original authority gates with bounded Core fan
   assert.equal(dynamic.outcome,'200',JSON.stringify(dynamic));
   assert.equal(fixed.value.fixtureMarker,'journal-read');
   assert.equal(dynamic.value.fixtureMarker,'journal-read');
-  assert.equal(fixed.coreCalls,31,JSON.stringify(fixed));
-  assert.equal(dynamic.coreCalls,37,JSON.stringify(dynamic));
-  assert.deepEqual([fixed.counts.identity,fixed.counts.context,fixed.counts.membership],[10,9,12]);
-  assert.deepEqual([dynamic.counts.identity,dynamic.counts.context,dynamic.counts.membership],[10,15,12]);
+  // Before: 31 (fixed) / 37 (dynamic); the worker no longer resolves its new session again after issuance.
+  assert.equal(fixed.coreCalls,27,JSON.stringify(fixed));
+  assert.equal(dynamic.coreCalls,32,JSON.stringify(dynamic));
+  assert.deepEqual([fixed.counts.identity,fixed.counts.context,fixed.counts.membership],[9,8,10]);
+  assert.deepEqual([dynamic.counts.identity,dynamic.counts.context,dynamic.counts.membership],[9,13,10]);
   for(const result of [fixed,dynamic]){
     assert.equal(result.counts.taskAuthorization,3);
     assert.equal(result.counts.append,0,'load must never publish');
@@ -147,41 +151,44 @@ test('legacy session ports retain the original fresh pair at every load boundary
   }
 });
 
-test('non-load worker publish retains separate authentication and current observations',async()=>{
-  const current=await one({mode:'dynamic',route:'publish'}),legacy=await one({mode:'dynamic',route:'publish',legacySessions:true});
-  for(const result of [current,legacy]){
-    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,42,JSON.stringify(result));
-    assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.append,1);assert.equal(result.counts.retention,2);
-    assert.equal(result.counts.journalExecution,0);assert.deepEqual(result.value.scopes,scopes);
+test('worker publish cross-checks its new session with the issuance observation; the service keeps its separate pair before the write',async()=>{
+  for(const [mode,owner,legacyCalls] of [['fixed',27,35],['dynamic',32,42]]){
+    const current=await one({mode,route:'publish'}),legacy=await one({mode,route:'publish',legacySessions:true});
+    for(const result of [current,legacy]){
+      assert.equal(result.outcome,'200',JSON.stringify(result));
+      assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.append,1);assert.equal(result.counts.retention,2);
+      assert.equal(result.counts.journalExecution,0);assert.deepEqual(result.value.scopes,scopes);
+    }
+    // Before: 35 (fixed) / 42 (dynamic) for both ports. Only the worker's session/task cross-check changed: the registered owner
+    // returns what its issuance resolve observed, where a plain port resolves the session twice more (authenticate + current state).
+    assert.equal(current.coreCalls,owner,JSON.stringify(current));assert.equal(legacy.coreCalls,legacyCalls,JSON.stringify(legacy));
+    assert.equal(legacy.counts.identity-current.counts.identity,2);assert.equal(legacy.counts.membership-current.counts.membership,4);
   }
-  assert.deepEqual(current.counts,legacy.counts);
 });
-
-test('the lifecycle control page takes one session observation per authority point and two task verifies',async()=>{
-  // Before: 67 (fixed) / 82 (dynamic) Core calls and 3 task authorizations: a session pair in worker HTTP, then per lifecycle fresh()
-  // its own pair plus the gated history read's pair before and after it. Now each of those points is one complete observation.
-  for(const [mode,coreCalls,split] of [['fixed',29,[9,8,12]],['dynamic',35,[9,14,12]]]){
+test('the lifecycle control page is read with the task authority alone: two task verifies, no session',async()=>{
+  // Before: 67 (fixed) / 82 (dynamic) Core calls: a task verify, a session issue and pair, a middle verify, the lifecycle
+  // service's own session observations and gated history read on both sides of the journal read, and a final verify.
+  for(const mode of ['fixed','dynamic']){
     const result=await one({mode,route:'next-controls'});
-    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,coreCalls,JSON.stringify(result));
-    assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],split);
-    assert.equal(result.counts.taskAuthorization,2,'task verified before the session work and after the read');
-    assert.equal(result.counts.controls,1);assert.equal(result.counts.read,2,'the run is read once per lifecycle fresh()');
-    assert.equal(result.counts.retention,4,'retention before and after each run read');assert.equal(result.counts.append,0);
+    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,4,JSON.stringify(result));
+    assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],[2,2,0]);
+    assert.equal(result.counts.taskAuthorization,2,'task verified before and after the read');assert.equal(result.counts.currentRun,4);
+    assert.equal(result.counts.controls,1);assert.equal(result.counts.read,0,'no session-gated run read');assert.equal(result.counts.append,0);
     assert.deepEqual(result.value,{controls:[],nextControlSequence:0});
   }
 });
 
-test('the lifecycle control page answers within its 23 s allowance at the 10:26Z median Core latencies', {timeout:30000},async()=>{
+test('the lifecycle control page answers well inside its 23 s allowance at the 10:26Z median Core latencies', {timeout:30000},async()=>{
   const latencyMs=route=>({identity:100,membership:300,context:500})[route];
   const result=await one({mode:'dynamic',route:'next-controls',latencyMs,serverMs:25000,nativeMs:3000,callMs:23000});
-  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,35);
-  assert.ok(result.durationMs<16000,JSON.stringify(result));
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,4);
+  assert.ok(result.durationMs<3000,JSON.stringify(result));
 });
 
 test('35 ms serial Core responses fit the fused load deadline',async()=>{
   const result=await one({mode:'dynamic',latencyMs:35});
   assert.equal(result.outcome,'200',JSON.stringify(result));
-  assert.equal(result.coreCalls,37);
+  assert.equal(result.coreCalls,32);
   assert.ok(result.durationMs<3000,JSON.stringify(result));
 });
 
@@ -240,8 +247,8 @@ test('nested remote runner passes its load budget into the activity',async()=>{
 test('500 ms Core replies fit the unchanged 23-second load budget after removing duplicate observations', {timeout:30000},async()=>{
   const result=await one({mode:'dynamic',latencyMs:500,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
   assert.equal(result.outcome,'200',JSON.stringify(result));
-  assert.equal(result.coreCalls,37);
-  assert.ok(result.durationMs>=18500&&result.durationMs<23000,JSON.stringify(result));
+  assert.equal(result.coreCalls,32);
+  assert.ok(result.durationMs>=16000&&result.durationMs<23000,JSON.stringify(result));
 });
 
 test('the original paired path exceeds that same 23-second budget at 500 ms per Core response', {timeout:30000},async()=>{
@@ -258,9 +265,9 @@ test('conservative tail-heavy stress using observed per-route bounds fits the un
   const latencyMs=(route,count)=>{const v=observed[route],ms=[v.mean,v.p95,v.mean,v.max,v.p95][(count-1)%5];scheduledMs+=ms;return ms;};
   const result=await one({mode:'dynamic',latencyMs,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
   t.diagnostic(JSON.stringify({profile:'conservative tail-heavy stress, not a reconstructed live distribution',scheduledMs,durationMs:result.durationMs,coreCalls:result.coreCalls,counts:result.counts,outcome:result.outcome}));
-  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,37);
-  assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],[10,15,12]);
-  assert.equal(scheduledMs,18152);assert.ok(result.durationMs>=scheduledMs&&result.durationMs<23000,JSON.stringify(result));
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,32);
+  assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],[9,13,10]);
+  assert.equal(scheduledMs,15270);assert.ok(result.durationMs>=scheduledMs&&result.durationMs<23000,JSON.stringify(result));
   assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.retention,4);
   assert.equal(result.counts.read,2);assert.equal(result.counts.append,0);assert.equal(result.counts.journalExecution,1);
   assert.equal(result.value.fixtureMarker,'journal-read');
@@ -392,4 +399,36 @@ test('task revocation at the final worker gate withholds the completed service r
   assert.equal(result.outcome,'NATIVE_UNAVAILABLE',JSON.stringify(result));assert.equal(result.responseStatus,403);
   assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.retention,4);
   assert.equal(result.counts.read,2);assert.equal(result.value,undefined);
+});
+
+// Run-owner replay (native-client.mjs): Core :3 answers an unanswered Clerk check 503, which worker-http reports as
+// 503 WORKER_AUTHORITY_UNAVAILABLE; only that is replayed, at most twice, inside the call's deadline.
+test('a Core read that did not answer is replayed and the next load answers',async()=>{
+  const result=await one({mode:'fixed',serverMs:10000,coreStatus:(route,n)=>route==='identity'&&n===1?503:undefined});
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.deepEqual(result.statuses,[503,200]);
+});
+test('a Core refusal is answered 403 and never replayed',async()=>{
+  const result=await one({mode:'fixed',serverMs:10000,coreStatus:(route,n)=>route==='identity'&&n===1?401:undefined});
+  assert.equal(result.outcome,'NATIVE_UNAVAILABLE',JSON.stringify(result));assert.deepEqual(result.statuses,[403]);
+});
+test('a Core that keeps not answering ends the load after three attempts',async()=>{
+  const result=await one({mode:'fixed',serverMs:10000,coreStatus:()=>503});
+  assert.equal(result.outcome,'NATIVE_UNAVAILABLE',JSON.stringify(result));assert.deepEqual(result.statuses,[503,503,503]);
+});
+test('a publish whose answer was lost after the append is replayed and stored once',async()=>{
+  const real=createPostgresConversationStore(storeFixture()),at=new Date().toISOString(),policyRevision=scopes[0].policyRevision;
+  await real.accept({run:{binding,state:'queued',scopes,createdAt:at,policyRevision,versions},request:{requestId:id(6),prompt:'Synthetic only',skill:null,window:null},
+    conversation:{conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt:at,policyRevision},
+    event:{contractVersion:'0.1.0',eventId:id(7),binding,sequence:1,createdAt:at,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},()=>{});
+  let appends=0,lost=0;const store={...real,async append(...args){const event=await real.append(...args);appends++;return event;}};
+  // The first Core call after the append does not answer, so control has stored the event but answers 503.
+  const result=await one({mode:'fixed',route:'publish',serverMs:10000,store,coreStatus:()=>appends===1&&!lost++?503:undefined});
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.deepEqual(result.statuses,[503,200]);assert.equal(appends,2);
+  assert.deepEqual((await real.read(binding,{after:0,limit:10},()=>{})).events.map(e=>e.eventId),[id(7),id(88)]);
+  assert.equal(result.value.eventId,id(88));assert.equal(result.value.sequence,2);
+});
+test('a Core read that did not answer during session issuance is replayed too',async()=>{
+  // Identity read 1 is the task verify; read 2 is the opaque session issuance inside the same worker request.
+  const result=await one({mode:'fixed',serverMs:10000,coreStatus:(route,n)=>route==='identity'&&n===2?503:undefined});
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.deepEqual(result.statuses,[503,200]);
 });

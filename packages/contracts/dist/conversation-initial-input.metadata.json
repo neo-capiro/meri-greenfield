@@ -30,8 +30,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "eb2a7bf2e9689a484d6a77e1412b81e584a9625c133447632040e1520699ed00",
-      "bytes": 19519
+      "sha256": "2a2ef52dc8a0674935c6621289d1b101fd428d495978b23ba2c05764453ef681",
+      "bytes": 20793
     },
     {
       "path": "conversation-initial-input/protocol.mjs",
@@ -70,7 +70,7 @@
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "39e00942cf7c2d0688678e4691b8b9bc93f152972a9acf906080102adc53c79b",
+      "sha256": "a4ce736bf876bfc7639ab07db2b70b644fd12bb1397a67f1371c035f5851a731",
       "bytes": 2375
     },
     {
@@ -85,7 +85,7 @@
     },
     {
       "path": "dist/conversation-input.metadata.json",
-      "sha256": "2a50bcb5efa81c01ffb4be8f6a238f737227dfd813e41778e1e2176a5530acbe",
+      "sha256": "7013e0f229f26f7fa0d72049a70de0a23404399252590bf8b73d83ea5ceb56f3",
       "bytes": 3402
     },
     {

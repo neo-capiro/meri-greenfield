@@ -14,6 +14,10 @@ const errors=new WeakSet();
 const currentReaders=new WeakMap();
 /** Trusted load composition: each call to the reader performs one complete fresh observation. */
 export const authenticatedCurrentState=owner=>currentReaders.get(owner);
+const currentIssuers=new WeakMap();
+/** Trusted per-request composition (worker HTTP): issuance plus the binding, scopes and selected client its own complete resolve
+ * just observed, so the caller can compare them without resolving the new session again. */
+export const issuedCurrentState=owner=>currentIssuers.get(owner);
 export class ActionSessionError extends Error{constructor(code){super(code);this.name='ActionSessionError';this.code=code;errors.add(this);}}
 const deny=(code='SESSION_REFUSED')=>{throw new ActionSessionError(code);};
 // One minimal issuance wire owner, reused at construction and HTTP release.
@@ -99,11 +103,15 @@ export function createActionSessionOwner(configuration){
   const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();
   const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{})};
  }
- async function issue(value){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
+ async function issue(value,withCurrent){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
   try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs);
    active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
-   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);return out;
-  }catch(error){if(record)remove(record);if(errors.has(error))throw error;deny();}finally{t.close();}
+   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);
+   return withCurrent?data({receipt:out,current:{binding:b,scopes:record.context.scopes,selectedClientId:record.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:record.expiresAtMs}}):out;
+  }catch(error){if(record)remove(record);if(errors.has(error))throw error;
+   // An owner that did not answer refuses only this issuance, as it does a recheck. The issuance route still answers 401
+   // (http.mjs); worker-http answers 503 so the runner can replay an idempotent call.
+   if(isAuthorityUnavailable(error))throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));deny();}finally{t.close();}
  }
  function currentReceipt(r,authentication,current,t){return data({authenticationSha256:canonicalSha256(authentication),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}
  async function authenticate(value,includeCurrent){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
@@ -167,6 +175,6 @@ export function createActionSessionOwner(configuration){
   if(best===null)deny('SESSION_UNAVAILABLE');valid(best,v.signal);
   return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs});
  }
- const owner=Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
- currentReaders.set(owner,value=>authenticate(value,true));return owner;
+ const owner=Object.freeze({issue:value=>issue(value,false),authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ currentReaders.set(owner,value=>authenticate(value,true));currentIssuers.set(owner,value=>issue(value,true));return owner;
 }

@@ -4,10 +4,25 @@ import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 
 /** The pinned native transport's fixed failure classes (pinned-native-transport.mjs documents each), owned here with the
- * rest of the allowlist so the transport and RUNNER_FIRST_FAILURE share one vocabulary. */
+ * rest of the allowlist so the transport, the clients that read its answers and RUNNER_FIRST_FAILURE share one vocabulary. */
 export const PINNED_NATIVE_FAILURE_CODES=Object.freeze(['PINNED_NATIVE_CONFIGURATION','PINNED_NATIVE_REFUSED','PINNED_NATIVE_ABORTED','PINNED_NATIVE_TIMEOUT',
  'PINNED_NATIVE_CONNECT','PINNED_NATIVE_TLS','PINNED_NATIVE_SOCKET','PINNED_NATIVE_TRANSPORT','PINNED_NATIVE_RESPONSE',
  'PINNED_NATIVE_STATUS_403','PINNED_NATIVE_STATUS_503','PINNED_NATIVE_STATUS_4XX','PINNED_NATIVE_STATUS_5XX','PINNED_NATIVE_STATUS_OTHER']);
+/** Rejections after which no answer arrived (the connection, its TLS or socket failed, or a 200 was cut short): an idempotent
+ * caller may send again. A timeout or abort is a deadline, and a non-200 status is an answer. */
+export const PINNED_NATIVE_UNANSWERED=Object.freeze(['PINNED_NATIVE_CONNECT','PINNED_NATIVE_TLS','PINNED_NATIVE_SOCKET','PINNED_NATIVE_RESPONSE']);
+/** The largest non-200 body the transport delivers, and the most the native client reads of one. */
+export const PINNED_NATIVE_ERROR_BODY_MAX_BYTES=4096;
+/** A rejection carrying exactly one class as `code`; its message is constant and nothing observed is attached. */
+export const pinnedNativeRefusal=code=>Object.assign(Error('PINNED_NATIVE_REFUSED'),{code:PINNED_NATIVE_FAILURE_CODES.includes(code)?code:'PINNED_NATIVE_TRANSPORT'});
+export function classifyPinnedStatus(statusCode){
+ if(statusCode===403)return 'PINNED_NATIVE_STATUS_403';if(statusCode===503)return 'PINNED_NATIVE_STATUS_503';
+ if(Number.isInteger(statusCode)&&statusCode>=400&&statusCode<500)return 'PINNED_NATIVE_STATUS_4XX';
+ if(Number.isInteger(statusCode)&&statusCode>=500&&statusCode<600)return 'PINNED_NATIVE_STATUS_5XX';return 'PINNED_NATIVE_STATUS_OTHER';
+}
+/** A non-200 answer's fixed status class, for a client to keep as the `cause` of its own refusal (never a body, status text
+ * or header). */
+export const pinnedStatusRefusal=statusCode=>pinnedNativeRefusal(classifyPinnedStatus(statusCode));
 const context=new AsyncLocalStorage();
 const origins=new Set(['runtime','sdk-prepare','native-prepare','native-start']);
 const stages=new Set(['module-import','runner-preflight','capability-load','binding-bootstrap','remote-module-import','admission-wait','activity',

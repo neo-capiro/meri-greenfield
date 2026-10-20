@@ -137,6 +137,11 @@ GRANT SELECT ON TABLE meri_conversations.runs,meri_conversations.native_allocati
 -- FOR UPDATE. Existing 0009/0007 identity guards protect these lock columns.
 GRANT UPDATE (sequence_base) ON meri_conversations.runs TO meri_model_budget_owner;
 GRANT UPDATE (intent_key) ON meri_conversations.native_allocations TO meri_model_budget_owner;
+-- Dynamic-conversation placement and currentness borrow control's initial-binding
+-- read (FOR UPDATE; 0017 rejects every UPDATE) and next-run read. Applied by
+-- phase_owner_conversation_reads (first-chat-database-owner-reads.sql, ordinal 22).
+GRANT SELECT ON TABLE meri_conversations.initial_run_bindings,meri_conversations.next_runs TO meri_model_budget_owner;
+GRANT UPDATE (record_sha256) ON meri_conversations.initial_run_bindings TO meri_model_budget_owner;
 GRANT INSERT ON TABLE meri_product_budget.requests TO meri_model_budget_owner;
 GRANT UPDATE (consumed_micro_usd,quarantined) ON meri_product_budget.budget TO meri_model_budget_owner;
 GRANT UPDATE (state,actual_micro_usd,evidence_sha256,settled_at) ON meri_product_budget.requests TO meri_model_budget_owner;
