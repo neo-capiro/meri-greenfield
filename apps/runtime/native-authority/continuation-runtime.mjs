@@ -26,7 +26,7 @@ export function createNativeContinuationRuntime(configuration){
   check();const target=data(await read(binding,{},check)),selection={binding,scopes:receipt.scopes,selectedClientId:receipt.selectedClientId};
   const lifecycle=data(await execution(selection,check)),next=nextExecution?data(await nextExecution(selection,check)):null;check();
   if(lifecycle!==null&&next!==null)throw executionFault('CONTINUATION_REFUSED');const saved=next??lifecycle;
-  if(!same(target.run.binding,binding)||!same(target.run.scopes,receipt.scopes)||live&&!['queued','running'].includes(target.run.state))throw executionFault('CONTINUATION_REFUSED');
+  if(!same(target.run.binding,binding)||!same(target.run.scopes,receipt.scopes)||live&&!['queued','starting','running'].includes(target.run.state))throw executionFault('CONTINUATION_REFUSED');
   let options=null;
   if(saved!==null){if(next!==null){own(saved,['nextTurn']);options=buildNextTurnOptions(saved.nextTurn,{binding,versions:target.run.versions,scopes:receipt.scopes,request:target.request,sourceRequest:saved.nextTurn.sourceRequest});}
    else {own(saved,['continuation','sourceRequest']);options=buildContinuationOptions(saved.continuation,{binding,versions:target.run.versions,scopes:receipt.scopes,request:target.request,sourceRequest:saved.sourceRequest});}}

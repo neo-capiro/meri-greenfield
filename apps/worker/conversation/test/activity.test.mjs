@@ -12,3 +12,16 @@ test('SDK options reject ambient config, wrong workspace and upstream keys',()=>
 test('final assistant frame repairs a missing streamed suffix without duplicate prefix',async()=>{const partial=structuredClone(frames);partial[1].event.delta.text='Hel';const f=await setup(partial);try{await f.execute({binding});const h=await f.service.history({credential:f.credential});assert.equal(h.events.filter(e=>e.type==='message.delta').map(e=>e.data.text).join(''),'Hello');}finally{f.close();}});
 test('a conflicting final text refuses completion instead of silently dropping the mismatch',async()=>{const conflict=structuredClone(frames);conflict[2].message.content[0].text='Changed';const f=await setup(conflict);try{await assert.rejects(f.execute({binding}),/EXECUTION_FAILED/);const h=await f.service.history({credential:f.credential});assert.equal(h.run.state,'failed');}finally{f.close();}});
 test('runtime preparation mismatch records a failed run without invoking SDK',async()=>{const f=await setup(frames,{runtime:{versions:{...versions,sdk:'0.0.0'}}});try{await assert.rejects(f.execute({binding}));const h=await f.service.history({credential:f.credential});assert.equal(h.run.state,'failed');assert.equal(f.counts().calls,0);}finally{f.close();}});
+async function submitted(){const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});return f;}
+test('the run reports starting while its runtime is prepared, and a preparation failure settles it failed',async()=>{const f=await submitted();let n=300,observed;try{
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:async()=>{observed=(await f.service.history({credential:f.credential})).run.state;throw Error('runtime-unavailable');},query(){throw Error('unused');},newId:()=>id(n++)});
+ await assert.rejects(execute({binding}),/EXECUTION_FAILED/);assert.equal(observed,'starting');
+ const h=await f.service.history({credential:f.credential});assert.equal(h.run.state,'failed');assert.equal(h.events.at(-1).data.reasonCode,'EXECUTION_FAILED');
+}finally{await f.close();}});
+test('a lost claim acknowledgement prepares nothing and publishes no terminal status for another claimant',async()=>{const f=await submitted();let n=400,prepared=0;try{
+ const runOwner={...f.runOwner,async append(value){const result=await f.runOwner.append(value);if(value.event.data?.state==='starting')throw Error('claim-acknowledgement-lost');return result;}};
+ const execute=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;return runtime();},query(){throw Error('unused');},newId:()=>id(n++)});
+ await assert.rejects(execute({binding}),/EXECUTION_FAILED/);assert.equal(prepared,0);
+ // Unacknowledged, the claim may belong to this activity or not: the run stays nonterminal for the reconciler to settle.
+ assert.equal((await f.service.history({credential:f.credential})).run.state,'starting');
+}finally{await f.close();}});
