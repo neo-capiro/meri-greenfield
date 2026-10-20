@@ -30,7 +30,23 @@ test('reading ahead stops at the end and at the limit, and next() reads directly
  assert.equal(many.reads,3,'at most limit reads ahead');assert.equal(bounded.take(),0);
  assert.deepEqual(await bounded.next(),{done:false,value:1});assert.deepEqual(await bounded.next(),{done:false,value:2});assert.deepEqual(await bounded.next(),{done:false,value:3});
  assert.equal(many.reads,4,'the fourth came from a direct read');
- assert.throws(()=>createSdkReadAhead(null),/READ_AHEAD_CONFIGURATION/);assert.throws(()=>createSdkReadAhead(many.read,{limit:0}),/READ_AHEAD_CONFIGURATION/);
+ for(const options of [{limit:0},{last:true},{check:'always'}])assert.throws(()=>createSdkReadAhead(many.read,options),/READ_AHEAD_CONFIGURATION/);
+ assert.throws(()=>createSdkReadAhead(null),/READ_AHEAD_CONFIGURATION/);
+});
+
+test('nothing is read ahead past a message last() accepts; the next one is then a direct read',async()=>{
+ const s=sdk(['a','turn-end','b']),ahead=createSdkReadAhead(s.read,{last:value=>value==='turn-end'});
+ await ahead.during(settle);assert.equal(s.reads,2,'up to the last message and no further');
+ assert.equal(ahead.take(),'a');assert.deepEqual(await ahead.next(),{done:false,value:'turn-end'});
+ await ahead.during(settle);assert.equal(s.reads,2,'reading ahead stays stopped');
+ assert.deepEqual(await ahead.next(),{done:false,value:'b'});assert.equal(s.reads,3);
+});
+
+test('a message read ahead is consumed only while check() passes; a refused one keeps its place',async()=>{
+ let open=true;const refused=Error('DEADLINE'),s=sdk(['a','b']),ahead=createSdkReadAhead(s.read,{check:()=>{if(!open)throw refused;}});
+ await ahead.during(settle);open=false;
+ assert.equal(ahead.peek(),'a','peeking consumes nothing');assert.throws(()=>ahead.take(),refused);await assert.rejects(ahead.next(),refused);
+ open=true;assert.equal(ahead.take(),'a');assert.deepEqual(await ahead.next(),{done:false,value:'b'});
 });
 
 test('next() waits for a read still in flight when during() ends instead of starting a second one',async()=>{

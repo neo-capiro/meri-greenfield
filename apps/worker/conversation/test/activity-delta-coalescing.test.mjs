@@ -14,12 +14,14 @@ const assistant=(msg,...texts)=>({type:'assistant',parent_tool_use_id:null,messa
 const success={type:'result',subtype:'success',is_error:false};
 const words=(n,prefix='w')=>Array.from({length:n},(_,i)=>`${prefix}${i} `);
 
-/** Every display publication waits `publishMs` (control's authorization round) before it is durable; the SDK yields at once. */
-async function run(frames,{publishMs=40,runtime:extra}={}){
+/** Every display publication waits `publishMs` (control's authorization round) before it is durable; the SDK yields at once.
+ * `modelDeadlineInMs` is the model deadline, counted from the activity's start. */
+async function run(frames,{publishMs=40,runtime:extra,modelDeadlineInMs}={}){
  const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
  const published=[];let n=500;
  const runOwner={...f.runOwner,async append(value){if(value.event.type==='message.delta'){published.push(value.event.data);await new Promise(resolve=>setTimeout(resolve,publishMs));}return f.runOwner.append(value);}};
- const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(extra),query:()=>({async *[Symbol.asyncIterator](){yield* frames;},close(){}}),newId:()=>id(n++)});
+ const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(extra),query:()=>({async *[Symbol.asyncIterator](){yield* frames;},close(){}}),newId:()=>id(n++),
+  modelDeadlineMs:modelDeadlineInMs===undefined?undefined:Date.now()+modelDeadlineInMs});
  try{const outcome=await execute({binding}).then(value=>value,error=>({error:error.message}));const history=await f.service.history({credential:f.credential});
   return {outcome,published,history,deltas:history.events.filter(e=>e.type==='message.delta').map(e=>e.data),state:history.run.state};}
  finally{f.close();}
@@ -52,6 +54,13 @@ test('the result is handled after the last folded publication, so all text is du
 test('the output limit fails the run while folding: nothing beyond it is published',async()=>{
  const parts=words(30),r=await run([start('m1'),block(0),...parts.map(t=>delta(t)),stop(0),assistant('m1',parts.join('')),success],{runtime:{maxOutputBytes:40}});
  assert.equal(r.state,'failed');assert.ok(Buffer.byteLength(r.published.map(p=>p.text).join(''))<=40,'published text stays inside maxOutputBytes');
+});
+
+test('deltas read while a publication is in flight are not used once the model deadline has passed',async()=>{
+ // The whole reply is read during the first publication; the deadline passes before it is durable, so nothing more is consumed.
+ const parts=words(10),r=await run([start('m1'),block(0),...parts.map(t=>delta(t)),stop(0),assistant('m1',parts.join('')),success],{publishMs:1500,modelDeadlineInMs:750});
+ assert.match(r.outcome.error,/EXECUTION_FAILED/);assert.equal(r.state,'failed');
+ assert.deepEqual(r.published.map(p=>p.text),[parts[0]],'only the publication begun before the deadline');
 });
 
 test('one folded publication carries at most the fold bound plus one delta',async()=>{

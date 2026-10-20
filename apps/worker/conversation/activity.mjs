@@ -104,8 +104,9 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     diagnostic('stage','activity-query');modelLife=modelDeadlineMs===undefined?null:createOperationLifetime({deadlineMs:Math.min(modelDeadlineMs,runtime.deadlineMs-terminalAttemptMs),now,signal:life.signal,errorFactory:fault});if(lifecycle!==undefined)input=createConversationInput({requestId:saved.request.requestId,prompt:saved.request.prompt});
    stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');const iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId),progressParts=createProgressProjector({policy,newId});
    // Every display publication is a full authorization round at control (seconds), so the deltas the SDK produced meanwhile join the
-   // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order.
-   const ahead=createSdkReadAhead(()=>modelLife?modelLife.run(()=>iterator.next()):life.run(()=>iterator.next()));
+   // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order; nothing is
+   // read past a result, and a message read early is used only while a read could still be made (deadline, lifecycle failure).
+   const reader=modelLife??life,ahead=createSdkReadAhead(()=>reader.run(()=>iterator.next()),{last:m=>m?.type==='result',check:()=>{reader.check();controls?.check();}});
    async function foldDeltas(first,text){
     for(let m=ahead.peek();textDelta(m)&&m.event.index===first.event.index&&Buffer.byteLength(text)<DELTA_FOLD_MAX_BYTES;m=ahead.peek()){
      ahead.take();capabilities?.check();await controls?.observe(m);if(controls?.isHeld())break;

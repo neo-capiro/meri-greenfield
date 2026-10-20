@@ -112,8 +112,9 @@ test('a fenced read that does not answer stays fatal: a refused publication must
  assert.equal(claims,0);assert.equal(f.state.records,0);
 });
 
-// Delta coalescing (activity.mjs foldDeltas): the SDK is read ahead while a publication is in flight, so these pin that a refusal
-// and a hold still end all display output, exactly as they did when every delta was its own publication.
+// Delta coalescing (activity.mjs foldDeltas): the SDK is read ahead while a publication is in flight, so these pin that a refusal,
+// a hold and a lifecycle failure still end all display output, and that nothing is read past the result, exactly as when every
+// delta was its own publication.
 const streamed=(f,count,stop)=>({async *[Symbol.asyncIterator](){
  yield {type:'system',subtype:'init',session_id:f.sessionId};
  yield {type:'stream_event',parent_tool_use_id:null,event:{type:'message_start',message:{id:'m1'}}};
@@ -138,4 +139,28 @@ test('a hold claimed while a delta publication is in flight ends display output:
  const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
  assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
  assert.deepEqual(published,['w0 '],'only the publication in flight when the hold was claimed');assert.equal(f.state.records,1);
+});
+test('a lifecycle failure while a delta publication is in flight ends the run: nothing read meanwhile is published',async()=>{
+ const f=fixture({action:'pause'});let gate=false,refused=false;const stop=Promise.withResolvers(),published=[];
+ f.runOwner.nextControls=async()=>{if(!gate)return [];refused=true;return {page:'refused'};};
+ f.runOwner.append=async({event})=>{if(event.type==='message.delta'){published.push(event.data.text);
+   if(published.length===1){gate=true;while(!refused)await new Promise(resolve=>setTimeout(resolve,5));await new Promise(resolve=>setTimeout(resolve,20));}}
+  f.state.events.push(event);};
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ await assert.rejects(execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.deepEqual(published,['w0 '],'only the publication in flight when the control reader failed');assert.equal(f.state.events.at(-1).data.state,'failed');
+});
+test('with a lifecycle the SDK is never read past the result, though it arrived while a publication was in flight',async()=>{
+ const f=fixture({action:'pause'});let reads=0;const published=[];
+ f.runOwner.nextControls=async()=>[];
+ f.runOwner.append=async({event})=>{if(event.type==='message.delta'){published.push(event.data.text);await new Promise(resolve=>setTimeout(resolve,30));}f.state.events.push(event);};
+ const event=e=>({type:'stream_event',parent_tool_use_id:null,event:e}),text=t=>event({type:'content_block_delta',index:0,delta:{type:'text_delta',text:t}});
+ const frames=[{type:'system',subtype:'init',session_id:f.sessionId},event({type:'message_start',message:{id:'m1'}}),event({type:'content_block_start',index:0,content_block:{type:'text',text:''}}),
+  ...['w0 ','w1 ','w2 '].map(text),event({type:'content_block_stop',index:0}),{type:'assistant',parent_tool_use_id:null,message:{id:'m1',content:[{type:'text',text:'w0 w1 w2 '}]}},success];
+ // After its result the SDK waits for input that never comes, as it does while the input is kept open.
+ const sdk=(async function*(){yield* frames;await new Promise(()=>{});})();
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},
+  query:()=>({[Symbol.asyncIterator]:()=>({next:()=>{reads++;return sdk.next();}}),async interrupt(){return {still_queued:[]};},close(){}})});
+ assert.deepEqual(await execute({binding:f.binding}),{state:'completed'});
+ assert.deepEqual(published,['w0 ','w1 w2 ']);assert.equal(reads,frames.length,'one read per message and none past the result');
 });
