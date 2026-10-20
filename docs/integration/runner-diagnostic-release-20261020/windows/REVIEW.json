@@ -1,0 +1,18 @@
+{
+  "status": "EXACT_PUBLIC_WRAPPER_PINS_PASS",
+  "packetCommit": "86983726ebf532955631578c07b080da1fcf2500",
+  "readbackCommit": "334f68728f23669d121d309b69b45a5bfc77b24b",
+  "release": "READY",
+  "upload": "PENDING",
+  "privateOperationsPerformed": false,
+  "files": {
+    "Invoke-Pr193LocalBindings.ps1": "91c38ea91b22acee1da1444ffa88548420ca43adcbb94ec49c7b5df944c11b09",
+    "Invoke-Pr193LocalRender.ps1": "c533990458d14debdfc3d5e2624fb446483fe89be7fc837838423d6b00a37d61",
+    "Invoke-Pr193PrivateUpload.ps1": "ba1b8e447551b9acb7c070d226b9fb4c1d0e57b06c3210789924dbcf1c09bb8e",
+    "NEO-UPLOAD-MANIFEST.json": "87b0f73bd3d8dc066abb821cd7792de5e9f09316924a21b58d171e76e0b5762d",
+    "Pr193Common.ps1": "39f7e3451273572df030f08b492066ff14996475611369c8d0ea16a0190899d6",
+    "Pr193DependencyProbe.mjs": "7ac62ebd3324c31b551b3fa75a450ad122fd54de8fe2351bc29d678ad6545f1a",
+    "Pr193PublicInputs.ps1": "bfa4bf6b7ce29fdfb9b7b3fd284536b2ec43be656d9fc846f63724558c5b4a8d",
+    "README.md": "fe4d7f6a3a94765e8ac20d22d1397fa3b31a01eddc6b138faac6deea10d928c9"
+  }
+}
