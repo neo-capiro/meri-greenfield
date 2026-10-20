@@ -423,3 +423,8 @@ test('a publish whose answer was lost after the append is replayed and stored on
   assert.deepEqual((await real.read(binding,{after:0,limit:10},()=>{})).events.map(e=>e.eventId),[id(7),id(88)]);
   assert.equal(result.value.eventId,id(88));assert.equal(result.value.sequence,2);
 });
+test('a Core read that did not answer during session issuance is replayed too',async()=>{
+  // Identity read 1 is the task verify; read 2 is the opaque session issuance inside the same worker request.
+  const result=await one({mode:'fixed',serverMs:10000,coreStatus:(route,n)=>route==='identity'&&n===2?503:undefined});
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.deepEqual(result.statuses,[503,200]);
+});
