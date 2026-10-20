@@ -13,6 +13,7 @@
  *  renderedExpected   {<role>: <render out>/<role>/expected.json} for the five material roles
  *  secretVersions     {<role>: VersionId} returned by PutSecretValue of <render out>/<role>/bundle.json
  *  imageScans         {proxy, nodeRuntime}: sha256 of each image's reviewed build/scan receipt (model-proxy plan v2 pins them)
+ *  liveAppTemplate    `aws cloudformation get-template --stack-name meri-first-chat-app --stage Original` TemplateBody (public 8080 group)
  *
  * The render input stage3.json and these bindings derive every family, service, network set and role from ONE place
  * (stage3RenderInput / the constants below), so the issuer's and owner's pins and the task definitions cannot drift. */
@@ -41,7 +42,8 @@ export const STAGE3_SIZING=Object.freeze({control:Object.freeze({cpu:512,memoryM
 /** Existing, reused: the shared interface-endpoint SG (foundation-binding.json endpointSecurityGroupId) and no bedrock-runtime endpoint (NAT). */
 export const STAGE3_EXISTING=Object.freeze({endpointSecurityGroupId:'sg-01def4e5c0fe44d4a',bedrockRuntimeEndpoint:null,
  runnerExecutionRoleName:'MeriPreview-runner-execution',budgetNamespace:'meri_product_budget'});
-const SECRET_KEYS=Object.freeze({control:'control/material','temporal-worker':'worker/material','temporal-issuer':'issuer/material','model-owner':'owner/material','model-proxy':'proxy/material'});
+/** Deployment-inputs secret key of each material role (Secrets Manager ARN under deployment.secrets). */
+export const MATERIAL_SECRET_KEYS=Object.freeze({control:'control/material','temporal-worker':'worker/material','temporal-issuer':'issuer/material','model-owner':'owner/material','model-proxy':'proxy/material'});
 const PRIVATE_EDGE_KEYS=Object.freeze({ControlPrivateOrigin:'controlPrivateOrigin',ControlPrivateTargetGroupArn:'controlPrivateTargetGroupArn',PrivateAlbSecurityGroupId:'privateAlbSecurityGroupId'});
 
 export const fail=(detail)=>{throw Object.assign(Error(`STAGE3_BINDING_REFUSED: ${detail}`),{code:'STAGE3_BINDING_REFUSED'});};
@@ -108,7 +110,7 @@ function checkFoundation(deployment,foundationOutputs){
 }
 
 /** Builds the three bindings. Every one is then passed through its own renderer (see synthesizeStage3). */
-export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOutputs,renderSummary,renderedExpected,secretVersions,imageScans}){
+export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOutputs,renderSummary,renderedExpected,secretVersions,imageScans,liveAppTemplate}){
  const d=deployment,f=foundationOutputs;
  checkFoundation(d,f);
  record(privateEdgeOutputs,'privateEdgeOutputs',Object.keys(PRIVATE_EDGE_KEYS));
@@ -130,8 +132,8 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
   const family=STAGE3_FAMILIES[role];
   if(!new RegExp(`^arn:aws:ecs:us-east-1:967807252336:task-definition/${family}:[1-9][0-9]*$`,'u').test(r.taskDefinitionArn??''))fail(`${role} was rendered for ${r.taskDefinitionArn}, not family ${family}`);
  }
- const material=role=>({valueFrom:`${d.secrets[SECRET_KEYS[role]]}:::${secretVersions[role]}`,expected:structuredClone(renderedExpected[role])});
- for(const role of ROLES)if(typeof d.secrets[SECRET_KEYS[role]]!=='string')fail(`deployment.secrets.${SECRET_KEYS[role]}`);
+ const material=role=>({valueFrom:`${d.secrets[MATERIAL_SECRET_KEYS[role]]}:::${secretVersions[role]}`,expected:structuredClone(renderedExpected[role])});
+ for(const role of ROLES)if(typeof d.secrets[MATERIAL_SECRET_KEYS[role]]!=='string')fail(`deployment.secrets.${MATERIAL_SECRET_KEYS[role]}`);
  const net=stage3Network(d,f);
 
  // (a) control, temporal-worker and the runner task definition.
@@ -157,8 +159,8 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
   network:{privateSubnetIds:[...d.privateSubnetIds],controlSecurityGroupIds:[...net.control.securityGroups],
    workerSecurityGroupIds:[...net['temporal-worker'].securityGroups],runnerSecurityGroupIds:[...net.runner.securityGroups]},
   sizing:structuredClone(STAGE3_SIZING),
-  // Private 8082 only. The public 8080 target group (foundation ControlTargetGroupArn) is attached at Stage 6, never here.
-  controlPrivateTargetGroupArn:privateEdgeOutputs.ControlPrivateTargetGroupArn,
+  // The stacks are live: control keeps the public 8080 target group its live service is attached to, plus the private 8082 one.
+  controlTargetGroupArn:liveControlTargetGroup(liveAppTemplate),controlPrivateTargetGroupArn:privateEdgeOutputs.ControlPrivateTargetGroupArn,
   temporalTokenWriters:{control:writer('control'),temporalWorker:writer('temporal-worker')}};
 
  // (b) model proxy and budget owner, plan v2.
@@ -194,9 +196,37 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
   services:Object.fromEntries(Object.entries(STAGE3_SERVICES).map(([role,name])=>[role,serviceArn(cluster,name)]))};
 }
 
-/** Each binding through its own renderer and validator. Throws the renderer's own refusal code on any mismatch. */
+/** The public 8080 target group the LIVE control service is attached to (`get-template --stage Original` of the app stack). */
+export function liveControlTargetGroup(liveAppTemplate){
+ const groups=liveAppTemplate?.Resources?.controlService?.Properties?.LoadBalancers;
+ const publicGroup=Array.isArray(groups)?groups.filter(g=>g?.ContainerPort===8080):[];
+ if(publicGroup.length!==1||typeof publicGroup[0].TargetGroupArn!=='string')fail('the live app template must attach control to exactly one public 8080 target group');
+ return publicGroup[0].TargetGroupArn;
+}
+
+/** Stacks update in this order (releases C-E): owner/proxy first, then the issuer, then control/worker/runner. The issuer admits
+ * only the control/worker revisions it pins, so the app update must follow the issuer gate immediately. */
+export const STAGE3_DEPLOY_ORDER=Object.freeze(['model','issuer','app']);
+
+/** The renderers declare DesiredCount 0, the safe value for a first create. All three stacks are live, and CloudFormation applies a
+ * declared 0 on update, so the update keeps every service serving: owner, proxy, control and worker at one task. Control runs exactly
+ * one task (poststart nonces are process-local): stop-then-start (max 100 / min 0), which ECS refuses while AZ rebalancing is
+ * ENABLED, and it starts only after the runner task definition it launches exists. */
+export function applyLiveServiceProfile(templates){
+ const service=(template,id)=>{const r=template.Resources?.[id];if(r?.Type!=='AWS::ECS::Service')fail(`template lacks service ${id}`);return r;};
+ for(const id of ['controlService','temporalWorkerService'])service(templates.app,id).Properties.DesiredCount=1;
+ for(const id of ['ModelOwnerService','ModelProxyService'])service(templates.model,id).Properties.DesiredCount=1;
+ const control=service(templates.app,'controlService');
+ if(templates.app.Resources.runnerTask?.Type!=='AWS::ECS::TaskDefinition')fail('template lacks runnerTask');
+ Object.assign(control.Properties,{DeploymentConfiguration:{MaximumPercent:100,MinimumHealthyPercent:0},AvailabilityZoneRebalancing:'DISABLED'});
+ control.DependsOn=['runnerTask'];
+ if(service(templates.issuer,'TemporalIssuerService').Properties.DesiredCount!==1)fail('the issuer service must stay at one task');
+ return templates;
+}
+
+/** Each binding through its own renderer and validator, then the live-service profile. Throws the renderer's own refusal code. */
 export function synthesizeStage3(bindings){
- const templates={app:synthesizeProductPreview(bindings.app),model:synthesizeModelProxyTemplate(bindings.model),issuer:synthesizeFirstChatIssuerServiceTemplate(bindings.issuer)};
+ const templates=applyLiveServiceProfile({app:synthesizeProductPreview(bindings.app),model:synthesizeModelProxyTemplate(bindings.model),issuer:synthesizeFirstChatIssuerServiceTemplate(bindings.issuer)});
  const bodies=Object.fromEntries(Object.entries(templates).map(([key,template])=>[key,JSON.stringify(template)]));
  return {templates,bodies,sizes:Object.fromEntries(Object.entries(bodies).map(([key,body])=>[key,{bytes:Buffer.byteLength(body,'utf8'),viaS3:Buffer.byteLength(body,'utf8')>TEMPLATE_BODY_LIMIT}]))};
 }
