@@ -128,3 +128,18 @@ test('cancellation during the pause between attempts ends the call without anoth
  await assert.rejects(client.call('runner/publish',{binding},{...replayOptions('runner/publish'),signal:controller.signal}),/CANCELLED/);
  assert.equal(calls,1);
 });
+
+test('only a rejection after which no answer arrived is replayed, and every failure keeps its fixed class as cause',async()=>{
+ const configuration={origin:'https://native.synthetic.invalid',maxResponseBytes:131072};
+ const pinned=code=>Object.assign(Error('PINNED_NATIVE_REFUSED'),{code});
+ for(const [rejection,replayed] of [[pinned('PINNED_NATIVE_SOCKET'),true],[pinned('PINNED_NATIVE_CONNECT'),true],[pinned('PINNED_NATIVE_TLS'),true],[pinned('PINNED_NATIVE_RESPONSE'),true],
+  [new TypeError('fetch failed'),true],[pinned('PINNED_NATIVE_TIMEOUT'),false],[pinned('PINNED_NATIVE_ABORTED'),false],[pinned('PINNED_NATIVE_TRANSPORT'),false],
+  [pinned('PINNED_NATIVE_REFUSED'),false],[pinned('PINNED_NATIVE_STATUS_403'),false],[pinned('PINNED_NATIVE_STATUS_503'),false]]){
+  let calls=0;const client=createNativeCapabilityClient({configuration,credential,fetch:async()=>{calls++;throw rejection;}});
+  await assert.rejects(client.call('runner/publish',{binding},replayOptions('runner/publish')),e=>e.code==='NATIVE_UNAVAILABLE'&&e.cause===rejection&&isAuthorityUnavailable(e)===replayed);
+  assert.equal(calls,replayed?3:1,rejection.code??rejection.name);
+ }
+ // A non-200 answer keeps its status class as cause; nothing from its body or headers.
+ const client=createNativeCapabilityClient({configuration,credential,fetch:async()=>Response.json({error:{code:'WORKER_REQUEST_REFUSED',detail:'private'}},{status:403})});
+ await assert.rejects(client.call('runner/load',{binding},replayOptions('runner/load')),e=>e.code==='NATIVE_UNAVAILABLE'&&e.cause.code==='PINNED_NATIVE_STATUS_403'&&e.cause.message==='PINNED_NATIVE_REFUSED');
+});

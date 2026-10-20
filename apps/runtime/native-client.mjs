@@ -4,6 +4,7 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {RUNNER_LOAD_MAX_MS} from '../../packages/runtime/runner-load-budget.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
+import {PINNED_NATIVE_UNANSWERED,PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedStatusRefusal} from './runner-runtime-diagnostics.mjs';
 import {fault} from './config.mjs';
 // The longer window is available only to bounded original-run operations.
 // Each caller must also pass its absolute lease-derived deadline; other operations
@@ -19,14 +20,18 @@ const STARTUP_REQUEST_MAX_MS=23000;
 // Answers that report a dependency that did not answer, never a decision: control's Core/Clerk authority reads
 // (worker-http.mjs), the task verifier's (native-authority/task-verifier-http.mjs), or a gateway that lost a request it had
 // dispatched (native-runner-gateway.mjs). Such a failure keeps code NATIVE_UNAVAILABLE and carries the transient mark of
-// packages/runtime/authority-availability.mjs; every other non-200 answer, including every refusal, stays definitive.
+// packages/runtime/authority-availability.mjs; every other non-200 answer, including every refusal, stays definitive. The
+// pinned transport delivers every answer as a Response (pinned-native-transport.mjs), so the status decides here.
 const unansweredCodes=new Set(['WORKER_AUTHORITY_UNAVAILABLE','NATIVE_TASK_AUTHORITY_UNAVAILABLE']);
 const unanswered=(status,error)=>status===503&&(unansweredCodes.has(error?.code)||error?.code==='NATIVE_GATEWAY_UNAVAILABLE'&&error?.outcome==='UNKNOWN');
 // Sent again after an unanswered attempt, and only inside the caller's absolute deadline: runner/load is a read, and
 // runner/publish carries a fixed eventId that control's store returns instead of appending twice
 // (apps/control/conversations/postgres-store.mjs appendEvent). No other operation is replayed.
 const replayable=new Set(['runner/load','runner/publish']);
-const REPLAY_DELAYS_MS=[500,1500],REPLAY_MIN_ATTEMPT_MS=1000,ERROR_BODY_MAX_BYTES=4096;
+const REPLAY_DELAYS_MS=[500,1500],REPLAY_MIN_ATTEMPT_MS=1000;
+// A transport that failed after dispatch before any answer: one of the pinned transport's no-answer rejections, or a plain
+// fetch's network TypeError. Its timeout or abort is a deadline, and a non-200 head arrives as a Response, never here.
+const noAnswer=error=>error instanceof TypeError||PINNED_NATIVE_UNANSWERED.includes(error?.code);
 const json=response=>/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??'')&&!response.headers.get('content-encoding');
 export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now,maxRequestMs=3000,loadMaxRequestMs=maxRequestMs}){
  if(typeof credential!=='string'||!/^[A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(credential)||
@@ -44,20 +49,24 @@ export function createNativeCapabilityClient({configuration,credential,fetch:tra
  async function attempt(operation,input,{signal,deadlineMs,maxRequestMs:requestMaxMs}){
   if(requestMaxMs!==undefined&&(!startupOperations.has(operation)||!Number.isSafeInteger(requestMaxMs)||requestMaxMs<1||requestMaxMs>STARTUP_REQUEST_MAX_MS||!Number.isSafeInteger(deadlineMs)))throw fault('NATIVE_CONFIGURATION');
   const limitMs=operation==='runner/load'?loadMaxRequestMs:requestMaxMs??maxRequestMs;
-  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response,dispatched=false,transient=false;
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response,dispatched=false,transient=false,cause;
   try{const payload=JSON.stringify(data(input));if(Buffer.byteLength(payload)>2097152)throw fault('NATIVE_REQUEST_LIMIT');
    response=await life.run(signal=>{dispatched=true;return transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:payload,signal});});
    if(response.status!==200){
+    cause=pinnedStatusRefusal(response.status);
     // Only an explicit "did not answer" is transient; an unreadable error body leaves the failure definitive.
-    if(json(response))try{transient=unanswered(response.status,(await body(response,life,ERROR_BODY_MAX_BYTES))?.error);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+    if(json(response))try{transient=unanswered(response.status,(await body(response,life,PINNED_NATIVE_ERROR_BODY_MAX_BYTES))?.error);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
     throw fault('NATIVE_UNAVAILABLE');
    }
    if(!json(response))throw fault('NATIVE_UNAVAILABLE');
    const value=await body(response,life,c.maxResponseBytes);life.check();return data(value);
   }catch(error){
    const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'NATIVE_UNAVAILABLE',failure=fault(code);
-   // A transport that failed after dispatch, before any answer, is as transient as an explicit "did not answer".
-   if(code==='NATIVE_UNAVAILABLE'&&(transient||dispatched&&response===undefined))markAuthorityUnavailable(failure);
+   if(code==='NATIVE_UNAVAILABLE'){
+    // RUNNER_FIRST_FAILURE prints the answer's status class or the transport's fixed rejection as `cause`.
+    Object.defineProperty(failure,'cause',{value:cause??error,configurable:true,writable:true});
+    if(transient||dispatched&&response===undefined&&noAnswer(error))markAuthorityUnavailable(failure);
+   }
    throw failure;
   }finally{life.close();}
  }

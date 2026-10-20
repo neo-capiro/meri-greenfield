@@ -45,8 +45,15 @@ prompt or credential is echoed, and request bytes, TLS options, ceilings and den
 | `PINNED_NATIVE_ABORTED` / `PINNED_NATIVE_TIMEOUT` | caller signal / the adapter's own 30 s ceiling |
 | `PINNED_NATIVE_CONNECT` / `PINNED_NATIVE_TLS` / `PINNED_NATIVE_SOCKET` | failure before any response head |
 | `PINNED_NATIVE_TRANSPORT` | any other request error (bounded fallback) |
-| `PINNED_NATIVE_STATUS_403` / `_503` / `_4XX` / `_5XX` / `_OTHER` | non-200 head, decided at the head before any body is read |
+| `PINNED_NATIVE_STATUS_403` / `_503` / `_4XX` / `_5XX` / `_OTHER` | non-200 head whose body (at most 4 KiB) could not be read whole: malformed, oversize, truncated, encoded or redirected |
 | `PINNED_NATIVE_RESPONSE` | 200 head whose framing, size or body did not complete, including loss after the head |
+
+Like fetch, a readable non-200 answer resolves as a `Response` carrying only its status, content type and that body. Its status
+text and other headers are dropped, so the client, not the transport, decides on the status. The native client
+(`NATIVE_UNAVAILABLE`) and the remote task client (`REMOTE_TASK_REFUSED`) keep the answer's status class as `cause`
+(`pinnedStatusRefusal`), so `origin=native-start … code=REMOTE_TASK_REFUSED … cause=PINNED_NATIVE_STATUS_403` replaces the
+earlier `code=PINNED_NATIVE_STATUS_403`. The native client also keeps a transport rejection as `cause`, and treats only
+`CONNECT`, `TLS`, `SOCKET` and `RESPONSE` (`PINNED_NATIVE_UNANSWERED`) as an answer that never arrived.
 
 At `native-start`, the client's operation lifetime still wins deadline and cancellation races, which print
 `REMOTE_TASK_REFUSED`. The transport's 30 s `TIMEOUT` is unreachable within the 23 s start bound. A 200 reply whose body is

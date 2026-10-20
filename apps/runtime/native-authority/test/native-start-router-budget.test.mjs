@@ -195,8 +195,9 @@ const prematureCloses = result => result.consoleLines.filter(line => line === 'C
 test('reproduction: the deployed eight-second router enclosure cuts start inside a nested authority call', async t => {
   const x = await compose(t, {routerOptions: {startupMaxRequestMs: 8000}}), result = await driveStart(x);
   assert.equal(result.ok, false);
-  assert.equal(result.error.code, 'PINNED_NATIVE_STATUS_403');
-  assert.equal(result.lines[0].trim(), 'RUNNER_FIRST_FAILURE origin=native-start stage=module-import code=PINNED_NATIVE_STATUS_403 class=ERROR exit=none signal=none');
+  assert.equal(result.error.code, 'REMOTE_TASK_REFUSED');
+  assert.equal(result.error.cause.code, 'PINNED_NATIVE_STATUS_403');
+  assert.equal(result.lines[0].trim(), 'RUNNER_FIRST_FAILURE origin=native-start stage=module-import code=REMOTE_TASK_REFUSED class=ERROR exit=none signal=none');
   // Live signature: the router destroys its runner connection, the runner aborts its nested call back to control.
   assert.equal(prematureCloses(result), 2, result.consoleLines.join(' | '));
   assert.deepEqual(x.aborted, ['started']);
@@ -231,7 +232,8 @@ test('native start completes inside the startup allowance and records its elapse
 test('a nested authority call slower than the allowance is refused by the receiver first; the router still answers', async t => {
   const x = await compose(t, {slow: {started: 60000}}), result = await driveStart(x);
   assert.equal(result.ok, false);
-  assert.equal(result.error.code, 'PINNED_NATIVE_STATUS_403');
+  assert.equal(result.error.code, 'REMOTE_TASK_REFUSED');
+  assert.equal(result.error.cause.code, 'PINNED_NATIVE_STATUS_403');
   assert.deepEqual(x.aborted, ['started']);
   // Only control logs a cut connection (the runner abandoned its nested call); the router received the receiver's refusal.
   assert.equal(prematureCloses(result), 1, result.consoleLines.join(' | '));
@@ -247,7 +249,8 @@ test('a nested authority call slower than the allowance is refused by the receiv
 test('lost acknowledgement after a completed start is refused once, never retried, and cleanup stops the task', async t => {
   const x = await compose(t, {routerSlow: (operation, join) => operation === 'start' && join === 3 ? 30000 : 0}), result = await driveStart(x);
   assert.equal(result.ok, false);
-  assert.equal(result.error.code, 'PINNED_NATIVE_STATUS_403');
+  assert.equal(result.error.code, 'REMOTE_TASK_REFUSED');
+  assert.equal(result.error.cause.code, 'PINNED_NATIVE_STATUS_403');
   const record = startRecord(x.routerLog);
   assert.deepEqual({phase: record.phase, category: record.category, certainty: record.certainty},
     {phase: 'authority-after', category: 'DEADLINE', certainty: 'effect-answered'});

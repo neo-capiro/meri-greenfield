@@ -7,6 +7,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {createRunBoundSessionStore,copySessionEntries,copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
+import {pinnedStatusRefusal} from '../runner-runtime-diagnostics.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});},get=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 export function createNativeSdkSessionClient(configuration){
  const {origin,credential,binding,fetchImpl,now=Date.now,maxRequestMs=3000,maxResponseBytes=35651584,startupMaxRequestMs,startupExpiresAtMs}=own(configuration,['origin','credential','binding','fetchImpl'],['now','maxRequestMs','maxResponseBytes','startupMaxRequestMs','startupExpiresAtMs']);
@@ -21,7 +22,9 @@ export function createNativeSdkSessionClient(configuration){
   const started=now(),startup=startupPending.delete(operation),requestMs=startup?startupMaxRequestMs:maxRequestMs;
   const life=createOperationLifetime({now,deadlineMs:Math.min(deadlineMs??started+requestMs,started+requestMs,...(startup?[startupExpiresAtMs]:[])),signal,errorFactory:code=>Object.assign(Error('SDK_SESSION_'+code),{code:'SDK_SESSION_'+code})});let reader,response;
   try{response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(url.origin+'/v1/runner/session/'+operation,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));pending.then(r=>{if(life.signal.aborted)try{get.body.call(r)?.cancel().catch(()=>{});}catch{}},()=>{});return pending;});
-   if(types.isProxy(response)||!(response instanceof Response)||get.status.call(response)!==200||get.redirected.call(response))fail('SDK_SESSION_UNAVAILABLE');const h=get.headers.call(response),header=k=>Headers.prototype.get.call(h,k),stream=get.body.call(response);
+   if(types.isProxy(response)||!(response instanceof Response)||get.redirected.call(response))fail('SDK_SESSION_UNAVAILABLE');
+   // A non-200 answer keeps its fixed status class as `cause` for RUNNER_FIRST_FAILURE; its body is never read.
+   const status=get.status.call(response);if(status!==200)throw Object.defineProperty(Object.assign(Error('SDK_SESSION_UNAVAILABLE'),{code:'SDK_SESSION_UNAVAILABLE'}),'cause',{value:pinnedStatusRefusal(status),configurable:true,writable:true});const h=get.headers.call(response),header=k=>Headers.prototype.get.call(h,k),stream=get.body.call(response);
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!stream)fail('SDK_SESSION_UNAVAILABLE');
    const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>maxResponseBytes))fail('SDK_SESSION_RESPONSE_LIMIT');reader=stream.getReader();let bytes=0;const chunks=[];
    while(true){const next=await life.run(()=>reader.read());if(next.done)break;bytes+=next.value.byteLength;if(bytes>maxResponseBytes)fail('SDK_SESSION_RESPONSE_LIMIT');chunks.push(next.value);}if(length!==null&&Number(length)!==bytes)fail('SDK_SESSION_UNAVAILABLE');
