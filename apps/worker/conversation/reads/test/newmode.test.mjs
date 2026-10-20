@@ -29,14 +29,14 @@ async function mounted(id,{mode='off',scene=sceneFor(id,mode)}={}){
 function noSource(f){assert.equal(f.wire.length,0);assert.equal(f.stateOwner.secrets,0);assert.equal(f.state.reservations.size,0);assert.equal(f.state.budget.consumed_micro_usd,0);}
 function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.hold_micro_usd,1);assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);}
 
-test('mode SDK source policy derives76/42 and keeps public/program families optional with exact canonical operations',()=>{
- assert.equal(familyReads().length,76);assert.equal(READ_FAMILY_IDS.length,42);
+test('mode SDK source policy derives81/45 and keeps public/program families optional with exact canonical operations',()=>{
+ assert.equal(familyReads().length,81);assert.equal(READ_FAMILY_IDS.length,45);
  for(const [family,ids] of Object.entries(families)){
   assert.equal(READ_FAMILIES[family].clientScope,'optional');assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation.id).sort(),[...ids].sort());
   const operations=[...MODE_READ_OPERATIONS,'get_legal_reference','get_business_development_evidence'].map(id=>({id,version:'0.2.0'}));
   for(const scopes of [[],[{kind:'private-user'}],[{kind:'client'}]])assert.deepEqual(resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations},discovery:{operations},scopes}).available.map(row=>row.operation.id).sort(),ids.filter(id=>MODE_READ_OPERATIONS.includes(id)).sort());
  }
- for(const id of ['get_legal_reference','get_business_development_evidence'])assert.equal(familyReads().some(row=>row.operation.id===id),false);
+ for(const id of ['get_legal_reference','get_business_development_evidence'])assert.equal(familyReads().some(row=>row.operation.id===id),true);
  assert.throws(()=>familyReads({'public-data':{clientScope:'optional',operationIds:['search_program_elements']}}),/READ_FAMILY_CONFIGURATION/u);
  assert.throws(()=>familyReads({'program-elements':{clientScope:'optional',operationIds:['search_federal_grants']}}),/READ_FAMILY_CONFIGURATION/u);
 });

@@ -26,15 +26,17 @@ async function mounted(id,{personal=true,request}={}){
 const contexts=f=>f.core.state.calls.filter(call=>call.path.endsWith('/context'));
 function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);}
 
-test('BD SDK exposes exactly the two complete operations to personal/client scope and withholds evidence despite forged inventories',()=>{
- assert.equal(familyReads().length,76);assert.equal(READ_FAMILY_IDS.length,42);
- assert.deepEqual(READ_FAMILIES['business-development'],{clientScope:'optional',operationIds:ids});
- assert.deepEqual(familyReads().filter(row=>row.family==='business-development').map(row=>row.operation.id),ids);
+test('BD SDK retains personal context/change reads and requires client scope for evidence',()=>{
+ assert.equal(familyReads().length,81);assert.equal(READ_FAMILY_IDS.length,45);
+ const expected=[ids[0],evidence.id,ids[1]];
+ assert.deepEqual(READ_FAMILIES['business-development'],{clientScope:'optional',requiredClientOperations:[evidence.id],operationIds:[...ids,evidence.id]});
+ assert.deepEqual(familyReads().filter(row=>row.family==='business-development').map(row=>row.operation.id),expected);
  for(const kind of ['tenant','private-user','client']){
   const result=resolveAvailableReads({policy:{generalReads:true,readFamilies:['business-development']},installation:{operations},discovery:{operations},scopes:[{kind}]});
-  assert.deepEqual(result.available.map(row=>row.operation.id),ids);assert.equal(result.available.some(row=>row.operation.id===evidence.id),false);
+  assert.deepEqual(result.available.map(row=>row.operation.id),kind==='client'?expected:ids);
+  assert.equal(result.available.some(row=>row.operation.id===evidence.id),kind==='client');
  }
- assert.equal(familyReads().some(row=>row.operation.id===evidence.id),false);
+ assert.equal(familyReads().some(row=>row.operation.id===evidence.id),true);
 });
 
 for(const id of ids){

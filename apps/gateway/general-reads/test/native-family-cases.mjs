@@ -27,6 +27,7 @@ import {storedCase as legalCase,ids as legalIds} from '../../sources/research-le
 import {storedCase as newsCase,ids as newsIds} from '../../sources/research-legal-news/test/fixture.mjs';
 import {storedCase as outreachCase,ids as outreachIds} from '../../sources/outreach-query/test/fixture.mjs';
 import {storedCase as businessCase,ids as businessIds} from '../../sources/business-development/test/fixture.mjs';
+import {storedCase as candidatesCase} from '../../sources/research-legal-candidates/test/fixture.mjs';
 
 export const DISCLOSURE_FAMILY_CASES=Object.freeze(['search_lda_filings','search_sec_filings','search_fara_registrations'].map(id=>['disclosures',id]));
 export const GOVERNED_NEXT_FAMILY_CASES=Object.freeze([
@@ -39,6 +40,7 @@ export const SOURCE_SLICE_CASES=Object.freeze([
  ['tracked-bills',trackedId],['public-domain-hearings',hearingsId],...legalIds.map(id=>['research-legal-legislation',id]),...newsIds.map(id=>['research-legal-news',id]),
  ...outreachIds.map(id=>['outreach-query',id]),
  ...businessIds.map(id=>['business-development',id]),
+ ['research-legal-candidates','search_research_sources'],
 ]);
 
 export const NATIVE_FAMILY_CASES=Object.freeze([
@@ -56,6 +58,10 @@ const storedCases={'pe-references':peCase,'federal-legislation':federalCase,'sta
  'public-web':webCase,'data-search':dataCase,'public-domain-query':queryCase,'facility-representation':facilityCase,'district-nexus':districtCase,'client-registry':registryCase,'federal-market':marketCase,
  'public-data':economicCase,'client-knowledge-search':graphCase,'state-status-votes':statusCase,'tracked-bills':trackedCase,'public-domain-hearings':hearingsCase,'research-legal-legislation':legalCase,'research-legal-news':newsCase,'outreach-query':outreachCase,'business-development':businessCase};
 export function nativeFamilyCase(family,id,options={}){
+ if(family==='research-legal-candidates'){
+  if(id!=='search_research_sources')throw Error('SYNTHETIC_FAMILY_MISMATCH');
+  return candidatesCase(options);
+ }
  if(Object.hasOwn(storedCases,family))return storedCases[family](id,options);
  const {request=directoryRequests[id]??(id==='get_acquisition_person'?{id:personId}:{}),actorRole='standard_user'}=options;
  if(family==='legislative-directory')return directoryCase(id,{request});

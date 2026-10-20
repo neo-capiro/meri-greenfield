@@ -61,26 +61,6 @@ export function createOperationalTaskPorts(configuration={}){
     subject.policyRevision!==scope.policyRevision||!same(subject.scopes,scopes))refuse();
    return subject;
   }
-  async function currentCredentials(deadlineMs,signal,operation,requestSha256){
-   active(deadlineMs,signal);
-   const request=Object.freeze({signal,deadlineMs,operation,requestSha256});
-   const readBearer=async()=>{
-    let result;try{result=own(await ports.getNativeCredentialWithExpiry(request),['credential','expiresAtMs']);}
-    catch{refuse();}
-    if(!token(result.credential)||!Number.isSafeInteger(result.expiresAtMs)||result.expiresAtMs<=c.now())refuse();
-    return result;
-   };
-   const first=await readBearer();active(deadlineMs,signal);
-   let secret;try{secret=await ports.getServiceSecret({signal,deadlineMs,operation,requestSha256});}catch{refuse();}
-   if(!token(secret)||secret===first.credential)refuse();
-   active(deadlineMs,signal);
-   // Secret rotation is an await. Require the same still-live session afterwards.
-   const second=await readBearer();active(deadlineMs,signal);
-   if(second.credential!==first.credential||secret===second.credential)refuse();
-   const expiresAtMs=Math.min(original.expiresAtMs,deadlineMs,first.expiresAtMs,second.expiresAtMs);
-   if(expiresAtMs<=c.now())refuse();
-   return {bearerToken:second.credential,serviceSecret:secret,expiresAtMs};
-  }
   async function originalCredentials(rawPins){
    const p=own(rawPins,['operation','sourceIdentity','binding','subject','policyRevision','sourceIds','argumentsSha256','deadlineMs','signal'],
     ['input','invocationId','target']);
@@ -89,7 +69,7 @@ export function createOperationalTaskPorts(configuration={}){
     !same(data(p.binding),binding)||!same(data(p.sourceIdentity),required[0])||
     !same(data(p.sourceIds),required.map(row=>row.sourceId))||p.policyRevision!==policyRevision||
     typeof p.argumentsSha256!=='string'||!/^[a-f0-9]{64}$/u.test(p.argumentsSha256))refuse();
-   if(operation.id==='query_action_items'){
+   {
     // Option B's opaque per-call handle can never be used as an ordinary Bearer.
     // Its tool exchange is bound to the gateway's UNKNOWN reservation and the
     // adapter's exact original flat POST body, not the derived successor body.
@@ -98,7 +78,7 @@ export function createOperationalTaskPorts(configuration={}){
     if(p.input===undefined||p.target===undefined)refuse();
     const input=data(p.input),target=data(own(p.target,['method','path','bodySha256']));
     if(input?.clientId!==selectedClient().resourceId||canonicalSha256(input)!==p.argumentsSha256||
-     target.method!=='POST'||target.path!=='/api/clio/tools/query_action_items'||
+     target.method!=='POST'||target.path!==`/api/clio/tools/${operation.id}`||
      typeof target.bodySha256!=='string'||!/^[a-f0-9]{64}$/u.test(target.bodySha256))refuse();
     active(p.deadlineMs,p.signal);
     let serviceSecret;try{serviceSecret=await ports.getServiceSecret({signal:p.signal,deadlineMs:p.deadlineMs,operation,
@@ -122,10 +102,6 @@ export function createOperationalTaskPorts(configuration={}){
      sourceIds:data(p.sourceIds),argumentsSha256:p.argumentsSha256,input,invocationId:p.invocationId,target,
      authorizationScheme:'CapiroMeriRead',bearerToken:credential.bearerToken,serviceSecret,expiresAtMs});
    }
-   if(p.input!==undefined||p.invocationId!==undefined||p.target!==undefined)refuse();
-   const credentials=await currentCredentials(p.deadlineMs,p.signal,operation,p.argumentsSha256);
-   return Object.freeze({operation,sourceIdentity:data(p.sourceIdentity),binding,subject,policyRevision,
-    sourceIds:data(p.sourceIds),argumentsSha256:p.argumentsSha256,...credentials});
   }
   async function successorCredentials(rawPins){
    const p=own(rawPins,['operation','input','metadata','argumentsSha256','requestSha256','binding','subject',

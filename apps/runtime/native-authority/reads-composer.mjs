@@ -170,6 +170,9 @@ export async function createControlReadsComposer(options){
   const supplied=retainedIds.length?own(synchronous(c.retainedTaskPorts(Object.freeze({task:t,
    getNativeCredential:async request=>(await bearer({binding:t.binding,...request})).credential,
    getNativeCredentialWithExpiry:request=>nativeCredentials.getNativeCredential({...request,binding:t.binding}),
+   // Retained authority/evidence routes accept the current attended user Bearer,
+   // never the opaque Option B delegation handle supplied above.
+   getAttendedCredentialWithExpiry:request=>bearer({...request,binding:t.binding}),
    getSignedSourceCredentials:signedCredentials,
    getMemoryEligibilityCredentials:signedMemoryEligibilityCredentials,
    getToolCredential:nativeCredentials.toolCredential,
@@ -180,11 +183,14 @@ export async function createControlReadsComposer(options){
   // P1: per task, over this run's own allocation and approved reads.
   const discoveryOwner=gateway.discoveryOwner??createGeneralReadDiscoveryProducer({binding:t.binding,policyRevision:t.grant.qualificationBinding.policyRevision,
    allocationJson:t.allocationJson,approvedReads:t.approvedReads,now,enabled:true,capabilityPolicy:discovery.capabilityPolicy,...(discovery.ttlMs===undefined?{}:{ttlMs:discovery.ttlMs})});
+  // The helper-only credential belongs to signedMemoryEligibilityCredentials
+  // above. It is not a member of the generic native source transport DTO.
+  const {memoryEligibilityCredential:memoryHelper,...sourceNativeCredentials}=nativeCredentials;
   return {gateway:{authority:gateway.authority,limits:gateway.limits,readCurrentInstallation,discoveryOwner,
     producerContext:t.grant,producer:{namespace:'general-reads',executionId:t.original.executionId},credential:t.taskCapability,sourceEnabled:true,...(gateway.namespace===undefined?{}:{namespace:gateway.namespace})},
    families:{...Object.fromEntries(familyIds.filter(id=>NATIVE_READ_FAMILIES.includes(id)).map(id=>[id,{origin:coreAuthority.origin,fetchImpl}])),...retainedFamilies},
    contextPorts,
-   nativeCredentials:{...nativeCredentials,getServiceSecret:broker.getServiceSecret,
+   nativeCredentials:{...sourceNativeCredentials,getServiceSecret:broker.getServiceSecret,
     ...(broker.getReadModeServiceSecret===undefined?{}:{getReadModeServiceSecret:broker.getReadModeServiceSecret}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress})}};
  }
  /** Option A only, or option B with A as the attended fallback. One delegation per run attempt (binding), reused across its tasks. */

@@ -245,8 +245,13 @@ test('Stop and expiry refuse before token acquisition, including Stop during sec
  assert.equal(waiting.calls.handle.length,0);assert.equal(waiting.calls.tool.length,0);
 });
 
-test('Monday refuses until current managed board mapping exists, before secret or token',async()=>{
+test('Monday issues only its exact body-bound credential; Core owns current board mapping checks',async()=>{
  const x=relayFixture(createClientKnowledgeFixture('read_monday_client_boards'));
- await assert.rejects(x.create()(x.pins),{message:'UNAVAILABLE'});
- assert.equal(x.calls.secret,0);assert.equal(x.calls.handle.length,0);assert.equal(x.calls.tool.length,0);
+ const receipt=await x.create()(x.pins);
+ assert.equal(receipt.authorizationScheme,'CapiroMeriRead');assert.equal(Object.hasOwn(receipt,'managedBoardMapping'),false);
+ assert.equal(x.calls.secret,1);assert.equal(x.calls.handle.length,1);assert.equal(x.calls.tool.length,1);
+ assert.deepEqual(x.calls.tool[0].operation,x.pins.operation);assert.deepEqual(x.calls.tool[0].target,x.pins.target);
+ assert.equal(x.calls.tool[0].correlationSha256,x.pins.correlationSha256);
+ const foreign=structuredClone(x.pins);foreign.input.clientId='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+ await assert.rejects(x.create()(foreign),{message:'ACCESS_DENIED'});assert.equal(x.calls.tool.length,1);
 });

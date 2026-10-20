@@ -52,7 +52,8 @@ import * as f40 from './families/business-development.mjs';
 import * as f41 from './families/funding-opportunities.mjs';
 import * as f42 from './families/mail.mjs';
 import * as f43 from './families/program-elements.mjs';
-const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40,f41,f42,f43];
+import * as f44 from './families/research-legal-candidates.mjs';
+const modules=[f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40,f41,f42,f43,f44];
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
 const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
@@ -67,6 +68,7 @@ const STORED_NATIVE_SOURCE_PATHS=Object.freeze([
  'apps/gateway/dispatch/tool-dispatch.mjs',
 ]);
 const SOURCE_PATHS=Object.freeze({
+ 'research-legal-candidates':['apps/gateway/sources/research-legal-candidates/handler.mjs','apps/gateway/sources/research-legal-candidates/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'mail':['apps/gateway/sources/mail/handler.mjs','apps/gateway/sources/mail/http-adapter.mjs','apps/gateway/sources/mail/request-context.mjs'],
  'funding-opportunities':['apps/gateway/sources/funding-opportunities/handler.mjs','apps/gateway/sources/funding-opportunities/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
  'public-data':['apps/gateway/sources/public-data/handler.mjs','apps/gateway/sources/public-data/request-context.mjs',...STORED_NATIVE_SOURCE_PATHS],
@@ -260,6 +262,20 @@ const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general
  'apps/runtime/cli.mjs','apps/runtime/native-authority/reads-composer.mjs','apps/runtime/native-authority/retained-read-credential-relay.mjs',
  'apps/runtime/native-authority/retained-reads/client-scoped-source-task-ports.mjs',
  'apps/runtime/native-authority/retained-reads/selected-task-ports.mjs',
+ 'apps/runtime/config.mjs','apps/runtime/native-authority/retained-reads/configuration.mjs',
+ 'apps/runtime/native-authority/retained-reads/research-florida-task-ports.mjs',
+ 'apps/runtime/native-authority/retained-reads/task-ports.mjs',
+ 'apps/runtime/native-authority/retained-reads/research-evidence-task-port.mjs',
+ 'apps/runtime/native-authority/retained-reads/runtime.mjs',
+ 'apps/runtime/native-authority/retained-reads/core-client.mjs',
+ 'apps/runtime/native-authority/retained-reads/meri-context.mjs',
+ 'apps/runtime/native-authority/retained-reads/credential-broker.mjs',
+ 'apps/runtime/native-authority/retained-reads/control-owner.mjs',
+ 'apps/runtime/native-authority/retained-reads/source-transport.mjs',
+ 'packages/contracts/runtime-0.2/retained-reads.mjs',
+ 'apps/runtime/native-authority/retained-reads/mail-monday-task-ports.mjs',
+ 'apps/gateway/sources/client-knowledge/monday-signed-adapter.mjs',
+ 'apps/gateway/sources/client-knowledge/monday-signed-handler.mjs',
  'apps/runtime/native-authority/retained-reads/memory-task-ports.mjs',
  'apps/runtime/native-authority/retained-reads/operational-task-ports.mjs',
  'apps/runtime/native-authority/retained-reads/dataset-metadata-port.mjs',
@@ -283,6 +299,9 @@ const COMMON=['apps/gateway/general-reads/integration.mjs','apps/gateway/general
  // These changed source modules are likewise loaded by static family imports in every composition.
  'apps/gateway/sources/business-development/handler.mjs','apps/gateway/sources/business-development/request-context.mjs',
  'apps/gateway/sources/research-legal-legislation/request-context.mjs',
+ 'apps/gateway/general-reads/families/research-legal-candidates.mjs',
+ 'apps/gateway/sources/research-legal-candidates/handler.mjs',
+ 'apps/gateway/sources/research-legal-candidates/request-context.mjs',
  // Static family imports load both memory paths for every selected family.
  // Bind their changed admission/transport bytes even when a different family is installed.
  'apps/gateway/general-reads/families/client-knowledge-memory.mjs',

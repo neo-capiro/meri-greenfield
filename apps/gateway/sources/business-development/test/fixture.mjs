@@ -6,10 +6,12 @@ import {billTextCase} from '../../bill-text/test/fixture.mjs';
 import {createBusinessDevelopmentHandlers} from '../handler.mjs';
 import {captureBusinessDevelopmentResource} from '../request-context.mjs';
 export const ids=['get_business_development_context','get_business_development_recent_changes'];
+export const evidenceId='get_business_development_evidence';
+const sourceIds=[...ids,evidenceId];
 export const clientId='a1234567-b123-4c12-8d12-e123456789ab';
 export const conversationId='b1234567-b123-4c12-8d12-e123456789ab';
 export const prospectId='c1234567-b123-4c12-8d12-e123456789ab';
-export const requests=Object.fromEntries(ids.map(id=>[id,{conversationId}]));
+export const requests=Object.fromEntries(sourceIds.map(id=>[id,{conversationId}]));
 const historyId='d1234567-b123-4c12-8d12-e123456789ab';
 
 export function storedPage(id,input,at){
@@ -18,6 +20,15 @@ export function storedPage(id,input,at){
   serviceHypothesis:'Stored hypothesis',geography:null,nextAction:null,canonicalEntityId:null,linkedClientId:clientId},
   firmPreferences:{practiceServiceAreas:['Synthetic practice'],agenciesIssues:[],geographies:[]},
   history:{entries:[{id:historyId,kind:'note',body:'Stored prospect activity',at:stamp,actorUserId:null}],total:1,returned:1,truncated:false}};
+ if(id===evidenceId)return {tool:id,generatedAt:stamp,identityBasis:'exact_name',canonicalEntityId:prospectId,
+  canonicalName:'Synthetic prospect',sectionStates:[{section:'government_exposure',status:'available',statusText:'Synthetic stored scope only'}],
+  data:[{sourceFamily:'usaspending_contract',recordId:'synthetic-record',locator:'https://source.example.invalid/evidence',
+   originalSourceName:null,originalSourceId:null,claimType:'government_exposure',relationshipStrength:'conditional',
+   eventDate:'2026-01-01',effectiveDate:null,fiscalYear:2026,stage:'obligated',sourceUpdatedAt:null,retrievedAt:null,
+   scopeChecked:'Synthetic exact-name query',status:'available',title:'Synthetic stored evidence',
+   facts:{amount:123.45,amountType:'obligated',agency:'Synthetic agency'},id:'synthetic-record',
+   url:'https://source.example.invalid/evidence',snippet:'Synthetic stored evidence'}],
+  evidence:{total:1,returned:1,truncated:false},coverage:{complete:true,partial:false,note:'Synthetic stored record window; no live source qualification.'}};
  if(id!==ids[1])throw Error('SYNTHETIC_OPERATION_MISMATCH');
  return {tool:id,generatedAt:stamp,prospect:{id:prospectId,name:'Synthetic prospect'},alerts:{items:[{id:'synthetic-alert',sourceFamily:'stored-source',
   category:'change',title:'Synthetic stored change',summary:null,materiality:null,dates:{eventAt:'Source date wording',effectiveAt:null,publishedAt:null,firstObservedAt:stamp},
@@ -27,7 +38,7 @@ export function storedPage(id,input,at){
 }
 
 export function storedCase(id=ids[0],{request=requests[id],personal=false}={}){
- if(!ids.includes(id))throw Error('SYNTHETIC_OPERATION_MISMATCH');
+ if(!sourceIds.includes(id))throw Error('SYNTHETIC_OPERATION_MISMATCH');
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext={};
  const {authority,state,now,wire}=scene,scope={tenantId:authority.binding.tenantId,kind:personal?'tenant':'client',resourceId:personal?authority.binding.tenantId:clientId,policyRevision:authority.policyRevision};
  Object.assign(authority.subject,{kind:personal?'personal':'client',entityType:personal?'user':'client',entityIds:[personal?authority.binding.actorId:clientId],scopes:[scope]});
@@ -36,6 +47,7 @@ export function storedCase(id=ids[0],{request=requests[id],personal=false}={}){
  const input=contract.normalizeInput(request,normalizationContext).input,page=storedPage(id,input,now());
  if(personal&&id===ids[0])page.prospect.linkedClientId=null;
  const {getCredentials,...passive}=scene.transport;
+ if(id===evidenceId)state.credentialMutator=proof=>{proof.authorizationScheme='CapiroMeriRead';};
  const transport={...passive,credentialsForCall(selected,originalCall){
   state.credentialOwnerCalls??=[];state.credentialOwnerCalls.push({operation:selected,call:originalCall});
   if(state.resourceDenied)deny('ACCESS_DENIED');

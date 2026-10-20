@@ -235,10 +235,10 @@ test('a composed read runs through the real P2 installation issuer and P1 discov
  }finally{x.close();}
 });
 
-test('the full P2 measurement needs all 21 retained handlers; task-bound ports compose the exact 76',async()=>{
+test('the full P2 measurement needs all 21 retained handlers; task-bound ports compose the exact 81',async()=>{
  const f=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),s=secretFixture(),rows=installationReadOperations();
- assert.equal(rows.length,76);const families=[...new Set(rows.map(row=>row.family))],retained=families.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
- assert.equal(families.length,42);assert.equal(retained.length,15);assert.equal(rows.filter(row=>retained.includes(row.family)).length,21);
+ assert.equal(rows.length,81);const families=[...new Set(rows.map(row=>row.family))],retained=families.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
+ assert.equal(families.length,45);assert.equal(retained.length,15);assert.equal(rows.filter(row=>retained.includes(row.family)).length,21);
  const {measurement,measurementSha256}=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:rows});
  const sourcePorts=Object.fromEntries(retained.map(family=>{
   if(family==='mail')return [family,{endpoints:mailEndpoints,getCredentials:async()=>{throw Error('UNREACHABLE_MAIL_CREDENTIAL');},fetchImpl:async()=>{throw Error('UNREACHABLE_MAIL_SOURCE');}}];
@@ -250,7 +250,7 @@ test('the full P2 measurement needs all 21 retained handlers; task-bound ports c
   gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits,discoveryOwner:f.gatewayConfiguration.discoveryOwner},
   installation:{enabled:true,measurement,measurementSha256}};
  const narrowed=await createControlReadsComposer({...base,familyIds:[f.family]});
- assert.equal(narrowed.missing.filter(name=>name.startsWith('familyIds.')).length,41,'a 55-handler override cannot silently accept the 76-row receipt');
+ assert.equal(narrowed.missing.filter(name=>name.startsWith('familyIds.')).length,44,'a native-only override cannot silently accept the 81-row receipt');
  const absent=await createControlReadsComposer(base);
  assert.deepEqual([...absent.missing].sort(),retained.map(id=>`retainedTaskPorts.${id}`).sort());
  await assert.rejects(absent.createReadsRuntime(f.tuple).readAvailability(),code('UNAVAILABLE'));
@@ -263,8 +263,9 @@ test('the full P2 measurement needs all 21 retained handlers; task-bound ports c
  assert.deepEqual(composer.missing,[]);assert.deepEqual([...composer.familyIds].sort(),families.sort());
  const available=await composer.createReadsRuntime(f.tuple).readAvailability();
  assert.equal(typeof retainedPorts.getNativeCredentialWithExpiry,'function');
+ assert.equal(typeof retainedPorts.getAttendedCredentialWithExpiry,'function');
  assert.equal(typeof retainedPorts.getSignedSourceCredentials,'function');
- assert.deepEqual(available.installation.operations,[f.operation],'all 76 source hashes pass before run eligibility narrows to one');
+ assert.deepEqual(available.installation.operations,[f.operation],'all 81 source hashes pass before run eligibility narrows to one');
  f.scope.abort();
 });
 
@@ -272,7 +273,7 @@ test('an exact partial P2 receipt selects only its measured families without hid
  const f=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),s=secretFixture();
  try{
   const all=installationReadOperations(),selected=all.filter(row=>row.family==='client-knowledge-profile'||row.family===f.family);
-  assert.equal(all.length,76);assert.equal(selected.length,2);
+  assert.equal(all.length,81);assert.equal(selected.length,2);
   const {measurement,measurementSha256}=await measureGeneralReadInstallation({catalogJson:JSON.stringify(catalog),operations:selected});
   const base={configuration:s.configuration,secretFiles:READ,readSecret:s.readSecret,now:f.now,
    nativeCredentials:{nativeCredentialFor(){throw Error('UNREACHABLE_NATIVE_CREDENTIAL');}},
@@ -283,7 +284,7 @@ test('an exact partial P2 receipt selects only its measured families without hid
   assert.deepEqual(absent.missing,['retainedTaskPorts.client-knowledge-profile']);
   const narrowed=await createControlReadsComposer({...base,familyIds:[f.family]});
   assert.deepEqual(narrowed.missing,['familyIds.client-knowledge-profile']);
-  assert.equal(installationReadOperations().length,76,'the desired inventory remains unchanged');
+  assert.equal(installationReadOperations().length,81,'the desired inventory remains unchanged by a partial selection');
  }finally{f.scope.abort();}
 });
 

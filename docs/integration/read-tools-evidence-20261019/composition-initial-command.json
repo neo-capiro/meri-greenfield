@@ -1,0 +1,21 @@
+{
+  "kind": "intermediate-not-acceptance",
+  "source": "changing receiving worktree before fde87b6c",
+  "result": {
+    "tests": 377,
+    "pass": 373,
+    "fail": 4
+  },
+  "classification": [
+    "three obsolete inventory assertions corrected",
+    "one UNAVAILABLE during noncoherent source changes; not accepted as qualification, final stable run authoritative"
+  ],
+  "argv": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "apps/runtime/native-authority/general-read-installation/test/preparation.test.mjs",
+    "apps/runtime/native-authority/test/read-composer.test.mjs",
+    "apps/gateway/general-reads/families.test.mjs"
+  ]
+}

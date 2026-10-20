@@ -25,6 +25,15 @@ test('selected retained source manifests bind the task composer and local datase
  const labels=['apps/runtime/native-authority/retained-reads/selected-task-ports.mjs',
   'apps/runtime/native-authority/retained-reads/operational-task-ports.mjs',
   'apps/runtime/native-authority/retained-reads/dataset-metadata-port.mjs',
+  'apps/runtime/native-authority/retained-reads/configuration.mjs',
+  'apps/runtime/native-authority/retained-reads/research-florida-task-ports.mjs',
+  'apps/runtime/native-authority/retained-reads/research-evidence-task-port.mjs',
+  'apps/runtime/native-authority/retained-reads/task-ports.mjs',
+  'apps/runtime/native-authority/retained-reads/core-client.mjs',
+  'apps/runtime/native-authority/retained-reads/credential-broker.mjs',
+  'apps/runtime/native-authority/retained-reads/mail-monday-task-ports.mjs',
+  'apps/gateway/sources/client-knowledge/monday-signed-adapter.mjs',
+  'apps/gateway/sources/research-legal-candidates/request-context.mjs',
   'packages/contracts/retrieval-0.2/public-domain-registry.mjs',
   'packages/contracts/retrieval-0.2/public-domain-datasets.json',
   'packages/contracts/retrieval-0.2/operation-contracts.mjs',
@@ -60,7 +69,8 @@ test('two-phase preparation preserves legacy source records/order/hash and canon
  const first=prepared.create({families,now,newId:randomUUID}),legacy=await createGeneralReadFamilyHandlers({families,now,newId:randomUUID});
  const kernelKeys=ids.flatMap(id=>familyOperations(id).map(op=>`${op.id}@${op.version}`)),eligibleKeys=installationReadOperations().map(row=>`${row.operation.id}@${row.operation.version}`);
  assert.deepEqual([...first.keys()],[...legacy.keys()]);assert.deepEqual([...first.keys()].sort(),kernelKeys.sort());
- assert.deepEqual(kernelKeys.filter(key=>!eligibleKeys.includes(key)),['get_legal_reference@0.2.0']);assert.ok(eligibleKeys.includes('search_legislative_research@0.2.0'));assert.equal(eligibleKeys.includes('get_legal_reference@0.2.0'),false);
+ assert.deepEqual(kernelKeys.filter(key=>!eligibleKeys.includes(key)),[]);
+ for(const id of ['search_legislative_research','get_legal_reference','search_legiwatch_news','query_outreach','search_research_sources'])assert.ok(eligibleKeys.includes(`${id}@0.2.0`),id);
  for(const [key,handler] of first){const prior=legacy.get(key);assert.deepEqual(handler.sourceFiles,prior.sourceFiles);assert.equal(handler.sourceSha256,prior.sourceSha256);assert.equal(handler.sourceSha256,hash(handler.sourceFiles));assert.ok(Object.isFrozen(handler.sourceFiles));assert.equal(new Set(handler.sourceFiles.map(row=>row.label)).size,handler.sourceFiles.length);assert.notEqual(handler.execute,prior.execute);
   for(const label of ['apps/runtime/native-authority/native-read-credentials/client-reference.mjs','apps/runtime/native-authority/general-read-installation/configuration.mjs','apps/runtime/native-authority/general-read-installation/runtime.mjs','apps/gateway/general-reads/families/mail.mjs',
    'apps/runtime/native-authority/native-read-credentials/owner.mjs','apps/runtime/native-authority/native-read-credentials/core-client.mjs','apps/runtime/native-authority/native-read-credentials/source-read-context.mjs',
@@ -73,7 +83,11 @@ test('two-phase preparation preserves legacy source records/order/hash and canon
 test('prepared family allowlist is finite; partial-only families cannot inherit SDK installation eligibility',async()=>{
  for(const familyIds of [['unknown'],['bill-text','bill-text']])await assert.rejects(prepareGeneralReadFamilyHandlers({familyIds}));
  const prepared=await prepareGeneralReadFamilyHandlers({familyIds:['bill-text']});assert.throws(()=>prepared.create({families:{mail:{}},now:Date.now,newId:randomUUID}));
- const supported=new Set(installationReadOperations().map(row=>row.family)),partialOnly=GENERAL_READ_ADAPTER_FAMILIES.find(id=>!supported.has(id));assert.ok(partialOnly);await assert.rejects(prepareGeneralReadInstallation({familyIds:[partialOnly],newId:randomUUID}));
+ const supported=new Set(installationReadOperations().map(row=>row.family));
+ assert.ok(GENERAL_READ_ADAPTER_FAMILIES.every(id=>supported.has(id)));
+ for(const absent of ['certification-status','rule-status','sam-opportunities','client-knowledge-attachments']){
+  assert.equal(supported.has(absent),false);await assert.rejects(prepareGeneralReadInstallation({familyIds:[absent],newId:randomUUID}));
+ }
  const empty=await prepareGeneralReadFamilyHandlers({familyIds:[]});assert.equal(empty.create({families:{},now:Date.now,newId:randomUUID}).size,0);assert.equal((await createGeneralReadFamilyHandlers({families:{},now:Date.now,newId:randomUUID})).size,0);
 });
 

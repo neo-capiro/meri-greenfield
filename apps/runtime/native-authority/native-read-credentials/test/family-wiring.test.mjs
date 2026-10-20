@@ -7,9 +7,11 @@ import {createGeneralReadFamilyHandlers} from '../../../../gateway/general-reads
 import {createControlGeneralReadRuntime} from '../../../general-read-runtime.mjs';
 import {createNativeReadCredentialOwner} from '../owner.mjs';
 import {ownerFixture} from './fixture.mjs';
+import {researchCandidatesFixture} from './research-candidates-fixture.mjs';
 import {NATIVE_FAMILY_CASES,GOVERNED_NEXT_FAMILY_CASES,SOURCE_SLICE_CASES} from '../../../../gateway/general-reads/test/native-family-cases.mjs';
 
 async function wired(id,options={}){
+ if(id==='search_research_sources')return researchCandidatesFixture(options);
  const f=await ownerFixture(id,options),{getCredentials,authorizeResultForCall,...transport}=f.transport,owner=options.owner?.(f)??f.owner;
  const family=f.contract.binding.group,handlers=await createGeneralReadFamilyHandlers({families:{[family]:{...transport,credentialsForCall:owner.credentialsForCall,
   ...(family==='client-registry'?{authorizeResultForCall:owner.authorizeResultForCall}:{})}},now:f.now,newId:randomUUID});
@@ -42,7 +44,9 @@ for(const [family,id] of NATIVE_FAMILY_CASES){
    assert.ok(contexts.every(call=>call.body.conversationId===f.nativeConversation.conversationId&&call.body.clientId===f.nativeConversation.clientId));
   }
   assert.deepEqual(Object.keys(f.wire[0].options.headers).sort(),['authorization','accept','accept-encoding','x-meri-deadline-at','x-internal-service-secret','content-type'].sort());
-  assert.equal(f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE');assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
+  if(family==='research-legal-candidates')assert.match(f.wire[0].options.headers.authorization,/^CapiroMeriRead synthetic-read-token-/u);
+  else assert.equal(f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE');
+  assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
   assert.equal(r.state,'SETTLED');assert.equal(r.charged_micro_usd,1);assert.equal(r.output_bytes,Buffer.byteLength(raw));assert.equal(f.state.produced.size,1);
   const [receipt]=f.state.produced.values();assert.equal(receipt.completion.resultSha256,hash(out));assert.equal(receipt.arguments_sha256,normalized.argumentsSha256);
   for(const suffix of ['native-read-context.mjs','native-read-credentials/owner.mjs','read-result-envelope.mjs'])assert.ok(f.handlers.get(`${id}@0.2.0`).sourceFiles.some(row=>row.label.endsWith(suffix)));

@@ -22,8 +22,8 @@ export function assertOriginalSourceIdentity(value,contract) {
 export function readContext(call,now) {
   const fields=ownFields(call,['operation','input','request','authority'],['signal','normalizationContext','invocationId']);
   const {operation,contract}=originalTrackingContract(fields.operation);
-  if(fields.invocationId!==undefined&&(operation.id!=='query_action_items'||
-      typeof fields.invocationId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/u.test(fields.invocationId)))deny('ACCESS_DENIED');
+  if(fields.invocationId!==undefined&&(typeof fields.invocationId!=='string'||
+      !/^[A-Za-z0-9_-]{1,128}$/u.test(fields.invocationId)))deny('ACCESS_DENIED');
   const input=frozenData(fields.input),request=frozenData(fields.request);
   let authority;
   try {
