@@ -7,6 +7,7 @@ import hashlib
 import json
 import time
 import unittest
+from unittest.mock import patch
 import uuid
 
 from apps.proxy.product.owner_admission import ProductOwnerAdmissionReader, _hash
@@ -15,6 +16,7 @@ from apps.proxy.product.owner_channel import (OwnerPeerPolicy, OwnerTlsEvidence,
 from apps.proxy.product.binding import _binding
 from apps.proxy.product.test.test_bearer_eni_admission import source as issued_fixture
 from apps.proxy.qualification.state.admission import GrantAdmission
+from apps.proxy.qualification.state.pricing import StateDenied
 from apps.proxy.qualification.runtime.ingress import IngressAdmission, PeerLease
 from apps.proxy.qualification.runtime.lifetime import RequestLifetime, LifetimeLimits, PendingWork
 from apps.proxy.qualification.test.test_ingress import fixture as ingress_fixture, SHA, KEY
@@ -69,7 +71,7 @@ class Exchange:
             self.policy.owner_task_arn, self.policy.proxy_task_arn, self.policy.server_cert_sha256,
             self.policy.server_issuer_sha256, self.policy.client_cert_sha256,
             self.policy.client_subject, "TLSv1.3", "http/1.1",
-            "operation-A" if channel == "operation" else "capture-A")
+            f"{channel}-A")
         evidence = replace(evidence, **self.evidence_change)
         reply = OwnerReply(json.dumps(frame, ensure_ascii=False).encode(), evidence)
         if self.saved is None:
@@ -95,9 +97,9 @@ class ReservationExchange(Exchange):
         frame = json.loads(body)
         if frame[0] == "meri.proxy.admission-read/1":
             if self.operation_pending:
-                if channel != "capture":
-                    raise AssertionError("fresh capture admission used held operation connection")
-                self.read_during_pending = True
+                if channel == "operation":
+                    raise AssertionError("an admission read used the held operation connection")
+                self.read_during_pending = self.read_during_pending or channel == "capture"
             return await super().__call__(channel, path, body, timeout)
         self.calls.append((channel, path, frame, timeout))
         if path == OPEN:
@@ -186,7 +188,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotEqual(self.exchange.calls[0][2][1], self.exchange.calls[1][2][1])
         self.assertIsNone(self.exchange.calls[0][2][3])
         self.assertEqual(self.exchange.calls[1][2][3], _hash(self.exchange.source))
-        self.assertTrue(all(c[:2] == ("operation", OPERATION) for c in self.exchange.calls))
+        self.assertTrue(all(c[:2] == ("admission", OPERATION) for c in self.exchange.calls))
 
     async def test_owner_loop_sync_call_refuses_before_scheduling(self):
         with self.assertRaises(Exception):
@@ -199,7 +201,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             await self.asyncSetUp()
             if kind == "tls": self.exchange.evidence_change = {"tls_version": "TLSv1.2"}
             if kind == "owner": self.exchange.evidence_change = {"owner_task_arn": "foreign-owner"}
-            if kind == "capture": self.reader.state[4]["capture"] = "operation-A"
+            if kind == "capture": self.reader.state[4]["capture"] = "admission-A"
             with self.subTest(kind=kind), self.assertRaises(Exception):
                 await self.resolve()
             self.assertFalse(self.gate.available)
@@ -253,20 +255,68 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(Exception):
             await asyncio.to_thread(authority.check)
 
-    async def test_deadline_includes_lock_wait_and_timeout_is_sticky(self):
-        await self.reader.state[3]["operation"].acquire()
-        self.reader.max_exchange_ms = 20
+    async def test_carrier_wait_is_bounded_on_its_own_and_never_poisons(self):
+        # Before candidate 6 the wait counted against the exchange deadline and its expiry poisoned the process-wide gate.
+        lock = self.reader.state[3]["admission"]
+        await lock.acquire()
+        self.reader.max_carrier_wait_ms = 20
         try:
-            with self.assertRaises(Exception):
+            with self.assertRaisesRegex(StateDenied, "^OWNER_CARRIER_BUSY$"):
                 await self.resolve()
         finally:
-            self.reader.state[3]["operation"].release()
-        await asyncio.sleep(.02)
-        self.assertFalse(self.gate.available)
-        self.assertTrue(self.exchange.aborted)
+            lock.release()
+        self.assertTrue(self.gate.available)
+        self.assertFalse(self.exchange.aborted)
         self.assertEqual(self.exchange.calls, [])
-        with self.assertRaises(Exception):
-            await self.resolve()
+        await self.resolve()  # Nothing was retired: the next read proceeds.
+        self.assertTrue(self.gate.available)
+
+    async def test_exchange_clock_starts_once_the_carrier_is_held(self):
+        lock = self.reader.state[3]["admission"]
+        await lock.acquire()
+        self.reader.max_exchange_ms, self.exchange.delay = 60, .03
+        async def release():
+            await asyncio.sleep(.1)  # Longer than the whole 60 ms exchange budget.
+            lock.release()
+        releaser = asyncio.create_task(release())
+        result = await self.resolve()
+        await releaser
+        self.assertIs(type(result.authority), GrantAdmission)
+        self.assertTrue(self.gate.available)
+        self.assertFalse(self.exchange.aborted)
+
+    async def test_a_waited_read_without_room_for_its_exchange_is_refused_before_sending(self):
+        lock = self.reader.state[3]["admission"]
+        await lock.acquire()
+        self.reader.max_exchange_ms = 500
+        async def release():
+            await asyncio.sleep(.1)
+            lock.release()
+        releaser = asyncio.create_task(release())
+        with self.assertRaisesRegex(StateDenied, "^OWNER_CARRIER_BUSY$"):
+            await asyncio.to_thread(self.reader.resolve_for_issued_sync,
+                issued=self.issued, capability_sha256="a"*64, deadline_ms=milliseconds()+300)
+        await releaser
+        self.assertEqual(self.exchange.calls, [])
+        self.assertTrue(self.gate.available)
+        self.assertFalse(self.exchange.aborted)
+
+    async def test_read_id_window_never_runs_out_on_a_long_lived_proxy(self):
+        # The former set refused every read after 4096, and that refusal aborted and poisoned the proxy.
+        from apps.proxy.product import owner_admission
+        # Thousands of reads outlast a wall-clock step under WSL; reader and fake owner share one monotonic clock instead.
+        offset = time.time_ns() // 1000000 - time.monotonic_ns() // 1000000
+        clock = lambda: offset + time.monotonic_ns() // 1000000
+        self.reader.now_ms = clock
+        with patch(__name__ + ".milliseconds", clock):
+            authority = (await asyncio.to_thread(self.reader.resolve_for_issued_sync, issued=self.issued,
+                capability_sha256="a"*64, deadline_ms=clock()+600000)).authority
+            def many():
+                for _ in range(owner_admission.READ_ID_WINDOW + 8):
+                    authority.check()
+            await asyncio.to_thread(many)
+        self.assertTrue(self.gate.available)
+        self.assertEqual(len(self.reader._read_ids), owner_admission.READ_ID_WINDOW)
 
     async def test_two_thread_checks_serialize_and_use_distinct_read_ids(self):
         authority = (await self.resolve()).authority
@@ -335,7 +385,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result["state"],"UNKNOWN")
             self.assertTrue(exchange.read_during_pending)
             reads = [c for c in exchange.calls if c[2][0]=="meri.proxy.admission-read/1"]
-            self.assertEqual([c[0] for c in reads],["operation","operation","capture"])
+            self.assertEqual([c[0] for c in reads],["admission","admission","capture"])
             before = len(exchange.calls)
             late_ready.set(); await asyncio.gather(*copied)
             self.assertEqual(len(exchange.calls),before)
@@ -390,7 +440,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             results=await asyncio.wait_for(asyncio.gather(*tasks),1)
             self.assertEqual([item["state"] for item in results],["UNKNOWN","UNKNOWN"])
             self.assertEqual([item for item in exchange.trace if item[0]=="admission"],
-                [("admission","operation")]*3+[("admission","capture")]*2)
+                [("admission","admission")]*3+[("admission","capture")]*2)
             self.assertTrue(self.gate.available)
         finally:
             exchange.allow_first_open.set();continue_first.set()
@@ -398,6 +448,77 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
                 if not task.done():task.cancel()
             if tasks:await asyncio.gather(*tasks,return_exceptions=True)
             for life in lives.values():await life.close()
+
+    def reservation_fixture(self, deadline):
+        value, observation = reservation()
+        value.update(binding=dict(self.issued.execution_binding), deadlineMs=deadline)
+        observation.update(proxyCredential=KEY.decode())
+        observation["peer"].update(binding=dict(self.issued.execution_binding),
+            taskArn=self.issued.binding.worker_arn, grantId=self.issued.grant_id)
+        return value, observation
+
+    def held_reservation(self, exchange, value, observation, deadline, capture):
+        bridge = ProductOwnerBridge(policy=self.policy, exchange=exchange, capture_call=capture,
+            host_gate=self.gate, request_id=value["requestId"], binding=value["binding"],
+            deadline_ms=deadline, grant_id=self.issued.grant_id, capability_sha256=SHA)
+        return asyncio.create_task(bridge.reserve(value, observation))
+
+    async def test_watch_refresh_never_queues_behind_a_held_reservation(self):
+        deadline = milliseconds()+5000
+        value, observation = self.reservation_fixture(deadline)
+        exchange = ReservationExchange(self.policy, self.issued, value, observation)
+        reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=exchange,
+            host_gate=self.gate, owner_loop=asyncio.get_running_loop())
+        source = await asyncio.to_thread(reader.resolve_for_issued_sync,
+            issued=self.issued, capability_sha256=SHA, deadline_ms=deadline)
+        entered, release = asyncio.Event(), asyncio.Event()
+        async def capture(_request):
+            entered.set(); await release.wait()
+            return observation
+        reserve = self.held_reservation(exchange, value, observation, deadline, capture)
+        try:
+            await asyncio.wait_for(entered.wait(), 1)
+            self.assertTrue(exchange.operation_pending)
+            # The turn's own watch refresh while its reserve operation holds the operation carrier.
+            await asyncio.wait_for(asyncio.to_thread(source.authority.check), .5)
+            self.assertTrue(exchange.operation_pending)
+        finally:
+            release.set()
+        self.assertEqual((await asyncio.wait_for(reserve, 1))["state"], "UNKNOWN")
+        self.assertEqual([c[0] for c in exchange.calls if c[2][0] == "meri.proxy.admission-read/1"],
+                         ["admission", "admission"])
+        self.assertTrue(self.gate.available)
+
+    async def test_title_style_request_and_turn_at_tail_latency_never_poison(self):
+        # Scaled 1:10 from the live tail (adj-e B6/B13): exchange budget 15 s -> 1.5 s, carrier wait 10 s -> 1 s, one owner
+        # read 2.5 s -> .25 s, the turn's reserve operation 14 s -> 1.4 s. Before candidate 6 each read below queued behind
+        # the held reserve on the operation carrier with its 1.5 s clock already running; the first expiry poisoned the proxy.
+        deadline = milliseconds()+10000
+        value, observation = self.reservation_fixture(deadline)
+        exchange = ReservationExchange(self.policy, self.issued, value, observation)
+        reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=exchange, host_gate=self.gate,
+            owner_loop=asyncio.get_running_loop(), max_exchange_ms=1500, max_carrier_wait_ms=1000)
+        source = await asyncio.to_thread(reader.resolve_for_issued_sync,
+            issued=self.issued, capability_sha256=SHA, deadline_ms=deadline)
+        expected = source.authority._product_owner[1]
+        exchange.delay = .25
+        entered = asyncio.Event()
+        async def capture(_request):
+            entered.set(); await asyncio.sleep(1.4)
+            return observation
+        reserve = self.held_reservation(exchange, value, observation, deadline, capture)
+        await asyncio.wait_for(entered.wait(), 2)
+        # The title-style request's bootstrap read, opening refresh and native-auth read, and the turn's watch refresh.
+        reads = await asyncio.wait_for(asyncio.gather(
+            asyncio.to_thread(reader.resolve_for_issued_sync, issued=self.issued, capability_sha256=SHA, deadline_ms=deadline),
+            asyncio.to_thread(source.authority.check),
+            asyncio.to_thread(reader.read_current_conversation_sync, expected, deadline),
+            asyncio.to_thread(source.authority.check)), 5)
+        self.assertEqual(reads[2]["selectedClientId"], "11111111-1111-4111-8111-111111111111")
+        self.assertTrue(exchange.operation_pending, "every read finished while the reserve still held its carrier")
+        self.assertEqual((await asyncio.wait_for(reserve, 5))["state"], "UNKNOWN")
+        self.assertTrue(self.gate.available)
+        self.assertFalse(exchange.aborted)
 
     async def test_expired_queued_claim_never_polls_or_aborts_another_bridge(self):
         from apps.proxy.product.owner_channel import owner_exchange_state

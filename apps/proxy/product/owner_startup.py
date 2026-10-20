@@ -11,9 +11,10 @@ import threading
 import time
 import uuid
 
-from .owner_channel import (OwnerPeerPolicy, OwnerHostGate, OPERATION,
-                            owner_exchange_state, validate_owner_reply,
+from .owner_channel import (OwnerPeerPolicy, OwnerHostGate, OPERATION, OwnerCarrierBusy,
+                            acquire_owner_carrier, owner_exchange_state, validate_owner_reply,
                             make_product_owner_bridge)
+from .budgets import OWNER_CARRIER_WAIT_MS
 from .owner_admission import ProductOwnerAdmissionReader
 from .owner_https import ProductOwnerHttpsExchange
 from .bearer_eni_admission import IssuedTaskNetwork
@@ -60,20 +61,23 @@ class ProductOwnerStartup:
         self.state=owner_exchange_state(exchange,policy,host_gate)
         self._authorities={}
 
-    async def _placement(self, capability, read_id, started, cutoff):
-        step="lock"
+    async def _placement(self, capability, read_id, started, deadline):
+        step="carrier";cutoff=deadline;lock=self.state[3]["admission"]
         try:
             with diagnostics.phase("placement"):
-                async with asyncio.timeout(max(.001,(cutoff-self.now_ms())/1000)):
-                    async with self.state[3]["operation"]:
+                # Waiting sends nothing (OwnerCarrierBusy on expiry); the exchange clock starts with the carrier held.
+                await acquire_owner_carrier(lock,min(OWNER_CARRIER_WAIT_MS,deadline-self.now_ms())/1000)
+                try:
+                    cutoff=min(deadline,self.now_ms()+self.policy.max_exchange_ms)
+                    async with asyncio.timeout(max(.001,(cutoff-self.now_ms())/1000)):
                         if not self.gate.available or self.now_ms()>=cutoff:
                             _deny()
                         step="exchange"
                         raw=json.dumps(["meri.proxy.placement-read/1",read_id,capability,cutoff],
                             separators=(",",":")).encode("ascii")
-                        reply=await self.exchange("operation",OPERATION,raw,(cutoff-self.now_ms())/1000)
+                        reply=await self.exchange("admission",OPERATION,raw,(cutoff-self.now_ms())/1000)
                         step="reply"
-                        frame=validate_owner_reply(self.policy,reply,"operation",self.state[4])
+                        frame=validate_owner_reply(self.policy,reply,"admission",self.state[4])
                         at=self.now_ms()
                         step="frame"
                         if (type(frame) is not list or len(frame)!=6
@@ -86,7 +90,9 @@ class ProductOwnerStartup:
                         step="expiry"
                         if frame[5]>issued.expires_at_ms or not self.gate.available:
                             _deny()
-                        return issued,frame[5]
+                        return issued,frame[5],cutoff
+                finally:
+                    lock.release()
         except BaseException as error:
             diagnostics.refused("placement",step,error,deadline_ms=cutoff,now_ms=self.now_ms)
             raise
@@ -96,20 +102,26 @@ class ProductOwnerStartup:
                 or type(capability) is not str or len(capability)!=64
                 or any(c not in "0123456789abcdef" for c in capability)):
             _deny()
-        started=self.now_ms();cutoff=min(self.exchange.expires_at_ms,started+self.policy.max_exchange_ms)
-        coroutine=self._placement(capability,uuid.uuid4().hex,started,cutoff)
+        started=self.now_ms();deadline=self.exchange.expires_at_ms
+        bound=min(deadline,started+OWNER_CARRIER_WAIT_MS+self.policy.max_exchange_ms)
+        coroutine=self._placement(capability,uuid.uuid4().hex,started,deadline)
         future=None;step="placement"
         try:
             diagnostics.stage("placement-read")
             future=asyncio.run_coroutine_threadsafe(coroutine,self.loop)
-            issued,effective=future.result(timeout=max(.001,(cutoff-self.now_ms())/1000))
+            issued,effective,cutoff=future.result(timeout=max(.001,(bound-self.now_ms())/1000+1))
             step="admission";diagnostics.stage("admission-read")
             source=self.reader.resolve_for_issued_sync(issued=issued,capability_sha256=capability,
                 deadline_ms=min(cutoff,effective))
             self._authorities[id(source.authority)]=source.authority
             return source
+        except OwnerCarrierBusy as error:
+            # A carrier stayed held: nothing of this resolution was sent on it. Refuse the request, keep the gate.
+            diagnostics.refused("owner",step,error,deadline_ms=bound,now_ms=self.now_ms)
+            if future is None:coroutine.close()
+            raise
         except BaseException as error:
-            diagnostics.refused("owner",step,error,deadline_ms=cutoff,now_ms=self.now_ms)
+            diagnostics.refused("owner",step,error,deadline_ms=bound,now_ms=self.now_ms)
             if future is None:coroutine.close()
             else:future.cancel()
             self.gate.poison();self.exchange.abort();_deny()

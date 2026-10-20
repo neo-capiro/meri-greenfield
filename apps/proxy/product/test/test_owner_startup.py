@@ -73,6 +73,20 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
                                   r'( phase=placement)? at=placement-read code=DEADLINE\n$')
         self.assertFalse(gate.available)
 
+    async def test_a_held_admission_carrier_refuses_the_bootstrap_without_poisoning(self):
+        _issued,_policy,transport,gate,startup=self._startup();sent=[]
+        lock=startup.state[3]['admission']
+        await lock.acquire()
+        try:
+            with (patch('apps.proxy.product.owner_startup.OWNER_CARRIER_WAIT_MS',50),
+                  patch.object(transport,'_send',side_effect=lambda *call:sent.append(call))):
+                with self.assertRaisesRegex(Exception,'^OWNER_CARRIER_BUSY$'):
+                    await asyncio.to_thread(startup.resolve_bearer_sha256,'a'*64)
+        finally:
+            lock.release()
+        self.assertEqual(sent,[]);self.assertTrue(gate.available);self.assertTrue(transport.available)
+        startup.close()
+
     async def test_real_startup_joins_placement_and_fresh_admission_without_native_import(self):
         issued,policy,transport,gate,startup=self._startup()
         synthetic=Exchange(policy,issued)
@@ -83,9 +97,9 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
             [issued.execution_binding[n] for n in names],issued.started_by,issued.group,
             issued.created_at_ms,issued.expires_at_ms,issued.vpc_id,issued.subnet_id,
             list(issued.security_group_ids),[list(row) for row in issued.tags]]
-        calls=[]
+        calls,carriers=[],set()
         def wire_only(channel,path,body,cutoff):
-            frame=json.loads(body);calls.append(frame[0])
+            frame=json.loads(body);calls.append(frame[0]);carriers.add(channel)
             if frame[0]=='meri.proxy.placement-read/1':
                 return synthetic.reply(['meri.proxy.placement/1',frame[1],frame[2],placement,
                     time.time_ns()//1000000,frame[3]],channel)
@@ -103,6 +117,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(receipt['binding'],issued.execution_binding)
                 self.assertEqual(receipt['selectedClientId'],'11111111-1111-4111-8111-111111111111')
                 self.assertEqual(calls,['meri.proxy.placement-read/1']+['meri.proxy.admission-read/1']*3)
+                self.assertEqual(carriers,{'admission'})
                 with self.assertRaises(Exception):startup.resolve_bearer_sha256('a'*64)
         finally:
             startup.close()

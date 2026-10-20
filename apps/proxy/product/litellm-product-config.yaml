@@ -12,6 +12,7 @@
   "router_settings": {
     "num_retries": 0,
     "allowed_fails": 0,
+    "disable_cooldowns": true,
     "fallbacks": [],
     "context_window_fallbacks": []
   },

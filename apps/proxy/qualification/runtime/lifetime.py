@@ -26,9 +26,9 @@ class LifetimeLimits:
     max_events: int = 4096
 
     def __post_init__(self):
-        # check and cleanup may reach the product's owner exchange budget (product/budgets.py): an in-request check is one
-        # owner exchange, and close waits for one still running before it quarantines.
-        for name, maximum in (("poll_seconds", 5), ("check_seconds", 15), ("cleanup_seconds", 15)):
+        # check and cleanup may reach the product's owner carrier wait plus exchange budget (product/budgets.py): an
+        # in-request check is one owner exchange that may first wait for its carrier, and close waits for one still running.
+        for name, maximum in (("poll_seconds", 5), ("check_seconds", 30), ("cleanup_seconds", 30)):
             value = getattr(self, name)
             if type(value) not in (int, float) or not math.isfinite(value) or not 0 < value <= maximum:
                 raise StateDenied("INVALID_LIFETIME_LIMITS")

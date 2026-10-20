@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from apps.proxy.product.owner_https import (ProductOwnerHttpsExchange,OwnerClientTlsMaterial,
     validate_owner_http_reply,load_owner_client_tls_material)
-from apps.proxy.product.owner_channel import OwnerPeerPolicy,OPERATION
+from apps.proxy.product.owner_channel import OwnerPeerPolicy,OPEN,OPERATION,POLL,REPLY
 from apps.proxy.product import refusal_diagnostics as diagnostics
 from apps.proxy.product.service_pair_discovery import compile_owner_peer
 from apps.proxy.product.test.test_service_pair_discovery import fixture, peer_template
@@ -139,6 +139,15 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
         item=exchange()
         with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
             await item('capture',OPERATION,b'["meri.proxy.operation/1"]',.1)
+        item.abort()
+
+    async def test_admission_connection_carries_only_owner_reads(self):
+        item=exchange()
+        for path,body in ((OPEN,b'["meri.proxy.session-open/1"]'),(POLL,b'["meri.proxy.capture-poll/1"]'),
+                          (REPLY,b'["meri.proxy.capture-reply/1"]'),(OPERATION,b'["meri.proxy.operation/1","s",[]]'),
+                          (OPERATION,b'["meri.proxy.admission-read/1","r","a"]'),(OPERATION,b'["meri.proxy.placement-read/1","r"]')):
+            with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
+                await item('admission',path,body,.1)
         item.abort()
 
     def test_unsupported_verified_chain_api_refuses_before_socket_creation(self):
