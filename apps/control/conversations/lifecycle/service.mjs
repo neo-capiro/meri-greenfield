@@ -123,9 +123,12 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
   if(typeof service[loadWithLifecycle]==='function')return service[loadWithLifecycle](args,(current,check)=>journal.execution(current,check));
   // Injected legacy services keep the original independently gated path.
   const saved=await service.loadForExecution(args);return operation(args.credential,args.signal,async(current,life,fresh)=>{if(!same(current.run.binding,args.binding))fail('STALE_WRITER');const extra=await life.run(()=>journal.execution({binding:args.binding,scopes:current.run.scopes,selectedClientId:current.selectedClientId},life.check));await fresh();if(extra&&saved.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');return extra?{...saved,...extra}:{...saved};});}
- /** Stop fences durably, then attempts Temporal cancellation and native original retirement independently. Neither a terminal run
-  * nor Temporal NOT_FOUND proves physical stop or grant revocation. Every repeat asks both owners again, including after restart;
-  * only the native adapter's validated reconciliation receipt permits success. A lost acknowledgement remains UNKNOWN. */
+ /** Stop answers the durable stop fence: once the cancellation is committed (or the run is already terminal) and the caller is still
+  * authorized, it returns the run's terminal state. A lost fence acknowledgement that the readback cannot prove remains UNKNOWN.
+  * Every Stop, including a repeat after restart, starts Temporal cancellation and native original retirement independently under
+  * their own bounded lifetime. The answer does not wait for them: an ECS stop outlasts any request (stopTimeout plus deprovisioning).
+  * Their outcome is owned durably: the fence refuses every later run output, and only the allocation journal's RETIRED with a proven
+  * physical stop and revoked grants lets a next turn start (next-run.mjs), retried by the Temporal reconcile. */
  async function cancel({credential,signal}){return operation(credential,signal,async(saved,life,fresh)=>{const terminal=s=>['completed','failed','cancelled'].includes(s),unknown=()=>Object.assign(new Error('LIFECYCLE_STOP_UNKNOWN'),{code:'LIFECYCLE_STOP_UNKNOWN',outcome:'UNKNOWN'});let state=saved.run.state;
   if(!terminal(state)){
    await fresh();
@@ -142,13 +145,13 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
     if(!terminal(current.state)||current.cancelCommitted&&current.state!=='cancelled')throw unknown();state=current.state;
    }finally{fence.close();}
   }
-  // The authenticated terminal fence authorizes stop-only cleanup even if this request disconnects during either effect.
-  const cleanup=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,errorFactory:unknown});let results;
-  try{results=await Promise.allSettled([
+  // The authenticated terminal fence authorizes stop-only cleanup even if this request disconnects during either effect. It runs
+  // under its own lifetime and settles after the answer; its owners above record the outcome.
+  const cleanup=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,errorFactory:unknown});
+  void Promise.allSettled([
    cleanup.run(signal=>dispatcher.cancel({binding:saved.run.binding,signal})),
-   cleanup.run(async()=>{const p=bounded(await reconcileOriginal({binding:saved.run.binding}));own(p,['state']);if(p.state!=='reconciled')fail('LIFECYCLE_STOP_UNKNOWN');}),
-  ]);}finally{cleanup.close();}
-  if(results.some(result=>result.status==='rejected'))throw unknown();
+   cleanup.run(()=>reconcileOriginal({binding:saved.run.binding})),
+  ]).finally(()=>cleanup.close());
   try{await fresh();}catch{throw unknown();}return {state};},{cleanup:true});}
  return Object.freeze({...service,cancel,control,inspectCheckpoint,nextControls,claimControl,ackControl,recordCheckpoint,loadForExecution,[taskControlPage]:controlsForTask});
 }

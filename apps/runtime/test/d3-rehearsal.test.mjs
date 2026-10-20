@@ -163,6 +163,8 @@ for(const profile of Object.keys(CORE_PROFILES))
   assert.equal(r.stream.terminal,'completed',JSON.stringify(r));
  });
 for(const profile of Object.keys(CORE_PROFILES))for(const stopMs of [1000,20000])
- test(`D3 double submit and Stop mid-stream under the ${profile} Core profile, native stop ${stopMs} ms (reported)`,{timeout:600000},async t=>{
-  t.diagnostic(JSON.stringify(await rehearseDuplicateAndStop({profile,stopMs})));
+ test(`D3 double submit and Stop mid-stream under the ${profile} Core profile, native stop ${stopMs} ms`,{timeout:600000},async t=>{
+  const r=await rehearseDuplicateAndStop({profile,stopMs});t.diagnostic(JSON.stringify(r));
+  // Stop answers the committed fence inside its request, however long the native stop takes (D5); a repeat answers the same.
+  assert.equal(r.stop.status,200,JSON.stringify(r.stop));assert.equal(r.stopAgain.status,200,JSON.stringify(r.stopAgain));assert.equal(r.statuses.at(-1),'cancelled');
  });
