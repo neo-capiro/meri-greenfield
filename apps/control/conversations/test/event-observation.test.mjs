@@ -7,11 +7,11 @@ import {createConversationEventSource} from '../events.mjs';
 import {binding,scopes,versions,id} from './store-fixture.mjs';
 
 function fixture(){
- const state={visible:0,runState:'running',rechecks:0,reads:0,revoked:false};
+ const state={visible:0,runState:'running',rechecks:0,reads:0,revoked:false,passMs:0};
  const events=Array.from({length:120},(_,i)=>({contractVersion:'0.1.0',eventId:id(100+i),binding,sequence:i+1,createdAt:new Date().toISOString(),scopes,type:'message.delta',data:{messageId:id(9),text:'x'}}));
  const receipt=()=>({checkedAtMs:Date.now(),expiresAtMs:Date.now()+60000});
  const sessions={
-  async authenticateSession(){state.rechecks++;if(state.revoked)throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});
+  async authenticateSession(){state.rechecks++;if(state.passMs)await sleep(state.passMs);if(state.revoked)throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});
    return {principal:{sessionId:id(8),tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},...receipt()};},
   async readCurrentState({authentication}){return {authenticationSha256:canonicalSha256(authentication),binding,scopes,selectedClientId:id(5),...receipt()};},
  };
@@ -44,7 +44,8 @@ test('a page read after revocation is never released, however long the idle cade
 });
 
 /** The same window through the real action-session owner, counting its Core authority ports (identity, context, membership).
- * One fresh recheck costs eight Core calls; the window check plus one release check per page is the whole cost. */
+ * One fresh recheck is one fused observation, four Core calls (it was a pair, eight); the window check plus one release check per
+ * page is the whole cost. */
 async function coreFixture(total){
  const {createActionSessionOwner}=await import('../../action-host/session/owner.mjs');
  const calls={identity:0,context:0,membership:0},expiresAtMs=Date.now()+60000,principal=()=>({tenantId:binding.tenantId,actorId:binding.actorId,role:'standard_user',permissions:[],clientIds:[id(5)],membershipRevision:'membership-1'});
@@ -62,15 +63,15 @@ async function coreFixture(total){
  return {state,calls,core:()=>calls.identity+calls.context+calls.membership,close:()=>owner.close(),reader:()=>createConversationEventSource({service,credential:issued.credential,pollMs:10}).getReader()};
 }
 const drain=async reader=>{const out=[];for(;;){const next=await reader.read();if(next.done)return out;out.push(next.value.sequence);}};
-test('Core calls per delivered event: eight per page after the window check, not sixteen per event',async t=>{
+test('Core calls per delivered event: four per page after the window check (one fused observation per recheck)',async t=>{
  const one=await coreFixture(10);t.after(one.close);one.state.visible=1;const r1=one.reader();
  const got=[];while(got.length<10){const next=await r1.read();got.push(next.value.sequence);if(got.length<10)one.state.visible++;}
  assert.equal((await r1.read()).done,true);
- assert.equal(one.core(),8+10*8,'one event per page: the window check, then one release recheck per event (was 16 per event)');
+ assert.equal(one.core(),4+10*4,'one event per page: the window check, then one release recheck per event (was 8 + 10 × 8)');
  const burst=await coreFixture(120);t.after(burst.close);burst.state.visible=120;
  assert.equal((await drain(burst.reader())).length,120);
- assert.equal(burst.core(),8+2*8,'a 120-event backlog: the window check and one recheck for each 100- and 20-event page');
- assert.deepEqual(burst.calls,{identity:6,context:6,membership:12});
+ assert.equal(burst.core(),4+2*4,'a 120-event backlog: the window check and one recheck for each 100- and 20-event page');
+ assert.deepEqual(burst.calls,{identity:3,context:3,membership:6});
 });
 test('the subscription cap closes an idle window cleanly, and a reconnect resumes exactly after the accepted cursor',async()=>{
  const f=fixture();f.state.visible=1;const started=Date.now(),reader=f.open({maxSubscriptionMs:150});
@@ -80,6 +81,17 @@ test('the subscription cap closes an idle window cleanly, and a reconnect resume
  }finally{reader.releaseLock();}
  f.state.visible=3;const resumed=createConversationEventSource({service:f.service,credential:'action-session',after:1,pollMs:10}).getReader();
  try{assert.deepEqual(await take(resumed,2),[2,3]);}finally{resumed.releaseLock();}
+});
+test('a recheck that could not finish before the window ends is not started: the window closes cleanly instead',async()=>{
+ // Each recheck takes 200 ms; the window opens (0-200 ms) and releases the first page (200-400 ms). The idle recheck falls due
+ // at about 850 ms, where it would still be running at the 1000 ms cap and end the window in SUBSCRIPTION_UNAVAILABLE.
+ const f=fixture();f.state.visible=1;f.state.passMs=200;const reader=f.open({maxSubscriptionMs:1000,idleRecheckMs:450});
+ try{assert.deepEqual(await take(reader,1),[1]);const rechecks=f.state.rechecks;
+  assert.equal((await reader.read()).done,true,'a clean close, not SUBSCRIPTION_UNAVAILABLE');
+  assert.equal(f.state.rechecks,rechecks,'the recheck that could not fit was not started');
+ }finally{reader.releaseLock();}
+ f.state.passMs=0;f.state.visible=2;const resumed=createConversationEventSource({service:f.service,credential:'action-session',after:1,pollMs:10}).getReader();
+ try{assert.deepEqual(await take(resumed,1),[2],'the reconnect resumes exactly after the accepted cursor');}finally{resumed.releaseLock();}
 });
 test('idle windows end with a clean close at the cap every time, not with the lifetime deadline',async()=>{
  const f=fixture();f.state.visible=1;let clean=0;const windows=20;

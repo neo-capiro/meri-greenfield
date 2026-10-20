@@ -4,18 +4,18 @@
   "sources": [
     {
       "path": "../../apps/control/conversations/events.mjs",
-      "sha256": "77a24116d21519347d6c08f3edd4fdbca8596258291f9b2c0386523c1f83b3a4",
-      "bytes": 2000
+      "sha256": "d6f6762216127113563e0ea3398eaac526b0c7e173f1ce245e6f272feea894b8",
+      "bytes": 2314
     },
     {
       "path": "../../apps/control/conversations/http.mjs",
-      "sha256": "2e65b13ceb17ae74afc96490b639b1afc0a5cdce37ffd76ddc2c1eb28fb28b79",
-      "bytes": 5425
+      "sha256": "4c0195ab7a8e36fcba30c9d4bc0da54f4d5c0c4b3cd8824349a4d8e904125f07",
+      "bytes": 5875
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "2a2ef52dc8a0674935c6621289d1b101fd428d495978b23ba2c05764453ef681",
-      "bytes": 20793
+      "sha256": "121954d1a2b74bfd13eec8db5bd5df8ad34ca30542b420366a63e212a683486f",
+      "bytes": 24057
     },
     {
       "path": "conversation-application/protocol.mjs",
