@@ -1,5 +1,6 @@
 /** Authenticated request/history control; policy remains in existing session owners. */
 import {randomUUID} from 'node:crypto';
+import {setTimeout as delay} from 'node:timers/promises';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {resolveWindow} from '../../../packages/window-resolution/index.mjs';
 import {selectSkill} from '../../../packages/skills/index.mjs';
@@ -16,6 +17,8 @@ import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary
 export const cleanupRead=Symbol('conversation.cleanupRead');
 /** Trusted lifecycle composition only. Keeps its read inside the basic load's authorization lifetime. */
 export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
+/** Events released per observation page: the history route's own page maximum. */
+const OBSERVE_PAGE_EVENTS=100;
 export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets}){
  const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
@@ -33,7 +36,9 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  const retentionGate=retention===undefined?undefined:own(retention,['assertServable'],['isSuppressed','withRelease']);
  if(retentionGate!==undefined&&(typeof retentionGate.assertServable!=='function'||Object.hasOwn(retentionGate,'withRelease')&&typeof retentionGate.withRelease!=='function'))fail('CONTROL_CONFIGURATION');
  validateShape('RuntimeVersions',versions);versions=bounded(versions);fiscalCalendars=bounded(fiscalCalendars);if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['accept','append','read'].some(k=>typeof store?.[k]!=='function')||['start','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONTROL_CONFIGURATION');
- async function operation(credential,signal,body,{cleanup=false,load=false}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
+ // untilMs: an observation window whose body releases nothing without its own post-read fresh(); it ends at untilMs instead of
+ // maxRequestMs and skips the trailing recheck, which would only repeat the last release's.
+ async function operation(credential,signal,body,{cleanup=false,load=false,untilMs}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
   async function fresh(){const started=now();let authentication,current;
    if(load&&readCurrent)({authentication,current}=bounded(await life.run(signal=>readCurrent({credential,signal,deadlineMs:started+maxRequestMs}))));
    else{authentication=bounded(await life.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs})));current=bounded(await life.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs})));}
@@ -44,7 +49,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    if(retentionGate&&!cleanup){await life.run(()=>retentionGate.assertServable({tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId}));life.check();}
    return pinned;
   }
-  try{const context=await fresh();const result=await body(context,life,fresh,()=>authorityExpiresAtMs);await fresh();life.check();return result;}finally{life.close();}
+  try{const context=await fresh();const result=await body(context,life,fresh,()=>authorityExpiresAtMs);if(untilMs===undefined)await fresh();life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
  function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);return i;}
@@ -91,9 +96,25 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    return release(saved);});
  }
  const submit=input=>acceptInput(input,true),admitInput=input=>acceptInput(input,false);
- async function history({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{
-  // An admitted conversation has no run row until its first input is accepted: that is "no saved turns yet" (404), not corruption.
-  const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
+ // One saved page under the pinned context. An admitted conversation has no run row until its first input is accepted: that is
+ // "no saved turns yet" (404), not corruption.
+ async function readPage(c,life,after,limit){const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;}
+ async function history({credential,after=0,limit=100,signal}){return operation(credential,signal,(c,life)=>readPage(c,life,after,limit));}
+ /** Event-stream window until untilMs. Polls read only the store. A page of new events is passed to deliver only after a complete
+  * fresh recheck that started after the page was read, as history releases; an idle window also rechecks once idleRecheckMs has
+  * passed since the last one, so revocation or suppression ends it. Latency bound: no event is released after a refusal; an idle
+  * window notices a refusal within idleRecheckMs plus one poll and one recheck. Returns once the run is terminal and fully
+  * delivered, or at untilMs. */
+ async function observe({credential,after=0,untilMs,pollMs,idleRecheckMs,signal,deliver}){
+  if(typeof deliver!=='function'||![after,untilMs,pollMs,idleRecheckMs].every(Number.isSafeInteger)||after<0||pollMs<1||idleRecheckMs<1)fail('SUBSCRIPTION_CONFIGURATION');
+  return operation(credential,signal,async(c,life,fresh)=>{let cursor=after,checkedAt=now();
+   while(now()<untilMs){const page=await readPage(c,life,cursor,OBSERVE_PAGE_EVENTS);
+    if(page.events.length){await fresh();checkedAt=now();deliver(page.events);cursor=page.events.at(-1).sequence;}
+    if(terminal(page.run.state)&&(!page.events.length||cursor===page.lastSequence))return;
+    if(page.events.length)continue;
+    if(now()-checkedAt>=idleRecheckMs){await fresh();checkedAt=now();}
+    await life.run(signal=>delay(Math.min(pollMs,Math.max(1,untilMs-now())),undefined,{signal}));
+   }},{untilMs});}
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
  async function loadForExecution({credential,binding,signal},readLifecycle){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');
@@ -121,7 +142,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
  async function historyForCleanup({credential,after=0,limit=100,signal}){return operation(credential,signal,async(c,life)=>{const result=await life.run(()=>store.read(c.binding,{after,limit},life.check));if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;},{cleanup:true});}
- return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput,[cleanupRead]:historyForCleanup},loadWithLifecycle,{value:loadForExecution}));
+ return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput,[cleanupRead]:historyForCleanup},loadWithLifecycle,{value:loadForExecution}));
 }
 function failError(code){return Object.assign(new Error(code),{code});}
 /** Closed run budgets: positive integer calls and per-result bytes, and an optional run aggregate no smaller than one result. */
