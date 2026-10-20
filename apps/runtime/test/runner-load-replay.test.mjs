@@ -15,7 +15,7 @@ function compose(answers){
  let clock=1_000_000;const loads=[];let claims=0;
  const stages=runnerStartupBudget({requestMs:25_000,shutdownMs:10_000,originalExpiresAtMs:clock+900_000}).stages;
  const native=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic',
-  now:()=>clock,maxRequestMs:3000,loadMaxRequestMs:stages.load.attemptMs??stages.load.maxMs,
+  now:()=>clock,maxRequestMs:3000,loadMaxRequestMs:stages.load.attemptMs,
   fetch:async url=>{assert.equal(new URL(url).pathname,'/v1/runner/load');const [elapsedMs,answer]=answers[loads.length];loads.push(elapsedMs);clock+=elapsedMs;
    return answer==='saved'?Response.json(saved):Response.json({error:{code:'WORKER_AUTHORITY_UNAVAILABLE'}},{status:503});}});
  const runOwner={load:({signal})=>native.call('runner/load',{binding},{signal,deadlineMs:stages.load.expiresAtMs}),
