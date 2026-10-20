@@ -57,6 +57,7 @@ export async function ensureSdkConfigurationDirectories(directories,options={}){
  await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
  return directories;
 }
+const lifecycleOperations=new Set(['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint']);
 function startupBudgetFor(configuration){
  if(configuration.remoteTask===undefined)return null;
  const original=remoteOriginal(configuration.remoteTask.original);
@@ -71,7 +72,9 @@ export function assembleConversationRunner({configuration,native,query,credentia
   else if(operation==='runner/runtime')stage=stages?.runtime;
   else if(operation==='runner/publish'&&startup){const state=input.event?.type==='run.status'?input.event.data?.state:null;
    stage=stages[state]??{maxMs:stages.session.maxMs,expiresAtMs:state==='failed'||state==='cancelled'?startup.originalExpiresAtMs-3*Math.max(configuration.limits.shutdownMs,RUNNER_STARTUP_MIN_SHUTDOWN_MS)-RUNNER_STARTUP_CLEANUP_MS-RUNNER_STARTUP_MARGIN_MS:stages.session.expiresAtMs+stages.session.maxMs};}
-  else if(operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete')stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:stages.session.expiresAtMs+stages.session.maxMs}:undefined;
+  // Lifecycle controls and checkpoints run during execution. Control re-verifies task authority three times per call
+  // (worker-http.mjs), so they share the session allowance up to the execution cutoff instead of the 3 s default.
+  else if(operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'||lifecycleOperations.has(operation))stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:stages.session.expiresAtMs+stages.session.maxMs}:undefined;
   return native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});};
  if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw fault('RUNNER_SESSION_CONFIGURATION');
  const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:configuration.limits?.shutdownMs??1000});

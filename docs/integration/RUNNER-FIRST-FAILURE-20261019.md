@@ -110,6 +110,16 @@ Attempt 2 (20 October, 08:26Z) printed `code=ERROR class=ERROR`, the line the li
 `LIFECYCLE_EXECUTION_UNKNOWN` was unlisted, and its original failure was dropped. A failed control poll now prints
 `code=LIFECYCLE_EXECUTION_UNKNOWN … cause=<the poll's failure> msg=a6073a611574 site=activity-lifecycle.mjs:…`.
 
+The failure itself was the first lifecycle control poll after `system/init`:
+- `runner/next-controls` crosses control's `worker-http.mjs`, which verifies task authority three times and issues and
+  reads an action session for every call. Live, verifies took 0.8–1.35 s each.
+- The native client gave that call its 3 s default, so the poll timed out (`DEADLINE`), and the pump failed the run about
+  3.0 s after the session started.
+- The four lifecycle control calls (`next-controls`, `claim-control`, `ack-control`, `record-checkpoint`) now share the
+  session allowance up to the execution cutoff, as checkpoint capture already did.
+- `apps/runtime/test/lifecycle.test.mjs` reproduces the failure through the real native client and proves that the product
+  budget completes the same slow poll.
+
 `apps/runtime/native-authority/test/sdk-initialization-milestones.test.mjs` signals the real CLI after its initialize answer
 crosses the remote facade:
 
