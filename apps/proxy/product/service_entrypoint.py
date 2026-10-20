@@ -10,6 +10,8 @@ import inspect
 
 from ..qualification.state.pricing import StateDenied
 from .bearer_eni_admission import FreshEcsEniReader
+from .budgets import BOOTSTRAP_SECONDS
+from . import refusal_diagnostics as diagnostics
 from .socket_capture import DirectTlsSocketCapture
 
 
@@ -88,6 +90,7 @@ class ProductProxyService:
         if scope.get("type") != "http":
             _deny()
         if not self.ready:
+            diagnostics.refused("service", "not-ready")
             await _refuse(send)
             return
         await self.host_app(scope, receive, send)
@@ -96,7 +99,7 @@ class ProductProxyService:
 def create_product_proxy_service(*, enabled=False, direct_tls_capture=None,
                                  resolve_bearer_sha256=None, ecs_client=None,
                                  ec2_client=None, resolve_session=None,
-                                 bootstrap_seconds=5.0):
+                                 bootstrap_seconds=BOOTSTRAP_SECONDS):
     """Wire existing ingress, current ECS observer and native LiteLLM route.
 
     Enabled startup requires separately reviewed, bounded control-owned

@@ -25,12 +25,12 @@ const poolAuthorities=new WeakMap();
  * the actual native session and current tenant/member/client/conversation.
  * readMaterial is a trusted test boundary; production always uses readSecret. */
 export function createProductOwnerNativeCurrentness(configuration,{readMaterial=readSecret}={}){
- const c=own(configuration,['configuration','pool','credentialFileSha256','now','limits','fetchImpl'],['enabled']);
+ const c=own(configuration,['configuration','pool','credentialFileSha256','now','limits','fetchImpl'],['enabled','report']);
  const enabled=c.enabled??false,startup=validateConfiguration(data(c.configuration),'control'),candidate=startup.nativeCandidate;
  const limits=data(own(c.limits,['maxRequestMs','maxFactBytes']));
  if(typeof enabled!=='boolean'||!candidate||candidate.multiRun?.dynamicInitialRuns!==true||
     typeof c.now!=='function'||typeof c.fetchImpl!=='function'||typeof readMaterial!=='function'||
-    typeof c.pool?.connect!=='function'||typeof c.credentialFileSha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.credentialFileSha256)||
+    typeof c.pool?.connect!=='function'||c.report!==undefined&&typeof c.report!=='function'||typeof c.credentialFileSha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.credentialFileSha256)||
     !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>3000||
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)fail();
  const original=candidate.runtime.binding,selectedClientId=candidate.identity.commandContext.clientResolution.clientId,
@@ -43,13 +43,15 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
  function scoped(binding){validateShape('RunBinding',binding);if(binding.tenantId!==original.tenantId||binding.actorId!==original.actorId)fail();}
  function make(binding){
   const currentOwner={async currentRun(request,{signal}={}){
+   // The step reached is reported on refusal (owner-diagnostics.mjs); the refusal itself is unchanged.
+   let step='input';try{
    scoped(request);if(closed||authorityState.quarantined||!same(request,binding))fail();const started=c.now(),check=()=>{signal?.throwIfAborted();if(closed||authorityState.quarantined)fail();};
-   check();const before=await store.readOptional(binding,{limit:1},check);check();
+   check();step='run';const before=await store.readOptional(binding,{limit:1},check);check();
    if(!before||!active(before.run)||!same(before.run.binding,binding)||!same(before.run.versions,startup.versions)||
       before.run.policyRevision!==candidate.qualification.policyRevision)fail();
    const expected=[{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision:before.run.policyRevision}];
    if(!same(before.run.scopes,expected))fail();
-   const allocation=await store.allocations.read({binding,allocationKey:hash(binding)},check);check();
+   step='allocation';const allocation=await store.allocations.read({binding,allocationKey:hash(binding)},check);check();
    const record=allocation?.record;
    if(!record||record.state!=='ADMITTED'||!same(record.original.binding,binding)||!same(allocation.run,before.run)||
       record.qualification.policyRevision!==candidate.qualification.policyRevision||!same(record.original.versions,startup.versions)||
@@ -58,24 +60,25 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
    let originalBinding=original;
    if(binding.conversationId===original.conversationId){if(binding.writerFence===1&&!same(binding,original))fail();}
    else{
-    const admission=await initialBindings.readConversation({principal:{tenantId:binding.tenantId,actorId:binding.actorId},
+    step='initial-binding';const admission=await initialBindings.readConversation({principal:{tenantId:binding.tenantId,actorId:binding.actorId},
      conversationId:binding.conversationId,selectedClientId},check);check();
     if(!admission||admission.state!=='ADMITTED'||admission.createdAtMs>c.now()||admission.configurationSha256!==configurationSha256||
        admission.policyRevision!==candidate.qualification.policyRevision||!same(admission.versions,startup.versions)||
        admission.binding.writerFence!==1||binding.writerFence===1&&(!same(admission.binding,binding)||admission.expiresAtMs!==record.original.expiresAtMs))fail();
     originalBinding=admission.binding;
    }
-   if(binding.writerFence>1){const first=await store.readOptional(originalBinding,{limit:1},check);check();
+   if(binding.writerFence>1){step='first-run';const first=await store.readOptional(originalBinding,{limit:1},check);check();
     if(!first||!same(first.run.binding,originalBinding)||!same(first.run.scopes,expected)||
        first.run.policyRevision!==candidate.qualification.policyRevision||!same(first.run.versions,startup.versions))fail();
    }
-   const current=await store.nextRuns.current(binding,check);check();
+   step='next-run';const current=await store.nextRuns.current(binding,check);check();
    if(current.reserved!==false||!same(current.binding,binding)||current.policyRevision!==before.run.policyRevision||!same(current.scopes,expected))fail();
-   const after=await store.readOptional(binding,{limit:1},check);check();
+   step='run-after';const after=await store.readOptional(binding,{limit:1},check);check();
    if(!after||!active(after.run)||!same(after.run.binding,binding)||!same(after.run.scopes,expected)||
       after.run.policyRevision!==before.run.policyRevision||!same(after.run.versions,startup.versions))fail();
    const at=c.now();if(!Number.isSafeInteger(at)||at<started)fail();
    return JSON.stringify({binding,policyRevision:after.run.policyRevision,checkedAtMs:at,deadlineMs:Math.min(at+limits.maxRequestMs,record.original.expiresAtMs)});
+   }catch(error){try{c.report?.('currentness',step,error);}catch{}throw error;}
   }};
   const delivery={async read(value){
    const v=own(value,['binding','selectedClientId','deadlineMs'],['signal']);nativeSignal(v.signal);

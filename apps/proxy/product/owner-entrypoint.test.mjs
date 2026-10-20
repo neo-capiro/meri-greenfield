@@ -117,7 +117,7 @@ test('verify-full-only DSN refuses duplicate and alternate parser controls befor
 
 test('actual assembly mounts genuine canonical owners against one pool and freshly joins native Core context',async()=>{
  const f=fixture(),runtime=await startProductOwner(f.runtime,f.dependencies),ports=f.captured();
- assert.equal(runtime.available,true);assert.equal(f.calls.length,0);assert.equal(f.fetches.length,0);assert.equal(f.awsCalls.length,10);assert.equal(ports.ownerPorts.pool,f.pool);
+ assert.equal(runtime.available,true);assert.equal(f.calls.length,0);assert.equal(f.fetches.length,0);assert.equal(f.awsCalls.length,10);assert.notEqual(ports.ownerPorts.pool,f.pool);assert.ok(Object.isFrozen(ports.ownerPorts.pool),'owners share the diagnostic pool over the one created pool (its end is the pool.end below)');
  assert.equal(ports.clientPolicy.ownerTaskArn,f.pair.id('owner'));assert.equal(ports.clientPolicy.proxyTaskArn,f.pair.id('proxy'));
  assert.equal('ownerTaskArn' in f.runtime.clientPolicy,false,'raw policy never contains observed task IDs');
  assert.equal(ports.serviceGate.available,true);assert.equal(ports.nativeCurrentness.available,true);assert.equal(ports.placement.available,true);assert.equal(ports.taskLeaseReader.available,true);

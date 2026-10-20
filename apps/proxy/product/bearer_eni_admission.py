@@ -18,6 +18,7 @@ from ..qualification.runtime.server import TrustedRequest
 from ..qualification.state.admission import GrantAdmission
 from ..qualification.state.grants import RunBinding, identifier
 from ..qualification.state.pricing import StateDenied
+from . import refusal_diagnostics as diagnostics
 
 
 _PRIVATE = tuple(ipaddress.ip_network(value) for value in
@@ -196,12 +197,14 @@ class FreshEcsEniReader:
         if type(issued) is not IssuedTaskNetwork:
             _deny()
         _private_ipv4(expected_ip)
-        started_at = time.monotonic()
+        started_at, step = time.monotonic(), "describe-tasks"
+        diagnostics.stage("eni-read")
         try:
             result = self.ecs.describe_tasks(cluster=issued.cluster_arn,
                                              tasks=[issued.binding.worker_arn], include=["TAGS"])
             if type(result) is not dict or result.get("failures") or len(result.get("tasks", [])) != 1:
                 _deny()
+            step = "task"
             task = result["tasks"][0]
             if (task.get("taskArn") != issued.binding.worker_arn
                     or task.get("clusterArn") != issued.cluster_arn
@@ -217,12 +220,14 @@ class FreshEcsEniReader:
                     or type(task.get("createdAt")) is not datetime
                     or int(task["createdAt"].timestamp() * 1000) != issued.created_at_ms):
                 _deny()
+            step = "tags"
             tags = task.get("tags")
             if type(tags) is not list or any(type(row) is not dict for row in tags):
                 _deny()
             pairs = [(row.get("key"), row.get("value")) for row in tags]
             if len({key for key, _ in pairs}) != len(pairs) or not set(issued.tags).issubset(set(pairs)):
                 _deny()
+            step = "container"
             containers = task.get("containers")
             task_id = issued.binding.worker_arn.rsplit("/", 1)[-1]
             container_prefix = issued.cluster_arn.replace("cluster/", "container/", 1) + "/" + task_id + "/"
@@ -238,6 +243,7 @@ class FreshEcsEniReader:
                     or type(containers[0].get("image")) is not str
                     or not containers[0]["image"].endswith("@" + issued.image_digest)):
                 _deny()
+            step = "attachment"
             attachments = [row for row in task.get("attachments", [])
                            if row.get("type") == "ElasticNetworkInterface"]
             if len(attachments) != 1 or attachments[0].get("status") != "ATTACHED":
@@ -254,9 +260,11 @@ class FreshEcsEniReader:
                     or fields.get("subnetId") != issued.subnet_id
                     or fields.get("privateIPv4Address") != expected_ip):
                 _deny()
+            step = "describe-eni"
             networks = self.ec2.describe_network_interfaces(NetworkInterfaceIds=[eni])
             if type(networks) is not dict or len(networks.get("NetworkInterfaces", [])) != 1:
                 _deny()
+            step = "network"
             network = networks["NetworkInterfaces"][0]
             groups = network.get("Groups")
             if (network.get("NetworkInterfaceId") != eni
@@ -270,13 +278,17 @@ class FreshEcsEniReader:
                     or len(groups) != len(issued.security_group_ids)
                     or set(row.get("GroupId") for row in groups) != set(issued.security_group_ids)):
                 _deny()
-            if (time.monotonic() - started_at >= 5
-                    or int(time.time() * 1000) >= issued.expires_at_ms):
+            step = "clock"
+            if time.monotonic() - started_at >= 5:
+                raise TimeoutError()
+            if int(time.time() * 1000) >= issued.expires_at_ms:
                 _deny()
             return PeerLease(expected_ip, time.monotonic(), issued.binding, issued.grant_id)
-        except StateDenied:
+        except StateDenied as error:
+            diagnostics.refused("eni", step, error, deadline_ms=issued.expires_at_ms)
             raise
-        except Exception:
+        except Exception as error:
+            diagnostics.refused("eni", step, error, deadline_ms=issued.expires_at_ms)
             _deny()
 
 
@@ -298,13 +310,16 @@ def create_bearer_eni_trusted_resolver(*, read_direct_tls_socket, resolve_bearer
         _deny()
 
     def resolver(scope):
+        step = "scope"
         try:
             if type(scope) is not dict or scope.get("type") != "http" or scope.get("scheme") != "https":
                 _deny()
+            step = "tls-socket"
             socket = read_direct_tls_socket(scope)
             if (type(socket) is not DirectTlsSocketPeer
                     or scope.get("client") != (socket.ipv4, socket.port)):
                 _deny()
+            step = "bearer-header"
             headers = scope.get("headers")
             if type(headers) is not list or len(headers) > 64:
                 _deny()
@@ -315,16 +330,20 @@ def create_bearer_eni_trusted_resolver(*, read_direct_tls_socket, resolve_bearer
             token = value[7:] if value.startswith(b"Bearer ") else b""
             if not 32 <= len(token) <= 256 or any(char <= 32 or char > 126 for char in token):
                 _deny()
+            step = "bearer"
             source = resolve_bearer_sha256(hashlib.sha256(token).hexdigest())
             if (type(source) is not ProductBearerSource
                     or source.authority.capability_sha256 != hashlib.sha256(token).hexdigest()):
                 _deny()
+            step = "task-eni"
             issued = source.issued
             peer = observe_task_eni(issued, socket.ipv4)
             if type(peer) is not PeerLease:
                 _deny()
+            step = "ingress"
             admission = IngressAdmission(source.authority, peer)
             admission.validate_scope(scope)
+            step = "expired"
             remaining = (issued.expires_at_ms - time.time_ns() // 1_000_000) / 1000
             if remaining <= 0:
                 _deny()
@@ -334,9 +353,11 @@ def create_bearer_eni_trusted_resolver(*, read_direct_tls_socket, resolve_bearer
                 return await asyncio.to_thread(observe_task_eni, issued, socket.ipv4)
 
             return TrustedRequest(admission, observer, deadline)
-        except StateDenied:
+        except StateDenied as error:
+            diagnostics.refused("resolver", step, error)
             raise
-        except Exception:
+        except Exception as error:
+            diagnostics.refused("resolver", step, error)
             _deny()
 
     return resolver

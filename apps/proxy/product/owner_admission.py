@@ -19,6 +19,7 @@ from .owner_channel import (OPERATION, OwnerPeerPolicy, OwnerReply, OwnerHostGat
                             admission_carrier, validate_capture_admission_lease)
 from .bearer_eni_admission import IssuedTaskNetwork, ProductBearerSource
 from .binding import _binding as checked_binding
+from . import refusal_diagnostics as diagnostics
 from ..qualification.state.pricing import StateDenied
 
 
@@ -133,7 +134,7 @@ class ProductOwnerAdmissionReader:
         return (cutoff - at) / 1000
 
     async def _read(self, read_id, capability_sha256, expected, started, cutoff, carrier, lease):
-        acquired = False
+        acquired, step = False, "carrier"
         task = asyncio.current_task()
         self._pending_tasks.add(task)
         def finished(value):
@@ -146,50 +147,57 @@ class ProductOwnerAdmissionReader:
                     None if expected is None else _json(expected)) != carrier:
                 _deny()
             return self._remaining(cutoff)
-        try:
-            if read_id in self._read_ids or len(self._read_ids) >= 4096:
-                _deny()
-            self._read_ids.add(read_id)
-            await asyncio.wait_for(self.state[3][carrier].acquire(), check_carrier())
-            acquired = True
-            check_carrier()
-            body = _json(["meri.proxy.admission-read/1", read_id, capability_sha256,
-                          None if expected is None else _hash(expected), cutoff])
-            reply = await asyncio.wait_for(
-                self.exchange(carrier, OPERATION, body, check_carrier()),
-                check_carrier())
-            check_carrier()
-            if type(reply) is not OwnerReply or type(reply.body) is not bytes or len(reply.body) > 16384:
-                _deny()
-            frame = validate_owner_reply(self.policy, reply, carrier, self.state[4])
-            _tuple(frame, 8)
-            if frame[:3] != ["meri.proxy.admission/1", read_id, capability_sha256]:
-                _deny()
-            binding = _source(frame[4])
-            if frame[4][2] != capability_sha256 or _sha(frame[3]) != _hash(frame[4]):
-                _deny()
-            if expected is not None and _json(expected) != _json(frame[4]):
-                _deny()
-            current = _tuple(frame[5], 7)
-            _sha(current[0]); _sha(current[4]); _binding(current[1])
-            scopes = [["client", binding["tenantId"], frame[4][7], frame[4][3][4]]]
-            at = _integer(self.now_ms())
-            if (current[1] != frame[4][0] or current[2] != scopes or current[3] != frame[4][7]
-                    or not started <= _integer(current[5]) <= at
-                    or not started <= _integer(frame[6]) <= at
-                    or _integer(frame[7], 1) <= at or frame[7] > cutoff
-                    or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
-                _deny()
-            check_carrier()
-            result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease, _json(current))
-            self._receipts[id(result)] = result
-            return result
-        except BaseException:
-            self._abort()
-            raise
-        finally:
-            if acquired:
-                self.state[3][carrier].release()
+        with diagnostics.phase("admission" if expected is None else "session"):
+            try:
+                if read_id in self._read_ids or len(self._read_ids) >= 4096:
+                    _deny()
+                self._read_ids.add(read_id)
+                await asyncio.wait_for(self.state[3][carrier].acquire(), check_carrier())
+                acquired = True
+                check_carrier()
+                step = "exchange"
+                body = _json(["meri.proxy.admission-read/1", read_id, capability_sha256,
+                              None if expected is None else _hash(expected), cutoff])
+                reply = await asyncio.wait_for(
+                    self.exchange(carrier, OPERATION, body, check_carrier()),
+                    check_carrier())
+                check_carrier()
+                step = "reply"
+                if type(reply) is not OwnerReply or type(reply.body) is not bytes or len(reply.body) > 16384:
+                    _deny()
+                frame = validate_owner_reply(self.policy, reply, carrier, self.state[4])
+                step = "frame"
+                _tuple(frame, 8)
+                if frame[:3] != ["meri.proxy.admission/1", read_id, capability_sha256]:
+                    _deny()
+                step = "source"
+                binding = _source(frame[4])
+                if frame[4][2] != capability_sha256 or _sha(frame[3]) != _hash(frame[4]):
+                    _deny()
+                if expected is not None and _json(expected) != _json(frame[4]):
+                    _deny()
+                step = "current"
+                current = _tuple(frame[5], 7)
+                _sha(current[0]); _sha(current[4]); _binding(current[1])
+                scopes = [["client", binding["tenantId"], frame[4][7], frame[4][3][4]]]
+                at = _integer(self.now_ms())
+                if (current[1] != frame[4][0] or current[2] != scopes or current[3] != frame[4][7]
+                        or not started <= _integer(current[5]) <= at
+                        or not started <= _integer(frame[6]) <= at
+                        or _integer(frame[7], 1) <= at or frame[7] > cutoff
+                        or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
+                    _deny()
+                check_carrier()
+                result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease, _json(current))
+                self._receipts[id(result)] = result
+                return result
+            except BaseException as error:
+                diagnostics.refused("admission", step, error, deadline_ms=cutoff, now_ms=self.now_ms)
+                self._abort()
+                raise
+            finally:
+                if acquired:
+                    self.state[3][carrier].release()
 
     def _sync_read(self, capability_sha256, expected, deadline_ms):
         if threading.get_ident() == self.loop_thread or self.loop.is_closed() or not self.loop.is_running():
@@ -214,7 +222,8 @@ class ProductOwnerAdmissionReader:
             validate_capture_admission_lease(lease, self.exchange, self.host_gate,
                 None if expected is None else _json(expected))
             return result
-        except BaseException:
+        except BaseException as error:
+            diagnostics.refused("admission", "read", error, deadline_ms=cutoff, now_ms=self.now_ms)
             self._abort(); future.cancel()
             _deny()
 
@@ -223,6 +232,7 @@ class ProductOwnerAdmissionReader:
                 or self._receipts.pop(id(receipt), None) is not receipt
                 or not self.host_gate.available or receipt.expires_at_ms <= self.now_ms()
                 or expected is not None and receipt.source_bytes != _json(expected)):
+            diagnostics.refused("admission", "consume")
             _deny()
         validate_capture_admission_lease(receipt.capture_lease, self.exchange,
             self.host_gate, receipt.source_bytes)
@@ -243,6 +253,7 @@ class ProductOwnerAdmissionReader:
                                 issued.task_definition_arn, issued.container_name]
                 or original != [issued.started_by, issued.started_by, dict(issued.tags)["meri:plan-sha256"],
                                 issued.expires_at_ms, issued.image_digest]):
+            diagnostics.refused("admission", "join")
             self._abort(); _deny()
         # The immutable issuance cap is distinct from this read's short lease.
         # A later check must read again; it may never extend the original cap.
@@ -250,6 +261,7 @@ class ProductOwnerAdmissionReader:
         encoded = _json(source)
         previous = self.state[5].get(capability_sha256)
         if previous is not None and previous != encoded:
+            diagnostics.refused("admission", "replay")
             self._abort(); _deny()
         self.state[5][capability_sha256] = encoded
         from ..qualification.state.admission import GrantAdmission

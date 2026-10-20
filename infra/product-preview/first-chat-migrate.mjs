@@ -24,6 +24,10 @@ export const TEMPORAL_SCRIPT='infra/product-preview/first-chat-database-temporal
 /** Integration packet grants (docs/integration/MIGRATION-PACKET-20261018.md, GRANTS-PROPOSAL-20261018.md); a separate file because
  * DATABASE_SCRIPT's phase_meri_grants sha is ledgered and an edit would refuse every later run. */
 export const INTEGRATION_SCRIPT='infra/product-preview/first-chat-database-integration.sql';
+/** The model budget owner's dynamic-conversation reads (initial run binding, next-run state), missing from phase_meri_grants.
+ * Its own file for the same reason. Stage 'meri' at ordinal 22: on a database with both earlier stages ledgered, one `meri`
+ * run applies only this entry and stops before the held integration entries; a fresh database runs meri, temporal, meri. */
+export const OWNER_READS_SCRIPT='infra/product-preview/first-chat-database-owner-reads.sql';
 export const LEDGER='meri_migration_ledger.applied';
 export const OWNER='meri_product_migrator';
 
@@ -54,6 +58,7 @@ export const PLAN=Object.freeze([
  ['migration','infra/product-preview/first-chat-seed-budget.sql','adfdbb8590e5c69ccf30c3cecf42bdc483a061ae6639c1db01e952389a39ff3a'],
  ['phase:meri_grants',DATABASE_SCRIPT,'c6e2b5edf6b88030c677cf326c83d8e4f17a0b413808072eae1d1dab3d8814d5'],
  ['phase:temporal_grants',TEMPORAL_SCRIPT,'2d305021ec1c66de034b07d233bb534492f5896d2ed3ff16c7118cf78520f348'],
+ ['phase:owner_conversation_reads',OWNER_READS_SCRIPT,'b05b88f0657b8b10681ac612101b9fca505ae2d6fef65b53866d92e269afdf18'],
  // Stage 'integration' (approved by D016, not applied: snapshot first). The 'meri' and 'temporal'
  // stages stop before these entries; only an explicit `integration` run applies them, after both earlier stages are ledgered.
  ['migration','apps/control/settings/migrations/0001_settings.sql','7243fe1e45b4890fc36eeb5c96a6ec493bd92cb8572de11b8d6bae5f06d976e1','integration'],
