@@ -197,6 +197,8 @@ node infra/product-preview/first-chat/render-material.mjs \
   --out "$W/rendered"
 ```
 
+`--runtime` must be the measured runtime values of the image being shipped. A new Node runtime image needs a fresh launch measurement first: see `infra/product-preview/launch-measurement/README.md`, then pass its verified output here.
+
 The output is `MERI_FIRST_CHAT_MATERIAL_RENDERED`. `$W/rendered/<role>/{config,bundle,expected}.json` and `summary.json` are written 0600, in a 0700 directory. `bundle.json` is **secret**.
 
 Validity:

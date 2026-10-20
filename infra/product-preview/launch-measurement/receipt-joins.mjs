@@ -1,8 +1,9 @@
 // Pure public-evidence joins. Callers separately authenticate AWS readbacks and
 // invoke the canonical source runtime-values assembler. No I/O on import.
+// The measured source commit is an operator argument (--source-commit), never edited in here.
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-export const SOURCE_COMMIT='2b4421f612f9fbb728d6da52927aac228d712d40';
+export const sourceCommitArgument=value=>{assert.match(String(value),/^[a-f0-9]{40}$/,'--source-commit must be 40 lowercase hex');return value;};
 export const PROJECT_ARN='arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build';
 export const PROJECT_ROLE_ARN='arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H';
 export const ARTIFACT_NAMES=['launch-measurement.json','launch-readback.json','runtime-native.json','runtime-packages.json','measurement-provenance.json','measurement-diagnostic.json'];
@@ -14,7 +15,7 @@ export const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 export const checkedJson=bytes=>JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
 const equal=(a,b,field)=>assert.deepEqual(a,b,`MEASUREMENT_JOIN_REFUSED:${field}`);
 const yes=(value,field)=>assert.ok(value,`MEASUREMENT_JOIN_REFUSED:${field}`);
-export const artifactPrefix=plan=>'results/launch-measurement/'+SOURCE_COMMIT+'/'+plan.attempt;
+export const artifactPrefix=plan=>'results/launch-measurement/'+plan.request.sourceCommit+'/'+plan.attempt;
 export function measurementStartRequest(plan,buildspec){return {projectName:PROJECT_ARN.split('/')[1],sourceTypeOverride:'S3',sourceLocationOverride:plan.request.archive.bucket+'/'+plan.request.archive.key,sourceVersion:plan.request.archive.versionId,buildspecOverride:buildspec,idempotencyToken:plan.attempt,timeoutInMinutesOverride:10,queuedTimeoutInMinutesOverride:5,autoRetryLimitOverride:0,artifactsOverride:{type:'S3',location:plan.request.archive.bucket,path:artifactPrefix(plan),name:'/',namespaceType:'NONE',packaging:'NONE',encryptionDisabled:false}};}
 // Records must be produced by the operator from authenticated S3 head/get calls.
 // These byte joins cannot authenticate a hand-written record on their own.
@@ -36,10 +37,10 @@ function scan(value,digest){
  yes(Object.values(counts).every(n=>Number.isSafeInteger(n)&&n>=0),'scan count types');
  equal(counts.HIGH??0,0,'scan high');equal(counts.CRITICAL??0,0,'scan critical');
 }
-export function joinMeasurement({plan,launch,readback,native,packages,provenance,operator}){
+export function joinMeasurement({plan,launch,readback,native,packages,provenance,operator,sourceCommit}){
  const p=plan.request,r=plan.productReceipt;
  equal(plan.schema,'meri.operator-launch-measurement-plan.v1','plan schema');
- equal(p.sourceCommit,SOURCE_COMMIT,'source commit');
+ equal(p.sourceCommit,sourceCommitArgument(sourceCommit),'source commit');
  equal(p.codeBuildProjectArn,PROJECT_ARN,'existing project');
  equal(plan.projectRoleArn,PROJECT_ROLE_ARN,'existing role');
  equal(plan.image,p.ecrRepositoryUri+'@'+r.imageDigest,'image URI');

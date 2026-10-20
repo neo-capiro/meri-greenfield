@@ -1,0 +1,10 @@
+{
+  "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+  "key": "inputs/launch-measurement/3dc993ef81846730ac696bb482b653162da8920c/34dcc85b43fe254265a6b43eb42fbeea/measurement-payload.json",
+  "versionId": "xshNdfYLrMddyF5PbR9VYdNx8NrTlebE",
+  "bytes": 76918,
+  "sha256": "b0e1fba706fd9daf0f218b395223003df8d818a0ee7e435f3406b439eca52df8",
+  "checksumSha256": "sOH7pwb9na8PIYs5UiMAPfjYGKDufkNfNAa0OeylLfg=",
+  "serverSideEncryption": "aws:kms",
+  "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+}

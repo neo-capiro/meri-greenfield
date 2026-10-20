@@ -16,7 +16,7 @@ import sys
 import tempfile
 import time
 
-SOURCE = "2b4421f612f9fbb728d6da52927aac228d712d40"
+SOURCE = "{{MERI_MEASUREMENT_SOURCE_COMMIT}}"
 PROJECT_ARN = "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build"
 PROJECT_ROLE_ARN = "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H"
 VERIFIER = "c373ff556873823e1fd7cb5a00945ed2f70f41acb74c96d2d9756d0f12bf461d"
