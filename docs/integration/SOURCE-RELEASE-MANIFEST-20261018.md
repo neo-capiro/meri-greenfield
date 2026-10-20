@@ -14,12 +14,23 @@ Labels used below:
 
 The focused deployed baseline for the failing path is in `C:\dev\fable\adj-reports\adj-a-baseline-REPORT.md` (package A). This section does not repeat its executable and configuration detail.
 
-### S1. Deployed now
+**Live update, 2026-10-20 about 09:40Z.** I read back ECS and ECR again (read-only), and took the live attempt facts from the orchestrator's decision log (O22–O26) and the evidence notes it cites. The orchestrator ran releases **F** and **G**, and made two live attempts from the user's own signed-in Chrome session with client Anduril. S1–S3 below show the current state. Releases E and F moved to S2.
+
+### S1. Deployed now (release G, read back 2026-10-20 about 09:40Z)
 
 | Repo | Service / task definition | Image digest | Source | Evidence |
 | --- | --- | --- | --- | --- |
-| meri-greenfield | control:35, temporal-worker:34, temporal-issuer:34, owner:33, runner:20 (registered 2026-10-20 01:10–01:29Z; each service 1/1, rollout COMPLETED) | `qualification-worker@sha256:f5a7abc9…5ff7` | `2b4421f612f9fbb728d6da52927aac228d712d40` (head of `fix/runner-transport-diagnostic-20261019`) | [R] ECS DescribeServices/DescribeTaskDefinition. [R] ECR tag `product-2b4421f6…-8779200a…`, pushed 2026-10-20T00:09Z. [E] scan COMPLETE with zero HIGH/CRITICAL, per `handoff/runner-diagnostic-release-20261020@c8fcf965` README. |
-| meri-greenfield | proxy:33 | `sha256:734a20ec…3551` (material-init uses `f5a7abc9…`) | `34851020aa0d73fead4db59ba6e26a098e2d0313`, an ancestor of `2b4421f6` | [R] ECR tag `proxy-product-34851020…`, pushed 2026-10-19T01:01Z |
+| meri-greenfield | control:37, temporal-worker:36 (registered 08:14:45Z); temporal-issuer:36 (08:09:30Z); owner:35 (07:59:38Z); runner:22 (08:14:45Z). Each service 1/1, one deployment, rollout COMPLETED | `qualification-worker@sha256:a62302c5…` | `59c7748f` (candidate 2; label `FIRST_CHAT_20261020G`) | [R] ECS readback. [R] ECR tag `product-59c7748f…-fb8680d0…`, pushed 07:29:53Z. [E] Scan clean and measurement verified (decision log O24). |
+| meri-greenfield | proxy:35 (07:59:38Z) | `sha256:734a20ec…` (material-init `a62302c5…`) | proxy `34851020`, unchanged | [R] |
+| capiro-backend (Core) | capiro-preview-first-chat-core:2 | `preview-core@sha256:46acfc07…` | `ade7fc88`, unchanged | [R] |
+| capiro-frontend | capiro-portfolio-preview:18 | `portfolio-preview@sha256:0401f61d…` | `67fdf56b`, unchanged | [R] |
+
+The rows below are from the first readback, taken 03:30–04:10Z for release E. They are kept for the services that did not change: Temporal, Core, frontend and v2.
+
+| Repo | Service / task definition | Image digest | Source | Evidence |
+| --- | --- | --- | --- | --- |
+| meri-greenfield (**release E, superseded; see S2**) | control:35, temporal-worker:34, temporal-issuer:34, owner:33, runner:20 (registered 2026-10-20 01:10–01:29Z; each service 1/1, rollout COMPLETED) | `qualification-worker@sha256:f5a7abc9…5ff7` | `2b4421f612f9fbb728d6da52927aac228d712d40` (head of `fix/runner-transport-diagnostic-20261019`) | [R] ECS DescribeServices/DescribeTaskDefinition. [R] ECR tag `product-2b4421f6…-8779200a…`, pushed 2026-10-20T00:09Z. [E] scan COMPLETE with zero HIGH/CRITICAL, per `handoff/runner-diagnostic-release-20261020@c8fcf965` README. |
+| meri-greenfield (**release E, superseded**) | proxy:33 | `sha256:734a20ec…3551` (material-init uses `f5a7abc9…`) | `34851020aa0d73fead4db59ba6e26a098e2d0313`, an ancestor of `2b4421f6` | [R] ECR tag `proxy-product-34851020…`, pushed 2026-10-19T01:01Z |
 | meri-greenfield | Temporal frontend, history, matching, internal-frontend, internal-worker (each :1, since 2026-10-17) | `sha256:f73ce01e…` | `989a4227…` | [E] public-candidate `deployment-inputs.candidate.json`. [R] services still at :1. |
 | capiro-backend (Core) | capiro-preview-first-chat-core:2 (registered 2026-10-17 18:27Z) | `capiro/preview-core@sha256:46acfc07…` | `ade7fc883b7459cbc50e6f71d40ce3644bace5ea` | [R] task definition `RELEASE_SHA` and ECR tag |
 | capiro-frontend | capiro-portfolio-preview:18 (cluster capiro-portfolio-preview, registered 2026-10-18 15:37Z) | `capiro/portfolio-preview@sha256:0401f61d…` | `67fdf56b8f63f25c95dd2c0a2ff0139dcfe3cfb8` | [R] ECR tag on the serving digest. The task environment labels `CAPIRO_PREVIEW_MERI_RUNTIME_SOURCE=176a8811…` and `CAPIRO_PREVIEW_FIRST_CHAT_BACKEND_SOURCE=c64f0005…` are stale and do not describe what is deployed. |
@@ -27,6 +38,7 @@ The focused deployed baseline for the failing path is in `C:\dev\fable\adj-repor
 
 #### Deployed capability inputs
 
+- **[R] Release G keeps the same scope.** `C:\dev\fable\ship-59c7748f\deployment-inputs.candidate.json` has no `features` key, and it pins `nodeRuntimeSourceCommit` `59c7748f` with image `a62302c5…`. The first-chat scope below is unchanged.
 - **[E] Meri.** In the deployed public `deployment-inputs.candidate.json` (handoff `c8fcf965`) there is **no `features` key**. Every optional family in `render-material.mjs` `FEATURE_KEYS` therefore renders disabled: `sourceEnabled`, `userPreferences`, `tenantSettings`, `intents`, `routines`, `retention`, `artifacts`, `downloadLinks`, `capabilityPlatform`, `reads`, `memory`.
   - `policy.json`: `maxTurns 3`, $2 per run, model profile `us.anthropic.claude-sonnet-4-6`.
   - The allocation rubric is `first-chat-no-tools`.
@@ -44,7 +56,8 @@ The focused deployed baseline for the failing path is in `C:\dev\fable\adj-repor
 #### Contract package
 
 - **[R]** `@capiro/meri-contracts` is `0.1.10` at:
-  - deployed `2b4421f6`
+  - deployed release G `59c7748f`, and candidate 3 `8d7c507e`
+  - release E `2b4421f6`
   - `32d06db2`
   - PR189, PR190, PR191, PR192 and PR193 heads
   - PR188 `98d3c96a`
@@ -58,6 +71,8 @@ The focused deployed baseline for the failing path is in `C:\dev\fable\adj-repor
 
 | Repo | Item | Status |
 | --- | --- | --- |
+| Meri | **Release F**: source `3dc993ef` (candidate 1), image `sha256:d7995b75…`, label `FIRST_CHAT_20261020F`, deployed 06:33Z | [R] control:36, worker:35, issuer:35, owner:34, proxy:34, runner:21. Registered 06:11–06:26Z, now **INACTIVE**. **Live attempt 06:35Z**, conversation `f9c31d42`, run `ef0c07c7` [E, decision log O22]: see the live attempts table below this one. |
+| Meri | **Release E**: source `2b4421f6`, image `sha256:f5a7abc9…` | [R] control:35, worker:34, issuer:34, owner:33, proxy:33, runner:20, superseded by F. Its failed attempt is the next row. |
 | Meri | Release D: source `5b395d4c` (PR193 head), image `sha256:ea0e9ad4…` | [R] control:34, worker:33, issuer:33, owner:32, proxy:32, runner:19, registered 2026-10-19 22:06–22:28Z, now **INACTIVE**. No completed chat is recorded. |
 | Meri | Release C: source `a16cc40d`, image `sha256:9bff84ba…` | [R] control:33, worker:32, issuer:32, runner:18, registered 2026-10-19 ~18:00Z, now **INACTIVE** |
 | Meri | Failed E attempt on `2b4421f6`, runner task `283f12c53eba4dc89f4d54767d0fa832` | [E] First failure at 2026-10-20 01:41:02.451Z: `RUNNER_FIRST_FAILURE origin=native-start code=UNKNOWN`. Terminal at 01:53:29.764Z. Runner exit 3 at 01:54:07.526Z. Provider contact and settlement are **unproven** (START-HERE §3; `meri-native-start-unknown-20261020/DIAGNOSIS.md`). |
@@ -66,13 +81,32 @@ The focused deployed baseline for the failing path is in `C:\dev\fable\adj-repor
 | Core | rev 1, `6542f5b0`, image `722a4832…` | [R] Task definition still ACTIVE. Previous Core. |
 | Frontend | rev 17, `4ea553fe`, image `98d2b5d3…` | [R] INACTIVE task definition |
 
+**Live attempts after the readback** [E]. Sources: the orchestrator's decision log O22–O26 and the evidence notes it cites (`A-DURABLE-READ-RESULTS.md`, `adj-a-D3-RECOVERY.md`, `adj-b-D1-PREFLIGHT.md`, `adj-b-STREAM-ERROR.md`). The orchestrator ran them in the user's own Chrome session, with client Anduril.
+
+| Attempt | Release | Proven live | Failed | Spend |
+| --- | --- | --- | --- | --- |
+| 06:35Z, conversation `f9c31d42`, run `ef0c07c7` | F `3dc993ef` | allocate, admit and submit returned 200. Queued → Starting → Running. Router `start` completed in **11.4 s**, which confirms the old 8 s router lifetime as the E cause. The durable `launch_binding` reached **STARTED** for the first time. Worker cleanup took about 1 s (previously 846 s). The UI showed a truthful **"Failed — ATTEMPT_LOST"**, and the run settled `failed/ATTEMPT_LOST` with a proven stop. | Runner `RUNNER_FIRST_FAILURE origin=runtime code=UNKNOWN`, 13 s after start. Afterwards the conversation was **unusable**: every reconnect returned `401 SESSION_REFUSED` (cause and fix: `adj-a-D3-RECOVERY.md`). | 0 provider requests, $0 model spend |
+| 08:23Z, conversation `6dc6d92a` | G `59c7748f` | The fresh conversation connected after **one "Try again"**. allocate 11.4 s, admit 15.7 s and submit 11.7 s, so about **39 s** from send to acknowledgement. Router `start` 14.07 s. After the failure, **reconnect, history and the composer worked**, which verifies A's recovery fix live. | `stage=activity-stream code=ERROR class=ERROR`, about 3 s after SDK `system/init`. **Cause** (`adj-b-STREAM-ERROR.md`): the lifecycle `runner/next-controls` call used the native client's 3 s default, while control needs about 4–6 s. Fixed in candidate 3 (`1d94b357`). | 0 provider requests, $0 model spend |
+
 ### S3. Proposed and open, by repository, with ancestry against what is deployed
 
 #### meri-greenfield
 
-| Item | Head | Relation to deployed `2b4421f6` | Release status |
+The candidate line `fable/meri-first-chat-candidate-20261020`:
+
+| Candidate | Head | Contents beyond the previous one | Status |
 | --- | --- | --- | --- |
-| Diagnostic candidate (package B) | `32d06db2`, `fable/pinned-transport-failure-codes-20261020` | Direct child; one new commit | Proposed. Revision 2 B and C successors are owned by the adj-b and adj-c sessions and had not been pushed when this was read. The integration owner must re-pin this row to the combined B+C candidate. |
+| 1 | `3dc993ef` | `32d06db2` (B transport codes), adj-c startup budget, F release machinery, D3 session-recheck availability | Deployed as release **F** (S2) |
+| 2 | `59c7748f` | `4f6aae24` (B first-failure class, exit, signal and stage), `ffcebddd` (A: a failed run no longer bricks the conversation), adj-c batch 2 `b3ffbb82` (earlier `starting` claim, F4, F6) | **Deployed as release G** (S1) |
+| 3 | `8d7c507e` | `1d94b357` + `a18aa09a` (lifecycle control calls get the session allowance, which fixes the `activity-stream` failure), `2be4863a` (diagnostics: cause, message hash and code site), adj-c runner cleanup | **Proposed**. Image building under label H (`C:\dev\fable\ship-8d7c507e`). Not deployed. |
+
+Not on the candidate line: adj-b F3 `b72b15d2` and the F follow-ups `fable/adj-followups-f-20261020` @ `19ceb924`. Both are reviewed and APPROVED, and docs/infra only or behaviour-neutral. They can join the next candidate.
+
+The table below has the earlier PR ancestry. It was read against release E (`2b4421f6`), which is an ancestor of every candidate.
+
+| Item | Head | Relation to `2b4421f6` | Release status |
+| --- | --- | --- | --- |
+| Diagnostic candidate (package B) | `32d06db2`, `fable/pinned-transport-failure-codes-20261020` | Direct child; one new commit | Received in candidate 1 and shipped in F |
 | PR193 | `5b395d4c` | **Contained** | Deployed as part of `2b4421f6` |
 | PR145, PR179, PR180, PR186, PR187, dot/meri-release-combined `7252f483`, PR171–PR177, document-executor lane `d2f05436` | — | **Contained** (ancestors) | Deployed as part of `2b4421f6` |
 | PR181 `139e0a14`, PR183 `b51687d4`, PR184 `6be3e4ab`, PR185 `67a7bfbc` | — | **Patch-equivalent commits contained.** `git cherry` shows all of their commits as `-` against `2b4421f6`. | Their source is in the deployed image. The PR branches themselves stay open drafts. |
@@ -144,7 +178,7 @@ Frontend: no database migrations.
 
 This is a proposed order derived from the dependencies above. It is not a schedule or an authorization. Each step requires its own reviewed packet from the shipper.
 
-1. **First-chat candidate (Meri only).** Combine `2b4421f6`, B (`32d06db2` or its successor) and the C startup correction. Then: one image, a measured runtime-values file, and a render with no `features` (unchanged scope). Core rev 2 and frontend rev 18 stay as they are. D3 acceptance runs on this cohort. Nothing in steps 2–6 is a prerequisite.
+1. **First-chat candidate (Meri only).** Combine `2b4421f6`, B (`32d06db2` or its successor) and the C startup correction. Then: one image, a measured runtime-values file, and a render with no `features` (unchanged scope). Core rev 2 and frontend rev 18 stay as they are. D3 acceptance runs on this cohort. Nothing in steps 2–6 is a prerequisite. **Status on 20 October:** this step is in progress. Candidates 1 and 2 shipped as releases F and G. Candidate 3 (`8d7c507e`) carries the `activity-stream` fix. Core and frontend were not touched.
 2. **Core security-clean candidate.** Resolve the 7 HIGH findings, through PR100's Alpine alternative or a successor, on the `50475125` line. Before any rev 3 activation, run the preflight and approval for the 11 Prisma migrations, then set the rev 3 environment (`MEMORY_GOVERNANCE_*` for the preview tenant only, `MERI_EXECUTION_MAX_*`, the internal service secret reference).
 3. **Frontend held candidate.** Release `e6180219` only together with a deployed Core that satisfies its roster pin. Before release, refresh its stale Meri runtime labels so they match the S1 Meri pins.
 4. **Meri migration readback, then integration stage.** dot reads `meri_migration_ledger.applied`. If the `integration` stage is not applied, take the D016 #1 snapshot, apply the stage, and read the ledger back. Plan entries for 0018/0019 come first if memory continuation is in the same release.
@@ -155,7 +189,7 @@ This is a proposed order derived from the dependencies above. It is not a schedu
 
 - **Meri.** The previous task definitions (release D and earlier) are **INACTIVE**.
   - [E] Earlier preview rollouts (Fable operational notes, outside this repository) recorded that the issuer admits only pinned revisions and that a rollback consumes the pinned revisions. Rolling back therefore means re-rendering and re-registering with the prior image digest and material labels. It is not a service-revision flip.
-  - The last deployed state before E is release D (`5b395d4c`, `ea0e9ad4…`). It also never completed a chat, so rolling back restores a known non-working chat state.
+  - The current rollback target behind G is release F (`3dc993ef`, `d7995b75…`, label F), and behind that release E. None has completed a chat. G is the only release where a failed run leaves the conversation usable, so rolling back to F would bring back the conversation-bricking defect.
   - Database rollback for applied conversation migrations is not supported in place; see `D2-DATABASE.md`. The `integration` stage has a logical drop-schema rollback (D016 #1).
 - **Core.** Task definition rev 1 (`6542f5b0`) is still ACTIVE. Rev 2 is the current target. Rolling back across the 11 Prisma migrations requires their own down-path review. [U] None was found.
 - **Frontend.** Rev 17 is INACTIVE. The rev 18 image digest remains in ECR.
