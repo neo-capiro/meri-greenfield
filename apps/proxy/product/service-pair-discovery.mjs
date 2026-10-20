@@ -6,6 +6,10 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const fail=()=>{throw Error('PRODUCT_SERVICE_TASK_LEASE_UNAVAILABLE');};
+/** One owner exchange: a fresh pair discovery before and after it on each side, placement or admission currentness in between.
+ * Live each discovery takes 0.5-1.5 s, so one model request (two exchanges) needs about 5-13 s; the proxy's shared exchange
+ * cutoff (ownerPeer.max_exchange_ms) and the owner's per-request limit are both bounded by this. */
+export const OWNER_MAX_REQUEST_MS=15000;
 const prefix='arn:aws:ecs:us-east-1:967807252336:',iam='arn:aws:iam::967807252336:role/';
 const name=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,255}$/u.test(v);
 const instant=v=>Number.isSafeInteger(v)&&v>0;
@@ -112,7 +116,7 @@ export async function createProductServicePairDiscovery(raw){
  try{
   c=own(raw,['ecsClient','ec2Client','configuration','now','limits'],['enabled']);pins=parseProductServicePairConfiguration(c.configuration);
   limits=data(own(c.limits,['maxRequestMs','maxLeaseMs']));
-  if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!instant(limits.maxRequestMs)||limits.maxRequestMs>3000||
+  if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!instant(limits.maxRequestMs)||limits.maxRequestMs>OWNER_MAX_REQUEST_MS||
      !instant(limits.maxLeaseMs)||limits.maxLeaseMs>30000)fail();
   ecs=storageMethod(c.ecsClient,'send');ec2=storageMethod(c.ec2Client,'send');
  }catch{fail();}
@@ -130,6 +134,10 @@ export async function createProductServicePairDiscovery(raw){
    life=createOperationLifetime({deadlineMs:deadline,now,signal:r.signal,errorFactory:()=>Error('PRODUCT_SERVICE_TASK_LEASE_UNAVAILABLE')});
    const check=()=>{life.check();if(quarantined||now()<started)fail();};
    const send=async(C,input,client=ecs)=>{check();const result=await life.run(signal=>client(new C(input),{abortSignal:signal}));check();return result;};
+   // Independent reads run together. A phase settles every read it started before refusing, so a refusal never leaves work
+   // behind for the lifetime to count (unsettled work quarantines the reader).
+   const together=async reads=>{const settled=await Promise.allSettled(reads.map(read=>read()));const refused=settled.find(r=>r.status==='rejected');if(refused)throw refused.reason;return settled.map(r=>r.value);};
+   const definition=async p=>definitionObservation(await send(DescribeTaskDefinitionCommand,{taskDefinition:p.taskDefinitionArn}),p);
    const services=async()=>{
     const reply=await send(DescribeServicesCommand,{cluster:pins.owner.clusterArn,services:[pins.owner.serviceArn,pins.proxy.serviceArn]});
     return {owner:serviceObservation(reply,pins.owner),proxy:serviceObservation(reply,pins.proxy)};
@@ -144,8 +152,9 @@ export async function createProductServicePairDiscovery(raw){
      if(typeof reply.nextToken!=='string'||!reply.nextToken||reply.nextToken.length>1024||tokens.has(reply.nextToken))fail();tokens.add(reply.nextToken);nextToken=reply.nextToken;
     }fail();
    };
-   const first=await services(),ownerId=await member(pins.owner),proxyId=await member(pins.proxy);if(ownerId===proxyId)fail();
-   for(const p of [pins.owner,pins.proxy])definitionObservation(await send(DescribeTaskDefinitionCommand,{taskDefinition:p.taskDefinitionArn}),p);
+   // Phase 1: both services, both members and both task definitions. The task observation below still needs each service's
+   // primary deployment and member, read before it; the final services and members re-read still follows the network read.
+   const [first,ownerId,proxyId]=await together([services,()=>member(pins.owner),()=>member(pins.proxy),()=>definition(pins.owner),()=>definition(pins.proxy)]);if(ownerId===proxyId)fail();
    const reply=await send(DescribeTasksCommand,{cluster:pins.owner.clusterArn,tasks:[ownerId,proxyId],include:['TAGS']});
    if(!Array.isArray(reply?.tasks)||reply.tasks.length!==2||reply.failures!==undefined&&(!Array.isArray(reply.failures)||reply.failures.length))fail();
    const tasks=new Map(reply.tasks.map(t=>[t?.taskArn,t]));if(tasks.size!==2)fail();
@@ -155,9 +164,8 @@ export async function createProductServicePairDiscovery(raw){
    if(!Array.isArray(networks?.NetworkInterfaces)||networks.NetworkInterfaces.length!==2)fail();
    const byId=new Map(networks.NetworkInterfaces.map(n=>[n?.NetworkInterfaceId,n]));if(byId.size!==2)fail();
    networkObservation(byId.get(owner.networkInterfaceId),owner,pins.owner);networkObservation(byId.get(proxy.networkInterfaceId),proxy,pins.proxy);
-   const last=await services();
-   if(last.owner.deploymentId!==first.owner.deploymentId||last.proxy.deploymentId!==first.proxy.deploymentId||
-      await member(pins.owner)!==ownerId||await member(pins.proxy)!==proxyId)fail();
+   const [last,ownerAgain,proxyAgain]=await together([services,()=>member(pins.owner),()=>member(pins.proxy)]);
+   if(last.owner.deploymentId!==first.owner.deploymentId||last.proxy.deploymentId!==first.proxy.deploymentId||ownerAgain!==ownerId||proxyAgain!==proxyId)fail();
    check();const checkedAtMs=now(),expiresAtMs=Math.min(pins.expiresAtMs,r.deadlineMs,checkedAtMs+limits.maxLeaseMs);
    if(!instant(checkedAtMs)||checkedAtMs<started||checkedAtMs>=deadline||expiresAtMs<=checkedAtMs)fail();
    const project=v=>({taskArn:v.taskArn,createdAtMs:v.createdAtMs,privateIpv4Address:v.privateIpv4Address});

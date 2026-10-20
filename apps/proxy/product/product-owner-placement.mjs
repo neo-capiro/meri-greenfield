@@ -44,7 +44,8 @@ export function createProductOwnerPlacement(configuration){
    const v=own(value,['capabilitySha256','deadlineMs'],['signal']);nativeSignal(v.signal);
    const at=c.now();if(!available()||!digest(v.capabilitySha256)||!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=at)deny();
    const deadlineMs=Math.min(v.deadlineMs,at+limits.maxRequestMs);
-   life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs,errorFactory:()=>Error('PRODUCT_PROXY_PLACEMENT_UNAVAILABLE')});
+   // An expired request is reported as DEADLINE (owner-diagnostics.mjs); the caller's refusal is unchanged (deny below).
+   life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs,errorFactory:code=>Object.assign(Error('PRODUCT_PROXY_PLACEMENT_UNAVAILABLE'),code==='DEADLINE'?{code}:{})});
    const resolveFacts=async(label='facts')=>{step=label;const facts=data(await life.run(signal=>readFacts({capabilitySha256:v.capabilitySha256,deadlineMs,signal})));life.check();
     own(facts,['binding','allocationJson','grantFactsJsons','modelGrantId','selectedClientId','original','resource','requestSha256','expiresAtMs']);
     own(facts.resource,['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName']);

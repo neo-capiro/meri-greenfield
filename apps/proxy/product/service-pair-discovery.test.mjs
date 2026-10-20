@@ -4,6 +4,9 @@ import {createProductServicePairDiscovery,parseProductServicePairConfiguration} 
 import {servicePairFixture,PAIR_NOW as NOW,PAIR_PREFIX as prefix} from './test/service-pair-fixture.mjs';
 const refused=/PRODUCT_SERVICE_TASK_LEASE_UNAVAILABLE/;
 const make=f=>createProductServicePairDiscovery(f.configuration),read=r=>r.read({deadlineMs:NOW+50000});
+// A refusal before task selection: no task was described and no network read, after the one services read of the first phase.
+const noTaskSelected=f=>{const kinds=f.calls.map(c=>c.kind);assert.ok(!kinds.includes('DescribeTasksCommand')&&!kinds.includes('DescribeNetworkInterfacesCommand'),kinds.join());
+ assert.ok(kinds.filter(k=>k==='DescribeServicesCommand').length<=1,kinds.join());};
 test('default disabled is inert, schema2 is closed and old task/IP pins are refused',async()=>{
  const f=servicePairFixture();delete f.configuration.enabled;const reader=await make(f);assert.equal(reader.available,false);await assert.rejects(read(reader),refused);assert.equal(f.calls.length,0);
  for(const mutate of [c=>c.schemaVersion=1,c=>c.owner.taskArn=prefix+'task/capiro-dev/'+'1'.repeat(32),c=>c.owner.createdAtMs=NOW-1,
@@ -35,7 +38,7 @@ for(const [label,mutate]of [
  ['public service',s=>s.networkConfiguration.awsvpcConfiguration.assignPublicIp='ENABLED'],
  ['foreign subnet set',s=>s.networkConfiguration.awsvpcConfiguration.subnets=['subnet-99999999']],
 ])test(label+' refuses before task selection',async()=>{
- const f=servicePairFixture();f.change('DescribeServicesCommand',v=>{mutate(v.services[1]);return v;});await assert.rejects(read(await make(f)),refused);assert.equal(f.calls.length,1);
+ const f=servicePairFixture();f.change('DescribeServicesCommand',v=>{mutate(v.services[1]);return v;});await assert.rejects(read(await make(f)),refused);noTaskSelected(f);
 });
 test('in-progress PRIMARY requires explicit false-by-default reviewed pin',async()=>{
  const f=servicePairFixture();f.pins.owner.allowPrimaryInProgress=true;f.change('DescribeServicesCommand',v=>{v.services[1].deployments[0].rolloutState='IN_PROGRESS';return v;});await read(await make(f));
@@ -79,7 +82,7 @@ test('service-scoped inventory proves uniqueness across all bounded pages',async
   const f=servicePairFixture();f.change('ListTasksCommand',v=>mode==='duplicate'?{taskArns:[v.taskArns[0],v.taskArns[0]]}:
    mode==='foreign'?{taskArns:[prefix+'task/foreign/'+'1'.repeat(32)]}:mode==='empty'?{taskArns:[]}:
    {taskArns:[],nextToken:mode==='repeated token'?'same':String(f.calls.length)});
-  await assert.rejects(read(await make(f)),refused);assert.ok(f.calls.length<=5);
+  await assert.rejects(read(await make(f)),refused);noTaskSelected(f);
  }
  const f=servicePairFixture();f.change('ListTasksCommand',(v,input)=>input.nextToken?v:{taskArns:[],nextToken:'page2'});await read(await make(f));
 });
@@ -100,4 +103,25 @@ test('expiry/cancellation/clock rollback refuse; unresolved SDK permanently quar
   await assert.rejects(read(q),refused);assert.equal(q.available,false);complete({});await new Promise(resolve=>setImmediate(resolve));
   const count=g.calls.length;await assert.rejects(read(q),refused);assert.equal(g.calls.length,count);assert.equal(q.available,false);
  }
+});
+
+test('one discovery runs its independent reads together: 10 calls in four phases, same checks and order of proof',async()=>{
+ const f=servicePairFixture(),events=[];let inFlight=0,peak=0;
+ for(const kind of ['DescribeServicesCommand','ListTasksCommand','DescribeTaskDefinitionCommand','DescribeTasksCommand','DescribeNetworkInterfacesCommand'])
+  f.change(kind,async v=>{events.push('start:'+kind);inFlight++;peak=Math.max(peak,inFlight);await new Promise(resolve=>setTimeout(resolve,5));inFlight--;events.push('end:'+kind);return v;});
+ await read(await make(f));
+ assert.equal(f.calls.length,10);assert.equal(peak,5,'services, both members and both task definitions at once');
+ // A phase is a run of starts before the next end: 5 (services, members, definitions), tasks, network, 3 (services, members).
+ const phases=[];let run=0;for(const e of events){if(e.startsWith('start:'))run++;else if(run){phases.push(run);run=0;}}
+ assert.deepEqual(phases,[5,1,1,3]);
+ const order=events.filter(e=>e.startsWith('start:')).map(e=>e.slice(6));
+ assert.deepEqual(order.slice(5,7),['DescribeTasksCommand','DescribeNetworkInterfacesCommand'],'tasks are described after both services and members, the network after the tasks');
+});
+test('a refusal while other reads of its phase are in flight settles them all first and does not quarantine the reader',async()=>{
+ const f=servicePairFixture();let inFlight=0,refuseServices=true;
+ f.change('ListTasksCommand',async v=>{inFlight++;await new Promise(resolve=>setTimeout(resolve,20));inFlight--;return v;});
+ f.change('DescribeServicesCommand',v=>{if(refuseServices)v.services[1].desiredCount=2;return v;});
+ const r=await make(f);await assert.rejects(read(r),refused);
+ assert.equal(inFlight,0,'no read of the phase outlives its refusal');assert.equal(r.available,true,'an ordinary refusal is not unknown work');
+ refuseServices=false;assert.equal((await read(r)).owner.taskArn,f.id('owner'));
 });

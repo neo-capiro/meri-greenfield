@@ -3,7 +3,7 @@
  * it additionally rejects duplicate JSON keys, non-finite constants, floats and
  * an expired expiresAtMs against its own clock. No IO occurs on import. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {parseProductServicePairConfiguration} from './service-pair-discovery.mjs';
+import {parseProductServicePairConfiguration,OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 
 /** Must equal apps/proxy/qualification/state/pricing.py PRICING_REVISION; a
  * Python cross-check test pins the two values together. */
@@ -27,7 +27,7 @@ function ownerPeer(raw){
  const v=own(raw,['origin','server_name','server_cert_sha256','server_issuer_sha256','client_cert_sha256','client_subject','max_exchange_ms']);
  if(typeof v.server_name!=='string'||!/^[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?$/u.test(v.server_name)||v.origin!==`https://${v.server_name}:8444`||
     ![v.server_cert_sha256,v.server_issuer_sha256,v.client_cert_sha256].every(sha)||v.server_cert_sha256===v.client_cert_sha256||
-    !slot(v.client_subject)||!Number.isSafeInteger(v.max_exchange_ms)||v.max_exchange_ms<1||v.max_exchange_ms>3000)fail();
+    !slot(v.client_subject)||!Number.isSafeInteger(v.max_exchange_ms)||v.max_exchange_ms<1||v.max_exchange_ms>OWNER_MAX_REQUEST_MS)fail();
  return v;
 }
 

@@ -10,6 +10,7 @@ import {validateConfiguration,readSecret} from '../../runtime/config.mjs';
 import {compilePreparedRunConfigurationSha256} from '../../runtime/prepared-run-configuration.mjs';
 import {compileNativeTaskRequest} from '../../runtime/native-authority/task-request.mjs';
 import {createProductOwnerCredentialDelivery} from './owner-credential-delivery.mjs';
+import {OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 
 const fail=()=>{throw Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE');};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -31,7 +32,7 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
  if(typeof enabled!=='boolean'||!candidate||candidate.multiRun?.dynamicInitialRuns!==true||
     typeof c.now!=='function'||typeof c.fetchImpl!=='function'||typeof readMaterial!=='function'||
     typeof c.pool?.connect!=='function'||c.report!==undefined&&typeof c.report!=='function'||typeof c.credentialFileSha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.credentialFileSha256)||
-    !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>3000||
+    !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>OWNER_MAX_REQUEST_MS||
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)fail();
  const original=candidate.runtime.binding,selectedClientId=candidate.identity.commandContext.clientResolution.clientId,
   store=createPostgresConversationStore({pool:c.pool,now:c.now}),initialBindings=createInitialRunBindingJournal({pool:c.pool,now:c.now}),
@@ -105,7 +106,7 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
    const at=c.now();if(!enabled||closed||authorityState.quarantined||!Number.isSafeInteger(v.deadlineMs)||!Number.isSafeInteger(at)||v.deadlineMs<=at)fail();
    const key=hash(binding);if(!owners.has(key)){if(owners.size>=1024)fail();owners.set(key,make(binding));}
    owner=owners.get(key);if(!owner.available){authorityState.quarantined=true;fail();}
-   life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs:Math.min(v.deadlineMs,at+limits.maxRequestMs),errorFactory:()=>Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE')});
+   life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs:Math.min(v.deadlineMs,at+limits.maxRequestMs),errorFactory:code=>Object.assign(Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE'),code==='DEADLINE'?{code}:{})});
    const receipt=await life.run(signal=>owner.checkCurrentConversation({binding,deadlineMs:v.deadlineMs,signal}));life.check();return receipt;
   }catch{fail();}finally{if(life?.close().unsettledOperations>0||owner?.available===false)authorityState.quarantined=true;}
  },close(){closed=true;if(enabled)authorityState.quarantined=true;owners.clear();}});

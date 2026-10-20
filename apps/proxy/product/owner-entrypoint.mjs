@@ -16,7 +16,7 @@ import {createProductProxyPersistedFacts} from './product-owner-facts.mjs';
 import {createProductOwnerPlacement} from './product-owner-placement.mjs';
 import {createProductOwnerNativeCurrentness} from './owner-native-currentness.mjs';
 import {createProductServiceTaskLeaseReader} from './service-task-leases.mjs';
-import {parseProductServicePairConfiguration} from './service-pair-discovery.mjs';
+import {parseProductServicePairConfiguration,OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 import {createProductOwnerServiceGate} from './owner-channel.mjs';
 import {createProductOwnerHttpsServer} from './owner-https.mjs';
 import {createOwnerDiagnostics,createDiagnosticPool} from './owner-diagnostics.mjs';
@@ -87,7 +87,7 @@ export function validateProductOwnerConfiguration(raw){
      t.certSha256===p.clientCertSha256||t.issuerSha256!==p.issuerSha256||
      !slot(p.clientSubject)||!slot(p.deploymentRevision)||!uuid(p.selectedClientId)||
      s.deploymentRevision!==p.deploymentRevision||s.ownerCertSha256!==t.certSha256||s.proxyCertSha256!==p.clientCertSha256||
-     !integer(s.expiresAtMs,Number.MAX_SAFE_INTEGER)||!integer(l.maxRequestMs,3000)||!integer(l.maxFactBytes,131072)||!integer(l.maxLeaseMs,30000)||
+     !integer(s.expiresAtMs,Number.MAX_SAFE_INTEGER)||!integer(l.maxRequestMs,OWNER_MAX_REQUEST_MS)||!integer(l.maxFactBytes,131072)||!integer(l.maxLeaseMs,30000)||
      price.modelId!=='anthropic.claude-sonnet-4-6'||price.profileId!=='us.anthropic.claude-sonnet-4-6'||!digest(price.revision)||
      !integer(price.validUntilMs,Number.MAX_SAFE_INTEGER)||
      ![price.actualInputMicroUSDPerK,price.reserveInputMicroUSDPerK,price.outputMicroUSDPerK].every(n=>integer(n,1_000_000_000))||
