@@ -12,7 +12,7 @@ import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.m
 import {continuationFixture,id} from '../../../worker/conversation/continuation/test/fixtures.mjs';
 import {RUNNER_LOAD_MAX_MS,RUNNER_LOAD_CONTROL_MARGIN_MS,RUNNER_SESSION_RPC_MS,RUNNER_SESSION_STORE_CALL_MS,controlSessionRpcMs,
  CONTROL_CHECKPOINT_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS,TASK_ROUTER_CAPTURE_MS,RUNNER_CAPTURE_MS,runnerStartupBudget} from '../../../../packages/runtime/runner-load-budget.mjs';
-import {createNativeSdkSessionClient} from '../session-client.mjs';
+import {createNativeSdkSessionClient,createNativeBoundSdkSessionStore} from '../session-client.mjs';
 import {createNativeSdkSessionApplication} from '../session-http.mjs';
 import {createRemoteNativeTaskController} from '../remote-task-client.mjs';
 import {createTaskCheckpointSource} from '../task-checkpoint-source.mjs';
@@ -81,6 +81,16 @@ test('control answers a slow session operation inside the runner allowance inste
  const client=createNativeSdkSessionClient({origin:'https://synthetic-native.invalid',credential:'opaque-native-task',binding:f.binding,fetchImpl:(url,options)=>app.handle(new Request(url,options))});
  const pending=client.load({key:f.key});pending.catch(()=>{});await settle();t.mock.timers.tick(controlSessionRpcMs('load'));
  await assert.rejects(pending,error=>error.code==='SDK_SESSION_UNAVAILABLE'&&error.cause!==undefined);
+});
+
+test('a bound-store call slower than the old three-second default completes on its default timer',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','Date'],now:Date.now()});
+ const f=sessionFixture(),delay=RUNNER_SESSION_RPC_MS.append-RUNNER_LOAD_CONTROL_MARGIN_MS,entries=[{type:'user',uuid:id(870),text:'mirrored'}];
+ const client={async register(){return {registered:true,key:f.key};},async load(){return {entries:null,offset:0};},async listSubkeys(){return {subkeys:[]};},
+  append:({expectedOffset,entries:batch})=>new Promise(resolve=>setTimeout(()=>resolve({offset:expectedOffset+batch.length}),delay))};
+ const bound=createNativeBoundSdkSessionStore({client,binding:f.binding,sessionKey:f.key});
+ assert.ok(delay>3000&&delay<RUNNER_SESSION_STORE_CALL_MS);const pending=bound.store.append(f.key,entries);await settle();t.mock.timers.tick(delay);
+ await pending;const status=await bound.settleObservedCalls();assert.equal(status.uncertain,false);assert.equal(status.appendFailures,0);
 });
 
 function original(){const {binding,target}=continuationFixture(),executionKey=hash(binding);return {binding,executionKey,executionId:executionKey,planSha256:'a'.repeat(64),expiresAtMs:Date.now()+600000,versions:target.versions};}
