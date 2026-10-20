@@ -1,13 +1,14 @@
 // Real transport reproduction: the actual apps/runtime/pinned-native-transport.mjs over a local TLS listener that stands
 // in for control behind the private ALB, driven through the deployed remote SDK process client and runner diagnostics.
-// Needs: node --experimental-test-module-mocks (the CA file's uid/mode check is POSIX-only; the CA bytes are presented
-// through an inert handle) and an `openssl` binary for a throwaway CA. No provider, SDK process, network or credential.
-// On the deployed tree every failure prints `native-start code=UNKNOWN`; on the repaired tree the fixed class appears.
+// Needs an `openssl` binary for a throwaway CA. On Linux/POSIX the CA is a real 0600 file owned by this uid (no mock, no
+// security-check bypass). On Windows only, the POSIX uid/mode check cannot pass, so the CA bytes are presented through an
+// inert handle (needs --experimental-test-module-mocks); that is not Linux qualification.
+// On the deployed tree (2b4421f6) every failure prints `native-start code=UNKNOWN`; on the repaired tree the fixed class appears.
 import test, {mock} from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'node:https';
 import {execFileSync} from 'node:child_process';
-import {mkdtempSync, readFileSync, writeFileSync, rmSync} from 'node:fs';
+import {mkdtempSync, readFileSync, writeFileSync, rmSync, chmodSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
@@ -25,9 +26,12 @@ writeFileSync(join(dir, 'srv.ext'), 'subjectAltName=DNS:localhost\nextendedKeyUs
 openssl(['x509', '-req', '-in', 'srv.csr', '-CA', 'ca.pem', '-CAkey', 'ca.key', '-CAcreateserial', '-out', 'srv.pem', '-days', '2', '-extfile', 'srv.ext']);
 const ca = readFileSync(join(dir, 'ca.pem'));
 
-mock.module('node:fs/promises', {namedExports: {open: async () => ({
-  stat: async () => ({isFile: () => true, size: ca.length, uid: 0, mode: 0o100600}), readFile: async () => ca, close: async () => {}})}});
-process.getuid ??= () => 0;
+const posixCa = process.platform !== 'win32', caFile = posixCa ? join(dir, 'control-ca.pem') : '/synthetic/control-ca.pem';
+if (posixCa) {writeFileSync(caFile, ca, {mode: 0o600}); chmodSync(caFile, 0o600);} else {
+  mock.module('node:fs/promises', {namedExports: {open: async () => ({
+    stat: async () => ({isFile: () => true, size: ca.length, uid: 0, mode: 0o100600}), readFile: async () => ca, close: async () => {}})}});
+  process.getuid ??= () => 0;
+}
 const transport = await import('../pinned-native-transport.mjs');
 const repaired = Array.isArray(transport.PINNED_NATIVE_FAILURE_CODES);
 
@@ -56,7 +60,7 @@ async function driveStart(selected) {
   mode = selected;
   const executionKey = hash(binding);
   const original = {binding, versions, executionKey, executionId: executionKey, planSha256: hash(descriptor), expiresAtMs: Date.now() + 120000};
-  const fetchImpl = await transport.createPinnedNativeFetch({origin, caFile: '/synthetic/control-ca.pem', caSha256: createHash('sha256').update(ca).digest('hex')});
+  const fetchImpl = await transport.createPinnedNativeFetch({origin, caFile, caSha256: createHash('sha256').update(ca).digest('hex')});
   const client = createRemoteSdkProcessClient({original, origin, credential: 'synthetic-task-only', fetchImpl});
   const lines = []; let startError;
   const outcome = await withRunnerDiagnostics(async () => {
@@ -76,7 +80,7 @@ test('native start succeeds through the real pinned transport when control answe
 });
 
 for (const [selected, repairedCode] of [['control-403', 'PINNED_NATIVE_STATUS_403'], ['edge-400', 'PINNED_NATIVE_STATUS_4XX'],
-  ['reset-before-headers', 'PINNED_NATIVE_SOCKET'], ['close-mid-body', 'PINNED_NATIVE_SOCKET']]) {
+  ['reset-before-headers', 'PINNED_NATIVE_SOCKET'], ['close-mid-body', 'PINNED_NATIVE_RESPONSE']]) {
   test(`${selected} at native start is reported as ${repaired ? repairedCode : 'UNKNOWN (deployed tree)'}`, async () => {
     const {lines, error, outcome} = await driveStart(selected);
     assert.equal(outcome, error);
