@@ -223,7 +223,7 @@ test('peer (or own) service not yet RUNNING is re-read in full until the pair is
   f.pair.change('DescribeServicesCommand',reply=>denials-->0?notRunning(role)(reply):reply);
   const runtime=await startProductOwner(f.runtime,f.dependencies),ports=f.captured();
   assert.equal(runtime.available,true);assert.deepEqual(clock.sleeps,[PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS]);
-  assert.equal(f.awsCalls.length,2+10,'each denied attempt stops at its first service read; the admitted one is a full read');
+  assert.equal(f.awsCalls.length,2*5+10,'each denied attempt stops after its first phase (services, members, definitions); the admitted one is a full read');
   assert.equal(ports.clientPolicy.ownerTaskArn,f.pair.id('owner'));assert.equal(ports.clientPolicy.proxyTaskArn,f.pair.id('proxy'));
   assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));
   await runtime.start();await runtime.close();assert.deepEqual(f.lifecycle.slice(-4),['server.close','pool.end','ecs.destroy','ec2.destroy']);
@@ -281,11 +281,11 @@ test('quarantined reader (unsettled AWS work) and stop requests end the wait at 
  const f=fixture(),clock=retryClock(f);f.runtime.limits.maxRequestMs=200;
  f.pair.change('DescribeServicesCommand',()=>new Promise(()=>{}));
  await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);
- assert.deepEqual(clock.sleeps,[],'a quarantined reader is never retried');assert.equal(kinds(f).length,1);
+ assert.deepEqual(clock.sleeps,[],'a quarantined reader is never retried');assert.equal(kinds(f).length,5,'only the first phase was started');
  assert.deepEqual(f.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
  const g=fixture(),stop=retryClock(g);g.pair.change('DescribeServicesCommand',notRunning('proxy'));
  const sleep=g.dependencies.sleep;g.dependencies.sleep=async(ms,signal)=>{await sleep(ms);process.emit('SIGTERM');assert.equal(signal.aborted,true);};
  const path=resolve('synthetic-stopped-runtime.json'),bytes=Buffer.from(JSON.stringify(g.runtime));g.material.set(path,bytes);
  assert.equal(await runProductOwnerMain(['--config',path],{MERI_PRODUCT_OWNER_REQUIRED:'1',MERI_PRODUCT_OWNER_CONFIG_SHA256:sha(bytes)},g.dependencies),3);
- assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,1);assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
+ assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,5,'one denied first phase, then the stop');assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
 });
