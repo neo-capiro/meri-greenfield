@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import {createConversationActivity} from '../activity.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {continuationFixture,id} from '../continuation/test/fixtures.mjs';
+import {LIFECYCLE_READ_BACKOFF_MS,LIFECYCLE_READ_UNAVAILABLE_LIMIT,lifecycleReadBackoffMs} from '../continuation/activity-lifecycle.mjs';
 const success={type:'result',subtype:'success',is_error:false};
-function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,entryChange,park=false}={}) {
+function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,entryChange,park=false,runtimeMs=1500}={}) {
  const f=continuationFixture(mode??'resume'),{target}=f;
  target.sourceRequest.skill=null;target.request.skill=null;
  const contextSha256=canonicalSha256({window:null,skill:null,scopes:target.scopes});
@@ -21,7 +22,7 @@ function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,en
   async ackControl({input}){state.acks.push(input);},async recordCheckpoint({input}){state.records++;return {controlId:command.controlId,intent:action==='pause'?'pause':'approval.wait',sourceBinding:binding,inputSha256:entry.commandSha256,state:'APPLIED',checkpointId:input.checkpointId,targetBinding:null,admissionReceiptId:null,retirementReceiptId:null,replayed:false};}};
  const captureCheckpoint=async()=>{const cp=structuredClone(f.continuation.checkpoint);cp.binding=binding;cp.workspace.binding=binding;cp.workspaceSha256=canonicalSha256(cp.workspace);cp.sessionId=sessionId;
   const r={checkpoint:cp,checkpointSha256:canonicalSha256(cp),sourceRequestSha256:canonicalSha256(request),contextSha256,sessionId,resumeSessionAt:null,verificationId:id(103),workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs:Date.now(),expiresAtMs:Date.now()+1000};if(corrupt)corrupt(r,'capture');return r;};
- const prepareRuntime=async args=>{state.prepare=args;const runtime={binding,versions:target.versions,cwd:`/workspace/conversations/${binding.conversationId}`,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1500,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024};
+ const prepareRuntime=async args=>{state.prepare=args;const runtime={binding,versions:target.versions,cwd:`/workspace/conversations/${binding.conversationId}`,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+runtimeMs,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024};
   if(mode){runtime.restoreReceipt={verificationId:id(104),binding,checkpointId:f.continuation.checkpoint.checkpointId,checkpointSha256:f.continuation.checkpointSha256,workspaceSha256:f.continuation.checkpoint.workspaceSha256,opaqueSessionSha256:f.continuation.checkpoint.opaqueSession.sha256,scopes:target.scopes,contextSha256,sourceRequestSha256:f.continuation.sourceRequestSha256,checkedAtMs:Date.now(),expiresAtMs:Date.now()+1000};if(corrupt)corrupt(runtime.restoreReceipt,'restore');}return runtime;};
  const query=args=>{state.calls++;state.options=args.options;return {async *[Symbol.asyncIterator](){
   yield {type:'system',subtype:'init',session_id:sessionId};const iter=args.prompt[Symbol.asyncIterator]();state.messages.push((await iter.next()).value);started.resolve();
@@ -64,4 +65,49 @@ test('a display publication refused by a hold the reader has not yet seen is fen
  assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
  assert.equal(refused,1,'no further display publication after the first refusal');assert.equal(claims,1);assert.equal(f.state.records,1);assert.equal(f.state.interrupts,1);
  assert.deepEqual(f.state.events.map(e=>e.data.state),['starting','running']);
+});
+
+// A control-page read that did not answer (control's ~80 serial Core rechecks outlasting the read allowance) is "no controls this
+// tick"; only that read is skippable.
+const unanswered=code=>Object.assign(Error(code),{code});
+for(const code of ['DEADLINE','NATIVE_UNAVAILABLE'])test(`a control read that ended ${code} counts as no controls, and a later read still claims and applies the steer`,async()=>{
+ const f=fixture({park:true}),read=f.runOwner.nextControls;let reads=0;
+ f.runOwner.nextControls=async args=>{if(++reads===1)throw unanswered(code);return read(args);};
+ assert.deepEqual(await f.execute({binding:f.binding}),{state:'completed'});
+ assert(reads>=2);assert.equal(f.state.claims,1);assert.equal(f.state.messages[1].message.content,'Literal /command @file text');
+ assert.deepEqual(f.state.acks.map(a=>a.outcome),['APPLIED']);
+});
+test('control not answering in time is never fatal by count; reads back off 0.5, 1, 2 s and the steer still applies',async()=>{
+ const f=fixture({park:true,runtimeMs:10000}),read=f.runOwner.nextControls,at=[];
+ f.runOwner.nextControls=async args=>{at.push(Date.now());if(at.length<=3)throw unanswered('DEADLINE');return read(args);};
+ assert.deepEqual(await f.execute({binding:f.binding}),{state:'completed'});
+ const gaps=at.slice(1,4).map((t,i)=>t-at[i]);
+ for(const [i,gap] of gaps.entries())assert(gap>=lifecycleReadBackoffMs(i+1)-20&&gap<lifecycleReadBackoffMs(i+1)+400,JSON.stringify(gaps));
+ assert.equal(f.state.claims,1);
+});
+test('NATIVE_UNAVAILABLE reads are skipped at most twice in a row, so a refusal still ends the run on the third',async()=>{
+ const f=fixture({runtimeMs:10000});let reads=0;
+ f.runOwner.nextControls=async()=>{reads++;throw unanswered('NATIVE_UNAVAILABLE');};
+ await assert.rejects(f.execute({binding:f.binding}));
+ assert.equal(reads,LIFECYCLE_READ_UNAVAILABLE_LIMIT+1);assert.equal(f.state.claims,0);
+ assert.equal(f.state.events.some(e=>e.data?.state==='completed'),false);
+});
+test('the read backoff is capped and never grows past five seconds',()=>{
+ assert.deepEqual([1,2,3,4,5,6].map(lifecycleReadBackoffMs),[500,1000,2000,4000,5000,5000]);
+ for(let missed=1;missed<=10000;missed++)assert(lifecycleReadBackoffMs(missed)<=LIFECYCLE_READ_BACKOFF_MS.max);
+});
+for(const [name,port] of [['claim','claimControl'],['ack','ackControl']])test(`a ${name} that does not answer stays fatal`,async()=>{
+ const f=fixture({park:true});f.runOwner[port]=async()=>{throw unanswered('DEADLINE');};
+ await assert.rejects(f.execute({binding:f.binding}));
+ assert.equal(f.state.events.some(e=>e.data?.state==='completed'),false);
+});
+test('a fenced read that does not answer stays fatal: a refused publication must find its hold',async()=>{
+ const f=fixture({action:'pause'});let hold=false,claims=0;const stop=Promise.withResolvers();
+ f.runOwner.nextControls=async()=>{if(hold)throw unanswered('DEADLINE');return [];};
+ f.runOwner.claimControl=async()=>{claims++;throw Error('no claim expected');};
+ f.runOwner.append=async({event})=>{if(event.type==='message.delta'){hold=true;throw unanswered('NATIVE_UNAVAILABLE');}f.state.events.push(event);};
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query(){return {async *[Symbol.asyncIterator](){
+  yield {type:'system',subtype:'init',session_id:f.sessionId};yield {type:'assistant',parent_tool_use_id:null,message:{id:'m1',content:[{type:'text',text:'refused'}]}};await stop.promise;},async interrupt(){return {still_queued:[]};},close(){stop.resolve();}};}});
+ await assert.rejects(execute({binding:f.binding}));
+ assert.equal(claims,0);assert.equal(f.state.records,0);
 });
