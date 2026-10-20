@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import {synthesizeFirstChatFoundation,validateFoundationBinding,FOUNDATION_SECRET_ROLES} from './first-chat-foundation.mjs';
 
 const secret=n=>[`arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/${n}-AbCdEf`];
@@ -70,12 +71,13 @@ test('signing key is RSA-2048 sign-only, retained, and only the issuer task role
  assert.equal(ofType(t,'AWS::ServiceDiscovery::Service').length,4);
 });
 
-test('control reaches the runner receiver only on 8080, and only the runner SG admits it',()=>{
- const t=synthesizeFirstChatFoundation(foundationBinding()),id=([logical])=>logical;
- const egress=ofType(t,'AWS::EC2::SecurityGroupEgress').filter(([,r])=>r.Properties.FromPort===8080).map(id);
- const ingress=ofType(t,'AWS::EC2::SecurityGroupIngress').filter(([,r])=>r.Properties.FromPort===8080&&r.Properties.SourceSecurityGroupId!=='sg-0dc7236a6d67e4340');
- assert.deepEqual(egress.map(e=>e.replace(/[A-F0-9]{8}8080[A-F0-9]{8}$/u,'')),['ControlSgtoMeriFirstChatFoundationRunnerSg']);
- assert.equal(ingress.length,1);assert.match(id(ingress[0]),/^RunnerSgfromMeriFirstChatFoundationControlSg/u);
- for(const [,r] of [...ofType(t,'AWS::EC2::SecurityGroupEgress'),...ofType(t,'AWS::EC2::SecurityGroupIngress')].filter(([,r])=>r.Properties.FromPort===8080&&r.Properties.Description!=='public ALB to control 8080 (Meri host rule only)'))
-  assert.equal(r.Properties.Description,'Meri preview control to original runner readiness','the live rule description, for import');
+test('the out-of-band control-to-runner 8080 pair stays out of the stack until its adoption is decided (task-route.md)',async()=>{
+ // Live rules sgr-0328903b4d42305a4 / sgr-01621253420024a59 exist outside CloudFormation. Declaring them here would make the next
+ // foundation update try to create duplicates; adopt them only through the recorded import-or-recreate decision.
+ const committed=JSON.parse(await readFile(new URL('./first-chat/foundation.template.json',import.meta.url),'utf8'));
+ for(const t of [synthesizeFirstChatFoundation(foundationBinding()),committed]){
+  const touchesRunner=r=>JSON.stringify([r.Properties.GroupId,r.Properties.SourceSecurityGroupId,r.Properties.DestinationSecurityGroupId]).includes('"RunnerSg');
+  const pair=[...ofType(t,'AWS::EC2::SecurityGroupIngress'),...ofType(t,'AWS::EC2::SecurityGroupEgress')].filter(([,r])=>r.Properties.FromPort===8080&&touchesRunner(r));
+  assert.deepEqual(pair.map(([id])=>id),[]);
+ }
 });

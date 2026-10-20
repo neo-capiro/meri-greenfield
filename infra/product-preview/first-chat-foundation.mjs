@@ -75,10 +75,6 @@ export function synthesizeFirstChatFoundation(binding){
  g.control.addIngressRule(alb,ec2.Port.tcp(8080),'public ALB to control 8080 (Meri host rule only)');
  g.control.addIngressRule(g.runner,ec2.Port.tcp(8082),'runner poststart to private control');
  g.runner.addEgressRule(g.control,ec2.Port.tcp(8082),'runner poststart to private control');
- // Control's task router reaches each original runner's TLS receiver directly (task-route.md). Same descriptions as the
- // out-of-band pair live since the first rollout, so adopting it into this stack is a reviewed import, not a second rule.
- g.control.addEgressRule(g.runner,ec2.Port.tcp(8080),'Meri preview control to original runner readiness');
- g.runner.addIngressRule(g.control,ec2.Port.tcp(8080),'Meri preview control to original runner readiness');
  g.runner.addEgressRule(g.proxy,ec2.Port.tcp(8443),'runner model traffic to proxy');
  g.proxy.addIngressRule(g.runner,ec2.Port.tcp(8443),'runner model traffic');
  g.proxy.addEgressRule(g.owner,ec2.Port.tcp(8444),'proxy to budget owner mTLS');

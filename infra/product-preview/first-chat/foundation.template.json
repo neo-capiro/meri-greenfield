@@ -93,27 +93,6 @@
     "ToPort": 8082
    }
   },
-  "ControlSgtoMeriFirstChatFoundationRunnerSgE3A10B918080493E6D0B": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "Meri preview control to original runner readiness",
-    "DestinationSecurityGroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "FromPort": 8080,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "ControlSgBD859011",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 8080
-   }
-  },
   "WorkerSgD9B79631": {
    "Type": "AWS::EC2::SecurityGroup",
    "Properties": {
@@ -229,27 +208,6 @@
     },
     "IpProtocol": "tcp",
     "ToPort": 8082
-   }
-  },
-  "RunnerSgfromMeriFirstChatFoundationControlSgA067F8D180802FAB141E": {
-   "Type": "AWS::EC2::SecurityGroupIngress",
-   "Properties": {
-    "Description": "Meri preview control to original runner readiness",
-    "FromPort": 8080,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "SourceSecurityGroupId": {
-     "Fn::GetAtt": [
-      "ControlSgBD859011",
-      "GroupId"
-     ]
-    },
-    "ToPort": 8080
    }
   },
   "RunnerSgtoMeriFirstChatFoundationProxySgD7877B2F8443B2C4DCCB": {

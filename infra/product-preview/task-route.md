@@ -16,6 +16,30 @@ The existing prepared-run issuance store owns immutable capability/facts binding
 
 `runner-tls-server.mjs` validates the owner-supplied certificate/key/CA against the exact original, observed candidate and task-local ECS metadata. It requires one awsvpc worker, matching task ARN/cluster/name/private IPv4, a matching private key, exact SAN and trusted bounded chain. It returns Node HTTPS options and creates no listener or file. `runner-https-material.mjs` reads protected task-local files and the remote conversation launch path passes the validated TLS options to the HTTPS listener. The pre-CLI poststart source now produces those task-local inputs; physical Linux/Fargate and live private-peer proof remain unrun.
 
+## Control → runner 8080 rule pair: live, outside the foundation stack (decision open)
+
+Control's task router reaches each runner's TLS receiver on 8080. The foundation stack (`first-chat-foundation.mjs`) does not declare that path. The live pair was added out of band at the first rollout and belongs to no stack (read back 20 October 2026):
+
+| Rule | Group | Direction | Peer | Description |
+| --- | --- | --- | --- | --- |
+| `sgr-0328903b4d42305a4` | control `sg-05a350c100574b21f` | egress tcp/8080 | runner `sg-098fc4f2ac89aa943` | `Meri preview control to original runner readiness` |
+| `sgr-01621253420024a59` | runner `sg-098fc4f2ac89aa943` | ingress tcp/8080 | control `sg-05a350c100574b21f` | same |
+
+The committed `first-chat/foundation.template.json` therefore matches the live stack, with 79 resources and without this pair. A test in `first-chat-foundation.test.mjs` keeps it that way. If the pair were declared, the next foundation update would try to create duplicate rules, fail and roll back.
+
+**Open decision: import or recreate.** Adopt the pair into the stack in one of two ways:
+- **(a) Import.** Use a CloudFormation resource import of the two rules. Whether `AWS::EC2::SecurityGroupIngress` and `AWS::EC2::SecurityGroupEgress` support import is **not verified**.
+- **(b) Recreate.** Revoke both rules and let a stack update create them, while no chat is in flight. Control cannot reach runners between the revoke and the create.
+
+The source change is the same for either option. Add these two lines after the runner-poststart rules, keeping the live descriptions so an import matches, then regenerate the template and invert the guard test:
+
+```js
+g.control.addEgressRule(g.runner,ec2.Port.tcp(8080),'Meri preview control to original runner readiness');
+g.runner.addIngressRule(g.control,ec2.Port.tcp(8080),'Meri preview control to original runner readiness');
+```
+
+The operator records which option was chosen, and when, before any foundation update.
+
 ## Private control listener integration
 
 The source composes a dedicated **private control listener on 8082** before opening the public listener on 8080. The proposed private ingress is only from the approved internal ALB security group; the internal ALB target group would forward to control 8082. Runner HTTPS remains private IP:8080 with proposed ingress only from the control SG. Public listener rules must deny all native/bootstrap/internal paths before a broader public rule. Network attribute/SG/listener readback and actual probes remain required before enabling traffic; these AWS resources and rules are not created by this source.
