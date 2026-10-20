@@ -1,6 +1,7 @@
 /** Task capability -> current native identity -> existing opaque session -> canonical service. */
 import {jsonBody} from '../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {assertRunOwnerRequest,same,runOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.mjs';
 import {fault} from './config.mjs';
@@ -45,5 +46,9 @@ export function createWorkerRunApplication({service,sessions,native,configuratio
    },{signal,deadlineMs}));
   }
   return Response.json(result,{headers:{'cache-control':'no-store'}});
- }catch(error){const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{if(session)sessions.revoke(session.credential);life?.close();}}});
+ }catch(error){
+  // An authority dependency (Core/Clerk, the task verifier) that did not answer decided nothing: 503 lets the runner replay an
+  // idempotent call (native-client.mjs). Every refusal, mismatch and changed authority stays 403.
+  if(isAuthorityUnavailable(error))return Response.json({error:{code:'WORKER_AUTHORITY_UNAVAILABLE'}},{status:503});
+  const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{if(session)sessions.revoke(session.credential);life?.close();}}});
 }

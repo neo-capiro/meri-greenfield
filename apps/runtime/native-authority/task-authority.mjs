@@ -4,6 +4,7 @@ import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertWorkerAuthorization,runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {isAuthorityUnavailable,carryAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const fault=code=>Object.assign(Error(code),{code});
 export function createNativeTaskAuthority(configuration){
@@ -19,5 +20,8 @@ export function createNativeTaskAuthority(configuration){
   life=createOperationLifetime({now,deadlineMs:cutoff,signal,errorFactory:()=>fault('WORKER_AUTHORITY_REFUSED')});
   const result=await life.run(signal=>call('worker/authorize',{capability,binding:pinned,operation,inputSha256},{signal,deadlineMs:cutoff}));
   const receipt=assertWorkerAuthorization(result,{binding:pinned,operation,inputSha256,started,now});life.limitDeadline(receipt.expiresAtMs);life.check();return receipt;
- }catch{throw fault(unavailable?'WORKER_AUTHORITY_UNAVAILABLE':'WORKER_AUTHORITY_REFUSED');}finally{life?.close();}}});
+ }catch(error){
+  // A verifier that did not answer stays transient (worker-http.mjs answers 503); every other failure is a refusal.
+  throw carryAuthorityUnavailable(error,fault(unavailable||isAuthorityUnavailable(error)?'WORKER_AUTHORITY_UNAVAILABLE':'WORKER_AUTHORITY_REFUSED'));
+ }finally{life?.close();}}});
 }

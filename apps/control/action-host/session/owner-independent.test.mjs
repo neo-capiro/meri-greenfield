@@ -45,3 +45,7 @@ test('independent rechecks pin the bound run so selection can never move or rese
  for(const hints of rechecks)assert.deepEqual(hints,{clientId:f.clientId,conversationId:f.binding.conversationId,runId:f.binding.runId});
  f.state.current=v=>({...v,binding:{...v.binding,runId:uuid(98)}});await assert.rejects(f.owner.authenticateSession({credential:s.credential}));assert.equal(f.owner.status().sessions,0,'a different selected run still refuses and removes the session');
 }finally{f.owner.close();}});
+for(const port of ['identity','current'])test(`independent ${port} owner that did not answer refuses only that issuance, as transient, and creates no session`,async()=>{const f=fixture();try{
+ f.state[port]=()=>{throw noAnswer();};await assert.rejects(f.issue(),unavailableCode);assert.equal(f.owner.status().sessions,0);
+ f.state[port]=()=>{throw Error('denied');};await assert.rejects(f.issue(),refusedCode);assert.equal(f.owner.status().sessions,0);
+ f.state[port]=null;await f.issue();assert.equal(f.owner.status().sessions,1);}finally{f.owner.close();}});
