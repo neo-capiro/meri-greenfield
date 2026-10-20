@@ -46,6 +46,11 @@ export const RUNNER_STARTUP_STAGE_ORDER=Object.freeze([
 
 // SDK session preparation; a continuation reads its checkpoint snapshot from control here.
 const LOCAL_STAGE_MS=RUNNER_SESSION_RPC_MS.snapshot+RUNNER_LOAD_CONTROL_MARGIN_MS;
+// The activity's bound on runtime preparation: the runner/runtime call, then the local stage. It is the one place where an
+// enclosing bound is smaller than its inner allowances in sequence (runtime 23 s + local 10 s = 33 s against 30 s). Each stage
+// keeps its own allowance and absolute cutoff, so the 30 s only shortens the local stage after a runtime call past 20 s; the
+// local stage's work is about 3.3 s at the tail profile (adj-e D2), so that takes a runtime call past 26.7 s, beyond its own 23 s.
+export const ACTIVITY_PREPARATION_MAX_MS=30000;
 // Optional Browser host, objective, and selected-skill preparation share this
 // stage before the first running publication.
 const SETUP_STAGE_MS=23000;
