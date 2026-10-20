@@ -53,8 +53,8 @@ const delay=(ms,signal)=>new Promise((done,fail)=>{
   signal?.addEventListener('abort',aborted,{once:true});
 });
 const gate=()=>({started:Promise.withResolvers(),release:Promise.withResolvers()});
-async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,loadNativeMs=nativeMs,signal,duringJournal,duringFinalRead,beforeInitialRead,duringTaskAuthorization,journalDelayMs=0,coreGate,storeReadGate,nextTurn=false,journalExtra=true,foreignStoredBinding=false,legacySessions=false}={}){
-  const started=performance.now(),counts={identity:0,context:0,membership:0,taskAuthorization:0,currentRun:0,read:0,append:0,journalExecution:0,retention:0};
+async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,loadNativeMs=nativeMs,callMs,signal,duringJournal,duringFinalRead,beforeInitialRead,duringTaskAuthorization,journalDelayMs=0,coreGate,storeReadGate,nextTurn=false,journalExtra=true,foreignStoredBinding=false,legacySessions=false}={}){
+  const started=performance.now(),counts={identity:0,context:0,membership:0,taskAuthorization:0,currentRun:0,read:0,append:0,journalExecution:0,retention:0,controls:0};
   const principal={tenantId:binding.tenantId,actorId:binding.actorId};
   const commandBinding=mode==='dynamic'?{...binding,conversationId:id(901),runId:id(902)}:binding;
   const clientId=id(5),expiry=()=>Date.now()+60000;
@@ -91,11 +91,11 @@ async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,lo
   const stub=async()=>{throw Error('unused');};
   const store={accept:stub,async append(){counts.append++;return {scopes};},async read(){counts.read++;if(counts.read===2)duringFinalRead?.({state,saved});if(storeReadGate&&counts.read===1){storeReadGate.started.resolve();await storeReadGate.release.promise;}return structuredClone(saved);},
     ...(nextTurn?{nextRuns:{async execution(){return {nextTurn:{fixtureMarker:'new-turn'}};}}}:{}),
-    lifecycle:{begin:stub,change:stub,get:stub,controls:stub,claim:stub,checkpoint:stub,readCheckpoint:stub,async execution(){counts.journalExecution++;duringJournal?.({state,saved});await delay(journalDelayMs);return journalExtra?{fixtureMarker:'journal-read'}:null;},continuation:stub,cancel:stub,readStopFence:stub}};
+    lifecycle:{begin:stub,change:stub,get:stub,async controls(){counts.controls++;return [];},claim:stub,checkpoint:stub,readCheckpoint:stub,async execution(){counts.journalExecution++;duringJournal?.({state,saved});await delay(journalDelayMs);return journalExtra?{fixtureMarker:'journal-read'}:null;},continuation:stub,cancel:stub,readStopFence:stub}};
   const dispatcher={start:stub,cancel:stub,signal:stub};
   const retention={async assertServable(){counts.retention++;if(state.retention!=='servable')throw Error('RETENTION_SUPPRESSED');}};
   const basic=createConversationService({sessions:sessionPort,store,dispatcher,versions,maxRequestMs:serverMs,retention});
-  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions:sessionPort,maxRequestMs:serverMs,reconcileOriginal:stub,checkpoints:{read:stub}});
+  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions:sessionPort,maxRequestMs:serverMs,reconcileOriginal:stub,checkpoints:{read:stub},retention});
   const native={async call(operation,input,{signal}={}){if(operation!=='worker/authorize')throw Error('unexpected native operation');counts.taskAuthorization++;
     duringTaskAuthorization?.({state,count:counts.taskAuthorization});
     const verified=await verifierContext.verifyIdentity({credential:'synthetic-native',deadlineMs:Date.now()+serverMs,signal});
@@ -109,8 +109,8 @@ async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,lo
   const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',now:Date.now,maxRequestMs:nativeMs,loadMaxRequestMs:loadNativeMs,
     fetch:async(url,init)=>{const request=app.handle(new Request(url.replace('/v1/runner/'+route,'/internal/conversations/'+route),init));pendingServer.push(request);const response=await request;responseStatus=response.status;return response;}});
   let outcome,value,serverSettled;
-  const input=route==='load'?{binding}:{binding,event:{eventId:id(88),createdAt:new Date().toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}}};
-  const transport=client.call('runner/'+route,input,{deadlineMs:Date.now()+serverMs,signal});
+  const input=route==='load'?{binding}:route==='next-controls'?{binding,after:0}:{binding,event:{eventId:id(88),createdAt:new Date().toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}}};
+  const transport=client.call('runner/'+route,input,{deadlineMs:Date.now()+serverMs,signal,...(callMs===undefined?{}:{maxRequestMs:callMs})});
   try{value=await transport;outcome='200';}
   catch(error){outcome=error?.code??error?.message??'error';}
   finally{if(coreGate||storeReadGate){coreGate?.release.resolve();storeReadGate?.release.resolve();const timeout=new AbortController();
@@ -155,6 +155,27 @@ test('non-load worker publish retains separate authentication and current observ
     assert.equal(result.counts.journalExecution,0);assert.deepEqual(result.value.scopes,scopes);
   }
   assert.deepEqual(current.counts,legacy.counts);
+});
+
+test('the lifecycle control page takes one session observation per authority point and two task verifies',async()=>{
+  // Before: 67 (fixed) / 82 (dynamic) Core calls and 3 task authorizations: a session pair in worker HTTP, then per lifecycle fresh()
+  // its own pair plus the gated history read's pair before and after it. Now each of those points is one complete observation.
+  for(const [mode,coreCalls,split] of [['fixed',29,[9,8,12]],['dynamic',35,[9,14,12]]]){
+    const result=await one({mode,route:'next-controls'});
+    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,coreCalls,JSON.stringify(result));
+    assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],split);
+    assert.equal(result.counts.taskAuthorization,2,'task verified before the session work and after the read');
+    assert.equal(result.counts.controls,1);assert.equal(result.counts.read,2,'the run is read once per lifecycle fresh()');
+    assert.equal(result.counts.retention,4,'retention before and after each run read');assert.equal(result.counts.append,0);
+    assert.deepEqual(result.value,{controls:[],nextControlSequence:0});
+  }
+});
+
+test('the lifecycle control page answers within its 23 s allowance at the 10:26Z median Core latencies', {timeout:30000},async()=>{
+  const latencyMs=route=>({identity:100,membership:300,context:500})[route];
+  const result=await one({mode:'dynamic',route:'next-controls',latencyMs,serverMs:25000,nativeMs:3000,callMs:23000});
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,35);
+  assert.ok(result.durationMs<16000,JSON.stringify(result));
 });
 
 test('35 ms serial Core responses fit the fused load deadline',async()=>{

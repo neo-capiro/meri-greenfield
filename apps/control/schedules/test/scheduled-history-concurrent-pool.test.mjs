@@ -76,15 +76,15 @@ test('concurrent scheduled and ordinary HTTP history requests complete on one co
    assert.equal(response.status,200);const body=await response.json();
    assert.deepEqual(body.conversations.map(c=>c.conversationId),[index===0?scheduledId:ordinaryId]);
   }
-  assert.deepEqual(coreCalls,[ordinaryId,ordinaryId],'only absent custody delegates to Core on both currentness passes');
+  assert.deepEqual(coreCalls,[ordinaryId],'only absent custody delegates to Core, once, in the fenced release');
   for(const conversationId of [scheduledId,ordinaryId]){
    const reads=pool.state.originReads.filter(r=>r.conversationId===conversationId);
-   assert.deepEqual(reads.map(r=>r.held),[false,false,true,true],'first and last final custody reads both borrow the held session');
+   assert.deepEqual(reads.map(r=>r.held),[true,true],'first and last final custody reads both borrow the held session');
    assert.ok(reads.every(r=>r.tenantId===fixture.principal.tenantId));
   }
   assert.equal(pool.state.peak,1);assert.equal(pool.state.live,1);assert.equal(pool.state.active,0);
   assert.equal(pool.state.waiters.length,0);assert.equal(pool.state.inFlight,0);assert.equal(pool.state.idle.length,1);
-  assert.equal(pool.state.connects,10,'each request has four preliminary reads and one serving checkout; no nested read checkout or retry');
+  assert.equal(pool.state.connects,4,'each request has one preliminary retention read and one serving checkout; no nested read checkout or retry');
   assert.ok(pool.state.releases.every(r=>r.error===undefined&&r.locks===0&&r.inFlight===0),'every returned session is unlocked and idle');
  }finally{pool.resumeHeldRead.resolve();await Promise.allSettled([scheduled,...(ordinary?[ordinary]:[])]);}
 });

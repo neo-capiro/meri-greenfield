@@ -15,6 +15,6 @@ test('Core currentness receives only its request value during final fenced relea
  const currentness={async assertCurrent(call){assert.equal(arguments.length,1);assert.equal(call.conversationId,conversation.conversationId);coreCalls++;}};
  const app=createConversationHistoryApplication({service,gate,currentness,now,limits:{maxRequestMs:1000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const response=await app.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:'{}'}));
- assert.equal(response.status,200);assert.equal(coreCalls,2);assert.equal(releaseReads,0);
+ assert.equal(response.status,200);assert.equal(coreCalls,1,'one currentness read per row, in the fenced release');assert.equal(releaseReads,0);
  assert.deepEqual((await response.json()).conversations.map(c=>c.conversationId),[conversation.conversationId]);
 });
