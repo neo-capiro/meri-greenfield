@@ -46,8 +46,8 @@ const signals=new Set(['SIGABRT','SIGALRM','SIGBUS','SIGFPE','SIGHUP','SIGILL','
  'SIGTRAP','SIGUSR1','SIGUSR2','SIGXCPU','SIGXFSZ']);
 const nonError=Object.freeze({code:'NON_ERROR',kind:'NON_ERROR',exit:'none',signal:'none',cause:'none',msg:'none',site:'none'});
 const ownValue=(error,key)=>{const d=Object.getOwnPropertyDescriptor(error,key);return d&&Object.hasOwn(d,'value')?d.value:undefined;};
-/** Twelve hex characters of SHA-256 over an error message. Matched offline against
- * docs/integration/runner-first-failure-message-hashes.json; the message itself is never printed. */
+/** Twelve hex characters of SHA-256 over an error message; the message itself is never printed. Resolve one with
+ * scripts/diagnostics/runner-first-failure-message-hashes.mjs at the commit the image was built from. */
 export const firstFailureMessageHash=message=>createHash('sha256').update(message,'utf8').digest('hex').slice(0,12);
 // V8 exposes `stack` as one shared native accessor that formats through Node's default prepareStackTrace, reading
 // `name` and `message`. It is invoked only when both resolve to data properties, so no user getter ever runs.
@@ -94,7 +94,10 @@ function describe(error){
  let fixed;try{fixed=classify(error);}catch{return nonError;}if(fixed===nonError)return nonError;
  const detail=(read,fallback)=>{try{return read();}catch{return fallback;}};
  return {...fixed,cause:detail(()=>{const cause=ownValue(error,'cause');return cause===undefined?'none':classify(cause).code;},'NON_ERROR'),
-  msg:detail(()=>{const message=ownValue(error,'message');return typeof message==='string'?firstFailureMessageHash(message):'none';},'none'),
+  // SDK-tagged failures and SyntaxErrors interpolate a stderr tail or an input snippet: their hash would only confirm guessed
+  // text, and their class/exit/signal fields already identify them.
+  msg:detail(()=>{const message=ownValue(error,'message');if(typeof message!=='string')return 'none';
+   return typeof ownValue(error,'errorClass')==='string'||error instanceof SyntaxError?'templated':firstFailureMessageHash(message);},'none'),
   site:detail(()=>siteOf(error),'none')};
 }
 export function markRunnerStage(stage){
