@@ -21,9 +21,10 @@ const STARTUP_REQUEST_MAX_MS=23000;
 // (worker-http.mjs), the task verifier's (native-authority/task-verifier-http.mjs), or a gateway that lost a request it had
 // dispatched (native-runner-gateway.mjs). Such a failure keeps code NATIVE_UNAVAILABLE and carries the transient mark of
 // packages/runtime/authority-availability.mjs; every other non-200 answer, including every refusal, stays definitive. The
-// pinned transport delivers every answer as a Response (pinned-native-transport.mjs), so the status decides here.
+// pinned transport delivers every answer as a Response (pinned-native-transport.mjs), so the status decides here. Control's
+// in-process provider (prepared-candidate.mjs) classifies the same applications' answers with this rule.
 const unansweredCodes=new Set(['WORKER_AUTHORITY_UNAVAILABLE','NATIVE_TASK_AUTHORITY_UNAVAILABLE']);
-const unanswered=(status,error)=>status===503&&(unansweredCodes.has(error?.code)||error?.code==='NATIVE_GATEWAY_UNAVAILABLE'&&error?.outcome==='UNKNOWN');
+export const unansweredNativeAnswer=(status,error)=>status===503&&(unansweredCodes.has(error?.code)||error?.code==='NATIVE_GATEWAY_UNAVAILABLE'&&error?.outcome==='UNKNOWN');
 // Sent again after an unanswered attempt, and only inside the caller's absolute deadline: runner/load is a read, and
 // runner/publish carries a fixed eventId that control's store returns instead of appending twice
 // (apps/control/conversations/postgres-store.mjs appendEvent). No other operation is replayed.
@@ -55,7 +56,7 @@ export function createNativeCapabilityClient({configuration,credential,fetch:tra
    if(response.status!==200){
     cause=pinnedStatusRefusal(response.status);
     // Only an explicit "did not answer" is transient; an unreadable error body leaves the failure definitive.
-    if(json(response))try{transient=unanswered(response.status,(await body(response,life,PINNED_NATIVE_ERROR_BODY_MAX_BYTES))?.error);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+    if(json(response))try{transient=unansweredNativeAnswer(response.status,(await body(response,life,PINNED_NATIVE_ERROR_BODY_MAX_BYTES))?.error);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
     throw fault('NATIVE_UNAVAILABLE');
    }
    if(!json(response))throw fault('NATIVE_UNAVAILABLE');
