@@ -16,7 +16,7 @@ import {createHash} from 'node:crypto';
 import {inspect} from 'node:util';
 import {getEventListeners} from 'node:events';
 import {createRunnerTlsCertificateFixture} from '../native-authority/test/runner-tls-fixture.mjs';
-import {withRunnerDiagnostics, markRunnerStage, captureRunnerFailure} from '../runner-runtime-diagnostics.mjs';
+import {withRunnerDiagnostics, markRunnerStage, captureRunnerFailure, PINNED_NATIVE_FAILURE_CODES} from '../runner-runtime-diagnostics.mjs';
 import {createRemoteSdkProcessClient} from '../native-authority/remote-task-client.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {binding, versions} from '../../control/conversations/test/store-fixture.mjs';
@@ -44,7 +44,7 @@ if (posixCa) {
     stat: async () => ({isFile: () => true, size: trusted.ca.length, uid: 0, mode: 0o100600}), readFile: async () => trusted.ca, close: async () => {}})}});
   process.getuid ??= () => 0;
 }
-const {createPinnedNativeFetch, PINNED_NATIVE_FAILURE_CODES, classifyPinnedStatus, classifyPinnedRequestError} = await import('../pinned-native-transport.mjs');
+const {createPinnedNativeFetch, classifyPinnedStatus, classifyPinnedRequestError} = await import('../pinned-native-transport.mjs');
 
 const SECRET = {credential: 'SECRETCREDENTIAL0123', prompt: 'SECRET-PROMPT-7f3a', body: 'SECRET-BODY-91c2', header: 'SECRET-HEADER-55e1',
   status: 'SECRET-STATUS-TEXT', cn: 'ignored-cn', ca: 'synthetic-test-ca'};
@@ -169,7 +169,7 @@ test('request error classes cover connect, TLS trust, socket and parser failures
     assert.equal(classifyPinnedRequestError(value), 'PINNED_NATIVE_TRANSPORT');
   }
 });
-test('the class set is closed, constant-shaped and exactly accepted by the runner diagnostics allowlist', async () => {
+test('the class set is closed and constant-shaped, every class prints, and the allowlist is exact', async () => {
   assert.ok(Object.isFrozen(PINNED_NATIVE_FAILURE_CODES));
   assert.equal(new Set(PINNED_NATIVE_FAILURE_CODES).size, PINNED_NATIVE_FAILURE_CODES.length);
   for (const code of PINNED_NATIVE_FAILURE_CODES) {
@@ -177,11 +177,11 @@ test('the class set is closed, constant-shaped and exactly accepted by the runne
     const lines = [];
     await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); captureRunnerFailure(coded(code), 'native-start'); throw coded(code);},
       {write: line => lines.push(line)}).catch(() => {});
-    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start code=${code}\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
+    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=${code} class=ERROR exit=none signal=none\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
   }
   const lines = []; // a look-alike outside the set stays UNKNOWN: the allowlist is exact, not a prefix match
   await withRunnerDiagnostics(async () => {throw coded('PINNED_NATIVE_SECRET');}, {write: line => lines.push(line)}).catch(() => {});
-  assert.deepEqual(lines, ['RUNNER_FIRST_FAILURE origin=runtime code=UNKNOWN\n', 'RUNNER_RUNTIME_FAILED stage=module-import code=UNKNOWN\n']);
+  assert.deepEqual(lines, ['RUNNER_FIRST_FAILURE origin=runtime stage=module-import code=ERROR class=ERROR exit=none signal=none\n', 'RUNNER_RUNTIME_FAILED stage=module-import code=ERROR\n']);
 });
 
 // --- success and status classes --------------------------------------------------------------------------------------
@@ -366,7 +366,7 @@ for (const [selected, code, base] of [['s403', 'PINNED_NATIVE_STATUS_403'], ['s4
   test(`${label} native-start ${selected} prints only the fixed class ${code}`, async () => {
     const {lines, failure} = await driveStart(selected, {base});
     assertSanitized(failure, code);
-    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start code=${code}\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
+    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=${code} class=ERROR exit=none signal=none\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
   });
 }
 test(`${label} native-start succeeds with no diagnostic line`, async () => {
@@ -376,5 +376,5 @@ test(`${label} the client's native-start lifetime deadline wins as REMOTE_TASK_R
   const budget = original => ({nativePrepare: {maxMs: 23000, expiresAtMs: original.expiresAtMs - 1000}, nativeStart: {maxMs: 50, expiresAtMs: original.expiresAtMs - 1000}});
   const {lines, failure} = await driveStart('hang', {startupBudget: budget});
   assert.equal(failure.code, 'REMOTE_TASK_REFUSED');
-  assert.equal(lines[0], 'RUNNER_FIRST_FAILURE origin=native-start code=REMOTE_TASK_REFUSED\n');
+  assert.equal(lines[0], 'RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=REMOTE_TASK_REFUSED class=ERROR exit=none signal=none\n');
 });

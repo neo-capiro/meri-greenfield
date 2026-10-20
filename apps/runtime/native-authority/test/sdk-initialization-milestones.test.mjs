@@ -17,6 +17,7 @@ import {createRemoteNativeTaskApplication} from '../remote-task-http.mjs';
 import {createRemoteSdkProcessClient} from '../remote-task-client.mjs';
 import {createIndependentNativeTask} from '../independent-task.mjs';
 import {createPreparedRunnerQuery} from '../runner-query.mjs';
+import {withRunnerDiagnostics, markRunnerStage} from '../../runner-runtime-diagnostics.mjs';
 
 const cliPackage = fileURLToPath(new URL('../../../worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude', import.meta.url));
 const available = process.platform === 'linux' && existsSync(cliPackage);
@@ -62,8 +63,9 @@ async function localProvider(t) {
   return {origin: 'http://127.0.0.1:' + server.address().port, requests};
 }
 
-/** One composed run; `refuseStart` makes the control-side start authority refuse after the modelled delay. */
-async function runQuery(t, {refuseStart = false} = {}) {
+/** One composed run; `refuseStart` makes the control-side start authority refuse after the modelled delay;
+ * `endCli` sends that signal to the native CLI once its initialize answer has crossed the facade, before any model turn. */
+async function runQuery(t, {refuseStart = false, endCli} = {}) {
   const provider = await localProvider(t);
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'meri-sdk-milestones-'))), workspace = join(root, 'workspace'), configDirectory = join(root, 'config-run');
   mkdirSync(workspace, {mode: 0o700}); mkdirSync(configDirectory, {mode: 0o700});
@@ -113,7 +115,7 @@ async function runQuery(t, {refuseStart = false} = {}) {
     if (operation === 'prepare' && response.status === 200) mark('prepareAcknowledged');
     if (operation === 'start' && response.status === 200) mark('startAcknowledged');
     if (exchanges.at(-1).initializeRequest) mark('initializeDelivered');
-    if (exchanges.at(-1).initializeResponse) mark('initializeResponded');
+    if (exchanges.at(-1).initializeResponse) { mark('initializeResponded'); if (endCli) process.kill(nativeTask.status().nativePid, endCli); }
     return response;
   };
   const client = createRemoteSdkProcessClient({original, origin: 'https://runner.invalid', credential: taskToken, fetchImpl, startupMaxRequestMs: 23000});
@@ -166,3 +168,25 @@ test('a refused start ends the SDK iteration promptly, before any process or mod
   // A failed start stays UNKNOWN at the receiver even after its stop; only the stop receipt says nothing was allocated.
   assert.equal(receiver.status().state, 'unknown');
 });
+
+/** The runner's first-failure line for an activity whose SDK iteration rejected with `error` (activity.mjs captures it raw). */
+async function firstFailureLine(error) {
+  const lines = [];
+  await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); throw error;}, {write: line => lines.push(line)}).catch(() => {});
+  return lines[0];
+}
+
+// Live run ef0c07c7: the CLI was running behind the remote facade when the activity failed, and the runner printed only
+// `code=UNKNOWN`. An SDK-side process failure must name its class, exit code or signal, and the stage.
+for (const [signal, expected] of [
+  ['SIGKILL', 'RUNNER_FIRST_FAILURE origin=runtime stage=activity-stream code=SDK_PROCESS_KILLED_BY_SIGNAL class=SDK_PROCESS_KILLED_BY_SIGNAL exit=none signal=SIGKILL\n'],
+  ['SIGTERM', 'RUNNER_FIRST_FAILURE origin=runtime stage=activity-stream code=SDK_PROCESS_EXITED_NONZERO class=SDK_PROCESS_EXITED_NONZERO exit=143 signal=none\n'],
+]) {
+  test(`a CLI ended by ${signal} after initialize is reported with its SDK class and exit, never UNKNOWN`, {skip: !available && 'needs Linux and the pinned Linux CLI'}, async t => {
+    const {error, result, nativeTask} = await runQuery(t, {endCli: signal});
+    assert.equal(result, undefined);
+    assert.ok(error instanceof Error);
+    assert.equal(await firstFailureLine(error), expected);
+    assert.equal(nativeTask.status().physicalStopProven, true);
+  });
+}

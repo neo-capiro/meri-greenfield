@@ -11,7 +11,7 @@ let sdkQuery = () => assert.fail('SDK query not configured by this test');
 mock.module('../../worker/conversation/agent-sdk.mjs', {namedExports: {query: value => sdkQuery(value)}});
 const {prepareNativeSdkQuery} = await import('../native-authority/sdk-query-preparation.mjs');
 const descriptor = {command: '/synthetic/node', args: [], cwd: '/synthetic/workspace', env: {}};
-const firstLine = (origin, code) => `RUNNER_FIRST_FAILURE origin=${origin} code=${code}\n`;
+const firstLine = (origin, code, kind = 'ERROR') => `RUNNER_FIRST_FAILURE origin=${origin} stage=activity-stream code=${code} class=${kind} exit=none signal=none\n`;
 const finalLine = code => `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`;
 const coded = code => Object.assign(Error('synthetic-private-canary'), {code});
 const observe = promise => promise.then(value => ({value}), error => ({error}));
@@ -134,14 +134,14 @@ test('preparation refusal or already assembled aggregate is rethrown without ins
   const refused = coded('NATIVE_EXECUTION_SDK_PREPARATION_REFUSED');
   const aggregate = new AggregateError([refused, Error('synthetic-private-canary')]);
   Object.defineProperty(aggregate, 'errors', {get() {inspected++; throw Error('private aggregate members');}});
-  for (const [initial, code] of [[refused, refused.code], [aggregate, 'UNKNOWN']]) {
+  for (const [initial, code, kind] of [[refused, refused.code, 'ERROR'], [aggregate, 'AGGREGATE_ERROR', 'AGGREGATE_ERROR']]) {
     const lines = [];
     sdkQuery = () => {throw initial;};
     await assert.rejects(withRunnerDiagnostics(() => {
       markRunnerStage('activity-stream');
       return prepareNativeSdkQuery({prompt: 'synthetic prompt', options: {}, bindLaunch() {assert.fail('No launch allowed');}});
     }, {write: line => lines.push(line)}), error => error === initial);
-    assert.deepEqual(lines, [firstLine('sdk-prepare', code), finalLine(code)]);
+    assert.deepEqual(lines, [firstLine('sdk-prepare', code, kind), finalLine(code)]);
   }
   assert.equal(inspected, 0);
 });
@@ -272,14 +272,15 @@ test('only fixed SDK codes are emitted and hostile errors/origins are never insp
   let inspected = 0;
   const accessor = Object.defineProperty({}, 'code', {get() {inspected++; throw Error('private');}});
   const proxy = new Proxy({}, {getOwnPropertyDescriptor() {inspected++; throw Error('private');}, get() {inspected++; throw Error('private');}});
-  for (const error of [accessor, proxy, coded('REMOTE_TASK_REFUSED\nsynthetic-private-canary'), 'synthetic-private-canary', null]) {
+  // An unlisted code or message is never printed: an Error reports only its type, anything else NON_ERROR.
+  for (const [error, code] of [[accessor, 'NON_ERROR'], [proxy, 'NON_ERROR'], [coded('REMOTE_TASK_REFUSED\nsynthetic-private-canary'), 'ERROR'], ['synthetic-private-canary', 'NON_ERROR'], [null, 'NON_ERROR']]) {
     const lines = [];
     // Node's assert.rejects inspects thrown proxies itself; retain the rejection in an inert envelope.
     const outcome = await observe(withRunnerDiagnostics(async () => {
       markRunnerStage('activity-stream'); captureRunnerFailure(error, 'sdk-prepare\nsynthetic-private-canary'); throw error;
     }, {write: line => lines.push(line)}));
     assert.equal(outcome.error, error);
-    assert.deepEqual(lines, [firstLine('runtime', 'UNKNOWN'), finalLine('UNKNOWN')]);
+    assert.deepEqual(lines, [firstLine('runtime', code, code), finalLine(code)]);
   }
   assert.equal(inspected, 0);
 });

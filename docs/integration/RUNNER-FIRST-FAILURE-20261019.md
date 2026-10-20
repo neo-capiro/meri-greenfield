@@ -34,8 +34,8 @@ node --test --test-concurrency=1 --test-name-pattern="^(control task ports|start
 
 The product runner's `fetchImpl` for native prepare/start is `apps/runtime/pinned-native-transport.mjs`. Its rejections
 were code-less, so every control/ALB status, socket, TLS or truncation failure at `origin=native-start` printed `UNKNOWN`.
-Each rejection now carries exactly one constant from `PINNED_NATIVE_FAILURE_CODES`, allowlisted by the canonical
-diagnostic owner. The message stays `PINNED_NATIVE_REFUSED`. No status text, body, system code, peer detail, header,
+Each rejection now carries exactly one constant from `PINNED_NATIVE_FAILURE_CODES`. The canonical diagnostic owner
+defines that list and spreads it into its allowlist, and the transport imports it. The message stays `PINNED_NATIVE_REFUSED`. No status text, body, system code, peer detail, header,
 prompt or credential is echoed, and request bytes, TLS options, ceilings and denial conditions are unchanged.
 
 | Class | Meaning |
@@ -50,9 +50,9 @@ prompt or credential is echoed, and request bytes, TLS options, ceilings and den
 
 At `native-start`, the client's operation lifetime still wins deadline and cancellation races, which print
 `REMOTE_TASK_REFUSED`. The transport's 30 s `TIMEOUT` is unreachable within the 23 s start bound. A 200 reply whose body is
-not JSON, is not valid UTF-8, or has a missing or wrong-shaped `original` still prints `UNKNOWN`. Those failures are raised in
-`native-authority/remote-task-client.mjs` (`JSON.parse`, `TextDecoder`, `CommandError('INVALID_COMMAND')` without a code),
-not in the transport.
+not JSON, is not valid UTF-8, or has a missing or wrong-shaped `original` fails in `native-authority/remote-task-client.mjs`
+(`JSON.parse`, `TextDecoder`, `CommandError('INVALID_COMMAND')` without a code), not in the transport. It is classified by
+the fixed fields below (`SYNTAX_ERROR`, `ERR_ENCODING_INVALID_ENCODED_DATA`, `INVALID_COMMAND`).
 
 `apps/runtime/test/pinned-native-transport.test.mjs` drives the real transport over local TLS. It covers every class,
 cancellation, the ceiling, abort/response races, late responses, redaction, unchanged denial, and socket/timer/listener
@@ -65,9 +65,49 @@ cases are labelled `[windows-ca-mock]`. The test is not part of the image build'
 node --experimental-test-module-mocks --test --test-concurrency=1 apps/runtime/test/pinned-native-transport.test.mjs
 ```
 
+## Fixed classification of every first failure (20 October, live run ef0c07c7)
+
+Image `sha256:d7995b75…` (candidate `3dc993ef`) printed `RUNNER_FIRST_FAILURE origin=runtime code=UNKNOWN` 13.4 s after
+native start completed. Cleanup then ran past the shutdown timer (`RUNTIME_SHUTDOWN_TIMEOUT`), so the final
+`RUNNER_RUNTIME_FAILED stage=… code=…` line, the only one carrying the stage, was never written.
+
+- The activity's `diagnostics.failure` hook captures the raw inner error.
+- On the post-start path, most errors are code-less: every SDK-originated failure (own `errorClass`, `exitCode` or `signal`,
+  no `code`), the text and progress projectors' `Error('SDK_TEXT_*')` / `Error('SDK_PROGRESS_REFUSED')`, and the client
+  parse errors above.
+
+The event is now:
+
+```text
+RUNNER_FIRST_FAILURE origin=<origin> stage=<stage> code=<code> class=<class> exit=<0-255|none> signal=<SIGNAME|none>
+```
+
+- `code`: an allowlisted own code, else an allowlisted constant message, else the class. An Error is never printed as
+  `UNKNOWN`; a thrown non-error or proxy is `NON_ERROR`.
+- `class`: `SDK_<errorClass>` for the pinned SDK's tagged classes (`SDK_PROCESS_EXITED_NONZERO`,
+  `SDK_PROCESS_KILLED_BY_SIGNAL`, `SDK_PROCESS_ERROR`, `SDK_CONTROL_REQUEST_FAILED`, `SDK_INITIALIZE_TIMEOUT`,
+  `SDK_ABORTED`, …; `SDK_OTHER` for any other), else the built-in type (`AGGREGATE_ERROR`, `TYPE_ERROR`, `SYNTAX_ERROR`,
+  `RANGE_ERROR`, `REFERENCE_ERROR`, `DOM_EXCEPTION`, `ERROR`).
+- `exit` / `signal`: the SDK's own `exitCode` / `signal` data, bounded to 0–255 and a fixed list of POSIX names.
+- `stage` is on the first line because a hung cleanup never reaches the final line.
+
+Only own data properties are read. Getters and proxies are never invoked, and no message, stack, stderr tail or path is
+printed.
+
+`apps/runtime/native-authority/test/sdk-initialization-milestones.test.mjs` signals the real CLI after its initialize answer
+crosses the remote facade:
+
+| Signal | Deployed image | With the fix |
+| --- | --- | --- |
+| SIGKILL | `code=UNKNOWN` | `code=SDK_PROCESS_KILLED_BY_SIGNAL … signal=SIGKILL` |
+| SIGTERM | `code=UNKNOWN` | `code=SDK_PROCESS_EXITED_NONZERO … exit=143` |
+
+That suite is Linux-only and needs the pinned CLI. Run it inside the image with the candidate's test directories mounted,
+as in `adj-reports/adj-b-D1-PREFLIGHT.md`.
+
 ## Limits and retained startup evidence
 
-The new event identifies the first observed terminal error at a rejecting boundary. A cancellation can still produce an outer SDK terminal rejection; the native prepare/start origin is suppressed once that client is closed or its spawn signal aborted. Concurrent failures may race to capture first. The event does not prove root cause or provider contact. An already assembled aggregate remains UNKNOWN; its members, cause and message are never inspected.
+The new event identifies the first observed terminal error at a rejecting boundary. A cancellation can still produce an outer SDK terminal rejection; the native prepare/start origin is suppressed once that client is closed or its spawn signal aborted. Concurrent failures may race to capture first. The event does not prove root cause or provider contact. An already assembled aggregate reports `AGGREGATE_ERROR`; its members, cause and message are never inspected.
 
 The paired 37-character startup lines at 22:43:51.818 (control) and 22:43:51.823 (runner), 19 October 2026, remain **UNCLASSIFIED**. A bounded private equality comparison against 26 local first-party/dependency source files found no exact substring match. Only timestamps, length, classification and empty match lists were persisted; raw messages and message digests were not emitted or stored. Local dependency version/source equality is not deployed-byte attestation.
 
