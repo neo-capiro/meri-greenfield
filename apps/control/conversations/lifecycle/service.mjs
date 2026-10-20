@@ -3,22 +3,38 @@ import {randomUUID} from 'node:crypto';
 import {assertWorkspacePaths,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {assertLifecycleCommand,assertLifecycleReceipt,assertWorkerControl,assertContinuationEnvelope,assertCheckpointInspectionRequest,assertCheckpointInspectionReceipt} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
-import {bounded,same,hash,fail,validateShape,own,uuid} from '../boundary.mjs';
+import {bounded,same,hash,fail,validateShape,own,uuid,data} from '../boundary.mjs';
 const contextHash=saved=>hash({window:saved.request.window,skill:saved.request.skill,scopes:saved.run.scopes});
 const receipt=(p,replayed=p.replayed)=>assertLifecycleReceipt({controlId:p.input.controlId,intent:p.input.intent,sourceBinding:p.sourceBinding,inputSha256:hash(p.input),state:p.state,checkpointId:p.checkpointId,targetBinding:p.target?.binding??null,admissionReceiptId:p.target?.admissionReceiptId??null,retirementReceiptId:p.retirement?.retirementReceiptId??null,replayed});
-import {cleanupRead,loadWithLifecycle} from '../service.mjs';
-export function createConversationLifecycleService({service,store,dispatcher,reconcileOriginal,checkpoints,nativeAdmission,approvals,sessions,now=Date.now,newId=randomUUID,maxRequestMs=3000}){
- const journal=store?.lifecycle;
- if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['history','loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel','readStopFence'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof reconcileOriginal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
+import {loadWithLifecycle} from '../service.mjs';
+import {authenticatedCurrentState} from '../../action-host/session/owner.mjs';
+export function createConversationLifecycleService({service,store,dispatcher,reconcileOriginal,checkpoints,nativeAdmission,approvals,sessions,retention,now=Date.now,newId=randomUUID,maxRequestMs=3000}){
+ const journal=store?.lifecycle,readCurrent=authenticatedCurrentState(sessions);
+ if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['loadForExecution','publish'].some(k=>typeof service?.[k]!=='function')||typeof store?.read!=='function'||retention!==undefined&&typeof retention?.assertServable!=='function'||['begin','change','get','controls','claim','checkpoint','readCheckpoint','execution','continuation','cancel','readStopFence'].some(k=>typeof journal?.[k]!=='function')||['signal','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||typeof reconcileOriginal!=='function'||typeof checkpoints?.read!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('LIFECYCLE_CONFIGURATION');
  const event=(type,data)=>({contractVersion:'0.1.0',eventId:newId(),createdAt:new Date(now()).toISOString(),type,data});
- /** Every lifecycle operation reads the conversation through the gated history (retention serving gate included); cancellation uses
-  * the cleanup-only read so a suppressed subject can still be stopped without any content release. */
- async function operation(credential,signal,body,{cleanup=false}={}){const read=cleanup&&typeof service[cleanupRead]==='function'?service[cleanupRead]:service.history;let cutoff=now()+maxRequestMs;const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>Object.assign(new Error(code),{code})}),life={...timer,deadline:()=>cutoff,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};let pinned;
-  async function fresh(active=life){
-   const started=now(),authentication=bounded(await active.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs}))),current=bounded(await active.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs}))),saved=bounded(await active.run(signal=>read({credential,after:0,limit:1,signal})),2097152);
-   if(current.authenticationSha256!==hash(authentication)||!same(current.binding,saved.run.binding)||!same(current.scopes,saved.run.scopes)||['tenantId','actorId','conversationId','runId'].some(k=>authentication.principal?.[k]!==saved.run.binding[k]))fail('SESSION_REFUSED');uuid(current.selectedClientId);if(!current.scopes.some(s=>s.kind==='client'&&s.resourceId===current.selectedClientId))fail('SCOPE_REFUSED');
+ /** Every lifecycle operation reads the conversation between two complete session observations and two retention checks, the gated
+  * read the conversation service's history applies; cancellation skips retention so a suppressed subject can still be stopped without
+  * any content release. One observation is one owner resolve (identity, membership, context, membership): the history read used a
+  * back-to-back authenticate + current-state pair at each end, and this operation another pair before it, so each was a repeat. */
+ async function operation(credential,signal,body,{cleanup=false}={}){let cutoff=now()+maxRequestMs;const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>Object.assign(new Error(code),{code})}),life={...timer,deadline:()=>cutoff,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};let pinned;
+  async function observe(active){
+   const started=now(),deadlineMs=started+maxRequestMs;let authentication,current;
+   if(readCurrent)({authentication,current}=bounded(await active.run(signal=>readCurrent({credential,signal,deadlineMs}))));
+   else{authentication=bounded(await active.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs})));current=bounded(await active.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs})));}
+   if(current.authenticationSha256!==hash(authentication)||['tenantId','actorId','conversationId','runId'].some(k=>authentication.principal?.[k]!==current.binding?.[k]))fail('SESSION_REFUSED');validateShape('RunBinding',current.binding);
+   if(!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)fail('SCOPE_REFUSED');for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==current.binding.tenantId)fail('SCOPE_REFUSED');}
+   if(new Set(current.scopes.map(hash)).size!==current.scopes.length||new Set(current.scopes.map(s=>s.policyRevision)).size!==1)fail('SCOPE_REFUSED');
+   uuid(current.selectedClientId);if(!current.scopes.some(s=>s.kind==='client'&&s.resourceId===current.selectedClientId))fail('SCOPE_REFUSED');
    const at=now();for(const r of [authentication,current])if(!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=at)fail('SESSION_REFUSED');active.limitDeadline(Math.min(authentication.expiresAtMs,current.expiresAtMs));
-   const selected={binding:saved.run.binding,scopes:saved.run.scopes,versions:saved.run.versions,request:saved.request,selectedClientId:current.selectedClientId};if(pinned&&!same(pinned,selected))fail('SESSION_CHANGED');pinned??=selected;active.check();return {...saved,selectedClientId:current.selectedClientId};
+   return data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId});
+  }
+  const servable=async(active,{binding})=>{if(retention&&!cleanup){await active.run(()=>retention.assertServable({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId}));active.check();}};
+  async function fresh(active=life){
+   const before=await observe(active);await servable(active,before);
+   // An admitted conversation has no run row until its first input is accepted: that is "no saved turns yet" (404), not corruption.
+   const saved=bounded(await active.run(()=>(cleanup||typeof store.readOptional!=='function'?store.read:store.readOptional)(before.binding,{after:0,limit:1},active.check)),2097152);if(saved===null)fail('NOT_FOUND');if(!same(saved.run.scopes,before.scopes))fail('SCOPE_REFUSED');
+   const after=await observe(active);if(!same(after,before))fail('SESSION_CHANGED');if(!same(after.binding,saved.run.binding))fail('SESSION_REFUSED');await servable(active,after);
+   const selected={binding:saved.run.binding,scopes:saved.run.scopes,versions:saved.run.versions,request:saved.request,selectedClientId:after.selectedClientId};if(pinned&&!same(pinned,selected))fail('SESSION_CHANGED');pinned??=selected;active.check();return {...saved,selectedClientId:after.selectedClientId};
   }
   try{return await body(await fresh(),life,fresh);}finally{life.close();}
  }

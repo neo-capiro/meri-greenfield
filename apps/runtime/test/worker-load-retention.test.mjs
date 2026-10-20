@@ -49,7 +49,7 @@ async function fixture(t,{requestMs=2000}={}){
   lifecycle:{begin:unused,change:unused,get:unused,controls:unused,claim:unused,checkpoint:unused,readCheckpoint:unused,async execution(){counts.journal++;return {fixtureMarker:'journal-read'};},continuation:unused,cancel:unused,readStopFence:unused}};
  const dispatcher={start:unused,cancel:unused,signal:unused};
  const basic=createConversationService({sessions,store,dispatcher,versions,retention,maxRequestMs:requestMs});
- const lifecycle=createConversationLifecycleService({service:basic,store,dispatcher,sessions,maxRequestMs:requestMs,reconcileOriginal:unused,checkpoints:{read:unused}});
+ const lifecycle=createConversationLifecycleService({service:basic,store,dispatcher,sessions,retention,maxRequestMs:requestMs,reconcileOriginal:unused,checkpoints:{read:unused}});
  const service={async loadForExecution(input){const result=await lifecycle.loadForExecution(input);
   // A trusted fixture hook observes the actual Response.json materialization point.
   return {...result,toJSON(){counts.serialized++;state.serializeHook?.();return result;}};
