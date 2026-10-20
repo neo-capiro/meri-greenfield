@@ -31,8 +31,11 @@ from .request_admission import ProductReservationAdapter
 from .response_settlement import NativeSettlementTransport, SettlementContext
 from .response_settlement import _settled_outcome
 from .bearer_eni_admission import create_bearer_eni_trusted_resolver
-from .budgets import BOOTSTRAP_SECONDS
+from .budgets import BOOTSTRAP_SECONDS, IN_REQUEST_CHECK_SECONDS, REQUEST_CLEANUP_SECONDS
 from . import refusal_diagnostics as diagnostics
+
+# Every product request's freshness steps are owner exchanges: they and close's wait get the exchange budget (budgets.py).
+PRODUCT_LIFETIME_LIMITS = LifetimeLimits(check_seconds=IN_REQUEST_CHECK_SECONDS, cleanup_seconds=REQUEST_CLEANUP_SECONDS)
 from .upstream_callback import ProductNativeDispatchEvidence
 
 
@@ -194,7 +197,7 @@ async def create_guarded_product_handler(life, session):
 
 
 def create_product_proxy_app(*, trusted_resolver, resolve_session, invoke_litellm,
-                             limits=LifetimeLimits(), body_limits=BodyLimits()):
+                             limits=PRODUCT_LIFETIME_LIMITS, body_limits=BodyLimits()):
     """Mount the existing direct-ingress wrapper with one product HTTPX path.
 
     `trusted_resolver` must independently authenticate the TLS peer and current
@@ -255,7 +258,7 @@ def create_product_proxy_app(*, trusted_resolver, resolve_session, invoke_litell
 def create_bearer_eni_product_proxy_app(*, read_direct_tls_socket,
                                         resolve_bearer_sha256, observe_task_eni,
                                         resolve_session, invoke_litellm,
-                                        limits=LifetimeLimits(), body_limits=BodyLimits(),
+                                        limits=PRODUCT_LIFETIME_LIMITS, body_limits=BodyLimits(),
                                         bootstrap_seconds=BOOTSTRAP_SECONDS):
     """Compose the one ingress/host path from required trusted product ports.
 

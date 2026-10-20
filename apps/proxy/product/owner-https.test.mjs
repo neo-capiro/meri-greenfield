@@ -4,7 +4,9 @@ import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {assertProductServiceTaskLease,productOwnerRoute,encodeProductPlacement,
  createProductOwnerHttpsServer,acquireProductOwnerRequest,retireProductOwnerRequests,
- createProductOwnerListenerLifecycle,consumeProductPlacementRead} from './owner-https.mjs';
+ createProductOwnerListenerLifecycle,consumeProductPlacementRead,PRODUCT_OWNER_IDLE_SOCKETS} from './owner-https.mjs';
+import {createServer} from 'node:https';
+import {readFileSync} from 'node:fs';
 import {OWNER_PATHS,createProductOwnerServiceGate} from './owner-channel.mjs';
 
 const policy={deploymentRevision:'reviewed-v1',ownerTaskArn:'owner',proxyTaskArn:'proxy',clientCertSha256:'b'.repeat(64)};
@@ -98,4 +100,12 @@ test('placement replay capacity exhaustion retires readiness without evicting ID
  assert.throws(()=>consumeProductPlacementRead(reads,'new_read',gate));
  assert.equal(gate.available,false);assert.equal(reads.size,4096);
  assert.ok(reads.has('read_0'),'old IDs cannot become usable again');
+});
+test('the owner never closes an idle pinned proxy socket and reaps one whose peer is gone',()=>{
+ const source=readFileSync(new URL('./owner-https.mjs',import.meta.url),'utf8');
+ assert.equal((source.match(/\.\.\.PRODUCT_OWNER_IDLE_SOCKETS\}/gu)??[]).length,1,'the owner TLS server takes the idle-socket policy');
+ assert.equal((source.match(/keepAliveTimeout:/gu)??[]).length,1,'no keep-alive timeout outside the idle-socket policy');
+ const server=createServer({...PRODUCT_OWNER_IDLE_SOCKETS});
+ try{assert.equal(server.keepAliveTimeout,0,'no HTTP idle close: the proxy never reconnects a carrier');
+  assert.equal(server.keepAlive,true,'TCP keep-alive probes detect a proxy task that is gone');}finally{server.close();}
 });
