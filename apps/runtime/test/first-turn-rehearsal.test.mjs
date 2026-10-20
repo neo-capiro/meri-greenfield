@@ -41,8 +41,9 @@ const CLERK_TIMEOUT_MS=2000;
 const delay=(ms,signal)=>new Promise((resolve,reject)=>{if(signal?.aborted)return reject(Error('aborted'));const timer=setTimeout(()=>{signal?.removeEventListener('abort',abort);resolve();},ms);
  const abort=()=>{clearTimeout(timer);reject(Error('aborted'));};signal?.addEventListener('abort',abort,{once:true});});
 
-/** One composed first turn. `clerkTimeoutAt` makes that (1-based) Core call wait Core's Clerk timeout and answer 401, as Core does. */
-export async function rehearseFirstTurn({profile,clerkTimeoutAt}){
+/** One composed first turn. `clerkTimeoutAt` makes that (1-based) Core call wait Core's Clerk timeout and answer `clerkStatus`:
+ * 401 as Core does today, 503 once Core reports the timeout as unavailable. */
+export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401}){
  const latency=CORE_PROFILES[profile];if(!latency)throw Error('unknown profile');
  const f=continuationFixture('resume'),{target}=f;target.sourceRequest.skill=null;target.request.skill=null;
  const binding=f.binding,versions=target.versions,scopes=target.scopes,clientId=id(5),principal={tenantId:binding.tenantId,actorId:binding.actorId};
@@ -52,7 +53,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt}){
  async function coreFetch(url,init){
   const path=new URL(url).pathname,route=path.endsWith('/identity')?'identity':path.endsWith('/context')?'context':path.endsWith('/membership')?'membership':null;
   if(!route)throw Error('unknown local Core route');count(route);
-  if(++coreCalls===clerkTimeoutAt){await delay(CLERK_TIMEOUT_MS,init.signal);return Response.json({message:'Application authority unavailable'},{status:401});}
+  if(++coreCalls===clerkTimeoutAt){await delay(CLERK_TIMEOUT_MS,init.signal);return Response.json({message:'Application authority unavailable'},{status:clerkStatus});}
   await delay(latency[route],init.signal);const now=Date.now(),body=JSON.parse(init.body);
   if(route==='identity')return Response.json({principal,identityRevision:'identity-revision',checkedAtMs:now,expiresAtMs:expiry()});
   if(route==='membership')return Response.json({...principal,status:'active',role:'standard_user',permissions:[],clientIds:[clientId],membershipRevision:'membership-revision',checkedAtMs:now,expiresAtMs:expiry()});
@@ -73,7 +74,8 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt}){
    if(event.type==='message.delta')marks.firstText??=at();return {scopes};},async read(){return structuredClone(saved);},
   lifecycle:{begin:unused,change:unused,get:unused,async controls(){return [];},claim:unused,checkpoint:unused,readCheckpoint:unused,async execution(){return null;},continuation:unused,cancel:unused,readStopFence:unused}};
  const service=createConversationLifecycleService({service:createConversationService({sessions,store,dispatcher:{start:unused,cancel:unused,signal:unused},versions,maxRequestMs:25000}),
-  store,dispatcher:{start:unused,cancel:unused,signal:unused},sessions,maxRequestMs:25000,reconcileOriginal:unused,checkpoints:{read:unused}});
+  store,dispatcher:{start:unused,cancel:unused,signal:unused},sessions,maxRequestMs:25000,reconcileOriginal:unused,checkpoints:{read:unused},
+  retention:null}); // no retention gate, as control.mjs passes without one (an explicit decision since L3)
  const native={async call(name,input,{signal}={}){if(name!=='worker/authorize')throw Error('unexpected native operation');
   const verified=await verifierContext.verifyIdentity({credential:'synthetic-native',deadlineMs:Date.now()+25000,signal});
   await verifierContext.resolveContext({identityCredential:'synthetic-native',identity:verified,identitySha256:hash(verified),hints:{conversationId:binding.conversationId,runId:binding.runId},deadlineMs:Date.now()+25000,signal});
@@ -113,7 +115,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt}){
  try{outcome=await execute({binding}).then(value=>({value}),error=>({error:error?.code??String(error)}));}
  finally{sessions.close();rmSync(root,{recursive:true,force:true});}
  const perOperation=Object.fromEntries(Object.entries(calls).sort());
- return {profile,clerkTimeoutAt:clerkTimeoutAt??null,outcome:outcome.value?.state??outcome.error,initMs:marks.init??null,firstTextMs:marks.firstText??null,resultMs:at(),
+ return {profile,clerkTimeoutAt:clerkTimeoutAt??null,...(clerkTimeoutAt?{clerkStatus}:{}),outcome:outcome.value?.state??outcome.error,initMs:marks.init??null,firstTextMs:marks.firstText??null,resultMs:at(),
   coreCalls:coreCalls,perOperation,published:events.map(e=>e.type==='run.status'?e.data.state:e.type)};
 }
 
@@ -122,6 +124,7 @@ for(const profile of ['quiet','live-median'])test(`first turn completes under th
  const r=await rehearseFirstTurn({profile});t.diagnostic(JSON.stringify(r));
  assert.equal(r.outcome,'completed',JSON.stringify(r));assert.ok(r.firstTextMs!==null,'text was published');
 });
-for(const [profile,clerkTimeoutAt] of [['live-tail'],['live-median',40]])test(`first turn under the ${profile} Core profile${clerkTimeoutAt?' with a Clerk timeout':''} (reported)`,posix,async t=>{
- t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,clerkTimeoutAt})));
-});
+for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503]])
+ test(`first turn under the ${profile} Core profile${clerkTimeoutAt?` with a Clerk timeout answered ${clerkStatus}`:''} (reported)`,posix,async t=>{
+  t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus})));
+ });
