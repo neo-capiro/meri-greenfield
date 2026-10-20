@@ -8,8 +8,10 @@
  * the SDK (the real message sequence: system/init, stream events, assistant, result); runner/runtime and
  * runner/checkpoint/complete, whose owners are outside worker-http (they answer at once and are not counted).
  *
- * Each turn reports time to first published text, time to result, and Core calls per operation. Quiet and the live median
- * must complete (the gate); the live tail and a Clerk timeout are reported. POSIX only (the remote task's SDK directories).
+ * Each turn reports time to first and last published text, time to result, Core calls and request durations per operation,
+ * the runner's first-failure line, control's refusals with what its owners threw, and any host clock step (recorded only:
+ * rehearsal-support.mjs keeps Date.now monotonic). Quiet and the live median must complete (the gate); the live tail, a Clerk
+ * timeout and a 40-delta reply are reported. POSIX only (the remote task's SDK directories).
  * Run: node --test --test-concurrency=1 apps/runtime/test/first-turn-rehearsal.test.mjs */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,26 +32,29 @@ import {continuationFixture,id} from '../../worker/conversation/continuation/tes
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {runnerStartupBudget} from '../../../packages/runtime/runner-load-budget.mjs';
+import {withRunnerDiagnostics} from '../runner-runtime-diagnostics.mjs';
+import {CORE_PROFILES,recordHostClockSteps} from './rehearsal-support.mjs';
 
-/** Per-route Core latency in ms (identity / membership / context), from the 10:26Z live Core log. */
-export const CORE_PROFILES=Object.freeze({
- quiet:{identity:85,membership:220,context:250},
- 'live-median':{identity:100,membership:300,context:500},
- 'live-tail':{identity:150,membership:450,context:750},
-});
 const CLERK_TIMEOUT_MS=2000;
 const delay=(ms,signal)=>new Promise((resolve,reject)=>{if(signal?.aborted)return reject(Error('aborted'));const timer=setTimeout(()=>{signal?.removeEventListener('abort',abort);resolve();},ms);
  const abort=()=>{clearTimeout(timer);reject(Error('aborted'));};signal?.addEventListener('abort',abort,{once:true});});
 
 /** One composed first turn. `clerkTimeoutAt` makes that (1-based) Core call wait Core's Clerk timeout and answer `clerkStatus`:
- * 401 as Core does today, 503 once Core reports the timeout as unavailable. */
-export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401}){
+ * 401 as Core does today, 503 once Core reports the timeout as unavailable. The SDK streams the reply as `deltas` text deltas
+ * (the product sets includePartialMessages). `leaseElapsedMs` is the original's lease already spent when the runner starts
+ * (live: acknowledgement, allocation and the ECS task start); the lease itself is the live allocation's 900 s runtime. */
+export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,deltas=2,leaseElapsedMs=0}){
  const latency=CORE_PROFILES[profile];if(!latency)throw Error('unknown profile');
  const f=continuationFixture('resume'),{target}=f;target.sourceRequest.skill=null;target.request.skill=null;
  const binding=f.binding,versions=target.versions,scopes=target.scopes,clientId=id(5),principal={tenantId:binding.tenantId,actorId:binding.actorId};
  const sessionId=f.continuation.checkpoint.sessionId,request=target.sourceRequest,expiry=()=>Date.now()+600000;
- const operation=new AsyncLocalStorage(),calls={},started=performance.now(),at=()=>Math.round(performance.now()-started),marks={};let coreCalls=0;
+ const operation=new AsyncLocalStorage(),calls={},durations={},refusals=[],started=performance.now(),at=()=>Math.round(performance.now()-started),marks={};let coreCalls=0;
  const count=route=>{const op=operation.getStore()??'other';calls[op]??={requests:0,core:0};calls[op].core++;calls[op][route]=(calls[op][route]??0)+1;};
+ // worker-http answers every refusal as WORKER_REQUEST_REFUSED and the identity context as NATIVE_AUTHORITY_UNAVAILABLE, so the
+ // owners record what they threw, with its cause chain.
+ const thrown=[],traced=(name,owner)=>{const copy={};for(const key of Reflect.ownKeys(owner)){const value=owner[key];copy[key]=typeof value!=='function'?value:async(...args)=>{
+   try{return await value.apply(owner,args);}catch(error){const chain=[];for(let e=error;e&&chain.length<4;e=e.cause)chain.push(e.code??e.message??String(e));
+    if(thrown.length<20)thrown.push({where:`${name}.${String(key)}`,atMs:at(),chain});throw error;}};}return Object.freeze(copy);};
  async function coreFetch(url,init){
   const path=new URL(url).pathname,route=path.endsWith('/identity')?'identity':path.endsWith('/context')?'context':path.endsWith('/membership')?'membership':null;
   if(!route)throw Error('unknown local Core route');count(route);
@@ -62,16 +67,16 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401}
  // Control: the dynamic first conversation selects this run; the task verifier keeps its own run-bound context.
  const runFact=()=>JSON.stringify({binding,policyRevision:scopes[0].policyRevision,deadlineMs:expiry(),checkedAtMs:Date.now()});
  const currentOwner={async currentRun(){return runFact();},async withCurrentAllocation(){throw Error('unused');}},limits={maxRequestMs:25000,maxFactBytes:65536};
- const identityContext=createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding:{...binding,conversationId:id(901),runId:id(902)},clientResolution:{reference:clientId,clientId}},
-  currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits,admitInitialConversation:async()=>runFact()});
- const verifierContext=createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding,clientResolution:{reference:clientId,clientId}},currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits});
+ const identityContext=traced('identity',createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding:{...binding,conversationId:id(901),runId:id(902)},clientResolution:{reference:clientId,clientId}},
+  currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits,admitInitialConversation:async()=>runFact()}));
+ const verifierContext=traced('verifier',createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding,clientResolution:{reference:clientId,clientId}},currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits}));
  const membership=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext,fetchImpl:coreFetch,now:Date.now,limits});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,
   membership:{admit:membership.admit,recheck:membership.recheck},now:Date.now,limits:{maxSessions:16,maxRequestMs:25000,maxTtlMs:300000,maxFactBytes:65536}});
  const saved={run:{binding,state:'queued',scopes,versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request,lastSequence:1},events=[];
  const unused=async()=>{throw Error('unused');};
  const store={accept:unused,async append(_binding,event){events.push(event);if(event.type==='run.status')saved.run.state=event.data.state;
-   if(event.type==='message.delta')marks.firstText??=at();return {scopes};},async read(){return structuredClone(saved);},
+   if(event.type==='message.delta'){marks.firstText??=at();marks.lastText=at();}return {scopes};},async read(){return structuredClone(saved);},
   lifecycle:{begin:unused,change:unused,get:unused,async controls(){return [];},claim:unused,checkpoint:unused,readCheckpoint:unused,async execution(){return null;},continuation:unused,cancel:unused,readStopFence:unused}};
  const service=createConversationLifecycleService({service:createConversationService({sessions,store,dispatcher:{start:unused,cancel:unused,signal:unused},versions,maxRequestMs:25000}),
   store,dispatcher:{start:unused,cancel:unused,signal:unused},sessions,maxRequestMs:25000,reconcileOriginal:unused,checkpoints:{read:unused},
@@ -81,7 +86,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401}
   await verifierContext.resolveContext({identityCredential:'synthetic-native',identity:verified,identitySha256:hash(verified),hints:{conversationId:binding.conversationId,runId:binding.runId},deadlineMs:Date.now()+25000,signal});
   const now=Date.now();return {binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-native',scopes,selectedClientId:clientId,
    policyRevision:scopes[0].policyRevision,authorizationDecisionId:'synthetic-decision',checkedAtMs:now,expiresAtMs:expiry()};}};
- const control=createWorkerRunApplication({service,sessions,native,configuration:{limits:{requestMs:25000,requestBytes:131072}},now:Date.now});
+ const control=createWorkerRunApplication({service:traced('service',service),sessions:traced('sessions',sessions),native:traced('native',native),configuration:{limits:{requestMs:25000,requestBytes:131072}},now:Date.now});
  // Runner → control: run-owner operations go to worker-http exactly as prepared-candidate.mjs rewrites them.
  const outside=async(name)=>{
   if(name==='runner/runtime')return {binding,versions,proxyUrl:'https://proxy.example.invalid',proxyCredential:'synthetic-proxy',model:'synthetic-model',deadlineMs:Date.now()+600000,maxTurns:2,maxCostMicroUSD:1,maxOutputBytes:65536};
@@ -90,7 +95,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401}
     workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs:Date.now(),expiresAtMs:Date.now()+60000};}
   throw Error('unexpected '+name);};
  const root=mkdtempSync(join(tmpdir(),'meri-first-turn-rehearsal-'));mkdirSync(join(root,'config'),{mode:0o700});
- const remoteTask={original:{binding,versions,executionKey:hash(binding),executionId:hash(binding),planSha256:'b'.repeat(64),expiresAtMs:Date.now()+900000},
+ const remoteTask={original:{binding,versions,executionKey:hash(binding),executionId:hash(binding),planSha256:'b'.repeat(64),expiresAtMs:Date.now()+900000-leaseElapsedMs},
   preparationIntent:{workspace:join(root,binding.conversationId),configParentDirectory:join(root,'config'),secureStorageDirectory:join(root,'secure'),
    launchTemplate:{command:'/opt/claude',args:[],env:{CLAUDE_SECURESTORAGE_CONFIG_DIR:join(root,'secure')}},executableSha256:'a'.repeat(64),imageSha256:'b'.repeat(64),
    runnerSha256:'c'.repeat(64),sdkOptionsSha256:'d'.repeat(64),authoritySha256:'f'.repeat(64)}};
@@ -99,24 +104,38 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401}
  const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',loadMaxRequestMs:startup.load.maxMs,
   fetch:async(url,init)=>{const name=new URL(url).pathname.slice('/v1/'.length),op=name.slice('runner/'.length);calls[name]??={requests:0,core:0};calls[name].requests++;
    if(!Object.hasOwn(runOwnerOperations,op))return Response.json(await outside(name));
-   return operation.run(name,()=>control.handle(new Request(url.replace('/v1/runner/','/internal/conversations/'),init)));}});
+   const begun=performance.now();
+   try{const response=await operation.run(name,()=>control.handle(new Request(url.replace('/v1/runner/','/internal/conversations/'),init)));
+    // A refused publish is swallowed by the activity's fence, so control's answer is recorded here.
+    if(response.status!==200)refusals.push({operation:name,atMs:at(),status:response.status,code:(await response.clone().json().catch(()=>null))?.error?.code??null});
+    return response;}
+   finally{(durations[name]??=[]).push(Math.round(performance.now()-begun));}}});
  const text=t=>({type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'content_block_delta',index:0,delta:{type:'text_delta',text:t}}});
+ const parts=deltas===2?['Hello',' from the rehearsal.']:Array.from({length:deltas},(_,i)=>i?` word${i}`:'Hello'),reply=parts.join('');
  const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid',limits:{requestMs:25000,shutdownMs:1000},remoteTask},
   native:client,credentialForBinding:async()=>'synthetic-current-task-capability',
   query(args){return {async *[Symbol.asyncIterator](){
    yield {type:'system',subtype:'init',session_id:sessionId};marks.init=at();await args.prompt[Symbol.asyncIterator]().next();
    yield {type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'message_start',message:{id:'msg_rehearsal',role:'assistant',content:[]}}};
    yield {type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'content_block_start',index:0,content_block:{type:'text',text:''}}};
-   yield text('Hello');yield text(' from the rehearsal.');
+   for(const part of parts)yield text(part);
    yield {type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'content_block_stop',index:0}};
-   yield {type:'assistant',session_id:sessionId,parent_tool_use_id:null,message:{id:'msg_rehearsal',role:'assistant',content:[{type:'text',text:'Hello from the rehearsal.'}]}};
-   yield {type:'result',subtype:'success',is_error:false,session_id:sessionId,result:'Hello from the rehearsal.'};},async interrupt(){return {still_queued:[]};},close(){}};}});
+   yield {type:'assistant',session_id:sessionId,parent_tool_use_id:null,message:{id:'msg_rehearsal',role:'assistant',content:[{type:'text',text:reply}]}};
+   yield {type:'result',subtype:'success',is_error:false,session_id:sessionId,result:reply};},async interrupt(){return {still_queued:[]};},close(){}};}});
  let outcome;
- try{outcome=await execute({binding}).then(value=>({value}),error=>({error:error?.code??String(error)}));}
- finally{sessions.close();rmSync(root,{recursive:true,force:true});}
- const perOperation=Object.fromEntries(Object.entries(calls).sort());
- return {profile,clerkTimeoutAt:clerkTimeoutAt??null,...(clerkTimeoutAt?{clerkStatus}:{}),outcome:outcome.value?.state??outcome.error,initMs:marks.init??null,firstTextMs:marks.firstText??null,resultMs:at(),
-  coreCalls:coreCalls,perOperation,published:events.map(e=>e.type==='run.status'?e.data.state:e.type)};
+ // The runner's own diagnostics context, as cli.mjs runs it: the first failure's stage, code and site, the line live logs carry.
+ const failures=[];
+ // Host wall-clock steps, recorded only: rehearsal-support.mjs keeps this process's Date.now from going back.
+ const clock=recordHostClockSteps(at);
+ try{outcome=await withRunnerDiagnostics(()=>execute({binding}),{write:line=>failures.push(line.trim())}).then(value=>({value}),error=>({error:error?.code??String(error)}));}
+ finally{clock.stop();sessions.close();rmSync(root,{recursive:true,force:true});}
+ // Request durations (ms) of the run-owner operations, as the runner's native client sees them: the margin against each budget.
+ const median=list=>[...list].sort((a,b)=>a-b)[Math.floor((list.length-1)/2)];
+ const perOperation=Object.fromEntries(Object.entries(calls).sort().map(([name,v])=>[name,durations[name]?{...v,medianMs:median(durations[name]),maxMs:Math.max(...durations[name])}:v]));
+ const published=events.map(e=>e.type==='run.status'?e.data.state:e.type);
+ return {profile,clerkTimeoutAt:clerkTimeoutAt??null,...(clerkTimeoutAt?{clerkStatus}:{}),deltas,leaseElapsedMs,outcome:outcome.value?.state??outcome.error,initMs:marks.init??null,firstTextMs:marks.firstText??null,
+  lastTextMs:marks.lastText??null,resultMs:at(),coreCalls:coreCalls,perOperation,deltasPublished:published.filter(type=>type==='message.delta').length,
+  statuses:published.filter(type=>type!=='message.delta'),firstFailure:failures.find(line=>line.startsWith('RUNNER_FIRST_FAILURE'))??null,refusals,thrown,hostClockSteps:clock.steps};
 }
 
 const posix={skip:process.platform==='win32'&&'POSIX ownership of the remote task SDK directories',timeout:600000};
@@ -127,4 +146,10 @@ for(const profile of ['quiet','live-median'])test(`first turn completes under th
 for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503]])
  test(`first turn under the ${profile} Core profile${clerkTimeoutAt?` with a Clerk timeout answered ${clerkStatus}`:''} (reported)`,posix,async t=>{
   t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus})));
+ });
+// A realistic reply streams tens of text deltas and each one is a separately authorized publish. 90 s of lease already spent
+// is the live first attempt's acknowledgement plus allocation and task start.
+for(const profile of ['quiet','live-median','live-tail'])
+ test(`a 40-delta reply under the ${profile} Core profile with 90 s of lease spent (reported)`,{...posix,timeout:1200000},async t=>{
+  t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,deltas:40,leaseElapsedMs:90000})));
  });
