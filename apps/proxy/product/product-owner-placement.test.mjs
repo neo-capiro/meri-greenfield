@@ -10,6 +10,7 @@ import {createMemoryIssuanceStore} from '../../runtime/prepared-run-issuance-sto
 import {compileNativeTaskRequest} from '../../runtime/native-authority/task-request.mjs';
 import {createProductProxyPersistedFacts} from './product-owner-facts.mjs';
 import {createProductOwnerPlacement} from './product-owner-placement.mjs';
+import {refusalCode} from './owner-diagnostics.mjs';
 
 const id=n=>'11111111-1111-4111-8111-'+String(n).padStart(12,'0');
 const refused=/PRODUCT_PROXY_PLACEMENT_UNAVAILABLE/;
@@ -145,8 +146,10 @@ test('fresh read leases may shorten independently without replacing immutable ex
 });
 
 test('a raced-out owner is quarantined; subsequent lookups cannot accumulate background work',async()=>{
- const f=fixture();let calls=0;const owner=f.make({limits:{maxRequestMs:20,maxFactBytes:131072},persistedFacts:{available:true,resolve(){calls++;return new Promise(()=>{});}}});
+ const f=fixture(),reports=[];let calls=0;const owner=f.make({limits:{maxRequestMs:20,maxFactBytes:131072},persistedFacts:{available:true,resolve(){calls++;return new Promise(()=>{});}},
+  report:(name,step,error)=>reports.push([name,step,refusalCode(error)])});
  await assert.rejects(owner.resolve(f.query()),refused);assert.equal(owner.available,false);
+ assert.deepEqual(reports,[['placement','facts','DEADLINE']],'an expired exchange is reported as DEADLINE, distinct from REFUSED');
  await assert.rejects(owner.resolve(f.query()),refused);assert.equal(calls,1);assert.equal(f.calls.length,0);
 });
 

@@ -106,7 +106,7 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
    const at=c.now();if(!enabled||closed||authorityState.quarantined||!Number.isSafeInteger(v.deadlineMs)||!Number.isSafeInteger(at)||v.deadlineMs<=at)fail();
    const key=hash(binding);if(!owners.has(key)){if(owners.size>=1024)fail();owners.set(key,make(binding));}
    owner=owners.get(key);if(!owner.available){authorityState.quarantined=true;fail();}
-   life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs:Math.min(v.deadlineMs,at+limits.maxRequestMs),errorFactory:()=>Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE')});
+   life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs:Math.min(v.deadlineMs,at+limits.maxRequestMs),errorFactory:code=>Object.assign(Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE'),code==='DEADLINE'?{code}:{})});
    const receipt=await life.run(signal=>owner.checkCurrentConversation({binding,deadlineMs:v.deadlineMs,signal}));life.check();return receipt;
   }catch{fail();}finally{if(life?.close().unsettledOperations>0||owner?.available===false)authorityState.quarantined=true;}
  },close(){closed=true;if(enabled)authorityState.quarantined=true;owners.clear();}});

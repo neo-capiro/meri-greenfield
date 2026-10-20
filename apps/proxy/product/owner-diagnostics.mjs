@@ -12,7 +12,8 @@ export function statementRelation(text){
  if(typeof text!=='string')return 'unknown';
  const m=RELATION.exec(text.slice(0,4096));return m?m[1]:'unknown';
 }
-/** A constant refusal code from an error, or `REFUSED`. */
+/** A constant refusal code from an error, or `REFUSED`. `DEADLINE` means the owner's request lifetime ran out (the exchange
+ * budget), not that a check refused. */
 export function refusalCode(error){
  const code=error?.code;return typeof code==='string'&&CODE.test(code)&&!SQLSTATE.test(code)?code:'REFUSED';
 }
