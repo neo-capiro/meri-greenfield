@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {
- ROOT,DATABASE_SCRIPT,INTEGRATION_SCRIPT,PLAN,PASSWORD_VARIABLES,lex,loadPlan,migrationBody,splitStatements,psqlLiteral,
+ ROOT,DATABASE_SCRIPT,INTEGRATION_SCRIPT,OWNER_READS_SCRIPT,PLAN,PASSWORD_VARIABLES,lex,loadPlan,migrationBody,splitStatements,psqlLiteral,
  runPsqlScript,scramVerifier,passwordVariables,verifyLedger,runStage
 } from './first-chat-migrate.mjs';
 
@@ -298,6 +298,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0010_retention.sql','0011_run_issuance.sql','0013_retention_recovery_watermark.sql','0015_model_run_issuance.sql',
   '0016_initial_inputs.sql','0017_initial_run_bindings.sql','0001_product_budget.sql','0002_tenant_budgets.sql',
   '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants',
+  'first-chat-database-owner-reads.sql#owner_conversation_reads',
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
@@ -307,7 +308,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
  assert.match(seed,/INSERT INTO meri_product_budget\.budget \(id, cap_micro_usd, consumed_micro_usd, quarantined\)\nVALUES \(1, 25000000, 0, false\)/u);
  const budget=read('apps/gateway/budget/migrations/0001_product_budget.sql');
  for(const column of ['id integer PRIMARY KEY CHECK (id=1)','cap_micro_usd bigint','consumed_micro_usd bigint','quarantined boolean'])assert.ok(budget.includes(column));
- assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-seed-budget\.sql \.\/infra\/product-preview\/$/mu);
+ assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql \.\/infra\/product-preview\/$/mu);
  assert.match(read('apps/runtime/package-lock.json'),/"node_modules\/pg": \{\n\s+"version": "8\.23\.1"/u);
 });
 
@@ -422,7 +423,7 @@ function fakeDatabase({failOn}={}){
    if(text==='ROLLBACK'){pending=null;return {rows:[]};}
    if(/^INSERT INTO meri_migration_ledger/u.test(text)){assert.ok(pending,'ledger write outside a transaction');pending.push({ordinal:params[0],name:params[1],sha256:params[2]});return {rows:[]};}
    if(/^SELECT CASE WHEN \(TRUE\)::int\s*\+/u.test(text)){state.phases.push('bootstrap');}
-   if(/^SELECT CASE WHEN \(TRUE\)::int = 1 THEN 'ok'/u.test(text))state.phases.push(/INTEGRATION_GRANTS/u.test(text)?'integration_grants':'temporal_grants');
+   if(/^SELECT CASE WHEN \(TRUE\)::int = 1 THEN 'ok'/u.test(text))state.phases.push(/INTEGRATION_GRANTS/u.test(text)?'integration_grants':/OWNER_CONVERSATION_READS/u.test(text)?'owner_conversation_reads':'temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(TRUE\)::int \+ \(FALSE\)::int/u.test(text))state.phases.push('meri_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('release');
@@ -451,10 +452,52 @@ test('runner applies the meri stage in order, one transaction and ledger row eac
  assert.equal(again.state.executed.length,0);
  assert.equal(log.filter(e=>e.event==='skipped').length,20);
  assert.deepEqual(again.state.phases,['bootstrap','release']);
- // Temporal stage then applies only its phase.
+ // Temporal stage then applies only its phase and stops at the owner reads (stage meri, ordinal 22).
  await runStage({stage:'temporal',plan,variables,connect:again.connect});
- assert.deepEqual(again.state.ledger.map(r=>r.ordinal),plan.filter(e=>e.stage!=='integration').map(e=>e.ordinal));
+ assert.deepEqual(again.state.ledger.map(r=>r.ordinal),plan.slice(0,21).map(e=>e.ordinal));
  assert.deepEqual(again.state.phases,['bootstrap','release','bootstrap','temporal_grants','release']);
+ // A fresh database therefore runs meri, temporal, meri; the last run applies only the owner reads.
+ await runStage({stage:'meri',plan,variables,connect:again.connect});
+ assert.deepEqual(again.state.ledger.map(r=>r.ordinal),plan.filter(e=>e.stage!=='integration').map(e=>e.ordinal));
+ assert.deepEqual(again.state.phases.slice(-3),['bootstrap','owner_conversation_reads','release']);
+});
+
+test('the live ledger (meri and temporal applied, 21 entries) takes the owner reads in one meri run and stops before integration',async()=>{
+ const plan=loadPlan(),live=fakeDatabase();
+ live.state.ledger=plan.slice(0,21).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));live.state.ledgerTable=live.state.owner=true;
+ assert.equal(plan[21].kind,'phase:owner_conversation_reads');assert.equal(plan[21].stage,'meri');assert.equal(plan[22].stage,'integration');
+ const events=[];await runStage({stage:'meri',plan,variables,connect:live.connect,log:e=>events.push(e)});
+ assert.deepEqual(live.state.ledger.map(r=>r.ordinal),plan.slice(0,22).map(e=>e.ordinal));
+ assert.deepEqual(events.filter(e=>e.event==='applied').map(e=>e.name),[`${OWNER_READS_SCRIPT}#owner_conversation_reads`]);
+ assert.deepEqual(live.state.phases,['bootstrap','owner_conversation_reads','release']);
+ assert.equal(live.state.executed.length,0,'a phase runs no migration body');
+});
+
+test('owner reads grant the model owner only SELECT on the two tables and the lock-only binding column',async()=>{
+ const statements=[];
+ await runPsqlScript({
+  text:read(OWNER_READS_SCRIPT),variables:{phase_owner_conversation_reads:'1'},
+  connect:async()=>({async query(q){if(typeof q==='string')statements.push(q);return {rows:[]};},async end(){}})
+ });
+ assert.deepEqual([...grants(statements)].sort(),[
+  'meri_model_budget_owner SELECT TABLE meri_conversations.initial_run_bindings',
+  'meri_model_budget_owner SELECT TABLE meri_conversations.next_runs',
+  'meri_model_budget_owner UPDATE(record_sha256) TABLE meri_conversations.initial_run_bindings'
+ ]);
+ const text=read(OWNER_READS_SCRIPT),code=text.split('\n').filter(line=>!line.trimStart().startsWith('--')).join('\n');
+ assert.equal(text.match(/^\\if /gmu).length,1);assert.match(text,/^\\if :\{\?phase_owner_conversation_reads\}$/mu);
+ assert.ok(!/phase_(bootstrap|meri_grants|temporal_grants|integration_grants|release)/u.test(code),'only the owner reads phase lives here');
+ assert.ok(!/\b(INSERT|DELETE|TRUNCATE)\b[^;]*\bTO meri_model_budget_owner/u.test(code));
+ // The privileges are derived from the production statements the owner runs.
+ assert.match(read('apps/control/conversations/initial-run-binding-journal.mjs'),
+  /SELECT \* FROM meri_conversations\.initial_run_bindings WHERE tenant_id=\$1 AND conversation_id=\$2 FOR UPDATE/u);
+ assert.match(read('apps/control/conversations/next-run-journal.mjs'),
+  /SELECT \* FROM meri_conversations\.next_runs WHERE tenant_id=\$1 AND conversation_id=\$2 AND target_run_id=\$3'/u);
+ for(const path of ['apps/proxy/product/product-owner-placement.mjs','apps/proxy/product/owner-native-currentness.mjs'])
+  assert.match(read(path),/readConversation/u,path);
+ assert.match(read('apps/proxy/product/owner-native-currentness.mjs'),/store\.nextRuns\.current\(/u);
+ assert.match(read('apps/control/conversations/migrations/0017_initial_run_bindings.sql'),
+  /CREATE TRIGGER immutable_initial_run_binding BEFORE UPDATE OR DELETE ON meri_conversations\.initial_run_bindings/u);
 });
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
