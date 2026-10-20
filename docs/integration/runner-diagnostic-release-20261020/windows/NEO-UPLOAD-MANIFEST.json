@@ -13,43 +13,43 @@
   "policySha256": "e338c50e1f3f4eede1943466024b6eff36e9a85a527339b4c9dbe752e65d88fe",
   "allocationSha256": "8caf70039edab43b1f5665c8555ef3189aa546da1fbf722c5563a82ff0788195",
   "stage3Sha256": "4ed035291fe02954ad5b2abd6ac3d29fe1cf1c8e176a344c0efdef6506bd1419",
-  "summarySha256": null,
+  "summarySha256": "23490c8820e60685bba0bb19c517b8d116eff6ddcf127d384e9113107cd5142b",
   "roles": [
     {
       "role": "control",
       "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV",
       "bundleRelativePath": "rendered/control/bundle.json",
-      "bytes": null,
-      "sha256": null
+      "bytes": 31224,
+      "sha256": "5f3e9063c58ed78f3af8a746f84b8768d4bb4abd224e3f242214da0213787212"
     },
     {
       "role": "temporal-worker",
       "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv",
       "bundleRelativePath": "rendered/temporal-worker/bundle.json",
-      "bytes": null,
-      "sha256": null
+      "bytes": 13570,
+      "sha256": "b9c9df92c78ffa6cf0184c74081338728aeb61071af13b7ee69a597a72fe785f"
     },
     {
       "role": "temporal-issuer",
       "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb",
       "bundleRelativePath": "rendered/temporal-issuer/bundle.json",
-      "bytes": null,
-      "sha256": null
+      "bytes": 13139,
+      "sha256": "13e766b16a24670238074987271579ef0decf8dfca97a9d9f6ccc10060bfcc3b"
     },
     {
       "role": "model-owner",
       "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/owner/material-05kED4",
       "bundleRelativePath": "rendered/model-owner/bundle.json",
-      "bytes": null,
-      "sha256": null
+      "bytes": 25690,
+      "sha256": "6af73346f5ad812ba96b1041d2814d0711c1430bbbe7863ef779a7e1dce4a3b0"
     },
     {
       "role": "model-proxy",
       "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/proxy/material-kpYYOE",
       "bundleRelativePath": "rendered/model-proxy/bundle.json",
-      "bytes": null,
-      "sha256": null
+      "bytes": 14119,
+      "sha256": "ed1cc812420d84300c991ea81e5dec8c88d6637a4f88954adc034b3a025c8c40"
     }
   ],
-  "preparationStatus": "PENDING_NEO_RENDER_METADATA_NOT_APPROVED"
+  "preparationStatus": "APPROVED_NEO_RENDER_METADATA_USER_UPLOAD_ONLY"
 }

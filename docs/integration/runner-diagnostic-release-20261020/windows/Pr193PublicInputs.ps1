@@ -1,6 +1,6 @@
 # Fixed successor pins; dot-sourcing defines data/functions only. No IO or execution.
 $script:Pr193ReleasePinStatus = 'READY'
-$script:Pr193UploadPinStatus = 'PENDING'
+$script:Pr193UploadPinStatus = 'READY'
 $script:Pr193SourceCommit = '2b4421f612f9fbb728d6da52927aac228d712d40'
 $script:Pr193PacketCommit = '86983726ebf532955631578c07b080da1fcf2500'
 $script:Pr193ReadbackCommit = '334f68728f23669d121d309b69b45a5bfc77b24b'
@@ -9,7 +9,7 @@ $script:Pr193ReadbackManifestSha256 = '4eeb505b63f1f6ab2756d2f694bcb446f6748124c
 $script:Pr193RuntimeValuesSha256 = '46a04439273a9a26b90472b4fab28f9d13068187e033ad41d12e7045d48f4e0d'
 $script:Pr193DeploymentInputsSha256 = '4c7f8adfafc6eb3ed7b9e65b8a0ee7d940a40269f903f7127b30111b68869a54'
 $script:Pr193ImageUri = '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f5a7abc9940ef8f5092bbfa9db9c3345874d448de2d7d7712645f8aad9db5ff7'
-$script:Pr193ApprovedManifestSha256 = $null
+$script:Pr193ApprovedManifestSha256 = '573c7d09b1fcf8adade3f09e80037fa9585339e320ec4844cfa447347b874c9a'
 $script:Pr193PolicySha256 = 'e338c50e1f3f4eede1943466024b6eff36e9a85a527339b4c9dbe752e65d88fe'
 $script:Pr193AllocationSha256 = '8caf70039edab43b1f5665c8555ef3189aa546da1fbf722c5563a82ff0788195'
 $script:Pr193Label = 'FIRST_CHAT_20261020E'

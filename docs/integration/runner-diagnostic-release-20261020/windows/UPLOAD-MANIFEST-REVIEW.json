@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "status": "NEO_RENDER_METADATA_MATCHES_FROZEN_PUBLIC_INPUTS",
+  "receivedVia": "Neo pasted metadata relayed by parent 01a0ff18-26cd-7609-beba-87726d0300c6",
+  "originalReceiptFileSha256": null,
+  "originalReceiptBytesReceived": false,
+  "receiptFileHashRule": "The unchanged upload wrapper hashes Neo's actual local-render-receipt.json on the secure host and binds that hash into persisted retry state and upload receipt. No hash is inferred from pasted metadata.",
+  "receivedPublicFields": {
+    "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+    "packetCommit": "86983726ebf532955631578c07b080da1fcf2500",
+    "readbackCommit": "334f68728f23669d121d309b69b45a5bfc77b24b",
+    "packetManifestSha256": "ebae569fdec329602ad068641f4c33599fb001f2eab9b1c1e613f88b801dfeec",
+    "readbackManifestSha256": "4eeb505b63f1f6ab2756d2f694bcb446f6748124cc70b159d277337ea77e8233",
+    "runtimeValuesSha256": "46a04439273a9a26b90472b4fab28f9d13068187e033ad41d12e7045d48f4e0d",
+    "deploymentInputsSha256": "4c7f8adfafc6eb3ed7b9e65b8a0ee7d940a40269f903f7127b30111b68869a54",
+    "policySha256": "e338c50e1f3f4eede1943466024b6eff36e9a85a527339b4c9dbe752e65d88fe",
+    "allocationSha256": "8caf70039edab43b1f5665c8555ef3189aa546da1fbf722c5563a82ff0788195",
+    "stage3Sha256": "4ed035291fe02954ad5b2abd6ac3d29fe1cf1c8e176a344c0efdef6506bd1419",
+    "summarySha256": "23490c8820e60685bba0bb19c517b8d116eff6ddcf127d384e9113107cd5142b"
+  },
+  "frozenGitChecks": {
+    "packetManifestSha256": {
+      "status": "MATCH_FROZEN_GIT_BYTES",
+      "commit": "86983726ebf532955631578c07b080da1fcf2500",
+      "path": "docs/integration/runner-diagnostic-release-20261020/PUBLIC-FILE-MANIFEST.json"
+    },
+    "readbackManifestSha256": {
+      "status": "MATCH_FROZEN_GIT_BYTES",
+      "commit": "334f68728f23669d121d309b69b45a5bfc77b24b",
+      "path": "docs/integration/runner-diagnostic-release-20261020/windows-readbacks/FILE-MANIFEST.json"
+    },
+    "runtimeValuesSha256": {
+      "status": "MATCH_FROZEN_GIT_BYTES",
+      "commit": "86983726ebf532955631578c07b080da1fcf2500",
+      "path": "docs/integration/runner-diagnostic-release-20261020/public-candidate/runtime-values.json"
+    },
+    "deploymentInputsSha256": {
+      "status": "MATCH_FROZEN_GIT_BYTES",
+      "commit": "86983726ebf532955631578c07b080da1fcf2500",
+      "path": "docs/integration/runner-diagnostic-release-20261020/public-candidate/deployment-inputs.candidate.json"
+    },
+    "policySha256": {
+      "status": "MATCH_FROZEN_GIT_BYTES",
+      "commit": "86983726ebf532955631578c07b080da1fcf2500",
+      "path": "docs/integration/runner-diagnostic-release-20261020/public-candidate/policy.json"
+    },
+    "allocationSha256": {
+      "status": "MATCH_FROZEN_GIT_BYTES",
+      "commit": "86983726ebf532955631578c07b080da1fcf2500",
+      "path": "docs/integration/runner-diagnostic-release-20261020/public-candidate/allocation.json"
+    },
+    "stage3Sha256": {
+      "status": "MATCH_FROZEN_GIT_BYTES",
+      "commit": "334f68728f23669d121d309b69b45a5bfc77b24b",
+      "path": "docs/integration/runner-diagnostic-release-20261020/windows-readbacks/stage3.observed.json"
+    }
+  },
+  "roles": [
+    {
+      "role": "control",
+      "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV",
+      "bundleRelativePath": "rendered/control/bundle.json",
+      "bytes": 31224,
+      "sha256": "5f3e9063c58ed78f3af8a746f84b8768d4bb4abd224e3f242214da0213787212"
+    },
+    {
+      "role": "temporal-worker",
+      "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv",
+      "bundleRelativePath": "rendered/temporal-worker/bundle.json",
+      "bytes": 13570,
+      "sha256": "b9c9df92c78ffa6cf0184c74081338728aeb61071af13b7ee69a597a72fe785f"
+    },
+    {
+      "role": "temporal-issuer",
+      "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb",
+      "bundleRelativePath": "rendered/temporal-issuer/bundle.json",
+      "bytes": 13139,
+      "sha256": "13e766b16a24670238074987271579ef0decf8dfca97a9d9f6ccc10060bfcc3b"
+    },
+    {
+      "role": "model-owner",
+      "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/owner/material-05kED4",
+      "bundleRelativePath": "rendered/model-owner/bundle.json",
+      "bytes": 25690,
+      "sha256": "6af73346f5ad812ba96b1041d2814d0711c1430bbbe7863ef779a7e1dce4a3b0"
+    },
+    {
+      "role": "model-proxy",
+      "arn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/proxy/material-kpYYOE",
+      "bundleRelativePath": "rendered/model-proxy/bundle.json",
+      "bytes": 14119,
+      "sha256": "ed1cc812420d84300c991ea81e5dec8c88d6637a4f88954adc034b3a025c8c40"
+    }
+  ],
+  "privateSummaryAndBundleProof": "Summary/bundle hashes and lengths are Neo-reported metadata. Private bytes were not received or independently read by the agent. The existing wrapper verifies all actual local bytes before upload.",
+  "approvedManifestSha256": "573c7d09b1fcf8adade3f09e80037fa9585339e320ec4844cfa447347b874c9a",
+  "uploadImplementationSha256": "ba1b8e447551b9acb7c070d226b9fb4c1d0e57b06c3210789924dbcf1c09bb8e",
+  "operationsPerformed": {
+    "privateFileReads": 0,
+    "awsCalls": 0,
+    "secretTransmissions": 0,
+    "uploads": 0
+  },
+  "independentReview": {
+    "status": "PASS",
+    "reviewer": "upload_manifest_audit",
+    "compared": "All 11 parent-supplied public fields, five exact role counts/hashes/paths, seven frozen Git hashes, and five ARNs against frozen deployment/readback metadata. Upload/Common/Render/Bind/DependencyProbe byte-identical to9230534d; PublicInputs only READY and manifest hash changed.",
+    "privateByteProof": "Not independently read; unchanged wrapper verifies actual local files before user upload."
+  },
+  "focusedCheck": {
+    "pinFilePowerShellParse": "PASS",
+    "releasePinsReadyForUpload": "PASS",
+    "privateOperationalExecution": false,
+    "broadTestsRun": false
+  }
+}
