@@ -177,11 +177,11 @@ test('the class set is closed and constant-shaped, every class prints, and the a
     const lines = [];
     await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); captureRunnerFailure(coded(code), 'native-start'); throw coded(code);},
       {write: line => lines.push(line)}).catch(() => {});
-    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start code=${code}\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
+    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=${code} class=ERROR exit=none signal=none\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
   }
   const lines = []; // a look-alike outside the set stays UNKNOWN: the allowlist is exact, not a prefix match
   await withRunnerDiagnostics(async () => {throw coded('PINNED_NATIVE_SECRET');}, {write: line => lines.push(line)}).catch(() => {});
-  assert.deepEqual(lines, ['RUNNER_FIRST_FAILURE origin=runtime code=UNKNOWN\n', 'RUNNER_RUNTIME_FAILED stage=module-import code=UNKNOWN\n']);
+  assert.deepEqual(lines, ['RUNNER_FIRST_FAILURE origin=runtime stage=module-import code=ERROR class=ERROR exit=none signal=none\n', 'RUNNER_RUNTIME_FAILED stage=module-import code=ERROR\n']);
 });
 
 // --- success and status classes --------------------------------------------------------------------------------------
@@ -366,7 +366,7 @@ for (const [selected, code, base] of [['s403', 'PINNED_NATIVE_STATUS_403'], ['s4
   test(`${label} native-start ${selected} prints only the fixed class ${code}`, async () => {
     const {lines, failure} = await driveStart(selected, {base});
     assertSanitized(failure, code);
-    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start code=${code}\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
+    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=${code} class=ERROR exit=none signal=none\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
   });
 }
 test(`${label} native-start succeeds with no diagnostic line`, async () => {
@@ -376,5 +376,5 @@ test(`${label} the client's native-start lifetime deadline wins as REMOTE_TASK_R
   const budget = original => ({nativePrepare: {maxMs: 23000, expiresAtMs: original.expiresAtMs - 1000}, nativeStart: {maxMs: 50, expiresAtMs: original.expiresAtMs - 1000}});
   const {lines, failure} = await driveStart('hang', {startupBudget: budget});
   assert.equal(failure.code, 'REMOTE_TASK_REFUSED');
-  assert.equal(lines[0], 'RUNNER_FIRST_FAILURE origin=native-start code=REMOTE_TASK_REFUSED\n');
+  assert.equal(lines[0], 'RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=REMOTE_TASK_REFUSED class=ERROR exit=none signal=none\n');
 });

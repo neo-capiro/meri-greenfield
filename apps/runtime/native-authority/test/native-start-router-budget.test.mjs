@@ -195,7 +195,7 @@ test('reproduction: the deployed eight-second router enclosure cuts start inside
   const x = await compose(t, {routerOptions: {startupMaxRequestMs: 8000}}), result = await driveStart(x);
   assert.equal(result.ok, false);
   assert.equal(result.error.code, 'PINNED_NATIVE_STATUS_403');
-  assert.equal(result.lines[0].trim(), 'RUNNER_FIRST_FAILURE origin=native-start code=PINNED_NATIVE_STATUS_403');
+  assert.equal(result.lines[0].trim(), 'RUNNER_FIRST_FAILURE origin=native-start stage=module-import code=PINNED_NATIVE_STATUS_403 class=ERROR exit=none signal=none');
   // Live signature: the router destroys its runner connection, the runner aborts its nested call back to control.
   assert.equal(prematureCloses(result), 2, result.consoleLines.join(' | '));
   assert.deepEqual(x.aborted, ['started']);
