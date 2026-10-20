@@ -157,25 +157,24 @@ test('non-load worker publish retains separate authentication and current observ
   assert.deepEqual(current.counts,legacy.counts);
 });
 
-test('the lifecycle control page takes one session observation per authority point and two task verifies',async()=>{
-  // Before: 67 (fixed) / 82 (dynamic) Core calls and 3 task authorizations: a session pair in worker HTTP, then per lifecycle fresh()
-  // its own pair plus the gated history read's pair before and after it. Now each of those points is one complete observation.
-  for(const [mode,coreCalls,split] of [['fixed',29,[9,8,12]],['dynamic',35,[9,14,12]]]){
+test('the lifecycle control page is read with the task authority alone: two task verifies, no session',async()=>{
+  // Before: 67 (fixed) / 82 (dynamic) Core calls: a task verify, a session issue and pair, a middle verify, the lifecycle
+  // service's own session observations and gated history read on both sides of the journal read, and a final verify.
+  for(const mode of ['fixed','dynamic']){
     const result=await one({mode,route:'next-controls'});
-    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,coreCalls,JSON.stringify(result));
-    assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],split);
-    assert.equal(result.counts.taskAuthorization,2,'task verified before the session work and after the read');
-    assert.equal(result.counts.controls,1);assert.equal(result.counts.read,2,'the run is read once per lifecycle fresh()');
-    assert.equal(result.counts.retention,4,'retention before and after each run read');assert.equal(result.counts.append,0);
+    assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,4,JSON.stringify(result));
+    assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],[2,2,0]);
+    assert.equal(result.counts.taskAuthorization,2,'task verified before and after the read');assert.equal(result.counts.currentRun,4);
+    assert.equal(result.counts.controls,1);assert.equal(result.counts.read,0,'no session-gated run read');assert.equal(result.counts.append,0);
     assert.deepEqual(result.value,{controls:[],nextControlSequence:0});
   }
 });
 
-test('the lifecycle control page answers within its 23 s allowance at the 10:26Z median Core latencies', {timeout:30000},async()=>{
+test('the lifecycle control page answers well inside its 23 s allowance at the 10:26Z median Core latencies', {timeout:30000},async()=>{
   const latencyMs=route=>({identity:100,membership:300,context:500})[route];
   const result=await one({mode:'dynamic',route:'next-controls',latencyMs,serverMs:25000,nativeMs:3000,callMs:23000});
-  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,35);
-  assert.ok(result.durationMs<16000,JSON.stringify(result));
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,4);
+  assert.ok(result.durationMs<3000,JSON.stringify(result));
 });
 
 test('35 ms serial Core responses fit the fused load deadline',async()=>{
