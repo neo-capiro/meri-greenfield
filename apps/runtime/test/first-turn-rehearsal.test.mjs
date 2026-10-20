@@ -86,7 +86,9 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
   await verifierContext.resolveContext({identityCredential:'synthetic-native',identity:verified,identitySha256:hash(verified),hints:{conversationId:binding.conversationId,runId:binding.runId},deadlineMs:Date.now()+25000,signal});
   const now=Date.now();return {binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-native',scopes,selectedClientId:clientId,
    policyRevision:scopes[0].policyRevision,authorizationDecisionId:'synthetic-decision',checkedAtMs:now,expiresAtMs:expiry()};}};
- const control=createWorkerRunApplication({service:traced('service',service),sessions:traced('sessions',sessions),native:traced('native',native),configuration:{limits:{requestMs:25000,requestBytes:131072}},now:Date.now});
+ // The session owner is passed as itself: worker-http finds its registered current-state issuer by the owner object, and a traced
+ // copy would fall back to the plain session port (issue, authenticate, read: 10 more Core calls per load and per publish).
+ const control=createWorkerRunApplication({service:traced('service',service),sessions,native:traced('native',native),configuration:{limits:{requestMs:25000,requestBytes:131072}},now:Date.now});
  // Runner → control: run-owner operations go to worker-http exactly as prepared-candidate.mjs rewrites them.
  const outside=async(name)=>{
   if(name==='runner/runtime')return {binding,versions,proxyUrl:'https://proxy.example.invalid',proxyCredential:'synthetic-proxy',model:'synthetic-model',deadlineMs:Date.now()+600000,maxTurns:2,maxCostMicroUSD:1,maxOutputBytes:65536};
