@@ -5,13 +5,13 @@ import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {assertRunOwnerRequest,same,runOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.mjs';
 import {fault} from './config.mjs';
 import {createNativeTaskAuthority} from './native-authority/task-authority.mjs';
-import {authenticatedCurrentState} from '../control/action-host/session/owner.mjs';
+import {issuedCurrentState} from '../control/action-host/session/owner.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {taskControlPage} from '../control/conversations/lifecycle/service.mjs';
 export function createWorkerRunApplication({service,sessions,native,configuration,retention,now=Date.now}){
  let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  const authority=createNativeTaskAuthority({native,enabled:true,now,maxRequestMs:configuration.limits.requestMs});
- const readCurrent=authenticatedCurrentState(sessions);
+ const issueCurrent=issuedCurrentState(sessions);
  return Object.freeze({async handle(request){let life,session;try{
   const url=new URL(request.url),route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||!Object.hasOwn(runOwnerOperations,route[1])||url.search)return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
   const capability=request.headers.get('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(capability??''))throw fault('WORKER_AUTHORITY_REFUSED');if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw fault('WORKER_REQUEST_REFUSED');
@@ -25,12 +25,12 @@ export function createWorkerRunApplication({service,sessions,native,configuratio
   // extra membership admission/rechecks only pin role, permission and client-list revisions; every effect still goes through it.
   if(route[1]==='next-controls'){if(typeof service[taskControlPage]!=='function')throw fault('WORKER_REQUEST_REFUSED');
    result=await life.run(signal=>service[taskControlPage]({binding:pinned.binding,scopes:pinned.scopes,selectedClientId:pinned.selectedClientId,after:input.after??0,signal}));}
-  else{session=await life.run(signal=>sessions.issue({identityCredential:authorization.identityCredential,hints:{conversationId:input.binding.conversationId,runId:input.binding.runId,clientId:authorization.selectedClientId},signal}));
-  // This observation only cross-checks the new session against the task authority; the service observes the session again (as a
-  // separate pair for every effect) immediately before it reads or writes, so one complete observation suffices here.
-  let current;
-  if(readCurrent)({current}=await life.run(signal=>readCurrent({credential:session.credential,signal})));
-  else{const authentication=await life.run(signal=>sessions.authenticateSession({credential:session.credential,signal}));current=await life.run(signal=>sessions.readCurrentState({authentication,signal}));}
+  // The new session is only cross-checked against the task authority here; the service observes it again (as a separate pair for
+  // every effect) immediately before it reads or writes. The registered owner hands back what its issuance resolve just observed
+  // (identity, membership admission, context, membership recheck); a plain session port issues and then observes the session.
+  else{const issue={identityCredential:authorization.identityCredential,hints:{conversationId:input.binding.conversationId,runId:input.binding.runId,clientId:authorization.selectedClientId}};let current;
+  if(issueCurrent)({receipt:session,current}=await life.run(signal=>issueCurrent({...issue,signal})));
+  else{session=await life.run(signal=>sessions.issue({...issue,signal}));const authentication=await life.run(signal=>sessions.authenticateSession({credential:session.credential,signal}));current=await life.run(signal=>sessions.readCurrentState({authentication,signal}));}
   if(!same(current.binding,pinned.binding)||!same(current.scopes,pinned.scopes)||current.selectedClientId!==pinned.selectedClientId)throw fault('WORKER_AUTHORITY_CHANGED');
   await fresh();result=await life.run(signal=>service[runOwnerOperations[route[1]]]({credential:session.credential,...input,signal}));}
   await fresh();life.check();

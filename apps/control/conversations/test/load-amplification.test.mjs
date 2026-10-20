@@ -124,10 +124,11 @@ test('fused runner/load keeps the original authority gates with bounded Core fan
   assert.equal(dynamic.outcome,'200',JSON.stringify(dynamic));
   assert.equal(fixed.value.fixtureMarker,'journal-read');
   assert.equal(dynamic.value.fixtureMarker,'journal-read');
-  assert.equal(fixed.coreCalls,31,JSON.stringify(fixed));
-  assert.equal(dynamic.coreCalls,37,JSON.stringify(dynamic));
-  assert.deepEqual([fixed.counts.identity,fixed.counts.context,fixed.counts.membership],[10,9,12]);
-  assert.deepEqual([dynamic.counts.identity,dynamic.counts.context,dynamic.counts.membership],[10,15,12]);
+  // Before: 31 (fixed) / 37 (dynamic); the worker no longer resolves its new session again after issuance.
+  assert.equal(fixed.coreCalls,27,JSON.stringify(fixed));
+  assert.equal(dynamic.coreCalls,32,JSON.stringify(dynamic));
+  assert.deepEqual([fixed.counts.identity,fixed.counts.context,fixed.counts.membership],[9,8,10]);
+  assert.deepEqual([dynamic.counts.identity,dynamic.counts.context,dynamic.counts.membership],[9,13,10]);
   for(const result of [fixed,dynamic]){
     assert.equal(result.counts.taskAuthorization,3);
     assert.equal(result.counts.append,0,'load must never publish');
@@ -147,18 +148,18 @@ test('legacy session ports retain the original fresh pair at every load boundary
   }
 });
 
-test('worker publish cross-checks its new session with one observation; the service keeps its separate pair before the write',async()=>{
-  for(const [mode,owner,legacyCalls] of [['fixed',31,35],['dynamic',37,42]]){
+test('worker publish cross-checks its new session with the issuance observation; the service keeps its separate pair before the write',async()=>{
+  for(const [mode,owner,legacyCalls] of [['fixed',27,35],['dynamic',32,42]]){
     const current=await one({mode,route:'publish'}),legacy=await one({mode,route:'publish',legacySessions:true});
     for(const result of [current,legacy]){
       assert.equal(result.outcome,'200',JSON.stringify(result));
       assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.append,1);assert.equal(result.counts.retention,2);
       assert.equal(result.counts.journalExecution,0);assert.deepEqual(result.value.scopes,scopes);
     }
-    // Before: 35 (fixed) / 42 (dynamic) for both ports. Only the worker's session/task cross-check changed: one owner resolve
-    // (identity, membership, context, membership) instead of an authenticate + current-state pair.
+    // Before: 35 (fixed) / 42 (dynamic) for both ports. Only the worker's session/task cross-check changed: the registered owner
+    // returns what its issuance resolve observed, where a plain port resolves the session twice more (authenticate + current state).
     assert.equal(current.coreCalls,owner,JSON.stringify(current));assert.equal(legacy.coreCalls,legacyCalls,JSON.stringify(legacy));
-    assert.equal(legacy.counts.identity-current.counts.identity,1);assert.equal(legacy.counts.membership-current.counts.membership,2);
+    assert.equal(legacy.counts.identity-current.counts.identity,2);assert.equal(legacy.counts.membership-current.counts.membership,4);
   }
 });
 test('the lifecycle control page is read with the task authority alone: two task verifies, no session',async()=>{
@@ -184,7 +185,7 @@ test('the lifecycle control page answers well inside its 23 s allowance at the 1
 test('35 ms serial Core responses fit the fused load deadline',async()=>{
   const result=await one({mode:'dynamic',latencyMs:35});
   assert.equal(result.outcome,'200',JSON.stringify(result));
-  assert.equal(result.coreCalls,37);
+  assert.equal(result.coreCalls,32);
   assert.ok(result.durationMs<3000,JSON.stringify(result));
 });
 
@@ -243,8 +244,8 @@ test('nested remote runner passes its load budget into the activity',async()=>{
 test('500 ms Core replies fit the unchanged 23-second load budget after removing duplicate observations', {timeout:30000},async()=>{
   const result=await one({mode:'dynamic',latencyMs:500,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
   assert.equal(result.outcome,'200',JSON.stringify(result));
-  assert.equal(result.coreCalls,37);
-  assert.ok(result.durationMs>=18500&&result.durationMs<23000,JSON.stringify(result));
+  assert.equal(result.coreCalls,32);
+  assert.ok(result.durationMs>=16000&&result.durationMs<23000,JSON.stringify(result));
 });
 
 test('the original paired path exceeds that same 23-second budget at 500 ms per Core response', {timeout:30000},async()=>{
@@ -261,9 +262,9 @@ test('conservative tail-heavy stress using observed per-route bounds fits the un
   const latencyMs=(route,count)=>{const v=observed[route],ms=[v.mean,v.p95,v.mean,v.max,v.p95][(count-1)%5];scheduledMs+=ms;return ms;};
   const result=await one({mode:'dynamic',latencyMs,serverMs:25000,nativeMs:3000,loadNativeMs:23000});
   t.diagnostic(JSON.stringify({profile:'conservative tail-heavy stress, not a reconstructed live distribution',scheduledMs,durationMs:result.durationMs,coreCalls:result.coreCalls,counts:result.counts,outcome:result.outcome}));
-  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,37);
-  assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],[10,15,12]);
-  assert.equal(scheduledMs,18152);assert.ok(result.durationMs>=scheduledMs&&result.durationMs<23000,JSON.stringify(result));
+  assert.equal(result.outcome,'200',JSON.stringify(result));assert.equal(result.coreCalls,32);
+  assert.deepEqual([result.counts.identity,result.counts.context,result.counts.membership],[9,13,10]);
+  assert.equal(scheduledMs,15270);assert.ok(result.durationMs>=scheduledMs&&result.durationMs<23000,JSON.stringify(result));
   assert.equal(result.counts.taskAuthorization,3);assert.equal(result.counts.retention,4);
   assert.equal(result.counts.read,2);assert.equal(result.counts.append,0);assert.equal(result.counts.journalExecution,1);
   assert.equal(result.value.fixtureMarker,'journal-read');
