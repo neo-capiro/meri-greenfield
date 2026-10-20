@@ -69,3 +69,13 @@ test('signing key is RSA-2048 sign-only, retained, and only the issuer task role
  const [[,tg]]=ofType(t,'AWS::ElasticLoadBalancingV2::TargetGroup');assert.equal(tg.Properties.HealthCheckPath,'/health/live');assert.equal(tg.Properties.Port,8080);
  assert.equal(ofType(t,'AWS::ServiceDiscovery::Service').length,4);
 });
+
+test('control reaches the runner receiver only on 8080, and only the runner SG admits it',()=>{
+ const t=synthesizeFirstChatFoundation(foundationBinding()),id=([logical])=>logical;
+ const egress=ofType(t,'AWS::EC2::SecurityGroupEgress').filter(([,r])=>r.Properties.FromPort===8080).map(id);
+ const ingress=ofType(t,'AWS::EC2::SecurityGroupIngress').filter(([,r])=>r.Properties.FromPort===8080&&r.Properties.SourceSecurityGroupId!=='sg-0dc7236a6d67e4340');
+ assert.deepEqual(egress.map(e=>e.replace(/[A-F0-9]{8}8080[A-F0-9]{8}$/u,'')),['ControlSgtoMeriFirstChatFoundationRunnerSg']);
+ assert.equal(ingress.length,1);assert.match(id(ingress[0]),/^RunnerSgfromMeriFirstChatFoundationControlSg/u);
+ for(const [,r] of [...ofType(t,'AWS::EC2::SecurityGroupEgress'),...ofType(t,'AWS::EC2::SecurityGroupIngress')].filter(([,r])=>r.Properties.FromPort===8080&&r.Properties.Description!=='public ALB to control 8080 (Meri host rule only)'))
+  assert.equal(r.Properties.Description,'Meri preview control to original runner readiness','the live rule description, for import');
+});
