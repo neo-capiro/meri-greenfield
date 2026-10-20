@@ -11,6 +11,7 @@ import {createProductOwnerAdmissionChannel} from './owner-channel.mjs';
 import {validateProductOwnerConfiguration,startProductOwner,runProductOwnerMain,
  PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS} from './owner-entrypoint.mjs';
 import {servicePairFixture} from './test/service-pair-fixture.mjs';
+import {OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/model-proxy/product-envelope.mjs';
 
 const sha=v=>createHash('sha256').update(v).digest('hex'),id=n=>'11111111-1111-4111-8111-'+String(n).padStart(12,'0');
@@ -96,9 +97,10 @@ test('runtime schema is closed and joins reviewed server/client/service/pricing 
   c=>{c.clientPolicy.selectedClientId='other';},c=>{c.serviceTasks.proxy.taskArn='prelaunch-task';},
   c=>{c.clientPolicy.ownerTaskArn='prelaunch-task';},c=>{c.serviceTasks.schemaVersion=1;},
   c=>{c.serviceTasks.ownerCertSha256='f'.repeat(64);},c=>{c.serviceTasks.proxy.vpcId='vpc-ffffffff';},
-  c=>{c.pricing.maxOutputTokens=PRODUCT_MAX_OUTPUT_TOKENS+1;},c=>{c.pricing.maxInputTokens=PRODUCT_MAX_INPUT_TOKENS+1;},c=>{c.limits.maxLeaseMs=30001;},c=>{c.serviceTasks.proxy.endpoint='https://foreign.invalid';},
+  c=>{c.pricing.maxOutputTokens=PRODUCT_MAX_OUTPUT_TOKENS+1;},c=>{c.pricing.maxInputTokens=PRODUCT_MAX_INPUT_TOKENS+1;},c=>{c.limits.maxLeaseMs=30001;},c=>{c.limits.maxRequestMs=OWNER_MAX_REQUEST_MS+1;},c=>{c.serviceTasks.proxy.endpoint='https://foreign.invalid';},
  ]){const f=fixture();change(f.runtime);await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);assert.deepEqual(f.reads,[]);assert.deepEqual(f.lifecycle,[]);}
  const f=fixture(),v=validateProductOwnerConfiguration(f.runtime);assert.ok(Object.isFrozen(v.tls));assert.ok(Object.isFrozen(v.serviceTasks.proxy.securityGroupIds));
+ const budget=fixture();budget.runtime.limits.maxRequestMs=OWNER_MAX_REQUEST_MS;assert.equal(validateProductOwnerConfiguration(budget.runtime).limits.maxRequestMs,15000,'one owner exchange may take 15 s');
 });
 
 test('whole original control raw bytes are pinned before parsing, including independently committed VPC',async()=>{

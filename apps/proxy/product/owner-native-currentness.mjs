@@ -10,6 +10,7 @@ import {validateConfiguration,readSecret} from '../../runtime/config.mjs';
 import {compilePreparedRunConfigurationSha256} from '../../runtime/prepared-run-configuration.mjs';
 import {compileNativeTaskRequest} from '../../runtime/native-authority/task-request.mjs';
 import {createProductOwnerCredentialDelivery} from './owner-credential-delivery.mjs';
+import {OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 
 const fail=()=>{throw Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE');};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -31,7 +32,7 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
  if(typeof enabled!=='boolean'||!candidate||candidate.multiRun?.dynamicInitialRuns!==true||
     typeof c.now!=='function'||typeof c.fetchImpl!=='function'||typeof readMaterial!=='function'||
     typeof c.pool?.connect!=='function'||c.report!==undefined&&typeof c.report!=='function'||typeof c.credentialFileSha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.credentialFileSha256)||
-    !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>3000||
+    !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>OWNER_MAX_REQUEST_MS||
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)fail();
  const original=candidate.runtime.binding,selectedClientId=candidate.identity.commandContext.clientResolution.clientId,
   store=createPostgresConversationStore({pool:c.pool,now:c.now}),initialBindings=createInitialRunBindingJournal({pool:c.pool,now:c.now}),

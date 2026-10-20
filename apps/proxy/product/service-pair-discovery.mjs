@@ -6,6 +6,10 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const fail=()=>{throw Error('PRODUCT_SERVICE_TASK_LEASE_UNAVAILABLE');};
+/** One owner exchange: a fresh pair discovery before and after it on each side, placement or admission currentness in between.
+ * Live each discovery takes 0.5-1.5 s, so one model request (two exchanges) needs about 5-13 s; the proxy's shared exchange
+ * cutoff (ownerPeer.max_exchange_ms) and the owner's per-request limit are both bounded by this. */
+export const OWNER_MAX_REQUEST_MS=15000;
 const prefix='arn:aws:ecs:us-east-1:967807252336:',iam='arn:aws:iam::967807252336:role/';
 const name=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,255}$/u.test(v);
 const instant=v=>Number.isSafeInteger(v)&&v>0;
@@ -112,7 +116,7 @@ export async function createProductServicePairDiscovery(raw){
  try{
   c=own(raw,['ecsClient','ec2Client','configuration','now','limits'],['enabled']);pins=parseProductServicePairConfiguration(c.configuration);
   limits=data(own(c.limits,['maxRequestMs','maxLeaseMs']));
-  if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!instant(limits.maxRequestMs)||limits.maxRequestMs>3000||
+  if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!instant(limits.maxRequestMs)||limits.maxRequestMs>OWNER_MAX_REQUEST_MS||
      !instant(limits.maxLeaseMs)||limits.maxLeaseMs>30000)fail();
   ecs=storageMethod(c.ecsClient,'send');ec2=storageMethod(c.ec2Client,'send');
  }catch{fail();}

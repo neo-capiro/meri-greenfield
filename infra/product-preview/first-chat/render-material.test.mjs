@@ -43,6 +43,9 @@ test('all five roles render from throwaway PKI and pass every repository validat
  parseTemporalIssuerRuntimeConfiguration(parsed('temporal-issuer'));
  assert.equal(validateProductOwnerConfiguration(parsed('model-owner')).enabled,true);
  parseProductProxyStartupConfiguration(parsed('model-proxy'));
+ // One model request makes two owner exchanges, each with fresh pair discoveries on both sides (adj-e-PROXY-DENIED.md, attempt 2).
+ assert.equal(parsed('model-owner').limits.maxRequestMs,15000);assert.equal(parsed('model-proxy').ownerPeer.max_exchange_ms,15000);
+ const longer=parsed('model-proxy');longer.ownerPeer.max_exchange_ms=15001;assert.throws(()=>parseProductProxyStartupConfiguration(longer));
  for(const role of ROLES){
   const plan=compileProductMaterialPlan({role,configuration:parsed(role),runtimeUser:RUNTIME_USERS[role],...(role==='model-owner'?{controlConfiguration:control}:{})});
   assert.deepEqual(plan.requiredFiles.map(f=>f.path).sort(),Object.keys(roles[role].expected.sha256ByPath).sort(),role);

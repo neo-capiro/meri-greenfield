@@ -75,6 +75,7 @@ import {productRunnerMeasurement} from '../../../apps/runtime/native-authority/e
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
+import {OWNER_MAX_REQUEST_MS} from '../../../apps/proxy/product/service-pair-discovery.mjs';
 import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION,PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
@@ -633,12 +634,12 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   serviceTasks,pricing:{modelId:d.model.modelId,profileId:d.model.profileId,revision:d.model.pricingRevision,validUntilMs:expiresAtMs,
    actualInputMicroUSDPerK:d.model.actualInputMicroUSDPerK,reserveInputMicroUSDPerK:d.model.reserveInputMicroUSDPerK,outputMicroUSDPerK:d.model.outputMicroUSDPerK,
    maxInputTokens:d.model.maxInputTokens,maxOutputTokens:d.model.maxOutputTokens},
-  limits:{maxRequestMs:3000,maxFactBytes:131072,maxLeaseMs:30000}};
+  limits:{maxRequestMs:OWNER_MAX_REQUEST_MS,maxFactBytes:131072,maxLeaseMs:30000}};
  const ref=(path,bytes)=>({path,sha256:sha(bytes)});
  const proxy={schemaVersion:1,enabled:true,deploymentRevision,expiresAtMs,pricingRevision:PRODUCT_PROXY_PRICING_REVISION,
   serverTls:{certificateFile:ref(PATHS.proxyServerCert,pki.certs['proxy-server']),privateKeyFile:ref(PATHS.proxyServerKey,pki.keys['proxy-server']),certificateSha256:pins.der['proxy-server']},
   ownerPeer:{origin:o.ownerOrigin,server_name:d.names.owner,server_cert_sha256:pins.der['owner-server'],server_issuer_sha256:pins.der['owner-bridge-ca'],
-   client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:3000},
+   client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:OWNER_MAX_REQUEST_MS},
   ownerTls:{caFile:ref(PATHS.proxyOwnerCa,pki.certs['owner-bridge-ca']),certificateFile:ref(PATHS.proxyOwnerCert,pki.certs['proxy-owner-client']),privateKeyFile:ref(PATHS.proxyOwnerKey,pki.keys['proxy-owner-client'])},
   serviceTasks};
 

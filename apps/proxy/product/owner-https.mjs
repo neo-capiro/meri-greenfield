@@ -6,6 +6,7 @@ import {isIPv4} from 'node:net';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createProductOwnerChannel,createProductOwnerAdmissionChannel,OWNER_PATHS} from './owner-channel.mjs';
 import {parseOwnerWire} from './owner-wire-codec.mjs';
+import {OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 
 const fail=()=>{throw Error('PRODUCT_OWNER_HTTPS_UNAVAILABLE');};
 const sha=v=>createHash('sha256').update(v).digest('hex');
@@ -98,7 +99,7 @@ export function createProductOwnerHttpsServer(configuration){
   'taskLeaseReader','serviceGate','now'],['enabled','maxRequestMs','nativeCurrentness']);
  const enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
  if(typeof enabled!=='boolean'||typeof c.now!=='function'||!Number.isSafeInteger(maxRequestMs)||
-    maxRequestMs<1||maxRequestMs>3000)fail();
+    maxRequestMs<1||maxRequestMs>OWNER_MAX_REQUEST_MS)fail();
  if(!enabled)return Object.freeze({available:false,listen:async()=>fail(),close:async()=>{}});
  const t=own(c.tlsMaterial,['origin','serverName','ca','cert','key','certSha256','issuerSha256']);
  const policy=Object.freeze(data(c.clientPolicy));
