@@ -8,7 +8,7 @@ import {migrationBody,splitStatements} from '../../../infra/product-preview/firs
 
 const read=name=>readFileSync(new URL('./migrations/'+name,import.meta.url));
 // Proposed plan pins (report: first-chat-migrate.mjs 'integration' stage, after 0001_objective_custody.sql).
-const PINS={'0002_objective_run_starts.sql':'659b5b400d3fe85ed122fbf75653cd5f7c60e5f2c99f055af90304f9fd1e8598',
+const PINS={'0002_objective_run_starts.sql':'bc3a742a520ef37f743c46249a9fba87b59e0f5d1ed9237fab70ce93d0bb2f38',
  '0003_objective_reader_replays.sql':'13241e96f5294dffc3e616ef0163bd7eaee5c2e5f6030fd7ca05244314b89286'};
 
 for(const [name,pin] of Object.entries(PINS))test(`${name} is CREATE-only inside meri_objective_source, one transaction, pinned`,()=>{
@@ -29,5 +29,7 @@ test('0002 binds the run start to writer fence 1, one job and one run; 0003 keys
  assert.match(runStarts,/generation_job_id uuid PRIMARY KEY/u);assert.match(runStarts,/issuance_key text NOT NULL UNIQUE/u);
  assert.match(runStarts,/UNIQUE \(tenant_id, conversation_id, run_id\)/u);assert.match(runStarts,/binding->'writerFence' = '1'::jsonb/u);
  assert.match(runStarts,/RAISE EXCEPTION 'OBJECTIVE_RUN_START_IMMUTABLE'/u);
+ // `-` binds tighter than `->`: unparenthesized, 'selection' - ARRAY[...] is cast to jsonb and CREATE TABLE fails with 22P02.
+ assert.match(runStarts,/\(record->'selection'\) - ARRAY\[/u);assert.doesNotMatch(runStarts,/[^(]record->'selection' - /u);
  assert.match(replays,/PRIMARY KEY \(issuer, subject, token_id\)/u);assert.match(replays,/OBJECTIVE_READER_REPLAY_TRANSITION/u);
 });

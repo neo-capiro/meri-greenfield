@@ -186,7 +186,7 @@ function literals(path){
    if(text[i]!=='+')break;i++;
   }
   const s=sql.replace(/\s+/gu,' ').trim();
-  if(/^(SELECT|INSERT|UPDATE|WITH)\b/u.test(s)&&/\b(FROM|INTO|SET)\b/u.test(s))out.push(s);
+  if(/^(SELECT|INSERT|UPDATE|DELETE|WITH)\b/u.test(s)&&/\b(FROM|INTO|SET)\b/u.test(s))out.push(s);
  }
  return out;
 }
@@ -195,9 +195,9 @@ function resolveTemplates(sql,path){
  const tables=path.endsWith('native-preparation-journal.mjs')?['meri_conversations.native_allocations','meri_conversations.native_restorations']
   :path.endsWith('prepared-run-issuance-postgres.mjs')?['meri_conversations.run_issuances','meri_conversations.model_run_issuances']:[null];
  for(const table of tables){
-  let s=sql.replace(/\$\{(?:t|store\.tables|this\.tables)\.([a-z_]+)\}/gu,(_,n)=>BUDGET(n))
-   .replace(/\$\{tables\.budgets\}/gu,BUDGET('tenant_budgets')).replace(/\$\{tables\.reservations\}/gu,BUDGET('tenant_run_reservations'))
-   .replace(/\$\{(suffix|locked\?' FOR UPDATE':'')\}/gu,' FOR UPDATE').replace(/\$\{model\?[^}]*\}/gu,'')
+  let s=sql.replace(/\$\{tables\.budgets\}/gu,BUDGET('tenant_budgets')).replace(/\$\{tables\.reservations\}/gu,BUDGET('tenant_run_reservations'))
+   .replace(/\$\{(?:t|tables|store\.tables|this\.tables)\.([a-z_]+)\}/gu,(_,n)=>BUDGET(n))
+   .replace(/\$\{(suffix|locked\?' FOR UPDATE':'')\}/gu,' FOR UPDATE').replace(/\$\{(?:model|omitted)\?[^}]*\}/gu,'')
    .replace(/\$\{(COLUMNS|ROW)\}/gu,'*');
   if(table)s=s.replaceAll('<<TABLE>>',table).replaceAll('${table}',table);
   if(s.includes('${column}'))for(const c of ['released_at','settled_at','not_dispatched_at'])variants.push(s.replace('${column}',c));
@@ -210,6 +210,7 @@ function resolveTemplates(sql,path){
 function required(sql){
  const need=[];const meri=t=>/^meri_[a-z_]+\.[a-z_]+$/u.test(t);
  const insert=/^INSERT INTO ([a-z_.]+)/u.exec(sql);if(insert&&meri(insert[1]))need.push(['INSERT',insert[1]]);
+ const remove=/^DELETE FROM ([a-z_.]+)/u.exec(sql);if(remove&&meri(remove[1]))need.push(['DELETE',remove[1]]);
  const upd=/^UPDATE ([a-z_.]+)(?: [a-z])? SET (.+?)(?: WHERE | RETURNING |$)/u.exec(sql);
  const conflict=/ON CONFLICT \([a-z_]+\) DO UPDATE SET (.+?)(?: WHERE |$)/u.exec(sql);
  for(const [table,set] of [[upd?.[1],upd?.[2]],[insert?.[1],conflict?.[1]]])if(table&&set&&meri(table)){
@@ -242,12 +243,15 @@ const CONTROL_FILES=['apps/control/conversations/postgres-store.mjs','apps/contr
  'apps/runtime/selected/ledger.mjs','apps/runtime/prepared-run-issuance-postgres.mjs',
  'apps/gateway/budget/native-allocation-admission.mjs','apps/gateway/budget/admitted-run-current.mjs',
  'apps/gateway/budget/postgres-budget-store.mjs','apps/gateway/budget/tenant/postgres-store.mjs',
- 'apps/gateway/budget/tenant/native-admission.mjs'];
+ 'apps/gateway/budget/tenant/native-admission.mjs','apps/gateway/budget/execution-grant-admission.mjs',
+ 'apps/gateway/budget/occurrence-cost-scope.mjs','apps/gateway/budget/run-allocation-budgets.mjs',
+ 'apps/runtime/native-authority/current-authority-adapters.mjs','apps/runtime/native-authority/execution-composition.mjs'];
 
 test('every table and column the control sources read, lock or write is granted to meri_control_runtime',async()=>{
  const granted=grants((await trace('meri_grants')).statements.map(s=>s.text));
  const statements=CONTROL_FILES.flatMap(path=>literals(path).flatMap(sql=>resolveTemplates(sql,path).map(s=>({sql:s,path}))));
  assert.ok(statements.length>80,String(statements.length));
+ for(const path of CONTROL_FILES)assert.ok(statements.some(s=>s.path===path),`${path} yields no statement`);
  for(const write of ['INSERT INTO meri_conversations.sdk_session_entries','UPDATE meri_conversations.runs SET sequence_end',
   'INSERT INTO meri_product_budget.tenant_run_reservations','UPDATE meri_product_budget.grants SET state=\'ACTIVE\'',
   'UPDATE meri_conversations.model_run_issuances SET facts_sha256'])
@@ -298,7 +302,8 @@ function ownerBorrowedCalls(){
 test('every table and column the model budget owner reads, locks or writes is granted to meri_model_budget_owner',async()=>{
  const meriGrants=(await trace('meri_grants')).statements.map(s=>s.text),granted=grants([...meriGrants,...await ownerReadsStatements()]);
  const files=['apps/gateway/budget/product-model-budget.mjs','apps/gateway/budget/product-model-settlement.mjs',
-  'apps/gateway/budget/admitted-run-current.mjs','apps/gateway/budget/postgres-budget-store.mjs','apps/proxy/product/product-owner-facts.mjs'];
+  'apps/gateway/budget/admitted-run-current.mjs','apps/gateway/budget/postgres-budget-store.mjs','apps/gateway/budget/occurrence-cost-scope.mjs',
+  'apps/proxy/product/product-owner-facts.mjs'];
  const statements=files.flatMap(path=>literals(path).flatMap(sql=>resolveTemplates(sql,path).map(s=>({sql:s,path}))));
  // Borrowed reads come from the owner's own call sites: a new borrowed call fails here until OWNER_BORROWED lists its statements.
  assert.deepEqual(ownerBorrowedCalls(),Object.keys(OWNER_BORROWED).sort());

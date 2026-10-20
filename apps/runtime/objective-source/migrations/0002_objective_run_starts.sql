@@ -40,7 +40,7 @@ CREATE TABLE meri_objective_source.run_starts (
   record->>'typedRequestSha256' = typed_request_sha256 AND record->>'selectionSha256' = selection_sha256 AND
   record->'effectExpiresAtMs' = to_jsonb(effect_expires_at_ms) AND jsonb_typeof(record->'selection') = 'object' AND
   record->'selection' ?& ARRAY['sourceAdmission','request','executionContext','queuedType'] AND
-  record->'selection' - ARRAY['sourceAdmission','request','executionContext','queuedType'] = '{}'::jsonb AND
+  (record->'selection') - ARRAY['sourceAdmission','request','executionContext','queuedType'] = '{}'::jsonb AND
   record#>>'{selection,sourceAdmission,generationJobId}' = generation_job_id::text AND
   record#>>'{selection,request,jobId}' = generation_job_id::text AND
   record#>>'{selection,sourceAdmission,clerkUserId}' = binding->>'actorId' AND
