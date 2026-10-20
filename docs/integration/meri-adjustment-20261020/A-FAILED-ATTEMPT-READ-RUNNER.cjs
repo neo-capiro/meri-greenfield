@@ -1,5 +1,5 @@
 // Package A read runner. Executed inside meri-product-preview-d2-migrate:6 as `node -e "$MERI_A_READ_JS"`
-// (A-FAILED-ATTEMPT-READ.overrides.json); reads the SQL from MERI_A_READ_SQL. Each "-- @login <name>" section runs on
+// (A-FAILED-ATTEMPT-READ-<n>.overrides.json); reads the SQL from MERI_A_READ_SQL. Each "-- @login <name>" section runs on
 // its own least-privilege login with default_transaction_read_only=on. Prints one JSON line per SELECT. Long strings
 // and byte values are shortened so prompts, transcripts and blobs do not land in the log group.
 const {createRequire} = require('node:module');

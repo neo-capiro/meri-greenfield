@@ -17,8 +17,9 @@ are historical records only.
 Companion files, used by the read packet in §4:
 - [A-FAILED-ATTEMPT-READONLY.sql](A-FAILED-ATTEMPT-READONLY.sql): the read-only durable-state queries.
 - [A-FAILED-ATTEMPT-READ-RUNNER.cjs](A-FAILED-ATTEMPT-READ-RUNNER.cjs): the in-task runner.
-- [A-FAILED-ATTEMPT-READ.overrides.json](A-FAILED-ATTEMPT-READ.overrides.json): the RunTask overrides built from the two files
-  above.
+- [A-FAILED-ATTEMPT-READ-GENERATE.cjs](A-FAILED-ATTEMPT-READ-GENERATE.cjs): builds the RunTask overrides from the two files
+  above, one file per run: [A-FAILED-ATTEMPT-READ-1.overrides.json](A-FAILED-ATTEMPT-READ-1.overrides.json) and
+  [A-FAILED-ATTEMPT-READ-2.overrides.json](A-FAILED-ATTEMPT-READ-2.overrides.json).
 
 ## 0. Summary
 
@@ -39,7 +40,7 @@ Companion files, used by the read packet in §4:
 5. **Failure became 12 minutes of waiting [R].** After the 01:41:02 failure, the `executeConversation` activity kept
    heartbeating every 48 s until the allocation lease expired at 01:53:19.753. Containment then began at 01:53:20.
 6. **Durable state is unread; a read packet is ready for the orchestrator.** The existing task definition
-   `meri-product-preview-d2-migrate:6` already holds the least-privilege DB logins. One RunTask with the supplied overrides runs
+   `meri-product-preview-d2-migrate:6` already holds the least-privilege DB logins. Two RunTasks with the supplied overrides run
    read-only SQL derived from the real schema (§4). It creates nothing new and reads no secret value outside the task. [I] The
    conversation may stay blocked for new allocations until its allocation is `RETIRED` with a recorded stop proof (Q3 checks
    this).
@@ -249,7 +250,7 @@ are decisions for the orchestrator.
 ### 4.1 Read access
 
 This session has no read channel of its own and makes no AWS mutations. The orchestrator, now the single AWS operator, can run
-the read with one RunTask on an **existing** task definition. It registers no new resource and reads no secret value outside the
+the read with two RunTasks on an **existing** task definition. It registers no new resource and reads no secret value outside the
 task. Nothing in the packet contains a secret.
 
 | Item | Value |
@@ -261,7 +262,7 @@ task. Nothing in the packet contains a secret.
 | Read-only enforcement | Connection option `default_transaction_read_only=on`, each section in `BEGIN TRANSACTION READ ONLY … ROLLBACK`, `statement_timeout` 15 s, SELECT statements only. Postgres refuses any write inside a read-only transaction even though these runtime roles hold INSERT/UPDATE grants |
 | Network | subnet `subnet-0920665f91c905f01` (us-east-1a); SGs `sg-0c9f0505c552ce469` (meri-preview-migrator) and `sg-0d5b5286baf28242e` (meri-preview-dbclient). Same as the earlier d2-migrate measurement runs (`docs/integration/scripts/measure-n21.sh`) |
 | Output | CloudWatch `/meri/product-preview/migrator`, stream `d2/d2-migrate/<task-id>`. One JSON line per SELECT, then `{"complete":true}` (exit 0). A failed statement prints `{"error":…}` and the run continues; a connection failure exits 2. Strings over 160 characters are truncated and byte values replaced by their length, so prompts, transcripts and blobs do not enter the log |
-| Cost | One Fargate task of about 0.25 vCPU for under a minute. No model request |
+| Cost | Two Fargate tasks of about 0.25 vCPU, each under a minute. No model request |
 
 Temporal event history (beyond the visibility row) would need the Temporal frontend with an authorized mTLS + issuer-JWT
 client identity. No existing task definition provides that, so it is left out rather than creating new access. Q2 and Q10 cover
@@ -269,10 +270,19 @@ ordering and terminal status.
 
 ### 4.2 Commands (orchestrator only)
 
-Run from a checkout of this branch:
+Run from a checkout of this branch: one RunTask per overrides file, in order (`<n>` = 1, then 2).
+
+| Run | Overrides file | Logins (queries) | Compact size | Executed (10-20) |
+| --- | --- | --- | --- | --- |
+| 1 | `A-FAILED-ATTEMPT-READ-1.overrides.json` | control (Q1–Q8) | 7,522 B | task `11329094d1934401be34a5db2828f7cb` |
+| 2 | `A-FAILED-ATTEMPT-READ-2.overrides.json` | owner (Q9), visibility (Q10) | 4,517 B | task `973b53f72cf64aea90f397aa144daf6d` |
+
+The orchestrator ran its own split of the same packet. It is statement-for-statement identical to these files after variable
+substitution, with the same runner and command. The only byte difference: each committed run now carries just the `\set`
+variables it references, which keeps run 1 under the margin.
 
 ```bash
-aws ecs run-task --profile capiro-dev --region us-east-1 --cluster capiro-dev --launch-type FARGATE --platform-version 1.4.0 --count 1 --task-definition meri-product-preview-d2-migrate:6 --started-by adj-a-durable-read --network-configuration 'awsvpcConfiguration={subnets=[subnet-0920665f91c905f01],securityGroups=[sg-0c9f0505c552ce469,sg-0d5b5286baf28242e],assignPublicIp=DISABLED}' --overrides file://docs/integration/meri-adjustment-20261020/A-FAILED-ATTEMPT-READ.overrides.json --query 'tasks[0].taskArn' --output text
+aws ecs run-task --profile capiro-dev --region us-east-1 --cluster capiro-dev --launch-type FARGATE --platform-version 1.4.0 --count 1 --task-definition meri-product-preview-d2-migrate:6 --started-by adj-a-durable-read --network-configuration 'awsvpcConfiguration={subnets=[subnet-0920665f91c905f01],securityGroups=[sg-0c9f0505c552ce469,sg-0d5b5286baf28242e],assignPublicIp=DISABLED}' --overrides file://docs/integration/meri-adjustment-20261020/A-FAILED-ATTEMPT-READ-<n>.overrides.json --query 'tasks[0].taskArn' --output text
 ```
 
 ```bash
@@ -283,24 +293,28 @@ aws ecs wait tasks-stopped --profile capiro-dev --region us-east-1 --cluster cap
 MSYS_NO_PATHCONV=1 aws logs get-log-events --profile capiro-dev --region us-east-1 --log-group-name /meri/product-preview/migrator --log-stream-name d2/d2-migrate/<task-id> --query 'events[].message' --output text
 ```
 
-Overrides shape, with the SQL and JS values abbreviated (8,131 bytes in total, under the 8,192-byte limit):
+Overrides shape, with the SQL and JS values abbreviated:
 
 ```json
 {"containerOverrides":[{"name":"d2-migrate",
   "command":["set -euo pipefail; umask 077; printf \"%s\" \"$MERI_D2_RDS_CA_PEM\" > /run/meri/rds-ca.pem; unset MERI_D2_RDS_CA_PEM PGUSER PGPASSWORD MERI_D2_ISSUER_PASSWORD MERI_D2_TEMPORAL_MIGRATOR_PASSWORD MERI_D2_TEMPORAL_PRIMARY_PASSWORD; printf \"%s  /run/meri/rds-ca.pem\\n\" \"$MERI_D2_RDS_CA_SHA256\" | sha256sum -c - >/dev/null; exec node -e \"$MERI_A_READ_JS\""],
-  "environment":[{"name":"MERI_A_READ_SQL","value":"<A-FAILED-ATTEMPT-READONLY.sql without comment lines>"},
+  "environment":[{"name":"MERI_A_READ_SQL","value":"<referenced \\set lines + this run's -- @login sections>"},
                  {"name":"MERI_A_READ_JS","value":"<A-FAILED-ATTEMPT-READ-RUNNER.cjs without comment lines>"}]}]}
 ```
 
-The overrides file is generated from the `.sql` and `.cjs` files: comment lines are dropped (`-- @login` markers kept),
-whitespace is collapsed, and the result is checked against the 8,192-byte limit. Regenerate it after editing either file.
-The command was dry-run locally with a stubbed `pg` client, which exercised:
-- the three login sections (12, 3 and 3 statements) and variable substitution;
-- read-only connection options;
+The overrides files are generated, never hand-edited. Regenerate with `node A-FAILED-ATTEMPT-READ-GENERATE.cjs` from this
+directory after editing the `.sql` or `.cjs`. The generator:
+- drops comment lines (keeping the `-- @login` markers) and collapses whitespace;
+- packs the login sections, in order, into runs of at most **7,600 bytes** compact;
+- validates every run before replacing any output.
+
+ECS rejected a single 8,120-byte compact payload with "Container Overrides length must be at most 8192". The API evidently
+counts length differently from compact JSON, hence the margin. The runner was dry-run locally with a stubbed `pg` client,
+which exercised:
+- each run's sections and variable substitution;
+- the read-only connection options;
 - recovery from a failed statement;
 - output shortening.
-
-It has not been run against the real database.
 
 ### 4.3 What each answer decides
 

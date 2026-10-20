@@ -1,6 +1,6 @@
 -- Package A: read-only inspection of the failed E attempt (runner task 283f12c53eba4dc89f4d54767d0fa832).
--- Executed by the orchestrator (single AWS operator) through A-FAILED-ATTEMPT-READ.overrides.json on the existing
--- meri-product-preview-d2-migrate:6 task definition; see A-BASELINE-AND-FAILURE-MAP.md section 4.
+-- Executed by the orchestrator (single AWS operator) through A-FAILED-ATTEMPT-READ-<n>.overrides.json, one RunTask per
+-- file, on the existing meri-product-preview-d2-migrate:6 task definition; see A-BASELINE-AND-FAILURE-MAP.md section 4.
 -- Every statement is a SELECT inside a READ ONLY transaction that is rolled back; the runner also sets
 -- default_transaction_read_only=on and statement_timeout=15s on each connection. No FOR UPDATE, no writes.
 -- Each "-- @login <name>" section runs on its own least-privilege login (grants: infra/product-preview/
@@ -16,7 +16,7 @@
 --   execution key    2b6358940a46173d56f2a4873b91afd797ef35c53a1c38909a6f1ed7297a8432 (RunTask startedBy/clientToken/tags)
 --   expires-at-ms    1792461199753 (2026-10-20T01:53:19.753Z)
 -- The \set values below are psql variables; the runner substitutes :'name' the same way.
--- After editing this file, regenerate the overrides JSON (command in the map document, section 4.2).
+-- After editing this file, regenerate the overrides: node A-FAILED-ATTEMPT-READ-GENERATE.cjs
 
 \set tenant '17b63099-bc0f-4ac5-b596-496161e9481e'
 \set conversation '13865b0a-b0d0-41de-8c97-c2a2058fa222'
