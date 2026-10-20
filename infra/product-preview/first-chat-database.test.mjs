@@ -1,7 +1,7 @@
 /** Offline checks for the D2 Stage 1 database script, its grants and the one-shot runner. No database. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,readdirSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {
  ROOT,DATABASE_SCRIPT,INTEGRATION_SCRIPT,OWNER_READS_SCRIPT,PLAN,PASSWORD_VARIABLES,lex,loadPlan,migrationBody,splitStatements,psqlLiteral,
@@ -28,6 +28,13 @@ async function trace(phase,variables=passwords){
  });
  await runPsqlScript({text:script,variables:{[`phase_${phase}`]:'1',...(phase==='bootstrap'?variables:{})},connect});
  return {statements,gexec};
+}
+/** The statements phase_owner_conversation_reads executes, through the real interpreter. */
+async function ownerReadsStatements(){
+ const statements=[];
+ await runPsqlScript({text:read(OWNER_READS_SCRIPT),variables:{phase_owner_conversation_reads:'1'},
+  connect:async()=>({async query(q){if(typeof q==='string')statements.push(q);return {rows:[]};},async end(){}})});
+ return statements;
 }
 
 /** GRANT parser: one tuple per role, privilege, object and column. */
@@ -131,8 +138,8 @@ test('phases run only their own block; bootstrap needs every password and nothin
  for(const phase of PHASES)assert.match((await trace(phase)).statements[0].text,/^SELECT CASE WHEN \(TRUE\)::int \+ \(FALSE\)::int|^SELECT CASE WHEN \(FALSE\)::int/u);
 });
 
-test('Meri grants equal the reviewed first-chat proposal blocks plus the issuer grants its migration names',async()=>{
- const m=await trace('meri_grants'),actual=grants(m.statements.map(s=>s.text));
+test('Meri grants (phase_meri_grants plus the owner reads phase) equal the reviewed proposal blocks plus the issuer grants',async()=>{
+ const m=await trace('meri_grants'),actual=grants([...m.statements.map(s=>s.text),...await ownerReadsStatements()]);
  const expected=proposalGrants(['existing approved application database','first-chat CONTROL store','CONTROL SDK/selected','CONTROL canonical allocation','MODEL owner']);
  for(const g of ['meri_temporal_issuer_service USAGE SCHEMA meri_service_identity',
   'meri_temporal_issuer_service SELECT TABLE meri_service_identity.service_task_registrations',
@@ -216,15 +223,16 @@ function required(sql){
  if(/RETURNING/u.test(sql)&&insert&&meri(insert[1]))need.push(['SELECT',insert[1]]);
  return need;
 }
-function assertCovered(role,statements,granted){
- const has=(priv,table)=>granted.has(`${role} ${priv} TABLE ${table}`);
- const uncovered=[];
+/** Every privilege the statements need that `role` lacks, as `path: PRIVILEGE table`. */
+function uncovered(role,statements,granted){
+ const has=(priv,table)=>granted.has(`${role} ${priv} TABLE ${table}`),out=[];
  for(const {sql,path} of statements)for(const [priv,table] of required(sql)){
   const ok=priv==='LOCK'?[...granted].some(g=>g.startsWith(`${role} UPDATE(`)&&g.endsWith(` TABLE ${table}`)):has(priv,table);
-  if(!ok)uncovered.push(`${path}: ${priv} ${table}`);
+  if(!ok)out.push(`${path}: ${priv} ${table}`);
  }
- assert.deepEqual([...new Set(uncovered)],[]);
+ return [...new Set(out)];
 }
+const assertCovered=(role,statements,granted)=>assert.deepEqual(uncovered(role,statements,granted),[]);
 const CONTROL_FILES=['apps/control/conversations/postgres-store.mjs','apps/control/conversations/completion-journal.mjs',
  'apps/control/conversations/execution-journal.mjs','apps/control/conversations/initial-input-journal.mjs',
  'apps/control/conversations/initial-run-binding-journal.mjs','apps/control/conversations/lifecycle/journal.mjs',
@@ -249,24 +257,66 @@ test('every table and column the control sources read, lock or write is granted 
  assert.ok([...granted].some(g=>g.startsWith('meri_control_runtime UPDATE(')&&g.endsWith('TABLE meri_conversations.runs')));
 });
 
+/** The control and runtime stores the model owner borrows, by factory. */
+const BORROWED_FACTORIES={createPostgresConversationStore:'apps/control/conversations/postgres-store.mjs',
+ createInitialRunBindingJournal:'apps/control/conversations/initial-run-binding-journal.mjs',
+ createPostgresModelGrantStore:'apps/runtime/prepared-run-issuance-postgres.mjs',
+ createPostgresAdmittedRunOwner:'apps/gateway/budget/admitted-run-owner.mjs'};
+/** The statements each borrowed method runs ([] only for a module without SQL of its own). */
+const OWNER_BORROWED={
+ 'apps/control/conversations/initial-run-binding-journal.mjs#readConversation':[['apps/control/conversations/initial-run-binding-journal.mjs',
+  'SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE']],
+ 'apps/control/conversations/postgres-store.mjs#allocations.read':[['apps/control/conversations/native-preparation-journal.mjs',
+  'SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE']],
+ 'apps/control/conversations/postgres-store.mjs#nextRuns.current':[
+  ['apps/control/conversations/next-run-journal.mjs','SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE'],
+  ['apps/control/conversations/next-run-journal.mjs','SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3']],
+ 'apps/control/conversations/postgres-store.mjs#readOptional':[
+  ['apps/control/conversations/postgres-store.mjs','SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE'],
+  ['apps/control/conversations/postgres-store.mjs','SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND sequence>$4 ORDER BY sequence LIMIT $5']],
+ // Reads through admitted-run-current.mjs and the budget store, which the owner files cover whole.
+ 'apps/gateway/budget/admitted-run-owner.mjs#currentTaskRun':[],
+ 'apps/runtime/prepared-run-issuance-postgres.mjs#read':[['apps/runtime/prepared-run-issuance-postgres.mjs',
+  'SELECT * FROM meri_conversations.model_run_issuances WHERE issuance_key=$1']]};
+/** Every method an owner source calls on a borrowed store: on a receiver the same file binds from a factory
+ * (`store=createPostgresConversationStore(` … `store.nextRuns.current(`), or through an option the entrypoint builds from one
+ * (`initialBindings=createInitialRunBindingJournal(` … `storageMethod(c.initialBindings,'readConversation')`). */
+function ownerBorrowedCalls(){
+ const dir='apps/proxy/product',bound=/\b([A-Za-z_][\w]*)=(create[A-Za-z]+)\(/gu,calls=new Set(),options=new Map();
+ for(const [,name,factory] of read(`${dir}/owner-entrypoint.mjs`).matchAll(bound))if(BORROWED_FACTORIES[factory])options.set(name,BORROWED_FACTORIES[factory]);
+ for(const file of readdirSync(resolve(ROOT,dir)).filter(f=>f.endsWith('.mjs')&&!f.endsWith('.test.mjs'))){
+  const text=read(`${dir}/${file}`);
+  for(const [,name,factory] of text.matchAll(bound))if(BORROWED_FACTORIES[factory])
+   for(const [,method] of text.matchAll(new RegExp(`\\b${name}\\.([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)\\(`,'gu')))
+    calls.add(`${BORROWED_FACTORIES[factory]}#${method}`);
+  for(const [,option,method] of text.matchAll(/storageMethod\(c\.([A-Za-z_]\w*),'([A-Za-z_]\w*)'\)/gu))
+   if(options.has(option))calls.add(`${options.get(option)}#${method}`);
+ }
+ return [...calls].sort();
+}
+
 test('every table and column the model budget owner reads, locks or writes is granted to meri_model_budget_owner',async()=>{
- const granted=grants((await trace('meri_grants')).statements.map(s=>s.text));
+ const meriGrants=(await trace('meri_grants')).statements.map(s=>s.text),granted=grants([...meriGrants,...await ownerReadsStatements()]);
  const files=['apps/gateway/budget/product-model-budget.mjs','apps/gateway/budget/product-model-settlement.mjs',
   'apps/gateway/budget/admitted-run-current.mjs','apps/gateway/budget/postgres-budget-store.mjs','apps/proxy/product/product-owner-facts.mjs'];
  const statements=files.flatMap(path=>literals(path).flatMap(sql=>resolveTemplates(sql,path).map(s=>({sql:s,path}))));
- // Borrowed canonical conversation reads (postgres-store readState, preparation load, model issuance read).
- const borrowed=[
-  ['apps/control/conversations/postgres-store.mjs','SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE'],
-  ['apps/control/conversations/postgres-store.mjs','SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND sequence>$4 ORDER BY sequence LIMIT $5'],
-  ['apps/control/conversations/native-preparation-journal.mjs','SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE'],
-  ['apps/runtime/prepared-run-issuance-postgres.mjs','SELECT * FROM meri_conversations.model_run_issuances WHERE issuance_key=$1']];
- for(const [path,sql] of borrowed){
-  assert.ok(literals(path).flatMap(s=>resolveTemplates(s,path)).includes(sql),`${path}: ${sql}`);
-  statements.push({sql,path});
+ // Borrowed reads come from the owner's own call sites: a new borrowed call fails here until OWNER_BORROWED lists its statements.
+ assert.deepEqual(ownerBorrowedCalls(),Object.keys(OWNER_BORROWED).sort());
+ for(const [call,borrowed] of Object.entries(OWNER_BORROWED)){
+  if(!borrowed.length)assert.deepEqual(literals(call.split('#')[0]),[],`${call} lists no statements, so its module has none`);
+  for(const [path,sql] of borrowed){
+   assert.ok(literals(path).flatMap(s=>resolveTemplates(s,path)).includes(sql),`${call}: ${path}: ${sql}`);
+   statements.push({sql,path});
+  }
  }
  assert.ok(statements.some(s=>s.sql.startsWith('INSERT INTO meri_product_budget.requests')));
  assert.ok(statements.some(s=>s.sql.startsWith('UPDATE meri_product_budget.budget SET consumed_micro_usd')));
  assertCovered('meri_model_budget_owner',statements,granted);
+ // phase_meri_grants alone leaves exactly the live refusal (20 Oct 12:16:07Z) and the next one; the owner reads phase closes both.
+ assert.deepEqual(uncovered('meri_model_budget_owner',statements,grants(meriGrants)),[
+  'apps/control/conversations/initial-run-binding-journal.mjs: SELECT meri_conversations.initial_run_bindings',
+  'apps/control/conversations/initial-run-binding-journal.mjs: LOCK meri_conversations.initial_run_bindings',
+  'apps/control/conversations/next-run-journal.mjs: SELECT meri_conversations.next_runs']);
  // No model write to grants state, issuance or tenant policy.
  for(const g of granted)if(g.startsWith('meri_model_budget_owner '))
   assert.doesNotMatch(g,/(INSERT|UPDATE\(state\)) TABLE meri_product_budget\.grants|TABLE meri_conversations\.(model_run_issuances|run_issuances) .*(INSERT|UPDATE)|tenant_/u);
@@ -474,12 +524,7 @@ test('the live ledger (meri and temporal applied, 21 entries) takes the owner re
 });
 
 test('owner reads grant the model owner only SELECT on the two tables and the lock-only binding column',async()=>{
- const statements=[];
- await runPsqlScript({
-  text:read(OWNER_READS_SCRIPT),variables:{phase_owner_conversation_reads:'1'},
-  connect:async()=>({async query(q){if(typeof q==='string')statements.push(q);return {rows:[]};},async end(){}})
- });
- assert.deepEqual([...grants(statements)].sort(),[
+ assert.deepEqual([...grants(await ownerReadsStatements())].sort(),[
   'meri_model_budget_owner SELECT TABLE meri_conversations.initial_run_bindings',
   'meri_model_budget_owner SELECT TABLE meri_conversations.next_runs',
   'meri_model_budget_owner UPDATE(record_sha256) TABLE meri_conversations.initial_run_bindings'
@@ -488,14 +533,8 @@ test('owner reads grant the model owner only SELECT on the two tables and the lo
  assert.equal(text.match(/^\\if /gmu).length,1);assert.match(text,/^\\if :\{\?phase_owner_conversation_reads\}$/mu);
  assert.ok(!/phase_(bootstrap|meri_grants|temporal_grants|integration_grants|release)/u.test(code),'only the owner reads phase lives here');
  assert.ok(!/\b(INSERT|DELETE|TRUNCATE)\b[^;]*\bTO meri_model_budget_owner/u.test(code));
- // The privileges are derived from the production statements the owner runs.
- assert.match(read('apps/control/conversations/initial-run-binding-journal.mjs'),
-  /SELECT \* FROM meri_conversations\.initial_run_bindings WHERE tenant_id=\$1 AND conversation_id=\$2 FOR UPDATE/u);
- assert.match(read('apps/control/conversations/next-run-journal.mjs'),
-  /SELECT \* FROM meri_conversations\.next_runs WHERE tenant_id=\$1 AND conversation_id=\$2 AND target_run_id=\$3'/u);
- for(const path of ['apps/proxy/product/product-owner-placement.mjs','apps/proxy/product/owner-native-currentness.mjs'])
-  assert.match(read(path),/readConversation/u,path);
- assert.match(read('apps/proxy/product/owner-native-currentness.mjs'),/store\.nextRuns\.current\(/u);
+ // The binding column is lock-only: 0017 rejects every UPDATE. The statements that need these privileges are derived from the
+ // owner's call sites in the source coverage test.
  assert.match(read('apps/control/conversations/migrations/0017_initial_run_bindings.sql'),
   /CREATE TRIGGER immutable_initial_run_binding BEFORE UPDATE OR DELETE ON meri_conversations\.initial_run_bindings/u);
 });
