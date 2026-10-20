@@ -19,6 +19,7 @@ from .owner_admission import ProductOwnerAdmissionReader
 from .owner_https import ProductOwnerHttpsExchange
 from .bearer_eni_admission import IssuedTaskNetwork
 from . import refusal_diagnostics as diagnostics
+from . import telemetry_context as telemetry
 from ..qualification.state.grants import RunBinding
 from ..qualification.state.pricing import StateDenied
 
@@ -90,6 +91,7 @@ class ProductOwnerStartup:
                         step="expiry"
                         if frame[5]>issued.expires_at_ms or not self.gate.available:
                             _deny()
+                        telemetry.bind(issued.execution_binding)
                         return issued,frame[5],cutoff
                 finally:
                     lock.release()
@@ -142,6 +144,7 @@ class ProductOwnerStartup:
         remaining=max(0,int((life.deadline-time.monotonic())*1000))
         deadline=min(facts[4][3],self.now_ms()+remaining)
         request_id=uuid.uuid4().hex
+        telemetry.bind(binding, request_id)
         async def current(value):
             if (type(value) is not dict or value!={"binding":binding,"requestId":request_id,"deadlineMs":deadline}):
                 _deny()

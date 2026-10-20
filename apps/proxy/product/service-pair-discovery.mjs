@@ -1,5 +1,7 @@
 /** Fresh approved service tasks, never original runner placement authority.
  * Revision/certificate pins are reviewed configuration, not AWS attestation. */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+import {health} from './owner-diagnostics.mjs';
 import {createRequire} from 'node:module';
 import {isIP} from 'node:net';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -124,6 +126,7 @@ export async function createProductServicePairDiscovery(raw){
  const {DescribeServicesCommand,ListTasksCommand,DescribeTaskDefinitionCommand,DescribeTasksCommand}=runtimeRequire('@aws-sdk/client-ecs');
  const {DescribeNetworkInterfacesCommand}=runtimeRequire('@aws-sdk/client-ec2');
  const enabled=c.enabled??false,now=c.now;
+ const telemetry=currentTurnTelemetry();
  let quarantined=false;
  return Object.freeze({get available(){return enabled&&!quarantined;},async read(raw){
   let life;
@@ -170,6 +173,6 @@ export async function createProductServicePairDiscovery(raw){
    if(!instant(checkedAtMs)||checkedAtMs<started||checkedAtMs>=deadline||expiresAtMs<=checkedAtMs)fail();
    const project=v=>({taskArn:v.taskArn,createdAtMs:v.createdAtMs,privateIpv4Address:v.privateIpv4Address});
    return data({owner:project(owner),proxy:project(proxy),checkedAtMs,expiresAtMs});
-  }catch{fail();}finally{if(life?.close().unsettledOperations>0)quarantined=true;}
+  }catch{fail();}finally{if(life?.close().unsettledOperations>0&&!quarantined){quarantined=true;health('pair','quarantined','PRODUCT_SERVICE_TASK_LEASE_UNAVAILABLE',telemetry);}}
  }});
 }

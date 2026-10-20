@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {createTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
 import assert from 'node:assert/strict';
 import {productFixture,NOW} from './product-scripted-fixture.mjs';
 import {createProductModelSettlement} from './product-model-settlement.mjs';
@@ -100,4 +101,30 @@ test('billed input below the CountTokens basis settles without quarantine; above
  const above=fixture();above.setCompletion({...above.completion(),usage:{inputTokens:2,outputTokens:1}});
  const result=await createProductModelSettlement(above.config).settle({requestId:'request_A'});
  assert.equal(result.quarantined,true);assert.equal(above.state().budget.quarantined,true);
+});
+
+// P0 observes acknowledged state transitions without another SQL operation.
+test('budget quarantine telemetry is emitted once after commit and never on a rolled-back write',async()=>{
+ const lines=[],telemetry=createTurnTelemetry({service:'owner',write:line=>lines.push(JSON.parse(line))});
+ const f=fixture();f.setCompletion({...f.completion(),usage:{inputTokens:1,outputTokens:2}});
+ const owner=createProductModelSettlement(f.config),binding=f.completion().binding;
+ await telemetry.within(binding,()=>owner.settle({requestId:'request_A'}));
+ await telemetry.within(binding,()=>owner.settle({requestId:'request_A'}));
+ const events=lines.filter(line=>line.event==='meri.budget.quarantined');assert.equal(events.length,1);
+ assert.equal(events[0].runId,binding.runId);assert.equal(events[0].reason,'PRODUCT_MODEL_ACCOUNTING_QUARANTINED');
+ const g=fixture();g.setCompletion({...g.completion(),usage:{inputTokens:1,outputTokens:2}});
+ const connect=g.config.pool.connect;g.config.pool={async connect(){const client=await connect();const query=client.query;client.query=async(sql,...args)=>{
+  if(sql.startsWith('UPDATE meri_product_budget.requests SET'))throw Error('synthetic write refused');return query(sql,...args);};return client;}};
+ await assert.rejects(telemetry.within(g.completion().binding,()=>createProductModelSettlement(g.config).settle({requestId:'request_A'})));
+ assert.equal(lines.filter(line=>line.event==='meri.budget.quarantined').length,1);assert.equal(g.state().budget.quarantined,false);
+});
+
+test('budget quarantine after uncertain commit is reported only when existing reconciliation proves it',async()=>{
+ const f=fixture(),lines=[],telemetry=createTurnTelemetry({service:'owner',write:line=>lines.push(JSON.parse(line))});
+ f.setCompletion({...f.completion(),usage:{inputTokens:1,outputTokens:2}});f.lose();
+ const owner=createProductModelSettlement(f.config),binding=f.completion().binding;
+ await assert.rejects(telemetry.within(binding,()=>owner.settle({requestId:'request_A'})),BudgetCommitUncertain);assert.equal(lines.length,0);
+ await telemetry.within(binding,()=>owner.readOutcome({requestId:'request_A'}));
+ await telemetry.within(binding,()=>owner.readOutcome({requestId:'request_A'}));
+ assert.equal(lines.filter(line=>line.event==='meri.budget.quarantined').length,1);
 });

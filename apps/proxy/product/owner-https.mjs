@@ -1,4 +1,6 @@
 /** Actual, explicit opt-in mTLS boundary for the one product budget owner. */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+import {runOwnerHttpRequest,finishOwnerChannel} from './owner-request-telemetry.mjs';
 import {createServer} from 'node:https';
 import {TLSSocket} from 'node:tls';
 import {X509Certificate,createHash,randomBytes,constants} from 'node:crypto';
@@ -101,6 +103,7 @@ export function createProductOwnerListenerLifecycle(server,{retire,pendingReques
 export function createProductOwnerHttpsServer(configuration){
  const c=own(configuration,['tlsMaterial','clientPolicy','persistedFacts','ownerPorts','placement',
   'taskLeaseReader','serviceGate','now'],['enabled','maxRequestMs','nativeCurrentness']);
+ const telemetry=currentTurnTelemetry();
  const enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
  if(typeof enabled!=='boolean'||typeof c.now!=='function'||!Number.isSafeInteger(maxRequestMs)||
     maxRequestMs<1||maxRequestMs>OWNER_MAX_REQUEST_MS)fail();
@@ -148,13 +151,14 @@ export function createProductOwnerHttpsServer(configuration){
  }
  async function dispatch(path,body,socket,p,deadline,signal){
   const f=parseOwnerWire(body),s=state(socket);
-  for(const [id,session]of sessions)if(session.expiry<=c.now())sessions.delete(id);
+  for(const [id,session]of sessions)if(session.expiry<=c.now()){finishOwnerChannel(session.channel);sessions.delete(id);}
   if(path===OWNER_PATHS.operation&&f[0]==='meri.proxy.placement-read/1'){
    role(socket,'operation');tuple(f,4);slot(f[1]);digest(f[2]);
    if(!Number.isSafeInteger(f[3])||f[3]<=c.now())fail();consumeProductPlacementRead(reads,f[1],c.serviceGate);
    const v=await c.placement.resolve({capabilitySha256:f[2],deadlineMs:Math.min(f[3],deadline),signal});
    if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<deadline-maxRequestMs||v.checkedAtMs>c.now()||
       !Number.isSafeInteger(v.effectiveExpiresAtMs)||v.effectiveExpiresAtMs<=c.now())fail();
+   try{telemetry?.bind(v.issuedTaskNetwork.execution_binding);}catch{}
    return wire(['meri.proxy.placement/1',f[1],f[2],encodeProductPlacement(v),v.checkedAtMs,
     Math.min(v.effectiveExpiresAtMs,f[3],deadline)]);
   }
@@ -183,7 +187,7 @@ export function createProductOwnerHttpsServer(configuration){
  const server=createServer({key:t.key,cert:t.cert,ca:t.ca,requestCert:true,rejectUnauthorized:true,
   minVersion:'TLSv1.3',maxVersion:'TLSv1.3',ALPNProtocols:['http/1.1'],
   secureOptions:constants.SSL_OP_NO_TICKET,maxHeaderSize:16384,headersTimeout:maxRequestMs,
-  requestTimeout:maxRequestMs,...PRODUCT_OWNER_IDLE_SOCKETS},async(req,res)=>{
+  requestTimeout:maxRequestMs,...PRODUCT_OWNER_IDLE_SOCKETS},(req,res)=>runOwnerHttpRequest(telemetry,async()=>{
   const socket=req.socket,s=state(socket),started=c.now(),deadline=started+maxRequestMs;
   const abort=new AbortController();let timer,releaseRequest;
   req.once('aborted',()=>{if(releaseRequest){abort.abort();retire();}});
@@ -229,7 +233,7 @@ export function createProductOwnerHttpsServer(configuration){
     'x-meri-owner-revision':policy.deploymentRevision});res.end(result);
   }catch{if(abort.signal.aborted)retire();if(!res.headersSent&&!socket.destroyed)res.writeHead(403,{'content-length':'0','cache-control':'no-store'}).end();}
   finally{clearTimeout(timer);controllers.delete(abort);releaseRequest?.();}
- });
+ }));
  server.maxConnections=16;
  server.on('connection',socket=>{sockets.add(socket);socket.on('error',()=>{});socket.once('close',()=>sockets.delete(socket));});
  server.on('clientError',(_error,socket)=>socket.destroy());server.on('tlsClientError',()=>{});
@@ -237,5 +241,7 @@ export function createProductOwnerHttpsServer(configuration){
  const listener=createProductOwnerListenerLifecycle(server,{retire,pendingRequests:()=>controllers.size,maxCloseMs:maxRequestMs});
  return Object.freeze({get available(){return available();},get pendingRequests(){return controllers.size;},
   async listen(value){if(!available())fail();await listener.listen(value);},
-  close(){closed=true;const result=listener.close();sessions.clear();return result;}});
+  close(){closed=true;const result=listener.close(),retained=[...sessions.values()];
+   const finish=()=>{for(const session of retained)finishOwnerChannel(session.channel);};
+   void result.then(finish,finish);sessions.clear();return result;}});
 }

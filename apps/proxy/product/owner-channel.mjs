@@ -8,6 +8,9 @@
  * The existing product persisted-facts owner selects by the SHA-256 of the
  * actual observed bearer. The caller's request ID is only a one-send slot.
  */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+import {health} from './owner-diagnostics.mjs';
+import {observeOwnerChannel} from './owner-request-telemetry.mjs';
 import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -51,7 +54,7 @@ function bindServiceGate(serviceGate,persistedFacts,pool){
  * database/capture promise may still finish; only process retirement or an
  * independently reviewed reconciliation may replace a poisoned gate.
  */
-export function createProductOwnerServiceGate(){
+export function createProductOwnerServiceGate({telemetry=currentTurnTelemetry()}={}){
  let available=true,pending=0;
  const gate=Object.freeze({
   get available(){return available;},
@@ -62,7 +65,7 @@ export function createProductOwnerServiceGate(){
    let finished=false;
    return ()=>{if(!finished){finished=true;pending--;}};
   },
-  poison(){available=false;},
+  poison(){if(available){available=false;health('service-gate','poisoned','PRODUCT_OWNER_CHANNEL_DENIED',telemetry);}},
  });
  serviceGates.add(gate);
  return gate;
@@ -121,7 +124,7 @@ function policyCheck(value){
 export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPorts,
  serviceGate,now,
  maxExchangeMs=3000}){
- const policy=policyCheck(clientPolicy);
+ const policy=policyCheck(clientPolicy),telemetry=currentTurnTelemetry();
  if(!serviceGates.has(serviceGate)||!serviceGate.available||
     typeof persistedFacts?.resolve!=='function'||persistedFacts.available!==true||
     !ownerPorts||typeof ownerPorts!=='object'||Array.isArray(ownerPorts)||
@@ -200,7 +203,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
   captureAuthenticatedComplete:request=>captured('complete',request),
  });
 
- return Object.freeze({
+ const handlers=Object.freeze({
   get available(){return state!=='FAILED'&&serviceGate.available;},
   async open(body,peer){
    try{
@@ -334,7 +337,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
    }catch(error){poisoned(error);deny();}
   },
  });
-
+ return observeOwnerChannel(handlers,{telemetry,identity:()=>({requestId,binding,settled:state==='SETTLED',failed:state==='FAILED'})});
 }
 
 /** Read-only frame on OWNER_PATHS.operation, before or between one-send exchanges.
@@ -407,6 +410,7 @@ export function createProductOwnerAdmissionChannel({clientPolicy,persistedFacts,
   const check=()=>{const at=now();if(!serviceGate.available||persistedFacts.available!==true||!Number.isSafeInteger(at)||at<started||at>=cutoff)deny();return at;};
   const work=Promise.resolve().then(async()=>{
    check();const first=source(await persistedFacts.resolve({capabilitySha256,deadlineMs:cutoff,signal:abort.signal}),capabilitySha256);check();
+   try{currentTurnTelemetry()?.bind(first.facts.binding);}catch{}
    const sourceSha256=canonicalSha256(first.tuple);if(expected!==null&&expected!==sourceSha256)deny();
    const firstCurrent=current(await ownerPorts.checkCurrentConversation({binding:first.facts.binding,deadlineMs:cutoff,signal:abort.signal}),first.facts,started,check());
    const last=source(await persistedFacts.resolve({capabilitySha256,deadlineMs:cutoff,signal:abort.signal}),capabilitySha256);check();

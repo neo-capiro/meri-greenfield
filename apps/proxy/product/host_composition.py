@@ -33,6 +33,7 @@ from .response_settlement import _settled_outcome
 from .bearer_eni_admission import create_bearer_eni_trusted_resolver
 from .budgets import BOOTSTRAP_SECONDS, IN_REQUEST_CHECK_SECONDS, REQUEST_CLEANUP_SECONDS
 from . import refusal_diagnostics as diagnostics
+from . import telemetry_context as telemetry
 
 # Every product request's freshness steps are owner exchanges: they and close's wait get the exchange budget (budgets.py).
 PRODUCT_LIFETIME_LIMITS = LifetimeLimits(check_seconds=IN_REQUEST_CHECK_SECONDS, cleanup_seconds=REQUEST_CLEANUP_SECONDS)
@@ -216,6 +217,7 @@ def create_product_proxy_app(*, trusted_resolver, resolve_session, invoke_litell
             _deny()
         session = await life._bounded(lambda: resolve_session(life))
         session = _session(life, session)
+        telemetry.bind(session.binding, session.request_id)
         if session.limits != body_limits:
             _deny()
         return life, session
@@ -320,7 +322,10 @@ class _BoundedProductBootstrap:
         return not self._poisoned and self._inner.ready
 
     def _quarantine(self, task):
+        transitioned = not self._poisoned
         self._poisoned = True
+        if transitioned:
+            telemetry.health("bootstrap", "quarantined", "BOOTSTRAP_PENDING_WORK")
         if task not in self._outstanding:
             self._outstanding.add(task)
             pending = getattr(self._inner, "pending", None)
@@ -335,8 +340,12 @@ class _BoundedProductBootstrap:
             task.add_done_callback(finished)
 
     async def __call__(self, scope, receive, send):
-        with diagnostics.request():
-            await self._serve(scope, receive, send)
+        with telemetry.request(), diagnostics.request():
+            try:
+                await self._serve(scope, receive, send)
+            except asyncio.CancelledError:
+                telemetry.outcome("cancelled")
+                raise
 
     async def _serve(self, scope, receive, send):
         if type(scope) is not dict or not self.ready or self._active >= 4:
@@ -373,6 +382,7 @@ class _BoundedProductBootstrap:
                 await self._inner._refuse(send)
                 return
             trusted = TrustedRequest(trusted.admission, trusted.observer, deadline)
+            telemetry.mark("bootstrapMs")
             holder = _TrustedHolder(scope, trusted)
             token = self._request.set(holder)
             try:

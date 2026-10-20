@@ -1,0 +1,134 @@
+name: Meri P0 telemetry verification
+
+on:
+  push:
+    branches: [feat/meri-p0-telemetry]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: meri-p0-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  resolve:
+    if: github.event_name != 'pull_request' || github.head_ref == 'feat/meri-p0-telemetry'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      base: ${{ steps.pins.outputs.base }}
+      head: ${{ steps.pins.outputs.head }}
+      changed-tests: ${{ steps.pins.outputs.changed-tests }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin exact base and head
+        id: pins
+        env:
+          P0_BASE_REF: ${{ github.event.pull_request.base.sha || 'origin/main' }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          base, head = git('rev-parse', os.environ['P0_BASE_REF']), git('rev-parse', 'HEAD')
+          assert all(re.fullmatch('[0-9a-f]{40}', sha) for sha in (base, head))
+          changed = git('diff', '--name-only', base, head, '--', '*.test.mjs').splitlines()
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'base={base}\nhead={head}\nchanged-tests={json.dumps(changed)}\n')
+          print(f'Base: {base}\nHead: {head}')
+          PY
+      - name: Check verification tooling
+        run: |
+          python3 -m unittest discover -s scripts/qualification/p0-telemetry -p 'test_*.py'
+          bash -n scripts/qualification/p0-telemetry/in-image.sh
+          bash -n scripts/qualification/p0-telemetry/proxy-tests.sh
+
+  verify:
+    needs: resolve
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        side: [base, head]
+        mode: [runtime, proxy, infra]
+    steps:
+      - name: Checkout verification tooling from candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.resolve.outputs.head }}
+          path: harness
+          sparse-checkout: scripts/qualification/p0-telemetry
+          persist-credentials: false
+      - name: Checkout exact source under test
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ matrix.side == 'base' && needs.resolve.outputs.base || needs.resolve.outputs.head }}
+          path: source
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Node for supplemental renderer checks
+        if: matrix.mode == 'infra'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.19.0'
+      - name: Python for synthetic renderer PKI
+        if: matrix.mode == 'infra'
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      - name: Build and verify without AWS or provider credentials
+        env:
+          DOCKER_BUILDKIT: '1'
+          P0_CHANGED_NODE_TESTS: ${{ needs.resolve.outputs.changed-tests }}
+        run: |
+          python3 harness/scripts/qualification/p0-telemetry/verify.py '${{ matrix.mode }}' \
+            --source source --output results --side '${{ matrix.side }}'
+      - name: Preserve complete verdicts and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: p0-${{ matrix.side }}-${{ matrix.mode }}
+          path: |
+            results/*.json
+            results/*.log
+          if-no-files-found: error
+          retention-days: 14
+
+  compare:
+    if: always() && needs.resolve.result == 'success'
+    needs: [resolve, verify]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.resolve.outputs.head }}
+          sparse-checkout: scripts/qualification/p0-telemetry
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: p0-*
+          path: evidence
+      - name: Compare failures with the exact base
+        run: |
+          set +e
+          python3 scripts/qualification/p0-telemetry/evidence.py compare evidence --output p0-verification.md
+          result=$?
+          cat p0-verification.md >> "$GITHUB_STEP_SUMMARY"
+          exit "$result"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: p0-verification-report
+          path: p0-verification.md
+          if-no-files-found: error
+          retention-days: 14

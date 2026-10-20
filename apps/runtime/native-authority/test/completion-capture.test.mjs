@@ -5,6 +5,7 @@ import {createExecutionBinding} from '../../../control/conversations/execution-b
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createTaskCheckpointSource} from '../task-checkpoint-source.mjs';
 import {createNativeCompletionCapture} from '../completion-capture.mjs';
+import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 async function fixture(t){const f=await lifecycleFixture();t.after(()=>f.close());await f.running();const root=fs.mkdtempSync(join(tmpdir(),'meri-completion-')),workspace=join(root,'workspace');fs.mkdirSync(workspace);fs.writeFileSync(join(workspace,'first.txt'),'first prompt immutable workspace');t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
  const original=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:Date.now()+30000}),sessionId=id(850),key={projectKey:workspace.replace(/[^a-zA-Z0-9]/gu,'-'),sessionId},transcripts=[{entries:[{type:'system',opaque:{state:'retained'}},{type:'user',uuid:id(851),message:{content:'first prompt'}}]}];let stopped=false,frozen=false,queryCloses=0,revoked=false,puts=0,onPut=()=>{};const {executionKey,...nativeOriginal}=original;
@@ -22,3 +23,14 @@ test('fresh grant revocation after immutable object write refuses publication',a
 for(const state of ['cancelled','failed'])test(`${state} races capture and wins before completion commit`,async t=>{const f=await fixture(t),publish=f.store.completions.publish;f.completionPort.publish=async(...args)=>{await f.store.append(binding,{eventId:id(870),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:state==='cancelled'?'USER_CANCELLED':null}},()=>{});return publish(...args);};const owner=createNativeCompletionCapture(f.config);await assert.rejects(owner.captureCompletion(f.input));assert.equal((await f.store.read(binding,{},()=>{})).run.state,state);assert.equal(await f.store.nextRuns.latestCheckpoint(binding,()=>{}),null);assert.equal(f.counts().queryCloses,1);});
 test('a completion with one workspace file verifies task authority 9 times: 2 before capture, 6 to publish, 1 to release',async t=>{const f=await fixture(t);let verifies=0;const owner=createNativeCompletionCapture({...f.config,authority:{verify:v=>{verifies++;return f.config.authority.verify(v);}}});await owner.captureCompletion(f.input);assert.equal(verifies,9);});
 test('a completion already PUBLISHED reads its stored objects back again and refuses one that changed',async t=>{const f=await fixture(t),a=await f.owner.captureCompletion(f.input);f.bytes.set(a.checkpoint.opaqueSession.objectId,Buffer.from('changed after publication'));await assert.rejects(f.owner.captureCompletion(f.input));assert.equal(f.counts().queryCloses,1);});
+for(const lostAck of [false,true])test(`completion ${lostAck?'with lost publication ACK':'with acknowledged publication'} emits one terminal summary without new SQL`,async t=>{
+ const baseline=await fixture(t),f=await fixture(t),lines=[],telemetry=createTurnTelemetry({service:'control',write:line=>lines.push(JSON.parse(line))});t.after(()=>telemetry.close());
+ if(lostAck)for(const entry of [baseline,f]){const publish=entry.store.completions.publish;entry.completionPort.publish=async(...args)=>{entry.state.commitUnknown=true;try{return await publish(...args);}finally{entry.state.commitUnknown=false;}};}
+ const baselineOwner=createNativeCompletionCapture(baseline.config),owner=createNativeCompletionCapture({...f.config,authority:{async verify(input){const result=await f.config.authority.verify(input);telemetry.recordCore('identity','2xx',1);return result;}}});
+ baseline.state.calls.length=0;await baselineOwner.captureCompletion(baseline.input);const queries=baseline.state.calls.length;
+ f.state.calls.length=0;await telemetry.within(binding,()=>owner.captureCompletion(f.input));assert.equal(f.state.calls.length,queries);
+ assert.equal(lines.filter(line=>line.event==='meri.turn.summary').length,1);assert.equal(lines.find(line=>line.event==='meri.turn.summary').state,'completed');
+ assert.equal(lines.find(line=>line.event==='meri.turn.counters').core.identity['2xx'],9);
+ await telemetry.within(binding,()=>owner.captureCompletion(f.input));
+ assert.equal(lines.filter(line=>line.event==='meri.turn.summary').length,1);assert.equal(f.state.events.values().next().value.length,5);
+});

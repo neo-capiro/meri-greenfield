@@ -12,6 +12,7 @@ from ..qualification.state.pricing import StateDenied
 from .bearer_eni_admission import FreshEcsEniReader
 from .budgets import BOOTSTRAP_SECONDS
 from . import refusal_diagnostics as diagnostics
+from . import telemetry_context as telemetry
 from .socket_capture import DirectTlsSocketCapture
 
 
@@ -52,6 +53,7 @@ class ProductProxyService:
             _deny()
         self.host_app, self.invoker, self.direct_tls_capture = host_app, invoker, capture
         self._started = False
+        self._unavailable_reported = False
 
     @property
     def ready(self):
@@ -69,6 +71,7 @@ class ProductProxyService:
                     _deny()
                 if event.get("type") == "lifespan.startup.complete":
                     if not self.invoker.registration_current():
+                        telemetry.health("service-gate", "unavailable", "PRODUCT_CALLBACK_UNAVAILABLE")
                         await send({"type": "lifespan.startup.failed",
                                     "message": "PRODUCT_CALLBACK_UNAVAILABLE"})
                         _deny()
@@ -89,11 +92,16 @@ class ProductProxyService:
             return
         if scope.get("type") != "http":
             _deny()
-        if not self.ready:
-            diagnostics.refused("service", "not-ready")
-            await _refuse(send)
-            return
-        await self.host_app(scope, receive, send)
+        with telemetry.request():
+            if not self.ready:
+                if not self._unavailable_reported:
+                    self._unavailable_reported = True
+                    telemetry.health("service-gate", "unavailable", "PRODUCT_PROXY_SERVICE_UNAVAILABLE")
+                diagnostics.refused("service", "not-ready")
+                await _refuse(send)
+                return
+            self._unavailable_reported = False
+            await self.host_app(scope, receive, send)
 
 
 def create_product_proxy_service(*, enabled=False, direct_tls_capture=None,

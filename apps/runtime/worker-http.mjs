@@ -9,15 +9,15 @@ import {createNativeTaskAuthority} from './native-authority/task-authority.mjs';
 import {issuedCurrentState} from '../control/action-host/session/owner.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {taskControlPage} from '../control/conversations/lifecycle/service.mjs';
-export function createWorkerRunApplication({service,sessions,native,configuration,retention,now=Date.now}){
+export function createWorkerRunApplication({service,sessions,native,configuration,retention,now=Date.now,turnTelemetry}){
  let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  const authority=createNativeTaskAuthority({native,enabled:true,now,maxRequestMs:configuration.limits.requestMs});
  const issueCurrent=issuedCurrentState(sessions);
- return Object.freeze({async handle(request){let life,session;try{
+ return Object.freeze({async handle(request){const operation=async()=>{let life,session;try{
   const url=new URL(request.url),route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||!Object.hasOwn(runOwnerOperations,route[1])||url.search)return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
   const capability=request.headers.get('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(capability??''))throw fault('WORKER_AUTHORITY_REFUSED');if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw fault('WORKER_REQUEST_REFUSED');
   let deadlineMs=now()+configuration.limits.requestMs;life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('WORKER_REQUEST_REFUSED');
-  const input=assertRunOwnerRequest(route[1],await jsonBody({body:request.body,length:length===null?null:Number(length)},configuration.limits.requestBytes,life,life.check)),inputSha256=canonicalSha256(input);let pinned;
+  const input=assertRunOwnerRequest(route[1],await jsonBody({body:request.body,length:length===null?null:Number(length)},configuration.limits.requestBytes,life,life.check)),inputSha256=canonicalSha256(input);try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
   async function fresh(){const value=await life.run(signal=>authority.verify({capability:capability.slice(7),binding:input.binding,operation:route[1],inputSha256,signal}));const identity={binding:value.binding,scopes:value.scopes,selectedClientId:value.selectedClientId,policyRevision:value.policyRevision};if(pinned&&!same(pinned,identity))throw fault('WORKER_AUTHORITY_CHANGED');pinned??=identity;deadlineMs=Math.min(deadlineMs,value.expiresAtMs);life.limitDeadline(deadlineMs);return value;}
   const authorization=await fresh();let result;
   // A runner's control page is a read of its own run's durable controls. The task verify before and after it proves the admitted
@@ -50,5 +50,5 @@ export function createWorkerRunApplication({service,sessions,native,configuratio
   // An authority dependency (Core/Clerk, the task verifier) that did not answer decided nothing: 503 lets the runner replay an
   // idempotent call (native-client.mjs). Every refusal, mismatch and changed authority stays 403.
   if(isAuthorityUnavailable(error))return Response.json({error:{code:'WORKER_AUTHORITY_UNAVAILABLE'}},{status:503});
-  const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{if(session)sessions.revoke(session.credential);life?.close();}}});
+  const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{if(session)sessions.revoke(session.credential);life?.close();}};return turnTelemetry?turnTelemetry.provisional(operation):operation();}});
 }

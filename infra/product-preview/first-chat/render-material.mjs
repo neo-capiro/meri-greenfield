@@ -347,8 +347,11 @@ function featureSecretFiles(features,supplied={},identityCredential){
 }
 
 export function parseDeploymentInputs(raw){
- const d=record(raw,'deployment',['schemaVersion','account','region','clusterArn','vpcId','privateSubnetIds','images','foundation','privateEdge','names','proxyClientSubject','temporalClients','origins','temporal','issuer','database','checkpoint','model','secrets','pinsDer','pinsPem','core'],['features']);
+ const d=record(raw,'deployment',['schemaVersion','account','region','clusterArn','vpcId','privateSubnetIds','images','foundation','privateEdge','names','proxyClientSubject','temporalClients','origins','temporal','issuer','database','checkpoint','model','secrets','pinsDer','pinsPem','core'],['features','telemetry']);
  if(d.schemaVersion!==1||d.account!==ACCOUNT||d.region!==REGION)fail('RENDER_INPUT_REFUSED','deployment account/region');
+ // P0 is log-based and always on; this label neither enables OTel nor grants exporter egress.
+ const telemetry=d.telemetry===undefined?{environment:'Preview'}:record(d.telemetry,'deployment.telemetry',['environment']);
+ if(!['Preview','Production'].includes(telemetry.environment))fail('RENDER_INPUT_REFUSED','deployment.telemetry.environment');
  // Core-owned placeholders in deployment-inputs are superseded by the core values file; everything else must be final.
  const {core:_core,origins,...rest}=d;void _core;const {coreOrigin:_c,frontendOrigin:_f,...finalOrigins}=origins;void _c;void _f;
  assertNoPending({...rest,origins:finalOrigins},'deployment');
@@ -358,7 +361,7 @@ export function parseDeploymentInputs(raw){
  if(jwkSha!==d.issuer.publicJwkSha256||jwk.kid!==d.issuer.kid)fail('RENDER_INPUT_REFUSED','deployment.issuer.publicJwkSha256 does not match the canonical JWK');
  for(const commit of [d.images.nodeRuntimeSourceCommit,d.images.proxySourceCommit])if(!/^[a-f0-9]{40}$/u.test(commit))fail('RENDER_INPUT_REFUSED','image source commits must be 40 hex');
  imageDigest(d.images.nodeRuntime);imageDigest(d.images.proxy);
- return {...d,clusterName:cluster[1],features:parseFeatures(d.features,{secrets:d.secrets,checkpoint:d.checkpoint})};
+ return {...d,telemetry:{...telemetry},clusterName:cluster[1],features:parseFeatures(d.features,{secrets:d.secrets,checkpoint:d.checkpoint})};
 }
 
 /** Throwaway-free private reader: only certificate/key PEMs, pins.json and db-logins.json named here are read. */
@@ -590,7 +593,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  // `input/admit` re-runs that recheck about five times (~2.4 s each), so 12000ms cancelled the first admit mid-flight
  // (control aborted its own Core call; ALB 460). 25000ms stays inside the frontend proxy's 30 s request budget.
  const limits={startupMs:30000,shutdownMs:10000,requestMs:25000,requestBytes:131072};
- const control={version:1,profile:'isolated-preview',sourceEnabled,limits,
+ const control={version:1,profile:'isolated-preview',sourceEnabled,limits,telemetry:{...d.telemetry},
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,loopback:false,maxResponseBytes:2097152},
   http:{hostname:'0.0.0.0',port:8080,frontendOrigin:k.frontendOrigin},database:{connectionFile:PATHS.database},temporal:temporal('control'),
   sessions:{mode:'process-local',replicas:1,maxSessions:100,maxTtlMs:300000},versions,nativeCandidate,
@@ -628,7 +631,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const serviceTasks={schemaVersion:2,deploymentRevision,expiresAtMs,ownerCertSha256:pins.der['owner-server'],proxyCertSha256:pins.der['proxy-owner-client'],
   owner:pairPin('model-owner',nodeImage,f.OwnerTaskRoleArn,f.OwnerExecutionRoleArn),proxy:pairPin('model-proxy',proxyImage,f.ProxyTaskRoleArn,f.ProxyExecutionRoleArn)};
  const controlBytes=Buffer.from(JSON.stringify(control));
- const owner={schemaVersion:1,sourceEnabled:false,enabled:true,controlConfigurationFile:PATHS.control,controlConfigurationSha256:sha(controlBytes),nativeCredentialFileSha256:sha(identityCredential),
+ const owner={schemaVersion:1,sourceEnabled:false,enabled:true,telemetry:{...d.telemetry},controlConfigurationFile:PATHS.control,controlConfigurationSha256:sha(controlBytes),nativeCredentialFileSha256:sha(identityCredential),
   tls:{origin:o.ownerOrigin,serverName:d.names.owner,caFile:PATHS.ownerCa,certFile:PATHS.ownerCert,keyFile:PATHS.ownerKey,certSha256:pins.der['owner-server'],issuerSha256:pins.der['owner-bridge-ca']},
   clientPolicy:{clientCertSha256:pins.der['proxy-owner-client'],clientSubject:d.proxyClientSubject,deploymentRevision,issuerSha256:pins.der['owner-bridge-ca'],selectedClientId:k.clientId},
   serviceTasks,pricing:{modelId:d.model.modelId,profileId:d.model.profileId,revision:d.model.pricingRevision,validUntilMs:expiresAtMs,
@@ -636,7 +639,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
    maxInputTokens:d.model.maxInputTokens,maxOutputTokens:d.model.maxOutputTokens},
   limits:{maxRequestMs:OWNER_MAX_REQUEST_MS,maxFactBytes:131072,maxLeaseMs:30000}};
  const ref=(path,bytes)=>({path,sha256:sha(bytes)});
- const proxy={schemaVersion:1,enabled:true,deploymentRevision,expiresAtMs,pricingRevision:PRODUCT_PROXY_PRICING_REVISION,
+ const proxy={schemaVersion:1,enabled:true,telemetry:{...d.telemetry},deploymentRevision,expiresAtMs,pricingRevision:PRODUCT_PROXY_PRICING_REVISION,
   serverTls:{certificateFile:ref(PATHS.proxyServerCert,pki.certs['proxy-server']),privateKeyFile:ref(PATHS.proxyServerKey,pki.keys['proxy-server']),certificateSha256:pins.der['proxy-server']},
   ownerPeer:{origin:o.ownerOrigin,server_name:d.names.owner,server_cert_sha256:pins.der['owner-server'],server_issuer_sha256:pins.der['owner-bridge-ca'],
    client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:OWNER_MAX_REQUEST_MS},

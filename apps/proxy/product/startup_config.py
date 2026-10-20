@@ -54,7 +54,12 @@ def parse_product_proxy_startup(raw, expected_sha256, *, now_ms=None):
     try:
         value = json.loads(raw.decode("utf-8", "strict"), object_pairs_hook=_pairs,
                            parse_constant=lambda _value: _deny())
-        _closed(value, ("schemaVersion", "enabled", "deploymentRevision", "expiresAtMs",
+        telemetry = value.get("telemetry")
+        if "telemetry" in value:
+            _closed(telemetry, ("environment",))
+            if telemetry["environment"] not in ("Preview", "Production"):
+                _deny()
+        _closed({k: v for k, v in value.items() if k != "telemetry"}, ("schemaVersion", "enabled", "deploymentRevision", "expiresAtMs",
                         "pricingRevision", "serverTls", "ownerPeer", "ownerTls",
                         "serviceTasks"))
         at = (now_ms or (lambda: time.time_ns()//1000000))()

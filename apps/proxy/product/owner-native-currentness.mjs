@@ -1,5 +1,7 @@
 /** Private startup join over the existing native material, conversation and Core owners.
  * No credential is issued, persisted, logged or returned by this facade. */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+import {health} from './owner-diagnostics.mjs';
 import {createHash} from 'node:crypto';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -40,7 +42,9 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
  const fingerprint=hash({configuration:startup,credentialFileSha256:c.credentialFileSha256});
  if(!poolAuthorities.has(c.pool))poolAuthorities.set(c.pool,{fingerprint,quarantined:false});
  const authorityState=poolAuthorities.get(c.pool);if(authorityState.fingerprint!==fingerprint)fail();
+ const telemetry=currentTurnTelemetry();
  let closed=false;
+ function quarantine(){if(!authorityState.quarantined){authorityState.quarantined=true;health('currentness','quarantined','PRODUCT_OWNER_NATIVE_UNAVAILABLE',telemetry);}}
  function scoped(binding){validateShape('RunBinding',binding);if(binding.tenantId!==original.tenantId||binding.actorId!==original.actorId)fail();}
  function make(binding){
   const currentOwner={async currentRun(request,{signal}={}){
@@ -105,9 +109,9 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
    const v=own(value,['binding','deadlineMs'],['signal']);nativeSignal(v.signal);const binding=data(v.binding);scoped(binding);
    const at=c.now();if(!enabled||closed||authorityState.quarantined||!Number.isSafeInteger(v.deadlineMs)||!Number.isSafeInteger(at)||v.deadlineMs<=at)fail();
    const key=hash(binding);if(!owners.has(key)){if(owners.size>=1024)fail();owners.set(key,make(binding));}
-   owner=owners.get(key);if(!owner.available){authorityState.quarantined=true;fail();}
+   owner=owners.get(key);if(!owner.available){quarantine();fail();}
    life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs:Math.min(v.deadlineMs,at+limits.maxRequestMs),errorFactory:code=>Object.assign(Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE'),code==='DEADLINE'?{code}:{})});
    const receipt=await life.run(signal=>owner.checkCurrentConversation({binding,deadlineMs:v.deadlineMs,signal}));life.check();return receipt;
-  }catch{fail();}finally{if(life?.close().unsettledOperations>0||owner?.available===false)authorityState.quarantined=true;}
- },close(){closed=true;if(enabled)authorityState.quarantined=true;owners.clear();}});
+  }catch{fail();}finally{if(life?.close().unsettledOperations>0||owner?.available===false)quarantine();}
+ },close(){closed=true;if(enabled)quarantine();owners.clear();}});
 }

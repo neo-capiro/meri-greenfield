@@ -9,6 +9,7 @@ by an arbitrary callback is not TLS authentication. No client, credential,
 listener or network request is created by this module.
 """
 import asyncio
+from . import telemetry_context as telemetry
 from contextvars import ContextVar
 from dataclasses import dataclass
 import hashlib
@@ -201,7 +202,10 @@ class OwnerHostGate:
         return self._available
 
     def poison(self):
+        transitioned = self._available
         self._available = False
+        if transitioned:
+            telemetry.health("owner-gate", "poisoned", "OWNER_GATE_POISONED")
 
 
 def owner_exchange_state(exchange, policy, host_gate):

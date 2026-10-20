@@ -34,7 +34,8 @@ function ownerPeer(raw){
 /** Closed proxy configuration and its explicit `{path,sha256}` file references. */
 export function parseProductProxyStartupConfiguration(raw){
  try{
-  const v=data(own(raw,['schemaVersion','enabled','deploymentRevision','expiresAtMs','pricingRevision','serverTls','ownerPeer','ownerTls','serviceTasks']));
+  const v=data(own(raw,['schemaVersion','enabled','deploymentRevision','expiresAtMs','pricingRevision','serverTls','ownerPeer','ownerTls','serviceTasks'],['telemetry']));
+  if(v.telemetry!==undefined){const telemetry=own(v.telemetry,['environment']);if(!['Preview','Production'].includes(telemetry.environment))fail();}
   if(v.schemaVersion!==1||v.enabled!==true||!instant(v.expiresAtMs)||!slot(v.deploymentRevision)||v.pricingRevision!==PRODUCT_PROXY_PRICING_REVISION)fail();
   const server=own(v.serverTls,['certificateFile','privateKeyFile','certificateSha256']),owner=own(v.ownerTls,['caFile','certificateFile','privateKeyFile']);
   if(!sha(server.certificateSha256))fail();

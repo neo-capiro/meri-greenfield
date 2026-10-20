@@ -1,0 +1,923 @@
+{
+  "Resources": {
+    "AlarmsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "meri-preview-alarms"
+      }
+    },
+    "AlarmEmailSubscription": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "Endpoint": {
+          "Ref": "AlarmEmail"
+        },
+        "Protocol": "email",
+        "TopicArn": {
+          "Ref": "AlarmsTopic"
+        }
+      },
+      "Condition": "HasAlarmEmail"
+    },
+    "RunnerFirstFailure": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-runner-first-failure",
+        "FilterPattern": "\"RUNNER_FIRST_FAILURE\"",
+        "LogGroupName": "/meri/product-preview/runner",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "RunnerFirstFailureLines",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "OwnerUnavailable": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-owner-unavailable",
+        "FilterPattern": "\"PRODUCT_OWNER_UNAVAILABLE\"",
+        "LogGroupName": "/meri/product-preview/owner",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "OwnerUnavailableLines",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "OwnerRefused": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-owner-refused",
+        "FilterPattern": "\"PRODUCT_OWNER_REFUSED\"",
+        "LogGroupName": "/meri/product-preview/owner",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "OwnerRefusedLines",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "ProxyPairRefused": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-proxy-pair-refused",
+        "FilterPattern": "\"PRODUCT_PROXY_REFUSED gate=pair\"",
+        "LogGroupName": "/meri/product-preview/proxy",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "ProxyPairRefusals",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "ProxyExchangeRefused": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-proxy-exchange-refused",
+        "FilterPattern": "\"PRODUCT_PROXY_REFUSED gate=exchange\"",
+        "LogGroupName": "/meri/product-preview/proxy",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "ProxyExchangeRefusals",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "ProxyRefused": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-proxy-refused",
+        "FilterPattern": "\"PRODUCT_PROXY_REFUSED\"",
+        "LogGroupName": "/meri/product-preview/proxy",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "ProxyRefusedLines",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "OwnerDiagnosticsSuppressed": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-owner-diagnostics-suppressed",
+        "FilterPattern": "\"DIAGNOSTICS_SUPPRESSED\"",
+        "LogGroupName": "/meri/product-preview/owner",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "DiagnosticsSuppressed",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "ProxyDiagnosticsSuppressed": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-proxy-diagnostics-suppressed",
+        "FilterPattern": "\"DIAGNOSTICS_SUPPRESSED\"",
+        "LogGroupName": "/meri/product-preview/proxy",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "DiagnosticsSuppressed",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "ControlUnavailable": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-control-unavailable",
+        "FilterPattern": "\"RUNTIME_UNAVAILABLE\"",
+        "LogGroupName": "/meri/product-preview/control",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "RuntimeUnavailable",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "WorkerUnavailable": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-worker-unavailable",
+        "FilterPattern": "\"RUNTIME_UNAVAILABLE\"",
+        "LogGroupName": "/meri/product-preview/worker",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "RuntimeUnavailable",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "TurnFailureRate": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: turn-failure-rate",
+        "AlarmName": "meri-preview-turn-failure-rate",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "DatapointsToAlarm": 1,
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "completed",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  },
+                  {
+                    "Name": "Outcome",
+                    "Value": "completed"
+                  }
+                ],
+                "MetricName": "Turns",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 1800,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "failed",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  },
+                  {
+                    "Name": "Outcome",
+                    "Value": "failed"
+                  }
+                ],
+                "MetricName": "Turns",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 1800,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Expression": "completed+failed",
+            "Id": "total",
+            "ReturnData": false
+          },
+          {
+            "Expression": "IF(total>=3,100*failed/total,0)",
+            "Id": "rate",
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 20,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "TimeoutFailure": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: timeout-failure",
+        "AlarmName": "meri-preview-timeout-failure",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 1,
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "control",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  }
+                ],
+                "MetricName": "TimeoutFailures",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 300,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "runner",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "runner"
+                  }
+                ],
+                "MetricName": "TimeoutFailures",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 300,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Expression": "SUM([control,runner])",
+            "Id": "timeouts",
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "FirstTextP95": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: first-text-p95",
+        "AlarmName": "meri-preview-first-text-p95",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "DatapointsToAlarm": 1,
+        "EvaluateLowSampleCountPercentile": "evaluate",
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "firsttext",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  }
+                ],
+                "MetricName": "FirstTextMs",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 3600,
+              "Stat": "p95"
+            },
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 20000,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "ProxyOwnerUnavailable": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: proxy-owner-unavailable",
+        "AlarmName": "meri-preview-proxy-owner-unavailable",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 1,
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "owner",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  }
+                ],
+                "MetricName": "HealthEvents",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 300,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "proxy",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "proxy"
+                  }
+                ],
+                "MetricName": "HealthEvents",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 300,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "legacy",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [],
+                "MetricName": "OwnerUnavailableLines",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 300,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Expression": "SUM([owner,proxy,legacy])",
+            "Id": "unavailable",
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "BudgetQuarantine": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: budget-quarantine",
+        "AlarmName": "meri-preview-budget-quarantine",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 1,
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "quarantines",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  }
+                ],
+                "MetricName": "BudgetQuarantines",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 300,
+              "Stat": "Sum"
+            },
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "CoreErrorRate": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: core-error-rate",
+        "AlarmName": "meri-preview-core-error-rate",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "DatapointsToAlarm": 2,
+        "EvaluationPeriods": 2,
+        "Metrics": [
+          {
+            "Id": "total0",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e00",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "5xx"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e01",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "503"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e02",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "timeout"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e03",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "unanswered"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "total1",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e10",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "5xx"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e11",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "503"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e12",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "timeout"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "e13",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  },
+                  {
+                    "Name": "StatusClass",
+                    "Value": "unanswered"
+                  }
+                ],
+                "MetricName": "CoreCalls",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 600,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Expression": "SUM([total0,total1])",
+            "Id": "total",
+            "ReturnData": false
+          },
+          {
+            "Expression": "SUM([e00,e01,e02,e03,e10,e11,e12,e13])",
+            "Id": "errors",
+            "ReturnData": false
+          },
+          {
+            "Expression": "IF(total>=20,100*errors/total,0)",
+            "Id": "rate",
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 5,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "PairRefusalsSustained": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: pair-refusals-sustained",
+        "AlarmName": "meri-preview-pair-refusals-sustained",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 3,
+        "EvaluationPeriods": 3,
+        "Metrics": [
+          {
+            "Id": "pair",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [],
+                "MetricName": "ProxyPairRefusals",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "exchange",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [],
+                "MetricName": "ProxyExchangeRefusals",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Expression": "SUM([pair,exchange])",
+            "Id": "refusals",
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "TelemetryDropped": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: telemetry-dropped",
+        "AlarmName": "meri-preview-telemetry-dropped",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 1,
+        "EvaluationPeriods": 1,
+        "Metrics": [
+          {
+            "Id": "control",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "control"
+                  }
+                ],
+                "MetricName": "TelemetryDropped",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 900,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "owner",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "owner"
+                  }
+                ],
+                "MetricName": "TelemetryDropped",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 900,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Id": "proxy",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "proxy"
+                  }
+                ],
+                "MetricName": "TelemetryDropped",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 900,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Expression": "SUM([control,owner,proxy])",
+            "Id": "drops",
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "HotPathDashboard": {
+      "Type": "AWS::CloudWatch::Dashboard",
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Join": [
+            "",
+            [
+              "{\"widgets\":[{\"type\":\"metric\",\"x\":0,\"y\":0,\"width\":12,\"height\":6,\"properties\":{\"title\":\"First text and result (1 hour)\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":3600,\"metrics\":[[\"Meri/Preview\",\"FirstTextMs\",\"Service\",\"control\",{\"stat\":\"p50\"}],[\"Meri/Preview\",\"FirstTextMs\",\"Service\",\"control\",{\"stat\":\"p95\"}],[\"Meri/Preview\",\"ResultMs\",\"Service\",\"control\",{\"stat\":\"p50\"}],[\"Meri/Preview\",\"ResultMs\",\"Service\",\"control\",{\"stat\":\"p95\"}]]}},{\"type\":\"metric\",\"x\":12,\"y\":0,\"width\":12,\"height\":6,\"properties\":{\"title\":\"First text and result (1 day)\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":86400,\"metrics\":[[\"Meri/Preview\",\"FirstTextMs\",\"Service\",\"control\",{\"stat\":\"p50\"}],[\"Meri/Preview\",\"FirstTextMs\",\"Service\",\"control\",{\"stat\":\"p95\"}],[\"Meri/Preview\",\"ResultMs\",\"Service\",\"control\",{\"stat\":\"p50\"}],[\"Meri/Preview\",\"ResultMs\",\"Service\",\"control\",{\"stat\":\"p95\"}]]}},{\"type\":\"metric\",\"x\":0,\"y\":6,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Turns and timeout signals by source (signals may share a turn)\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"Turns\",\"Service\",\"control\",\"Outcome\",\"completed\",{}],[\"Meri/Preview\",\"Turns\",\"Service\",\"control\",\"Outcome\",\"failed\",{}],[\"Meri/Preview\",\"Turns\",\"Service\",\"control\",\"Outcome\",\"cancelled\",{}],[\"Meri/Preview\",\"TimeoutFailures\",\"Service\",\"control\",{\"label\":\"Control timeout signals\"}],[\"Meri/Preview\",\"TimeoutFailures\",\"Service\",\"runner\",{\"label\":\"Runner timeout signals\"}]]}},{\"type\":\"metric\",\"x\":12,\"y\":6,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Calls per turn (background excluded; Clerk reads estimated)\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"Turns\",\"Service\",\"control\",\"Outcome\",\"completed\",{\"id\":\"turn0\",\"visible\":false}],[\"Meri/Preview\",\"Turns\",\"Service\",\"control\",\"Outcome\",\"failed\",{\"id\":\"turn1\",\"visible\":false}],[\"Meri/Preview\",\"Turns\",\"Service\",\"control\",\"Outcome\",\"cancelled\",{\"id\":\"turn2\",\"visible\":false}],[{\"expression\":\"SUM([turn0,turn1,turn2])\",\"id\":\"turns\",\"visible\":false}],[\"Meri/Preview\",\"CoreCalls\",\"Service\",\"control\",{\"id\":\"s0m0\",\"visible\":false}],[\"Meri/Preview\",\"CoreCalls\",\"Service\",\"control\",\"Attribution\",\"background\",{\"id\":\"b0m0\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s0m0-FILL(b0m0,0))/turns,0)\",\"label\":\"control CoreCalls / turn\"}],[\"Meri/Preview\",\"ClerkReadsEstimate\",\"Service\",\"control\",{\"id\":\"s0m1\",\"visible\":false}],[\"Meri/Preview\",\"ClerkReadsEstimate\",\"Service\",\"control\",\"Attribution\",\"background\",{\"id\":\"b0m1\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s0m1-FILL(b0m1,0))/turns,0)\",\"label\":\"control ClerkReadsEstimate / turn\"}],[\"Meri/Preview\",\"AwsCalls\",\"Service\",\"control\",{\"id\":\"s0m2\",\"visible\":false}],[\"Meri/Preview\",\"AwsCalls\",\"Service\",\"control\",\"Attribution\",\"background\",{\"id\":\"b0m2\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s0m2-FILL(b0m2,0))/turns,0)\",\"label\":\"control AwsCalls / turn\"}],[\"Meri/Preview\",\"DbStatements\",\"Service\",\"control\",{\"id\":\"s0m3\",\"visible\":false}],[\"Meri/Preview\",\"DbStatements\",\"Service\",\"control\",\"Attribution\",\"background\",{\"id\":\"b0m3\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s0m3-FILL(b0m3,0))/turns,0)\",\"label\":\"control DbStatements / turn\"}],[\"Meri/Preview\",\"CoreCalls\",\"Service\",\"owner\",{\"id\":\"s1m0\",\"visible\":false}],[\"Meri/Preview\",\"CoreCalls\",\"Service\",\"owner\",\"Attribution\",\"background\",{\"id\":\"b1m0\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s1m0-FILL(b1m0,0))/turns,0)\",\"label\":\"owner CoreCalls / turn\"}],[\"Meri/Preview\",\"ClerkReadsEstimate\",\"Service\",\"owner\",{\"id\":\"s1m1\",\"visible\":false}],[\"Meri/Preview\",\"ClerkReadsEstimate\",\"Service\",\"owner\",\"Attribution\",\"background\",{\"id\":\"b1m1\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s1m1-FILL(b1m1,0))/turns,0)\",\"label\":\"owner ClerkReadsEstimate / turn\"}],[\"Meri/Preview\",\"AwsCalls\",\"Service\",\"owner\",{\"id\":\"s1m2\",\"visible\":false}],[\"Meri/Preview\",\"AwsCalls\",\"Service\",\"owner\",\"Attribution\",\"background\",{\"id\":\"b1m2\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s1m2-FILL(b1m2,0))/turns,0)\",\"label\":\"owner AwsCalls / turn\"}],[\"Meri/Preview\",\"DbStatements\",\"Service\",\"owner\",{\"id\":\"s1m3\",\"visible\":false}],[\"Meri/Preview\",\"DbStatements\",\"Service\",\"owner\",\"Attribution\",\"background\",{\"id\":\"b1m3\",\"visible\":false}],[{\"expression\":\"IF(turns>0,(s1m3-FILL(b1m3,0))/turns,0)\",\"label\":\"owner DbStatements / turn\"}]]}},{\"type\":\"metric\",\"x\":0,\"y\":12,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Model timings\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"ModelTtftMs\",\"Service\",\"proxy\",{\"stat\":\"p50\"}],[\"Meri/Preview\",\"ModelTtftMs\",\"Service\",\"proxy\",{\"stat\":\"p95\"}],[\"Meri/Preview\",\"ModelBootstrapMs\",\"Service\",\"proxy\",{\"stat\":\"p50\"}],[\"Meri/Preview\",\"ModelBootstrapMs\",\"Service\",\"proxy\",{\"stat\":\"p95\"}]]}},{\"type\":\"metric\",\"x\":12,\"y\":12,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Owner exchanges per model request\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"OwnerExchanges\",\"Service\",\"proxy\",{\"stat\":\"Average\"}]]}},{\"type\":\"metric\",\"x\":0,\"y\":18,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Model requests and proxy AWS calls\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"ModelRequests\",\"Service\",\"proxy\",\"Outcome\",\"completed\",{}],[\"Meri/Preview\",\"ModelRequests\",\"Service\",\"proxy\",\"Outcome\",\"refused\",{}],[\"Meri/Preview\",\"ModelRequests\",\"Service\",\"proxy\",\"Outcome\",\"failed\",{}],[\"Meri/Preview\",\"ModelRequests\",\"Service\",\"proxy\",\"Outcome\",\"cancelled\",{}],[\"Meri/Preview\",\"ProxyAwsCalls\",\"Service\",\"proxy\",{}]]}},{\"type\":\"metric\",\"x\":12,\"y\":18,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Runner run-owner calls and elapsed time\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"RunOwnerCalls\",\"Service\",\"runner\",{\"stat\":\"Average\"}],[\"Meri/Preview\",\"RunOwnerMs\",\"Service\",\"runner\",{\"stat\":\"Average\",\"yAxis\":\"right\"}]]}},{\"type\":\"metric\",\"x\":0,\"y\":24,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Health transitions and budget quarantine\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"bootstrap\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"pending-work\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"owner-gate\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"pair\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"service-gate\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"facts\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"credential-delivery\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"owner\",\"Component\",\"currentness\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"bootstrap\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"pending-work\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"owner-gate\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"pair\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"service-gate\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"facts\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"credential-delivery\",{}],[\"Meri/Preview\",\"HealthEvents\",\"Service\",\"proxy\",\"Component\",\"currentness\",{}],[\"Meri/Preview\",\"BudgetQuarantines\",\"Service\",\"owner\",{}]]}},{\"type\":\"metric\",\"x\":12,\"y\":24,\"width\":12,\"height\":6,\"properties\":{\"title\":\"Pair refusals\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"timeSeries\",\"stat\":\"Sum\",\"period\":300,\"metrics\":[[\"Meri/Preview\",\"ProxyPairRefusals\",{}],[\"Meri/Preview\",\"ProxyExchangeRefusals\",{}]]}},{\"type\":\"log\",\"x\":0,\"y\":30,\"width\":24,\"height\":6,\"properties\":{\"title\":\"Turn detail\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"table\",\"query\":\"SOURCE '/meri/product-preview/control' | SOURCE '/meri/product-preview/worker' | SOURCE '/meri/product-preview/runner' | SOURCE '/meri/product-preview/owner' | SOURCE '/meri/product-preview/proxy'\\n| fields @timestamp, @log, event, service, stage, atMs, firstTextMs, resultMs, state, reasonCode, timeoutClass, core, aws, db, ownerExchanges, firstChunkMs\\n| filter schema = \\\"meri.telemetry/1\\\" and runId = \\\"<paste runId>\\\"\\n| sort atMs asc\"}},{\"type\":\"log\",\"x\":0,\"y\":36,\"width\":24,\"height\":6,\"properties\":{\"title\":\"Last 20 turns\",\"region\":\"",
+              {
+                "Ref": "AWS::Region"
+              },
+              "\",\"view\":\"table\",\"query\":\"SOURCE '/meri/product-preview/control' | SOURCE '/meri/product-preview/worker' | SOURCE '/meri/product-preview/runner' | SOURCE '/meri/product-preview/owner' | SOURCE '/meri/product-preview/proxy'\\n| filter schema = \\\"meri.telemetry/1\\\" and event = \\\"meri.turn.summary\\\"\\n| sort @timestamp desc\\n| limit 20\"}}]}"
+            ]
+          ]
+        },
+        "DashboardName": "meri-preview-hot-path"
+      }
+    }
+  },
+  "Parameters": {
+    "AlarmEmail": {
+      "Type": "String",
+      "Default": "",
+      "AllowedPattern": "^$|^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+      "Description": "Optional alarm recipient; confirm the SNS email after deployment.",
+      "MaxLength": 254
+    }
+  },
+  "Conditions": {
+    "HasAlarmEmail": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AlarmEmail"
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  }
+}

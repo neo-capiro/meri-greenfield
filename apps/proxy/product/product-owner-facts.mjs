@@ -15,6 +15,8 @@
  * grant bound to this exact run, allocation and qualification; its state and expiry
  * never bound the model lease. Any other row on the run still refuses.
  */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+import {health} from './owner-diagnostics.mjs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
@@ -45,6 +47,7 @@ export function createProductProxyPersistedFacts(configuration){
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)deny();
  const budget=new PostgresBudgetStore(c.pool,{namespace:'product'});
  const conversations=createPostgresConversationStore({pool:c.pool,now:c.now});
+ const telemetry=currentTurnTelemetry();
  let quarantined=false;
 
  /** The model grant the digest locates: its own binding facts and the run's installed allocation. No run-wide grant set yet. */
@@ -171,7 +174,7 @@ export function createProductProxyPersistedFacts(configuration){
   }catch{deny();}finally{
    // A deadline races I/O; it cannot prove a hung pool/driver stopped. Refuse
    // every later lookup on this instance rather than accumulating new work.
-   if(life?.close().unsettledOperations>0)quarantined=true;
+   if(life?.close().unsettledOperations>0&&!quarantined){quarantined=true;health('facts','quarantined','PRODUCT_OWNER_FACTS_UNAVAILABLE',telemetry);}
   }
  }});
 }

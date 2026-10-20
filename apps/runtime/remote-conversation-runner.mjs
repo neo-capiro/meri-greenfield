@@ -24,9 +24,9 @@ import {captureGeneralReadPort} from './general-read-port.mjs';
 import {createNativeReadsClient} from './native-authority/reads-client.mjs';
 import {createRunnerIntentsClient} from './native-authority/intents-client.mjs';
 import {loadRunnerHttpsMaterial} from './runner-https-material.mjs';
-import {atRunnerStage,markRunnerStage,captureRunnerFailure} from './runner-runtime-diagnostics.mjs';
+import {atRunnerStage,markRunnerStage,captureRunnerFailure,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
 export async function runRemoteConversation(configuration,options={}){
- return atRunnerStage('remote-config',async()=>{
+ return withRunnerDiagnostics(()=>atRunnerStage('remote-config',async()=>{
  const {signal,fetchImpl=fetch,execute=runConversation,listen=listenRuntime,createWorker=createRemoteNativeWorker,sessionFactory,generalReads,poststartNativeFetch}=own(options,[],['signal','fetchImpl','execute','listen','createWorker','sessionFactory','generalReads','poststartNativeFetch']);nativeSignal(signal);
  const borrowedReads=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  const remote=own(configuration.remoteTask,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads','tls','intents']),original=remoteOriginal(remote.original),intent=compileNativePreparationIntent(remote.preparationIntent);
@@ -45,5 +45,5 @@ export async function runRemoteConversation(configuration,options={}){
    markRunnerStage('kickoff-wait');await gate?.wait({signal});markRunnerStage('activity');result=await execute({...configuration,captureOwnsClose:true},{signal,query:worker.query,sessionFactory:mirror.factory,...(readPort?{generalReads:readPort}:{}),...(intentPort?{governedIntents:intentPort}:{}),...(poststartNativeFetch?{nativeFetch:poststartNativeFetch}:{})});
   }catch(error){captureRunnerFailure(error);failure=error;}finally{markRunnerStage('remote-cleanup');gate?.close();const errors=[];if(worker)try{await cleanup(storageMethod(worker,'close'));}catch(error){errors.push(error);}try{await cleanup(mirror.session.close);}catch(error){errors.push(error);}if(gate&&listener&&!retired){const life=createOperationLifetime({now:Date.now,deadlineMs:Math.max(Date.now()+1,original.expiresAtMs+configuration.limits.shutdownMs),errorFactory:()=>Error('REMOTE_RUNNER_RETIREMENT_UNKNOWN')});try{await life.run(()=>retirement.promise);}catch(error){errors.push(error);}finally{life.close();}}if(listener)try{await cleanup(storageMethod(listener,'close'));}catch(error){errors.push(error);}if(errors.length)failure=new AggregateError([...(failure?[failure]:[]),...errors],'REMOTE_RUNNER_CLEANUP_UNKNOWN');}
  if(failure)throw failure;return result;
- });
+ }),{binding:configuration.binding,environment:configuration.telemetry?.environment});
 }

@@ -9,7 +9,7 @@ import {readTransitionAuthority,requireTransitionAuthority} from './authority.mj
 /** The single worker failure a control hold admits (see failUncheckpointedHold); run.status reasonCode is free-form in the frozen UIEvent contract. */
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 const selectRun=async(c,b)=>{const r=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0];return r;};
-export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthority,now=Date.now}){
+export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthority,now=Date.now,onPublished}){
  const validateProof=(proof,p)=>{own(proof,['checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','resumeSessionAt','readReceiptId']);uuid(proof.readReceiptId);if(proof.resumeSessionAt!==null)uuid(proof.resumeSessionAt);validateShape('Checkpoint',proof.checkpoint);assertWorkspacePaths(proof.checkpoint.workspace);const cp=proof.checkpoint;if(hash(cp)!==proof.checkpointSha256||!same(cp.binding,p.sourceBinding)||!same(cp.workspace.binding,p.sourceBinding)||!same(cp.scopes,p.scopes)||!same(cp.workspace.scopes,p.scopes)||!same(cp.opaqueSession.scopes,p.scopes)||!same(cp.versions,p.versions)||hash(cp.workspace)!==cp.workspaceSha256||proof.sourceRequestSha256!==p.sourceRequestSha256||proof.contextSha256!==p.contextSha256||cp.lastEventSequence>p.captureSequence||cp.workspace.entries.some(e=>e.object.scopes.some(s=>!p.scopes.some(parent=>same(parent,s)))))fail('STORE_CORRUPT');};
  const decode=row=>{if(!row||hash(row.projection)!==row.projection_sha256)fail('STORE_CORRUPT');const p=row.projection,b=p.sourceBinding,seq=Number(row.control_sequence);validateShape('RunBinding',b);uuid(p.sourceSelectedClientId);if(!p.scopes.some(s=>s.kind==='client'&&s.resourceId===p.sourceSelectedClientId))fail('STORE_CORRUPT');assertLifecycleCommand(p.input);
   if(row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.control_id!==p.input.controlId||!Number.isSafeInteger(seq)||seq<1||hash(p.sourceRequest)!==p.sourceRequestSha256||hash({window:p.sourceRequest.window,skill:p.sourceRequest.skill,scopes:p.scopes})!==p.contextSha256||hash(p.input)!==p.inputSha256||!['PENDING','DISPATCHING','APPLIED','UNKNOWN'].includes(p.state))fail('STORE_CORRUPT');
@@ -123,14 +123,14 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
  /** Cleanup-only readback of this request's terminal fence. An absent event may coincide with another terminal writer, but does
   * not prove that this request's cancelled event committed. The caller supplies binding/scopes verified before disconnection. */
  async function readStopFence(value,check){const {binding:b,scopes,eventId}=own(value,['binding','scopes','eventId']);validateShape('RunBinding',b);uuid(eventId);
-  return tx(b,check,async c=>{
+  let committed;const result=await tx(b,check,async c=>{
    const r=await verifyRun(c,b,scopes);check();
    const rows=(await c.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event_id=$4',[b.tenantId,b.conversationId,b.runId,eventId])).rows;check();
    if(rows.length>1)fail('STORE_CORRUPT');const row=rows[0];
    if(row){const e=row.event;validateShape('UIEvent',e);
-    if(row.event_id!==eventId||e.eventId!==eventId||hash(e)!==row.event_sha256||Number(row.sequence)!==Number(r.last_sequence)||e.sequence!==Number(row.sequence)||!same(e.binding,b)||!same(e.scopes,scopes)||e.type!=='run.status'||e.data.state!=='cancelled'||e.data.reasonCode!=='USER_CANCELLED'||r.projection.state!=='cancelled')fail('STORE_CORRUPT');
+    if(row.event_id!==eventId||e.eventId!==eventId||hash(e)!==row.event_sha256||Number(row.sequence)!==Number(r.last_sequence)||e.sequence!==Number(row.sequence)||!same(e.binding,b)||!same(e.scopes,scopes)||e.type!=='run.status'||e.data.state!=='cancelled'||e.data.reasonCode!=='USER_CANCELLED'||r.projection.state!=='cancelled')fail('STORE_CORRUPT');committed=e;
    }
    return {state:r.projection.state,cancelCommitted:!!row};
-  });}
+  });try{if(committed&&onPublished)Promise.resolve(onPublished(committed)).catch(()=>{});}catch{}return result;}
  return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
 }

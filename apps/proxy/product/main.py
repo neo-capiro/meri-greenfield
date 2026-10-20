@@ -24,6 +24,8 @@ import time
 
 from ..qualification.state.pricing import PRICING_REVISION, StateDenied
 from . import refusal_diagnostics as diagnostics
+from . import telemetry_context as telemetry
+from . import telemetry_lines
 from .owner_channel import OwnerPeerPolicy
 from .startup_config import (ProductProxyConfiguration, parse_product_proxy_startup,
                              read_reviewed_file, _environment)
@@ -71,14 +73,23 @@ class _Resources:
             _deny()
         for name in methods:
             original = getattr(client, name)
-            def call(*args, _original=original, **kwargs):
+            operation = "".join(part.capitalize() for part in name.split("_"))
+            def call(*args, _original=original, _operation=operation, **kwargs):
                 with self.lock:
                     if self.retired:
                         _deny()
                     self.active += 1
+                began = time.monotonic()
+                outcome = "failed"
                 try:
-                    return _original(*args, **kwargs)
+                    result = _original(*args, **kwargs)
+                    outcome = "success"
+                    return result
+                except TimeoutError:
+                    outcome = "timeout"
+                    raise
                 finally:
+                    telemetry.count("aws", _operation, outcome, (time.monotonic() - began) * 1000)
                     with self.lock:
                         self.active -= 1
             setattr(client, name, call)
@@ -86,7 +97,10 @@ class _Resources:
 
     async def close(self):
         with self.lock:
+            transitioned = not self.retired
             self.retired = True
+        if transitioned:
+            telemetry.health("resources", "retired", "RESOURCES_RETIRED")
         work = [asyncio.create_task(asyncio.to_thread(client.close)) for client in self.clients]
         work += [asyncio.create_task(item.aclose()) for item in self.transports]
         done, pending = await asyncio.wait(work, timeout=1) if work else (set(), set())
@@ -205,7 +219,9 @@ def _provider_factory(resources):
             task = asyncio.current_task()
             self.calls.add(task)
             try:
+                telemetry.mark("provider.start")
                 response = await self.inner.handle_async_request(request)
+                telemetry.mark("bedrockHeadersMs")
                 if self.closed or resources.retired:
                     await response.aclose()
                     _deny()
@@ -214,6 +230,8 @@ def _provider_factory(resources):
                 class Stream(httpx.AsyncByteStream):
                     async def __aiter__(self):
                         async for chunk in inner:
+                            if chunk:
+                                telemetry.mark("firstChunkMs")
                             if owner.closed or resources.retired:
                                 _deny()
                             yield chunk
@@ -310,6 +328,8 @@ async def run_product_proxy(configuration):
     if value["expiresAtMs"] <= time.time_ns()//1000000:
         _deny()
     resources = _Resources()
+    telemetry_lines.install(write=diagnostics.raw_writer, environment=value.get("telemetry", {}).get("environment", "Preview"))
+    rollups = telemetry.start_rollups()
     operation = None
     compatibility = None
     try:
@@ -346,6 +366,8 @@ async def run_product_proxy(configuration):
         if not resources.native_started or not resources.native_stopped or resources.native_failed:
             _deny()
     finally:
+        rollups.close()
+        telemetry.rollup()
         if operation is not None and not operation.done():
             operation.cancel()
             ready, _ = await asyncio.wait({operation}, timeout=1)

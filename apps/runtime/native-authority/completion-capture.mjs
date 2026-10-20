@@ -11,7 +11,18 @@ import {remoteOriginal} from './remote-task-boundary.mjs';
 import {checkpointIdentity,publishCapturedCheckpoint} from './checkpoint-publication.mjs';
 import {verifyCheckpointReadback} from './checkpoint-readback.mjs';
 import {assertTypedResult,typedCheckpointObject,issuedObjectiveSelection,objectiveCompletionId} from '../../../packages/runtime/objective-generation-custody.mjs';
+import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 const fault=()=>Error('NATIVE_COMPLETION_CAPTURE_UNKNOWN'),same=(a,b)=>hash(a)===hash(b);
+/** Observe committed events or the journal's validated PUBLISHED proof after an ACK loss/replay. PUBLISHED is written
+ * atomically with the pinned completed event at captureSequence+2; it cannot describe physical capture alone. */
+export function observeCompletionPublication(published){
+ try{const telemetry=currentTurnTelemetry();
+  const recovered=published?.state==='PUBLISHED'&&Number.isSafeInteger(published.captureSequence)&&published.captureSequence>0&&published.proof?.checkpoint?.lastEventSequence===published.captureSequence&&typeof published.completedEventId==='string';
+  const events=published?.events??(recovered?[{binding:published.binding,eventId:published.completedEventId,sequence:published.captureSequence+2,type:'run.status',data:{state:'completed',reasonCode:null}}]:[]);
+  for(const event of events){telemetry?.bind(event.binding);telemetry?.summary(event);}
+ }catch{}
+ return published;
+}
 export function createNativeCompletionCapture(configuration){
  const c=own(configuration,['store','objects','authority','taskCapability','original','taskCapture'],['enabled','now','maxRequestMs','preparedFacts']),original=remoteOriginal(c.original),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
  const journal=Object.fromEntries(['begin','read','publish','unknown'].map(k=>[k,storageMethod(c.store.completions,k)])),readRun=storageMethod(c.store,'read'),capture=storageMethod(c.taskCapture,'capture'),verify=storageMethod(c.authority,'verify'),objects={get:storageMethod(c.objects,'get'),put:storageMethod(c.objects,'put')};
@@ -38,7 +49,7 @@ export function createNativeCompletionCapture(configuration){
    const savedIdentity=await life.run(()=>journal.read(pins,life.check));if(!savedIdentity||savedIdentity.completionId!==completionId||savedIdentity.checkpointId!==checkpointId||savedIdentity.contextSha256!==input.contextSha256||!same(savedIdentity.sourceRequest,input.request)||!same(savedIdentity.typedResult??null,typed??null)||identity&&savedIdentity.captureSequence!==identity.captureSequence)throw fault();await selected();return savedIdentity;}
   async function current(){await fresh();return reread();}
   // `readBack` is the proof this lifetime already read back from its objects; any other proof is read back before release.
-  async function result(p,readBack){if(p.state!=='PUBLISHED'||!p.proof||p.proof.checkpoint.sessionId!==input.sessionId||!same(p.typedResult??null,typed??null))throw fault();await selected();if(!same(p.typedSelection??null,typedSelection??null))throw fault();if(typed)typedCheckpointObject(p.proof,typed);if(!readBack||!same(readBack,p.proof))await verifyCheckpointReadback({proof:p.proof,binding:original.binding,versions:original.versions,objects,life,revalidate:fresh});await fresh();const cp=p.proof.checkpoint,r={checkpoint:cp,checkpointSha256:p.proof.checkpointSha256,sourceRequestSha256:p.proof.sourceRequestSha256,contextSha256:p.proof.contextSha256,sessionId:cp.sessionId,resumeSessionAt:p.proof.resumeSessionAt,verificationId:randomUUID(),workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs:now(),expiresAtMs:captureExpiresAtMs};assertCaptureReceipt(r,{...input,started:r.checkedAtMs,now});return r;}
+  async function result(p,readBack){if(p.state!=='PUBLISHED'||!p.proof||p.proof.checkpoint.sessionId!==input.sessionId||!same(p.typedResult??null,typed??null))throw fault();observeCompletionPublication(p);await selected();if(!same(p.typedSelection??null,typedSelection??null))throw fault();if(typed)typedCheckpointObject(p.proof,typed);if(!readBack||!same(readBack,p.proof))await verifyCheckpointReadback({proof:p.proof,binding:original.binding,versions:original.versions,objects,life,revalidate:fresh});await fresh();const cp=p.proof.checkpoint,r={checkpoint:cp,checkpointSha256:p.proof.checkpointSha256,sourceRequestSha256:p.proof.sourceRequestSha256,contextSha256:p.proof.contextSha256,sessionId:cp.sessionId,resumeSessionAt:p.proof.resumeSessionAt,verificationId:randomUUID(),workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs:now(),expiresAtMs:captureExpiresAtMs};assertCaptureReceipt(r,{...input,started:r.checkedAtMs,now});return r;}
   try{
    await fresh();const saved=await life.run(()=>readRun(original.binding,{},life.check));if(!same(saved.request,input.request)||!same(saved.run.versions,input.versions)||!same(saved.run.scopes,input.scopes)||saved.run.policyRevision!==policyRevision)throw fault();
    await selected();identity=await life.run(()=>journal.begin({...pins,completionId,checkpointId,...(typed===undefined?{}:{typedResult:typed,typedSelection})},life.check));
@@ -54,7 +65,7 @@ export function createNativeCompletionCapture(configuration){
    proof=await publishCapturedCheckpoint({captured,original,input:{...input,controlId:completionId},captureSequence:identity.captureSequence,checkpointId,parentCheckpointId:parent?.checkpointId??null,objects,life,fresh,revalidate:reread,now});
    if(typed)typedCheckpointObject(proof,typed);
    const createdAt=new Date(now()).toISOString(),events=[{contractVersion:'0.1.0',eventId:identity.verifiedEventId,createdAt,type:'checkpoint.verified',data:{checkpointId}},{contractVersion:'0.1.0',eventId:identity.completedEventId,createdAt,type:'run.status',data:{state:'completed',reasonCode:null}}];
-   const published=await life.run(()=>journal.publish({...pins,completionId,proof,events},life.check));return await result(published,proof);
+   const published=await life.run(()=>journal.publish({...pins,completionId,proof,events},life.check));observeCompletionPublication(published);return await result(published,proof);
   }catch(error){
    // A lost publication ACK can be reconciled by immutable identity. Never recapture.
    if(pins&&!life.signal.aborted){try{const saved=await life.run(()=>journal.read(pins,life.check));if(saved?.state==='PUBLISHED'&&(!proof||same(saved.proof,proof)))return await result(saved,proof);}catch{}}

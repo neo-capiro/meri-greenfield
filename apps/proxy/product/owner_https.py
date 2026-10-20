@@ -20,6 +20,7 @@ import time
 from .owner_channel import OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, OPERATION, POLL, REPLY
 from .service_pair_discovery import ProductServicePairDiscovery
 from . import refusal_diagnostics as diagnostics
+from . import telemetry_context as telemetry
 from .budgets import MAX_OWNER_EXCHANGE_MS
 from ..qualification.state.pricing import StateDenied
 
@@ -149,11 +150,14 @@ class ProductOwnerHttpsExchange:
     def abort(self):
         self.service_pair_reader.abort()
         with self._state:
+            transitioned = not self._retired
             self._retired = True
             sockets = tuple(self._sockets)
             connections = tuple(self._connections.values())
             self._sockets.clear()
             self._connections.clear()
+        if transitioned:
+            telemetry.health("exchange", "retired", "EXCHANGE_RETIRED")
         for sock in sockets:
             try:
                 sock.shutdown(socket.SHUT_RDWR)
@@ -226,6 +230,7 @@ class ProductOwnerHttpsExchange:
         return connection
 
     def _send(self, channel, path, body, cutoff):
+        began = time.monotonic()
         acquired, step = False, "lock"
         try:
             acquired = self._locks[channel].acquire(timeout=self._remaining(cutoff))
@@ -264,6 +269,7 @@ class ProductOwnerHttpsExchange:
             self.abort()
             _deny()
         finally:
+            telemetry.count("ownerExchanges", channel, {OPEN: "OPEN", OPERATION: "OPERATION", POLL: "POLL", REPLY: "REPLY"}.get(path), (time.monotonic() - began) * 1000)
             if acquired:
                 self._locks[channel].release()
 
