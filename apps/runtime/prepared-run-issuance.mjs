@@ -31,11 +31,15 @@ function receiptOf(value,intent){
 /** The per-run delivery/transport contract: the exact origin the task's control traffic uses and the listener the runner binds. Frozen
  * into the immutable facts of each entry (never shared registry state). */
 export function parseTransport(value){
- const t=data(own(value,['origin','http']));let u;try{u=new URL(t.origin);}catch{fail('TRANSPORT_REFUSED');}
+ const t=data(own(value,['origin','http'],['executionTransport']));if(![undefined,'local'].includes(t.executionTransport))fail('TRANSPORT_REFUSED');let u;try{u=new URL(t.origin);}catch{fail('TRANSPORT_REFUSED');}
  if(u.protocol!=='https:'||u.origin!==t.origin||u.username||u.password||u.search||u.hash||u.pathname!=='/')fail('TRANSPORT_REFUSED');
  const h=own(t.http,['hostname','port','frontendOrigin']);if(!['127.0.0.1','0.0.0.0','::1','::'].includes(h.hostname)||!Number.isSafeInteger(h.port)||h.port<1||h.port>65535||h.frontendOrigin!==t.origin)fail('TRANSPORT_REFUSED');
- return Object.freeze({origin:t.origin,http:Object.freeze({hostname:h.hostname,port:h.port,frontendOrigin:h.frontendOrigin})});
+ return Object.freeze({origin:t.origin,http:Object.freeze({hostname:h.hostname,port:h.port,frontendOrigin:h.frontendOrigin}),...(t.executionTransport===undefined?{}:{executionTransport:t.executionTransport})});
 }
+/** The transport facts of a prepared candidate configuration. `executionTransport` is the temporary execution switch (ADR
+ * EXECUTION-ARCHITECTURE-SIMPLIFICATION-20261020 phase 1): only 'local' is carried, so the default (absent or 'forwarded')
+ * leaves every existing fact, configuration hash and runner binding unchanged. */
+export function candidateTransport(config){return {origin:config.taskOrigin,http:config.taskHttp,...(config.executionTransport==='local'?{executionTransport:'local'}:{})};}
 /** Inert fact compiler: calls no database/cloud/provider port and retains original expiry. */
 export function compilePreparedRunFacts(value,{intent,issuance,now=Date.now}){
  const i=intentOf(intent),r=receiptOf(issuance,i),c=data(own(value,['runtime','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskRequest','containerName','controlCapabilitySha256','transport'],['approvedReads'])),transport=parseTransport(c.transport);

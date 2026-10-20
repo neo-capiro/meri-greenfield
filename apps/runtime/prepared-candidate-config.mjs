@@ -13,7 +13,7 @@ const refuse=()=>{throw Error('PREPARED_CANDIDATE_CONFIGURATION');};
 const file=value=>{if(typeof value!=='string'||!isAbsolute(value)||value.includes('/../')||value.length>4096)refuse();};
 const origin=value=>{let u;try{u=new URL(value);}catch{refuse();}if(u.protocol!=='https:'||u.username||u.password||u.search||u.hash||u.pathname!=='/'||u.origin!==value)refuse();};
 export function compilePreparedCandidateConfiguration(value,versions){
- const c=data(own(value,['identity','runtime','proxyCredentialFile','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskCapabilityFile','controlCapabilityFile','taskRequest','containerName','taskOrigin','taskHttp','objects'],['multiRun','approvedReads']));
+ const c=data(own(value,['identity','runtime','proxyCredentialFile','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskCapabilityFile','controlCapabilityFile','taskRequest','containerName','taskOrigin','taskHttp','objects'],['multiRun','approvedReads','executionTransport']));if(!['forwarded','local',undefined].includes(c.executionTransport))refuse();
  const reads=c.approvedReads===undefined?{}:{approvedReads:assertNativeReadConfiguration(c.approvedReads),operations:data([...new Set([...c.operations,...nativeReadOperations])])};
  // Multi-run mode (S2) is a closed declaration of reviewed static bounds; the durable issuer, capability authority and admission owners are
  // supplied as ports by startup, never named in configuration. Declaring it without those ports fails readiness instead of first-run fallback.

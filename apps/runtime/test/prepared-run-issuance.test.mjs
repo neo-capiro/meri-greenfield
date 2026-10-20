@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalize} from 'node:path';
-import {createPreparedRunIssuance,compilePreparedRunFacts} from '../prepared-run-issuance.mjs';
+import {createPreparedRunIssuance,compilePreparedRunFacts,parseTransport,candidateTransport} from '../prepared-run-issuance.mjs';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
@@ -143,4 +143,12 @@ test('complete approved READS config + both native operations enter immutable fa
  const read=compilePreparedRunFacts(config,{intent:f.input,issuance:entry.issuance,now:()=>f.state.now});assert.deepEqual(read.approvedReads,approvedReads);assert.notEqual(read.factsSha256,base.factsSha256);
  for(const change of [{maxExecuteMs:10001},{enabled:false},{operations:[]}]){const next={...config,approvedReads:{...approvedReads,...change}};if(change.operations)assert.throws(()=>compilePreparedRunFacts(next,{intent:f.input,issuance:entry.issuance,now:()=>f.state.now}));else assert.notEqual(compilePreparedRunFacts(next,{intent:f.input,issuance:entry.issuance,now:()=>f.state.now}).factsSha256,read.factsSha256);}
  assert.throws(()=>compilePreparedRunFacts({...config,operations:raw.operations},{intent:f.input,issuance:entry.issuance,now:()=>f.state.now}));
+});
+test('transport facts carry the execution switch only for local execution',()=>{
+ const config={taskOrigin:'https://control.synthetic.invalid',taskHttp:{hostname:'0.0.0.0',port:8080,frontendOrigin:'https://control.synthetic.invalid'}};
+ assert.deepEqual(candidateTransport(config),{origin:config.taskOrigin,http:config.taskHttp});
+ assert.deepEqual(candidateTransport({...config,executionTransport:'forwarded'}),{origin:config.taskOrigin,http:config.taskHttp});
+ assert.equal(parseTransport(candidateTransport({...config,executionTransport:'local'})).executionTransport,'local');
+ assert.equal(Object.hasOwn(parseTransport(candidateTransport(config)),'executionTransport'),false);
+ for(const executionTransport of ['forwarded','remote'])assert.throws(()=>parseTransport({...candidateTransport(config),executionTransport}),/TRANSPORT_REFUSED/);
 });

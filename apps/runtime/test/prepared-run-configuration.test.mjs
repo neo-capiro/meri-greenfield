@@ -28,3 +28,8 @@ test('binding configuration identity still follows the reviewed workload',()=>{
  const seen=new Set([baseline]);
  for(const [label,change] of changed){const next=hashOf(rendered(change));assert.notEqual(next,baseline,label);assert.ok(!seen.has(next),label+' collides');seen.add(next);}
 });
+test('the default execution switch leaves the configuration identity unchanged; local execution is a new identity',()=>{
+ const baseline=hashOf(candidateFixture().configuration);
+ assert.equal(hashOf(rendered(c=>{c.executionTransport='forwarded';})),baseline);
+ assert.notEqual(hashOf(rendered(c=>{c.executionTransport='local';})),baseline);
+});
