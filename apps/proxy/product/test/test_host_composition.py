@@ -687,5 +687,17 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
             gate.set()
 
 
+class ProductLifetimeLimitTests(unittest.TestCase):
+    def test_product_requests_bound_owner_checks_and_close_by_the_exchange_budget(self):
+        from apps.proxy.product.budgets import MAX_OWNER_EXCHANGE_MS
+        from apps.proxy.product.host_composition import (
+            PRODUCT_LIFETIME_LIMITS, create_bearer_eni_product_proxy_app, create_product_proxy_app)
+        self.assertEqual(PRODUCT_LIFETIME_LIMITS.check_seconds, MAX_OWNER_EXCHANGE_MS / 1000)
+        self.assertGreaterEqual(PRODUCT_LIFETIME_LIMITS.cleanup_seconds, PRODUCT_LIFETIME_LIMITS.check_seconds)
+        for factory in (create_product_proxy_app, create_bearer_eni_product_proxy_app):
+            with self.subTest(factory=factory.__name__):
+                self.assertIs(inspect.signature(factory).parameters["limits"].default, PRODUCT_LIFETIME_LIMITS)
+
+
 if __name__ == "__main__":
     unittest.main()
