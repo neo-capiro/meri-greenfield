@@ -8,6 +8,7 @@ import {assertSkillManifest} from '../../../packages/contracts/retrieval-0.2/val
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {selectSkill} from '../../../packages/skills/index.mjs';
 import {createTextProjector} from './text-projector.mjs';
+import {createSdkReadAhead} from './sdk-read-ahead.mjs';
 import {buildConversationOptions} from './options.mjs';
 import {requestContextSuffix} from './request-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
@@ -27,6 +28,10 @@ const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbo
 /** Acknowledgement bound for one terminal publication attempt: the control service's default per-request bound. Terminal
  * settlement makes at most two rounds over the (at most two) candidate events, so it is finite (here at most 12 s). */
 export const TERMINAL_ATTEMPT_MS=3000;
+/** Text one folded `message.delta` publication carries at most: even fully JSON-escaped it stays inside the 128 KiB event bound. */
+export const DELTA_FOLD_MAX_BYTES=16384;
+// A streamed text delta outside any subagent; only these fold, and only with deltas of the same content block.
+const textDelta=m=>m?.type==='stream_event'&&!m.parent_tool_use_id&&m.event?.type==='content_block_delta'&&m.event.delta?.type==='text_delta';
 export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
  // Optional trusted observers cannot affect execution, publication or bounded cleanup.
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
@@ -98,9 +103,20 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.
     diagnostic('stage','activity-query');modelLife=modelDeadlineMs===undefined?null:createOperationLifetime({deadlineMs:Math.min(modelDeadlineMs,runtime.deadlineMs-terminalAttemptMs),now,signal:life.signal,errorFactory:fault});if(lifecycle!==undefined)input=createConversationInput({requestId:saved.request.requestId,prompt:saved.request.prompt});
    stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');const iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId),progressParts=createProgressProjector({policy,newId});
+   // Every display publication is a full authorization round at control (seconds), so the deltas the SDK produced meanwhile join the
+   // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order; nothing is
+   // read past a result, and a message read early is used only while a read could still be made (deadline, lifecycle failure).
+   const readLife=modelLife??life,ahead=createSdkReadAhead(()=>readLife.run(()=>iterator.next()),{last:m=>m?.type==='result',check:()=>{readLife.check();controls?.check();}});
+   async function foldDeltas(first,text){
+    for(let m=ahead.peek();textDelta(m)&&m.event.index===first.event.index&&Buffer.byteLength(text)<DELTA_FOLD_MAX_BYTES;m=ahead.peek()){
+     ahead.take();capabilities?.check();await controls?.observe(m);if(controls?.isHeld())break;
+     for(const part of textParts(m)){bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');capabilities?.check();text+=part.text;}
+    }
+    return text;
+   }
    if(lifecycle!==undefined)controls=createActivityLifecycle({config:lifecycle,runOwner,binding,saved,runtime,input,
     query:{interrupt:()=>stream.interrupt(),close:closeQuery},life,now});
-    while(true){diagnostic('stage','activity-stream');let next;try{const advance=()=>modelLife?modelLife.run(()=>iterator.next()):life.run(()=>iterator.next());next=await (controls?Promise.race([advance(),controls.failure.then(error=>{throw error;})]):advance());}
+    while(true){diagnostic('stage','activity-stream');let next;try{next=await (controls?Promise.race([ahead.next(),controls.failure.then(error=>{throw error;})]):ahead.next());}
     catch(error){if(controls?.isHeld()){capabilities?.check();return await controls.heldResult();}throw error;}if(next.done)break;const m=next.value;
     capabilities?.check(); // A latched capability/hook failure stops observation, checkpointing and output before this frame is used.
     if(m?.type==='system'&&m.subtype==='mirror_error')throw fault('SESSION_PERSISTENCE_FAILED');
@@ -108,7 +124,9 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     if(m?.parent_tool_use_id)continue; // Subagent/internal content is never a display event; only policy-admitted progress summaries are.
     // A refused display publication may be a committed pause/approval hold the control reader has not yet
     // claimed: the lifecycle fences output and settles it through the checkpoint, never a generic close.
-    for(const part of [...textParts(m),...progressParts(m)]){if(controls?.isHeld())break;bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');capabilities?.check();diagnostic('stage','activity-output');try{await publish('message.delta',part);}catch(error){if(!controls?.fence())throw error;}diagnostic('stage','activity-stream');}
+    for(const part of [...textParts(m),...progressParts(m)]){if(controls?.isHeld())break;bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');capabilities?.check();
+     const text=textDelta(m)?await foldDeltas(m,part.text):part.text;if(controls?.isHeld())break;
+     diagnostic('stage','activity-output');try{await ahead.during(()=>publish('message.delta',{messageId:part.messageId,text}));}catch(error){if(!controls?.fence())throw error;}diagnostic('stage','activity-stream');}
     if(controls?.isHeld())continue;
     if(m?.type==='result'){diagnostic('stage','activity-result');if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');capabilities?.check();if(controls||skillRuntime){diagnostic('stage','activity-finalize');if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
