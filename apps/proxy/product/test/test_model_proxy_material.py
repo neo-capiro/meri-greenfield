@@ -71,7 +71,7 @@ class ModelProxyMaterialAgreement(unittest.TestCase):
 
     def test_python_refusals_are_also_material_plan_refusals(self):
         for mutate in (lambda v: v.update(enabled=False), lambda v: v.update(pricingRevision="f"*64),
-                       lambda v: v["ownerPeer"].update(max_exchange_ms=3001),
+                       lambda v: v["ownerPeer"].update(max_exchange_ms=15001),
                        lambda v: v["serviceTasks"].update(deploymentRevision="foreign"),
                        lambda v: v["ownerTls"].update(password="secret")):
             raw, files = _delivery(mutate)

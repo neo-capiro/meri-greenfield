@@ -31,6 +31,8 @@ from .request_admission import ProductReservationAdapter
 from .response_settlement import NativeSettlementTransport, SettlementContext
 from .response_settlement import _settled_outcome
 from .bearer_eni_admission import create_bearer_eni_trusted_resolver
+from .budgets import BOOTSTRAP_SECONDS
+from . import refusal_diagnostics as diagnostics
 from .upstream_callback import ProductNativeDispatchEvidence
 
 
@@ -254,7 +256,7 @@ def create_bearer_eni_product_proxy_app(*, read_direct_tls_socket,
                                         resolve_bearer_sha256, observe_task_eni,
                                         resolve_session, invoke_litellm,
                                         limits=LifetimeLimits(), body_limits=BodyLimits(),
-                                        bootstrap_seconds=5.0):
+                                        bootstrap_seconds=BOOTSTRAP_SECONDS):
     """Compose the one ingress/host path from required trusted product ports.
 
     This is import-inert. The real direct-socket callback, durable grant lookup,
@@ -263,7 +265,7 @@ def create_bearer_eni_product_proxy_app(*, read_direct_tls_socket,
     """
     if (type(bootstrap_seconds) not in (int, float)
             or not math.isfinite(bootstrap_seconds)
-            or not 0 < bootstrap_seconds <= 5):
+            or not 0 < bootstrap_seconds <= BOOTSTRAP_SECONDS):
         _deny()
     resolver = create_bearer_eni_trusted_resolver(
         read_direct_tls_socket=read_direct_tls_socket,
@@ -330,7 +332,12 @@ class _BoundedProductBootstrap:
             task.add_done_callback(finished)
 
     async def __call__(self, scope, receive, send):
+        with diagnostics.request():
+            await self._serve(scope, receive, send)
+
+    async def _serve(self, scope, receive, send):
         if type(scope) is not dict or not self.ready or self._active >= 4:
+            diagnostics.refused("bootstrap", "scope" if type(scope) is not dict else "poisoned" if not self.ready else "busy")
             await self._inner._refuse(send)
             return
         accepted_at = time.monotonic()
@@ -339,6 +346,7 @@ class _BoundedProductBootstrap:
         try:
             done, _ = await asyncio.wait({task}, timeout=self._bootstrap_seconds)
             if not done:
+                diagnostics.refused("bootstrap", "timeout", TimeoutError())
                 self._quarantine(task)
                 await self._inner._refuse(send)
                 return
@@ -346,16 +354,19 @@ class _BoundedProductBootstrap:
                 trusted = task.result()
                 if type(trusted) is not TrustedRequest:
                     _deny()
-            except Exception:
+            except Exception as error:
+                diagnostics.refused("bootstrap", "resolver", error)
                 await self._inner._refuse(send)
                 return
             if not self.ready:
+                diagnostics.refused("bootstrap", "poisoned")
                 await self._inner._refuse(send)
                 return
             # The original deadline includes admission time, never starts anew
             # after a slow durable/AWS lookup.
             deadline = min(trusted.deadline, accepted_at + 900)
             if time.monotonic() >= deadline:
+                diagnostics.refused("bootstrap", "deadline", TimeoutError())
                 await self._inner._refuse(send)
                 return
             trusted = TrustedRequest(trusted.admission, trusted.observer, deadline)

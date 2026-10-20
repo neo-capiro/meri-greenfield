@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import patch
 from apps.proxy.product.owner_startup import decode_product_placement,ProductOwnerStartup
 from apps.proxy.product.owner_channel import OwnerHostGate
+from apps.proxy.product import refusal_diagnostics as diagnostics
 from apps.proxy.product.owner_https import ProductOwnerHttpsExchange,OwnerClientTlsMaterial
 from apps.proxy.product.test.test_bearer_eni_admission import source
 from apps.proxy.product.test.test_owner_admission import Exchange
@@ -33,25 +34,49 @@ class StartupTests(unittest.TestCase):
 
 
 class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
-    async def test_real_startup_joins_placement_and_fresh_admission_without_native_import(self):
+    def _startup(self,max_exchange_ms=3000):
         issued=source()[0].issued
         # The service-pair reader is mandatory: the owner/proxy peer policy and both
         # IPv4s come from the scripted discovery of exactly one owner/proxy pair.
         pair=fixture();reader=pair.reader()
-        # The process-global owner gate is keyed by origin and task pair, so this test
+        # The process-global owner gate is keyed by origin and task pair, so each test
         # uses its own origin instead of colliding with other scripted pairs.
         host='owner-'+uuid.uuid4().hex+'.invalid';template=peer_template()
-        template.update(origin='https://'+host+':8444',server_name=host)
+        template.update(origin='https://'+host+':8444',server_name=host,max_exchange_ms=max_exchange_ms)
         policy=compile_owner_peer(template,reader.read(deadline_ms=pair.at+3000))
         context=ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         context.minimum_version=context.maximum_version=ssl.TLSVersion.TLSv1_3
         transport=ProductOwnerHttpsExchange(policy=policy,material=OwnerClientTlsMaterial(context,'3'*64),
             owner_ipv4='10.40.4.1',proxy_ipv4='10.40.4.2',expires_at_ms=pair.configuration['expiresAtMs'],
             deployment_revision='reviewed-v1',service_pair_reader=reader)
-        synthetic=Exchange(policy,issued)
-        loop=asyncio.get_running_loop();gate=OwnerHostGate()
-        startup=ProductOwnerStartup(policy=policy,exchange=transport,host_gate=gate,owner_loop=loop,
+        gate=OwnerHostGate()
+        startup=ProductOwnerStartup(policy=policy,exchange=transport,host_gate=gate,owner_loop=asyncio.get_running_loop(),
             count_client=object(),make_provider_transport=lambda:None,pricing_revision='f'*64)
+        return issued,policy,transport,gate,startup
+
+    async def test_a_slow_owner_placement_is_one_deadline_line_saying_where_the_time_went(self):
+        # Attempt 2, 20 Oct: the owner answered the placement read after the exchange budget.
+        _issued,_policy,transport,gate,startup=self._startup(max_exchange_ms=300);lines=[]
+        def late_owner(channel,path,body,cutoff):
+            time.sleep(.6)
+        diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))
+        try:
+            with patch.object(transport,'_send',side_effect=late_owner),diagnostics.request():
+                with self.assertRaises(Exception):
+                    await asyncio.to_thread(startup.resolve_bearer_sha256,'a'*64)
+        finally:
+            diagnostics.uninstall();startup.close()
+        # Three checks share the same cutoff (the exchange call, the placement read and the bearer
+        # resolution); whichever sees it first reports, once.
+        self.assertEqual(len(lines),1)
+        self.assertRegex(lines[0],r'^PRODUCT_PROXY_REFUSED gate=(exchange step=call|placement step=exchange|owner step=placement)'
+                                  r'( phase=placement)? at=placement-read code=DEADLINE\n$')
+        self.assertFalse(gate.available)
+
+    async def test_real_startup_joins_placement_and_fresh_admission_without_native_import(self):
+        issued,policy,transport,gate,startup=self._startup()
+        synthetic=Exchange(policy,issued)
+        loop=asyncio.get_running_loop()
         names=('tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence');q=issued.binding
         placement=[[q.run_id,q.attempt,q.worker_arn,q.fence,q.policy_revision],issued.grant_id,
             issued.cluster_arn,issued.task_definition_arn,issued.container_name,issued.image_digest,

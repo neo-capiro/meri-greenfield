@@ -12,6 +12,7 @@ import time
 
 from ..qualification.state.pricing import StateDenied
 from .service_entrypoint import ProductProxyService, create_product_proxy_service
+from .budgets import BOOTSTRAP_SECONDS
 
 
 def _deny():
@@ -132,7 +133,7 @@ def create_product_h11_config(service, *, server_tls_context):
 async def serve_product_proxy(*, enabled=False, server_tls_context=None,
                               direct_tls_capture=None, resolve_bearer_sha256=None,
                               ecs_client=None, ec2_client=None,
-                              resolve_session=None, bootstrap_seconds=5.0):
+                              resolve_session=None, bootstrap_seconds=BOOTSTRAP_SECONDS):
     """Explicit opt-in entry point; no import-time or default listener.
 
     Enabled startup still needs real durable/session owner callbacks, a
@@ -165,7 +166,7 @@ async def serve_product_proxy_with_owner(*, enabled=False, server_tls_context=No
         owner_policy=None, owner_tls_material=None, owner_ipv4=None, proxy_ipv4=None,
         deployment_expires_at_ms=None, deployment_revision=None, ecs_client=None, ec2_client=None,
         count_client=None, make_provider_transport=None, pricing_revision=None,
-        body_limits=None, bootstrap_seconds=5.0, service_pair_reader=None):
+        body_limits=None, bootstrap_seconds=BOOTSTRAP_SECONDS, service_pair_reader=None):
     """Actual opt-in caller for placement, fresh admission and session composition.
 
     Externally delivered reviewed TLS material/deployment pins and bounded AWS
