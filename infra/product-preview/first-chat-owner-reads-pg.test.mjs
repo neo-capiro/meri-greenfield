@@ -14,6 +14,7 @@ import {resolve} from 'node:path';
 import {ROOT,OWNER_READS_SCRIPT,PASSWORD_VARIABLES,loadPlan,passwordVariables,runPsqlScript,runStage} from './first-chat-migrate.mjs';
 import {createInitialRunBindingJournal} from '../../apps/control/conversations/initial-run-binding-journal.mjs';
 import {createPostgresConversationStore} from '../../apps/control/conversations/postgres-store.mjs';
+import {createOwnerDiagnostics,createDiagnosticPool} from '../../apps/proxy/product/owner-diagnostics.mjs';
 
 const adminUrl=process.env.MERI_D2_TEST_ADMIN_URL;
 const pg=createRequire(resolve(ROOT,'apps/runtime/package.json'))('pg');
@@ -42,11 +43,13 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
  await runStage({stage:'meri',plan:loadPlan(),variables:passwordVariables(env),connect});
 
  const owner=recordingPool({...base,user:'meri_model_budget_owner',password:env.MERI_D2_MODEL_OWNER_PASSWORD,database:'capiro'});
+ // The owner process wraps its pool exactly like this (owner-entrypoint.mjs): the line that would have named the live cause.
+ const lines=[],pool=createDiagnosticPool(owner,createOwnerDiagnostics({write:line=>lines.push(line)}));
  const check=()=>{};
  const binding={tenantId:randomUUID(),actorId:randomUUID(),conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),
   workerId:randomUUID(),writerFence:1};
  const principal={tenantId:binding.tenantId,actorId:binding.actorId},selectedClientId=randomUUID();
- const journal=createInitialRunBindingJournal({pool:owner,now:Date.now}),store=createPostgresConversationStore({pool:owner,now:Date.now});
+ const journal=createInitialRunBindingJournal({pool,now:Date.now}),store=createPostgresConversationStore({pool,now:Date.now});
  const attempt=async call=>{const before=owner.denied.length;let error;try{await call();}catch(caught){error=caught;}return {error,denied:owner.denied.slice(before)};};
  try{
   // phase_meri_grants alone: the owner's placement/currentness reads are refused exactly where live refused them.
@@ -56,6 +59,8 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
   r=await attempt(()=>store.nextRuns.current(binding,check));
   assert.ok(r.error);
   assert.deepEqual(r.denied,['SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3']);
+  assert.deepEqual(lines,['PRODUCT_OWNER_DB_REFUSED sqlstate=42501 relation=meri_conversations.initial_run_bindings\n',
+   'PRODUCT_OWNER_DB_REFUSED sqlstate=42501 relation=meri_conversations.next_runs\n']);
   // The rest of the owner's conversation reads were already granted (live passed them before the refusal).
   for(const call of [()=>store.readOptional(binding,{limit:1},check),()=>store.allocations.read({binding,allocationKey:'a'.repeat(64)},check)])
    assert.deepEqual((await attempt(call)).denied,[]);
@@ -63,11 +68,12 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
   const phase=()=>runPsqlScript({text:readFileSync(resolve(ROOT,OWNER_READS_SCRIPT),'utf8'),variables:{phase_owner_conversation_reads:'1'},connect});
   await phase();await phase(); // GRANT is idempotent; a repeated run changes nothing.
 
+  lines.length=0;
   r=await attempt(()=>journal.readConversation({principal,conversationId:binding.conversationId,selectedClientId},check));
   assert.equal(r.error,undefined);assert.deepEqual(r.denied,[]);
   // No reservation exists: the journal's own refusal, never a privilege refusal.
   r=await attempt(()=>store.nextRuns.current(binding,check));
-  assert.match(String(r.error?.code??r.error?.message),/NEXT_RUN_NOT_LATEST/u);assert.deepEqual(r.denied,[]);
+  assert.match(String(r.error?.code??r.error?.message),/NEXT_RUN_NOT_LATEST/u);assert.deepEqual(r.denied,[]);assert.deepEqual(lines,[]);
   // The owner may lock a binding row but holds no write on either table (the trigger rejects any binding UPDATE).
   const client=await owner.connect();
   try{
