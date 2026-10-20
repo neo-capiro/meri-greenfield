@@ -22,13 +22,16 @@ export function createNextRunOwner({store,retirement,revocation,versions,now=Dat
   * retried once the source settles (completion cleanup still retiring the original, or a pending reconciliation). An abort stays an abort. */
  async function explicitSettlement(latest,signal,check){try{return await settlement(latest,signal,check);}catch(error){if(signal?.aborted)throw error;throw Object.assign(new Error('NEXT_RUN_SOURCE_UNSETTLED',{cause:error}),{code:'NEXT_RUN_SOURCE_UNSETTLED'});}}
  /** Selection under the conversation lock; a pending reservation is returned unchanged, a live run is bound as is, a terminal run yields its
-  * reserved successor only after its original is physically retired and its grants revoked (a nonterminal crashed run is first settled by the run reconciler). */
- async function select({principal,conversationId,signal,expectedSourceRunId},{explicit=false}={}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);if(expectedSourceRunId!==undefined)uuid(expectedSourceRunId);const check=checking(signal);
+  * reserved successor only after its original is physically retired and its grants revoked (a nonterminal crashed run is first settled by the run reconciler).
+  * A session that names its exact `runId` never reserves: it binds that terminal latest run read-only (its next turn is reserved only by an
+  * explicit turn, which retains the request identity), and any other terminal run is not current. Hints constrain; they never create. */
+ async function select({principal,conversationId,signal,expectedSourceRunId,runId},{explicit=false}={}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);if(expectedSourceRunId!==undefined)uuid(expectedSourceRunId);if(runId!==undefined)uuid(runId);const check=checking(signal);
   const {runs,reservations}=await journal.listRuns({tenantId:p.tenantId,conversationId},check);if(!runs.length)fail('NEXT_RUN_NO_CONVERSATION');
   const latest=runs.at(-1);if(latest.binding.actorId!==p.actorId)fail('NEXT_RUN_OWNER_REFUSED');
   if(expectedSourceRunId!==undefined&&latest.binding.runId!==expectedSourceRunId)fail('NEXT_RUN_NOT_LATEST');
   const pending=reservations.find(r=>r.state==='RESERVED'&&r.source.runId===latest.binding.runId);if(pending)return {binding:pending.target,source:latest.binding,reserved:true,replayed:true};
   if(!terminal(latest.state))return {binding:latest.binding,reserved:false};
+  if(runId!==undefined){if(latest.binding.runId!==runId)fail('NEXT_RUN_NOT_LATEST');return {binding:latest.binding,reserved:false};}
   const facts=await (explicit?explicitSettlement:settlement)(latest,signal,check);
   const target={tenantId:p.tenantId,actorId:p.actorId,conversationId,runId:newId(),attemptId:newId(),workerId:newId(),writerFence:latest.binding.writerFence+1};
   const r=await journal.reserve({source:latest.binding,target,facts,scopes:latest.scopes,versions,policyRevision:latest.policyRevision,reservedAt:new Date(now()).toISOString()},check);
