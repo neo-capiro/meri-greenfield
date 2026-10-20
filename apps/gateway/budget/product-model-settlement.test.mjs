@@ -91,3 +91,13 @@ test('lost COMMIT acknowledgement is reconciled read-only and exact repeat charg
  assert.equal(f.commands.slice(before).some(x=>x.sql.startsWith('UPDATE')),false);
  assert.equal((await owner.settle({requestId:'request_A'})).state,'SETTLED');assert.equal(f.state().budget.consumed_micro_usd,'20');
 });
+test('billed input below the CountTokens basis settles without quarantine; above it quarantines',async()=>{
+ // Bedrock counted 465 and billed 448 for the same native bytes (2026-10-20).
+ const below=fixture();Object.assign(below.state().request,{input_tokens:3,hold_micro_usd:'37'});below.setCompletion({...below.completion(),usage:{inputTokens:2,outputTokens:1}});
+ assert.deepEqual(await createProductModelSettlement(below.config).settle({requestId:'request_A'}),
+  {requestId:'request_A',state:'SETTLED',actualMicroUSD:'24',quarantined:false});
+ assert.equal(below.state().budget.quarantined,false);
+ const above=fixture();above.setCompletion({...above.completion(),usage:{inputTokens:2,outputTokens:1}});
+ const result=await createProductModelSettlement(above.config).settle({requestId:'request_A'});
+ assert.equal(result.quarantined,true);assert.equal(above.state().budget.quarantined,true);
+});

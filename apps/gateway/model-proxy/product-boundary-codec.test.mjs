@@ -68,10 +68,15 @@ test('Python UsageResult frame becomes sorted JS settlement claim',()=>{
   input_tokens:12,output_tokens:7,reason:'COMPLETE_NATIVE_MESSAGE',origin:'native-usage-data'});
 });
 
-test('settlement decoder refuses incomplete, changed count, duplicate tools and extra fields',()=>{
+test('billed input below the CountTokens basis decodes as the billed value',()=>{
+ const value=settlement();value[2][3]=11;
+ assert.equal(decodeSettlementFrame(wire(value)).usageResult.input_tokens,11);
+});
+
+test('settlement decoder refuses incomplete, billed above count, duplicate tools and extra fields',()=>{
  const invalid=[];
  let value=settlement();value[2][0]='UNKNOWN';invalid.push(value);
- value=settlement();value[2][3]=11;invalid.push(value);
+ value=settlement();value[2][3]=13;invalid.push(value);
  value=settlement();value[2][1][6]=['local_echo','local_echo'];invalid.push(value);
  value=settlement();value[2][1][6]=['tool_B','local_echo'];invalid.push(value);
  value=settlement();value[2].push('extra');invalid.push(value);

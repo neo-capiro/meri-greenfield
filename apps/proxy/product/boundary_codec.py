@@ -163,7 +163,9 @@ def encode_settlement(request_id, result):
                    for name in binding.allowed_tool_names)
     counted = _integer(binding.counted_input_tokens, 1, ENVELOPE_MAX_INPUT_TOKENS)
     maximum = _integer(binding.max_output_tokens, 1, ENVELOPE_MAX_OUTPUT_TOKENS)
-    if _integer(result.input_tokens, 1, ENVELOPE_MAX_INPUT_TOKENS) != counted:
+    # Billed input may be below the CountTokens basis of the hold, never above it.
+    billed = _integer(result.input_tokens, 1, ENVELOPE_MAX_INPUT_TOKENS)
+    if billed > counted:
         _deny()
     output = _integer(result.output_tokens, 0, maximum)
     frame = ["meri.proxy.settlement/1", request_id,
@@ -174,7 +176,7 @@ def encode_settlement(request_id, result):
                _text(binding.pricing_revision, 64, pattern=_HASH),
                counted, maximum, names],
               _text(result.evidence_sha256, 64, pattern=_HASH),
-              counted, output, result.reason, "native-usage-data"]]
+              billed, output, result.reason, "native-usage-data"]]
     return _wire(frame)
 
 

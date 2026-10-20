@@ -67,3 +67,13 @@ test('read-only outcome is restricted to the constructor-captured slot',async()=
  await assert.rejects(bridge.readOutcome('request_A'),/BUDGET_STATE_UNAVAILABLE/);
  assert.equal(sql,1);assert.equal(captures,0);
 });
+
+test('billed input below the CountTokens basis settles; above it refuses before SQL',async()=>{
+ for(const [billed,expected,sqlCalls] of [[11,/BUDGET_STATE_UNAVAILABLE/,1],[13,/PRODUCT_SETTLEMENT_BRIDGE_REFUSED/,0]]){
+  const {config,claim,observed}=fixture();let sql=0;
+  const usage={...claim,input_tokens:billed};observed.usageResult=structuredClone(usage);observed.completion.usage.inputTokens=billed;
+  const bridge=createProductProxySettlementBridge({...config,pool:{connect(){sql++;throw Error('synthetic unavailable SQL');}},captureAuthenticatedComplete:async()=>observed});
+  await assert.rejects(bridge.settleComplete('request_A',usage),expected);
+  assert.equal(sql,sqlCalls);
+ }
+});

@@ -103,7 +103,8 @@ export function createProductModelSettlement(configuration){
     const remaining=(await client.query(`SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM ${t.budget_liabilities} WHERE state='UNKNOWN' AND NOT (kind='model' AND slot=$1)`,[id])).rows;
     const runRemaining=(await client.query(`SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END),0) AS total FROM ${t.budget_liabilities} WHERE run_id=$1 AND NOT (kind='model' AND slot=$2)`,[selected.binding.runId,id])).rows;
     if(remaining.length!==1||runRemaining.length!==1)refuse('PRODUCT_MODEL_ACCOUNTING_REFUSED');
-    const inconsistent=observed.usage.inputTokens!==integer(row.input_tokens)||observed.usage.outputTokens>integer(row.max_output_tokens);
+    // row.input_tokens is the CountTokens basis of the hold; billed usage may be below it (465 counted, 448 billed).
+    const inconsistent=observed.usage.inputTokens>integer(row.input_tokens)||observed.usage.outputTokens>integer(row.max_output_tokens);
     const occurrence=await readOccurrenceCost({client,tables:t,allocation:a,parseAllocation:allocation,exclude:{kind:'model',slot:id}});
     const quarantine=inconsistent||actual>money(row.hold_micro_usd)||money(budget.consumed_micro_usd)+money(remaining[0].held)+actual>money(budget.cap_micro_usd)||money(runRemaining[0].total)+actual>money(a.budgets.maxCostMicroUSD)||
      occurrence!==null&&occurrence.totalMicroUSD+actual>occurrence.maxCostMicroUSD;

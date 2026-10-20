@@ -77,4 +77,12 @@ test('mismatched slot, extra tuple member, duplicate header and incomplete respo
  const forgedUsage=usage();forgedUsage[4]=17;
  assert.throws(()=>decodeSettlementFrame(['meri.proxy.settlement/1',id,forgedUsage]),
   /PRODUCT_OWNER_WIRE_REFUSED/);
+ const overCount=usage();overCount[3]=13;
+ assert.throws(()=>decodeSettlementFrame(['meri.proxy.settlement/1',id,overCount]),
+  /PRODUCT_OWNER_WIRE_REFUSED/);
+});
+
+test('billed input below the CountTokens basis is the settled usage',()=>{
+ const billed=usage();billed[3]=11;
+ assert.equal(decodeSettlementFrame(['meri.proxy.settlement/1',id,billed]).usageResult.input_tokens,11);
 });

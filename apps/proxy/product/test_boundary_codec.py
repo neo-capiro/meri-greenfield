@@ -82,12 +82,17 @@ class CodecTests(unittest.TestCase):
         base = usage()
         for candidate in (UsageResult("UNKNOWN", base.binding, base.evidence_sha256),
                           UsageResult("COMPLETE", base.binding, base.evidence_sha256,
-                                      11, 7, "COMPLETE_NATIVE_MESSAGE"),
+                                      13, 7, "COMPLETE_NATIVE_MESSAGE"),
                           {"status": "COMPLETE"}):
             with self.assertRaisesRegex(ValueError, "^PRODUCT_PROXY_CODEC_REFUSED$"):
                 encode_settlement("request_A", candidate)
         with self.assertRaisesRegex(ValueError, "^PRODUCT_PROXY_CODEC_REFUSED$"):
             encode_settlement("another_request", base)
+
+    def test_settlement_carries_billed_input_below_the_count(self):
+        base = usage()
+        billed = UsageResult("COMPLETE", base.binding, base.evidence_sha256, 11, 7, "COMPLETE_NATIVE_MESSAGE")
+        self.assertEqual(json.loads(encode_settlement("request_A", billed))[2][3:5], [11, 7])
 
 
 if __name__ == "__main__":

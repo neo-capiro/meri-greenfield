@@ -42,9 +42,9 @@ class UsageTests(unittest.TestCase):
     def test_usage_features_wrong_model_and_counts_fail_closed(self):
         for key,value in (("model","foreign"),("stop_reason",None),("stop_sequence","unrequested"),("thinking",{})):
             m=message();m[key]=value;self.assertEqual(parse(raw(m)).status,"UNKNOWN")
-        for field,value in (("input_tokens",True),("input_tokens",8),("output_tokens",17),("output_tokens",-1),("cache_read_input_tokens",1),("cache_creation_input_tokens",False),("service_tier","standard")):
+        for field,value in (("input_tokens",True),("input_tokens",8),("output_tokens",17),("output_tokens",-1),("cache_read_input_tokens",1),("cache_creation_input_tokens",False),("service_tier","priority")):
             m=message();m["usage"][field]=value;self.assertEqual(parse(raw(m)).status,"UNKNOWN")
-        m=message();m["usage"].update(cache_read_input_tokens=0,cache_creation_input_tokens=0)
+        m=message();m["usage"].update(cache_read_input_tokens=0,cache_creation_input_tokens=0,service_tier="standard")
         self.assertEqual(parse(raw(m)).status,"COMPLETE")
 
     def test_complete_tool_and_unsupported_content(self):
@@ -178,5 +178,51 @@ class UsageTests(unittest.TestCase):
         self.assertEqual(stream(ev).status,"UNKNOWN")
         ev=events();ev[-1]["context_management"]={"applied_edits":[]}
         self.assertEqual(stream(ev).status,"UNKNOWN")
+
+
+def bedrock_events(billed=5):
+    """The real Bedrock Sonnet 4.6 stream shape of 2026-10-20 (tokens scaled to BIND): billed input below the count."""
+    usage={"input_tokens":billed,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,
+           "cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1,"service_tier":"standard"}
+    start={"model":"claude-sonnet-4-6","id":"msg_bdrk_synthetic","type":"message","role":"assistant","content":[],"container":None,
+           "stop_reason":None,"stop_sequence":None,"stop_details":None,"usage":usage,"context_management":None}
+    return [{"type":"message_start","message":start},{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}},
+            {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"hello"}},{"type":"content_block_stop","index":0},
+            {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":None,"stop_details":None,"container":None},
+             "usage":{"input_tokens":billed,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":3},
+             "context_management":{"applied_edits":[]}},
+            {"type":"message_stop","amazon-bedrock-invocationMetrics":{"inputTokenCount":billed,"outputTokenCount":3,
+             "invocationLatency":685,"firstByteLatency":673}}]
+
+
+class BedrockSonnet46StreamTests(unittest.TestCase):
+    def test_real_stream_shape_settles_on_billed_input_up_to_the_count(self):
+        for billed in (5,7):
+            result=stream(bedrock_events(billed))
+            self.assertEqual((result.status,result.input_tokens,result.output_tokens),("COMPLETE",billed,3))
+
+    def test_billed_above_the_count_or_disagreeing_usage_stays_unknown(self):
+        self.assertEqual(stream(bedrock_events(8)).status,"UNKNOWN")
+        ev=bedrock_events();ev[4]["usage"]["input_tokens"]=6
+        self.assertEqual(stream(ev).status,"UNKNOWN")
+        ev=bedrock_events();ev[-1]["amazon-bedrock-invocationMetrics"]["inputTokenCount"]=7
+        self.assertEqual(stream(ev).status,"UNKNOWN")
+
+    def test_unqualified_extension_values_stay_unknown(self):
+        for alter in (lambda ev:ev[0]["message"].update(container={"id":"c"}),
+                      lambda ev:ev[0]["message"].update(stop_details={"type":"refusal"}),
+                      lambda ev:ev[0]["message"]["usage"]["cache_creation"].update(ephemeral_5m_input_tokens=1),
+                      lambda ev:ev[0]["message"]["usage"]["cache_creation"].update(other=0),
+                      lambda ev:ev[0]["message"]["usage"].update(service_tier="batch"),
+                      lambda ev:ev[4]["delta"].update(container={"id":"c"}),
+                      lambda ev:ev[4]["delta"].update(stop_details="refusal"),
+                      lambda ev:ev[4]["delta"].update(other=None)):
+            ev=bedrock_events();alter(ev);self.assertEqual(stream(ev).status,"UNKNOWN")
+        ev=bedrock_events();ev[4]["delta"]["stop_details"]={"type":"end_turn"}
+        self.assertEqual(stream(ev).status,"COMPLETE")
+
+    def test_complete_message_reports_billed_input(self):
+        m=message();m["usage"]["input_tokens"]=4;m.update(container=None,stop_details=None)
+        self.assertEqual((parse(raw(m)).status,parse(raw(m)).input_tokens),("COMPLETE",4))
 
 if __name__=="__main__":unittest.main()
