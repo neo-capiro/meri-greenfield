@@ -34,8 +34,8 @@ node --test --test-concurrency=1 --test-name-pattern="^(control task ports|start
 
 The product runner's `fetchImpl` for native prepare/start is `apps/runtime/pinned-native-transport.mjs`. Its rejections
 were code-less, so every control/ALB status, socket, TLS or truncation failure at `origin=native-start` printed `UNKNOWN`.
-Each rejection now carries exactly one constant from `PINNED_NATIVE_FAILURE_CODES`, allowlisted by the canonical
-diagnostic owner. The message stays `PINNED_NATIVE_REFUSED`. No status text, body, system code, peer detail, header,
+Each rejection now carries exactly one constant from `PINNED_NATIVE_FAILURE_CODES`. The canonical diagnostic owner
+defines that list and spreads it into its allowlist, and the transport imports it. The message stays `PINNED_NATIVE_REFUSED`. No status text, body, system code, peer detail, header,
 prompt or credential is echoed, and request bytes, TLS options, ceilings and denial conditions are unchanged.
 
 | Class | Meaning |
