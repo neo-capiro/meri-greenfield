@@ -160,7 +160,51 @@ This is a proposed order derived from the dependencies above. It is not a schedu
 - **Core.** Task definition rev 1 (`6542f5b0`) is still ACTIVE. Rev 2 is the current target. Rolling back across the 11 Prisma migrations requires their own down-path review. [U] None was found.
 - **Frontend.** Rev 17 is INACTIVE. The rev 18 image digest remains in ECR.
 
-### S6. Not verified here
+### S6. Cleanup candidates (reported only; nothing was deleted)
+
+On 20 October Neo asked that the codebases stay clean, with no dead code left behind. Everything below is a **candidate for its owner** to close, delete or move. This pass closed and deleted nothing.
+
+Terms used in the tables:
+- **Contained**: the head commit is an ancestor of the named target.
+- **Patch-equivalent**: `git cherry` reports every commit as already applied.
+
+The raw lists are outside the repository, in `C:\dev\fable\adj-reports\adj-g-evidence\`.
+
+**Branches and PRs**
+
+| Repo | Candidate | Basis [R] | Owner and caution |
+| --- | --- | --- | --- |
+| meri-greenfield | **256 of 498 remote branches** are fully contained in deployed `2b4421f6` | `merge-base --is-ancestor` run per branch | Branch owners. Keep `main`. Keep frozen PR175 (`dot/first-chat-source-repairs-20261018`) while it is cited as evidence. |
+| meri-greenfield | **142 of 175 open draft PRs** have heads contained in `2b4421f6` | Same check on PR heads (`meri-open-prs-ancestry.txt`) | Close after the owner confirms. PR145 and PR175 are in this set; PR175 stays open while frozen. |
+| meri-greenfield | PR96, PR122, PR126, PR130, PR159, PR166, PR168, PR169, PR170, PR181, PR183, PR184, PR185 | Patch-equivalent inside `2b4421f6` | Close as received |
+| meri-greenfield | PR3, PR8, PR23, PR25, PR27, PR29, PR34, PR36, PR82, PR83, PR87, PR88, PR95 (all from 11–16 October) | Neither contained nor patch-equivalent. Each has 1–50 unique commits. | Owner review: superseded or still needed. Not judged here. |
+| meri-greenfield | PR188 (`98d3c96a`) | `34851020` plus one evidence-docs commit. Its only role is as the base of PR189/PR190. | Close or retarget once PR189/PR190 are received onto the deployed line |
+| meri-greenfield | branch `dot/meri-release-manifest-20261018` (`a0e4e8f7`) | Its only file was received byte-for-byte on `fable/adj-g-capability-ledger-20261020` and extended there | dot. Delete once that branch is accepted, so only one manifest exists. |
+| capiro-frontend | **90 open PRs**: #9–#100 (except #20, #92, #97) plus #103 | Heads contained in main `5cd5f20d` | dot. The only open PRs with work not in main are PR102, PR111 and PR112. |
+| capiro-backend | 87 of 100 open PRs, including PR83, PR84, PR86, PR96, PR97 | Heads contained in candidate `50475125` | dot. Close **only after** `50475125`, or a successor, lands on `backend-import`. It is not merged and has HIGH findings. Not contained: PR2, PR3, PR19, PR25, PR28, PR29, PR30, PR32, PR34, PR36, PR39, PR99, PR100. |
+
+**meri-greenfield docs and files**
+
+| Path | Why it is a candidate |
+| --- | --- |
+| `docs/integration/DEPLOYMENT-PACKET-20261018.md`, `MIGRATION-PACKET-20261018.md` | They contain old Meri, Core and frontend placeholders. The release E packet (`handoff/runner-diagnostic-release-20261020`), the migrate `PLAN` and D016 #1 supersede them. Mark them historical, or fold them into the shipping packet under package F. |
+| `docs/integration/PLAN-RECONCILIATION-20261018.md` §1 | Still says N17 and frontend rev 17 are live. S1 above is current. |
+| `docs/shipping/20261017/*` | Historical 17 October backlog and change set. A pointer has been added. |
+| `docs/coordination/ledgers/scope-ledger.json`, `TOOL-COVERAGE-96.csv` | Stale totals (P2; see capability ledger §0). They remain the scope input; current status lives in capability ledger §R2. |
+| `docs/coordination/proposals/memory-proposal-continuation-20261018.sql` | Unnumbered predecessor of conversations `0019`. The memory handoff says it must not be applied. It is a dead path that someone could apply by mistake. |
+| `infra/product-preview/first-chat/{b6,b7,n6–n21}-build-receipt.json` (17 files) | Historical build receipts sitting in the deployable `infra` tree. Candidate to move under `docs/integration/evidence/`, after confirming no module reads them. |
+| `apps/control/conversations/migrations/0018_*.sql`, `0019_*.sql` | Not dead, but **orphaned from the migrate `PLAN`**. Either add them to the plan or hold them explicitly. |
+
+**Other repositories**
+
+| Repo / path | Why it is a candidate |
+| --- | --- |
+| capiro-frontend `vendor/capiro-meri-contracts-0.1.{1,2,3,6,7,8,9}.tgz` | Not referenced outside `docs/` at main. The only versions in use are 0.1.10 (web, meri-client) and 0.1.0 (`packages/qualification-transport`). |
+| capiro-frontend `apps/web/deployment/portfolio/service.yml`: labels `CAPIRO_PREVIEW_MERI_RUNTIME_SOURCE`, `…_IMAGE_DIGEST`, `CAPIRO_PREVIEW_FIRST_CHAT_BACKEND_SOURCE` | The live task shows stale values for them (`176a8811`, `5534edfe`, `c64f0005`). Either derive them from the release manifest or remove them. |
+| capiro-frontend docs that cite the 3.0 Figma file `Zc2dEN5aLU47dVdsewDmiJ`: `apps/web/PORTFOLIO.md:91`, `docs/SHARED-FRONTEND-PREVIEW-GUIDELINES-2026-10-11.md:163`, `docs/modules-settings/HANDOVER.md:72`, `IMPLEMENTATION.md:7`, `docs/portfolio-31/*` | Mark them historical so nobody implements from 3.0. |
+| capiro-frontend `features/meri/screens/{approvals,memory,routines,browser}` and the run-history screens | Currently fixture-only. **Not dead code**: they are reserved for capability families in the capability ledger. Wire each when its family is enabled, or remove it if the family is dropped. |
+
+### S7. Not verified here
 
 - The Meri migration ledger rows and the Core migration table (no database access).
 - Image scan results other than the recorded ones (`DescribeImages` returned no scan summary for these digests).
