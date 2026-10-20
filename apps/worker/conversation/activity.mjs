@@ -2,7 +2,7 @@
 import {query as sdkQuery} from '@anthropic-ai/claude-agent-sdk';
 import {randomUUID,createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {RUNNER_LOAD_MAX_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_LOAD_STAGE_MAX_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {validateShape,canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertSkillManifest} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
@@ -32,7 +32,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
  if(!Number.isSafeInteger(cleanupAttemptMs)||cleanupAttemptMs<1||cleanupAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
- if(!Number.isSafeInteger(loadMaxMs)||loadMaxMs<1||loadMaxMs>RUNNER_LOAD_MAX_MS||loadExpiresAtMs!==undefined&&!Number.isSafeInteger(loadExpiresAtMs))throw fault('ACTIVITY_CONFIGURATION');
+ if(!Number.isSafeInteger(loadMaxMs)||loadMaxMs<1||loadMaxMs>RUNNER_LOAD_STAGE_MAX_MS||loadExpiresAtMs!==undefined&&!Number.isSafeInteger(loadExpiresAtMs))throw fault('ACTIVITY_CONFIGURATION');
  if(!Number.isSafeInteger(runtimeMaxMs)||runtimeMaxMs<1||runtimeMaxMs>30000||runtimeExpiresAtMs!==undefined&&!Number.isSafeInteger(runtimeExpiresAtMs)||setupBudget!==undefined&&(!Number.isSafeInteger(setupBudget.maxMs)||setupBudget.maxMs<1||setupBudget.maxMs>30000||!Number.isSafeInteger(setupBudget.expiresAtMs)))throw fault('ACTIVITY_CONFIGURATION');
  if(executionDeadlineMs!==undefined&&(!Number.isSafeInteger(executionDeadlineMs)||executionDeadlineMs<1))throw fault('ACTIVITY_CONFIGURATION');
  if(modelDeadlineMs!==undefined&&(!Number.isSafeInteger(modelDeadlineMs)||modelDeadlineMs<1||executionDeadlineMs!==undefined&&modelDeadlineMs>=executionDeadlineMs))throw fault('ACTIVITY_CONFIGURATION');
