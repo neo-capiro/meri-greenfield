@@ -1,5 +1,7 @@
 # Meri final scope ledger
 
+**Capability status (20 Oct):** this 15 October scope ledger stays the scope input. Current implemented, integrated, enabled and runtime-verified status lives only in [CAPABILITY-LEDGER-20261018.md §R2](../../integration/CAPABILITY-LEDGER-20261018.md#r2-canonical-capability-ledger-revision-2-11).
+
 Stored-source continuation after reviewed PR99: ten more selected reads now have
 fixed native adapters and current grant/context/credential wiring across six
 families (PE references, federal/state legislation, stored intelligence, regulatory

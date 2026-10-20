@@ -1,5 +1,7 @@
 # Meri runtime integration ledger (meri-greenfield)
 
+**Capability status (20 Oct, Revision 2 §11):** the canonical seven-column capability ledger is [CAPABILITY-LEDGER-20261018.md §R2](CAPABILITY-LEDGER-20261018.md#r2-canonical-capability-ledger-revision-2-11). Release pins, migrations and order are in the [manifest successor](SOURCE-RELEASE-MANIFEST-20261018.md). This file keeps startup wiring, gates and defects; its family table is not a separate capability registry.
+
 Branch `fable/meri-integration-20261018`, draft PR to `main`. Owner: Fable (implementation and deployment). Review: dot, read-only, via PR #121.
 Started 2026-10-18 03:52 UTC on Neo's instruction to stop the preview first-chat loop and consolidate everything already built (PR #121 comment 6245271467).
 

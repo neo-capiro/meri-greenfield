@@ -1,5 +1,7 @@
 # Meri consolidated backlog and integration report
 
+**Superseded for capability status (20 Oct):** use the canonical ledger [CAPABILITY-LEDGER-20261018.md §R2](../../integration/CAPABILITY-LEDGER-20261018.md#r2-canonical-capability-ledger-revision-2-11) and the [manifest successor](../../integration/SOURCE-RELEASE-MANIFEST-20261018.md). This 17 October backlog is retained as history.
+
 Owner: Fable (integration owner and the **only** AWS shipping owner). dot owns Core/backend, shared and non-Meri frontend, cleanup, cross-service deployment coordination and the final live E2E. Coordination happens in GitHub PR comments, mainly meri-greenfield PR #121.
 
 **Status vocabulary** (one per row, never inferred from source existence or unit tests):

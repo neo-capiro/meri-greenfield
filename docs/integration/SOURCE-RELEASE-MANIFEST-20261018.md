@@ -1,4 +1,174 @@
-# Integrated source release manifest — 18 October 2026
+# Integrated source release manifest — 18 October 2026, with 20 October successor
+
+## 20 October 2026 successor: three-repository release manifest (adjustment plan Revision 2)
+
+Status: **inventory and dependency record only.** It does not authorize a merge, image build, migration, deployment, rollback, or chat. Revision 2 §4 makes this parallel work: it is not a prerequisite for the first-chat repair. The 18 October body below this section is kept unchanged as history. Where the two disagree, this section is newer. The capability view of the same release is in [CAPABILITY-LEDGER-20261018.md §R2](CAPABILITY-LEDGER-20261018.md#r2-canonical-capability-ledger-revision-2-11).
+
+Prepared by Fable session adj-g-ledger on branch `fable/adj-g-capability-ledger-20261020`, from `2b4421f6`. Readbacks were taken 2026-10-20 between 03:30 and 04:10 UTC. They used `gh`, Git objects, and read-only ECS/ECR/CloudWatch describe calls on account `967807252336`, `us-east-1`. Nothing was mutated, no secret value was read, and no database was queried.
+
+Labels used below:
+- **[R]** recorded now: read from GitHub, Git or AWS during this session.
+- **[E]** recorded earlier: taken from a cited release record and not re-read here.
+- **[I]** inference.
+- **[U]** unknown.
+
+The focused deployed baseline for the failing path is in `C:\dev\fable\adj-reports\adj-a-baseline-REPORT.md` (package A). This section does not repeat its executable and configuration detail.
+
+### S1. Deployed now
+
+| Repo | Service / task definition | Image digest | Source | Evidence |
+| --- | --- | --- | --- | --- |
+| meri-greenfield | control:35, temporal-worker:34, temporal-issuer:34, owner:33, runner:20 (registered 2026-10-20 01:10–01:29Z; each service 1/1, rollout COMPLETED) | `qualification-worker@sha256:f5a7abc9…5ff7` | `2b4421f612f9fbb728d6da52927aac228d712d40` (head of `fix/runner-transport-diagnostic-20261019`) | [R] ECS DescribeServices/DescribeTaskDefinition. [R] ECR tag `product-2b4421f6…-8779200a…`, pushed 2026-10-20T00:09Z. [E] scan COMPLETE with zero HIGH/CRITICAL, per `handoff/runner-diagnostic-release-20261020@c8fcf965` README. |
+| meri-greenfield | proxy:33 | `sha256:734a20ec…3551` (material-init uses `f5a7abc9…`) | `34851020aa0d73fead4db59ba6e26a098e2d0313`, an ancestor of `2b4421f6` | [R] ECR tag `proxy-product-34851020…`, pushed 2026-10-19T01:01Z |
+| meri-greenfield | Temporal frontend, history, matching, internal-frontend, internal-worker (each :1, since 2026-10-17) | `sha256:f73ce01e…` | `989a4227…` | [E] public-candidate `deployment-inputs.candidate.json`. [R] services still at :1. |
+| capiro-backend (Core) | capiro-preview-first-chat-core:2 (registered 2026-10-17 18:27Z) | `capiro/preview-core@sha256:46acfc07…` | `ade7fc883b7459cbc50e6f71d40ce3644bace5ea` | [R] task definition `RELEASE_SHA` and ECR tag |
+| capiro-frontend | capiro-portfolio-preview:18 (cluster capiro-portfolio-preview, registered 2026-10-18 15:37Z) | `capiro/portfolio-preview@sha256:0401f61d…` | `67fdf56b8f63f25c95dd2c0a2ff0139dcfe3cfb8` | [R] ECR tag on the serving digest. The task environment labels `CAPIRO_PREVIEW_MERI_RUNTIME_SOURCE=176a8811…` and `CAPIRO_PREVIEW_FIRST_CHAT_BACKEND_SOURCE=c64f0005…` are stale and do not describe what is deployed. |
+| capiro-dev (not this product path) | capiro-dev-meriv2-orchestrator:175 | — | — | Old Meri v2. Out of scope; listed so it is not mistaken for this runtime. |
+
+#### Deployed capability inputs
+
+- **[E] Meri.** In the deployed public `deployment-inputs.candidate.json` (handoff `c8fcf965`) there is **no `features` key**. Every optional family in `render-material.mjs` `FEATURE_KEYS` therefore renders disabled: `sourceEnabled`, `userPreferences`, `tenantSettings`, `intents`, `routines`, `retention`, `artifacts`, `downloadLinks`, `capabilityPlatform`, `reads`, `memory`.
+  - `policy.json`: `maxTurns 3`, $2 per run, model profile `us.anthropic.claude-sonnet-4-6`.
+  - The allocation rubric is `first-chat-no-tools`.
+  - The release README says: "Optional feature, capability-profile and active-read selectors stay absent."
+- **[R] Frontend rev 18.** Flags set:
+  - `MERI_CONVERSATION_WORKFLOW_ENABLED=true`
+  - `CAPIRO_PREVIEW_MERI_CONVERSATION_ROUTES_ENABLED=true`
+  - `MERI_FIRST_CHAT_BOOTSTRAP_ENABLED=true`
+  - `MERI_DOCUMENT_WORKFLOW_ENABLED=false`
+  - `MERI_ACTION_WORKFLOW_ENABLED=false`
+
+  Not set: `MERI_MEMORY_OWNER_REVIEW_ENABLED`, `MERI_TASK_COMMAND_WORKFLOW_ENABLED`, `MERI_USER_PREFERENCES_ENABLED`. Every frontend flag check is `=== "true"`, so an unset flag is off. The checks are in `apps/web/src/shared/meri-actions/connection-config.ts`, `apps/web/src/app/settings/[section]/page.tsx:16` and `shared/meri-user-preferences/config.ts:14` at main.
+- **[R] Core rev 2.** Background and delivery flags are false: `MERI_JOB_SWEEPER_ENABLED`, `ENGAGEMENT_CALLBACKS_ENABLED`, `CLIENT_PROFILE_FILL_*`, `NEWSLETTER_*`, `RESEARCH_PORTFOLIO_WATCH_DELIVERY_ENABLED`, `ENGAGEMENT_RECALL_WEBHOOK_ENABLED`. None of the rev 3 settings appear in the task environment: `MEMORY_GOVERNANCE_*`, `MERI_EXECUTION_MAX_*`, `PREVIEW_NATIVE_GETS_ENABLED`.
+
+#### Contract package
+
+- **[R]** `@capiro/meri-contracts` is `0.1.10` at:
+  - deployed `2b4421f6`
+  - `32d06db2`
+  - PR189, PR190, PR191, PR192 and PR193 heads
+  - PR188 `98d3c96a`
+- **[R]** The frontend vendors the same tarball blob `abba937b…` (`vendor/capiro-meri-contracts-0.1.10.tgz`) at `67fdf56b`, `5cd5f20d`, `e6180219` and PR102 `3a23d8b1`. `packages/meri-client` declares `0.1.10`.
+- **[R]** PR121 `c7af4ed6` is still on `0.1.7`. Its old base makes it a coordination thread, not a release input.
+- **[R]** PR191 and PR192 add the subpath exports `intents-application` (`urn:meri:intents-application:0.1.0`) and `document-access-application` (`urn:meri:document-access-application:0.1.0`) without changing the package version.
+- **[R]** Frontend PR102 consumes the intents-application contract.
+- **Open decision (dot as freeze reviewer, recorded in the PR191/192 docs):** bump `0.1.10`, or vendor the subpath contracts into `packages/meri-client/vendor/`. PR102 already vendors the PR191 dist directly. The decision settles whether that vendoring or a version bump is canonical before PR102 is received.
+
+### S2. Historical: kept as evidence, not deployed
+
+| Repo | Item | Status |
+| --- | --- | --- |
+| Meri | Release D: source `5b395d4c` (PR193 head), image `sha256:ea0e9ad4…` | [R] control:34, worker:33, issuer:33, owner:32, proxy:32, runner:19, registered 2026-10-19 22:06–22:28Z, now **INACTIVE**. No completed chat is recorded. |
+| Meri | Release C: source `a16cc40d`, image `sha256:9bff84ba…` | [R] control:33, worker:32, issuer:32, runner:18, registered 2026-10-19 ~18:00Z, now **INACTIVE** |
+| Meri | Failed E attempt on `2b4421f6`, runner task `283f12c53eba4dc89f4d54767d0fa832` | [E] First failure at 2026-10-20 01:41:02.451Z: `RUNNER_FIRST_FAILURE origin=native-start code=UNKNOWN`. Terminal at 01:53:29.764Z. Runner exit 3 at 01:54:07.526Z. Provider contact and settlement are **unproven** (START-HERE §3; `meri-native-start-unknown-20261020/DIAGNOSIS.md`). |
+| Meri | PR175 `993f52a9` (frozen) | [R] Ancestor of `2b4421f6`. Never edit. |
+| Meri | N17 `4172e474`, N20/N21 `176a8811` | [E] Older first-chat cohort and build pins (`PLAN-RECONCILIATION-20261018.md` §1) |
+| Core | rev 1, `6542f5b0`, image `722a4832…` | [R] Task definition still ACTIVE. Previous Core. |
+| Frontend | rev 17, `4ea553fe`, image `98d2b5d3…` | [R] INACTIVE task definition |
+
+### S3. Proposed and open, by repository, with ancestry against what is deployed
+
+#### meri-greenfield
+
+| Item | Head | Relation to deployed `2b4421f6` | Release status |
+| --- | --- | --- | --- |
+| Diagnostic candidate (package B) | `32d06db2`, `fable/pinned-transport-failure-codes-20261020` | Direct child; one new commit | Proposed. Revision 2 B and C successors are owned by the adj-b and adj-c sessions and had not been pushed when this was read. The integration owner must re-pin this row to the combined B+C candidate. |
+| PR193 | `5b395d4c` | **Contained** | Deployed as part of `2b4421f6` |
+| PR145, PR179, PR180, PR186, PR187, dot/meri-release-combined `7252f483`, PR171–PR177, document-executor lane `d2f05436` | — | **Contained** (ancestors) | Deployed as part of `2b4421f6` |
+| PR181 `139e0a14`, PR183 `b51687d4`, PR184 `6be3e4ab`, PR185 `67a7bfbc` | — | **Patch-equivalent commits contained.** `git cherry` shows all of their commits as `-` against `2b4421f6`. | Their source is in the deployed image. The PR branches themselves stay open drafts. |
+| PR178 | `ba701529` (config adoption) | Not contained (22 commits) | Proposed. Not in any release candidate. |
+| PR188 | `98d3c96a` | `34851020` plus one docs commit | Base for PR189 and PR190 |
+| PR189 read tools | `e82d199f` | Not contained. Sibling of PR190 off PR188. | Proposed. Recorded 2,511/2,511 local over 93 files and a 290/290 correction run. Adds `reads.retainedAuthority` config. No migration. |
+| PR190 conversational writes | `29379ab1` | Not contained | Proposed. Recorded 1,067/1,069 local (2 opt-in LibreOffice skips). Changes the governed SDK profile, so it needs an in-image re-measure. No migration. |
+| PR191 B1 intents contract | `53bbe3da` | On PR190 | Proposed. Contract only: 82/82. |
+| PR192 B2 document access contract | `8eab537a` | On PR190 | Proposed. Contract only: 151/151. |
+| PR121 | `c7af4ed6` | Unrelated old base | Coordination thread only |
+
+**[I] Overlaps the integration owner must check.**
+- PR189 and PR190 both edit `apps/runtime/cli.mjs`. PR190 records no textual conflict.
+- PR190 edits `apps/runtime/control.mjs` (`bindDocumentsSessions(..., retention?.gate)`). The deployed PR193 changes the same file to inject the gate into the worker. No three-way check of that pair is recorded.
+- PR191 and PR192 add lines to the same `packages/contracts/package.json` exports and scripts.
+
+#### capiro-frontend
+
+| Item | Head | Relation | Release status |
+| --- | --- | --- | --- |
+| Serving | `67fdf56b` | Ancestor of main | Deployed (rev 18) |
+| main | `5cd5f20d` (PR110 merge, 2026-10-19 19:48Z) | 50 commits after `67fdf56b`. Received PR97, PR101, PR104–PR110. The heads of the still-open PR98 (`5c784e3e`), PR99, PR100 and PR103 (`442f188c`) are also ancestors of main. Meri feature code differs from serving in only 18 files (+204/−91). | Not built from main itself. |
+| PR111 held candidate | `e6180219` | Main plus 2 commits that move the Core roster source pin from `b97a3286` to Core `50475125` | [R] ECR tag on `portfolio-preview@sha256:32941b84…`. [E] PR112 receipt: build `capiro-portfolio-preview-build:78d8240f…` SUCCEEDED (ended 20:41:11Z); scan COMPLETE with 0 findings. **Held**: it needs a qualified Core image, `PREVIEW_NATIVE_GETS_ENABLED` and `CORE_ROSTER_PREVIEW_ENABLED` proven, host routing, native-session checks and template admission. With the roster unset, `clients.list` would stop working. Not deployed. |
+| PR112 | `cfabbc30` | On PR111 | Build-receipt documentation |
+| PR102 FE intents approvals | `3a23d8b1` | One commit on `5c784e3e` (main has 25 more commits past that base) | Proposed. It vendors Meri PR191's `intents-application` 0.1.0 dist under `packages/meri-client/vendor/intents-application/0.1.0/`, adds flag `MERI_INTENT_APPROVALS_WORKFLOW_ENABLED` (not on main), and records tsc clean, vitest 2,939 tests, node 79/82 (3 failures described as pre-existing). No Playwright and no live run. |
+| PR93–PR96, PR99, PR100, PR103 | — | Older receiving lines. Content from PR93–PR96, PR99, PR100 and PR103 is in main. | Open drafts. Closing them is up to the frontend owner (dot). |
+
+#### capiro-backend (Core)
+
+| Item | Head | Relation | Release status |
+| --- | --- | --- | --- |
+| Serving | `ade7fc88` | — | Deployed (rev 2) |
+| Candidate PR98 | `50475125` | `ade7fc88` plus 286 commits. Contains PR83 `9ab565f4`, PR84 `5c105cfe`, PR86 `b40971b1`, PR96 `784b1c3a` and PR97 `b841544a`. | [R] Image `preview-core@sha256:ace1acca…`, pushed 2026-10-19 20:31Z. [E] Scan: **7 HIGH, 2 MEDIUM, 2 LOW** (PR99 `BUILD-PLAN.md`). The single build authorization is consumed. **Not releasable.** |
+| PR99 | `d443e227` | Docs on PR98 | Core roster release plan, build receipt and route plan |
+| PR100 | `05d8eb03` | Buildspec and docs on PR98 | Held amd64 Alpine alternative for the OS findings, and real-PostgreSQL qualification gates. Not built. |
+
+### S4. Migrations: applied and pending
+
+Meri preview database (shared `capiro` Aurora). The canonical ordered plan is `infra/product-preview/first-chat-migrate.mjs` `PLAN` at `2b4421f6`. Every entry is SHA-256 pinned, and the plan refuses a changed applied file.
+
+| Stage | Entries | Status |
+| --- | --- | --- |
+| `meri` | conversations 0001–0011, 0013, 0015, 0016, 0017; budget 0001–0002; issuer 0001; seed; `phase:meri_grants` | **Applied** [E]: `RUNTIME-INTEGRATION-LEDGER.md` §5 G5 and `D2-DATABASE.md`. Conversations `0012` and `0014` stay **held** (reserved, central allocation ledger). |
+| `temporal` | `phase:temporal_grants` | **Applied** [E] (same records) |
+| `integration` | settings 0001; commands 0001; approval-metadata 0001; intents 0001; schedules 0001–0004; task-lookup 0001; objective-source 0001–0003; artifacts 0001–0003; memory 0001; read-delegation 0001–0002; `phase:integration_grants` | **Approved, not evidenced as applied.** D016 #1 approved it, with a cluster snapshot `meri-integration-pre-<UTC>` taken first. I found no recorded application. [R] The latest `meri-product-preview-d2-migrate` task definition (:6, registered 2026-10-18 07:08Z) has `MERI_D2_STAGE=meri` and the older N21 image `5534edfe…`. The newest retained migrator log streams (2026-10-18 00:28–07:10Z) contain launch-measurement and diagnostic output, not an `integration` stage completion. [U] The ledger rows themselves (`meri_migration_ledger.applied`) were not read: that needs database access. **Owner: dot**, as shipper, through a read-only ledger SELECT before any release that enables these families. |
+| Not in the plan | conversations `0018_memory_candidate_targets.sql` and `0019_memory_proposal_contexts.sql` | [R] Both are in source at `2b4421f6`. Both are absent from `PLAN`. They were allocated in `docs/coordination/tasks/CODEX-PACKAGE4-CENTRAL-MIGRATION-ALLOCATIONS-20261016.md`; 0019 was verified only in a disposable PostgreSQL. They need a plan entry, a stage, grants review and approval before the memory-continuation code that reads them can be enabled. |
+| Qualification only | proxy qualification state 0001–0003; qualification-sdk-fixture 0001 | Not product migrations. Not part of release. |
+
+PR189, PR190, PR191, PR192 and 32d06db2 add **no** migration [R]. PR190 names a possible additive Core migration for exact-version attachment registration as **unallocated** [E].
+
+Core (Prisma, `apps/api/prisma/migrations`). [R] `50475125` adds 11 migrations over the deployed `ade7fc88`:
+- `20281015040000_engagement_plans`
+- `20281016010000_client_objective_workload_delegations`
+- `20281017010000_client_objective_strategy_intake`
+- `20281018010000_clio_meri_approval_decisions`
+- `20281018020000_clio_meri_memory_submissions`
+- `20281018030000_clio_meri_routine_authority`
+- `20281018040000_clio_meri_execution_authority`
+- `20281018050000_clio_meri_routine_unattended`
+- `20281018060000_meri_read_delegation`
+- `20281018080000_clio_memory_scope_unique`
+- `20281018090000_clio_meri_memory_submissions_content_free`
+
+The held `20281018100000_meri_memory_eligibility_helper` is absent. [E] Stage 1 (`090000`) is payload-preserving, and its archive hash `f9d2f4a1…` was checked. Inclusion in source authorizes no migration. A role/target preflight is required. Stage 2 is held. [U] Whether the preview Core database already contains any of the 11 was not read. Owner: dot (Core).
+
+Frontend: no database migrations.
+
+### S5. Dependency order for a coordinated release and rollback
+
+This is a proposed order derived from the dependencies above. It is not a schedule or an authorization. Each step requires its own reviewed packet from the shipper.
+
+1. **First-chat candidate (Meri only).** Combine `2b4421f6`, B (`32d06db2` or its successor) and the C startup correction. Then: one image, a measured runtime-values file, and a render with no `features` (unchanged scope). Core rev 2 and frontend rev 18 stay as they are. D3 acceptance runs on this cohort. Nothing in steps 2–6 is a prerequisite.
+2. **Core security-clean candidate.** Resolve the 7 HIGH findings, through PR100's Alpine alternative or a successor, on the `50475125` line. Before any rev 3 activation, run the preflight and approval for the 11 Prisma migrations, then set the rev 3 environment (`MEMORY_GOVERNANCE_*` for the preview tenant only, `MERI_EXECUTION_MAX_*`, the internal service secret reference).
+3. **Frontend held candidate.** Release `e6180219` only together with a deployed Core that satisfies its roster pin. Before release, refresh its stale Meri runtime labels so they match the S1 Meri pins.
+4. **Meri migration readback, then integration stage.** dot reads `meri_migration_ledger.applied`. If the `integration` stage is not applied, take the D016 #1 snapshot, apply the stage, and read the ledger back. Plan entries for 0018/0019 come first if memory continuation is in the same release.
+5. **Meri capability receipt.** Receive PR189 and PR190 onto the step 1 line (three-way check `cli.mjs` and `control.mjs`). Then receive PR191/192 after the contract version/vendor decision. Re-measure the governed SDK profile in-image, then render `features` family by family. Revision 2 §11 integration order: one read/evidence flow, then memory, then one approval-controlled write, then one generated/downloaded artifact.
+6. **Frontend capability UI.** PR102 and the document/memory UI flags, released after the Meri families they call are enabled.
+
+**Rollback targets.**
+
+- **Meri.** The previous task definitions (release D and earlier) are **INACTIVE**.
+  - [E] Earlier preview rollouts (Fable operational notes, outside this repository) recorded that the issuer admits only pinned revisions and that a rollback consumes the pinned revisions. Rolling back therefore means re-rendering and re-registering with the prior image digest and material labels. It is not a service-revision flip.
+  - The last deployed state before E is release D (`5b395d4c`, `ea0e9ad4…`). It also never completed a chat, so rolling back restores a known non-working chat state.
+  - Database rollback for applied conversation migrations is not supported in place; see `D2-DATABASE.md`. The `integration` stage has a logical drop-schema rollback (D016 #1).
+- **Core.** Task definition rev 1 (`6542f5b0`) is still ACTIVE. Rev 2 is the current target. Rolling back across the 11 Prisma migrations requires their own down-path review. [U] None was found.
+- **Frontend.** Rev 17 is INACTIVE. The rev 18 image digest remains in ECR.
+
+### S6. Not verified here
+
+- The Meri migration ledger rows and the Core migration table (no database access).
+- Image scan results other than the recorded ones (`DescribeImages` returned no scan summary for these digests).
+- Whether dot's live view has moved since 04:10Z. The shipper must refresh S1 before acting.
+
+---
+
+## 18 October 2026 manifest (historical, unchanged)
 
 Status: **source candidate, held for successor review and release qualification**. This
 manifest records immutable repository commits and their dependencies. It is not an
