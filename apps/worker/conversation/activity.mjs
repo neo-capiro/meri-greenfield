@@ -106,7 +106,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // Every display publication is a full authorization round at control (seconds), so the deltas the SDK produced meanwhile join the
    // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order; nothing is
    // read past a result, and a message read early is used only while a read could still be made (deadline, lifecycle failure).
-   const reader=modelLife??life,ahead=createSdkReadAhead(()=>reader.run(()=>iterator.next()),{last:m=>m?.type==='result',check:()=>{reader.check();controls?.check();}});
+   const readLife=modelLife??life,ahead=createSdkReadAhead(()=>readLife.run(()=>iterator.next()),{last:m=>m?.type==='result',check:()=>{readLife.check();controls?.check();}});
    async function foldDeltas(first,text){
     for(let m=ahead.peek();textDelta(m)&&m.event.index===first.event.index&&Buffer.byteLength(text)<DELTA_FOLD_MAX_BYTES;m=ahead.peek()){
      ahead.take();capabilities?.check();await controls?.observe(m);if(controls?.isHeld())break;
