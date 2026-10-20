@@ -7,6 +7,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {compileNativeLaunch,matchNativeLaunch} from './launch-configuration.mjs';import {matchesCapability} from './task-verifier.mjs';
 import {remoteOriginal,exactOriginal,descriptor,preparationAck,transportLimits,remoteFault,decodeBytes,digest} from './remote-task-boundary.mjs';
 import {captureSdkConfiguration,installSdkConfiguration,verifySdkConfiguration} from './sdk-config-transfer.mjs';
+import {RUNNER_NATIVE_STARTUP_RECEIVER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex'),frame=b=>({bytes:b.length,sha256:sha(b),base64:b.toString('base64')}),get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createRemoteNativeTaskApplication(configuration){
  const c=own(configuration,['original','controlCapabilitySha256','taskCapabilitySha256'],['task','launchConfiguration','preparationAuthorizer','nativeFactory','descriptorPolicy','taskArn','capture','enabled','now','limits','configurationSha256','parkedWorkspace']);
@@ -76,11 +77,14 @@ export function createRemoteNativeTaskApplication(configuration){
  }
  const fields={prepare:['descriptor'],start:['descriptorSha256'],stdin:['sequence','frame','end'],stdout:['sequence'],stop:[],inspect:[],retire:[],readiness:[],launch:['plan'],configuration:['tree'],registration:['request'],'workspace-restore':['request'],'workspace-verify':['request'],capture:['request'],'binding-read':[]};
  const worker=new Set(['prepare','start','stdin','stdout','stop']);
+ // Startup exchanges finish inside the control router's startup allowance, so a slow nested authority call
+ // is refused here first and the router still receives an answer instead of cutting the connection.
+ const startupMs=Math.min(limits.maxRequestMs,RUNNER_NATIVE_STARTUP_RECEIVER_MS);
  return Object.freeze({async handle(request){let life;try{
   const info=Object.fromEntries(Object.entries(get).map(([k,g])=>[k,g.call(request)])),url=new URL(info.url);if(!url.pathname.startsWith('/v1/native-task/'))return null;const name=url.pathname.slice('/v1/native-task/'.length);if(!Object.hasOwn(fields,name)||url.search||info.method!=='POST')throw remoteFault();if(!enabled)return reply({error:{code:'REMOTE_TASK_UNAVAILABLE'}},503);
   const header=k=>Headers.prototype.get.call(info.headers,k),auth=header('authorization');if(!auth?.startsWith('Bearer '))throw remoteFault();const token=auth.slice(7),control=matchesCapability(token,c.controlCapabilitySha256),taskRole=matchesCapability(token,c.taskCapabilitySha256);if(!control&&!(worker.has(name)&&taskRole)||worker.has(name)&&name!=='stop'&&!taskRole)throw remoteFault();
   if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||header('content-encoding'))throw remoteFault();const length=header('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw remoteFault();
-  life=createOperationLifetime({now,signal:info.signal,deadlineMs:Math.min(now()+limits.maxRequestMs,['stop','inspect','retire'].includes(name)?Infinity:original.expiresAtMs),errorFactory:remoteFault});
+  life=createOperationLifetime({now,signal:info.signal,deadlineMs:Math.min(now()+(name==='prepare'||name==='start'?startupMs:limits.maxRequestMs),['stop','inspect','retire'].includes(name)?Infinity:original.expiresAtMs),errorFactory:remoteFault});
   const body=own(await jsonBody({body:info.body,length:length===null?null:Number(length)},name==='configuration'||name==='workspace-restore'?50331648:2097152,life,life.check),['original',...fields[name]]);exactOriginal(body.original,original);const {original:ignored,...input}=body;const result=await life.run(signal=>operation(name,input,signal));life.check();return reply(result);
  }catch{return reply({error:{code:'REMOTE_TASK_REFUSED'}},403);}finally{life?.close();}},close:stop,status:()=>({state,inputSequence,outputSequence,queuedBytes:queued})});
 }

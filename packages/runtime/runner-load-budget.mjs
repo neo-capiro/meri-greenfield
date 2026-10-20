@@ -15,6 +15,12 @@ export const RUNNER_STARTUP_CATCH_CLEANUP_MS=3000;
 // 131 seconds settling a Browser host whose outcome remains uncertain.
 export const RUNNER_STARTUP_CLEANUP_MS=7*3000+131000;
 export const RUNNER_STARTUP_MARGIN_MS=2000;
+// A native prepare/start exchange crosses runner client -> control task router
+// -> runner receiver, and the receiver's preparation authority calls return to
+// control inside it. Each enclosing hop keeps one control margin above the hop it
+// encloses, so the innermost owner refuses first and the outer ones still answer.
+export const RUNNER_NATIVE_STARTUP_ROUTER_MS=RUNNER_LOAD_MAX_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const RUNNER_NATIVE_STARTUP_RECEIVER_MS=RUNNER_NATIVE_STARTUP_ROUTER_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
 
 export const RUNNER_STARTUP_STAGE_ORDER=Object.freeze([
  'bootstrap','admittedBefore','admittedAfter','load','runtime','local',

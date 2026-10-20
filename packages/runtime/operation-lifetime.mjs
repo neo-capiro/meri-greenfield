@@ -49,5 +49,5 @@ export function createOperationLifetime({ deadlineMs, now, signal, schedule = se
     return { unsettledOperations: pending.size, physicalStopProven: false };
   }
   return Object.freeze({ run, check, close, limitDeadline, signal: controller.signal,
-    pendingOperations: () => pending.size });
+    pendingOperations: () => pending.size, deadline: () => deadlineMs });
 }
