@@ -13,16 +13,18 @@ const runner={version:1,profile:'isolated-preview',sourceEnabled:false,
  limits:{startupMs:3000,shutdownMs:1000,requestMs:1000,requestBytes:131072},binding,versions,
  workspace:'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid'};
 
-test('runtime preparation retains its stage and allowed code through generic activity failure, before any claim or Query',async()=>{
+test('runtime preparation retains its stage and allowed code through generic activity failure, after its claim and before any Query',async()=>{
  const lines=[],operations=[],saved={run:{binding,versions,scopes,state:'queued',createdAt:'2026-10-18T00:00:00.000Z',policyRevision:'policy1'}};let queries=0;
   const execute=assembleConversationRunner({configuration:runner,native:{async call(operation,input){
    operations.push(operation);if(operation==='runner/load')return saved;
+   // The activity claims the run (starting) before runtime preparation; later publications are refused.
+   if(operation==='runner/publish'&&input.event.data?.state==='starting')return {};
    if(operation==='runner/runtime')throw Object.assign(Error('synthetic secret: bearer-private-canary'),{code:'NATIVE_UNAVAILABLE'});
    throw Error('unexpected publication');
   }},query(){queries++;throw Error('No SDK Query allowed');}});
   await assert.rejects(withRunnerDiagnostics(()=>execute({binding}),{write:line=>lines.push(line)}),{code:'EXECUTION_FAILED'});
   assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime stage=runtime-admission code=NATIVE_UNAVAILABLE class=ERROR exit=none signal=none\n','RUNNER_RUNTIME_FAILED stage=runtime-admission code=NATIVE_UNAVAILABLE\n']);
-  assert.equal(queries,0);assert.equal(saved.run.state,'queued');assert.deepEqual(operations,['runner/load','runner/runtime']);
+  assert.equal(queries,0);assert.equal(saved.run.state,'queued');assert.deepEqual(operations.slice(0,3),['runner/load','runner/publish','runner/runtime']);
 });
 
 test('first failure survives cleanup replacement without emitting error text, dynamic codes, getters or stacks',async()=>{
