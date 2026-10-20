@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {createConversationService} from '../service.mjs';
 import {binding,versions} from './application-fixture.mjs';
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
+import {createConversationLifecycleService} from '../lifecycle/service.mjs';
 import {createMemoryRetentionJournal} from '../../retention/memory-journal.mjs';
 import {createServingFence} from '../../retention/serving-fence.mjs';
 import {createRetentionReadGate} from '../../retention/suppression.mjs';
@@ -32,4 +33,15 @@ test('optional serving methods are typed and unknown retention keys remain close
  for(const withRelease of [undefined,null,false,1,'callable',{}])assert.throws(()=>createConversationService({...options,retention:{assertServable:unused,withRelease}}),{code:'CONTROL_CONFIGURATION'});
  assert.throws(()=>createConversationService({...options,retention:{assertServable:unused,withRelease:unused,foreign:unused}}),{message:'INVALID_COMMAND'});
  assert.throws(()=>createConversationService({...options,retention:{assertServable:null,withRelease:unused}}),{code:'CONTROL_CONFIGURATION'});
+});
+
+test('the lifecycle service is composed with an explicit retention decision: a gate, or null when none is configured',async()=>{
+ const f=await lifecycleFixture();
+ try{
+  const {retention,...base}={service:f.service,store:f.store,dispatcher:f.dispatcher,sessions:f.sessions,checkpoints:{async read(){}},reconcileOriginal:async()=>({state:'reconciled'}),retention:null};
+  assert.doesNotThrow(()=>createConversationLifecycleService({...base,retention}));
+  assert.doesNotThrow(()=>createConversationLifecycleService({...base,retention:{assertServable:async()=>{}}}));
+  for(const missing of [{},{retention:undefined},{retention:{}},{retention:{assertServable:true}}])
+   assert.throws(()=>createConversationLifecycleService({...base,...missing}),{code:'LIFECYCLE_CONFIGURATION'});
+ }finally{f.close();}
 });
