@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,writeFile,rm,readFile} from 'node:fs/promises';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {withRunnerDiagnostics,atRunnerStage,markRunnerStage,captureRunnerFailure,firstFailureMessageHash} from '../runner-runtime-diagnostics.mjs';
@@ -131,10 +131,11 @@ test('detail never runs getters, never prints message text and never reads frame
  assert.equal(detail(await firstRaw(Object.assign(Error('x'),{stack:'no frames here'})))[2],'none');
 });
 
-test('the committed message-hash table resolves runner hashes with the runtime hash function',async()=>{
- const table=JSON.parse(await readFile(new URL('../../../docs/integration/runner-first-failure-message-hashes.json',import.meta.url),'utf8'));
- assert.equal(table.sdkVersion,'0.3.295');
- for(const row of table.messages)assert.equal(row.msg,firstFailureMessageHash(row.message),row.message);
- const lookup=new Map(table.messages.map(row=>[row.msg,row.message]));
- for(const message of ['LIFECYCLE_EXECUTION_UNKNOWN','DEADLINE','NATIVE_UNAVAILABLE','REMOTE_TASK_REFUSED','SDK_SESSION_REFUSED'])assert.equal(lookup.get(firstFailureMessageHash(message)),message);
+test('SDK-tagged failures and SyntaxErrors report msg=templated, never a hash of their interpolated text',async()=>{
+ const exited=Object.assign(Error('Claude Code process exited with code 1. stderr: private-canary'),{errorClass:'process_exited_nonzero',exitCode:1});
+ assert.equal(detail(await firstRaw(exited))[1],'templated');
+ let parsed;try{JSON.parse('{"private-canary"');}catch(error){parsed=error;}
+ assert.ok(parsed instanceof SyntaxError);assert.equal(detail(await firstRaw(parsed))[1],'templated');
+ // Constant messages still hash, so the generator (scripts/diagnostics) can resolve them.
+ assert.equal(detail(await firstRaw(Error('LIFECYCLE_EXECUTION_UNKNOWN')))[1],firstFailureMessageHash('LIFECYCLE_EXECUTION_UNKNOWN'));
 });
