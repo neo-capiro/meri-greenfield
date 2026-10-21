@@ -4,13 +4,9 @@
 // Only the authority owners are modelled: each sleeps for the serial Core/DB/ECS work it performs in the deployed source,
 // using the live Core target average (≈0.28 s per call, 2026-10-20 01:38–01:41). Needs --experimental-test-module-mocks on
 // Windows (the CA file uid/mode check is POSIX-only); on Linux the CA file is real and nothing is mocked.
-import test, {mock} from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
-import * as fsp from 'node:fs/promises';
-import {request as httpsRequest} from 'node:https';
-import {execFileSync} from 'node:child_process';
-import {createHash} from 'node:crypto';
-import {mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync, chmodSync} from 'node:fs';
+import {mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PassThrough} from 'node:stream';
@@ -18,7 +14,6 @@ import {EventEmitter} from 'node:events';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {continuationFixture} from '../../../worker/conversation/continuation/test/fixtures.mjs';
 import {runnerStartupBudget} from '../../../../packages/runtime/runner-load-budget.mjs';
-import {listenRuntime} from '../../http-server.mjs';
 import {createNativeCapabilityClient} from '../../native-client.mjs';
 import {withRunnerDiagnostics} from '../../runner-runtime-diagnostics.mjs';
 import {createTaskRouterApplication} from '../task-router.mjs';
@@ -27,8 +22,8 @@ import {createRemoteNativeTaskApplication} from '../remote-task-http.mjs';
 import {createRemoteSdkProcessClient} from '../remote-task-client.mjs';
 import {createNativePreparationApplication, createNativePreparationClient} from '../preparation-http.mjs';
 import {withoutDetail} from '../../test/runner-diagnostic-lines.mjs';
+import {sha, ca, caFile, createPinnedNativeFetch, listen, tlsConnector} from './router-tls-fixture.mjs';
 
-const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const taskToken = 'synthetic-task-only', controlToken = 'synthetic-control-only';
 const taskArn = 'arn:aws:ecs:us-east-1:967807252336:task/synthetic/' + 'a'.repeat(32);
 const preparationId = '11111111-1111-4111-8111-000000000009';
@@ -55,29 +50,6 @@ const sleep = (ms, signal) => new Promise((resolve, reject) => {
   const abort = () => { clearTimeout(timer); reject(signal.reason); };
   signal?.addEventListener('abort', abort, {once: true});
 });
-
-const certificates = mkdtempSync(join(tmpdir(), 'meri-native-start-budget-'));
-const openssl = process.platform === 'win32' ? 'C:\\Program Files\\Git\\mingw64\\bin\\openssl.exe' : 'openssl';
-const run = args => execFileSync(openssl, args, {cwd: certificates, stdio: 'ignore'});
-run(['req', '-x509', '-newkey', 'ec', '-pkeyopt', 'ec_paramgen_curve:prime256v1', '-nodes', '-keyout', 'ca.key', '-out', 'ca.pem', '-days', '2',
-  '-subj', '/CN=synthetic-control-ca', '-addext', 'basicConstraints=critical,CA:TRUE', '-addext', 'keyUsage=critical,keyCertSign,cRLSign']);
-run(['req', '-newkey', 'ec', '-pkeyopt', 'ec_paramgen_curve:prime256v1', '-nodes', '-keyout', 'srv.key', '-out', 'srv.csr', '-subj', '/CN=localhost']);
-writeFileSync(join(certificates, 'srv.ext'), 'subjectAltName=DNS:localhost\nextendedKeyUsage=serverAuth\nbasicConstraints=CA:FALSE\n');
-run(['x509', '-req', '-in', 'srv.csr', '-CA', 'ca.pem', '-CAkey', 'ca.key', '-CAcreateserial', '-out', 'srv.pem', '-days', '2', '-extfile', 'srv.ext']);
-const ca = readFileSync(join(certificates, 'ca.pem'));
-const serverTls = {key: readFileSync(join(certificates, 'srv.key')), cert: readFileSync(join(certificates, 'srv.pem')), minVersion: 'TLSv1.3'};
-let caFile = join(certificates, 'ca.pem');
-if (process.platform === 'win32') {
-  caFile = '/synthetic/control-ca.pem';
-  const handle = {stat: async () => ({isFile: () => true, size: ca.length, uid: 0, mode: 0o100600}), readFile: async () => ca, close: async () => {}};
-  mock.module('node:fs/promises', {namedExports: {...fsp, open: async (path, ...rest) => path === caFile ? handle : fsp.open(path, ...rest)}});
-  process.getuid ??= () => 0;
-} else chmodSync(caFile, 0o600);
-const {createPinnedNativeFetch} = await import('../../pinned-native-transport.mjs');
-test.after(() => rmSync(certificates, {recursive: true, force: true}));
-
-const listen = (application, http = {hostname: 'localhost', port: 0, frontendOrigin: 'https://synthetic.invalid'}) =>
-  listenRuntime({configuration: {http, limits: {requestMs: 25000, shutdownMs: 2000}}, application, readiness: async () => ({}), tls: serverTls});
 
 /** One composed control + runner pair. `slow` overrides a modelled preparation owner duration (ms); `routerSlow(operation, n)`
  * adds ms to the router's n-th authority join for that operation. */
@@ -121,22 +93,9 @@ async function compose(t, {routerOptions, slow = {}, routerSlow = () => 0} = {})
   const preparation = createNativePreparationApplication({owner, taskCapabilitySha256: sha(taskToken), enabled: true, maxRequestMs: 25000,
     report: line => preparationLog.push(JSON.parse(line))});
 
-  // Control → runner forwarding over a real local TLS connection; close() destroys it like the production connector.
+  // Control → runner forwarding over a real local TLS connection (router-tls-fixture.mjs), with the modelled TLS setup time.
   let runnerOrigin;
-  const connector = {async connect({signal}) {
-    await sleep(TLS_MS, signal);
-    let request;
-    return {close: () => request?.destroy(), send: ({operation, body, authorization, signal: sendSignal}) => new Promise((resolve, reject) => {
-      request = httpsRequest(runnerOrigin + '/v1/native-task/' + operation, {method: 'POST', ca, agent: false,
-        headers: {authorization, 'content-type': 'application/json', 'content-length': String(body.length)}}, response => {
-        const chunks = [];
-        response.on('data', chunk => chunks.push(chunk)).on('end', () => resolve({status: response.statusCode, body: Buffer.concat(chunks)})).on('error', reject);
-      });
-      request.on('error', reject);
-      sendSignal?.addEventListener('abort', () => { request.destroy(); reject(Error('aborted')); }, {once: true});
-      request.end(body);
-    })};
-  }};
+  const connector = tlsConnector(() => runnerOrigin, {beforeConnect: ({signal}) => sleep(TLS_MS, signal)});
   const joins = {};
   const routerAuthority = {async verify({original: value, operation, signal}) {
     joins[operation] = (joins[operation] ?? 0) + 1;

@@ -15,13 +15,16 @@ const pin=candidate=>hash(Object.fromEntries(Object.entries(candidate).filter(([
 // authority calls back through control. It receives the startup allowance instead of the per-exchange one.
 const startupOperations=new Set(['prepare','start']);
 // A forwarded capture encloses the runner's whole checkpoint capture, including its session reads back through control.
+// It also encloses its own stop: the runner's capture closes the SDK query, whose process client then stops this original
+// through this router. That stop ends every other exchange of the original and refuses any later capture, never the capture
+// that caused it, which still needs its reply.
 // Stops are bounded apart from ordinary forwarding. More than one is admitted because the runner's own stop and control's final
 // stop for the same original overlap when a runner fails; admitting only one refuses control's stop and the runner then waits for it.
 const maxCleanupRequests=8;
 export function createTaskRouterApplication(configuration){
  const c=own(configuration,['authority','networkReader','connector'],['privateIngress','enabled','now','maxRequestMs','startupMaxRequestMs','maxConcurrent','maxOriginals','maxBufferedBytes','report']),enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??8000,startupMaxRequestMs=c.startupMaxRequestMs??RUNNER_NATIVE_STARTUP_ROUTER_MS,report=c.report??writeEventLine,maxConcurrent=c.maxConcurrent??64,maxOriginals=c.maxOriginals??1024,maxBufferedBytes=c.maxBufferedBytes??201326592;
  if(typeof enabled!=='boolean'||typeof now!=='function'||typeof report!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>30000||!Number.isSafeInteger(maxConcurrent)||maxConcurrent<1||maxConcurrent>256||!Number.isSafeInteger(maxOriginals)||maxOriginals<1||maxOriginals>4096||!Number.isSafeInteger(maxBufferedBytes)||maxBufferedBytes<8388608||maxBufferedBytes>268435456)throw taskRouterFault();
- const verify=storageMethod(c.authority,'verify'),observe=storageMethod(c.networkReader,'observe'),connect=storageMethod(c.connector,'connect'),assertIngress=storageMethod(c.privateIngress??createTaskRouterIngress(),'assert'),active=new Set(),cleanups=new Set(),originals=new Map();let closed=false,reservedBytes=0;
+ const verify=storageMethod(c.authority,'verify'),observe=storageMethod(c.networkReader,'observe'),connect=storageMethod(c.connector,'connect'),assertIngress=storageMethod(c.privateIngress??createTaskRouterIngress(),'assert'),active=new Set(),cleanups=new Set(),captures=new Set(),originals=new Map();let closed=false,reservedBytes=0;
  async function handle(request,marker){let life,entry,controller,connection,reservation=0,record,routedOperation,cleanupOutcome='none',outcome='refused';
   try{
    const info=Object.fromEntries(Object.entries(getters).map(([key,get])=>[key,get.call(request)])),url=new URL(info.url);
@@ -35,7 +38,7 @@ export function createTaskRouterApplication(configuration){
    // Keep one stop's bytes available even when ordinary forwarding is saturated.
    reservation=maxRequestBytes+maxResponseBytes;
    if((cleanup?cleanups.size>=maxCleanupRequests:active.size-cleanups.size>=maxConcurrent)||reservation>(cleanup?maxBufferedBytes:maxBufferedBytes-4194304)-reservedBytes){reservation=0;throw taskRouterFault();}
-   reservedBytes+=reservation;controller=new AbortController();active.add(controller);if(cleanup)cleanups.add(controller);
+   reservedBytes+=reservation;controller=new AbortController();active.add(controller);if(cleanup)cleanups.add(controller);if(operation==='capture')captures.add(controller);
    life=createOperationLifetime({now,signal:AbortSignal.any([info.signal,controller.signal]),deadlineMs:now()+(startupOperations.has(operation)?startupMaxRequestMs:operation==='capture'?TASK_ROUTER_CAPTURE_MS:maxRequestMs),errorFactory:code=>{record.fail(code);return taskRouterFault();}});
    record.phase('body');const input=taskRouterBody(await jsonBody({body:info.body,length:declared===null?null:Number(declared)},maxRequestBytes,life,life.check),operation),original=remoteOriginal(input.original);record.bind(original);
    if(!cleanup)life.limitDeadline(original.expiresAtMs);
@@ -45,10 +48,10 @@ export function createTaskRouterApplication(configuration){
    for(const [key,value]of originals)if(value.expiresAtMs<=now()&&value.requests.size===0)originals.delete(key);
    entry=originals.get(original.executionKey);
    if(!entry){if(originals.size>=maxOriginals)throw taskRouterFault();entry={expiresAtMs:original.expiresAtMs,stopping:false,requests:new Set()};originals.set(original.executionKey,entry);}
-   if(cleanup){entry.stopping=true;for(const pending of entry.requests)if(!cleanups.has(pending))pending.abort(taskRouterFault());}
+   if(cleanup){entry.stopping=true;for(const pending of entry.requests)if(!cleanups.has(pending)&&!captures.has(pending))pending.abort(taskRouterFault());}
    else if(entry.stopping||entry.requests.size>=8)throw taskRouterFault();
    entry.requests.add(controller);
-   const check=()=>{life.check();if(!cleanup&&entry.stopping)throw taskRouterFault();};
+   const check=()=>{life.check();if(!cleanup&&!captures.has(controller)&&entry.stopping)throw taskRouterFault();};
    const network=()=>life.run(signal=>observe({original,resource:first.resource,signal,check}));
    record.phase('network');const candidate=await network();check();
    // A late connector result must still be closed when cancellation won the race.
@@ -63,7 +66,7 @@ export function createTaskRouterApplication(configuration){
    // A stop is intentionally allowed to end RUNNING status. Every ordinary response needs fresh task+ENI evidence.
    if(!cleanup){life.limitDeadline(after.expiresAtMs);record.phase('network-after');const returned=await network();if(pin(returned)!==pin(candidate))throw taskRouterFault();}
    check();outcome='completed';return new Response(response.body,{status:200,headers:{'content-type':'application/json','cache-control':'no-store','x-content-type-options':'nosniff'}});
-  }catch{record?.fail('REFUSED');return reply();}finally{if(connection)try{connection.close();cleanupOutcome='closed';}catch{cleanupOutcome='close-failed';}entry?.requests.delete(controller);active.delete(controller);reservedBytes-=reservation;cleanups.delete(controller);
+  }catch{record?.fail('REFUSED');return reply();}finally{if(connection)try{connection.close();cleanupOutcome='closed';}catch{cleanupOutcome='close-failed';}entry?.requests.delete(controller);active.delete(controller);reservedBytes-=reservation;cleanups.delete(controller);captures.delete(controller);
    // Refusals are always recorded; successful startup exchanges are recorded for their elapsed time.
    if(record&&(outcome!=='completed'||startupOperations.has(routedOperation)))record.finish({outcome,remainingMs:life?life.deadline()-now():undefined,cleanup:cleanupOutcome});life?.close();}
  }
