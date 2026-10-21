@@ -1,0 +1,802 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
+  "headStartingCommit": "c44b4126490495579c0f4821a6ae00e417ab7e13",
+  "environment": {
+    "node": "24.19.0",
+    "python": "3.12.14",
+    "awsAccess": false,
+    "execution": "serial per-file baseline then head; same locked dependency versions installed on head and symlinked into disposable baseline"
+  },
+  "notes": [
+    "Focused final-base comparison; does not replace the complete earlier phase-1 comparison.",
+    "New regression test and pure budget/guard checks recorded separately.",
+    "Timeouts and failures remain visible.",
+    "The startup-proof restoration is checked separately after this comparison. Counts below are focused affected-suite evidence, not a fresh full-suite claim."
+  ],
+  "records": [
+    {
+      "side": "base",
+      "file": "apps/runtime/native-authority/test/completion-broker-poll.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/completion-broker-poll.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 57.24,
+      "counts": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/runtime/native-authority/test/capture-self-stop.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/capture-self-stop.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 17.53,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/runtime/native-authority/test/task-router.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/task-router.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 6.5,
+      "counts": {
+        "tests": 11,
+        "pass": 11,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/runtime/native-authority/test/native-start-router-budget.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/native-start-router-budget.test.mjs"
+      ],
+      "exitCode": 124,
+      "timeout": true,
+      "seconds": 60.03,
+      "counts": {},
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/runtime/test/runner-load-replay.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/test/runner-load-replay.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 7.72,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/runtime/test/conversation-survives-deploy.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/test/conversation-survives-deploy.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 6.65,
+      "counts": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/control/action-host/session/refusal-diagnostics.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/control/action-host/session/refusal-diagnostics.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 0.76,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/runtime/native-authority/test/intents-transport.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/intents-transport.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 5.67,
+      "counts": {
+        "tests": 9,
+        "pass": 9,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/runtime/telemetry/test/turn-lines.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/telemetry/test/turn-lines.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 1.39,
+      "counts": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/proxy/product/owner-native-currentness.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/owner-native-currentness.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 12.06,
+      "counts": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/proxy/product/owner-telemetry.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/owner-telemetry.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 3.56,
+      "counts": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/proxy/product/owner-entrypoint.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/owner-entrypoint.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 9.51,
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/proxy/product/product-owner-placement.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/product-owner-placement.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 20.28,
+      "counts": {
+        "tests": 24,
+        "pass": 24,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "base",
+      "file": "apps/proxy/product/service-pair-discovery.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/service-pair-discovery.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 6.67,
+      "counts": {
+        "tests": 53,
+        "pass": 53,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/native-authority/test/completion-broker-poll.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/completion-broker-poll.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 20.62,
+      "counts": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/native-authority/test/capture-self-stop.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/capture-self-stop.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 10.6,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/native-authority/test/task-router.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/task-router.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 9.34,
+      "counts": {
+        "tests": 11,
+        "pass": 11,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/native-authority/test/native-start-router-budget.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/native-start-router-budget.test.mjs"
+      ],
+      "exitCode": 124,
+      "timeout": true,
+      "seconds": 60.05,
+      "counts": {},
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/test/runner-load-replay.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/test/runner-load-replay.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 15.41,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/test/conversation-survives-deploy.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/test/conversation-survives-deploy.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 17.44,
+      "counts": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/control/action-host/session/refusal-diagnostics.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/control/action-host/session/refusal-diagnostics.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 2.28,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/native-authority/test/intents-transport.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/intents-transport.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 15.45,
+      "counts": {
+        "tests": 9,
+        "pass": 9,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/telemetry/test/turn-lines.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/telemetry/test/turn-lines.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 1.18,
+      "counts": {
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/proxy/product/owner-native-currentness.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/owner-native-currentness.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 28.83,
+      "counts": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/proxy/product/owner-telemetry.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/owner-telemetry.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 5.96,
+      "counts": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/proxy/product/owner-entrypoint.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/owner-entrypoint.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 19.84,
+      "counts": {
+        "tests": 17,
+        "pass": 17,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/proxy/product/product-owner-placement.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/product-owner-placement.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 20.06,
+      "counts": {
+        "tests": 24,
+        "pass": 24,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    },
+    {
+      "side": "head",
+      "file": "apps/proxy/product/service-pair-discovery.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/proxy/product/service-pair-discovery.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 5.48,
+      "counts": {
+        "tests": 53,
+        "pass": 53,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [],
+      "errors": []
+    }
+  ],
+  "headFixCommit": "e83c77346bbf09675459255cf9bee7ebc3e19250",
+  "routerWholeFileRerun": [
+    {
+      "side": "base",
+      "file": "apps/runtime/native-authority/test/native-start-router-budget.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/native-start-router-budget.test.mjs"
+      ],
+      "harnessTimeoutSeconds": 180,
+      "exitCode": 1,
+      "seconds": 116.14,
+      "counts": {
+        "tests": 5,
+        "pass": 4,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [
+        "reproduction: the deployed eight-second router enclosure cuts start inside a nested authority call"
+      ],
+      "errors": [
+        "|-",
+        "'ERR_ASSERTION'"
+      ]
+    },
+    {
+      "side": "head",
+      "file": "apps/runtime/native-authority/test/native-start-router-budget.test.mjs",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/native-start-router-budget.test.mjs"
+      ],
+      "harnessTimeoutSeconds": 180,
+      "exitCode": 1,
+      "seconds": 145.03,
+      "counts": {
+        "tests": 5,
+        "pass": 3,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failures": [
+        "reproduction: the deployed eight-second router enclosure cuts start inside a nested authority call",
+        "a nested authority call slower than the allowance is refused by the receiver first; the router still answers"
+      ],
+      "errors": [
+        "|-",
+        "'ERR_ASSERTION'",
+        "\"Cannot read properties of undefined (reading 'code')\"",
+        "'ERR_TEST_FAILURE'"
+      ]
+    }
+  ],
+  "pythonRegression": {
+    "modules": [
+      "apps.proxy.product.test.test_startup_config",
+      "apps.proxy.product.test.test_service_pair_discovery",
+      "apps.proxy.product.test.test_refusal_diagnostics",
+      "apps.proxy.product.test.test_telemetry_lines"
+    ],
+    "base": {
+      "tests": 31,
+      "pass": 31,
+      "fail": 0
+    },
+    "head": {
+      "tests": 31,
+      "pass": 31,
+      "fail": 0
+    }
+  },
+  "generationResume": {
+    "passed": 8,
+    "blocked": 2,
+    "blockedModules": [
+      "user-preferences",
+      "task-commands"
+    ],
+    "reason": "Offline generator toolchain missing rolldown/json-schema-to-ts/ts-algebra; historical ten-check pass remains separate."
+  },
+  "routerSelectedRerun": [
+    {
+      "side": "base",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=a nested authority call slower than the allowance",
+        "apps/runtime/native-authority/test/native-start-router-budget.test.mjs"
+      ],
+      "exitCode": 124,
+      "timeout": true,
+      "seconds": 100.05
+    },
+    {
+      "side": "head",
+      "command": [
+        "node",
+        "--experimental-test-module-mocks",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=a nested authority call slower than the allowance",
+        "apps/runtime/native-authority/test/native-start-router-budget.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeout": false,
+      "seconds": 46.92
+    }
+  ]
+}
