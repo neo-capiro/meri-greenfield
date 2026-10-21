@@ -44,6 +44,23 @@ test('turn 1 completes, turn 2 fails, a release ships: turn 3 resumes turn 1\'s 
   await resumesTurnOne(await c.runner(third, id(852)), first);
 });
 
+test('two releases, A to B to C: turn 2 resumes turn 1 under B and completes; turn 3 under C resumes turn 2\'s session', async t => {
+  const releaseB = {...versions, imageDigest: 'sha256:' + '6'.repeat(64)}, releaseC = {...versions, imageDigest: 'sha256:' + '7'.repeat(64), skillsDigest: 'e'.repeat(64)};
+  const c = await conversation(t), first = await c.firstCompleted();
+  c.deploy(releaseB);
+  const second = await c.acceptNext('A second prompt under release B'), allocation = await c.allocate(second);
+  await resumesTurnOne(await c.runner(second, id(851)), first);
+  const completed = await c.completeTurn(second, allocation, {started: true});
+  c.deploy(releaseC);
+  const third = await c.acceptNext('A third prompt under release C'), r = await c.runner(third, id(852));
+  assert.deepEqual(r.lineage.nextTurn.checkpoint.binding, second, 'turn 2, completed under release B, is the lineage');
+  assert.deepEqual(r.lineage.nextTurn.checkpoint.versions, releaseB);
+  assert.deepEqual(r.lineage.nextTurn.sourceRequest, completed.request);
+  const prepared = await r.prepare();
+  assert.equal(prepared.sdkSessionKey.sessionId, id(850), 'the SDK resumes the conversation\'s session under release C');
+  assert.equal((await r.restoration()).state, 'RESTORED');
+});
+
 test('a release that changes the SDK or CLI refuses the next turn with NEXT_TURN_SDK_CHANGED, before anything is resumed', async t => {
   for (const change of [{sdk: '0.3.296'}, {cli: '2.1.296'}]) {
     const c = await conversation(t);

@@ -7,6 +7,7 @@ import {assertProposalIntegrity,assertWorkspacePaths} from '../../../packages/co
 import {assertTypedResult,assertTypedSelection,MAX_OBJECTIVE_SELECTION_BYTES} from '../../../packages/runtime/objective-generation-custody.mjs';
 import {validateCompletionProof} from './completion-journal.mjs';
 import {assertNextRunReservation} from './next-run-reservation.mjs';
+import {continuesSession} from '../../../packages/contracts/session-continuity.mjs';
 
 const corrupt=()=>fail('STORE_CORRUPT');
 const requireFact=value=>{if(!value)corrupt();};
@@ -151,7 +152,7 @@ function decodeNextRun(row,owner,byRun,byCompletion){
   same(p.scopes,source.projection.scopes)&&
   p.policyRevision===source.projection.policyRevision&&['RESERVED','ACCEPTED'].includes(row.state));
  if(row.state==='ACCEPTED')requireFact(target&&same(p.target,target.projection.binding)&&
-  same(p.scopes,target.projection.scopes)&&same(p.versions,target.projection.versions)&&
+  same(p.scopes,target.projection.scopes)&&continuesSession(p.versions,target.projection.versions)&&
   p.policyRevision===target.projection.policyRevision&&
   source.public.sequenceEnd===target.public.sequenceBase);
  else requireFact(!target&&source.public.sequenceEnd===null);

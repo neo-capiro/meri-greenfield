@@ -81,3 +81,11 @@ test('a release that changes the SDK or CLI never resumes the earlier session: N
   await assert.rejects(x.select(),/NEXT_TURN_SDK_CHANGED/);assert.equal(x.f.state.nextRuns.size,0);
  }finally{x.f.close();}}
 });
+// Liveness across a deploy (adj-b-review-c11.md F1, probe L1): a reservation written before an image-only release is still accepted after it.
+test('L1 a RESERVED next turn written before an image-only deploy is accepted after it',async()=>{const x=await fixture();try{
+ await x.first();await x.complete(binding);await x.retire(binding);const reserved=await x.select();assert.equal(reserved.reserved,true);
+ x.deploy({...versions,imageDigest:'sha256:'+'5'.repeat(64),skillsDigest:'c'.repeat(64)});
+ const again=await x.select();assert.equal(again.replayed,true);assert.deepEqual(again.binding,reserved.binding);
+ await x.accept(again.binding,'after the release');
+ assert.ok((await x.lineage(again.binding)).nextTurn.checkpoint.checkpointId);
+}finally{x.f.close();}});

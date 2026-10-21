@@ -16,15 +16,17 @@ import {sha} from './router-tls-fixture.mjs';
 export {binding, id};
 const check = () => {}, at = () => new Date().toISOString();
 const status = (eventId, state, reasonCode = null) => ({eventId, createdAt: at(), type: 'run.status', data: {state, reasonCode}});
-const authorityFor = b => ({async verify(v) {
-  return {binding: b, operation: v.operation, inputSha256: v.inputSha256, identityCredential: 'synthetic-authority', scopes, selectedClientId: id(5), policyRevision: scopes[0].policyRevision, authorizationDecisionId: 'scripted-current', checkedAtMs: Date.now(), expiresAtMs: Date.now() + 600000};
+/** Control's current authority for a run, valid until `expiresAtMs`: one fixed instant per conversation, an hour out, so it always outlives
+ * every original the conversation mints (each `Date.now() + 600000`) whatever the host clock does between calls. */
+const authorityFor = (b, expiresAtMs) => ({async verify(v) {
+  return {binding: b, operation: v.operation, inputSha256: v.inputSha256, identityCredential: 'synthetic-authority', scopes, selectedClientId: id(5), policyRevision: scopes[0].policyRevision, authorizationDecisionId: 'scripted-current', checkedAtMs: Date.now(), expiresAtMs};
 }});
 
 export async function conversation(t) {
   const f = await lifecycleFixture();
   t.after(() => f.close());
   let n = 900;
-  const next = () => id(n++);
+  const next = () => id(n++), authorityExpiresAtMs = Date.now() + 3600000;
   const blobs = new Map(), objects = {
     async put(v) { const ref = {objectId: v.objectId, versionId: 'immutable-v1', scopes: v.scopes, sha256: sha(v.bytes), bytes: v.bytes.length}; blobs.set(ref.objectId, Buffer.from(v.bytes)); return ref; },
     async get(ref) { return Buffer.from(blobs.get(ref.objectId)); }};
@@ -35,18 +37,35 @@ export async function conversation(t) {
     revocation: {async verifyRevoked({binding: b}) { return {grantIds: [id(240)], receiptSha256: hash({revoked: b.runId})}; }}}); };
   deploy(versions);
 
-  /** Turn 1: queued, allocated, starting, running, then the real end-of-turn completion; its original retired and grants revoked. */
+  /** The real end-of-turn completion of a running turn over its own composed capture, then its original retired and grants revoked. */
+  async function captureCompletion(b, runVersions, capture, allocation) {
+    const completion = createNativeCompletionCapture({store: f.store, objects, authority: authorityFor(b, authorityExpiresAtMs), taskCapability: taskToken, original: capture.original, taskCapture: capture.controller, enabled: true, maxRequestMs: 20000});
+    const request = (await f.store.read(b, {}, check)).request;
+    await completion.captureCompletion({binding: b, request, versions: runVersions, scopes, sessionId: id(850), contextSha256: hash({window: request.window, skill: request.skill, scopes})});
+    await recordRetired(f.store, allocation);
+    return {binding: b, request};
+  }
+
+  /** Turn 1: queued, allocated, starting, running, then the real end-of-turn completion (SDK session id(850)). */
   async function firstCompleted() {
     const first = await composeCapture(t, {binding, versions, sessionId: id(850), selfStop: true});
     first.release();
     await f.service.allocateInput({credential: f.credential, input: f.input}); await f.service.submit({credential: f.credential, input: f.input});
     const allocation = await allocateOriginal(f.store, binding);
     for (const state of ['starting', 'running']) await f.service.publish({credential: f.credential, binding, event: status(next(), state)});
-    const completion = createNativeCompletionCapture({store: f.store, objects, authority: authorityFor(binding), taskCapability: taskToken, original: first.original, taskCapture: first.controller, enabled: true, maxRequestMs: 20000});
-    const request = (await f.store.read(binding, {}, check)).request;
-    await completion.captureCompletion({binding, request, versions, scopes, sessionId: id(850), contextSha256: hash({window: request.window, skill: request.skill, scopes})});
-    await recordRetired(f.store, allocation);
-    return {binding, request};
+    return captureCompletion(binding, versions, first, allocation);
+  }
+
+  /** A queued turn's allocation, claimed at kickoff (before its runner exists). */
+  const allocate = b => allocateOriginal(f.store, b);
+  /** An allocated next turn that runs under the current deployment and completes: it continues the resumed SDK session id(850), so its
+   * own published checkpoint (captured under the deployment's versions) becomes the conversation's latest. `started`: its runner already
+   * claimed `starting`. */
+  async function completeTurn(b, allocation, {started = false} = {}) {
+    const capture = await composeCapture(t, {binding: b, versions: deployed, sessionId: id(850), selfStop: true});
+    capture.release();
+    for (const state of started ? ['running'] : ['starting', 'running']) await f.store.append(b, status(next(), state), check);
+    return captureCompletion(b, deployed, capture, allocation);
   }
 
   /** The next run, reserved by the owner after the latest run, with its prompt accepted. */
@@ -80,11 +99,11 @@ export async function conversation(t) {
     await claim('starting');
     // Control's continuation runtime and checkpoint restorer for the turn (remote-composition.mjs createRemoteNativeController).
     const restorer = createNativeCheckpointRestorer({journal: f.store.restorations, objects, workspace: '/workspace/' + target.conversationId, workspaceOwner: composed.controller.workspace, expiresAtMs: composed.original.expiresAtMs});
-    const continuation = createNativeContinuationRuntime({store: f.store, verifier: authorityFor(target), taskCapability: taskToken, restorer});
+    const continuation = createNativeContinuationRuntime({store: f.store, verifier: authorityFor(target, authorityExpiresAtMs), taskCapability: taskToken, restorer});
     const prepare = () => continuation.prepare({binding: target, versions: saved.run.versions, nextTurn: lineage?.nextTurn, sourceRequest: lineage?.nextTurn.sourceRequest, request: saved.request, scopes: saved.run.scopes});
     return {lineage, restored, claim, prepare,
       restoration: async () => (await f.store.restorations.read({binding: target, restoreKey: hash({binding: target, versions: saved.run.versions, request: saved.request, sourceRequest: lineage.nextTurn.sourceRequest, scopes, nextTurn: lineage.nextTurn})}, check)).record};
   }
 
-  return {firstCompleted, acceptNext, endTurn, runner, deploy};
+  return {firstCompleted, allocate, completeTurn, acceptNext, endTurn, runner, deploy};
 }

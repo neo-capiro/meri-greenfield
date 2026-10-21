@@ -190,7 +190,7 @@ test('one PostgreSQL snapshot exhausts conversation rows and memory pages, respe
 /** Turn 1 completed, turn 2 (its successor) failed, turn 3 reserved and accepted after it: turn 3's reservation names turn 1's
  * published checkpoint, the conversation's latest (O97), or `forge` replaces that checkpoint's proof digest (the rows are immutable,
  * so a corrupt reservation is written as such). Turns 2 and 3 are inserted as the next-run journal leaves them. */
-async function afterFailure(pool,{forge=null}={}){
+async function afterFailure(pool,{forge=null,thirdVersions=versions}={}){
  const tenantId=randomUUID(),actorId=randomUUID(),conversationId=randomUUID(),
   clientId=randomUUID(),policyRevision='b'.repeat(64),scopes=[{tenantId,kind:'client',resourceId:clientId,policyRevision}];
  const store=createPostgresConversationStore({pool}),createdAt=at(),turn=n=>({tenantId,actorId,conversationId,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:n});
@@ -207,7 +207,7 @@ async function afterFailure(pool,{forge=null}={}){
  const lineage={checkpointId:first.checkpointId,proofSha256:hash(proof)};
  const settled=async b=>{const last=Number((await pool.query('SELECT sequence_base+last_sequence AS e FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[tenantId,conversationId,b.runId])).rows[0].e);
   await pool.query('UPDATE meri_conversations.runs SET sequence_end=$4 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[tenantId,conversationId,b.runId,last]);return last;};
- const next=async(source,target,base,prompt,checkpoint=lineage)=>{const r={...run,binding:target,createdAt:at()},q={...request,requestId:randomUUID(),prompt},e={...event,eventId:randomUUID(),binding:target,createdAt:at()};
+ const next=async(source,target,base,prompt,checkpoint=lineage,runVersions=versions)=>{const r={...run,binding:target,createdAt:at(),versions:runVersions},q={...request,requestId:randomUUID(),prompt},e={...event,eventId:randomUUID(),binding:target,createdAt:at()};
   await pool.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence,sequence_base) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,$9)',[tenantId,conversationId,target.runId,r,hash(r),q.requestId,q,hash(q),base]);
   await pool.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,1,$4,$5,$6)',[tenantId,conversationId,target.runId,e.eventId,e,hash(e)]);
   const reservation=assertNextRunReservation({source,target,facts:{checkpoint,retirement:{physicalStopProven:true},revocation:{receiptSha256:'c'.repeat(64),grantIds:[randomUUID()]}},scopes,versions,policyRevision,reservedAt:at()});
@@ -216,7 +216,7 @@ async function afterFailure(pool,{forge=null}={}){
  const second=turn(2);await next(binding,second,await settled(binding),'synthetic second turn');
  for(const state of ['starting','running'])await store.append(second,status(state),check);
  await store.append(second,{eventId:randomUUID(),createdAt:at(),type:'run.status',data:{state:'failed',reasonCode:'EXECUTION_FAILED'}},check);
- const third=turn(3);await next(second,third,await settled(second),'synthetic third turn',forge===null?lineage:{...lineage,proofSha256:forge});
+ const third=turn(3);await next(second,third,await settled(second),'synthetic third turn',forge===null?lineage:{...lineage,proofSha256:forge},thirdVersions);
  return {subject:{tenantId,conversationId,ownerActorId:actorId},binding,second,third};
 }
 
@@ -231,4 +231,15 @@ test("after a failed turn, the next reservation naming the last completed turn's
  // A structurally valid reservation whose checkpoint proof is not the published one is refused.
  const forged=await afterFailure(pool,{forge:'d'.repeat(64)});
  await assert.rejects(inventory.inventoryForConversation(forged.subject),/STORE_CORRUPT/);
+});
+
+test('a next turn reserved before an image-only deploy and accepted after it is inventoried; one accepted across an SDK change is corrupt',
+ {skip:!enabled},async t=>{
+ const pool=new pg.Pool({host:SOCKET,database:DATABASE,user:'postgres',max:5,connectionTimeoutMillis:3000,options:'-c statement_timeout=5000'});
+ t.after(()=>pool.end());
+ const inventory=createConversationRetentionInventory({pool});
+ const redeployed=await afterFailure(pool,{thirdVersions:{...versions,imageDigest:'sha256:'+'5'.repeat(64)}});
+ assert.equal((await inventory.inventoryForConversation(redeployed.subject)).nextRuns.length,2);
+ const bumped=await afterFailure(pool,{thirdVersions:{...versions,sdk:'0.3.296'}});
+ await assert.rejects(inventory.inventoryForConversation(bumped.subject),/STORE_CORRUPT/);
 });
