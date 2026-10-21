@@ -3,8 +3,8 @@ import {types} from 'node:util';
 import {createConversationApplication} from '../http.mjs';
 import {jsonBody,response} from '../../action-application/http.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
-export function createConversationLifecycleApplication({service,now=Date.now,maxRequestMs=3000,maxRequestBytes=131072}){
- if(typeof service?.control!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072)throw Error('LIFECYCLE_CONFIGURATION');const legacy=createConversationApplication({service,now,maxRequestMs,maxRequestBytes});
+export function createConversationLifecycleApplication({service,now=Date.now,maxRequestMs,maxRequestBytes=131072,eventBudgets}){
+ if(typeof service?.control!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072)throw Error('LIFECYCLE_CONFIGURATION');const legacy=createConversationApplication({service,now,maxRequestMs,maxRequestBytes,eventBudgets});
  return Object.freeze({async handle(request){let life,effectStarted=false;try{
   if(!request||types.isProxy(request))return response({error:{code:'LIFECYCLE_INPUT_REFUSED',outcome:'NOT_DISPATCHED'}},400);
   let info;try{info=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get.call(request)]));}catch{return response({error:{code:'LIFECYCLE_INPUT_REFUSED',outcome:'NOT_DISPATCHED'}},400);}

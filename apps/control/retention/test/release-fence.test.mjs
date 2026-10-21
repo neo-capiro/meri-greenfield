@@ -15,7 +15,7 @@ for(const phase of ['authorization','later-subject-read'])test(`canonical releas
  const f=composeStartup(),a=subjectOf(),b=subjectOf();await f.startup.start();
  const entered=deferred(),resume=deferred(),queued=deferred();let ack=false,published=false;
  const original=f.journal.withTransition,writerJournal={...f.journal,withTransition(key,fn){queued.resolve();return original(key,fn);}};
- const suppressor=createRetentionStartup({journal:writerJournal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await suppressor.start();
+ const suppressor=createRetentionStartup({ledgerMaxHeadMs:10000,journal:writerJournal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await suppressor.start();
  const release=f.startup.gate.withRelease([a,b,a],async()=>{
   if(phase==='authorization'){entered.resolve();await resume.promise;}
   await f.startup.gate.assertServable(a);

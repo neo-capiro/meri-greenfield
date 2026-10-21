@@ -1,3 +1,4 @@
+import {WORKFLOW_BUDGETS} from './hot-path-budgets.generated.ts';
 /** Server-owned Objective generation lifecycle. Opt-in, separate workflow type: the
  * browser only requested work; Temporal keeps admission, the one accepted run, run
  * observation and Core completion going after the browser closes or a worker dies.
@@ -18,7 +19,7 @@ export const objectiveGenerationState=defineQuery<ObjectiveGenerationState|null>
 export const stopObjectiveGeneration=defineSignal('meriObjectiveGenerationStop');
 export const wakeObjectiveGeneration=defineSignal('meriObjectiveGenerationWake');
 // One attempt per activity call: the driver alone decides effect versus read-back.
-const activities=proxyActivities<Activities>({startToCloseTimeout:'1 minute',retry:{maximumAttempts:1}});
+const activities=proxyActivities<Activities>({startToCloseTimeout:WORKFLOW_BUDGETS['workflow.objective.startToClose'],retry:{maximumAttempts:1}});
 export async function meriObjectiveGenerationWorkflow(input:ObjectiveGenerationInput):Promise<ObjectiveGenerationState>{
  let stop=false,wake=false,current:ObjectiveGenerationState|null=null;
  setHandler(objectiveGenerationState,()=>current&&{...current,stopRequested:stop});

@@ -15,7 +15,7 @@ function fixture({park=false,ignoreCancellation=false,now=Date.now,maxRequestMs=
  }},callContextStorage:context,interceptors:[],staticMetadata:{},apiKeyFnRef:{}});
  const send=method=>new Promise((resolve,reject)=>rpc({name:method},Buffer.alloc(0),(error,value)=>error?reject(error):resolve(value))),starts=[];
  const client={connection,workflow:{async start(name,options){starts.push({name,options});await send('StartWorkflowExecution');},getHandle(value){assert.equal(value,workflowId(binding));return {async signal(name,input){await send(name);},async cancel(){await send('RequestCancelWorkflowExecution');}};}}};
- return {client,calls,state,starts,dispatcher:createTemporalConversationDispatcher({client,taskQueue:'synthetic-only',lifecycle:true,now,maxRequestMs})};
+ return {client,calls,state,starts,dispatcher:createTemporalConversationDispatcher({maxRequestMs:3000,client,taskQueue:'synthetic-only',lifecycle:true,now,maxRequestMs})};
 }
 const input={controlId:id(800),sourceRunId:binding.runId,targetRunId:id(801),admissionReceiptId:id(802),retirementReceiptId:id(803)};
 const untilRpc=async f=>{for(let i=0;i<50&&!f.calls.length;i++)await new Promise(resolve=>setImmediate(resolve));assert.equal(f.calls.length,1);};

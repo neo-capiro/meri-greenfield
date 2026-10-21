@@ -6,7 +6,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {validateShape,fail} from './boundary.mjs';
 import {workflowId} from './temporal-dispatch.mjs';
-export function createTemporalRunEvidence({client,now=Date.now,maxRequestMs=3000}){
+export function createTemporalRunEvidence({client,now=Date.now,maxRequestMs}){
  if(typeof client?.workflow?.getHandle!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('TEMPORAL_CONFIGURATION');
  async function describe({binding,signal,deadlineMs}){
   validateShape('RunBinding',binding);nativeSignal(signal);signal?.throwIfAborted();const began=now();

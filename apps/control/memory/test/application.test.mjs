@@ -24,7 +24,7 @@ function setup({lifecycle=true}={}){
  const application=createMemoryApplication({gate:gate(calls),now:()=>NOW,limits:{maxRequestMs:5000,maxRequestBytes:65536,maxResponseBytes:1048576},
   producerFor({principal,bearer}){
    bearers.push([principal.actorId,bearer.credential,bearer.expiresAtMs]);
-   const transport=createCoreMemoryTransport({origin:'https://core.example',now:()=>NOW,fetchImpl:(u,i)=>core.fetch(u,i),
+   const transport=createCoreMemoryTransport({maxRequestMs:10000,origin:'https://core.example',now:()=>NOW,fetchImpl:(u,i)=>core.fetch(u,i),
     getCredentials:async({tenantId,actorId})=>({tenantId,actorId,bearerToken:bearer.credential,serviceSecret:SECRET,expiresAtMs:bearer.expiresAtMs})});
    return createMemoryProducer({journal,review:createCoreReview({transport}),memory:createCoreMemoryReads({transport}),decisions:createCoreDecisions({transport}),newId,now:()=>NOW});
   }});

@@ -3,7 +3,7 @@
 import {own,data,fail,hash,subject,subjectKey,clock,text} from './boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 export const transitions=Object.freeze(['SUPPRESSED','RELEASED','PURGE_PLANNED','PURGE_BLOCKED','PURGE_UNKNOWN','PURGE_EXECUTED']);
-export function createRetentionLedger({sink,now,maxHeadMs=10000}){
+export function createRetentionLedger({sink,now,maxHeadMs}){
  if(typeof sink?.append!=='function'||typeof sink?.read!=='function'||!Number.isSafeInteger(maxHeadMs)||maxHeadMs<1||maxHeadMs>60000)fail('RETENTION_CONFIGURATION');const tick=clock(now);
  const entry=value=>{const e=own(data(value),['subject','state','facts'],['reason']);subject(e.subject);if(!transitions.includes(e.state))fail('RETENTION_INVALID_REQUEST');if(e.reason!==undefined)text(e.reason,1024);return e;};
  const receipt=(sequence,entrySha256)=>hash({sequence,entrySha256});

@@ -41,7 +41,7 @@ async function fixture({lifecycle=false,extraClient=false}={}){
  const retention={...retentionGate,
   assertServable:subject=>observeRetention(subject,retentionGate.assertServable),
   withRelease:(subjects,release,options)=>retentionGate.withRelease(subjects,(signal,assertLocked)=>release(signal,subject=>observeRetention(subject,assertLocked)),options)};
- const retentionOwner=createSuppressionOwner({journal,serving,ledger:createRetentionLedger({sink:createMemoryLedgerSink(),now:Date.now}),ownership:{async ownerOf(){return binding.actorId;}},now:Date.now});
+ const retentionOwner=createSuppressionOwner({journal,serving,ledger:createRetentionLedger({maxHeadMs:10000,sink:createMemoryLedgerSink(),now:Date.now}),ownership:{async ownerOf(){return binding.actorId;}},now:Date.now});
  state.coreState='active';state.coreClientId=id(5);state.coreReads=[];
  const currentness={async assertCurrent({credential,principal,conversationId,scopes,signal,deadlineMs}){
   state.coreReads.push({credential,principal,conversationId,scopes,signal,deadlineMs});await state.onCoreRead?.();

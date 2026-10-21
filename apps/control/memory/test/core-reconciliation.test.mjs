@@ -23,7 +23,7 @@ function setup({lifecycle=true,credentials}={}){
  const core=createGoldenCore({now:clock,lifecycle,serviceSecret:SECRET});
  core.member({token:TOKEN,tenantId:TENANT,userId:ACTOR});core.member({token:OTHER_TOKEN,tenantId:TENANT,userId:OTHER});core.state.walledClients.add(WALLED);
  const journal=createJournalDouble();
- const transport=createCoreMemoryTransport({origin:'https://core.example',now:clock,fetchImpl:(url,init)=>core.fetch(url,init),
+ const transport=createCoreMemoryTransport({maxRequestMs:10000,origin:'https://core.example',now:clock,fetchImpl:(url,init)=>core.fetch(url,init),
   getCredentials:credentials??(async({tenantId,actorId})=>({tenantId,actorId,bearerToken:actorId===ACTOR?TOKEN:OTHER_TOKEN,serviceSecret:SECRET,expiresAtMs:clock()+60000}))});
  const producer=createMemoryProducer({journal,review:createCoreReview({transport}),memory:createCoreMemoryReads({transport}),decisions:createCoreDecisions({transport}),newId:ids(100),now:clock});
  return {core,journal,producer,transport,tick:ms=>{now+=ms;},

@@ -27,7 +27,7 @@ test('the storage port times out to UNKNOWN, refuses deletes without the delete 
  f.store.fault.mode='forbidden';assert.equal((await f.storage.headVersion({key:'k',versionId:'v1'})).reason,'ACCESS_DENIED_MAY_MASK_ABSENCE');
  f.store.fault.mode='marker-on-delete';await assert.rejects(f.storage.deleteVersion({key:'k',versionId:'v1'}),/RETENTION_DELETE_MARKER/);
  f.store.fault.mode=null;const receipt=await f.storage.deleteVersion({key:'k',versionId:'v1'});assert.equal(receipt.outcome,'REQUESTED');assert.ok(receipt.requestId);assert.equal((await f.storage.headVersion({key:'k',versionId:'v1'})).outcome,'ABSENT');
- const b=bucket();const noDelete=createVersionStorage({send:b.send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:{...full,deleteObjectVersion:false},now:Date.now});
+ const b=bucket();const noDelete=createVersionStorage({maxRequestMs:15000,send:b.send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:{...full,deleteObjectVersion:false},now:Date.now});
  await assert.rejects(noDelete.deleteVersion({key:'k',versionId:'v1'}),/RETENTION_STORAGE_PERMISSION/);
- assert.throws(()=>createVersionStorage({send:b.send,bucket:'synthetic-bucket',expectedBucketOwner:'bad',permissions:full,now:Date.now}),/RETENTION_CONFIGURATION/);
+ assert.throws(()=>createVersionStorage({maxRequestMs:15000,send:b.send,bucket:'synthetic-bucket',expectedBucketOwner:'bad',permissions:full,now:Date.now}),/RETENTION_CONFIGURATION/);
 });

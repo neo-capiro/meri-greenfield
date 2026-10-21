@@ -61,7 +61,7 @@ test('enumeration: the planned class is refused, every row of a row-target class
 });
 
 test('the PostgreSQL row owner admits only the row classes its schema amendments allow; every other registered row class is refused at preflight without a connection',async()=>{
- let connects=0;const journal=createPostgresRetentionJournal({pool:{connect(){connects++;throw Error('no connection expected');},query(){connects++;throw Error('no query expected');}}});
+ let connects=0;const journal=createPostgresRetentionJournal({maxRequestMs:10000,pool:{connect(){connects++;throw Error('no connection expected');},query(){connects++;throw Error('no query expected');}}});
  assert.deepEqual([...journal.rowClasses].sort(),['artifactVersions','sdkSession']);for(const id of journal.rowClasses)assert.ok(rowTargetClasses.includes(id),id);
  const key=`tenant-a:conversation:${randomUUID()}`;
  for(const className of rowTargetClasses.filter(id=>!journal.rowClasses.includes(id)&&rowTargetSubjectKind[id]==='conversation'))

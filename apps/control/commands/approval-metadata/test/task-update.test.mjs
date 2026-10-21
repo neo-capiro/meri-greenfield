@@ -8,7 +8,7 @@ test('retained task-update metadata round-trips exact operation/action/input/has
  const read={proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,operation:c.commandOptions.operation,action:'task.update',binding:c.binding,deadlineMs:c.f.state.now+1000,signal:undefined};
  const fact=await c.commandOptions.approvalMetadataOwner.read(read);assert.equal(fact.action,'task.update');assert.equal(fact.inputSha256,canonicalSha256({arguments:proposal.command.arguments,attachments:[]}));
  assert.deepEqual(c.policy.calls.map(x=>x.selection.action),['task.update','task.update','task.update','task.update']);
- const owner=createTaskCreateApprovalMetadataOwner({store:createPostgresApprovalMetadataStore({pool:c.sql.pool}),commandContext:{binding:c.binding,clientResolution:null},preparePolicy:c.policy.preparePolicy,now:()=>c.f.state.now});
+ const owner=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store:createPostgresApprovalMetadataStore({pool:c.sql.pool}),commandContext:{binding:c.binding,clientResolution:null},preparePolicy:c.policy.preparePolicy,now:()=>c.f.state.now});
  await assert.rejects(owner.read({...read,operation:{id:'create_task',version:'0.2.0'},action:'task.create'}),e=>e.outcome==='READ_UNAVAILABLE');
 });
 test('payload action/operation substitution refuses before connecting to the shared store',async()=>{

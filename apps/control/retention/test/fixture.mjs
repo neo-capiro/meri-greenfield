@@ -70,10 +70,10 @@ export function memoryRows(){
   revive(key,target){present.get(key)?.add(id(target));}};
 }
 export function compose({ownerMediated,permissions={getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},maxRequestMs=200}={}){
- const c=clock(),sink=createMemoryLedgerSink(),ledger=createRetentionLedger({sink,now:c.now}),journal=createMemoryRetentionJournal(),serving=createServingGate(),store=bucket();
+ const c=clock(),sink=createMemoryLedgerSink(),ledger=createRetentionLedger({maxHeadMs:10000,sink,now:c.now}),journal=createMemoryRetentionJournal(),serving=createServingGate(),store=bucket();
  const authorization=ownerMediated?{ownerMediated}:undefined;
  const suppression=createSuppressionOwner({ledger,journal,ownership,authorization,serving,now:c.now});
- const storage=createVersionStorage({send:store.send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions,now:c.now,maxRequestMs});
+ const storage=createVersionStorage({maxRequestMs:15000,send:store.send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions,now:c.now,maxRequestMs});
  const keyFor=st=>`${tenant}/${st.objectId}/${st.sha256}`;
  const {current,facts}=currentFacts(c),rows=memoryRows();
  const executor=(enabled=true)=>createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving,rows,enabled,now:c.now});
@@ -98,7 +98,7 @@ export function composeStartup({purge=false,ledger=true,watermark:withWatermark=
  const faults={lostAck:false,failSets:0};
  const sink={async append(row){const ack=await base.sink.append(row);return faults.lostAck?null:ack;},read:()=>base.sink.read()};
  const faulty={...journal,async set(...args){if(faults.failSets>0){faults.failSets--;throw Object.assign(new Error('RETENTION_STORE_UNAVAILABLE'),{code:'RETENTION_STORE_UNAVAILABLE'});}return journal.set(...args);}};
- const startup=createRetentionStartup({journal:faulty,watermark:withWatermark?watermark:null,ledgerSink:ledger?sink:null,ownership,purge:owners,now:base.clock.now});
+ const startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal:faulty,watermark:withWatermark?watermark:null,ledgerSink:ledger?sink:null,ownership,purge:owners,now:base.clock.now});
  return {...base,journal,watermark,startup,storage,rows,deletes,rowPurges,faults,
   backup:()=>({journal:journal.snapshot(),watermark:watermark.snapshot()}),
   restore(saved){journal.restore(saved.journal);watermark.restore(saved.watermark);}};

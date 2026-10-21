@@ -36,7 +36,7 @@ export function createApprovedScheduleInstructions(options){
   if(keys.some(key=>!allowed.includes(key)))fail('CONFIGURATION');
   for(const key of keys){const d=Object.getOwnPropertyDescriptor(options,key);if(!d.enumerable||!Object.hasOwn(d,'value'))fail('CONFIGURATION');}
   readFiring=sdkMethod(options.scheduleOwner,'readFiring');readPreparedSchedule=sdkMethod(options.preparations,'readPreparedSchedule');
-  now=options.now??Date.now;maxRequestMs=options.maxRequestMs??10000;
+  now=options.now??Date.now;maxRequestMs=options.maxRequestMs;
   if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  }catch{throw fault('CONFIGURATION');}
 

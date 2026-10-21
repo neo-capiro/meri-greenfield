@@ -11,7 +11,7 @@ import {createMemoryRetentionJournal} from '../../retention/memory-journal.mjs';
 import {createSuppressionOwner,createRetentionReadGate} from '../../retention/suppression.mjs';
 import {createServingGate} from '../../retention/reconciliation.mjs';
 export function retentionFixture(){
- const sink=createMemoryLedgerSink(),ledger=createRetentionLedger({sink,now:Date.now}),journal=createMemoryRetentionJournal(),serving=createServingGate(),state={calls:[],suppressAfter:null,journalDown:false};
+ const sink=createMemoryLedgerSink(),ledger=createRetentionLedger({maxHeadMs:10000,sink,now:Date.now}),journal=createMemoryRetentionJournal(),serving=createServingGate(),state={calls:[],suppressAfter:null,journalDown:false};
  const ownership={async ownerOf(){return binding.actorId;}};const owner=createSuppressionOwner({ledger,journal,ownership,serving,now:Date.now});
  const gate=createRetentionReadGate({journal:{async get(key){if(state.journalDown)throw Error('journal down');return journal.get(key);}},serving});
  const subject=(conversationId=binding.conversationId,tenantId=binding.tenantId)=>({tenantId,kind:'conversation',subjectId:conversationId}),principal={tenantId:binding.tenantId,actorId:binding.actorId};
@@ -49,12 +49,12 @@ test('a suppression that lands during an awaited read is caught before release; 
 });
 test('an open event stream and a reconnect stop exposing events after suppression or barrier closure',async()=>{
  const r=retentionFixture(),f=await allocatedApplicationFixture({retention:r.port});try{
-  await f.post('submit');const source=createConversationEventSource({service:f.service,credential:f.credential,after:0,idleRecheckMs:100}),reader=source.getReader();assert.equal((await reader.read()).value.sequence,1);
+  await f.post('submit');const source=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service:f.service,credential:f.credential,after:0,idleRecheckMs:100}),reader=source.getReader();assert.equal((await reader.read()).value.sequence,1);
   // The event source keeps its existing public failure (SUBSCRIPTION_UNAVAILABLE); the gate's refusal at the idle recheck closed it.
   await r.suppress();await assert.rejects(reader.read(),/SUBSCRIPTION_UNAVAILABLE/,'the open stream stops');reader.releaseLock();
-  const reconnect=createConversationEventSource({service:f.service,credential:f.credential,after:0}).getReader();await assert.rejects(reconnect.read(),/SUBSCRIPTION_UNAVAILABLE/,'a reconnect gets nothing');reconnect.releaseLock();assert.ok(r.state.calls.length>0);
-  await r.release();r.serving.disable();const barred=createConversationEventSource({service:f.service,credential:f.credential,after:0}).getReader();await assert.rejects(barred.read(),/SUBSCRIPTION_UNAVAILABLE/);barred.releaseLock();r.serving.enable();
-  const again=createConversationEventSource({service:f.service,credential:f.credential,after:0}).getReader();assert.equal((await again.read()).value.sequence,1);again.releaseLock();
+  const reconnect=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service:f.service,credential:f.credential,after:0}).getReader();await assert.rejects(reconnect.read(),/SUBSCRIPTION_UNAVAILABLE/,'a reconnect gets nothing');reconnect.releaseLock();assert.ok(r.state.calls.length>0);
+  await r.release();r.serving.disable();const barred=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service:f.service,credential:f.credential,after:0}).getReader();await assert.rejects(barred.read(),/SUBSCRIPTION_UNAVAILABLE/);barred.releaseLock();r.serving.enable();
+  const again=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service:f.service,credential:f.credential,after:0}).getReader();assert.equal((await again.read()).value.sequence,1);again.releaseLock();
  }finally{f.close();}
 });
 test('lifecycle entry points read through the gated history: controls, execution load and checkpoint inspection refuse under suppression while lifecycle cancellation still stops work',async()=>{

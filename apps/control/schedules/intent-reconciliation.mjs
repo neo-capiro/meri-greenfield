@@ -29,7 +29,7 @@ function field(value,name,optional=false) {
 }
 
 export function createScheduleIntentReconciler(options) {
- const o=optionsData(options,OPTIONS,OPTIONS.slice(0,4)),clock=o.clock??Date.now,maxRequestMs=o.maxRequestMs??10000,NotFound=o.scheduleNotFoundError;
+ const o=optionsData(options,OPTIONS,OPTIONS.slice(0,4)),clock=o.clock??Date.now,maxRequestMs=o.maxRequestMs,NotFound=o.scheduleNotFoundError;
  const readIntent=sdkMethod(o.scheduleOwner,'readIntent'),acknowledge=sdkMethod(o.scheduleOwner,'acknowledgeReconciled');
  if(typeof NotFound!=='function'||typeof clock!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000)denySchedule('SCHEDULE_RECONCILE_OPTIONS');
  const scheduleConnection=o.scheduleClient.connection,workflowConnection=o.workflowClient.connection;

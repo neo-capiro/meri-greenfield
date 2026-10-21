@@ -14,7 +14,7 @@ export async function settlementComposition(options={}){
  h.allocate=async()=>{h.allocation=await allocateOriginal(f.store,(await h.history()).run.binding);};
  // Synthetic native stop owner: 'record' retires through the canonical journal; 'silent' and 'throw' leave the stop unproven.
  const retirement={async retire({binding:b}){h.retirements++;assert.deepEqual(b,h.allocation?.key.binding??b);if(h.retireMode==='throw')throw Error('synthetic native stop uncertain');if(h.retireMode==='record')await recordRetired(f.store,h.allocation);}};
- h.reconciler=createRunReconciler({store:f.store,retirement});
+ h.reconciler=createRunReconciler({maxReconcileMs:60000,store:f.store,retirement});
  h.reconcile=(b=binding)=>h.reconciler.reconcile({binding:b});
  h.terminals=async()=>(await h.history()).events.filter(e=>e.type==='run.status'&&['failed','cancelled','completed'].includes(e.data.state));
  return h;

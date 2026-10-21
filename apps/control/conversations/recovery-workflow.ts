@@ -1,3 +1,4 @@
+import {WORKFLOW_BUDGETS} from './hot-path-budgets.generated.ts';
 /** Workflow-side original-attempt reconciliation. The single executeConversation attempt is never retried; when it fails or is
  * lost (a crashed poller surfaces as a heartbeat timeout and never ran its own cleanup), the workflow schedules the idempotent
  * reconcile activity, which retires the original and settles a run it left nonterminal, and then fails as before. */
@@ -7,7 +8,7 @@ interface RecoveryActivities {reconcileConversation(input:{binding:Binding}):Pro
 /** The reconcile retries until ECS reports the original STOPPED: the runner's 60 s stopTimeout plus deprovisioning (47 s observed live
  * after StopTask). 30 s heartbeat detection plus at most 240 s of attempts, at most 10 s apart, stays under five minutes. A next turn
  * waits for that proven stop (next-run.mjs). */
-const {reconcileConversation}=proxyActivities<RecoveryActivities>({startToCloseTimeout:'20 seconds',scheduleToCloseTimeout:'240 seconds',retry:{initialInterval:'1 second',backoffCoefficient:2,maximumInterval:'10 seconds'}});
+const {reconcileConversation}=proxyActivities<RecoveryActivities>({startToCloseTimeout:WORKFLOW_BUDGETS['workflow.recovery.startToClose'],scheduleToCloseTimeout:WORKFLOW_BUDGETS['workflow.recovery.scheduleToClose'],retry:{initialInterval:WORKFLOW_BUDGETS['workflow.recovery.retry.initial'],backoffCoefficient:2,maximumInterval:WORKFLOW_BUDGETS['workflow.recovery.retry.maximum']}});
 export async function reconcileAfterFailure<T>(input:{binding:Binding},execute:()=>Promise<T>):Promise<T>{
  try{return await execute();}
  catch(error){

@@ -2,7 +2,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createRetentionStartup} from '../startup.mjs';import {createRecoveryReconciler} from '../reconciliation.mjs';
 import {subjectKey} from '../boundary.mjs';import {composeStartup,subjectOf,ownership} from './fixture.mjs';
-const startup=(f,recoverPrerequisitesExclusive,watermark=f.watermark)=>createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now,recoverPrerequisitesExclusive});
+const startup=(f,recoverPrerequisitesExclusive,watermark=f.watermark)=>createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now,recoverPrerequisitesExclusive});
 const append=(f,s)=>f.ledger.append({subject:s,state:'SUPPRESSED',reason:'synthetic concurrent decision',facts:{principal:f.principal,authorization:{mode:'owner',receiptId:null},outstandingAccess:{signedUrlsExpireAtMs:null,inFlightRuns:[]},cancelled:[]}});
 
 test('recovery continuation: canonical retention replay precedes one continuation under the SAME exclusion and before watermark/fence',async()=>{

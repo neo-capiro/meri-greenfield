@@ -143,7 +143,7 @@ for(const boundary of ['request abort','subscription deadline'])test(`event ${bo
   dispatcher:{async start(){throw Error('unexpected dispatch');},async cancel(){throw Error('unexpected durable cancellation');}},
   store:{async accept(){throw Error('unexpected write');},async append(){throw Error('unexpected write');},async read(_binding,{after,limit}){seenCursors.push(after);return {run:{binding,scopes,state:runState,createdAt:new Date(NOW).toISOString(),policyRevision:'policy1',versions},request:{requestId:id(6),prompt:'Synthetic',skill:null,window:null,windowRequest:null},events:events.filter(event=>event.sequence>after&&event.sequence<=visible).slice(0,limit),lastSequence:visible};}},
  });
- const source=createConversationEventSource({service,credential:f.issued.credential,signal:abort.signal,now:f.now,maxSubscriptionMs:boundary==='subscription deadline'?100:30000}),reader=source.getReader();
+ const source=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service,credential:f.issued.credential,signal:abort.signal,now:f.now,maxSubscriptionMs:boundary==='subscription deadline'?100:30000}),reader=source.getReader();
  t.after(()=>reader.releaseLock());
  const first=await reader.read();assert.equal(first.value.sequence,1);const cursor=first.value.sequence;
  // The next event becomes visible; its release recheck parks until the request abort or the subscription deadline ends the stream.
@@ -155,7 +155,7 @@ for(const boundary of ['request abort','subscription deadline'])test(`event ${bo
  const preflight=await service.history({credential:f.issued.credential,after:cursor,limit:1});
  assert.equal(preflight.events[0].sequence,2);
  runState='completed';
- const reconnected=createConversationEventSource({service,credential:f.issued.credential,after:cursor,now:f.now}).getReader();
+ const reconnected=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service,credential:f.issued.credential,after:cursor,now:f.now}).getReader();
  t.after(()=>reconnected.releaseLock());
  assert.equal((await reconnected.read()).value.sequence,2);
  assert.equal((await reconnected.read()).done,true);

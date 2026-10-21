@@ -6,7 +6,7 @@ import {hash,fail} from './preparation.mjs';
 import {projectOutput} from './projection.mjs';
 import {approvedReceipt,checkOutputConfiguration,sourceAccessReceipt} from './receipts.mjs';
 export async function openOutputSession(c,source,signal){
- const life=createOperationLifetime({deadlineMs:c.now()+(c.maxRequestMs??60000),now:c.now,signal,errorFactory:code=>Object.assign(Error(code),{code})});let receipt,options,projection,sessionCredential;
+ const life=createOperationLifetime({deadlineMs:c.now()+(c.maxRequestMs),now:c.now,signal,errorFactory:code=>Object.assign(Error(code),{code})});let receipt,options,projection,sessionCredential;
  const current=async()=>{const started=c.now(),raw=await life.run(signal=>c.approvedOutput.read({sourcePins:source.sourcePins,signal}));if(raw===null)return null;own(raw,['receipt','documentOptions','sessionCredential']);if(typeof raw.sessionCredential!=='string'||!raw.sessionCredential||raw.sessionCredential.length>4096)fail('SELECTED_OUTPUT_SESSION');
   const next=approvedReceipt(raw.receipt,{source,started,now:c.now,life,previous:receipt}),configured=checkOutputConfiguration(raw.documentOptions,next,source);receipt??=next;options??=configured;sessionCredential??=raw.sessionCredential;if(sessionCredential!==raw.sessionCredential)fail('SELECTED_OUTPUT_SESSION_CHANGED');return next;};
  const access=async phase=>{const started=c.now();return sourceAccessReceipt(await life.run(signal=>c.sourceAccess.check({phase,sourcePins:source.sourcePins,outputBinding:receipt.outputBinding,evidence:data(source.context.evidence),...(projection?{lineageSha256:projection.lineageSha256}:{}),signal})),{source,outputBinding:receipt.outputBinding,started,now:c.now,life});};

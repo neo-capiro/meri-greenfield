@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Exact conversation-owned retention rows from one read-only database snapshot.
  * This is a source producer, not a purge fact or deletion authority. */
 import {bounded,fail,own,uuid} from './boundary.mjs';
@@ -8,7 +9,7 @@ import {decodeConversationInventoryRows} from './retention-inventory-decode.mjs'
 const PAGE_SIZE=32;
 const MAX_ROWS=4096;
 const MAX_BYTES=16*1024*1024;
-const MAX_DURATION_MS=5000;
+const MAX_DURATION_MS=fixedHotPathBudget('conversation.retention.inventory');
 const expired=()=>Object.assign(new Error('RETENTION_INVENTORY_EXPIRED'),{code:'RETENTION_INVENTORY_EXPIRED'});
 const cancelled=()=>Object.assign(new Error('RETENTION_INVENTORY_CANCELLED'),{code:'RETENTION_INVENTORY_CANCELLED'});
 

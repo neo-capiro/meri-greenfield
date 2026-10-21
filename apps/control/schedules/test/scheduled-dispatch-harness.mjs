@@ -56,10 +56,10 @@ export function authorityFixture() {
 export function harness() {
  const schedules=scheduleOwnerFixture(),conversations=storeFixture(),temporal=temporalFixture(),authority=authorityFixture(),instructions={calls:[],text:instruction};
  const scheduleOwner=createPostgresScheduleOwner({pool:schedules.pool}),store=createPostgresConversationStore({pool:conversations.pool,now:()=>NOW});
- const dispatcher=createTemporalConversationDispatcher({client:temporal.client,taskQueue:'meri-conversations',lifecycle:true,now:()=>NOW});
- const runs=createTemporalRunEvidence({client:temporal.client,now:()=>NOW});
+ const dispatcher=createTemporalConversationDispatcher({maxRequestMs:3000,client:temporal.client,taskQueue:'meri-conversations',lifecycle:true,now:()=>NOW});
+ const runs=createTemporalRunEvidence({maxRequestMs:3000,client:temporal.client,now:()=>NOW});
  const taskInstructions={async read(q){instructions.calls.push(q);return {instruction:instructions.text};}};
- const scheduled=createScheduledDispatch({scheduleOwner,store,dispatcher,runs,authority:authority.port,taskInstructions,versions,now:()=>NOW});
+ const scheduled=createScheduledDispatch({maxRequestMs:10000,scheduleOwner,store,dispatcher,runs,authority:authority.port,taskInstructions,versions,now:()=>NOW});
  async function acknowledge(intent){const b=ownerBinding(intent);await scheduleOwner.claim(b,check);await scheduleOwner.markDispatching(b,check);await scheduleOwner.commitKnown(b,check);}
  return {schedules,conversations,temporal,authority,instructions,scheduleOwner,store,scheduled,acknowledge,
   runCount:()=>conversations.state.runs.size,workflowCount:()=>temporal.workflows.size};

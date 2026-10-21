@@ -26,7 +26,7 @@ test('one fresh owner observation correlates both immutable receipts and preserv
  const f=fixture(t),issued=await f.issue();
  assert.deepEqual(Object.keys(f.owner).sort(),['issue','authenticateSession','readCurrentState','verifyTransition','nativeCredentialFor','revoke','close','status'].sort());
  assert.deepEqual(Object.getOwnPropertySymbols(f.owner),[]);
- assert.doesNotThrow(()=>createActionSessionApplication({owner:f.owner}));
+ assert.doesNotThrow(()=>createActionSessionApplication({maxRequestMs:3000,owner:f.owner}));
  let traps=0;const proxy=new Proxy(f.owner,{get(){traps++;throw Error('must not inspect');}});
  for(const unknown of [{...f.owner},{},proxy,null,undefined])assert.equal(authenticatedCurrentState(unknown),undefined);
  assert.equal(traps,0);

@@ -51,7 +51,7 @@ test('lease faults: a lost COMMIT acknowledgement is unknown and retires the lea
 test('through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence',async()=>{
  const faults={}, {store,pool}=compose({faults}),fence=createServingFence();fence.enable({watermark:{sequence:0,entrySha256:null}});
  const writes=[],memory=createMemoryRetentionJournal(),inner={...memory,async set(key,row,options){writes.push(key);return memory.set(key,row,options);}};
- const tracked=watermarkedJournal({journal:inner,watermark:store,fence,ledger:createRetentionLedger({sink:createMemoryLedgerSink(),now:Date.now})});const key=`tenant-a:conversation:${randomUUID()}`;
+ const tracked=watermarkedJournal({journal:inner,watermark:store,fence,ledger:createRetentionLedger({maxHeadMs:10000,sink:createMemoryLedgerSink(),now:Date.now})});const key=`tenant-a:conversation:${randomUUID()}`;
  const set=inner.set;inner.set=async(...args)=>{const result=await set(...args);pool.project(args[0],args[1]);faults.COMMIT='throw';return result;};
  await tracked.set(key,{state:'SUPPRESSED',ledgerSequence:1,entrySha256:'1'.repeat(64)});
  assert.deepEqual(writes,[key]);assert.equal(fence.isEnabled(),false);assert.equal(fence.state().reason,'RETENTION_WATERMARK_UNKNOWN');assert.equal(fence.state().highWater,0,'an unacknowledged advance is not observed');

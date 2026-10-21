@@ -18,7 +18,7 @@ const refused=(f,s)=>assert.rejects(f.startup.gate.assertServable(s),e=>e.code==
 test('synthetic: restore after projection ACK but before watermark advance cannot certify the missing projection',async()=>{
  const f=composeStartup(),s=subjectOf();let restore=null;
  const journal={...f.journal,async set(...args){const result=await f.journal.set(...args);if(restore){f.restore(restore);restore=null;}return result;}};
- f.startup=createRetentionStartup({journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ f.startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  await f.startup.start();restore=f.backup();
  const result=await suppress(f,s);assert.equal(result.state,'SUPPRESSED','the ledger decision remains acknowledged');
  assert.equal((await f.sink.read()).length,1);assert.equal(await f.journal.get(subjectKey(s)),null,'the just-acknowledged projection was restored away');
@@ -31,7 +31,7 @@ test('synthetic: restore after projection ACK but before watermark advance canno
 test('synthetic: a restore at the projection snapshot refuses the first served read',async()=>{
  const f=composeStartup(),s=subjectOf();let restore=null;
  const watermark={...f.watermark,async readProjection(...args){if(restore){f.restore(restore);restore=null;}return f.watermark.readProjection(...args);}};
- f.startup=createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ f.startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  await f.startup.start();const backup=f.backup();await suppress(f,s);restore=backup;
  await refused(f,s);assert.equal((await f.watermark.read()).sequence,0);assert.equal(f.startup.state().enabled,false);
  await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
@@ -39,9 +39,9 @@ test('synthetic: a restore at the projection snapshot refuses the first served r
 
 test('synthetic: a later durable decision fences a completed older snapshot before serving',async()=>{
  const f=composeStartup(),s=subjectOf();let advance=false;
- const other=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ const other=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  const watermark={...f.watermark,async readProjection(...args){const result=await f.watermark.readProjection(...args);if(advance){advance=false;await other.suppression.suppress({principal:f.principal,subject:s,reason:'concurrent owner request'});}return result;}};
- f.startup=createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await f.startup.start();advance=true;
+ f.startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await f.startup.start();advance=true;
  await other.start();await refused(f,s);assert.equal(advance,false,'the atomic port was called');
  assert.equal(f.startup.state().enabled,false);assert.equal(f.startup.state().highWater,1,'the newer durable head is now known');
  await f.startup.ensureServing();await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
@@ -49,7 +49,7 @@ test('synthetic: a later durable decision fences a completed older snapshot befo
 
 test('synthetic: legacy blind-advance ports cannot satisfy retention startup configuration',()=>{
  const journal=createMemoryRetentionJournal(),legacy={async read(){return {sequence:0,entrySha256:null};},async advance(){},async record(){}};
- assert.throws(()=>createRetentionStartup({journal,watermark:legacy,ledgerSink:createMemoryLedgerSink(),purge:{enabled:false}}),/RETENTION_CONFIGURATION/);
+ assert.throws(()=>createRetentionStartup({ledgerMaxHeadMs:10000,journal,watermark:legacy,ledgerSink:createMemoryLedgerSink(),purge:{enabled:false}}),/RETENTION_CONFIGURATION/);
 });
 
 test('synthetic: a new suppression cannot conceal a restore before the first read',async()=>{
@@ -67,7 +67,7 @@ test('synthetic: a new suppression cannot conceal a restore before the first rea
 test('synthetic: restore after ledger acknowledgement is caught before projection and watermark advance',async()=>{
  const f=composeStartup(),lost=subjectOf(),next=subjectOf();let restore=null;
  const sink={read:()=>f.sink.read(),async append(row){const ack=await f.sink.append(row);if(restore){f.restore(restore);restore=null;}return ack;}};
- f.startup=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:sink,ownership,purge:{enabled:false},now:f.clock.now});
+ f.startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:f.watermark,ledgerSink:sink,ownership,purge:{enabled:false},now:f.clock.now});
  await f.startup.start();const backup=f.backup();await suppress(f,lost);restore=backup;
  await assert.rejects(suppress(f,next),/RETENTION_PROJECTION_FAILED/);
  assert.equal(f.watermark.snapshot().sequence,0);assert.equal(await f.journal.get(subjectKey(next)),null);
@@ -98,7 +98,7 @@ test('synthetic: release as the first post-restore operation cannot advance over
 test('synthetic: atomic advance floor catches a restore after a successful guard read',async()=>{
  const f=composeStartup(),lost=subjectOf(),next=subjectOf();let restore=null;
  const watermark={...f.watermark,async read(){const result=await f.watermark.read();if(restore){f.restore(restore);restore=null;}return result;}};
- f.startup=createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ f.startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  await f.startup.start();const backup=f.backup();await suppress(f,lost);
  // Exercise the guarded journal directly so the restore lands between verification and advancement.
  restore=backup;await f.startup.journal.set(subjectKey(next),{state:'SUPPRESSED',ledgerSequence:2,entrySha256:'1'.repeat(64)});
@@ -108,7 +108,7 @@ test('synthetic: atomic advance floor catches a restore after a successful guard
 
 test('synthetic: another running owner cannot advance across an unseen restored-away ledger transition',async()=>{
  const f=composeStartup(),lost=subjectOf(),next=subjectOf();await f.startup.start();const saved=f.backup();
- const other=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await other.start();
+ const other=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});await other.start();
  await suppress(f,lost);f.restore(saved);
  await assert.rejects(other.suppression.suppress({principal:f.principal,subject:next,reason:'owner request'}),/RETENTION_WATERMARK_STALE/);
  assert.equal(f.watermark.snapshot().sequence,0,'the unseen durable decision cannot be concealed');assert.equal((await f.sink.read()).length,1,'no second decision before recovery');
@@ -133,8 +133,8 @@ test('without a ledger sink or a watermark store the fence never opens; reads re
   await assert.rejects(f.startup.start(),e=>e.code===reason,reason);assert.equal(f.startup.serving.isEnabled(),false);assert.equal(f.startup.state().unavailable,reason);
   await refused(f,s);if(options.ledger===false)assert.equal(f.startup.suppression,null,'no suppression owner without the authoritative ledger');
  }
- assert.throws(()=>createRetentionStartup({journal:createMemoryRetentionJournal(),purge:{}}),/RETENTION_CONFIGURATION/,'the purge switch is required');
- assert.throws(()=>createRetentionStartup({journal:createMemoryRetentionJournal(),purge:{enabled:true}}),/RETENTION_CONFIGURATION/,'enabling purge without every deletion owner is refused');
+ assert.throws(()=>createRetentionStartup({ledgerMaxHeadMs:10000,journal:createMemoryRetentionJournal(),purge:{}}),/RETENTION_CONFIGURATION/,'the purge switch is required');
+ assert.throws(()=>createRetentionStartup({ledgerMaxHeadMs:10000,journal:createMemoryRetentionJournal(),purge:{enabled:true}}),/RETENTION_CONFIGURATION/,'enabling purge without every deletion owner is refused');
 });
 
 test('suppression before serving across a restore underneath a running process: the restored projection is refused from its first read and serves only after the ledger re-applies the suppression',async()=>{
@@ -153,12 +153,12 @@ test('suppression before serving across a restore underneath a running process: 
 
 test('a restart over a restored backup is fenced until startup replays the ledger; a stale watermark that cannot be re-recorded keeps refusing to serve',async()=>{
  const f=composeStartup(),s=subjectOf();await f.startup.start();const empty=f.backup();await suppress(f,s);f.restore(empty);
- const restart=()=>createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ const restart=()=>createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  const next=restart();await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER');
  f.watermark.faults.record=true;await assert.rejects(next.start(),/RETENTION_STORE_UNAVAILABLE/);assert.equal(next.serving.isEnabled(),false,'a watermark that cannot be recorded never opens serving');
  await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER');
  f.watermark.faults.record=false;const lying={...f.watermark,read:async()=>({sequence:0,entrySha256:null})};
- const misread=createRetentionStartup({journal:f.journal,watermark:lying,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ const misread=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:lying,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  await assert.rejects(misread.start(),/RETENTION_WATERMARK_UNVERIFIED/,'a recorded watermark that does not read back exactly is not a recovered watermark');assert.equal(misread.serving.isEnabled(),false);
  await next.start();await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_SUPPRESSED');
  f.watermark.faults.read=true;await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER','an unreadable watermark refuses');assert.equal(next.state().reason,'RETENTION_WATERMARK_UNVERIFIED');

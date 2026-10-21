@@ -1,3 +1,4 @@
+import {testBudgetTable as runnerTestBudgets} from '../../../../packages/runtime/test/budget-fixture.mjs';
 /** The worker HTTP, native client, session, service and lifecycle load composition
  * against bounded, in-process Core responses. Task-verifier grant/SQL checks are
  * replaced with an instrumented fixed-run identity/context join; those checks
@@ -41,7 +42,7 @@ const [{createNativeIdentityContext},{createCoreMembershipGate},{createActionSes
   'apps/runtime/native-client.mjs',
   'apps/worker/conversation/activity.mjs',
   'apps/runtime/conversation-runner.mjs',
-  'packages/runtime/runner-load-budget.mjs',
+  'packages/runtime/hot-path-budgets.mjs',
   'apps/control/conversations/test/store-fixture.mjs',
   'packages/contracts/validate.mjs',
   'apps/control/conversations/postgres-store.mjs',
@@ -94,7 +95,7 @@ async function one({mode,route='load',latencyMs=0,serverMs=3000,nativeMs=3000,lo
   const stub=async()=>{throw Error('unused');};
   const store=replayStore??{accept:stub,async append(){counts.append++;return {scopes};},async read(){counts.read++;if(counts.read===2)duringFinalRead?.({state,saved});if(storeReadGate&&counts.read===1){storeReadGate.started.resolve();await storeReadGate.release.promise;}return structuredClone(saved);},
     ...(nextTurn?{nextRuns:{async execution(){return {nextTurn:{fixtureMarker:'new-turn'}};}}}:{}),
-    lifecycle:{begin:stub,change:stub,get:stub,async controls(){counts.controls++;return [];},claim:stub,checkpoint:stub,readCheckpoint:stub,async execution(){counts.journalExecution++;duringJournal?.({state,saved});await delay(journalDelayMs);return journalExtra?{fixtureMarker:'journal-read'}:null;},continuation:stub,cancel:stub,readStopFence:stub}};
+    lifecycle:{...{pollMs:100},begin:stub,change:stub,get:stub,async controls(){counts.controls++;return [];},claim:stub,checkpoint:stub,readCheckpoint:stub,async execution(){counts.journalExecution++;duringJournal?.({state,saved});await delay(journalDelayMs);return journalExtra?{fixtureMarker:'journal-read'}:null;},continuation:stub,cancel:stub,readStopFence:stub}};
   const dispatcher={start:stub,cancel:stub,signal:stub};
   const retention={async assertServable(){counts.retention++;if(state.retention!=='servable')throw Error('RETENTION_SUPPRESSED');}};
   const basic=createConversationService({sessions:sessionPort,store,dispatcher,versions,maxRequestMs:serverMs,retention});
@@ -216,20 +217,20 @@ test('activity separates long load from three-second runtime preparation',async(
   let clock=0,prepared=0,claims=0,stages=[];
   const runOwner={async load(){clock+=19000;return saved;},async append({event}){if(event.data?.state==='starting'){claims++;return;}throw Error('STOP_BEFORE_MODEL');}};
   const bounds={query:()=>{throw Error('MODEL_CALL_FORBIDDEN');},now:()=>clock,loadMaxMs:23000,diagnostics:{stage:stage=>stages.push(stage)}};
-  const activity=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;return {binding,versions,deadlineMs:clock+1000};},...bounds,loadExpiresAtMs:50000});
+  const activity=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>{prepared++;return {binding,versions,deadlineMs:clock+1000};},...bounds,loadExpiresAtMs:50000});
   await assert.rejects(activity({binding}),/EXECUTION_FAILED/u);
   assert.equal(claims,1,'the run is claimed before runtime preparation');
   assert.equal(prepared,1,'a 19-second load may reach runtime preparation');
   assert.ok(stages.includes('activity-setup'),'runtime preparation uses its own fresh bound');
 
   clock=0;prepared=0;claims=0;stages=[];
-  const slowPreparation=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;clock+=3001;return {binding,versions,deadlineMs:clock+1000};},...bounds,loadExpiresAtMs:50000});
+  const slowPreparation=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>{prepared++;clock+=3001;return {binding,versions,deadlineMs:clock+1000};},...bounds,loadExpiresAtMs:50000});
   await assert.rejects(slowPreparation({binding}),/EXECUTION_FAILED/u);
   assert.equal(prepared,1);
   assert.ok(!stages.includes('activity-setup'),'runtime preparation still has a three-second cap');
 
   clock=0;prepared=0;claims=0;stages=[];
-  const expiringOriginal=createConversationActivity({runOwner,prepareRuntime:async()=>{prepared++;throw Error('PREPARATION_MUST_NOT_START');},...bounds,loadExpiresAtMs:15000});
+  const expiringOriginal=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>{prepared++;throw Error('PREPARATION_MUST_NOT_START');},...bounds,loadExpiresAtMs:15000});
   await assert.rejects(expiringOriginal({binding}),/EXECUTION_FAILED/u);
   assert.equal(prepared,0,'the original lease reserve clips load below its 23-second ceiling');
   assert.equal(claims,0);
@@ -242,7 +243,7 @@ test('nested remote runner passes its load budget into the activity',async()=>{
   const executionKey=hash(binding),configuration={binding,versions,sourceEnabled:false,limits:{requestMs:25000,shutdownMs:10000},
     remoteTask:{original:{binding,versions,executionKey,executionId:executionKey,planSha256:'0'.repeat(64),expiresAtMs:1000000}}};
   const native={async call(operation,input){if(operation==='runner/load'){clock+=19000;return saved;}if(operation==='runner/publish'&&input.event.data?.state==='starting')return {};if(operation==='runner/runtime'){runtimeCalls++;throw Error('STOP_BEFORE_MODEL');}throw Error('UNEXPECTED_NATIVE_CALL');}};
-  const execute=assembleConversationRunner({configuration,native,now:()=>clock,query:()=>{throw Error('MODEL_CALL_FORBIDDEN');}});
+  const execute=assembleConversationRunner({budgets:runnerTestBudgets,configuration,native,now:()=>clock,query:()=>{throw Error('MODEL_CALL_FORBIDDEN');}});
   await assert.rejects(execute({binding}),/EXECUTION_FAILED/u);
   assert.equal(runtimeCalls,1,'a 19-second load reaches runtime admission through nested runner wiring');
 });
@@ -356,7 +357,7 @@ test('the fused load independently refuses an out-of-scope selected client',asyn
   const sessions={async authenticateSession(){const at=Date.now();return {principal,checkedAtMs:at,expiresAtMs:at+30000};},
     async readCurrentState({authentication}){const at=Date.now();return {authenticationSha256:hash(authentication),binding,scopes,selectedClientId:id(777),checkedAtMs:at,expiresAtMs:at+30000};}};
   const unused=async()=>{throw Error('must not read');};
-  const service=createConversationService({sessions,store:{accept:unused,append:unused,read:unused},dispatcher:{start:unused,cancel:unused},versions});
+  const service=createConversationService({maxRequestMs:3000,sessions,store:{accept:unused,append:unused,read:unused},dispatcher:{start:unused,cancel:unused},versions});
   await assert.rejects(service[loadWithLifecycle]({credential:'synthetic',binding},unused),/SCOPE_REFUSED/u);
 });
 

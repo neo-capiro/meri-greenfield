@@ -1,3 +1,4 @@
+import {WORKFLOW_BUDGETS} from '../hot-path-budgets.generated.ts';
 /** Temporal owns durable waiting; the activity/SDK owns the only model loop. */
 import {proxyActivities,defineSignal,defineQuery,setHandler,condition} from '@temporalio/workflow';
 import {reconcileAfterFailure} from '../recovery-workflow.ts';
@@ -10,7 +11,7 @@ const uuid=(v:unknown):v is string=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{
 export const controlsAvailable=defineSignal<[{controlId:string}]>('meriControlsAvailable');
 export const lifecycleContinued=defineSignal<[Continued]>('meriLifecycleContinued');
 export const lifecycleState=defineQuery<{state:Terminal|Held|'executing'|'continued';lastControlId:string|null;targetRunId:string|null}>('meriLifecycleState');
-const {executeConversation}=proxyActivities<Activities>({startToCloseTimeout:'30 minutes',heartbeatTimeout:'30 seconds',retry:{maximumAttempts:1}});
+const {executeConversation}=proxyActivities<Activities>({startToCloseTimeout:WORKFLOW_BUDGETS['workflow.conversation.startToClose'],heartbeatTimeout:WORKFLOW_BUDGETS['workflow.conversation.heartbeat'],retry:{maximumAttempts:1}});
 export async function meriConversationLifecycleWorkflow(input:{binding:Binding}):Promise<{state:Terminal|'continued'}>{
  let state:Terminal|Held|'executing'|'continued'='executing',lastControlId:string|null=null,target:Continued|null=null;
  setHandler(controlsAvailable,v=>{if(v&&Object.keys(v).length===1&&uuid(v.controlId))lastControlId=v.controlId;});

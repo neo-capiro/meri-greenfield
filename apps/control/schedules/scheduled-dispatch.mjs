@@ -33,7 +33,7 @@ const resourceSet=scopes=>canonicalSha256(scopes.map(scopeKey).sort());
 const exposed=code=>typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(code)?code:'SCHEDULE_DISPATCH_UNKNOWN';
 
 export function createScheduledDispatch(options) {
- const o=optionsData(options,PORTS,PORTS.slice(0,7)),now=o.now??Date.now,maxRequestMs=o.maxRequestMs??10000;
+ const o=optionsData(options,PORTS,PORTS.slice(0,7)),now=o.now??Date.now,maxRequestMs=o.maxRequestMs;
  const readFiring=sdkMethod(o.scheduleOwner,'readFiring'),openOccurrence=sdkMethod(o.scheduleOwner,'openOccurrence'),settleOccurrence=sdkMethod(o.scheduleOwner,'settleOccurrence'),accept=sdkMethod(o.store,'accept'),readOptional=sdkMethod(o.store,'readOptional');
  const start=sdkMethod(o.dispatcher,'start'),describeRun=sdkMethod(o.runs,'describe'),authorize=sdkMethod(o.authority,'authorize'),readInstruction=sdkMethod(o.taskInstructions,'read');
  const admit=o.runAdmission===undefined?null:sdkMethod(o.runAdmission,'admit');

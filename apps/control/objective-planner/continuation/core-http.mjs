@@ -7,7 +7,7 @@ import {ProductError} from '../../product-access/errors.mjs';import {jsonBody} f
 const PREFIX='/strategy-api',PRODUCER_PATH='/internal/objective-canonical/generation-producer/admit';
 const getters=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 function cancel(response){try{if(response instanceof Response&&!types.isProxy(response))Promise.resolve(getters.body.call(response)?.cancel()).catch(()=>{});}catch{}}
-export function createCorePlannerTransport({origin,fetchImpl,authorization,enabled=false,now=Date.now,maxRequestMs=3000,maxFactBytes=1048576}){
+export function createCorePlannerTransport({origin,fetchImpl,authorization,enabled=false,now=Date.now,maxRequestMs,maxFactBytes=1048576}){
  let base;try{base=new URL(origin);}catch{fail('CONFIGURATION');}
  if(base.protocol!=='https:'||base.pathname!=='/'||base.username||base.password||base.search||base.hash||typeof fetchImpl!=='function'||typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxFactBytes)||maxFactBytes<1||maxFactBytes>16777216)fail('CONFIGURATION');
  const available=()=>enabled&&typeof authorization?.readCredential==='function';

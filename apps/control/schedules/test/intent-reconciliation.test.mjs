@@ -21,7 +21,7 @@ function provider() {
  return {...service,runs,workflowClient,applied,createdAs,schedule};
 }
 async function uncertain(h,intent,to='UNKNOWN'){const b=ownerBinding(intent);await h.scheduleOwner.claim(b,check);if(to==='CLAIMED')return;await h.scheduleOwner.markDispatching(b,check);if(to==='UNKNOWN')await h.scheduleOwner.markUnknown(b,check);}
-const reconcilerFor=(h,scheduleClient,workflowClient)=>createScheduleIntentReconciler({scheduleClient,workflowClient,scheduleOwner:h.scheduleOwner,scheduleNotFoundError:ScheduleNotFoundError,clock:()=>NOW});
+const reconcilerFor=(h,scheduleClient,workflowClient)=>createScheduleIntentReconciler({maxRequestMs:10000,scheduleClient,workflowClient,scheduleOwner:h.scheduleOwner,scheduleNotFoundError:ScheduleNotFoundError,clock:()=>NOW});
 function setup(){const h=harness(),p=provider();return {h,p,reconciler:reconcilerFor(h,p.scheduleClient,p.workflowClient)};}
 const firing=h=>h.scheduleOwner.readFiring({tenantId:'tenant-a',scheduleId:ids.schedule},check);
 const intentState=(h,id)=>h.schedules.state.intents.get(`tenant-a:${id}`).state;

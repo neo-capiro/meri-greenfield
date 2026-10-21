@@ -12,9 +12,9 @@ for(const separateOwner of [false,true])test(`synthetic ABA: ${separateOwner?'an
  // The old split-read owner reaches get; the fixed owner reaches readProjection. Both receive the same restore/recover schedule.
  const journal={...f.journal,get:(key,options)=>window(()=>f.journal.get(key,options),options?.exclusive)};
  const watermark={...f.watermark,readProjection:(...args)=>window(()=>f.watermark.readProjection(...args))};
- f.startup=createRetentionStartup({journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ f.startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  await f.startup.start();saved=f.backup();await f.startup.suppression.suppress({principal:f.principal,subject,reason:'owner request'});
- recoveryOwner=separateOwner?createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now}):f.startup;
+ recoveryOwner=separateOwner?createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now}):f.startup;
  await recoveryOwner.recover();const head=await f.watermark.read();armed=true;
  await assert.rejects(f.startup.gate.assertServable(subject),e=>['RETENTION_RECOVERY_BARRIER','RETENTION_SUPPRESSED'].includes(e.code));
  assert.equal(captured,true);assert.deepEqual(recovered,head,'ABA returns exactly the same sequence AND entry hash');
@@ -46,9 +46,9 @@ test('synthetic atomic read: recovery cannot enter between the memory projection
 
 test('synthetic atomic read: split-read and malformed snapshot stores fail closed rather than guessing unsuppressed',async()=>{
  const f=composeStartup(),subject=subjectOf();const {readProjection,...legacy}=f.watermark;
- assert.throws(()=>createRetentionStartup({journal:f.journal,watermark:legacy,ledgerSink:f.sink,purge:{enabled:false}}),/RETENTION_CONFIGURATION/);
+ assert.throws(()=>createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:legacy,ledgerSink:f.sink,purge:{enabled:false}}),/RETENTION_CONFIGURATION/);
  for(const snapshot of [{watermark:{sequence:0,entrySha256:null}},{projection:undefined,watermark:{sequence:0,entrySha256:null}},{projection:null,watermark:null}]){
-  const startup=createRetentionStartup({journal:f.journal,watermark:{...f.watermark,async readProjection(){return snapshot;}},ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now});
+  const startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal:f.journal,watermark:{...f.watermark,async readProjection(){return snapshot;}},ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now});
   await startup.start();await assert.rejects(startup.gate.assertServable(subject),/RETENTION_RECOVERY_BARRIER/);assert.equal(startup.state().enabled,false);
  }
 });

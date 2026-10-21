@@ -11,7 +11,7 @@ for(const fault of ['denied','revoked','scope','actor','expired'])test(`fresh ${
    return {binding:fault==='actor'?{...b,actorId:'other'}:b,scopes:fault==='scope'?[]:scopes,selectedClientId:id(5),policyRevision:'policy1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+(fault==='expired'?-1:30000)};
   }};
   const store=createPostgresConversationStore({pool:f.pool,transitionAuthority:authority});
-  const service=createConversationLifecycleService({retention:null,store,service:f.service,dispatcher:f.dispatcher,reconcileOriginal:f.reconcileOriginal,sessions:f.sessions,checkpoints:f.checkpoints,nativeAdmission:f.nativeAdmission,approvals:f.approvals});
+  const service=createConversationLifecycleService({maxRequestMs:3000,retention:null,store,service:f.service,dispatcher:f.dispatcher,reconcileOriginal:f.reconcileOriginal,sessions:f.sessions,checkpoints:f.checkpoints,nativeAdmission:f.nativeAdmission,approvals:f.approvals});
   const before=f.state.starts,proof=f.proofs.get(id(220));
   await assert.rejects(service.control({credential:f.credential,input:{controlId:id(901),intent:'resume',checkpointId:id(220),checkpointSha256:proof.checkpointSha256}}),/LIFECYCLE_EFFECT_UNKNOWN/);
   assert.equal(calls,1);assert.equal(f.state.runs.size,1);assert.equal(f.state.starts,before);assert.equal(f.state.continued,0);

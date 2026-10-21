@@ -29,19 +29,19 @@ test('the canonical retention gate composes, suppresses history and still permit
 test('optional serving methods are typed and unknown retention keys remain closed without invoking any owner',()=>{
  const unused=()=>assert.fail('configuration validation must not invoke a retained owner');
  const options={sessions:{authenticateSession:unused,readCurrentState:unused},store:{accept:unused,append:unused,read:unused},dispatcher:{start:unused,cancel:unused},versions};
- for(const retention of [{assertServable:unused},{assertServable:unused,isSuppressed:unused},{assertServable:unused,isSuppressed:unused,withRelease:unused}])assert.doesNotThrow(()=>createConversationService({...options,retention}));
- for(const withRelease of [undefined,null,false,1,'callable',{}])assert.throws(()=>createConversationService({...options,retention:{assertServable:unused,withRelease}}),{code:'CONTROL_CONFIGURATION'});
- assert.throws(()=>createConversationService({...options,retention:{assertServable:unused,withRelease:unused,foreign:unused}}),{message:'INVALID_COMMAND'});
- assert.throws(()=>createConversationService({...options,retention:{assertServable:null,withRelease:unused}}),{code:'CONTROL_CONFIGURATION'});
+ for(const retention of [{assertServable:unused},{assertServable:unused,isSuppressed:unused},{assertServable:unused,isSuppressed:unused,withRelease:unused}])assert.doesNotThrow(()=>createConversationService({maxRequestMs:3000,...options,retention}));
+ for(const withRelease of [undefined,null,false,1,'callable',{}])assert.throws(()=>createConversationService({maxRequestMs:3000,...options,retention:{assertServable:unused,withRelease}}),{code:'CONTROL_CONFIGURATION'});
+ assert.throws(()=>createConversationService({maxRequestMs:3000,...options,retention:{assertServable:unused,withRelease:unused,foreign:unused}}),{message:'INVALID_COMMAND'});
+ assert.throws(()=>createConversationService({maxRequestMs:3000,...options,retention:{assertServable:null,withRelease:unused}}),{code:'CONTROL_CONFIGURATION'});
 });
 
 test('the lifecycle service is composed with an explicit retention decision: a gate, or null when none is configured',async()=>{
  const f=await lifecycleFixture();
  try{
   const {retention,...base}={service:f.service,store:f.store,dispatcher:f.dispatcher,sessions:f.sessions,checkpoints:{async read(){}},reconcileOriginal:async()=>({state:'reconciled'}),retention:null};
-  assert.doesNotThrow(()=>createConversationLifecycleService({...base,retention}));
-  assert.doesNotThrow(()=>createConversationLifecycleService({...base,retention:{assertServable:async()=>{}}}));
+  assert.doesNotThrow(()=>createConversationLifecycleService({maxRequestMs:3000,...base,retention}));
+  assert.doesNotThrow(()=>createConversationLifecycleService({maxRequestMs:3000,...base,retention:{assertServable:async()=>{}}}));
   for(const missing of [{},{retention:undefined},{retention:{}},{retention:{assertServable:true}}])
-   assert.throws(()=>createConversationLifecycleService({...base,...missing}),{code:'LIFECYCLE_CONFIGURATION'});
+   assert.throws(()=>createConversationLifecycleService({maxRequestMs:3000,...base,...missing}),{code:'LIFECYCLE_CONFIGURATION'});
  }finally{f.close();}
 });

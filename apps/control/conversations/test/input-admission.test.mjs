@@ -12,7 +12,7 @@ const input={requestId:id(6),prompt:'Hello'},check=()=>{};
 function fixture({wrapStore=s=>s,retention,dispatcher}={}){
  const f=initialInputFixture(),state=Object.assign(f.state,{time:Date.parse('2026-10-16T12:00:00.000Z'),context:structuredClone({binding,scopes,selectedClientId:id(5)}),revoked:false,starts:[],authReads:0});let serial=100;
  const sessions={async authenticateSession(){state.authReads++;await state.onAuthenticate?.();if(state.revoked)throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});return {principal:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},checkedAtMs:state.time,expiresAtMs:state.time+30000};},async readCurrentState({authentication}){await state.onCurrent?.();return {authenticationSha256:hash(authentication),...structuredClone(state.context),checkedAtMs:state.time,expiresAtMs:state.time+30000};}};
- const store=wrapStore(createPostgresConversationStore({pool:f.pool,now:()=>state.time}),state),service=createConversationService({sessions,store,versions,now:()=>state.time,newId:()=>id(serial++),retention,dispatcher:dispatcher??{async start(value){state.starts.push(value.binding);},async cancel(){}}});
+ const store=wrapStore(createPostgresConversationStore({pool:f.pool,now:()=>state.time}),state),service=createConversationService({maxRequestMs:3000,sessions,store,versions,now:()=>state.time,newId:()=>id(serial++),retention,dispatcher:dispatcher??{async start(value){state.starts.push(value.binding);},async cancel(){}}});
  // Writer-fence-1 input requires its canonical initial-input allocation (0016); a refused allocation leaves admission to report its own refusal.
  const allocate=async i=>{if(state.context.binding.writerFence===1)await service.allocateInput({credential:'synthetic',input:i}).catch(()=>{});};
  const admit=async(i=input)=>{await allocate(i);return service.admitInput({credential:'synthetic',input:i});},submit=async(i=input)=>{await allocate(i);return service.submit({credential:'synthetic',input:i});},history=()=>service.history({credential:'synthetic'});
@@ -25,7 +25,7 @@ test('admission stores one full immutable request and queued event with zero dis
 });
 
 test('admit then submit and exact replays preserve existing submit wire and a single upstream Temporal workflow identity',async()=>{
- const workflows=new Set(),starts=[];const dispatcher=createTemporalConversationDispatcher({taskQueue:'synthetic',client:{connection:{async withDeadline(_,run){return run();},async withAbortSignal(_,run){return run();}},workflow:{async start(_,options){starts.push(options);workflows.add(options.workflowId);},getHandle(){return {async cancel(){}};}}}});
+ const workflows=new Set(),starts=[];const dispatcher=createTemporalConversationDispatcher({maxRequestMs:3000,taskQueue:'synthetic',client:{connection:{async withDeadline(_,run){return run();},async withAbortSignal(_,run){return run();}},workflow:{async start(_,options){starts.push(options);workflows.add(options.workflowId);},getHandle(){return {async cancel(){}};}}}});
  const f=fixture({dispatcher}),receipt=await f.admit(),submitted=await f.submit(),again=await f.submit();assert.deepEqual(Object.keys(submitted).sort(),['lastSequence','replayed','requestId','run']);assert.equal(submitted.requestId,receipt.request.requestId);assert.equal(submitted.replayed,true);assert.equal(again.replayed,true);assert.equal(starts.length,2);assert.deepEqual([...workflows],[workflowId(binding)]);assert.ok(starts.every(s=>s.workflowIdReusePolicy==='REJECT_DUPLICATE'&&s.workflowIdConflictPolicy==='USE_EXISTING'));assert.equal(queuedEvents(f).length,1);
 });
 
@@ -34,7 +34,7 @@ test('lost admission commit acknowledgement recovers positively from existing hi
 });
 
 test('lost start acknowledgement after admission retries the same fixed workflow and never adds another queued event',async()=>{
- const workflows=new Set(),attempts=[];let unknown=true;const dispatcher=createTemporalConversationDispatcher({taskQueue:'synthetic',client:{connection:{async withDeadline(_,run){return run();},async withAbortSignal(_,run){return run();}},workflow:{async start(_,options){attempts.push(options.workflowId);workflows.add(options.workflowId);if(unknown)throw Error('ack lost');},getHandle(){return {async cancel(){}};}}}});
+ const workflows=new Set(),attempts=[];let unknown=true;const dispatcher=createTemporalConversationDispatcher({maxRequestMs:3000,taskQueue:'synthetic',client:{connection:{async withDeadline(_,run){return run();},async withAbortSignal(_,run){return run();}},workflow:{async start(_,options){attempts.push(options.workflowId);workflows.add(options.workflowId);if(unknown)throw Error('ack lost');},getHandle(){return {async cancel(){}};}}}});
  const f=fixture({dispatcher});await f.admit();await assert.rejects(f.submit(),/TEMPORAL_DISPATCH_UNKNOWN/);assert.equal((await f.history()).request.requestId,input.requestId);unknown=false;await f.submit();assert.deepEqual(attempts,[workflowId(binding),workflowId(binding)]);assert.equal(workflows.size,1);assert.equal(queuedEvents(f).length,1);
 });
 

@@ -18,7 +18,7 @@ function parseKey(key){if(typeof key!=='string')fail('RETENTION_INVALID_REQUEST'
 /** `maxRequestMs` bounds every client-side wait (lease acquisition and each statement) independently of the server-side statement and
  * lock timeouts; `now` is the clock those bounds read. The proposal-continuation target route is source-qualified only against an
  * explicitly marked synthetic pool until its exact-target table and same-transaction trigger receive a central migration. */
-export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=10000,memoryContinuationPurgeSourceQualified=false}){
+export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs,memoryContinuationPurgeSourceQualified=false}){
  if(typeof pool?.connect!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000||typeof memoryContinuationPurgeSourceQualified!=='boolean'||memoryContinuationPurgeSourceQualified&&pool?.retentionSourceQualificationOnly!==true)fail('RETENTION_CONFIGURATION');
  const storeError=(code,cause)=>Object.assign(new Error(code),{code,cause});
  const wrap=e=>storeError(e?.code&&String(e.code).startsWith('RETENTION_')?e.code:'RETENTION_STORE_UNAVAILABLE',e);

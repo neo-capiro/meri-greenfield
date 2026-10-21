@@ -113,7 +113,7 @@ test('credential/provider/opaque properties and duplicate SDK read identities ar
 });
 test('model booleans and opaque callback properties cannot act as current output access',async()=>{
  const f=await fixture();await f.retain();await f.status('completed');
- for(const record of [true,{allowed:true},{credential:'SYNTHETIC'},{...f.pending}]){const owner=createSelectedOutputRetention({journal:f.store.selectedOutputs,currentOutputAccess:async()=>record,now:()=>f.state.now});await assert.rejects(f.load(owner));}
+ for(const record of [true,{allowed:true},{credential:'SYNTHETIC'},{...f.pending}]){const owner=createSelectedOutputRetention({maxRequestMs:3000,journal:f.store.selectedOutputs,currentOutputAccess:async()=>record,now:()=>f.state.now});await assert.rejects(f.load(owner));}
 });
 test('original pointer with hostile context getters is rejected without getter execution or SQL allocation',async()=>{
  const f=await fixture();let effects=0;const p={...f.prepared};Object.defineProperty(p,'context',{enumerable:true,get(){effects++;return f.context;}});
@@ -123,7 +123,7 @@ test('concurrent exact retention uses canonical transaction serialization and cr
  const f=await fixture(),results=await Promise.all([f.retain(),f.retain()]);assert.equal(f.outputs.size,1);assert.equal(results.filter(r=>r.replayed).length,1);
 });
 test('foreign journal and private native owner diagnostics are rejected without exposing details',async()=>{
- const f=await fixture();assert.throws(()=>createSelectedOutputRetention({journal:{retain:async()=>{},load:async()=>f.prepared},currentOutputAccess:f.currentOutputAccess,now:()=>f.state.now}),/CONFIGURATION/);
- await f.retain();await f.status('completed');const owner=createSelectedOutputRetention({journal:f.store.selectedOutputs,currentOutputAccess:async()=>{throw Error('SYNTHETIC_PRIVATE_OWNER_DIAGNOSTIC');},now:()=>f.state.now});
+ const f=await fixture();assert.throws(()=>createSelectedOutputRetention({maxRequestMs:3000,journal:{retain:async()=>{},load:async()=>f.prepared},currentOutputAccess:f.currentOutputAccess,now:()=>f.state.now}),/CONFIGURATION/);
+ await f.retain();await f.status('completed');const owner=createSelectedOutputRetention({maxRequestMs:3000,journal:f.store.selectedOutputs,currentOutputAccess:async()=>{throw Error('SYNTHETIC_PRIVATE_OWNER_DIAGNOSTIC');},now:()=>f.state.now});
  await assert.rejects(f.load(owner),e=>e.message==='SELECTED_OUTPUT_ACCESS_REFUSED'&&!e.message.includes('PRIVATE'));
 });

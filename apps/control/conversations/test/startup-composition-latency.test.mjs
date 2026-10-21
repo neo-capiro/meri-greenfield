@@ -52,7 +52,7 @@ const [{createNativeIdentityContext},{createCoreMembershipGate},{createActionSes
  'apps/worker/conversation/activity.mjs',
  'apps/runtime/native-authority/remote-task-http.mjs',
  'apps/runtime/native-authority/remote-task-client.mjs',
- 'packages/runtime/runner-load-budget.mjs',
+ 'packages/runtime/hot-path-budgets.mjs',
  'apps/runtime/native-authority/task-verifier.mjs',
  'apps/control/conversations/test/store-fixture.mjs',
  'packages/contracts/validate.mjs',
@@ -96,7 +96,7 @@ async function composedStartup({latencyMs=300,originalExpiresAtMs=Date.now()+900
  const store={accept:unused,async append(b,event){assert.deepEqual(b,binding);counts.storeAppend++;trace.push(`publish:${event.data?.state??event.type}`);
    saved.run.state=event.data.state;saved.lastSequence++;return {scopes,sequence:saved.lastSequence};},
   async read(){counts.storeRead++;return structuredClone(saved);},
-  lifecycle:{begin:unused,change:unused,get:unused,controls:unused,claim:unused,checkpoint:unused,readCheckpoint:unused,
+  lifecycle:{...{pollMs:100},begin:unused,change:unused,get:unused,controls:unused,claim:unused,checkpoint:unused,readCheckpoint:unused,
    async execution(){return null;},continuation:unused,cancel:unused,readStopFence:unused}};
  const dispatcher={start:unused,cancel:unused,signal:unused};
  const basic=createConversationService({sessions,store,dispatcher,versions,maxRequestMs:serverMs});
@@ -150,7 +150,7 @@ async function composedStartup({latencyMs=300,originalExpiresAtMs=Date.now()+900
   return {...runtime,cwd:resolve(repo,'synthetic-workspace').replaceAll('\\','/')+'/'+binding.conversationId,
    sessionStore:{async load(){throw Error('SDK_SESSION_FORBIDDEN');},async append(){throw Error('SDK_SESSION_FORBIDDEN');}}};
  };
- const activity=createConversationActivity({runOwner,prepareRuntime,query:()=>{counts.query++;return {async *[Symbol.asyncIterator](){
+ const activity=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime,query:()=>{counts.query++;return {async *[Symbol.asyncIterator](){
   trace.push('native-prepare-start');await beforeModel();throw Error('MODEL_CALL_FORBIDDEN');}};},
   now:Date.now,loadMaxMs:budget.stages.load.maxMs,loadExpiresAtMs:budget.stages.load.expiresAtMs,
   runtimeMaxMs:budget.stages.runtime.maxMs,runtimeExpiresAtMs:budget.stages.runtime.expiresAtMs,

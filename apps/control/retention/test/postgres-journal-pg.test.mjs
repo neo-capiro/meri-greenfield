@@ -21,7 +21,7 @@ async function fixture(t){
  const listen=(await pool.query("SELECT current_setting('listen_addresses') AS l")).rows[0].l;assert.equal(listen,'','task-owned socket-only cluster');
  await pool.query('TRUNCATE meri_conversations.retention_purge_targets,meri_conversations.retention_purges,meri_conversations.retention_subjects,meri_artifacts.retention_purges,meri_artifacts.retention_subjects CASCADE');
  await pool.query('TRUNCATE meri_conversations.conversations CASCADE');await pool.query('TRUNCATE meri_artifacts.versions,meri_artifacts.heads CASCADE');
- const c=clock(),sink=createMemoryLedgerSink(),ledger=createRetentionLedger({sink,now:c.now}),journal=createPostgresRetentionJournal({pool}),serving=createServingGate(),store=bucket();
+ const c=clock(),sink=createMemoryLedgerSink(),ledger=createRetentionLedger({maxHeadMs:10000,sink,now:c.now}),journal=createPostgresRetentionJournal({maxRequestMs:10000,pool}),serving=createServingGate(),store=bucket();
  const suppression=createSuppressionOwner({ledger,journal,ownership:journal,serving,now:c.now});const {current,facts}=currentFacts(c);
  const storage=createVersionStorage({send:store.send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:{getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},now:c.now,maxRequestMs:200});
  const keyFor=st=>`${tenant}/${st.objectId}/${st.sha256}`;
@@ -83,7 +83,7 @@ test('the PostgreSQL journal round-trips suppression and release for conversatio
 });
 test('finding 3: two connections that both observed an absent row cannot both create it; concurrent suppressions of one subject leave exactly one row and a consistent generation after reconciliation',async t=>{
  const f=await fixture(t),s=await f.conversation(),key=subjectKey(s);
- const other=new pg.Pool({host:socket,user:'postgres',database:'postgres',max:4});t.after(()=>other.end());const second=createPostgresRetentionJournal({pool:other});
+ const other=new pg.Pool({host:socket,user:'postgres',database:'postgres',max:4});t.after(()=>other.end());const second=createPostgresRetentionJournal({maxRequestMs:10000,pool:other});
  assert.equal(await f.journal.get(key),null);assert.equal(await second.get(key),null,'both observed absence');
  const row=n=>({state:'SUPPRESSED',ownerActorId:owner,suppressedAtMs:f.clock.now(),ledgerSequence:n,entrySha256:String(n).repeat(64),authorization:{mode:'owner',receiptId:null},outstandingAccess:{signedUrlsExpireAtMs:null,inFlightRuns:[]},cancelled:[],purge:null});
  const outcomes=await Promise.allSettled([f.journal.set(key,row(1),{expected:null}),second.set(key,row(2),{expected:null})]);
@@ -173,7 +173,7 @@ test('DA-1 on PostgreSQL: a conversation snapshot carrying a real artifact versi
  assert.equal(mixed.state,'BLOCKED');assert.ok(mixed.blocks.some(b=>b.reason==='ROW_TARGET_SUBJECT_MISMATCH'));await assert.rejects(f.executor().execute(mixed),/RETENTION_PURGE_BLOCKED/);
  assert.ok(mixed.steps.every(st=>f.store.has(f.keyFor(st),st.versionId)),'zero storage deletes');assert.equal(await f.entryCount(e1),1);assert.equal(await f.versionCount(made.subject.subjectId),1);assert.deepEqual((await f.sink.read()).map(r=>r.state),['SUPPRESSED']);
  f.current.inventories.set(key,admitted(enumerateReferences(snapshot(s,{sdkEntries:[e1]}))));const plan=planFrom(f,s,await f.journal.get(key));f.seed(plan);assert.equal(plan.state,'PLANNED');
- const lossy=faultyPool(f.pool,{dropAfterSend:['COMMIT']}),rowsOverLossy=createPostgresRetentionJournal({pool:lossy}).rows;
+ const lossy=faultyPool(f.pool,{dropAfterSend:['COMMIT']}),rowsOverLossy=createPostgresRetentionJournal({maxRequestMs:10000,pool:lossy}).rows;
  const exec=createPurgeExecutor({storage:f.storage,ledger:f.ledger,journal:f.journal,keyFor:f.keyFor,facts:f.facts,serving:f.serving,rows:rowsOverLossy,enabled:true,now:f.clock.now});
  await assert.rejects(exec.execute(plan),e=>e.code==='RETENTION_COMMIT_UNKNOWN');assert.equal(await f.entryCount(e1),0,'the commit really happened; only its acknowledgement was lost');
  const last=(await f.sink.read()).at(-1);assert.equal(last.state,'PURGE_UNKNOWN');assert.equal(last.reason,'RETENTION_COMMIT_UNKNOWN');assert.deepEqual(last.facts.rowSteps.map(r=>r.state),['UNKNOWN']);assert.ok(last.facts.steps.every(x=>x.state==='EXECUTED'));
@@ -183,12 +183,12 @@ test('DA-1 on PostgreSQL: a conversation snapshot carrying a real artifact versi
 });
 test('DA-4 on PostgreSQL: a ROLLBACK and an advisory unlock whose replies are lost retire the real session, so later borrowers are not blocked by its transaction or recovery lock',async t=>{
  const f=await fixture(t),s=await f.conversation(),key=subjectKey(s);
- const noRollback=faultyPool(f.pool,{dropBeforeSend:['ROLLBACK']}),j=createPostgresRetentionJournal({pool:noRollback});
+ const noRollback=faultyPool(f.pool,{dropBeforeSend:['ROLLBACK']}),j=createPostgresRetentionJournal({maxRequestMs:10000,pool:noRollback});
  const value={state:'SUPPRESSED',ownerActorId:owner,suppressedAtMs:f.clock.now(),ledgerSequence:1,entrySha256:'1'.repeat(64),purge:null};
  await assert.rejects(j.set(key,value,{expected:'0'.repeat(64)}),/RETENTION_STALE_WRITE/,'the refusal holds the subject lock and the shared recovery lock in a transaction that was never rolled back');
  assert.ok(noRollback.sessions[0].releases[0] instanceof Error);assert.ok(await sessionEnded(f.pool,noRollback.sessions[0].pid),'the open transaction is ended with its session');
  assert.equal(await recoveryLockFree(f.pool),true,'recovery is not blocked by a leaked shared lock');assert.equal((await f.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'})).state,'SUPPRESSED','a later write on the same subject is not blocked');
- const noUnlock=faultyPool(f.pool,{dropBeforeSend:['SELECT pg_advisory_unlock']}),j2=createPostgresRetentionJournal({pool:noUnlock});
+ const noUnlock=faultyPool(f.pool,{dropBeforeSend:['SELECT pg_advisory_unlock']}),j2=createPostgresRetentionJournal({maxRequestMs:10000,pool:noUnlock});
  await assert.rejects(j2.exclusive(async()=>'pass'),/RETENTION_STORE_UNAVAILABLE/,'the caller is told the unlock outcome is unknown');
  assert.ok(noUnlock.sessions[0].releases[0] instanceof Error);assert.ok(await sessionEnded(f.pool,noUnlock.sessions[0].pid),'the session holding the exclusive recovery lock is ended');
  assert.equal(await recoveryLockFree(f.pool),true);assert.equal((await f.suppression.release({principal:f.principal,subject:s,reason:'withdrawn'})).state,'RELEASED','transitions take the shared recovery lock again');

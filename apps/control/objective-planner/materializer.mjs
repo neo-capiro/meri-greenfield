@@ -4,7 +4,7 @@ import {plannerObservation} from './core-receipts.mjs';
 import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
-export function createCorePlannerMaterializer({transport,now=Date.now,maxRequestMs=3000,maxFactBytes=1048576}){
+export function createCorePlannerMaterializer({transport,now=Date.now,maxRequestMs,maxFactBytes=1048576}){
  if(typeof transport?.request!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxFactBytes)||maxFactBytes<1||maxFactBytes>16777216)fail('CONFIGURATION');
  async function call(method,value){
   const {work:raw,signal,deadlineMs}=own(value,['work','deadlineMs'],['signal']),w=work(raw);nativeSignal(signal);if(!Number.isSafeInteger(deadlineMs))fail('CONFIGURATION');

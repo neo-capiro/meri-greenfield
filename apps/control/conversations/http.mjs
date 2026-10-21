@@ -12,7 +12,7 @@ const streamPath=/^\/api\/conversations\/events\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-
 function cursor(value){if(value===null)return 0;if(!/^(0|[1-9][0-9]*)$/u.test(value)||!Number.isSafeInteger(Number(value)))fail('INVALID_CURSOR');return Number(value);}
 function closedBody(body,required,optional=[]){try{return own(body,required,optional);}catch{fail('INVALID_REQUEST');}}
 function publicRequest(route,body){try{return receiveConversationRequest(route,new TextEncoder().encode(JSON.stringify(body)));}catch{fail('INVALID_REQUEST');}}
-export function createConversationApplication({service,now=Date.now,maxRequestBytes=131072,maxRequestMs=3000}){
+export function createConversationApplication({service,now=Date.now,maxRequestBytes=131072,maxRequestMs,eventBudgets}){
  if(['submit','history','cancel'].some(k=>typeof service?.[k]!=='function')||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('HTTP_CONFIGURATION');
  return Object.freeze({async handle(request){let life;try{
    if(!request||types.isProxy(request))fail('INVALID_REQUEST');
@@ -42,7 +42,7 @@ export function createConversationApplication({service,now=Date.now,maxRequestBy
    // The window's own opening session pass and first page read authenticate and validate the cursor and selector before any header
    // or event is exposed; a refusal before that point is answered here with its own status, as a separate history read was.
    const opening=Promise.withResolvers();opening.promise.catch(()=>{});
-   const events=createConversationEventSource({service,credential,after,signal:info.signal,now,refused:opening.reject,
+   const events=createConversationEventSource({...eventBudgets,service,credential,after,signal:info.signal,now,refused:opening.reject,
     opened(run){if(selector!==undefined&&selector!==run.binding.conversationId)fail('CONVERSATION_SELECTOR_REFUSED');opening.resolve();}});
    // Cancelling an already errored window rejects with its own scrubbed error; the refusal to answer is the original one.
    try{await life.run(()=>opening.promise);life.check();}catch(error){await events.cancel().catch(()=>{});throw error;}

@@ -19,7 +19,7 @@ function fixture(){
  const store={async accept(){throw Error('unexpected write');},async append(){throw Error('unexpected write');},
   async read(_binding,{after,limit}){state.reads++;return {run:run(),request:{requestId:id(6),prompt:'Synthetic',skill:null,window:null,windowRequest:null},events:events.filter(e=>e.sequence>after&&e.sequence<=state.visible).slice(0,limit),lastSequence:state.visible};}};
  const service=createConversationService({sessions,store,versions,maxRequestMs:1000,dispatcher:{async start(){throw Error('unexpected dispatch');},async cancel(){throw Error('unexpected cancel');}}});
- const open=(options={})=>createConversationEventSource({service,credential:'action-session',pollMs:10,...options}).getReader();
+ const open=(options={})=>createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service,credential:'action-session',pollMs:10,...options}).getReader();
  return {state,open,service};
 }
 const take=async(reader,n)=>{const out=[];while(out.length<n){const next=await reader.read();assert.equal(next.done,false);out.push(next.value.sequence);}return out;};
@@ -60,7 +60,7 @@ async function coreFixture(total){
   async read(_binding,{after,limit}){return {run:{binding,scopes,state:state.visible>=total?'completed':'running',createdAt:new Date().toISOString(),policyRevision:'policy1',versions},request:{requestId:id(6),prompt:'Synthetic',skill:null,window:null,windowRequest:null},events:events.filter(e=>e.sequence>after&&e.sequence<=state.visible).slice(0,limit),lastSequence:state.visible};}};
  const service=createConversationService({sessions:owner,store,versions,maxRequestMs:1000,dispatcher:{async start(){throw Error('unexpected dispatch');},async cancel(){throw Error('unexpected cancel');}}});
  for(const k of Object.keys(calls))calls[k]=0;
- return {state,calls,core:()=>calls.identity+calls.context+calls.membership,close:()=>owner.close(),reader:()=>createConversationEventSource({service,credential:issued.credential,pollMs:10}).getReader()};
+ return {state,calls,core:()=>calls.identity+calls.context+calls.membership,close:()=>owner.close(),reader:()=>createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service,credential:issued.credential,pollMs:10}).getReader()};
 }
 const drain=async reader=>{const out=[];for(;;){const next=await reader.read();if(next.done)return out;out.push(next.value.sequence);}};
 test('Core calls per delivered event: four per page after the window check (one fused observation per recheck)',async t=>{
@@ -79,7 +79,7 @@ test('the subscription cap closes an idle window cleanly, and a reconnect resume
   // An idle window closes cleanly at its cap; the observer then resumes from its cursor.
   assert.equal((await reader.read()).done,true,'a clean close, not SUBSCRIPTION_UNAVAILABLE');assert.ok(Date.now()-started<1000,'ended by the cap, not by an unbounded wait');
  }finally{reader.releaseLock();}
- f.state.visible=3;const resumed=createConversationEventSource({service:f.service,credential:'action-session',after:1,pollMs:10}).getReader();
+ f.state.visible=3;const resumed=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service:f.service,credential:'action-session',after:1,pollMs:10}).getReader();
  try{assert.deepEqual(await take(resumed,2),[2,3]);}finally{resumed.releaseLock();}
 });
 test('a recheck that could not finish before the window ends is not started: the window closes cleanly instead',async()=>{
@@ -90,7 +90,7 @@ test('a recheck that could not finish before the window ends is not started: the
   assert.equal((await reader.read()).done,true,'a clean close, not SUBSCRIPTION_UNAVAILABLE');
   assert.equal(f.state.rechecks,rechecks,'the recheck that could not fit was not started');
  }finally{reader.releaseLock();}
- f.state.passMs=0;f.state.visible=2;const resumed=createConversationEventSource({service:f.service,credential:'action-session',after:1,pollMs:10}).getReader();
+ f.state.passMs=0;f.state.visible=2;const resumed=createConversationEventSource({...{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000,},service:f.service,credential:'action-session',after:1,pollMs:10}).getReader();
  try{assert.deepEqual(await take(resumed,1),[2],'the reconnect resumes exactly after the accepted cursor');}finally{resumed.releaseLock();}
 });
 test('idle windows end with a clean close at the cap every time, not with the lifetime deadline',async()=>{

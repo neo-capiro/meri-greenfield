@@ -47,7 +47,7 @@ export function createCoreObjectiveGenerationTransport(configuration){
   source=data(own(c.source,['generationJobId','binding']));uuid(source.generationJobId);validateShape('RunBinding',source.binding);
   const base=new URL(c.origin);
   if(typeof c.origin!=='string'||base.protocol!=='https:'||base.pathname!=='/'||base.username||base.password||base.search||base.hash||base.origin!==c.origin)refuse();
-  origin=base.origin;fetchImpl=c.fetchImpl;readCredential=c.authorization===null?null:storageMethod(c.authorization,'readCredential');enabled=c.enabled??false;now=c.now??Date.now;maxRequestMs=c.maxRequestMs??3000;maxFactBytes=c.maxFactBytes??131072;
+  origin=base.origin;fetchImpl=c.fetchImpl;readCredential=c.authorization===null?null:storageMethod(c.authorization,'readCredential');enabled=c.enabled??false;now=c.now??Date.now;maxRequestMs=c.maxRequestMs;maxFactBytes=c.maxFactBytes??131072;
   if(typeof fetchImpl!=='function'||types.isProxy(fetchImpl)||typeof enabled!=='boolean'||typeof now!=='function'||types.isProxy(now)||
    !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxFactBytes)||maxFactBytes<1||maxFactBytes>1048576)refuse();
  }catch{refuse();}

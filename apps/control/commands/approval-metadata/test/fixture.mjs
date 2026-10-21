@@ -32,7 +32,7 @@ export function setup(){
  const raw={title:' Review recommendation ',clientId:id(5),dueDate:'2030-03-17'};
  const p=createMetadataPolicyFixture({binding,scopes,requiredApprover:{tenantId:'tenant',actorId:'reviewer'},expiresAt:new Date(NOW+60000).toISOString()});
  const sql=createMetadataPoolFixture(),store=createPostgresApprovalMetadataStore({pool:sql.pool});let n=100,effects=0;
- const owner=createTaskCreateApprovalMetadataOwner({store,commandContext,preparePolicy:p.preparePolicy,now:()=>NOW,newId:()=>id(n++)});
+ const owner=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store,commandContext,preparePolicy:p.preparePolicy,now:()=>NOW,newId:()=>id(n++)});
  const operation={id:'create_task',version:'0.2.0'},action='task.create';
  const tool=createCommandToolInterface({operation,action,outputShape:'TaskCreateToolResult',commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:owner,executor:{async execute(){effects++;return {status:'indeterminate',outcome:null};}},now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536}});
  const normalized=commandToolValidators.normalizeCommandToolInput(action,raw,{commandContext}).input;

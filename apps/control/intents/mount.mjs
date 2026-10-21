@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** The control intent port for the worker's `meri_intents` server (`apps/worker/conversation/intents/runtime.mjs`):
  * `{readAvailability, prepare}` over the preparers the trusted composition built for this run. It adds no
  * authorization of its own: each preparer's canonical owner checks current authority, and execution stays with the
@@ -18,7 +19,7 @@ import {createIntentResultRelease} from './result-release.mjs';
 import {COMMAND_INTENT_OPERATIONS} from './command-preparer.mjs';
 import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
 import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
-const DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
+const DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=fixedHotPathBudget('intents.availability');
 const OWNERS=Object.freeze({command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS});
 const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';

@@ -56,7 +56,7 @@ export async function createLocalActionDemo(options){
   limitDeadline(cutoff);await current(signal);if(!preparationAllowed||canonicalSha256(selection.binding)!==canonicalSha256(f.binding))deny('COMMAND_PREPARATION_REFUSED');
   return {authorized:true,selectionSha256,binding:f.binding,scopes:f.scopes,requiredApprover:f.proposal.requiredApprover,proposalExpiresAt:new Date(cutoff).toISOString(),checkedAtMs:now(),expiresAtMs:cutoff};
  };
- const metadata=createTaskCreateApprovalMetadataOwner({store:createPostgresApprovalMetadataStore({pool:metadataSql.pool}),commandContext:f.context,preparePolicy,now,newId:randomUUID});
+ const metadata=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store:createPostgresApprovalMetadataStore({pool:metadataSql.pool}),commandContext:f.context,preparePolicy,now,newId:randomUUID});
  const authorityPorts=Object.fromEntries(Object.entries(f.ports).map(([name,fn])=>[name,async(...args)=>{await current(args.at(-1)?.signal);if(name==='verifyCapability'&&args[0]!==commandCredential)deny('ACCESS_DENIED');const value=await fn(...args);await current(args.at(-1)?.signal);return value;}]));
  const authority=createCommandAuthority({authorityPorts,now,maxFactBytes:65536});
  const approvalStore={async getCurrent({proposalId,commandSha256,signal}){await current(signal);const decision=approvals.get(proposalId);if(!decision||decision.commandSha256!==commandSha256)deny('COMMAND_APPROVAL_REFUSED');return JSON.stringify({decision,checkedAtMs:now(),revoked:false});}};

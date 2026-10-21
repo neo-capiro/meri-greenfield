@@ -46,7 +46,7 @@ test('memory proposals owned outside Meri block the plan with zero deletes until
 });
 
 test('a row owner that does not admit a registered class (the PostgreSQL schema before the amendment migration) refuses the whole plan at preflight: zero deletes and nothing recorded',async()=>{
- const pg=createPostgresRetentionJournal({pool:{connect(){throw Error('no connection expected');},query(){throw Error('no query expected');}}});
+ const pg=createPostgresRetentionJournal({maxRequestMs:10000,pool:{connect(){throw Error('no connection expected');},query(){throw Error('no query expected');}}});
  const f=composeStartup({purge:true,rowPreflight:pg.rows.preflight}),s=subjectOf();await f.startup.start();const {plan}=await prepared(f,s,everyClass(s));
  const before=(await f.sink.read()).length;
  await assert.rejects(f.startup.purge.execute(plan),e=>e.code==='RETENTION_ROW_CLASS_UNSUPPORTED');

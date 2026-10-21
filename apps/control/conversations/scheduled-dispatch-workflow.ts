@@ -1,3 +1,4 @@
+import {WORKFLOW_BUDGETS} from './hot-path-budgets.generated.ts';
 /** Durable owner of ONE Temporal schedule firing. The schedule action starts this workflow with {projection, generation, task};
  * Temporal's server-set TemporalScheduledById/TemporalScheduledStartTime and the scheduled workflow ID fix the occurrence identity.
  * The workflow never fires, retries or re-identifies anything itself: an uncertain dispatch is reconciled against the canonical
@@ -12,12 +13,12 @@ interface Activities {
  reconcileScheduledOccurrence(input:{occurrence:Occurrence}):Promise<ScheduledOutcome>;
  cancelScheduledOccurrence(input:{occurrence:Occurrence}):Promise<ScheduledOutcome>;
 }
-const {dispatchScheduledOccurrence,reconcileScheduledOccurrence}=proxyActivities<Activities>({startToCloseTimeout:'1 minute',retry:{maximumAttempts:1}});
-const {cancelScheduledOccurrence}=proxyActivities<Activities>({startToCloseTimeout:'1 minute',retry:{maximumAttempts:1}});
+const {dispatchScheduledOccurrence,reconcileScheduledOccurrence}=proxyActivities<Activities>({startToCloseTimeout:WORKFLOW_BUDGETS['workflow.schedule.startToClose'],retry:{maximumAttempts:1}});
+const {cancelScheduledOccurrence}=proxyActivities<Activities>({startToCloseTimeout:WORKFLOW_BUDGETS['workflow.schedule.startToClose'],retry:{maximumAttempts:1}});
 // Server-set system search attributes of a schedule-started workflow (typed keys; no caller-supplied value is trusted).
 const scheduledBy={name:'TemporalScheduledById',type:'KEYWORD'} as const,scheduledStart={name:'TemporalScheduledStartTime',type:'DATETIME'} as const;
 /** Longer than the activity's startToClose bound plus the store/Temporal request bounds, so a lost attempt has settled. */
-export const settleAfterUnknown='2 minutes';
+export const settleAfterUnknown=WORKFLOW_BUDGETS['workflow.schedule.settle'];
 async function attempt(activity:()=>Promise<ScheduledOutcome>):Promise<ScheduledOutcome>{
  try{return await activity();}catch(error){if(isCancellation(error))throw error;return {outcome:'UNKNOWN',occurrenceKey:null,binding:null,code:'SCHEDULE_ACTIVITY_UNKNOWN',admitted:null};}
 }

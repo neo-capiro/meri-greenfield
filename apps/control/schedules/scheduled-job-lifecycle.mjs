@@ -10,7 +10,7 @@ import {sdkMethod} from './temporal-schedule-mutations.mjs';
 
 const same=(a,b)=>hash(a)===hash(b),fail=()=>denySchedule('SCHEDULE_JOB_UNKNOWN');
 export function createScheduledJobLifecycle(configuration){
- const {store,runControl,retirement,now=Date.now,maxRequestMs=10000}=own(configuration,['store','runControl','retirement'],['now','maxRequestMs']);
+ const {store,runControl,retirement,now=Date.now,maxRequestMs}=own(configuration,['store','runControl','retirement'],['now','maxRequestMs']);
  const lineage=createScheduledJobLineage({store}),facet=Object.getOwnPropertyDescriptor(store,'allocations');if(!facet||!Object.hasOwn(facet,'value'))fail();
  const allocation=sdkMethod(facet.value,'read'),cancelRun=sdkMethod(runControl,'cancel'),retire=sdkMethod(retirement,'retire');
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail();

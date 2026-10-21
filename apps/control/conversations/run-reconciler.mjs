@@ -13,7 +13,7 @@ const checkpointed=state=>state==='paused'||state==='waiting-for-approval';
 const retired=saved=>saved.record?.state==='RETIRED'&&saved.record.resource?.physicalStopProven===true;
 /** Nothing to stop: the store's no-authority evidence that this attempt never claimed an allocation (never a missing row). */
 const foreclosedAttempt=saved=>saved.record?.state===FORECLOSED;
-export function createRunReconciler({store,retirement,now=Date.now,newId=randomUUID,maxReconcileMs=60000}){
+export function createRunReconciler({store,retirement,now=Date.now,newId=randomUUID,maxReconcileMs}){
  if(['read','append'].some(k=>typeof store?.[k]!=='function')||typeof store?.allocations?.read!=='function'||typeof retirement?.retire!=='function'||typeof now!=='function'||typeof newId!=='function'||!Number.isSafeInteger(maxReconcileMs)||maxReconcileMs<1||maxReconcileMs>120000)fail('RECONCILE_CONFIGURATION');
  /** Idempotent and bounded. Outcomes: settled (already terminal), reconciled (this call wrote the terminal event),
   * checkpointed (paused/waiting run, owned by continuation), unknown (physical stop not proven: a barrier, nothing written). */

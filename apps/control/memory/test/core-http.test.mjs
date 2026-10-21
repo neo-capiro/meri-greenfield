@@ -6,7 +6,7 @@ import {NOW,id} from './fixtures.mjs';
 const json=(value,init={})=>new Response(JSON.stringify(value),{status:200,headers:{'content-type':'application/json'},...init});
 function setup({reply=()=>json({ok:true}),credentials}={}){
  const seen=[];
- const transport=createCoreMemoryTransport({origin:'https://core.example',now:()=>NOW,
+ const transport=createCoreMemoryTransport({maxRequestMs:10000,origin:'https://core.example',now:()=>NOW,
   getCredentials:async v=>{seen.push({credentials:v});return credentials??{tenantId:v.tenantId,actorId:v.actorId,bearerToken:'synthetic-token',serviceSecret:'synthetic-secret',expiresAtMs:NOW+5000};},
   fetchImpl:async(url,init)=>{seen.push({url,init});return reply(url,init);}});
  return {transport,seen};
@@ -26,7 +26,7 @@ test('credentials for another identity, non-200, wrong media type and oversize a
  await refused(setup({reply:()=>json({},{status:500})}));
  await refused(setup({reply:()=>new Response('{}',{status:200,headers:{'content-type':'text/plain'}})}));
  await refused(setup({reply:()=>json({pad:'x'.repeat(300000)})}));
- assert.throws(()=>createCoreMemoryTransport({origin:'http://core.example',getCredentials:()=>{},now:()=>NOW}),e=>productFailure(e)?.code==='PRODUCT_CONFIGURATION');
+ assert.throws(()=>createCoreMemoryTransport({maxRequestMs:10000,origin:'http://core.example',getCredentials:()=>{},now:()=>NOW}),e=>productFailure(e)?.code==='PRODUCT_CONFIGURATION');
  // A bearer that is the service secret never leaves (the reads broker's credential invariant).
  await refused(setup({credentials:{tenantId:'t1',actorId:'a1',bearerToken:'same',serviceSecret:'same',expiresAtMs:NOW+5000}}));
 });

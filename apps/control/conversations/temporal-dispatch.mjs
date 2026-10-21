@@ -6,7 +6,7 @@ import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-b
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 export const workflowId=b=>`meri:${b.tenantId}:${b.conversationId}:${b.runId}`;
-export function createTemporalConversationDispatcher({client,taskQueue,lifecycle=false,now=Date.now,maxRequestMs=3000}){
+export function createTemporalConversationDispatcher({client,taskQueue,lifecycle=false,now=Date.now,maxRequestMs}){
  if(typeof client?.workflow?.start!=='function'||typeof client?.workflow?.getHandle!=='function'||typeof taskQueue!=='string'||!taskQueue||taskQueue.length>256||typeof lifecycle!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('TEMPORAL_CONFIGURATION');
  /** Temporal 1.24 Connection scopes reach the actual gRPC deadline/call.cancel.
   * An outer promise timeout alone cannot cancel a workflow RPC. Never retry or

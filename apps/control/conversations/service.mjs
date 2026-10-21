@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Authenticated request/history control; policy remains in existing session owners. */
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -17,8 +18,8 @@ export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
 /** Events released per observation page: the history route's own page maximum. */
 const OBSERVE_PAGE_EVENTS=100;
 /** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
-const WINDOW_END_SLACK_MS=50;
-export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets}){
+const WINDOW_END_SLACK_MS=fixedHotPathBudget('conversation.window.slack');
+export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets}){
  const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
  if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function')fail('CONTROL_CONFIGURATION');

@@ -17,7 +17,7 @@ function harness({replies={},available=true,clock=NOW}={}){
   if(next instanceof Error)throw next;if(next===undefined||next==='unavailable')return {kind:'unavailable'};
   return {kind:'unqualified-response',status:method.startsWith('read')?200:201,value:next};};
  const transport={available:()=>state.available,...Object.fromEntries(['admit','publish','accept','readAdmission','readRequest','complete','readCompletion'].map(m=>[m,respond(m)]))};
- const create=(options={})=>createCoreObjectiveGenerationClient({transport,source:x.source,executionSelection:x.executionSelection,issuance:x.issuance,now:()=>state.now,...options});
+ const create=(options={})=>createCoreObjectiveGenerationClient({maxRequestMs:3000,maxFreshMs:3000,transport,source:x.source,executionSelection:x.executionSelection,issuance:x.issuance,now:()=>state.now,...options});
  return {x,calls,state,queue,transport,create};
 }
 

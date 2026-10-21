@@ -29,7 +29,7 @@ test('read binds full original actor/run/binding and command hash',async()=>{
 });
 test('lost insert acknowledgment retains possible row and UNKNOWN without retry',async()=>{
  const f=setup(),original=f.sql.pool.connect;f.sql.pool.connect=async()=>{const c=await original();return {...c,async query(q){await c.query(q);throw new Error('private database canary');}};};
- const store=createPostgresApprovalMetadataStore({pool:f.sql.pool}),owner=createTaskCreateApprovalMetadataOwner({store,commandContext:f.commandContext,preparePolicy:f.p.preparePolicy,now:()=>NOW,newId:()=>id(80)});
+ const store=createPostgresApprovalMetadataStore({pool:f.sql.pool}),owner=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store,commandContext:f.commandContext,preparePolicy:f.p.preparePolicy,now:()=>NOW,newId:()=>id(80)});
  await assert.rejects(owner.prepare(f.call),e=>e.outcome==='UNKNOWN'&&!e.message.includes('canary'));assert.equal(f.sql.rows.size,1);assert.equal(f.sql.calls.filter(x=>typeof x==='object').length,1);
 });
 test('current read release denial retains immutable metadata and prevents executor call',async()=>{
@@ -40,11 +40,11 @@ test('metadata pool configuration requires finite bounds before any connect',()=
 });
 test('query ACK corruption is UNKNOWN and borrowed client is evicted without pool close',async()=>{
  const f=setup(),original=f.sql.pool.connect;f.sql.pool.connect=async()=>{const c=await original();return{...c,async query(q){const r=await c.query(q);r.rows[0].payload_sha256='b'.repeat(64);return r;}};};
- const store=createPostgresApprovalMetadataStore({pool:f.sql.pool}),owner=createTaskCreateApprovalMetadataOwner({store,commandContext:f.commandContext,preparePolicy:f.p.preparePolicy,now:()=>NOW});
+ const store=createPostgresApprovalMetadataStore({pool:f.sql.pool}),owner=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store,commandContext:f.commandContext,preparePolicy:f.p.preparePolicy,now:()=>NOW});
  await assert.rejects(owner.prepare(f.call),e=>e.outcome==='UNKNOWN');assert.equal(f.sql.rows.size,1);assert(f.sql.releases[0]);
 });
 test('known policy deadline published before parked receipt bounds call with no insert',async()=>{
- const f=setup(),started=Date.now(),owner=createTaskCreateApprovalMetadataOwner({store:f.store,commandContext:f.commandContext,preparePolicy:async({limitDeadline})=>{limitDeadline(started+25);return new Promise(()=>{});}});
+ const f=setup(),started=Date.now(),owner=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store:f.store,commandContext:f.commandContext,preparePolicy:async({limitDeadline})=>{limitDeadline(started+25);return new Promise(()=>{});}});
  await assert.rejects(owner.prepare({...f.call,deadlineMs:started+1000}),e=>e.message==='DEADLINE'&&e.outcome==='NOT_STORED');assert.equal(f.sql.calls.length,0);
 });
 test('late acquired SQL client issues no query after cancellation and is released',async()=>{
@@ -63,6 +63,6 @@ test('statement timeout preserves a caller pool bound shorter than local 5000 ca
 test('sanitizing a trusted-error class never invokes a hostile message accessor',async()=>{
  const {CommandError}=await import('../../protocol.mjs'),f=setup();let reads=0;
  const error=new CommandError('DEADLINE');Object.defineProperty(error,'message',{get(){reads++;return 'SECRET';}});
- const owner=createTaskCreateApprovalMetadataOwner({store:f.store,commandContext:f.commandContext,preparePolicy:async()=>{throw error;},now:()=>NOW});
+ const owner=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store:f.store,commandContext:f.commandContext,preparePolicy:async()=>{throw error;},now:()=>NOW});
  await assert.rejects(owner.prepare(f.call),e=>e.outcome==='NOT_STORED'&&!e.message.includes('SECRET'));assert.equal(reads,0);assert.equal(f.sql.calls.length,0);
 });

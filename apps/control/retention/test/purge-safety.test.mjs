@@ -75,7 +75,7 @@ test('DA-1 per-step state: a step that throws after its request is recorded UNKN
 });
 
 test('DA-1 adapter routing: the PostgreSQL row owner\'s preflight refuses a row class of another subject kind and a malformed target without a connection, and its purge refuses before any transaction',async()=>{
- let connects=0;const journal=createPostgresRetentionJournal({pool:{async connect(){connects++;throw new Error('no database in this test');}}});
+ let connects=0;const journal=createPostgresRetentionJournal({maxRequestMs:10000,pool:{async connect(){connects++;throw new Error('no database in this test');}}});
  const conversation=`tenant-a:conversation:${randomUUID()}`,artifact=`tenant-a:artifact:${randomUUID()}`;
  const sdk={workflowId:'a'.repeat(64),className:'sdkSession',target:{className:'sdkSession',runId:randomUUID(),sessionId:randomUUID(),subpath:'main',sequence:1}},version={workflowId:'b'.repeat(64),className:'artifactVersions',target:{className:'artifactVersions',artifactVersionId:randomUUID()}};
  assert.equal(await journal.rows.preflight(conversation,{rowSteps:[sdk]}),true);assert.equal(await journal.rows.preflight(artifact,{rowSteps:[version]}),true);

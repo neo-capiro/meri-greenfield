@@ -16,14 +16,14 @@ const disabledPurge=Object.freeze({enabled:false,async execute(){fail('RETENTION
 /** `purge` is required: `{enabled:false}`, or `{enabled:true,storage,rows,facts,keyFor}` with every deletion owner bound. `ownership`
  * composes the suppression owner (trusted application ownership reader); without it only the read gate and recovery exist. The optional
  * trusted recovery continuation runs inside the existing exclusion before the watermark is certified and serving opens. */
-export function createRetentionStartup({journal,watermark=null,ledgerSink=null,ownership=null,authorization=refusingOwnerMediation,cancellation=null,purge,now=Date.now,recoverPrerequisitesExclusive=null}){
+export function createRetentionStartup({journal,watermark=null,ledgerSink=null,ownership=null,authorization=refusingOwnerMediation,cancellation=null,purge,now=Date.now,recoverPrerequisitesExclusive=null,ledgerMaxHeadMs}){
  if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof purge?.enabled!=='boolean'||watermark!==null&&['read','readProjection','advanceProjection','record'].some(m=>typeof watermark?.[m]!=='function')||ledgerSink!==null&&(typeof ledgerSink?.append!=='function'||typeof ledgerSink?.read!=='function'))fail('RETENTION_CONFIGURATION');
  if(recoverPrerequisitesExclusive!==null&&typeof recoverPrerequisitesExclusive!=='function')fail('RETENTION_CONFIGURATION');
  const owners=purge.enabled?purge:{storage:null,rows:null,facts:null,keyFor:null};
  if(purge.enabled&&(typeof owners.storage?.deleteVersion!=='function'||typeof owners.rows?.purge!=='function'||typeof owners.facts!=='object'||owners.facts===null||typeof owners.keyFor!=='function'))fail('RETENTION_CONFIGURATION');
  clock(now);const fence=createServingFence();
  const unavailable=ledgerSink===null?'RETENTION_LEDGER_UNAVAILABLE':watermark===null?'RETENTION_WATERMARK_UNAVAILABLE':null;
- const ledger=ledgerSink?acknowledgedLedger({ledger:createRetentionLedger({sink:ledgerSink,now}),fence,watermark}):null;
+ const ledger=ledgerSink?acknowledgedLedger({ledger:createRetentionLedger({sink:ledgerSink,now,maxHeadMs:ledgerMaxHeadMs}),fence,watermark}):null;
  const tracked=watermark&&ledger?watermarkedJournal({journal,watermark,fence,ledger}):journal;
  // Every ordinary tracked read requires one backing-store snapshot of the projection and its recovered watermark.
  const gate=createRetentionReadGate({journal:tracked,serving:fence});

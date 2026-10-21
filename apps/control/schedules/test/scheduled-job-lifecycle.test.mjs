@@ -83,9 +83,9 @@ test('lost stop acknowledgement remains occupied; a later observation uses only 
  await h.retire();assert.equal((await h.inspect()).state,'SETTLED');assert.equal(h.calls.cancel.length,1);
 });
 test('accessor/missing trusted ports and cancelled/expired operation fail before any cancellation',async t=>{
- const h=await scheduledJobFixture();t.after(h.close);let getters=0;assert.throws(()=>createScheduledJobLifecycle({...h.options,runControl:{get cancel(){getters++;return ()=>{};}}}));assert.equal(getters,0);
- assert.throws(()=>createScheduledJobLifecycle({...h.options,retirement:undefined}));const abort=new AbortController();abort.abort();await assert.rejects(h.owner.cancel({...h.selection,signal:abort.signal,deadlineMs:h.now()+1000}));await assert.rejects(h.owner.cancel({...h.selection,deadlineMs:h.now()}));assert.equal(h.calls.cancel.length,0);
- const store={...h.store};Object.defineProperty(store,'initialInputs',{get(){getters++;return h.store.initialInputs;}});assert.throws(()=>createScheduledJobLifecycle({...h.options,store}));assert.equal(getters,0);
+ const h=await scheduledJobFixture();t.after(h.close);let getters=0;assert.throws(()=>createScheduledJobLifecycle({maxRequestMs:10000,...h.options,runControl:{get cancel(){getters++;return ()=>{};}}}));assert.equal(getters,0);
+ assert.throws(()=>createScheduledJobLifecycle({maxRequestMs:10000,...h.options,retirement:undefined}));const abort=new AbortController();abort.abort();await assert.rejects(h.owner.cancel({...h.selection,signal:abort.signal,deadlineMs:h.now()+1000}));await assert.rejects(h.owner.cancel({...h.selection,deadlineMs:h.now()}));assert.equal(h.calls.cancel.length,0);
+ const store={...h.store};Object.defineProperty(store,'initialInputs',{get(){getters++;return h.store.initialInputs;}});assert.throws(()=>createScheduledJobLifecycle({maxRequestMs:10000,...h.options,store}));assert.equal(getters,0);
 });
 test('a control change during explicit retirement withholds settlement despite a stopped current target',async t=>{
  const h=await scheduledJobFixture();t.after(h.close);await h.running();await h.pause();const target=await h.resume();await h.running(target);

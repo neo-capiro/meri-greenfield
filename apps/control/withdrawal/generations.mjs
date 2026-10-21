@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** S4 live revocation by withdrawal generations (design section 1.1 S4; owner answer Q-X7 accepted 15 October 2026: 30 s
  * propagation target and 30 s fail-closed staleness bound, measured end to end) for all four post-shipment features.
  *
@@ -14,7 +15,7 @@ export const WITHDRAWAL_FEATURES=Object.freeze({
  editor:Object.freeze({scopes:Object.freeze(['platform-feature','tenant-enablement','membership','artifact-suppression']),refusal:'WOPI_REVOKED'}),
  bridge:Object.freeze({scopes:Object.freeze(['platform-feature','tenant-enablement','membership','conversation','device-pairing']),refusal:'BRIDGE_REVOKED'}),
 });
-export const WITHDRAWAL_LIMITS=Object.freeze({propagationMs:30000,stalenessMs:30000});
+export const WITHDRAWAL_LIMITS=Object.freeze({propagationMs:fixedHotPathBudget('withdrawal.propagation'),stalenessMs:fixedHotPathBudget('withdrawal.staleness')});
 const fault=code=>Object.assign(new Error(code),{code});
 const generation=v=>Number.isSafeInteger(v)&&v>=0;
 function feature(name){const f=WITHDRAWAL_FEATURES[name];if(!f)throw fault('WITHDRAWAL_CONFIGURATION');return f;}

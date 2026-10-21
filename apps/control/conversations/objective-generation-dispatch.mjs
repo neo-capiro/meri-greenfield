@@ -10,7 +10,7 @@ import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-b
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 export const objectiveGenerationWorkflowId=({tenantId,generationJobId})=>`meri:objective-generation:${tenantId}:${generationJobId}`;
-export function createObjectiveGenerationDispatcher({client,taskQueue,now=Date.now,maxRequestMs=3000}){
+export function createObjectiveGenerationDispatcher({client,taskQueue,now=Date.now,maxRequestMs}){
  if(typeof client?.workflow?.start!=='function'||typeof client?.workflow?.getHandle!=='function'||typeof taskQueue!=='string'||!taskQueue||taskQueue.length>256||
     typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('TEMPORAL_CONFIGURATION');
  async function dispatch({signal,deadlineMs},operation){

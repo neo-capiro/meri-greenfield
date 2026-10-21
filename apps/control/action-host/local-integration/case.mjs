@@ -18,7 +18,7 @@ export function createLocalApplicationCase(options){
  const {sessionFactory,...base}=own(options,['mode','deadlineMs'],['now','newId','sessionFactory']);if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw Error('LOCAL_CASE_CONFIGURATION');
  const s=createState(base),p=createPorts(s),{now,newId,binding,state,active}=s;
  const sessions=sessionFactory?sessionFactory({...p.session,now,deadlineMs:s.deadlineMs}):null;
- const issuance=sessions?createActionSessionApplication({owner:sessions,now}):null;
+ const issuance=sessions?createActionSessionApplication({maxRequestMs:3000,owner:sessions,now}):null;
  const limits={maxRequestMs:3000,maxFactBytes:131072,maxResponseBytes:131072,maxCleanupMs:100};
  const ownedRows=data({runId:binding.runId,tenantId:binding.tenantId,readGrantId:s.readFacts.grantId,commandGrantId:s.commandFacts.grantId,allocationSha256:canonicalSha256(s.allocation)});
  const context=data({binding,clientResolution:{reference:s.clientId,clientId:s.clientId}});

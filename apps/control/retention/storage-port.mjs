@@ -23,7 +23,7 @@ export function classifyHeadOutcome({response=null,error=null,versionId,permissi
  if(response.VersionId!==versionId)return {outcome:'UNKNOWN',reason:'VERSION_MISMATCH',status:code,name:null};
  return {outcome:'PRESENT',reason:'VERSION_PRESENT',status:code??200,name:null};
 }
-export function createVersionStorage({send,bucket,expectedBucketOwner,permissions,now,maxRequestMs=15000}){
+export function createVersionStorage({send,bucket,expectedBucketOwner,permissions,now,maxRequestMs}){
  if(typeof send!=='function'||typeof bucket!=='string'||!bucket||!/^[0-9]{12}$/u.test(String(expectedBucketOwner))||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1)fail('RETENTION_CONFIGURATION');
  const p=parsePermissions(permissions),tick=clock(now);
  /** Bounded call: the deadline wins even when the handler ignores its abort signal; a late result is discarded, never classified. */

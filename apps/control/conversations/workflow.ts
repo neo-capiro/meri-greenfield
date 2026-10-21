@@ -1,9 +1,10 @@
+import {WORKFLOW_BUDGETS} from './hot-path-budgets.generated.ts';
 // Product Temporal workflow: deterministic durable dispatch, never a model/tool loop.
 import {proxyActivities} from '@temporalio/workflow';
 import {reconcileAfterFailure} from './recovery-workflow.ts';
 interface Binding {tenantId:string;actorId:string;conversationId:string;runId:string;attemptId:string;workerId:string;writerFence:number}
 interface ConversationActivities {executeConversation(input:{binding:Binding}):Promise<{state:'completed'|'failed'|'cancelled'}>}
-const {executeConversation}=proxyActivities<ConversationActivities>({startToCloseTimeout:'30 minutes',heartbeatTimeout:'30 seconds',retry:{maximumAttempts:1}});
+const {executeConversation}=proxyActivities<ConversationActivities>({startToCloseTimeout:WORKFLOW_BUDGETS['workflow.conversation.startToClose'],heartbeatTimeout:WORKFLOW_BUDGETS['workflow.conversation.heartbeat'],retry:{maximumAttempts:1}});
 export async function meriConversationWorkflow(input:{binding:Binding}):Promise<{state:'completed'|'failed'|'cancelled'}>{return reconcileAfterFailure(input,()=>executeConversation(input));}
 
 // Separate opt-in definition preserves legacy in-flight workflow history.

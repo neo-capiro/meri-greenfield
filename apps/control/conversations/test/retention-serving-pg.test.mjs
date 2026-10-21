@@ -16,9 +16,9 @@ test('an independent PostgreSQL connection suppresses the conversation between t
  // The retention projection references the conversation row; the conversation fixture's own store is in-process, so the trusted conversation record is seeded here.
  const projection={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes:[],createdAt:new Date().toISOString(),policyRevision:'p'};
  await poolA.query('INSERT INTO meri_conversations.conversations(tenant_id,conversation_id,owner_actor_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING',[binding.tenantId,binding.conversationId,binding.actorId,projection,require_hash(projection)]);
- const journalA=createPostgresRetentionJournal({pool:poolA}),journalB=createPostgresRetentionJournal({pool:poolB}),serving=createServingGate(),gate=createRetentionReadGate({journal:journalA,serving});
+ const journalA=createPostgresRetentionJournal({maxRequestMs:10000,pool:poolA}),journalB=createPostgresRetentionJournal({maxRequestMs:10000,pool:poolB}),serving=createServingGate(),gate=createRetentionReadGate({journal:journalA,serving});
  // The conversation fixture's store is in-process, so trusted ownership for the suppression owner is scripted; the journal rows are real.
- const ownerB=createSuppressionOwner({ledger:createRetentionLedger({sink:createMemoryLedgerSink(),now:Date.now}),journal:journalB,ownership:{async ownerOf(){return binding.actorId;}},serving:createServingGate(),now:Date.now});
+ const ownerB=createSuppressionOwner({ledger:createRetentionLedger({maxHeadMs:10000,sink:createMemoryLedgerSink(),now:Date.now}),journal:journalB,ownership:{async ownerOf(){return binding.actorId;}},serving:createServingGate(),now:Date.now});
  const subject={tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId},principal={tenantId:binding.tenantId,actorId:binding.actorId};const state={calls:0,suppressAt:null};
  const port={async assertServable(s){state.calls++;if(state.suppressAt===state.calls){state.suppressAt=null;try{await ownerB.suppress({principal,subject,reason:'from another connection'});}catch(error){state.error=error;throw error;}}return gate.assertServable(s);}};
  const f=await applicationFixture({retention:port});try{

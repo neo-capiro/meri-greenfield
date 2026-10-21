@@ -15,7 +15,7 @@ export async function fixture(){const f=await lifecycleFixture();let serial=900;
  async function allocate(b){const a=await allocateOriginal(f.store,b);allocations.set(b.runId,a);return a;}
  // The native stop owner's effect: physical stop and grant revocation recorded in the canonical journal.
  async function retire(b){const a=allocations.get(b.runId);await recordRetired(f.store,a);revoked.set(b.runId,{grantIds:[id(240)],receiptSha256:hash({retired:a.key})});}
- const reconciler=createRunReconciler({store:f.store,retirement:{retire:({binding:b})=>retire(b)}});
+ const reconciler=createRunReconciler({maxReconcileMs:60000,store:f.store,retirement:{retire:({binding:b})=>retire(b)}});
  async function running(b){for(const state of ['starting','running'])await f.store.append(b,status(state),check);}
  async function complete(b){await running(b);const k={binding:b,scopes,selectedClientId:id(5)},p=await f.store.completions.begin({...k,completionId:id(serial++),checkpointId:id(serial++)},check),proof=structuredClone(await f.capture(p.checkpointId));proof.checkpoint.binding=b;proof.checkpoint.workspace.binding=b;proof.checkpoint.workspaceSha256=hash(proof.checkpoint.workspace);proof.checkpoint.lastEventSequence=p.captureSequence;proof.checkpointSha256=hash(proof.checkpoint);proof.sourceRequestSha256=p.sourceRequestSha256;proof.contextSha256=p.contextSha256;
   await f.store.completions.publish({...k,completionId:p.completionId,proof,events:[{contractVersion:'0.1.0',eventId:p.verifiedEventId,createdAt:at,type:'checkpoint.verified',data:{checkpointId:p.checkpointId}},{contractVersion:'0.1.0',eventId:p.completedEventId,createdAt:at,type:'run.status',data:{state:'completed',reasonCode:null}}]},check);return p;}

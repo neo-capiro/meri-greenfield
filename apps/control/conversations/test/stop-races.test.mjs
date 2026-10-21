@@ -21,7 +21,7 @@ async function stopFixture({cancelJournal,cancelWorkflow,stopOriginal,maxRequest
  const native={async call(operation,input,{signal}){calls.native.push({operation,input});assert.equal(signal.aborted,false);assert.ok(['completed','failed','cancelled'].includes((await f.store.read(binding,{after:0,limit:1},()=>{})).run.state),'native cleanup follows the durable terminal fence');return stopOriginal?stopOriginal(input,signal):{...input,expiresAtMs:1};}};
  // Stop's cleanup settles after its answer: record each reconcile outcome, and let a test wait for all of them.
  const reconcile=createOriginalReconciler({native,timeoutMs:maxRequestMs}),reconcileOriginal=input=>{const outcome=reconcile(input);pending.push(outcome.then(()=>calls.reconciled.push('reconciled'),()=>calls.reconciled.push('UNKNOWN')));return outcome;};
- const make=()=>createConversationLifecycleService({retention:null,service:f.service,store,dispatcher,reconcileOriginal,maxRequestMs,checkpoints:{async read(){throw Error('unused');}},sessions:f.sessions,newId:()=>id(n++)});
+ const make=()=>createConversationLifecycleService({maxRequestMs:3000,retention:null,service:f.service,store,dispatcher,reconcileOriginal,maxRequestMs,checkpoints:{async read(){throw Error('unused');}},sessions:f.sessions,newId:()=>id(n++)});
  const publish=state=>f.service.publish({credential:f.credential,binding,event:status(n++,state)});
  async function running(){await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});await publish('starting');await publish('running');}
  const read=async()=>{const saved=await f.store.read(binding,{after:0,limit:100},()=>{});return {state:saved.run.state,cancelled:saved.events.filter(e=>e.data?.reasonCode==='USER_CANCELLED').length};};
@@ -97,7 +97,7 @@ for(const lost of [false,true])test(`disconnect immediately after the durable ca
 
 test('public HTTP Stop answers the committed fence when native cleanup is UNKNOWN; the cleanup is still attempted',async()=>{
  const x=await stopFixture({async stopOriginal(){throw Error('revocation UNKNOWN');}});
- try{await x.running();const app=createConversationLifecycleApplication({service:x.make()}),response=await app.handle(new Request('https://meri.invalid/api/conversations/cancel',{method:'POST',headers:{authorization:`Bearer ${x.f.credential}`,'content-type':'application/json'},body:'{}'}));assert.equal(response.status,200);assert.deepEqual(await response.json(),{state:'cancelled'});await x.drain();assert.deepEqual(x.calls.reconciled,['UNKNOWN']);assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
+ try{await x.running();const app=createConversationLifecycleApplication({maxRequestMs:3000,eventBudgets:{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000},service:x.make()}),response=await app.handle(new Request('https://meri.invalid/api/conversations/cancel',{method:'POST',headers:{authorization:`Bearer ${x.f.credential}`,'content-type':'application/json'},body:'{}'}));assert.equal(response.status,200);assert.deepEqual(await response.json(),{state:'cancelled'});await x.drain();assert.deepEqual(x.calls.reconciled,['UNKNOWN']);assert.equal(x.calls.cancels.length,1);assert.equal(x.calls.native.length,1);assert.deepEqual(await x.read(),{state:'cancelled',cancelled:1});}finally{x.f.close();}
 });
 
 test('revoked session refuses Stop before any fence or native effect',async()=>{
@@ -123,11 +123,11 @@ test('the lifecycle owner refuses composition without journal or dispatcher canc
  const f=await applicationFixture({transitions:true,initialInput:true});
  try{const base={service:f.service,checkpoints:{async read(){}},sessions:f.sessions,retention:null,reconcileOriginal:async()=>({state:'reconciled'})};
   const journal={...f.store.lifecycle};delete journal.cancel;
-  assert.throws(()=>createConversationLifecycleService({...base,store:{...f.store,lifecycle:journal},dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
+  assert.throws(()=>createConversationLifecycleService({maxRequestMs:3000,...base,store:{...f.store,lifecycle:journal},dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
   const noFence={...f.store.lifecycle};delete noFence.readStopFence;
-  assert.throws(()=>createConversationLifecycleService({...base,store:{...f.store,lifecycle:noFence},dispatcher:{...f.dispatcher,async signal(){},async cancel(){}}}),/LIFECYCLE_CONFIGURATION/);
-  assert.throws(()=>createConversationLifecycleService({...base,store:f.store,dispatcher:{async start(){},async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
-  assert.throws(()=>createConversationLifecycleService({...base,reconcileOriginal:undefined,store:f.store,dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
+  assert.throws(()=>createConversationLifecycleService({maxRequestMs:3000,...base,store:{...f.store,lifecycle:noFence},dispatcher:{...f.dispatcher,async signal(){},async cancel(){}}}),/LIFECYCLE_CONFIGURATION/);
+  assert.throws(()=>createConversationLifecycleService({maxRequestMs:3000,...base,store:f.store,dispatcher:{async start(){},async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
+  assert.throws(()=>createConversationLifecycleService({maxRequestMs:3000,...base,reconcileOriginal:undefined,store:f.store,dispatcher:{...f.dispatcher,async signal(){}}}),/LIFECYCLE_CONFIGURATION/);
  }finally{f.close();}
 });
 
@@ -137,7 +137,7 @@ function temporalClient(failure){
  const metadata={get:()=>[]},calls=[];
  const connection={callContextStorage:new AsyncLocalStorage(),withDeadline:Connection.prototype.withDeadline,withAbortSignal:Connection.prototype.withAbortSignal,withMetadata:Connection.prototype.withMetadata,operatorService:{},healthService:{},plugins:[],
   workflowService:{async requestCancelWorkflowExecution(request){calls.push(request.workflowExecution.workflowId);if(failure)throw Object.assign(Error(`${failure.code} ${failure.details}`),{...failure,metadata});return {};}}};
- return {calls,dispatcher:createTemporalConversationDispatcher({client:new Client({connection,namespace:'synthetic-only'}),taskQueue:'synthetic-only',lifecycle:true})};
+ return {calls,dispatcher:createTemporalConversationDispatcher({maxRequestMs:3000,client:new Client({connection,namespace:'synthetic-only'}),taskQueue:'synthetic-only',lifecycle:true})};
 }
 test('Temporal cancel: requested, definitive NOT_FOUND, and every other failure UNKNOWN',async()=>{
  const ok=temporalClient();assert.deepEqual(await ok.dispatcher.cancel({binding}),{workflow:'CANCEL_REQUESTED'});assert.deepEqual(ok.calls,[workflowId(binding)]);

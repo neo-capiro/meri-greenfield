@@ -28,12 +28,12 @@ function syntheticPool(){
 }
 
 test('memory continuation row source is disabled by default, then admits only the exact conversation target when explicitly qualified',async()=>{
- const f=syntheticPool(),closed=createPostgresRetentionJournal({pool:f.pool});
+ const f=syntheticPool(),closed=createPostgresRetentionJournal({maxRequestMs:10000,pool:f.pool});
  await assert.rejects(closed.rows.preflight(key,plan),/RETENTION_ROW_CLASS_UNSUPPORTED/);
  await assert.rejects(closed.rows.purge(key,plan),/RETENTION_ROW_CLASS_UNSUPPORTED/);
  assert.deepEqual(f.queries,[],'default production path does not acquire a lease');
- assert.throws(()=>createPostgresRetentionJournal({pool:{...f.pool,retentionSourceQualificationOnly:false},memoryContinuationPurgeSourceQualified:true}),/RETENTION_CONFIGURATION/,'an unmarked pool cannot enable the source-only route');
- const qualified=createPostgresRetentionJournal({pool:f.pool,memoryContinuationPurgeSourceQualified:true});
+ assert.throws(()=>createPostgresRetentionJournal({maxRequestMs:10000,pool:{...f.pool,retentionSourceQualificationOnly:false},memoryContinuationPurgeSourceQualified:true}),/RETENTION_CONFIGURATION/,'an unmarked pool cannot enable the source-only route');
+ const qualified=createPostgresRetentionJournal({maxRequestMs:10000,pool:f.pool,memoryContinuationPurgeSourceQualified:true});
  assert.equal(await qualified.rows.preflight(key,plan),true);
  for(const target of [
   {...step.target,table:'runs'},
@@ -46,7 +46,7 @@ test('memory continuation row source is disabled by default, then admits only th
 });
 
 test('qualified source records exact target under current plan, deletes the selected row, reads it back and projects state in the same transaction',async()=>{
- const f=syntheticPool(),journal=createPostgresRetentionJournal({pool:f.pool,memoryContinuationPurgeSourceQualified:true});
+ const f=syntheticPool(),journal=createPostgresRetentionJournal({maxRequestMs:10000,pool:f.pool,memoryContinuationPurgeSourceQualified:true});
  const result=await journal.rows.purge(key,plan);
  assert.deepEqual(result,[{workflowId:step.workflowId,className:step.className,target:step.target,deleted:1,state:'EXECUTED'}]);
  const recorded=f.queries.find(q=>q.sql.startsWith('INSERT INTO meri_conversations.memory_proposal_retention_targets'));
@@ -61,7 +61,7 @@ test('qualified source records exact target under current plan, deletes the sele
 });
 
 test('qualified source reprojects executed and unknown memory targets from a retention ledger projection',async()=>{
- const f=syntheticPool(),journal=createPostgresRetentionJournal({pool:f.pool,memoryContinuationPurgeSourceQualified:true});
+ const f=syntheticPool(),journal=createPostgresRetentionJournal({maxRequestMs:10000,pool:f.pool,memoryContinuationPurgeSourceQualified:true});
  const value={state:'SUPPRESSED',ledgerSequence:4,entrySha256:'e'.repeat(64),ownerActorId:'actor-a',suppressedAtMs:1000,
   purge:{state:'UNKNOWN',planSha256,ledgerSequence:4,steps:[],rowSteps:[{...step,state:'UNKNOWN'}]}};
  await journal.set(key,value,{expected:hash(projection)});
@@ -72,7 +72,7 @@ test('qualified source reprojects executed and unknown memory targets from a ret
 });
 
 test('a stale or unrecorded plan cannot delete a memory continuation row',async()=>{
- const f=syntheticPool(),journal=createPostgresRetentionJournal({pool:f.pool,memoryContinuationPurgeSourceQualified:true});
+ const f=syntheticPool(),journal=createPostgresRetentionJournal({maxRequestMs:10000,pool:f.pool,memoryContinuationPurgeSourceQualified:true});
  await assert.rejects(journal.rows.purge(key,{...plan,planSha256:'0'.repeat(64)}),/RETENTION_PURGE_PLAN_MISMATCH/);
  assert.ok(f.queries.some(q=>q.sql==='ROLLBACK'));
  assert.ok(!f.queries.some(q=>q.sql.startsWith('DELETE FROM meri_conversations.memory_proposal_contexts')));

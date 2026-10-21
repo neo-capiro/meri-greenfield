@@ -89,7 +89,7 @@ async function metadata(f,kind){
  if(kind==='not-stored')policy.state.denyPhase='prepare';
  if(kind==='unknown'){const connect=sql.pool.connect;sql.pool.connect=async()=>{const c=await connect();return{...c,async query(q){const result=await c.query(q);if(q.text.startsWith('INSERT'))throw Error('SECRET_ACK');return result;}};};}
  const store=createPostgresApprovalMetadataStore({pool:sql.pool});let n=800;
- f.t.commandOptions.approvalMetadataOwner=createTaskCreateApprovalMetadataOwner({store,commandContext:f.t.f.context,preparePolicy:policy.preparePolicy,now:f.t.clock,newId:()=>id(n++)});return{sql,policy};
+ f.t.commandOptions.approvalMetadataOwner=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store,commandContext:f.t.f.context,preparePolicy:policy.preparePolicy,now:f.t.clock,newId:()=>id(n++)});return{sql,policy};
 }
 for(const [kind,outcome]of [['stored','STORED_NOT_RELEASED'],['unknown','UNKNOWN']])test(`application independent actual metadata ${kind} outcome survives HTTP`,async()=>{
  const f=await fixture(),m=await metadata(f,kind),d=await f.call('draft',{selection:f.t.wanted});assert.equal(d.response.status,200,d.text);const r=await f.call('prepare',{draft:d.value});refused(r);assert.equal(r.value.error.outcome,outcome);assert.equal(m.sql.rows.size,1);assert.equal(f.t.f.state.fetches,0);

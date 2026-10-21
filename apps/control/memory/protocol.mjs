@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Memory transport paths and ceilings (routes.mjs owns the handlers and policy). Shared by the control route boundary and the
  * runtime product dispatcher so the public allowlist and the mount cannot drift apart. Import-light on purpose: composer files load
  * this without the producer, journal or Core client graph.
@@ -10,6 +11,6 @@ export const MEMORY_PATHS=Object.freeze({
  reviewList:'/api/memory/review/list',reviewApprove:'/api/memory/review/approve',reviewReject:'/api/memory/review/reject'});
 /** Transport ceilings for the memory mount; the control's own limits can only lower them. A listing page carries at most 50
  * candidates of 4000 characters with 16 sources each (under 1 MiB); a proposal body is a few KiB. */
-export const MEMORY_LIMITS=Object.freeze({maxRequestMs:30000,maxRequestBytes:65536,maxResponseBytes:1048576});
+export const MEMORY_LIMITS=Object.freeze({maxRequestMs:fixedHotPathBudget('memory.request.max'),maxRequestBytes:65536,maxResponseBytes:1048576});
 /** The fixed mount's answer while no memory application is composed (disabled, unconfigured or missing its owners). */
 export const memoryUnavailable=()=>Response.json({error:{code:'MEMORY_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});

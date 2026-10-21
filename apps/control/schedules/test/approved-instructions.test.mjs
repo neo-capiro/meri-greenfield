@@ -25,7 +25,7 @@ function setup(operation='schedule_task',options={}){
  const state={row:{projection:clone(intent.projection),generation:intent.generation,activeIntent:null,intent:clone(intent)},entry:custody(prepared),calls:[],reads:0};
  const ports={scheduleOwner:{async readFiring(selection,check){state.calls.push(['firing',selection]);check();state.reads++;if(state.onFiring)return state.onFiring(selection,check);return state.row;}},
   preparations:{async readPreparedSchedule(selection){state.calls.push(['preparation',selection]);if(state.onLookup)return state.onLookup(selection);return state.entry;}}};
- const reader=createApprovedScheduleInstructions({...ports,now:()=>NOW,...options});
+ const reader=createApprovedScheduleInstructions({maxRequestMs:10000,...ports,now:()=>NOW,...options});
  const request={tenantId:intent.projection.owner.tenantId,scheduleId:intent.projection.scheduleId,generation:intent.generation,task:clone(intent.configuration.task),instructionSha256:intent.taskInstructionSha256};
  return {state,ports,reader,request,prepared,intent};
 }
@@ -156,7 +156,7 @@ test('abort during the final read prevents release after a successful lookup',as
 });
 test('construction is inert and rejects extra configuration/accessors',()=>{
  const s=setup();assert.deepEqual(s.state.calls,[]);
- assert.throws(()=>createApprovedScheduleInstructions({...s.ports,extra:true}),{code:'SCHEDULE_INSTRUCTION_CONFIGURATION'});
+ assert.throws(()=>createApprovedScheduleInstructions({maxRequestMs:10000,...s.ports,extra:true}),{code:'SCHEDULE_INSTRUCTION_CONFIGURATION'});
  let read=0;const o={...s.ports};Object.defineProperty(o,'now',{enumerable:true,get(){read++;return Date.now;}});
  assert.throws(()=>createApprovedScheduleInstructions(o),{code:'SCHEDULE_INSTRUCTION_CONFIGURATION'});assert.equal(read,0);
 });
@@ -180,10 +180,10 @@ for(const mode of ['retained','missing','corrupt','commit-unknown'])test(`schedu
   if(mode==='commit-unknown')database.state.commitError=Error('synthetic lost custody COMMIT acknowledgement');
  }
  const preparations=createPostgresPreparedScheduleReader({pool:database.pool});
- const taskInstructions=createApprovedScheduleInstructions({scheduleOwner:h.scheduleOwner,preparations,now:()=>DISPATCH_NOW});
- const dispatcher=createTemporalConversationDispatcher({client:h.temporal.client,taskQueue:'meri-conversations',lifecycle:true,now:()=>DISPATCH_NOW});
- const dispatch=createScheduledDispatch({scheduleOwner:h.scheduleOwner,store:h.store,dispatcher,
-  runs:createTemporalRunEvidence({client:h.temporal.client,now:()=>DISPATCH_NOW}),authority:h.authority.port,taskInstructions,versions,now:()=>DISPATCH_NOW});
+ const taskInstructions=createApprovedScheduleInstructions({maxRequestMs:10000,scheduleOwner:h.scheduleOwner,preparations,now:()=>DISPATCH_NOW});
+ const dispatcher=createTemporalConversationDispatcher({maxRequestMs:3000,client:h.temporal.client,taskQueue:'meri-conversations',lifecycle:true,now:()=>DISPATCH_NOW});
+ const dispatch=createScheduledDispatch({maxRequestMs:10000,scheduleOwner:h.scheduleOwner,store:h.store,dispatcher,
+  runs:createTemporalRunEvidence({maxRequestMs:3000,client:h.temporal.client,now:()=>DISPATCH_NOW}),authority:h.authority.port,taskInstructions,versions,now:()=>DISPATCH_NOW});
  const firing=occurrence({projection:s.intent.projection,generation:s.intent.generation,task:s.intent.configuration.task,temporalScheduleId:s.intent.projection.temporalScheduleId});
  const result=await dispatch.dispatch({occurrence:firing});
  if(mode==='retained'){

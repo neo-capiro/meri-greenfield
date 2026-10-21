@@ -73,7 +73,7 @@ function accessRecord(raw,record,started,now,life,previous){
 }
 /** Current access is an injected trusted owner, not a model boolean or old source grant. */
 export function createSelectedOutputRetention(configuration){
- const {journal,currentOutputAccess,now,maxRequestMs=3000}=own(configuration,['journal','currentOutputAccess','now'],['maxRequestMs']);
+ const {journal,currentOutputAccess,now,maxRequestMs}=own(configuration,['journal','currentOutputAccess','now'],['maxRequestMs']);
  if(!journals.has(journal)||typeof currentOutputAccess!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('SELECTED_OUTPUT_CONFIGURATION');
  const loaded=new WeakMap();
  const lifetime=signal=>{nativeSignal(signal);let deadlineMs=now()+maxRequestMs;const owner=createOperationLifetime({deadlineMs,now,signal,errorFactory:code=>Object.assign(Error('SELECTED_OUTPUT_'+code),{code:'SELECTED_OUTPUT_'+code})});

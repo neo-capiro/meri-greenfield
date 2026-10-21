@@ -31,7 +31,7 @@ export function createCoreObjectiveGenerationClient(configuration){
   transport=c.transport;source=data(own(c.source,['generationJobId','binding']));validateShape('RunBinding',source.binding);
   executionSelection=c.executionSelection===undefined?null:data(own(c.executionSelection,['provider','model']));
   issued=c.issuance===undefined?undefined:data(c.issuance);
-  now=c.now??Date.now;maxRequestMs=c.maxRequestMs??3000;maxFreshMs=c.maxFreshMs??3000;
+  now=c.now??Date.now;maxRequestMs=c.maxRequestMs;maxFreshMs=c.maxFreshMs;
   for(const m of ['available','admit','publish','accept','readAdmission','readRequest','complete','readCompletion'])if(typeof transport?.[m]!=='function')throw unavailable();
   if(typeof now!=='function'||types.isProxy(now)||![maxRequestMs,maxFreshMs].every(v=>Number.isSafeInteger(v)&&v>=1&&v<=30000))throw unavailable();
  }catch{throw unavailable();}

@@ -23,7 +23,7 @@ const ROUTES=Object.freeze({...Object.fromEntries(Object.entries(CORE_MEMORY_ROU
 const STATUS=Object.getOwnPropertyDescriptor(Response.prototype,'status').get;
 const CODE=/^[A-Z][A-Z0-9_]{2,63}$/u;
 export function createCoreMemoryTransport(options){
- const {origin,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs=10000,maxResponseBytes=262144}=options??{};
+ const {origin,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs,maxResponseBytes=262144}=options??{};
  if(Object.keys(options??{}).some(k=>!['origin','getCredentials','fetchImpl','now','maxRequestMs','maxResponseBytes'].includes(k))||typeof origin!=='string'||typeof getCredentials!=='function'||
   typeof fetchImpl!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||
   !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)throw new ProductError('PRODUCT_CONFIGURATION');

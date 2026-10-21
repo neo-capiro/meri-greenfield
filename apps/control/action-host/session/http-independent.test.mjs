@@ -13,7 +13,7 @@ for(const [name,request]of [['method',()=>new Request(url)],['query',()=>new Req
 test('independent session HTTP must not execute own Request accessors',async()=>{const f=httpFixture();let effects=0;const r=req();Object.defineProperty(r,'url',{get(){effects++;return url;}});await f.app.handle(r);assert.equal(effects,0);});
 test('independent session HTTP rejects Proxy Request without traps',async()=>{const f=httpFixture();let effects=0;const p=new Proxy(req(),{get(){effects++;throw Error('SECRET');},getPrototypeOf(){effects++;throw Error('SECRET');}});const r=await f.app.handle(p);assert.notEqual(r.status,200);assert.equal(effects,0);assert.equal(f.calls.length,0);});
 test('independent session HTTP parked body is cancelled before issuance at finite deadline',async()=>{const f=httpFixture();let cancelled=0;const body=new ReadableStream({pull(){return new Promise(()=>{});},cancel(){cancelled++;}}),r=await f.app.handle(req(body,{duplex:'half'}));assert.notEqual(r.status,200);assert.equal(f.calls.length,0);assert.equal(cancelled,1);});
-test('independent session constructor rejects borrowed issue getter without executing it',()=>{let effects=0;assert.throws(()=>createActionSessionApplication({owner:{get issue(){effects++;return async()=>({});}}}));assert.equal(effects,0);});
+test('independent session constructor rejects borrowed issue getter without executing it',()=>{let effects=0;assert.throws(()=>createActionSessionApplication({maxRequestMs:3000,owner:{get issue(){effects++;return async()=>({});}}}));assert.equal(effects,0);});
 
 test('independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute',async()=>{
  const p=createSharedPool();let owner;const c=createLocalApplicationCase({mode:'synthetic-local',deadlineMs:Date.now()+18000,sessionFactory:({verifyIdentity,resolveContext,now})=>(owner=createActionSessionOwner({mode:'process-local',verifyIdentity,resolveContext,now,limits:{maxSessions:3,maxRequestMs:1000,maxTtlMs:15000,maxFactBytes:65536}}))});let server;
@@ -27,7 +27,7 @@ test('independent actual HTTP opaque issuance reaches same accepted graph/propos
 
 test('independent issuance HTTP never reflects extra owner fields or response accessors',async()=>{
  for(const hostile of [false,true]){let effects=0;const result={credential:'opaque',expiresAtMs:Date.now()+1000,context:{},privateSecret:'PRIVATE_SECRET'};if(hostile)Object.defineProperty(result,'credential',{enumerable:true,get(){effects++;return 'PRIVATE_SECRET';}});
- let app;try{app=createActionSessionApplication({owner:{issue:async()=>result}});}catch{assert.equal(effects,0);continue;}
+ let app;try{app=createActionSessionApplication({maxRequestMs:3000,owner:{issue:async()=>result}});}catch{assert.equal(effects,0);continue;}
  const response=await app.handle(req());assert.notEqual(response.status,200);assert.doesNotMatch(await response.text(),/PRIVATE_SECRET/);assert.equal(effects,0);
  }
 });

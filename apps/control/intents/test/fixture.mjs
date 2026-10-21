@@ -38,7 +38,7 @@ export function commandComposition({tenantId='tenant',action='task.create',appro
  const commandContext=action==='task.update'?{binding}:{binding,clientResolution:null},sql=createMetadataPoolFixture(),metadataCalls={prepare:0};
  const policy=createMetadataPolicyFixture({binding,scopes,requiredApprover:{tenantId,actorId:approverActorId},expiresAt:new Date(NOW+45000).toISOString(),now:()=>f.state.now});
  const factory=action==='task.update'?createTaskUpdateApprovalMetadataOwner:createTaskCreateApprovalMetadataOwner;
- let n=100;const metadataOwner=factory({store:createPostgresApprovalMetadataStore({pool:sql.pool}),commandContext,preparePolicy:policy.preparePolicy,now:()=>f.state.now,newId:()=>id(n++)});
+ let n=100;const metadataOwner=factory({maxRequestMs:60000,store:createPostgresApprovalMetadataStore({pool:sql.pool}),commandContext,preparePolicy:policy.preparePolicy,now:()=>f.state.now,newId:()=>id(n++)});
  const hooks={};
  const approvalMetadataOwner={async prepare(v){metadataCalls.prepare++;if(hooks.prepare)return hooks.prepare(v,metadataOwner);return metadataOwner.prepare(v);},read:v=>metadataOwner.read(v)};
  // The existing approval control's current decision store: nothing is approved until `approve(proposal)`.
