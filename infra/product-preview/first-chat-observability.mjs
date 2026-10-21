@@ -49,7 +49,10 @@ export function synthesizeFirstChatObservability(raw){
   ['OwnerDiagnosticsSuppressed','owner','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
   ['ProxyDiagnosticsSuppressed','proxy','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
   ['ControlUnavailable','control','RUNTIME_UNAVAILABLE','RuntimeUnavailable'],
-  ['WorkerUnavailable','worker','RUNTIME_UNAVAILABLE','RuntimeUnavailable']
+  ['WorkerUnavailable','worker','RUNTIME_UNAVAILABLE','RuntimeUnavailable'],
+  // Each refused action-session issuance or recheck (session/owner.mjs): step and owned code only, rate-limited at the source.
+  ['ControlSessionRefused','control','CONTROL_SESSION_REFUSED','ControlSessionRefusals'],
+  ['ControlSessionDiagnosticsSuppressed','control','CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed']
  ];
  for(const [id,service,pattern,metricName] of filters)new logs.CfnMetricFilter(stack,id,{filterName:`${prefix}-${id.replace(/[A-Z]/gu,x=>`-${x.toLowerCase()}`).slice(1)}`,
   logGroupName:b.logGroups[service],filterPattern:JSON.stringify(pattern),metricTransformations:[{metricName,metricNamespace:namespace,metricValue:'1',defaultValue:0}]});

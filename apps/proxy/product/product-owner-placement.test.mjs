@@ -163,3 +163,16 @@ test('active successor joins the actual original first-run row even after its ad
   const g=fixture({successor:true});mutate(g.state);await assert.rejects(g.make().resolve(g.query()),refused);
  }
 });
+
+// O102: image identity is a property of each run. An active successor places although its conversation's original record and
+// first run were admitted under an earlier render; its own allocation and run must still be this render's.
+test('active successor of a conversation admitted under an earlier render places; its own allocation stays pinned',async()=>{
+ const earlier=s=>{const versions={...s.admission.versions,imageDigest:'sha256:'+'9'.repeat(64)};Object.assign(s.admission,{versions,configurationSha256:'9'.repeat(64)});
+  s.firstRun.projection.versions=versions;s.firstRun.projection_sha256=hash(s.firstRun.projection);};
+ const f=fixture({successor:true});earlier(f.state);const out=await f.make().resolve(f.query());assert.equal(out.issuedTaskNetwork.execution_binding.writerFence,2);
+ for(const mutate of [
+  s=>{s.native.record.original.versions=s.admission.versions;s.native.record_sha256=hash(s.native.record);},   // the successor was allocated under the earlier render
+  s=>{s.admission.policyRevision='f'.repeat(64);},                                                              // the original's qualification policy changed
+  s=>{s.firstRun.projection.versions={...s.firstRun.projection.versions,sdk:'9.9.9'};s.firstRun.projection_sha256=hash(s.firstRun.projection);}, // not the original record's run
+ ]){const g=fixture({successor:true});earlier(g.state);mutate(g.state);await assert.rejects(g.make().resolve(g.query()),refused);}
+});
