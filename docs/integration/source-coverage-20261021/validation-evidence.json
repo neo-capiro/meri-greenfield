@@ -1,0 +1,210 @@
+{
+  "sourceHead": "4565ce95a301e76f3768091cda33fa19ef77e223",
+  "node": "24.10.0",
+  "platform": "Windows",
+  "coverage": {
+    "publishedRefs": 742,
+    "prHeads": 196,
+    "localCheckouts": 36,
+    "localUnpublishedHeads": 17,
+    "localUnpublishedCommits": 19
+  },
+  "generatedContracts": [
+    {
+      "file": "packages/contracts/dist/intents-application.d.ts",
+      "donor": "53bbe3da88aaf6b4c7048bb0a89c06decf00d5df",
+      "blob": "61060fc481d5bb237add0b12a6b3b72d282e9f2d"
+    },
+    {
+      "file": "packages/contracts/dist/intents-application.metadata.json",
+      "donor": "53bbe3da88aaf6b4c7048bb0a89c06decf00d5df",
+      "blob": "e73f8372c545127b0f3191b5a237df159f14eaab"
+    },
+    {
+      "file": "packages/contracts/dist/intents-application.mjs",
+      "donor": "53bbe3da88aaf6b4c7048bb0a89c06decf00d5df",
+      "blob": "6f9cd29333a3d80bab9aa02edf4cde69cbfbfb19"
+    },
+    {
+      "file": "packages/contracts/dist/intents-application.schema.json",
+      "donor": "53bbe3da88aaf6b4c7048bb0a89c06decf00d5df",
+      "blob": "9e4d5f9bb0fafa48f6cbde3567229cd6b39a921b"
+    },
+    {
+      "file": "packages/contracts/dist/document-access-application.d.ts",
+      "donor": "8eab537a8c60bf086afb56b2ceb24b79f6260b6b",
+      "blob": "0f6adbb7c9724f8e8f52e17e4a6228b6e8c50f82"
+    },
+    {
+      "file": "packages/contracts/dist/document-access-application.metadata.json",
+      "donor": "8eab537a8c60bf086afb56b2ceb24b79f6260b6b",
+      "blob": "2764f27155352af801aae5b73762ba6fe6d945c3"
+    },
+    {
+      "file": "packages/contracts/dist/document-access-application.mjs",
+      "donor": "8eab537a8c60bf086afb56b2ceb24b79f6260b6b",
+      "blob": "0c310852d617cd5e810cfdd19cff5fdf27343a76"
+    },
+    {
+      "file": "packages/contracts/dist/document-access-application.schema.json",
+      "donor": "8eab537a8c60bf086afb56b2ceb24b79f6260b6b",
+      "blob": "8a31aba10220582d5e98f96e79f3aeaeb5b73dfe"
+    }
+  ],
+  "localEvidence": [
+    {
+      "localLog": "meri-final-runtime-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-final-m8-integration.log",
+      "sha256": "62eb182f3b7f19b86a066d26de44e0ffbf937910b2124018c311dea3c31fb2b1",
+      "bytes": 1498,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-invocation-validation.log",
+      "sha256": "76f84534712867c3d64e67d4ec4894815cdd4104140dfc621ffd28c3b196eeb8",
+      "bytes": 4063,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-memory-adapter-final.log",
+      "sha256": "366c01126238dc90a0111fd1ce069d06ddd4744a05f42563ee92be2042459737",
+      "bytes": 26080,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-history-test-residual-final.log",
+      "sha256": "35f0a77832ca1ba715a06cc992e47b2177d197c1416cf39a17e2a0abb1a42692",
+      "bytes": 5934,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-read-focused-final.log",
+      "sha256": "ffb75b35dfa7efca48655c26bd6eae069b17a77446ea28ed5c91f668f0069b76",
+      "bytes": 5652,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-stage3-upload-final.log",
+      "sha256": "9416863605dc019284689359861bb3df2f004e3675ad82635a498a7011ba034e",
+      "bytes": 541,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-proxy-diagnostics-tests.log",
+      "sha256": "95226c04b484856999242fa09af1d1e468cfd46680aadac19525e7aa71b77a23",
+      "bytes": 183,
+      "tests": 66,
+      "pass": 65,
+      "fail": 0,
+      "skipped": 1
+    },
+    {
+      "localLog": "meri-public-final.log",
+      "sha256": "c4535359f3e8ed4dace5a14f3d31e6ceed17e31f8dfd4e298e84803c2a03a73f",
+      "bytes": 41336,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-189-validation.log",
+      "sha256": "bcd27d917fb89d46087d0196851031f39fa90f438b09a8517fbc9612f1804c13",
+      "bytes": 289011,
+      "tests": 2501,
+      "pass": 2483,
+      "fail": 18,
+      "skipped": 0
+    },
+    {
+      "localLog": "meri-document-intent-permitted.log",
+      "sha256": "ce9f5a194935a2d700bcfb18f33215a90f04e35e91f966f2ac0d679e32c0322b",
+      "bytes": 5584,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-residual-validation-permitted.log",
+      "sha256": "ee84273912df85c634e4446c170e1ae58a8a694efa6dd8aeab669fee0660ca25",
+      "bytes": 59613,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-capsule-stage3-permitted.log",
+      "sha256": "a57e0f5a10150cc33c4e3f495ac31bc15bc81da2a8e6de23088e589673f11e49",
+      "bytes": 14484,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-browser-review/host-tests.log",
+      "sha256": "0a88ef90d336d1b6acadbf2aa9f8bae7c45c0d4eaee0bf5195d909ec0e9cb1e9",
+      "bytes": 29102,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-browser-review/browser-tests.log",
+      "sha256": "c7c132a7b94484d0cf8d3b2b28d1e585bf1a1829e56a219fd3ee1b3295c7de49",
+      "bytes": 17098,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-browser-review/regression-tests.log",
+      "sha256": "1f88372ab94bb57cc4ae28d991ccc4166ad2776177b49a9de4bdf40bbd748575",
+      "bytes": 48926,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    },
+    {
+      "localLog": "meri-browser-review/baseline-tests.log",
+      "sha256": "9e1cfa0d6b9006903e0f1d4d3aa0cfc16c6374593fe0b128b9d1d578b90c55a7",
+      "bytes": 37119,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "skipped": null
+    }
+  ],
+  "note": "Raw logs remain in the owned task directory; hashes identify exact observed runs, not native or deployment qualification. See SOURCE-COVERAGE-20261021.md for failure classification, reruns and operational holds."
+}

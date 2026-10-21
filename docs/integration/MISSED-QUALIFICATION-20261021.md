@@ -14,7 +14,7 @@ The human requested complete source consolidation, then explicitly retained fina
 
 ## Preserved ownership and holds
 
-Existing PR189 read composition, PR190 write composition, B1/B2 contract proposals, configuration adoption, P2 proof reuse and current c10 chat lanes remain separately identified in the audit ledger. Browser host qualification, memory tombstone owner reconciliation, application migrations and deployment remain held. The Core-owned Planner continuation replaces the old Meri Planner loop under D7-1; the old loop is not restored.
+This initial qualification outline was expanded by the final [source coverage receipt](SOURCE-COVERAGE-20261021.md). PR189 reads and B1/B2 contracts now compose above the existing PR190 receiver. Latest memory content-tombstone and unmounted M8 host source are also received; their canonical bindings, migrations and native qualification remain held. Configuration adoption needs the documented c10 descriptor reconciliation. P2 proof reuse and current c10 chat lanes remain with their active owners. The Core-owned Planner continuation replaces the old Meri Planner loop under D7-1; the old loop is not restored.
 
 The current first-response and next-turn SDK configuration-directory repairs remain on the base. No established branch or PR is merged by this work.
 
