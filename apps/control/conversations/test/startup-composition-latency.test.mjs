@@ -124,7 +124,7 @@ async function composedStartup({latencyMs=300,originalExpiresAtMs=Date.now()+900
  const execution=createNativeExecutionApplication({broker,runtime,controlCapabilitySha256:controlDigest,taskCapabilitySha256:taskDigest,enabled:true,maxRequestMs:serverMs});
  const responseStatus=[];
  const native=createNativeCapabilityClient({configuration:{origin:'https://native.synthetic.invalid',maxResponseBytes:2097152},credential:taskCapability,
-  maxRequestMs:3000,loadMaxRequestMs:budget.stages.load.maxMs,fetch:async(url,init)=>{
+  maxRequestMs:3000,loadMaxRequestMs:budget.stages.load.attemptMs,fetch:async(url,init)=>{
    const path=new URL(url).pathname;
    const request=new Request(path==='/v1/runner/load'||path==='/v1/runner/publish'?url.replace('/v1/runner/','/internal/conversations/'):url,init);
    const response=path==='/v1/runner/runtime'?await execution.handle(request):await worker.handle(request);

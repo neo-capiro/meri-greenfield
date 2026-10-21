@@ -118,7 +118,7 @@ export async function runConversation(configuration,{signal,query,sessionFactory
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
   return runRemoteConversation(configuration,{signal,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
  }
-  markRunnerStage('capability-load');const startup=startupBudgetFor(configuration),bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(startup?{loadMaxRequestMs:startup.stages.load.maxMs}:{}),...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
+  markRunnerStage('capability-load');const startup=startupBudgetFor(configuration),bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(startup?{loadMaxRequestMs:startup.stages.load.attemptMs}:{}),...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
  if(configuration.bootstrap?.remote===true&&query===undefined){
    markRunnerStage('binding-bootstrap');const bootstrap=runnerStartupBudget({requestMs:configuration.limits.requestMs,shutdownMs:configuration.limits.shutdownMs,originalExpiresAtMs:configuration.bootstrap.expiresAtMs}).stages.bootstrap;const resolved=await loadRemoteTaskBinding({native,configuration,signal,startupBudget:bootstrap,...(poststartTls===undefined?{}:{poststartTls})});
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');

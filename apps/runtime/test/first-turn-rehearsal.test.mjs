@@ -102,9 +102,9 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
   preparationIntent:{workspace:join(root,binding.conversationId),configParentDirectory:join(root,'config'),secureStorageDirectory:join(root,'secure'),
    launchTemplate:{command:'/opt/claude',args:[],env:{CLAUDE_SECURESTORAGE_CONFIG_DIR:join(root,'secure')}},executableSha256:'a'.repeat(64),imageSha256:'b'.repeat(64),
    runnerSha256:'c'.repeat(64),sdkOptionsSha256:'d'.repeat(64),authoritySha256:'f'.repeat(64)}};
- // remote-conversation-runner.mjs gives runner/load the startup budget's load stage; every other call passes its own allowance.
+ // remote-conversation-runner.mjs gives each runner/load attempt the load stage's attempt allowance; every other call passes its own.
  const startup=runnerStartupBudget({requestMs:25000,shutdownMs:1000,originalExpiresAtMs:remoteTask.original.expiresAtMs}).stages;
- const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',loadMaxRequestMs:startup.load.maxMs,
+ const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',loadMaxRequestMs:startup.load.attemptMs,
   fetch:async(url,init)=>{const name=new URL(url).pathname.slice('/v1/'.length),op=name.slice('runner/'.length);calls[name]??={requests:0,core:0};calls[name].requests++;
    if(!Object.hasOwn(runOwnerOperations,op))return Response.json(await outside(name));
    const begun=performance.now();
@@ -146,7 +146,8 @@ for(const profile of ['quiet','live-median'])test(`first turn completes under th
  const r=await rehearseFirstTurn({profile});t.diagnostic(JSON.stringify(r));
  assert.equal(r.outcome,'completed',JSON.stringify(r));assert.ok(r.firstTextMs!==null,'text was published');
 });
-for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503]])
+// Core call 31 is late in runner/load (32 Core calls): at the tail a replayed load needs the load stage's room for one replay.
+for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503],['live-tail',31,503]])
  test(`first turn under the ${profile} Core profile${clerkTimeoutAt?` with a Clerk timeout answered ${clerkStatus}`:''} (reported)`,posix,async t=>{
   t.diagnostic(JSON.stringify(await rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus})));
  });
