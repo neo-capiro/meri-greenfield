@@ -3,7 +3,10 @@ import {pathToFileURL} from 'node:url';
 import {loadConfiguration} from './config.mjs';
 import {assertProductRunnerMeasurement} from './native-authority/ecs-prepared-task-proof.mjs';
 import {withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
+import {createTurnTelemetry} from './telemetry/turn-context.mjs';
+import {countingFetch} from './telemetry/counting.mjs';
 import {verifyControlCaBundle} from './control-ca-bundle.mjs';
+const processStartedAtMs=Date.now();
 /** The product worker reaches control's private origin with global fetch, so Node's default store must also trust the one Meri
  * preview server CA. That anchor is exactly its pinned issuer server CA file (same CA; serverCaSha256 pinned, written by
  * material-init before this process starts), never another path. NODE_EXTRA_CA_CERTS is read once at process start. */
@@ -31,9 +34,9 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    if(c.remoteTask!==undefined&&measured.runnerSha256!==c.remoteTask.preparationIntent.runnerSha256)throw Error('RUNNER_PIN_REFUSED');
   }
  }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
- const controller=new AbortController();let runtime,shutdownTimer,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
+ const controller=new AbortController();let runtime,shutdownTimer,controlTurnTelemetry,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();
- try{if(role==='conversation-runner'){await withRunnerDiagnostics(async()=>{const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});});return 0;}
+ try{if(role==='conversation-runner'){await withRunnerDiagnostics(async()=>{const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});},{binding:c.binding,environment:c.telemetry?.environment,processStartedAtMs});return 0;}
   // The schedule service refuses before secret reads unless trusted owners are supplied; without `routines.enabled` the bare CLI supplies none.
   const [file,start]={control:['./control.mjs','startControl'],'temporal-worker':['./temporal-worker.mjs','startTemporalWorker'],'schedule-worker':['./schedule-service.mjs','startScheduleWorker']}[role];
   const module=await import(file);
@@ -48,22 +51,23 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   // the factory composes Core's firing authority and unattended stop (B2) plus the admission/retirement ports over control's operations.
   if(role==='schedule-worker'&&c.routines?.enabled===true){const {composeRoutinesWorkerRuntimePorts}=await import('./schedule-service-owners.mjs');productPorts={runtimePortsFactory:composeRoutinesWorkerRuntimePorts};}
   if(role==='control'){
+   controlTurnTelemetry=createTurnTelemetry({service:'control',environment:c.telemetry?.environment});
    const {createMemoryFamilyWith}=await import('./product-ports/memory.mjs');
    const memoryFamily=createMemoryFamilyWith(relay?{nativeCredentials:relay.port}:{});
    // Documents (D31): the Core artifact authority composes only with every input present; otherwise the store-only family stays
    // and `missing` names the gaps by key (runOptions and executor are Meri-local owners not yet composed).
    const [{createProductPortsFactory,PRODUCT_FAMILIES},{composeDocumentsFamily}]=await Promise.all([import('./product-ports/index.mjs'),import('./artifacts/authority-composition.mjs')]);
-   const documents=await composeDocumentsFamily({configuration:c});
+   const documents=await composeDocumentsFamily({configuration:c,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
    if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
    // Write-intent execution (lane E): the intents family and the per-run intent mount share one composition; both stay inert
    // unless control declares intents.execution and its Core owners exist.
    const [{createControlIntentExecution},{readSecret},{createControlCurrentAuthority}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs'),import('./native-authority/current-authority-adapters.mjs')]);
    // Current tool authority (lane T): one observation per port call over Core identity/membership/context through the relay; it
    // supplies the execution owners and the reads gateway authority/limits. Without a prepared candidate there is nothing to observe.
-   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port});
+   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
    const execution=createControlIntentExecution({readSecret,...(authority?{owners:authority.owners}:{})});
    const intents=authority?context=>{authority.bind(context);return execution.family(context);}:execution.family;
-   productPorts={productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(occurrences?{occurrenceRelay:occurrences}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
+   productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(occurrences?{occurrenceRelay:occurrences}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
   }
   // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
   // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
@@ -97,12 +101,12 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
       const {createMemoryContextRelay}=await import('./memory-context-relay.mjs');
       memoryContextRelay=createMemoryContextRelay();
      }
-     retainedTaskPorts=createSelectedRetainedTaskPorts({coreOrigin:c.nativeCandidate.identity.origin,fetchImpl:globalThis.fetch,
+     retainedTaskPorts=createSelectedRetainedTaskPorts({coreOrigin:c.nativeCandidate.identity.origin,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),
       now:Date.now,familyIds:retained,operationRefs:installation.measurement.operations.map(row=>row.operation),
       ...(memoryContextRelay?{memoryContextPortsForTask:memoryContextRelay.forTask}:{})});
     }
    }
-   const reads=await createControlReadsComposer({configuration:c,secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery}),...(familyIds===undefined?{}:{familyIds}),...(retainedTaskPorts===undefined?{}:{retainedTaskPorts})});
+   const reads=await createControlReadsComposer({configuration:c,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery}),...(familyIds===undefined?{}:{familyIds}),...(retainedTaskPorts===undefined?{}:{retainedTaskPorts})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
    Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,
     ...(memoryContextRelay?{memoryContextRelay}:{}),
@@ -118,7 +122,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
  }catch(error){process.stderr.write('RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
   if(cleanupUnknown)process.stderr.write('RUNTIME_CLEANUP_UNKNOWN\n');return 3;
- }finally{clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}
+ }finally{controlTurnTelemetry?.close();clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}
 
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)process.exitCode=await main();

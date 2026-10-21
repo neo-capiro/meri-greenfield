@@ -3,6 +3,8 @@
  * router VPC (which the prepared-run configuration digest does not cover).
  * Retain/pin-route that service for its originals on configuration rollover.
  * Importing this module loads no material, dependency client or listener. */
+import {createTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+import {countingFetch,countingAwsClient,countingPool} from '../../runtime/telemetry/counting.mjs';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {isAbsolute} from 'node:path';
@@ -73,7 +75,8 @@ async function readStartupPair({taskLeaseReader,now,sleep,maxRequestMs,expiresAt
 export function validateProductOwnerConfiguration(raw){
  try{
   const c=data(own(raw,['schemaVersion','sourceEnabled','controlConfigurationFile','controlConfigurationSha256','nativeCredentialFileSha256',
-   'tls','clientPolicy','serviceTasks','pricing','limits'],['enabled']));
+   'tls','clientPolicy','serviceTasks','pricing','limits'],['enabled','telemetry']));
+  if(c.telemetry!==undefined){const telemetry=own(c.telemetry,['environment']);if(!['Preview','Production'].includes(telemetry.environment))fail();}
   const t=own(c.tls,['origin','serverName','caFile','certFile','keyFile','certSha256','issuerSha256']),
    p=own(c.clientPolicy,['clientCertSha256','clientSubject','deploymentRevision','issuerSha256','selectedClientId']),
    s=parseProductServicePairConfiguration(c.serviceTasks),
@@ -127,15 +130,15 @@ function defaultClients(options){
  * the bounded service-pair startup wait begin. */
 export async function startProductOwner(raw,dependencies={}){return assembleProductOwner(raw,dependencies);}
 async function assembleProductOwner(raw,dependencies,stopSignal){
- let server,nativeCurrentness,pool,clients,closing,closed=false,started=false,life,closeMs=3000;
- const serviceGate=createProductOwnerServiceGate(),buffers=new Set();
+ let server,nativeCurrentness,pool,clients,closing,telemetry,serviceGate,closed=false,started=false,life,closeMs=3000;
+ const buffers=new Set();
  const close=()=>closing??=(async()=>{
-  closed=true;serviceGate.poison();let timer;
+  closed=true;serviceGate?.poison();let timer;
   const pending=Promise.allSettled([()=>server?.close(),()=>nativeCurrentness?.close(),()=>pool?.end(),
    ()=>clients?.ecsClient.destroy(),()=>clients?.ec2Client.destroy()].map(action=>Promise.resolve().then(action)));
   let outcome;
   try{outcome=await Promise.race([pending,new Promise(resolve=>{timer=setTimeout(()=>resolve(null),closeMs);})]);}
-  finally{clearTimeout(timer);for(const bytes of buffers)bytes.fill(0);buffers.clear();}
+  finally{clearTimeout(timer);for(const bytes of buffers)bytes.fill(0);buffers.clear();telemetry?.close();}
   let listenerStopped=!server;
   if(server&&outcome?.[0]?.status==='fulfilled')try{
    const receipt=own(outcome[0].value,['listenerStopped','pendingRequests'],['physicalStopProven']);
@@ -147,11 +150,16 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   const c=validateProductOwnerConfiguration(raw);
   if(!c.enabled)return frozenDisabled();
   closeMs=c.limits.maxRequestMs;
-  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','fetchImpl','sleep','writeDiagnostic']),
+  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','fetchImpl','sleep','writeDiagnostic','writeTelemetry']),
    readMaterial=d.readMaterial??readSecret,createPool=d.createPool??defaultPool,
    createAwsClients=d.createAwsClients??defaultClients,createServer=d.createServer??createProductOwnerHttpsServer,
-   now=d.now??Date.now,fetchImpl=d.fetchImpl??fetch,sleep=d.sleep??defaultSleep;
-  if(![readMaterial,createPool,createAwsClients,createServer,now,fetchImpl,sleep].every(v=>typeof v==='function'))fail();
+   now=d.now??Date.now,rawFetch=d.fetchImpl??fetch,sleep=d.sleep??defaultSleep;
+  if(![readMaterial,createPool,createAwsClients,createServer,now,rawFetch,sleep].every(v=>typeof v==='function'))fail();
+  telemetry=createTurnTelemetry({service:'owner',environment:c.telemetry?.environment??'Preview',now,...(d.writeTelemetry?{write:d.writeTelemetry}:{})});
+  telemetry.start();
+  const fetchImpl=countingFetch(rawFetch,telemetry);
+  return await telemetry.provisional(async()=>{
+  serviceGate=createProductOwnerServiceGate({telemetry});
   const at=now();if(!Number.isSafeInteger(at)||at<0||c.serviceTasks.expiresAtMs<=at||c.pricing.validUntilMs<=at)fail();
   life=createOperationLifetime({now,deadlineMs:at+c.limits.maxRequestMs,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
   async function material(path){
@@ -170,9 +178,10 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   const connectionBytes=await material(control.database.connectionFile),options=databaseOptions(connectionBytes,c.limits.maxRequestMs);
   pool=createPool(options);if(typeof pool?.connect!=='function'||typeof pool?.end!=='function')fail();
   // Every refused statement and placement/currentness decision leaves one bounded line (owner-diagnostics.mjs).
-  const diagnostics=createOwnerDiagnostics({...(d.writeDiagnostic?{write:d.writeDiagnostic}:{}),now});pool=createDiagnosticPool(pool,diagnostics);
+  const diagnostics=createOwnerDiagnostics({...(d.writeDiagnostic?{write:d.writeDiagnostic}:{}),now,telemetry});pool=createDiagnosticPool(countingPool(pool,telemetry),diagnostics);
   clients=createAwsClients(awsOptions);own(clients,['ecsClient','ec2Client']);
   if([clients.ecsClient,clients.ec2Client].some(client=>typeof client?.send!=='function'||typeof client?.destroy!=='function'))fail();
+  clients={ecsClient:countingAwsClient(clients.ecsClient,telemetry),ec2Client:countingAwsClient(clients.ec2Client,telemetry)};
   const limits={maxRequestMs:c.limits.maxRequestMs,maxFactBytes:c.limits.maxFactBytes},
    persistedFacts=createProductProxyPersistedFacts({pool,selectedClientId:c.clientPolicy.selectedClientId,now,limits,enabled:true}),
    initialBindings=createInitialRunBindingJournal({pool,now}),
@@ -200,6 +209,7 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
      startup=createOperationLifetime({now,deadlineMs:now()+c.limits.maxRequestMs,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
      await startup.run(()=>server.listen({host:'0.0.0.0',port:8444}));startup.check();if(closed)fail();}
     catch{await close();fail();}finally{if(startup?.close().unsettledOperations>0)serviceGate.poison();}},close});
+  });
  }catch{try{await close();}catch{throw Error('PRODUCT_OWNER_CLEANUP_UNKNOWN');}fail();}
  finally{life?.close();for(const bytes of buffers)bytes.fill(0);buffers.clear();}
 }
@@ -207,7 +217,7 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
 /** Actual executable: explicit enablement and a separately pinned runtime file.
  * Emits constant status codes only; no caught error, DSN or material is logged. */
 export async function runProductOwnerMain(argv=process.argv.slice(2),env=process.env,dependencies={}){
- let runtime,stop,stopped=false,startupTimer,shutdownTimer;
+ let runtime,stop,stopped=false,startupTimer,shutdownTimer,telemetryEnvironment='Preview';
  const watchdog=(code,ms)=>{const timer=setTimeout(()=>{process.stderr.write(code+'\n');process.exit(3);},ms);timer.unref();return timer;};
  try{
   if(argv.length!==2||argv[0]!=='--config'||!file(argv[1])||env.MERI_PRODUCT_OWNER_REQUIRED!=='1'||!digest(env.MERI_PRODUCT_OWNER_CONFIG_SHA256))fail();
@@ -217,6 +227,7 @@ export async function runProductOwnerMain(argv=process.argv.slice(2),env=process
    c=validateProductOwnerConfiguration(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));}
   finally{if(Buffer.isBuffer(bytes))bytes.fill(0);}
   if(!c.enabled)fail();
+  telemetryEnvironment=c.telemetry?.environment??'Preview';
   const stopping=new AbortController();
   const completion=new Promise(resolve=>{stop=()=>{stopped=true;stopping.abort();shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',c.limits.maxRequestMs+1000);resolve();};});
   process.once('SIGTERM',stop);process.once('SIGINT',stop);
@@ -224,7 +235,9 @@ export async function runProductOwnerMain(argv=process.argv.slice(2),env=process
  }catch(error){let cleanupUnknown=error?.message==='PRODUCT_OWNER_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
   if(cleanupUnknown)shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',1000);else clearTimeout(shutdownTimer);
-  process.stderr.write('PRODUCT_OWNER_UNAVAILABLE\n');return 3;}
+  process.stderr.write('PRODUCT_OWNER_UNAVAILABLE\n');
+  try{createTurnTelemetry({service:'owner',environment:telemetryEnvironment}).health('owner-gate','unavailable','PRODUCT_OWNER_UNAVAILABLE');}catch{}
+  return 3;}
  finally{clearTimeout(startupTimer);if(stop){process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}}
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)process.exitCode=await runProductOwnerMain();

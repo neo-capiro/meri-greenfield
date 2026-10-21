@@ -21,6 +21,8 @@ import re
 import threading
 import time
 
+from . import telemetry_context as telemetry
+
 _WORD = re.compile(r"[a-z][a-z-]{0,31}")
 PHASES = frozenset(("placement", "admission", "session"))
 
@@ -74,6 +76,13 @@ def install_stderr():
         pass
 
 
+def raw_writer(data):
+    """Borrow the same preserved descriptor, without the refusal rate limit."""
+    if _sink is None:
+        raise OSError("TELEMETRY_STDERR_UNAVAILABLE")
+    return _sink.write(data)
+
+
 def uninstall():
     global _sink
     _sink = None
@@ -120,6 +129,7 @@ def code(error=None, deadline_ms=None, now_ms=None):
 def refused(gate, step, error=None, *, deadline_ms=None, now_ms=None):
     """Report one refusal of check `gate`/`step`; `deadline_ms` is that check's own epoch-ms deadline."""
     try:
+        telemetry.refusal(gate, step, code(error, deadline_ms, now_ms))
         sink = _sink
         if sink is None or type(gate) is not str or type(step) is not str or not (_WORD.fullmatch(gate) and _WORD.fullmatch(step)):
             return

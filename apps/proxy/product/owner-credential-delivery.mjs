@@ -6,6 +6,8 @@
  * material in its result or error. The fixed original run/client and current
  * Core identity/context, not delivery metadata alone, authorize a receipt.
  */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+import {health} from './owner-diagnostics.mjs';
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -43,6 +45,7 @@ export function createProductOwnerCredentialDelivery(configuration){
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072||
     !Number.isSafeInteger(limits.maxCredentialMs)||limits.maxCredentialMs<1||limits.maxCredentialMs>300000)fail();
  const read=storageMethod(c.delivery,'read'),currentRun=storageMethod(c.currentOwner,'currentRun'),origin=retainedOrigin(c.origin);
+ const telemetry=currentTurnTelemetry();
  let quarantined=false;
  return Object.freeze({get available(){return enabled&&!quarantined;},async checkCurrentConversation(value){
   let life,cutoff;const pending=new Set(),bodies=new Set();
@@ -119,7 +122,7 @@ export function createProductOwnerCredentialDelivery(configuration){
    // Await the underlying body owner's stop within the original lifetime;
    // known complete denials can retry, unresolved I/O closes this instance.
    if(bodies.size&&life)try{await life.run(()=>Promise.all([...bodies].map(body=>body.stop())));}catch{}
-   if(life?.close().unsettledOperations>0||pending.size>0||bodies.size>0)quarantined=true;
+   if((life?.close().unsettledOperations>0||pending.size>0||bodies.size>0)&&!quarantined){quarantined=true;health('credential-delivery','quarantined','PRODUCT_OWNER_CREDENTIAL_UNAVAILABLE',telemetry);}
   }
  }});
 }

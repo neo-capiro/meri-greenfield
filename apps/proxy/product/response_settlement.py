@@ -10,6 +10,9 @@ import binascii
 from dataclasses import dataclass
 import hashlib
 import json
+import time
+
+from . import telemetry_context as telemetry
 
 from botocore.eventstream import EventStreamBuffer
 import httpx
@@ -179,6 +182,8 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
                 else:
                     yield chunk
             self.eof = True
+            if self.gate_completion:
+                telemetry.mark("streamEndMs")
             result = self._result()
             if self.gate_completion and (result is None or result.status != "COMPLETE"):
                 raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")
@@ -186,6 +191,7 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
                 # The host bridge must authenticate this process and bind the
                 # original reservation, task, hashes and current tenant owner.
                 # A failed/uncertain callback leaves the durable hold UNKNOWN.
+                settlement_started = time.monotonic() * 1000
                 try:
                     await self.complete(self.binding.request_id, result)
                 except SettlementCommitUncertain as settlement_error:
@@ -200,6 +206,9 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
                         raise settlement_error from None
                     if not _settled_outcome(outcome, self.binding.request_id):
                         raise settlement_error
+                finally:
+                    if self.gate_completion:
+                        telemetry.settle(settlement_started, result)
                 if self.gate_completion:
                     if self.closed:
                         raise AdmissionDenied("INCOMPLETE_NATIVE_RESPONSE")

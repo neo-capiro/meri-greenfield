@@ -4,7 +4,7 @@ These exercise the actual lifecycle and existing owner startup, not native
 LiteLLM success, an mTLS handshake, AWS authorization or a model dispatch.
 """
 import asyncio
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import asynccontextmanager, contextmanager, nullcontext
 import hashlib
 import json
 from importlib import metadata, import_module
@@ -288,6 +288,32 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
                     services=[c for c in services.calls if c[0] == 'describe_services'])
                 self.last = result
         return result
+
+    async def test_telemetry_writer_is_released_on_shutdown_startup_refusal_and_cleanup_failure(self):
+        original_close = main._Resources.close
+        cleanup_error = main.CleanupUnknown()
+        async def fail_close(resources):
+            await original_close(resources)
+            raise cleanup_error
+        for scenario in ('shutdown', 'startup-refusal', 'cleanup-failure'):
+            raw = []
+            startup_error = main.StateDenied('PRODUCT_PROXY_STARTUP_DENIED') if scenario == 'startup-refusal' else None
+            expected_error = startup_error or (cleanup_error if scenario == 'cleanup-failure' else None)
+            with self.subTest(scenario=scenario), patch.object(main.diagnostics, 'raw_writer', side_effect=raw.append), \
+                 (patch.object(main._Resources, 'close', fail_close) if scenario == 'cleanup-failure' else nullcontext()):
+                if expected_error is None:
+                    await self._run(service_fixture())
+                else:
+                    with self.assertRaises(type(expected_error)) as caught:
+                        await self._run(service_fixture(), tls_check=startup_error)
+                    self.assertIs(caught.exception, expected_error)
+                rows = [json.loads(value) for value in raw]
+                self.assertTrue(any(row.get('component') == 'resources' and row.get('transition') == 'retired'
+                                    for row in rows), 'terminal resource health must precede writer release')
+                count = len(raw)
+                self.assertFalse(main.telemetry_lines.emit('meri.health',
+                    {'component': 'pair', 'transition': 'retired', 'code': 'PAIR_RETIRED'}))
+                self.assertEqual(len(raw), count)
 
     async def test_peer_or_own_service_not_yet_running_is_reread_until_admitted(self):
         for role in ('proxy', 'owner'):

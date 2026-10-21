@@ -67,7 +67,7 @@ export function validateConfiguration(raw,role){
  // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
  // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database','native','routines']:role==='temporal-worker'?['objectiveGeneration']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask','telemetry']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database','native','routines']:role==='temporal-worker'?['objectiveGeneration']:[]);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
  // `routines` is also the schedule worker's firing declaration (lane B2/B3); `routines.task` is control's routine task identity.
@@ -96,9 +96,14 @@ export function validateConfiguration(raw,role){
  // The poller admits only the prepared original kickoff (stop-owned cleanup); the legacy execution/start mode has no original stop owner (audit L5).
  if(role==='temporal-worker'||c.native.preparedKickoff!==undefined)requireValue(c.native.preparedKickoff===true,'PREPARED_KICKOFF_CONFIGURATION');
  requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152)&&c.native.origin===endpoint(c.native.origin,c.native.loopback));file(c.native.capabilityFile);}
- // Telemetry is an explicit control declaration: the OTLP collector origin (signal paths are appended by the SDK owner), an optional
- // export interval and service name. Absent or `enabled:false`, control composes no SDK and no instrumentation.
- if(c.telemetry!==undefined){requireValue(role==='control','TELEMETRY_CONFIGURATION');own(c.telemetry,['enabled','endpoint'],['exportIntervalMs','serviceName']);requireValue(typeof c.telemetry.enabled==='boolean'&&c.telemetry.endpoint===endpoint(c.telemetry.endpoint,c.native.loopback)&&(c.telemetry.exportIntervalMs===undefined||integer(c.telemetry.exportIntervalMs,1000,300000))&&(c.telemetry.serviceName===undefined||/^[a-z][a-z0-9-]{0,62}$/u.test(c.telemetry.serviceName)),'TELEMETRY_CONFIGURATION');}
+ // Log telemetry is always on and needs only an environment label. OTLP remains a separate control-only opt-in.
+ if(c.telemetry!==undefined){
+  requireValue(role==='control'||role==='conversation-runner','TELEMETRY_CONFIGURATION');
+  own(c.telemetry,[],['environment','enabled','endpoint','exportIntervalMs','serviceName']);
+  requireValue(c.telemetry.environment===undefined||['Preview','Production'].includes(c.telemetry.environment),'TELEMETRY_CONFIGURATION');
+  const otel=['enabled','endpoint','exportIntervalMs','serviceName'].some(key=>Object.hasOwn(c.telemetry,key));
+  if(otel){requireValue(role==='control','TELEMETRY_CONFIGURATION');own(c.telemetry,['enabled','endpoint'],['environment','exportIntervalMs','serviceName']);requireValue(typeof c.telemetry.enabled==='boolean'&&c.telemetry.endpoint===endpoint(c.telemetry.endpoint,c.native.loopback)&&(c.telemetry.exportIntervalMs===undefined||integer(c.telemetry.exportIntervalMs,1000,300000))&&(c.telemetry.serviceName===undefined||/^[a-z][a-z0-9-]{0,62}$/u.test(c.telemetry.serviceName)),'TELEMETRY_CONFIGURATION');}
+ }
  // Signed download links are an explicit control declaration: the owner-only signing key file (read through readSecret only by trusted
  // startup) and an optional link lifetime of at most five minutes. Absent or `enabled:false`, the link routes answer DOWNLOADS_UNAVAILABLE.
  if(c.downloadLinks!==undefined){requireValue(role==='control','DOWNLOAD_LINK_CONFIGURATION');own(c.downloadLinks,['enabled'],['keyFile','ttlMs']);requireValue(typeof c.downloadLinks.enabled==='boolean'&&(c.downloadLinks.enabled===false||c.downloadLinks.keyFile!==undefined)&&(c.downloadLinks.ttlMs===undefined||integer(c.downloadLinks.ttlMs,1000,300000)),'DOWNLOAD_LINK_CONFIGURATION');if(c.downloadLinks.keyFile!==undefined)file(c.downloadLinks.keyFile);}

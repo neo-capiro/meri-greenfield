@@ -4,8 +4,9 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {RUNNER_LOAD_MAX_MS,RUNNER_REPLAY_DELAYS_MS} from '../../packages/runtime/runner-load-budget.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
-import {PINNED_NATIVE_UNANSWERED,PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedStatusRefusal} from './runner-runtime-diagnostics.mjs';
+import {PINNED_NATIVE_UNANSWERED,PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedStatusRefusal,runnerTurnTelemetry} from './runner-runtime-diagnostics.mjs';
 import {fault} from './config.mjs';
+import {classifyStatus} from './telemetry/counting.mjs';
 // The longer window is available only to bounded original-run operations.
 // Each caller must also pass its absolute lease-derived deadline; other operations
 // retain the ordinary 3s default (or the factory's configured cap).
@@ -50,9 +51,9 @@ export function createNativeCapabilityClient({configuration,credential,fetch:tra
  async function attempt(operation,input,{signal,deadlineMs,maxRequestMs:requestMaxMs}){
   if(requestMaxMs!==undefined&&(!startupOperations.has(operation)||!Number.isSafeInteger(requestMaxMs)||requestMaxMs<1||requestMaxMs>STARTUP_REQUEST_MAX_MS||!Number.isSafeInteger(deadlineMs)))throw fault('NATIVE_CONFIGURATION');
   const limitMs=operation==='runner/load'?loadMaxRequestMs:requestMaxMs??maxRequestMs;
-  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response,dispatched=false,transient=false,cause;
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response,dispatched=false,transient=false,cause,observedError,startedAt,turnTelemetry;
   try{const payload=JSON.stringify(data(input));if(Buffer.byteLength(payload)>2097152)throw fault('NATIVE_REQUEST_LIMIT');
-   response=await life.run(signal=>{dispatched=true;return transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:payload,signal});});
+   response=await life.run(signal=>{dispatched=true;try{turnTelemetry=runnerTurnTelemetry();startedAt=turnTelemetry?.now();}catch{}return transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:payload,signal});});
    if(response.status!==200){
     cause=pinnedStatusRefusal(response.status);
     // Only an explicit "did not answer" is transient; an unreadable error body leaves the failure definitive.
@@ -62,14 +63,14 @@ export function createNativeCapabilityClient({configuration,credential,fetch:tra
    if(!json(response))throw fault('NATIVE_UNAVAILABLE');
    const value=await body(response,life,c.maxResponseBytes);life.check();return data(value);
   }catch(error){
-   const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'NATIVE_UNAVAILABLE',failure=fault(code);
+   observedError=error;const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'NATIVE_UNAVAILABLE',failure=fault(code);
    if(code==='NATIVE_UNAVAILABLE'){
     // RUNNER_FIRST_FAILURE prints the answer's status class or the transport's fixed rejection as `cause`.
     Object.defineProperty(failure,'cause',{value:cause??error,configurable:true,writable:true});
     if(transient||dispatched&&response===undefined&&noAnswer(error))markAuthorityUnavailable(failure);
    }
    throw failure;
-  }finally{life.close();}
+  }finally{life.close();if(dispatched&&operation.startsWith('runner/'))try{turnTelemetry?.recordRunOwner(operation,classifyStatus(response?.status,observedError),Math.max(0,turnTelemetry.now()-startedAt));}catch{}}
  }
  async function call(operation,input,options={}){
   for(let replays=0;;replays++){

@@ -7,6 +7,7 @@ import time
 
 from .ingress import IngressAdmission, PeerLease
 from ..state.pricing import StateDenied
+from ...product import telemetry_context as telemetry
 
 _request_lifetime = ContextVar("meri_trusted_request_lifetime", default=None)
 
@@ -46,7 +47,10 @@ class PendingWork:
 
     def quarantine(self, tasks):
         if tasks:
+            transitioned = self.ready
             self.ready = False
+            if transitioned:
+                telemetry.health("pending-work", "quarantined", "PENDING_WORK")
         for task in tasks:
             self.tasks.add(task)
             task.add_done_callback(self.tasks.discard)

@@ -5,6 +5,7 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {createRunReconciler} from '../control/conversations/run-reconciler.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {types} from 'node:util';
+import {currentTurnTelemetry} from './telemetry/turn-context.mjs';
 import {jsonBody} from '../control/action-application/http.mjs';
 import {allocateRemoteNativeController,createOriginalRetirement} from './native-authority/remote-composition.mjs';
 import {compilePreparedRunFacts,parseTransport} from './prepared-run-issuance.mjs';
@@ -124,7 +125,7 @@ export function createPreparedRunRegistry(configuration){
   const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))))fail();
   const cap=path.startsWith('/v1/runner/session/')?9437184:path==='/v1/runner/runtime'||path.startsWith('/v1/runner/checkpoint/')?2097152:path.startsWith('/v1/runner/native/')&&path!=='/v1/runner/native/bootstrap'?262144:131072;
   life=lifetime(info.signal);const clone=Request.prototype.clone.call(request),input=await jsonBody({body:clone.body,length:length===null?null:Number(length)},cap,life,life.check);life.check();
-  if(!input||typeof input!=='object'||Array.isArray(input))fail();const binding=data(input.binding??input.original?.binding);validateShape('RunBinding',binding);if(input.binding&&input.original?.binding&&!same(input.binding,input.original.binding))fail();
+  if(!input||typeof input!=='object'||Array.isArray(input))fail();const binding=data(input.binding??input.original?.binding);validateShape('RunBinding',binding);try{currentTurnTelemetry()?.bind(binding);}catch{}if(input.binding&&input.original?.binding&&!same(input.binding,input.original.binding))fail();
   principal(binding);
   let entry=ready.get(hash(binding));
   if(path==='/v1/execution/kickoff'){

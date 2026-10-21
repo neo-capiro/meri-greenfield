@@ -20,7 +20,7 @@ import {waitForAdmittedTask,loadRemoteTaskBinding} from './task-bootstrap.mjs';
 import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {captureGeneralReadPort} from './general-read-port.mjs';
-import {atRunnerStage,markRunnerStage,captureRunnerFailure} from './runner-runtime-diagnostics.mjs';
+import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
 export function assertRunnerEnvironment(environment=process.env){for(const key of ['DATABASE_URL','PGPASSWORD','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','TEMPORAL_API_KEY','MERI_NATIVE_ADMIN_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY','ANTHROPIC_AWS_BEARER_TOKEN','ANTHROPIC_AWS_REGION'])if(environment[key])throw fault('RUNNER_AMBIENT_CREDENTIAL_REFUSED');}
 /** Per-run SDK configuration directories under the admitted preparation intent; absent outside the remote task path.
  * The SDK subprocess environment replaces (never inherits) process.env, so its one extra TLS anchor comes from the same
@@ -75,7 +75,9 @@ export function assembleConversationRunner({configuration,native,query,credentia
   // Lifecycle controls and checkpoints run during execution. Control re-verifies task authority three times per call
   // (worker-http.mjs), so they share the session allowance up to the execution cutoff instead of the 3 s default.
   else if(operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'||lifecycleOperations.has(operation))stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:stages.session.expiresAtMs+stages.session.maxMs}:undefined;
-  return native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});};
+  const result=native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});
+  if(operation!=='runner/load')return result;
+  const loaded=value=>{markRunnerTelemetryStage('runner.load.done');return value;};return typeof result?.then==='function'?result.then(loaded):loaded(result);};
  if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw fault('RUNNER_SESSION_CONFIGURATION');
  const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:configuration.limits?.shutdownMs??1000});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
@@ -100,12 +102,12 @@ export function assembleConversationRunner({configuration,native,query,credentia
    markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
  const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:stages.session.expiresAtMs+stages.session.maxMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
-  const execute=async input=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');try{await selectedSkills.close();}finally{await sdkSession?.close();}}});
+  const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');try{await selectedSkills.close();}finally{await sdkSession?.close();}}}),{binding,environment:configuration.telemetry?.environment});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
 }
 export async function assertRunnerWorkspace(configuration){const workspace=await lstat(configuration.workspace);if(process.getuid()===0||!workspace.isDirectory()||workspace.isSymbolicLink()||workspace.uid!==process.getuid()||await realpath(configuration.workspace)!==configuration.workspace)throw fault('RUNNER_WORKSPACE_REFUSED');}
 export async function runConversation(configuration,{signal,query,sessionFactory,generalReads,governedIntents,poststartTls,nativeFetch}={}){
- return atRunnerStage('runner-preflight',async()=>{
+ return withRunnerDiagnostics(()=>atRunnerStage('runner-preflight',async()=>{
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  assertRunnerEnvironment();await assertRunnerWorkspace(configuration);
  const product=process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1';
@@ -129,5 +131,5 @@ export async function runConversation(configuration,{signal,query,sessionFactory
   markRunnerStage('activity');
  const sessions=sessionFactory??createRuntimeSdkSessionFactory({origin:configuration.native.origin,credential,binding:configuration.binding});
   return assembleConversationRunner({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});
- });
+ }),{binding:configuration.binding,environment:configuration.telemetry?.environment});
 }

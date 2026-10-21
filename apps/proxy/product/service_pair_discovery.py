@@ -14,6 +14,7 @@ import threading
 import time
 from ..qualification.state.pricing import StateDenied
 from . import refusal_diagnostics as diagnostics
+from . import telemetry_context as telemetry
 from .budgets import MAX_OWNER_EXCHANGE_MS
 
 _PREFIX = 'arn:aws:ecs:us-east-1:967807252336:'
@@ -222,7 +223,10 @@ class ProductServicePairDiscovery:
 
     def abort(self):
         with self._state:
+            transitioned = not self._retired
             self._retired = True
+        if transitioned:
+            telemetry.health("pair", "retired", "PAIR_RETIRED")
 
     def assert_transport(self, policy, owner_ipv4, proxy_ipv4, expires_at_ms, revision):
         # The expected socket pair is compiled from this reader's admitted
@@ -334,7 +338,10 @@ class ProductServicePairDiscovery:
             identity = tuple(tuple(pair[r][k] for k in ('taskArn', 'createdAtMs', 'privateIpv4Address')) for r in ('owner', 'proxy'))
             with self._state:
                 if self._retired or self._identity is not None and self._identity != identity:
+                    transitioned = not self._retired
                     self._retired = True
+                    if transitioned:
+                        telemetry.health("pair", "retired", "PAIR_RETIRED")
                     _deny()
                 self._identity = identity
             checked = self._now()

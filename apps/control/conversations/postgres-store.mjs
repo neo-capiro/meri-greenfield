@@ -11,7 +11,7 @@ import {productFailure} from '../product-access/errors.mjs';
 import {createOriginalInputJournal} from './initial-input-journal.mjs';
 import {assertOriginalInputActive} from './initial-input-facts.mjs';
 import {createMemoryProposalContextJournal} from './memory-proposal-context-journal.mjs';
-export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now}){
+export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now,onPublished}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
  async function tx(binding,check,body,{beforeConversation}={}){let c,begun=false,committing=false,reusable=false,failure,result;
   try{check();c=await pool.connect();check();await c.query('BEGIN');begun=true;check();await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");check();
@@ -46,7 +46,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  }
  async function findRequest(binding,requestId,check){const b=bounded(binding);validateShape('RunBinding',b);uuid(requestId);return tx(b,check,async c=>{const rows=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND request_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,requestId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=rowRun(rows[0]);if(!same(r.projection.binding,b))fail('STALE_WRITER');return {run:r.projection,request:r.request,lastSequence:Number(r.last_sequence),replayed:true};});}
  async function appendEvent(binding,input,check,expectedScopes,allowHeldCancel=false){const b=bounded(binding);validateShape('RunBinding',b);const i=bounded(input);uuid(i.eventId);
-  return tx(b,check,async c=>{const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(r.projection.binding,b))fail('STALE_WRITER');if(expectedScopes&&!same(r.projection.scopes,expectedScopes))fail('SCOPE_REFUSED');
+  const published=await tx(b,check,async c=>{const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(r.projection.binding,b))fail('STALE_WRITER');if(expectedScopes&&!same(r.projection.scopes,expectedScopes))fail('SCOPE_REFUSED');
    // The hold fences all worker output; its only worker exit is the explicit uncheckpointed-hold failure, verified below.
    const holdFailure=i.type==='run.status'&&i.data?.state==='failed'&&i.data?.reasonCode===HOLD_CHECKPOINT_FAILED;if(holdFailure&&!r.hold_control_id)fail('HOLD_FAILURE_REFUSED');
    if(r.hold_control_id&&!holdFailure&&!(allowHeldCancel&&i.type==='run.status'&&i.data?.state==='cancelled'&&i.data?.reasonCode==='USER_CANCELLED'))fail('RUN_HELD');
@@ -62,6 +62,9 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(r.projection.state==='queued'&&['failed','cancelled'].includes(projection.state))await preparation.allocations.foreclose(c,b,event,check);
    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,event.sequence,event.eventId,event,hash(event)]);check();
    await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),event.sequence]);check();return event;});
+  // Diagnostics observe the accepted durable result, including the cancellation and reconciliation paths.
+  // Their failure never changes publication ownership, its result, or its error.
+  try{if(onPublished)Promise.resolve(onPublished(published)).catch(()=>{});}catch{}return published;
  }
  async function readState(binding,{after=0,limit=100}={},check,optional=false){const b=bounded(binding);validateShape('RunBinding',b);if(!Number.isSafeInteger(after)||after<0||!Number.isSafeInteger(limit)||limit<1||limit>100)fail('INVALID_CURSOR');
   return tx(b,check,async c=>{const current=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();if(optional&&current.length===0)return null;if(current.length!==1)fail('STORE_CORRUPT');const r=rowRun(current[0]);if(!same(r.projection.binding,b))fail('STALE_WRITER');
@@ -71,7 +74,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  }
  const read=(binding,cursor,check)=>readState(binding,cursor,check),readOptional=(binding,cursor,check)=>readState(binding,cursor,check,true);
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
- const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,now,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
+ const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,now,onPublished,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
  const preparation=createNativePreparationJournals({tx,rowRun});
  const initialInputs=createOriginalInputJournal({tx,rowRun,now}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
  return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});

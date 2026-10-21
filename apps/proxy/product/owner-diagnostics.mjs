@@ -4,6 +4,16 @@
  * A line holds fixed words, a constant refusal code, a five-character SQLSTATE and the first relation our own constant
  * SQL names. Never an error message, SQL parameter, row value, identifier of a tenant/conversation, header or credential.
  * At most `burst` lines per window; the first suppressed line in a window says so once. */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
+
+/** Additive telemetry never shares the bounded legacy refusal budget. */
+export function health(component,transition,code,telemetry=currentTurnTelemetry()){
+ try{telemetry?.health(component,transition,code);}catch{}
+}
+export function budgetQuarantined(binding,reason,telemetry=currentTurnTelemetry()){
+ try{telemetry?.budgetQuarantined(binding,reason);}catch{}
+}
+
 const SQLSTATE=/^[0-9A-Z]{5}$/u,CODE=/^[A-Z][A-Z0-9_]{2,63}$/u,STEP=/^[a-z][a-z-]{0,31}$/u;
 const RELATION=/\b(?:FROM|INTO|UPDATE|JOIN)\s+(meri_[a-z_]{1,48}\.[a-z_]{1,64})\b/u;
 
@@ -18,7 +28,7 @@ export function refusalCode(error){
  const code=error?.code;return typeof code==='string'&&CODE.test(code)&&!SQLSTATE.test(code)?code:'REFUSED';
 }
 
-export function createOwnerDiagnostics({write=line=>process.stderr.write(line),now=Date.now,burst=20,windowMs=60000}={}){
+export function createOwnerDiagnostics({write=line=>process.stderr.write(line),now=Date.now,burst=20,windowMs=60000,telemetry=currentTurnTelemetry()}={}){
  if(typeof write!=='function'||typeof now!=='function'||!Number.isSafeInteger(burst)||burst<1||!Number.isSafeInteger(windowMs)||windowMs<1)
   throw Error('PRODUCT_OWNER_DIAGNOSTICS_CONFIGURATION');
  let windowStart=-Infinity,count=0,suppressed=false;
@@ -30,6 +40,8 @@ export function createOwnerDiagnostics({write=line=>process.stderr.write(line),n
   }catch{}
  }
  return Object.freeze({
+  health:(component,transition,code)=>health(component,transition,code,telemetry),
+  budgetQuarantined:(binding,reason)=>budgetQuarantined(binding,reason,telemetry),
   /** One refused statement: `sqlstate` only when PostgreSQL supplied one. */
   database(error,text){const state=error?.code;if(typeof state!=='string'||!SQLSTATE.test(state))return;
    emit(`PRODUCT_OWNER_DB_REFUSED sqlstate=${state} relation=${statementRelation(text)}`);},

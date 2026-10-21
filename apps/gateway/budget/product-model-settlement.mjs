@@ -2,11 +2,12 @@
  * response observation; callers can identify an original slot, never supply
  * usage or turn an incomplete stream into a charge/no-dispatch decision.
  */
+import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {parseAdmittedGrantSet,integer,dbTime,assertRun} from './admitted-run-binding.mjs';
 import {digest,same,allocation} from './tool-budget-binding.mjs';
-import {PostgresBudgetStore,refuse} from './postgres-budget-store.mjs';
+import {PostgresBudgetStore,BudgetCommitUncertain,refuse} from './postgres-budget-store.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../model-proxy/product-envelope.mjs';
 import {readOccurrenceCost} from './occurrence-cost-scope.mjs';
 
@@ -54,6 +55,11 @@ export function createProductModelSettlement(configuration){
  if(typeof c.observeComplete!=='function')refuse('PRODUCT_MODEL_CONFIGURATION');
  const {allocation:a,facts}=parseAdmittedGrantSet(c),selected=facts.find(f=>f.grantId===c.modelGrantId);
  if(!selected)refuse('PRODUCT_MODEL_GRANT_REFUSED');
+ const pendingQuarantines=new Set();
+ function reportQuarantine(id){
+  pendingQuarantines.delete(id);
+  try{currentTurnTelemetry()?.budgetQuarantined(selected.binding,'PRODUCT_MODEL_ACCOUNTING_QUARANTINED');}catch{}
+ }
  const p=price(c.pricing),store=new PostgresBudgetStore(c.pool,{namespace:'product'}),t=store.tables,allocationSha256=canonicalSha256(a);
  async function original(client,id){
   const rows=(await client.query(`SELECT * FROM ${t.requests} WHERE request_id=$1`,[id])).rows;
@@ -91,7 +97,8 @@ export function createProductModelSettlement(configuration){
   async settle(value){
    const id=requestId(own(value,['requestId']).requestId);
    const observed=completed(await c.observeComplete(Object.freeze({requestId:id,binding:selected.binding,grantId:selected.grantId})),id,selected,p);
-   return store.transact(async client=>{
+   let newlyQuarantined=false;
+   const result=await store.transact(async client=>{
     const budget=await store.lock(client),row=await original(client,id);
     if(row.native_body_sha256!==observed.nativeBodySha256||row.raw_request_sha256!==observed.rawRequestSha256)refuse('PRODUCT_MODEL_COMPLETION_REFUSED');
     const actual=charge(observed.usage.inputTokens,observed.usage.outputTokens,p);
@@ -112,14 +119,21 @@ export function createProductModelSettlement(configuration){
     if(budgetChange.rowCount!==1)refuse('PRODUCT_MODEL_ACCOUNTING_REFUSED');
     const requestChange=await client.query(`UPDATE ${t.requests} SET state='SETTLED',actual_micro_usd=$2,evidence_sha256=$3,settled_at=clock_timestamp() WHERE request_id=$1 AND state='UNKNOWN'`,[id,actual.toString(),observed.evidenceSha256]);
     if(requestChange.rowCount!==1)refuse('PRODUCT_MODEL_ACCOUNTING_REFUSED');
+    newlyQuarantined=!budget.quarantined&&quarantine;
     return Object.freeze({requestId:id,state:'SETTLED',actualMicroUSD:actual.toString(),quarantined:budget.quarantined||quarantine});
-   });
+   }).catch(error=>{if(error instanceof BudgetCommitUncertain&&newlyQuarantined){if(pendingQuarantines.size>=10000)pendingQuarantines.delete(pendingQuarantines.values().next().value);pendingQuarantines.add(id);}throw error;});
+   // Report only an acknowledged transition. An uncertain COMMIT may be proven
+   // by the existing read-only reconciliation below; no new database read.
+   if(newlyQuarantined||pendingQuarantines.has(id))reportQuarantine(id);
+   return result;
   },
   async readOutcome(value){
    const id=requestId(own(value,['requestId']).requestId);
    // Snapshot for uncertain-COMMIT reconciliation. ABSENT is refusal, never
    // positive no-dispatch proof or a reason to reissue inference.
-   return store.transact(async client=>outcome(await original(client,id)),()=>{},undefined,true);
+   const result=await store.transact(async client=>outcome(await original(client,id)),()=>{},undefined,true);
+   if(result.state==='SETTLED'&&pendingQuarantines.has(id))reportQuarantine(id);
+   return result;
   },
  });
 }

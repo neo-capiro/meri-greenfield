@@ -20,6 +20,7 @@ import time
 from .owner_channel import OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, OPERATION, POLL, REPLY
 from .service_pair_discovery import ProductServicePairDiscovery
 from . import refusal_diagnostics as diagnostics
+from . import telemetry_context as telemetry
 from .budgets import MAX_OWNER_EXCHANGE_MS
 from ..qualification.state.pricing import StateDenied
 
@@ -147,6 +148,8 @@ class ProductOwnerHttpsExchange:
                 and context.verify_mode == ssl.CERT_REQUIRED and context.check_hostname is True)
 
     def abort(self):
+        # Pair discovery owns the single retirement health transition for this
+        # transport pair; descriptor cleanup below does not emit it again.
         self.service_pair_reader.abort()
         with self._state:
             self._retired = True
@@ -226,6 +229,7 @@ class ProductOwnerHttpsExchange:
         return connection
 
     def _send(self, channel, path, body, cutoff):
+        began = time.monotonic()
         acquired, step = False, "lock"
         try:
             acquired = self._locks[channel].acquire(timeout=self._remaining(cutoff))
@@ -264,6 +268,7 @@ class ProductOwnerHttpsExchange:
             self.abort()
             _deny()
         finally:
+            telemetry.count("ownerExchanges", channel, {OPEN: "OPEN", OPERATION: "OPERATION", POLL: "POLL", REPLY: "REPLY"}.get(path), (time.monotonic() - began) * 1000)
             if acquired:
                 self._locks[channel].release()
 

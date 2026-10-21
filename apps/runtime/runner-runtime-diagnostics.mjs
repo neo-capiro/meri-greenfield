@@ -2,6 +2,8 @@
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
+import {createTurnTelemetry} from './telemetry/turn-context.mjs';
+import {timeoutClass} from './telemetry/turn-lines.mjs';
 
 /** The pinned native transport's fixed failure classes (pinned-native-transport.mjs documents each), owned here with the
  * rest of the allowlist so the transport, the clients that read its answers and RUNNER_FIRST_FAILURE share one vocabulary. */
@@ -114,7 +116,14 @@ function describe(error){
 }
 export function markRunnerStage(stage){
  const active=context.getStore();if(active)active.stage=stages.has(stage)?stage:'runner-preflight';
+ if(stage==='activity-query')markRunnerTelemetryStage('runner.query.start');
 }
+export function runnerTurnTelemetry(){return context.getStore()?.telemetry;}
+/** The binding is already checked by the runtime; only random correlation IDs reach the line emitter. */
+export function bindRunnerDiagnostics(binding){
+ const active=context.getStore();if(!active||!binding)return;try{active.binding=binding;active.telemetry.bind(binding);active.telemetry.stage(binding,'runner.process.start',active.processStartedAtMs);}catch{}
+}
+export function markRunnerTelemetryStage(stage){const active=context.getStore();if(active?.binding)try{active.telemetry.stage(active.binding,stage);}catch{}}
 function emit(active,line){try{Promise.resolve(active.write(line)).catch(()=>{});}catch{}}
 /** First observed terminal error, not proof of an unexpected cause or provider contact. Its stage is printed here because
  * a cleanup that outlives the shutdown timer never reaches the final RUNNER_RUNTIME_FAILED line. */
@@ -122,18 +131,24 @@ export function captureRunnerFailure(error,origin='runtime'){
  const active=context.getStore();if(active&&active.failure===undefined){
   const failure=active.failure=Object.freeze({stage:active.stage,origin:origins.has(origin)?origin:'runtime',...describe(error)});
   emit(active,`RUNNER_FIRST_FAILURE origin=${failure.origin} stage=${failure.stage} code=${failure.code} class=${failure.kind} exit=${failure.exit} signal=${failure.signal} cause=${failure.cause} msg=${failure.msg} site=${failure.site}\n`);
+  try{active.telemetry.emit('meri.turn.failure',{...active.binding,origin:failure.origin,stage:failure.stage,code:failure.code,class:failure.kind,exit:failure.exit,signal:failure.signal,cause:failure.cause,msgHash:failure.msg,timeoutClass:timeoutClass(failure.code,failure.cause)});}catch{}
  }
 }
 /** A nested failure is captured before activity translation or cleanup can replace it. */
 export async function atRunnerStage(stage,operation){
  markRunnerStage(stage);try{return await operation();}catch(error){captureRunnerFailure(error);throw error;}
 }
-export async function withRunnerDiagnostics(operation,{write=line=>process.stderr.write(line)}={}){
- return context.run({stage:'module-import',write},async()=>{
+export async function withRunnerDiagnostics(operation,{write=line=>process.stderr.write(line),binding,environment='Preview',processStartedAtMs=Date.now(),turnTelemetry}={}){
+ // Recursive remote execution borrows the outer task's diagnostics and counters.
+ if(context.getStore()){bindRunnerDiagnostics(binding);return operation();}
+ const telemetry=turnTelemetry??createTurnTelemetry({service:'runner',environment});
+ return telemetry.provisional(()=>context.run({stage:'module-import',write,telemetry,processStartedAtMs},async()=>{
+  bindRunnerDiagnostics(binding);const active=context.getStore();let flushed=false;const flush=()=>{if(flushed)return;flushed=true;try{if(active.binding)telemetry.counters(active.binding);}catch{}};
+  process.once('exit',flush);
   try{return await operation();}catch(error){
    captureRunnerFailure(error);const {stage,code}=context.getStore().failure;
    emit(context.getStore(),`RUNNER_RUNTIME_FAILED stage=${stage} code=${code}\n`);
    throw error;
-  }
- });
+  }finally{flush();process.removeListener('exit',flush);if(!turnTelemetry)try{telemetry.close();}catch{}}
+ }));
 }
