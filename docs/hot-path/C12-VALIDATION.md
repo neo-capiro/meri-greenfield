@@ -41,6 +41,8 @@ All checks used synthetic inputs and local protocol fixtures. They do not establ
 | JavaScript syntax for all three changed real-PG suites; whitespace check | Pass |
 | Base `bce70776` recovery proof, with SQL fixtures compatible with both query signatures | All three recovery cases fail with **SESSION_REFUSED**: expiry, release A→B, reserved-input retry |
 | Targeted mutations in isolated source copies | Five journal mutations, eight composed/diagnostic mutations, and one latest-generation reader mutation all killed; source restored |
+| Initial-input public contract suite after review fix | **6/6 pass**; exact source provenance, canonical browser import, and public package exports |
+| Initial-input generator `--check` after regeneration | Pass; only metadata source hashes and byte counts changed |
 
 The first caller sweep was 79/108: 27 failures came from three older fixture row constructors omitting `generation`, one lifecycle test hit a session deadline on the heavily loaded host, and one mount assertion was already stale. After adding faithful generation fields (no assertion changes), the affected 74 tests pass. The mount assertion in `task-preferences-integration.test.mjs` expects `/api/settings/tenant/read` to return 404 but observes 503. It fails identically on the clean `bce70776` tree; this unrelated behavior is unchanged.
 
@@ -66,6 +68,19 @@ MERI_REVIEW_SOURCE_ROOT="$PWD" node --experimental-test-module-mocks --test --te
 ```
 
 The remaining caller files were `lifecycle-continuation-servability`, `read-runtime-startup`, `control-temporal-startup`, `user-preferences-startup`, `task-preferences-integration`, `prepared-candidate-startup`, `objective-admission`, `routines-occurrence`, `scheduled-admission`, and `owner-diagnostics`. Use the same Node flags and source-root environment; `npm run typecheck --prefix apps/runtime` checks TypeScript.
+
+### Initial-input contract metadata review fix
+
+At `80ea8031`, the public contract suite reproduced the reported **5/6 pass** result: the provenance assertion rejected the stale `initial-input-journal.mjs` hash. Regenerating with `packages/contracts/generate-initial-input.mjs` updates that pin to `1d6627455d124e68148005f5011820b5db7a705db63b095de323f86d93831e55` (7,202 bytes) and also refreshes the stale `postgres-store.mjs` pin to `e496b788cca732d5530ef79b2d5b17153072fbb25d35dd50213c8cb6bb40d1d1` (12,988 bytes). Runtime, declarations, schema, and browser import metadata remain byte-identical. No source behavior or test assertions changed.
+
+The first generator attempt was blocked by missing local `esbuild`; generation and the checks below passed with local dependencies matching the unchanged contracts lockfile. The public suite is now part of C12's validation command list:
+
+```sh
+node packages/contracts/generate-initial-input.mjs --check
+node --test packages/contracts/test/conversation-initial-input-public.test.mjs
+```
+
+The provenance row in `docs/handover/20261017/fable-shipping/MERI-CONTRACT-COMPATIBILITY.md` is intentionally unchanged: that report explicitly compares frozen Meri `38f52df9` and frontend `e0b47a34` objects, not the current checkout. Replacing its historical hash would invalidate that receipt. Current provenance is recorded in the regenerated metadata above.
 
 ### PostgreSQL and shipping validation still required
 
