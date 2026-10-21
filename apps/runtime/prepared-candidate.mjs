@@ -73,12 +73,13 @@ export function createPreparedCandidateIdentity({store,identity,qualification,no
   const pinned=record=>{if(record.configurationSha256!==configurationSha256)refuseWith('INITIAL_BINDING_CONFIGURATION_CHANGED');if(!same(record.versions,versions))refuseWith('INITIAL_BINDING_VERSIONS_CHANGED');return record;};
   const fact=selected=>JSON.stringify({binding:selected.binding,policyRevision:selected.policyRevision,checkedAtMs:now(),deadlineMs:Math.min(selected.expiresAtMs??factUntil(),factUntil())});
   // An original whose first turn never started is single-use only while it is live for this render: once it expired, or it was admitted
-  // under another policy, configuration or runtime, the journal re-prepares it as the conversation's next generation under this render
+  // under another configuration or runtime, the journal re-prepares it as the conversation's next generation under this render
   // (it re-verifies under the conversation lock that nothing started; a started original is never rebound and keeps the checks below).
-  // Only a fresh issuance rebinds (no exact run, or exactly the dead original's own run): a session pinned to a run rechecks it, never replaces it.
-  const dead=record=>record.expiresAtMs<=now()||record.policyRevision!==qualification.policyRevision||record.configurationSha256!==configurationSha256||!same(record.versions,versions);
+  // Only issuance without an exact run constraint can claim or rebind. A session pinned to a run rechecks it, never replaces it.
+  const dead=record=>record.expiresAtMs<=now()||record.configurationSha256!==configurationSha256||!same(record.versions,versions);
   async function original(principal,conversationId,signal,runId){const query={principal,conversationId,selectedClientId};let record=await initialBindings.readConversation(query,check(signal));check(signal)();
-   const rebind=record&&dead(record)&&(runId===undefined||runId===record.binding.runId)&&!await store.readOptional(record.binding,{},check(signal));check(signal)();
+   if(record)valid(record,principal,conversationId);else if(runId!==undefined)refuseWith('INITIAL_BINDING_SUPERSEDED');
+   const rebind=record&&dead(record)&&runId===undefined&&!await store.readOptional(record.binding,{},check(signal));check(signal)();
    if(!record||rebind){const proposedExpiresAtMs=proposeInitialExpiry({signal});const claimed=await initialBindings[rebind?'rebind':'claim']({...query,policyRevision:qualification.policyRevision,versions,configurationSha256,proposedExpiresAtMs},check(signal));record=claimed.record;check(signal)();}
    return valid(record,principal,conversationId);}
   async function select(record,principal,conversationId,signal,exact={}){const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();

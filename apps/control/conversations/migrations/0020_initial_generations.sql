@@ -14,5 +14,22 @@ ALTER TABLE meri_conversations.initial_run_bindings ADD PRIMARY KEY (tenant_id,c
 ALTER TABLE meri_conversations.initial_inputs DROP CONSTRAINT initial_inputs_pkey;
 ALTER TABLE meri_conversations.initial_inputs ADD PRIMARY KEY (tenant_id,conversation_id,run_id);
 ALTER TABLE meri_conversations.initial_inputs DROP CONSTRAINT initial_inputs_request_id_key;
-ALTER TABLE meri_conversations.initial_inputs ADD UNIQUE (tenant_id,run_id,request_id);
+-- Leading request_id also indexes the cross-conversation ownership probe. Enforce ownership for both current claims and
+-- legacy writers during migration-first rollout: both acquire the conversation lock before this request lock.
+ALTER TABLE meri_conversations.initial_inputs ADD UNIQUE (request_id,tenant_id,run_id);
+CREATE FUNCTION meri_conversations.guard_initial_input_request_owner() RETURNS trigger
+ LANGUAGE plpgsql VOLATILE SECURITY INVOKER AS $$
+BEGIN
+ -- The ownership read must see a competing commit after waiting for its request lock. Reject snapshot isolation rather
+ -- than silently weaken the old global request-id invariant; VOLATILE gives each query a fresh READ COMMITTED snapshot.
+ IF pg_catalog.current_setting('transaction_isolation') <> 'read committed'
+ THEN RAISE EXCEPTION 'INITIAL_INPUT_ISOLATION_REQUIRED' USING ERRCODE = '0A000'; END IF;
+ PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended('meri_initial_input_request:' || NEW.request_id::text,0));
+ IF EXISTS (SELECT 1 FROM meri_conversations.initial_inputs
+            WHERE request_id = NEW.request_id AND (tenant_id <> NEW.tenant_id OR conversation_id <> NEW.conversation_id))
+ THEN RAISE EXCEPTION 'INITIAL_INPUT_CONFLICT' USING ERRCODE = '23505'; END IF;
+ RETURN NEW;
+END $$;
+CREATE TRIGGER initial_input_request_owner BEFORE INSERT ON meri_conversations.initial_inputs
+ FOR EACH ROW EXECUTE FUNCTION meri_conversations.guard_initial_input_request_owner();
 COMMIT;

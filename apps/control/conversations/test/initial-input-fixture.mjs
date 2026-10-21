@@ -35,7 +35,9 @@ export function initialInputFixture(){
   if(sql==='COMMIT'){const result=await c.query(sql,p);faults.onCommit?.();return result;}
   if(!sql.includes('meri_conversations.initial_inputs'))return c.query(sql,p);
   f.state.calls.push(sql);let rows=[];
-  if(sql.startsWith('SELECT *')){const r=allocations.get(key(p));if(r)rows=[r];}
+  if(sql.startsWith('SELECT tenant_id,conversation_id'))rows=[...allocations.values()].filter(r=>r.request_id===p[0]&&(r.tenant_id!==p[1]||r.conversation_id!==p[2])).slice(0,1).map(r=>({tenant_id:r.tenant_id,conversation_id:r.conversation_id}));
+  else if(sql.startsWith('SELECT run_id'))rows=[...allocations.values()].filter(r=>r.tenant_id===p[0]&&r.conversation_id===p[1]).slice(0,2).map(r=>({run_id:r.run_id}));
+  else if(sql.startsWith('SELECT *'))rows=[...allocations.values()].filter(r=>r.tenant_id===p[0]&&r.conversation_id===p[1]&&(!sql.includes('AND run_id=$3')||r.run_id===p[2]));
   else if(sql.startsWith('INSERT INTO')){
    if(!allocations.has(key(p))&&![...allocations.values()].some(r=>r.tenant_id===p[0]&&r.run_id===p[2]&&r.request_id===p[3])){
     const r={tenant_id:p[0],conversation_id:p[1],run_id:p[2],request_id:p[3],allocation:copy(p[4]),allocation_sha256:p[5],state:'RESERVED',accepted_request_sha256:null};allocations.set(key(p),r);rows=[r];

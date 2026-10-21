@@ -107,17 +107,18 @@ export function createInitialRunBindingJournal({pool,now=Date.now,newId=randomUU
   });
  }
  /** Session issuance only (O117): the conversation's original for this principal and client under THIS render. A stored original whose
-  * first turn never started and that is dead for the proposal (expired, or admitted under another policy, configuration or runtime) is
+  * first turn never started and that is dead for the proposal (expired, or admitted under another configuration or runtime) is
   * superseded by the next generation: nothing ran, so nothing carries over, and its reserved input stays dead with it. A started original
-  * is never rebound (CONFLICT, or EXPIRED when it is this exact proposal). Another actor or client always refuses CONFLICT. The
+  * is never rebound (CONFLICT, or EXPIRED when it is this exact proposal). Another actor, client or policy always refuses CONFLICT. The
   * conversation's advisory lock serializes concurrent issuance: exactly one new generation. */
  async function rebind(raw,check){
   const at=clock(),v=proposed(raw,at),key={tenantId:v.principal.tenantId,conversationId:v.conversationId};
   return transaction(key,check,async client=>{
    const latest=await row(client,key,check);
    if(!latest){await vacant(client,{...v.principal,conversationId:v.conversationId},check);return {record:await insert(client,key,v,at,1,check),created:true,superseded:false};}
-   const old=latest.record;if(old.binding.actorId!==v.principal.actorId||old.selectedClientId!==v.selectedClientId)refuse('INITIAL_RUN_BINDING_CONFLICT');
-   const current=clock(),live=current>=old.createdAtMs&&current<old.expiresAtMs,matches=matchesProposal(old,v),begun=await started(client,old,check);
+   const old=latest.record;if(old.binding.actorId!==v.principal.actorId||old.selectedClientId!==v.selectedClientId||old.policyRevision!==v.policyRevision)refuse('INITIAL_RUN_BINDING_CONFLICT');
+   const current=clock();if(current<at||current<old.createdAtMs)refuse('INITIAL_RUN_BINDING_CLOCK');
+   const live=current<old.expiresAtMs,matches=matchesProposal(old,v),begun=await started(client,old,check);
    if(matches&&live)return {record:old,created:false,superseded:false};
    if(begun)refuse(matches?'INITIAL_RUN_BINDING_EXPIRED':'INITIAL_RUN_BINDING_CONFLICT');
    return {record:await insert(client,key,v,at,latest.generation+1,check),created:true,superseded:true};

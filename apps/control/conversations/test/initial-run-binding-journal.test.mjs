@@ -138,14 +138,14 @@ test('two concurrent first claims serialize and return the same binding',async()
  assert.equal(a.created!==b.created,true);assert.deepEqual(a.record,b.record);assert.equal(f.state.inserts,1);
 });
 
-// O117: session issuance re-prepares an original whose first turn never started once it is dead (expired, or another policy,
+// O117: session issuance re-prepares an original whose first turn never started once it is dead (expired, or another
 // configuration or runtime) as the next generation; a started original is never rebound.
 const readLatest=(f,j)=>j.readConversation({principal:f.input.principal,conversationId:f.input.conversationId,selectedClientId:f.input.selectedClientId},check);
 test('rebind supersedes an unstarted original once it expired or its render changed; the old generation stays dead history',async()=>{
- for(const change of ['expired','configurationSha256','versions','policyRevision']){
+ for(const change of ['expired','configurationSha256','versions']){
   const f=fixture(),j=f.journal(),first=(await j.claim(f.input,check)).record;
   const proposal=change==='expired'?(f.advance(60000),{...f.input,proposedExpiresAtMs:f.now()+60000}):{...f.input,
-   ...(change==='configurationSha256'?{configurationSha256:'d'.repeat(64)}:change==='versions'?{versions:{...versions,imageDigest:'sha256:'+'f'.repeat(64)}}:{policyRevision:'policy2'})};
+   ...(change==='configurationSha256'?{configurationSha256:'d'.repeat(64)}:{versions:{...versions,imageDigest:'sha256:'+'f'.repeat(64)}})};
   const next=await j.rebind(proposal,check);assert.equal(next.created,true,change);assert.equal(next.superseded,true,change);
   assert.notEqual(next.record.binding.runId,first.binding.runId);assert.equal(next.record.binding.conversationId,first.binding.conversationId);assert.equal(next.record.binding.writerFence,1);
   assert.equal(next.record.configurationSha256,proposal.configurationSha256);assert.equal(next.record.policyRevision,proposal.policyRevision);
@@ -163,7 +163,7 @@ test('rebind supersedes a reserved-but-never-accepted input with its original; a
  f.advance(60000);const next=await j.rebind({...f.input,proposedExpiresAtMs:f.now()+60000},check);
  assert.equal(next.superseded,true);assert.equal(f.state.inputs.get(f.key()).run_id,b.runId,'the dead input is left as history');
 });
-test('a started original is never rebound; another actor or client always refuses',async()=>{
+test('a started original is never rebound; another actor, client or policy always refuses',async()=>{
  for(const kind of ['run','accepted','allocation','successor']){
   const f=fixture(),j=f.journal(),first=(await j.claim(f.input,check)).record,b=first.binding,k=f.key();
   const run={binding:b,state:'queued',scopes,versions,createdAt:new Date(first.createdAtMs).toISOString(),policyRevision:'policy1'};
@@ -177,9 +177,25 @@ test('a started original is never rebound; another actor or client always refuse
   assert.equal(f.state.bindings.get(k).length,1,kind);
  }
  const f=fixture(),j=f.journal();await j.claim(f.input,check);f.advance(60000);
- for(const edit of [{principal:{...f.input.principal,actorId:'actor-b'}},{selectedClientId:id(8)}])
+ for(const edit of [{principal:{...f.input.principal,actorId:'actor-b'}},{selectedClientId:id(8)},{policyRevision:'policy2'}])
   await assert.rejects(j.rebind({...f.input,...edit,proposedExpiresAtMs:f.now()+60000},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
  assert.equal(f.state.bindings.get(f.key()).length,1);
+});
+test('clock rollback refuses supersession without appending a generation',async()=>{
+ const f=fixture(),j=f.journal(),first=await j.claim(f.input,check);f.advance(-1);
+ await assert.rejects(j.rebind({...f.input,configurationSha256:'d'.repeat(64)},check),{code:'INITIAL_RUN_BINDING_CLOCK'});
+ assert.equal(f.state.bindings.get(f.key()).length,1);assert.deepEqual(await readLatest(f,j),first.record);
+});
+test('each durable start marker independently prevents replacing an original',async()=>{
+ for(const marker of ['runs','inputs','next','allocations']){
+  const f=fixture(),j=f.journal(),first=await j.claim(f.input,check),b=first.record.binding,k=f.key();
+  if(marker==='runs'){const run={binding:b,state:'queued',scopes,versions,createdAt:new Date(first.record.createdAtMs).toISOString(),policyRevision:'policy1'};f.state.runs.set(k,{projection:run,projection_sha256:hash(run)});}
+  if(marker==='inputs')f.state.inputs.set(k,{run_id:b.runId,state:'ACCEPTED'});
+  if(marker==='next'){const reservation={source:b};f.state.next.set(k,{reservation,reservation_sha256:hash(reservation)});}
+  if(marker==='allocations')f.state.allocations.add([b.tenantId,b.conversationId,b.runId].join(':'));
+  await assert.rejects(j.rebind({...f.input,configurationSha256:'d'.repeat(64)},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},marker);
+  assert.equal(f.state.bindings.get(k).length,1,marker);
+ }
 });
 test('concurrent rebinds of one dead original create exactly one new generation',async()=>{
  const f=fixture(),j=f.journal(),other=f.journal();await j.claim(f.input,check);f.advance(60000);

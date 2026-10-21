@@ -84,7 +84,7 @@ export const PLAN=Object.freeze([
  // C12 (O117): latest-generation original bindings and run-keyed original inputs. Appended (the ledger is ordinal-exact) to the
  // integration stage, so one `integration` run applies it whether or not the earlier integration entries are already ledgered.
  // Existing grants are table-level SELECT/INSERT, so the new column needs none.
- ['migration',conversation('0020_initial_generations.sql'),'87abd2da46b1ab741f537307590d7dc18abe44e6b1949c8e2419caa41bf34b94','integration']
+ ['migration',conversation('0020_initial_generations.sql'),'366e1aff5eea618f5ef611fa8de7f1b6e24a9c2bc0738b70a43fdaa6aec11a80','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

@@ -1,6 +1,7 @@
 /** Native 0020 qualification (O117) on the local-baseline PostgreSQL 16 Unix-socket cluster only: each case creates and drops its
- * own disposable database, applies 0001..0017 exactly, populates 0016/0017, then applies 0020 and times its transaction (the
- * ACCESS EXCLUSIVE window of the primary-key swaps). Never a deployed database. */
+ * own disposable database, applies 0001..0017 exactly, populates 0016/0017, then applies 0020 and times its transaction.
+ * Elapsed transaction time includes acquisition/network overhead: an upper bound, NOT an exact ACCESS EXCLUSIVE lock duration.
+ * Never a deployed database. Run with the local-baseline provision-postgres.sh environment exports; no implicit skip. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -8,6 +9,9 @@ import {readFile} from 'node:fs/promises';
 import {performance} from 'node:perf_hooks';
 import pg from 'pg';
 import {createInitialRunBindingJournal} from '../initial-run-binding-journal.mjs';
+import {createPostgresConversationStore} from '../postgres-store.mjs';
+import {prepareOriginalInputFacts} from '../initial-input-facts.mjs';
+import {hash} from '../boundary.mjs';
 import {versions} from './store-fixture.mjs';
 
 const migrations=new URL('../migrations/',import.meta.url);
@@ -31,27 +35,37 @@ async function database(t){
 /** `rows` conversations with a generation-1 original (0017 shape); every other one also has a RESERVED original input (0016 shape). */
 async function populate(main,rows){
  const r=record(Date.now());
- await main.query(`INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256)
-  SELECT 'tenant-pop',c,r,jsonb_build_object('schemaVersion',1,'state','ADMITTED',
-   'binding',jsonb_build_object('tenantId','tenant-pop','actorId','actor-pop','conversationId',c::text,'runId',r::text,'attemptId',gen_random_uuid()::text,'workerId',gen_random_uuid()::text,'writerFence',1),
-   'selectedClientId',$1::text,'policyRevision',$2::text,'versions',$3::jsonb,'configurationSha256',$4::text,'createdAtMs',$5::bigint,'expiresAtMs',$6::bigint),repeat('0',64)
-  FROM (SELECT gen_random_uuid() AS c,gen_random_uuid() AS r FROM generate_series(1,$7)) s`,[r.clientId,r.policyRevision,JSON.stringify(versions),r.configurationSha256,r.createdAtMs,r.expiresAtMs,rows]);
- await main.query(`INSERT INTO meri_conversations.initial_inputs(tenant_id,conversation_id,run_id,request_id,allocation,allocation_sha256,state,accepted_request_sha256)
-  SELECT b.tenant_id,b.conversation_id,b.run_id,q,jsonb_build_object('binding',b.record->'binding','scopes','[]'::jsonb,'versions',$1::jsonb,'selectedClientId',b.record->>'selectedClientId',
-   'requestId',q::text,'inputSha256',repeat('a',64),'requestSha256',repeat('b',64),'allocatedAtMs',1,'expiresAtMs',2),repeat('0',64),'RESERVED',NULL
-  FROM (SELECT *,gen_random_uuid() AS q,row_number() OVER () AS n FROM meri_conversations.initial_run_bindings) b WHERE b.n%2=0`,[JSON.stringify(versions)]);
+ // Bound each batch's memory while giving every existing row a genuine application-canonical digest and scope.
+ for(let start=0;start<rows;start+=500){const bindings=[],inputs=[];
+  for(let i=start;i<Math.min(rows,start+500);i++){
+   const binding={tenantId:'tenant-pop',actorId:'actor-pop',conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
+   const value={schemaVersion:1,state:'ADMITTED',binding,selectedClientId:r.clientId,policyRevision:r.policyRevision,versions,
+    configurationSha256:r.configurationSha256,createdAtMs:r.createdAtMs,expiresAtMs:r.expiresAtMs};
+   bindings.push({tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,record:value,record_sha256:hash(value)});
+   if(i%2===0){const allocation={binding,scopes:[{kind:'client',tenantId:binding.tenantId,resourceId:r.clientId,policyRevision:r.policyRevision}],versions,
+    selectedClientId:r.clientId,requestId:randomUUID(),inputSha256:'a'.repeat(64),requestSha256:'b'.repeat(64),allocatedAtMs:r.createdAtMs,expiresAtMs:r.expiresAtMs};
+    inputs.push({tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,request_id:allocation.requestId,allocation,allocation_sha256:hash(allocation)});}
+  }
+  await main.query(`INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256)
+   SELECT * FROM jsonb_to_recordset($1::jsonb) AS x(tenant_id text,conversation_id uuid,run_id uuid,record jsonb,record_sha256 text)`,[JSON.stringify(bindings)]);
+  await main.query(`INSERT INTO meri_conversations.initial_inputs(tenant_id,conversation_id,run_id,request_id,allocation,allocation_sha256,state,accepted_request_sha256)
+   SELECT x.*,'RESERVED',NULL FROM jsonb_to_recordset($1::jsonb) AS x(tenant_id text,conversation_id uuid,run_id uuid,request_id uuid,allocation jsonb,allocation_sha256 text)`,[JSON.stringify(inputs)]);
+ }
  return (await main.query('SELECT (SELECT count(*) FROM meri_conversations.initial_run_bindings)::int AS bindings,(SELECT count(*) FROM meri_conversations.initial_inputs)::int AS inputs')).rows[0];
 }
 async function migrate(main){const sql=await readFile(new URL('0020_initial_generations.sql',migrations),'utf8'),started=performance.now();await main.query(sql);return Math.round(performance.now()-started);}
 
 for(const rows of [1000,100000])test(`0020 applies up on populated 0016/0017 tables (${rows} originals): rows kept as generation 1, triggers intact`,async t=>{
  const {main}=await database(t),before=await populate(main,rows),ms=await migrate(main);
- t.diagnostic(`0020 transaction (PK swaps, ACCESS EXCLUSIVE) on ${before.bindings} bindings + ${before.inputs} inputs: ${ms} ms`);
+ t.diagnostic(`0020 migration transaction elapsed (upper bound on PK-swap lock duration) on ${before.bindings} bindings + ${before.inputs} inputs: ${ms} ms`);
  const after=(await main.query('SELECT count(*)::int AS n,min(generation) AS lo,max(generation) AS hi FROM meri_conversations.initial_run_bindings')).rows[0];
  assert.deepEqual(after,{n:before.bindings,lo:1,hi:1});assert.equal((await main.query('SELECT count(*)::int AS n FROM meri_conversations.initial_inputs')).rows[0].n,before.inputs);
+ const sample=(await main.query('SELECT record,record_sha256 FROM meri_conversations.initial_run_bindings LIMIT 1')).rows[0];
+ assert.equal(hash(sample.record),sample.record_sha256,'the migration preserved valid canonical record bytes');
+ assert.deepEqual(await createInitialRunBindingJournal({pool:main}).read({binding:sample.record.binding},check),sample.record);
  const keys=(await main.query(`SELECT conrelid::regclass::text AS t,contype,pg_get_constraintdef(oid) AS d FROM pg_constraint WHERE conrelid IN ('meri_conversations.initial_run_bindings'::regclass,'meri_conversations.initial_inputs'::regclass) AND contype IN ('p','u') ORDER BY 1,2,3`)).rows;
  assert.deepEqual(keys.map(k=>`${k.t} ${k.contype} ${k.d}`),[
-  'meri_conversations.initial_inputs p PRIMARY KEY (tenant_id, conversation_id, run_id)','meri_conversations.initial_inputs u UNIQUE (tenant_id, run_id, request_id)',
+  'meri_conversations.initial_inputs p PRIMARY KEY (tenant_id, conversation_id, run_id)','meri_conversations.initial_inputs u UNIQUE (request_id, tenant_id, run_id)',
   'meri_conversations.initial_run_bindings p PRIMARY KEY (tenant_id, conversation_id, generation)','meri_conversations.initial_run_bindings u UNIQUE (tenant_id, run_id)']);
  for(const sql of ["UPDATE meri_conversations.initial_run_bindings SET record_sha256=repeat('1',64) WHERE tenant_id='tenant-pop'","DELETE FROM meri_conversations.initial_run_bindings WHERE tenant_id='tenant-pop'"])
   await assert.rejects(main.query(sql),/INITIAL_RUN_BINDING_IMMUTABLE/,sql);
@@ -73,14 +87,78 @@ test('after 0020: concurrent rebinds on two connections create exactly one gener
  assert.deepEqual(await journal.readConversation({principal,conversationId,selectedClientId},check),a.record,'only the latest generation is served');
  await assert.rejects(journal.read({binding:first.record.binding},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
  // One input per original run: the same client request id may reach the new run, never twice the same run.
- const input=(binding,requestId)=>main.query(`INSERT INTO meri_conversations.initial_inputs(tenant_id,conversation_id,run_id,request_id,allocation,allocation_sha256,state,accepted_request_sha256)
-  VALUES($1,$2,$3,$4,jsonb_build_object('binding',$5::jsonb,'scopes','[]'::jsonb,'versions',$6::jsonb,'selectedClientId',$7::text,'requestId',$4::text,'inputSha256',repeat('a',64),'requestSha256',repeat('b',64),'allocatedAtMs',1,'expiresAtMs',2),repeat('0',64),'RESERVED',NULL)`,
-  [binding.tenantId,binding.conversationId,binding.runId,requestId,JSON.stringify(binding),JSON.stringify(versions),selectedClientId]);
+ const input=(binding,requestId)=>{const allocation={binding,scopes:[{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision:proposal.policyRevision}],versions,
+  selectedClientId,requestId,inputSha256:'a'.repeat(64),requestSha256:'b'.repeat(64),allocatedAtMs:1,expiresAtMs:2};
+  return main.query(`INSERT INTO meri_conversations.initial_inputs(tenant_id,conversation_id,run_id,request_id,allocation,allocation_sha256,state,accepted_request_sha256)
+   VALUES($1,$2,$3,$4,$5,$6,'RESERVED',NULL)`,[binding.tenantId,binding.conversationId,binding.runId,requestId,allocation,hash(allocation)]);};
  const requestId=randomUUID();await input(first.record.binding,requestId);await input(a.record.binding,requestId);
  await assert.rejects(input(a.record.binding,randomUUID()),{code:'23505'},'one original input per run');
  // Earlier code inserts without the column: the default keeps a first claim working (generation 1).
  const other=randomUUID(),runId=randomUUID(),earlier={...first.record,binding:{...first.record.binding,conversationId:other,runId}};
- await main.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256) VALUES($1,$2,$3,$4,$5)',[principal.tenantId,other,runId,earlier,'0'.repeat(64)]);
+ await main.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256) VALUES($1,$2,$3,$4,$5)',[principal.tenantId,other,runId,earlier,hash(earlier)]);
  assert.equal((await main.query('SELECT generation FROM meri_conversations.initial_run_bindings WHERE conversation_id=$1',[other])).rows[0].generation,1);
- await assert.rejects(main.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256,generation) VALUES($1,$2,$3,$4,$5,1)',[principal.tenantId,other,randomUUID(),earlier,'0'.repeat(64)]),{code:'23505'},'one row per generation');
+ const duplicate={...earlier,binding:{...earlier.binding,runId:randomUUID()}};
+ await assert.rejects(main.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256,generation) VALUES($1,$2,$3,$4,$5,1)',[principal.tenantId,other,duplicate.binding.runId,duplicate,hash(duplicate)]),{code:'23505'},'one row per generation');
+});
+
+/** Observe a real PostgreSQL lock request, then pause only after it is held, to force serial orders across independent connections. */
+function heldPool(pool,lockKey){let resume,entered,requested,armed=true;const held=new Promise(resolve=>entered=resolve),requesting=new Promise(resolve=>requested=resolve),release=()=>resume?.(),gate=new Promise(resolve=>resume=resolve);
+ return {held,requesting,release,pool:{async connect(){const c=await pool.connect();return {async query(sql,p){
+  const target=armed&&sql.startsWith('SELECT pg_advisory_xact_lock(')&&(lockKey===undefined||p?.[0]===lockKey);if(target)requested();const result=await c.query(sql,p);
+  if(target){armed=false;entered();await gate;}return result;},release:error=>c.release(error)};}}};}
+
+for(const winner of ['accept','rebind'])test(`original input acceptance and supersession serialize across connections (${winner} holds the lock first)`,async t=>{
+ const {pool,main}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
+ const proposal={principal,conversationId:randomUUID(),selectedClientId,policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000};
+ const original=(await createInitialRunBindingJournal({pool:main,now:()=>now}).claim(proposal,check)).record,binding=original.binding;
+ const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision:proposal.policyRevision}],createdAt=new Date(now).toISOString();
+ const input={requestId:randomUUID(),prompt:'accepted exactly once'},request={...input,skill:null,window:null,windowRequest:null};
+ const facts=await prepareOriginalInputFacts({binding,scopes,versions,selectedClientId,input,request,allocatedAtMs:now,expiresAtMs:now+60000});
+ await createPostgresConversationStore({pool:main,now:()=>now}).initialInputs.claim(facts,check);
+ const acceptance={conversation:{conversationId:binding.conversationId,owner:principal,scopes,createdAt,policyRevision:proposal.policyRevision},
+  run:{binding,state:'queued',scopes,versions,createdAt,policyRevision:proposal.policyRevision},request,selectedClientId,
+  event:{contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}};
+ const first=heldPool(pool()),second=pool(),store=createPostgresConversationStore({pool:winner==='accept'?first.pool:second,now:()=>now});
+ const journal=createInitialRunBindingJournal({pool:winner==='rebind'?first.pool:second,now:()=>now});
+ const operations={accept:()=>store.initialInputs.accept(acceptance,check),rebind:()=>journal.rebind({...proposal,configurationSha256:'d'.repeat(64)},check)};
+ let leading,trailing;
+ try{leading=operations[winner]();await Promise.race([first.held,leading.then(()=>{throw Error('CONVERSATION_LOCK_NOT_OBSERVED');})]);
+  trailing=operations[winner==='accept'?'rebind':'accept']();}finally{first.release();}
+ const results=await Promise.allSettled([leading,trailing]);assert.equal(results[0].status,'fulfilled');assert.equal(results[1].status,'rejected');
+ assert.equal(results[1].reason.code,winner==='accept'?'INITIAL_RUN_BINDING_CONFLICT':'INITIAL_INPUT_SUPERSEDED');
+ const state=(await main.query(`SELECT (SELECT count(*) FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1)::int AS generations,
+  (SELECT count(*) FROM meri_conversations.runs WHERE tenant_id=$1)::int AS runs,(SELECT state FROM meri_conversations.initial_inputs WHERE tenant_id=$1) AS input`,[principal.tenantId])).rows[0];
+ assert.deepEqual(state,winner==='accept'?{generations:1,runs:1,input:'ACCEPTED'}:{generations:2,runs:0,input:'RESERVED'});
+});
+
+test('0020 preserves one request owner across concurrent legacy INSERT and current claims in different conversations',async t=>{
+ const {pool,main}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
+ const input={requestId:randomUUID(),prompt:'one request owner'},request={...input,skill:null,window:null,windowRequest:null},facts=[];
+ for(let i=0;i<2;i++){
+  const original=(await createInitialRunBindingJournal({pool:main,now:()=>now}).claim({principal,conversationId:randomUUID(),selectedClientId,
+   policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000},check)).record;
+  facts.push(await prepareOriginalInputFacts({binding:original.binding,scopes:[{kind:'client',tenantId:principal.tenantId,resourceId:selectedClientId,policyRevision:'policy1'}],
+   versions,selectedClientId,input,request,allocatedAtMs:now,expiresAtMs:now+60000}));
+ }
+ const insert=(client,f)=>client.query(`INSERT INTO meri_conversations.initial_inputs(tenant_id,conversation_id,run_id,request_id,allocation,allocation_sha256,state,accepted_request_sha256)
+  VALUES($1,$2,$3,$4,$5,$6,'RESERVED',NULL) ON CONFLICT DO NOTHING RETURNING *`,[f.binding.tenantId,f.binding.conversationId,f.binding.runId,f.requestId,f,hash(f)]);
+ const legacy=await pool().connect(),requestKey=`meri_initial_input_request:${input.requestId}`,current=heldPool(pool(),requestKey);current.release();
+ try{
+  // The earlier journal takes only its conversation lock. The migration trigger must supply the request lock itself.
+  await legacy.query('BEGIN ISOLATION LEVEL READ COMMITTED');
+  await legacy.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${principal.tenantId}:${facts[0].binding.conversationId}`]);
+  assert.equal((await insert(legacy,facts[0])).rows.length,1);
+  assert.equal((await main.query('SELECT pg_try_advisory_xact_lock(hashtextextended($1,0)) AS acquired',[requestKey])).rows[0].acquired,false,
+   'a legacy INSERT holds the shared request ownership lock until commit');
+  const trailing=createPostgresConversationStore({pool:current.pool,now:()=>now}).initialInputs.claim(facts[1],check),settled=Promise.allSettled([trailing]);
+  await Promise.race([current.requesting,trailing.then(()=>{throw Error('REQUEST_LOCK_NOT_OBSERVED');})]);
+  await legacy.query('COMMIT');
+  const [outcome]=await settled;assert.equal(outcome.status,'rejected');assert.equal(outcome.reason.code,'INITIAL_INPUT_CONFLICT');
+  // A legacy loser is also rejected by the database, including when it omits the new application ownership check.
+  await assert.rejects(insert(main,facts[1]),error=>error.code==='23505'&&error.message==='INITIAL_INPUT_CONFLICT');
+  const rows=(await main.query('SELECT tenant_id,conversation_id,run_id,state FROM meri_conversations.initial_inputs WHERE request_id=$1',[input.requestId])).rows;
+  assert.deepEqual(rows,[{tenant_id:principal.tenantId,conversation_id:facts[0].binding.conversationId,run_id:facts[0].binding.runId,state:'RESERVED'}]);
+  await legacy.query('BEGIN ISOLATION LEVEL REPEATABLE READ');
+  await assert.rejects(insert(legacy,facts[1]),error=>error.code==='0A000'&&error.message==='INITIAL_INPUT_ISOLATION_REQUIRED');
+ }finally{current.release();await legacy.query('ROLLBACK').catch(()=>{});legacy.release();}
 });

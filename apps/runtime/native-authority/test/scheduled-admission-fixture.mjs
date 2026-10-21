@@ -30,7 +30,7 @@ export async function scheduledAdmissionFixture({nativeCandidate,clockMs}={}){
   if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings'))return rows(bindings.has(key(p))?[bindings.get(key(p))]:[]);
   if(sql.startsWith('INSERT INTO meri_conversations.initial_run_bindings')){
    stage='binding';if(bindings.has(key(p)))return rows([]);
-   const row={tenant_id:p[0],conversation_id:p[1],run_id:p[2],record:copy(p[3]),record_sha256:p[4]};bindings.set(key(p),row);return rows([row]);
+   const row={tenant_id:p[0],conversation_id:p[1],run_id:p[2],record:copy(p[3]),record_sha256:p[4],generation:p[5]??1};bindings.set(key(p),row);return rows([row]);
   }
   if(sql.startsWith('SELECT projection,projection_sha256 FROM meri_conversations.runs'))return rows([...conversations.state.runs.values()].filter(r=>r.tenant_id===p[0]&&r.conversation_id===p[1]).slice(0,1));
   if(sql.startsWith('SELECT reservation,reservation_sha256 FROM meri_conversations.next_runs'))return rows([...conversations.state.nextRuns.values()].filter(r=>r.tenant_id===p[0]&&r.conversation_id===p[1]&&r.source_run_id===p[2]));

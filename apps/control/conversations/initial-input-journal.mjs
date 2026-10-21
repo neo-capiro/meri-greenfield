@@ -1,4 +1,4 @@
-/** One original-input CAS, inside the existing ConversationStore conversation transaction. No independent lock/dispatcher.
+/** One original-input CAS, inside the existing ConversationStore conversation transaction. No independent transaction/dispatcher.
  * One input per original RUN (0020): the reserved input of a superseded original generation is dead history, never read. */
 import {bounded,hash,same,fail,validateShape} from './boundary.mjs';
 import {assertOriginalInputFacts,sameOriginalInputIdentity,assertOriginalInputAcceptance,assertOriginalInputActive,originalInputReceipt} from './initial-input-facts.mjs';
@@ -13,13 +13,22 @@ export function createOriginalInputJournal({tx,rowRun,now}){
  /** Under the conversation lock that also serializes supersession: an input is only ever reserved or accepted for the conversation's
   * latest original generation (a conversation with no journal row is the static original). */
  async function current(c,b,check){const rows=(await c.query('SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY generation DESC LIMIT 1',[b.tenantId,b.conversationId])).rows;check();
-  if(rows.length>1)fail('INITIAL_INPUT_CORRUPT');if(rows.length&&rows[0].run_id!==b.runId)fail('INITIAL_INPUT_SUPERSEDED');}
+  if(rows.length>1)fail('INITIAL_INPUT_CORRUPT');if(rows.length&&rows[0].run_id!==b.runId)fail('INITIAL_INPUT_SUPERSEDED');
+  // A static original has no generation journal: another run cannot claim its conversation's input slot.
+  if(!rows.length){const inputs=(await c.query('SELECT run_id FROM meri_conversations.initial_inputs WHERE tenant_id=$1 AND conversation_id=$2 LIMIT 2',[b.tenantId,b.conversationId])).rows;check();
+   if(inputs.length>1)fail('INITIAL_INPUT_CORRUPT');if(inputs.length&&inputs[0].run_id!==b.runId)fail('INITIAL_INPUT_CONFLICT');}}
+ // 0020 permits a request retry on a later run of the SAME conversation. Preserve the old global request ownership rule for
+ // every other conversation. All claims acquire this request lock after the conversation lock, and never acquire another one.
+ async function requestOwner(c,f,check){const b=f.binding;
+  await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`meri_initial_input_request:${f.requestId}`]);check();
+  const rows=(await c.query('SELECT tenant_id,conversation_id FROM meri_conversations.initial_inputs WHERE request_id=$1 AND (tenant_id<>$2 OR conversation_id<>$3) LIMIT 1',[f.requestId,b.tenantId,b.conversationId])).rows;check();
+  if(rows.length)fail('INITIAL_INPUT_CONFLICT');}
  async function runs(c,b,check,accepted=false){const rows=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2'+(accepted?' AND run_id=$3':'')+' LIMIT 2 FOR UPDATE',accepted?[b.tenantId,b.conversationId,b.runId]:[b.tenantId,b.conversationId])).rows;check();return rows;}
  function consistent(saved,rows){if(saved.state==='RESERVED'){if(rows.length)fail('INITIAL_INPUT_CORRUPT');return;}
   if(rows.length!==1)fail('INITIAL_INPUT_CORRUPT');const r=rowRun(rows[0]);assertOriginalInputAcceptance(saved.facts,{run:r.projection,request:r.request,selectedClientId:saved.facts.selectedClientId});
  }
  async function claim(raw,check){const proposed=assertOriginalInputFacts(raw),b=proposed.binding;let pinned=proposed;const callerCheck=check;check=()=>{callerCheck();active(proposed);active(pinned);};check();return tx(b,check,async c=>{
-  await current(c,b,check);const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
+  await current(c,b,check);await requestOwner(c,proposed,check);const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
   if(old){pinned=old.facts;check();if(!sameOriginalInputIdentity(old.facts,proposed))fail('INITIAL_INPUT_CONFLICT');consistent(old,existing);return originalInputReceipt(old.facts,old.state,false);}
   if(existing.length)fail('INITIAL_INPUT_ALREADY_EXISTS');
   const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();

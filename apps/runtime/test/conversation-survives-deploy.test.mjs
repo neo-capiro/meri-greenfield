@@ -22,7 +22,13 @@ const status=(n,state)=>({eventId:id(n),createdAt:at,type:'run.status',data:{sta
 async function deployment(){
  const f=await lifecycleFixture({binding:conversation});let serial=800;const revoked=new Map(),journal={record:null,claims:0};
  const initialBindings={async readConversation(){return structuredClone(journal.record);},
-  async claim(input){journal.claims++;journal.record={schemaVersion:1,state:'ADMITTED',binding:conversation,selectedClientId:input.selectedClientId,policyRevision:input.policyRevision,versions:input.versions,configurationSha256:input.configurationSha256,createdAtMs:Date.now(),expiresAtMs:input.proposedExpiresAtMs};return {record:structuredClone(journal.record),created:true};}};
+  async claim(input){journal.claims++;journal.record={schemaVersion:1,state:'ADMITTED',binding:conversation,selectedClientId:input.selectedClientId,policyRevision:input.policyRevision,versions:input.versions,configurationSha256:input.configurationSha256,createdAtMs:Date.now(),expiresAtMs:input.proposedExpiresAtMs};return {record:structuredClone(journal.record),created:true};},
+  async rebind(input){const old=journal.record;
+   assert.equal(input.principal.tenantId,old.binding.tenantId);assert.equal(input.principal.actorId,old.binding.actorId);
+   assert.equal(input.selectedClientId,old.selectedClientId);assert.equal(input.policyRevision,old.policyRevision);
+   assert.equal(await f.store.readOptional(old.binding,{},check),null,'started originals never reach rebind');
+   journal.claims++;journal.record={...old,binding:{...old.binding,runId:id(serial++),attemptId:id(serial++),workerId:id(serial++)},versions:input.versions,configurationSha256:input.configurationSha256,createdAtMs:Date.now(),expiresAtMs:input.proposedExpiresAtMs};
+   return {record:structuredClone(journal.record),created:true,superseded:true};}};
  const retirement={async verifyRetired({binding:b}){const r=await f.store.allocations.read({binding:b,allocationKey:hash(b)},check);return {physicalStopProven:r.record.state==='RETIRED'};}};
  const revocation={async verifyRevoked({binding:b}){const r=revoked.get(b.runId);if(!r)throw Error('NEXT_RUN_REVOCATION_REQUIRED');return r;}};
  /** One control render: its own identity, next-run owner and session owner, over the shared durable state. */
@@ -87,11 +93,13 @@ test('a successor reserved before an SDK release is refused at acceptance, nothi
  await assert.rejects(d.accept(second,RENDER_SDK.versions),{code:'NEXT_TURN_SDK_CHANGED'});assert.equal(d.f.state.runs.size,runs);
 }finally{d.close();}});
 
-test('an original that never ran stays pinned to the render that admitted it',async()=>{
- for(const [r,code] of [[RENDER_B,'INITIAL_BINDING_CONFIGURATION_CHANGED'],[{...RENDER_A,versions:RENDER_B.versions},'INITIAL_BINDING_VERSIONS_CHANGED']]){const d=await deployment();try{
-  await d.render(RENDER_A).issue();const next=d.render(r);
-  await assert.rejects(next.issue(),{code:'SESSION_REFUSED'});assert.deepEqual(next.lines,[{step:'initial-binding',code}]);assert.equal(d.journal.claims,1);
-  assert.deepEqual(await d.render(RENDER_A).issue(),conversation,'its own render still admits it');
+test('an original that never ran is re-prepared under the current render',async()=>{
+ for(const r of [RENDER_B,{...RENDER_A,versions:RENDER_B.versions}]){const d=await deployment();try{
+  await d.render(RENDER_A).issue();const next=d.render(r),recovered=await next.issue();
+  assert.equal(recovered.conversationId,conversation.conversationId);assert.notEqual(recovered.runId,conversation.runId);
+  assert.equal(recovered.writerFence,1);assert.deepEqual(next.lines,[]);assert.equal(d.journal.claims,2);
+  assert.deepEqual(d.journal.record.versions,r.versions);assert.equal(d.journal.record.configurationSha256,r.configurationSha256);
+  assert.deepEqual(await d.render(r).issue(),recovered,'the current render reuses the latest generation');assert.equal(d.journal.claims,2);
  }finally{d.close();}}
 });
 

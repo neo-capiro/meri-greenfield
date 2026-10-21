@@ -41,6 +41,8 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
   password:decodeURIComponent(admin.password),database});await client.connect();return client;};
  const env=Object.fromEntries(Object.values(PASSWORD_VARIABLES).map(key=>[key,randomBytes(30).toString('base64url')]));
  await runStage({stage:'meri',plan:loadPlan(),variables:passwordVariables(env),connect});
+ // Current journal queries require 0020. Apply its schema only here: the test still isolates the owner GRANT phase below.
+ const schema=await connect('capiro');try{await schema.query(readFileSync(resolve(ROOT,'apps/control/conversations/migrations/0020_initial_generations.sql'),'utf8'));}finally{await schema.end();}
 
  const owner=recordingPool({...base,user:'meri_model_budget_owner',password:env.MERI_D2_MODEL_OWNER_PASSWORD,database:'capiro'});
  // The owner process wraps its pool exactly like this (owner-entrypoint.mjs): the line that would have named the live cause.
@@ -55,7 +57,7 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
   // phase_meri_grants alone: the owner's placement/currentness reads are refused exactly where live refused them.
   let r=await attempt(()=>journal.readConversation({principal,conversationId:binding.conversationId,selectedClientId},check));
   assert.ok(r.error);
-  assert.deepEqual(r.denied,['SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE']);
+  assert.deepEqual(r.denied,['SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY generation DESC LIMIT 1 FOR UPDATE']);
   r=await attempt(()=>store.nextRuns.current(binding,check));
   assert.ok(r.error);
   assert.deepEqual(r.denied,['SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3']);

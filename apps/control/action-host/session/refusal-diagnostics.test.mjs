@@ -42,3 +42,13 @@ test('the session owner reports each refused issuance and recheck at the step it
 });
 
 test('a refusals port must be callable',()=>{assert.throws(()=>createActionSessionOwner({mode:'process-local',limits:{maxSessions:1,maxRequestMs:500,maxTtlMs:1000,maxFactBytes:65536},verifyIdentity(){},resolveContext(){},refusals:'stderr'}),{code:'SESSION_CONFIGURATION'});});
+
+
+test('a superseded original refusal is logged by the session owner with its owned code',async()=>{
+ const f=fixture();try{
+  const issued=await f.issue();
+  f.state.context=refused('private upstream details',{step:'initial-binding',reason:'INITIAL_BINDING_SUPERSEDED'});
+  await assert.rejects(f.owner.authenticateSession({credential:issued.credential}),{code:'SESSION_REFUSED'});
+  assert.deepEqual(f.written(),['CONTROL_SESSION_REFUSED step=initial-binding code=INITIAL_BINDING_SUPERSEDED\n']);
+ }finally{f.owner.close();}
+});

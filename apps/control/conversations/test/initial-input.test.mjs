@@ -72,7 +72,7 @@ test('corrupt or inconsistent stored state never becomes fresh allocation eviden
 });
 test('any existing original input, conversation shell or successor journal refuses a new original claim',async()=>{
  for(const occupied of ['run','conversation','next']){const f=initialInputFixture(),p=await f.proposal();
-  if(occupied==='run')await f.store().accept(p.acceptance,check);if(occupied==='conversation')f.state.conversations.set(f.key(),{});if(occupied==='next')f.state.nextRuns.set(f.key(),{tenant_id:binding.tenantId,conversation_id:binding.conversationId});
+  if(occupied==='run')await f.store().accept(p.acceptance,check);if(occupied==='conversation')f.state.conversations.set([binding.tenantId,binding.conversationId].join(':'),{});if(occupied==='next')f.state.nextRuns.set(f.key(),{tenant_id:binding.tenantId,conversation_id:binding.conversationId});
   await assert.rejects(f.store().initialInputs.claim(p.facts,check),/INITIAL_INPUT_ALREADY_EXISTS/);assert.equal(f.allocations.size,0);
  }
 });
