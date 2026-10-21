@@ -37,7 +37,15 @@ export function createNativeExecutionBroker(configuration){
  });}
  async function poll(value){const input=request(value,['executionId']);if(input.executionId!==original.executionId)throw executionFault('REFUSED');return operation(input.signal,async life=>{
   const saved=await life.run(()=>read(binding,life.check));let admitted=true;try{await fresh(life);}catch{admitted=false;}
-  const observed=await observe(life,saved,{stop:!admitted||['completed','failed','cancelled','paused','waiting-for-approval'].includes(saved.run.state)});
+  // The end-of-turn completion capture stops the native process, and through the runner's own stop fences this original in the
+  // task router, before it publishes the outcome (task-checkpoint-source.mjs, task-router.mjs). While that capture holds the run
+  // the turn is still executing; once published, its proof carries the stop it proved (checkpoint-publication.mjs). Neither is
+  // observed through the fenced original, and an observation the capture's stop cut short defers to it. A capture given up
+  // (UNKNOWN) is observed as before.
+  const completing=s=>!s.record?null:admitted&&s.completion==='CAPTURING'&&s.run.state==='running'?'executing':s.completion==='PUBLISHED'&&s.run.state==='completed'?'completed':null;
+  const held=completing(saved);if(held)return {binding,executionId:original.executionId,state:held};
+  let observed;try{observed=await observe(life,saved,{stop:!admitted||['completed','failed','cancelled','paused','waiting-for-approval'].includes(saved.run.state)});}
+  catch(error){const later=completing(await life.run(()=>read(binding,life.check)));if(later)return {binding,executionId:original.executionId,state:later};throw error;}
   if(!admitted)throw executionFault('ADMISSION_REFUSED');const state=observed.run.state,native=observed.record.native;
   if(['completed','failed','cancelled','paused','waiting-for-approval'].includes(state)){if(!native.physicalStopProven)throw executionFault('CLEANUP_UNKNOWN');return {binding,executionId:original.executionId,state};}
   if(native.physicalStopProven)throw executionFault('PROCESS_STOPPED_WITHOUT_RUN_OUTCOME');return {binding,executionId:original.executionId,state:'executing'};
