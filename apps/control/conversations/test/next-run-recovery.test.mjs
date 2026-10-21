@@ -75,9 +75,9 @@ test("a release between turns: turn 2 is reserved under the new versions and con
  assert.deepEqual([...x.f.state.nextRuns.values()][0].reservation.versions,released);
  const lineage=(await x.lineage(second)).nextTurn;assert.equal(lineage.checkpoint.checkpointId,done.checkpointId);assert.deepEqual(lineage.checkpoint.versions,versions);
 }finally{x.f.close();}});
-test('a release that changes the SDK or CLI never resumes the earlier session: the reservation is refused',async()=>{
+test('a release that changes the SDK or CLI never resumes the earlier session: NEXT_TURN_SDK_CHANGED, nothing reserved',async()=>{
  for(const change of [{sdk:'0.3.296'},{cli:'2.1.296'}]){const x=await fixture();try{
   await x.first();await x.complete(binding);await x.retire(binding);x.deploy({...versions,...change});
-  await assert.rejects(x.select(),/NEXT_RUN_SESSION_INCOMPATIBLE/);assert.equal(x.f.state.nextRuns.size,0);
+  await assert.rejects(x.select(),/NEXT_TURN_SDK_CHANGED/);assert.equal(x.f.state.nextRuns.size,0);
  }finally{x.f.close();}}
 });

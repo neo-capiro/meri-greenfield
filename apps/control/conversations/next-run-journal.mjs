@@ -7,7 +7,7 @@ import {validateCompletionProof} from './completion-journal.mjs';
 import {closeSequenceRange} from './sequence-ranges.mjs';
 import {FORECLOSED,foreclosed} from './native-preparation-journal.mjs';
 import {assertNextRunFacts as facts,assertNextRunReservation} from './next-run-reservation.mjs';
-import {continuesSession} from '../../../packages/contracts/session-continuity.mjs';
+import {continuesSession,sessionDiscontinuity} from '../../../packages/contracts/session-continuity.mjs';
 /** Terminal states that may admit a next prompt once the original is retired and its grants revoked. */
 export const admitsNextRun=state=>state==='completed'||state==='failed'||state==='cancelled';
 const CHECKPOINTED=['paused','waiting-for-approval'];
@@ -78,7 +78,7 @@ export function createNextRunJournal({tx,rowRun}){
    if(lineage===null?f.checkpoint!==null:f.checkpoint===null)fail(lineage===null?'NEXT_RUN_CHECKPOINT_REFUSED':'NEXT_RUN_CHECKPOINT_REQUIRED');
    if(lineage&&(f.checkpoint.checkpointId!==lineage.row.checkpoint_id||f.checkpoint.proofSha256!==lineage.row.proof_sha256))fail('NEXT_RUN_CHECKPOINT_REFUSED');
    if(lineage&&(!same(run.scopes,scopes)||run.policyRevision!==policyRevision))fail('NEXT_RUN_SCOPE_REFUSED');
-   if(lineage&&!continuesSession(run.versions,versions))fail('NEXT_RUN_SESSION_INCOMPATIBLE');
+   const discontinuity=lineage&&sessionDiscontinuity(run.versions,versions);if(discontinuity)fail(discontinuity);
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    if(existing.length){const r=row(existing[0]);if(r.state!=='RESERVED')fail('STORE_CORRUPT');if(!same(r.facts,f)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision)fail('NEXT_RUN_REPLAY_REFUSED');return {target:r.target,state:r.state,replayed:true};}
    if(runs.some(r=>r.binding.runId===target.runId||r.binding.attemptId===target.attemptId||r.binding.workerId===target.workerId))fail('NEXT_RUN_TARGET_REFUSED');
