@@ -49,7 +49,7 @@ test('network reader asks both adopted SDKs for the admitted task and only its o
  const f=fixture(),calls=[];
  const ecsClient={async send(command,{abortSignal}){assert.equal(abortSignal.aborted,false);calls.push(['ecs',command.constructor.name,command.input]);return {tasks:[f.task]};}};
  const ec2Client={async send(command,{abortSignal}){assert.equal(abortSignal.aborted,false);calls.push(['ec2',command.constructor.name,command.input]);return {NetworkInterfaces:[f.networkInterface]};}};
- const reader=await createTaskRouterNetworkReader({ecsClient,ec2Client,network:f.network,now:f.now});
+ const reader=await createTaskRouterNetworkReader({ecsClient,ec2Client,network:f.network,now:f.now,maxRequestMs:3000});
  const observed=await reader.observe({original:f.original,resource:f.resource,signal:new AbortController().signal,check:()=>{}});
  assert.equal(observed.networkInterfaceId,'eni-abcdef01');
  assert.deepEqual(calls,[['ecs','DescribeTasksCommand',{cluster:clusterArn,tasks:[taskArn],include:['TAGS']}],['ec2','DescribeNetworkInterfacesCommand',{NetworkInterfaceIds:['eni-abcdef01']}]]);
