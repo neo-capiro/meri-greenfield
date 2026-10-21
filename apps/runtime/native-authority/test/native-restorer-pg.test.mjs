@@ -1,6 +1,6 @@
 /** Real task-owned PostgreSQL + filesystem; checkpoint capture/authority remain synthetic. */
 import test from 'node:test';import assert from 'node:assert/strict';import {randomUUID,createHash} from 'node:crypto';import {mkdir,readFile,stat,readdir} from 'node:fs/promises';import {join} from 'node:path';
-import {fixture} from './broker-pg-fixture.mjs';import {seedContinuation} from './lifecycle-seed.mjs';import {createNativeCheckpointRestorer} from '../native-restorer.mjs';import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
+import {fixture} from './broker-pg-fixture.mjs';import {createPostgresConversationStore} from '../../../control/conversations/postgres-store.mjs';import {allocateOriginal,recordRetired} from '../../../control/conversations/test/lifecycle-fixture.mjs';import {seedContinuation} from './lifecycle-seed.mjs';import {createNativeCheckpointRestorer} from '../native-restorer.mjs';import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 async function setup(t,mode){
  const x=await fixture(t),fixed=await x.stack.store.read(x.binding,{},()=>{}),scopes=fixed.run.scopes,createdAt=fixed.run.createdAt;
@@ -10,10 +10,15 @@ async function setup(t,mode){
  const source={...x.binding,conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
  await x.stack.store.accept({conversation:{conversationId:source.conversationId,owner:{tenantId:source.tenantId,actorId:source.actorId},scopes,createdAt,policyRevision:fixed.run.policyRevision},run:{...fixed.run,binding:source,state:'queued'},request:{requestId:randomUUID(),prompt:'/status',skill:null,window:null,windowRequest:null},event:{contractVersion:'0.1.0',eventId:randomUUID(),binding:source,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},()=>{});
  const saved=await x.stack.store.read(source,{},()=>{});
+ // The lifecycle journal needs a current-authority owner (lifecycle/authority.mjs) and the broker stack's store has none, so continuations
+ // are seeded through a second canonical store on the same pool whose owner echoes the expected facts. A resume in the same conversation
+ // also needs the source's allocation RETIRED with the physical stop proven, as the native stop records it (recordContinuationReservation).
+ const now=()=>Date.now(),seeding=createPostgresConversationStore({pool:x.pool,transitionAuthority:{async readCurrent(e){return {binding:e.binding,scopes:e.scopes,selectedClientId:e.selectedClientId,policyRevision:e.policyRevision,checkedAtMs:now(),expiresAtMs:now()+60000};}}});
+ if(mode==='resume')await recordRetired(seeding,await allocateOriginal(seeding,source));
  const target=mode==='resume'?{...source,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:source.writerFence+1}:{...source,conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
  const workspace=join(x.root,'restore-target');await mkdir(workspace,{mode:0o700});const blobs=new Map(),reference=bytes=>{const ref={objectId:randomUUID(),versionId:'immutable-local-fixture-v1',sha256:sha(bytes),bytes:bytes.length,scopes};blobs.set(ref.objectId,bytes);return ref;},payload=Buffer.from('actual PostgreSQL-owned restore bytes\n'),manifest={contractVersion:'0.1.0',manifestId:randomUUID(),binding:source,logicalCwd:'/workspace/conversation',entries:[{path:'notes/pinned.txt',kind:'file',object:reference(payload),executable:false}],scopes,createdAt};
  const checkpoint={contractVersion:'0.1.0',checkpointId:randomUUID(),parentCheckpointId:null,binding:source,sessionId:randomUUID(),opaqueSession:reference(Buffer.from(JSON.stringify([{entries:[{type:'system',opaque:{exact:true}}]}]))),workspace:manifest,workspaceSha256:hash(manifest),versions:saved.run.versions,lastEventSequence:1,scopes,createdAt,durableReceiptId:randomUUID()};
- const {continuation,request,sourceRequest}=await seedContinuation(x.stack.store,source,saved,{mode,checkpoint,target,expiresAtMs:x.expiry});
+ const {continuation,request,sourceRequest}=await seedContinuation(seeding,source,saved,{mode,checkpoint,target,expiresAtMs:x.expiry});
  const context={binding:target,versions:saved.run.versions,request,sourceRequest,scopes,continuation},input={...context,restoreKey:hash(context),async revalidate(){const current=await x.stack.store.read(target,{},()=>{});assert.equal(current.run.state,'queued');assert.deepEqual(current.run.scopes,scopes);}};
  const owner=createNativeCheckpointRestorer({journal:x.stack.store.restorations,objects:{async get(ref){return Buffer.from(blobs.get(ref.objectId));}},workspace,expiresAtMs:x.expiry});return {...x,target,workspace,payload,input,owner};
 }

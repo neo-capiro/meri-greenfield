@@ -83,7 +83,7 @@ test('a second turn claimed `starting` restores the first turn\'s checkpoint thr
 test('a restoration is still refused once the turn is running, and nothing is restored', async t => {
   const r = await secondTurn(t);
   await r.claim('running');
-  await assert.rejects(r.prepare());
+  await assert.rejects(r.prepare(), /NATIVE_PREPARATION_STATE_REFUSED/);
   assert.equal(await r.restoration(), null);
   assert.equal(r.restored.length, 0);
 });
