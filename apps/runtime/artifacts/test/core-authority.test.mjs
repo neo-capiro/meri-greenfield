@@ -263,7 +263,7 @@ test('composed family through the runtime document application: Core gates admis
  const {family,missing}=await composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:core.fetch,runOptions:run.port,executor:{execute(){}},now});
  assert.deepEqual(missing,[]);
  // The family constructs the pinned SDK S3 client with no request; no path below reaches it (the versions owner refuses before IO).
- const context=Object.freeze({configuration:{...control({artifacts:artifacts()}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:Object.freeze({connect:()=>assert.fail('no SQL')}),now});
+ const context=Object.freeze({budgets:testBudgetTable,configuration:{...control({artifacts:artifacts()}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:Object.freeze({connect:()=>assert.fail('no SQL')}),now});
  const realFamily=family(context);
  assert.deepEqual(Object.keys(realFamily.ports),['artifactStore','artifactOptionsOwner']);
  assert.equal(bindDocumentsSessions(context,live.sessions),true);

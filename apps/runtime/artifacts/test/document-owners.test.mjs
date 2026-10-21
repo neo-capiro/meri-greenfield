@@ -253,7 +253,7 @@ test('startup composition composes both Meri-local owners from the declaration a
  await assert.rejects(composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,authorityPorts:{verifyCapability(){}}}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
  await assert.rejects(composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts({executor:{...executorBlock,timeoutMs:0}})}),readSecret:s.readSecret}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
  // The composed family constructs the pinned S3 client without any request and never touches the pool at construction.
- const sharedPool=Object.freeze({connect:()=>assert.fail('no SQL')}),familyContext=()=>Object.freeze({configuration:{...control({artifacts:artifacts({executor:executorBlock})}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:sharedPool,now});
+ const sharedPool=Object.freeze({connect:()=>assert.fail('no SQL')}),familyContext=()=>Object.freeze({budgets:testBudgetTable,configuration:{...control({artifacts:artifacts({executor:executorBlock})}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:sharedPool,now});
  const realFamily=composed.family(familyContext());
  assert.deepEqual(Object.keys(realFamily.ports),['artifactStore','artifactOptionsOwner']);
  const recomposed=composed.family(familyContext());
@@ -265,7 +265,7 @@ test('through the real documents app: create reaches the run budget and generato
  const ports=authorityPorts({credential:tuple.taskCapability,calls}),executor={async execute(value){generated.push(value);throw Error('not reached');}};
  const configuration={...control({artifacts:artifacts()}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}};
  const mount=async(options)=>{const composed=await composeDocumentsFamily({budgets:testBudgetTable,configuration,readSecret:s.readSecret,fetchImpl:core.fetch,now,...options});
-  const context=Object.freeze({configuration,pool:f.pool,now}),family=composed.family(context);
+  const context=Object.freeze({budgets:testBudgetTable,configuration,pool:f.pool,now}),family=composed.family(context);
   if(family.ports.artifactOptionsOwner)assert.equal(bindDocumentsSessions(context,live.sessions),true);
   const app=createRuntimeArtifactApplication({sessions:live.sessions,now,limits,optionsOwner:captureRuntimePorts(family.ports).artifactOptionsOwner});
   return {composed,family,send:(intent,body)=>app.handle(new Request('https://control.synthetic.invalid/api/documents/'+intent,{method:'POST',headers:{authorization:'Bearer '+live.credential,'content-type':'application/json'},body:JSON.stringify(body)}))};};

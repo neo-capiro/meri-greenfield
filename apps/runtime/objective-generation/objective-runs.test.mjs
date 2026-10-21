@@ -28,7 +28,7 @@ function harness({admitFails=false,dispatchFails=false,enabled=true}={}){
   return {binding:record.binding,requestSha256:record.sourceRequestSha256,expiresAtMs:NOW+60000,replayed:calls.admit.length>1};}};
  const dispatcher={async start({binding}){calls.dispatch.push(binding);if(dispatchFails)throw Object.assign(Error('lost'),{code:'TEMPORAL_DISPATCH_UNKNOWN'});}};
  const store={async readOptional(binding,_page,check){check();calls.reads++;return conversation.saved&&hash(conversation.saved.run.binding)===hash(binding)?structuredClone(conversation.saved):null;}};
- const owner=createObjectiveRunOwner(enabled?{enabled:true,runStarts,admission,dispatcher,store,now:()=>clock.now}:{});
+ const owner=createObjectiveRunOwner(enabled?{enabled:true,maxRequestMs:10000,runStarts,admission,dispatcher,store,now:()=>clock.now}:{});
  const app=createObjectiveRunsApplication({maxRequestMs:10000,controlCapabilitySha256:capabilityDigest(CONTROL),owner,enabled:true,now:()=>clock.now});
  const requests=[];
  const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:()=>clock.now,

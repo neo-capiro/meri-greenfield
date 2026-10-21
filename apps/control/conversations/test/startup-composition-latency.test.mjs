@@ -197,7 +197,7 @@ function nativeTaskFixture(t,originalExpiresAtMs){
  const executionKey=hash(binding),original={binding,executionKey,executionId:executionKey,planSha256:hash(descriptor),
   expiresAtMs:originalExpiresAtMs,versions};
  const sha=value=>createHash('sha256').update(value).digest('hex'),taskToken='synthetic-task-only',controlToken='synthetic-control-only';
- const launchConfiguration={binding,workspace,configDirectory,versions:{sdk:versions.sdk,cli:versions.cli},
+ const launchConfiguration={shutdownMs:1000,binding,workspace,configDirectory,versions:{sdk:versions.sdk,cli:versions.cli},
   expiresAtMs:original.expiresAtMs,executableSha256:sha(readFileSync(command)),launch:{command,args:[],env:descriptor.env},enabled:true};
  const taskArn='arn:aws:ecs:us-east-1:967807252336:task/synthetic/'+'a'.repeat(32),preparationId=id(9);
  const budget=runnerStartupBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs:original.expiresAtMs});
