@@ -1,6 +1,6 @@
 """Bounded, content-free CloudWatch EMF lines; no resources start at import.
 
-Only the three proxy-owned P0 schemas are accepted. Nested maps use closed
+Only the proxy-owned telemetry schemas are accepted. Nested maps use closed
 vocabularies too: an allowed container never permits arbitrary caller keys.
 The emitter borrows the refusal diagnostics' preserved stderr writer.
 """
@@ -12,7 +12,7 @@ import threading
 import time
 
 SCHEMA = "meri.telemetry/1"
-EVENTS = frozenset(("meri.model.request", "meri.health", "meri.process.rollup"))
+EVENTS = frozenset(("meri.model.request", "meri.health", "meri.process.rollup", "meri.budget.table"))
 IDS = re.compile(r"(?:[0-9a-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\Z", re.I)
 CODE = re.compile(r"[A-Za-z0-9_.:-]{1,64}\Z")
 AWS_OPERATIONS = frozenset(("DescribeTasks", "DescribeServices", "ListTasks", "DescribeTaskDefinition", "DescribeNetworkInterfaces", "CountTokens", "other"))
@@ -111,6 +111,11 @@ def build_line(event, fields, *, at_ms=None):
         line["transition"] = _word(fields.get("transition"), TRANSITIONS)
         line["code"] = _word(fields.get("code"), HEALTH_CODES)
         _metric(directives, line, "HealthEvents", 1, [["Service"], ["Service", "Component"]])
+    elif event == "meri.budget.table":
+        digest = fields.get("tableSha256")
+        line["tableSha256"] = digest if type(digest) is str and re.fullmatch(r"[a-f0-9]{64}", digest) else "invalid"
+        hops = fields.get("hops")
+        line["hops"] = hops if type(hops) is int and 0 <= hops <= 9007199254740991 else None
     else:
         line["windowMs"] = _number(fields.get("windowMs"))
         line["telemetryDropped"] = _number(fields.get("telemetryDropped")) or 0
@@ -121,6 +126,8 @@ def build_line(event, fields, *, at_ms=None):
         _metric(directives, line, "AwsCalls", _total(line["aws"]), [["Service"], ["Service", "Attribution"]])
         _metric(directives, line, "TelemetryDropped", line["telemetryDropped"], [["Service"]])
     stamp = _number(at_ms if at_ms is not None else _now())
+    if event == "meri.budget.table":
+        line["atMs"] = stamp
     line["_aws"] = {"Timestamp": stamp, "CloudWatchMetrics": directives}
     return line
 

@@ -1,3 +1,4 @@
+import {hotPathBudgetDigest} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Task-local failure context. Only fixed stages and reviewed codes may reach stderr. */
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {createHash} from 'node:crypto';
@@ -133,6 +134,13 @@ export function captureRunnerFailure(error,origin='runtime'){
   emit(active,`RUNNER_FIRST_FAILURE origin=${failure.origin} stage=${failure.stage} code=${failure.code} class=${failure.kind} exit=${failure.exit} signal=${failure.signal} cause=${failure.cause} msg=${failure.msg} site=${failure.site}\n`);
   try{active.telemetry.emit('meri.turn.failure',{...active.binding,origin:failure.origin,stage:failure.stage,code:failure.code,class:failure.kind,exit:failure.exit,signal:failure.signal,cause:failure.cause,msgHash:failure.msg,timeoutClass:timeoutClass(failure.code,failure.cause)});}catch{}
  }
+}
+/** One content-free table proof for the task, including recursive remote execution. */
+export function emitRunnerBudgetTable(budgets){
+ const active=context.getStore();if(!active||active.budgetTableEmitted)return;
+ try{const tableSha256=hotPathBudgetDigest(budgets);active.budgetTableEmitted=true;
+  active.telemetry.emit('meri.budget.table',{hops:Object.keys(budgets.hops).length,tableSha256});
+ }catch{}
 }
 /** A nested failure is captured before activity translation or cleanup can replace it. */
 export async function atRunnerStage(stage,operation){

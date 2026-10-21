@@ -1,4 +1,4 @@
-import {budget,assertHotPathBudgets} from '../../packages/runtime/hot-path-budgets.mjs';
+import {budget,assertHotPathBudgets,hotPathBudgetDigest} from '../../packages/runtime/hot-path-budgets.mjs';
 import {runtimeHotPathBudgets} from './hot-path-budget-inputs.mjs';
 import {createHotPathFetch,createHotPathAwsRequestHandler} from './hot-path-transports.mjs';
 /** Trusted control composition. Single preview replica; source connectivity disabled. */
@@ -143,9 +143,11 @@ export async function startControl(configuration,options={}){
  if(configuration.nativeCandidate===undefined&&Object.keys(reads).length)throw fault('PREPARED_CANDIDATE_CONFIGURATION');
  if(configuration.nativeCandidate!==undefined){compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);if(configuration.native.capabilityFile!==configuration.nativeCandidate.controlCapabilityFile)throw fault('PREPARED_CANDIDATE_CONFIGURATION');}
  const budgets=injectedBudgets??runtimeHotPathBudgets(configuration);assertHotPathBudgets(budgets);
+ const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment});
+ try{turnTelemetry.emit('meri.budget.table',{hops:Object.keys(budgets.hops).length,tableSha256:hotPathBudgetDigest(budgets)});}catch{}
  const routerPlan=compileControlTaskRouterConfiguration(configuration);
  compileControlUserPreferencesConfiguration(configuration);
- const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment});turnTelemetry.start();
+ turnTelemetry.start();
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
  const onExternalAbort=()=>fence.lose(externalSignal.reason);externalSignal?.addEventListener('abort',onExternalAbort,{once:true});if(externalSignal?.aborted)onExternalAbort();
  let nativeFetch;

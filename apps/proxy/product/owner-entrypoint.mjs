@@ -3,7 +3,7 @@
  * router VPC (which the prepared-run configuration digest does not cover).
  * Retain/pin-route that service for its originals on configuration rollover.
  * Importing this module loads no material, dependency client or listener. */
-import {HOP,hotPathBudgets,budget} from '../../../packages/runtime/hot-path-budgets.mjs';
+import {HOP,hotPathBudgets,budget,hotPathBudgetDigest} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {createHotPathFetch,createHotPathAwsRequestHandler} from '../../runtime/hot-path-transports.mjs';
 import {createTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
 import {countingFetch,countingAwsClient,countingPool} from '../../runtime/telemetry/counting.mjs';
@@ -177,6 +177,7 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   const control=validateConfiguration(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(controlBytes)),'control'),candidate=control.nativeCandidate;
   if(candidate?.multiRun?.dynamicInitialRuns!==true||candidate.identity.commandContext.clientResolution.clientId!==c.clientPolicy.selectedClientId)fail();
   const budgets=hotPathBudgets({limits:control.limits,runWindowMs:candidate.multiRun.runWindowMs,ownerRequestMs:c.limits.maxRequestMs});
+  telemetry.emit('meri.budget.table',{hops:Object.keys(budgets.hops).length,tableSha256:hotPathBudgetDigest(budgets)});
   const ownerRequestMs=budget(budgets,'owner.request');
   fetchTransport=createHotPathFetch(budgets,{fetchImpl:rawFetch});
   fetchImpl=countingFetch(fetchTransport.fetch,telemetry);

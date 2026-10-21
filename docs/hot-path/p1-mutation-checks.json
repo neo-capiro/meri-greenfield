@@ -3,7 +3,7 @@
   "baseCommit": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
   "newTestCases": 46,
   "mutantCount": 60,
-  "method": "Each listed edit was applied in isolation and the named test failed at its intended assertion. Normal-source checks passed. The 52 pre-rebase edits are retained; six additional C11 rebase edits cover both new golden values, both removed defaults and both explicit caller fields. Shared repository sources were not mutated. Commands assume repository root, installed locked dependencies, and MERI_REVIEW_SOURCE_ROOT=$PWD.",
+  "method": "Historical non-startup entries are retained from the supplied branch evidence. Seven startup-proof cases named in that audit were absent from published c44b4126 source: the final restoration adds them and freshly executes their nine isolated intended-assertion mutations, restoring every source afterward. Two additional final-base mutations cover the real remote-intents caller regression. Commands assume repository root, installed locked dependencies, and MERI_REVIEW_SOURCE_ROOT=$PWD. No production shared repository was mutated.",
   "tests": [
     {
       "file": "apps/proxy/product/owner-entrypoint.test.mjs",
@@ -50,10 +50,12 @@
             "--test-concurrency=1",
             "--test-name-pattern=^owner\\ emits\\ one\\ budget\\ table\\ proof\\ before\\ constructing\\ its\\ first\\ client$",
             "apps/proxy/product/owner-entrypoint.test.mjs"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         }
       ],
-      "sourceRestored": true
+      "sourceRestored": true,
+      "greenAfterRestoration": true
     },
     {
       "file": "apps/proxy/product/test/test_main.py",
@@ -74,10 +76,12 @@
             "-m",
             "unittest",
             "apps.proxy.product.test.test_main.MainTests.test_proxy_emits_one_budget_table_proof_before_native_construction"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         }
       ],
-      "sourceRestored": true
+      "sourceRestored": true,
+      "greenAfterRestoration": true
     },
     {
       "file": "apps/proxy/product/test/test_telemetry_lines.py",
@@ -98,10 +102,12 @@
             "-m",
             "unittest",
             "apps.proxy.product.test.test_telemetry_lines.TelemetryLineTests.test_budget_table_schema_has_a_checked_digest_count_and_no_metrics_or_values"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         }
       ],
-      "sourceRestored": true
+      "sourceRestored": true,
+      "greenAfterRestoration": true
     },
     {
       "file": "apps/runtime/telemetry/test/turn-lines.test.mjs",
@@ -123,10 +129,12 @@
             "--test-concurrency=1",
             "--test-name-pattern=^budget\\ table\\ startup\\ schema\\ permits\\ only\\ a\\ lowercase\\ digest\\ and\\ emits\\ no\\ metrics$",
             "apps/runtime/telemetry/test/turn-lines.test.mjs"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         }
       ],
-      "sourceRestored": true
+      "sourceRestored": true,
+      "greenAfterRestoration": true
     },
     {
       "file": "apps/runtime/test/control-temporal-startup.test.mjs",
@@ -136,7 +144,7 @@
         {
           "source": "apps/runtime/control.mjs",
           "edit": {
-            "before": " turnTelemetry.emit('meri.budget.table',{hops:Object.keys(budgets.hops).length,tableSha256:hotPathBudgetDigest(budgets)});",
+            "before": "try{turnTelemetry.emit('meri.budget.table',{hops:Object.keys(budgets.hops).length,tableSha256:hotPathBudgetDigest(budgets)});}catch{}",
             "after": ""
           },
           "mutantExit": 1,
@@ -148,10 +156,12 @@
             "--test-concurrency=1",
             "--test-name-pattern=^control\\ emits\\ exactly\\ one\\ budget\\ table\\ proof\\ before\\ its\\ first\\ resource\\ allocation$",
             "apps/runtime/test/control-temporal-startup.test.mjs"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         }
       ],
-      "sourceRestored": true
+      "sourceRestored": true,
+      "greenAfterRestoration": true
     },
     {
       "file": "apps/runtime/test/runner-poststart-bootstrap.test.mjs",
@@ -556,7 +566,8 @@
             "--test-concurrency=1",
             "--test-name-pattern=^both\\ runner\\ roots\\ emit\\ a\\ single\\ proof\\ across\\ recursive\\ execution\\ and\\ none\\ for\\ an\\ invalid\\ table$",
             "apps/runtime/telemetry/test/budget-startup.test.mjs"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         },
         {
           "source": "apps/runtime/remote-conversation-runner.mjs",
@@ -573,7 +584,8 @@
             "--test-concurrency=1",
             "--test-name-pattern=^both\\ runner\\ roots\\ emit\\ a\\ single\\ proof\\ across\\ recursive\\ execution\\ and\\ none\\ for\\ an\\ invalid\\ table$",
             "apps/runtime/telemetry/test/budget-startup.test.mjs"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         },
         {
           "source": "apps/runtime/runner-runtime-diagnostics.mjs",
@@ -590,10 +602,12 @@
             "--test-concurrency=1",
             "--test-name-pattern=^both\\ runner\\ roots\\ emit\\ a\\ single\\ proof\\ across\\ recursive\\ execution\\ and\\ none\\ for\\ an\\ invalid\\ table$",
             "apps/runtime/telemetry/test/budget-startup.test.mjs"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         }
       ],
-      "sourceRestored": true
+      "sourceRestored": true,
+      "greenAfterRestoration": true
     },
     {
       "file": "apps/runtime/test/hot-path-budget-inputs.test.mjs",
@@ -1365,10 +1379,12 @@
             "--test-concurrency=1",
             "--test-name-pattern=^meri\\.budget\\.table:\\ explicit\\ schema\\ and\\ poison\\ pin$",
             "apps/runtime/telemetry/test/turn-lines.test.mjs"
-          ]
+          ],
+          "evidencePhase": "final-base startup-proof restoration"
         }
       ],
-      "sourceRestored": true
+      "sourceRestored": true,
+      "greenAfterRestoration": true
     },
     {
       "file": "apps/runtime/test/remote-intents-budget.test.mjs",

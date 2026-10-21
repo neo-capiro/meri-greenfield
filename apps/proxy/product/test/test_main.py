@@ -31,6 +31,35 @@ from apps.proxy.product.service_pair_discovery import compile_owner_peer, Produc
 
 
 class MainTests(unittest.IsolatedAsyncioTestCase):
+    async def test_proxy_emits_one_budget_table_proof_before_native_construction(self):
+        accepted = parse(configuration())
+        output = []
+        def proofs():
+            return [row for raw in output if (row := json.loads(raw))["event"] == "meri.budget.table"]
+        def before_native(_resources):
+            self.assertEqual(len(proofs()), 1, "proof precedes native construction")
+            proof = proofs()[0]
+            self.assertEqual(proof["service"], "proxy")
+            self.assertIs(type(proof["atMs"]), int)
+            self.assertEqual(proof["atMs"], proof["_aws"]["Timestamp"])
+            self.assertEqual(proof["hops"], 278)
+            self.assertEqual(proof["tableSha256"], "81f345019ea00738c562647c2f9f0c767b2d92404cda4b04d05490603d7c09b1")
+            self.assertEqual(proof["_aws"]["CloudWatchMetrics"], [])
+            self.assertEqual(set(proof), {"schema", "event", "service", "Service", "atMs", "hops", "tableSha256", "_aws"})
+            raise RuntimeError("stop-after-budget-proof")
+        with patch.dict(os.environ, {}, clear=True), \
+             patch.object(main, "_running", False), \
+             patch.object(main, "_environment"), \
+             patch.object(main.sys, "platform", "linux"), \
+             patch.object(main.sys, "version_info", (3, 13, 5)), \
+             patch.object(main.diagnostics, "raw_writer", output.append), \
+             patch.object(main, "_native_bootstrap", side_effect=before_native), \
+             patch.object(main, "_clients") as clients:
+            with self.assertRaisesRegex(RuntimeError, "stop-after-budget-proof"):
+                await main.run_product_proxy(accepted)
+            clients.assert_not_called()
+        self.assertEqual(len(proofs()), 1, "cleanup never repeats the startup proof")
+
     async def test_native_lifespan_boots_fixed_config_and_exits_same_context(self):
         events = []
         @asynccontextmanager

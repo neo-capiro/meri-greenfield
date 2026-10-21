@@ -1,3 +1,5 @@
+import {hotPathBudgetDigest} from '../../../packages/runtime/hot-path-budgets.mjs';
+import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
 import test from 'node:test';
 import {testBudgetTable} from '../../../packages/runtime/test/budget-fixture.mjs';
 import assert from 'node:assert/strict';
@@ -174,4 +176,17 @@ test('runtime close fences private admissions synchronously while public listene
   release({listenerStopped:true,pendingRequests:0,physicalStopProven:false});await closing;
  }
  assert.equal(settled,true);assert.deepEqual(f.closed.sort(),['assembly','authorization','candidate','connection','pool','private-listener','public-listener'].sort());
+});
+
+
+test('control emits exactly one budget table proof before its first resource allocation',async()=>{
+ const f=fixture(),lines=[],turnTelemetry=createTurnTelemetry({service:'control',now:()=>123,write:line=>{
+  const value=JSON.parse(line);lines.push(value);if(value.event==='meri.budget.table')f.events.push('budget-proof');
+ }});
+ let runtime;
+ try{runtime=await startControl(f.configuration,{budgets:testBudgetTable,testOwners:f.owners,turnTelemetry});
+  const proofs=lines.filter(line=>line.event==='meri.budget.table');assert.equal(proofs.length,1);
+  assert.deepEqual(proofs[0],{schema:'meri.telemetry/1',event:'meri.budget.table',service:'control',atMs:123,hops:278,tableSha256:hotPathBudgetDigest(testBudgetTable),Service:'control',_aws:{Timestamp:123,CloudWatchMetrics:[]}});
+  assert.equal(f.events[0],'budget-proof');assert.ok(f.events.indexOf('budget-proof')<f.events.indexOf('authorization'));
+ }finally{await runtime?.close();turnTelemetry.close();}
 });

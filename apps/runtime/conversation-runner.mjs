@@ -22,7 +22,7 @@ import {waitForAdmittedTask,loadRemoteTaskBinding} from './task-bootstrap.mjs';
 import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {captureGeneralReadPort} from './general-read-port.mjs';
-import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
+import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,withRunnerDiagnostics,emitRunnerBudgetTable} from './runner-runtime-diagnostics.mjs';
 export function assertRunnerEnvironment(environment=process.env){for(const key of ['DATABASE_URL','PGPASSWORD','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','TEMPORAL_API_KEY','MERI_NATIVE_ADMIN_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY','ANTHROPIC_AWS_BEARER_TOKEN','ANTHROPIC_AWS_REGION'])if(environment[key])throw fault('RUNNER_AMBIENT_CREDENTIAL_REFUSED');}
 /** Per-run SDK configuration directories under the admitted preparation intent; absent outside the remote task path.
  * The SDK subprocess environment replaces (never inherits) process.env, so its one extra TLS anchor comes from the same
@@ -112,6 +112,7 @@ export async function assertRunnerWorkspace(configuration){const workspace=await
 export async function runConversation(configuration,{signal,query,sessionFactory,generalReads,governedIntents,poststartTls,nativeFetch,budgets=runtimeHotPathBudgets(configuration)}={}){
  assertHotPathBudgets(budgets);let ownedFetch;
  try{return await withRunnerDiagnostics(()=>atRunnerStage('runner-preflight',async()=>{
+ emitRunnerBudgetTable(budgets);
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  assertRunnerEnvironment();await assertRunnerWorkspace(configuration);
  const product=process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1';

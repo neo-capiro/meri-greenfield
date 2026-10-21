@@ -58,6 +58,7 @@ export const LINE_SCHEMAS=Object.freeze({
    bootstrapMs:nullable,bedrockHeadersMs:nullable,firstChunkMs:nullable,streamEndMs:nullable,settleMs:nullable,
    ownerExchanges:exchanges,ownerExchangeMs:number,aws,awsMs:number,inputTokens:number,outputTokens:number},
  'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable']),code:safeCode},
+ 'meri.budget.table':{service:choice(SERVICES),atMs:number,hops:number,tableSha256:value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value)?value:'invalid'},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},
 });

@@ -47,6 +47,24 @@ class TelemetryLineTests(unittest.TestCase):
                 elif event == 'meri.health':
                     self.assertEqual(row['_aws']['CloudWatchMetrics'][0]['Dimensions'], [['Service'], ['Service', 'Component']])
 
+    def test_budget_table_schema_has_a_checked_digest_count_and_no_metrics_or_values(self):
+        fields = {"hops": 278, "tableSha256": "a" * 64, "values": {"secret-hop": 123},
+                  "runId": RUN, "tenantId": "private-tenant", "url": "https://private.invalid"}
+        self.assertTrue(lines.emit("meri.budget.table", fields))
+        row = json.loads(self.output[-1])
+        self.assertEqual(row, {"schema": "meri.telemetry/1", "event": "meri.budget.table",
+                              "service": "proxy", "Service": "proxy", "atMs": 1000,
+                              "hops": 278, "tableSha256": "a" * 64,
+                              "_aws": {"Timestamp": 1000, "CloudWatchMetrics": []}})
+        for digest in ("a" * 63, "A" * 64, "g" * 64, "a" * 64 + "\n", "private-secret", None, {}):
+            with self.subTest(digest=digest):
+                self.assertTrue(lines.emit("meri.budget.table", {**fields, "tableSha256": digest}))
+                self.assertEqual(json.loads(self.output[-1])["tableSha256"], "invalid")
+        for hops in (-1, 1.5, True, 9007199254740992, None):
+            with self.subTest(hops=hops):
+                self.assertTrue(lines.emit("meri.budget.table", {**fields, "hops": hops}))
+                self.assertIsNone(json.loads(self.output[-1])["hops"])
+
     def test_secret_pin_covers_every_proxy_schema_and_nested_allowed_fields(self):
         poison = {'tenantId': 'tenant-poison', 'actorId': 'actor-poison', 'bearer': 'bearer-poison',
                   'authorization': 'auth-poison', 'grantId': 'grant-poison',

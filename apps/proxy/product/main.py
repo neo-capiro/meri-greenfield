@@ -14,6 +14,7 @@ import argparse
 import asyncio
 from contextlib import asynccontextmanager, contextmanager, redirect_stderr, redirect_stdout
 import hashlib
+import json
 from importlib import import_module, metadata
 import os
 from pathlib import Path
@@ -325,8 +326,12 @@ async def run_product_proxy(configuration):
     if value["expiresAtMs"] <= time.time_ns()//1000000:
         _deny()
     budgets = load_hot_path_budgets(value.get("budgets"))
-    resources = _Resources(budgets)
     telemetry_lines.install(write=diagnostics.raw_writer, environment=value.get("telemetry", {}).get("environment", "Preview"))
+    table = budgets.value
+    values = {key: table["hops"][key]["ms"] for key in sorted(table["hops"])}
+    telemetry_lines.emit("meri.budget.table", {"hops": len(values),
+        "tableSha256": hashlib.sha256(json.dumps(values, separators=(",", ":")).encode("ascii")).hexdigest()})
+    resources = _Resources(budgets)
     rollups = telemetry.start_rollups()
     operation = None
     compatibility = None

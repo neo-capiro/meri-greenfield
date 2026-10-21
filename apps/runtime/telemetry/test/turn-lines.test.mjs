@@ -70,3 +70,14 @@ test('durable reconciliation and hold-failure reasons retain canonical constants
  for(const reasonCode of ['ATTEMPT_LOST','HOLD_CHECKPOINT_FAILED'])emitter.emit('meri.turn.summary',{runId,attemptId,state:'failed',reasonCode,timeoutClass:'none'});
  assert.deepEqual(lines.map(line=>line.reasonCode),['ATTEMPT_LOST','HOLD_CHECKPOINT_FAILED']);
 });
+
+
+test('budget table startup schema permits only a lowercase digest and emits no metrics',()=>{
+ const output=[],emitter=createTurnLineEmitter({service:'control',write:line=>output.push(JSON.parse(line)),now:()=>123});
+ for(const tableSha256 of ['a'.repeat(64),'A'.repeat(64),'private-secret',123,null]){
+  emitter.emit('meri.budget.table',{hops:278,tableSha256,values:{secret:123},runId,tenantId:'secret'});
+  const line=output.at(-1);assert.equal(line.hops,278);assert.equal(line.tableSha256,tableSha256==='a'.repeat(64)?tableSha256:'invalid');
+  assert.equal(line.atMs,123);assert.deepEqual(line._aws.CloudWatchMetrics,[]);
+  assert.deepEqual(Object.keys(line).sort(),['schema','event','service','atMs','hops','tableSha256','Service','_aws'].sort());
+ }
+});

@@ -35,7 +35,7 @@ The final base preserves `native-preparation-journal` admitting restoration stat
 
 ## Verification results
 
-Host tools: Node 24.19.0, Python 3.13.16 with pinned proxy dependencies, TypeScript 5.9.3 and OpenSSL 3.0.13. AWS credentials and metadata access were disabled. Node test files ran serially within each queue. This is host evidence; the unavailable gates below remain unqualified.
+Original phase-1 host tools: Node 24.19.0, Python 3.13.16 with pinned proxy dependencies, TypeScript 5.9.3 and OpenSSL 3.0.13. The final-base resume uses Node 24.19.0 and Python 3.12.14, as recorded below. AWS credentials and metadata access were disabled. Node test files ran serially within each queue. This is host evidence; the unavailable gates below remain unqualified.
 
 ### Phase 1: complete original-base comparison
 
@@ -86,6 +86,12 @@ The [focused final-base comparison](p1-final-base-checks.json) ran each file in 
 The remaining native-start-router file hit the initial 60 s harness limit on both sides. A 180 s whole-file rerun completed with **4/5 base and 3/5 head**. Both failed the reproduction's expected two premature-close messages (one observed); head also lacked the nested-timeout cause expected by the slow-authority case. These outcomes are retained and are not called passes. The host was heavily delayed and subsequently lost its execution connection. A selected rerun of the slow-authority case passed unchanged on head (46.92 s); baseline exceeded its 100 s harness limit. The original full-file failures and timeout remain visible. This rerun establishes the head assertion can pass unchanged, not baseline equivalence or the plan's ±10% timing gate.
 
 Fresh generation checks passed eight of ten. The user-preferences and task-commands generators were blocked by the unavailable offline generator toolchain (`rolldown`, `json-schema-to-ts`, `ts-algebra`); the earlier ten-check pass is retained as historical evidence. No public wire artifact was manually edited.
+
+### Final startup-proof source restoration
+
+The final separate commit emits `meri.budget.table` once after table validation in control, runner, owner and proxy. Recursive remote execution borrows the runner context and suppresses duplicate proof lines; the temporal worker gains no event. Existing closed emitters expose only service, timestamp, hop count and a validated 64-character lowercase digest, plus their existing telemetry envelope. No budget values or new metrics are emitted.
+
+Fresh Node checks passed **30/30** across the schema (17), recursive runner startup (1) and actual control startup composition (12). The first control invocation lacked the harness-required `MERI_REVIEW_SOURCE_ROOT` and failed during import; the corrected full-file run passed. All six Node startup-proof mutations failed at the intended assertion, source was restored, and all four selected startup cases passed again. Owner/proxy startup cases passed **3/3** before and after their three intended-assertion mutations; the full Python telemetry suite passed **9/9**, including its existing all-event schema and poison loops. In total all nine startup-proof mutations were freshly killed and restored. The prior seven-case audit claims are explicitly superseded by the source and fresh mutation evidence in this final commit.
 
 ## Not run / not established
 
@@ -141,6 +147,7 @@ Restore the uncommitted qualification harness from `43b705c8:scripts/qualificati
 | Worker, runner, bootstrap and workflow projection | 5 | Remove startup assertion or Temporal `connectTimeout`; invent a turn root; replace selected metadata allowance with `2000`; change generated `30 minutes` to `29 minutes`. |
 | Native session and required constructor arguments | 2 | Omit `operationMaxRequestMs`; restore native request/load defaults. |
 | Proxy admission, owner refusal and cross-language fixture | 7 | Swallow the budget refusal code; change fixture fetch connect `10000` to `10001`; omit admission validation; weaken nested/margin checks; omit independent/derived metadata or unbounded ownership checks. |
+| Remote-intent composition | 1 | Remove the explicit preserved limits from the real remote-runner caller; both composed regression and constructor registry fail. |
 | P0 startup proof | 7 | Remove a control/owner/proxy/runner emission; remove recursive duplicate suppression; bypass either digest sanitizer; permit `tenantId` in the closed Node schema. |
 
 ## Inventory delta

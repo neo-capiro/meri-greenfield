@@ -17,6 +17,28 @@ import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/
 const sha=v=>createHash('sha256').update(v).digest('hex'),id=n=>'11111111-1111-4111-8111-'+String(n).padStart(12,'0');
 const refused={message:'PRODUCT_OWNER_STARTUP_UNAVAILABLE'},prefix='arn:aws:ecs:us-east-1:967807252336:';
 
+test('owner emits one budget table proof before constructing its first client',async()=>{
+ const f=fixture(),lines=[];f.runtime.limits.maxRequestMs=15000;
+ f.dependencies.writeTelemetry=line=>lines.push(JSON.parse(line));
+ const proofs=()=>lines.filter(line=>line.event==='meri.budget.table'),createPool=f.dependencies.createPool;
+ let proofsAtFirstClient;
+ f.dependencies.createPool=options=>{
+  proofsAtFirstClient=proofs().length;
+  return createPool(options);
+ };
+ const runtime=await startProductOwner(f.runtime,f.dependencies);
+ try{
+  assert.equal(proofsAtFirstClient,1,'proof precedes the first client constructor');
+  assert.equal(proofs().length,1);
+  const proof=proofs()[0];
+  assert.equal(proof.service,'owner');assert.equal(proof.atMs,NOW);assert.equal(proof.hops,278);
+  assert.equal(proof.tableSha256,'81f345019ea00738c562647c2f9f0c767b2d92404cda4b04d05490603d7c09b1');
+  assert.deepEqual(proof._aws.CloudWatchMetrics,[]);
+  assert.deepEqual(Object.keys(proof).sort(),['Service','_aws','atMs','event','hops','schema','service','tableSha256'].sort());
+ }finally{await runtime.close();}
+ assert.equal(proofs().length,1,'cleanup never repeats the startup proof');
+});
+
 /** Real internal owners, scripted canonical PostgreSQL rows and constructor
  * seams only. No key generation, listener, PostgreSQL, AWS or provider call. */
 function fixture(){
