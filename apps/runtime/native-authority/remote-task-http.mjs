@@ -9,6 +9,9 @@ import {remoteOriginal,exactOriginal,descriptor,preparationAck,transportLimits,r
 import {captureSdkConfiguration,installSdkConfiguration,verifySdkConfiguration} from './sdk-config-transfer.mjs';
 import {RUNNER_NATIVE_STARTUP_RECEIVER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex'),frame=b=>({bytes:b.length,sha256:sha(b),base64:b.toString('base64')}),get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
+/** The receiver's descriptor policy for a prepared launch: the run's workspace, the configured command, a configuration directory directly
+ * under the run's configuration parent and its secure storage directory. Shared with the in-image launch measurement's resumed probe. */
+export function descriptorPolicyAdmits(policy,d){return d.cwd===policy.workspace&&d.command===policy.command&&isAbsolute(d.env.CLAUDE_CONFIG_DIR)&&dirname(d.env.CLAUDE_CONFIG_DIR)===policy.configParentDirectory&&d.env.CLAUDE_SECURESTORAGE_CONFIG_DIR===policy.secureStorageDirectory;}
 export function createRemoteNativeTaskApplication(configuration){
  const c=own(configuration,['original','controlCapabilitySha256','taskCapabilitySha256'],['task','launchConfiguration','preparationAuthorizer','nativeFactory','descriptorPolicy','taskArn','capture','enabled','now','limits','configurationSha256','parkedWorkspace']);
  const original=remoteOriginal(c.original),now=c.now??Date.now,limits=transportLimits(c.limits),enabled=c.enabled??false;
@@ -28,7 +31,7 @@ export function createRemoteNativeTaskApplication(configuration){
   state='preparing';try{
    if(legacy){matchNativeLaunch(d,p);configurationTree=captureSdkConfiguration(configs());if(c.configurationSha256&&configurationTree.sha256!==c.configurationSha256)throw remoteFault();pins={original,descriptorSha256,configTreeSha256:configurationTree.sha256};}
    else{
-    if(d.cwd!==policy.workspace||d.command!==policy.command||!isAbsolute(d.env.CLAUDE_CONFIG_DIR)||dirname(d.env.CLAUDE_CONFIG_DIR)!==policy.configParentDirectory||d.env.CLAUDE_SECURESTORAGE_CONFIG_DIR!==policy.secureStorageDirectory)throw remoteFault();
+    if(!descriptorPolicyAdmits(policy,d))throw remoteFault();
     const tree=captureSdkConfiguration({configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:d.env.CLAUDE_SECURESTORAGE_CONFIG_DIR},{check:()=>{if(signal.aborted||now()>=original.expiresAtMs)throw remoteFault();}});configurationTree=tree;
     pins={original,descriptorSha256,configTreeSha256:tree.sha256};ack=preparationAck(await prepareAuthority({...pins,descriptor:d,signal}),{...pins,taskArn:c.taskArn,now});
     if(state!=='preparing'||signal.aborted||now()>=original.expiresAtMs)throw remoteFault();const made=c.nativeFactory({original,descriptor:d,ack});if(types.isPromise(made)){Promise.prototype.then.call(made,async late=>{try{const bound=own(late,['task','launchConfiguration']);await storageMethod(bound.task,'close')();}catch{}},()=>{}).catch(()=>{});throw remoteFault();}const bound=own(made,['task','launchConfiguration']);task=bound.task;p=compileNativeLaunch(bound.launchConfiguration);matchNativeLaunch(d,p);

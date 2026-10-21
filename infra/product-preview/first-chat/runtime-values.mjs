@@ -46,7 +46,7 @@ import {parseRuntimeValues,parseFeatures,capabilityProfileOf,SOURCE_ROOT} from '
 export const MEASUREMENT_MODULE='apps/runtime/build/first-chat-launch-measurement.mjs';
 export const POLICY_SCHEMA='meri.first-chat-policy.v1';
 /** Every launch gate first-chat-launch-measurement.mjs reports; all must PASS on the image (linux/x64, uid 1000). */
-export const RECEIPT_GATES=Object.freeze(['compileNativePreparationIntent','matchPreparedDescriptor','commandIsRealpath','executable','runnerCaTrust','secureStorage','runnerSdkOptions']);
+export const RECEIPT_GATES=Object.freeze(['compileNativePreparationIntent','matchPreparedDescriptor','commandIsRealpath','executable','runnerCaTrust','secureStorage','runnerSdkOptions','resumedDescriptor']);
 const hex64=/^[a-f0-9]{64}$/u;
 export const fail=(code,detail)=>{throw Object.assign(Error(detail?`${code}: ${detail}`:code),{code});};
 const refuse=detail=>fail('RUNTIME_VALUES_REFUSED',detail);

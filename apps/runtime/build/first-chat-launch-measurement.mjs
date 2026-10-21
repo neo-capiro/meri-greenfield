@@ -6,9 +6,15 @@
  * Every application module is loaded from --root (default: the image root this file sits in), so the same bytes also run
  * from a copy written to /run/meri by the node -e fallback for an image that predates this file.
  *
+ * The one file write: the resumed probe's SDK materializes its synthetic session into a claude-resume-* directory under the
+ * configuration parent (the worker's temporary root, run-temporary-root.mjs), as a next turn does; the probe removes it.
+ *
  * Receipt (one JSON line on stdout):
  *  executable  realpath + sha256 of the CLI the SDK launches (= preparationIntent.executableSha256; session-launcher.mjs re-hashes it).
  *  launchTemplate  descriptor minus CLAUDE_CONFIG_DIR, ANTHROPIC_AUTH_TOKEN (launchTemplateArgs); one for both probes.
+ *  resumedProbe  a next turn's resumed run (RESUMED_PROBE), launched under the worker's temporary root; gate resumedDescriptor: its
+ *              descriptor passes the task receiver's descriptor policy and both descriptor matches with its continuation, and its
+ *              options reduce to the same template. A release whose resumed descriptor would be refused fails here, at build.
  *  sdkOptions  sdk-option-template.mjs run-invariant template hash (= preparationIntent.sdkOptionsSha256, checked by runner-query.mjs);
  *              two probe runs must hash equal (runInvariant) and pass the real runner-query gate (runnerSdkOptions).
  *              G3: --capability-profile (base64url CapabilityPolicy JSON) adds its parts (capabilities/measured-options.mjs).
@@ -19,8 +25,8 @@
  *  generalReadInventory  the full installable read inventory, separately measured when an active subset is supplied.
  * Exit 0 receipt printed (gate outcomes inside), 2 usage, 3 measurement refused. */
 import {createHash} from 'node:crypto';
-import {readFileSync,realpathSync,statSync} from 'node:fs';
-import {posix,resolve,join,dirname} from 'node:path';
+import {readFileSync,realpathSync,rmSync,statSync} from 'node:fs';
+import {posix,resolve,join,dirname,basename} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 
 export const RECEIPT_SCHEMA='meri.first-chat-launch-measurement.v2';
@@ -37,6 +43,9 @@ export const PROBES=Object.freeze([
  Object.freeze({tenantId:'meri-measurement-tenant',actorId:'meri-measurement-actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1}),
  Object.freeze({tenantId:'meri-measurement-tenant',actorId:'meri-measurement-actor',conversationId:id(11),runId:id(12),attemptId:id(13),workerId:id(14),writerFence:1})]);
 export const PROBE_CLIENT_ID=id(5),PROBE_CREDENTIAL='meri-measurement-synthetic-credential';
+/** The resumed probe: the next turn (writer fence 2) of a conversation, resuming RESUMED_SESSION_ID. */
+export const RESUMED_PROBE=Object.freeze({tenantId:'meri-measurement-tenant',actorId:'meri-measurement-actor',conversationId:id(21),runId:id(22),attemptId:id(23),workerId:id(24),writerFence:2});
+export const RESUMED_SESSION_ID=id(25);
 /** Credential-shaped names the measurement task definition may inject (the D2 migrate family carries Aurora/login secrets). */
 export const SCRUBBED_ENVIRONMENT=/^(PG|AWS_|ANTHROPIC_|CLAUDE|MERI_D2_|GOOGLE_|GCP_|AZURE_|OPENAI_|TEMPORAL_)|^DATABASE_URL$/u;
 export function scrubEnvironment(environment=process.env){for(const name of Object.keys(environment))if(SCRUBBED_ENVIRONMENT.test(name))delete environment[name];}
@@ -92,6 +101,7 @@ async function productOptions(m,v,binding){
 }
 const MODULES=['apps/worker/conversation/capabilities/measured-options.mjs','apps/runtime/native-authority/sdk-option-template.mjs','apps/runtime/native-authority/preparation-intent.mjs'];
 const modules=async root=>Object.assign({},...await Promise.all(MODULES.map(path=>load(root,path))));
+const RESUMED_MODULES=['apps/runtime/native-authority/run-temporary-root.mjs','apps/runtime/native-authority/continuation-pin.mjs','apps/worker/conversation/continuation/options.mjs','apps/runtime/native-authority/remote-task-http.mjs','apps/runtime/native-authority/remote-task-boundary.mjs'];
 /** A probe run's SDK options and per-run facts (to replay runner-query.mjs); close() releases its MCP servers. */
 export async function probeRun(raw,{root,binding=PROBES[0]}){const {options,run,close}=await productOptions(await modules(root),inputs(raw),binding);return {options,run,close};}
 export const probeOptions=async(raw,context)=>(await probeRun(raw,context)).options;
@@ -114,7 +124,7 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
  const sdkVersion=JSON.parse(readFileSync(join(sdkDirectory,'package.json'),'utf8')).version;
  const {query}=await import(pathToFileURL(join(sdkDirectory,'sdk.mjs')).href);
  const probes=[];try{for(const binding of PROBES)probes.push(await productOptions(m,v,binding));
- const [first,second]=probes;
+ const [first,second]=probes,resumed=await productOptions(m,v,RESUMED_PROBE);probes.push(resumed);
  const {descriptor,env}=captureDescriptor(query,first),{descriptor:secondDescriptor,env:secondEnv}=captureDescriptor(query,second);
  const template=(d,e,p)=>({command:d.command,args:m.launchTemplateArgs(d.args,p.runtime.cwd),env:e});
  const launchTemplate=template(descriptor,env,first),launchTemplateRunInvariant=JSON.stringify(launchTemplate)===JSON.stringify(template(secondDescriptor,secondEnv,second));
@@ -126,6 +136,8 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
  // The launch gates the runtime applies to this template, run on a probe intent (Linux paths; fails off-Linux by design).
  const intent={workspace:first.runtime.cwd,configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,launchTemplate,
   executableSha256:sha(bytes),imageSha256:'0'.repeat(64),runnerSha256:runner.runnerSha256,sdkOptionsSha256:optionsSha256[0],authoritySha256:first.authoritySha256};
+ const r=Object.assign({},...await Promise.all(RESUMED_MODULES.map(path=>load(root,path))));
+ const resumedRun=await captureResumedDescriptor(query,r,resumed,v.configParentDirectory),resumedIntent={...intent,workspace:resumed.runtime.cwd,authoritySha256:resumed.authoritySha256};
  // runner-query.mjs as the remote worker builds it, for both probe runs.
  const runnerGate=p=>{const query=m.createPreparedRunnerQuery({sdkOptions:{sdkOptionsSha256:optionsSha256[0],run:p.run},processClientFactory:()=>({}),prepare:()=>{throw Error('not reached');}});
   if(typeof query({prompt:'measurement',options:p.options})?.[Symbol.asyncIterator]!=='function')throw Error('runner query refused');};
@@ -135,7 +147,8 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
   executable:stat.isFile()&&(stat.mode&0o111)!==0&&stat.size>0&&stat.size<=268435456?'PASS':'FAIL: not an executable regular file within 256 MiB',
   runnerCaTrust:env.NODE_EXTRA_CA_CERTS===m.RUNNER_SDK_CA_FILE?'PASS':'FAIL: template does not trust the pinned runner CA',
   secureStorage:env.CLAUDE_SECURESTORAGE_CONFIG_DIR===v.secureStorageDirectory?'PASS':'FAIL: CLAUDE_SECURESTORAGE_CONFIG_DIR differs',
-  runnerSdkOptions:gate(()=>{runnerGate(first);runnerGate(second);})};
+  runnerSdkOptions:gate(()=>{runnerGate(first);runnerGate(second);}),
+  resumedDescriptor:gate(()=>resumedGate(m,r,resumedRun,resumedIntent,resumed.run,optionsSha256[0]))};
  return {schema:RECEIPT_SCHEMA,platform:{os:process.platform,arch:process.arch,node:process.version,uid:process.getuid?.()??null},
   inputs:{proxyUrl:v.proxyUrl,model:v.model,maxTurns:v.maxTurns,maxCostMicroUSD:v.maxCostMicroUSD,maxOutputBytes:v.maxOutputBytes,
    configParentDirectory:v.configParentDirectory,secureStorageDirectory:v.secureStorageDirectory,policyRevision:v.policyRevision??null,
@@ -146,10 +159,11 @@ export async function measureFirstChatLaunch(raw,{root=resolve(fileURLToPath(new
   executable:{path:command,sha256:sha(bytes),bytes:bytes.length},launchTemplate,launchTemplateRunInvariant,
   sdkOptions:{schema:m.SDK_OPTIONS_TEMPLATE_SCHEMA,sha256:optionsSha256[0],secondProbeSha256:optionsSha256[1],runInvariant:optionsSha256[0]===optionsSha256[1],
    probes:[first,second].map((p,n)=>({binding:PROBES[n],clientId:PROBE_CLIENT_ID,workspace:p.run.workspace,sdkConfigDirectory:p.run.configDirectory,authoritySha256:p.authoritySha256,scopes:p.scopes,window:null,skill:null}))},
+  resumedProbe:{binding:RESUMED_PROBE,sessionId:RESUMED_SESSION_ID,workspace:resumed.run.workspace,configDirectoryParent:resumedRun.configDirectoryParent},
   runner:{path:runner.path,sha256:runner.runnerSha256,bytes:runner.bytes},skills,generalReadInstallation:{measurement:installation.measurement,measurementSha256:installation.measurementSha256},
   ...(v.activeReadOperations===undefined?{}:{generalReadInventory:{measurement:inventory.measurement,measurementSha256:inventory.measurementSha256}}),gates,
   module:{sha256:sha(readFileSync(fileURLToPath(import.meta.url)))},
-  scope:'Measurement only: no process spawned, no network or AWS call, no file written; probe identities and credential are synthetic.'};
+  scope:'Measurement only: no process spawned, no network or AWS call; the one file written is the resumed probe\'s materialized session, removed; probe identities, session and credential are synthetic.'};
  }finally{for(const p of probes)await p.close();}
 }
 function captureDescriptor(query,probe){
@@ -160,6 +174,33 @@ function captureDescriptor(query,probe){
  if(configDirectory!==probe.runtime.sdkConfigDirectory||credential!==PROBE_CREDENTIAL||descriptor.cwd!==probe.runtime.cwd)refuse('descriptor does not carry the probe directories/credential');
  if(Object.values(env).some(value=>typeof value!=='string'))refuse('descriptor env carries a non-string value');
  return {descriptor,env};
+}
+
+/** The resumed probe's launch descriptor: its options with the continuation fields exactly as the worker composes them
+ * (lineageResumeOptions) and a one-entry synthetic session behind the SDK session store, run under the worker's temporary root. The SDK
+ * materializes the session into a claude-resume-* directory before its spawn hook (sdk.mjs); that directory is removed here. */
+async function captureResumedDescriptor(query,r,probe,configParentDirectory){
+ const continuation=r.assertResumeOptions(r.lineageResumeOptions({sessionId:RESUMED_SESSION_ID,resumeSessionAt:null,targetSessionId:null}));
+ const key={projectKey:r.projectKeyOf(probe.runtime.cwd),sessionId:RESUMED_SESSION_ID},entries=[{type:'user',uuid:id(26),sessionId:RESUMED_SESSION_ID,message:{role:'user',content:'measurement'}}];
+ const sessionStore={async load(k){return k?.projectKey===key.projectKey&&k?.sessionId===key.sessionId&&k.subpath===undefined?structuredClone(entries):null;},async append(){},async listSubkeys(){return [];}};
+ const options={...probe.options,...continuation,sessionStore};let descriptor=null;
+ const release=r.holdRunTemporaryRoot(configParentDirectory);
+ try{const q=query({prompt:'measurement',options:{...options,spawnClaudeCodeProcess(request){descriptor={command:request.command,args:[...request.args],cwd:request.cwd,env:{...request.env}};throw Error('DESCRIPTOR_CAPTURED_NO_SPAWN');}}});
+  try{await q.next();}catch{}try{await q.return();}catch{}
+ }finally{release();}
+ const materialized=descriptor?.env.CLAUDE_CONFIG_DIR;
+ if(typeof materialized==='string'&&/^claude-resume-/u.test(basename(materialized)))rmSync(materialized,{recursive:true,force:true});
+ return {descriptor,continuation,options,configDirectoryParent:typeof materialized==='string'?dirname(materialized):null};
+}
+/** The resumed descriptor as a next turn's prepare sees it: the materialized session, the task receiver's descriptor policy and shape
+ * match, control's exact match with the probe credential, and the options' template with the continuation removed. */
+function resumedGate(m,r,{descriptor,continuation,options},intent,run,sdkOptionsSha256){
+ if(!descriptor)throw Error('the SDK did not call the spawn hook for the resumed run');const d=r.descriptor(descriptor);
+ if(!/^claude-resume-/u.test(basename(d.env.CLAUDE_CONFIG_DIR)))throw Error('the SDK did not materialize the resumed session');
+ if(!r.descriptorPolicyAdmits({workspace:intent.workspace,command:intent.launchTemplate.command,configParentDirectory:intent.configParentDirectory,secureStorageDirectory:intent.secureStorageDirectory},d))
+  throw Error(`the task receiver's descriptor policy refuses CLAUDE_CONFIG_DIR under ${dirname(d.env.CLAUDE_CONFIG_DIR)}`);
+ m.matchPreparedDescriptorShape(d,intent,continuation);m.matchPreparedDescriptor(d,intent,PROBE_CREDENTIAL,continuation);
+ if(m.sdkOptionsTemplateSha256(options,run,continuation)!==sdkOptionsSha256)throw Error('the resumed options do not reduce to the configured template');
 }
 
 const USAGE=`Usage: node apps/runtime/build/first-chat-launch-measurement.mjs --proxy-url URL --model PROFILE --max-turns N --max-cost-micro-usd N

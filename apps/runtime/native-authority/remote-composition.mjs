@@ -35,6 +35,7 @@ import {exactOriginal} from './remote-task-boundary.mjs';
 import {compileNativePreparationIntent,matchPreparedDescriptorShape} from './preparation-intent.mjs';
 import {createPreparedNativeReads,captureReadRuntimeOptions} from './prepared-reads.mjs';
 import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {holdRunTemporaryRoot} from './run-temporary-root.mjs';
 export function createRemoteNativeController(configuration){
  const {runtimeConfiguration,transport,objects}=own(configuration,['runtimeConfiguration','transport'],['objects']);
  const pinned=compileNativeBrokerPlan({runtime:runtimeConfiguration.runtime,plan:runtimeConfiguration.plan,preparationIntent:runtimeConfiguration.preparationIntent});exactOriginal(transport.original,pinned.original);if(!matchesCapability(transport.credential,runtimeConfiguration.controlCapabilitySha256))throw Error('REMOTE_CONTROL_BINDING_REFUSED');
@@ -81,12 +82,8 @@ export function createRemoteNativeWorker(configuration){
   const d=matchPreparedDescriptorShape(descriptor,i,continuation),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
   nativeTask=createIndependentNativeTask({original,launchConfiguration,deferredSpawn:true,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs})});return {task:nativeTask,launchConfiguration};
  },parkedWorkspace:workspace,...(capture?{capture}:{}),enabled:c.enabled??false,now:c.now??Date.now,...(c.limits?{limits:c.limits}:{})});
- // A resumed turn's SDK (resume + sessionStore) materializes the session into join(os.tmpdir(),'claude-resume-*') and launches the
- // CLI with that directory as CLAUDE_CONFIG_DIR (claude-agent-sdk sdk.mjs). The descriptor policy above, and control's preparation
- // authority (preparation-intent.mjs), admit only a config directory directly under the run's configParentDirectory, so while this
- // worker lives the process's temporary root is that private parent; close() restores the previous one.
- const temporaryRoot=process.env.TMPDIR;process.env.TMPDIR=i.configParentDirectory;
- const restoreTemporaryRoot=()=>{if(process.env.TMPDIR!==i.configParentDirectory)return;if(temporaryRoot===undefined)delete process.env.TMPDIR;else process.env.TMPDIR=temporaryRoot;};
+ // While this worker lives a resumed SDK session materializes under the run's configuration parent (run-temporary-root.mjs).
+ const restoreTemporaryRoot=holdRunTemporaryRoot(i.configParentDirectory);
  return Object.freeze({application,workspace,query,capture,close:()=>{try{return application.close();}finally{restoreTemporaryRoot();}}});
 }
 

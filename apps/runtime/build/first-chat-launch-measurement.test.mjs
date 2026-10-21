@@ -4,9 +4,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
+import {readdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
-import {measureFirstChatLaunch,probeRun,scrubEnvironment,skillsDigest,generalReadInstallation,PROBES,RECEIPT_SCHEMA} from './first-chat-launch-measurement.mjs';
+import {measureFirstChatLaunch,probeRun,scrubEnvironment,skillsDigest,generalReadInstallation,PROBES,RESUMED_PROBE,RESUMED_SESSION_ID,RECEIPT_SCHEMA} from './first-chat-launch-measurement.mjs';
 import {createPreparedRunnerQuery} from '../native-authority/runner-query.mjs';
 import {measureProductRunner} from '../native-authority/ecs-prepared-task-proof.mjs';
 import {measureGeneralReadInstallation,createGeneralReadInstallationIssuer,GENERAL_READ_INSTALLATION_MEASUREMENT_SCHEMA} from '../../gateway/general-reads/installation-issuer.mjs';
@@ -18,6 +19,7 @@ const root=resolve(fileURLToPath(new URL('../../../',import.meta.url))),module=n
 const inputs={proxyUrl:'https://proxy.meri.internal:8443',model:'us.anthropic.claude-sonnet-4-6',maxTurns:3,maxCostMicroUSD:2000000,maxOutputBytes:262144,
  configParentDirectory:'/run/meri',secureStorageDirectory:'/run/meri/sdk-secure',policyRevision:'e'.repeat(64)};
 const run=args=>spawnSync(process.execPath,args,{encoding:'utf8',timeout:60000,env:{PATH:process.env.PATH??'',...(process.platform==='win32'?{SystemRoot:process.env.SystemRoot}:{})}});
+const temporaryRoot=process.env.TMPDIR;
 let receipt;const measured=async()=>receipt??=await measureFirstChatLaunch(inputs,{root});
 
 test('importing the module performs no measurement or output; help and argument refusal exit 0/2 without stdout receipts',()=>{
@@ -43,6 +45,16 @@ test('descriptor capture yields a credential-free launch template bound to the p
  assert.equal(JSON.stringify(r).includes('meri-measurement-synthetic-credential'),false,'the probe credential never reaches the receipt');
  for(const k of ['commandIsRealpath','runnerCaTrust','secureStorage'])assert.equal(r.gates[k],'PASS',k);
  if(process.platform==='linux')for(const [k,v] of Object.entries(r.gates))assert.equal(v,'PASS',k);
+});
+
+test('the resumed probe launches a next turn under the worker\'s temporary root, passes its gate and leaves nothing behind',async()=>{
+ const r=await measured();
+ assert.deepEqual(r.resumedProbe,{binding:RESUMED_PROBE,sessionId:RESUMED_SESSION_ID,workspace:'/workspace/'+RESUMED_PROBE.conversationId,configDirectoryParent:r.resumedProbe.configDirectoryParent});
+ assert.equal(process.env.TMPDIR,temporaryRoot,'the worker\'s temporary root is released');
+ if(process.platform==='linux'){
+  assert.equal(r.resumedProbe.configDirectoryParent,'/run/meri');assert.equal(r.gates.resumedDescriptor,'PASS');
+  assert.deepEqual(readdirSync('/run/meri').filter(name=>name.startsWith('claude-resume-')),[],'the materialized session is removed');
+ }
 });
 
 test('sdkOptionsSha256 is one run-invariant template hash runner-query.mjs admits for every probe run and refuses on any other option',async()=>{
