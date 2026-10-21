@@ -11,13 +11,19 @@ export function createExecutionJournal({tx,rowRun,verifyPreparedClaim}){
   if(!same(r.binding,b)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.execution_key!==r.executionKey||row.execution_id!==r.executionId||!phases.has(r.phase))fail('EXECUTION_CORRUPT');coherent(r,versions);return r;}
  function coherent(r,versions){if(['launching','unknown'].includes(r.phase)){if(r.native!==null)fail('EXECUTION_CORRUPT');}
   else{const fact=assertNativeExecution(r.native,{...r,versions});if((r.phase==='retired')!==fact.physicalStopProven)fail('EXECUTION_CORRUPT');}}
- async function load(c,b,check){const run=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',args(b))).rows[0]);check();if(!same(run.projection.binding,b))fail('STALE_WRITER');
+ async function runRow(c,b,check){const run=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',args(b))).rows[0]);check();if(!same(run.projection.binding,b))fail('STALE_WRITER');return run;}
+ async function load(c,b,check,run){run??=await runRow(c,b,check);
   const rows=(await c.query('SELECT * FROM meri_conversations.native_executions WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',args(b))).rows;check();if(rows.length>1)fail('EXECUTION_CORRUPT');return {run:run.projection,record:rows.length?decode(rows[0],b,run.projection.versions):null};}
  async function claim(value,check){const original=identity(value),b=original.binding;return tx(b,check,async c=>{const saved=await load(c,b,check);
   if(saved.record){const {phase,native,...prior}=saved.record;if(!same(prior,original))fail('EXECUTION_REPLAY_REFUSED');return {...saved,dispatch:false};}
   if(saved.run.state!=='queued'){if(!['starting','running'].includes(saved.run.state)||typeof verifyPreparedClaim!=='function')fail('EXECUTION_NOT_QUEUED');await verifyPreparedClaim(c,original,saved.run.versions,check);check();}const record=data({...original,phase:'launching',native:null});
   await c.query('INSERT INTO meri_conversations.native_executions(tenant_id,conversation_id,run_id,execution_key,execution_id,record,record_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[...args(b),record.executionKey,record.executionId,record,hash(record)]);check();return {run:saved.run,record,dispatch:true};});}
- async function read(binding,check){const b=data(binding);validateShape('RunBinding',b);return tx(b,check,c=>load(c,b,check));}
+ // The run's end-of-turn completion capture (completion-journal.mjs) while it holds the run: CAPTURING while that capture owns the
+ // end of the turn, PUBLISHED once its outcome and the native stop it proved are durable, UNKNOWN once given up; otherwise null.
+ async function completion(c,run,check){const b=run.projection.binding,rows=(await c.query('SELECT * FROM meri_conversations.completion_checkpoints WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',args(b))).rows;check();
+  if(rows.length>1)fail('EXECUTION_CORRUPT');const row=rows[0];if(!row||run.hold_completion_id!==row.completion_id)return null;
+  if(hash(row.identity)!==row.identity_sha256||row.identity.completionId!==row.completion_id||!same(row.identity.binding,b)||!['CAPTURING','UNKNOWN','PUBLISHED'].includes(row.state))fail('EXECUTION_CORRUPT');return row.state;}
+ async function read(binding,check){const b=data(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const run=await runRow(c,b,check);return {...await load(c,b,check,run),completion:await completion(c,run,check)};});}
  async function record(value,check){const v=data(value);own(v,['binding','executionId','phase','native']);validateShape('RunBinding',v.binding);if(!phases.has(v.phase))fail('EXECUTION_REFUSED');
   return tx(v.binding,check,async c=>{const saved=await load(c,v.binding,check),old=saved.record;if(!old||old.executionId!==v.executionId)fail('EXECUTION_REFUSED');
    const transitions={launching:['started','unknown','retired'],unknown:['unknown','started','retired'],started:['started','retired'],retired:['retired']};

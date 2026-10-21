@@ -40,3 +40,9 @@ test('durable journal refuses altered plan/expiry/phase and SQL trigger protects
 test('product completion and native process exit are independent facts; revocation still permits original containment',async t=>{
  const x=await fixture(t);await x.start();const l=x.launchConfiguration,p=x.stack.tasks.spawnClaudeCodeProcess({...l.launch,cwd:l.workspace});p.stdout.resume();p.stdin.end();await new Promise(resolve=>p.once('exit',resolve));await assert.rejects(x.poll(),/PROCESS_STOPPED_WITHOUT_RUN_OUTCOME/);assert.equal(x.stack.tasks.status().physicalStopProven,true);
 });
+test('a completion capture holding the run defers the poll past the native stop it makes; given up, that stop is observed again',async t=>{
+ const x=await fixture(t);await x.start();await x.status('starting',100);await x.status('running',101);const l=x.launchConfiguration,p=x.stack.tasks.spawnClaudeCodeProcess({...l.launch,cwd:l.workspace});p.stdout.resume();p.stdin.end();await new Promise(resolve=>p.once('exit',resolve));
+ const {projection}=(await x.pool.query('SELECT projection FROM meri_conversations.runs')).rows[0],pins={binding:x.binding,scopes:projection.scopes,selectedClientId:projection.scopes.find(s=>s.kind==='client').resourceId},completionId='11111111-1111-4111-8111-000000000071';
+ await x.stack.store.completions.begin({...pins,completionId,checkpointId:'11111111-1111-4111-8111-000000000072'},()=>{});assert.equal((await x.poll()).state,'executing');
+ await x.stack.store.completions.unknown({...pins,completionId},()=>{});await assert.rejects(x.poll(),/PROCESS_STOPPED_WITHOUT_RUN_OUTCOME/);
+});
