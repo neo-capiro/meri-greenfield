@@ -1,0 +1,1357 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
+  "newTestCases": 45,
+  "mutantCount": 58,
+  "method": "Each listed edit was applied in isolation and the named test failed at its intended assertion. Normal-source checks passed. The 52 pre-rebase edits are retained; six additional C11 rebase edits cover both new golden values, both removed defaults and both explicit caller fields. Shared repository sources were not mutated. Commands assume repository root, installed locked dependencies, and MERI_REVIEW_SOURCE_ROOT=$PWD.",
+  "tests": [
+    {
+      "file": "apps/proxy/product/owner-entrypoint.test.mjs",
+      "test": "invalid canonical budget nesting refuses owner before network constructors and preserves its code",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/owner-entrypoint.mjs",
+          "edit": {
+            "before": "if(error?.code==='HOT_PATH_BUDGET_CONFIGURATION')throw error;",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^invalid\\ canonical\\ budget\\ nesting\\ refuses\\ owner\\ before\\ network\\ constructors\\ and\\ preserves\\ its\\ code$",
+            "apps/proxy/product/owner-entrypoint.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/owner-entrypoint.test.mjs",
+      "test": "owner emits one budget table proof before constructing its first client",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/owner-entrypoint.mjs",
+          "edit": {
+            "before": "  telemetry.emit('meri.budget.table',{hops:Object.keys(budgets.hops).length,tableSha256:hotPathBudgetDigest(budgets)});",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^owner\\ emits\\ one\\ budget\\ table\\ proof\\ before\\ constructing\\ its\\ first\\ client$",
+            "apps/proxy/product/owner-entrypoint.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_main.py",
+      "test": "test_proxy_emits_one_budget_table_proof_before_native_construction",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/main.py",
+          "edit": {
+            "before": "    telemetry_lines.emit(\"meri.budget.table\", {\"hops\": len(values),\n        \"tableSha256\": hashlib.sha256(json.dumps(values, separators=(\",\", \":\")).encode(\"ascii\")).hexdigest()})",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_main.MainTests.test_proxy_emits_one_budget_table_proof_before_native_construction"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_telemetry_lines.py",
+      "test": "test_budget_table_schema_has_a_checked_digest_count_and_no_metrics_or_values",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/telemetry_lines.py",
+          "edit": {
+            "before": "digest if type(digest) is str and re.fullmatch(r\"[a-f0-9]{64}\", digest) else \"invalid\"",
+            "after": "digest"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_telemetry_lines.TelemetryLineTests.test_budget_table_schema_has_a_checked_digest_count_and_no_metrics_or_values"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/telemetry/test/turn-lines.test.mjs",
+      "test": "budget table startup schema permits only a lowercase digest and emits no metrics",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/telemetry/turn-lines.mjs",
+          "edit": {
+            "before": "typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value)?value:'invalid'",
+            "after": "value"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^budget\\ table\\ startup\\ schema\\ permits\\ only\\ a\\ lowercase\\ digest\\ and\\ emits\\ no\\ metrics$",
+            "apps/runtime/telemetry/test/turn-lines.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/control-temporal-startup.test.mjs",
+      "test": "control emits exactly one budget table proof before its first resource allocation",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/control.mjs",
+          "edit": {
+            "before": " turnTelemetry.emit('meri.budget.table',{hops:Object.keys(budgets.hops).length,tableSha256:hotPathBudgetDigest(budgets)});",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^control\\ emits\\ exactly\\ one\\ budget\\ table\\ proof\\ before\\ its\\ first\\ resource\\ allocation$",
+            "apps/runtime/test/control-temporal-startup.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/runner-poststart-bootstrap.test.mjs",
+      "test": "poststart supplies the selected budgets to metadata, transport, each step and materialization",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/runner-poststart-bootstrap.mjs",
+          "edit": {
+            "before": "maxRequestMs:c.metadataRequestMs",
+            "after": "maxRequestMs:2000"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^poststart\\ supplies\\ the\\ selected\\ budgets\\ to\\ metadata,\\ transport,\\ each\\ step\\ and\\ materialization$",
+            "apps/runtime/test/runner-poststart-bootstrap.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/temporal-worker-startup.test.mjs",
+      "test": "Temporal startup passes the explicit connection allowance before creating the worker",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/temporal-worker.mjs",
+          "edit": {
+            "before": "connectTimeout:budget(budgets,'temporal.connect'),",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^Temporal\\ startup\\ passes\\ the\\ explicit\\ connection\\ allowance\\ before\\ creating\\ the\\ worker$",
+            "apps/runtime/test/temporal-worker-startup.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/proxy-budgets.test.mjs",
+      "test": "the Python-only image fixture contains the canonical table without requiring Node in the proxy image",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/test/budget-fixture.json",
+          "edit": {
+            "before": "hops['fetch.connect'].ms = 10000",
+            "after": "hops['fetch.connect'].ms = 10001"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^the\\ Python\\-only\\ image\\ fixture\\ contains\\ the\\ canonical\\ table\\ without\\ requiring\\ Node\\ in\\ the\\ proxy\\ image$",
+            "apps/proxy/product/proxy-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_hot_path_budgets.py",
+      "test": "test_missing_or_invalid_table_refuses_before_native_construction",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/startup_config.py",
+          "edit": {
+            "before": "        load_hot_path_budgets(value.get(\"budgets\"))",
+            "after": "        pass # mutant: omit budget admission"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_hot_path_budgets.HotPathBudgetTests.test_missing_or_invalid_table_refuses_before_native_construction"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_hot_path_budgets.py",
+      "test": "test_nested_serial_and_background_edges_are_reasserted",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/budgets.py",
+          "edit": {
+            "before": "row[\"ms\"] > parent[\"ms\"] - self._margin()",
+            "after": "row[\"ms\"] > parent[\"ms\"]"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_hot_path_budgets.HotPathBudgetTests.test_nested_serial_and_background_edges_are_reasserted"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_hot_path_budgets.py",
+      "test": "test_rendered_margin_cannot_weaken_the_nesting_policy",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/budgets.py",
+          "edit": {
+            "before": "self._margin() != 2000",
+            "after": "self._margin() <= 0"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_hot_path_budgets.HotPathBudgetTests.test_rendered_margin_cannot_weaken_the_nesting_policy"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_hot_path_budgets.py",
+      "test": "test_independent_and_derived_budgets_require_reviewed_metadata",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/budgets.py",
+          "edit": {
+            "before": "if row[\"kind\"] == \"independent\":",
+            "after": "if False:"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_hot_path_budgets.HotPathBudgetTests.test_independent_and_derived_budgets_require_reviewed_metadata"
+          ]
+        },
+        {
+          "source": "apps/proxy/product/budgets.py",
+          "edit": {
+            "before": "if row[\"kind\"] == \"derived\":",
+            "after": "if False:"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_hot_path_budgets.HotPathBudgetTests.test_independent_and_derived_budgets_require_reviewed_metadata"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_hot_path_budgets.py",
+      "test": "test_unbounded_library_requires_an_owner_and_keeps_uvicorn_none",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/budgets.py",
+          "edit": {
+            "before": " or row.get(\"boundedBy\") not in values_by_id",
+            "after": " or False"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_hot_path_budgets.HotPathBudgetTests.test_unbounded_library_requires_an_owner_and_keeps_uvicorn_none"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_no_default_budget.py",
+      "test": "test_product_has_no_numeric_budget_defaults_or_literals",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/service_pair_discovery.py",
+          "edit": {
+            "before": "ec2_client, max_request_ms, max_lease_ms",
+            "after": "ec2_client, max_request_ms=3000, max_lease_ms"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_no_default_budget.NoDefaultBudgetTests.test_product_has_no_numeric_budget_defaults_or_literals"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_no_default_budget.py",
+      "test": "test_product_library_timeouts_are_explicit_table_hops",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/main.py",
+          "edit": {
+            "before": "connect_timeout=resources.budgets.seconds(\"proxy.boto.connect\")",
+            "after": "connect_timeout=1"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_no_default_budget.NoDefaultBudgetTests.test_product_library_timeouts_are_explicit_table_hops"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/proxy/product/test/test_no_default_budget.py",
+      "test": "test_service_pair_caps_are_required_and_root_passes_table_hops",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/proxy/product/main.py",
+          "edit": {
+            "before": "max_lease_ms=budgets.ms(\"proxy.pair.lease\")",
+            "after": "max_lease_ms=budgets.ms(\"proxy.pair.fetch\")"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "python3",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.product.test.test_no_default_budget.NoDefaultBudgetTests.test_service_pair_caps_are_required_and_root_passes_table_hops"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/native-authority/test/hot-path-margins.test.mjs",
+      "test": "quiet, median and tail serial work has 1.5 times allowance or an exact phase-owned exception",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": " exception('runner.call.load','tail-margin','P6','Repeated current Core checks retain the existing load allowance.'),\n",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^quiet,\\ median\\ and\\ tail\\ serial\\ work\\ has\\ 1\\.5\\ times\\ allowance\\ or\\ an\\ exact\\ phase\\-owned\\ exception$",
+            "apps/runtime/native-authority/test/hot-path-margins.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/native-authority/test/hot-path-margins.test.mjs",
+      "test": "the extended model retains the original capture-chain quiet and tail values",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/native-authority/test/hot-path-margins.test.mjs",
+          "edit": {
+            "before": "LOCAL_MS=300",
+            "after": "LOCAL_MS=301"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^the\\ extended\\ model\\ retains\\ the\\ original\\ capture\\-chain\\ quiet\\ and\\ tail\\ values$",
+            "apps/runtime/native-authority/test/hot-path-margins.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/native-authority/test/p1-session-budget.test.mjs",
+      "test": "the session receiver passes the effective per-operation allowance to its owner",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/native-authority/session-http.mjs",
+          "edit": {
+            "before": "...(route[1]==='snapshot'?{}:{operationMaxRequestMs})",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^the\\ session\\ receiver\\ passes\\ the\\ effective\\ per\\-operation\\ allowance\\ to\\ its\\ owner$",
+            "apps/runtime/native-authority/test/p1-session-budget.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/native-authority/test/p1-session-budget.test.mjs",
+      "test": "native factories refuse omitted ordinary and transport allowances",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/native-client.mjs",
+          "edit": {
+            "before": "now=Date.now,maxRequestMs,loadMaxRequestMs",
+            "after": "now=Date.now,maxRequestMs=3000,loadMaxRequestMs=maxRequestMs"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^native\\ factories\\ refuse\\ omitted\\ ordinary\\ and\\ transport\\ allowances$",
+            "apps/runtime/native-authority/test/p1-session-budget.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/telemetry/test/budget-startup.test.mjs",
+      "test": "both runner roots emit a single proof across recursive execution and none for an invalid table",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/conversation-runner.mjs",
+          "edit": {
+            "before": " emitRunnerBudgetTable(budgets);",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^both\\ runner\\ roots\\ emit\\ a\\ single\\ proof\\ across\\ recursive\\ execution\\ and\\ none\\ for\\ an\\ invalid\\ table$",
+            "apps/runtime/telemetry/test/budget-startup.test.mjs"
+          ]
+        },
+        {
+          "source": "apps/runtime/remote-conversation-runner.mjs",
+          "edit": {
+            "before": "emitRunnerBudgetTable(budgets);",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^both\\ runner\\ roots\\ emit\\ a\\ single\\ proof\\ across\\ recursive\\ execution\\ and\\ none\\ for\\ an\\ invalid\\ table$",
+            "apps/runtime/telemetry/test/budget-startup.test.mjs"
+          ]
+        },
+        {
+          "source": "apps/runtime/runner-runtime-diagnostics.mjs",
+          "edit": {
+            "before": "if(!active||active.budgetTableEmitted)return;",
+            "after": "if(!active)return;"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^both\\ runner\\ roots\\ emit\\ a\\ single\\ proof\\ across\\ recursive\\ execution\\ and\\ none\\ for\\ an\\ invalid\\ table$",
+            "apps/runtime/telemetry/test/budget-startup.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/hot-path-budget-inputs.test.mjs",
+      "test": "composition uses the rendered turn root, then the admitted candidate window and allocation cap",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/hot-path-budget-inputs.mjs",
+          "edit": {
+            "before": "configuration?.runWindowMs??candidate?.multiRun?.runWindowMs",
+            "after": "candidate?.multiRun?.runWindowMs??configuration?.runWindowMs"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^composition\\ uses\\ the\\ rendered\\ turn\\ root,\\ then\\ the\\ admitted\\ candidate\\ window\\ and\\ allocation\\ cap$",
+            "apps/runtime/test/hot-path-budget-inputs.test.mjs"
+          ]
+        },
+        {
+          "source": "apps/runtime/hot-path-budget-inputs.mjs",
+          "edit": {
+            "before": "return hotPathBudgets({limits:configuration?.limits,runWindowMs,",
+            "after": "return hotPathBudgets({limits:configuration?.limits,runWindowMs:runWindowMs??900000,"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^composition\\ uses\\ the\\ rendered\\ turn\\ root,\\ then\\ the\\ admitted\\ candidate\\ window\\ and\\ allocation\\ cap$",
+            "apps/runtime/test/hot-path-budget-inputs.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/hot-path-startup.test.mjs",
+      "test": "worker and runner entrypoints reject invalid nesting before allocating their resources",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/temporal-worker.mjs",
+          "edit": {
+            "before": " assertHotPathBudgets(budgets);\n const owners=",
+            "after": "\n const owners="
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^worker\\ and\\ runner\\ entrypoints\\ reject\\ invalid\\ nesting\\ before\\ allocating\\ their\\ resources$",
+            "apps/runtime/test/hot-path-startup.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/hot-path-startup.test.mjs",
+      "test": "worker and runner entrypoints require the rendered turn root before resource allocation",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/temporal-worker.mjs",
+          "edit": {
+            "before": "budgets=runtimeHotPathBudgets(configuration)}={})",
+            "after": "budgets=runtimeHotPathBudgets({...configuration,runWindowMs:900000})}={})"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^worker\\ and\\ runner\\ entrypoints\\ require\\ the\\ rendered\\ turn\\ root\\ before\\ resource\\ allocation$",
+            "apps/runtime/test/hot-path-startup.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/hot-path-transports.test.mjs",
+      "test": "HTTP transports receive the canonical library caps and preserve the operation signal",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/hot-path-transports.mjs",
+          "edit": {
+            "before": "headersTimeout:budget(table,'fetch.headers')",
+            "after": "headersTimeout:300001"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^HTTP\\ transports\\ receive\\ the\\ canonical\\ library\\ caps\\ and\\ preserve\\ the\\ operation\\ signal$",
+            "apps/runtime/test/hot-path-transports.test.mjs"
+          ]
+        },
+        {
+          "source": "apps/runtime/hot-path-transports.mjs",
+          "edit": {
+            "before": "requestTimeout:budget(table,'aws.request')",
+            "after": "requestTimeout:1"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^HTTP\\ transports\\ receive\\ the\\ canonical\\ library\\ caps\\ and\\ preserve\\ the\\ operation\\ signal$",
+            "apps/runtime/test/hot-path-transports.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/hot-path-workflow-drift.test.mjs",
+      "test": "generated workflow budgets exactly match the canonical projection",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/control/conversations/hot-path-budgets.generated.ts",
+          "edit": {
+            "before": "\"workflow.conversation.startToClose\": \"30 minutes\"",
+            "after": "\"workflow.conversation.startToClose\": \"29 minutes\""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^generated\\ workflow\\ budgets\\ exactly\\ match\\ the\\ canonical\\ projection$",
+            "apps/runtime/test/hot-path-workflow-drift.test.mjs"
+          ]
+        },
+        {
+          "source": "apps/control/conversations/hot-path-budgets.generated.ts",
+          "edit": {
+            "before": "\"objective.lifecycle.poll\": 30000",
+            "after": "\"objective.lifecycle.poll\": 30001"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^generated\\ workflow\\ budgets\\ exactly\\ match\\ the\\ canonical\\ projection$",
+            "apps/runtime/test/hot-path-workflow-drift.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "production roots derive the frozen table and preserve all absolute runner cutoffs",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "return freeze(assertHotPathBudgets({version:HOT_PATH_BUDGET_VERSION,roots,hops,startup}));",
+            "after": "return assertHotPathBudgets({version:HOT_PATH_BUDGET_VERSION,roots,hops,startup});"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^production\\ roots\\ derive\\ the\\ frozen\\ table\\ and\\ preserve\\ all\\ absolute\\ runner\\ cutoffs$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "every nested edge rejects both a grown child and a shrunken parent, naming the edge",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(hop.kind==='nested'){",
+            "after": "if(false&&hop.kind==='nested'){"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^every\\ nested\\ edge\\ rejects\\ both\\ a\\ grown\\ child\\ and\\ a\\ shrunken\\ parent,\\ naming\\ the\\ edge$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "serial owners validate each child and report the unchanged sum without rejecting the known overrun",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(budget(table,child)>hop.ms-HOT_PATH_BUDGET_MARGIN_MS)",
+            "after": "if(false&&budget(table,child)>hop.ms-HOT_PATH_BUDGET_MARGIN_MS)"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^serial\\ owners\\ validate\\ each\\ child\\ and\\ report\\ the\\ unchanged\\ sum\\ without\\ rejecting\\ the\\ known\\ overrun$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "background expiry must cover two whole renewal periods",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "expiry<2*period",
+            "after": "expiry<period"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^background\\ expiry\\ must\\ cover\\ two\\ whole\\ renewal\\ periods$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "ADR ten-percent exceptions are exact, dated, phase-owned and never stale",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": " exception('control.capture','adr-margin','P2','21 s capture inside 23 s client keeps the existing 2 s margin.'),\n",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^ADR\\ ten\\-percent\\ exceptions\\ are\\ exact,\\ dated,\\ phase\\-owned\\ and\\ never\\ stale$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "unbounded libraries require an existing bound and a reason",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(hop.unbounded&&",
+            "after": "if(false&&hop.unbounded&&"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^unbounded\\ libraries\\ require\\ an\\ existing\\ bound\\ and\\ a\\ reason$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "missing roots, invalid values and unknown or non-fixed hops refuse without supplying defaults",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(!hop||typeof hop.ms==='function')refuse(id,undefined,'fixed preconfiguration hop required')",
+            "after": "if(!hop)refuse(id,undefined,'fixed preconfiguration hop required')"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^missing\\ roots,\\ invalid\\ values\\ and\\ unknown\\ or\\ non\\-fixed\\ hops\\ refuse\\ without\\ supplying\\ defaults$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "digest covers canonical effective values and excludes absolute wall-clock timestamps",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": ".update(JSON.stringify(values)).digest('hex')",
+            "after": ".update(JSON.stringify({...values,wall:table.roots.original.expiresAtMs})).digest('hex')"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^digest\\ covers\\ canonical\\ effective\\ values\\ and\\ excludes\\ absolute\\ wall\\-clock\\ timestamps$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "every effective production hop equals the independently extracted base golden",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "'owner.diagnostics.burst':fixed(20,",
+            "after": "'owner.diagnostics.burst':fixed(21,"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^every\\ effective\\ production\\ hop\\ equals\\ the\\ independently\\ extracted\\ base\\ golden$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        },
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "'control.session.diagnostics.burst':fixed(20",
+            "after": "'control.session.diagnostics.burst':fixed(21"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "independent golden value differs for control.session.diagnostics.burst",
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^every\\ effective\\ production\\ hop\\ equals\\ the\\ independently\\ extracted\\ base\\ golden$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ],
+          "evidencePhase": "C11 rebase"
+        },
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "'control.session.diagnostics.window':fixed(60000",
+            "after": "'control.session.diagnostics.window':fixed(60001"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "independent golden value differs for control.session.diagnostics.window",
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^every\\ effective\\ production\\ hop\\ equals\\ the\\ independently\\ extracted\\ base\\ golden$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ],
+          "evidencePhase": "C11 rebase"
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "independent lifetimes identify their owner and reject absent reasons or nonpositive durations",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(hop.kind==='independent'&&",
+            "after": "if(false&&hop.kind==='independent'&&"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^independent\\ lifetimes\\ identify\\ their\\ owner\\ and\\ reject\\ absent\\ reasons\\ or\\ nonpositive\\ durations$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "Core retains its shared request deadline with an explicit P6 exception",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(hop.inherits&&hop.ms!==budget(table,hop.inherits))",
+            "after": "if(false&&hop.inherits&&hop.ms!==budget(table,hop.inherits))"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^Core\\ retains\\ its\\ shared\\ request\\ deadline\\ with\\ an\\ explicit\\ P6\\ exception$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "separately configured owner request limits retain the same pool and shutdown values",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "'pg.owner.connect':library(({ownerRequestMs})=>ownerRequestMs,",
+            "after": "'pg.owner.connect':library(({ownerRequestMs})=>15000,"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^separately\\ configured\\ owner\\ request\\ limits\\ retain\\ the\\ same\\ pool\\ and\\ shutdown\\ values$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "rendered tables cannot relax or replace the fixed containment margin",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(table.hops['budget.margin'].ms!==HOT_PATH_BUDGET_MARGIN_MS)",
+            "after": "if(false&&table.hops['budget.margin'].ms!==HOT_PATH_BUDGET_MARGIN_MS)"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^rendered\\ tables\\ cannot\\ relax\\ or\\ replace\\ the\\ fixed\\ containment\\ margin$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/hot-path-budgets.test.mjs",
+      "test": "durable workflow policy windows have their own lifetime beyond a single turn",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "packages/runtime/hot-path-budgets.mjs",
+          "edit": {
+            "before": "if(id.startsWith('workflow.'))return {...row,kind:'independent',owner:'temporal.workflow-policy',",
+            "after": "if(id.startsWith('workflow.'))return {...row,kind:'library',boundedBy:'turn',"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^durable\\ workflow\\ policy\\ windows\\ have\\ their\\ own\\ lifetime\\ beyond\\ a\\ single\\ turn$",
+            "packages/runtime/test/hot-path-budgets.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/no-default-budget.test.mjs",
+      "test": "production budget literals have one source and exact reviewed exceptions",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/native-client.mjs",
+          "edit": {
+            "before": "maxRequestMs,loadMaxRequestMs",
+            "after": "maxRequestMs=3000,loadMaxRequestMs"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^production\\ budget\\ literals\\ have\\ one\\ source\\ and\\ exact\\ reviewed\\ exceptions$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/no-default-budget.test.mjs",
+      "test": "registered constructor fields are required and composition roots pass their table hops",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/conversation-runner.mjs",
+          "edit": {
+            "before": "maxRequestMs:budget(budgets,'native.client.request')",
+            "after": "maxRequestMs:budget(budgets,'broker.native.request')"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^registered\\ constructor\\ fields\\ are\\ required\\ and\\ composition\\ roots\\ pass\\ their\\ table\\ hops$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ]
+        },
+        {
+          "source": "apps/runtime/native-authority/runner-poststart-authority.mjs",
+          "edit": {
+            "before": ",maxRequestMs:fixedHotPathBudget('native.ecs.binding.request')",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^registered\\ constructor\\ fields\\ are\\ required\\ and\\ composition\\ roots\\ pass\\ their\\ table\\ hops$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ]
+        },
+        {
+          "source": "apps/control/action-host/session/owner.mjs",
+          "edit": {
+            "before": "now=Date.now,burst,windowMs",
+            "after": "now=Date.now,burst=20,windowMs"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "createSessionRefusalDiagnostics.burst has a numeric default",
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^registered\\ constructor\\ fields\\ are\\ required\\ and\\ composition\\ roots\\ pass\\ their\\ table\\ hops$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ],
+          "evidencePhase": "C11 rebase"
+        },
+        {
+          "source": "apps/control/action-host/session/owner.mjs",
+          "edit": {
+            "before": "now=Date.now,burst,windowMs",
+            "after": "now=Date.now,burst,windowMs=60000"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "createSessionRefusalDiagnostics.windowMs has a numeric default",
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^registered\\ constructor\\ fields\\ are\\ required\\ and\\ composition\\ roots\\ pass\\ their\\ table\\ hops$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ],
+          "evidencePhase": "C11 rebase"
+        },
+        {
+          "source": "apps/control/action-host/session/owner.mjs",
+          "edit": {
+            "before": "burst:fixedHotPathBudget('control.session.diagnostics.burst'),",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "createSessionRefusalDiagnostics.burst must receive budget(table, 'control.session.diagnostics.burst')",
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^registered\\ constructor\\ fields\\ are\\ required\\ and\\ composition\\ roots\\ pass\\ their\\ table\\ hops$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ],
+          "evidencePhase": "C11 rebase"
+        },
+        {
+          "source": "apps/control/action-host/session/owner.mjs",
+          "edit": {
+            "before": ",windowMs:fixedHotPathBudget('control.session.diagnostics.window')",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "createSessionRefusalDiagnostics.windowMs must receive budget(table, 'control.session.diagnostics.window')",
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^registered\\ constructor\\ fields\\ are\\ required\\ and\\ composition\\ roots\\ pass\\ their\\ table\\ hops$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ],
+          "evidencePhase": "C11 rebase"
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "packages/runtime/test/no-default-budget.test.mjs",
+      "test": "registered library clients receive explicit transport time options",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/hot-path-transports.mjs",
+          "edit": {
+            "before": "headersTimeout:budget(table,'fetch.headers')",
+            "after": "headersTimeout:budget(table,'fetch.body')"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^registered\\ library\\ clients\\ receive\\ explicit\\ transport\\ time\\ options$",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/telemetry/test/turn-lines.test.mjs",
+      "test": "meri.budget.table: explicit schema and poison pin",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/telemetry/turn-lines.mjs",
+          "edit": {
+            "before": "'meri.budget.table':{service:choice(SERVICES),",
+            "after": "'meri.budget.table':{tenantId:value=>value,service:choice(SERVICES),"
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-concurrency=1",
+            "--test-name-pattern=^meri\\.budget\\.table:\\ explicit\\ schema\\ and\\ poison\\ pin$",
+            "apps/runtime/telemetry/test/turn-lines.test.mjs"
+          ]
+        }
+      ],
+      "sourceRestored": true
+    }
+  ],
+  "previousValidationBase": "3c56c3e981ba868a2af103c4cae9f65a0d47458d"
+}

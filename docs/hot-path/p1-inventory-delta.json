@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
+  "planBase": "e3ba4e47",
+  "suppliedInventoryRows": 620,
+  "relocatedInventoryRows": 620,
+  "newTimingConstantsBetweenPlanAndFinalBase": 1,
+  "discoveryDeltaCount": 25,
+  "notes": [
+    "These are existing values discovered in source omitted from the supplied inventory, not new delays or retries.",
+    "gateway.generalRead.defaultRuntime is seconds and proxy.diagnostics.burst is a count; do not interpret them as milliseconds.",
+    "native.remote.stdout.poll (100 ms) and issuer PostgreSQL connection/idle caps (3000/1000 ms) are already represented by inventory rows runner:F6 and D11, so they are not additional inventory deltas.",
+    "The rebase adds two C11 coverage deltas separately from the 23 earlier discoveries: one 60000 ms window and one 20-line burst count. No effective value changes."
+  ],
+  "entries": [
+    {
+      "hop": "artifact.authority.request",
+      "value": 3000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/artifacts/core-authority-client.mjs",
+        "symbol": "createCoreArtifactAuthorityClient",
+        "baseExtractionPattern": "/maxRequestMs\\?\\?(\\d+)/"
+      },
+      "previousSourceValue": 3000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "gateway.completion.admission",
+      "value": 3000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/gateway/budget/postgres-tool-budget.mjs",
+        "symbol": "createPostgresToolBudget",
+        "baseExtractionPattern": "/limits:\\{maxRequestMs:(\\d+)/"
+      },
+      "previousSourceValue": 3000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "gateway.document.vision",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/gateway/budget/general-read-tariffs.mjs",
+        "symbol": "GENERAL_READ_DOCUMENT_BOUNDS.vision",
+        "baseExtractionPattern": "/vision:Object.freeze\\(\\{[^\\n]*timeoutMs:(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "gateway.generalRead.defaultRuntime",
+      "value": 900,
+      "unit": "seconds",
+      "source": {
+        "file": "apps/gateway/budget/general-read-manifest.mjs",
+        "symbol": "GENERAL_READ_DEFAULT_RUN_BUDGETS.maxRuntimeSeconds",
+        "baseExtractionPattern": "/GENERAL_READ_DEFAULT_RUN_BUDGETS=Object.freeze\\(\\{[^\\n]*maxRuntimeSeconds:(\\d+)/"
+      },
+      "previousSourceValue": 900,
+      "previousSourceUnit": "seconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "intents.availability",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/control/intents/mount.mjs",
+        "symbol": "createIntentMount / AVAILABILITY_MS",
+        "baseExtractionPattern": "/AVAILABILITY_MS\\s*[:=]\\s*(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "material.initialize.request",
+      "value": 5000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/material-init.mjs",
+        "symbol": "materializeStaticProductMaterial",
+        "baseExtractionPattern": "/maxRequestMs(?:=|:|:c.maxRequestMs\\?\\?)(\\d+)/"
+      },
+      "previousSourceValue": 5000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.continuation.admission",
+      "value": 300000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/continuation-authority.mjs",
+        "symbol": "createContinuationAuthority / admissionWindowMs",
+        "baseExtractionPattern": "/admissionWindowMs:l.admissionWindowMs\\?\\?(\\d+)/"
+      },
+      "previousSourceValue": 300000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.continuation.authority",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/continuation-authority.mjs",
+        "symbol": "createContinuationAuthority / authorityWindowMs",
+        "baseExtractionPattern": "/authorityWindowMs:l.authorityWindowMs\\?\\?(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.continuation.request",
+      "value": 3000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/continuation-authority.mjs",
+        "symbol": "createContinuationAuthority / maxRequestMs",
+        "baseExtractionPattern": "/maxRequestMs:l.maxRequestMs\\?\\?(\\d+)/"
+      },
+      "previousSourceValue": 3000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.execution.cleanup",
+      "value": 3000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/execution-composition.mjs",
+        "symbol": "createControlIntentExecution / maxCleanupMs",
+        "baseExtractionPattern": "/maxCleanupMs:(\\d+)/"
+      },
+      "previousSourceValue": 3000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.execution.request",
+      "value": 10000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/execution-issuance.mjs",
+        "symbol": "createCoreExecutionIssuance / maxRequestMs",
+        "baseExtractionPattern": "/maxRequestMs:(\\d+)/"
+      },
+      "previousSourceValue": 10000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.execution.skew",
+      "value": 1000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/execution-issuance.mjs",
+        "symbol": "createCoreExecutionIssuance / maxSkewMs",
+        "baseExtractionPattern": "/maxSkewMs:(\\d+)/"
+      },
+      "previousSourceValue": 1000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.intent.prepare",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/intents-http.mjs",
+        "symbol": "createRunnerIntentsApplication / maxPrepareMs",
+        "baseExtractionPattern": "/maxPrepareMs:(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.read.observation",
+      "value": 3000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/native-read-credentials/read-mode-observation.mjs",
+        "symbol": "READ_MODE_MAX_REQUEST_MS",
+        "baseExtractionPattern": "/READ_MODE_MAX_REQUEST_MS=(\\d+)/"
+      },
+      "previousSourceValue": 3000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.read.reference",
+      "value": 3000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/native-read-credentials/client-reference.mjs",
+        "symbol": "CLIENT_REFERENCE_MAX_REQUEST_MS",
+        "baseExtractionPattern": "/CLIENT_REFERENCE_MAX_REQUEST_MS=(\\d+)/"
+      },
+      "previousSourceValue": 3000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.read.request",
+      "value": 3000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/reads-http.mjs",
+        "symbol": "createNativeReadsApplication / maxExecuteMs",
+        "baseExtractionPattern": "/config.maxExecuteMs:(\\d+)/"
+      },
+      "previousSourceValue": 3000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.retained.credential",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/retained-reads/credential-broker.mjs",
+        "symbol": "createRetainedCredentialBroker / started cutoff",
+        "baseExtractionPattern": "/started\\+(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.retained.source",
+      "value": 15000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/retained-reads/source-transport.mjs",
+        "symbol": "createRetainedDelegatedTransport / maxRequestMs",
+        "baseExtractionPattern": "/maxRequestMs=c.maxRequestMs\\?\\?(\\d+)/"
+      },
+      "previousSourceValue": 15000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "native.routine.receipt",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/runtime/native-authority/routines-core-client.mjs",
+        "symbol": "ROUTINE_RECEIPT_MAX_MS",
+        "baseExtractionPattern": "/ROUTINE_RECEIPT_MAX_MS=(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "proxy.diagnostics.burst",
+      "value": 20,
+      "unit": "count",
+      "source": {
+        "file": "apps/proxy/product/refusal_diagnostics.py",
+        "symbol": "install / burst",
+        "baseExtractionPattern": "/burst=(\\d+)/"
+      },
+      "previousSourceValue": 20,
+      "previousSourceUnit": "count",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "proxy.diagnostics.window",
+      "value": 60000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/proxy/product/refusal_diagnostics.py",
+        "symbol": "install / window",
+        "baseExtractionPattern": "/window=([\\d.]+)/"
+      },
+      "previousSourceValue": 60,
+      "previousSourceUnit": "seconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "withdrawal.propagation",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/control/withdrawal/generations.mjs",
+        "symbol": "WITHDRAWAL_LIMITS.propagationMs",
+        "baseExtractionPattern": "/propagationMs\\s*[:=]\\s*(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    },
+    {
+      "hop": "withdrawal.staleness",
+      "value": 30000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/control/withdrawal/generations.mjs",
+        "symbol": "WITHDRAWAL_LIMITS.stalenessMs",
+        "baseExtractionPattern": "/stalenessMs\\s*[:=]\\s*(\\d+)/"
+      },
+      "previousSourceValue": 30000,
+      "previousSourceUnit": "milliseconds",
+      "change": "Existing value moved into the canonical table; source file was omitted from the supplied 620-row inventory."
+    }
+  ],
+  "previousValidationBase": "3c56c3e981ba868a2af103c4cae9f65a0d47458d",
+  "newBudgetConstantsBetweenPlanAndFinalBase": 2,
+  "preRebaseDiscoveryDeltaCount": 23,
+  "rebaseDeltaCount": 2,
+  "rebaseEntries": [
+    {
+      "hop": "control.session.diagnostics.burst",
+      "value": 20,
+      "unit": "count",
+      "source": {
+        "file": "apps/control/action-host/session/owner.mjs",
+        "symbol": "createSessionRefusalDiagnostics.burst",
+        "callerSymbol": "createActionSessionOwner.refusals",
+        "baseExtractionPattern": "/function createSessionRefusalDiagnostics\\([\\s\\S]*?\\bburst=(\\d+)/"
+      },
+      "introducedBy": "843115b6",
+      "observedBase": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
+      "previousSourceValue": 20,
+      "previousSourceUnit": "count",
+      "change": "C11 added this existing production default after the supplied P1 inventory; P1 now centralizes the same value and explicitly supplies it at the unchanged default diagnostics construction."
+    },
+    {
+      "hop": "control.session.diagnostics.window",
+      "value": 60000,
+      "unit": "milliseconds",
+      "source": {
+        "file": "apps/control/action-host/session/owner.mjs",
+        "symbol": "createSessionRefusalDiagnostics.windowMs",
+        "callerSymbol": "createActionSessionOwner.refusals",
+        "baseExtractionPattern": "/function createSessionRefusalDiagnostics\\([\\s\\S]*?\\bwindowMs=(\\d+)/"
+      },
+      "introducedBy": "843115b6",
+      "observedBase": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
+      "previousSourceValue": 60000,
+      "previousSourceUnit": "milliseconds",
+      "change": "C11 added this existing production default after the supplied P1 inventory; P1 now centralizes the same value and explicitly supplies it at the unchanged default diagnostics construction."
+    }
+  ]
+}
