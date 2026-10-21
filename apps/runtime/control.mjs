@@ -1,7 +1,6 @@
 /** Trusted control composition. Single preview replica; source connectivity disabled. */
 import {Pool} from 'pg';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
-import {createTurnPublishObserver} from './telemetry/turn-publish.mjs';
 import {countingPool,countingAwsClient} from './telemetry/counting.mjs';
 import {Connection,Client} from '@temporalio/client';
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
@@ -118,7 +117,7 @@ export function assembleControl(options){
  const port=operation=>({signal,...input})=>native.call(operation,input,{signal});
  const rawService=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),checkpoints:{read:port('checkpoint/read')},nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
  const observedInput=Object.fromEntries(['allocateInput','admitInput','submit'].map(name=>[name,async input=>turnTelemetry.provisional(async()=>{const value=await rawService[name](input);try{const binding=value.run?.binding??value.allocation?.binding;if(binding){turnTelemetry.bind(binding);if(name==='submit')turnTelemetry.stage(binding,'send.submit.accepted');}}catch{}return value;})]));
- const service=createTurnPublishObserver({telemetry:turnTelemetry}).observeRunOwner({...rawService,...observedInput});
+ const service=Object.freeze({...rawService,...observedInput});
  const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,turnTelemetry,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({service:telemetry?telemetry.observeRunOwner(service):service,sessions,native,configuration,now,turnTelemetry,...(retention?{retention:retention.gate}:{})});
  const products=createRuntimeProductApplications({configuration,sessions,ports,now,conversationStore:store,userPreferences,...(retention?{retention:retention.gate,suppression:{journal:retention.journal,serving:retention.serving}}:{})});
  // Composed intents need their journal table; a disabled family adds no table, so first-chat readiness is unchanged.

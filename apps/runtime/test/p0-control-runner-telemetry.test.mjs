@@ -12,8 +12,24 @@ import {observeCompletionPublication} from '../native-authority/completion-captu
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
 import {lifecycleFixture,retireAllocation,scopes,id} from '../../control/conversations/test/lifecycle-fixture.mjs';
 import {createRunReconciler} from '../../control/conversations/run-reconciler.mjs';
+import {assembleControl} from '../control.mjs';
+import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 
 function capture(service,now=Date.now){const lines=[];return {lines,telemetry:createTurnTelemetry({service,now,write:line=>lines.push(JSON.parse(line))})};}
+
+test('production control observes each accepted publication only at the durable store',async t=>{
+ const f=await lifecycleFixture(),{lines,telemetry}=capture('control'),observed=[];t.after(()=>{f.close();telemetry.close();});await f.running();
+ const saved=await f.store.read(binding,{},()=>{}),configuration={versions:saved.run.versions,sourceEnabled:false,sessions:{maxSessions:10,maxTtlMs:30000},limits:{requestMs:1000,requestBytes:131072,shutdownMs:1000},temporal:{taskQueue:'synthetic'},native:{maxResponseBytes:2097152}};
+ const identityContext={async verifyIdentity(){return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'synthetic-current',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},async resolveContext({identity}){return {identitySha256:hash(identity),binding,scopes,selectedClientId:id(5),contextRevision:'synthetic-current',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}};
+ const unexpected=()=>{throw Error('Unexpected external effect');},assembly=assembleControl({configuration,pool:f.pool,client:{workflow:{start:unexpected,getHandle:unexpected}},native:{call:unexpected},productPorts:{identityContext},turnTelemetry:{...telemetry,summary(event){observed.push(event);return telemetry.summary(event);}}});t.after(()=>assembly.close());
+ const {credential}=await assembly.sessions.issue({identityCredential:'synthetic-native'}),delta={eventId:id(930),createdAt:new Date().toISOString(),type:'message.delta',data:{messageId:id(931),text:'Synthetic answer'}},completed={eventId:id(932),createdAt:new Date().toISOString(),type:'run.status',data:{state:'completed',reasonCode:null}};
+ for(const event of [delta,completed,completed]){
+  const before=observed.length,published=await telemetry.provisional(()=>assembly.service.publish({credential,binding,event}));
+  assert.equal(observed.length,before+1,'one store observation per accepted publication, including durable replay');assert.equal(observed.at(-1),published);
+ }
+ assert.equal(lines.filter(line=>line.event==='meri.turn.summary').length,1);assert.equal(lines.find(line=>line.event==='meri.turn.summary').deltaPublications,1);
+ const before=observed.length;await assert.rejects(telemetry.provisional(()=>assembly.service.publish({credential,binding,event:{...delta,eventId:id(933)}})));assert.equal(observed.length,before,'a refused write is never observed');
+});
 
 test('admission keeps handler-entry t0, adopts pre-binding work and deduplicates a durable replay',async()=>{
  const f=await applicationFixture({initialInput:true});let at=Date.now();const {lines,telemetry}=capture('control',()=>at);

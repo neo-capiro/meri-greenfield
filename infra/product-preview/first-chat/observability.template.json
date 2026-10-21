@@ -119,7 +119,7 @@
       "Type": "AWS::Logs::MetricFilter",
       "Properties": {
         "FilterName": "meri-preview-owner-diagnostics-suppressed",
-        "FilterPattern": "\"DIAGNOSTICS_SUPPRESSED\"",
+        "FilterPattern": "\"PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED\"",
         "LogGroupName": "/meri/product-preview/owner",
         "MetricTransformations": [
           {
@@ -135,7 +135,7 @@
       "Type": "AWS::Logs::MetricFilter",
       "Properties": {
         "FilterName": "meri-preview-proxy-diagnostics-suppressed",
-        "FilterPattern": "\"DIAGNOSTICS_SUPPRESSED\"",
+        "FilterPattern": "\"PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\"",
         "LogGroupName": "/meri/product-preview/proxy",
         "MetricTransformations": [
           {
@@ -825,7 +825,25 @@
             "ReturnData": false
           },
           {
-            "Expression": "SUM([control,owner,proxy])",
+            "Id": "runner",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [
+                  {
+                    "Name": "Service",
+                    "Value": "runner"
+                  }
+                ],
+                "MetricName": "TelemetryDropped",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 900,
+              "Stat": "Sum"
+            },
+            "ReturnData": false
+          },
+          {
+            "Expression": "SUM([control,owner,proxy,runner])",
             "Id": "drops",
             "ReturnData": true
           }

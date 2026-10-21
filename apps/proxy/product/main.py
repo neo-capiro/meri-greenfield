@@ -80,7 +80,7 @@ class _Resources:
                         _deny()
                     self.active += 1
                 began = time.monotonic()
-                outcome = "failed"
+                outcome = "error"
                 try:
                     result = _original(*args, **kwargs)
                     outcome = "success"
@@ -366,16 +366,21 @@ async def run_product_proxy(configuration):
         if not resources.native_started or not resources.native_stopped or resources.native_failed:
             _deny()
     finally:
-        rollups.close()
-        telemetry.rollup()
-        if operation is not None and not operation.done():
-            operation.cancel()
-            ready, _ = await asyncio.wait({operation}, timeout=1)
-            if not ready:
-                resources.native_pending.add(operation)
-        await resources.close()
-        if compatibility is not None:
-            compatibility.close()
+        try:
+            rollups.close()
+            telemetry.rollup()
+            if operation is not None and not operation.done():
+                operation.cancel()
+                ready, _ = await asyncio.wait({operation}, timeout=1)
+                if not ready:
+                    resources.native_pending.add(operation)
+            await resources.close()
+            if compatibility is not None:
+                compatibility.close()
+        finally:
+            # Keep terminal cleanup health visible, then release this service's
+            # borrowed writer even when resource or compatibility cleanup fails.
+            telemetry_lines.uninstall()
 
 
 @contextmanager

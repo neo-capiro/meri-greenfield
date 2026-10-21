@@ -69,6 +69,18 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([row[name] for name in ('bootstrapMs', 'bedrockHeadersMs', 'firstChunkMs', 'streamEndMs', 'settleMs')], [20, 10, 15, 30, 5])
         self.assertEqual((row['inputTokens'], row['outputTokens']), (41, 9))
 
+    async def test_http_outcome_classifies_status_and_contains_invalid_status_failure(self):
+        for status, expected in ((200, 'completed'), (399, 'completed'), (400, 'failed'),
+                                 (401, 'refused'), (403, 'refused'), (500, 'failed')):
+            with self.subTest(status=status), telemetry.request():
+                telemetry.http_outcome(status)
+            self.assertEqual(self.records('meri.model.request')[-1]['outcome'], expected)
+        with telemetry.request():
+            telemetry.outcome('completed')
+            self.assertIsNone(telemetry.http_outcome(None))
+        self.assertEqual(self.records('meri.model.request')[-1]['outcome'], 'completed')
+        self.assertEqual(lines.dropped(), 1)
+
     async def test_unplaced_refusal_has_uuid_request_and_unknown_binding_even_without_text_sink(self):
         with telemetry.request():
             diagnostics.refused('bootstrap', 'timeout', TimeoutError('secret'))
@@ -111,26 +123,25 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(row['refusal'], {'gate': 'bootstrap', 'step': 'timeout', 'code': 'DEADLINE'})
 
     async def test_aws_wrapper_returns_identical_result_and_error_and_counts_once(self):
-        result = object(); error = TimeoutError('secret')
+        result = object()
+        errors = (TimeoutError('secret'), ValueError('secret'))
         class Client:
             def describe_tasks(self, **kwargs):
                 if kwargs.get('fail'):
-                    raise error
+                    raise kwargs['fail']
                 return result
             def close(self):
                 pass
         resources = _Resources(); client = resources.track_client(Client(), ['describe_tasks'])
         with telemetry.request():
             self.assertIs(client.describe_tasks(), result)
-            try:
-                client.describe_tasks(fail=True)
-            except TimeoutError as actual:
-                self.assertIs(actual, error)
-            else:
-                self.fail('original error was not propagated')
+            for error in errors:
+                with self.assertRaises(type(error)) as caught:
+                    client.describe_tasks(fail=error)
+                self.assertIs(caught.exception, error)
         row = self.records('meri.model.request')[0]
-        self.assertEqual(row['aws'], {'DescribeTasks': {'success': 1, 'timeout': 1}})
-        self.assertEqual(row['ProxyAwsCalls'], 2)
+        self.assertEqual(row['aws'], {'DescribeTasks': {'success': 1, 'timeout': 1, 'error': 1}})
+        self.assertEqual(row['ProxyAwsCalls'], 3)
         await resources.close()
 
     async def test_health_only_on_gate_and_pending_transitions(self):
@@ -193,6 +204,21 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((rows[0]['outcome'], rows[0]['ProxyAwsCalls']), ('completed', 1))
         self.assertEqual(lines.dropped(), 1)
 
+    async def test_inference_response_and_readiness_survive_outcome_classification_failure(self):
+        from apps.proxy.qualification.test.test_server import ServerTests
+        async def upstream(scope, receive, send):
+            await receive()
+            await send({'type': 'http.response.start', 'status': 200})
+            await send({'type': 'http.response.body', 'body': b'original', 'more_body': False})
+        _, scope, app, queue, sends, send = ServerTests().make(upstream)
+        with patch.object(telemetry, 'outcome', side_effect=RuntimeError('telemetry-only failure')):
+            await app(scope, queue.get, send)
+        self.assertEqual(sends, [{'type': 'http.response.start', 'status': 200},
+                                 {'type': 'http.response.body', 'body': b'original', 'more_body': False}])
+        self.assertTrue(app.ready)
+        self.assertEqual(len(self.records('meri.model.request')), 1)
+        self.assertEqual(lines.dropped(), 1)
+
     async def test_real_owner_send_counter_is_one_per_exchange_and_abort_health_is_once(self):
         from types import SimpleNamespace
         from apps.proxy.product.test.test_owner_https import exchange
@@ -209,10 +235,22 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
                 result = item._send('operation', OPERATION, b'[]', item.now_ms()+1000)
                 self.assertEqual(result.body, b'[]')
             item.abort(); item.abort()
+        self.assertFalse(item.available)
+        self.assertFalse(item.service_pair_reader.available)
         row = self.records('meri.model.request')[0]
         self.assertEqual(row['ownerExchanges'], {'operation': {'OPERATION': 1}})
         self.assertEqual([(row['component'], row['transition']) for row in self.records('meri.health')],
-                         [('pair', 'retired'), ('exchange', 'retired')])
+                         [('pair', 'retired')])
+
+    async def test_pair_retirement_before_exchange_abort_still_emits_once(self):
+        from apps.proxy.product.test.test_owner_https import exchange
+        item = exchange()
+        item.service_pair_reader.abort()
+        item.abort(); item.abort()
+        self.assertFalse(item.available)
+        self.assertEqual([(row['component'], row['transition'], row['code'])
+                          for row in self.records('meri.health')],
+                         [('pair', 'retired', 'PAIR_RETIRED')])
 
     async def test_startup_telemetry_option_is_closed_optional_and_validated(self):
         from apps.proxy.product.test.test_startup_config import configuration, parse

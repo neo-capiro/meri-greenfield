@@ -101,6 +101,13 @@ def outcome(value):
 
 
 @_safe
+def http_outcome(response_status):
+    """Keep response classification inside the telemetry failure boundary."""
+    outcome("completed" if response_status < 400 else
+            "refused" if response_status in (401, 403) else "failed")
+
+
+@_safe
 def failed(*, refused=False):
     current = _request.get()
     if current is not None and not current.closed and current.fields.get("outcome") != "refused":

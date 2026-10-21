@@ -180,7 +180,7 @@ for(const profile of ['quiet','live-median'])test(`first turn completes under th
  const counters=r.telemetry.filter(line=>line.event==='meri.turn.counters'&&line.service==='control');assert.equal(counters.length,1);
  const measured=Object.values(counters[0].core).reduce((sum,statuses)=>sum+Object.values(statuses).reduce((s,n)=>s+n,0),0);
  assert.equal(measured,r.coreCalls,'production counters equal the independent rehearsal Core counter');
- if(profile==='live-median'&&measured!==224)t.diagnostic(`P0 plan reference is 224 Core calls; this source/environment measured ${measured}. Compare the same base suite; telemetry must equal the independent counter above.`);
+ if(profile==='live-median')assert.equal(r.coreCalls,164,'the median fixture preserves the confirmed Core-call baseline');
 });
 for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503]])
  test(`first turn under the ${profile} Core profile${clerkTimeoutAt?` with a Clerk timeout answered ${clerkStatus}`:''} (reported)`,posix,async t=>{

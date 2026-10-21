@@ -46,8 +46,8 @@ export function synthesizeFirstChatObservability(raw){
   ['ProxyPairRefused','proxy','PRODUCT_PROXY_REFUSED gate=pair','ProxyPairRefusals'],
   ['ProxyExchangeRefused','proxy','PRODUCT_PROXY_REFUSED gate=exchange','ProxyExchangeRefusals'],
   ['ProxyRefused','proxy','PRODUCT_PROXY_REFUSED','ProxyRefusedLines'],
-  ['OwnerDiagnosticsSuppressed','owner','DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
-  ['ProxyDiagnosticsSuppressed','proxy','DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
+  ['OwnerDiagnosticsSuppressed','owner','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
+  ['ProxyDiagnosticsSuppressed','proxy','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
   ['ControlUnavailable','control','RUNTIME_UNAVAILABLE','RuntimeUnavailable'],
   ['WorkerUnavailable','worker','RUNTIME_UNAVAILABLE','RuntimeUnavailable']
  ];
@@ -83,7 +83,7 @@ export function synthesizeFirstChatObservability(raw){
  alarms('PairRefusalsSustained','pair-refusals-sustained',1,'GreaterThanOrEqualToThreshold',[
   metric('pair','ProxyPairRefusals',{},60),metric('exchange','ProxyExchangeRefusals',{},60),expression('refusals','SUM([pair,exchange])',true)],{evaluationPeriods:3,datapointsToAlarm:3});
  alarms('TelemetryDropped','telemetry-dropped',1,'GreaterThanOrEqualToThreshold',[
-  ...['control','owner','proxy'].map(service=>metric(service,'TelemetryDropped',{Service:service},900)),expression('drops','SUM([control,owner,proxy])',true)]);
+  ...['control','owner','proxy','runner'].map(service=>metric(service,'TelemetryDropped',{Service:service},900)),expression('drops','SUM([control,owner,proxy,runner])',true)]);
 
  const chartMetric=(name,dims={},options={})=>[namespace,name,...Object.entries(dims).flat(),options];
  const widgets=[];

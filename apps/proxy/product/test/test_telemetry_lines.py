@@ -66,6 +66,29 @@ class TelemetryLineTests(unittest.TestCase):
                     self.assertNotIn(key, output)
                     self.assertNotIn(item, output)
 
+    def test_proxy_rollup_exports_aws_aggregate_and_background_without_core_or_db_metrics(self):
+        fields = {**self.fields(), 'aws': {'DescribeTasks': {'success': 2, 'error': 1}}}
+        self.assertTrue(lines.emit('meri.process.rollup', fields))
+        row = json.loads(self.output[-1])
+        self.assertEqual(row['aws'], fields['aws'])
+        self.assertEqual(row['Attribution'], 'background')
+        self.assertEqual(row['AwsCalls'], 3)
+        metrics = {metric['Name']: definition['Dimensions']
+                   for definition in row['_aws']['CloudWatchMetrics'] for metric in definition['Metrics']}
+        self.assertEqual(metrics, {'AwsCalls': [['Service'], ['Service', 'Attribution']],
+                                   'TelemetryDropped': [['Service']]})
+        self.assertNotIn('CoreCalls', row)
+        self.assertNotIn('DbStatements', row)
+
+    def test_aws_outcomes_use_error_and_reject_old_failed_label(self):
+        fields = {**self.fields(), 'aws': {'DescribeTasks': {'error': 1, 'failed': 9}}}
+        for event, metric in (('meri.model.request', 'ProxyAwsCalls'), ('meri.process.rollup', 'AwsCalls')):
+            with self.subTest(event=event):
+                self.assertTrue(lines.emit(event, fields))
+                row = json.loads(self.output[-1])
+                self.assertEqual(row['aws'], {'DescribeTasks': {'error': 1}})
+                self.assertEqual(row[metric], 1)
+
     def test_ids_codes_and_numbers_reject_untrusted_values_even_with_valid_syntax(self):
         fields = {**self.fields(), 'runId': 'tenant-poison', 'attemptId': 'a' * 64,
                   'requestId': 'secret', 'firstChunkMs': float('nan'), 'inputTokens': True,

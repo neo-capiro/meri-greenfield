@@ -5,6 +5,7 @@ import {spawnSync} from 'node:child_process';
 import {synthesizeFirstChatObservability,observabilityBindingFromDeployment,telemetryEnvironment} from './first-chat-observability.mjs';
 import {main} from './render-observability.mjs';
 import {createTurnTelemetry} from '../../apps/runtime/telemetry/turn-context.mjs';
+import {createOwnerDiagnostics} from '../../apps/proxy/product/owner-diagnostics.mjs';
 
 const deployment=JSON.parse(await readFile(new URL('./first-chat/deployment-inputs.json',import.meta.url),'utf8'));
 const binding=()=>observabilityBindingFromDeployment(deployment);
@@ -35,11 +36,25 @@ test('filters match existing exact text vocabularies in the proper groups with z
   ['/meri/product-preview/proxy','"PRODUCT_PROXY_REFUSED gate=pair"','ProxyPairRefusals'],
   ['/meri/product-preview/proxy','"PRODUCT_PROXY_REFUSED gate=exchange"','ProxyExchangeRefusals'],
   ['/meri/product-preview/proxy','"PRODUCT_PROXY_REFUSED"','ProxyRefusedLines'],
-  ['/meri/product-preview/owner','"DIAGNOSTICS_SUPPRESSED"','DiagnosticsSuppressed'],
-  ['/meri/product-preview/proxy','"DIAGNOSTICS_SUPPRESSED"','DiagnosticsSuppressed'],
+  ['/meri/product-preview/owner','"PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED"','DiagnosticsSuppressed'],
+  ['/meri/product-preview/proxy','"PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED"','DiagnosticsSuppressed'],
   ['/meri/product-preview/control','"RUNTIME_UNAVAILABLE"','RuntimeUnavailable'],
   ['/meri/product-preview/worker','"RUNTIME_UNAVAILABLE"','RuntimeUnavailable']]);
  for(const p of filters){const m=p.MetricTransformations[0];assert.equal(m.DefaultValue,0);assert.equal(m.MetricValue,'1');assert.equal(m.MetricNamespace,'Meri/Preview');assert.equal(m.Dimensions,undefined);}
+});
+
+test('suppression filters use the complete literal tokens emitted after the owner and proxy diagnostic budgets fill',()=>{
+ const ownerLines=[],diagnostics=createOwnerDiagnostics({write:line=>ownerLines.push(line.trim()),now:()=>0,burst:1});
+ diagnostics.refused('budget','reserve',{code:'REFUSED'});diagnostics.refused('budget','reserve',{code:'REFUSED'});
+ diagnostics.refused('budget','reserve',{code:'REFUSED'});
+ assert.deepEqual(ownerLines,['PRODUCT_OWNER_REFUSED owner=budget step=reserve code=REFUSED','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED']);
+ const script='import sys\nfrom apps.proxy.product import refusal_diagnostics as d\nd.install(write=sys.stdout.buffer.write, now=lambda: 0, burst=1)\nfor _ in range(3): d.refused("pair", "verify")\nd.uninstall()\n';
+ const result=spawnSync(process.env.MERI_TEST_PYTHON??'python3',['-B','-c',script],{cwd:new URL('../../',import.meta.url),encoding:'utf8',timeout:10000});
+ assert.equal(result.status,0,result.stderr);assert.equal(result.stderr,'');
+ assert.deepEqual(result.stdout.trim().split('\n'),['PRODUCT_PROXY_REFUSED gate=pair step=verify code=REFUSED','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED']);
+ const filters=resources(synthesizeFirstChatObservability(binding()),'AWS::Logs::MetricFilter').filter(p=>p.MetricTransformations[0].MetricName==='DiagnosticsSuppressed');
+ assert.deepEqual(filters.map(p=>[p.LogGroupName,JSON.parse(p.FilterPattern)]),[
+  [binding().logGroups.owner,ownerLines[1]],[binding().logGroups.proxy,result.stdout.trim().split('\n')[1]]]);
 });
 
 test('all eight alarm thresholds, windows, evaluation counts and missing-data semantics are pinned',()=>{
@@ -68,6 +83,10 @@ test('all eight alarm thresholds, windows, evaluation counts and missing-data se
  assert.deepEqual(timeouts.filter(m=>m.MetricStat).map(m=>metricKey(m.MetricStat.Metric)),[
   ['TimeoutFailures',{Service:'control'}],['TimeoutFailures',{Service:'runner'}]]);
  assert.equal(timeouts.at(-1).Expression,'SUM([control,runner])');
+ const dropped=alarms['meri-preview-telemetry-dropped'].Metrics;
+ assert.deepEqual(dropped.filter(m=>m.MetricStat).map(m=>metricKey(m.MetricStat.Metric)),
+  ['control','owner','proxy','runner'].map(Service=>['TelemetryDropped',{Service}]));
+ assert.equal(dropped.at(-1).Expression,'SUM([control,owner,proxy,runner])');
  assert.equal(alarms['meri-preview-core-error-rate'].Metrics.at(-1).Expression,'IF(total>=20,100*errors/total,0)');
  const core=alarms['meri-preview-core-error-rate'].Metrics.filter(m=>m.MetricStat).map(m=>metricKey(m.MetricStat.Metric));
  assert.deepEqual(core,['control','owner'].flatMap(Service=>[
@@ -90,6 +109,7 @@ test('actual EMF emitter series satisfy alarm dimensions and aggregate backgroun
  control.summary({binding:{...binding,runId:'44444444-4444-4444-8444-444444444444'},type:'run.status',sequence:1,data:{state:'failed',reasonCode:'DEADLINE'}});
  const runner=createTurnTelemetry({service:'runner',write,now:()=>1000});
  runner.emit('meri.turn.failure',{...binding,origin:'runtime',stage:'activity',code:'DEADLINE',class:'other',timeoutClass:'deadline'});
+ runner.rollup();
  owner.health('owner-gate','unavailable','PRODUCT_OWNER_UNAVAILABLE');owner.budgetQuarantined(binding,'other');
  const proxy=createTurnTelemetry({service:'proxy',write,now:()=>1000});proxy.health('pair','poisoned','other');proxy.rollup();
  const key=(namespace,name,dimensions)=>JSON.stringify([namespace,name,Object.entries(dimensions).sort()]);
@@ -111,6 +131,21 @@ test('actual EMF emitter series satisfy alarm dimensions and aggregate backgroun
   for(const StatusClass of ['5xx','503','timeout','unanswered'])assert.equal(observed.get(key('Meri/Preview','CoreCalls',{Service,StatusClass})),2);
  }
  assert.equal(observed.get(key('Meri/Preview','TimeoutFailures',{Service:'runner'})),1);
+});
+
+test('a runner writer failure becomes a positive sample in the alarm series when the runner closes',()=>{
+ const lines=[];let refuseWrite=true;
+ const runner=createTurnTelemetry({service:'runner',now:()=>1000,write:line=>{if(refuseWrite)throw Error('synthetic writer unavailable');lines.push(JSON.parse(line));}});
+ assert.equal(runner.emit('meri.turn.failure',{origin:'runtime',stage:'activity',code:'DEADLINE',timeoutClass:'deadline'}),false);
+ refuseWrite=false;runner.close();
+ assert.equal(lines.length,1);const line=lines[0];
+ assert.equal(line.event,'meri.process.rollup');assert.equal(line.TelemetryDropped,1);
+ const alarm=alarmMap(synthesizeFirstChatObservability(binding()))['meri-preview-telemetry-dropped'];
+ const metric=alarm.Metrics.find(m=>m.Id==='runner').MetricStat.Metric;
+ assert.ok(line._aws.CloudWatchMetrics.some(group=>group.Namespace===metric.Namespace&&group.Metrics.some(m=>m.Name===metric.MetricName)&&
+  group.Dimensions.some(names=>JSON.stringify(names)===JSON.stringify(metric.Dimensions.map(d=>d.Name)))));
+ assert.equal(line.Service,metric.Dimensions[0].Value);
+ assert.equal(alarm.Threshold,1);assert.equal(alarm.ComparisonOperator,'GreaterThanOrEqualToThreshold');
 });
 
 test('dashboard consumes known metric dimensions and its Logs Insights widgets span all five groups',()=>{

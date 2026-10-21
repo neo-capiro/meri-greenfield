@@ -162,8 +162,7 @@ class InferenceApp:
                 life.deny("ORIGINAL_DEADLINE_EXPIRED")
                 raise StateDenied(life.reason)
             app_task.result()
-            telemetry.outcome("completed" if response_status < 400 else
-                              "refused" if response_status in (401, 403) else "failed")
+            telemetry.http_outcome(response_status)
         except asyncio.CancelledError:
             telemetry.outcome("cancelled")
             if life is not None:

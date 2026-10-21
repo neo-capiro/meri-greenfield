@@ -16,7 +16,7 @@ EVENTS = frozenset(("meri.model.request", "meri.health", "meri.process.rollup"))
 IDS = re.compile(r"(?:[0-9a-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\Z", re.I)
 CODE = re.compile(r"[A-Za-z0-9_.:-]{1,64}\Z")
 AWS_OPERATIONS = frozenset(("DescribeTasks", "DescribeServices", "ListTasks", "DescribeTaskDefinition", "DescribeNetworkInterfaces", "CountTokens", "other"))
-AWS_OUTCOMES = frozenset(("success", "failed", "timeout", "cancelled", "unanswered", "other"))
+AWS_OUTCOMES = frozenset(("success", "error", "timeout", "cancelled", "unanswered", "other"))
 CHANNELS = frozenset(("operation", "capture", "admission"))
 PATHS = frozenset(("OPEN", "OPERATION", "POLL", "REPLY"))
 COMPONENTS = frozenset(("bootstrap", "pending-work", "owner-gate", "pair", "exchange", "service-gate", "facts", "credential-delivery", "currentness", "resources"))
@@ -118,8 +118,7 @@ def build_line(event, fields, *, at_ms=None):
         line["ownerExchanges"] = _matrix(fields.get("ownerExchanges"), CHANNELS, PATHS)
         line["core"], line["db"] = {}, {"statements": 0, "ms": 0}
         line["Attribution"] = "background"
-        for name, value in (("CoreCalls", 0), ("AwsCalls", _total(line["aws"])), ("DbStatements", 0)):
-            _metric(directives, line, name, value, [["Service", "Attribution"]])
+        _metric(directives, line, "AwsCalls", _total(line["aws"]), [["Service"], ["Service", "Attribution"]])
         _metric(directives, line, "TelemetryDropped", line["telemetryDropped"], [["Service"]])
     stamp = _number(at_ms if at_ms is not None else _now())
     line["_aws"] = {"Timestamp": stamp, "CloudWatchMetrics": directives}

@@ -22,8 +22,16 @@ instrumentation suppresses only its nested client-query count, preserving one
 count per statement across pooled-client reuse. Callback and promise APIs remain
 supported. Wrapper composition is idempotent for the same telemetry instance.
 
-`turn-publish.mjs` observes only the committed value returned by run-owner publish.
-It records first durable delta and terminal times once. Terminal counters wait
+Production control observes committed journal results through the store's
+`onPublished` hook. Completion, cancellation and the run reconciler can write
+terminal events without calling `service.publish`, so their existing acknowledged
+journal results and validated readbacks after a lost acknowledgement also feed
+the same telemetry owner. These hooks add no SQL or authority checks. Failed
+transactions and unproven readbacks produce no success observation; repeated
+durable evidence is deduplicated. `turn-publish.mjs` is used by the rehearsal's
+in-memory store, which has no production journal hook.
+
+First durable delta and terminal times are recorded once. Terminal counters wait
 until all concurrent outer operations attributed to that run finish, including
 post-publication authority checks. Later post-terminal polls are background work.
 After a process restart or eviction, unknown admission/first-text times stay null.
@@ -48,6 +56,12 @@ The 60-second interval is unreferenced and does not keep a process alive.
 - `currentTurnTelemetry()` returns only the current async context's instance.
   Health hooks outside a run use their injected service-owned instance.
 
+Owner placement and admission work before the reservation does not yet have a
+model request ID. A validated run binding keeps those counts in the run bucket;
+the subsequent settlement drains them once alongside its request counters. Work
+without a validated binding stays background. Attribution adds no correlation
+headers or authority fields to the wire contract.
+
 ## EMF schema reconciliations
 
 P0's status-class alarm needs distinct `CoreCalls` values for each status. A single
@@ -63,6 +77,18 @@ emit both `Service,StatusClass` and its `Attribution=background` subset. **Never
 add the subset to the aggregate.** The Core error alarm consumes aggregate series
 only, keeping its metric-stat count within CloudWatch's ten-metric alarm limit.
 Turn-detail queries use the run id and exclude background work naturally.
+
+Proxy background rollups expose `AwsCalls` with both `Service` and
+`Service,Attribution` dimension sets. They do not publish Core or database metrics
+because the proxy does not own those calls. AWS failures use `error`, matching
+Node's outcome vocabulary.
+
+CloudWatch text metric filters cannot combine dimensions with `DefaultValue=0`,
+and a plain text filter cannot extract a constant Service dimension. The owner
+and proxy therefore have separate filters on their respective log groups, using
+the exact `PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED` and
+`PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED` tokens. Both publish the undimensioned
+`DiagnosticsSuppressed` metric with a zero default.
 
 `HealthEvents` emits both `Service` and `Service,Component` dimension sets for the
 same value. The service aggregate powers the owner/proxy health alarm; component

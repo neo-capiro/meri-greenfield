@@ -148,16 +148,15 @@ class ProductOwnerHttpsExchange:
                 and context.verify_mode == ssl.CERT_REQUIRED and context.check_hostname is True)
 
     def abort(self):
+        # Pair discovery owns the single retirement health transition for this
+        # transport pair; descriptor cleanup below does not emit it again.
         self.service_pair_reader.abort()
         with self._state:
-            transitioned = not self._retired
             self._retired = True
             sockets = tuple(self._sockets)
             connections = tuple(self._connections.values())
             self._sockets.clear()
             self._connections.clear()
-        if transitioned:
-            telemetry.health("exchange", "retired", "EXCHANGE_RETIRED")
         for sock in sockets:
             try:
                 sock.shutdown(socket.SHUT_RDWR)
