@@ -47,14 +47,14 @@ test('filters match existing exact text vocabularies in the proper groups with z
 });
 
 test('suppression filters use the complete literal tokens emitted after the owner, proxy and control session diagnostic budgets fill',()=>{
- const ownerLines=[],diagnostics=createOwnerDiagnostics({write:line=>ownerLines.push(line.trim()),now:()=>0,burst:1});
+ const ownerLines=[],diagnostics=createOwnerDiagnostics({write:line=>ownerLines.push(line.trim()),now:()=>0,burst:1,windowMs:60000});
  diagnostics.refused('budget','reserve',{code:'REFUSED'});diagnostics.refused('budget','reserve',{code:'REFUSED'});
  diagnostics.refused('budget','reserve',{code:'REFUSED'});
  assert.deepEqual(ownerLines,['PRODUCT_OWNER_REFUSED owner=budget step=reserve code=REFUSED','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED']);
- const controlLines=[],sessions=createSessionRefusalDiagnostics({write:line=>controlLines.push(line.trim()),now:()=>0,burst:1});
+ const controlLines=[],sessions=createSessionRefusalDiagnostics({write:line=>controlLines.push(line.trim()),now:()=>0,burst:1,windowMs:60000});
  for(let i=0;i<3;i++)sessions('identity',{code:'SESSION_REFUSED'});
  assert.deepEqual(controlLines,['CONTROL_SESSION_REFUSED step=identity code=SESSION_REFUSED','CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED']);
- const script='import sys\nfrom apps.proxy.product import refusal_diagnostics as d\nd.install(write=sys.stdout.buffer.write, now=lambda: 0, burst=1)\nfor _ in range(3): d.refused("pair", "verify")\nd.uninstall()\n';
+ const script='import sys\nfrom apps.proxy.product import refusal_diagnostics as d\nd.install(write=sys.stdout.buffer.write, now=lambda: 0, burst=1, window=60)\nfor _ in range(3): d.refused("pair", "verify")\nd.uninstall()\n';
  const result=spawnSync(process.env.MERI_TEST_PYTHON??'python3',['-B','-c',script],{cwd:new URL('../../',import.meta.url),encoding:'utf8',timeout:10000});
  assert.equal(result.status,0,result.stderr);assert.equal(result.stderr,'');
  assert.deepEqual(result.stdout.trim().split('\n'),['PRODUCT_PROXY_REFUSED gate=pair step=verify code=REFUSED','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED']);
