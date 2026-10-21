@@ -256,6 +256,21 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(r._active, 0)
         self.assertNotIn('describe_tasks', [m for m, _ in f.calls])
 
+    def test_a_refusal_of_the_phases_first_read_still_settles_its_slow_siblings(self):
+        # Results are collected in order, so only the explicit settle keeps an earlier-listed refusal from
+        # returning while later reads are still running.
+        f = fixture(); finished = []
+        def slow(v, _):
+            time.sleep(.2); finished.append('list_tasks'); return v
+        f.changes['list_tasks'] = slow
+        f.changes['describe_services'] = lambda v, _: v['services'][1].update(pendingCount=1) or v
+        r = f.reader()
+        with self.assertRaisesRegex(Exception, 'PRODUCT_SERVICE_PAIR_DENIED'):
+            r.read(deadline_ms=f.at+2000)
+        self.assertEqual(finished, ['list_tasks', 'list_tasks'], 'no SDK call outlives the refused read')
+        self.assertEqual(r._active, 0)
+        self.assertNotIn('describe_tasks', [m for m, _ in f.calls])
+
     def test_refusal_names_its_phase_and_the_exchange_budget_cap_is_15000(self):
         from apps.proxy.product import refusal_diagnostics as diagnostics
         lines = []; diagnostics.install(write=lambda data: lines.append(data.decode('ascii')))

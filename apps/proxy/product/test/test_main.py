@@ -348,6 +348,37 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.last.sleeps, [])
         self.assertEqual(self.last.served, [])
 
+    async def test_rollout_overlap_pair_wait_lines_never_suppress_the_first_chats_refusal(self):
+        # adj-b F-1: 68 denied reads 2.5 s apart (old and new proxy task both RUNNING), admitted at t=172.5 s; the first
+        # chat refuses 5 s later, inside the window the pair-wait lines filled. That line must still be written.
+        services, clock, lines, attempts = service_fixture(), [0.0], [], [0]
+        def services_read(reply, _kwargs):
+            attempts[0] += 1
+            clock[0] = 2.5 * (attempts[0] - 1)
+            return reply
+        def overlap(reply, kwargs):
+            if kwargs['serviceName'] == 'meri-proxy' and attempts[0] <= 68:
+                reply['taskArns'] = reply['taskArns'] + [reply['taskArns'][0][:-32] + '9' * 32]
+            return reply
+        services.changes['describe_services'], services.changes['list_tasks'] = services_read, overlap
+        main.diagnostics.install(write=lambda data: lines.append(data.decode('ascii')), now=lambda: clock[0])
+        try:
+            with patch.object(main, "_PAIR_RETRY_INTERVAL_SECONDS", .001):
+                pair = await main._read_startup_service_pair(services.reader(), main._Resources(), services.configuration['expiresAtMs'])
+            # 68 denied reads, then the admitted one, which reads services twice (first and recheck): t=172.5 s.
+            self.assertEqual((attempts[0], clock[0], pair['proxy']['taskArn']), (70, 172.5, services.task_id('proxy')))
+            clock[0] += 5
+            with main.diagnostics.request():
+                main.diagnostics.refused("exchange", "reply-status")
+        finally:
+            main.diagnostics.uninstall()
+        self.assertEqual(lines[-1], "PRODUCT_PROXY_REFUSED gate=exchange step=reply-status code=REFUSED\n")
+        background = lines[:-1]
+        self.assertEqual(set(background), {"PRODUCT_PROXY_REFUSED gate=pair step=snapshot code=REFUSED\n",
+                                           "PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED scope=background\n"})
+        self.assertEqual(background.count("PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED scope=background\n"), 3)  # one per 60 s window
+        self.assertEqual(len(background), 3 * (5 + 1))
+
     async def test_unsettled_native_read_or_retired_reader_is_terminal_without_retry(self):
         resources, calls = main._Resources(), []
         async def unsettled(_factory, _resources, _seconds=5):

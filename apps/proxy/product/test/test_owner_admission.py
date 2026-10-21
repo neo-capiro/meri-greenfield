@@ -188,6 +188,24 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.exchange.calls[1][2][3], _hash(self.exchange.source))
         self.assertTrue(all(c[:2] == ("operation", OPERATION) for c in self.exchange.calls))
 
+    async def test_refusal_lines_name_the_admission_read_apart_from_the_session_read(self):
+        from apps.proxy.product import refusal_diagnostics as diagnostics
+        lines = []
+        diagnostics.install(write=lambda data: lines.append(data.decode("ascii")))
+        try:
+            self.exchange.mutate = lambda frame: ["meri.proxy.foreign/1"] + frame[1:]
+            with diagnostics.request(), self.assertRaises(Exception):
+                await self.resolve()
+            await self.asyncSetUp()
+            authority = (await self.resolve()).authority
+            self.exchange.mutate = lambda frame: frame[:6] + [1] + frame[7:]
+            with diagnostics.request(), self.assertRaises(Exception):
+                await asyncio.to_thread(authority.check)
+        finally:
+            diagnostics.uninstall()
+        self.assertEqual(lines, ["PRODUCT_PROXY_REFUSED gate=admission step=frame phase=admission code=REFUSED\n",
+                                 "PRODUCT_PROXY_REFUSED gate=admission step=current phase=session code=REFUSED\n"])
+
     async def test_owner_loop_sync_call_refuses_before_scheduling(self):
         with self.assertRaises(Exception):
             self.reader.resolve_for_issued_sync(issued=self.issued, capability_sha256="a"*64,

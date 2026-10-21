@@ -62,8 +62,8 @@ class ProductOwnerStartup:
 
     async def _placement(self, capability, read_id, started, cutoff):
         step="lock"
-        try:
-            with diagnostics.phase("placement"):
+        with diagnostics.phase("placement"):  # outside the try, so this read's own refusal line carries the label
+            try:
                 async with asyncio.timeout(max(.001,(cutoff-self.now_ms())/1000)):
                     async with self.state[3]["operation"]:
                         if not self.gate.available or self.now_ms()>=cutoff:
@@ -87,9 +87,9 @@ class ProductOwnerStartup:
                         if frame[5]>issued.expires_at_ms or not self.gate.available:
                             _deny()
                         return issued,frame[5]
-        except BaseException as error:
-            diagnostics.refused("placement",step,error,deadline_ms=cutoff,now_ms=self.now_ms)
-            raise
+            except BaseException as error:
+                diagnostics.refused("placement",step,error,deadline_ms=cutoff,now_ms=self.now_ms)
+                raise
 
     def resolve_bearer_sha256(self, capability):
         if (threading.get_ident()==self.loop_thread or self.loop.is_closed() or not self.loop.is_running()

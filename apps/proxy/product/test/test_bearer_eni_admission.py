@@ -5,7 +5,9 @@ import json
 import time
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
+from apps.proxy.product import bearer_eni_admission
 from apps.proxy.product.bearer_eni_admission import (
     DirectTlsSocketPeer, FreshEcsEniReader, IssuedTaskNetwork,
     ProductBearerSource, create_bearer_eni_trusted_resolver,
@@ -145,6 +147,28 @@ class DirectBearerTests(unittest.IsolatedAsyncioTestCase):
             diagnostics.uninstall()
         self.assertEqual(lines, ["PRODUCT_PROXY_REFUSED gate=resolver step=bearer-header code=REFUSED\n",
                                  "PRODUCT_PROXY_REFUSED gate=eni step=attachment at=eni-read code=REFUSED\n"])
+
+    async def test_an_eni_read_past_its_five_seconds_is_a_deadline_line(self):
+        grant, created = source()
+        aws = FakeAws(grant.issued)
+        aws.task["createdAt"] = created
+        skew, describe = [0.0], aws.describe_network_interfaces
+        def slow_network(**kwargs):
+            skew[0] = 5.0  # the two SDK calls together took the reader's whole 5 s
+            return describe(**kwargs)
+        aws.describe_network_interfaces = slow_network
+        clock = SimpleNamespace(monotonic=lambda: time.monotonic() + skew[0], time=time.time, time_ns=time.time_ns)
+        lines = []
+        diagnostics.install(write=lambda data: lines.append(data.decode("ascii")))
+        try:
+            with patch.object(bearer_eni_admission, "time", clock), diagnostics.request(), self.assertRaises(StateDenied):
+                reader(aws)(grant.issued, "10.77.0.9")
+        finally:
+            diagnostics.uninstall()
+        self.assertEqual(lines, ["PRODUCT_PROXY_REFUSED gate=eni step=clock at=eni-read code=DEADLINE\n"])
+        skew[0] = 0.0
+        aws.describe_network_interfaces = describe
+        self.assertIs(type(reader(aws)(grant.issued, "10.77.0.9")), PeerLease)  # the same read in time is admitted
 
     async def test_wrong_socket_bearer_and_headers_fail_before_aws(self):
         grant, created = source()

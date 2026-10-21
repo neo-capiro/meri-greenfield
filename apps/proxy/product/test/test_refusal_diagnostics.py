@@ -65,17 +65,41 @@ class RefusalDiagnosticsTests(unittest.TestCase):
         at = [0.0]
         diagnostics.install(write=lambda data: self.lines.append(data.decode("ascii")), now=lambda: at[0], burst=2, window=60)
         for _ in range(5):
-            diagnostics.refused("bootstrap", "poisoned")
-        self.assertEqual([line.split()[0] for line in self.lines],
-                         ["PRODUCT_PROXY_REFUSED", "PRODUCT_PROXY_REFUSED", "PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED"])
+            with diagnostics.request():
+                diagnostics.refused("bootstrap", "poisoned")
+        self.assertEqual(self.lines, ["PRODUCT_PROXY_REFUSED gate=bootstrap step=poisoned code=REFUSED\n"] * 2
+                         + ["PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\n"])
         at[0] = 60
-        diagnostics.refused("bootstrap", "poisoned")
+        with diagnostics.request():
+            diagnostics.refused("bootstrap", "poisoned")
         self.assertEqual(len(self.lines), 4)
         diagnostics.install(write=lambda data: (_ for _ in ()).throw(OSError("closed")))
         diagnostics.refused("bootstrap", "poisoned")
-        for kwargs in ({}, {"fd": 2, "write": print}, {"fd": -1}, {"write": print, "burst": 0}, {"write": print, "window": 0}):
+        for kwargs in ({}, {"fd": 2, "write": print}, {"fd": -1}, {"write": print, "burst": 0}, {"write": print, "window": 0},
+                       {"write": print, "background_burst": 0}, {"write": print, "background_burst": 2.0}):
             with self.assertRaisesRegex(ValueError, "PRODUCT_PROXY_DIAGNOSTICS_CONFIGURATION"):
                 diagnostics.install(**kwargs)
+
+    def test_lines_outside_a_request_have_their_own_budget_and_never_use_up_a_requests(self):
+        at = [0.0]
+        diagnostics.install(write=lambda data: self.lines.append(data.decode("ascii")), now=lambda: at[0])
+        for attempt in range(24):  # one minute of the startup pair wait during a rollout overlap, one read per 2.5 s
+            at[0] = 2.5 * attempt
+            diagnostics.refused("pair", "snapshot")
+        self.assertEqual(self.lines, ["PRODUCT_PROXY_REFUSED gate=pair step=snapshot code=REFUSED\n"] * 5
+                         + ["PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED scope=background\n"])
+        with diagnostics.request():  # the first chat, inside the same window
+            diagnostics.stage("exchange-wait")
+            diagnostics.refused("exchange", "reply-status")
+        self.assertEqual(self.lines[-1], "PRODUCT_PROXY_REFUSED gate=exchange step=reply-status at=exchange-wait code=REFUSED\n")
+        for _ in range(25):  # requests exhaust their own budget; the background budget is untouched by them
+            with diagnostics.request():
+                diagnostics.refused("bootstrap", "poisoned")
+        self.assertEqual(self.lines.count("PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\n"), 1)
+        self.assertEqual(len(self.lines), 6 + 20 + 1)
+        at[0] = 60.0
+        diagnostics.refused("pair", "snapshot")
+        self.assertEqual(self.lines[-1], "PRODUCT_PROXY_REFUSED gate=pair step=snapshot code=REFUSED\n")
 
     def test_the_kept_stderr_still_receives_lines_while_native_output_is_silenced(self):
         read, write = os.pipe()
