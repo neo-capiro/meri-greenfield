@@ -87,6 +87,22 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(sent,[]);self.assertTrue(gate.available);self.assertTrue(transport.available)
         startup.close()
 
+    async def test_a_refused_placement_frame_is_one_line_labelled_with_the_placement_phase(self):
+        issued,policy,transport,gate,startup=self._startup();lines=[]
+        synthetic=Exchange(policy,issued)
+        def foreign_frame(channel,path,body,cutoff):
+            frame=json.loads(body)
+            return synthetic.reply(['meri.proxy.placement/1','f'*32,frame[2],[],time.time_ns()//1000000,frame[3]],channel)
+        diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))
+        try:
+            with patch.object(transport,'_send',side_effect=foreign_frame),diagnostics.request():
+                with self.assertRaises(Exception):
+                    await asyncio.to_thread(startup.resolve_bearer_sha256,'a'*64)
+        finally:
+            diagnostics.uninstall();startup.close()
+        self.assertEqual(lines,['PRODUCT_PROXY_REFUSED gate=placement step=frame phase=placement at=placement-read code=REFUSED\n'])
+        self.assertFalse(gate.available)
+
     async def test_real_startup_joins_placement_and_fresh_admission_without_native_import(self):
         issued,policy,transport,gate,startup=self._startup()
         synthetic=Exchange(policy,issued)

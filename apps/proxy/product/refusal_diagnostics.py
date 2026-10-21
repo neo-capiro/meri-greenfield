@@ -12,7 +12,10 @@ at is the last stage the request entered, so a timeout seen from outside still s
 means the check ran out of its time budget (a timeout, or its deadline had passed when it refused), REFUSED that it
 refused in time. Every field is a fixed word chosen by the caller: never an error message, header, token, identifier,
 address, ARN or body. Within one request() scope only the first refusal is written, which is the innermost check that
-failed. At most `burst` lines per `window` seconds; the first suppressed line in a window says so once. Never raises.
+failed. At most `burst` lines per `window` seconds; the first suppressed line in a window says so once. Lines
+written outside any request() scope (the startup pair wait, a not-ready service) have their own smaller budget of
+`background_burst` per `window` and their own once-per-window suppression line, so a background retry loop can never
+use up the budget a request's first refusal needs. Never raises.
 """
 import contextlib
 import contextvars
@@ -40,32 +43,42 @@ _lock = threading.Lock()
 _sink = None
 
 
-class _Sink:
-    def __init__(self, write, now, burst, window):
-        self.write, self.now, self.burst, self.window = write, now, burst, window
+class _Budget:
+    __slots__ = ("burst", "notice", "start", "count", "suppressed")
+
+    def __init__(self, burst, notice):
+        self.burst, self.notice = burst, notice
         self.start, self.count, self.suppressed = float("-inf"), 0, False
 
-    def emit(self, line):
+
+class _Sink:
+    def __init__(self, write, now, burst, window, background_burst):
+        self.write, self.now, self.window = write, now, window
+        self.requests = _Budget(burst, b"PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\n")
+        self.background = _Budget(background_burst, b"PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED scope=background\n")
+
+    def emit(self, line, background=False):
         with _lock:
-            at = self.now()
-            if at - self.start >= self.window:
-                self.start, self.count, self.suppressed = at, 0, False
-            if self.count < self.burst:
-                self.count += 1
+            budget, at = self.background if background else self.requests, self.now()
+            if at - budget.start >= self.window:
+                budget.start, budget.count, budget.suppressed = at, 0, False
+            if budget.count < budget.burst:
+                budget.count += 1
                 self.write((line + "\n").encode("ascii"))
-            elif not self.suppressed:
-                self.suppressed = True
-                self.write(b"PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\n")
+            elif not budget.suppressed:
+                budget.suppressed = True
+                self.write(budget.notice)
 
 
-def install(*, fd=None, write=None, now=time.monotonic, burst=20, window=60.0):
+def install(*, fd=None, write=None, now=time.monotonic, burst=20, window=60.0, background_burst=5):
     """Write lines to `fd` (a duplicate of stderr taken before the quiet scope) or through `write(bytes)`."""
     global _sink
     if ((fd is None) == (write is None) or fd is not None and (type(fd) is not int or fd < 0)
             or write is not None and not callable(write) or not callable(now)
-            or type(burst) is not int or burst < 1 or type(window) not in (int, float) or not window > 0):
+            or type(burst) is not int or burst < 1 or type(background_burst) is not int or background_burst < 1
+            or type(window) not in (int, float) or not window > 0):
         raise ValueError("PRODUCT_PROXY_DIAGNOSTICS_CONFIGURATION")
-    _sink = _Sink(write or (lambda data: os.write(fd, data)), now, burst, window)
+    _sink = _Sink(write or (lambda data: os.write(fd, data)), now, burst, window, background_burst)
 
 
 def install_stderr():
@@ -145,6 +158,6 @@ def refused(gate, step, error=None, *, deadline_ms=None, now_ms=None):
         if current is not None and current.at is not None:
             fields.append(f"at={current.at}")
         fields.append("code=" + code(error, deadline_ms, now_ms))
-        sink.emit("PRODUCT_PROXY_REFUSED " + " ".join(fields))
+        sink.emit("PRODUCT_PROXY_REFUSED " + " ".join(fields), background=current is None)
     except Exception:
         pass
