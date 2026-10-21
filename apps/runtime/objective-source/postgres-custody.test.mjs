@@ -124,10 +124,10 @@ function abortingOnRelease(p,controller,clientNumber){
 
 test('final release gate: abort during client release withholds a read and makes a write ACK_UNKNOWN',async()=>{
  const p=postgresCustodyFixture();p.seed('COMMITTED');const readAbort=new AbortController();
- const reader=createPostgresObjectiveCustodyStore({pool:abortingOnRelease(p,readAbort,1),tenantId:p.f.binding.tenantId,now:()=>p.f.state.now,enabled:true});
+ const reader=createPostgresObjectiveCustodyStore({maxRequestMs:3000,pool:abortingOnRelease(p,readAbort,1),tenantId:p.f.binding.tenantId,now:()=>p.f.state.now,enabled:true});
  await assert.rejects(reader.read({generationJobId:p.record.generationJobId,signal:readAbort.signal}),unavailable);
  const q=postgresCustodyFixture(),writeAbort=new AbortController();
- const writer=createPostgresObjectiveCustodyStore({pool:abortingOnRelease(q,writeAbort,2),tenantId:q.f.binding.tenantId,now:()=>q.f.state.now,allocateFence:()=>id(80),enabled:true});
+ const writer=createPostgresObjectiveCustodyStore({maxRequestMs:3000,pool:abortingOnRelease(q,writeAbort,2),tenantId:q.f.binding.tenantId,now:()=>q.f.state.now,allocateFence:()=>id(80),enabled:true});
  await assert.rejects(writer.putOnce({...q.input,signal:writeAbort.signal}),ackUnknown);assert.equal(q.state.rows.get(q.record.generationJobId).state,'COMMITTED');
 });
 

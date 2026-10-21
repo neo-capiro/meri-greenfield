@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
 /** Synthetic ports for the canonical original allocator: one scripted Fargate task per original (with outage and failed-stop modes)
  * and a scripted budget admission (with an uncertain-revocation mode). The conversation journal is the caller's (scripted SQL protocol
  * fixture). No AWS, budget database or provider effects. */
@@ -16,7 +17,7 @@ export function originalFacts(){
  intent.launchTemplate.command=normalize(intent.launchTemplate.command);intent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=intent.secureStorageDirectory;
  const config=compilePreparedCandidateConfiguration(f.configuration.nativeCandidate,f.configuration.versions),runtime={...config.runtime,proxyCredential:f.secret.proxy};
  const original=compileNativeBrokerPlan({runtime,plan:config.plan,preparationIntent:config.preparationIntent}).original,limits={maxRequestMs:1000,maxFactBytes:131072};
- const retirement=(store,client,extra={})=>({store,pool:{connect(){throw Error('no budget database in this synthetic test');}},client,allocationJson:config.allocationJson,qualification:config.qualification,grantIntents:config.grantIntents,runtime,plan:config.plan,preparationIntent:config.preparationIntent,taskRequest:config.taskRequest,containerName:config.containerName,limits,...extra});
+ const retirement=(store,client,extra={})=>({store,pool:{connect(){throw Error('no budget database in this synthetic test');}},client,allocationJson:config.allocationJson,qualification:config.qualification,grantIntents:config.grantIntents,runtime,plan:config.plan,preparationIntent:config.preparationIntent,taskRequest:config.taskRequest,containerName:config.containerName,limits,budgets:testBudgetTable,...extra});
  return {f,config,runtime,original,limits,retirement};
 }
 export function fakeEcs(original,taskRequest){
@@ -45,5 +46,5 @@ export function syntheticAdmission({original,config}){
 }
 /** The canonical allocator a process uses to allocate this original (its pre-allocation authority is synthetic and current). */
 export function processAllocator({store,original,config,client,admission}){
- return createNativeTaskAllocator({journal:store.allocations,authority:{async verify(){}},admission,client,original,taskRequest:config.taskRequest,qualification:config.qualification,grantIntents:config.grantIntents,allocationSha256:hash(JSON.parse(config.allocationJson)),containerName:config.containerName,enabled:true,maxRequestMs:1000});
+ return createNativeTaskAllocator({startupMs:180000,journal:store.allocations,authority:{async verify(){}},admission,client,original,taskRequest:config.taskRequest,qualification:config.qualification,grantIntents:config.grantIntents,allocationSha256:hash(JSON.parse(config.allocationJson)),containerName:config.containerName,enabled:true,maxRequestMs:1000});
 }

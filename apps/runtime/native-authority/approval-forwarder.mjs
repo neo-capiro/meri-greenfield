@@ -85,7 +85,7 @@ export function createCoreApprovalForwarder(options){
   if(c.maxRequestMs!==undefined&&(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000))throw Error();
   if(c.maxResponseBytes!==undefined&&(!Number.isSafeInteger(c.maxResponseBytes)||c.maxResponseBytes<1||c.maxResponseBytes>1048576))throw Error();
  }catch{configuration();}
- const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs??10000,maxResponseBytes=c.maxResponseBytes??131072,reservedDigests=c.reservedCredentials??(async()=>new Set());
+ const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs,maxResponseBytes=c.maxResponseBytes??131072,reservedDigests=c.reservedCredentials??(async()=>new Set());
  const pending=new Map();
  function lifetime(signal,deadlineMs){
   nativeSignal(signal);const began=now();if(!Number.isSafeInteger(began)||deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))refuse('INVALID_ARGUMENTS');

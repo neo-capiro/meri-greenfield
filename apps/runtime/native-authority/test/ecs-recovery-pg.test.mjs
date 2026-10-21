@@ -14,7 +14,7 @@ function factory(t){let client,native,metadata,original,stops=0;const taskArn=pr
  };return {tasksFactory,get:()=>({client,native,metadata,original,stops})};}
 test('reconstructed broker consumes persisted original ARN and contains real local owner after expired lease',async t=>{
  const adapter=factory(t),f=await fixture(t,{tasksFactory:adapter.tasksFactory});await f.start();const a=adapter.get(),before=await f.stack.store.executions.read(f.binding,()=>{});assert.equal(before.record.native.taskId,a.metadata.taskArn);
- const taskFactory=createAdmittedEcsTaskFactory({client:a.client,native:a.native,metadata:a.metadata,allocationJson:JSON.stringify(f.allocation),grantFactsJsons:[JSON.stringify(f.facts)],grantId:f.facts.grantId,enabled:true});
+ const taskFactory=createAdmittedEcsTaskFactory({maxRequestMs:3000,client:a.client,native:a.native,metadata:a.metadata,allocationJson:JSON.stringify(f.allocation),grantFactsJsons:[JSON.stringify(f.facts)],grantId:f.facts.grantId,enabled:true});
  const recovered=createAdmittedEcsExecutionRecovery({pool:f.pool,binding:f.binding,versions:f.runtime.versions,plan:f.stack.plan,expiresAtMs:f.expiry,verifier:f.config.supervisor.taskVerifier,taskCapability:f.f.credential,taskFactory,enabled:true,now:()=>f.expiry+1,maxRequestMs:3000});
  await assert.rejects(recovered.start({binding:f.binding,executionKey:a.original.executionKey}));const out=await recovered.stop();assert.equal(out.record.phase,'retired');assert.equal(out.record.native.physicalStopProven,true);assert.equal(adapter.get().stops,1);assert.equal(a.native.status().physicalStopProven,true);assert.equal((await f.pool.query('SELECT count(*) FROM meri_conversations.native_executions')).rows[0].count,'1');
 });

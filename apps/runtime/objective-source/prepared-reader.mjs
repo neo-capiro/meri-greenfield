@@ -11,11 +11,11 @@ import {objectiveSourceUnavailable} from './projection.mjs';
 const refuse=()=>{throw objectiveSourceUnavailable();};
 
 export function createObjectiveSourcePreparedReader(configuration={}){
- let enabled=false,issued,ports,readCore,now=Date.now,maxRequestMs=3000;
+ let enabled=false,issued,ports,readCore,now=Date.now,maxRequestMs;
  try{
   const c=own(configuration,[],['issued','store','issuance','taskProof','coreCurrent','enabled','now','maxRequestMs']);
   if(c.enabled===true){
-   now=c.now??Date.now;maxRequestMs=c.maxRequestMs??3000;
+   now=c.now??Date.now;maxRequestMs=c.maxRequestMs;
    if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)refuse();
    issued=data(c.issued);readCore=storageMethod(c.coreCurrent,'readCurrent');
    ports={store:c.store,issuance:c.issuance,taskProof:c.taskProof};

@@ -8,7 +8,7 @@ import {matchesCapability} from './task-verifier.mjs';
 import {remoteFault} from './remote-task-boundary.mjs';
 const requestGet=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createNativeCheckpointApplication(configuration){
- const c=own(configuration,[],['owner','completion','taskCapabilitySha256','inspection','controlCapabilitySha256','enabled','now','maxRequestMs']),enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,[],['owner','completion','taskCapabilitySha256','inspection','controlCapabilitySha256','enabled','now','maxRequestMs']),enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  const validDigest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!c.owner&&!c.inspection||c.owner&&!validDigest(c.taskCapabilitySha256)||c.inspection&&(!validDigest(c.controlCapabilitySha256)||c.controlCapabilitySha256===c.taskCapabilitySha256))throw remoteFault();
  const readFields=['binding','scopes','versions','checkpointId','expectedSha256'],routes=new Map();

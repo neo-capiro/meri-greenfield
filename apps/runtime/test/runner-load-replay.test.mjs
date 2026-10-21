@@ -2,7 +2,7 @@
  * startup budget, native client and activity. Durations are the tail Core profile's, measured in the first-turn rehearsal. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {runnerStartupBudget,RUNNER_LOAD_MAX_MS,RUNNER_REPLAY_DELAYS_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {runnerStartupBudget,RUNNER_LOAD_MAX_MS,RUNNER_REPLAY_DELAYS_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
 import {createConversationActivity} from '../../worker/conversation/activity.mjs';
 import {binding,scopes,versions,id} from '../../control/conversations/test/store-fixture.mjs';
@@ -20,7 +20,7 @@ function compose(answers){
    return answer==='saved'?Response.json(saved):Response.json({error:{code:'WORKER_AUTHORITY_UNAVAILABLE'}},{status:503});}});
  const runOwner={load:({signal})=>native.call('runner/load',{binding},{signal,deadlineMs:stages.load.expiresAtMs}),
   async append({event}){if(event.data?.state==='starting'){claims++;return;}throw Error('STOP_BEFORE_MODEL');}};
- const activity=createConversationActivity({runOwner,prepareRuntime:async()=>{throw Error('STOP_AT_RUNTIME');},query:()=>{throw Error('MODEL_CALL_FORBIDDEN');},
+ const activity=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>{throw Error('STOP_AT_RUNTIME');},query:()=>{throw Error('MODEL_CALL_FORBIDDEN');},
   now:()=>clock,loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs});
  return {stages,run:()=>activity({binding}),loads,claims:()=>claims};
 }

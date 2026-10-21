@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC actual assembleControl composition; scripted canonical SQL/current identity/Temporal, no listener or services. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {assembleControl} from '../control.mjs';
@@ -10,7 +11,7 @@ function fixture(){
  const identityContext={async verifyIdentity(){if(state.revoked)throw Error('revoked');return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'synthetic-current',checkedAtMs:now(),expiresAtMs:now()+30000};},async resolveContext({identity}){if(state.revoked)throw Error('revoked');return {identitySha256:hash(identity),binding,scopes,selectedClientId:id(5),contextRevision:'synthetic-current',checkedAtMs:now(),expiresAtMs:now()+30000};}};
  const configuration={versions,sourceEnabled:false,sessions:{maxSessions:10,maxTtlMs:30000},limits:{requestMs:1000,requestBytes:131072,shutdownMs:1000},temporal:{taskQueue:'synthetic'},native:{maxResponseBytes:2097152}};
  const client={connection:{async withDeadline(_at,body){return body();},async withAbortSignal(_signal,body){return body();}},workflow:{async start(name,options){state.starts.push({name,options});},getHandle(){return {};}}};
- const assembly=assembleControl({configuration,pool:f.pool,client,native:{async call(){state.nativeCalls++;throw Error('No native effect');}},productPorts:{identityContext}});
+ const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool:f.pool,client,native:{async call(){state.nativeCalls++;throw Error('No native effect');}},productPorts:{identityContext}});
  const post=(path,input,credential='synthetic-native')=>assembly.application.handle(new Request('https://meri.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(input)}));
  return {...f,state,assembly,post};
 }

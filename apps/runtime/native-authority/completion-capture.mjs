@@ -5,7 +5,7 @@ import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts
 import {assertWorkerAuthorization} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {CONTROL_CHECKPOINT_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {CONTROL_CHECKPOINT_CAPTURE_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {assertCaptureReceipt} from '../../worker/conversation/continuation/native-receipts.mjs';
 import {remoteOriginal} from './remote-task-boundary.mjs';
 import {checkpointIdentity,publishCapturedCheckpoint} from './checkpoint-publication.mjs';
@@ -24,7 +24,7 @@ export function observeCompletionPublication(published){
  return published;
 }
 export function createNativeCompletionCapture(configuration){
- const c=own(configuration,['store','objects','authority','taskCapability','original','taskCapture'],['enabled','now','maxRequestMs','preparedFacts']),original=remoteOriginal(c.original),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,['store','objects','authority','taskCapability','original','taskCapture'],['enabled','now','maxRequestMs','preparedFacts']),original=remoteOriginal(c.original),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs;
  const journal=Object.fromEntries(['begin','read','publish','unknown'].map(k=>[k,storageMethod(c.store.completions,k)])),readRun=storageMethod(c.store,'read'),capture=storageMethod(c.taskCapture,'capture'),verify=storageMethod(c.authority,'verify'),objects={get:storageMethod(c.objects,'get'),put:storageMethod(c.objects,'put')};
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||typeof c.taskCapability!=='string'||!/^\S{1,8192}$/u.test(c.taskCapability))throw fault();
  const readFacts=c.preparedFacts===undefined?null:storageMethod(c.preparedFacts,'read');

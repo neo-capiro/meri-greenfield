@@ -1,3 +1,4 @@
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Conversation lifecycle owners family (resume / fork / approval wait) for the production product-port composer.
  *
  * All three lifecycle ports compose together, only when the shared intents composition (`intents.mjs`) is `composed`
@@ -71,7 +72,7 @@ function continuationAuthority(context,owners){
    proposeInitialExpiry(){const expiresAtMs=Math.min(now()+runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())throw fault('CONTINUATION_WINDOW_EXPIRED');return expiresAtMs;}};
  }
  return createContinuationAuthority({store,stop,selectedClientId:candidate.identity.commandContext.clientResolution.clientId,policyRevision:candidate.qualification.policyRevision,
-  versions:configuration.versions,now,limits:{maxRequestMs:Math.min(configuration.limits.requestMs,30000)},...(fork===undefined?{}:{fork})});
+  versions:configuration.versions,now,limits:{maxRequestMs:Math.min(budget(context.budgets,'runtime.request'),30000),authorityWindowMs:budget(context.budgets,'native.continuation.authority'),admissionWindowMs:budget(context.budgets,'native.continuation.admission')},...(fork===undefined?{}:{fork})});
 }
 export function createLifecycleFamilyWith({readProposal,continuation}={}){
  if(readProposal!==undefined&&!ordinary(readProposal))throw fault('LIFECYCLE_CONFIGURATION');

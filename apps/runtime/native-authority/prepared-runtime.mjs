@@ -1,3 +1,4 @@
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Parked admitted-task runtime, then exact descriptor latch and canonical broker dispatch. */
 import {randomUUID} from 'node:crypto';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -12,8 +13,8 @@ import {executionFault} from './execution-broker.mjs';
 import {capabilityDigest} from './task-verifier.mjs';
 import {preparationAck} from './remote-task-boundary.mjs';
 export function createPreparedNativeRuntime(configuration){
- const c=own(configuration,['pool','store','allocator','supervisor','runtime','plan','preparationIntent','taskCapability','controlCapabilitySha256','tasksFactory','verifyTask'],['continuation','continuationObjects','enabled','now','maxRequestMs']);
- const now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000,compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),{original,runtime,preparationIntent}=compiled;
+ const c=own(configuration,['pool','store','allocator','supervisor','runtime','plan','preparationIntent','taskCapability','controlCapabilitySha256','tasksFactory','verifyTask','budgets'],['continuation','continuationObjects','enabled','now','maxRequestMs']);
+ const now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs,compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),{original,runtime,preparationIntent}=compiled;
  const allocate=storageMethod(c.allocator,'allocate'),retire=storageMethod(c.allocator,'stop'),journal=c.store.allocations,read=storageMethod(journal,'read'),prepareLaunch=storageMethod(journal,'prepareLaunch'),consumeLaunch=storageMethod(journal,'consumeLaunch'),recordLaunch=storageMethod(journal,'recordLaunch'),verify=storageMethod(c.supervisor.taskVerifier,'verify'),allocation=storageMethod(c.supervisor.admission,'currentAllocation');
  if(typeof enabled!=='boolean'||typeof now!=='function'||typeof c.verifyTask!=='function'||typeof c.tasksFactory!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw executionFault('PREPARATION_CONFIGURATION');
  const key={binding:original.binding,allocationKey:original.executionKey};let admitted,allocating,stack,closed=false;
@@ -34,8 +35,8 @@ export function createPreparedNativeRuntime(configuration){
   * lineage), or null for a fresh run or a runtime without continuation. The descriptor's continuation arguments must be exactly these. */
  async function controlContinuation(life){if(!c.continuation)return null;let read;try{read=storageMethod(c.continuation,'resumeOptions');}catch{throw executionFault('PREPARATION_REFUSED');}
   let options;try{options=await life.run(signal=>read({binding:original.binding,signal}));}catch{throw executionFault('PREPARATION_REFUSED');}return assertResumeOptions(options,()=>{throw executionFault('PREPARATION_REFUSED');});}
- function buildStack(descriptor,continuation){if(stack)return;const launchConfiguration={binding:original.binding,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,workspace:descriptor.cwd,configDirectory:descriptor.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:preparationIntent.secureStorageDirectory,executableSha256:preparationIntent.executableSha256,launch:{command:descriptor.command,args:descriptor.args,env:descriptor.env},enabled};
-   const made=createNativeBrokerStack({pool:c.pool,supervisor:c.supervisor,runtime,plan:c.plan,preparationIntent,launchConfiguration,taskCapability:c.taskCapability,controlCapabilitySha256:c.controlCapabilitySha256,tasksFactory:c.tasksFactory,enabled,now,maxRequestMs,...(c.continuationObjects?{continuationObjects:c.continuationObjects}:{}),...(continuation?{continuation}:{})});
+ function buildStack(descriptor,continuation){if(stack)return;const launchConfiguration={binding:original.binding,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,workspace:descriptor.cwd,configDirectory:descriptor.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:preparationIntent.secureStorageDirectory,executableSha256:preparationIntent.executableSha256,launch:{command:descriptor.command,args:descriptor.args,env:descriptor.env},enabled,shutdownMs:budget(c.budgets,'native.launch.shutdown')};
+   const made=createNativeBrokerStack({budgets:c.budgets,pool:c.pool,supervisor:c.supervisor,runtime,plan:c.plan,preparationIntent,launchConfiguration,taskCapability:c.taskCapability,controlCapabilitySha256:c.controlCapabilitySha256,tasksFactory:c.tasksFactory,enabled,now,maxRequestMs,...(c.continuationObjects?{continuationObjects:c.continuationObjects}:{}),...(continuation?{continuation}:{})});
    if(!same(made.original,original))throw executionFault('PREPARATION_REFUSED');stack=made;
   }
  async function prepare(value){const v=request(value,true);if(!c.continuation){const descriptor=matchPreparedDescriptor(v.descriptor,preparationIntent,runtime.proxyCredential);if(hash(descriptor)!==v.descriptorSha256)throw executionFault('PREPARATION_REFUSED');}return operation(v.signal,async life=>{

@@ -8,7 +8,7 @@ export function compileNativeLaunch(configuration){
  const c=own(configuration,['binding','workspace','configDirectory','versions','expiresAtMs','executableSha256','launch'],['enabled','now','signal','shutdownMs','limits','secureStorageDirectory']);
  const binding=data(c.binding);validateShape('RunBinding',binding);
  const versions=data(own(c.versions,['sdk','cli'])),launch=data(own(c.launch,['command','args','env']));
- nativeSignal(c.signal);const now=c.now??Date.now,shutdownMs=c.shutdownMs??1000,enabled=c.enabled??false;
+ nativeSignal(c.signal);const now=c.now??Date.now,shutdownMs=c.shutdownMs,enabled=c.enabled??false;
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(shutdownMs)||shutdownMs<10||shutdownMs>10000||
   !absolute(c.workspace)||!absolute(c.configDirectory)||!absolute(launch.command)||
   c.workspace.replace(/[^a-zA-Z0-9]/gu,'-').length>256||versions.sdk!=='0.3.295'||versions.cli!=='2.1.295'||

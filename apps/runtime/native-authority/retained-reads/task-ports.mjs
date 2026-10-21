@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Per-task composition for the three retained Core reads. The accepted task and live
  * native bearer come from the reads composer; this module borrows their owners and
  * creates no process-wide authority, connection, credential, or network request. */
@@ -51,7 +52,7 @@ export function createCoreRetainedTaskPorts(configuration={}){
    fetchImpl:c.fetchImpl,issuerId:c.issuerId,keyId:c.keyId,publicKeyJwk:c.publicKeyJwk,recipients,now:c.now,enabled:true});
   if(!control.available)refuse('UNAVAILABLE');
   const researchOrigin=recipients.get_research_portfolio,floridaOrigin=recipients.get_florida_budget_project;
-  const family=origin=>Object.freeze({origin,delegatedTransport:createRetainedDelegatedTransport({origin,getCredentials:control.getCredentials,now:c.now,fetchImpl:c.fetchImpl})});
+  const family=origin=>Object.freeze({origin,delegatedTransport:createRetainedDelegatedTransport({origin,getCredentials:control.getCredentials,now:c.now,fetchImpl:c.fetchImpl,maxRequestMs:fixedHotPathBudget('native.retained.source')})});
   return Object.freeze({families:Object.freeze({'research-portfolio':family(researchOrigin),'florida-budget':family(floridaOrigin)}),
    contextPorts:Object.freeze({retainedContextPorts:control.retainedContextPorts})});
  };

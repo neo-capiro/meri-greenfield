@@ -11,7 +11,7 @@ async function fixture(t,{proven=true,reconcile=true,state='running'}={}){
  for(const s of ['starting','running'].slice(0,state==='running'?2:state==='starting'?1:0))await f.service.publish({credential:f.credential,binding,event:{eventId:id(n++),createdAt:new Date().toISOString(),type:'run.status',data:{state:s,reasonCode:null}}});
  const original=createExecutionBinding({binding,versions,plan:{synthetic:'kickoff-reconcile'},expiresAtMs:Date.now()+30000});
  const controller={allocate:async()=>{throw Error('not dispatched in this test');},close:async()=>{closes++;if(proven)await recordRetired(f.store,allocation);}};
- const owner=createPreparedTaskKickoff({original,controller,store:f.store,runner:{readiness:async()=>{throw Error('unused');},release:async()=>{throw Error('unused');}},enabled:true,maxWaitMs:1000,pollMs:10,cleanupMs:1000,...(reconcile?{reconcile:true}:{})});
+ const owner=createPreparedTaskKickoff({maxRequestMs:3000,original,controller,store:f.store,runner:{readiness:async()=>{throw Error('unused');},release:async()=>{throw Error('unused');}},enabled:true,maxWaitMs:1000,pollMs:10,cleanupMs:1000,...(reconcile?{reconcile:true}:{})});
  const history=async()=>(await f.store.read(binding,{after:0,limit:100},()=>{}));
  return {f,owner,original,history,closes:()=>closes,stop:()=>owner.stop({binding,executionId:original.executionId})};
 }

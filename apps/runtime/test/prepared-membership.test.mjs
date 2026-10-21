@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC actual prepared membership composition. Linux plan/compiler and kickoff are borrowed; no SDK loop, DB, socket or AWS. */
 import {test,mock} from 'node:test';import assert from 'node:assert/strict';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
@@ -10,7 +11,7 @@ mock.module('../native-authority/prepared-kickoff.mjs',{namedExports:{createPrep
 const {assemblePreparedCandidate}=await import('../prepared-candidate.mjs');
 test('prepared startup installs the real request-local membership gate while retaining the same identity and lazy SDK owners',async()=>{
  let now=f.now,allocations=0;const calls=[];
- const candidate=assemblePreparedCandidate({configuration:f.configuration,pool:{connect(){throw Error('No SQL');}},ecs:{send(){throw Error('No AWS');}},objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:f.secret,now:()=>now,
+ const candidate=assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:f.configuration,pool:{connect(){throw Error('No SQL');}},ecs:{send(){throw Error('No AWS');}},objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:f.secret,now:()=>now,
   allocate(){allocations++;throw Error('No allocation');},async fetchImpl(url,options){
    calls.push({url,options});const times={checkedAtMs:now,expiresAtMs:now+500};
    if(url.endsWith('/identity'))return Response.json({principal:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},identityRevision:'i1',...times});

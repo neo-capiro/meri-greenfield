@@ -29,7 +29,7 @@ function configuration(reads,extra={}){
  const c=structuredClone(candidateFixture().configuration),intent=c.nativeCandidate.preparationIntent;
  for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])intent[k]=normalize(intent[k]);
  intent.launchTemplate.command=normalize(intent.launchTemplate.command);intent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=intent.secureStorageDirectory;
- return {...c,...extra,reads};
+ return {...c,runWindowMs:900000,limits:{...c.limits,startupMs:30000,shutdownMs:10000,requestMs:25000},...extra,reads};
 }
 async function start(reads,extra,{candidate}={}){
  const dir=await mkdtemp(join(tmpdir(),'meri-cli-reads-')),file=join(dir,'control.json'),out=[],err=[],o=process.stdout.write.bind(process.stdout),e=process.stderr.write.bind(process.stderr);
@@ -56,8 +56,8 @@ test('cli passes exactly installation {enabled, measurement, measurementSha256, 
  const r=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:PIN,measurementFile:FILE,revokedOperations:[OP]},discovery:{enabled:true}},{capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM});
  assert.equal(r.code,0,r.err);assert.match(r.out,/runtime\.listening/u);assert.equal(r.composer.length,1);
  const o=r.composer[0];
- assert.deepEqual(Object.keys(o),['configuration','secretFiles','nativeCredentials','gateway','installation','discovery','familyIds']);
- assert.deepEqual(o.secretFiles,{serviceSecret:SERVICE});assert.equal(typeof o.nativeCredentials.nativeCredentialFor,'function');
+ assert.deepEqual(Object.keys(o),['configuration','fetchImpl','secretFiles','nativeCredentials','gateway','installation','discovery','familyIds']);
+ assert.equal(typeof o.fetchImpl,'function');assert.deepEqual(o.secretFiles,{serviceSecret:SERVICE});assert.equal(typeof o.nativeCredentials.nativeCredentialFor,'function');
  assert.equal(typeof o.gateway.authority.identify,'function');assert.equal(typeof o.gateway.authority.check,'function');assert.equal(typeof o.gateway.limits.maxRequestMs,'number');
  assert.deepEqual(o.installation,{enabled:true,measurement:MEASUREMENT,measurementSha256:PIN,revokedOperations:[OP]});
  assert.deepEqual(o.familyIds,['bill-text']);
@@ -123,7 +123,7 @@ test('disabled installation and discovery pass their toggles only; absent blocks
  const off=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:false},discovery:{enabled:false}});
  assert.equal(off.code,0,off.err);assert.deepEqual(off.composer[0].installation,{enabled:false});assert.deepEqual(off.composer[0].discovery,{enabled:false});assert.deepEqual(off.secrets,[]);
  const plain=await start({enabled:true,serviceSecretFile:SERVICE,defaultCongress:119});
- assert.equal(plain.code,0,plain.err);assert.deepEqual(Object.keys(plain.composer[0]),['configuration','secretFiles','nativeCredentials','gateway','defaultCongress']);assert.deepEqual(plain.secrets,[]);
+ assert.equal(plain.code,0,plain.err);assert.deepEqual(Object.keys(plain.composer[0]),['configuration','fetchImpl','secretFiles','nativeCredentials','gateway','defaultCongress']);assert.deepEqual(plain.secrets,[]);
  const refused=await start({enabled:true,serviceSecretFile:SERVICE,discovery:{enabled:true}});
  assert.equal(refused.code,2);assert.equal(refused.err,'RUNTIME_CONFIGURATION\n');assert.equal(refused.composer.length,0);
 });

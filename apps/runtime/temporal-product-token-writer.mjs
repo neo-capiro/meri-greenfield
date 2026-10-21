@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Disabled source interface for task-local Temporal token delivery. This is not an issuer HTTP client or signer.
  * Trusted startup supplies delivery.read after independently authenticating the workload and issuer. A matching echo here
  * is configuration consistency, never cryptographic proof. The application must watch authorization loss and stop its
@@ -172,7 +173,7 @@ export function createTemporalProductTokenWriter({configuration,delivery,now=Dat
  if(c.enabled){try{const port=own(delivery,['read']);if(typeof port.read!=='function'||types.isProxy(port.read))fail('CONFIGURATION');read=port.read.bind(delivery);}catch{fail('CONFIGURATION');}}
  const files=c.enabled?tokenFiles(c.authorization.tokenFile):null;
  let closed=false,refreshing=null,active=null,activeLife=null,closing=null,fileQueue=Promise.resolve();
- const lease=createTemporalProductTokenLease({enabled:c.enabled,refreshMs:c.authorization?.refreshMs??1000,maxRequestMs:c.maxRequestMs??1000,now,timers,
+ const lease=createTemporalProductTokenLease({enabled:c.enabled,refreshMs:c.enabled?c.authorization.refreshMs:fixedHotPathBudget('temporal.token.disabled.refresh'),maxRequestMs:c.enabled?c.maxRequestMs:fixedHotPathBudget('temporal.token.disabled.request'),now,timers,
   renew:()=>refresh(),abort:()=>active?.abort(),onExpiry(){if(activeLife)lease.accountForLifetime(activeLife.close());clearOwned().catch(()=>{});}});
  // Lifetime cancellation bounds waiting; it cannot cancel an issued filesystem syscall. Every mutation and cleanup is
  // serialized, and a late operation must check the closed lifetime before another write/rename. Unknown work quarantines.

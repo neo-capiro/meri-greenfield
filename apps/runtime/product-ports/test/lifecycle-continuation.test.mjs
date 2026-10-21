@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
 /** SYNTHETIC: approval.wait settling through the ACTUAL lifecycle service, journal and conversation store (scripted SQL protocol
  * fixture), the ACTUAL action-session owner (`verifyTransition` over the journal's `readTransition`), the production continuation
  * authority (retirement over a scripted native stop, derived admission) and the Core P-INT-10 approval forwarder over a scripted
@@ -27,7 +28,7 @@ const status=(n,state)=>({eventId:id(n),createdAt:new Date().toISOString(),type:
  * owner with the journal's transition reader, basic + lifecycle services; Temporal and the native stop are scripted. */
 async function composition(){
  const f=await lifecycleFixture(),base=createPostgresConversationStore({pool:f.pool}),stops=[],calls={starts:[],continued:[],signals:0},state={stopMode:'record'};let n=700,allocation=null;
- const authority=createContinuationAuthority({store:base,stop:async({binding:b})=>{stops.push(b);if(state.stopMode==='record')await recordRetired(base,allocation);},selectedClientId:id(5),policyRevision:'policy1',versions,now:Date.now});
+ const authority=createContinuationAuthority({limits:{maxRequestMs:3000,authorityWindowMs:30000,admissionWindowMs:300000},store:base,stop:async({binding:b})=>{stops.push(b);if(state.stopMode==='record')await recordRetired(base,allocation);},selectedClientId:id(5),policyRevision:'policy1',versions,now:Date.now});
  const store=createPostgresConversationStore({pool:f.pool,transitionAuthority:authority.transitionAuthority});
  const context={binding,scopes,selectedClientId:id(5)};
  const sessions=createActionSessionOwner({mode:'process-local',limits:{maxSessions:20,maxRequestMs:3000,maxTtlMs:30000,maxFactBytes:65536},
@@ -41,9 +42,9 @@ async function composition(){
  const forwarder=createCoreApprovalForwarder({origin:CORE_ORIGIN,nativeCredentials:sessions,getServiceSecret:createRoutinesServiceSecret({file:'/run/meri/core',reservedFiles:['/run/meri/control'],readSecret}),
   reservedCredentials:createReservedCredentialDigests({files:['/run/meri/control'],readSecret}),readProposal:async({proposalId})=>proposalId===f.proposal.proposalId?structuredClone(f.proposal):null,now:Date.now,fetchImpl:synthetic.fetchImpl,maxRequestMs:5000});
  const dispatcher={async start(v){calls.starts.push(v.binding);},async cancel(){},async continued(v){calls.continued.push(v.input);},async signal(){calls.signals++;}};
- const basic=createConversationService({sessions,store,dispatcher,versions,newId:()=>id(n++)});
+ const basic=createConversationService({maxRequestMs:3000,sessions,store,dispatcher,versions,newId:()=>id(n++)});
  const approvals={async read({proposalId}){if(proposalId!==f.proposal.proposalId)throw Object.assign(Error('APPROVAL_REFUSED'),{code:'APPROVAL_REFUSED'});return structuredClone(f.proposal);},readDecision:v=>forwarder.readDecision(v)};
- const service=createConversationLifecycleService({retention:null,service:basic,store,dispatcher,checkpoints:f.checkpoints,nativeAdmission:authority.continuationAdmission,approvals,sessions,newId:()=>id(n++)});
+ const service=createConversationLifecycleService({maxRequestMs:3000,retention:null,service:basic,store,dispatcher,checkpoints:f.checkpoints,nativeAdmission:authority.continuationAdmission,approvals,sessions,newId:()=>id(n++)});
  const control=input=>service.control({credential,input});
  async function waiting(){
   await basic.allocateInput({credential,input:f.input});await basic.submit({credential,input:f.input});allocation=await allocateOriginal(base,binding);
@@ -105,7 +106,7 @@ function familyContext({core=true,calls=[]}={}){
  const native={async call(operation,input){calls.push({operation,input});if(operation===NATIVE_STOP_OPERATION)return {binding:input.binding,executionId:input.executionId,expiresAtMs:Date.now()+1000};throw Error('unexpected native operation '+operation);}};
  const pool={async connect(){return {async query(text){if(/^(BEGIN|COMMIT|ROLLBACK|SET LOCAL|SELECT pg_advisory)/u.test(text))return {rows:[]};if(text.includes('FROM meri_intents.preparations'))return {rows:[]};throw Error('unexpected statement: '+text);},release(){}};}};
  const gate={async admit(){throw Error('not used');},async recheck(){throw Error('not used');}};
- return Object.freeze({configuration:{...configuration,intents:{enabled:true,...(core?{core:{origin:CORE_ORIGIN,serviceSecretFile:'/run/secrets/core-approvals'}}:{})}},pool,client:{},native,now:Date.now,canonicalProductPorts:captureRuntimePorts({conversationMembership:gate})});
+ return Object.freeze({budgets:testBudgetTable,configuration:{...configuration,intents:{enabled:true,...(core?{core:{origin:CORE_ORIGIN,serviceSecretFile:'/run/secrets/core-approvals'}}:{})}},pool,client:{},native,now:Date.now,canonicalProductPorts:captureRuntimePorts({conversationMembership:gate})});
 }
 const states=(ctx,ports)=>Object.fromEntries(productReadiness({ports:composeRuntimePorts(ctx.canonicalProductPorts,captureRuntimePorts(ports)),sourceEnabled:false}).owners.filter(o=>o.name.startsWith('lifecycle.')).map(o=>[o.name,o.state]));
 test('with a candidate and intents.core the family composes current authority, admission/retirement and approvals; the relay binds once',async()=>{

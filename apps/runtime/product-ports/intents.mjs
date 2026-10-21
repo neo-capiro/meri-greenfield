@@ -100,12 +100,12 @@ function approvalForwarder(context,c,intents,now,transport){
   reservedCredentials:createReservedCredentialDigests({files:reserved,readSecret}),
   readProposal:createPostgresCommandProposalReader({pool:c.pool}).readProposal,
   ...(candidate===null?{}:{selectedClientId:candidate.identity.commandContext.clientResolution.clientId}),
-  now,maxRequestMs:Math.min(c.configuration.limits?.requestMs??10000,30000),...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
+  now,maxRequestMs:Math.min(c.configuration.limits.requestMs,30000),fetchImpl:transport.fetchImpl??c.fetchImpl});
  registerApprovalSessionBinder(context,sessions=>relay.bind(sessions));
  return Object.freeze({forwarder,relay});
 }
 function compose(context,execution,transport){
- let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
+ let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery','budgets','fetchImpl']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const intents=compileIntentsConfiguration(c.configuration);
  // The trusted native client: the fenced startup client carries `call` as an own method; a prototype method is accepted too.
  const nativeCall=c.native!==null&&typeof c.native==='object'&&!types.isProxy(c.native)&&typeof c.native.call==='function'?c.native.call:undefined,now=c.now;
@@ -142,7 +142,7 @@ function executionOwner(execution){
  if(execution===null||typeof execution!=='object'||types.isProxy(execution)||EXECUTION_METHODS.some(k=>typeof execution[k]!=='function'||types.isProxy(execution[k])))throw fault('PRODUCT_PORTS_CONFIGURATION');
  return execution;
 }
-/** `transport` ({fetchImpl, readSecret}) is a trusted test seam for the approval forwarder only; production uses global fetch
+/** `transport` ({fetchImpl, readSecret}) is a trusted test seam for the approval forwarder only; production uses the configured control transport
  * and the runtime secret reader. */
 function captureTransport(transport){
  try{const t=own(transport??{},[],['fetchImpl','readSecret']);for(const fn of Object.values(t))if(typeof fn!=='function'||types.isProxy(fn))throw Error();return Object.freeze(t);}

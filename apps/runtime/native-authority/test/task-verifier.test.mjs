@@ -19,7 +19,7 @@ async function setup(t,{enabled=true,operations=['load','runner/session/register
 const verify=(x,extra={})=>x.supervisor.taskVerifier.verify({capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:hash({binding:x.binding}),...extra});
 test('actual native authorization HTTP/client returns canonical task receipt with original authority expiry',async t=>{
  const x=await setup(t),listener=await listenFetch(x.supervisor.application);t.after(()=>listener.close());
- const native=createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,now:x.f.now});
+ const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,now:x.f.now});
  const authority=createNativeTaskAuthority({native,enabled:true,now:x.f.now,maxRequestMs:1000});
  const receipt=await authority.verify({capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:hash({binding:x.binding})});
  assert.deepEqual(receipt.binding,x.binding);assert.equal(receipt.identityCredential,x.identity.credential);assert.equal(receipt.expiresAtMs,NOW+8000,'request1000ms must not shorten original authority lease');
@@ -28,7 +28,7 @@ test('actual native authorization HTTP/client returns canonical task receipt wit
 });
 test('a Core read that did not answer reaches control as transient; a refused task stays refused',async t=>{
  const x=await setup(t),listener=await listenFetch(x.supervisor.application);t.after(()=>listener.close());
- const native=createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,now:x.f.now});
+ const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,now:x.f.now});
  const authority=createNativeTaskAuthority({native,enabled:true,now:x.f.now,maxRequestMs:1000}),input={capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:hash({binding:x.binding})};
  x.setHook(()=>{throw new TypeError('fetch failed');});
  await assert.rejects(authority.verify(input),e=>e.code==='WORKER_AUTHORITY_UNAVAILABLE'&&isAuthorityUnavailable(e));
@@ -51,7 +51,7 @@ test('held canonical allocation can refresh verifier without reacquiring budget 
 });
 test('canonical durable session owner uses native HTTP verifier inside locked SQL effect',async t=>{
  const x=await setup(t),nativeListener=await listenFetch(x.supervisor.application);t.after(()=>nativeListener.close());
- const native=createNativeCapabilityClient({configuration:{origin:nativeListener.origin,maxResponseBytes:131072},credential:control,now:x.f.now}),authority=createNativeTaskAuthority({native,enabled:true,now:x.f.now,maxRequestMs:1000});
+ const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:nativeListener.origin,maxResponseBytes:131072},credential:control,now:x.f.now}),authority=createNativeTaskAuthority({native,enabled:true,now:x.f.now,maxRequestMs:1000});
  const registration={async read(){return {binding:x.binding,key:x.key,sdkVersion:'0.3.295',cliVersion:'2.1.295',observationId:'explicit-synthetic-observation',sessionEventSha256:'b'.repeat(64),checkedAtMs:NOW,expiresAtMs:NOW+7000};}};
  const owner=createDurableSdkSessionOwner({admission:x.supervisor.admission,authority,registration,enabled:true,now:x.f.now,maxRequestMs:1000}),sessionListener=await listenFetch(createNativeSdkSessionApplication({owner,now:x.f.now,maxRequestMs:1000}));t.after(()=>sessionListener.close());
  const client=createNativeSdkSessionClient({origin:'https://session.synthetic.invalid',credential:x.f.credential,binding:x.binding,now:x.f.now,maxRequestMs:1000,fetchImpl:(url,options)=>fetch(sessionListener.origin+new URL(url).pathname,options)});

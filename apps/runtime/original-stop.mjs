@@ -10,7 +10,7 @@ export async function stopOriginal({native,binding,expiresAtMs,now,timeoutMs,cod
  try{const p=own(await life.run(signal=>native.call('execution/kickoff/stop',{binding,executionId:executionKey},{signal})),['binding','executionId','expiresAtMs']);if(canonicalSha256(p.binding)!==executionKey||p.executionId!==executionKey||!Number.isSafeInteger(p.expiresAtMs)||expiresAtMs!==undefined&&p.expiresAtMs!==expiresAtMs)throw fault(code);}finally{life.close();}
 }
 /** Each invocation makes a fresh idempotent attempt, including after the workflow has closed. No start or redispatch is exposed. */
-export function createOriginalReconciler({native,now=Date.now,timeoutMs=15000}){
+export function createOriginalReconciler({native,now=Date.now,timeoutMs}){
  if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>30000)throw fault('BROKER_CONFIGURATION');
  return async function reconcileConversation(input){own(input,['binding']);validateShape('RunBinding',input.binding);await stopOriginal({native,binding:input.binding,expiresAtMs:undefined,now,timeoutMs,code:'BROKER_RECONCILE_UNKNOWN'});return {state:'reconciled'};};
 }

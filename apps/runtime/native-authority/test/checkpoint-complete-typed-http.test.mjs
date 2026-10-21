@@ -9,7 +9,7 @@ const post=(path,body)=>new Request('https://runner.synthetic.invalid'+path,{met
 
 test('only the authenticated completion route carries an optional typed result',async()=>{
  const calls=[],owner={async captureCheckpoint(value){calls.push(['capture',value]);return {ok:true};},async read(value){calls.push(['read',value]);return {ok:true};}},completion={async captureCompletion(value){calls.push(['complete',value]);return {ok:true};}};
- const app=createNativeCheckpointApplication({owner,completion,taskCapabilitySha256:capabilityDigest(credential),enabled:true});
+ const app=createNativeCheckpointApplication({maxRequestMs:3000,owner,completion,taskCapabilitySha256:capabilityDigest(credential),enabled:true});
  assert.equal((await app.handle(post('/v1/runner/checkpoint/complete',complete))).status,200);
  assert.equal(Object.hasOwn(calls[0][1],'typedResult'),false);
  const typedResult={kind:'objective.strategy.draft',resultRef:'opaque'};

@@ -29,11 +29,11 @@ const selectorOf=value=>{
 };
 
 export function createObjectiveSourceCustody(configuration={}){
- let enabled=false,now=Date.now,maxRequestMs=3000,readStore,putOnce,readRun,readIssuance,readPrepared,assertCurrent;
+ let enabled=false,now=Date.now,maxRequestMs,readStore,putOnce,readRun,readIssuance,readPrepared,assertCurrent;
  try{
   const c=own(configuration,[],['store','acceptedRuns','issuanceStore','preparedReader','freshAuthority','enabled','now','maxRequestMs']);
   if(c.enabled===true){
-   now=c.now??Date.now;maxRequestMs=c.maxRequestMs??3000;
+   now=c.now??Date.now;maxRequestMs=c.maxRequestMs;
    if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)refuse();
    readStore=storageMethod(c.store,'read');putOnce=storageMethod(c.store,'putOnce');readRun=storageMethod(c.acceptedRuns,'read');
    readIssuance=storageMethod(c.issuanceStore,'read');assertCurrent=storageMethod(c.freshAuthority,'assertCurrent');

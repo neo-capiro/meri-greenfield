@@ -41,7 +41,7 @@ for(const skillId of ids)test(`${skillId} requests literal pinned JSON output ma
 
 test('the single activity query receives selected outputFormat while source remains opt-in',async()=>{
  const x=await fixture({queued:true}),c=x.f.configuration;let observed,queries=0,published=0;
- const activity=createConversationActivity({now:c.now,runOwner:{load:({binding})=>x.store.read(binding,{},()=>{}),append:({binding,event})=>x.store.append(binding,event,()=>{},c.scopes)},prepareRuntime:async()=>runOptions(x.f),selectedSkills:{async prepare(args){const runtime=await x.task.prepare(args);return {...runtime,finish:async()=>({state:'awaiting-output-approval'})};},async publish(){published++;}},query({options}){queries++;observed=options;return {async *[Symbol.asyncIterator](){yield {type:'result',subtype:'success',is_error:false,structured_output:x.f.input};},async close(){}};}});
+ const activity=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},now:c.now,runOwner:{load:({binding})=>x.store.read(binding,{},()=>{}),append:({binding,event})=>x.store.append(binding,event,()=>{},c.scopes)},prepareRuntime:async()=>runOptions(x.f),selectedSkills:{async prepare(args){const runtime=await x.task.prepare(args);return {...runtime,finish:async()=>({state:'awaiting-output-approval'})};},async publish(){published++;}},query({options}){queries++;observed=options;return {async *[Symbol.asyncIterator](){yield {type:'result',subtype:'success',is_error:false,structured_output:x.f.input};},async close(){}};}});
  try{const result=await activity({binding:c.binding});assert.equal(result.state,'completed');assert.equal(queries,1);assert.equal(published,1);assert.equal(observed.outputFormat.type,'json_schema');const validate=new Ajv({strict:false}).compile(observed.outputFormat.schema);assert.equal(validate(x.f.input),true,JSON.stringify(validate.errors));}
  finally{await x.task.close();await x.control.close();}
  const inactive=createTaskSelectedSkills({native:{async call(){throw Error('UNEXPECTED_NATIVE_EFFECT');}}});await assert.rejects(inactive.prepare(c),{code:'UNAVAILABLE'});await inactive.close();
@@ -49,7 +49,7 @@ test('the single activity query receives selected outputFormat while source rema
 
 for(const skillId of ids)test(`${skillId}: activity output reaches its actual compiler and canonical pending-output journal`,async()=>{
  const x=await fixture({queued:true,skillId}),c=x.f.configuration;let queries=0;
- const activity=createConversationActivity({now:c.now,runOwner:{load:({binding})=>x.store.read(binding,{},()=>{}),append:({binding,event})=>x.store.append(binding,event,()=>{},c.scopes)},prepareRuntime:async()=>runOptions(x.f),selectedSkills:x.task,query({options}){
+ const activity=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},now:c.now,runOwner:{load:({binding})=>x.store.read(binding,{},()=>{}),append:({binding,event})=>x.store.append(binding,event,()=>{},c.scopes)},prepareRuntime:async()=>runOptions(x.f),selectedSkills:x.task,query({options}){
   queries++;assert.equal(options.outputFormat.type,'json_schema');
   const validate=new Ajv({strict:false}).compile(options.outputFormat.schema);
   assert.equal(validate(x.f.input),true,JSON.stringify(validate.errors));

@@ -70,7 +70,7 @@ function fixture(){
  const certificateIssuer=createTemporalServiceClientCertificateIssuerFromMaterial({...material,
   caSha256:createHash('sha256').update(new X509Certificate(material.caPem).raw).digest('hex'),
   now:()=>currentMs});
- const owner=createTemporalIssuerBootstrapOwner({configuration,taskProof:ports.taskProof,
+ const owner=createTemporalIssuerBootstrapOwner({maxRequestMs:3000,challengeLifetimeMs:15000,certificateLifetimeMs:300000,configuration,taskProof:ports.taskProof,
   registration:ports.registration,certificateIssuer,now:()=>currentMs});
  const body={schemaVersion:1,role:'control',taskArn:TASK,csrPem:csr.csrPem};
  async function challenge(){return owner.challenge(body,{socket});}
@@ -167,7 +167,7 @@ test('task stop after registration commit and primary read prevents certificate 
 
 test('registration is mandatory, and close/abort fail closed',async()=>{
  const f=fixture();
- assert.throws(()=>createTemporalIssuerBootstrapOwner({configuration:f.configuration,
+ assert.throws(()=>createTemporalIssuerBootstrapOwner({maxRequestMs:3000,challengeLifetimeMs:15000,certificateLifetimeMs:300000,configuration:f.configuration,
   taskProof:f.ports.taskProof,certificateIssuer:f.certificateIssuer}),
   {code:'TEMPORAL_ISSUER_BOOTSTRAP_REFUSED'});
  await assert.rejects(f.owner.challenge(f.body,{socket:f.socket,signal:AbortSignal.abort()}),

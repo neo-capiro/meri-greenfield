@@ -103,7 +103,7 @@ for(const [name,edit]of [
 test('policy unavailability and unimplemented background authority never have a positive fallback',async()=>{
  const f=await scheduledAdmissionFixture();f.policy.onAuthorize=()=>{throw Error('private policy detail must not escape');};
  await assert.rejects(f.adapter.admit(f.request),e=>e.code==='SCHEDULE_ADMISSION_UNKNOWN'&&!e.message.includes('private'));
- const options={...f.options};delete options.authority;assert.throws(()=>createScheduledNativeAdmission(options),code('CONFIGURATION'));
+ const options={maxRequestMs:10000,...f.options};delete options.authority;assert.throws(()=>createScheduledNativeAdmission(options),code('CONFIGURATION'));
  assert.deepEqual(counts(f),empty);
 });
 
@@ -111,11 +111,11 @@ test('constructor validates trusted profile and ports without opening SQL or inv
  const f=await scheduledAdmissionFixture();
  for(const change of [o=>o.template.configurationSha256='invalid',o=>o.template.task.manifestSha256='a'.repeat(64),
   o=>o.template.principal.actorId='foreign',o=>o.template.allocationJson='{}',o=>o.maxRequestMs=0,o=>o.runAdmission={}]){
-  const options={...f.options,template:copy(f.template)};change(options);assert.throws(()=>createScheduledNativeAdmission(options),code('CONFIGURATION'));
+  const options={maxRequestMs:10000,...f.options,template:copy(f.template)};change(options);assert.throws(()=>createScheduledNativeAdmission(options),code('CONFIGURATION'));
  }
  const store={};Object.defineProperty(store,'initialInputs',{get(){assert.fail('accessor evaluated');}});
- assert.throws(()=>createScheduledNativeAdmission({...f.options,store}),code('CONFIGURATION'));
- assert.throws(()=>createScheduledNativeAdmission({...f.options,store:new Proxy(f.store,{getOwnPropertyDescriptor(){assert.fail('proxy trap evaluated');}})}),code('CONFIGURATION'));
+ assert.throws(()=>createScheduledNativeAdmission({maxRequestMs:10000,...f.options,store}),code('CONFIGURATION'));
+ assert.throws(()=>createScheduledNativeAdmission({maxRequestMs:10000,...f.options,store:new Proxy(f.store,{getOwnPropertyDescriptor(){assert.fail('proxy trap evaluated');}})}),code('CONFIGURATION'));
  assert.equal(f.queries.length,0);assert.deepEqual(counts(f),empty);
 });
 
@@ -180,7 +180,7 @@ test('acceptance failure rolls back actual request/event/input acceptance, retai
  assert.deepEqual(counts(f),{bindings:1,inputs:1,runs:1,events:1});
 });
 
-function dispatch(f,runAdmission=f.adapter){return createScheduledDispatch({scheduleOwner:f.scheduleOwner,store:f.store,dispatcher:f.dispatcher,runs:f.runs,authority:f.firingAuthority,
+function dispatch(f,runAdmission=f.adapter){return createScheduledDispatch({maxRequestMs:10000,scheduleOwner:f.scheduleOwner,store:f.store,dispatcher:f.dispatcher,runs:f.runs,authority:f.firingAuthority,
  taskInstructions:{async read(){return {instruction};}},versions,now:f.now,runAdmission});}
 test('actual dispatch -> native original journals -> store -> Temporal start uses one prompt and native-eligible durable binding',async()=>{
  const f=await scheduledAdmissionFixture(),owner=dispatch(f),first=await owner.dispatch({occurrence:f.occurrence});
@@ -259,7 +259,7 @@ test('actual journal-backed schedule admission is accepted by existing native pr
  const capabilityAuthority={async generate(){calls.task++;return {grantId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',capability,materialRef:'synthetic-scheduled-material'};},async retrieve(){return {state:'PRESENT',capability};},async status(){return {state:'ABSENT'};}};
  const modelRows=new Map(),modelGrants={async issue({intent}){const old=modelRows.get(intent.issuanceKey);if(old){assert.deepEqual(Object.fromEntries(Object.keys(intent).map(k=>[k,old[k]])),intent);return old;}
   calls.model++;const receipt={...intent,grantId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',capabilitySha256:capabilityDigest(proxyCredential),proxyCredential};modelRows.set(intent.issuanceKey,receipt);return receipt;}};
- const native=createPreparedRunBindings({configuration:candidate.configuration,pool:f.pool,store:f.store,credentials:{control:candidate.secret.control},
+ const native=createPreparedRunBindings({limits:{maxRequestMs:3000,maxFactBytes:131072},configuration:candidate.configuration,pool:f.pool,store:f.store,credentials:{control:candidate.secret.control},
   issuanceStore:createMemoryIssuanceStore(),capabilityAuthority,modelGrants,initialBindings,now:f.now});
  f.template.configurationSha256=native.configurationSha256;
  const receipt=await createScheduledNativeAdmission(f.options).admit(f.request);

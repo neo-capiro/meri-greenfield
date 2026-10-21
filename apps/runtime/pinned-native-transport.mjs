@@ -34,10 +34,11 @@ export function classifyPinnedRequestError(error){
  if(SOCKET_CODES.has(code))return 'PINNED_NATIVE_SOCKET';
  if(code.startsWith('HPE_'))return 'PINNED_NATIVE_RESPONSE';return 'PINNED_NATIVE_TRANSPORT';
 }
-export async function createPinnedNativeFetch({origin,caFile,caSha256,maxResponseBytes=67108864,maxRequestBytes=50331648}){
+export async function createPinnedNativeFetch({origin,caFile,caSha256,maxResponseBytes=67108864,maxRequestBytes=50331648,timeoutMs}){
  let base;try{base=new URL(origin);}catch{failConfiguration();}
  if(base.protocol!=='https:'||base.origin!==origin||base.pathname!=='/'||base.search||base.hash||
     base.username||base.password||typeof caFile!=='string'||!caFile.startsWith('/')||!hex64.test(caSha256)||
+    !Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>30000||
     !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>67108864||
     !Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>50331648)failConfiguration();
  let handle,ca;
@@ -70,9 +71,9 @@ export async function createPinnedNativeFetch({origin,caFile,caSha256,maxRespons
    const failed=error=>finish(head===200?'PINNED_NATIVE_RESPONSE':head?classifyPinnedStatus(head):classifyPinnedRequestError(error));
    // Every caller supplies its own shorter AbortSignal; this ceiling covers
    // the longest approved read while preventing an unbounded socket.
-   timer=setTimeout(timedOut,30000);
+   timer=setTimeout(timedOut,timeoutMs);
    try{request=httpsRequest(url,{method:'POST',agent:false,ca,minVersion:'TLSv1.3',rejectUnauthorized:true,servername:url.hostname,
-    timeout:30000,maxHeaderSize:8192,headers:{authorization,'content-type':'application/json','content-length':String(body.length),accept:'application/json','accept-encoding':'identity',connection:'close'}},response=>{
+    timeout:timeoutMs,maxHeaderSize:8192,headers:{authorization,'content-type':'application/json','content-length':String(body.length),accept:'application/json','accept-encoding':'identity',connection:'close'}},response=>{
     // Error listeners stay attached (`on`, not `once`): a second error after settlement is absorbed, never uncaught.
     response.on('error',failed);
     if(done){response.destroy();return;}

@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** `issueExecution` for conversation write intents (`apps/control/intents/approval.mjs`) over Core's proposed issuance route
  * (Core DRAFT rev 3 §3, `POST /api/clio/approvals/native/execution`, NOT mounted at Core 0304b0ef). Construction is inert.
  *
@@ -44,7 +45,7 @@ const GRANT_REFUSALS=/^EXECUTION_GRANT_(REFUSED|CONFLICT|REVOKED)$/u;
 const grantFailure=error=>{const code=error?.code??error?.message;return typeof code==='string'&&GRANT_REFUSALS.test(code)?executionFault('EXECUTION_GRANT_REFUSED'):unavailable();};
 export function createCoreExecutionIssuance(configuration){
  const c=own(configuration,['origin','trust','getCredentials','executorFor','readDecision','installGrant','fetchImpl','now'],['limits','sleep']);
- const limits=c.limits===undefined?{maxRequestMs:10000,maxResponseBytes:65536,maxSkewMs:1000}:data(own(c.limits,['maxRequestMs','maxResponseBytes','maxSkewMs']));
+ const limits=data(own(c.limits,['maxRequestMs','maxResponseBytes','maxSkewMs']));
  let base;try{base=new URL(c.origin);}catch{throw executionFault('EXECUTION_CONFIGURATION');}
  const sleep=c.sleep??(ms=>new Promise(resolve=>setTimeout(resolve,ms)));
  if(base.protocol!=='https:'||base.origin!==c.origin||base.username||base.password||!(c.trust?.keys instanceof Map)||

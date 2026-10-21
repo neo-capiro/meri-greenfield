@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Production continuation authority for the conversation lifecycle (resume / fork; dot PR #121 6247464370 item 6), over the
  * existing durable run owners. It supplies the two lifecycle product ports `apps/runtime/product-applications.mjs` captures and
  * `apps/control/conversations/lifecycle/{service,journal,authority}.mjs` verify:
@@ -53,8 +54,8 @@ export function createContinuationAuthority(configuration){
   if(!ordinary(c.stop)||!ordinary(c.now)||typeof c.selectedClientId!=='string'||!UUID.test(c.selectedClientId)||typeof c.policyRevision!=='string'||!c.policyRevision||c.policyRevision.length>256)throw Error();
   validateShape('RuntimeVersions',data(c.versions));
   if(c.fork!==undefined){fork=own(c.fork,['initialBindings','configurationSha256','proposeInitialExpiry']);storageMethod(fork.initialBindings,'claim');storageMethod(fork.initialBindings,'readConversation');if(!ordinary(fork.proposeInitialExpiry)||typeof fork.configurationSha256!=='string'||!/^[a-f0-9]{64}$/u.test(fork.configurationSha256))throw Error();}
-  const l=c.limits===undefined?{}:own(c.limits,[],['maxRequestMs','authorityWindowMs','admissionWindowMs']);
-  limits={maxRequestMs:l.maxRequestMs??3000,authorityWindowMs:l.authorityWindowMs??30000,admissionWindowMs:l.admissionWindowMs??300000};
+  const l=own(c.limits,['maxRequestMs','authorityWindowMs','admissionWindowMs']);
+  limits={maxRequestMs:l.maxRequestMs,authorityWindowMs:l.authorityWindowMs,admissionWindowMs:l.admissionWindowMs};
   if(!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000||!Number.isSafeInteger(limits.authorityWindowMs)||limits.authorityWindowMs<1||limits.authorityWindowMs>300000||!Number.isSafeInteger(limits.admissionWindowMs)||limits.admissionWindowMs<1||limits.admissionWindowMs>1800000)throw Error();
  }catch{refuse('CONFIGURATION');}
  const now=c.now,versions=data(c.versions),read=storageMethod(c.store,'readOptional'),readAllocation=storageMethod(c.store.allocations,'read'),current=storageMethod(c.store.nextRuns,'current'),getControl=storageMethod(c.store.lifecycle,'get');

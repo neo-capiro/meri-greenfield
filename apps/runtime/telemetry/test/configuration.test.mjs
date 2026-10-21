@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validateConfiguration} from '../../config.mjs';
@@ -21,5 +22,5 @@ test('a loopback http collector is accepted only with the existing loopback decl
  assert.doesNotThrow(()=>validateConfiguration(c,'control'));
 });
 test('assembleControl refuses a telemetry port without the run-owner hook before composing anything',()=>{
- assert.throws(()=>assembleControl({configuration:{},pool:{},client:{},native:{},telemetry:{}}),/TELEMETRY_CONFIGURATION/u);
+ assert.throws(()=>assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{},pool:{},client:{},native:{},telemetry:{}}),/TELEMETRY_CONFIGURATION/u);
 });

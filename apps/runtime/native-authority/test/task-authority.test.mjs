@@ -23,8 +23,8 @@ test('a verifier that did not answer stays transient across the worker/authorize
  // The receiving boundary answers 503 NATIVE_TASK_AUTHORITY_UNAVAILABLE, which control's native client marks transient.
  const caller='synthetic-control-capability',statuses=[];
  for(const [failure,code,transient,status] of [[markAuthorityUnavailable(Error('NATIVE_AUTHORITY_UNAVAILABLE')),'WORKER_AUTHORITY_UNAVAILABLE',true,503],[Error('NATIVE_TASK_REFUSED'),'WORKER_AUTHORITY_REFUSED',false,403]]){
-  const application=createNativeTaskVerifierApplication({verifier:{async verify(){throw failure;}},callerCapabilitySha256:capabilityDigest(caller),taskCapabilitySha256:digest,enabled:true});
-  const native=createNativeCapabilityClient({configuration:{origin:'https://native.synthetic.invalid',maxResponseBytes:131072},credential:caller,
+  const application=createNativeTaskVerifierApplication({maxRequestMs:3000,verifier:{async verify(){throw failure;}},callerCapabilitySha256:capabilityDigest(caller),taskCapabilitySha256:digest,enabled:true});
+  const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:'https://native.synthetic.invalid',maxResponseBytes:131072},credential:caller,
    fetch:async(url,init)=>{const response=await application.handle(new Request(url,init));statuses.push(response.status);return response;}});
   const {authority,input}=setup(undefined,{native,now:Date.now,maxRequestMs:1000});
   await assert.rejects(authority.verify(input),e=>e.code===code&&isAuthorityUnavailable(e)===transient);assert.equal(statuses.at(-1),status);

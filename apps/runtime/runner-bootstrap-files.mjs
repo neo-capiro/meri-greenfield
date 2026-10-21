@@ -36,16 +36,16 @@ async function writeFresh(path,bytes,maxBytes){if(!Buffer.isBuffer(bytes)||!byte
  * validated by the same validator the runner applies at load; nothing optional is left for the runner to assume. */
 function runnerConfiguration(e,directory,delivered){
  let configuration;
- try{const c=own(delivered,['limits','native','workspace','proxyOrigin'],['sourceEnabled','telemetry']),n=own(c.native,['maxResponseBytes']);if(c.sourceEnabled!==undefined&&c.sourceEnabled!==true)fail('CONFIG_REFUSED');
-  configuration={version:1,profile:'isolated-preview',sourceEnabled:c.sourceEnabled===true,limits:c.limits,native:{origin:e.origin,capabilityFile:join(directory,files.capability.name),loopback:false,maxResponseBytes:n.maxResponseBytes},binding:e.binding,versions:e.versions,workspace:c.workspace,proxyOrigin:c.proxyOrigin,bootstrap:{expiresAtMs:e.expiresAtMs,remote:true},captureOwnsClose:true,...(c.telemetry===undefined?{}:{telemetry:c.telemetry})};
+ try{const c=own(delivered,['limits','native','workspace','proxyOrigin','runWindowMs'],['sourceEnabled','telemetry']),n=own(c.native,['maxResponseBytes']);if(c.sourceEnabled!==undefined&&c.sourceEnabled!==true)fail('CONFIG_REFUSED');
+  configuration={version:1,profile:'isolated-preview',sourceEnabled:c.sourceEnabled===true,limits:c.limits,runWindowMs:c.runWindowMs,native:{origin:e.origin,capabilityFile:join(directory,files.capability.name),loopback:false,maxResponseBytes:n.maxResponseBytes},binding:e.binding,versions:e.versions,workspace:c.workspace,proxyOrigin:c.proxyOrigin,bootstrap:{expiresAtMs:e.expiresAtMs,remote:true},captureOwnsClose:true,...(c.telemetry===undefined?{}:{telemetry:c.telemetry})};
   validateConfiguration(configuration,'conversation-runner');}
  catch(error){fail('CONFIG_REFUSED',{cause:error?.code??error?.message});}
  return configuration;
 }
 /** Validates the delivery against the expected contract, composes and validates the runner configuration, then writes the three files.
  * Any failure removes what was written; a failed removal is reported as RUNNER_BOOTSTRAP_CLEANUP_FAILED carrying both causes. */
-export async function materializeRunnerBootstrap({directory,delivery,expected,now=Date.now,signal,maxRequestMs=5000}){
- nativeSignal(signal);const e=parseExpectedBootstrap(expected);if(typeof delivery?.fetch!=='function')fail('DELIVERY_REFUSED');if(e.expiresAtMs<=now())fail('EXPIRED');
+export async function materializeRunnerBootstrap({directory,delivery,expected,now=Date.now,signal,maxRequestMs}){
+ nativeSignal(signal);const e=parseExpectedBootstrap(expected);if(typeof delivery?.fetch!=='function')fail('DELIVERY_REFUSED');if(!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1)fail('DELIVERY_REFUSED');if(e.expiresAtMs<=now())fail('EXPIRED');
  const life=createOperationLifetime({now,signal,deadlineMs:Math.min(e.expiresAtMs,now()+maxRequestMs),errorFactory:()=>Object.assign(Error('RUNNER_BOOTSTRAP_UNKNOWN'),{code:'RUNNER_BOOTSTRAP_UNKNOWN'})});
  let created=null;const written=[];let receipt=null;
  try{

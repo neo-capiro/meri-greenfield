@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Executable owner of the dedicated Temporal issuer registration Pool.
  * Importing performs no IO. Configuration names no module, callback or authority. */
 import {createHash} from 'node:crypto';
@@ -13,7 +14,7 @@ import {assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-ru
 import {createTemporalIssuerEntrypoint,parseTemporalIssuerEntrypointConfiguration} from './temporal-issuer/entrypoint.mjs';
 
 const CONFIGURATION='TEMPORAL_ISSUER_RUNTIME_CONFIGURATION',UNAVAILABLE='TEMPORAL_ISSUER_RUNTIME_UNAVAILABLE';
-const CLEANUP='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN',MAX_BYTES=32768,MAX_RETIREMENT_MS=30000;
+const CLEANUP='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN',MAX_BYTES=32768,MAX_RETIREMENT_MS=fixedHotPathBudget('temporal.issuer.retirement');
 const hex64=value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value);
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const callable=value=>typeof value==='function'&&!types.isProxy(value);
@@ -80,8 +81,8 @@ export async function startTemporalIssuerRuntime(options={}){
   await life.run(async signal=>{
    let bytes;
    try{bytes=await material(c.database.connectionFile,{signal});life.check();const connectionString=databaseUri(bytes,c);
-    life.check();pool=createPool({connectionString,max:2,connectionTimeoutMillis:Math.min(c.issuer.startupTimeoutMs,3000),
-     query_timeout:c.issuer.service.maxRequestMs,statement_timeout:c.issuer.service.maxRequestMs,idleTimeoutMillis:1000});
+    life.check();pool=createPool({connectionString,max:2,connectionTimeoutMillis:Math.min(c.issuer.startupTimeoutMs,fixedHotPathBudget('temporal.issuer.pg.connect.max')),
+     query_timeout:c.issuer.service.maxRequestMs,statement_timeout:c.issuer.service.maxRequestMs,idleTimeoutMillis:fixedHotPathBudget('temporal.issuer.pg.idle')});
     endPool=storageMethod(pool,'end');storageMethod(pool,'connect');life.check();
     entrypoint=createEntrypoint({configuration:c.issuer,registrationPool:pool});closeEntrypoint=storageMethod(entrypoint,'close');
     const start=storageMethod(entrypoint,'start');availableEntrypoint=storageMethod(entrypoint,'available');life.check();

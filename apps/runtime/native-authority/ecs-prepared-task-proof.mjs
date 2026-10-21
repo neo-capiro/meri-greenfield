@@ -44,7 +44,7 @@ export async function assertProductRunnerMeasurement(value){
 function metadata(value){const v=data(own(value,fields,['grantFactsJsons','launchBinding','physicalStopProven']));return Object.fromEntries(fields.map(k=>[k,v[k]]));}
 function environment(rows){if(!Array.isArray(rows))refuse();const result=new Map();for(const row of rows){if(!row||typeof row.name!=='string'||typeof row.value!=='string'||result.has(row.name))refuse();result.set(row.name,row.value);}return result;}
 export function createEcsPreparedTaskProof(configuration){
- const c=own(configuration,['client','original','metadata','imageSha256','runnerSha256'],['now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,m=metadata(c.metadata),binding=compileEcsTaskBinding({...m,original:c.original,enabled:true,now,maxRequestMs}),original=binding.original,send=storageMethod(c.client,'send');
+ const c=own(configuration,['client','original','metadata','imageSha256','runnerSha256'],['now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs,m=metadata(c.metadata),binding=compileEcsTaskBinding({...m,original:c.original,enabled:true,now,maxRequestMs}),original=binding.original,send=storageMethod(c.client,'send');
  if(!digest(c.imageSha256)||!digest(c.runnerSha256)||original.versions.imageDigest!=='sha256:'+c.imageSha256||binding.prefix!=='arn:aws:ecs:us-east-1:967807252336:')refuse();
  const image='sha256:'+c.imageSha256;
  function fresh(signal){if(signal?.aborted||now()>=original.expiresAtMs)refuse();}

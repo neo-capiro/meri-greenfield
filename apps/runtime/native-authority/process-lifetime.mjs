@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Own one Linux detached process group. Close alone never proves tree cleanup. */
 import {launchFault} from './launch-configuration.mjs';
 export function ownNativeProcess(child,{expiresAtMs,now,startedAtMs,shutdownMs,signal,onStop}){
@@ -12,7 +13,7 @@ export function ownNativeProcess(child,{expiresAtMs,now,startedAtMs,shutdownMs,s
   signal?.removeEventListener('abort',abort);
   completion.resolve(Object.freeze({physicalStopProven:proven,closed,code,signal:exitSignal,reason}));
  };
- function poll(){if(settled)return;if(closed&&absent()){finish(true);return;}pollTimer=setTimeout(poll,10);}
+ function poll(){if(settled)return;if(closed&&absent()){finish(true);return;}pollTimer=setTimeout(poll,fixedHotPathBudget('native.process.poll'));}
  function stop(value='CLOSED'){
   if(stopping||settled)return completion.promise;
   stopping=true;reason??=value;clearTimeout(expiryTimer);
@@ -28,7 +29,7 @@ export function ownNativeProcess(child,{expiresAtMs,now,startedAtMs,shutdownMs,s
   let current;try{current=now();}catch{void stop('CLOCK');return;}
   if(!Number.isSafeInteger(current)||current<at){void stop('CLOCK');return;}
   at=current;if(current>=expiresAtMs){void stop('EXPIRED');return;}
-  expiryTimer=setTimeout(lease,Math.min(1000,expiresAtMs-current));
+  expiryTimer=setTimeout(lease,Math.min(fixedHotPathBudget('native.process.leaseTick'),expiresAtMs-current));
  }
  const abort=()=>{void stop('CANCELLED');};
  child.on('error',()=>{void stop('PROCESS_ERROR');});

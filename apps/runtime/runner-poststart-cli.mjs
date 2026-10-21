@@ -1,6 +1,7 @@
 /** Product runner entry point. No run credential or private key is supplied by ECS.
  * The fixed, nonsecret pins select the protected control endpoint and its CA;
  * the poststart owner then writes one task-local bundle before runtime CLI load. */
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 import {pathToFileURL} from 'node:url';
 import {main as runRuntime} from './cli.mjs';
 import {runRunnerPoststart,releaseRunnerPoststart} from './runner-poststart-bootstrap.mjs';
@@ -44,9 +45,13 @@ export async function startRunnerProductTask({argv=process.argv.slice(2),environ
  process.once('SIGTERM',abort);process.once('SIGINT',abort);
  let material,code=2,stage='bootstrap';
  try{
-  material=await bootstrap({...fields,signal:controller.signal});
+  material=await bootstrap({...fields,signal:controller.signal,
+   maxStartupMs:fixedHotPathBudget('runner.poststart.bootstrap'),stepMs:fixedHotPathBudget('runner.poststart.step'),
+   pendingPollMs:fixedHotPathBudget('runner.poststart.pending.poll'),challengeCeilingMs:fixedHotPathBudget('runner.poststart.challenge.ceiling'),
+   transportRequestMs:fixedHotPathBudget('runner.poststart.transport.request'),metadataRequestMs:fixedHotPathBudget('runner.poststart.metadata.read'),
+   bootstrapRequestMs:fixedHotPathBudget('runner.bootstrap.files.request')});
   if(controller.signal.aborted||typeof material?.configFile!=='string'||typeof material?.controlCaFile!=='string'||!material?.tls||!material?.receipt)fail();
-  stage='native-transport';const nativeFetch=await makeNativeFetch({origin:fields.origin,caFile:material.controlCaFile,caSha256:fields.controlCaSha256});
+  stage='native-transport';const nativeFetch=await makeNativeFetch({timeoutMs:fixedHotPathBudget('native.pinned.transport'),origin:fields.origin,caFile:material.controlCaFile,caSha256:fields.controlCaSha256});
   if(controller.signal.aborted)fail();
   stage='runtime';code=await runtime(['conversation-runner','--config',material.configFile],{poststartTls:material.tls,nativeFetch});
  }catch(error){report(stage,error);code=2;}

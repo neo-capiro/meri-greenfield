@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Core routines wires (capiro-backend PR #84 @32cf3ca7, docs/integration/MERI-ROUTINES-POLICY-AND-CANCELLATION-DRAFT.md; R0
  * meri-greenfield #121 6247017061). Both calls are ATTENDED: each carries the verified service identity
  * (`x-internal-service-secret`, Core ToolServiceSecretGuard) and the routine owner's own native bearer, resolved per call from the
@@ -27,7 +28,7 @@ import {SCHEDULED_MERI_INBOX_DESTINATION} from '../../control/schedules/schedule
 export const ROUTINES_CORE_ROUTES=Object.freeze({policy:'/api/clio/routines/policy/check',cancellationProof:'/api/clio/routines/cancellation-proof',unattendedGrant:'/api/clio/routines/unattended-grant'});
 const FIRE_PHASES=['before_admission','before_start','before_stop'],HEX64=/^[a-f0-9]{64}$/u;
 /** Core's receipt ceiling: Meri's own request bound (`maxRequestMs` ≤ 30000 across the routines owners). */
-export const ROUTINE_RECEIPT_MAX_MS=30000;
+export const ROUTINE_RECEIPT_MAX_MS=fixedHotPathBudget('native.routine.receipt');
 const RECEIPT_KEYS=['authorized','selectionSha256','binding','scopes','selectedClientId','destinationResolution','limits','checkedAtMs','expiresAtMs'];
 const LIMIT_KEYS=['maxCostMicrousd','maxRuntimeSeconds','retryLimit'],OPERATIONS=['schedule_task','update_scheduled_task','list_scheduled_tasks','cancel_scheduled_task'];
 const TOKEN=/^[\x21-\x7e]{1,8192}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,UUID_V4=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
@@ -56,7 +57,7 @@ export function createRoutinesServiceSecret(configuration){
 export function createRoutinesCoreClient(configuration){
  let c,origin,nativeCredentialFor;
  try{
-  c=own(configuration,['origin','getServiceSecret','now'],['nativeCredentials','fetchImpl','maxRequestMs']);origin=retainedOrigin(c.origin);
+  c=own(configuration,['origin','getServiceSecret','now','maxRequestMs'],['nativeCredentials','fetchImpl']);origin=retainedOrigin(c.origin);
   // The relay port (read-credential-relay.mjs) or the action-session owner itself: only its own `nativeCredentialFor` is borrowed.
   // Absent (the schedule worker has no sessions), the attended wires refuse and only the service-identity wire C is reachable.
   if(c.nativeCredentials!==undefined){
@@ -64,9 +65,9 @@ export function createRoutinesCoreClient(configuration){
    const method=Object.getOwnPropertyDescriptor(c.nativeCredentials,'nativeCredentialFor');if(!method||!Object.hasOwn(method,'value'))throw Error();nativeCredentialFor=method.value;
   }
   for(const fn of [nativeCredentialFor??(()=>{}),c.getServiceSecret,c.now,c.fetchImpl??globalThis.fetch])if(typeof fn!=='function'||types.isProxy(fn))throw Error();
-  if(c.maxRequestMs!==undefined&&(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000))throw Error();
+  if(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)throw Error();
  }catch{throw Object.assign(Error('ROUTINES_CONFIGURATION'),{code:'ROUTINES_CONFIGURATION'});}
- const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs??10000;
+ const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs;
  function session(raw){
   let s;try{s=data(own(raw,['binding','selectedClientId']));validateShape('RunBinding',s.binding);}catch{refuse('REQUEST');}
   if(typeof s.selectedClientId!=='string'||!UUID.test(s.selectedClientId))refuse('REQUEST');return s;

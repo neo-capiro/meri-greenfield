@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC actual control composition and loopback health listener, scripted SQL/Temporal/native/Core facts. No real services. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {assembleControl} from '../control.mjs';
@@ -29,7 +30,7 @@ function fixture(){const f=initialInputFixture();let revoked=false,starts=0,nati
   return Response.json({...receipt,identitySha256:request.identitySha256,conversationId:request.conversationId,selectedClientId:request.clientId,contextRevision:'current-1'});
  }});
  const client={connection:{async withDeadline(_at,fn){return fn();},async withAbortSignal(_s,fn){return fn();}},workflow:{async start(){starts++;},getHandle(){return {};}}};
- const assembly=assembleControl({configuration,pool,client,native:{async call(operation,input){nativeCalls++;if(operation==='worker/authorize'&&input.capability==='synthetic-task-cap')return {binding:input.binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'native',scopes,selectedClientId:id(5),policyRevision:'policy1',authorizationDecisionId:'synthetic-worker-decision',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};throw Error('uncomposed');}},productPorts:{identityContext:identity,conversationMembership:gate,conversationCurrentness}});
+ const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool,client,native:{async call(operation,input){nativeCalls++;if(operation==='worker/authorize'&&input.capability==='synthetic-task-cap')return {binding:input.binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'native',scopes,selectedClientId:id(5),policyRevision:'policy1',authorizationDecisionId:'synthetic-worker-decision',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};throw Error('uncomposed');}},productPorts:{identityContext:identity,conversationMembership:gate,conversationCurrentness}});
  const post=(path,body,credential='native')=>assembly.application.handle(new Request(`https://meri.invalid${path}`,{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)}));
  const getStream=credential=>assembly.application.handle(new Request(`https://meri.invalid/api/conversations/events/${binding.conversationId}/stream`,{method:'GET',headers:{authorization:`Bearer ${credential}`,'x-meri-resume-sequence':'0'}}));
  return {...f,member,assembly,post,getStream,duringHistoryRead(callback){onHistoryRead=callback;},counts:()=>({starts,nativeCalls}),revoke(){revoked=true;member.status='removed';}};
@@ -53,7 +54,7 @@ test('trusted startup composes canonical session, submit and membership history,
  }finally{f.assembly.close();}
 });
 test('actual readiness response names composition gaps and keeps release held',async()=>{
- const f=fixture(),listener=await listenRuntime({configuration,application:f.assembly.application,readiness:async()=>({product:f.assembly.productReadiness()})});
+ const f=fixture(),listener=await listenRuntime({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,application:f.assembly.application,readiness:async()=>({product:f.assembly.productReadiness()})});
  try{const response=await fetch(`http://127.0.0.1:${listener.address.port}/health/ready`);assert.equal(response.status,503);const body=await response.json();
   assert.equal(body.status,'not-ready');assert.equal(body.releaseAcceptance,'held');assert.ok(body.product.missingOwners.includes('schedules.dispatchWorker'));
  }finally{await listener.close();f.assembly.close();}

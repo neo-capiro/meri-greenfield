@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** The Objective `runs` port end to end in one process: lifecycle activity -> worker native port -> actual native capability
  * client -> private control native operation -> run owner -> run-start store (SYNTHETIC pg pool). Core, admission, the
  * conversation store and Temporal are SYNTHETIC ports; no Core claim, database, socket or Temporal server is involved. */
@@ -19,7 +20,7 @@ import {compileObjectiveGenerationConfiguration} from './configuration.mjs';
 const CONTROL='synthetic-control-capability-0123456789abcdef',origin='https://control.internal.invalid';
 function harness({admitFails=false,dispatchFails=false,enabled=true}={}){
  const f=runStartFixture(),{pool,state}=syntheticObjectivePool(),clock={now:NOW},calls={admit:[],dispatch:[],reads:0};
- const runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool,tenantId:f.tenantId,now:()=>clock.now});
+ const runStarts=createPostgresObjectiveRunStartStore({maxRequestMs:3000,enabled:true,pool,tenantId:f.tenantId,now:()=>clock.now});
  const run={binding:f.binding,state:'queued',scopes:[{tenantId:f.tenantId,kind:'client',resourceId:f.clientId,policyRevision:'policy1'}],createdAt:new Date(NOW).toISOString(),policyRevision:'policy1',
   versions:{imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'}};
  const conversation={saved:null};
@@ -28,14 +29,14 @@ function harness({admitFails=false,dispatchFails=false,enabled=true}={}){
  const dispatcher={async start({binding}){calls.dispatch.push(binding);if(dispatchFails)throw Object.assign(Error('lost'),{code:'TEMPORAL_DISPATCH_UNKNOWN'});}};
  const store={async readOptional(binding,_page,check){check();calls.reads++;return conversation.saved&&hash(conversation.saved.run.binding)===hash(binding)?structuredClone(conversation.saved):null;}};
  const owner=createObjectiveRunOwner(enabled?{enabled:true,runStarts,admission,dispatcher,store,now:()=>clock.now}:{});
- const app=createObjectiveRunsApplication({controlCapabilitySha256:capabilityDigest(CONTROL),owner,enabled:true,now:()=>clock.now});
+ const app=createObjectiveRunsApplication({maxRequestMs:10000,controlCapabilitySha256:capabilityDigest(CONTROL),owner,enabled:true,now:()=>clock.now});
  const requests=[];
- const native=createNativeCapabilityClient({configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:()=>clock.now,
+ const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:()=>clock.now,
   fetch:async(url,init)=>{const request=new Request(url,init);requests.push(request.url);return await app.handle(request)??Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404});}});
  const port=createObjectiveNativeRunsPort({native});
  const client={async readAdmission(){return {sourceAdmission:structuredClone(f.selection.sourceAdmission)};},
   async readRequest(){return {requestSha256:hash(f.selection.request),request:structuredClone(f.selection.request),executionContext:structuredClone(f.selection.executionContext),queuedType:f.selection.queuedType};}};
- const activities=createObjectiveGenerationActivities({clientFor:()=>client,runs:port,context:()=>({cancellationSignal:new AbortController().signal}),now:()=>clock.now});
+ const activities=createObjectiveGenerationActivities({maxRequestMs:15000,clientFor:()=>client,runs:port,context:()=>({cancellationSignal:new AbortController().signal}),now:()=>clock.now});
  const input={generationJobId:f.generationJobId,binding:f.binding,notAfterMs:NOW+3600000};
  return {f,state,clock,calls,conversation,owner,app,native,port,activities,input,requests};
 }
@@ -82,9 +83,9 @@ test('the native operations require the exact control capability, POST JSON and 
  for(const init of [{headers:{authorization:'Bearer wrong-capability','content-type':'application/json'}},{headers:{'content-type':'application/json'}},
   {headers:{authorization:'Bearer '+CONTROL,'content-type':'text/plain'}},{body:JSON.stringify({binding:h.f.binding,extra:1})},{body:'{'}])assert.equal((await call(init)).status,503);
  assert.equal((await call({},url+'?x=1')).status,503);assert.equal(await call({},origin+'/v1/objective-generation/other'),null);
- const disabled=createObjectiveRunsApplication({controlCapabilitySha256:capabilityDigest(CONTROL)});assert.equal(disabled.state(),'disabled');
+ const disabled=createObjectiveRunsApplication({maxRequestMs:10000,controlCapabilitySha256:capabilityDigest(CONTROL)});assert.equal(disabled.state(),'disabled');
  assert.equal(await disabled.handle(new Request(url,{method:'POST',body})),null,'disabled: the boundary answers 404, nothing is read');
- assert.throws(()=>createObjectiveRunsApplication({controlCapabilitySha256:capabilityDigest(CONTROL),enabled:true}),/OBJECTIVE_RUNS_UNAVAILABLE/u);
+ assert.throws(()=>createObjectiveRunsApplication({maxRequestMs:10000,controlCapabilitySha256:capabilityDigest(CONTROL),enabled:true}),/OBJECTIVE_RUNS_UNAVAILABLE/u);
 });
 
 test('the worker port refuses a reply for another binding or an open reply shape',async()=>{
@@ -104,12 +105,12 @@ test('declarations: absent is disabled everywhere; worker ports and control comp
   [{objectiveGeneration:{runs:{enabled:true,extra:1}}},'control'],[{objectiveGeneration:{start:{enabled:true,windowMs:1000}}},'control'],[{objectiveGeneration:{}},'conversation-runner']])
   assert.throws(()=>compileObjectiveGenerationConfiguration(c,role),/OBJECTIVE_GENERATION_CONFIGURATION/u);
  const native={call(){throw Error('MUST_NOT_CALL');}};
- assert.deepEqual(objectiveWorkerPorts({configuration:{},native}),{});
- assert.deepEqual(Object.keys(objectiveWorkerPorts({configuration:{objectiveGeneration:{runs:{enabled:true}}},native})),['runs']);
- assert.deepEqual(Object.keys(createObjectiveWorkerActivities(objectiveWorkerPorts({configuration:{objectiveGeneration:{runs:{enabled:true}}},native}))).length,4);
+ assert.deepEqual(objectiveWorkerPorts({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{},native}),{maxRequestMs:15000});
+ assert.deepEqual(Object.keys(objectiveWorkerPorts({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{objectiveGeneration:{runs:{enabled:true}}},native})),['maxRequestMs','runs']);
+ assert.deepEqual(Object.keys(createObjectiveWorkerActivities(objectiveWorkerPorts({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{objectiveGeneration:{runs:{enabled:true}}},native}))).length,4);
  const digest=capabilityDigest(CONTROL),configuration={limits:{requestMs:3000},temporal:{taskQueue:'q'}};
- assert.equal(composeObjectiveRuns({configuration,controlCapabilitySha256:digest}).state,'disabled');
- const declared=composeObjectiveRuns({configuration:{...configuration,objectiveGeneration:{runs:{enabled:true}}},controlCapabilitySha256:digest});
+ assert.equal(composeObjectiveRuns({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,controlCapabilitySha256:digest}).state,'disabled');
+ const declared=composeObjectiveRuns({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{...configuration,objectiveGeneration:{runs:{enabled:true}}},controlCapabilitySha256:digest});
  assert.equal(declared.state,'owners-unavailable','declared without Core authority or the dynamic-initial-run template: mounted, answers not-started');
  assert.deepEqual(declared.tables,[]);
 });

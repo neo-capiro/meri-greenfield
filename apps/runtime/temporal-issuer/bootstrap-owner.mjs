@@ -70,8 +70,8 @@ function previousCertificate(value,{role,taskArn,peerSanUri,revision}){
  * request fields never supply peer/task authority. No certificate is released
  * until one canonical durable registerCurrent transaction returns an exact row. */
 export function createTemporalIssuerBootstrapOwner({configuration,taskProof,registration,
- certificateIssuer,now=Date.now,maxRequestMs=3000,maxChallenges=128,
- challengeLifetimeMs=15000,certificateLifetimeMs=300000}={}){
+ certificateIssuer,now=Date.now,maxRequestMs,maxChallenges=128,
+ challengeLifetimeMs,certificateLifetimeMs}={}){
  const c=parseTemporalIssuerTaskAuthorityConfiguration(configuration);
  if(typeof taskProof?.readCurrent!=='function'||typeof registration?.readTaskCurrent!=='function'||
     typeof registration?.registerCurrent!=='function'||typeof registration?.readCurrent!=='function'||

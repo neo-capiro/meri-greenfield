@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC: conversation resume and fork END TO END through the real owners: the lifecycle service/journal and conversation store
  * (scripted SQL protocol fixture), the real action-session owner over the REAL prepared-candidate identity context (the application
  * context adapter's `resolveTransitionContext`; Core application-authority routes scripted), the production continuation authority
@@ -63,7 +64,7 @@ async function composition({retire,onStart}={}){
  const f=await lifecycleFixture({scopes}),base=createPostgresConversationStore({pool:f.pool}),journal=createInitialRunBindingJournal({pool:withInitialRunBindings(f),now:Date.now});
  const configurationSha256=compilePreparedRunConfigurationSha256(fx.configuration),scheduleExpiresAtMs=Date.parse(JSON.parse(c.allocationJson).schedule.expiresAt),proposeInitialExpiry=()=>Math.min(Date.now()+c.multiRun.runWindowMs,scheduleExpiresAtMs);
  const stops=[],calls={starts:[],continued:[]},state={stopMode:'record'};let n=700,allocation=null;
- const authority=createContinuationAuthority({store:base,stop:async({binding:b})=>{stops.push(b);if(state.stopMode==='record')await recordRetired(base,allocation);},selectedClientId:id(5),policyRevision:POLICY,versions,now:Date.now,fork:{initialBindings:journal,configurationSha256,proposeInitialExpiry}});
+ const authority=createContinuationAuthority({limits:{maxRequestMs:3000,authorityWindowMs:30000,admissionWindowMs:300000},store:base,stop:async({binding:b})=>{stops.push(b);if(state.stopMode==='record')await recordRetired(base,allocation);},selectedClientId:id(5),policyRevision:POLICY,versions,now:Date.now,fork:{initialBindings:journal,configurationSha256,proposeInitialExpiry}});
  const store=createPostgresConversationStore({pool:f.pool,transitionAuthority:authority.transitionAuthority});
  const nextRunOwner=createPreparedNextRunOwner({store:base,versions,admissionForBinding:async()=>{throw Error('no revocation in this suite');}});
  const core={requests:[]};
@@ -74,12 +75,12 @@ async function composition({retire,onStart}={}){
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),resolveTransitionContext:identityContext.resolveTransitionContext});
  const session=async hints=>(await sessions.issue({identityCredential:NATIVE,...(hints?{hints:{...hints,clientId:id(5)}}:{})})).credential,credential=await session();
  const dispatcher={async start(v){calls.starts.push(v.binding);await onStart?.({binding:v.binding,store});},async cancel(){},async continued(v){calls.continued.push(v.input);},async signal(){}};
- const basic=createConversationService({sessions,store,dispatcher,versions,newId:()=>id(n++)});
+ const basic=createConversationService({maxRequestMs:3000,sessions,store,dispatcher,versions,newId:()=>id(n++)});
  const nativeAdmission={admit:v=>authority.continuationAdmission.admit(v),retire:retire??(v=>authority.continuationAdmission.retire(v))};
- const service=createConversationLifecycleService({retention:null,service:basic,store,dispatcher,reconcileOriginal:f.reconcileOriginal,checkpoints:f.checkpoints,nativeAdmission,approvals:f.approvals,sessions,newId:()=>id(n++)});
+ const service=createConversationLifecycleService({maxRequestMs:3000,retention:null,service:basic,store,dispatcher,reconcileOriginal:f.reconcileOriginal,checkpoints:f.checkpoints,nativeAdmission,approvals:f.approvals,sessions,newId:()=>id(n++)});
  const {issuance,stats}=syntheticIssuance(fx);
  const prepareInitial=async({binding:b})=>{const record=await journal.read({binding:b},check),saved=await base.readOptional(b,{},check);if(!record||!saved)throw Error('not an admitted dynamic original');return issuance.prepare({binding:b,requestSha256:hash(saved.request),expiresAtMs:record.expiresAtMs});};
- const registry=createPreparedRunRegistry({issuance,issuanceIntent:async()=>({expiresAtMs:c.runtime.deadlineMs}),store:base,pool:{connect(){assert.fail('No database');}},client:{send(){assert.fail('No AWS');}},identity:{origin:c.identity.origin,credential:fx.secret.identity,commandContext:c.identity.commandContext,fetchImpl(){assert.fail('No authority network');}},controlCapability:fx.secret.control,objects:{},limits:{maxRequestMs:1000,maxFactBytes:131072,cleanupMs:1000},now:Date.now,allocate(){assert.fail('No physical allocation in this suite');},initialBindings:journal,prepareInitial,retireInitial(){assert.fail('No initial retirement in this suite');},configurationSha256});
+ const registry=createPreparedRunRegistry({fetchImpl(){assert.fail('No network in this suite');},budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),issuance,issuanceIntent:async()=>({expiresAtMs:c.runtime.deadlineMs}),store:base,pool:{connect(){assert.fail('No database');}},client:{send(){assert.fail('No AWS');}},identity:{origin:c.identity.origin,credential:fx.secret.identity,commandContext:c.identity.commandContext,fetchImpl(){assert.fail('No authority network');}},controlCapability:fx.secret.control,objects:{},limits:{maxRequestMs:1000,maxFactBytes:131072,cleanupMs:1000},now:Date.now,allocate(){assert.fail('No physical allocation in this suite');},initialBindings:journal,prepareInitial,retireInitial(){assert.fail('No initial retirement in this suite');},configurationSha256});
  const control=input=>service.control({credential,input});
  async function paused(){
   await basic.allocateInput({credential,input:f.input});await basic.submit({credential,input:f.input});allocation=await allocateOriginal(base,binding);

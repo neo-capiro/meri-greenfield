@@ -5,7 +5,7 @@ import {createPreparedRunIssuer} from './prepared-run-issuer.mjs';
 import {createPostgresModelGrantStore} from './prepared-run-issuance-postgres.mjs';
 import {createFileModelMaterialAuthority} from './model-material-authority.mjs';
 const fail=code=>{throw Object.assign(Error('MODEL_GRANT_'+code),{code:'MODEL_GRANT_'+code});};
-export function createModelGrantIssuer({store,authority,now=Date.now,maxRequestMs=3000}){
+export function createModelGrantIssuer({store,authority,now=Date.now,maxRequestMs}){
  const issuer=createPreparedRunIssuer({store,authority,now,maxRequestMs}),uncertain=new Set();
  const readFailure=error=>fail(error?.code==='PREPARED_RUN_ISSUER_INTENT_CONFLICT'?'INTENT_CONFLICT':error?.code==='PREPARED_RUN_ISSUER_EXPIRED'?'EXPIRED':'UNKNOWN');
  return Object.freeze({
@@ -47,6 +47,6 @@ export function createModelGrantIssuer({store,authority,now=Date.now,maxRequestM
  }});
 }
 /** Inert startup composition over the approved pool and existing owner-only material directory; no generation or I/O until used. */
-export function createPostgresModelGrants({pool,taskMaterialDirectory,now=Date.now,maxRequestMs=3000}){
+export function createPostgresModelGrants({pool,taskMaterialDirectory,now=Date.now,maxRequestMs}){
  return createModelGrantIssuer({store:createPostgresModelGrantStore({pool}),authority:createFileModelMaterialAuthority({taskMaterialDirectory,now}),now,maxRequestMs});
 }

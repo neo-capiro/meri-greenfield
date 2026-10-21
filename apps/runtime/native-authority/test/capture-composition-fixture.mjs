@@ -51,13 +51,13 @@ export async function composeCapture(t, {binding, versions, sessionId, selfStop,
   let runnerOrigin;
   const ingress = createTaskRouterIngress(), marker = ingress.issue(), routerLog = [];
   // control.mjs wires the router with maxRequestMs 8000 (a forwarded capture takes TASK_ROUTER_CAPTURE_MS).
-  const router = createTaskRouterApplication({authority: routerAuthority, networkReader, connector: tlsConnector(() => runnerOrigin), privateIngress: ingress,
+  const router = createTaskRouterApplication({startupMaxRequestMs:21000,authority: routerAuthority, networkReader, connector: tlsConnector(() => runnerOrigin), privateIngress: ingress,
     enabled: true, maxRequestMs: 8000, report: line => routerLog.push(JSON.parse(line))});
   const control = await listen({handle: async request => (await router.privateApplication.handle(request, {ingress: marker})) ?? null});
   const controlOrigin = 'https://localhost:' + control.address.port;
-  const pinned = await createPinnedNativeFetch({origin: controlOrigin, caFile, caSha256: sha(ca)});
+  const pinned = await createPinnedNativeFetch({timeoutMs:30000,origin: controlOrigin, caFile, caSha256: sha(ca)});
   // The runner side: its remote SDK process client (the CLI's process facade) and the real capture over that query.
-  const processClient = createRemoteSdkProcessClient({original, origin: controlOrigin, credential: taskToken, fetchImpl: pinned});
+  const processClient = createRemoteSdkProcessClient({limits:{maxRequestMs:8000},original, origin: controlOrigin, credential: taskToken, fetchImpl: pinned});
   const stopped = gate(), released = gate();
   const key = {projectKey: workspace.replace(/[^a-zA-Z0-9]/gu, '-'), sessionId};
   const transcripts = [{entries: [{type: 'system', opaque: {state: 'retained'}}, {type: 'user', uuid: id(863), message: {content: 'first prompt'}}]}];
@@ -70,7 +70,7 @@ export async function composeCapture(t, {binding, versions, sessionId, selfStop,
     async closeQuery() { if (selfStop) { void processClient.close().catch(() => {}); await stopped.promise; } }});
   const receiver = createRemoteNativeTaskApplication({original, controlCapabilitySha256: sha(controlToken), taskCapabilitySha256: sha(taskToken), taskArn,
     // The launched task already exists when a turn ends.
-    task: nativeTask, launchConfiguration: {binding, workspace, configDirectory, versions: {sdk: versions.sdk, cli: versions.cli},
+    task: nativeTask, launchConfiguration: {shutdownMs:1000,binding, workspace, configDirectory, versions: {sdk: versions.sdk, cli: versions.cli},
       expiresAtMs: original.expiresAtMs, executableSha256: sha(readFileSync(command)), launch: {command, args: [], env}, enabled: true},
     capture, enabled: true, limits: {maxRequestMs: 25000}});
   const runner = await listen({handle: async request => {
@@ -80,7 +80,7 @@ export async function composeCapture(t, {binding, versions, sessionId, selfStop,
   }});
   runnerOrigin = 'https://localhost:' + runner.address.port;
   t.after(async () => { router.close(); await runner.close(); await control.close(); });
-  const controller = createRemoteNativeTaskController({original, origin: controlOrigin, credential: controlToken, fetchImpl: pinned});
+  const controller = createRemoteNativeTaskController({limits:{maxRequestMs:8000},original, origin: controlOrigin, credential: controlToken, fetchImpl: pinned});
   const outcome = promise => promise.then(() => 'answered', error => error.code);
   return {original, plan, workspace, controller, router, routerLog, stopped: stopped.promise, release: () => released.resolve(),
     revoke() { revoked = true; },

@@ -21,8 +21,8 @@ export function createNativeSessionRegistration(configuration){
  const binding=data(c.binding);validateShape('RunBinding',binding);
  const versions=data(own(c.versions,['sdk','cli'])),enabled=c.enabled??false,now=c.now??Date.now;
  nativeSignal(c.signal);
- const l=own(c.limits??{},[],['maxFrameBytes','maxTotalBytes','maxWaiters','maxRequestMs']);
- const limits={maxFrameBytes:l.maxFrameBytes??9437184,maxTotalBytes:l.maxTotalBytes??67108864,maxWaiters:l.maxWaiters??16,maxRequestMs:l.maxRequestMs??3000};
+ const l=own(c.limits,['maxRequestMs'],['maxFrameBytes','maxTotalBytes','maxWaiters']);
+ const limits={maxFrameBytes:l.maxFrameBytes??9437184,maxTotalBytes:l.maxTotalBytes??67108864,maxWaiters:l.maxWaiters??16,maxRequestMs:l.maxRequestMs};
  const caps={maxFrameBytes:9437184,maxTotalBytes:67108864,maxWaiters:32,maxRequestMs:30000};
  if(typeof enabled!=='boolean'||typeof now!=='function'||!path(c.workspace)||!path(c.configDirectory)||versions.sdk!=='0.3.295'||versions.cli!=='2.1.295'||Object.keys(limits).some(k=>!Number.isSafeInteger(limits[k])||limits[k]<1||limits[k]>caps[k]))throw fault('CONFIGURATION');
  let at=now();if(!Number.isSafeInteger(at)||at<1||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<=at)throw fault('CONFIGURATION');

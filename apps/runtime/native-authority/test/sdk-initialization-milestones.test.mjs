@@ -94,9 +94,9 @@ async function runQuery(t, {refuseStart = false, endCli} = {}) {
     descriptorPolicy: {workspace, command, configParentDirectory: dirname(configDirectory), secureStorageDirectory: configDirectory},
     preparationAuthorizer: authorizer, parkedWorkspace: {restore: () => { throw Error('unused'); }, verify: () => { throw Error('unused'); }},
     nativeFactory: ({descriptor}) => {
-      const launchConfiguration = {binding, workspace, configDirectory, versions: {sdk: target.versions.sdk, cli: target.versions.cli}, expiresAtMs: original.expiresAtMs,
+      const launchConfiguration = {shutdownMs: 1000, binding, workspace, configDirectory, versions: {sdk: target.versions.sdk, cli: target.versions.cli}, expiresAtMs: original.expiresAtMs,
         executableSha256, launch: {command: descriptor.command, args: descriptor.args, env: descriptor.env}, enabled: true};
-      nativeTask = createIndependentNativeTask({original, launchConfiguration, deferredSpawn: true, maxRequestMs: 25000});
+      nativeTask = createIndependentNativeTask({startupMaxRequestMs:3000,original, launchConfiguration, deferredSpawn: true, maxRequestMs: 25000});
       return {task: nativeTask, launchConfiguration};
     }, enabled: true, limits: {maxRequestMs: 25000}});
   t.after(() => receiver.close().catch(() => {}));
@@ -119,7 +119,7 @@ async function runQuery(t, {refuseStart = false, endCli} = {}) {
     if (exchanges.at(-1).initializeResponse) { mark('initializeResponded'); if (endCli) process.kill(nativeTask.status().nativePid, endCli); }
     return response;
   };
-  const client = createRemoteSdkProcessClient({original, origin: 'https://runner.invalid', credential: taskToken, fetchImpl, startupMaxRequestMs: 23000});
+  const client = createRemoteSdkProcessClient({limits:{maxRequestMs:8000},original, origin: 'https://runner.invalid', credential: taskToken, fetchImpl, startupMaxRequestMs: 23000});
   const spawn = client.spawnClaudeCodeProcess;
   const processClient = {...client, spawnClaudeCodeProcess: descriptor => { mark('descriptorCaptured'); return spawn(descriptor); }};
   const query = createPreparedRunnerQuery({processClientFactory: () => processClient})({

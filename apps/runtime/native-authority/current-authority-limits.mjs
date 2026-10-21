@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Closed, validated bounds for the current-authority adapters and the reads gateway limits record (`gateway.limits` of
  * `createControlReadsComposer`). No I/O; importable by `config.mjs` without pulling the control tree.
  *
@@ -8,11 +9,11 @@
  * universal ceiling. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {deny} from '../../gateway/dispatch/operation-result.mjs';
-export const GATEWAY_LIMITS_DEFAULTS=Object.freeze({maxRequestBytes:65536,maxResponseBytes:2097152,maxRequestMs:30000,maxCleanupMs:3000});
+export const GATEWAY_LIMITS_DEFAULTS=Object.freeze({maxRequestBytes:65536,maxResponseBytes:2097152,maxRequestMs:fixedHotPathBudget('authority.gateway.request'),maxCleanupMs:fixedHotPathBudget('authority.gateway.cleanup')});
 export const GATEWAY_LIMIT_BOUNDS=Object.freeze({maxRequestBytes:Object.freeze([1024,131072]),maxResponseBytes:Object.freeze([1024,16777216]),maxRequestMs:Object.freeze([1000,60000]),maxCleanupMs:Object.freeze([100,60000])});
 /** Adapter bounds: one Core round trip set per port call, the fact size the gateway parses, the lease an observation may
  * carry (never past any Core expiry, the session or the caller deadline), and the proposal lifetime `preparePolicy` answers. */
-export const CURRENT_AUTHORITY_LIMITS=Object.freeze({maxRequestMs:10000,maxFactBytes:131072,maxLeaseMs:30000,proposalTtlMs:900000});
+export const CURRENT_AUTHORITY_LIMITS=Object.freeze({maxRequestMs:fixedHotPathBudget('authority.current.request'),maxFactBytes:131072,maxLeaseMs:fixedHotPathBudget('authority.current.lease'),proposalTtlMs:fixedHotPathBudget('authority.current.proposal')});
 const ADAPTER_BOUNDS=Object.freeze({maxRequestMs:Object.freeze([100,30000]),maxFactBytes:Object.freeze([1024,131072]),maxLeaseMs:Object.freeze([1000,300000]),proposalTtlMs:Object.freeze([1000,86400000])});
 function bounded(raw,defaults,bounds){
  let v;try{v=raw===undefined?{}:data(own(raw,[],Object.keys(bounds)));}catch{deny('GATEWAY_CONFIGURATION');}

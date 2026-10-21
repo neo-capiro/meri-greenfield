@@ -9,7 +9,7 @@ import {GatewayDenied,safeFailure,deny} from '../../../gateway/dispatch/operatio
 import {createDispatchLifetime} from '../../../gateway/dispatch/dispatch-lifetime.mjs';
 const same=(a,b)=>hash(a)===hash(b);
 export function createRetainedDelegatedTransport(configuration){
- const c=own(configuration,['origin','getCredentials','now','fetchImpl'],['maxRequestMs','maxResponseBytes']),origin=retainedOrigin(c.origin),maxRequestMs=c.maxRequestMs??15000,maxResponseBytes=c.maxResponseBytes??1048576;
+ const c=own(configuration,['origin','getCredentials','now','fetchImpl'],['maxRequestMs','maxResponseBytes']),origin=retainedOrigin(c.origin),maxRequestMs=c.maxRequestMs,maxResponseBytes=c.maxResponseBytes??1048576;
  if(typeof c.getCredentials!=='function'||typeof c.now!=='function'||typeof c.fetchImpl!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
  async function read(call,route){let life,acquired;try{const {path,method,body}=own(route,['path','method'],['body']),op=retainedOperation(call.operation);nativeSignal(call.signal);
   const changes=op.id==='get_research_portfolio_changes',fl=op.id==='get_florida_budget_project',query=new URLSearchParams();if(changes){query.set('limit',String(call.input.limit));if(call.input.cursor!==null)query.set('cursor',call.input.cursor);}

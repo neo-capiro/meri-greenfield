@@ -31,7 +31,7 @@ function fixture(){
  const authority={async authorize(q){policy.calls.push(q);if(policy.refuse===q.phase)throw Error('SYNTHETIC_CORE_DENIED');
   return {authorized:true,selectionSha256:q.selectionSha256,binding:q.selection.binding,scopes,selectedClientId:f.clientId,policyRevision:'policy1',
    configurationSha256:template.configurationSha256,checkedAtMs:now(),expiresAtMs:policy.expiresAtMs};}};
- const options={pool,store,authority,template,now};
+ const options={maxRequestMs:10000,pool,store,authority,template,now};
  return {conversations,bindings,store,f,template,policy,authority,options,scopes,now,admission:createObjectiveNativeAdmission(options)};
 }
 const counts=x=>({bindings:x.bindings.size,inputs:x.conversations.allocations.size,runs:x.conversations.state.runs.size});
@@ -67,6 +67,6 @@ test('a tampered or foreign record and an incomplete composition are refused bef
  await assert.rejects(x.admission.admit({record:x.f.record,extra:1}),/OBJECTIVE_ADMISSION_UNKNOWN|OBJECTIVE_ADMISSION_REQUEST/u);
  assert.deepEqual(counts(x),{bindings:0,inputs:0,runs:0});assert.equal(x.policy.calls.length,0);
  for(const change of [o=>{delete o.authority;},o=>{o.template={...o.template,runWindowMs:0};},o=>{o.template={...o.template,configurationSha256:'x'};},o=>{o.store={};},o=>{o.maxRequestMs=30001;}]){
-  const options={...x.options};change(options);assert.throws(()=>createObjectiveNativeAdmission(options),/OBJECTIVE_ADMISSION_CONFIGURATION/u);
+  const options={maxRequestMs:10000,...x.options};change(options);assert.throws(()=>createObjectiveNativeAdmission(options),/OBJECTIVE_ADMISSION_CONFIGURATION/u);
  }
 });

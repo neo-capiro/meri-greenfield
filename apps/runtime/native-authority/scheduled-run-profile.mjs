@@ -28,7 +28,7 @@ export function createScheduledRunProfile(configuration){
   if(typeof task.taskId!=='string'||!uuid.test(task.taskId)||!integer(task.version)||task.manifestSha256!==a.manifestSha256||
    typeof c.selectedClientId!=='string'||!uuid.test(c.selectedClientId)||
    !integer(c.maxCostMicroUSD)||typeof c.now!=='function')fail('CONFIGURATION');
-  c.maxRequestMs??=10000;if(!integer(c.maxRequestMs)||c.maxRequestMs>30000)fail('CONFIGURATION');
+  if(!integer(c.maxRequestMs)||c.maxRequestMs>30000)fail('CONFIGURATION');
   read=sdkMethod(c.scheduleOwner,'readOccurrenceForConversation');
   // Capture data facets without evaluating caller accessors. The canonical helper remains the only lineage owner.
   lineage=createScheduledJobLineage({store:{readOptional:sdkMethod(c.store,'readOptional'),initialInputs:facet(c.store,'initialInputs'),

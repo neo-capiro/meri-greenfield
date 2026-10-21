@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Canonical, task-keyed Temporal service certificate/revocation owner.
  * This adapter borrows a pg Pool and never owns or closes it. It requires a
  * primary writer, including for negative reads and post-COMMIT readback. */
@@ -99,7 +100,7 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
  }
  function query(client,text,values){
   const pending=track(pendingQueries,Promise.resolve().then(()=>client.query({text,values,
-   query_timeout:3000})));
+   query_timeout:fixedHotPathBudget('temporal.issuer.registration.query')})));
   // A client-side timeout or transport error does not prove the primary server
   // stopped processing that statement, even if a later ROLLBACK is acknowledged.
   pending.then(undefined,()=>{uncertain=true;});
@@ -112,7 +113,7 @@ export function createTemporalIssuerServiceTaskRegistrationPg({pool,expectedRole
   pending.then(()=>{borrowSettled=true;},()=>{borrowSettled=true;});
   let timer,abort;
   const stopped=new Promise((_,reject)=>{
-   timer=setTimeout(()=>reject(unavailable()),2000);timer.unref?.();
+   timer=setTimeout(()=>reject(unavailable()),fixedHotPathBudget('temporal.issuer.registration.cleanup'));timer.unref?.();
    abort=()=>reject(unavailable());signal?.addEventListener('abort',abort,{once:true});
   });
   try{return await Promise.race([pending,stopped]);}

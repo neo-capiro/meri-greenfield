@@ -54,7 +54,7 @@ const versionSubjects=(binding,version)=>[{tenantId:binding.tenantId,kind:'conve
  {tenantId:version.binding.tenantId,kind:'artifact',subjectId:version.artifactId}];
 /** The signing key is a secret file read through the runtime's owner-only readSecret. */
 export async function readDownloadLinkKey(keyFile){const key=await readSecret(keyFile);if(key.length<MIN_KEY_BYTES)throw fault('DOWNLOAD_LINK_CONFIGURATION');return key;}
-export function createDownloadLinkApplication({documents,sessions,key,generation,now=Date.now,ttlMs=60000,maxRequestMs}){
+export function createDownloadLinkApplication({documents,sessions,key,generation,now=Date.now,ttlMs,maxRequestMs}){
  if(typeof documents?.handle!=='function'||typeof sessions?.authenticateSession!=='function'||typeof sessions?.readCurrentState!=='function'||typeof generation!=='function'||!Number.isSafeInteger(ttlMs)||ttlMs<1000||ttlMs>MAX_TTL_MS||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000)throw fault('DOWNLOAD_LINK_CONFIGURATION');
  const codec=createSignedDownloadCodec({key,now});
  const forward=(request,intent,body,signal)=>{const serialized=JSON.stringify(body),headers=new Headers(request.headers);headers.set('content-length',String(Buffer.byteLength(serialized)));

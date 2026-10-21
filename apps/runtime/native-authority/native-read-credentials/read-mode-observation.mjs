@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Fixed native chat-mode observation. Current grants and producer consumption remain separate owners. */
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -10,7 +11,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {readJsonResponse,responseBody,cancelBody} from '../../../gateway/sources/json-response.mjs';
 import {safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 
-export const READ_MODE_MAX_REQUEST_MS=3000;
+export const READ_MODE_MAX_REQUEST_MS=fixedHotPathBudget('native.read.observation');
 const MAX_RESPONSE_BYTES=4096,ROUTE='/api/clio/application-authority/read-mode-observation',SHA=/^[a-f0-9]{64}$/u;
 const MODES=new Set(['off','shadow','enforce']),token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(value);
 const refuse=code=>{throw nativeReadFault(code);},same=(a,b)=>hash(a)===hash(b);

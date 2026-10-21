@@ -19,7 +19,7 @@ test('canonical extraction preserves the complete launch request and allocator i
  assert.equal(JSON.stringify(compiled.spec),JSON.stringify(expected));
  assert.equal(compiled.taskRequestSha256,hash(expected));
  const noEffect=()=>assert.fail('compilation must not call an owner');
- const allocator=createNativeTaskAllocator({...f,journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},qualification:{attempt:1,policyRevision:'a'.repeat(64)},grantIntents:[],allocationSha256:'b'.repeat(64)});
+ const allocator=createNativeTaskAllocator({maxRequestMs:30000,startupMs:180000,...f,journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},qualification:{attempt:1,policyRevision:'a'.repeat(64)},grantIntents:[],allocationSha256:'b'.repeat(64)});
  assert.equal(allocator.intent.taskRequestSha256,compiled.taskRequestSha256);
  assert.ok(Object.isFrozen(compiled.spec.tags[0]));
  f.taskRequest.networkConfiguration.awsvpcConfiguration.subnets[0]='subnet-ffffffff';
@@ -46,7 +46,7 @@ function stopFixture({stoppedAfterDescribes,clockStepMs=0}){
   if(command instanceof DescribeTasksCommand){if(state.stopRequests)state.describesAfterStop++;return {tasks:[task()],failures:[]};}
   throw Error('unexpected ECS command');}};
  const saved={state:'ADMITTED',resource};
- const allocator=createNativeTaskAllocator({...f,now:()=>clock,enabled:true,client,grantIntents,qualification:{attempt:1,policyRevision:'a'.repeat(64)},allocationSha256:'b'.repeat(64),
+ const allocator=createNativeTaskAllocator({maxRequestMs:30000,startupMs:180000,...f,now:()=>clock,enabled:true,client,grantIntents,qualification:{attempt:1,policyRevision:'a'.repeat(64)},allocationSha256:'b'.repeat(64),
   journal:{claim:()=>assert.fail('stop never claims'),async read(){return {record:{...saved}};},async record(value){state.records.push(value);}},authority:{verify:()=>assert.fail('stop needs no task authority')},
   admission:{admit:()=>assert.fail('no admission'),read:()=>assert.fail('no admission'),async revoke(){return {state:'REVOKED',revocationProven:true,grantIds:grantIntents.map(g=>g.grantId),taskArn};}}});
  return {allocator,state,taskArn};

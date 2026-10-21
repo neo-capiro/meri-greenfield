@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Pre-deploy rehearsal of the browser side of D3 against the live control composition under measured Core latencies.
  *
  * Composed for real: assemblePreparedCandidate + assembleControl exactly as startControl mounts them (the public action-session
@@ -47,13 +48,13 @@ function compose({profile,stopMs=1000}){
   return Response.json({principal,identityRevision:'identity-revision',identitySha256:body.identitySha256,conversationId:f.binding.conversationId,selectedClientId:clientId,contextRevision:'context-revision',checkedAtMs,expiresAtMs});
  }
  const effects={starts:0,cancels:0,stops:0};
- const candidate=assemblePreparedCandidate({configuration,pool:sql.pool,ecs:{send(){throw Error('No AWS');}},objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:f.secret,fetchImpl,allocate(){throw Error('No allocation');}});
+ const candidate=assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool:sql.pool,ecs:{send(){throw Error('No AWS');}},objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:f.secret,fetchImpl,allocate(){throw Error('No allocation');}});
  const client={connection:{withDeadline(_deadline,fn){return fn();},withAbortSignal(_signal,fn){return fn();}},
   workflow:{async start(){await delay(TEMPORAL_MS);effects.starts++;},getHandle(){return {async signal(){await delay(TEMPORAL_MS);},async cancel(){await delay(TEMPORAL_MS);effects.cancels++;}};}}};
  // control.mjs routes the stop-only native call around its fence; here it answers after the modelled ECS stop and revocation.
  const native=Object.freeze({...candidate.native,async call(operation,input,options={}){if(operation!=='execution/kickoff/stop')return candidate.native.call(operation,input,options);
   await delay(stopMs,options.signal);effects.stops++;return {binding:input.binding,executionId:input.executionId,expiresAtMs:Date.now()+600000};}});
- const assembly=assembleControl({configuration,pool:sql.pool,client,native,canonicalProductPorts:candidate.productPorts});candidate.bindApplication(assembly.application);
+ const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool:sql.pool,client,native,canonicalProductPorts:candidate.productPorts});candidate.bindApplication(assembly.application);
  const at=()=>Math.round(performance.now()-started);
  /** A browser request through the frontend's 30 s budget: status, body, duration and the Core calls it made. */
  async function call(name,method,path,{body,credential,headers={},signal}={}){

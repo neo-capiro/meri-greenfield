@@ -1,3 +1,5 @@
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC S3 client, pool and Core artifact authority only. The actual artifact storage, recovery binding, product-port
  * composer and control assembly run; no AWS, database, credential or network is used. */
 import test from 'node:test';
@@ -70,12 +72,12 @@ test('an enabled store composes through the production composer without IO and p
 });
 
 test('the production registration constructs the pinned SDK client synchronously with no request',()=>{
- const ports=createDocumentsFamily(Object.freeze({configuration:base({artifacts:artifacts()}),pool,now}));
+ const ports=createDocumentsFamily(Object.freeze({budgets:testBudgetTable,configuration:base({artifacts:artifacts()}),pool,now}));
  assert.equal(typeof ports.ports.artifactStore.verifyPrivate,'function');assert.equal('artifactOptionsOwner' in ports.ports,false);
 });
 
 test('declared retention binds enabled publication custody to control\'s own recovery forwarder, and refuses to compose without it',()=>{
- const f=family(),recovery=createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({pool,now})});
+ const f=family(),recovery=createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({maxRequestMs:10000,pool,now})});
  const configuration=base({retention:{enabled:true},artifacts:artifacts({tenantId:'tenant-a'})});
  assert.deepEqual(f.factory(Object.freeze({configuration,pool,now})),{ports:{}},'no recovery forwarder, no store');assert.equal(f.clients.length,0);
  const {ports}=f.factory(Object.freeze({configuration,pool,now,artifactRecovery:recovery.context}));
@@ -85,7 +87,7 @@ test('declared retention binds enabled publication custody to control\'s own rec
 
 test('actual control assembly: the store composes, retention recovery is composed, options stay a named gap, documents answer 503',async()=>{
  const f=family();let seen;
- const assembly=assembleControl({configuration:base({retention:{enabled:true},artifacts:artifacts({tenantId:'tenant-a'})}),pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},now,
+ const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:base({retention:{enabled:true},artifacts:artifacts({tenantId:'tenant-a'})}),pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},now,
   productPortsFactory:createProductPortsFactory({families:[['documents',context=>{seen=context;return f.factory(context);}]]})});
  try{
   assert.ok(seen.artifactRecovery);assert.deepEqual(assembly.retention.artifactRecovery(),{required:true,state:'composed'});

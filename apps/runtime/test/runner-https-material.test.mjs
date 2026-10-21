@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {request as httpsRequest} from 'node:https';
@@ -30,7 +31,7 @@ test('runner startup requires exact original-bound TLS files before opening HTTP
 
 test('the trusted runner material serves the existing receiver over TLS 1.3',async t=>{
  const f=fixture(t),tls=await loadRunnerHttpsMaterial({original:f.original,taskArn:f.candidate.taskArn,tls:f.tls,read:f.read});
- const listener=await listenRuntime({configuration:{http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://client.invalid'},limits:{requestMs:1000,shutdownMs:1000}},tls,
+ const listener=await listenRuntime({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://client.invalid'},limits:{requestMs:1000,shutdownMs:1000}},tls,
   application:{handle:async request=>Response.json({path:new URL(request.url).pathname})},readiness:async()=>({})});
  t.after(()=>listener.close());
  const body=await new Promise((resolve,reject)=>{

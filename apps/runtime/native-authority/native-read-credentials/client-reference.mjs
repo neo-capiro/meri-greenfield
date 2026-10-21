@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Fixed native name/UUID selection; current grants and selector use-time binding stay with CONTROL. */
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -10,7 +11,7 @@ import {readJsonResponse,responseBody,cancelBody} from '../../../gateway/sources
 import {safeFailure} from '../../../gateway/dispatch/operation-result.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,SHA=/^[a-f0-9]{64}$/u;
-export const CLIENT_REFERENCE_MAX_REQUEST_MS=3000;
+export const CLIENT_REFERENCE_MAX_REQUEST_MS=fixedHotPathBudget('native.read.reference');
 const MAX_REQUEST_MS=CLIENT_REFERENCE_MAX_REQUEST_MS,MAX_RESPONSE_BYTES=4096,ROUTE='/api/clio/clients/check-ref';
 const refuse=code=>{throw nativeReadFault(code);};
 const referenceValid=value=>typeof value==='string'&&value.length<=80&&value.trim().length>0;

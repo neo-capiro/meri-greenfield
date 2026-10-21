@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** The run's CURRENT authority, Meri side, established per check from Core's existing routes with the user's own live-session
  * bearer (RC1 option A relay; lane T, PR #121 6247577743 item 5). Construction is inert: no secret read, SQL, fetch or timer.
  *
@@ -372,6 +373,6 @@ export function createControlCurrentAuthority(options){
  const adapters=createCurrentAuthorityAdapters({origin:ownedValue(identity,'origin'),nativeCredentials:c.nativeCredentials,readSecret:c.readSecret,reservedFiles,secretFiles,
   ...(execution===undefined?{}:{coreOrigin:ownedValue(execution,'coreOrigin'),serviceSecretFile:ownedValue(execution,'serviceSecretFile')}),
   sourceEnabled:ownedValue(configuration,'sourceEnabled')===true,now:c.now??Date.now,...(c.fetchImpl===undefined?{}:{fetchImpl:c.fetchImpl}),...(c.newId===undefined?{}:{newId:c.newId}),
-  limits:{maxRequestMs:Math.min(Number.isSafeInteger(requestMs)?requestMs:10000,10000)}});
+  limits:{maxRequestMs:Math.min(Number.isSafeInteger(requestMs)?requestMs:fixedHotPathBudget('authority.current.request'),fixedHotPathBudget('authority.current.request'))}});
  return Object.freeze({gateway:Object.freeze({authority:adapters.authority,limits:compileGatewayLimits(ownedValue(reads,'gateway'))}),owners:adapters.owners,bind:adapters.bind,state:adapters.state,missing:adapters.missing});
 }

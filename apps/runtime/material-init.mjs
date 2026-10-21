@@ -162,7 +162,7 @@ async function releaseOwned(state){
 
 /** The delivery port is installed only by a trusted shipping composition (for example exact-version ECS secret injection). No
  * ambient network, task metadata, browser input, capability minting or fallback credentials are consulted. */
-export async function materializeStaticProductMaterial({expected,delivery,now=Date.now,signal,maxRequestMs=5000}){
+export async function materializeStaticProductMaterial({expected,delivery,now=Date.now,signal,maxRequestMs}){
  const e=parseStaticProductMaterialExpected(expected);nativeSignal(signal);
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||typeof delivery?.fetch!=='function')fail('CONFIGURATION_REFUSED');
  // The process must be the role's writer: the reader itself, or root (CAP_CHOWN only) for model-proxy.

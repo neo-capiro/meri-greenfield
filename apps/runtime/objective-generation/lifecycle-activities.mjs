@@ -25,7 +25,7 @@ const sha=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
 const states=['queued','starting','running','completed','failed','cancelled','paused','waiting-for-approval'];
 const unconfirmed=()=>data({kind:'unconfirmed'});
 
-export function createObjectiveGenerationActivities({clientFor,runs,context=()=>Context.current(),now=Date.now,maxRequestMs=15000}={}){
+export function createObjectiveGenerationActivities({clientFor,runs,context=()=>Context.current(),now=Date.now,maxRequestMs}={}){
  if(clientFor!==undefined&&typeof clientFor!=='function'||runs!==undefined&&(typeof runs?.start!=='function'||typeof runs?.read!=='function')||
     typeof context!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw fault();
  function parse(value,extra=[]){

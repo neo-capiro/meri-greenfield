@@ -1,3 +1,4 @@
+import {budget,fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Write-intent execution composition, Meri side (dot PR #121 6246551969, items 1-7 assigned to R0). One trusted in-process
  * owner per control process; construction is inert (no SQL, native call, secret read, timer or fetch).
  *
@@ -88,7 +89,7 @@ export function createIntentExecutionOwner(configuration){
  const c=own(configuration??{},['enabled'],[...OWNERS,'sourceEnabled','fetchImpl','now','newId','limits']);
  if(typeof c.enabled!=='boolean'||c.sourceEnabled!==undefined&&typeof c.sourceEnabled!=='boolean')throw configurationFault();
  const now=c.now??Date.now,newId=c.newId??(()=>globalThis.crypto.randomUUID()),fetchImpl=c.fetchImpl??globalThis.fetch;
- const limits=c.limits===undefined?{maxRequestMs:10000,maxFactBytes:131072,maxResponseBytes:262144,maxCleanupMs:3000}:data(own(c.limits,['maxRequestMs','maxFactBytes','maxResponseBytes','maxCleanupMs']));
+ const limits=data(own(c.limits,['maxRequestMs','maxFactBytes','maxResponseBytes','maxCleanupMs']));
  if(!ordinary(now)||!ordinary(newId)||!ordinary(fetchImpl)||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000||
   !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072||!Number.isSafeInteger(limits.maxResponseBytes)||limits.maxResponseBytes<1||limits.maxResponseBytes>1048576||
   !Number.isSafeInteger(limits.maxCleanupMs)||limits.maxCleanupMs<1||limits.maxCleanupMs>60000)throw configurationFault();
@@ -110,7 +111,7 @@ export function createIntentExecutionOwner(configuration){
    const facts=executionGrantFacts({verified,admitted:{allocationJson:run.allocationJson,grantFactsJsons:run.grantFactsJsons}});
    const installer=createExecutionGrantAdmission({pool:c.pool,allocationJson:run.allocationJson,grantFactsJsons:run.grantFactsJsons,namespace:'product',now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes}});
    return installer.install({facts,expiresAtMs:verified.expiresAtMs,signal});},
-  readDecision:value=>approvals.readDecision(value),limits:{maxRequestMs:limits.maxRequestMs,maxResponseBytes:Math.min(limits.maxResponseBytes,65536),maxSkewMs:1000}}):undefined;
+  readDecision:value=>approvals.readDecision(value),limits:{maxRequestMs:limits.maxRequestMs,maxResponseBytes:Math.min(limits.maxResponseBytes,65536),maxSkewMs:fixedHotPathBudget('native.execution.skew')}}):undefined;
  const composed=()=>{if(state()!=='composed')throw unavailable();};
  async function contextFor(proposal){
   composed();const p=data(proposal);assertProposalIntegrity(p);
@@ -195,7 +196,7 @@ export function createControlIntentExecution({readSecret,owners={}}={}){
  function build(context){
   const configuration=context.configuration,intents=compileIntentsConfiguration(configuration),e=intents.execution;
   const clientResolution=configuration.nativeCandidate===undefined?null:compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions).identity.commandContext.clientResolution;
-  return createIntentExecutionOwner({enabled:intents.enabled===true&&e!==undefined,now:context.now,sourceEnabled:configuration.sourceEnabled===true,
+  return createIntentExecutionOwner({fetchImpl:context.fetchImpl,limits:{maxRequestMs:budget(context.budgets,'native.execution.request'),maxFactBytes:131072,maxResponseBytes:262144,maxCleanupMs:budget(context.budgets,'native.execution.cleanup')},enabled:intents.enabled===true&&e!==undefined,now:context.now,sourceEnabled:configuration.sourceEnabled===true,
    ...(intents.enabled===true&&e!==undefined?{trust:{issuer:e.issuer,keys:e.keys},pool:context.pool,allocations:createPostgresConversationStore({pool:context.pool}).allocations,
     selectionFor:async()=>clientResolution,source:{origin:e.coreOrigin,getServiceSecret:async()=>(await readSecret(e.serviceSecretFile)).toString('utf8').trim()},...extra}:{})});
  }

@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {startTemporalWorker,BROKER_NATIVE_MS} from '../temporal-worker.mjs';
-import {RUNNER_LOAD_CONTROL_MARGIN_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_LOAD_CONTROL_MARGIN_MS,fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 
-const configuration={temporal:{address:'temporal.synthetic.invalid:7233',namespace:'meri',taskQueue:'meri-conversations',tls:{}},native:{capabilityFile:'/synthetic/not-read'},limits:{requestMs:100,shutdownMs:100},http:{}};
+const configuration={temporal:{address:'temporal.synthetic.invalid:7233',namespace:'meri',taskQueue:'meri-conversations',tls:{}},native:{capabilityFile:'/synthetic/not-read'},runWindowMs:900000,limits:{startupMs:30000,requestMs:25000,shutdownMs:10000},http:{}};
 function boundaries(){
  const calls=[];let fail,state='INITIALIZED',resolveRun;
  const run=new Promise(resolve=>{resolveRun=resolve;});
@@ -39,7 +39,15 @@ test('real startup orders issuer before private material and exposes asynchronou
 test('the broker native client allows one control margin above a task router exchange',async()=>{
  const b=boundaries(),stub=b.owners.nativeClient;let options;b.owners.nativeClient=value=>{options=value;return stub(value);};
  const runtime=await startTemporalWorker(configuration,{testOwners:b.owners});
- try{const router=Number(/createTaskRouterApplication\(\{[^}]*maxRequestMs:(\d+)\}\)/u.exec(readFileSync(new URL('../control.mjs',import.meta.url),'utf8'))[1]);
+ try{const router=fixedHotPathBudget('native.transport.request');assert.match(readFileSync(new URL('../control.mjs',import.meta.url),'utf8'),/createTaskRouterApplication\(\{[^\n]*maxRequestMs:budget\(budgets,'native\.transport\.request'\)/u);
   assert.equal(options.maxRequestMs,BROKER_NATIVE_MS);assert.ok(BROKER_NATIVE_MS>=router+RUNNER_LOAD_CONTROL_MARGIN_MS,`broker ${BROKER_NATIVE_MS} ms against router ${router} ms`);}
+ finally{await runtime.close();}
+});
+
+test('Temporal startup passes the explicit connection allowance before creating the worker',async()=>{
+ const b=boundaries(),connect=b.owners.connect;let options;
+ b.owners.connect=async value=>{options=value;return connect(value);};
+ const runtime=await startTemporalWorker(configuration,{testOwners:b.owners});
+ try{assert.equal(options.connectTimeout,10000);assert.ok(b.calls.indexOf('connect')<b.calls.indexOf('create'));}
  finally{await runtime.close();}
 });

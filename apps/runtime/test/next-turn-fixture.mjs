@@ -60,7 +60,7 @@ function memorySessionClient(snapshot){
 export async function initializedMirror(binding,{sessionKey=null,nextTurn,snapshot,memory=false}={}){
  const plain=async()=>({store:{async load(){return null;},async append(){},async listSubkeys(){return [];}},async settle(){},async close(){}});
  const client=memory?memorySessionClient(snapshot):{async snapshot(){return structuredClone(snapshot);},async register(){assert.fail('not reached');},async load(){assert.fail('not reached');},async append(){assert.fail('not reached');},async listSubkeys(){assert.fail('not reached');}};
- const mirror=createCheckpointSessionFactory({binding,client:{async load(){},async listSubkeys(){}},factory:nextTurn===undefined?plain:value=>createContinuationRuntimeSdkSession({client,binding:value.binding,sessionKey:value.sessionKey,nextTurn:value.nextTurn})});
+ const mirror=createCheckpointSessionFactory({binding,client:{async load(){},async listSubkeys(){}},factory:nextTurn===undefined?plain:value=>createContinuationRuntimeSdkSession({...{timeoutMs:15000,},client,binding:value.binding,sessionKey:value.sessionKey,nextTurn:value.nextTurn})});
  const prepared=await hostPaths(()=>mirror.factory({binding,sessionKey,...(nextTurn===undefined?{}:{nextTurn})}));
  return Object.freeze({...mirror,prepared});
 }
@@ -81,7 +81,7 @@ export async function fixture({measureLaunch}={}){
  const store={async readOptional(binding){return structuredClone(saved.get(key(binding))??null);},async read(binding){return structuredClone(saved.get(key(binding)));},allocations:{async read(){return {record:null};}}};
  const capabilityAuthority={async generate({issuanceKey}){return {grantId:id(900),capability:'synthetic-dynamic-task-'+issuanceKey.slice(0,8),materialRef:'ref-'+issuanceKey.slice(0,8)};},async retrieve({materialRef}){return {state:'PRESENT',capability:'synthetic-dynamic-task-'+materialRef.slice(4)};},async status(){return {state:'ABSENT'};}};
  const modelGrants={async issue({intent}){const proxyCredential='synthetic-dynamic-model-'+intent.issuanceKey.slice(0,16);return {...intent,grantId:id(901),capabilitySha256:capabilityDigest(proxyCredential),proxyCredential};}};
- const ports=createPreparedRunBindings({configuration:f.configuration,pool:{connect(){assert.fail('No database');}},store,credentials:{control:f.secret.control},issuanceStore:createMemoryIssuanceStore(),capabilityAuthority,modelGrants,initialBindings,now:()=>f.now});
+ const ports=createPreparedRunBindings({limits:{maxRequestMs:3000,maxFactBytes:131072},configuration:f.configuration,pool:{connect(){assert.fail('No database');}},store,credentials:{control:f.secret.control},issuanceStore:createMemoryIssuanceStore(),capabilityAuthority,modelGrants,initialBindings,now:()=>f.now});
  /** A new user conversation: Core's binding, the accepted run/request, the 0017 admission, then control's issued facts. */
  async function newConversation(n,window){
   const binding={...f.binding,conversationId:id(n),runId:id(n+1),attemptId:id(n+2),workerId:id(n+3)},scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision}];

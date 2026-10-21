@@ -8,7 +8,7 @@ import {taskRouterClientIPv4,taskRouterFault} from './task-router-boundary.mjs';
 const getters=Object.fromEntries(['url','method','headers','body','signal'].map(key=>[key,Object.getOwnPropertyDescriptor(Request.prototype,key).get]));
 const deny=()=>Response.json({error:{code:'RUNNER_POSTSTART_REFUSED'}},{status:403,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 export function createRunnerPoststartApplication(configuration){
- const c=own(configuration,['authority','privateIngress'],['now','maxRequestMs','maxConcurrent']),challenge=storageMethod(c.authority,'challenge'),redeem=storageMethod(c.authority,'redeem'),assertIngress=storageMethod(c.privateIngress,'assert'),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,maxConcurrent=c.maxConcurrent??16;let active=0;
+ const c=own(configuration,['authority','privateIngress'],['now','maxRequestMs','maxConcurrent']),challenge=storageMethod(c.authority,'challenge'),redeem=storageMethod(c.authority,'redeem'),assertIngress=storageMethod(c.privateIngress,'assert'),now=c.now??Date.now,maxRequestMs=c.maxRequestMs,maxConcurrent=c.maxConcurrent??16;let active=0;
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxConcurrent)||maxConcurrent<1||maxConcurrent>64)throw taskRouterFault();
  async function handle(request,marker){let life,reserved=false;try{
   const r=Object.fromEntries(Object.entries(getters).map(([k,get])=>[k,get.call(request)])),url=new URL(r.url);

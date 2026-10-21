@@ -25,7 +25,7 @@ export function coreFixture(options={}){
    {...principal,status:'active',role:state.role,permissions:state.permissions,clientIds:state.clientIds,membershipRevision:state.membershipRevision,checkedAtMs:now(),expiresAtMs:state.nativeExpiry};
   state.mutate?.(value,path);return state.response?.(value,path)??Response.json(value);
  };
- const configuration={origin,fetchImpl,now,enabled:true},client=createNativeToolAuthorityClient(configuration);
+ const configuration={maxRequestMs:3000,origin,fetchImpl,now,enabled:true},client=createNativeToolAuthorityClient(configuration);
  return {state,now,principal,fetchImpl,configuration,client,request:()=>({credential:'SYNTHETIC_NATIVE',deadlineMs:now()+10000})};
 }
 function retarget(value,old,seen=new Set()){if(!value||typeof value!=='object'||seen.has(value))return;seen.add(value);for(const [key,v] of Object.entries(value)){if(v===old.tenantId)value[key]=uuid('b');else if(v===old.actorId)value[key]=uuid('c');else retarget(v,old,seen);}}
@@ -42,7 +42,7 @@ export async function ownerFixture(id='read_bill_text',options={}){
  const currentOwner=createPostgresAdmittedRunOwner({pool,allocationJson:JSON.stringify(allocated),grantFactsJsons:[JSON.stringify(grant)],now:f.now,limits:{maxRequestMs:1000,maxFactBytes:131072}}),approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[operation],maxExecuteMs:10000,maxRequestBytes:65536,maxResponseBytes:1048576};
  const entry={binding:f.binding,runRequestSha256:hash(runRequest),grantId:grant.grantId,taskArn:grant.qualificationBinding.workerArn,issuanceFactsSha256:'f'.repeat(64),allocationSha256:hash(allocated),scopes:f.scopes,policyRevision:f.policyRevision,readConfigurationSha256:hash(approvedReads),checkedAtMs:f.now(),expiresAtMs:f.deadlineMs};
  const readCurrentEntry=async()=>{state.entryReads++;const row={...entry,checkedAtMs:f.now()};state.entryMutator?.(row);return row;};
- const taskVerifier=createReadTaskVerifier({allocationJson:JSON.stringify(allocated),grantFactsJsons:[JSON.stringify(grant)],grantId:grant.grantId,currentOwner,readCurrentEntry,taskArn:entry.taskArn,issuanceFactsSha256:entry.issuanceFactsSha256,runRequestSha256:entry.runRequestSha256,scopes:f.scopes,approvedReads,expiresAtMs:f.deadlineMs,enabled:true,now:f.now});
+ const taskVerifier=createReadTaskVerifier({maxRequestMs:3000,allocationJson:JSON.stringify(allocated),grantFactsJsons:[JSON.stringify(grant)],grantId:grant.grantId,currentOwner,readCurrentEntry,taskArn:entry.taskArn,issuanceFactsSha256:entry.issuanceFactsSha256,runRequestSha256:entry.runRequestSha256,scopes:f.scopes,approvedReads,expiresAtMs:f.deadlineMs,enabled:true,now:f.now});
  const core=coreFixture({now:f.now});core.state.nativeExpiry=f.now()+60000;core.state.clientIds=[...(options.clientIds??scene.visibleClientIds??[])];
  if(scene.nativeConversation)core.state.context={conversationId:scene.nativeConversation.conversationId,selectedClientId:scene.nativeConversation.clientId};
  if(options.actorRole)core.state.role=options.actorRole;const coreAuthority=core.client;

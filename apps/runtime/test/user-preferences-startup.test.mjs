@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Actual control assembly/startup and preferences owners. SQL, secrets, Temporal, native startup and listeners are SYNTHETIC.
  * Prepared allocation/compiler and unrelated artifact recovery are borrowed; no live database, schema or service is qualified. */
 import test,{mock} from 'node:test';import assert from 'node:assert/strict';
@@ -47,7 +48,7 @@ const cleanup=['listener-close:public','listener-close:private','candidate-close
 test('actual assembly leaves absent/false preferences inert and never closes the borrowed pool',async()=>{
  for(const enabled of [undefined,false]){
   const s=scenario({enabled}),configuration={...s.configuration};if(enabled===undefined)delete configuration.userPreferences;
-  const assembly=assembleControl({configuration,pool:s.pool,client:{workflow:{async start(){assert.fail('disabled preferences must not dispatch');},getHandle(){assert.fail('disabled preferences must not read a workflow');}}},native:s.native,canonicalProductPorts:{conversationMembership:s.membership},now:()=>s.identity.state.now});
+  const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool:s.pool,client:{workflow:{async start(){assert.fail('disabled preferences must not dispatch');},getHandle(){assert.fail('disabled preferences must not read a workflow');}}},native:s.native,canonicalProductPorts:{conversationMembership:s.membership},now:()=>s.identity.state.now});
   assert.equal(assembly.userPreferences.state(),'disabled');await assembly.userPreferences.readiness();
   assert.equal((await assembly.application.handle(request('save'))).status,503);assert.deepEqual(s.events,[]);assert.equal(s.identity.state.identities.length,0);assert.equal(s.sql.connections(),0);
   assembly.close();assert.equal(assembly.sessions.status().closed,true);assert.equal(assembly.userPreferences.state(),'retired');assert.equal(s.ends,0);
@@ -82,7 +83,7 @@ test('enabled missing membership or settings schema fails before listeners and p
 });
 test('invalid feature declarations fail before secret reads or allocation',async()=>{
  for(const userPreferences of [{enabled:'true'},{enabled:true,authority:{}},null]){
-  const s=scenario();await assert.rejects(startControl({...s.configuration,userPreferences}));assert.deepEqual(s.events,[]);assert.equal(s.ends,0);
+  const s=scenario();await assert.rejects(startControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),...s.configuration,userPreferences}));assert.deepEqual(s.events,[]);assert.equal(s.ends,0);
  }
 });
 test('cancellation during settings schema readiness cannot open listeners and closes owned startup resources',async()=>{

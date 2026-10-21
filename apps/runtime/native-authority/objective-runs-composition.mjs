@@ -1,3 +1,4 @@
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** One-call control composition of the Objective `runs` native operations, so startControl needs a single splice.
  * Disabled unless the control configuration declares `objectiveGeneration.runs.enabled`. Declared, it always mounts the
  * private application; the owner inside answers `not-started` (nothing written) until every trusted owner exists:
@@ -19,19 +20,19 @@ import {createObjectiveRunsApplication} from './objective-runs-http.mjs';
 const fault=()=>Object.assign(Error('OBJECTIVE_RUNS_CONFIGURATION'),{code:'OBJECTIVE_RUNS_CONFIGURATION'});
 
 export function composeObjectiveRuns(options){
- let o;try{o=own(options,['configuration','controlCapabilitySha256'],['pool','store','client','tenantId','template','authority','now']);}catch{throw fault();}
+ let o;try{o=own(options,['configuration','controlCapabilitySha256','budgets'],['pool','store','client','tenantId','template','authority','now']);}catch{throw fault();}
  const declared=compileObjectiveGenerationConfiguration(o.configuration,'control').runs;
- if(!declared)return Object.freeze({application:createObjectiveRunsApplication({controlCapabilitySha256:o.controlCapabilitySha256}),state:'disabled',tables:Object.freeze([])});
+ if(!declared)return Object.freeze({application:createObjectiveRunsApplication({controlCapabilitySha256:o.controlCapabilitySha256,maxRequestMs:budget(o.budgets,'runtime.objective.owner')}),state:'disabled',tables:Object.freeze([])});
  const now=o.now??Date.now,limits=o.configuration.limits,ready=o.authority!==undefined&&o.template!==undefined&&typeof o.tenantId==='string';
  let owner;
  if(ready){
-  const runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool:o.pool,tenantId:o.tenantId,now});
+  const runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool:o.pool,tenantId:o.tenantId,now,maxRequestMs:budget(o.budgets,'native.prepared.request')});
   if(!runStarts.available())throw fault();
   const admission=createObjectiveNativeAdmission({pool:o.pool,store:o.store,authority:o.authority,template:o.template,now,maxRequestMs:limits.requestMs});
   const dispatcher=createTemporalConversationDispatcher({client:o.client,taskQueue:o.configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:limits.requestMs});
-  owner=createObjectiveRunOwner({enabled:true,runStarts,admission,dispatcher,store:o.store,now});
+  owner=createObjectiveRunOwner({enabled:true,runStarts,admission,dispatcher,store:o.store,now,maxRequestMs:budget(o.budgets,'runtime.objective.owner')});
  }else owner=createObjectiveRunOwner({});
- return Object.freeze({application:createObjectiveRunsApplication({controlCapabilitySha256:o.controlCapabilitySha256,owner,enabled:true,now}),
+ return Object.freeze({application:createObjectiveRunsApplication({controlCapabilitySha256:o.controlCapabilitySha256,owner,enabled:true,now,maxRequestMs:budget(o.budgets,'runtime.objective.owner')}),
   state:ready?'composed':'owners-unavailable',
   // Readiness must see the run-start table once the owner can write it (migration 0002 applied).
   tables:Object.freeze(ready?['meri_objective_source.run_starts']:[])});

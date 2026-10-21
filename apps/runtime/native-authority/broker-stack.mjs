@@ -1,3 +1,4 @@
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** One source composition over canonical admitted task and conversation/session owners. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
@@ -35,11 +36,11 @@ export function compileNativeBrokerPlan(configuration){
  return Object.freeze({runtime,launchConfiguration:data(launchConfiguration),plan,original});
 }
 export function createNativeBrokerStack(configuration){
- const c=own(configuration,['pool','supervisor','runtime','plan','launchConfiguration','taskCapability','controlCapabilitySha256','tasksFactory'],['enabled','now','maxRequestMs','continuationObjects','preparationIntent','continuation']);
- const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,{runtime,launchConfiguration,plan,original}=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,launchConfiguration:c.launchConfiguration,...(c.preparationIntent?{preparationIntent:c.preparationIntent}:{}),...(c.continuation?{continuation:c.continuation}:{})});
+ const c=own(configuration,['pool','supervisor','runtime','plan','launchConfiguration','taskCapability','controlCapabilitySha256','tasksFactory','budgets'],['enabled','now','maxRequestMs','continuationObjects','preparationIntent','continuation']);
+ const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs,{runtime,launchConfiguration,plan,original}=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,launchConfiguration:c.launchConfiguration,...(c.preparationIntent?{preparationIntent:c.preparationIntent}:{}),...(c.continuation?{continuation:c.continuation}:{})});
  if(typeof c.tasksFactory!=='function')throw executionFault('STACK_CONFIGURATION');
  const store=createPostgresConversationStore({pool:c.pool}),objects=c.continuationObjects?{get:storageMethod(c.continuationObjects,'get')}:undefined;
- const tasks=c.tasksFactory({original,launchConfiguration}),closeTasks=storageMethod(tasks,'close'),readyTasks=storageMethod(tasks,'readiness'),taskDigest=capabilityDigest(c.taskCapability);
+ const tasks=c.tasksFactory({original,launchConfiguration,maxRequestMs:budget(c.budgets,'native.independent.request'),startupMaxRequestMs:Math.min(budget(c.budgets,'native.independent.request'),budget(c.budgets,'native.client.startup'))}),closeTasks=storageMethod(tasks,'close'),readyTasks=storageMethod(tasks,'readiness'),taskDigest=capabilityDigest(c.taskCapability);
  const restorer=objects?createNativeCheckpointRestorer({journal:store.restorations,objects,workspace:launchConfiguration.workspace,workspaceOwner:own(tasks.workspace,['restore','verify']),expiresAtMs:original.expiresAtMs,now}):undefined;
  const broker=createNativeExecutionBroker({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs,journal:store.executions,tasks,verifier:c.supervisor.taskVerifier,taskCapability:c.taskCapability,enabled,now,maxRequestMs});
  const continuation=createNativeContinuationRuntime({store,verifier:c.supervisor.taskVerifier,taskCapability:c.taskCapability,restorer,now});

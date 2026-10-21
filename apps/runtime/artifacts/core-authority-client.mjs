@@ -26,7 +26,7 @@ const lifeCode=code=>['DEADLINE','CANCELLED'].includes(code)?code:'UNAVAILABLE';
 
 export function createCoreArtifactAuthorityClient(configuration){
  let c;try{c=own(configuration,['origin','fetchImpl','now'],['maxRequestMs','newObservationId']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
- const origin=artifactAuthorityOrigin(c.origin),maxRequestMs=c.maxRequestMs??3000,newObservationId=c.newObservationId??randomUUID,{fetchImpl,now}=c;
+ const origin=artifactAuthorityOrigin(c.origin),maxRequestMs=c.maxRequestMs,newObservationId=c.newObservationId??randomUUID,{fetchImpl,now}=c;
  if(typeof fetchImpl!=='function'||types.isProxy(fetchImpl)||typeof now!=='function'||types.isProxy(now)||typeof newObservationId!=='function'||
   !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>MAX_REQUEST_MS)refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
  const url=new URL(ARTIFACT_AUTHORITY_ROUTE,origin).href;

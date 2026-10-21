@@ -1,3 +1,5 @@
+import {testBudgetTable} from '../../../packages/runtime/test/budget-fixture.mjs';
+import {WORKFLOW_BUDGETS} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Source composition only: real service/poller/domain owners; SQL, SDK connections/poller, secrets and listener are synthetic.
  * Common runtime role validation is primary-owned and is not mocked or claimed here; the new role helper runs unchanged. */
 import {test,mock} from 'node:test';
@@ -33,7 +35,9 @@ mock.module('../config.mjs',{namedExports:{fault:code=>Object.assign(Error(code)
 mock.module('../control.mjs',{namedExports:{async temporalTls(){state.events.push('tls');return {};},async temporalAuthorization(){state.events.push('temporal-authorization');return null;}}});
 mock.module('../http-server.mjs',{namedExports:{async listenRuntime(options){state.events.push('listener-open');if(state.failListener)throw Error('Synthetic listener failure');state.listener=options;return {address:{port:0},async close(){state.events.push('listener-close');}};}}});
 
-const {startScheduleWorker,composeScheduleService}=await import('../schedule-service.mjs');
+const {startScheduleWorker:startOwnedScheduleWorker,composeScheduleService:composeOwnedScheduleService}=await import('../schedule-service.mjs');
+const startScheduleWorker=(configuration,options)=>startOwnedScheduleWorker(configuration,{budgets:testBudgetTable,...options});
+const composeScheduleService=options=>composeOwnedScheduleService({budgets:testBudgetTable,...options});
 const {compileScheduleServiceConfiguration,SCHEDULE_MAX_REQUEST_MS}=await import('../schedule-service-configuration.mjs');
 const {composeRoutinesWorkerRuntimePorts}=await import('../schedule-service-owners.mjs');
 const {readFileSync}=await import('node:fs');
@@ -117,9 +121,9 @@ test('a trusted owner factory runs once, after the owned pool, Temporal client a
  const received=[],queriesBefore=x.sql.queries.length;
  const factory=resources=>{
   received.push(resources);state.events.push('factory');
-  assert.equal(Object.isFrozen(resources),true);assert.deepEqual(Object.keys(resources).sort(),['client','configuration','native','now','pool']);
+  assert.equal(Object.isFrozen(resources),true);assert.deepEqual(Object.keys(resources).sort(),['client','configuration','fetchImpl','native','now','pool']);
   assert.equal(resources.pool,x.pool);assert.equal(resources.client.workflow,x.h.temporal.client.workflow);assert.equal(resources.configuration,nativeConfiguration);
-  assert.equal(typeof resources.native.call,'function');assert.equal(typeof resources.now,'function');assert.equal(x.sql.queries.length,queriesBefore,'no SQL before the owners exist');
+  assert.equal(typeof resources.fetchImpl,'function');assert.equal(typeof resources.native.call,'function');assert.equal(typeof resources.now,'function');assert.equal(x.sql.queries.length,queriesBefore,'no SQL before the owners exist');
   const {pool,client,...owners}=x.runtimePorts;return {...owners,pool:resources.pool,client:resources.client};
  };
  const service=await startScheduleWorker(nativeConfiguration,{runtimePortsFactory:factory});
@@ -159,7 +163,7 @@ test('an incomplete, foreign, promised or thrown factory record is unavailable: 
 test('without a declared native block the factory receives no native client, and the production composer then refuses',async t=>{
  const x=await actualComposition(t);reset();state.pool=x.pool;state.client=x.h.temporal.client;
  let seen;const service=await startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePortsFactory:r=>{seen=r;const {pool,client,...owners}=x.runtimePorts;return {...owners,pool:r.pool,client:r.client};}});
- try{assert.deepEqual(Object.keys(seen).sort(),['client','configuration','now','pool']);assert.equal(state.events.filter(e=>e==='secret-read').length,1);}finally{await service.close();}
+ try{assert.deepEqual(Object.keys(seen).sort(),['client','configuration','fetchImpl','now','pool']);assert.equal(state.events.filter(e=>e==='secret-read').length,1);}finally{await service.close();}
  assert.throws(()=>composeRoutinesWorkerRuntimePorts({pool:x.pool,client:x.h.temporal.client,configuration}),{code:'SCHEDULE_SERVICE_UNAVAILABLE'});
  assert.throws(()=>composeRoutinesWorkerRuntimePorts({pool:x.pool,client:x.h.temporal.client,configuration,native:{call(){}},now:x.h.now,transport:{}}),{code:'SCHEDULE_SERVICE_CONFIGURATION'});
  // With the client but without the unattended pin nothing composes either: the record is the B2 composer's own refusal.
@@ -172,10 +176,10 @@ test('the role accepts the preview control request budget and stays inside the s
  // Static witness over the workflow source: one activity lifetime ends inside startToClose, and startToClose plus the request bound
  // stays shorter than the settle period after UNKNOWN, so a lost attempt has settled before reconciliation.
  const workflow=readFileSync(new URL('../../control/conversations/scheduled-dispatch-workflow.ts',import.meta.url),'utf8');
- const minutes=pattern=>Number(pattern.exec(workflow)?.[1])*60000;
- const startToClose=minutes(/proxyActivities<Activities>\(\{startToCloseTimeout:'(\d+) minutes?'/u),settle=minutes(/settleAfterUnknown='(\d+) minutes?'/u);
+ const minutes=value=>Number(/^(\d+) minutes?$/u.exec(value)?.[1])*60000;
+ const startToClose=minutes(WORKFLOW_BUDGETS['workflow.schedule.startToClose']),settle=minutes(WORKFLOW_BUDGETS['workflow.schedule.settle']);
  assert.equal(startToClose,60000);assert.equal(settle,120000);
- assert.equal((workflow.match(/startToCloseTimeout:'1 minute'/gu)??[]).length,2,'every scheduled activity keeps the same startToClose');
+ assert.equal((workflow.match(/startToCloseTimeout:WORKFLOW_BUDGETS\['workflow.schedule.startToClose'\]/gu)??[]).length,2,'every scheduled activity keeps the same startToClose');
  assert.ok(SCHEDULE_MAX_REQUEST_MS<startToClose&&startToClose+SCHEDULE_MAX_REQUEST_MS<settle);
 });
 
@@ -274,8 +278,8 @@ test('service-owned pool and JS connection close after the existing poller, with
   const x=await actualComposition(t);reset();state.pool=x.pool;state.client=x.h.temporal.client;const owners={...x.runtimePorts};
   if(mode!=='client')delete owners.pool;if(mode!=='pool')delete owners.client;
   const service=await startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:owners});
-  if(mode!=='client')assert.equal(state.poolOptions.connectionTimeoutMillis,configuration.limits.requestMs);
-  if(mode!=='pool')assert.equal(state.clientOptions.connectTimeout,configuration.limits.startupMs);
+  if(mode!=='client')assert.equal(state.poolOptions.connectionTimeoutMillis,25000);
+  if(mode!=='pool')assert.equal(state.clientOptions.connectTimeout,30000);
   await service.close();await service.close();
   assert.equal(x.sql.ends,mode==='client'?0:1);assert.equal(state.events.filter(e=>e==='client-close').length,mode==='pool'?0:1);
   for(const event of ['client-close','pool-end'])if(state.events.includes(event))assert.ok(state.events.indexOf(event)>state.events.indexOf('poller-close'));

@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC composition controls. Linux plan/compiler, allocation and kickoff are borrowed;
  * actual prepared candidate and remote controller expose the same SDK owners. No native process/DB/provider. */
 import {test,mock} from 'node:test';import assert from 'node:assert/strict';
@@ -17,7 +18,7 @@ const {createRemoteNativeController}=await import('../native-authority/remote-co
 const pool={connect(){throw Error('No SQL');}},objects={async get(){throw Error('No object');}};
 
 test('prepared SDK ports refuse before allocation, then borrow the same owner and refuse foreign bindings/after close',async()=>{
- const candidate=assemblePreparedCandidate({configuration:f.configuration,pool,ecs:{},objects,credentials:f.secret,
+ const candidate=assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:f.configuration,pool,ecs:{},objects,credentials:f.secret,
   allocate(){allocations++;return {resource:{taskArn:'synthetic'},productPorts:{sdkSessionOwner,sdkSessionSnapshot:continuation},async close(){controllerClosed++;}};}});
  const value={credential:'synthetic-task',request:{binding:f.binding}};
  assert.equal(allocations,0);assert.equal(candidate.productPorts.identityContext,candidate.identityContext);assert.equal(candidate.productPorts.conversationTurns,undefined);
@@ -30,7 +31,7 @@ test('prepared SDK ports refuse before allocation, then borrow the same owner an
 test('remote controller exposes exactly the durable session owner built with its canonical admission/verifier/registration',async()=>{
  const admission={},taskVerifier={async verify(){throw Error('No authority');}},supervisor={admission,taskVerifier},transport={original,origin:config.taskOrigin,credential:f.secret.control,async fetchImpl(){throw Error('No transport');}};
  const {capabilityDigest}=await import('../native-authority/task-verifier.mjs');
- const controller=createRemoteNativeController({runtimeConfiguration:{runtime:{...config.runtime,proxyCredential:f.secret.proxy},plan:config.plan,preparationIntent:config.preparationIntent,supervisor,store:{},taskCapability:f.secret.task,controlCapabilitySha256:capabilityDigest(f.secret.control),continuation,enabled:true},transport});
+ const controller=createRemoteNativeController({runtimeConfiguration:{budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),maxRequestMs:3000,runtime:{...config.runtime,proxyCredential:f.secret.proxy},plan:config.plan,preparationIntent:config.preparationIntent,supervisor,store:{},taskCapability:f.secret.task,controlCapabilitySha256:capabilityDigest(f.secret.control),continuation,enabled:true},transport});
  assert.equal(controller.productPorts.sdkSessionOwner,sdkSessionOwner);assert.equal(controller.productPorts.sdkSessionSnapshot,continuation);
  assert.equal(captured.admission,admission);assert.equal(captured.authority,taskVerifier);assert.equal(typeof captured.registration.read,'function');
  assert.ok(Object.isFrozen(controller.productPorts));assert.equal(allocations,1);

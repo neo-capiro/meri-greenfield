@@ -14,7 +14,7 @@ async function fixture(t,{mode='normal',leaseMs=5000,signal,limits,shutdownMs=30
  const env={CLAUDE_CONFIG_DIR:configDirectory,CLAUDE_SECURESTORAGE_CONFIG_DIR:configDirectory};
  let launcher;t.after(async()=>{if(launcher){await bounded(launcher.close());if(launcher.status().used)assert.equal(launcher.status().process.physicalStopProven,true);}await rm(root,{recursive:true,force:true});});
  const executableSha256=sha(readFileSync(command));
- const config={binding:structuredClone(binding),workspace,configDirectory,versions:{sdk:'0.3.295',cli:'2.1.295'},expiresAtMs:Date.now()+leaseMs,executableSha256,launch:{command,args,env},enabled,shutdownMs,...(signal?{signal}:{}),...(limits?{limits}:{})};
+ const config={limits:{maxRequestMs:3000},binding:structuredClone(binding),workspace,configDirectory,versions:{sdk:'0.3.295',cli:'2.1.295'},expiresAtMs:Date.now()+leaseMs,executableSha256,launch:{command,args,env},enabled,shutdownMs,...(signal?{signal}:{}),...(limits?{limits}:{})};
  launcher=createNativeSessionLauncher(config);const request={command,args:[...args],cwd:workspace,env:{...env}},key={projectKey:workspace.replace(/[^a-zA-Z0-9]/gu,'-'),sessionId:id(5)};
  return {config,launcher,request,key,root};
 }
@@ -37,10 +37,10 @@ test('altered SDK inputs and second spawn refuse, original compiled data survive
 });
 test('hostile descriptors/proxies and bad pins fail before child allocation',async t=>{
  const x=await fixture(t);let traps=0;
- assert.throws(()=>createNativeSessionLauncher({...x.config,get binding(){traps++;return binding;}}));
+ assert.throws(()=>createNativeSessionLauncher({shutdownMs:1000,limits:{maxRequestMs:3000},...x.config,get binding(){traps++;return binding;}}));
  assert.throws(()=>createNativeSessionLauncher(new Proxy(x.config,{ownKeys(){traps++;return [];}})));assert.equal(traps,0);
- const bad=createNativeSessionLauncher({...x.config,executableSha256:'0'.repeat(64)});assert.throws(()=>bad.spawnClaudeCodeProcess(x.request),{code:'NATIVE_LAUNCH_PREFLIGHT'});assert.equal(bad.status().used,false);await bad.close();
- assert.throws(()=>createNativeSessionLauncher({...x.config,launch:{...x.config.launch,env:{...x.request.env,ANTHROPIC_API_KEY:'forbidden'}}}));
+ const bad=createNativeSessionLauncher({shutdownMs:1000,limits:{maxRequestMs:3000},...x.config,executableSha256:'0'.repeat(64)});assert.throws(()=>bad.spawnClaudeCodeProcess(x.request),{code:'NATIVE_LAUNCH_PREFLIGHT'});assert.equal(bad.status().used,false);await bad.close();
+ assert.throws(()=>createNativeSessionLauncher({shutdownMs:1000,limits:{maxRequestMs:3000},...x.config,launch:{...x.config.launch,env:{...x.request.env,ANTHROPIC_API_KEY:'forbidden'}}}));
 });
 test('launch uses explicit environment without ambient inheritance',async t=>{
  const x=await fixture(t),before=process.env.MERI_LAUNCH_AMBIENT;process.env.MERI_LAUNCH_AMBIENT='ambient';

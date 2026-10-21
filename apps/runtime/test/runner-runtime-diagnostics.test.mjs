@@ -1,3 +1,4 @@
+import {testBudgetTable as runnerTestBudgets} from '../../../packages/runtime/test/budget-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,rm,readFile} from 'node:fs/promises';
@@ -16,7 +17,7 @@ const runner={version:1,profile:'isolated-preview',sourceEnabled:false,
 
 test('runtime preparation retains its stage and allowed code through generic activity failure, before any Query',async()=>{
  const lines=[],operations=[],states=[],saved={run:{binding,versions,scopes,state:'queued',createdAt:'2026-10-18T00:00:00.000Z',policyRevision:'policy1'}};let queries=0;
-  const execute=assembleConversationRunner({configuration:runner,native:{async call(operation,input){
+  const execute=assembleConversationRunner({budgets:runnerTestBudgets,configuration:runner,native:{async call(operation,input){
    operations.push(operation);if(operation==='runner/load')return saved;
    // The starting claim follows the load check (activity.mjs), so runtime preparation fails after it and settles as failed.
    if(operation==='runner/publish'){states.push(input.event.data.state);return {};}

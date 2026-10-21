@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** One verified original-task TLS connection, with one bounded HTTP exchange. */
 import {connect as tlsConnect, createSecureContext} from 'node:tls';
 import {Agent, request as httpRequest} from 'node:http';
@@ -90,7 +91,7 @@ function makeConnector(configuration, connectImpl) {
             done();
           } catch { done(fail()); }
         };
-        const timer = setTimeout(error, Math.min(3000, candidate.expiresAtMs - clock(c.now)));
+        const timer = setTimeout(error, Math.min(fixedHotPathBudget('native.tls.challenge'), candidate.expiresAtMs - clock(c.now)));
         pendingReject = error;
         try {
           socket = connectImpl({host: candidate.privateIPv4Address, port: PORT, family: 4, servername: candidate.taskName,
@@ -140,8 +141,8 @@ function makeConnector(configuration, connectImpl) {
           abort = () => finish(fail());
           pendingReject = abort;
           sendSignal?.addEventListener('abort', abort, {once: true});
-          timer = setTimeout(abort, Math.min(30000, expiresAtMs - clock(c.now)));
-          agent = new Agent({keepAlive: false, maxSockets: 1, maxTotalSockets: 1});
+          timer = setTimeout(abort, Math.min(fixedHotPathBudget('native.tls.exchange'), expiresAtMs - clock(c.now)));
+          agent = new Agent({keepAlive: false, maxSockets: 1, maxTotalSockets: 1, timeout: fixedHotPathBudget('native.tls.socket')});
           agent.createConnection = () => socket;
           request = httpRequest({hostname: candidate.taskName, port: PORT, method: 'POST', path: '/v1/native-task/' + operation,
             agent, maxHeaderSize: MAX_HEADERS, insecureHTTPParser: false, headers: {

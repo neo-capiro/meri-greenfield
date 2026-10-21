@@ -1,3 +1,4 @@
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** The Objective generation activities the trusted Temporal poller registers next to the conversation broker, so the
  * `meriObjectiveGenerationWorkflow` type it already bundles (apps/control/conversations/workflow.ts) has its four activities.
  *
@@ -27,7 +28,7 @@ export function createObjectiveWorkerActivities(ports={}){
 /** Declared worker ports only. `runs` is the control accepted-run owner reached through the poller's native capability client
  * (native-runs-port.mjs -> /v1/objective-generation/runs/*), composed only with `objectiveGeneration.runs.enabled`. `clientFor`
  * is never composed here: it needs the Core generation-workload credential owner (D7-3), which does not exist. */
-export function objectiveWorkerPorts({configuration,native}){
+export function objectiveWorkerPorts({configuration,native,budgets}){
  const declared=compileObjectiveGenerationConfiguration(configuration,'temporal-worker');
- return declared.runs?Object.freeze({runs:createObjectiveNativeRunsPort({native})}):Object.freeze({});
+ return Object.freeze({maxRequestMs:budget(budgets,'runtime.objective.lifecycle'),...(declared.runs?{runs:createObjectiveNativeRunsPort({native})}:{})});
 }

@@ -8,7 +8,7 @@ import {runRunnerPoststart} from '../runner-poststart-bootstrap.mjs';
 const ca=Buffer.from('synthetic public CA bytes'),caSha=createHash('sha256').update(ca).digest('hex'),taskArn='arn:aws:ecs:us-east-1:967807252336:task/test/'+'a'.repeat(32),metadata={TaskARN:taskArn,Cluster:'arn:aws:ecs:us-east-1:967807252336:cluster/test',Containers:[{Name:'worker'}]},original=createExecutionBinding({binding,versions,plan:{test:'poststart-client'},expiresAtMs:Date.now()+60000});
 const expected={binding,taskArn,taskRevision:1,expiresAtMs:original.expiresAtMs,versions,origin:'https://control.invalid',san:['control.invalid'],caSha256:caSha,capabilitySha256:'c'.repeat(64),materialRef:'material:'+original.executionKey,bootstrapRef:'d'.repeat(64)};
 const result={schemaVersion:1,original,expected,delivery:{...expected,capability:'synthetic-secret',config:{},ca:ca.toString('base64')},tls:{zone:'runner.invalid',ca:ca.toString('base64'),cert:ca.toString('base64'),candidate:{taskArn,executionKey:original.executionKey,bindingSha256:hash(binding),expiresAtMs:original.expiresAtMs}}};
-const config={origin:'https://control.invalid',controlCaBase64:ca.toString('base64'),controlCaSha256:caSha,metadataUri:'http://169.254.170.2/v4/synthetic',directory:'/run/meri/poststart',maxStartupMs:2000};
+const config={origin:'https://control.invalid',controlCaBase64:ca.toString('base64'),controlCaSha256:caSha,metadataUri:'http://169.254.170.2/v4/synthetic',directory:'/run/meri/poststart',maxStartupMs:2000,stepMs:3000,pendingPollMs:250,challengeCeilingMs:15000,transportRequestMs:3000,metadataRequestMs:2000,bootstrapRequestMs:5000};
 function fixture(post){let writes=0,releases=0,workspaces=0;const configuration={binding,versions,workspace:'/workspace/'+binding.conversationId};return {dependencies:{async readMetadata(){return metadata;},createTransport(){return {post};},createCsr(){return {csrPem:'synthetic CSR',keyPem:'synthetic private key',signProof:message=>{assert.equal(message.toString(),'synthetic challenge nonce is long');return 'synthetic-proof';}};},async createDirectory(){return {dev:1,ino:2,uid:1000};},async writeTls(){writes++;return {descriptor:{zone:'runner.invalid',caFile:'/run/meri/poststart/tls/ca',certFile:'/run/meri/poststart/tls/cert',keyFile:'/run/meri/poststart/tls/key',candidateFile:'/run/meri/poststart/tls/candidate',metadataFile:'/run/meri/poststart/tls/metadata'},receipt:{directory:{path:'/run/meri/poststart/tls',dev:1,ino:3,uid:1000},files:[]}};},async materialize(){writes++;return {configuration,configFile:'/run/meri/poststart/bootstrap/runner-config.json',caFile:'/run/meri/poststart/bootstrap/control-ca.pem',receipt:{directory:{path:'/run/meri/poststart/bootstrap',dev:1,ino:4,uid:1000},files:[]}};},async initializeWorkspace(input){assert.equal(writes,2);assert.strictEqual(input.configuration,configuration);assert.deepEqual(input.original,original);workspaces++;},async release(){releases++;}},counts:()=>({writes,releases,workspaces})};}
 const pending=()=>Object.assign(Error('RUNNER_POSTSTART_PENDING'),{code:'RUNNER_POSTSTART_PENDING'});
 const challenge={schemaVersion:1,challengeId:'11111111-1111-4111-8111-111111111111',proofMessage:Buffer.from('synthetic challenge nonce is long').toString('base64'),expiresAtMs:Date.now()+15000};
@@ -29,4 +29,16 @@ test('incomplete material write calls exact cleanup and reports failure',async()
 test('workspace refusal occurs after authenticated materialization, releases its bundle and keeps the constant step',async()=>{
  const f=fixture(async step=>step==='challenge'?challenge:result);f.dependencies.initializeWorkspace=async()=>{throw Object.assign(Error('RUNNER_WORKSPACE_REFUSED'),{code:'RUNNER_WORKSPACE_REFUSED'});};
  await assert.rejects(runRunnerPoststart(config,f.dependencies),error=>error.code==='RUNNER_WORKSPACE_REFUSED'&&error.step==='workspace');assert.equal(f.counts().writes,2);assert.equal(f.counts().releases,1);
+});
+
+test('poststart supplies the selected budgets to metadata, transport, each step and materialization',async()=>{
+ const selected={...config,maxStartupMs:2000,stepMs:1700,pendingPollMs:10,transportRequestMs:1800,metadataRequestMs:1200,bootstrapRequestMs:1600},seen={};
+ const f=fixture(async(step,body,{deadlineMs})=>{(seen.steps??=[]).push(deadlineMs);return step==='challenge'?challenge:result;});
+ const materialize=f.dependencies.materialize;
+ f.dependencies.readMetadata=async input=>{seen.metadata=input.maxRequestMs;return metadata;};
+ f.dependencies.createTransport=input=>{seen.transport=input.maxRequestMs;return {post:async(step,body,options)=>{(seen.steps??=[]).push(options.deadlineMs);return step==='challenge'?challenge:result;}};};
+ f.dependencies.materialize=async input=>{seen.materialize=input.maxRequestMs;return materialize(input);};
+ await runRunnerPoststart(selected,f.dependencies);
+ assert.deepEqual({metadata:seen.metadata,transport:seen.transport,materialize:seen.materialize},{metadata:1200,transport:1800,materialize:1600});
+ assert.equal(seen.steps.length,2);assert.ok(seen.steps.every(ms=>ms>0&&ms<=1700));
 });

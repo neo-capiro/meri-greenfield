@@ -3,7 +3,7 @@ import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {validateConfiguration,fault} from './config.mjs';
-export async function waitForAdmittedTask({native,binding,versions,deadlineMs,signal,now=Date.now,pollMs=100}){
+export async function waitForAdmittedTask({native,binding,versions,deadlineMs,signal,now=Date.now,pollMs}){
  nativeSignal(signal);if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now()||!Number.isSafeInteger(pollMs)||pollMs<10||pollMs>1000)throw fault('TASK_BOOTSTRAP_REFUSED');
  const life=createOperationLifetime({now,signal,deadlineMs,errorFactory:()=>fault('TASK_BOOTSTRAP_REFUSED')});
  try{while(true){life.check();let runtime;try{const saved=await life.run(signal=>native.call('runner/load',{binding},{signal,deadlineMs}));if(hash(saved.run.binding)!==hash(binding)||hash(saved.run.versions)!==hash(versions))throw fault('TASK_BOOTSTRAP_BINDING_REFUSED');if(saved.continuation&&saved.nextTurn)throw fault('TASK_BOOTSTRAP_BINDING_REFUSED');const resumed=saved.nextTurn?{nextTurn:saved.nextTurn,sourceRequest:saved.nextTurn.sourceRequest,request:saved.request,scopes:saved.run.scopes}:saved.continuation?{continuation:saved.continuation,sourceRequest:saved.sourceRequest,request:saved.request,scopes:saved.run.scopes}:{};runtime=await life.run(signal=>native.call('runner/runtime',{binding,versions,...resumed},{signal,deadlineMs}));}catch(error){if(error?.code==='TASK_BOOTSTRAP_BINDING_REFUSED')throw error;life.check();}
@@ -13,7 +13,7 @@ export async function waitForAdmittedTask({native,binding,versions,deadlineMs,si
 }
 
 /** Resolve only the admitted original task's private binding; no extra credential. */
-export async function loadRemoteTaskBinding({native,configuration,signal,poststartTls,startupBudget,now=Date.now,pollMs=100}){
+export async function loadRemoteTaskBinding({native,configuration,signal,poststartTls,startupBudget,now=Date.now,pollMs}){
  const deadlineMs=configuration.bootstrap.expiresAtMs;nativeSignal(signal);if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now()||!Number.isSafeInteger(pollMs)||pollMs<10||pollMs>1000)throw fault('TASK_BOOTSTRAP_REFUSED');
  const cutoff=startupBudget?.expiresAtMs??deadlineMs,life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,cutoff),errorFactory:()=>fault('TASK_BOOTSTRAP_REFUSED')});
  try{while(true){life.check();let binding;try{binding=await life.run(signal=>native.call('runner/native/bootstrap',{binding:configuration.binding,versions:configuration.versions},{signal,deadlineMs:Math.min(deadlineMs,cutoff),...(startupBudget?{maxRequestMs:startupBudget.maxMs}:{})}));}catch{life.check();}

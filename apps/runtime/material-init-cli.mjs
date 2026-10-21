@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Packaged one-shot init entrypoint. Secrets are accepted only in the init container's fixed environment slot. */
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -25,7 +26,7 @@ export async function runMaterialInitCli(argv,{environment=process.env,writeOut=
    signal.throwIfAborted();if(consumed)throw Error();consumed=true;
    const text=bundleText;bundleText=undefined;return JSON.parse(text);
   }};
-  const result=await materializeStaticProductMaterial({expected,delivery});
+  const result=await materializeStaticProductMaterial({expected,delivery,maxRequestMs:fixedHotPathBudget('material.initialize.request')});
   if(controlCa)try{await materializeControlCaBundle({configurationPath:result.configurationPath,expected});}
   catch(error){await releaseStaticProductMaterial(result.receipt);throw error;}
   writeOut(JSON.stringify({ready:true,role:result.receipt.role,fileCount:result.receipt.fileCount})+'\n');return 0;

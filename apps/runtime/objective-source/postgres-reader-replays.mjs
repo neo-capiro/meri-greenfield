@@ -74,7 +74,7 @@ export function createPostgresObjectiveReaderReplayStore(configuration={}){
   if(flag&&'value'in flag&&flag.value===true){
    const c=own(configuration,['enabled','pool','tenantId'],['now','maxRequestMs','allocateFence']);tenantId=c.tenantId;allocateFence=c.allocateFence??allocateFence;
    if(typeof tenantId!=='string'||!tenantId||tenantId.trim()!==tenantId||tenantId.length>128||typeof allocateFence!=='function'||types.isProxy(allocateFence))refuse();
-   tx=createObjectivePostgresTransactions({connect:storageMethod(c.pool,'connect'),now:c.now??Date.now,maxRequestMs:c.maxRequestMs??3000,unavailable,unknown,semantic:['OBJECTIVE_READER_REPLAY_CONFLICT']});
+   tx=createObjectivePostgresTransactions({connect:storageMethod(c.pool,'connect'),now:c.now??Date.now,maxRequestMs:c.maxRequestMs,unavailable,unknown,semantic:['OBJECTIVE_READER_REPLAY_CONFLICT']});
    enabled=true;
   }
  }catch{enabled=false;}

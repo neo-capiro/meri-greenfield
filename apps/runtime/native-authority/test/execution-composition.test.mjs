@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
 /** SYNTHETIC owners and a scripted product-budget pool under the ACTUAL execution composition: state gating, the executor
  * context, the deferred per-capability executor's pre-SQL refusals, the ACTIVE-grant requirement, the P-INT-9 mount, and the
  * issuance path that installs the token's grant on the run's existing allocation before any receipt (lane X). */
@@ -32,7 +33,7 @@ function owners({enabled=true,omit=[],allocation=true}={}){
   preparePolicy:async()=>{calls.push(['preparePolicy']);throw Error('not reached');},authorizeBusiness:async()=>{throw Error('not reached');},authorizeSources:async()=>{throw Error('not reached');},
   currentRights:async()=>{throw Error('not reached');},source:{origin:'https://core.example.test',getServiceSecret:async()=>'service-secret'},sourceEnabled:true};
  for(const k of omit)delete all[k];
- const owner=createIntentExecutionOwner({enabled,...all,now:()=>ISSUED_AT*1000+1000,fetchImpl:async()=>{calls.push(['fetch']);throw Error('not reached');}});
+ const owner=createIntentExecutionOwner({limits:{maxRequestMs:10000,maxFactBytes:131072,maxResponseBytes:262144,maxCleanupMs:3000},enabled,...all,now:()=>ISSUED_AT*1000+1000,fetchImpl:async()=>{calls.push(['fetch']);throw Error('not reached');}});
  return {owner,sql,calls,set};
 }
 const approvals={approvalStore:{getCurrent:async()=>{throw Error('not reached');}},readDecision:async()=>{throw Error('not reached');}};
@@ -84,7 +85,7 @@ test('issueExecution over the real composition: rev 3 body from the admitted run
   const t=signExecution({proposal:body.proposal,decision,executorBinding:body.executorBinding,requestId:body.requestId,capabilityId:CAPABILITY_ID,allocation:body.allocation,qualification:body.qualification,iat:ISSUED_AT,exp:ISSUED_AT+120});
   return new Response(JSON.stringify({execution:t.execution,credential:t.credential,checkedAtMs:1,expiresAtMs:(ISSUED_AT+120)*1000}),{status:200,headers:{'content-type':'application/json'}});};
  const refuse=async()=>{throw Error('not reached');};
- const owner=createIntentExecutionOwner({enabled:true,trust:productionTrust(),core:{origin:'https://core.example.test',getCredentials:async v=>({tenantId:v.tenantId,actorId:v.actorId,bearerToken:'native-session-token',serviceSecret:'service-secret',expiresAtMs:START+300000})},
+ const owner=createIntentExecutionOwner({limits:{maxRequestMs:10000,maxFactBytes:131072,maxResponseBytes:262144,maxCleanupMs:3000},enabled:true,trust:productionTrust(),core:{origin:'https://core.example.test',getCredentials:async v=>({tenantId:v.tenantId,actorId:v.actorId,bearerToken:'native-session-token',serviceSecret:'service-secret',expiresAtMs:START+300000})},
   allocations:f.allocations,pool:f.pool,selectionFor:async()=>({reference:CLIENT,clientId:CLIENT}),preparePolicy:refuse,authorizeBusiness:refuse,authorizeSources:refuse,currentRights:refuse,
   source:{origin:'https://core.example.test',getServiceSecret:async()=>'service-secret'},sourceEnabled:true,now:()=>START,fetchImpl});
  owner.bindApprovals({approvalStore:{getCurrent:refuse},readDecision:async()=>decision});assert.equal(owner.state(),'composed');
@@ -119,7 +120,7 @@ test('control-startup helper: one owner per control over the trusted context; di
  const {captureRuntimePorts}=await import('../../product-applications.mjs');
  const gate={async admit(){throw Error('not used');},async recheck(){throw Error('not used');}};
  const t=productionTrust(),reads=[];
- const context=intents=>Object.freeze({configuration:{sourceEnabled:true,limits:{requestMs:5000,requestBytes:65536},native:{maxResponseBytes:262144},intents},
+ const context=intents=>Object.freeze({budgets:testBudgetTable,fetchImpl:async()=>{throw Error('no fetch');},configuration:{sourceEnabled:true,limits:{requestMs:5000,requestBytes:65536},native:{maxResponseBytes:262144},intents},
   pool:{options:{connectionTimeoutMillis:2000,query_timeout:5000},connect(){throw Error('no SQL');}},client:{},native:{call:async()=>{throw Error('no native');}},now:()=>ISSUED_AT*1000,
   canonicalProductPorts:captureRuntimePorts({conversationMembership:gate})});
  const run=intents=>{const helper=createControlIntentExecution({readSecret:async f=>{reads.push(f);return Buffer.from('secret');}}),ctx=context(intents);

@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Trusted control-side composition over one existing task verifier and canonical gateway. */
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -18,7 +19,7 @@ export function createNativeReadsOwner(configuration){
  const verify=ready?storageMethod(c.taskVerifier,'verify'):null,availability=ready?storageMethod(c.gateway,'readAvailability'):null,execute=ready?storageMethod(c.gateway,'execute'):null,scopes=ready?data(c.scopes):null;
  async function handle(operation,raw,capability,signal,operationDeadlineMs){let life,dispatched=false;try{
   if(!ready)deny('UNAVAILABLE');nativeSignal(signal);const op='runner/reads/'+operation,request=assertNativeReadRequest(op,raw),inputSha256=hash(request),started=now();if(!same(request.binding,binding))deny('ACCESS_DENIED');if(Buffer.byteLength(JSON.stringify(request),'utf8')>config.maxRequestBytes)deny('RESOURCE_LIMIT');
-  if(operationDeadlineMs!==undefined&&!Number.isSafeInteger(operationDeadlineMs))deny('INVALID_ARGUMENTS');const deadlineMs=Math.min(operationDeadlineMs??Infinity,started+(operation==='execute'?config.maxExecuteMs:3000));life=createOperationLifetime({now,deadlineMs,signal,errorFactory:nativeReadFault});
+  if(operationDeadlineMs!==undefined&&!Number.isSafeInteger(operationDeadlineMs))deny('INVALID_ARGUMENTS');const deadlineMs=Math.min(operationDeadlineMs??Infinity,started+(operation==='execute'?config.maxExecuteMs:fixedHotPathBudget('native.read.request')));life=createOperationLifetime({now,deadlineMs,signal,errorFactory:nativeReadFault});
   let initial,authorityExpiry=deadlineMs;
   async function task(){const began=now(),a=assertNativeReadTaskAssertion(await life.run(signal=>verify({capability,binding,operation:op,inputSha256,signal,deadlineMs})),{binding,operation:op,inputSha256,started:began,now});
    if(a.allocationSha256!==c.allocationSha256||a.policyRevision!==c.policyRevision||!same(a.scopes,scopes)||initial&&!same(stableTask(a),stableTask(initial)))deny('ACCESS_DENIED');initial??=a;authorityExpiry=Math.min(authorityExpiry,a.expiresAtMs);life.limitDeadline(authorityExpiry);return a;}

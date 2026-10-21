@@ -102,7 +102,7 @@ test('retirement refuses a running source and a source without an allocation row
 });
 test('configuration is closed and inert',async t=>{
  const h=await pausedSource();t.after(h.close);
- const valid={store:h.base,stop:async()=>{},selectedClientId:id(5),policyRevision:'policy1',versions,now:Date.now};
+ const valid={limits:{maxRequestMs:3000,authorityWindowMs:30000,admissionWindowMs:300000},store:h.base,stop:async()=>{},selectedClientId:id(5),policyRevision:'policy1',versions,now:Date.now};
  for(const bad of [{...valid,store:{}},{...valid,stop:'stop'},{...valid,selectedClientId:'client'},{...valid,policyRevision:''},{...valid,versions:{}},{...valid,fork:{}},{...valid,limits:{authorityWindowMs:0}},{...valid,extra:1}])
   assert.throws(()=>createContinuationAuthority(bad),code('CONTINUATION_CONFIGURATION'));
  const a=createContinuationAuthority(valid);assert.deepEqual(Object.keys(a),['transitionAuthority','continuationAdmission','fork','limits']);assert.equal(a.fork,false);assert.equal(h.f.state.calls.length>0,true);

@@ -8,7 +8,7 @@ import {executionFault} from './execution-broker.mjs';
 const getters=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createNativeExecutionApplication(configuration){
  const c=own(configuration,['broker','runtime','controlCapabilitySha256','taskCapabilitySha256'],['enabled','now','maxRequestMs','readiness']);
- const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  if(c.runtime.taskCapabilitySha256!==c.taskCapabilitySha256||typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||[c.controlCapabilitySha256,c.taskCapabilitySha256].some(d=>typeof d!=='string'||!/^[a-f0-9]{64}$/u.test(d))||c.controlCapabilitySha256===c.taskCapabilitySha256)throw executionFault('CONFIGURATION');
  const routes=new Map([['/v1/execution/start',{call:storageMethod(c.broker,'start'),fields:['binding','executionKey'],digest:c.controlCapabilitySha256}],['/v1/execution/poll',{call:storageMethod(c.broker,'poll'),fields:['binding','executionId'],digest:c.controlCapabilitySha256}],['/v1/runner/runtime',{call:storageMethod(c.runtime,'runtime'),fields:['binding','versions'],digest:c.taskCapabilitySha256}]]);
  if(c.readiness)routes.set('/v1/readiness',{call:storageMethod(c.readiness,'check'),fields:[],digest:c.controlCapabilitySha256});

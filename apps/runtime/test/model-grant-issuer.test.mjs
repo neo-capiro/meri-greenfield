@@ -69,7 +69,7 @@ test('file authority composition is inert and model directory/reference purpose 
  assert.equal(task.directory,directory);assert.equal(model.directory,join(directory,'model-grants'));assert.notEqual(task.directory,model.directory);
  await assert.rejects(model.retrieve({materialRef:'material:'+intent.issuanceKey,grantId:id(100)}),/MODEL_MATERIAL_REFUSED/);
  await assert.rejects(task.retrieve({materialRef:'model-material:v1:'+intent.issuanceKey,grantId:id(100)}),/CAPABILITY_AUTHORITY_REFUSED/);
- let queries=0;const owner=createPostgresModelGrants({pool:{async query(){queries++;throw Error('no SQL allowed');}},taskMaterialDirectory:directory,now:()=>at});
+ let queries=0;const owner=createPostgresModelGrants({maxRequestMs:3000,pool:{async query(){queries++;throw Error('no SQL allowed');}},taskMaterialDirectory:directory,now:()=>at});
  assert.equal(typeof owner.issue,'function');assert.equal(typeof owner.read,'function');assert.equal(typeof owner.resolve,'function');assert.equal(queries,0,'startup construction neither queries nor generates');
  await assert.rejects(owner.issue({intent}),/MODEL_GRANT_UNKNOWN/);assert.equal(queries,1,'unavailable current store cannot reach material generation');
 });

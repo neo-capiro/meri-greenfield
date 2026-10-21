@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC: the three write-path families (intents, tasks, lifecycle) through the actual `assembleControl` composer seam
  * (`productPortsFactory`), with a fake pool, Temporal client and native client. No connection, Core or database. */
 import test from 'node:test';
@@ -17,7 +18,7 @@ function assemble(intents,{gate}={}){
  const pool={connect(){touched.push('pool');throw Error('no SQL in this test');},query(){touched.push('pool');throw Error('no SQL');}};
  const native={async call(operation){touched.push(operation);throw Error('no Core');},async readiness(){}};
  const client={workflow:{async start(){touched.push('temporal');},getHandle(){touched.push('temporal');}}};
- const assembly=assembleControl({configuration:{...base,...(intents?{intents}:{})},pool,client,native,now:Date.now,
+ const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{...base,...(intents?{intents}:{})},pool,client,native,now:Date.now,
   ...(gate?{canonicalProductPorts:{conversationMembership:gate}}:{}),productPortsFactory:createProductPortsFactory({families:WRITE_FAMILIES})});
  const owner=name=>assembly.productReadiness().owners.find(o=>o.name===name).state;
  return {assembly,touched,owner};

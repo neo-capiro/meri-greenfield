@@ -10,15 +10,17 @@ import {BudgetCommitUncertain} from '../../gateway/budget/postgres-budget-store.
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});},integer=n=>{const v=typeof n==='string'&&/^(0|[1-9][0-9]*)$/u.test(n)?Number(n):n;if(!Number.isSafeInteger(v)||v<0)fail('SDK_SESSION_CORRUPT');return v;};
 export function createDurableSdkSessionOwner(configuration){
- const {admission,authority,registration,enabled=false,now=Date.now,maxRequestMs=3000}=own(configuration,['admission'],['authority','registration','enabled','now','maxRequestMs']);
+ const {admission,authority,registration,enabled=false,now=Date.now,maxRequestMs}=own(configuration,['admission'],['authority','registration','enabled','now','maxRequestMs']);
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('SDK_SESSION_CONFIGURATION');
  const transaction=storageMethod(admission,'withCurrentAllocation'),authorize=authority?captureSessionMethods(authority,['verify'],'SDK_SESSION_CONFIGURATION'):null,observe=registration?captureSessionMethods(registration,['read'],'SDK_SESSION_CONFIGURATION'):null;
  async function execute(operation,value){
-  const raw=own(value,['credential','request'],['signal','deadlineMs']);if(!enabled||!authorize||!observe)fail('SDK_SESSION_UNAVAILABLE');
+  const raw=own(value,['credential','request'],['signal','deadlineMs','operationMaxRequestMs']);if(!enabled||!authorize||!observe)fail('SDK_SESSION_UNAVAILABLE');
   if(typeof raw.credential!=='string'||!raw.credential||raw.credential.length>8192)fail('SDK_SESSION_REFUSED');
+  if(raw.operationMaxRequestMs!==undefined&&(!Number.isSafeInteger(raw.operationMaxRequestMs)||raw.operationMaxRequestMs<1||raw.operationMaxRequestMs>30000))fail('SDK_SESSION_CONFIGURATION');
+  const operationMs=Math.min(raw.operationMaxRequestMs??maxRequestMs,maxRequestMs);
   const request=assertSdkSessionRequestHeaders(operation,raw.request);let entries;
   if(operation==='append'){entries=copySessionEntries(Object.getOwnPropertyDescriptor(raw.request,'entries').value);if(hash(entries)!==request.entriesSha256)fail('INVALID_SDK_SESSION_REQUEST');}
-  const input={...request,...(entries===undefined?{}:{entries})},inputSha256=hash(input),started=now(),deadlineMs=Math.min(raw.deadlineMs??started+maxRequestMs,started+maxRequestMs);
+  const input={...request,...(entries===undefined?{}:{entries})},inputSha256=hash(input),started=now(),deadlineMs=Math.min(raw.deadlineMs??started+operationMs,started+operationMs);
   const life=createOperationLifetime({now,signal:raw.signal,deadlineMs,errorFactory:code=>Object.assign(Error('SDK_SESSION_'+code),{code:'SDK_SESSION_'+code})});let pinned,attempted=false;let cutoff=deadlineMs;const limit=next=>{cutoff=Math.min(cutoff,next);life.limitDeadline(cutoff);};
   // Task authority is verified where revocation must take effect, and only there: before the first stored read, after the
   // registration observation (register), before a write commits (register, a new append), and before the result is released.

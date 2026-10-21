@@ -7,12 +7,12 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {assertCaptureReceipt} from '../../worker/conversation/continuation/native-receipts.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {CONTROL_CHECKPOINT_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {CONTROL_CHECKPOINT_CAPTURE_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {verifyCheckpointReadback} from './checkpoint-readback.mjs';
 import {publishCapturedCheckpoint} from './checkpoint-publication.mjs';
 const fail=()=>{throw Error('NATIVE_CHECKPOINT_CAPTURE_REFUSED');};
 export function createNativeCheckpointCapture(configuration){
- const c=own(configuration,['store','objects','authority','taskCapability','original','taskCapture'],['enabled','now','maxRequestMs']),original=data(c.original),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,['store','objects','authority','taskCapability','original','taskCapture'],['enabled','now','maxRequestMs']),original=data(c.original),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs;
  own(original,['binding','executionKey','executionId','planSha256','expiresAtMs','versions']);validateShape('RunBinding',original.binding);validateShape('RuntimeVersions',original.versions);
  if(original.executionKey!==hash(original.binding)||original.executionId!==original.executionKey||typeof original.planSha256!=='string'||!/^[a-f0-9]{64}$/u.test(original.planSha256)||typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(original.expiresAtMs)||typeof c.taskCapability!=='string'||!/^\S{1,8192}$/u.test(c.taskCapability))fail();
  const readRun=storageMethod(c.store,'read'),getControl=storageMethod(c.store.lifecycle,'get'),publish=storageMethod(c.store.lifecycle,'checkpoint'),readCheckpoint=storageMethod(c.store.lifecycle,'readCheckpoint'),readExecution=storageMethod(c.store.lifecycle,'execution'),verify=storageMethod(c.authority,'verify'),capture=storageMethod(c.taskCapture,'capture');

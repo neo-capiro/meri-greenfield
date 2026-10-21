@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** P0 integration: real handlers and native transport; synthetic data, no network or credentials. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -21,7 +22,7 @@ test('production control observes each accepted publication only at the durable 
  const f=await lifecycleFixture(),{lines,telemetry}=capture('control'),observed=[];t.after(()=>{f.close();telemetry.close();});await f.running();
  const saved=await f.store.read(binding,{},()=>{}),configuration={versions:saved.run.versions,sourceEnabled:false,sessions:{maxSessions:10,maxTtlMs:30000},limits:{requestMs:1000,requestBytes:131072,shutdownMs:1000},temporal:{taskQueue:'synthetic'},native:{maxResponseBytes:2097152}};
  const identityContext={async verifyIdentity(){return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'synthetic-current',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},async resolveContext({identity}){return {identitySha256:hash(identity),binding,scopes,selectedClientId:id(5),contextRevision:'synthetic-current',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}};
- const unexpected=()=>{throw Error('Unexpected external effect');},assembly=assembleControl({configuration,pool:f.pool,client:{workflow:{start:unexpected,getHandle:unexpected}},native:{call:unexpected},productPorts:{identityContext},turnTelemetry:{...telemetry,summary(event){observed.push(event);return telemetry.summary(event);}}});t.after(()=>assembly.close());
+ const unexpected=()=>{throw Error('Unexpected external effect');},assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool:f.pool,client:{workflow:{start:unexpected,getHandle:unexpected}},native:{call:unexpected},productPorts:{identityContext},turnTelemetry:{...telemetry,summary(event){observed.push(event);return telemetry.summary(event);}}});t.after(()=>assembly.close());
  const {credential}=await assembly.sessions.issue({identityCredential:'synthetic-native'}),delta={eventId:id(930),createdAt:new Date().toISOString(),type:'message.delta',data:{messageId:id(931),text:'Synthetic answer'}},completed={eventId:id(932),createdAt:new Date().toISOString(),type:'run.status',data:{state:'completed',reasonCode:null}};
  for(const event of [delta,completed,completed]){
   const before=observed.length,published=await telemetry.provisional(()=>assembly.service.publish({credential,binding,event}));
@@ -36,7 +37,7 @@ test('admission keeps handler-entry t0, adopts pre-binding work and deduplicates
  try{
   await f.service.allocateInput({credential:f.credential,input:f.input});
   const saved=await f.service.admitInput({credential:f.credential,input:f.input});
-  const app=createConversationInputApplication({now:()=>at,turnTelemetry:telemetry,service:{async admitInput(){telemetry.recordCore('identity','2xx',25);at+=25;return saved;}}});
+  const app=createConversationInputApplication({maxRequestMs:3000,now:()=>at,turnTelemetry:telemetry,service:{async admitInput(){telemetry.recordCore('identity','2xx',25);at+=25;return saved;}}});
   const post=()=>app.handle(new Request('https://meri.invalid/api/conversations/input/admit',{method:'POST',headers:{authorization:'Bearer synthetic-session','content-type':'application/json'},body:JSON.stringify(f.input)}));
   const enteredAt=at;assert.equal((await post()).status,200);assert.equal((await post()).status,200);
   const stages=lines.filter(line=>line.event==='meri.turn.stage');assert.equal(stages.length,1);assert.equal(stages[0].atMs,enteredAt);assert.equal(stages[0].stage,'send.admit.received');
@@ -47,12 +48,12 @@ test('admission keeps handler-entry t0, adopts pre-binding work and deduplicates
 test('refused admission does not invent a run binding, and a failed telemetry writer cannot fail admitted HTTP',async()=>{
  const f=await applicationFixture({initialInput:true}),failed=capture('control');
  try{
-  const app=createConversationInputApplication({turnTelemetry:failed.telemetry,service:{async admitInput(){throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});}}});
+  const app=createConversationInputApplication({maxRequestMs:3000,turnTelemetry:failed.telemetry,service:{async admitInput(){throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});}}});
   const request=()=>new Request('https://meri.invalid/api/conversations/input/admit',{method:'POST',headers:{authorization:'Bearer synthetic-session','content-type':'application/json'},body:JSON.stringify(f.input)});
   assert.equal((await app.handle(request())).status,403);assert.equal(failed.lines.filter(line=>line.event==='meri.turn.stage').length,0);
   await f.service.allocateInput({credential:f.credential,input:f.input});const saved=await f.service.admitInput({credential:f.credential,input:f.input});
   const telemetry=createTurnTelemetry({service:'control',write(){throw Error('synthetic writer failure');}});
-  const succeeds=createConversationInputApplication({turnTelemetry:telemetry,service:{async admitInput(){return saved;}}});
+  const succeeds=createConversationInputApplication({maxRequestMs:3000,turnTelemetry:telemetry,service:{async admitInput(){return saved;}}});
   assert.equal((await succeeds.handle(request())).status,200);assert.ok(telemetry.telemetryDropped>0);telemetry.close();
  }finally{f.close();failed.telemetry.close();}
 });
@@ -61,7 +62,7 @@ test('runner native request counts and first-failure JSON preserve pinned text a
  let now=1000;const records=[],text=[],telemetry=createTurnTelemetry({service:'runner',now:()=>now,write:line=>records.push(JSON.parse(line))});
  const failure=Object.assign(Error('DEADLINE'),{code:'DEADLINE'});
  await assert.rejects(withRunnerDiagnostics(async()=>{
-  const native=createNativeCapabilityClient({configuration:{origin:'https://native.invalid',maxResponseBytes:131072},credential:'synthetic-capability',now:()=>now,fetch:async()=>{now+=8;return Response.json({ok:true});}});
+  const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:'https://native.invalid',maxResponseBytes:131072},credential:'synthetic-capability',now:()=>now,fetch:async()=>{now+=8;return Response.json({ok:true});}});
   assert.deepEqual(await native.call('runner/load',{binding}),{ok:true});
   markRunnerStage('activity-query');throw failure;
  },{binding,processStartedAtMs:500,turnTelemetry:telemetry,write:line=>text.push(line)}),error=>error===failure);
@@ -111,7 +112,7 @@ test('lost cancellation ACK observes only the existing validated stop-fence read
 
 test('run reconciler observes failed publication only after retirement is proven',async t=>{
  const f=await lifecycleFixture(),{lines,telemetry}=capture('control');t.after(()=>{f.close();telemetry.close();});await f.running();let retire=false;
- const store=createPostgresConversationStore({pool:f.pool,onPublished:event=>{telemetry.bind(event.binding);telemetry.summary(event);}}),reconciler=createRunReconciler({store,retirement:{async retire(){if(retire)await retireAllocation(store,binding);}}});
+ const store=createPostgresConversationStore({pool:f.pool,onPublished:event=>{telemetry.bind(event.binding);telemetry.summary(event);}}),reconciler=createRunReconciler({maxReconcileMs:60000,store,retirement:{async retire(){if(retire)await retireAllocation(store,binding);}}});
  assert.equal((await telemetry.provisional(()=>reconciler.reconcile({binding}))).outcome,'unknown');assert.equal(lines.filter(line=>line.event==='meri.turn.summary').length,0);
  retire=true;assert.deepEqual(await telemetry.provisional(()=>reconciler.reconcile({binding})),{outcome:'reconciled',state:'failed',reasonCode:'ATTEMPT_LOST'});
  assert.equal(lines.find(line=>line.event==='meri.turn.summary').state,'failed');assert.equal(lines.find(line=>line.event==='meri.turn.summary').reasonCode,'ATTEMPT_LOST');

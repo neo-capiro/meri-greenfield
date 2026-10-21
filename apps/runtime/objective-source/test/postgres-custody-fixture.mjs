@@ -70,7 +70,7 @@ export function postgresCustodyFixture(){
   };
   state.clients.push(client);if(state.connectWait)await state.connectWait;return client;
  },end(){state.poolEnds++;throw Error('BORROWED_POOL_MUST_NOT_END');}};
- const create=(options={})=>createPostgresObjectiveCustodyStore({pool,tenantId:f.binding.tenantId,now:()=>f.state.now,allocateFence:()=>id(80),enabled:true,...options});
+ const create=(options={})=>createPostgresObjectiveCustodyStore({maxRequestMs:3000,pool,tenantId:f.binding.tenantId,now:()=>f.state.now,allocateFence:()=>id(80),enabled:true,...options});
  const input={generationJobId:record.generationJobId,record};
  const reverse={issuanceKey:record.issued.issuance.issuanceKey,binding:record.binding,factsSha256:record.issued.factsSha256};
  const seed=(lifecycle='CLAIMED',changes={})=>{

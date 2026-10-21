@@ -9,7 +9,7 @@ export function compileEcsTaskBinding(value){
  if([c.clusterArn,c.taskDefinitionArn,c.taskArn].some(v=>typeof v!=='string')||!regionAccount.test(c.clusterArn)||!/^cluster\/[A-Za-z0-9_-]{1,255}$/u.test(c.clusterArn.replace(regionAccount,'')))refused();
  const prefix=c.clusterArn.slice(0,c.clusterArn.indexOf('cluster/')),cluster=c.clusterArn.slice(prefix.length+8);
  if(!c.taskDefinitionArn.startsWith(prefix)||!/^task-definition\/[A-Za-z0-9_-]+:[1-9][0-9]*$/u.test(c.taskDefinitionArn.slice(prefix.length))||c.taskArn!==prefix+'task/'+cluster+'/'+c.taskArn.split('/').at(-1)||!/^[a-f0-9]{32}$/u.test(c.taskArn.split('/').at(-1))||typeof c.containerName!=='string'||!/^[A-Za-z0-9_-]{1,255}$/u.test(c.containerName)||!Number.isSafeInteger(c.createdAtMs)||c.createdAtMs<1||c.createdAtMs>=original.expiresAtMs)refused();
- const now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000,maxPages=c.maxPages??4,maxTasks=c.maxTasks??100;
+ const now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs,maxPages=c.maxPages??4,maxTasks=c.maxTasks??100;
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxPages)||maxPages<1||maxPages>10||!Number.isSafeInteger(maxTasks)||maxTasks<1||maxTasks>100)refused();
  return Object.freeze({...c,original,now,enabled,maxRequestMs,maxPages,maxTasks,prefix,cluster,tags:Object.freeze({'meri:execution-id':original.executionId,'meri:binding-sha256':hash(original.binding),'meri:plan-sha256':original.planSha256,'meri:expires-at-ms':String(original.expiresAtMs)})});
 }

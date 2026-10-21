@@ -15,9 +15,9 @@ function setup({enabled=true,clientEnabled=true,mount,limits,fetchHook,responseH
  const f=intentFixture({approverActorId:'actor'}),resolved=[],wire=[];
  // Synthetic stand-in for the registry entry: exactly this run's binding and its issued task capability.
  const resolveRun=async({binding,credential,operation})=>{resolved.push(operation);if(hash(binding)!==hash(f.binding)||credential!==TASK)throw runnerIntentFault('ACCESS_DENIED');return mount?mount(f):f.port;};
- const app=createRunnerIntentsApplication({resolveRun,enabled,now:f.now,controlCapabilitySha256:capabilityDigest(CONTROL),...(limits?{limits}:{})});
+ const app=createRunnerIntentsApplication({limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000},resolveRun,enabled,now:f.now,controlCapabilitySha256:capabilityDigest(CONTROL),...(limits?{limits}:{})});
  const fetchImpl=async(url,init)=>{wire.push({url,init});await fetchHook?.(url,init);const response=await app.handle(new Request(url,init));return responseHook?responseHook(response):response;};
- const client=createRunnerIntentsClient({origin:ORIGIN,credential:TASK,binding:f.binding,fetchImpl,enabled:clientEnabled,now:f.now});
+ const client=createRunnerIntentsClient({limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000},origin:ORIGIN,credential:TASK,binding:f.binding,fetchImpl,enabled:clientEnabled,now:f.now});
  const post=(path,body,{credential=TASK,headers={},method='POST'}={})=>app.handle(new Request(ORIGIN+path,{method,headers:{'content-type':'application/json',...(credential?{authorization:'Bearer '+credential}:{}),...headers},...(method==='POST'?{body:typeof body==='string'?body:JSON.stringify(body)}:{})}));
  return {f,app,client,resolved,wire,post};
 }
@@ -97,10 +97,10 @@ test('control: a prepare cancelled after it reached the mount answers UNKNOWN, n
 });
 test('construction is inert and closed',()=>{
  let calls=0;const resolveRun=async()=>{calls++;};
- createRunnerIntentsApplication({resolveRun});createRunnerIntentsClient({origin:ORIGIN,credential:TASK,binding:intentFixture().binding,fetchImpl:async()=>{calls++;}});assert.equal(calls,0);
+ createRunnerIntentsApplication({limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000},resolveRun});createRunnerIntentsClient({limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000},origin:ORIGIN,credential:TASK,binding:intentFixture().binding,fetchImpl:async()=>{calls++;}});assert.equal(calls,0);
  assert.throws(()=>createRunnerIntentsApplication({resolveRun,limits:{maxRequestBytes:0,maxResponseBytes:1,maxPrepareMs:1000}}));
- assert.throws(()=>createRunnerIntentsApplication({resolveRun,controlCapabilitySha256:'x'}));
+ assert.throws(()=>createRunnerIntentsApplication({limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000},resolveRun,controlCapabilitySha256:'x'}));
  for(const origin of ['http://control.synthetic.invalid','https://control.synthetic.invalid/v1','https://u@control.synthetic.invalid','https://control.synthetic.invalid?x=1'])
-  assert.throws(()=>createRunnerIntentsClient({origin,credential:TASK,binding:intentFixture().binding,fetchImpl:async()=>{}}),failed('UNAVAILABLE'),origin);
- assert.throws(()=>createRunnerIntentsClient({origin:ORIGIN,credential:'has space',binding:intentFixture().binding,fetchImpl:async()=>{}}),failed('UNAVAILABLE'));
+  assert.throws(()=>createRunnerIntentsClient({limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000},origin,credential:TASK,binding:intentFixture().binding,fetchImpl:async()=>{}}),failed('UNAVAILABLE'),origin);
+ assert.throws(()=>createRunnerIntentsClient({limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000},origin:ORIGIN,credential:'has space',binding:intentFixture().binding,fetchImpl:async()=>{}}),failed('UNAVAILABLE'));
 });

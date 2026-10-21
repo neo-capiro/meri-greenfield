@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 // D8: control's in-process native provider (prepared-candidate.mjs localNative) keeps a task verify that did not answer transient.
 // End to end, the runner's real native client calls run-owner routes through the real pinned transport and control's production
 // listener (http-server.mjs). Behind it are the real prepared candidate (localNative and its in-process native application),
@@ -61,14 +62,14 @@ if (!skip) {
   const dir = mkdtempSync(join(tmpdir(), 'meri-prepared-native-'));
   test.after(() => rmSync(dir, {recursive: true, force: true}));
   caFile = join(dir, 'control-ca.pem'); writeFileSync(caFile, trusted.ca, {mode: 0o600}); chmodSync(caFile, 0o600);
-  candidate = assemblePreparedCandidate({configuration: f.configuration, pool: {connect() {throw Error('No SQL');}},
+  candidate = assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration: f.configuration, pool: {connect() {throw Error('No SQL');}},
     ecs: {send() {throw Error('No AWS');}}, objects: {async get() {throw Error('No objects');}, async put() {throw Error('No objects');}},
     credentials: f.secret, fetchImpl: async () => {throw Error('No Core: the task verifier decides here');},
     allocate() {return {resource: {taskArn: 'synthetic'}, supervisor: {}, application: controllerApplication, productPorts: {}, async close() {}};}});
   await lazy.allocate();
   // control.mjs binds its whole assembly here; the run-owner routes it reaches are worker-http's.
   candidate.bindApplication(createWorkerRunApplication({service, sessions, native: candidate.native, configuration: {limits: {requestMs: 25000, requestBytes: 131072}}, now: Date.now}));
-  const listener = await listenRuntime({configuration: {http: {hostname: 'localhost', port: 0, frontendOrigin: 'https://frontend.synthetic.invalid'}, limits: {requestMs: 25000, shutdownMs: 1000}},
+  const listener = await listenRuntime({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration: {http: {hostname: 'localhost', port: 0, frontendOrigin: 'https://frontend.synthetic.invalid'}, limits: {requestMs: 25000, shutdownMs: 1000}},
     application: {handle: request => {served.push(new URL(request.url).pathname); return candidate.application.handle(request);}},
     readiness: async () => ({}), tls: {key: leaf.key, cert: leaf.cert}, exposeReadiness: false});
   test.after(async () => {await listener.close(); await candidate.close();});
@@ -77,8 +78,8 @@ if (!skip) {
 
 async function loadThroughPinned(answers) {
   decisions = [...answers]; verifies = []; loads = []; served = [];
-  const client = createNativeCapabilityClient({configuration: {origin, maxResponseBytes: 131072}, credential: 'synthetic-runner-task-capability',
-    fetch: await createPinnedNativeFetch({origin, caFile, caSha256})});
+  const client = createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration: {origin, maxResponseBytes: 131072}, credential: 'synthetic-runner-task-capability',
+    fetch: await createPinnedNativeFetch({timeoutMs:30000,origin, caFile, caSha256})});
   const outcome = await client.call('runner/load', {binding: f.binding}, {deadlineMs: Date.now() + 15000}).then(value => ({value}), error => ({error}));
   return {...outcome, requests: served.filter(path => path === '/v1/runner/load').length, verifies, loads};
 }

@@ -1,3 +1,4 @@
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Startup composition of the documents family with the Core artifact authority (control only; called by trusted startup, never by
  * configuration or a request). Composed DISABLED unless every input exists: `artifacts.enabled`, a declared `artifacts.authority`
  * (Core origin + service-secret file), the marked candidate credentials (`nativeCandidate`) to refuse as bearers, a readable service
@@ -26,7 +27,7 @@ import {createRuntimeDocumentRunOptions} from './run-options.mjs';
 import {documentsFamily,createDocumentsFamily} from '../product-ports/documents.mjs';
 
 export async function composeDocumentsFamily(options){
- let c;try{c=own(options,['configuration'],['runOptions','executor','authorityPorts','fetchImpl','readSecret','now']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
+ let c;try{c=own(options,['configuration'],['runOptions','executor','authorityPorts','fetchImpl','readSecret','now','budgets']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
  const now=c.now??Date.now,fetchImpl=c.fetchImpl??globalThis.fetch,configuration=c.configuration;
  if(typeof now!=='function'||typeof fetchImpl!=='function'||types.isProxy(fetchImpl))refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
  let declared;try{declared=compileRuntimeArtifactsConfiguration(configuration);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
@@ -56,7 +57,7 @@ export async function composeDocumentsFamily(options){
  let credentials;
  try{credentials=await createArtifactAuthorityCredentials({configuration,serviceSecretFile:declared.authority.serviceSecretFile,...(c.readSecret===undefined?{}:{readSecret:c.readSecret})});}
   catch{missing.push('artifacts.authority.serviceSecretFile');return disabled();}
- const client=createCoreArtifactAuthorityClient({origin:declared.authority.origin,fetchImpl,now});
+ const client=createCoreArtifactAuthorityClient({maxRequestMs:budget(c.budgets,'artifact.authority.request'),origin:declared.authority.origin,fetchImpl,now});
  const authority=createCoreArtifactAuthority({client,credentials,runOptions,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});
  return Object.freeze({family:documentsFamily({authority,executor,...(composedRunOptions?{bindVersionReader:value=>composedRunOptions.bindVersionReader(value)}:{})}),authority,missing:Object.freeze([]),runOptions:composedRunOptions});

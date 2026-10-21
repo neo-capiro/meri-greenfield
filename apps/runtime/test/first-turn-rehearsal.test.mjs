@@ -1,3 +1,4 @@
+import {testBudgetTable as runnerTestBudgets} from '../../../packages/runtime/test/budget-fixture.mjs';
 /** Pre-deploy rehearsal of one first turn against the real control run-owner path under measured Core latencies.
  *
  * Composed for real: the product runner (assembleConversationRunner with the remote task's lease-derived budget), the
@@ -31,7 +32,7 @@ import {assembleConversationRunner} from '../conversation-runner.mjs';
 import {continuationFixture,id} from '../../worker/conversation/continuation/test/fixtures.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
-import {runnerStartupBudget} from '../../../packages/runtime/runner-load-budget.mjs';
+import {runnerStartupBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {withRunnerDiagnostics} from '../runner-runtime-diagnostics.mjs';
 import {CORE_PROFILES,recordHostClockSteps} from './rehearsal-support.mjs';
 import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
@@ -118,7 +119,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
    runnerSha256:'c'.repeat(64),sdkOptionsSha256:'d'.repeat(64),authoritySha256:'f'.repeat(64)}};
  // remote-conversation-runner.mjs gives each runner/load attempt the load stage's attempt allowance; every other call passes its own.
  const startup=runnerStartupBudget({requestMs:25000,shutdownMs:1000,originalExpiresAtMs:remoteTask.original.expiresAtMs}).stages;
- const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',loadMaxRequestMs:startup.load.attemptMs,
+ const client=createNativeCapabilityClient({maxRequestMs:3000,configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:2097152},credential:'synthetic-task',loadMaxRequestMs:startup.load.attemptMs,
   fetch:async(url,init)=>{const name=new URL(url).pathname.slice('/v1/'.length),op=name.slice('runner/'.length);calls[name]??={requests:0,core:0};calls[name].requests++;
    if(!Object.hasOwn(runOwnerOperations,op))return Response.json(await outside(name));
    const begun=performance.now();
@@ -129,7 +130,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
    finally{(durations[name]??=[]).push(Math.round(performance.now()-begun));}}});
  const text=t=>({type:'stream_event',session_id:sessionId,parent_tool_use_id:null,event:{type:'content_block_delta',index:0,delta:{type:'text_delta',text:t}}});
  const parts=deltas===2?['Hello',' from the rehearsal.']:Array.from({length:deltas},(_,i)=>i?` word${i}`:'Hello'),reply=parts.join('');
- const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid',limits:{requestMs:25000,shutdownMs:1000},remoteTask},
+ const execute=assembleConversationRunner({budgets:runnerTestBudgets,configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid',limits:{requestMs:25000,shutdownMs:1000},remoteTask},
   native:client,credentialForBinding:async()=>'synthetic-current-task-capability',
   query(args){return {async *[Symbol.asyncIterator](){
    yield {type:'system',subtype:'init',session_id:sessionId};marks.init=at();await args.prompt[Symbol.asyncIterator]().next();
@@ -147,7 +148,7 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
  try{
   // This rehearsal starts from a pre-admitted store fixture. Exercise the real HTTP admission timestamp hook with that
   // receipt; allocation/Send authority costs remain outside this rehearsal's existing runner baseline.
-  const admission=createConversationInputApplication({service:{async admitInput(){return {...structuredClone(saved),replayed:false};}},turnTelemetry,now:Date.now});
+  const admission=createConversationInputApplication({maxRequestMs:3000,service:{async admitInput(){return {...structuredClone(saved),replayed:false};}},turnTelemetry,now:Date.now});
   const admitted=await admission.handle(new Request('https://control.synthetic.invalid/api/conversations/input/admit',{
    method:'POST',headers:{authorization:'Bearer synthetic-session','content-type':'application/json'},body:JSON.stringify({requestId:request.requestId,prompt:request.prompt})}));
   assert.equal(admitted.status,200,'the seeded admission receipt passes the real input route');

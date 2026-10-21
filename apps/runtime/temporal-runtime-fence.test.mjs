@@ -76,7 +76,7 @@ test('the canonical stop handler still owns control authentication, body validat
   assert.deepEqual(value.binding,binding);assert.equal(value.executionId,body.executionId);assert.ok(value.signal instanceof AbortSignal);
   calls.push(value);return {...body,expiresAtMs:1_800_000_010_000};
  }};
- const original=createPreparedKickoffApplication({owner,controlCapabilitySha256:capabilityDigest(credential),enabled:true}),fence=createTemporalRuntimeFence();
+ const original=createPreparedKickoffApplication({maxRequestMs:3000,owner,controlCapabilitySha256:capabilityDigest(credential),enabled:true}),fence=createTemporalRuntimeFence();
  const mounted=fence.wrap(original);fence.lose();
  const request=(auth,input=body)=>new Request(origin+stopPath,{method:'POST',headers:{'content-type':'application/json',...(auth===undefined?{}:{authorization:auth})},body:JSON.stringify(input)});
  for(const auth of [undefined,'Bearer foreign-synthetic-control','Basic '+credential])assert.equal((await mounted.handle(request(auth))).status,503);

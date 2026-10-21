@@ -13,19 +13,19 @@ function harness({sessionFails=false,startFails=false}={}){
  const sessions={async authenticateSession(q){calls.auth.push(q);if(sessionFails)throw Error('SESSION_REFUSED');
   return {principal:{sessionId:id(90),tenantId:id(1),actorId:id(2),conversationId:id(91),runId:id(92)},sessionRevision:'r1',checkedAtMs:NOW,expiresAtMs:NOW+300000};}};
  const starts=[],client={connection:{withDeadline:(_d,fn)=>fn(),withAbortSignal:(_s,fn)=>fn()},workflow:{async start(type,options){starts.push({type,options});if(startFails)throw Error('lost ack');},getHandle(){return {signal:async()=>{}};}}};
- const dispatcher=createObjectiveGenerationDispatcher({client,taskQueue:'meri-conversations',now:()=>NOW});
+ const dispatcher=createObjectiveGenerationDispatcher({maxRequestMs:3000,client,taskQueue:'meri-conversations',now:()=>NOW});
  const spy={start(value){calls.start.push(value);return dispatcher.start(value);}};
- const app=createObjectiveGenerationStartApplication({enabled:true,sessions,dispatcher:spy,windowMs:1800000,now:()=>NOW});
+ const app=createObjectiveGenerationStartApplication({maxRequestMs:3000,enabled:true,sessions,dispatcher:spy,windowMs:1800000,now:()=>NOW});
  const post=(body={generationJobId:id(21)},init={})=>app.handle(new Request(url,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body),...init}));
  return {calls,starts,app,post};
 }
 
 test('disabled by default: every request falls through (null) and no port is touched',async()=>{
- for(const app of [createObjectiveGenerationStartApplication(),createObjectiveGenerationStartApplication({enabled:false,sessions:null})]){
+ for(const app of [createObjectiveGenerationStartApplication(),createObjectiveGenerationStartApplication({maxRequestMs:3000,enabled:false,sessions:null})]){
   assert.equal(app.state(),'disabled');assert.equal(await app.handle(new Request(url,{method:'POST',body:'{}'})),null);
  }
- assert.throws(()=>createObjectiveGenerationStartApplication({enabled:true,sessions:{},dispatcher:{start(){}},windowMs:1800000}),/OBJECTIVE_GENERATION_CONFIGURATION/u);
- assert.throws(()=>createObjectiveGenerationStartApplication({enabled:true,sessions:{authenticateSession(){}},dispatcher:{start(){}},windowMs:1000}),/OBJECTIVE_GENERATION_CONFIGURATION/u);
+ assert.throws(()=>createObjectiveGenerationStartApplication({maxRequestMs:3000,enabled:true,sessions:{},dispatcher:{start(){}},windowMs:1800000}),/OBJECTIVE_GENERATION_CONFIGURATION/u);
+ assert.throws(()=>createObjectiveGenerationStartApplication({maxRequestMs:3000,enabled:true,sessions:{authenticateSession(){}},dispatcher:{start(){}},windowMs:1000}),/OBJECTIVE_GENERATION_CONFIGURATION/u);
 });
 
 test('a fresh action session starts exactly one workflow for the derived binding with a server-set deadline',async()=>{

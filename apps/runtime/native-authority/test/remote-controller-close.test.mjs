@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // Control's close of one original: the final control stop reaches the runner before containment, and containment runs
 // even when that stop is refused. Ports are inert fakes; only the close sequence is under test.
 import test from 'node:test';
@@ -21,12 +22,12 @@ function controller({stopStatus = 200} = {}) {
     order.push('runner ' + new URL(url).pathname.split('/').at(-1));
     return stopStatus === 200 ? Response.json({original, receipt: {physicalStopProven: false, notAllocated: true}}) : Response.json({error: {code: 'TASK_ROUTER_REFUSED'}}, {status: stopStatus});
   };
-  const owner = createRemoteNativeController({runtimeConfiguration: {pool: {}, runtime, plan: {}, preparationIntent, taskCapability: 'synthetic-task', controlCapabilitySha256: capabilityDigest(control),
+  const owner = createRemoteNativeController({runtimeConfiguration: {budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),pool: {}, runtime, plan: {}, preparationIntent, taskCapability: 'synthetic-task', controlCapabilitySha256: capabilityDigest(control),
     store: {allocations: {read: async () => ({}), prepareLaunch: async () => {}, consumeLaunch: async () => {}, recordLaunch: async () => {}}},
     allocator: {allocate: async () => ({}), stop: async () => { order.push('containment'); }},
     supervisor: {taskVerifier: {verify: async () => ({})}, admission: {currentAllocation: async () => '{}', withCurrentAllocation: async () => {}}},
     continuation: {prepare: async () => null, readSnapshot: async () => null, resumeOptions: async () => null}, verifyTask: async () => ({}), enabled: true, maxRequestMs: 3000},
-    transport: {original, origin: 'https://synthetic-task.invalid', credential: control, fetchImpl}});
+    transport: {limits:{maxRequestMs:8000},original, origin: 'https://synthetic-task.invalid', credential: control, fetchImpl}});
   return {owner, order};
 }
 

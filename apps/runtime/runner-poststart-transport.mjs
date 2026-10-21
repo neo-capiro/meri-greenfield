@@ -25,7 +25,7 @@ export async function readRunnerPoststartCa({path,sha256}){
  try{file=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);const st=await file.stat();if(!st.isFile()||st.size<1||st.size>16384)fail();const bytes=await file.readFile();if(bytes.length!==st.size||createHash('sha256').update(bytes).digest('hex')!==sha256)fail();return bytes;}
  catch{fail();}finally{await file?.close();}
 }
-function exchange(url,{method,body,ca,signal,maxBytes=131072,deadlineMs=3000}){
+function exchange(url,{method,body,ca,signal,maxBytes=131072,deadlineMs}){
  nativeSignal(signal);if(signal?.aborted||!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>262144||!Number.isSafeInteger(deadlineMs)||deadlineMs<1||deadlineMs>3000)fail();
  return new Promise((resolve,reject)=>{
   let settled=false,received=0,request,timer;const chunks=[];const done=(code,value)=>{if(settled)return;settled=true;signal?.removeEventListener('abort',abort);clearTimeout(timer);code?reject(fault(code)):resolve(value);};
@@ -48,7 +48,7 @@ function exchange(url,{method,body,ca,signal,maxBytes=131072,deadlineMs=3000}){
  });
 }
 export function createRunnerPoststartTransport(configuration){
- const c=own(configuration,['origin','ca'],['maxRequestMs']),maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,['origin','ca','maxRequestMs']),maxRequestMs=c.maxRequestMs;
  let base;try{base=new URL(c.origin);}catch{fail();}
  if(base.protocol!=='https:'||base.origin!==c.origin||base.pathname!=='/'||base.search||base.hash||base.username||base.password||!Buffer.isBuffer(c.ca)||c.ca.length<1||c.ca.length>16384||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)fail();
  return Object.freeze({async post(step,body,{signal,deadlineMs=maxRequestMs}={}){
@@ -57,8 +57,8 @@ export function createRunnerPoststartTransport(configuration){
   return exchange(new URL('/v1/runner-poststart/'+step,base),{method:'POST',body:bytes,ca:c.ca,signal,maxBytes:131072,deadlineMs:Math.min(deadlineMs,maxRequestMs)});
  }});
 }
-export async function readRunnerPoststartMetadata({uri,signal}){
+export async function readRunnerPoststartMetadata({uri,signal,maxRequestMs}){
  let url;try{url=new URL(uri);}catch{fail();}
  if(url.protocol!=='http:'||url.hostname!=='169.254.170.2'||url.port||!/^\/v4\/[A-Za-z0-9_-]{1,128}$/u.test(url.pathname)||url.search||url.hash||url.username||url.password)fail();
- return exchange(new URL(url.pathname+'/task',url),{method:'GET',signal,maxBytes:65536,deadlineMs:2000});
+ return exchange(new URL(url.pathname+'/task',url),{method:'GET',signal,maxBytes:65536,deadlineMs:maxRequestMs});
 }

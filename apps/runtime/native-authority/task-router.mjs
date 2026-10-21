@@ -6,7 +6,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {jsonBody} from '../../control/action-application/http.mjs';
 import {remoteOriginal,exactOriginal} from './remote-task-boundary.mjs';
 import {taskRouterFault,taskRouterBody,taskRouterOperation,createTaskRouterIngress} from './task-router-boundary.mjs';
-import {RUNNER_NATIVE_STARTUP_ROUTER_MS,TASK_ROUTER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_NATIVE_STARTUP_ROUTER_MS,TASK_ROUTER_CAPTURE_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {createExchangeRecord,writeEventLine} from './exchange-diagnostics.mjs';
 const getters=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const reply=(status=403)=>Response.json({error:{code:status===503?'TASK_ROUTER_UNAVAILABLE':'TASK_ROUTER_REFUSED'}},{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
@@ -22,7 +22,7 @@ const startupOperations=new Set(['prepare','start']);
 // stop for the same original overlap when a runner fails; admitting only one refuses control's stop and the runner then waits for it.
 const maxCleanupRequests=8;
 export function createTaskRouterApplication(configuration){
- const c=own(configuration,['authority','networkReader','connector'],['privateIngress','enabled','now','maxRequestMs','startupMaxRequestMs','maxConcurrent','maxOriginals','maxBufferedBytes','report']),enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??8000,startupMaxRequestMs=c.startupMaxRequestMs??RUNNER_NATIVE_STARTUP_ROUTER_MS,report=c.report??writeEventLine,maxConcurrent=c.maxConcurrent??64,maxOriginals=c.maxOriginals??1024,maxBufferedBytes=c.maxBufferedBytes??201326592;
+ const c=own(configuration,['authority','networkReader','connector'],['privateIngress','enabled','now','maxRequestMs','startupMaxRequestMs','maxConcurrent','maxOriginals','maxBufferedBytes','report']),enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs,startupMaxRequestMs=c.startupMaxRequestMs,report=c.report??writeEventLine,maxConcurrent=c.maxConcurrent??64,maxOriginals=c.maxOriginals??1024,maxBufferedBytes=c.maxBufferedBytes??201326592;
  if(typeof enabled!=='boolean'||typeof now!=='function'||typeof report!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>30000||!Number.isSafeInteger(maxConcurrent)||maxConcurrent<1||maxConcurrent>256||!Number.isSafeInteger(maxOriginals)||maxOriginals<1||maxOriginals>4096||!Number.isSafeInteger(maxBufferedBytes)||maxBufferedBytes<8388608||maxBufferedBytes>268435456)throw taskRouterFault();
  const verify=storageMethod(c.authority,'verify'),observe=storageMethod(c.networkReader,'observe'),connect=storageMethod(c.connector,'connect'),assertIngress=storageMethod(c.privateIngress??createTaskRouterIngress(),'assert'),active=new Set(),cleanups=new Set(),captures=new Set(),originals=new Map();let closed=false,reservedBytes=0;
  async function handle(request,marker){let life,entry,controller,connection,reservation=0,record,routedOperation,cleanupOutcome='none',outcome='refused';

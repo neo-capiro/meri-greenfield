@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Canonical schedule-role settings. Common HTTP/Temporal/version configuration remains owned by runtime/config.mjs.
  *
  * Request bound. `limits.requestMs` is the single budget of one dispatch/reconcile/cancel activity (`scheduled-dispatch.mjs` begin():
@@ -20,9 +21,9 @@ import {isAbsolute} from 'node:path';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const refuse=()=>{throw Object.assign(Error('SCHEDULE_SERVICE_CONFIGURATION'),{code:'SCHEDULE_SERVICE_CONFIGURATION'});};
 /** Must stay below the dispatch activity's startToCloseTimeout (60000 ms) and, added to it, below settleAfterUnknown (120000 ms). */
-export const SCHEDULE_MAX_REQUEST_MS=30000;
+export const SCHEDULE_MAX_REQUEST_MS=fixedHotPathBudget('schedule.request.max');
 /** native-client.mjs accepts at most this request bound; the role's `limits.requestMs` is capped to it for native calls. */
-export const SCHEDULE_NATIVE_MAX_REQUEST_MS=10000;
+export const SCHEDULE_NATIVE_MAX_REQUEST_MS=fixedHotPathBudget('schedule.native.request');
 function filePath(value){if(typeof value!=='string'||!isAbsolute(value)||value.length>4096||value.split(/[\\/]/u).includes('..'))refuse();return value;}
 function nativeOrigin(value,loopback){
  let u;try{u=new URL(value);}catch{refuse();}

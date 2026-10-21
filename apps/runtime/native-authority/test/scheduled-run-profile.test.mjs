@@ -21,7 +21,7 @@ test('canonical OPEN origin seals private allocation bytes without changing the 
 
 test('narrower configured runtime cap does not change the immutable occurrence group cap',async t=>{
  const h=await scheduledRunProfileFixture();t.after(h.close);
- const first=await h.profile.read(h.call()),narrower=await createScheduledRunProfile({...h.configuration,maxCostMicroUSD:75}).read(h.call());
+ const first=await h.profile.read(h.call()),narrower=await createScheduledRunProfile({maxRequestMs:10000,...h.configuration,maxCostMicroUSD:75}).read(h.call());
  assert.equal(narrower.maxCostMicroUSD,75);assert.deepEqual(narrower.occurrenceCostScope,first.occurrenceCostScope);
  assert.equal(narrower.allocationSha256,first.allocationSha256);
 });
@@ -45,7 +45,7 @@ test('original accepted expiry and explicit shorter issuance expiry both constra
 
 test('charge schedule expiry remains an independent earlier bound',async t=>{
  const h=await scheduledRunProfileFixture();t.after(h.close);const a=copy(h.allocation);a.schedule.expiresAt=new Date(h.now()+2000).toISOString();
- const result=await createScheduledRunProfile({...h.configuration,allocationJson:JSON.stringify(a)}).read(h.call());
+ const result=await createScheduledRunProfile({maxRequestMs:10000,...h.configuration,allocationJson:JSON.stringify(a)}).read(h.call());
  assert.equal(result.expiresAtMs,h.now()+2000);
 });
 
@@ -86,7 +86,7 @@ for(const [label,change]of [
  ['allocation tenant',c=>{const a=JSON.parse(c.allocationJson);a.run.tenantId='foreign';c.allocationJson=JSON.stringify(a);}],
  ['allocation actor',c=>{const a=JSON.parse(c.allocationJson);a.run.actorId='foreign';c.allocationJson=JSON.stringify(a);}]
 ])test('configured '+label+' mismatch fails closed on positive origin',async t=>{
- const h=await scheduledRunProfileFixture();t.after(h.close);const c={...h.configuration,task:copy(h.configuration.task)};change(c);
+ const h=await scheduledRunProfileFixture();t.after(h.close);const c={maxRequestMs:10000,...h.configuration,task:copy(h.configuration.task)};change(c);
  await assert.rejects(createScheduledRunProfile(c).read(h.call()));
 });
 
@@ -97,9 +97,9 @@ test('rehash of a foreign effect is rejected by canonical custody, not adopted a
 
 test('pre-existing private scope must match canonical cap and origin; it cannot silently disappear',async t=>{
  const h=await scheduledRunProfileFixture();t.after(h.close);const admitted=await h.profile.read(h.call());
- const c={...h.configuration,allocationJson:admitted.allocationJson};assert.equal((await createScheduledRunProfile(c).read(h.call())).allocationSha256,admitted.allocationSha256);
+ const c={maxRequestMs:10000,...h.configuration,allocationJson:admitted.allocationJson};assert.equal((await createScheduledRunProfile(c).read(h.call())).allocationSha256,admitted.allocationSha256);
  const changed=JSON.parse(c.allocationJson);changed.occurrenceCostScope.maxCostMicroUSD--;
- await assert.rejects(createScheduledRunProfile({...c,allocationJson:JSON.stringify(changed)}).read(h.call()),code('SCOPE'));
+ await assert.rejects(createScheduledRunProfile({maxRequestMs:10000,...c,allocationJson:JSON.stringify(changed)}).read(h.call()),code('SCOPE'));
  h.scheduleSql.state.occurrences.clear();await assert.rejects(createScheduledRunProfile(c).read(h.call()),code('ORIGIN'));
 });
 
@@ -140,15 +140,15 @@ test('cancellation of a pending read returns no profile and releases the borrowe
 test('foreign thrown errors are sanitized without inspecting proxy traps or message getters',async t=>{
  const h=await scheduledRunProfileFixture();t.after(h.close);let touches=0;
  const thrown=new Proxy({}, {get(){touches++;throw Error('private error');},getOwnPropertyDescriptor(){touches++;throw Error('private error');}});
- const reader=createScheduledRunProfile({...h.configuration,scheduleOwner:{async readOccurrenceForConversation(){throw thrown;}}});
+ const reader=createScheduledRunProfile({maxRequestMs:10000,...h.configuration,scheduleOwner:{async readOccurrenceForConversation(){throw thrown;}}});
  await assert.rejects(reader.read(h.call()),code('REFUSED'));assert.equal(touches,0);
 });
 
 test('constructor and request reject proxies/accessors without running them or allocating effects',async t=>{
- const h=await scheduledRunProfileFixture();t.after(h.close);let touches=0;const getter={...h.configuration};Object.defineProperty(getter,'task',{enumerable:true,get(){touches++;return {};}});
+ const h=await scheduledRunProfileFixture();t.after(h.close);let touches=0;const getter={maxRequestMs:10000,...h.configuration};Object.defineProperty(getter,'task',{enumerable:true,get(){touches++;return {};}});
  assert.throws(()=>createScheduledRunProfile(getter),code('CONFIGURATION'));
  assert.throws(()=>createScheduledRunProfile(new Proxy({}, {ownKeys(){touches++;return [];}})),code('CONFIGURATION'));
- const store={...h.store};Object.defineProperty(store,'initialInputs',{get(){touches++;return {};}});assert.throws(()=>createScheduledRunProfile({...h.configuration,store}),code('CONFIGURATION'));
+ const store={...h.store};Object.defineProperty(store,'initialInputs',{get(){touches++;return {};}});assert.throws(()=>createScheduledRunProfile({maxRequestMs:10000,...h.configuration,store}),code('CONFIGURATION'));
  const request={...h.call()};Object.defineProperty(request,'scopes',{enumerable:true,get(){touches++;return [];}});
  await assert.rejects(h.profile.read(request));assert.equal(touches,0);assert.equal(h.state.originReads,0);
 });
@@ -156,6 +156,6 @@ test('constructor and request reject proxies/accessors without running them or a
 test('constructor never coerces a non-string configured client identity',async t=>{
  const h=await scheduledRunProfileFixture();t.after(h.close);let coerced=0;
  const selectedClientId={toString(){coerced++;return h.template.selectedClientId;}};
- assert.throws(()=>createScheduledRunProfile({...h.configuration,selectedClientId}),code('CONFIGURATION'));
+ assert.throws(()=>createScheduledRunProfile({maxRequestMs:10000,...h.configuration,selectedClientId}),code('CONFIGURATION'));
  assert.equal(coerced,0);assert.equal(h.state.originReads,0);
 });

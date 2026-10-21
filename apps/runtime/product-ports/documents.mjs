@@ -1,3 +1,5 @@
+import {createHotPathAwsRequestHandler} from '../hot-path-transports.mjs';
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Production product family for documents and artifacts (lane 6). Ordinary synchronous composition over the trusted control
  * context: no connection, no SQL, no secret read and no SDK request at construction. The S3 client is constructed here with an
  * explicit region and one attempt; the AWS SDK resolves credentials (the control task role) and endpoints lazily on the first
@@ -63,7 +65,7 @@ export function documentsFamily(owners={}){
  if(o.bindVersionReader!==undefined&&!ordinary(o.bindVersionReader))throw fault();
  if((o.authority===undefined)!==(o.executor===undefined))throw fault();
  if(o.authority!==undefined){storageMethod(o.authority,'resolve');storageMethod(o.executor,'execute');}
- const createClient=o.createS3Client??(({region})=>new S3Client({region,maxAttempts:1}));
+ const createClient=o.createS3Client;
  return function createDocumentsFamily(context){
   const {configuration,pool,now,artifactRecovery}=context;
   let declared;try{declared=compileRuntimeArtifactsConfiguration(configuration);}catch{throw fault();}
@@ -71,7 +73,7 @@ export function documentsFamily(owners={}){
   const retention=configuration.retention!==undefined;
   // Declared retention without control's recovery forwarder cannot host a store (see the module comment).
   if(retention&&artifactRecovery===undefined)return {ports:{}};
-  const client=createClient({region:declared.region});
+  const client=createClient?createClient({region:declared.region}):new S3Client({region:declared.region,maxAttempts:budget(context.budgets,'aws.attempts'),requestHandler:createHotPathAwsRequestHandler(context.budgets)});
   const s3={client,bucket:declared.bucket,prefix:declared.prefix,expectedBucketOwner:declared.expectedBucketOwner,kmsKeyId:declared.kmsKeyId};
   const storage=createRuntimeArtifactStorage({s3,versionsPool:pool,now,maxRequestMs:configuration.limits.requestMs,
    ...(retention?{custody:{journal:artifactRecovery.journal,retention:artifactRecovery.retention,tenantId:declared.tenantId,evidenceS3:s3,enabled:true}}:{})});

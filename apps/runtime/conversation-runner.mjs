@@ -4,7 +4,9 @@ import {canonicalSha256,validateShape} from '../../packages/contracts/validate.m
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {readSecret,fault} from './config.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
-import {runnerStartupBudget,RUNNER_STARTUP_MIN_SHUTDOWN_MS,RUNNER_STARTUP_CLEANUP_MS,RUNNER_STARTUP_MARGIN_MS,ACTIVITY_PREPARATION_MAX_MS} from '../../packages/runtime/runner-load-budget.mjs';
+import {runnerStartupBudget,RUNNER_STARTUP_MIN_SHUTDOWN_MS,RUNNER_STARTUP_CLEANUP_MS,RUNNER_STARTUP_MARGIN_MS,ACTIVITY_PREPARATION_MAX_MS,budget,assertHotPathBudgets} from '../../packages/runtime/hot-path-budgets.mjs';
+import {runtimeHotPathBudgets} from './hot-path-budget-inputs.mjs';
+import {createHotPathFetch} from './hot-path-transports.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {lstat,realpath,mkdir,open} from 'node:fs/promises';
 import {constants} from 'node:fs';
@@ -63,7 +65,8 @@ function startupBudgetFor(configuration){
  const original=remoteOriginal(configuration.remoteTask.original);
  return runnerStartupBudget({requestMs:configuration.limits?.requestMs,shutdownMs:configuration.limits?.shutdownMs,originalExpiresAtMs:original.expiresAtMs});
 }
-export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,governedIntents,now=Date.now}){
+export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,governedIntents,now=Date.now,budgets}){
+ assertHotPathBudgets(budgets);
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  const startup=startupBudgetFor(configuration),stages=startup?.stages;
  validateShape('RuntimeVersions',configuration.versions);const configuredVersionsSha256=canonicalSha256(configuration.versions);
@@ -79,7 +82,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
   if(operation!=='runner/load')return result;
   const loaded=value=>{markRunnerTelemetryStage('runner.load.done');return value;};return typeof result?.then==='function'?result.then(loaded):loaded(result);};
  if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw fault('RUNNER_SESSION_CONFIGURATION');
- const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:configuration.limits?.shutdownMs??1000});
+ const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:budget(budgets,'shutdown')});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
  let runOwner={load:({binding:b,signal})=>{localBinding(b);return call('runner/load',{},signal);},append:({binding:b,event,signal})=>{localBinding(b);return call('runner/publish',{event},signal);}},lifecycle;
  if(credentialForBinding!==undefined){
@@ -87,7 +90,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
   const forward=operation=>({binding:b,credential,signal,...input})=>{localBinding(b);return call(operation,input,signal);};
   const service={loadForExecution:forward('runner/load'),publish:forward('runner/publish'),nextControls:forward('runner/next-controls'),claimControl:forward('runner/claim-control'),ackControl:forward('runner/ack-control'),recordCheckpoint:forward('runner/record-checkpoint')};
   runOwner=createLifecycleRunOwner({service,credentialForBinding:args=>{localBinding(args.binding);return credentialForBinding(args);}});
-  lifecycle={captureOwnsClose:configuration.captureOwnsClose??false,captureCheckpoint:({binding:b,signal,...input})=>{localBinding(b);return call('runner/checkpoint/capture',input,signal);},captureCompletion:async({binding:b,signal,...input})=>{localBinding(b);await sdkSession?.settle(signal);return call('runner/checkpoint/complete',input,signal);}};
+  lifecycle={pollMs:budget(budgets,'continuation.poll'),captureOwnsClose:configuration.captureOwnsClose??false,captureCheckpoint:({binding:b,signal,...input})=>{localBinding(b);return call('runner/checkpoint/capture',input,signal);},captureCompletion:async({binding:b,signal,...input})=>{localBinding(b);await sdkSession?.settle(signal);return call('runner/checkpoint/complete',input,signal);}};
  }
  const append=storageMethod(runOwner,'append');runOwner={...runOwner,async append(input){if(input.event.type==='run.status'&&input.event.data.state==='completed')await sdkSession?.settle(input.signal);return append(input);}};
   const prepareRuntime=async({binding:b,versions,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes,skillPlugin})=>atRunnerStage('runtime-prepare',async()=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};markRunnerStage('runtime-admission');const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','proxyUrl','proxyCredential','model','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256||new URL(r.proxyUrl).origin!==configuration.proxyOrigin)throw fault('RUNNER_RUNTIME_REFUSED');
@@ -101,13 +104,14 @@ export function assembleConversationRunner({configuration,native,query,credentia
    markRunnerStage('skill-plugin');const plugin=skillPlugin===true&&directories.sdkConfigDirectory!==undefined?await prepareRunSkillPlugin(sdkSkillPluginDirectory(dirname(directories.sdkConfigDirectory))):undefined;
    markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:stages.session.expiresAtMs+stages.session.maxMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,terminalAttemptMs:budget(budgets,'runner.terminal.attempt'),cleanupAttemptMs:budget(budgets,'activity.cleanup.attempt'),loadMaxMs:budget(budgets,'activity.load'),runtimeMaxMs:budget(budgets,'activity.runtime'),...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:stages.session.expiresAtMs+stages.session.maxMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');try{await selectedSkills.close();}finally{await sdkSession?.close();}}}),{binding,environment:configuration.telemetry?.environment});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;
 }
 export async function assertRunnerWorkspace(configuration){const workspace=await lstat(configuration.workspace);if(process.getuid()===0||!workspace.isDirectory()||workspace.isSymbolicLink()||workspace.uid!==process.getuid()||await realpath(configuration.workspace)!==configuration.workspace)throw fault('RUNNER_WORKSPACE_REFUSED');}
-export async function runConversation(configuration,{signal,query,sessionFactory,generalReads,governedIntents,poststartTls,nativeFetch}={}){
- return withRunnerDiagnostics(()=>atRunnerStage('runner-preflight',async()=>{
+export async function runConversation(configuration,{signal,query,sessionFactory,generalReads,governedIntents,poststartTls,nativeFetch,budgets=runtimeHotPathBudgets(configuration)}={}){
+ assertHotPathBudgets(budgets);let ownedFetch;
+ try{return await withRunnerDiagnostics(()=>atRunnerStage('runner-preflight',async()=>{
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  assertRunnerEnvironment();await assertRunnerWorkspace(configuration);
  const product=process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1';
@@ -118,18 +122,19 @@ export async function runConversation(configuration,{signal,query,sessionFactory
  if(configuration.remoteTask&&query===undefined){
   if(poststartTls!==undefined||nativeFetch!==undefined)throw fault('RUNNER_POSTSTART_REFUSED');
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
-  return runRemoteConversation(configuration,{signal,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
+  return runRemoteConversation(configuration,{signal,budgets,...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
  }
-  markRunnerStage('capability-load');const startup=startupBudgetFor(configuration),bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,...(startup?{loadMaxRequestMs:startup.stages.load.attemptMs}:{}),...(nativeFetch===undefined?{}:{fetch:nativeFetch})});
+  const requestFetch=nativeFetch??(ownedFetch=createHotPathFetch(budgets)).fetch;
+  markRunnerStage('capability-load');const startup=startupBudgetFor(configuration),bytes=await readSecret(configuration.native.capabilityFile),credential=bytes.toString('utf8').trim(),native=createNativeCapabilityClient({configuration:configuration.native,credential,maxRequestMs:budget(budgets,'native.client.request'),loadMaxRequestMs:startup?startup.stages.load.attemptMs:budget(budgets,'native.client.request'),fetch:requestFetch});
  if(configuration.bootstrap?.remote===true&&query===undefined){
-   markRunnerStage('binding-bootstrap');const bootstrap=runnerStartupBudget({requestMs:configuration.limits.requestMs,shutdownMs:configuration.limits.shutdownMs,originalExpiresAtMs:configuration.bootstrap.expiresAtMs}).stages.bootstrap;const resolved=await loadRemoteTaskBinding({native,configuration,signal,startupBudget:bootstrap,...(poststartTls===undefined?{}:{poststartTls})});
+   markRunnerStage('binding-bootstrap');const bootstrap=runnerStartupBudget({requestMs:configuration.limits.requestMs,shutdownMs:configuration.limits.shutdownMs,originalExpiresAtMs:configuration.bootstrap.expiresAtMs}).stages.bootstrap;const resolved=await loadRemoteTaskBinding({native,configuration,signal,pollMs:budget(budgets,'runner.task.bootstrap.poll'),startupBudget:bootstrap,...(poststartTls===undefined?{}:{poststartTls})});
    markRunnerStage('remote-module-import');const {runRemoteConversation}=await import('./remote-conversation-runner.mjs');
-  return runRemoteConversation(resolved,{signal,...(nativeFetch===undefined?{}:{fetchImpl:nativeFetch,poststartNativeFetch:nativeFetch}),...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
+  return runRemoteConversation(resolved,{signal,budgets,fetchImpl:requestFetch,...(nativeFetch===undefined?{}:{poststartNativeFetch:nativeFetch}),...(readPort?{generalReads:readPort}:{}),...(sessionFactory?{sessionFactory}:{})});
  }
  if(poststartTls!==undefined)throw fault('RUNNER_POSTSTART_REFUSED');
-  if(configuration.bootstrap){markRunnerStage('admission-wait');await waitForAdmittedTask({native,binding:configuration.binding,versions:configuration.versions,deadlineMs:configuration.bootstrap.expiresAtMs,signal});}
+  if(configuration.bootstrap){markRunnerStage('admission-wait');await waitForAdmittedTask({native,binding:configuration.binding,versions:configuration.versions,deadlineMs:configuration.bootstrap.expiresAtMs,signal,pollMs:budget(budgets,'runner.task.bootstrap.poll')});}
   markRunnerStage('activity');
- const sessions=sessionFactory??createRuntimeSdkSessionFactory({origin:configuration.native.origin,credential,binding:configuration.binding});
-  return assembleConversationRunner({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});
- }),{binding:configuration.binding,environment:configuration.telemetry?.environment});
+ const sessions=sessionFactory??createRuntimeSdkSessionFactory({origin:configuration.native.origin,credential,binding:configuration.binding,fetchImpl:requestFetch,sessionTimeoutMs:budget(budgets,'runner.session.store')});
+  return assembleConversationRunner({configuration,native,budgets,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});
+ }),{binding:configuration.binding,environment:configuration.telemetry?.environment});}finally{await ownedFetch?.close();}
 }

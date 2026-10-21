@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Readiness gate for the signed download link routes at the runtime root. The gate wraps the canonical document application: every
  * path except `/api/documents/links/{issue,redeem}` is delegated unchanged, and those two routes answer a stable
  * `503 {error:{code:'DOWNLOADS_UNAVAILABLE'}}` until trusted startup opens the gate. `open` enables the routes only when, in order:
@@ -11,7 +12,7 @@ import {response} from '../../control/document-application/http.mjs';
 import {createDownloadLinkApplication,readDownloadLinkKey,hardenLinkResponse,LINK_ROUTE} from './download-links.mjs';
 import {createSuppressionGeneration} from './suppression-generation.mjs';
 import {fault} from '../config.mjs';
-export const DOWNLOADS_UNAVAILABLE='DOWNLOADS_UNAVAILABLE',DEFAULT_LINK_TTL_MS=60000;
+export const DOWNLOADS_UNAVAILABLE='DOWNLOADS_UNAVAILABLE',DEFAULT_LINK_TTL_MS=fixedHotPathBudget('artifact.download.ttl');
 /** Closed reason codes; `ENABLED` is the only open state. */
 export const GATE_REASONS=Object.freeze(['ENABLED','DOWNLOAD_LINKS_DISABLED','DOWNLOAD_LINKS_NOT_OPENED','DOWNLOAD_LINK_RETENTION_UNAVAILABLE','DOWNLOAD_LINK_AUTHORIZATION_UNAVAILABLE','DOWNLOAD_LINK_STORE_UNAVAILABLE','DOWNLOAD_LINK_STORE_UNVERIFIED','DOWNLOAD_LINK_KEY_UNAVAILABLE']);
 /** `links` is the validated `downloadLinks` control block or undefined; `suppression` is `{journal,serving}` from retention serving;

@@ -96,7 +96,7 @@ async function activityRun({profile,generalReads,governedIntents,cwd=`/workspace
   const runtime={binding,versions,cwd,proxyUrl:inputs.proxyUrl,proxyCredential:'synthetic-task-capability',model:inputs.model,sessionStore:{async load(){},async append(){},async listSubkeys(){}},
    deadlineMs:Date.now()+60000,maxTurns:inputs.maxTurns,maxCostMicroUSD:inputs.maxCostMicroUSD,maxOutputBytes:inputs.maxOutputBytes,
    sdkConfigDirectory:sdkConfigDirectory(configParent,binding.runId),sdkSecureStorageDirectory:inputs.secureStorageDirectory,sdkCaFile:RUNNER_SDK_CA_FILE,...(skillPluginDirectory?{skillPluginDirectory}:{})};
-  let n=700;const activity=createConversationActivity({runOwner:{async load(){return {run,request,capabilities:profile};},async append(){}},prepareRuntime:async()=>runtime,
+  let n=700;const activity=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:{async load(){return {run,request,capabilities:profile};},async append(){}},prepareRuntime:async()=>runtime,
    ...(generalReads?{generalReads}:{}),...(governedIntents?{governedIntents}:{}),newId:()=>id(n++),
    query:({options})=>{seen=options;return {async *[Symbol.asyncIterator](){yield {type:'result',subtype:'success',is_error:false};},close(){}};}});
   assert.deepEqual(await activity({binding}),{state:'completed'});

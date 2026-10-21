@@ -49,12 +49,12 @@ test('claim is an atomic absent-row insert from two connections; the same run wi
  assert.deepEqual(await f.store.read({issuanceKey:intent.issuanceKey}),bound,'nothing changed');
 });
 test('the issuer over the durable adapter: concurrent callers share one generation; restart replays without generating; a separate OS process that claimed and completed is recognized; a lost completion stays UNKNOWN until the authority answers; no raw material reaches the row',async t=>{
- const f=await fixture(t),a=authority(),issuer=createPreparedRunIssuer({store:f.store,authority:a,now:f.now}),b=binding(),intent=intentFor(b,f.now());
- const results=await Promise.all([issuer.issue(intent),issuer.issue(intent),createPreparedRunIssuer({store:createPostgresIssuanceStore({pool:f.pool}),authority:a,now:f.now}).issue(intent)]);
+ const f=await fixture(t),a=authority(),issuer=createPreparedRunIssuer({maxRequestMs:3000,store:f.store,authority:a,now:f.now}),b=binding(),intent=intentFor(b,f.now());
+ const results=await Promise.all([issuer.issue(intent),issuer.issue(intent),createPreparedRunIssuer({maxRequestMs:3000,store:createPostgresIssuanceStore({pool:f.pool}),authority:a,now:f.now}).issue(intent)]);
  assert.ok(results.every(r=>r.state==='ISSUED'));assert.equal(new Set(results.map(r=>r.issuance.grantId)).size,1);assert.equal(a.stats.generate,1,'exactly one generation across concurrent callers');
  const material=a.materials.get(await f.store.materialRef({issuanceKey:intent.issuanceKey})).capability;const text=await f.rowText(intent.issuanceKey);assert.ok(!text.includes(material),'the raw material is not in the row');assert.ok(text.includes(results[0].issuance.capabilitySha256));
  // Restart: a new pool, adapter and issuer over the same database.
- const pool2=new pg.Pool({host:socket,user:'postgres',database:'postgres',max:4});t.after(()=>pool2.end());const restarted=createPreparedRunIssuer({store:createPostgresIssuanceStore({pool:pool2}),authority:a,now:f.now});
+ const pool2=new pg.Pool({host:socket,user:'postgres',database:'postgres',max:4});t.after(()=>pool2.end());const restarted=createPreparedRunIssuer({maxRequestMs:3000,store:createPostgresIssuanceStore({pool:pool2}),authority:a,now:f.now});
  f.advance(60000);const again=await restarted.issue(intent);assert.equal(again.issuance.grantId,results[0].issuance.grantId);assert.equal(a.stats.generate,1,'restart replays, never re-mints');
  const receipt={...again.issuance,factsSha256:hash({facts:1})};const bound=await restarted.bindFacts(receipt);assert.equal(bound.factsSha256,receipt.factsSha256);assert.equal(capabilityDigest(await restarted.resolve(bound)),again.issuance.capabilitySha256);
  await assert.rejects(restarted.bindFacts({...receipt,factsSha256:hash({facts:2})}),/PREPARED_RUN_ISSUER_FACTS_CONFLICT/);

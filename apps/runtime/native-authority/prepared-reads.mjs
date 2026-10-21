@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Control-only join over already admitted task/issuance owners. Missing business owners remain unavailable. */
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
@@ -21,7 +22,7 @@ export function createPreparedNativeReads(configuration){
  if(c.enabled!==undefined&&typeof c.enabled!=='boolean')throw nativeReadFault('CONFIGURATION');
  const complete=config?.enabled&&c.enabled===true&&['allocationJson','grantFactsJsons','grantId','taskArn','issuanceFactsSha256','runRequestSha256','scopes','currentOwner','readCurrentEntry','expiresAtMs'].every(k=>c[k]!==undefined)&&(c.gateway!==undefined||c.createReadsRuntime!==undefined&&typeof c.taskCapability==='string'&&/^\S{1,8192}$/u.test(c.taskCapability));
  let taskVerifier,allocationSha256,policyRevision;
- if(complete){taskVerifier=createReadTaskVerifier({...Object.fromEntries(['allocationJson','grantFactsJsons','grantId','taskArn','issuanceFactsSha256','runRequestSha256','scopes','currentOwner','readCurrentEntry','expiresAtMs'].map(k=>[k,c[k]])),approvedReads:config,enabled:c.enabled??false,now,...(c.signal?{signal:c.signal}:{})});allocationSha256=hash(JSON.parse(c.allocationJson));policyRevision=c.scopes[0]?.policyRevision;}
+ if(complete){taskVerifier=createReadTaskVerifier({...Object.fromEntries(['allocationJson','grantFactsJsons','grantId','taskArn','issuanceFactsSha256','runRequestSha256','scopes','currentOwner','readCurrentEntry','expiresAtMs'].map(k=>[k,c[k]])),approvedReads:config,enabled:c.enabled??false,now,maxRequestMs:fixedHotPathBudget('native.read.request'),...(c.signal?{signal:c.signal}:{})});allocationSha256=hash(JSON.parse(c.allocationJson));policyRevision=c.scopes[0]?.policyRevision;}
  // Control must supply its canonical gateway. Missing context/broker/installation is absence, never inferred authority.
  const gateway=complete&&c.createReadsRuntime?c.createReadsRuntime(Object.freeze({taskVerifier,taskCapability:c.taskCapability,approvedReads:config})):c.gateway;
  if(types.isPromise(gateway)){Promise.prototype.then.call(gateway,()=>{},()=>{});throw nativeReadFault('CONFIGURATION');}

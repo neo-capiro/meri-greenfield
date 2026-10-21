@@ -25,7 +25,7 @@ test('through the issuer: a lost acknowledgement after generation reconciles fro
  const root=mkdtempSync(join(tmpdir(),'meri-material-'));t.after(()=>rmSync(root,{recursive:true,force:true}));let now=1_800_000_000_000;const authority=createFileCapabilityAuthority({directory:join(root,'material'),now:()=>now}),store=createMemoryIssuanceStore({crashAt:'before-complete'});
  const b=binding(),intent={issuanceKey:hash(b),binding:b,requestSha256:hash({prompt:'p'}),expiresAtMs:now+600000};
  await assert.rejects(createPreparedRunIssuer({store,authority,now:()=>now,maxRequestMs:300}).issue(intent),/PREPARED_RUN_ISSUER_UNKNOWN/);assert.equal((await store.read({issuanceKey:intent.issuanceKey})).state,'CLAIMED');
- const issuer=createPreparedRunIssuer({store,authority,now:()=>now});await assert.rejects(issuer.issue(intent),/PREPARED_RUN_ISSUER_UNKNOWN/,'the claim is uncertain and the authority refuses a second generation');
+ const issuer=createPreparedRunIssuer({maxRequestMs:3000,store,authority,now:()=>now});await assert.rejects(issuer.issue(intent),/PREPARED_RUN_ISSUER_UNKNOWN/,'the claim is uncertain and the authority refuses a second generation');
  const reconciled=await issuer.reconcile(intent);assert.equal(reconciled.state,'ISSUED');const status=await authority.status({issuanceKey:intent.issuanceKey});assert.equal(reconciled.issuance.capabilitySha256,status.capabilitySha256);
  const capability=await issuer.resolve(reconciled.issuance);assert.equal(capabilityDigest(capability),status.capabilitySha256);assert.ok(!JSON.stringify([...store.snapshot()]).includes(capability),'the store holds the digest and the reference, never the material');
  now=intent.expiresAtMs;await assert.rejects(issuer.resolve(reconciled.issuance),/PREPARED_RUN_ISSUER_EXPIRED/);

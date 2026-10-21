@@ -9,7 +9,7 @@ const T0=1800000000000,uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8$
 const code=expected=>error=>error.message===expected;
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json'}});
 function client(respond=()=>json({schemaVersion:1}),secret='SYNTHETIC_SERVICE'){
- const sent=[];const c=createReadDelegationCoreClient({origin:'https://core.example.invalid',now:()=>T0,enabled:true,getServiceSecret:async()=>secret,
+ const sent=[];const c=createReadDelegationCoreClient({maxRequestMs:3000,origin:'https://core.example.invalid',now:()=>T0,enabled:true,getServiceSecret:async()=>secret,
   fetchImpl:async(url,init)=>{sent.push({path:new URL(url).pathname,init});return respond(url,init);}});
  return {c,sent};
 }
@@ -44,7 +44,7 @@ test('bounded bodies; the service secret is never sent as a bearer; no client wi
  await assert.rejects(c.create({request:attended,liveCredential:'SYNTHETIC_SERVICE',deadlineMs:T0+1000}),code('UNAVAILABLE'));
  await assert.rejects(c.create({request:attended,deadlineMs:T0+1000}),code('UNAVAILABLE'),'attended create needs a live session');
  assert.equal(sent.length,0);
- const off=createReadDelegationCoreClient({origin:'https://core.example.invalid',now:()=>T0,enabled:true,fetchImpl:async()=>json({})});assert.equal(off.available,false);
+ const off=createReadDelegationCoreClient({maxRequestMs:3000,origin:'https://core.example.invalid',now:()=>T0,enabled:true,fetchImpl:async()=>json({})});assert.equal(off.available,false);
  await assert.rejects(off.revoke({delegationId:uuid('1'),reason:'cancelled',deadlineMs:T0+1000}),code('UNAVAILABLE'));
 });
 

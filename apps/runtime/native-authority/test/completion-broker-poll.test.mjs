@@ -64,7 +64,7 @@ async function turn(t, {holdPublication = async () => {}, pollsAcrossCapture = f
     if (after && value.state === 'executing') opened.resolve();
     return value;
   }};
-  const activity = createBrokerActivity({native, pollMs: 20, context: () => ({cancellationSignal: new AbortController().signal, heartbeat() {}})})({binding});
+  const activity = createBrokerActivity({...{pollMs:1000,cleanupMs:10000,},native, pollMs: 20, context: () => ({cancellationSignal: new AbortController().signal, heartbeat() {}})})({binding});
   activity.catch(() => {});
   const bytes = new Map();
   let puts = 0;

@@ -23,7 +23,7 @@ const CLEANUP_BOUND_MS=BROKER_NATIVE_MS;
 
 test('audit probe: a default-constructed broker never uses execution/start and stops the original when cancelled after launch and poll',async()=>{
  const executionId=hash(binding),expiresAtMs=Date.now()+30000,calls=[],abort=new AbortController();let polls=0,stopLive=null;
- const run=createBrokerActivity({pollMs:10,context:()=>({cancellationSignal:abort.signal,heartbeat(){if(polls===1)abort.abort(Error('synthetic-heartbeat-cancel'));}}),native:{async call(op,input,{signal}){calls.push(op);
+ const run=createBrokerActivity({...{pollMs:1000,cleanupMs:10000,},pollMs:10,context:()=>({cancellationSignal:abort.signal,heartbeat(){if(polls===1)abort.abort(Error('synthetic-heartbeat-cancel'));}}),native:{async call(op,input,{signal}){calls.push(op);
   if(op==='execution/start')throw Error('legacy start must not be called');
   if(op==='execution/kickoff/stop'){stopLive=!signal.aborted;return {binding,executionId,expiresAtMs};}
   if(op==='execution/kickoff')return {binding,executionId,expiresAtMs};
@@ -51,11 +51,11 @@ async function composition(t,{loseKickoffAck=false,blockPoll=false,now}={}){
   allocate:async()=>{record={state:'ADMITTED',original,resource:{taskArn}};return {original,resource:{taskArn}};},
   close:async()=>{effects.closes++;effects.terminated=true;effects.revoked=true;effects.closedAt??=Date.now();},
   prepared:{stack:{broker:{poll:async()=>({binding,executionId:original.executionId,state:'executing'})}}}};
- const owner=createPreparedTaskKickoff({original,controller,store:{allocations:{read:async()=>({record,run:{binding,state:'queued'}})}},
+ const owner=createPreparedTaskKickoff({maxRequestMs:3000,original,controller,store:{allocations:{read:async()=>({record,run:{binding,state:'queued'}})}},
   runner:{readiness:async()=>proof(false),release:async()=>{record.resource.launchBinding={state:'STARTED'};return proof(true);}},
   enabled:true,maxWaitMs:2000,pollMs:10,cleanupMs:2000});
  const observed={kickoff:owner.kickoff,status:owner.status,stop:value=>{effects.stopRequests++;return owner.stop(value);}};
- const kickoffApp=createPreparedKickoffApplication({owner:{...observed,kickoff:value=>{effects.kickoffs++;return owner.kickoff(value);}},controlCapabilitySha256:sha(control),enabled:true});
+ const kickoffApp=createPreparedKickoffApplication({maxRequestMs:3000,owner:{...observed,kickoff:value=>{effects.kickoffs++;return owner.kickoff(value);}},controlCapabilitySha256:sha(control),enabled:true});
  const executionApp=createNativeExecutionApplication({broker:{start:async()=>{effects.starts++;throw Error('legacy start must not be called');},poll:async({signal})=>{effects.polls++;
    if(!blockPoll)return {binding,executionId:original.executionId,state:'executing'};
    pollEntered.resolve();await new Promise((resolve,reject)=>{signal.addEventListener('abort',()=>reject(Error('poll-aborted')),{once:true});teardown.promise.then(()=>reject(Error('poll-teardown')));});}},
@@ -63,9 +63,9 @@ async function composition(t,{loseKickoffAck=false,blockPoll=false,now}={}){
  const listener=await listenFetch({async handle(request){return await kickoffApp.handle(request)??await executionApp.handle(request);}});
  t.after(async()=>{teardown.resolve();await owner.close().catch(()=>{});await listener.close();});
  const transport=async(url,init)=>{const response=await fetch(url,init);if(loseKickoffAck&&url.endsWith('/v1/execution/kickoff')){await response.body?.cancel();throw new TypeError('synthetic lost kickoff acknowledgment');}return response;};
- const native=createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,fetch:transport});
+ const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,fetch:transport});
  const abort=new AbortController();let beats=0;const beat=Promise.withResolvers();
- const run=createBrokerActivity({pollMs:10,...(now?{now}:{}),native,context:()=>({cancellationSignal:abort.signal,heartbeat(){beats++;beat.resolve();}})});
+ const run=createBrokerActivity({...{pollMs:1000,cleanupMs:10000,},pollMs:10,...(now?{now}:{}),native,context:()=>({cancellationSignal:abort.signal,heartbeat(){beats++;beat.resolve();}})});
  return {run,abort,effects,pollEntered:pollEntered.promise,firstBeat:beat.promise,beats:()=>beats};
 }
 async function until(check){const deadline=Date.now()+5000;while(!check()){if(Date.now()>=deadline)throw Error('TEST_TIMEOUT');await new Promise(resolve=>setTimeout(resolve,5));}}

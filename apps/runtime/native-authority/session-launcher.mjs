@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Trusted supervisor one-use SDK spawn binding; retain registration outside worker. */
 import {spawn} from 'node:child_process';
 import {openSync,closeSync,fstatSync,readFileSync,realpathSync,lstatSync} from 'node:fs';
@@ -36,7 +37,7 @@ export function createNativeSessionLauncher(configuration){
   try{
    if(closed)throw launchFault('STOPPED');
    observer=createNativeSessionRegistration({binding:c.binding,child,workspace:c.workspace,configDirectory:c.configDirectory,
-    versions:c.versions,expiresAtMs:c.expiresAtMs,enabled:true,now:c.now,signal:c.signal,limits:c.limits});
+    versions:c.versions,expiresAtMs:c.expiresAtMs,enabled:true,now:c.now,signal:c.signal,limits:{maxRequestMs:fixedHotPathBudget('native.session.registration'),...c.limits}});
    // Expose a readable facade, never the writable Transform witness tap.
    transport=Readable.from(observer.stdout,{objectMode:false});transport.on('error',()=>{void owner.stop('STREAM_ERROR');});
    observer.stdout.on('error',()=>{void owner.stop('STREAM_ERROR');});

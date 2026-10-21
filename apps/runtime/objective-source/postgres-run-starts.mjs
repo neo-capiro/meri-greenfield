@@ -34,7 +34,7 @@ export function createPostgresObjectiveRunStartStore(configuration={}){
   if(flag&&'value'in flag&&flag.value===true){
    const c=own(configuration,['enabled','pool','tenantId'],['now','maxRequestMs']);tenantId=c.tenantId;
    if(typeof tenantId!=='string'||!tenantId||tenantId.trim()!==tenantId||tenantId.length>128)refuse();
-   tx=createObjectivePostgresTransactions({connect:storageMethod(c.pool,'connect'),now:c.now??Date.now,maxRequestMs:c.maxRequestMs??3000,unavailable,unknown,semantic:['OBJECTIVE_RUN_START_CONFLICT']});
+   tx=createObjectivePostgresTransactions({connect:storageMethod(c.pool,'connect'),now:c.now??Date.now,maxRequestMs:c.maxRequestMs,unavailable,unknown,semantic:['OBJECTIVE_RUN_START_CONFLICT']});
    enabled=true;
   }
  }catch{enabled=false;}

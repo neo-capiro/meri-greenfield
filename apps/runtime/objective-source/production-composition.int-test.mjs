@@ -184,8 +184,8 @@ test('current admitted task refusal cannot fall back to stored source facts',asy
 
 test('actual default-off factories remain closed before credential, key, clock or source I/O',async()=>{
  let effects=0;const poison={get read(){effects++;throw Error('SYNTHETIC_MUST_STAY_CLOSED');}},clock=()=>{effects++;return Date.now();};
- const native=createObjectiveSourceNativeAuthority({acceptedRuns:poison,now:clock}),prepared=createObjectiveSourcePreparedReader({store:poison,now:clock}),
-  custody=createObjectiveSourceCustody({store:poison,now:clock}),gate=createObjectiveSourceReaderGate(),client=coreClient.createObjectiveReaderV2Client({now:clock});
+ const native=createObjectiveSourceNativeAuthority({acceptedRuns:poison,now:clock}),prepared=createObjectiveSourcePreparedReader({maxRequestMs:3000,store:poison,now:clock}),
+  custody=createObjectiveSourceCustody({maxRequestMs:3000,store:poison,now:clock}),gate=createObjectiveSourceReaderGate(),client=coreClient.createObjectiveReaderV2Client({now:clock});
  assert.equal(native.available(),false);assert.equal(prepared.available(),false);assert.equal(custody.available(),false);assert.equal(gate.available(),false);
  await assert.rejects(native.assertCurrent({}),unavailable);await assert.rejects(prepared.read({}),unavailable);await assert.rejects(custody.read({}),unavailable);await assert.rejects(gate.read({}),unavailable);
  await assert.rejects(client.readActiveSource({}),unavailable);assert.equal(effects,0);

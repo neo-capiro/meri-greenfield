@@ -1,5 +1,7 @@
 /** Separately supervised control-domain Temporal schedule poller. HTTP is health-only; Temporal owns firing/retry identity. */
 import {fileURLToPath} from 'node:url';
+import {budget,assertHotPathBudgets} from '../../packages/runtime/hot-path-budgets.mjs';
+import {runtimeHotPathBudgets} from './hot-path-budget-inputs.mjs';
 import {NativeConnection,Worker} from '@temporalio/worker';
 import {Context} from '@temporalio/activity';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -18,16 +20,18 @@ import {createWorkerReadiness,stopWorkerOnAuthorizationFailure} from './temporal
 import {listenRuntime} from './http-server.mjs';
 import {fault} from './config.mjs';
 /** Real canonical domain composition over borrowed resources. Trusted authority/instruction owners are never configuration selectors. */
-export function assembleScheduleDispatch({configuration,pool,client,authority,taskInstructions,runAdmission,runControl,retirement,now=Date.now}){
+export function assembleScheduleDispatch({configuration,pool,client,authority,taskInstructions,runAdmission,runControl,retirement,now=Date.now,budgets}){
+ assertHotPathBudgets(budgets);
  const s=configuration.scheduledDispatch;if(s?.enabled!==true)throw fault('SCHEDULE_WORKER_CONFIGURATION');
  const scheduleOwner=createPostgresScheduleOwner({pool});
- const instructions=taskInstructions??createApprovedScheduleInstructions({scheduleOwner,preparations:createPostgresPreparedScheduleReader({pool}),now,maxRequestMs:configuration.limits.requestMs});
- const store=createPostgresConversationStore({pool,now}),jobOwner=runControl&&retirement?createScheduledJobLifecycle({store,runControl,retirement,now,maxRequestMs:configuration.limits.requestMs}):undefined;
+ const instructions=taskInstructions??createApprovedScheduleInstructions({scheduleOwner,preparations:createPostgresPreparedScheduleReader({pool}),now,maxRequestMs:budget(budgets,'request')});
+ const store=createPostgresConversationStore({pool,now}),jobOwner=runControl&&retirement?createScheduledJobLifecycle({store,runControl,retirement,now,maxRequestMs:budget(budgets,'request')}):undefined;
  return createScheduledDispatch({scheduleOwner,store,
-  dispatcher:createTemporalConversationDispatcher({client,taskQueue:s.conversationTaskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs}),
-  runs:createTemporalRunEvidence({client,now,maxRequestMs:configuration.limits.requestMs}),authority,taskInstructions:instructions,...(runAdmission===undefined?{}:{runAdmission}),...(jobOwner===undefined?{}:{jobOwner}),versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs});
+  dispatcher:createTemporalConversationDispatcher({client,taskQueue:s.conversationTaskQueue,lifecycle:true,now,maxRequestMs:budget(budgets,'request')}),
+  runs:createTemporalRunEvidence({client,now,maxRequestMs:budget(budgets,'request')}),authority,taskInstructions:instructions,...(runAdmission===undefined?{}:{runAdmission}),...(jobOwner===undefined?{}:{jobOwner}),versions:configuration.versions,now,maxRequestMs:budget(budgets,'request')});
 }
-export function scheduleWorkerOptions({configuration,connection,dispatch,context=()=>Context.current()}){
+export function scheduleWorkerOptions({configuration,connection,dispatch,context=()=>Context.current(),budgets}){
+ assertHotPathBudgets(budgets);
  const s=configuration.scheduledDispatch;
  if(s?.enabled!==true)throw fault('SCHEDULE_WORKER_CONFIGURATION');own(s,['enabled','conversationTaskQueue','maxConcurrentActivities']);
  if(!Number.isSafeInteger(s.maxConcurrentActivities)||s.maxConcurrentActivities<1||s.maxConcurrentActivities>10||typeof s.conversationTaskQueue!=='string'||!/^[a-zA-Z0-9._\-]{1,128}$/u.test(s.conversationTaskQueue)||s.conversationTaskQueue===configuration.temporal.taskQueue)throw fault('SCHEDULE_WORKER_CONFIGURATION');
@@ -36,19 +40,19 @@ export function scheduleWorkerOptions({configuration,connection,dispatch,context
  return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,
   workflowsPath:fileURLToPath(new URL('../control/conversations/scheduled-dispatch-workflow.ts',import.meta.url)),
   activities:createScheduledDispatchActivities({dispatch:borrowed,context}),maxConcurrentActivityTaskExecutions:s.maxConcurrentActivities,
-  shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};
+  shutdownGraceTime:budget(budgets,'worker.shutdown.grace'),shutdownForceTime:budget(budgets,'worker.shutdown.force')};
 }
 /** Caller owns compiled dispatch and its SQL/client/authority dependencies. This process owns only its poller/connection/health listener. */
 export async function startScheduleWorker(configuration,options={}){
- const {signal,dispatch}=own(options,[],['signal','dispatch']);nativeSignal(signal);
+ const {signal,dispatch,budgets=runtimeHotPathBudgets(configuration)}=own(options,[],['signal','dispatch','budgets']);nativeSignal(signal);assertHotPathBudgets(budgets);
  // Missing or malformed real dispatch fails before TLS secrets, connection or poller allocation. No fallback fake owner.
- const compiled=scheduleWorkerOptions({configuration,dispatch});
+ const compiled=scheduleWorkerOptions({configuration,dispatch,budgets});
  let connection,worker,listener,run,closing,authorization,unwatch;
  const close=()=>closing??=(async()=>{const errors=[];for(const step of [()=>listener?.close(),()=>{unwatch?.();if(worker?.getState()==='RUNNING')worker.shutdown();},()=>run?.catch(()=>{}),()=>connection?.close(),()=>authorization?.close()])try{await step();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'SCHEDULE_WORKER_CLEANUP_UNKNOWN');})();
  try{signal?.throwIfAborted();const tls=await temporalTls(configuration.temporal.tls);authorization=await temporalAuthorization(configuration,{signal});signal?.throwIfAborted();
-  connection=await NativeConnection.connect({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);signal?.throwIfAborted();
+  connection=await NativeConnection.connect({address:configuration.temporal.address,tls,connectTimeout:budget(budgets,'temporal.connect'),...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);signal?.throwIfAborted();
   worker=await Worker.create({...compiled,connection});if(authorization)unwatch=stopWorkerOnAuthorizationFailure({worker,authorization});run=worker.run();run.catch(()=>{});
-  listener=await listenRuntime({configuration,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:createWorkerReadiness({worker,authorization}),signal});
+  listener=await listenRuntime({configuration,budgets,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:createWorkerReadiness({worker,authorization}),signal});
   return Object.freeze({address:listener.address,completion:run,close});
  }catch(error){await close().catch(()=>{});throw Object.assign(fault('SCHEDULE_WORKER_STARTUP_FAILED'),{cause:error});}
 }

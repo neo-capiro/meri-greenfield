@@ -23,7 +23,7 @@ function identityFor({binding,purpose='active-source',tokenId=id(99),bodySha256=
 }
 function setup(options={}){
  const f=custodyFixture(),{pool,state}=syntheticObjectivePool(),effects={count:0,value:{schemaVersion:2,observed:'synthetic'}};
- const create=(extra={})=>createPostgresObjectiveReaderReplayStore({enabled:true,pool,tenantId:f.binding.tenantId,now:()=>NOW,allocateFence:()=>id(80),...options,...extra});
+ const create=(extra={})=>createPostgresObjectiveReaderReplayStore({maxRequestMs:3000,enabled:true,pool,tenantId:f.binding.tenantId,now:()=>NOW,allocateFence:()=>id(80),...options,...extra});
  const effect=async()=>{effects.count++;if(effects.fail)throw Error('SYNTHETIC_EFFECT_FAILED');return structuredClone(effects.value);};
  return {f,pool,state,create,store:create(),effects,effect,...identityFor({binding:f.binding})};
 }
@@ -95,7 +95,7 @@ test('the actual reader gate uses this store as its durable runOnce: one effect,
  const f=custodyFixture(),owner=f.create();await owner.publish({issued:f.issued});let reads=0;
  const custody={available:p=>owner.available(p),async read(value){reads++;return owner.read(value);}};
  const {pool,state}=syntheticObjectivePool({now:()=>f.state.now});
- const idempotency=createPostgresObjectiveReaderReplayStore({enabled:true,pool,tenantId:f.binding.tenantId,now:()=>f.state.now});
+ const idempotency=createPostgresObjectiveReaderReplayStore({maxRequestMs:3000,enabled:true,pool,tenantId:f.binding.tenantId,now:()=>f.state.now});
  const gate=createObjectiveSourceReaderGate({enabled:true,trust,custody,idempotency,now:()=>f.state.now});
  const body={schemaVersion:2,purpose:'active-source',...f.selector},bytes=objectiveReaderRequestBody(body),d=readerPurposes['active-source'],seconds=Math.floor(NOW/1000);
  const header={alg:'EdDSA',typ:readerTokenType,kid:'test-1'},claims={iss:trust['active-source'].issuer,sub:d.subject,aud:d.audience,iat:seconds,nbf:seconds,exp:seconds+60,jti:id(99),

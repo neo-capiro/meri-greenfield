@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** The routine occurrence native operations end to end in one process: worker port -> actual native capability client -> private
  * control operation -> owner -> REAL scheduled admission (binding journal, initial inputs, conversation store, schedule owner over
  * the scripted SQL fixtures) under the REAL unattended firing authority over a scripted Core wire C; retirement through the
@@ -60,9 +61,9 @@ async function harness(){
   temporal:{taskQueue:'meri-schedules'},scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1},
   routines:{enabled:true,core:{origin:CORE_ORIGIN,serviceSecretFile:'/run/meri/routines-service-secret',unattendedGrant:signer.pin}}};
  const owners={template:h.template,retirement:h.options.retirement};
- const control=composeRoutinesOccurrences({configuration,controlCapabilitySha256:capabilityDigest(CONTROL),pool,owners,transport,now:h.now});
+ const control=composeRoutinesOccurrences({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,controlCapabilitySha256:capabilityDigest(CONTROL),pool,owners,transport,now:h.now});
  const urls=[];
- const native=createNativeCapabilityClient({configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:h.now,
+ const native=createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:h.now,
   fetch:async(url,init)=>{urls.push(url);return await control.application.handle(new Request(url,init))??Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404});}});
  const ports=createRoutinesOccurrencePorts({native});
  const replay=()=>{const r=copy(h.request);for(const key of ['conversation','run','event'])r.input[key].createdAt=new Date(h.now()).toISOString();return r;};
@@ -153,23 +154,23 @@ test('the native operations require the exact control capability, POST JSON and 
  for(const init of [{headers:{authorization:'Bearer wrong-capability','content-type':'application/json'}},{headers:{'content-type':'application/json'}},
   {headers:{authorization:'Bearer '+CONTROL,'content-type':'text/plain'}},{body:JSON.stringify({binding:h.identity.binding,extra:1})},{body:'{'}])assert.equal((await call(init)).status,503);
  assert.equal((await call({},url+'?x=1')).status,503);assert.equal(await call({},origin+'/v1/routines/occurrences/other'),null);
- const digest=capabilityDigest(CONTROL),disabled=createRoutinesOccurrenceApplication({controlCapabilitySha256:digest});
+ const digest=capabilityDigest(CONTROL),disabled=createRoutinesOccurrenceApplication({maxRequestMs:10000,controlCapabilitySha256:digest});
  assert.equal(disabled.state(),'disabled');assert.equal(await disabled.handle(new Request(url,{method:'POST',body})),null,'disabled: the boundary answers 404, nothing is read');
- assert.throws(()=>createRoutinesOccurrenceApplication({controlCapabilitySha256:digest,enabled:true}),code('ROUTINES_OCCURRENCE_UNAVAILABLE'));
+ assert.throws(()=>createRoutinesOccurrenceApplication({maxRequestMs:10000,controlCapabilitySha256:digest,enabled:true}),code('ROUTINES_OCCURRENCE_UNAVAILABLE'));
  assert.deepEqual(Object.keys(ROUTINES_OCCURRENCE_OWNERS).sort(),['consent','retirement','template']);assert.deepEqual(ADMISSION_PHASES,['before_claim','before_accept','before_release']);
  const {routines:_,...undeclared}=h.configuration;
- assert.equal(composeRoutinesOccurrences({configuration:undeclared,controlCapabilitySha256:digest,pool:h.pool,owners:h.owners}).state,'disabled');
- assert.equal(composeRoutinesOccurrences({configuration:{...h.configuration,routines:{enabled:false,core:h.configuration.routines.core}},controlCapabilitySha256:digest,pool:h.pool,owners:h.owners}).state,'disabled');
+ assert.equal(composeRoutinesOccurrences({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:undeclared,controlCapabilitySha256:digest,pool:h.pool,owners:h.owners}).state,'disabled');
+ assert.equal(composeRoutinesOccurrences({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{...h.configuration,routines:{enabled:false,core:h.configuration.routines.core}},controlCapabilitySha256:digest,pool:h.pool,owners:h.owners}).state,'disabled');
  const {unattendedGrant:__,...cancelOnly}=h.configuration.routines.core;
- assert.equal(composeRoutinesOccurrences({configuration:{...h.configuration,routines:{enabled:true,core:{...cancelOnly,cancellationProof:coreSigner().pin}}},controlCapabilitySha256:digest,pool:h.pool,owners:h.owners}).state,'disabled');
+ assert.equal(composeRoutinesOccurrences({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{...h.configuration,routines:{enabled:true,core:{...cancelOnly,cancellationProof:coreSigner().pin}}},controlCapabilitySha256:digest,pool:h.pool,owners:h.owners}).state,'disabled');
  // Declared without the candidate's owners: mounted, every call refuses with no evidence, the worker port reports the transport fault.
- const waiting=composeRoutinesOccurrences({configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool});assert.equal(waiting.state,'owners-unavailable');assert.deepEqual(waiting.tables,[]);
+ const waiting=composeRoutinesOccurrences({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool});assert.equal(waiting.state,'owners-unavailable');assert.deepEqual(waiting.tables,[]);
  assert.equal((await waiting.application.handle(new Request(url,{method:'POST',headers:{authorization:'Bearer '+CONTROL,'content-type':'application/json'},body}))).status,503);
- const port=createRoutinesOccurrencePorts({native:createNativeCapabilityClient({configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:h.now,fetch:async(u,i)=>await waiting.application.handle(new Request(u,i))??new Response('',{status:404})})});
+ const port=createRoutinesOccurrencePorts({native:createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:h.now,fetch:async(u,i)=>await waiting.application.handle(new Request(u,i))??new Response('',{status:404})})});
  await assert.rejects(port.runAdmission.admit(h.request),code('NATIVE_UNAVAILABLE'));assert.deepEqual(counts(h),{bindings:0,inputs:0,runs:0});
  // A malformed candidate template refuses composition itself, not every later admission.
- assert.throws(()=>composeRoutinesOccurrences({configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool,owners:{...h.owners,template:{...h.template,destinationId:'ui-guessed-inbox'}}}),code('SCHEDULE_ADMISSION_CONFIGURATION'));
- assert.throws(()=>composeRoutinesOccurrences({configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool,owners:{template:h.template}}),code('ROUTINES_OCCURRENCE_CONFIGURATION'));
+ assert.throws(()=>composeRoutinesOccurrences({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool,owners:{...h.owners,template:{...h.template,destinationId:'ui-guessed-inbox'}}}),code('SCHEDULE_ADMISSION_CONFIGURATION'));
+ assert.throws(()=>composeRoutinesOccurrences({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool,owners:{template:h.template}}),code('ROUTINES_OCCURRENCE_CONFIGURATION'));
  assert.deepEqual(h.control.tables,['meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_conversations.initial_run_bindings','meri_conversations.initial_inputs']);
 });
 

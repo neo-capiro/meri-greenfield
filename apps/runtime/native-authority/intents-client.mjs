@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** P-INT-9, runner side: the worker's `governedIntents` port (`apps/worker/conversation/intents/runtime.mjs`) over the private
  * task-authorized control routes served by `intents-http.mjs`. Mirrors `reads-client.mjs`: fixed https origin, the run's task
  * capability as Bearer, this run's binding in every body, bounded streamed responses, no redirects, no retries.
@@ -17,7 +18,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 export const RUNNER_INTENT_FAILURES=Object.freeze({UNAVAILABLE:503,ACCESS_DENIED:403,REFUSED:409,INVALID_ARGUMENTS:400,DEADLINE:408,CANCELLED:408,CONFLICT:409,UNKNOWN:502,RESOURCE_LIMIT:413});
 export const RUNNER_INTENT_PATHS=Object.freeze({availability:'/v1/runner/intents/availability',prepare:'/v1/runner/intents/prepare'});
 /** Availability is a snapshot read: its own short bound, as for native reads. */
-export const RUNNER_INTENT_AVAILABILITY_MS=3000;
+export const RUNNER_INTENT_AVAILABILITY_MS=fixedHotPathBudget('native.intent.availability');
 export const runnerIntentFault=code=>Object.assign(new Error(code),{code:Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:'UNAVAILABLE'});
 /** The closed code an error carries as an own data property, or null. Never runs accessors or proxy traps. */
 export const runnerIntentCode=error=>{const code=error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;return typeof code==='string'&&Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:null;};
@@ -47,7 +48,7 @@ const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 class ControlAnswer extends Error{constructor(code){super(code);this.code=code;}}
 export function createRunnerIntentsClient(configuration){
  const c=own(configuration,['origin','credential','binding','fetchImpl'],['enabled','now','limits']),now=c.now??Date.now,enabled=c.enabled??false;let binding,origin;
- const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
+ const limits=own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
  try{const u=new URL(c.origin);if(u.protocol!=='https:'||u.pathname!=='/'||u.username||u.password||u.search||u.hash||u.origin!==c.origin)throw 0;origin=u.origin;}catch{throw runnerIntentFault('UNAVAILABLE');}
  try{binding=data(c.binding);validateShape('RunBinding',binding);}catch{throw runnerIntentFault('UNAVAILABLE');}
  if(typeof c.credential!=='string'||!/^\S{1,8192}$/u.test(c.credential)||typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)||typeof now!=='function'||typeof enabled!=='boolean'||

@@ -21,7 +21,7 @@ async function harness({allowedOperations}={}){
  const f=await applicationFixture(),clientId=scopes[0].resourceId;let clock=Date.now();const now=()=>clock;
  const core=delegationCoreFixture({now,binding,clientId,runDeadlineMs:clock+3600000,principal:{tenantId:binding.tenantId,actorId:binding.actorId},reservations:new Map(),liveBearers:new Set([NATIVE]),
   authority:async()=>new Response('',{status:404}),tools:async()=>new Response('',{status:404})});
- const client=createReadDelegationCoreClient({origin:coreOrigin,fetchImpl:core.fetchImpl,now,enabled:true,getServiceSecret:async()=>'SYNTHETIC_SERVICE'});
+ const client=createReadDelegationCoreClient({maxRequestMs:3000,origin:coreOrigin,fetchImpl:core.fetchImpl,now,enabled:true,getServiceSecret:async()=>'SYNTHETIC_SERVICE'});
  const port=createRoutineReadConsents({consents:createReadDelegationConsents({client,now}),nativeCredentials:f.sessions,allocationJson:allocationJson(clock,allowedOperations),now});
  const attended={binding,selectedClientId:clientId};
  const approve=extra=>port.approve({attended,scheduleId:id(60),clientId,policyRevision:POLICY,scheduleProjectionSha256:PROJECTION,scheduleEndsAtMs:null,deadlineMs:now()+2000,...extra});
@@ -69,7 +69,7 @@ test('a Core outage is UNAVAILABLE; a template naming a non-read operation can n
  h.core.state.consentStatus=503;await assert.rejects(h.approve(),code('UNAVAILABLE'));h.core.state.consentStatus=null;
  const w=await harness({allowedOperations:[{id:'create_word',version:'0.2.0'},{id:'search_memory',version:'0.2.0'}]});t.after(w.close);
  const before=w.calls().length;await assert.rejects(w.approve(),code('ACCESS_DENIED'));assert.equal(w.calls().length,before,'refused before any request');
- const consents=createReadDelegationConsents({client:createReadDelegationCoreClient({origin:coreOrigin,fetchImpl:h.core.fetchImpl,now:h.now,enabled:true,getServiceSecret:async()=>'s'}),now:h.now});
+ const consents=createReadDelegationConsents({client:createReadDelegationCoreClient({maxRequestMs:3000,origin:coreOrigin,fetchImpl:h.core.fetchImpl,now:h.now,enabled:true,getServiceSecret:async()=>'s'}),now:h.now});
  for(const bad of [{consents:{},nativeCredentials:h.f.sessions,allocationJson:allocationJson(h.now()),now:h.now},{consents,nativeCredentials:{},allocationJson:allocationJson(h.now()),now:h.now},
   {consents,nativeCredentials:h.f.sessions,allocationJson:allocationJson(h.now()),now:'x'},{consents,nativeCredentials:h.f.sessions,allocationJson:allocationJson(h.now())}])
   assert.throws(()=>createRoutineReadConsents(bad),code('CONFIGURATION'));

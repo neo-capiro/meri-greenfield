@@ -40,7 +40,7 @@ export function createScheduledNativeAdmission(options){
    !integer(t.task.version)||t.task.version<1||t.task.manifestSha256!==a.manifestSha256||!digest(t.configurationSha256)||
    a.run.tenantId!==t.principal.tenantId||a.run.actorId!==t.principal.actorId||!integer(t.runWindowMs)||t.runWindowMs<1||
    t.destinationId!==SCHEDULED_MERI_INBOX_DESTINATION)fail('CONFIGURATION');
-  now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
+  now=o.now??Date.now;maxRequestMs=o.maxRequestMs;
   if(typeof now!=='function'||!integer(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  }catch{throw fault('CONFIGURATION');}
 

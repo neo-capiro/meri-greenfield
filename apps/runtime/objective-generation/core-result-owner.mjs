@@ -6,7 +6,7 @@ import {storageMethod,uuid,digest,validateShape} from '../../artifacts/storage/b
 const refuse=()=>{throw typedFault();};
 export function createCoreObjectiveGenerationResultOwner(configuration){
  const c=own(configuration,['source'],['reader','enabled','now','maxRequestMs']),source=data(own(c.source,['generationJobId','binding','sourceAdmissionSha256']));
- const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  uuid(source.generationJobId);digest(source.sourceAdmissionSha256);validateShape('RunBinding',source.binding);
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)refuse();
  const retained=c.reader===undefined?null:{read:storageMethod(c.reader,'read'),available:storageMethod(c.reader,'available')};

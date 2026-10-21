@@ -128,11 +128,11 @@ test('configuration is inert and rejects routes, headers, proxy ports and invali
 
 test('unavailable reader and unavailable Core client expose the method without invoking any owner',async()=>{
  const f=fixture(),read=createReadModeObservationReader({available:false,now:f.now,maxRequestMs:3000});await failure(read(f.request()),'UNAVAILABLE');
- const core=createNativeToolAuthorityClient({now:f.now});assert.equal(core.available,false);assert.equal(typeof core.readModeObservation,'function');await failure(core.readModeObservation(f.request()),'UNAVAILABLE');assert.equal(f.state.calls.length,0);
+ const core=createNativeToolAuthorityClient({maxRequestMs:3000,now:f.now});assert.equal(core.available,false);assert.equal(typeof core.readModeObservation,'function');await failure(core.readModeObservation(f.request()),'UNAVAILABLE');assert.equal(f.state.calls.length,0);
 });
 
 test('actual Core-client method composes the same existing identity HTTP owner and fixed mode reader',async()=>{
- const f=fixture(),core=createNativeToolAuthorityClient({origin,fetchImpl:f.configuration.fetchImpl,now:f.now,enabled:true});
+ const f=fixture(),core=createNativeToolAuthorityClient({maxRequestMs:3000,origin,fetchImpl:f.configuration.fetchImpl,now:f.now,enabled:true});
  assert.equal(core.available,true);assert.equal((await core.readModeObservation(f.request())).evidenceAccuracyMode,'off');assert.deepEqual(f.state.calls.map(c=>c.path),[identityPath,modePath,identityPath]);
  for(const method of ['readCurrent','readConversation','readClientReference'])assert.equal(typeof core[method],'function');
 });

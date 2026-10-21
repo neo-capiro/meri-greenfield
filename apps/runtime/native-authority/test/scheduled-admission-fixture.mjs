@@ -56,10 +56,10 @@ export async function scheduledAdmissionFixture({nativeCandidate,clockMs}={}){
  const policy={calls:[],onAuthorize:null,expiresAtMs:now()+120000};
  const authority={async authorize(q){policy.calls.push(q);if(policy.onAuthorize)return policy.onAuthorize(q);return {authorized:true,selectionSha256:q.selectionSha256,binding:q.selection.binding,scopes,
   selectedClientId,policyRevision,configurationSha256:template.configurationSha256,checkedAtMs:now(),expiresAtMs:policy.expiresAtMs};}};
- const options={pool,store,scheduleOwner,authority,template,now},adapter=createScheduledNativeAdmission(options);
+ const options={maxRequestMs:10000,pool,store,scheduleOwner,authority,template,now},adapter=createScheduledNativeAdmission(options);
  async function acknowledge(value=intent){const q=ownerBinding(value);await scheduleOwner.claim(q,()=>{});await scheduleOwner.markDispatching(q,()=>{});await scheduleOwner.commitKnown(q,()=>{});}
  await acknowledge();
- const temporal=temporalFixture(),dispatcher=createTemporalConversationDispatcher({client:temporal.client,taskQueue:'meri-conversations',lifecycle:true,now}),runs=createTemporalRunEvidence({client:temporal.client,now});
+ const temporal=temporalFixture(),dispatcher=createTemporalConversationDispatcher({maxRequestMs:3000,client:temporal.client,taskQueue:'meri-conversations',lifecycle:true,now}),runs=createTemporalRunEvidence({maxRequestMs:3000,client:temporal.client,now});
  const firingAuthority={async authorize(q){return {authorized:true,occurrenceKey:q.occurrenceKey,owner:principal,scopes,checkedAtMs:now(),expiresAtMs:now()+60000};}};
  return {pool,store,scheduleSql,scheduleOwner,conversations,bindings,queries,releases,faults,now,advance:conversations.advance,template,allocation,scopes,intent,occurrence,identity,effect,input,request,
   policy,authority,options,adapter,acknowledge,temporal,dispatcher,runs,firingAuthority};

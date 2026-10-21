@@ -7,7 +7,7 @@ import {createNativeIdentityContext} from '../native-authority/identity-context.
 import {loadObjectiveStrategyCodec} from '../../worker/conversation/objective-generation/typed-result.mjs';
 const refuse=()=>{throw typedFault();};
 export function createObjectiveGenerationResultReader(configuration){
- const c=own(configuration,['store','objects','identity','source'],['enabled','now','maxRequestMs','maxFactBytes','codec']),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000,maxFactBytes=c.maxFactBytes??131072,codec=c.codec??loadObjectiveStrategyCodec;
+ const c=own(configuration,['store','objects','identity','source'],['enabled','now','maxRequestMs','maxFactBytes','codec']),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs,maxFactBytes=c.maxFactBytes??131072,codec=c.codec??loadObjectiveStrategyCodec;
  const source=data(own(c.source,['generationJobId','binding','sourceAdmissionSha256'])),identity=own(c.identity,['origin','credential','commandContext','fetchImpl']),context=data(own(identity.commandContext,['binding','clientResolution']));
  const readRun=storageMethod(c.store,'read'),readCompletion=storageMethod(c.store.completions,'read'),get=storageMethod(c.objects,'get');
  if(typeof now!=='function'||typeof enabled!=='boolean'||typeof codec!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxFactBytes)||maxFactBytes<1||maxFactBytes>131072||hash(context.binding)!==hash(source.binding))refuse();

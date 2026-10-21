@@ -21,7 +21,7 @@ function rowOf(value){if(value===null||value===undefined)return null;if(!value||
  if(r.state==='CLAIMED'&&(r.grantId!==undefined||r.capabilitySha256!==undefined||r.factsSha256!==undefined))fail('STORE_SHAPE');return r;}
 const sameIntent=(row,i)=>hash({binding:row.binding,requestSha256:row.requestSha256,expiresAtMs:row.expiresAtMs})===hash({binding:i.binding,requestSha256:i.requestSha256,expiresAtMs:i.expiresAtMs});
 const issuanceOf=r=>({issuanceKey:r.issuanceKey,binding:r.binding,requestSha256:r.requestSha256,expiresAtMs:r.expiresAtMs,grantId:r.grantId,capabilitySha256:r.capabilitySha256,...(r.factsSha256!==undefined?{factsSha256:r.factsSha256}:{})});
-export function createPreparedRunIssuer({store,authority,now=Date.now,maxRequestMs=3000}){
+export function createPreparedRunIssuer({store,authority,now=Date.now,maxRequestMs}){
  const claim=storageMethod(store,'claim'),read=storageMethod(store,'read'),complete=storageMethod(store,'complete'),bind=storageMethod(store,'bindFacts'),materialRef=storageMethod(store,'materialRef');
  const generate=storageMethod(authority,'generate'),retrieve=storageMethod(authority,'retrieve'),status=storageMethod(authority,'status');
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');

@@ -1,10 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createTaskRouterApplication} from '../task-router.mjs';
 import {taskRouterFixture} from './task-router-fixture.mjs';
-import {TASK_ROUTER_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
+import {TASK_ROUTER_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS} from '../../../../packages/runtime/hot-path-budgets.mjs';
 function fixture(options={}){
  const f=taskRouterFixture();let networkHook=()=>{},connectHook=async()=>{},sendHook=async()=>({status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))});
- const router=createTaskRouterApplication({authority:f.authority,privateIngress:f.privateIngress,networkReader:{async observe(){f.counts.network++;await networkHook();return {...f.candidate,checkedAtMs:Date.now()};}},connector:{async connect(value){f.counts.connect++;await connectHook(value);return {async send(input){f.counts.send++;return sendHook(input);},close(){f.counts.close++;}};}},enabled:true,...options});
+ const router=createTaskRouterApplication({maxRequestMs:8000,startupMaxRequestMs:21000,authority:f.authority,privateIngress:f.privateIngress,networkReader:{async observe(){f.counts.network++;await networkHook();return {...f.candidate,checkedAtMs:Date.now()};}},connector:{async connect(value){f.counts.connect++;await connectHook(value);return {async send(input){f.counts.send++;return sendHook(input);},close(){f.counts.close++;}};}},enabled:true,...options});
  return {...f,router,post:(operation,credential,body)=>router.privateApplication.handle(f.request(operation,credential,body),{ingress:f.ingress}),onNetwork:hook=>{networkHook=hook;},onConnect:hook=>{connectHook=hook;},onSend:hook=>{sendHook=hook;}};
 }
 test('disabled and public mounts refuse without reading owners or forwarding any token',async()=>{

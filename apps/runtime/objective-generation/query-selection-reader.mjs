@@ -28,7 +28,7 @@ function selection(value){const s=data(own(value,['provider','model']));
 
 export function createObjectiveQuerySelectionReader(configuration){
  const c=own(configuration,[],['preparedFacts','modelIssuer','proxyAttestation','enabled','now','maxRequestMs']);
- const now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,enabled=c.enabled??false;
+ const now=c.now??Date.now,maxRequestMs=c.maxRequestMs,enabled=c.enabled??false;
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  const readFacts=c.preparedFacts===undefined?null:storageMethod(c.preparedFacts,'read');
  const factsAvailable=c.preparedFacts===undefined?null:storageMethod(c.preparedFacts,'available');

@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** A next turn's native prepare through the real runner path: the second turn of a conversation (writer fence 2, control's facts, the
  * next-turn lineage of turn 1's checkpoint, the task's checkpoint session mirror restored over the real continuation SDK session) runs
  * the real SDK query (resume + the mirror's sessionStore) inside the remote worker (remote-composition.mjs createRemoteNativeWorker:
@@ -55,7 +56,7 @@ async function secondTurn(t,{resumeSessionAt=null}={}){
   throw Error('synthetic control refusal: '+operation);
  }};
  let worker;const fetchImpl=(url,options)=>worker.application.handle(new Request(url,options));
- worker=createRemoteNativeWorker({original,preparationIntent,controlCapabilitySha256:capabilityDigest(controlToken),taskCapabilitySha256:capabilityDigest(taskToken),taskArn,native,
+ worker=createRemoteNativeWorker({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),original,preparationIntent,controlCapabilitySha256:capabilityDigest(controlToken),taskCapabilitySha256:capabilityDigest(taskToken),taskArn,native,
   processTransport:{original,origin:'https://synthetic-task.invalid',credential:taskToken,fetchImpl},session:second.mirror.session,enabled:true,limits:{maxRequestMs:12000}});
  t.after(()=>worker.close());
  // conversation-runner prepareRuntime hands the SDK the mirror's store; the activity's options are otherwise the worker's.

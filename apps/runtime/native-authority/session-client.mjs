@@ -8,7 +8,7 @@ import {createRunBoundSessionStore,copySessionEntries,copySessionTranscript,scop
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {pinnedStatusRefusal} from '../runner-runtime-diagnostics.mjs';
-import {RUNNER_SESSION_RPC_MS,RUNNER_SESSION_STORE_CALL_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_SESSION_RPC_MS,RUNNER_SESSION_STORE_CALL_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});},get=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 export function createNativeSdkSessionClient(configuration){
  const {origin,credential,binding,fetchImpl,now=Date.now,maxRequestMs,maxResponseBytes=35651584,startupMaxRequestMs,startupExpiresAtMs}=own(configuration,['origin','credential','binding','fetchImpl'],['now','maxRequestMs','maxResponseBytes','startupMaxRequestMs','startupExpiresAtMs']);
@@ -44,7 +44,7 @@ export function createNativeSdkSessionClient(configuration){
 
 /** Existing run-bound SDK adapter supplies queue bounds and uncertainty barrier. */
 export function createNativeBoundSdkSessionStore(configuration){
- const {client,binding,sessionKey,timeoutMs=RUNNER_SESSION_STORE_CALL_MS}=own(configuration,['client','binding','sessionKey'],['timeoutMs']);
+ const {client,binding,sessionKey,timeoutMs}=own(configuration,['client','binding','sessionKey','timeoutMs']);
  const admitted=Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(name=>[name,storageMethod(client,name)])));
  const key=scopedSessionKey(sessionKey,sessionKey,true),offsets=new Map();
  const name=k=>k.subpath??'';

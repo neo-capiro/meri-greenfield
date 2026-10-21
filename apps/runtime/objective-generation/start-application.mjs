@@ -29,13 +29,13 @@ const fault=code=>Object.assign(Error(code),{code});
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 
 export function createObjectiveGenerationStartApplication(configuration={}){
- let enabled=false,authenticate,start,windowMs,now=Date.now,maxRequestMs=3000;
+ let enabled=false,authenticate,start,windowMs,now=Date.now,maxRequestMs;
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
    const c=own(configuration,['enabled','sessions','dispatcher','windowMs'],['now','maxRequestMs']);
    authenticate=storageMethod(c.sessions,'authenticateSession');start=storageMethod(c.dispatcher,'start');
-   windowMs=c.windowMs;now=c.now??now;maxRequestMs=c.maxRequestMs??maxRequestMs;
+   windowMs=c.windowMs;now=c.now??now;maxRequestMs=c.maxRequestMs;
    if(!Number.isSafeInteger(windowMs)||windowMs<60000||windowMs>86400000||typeof now!=='function'||types.isProxy(now)||
       !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw fault('CONFIGURATION');
    enabled=true;

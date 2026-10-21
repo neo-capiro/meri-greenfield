@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC actual artifact/retention owners with scripted SQL and SDK replies. No services, credentials, renderer or children. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createArtifactRecoveryBinding} from '../recovery-binding.mjs';
@@ -31,7 +32,7 @@ function fixture({preview=true,enabled=true,failProjection=false,orphan=false}={
  const ports=composeRuntimePorts({},captureRuntimePorts({artifactStore:storage}));
  const callback=binding.configure(readRuntimeArtifactRecovery(ports),true);
  const watermark={...f.watermark,async record(...args){records++;events.push('watermark');return f.watermark.record(...args);}};
- const startup=createRetentionStartup({journal,watermark,ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now,recoverPrerequisitesExclusive:callback});binding.bindRetention(startup.gate);
+ const startup=createRetentionStartup({ledgerMaxHeadMs:10000,journal,watermark,ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now,recoverPrerequisitesExclusive:callback});binding.bindRetention(startup.gate);
  return {f,journal,binding,storage,ports,startup,events,s3,counts:()=>({inventory,inside,s3Calls,records})};
 }
 for(const preview of [false,true])test(`canonical ${preview?'preview':'publication-only'} recovery restores versions once under the same exclusion, even with no preview rows`,async()=>{
@@ -74,7 +75,7 @@ test('document composition uses the SAME canonical versions and preview owners a
 });
 test('actual control factory receives its canonical raw journal/forwarder before port capture, without constructor IO',()=>{
  const configuration={versions:contractVersions,sourceEnabled:false,retention:{},sessions:{maxSessions:10,maxTtlMs:30000},limits:{requestMs:1000,requestBytes:131072},native:{maxResponseBytes:2097152},temporal:{taskQueue:'synthetic'}};
- let storage,context;const assembly=assembleControl({configuration,pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},now,productPortsFactory(c){context=c.artifactRecovery;
+ let storage,context;const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},now,productPortsFactory(c){context=c.artifactRecovery;
   const s3={client:{send:unused},bucket:'synthetic-mount-bucket',prefix:'runtime-artifacts',expectedBucketOwner:'111122223333',kmsKeyId:'arn:aws:kms:us-east-1:111122223333:key/00000000-0000-4000-8000-000000000001'};
   storage=createRuntimeArtifactStorage({s3,versionsPool:c.pool,now:c.now,custody:{...context,tenantId:'tenant-a',evidenceS3:s3,artifactId,enabled:true}});return {artifactStore:storage};
  }});

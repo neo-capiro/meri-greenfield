@@ -67,7 +67,7 @@ test('canonical refusals pass through unchanged; malformed requests are closed c
  const h=harness();h.calls.inspectRefused=true;const r=await h.post('links/issue',{versionId});assert.equal(r.status,403);assert.equal(await code(r),'ACCESS_DENIED');hardened(r);h.calls.inspectRefused=false;
  assert.equal((await h.post('links/issue',{versionId,extra:1})).status,400);assert.equal((await h.post('links/redeem',{})).status,400);
  assert.equal((await h.app.handle(new Request('https://control.synthetic.invalid/api/documents/links/issue',{method:'GET'}))).status,405);
- assert.throws(()=>createDownloadLinkApplication({documents:h.documents,sessions:{},key,generation:async()=>0,maxRequestMs:1000}),/DOWNLOAD_LINK_CONFIGURATION/u);
+ assert.throws(()=>createDownloadLinkApplication({ttlMs:60000,documents:h.documents,sessions:{},key,generation:async()=>0,maxRequestMs:1000}),/DOWNLOAD_LINK_CONFIGURATION/u);
 });
 
 test('issue requires exact-version download authority, not only inspect: a denied canonical download signs nothing',async()=>{
@@ -91,7 +91,7 @@ test('link lifetime is short and bounded: the configured TTL, never beyond five 
  assert.equal((await harness({ttlMs:300000}).issue()).expiresAtMs,T+300000);
  assert.equal((await harness({sessionExpiresAtMs:T+30000}).issue()).expiresAtMs,T+30000);
  const ending=harness({sessionExpiresAtMs:T});assert.equal(await code(await ending.post('links/issue',{versionId})),'SESSION_REFUSED');
- const h=harness();for(const ttlMs of [999,300001,1.5])assert.throws(()=>createDownloadLinkApplication({documents:h.documents,sessions:{authenticateSession(){},readCurrentState(){}},key,generation:async()=>0,ttlMs,maxRequestMs:1000}),/DOWNLOAD_LINK_CONFIGURATION/u);
+ const h=harness();for(const ttlMs of [999,300001,1.5])assert.throws(()=>createDownloadLinkApplication({ttlMs:60000,documents:h.documents,sessions:{authenticateSession(){},readCurrentState(){}},key,generation:async()=>0,ttlMs,maxRequestMs:1000}),/DOWNLOAD_LINK_CONFIGURATION/u);
 });
 
 test('authority revoked, scope changed or session expired during the final body and suppression reads releases no bytes',async()=>{
@@ -124,7 +124,7 @@ test('real canonical owners: a link issued for a generated workbook redeems its 
  try{
   const original=await (await x.send('create',{deliveryId:'link-original',request:workbookDraft()})).json();assert.ok(original.version,JSON.stringify(original));
   const documents=createRuntimeArtifactApplication({sessions:x.f.sessions,optionsOwner:x.owner,now:x.f.now,limits:x.f.limits,retention:createRetentionReadGate({journal,serving})});
-  const app=createDownloadLinkApplication({documents,sessions:x.f.sessions,key,generation:createSuppressionGeneration({journal,serving}),now:x.f.now,maxRequestMs:x.f.limits.maxRequestMs});
+  const app=createDownloadLinkApplication({ttlMs:60000,documents,sessions:x.f.sessions,key,generation:createSuppressionGeneration({journal,serving}),now:x.f.now,maxRequestMs:x.f.limits.maxRequestMs});
   const post=(route,body)=>app.handle(new Request('https://control.synthetic.invalid/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+x.session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
   const direct=Buffer.from(await (await post('download',{versionId:original.version.versionId})).arrayBuffer());assert.equal(sha(direct),original.version.object.sha256);
   const issued=await (await post('links/issue',{versionId:original.version.versionId})).json();assert.ok(issued.token,JSON.stringify(issued));

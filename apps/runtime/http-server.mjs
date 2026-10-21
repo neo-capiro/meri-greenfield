@@ -1,11 +1,12 @@
+import {budget,RUNTIME_KEEP_ALIVE_MS} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Production-capable HTTP adapter; canonical Fetch owners handle application input. */
 import {serve} from '@hono/node-server';
 import {createServer as createHttpsServer} from 'node:https';
 import {fault} from './config.mjs';
 /** Idle keep-alive sockets outlive the private ALB's 120 s idle timeout (first-chat-private-edge.mjs), so the load balancer, not
  * this listener, closes them. A listener that closes first races the ALB's reuse of the socket, and the ALB answers 502. */
-export const RUNTIME_KEEP_ALIVE_MS=125000;
-export async function listenRuntime({configuration,application,readiness,signal,tls,exposeReadiness=true,testOwners={}}){
+export {RUNTIME_KEEP_ALIVE_MS};
+export async function listenRuntime({configuration,budgets,application,readiness,signal,tls,exposeReadiness=true,testOwners={}}){
  const startServer=testOwners.serve??serve;if(Object.keys(testOwners).some(key=>key!=='serve')||typeof startServer!=='function'||typeof exposeReadiness!=='boolean')throw fault('HTTP_CONFIGURATION');
  signal?.throwIfAborted();
  let stopping=false;const active=new Set(),sockets=new Set(),serving=new Map();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
@@ -37,7 +38,7 @@ export async function listenRuntime({configuration,application,readiness,signal,
  server.on('request',(request,response)=>{const socket=request.socket,open=serving.get(socket)??new Set();serving.set(socket,open.add(response));
   if(stopping)response.setHeader('connection','close');
   response.once('close',()=>{open.delete(response);if(open.size)return;serving.delete(socket);if(stopping)socket.destroySoon();});});
- server.requestTimeout=configuration.limits.requestMs+1000;server.headersTimeout=configuration.limits.requestMs;server.keepAliveTimeout=RUNTIME_KEEP_ALIVE_MS;server.maxHeadersCount=100;
+ server.requestTimeout=budget(budgets,'http.request');server.headersTimeout=budget(budgets,'http.headers');server.keepAliveTimeout=budget(budgets,'http.keepAlive');server.maxHeadersCount=100;
  await new Promise((resolve,reject)=>{if(server.listening)return resolve();server.once('listening',resolve);server.once('error',reject);});
  let closing;const close=()=>closing??=new Promise(resolve=>{
   stopping=true;for(const c of active)c.abort(fault('RUNTIME_STOPPING'));

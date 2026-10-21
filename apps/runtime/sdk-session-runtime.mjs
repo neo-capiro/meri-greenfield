@@ -8,16 +8,17 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {createFirstRuntimeSdkSession} from './sdk-first-session.mjs';
 import {createContinuationRuntimeSdkSession} from './sdk-continuation-session.mjs';
 export function createRuntimeSdkSessionFactory(configuration){
- const {origin,credential,binding,fetchImpl=fetch,now=Date.now,startupMaxRequestMs,startupExpiresAtMs}=own(configuration,['origin','credential','binding'],['fetchImpl','now','startupMaxRequestMs','startupExpiresAtMs']);
+ const {origin,credential,binding,fetchImpl=fetch,now=Date.now,startupMaxRequestMs,startupExpiresAtMs,sessionTimeoutMs}=own(configuration,['origin','credential','binding','sessionTimeoutMs'],['fetchImpl','now','startupMaxRequestMs','startupExpiresAtMs']);
+ if(!Number.isSafeInteger(sessionTimeoutMs)||sessionTimeoutMs<1||sessionTimeoutMs>30000)throw fault('RUNNER_SESSION_CONFIGURATION');
  const pinnedBinding=data(binding),client=createNativeSdkSessionClient({origin,credential,binding:pinnedBinding,fetchImpl,now});
  if((startupMaxRequestMs===undefined)!==(startupExpiresAtMs===undefined)||startupMaxRequestMs!==undefined&&(!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>23000||!Number.isSafeInteger(startupExpiresAtMs)||startupExpiresAtMs<1))throw fault('RUNNER_SESSION_CONFIGURATION');
  return async value=>{
   const {binding:currentBinding,sessionKey,signal,runtimeSignal,continuation,nextTurn}=own(value,['binding'],['sessionKey','signal','runtimeSignal','continuation','nextTurn']);
   if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_SDK_RESTORE_REFUSED');
   if(canonicalSha256(data(currentBinding))!==canonicalSha256(pinnedBinding)||sessionKey===undefined)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');
-  if(sessionKey===null){nativeSignal(signal);nativeSignal(runtimeSignal);if(continuation!==undefined||nextTurn!==undefined||signal?.aborted||runtimeSignal?.aborted)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');const firstClient=startupMaxRequestMs===undefined?client:createNativeSdkSessionClient({origin,credential,binding:pinnedBinding,fetchImpl,now,startupMaxRequestMs,startupExpiresAtMs});return createFirstRuntimeSdkSession({client:firstClient,binding:pinnedBinding,signal:runtimeSignal,...(startupMaxRequestMs===undefined?{}:{timeoutMs:startupMaxRequestMs})});}
-  if(continuation!==undefined||nextTurn!==undefined)return createContinuationRuntimeSdkSession({client,binding:pinnedBinding,sessionKey,...(nextTurn===undefined?{continuation}:{nextTurn}),signal,runtimeSignal});
-  const bound=createNativeBoundSdkSessionStore({client,binding:pinnedBinding,sessionKey});
+  if(sessionKey===null){nativeSignal(signal);nativeSignal(runtimeSignal);if(continuation!==undefined||nextTurn!==undefined||signal?.aborted||runtimeSignal?.aborted)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');const firstClient=startupMaxRequestMs===undefined?client:createNativeSdkSessionClient({origin,credential,binding:pinnedBinding,fetchImpl,now,startupMaxRequestMs,startupExpiresAtMs});return createFirstRuntimeSdkSession({client:firstClient,binding:pinnedBinding,signal:runtimeSignal,timeoutMs:startupMaxRequestMs??sessionTimeoutMs});}
+  if(continuation!==undefined||nextTurn!==undefined)return createContinuationRuntimeSdkSession({client,binding:pinnedBinding,sessionKey,...(nextTurn===undefined?{continuation}:{nextTurn}),signal,runtimeSignal,timeoutMs:sessionTimeoutMs});
+  const bound=createNativeBoundSdkSessionStore({client,binding:pinnedBinding,sessionKey,timeoutMs:sessionTimeoutMs});
   const settle=async()=>{const result=await bound.settleObservedCalls();if(result.uncertain)throw fault('RUNNER_SDK_SESSION_UNKNOWN');};
   const close=async()=>{bound.closeMirror();await settle();};
   try{await bound.register({signal});return Object.freeze({store:bound.store,settle,close});}
@@ -27,7 +28,7 @@ export function createRuntimeSdkSessionFactory(configuration){
 
 /** Own only mirrors returned by this runner's compiled factory, including late results. */
 export function createOwnedRuntimeSdkSession(configuration){
- const {factory,now=Date.now,cleanupMs=1000}=own(configuration,['factory'],['now','cleanupMs']);
+ const {factory,now=Date.now,cleanupMs}=own(configuration,['factory','cleanupMs'],['now']);
  if(typeof factory!=='function'||typeof now!=='function'||!Number.isSafeInteger(cleanupMs)||cleanupMs<1||cleanupMs>30000)throw fault('RUNNER_SESSION_CONFIGURATION');
  const records=new WeakMap(),failures=[];let closed=false,current,pending=0;
  function capture(value){let r=records.get(value);if(r)return r;const v=own(value,['store','settle','close']);r={store:v.store,settle:storageMethod(value,'settle'),close:storageMethod(value,'close'),retirement:null};records.set(value,r);return r;}

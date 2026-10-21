@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {testBudgetTable} from '../../../packages/runtime/test/budget-fixture.mjs';
 import assert from 'node:assert/strict';
 import {startControl} from '../control.mjs';
 import {productControlFixture} from '../../proxy/product/test/control-fixture.mjs';
@@ -25,7 +26,7 @@ function fixture({authorizationError,initialLoss=false,onListen,cleanup={},memor
  const native={async readiness({signal}={}){signal?.throwIfAborted();events.push('native-readiness');},async call(operation,input,{signal}={}){
   state.nativeCalls.push({operation,input,signal});return {operation};
  }};
- const kickoff=createPreparedKickoffApplication({owner:{
+ const kickoff=createPreparedKickoffApplication({maxRequestMs:3000,owner:{
   async kickoff(){assert.fail('fenced kickoff reached native admission');},async status(){assert.fail('fenced status reached native admission');},
   async stop(value){assert.deepEqual(value.binding,binding);assert.equal(value.executionId,executionId);assert.equal(value.signal.aborted,false);state.stopRequests.push(value);return {binding,executionId,expiresAtMs:1_800_000_010_000};}
  },enabled:true,controlCapabilitySha256:capabilityDigest(credential)});
@@ -66,7 +67,7 @@ function fixture({authorizationError,initialLoss=false,onListen,cleanup={},memor
   },
  };
  return {configuration,binding,executionId,events,closed,state,lose,owners,memoryContextRelay,memoryCalls,
-  start:()=>startControl(configuration,{testOwners:owners,...(memoryContextRelay?{memoryContextRelay}:{})})};
+  start:()=>startControl(configuration,{budgets:testBudgetTable,testOwners:owners,...(memoryContextRelay?{memoryContextRelay}:{})})};
 }
 
 test('control binds the selected proposal continuation relay only to its own ready store',async()=>{

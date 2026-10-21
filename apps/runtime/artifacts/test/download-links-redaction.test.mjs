@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** A signed link acts like a temporary password until it expires. This test drives issue and redeem, and every refusal path that
  * carries a token, through the real runtime HTTP listener with the control telemetry instrumentation over in-memory OpenTelemetry
  * providers, and proves no token (or its claims or signature part) reaches process output, spans, span events, span status, metric
@@ -29,7 +30,7 @@ test('no signed link reaches process output, telemetry spans, span events, metri
   const h=harness(),gate=createDownloadLinkGate({documents:h.documents,sessions:h.sessions,now:()=>h.clock.t,maxRequestMs:3000,links:{enabled:true,keyFile},suppression:{journal:h.journal,serving:h.serving},authorization:{async resolve(){return null;}},store:{async verifyPrivate(){return {};}}});
   assert.deepEqual(await gate.open(),{enabled:true,reason:'ENABLED'});
   const application=instrumentApplication(telemetry.instruments,gate,{now:()=>h.clock.t});
-  listener=await listenRuntime({configuration:{http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://frontend.synthetic.invalid'},limits:{requestMs:3000,shutdownMs:1000}},application,readiness:async()=>{}});
+  listener=await listenRuntime({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://frontend.synthetic.invalid'},limits:{requestMs:3000,shutdownMs:1000}},application,readiness:async()=>{}});
   const base=`http://127.0.0.1:${listener.address.port}`,headers=(credential='action_session_a')=>({authorization:'Bearer '+credential,'content-type':'application/json'});
   const post=(path,body,credential)=>fetch(base+path,{method:'POST',headers:headers(credential),body:typeof body==='string'?body:JSON.stringify(body)});
   const issued=await post('/api/documents/links/issue',{versionId});assert.equal(issued.status,200);const {token}=await issued.json();

@@ -10,7 +10,7 @@ test('real PostgreSQL concurrent/replayed start retains one actual independent s
 });
 test('actual protected HTTP broker/runtime path correlates current native task and original runtime',async t=>{
  const x=await fixture(t),listener=await listenFetch(x.stack.application);t.after(()=>listener.close());
- const native=credential=>createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential});
+ const native=credential=>createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:listener.origin,maxResponseBytes:131072},credential});
  await native(control).readiness();await assert.rejects(native(x.f.credential).readiness());
  const started=await native(control).call('execution/start',{binding:x.binding,executionKey:hash(x.binding)});assert.equal(started.expiresAtMs,x.expiry);
  assert.equal((await native(x.f.credential).call('runner/runtime',{binding:x.binding,versions:x.runtime.versions})).sdkSessionKey,null);
@@ -28,7 +28,7 @@ test('separate supervisor observes real native-format bytes and canonical PG ses
 test('lost real claim commit acknowledgement dispatches zero and durable replay never relaunches',async t=>{
  const x=await fixture(t);let lose=true;const wrapped={async connect(){const real=await x.pool.connect();return {async query(sql,args){const out=await real.query(sql,args);if(sql==='COMMIT'&&lose){lose=false;throw Error('synthetic lost ACK after actual PG COMMIT');}return out;},release:e=>real.release(e)};}};
  const journal=createPostgresConversationStore({pool:wrapped}).executions;let calls=0;const tasks={launch(){calls++;throw Error();},inspect(){throw Error('no launch exists');},retire(){throw Error('no launch exists');}};
- const broker=createNativeExecutionBroker({binding:x.binding,versions:x.runtime.versions,plan:x.stack.plan,expiresAtMs:x.expiry,journal,tasks,verifier:x.config.supervisor.taskVerifier,taskCapability:x.f.credential,enabled:true});
+ const broker=createNativeExecutionBroker({maxRequestMs:3000,binding:x.binding,versions:x.runtime.versions,plan:x.stack.plan,expiresAtMs:x.expiry,journal,tasks,verifier:x.config.supervisor.taskVerifier,taskCapability:x.f.credential,enabled:true});
  await assert.rejects(broker.start({binding:x.binding,executionKey:hash(x.binding)}),/COMMIT_UNKNOWN/);assert.equal(calls,0);assert.equal((await x.pool.query('SELECT count(*) FROM meri_conversations.native_executions')).rows[0].count,'1');await assert.rejects(broker.start({binding:x.binding,executionKey:hash(x.binding)}));assert.equal(calls,0);
 });
 test('durable journal refuses altered plan/expiry/phase and SQL trigger protects original identity',async t=>{

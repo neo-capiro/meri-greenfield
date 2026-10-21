@@ -36,10 +36,10 @@ const unavailable=()=>fault('SCHEDULE_SERVICE_UNAVAILABLE');
  * the service refuses as unavailable rather than firing without admission or retirement. */
 export function composeRoutinesWorkerRuntimePorts(resources){
  let r;
- try{r=own(resources,['pool','client','configuration'],['native','now']);}catch{throw fault('SCHEDULE_SERVICE_CONFIGURATION');}
+ try{r=own(resources,['pool','client','configuration'],['native','now','fetchImpl']);}catch{throw fault('SCHEDULE_SERVICE_CONFIGURATION');}
  if(r.native===undefined)throw unavailable();
  const ports=createRoutinesOccurrencePorts({native:r.native});
- return composeRoutinesWorkerOwners({configuration:r.configuration,pool:r.pool,client:r.client,...(r.now===undefined?{}:{now:r.now}),runAdmission:ports.runAdmission,retirement:ports.retirement});
+ return composeRoutinesWorkerOwners({...(r.fetchImpl===undefined?{}:{transport:{fetchImpl:r.fetchImpl}}),configuration:r.configuration,pool:r.pool,client:r.client,...(r.now===undefined?{}:{now:r.now}),runAdmission:ports.runAdmission,retirement:ports.retirement});
 }
 export function composeRoutinesWorkerOwners(options){
  let o,transport;

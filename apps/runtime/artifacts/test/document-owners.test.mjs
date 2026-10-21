@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
 /** SYNTHETIC: the two Meri-local owners of the documents family (lane X): the `artifacts.executor` declaration and the run-options
  * owner (`../run-options.mjs`), composed by `composeDocumentsFamily` and driven through the REAL runtime document application over
  * control's real action-session owner, a scripted Core artifact authority (lane D's wire), scripted Core current-tool-authority
@@ -215,7 +216,7 @@ test('retained Word and Excel traverse Core authority, canonical publication/ret
   r.version.mimeType=ARTIFACT_MIME_TYPES[spec.format];r.version.filename=artifactFilename(spec);
   await versions.commit({...r,expectedParentVersionId:null});records.push({record:r,bytes:generated.bytes});
  }
- const {tuple}=admittedRun(),core=scriptedCore(now),secrets=secretFiles(),composed=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),now,readSecret:secrets.readSecret,fetchImpl:core.fetch,executor,authorityPorts:authorityPorts({credential:tuple.taskCapability,calls:[]})});
+ const {tuple}=admittedRun(),core=scriptedCore(now),secrets=secretFiles(),composed=await composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts()}),now,readSecret:secrets.readSecret,fetchImpl:core.fetch,executor,authorityPorts:authorityPorts({credential:tuple.taskCapability,calls:[]})});
  composed.runOptions.bindVersionReader({pool:db.pool,versions});const registered=composed.runOptions.register({...tuple,pool:db.pool,original:{...tuple.original,expiresAtMs:now()+60000}});t.after(()=>registered.release());
  const renderer=createRendererPort({admission:syntheticAdmission(),transformer:syntheticOfficeConverter()});
  const compose=createRuntimeDocumentOptionsComposer({storage:{versions,objects},executor,budgetPool:db.pool,sessions:live.sessions,now,previews,renderer,namespace:'product'});
@@ -239,18 +240,18 @@ test('retained Word and Excel traverse Core authority, canonical publication/ret
 
 test('startup composition composes both Meri-local owners from the declaration and the Core authority ports, naming each gap by key; nothing spawns, reads or connects',async()=>{
  const s=secretFiles(),fetches=[],fetchImpl=async()=>{fetches.push(1);throw Error('not reached');},ports=authorityPorts({credential:'x',calls:[]}),now=()=>START;
- const missing=async(configuration,extra={})=>(await composeDocumentsFamily({configuration,readSecret:s.readSecret,fetchImpl,...extra})).missing;
+ const missing=async(configuration,extra={})=>(await composeDocumentsFamily({budgets:testBudgetTable,configuration,readSecret:s.readSecret,fetchImpl,...extra})).missing;
  assert.deepEqual(await missing(control({artifacts:artifacts()})),['runOptions.authorityPorts','artifacts.executor'],'the production registration today');
  assert.deepEqual(await missing(control({artifacts:artifacts({executor:executorBlock})})),['runOptions.authorityPorts']);
  assert.deepEqual(await missing(control({artifacts:artifacts()}),{authorityPorts:ports}),['artifacts.executor']);
  assert.deepEqual(await missing(control({artifacts:artifacts({executor:executorBlock})}),{authorityPorts:ports,executor:{execute(){}}}),[],'a supplied executor wins over the declaration');
- const composed=await composeDocumentsFamily({configuration:control({artifacts:artifacts({executor:executorBlock})}),readSecret:s.readSecret,fetchImpl,authorityPorts:ports,now});
+ const composed=await composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts({executor:executorBlock})}),readSecret:s.readSecret,fetchImpl,authorityPorts:ports,now});
  assert.deepEqual(composed.missing,[]);assert.equal(composed.authority.origin,ORIGIN);assert.equal(typeof composed.runOptions.register,'function');assert.equal(composed.runOptions.state(),'composed');
  assert.equal(fetches.length,0,'no network at composition');
- const supplied=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl,runOptions:{read(){}},executor:{execute(){}}});
+ const supplied=await composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl,runOptions:{read(){}},executor:{execute(){}}});
  assert.deepEqual(supplied.missing,[]);assert.equal(supplied.runOptions,null,'startup-supplied owners are not re-composed');
- await assert.rejects(composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,authorityPorts:{verifyCapability(){}}}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
- await assert.rejects(composeDocumentsFamily({configuration:control({artifacts:artifacts({executor:{...executorBlock,timeoutMs:0}})}),readSecret:s.readSecret}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
+ await assert.rejects(composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,authorityPorts:{verifyCapability(){}}}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
+ await assert.rejects(composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts({executor:{...executorBlock,timeoutMs:0}})}),readSecret:s.readSecret}),code('ARTIFACT_AUTHORITY_CONFIGURATION'));
  // The composed family constructs the pinned S3 client without any request and never touches the pool at construction.
  const sharedPool=Object.freeze({connect:()=>assert.fail('no SQL')}),familyContext=()=>Object.freeze({configuration:{...control({artifacts:artifacts({executor:executorBlock})}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:sharedPool,now});
  const realFamily=composed.family(familyContext());
@@ -263,7 +264,7 @@ test('through the real documents app: create reaches the run budget and generato
  const now=()=>START,s=secretFiles(),core=scriptedCore(now),live=await liveSession(now),{f,tuple}=admittedRun(),calls=[],generated=[];
  const ports=authorityPorts({credential:tuple.taskCapability,calls}),executor={async execute(value){generated.push(value);throw Error('not reached');}};
  const configuration={...control({artifacts:artifacts()}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}};
- const mount=async(options)=>{const composed=await composeDocumentsFamily({configuration,readSecret:s.readSecret,fetchImpl:core.fetch,now,...options});
+ const mount=async(options)=>{const composed=await composeDocumentsFamily({budgets:testBudgetTable,configuration,readSecret:s.readSecret,fetchImpl:core.fetch,now,...options});
   const context=Object.freeze({configuration,pool:f.pool,now}),family=composed.family(context);
   if(family.ports.artifactOptionsOwner)assert.equal(bindDocumentsSessions(context,live.sessions),true);
   const app=createRuntimeArtifactApplication({sessions:live.sessions,now,limits,optionsOwner:captureRuntimePorts(family.ports).artifactOptionsOwner});

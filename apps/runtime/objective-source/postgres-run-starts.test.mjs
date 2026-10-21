@@ -8,7 +8,7 @@ const unavailable=e=>e?.code==='OBJECTIVE_RUN_START_UNAVAILABLE',conflict=e=>e?.
 const inserts=s=>s.trace.filter(t=>t.text.startsWith('INSERT'));
 function setup(options={}){
  const f=runStartFixture(),clock={now:NOW},{pool,state}=syntheticObjectivePool({now:()=>clock.now});
- const create=(extra={})=>createPostgresObjectiveRunStartStore({enabled:true,pool,tenantId:f.tenantId,now:()=>clock.now,...options,...extra});
+ const create=(extra={})=>createPostgresObjectiveRunStartStore({maxRequestMs:3000,enabled:true,pool,tenantId:f.tenantId,now:()=>clock.now,...options,...extra});
  return {f,clock,pool,state,create,store:create()};
 }
 

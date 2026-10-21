@@ -15,6 +15,6 @@ export function createAllocatedNativeRuntime(configuration){
  }
  const broker={async start(value){const input=own(value,['binding','executionKey'],['signal']);if(hash(input.binding)!==hash(original.binding)||input.executionKey!==original.executionKey)throw executionFault('REFUSED');return (await prepare(input.signal)).broker.start(input);},poll:value=>required().broker.poll(value)};
  const runtime={taskCapabilitySha256:c.taskCapabilitySha256,runtime:value=>required().runtime.runtime(value)};
- const execution=createNativeExecutionApplication({broker,runtime,controlCapabilitySha256:c.controlCapabilitySha256,taskCapabilitySha256:c.taskCapabilitySha256,enabled:c.enabled??false,now:c.now??Date.now,maxRequestMs:c.maxRequestMs??30000});
+ const execution=createNativeExecutionApplication({broker,runtime,controlCapabilitySha256:c.controlCapabilitySha256,taskCapabilitySha256:c.taskCapabilitySha256,enabled:c.enabled??false,now:c.now??Date.now,maxRequestMs:c.maxRequestMs});
  return Object.freeze({broker,runtime,application:{async handle(request){const result=await execution.handle(request);if(result!==null)return result;if(closed||!assembly)return Response.json({error:{code:'NATIVE_EXECUTION_UNAVAILABLE'}},{status:503});return assembly.application.handle(request);}},async close(){closed=true;try{await assembly?.close();}finally{await stop();}},status:()=>({prepared:assembly!==undefined,preparing,closed})});
 }

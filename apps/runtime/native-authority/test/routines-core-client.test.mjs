@@ -90,7 +90,7 @@ test('attended only: without a live session for the exact run and client nothing
   await assert.rejects(h.client.policyCheck({selection:changed,selectionSha256:hash(changed)}),code('ROUTINES_CORE_SESSION_UNAVAILABLE'));assert.equal(h.core.requests.length,count);
  }
  await assert.rejects(h.client.policyCheck({selection:selection.selection,selectionSha256:'0'.repeat(64)}),code('ROUTINES_CORE_REQUEST'));
- const same=createRoutinesCoreClient({origin:CORE_ORIGIN,nativeCredentials:h.f.sessions,getServiceSecret:async()=>'synthetic-native',now:h.f.now,fetchImpl:coreRoutes(h.core)});
+ const same=createRoutinesCoreClient({maxRequestMs:10000,origin:CORE_ORIGIN,nativeCredentials:h.f.sessions,getServiceSecret:async()=>'synthetic-native',now:h.f.now,fetchImpl:coreRoutes(h.core)});
  await assert.rejects(same.policyCheck(selection),code('ROUTINES_CORE_UNAVAILABLE'));
  const candidate=createRoutinesServiceSecret({file:'/run/meri/s',reservedFiles:['/run/meri/identity'],readSecret:async()=>Buffer.from('same-bytes')});await assert.rejects(candidate(),code('ROUTINES_CORE_UNAVAILABLE'));
  h.f.sessions.close();const count=h.core.requests.length;

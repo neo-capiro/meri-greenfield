@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Actual merged control/startup, public/private boundary and both application owners.
  * SQL/Temporal/listener/native preparation, identity and Core Fetch boundaries are SYNTHETIC; no service is contacted.
  * Explicit source-enabled module compositions below are not validated configurations or activation evidence. */
@@ -55,7 +56,7 @@ function scenario({sourceEnabled=false,taskOwner=true,scripts=[],schemaHook}={})
  state.configuration={...base,sourceEnabled,userPreferences:{enabled:true}};active=state;return state;
 }
 function assembled(state){
- const assembly=assembleControl({configuration:state.configuration,pool:state.pool,client:{workflow:{async start(){assert.fail('no workflow dispatch');},getHandle(){assert.fail('no workflow read');}}},native:state.native,canonicalProductPorts:state.ports});
+ const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:state.configuration,pool:state.pool,client:{workflow:{async start(){assert.fail('no workflow dispatch');},getHandle(){assert.fail('no workflow read');}}},native:state.native,canonicalProductPorts:state.ports});
  return {assembly,routes:createControlRouteApplications({assembly:assembly.application,candidate:state.candidate})};
 }
 function preferenceScripts(preferences){

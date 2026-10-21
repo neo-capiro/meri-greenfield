@@ -78,7 +78,7 @@ export function bindMemoryRetention(context,gate){
  bind(gate);return true;
 }
 function compose(context,owners){
- let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
+ let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery','budgets','fetchImpl']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const memory=compileMemoryConfiguration(c.configuration),now=c.now;
  if(typeof now!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  const off=(state,reason)=>Object.freeze({state,reason,application:null,commandSourceFor:null,tables:Object.freeze([])});
@@ -100,7 +100,7 @@ function compose(context,owners){
  // Inert: the broker validates paths only; the secret file is read inside a request (and the candidate digests once, on first use).
  const broker=createMemoryCredentialBroker({configuration:c.configuration,serviceSecretFile:memory.serviceSecretFile,now,
   ...(owners.readSecret===undefined?{}:{readSecret:owners.readSecret}),...(owners.nativeCredentials===undefined?{}:{nativeCredentials:owners.nativeCredentials})});
- const journal=createPostgresMemoryJournal({pool:c.pool,guardConversationRetention:true}),newId=owners.newId??randomUUID,fetchImpl=owners.fetchImpl??globalThis.fetch;
+ const journal=createPostgresMemoryJournal({pool:c.pool,guardConversationRetention:true}),newId=owners.newId??randomUUID,fetchImpl=owners.fetchImpl??c.fetchImpl;
  /** One producer over one credential source: the Core client, the review/read/decision adapters and the shared journal. */
  function producerWith(getCredentials){
   const transport=createCoreMemoryTransport({origin:memory.origin,getCredentials,fetchImpl,now,maxRequestMs:Math.min(limits.maxRequestMs,10000),maxResponseBytes:Math.min(limits.maxResponseBytes,262144)});

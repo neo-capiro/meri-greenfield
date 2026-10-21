@@ -8,7 +8,7 @@ import {isAuthorityUnavailable,carryAuthorityUnavailable} from '../../../package
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const fault=code=>Object.assign(Error(code),{code});
 export function createNativeTaskAuthority(configuration){
- const {native,enabled=false,now=Date.now,maxRequestMs=3000}=own(configuration,[],['native','enabled','now','maxRequestMs']);
+ const {native,enabled=false,now=Date.now,maxRequestMs}=own(configuration,[],['native','enabled','now','maxRequestMs']);
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw fault('WORKER_AUTHORITY_CONFIGURATION');
  const call=native===undefined?null:storageMethod(native,'call');
  return Object.freeze({async verify(value){let life,unavailable=false;try{

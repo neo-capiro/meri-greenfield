@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalize,resolve} from 'node:path';
@@ -21,7 +22,7 @@ async function fixture(){
  const capability='synthetic-dynamic-task-grant',proxyCredential='synthetic-dynamic-model-grant-0001';
  const capabilityAuthority={async generate(){state.taskCalls++;return {grantId:id(304),capability,materialRef:'synthetic-dynamic-material'};},async retrieve(){return {state:'PRESENT',capability};},async status(){return {state:'ABSENT'};}};
  const modelGrants={async issue({intent}){state.modelCalls++;return {...intent,grantId:id(305),capabilitySha256:capabilityDigest(proxyCredential),proxyCredential};}};
- const now=()=>state.clock,issuanceStore=createMemoryIssuanceStore(),ports=createPreparedRunBindings({configuration:f.configuration,pool:{connect(){assert.fail('No database');}},store,credentials:{control:f.secret.control},issuanceStore,capabilityAuthority,modelGrants,initialBindings,now});
+ const now=()=>state.clock,issuanceStore=createMemoryIssuanceStore(),ports=createPreparedRunBindings({limits:{maxRequestMs:3000,maxFactBytes:131072},configuration:f.configuration,pool:{connect(){assert.fail('No database');}},store,credentials:{control:f.secret.control},issuanceStore,capabilityAuthority,modelGrants,initialBindings,now});
  const expiresAtMs=ports.proposeInitialExpiry();state.admission={schemaVersion:1,state:'ADMITTED',binding,selectedClientId:c.identity.commandContext.clientResolution.clientId,policyRevision:c.qualification.policyRevision,versions:c.runtime.versions,configurationSha256:ports.configurationSha256,expiresAtMs,createdAtMs:f.now};
  return {f,c,binding,scopes,store,ports,state,initialBindings,issuanceStore,close:async()=>{}};
 }
@@ -29,16 +30,16 @@ async function fixture(){
 test('dynamic declaration and journal port must agree before candidate secrets or effects',async()=>{
  const x=await fixture();let effects=0;const pool={connect(){effects++;throw Error('No SQL');}},ecs={send(){effects++;}},objects={get(){effects++;},put(){effects++;}};
  await assert.rejects(startPreparedCandidate({configuration:x.f.configuration,pool}),/PREPARED_CANDIDATE_REFUSED/);
- assert.throws(()=>assemblePreparedCandidate({configuration:x.f.configuration,pool,ecs,objects,credentials:x.f.secret}),/PREPARED_CANDIDATE_REFUSED/);
+ assert.throws(()=>assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:x.f.configuration,pool,ecs,objects,credentials:x.f.secret}),/PREPARED_CANDIDATE_REFUSED/);
  const unmounted=structuredClone(x.f.configuration);delete unmounted.nativeCandidate.multiRun.dynamicInitialRuns;
  await assert.rejects(startPreparedCandidate({configuration:unmounted,pool,initialBindings:x.initialBindings}),/PREPARED_CANDIDATE_REFUSED/);
- assert.throws(()=>assemblePreparedCandidate({configuration:unmounted,pool,ecs,objects,credentials:x.f.secret,initialBindings:x.initialBindings}),/PREPARED_CANDIDATE_REFUSED/);
+ assert.throws(()=>assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:unmounted,pool,ecs,objects,credentials:x.f.secret,initialBindings:x.initialBindings}),/PREPARED_CANDIDATE_REFUSED/);
  assert.equal(effects,0);
 });
 
 test('mounted dynamic candidate refuses a missing 0017 relation before authority effects',async()=>{
  const x=await fixture();let effects=0,requested=[];const pool={connect(){effects++;throw Error('No SQL transaction');},async query(sql,args){if(!sql.startsWith('SELECT name,to_regclass'))throw Error('Unexpected SQL');requested=args[0];return {rows:requested.map(name=>({name,relation:name==='meri_conversations.initial_run_bindings'?null:name}))};}};
- const candidate=assemblePreparedCandidate({configuration:x.f.configuration,pool,ecs:{send(){effects++;}},objects:{get(){effects++;},put(){effects++;}},credentials:x.f.secret,fetchImpl(){effects++;throw Error('No Core read');},initialBindings:{...x.initialBindings,async claim(){effects++;throw Error('No claim');}},runIssuance:x.ports.runIssuance,issuanceIntent:x.ports.issuanceIntent,admissionForBinding:x.ports.admissionForBinding,prepareOriginal:x.ports.prepareOriginal,prepareInitial:x.ports.prepareInitial,retireInitial:x.ports.retireInitial,configurationSha256:x.ports.configurationSha256,proposeInitialExpiry:x.ports.proposeInitialExpiry});
+ const candidate=assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:x.f.configuration,pool,ecs:{send(){effects++;}},objects:{get(){effects++;},put(){effects++;}},credentials:x.f.secret,fetchImpl(){effects++;throw Error('No Core read');},initialBindings:{...x.initialBindings,async claim(){effects++;throw Error('No claim');}},runIssuance:x.ports.runIssuance,issuanceIntent:x.ports.issuanceIntent,admissionForBinding:x.ports.admissionForBinding,prepareOriginal:x.ports.prepareOriginal,prepareInitial:x.ports.prepareInitial,retireInitial:x.ports.retireInitial,configurationSha256:x.ports.configurationSha256,proposeInitialExpiry:x.ports.proposeInitialExpiry});
  try{await assert.rejects(candidate.readiness());assert.ok(requested.includes('meri_conversations.initial_run_bindings'));assert.equal(effects,0);}finally{await candidate.close();}
 });
 
@@ -73,7 +74,7 @@ test('an admitted original with an extra persisted scope cannot issue task or mo
  const x=await fixture();x.state.saved.run.scopes.push({kind:'client',tenantId:x.binding.tenantId,resourceId:id(998),policyRevision:x.state.admission.policyRevision});const owner=registry(x);try{await assert.rejects(x.ports.prepareInitial({binding:x.binding}));await assert.rejects(owner.ensure({binding:x.binding}));assert.equal(x.state.taskCalls,0);assert.equal(x.state.modelCalls,0);}finally{await owner.close();await x.close();}
 });
 
-function registry(x,retireInitial=x.ports.retireInitial){return createPreparedRunRegistry({issuance:x.ports.runIssuance,issuanceIntent:x.ports.issuanceIntent,prepareOriginal:x.ports.prepareOriginal,prepareInitial:x.ports.prepareInitial,retireInitial,initialBindings:x.initialBindings,configurationSha256:x.ports.configurationSha256,store:x.store,pool:{connect(){assert.fail('No database');}},client:{send(){assert.fail('No AWS');}},identity:{origin:x.c.identity.origin,credential:x.f.secret.identity,commandContext:x.c.identity.commandContext,fetchImpl(){assert.fail('No authority network');}},controlCapability:x.f.secret.control,objects:{},limits:{maxRequestMs:1000,maxFactBytes:131072,cleanupMs:1000},now:()=>x.state.clock,maximumExpiresAtMs:x.c.runtime.deadlineMs,allocate(){x.state.allocations++;assert.fail('No physical allocation in this check');}});}
+function registry(x,retireInitial=x.ports.retireInitial){return createPreparedRunRegistry({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),issuance:x.ports.runIssuance,issuanceIntent:x.ports.issuanceIntent,prepareOriginal:x.ports.prepareOriginal,prepareInitial:x.ports.prepareInitial,retireInitial,initialBindings:x.initialBindings,configurationSha256:x.ports.configurationSha256,store:x.store,pool:{connect(){assert.fail('No database');}},client:{send(){assert.fail('No AWS');}},identity:{origin:x.c.identity.origin,credential:x.f.secret.identity,commandContext:x.c.identity.commandContext,fetchImpl(){assert.fail('No authority network');}},controlCapability:x.f.secret.control,objects:{},limits:{maxRequestMs:1000,maxFactBytes:131072,cleanupMs:1000},now:()=>x.state.clock,maximumExpiresAtMs:x.c.runtime.deadlineMs,allocate(){x.state.allocations++;assert.fail('No physical allocation in this check');}});}
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
 test('registry accepts a journal-backed dynamic original without next-run reservation, then checks the same admission before kickoff',async()=>{
  const x=await fixture(),owner=registry(x);try{

@@ -8,7 +8,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {matchesCapability,taskFault} from './task-verifier.mjs';
 export function createNativeTaskVerifierApplication(configuration){
  const c=own(configuration,['verifier','callerCapabilitySha256','taskCapabilitySha256'],['enabled','now','maxRequestMs']);
- const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||
   [c.callerCapabilitySha256,c.taskCapabilitySha256].some(d=>typeof d!=='string'||!/^[a-f0-9]{64}$/u.test(d))||c.callerCapabilitySha256===c.taskCapabilitySha256)throw taskFault('CONFIGURATION');
  const verify=storageMethod(c.verifier,'verify'),reply=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});

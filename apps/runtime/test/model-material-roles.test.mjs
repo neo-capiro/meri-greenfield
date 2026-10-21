@@ -183,7 +183,7 @@ test('model roles refuse an unsupported host before any delivery effect',async()
  let calls=0;
  for(const d of [proxyDelivery(),ownerDelivery()]){
   const delivery={async fetch(){calls++;return d.bundle;}};
-  if(process.platform!=='linux')await assert.rejects(materializeStaticProductMaterial({expected:d.expected,delivery}),{code:'STATIC_INIT_PLATFORM_REFUSED'});
+  if(process.platform!=='linux')await assert.rejects(materializeStaticProductMaterial({maxRequestMs:5000,expected:d.expected,delivery}),{code:'STATIC_INIT_PLATFORM_REFUSED'});
  }
  assert.equal(calls,0);
 });
@@ -193,7 +193,7 @@ test('model-proxy root init stages, verifies and hands files and directory to 10
  assert.equal(existsSync('/run/meri'),false,'test owns /run/meri only when it is absent');
  const d=proxyDelivery();
  try{
-  const result=await materializeStaticProductMaterial({expected:d.expected,delivery:{async fetch(){return d.bundle;}}});
+  const result=await materializeStaticProductMaterial({maxRequestMs:5000,expected:d.expected,delivery:{async fetch(){return d.bundle;}}});
   assert.equal(result.receipt.fileCount,6);
   const dir=statSync('/run/meri');assert.deepEqual([dir.uid,dir.gid,dir.mode&0o7777],[10001,10001,0o700]);
   assert.deepEqual(readdirSync('/run/meri').sort(),Object.keys(d.expected.sha256ByPath).map(p=>p.slice(10)).sort());

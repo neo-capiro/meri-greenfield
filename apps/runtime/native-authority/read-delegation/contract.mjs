@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** RC1 option B (D016-A 4): run-bound Core read delegation, Meri side. Bounds, closed wire shapes and per-slot token ceilings
  * that Meri enforces on its own, independently of Core (FABLE-RUN-BOUND-READ-DELEGATION-20261018.md). Nothing here mints,
  * stores or logs a credential: a delegation id is a reference, a read token is a single-use value held only for one request.
@@ -19,9 +20,8 @@ import {signedRetainedSourceId,signedRetainedSourceOperation} from '../../../gat
 const refuse=code=>{throw nativeReadFault(code);};
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,SHA=/^[a-f0-9]{64}$/u,CALL_KEY=/^[A-Za-z0-9_-]{1,128}$/u;
 const TOKEN=/^[\x21-\x7e]{1,8192}$/u,ROLES=new Set(['standard_user','user_admin','capiro_admin']);
-const MINUTE=60000,DAY=86400000;
-export const READ_DELEGATION_LIMITS=Object.freeze({attendedMaxMs:30*MINUTE,occurrenceMaxMs:15*MINUTE,consentMaxMs:30*DAY,tokenMaxMs:MINUTE,
- clockSkewMs:5000,maxRequestMs:3000,maxBodyBytes:16384,maxResponseBytes:16384,maxTokenRetries:2,revokeAttempts:3});
+export const READ_DELEGATION_LIMITS=Object.freeze({attendedMaxMs:fixedHotPathBudget('native.delegation.attended'),occurrenceMaxMs:fixedHotPathBudget('native.delegation.occurrence'),consentMaxMs:fixedHotPathBudget('native.delegation.consent'),tokenMaxMs:fixedHotPathBudget('native.delegation.token'),
+ clockSkewMs:5000,maxRequestMs:fixedHotPathBudget('native.delegation.request'),maxBodyBytes:16384,maxResponseBytes:16384,maxTokenRetries:2,revokeAttempts:3});
 export const READ_TOKEN_SCHEME='CapiroMeriRead';
 export const READ_TOKEN_KINDS=Object.freeze(['current','tool','mode','reference','memory_eligibility']);
 export const MEMORY_ELIGIBILITY_TOKEN_CEILING=1;

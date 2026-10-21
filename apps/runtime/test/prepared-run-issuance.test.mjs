@@ -84,7 +84,7 @@ test('source retirement is rechecked after issuance and fact compilation',async(
  const owner=f.create();await assert.rejects(owner.prepare({...f.next,source:f.source}),/SOURCE_NOT_RETIRED/);assert.equal(f.stats.issue,1);
 });
 test('absent issuer provider and already aborted requests perform no issuance',async()=>{
- const f=fixture();assert.throws(()=>createPreparedRunIssuance({issuer:{},facts:f.facts}));await assert.rejects(f.owner.prepare({...f.input,signal:AbortSignal.abort()}));assert.equal(f.stats.issue,0);
+ const f=fixture();assert.throws(()=>createPreparedRunIssuance({maxRequestMs:3000,issuer:{},facts:f.facts}));await assert.rejects(f.owner.prepare({...f.input,signal:AbortSignal.abort()}));assert.equal(f.stats.issue,0);
 });
 for(const [name,mutate] of Object.entries({
  binding:c=>{c.runtime.binding={...c.runtime.binding,actorId:'foreign'};},

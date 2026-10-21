@@ -13,7 +13,7 @@ import {PassThrough} from 'node:stream';
 import {EventEmitter} from 'node:events';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {continuationFixture} from '../../../worker/conversation/continuation/test/fixtures.mjs';
-import {runnerStartupBudget} from '../../../../packages/runtime/runner-load-budget.mjs';
+import {runnerStartupBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 import {createNativeCapabilityClient} from '../../native-client.mjs';
 import {withRunnerDiagnostics} from '../../runner-runtime-diagnostics.mjs';
 import {createTaskRouterApplication} from '../task-router.mjs';
@@ -61,7 +61,7 @@ async function compose(t, {routerOptions, slow = {}, routerSlow = () => 0} = {})
   const descriptor = {command, args: [], cwd: workspace, env: {CLAUDE_CONFIG_DIR: configDirectory, CLAUDE_SECURESTORAGE_CONFIG_DIR: configDirectory}};
   const executionKey = hash(binding);
   const original = {binding, executionKey, executionId: executionKey, planSha256: hash(descriptor), expiresAtMs: Date.now() + 600000, versions: target.versions};
-  const launchConfiguration = {binding, workspace, configDirectory, versions: {sdk: target.versions.sdk, cli: target.versions.cli}, expiresAtMs: original.expiresAtMs,
+  const launchConfiguration = {shutdownMs: 1000, binding, workspace, configDirectory, versions: {sdk: target.versions.sdk, cli: target.versions.cli}, expiresAtMs: original.expiresAtMs,
     executableSha256: sha(readFileSync(command)), launch: {command, args: [], env: descriptor.env}, enabled: true};
   const startup = runnerStartupBudget({requestMs: 25000, shutdownMs: 10000, originalExpiresAtMs: original.expiresAtMs}).stages;
 
@@ -107,14 +107,14 @@ async function compose(t, {routerOptions, slow = {}, routerSlow = () => 0} = {})
   const ingress = createTaskRouterIngress(), marker = ingress.issue();
   const routerLog = [];
   // control.mjs wires the router with maxRequestMs 8000.
-  const router = createTaskRouterApplication({authority: routerAuthority, networkReader, connector, privateIngress: ingress, enabled: true,
+  const router = createTaskRouterApplication({startupMaxRequestMs:21000,authority: routerAuthority, networkReader, connector, privateIngress: ingress, enabled: true,
     maxRequestMs: 8000, report: line => routerLog.push(JSON.parse(line)), ...routerOptions});
   const control = await listen({handle: async request => (await router.privateApplication.handle(request, {ingress: marker})) ?? preparation.handle(request)});
   const controlOrigin = 'https://localhost:' + control.address.port;
-  const pinned = await createPinnedNativeFetch({origin: controlOrigin, caFile, caSha256: sha(ca)});
+  const pinned = await createPinnedNativeFetch({timeoutMs:30000,origin: controlOrigin, caFile, caSha256: sha(ca)});
 
   // Runner receiver: real application; its preparation calls go back to control through the same pinned transport.
-  const native = createNativeCapabilityClient({configuration: {origin: controlOrigin, maxResponseBytes: 2097152}, credential: taskToken, fetch: pinned});
+  const native = createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration: {origin: controlOrigin, maxResponseBytes: 2097152}, credential: taskToken, fetch: pinned});
   const receiver = createRemoteNativeTaskApplication({original, controlCapabilitySha256: sha(controlToken), taskCapabilitySha256: sha(taskToken), taskArn,
     descriptorPolicy: {workspace, command, configParentDirectory: root, secureStorageDirectory: configDirectory},
     preparationAuthorizer: createNativePreparationClient({native, startupBudget: {...startup, admittedBefore: startup.nativePrepare, admittedAfter: startup.nativePrepare}}),
@@ -123,7 +123,7 @@ async function compose(t, {routerOptions, slow = {}, routerSlow = () => 0} = {})
   runnerOrigin = 'https://localhost:' + runner.address.port;
   t.after(async () => { router.close(); await runner.close(); await control.close(); });
 
-  const client = createRemoteSdkProcessClient({original, origin: controlOrigin, credential: taskToken, fetchImpl: pinned, startupMaxRequestMs: 23000, startupBudget: startup});
+  const client = createRemoteSdkProcessClient({limits:{maxRequestMs:8000},original, origin: controlOrigin, credential: taskToken, fetchImpl: pinned, startupMaxRequestMs: 23000, startupBudget: startup});
   return {client, descriptor, receiver, calls, aborted, routerLog, preparationLog, starts: () => starts, taskClosed: () => closed};
 }
 

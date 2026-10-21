@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Closed first-conversation bindings; compilation performs no IO or allocation. */
 import {isAbsolute} from 'node:path';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -29,8 +30,8 @@ export function compilePreparedCandidateConfiguration(value,versions){
  const o=own(c.objects,['bucket','prefix','expectedBucketOwner','kmsKeyId']);if(!/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u.test(o.bucket)||!/^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u.test(o.prefix)||o.prefix.endsWith('/')||o.prefix.includes('//')||o.expectedBucketOwner!=='967807252336'||!/^arn:aws:kms:us-east-1:967807252336:key\/[a-f0-9-]{36}$/u.test(o.kmsKeyId))refuse();
  own(c.taskRequest,['cluster','taskDefinition','networkConfiguration','overrides']);
  if(!Array.isArray(c.grantIntents)||!c.grantIntents.length)refuse();
- const noEffect=()=>{};createNativeTaskAllocator({journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},original:compiled.original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:c.grantIntents,allocationSha256:hash(JSON.parse(c.allocationJson)),containerName:c.containerName});
+ const noEffect=()=>{};createNativeTaskAllocator({maxRequestMs:fixedHotPathBudget('native.allocator.request'),startupMs:fixedHotPathBudget('native.allocator.startup'),journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},original:compiled.original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:c.grantIntents,allocationSha256:hash(JSON.parse(c.allocationJson)),containerName:c.containerName});
  const scopes=[{kind:'client',tenantId:c.runtime.binding.tenantId,resourceId:i.commandContext.clientResolution.clientId,policyRevision:c.qualification.policyRevision}];if(c.preparationIntent.authoritySha256!==hash({scopes,selectedClientId:i.commandContext.clientResolution.clientId,policyRevision:c.qualification.policyRevision})||!c.grantIntents.some(g=>g.grantId===c.grantId)||c.grantIntents.some(g=>g.expiresAtMs<c.runtime.deadlineMs))refuse();
- createNativeAllocationAdmission({pool:{connect(){}},allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,binding:c.runtime.binding,now:Date.now,limits:{maxRequestMs:3000,maxFactBytes:131072}});
+ createNativeAllocationAdmission({pool:{connect(){}},allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,binding:c.runtime.binding,now:Date.now,limits:{maxRequestMs:fixedHotPathBudget('native.prepared.request'),maxFactBytes:131072}});
  return Object.freeze({...c,...reads,preparationIntent:compiled.preparationIntent});
 }

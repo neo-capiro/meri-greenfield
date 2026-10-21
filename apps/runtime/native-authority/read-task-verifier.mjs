@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Secret-free sibling to worker authorization. Reads only existing admission/entry facts. */
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -10,7 +11,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 const same=(a,b)=>hash(a)===hash(b),deny=()=>{throw nativeReadFault('ACCESS_DENIED');};
 export function createReadTaskVerifier(configuration){
  const c=own(configuration,['allocationJson','grantFactsJsons','grantId','currentOwner','readCurrentEntry','taskArn','issuanceFactsSha256','runRequestSha256','scopes','approvedReads','expiresAtMs'],['enabled','now','maxRequestMs','signal']);nativeSignal(c.signal);
- const {allocation,facts}=parseAdmittedGrantSet(c),grant=facts.find(f=>f.grantId===c.grantId),config=assertNativeReadConfiguration(c.approvedReads),scopes=data(c.scopes),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
+ const {allocation,facts}=parseAdmittedGrantSet(c),grant=facts.find(f=>f.grantId===c.grantId),config=assertNativeReadConfiguration(c.approvedReads),scopes=data(c.scopes),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs;
  if(!grant||c.taskArn!==grant.qualificationBinding.workerArn||typeof c.readCurrentEntry!=='function'||types.isProxy(c.readCurrentEntry)||typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<=now()||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)throw nativeReadFault('CONFIGURATION');
  const current=storageMethod(c.currentOwner,'currentTaskRun'),readEntry=c.readCurrentEntry,binding=grant.binding,policyRevision=grant.qualificationBinding.policyRevision,allocationSha256=hash(allocation),readConfigurationSha256=nativeReadConfigurationSha256(config);
  const base={schemaVersion,binding,runRequestSha256:c.runRequestSha256,grantId:grant.grantId,taskArn:c.taskArn,issuanceFactsSha256:c.issuanceFactsSha256,allocationSha256,scopes,policyRevision};
@@ -20,7 +21,7 @@ export function createReadTaskVerifier(configuration){
   if(!enabled||!config.enabled)throw nativeReadFault('UNAVAILABLE');if(c.signal?.aborted)deny();
   const v=own(raw,['capability','binding','operation','inputSha256'],['signal','deadlineMs']);nativeSignal(v.signal);const requested=data(v.binding);validateShape('RunBinding',requested);
   if(!same(requested,binding)||!nativeReadOperations.includes(v.operation)||typeof v.inputSha256!=='string'||!/^[a-f0-9]{64}$/u.test(v.inputSha256)||!matchesCapability(v.capability,grant.capabilitySha256)||v.deadlineMs!==undefined&&!Number.isSafeInteger(v.deadlineMs))deny();
-  const started=now(),operationCutoff=Math.min(v.deadlineMs??started+(v.operation.endsWith('/execute')?config.maxExecuteMs:3000),started+(v.operation.endsWith('/execute')?config.maxExecuteMs:3000));let expiresAtMs=Math.min(c.expiresAtMs,operationCutoff);
+  const started=now(),operationCutoff=Math.min(v.deadlineMs??started+(v.operation.endsWith('/execute')?config.maxExecuteMs:fixedHotPathBudget('native.read.request')),started+(v.operation.endsWith('/execute')?config.maxExecuteMs:fixedHotPathBudget('native.read.request')));let expiresAtMs=Math.min(c.expiresAtMs,operationCutoff);
   life=createOperationLifetime({now,deadlineMs:Math.min(started+maxRequestMs,expiresAtMs),signal:c.signal||v.signal?AbortSignal.any([c.signal,v.signal].filter(Boolean)):undefined,errorFactory:()=>nativeReadFault('ACCESS_DENIED')});
   const limit=expiry=>{if(!Number.isSafeInteger(expiry)||expiry<=now())deny();expiresAtMs=Math.min(expiresAtMs,expiry);life.limitDeadline(expiresAtMs);};
   async function observe(){const began=now(),text=await life.run(signal=>current(binding,{signal}));if(typeof text!=='string'||Buffer.byteLength(text,'utf8')>131072)deny();const row=data(JSON.parse(text));own(row,['binding','policyRevision','deadlineMs','checkedAtMs']);if(!same(row.binding,binding)||row.policyRevision!==policyRevision||!Number.isSafeInteger(row.checkedAtMs)||row.checkedAtMs<began||row.checkedAtMs>now())deny();limit(row.deadlineMs);

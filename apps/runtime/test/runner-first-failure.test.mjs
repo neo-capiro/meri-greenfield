@@ -44,7 +44,7 @@ function installSdk(events, {signal, close = () => {}} = {}) {
 
 function remote(t, events, handle, {now = Date.now, startupBudget} = {}) {
   const original = originalAt(now());
-  const client = createRemoteSdkProcessClient({
+  const client = createRemoteSdkProcessClient({limits:{maxRequestMs:8000},
     original, origin: 'https://synthetic-task.invalid', credential: 'synthetic-task-only', now,
     ...(startupBudget ? {startupBudget} : {}),
     fetchImpl: async (url, init) => {

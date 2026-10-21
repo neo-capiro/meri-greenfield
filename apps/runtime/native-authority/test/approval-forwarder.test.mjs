@@ -99,7 +99,7 @@ test('the marked control credential is never forwarded, as bearer or as service 
  const swapped=await harness({readSecret:async()=>Buffer.from(CONTROL)});t.after(swapped.close);
  await assert.rejects(swapped.decide(),code('UNAVAILABLE'));assert.equal(swapped.core.requests.length,0);
  // A service-only call does not exist: the relay is required at construction.
- assert.throws(()=>createCoreApprovalForwarder({origin:CORIGIN(),getServiceSecret:async()=>SECRET,now:Date.now}),code('APPROVAL_FORWARDER_CONFIGURATION'));
+ assert.throws(()=>createCoreApprovalForwarder({maxRequestMs:10000,origin:CORIGIN(),getServiceSecret:async()=>SECRET,now:Date.now}),code('APPROVAL_FORWARDER_CONFIGURATION'));
  function CORIGIN(){return CORE_ORIGIN;}
 });
 test('Core refusals, outages, malformed and uncorrelated answers refuse with the typed code and effect',async t=>{

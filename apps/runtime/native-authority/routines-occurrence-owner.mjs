@@ -76,7 +76,7 @@ export function createRoutinesOccurrenceOwner(options){
   admissionFor=o.admissionFor;if(typeof admissionFor!=='function'||types.isProxy(admissionFor))throw Error();
   retire=storageMethod(o.retirement,'retire');readOccurrence=sdkMethod(o.scheduleOwner,'readOccurrenceForConversation');
   principal=data(own(o.principal,['tenantId','actorId']));validateShape('Identity',principal);
-  now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
+  now=o.now??Date.now;maxRequestMs=o.maxRequestMs;
   if(typeof now!=='function'||types.isProxy(now)||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw Error();
  }catch{throw fault('CONFIGURATION');}
  /** Carry the owner's typed refusal; anything else (open shapes, private failures) is no evidence. */

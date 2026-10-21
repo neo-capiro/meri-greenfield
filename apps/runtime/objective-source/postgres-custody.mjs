@@ -27,12 +27,12 @@ const one=rows=>{if(!Array.isArray(rows)||rows.length!==1)refuse();return rows[0
 const maybe=rows=>{if(!Array.isArray(rows)||rows.length>1)refuse();return rows[0]??null;};
 
 export function createPostgresObjectiveCustodyStore(configuration={}){
- let enabled=false,connect,tenantId,now=Date.now,maxRequestMs=3000,allocateFence=randomUUID;
+ let enabled=false,connect,tenantId,now=Date.now,maxRequestMs,allocateFence=randomUUID;
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
    const c=own(configuration,['enabled','pool','tenantId'],['now','maxRequestMs','allocateFence']);
-   tenantId=c.tenantId;now=c.now??now;maxRequestMs=c.maxRequestMs??maxRequestMs;allocateFence=c.allocateFence??allocateFence;
+   tenantId=c.tenantId;now=c.now??now;maxRequestMs=c.maxRequestMs;allocateFence=c.allocateFence??allocateFence;
    if(typeof tenantId!=='string'||!tenantId||tenantId.trim()!==tenantId||tenantId.length>128||typeof now!=='function'||types.isProxy(now)||
     typeof allocateFence!=='function'||types.isProxy(allocateFence)||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)refuse();
    connect=storageMethod(c.pool,'connect');enabled=true;

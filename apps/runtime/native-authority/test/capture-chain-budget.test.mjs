@@ -11,7 +11,7 @@ import {tmpdir} from 'node:os';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {continuationFixture,id} from '../../../worker/conversation/continuation/test/fixtures.mjs';
 import {RUNNER_LOAD_MAX_MS,RUNNER_LOAD_CONTROL_MARGIN_MS,RUNNER_SESSION_RPC_MS,RUNNER_SESSION_STORE_CALL_MS,controlSessionRpcMs,
- CONTROL_CHECKPOINT_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS,TASK_ROUTER_CAPTURE_MS,RUNNER_CAPTURE_MS,runnerStartupBudget} from '../../../../packages/runtime/runner-load-budget.mjs';
+ CONTROL_CHECKPOINT_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS,TASK_ROUTER_CAPTURE_MS,RUNNER_CAPTURE_MS,runnerStartupBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 import {createNativeSdkSessionClient,createNativeBoundSdkSessionStore} from '../session-client.mjs';
 import {createNativeSdkSessionApplication} from '../session-http.mjs';
 import {createRemoteNativeTaskController} from '../remote-task-client.mjs';
@@ -88,7 +88,7 @@ test('a bound-store call slower than the old three-second default completes on i
  const f=sessionFixture(),delay=RUNNER_SESSION_RPC_MS.append-RUNNER_LOAD_CONTROL_MARGIN_MS,entries=[{type:'user',uuid:id(870),text:'mirrored'}];
  const client={async register(){return {registered:true,key:f.key};},async load(){return {entries:null,offset:0};},async listSubkeys(){return {subkeys:[]};},
   append:({expectedOffset,entries:batch})=>new Promise(resolve=>setTimeout(()=>resolve({offset:expectedOffset+batch.length}),delay))};
- const bound=createNativeBoundSdkSessionStore({client,binding:f.binding,sessionKey:f.key});
+ const bound=createNativeBoundSdkSessionStore({timeoutMs:15000,client,binding:f.binding,sessionKey:f.key});
  assert.ok(delay>3000&&delay<RUNNER_SESSION_STORE_CALL_MS);const pending=bound.store.append(f.key,entries);await settle();t.mock.timers.tick(delay);
  await pending;const status=await bound.settleObservedCalls();assert.equal(status.uncertain,false);assert.equal(status.appendFailures,0);
 });
@@ -98,7 +98,7 @@ function original(){const {binding,target}=continuationFixture(),executionKey=ha
 test('the control capture channel waits for a capture longer than an ordinary eight-second exchange',async t=>{
  t.mock.timers.enable({apis:['setTimeout','Date'],now:Date.now()});
  const o=original(),delay=CONTROL_CAPTURE_CHANNEL_MS-1000;
- const controller=createRemoteNativeTaskController({original:o,origin:'https://runner.invalid',credential:'synthetic-control',
+ const controller=createRemoteNativeTaskController({limits:{maxRequestMs:8000},original:o,origin:'https://runner.invalid',credential:'synthetic-control',
   fetchImpl:()=>new Promise(resolve=>setTimeout(()=>resolve(Response.json({original:o,capture:{synthetic:true}})),delay))});
  assert.ok(delay>8000);const pending=controller.capture({binding:o.binding,controlId:id(860),sessionId:id(861)});await settle();t.mock.timers.tick(delay);
  assert.deepEqual(await pending,{synthetic:true});

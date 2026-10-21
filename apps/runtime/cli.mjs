@@ -1,5 +1,8 @@
 /** Executable ownership only. Importing this file does not allocate resources. */
 import {pathToFileURL} from 'node:url';
+import {runtimeHotPathBudgets} from './hot-path-budget-inputs.mjs';
+import {budget} from '../../packages/runtime/hot-path-budgets.mjs';
+import {createHotPathFetch} from './hot-path-transports.mjs';
 import {loadConfiguration} from './config.mjs';
 import {assertProductRunnerMeasurement} from './native-authority/ecs-prepared-task-proof.mjs';
 import {withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
@@ -13,7 +16,7 @@ const processStartedAtMs=Date.now();
 export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.temporal?.issuerBootstrap?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
 export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}={}){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('Usage: node apps/runtime/cli.mjs <control|temporal-worker|conversation-runner|schedule-worker> --config /absolute/config.json\nExit: 0 graceful completion; 2 configuration/startup timeout; 3 runtime/startup failure/shutdown timeout.\n');return 0;}
- if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
+ if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c,budgets;try{c=await loadConfiguration(path,role);budgets=runtimeHotPathBudgets(c);
   if((poststartTls===undefined)!==(nativeFetch===undefined)||poststartTls!==undefined&&
      (role!=='conversation-runner'||process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_POSTSTART_REFUSED');
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
@@ -33,10 +36,10 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    const measured=await assertProductRunnerMeasurement({expectedSha256:process.env.MERI_RUNNER_SHA256});
    if(c.remoteTask!==undefined&&measured.runnerSha256!==c.remoteTask.preparationIntent.runnerSha256)throw Error('RUNNER_PIN_REFUSED');
   }
- }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
- const controller=new AbortController();let runtime,shutdownTimer,controlTurnTelemetry,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
- const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();
- try{if(role==='conversation-runner'){await withRunnerDiagnostics(async()=>{const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});},{binding:c.binding,environment:c.telemetry?.environment,processStartedAtMs});return 0;}
+ }catch(error){process.stderr.write(error?.code==='HOT_PATH_BUDGET_CONFIGURATION'?'HOT_PATH_BUDGET_CONFIGURATION\n':'RUNTIME_CONFIGURATION\n');return 2;}
+ const controller=new AbortController();let runtime,shutdownTimer,controlTurnTelemetry,controlFetch,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},budget(budgets,'runtime.shutdown.watchdog'));};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
+ const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},budget(budgets,'runtime.startup'));startupTimer.unref();
+ try{if(role==='conversation-runner'){await withRunnerDiagnostics(async()=>{const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{budgets,signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});},{binding:c.binding,environment:c.telemetry?.environment,processStartedAtMs});return 0;}
   // The schedule service refuses before secret reads unless trusted owners are supplied; without `routines.enabled` the bare CLI supplies none.
   const [file,start]={control:['./control.mjs','startControl'],'temporal-worker':['./temporal-worker.mjs','startTemporalWorker'],'schedule-worker':['./schedule-service.mjs','startScheduleWorker']}[role];
   const module=await import(file);
@@ -51,20 +54,21 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
   // the factory composes Core's firing authority and unattended stop (B2) plus the admission/retirement ports over control's operations.
   if(role==='schedule-worker'&&c.routines?.enabled===true){const {composeRoutinesWorkerRuntimePorts}=await import('./schedule-service-owners.mjs');productPorts={runtimePortsFactory:composeRoutinesWorkerRuntimePorts};}
   if(role==='control'){
+   controlFetch=createHotPathFetch(budgets);
    controlTurnTelemetry=createTurnTelemetry({service:'control',environment:c.telemetry?.environment});
    const {createMemoryFamilyWith}=await import('./product-ports/memory.mjs');
    const memoryFamily=createMemoryFamilyWith(relay?{nativeCredentials:relay.port}:{});
    // Documents (D31): the Core artifact authority composes only with every input present; otherwise the store-only family stays
    // and `missing` names the gaps by key (runOptions and executor are Meri-local owners not yet composed).
    const [{createProductPortsFactory,PRODUCT_FAMILIES},{composeDocumentsFamily}]=await Promise.all([import('./product-ports/index.mjs'),import('./artifacts/authority-composition.mjs')]);
-   const documents=await composeDocumentsFamily({configuration:c,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
+   const documents=await composeDocumentsFamily({configuration:c,budgets,fetchImpl:countingFetch(controlFetch.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
    if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
    // Write-intent execution (lane E): the intents family and the per-run intent mount share one composition; both stay inert
    // unless control declares intents.execution and its Core owners exist.
    const [{createControlIntentExecution},{readSecret},{createControlCurrentAuthority}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs'),import('./native-authority/current-authority-adapters.mjs')]);
    // Current tool authority (lane T): one observation per port call over Core identity/membership/context through the relay; it
    // supplies the execution owners and the reads gateway authority/limits. Without a prepared candidate there is nothing to observe.
-   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
+   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port,fetchImpl:countingFetch(controlFetch.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
    const execution=createControlIntentExecution({readSecret,...(authority?{owners:authority.owners}:{})});
    const intents=authority?context=>{authority.bind(context);return execution.family(context);}:execution.family;
    productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(occurrences?{occurrenceRelay:occurrences}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
@@ -101,12 +105,12 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
       const {createMemoryContextRelay}=await import('./memory-context-relay.mjs');
       memoryContextRelay=createMemoryContextRelay();
      }
-     retainedTaskPorts=createSelectedRetainedTaskPorts({coreOrigin:c.nativeCandidate.identity.origin,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),
+     retainedTaskPorts=createSelectedRetainedTaskPorts({coreOrigin:c.nativeCandidate.identity.origin,fetchImpl:countingFetch(controlFetch.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),
       now:Date.now,familyIds:retained,operationRefs:installation.measurement.operations.map(row=>row.operation),
       ...(memoryContextRelay?{memoryContextPortsForTask:memoryContextRelay.forTask}:{})});
     }
    }
-   const reads=await createControlReadsComposer({configuration:c,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery}),...(familyIds===undefined?{}:{familyIds}),...(retainedTaskPorts===undefined?{}:{retainedTaskPorts})});
+   const reads=await createControlReadsComposer({configuration:c,fetchImpl:countingFetch(controlFetch.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery}),...(familyIds===undefined?{}:{familyIds}),...(retainedTaskPorts===undefined?{}:{retainedTaskPorts})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
    Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,
     ...(memoryContextRelay?{memoryContextRelay}:{}),
@@ -118,11 +122,11 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    routinesOwners=createAttendedRoutinesOwnerComposition({configuration:c,workflow:c.routines.workflow,readConsents:readDelegationConsents});
    productPorts.routinesCandidateBinder=candidate=>{routinesOwners.bindCandidate(candidate);if(routinesOwners.state()==='owners-unavailable')process.stderr.write(JSON.stringify({event:'runtime.routines.attended.unavailable'})+'\n');};
   }
-  runtime=await module[start](c,{signal:controller.signal,...productPorts});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
- }catch(error){process.stderr.write('RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
+  runtime=await module[start](c,{budgets,signal:controller.signal,...productPorts});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
+ }catch(error){process.stderr.write(error?.code==='HOT_PATH_BUDGET_CONFIGURATION'?'HOT_PATH_BUDGET_CONFIGURATION\n':'RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
   if(cleanupUnknown)process.stderr.write('RUNTIME_CLEANUP_UNKNOWN\n');return 3;
- }finally{controlTurnTelemetry?.close();clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}
+ }finally{await controlFetch?.close();controlTurnTelemetry?.close();clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}
 
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)process.exitCode=await main();

@@ -1,3 +1,4 @@
+import {testBudgetTable as runnerTestBudgets} from '../../../packages/runtime/test/budget-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {assembleConversationRunner} from '../conversation-runner.mjs';
@@ -32,7 +33,7 @@ function fixture({failureAt,code='NATIVE_UNAVAILABLE',cleanupFailure=false,frame
   queries++;if(failureAt==='query')throw fail(code);
   return {async *[Symbol.asyncIterator](){if(failureAt==='stream')throw fail(code);yield* frames;},close(){closes++;if(cleanupFailure)throw fail('NATIVE_UNAVAILABLE');}};
  };
- return {saved,calls,events,native,query,counts:()=>({queries,closes}),execute:assembleConversationRunner({configuration,native,query})};
+ return {saved,calls,events,native,query,counts:()=>({queries,closes}),execute:assembleConversationRunner({budgets:runnerTestBudgets,configuration,native,query})};
 }
 
 for(const entry of [
@@ -63,7 +64,7 @@ test('successful activity remains silent and publishes starting, running, comple
 });
 
 test('diagnostic observer throws and rejections do not replace activity failure or prevent cleanup',async()=>{
- const f=fixture({failureAt:'stream'}),execute=createConversationActivity({
+ const f=fixture({failureAt:'stream'}),execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},
   runOwner:{load:input=>f.native.call('runner/load',input),append:input=>f.native.call('runner/publish',input)},
   prepareRuntime:async()=>({...admitted(),cwd:configuration.workspace,sessionStore:{load:async()=>null,append:async()=>{}}}),query:f.query,
   diagnostics:{stage(){throw Error('observer exception');},failure(){return Promise.reject(Error('observer rejection'));}},

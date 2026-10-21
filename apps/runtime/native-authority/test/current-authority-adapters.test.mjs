@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
 /** The current-authority adapters over a synthetic Core (golden receipts from capiro-backend #84 @ 0304b0ef), the live-session
  * relay, secret files and the product-budget SQL: reads identify/check, each lane E port, every refusal class and the control
  * composition. No live Core, PostgreSQL, SDK or network. */
@@ -203,7 +204,7 @@ test('createControlCurrentAuthority composes from the runtime configuration; the
  const family=context=>{authority.bind(context);return execution.family(context);};
  // The trusted context carries the control configuration; the execution owner compiles `nativeCandidate` only when present.
  const {nativeCandidate,...contextConfiguration}=configuration;
- const context=Object.freeze({configuration:contextConfiguration,pool:f.pool,client:{},native:{call:async()=>{throw Error('no native');}},now:f.now,
+ const context=Object.freeze({budgets:testBudgetTable,fetchImpl:f.fetchImpl,configuration:contextConfiguration,pool:f.pool,client:{},native:{call:async()=>{throw Error('no native');}},now:f.now,
   canonicalProductPorts:captureRuntimePorts({conversationMembership:{async admit(){throw Error('not used');},async recheck(){throw Error('not used');}}})});
  const ports=createProductPortsFactory({families:PRODUCT_FAMILIES.map(([n,fn])=>[n,n==='intents'?family:fn])})(context);
  assert.ok(ports.intentApplication);assert.equal(authority.state(),'composed');assert.equal(execution.state(),'composed');assert.deepEqual(execution.missing(),[]);

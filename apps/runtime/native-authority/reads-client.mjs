@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Worker-side two-method task transport. No user/provider credential or SQL dependency. */
 import {types} from 'node:util';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
@@ -12,7 +13,7 @@ export function createNativeReadsClient(configuration){
  try{const u=new URL(c.origin);if(u.protocol!=='https:'||u.pathname!=='/'||u.username||u.password||u.search||u.hash||u.origin!==c.origin)fail('CONFIGURATION');origin=u.origin;}catch{fail('CONFIGURATION');}
  validateShape('RunBinding',binding);if(typeof c.credential!=='string'||!/^\S{1,8192}$/u.test(c.credential)||typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)||typeof now!=='function')fail('CONFIGURATION');const fetchImpl=c.fetchImpl,credential=c.credential;let pin;
  async function call(operation,fields,signal){if(!config?.enabled)fail('UNAVAILABLE');nativeSignal(signal);const full='runner/reads/'+operation,request=assertNativeReadRequest(full,{schemaVersion,binding,...fields}),body=JSON.stringify(request);if(Buffer.byteLength(body,'utf8')>config.maxRequestBytes)fail('RESOURCE_LIMIT');
-  const started=now(),deadlineMs=started+(operation==='execute'?config.maxExecuteMs:3000),life=createOperationLifetime({now,deadlineMs,signal,errorFactory:nativeReadFault});let response,reader,dispatched=false;
+  const started=now(),deadlineMs=started+(operation==='execute'?config.maxExecuteMs:fixedHotPathBudget('native.read.request')),life=createOperationLifetime({now,deadlineMs,signal,errorFactory:nativeReadFault});let response,reader,dispatched=false;
   try{dispatched=true;response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(origin+'/v1/'+full,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));pending.then(r=>{if(life.signal.aborted)try{get.body.call(r)?.cancel().catch(()=>{});}catch{}},()=>{});return pending;});
    if(types.isProxy(response)||!(response instanceof Response)||get.redirected.call(response))fail('UNAVAILABLE');const responseUrl=get.url.call(response);if(responseUrl&&responseUrl!==origin+'/v1/'+full)fail('UNAVAILABLE');
    const headers=get.headers.call(response),header=k=>Headers.prototype.get.call(headers,k),stream=get.body.call(response);if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!stream)fail('INVALID_RESULT');

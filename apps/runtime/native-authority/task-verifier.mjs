@@ -22,7 +22,7 @@ export function compileNativeTaskAccess(configuration){
 export function createNativeTaskVerifier(configuration){
  const c=own(configuration,['allocationJson','grantFactsJsons','grantId','identityCredential','currentOwner','identityContext','operations','expiresAtMs'],['enabled','now','maxRequestMs','signal']);nativeSignal(c.signal);
  const {facts}=parseAdmittedGrantSet(c),grant=facts.find(f=>f.grantId===c.grantId);if(!grant)throw taskFault('CONFIGURATION');const operations=compileNativeTaskAccess({identityCredential:c.identityCredential,taskCapabilitySha256:grant.capabilitySha256,operations:c.operations});
- const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  if(!grant||typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||
   !Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<=now())throw taskFault('CONFIGURATION');
  const current=storageMethod(c.currentOwner,'currentTaskRun'),identity=storageMethod(c.identityContext,'verifyIdentity'),context=storageMethod(c.identityContext,'resolveContext');

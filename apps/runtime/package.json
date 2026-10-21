@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": {"node": ">=24 <25"},
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "start:control": "node cli.mjs control",
     "start:worker": "node cli.mjs temporal-worker",
@@ -20,10 +22,15 @@
     "@opentelemetry/exporter-metrics-otlp-http": "0.223.0",
     "@opentelemetry/exporter-trace-otlp-http": "0.223.0",
     "@opentelemetry/sdk-node": "0.223.0",
+    "@smithy/node-http-handler": "4.12.1",
     "@temporalio/activity": "1.24.0",
     "@temporalio/client": "1.24.0",
     "@temporalio/worker": "1.24.0",
-    "pg": "8.23.1"
+    "pg": "8.23.1",
+    "undici": "7.30.0"
   },
-  "devDependencies": {"typescript": "5.9.3", "@types/node": "24.19.2"}
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3"
+  }
 }

@@ -46,7 +46,7 @@ test('relay executes canonical task-authorized load/publish and denies foreign/r
  }finally{f.close();}
 });
 test('canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay',async()=>{
- const f=fixture(),control=createNativeSdkSessionApplication({owner:f.owner,now:()=>NOW});let forwards=0;
+ const f=fixture(),control=createNativeSdkSessionApplication({maxRequestMs:3000,owner:f.owner,now:()=>NOW});let forwards=0;
  const gateway=make((url,init)=>{forwards++;assert.equal(init.headers.authorization,'Bearer opaque-native-task');return control.handle(new Request(url,init));},{now:()=>NOW});
  const client=createNativeSdkSessionClient({origin:'https://native.synthetic.invalid',credential:'opaque-native-task',binding:f.binding,fetchImpl:(url,init)=>gateway.handle(new Request(url,init)),now:()=>NOW});
  assert.equal((await client.register({key:f.key})).registered,true);let nested={leaf:'opaque'};for(let i=0;i<90;i++)nested={nested};const marker={type:'system',future:nested},entries=[{type:'assistant',uuid:sessionId(10),future:nested},marker,marker];
@@ -80,6 +80,6 @@ test('redirect, response media/length and size failures release no result after 
 
 test('private immutable snapshot read relays exact bearer and bytes to canonical session receiver',async()=>{
  let called=0;const snapshot={async readSnapshot(value){called++;assert.equal(value.credential,'original-task');assert.deepEqual(value.request,{binding});return {binding,key:{projectKey:'-workspace-conversation',sessionId:id(88)},checkpointSha256:'a'.repeat(64),opaqueSessionSha256:'b'.repeat(64),transcripts:[{entries:[{type:'system',opaque:['preserved',null]}]}]};}};
- const receiver=createNativeSdkSessionApplication({owner:{register(){throw Error();},load(){throw Error();},append(){throw Error();},listSubkeys(){throw Error();}},snapshot}),gateway=make((url,init)=>receiver.handle(new Request(url,init)));
+ const receiver=createNativeSdkSessionApplication({maxRequestMs:3000,owner:{register(){throw Error();},load(){throw Error();},append(){throw Error();},listSubkeys(){throw Error();}},snapshot}),gateway=make((url,init)=>receiver.handle(new Request(url,init)));
  const response=await gateway.handle(request('/v1/runner/session/snapshot',JSON.stringify({binding}),'original-task'));assert.equal(response.status,200);assert.equal((await response.json()).transcripts[0].entries[0].opaque[0],'preserved');assert.equal(called,1);
 });

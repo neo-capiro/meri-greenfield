@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Owns task-local installation/lifetime of the genuine post-placement reply.
  * The issuer client, not metadata or this filesystem owner, proves identity. */
 import * as nativeFs from 'node:fs/promises';
@@ -119,7 +120,7 @@ function bootstrapFiles(c,fs,runtimeIdentity,newId){
  * are. cli.mjs ends startup at limits.startupMs, so the window is also capped
  * by startupMs minus a reserve for the rest of startup (Temporal connection,
  * worker creation, listen); startup attempts never outlive that window. */
-export const TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS=180000,TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS=2500,TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS=10000;
+export const TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS=fixedHotPathBudget('temporal.bootstrap.window'),TEMPORAL_BOOTSTRAP_RETRY_INTERVAL_MS=fixedHotPathBudget('temporal.bootstrap.retry'),TEMPORAL_BOOTSTRAP_STARTUP_RESERVE_MS=fixedHotPathBudget('temporal.bootstrap.reserve');
 const retriedCodes=['TEMPORAL_ISSUER_BOOTSTRAP_CLIENT_REFUSED','TEMPORAL_PRODUCT_BOOTSTRAP_UNAVAILABLE'];
 export function temporalBootstrapStartupWindowMs(limits){
  const startupMs=limits!==null&&typeof limits==='object'&&!types.isProxy(limits)?Object.getOwnPropertyDescriptor(limits,'startupMs')?.value:undefined;

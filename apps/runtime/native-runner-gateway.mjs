@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Fixed trusted-stack relay. Control retains task verification, observation and all effects. */
 import {types} from 'node:util';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -36,7 +37,7 @@ export function createNativeRunnerGateway(configuration){
   if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding')))fail('NATIVE_GATEWAY_MEDIA',415);
   const requestLimit=Math.min(l.maxRequestBytes,route.reads?reads.maxRequestBytes:route.session?9437184:131072),expected=length(info.headers,requestLimit);
   const started=now();if(!Number.isSafeInteger(started)||started<0)fail('NATIVE_GATEWAY_CONFIGURATION');
-  const requestMs=route.reads?(route.execute?reads.maxExecuteMs:3000):l.maxRequestMs;
+  const requestMs=route.reads?(route.execute?reads.maxExecuteMs:fixedHotPathBudget('native.gateway.read.request')):l.maxRequestMs;
   life=createOperationLifetime({now,deadlineMs:started+requestMs,signal:info.signal,errorFactory:code=>new RelayError(code,['DEADLINE','CANCELLED'].includes(code)?408:503)});
   const body=await bytes(info.body,requestLimit,expected,life);life.check();
   const headers={authorization,'content-type':header('content-type'),accept:'application/json',...(header('content-encoding')===null?{}:{'content-encoding':header('content-encoding')})};

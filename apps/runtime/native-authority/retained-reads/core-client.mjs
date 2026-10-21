@@ -18,7 +18,7 @@ function bearerOf(value,now){
  return bearer;
 }
 export function createCoreRetainedAuthorityClient(configuration={}){
- const c=own(configuration,[],['origin','getNativeCredential','fetchImpl','now','maxRequestMs','enabled']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,enabled=c.enabled??false;
+ const c=own(configuration,[],['origin','getNativeCredential','fetchImpl','now','maxRequestMs','enabled']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs,enabled=c.enabled??false;
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)throw nativeReadFault('CONFIGURATION');
  const ready=Boolean(enabled&&c.origin&&c.getNativeCredential&&c.fetchImpl),origin=c.origin===undefined?undefined:retainedOrigin(c.origin);
  if(c.getNativeCredential!==undefined&&(typeof c.getNativeCredential!=='function'||types.isProxy(c.getNativeCredential))||c.fetchImpl!==undefined&&(typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)))throw nativeReadFault('CONFIGURATION');

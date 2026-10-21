@@ -17,7 +17,7 @@ test('native completion refuses a typed result before beginning capture when pro
  let begins=0,captures=0;
  const store={completions:{begin(){begins++;},read(){},publish(){},unknown(){}},read(){return {run:{binding,versions,scopes,policyRevision:'policy1'},request};}};
  const authority={verify(input){return {binding,operation:'load',inputSha256:input.inputSha256,identityCredential:'synthetic-native',scopes,selectedClientId:scopes[0].resourceId,policyRevision:'policy1',authorizationDecisionId:'synthetic-decision',checkedAtMs:now,expiresAtMs:original.expiresAtMs};}};
- const completion=createNativeCompletionCapture({store,objects:{get(){},put(){}},authority,taskCapability:'synthetic-task',original,taskCapture:{capture(){captures++;}},enabled:true,now:()=>now});
+ const completion=createNativeCompletionCapture({maxRequestMs:3000,store,objects:{get(){},put(){}},authority,taskCapability:'synthetic-task',original,taskCapture:{capture(){captures++;}},enabled:true,now:()=>now});
  await assert.rejects(completion.captureCompletion({binding,request,versions,scopes,sessionId,contextSha256:hash({window:request.window,skill:request.skill,scopes}),typedResult}),/NATIVE_COMPLETION_CAPTURE_UNKNOWN/);
  assert.equal(begins,0);assert.equal(captures,0);
 });

@@ -10,7 +10,7 @@ export const executionFault=code=>Object.assign(Error('NATIVE_EXECUTION_'+code),
 export function createNativeExecutionBroker(configuration){
  const c=own(configuration,['binding','versions','plan','expiresAtMs','journal','tasks','verifier','taskCapability'],['enabled','now','maxRequestMs']);
  const binding=data(c.binding),versions=data(c.versions),plan=data(c.plan);validateShape('RunBinding',binding);validateShape('RuntimeVersions',versions);
- const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<1||typeof c.taskCapability!=='string')throw executionFault('CONFIGURATION');
  const claim=storageMethod(c.journal,'claim'),read=storageMethod(c.journal,'read'),record=storageMethod(c.journal,'record'),launch=storageMethod(c.tasks,'launch'),inspect=storageMethod(c.tasks,'inspect'),retire=storageMethod(c.tasks,'retire'),verify=storageMethod(c.verifier,'verify');
  const nativeOriginal=createExecutionBinding({binding,versions,plan,expiresAtMs:c.expiresAtMs}),{versions:ignored,...original}=nativeOriginal,executionKey=original.executionKey;

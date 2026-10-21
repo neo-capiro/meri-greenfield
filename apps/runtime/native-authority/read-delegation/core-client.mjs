@@ -27,7 +27,7 @@ export const bodyBytes=value=>Buffer.from(JSON.stringify(value),'utf8');
 export const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 
 export function createReadDelegationCoreClient(configuration){
- const c=own(configuration,['now'],['origin','fetchImpl','getServiceSecret','enabled','maxRequestMs']),now=c.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??READ_DELEGATION_LIMITS.maxRequestMs;
+ const c=own(configuration,['now'],['origin','fetchImpl','getServiceSecret','enabled','maxRequestMs']),now=c.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs;
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>READ_DELEGATION_LIMITS.maxRequestMs)refuse('CONFIGURATION');
  for(const name of ['fetchImpl','getServiceSecret'])if(c[name]!==undefined&&(typeof c[name]!=='function'||types.isProxy(c[name])))refuse('CONFIGURATION');
  const origin=c.origin===undefined?undefined:retainedOrigin(c.origin),available=Boolean(enabled&&origin&&c.fetchImpl&&c.getServiceSecret);

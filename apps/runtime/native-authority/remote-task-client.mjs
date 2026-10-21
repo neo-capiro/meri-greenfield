@@ -6,9 +6,9 @@ import {copySessionJson} from '../../worker/qualification/checkpoint/session-sto
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {remoteOriginal,exactOriginal,descriptor,transportLimits,remoteFault,decodeBytes} from './remote-task-boundary.mjs';
 import {captureRunnerFailure,pinnedStatusRefusal} from '../runner-runtime-diagnostics.mjs';
-import {CONTROL_CAPTURE_CHANNEL_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {CONTROL_CAPTURE_CHANNEL_MS,RUNNER_LOAD_MAX_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex');
-function channel(configuration){const c=own(configuration,['original','origin','credential','fetchImpl'],['now','limits','startupMaxRequestMs','startupBudget']),original=remoteOriginal(c.original),now=c.now??Date.now,limits=transportLimits(c.limits),startupMaxRequestMs=c.startupMaxRequestMs??Math.min(limits.maxRequestMs,23000);let origin;
+function channel(configuration){const c=own(configuration,['original','origin','credential','fetchImpl'],['now','limits','startupMaxRequestMs','startupBudget']),original=remoteOriginal(c.original),now=c.now??Date.now,limits=transportLimits(c.limits),startupMaxRequestMs=c.startupMaxRequestMs??Math.min(limits.maxRequestMs,RUNNER_LOAD_MAX_MS);let origin;
  if(!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>23000)throw remoteFault();
  const startupStage=operation=>operation==='prepare'?c.startupBudget?.nativePrepare:operation==='start'?c.startupBudget?.nativeStart:undefined;
  for(const operation of ['prepare','start']){const stage=startupStage(operation);if(stage!==undefined&&(!Number.isSafeInteger(stage.maxMs)||stage.maxMs<1||stage.maxMs>23000||!Number.isSafeInteger(stage.expiresAtMs)||stage.expiresAtMs<1||stage.expiresAtMs>original.expiresAtMs))throw remoteFault();}

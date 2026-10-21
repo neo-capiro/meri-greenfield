@@ -11,7 +11,8 @@ import {createNativeBoundSdkSessionStore} from './native-authority/session-clien
 import {createCheckpointSdkSnapshot} from './native-authority/checkpoint-snapshot.mjs';
 import {fault} from './config.mjs';
 export async function createContinuationRuntimeSdkSession(configuration){
- const c=own(configuration,['client','binding','sessionKey'],['continuation','nextTurn','signal','runtimeSignal']);nativeSignal(c.signal);nativeSignal(c.runtimeSignal);
+ const c=own(configuration,['client','binding','sessionKey','timeoutMs'],['continuation','nextTurn','signal','runtimeSignal']);nativeSignal(c.signal);nativeSignal(c.runtimeSignal);
+ if(!Number.isSafeInteger(c.timeoutMs)||c.timeoutMs<1||c.timeoutMs>30000)throw fault('RUNNER_SESSION_CONFIGURATION');
  if((c.continuation===undefined)===(c.nextTurn===undefined))throw fault('RUNNER_SDK_RESTORE_REFUSED');
  const continuation=c.nextTurn!==undefined?assertNextTurnLineage(c.nextTurn,c.binding):assertContinuationEnvelope(c.continuation);
  const target=assertSdkSessionKey(c.sessionKey,{main:true}),methods=Object.fromEntries(['snapshot','register','load','append','listSubkeys'].map(k=>[k,storageMethod(c.client,k)])),abort=new AbortController(),signal=AbortSignal.any([abort.signal,...[c.runtimeSignal].filter(Boolean)]);
@@ -29,7 +30,7 @@ export async function createContinuationRuntimeSdkSession(configuration){
  function first(key){check();scopedSessionKey(key,target,!bound);
   if(bound)return bound;
   const admitted={register:methods.register,...Object.fromEntries(['load','append','listSubkeys'].map(name=>[name,async(input,options)=>{check();return methods[name](input,{...options,signal});}]))};
-  bound=createNativeBoundSdkSessionStore({client:admitted,binding:c.binding,sessionKey:target});
+  bound=createNativeBoundSdkSessionStore({client:admitted,binding:c.binding,sessionKey:target,timeoutMs:c.timeoutMs});
   bootstrap=Promise.resolve().then(async()=>{check();await methods.register({key:target},{signal});check();
    // Exact immutable history seeds a distinct target namespace only AFTER the
    // canonical owner establishes the independently observed native target key.

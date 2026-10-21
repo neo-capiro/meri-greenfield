@@ -7,7 +7,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {compileNativeLaunch,matchNativeLaunch} from './launch-configuration.mjs';import {matchesCapability} from './task-verifier.mjs';
 import {remoteOriginal,exactOriginal,descriptor,preparationAck,transportLimits,remoteFault,decodeBytes,digest} from './remote-task-boundary.mjs';
 import {captureSdkConfiguration,installSdkConfiguration,verifySdkConfiguration} from './sdk-config-transfer.mjs';
-import {RUNNER_NATIVE_STARTUP_RECEIVER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_NATIVE_STARTUP_RECEIVER_MS,fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex'),frame=b=>({bytes:b.length,sha256:sha(b),base64:b.toString('base64')}),get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createRemoteNativeTaskApplication(configuration){
  const c=own(configuration,['original','controlCapabilitySha256','taskCapabilitySha256'],['task','launchConfiguration','preparationAuthorizer','nativeFactory','descriptorPolicy','taskArn','capture','enabled','now','limits','configurationSha256','parkedWorkspace']);
@@ -65,7 +65,7 @@ export function createRemoteNativeTaskApplication(configuration){
   }
   if(name==='stdout'){
    if(!['running','stopped'].includes(state)||pendingReader||!Number.isSafeInteger(request.sequence))throw remoteFault();if(request.sequence===outputSequence-1&&lastOutput)return lastOutput;if(request.sequence!==outputSequence)throw remoteFault();pendingReader=true;
-   try{if(!output.length&&!ended)await new Promise(resolve=>{waiters.add(resolve);const timer=setTimeout(()=>{waiters.delete(resolve);resolve();},100);timer.unref?.();});await fresh(signal);if(!['running','stopped'].includes(state)||request.sequence!==outputSequence)throw remoteFault();const bytes=output.shift()??Buffer.alloc(0);queued-=bytes.length;
+   try{if(!output.length&&!ended)await new Promise(resolve=>{waiters.add(resolve);const timer=setTimeout(()=>{waiters.delete(resolve);resolve();},fixedHotPathBudget('native.remote.stdout.poll'));timer.unref?.();});await fresh(signal);if(!['running','stopped'].includes(state)||request.sequence!==outputSequence)throw remoteFault();const bytes=output.shift()??Buffer.alloc(0);queued-=bytes.length;
     lastOutput={original,sequence:outputSequence++,frame:frame(bytes),end:ended&&!output.length,exitCode,signal:signalCode};return lastOutput;
    }finally{pendingReader=false;}
   }

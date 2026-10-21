@@ -28,7 +28,7 @@ async function continueFrom(store,source,saved,paused,{mode,target,expiresAtMs})
  const targetSessionId=mode==='fork'?randomUUID():null,admission={binding:target,scopes,selectedClientId,admissionReceiptId:randomUUID(),targetSessionId,expiresAtMs},retirement=mode==='resume'?{binding:source,retirementReceiptId:randomUUID(),expiresAtMs}:null;
  const continuation={mode,controlId,checkpoint,checkpointSha256,sourceRequestSha256:hash(sourceRequest),contextSha256,resumeSessionAt:null,targetSessionId},request={...sourceRequest,requestId:randomUUID()},createdAt=new Date().toISOString();
  const run={...saved.run,binding:target,state:'queued',createdAt},conversation={conversationId:target.conversationId,owner:{tenantId:target.tenantId,actorId:target.actorId},scopes,createdAt,policyRevision:run.policyRevision};
- await journal.continuation({binding:source,scopes,selectedClientId,controlId,admission,retirement,proof,conversation,run,request,continuation,event:{...event('run.status',{state:'queued',reasonCode:null}),binding:target,scopes,sequence:1}},check);
+ await journal.continuation({deadlineMs:Date.now()+3000,binding:source,scopes,selectedClientId,controlId,admission,retirement,proof,conversation,run,request,continuation,event:{...event('run.status',{state:'queued',reasonCode:null}),binding:target,scopes,sequence:1}},check);
  return {continuation,request,sourceRequest,controlId};
 }
 export /** Pause once and continue once: the single-target convenience over pauseSource and continueFrom. */

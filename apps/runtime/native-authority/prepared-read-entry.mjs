@@ -8,7 +8,7 @@ import {types} from 'node:util';
 const same=(a,b)=>hash(a)===hash(b),deny=()=>{throw nativeReadFault('ACCESS_DENIED');};
 export function createPreparedReadEntry(configuration){
  const c=own(configuration,['store','issuance','issued','request','readCurrentRun','resource','now'],['maxRequestMs']),issued=data(c.issued),expectedRequest=data(c.request),binding=issued.original.binding;
- const readAllocation=storageMethod(c.store.allocations,'read'),readIssuance=storageMethod(c.issuance,'readIssuance'),now=c.now,maxRequestMs=c.maxRequestMs??3000;
+ const readAllocation=storageMethod(c.store.allocations,'read'),readIssuance=storageMethod(c.issuance,'readIssuance'),now=c.now,maxRequestMs=c.maxRequestMs;
  const readConfigurationSha256=nativeReadConfigurationSha256(issued.approvedReads);
  if([c.readCurrentRun,c.resource,now].some(f=>typeof f!=='function'||types.isProxy(f))||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000||issued.issuance.requestSha256!==hash(expectedRequest)||issued.factsSha256!==issued.issuance.factsSha256)throw nativeReadFault('CONFIGURATION');
  return async function readCurrentEntry(raw){const v=own(raw,['binding','deadlineMs'],['signal']);nativeSignal(v.signal);if(!same(v.binding,binding)||!Number.isSafeInteger(v.deadlineMs))deny();

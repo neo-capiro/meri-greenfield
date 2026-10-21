@@ -21,14 +21,14 @@ const fail=code=>{throw fault(code);};
 const same=(a,b)=>hash(a)===hash(b);
 
 export function createObjectiveRunOwner(configuration={}){
- let enabled=false,putOnce,readStart,admit,dispatch,readOptional,now=Date.now,maxRequestMs=10000;
+ let enabled=false,putOnce,readStart,admit,dispatch,readOptional,now=Date.now,maxRequestMs;
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
    const c=own(configuration,['enabled','runStarts','admission','dispatcher','store'],['now','maxRequestMs']);
    putOnce=storageMethod(c.runStarts,'putOnce');readStart=storageMethod(c.runStarts,'read');admit=storageMethod(c.admission,'admit');
    dispatch=storageMethod(c.dispatcher,'start');readOptional=storageMethod(c.store,'readOptional');
-   now=c.now??now;maxRequestMs=c.maxRequestMs??maxRequestMs;
+   now=c.now??now;maxRequestMs=c.maxRequestMs;
    if(typeof now!=='function'||types.isProxy(now)||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
    enabled=true;
   }

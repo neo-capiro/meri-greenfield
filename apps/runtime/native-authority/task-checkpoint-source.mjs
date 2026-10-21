@@ -4,7 +4,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {remoteOriginal} from './remote-task-boundary.mjs';
 import {assertNativeExecution} from './execution-broker.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';

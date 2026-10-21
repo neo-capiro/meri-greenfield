@@ -33,7 +33,7 @@ export function createObjectiveNativeAdmission(options){
   claimInput=sdkMethod(initial.value,'claim');acceptInput=sdkMethod(initial.value,'accept');readOptional=sdkMethod(o.store,'readOptional');authorize=sdkMethod(o.authority,'authorize');
   t=data(own(o.template,['versions','policyRevision','configurationSha256','runWindowMs']));validateShape('RuntimeVersions',t.versions);
   if(typeof t.policyRevision!=='string'||!t.policyRevision||t.policyRevision.length>256||!digest(t.configurationSha256)||!integer(t.runWindowMs)||t.runWindowMs<1)fail('CONFIGURATION');
-  now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
+  now=o.now??Date.now;maxRequestMs=o.maxRequestMs;
   if(typeof now!=='function'||!integer(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  }catch{throw fault('CONFIGURATION');}
 

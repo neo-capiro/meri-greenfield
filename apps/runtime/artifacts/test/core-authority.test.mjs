@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
 /** Artifact current-authority wire: golden vectors (docs/integration/artifact-current-authority.vector.json), the fixed Core client,
  * credential custody, the in-process authority over control's REAL action-session owner, and the composed documents family through
  * the runtime document application. SYNTHETIC only: scripted Core replies over an in-memory fetch, placeholder credentials, a
@@ -78,7 +79,7 @@ function scriptedRunOptions(){
 async function authorityHarness({now=Date.now,nativeCredential}={}){
  const core=scriptedCore(),s=secretFiles(),run=scriptedRunOptions(),live=await liveSession({now,...(nativeCredential?{nativeCredential}:{})});
  const credentials=await createArtifactAuthorityCredentials({configuration:{nativeCandidate},serviceSecretFile:files.secret,readSecret:s.readSecret});
- const client=createCoreArtifactAuthorityClient({origin:ORIGIN,fetchImpl:core.fetch,now});
+ const client=createCoreArtifactAuthorityClient({maxRequestMs:3000,origin:ORIGIN,fetchImpl:core.fetch,now});
  const authority=createCoreArtifactAuthority({client,credentials,runOptions:run.port,now,limits});
  const call=(intent,body,extra={})=>({sessions:live.sessions,credential:live.credential,intent,body,requestSha256:canonicalSha256({intent,body}),deadlineMs:now()+5000,...extra});
  return {core,s,run,live,authority,call,now};
@@ -106,7 +107,7 @@ test('golden vectors: exact request bytes and digest, accepted receipts, every l
 test('client: the golden request on the wire, Meri-clock receipt timing, and closed status/body/deadline refusals',async()=>{
  const [k]=vector.cases,times=[k.meriClock.startedAtMs,k.meriClock.observedAtMs],seen=[];let reply=()=>Response.json(k.receipt);
  const now=()=>times.length>1?times.shift():times[0];
- const client=createCoreArtifactAuthorityClient({origin:ORIGIN,now,newObservationId:()=>k.request.observationId,fetchImpl:async(url,init)=>{seen.push({url,init});return reply(init);}});
+ const client=createCoreArtifactAuthorityClient({maxRequestMs:3000,origin:ORIGIN,now,newObservationId:()=>k.request.observationId,fetchImpl:async(url,init)=>{seen.push({url,init});return reply(init);}});
  const read=(extra={})=>client.read({bearer:BEARER,serviceSecret:SECRET,request:{conversationId:k.request.conversationId,clientId:k.request.clientId,intent:k.request.intent,requestSha256:k.request.requestSha256},deadlineMs:k.meriClock.startedAtMs+3000,...extra});
  const out=await read();
  assert.equal(seen[0].url,ORIGIN+vector.route.path);assert.equal(seen[0].init.body,k.requestJson);
@@ -134,7 +135,7 @@ test('client: the golden request on the wire, Meri-clock receipt timing, and clo
  await assert.rejects(parkedRead(),code('DEADLINE'));
  const controller=new AbortController();setTimeout(()=>controller.abort(),10);await assert.rejects(parkedRead({signal:controller.signal}),code('CANCELLED'));
  for(const origin of ['http://core.synthetic.invalid','https://core.synthetic.invalid/api','https://user:pw@core.synthetic.invalid','https://core.synthetic.invalid/?q=1'])
-  assert.throws(()=>createCoreArtifactAuthorityClient({origin,now:Date.now,fetchImpl:async()=>{}}),code('ARTIFACT_AUTHORITY_CONFIGURATION'),origin);
+  assert.throws(()=>createCoreArtifactAuthorityClient({maxRequestMs:3000,origin,now:Date.now,fetchImpl:async()=>{}}),code('ARTIFACT_AUTHORITY_CONFIGURATION'),origin);
 });
 
 test('credentials: the service secret is re-read per call and never a candidate credential; bearers are admitted per call only',async()=>{
@@ -242,24 +243,24 @@ const control=(extra={})=>({nativeCandidate,limits:{requestMs:5000,requestBytes:
 
 test('startup composition is disabled unless every input exists, and names each gap by key only',async()=>{
  const s=secretFiles(),run=scriptedRunOptions(),executor={execute(){}};
- const missing=async(configuration,extra={})=>(await composeDocumentsFamily({configuration,readSecret:s.readSecret,fetchImpl:async()=>{},...extra})).missing;
+ const missing=async(configuration,extra={})=>(await composeDocumentsFamily({budgets:testBudgetTable,configuration,readSecret:s.readSecret,fetchImpl:async()=>{},...extra})).missing;
  // Lane X composes both Meri-local owners when their inputs exist; the production CLI supplies neither input today.
  assert.deepEqual(await missing(control({artifacts:artifacts()})),['runOptions.authorityPorts','artifacts.executor'],'the production registration today');
  assert.deepEqual(await missing(control({artifacts:{enabled:false}}),{runOptions:run.port,executor}),['artifacts.enabled']);
  assert.deepEqual(await missing(control({artifacts:artifacts({authority:undefined})}),{runOptions:run.port,executor}),['artifacts.authority']);
  assert.deepEqual(await missing({...control({artifacts:artifacts()}),nativeCandidate:undefined},{runOptions:run.port,executor}),['nativeCandidate']);
  assert.deepEqual(await missing(control({artifacts:artifacts({authority:{origin:ORIGIN,serviceSecretFile:'/run/meri/absent'}})}),{runOptions:run.port,executor}),['artifacts.authority.serviceSecretFile']);
- const composed=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:async()=>{},runOptions:run.port,executor});
+ const composed=await composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:async()=>{},runOptions:run.port,executor});
  assert.deepEqual(composed.missing,[]);assert.equal(composed.authority.origin,ORIGIN);assert.equal(typeof composed.family,'function');
  // The declaration is closed: origin must be a bare https origin equal to the session identity origin; the secret file a POSIX path.
  for(const authority of [{origin:'http://core.synthetic.invalid',serviceSecretFile:files.secret},{origin:ORIGIN+'/api',serviceSecretFile:files.secret},{origin:'https://other.synthetic.invalid',serviceSecretFile:files.secret},
   {origin:ORIGIN,serviceSecretFile:'relative'},{origin:ORIGIN,serviceSecretFile:'/run/../x'},{origin:ORIGIN},{origin:ORIGIN,serviceSecretFile:files.secret,bearerFile:'/x'}])
-  await assert.rejects(composeDocumentsFamily({configuration:control({artifacts:artifacts({authority})}),readSecret:s.readSecret}),code('ARTIFACT_AUTHORITY_CONFIGURATION'),JSON.stringify(authority));
+  await assert.rejects(composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts({authority})}),readSecret:s.readSecret}),code('ARTIFACT_AUTHORITY_CONFIGURATION'),JSON.stringify(authority));
 });
 
 test('composed family through the runtime document application: Core gates admission and every effect, fail closed',async()=>{
  const now=Date.now,s=secretFiles(),run=scriptedRunOptions(),core=scriptedCore(),live=await liveSession({now});
- const {family,missing}=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:core.fetch,runOptions:run.port,executor:{execute(){}},now});
+ const {family,missing}=await composeDocumentsFamily({budgets:testBudgetTable,configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:core.fetch,runOptions:run.port,executor:{execute(){}},now});
  assert.deepEqual(missing,[]);
  // The family constructs the pinned SDK S3 client with no request; no path below reaches it (the versions owner refuses before IO).
  const context=Object.freeze({configuration:{...control({artifacts:artifacts()}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:Object.freeze({connect:()=>assert.fail('no SQL')}),now});

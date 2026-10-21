@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // Shared harness for the composed task-router tests: a throwaway CA and localhost certificate, the runtime HTTPS listener, control's
 // pinned native transport, and the real TLS connection from control's task router to a runner listener (as the production connector
 // opens it). Needs --experimental-test-module-mocks on Windows (the CA file uid/mode check is POSIX-only); on Linux the CA file is real.
@@ -33,7 +34,7 @@ export const {createPinnedNativeFetch} = await import('../../pinned-native-trans
 test.after(() => rmSync(certificates, {recursive: true, force: true}));
 
 export const listen = (application, http = {hostname: 'localhost', port: 0, frontendOrigin: 'https://synthetic.invalid'}) =>
-  listenRuntime({configuration: {http, limits: {requestMs: 25000, shutdownMs: 2000}}, application, readiness: async () => ({}), tls: serverTls});
+  listenRuntime({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration: {http, limits: {requestMs: 25000, shutdownMs: 2000}}, application, readiness: async () => ({}), tls: serverTls});
 
 /** The router's connector: one real TLS connection to the runner listener per exchange; close() destroys it like the production
  * connector. `runnerOrigin()` is read at connect time; `beforeConnect({signal})` may add modelled latency. */

@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {listenRuntime} from '../http-server.mjs';
@@ -7,7 +8,7 @@ const configuration={http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://f
 const readiness=async()=>({product:{ready:true,ports:{secret:'internal-detail'}}});
 async function handlerFor(exposeReadiness){
  let fetch;const server={listening:true,on(){},once(){},close(cb){cb?.();},closeIdleConnections(){},address:()=>({port:0})};
- const listener=await listenRuntime({configuration,application:{handle:async()=>new Response('app',{status:200})},readiness,
+ const listener=await listenRuntime({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,application:{handle:async()=>new Response('app',{status:200})},readiness,
   ...(exposeReadiness===undefined?{}:{exposeReadiness}),testOwners:{serve(options){fetch=options.fetch;return server;}}});
  return {fetch,listener};
 }

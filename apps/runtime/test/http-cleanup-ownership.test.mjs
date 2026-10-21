@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
@@ -8,7 +9,7 @@ test('actual HTTP shutdown retains an abort-ignoring borrowed handler after its 
  let fetch,release,entered,observedAbort=false;
  const pending=new Promise(resolve=>{release=resolve;}),started=new Promise(resolve=>{entered=resolve;});
  const server=new EventEmitter();Object.assign(server,{listening:true,address:()=>({port:0}),close(callback){this.listening=false;callback();this.emit('close');},closeIdleConnections(){}});
- const listener=await listenRuntime({configuration:{http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://ui.synthetic.invalid'},limits:{requestMs:100,shutdownMs:100}},
+ const listener=await listenRuntime({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:{http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://ui.synthetic.invalid'},limits:{requestMs:100,shutdownMs:100}},
   application:{async handle(request){request.signal.addEventListener('abort',()=>{observedAbort=true;},{once:true});entered();await pending;return new Response(null,{status:204});}},readiness:async()=>{},
   testOwners:{serve(options){fetch=options.fetch;return server;}}});
  const response=fetch(new Request('http://127.0.0.1/api/conversations',{method:'POST'}));await started;

@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Per-run preparation over existing compilers. No capability generation or admission here.
  * Trusted issuer contract: read is durable/linearizable; issue durably claims the key
  * BEFORE generation and is atomic/idempotent across callers. An uncertain claim reads
@@ -46,14 +47,14 @@ export function compilePreparedRunFacts(value,{intent,issuance,now=Date.now}){
  const taskGrant=c.grantIntents.find(g=>g.grantId===r.grantId);
  if(!taskGrant||taskGrant.capabilitySha256!==r.capabilitySha256||taskGrant.expiresAtMs!==i.expiresAtMs||c.grantIntents.some(g=>g.capabilitySha256===c.controlCapabilitySha256||g.expiresAtMs!==i.expiresAtMs))fail('FACTS_REFUSED');
  compileNativeTaskAccess({identityCredential:'inert-issuance-validation',taskCapabilitySha256:r.capabilitySha256,operations:c.operations});
- const noEffect=()=>{fail('UNEXPECTED_EFFECT');},limits={maxRequestMs:3000,maxFactBytes:131072};
+ const noEffect=()=>{fail('UNEXPECTED_EFFECT');},limits={maxRequestMs:fixedHotPathBudget('native.prepared.request'),maxFactBytes:131072};
  createNativeAllocationAdmission({pool:{connect:noEffect},allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,binding:i.binding,now,limits});
- const allocator=createNativeTaskAllocator({journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},original:compiled.original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:c.grantIntents,allocationSha256:hash(a),containerName:c.containerName});
+ const allocator=createNativeTaskAllocator({maxRequestMs:fixedHotPathBudget('native.allocator.request'),startupMs:fixedHotPathBudget('native.allocator.startup'),journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},original:compiled.original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:c.grantIntents,allocationSha256:hash(a),containerName:c.containerName});
  const facts=data({original:compiled.original,allocationSha256:hash(a),taskRequestSha256:allocator.intent.taskRequestSha256,qualification:c.qualification,grantIntents:c.grantIntents,grantId:c.grantId,operations:c.operations,controlCapabilitySha256:c.controlCapabilitySha256,transport,...reads});
  return data({...facts,factsSha256:hash(facts)});
 }
 export function createPreparedRunIssuance(configuration){
- const c=own(configuration,['issuer','facts'],['sourceOwners','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,['issuer','facts'],['sourceOwners','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  const read=storageMethod(c.issuer,'read'),issue=storageMethod(c.issuer,'issue'),bindFacts=storageMethod(c.issuer,'bindFacts'),resolve=storageMethod(c.issuer,'resolve'),compile=storageMethod(c.facts,'compile'),uncertain=new Set();
  // D7-4 shared splice: the trusted Objective decorator (objective-source/run-start-facts.mjs) returns null for ordinary chat and

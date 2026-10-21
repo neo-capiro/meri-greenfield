@@ -155,7 +155,7 @@ function assertSanitized(error, code) {
 const request = (signal, extra = {}) => ({method: 'POST', redirect: 'error', headers: {authorization: 'Bearer ' + SECRET.credential, 'content-type': 'application/json'},
   body: JSON.stringify({original: {prompt: SECRET.prompt}}), ...(signal ? {signal} : {}), ...extra});
 const startUrl = base => base + '/v1/native-task/start';
-const fetchFor = (base = origin, options = {}) => createPinnedNativeFetch({origin: base, caFile, caSha256, ...options});
+const fetchFor = (base = origin, options = {}) => createPinnedNativeFetch({timeoutMs:30000,origin: base, caFile, caSha256, ...options});
 async function outcome(promise) {return promise.then(value => ({value}), error => ({error}));}
 async function expectClass(selected, code, {base = origin, options, signal} = {}) {
   mode = selected; seen = [];
@@ -357,14 +357,14 @@ test(`${label} local refusals are REFUSED and send nothing`, async () => {
 test(`${label} adapter configuration refusals are CONFIGURATION`, async () => {
   for (const options of [{origin: 'http://localhost:1'}, {origin: origin + '/'}, {origin: origin + '/x'}, {origin: 'https://u:p@localhost:1'}, {origin: 'nonsense'},
     {caFile: 'relative/ca.pem'}, {caSha256: 'A'.repeat(64)}, {caSha256: '0'.repeat(64)}, {maxResponseBytes: 0}, {maxResponseBytes: 67108865}, {maxRequestBytes: 50331649}]) {
-    assertSanitized((await outcome(createPinnedNativeFetch({origin, caFile, caSha256, ...options}))).error, 'PINNED_NATIVE_CONFIGURATION');
+    assertSanitized((await outcome(createPinnedNativeFetch({timeoutMs:30000,origin, caFile, caSha256, ...options}))).error, 'PINNED_NATIVE_CONFIGURATION');
   }
 });
 
 // --- POSIX CA-file ownership and mode, real filesystem, no bypass -----------------------------------------------------
 test(`${label} CA file ownership, mode and type are enforced on the real filesystem`, {skip: posixCa ? false : 'POSIX uid/mode semantics; the Windows run mocks the CA handle'}, async () => {
-  const refuse = async file => assertSanitized((await outcome(createPinnedNativeFetch({origin, caFile: file, caSha256}))).error, 'PINNED_NATIVE_CONFIGURATION');
-  assert.equal(typeof (await createPinnedNativeFetch({origin, caFile, caSha256})), 'function', 'the 0600 own-uid file is accepted');
+  const refuse = async file => assertSanitized((await outcome(createPinnedNativeFetch({timeoutMs:30000,origin, caFile: file, caSha256}))).error, 'PINNED_NATIVE_CONFIGURATION');
+  assert.equal(typeof (await createPinnedNativeFetch({timeoutMs:30000,origin, caFile, caSha256})), 'function', 'the 0600 own-uid file is accepted');
   for (const [name, mode] of [['group-read.pem', 0o640], ['world-read.pem', 0o604], ['group-write.pem', 0o620], ['world-all.pem', 0o666]]) {
     const file = join(dir, name); writeFileSync(file, trusted.ca); chmodSync(file, mode); await refuse(file);
   }
@@ -378,7 +378,7 @@ test(`${label} CA file ownership, mode and type are enforced on the real filesys
 });
 test(`${label} a CA file owned by another uid is refused even at mode 0600`, {skip: !posixCa ? 'POSIX only' : process.getuid() !== 0 ? 'needs root to chown; the non-root run covers foreign ownership via /etc/passwd (root-owned, 0644)' : false}, async () => {
   const file = join(dir, 'foreign.pem'); writeFileSync(file, trusted.ca); chmodSync(file, 0o600); chownSync(file, 65534, 65534);
-  assertSanitized((await outcome(createPinnedNativeFetch({origin, caFile: file, caSha256}))).error, 'PINNED_NATIVE_CONFIGURATION');
+  assertSanitized((await outcome(createPinnedNativeFetch({timeoutMs:30000,origin, caFile: file, caSha256}))).error, 'PINNED_NATIVE_CONFIGURATION');
 });
 
 // --- through the product client and runner diagnostics -------------------------------------------------------------------
@@ -387,7 +387,7 @@ async function driveStart(selected, {base = origin, startupBudget} = {}) {
   const baseline = await snapshot(), executionKey = hash(binding);
   const original = {binding, versions, executionKey, executionId: executionKey, planSha256: hash(descriptor), expiresAtMs: Date.now() + 120000};
   const fetchImpl = await fetchFor(base);
-  const client = createRemoteSdkProcessClient({original, origin: base, credential: SECRET.credential, fetchImpl, ...(startupBudget ? {startupBudget: startupBudget(original)} : {})});
+  const client = createRemoteSdkProcessClient({limits:{maxRequestMs:8000},original, origin: base, credential: SECRET.credential, fetchImpl, ...(startupBudget ? {startupBudget: startupBudget(original)} : {})});
   const lines = [], raw = [];
   const failure = await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); client.spawnClaudeCodeProcess(descriptor); await client.startPreparedProcess();},
     {write: line => {raw.push(line); lines.push(withoutDetail(line));}}).then(() => null, error => error);
@@ -428,7 +428,7 @@ async function publishThroughPinned(answers) {
   await runnerStore.accept({run: {binding, state: 'queued', scopes, createdAt: at, policyRevision, versions}, request: {requestId: id(6), prompt: 'Synthetic only', skill: null, window: null},
     conversation: {conversationId: binding.conversationId, owner: {tenantId: binding.tenantId, actorId: binding.actorId}, scopes, createdAt: at, policyRevision},
     event: {contractVersion: '0.1.0', eventId: id(7), binding, sequence: 1, createdAt: at, scopes, type: 'run.status', data: {state: 'queued', reasonCode: null}}}, () => {});
-  const baseline = await snapshot(), client = createNativeCapabilityClient({configuration: {origin, maxResponseBytes: 131072}, credential: SECRET.credential, fetch: await fetchFor()});
+  const baseline = await snapshot(), client = createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration: {origin, maxResponseBytes: 131072}, credential: SECRET.credential, fetch: await fetchFor()});
   const event = {eventId: id(88), createdAt: at, type: 'run.status', data: {state: 'starting', reasonCode: null}};
   const outcome = await client.call('runner/publish', {binding, event}, {deadlineMs: Date.now() + 10000, maxRequestMs: 5000}).then(value => ({value}), error => ({error}));
   const stored = (await runnerStore.read(binding, {after: 0, limit: 10}, () => {})).events.map(e => e.eventId);

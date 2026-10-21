@@ -53,7 +53,7 @@ export function createRoutinesOccurrenceApplication(configuration={}){
  let c,calls;
  try{
   c=own(configuration,['controlCapabilitySha256'],['owner','enabled','now','maxRequestMs']);
-  c.enabled=c.enabled??false;c.now=c.now??Date.now;c.maxRequestMs=c.maxRequestMs??10000;
+  c.enabled=c.enabled??false;c.now=c.now??Date.now;c.maxRequestMs=c.maxRequestMs;
   if(typeof c.enabled!=='boolean'||typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000||
      typeof c.controlCapabilitySha256!=='string'||!HEX64.test(c.controlCapabilitySha256)||c.enabled&&c.owner===undefined)throw fault();
   calls=c.enabled?Object.fromEntries(['admit','retire'].map(m=>[m,storageMethod(c.owner,m)])):null;

@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Private Temporal token issuer. This is a source-only boundary: TLS material, the
  * signing operation, and the live ECS/revocation authority are supplied by their
  * respective owners. A request body is never an authority for a workload. */
@@ -270,7 +271,7 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
      host!=='0.0.0.0'||port!==8445)throw fault();
   // A public JWKS read shares this listener; token POST explicitly requires the
   // completed client-certificate handshake and the fresh server-side binding.
-  server=createServer({key:tls.key,cert:tls.cert,ca:tls.ca,requestCert:true,
+  server=createServer({headersTimeout:fixedHotPathBudget('temporal.issuer.http.headers'),requestTimeout:fixedHotPathBudget('temporal.issuer.http.request'),keepAliveTimeout:fixedHotPathBudget('temporal.issuer.http.keepAlive'),key:tls.key,cert:tls.cert,ca:tls.ca,requestCert:true,
    rejectUnauthorized:false,minVersion:'TLSv1.3'},(req,res)=>{handle(req,res).catch(()=>refused(res,503));});
   const held=server;
   const listening=new Promise((resolve,reject)=>{
@@ -307,7 +308,7 @@ export function createTemporalIssuerService({configuration,taskAuthority,sign,pu
      const stopped=new Promise(resolve=>held.close(error=>resolve(error===undefined)));
      let deadline;
      const timed=new Promise(resolve=>{
-      deadline=setTimeout(()=>resolve(false),2000);deadline.unref?.();
+      deadline=setTimeout(()=>resolve(false),fixedHotPathBudget('temporal.issuer.http.close'));deadline.unref?.();
      });
      listenerStopped=(await Promise.race([stopped,timed]))&&!connectionCloseFailed;
      clearTimeout(deadline);

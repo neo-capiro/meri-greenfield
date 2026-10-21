@@ -32,7 +32,7 @@ export function assertNativeToolAuthority(raw,{started,now}){
  return v;
 }
 export function createNativeToolAuthorityClient(configuration={}){
- const c=own(configuration,[],['origin','fetchImpl','now','enabled','maxRequestMs']),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,[],['origin','fetchImpl','now','enabled','maxRequestMs']),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs;
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)refuse('CONFIGURATION');
  const origin=c.origin===undefined?undefined:retainedOrigin(c.origin);
  if(c.fetchImpl!==undefined&&(typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)))refuse('CONFIGURATION');

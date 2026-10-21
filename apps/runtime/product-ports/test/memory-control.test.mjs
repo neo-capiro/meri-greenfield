@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** SYNTHETIC actual control assembly: borrowed SQL/Core/Temporal/session boundaries. No network or secret read. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {assembleControl} from '../../control.mjs';
@@ -11,7 +12,7 @@ const configuration={sourceEnabled:false,http:{hostname:'127.0.0.1',port:0,front
 test('actual control binds memory to its canonical retention gate without opening the unrecovered fence',async()=>{
  let context;
  const factory=createProductPortsFactory({families:[['memory',createMemoryFamilyWith({readSecret:unused,fetchImpl:unused})]]});
- const assembly=assembleControl({configuration,pool:{query:unused,connect:unused},client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},
+ const assembly=assembleControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration,pool:{query:unused,connect:unused},client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},
   canonicalProductPorts:{conversationMembership:{admit:unused,recheck:unused}},
   productPortsFactory(c){context=c;const ports=factory(c);assert.equal(memoryComposition(c).retentionBound(),false);return ports;}});
  try{

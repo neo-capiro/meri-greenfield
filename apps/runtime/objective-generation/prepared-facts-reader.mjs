@@ -15,7 +15,7 @@ const digest=value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value);
  * Neither port may be supplied by a worker, model, or caller of read(). */
 export function createObjectivePreparedFactsReader(configuration){
  const c=own(configuration,['issued','store','issuance'],['taskProof','coreCurrent','enabled','now','maxRequestMs']);
- const issued=data(c.issued),original=issued.original,receipt=issued.issuance,binding=original?.binding,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,enabled=c.enabled??false;
+ const issued=data(c.issued),original=issued.original,receipt=issued.issuance,binding=original?.binding,now=c.now??Date.now,maxRequestMs=c.maxRequestMs,enabled=c.enabled??false;
  const readRun=storageMethod(c.store,'read'),readAllocation=storageMethod(c.store.allocations,'read'),readIssuance=storageMethod(c.issuance,'readIssuance');
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  validateShape('RunBinding',binding);

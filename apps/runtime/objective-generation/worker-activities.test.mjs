@@ -1,3 +1,4 @@
+import {testBudgetTable as runnerTestBudgets} from '../../../packages/runtime/test/budget-fixture.mjs';
 /** No Core, credential, database or Temporal server: the production registration has no ports, so no transport exists to call. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -11,7 +12,7 @@ const input={generationJobId:'00000000-0000-4000-8000-000000000005',binding,notA
 const context=()=>({cancellationSignal:new AbortController().signal});
 
 test('the production registration answers a definite no-op for every step with all ports absent',async()=>{
- const a=createObjectiveWorkerActivities({context});
+ const a=createObjectiveWorkerActivities({maxRequestMs:15000,context});
  assert.deepEqual(Object.keys(a),OBJECTIVE_GENERATION_ACTIVITY_NAMES);assert.ok(Object.isFrozen(a));
  assert.deepEqual(await a.objectiveGenerationSource(input),{kind:'unconfirmed'});
  assert.deepEqual(await a.objectiveGenerationStartRun({...input,mode:'effect',requestSha256:'a'.repeat(64)}),{kind:'not-started'});
@@ -22,17 +23,17 @@ test('the production registration answers a definite no-op for every step with a
 });
 
 test('the default constructor (Temporal Context) and every activity name match the bundled workflow and never collide with the broker',async()=>{
- const a=createObjectiveWorkerActivities();assert.deepEqual(Object.keys(a),OBJECTIVE_GENERATION_ACTIVITY_NAMES);
+ const a=createObjectiveWorkerActivities({maxRequestMs:15000});assert.deepEqual(Object.keys(a),OBJECTIVE_GENERATION_ACTIVITY_NAMES);
  const workflow=await readFile(new URL('../../control/conversations/objective-generation-workflow.ts',import.meta.url),'utf8');
  for(const name of OBJECTIVE_GENERATION_ACTIVITY_NAMES)assert.match(workflow,new RegExp(`\\b${name}\\(input`,'u'),name);
  // The poller registers the four Objective activities next to its own two broker activities; no name is shared.
- const registered=Object.keys(workerOptions({configuration:{temporal:{namespace:'synthetic',taskQueue:'synthetic'},limits:{shutdownMs:1000}},connection:{},native:{}}).activities);
+ const registered=Object.keys(workerOptions({budgets:runnerTestBudgets,configuration:{temporal:{namespace:'synthetic',taskQueue:'synthetic'},limits:{shutdownMs:1000}},connection:{},native:{}}).activities);
  assert.deepEqual(registered.filter(name=>!OBJECTIVE_GENERATION_ACTIVITY_NAMES.includes(name)),['executeConversation','reconcileConversation']);
  assert.deepEqual(registered.filter(name=>OBJECTIVE_GENERATION_ACTIVITY_NAMES.includes(name)),OBJECTIVE_GENERATION_ACTIVITY_NAMES);
 });
 
 test('ports are closed: unknown keys and half-composed run owners are refused',()=>{
- assert.throws(()=>createObjectiveWorkerActivities({prompt:'x'}),/OBJECTIVE_GENERATION_ACTIVITY_CONFIGURATION/u);
- assert.throws(()=>createObjectiveWorkerActivities({runs:{start(){}}}),/OBJECTIVE_GENERATION_ACTIVITY_CONFIGURATION/u);
+ assert.throws(()=>createObjectiveWorkerActivities({maxRequestMs:15000,prompt:'x'}),/OBJECTIVE_GENERATION_ACTIVITY_CONFIGURATION/u);
+ assert.throws(()=>createObjectiveWorkerActivities({maxRequestMs:15000,runs:{start(){}}}),/OBJECTIVE_GENERATION_ACTIVITY_CONFIGURATION/u);
  assert.throws(()=>createObjectiveWorkerActivities(null),/OBJECTIVE_GENERATION_ACTIVITY_CONFIGURATION/u);
 });

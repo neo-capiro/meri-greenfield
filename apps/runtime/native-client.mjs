@@ -2,14 +2,14 @@
 import {setTimeout as pause} from 'node:timers/promises';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {RUNNER_LOAD_MAX_MS,RUNNER_REPLAY_DELAYS_MS} from '../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_LOAD_MAX_MS,RUNNER_REPLAY_DELAYS_MS,fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
 import {PINNED_NATIVE_UNANSWERED,PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedStatusRefusal,runnerTurnTelemetry} from './runner-runtime-diagnostics.mjs';
 import {fault} from './config.mjs';
 import {classifyStatus} from './telemetry/counting.mjs';
 // The longer window is available only to bounded original-run operations.
 // Each caller must also pass its absolute lease-derived deadline; other operations
-// retain the ordinary 3s default (or the factory's configured cap).
+// retain the factory's explicitly configured ordinary cap.
 const startupOperations=new Set([
  'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
  'runner/native/verify','runner/native/start','runner/native/started',
@@ -17,7 +17,7 @@ const startupOperations=new Set([
  'runner/session/register','runner/session/load','runner/session/append',
  'runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint',
 ]);
-const STARTUP_REQUEST_MAX_MS=23000;
+const STARTUP_REQUEST_MAX_MS=fixedHotPathBudget('native.client.startup');
 // Answers that report a dependency that did not answer, never a decision: control's Core/Clerk authority reads
 // (worker-http.mjs), the task verifier's (native-authority/task-verifier-http.mjs), or a gateway that lost a request it had
 // dispatched (native-runner-gateway.mjs). Such a failure keeps code NATIVE_UNAVAILABLE and carries the transient mark of
@@ -30,12 +30,12 @@ export const unansweredNativeAnswer=(status,error)=>status===503&&(unansweredCod
 // runner/publish carries a fixed eventId that control's store returns instead of appending twice
 // (apps/control/conversations/postgres-store.mjs appendEvent). No other operation is replayed.
 const replayable=new Set(['runner/load','runner/publish']);
-const REPLAY_DELAYS_MS=RUNNER_REPLAY_DELAYS_MS,REPLAY_MIN_ATTEMPT_MS=1000;
+const REPLAY_DELAYS_MS=RUNNER_REPLAY_DELAYS_MS,REPLAY_MIN_ATTEMPT_MS=fixedHotPathBudget('native.replay.minAttempt');
 // A transport that failed after dispatch before any answer: one of the pinned transport's no-answer rejections, or a plain
 // fetch's network TypeError. Its timeout or abort is a deadline, and a non-200 head arrives as a Response, never here.
 const noAnswer=error=>error instanceof TypeError||PINNED_NATIVE_UNANSWERED.includes(error?.code);
 const json=response=>/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??'')&&!response.headers.get('content-encoding');
-export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now,maxRequestMs=3000,loadMaxRequestMs=maxRequestMs}){
+export function createNativeCapabilityClient({configuration,credential,fetch:transport=fetch,now=Date.now,maxRequestMs,loadMaxRequestMs}){
  if(typeof credential!=='string'||!/^[A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(credential)||
     !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>10000||
     !Number.isSafeInteger(loadMaxRequestMs)||loadMaxRequestMs<1||loadMaxRequestMs>RUNNER_LOAD_MAX_MS)throw fault('NATIVE_CONFIGURATION');

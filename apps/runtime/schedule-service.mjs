@@ -1,10 +1,13 @@
+import {createHotPathFetch} from './hot-path-transports.mjs';
+import {runtimeHotPathBudgets} from './hot-path-budget-inputs.mjs';
+import {assertHotPathBudgets,budget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Owned startup for the existing schedule poller. Trusted firing authority and native admission are mandatory borrowed owners;
  * JSON configuration never selects or manufactures them. Common configuration is validated by the calling runtime entry point.
  *
  * Two ways to supply the owners (exactly one):
  *  `runtimePorts`         the finished record {authority, runAdmission, runControl, retirement, pool?, client?, now?} (tests, embedders);
  *  `runtimePortsFactory`  a trusted plain function the service calls ONCE, after it owns its pool, Temporal client and (when the
- *                         role declares `native`) its native capability client: `factory({pool, client, native?, configuration, now})`
+ *                         role declares `native`) its native capability client: `factory({pool, client, native?, configuration, now, fetchImpl})`
  *                         must return that same record synchronously (schedule-service-owners.mjs composeRoutinesWorkerRuntimePorts
  *                         is the production factory, passed by cli.mjs). It is refused as configuration when it is not a plain
  *                         function, and as unavailable when its record is not complete, before any poller or listener starts; a
@@ -37,10 +40,10 @@ function capture(value){
  }catch{throw fault('SCHEDULE_SERVICE_UNAVAILABLE');}
 }
 /** Pure receiving seam over borrowed canonical resources. No listener, connection, credential read or SQL starts here. */
-export function composeScheduleService({configuration,runtimePorts}){
+export function composeScheduleService({configuration,runtimePorts,budgets}){
  const p=capture(runtimePorts);compileScheduleServiceConfiguration(configuration);
  if(!p.pool||!p.client)throw fault('SCHEDULE_SERVICE_CONFIGURATION');
- return assembleScheduleDispatch({configuration,pool:p.pool,client:p.client,authority:p.authority,runAdmission:p.runAdmission,runControl:p.runControl,retirement:p.retirement,now:p.now});
+ return assembleScheduleDispatch({configuration,budgets,pool:p.pool,client:p.client,authority:p.authority,runAdmission:p.runAdmission,runControl:p.runControl,retirement:p.retirement,now:p.now});
 }
 function connectionString(bytes){
  let text,url;try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes).trim();url=new URL(text);}catch{throw fault('DATABASE_CONFIGURATION');}
@@ -58,7 +61,7 @@ async function checkSchema(pool,configuration,now,signal){
 }
 /** A trusted plain synchronous function, or undefined. Accessors, proxies, async and generator functions are configuration faults. */
 function captureFactory(options){
- const c=own(options,[],['runtimePorts','runtimePortsFactory','signal']);
+ const c=own(options,[],['runtimePorts','runtimePortsFactory','signal','budgets']);
  const factory=c.runtimePortsFactory;
  if(factory===undefined)return null;
  if(c.runtimePorts!==undefined||typeof factory!=='function'||types.isProxy(factory)||types.isAsyncFunction(factory)||types.isGeneratorFunction(factory))throw fault('SCHEDULE_SERVICE_CONFIGURATION');
@@ -75,35 +78,36 @@ function produced(factory,resources){
  return p;
 }
 export async function startScheduleWorker(configuration,options={}){
- const {runtimePorts,signal}=own(options,[],['runtimePorts','runtimePortsFactory','signal']);nativeSignal(signal);
+ const budgets=assertHotPathBudgets(options.budgets??runtimeHotPathBudgets(configuration));
+ const {runtimePorts,signal}=own(options,[],['runtimePorts','runtimePortsFactory','signal','budgets']);nativeSignal(signal);
  const factory=captureFactory(options),plan=compileScheduleServiceConfiguration(configuration);
  // Without a factory the owners must exist now; with one, every resource it will receive is owned here, so the pool needs its file.
  let p=factory===null?capture(runtimePorts):null;
  if((factory===null?!p.pool:true)&&plan.connectionFile===undefined)throw fault('SCHEDULE_SERVICE_CONFIGURATION');
- let ownedPool,ownedClientConnection,ownedClientAuthorization,poller,closing;
+ let ownedFetch,ownedPool,ownedClientConnection,ownedClientAuthorization,poller,closing;
  const close=()=>closing??=(async()=>{
-  const errors=[];for(const stop of [()=>poller?.close(),()=>ownedClientConnection?.close(),()=>ownedClientAuthorization?.close(),()=>ownedPool?.end()])try{await stop();}catch(error){errors.push(error);}
+  const errors=[];for(const stop of [()=>poller?.close(),()=>ownedClientConnection?.close(),()=>ownedClientAuthorization?.close(),()=>ownedPool?.end(),()=>ownedFetch?.close()])try{await stop();}catch(error){errors.push(error);}
   if(errors.length)throw new AggregateError(errors,'SCHEDULE_SERVICE_CLEANUP_UNKNOWN');
  })();
  try{
-  signal?.throwIfAborted();let pool=p?.pool,client=p?.client,native;
-  if(!pool){const bytes=await readSecret(plan.connectionFile);signal?.throwIfAborted();ownedPool=new Pool({connectionString:connectionString(bytes),max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});pool=ownedPool;}
+  signal?.throwIfAborted();ownedFetch=createHotPathFetch(budgets);let pool=p?.pool,client=p?.client,native;
+  if(!pool){const bytes=await readSecret(plan.connectionFile);signal?.throwIfAborted();ownedPool=new Pool({connectionString:connectionString(bytes),max:10,connectionTimeoutMillis:budget(budgets,'pg.control.connect'),idleTimeoutMillis:budget(budgets,'pg.control.idle'),query_timeout:budget(budgets,'pg.control.query')});pool=ownedPool;}
   if(!client){
    const tls=await temporalTls(configuration.temporal.tls);ownedClientAuthorization=await temporalAuthorization(configuration,{signal});signal?.throwIfAborted();
-   ownedClientConnection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(ownedClientAuthorization?{apiKey:()=>ownedClientAuthorization.apiKey()}:{})});signal?.throwIfAborted();
+   ownedClientConnection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:budget(budgets,'temporal.schedule.connect'),...(ownedClientAuthorization?{apiKey:()=>ownedClientAuthorization.apiKey()}:{})});signal?.throwIfAborted();
    client=new Client({connection:ownedClientConnection,namespace:configuration.temporal.namespace});
   }
   if(factory!==null){
    // The native capability client (control's private native operations) is owned here too, only when the role declares it.
    if(plan.native!==undefined){
     const capability=await readSecret(plan.native.capabilityFile);signal?.throwIfAborted();
-    native=createNativeCapabilityClient({configuration:plan.native,credential:new TextDecoder('utf-8',{fatal:true}).decode(capability).trim(),maxRequestMs:Math.min(configuration.limits.requestMs,SCHEDULE_NATIVE_MAX_REQUEST_MS)});
+    native=createNativeCapabilityClient({fetch:ownedFetch.fetch,configuration:plan.native,credential:new TextDecoder('utf-8',{fatal:true}).decode(capability).trim(),maxRequestMs:Math.min(configuration.limits.requestMs,SCHEDULE_NATIVE_MAX_REQUEST_MS),loadMaxRequestMs:Math.min(configuration.limits.requestMs,SCHEDULE_NATIVE_MAX_REQUEST_MS)});
    }
-   p=produced(factory,{pool,client,...(native===undefined?{}:{native}),configuration,now:Date.now});signal?.throwIfAborted();
+   p=produced(factory,{pool,client,fetchImpl:ownedFetch.fetch,...(native===undefined?{}:{native}),configuration,now:Date.now});signal?.throwIfAborted();
   }
-  const dispatch=composeScheduleService({configuration,runtimePorts:{...p,pool,client}});
+  const dispatch=composeScheduleService({configuration,budgets,runtimePorts:{...p,pool,client}});
   await checkSchema(pool,configuration,p.now,signal);signal?.throwIfAborted();
-  poller=await startSchedulePoller(configuration,{dispatch,signal});signal?.throwIfAborted();
+  poller=await startSchedulePoller(configuration,{budgets,dispatch,signal});signal?.throwIfAborted();
   return Object.freeze({address:poller.address,completion:poller.completion,close});
  }catch(error){await close().catch(()=>{});throw Object.assign(fault('SCHEDULE_SERVICE_STARTUP_FAILED'),{cause:error});}
 }

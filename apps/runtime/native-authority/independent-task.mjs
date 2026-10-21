@@ -10,7 +10,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {executionFault} from './execution-broker.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 export function createIndependentNativeTask(configuration){
- const c=own(configuration,['original','launchConfiguration'],['now','maxRequestMs','startupMaxRequestMs','deferredSpawn']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,startupMaxRequestMs=c.startupMaxRequestMs??Math.min(maxRequestMs,23000),original=data(c.original),p=compileNativeLaunch(c.launchConfiguration);
+ const c=own(configuration,['original','launchConfiguration'],['now','maxRequestMs','startupMaxRequestMs','deferredSpawn']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs,startupMaxRequestMs=c.startupMaxRequestMs,original=data(c.original),p=compileNativeLaunch(c.launchConfiguration);
  if(hash(original.binding)!==hash(p.binding)||original.expiresAtMs!==p.expiresAtMs||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw executionFault('TASK_CONFIGURATION');
  if(!Number.isSafeInteger(startupMaxRequestMs)||startupMaxRequestMs<1||startupMaxRequestMs>23000)throw executionFault('TASK_CONFIGURATION');
  if(c.deferredSpawn!==undefined&&typeof c.deferredSpawn!=='boolean')throw executionFault('TASK_CONFIGURATION');

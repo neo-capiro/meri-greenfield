@@ -16,7 +16,7 @@ const allocation=admittedSet().allocation;
 function harness({token=productionToken('clientAndDueDate'),decision,start=ISSUED_AT*1000+200,coreChecked=1,executor,respond,install}={}){
  const s={t:start,requests:[],decisions:0,sleeps:[],credentials:[],installs:[]};const now=()=>s.t;
  const current=()=>JSON.stringify({binding:RUN_BINDING,policyRevision:POLICY_REVISION,deadlineMs:start+600000,checkedAtMs:s.t,allocation,allocationSha256:hash(allocation)});
- const issuance=createCoreExecutionIssuance({origin:ORIGIN,trust:compileExecutionTrust(productionTrust()),now,
+ const issuance=createCoreExecutionIssuance({limits:{maxRequestMs:10000,maxResponseBytes:65536,maxSkewMs:1000},origin:ORIGIN,trust:compileExecutionTrust(productionTrust()),now,
   sleep:async ms=>{s.sleeps.push(ms);s.t+=ms;},
   getCredentials:async v=>{s.credentials.push(v);return {tenantId:v.tenantId,actorId:v.actorId,bearerToken:'native-session-token',serviceSecret:'service-secret',expiresAtMs:s.t+300000};},
   executorFor:async({proposal})=>executor?executor(proposal):{binding:RUN_BINDING,currentAllocationJson:current(),qualification:QUALIFICATION},

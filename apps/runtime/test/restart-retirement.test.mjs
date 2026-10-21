@@ -1,3 +1,4 @@
+import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Synthetic hard control restart (scripted SQL protocol fixture; scripted ECS and budget admission): a fresh first-run candidate process
  * that never held the original's controller stops it through the real prepared kickoff, run reconciler, lifecycle store, allocation
  * journal, canonical allocator and the stop-only original retirement. A "crash" is modelled by abandoning the earlier process without
@@ -26,8 +27,8 @@ async function crashed(t,{admitted=false,state='running'}={}){
  if(state==='failed')await f.service.publish({credential:f.credential,binding,event:{eventId:id(n++),createdAt:new Date().toISOString(),type:'run.status',data:{state:'failed',reasonCode:'EXECUTION_FAILED'}}});
  const before={runs:ecs.state.runs,admits:budget.state.admits};
  /** A fresh control process: no controller, never allocates (its allocation port fails the test if used). */
- function fresh(){let allocations=0;const p=assemblePreparedCandidate({configuration:o.f.configuration,pool:f.pool,ecs:ecs.client,objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:o.f.secret,fetchImpl:async()=>{throw Error('No identity');},
-  allocate:async()=>{allocations++;throw Error('a restarted process never allocates');},retireOriginal:configuration=>{retirements++;return createOriginalRetirement({...configuration,admission:budget.admission});}});processes.push(p);return {native:p.native,allocations:()=>allocations};}
+ function fresh(){let allocations=0;const p=assemblePreparedCandidate({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),configuration:o.f.configuration,pool:f.pool,ecs:ecs.client,objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:o.f.secret,fetchImpl:async()=>{throw Error('No identity');},
+  allocate:async()=>{allocations++;throw Error('a restarted process never allocates');},retireOriginal:configuration=>{retirements++;return createOriginalRetirement({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),...configuration,admission:budget.admission});}});processes.push(p);return {native:p.native,allocations:()=>allocations};}
  const stop=p=>p.native.call('execution/kickoff/stop',{binding,executionId:o.original.executionId});
  const history=async()=>f.store.read(binding,{after:0,limit:100},check),record=async()=>(await f.store.allocations.read(key,check)).record;
  const terminals=async()=>(await history()).events.filter(e=>e.type==='run.status'&&['failed','cancelled','completed'].includes(e.data.state));

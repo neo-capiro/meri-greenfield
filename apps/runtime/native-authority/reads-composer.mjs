@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** The one CONTROL startup hook for general reads. Control startup calls `createControlReadsComposer` once and passes its
  * `createReadsRuntime` to `startControl(configuration,{signal,createReadsRuntime,readCredentialRelay})` (control.mjs →
  * prepared-candidate → remote-composition → prepared-reads → reads-owner). It composes only what exists: Core's native tool
@@ -115,7 +116,7 @@ export async function createControlReadsComposer(options){
   c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1))refuse('CONFIGURATION');
  const broker=await createNativeReadCredentialBroker({configuration:c.configuration,secretFiles:c.secretFiles,now,
   ...(c.readSecret===undefined?{}:{readSecret:c.readSecret}),...(c.nativeCredentials===undefined?{}:{nativeCredentials:c.nativeCredentials})});
- const coreAuthority=createNativeToolAuthorityClient({origin:c.configuration.nativeCandidate.identity.origin,fetchImpl,now,enabled:broker.available});
+ const coreAuthority=createNativeToolAuthorityClient({origin:c.configuration.nativeCandidate.identity.origin,fetchImpl,now,enabled:broker.available,maxRequestMs:fixedHotPathBudget('native.read.request')});
  const installation=c.installation===undefined?{}:own(c.installation,[],['enabled','measurement','measurementSha256','ttlMs','revokedOperations']);
  const discovery=c.discovery===undefined?{}:own(c.discovery,[],['enabled','capabilityPolicy','ttlMs']);
  if(installation.enabled!==undefined&&typeof installation.enabled!=='boolean'||discovery.enabled!==undefined&&typeof discovery.enabled!=='boolean')refuse('CONFIGURATION');
@@ -146,7 +147,7 @@ export async function createControlReadsComposer(options){
  // Option B: composed only when enabled and the service identity exists; nothing is created at startup.
  const delegationOptions=c.delegation===undefined?{}:own(c.delegation,[],['enabled','readOccurrence']);
  if(delegationOptions.enabled!==undefined&&typeof delegationOptions.enabled!=='boolean'||delegationOptions.readOccurrence!==undefined&&(typeof delegationOptions.readOccurrence!=='function'||types.isProxy(delegationOptions.readOccurrence)))refuse('CONFIGURATION');
- const delegationClient=delegationOptions.enabled===true?createReadDelegationCoreClient({origin:c.configuration.nativeCandidate.identity.origin,fetchImpl,now,enabled:broker.getServiceSecret!==undefined,...(broker.getServiceSecret===undefined?{}:{getServiceSecret:broker.getServiceSecret})}):null;
+ const delegationClient=delegationOptions.enabled===true?createReadDelegationCoreClient({maxRequestMs:fixedHotPathBudget('native.delegation.request'),origin:c.configuration.nativeCandidate.identity.origin,fetchImpl,now,enabled:broker.getServiceSecret!==undefined,...(broker.getServiceSecret===undefined?{}:{getServiceSecret:broker.getServiceSecret})}):null;
  const unattendedReads=Boolean(delegationClient?.available&&delegationOptions.readOccurrence);
  const delegations=new Map();
  const missing=Object.freeze([...(c.nativeCredentials===undefined&&!unattendedReads?['nativeCredentials.nativeCredentialFor']:[]),...(broker.getServiceSecret===undefined?['secretFiles.serviceSecret']:[]),

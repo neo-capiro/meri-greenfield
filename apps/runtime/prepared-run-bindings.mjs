@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../packages/runtime/hot-path-budgets.mjs';
 /** Production composition of the three multi-run ports (S2): `runIssuance` (the canonical prepared-run issuance over the durable
  * issuer and a trusted fact producer), `issuanceIntent` (the next run's expiry from reviewed static bounds) and `admissionForBinding`
  * (the existing budget admission owner per target binding). Ports are built from startup-supplied owners; configuration names no
@@ -20,7 +21,7 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
 const fail=code=>{throw Object.assign(Error('PREPARED_RUN_BINDINGS_'+code),{code:'PREPARED_RUN_BINDINGS_'+code});};
 export function createPreparedRunBindings(options){
- const o=own(options,['configuration','pool','store','credentials'],['issuanceStore','capabilityAuthority','modelGrants','now','limits','initialBindings','objectiveFacts','objectiveExecutionSelection']),now=o.now??Date.now,limits=o.limits??{maxRequestMs:3000,maxFactBytes:131072};
+ const o=own(options,['configuration','pool','store','credentials','limits'],['issuanceStore','capabilityAuthority','modelGrants','now','initialBindings','objectiveFacts','objectiveExecutionSelection']),now=o.now??Date.now,limits=o.limits;
  const config=compilePreparedCandidateConfiguration(o.configuration.nativeCandidate,o.configuration.versions);if(config.multiRun===undefined)fail('NOT_CONFIGURED');
  if(!o.issuanceStore||!o.capabilityAuthority)fail('UNAVAILABLE');if(typeof o.pool?.connect!=='function'||typeof o.store?.allocations?.read!=='function'||typeof o.store?.readOptional!=='function'||typeof o.issuanceStore.read!=='function')fail('CONFIGURATION');
  if(typeof o.modelGrants?.issue!=='function')fail('MODEL_GRANT_UNAVAILABLE');
@@ -107,7 +108,7 @@ export function createPreparedRunBindings(options){
   const issuedFacts={original:record.original,allocationSha256:record.allocationSha256,taskRequestSha256:record.taskRequestSha256,qualification:record.qualification,grantIntents:record.grantIntents,grantId:issued.grantId,operations,controlCapabilitySha256:controlDigest,transport:{origin:config.taskOrigin,http:config.taskHttp},...(approvedReads===undefined?{}:{approvedReads})};
   const pair=objective?await life.run(signal=>objective.facts.pairFor({binding:b,executionSelection:objective.executionSelection,signal})):null;
   if(hash(pair?{...issuedFacts,...pair}:issuedFacts)!==issued.factsSha256)fail('INITIAL_STOP_FACTS_DRIFT');
-  const allocationJson=retarget(b),admission=admissionFor(b,record),allocator=createNativeTaskAllocator({journal:o.store.allocations,authority:{async verify(){fail('INITIAL_STOP_REFUSED');}},admission,client,original:record.original,taskRequest:config.taskRequest,qualification:config.qualification,grantIntents:record.grantIntents,allocationSha256:hash(allocation(allocationJson)),containerName:config.containerName,enabled:true,now,maxRequestMs:limits.maxRequestMs});
+  const allocationJson=retarget(b),admission=admissionFor(b,record),allocator=createNativeTaskAllocator({startupMs:fixedHotPathBudget('native.allocator.startup'),journal:o.store.allocations,authority:{async verify(){fail('INITIAL_STOP_REFUSED');}},admission,client,original:record.original,taskRequest:config.taskRequest,qualification:config.qualification,grantIntents:record.grantIntents,allocationSha256:hash(allocation(allocationJson)),containerName:config.containerName,enabled:true,now,maxRequestMs:limits.maxRequestMs});
   const {state:_,resource:__,...persistedIntent}=record;if(hash(persistedIntent)!==hash(allocator.intent))fail('INITIAL_STOP_CONFLICT');life.check();if(record.state==='RETIRED'&&record.resource?.physicalStopProven===true)return {physicalStopProven:true};return await life.run(()=>allocator.stop());
  }finally{life.close();}}:undefined;
  function proposeInitialExpiry({signal}={}){nativeSignal(signal);if(signal?.aborted)fail('CANCELLED');const expiresAtMs=Math.min(now()+config.multiRun.runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())fail('WINDOW_EXPIRED');return expiresAtMs;}

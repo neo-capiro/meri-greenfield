@@ -1,3 +1,4 @@
+import {budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** One-call control composition of the routine occurrence native operations (lane B3), so startControl needs a single splice.
  * Disabled unless the control configuration declares `routines.enabled` with `routines.core.unattendedGrant` (the same pin the
  * schedule worker fires under). Declared, it always mounts the private application; the owner inside refuses (503, no evidence)
@@ -39,13 +40,13 @@ const refusing=Object.freeze({async admit(){throw unavailable();},async retire()
 export function composeRoutinesOccurrences(options){
  let o,transport;
  try{
-  o=own(options,['configuration','controlCapabilitySha256'],['pool','owners','transport','now']);
+  o=own(options,['configuration','controlCapabilitySha256','budgets'],['pool','owners','transport','now']);
   transport=own(o.transport??{},[],['fetchImpl','readSecret']);for(const fn of Object.values(transport))if(typeof fn!=='function'||types.isProxy(fn))throw Error();
   if(o.now!==undefined&&(typeof o.now!=='function'||types.isProxy(o.now)))throw Error();
  }catch{throw fault();}
  const {configuration,controlCapabilitySha256}=o,now=o.now??Date.now;
  const core=configuration?.routines?.enabled===true?compileRoutinesCoreConfiguration(configuration):null;
- if(core===null||core.unattendedGrant===undefined)return Object.freeze({application:createRoutinesOccurrenceApplication({controlCapabilitySha256}),state:'disabled',tables:Object.freeze([])});
+ if(core===null||core.unattendedGrant===undefined)return Object.freeze({application:createRoutinesOccurrenceApplication({controlCapabilitySha256,maxRequestMs:budget(o.budgets,'runtime.objective.owner')}),state:'disabled',tables:Object.freeze([])});
  const maxRequestMs=configuration.limits.requestMs;
  let owners=null;
  if(o.owners!==undefined){try{owners=own(o.owners,['template','retirement']);}catch{throw fault();}}

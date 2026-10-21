@@ -4,7 +4,7 @@ import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/va
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 const fail=code=>{throw Object.assign(Error('ORIGINAL_RUN_'+code),{code:'ORIGINAL_RUN_'+code});};
 const same=(a,b)=>hash(a)===hash(b),digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
-export function createOriginalRunPreparation({binding,expiresAtMs,store,issuer,runIssuance,now=Date.now,maxRequestMs=3000}){
+export function createOriginalRunPreparation({binding,expiresAtMs,store,issuer,runIssuance,now=Date.now,maxRequestMs}){
  const b=data(binding);validateShape('RunBinding',b);
  if(b.writerFence!==1||!Number.isSafeInteger(expiresAtMs)||expiresAtMs<1||typeof store?.readOptional!=='function'||typeof store?.allocations?.read!=='function'||typeof issuer?.read!=='function'||typeof runIssuance?.prepare!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  const issuanceKey=hash(b);

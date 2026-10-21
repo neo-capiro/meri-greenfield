@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** P-INT-9, control side: the runner -> control conversation write-intent transport. Two fixed private POST routes on the same
  * task-authorized surface as `/v1/runner/reads/*` (prepared-run-registry / remote-composition), never on the public listener:
  *
@@ -25,7 +26,7 @@ const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 export function createRunnerIntentsApplication(configuration){
  const c=own(configuration,['resolveRun'],['enabled','now','limits','controlCapabilitySha256']),now=c.now??Date.now,enabled=c.enabled??false;
- const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
+ const limits=own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
  if(typeof c.resolveRun!=='function'||types.isProxy(c.resolveRun)||typeof now!=='function'||typeof enabled!=='boolean'||!integer(limits.maxRequestBytes,1,1048576)||!integer(limits.maxResponseBytes,1,2097152)||!integer(limits.maxPrepareMs,1000,60000)||
   c.controlCapabilitySha256!==undefined&&(typeof c.controlCapabilitySha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.controlCapabilitySha256)))throw runnerIntentFault('UNAVAILABLE');
  const resolveRun=c.resolveRun;

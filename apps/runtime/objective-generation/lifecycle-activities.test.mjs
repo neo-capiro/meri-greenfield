@@ -12,10 +12,10 @@ function harness({replies={},runs:runOptions={},withRuns=true,withClient=true}={
   complete:[x.replies.completion()],readCompletion:['unavailable'],...replies};
  const transport={available:()=>true,...Object.fromEntries(Object.keys(queue).map(m=>[m,async value=>{calls.push(m);
   const next=queue[m].length>1?queue[m].shift():queue[m][0];if(next===undefined||next==='unavailable')return {kind:'unavailable'};return {kind:'unqualified-response',status:200,value:structuredClone(next)};}]))};
- const clientFor=source=>{assert.deepEqual(source,x.source);return createCoreObjectiveGenerationClient({transport,source,executionSelection:x.executionSelection,now:()=>NOW});};
+ const clientFor=source=>{assert.deepEqual(source,x.source);return createCoreObjectiveGenerationClient({maxRequestMs:3000,maxFreshMs:3000,transport,source,executionSelection:x.executionSelection,now:()=>NOW});};
  const runs={async start(value){runState.starts.push(value);if(runOptions.startFails)throw Error('lost');runState.run={state:'queued'};return runOptions.startAnswer??{kind:'started'};},
   async read(){if(runOptions.readFails)throw Error('down');return runState.run;}};
- const activities=createObjectiveGenerationActivities({...(withClient?{clientFor}:{}),...(withRuns?{runs}:{}),context:()=>({cancellationSignal:new AbortController().signal}),now:()=>NOW});
+ const activities=createObjectiveGenerationActivities({maxRequestMs:15000,...(withClient?{clientFor}:{}),...(withRuns?{runs}:{}),context:()=>({cancellationSignal:new AbortController().signal}),now:()=>NOW});
  const input={generationJobId:x.source.generationJobId,binding:x.source.binding,notAfterMs:NOW+3600000};
  return {x,calls,runState,activities,input};
 }
@@ -71,5 +71,5 @@ test('inputs are closed and configuration must be complete',async()=>{
  const h=harness();
  await assert.rejects(h.activities.objectiveGenerationSource({...h.input,prompt:'x'}));
  await assert.rejects(h.activities.objectiveGenerationStartRun({...h.input,mode:'other',requestSha256:'0'.repeat(64)}));
- assert.throws(()=>createObjectiveGenerationActivities({runs:{start(){}}}));assert.throws(()=>createObjectiveGenerationActivities({maxRequestMs:0}));
+ assert.throws(()=>createObjectiveGenerationActivities({maxRequestMs:15000,runs:{start(){}}}));assert.throws(()=>createObjectiveGenerationActivities({maxRequestMs:0}));
 });

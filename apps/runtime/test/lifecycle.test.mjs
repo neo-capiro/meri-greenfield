@@ -1,3 +1,4 @@
+import {testBudgetTable as runnerTestBudgets} from '../../../packages/runtime/test/budget-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,rmSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
 import {assembleConversationRunner} from '../conversation-runner.mjs';
@@ -24,7 +25,7 @@ function fixture({action='steer',mode,captureRefused=false,restoreChanged=false,
   if(operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'){if(operation==='runner/checkpoint/complete')state.completions=(state.completions??0)+1;if(captureRefused)throw Error('native capture unavailable');const cp=structuredClone(f.continuation.checkpoint);cp.binding=binding;cp.workspace.binding=binding;cp.workspaceSha256=canonicalSha256(cp.workspace);cp.sessionId=sessionId;return {checkpoint:cp,checkpointSha256:canonicalSha256(cp),sourceRequestSha256:canonicalSha256(request),contextSha256:f.continuation.contextSha256,sessionId,resumeSessionAt:null,verificationId:id(103),workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs:Date.now(),expiresAtMs:Date.now()+1500};}
   if(operation==='runner/record-checkpoint'){state.records++;return {controlId:command.controlId,intent:'pause',sourceBinding:binding,inputSha256:entry.commandSha256,state:'APPLIED',checkpointId:input.input.checkpointId,targetBinding:null,admissionReceiptId:null,retirementReceiptId:null,replayed:false};}throw Error('unexpected '+operation);
  }};
- const client=controlDelayMs===undefined?native:createNativeCapabilityClient({configuration:{origin:'https://native.example.invalid',maxResponseBytes:131072},credential:'synthetic-runner-capability',
+ const client=controlDelayMs===undefined?native:createNativeCapabilityClient({maxRequestMs:3000,loadMaxRequestMs:3000,configuration:{origin:'https://native.example.invalid',maxResponseBytes:131072},credential:'synthetic-runner-capability',
   fetch:async(url,init)=>{const operation=new URL(url).pathname.slice('/v1/'.length);if(operation===slowOperation&&slowCalls-->0)await new Promise(resolve=>setTimeout(resolve,controlDelayMs));
    return Response.json(await native.call(operation,JSON.parse(init.body)));}});
  const root=product?mkdtempSync(join(tmpdir(),'meri-lifecycle-product-')):null;if(root)mkdirSync(join(root,'config'),{mode:0o700});
@@ -32,7 +33,7 @@ function fixture({action='steer',mode,captureRefused=false,restoreChanged=false,
   preparationIntent:{workspace:join(root,binding.conversationId),configParentDirectory:join(root,'config'),secureStorageDirectory:join(root,'secure'),
    launchTemplate:{command:'/opt/claude',args:[],env:{CLAUDE_SECURESTORAGE_CONFIG_DIR:join(root,'secure')}},executableSha256:'a'.repeat(64),imageSha256:'b'.repeat(64),
    runnerSha256:'c'.repeat(64),sdkOptionsSha256:'d'.repeat(64),authoritySha256:'f'.repeat(64)}}:undefined;
- const execute=assembleConversationRunner({configuration:{binding,versions:target.versions,workspace:'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid',
+ const execute=assembleConversationRunner({budgets:runnerTestBudgets,configuration:{binding,versions:target.versions,workspace:'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid',
   ...(product?{limits:{requestMs:25000,shutdownMs:1000},remoteTask}:{})},native:client,credentialForBinding:async()=> 'synthetic-current-task-capability',query(args){state.calls++;state.options=args.options;return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'init',session_id:sessionId};const iterator=args.prompt[Symbol.asyncIterator]();await iterator.next();if(!mode&&action==='steer'){const message=(await iterator.next()).value;yield message;}if(!mode&&action==='pause'){await stop.promise;return;}yield {type:'result',subtype:'success',is_error:false};},async interrupt(){state.interrupts++;return {still_queued:[]};},close(){state.closes++;stop.resolve();}};}});
  return {execute,state,binding,saved,command,cleanup:()=>{if(root)rmSync(root,{recursive:true,force:true});}};
 }

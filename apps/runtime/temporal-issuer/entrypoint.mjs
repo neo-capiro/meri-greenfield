@@ -1,3 +1,5 @@
+import {NodeHttpHandler} from '@smithy/node-http-handler';
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Composed private Temporal issuer. Importing this module performs no IO. */
 import {constants as fileFlags} from 'node:fs';
 import {open,lstat} from 'node:fs/promises';
@@ -151,8 +153,8 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
   checkSignal(cancellation.signal);
   const created={};ownedClients=created;
   try{
-   created.ecs=new ECSClient({region});created.ec2=new EC2Client({region});
-   created.kms=new KMSClient({region});
+   created.ecs=new ECSClient({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request')})});created.ec2=new EC2Client({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request')})});
+   created.kms=new KMSClient({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request')})});
   }catch{throw fault();}
   return ownedClients;
  }
@@ -168,7 +170,7 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
     let timer;
     const bounded=await Promise.race([
      raw.then(value=>({settled:true,value}),()=>({settled:true,error:true})),
-     new Promise(resolve=>{timer=setTimeout(()=>resolve({settled:false}),2500);timer.unref?.();})
+     new Promise(resolve=>{timer=setTimeout(()=>resolve({settled:false}),fixedHotPathBudget('temporal.issuer.settlement'));timer.unref?.();})
     ]);
     clearTimeout(timer);
     if(!bounded.settled||bounded.error){errors.push(name);return;}
@@ -200,7 +202,7 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
     const raw=track(pendingExternal,Promise.resolve().then(()=>client.destroy()));
     let timer;
     const result=await Promise.race([raw.then(()=>true,()=>false),
-     new Promise(resolve=>{timer=setTimeout(()=>resolve(false),2500);timer.unref?.();})]);
+     new Promise(resolve=>{timer=setTimeout(()=>resolve(false),fixedHotPathBudget('temporal.issuer.settlement'));timer.unref?.();})]);
     clearTimeout(timer);
     if(!result)errors.push(`client:${name}`);
    }
@@ -277,7 +279,7 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
     taskProof=proofOwner;
     bootstrapOwner=createTemporalIssuerBootstrapOwner({configuration:c.taskAuthority,
      taskProof:proofOwner,registration,certificateIssuer,now,
-     maxRequestMs:c.service.bootstrapMaxRequestMs-1000});
+     maxRequestMs:c.service.bootstrapMaxRequestMs-1000,challengeLifetimeMs:fixedHotPathBudget('temporal.issuer.challenge'),certificateLifetimeMs:fixedHotPathBudget('temporal.issuer.certificate')});
     createdService=serviceFactory({configuration:c.service,taskAuthority:authority,
      sign:(input,context)=>signer.sign(input,context),publicJwk:c.signer.publicJwk,
      bootstrapOwner,now});
