@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "baseCommit": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
-  "newTestCases": 45,
-  "mutantCount": 58,
+  "newTestCases": 46,
+  "mutantCount": 60,
   "method": "Each listed edit was applied in isolation and the named test failed at its intended assertion. Normal-source checks passed. The 52 pre-rebase edits are retained; six additional C11 rebase edits cover both new golden values, both removed defaults and both explicit caller fields. Shared repository sources were not mutated. Commands assume repository root, installed locked dependencies, and MERI_REVIEW_SOURCE_ROOT=$PWD.",
   "tests": [
     {
@@ -1298,6 +1298,24 @@
             "packages/runtime/test/no-default-budget.test.mjs"
           ],
           "evidencePhase": "C11 rebase"
+        },
+        {
+          "source": "apps/runtime/remote-conversation-runner.mjs",
+          "edit": {
+            "before": ",limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:budget(budgets,'native.intent.prepare')}",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "registered createRunnerIntentsClient.maxPrepareMs must receive native.intent.prepare from the production remote-runner caller",
+          "reproduceTest": [
+            "node",
+            "--test",
+            "--test-reporter=tap",
+            "--test-name-pattern=registered constructor fields",
+            "packages/runtime/test/no-default-budget.test.mjs"
+          ],
+          "evidencePhase": "final-base resume"
         }
       ],
       "sourceRestored": true
@@ -1348,6 +1366,32 @@
             "--test-name-pattern=^meri\\.budget\\.table:\\ explicit\\ schema\\ and\\ poison\\ pin$",
             "apps/runtime/telemetry/test/turn-lines.test.mjs"
           ]
+        }
+      ],
+      "sourceRestored": true
+    },
+    {
+      "file": "apps/runtime/test/remote-intents-budget.test.mjs",
+      "test": "remote startup supplies preserved intent limits and enables the real task-bound port only for an enabled source",
+      "greenBeforeMutation": true,
+      "mutations": [
+        {
+          "source": "apps/runtime/remote-conversation-runner.mjs",
+          "edit": {
+            "before": ",limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:budget(budgets,'native.intent.prepare')}",
+            "after": ""
+          },
+          "mutantExit": 1,
+          "killed": true,
+          "intendedAssertion": "remote startup cannot construct the real governed-intent client without its preserved explicit limits",
+          "reproduceTest": [
+            "node",
+            "--experimental-test-module-mocks",
+            "--test",
+            "--test-reporter=tap",
+            "apps/runtime/test/remote-intents-budget.test.mjs"
+          ],
+          "evidencePhase": "final-base resume"
         }
       ],
       "sourceRestored": true

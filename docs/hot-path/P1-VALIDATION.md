@@ -1,6 +1,6 @@
 # P1 validation record
 
-Branch: `feat/meri-p1-budget-table` → `main` (draft; do not merge). Final base: `bce707763f2cbabe1a73a99aee7b7ec206fa6996`. Implementation through `8e39cac2354018c0ac9aef4ec627f6bf9f4db664`; the final candidate is the PR head, whose last commit adds the independent telemetry seam. Evidence date: 2026-10-21.
+Branch: `feat/meri-p1-budget-table` → `main` (draft; do not merge). Final base: `bce707763f2cbabe1a73a99aee7b7ec206fa6996`. Implementation and prior evidence through `c44b4126490495579c0f4821a6ae00e417ab7e13`; the final candidate is the PR head, including the final-base remote-intents caller correction below. Evidence date: 2026-10-21.
 
 P1 centralizes existing hot-path allowances and their composition without shortening, extending or reordering the existing operations. The table has **278 hops**. Production inputs are `startupMs=30000`, `shutdownMs=10000`, `requestMs=25000`, `runWindowMs=900000`; the fixed original-expiry fixture is in `packages/runtime/test/budget-fixture.mjs`. JavaScript and Python produce the same digest:
 
@@ -17,9 +17,9 @@ The digest covers sorted hop IDs and effective values, excluding absolute wall-c
 | Runner, worker and conversations | Runner bootstrap/process transports, activity/continuation/session store, worker roots, conversation events/journal, browser/host/readiness owners, generated workflow projection. |
 | Owner, proxy and renderer | Node owner pool/HTTP/AWS/fetch options; Python loader, lifetime, discovery, boto/uvicorn options; full rendered proxy table and cross-language fixture. |
 | Validation documentation | This record, [exact mutation edits](p1-mutation-checks.json), and [inventory delta](p1-inventory-delta.json). The four supplied plans/design inputs are local reference files and are excluded from the PR. |
-| Telemetry — separate last commit | One closed `meri.budget.table` startup proof from control, runner, owner and proxy, with no values or metrics; no new temporal-worker event. It can be dropped independently. |
+| Telemetry — existing startup seam | One closed `meri.budget.table` startup proof from control, runner, owner and proxy, with no values or metrics; no new temporal-worker event. Its emitted schema remains closed and contains no tenant or prompt data. |
 
-Commits separate the table, control, worker, runtime, owner/proxy and remaining ports, followed by compatibility fixtures, the final-base inventory update and validation evidence. The independently removable telemetry seam remains the last commit. The PR records the final candidate SHA.
+Commits separate the table, control, worker, runtime, owner/proxy and remaining ports, followed by compatibility fixtures, the final-base inventory update and validation evidence. Telemetry is part of the existing implementation commits; it is not the last commit in the rebased history. The PR records the final candidate SHA.
 
 The final base preserves `native-preparation-journal` admitting restoration state `starting` (`96b6da6d`), the remote worker's `TMPDIR` lifetime (`3c56c3e9`), and C10/C11 conversation-survives-deploy semantics (`bce70776`). The latter adds two diagnostic policies: a burst of 20 messages and a 60,000 ms window. Both are now table entries; all previous 276 effective values remain unchanged. The golden was regenerated independently from `bce70776`. References were relocated by symbols, not old line numbers.
 
@@ -72,7 +72,17 @@ The branch was rebased onto `bce707763f2cbabe1a73a99aee7b7ec206fa6996`. Fresh af
 
 The final comparison is being assembled from four disjoint, serial-per-file queues: full owner/Python coverage and three balanced affected-source lists, with fresh telemetry and composed end-of-turn coverage. Unchanged phase-1 results are eligible for reuse only when their source and fixture closure hashes match both final trees.
 
-The new-test audit covers 45 cases with 58 isolated intended-assertion mutations. Node/Python no-default guards pass on head and fail on the original and final bases; the C11 default/caller probes are included. The static image audit resolves 10 fixture roots through 417 modules with no budget-test-fixture imports. This is a source audit, not a Docker run.
+The original new-test audit covered 45 cases with 58 isolated intended-assertion mutations; the resume adds one composed regression case and two isolated mutations (46 cases / 60 mutations total). Node/Python no-default guards pass on head and fail on the original and final bases; the C11 default/caller probes are included. The static image audit resolves 10 fixture roots through 417 modules with no budget-test-fixture imports. This is a source audit, not a Docker run.
+### Final-base resume: explicit remote-intent transport budgets
+
+A read-only independent source review identified one missed production caller: `runRemoteConversation` constructed `createRunnerIntentsClient` without `limits`, after P1 removed that constructor's defaults. With both source access and intents enabled, startup would throw before the worker/listener ran. The correction supplies the original 65,536-byte request and 262,144-byte response caps and `native.intent.prepare` (30,000 ms) from the existing table. No hop, effective value, retry, wire contract, or feature flag changes.
+
+The canonical owner stays the remote-runner composition root; the existing intent client still owns transport validation and failure semantics. The regression test invokes the real client through remote startup, checks availability and prepare requests carry the task credential and exact binding, and checks both disabled gates remain inert. The constructor registry now covers that production caller. Removing its supplied limits fails both the composed test (`INVALID_COMMAND` before execution) and the registry guard. Both mutations were restored.
+
+Fresh host checks on Node 24.19.0 / Python 3.12.14: canonical budgets, nesting/margins and Node guards **22/22**; Python budget/guard suites **8/8**; composed intent regression **1/1**; runtime TypeScript **pass**. The Node guard fails all three cases against final base `bce70776`; Python's three guard cases also fail there as required. The previous Python 3.13 pinned-environment evidence is retained separately; this resume does not claim native proxy image qualification.
+
+A focused final-base regression comparison is running against the exact baseline and head, one test file per process. Its results will be appended before the draft is handed off. No full-suite or image claim is inferred from these focused checks.
+
 ## Not run / not established
 
 | Gate | Status and reason |

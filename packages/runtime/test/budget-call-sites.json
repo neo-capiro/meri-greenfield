@@ -693,6 +693,18 @@
           "sourceReason": "createEcsNativeTaskOwner forwards its binding object unchanged. createAdmittedEcsTaskFactory explicitly copies maxRequestMs from its options into that binding; runnable-runtime supplies limits.maxRequestMs to the factory."
         }
       ]
+    },
+    {
+      "file": "apps/runtime/native-authority/intents-client.mjs",
+      "constructor": "createRunnerIntentsClient",
+      "field": "maxPrepareMs",
+      "hop": "native.intent.prepare",
+      "calls": [
+        {
+          "file": "apps/runtime/remote-conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
     }
   ],
   "libraries": [
