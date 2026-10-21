@@ -80,7 +80,11 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/memory/migrations/0001_memory_candidates.sql','d925ec36d5e4fa98efeb123fb86f602608dbf82b2caa59bd093366e1eb33067d','integration'],
  ['migration','apps/runtime/native-authority/read-delegation/migrations/0001_read_delegation_facts.sql','bc3ec0314839d953909ffd9eda5c9235da0fbf966ff28d46e19d7e76f7702745','integration'],
  ['migration','apps/runtime/native-authority/read-delegation/migrations/0002_prepared_approval_facts.sql','b203cf0faef94523270eb9c43f7508d0b805e658652214e71ca92e10a050fc1a','integration'],
- ['phase:integration_grants',INTEGRATION_SCRIPT,'298f74bb550194225976c275fe90dee3f218499f883bd5c9ed7b33da211e235f','integration']
+ ['phase:integration_grants',INTEGRATION_SCRIPT,'298f74bb550194225976c275fe90dee3f218499f883bd5c9ed7b33da211e235f','integration'],
+ // C12 (O117): latest-generation original bindings and run-keyed original inputs. Appended (the ledger is ordinal-exact) to the
+ // integration stage, so one `integration` run applies it whether or not the earlier integration entries are already ledgered.
+ // Existing grants are table-level SELECT/INSERT, so the new column needs none.
+ ['migration',conversation('0020_initial_generations.sql'),'87abd2da46b1ab741f537307590d7dc18abe44e6b1949c8e2419caa41bf34b94','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

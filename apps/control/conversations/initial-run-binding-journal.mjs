@@ -50,21 +50,31 @@ export function createInitialRunBindingJournal({pool,now=Date.now,newId=randomUU
   }finally{if(client)try{client.release(reusable?undefined:failure);}catch{failure??=Object.assign(new Error('INITIAL_RUN_BINDING_STORE_UNAVAILABLE'),{code:'INITIAL_RUN_BINDING_STORE_UNAVAILABLE'});}}
   if(failure)throw failure;return bounded(result);
  }
+ /** The conversation's LATEST original generation (0020): earlier generations are superseded history, never served. */
  async function row(client,key,check){
-  const rows=(await client.query('SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,key.conversationId])).rows;check();
-  if(!Array.isArray(rows)||rows.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');return rows.length?decode(rows[0]):null;
+  const rows=(await client.query('SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY generation DESC LIMIT 1 FOR UPDATE',[key.tenantId,key.conversationId])).rows;check();
+  if(!Array.isArray(rows)||rows.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');if(!rows.length)return null;
+  const generation=Number(rows[0].generation);if(!Number.isSafeInteger(generation)||generation<1)refuse('INITIAL_RUN_BINDING_CORRUPT');
+  return {record:decode(rows[0]),generation};
  }
- async function otherState(client,binding,check,existing){
+ /** Nothing may exist for a conversation's first generation. */
+ async function vacant(client,binding,check){
   const p=[binding.tenantId,binding.conversationId];
-  const runs=(await client.query('SELECT projection,projection_sha256 FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY sequence_base LIMIT 1 FOR UPDATE',p)).rows;check();
-  const inputs=(await client.query('SELECT * FROM meri_conversations.initial_inputs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',p)).rows;check();
-  const successors=(await client.query('SELECT reservation,reservation_sha256 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[...p,binding.runId])).rows;check();
-  if(!Array.isArray(runs)||!Array.isArray(inputs)||!Array.isArray(successors)||runs.length>1||inputs.length>1||successors.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');
-  if(!existing){if(runs.length||inputs.length||successors.length)refuse('INITIAL_RUN_BINDING_ALREADY_EXISTS');
-   // An unrelated successor reservation also blocks a new original, even when its source is not the proposed random UUID.
-   const anyNext=(await client.query('SELECT 1 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 LIMIT 1 FOR UPDATE',p)).rows;check();
-   if(!Array.isArray(anyNext)||anyNext.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');if(anyNext.length)refuse('INITIAL_RUN_BINDING_ALREADY_EXISTS');return;
+  for(const sql of ['SELECT 1 FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 LIMIT 1',
+   'SELECT 1 FROM meri_conversations.initial_inputs WHERE tenant_id=$1 AND conversation_id=$2 LIMIT 1',
+   'SELECT 1 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 LIMIT 1']){
+   const rows=(await client.query(sql,p)).rows;check();if(!Array.isArray(rows)||rows.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');if(rows.length)refuse('INITIAL_RUN_BINDING_ALREADY_EXISTS');
   }
+ }
+ /** The stored original's dependent state, verified consistent with it; true once its first turn STARTED: a run, an accepted input,
+  * a native allocation or a successor exists. A reserved input alone is not a start (it never ran). */
+ async function started(client,existing,check){
+  const binding=existing.binding,p=[binding.tenantId,binding.conversationId];
+  const runs=(await client.query('SELECT projection,projection_sha256 FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY sequence_base LIMIT 1 FOR UPDATE',p)).rows;check();
+  const inputs=(await client.query('SELECT * FROM meri_conversations.initial_inputs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[...p,binding.runId])).rows;check();
+  const successors=(await client.query('SELECT reservation,reservation_sha256 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[...p,binding.runId])).rows;check();
+  const allocations=(await client.query('SELECT 1 FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 LIMIT 1',[...p,binding.runId])).rows;check();
+  if(!Array.isArray(runs)||!Array.isArray(inputs)||!Array.isArray(successors)||!Array.isArray(allocations)||runs.length>1||inputs.length>1||successors.length>1||allocations.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');
   const selectedScope=[{tenantId:binding.tenantId,kind:'client',resourceId:existing.selectedClientId,policyRevision:existing.policyRevision}];
   if(runs.length!==inputs.length&&!(inputs.length&&inputs[0].state==='RESERVED'&&!runs.length)||runs.length&&inputs[0].state!=='ACCEPTED')refuse('INITIAL_RUN_BINDING_CONFLICT');
   if(runs.length){const r=runs[0];try{validateShape('Run',r.projection);}catch{refuse('INITIAL_RUN_BINDING_CONFLICT');}
@@ -72,34 +82,58 @@ export function createInitialRunBindingJournal({pool,now=Date.now,newId=randomUU
   if(inputs.length){const i=inputs[0],a=i.allocation;try{assertOriginalInputFacts(a);}catch{refuse('INITIAL_RUN_BINDING_CONFLICT');}
    if(hash(a)!==i.allocation_sha256||i.tenant_id!==binding.tenantId||i.conversation_id!==binding.conversationId||i.run_id!==binding.runId||i.request_id!==a.requestId||!same(a.binding,binding)||a.selectedClientId!==existing.selectedClientId||!same(a.versions,existing.versions)||!same(a.scopes,selectedScope)||!['RESERVED','ACCEPTED'].includes(i.state)||i.state==='ACCEPTED'&&i.accepted_request_sha256!==a.requestSha256||i.state==='RESERVED'&&i.accepted_request_sha256!==null)refuse('INITIAL_RUN_BINDING_CONFLICT');}
   if(successors.length){const s=successors[0];if(hash(s.reservation)!==s.reservation_sha256||!same(s.reservation?.source,binding)||!runs.length)refuse('INITIAL_RUN_BINDING_CONFLICT');}
+  return runs.length>0||inputs.length>0&&inputs[0].state==='ACCEPTED'||successors.length>0||allocations.length>0;
  }
+ async function insert(client,key,v,at,generation,check){
+  const binding={...v.principal,conversationId:v.conversationId,runId:newId(),attemptId:newId(),workerId:newId(),writerFence:1};
+  try{validateShape('RunBinding',binding);}catch{refuse('INITIAL_RUN_BINDING_CONFIGURATION');}
+  if(new Set([binding.conversationId,binding.runId,binding.attemptId,binding.workerId]).size!==4)refuse('INITIAL_RUN_BINDING_CONFIGURATION');
+  const record=assertRecord({schemaVersion:1,state:'ADMITTED',binding,selectedClientId:v.selectedClientId,policyRevision:v.policyRevision,versions:v.versions,configurationSha256:v.configurationSha256,expiresAtMs:v.proposedExpiresAtMs,createdAtMs:at});
+  const inserted=(await client.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256,generation) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING RETURNING *',[binding.tenantId,binding.conversationId,binding.runId,record,hash(record),generation])).rows;check();
+  if(!Array.isArray(inserted)||inserted.length!==1||!same(decode(inserted[0]),record)||Number(inserted[0].generation)!==generation)refuse('INITIAL_RUN_BINDING_CONFLICT');
+  const back=await row(client,key,check),current=clock();if(!back||back.generation!==generation||!same(back.record,record)||current<at||current>=record.expiresAtMs)refuse('INITIAL_RUN_BINDING_CONFLICT');
+  return back.record;
+ }
+ /** First claim of a conversation's original, or its exact replay while live. Unchanged for every caller: a stored original for another
+  * proposal refuses CONFLICT and an expired one EXPIRED. */
  async function claim(raw,check){
   const at=clock(),v=proposed(raw,at),key={tenantId:v.principal.tenantId,conversationId:v.conversationId};
   return transaction(key,check,async client=>{
-   const old=await row(client,key,check);
-   if(old){if(!matchesProposal(old,v))refuse('INITIAL_RUN_BINDING_CONFLICT');const current=clock();if(current<old.createdAtMs||current>=old.expiresAtMs)refuse('INITIAL_RUN_BINDING_EXPIRED');await otherState(client,old.binding,check,old);return {record:old,created:false};}
-   const binding={...v.principal,conversationId:v.conversationId,runId:newId(),attemptId:newId(),workerId:newId(),writerFence:1};
-   try{validateShape('RunBinding',binding);}catch{refuse('INITIAL_RUN_BINDING_CONFIGURATION');}
-   if(new Set([binding.conversationId,binding.runId,binding.attemptId,binding.workerId]).size!==4)refuse('INITIAL_RUN_BINDING_CONFIGURATION');
-   await otherState(client,binding,check,null);
-   const record=assertRecord({schemaVersion:1,state:'ADMITTED',binding,selectedClientId:v.selectedClientId,policyRevision:v.policyRevision,versions:v.versions,configurationSha256:v.configurationSha256,expiresAtMs:v.proposedExpiresAtMs,createdAtMs:at});
-   const inserted=(await client.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING RETURNING *',[binding.tenantId,binding.conversationId,binding.runId,record,hash(record)])).rows;check();
-   if(!Array.isArray(inserted)||inserted.length!==1||!same(decode(inserted[0]),record))refuse('INITIAL_RUN_BINDING_CONFLICT');
-   const back=await row(client,key,check),current=clock();if(!back||!same(back,record)||current<at||current>=record.expiresAtMs)refuse('INITIAL_RUN_BINDING_CONFLICT');
-   return {record:back,created:true};
+   const latest=await row(client,key,check);
+   if(!latest){await vacant(client,{...v.principal,conversationId:v.conversationId},check);return {record:await insert(client,key,v,at,1,check),created:true};}
+   const old=latest.record;if(!matchesProposal(old,v))refuse('INITIAL_RUN_BINDING_CONFLICT');
+   const current=clock();if(current<old.createdAtMs||current>=old.expiresAtMs)refuse('INITIAL_RUN_BINDING_EXPIRED');
+   await started(client,old,check);return {record:old,created:false};
+  });
+ }
+ /** Session issuance only (O117): the conversation's original for this principal and client under THIS render. A stored original whose
+  * first turn never started and that is dead for the proposal (expired, or admitted under another policy, configuration or runtime) is
+  * superseded by the next generation: nothing ran, so nothing carries over, and its reserved input stays dead with it. A started original
+  * is never rebound (CONFLICT, or EXPIRED when it is this exact proposal). Another actor or client always refuses CONFLICT. The
+  * conversation's advisory lock serializes concurrent issuance: exactly one new generation. */
+ async function rebind(raw,check){
+  const at=clock(),v=proposed(raw,at),key={tenantId:v.principal.tenantId,conversationId:v.conversationId};
+  return transaction(key,check,async client=>{
+   const latest=await row(client,key,check);
+   if(!latest){await vacant(client,{...v.principal,conversationId:v.conversationId},check);return {record:await insert(client,key,v,at,1,check),created:true,superseded:false};}
+   const old=latest.record;if(old.binding.actorId!==v.principal.actorId||old.selectedClientId!==v.selectedClientId)refuse('INITIAL_RUN_BINDING_CONFLICT');
+   const current=clock(),live=current>=old.createdAtMs&&current<old.expiresAtMs,matches=matchesProposal(old,v),begun=await started(client,old,check);
+   if(matches&&live)return {record:old,created:false,superseded:false};
+   if(begun)refuse(matches?'INITIAL_RUN_BINDING_EXPIRED':'INITIAL_RUN_BINDING_CONFLICT');
+   return {record:await insert(client,key,v,at,latest.generation+1,check),created:true,superseded:true};
   });
  }
  async function read(raw,check){
   const {binding}=own(bounded(raw),['binding']);validateShape('RunBinding',binding);
-  return transaction(binding,check,async client=>{const saved=await row(client,binding,check);if(saved&&!same(saved.binding,binding))refuse('INITIAL_RUN_BINDING_CONFLICT');return saved;});
+  return transaction(binding,check,async client=>{const saved=(await row(client,binding,check))?.record??null;if(saved&&!same(saved.binding,binding))refuse('INITIAL_RUN_BINDING_CONFLICT');return saved;});
  }
  async function readConversation(raw,check){
   const {principal,conversationId,selectedClientId}=own(bounded(raw),['principal','conversationId','selectedClientId']),p=own(principal,['tenantId','actorId']);
   uuid(conversationId);uuid(selectedClientId);if(!text(p.tenantId)||!text(p.actorId))refuse('INITIAL_RUN_BINDING_INPUT_REFUSED');
   return transaction({tenantId:p.tenantId,conversationId},check,async client=>{
-   const saved=await row(client,{tenantId:p.tenantId,conversationId},check);
+   const saved=(await row(client,{tenantId:p.tenantId,conversationId},check))?.record??null;
    if(saved&&(saved.binding.actorId!==p.actorId||saved.selectedClientId!==selectedClientId))refuse('INITIAL_RUN_BINDING_CONFLICT');return saved;
   });
  }
- return Object.freeze({claim,read,readConversation});
+ return Object.freeze({claim,rebind,read,readConversation});
 }
