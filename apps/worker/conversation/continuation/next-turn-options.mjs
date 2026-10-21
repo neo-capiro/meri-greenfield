@@ -3,6 +3,7 @@ import {validateShape,assertWorkspacePaths,canonicalSha256 as hash} from '../../
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {continuationContextSha256,lineageResumeOptions} from './options.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {continuesSession} from '../../../../packages/contracts/session-continuity.mjs';
 import AjvModule from 'ajv/dist/2020.js';
 import formatsModule from 'ajv-formats';
 import {conversationSchema} from '../../../../packages/contracts/conversation-application/schema.mjs';
@@ -24,7 +25,9 @@ export function assertNextTurnLineage(value,binding){
   continuationContextSha256(n.sourceRequest,cp.scopes)!==n.contextSha256||!uuid.test(cp.sessionId)||n.resumeSessionAt!==null&&!uuid.test(n.resumeSessionAt))fail();
  for(const key of ['tenantId','actorId','conversationId'])if(cp.binding[key]!==binding[key])fail();
  for(const key of ['runId','attemptId','workerId'])if(cp.binding[key]===binding[key])fail();
- if(binding.writerFence!==cp.binding.writerFence+1)fail();return n;
+ // The checkpoint is the conversation's latest published one: the previous run's, or an earlier completed turn's after a failed or
+ // cancelled one. Control verified which; here it need only precede the target.
+ if(binding.writerFence<=cp.binding.writerFence)fail();return n;
 }
 export function buildNextTurnOptions(value,target){
  const t=data(own(target,['binding','versions','scopes','request','sourceRequest'])),n=assertNextTurnLineage(value,t.binding),cp=n.checkpoint;
@@ -33,7 +36,7 @@ export function buildNextTurnOptions(value,target){
   if(!validRequest(request)||(request.window===null)!==(request.windowRequest===null))fail();
   if(request.window!==null)assertWindowResolution(request.windowRequest,request.window);
  }
- if(!same(n.sourceRequest,t.sourceRequest)||!same(cp.scopes,t.scopes)||!same(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
+ if(!same(n.sourceRequest,t.sourceRequest)||!same(cp.scopes,t.scopes)||!continuesSession(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
   continuationContextSha256(t.request,t.scopes)!==n.contextSha256||!same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.sourceRequest.requestId===t.request.requestId)fail();
  if(t.request.skill!==null&&!same(selectSkill(t.request.skill.skillId,t.request.skill.skillVersion).pin,t.request.skill))fail();
  return lineageResumeOptions({sessionId:cp.sessionId,resumeSessionAt:n.resumeSessionAt,targetSessionId:null});
