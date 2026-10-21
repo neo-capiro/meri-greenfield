@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
  RUNNER_STARTUP_STAGE_ORDER,runnerStartupBudget,runnerLoadBudget,
-} from '../runner-load-budget.mjs';
+} from '../hot-path-budgets.mjs';
 
 test('startup stages retain their own cap and all later caps before settlement',()=>{
  const expiry=1_000_000;

@@ -1,0 +1,522 @@
+[
+  {
+    "file": "apps/control/action-application/local/demo.mjs",
+    "field": "ttlMs",
+    "site": "const {mode,ttlMs=10000}=own(options,['mode'],['ttlMs']);",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-application/local/demo.mjs",
+    "field": "maxRuntimeSeconds",
+    "site": "h.allocation.budgets.maxRuntimeSeconds=60;h.allocation.manifest.budgets.maxRuntimeSeconds=60;h.allocation.schedule.expiresAt=new Date(cutoff).toISOString();",
+    "occurrences": 2,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-application/local/demo.mjs",
+    "field": "maxRequestMs",
+    "site": "const commandOptions={operation:resolveOperationContract({id:'create_task',version:'0.2.0'}).descriptor.operation,action:'task.create',outputShape:'TaskCreateToolResult',commandContext:f.context,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:metadata,executor:f.create({authority,approvalStore,now,newId:randomUUID}),now,limits:{maxRequestMs:5000,maxFactBytes:65536}};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-application/local/demo.mjs",
+    "field": "maxRequestMs",
+    "site": "const app=createActionApplication({resolveSession,now,limits:{maxRequestMs:5000,maxRequestBytes:65536,maxResponseBytes:262144}});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/application-adapters/cross-repo/source.mjs",
+    "field": "timeout",
+    "site": "const git=args=>execFileSync('git',['-c','gc.auto=0','--git-dir='+resolve(sourceRepository),...args],{encoding:'utf8',timeout:5000,maxBuffer:16*1024*1024,stdio:['ignore','pipe','pipe']});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/application-adapters/cross-repo/source.mjs",
+    "field": "timeout",
+    "site": "vm.runInNewContext(js,{module,exports:module.exports,Object,Reflect,Array,Number,String,Boolean,Math,JSON,Map,Set,WeakMap,WeakSet,Promise,Error,TypeError,Buffer,URL,setTimeout,clearTimeout,process:{env:{}},...globals,require(id){if(Object.hasOwn(imports,id))return imports[id];throw Error('UNADMITTED_IMPORT');}},{filename:'pinned-owner.js',timeout:1000});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/case.mjs",
+    "field": "maxRequestMs",
+    "site": "const limits={maxRequestMs:3000,maxFactBytes:131072,maxResponseBytes:131072,maxCleanupMs:100};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/case.mjs",
+    "field": "maxCleanupMs",
+    "site": "const limits={maxRequestMs:3000,maxFactBytes:131072,maxResponseBytes:131072,maxCleanupMs:100};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/case.mjs",
+    "field": "maxRequestMs",
+    "site": "const gateway=createLocalActionGateway({mode:s.mode,identity:s.identity,pool,allocationJson:JSON.stringify(s.allocation),source:p.source,limits:{maxRequestBytes:65536,maxResponseBytes:131072,maxRequestMs:3000,maxCleanupMs:100},now,newId});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/case.mjs",
+    "field": "maxCleanupMs",
+    "site": "const gateway=createLocalActionGateway({mode:s.mode,identity:s.identity,pool,allocationJson:JSON.stringify(s.allocation),source:p.source,limits:{maxRequestBytes:65536,maxResponseBytes:131072,maxRequestMs:3000,maxCleanupMs:100},now,newId});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/case.mjs",
+    "field": "maxRequestMs",
+    "site": "openHost(value){const {pool,closeGraph}=own(value,['pool'],['closeGraph']);active();if(state.setup!=='READY'||closeGraph!==undefined&&typeof closeGraph!=='function')throw Error('LOCAL_CASE_NOT_READY');const {services}=graph(pool);const app=createActionHostApplication({services,...p.host,...(sessions?{authenticateSession:sessions.authenticateSession,readCurrentState:sessions.readCurrentState}:{}),now,limits:{maxRequestMs:3000,maxRequestBytes:65536,maxResponseBytes:131072}});state.hostsOpened++;const mounted=issuance?Object.freeze({handle(request){let path;try{if(types.isProxy(request)||!(request instanceof Request))return issuance.handle(request);path=new URL(Object.getOwnPropertyDescriptor(Request.prototype,'url').get.call(request)).pathname;}catch{return issuance.handle(request);}return path===actionSessionPath?issuance.handle(request):app.handle(request);}}):app;return {app:mounted,...(sessions?{identityCredential:s.credential}:{credential:s.credential}),...(closeGraph?{closeGraph}:{})};},",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/state.mjs",
+    "field": "maxRuntimeSeconds",
+    "site": "const publicBudgets={maxTurns:5,maxRuntimeSeconds:60,maxCostMicrousd:100,maxOutputBytes:65536};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/state.mjs",
+    "field": "maxRuntimeSeconds",
+    "site": "const budgets={maxTurns:5,maxToolCalls:3,maxRecoveryAttempts:0,maxRuntimeSeconds:60,maxCostMicroUSD:100,maxOutputBytes:65536};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/test-pool.mjs",
+    "field": "query_timeout",
+    "site": "function pool(){return {options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){let c,kind,setup=[];",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local/fixture.mjs",
+    "field": "maxRequestMs",
+    "site": "openHost(){active();const services=reconstruct();const app=createActionHostApplication({services,...ports,now,limits:{maxRequestMs:1000,maxRequestBytes:65536,maxResponseBytes:131072}});hosts++;return {app,credential};},",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/conversations/skills/evidence/capture.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=180)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/conversations/skills/evidence/capture.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=5)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/commitments-audit/local/flow.mjs",
+    "field": "maxRequestMs",
+    "site": "const issuance=createActionSessionApplication({owner:fixture.sessions,now:fixture.now,maxRequestMs:3000});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/fixture.mjs",
+    "field": "maxRuntimeSeconds",
+    "site": "Object.assign(ledger.f.claims.budgets,{maxRuntimeSeconds: 30,maxOutputBytes: 1048576});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/fixture.mjs",
+    "field": "maxRuntimeSeconds",
+    "site": "ledger.allocation.budgets.maxRuntimeSeconds = 30;",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/fixture.mjs",
+    "field": "timeoutMs",
+    "site": "pptxModulePath: join(directory,'pptx-not-configured'),tempRoot: directory,timeoutMs: 15000});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/fixture.mjs",
+    "field": "maxRequestMs",
+    "site": "newReservationId: randomUUID,limits: {maxRequestMs: 15000,maxResponseBytes: 131072},sourceEnabled: true};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/fixture.mjs",
+    "field": "maxRequestMs",
+    "site": "limits: {maxRequestMs: 15000,maxRequestBytes: 131072,maxResponseBytes: 1048576},",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/mount.mjs",
+    "field": "maxRequestMs",
+    "site": "const issuance = createActionSessionApplication({owner: sessions,now,maxRequestMs: 3000});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/ports.mjs",
+    "field": "maxRequestMs",
+    "site": "limits: {maxSessions: 8, maxRequestMs: 3000, maxTtlMs: 30000, maxFactBytes: 65536},",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/local/ports.mjs",
+    "field": "maxTtlMs",
+    "site": "limits: {maxSessions: 8, maxRequestMs: 3000, maxTtlMs: 30000, maxFactBytes: 65536},",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/mail-history/local/flow.mjs",
+    "field": "maxRequestMs",
+    "site": "const issuance=createActionSessionApplication({owner:fixture.sessions,now:fixture.now,maxRequestMs:3000});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/document-application/relationship-brief/local/flow.mjs",
+    "field": "maxRequestMs",
+    "site": "export async function runLocalRelationshipFlow({fixture,readSource=sourcePage,outputDirectory,pythonExecutable,sofficeExecutable}){const req=(path,body,credential)=>new Request('https://meri.invalid'+path,{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)}),json=async response=>{const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;},issuance=createActionSessionApplication({owner:fixture.sessions,now:fixture.now,maxRequestMs:3000}),session=await json(await issuance.handle(req('/api/action-followthrough/session',{},fixture.nativeCredential)));let app;const send=(route,body,credential=session.credential)=>app.handle(req('/api/documents/'+route,body,credential)),configure=p=>{app=createDocumentApplication({sessions:fixture.sessions,selectedClientId:fixture.selectedClientId,artifactOptions:bindPreparedRelationshipArtifactOptions(p,{...fixture.artifactOptions,context:p.context}),credential:fixture.credential,now:fixture.now,limits:fixture.limits,enabled:true});};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/control/staging-e2e/client.mjs",
+    "field": "maxRequestMs",
+    "site": "export function createStagingE2EClient({target:rawTarget,readCurrentContext,verifyCandidate,authenticatedFetch,now=Date.now,maxRequestMs=15000}){",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/gateway/budget/evidence/capture.py",
+    "field": "timeout",
+    "site": "try: out,err=p.communicate(timeout=180)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/gateway/budget/evidence/capture.py",
+    "field": "timeout",
+    "site": "out,err=p.communicate(timeout=10)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/build/materialize-swc.mjs",
+    "field": "timeout",
+    "site": "observed=JSON.parse(require('node:child_process').execFileSync(shell,['-NoProfile','-NonInteractive','-Command',command],{encoding:'utf8',timeout:10000,maxBuffer:1024*1024,stdio:['ignore','pipe','pipe']}));",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/build/materialize-swc.mjs",
+    "field": "timeout",
+    "site": "return JSON.parse(execFileSync(process.execPath,['-e',loadScript,binding.owner,binding.native,cache,windowsTestObserver?'windows-test-observer':'native-report',diagnostic],{env,timeout:30000,maxBuffer:64*1024,encoding:'utf8',stdio:['ignore','pipe','pipe']}));",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/evidence/capture-reaped.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=180)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/evidence/capture-reaped.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=5)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/native-authority/evidence/capture.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=180)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/native-authority/evidence/capture.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=5)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/selected/evidence/capture-reaped.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=180)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/selected/evidence/capture-reaped.py",
+    "field": "timeout",
+    "site": "code = child.wait(timeout=5)",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/telemetry/sdk.mjs",
+    "field": "DEFAULT_EXPORT_INTERVAL_MS",
+    "site": "export const DEFAULT_EXPORT_INTERVAL_MS=15000;",
+    "occurrences": 1,
+    "scope": "telemetry",
+    "reason": "P0 telemetry aggregation/export cadence, not a hot-path deadline."
+  },
+  {
+    "file": "apps/runtime/telemetry/turn-context.mjs",
+    "field": "rollupMs",
+    "site": "export function createTurnTelemetry({service,environment='Preview',write,now=Date.now,maxTrackedRuns=10000,rollupMs=60000}={}){",
+    "occurrences": 1,
+    "scope": "telemetry",
+    "reason": "P0 telemetry aggregation/export cadence, not a hot-path deadline."
+  },
+  {
+    "file": "apps/runtime/telemetry/turn-context.mjs",
+    "field": "rollupMs",
+    "site": "start(){if(!timer&&!closed){timer=setInterval(rollup,Number.isSafeInteger(rollupMs)&&rollupMs>0?rollupMs:60000);timer.unref?.();}return api;},",
+    "occurrences": 1,
+    "scope": "telemetry",
+    "reason": "P0 telemetry aggregation/export cadence, not a hot-path deadline."
+  },
+  {
+    "file": "apps/runtime/temporal-issuer/qualification/qualify.mjs",
+    "field": "query_timeout",
+    "site": "connectionTimeoutMillis:2000,idleTimeoutMillis:1000,query_timeout:3000,",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/temporal-issuer/qualification/qualify.mjs",
+    "field": "statement_timeout",
+    "site": "statement_timeout:3000,max:5};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/worker/conversation/sandbox-readiness/linux-qualification-cli.mjs",
+    "field": "timeout",
+    "site": "const run=(command,args)=>new Promise(resolve=>{execFile(command,args,{timeout:10000,killSignal:'SIGKILL',env:{},windowsHide:true,maxBuffer:65536},(error,stdout,stderr)=>resolve({ok:!error,stdout:String(stdout),stderr:String(stderr)}));});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/worker/conversation/sandbox-readiness/linux-qualification.mjs",
+    "field": "admitMs",
+    "site": "const proxy=await startEgressProxy({control,dial,httpPort:0,socksPort:0,limits:{admitMs:2000,connectMs:2000,idleMs:5000}});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/worker/conversation/sandbox-readiness/linux-qualification.mjs",
+    "field": "connectMs",
+    "site": "const proxy=await startEgressProxy({control,dial,httpPort:0,socksPort:0,limits:{admitMs:2000,connectMs:2000,idleMs:5000}});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/worker/conversation/sandbox-readiness/linux-qualification.mjs",
+    "field": "idleMs",
+    "site": "const proxy=await startEgressProxy({control,dial,httpPort:0,socksPort:0,limits:{admitMs:2000,connectMs:2000,idleMs:5000}});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification, local fixture, or evidence/build tooling bound; this code does not own a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/native-authority/launch-configuration.mjs",
+    "field": "maxRequestMs",
+    "site": "const caps={maxFrameBytes:9437184,maxTotalBytes:67108864,maxWaiters:32,maxRequestMs:30000};",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Range validation cap for a supplied launch maxRequestMs; this does not supply a default or schedule a timer."
+  },
+  {
+    "file": "apps/runtime/native-authority/session-registration.mjs",
+    "field": "maxRequestMs",
+    "site": "const caps={maxFrameBytes:9437184,maxTotalBytes:67108864,maxWaiters:32,maxRequestMs:30000};",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Range validation cap for a supplied registration maxRequestMs; this does not supply a default or schedule a timer."
+  },
+  {
+    "file": "apps/control/qualified-application/schema-independent/fixture.mjs",
+    "field": "query_timeout",
+    "site": "const pool={options:{host:fixture.host,port:fixture.port,database:fixture.database,user:fixture.user,connectionTimeoutMillis:5000,query_timeout:6000,...options},async connect(){state.connects++;return onConnect?onConnect(client):client;},end(){state.ends++;throw Error('BORROWED_POOL_CLOSE');}};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Schema-independent qualification fixture database query bound; not production composition."
+  },
+  {
+    "file": "apps/runtime/artifacts/core-authority-client.mjs",
+    "field": "MAX_REQUEST_MS",
+    "site": "const TOKEN=/^[\\x21-\\x7e]{1,8192}$/u,MAX_REQUEST_MS=10000;",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Range validation only: supplied maxRequestMs is rejected above this ceiling; no timer or fallback takes this value."
+  },
+  {
+    "file": "apps/runtime/artifacts/core-authority-wire.mjs",
+    "field": "MAX_RECEIPT_TTL_MS",
+    "site": "export const MAX_RECEIPT_TTL_MS=60000;",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Signed authority receipt validity ceiling: checks expiresAtMs minus checkedAtMs; it does not create a request deadline."
+  },
+  {
+    "file": "apps/runtime/native-authority/execution-capability.mjs",
+    "field": "maxLifetimeSeconds",
+    "site": "export const EXECUTION_LIMITS=Object.freeze({maxTokenBytes:8192,maxSigningInputBytes:4096,maxLifetimeSeconds:120,maxSkewMs:2000});",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Execution capability contract validation ceilings for signed JWT lifetime and clock skew; neither creates an outbound timer."
+  },
+  {
+    "file": "apps/runtime/native-authority/execution-capability.mjs",
+    "field": "maxSkewMs",
+    "site": "export const EXECUTION_LIMITS=Object.freeze({maxTokenBytes:8192,maxSigningInputBytes:4096,maxLifetimeSeconds:120,maxSkewMs:2000});",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Execution capability contract validation ceilings for signed JWT lifetime and clock skew; neither creates an outbound timer."
+  },
+  {
+    "file": "apps/runtime/native-authority/routines-cancellation-proof.mjs",
+    "field": "ROUTINE_CANCEL_MAX_TTL_SECONDS",
+    "site": "export const ROUTINE_CANCEL_MAX_TTL_SECONDS=30;",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Signed cancellation proof lifetime validation ceiling; no request timer or constructor default."
+  },
+  {
+    "file": "apps/runtime/native-authority/routines-firing-grant.mjs",
+    "field": "ROUTINE_FIRE_MAX_TTL_SECONDS",
+    "site": "export const ROUTINE_FIRE_MAX_TTL_SECONDS=30;",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Signed routine firing grant/consent lifetime validation ceiling; no request timer or constructor default."
+  },
+  {
+    "file": "apps/runtime/native-authority/routines-firing-grant.mjs",
+    "field": "ROUTINE_CONSENT_MAX_SECONDS",
+    "site": "export const ROUTINE_CONSENT_MAX_SECONDS=30*86400;",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Signed routine firing grant/consent lifetime validation ceiling; no request timer or constructor default."
+  },
+  {
+    "file": "apps/runtime/native-authority/read-delegation/contract.mjs",
+    "field": "clockSkewMs",
+    "site": "clockSkewMs:5000,maxRequestMs:fixedHotPathBudget('native.delegation.request'),maxBodyBytes:16384,maxResponseBytes:16384,maxTokenRetries:2,revokeAttempts:3});",
+    "occurrences": 1,
+    "scope": "validator",
+    "reason": "Signed read-delegation clock-skew validation ceiling; no request timer or constructor default."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/test-pool.mjs",
+    "field": "connectionTimeoutMillis",
+    "site": "function pool(){return {options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){let c,kind,setup=[];",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification fixture database connection/idle bound; not a production hot-path request."
+  },
+  {
+    "file": "apps/control/qualified-application/schema-independent/fixture.mjs",
+    "field": "connectionTimeoutMillis",
+    "site": "const pool={options:{host:fixture.host,port:fixture.port,database:fixture.database,user:fixture.user,connectionTimeoutMillis:5000,query_timeout:6000,...options},async connect(){state.connects++;return onConnect?onConnect(client):client;},end(){state.ends++;throw Error('BORROWED_POOL_CLOSE');}};",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification fixture database connection/idle bound; not a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/temporal-issuer/qualification/qualify.mjs",
+    "field": "connectionTimeoutMillis",
+    "site": "connectionTimeoutMillis:2000,idleTimeoutMillis:1000,query_timeout:3000,",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification fixture database connection/idle bound; not a production hot-path request."
+  },
+  {
+    "file": "apps/runtime/temporal-issuer/qualification/qualify.mjs",
+    "field": "idleTimeoutMillis",
+    "site": "connectionTimeoutMillis:2000,idleTimeoutMillis:1000,query_timeout:3000,",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Qualification fixture database connection/idle bound; not a production hot-path request."
+  },
+  {
+    "file": "apps/control/action-host/local-integration/case.mjs",
+    "field": "maxRequestMs",
+    "site": "const issuance=sessions?createActionSessionApplication({maxRequestMs:3000,owner:sessions,now}):null;",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Local integration qualification fixture explicitly supplies its existing owner bound; not production composition."
+  },
+  {
+    "file": "apps/control/action-application/local/demo.mjs",
+    "field": "maxRequestMs",
+    "site": "const metadata=createTaskCreateApprovalMetadataOwner({maxRequestMs:60000,store:createPostgresApprovalMetadataStore({pool:metadataSql.pool}),commandContext:f.context,preparePolicy,now,newId:randomUUID});",
+    "occurrences": 1,
+    "scope": "qualification",
+    "reason": "Local integration qualification fixture explicitly supplies its existing owner bound; not production composition."
+  }
+]

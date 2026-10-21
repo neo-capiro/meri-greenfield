@@ -1,0 +1,971 @@
+{
+  "version": 1,
+  "constructors": [
+    {
+      "file": "apps/runtime/native-client.mjs",
+      "constructor": "createNativeCapabilityClient",
+      "field": "maxRequestMs",
+      "hop": "native.client.request",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/remote-conversation-runner.mjs",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/control.mjs",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/temporal-worker.mjs",
+          "occurrences": 1,
+          "hop": "broker.native.request"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-client.mjs",
+      "constructor": "createNativeCapabilityClient",
+      "field": "loadMaxRequestMs",
+      "hop": "runner.call.load",
+      "calls": [
+        {
+          "file": "apps/runtime/remote-conversation-runner.mjs",
+          "occurrences": 1,
+          "source": "loadMaxRequestMs:startup.load.attemptMs",
+          "sourceReason": "runnerStartupBudget derives the load attempt from the canonical table constants"
+        },
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1,
+          "source": "loadMaxRequestMs:startup?startup.stages.load.attemptMs:budget(budgets,'native.client.request')",
+          "sourceReason": "startup stage or ordinary canonical request cap"
+        },
+        {
+          "file": "apps/runtime/control.mjs",
+          "occurrences": 1,
+          "hop": "native.client.request"
+        },
+        {
+          "file": "apps/runtime/temporal-worker.mjs",
+          "occurrences": 1,
+          "hop": "broker.native.request"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/session-client.mjs",
+      "constructor": "createNativeSdkSessionClient",
+      "field": "maxRequestMs",
+      "hop": "runner.session.load",
+      "calls": [
+        {
+          "file": "apps/runtime/native-authority/session-client.mjs",
+          "constructor": "Math.min",
+          "occurrences": 1,
+          "anchor": "RUNNER_SESSION_RPC_MS[operation]",
+          "source": "RUNNER_SESSION_RPC_MS[operation]",
+          "sourceReason": "optional cap may only lower the operation-specific canonical RPC value"
+        }
+      ]
+    },
+    {
+      "file": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "constructor": "createRunBoundSessionStore",
+      "field": "timeoutMs",
+      "hop": "runner.session.store",
+      "calls": [
+        {
+          "file": "apps/runtime/remote-conversation-runner.mjs",
+          "constructor": "createRuntimeSdkSessionFactory",
+          "occurrences": 1,
+          "field": "sessionTimeoutMs"
+        },
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "constructor": "createRuntimeSdkSessionFactory",
+          "occurrences": 1,
+          "field": "sessionTimeoutMs"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/remote-task-boundary.mjs",
+      "constructor": "transportLimits",
+      "field": "maxRequestMs",
+      "hop": "native.transport.request",
+      "calls": [
+        {
+          "file": "apps/runtime/remote-conversation-runner.mjs",
+          "constructor": "createWorker",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/prepared-run-registry.mjs",
+          "constructor": "allocateRemoteNativeController",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "constructor": "allocateRemoteNativeController",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/independent-task.mjs",
+      "constructor": "createIndependentNativeTask",
+      "field": "maxRequestMs",
+      "hop": "native.independent.request",
+      "calls": [
+        {
+          "file": "apps/runtime/native-authority/remote-composition.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/launch-configuration.mjs",
+      "constructor": "compileNativeLaunch",
+      "field": "shutdownMs",
+      "hop": "native.launch.shutdown",
+      "calls": [
+        {
+          "file": "apps/runtime/native-authority/remote-composition.mjs",
+          "constructor": "createIndependentNativeTask",
+          "occurrences": 1,
+          "field": "launchConfiguration",
+          "via": [
+            "launchConfiguration"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/session-registration.mjs",
+      "constructor": "createNativeSessionRegistration",
+      "field": "maxRequestMs",
+      "hop": "native.session.registration",
+      "calls": [
+        {
+          "file": "apps/runtime/native-authority/session-launcher.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/prepared-kickoff.mjs",
+      "constructor": "createPreparedTaskKickoff",
+      "field": "maxRequestMs",
+      "hop": "native.prepared.request",
+      "calls": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "occurrences": 1,
+          "source": "maxRequestMs:limits.maxRequestMs",
+          "sourceReason": "required root request limit is passed through the prepared composition"
+        },
+        {
+          "file": "apps/runtime/prepared-run-registry.mjs",
+          "occurrences": 1,
+          "source": "maxRequestMs:limits.maxRequestMs",
+          "sourceReason": "required root request limit is passed through the prepared composition"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/prepared-kickoff.mjs",
+      "constructor": "createPreparedTaskKickoff",
+      "field": "maxWaitMs",
+      "hop": "native.prepared.wait",
+      "calls": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "occurrences": 1,
+          "source": "original.expiresAtMs-now()",
+          "sourceReason": "same absolute original lifetime clipping; no default timer"
+        },
+        {
+          "file": "apps/runtime/prepared-run-registry.mjs",
+          "occurrences": 1,
+          "source": "original.expiresAtMs-now()",
+          "sourceReason": "same absolute original lifetime clipping; no default timer"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/prepared-kickoff.mjs",
+      "constructor": "createPreparedTaskKickoff",
+      "field": "cleanupMs",
+      "hop": "native.prepared.cleanup",
+      "calls": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "occurrences": 1,
+          "source": "cleanupMs:c.configuration.limits.shutdownMs",
+          "sourceReason": "required rendered shutdown/root cleanup limit; separately checked by literal sweep"
+        },
+        {
+          "file": "apps/runtime/prepared-run-registry.mjs",
+          "occurrences": 1,
+          "source": "cleanupMs:limits.cleanupMs",
+          "sourceReason": "required rendered shutdown/root cleanup limit; separately checked by literal sweep"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/prepared-kickoff.mjs",
+      "constructor": "createPreparedTaskKickoff",
+      "field": "pollMs",
+      "hop": "native.prepared.poll",
+      "calls": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/prepared-run-registry.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/prepared-kickoff.mjs",
+      "constructor": "createPreparedRunnerGate",
+      "field": "maxRequestMs",
+      "hop": "native.transport.request",
+      "calls": [
+        {
+          "file": "apps/runtime/remote-conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/prepared-kickoff.mjs",
+      "constructor": "createPreparedRunnerGate",
+      "field": "maxWaitMs",
+      "hop": "native.prepared.wait",
+      "calls": [
+        {
+          "file": "apps/runtime/remote-conversation-runner.mjs",
+          "occurrences": 1,
+          "source": "startup.admittedAfter.expiresAtMs-Date.now()",
+          "sourceReason": "absolute original-derived startup cutoff"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/prepared-run-bindings.mjs",
+      "constructor": "createPreparedRunBindings",
+      "field": "maxRequestMs",
+      "hop": "core.request",
+      "calls": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "occurrences": 1,
+          "hop": "core.request"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/objective-generation/lifecycle-activities.mjs",
+      "constructor": "createObjectiveGenerationActivities",
+      "field": "maxRequestMs",
+      "hop": "runtime.objective.lifecycle",
+      "calls": [
+        {
+          "file": "apps/runtime/objective-generation/worker-activities.mjs",
+          "constructor": "Object.freeze",
+          "occurrences": 1,
+          "anchor": "budget(budgets,'runtime.objective.lifecycle')"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/objective-generation/run-owner.mjs",
+      "constructor": "createObjectiveRunOwner",
+      "field": "maxRequestMs",
+      "hop": "runtime.objective.owner",
+      "calls": [
+        {
+          "file": "apps/runtime/native-authority/objective-runs-composition.mjs",
+          "occurrences": 1,
+          "anchor": "enabled:true"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/original-stop.mjs",
+      "constructor": "createOriginalReconciler",
+      "field": "timeoutMs",
+      "hop": "runtime.original.reconcile",
+      "calls": [
+        {
+          "file": "apps/runtime/temporal-worker.mjs",
+          "constructor": "createReconcileActivity",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/control.mjs",
+          "occurrences": 1,
+          "source": "timeoutMs:configuration.limits.requestMs",
+          "sourceReason": "control explicitly selects its rendered request root instead of worker reconcile allowance"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/runner-bootstrap-files.mjs",
+      "constructor": "materializeRunnerBootstrap",
+      "field": "maxRequestMs",
+      "hop": "runner.bootstrap.files.request",
+      "calls": [
+        {
+          "file": "apps/runtime/runner-poststart-cli.mjs",
+          "constructor": "bootstrap",
+          "occurrences": 1,
+          "field": "bootstrapRequestMs"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/runner-poststart-bootstrap.mjs",
+      "constructor": "runRunnerPoststart",
+      "field": "maxStartupMs",
+      "hop": "runner.poststart.bootstrap",
+      "calls": [
+        {
+          "file": "apps/runtime/runner-poststart-cli.mjs",
+          "constructor": "bootstrap",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/runner-poststart-transport.mjs",
+      "constructor": "createRunnerPoststartTransport",
+      "field": "maxRequestMs",
+      "hop": "runner.poststart.transport.request",
+      "calls": [
+        {
+          "file": "apps/runtime/runner-poststart-cli.mjs",
+          "constructor": "bootstrap",
+          "occurrences": 1,
+          "field": "transportRequestMs"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/runner-poststart-transport.mjs",
+      "constructor": "exchange",
+      "field": "deadlineMs",
+      "hop": "runner.poststart.transport.request",
+      "calls": [
+        {
+          "file": "apps/runtime/runner-poststart-bootstrap.mjs",
+          "constructor": "transportFactory",
+          "occurrences": 1,
+          "field": "maxRequestMs",
+          "source": "maxRequestMs:c.transportRequestMs",
+          "sourceReason": "transport request field forwarded from fixedHotPathBudget at poststart CLI"
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/task-bootstrap.mjs",
+      "constructor": "waitForAdmittedTask",
+      "field": "pollMs",
+      "hop": "runner.task.bootstrap.poll",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/task-bootstrap.mjs",
+      "constructor": "loadRemoteTaskBinding",
+      "field": "pollMs",
+      "hop": "runner.task.bootstrap.poll",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/worker/conversation/activity.mjs",
+      "constructor": "createConversationActivity",
+      "field": "loadMaxMs",
+      "hop": "activity.load",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/worker/conversation/activity.mjs",
+      "constructor": "createConversationActivity",
+      "field": "runtimeMaxMs",
+      "hop": "activity.runtime",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/worker/conversation/activity.mjs",
+      "constructor": "createConversationActivity",
+      "field": "terminalAttemptMs",
+      "hop": "runner.terminal.attempt",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/worker/conversation/activity.mjs",
+      "constructor": "createConversationActivity",
+      "field": "cleanupAttemptMs",
+      "hop": "activity.cleanup.attempt",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/worker/conversation/continuation/activity-lifecycle.mjs",
+      "constructor": "assertLifecycleConfiguration",
+      "field": "pollMs",
+      "hop": "continuation.poll",
+      "calls": [
+        {
+          "file": "apps/runtime/conversation-runner.mjs",
+          "constructor": "createConversationActivity",
+          "occurrences": 1,
+          "field": "lifecycle",
+          "via": [
+            "lifecycle"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "apps/control/conversations/events.mjs",
+      "constructor": "createConversationEventSource",
+      "field": "maxSubscriptionMs",
+      "hop": "conversation.events.subscription",
+      "calls": [
+        {
+          "file": "apps/runtime/control.mjs",
+          "constructor": "createConversationLifecycleApplication",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/control/conversations/events.mjs",
+      "constructor": "createConversationEventSource",
+      "field": "pollMs",
+      "hop": "conversation.events.poll",
+      "calls": [
+        {
+          "file": "apps/runtime/control.mjs",
+          "constructor": "createConversationLifecycleApplication",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/control/conversations/events.mjs",
+      "constructor": "createConversationEventSource",
+      "field": "idleRecheckMs",
+      "hop": "conversation.events.idleRecheck",
+      "calls": [
+        {
+          "file": "apps/runtime/control.mjs",
+          "constructor": "createConversationLifecycleApplication",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/runtime/temporal-worker.mjs",
+      "constructor": "createBrokerActivity",
+      "field": "pollMs",
+      "hop": "broker.poll",
+      "calls": [
+        {
+          "file": "apps/runtime/temporal-worker.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/proxy/product/owner-diagnostics.mjs",
+      "constructor": "createOwnerDiagnostics",
+      "field": "windowMs",
+      "hop": "owner.diagnostics.window",
+      "calls": [
+        {
+          "file": "apps/proxy/product/owner-entrypoint.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/proxy/product/owner-diagnostics.mjs",
+      "constructor": "createOwnerDiagnostics",
+      "field": "burst",
+      "hop": "owner.diagnostics.burst",
+      "calls": [
+        {
+          "file": "apps/proxy/product/owner-entrypoint.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/gateway/budget/run-allocation-budgets.mjs",
+      "constructor": "createRunAllocationBudgetReader",
+      "field": "maxRequestMs",
+      "hop": "gateway.runAllocation.read",
+      "calls": [
+        {
+          "file": "apps/runtime/control.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/proxy/product/owner-channel.mjs",
+      "constructor": "createProductOwnerChannel",
+      "field": "maxExchangeMs",
+      "hop": "owner.request",
+      "calls": [
+        {
+          "file": "apps/proxy/product/owner-https.mjs",
+          "occurrences": 1,
+          "source": "maxExchangeMs:maxRequestMs",
+          "sourceReason": "owner server receives its rendered owner.request limit and forwards it to each owned channel/lifecycle"
+        }
+      ]
+    },
+    {
+      "file": "apps/proxy/product/owner-channel.mjs",
+      "constructor": "createProductOwnerAdmissionChannel",
+      "field": "maxExchangeMs",
+      "hop": "owner.request",
+      "calls": [
+        {
+          "file": "apps/proxy/product/owner-https.mjs",
+          "occurrences": 2,
+          "source": "maxExchangeMs:maxRequestMs",
+          "sourceReason": "owner server receives its rendered owner.request limit and forwards it to each owned channel/lifecycle"
+        }
+      ]
+    },
+    {
+      "file": "apps/proxy/product/owner-https.mjs",
+      "constructor": "createProductOwnerListenerLifecycle",
+      "field": "maxCloseMs",
+      "hop": "owner.request",
+      "calls": [
+        {
+          "file": "apps/proxy/product/owner-https.mjs",
+          "occurrences": 1,
+          "source": "maxCloseMs:maxRequestMs",
+          "sourceReason": "owner server receives its rendered owner.request limit and forwards it to each owned channel/lifecycle"
+        }
+      ]
+    },
+    {
+      "file": "apps/proxy/product/owner-https.mjs",
+      "constructor": "createProductOwnerHttpsServer",
+      "field": "maxRequestMs",
+      "hop": "owner.request",
+      "calls": [
+        {
+          "file": "apps/proxy/product/owner-entrypoint.mjs",
+          "constructor": "createServer",
+          "occurrences": 1,
+          "field": "maxRequestMs",
+          "via": [
+            "ownerRequestMs"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "apps/control/conversations/lifecycle/journal.mjs",
+      "constructor": "continuation",
+      "field": "deadlineMs",
+      "hop": "continuation.journal.deadline",
+      "calls": [
+        {
+          "file": "apps/control/conversations/lifecycle/service.mjs",
+          "constructor": "journal.continuation",
+          "occurrences": 1,
+          "source": "deadlineMs:life.deadline()",
+          "sourceReason": "The lifecycle service passes its existing request/authority-limited absolute deadline; the journal no longer invents its own default."
+        }
+      ]
+    }
+  ],
+  "libraries": [
+    {
+      "file": "apps/runtime/control.mjs",
+      "constructor": "Pool",
+      "occurrences": 1,
+      "options": [
+        "connectionTimeoutMillis",
+        "idleTimeoutMillis",
+        "query_timeout"
+      ],
+      "optionsSource": {
+        "start": "pool=countingPool(",
+        "end": "),turnTelemetry);",
+        "argument": "options"
+      }
+    },
+    {
+      "file": "apps/runtime/control.mjs",
+      "constructor": "ECSClient",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/runtime/control.mjs",
+      "constructor": "EC2Client",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/runtime/prepared-candidate.mjs",
+      "constructor": "ECSClient",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/runtime/prepared-candidate.mjs",
+      "constructor": "S3Client",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/runtime/temporal-worker.mjs",
+      "constructor": "NativeConnection.connect",
+      "occurrences": 1,
+      "options": [
+        "connectTimeout"
+      ],
+      "optionsSource": {
+        "start": "connection=await (owners.connect",
+        "end": "});checkAuthorization();",
+        "argument": "options"
+      },
+      "hops": {
+        "connectTimeout": "temporal.connect"
+      }
+    },
+    {
+      "file": "apps/runtime/hot-path-transports.mjs",
+      "constructor": "Agent",
+      "occurrences": 1,
+      "options": [
+        "connect",
+        "headersTimeout",
+        "bodyTimeout"
+      ],
+      "hops": {
+        "timeout": "fetch.connect",
+        "headersTimeout": "fetch.headers",
+        "bodyTimeout": "fetch.body"
+      }
+    },
+    {
+      "file": "apps/runtime/hot-path-transports.mjs",
+      "constructor": "NodeHttpHandler",
+      "occurrences": 1,
+      "options": [
+        "connectionTimeout",
+        "requestTimeout"
+      ],
+      "hops": {
+        "connectionTimeout": "aws.connection",
+        "requestTimeout": "aws.request"
+      }
+    },
+    {
+      "file": "apps/runtime/temporal-issuer/entrypoint.mjs",
+      "constructor": "ECSClient",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/runtime/temporal-issuer/entrypoint.mjs",
+      "constructor": "EC2Client",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/runtime/temporal-issuer/entrypoint.mjs",
+      "constructor": "KMSClient",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/runtime/product-ports/documents.mjs",
+      "constructor": "S3Client",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/artifacts/storage/s3-objects.mjs",
+      "constructor": "S3Client",
+      "occurrences": 1,
+      "options": [
+        "requestHandler",
+        "maxAttempts"
+      ]
+    },
+    {
+      "file": "apps/proxy/product/owner-entrypoint.mjs",
+      "constructor": "Pool",
+      "occurrences": 1,
+      "options": [
+        "connectionTimeoutMillis",
+        "idleTimeoutMillis",
+        "query_timeout"
+      ],
+      "optionsSource": {
+        "argument": "options",
+        "start": "function databaseOptions(",
+        "end": "function defaultPool"
+      }
+    },
+    {
+      "file": "apps/proxy/product/owner-entrypoint.mjs",
+      "constructor": "ECSClient",
+      "occurrences": 1,
+      "options": [
+        "requestHandler"
+      ],
+      "optionsSource": {
+        "argument": "options.ecs",
+        "start": "clients=createAwsClients(",
+        "end": ");own(clients"
+      }
+    },
+    {
+      "file": "apps/proxy/product/owner-entrypoint.mjs",
+      "constructor": "EC2Client",
+      "occurrences": 1,
+      "options": [
+        "requestHandler"
+      ],
+      "optionsSource": {
+        "argument": "options.ec2",
+        "start": "clients=createAwsClients(",
+        "end": ");own(clients"
+      }
+    },
+    {
+      "file": "apps/proxy/product/owner-https.mjs",
+      "constructor": "createServer",
+      "occurrences": 1,
+      "options": [
+        "headersTimeout",
+        "requestTimeout",
+        "keepAliveTimeout",
+        "keepAliveInitialDelay"
+      ],
+      "via": [
+        "PRODUCT_OWNER_IDLE_SOCKETS"
+      ],
+      "tableExpressions": {
+        "keepAliveTimeout": "HOP['owner.idle.keepAlive'].ms",
+        "keepAliveInitialDelay": "HOP['owner.idle.initialDelay'].ms"
+      }
+    },
+    {
+      "file": "apps/runtime/control.mjs",
+      "constructor": "Connection.connect",
+      "occurrences": 1,
+      "options": [
+        "connectTimeout"
+      ],
+      "optionsSource": {
+        "argument": "options",
+        "start": "connection=await (owners.connect",
+        "end": "});checkAuthorization();"
+      }
+    },
+    {
+      "file": "apps/runtime/temporal-issuer/service.mjs",
+      "constructor": "createServer",
+      "occurrences": 1,
+      "options": [
+        "headersTimeout",
+        "requestTimeout",
+        "keepAliveTimeout"
+      ]
+    },
+    {
+      "file": "apps/runtime/schedule-worker.mjs",
+      "constructor": "NativeConnection.connect",
+      "occurrences": 1,
+      "options": [
+        "connectTimeout"
+      ],
+      "hops": {
+        "connectTimeout": "temporal.connect"
+      }
+    },
+    {
+      "file": "apps/runtime/schedule-service.mjs",
+      "constructor": "Pool",
+      "occurrences": 1,
+      "options": [
+        "connectionTimeoutMillis",
+        "idleTimeoutMillis",
+        "query_timeout"
+      ],
+      "hops": {
+        "connectionTimeoutMillis": "pg.control.connect",
+        "idleTimeoutMillis": "pg.control.idle",
+        "query_timeout": "pg.control.query"
+      }
+    },
+    {
+      "file": "apps/runtime/temporal-issuer-cli.mjs",
+      "constructor": "Pool",
+      "occurrences": 1,
+      "options": [
+        "connectionTimeoutMillis",
+        "idleTimeoutMillis",
+        "query_timeout"
+      ],
+      "optionsSource": {
+        "argument": "options",
+        "start": "pool=createPool({",
+        "end": "});"
+      }
+    },
+    {
+      "file": "apps/control/action-application/node-http.mjs",
+      "constructor": "createServer",
+      "occurrences": 1,
+      "options": [
+        "headersTimeout",
+        "requestTimeout",
+        "keepAliveTimeout"
+      ]
+    },
+    {
+      "file": "apps/runtime/temporal-issuer/entrypoint.mjs",
+      "constructor": "NodeHttpHandler",
+      "occurrences": 3,
+      "options": [
+        "connectionTimeout",
+        "requestTimeout"
+      ]
+    },
+    {
+      "file": "apps/runtime/native-authority/runner-tls-client.mjs",
+      "constructor": "Agent",
+      "occurrences": 1,
+      "options": [
+        "timeout"
+      ],
+      "tableExpressions": {
+        "timeout": "fixedHotPathBudget('native.tls.socket')"
+      }
+    },
+    {
+      "file": "apps/artifacts/storage/s3-objects.mjs",
+      "constructor": "NodeHttpHandler",
+      "occurrences": 1,
+      "options": [
+        "connectionTimeout",
+        "requestTimeout"
+      ],
+      "tableExpressions": {
+        "connectionTimeout": "fixedHotPathBudget('aws.connection')",
+        "requestTimeout": "fixedHotPathBudget('aws.request')"
+      }
+    }
+  ],
+  "assignments": [
+    {
+      "file": "apps/runtime/http-server.mjs",
+      "target": "server.requestTimeout",
+      "hop": "http.request"
+    },
+    {
+      "file": "apps/runtime/http-server.mjs",
+      "target": "server.headersTimeout",
+      "hop": "http.headers"
+    },
+    {
+      "file": "apps/runtime/http-server.mjs",
+      "target": "server.keepAliveTimeout",
+      "hop": "http.keepAlive"
+    }
+  ],
+  "libraryExceptions": [
+    {
+      "file": "apps/worker/conversation/sandbox-readiness/linux-qualification.mjs",
+      "constructor": "http.createServer",
+      "occurrences": 1,
+      "scope": "qualification",
+      "anchor": "res.end('ok')",
+      "reason": "egressLoopbackSelfTest creates a local scripted upstream for a measurement-only qualification matrix."
+    },
+    {
+      "file": "apps/worker/conversation/sandbox-readiness/linux-qualification.mjs",
+      "constructor": "net.createServer",
+      "occurrences": 1,
+      "scope": "qualification",
+      "anchor": "s=>s.pipe(s)",
+      "reason": "egressLoopbackSelfTest creates an echo fixture on loopback for qualification; no product request listener."
+    }
+  ]
+}
