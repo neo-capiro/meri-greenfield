@@ -1,3 +1,4 @@
+import {HOP} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Actual, explicit opt-in mTLS boundary for the one product budget owner. */
 import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
 import {runOwnerHttpRequest,finishOwnerChannel} from './owner-request-telemetry.mjs';
@@ -14,7 +15,7 @@ const fail=()=>{throw Error('PRODUCT_OWNER_HTTPS_UNAVAILABLE');};
 /** The proxy keeps one verified socket per carrier for the pair's lifetime and never reconnects after loss (owner_https.py), and a
  * session is bound to its socket, so the owner never closes an idle one: the former 900 s idle close retired the pair at the first
  * exchange after a quiet quarter hour. TCP keep-alive still reaps a socket whose proxy task is gone. */
-export const PRODUCT_OWNER_IDLE_SOCKETS=Object.freeze({keepAliveTimeout:0,keepAlive:true,keepAliveInitialDelay:60000});
+export const PRODUCT_OWNER_IDLE_SOCKETS=Object.freeze({keepAliveTimeout:HOP['owner.idle.keepAlive'].ms,keepAlive:true,keepAliveInitialDelay:HOP['owner.idle.initialDelay'].ms});
 const sha=v=>createHash('sha256').update(v).digest('hex');
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)?v:fail();
 const slot=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,128}$/u.test(v)?v:fail();
@@ -72,7 +73,7 @@ export function consumeProductPlacementRead(reads,readId,serviceGate){
 }
 
 /** Own the native listener's pending bind as well as its established sockets. */
-export function createProductOwnerListenerLifecycle(server,{retire,pendingRequests,maxCloseMs=3000}){
+export function createProductOwnerListenerLifecycle(server,{retire,pendingRequests,maxCloseMs}){
  let closed=false,listening=false,starting=null,rejectStart,detachStart,listenAbort,closing;
  function stop(){return new Promise(resolve=>{
   let settled=false;const done=stopped=>{if(!settled){settled=true;clearTimeout(timer);resolve(stopped);}};
@@ -102,9 +103,9 @@ export function createProductOwnerListenerLifecycle(server,{retire,pendingReques
 
 export function createProductOwnerHttpsServer(configuration){
  const c=own(configuration,['tlsMaterial','clientPolicy','persistedFacts','ownerPorts','placement',
-  'taskLeaseReader','serviceGate','now'],['enabled','maxRequestMs','nativeCurrentness']);
+  'taskLeaseReader','serviceGate','now','maxRequestMs'],['enabled','nativeCurrentness']);
  const telemetry=currentTurnTelemetry();
- const enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000;
+ const enabled=c.enabled??false,maxRequestMs=c.maxRequestMs;
  if(typeof enabled!=='boolean'||typeof c.now!=='function'||!Number.isSafeInteger(maxRequestMs)||
     maxRequestMs<1||maxRequestMs>OWNER_MAX_REQUEST_MS)fail();
  if(!enabled)return Object.freeze({available:false,listen:async()=>fail(),close:async()=>{}});

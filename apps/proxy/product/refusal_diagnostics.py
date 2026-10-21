@@ -58,7 +58,7 @@ class _Sink:
                 self.write(b"PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\n")
 
 
-def install(*, fd=None, write=None, now=time.monotonic, burst=20, window=60.0):
+def install(*, fd=None, write=None, now=time.monotonic, burst, window):
     """Write lines to `fd` (a duplicate of stderr taken before the quiet scope) or through `write(bytes)`."""
     global _sink
     if ((fd is None) == (write is None) or fd is not None and (type(fd) is not int or fd < 0)
@@ -68,10 +68,10 @@ def install(*, fd=None, write=None, now=time.monotonic, burst=20, window=60.0):
     _sink = _Sink(write or (lambda data: os.write(fd, data)), now, burst, window)
 
 
-def install_stderr():
+def install_stderr(*, burst, window):
     """main(): keep the original stderr for these lines before native output is silenced."""
     try:
-        install(fd=os.dup(2))
+        install(fd=os.dup(2), burst=burst, window=window)
     except Exception:
         pass
 

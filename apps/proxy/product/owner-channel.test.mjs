@@ -58,7 +58,7 @@ function fixture(){
     policyRevision:selected.qualificationBinding.policyRevision}],
    selectedClientId:clientId,contextRevision:'b'.repeat(64),checkedAtMs:NOW,
    expiresAtMs:requestDeadline})};
- const channel=(maxExchangeMs=3000)=>createProductOwnerChannel({clientPolicy,
+ const channel=(maxExchangeMs=3000)=>createProductOwnerChannel({maxExchangeMs:3000,clientPolicy,
   persistedFacts,ownerPorts,serviceGate,now:()=>NOW,maxExchangeMs});
  const open=wire(['meri.proxy.session-open/1',id,sha(credential),bindingTuple,requestDeadline]);
  const operationPeer={...peerBase,connectionId:'operation-A'};
@@ -79,7 +79,7 @@ function admissionFixture(){
  let coreReads=0,at=NOW;
  const current=f.ownerPorts.checkCurrentConversation;
  f.ownerPorts.checkCurrentConversation=async value=>{coreReads++;return current(value);};
- const channel=createProductOwnerAdmissionChannel({...f,now:()=>at});
+ const channel=createProductOwnerAdmissionChannel({maxExchangeMs:3000,...f,now:()=>at});
  return {...f,channel,coreReads:()=>coreReads,setNow:value=>{at=value;},
   read:(readId='admission_A',expected=null)=>wire(['meri.proxy.admission-read/1',readId,sha(credential),expected,NOW+5000])};
 }
@@ -119,18 +119,18 @@ test('admission carriers share distinct physical connection roles with budget ch
  await f.channel.read(f.read('capture-read'),f.capturePeer,'capture');
  await assert.rejects(f.channel.read(f.read('same-id'),f.operationPeer,'capture'));
  await assert.rejects(f.channel.read(f.read('swap-id'),f.capturePeer,'operation'));
- const budget=createProductOwnerChannel({...f,now:()=>NOW});
+ const budget=createProductOwnerChannel({maxExchangeMs:3000,...f,now:()=>NOW});
  await assert.rejects(budget.open(f.open,f.capturePeer));
- const fresh=createProductOwnerChannel({...f,now:()=>NOW});
+ const fresh=createProductOwnerChannel({maxExchangeMs:3000,...f,now:()=>NOW});
  await fresh.open(f.open,f.operationPeer);
  const session='unused';
  await assert.rejects(fresh.poll(wire(['meri.proxy.capture-poll/1',session,id,'call']),f.operationPeer));
- const second=createProductOwnerAdmissionChannel({...f,now:()=>NOW});
+ const second=createProductOwnerAdmissionChannel({maxExchangeMs:3000,...f,now:()=>NOW});
  await assert.rejects(second.read(f.read('instance-swap'),f.operationPeer,'capture'));
  await assert.rejects(second.read(f.read('invalid-carrier'),f.capturePeer,'header-selected'));
  await second.read(f.read('next-pair-operation'),{...f.operationPeer,connectionId:'operation-B'});
  await second.read(f.read('next-pair-capture'),{...f.capturePeer,connectionId:'capture-B'},'capture');
- const next=createProductOwnerChannel({...f,now:()=>NOW});
+ const next=createProductOwnerChannel({maxExchangeMs:3000,...f,now:()=>NOW});
  await next.open(f.open,{...f.operationPeer,connectionId:'operation-B'});
 });
 
@@ -163,7 +163,7 @@ test('hung owner read poisons the shared service before and after a late complet
  await assert.rejects(channel.read(f.read(),f.operationPeer),/DEADLINE/);
  assert.equal(f.serviceGate.available,false);release(f.facts);await new Promise(resolve=>setTimeout(resolve,0));
  await assert.rejects(channel.read(f.read('later'),f.operationPeer));
- assert.throws(()=>createProductOwnerAdmissionChannel({...f,now:()=>NOW}),/PRODUCT_OWNER_CHANNEL_DENIED/);
+ assert.throws(()=>createProductOwnerAdmissionChannel({maxExchangeMs:3000,...f,now:()=>NOW}),/PRODUCT_OWNER_CHANNEL_DENIED/);
 });
 
 test('open selects current persisted facts by observed bearer digest and reveals no facts',async()=>{
@@ -287,7 +287,7 @@ test('unresolved persisted read aborts and quarantines all later service session
  assert.equal(f.serviceGate.available,false);
  assert.equal(f.serviceGate.pending,1);
  assert.throws(()=>f.channel(),/PRODUCT_OWNER_CHANNEL_DENIED/);
- assert.throws(()=>createProductOwnerChannel({clientPolicy:f.clientPolicy,
+ assert.throws(()=>createProductOwnerChannel({maxExchangeMs:3000,clientPolicy:f.clientPolicy,
   persistedFacts:f.persistedFacts,ownerPorts:f.ownerPorts,
   serviceGate:createProductOwnerServiceGate(),now:()=>NOW}),
  /PRODUCT_OWNER_CHANNEL_DENIED/);
@@ -301,7 +301,7 @@ test('a second gate cannot replace an active gate for the same pool or facts',()
  const f=fixture();
  f.channel();
  const fresh=createProductOwnerServiceGate();
- assert.throws(()=>createProductOwnerChannel({clientPolicy:f.clientPolicy,
+ assert.throws(()=>createProductOwnerChannel({maxExchangeMs:3000,clientPolicy:f.clientPolicy,
   persistedFacts:f.persistedFacts,ownerPorts:f.ownerPorts,
   serviceGate:fresh,now:()=>NOW}),/PRODUCT_OWNER_CHANNEL_DENIED/);
  assert.equal(f.serviceGate.available,true);

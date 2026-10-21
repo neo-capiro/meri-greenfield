@@ -50,7 +50,7 @@ test('private placement wire contains only existing constructor facts in fixed o
  assert.throws(()=>encodeProductPlacement({issuedTaskNetwork:{...issuedTaskNetwork,credential:'forbidden'},checkedAtMs:10,effectiveExpiresAtMs:15}));
 });
 test('default construction never builds or opens a TLS server',async()=>{
- const value=createProductOwnerHttpsServer({tlsMaterial:null,clientPolicy:null,persistedFacts:null,
+ const value=createProductOwnerHttpsServer({maxRequestMs:3000,tlsMaterial:null,clientPolicy:null,persistedFacts:null,
   ownerPorts:null,placement:null,taskLeaseReader:null,serviceGate:null,now:Date.now});
  assert.equal(value.available,false);await assert.rejects(value.listen());await value.close();
 });

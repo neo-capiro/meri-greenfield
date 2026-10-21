@@ -25,7 +25,6 @@ from ..qualification.state.pricing import StateDenied
 from .boundary_codec import (_binding, _wire, encode_complete_capture,
                              encode_reservation, encode_settlement)
 from .binding import _binding as _host_binding
-from .budgets import OWNER_CARRIER_WAIT_MS
 
 
 OPEN = "/v1/internal/product-model/owner/session/open"
@@ -115,7 +114,7 @@ class OwnerPeerPolicy:
     server_issuer_sha256: str
     client_cert_sha256: str
     client_subject: str
-    max_exchange_ms: int = 3000
+    max_exchange_ms: int
 
     def __post_init__(self):
         if (type(self.origin) is not str or not _ORIGIN.fullmatch(self.origin)
@@ -278,7 +277,7 @@ class ProductOwnerBridge:
     """
 
     def __init__(self, *, policy, exchange, capture_call, host_gate, request_id,
-                 binding, deadline_ms, grant_id, capability_sha256, now_ms=None):
+                 binding, deadline_ms, grant_id, capability_sha256, max_carrier_wait_ms, now_ms=None):
         if (type(policy) is not OwnerPeerPolicy or not callable(exchange)
                 or not callable(getattr(exchange, "abort", None))
                 or inspect.iscoroutinefunction(exchange.abort)
@@ -295,6 +294,9 @@ class ProductOwnerBridge:
             if existing is not None and existing is not host_gate:
                 _deny()
             _SERVICE_GATES[gate_key] = host_gate
+        if type(max_carrier_wait_ms) is not int or not 0 < max_carrier_wait_ms <= 10000:
+            _deny()
+        self.max_carrier_wait_ms = max_carrier_wait_ms
         self.policy, self.exchange, self.capture_call = policy, exchange, capture_call
         self.host_gate = host_gate
         self.request_id, self.binding = _slot(request_id), _host_binding(binding)
@@ -346,7 +348,7 @@ class ProductOwnerBridge:
         at = self.now_ms()
         if type(at) is not int or at >= self.deadline_ms:
             _deny()
-        return min(OWNER_CARRIER_WAIT_MS, self.deadline_ms - at) / 1000
+        return min(self.max_carrier_wait_ms, self.deadline_ms - at) / 1000
 
     async def _exchange(self, channel, path, body):
         if (path not in (OPEN, OPERATION, POLL, REPLY)
@@ -631,7 +633,7 @@ class ProductOwnerBridge:
 
 def make_product_owner_bridge(*, policy, exchange, host_gate, request_id, binding,
                               deadline_ms, grant_id, capability_sha256,
-                              now_ms=None):
+                              max_carrier_wait_ms, now_ms=None):
     """Adapt ProductSession.make_owner_bridge without inventing an HTTP client."""
     def make(capture_call):
         return ProductOwnerBridge(
@@ -639,5 +641,5 @@ def make_product_owner_bridge(*, policy, exchange, host_gate, request_id, bindin
             host_gate=host_gate,
             request_id=request_id, binding=binding, deadline_ms=deadline_ms,
             grant_id=grant_id, capability_sha256=capability_sha256,
-            now_ms=now_ms)
+            max_carrier_wait_ms=max_carrier_wait_ms, now_ms=now_ms)
     return make

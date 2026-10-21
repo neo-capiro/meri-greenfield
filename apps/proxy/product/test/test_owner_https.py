@@ -1,4 +1,5 @@
 """Offline real-transport refusal/framing/cleanup checks; native TLS is unrun."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 import dataclasses
 import http.client
@@ -19,7 +20,7 @@ from apps.proxy.product.test.test_service_pair_discovery import fixture, peer_te
 
 def policy():
     return OwnerPeerPolicy('https://owner.invalid:8444','owner.invalid','owner-task','proxy-task',
-        'a'*64,'b'*64,'c'*64,'proxy-client')
+        'a'*64,'b'*64,'c'*64,'proxy-client', max_exchange_ms=3000)
 
 
 def exchange():
@@ -74,7 +75,7 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
                 item._send('operation',OPERATION,b'[]',item.now_ms()+1000)
         self.assertFalse(item.available);self.assertEqual(len(sent),1)
     def test_an_owner_refusal_is_one_reply_status_line_and_the_exchange_cap_is_15000(self):
-        item=exchange();lines=[];diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))
+        item=exchange();lines=[];diagnostics.install(write=lambda data:lines.append(data.decode('ascii')), burst=20, window=60)
         response=SimpleNamespace(status=403,version=11,will_close=False,length=0,
             getheaders=lambda:[('content-length','0'),('cache-control','no-store')],read=lambda _size:b'')
         connection=SimpleNamespace(sock=SimpleNamespace(settimeout=lambda _value:None),request=lambda *a,**kw:None,getresponse=lambda:response)

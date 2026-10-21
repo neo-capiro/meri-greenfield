@@ -1,34 +1,118 @@
-"""Time budgets for one proxied model request.
+"""Validate the canonical table delivered in reviewed proxy startup material.
 
-A request resolves its bearer with two owner exchanges (placement read, then admission read) under one exchange
-budget, and each exchange proves the service pair four times (proxy and owner, before and after). Live ECS/EC2
-latency made the original 3 s exchange and 5 s bootstrap impossible (20 Oct, attempt 2: the first two pair proofs
-alone used the 3 s and the owner's placement expired). The Node mirror is OWNER_MAX_REQUEST_MS in
-service-pair-discovery.mjs; the render emits the same 15000 for the owner request and ownerPeer.max_exchange_ms.
+No timing values originate here. The JavaScript table is rendered as data;
+Python checks its edges before native imports, clients or a listener exist.
 """
+import copy
+from ..qualification.state.pricing import StateDenied
 
-MAX_OWNER_EXCHANGE_MS = 15000
-"""Cap on ownerPeer.max_exchange_ms: both owner exchanges of one bearer resolution share this budget."""
+VERSION = "meri.hot-path-budgets/1"
+_REQUIRED = frozenset((
+    "proxy.exchange.max", "proxy.exchange.min", "proxy.exchange.carrier",
+    "proxy.request.check", "proxy.request.cleanup", "proxy.request.poll",
+    "proxy.bootstrap", "proxy.connection", "proxy.pair.fetch", "proxy.pair.lease",
+    "proxy.boto.connect", "proxy.boto.read", "proxy.boto.attempts",
+    "proxy.uvicorn.keepAlive", "proxy.uvicorn.shutdown", "proxy.native.start",
+    "proxy.native.stop", "proxy.resources.close", "proxy.owner.settle",
+    "proxy.startup.pair.window", "proxy.startup.pair.retry",
+    "proxy.diagnostics.burst", "proxy.diagnostics.window"))
 
-OWNER_CARRIER_WAIT_MS = 10000
-"""Bound on waiting for a free owner carrier (one pinned TLS connection). Waiting sends nothing, so it is never part of an
-exchange's own budget: the exchange clock starts once the carrier is held, and an expired wait is a plain refusal
-(OWNER_CARRIER_BUSY) that never poisons the host gate."""
 
-MIN_OWNER_EXCHANGE_MS = 8000
-"""After waiting for its carrier, an exchange whose caller deadline leaves less than this (or than the exchange budget, if
-smaller) is refused before sending: an exchange needs about 4-8 s at live-tail latency, and one started without that room
-would overrun and poison. A carrier that was free at once never applies this rule."""
+def _deny():
+    raise StateDenied("HOT_PATH_BUDGET_CONFIGURATION")
 
-IN_REQUEST_CHECK_SECONDS = (OWNER_CARRIER_WAIT_MS + MAX_OWNER_EXCHANGE_MS) / 1000 + 1
-"""Bound on each in-request freshness step (the opening refresh, session resolution and every watch refresh). Each is one
-owner exchange that may first wait for its carrier, so it gets the carrier wait plus the exchange budget and a second of
-margin; a shorter bound would cut a read that is still within its own limits and leave it running in its thread."""
 
-REQUEST_CLEANUP_SECONDS = IN_REQUEST_CHECK_SECONDS
-"""How long close waits for an owner exchange still running in a thread before quarantining the proxy until restart. A
-refresh is often in flight when a request ends; close must outlast the bound that refresh is still inside."""
+def _number(value):
+    return type(value) is int and 0 <= value <= 9007199254740991
 
-BOOTSTRAP_SECONDS = 25.0 + OWNER_CARRIER_WAIT_MS / 1000
-"""Cap and default for one request's bearer/ENI bootstrap: the exchange budget plus the runner ENI read, with margin, plus one
-carrier wait for its placement read. A bootstrap that overruns it still quarantines the proxy."""
+
+class HotPathBudgets:
+    def __init__(self, value):
+        if (type(value) is not dict or value.get("version") != VERSION
+                or type(value.get("roots")) is not dict or type(value.get("hops")) is not dict
+                or not _REQUIRED <= value["hops"].keys()):
+            _deny()
+        self._value = copy.deepcopy(value)
+        hops = self._value["hops"]
+        for root in ("turn", "startup", "shutdown", "request", "original"):
+            row = self._value["roots"].get(root)
+            if type(row) is not dict or not _number(row.get("ms")) or row["ms"] <= 0:
+                _deny()
+        # Schema invariant: rendered data cannot weaken the required two-second nesting policy.
+        if not _number(self._margin()) or self._margin() != 2000:
+            _deny()
+        values_by_id = {**self._value["roots"], **hops}
+        for hop, row in hops.items():
+            if type(hop) is not str or type(row) is not dict or row.get("kind") not in ("nested", "serial", "background", "derived", "library", "independent"):
+                _deny()
+            if row.get("parent") is not None and row["parent"] not in values_by_id:
+                _deny()
+            if row.get("unbounded") is True:
+                if type(row.get("reason")) is not str or not row["reason"].strip() or row.get("boundedBy") not in values_by_id:
+                    _deny()
+            values = row.get("ms") if type(row.get("ms")) is list else [row.get("ms")]
+            if not all(_number(value) for value in values):
+                _deny()
+            if row["kind"] == "derived":
+                if type(row.get("reason")) is not str or not row["reason"].strip():
+                    _deny()
+            if row["kind"] == "independent":
+                if (not _number(row["ms"]) or row["ms"] <= 0
+                        or type(row.get("owner")) is not str or not row["owner"].strip()
+                        or type(row.get("reason")) is not str or not row["reason"].strip()):
+                    _deny()
+            if row["kind"] == "nested":
+                parent = hops.get(row.get("parent"), self._value["roots"].get(row.get("parent")))
+                if parent is None or not _number(parent.get("ms")) or row["ms"] > parent["ms"] - self._margin():
+                    _deny()
+            if row["kind"] == "serial":
+                if type(row.get("children")) is not list or not row["children"]:
+                    _deny()
+                for child in row["children"]:
+                    if child not in hops or hops[child]["ms"] > row["ms"] - self._margin():
+                        _deny()
+            if row["kind"] == "background":
+                period = values_by_id.get(row.get("period"), {}).get("ms", row.get("periodMs"))
+                expiry = values_by_id.get(row.get("expiry"), {}).get("ms", row.get("expiryMs"))
+                if not _number(period) or period <= 0 or not _number(expiry) or expiry < 2 * period:
+                    _deny()
+        for hop in _REQUIRED:
+            self.ms(hop)
+
+    def _margin(self):
+        # Read the table field after pinning its schema invariant during admission.
+        try:
+            return self._value["hops"]["budget.margin"]["ms"]
+        except (KeyError, TypeError):
+            _deny()
+
+    def ms(self, hop):
+        try:
+            row = self._value["hops"][hop]
+        except (KeyError, TypeError):
+            _deny()
+        if row.get("unbounded") is True:
+            return None
+        value = row.get("ms")
+        if not _number(value):
+            _deny()
+        return value
+
+    def seconds(self, hop):
+        value = self.ms(hop)
+        if value is None:
+            return None
+        return value // 1000 if value % 1000 == 0 else value / 1000
+
+    @property
+    def value(self):
+        return copy.deepcopy(self._value)
+
+
+def load_hot_path_budgets(value):
+    try:
+        return HotPathBudgets(value)
+    except StateDenied:
+        raise
+    except (TypeError, ValueError, KeyError, OverflowError):
+        _deny()

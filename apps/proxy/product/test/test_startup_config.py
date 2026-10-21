@@ -1,4 +1,5 @@
 """Closed data/file/environment controls; no native dependencies or credentials."""
+from apps.proxy.product.test.budget_fixture import budget_data
 import copy
 import hashlib
 import json
@@ -26,7 +27,7 @@ def configuration():
         "ownerPeer": peer_template(),
         "ownerTls": {"caFile": ref("ca.pem"), "certificateFile": ref("client.pem"),
                      "privateKeyFile": ref("client.key")},
-        "serviceTasks": pair}
+        "serviceTasks": pair, "budgets": budget_data()}
 
 
 def parse(value):

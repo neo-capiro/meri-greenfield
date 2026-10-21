@@ -9,6 +9,7 @@ import stat
 import time
 from ..qualification.state.pricing import PRICING_REVISION, StateDenied
 from .service_pair_discovery import parse_service_pair_configuration, parse_owner_peer_template
+from .budgets import load_hot_path_budgets
 
 _SHA = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -54,6 +55,7 @@ def parse_product_proxy_startup(raw, expected_sha256, *, now_ms=None):
     try:
         value = json.loads(raw.decode("utf-8", "strict"), object_pairs_hook=_pairs,
                            parse_constant=lambda _value: _deny())
+        load_hot_path_budgets(value.get("budgets"))
         telemetry = value.get("telemetry")
         if "telemetry" in value:
             _closed(telemetry, ("environment",))
@@ -61,7 +63,7 @@ def parse_product_proxy_startup(raw, expected_sha256, *, now_ms=None):
                 _deny()
         _closed({k: v for k, v in value.items() if k != "telemetry"}, ("schemaVersion", "enabled", "deploymentRevision", "expiresAtMs",
                         "pricingRevision", "serverTls", "ownerPeer", "ownerTls",
-                        "serviceTasks"))
+                        "serviceTasks", "budgets"))
         at = (now_ms or (lambda: time.time_ns()//1000000))()
         if (type(value["schemaVersion"]) is not int or value["schemaVersion"] != 1
                 or value["enabled"] is not True

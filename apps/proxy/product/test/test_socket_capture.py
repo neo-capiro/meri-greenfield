@@ -1,4 +1,5 @@
 """Synthetic transport controls only; no socket, listener or TLS handshake."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 from contextvars import copy_context
 import socket
@@ -61,7 +62,7 @@ class SocketCaptureTests(unittest.IsolatedAsyncioTestCase):
         resolve = create_bearer_eni_trusted_resolver(
             read_direct_tls_socket=self.capture.read_direct_tls_socket,
             resolve_bearer_sha256=lambda sha: grant if sha == SHA else None,
-            observe_task_eni=reader(aws))
+            observe_task_eni=reader(aws), max_request_seconds=900)
         with self.capture.bind_request(scope, self.transport, deadline=time.monotonic() + 10):
             trusted = await asyncio.to_thread(resolve, scope)
         self.assertEqual(trusted.admission.peer.ipv4, "10.77.0.9")

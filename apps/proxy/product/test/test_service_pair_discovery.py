@@ -1,4 +1,5 @@
 """Scripted task-role SDK boundary; no AWS, TLS, provider or credential I/O."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import copy
 from datetime import datetime, timezone
 from types import SimpleNamespace
@@ -81,13 +82,13 @@ def fixture(now=None):
         for method in methods:
             setattr(client, method, lambda _method=method, **kwargs: call(_method, kwargs))
     return SimpleNamespace(configuration=c, ecs=ecs, ec2=ec2, calls=calls, changes=changes, ids=ids, at=at, task_id=task_id,
-        reader=lambda **kw: ProductServicePairDiscovery(configuration=c, ecs_client=ecs, ec2_client=ec2, enabled=True, **kw))
+        reader=lambda **kw: ProductServicePairDiscovery(configuration=c, ecs_client=ecs, ec2_client=ec2, enabled=True, **kw, max_request_ms=3000, max_lease_ms=30000))
 
 class DiscoveryTests(unittest.TestCase):
     def test_closed_prelaunch_service_schema_and_default_hold(self):
         f = fixture()
         self.assertFalse(parse_service_pair_configuration(f.configuration)['owner']['allowPrimaryInProgress'])
-        r = ProductServicePairDiscovery(configuration=f.configuration, ecs_client=f.ecs, ec2_client=f.ec2)
+        r = ProductServicePairDiscovery(configuration=f.configuration, ecs_client=f.ecs, ec2_client=f.ec2, max_request_ms=3000, max_lease_ms=30000)
         with self.assertRaises(Exception):
             r.read(deadline_ms=f.at+1000)
         self.assertEqual(f.calls, [])
@@ -258,7 +259,7 @@ class DiscoveryTests(unittest.TestCase):
 
     def test_refusal_names_its_phase_and_the_exchange_budget_cap_is_15000(self):
         from apps.proxy.product import refusal_diagnostics as diagnostics
-        lines = []; diagnostics.install(write=lambda data: lines.append(data.decode('ascii')))
+        lines = []; diagnostics.install(write=lambda data: lines.append(data.decode('ascii')), burst=20, window=60)
         try:
             f = fixture(); f.changes['describe_services'] = lambda v, _: v['services'][1].update(pendingCount=1) or v
             with self.assertRaises(Exception):

@@ -1,4 +1,5 @@
 """Synthetic pinned-protocol controls; no listener or TLS handshake."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 from contextlib import contextmanager
 import ssl
@@ -110,7 +111,7 @@ class UvicornTlsProtocolTests(unittest.IsolatedAsyncioTestCase):
 
     def protocol(self):
         with self.pinned():
-            protocol = create_product_h11_protocol(self.service)
+            protocol = create_product_h11_protocol(self.service, max_connection_seconds=900)
         return protocol(self.config(protocol), object(), {})
 
     async def send(self, message):
@@ -168,17 +169,17 @@ class UvicornTlsProtocolTests(unittest.IsolatedAsyncioTestCase):
     async def test_wrong_version_or_server_config_refuses_before_dispatch(self):
         with self.pinned(uvicorn="0.41.0"):
             with self.assertRaises(StateDenied):
-                create_product_h11_protocol(self.service)
+                create_product_h11_protocol(self.service, max_connection_seconds=900)
         with self.pinned(h11="0.15.0"):
             with self.assertRaises(StateDenied):
-                create_product_h11_protocol(self.service)
+                create_product_h11_protocol(self.service, max_connection_seconds=900)
         for invalid in (True, 0, 901):
             with self.subTest(limit=invalid), self.pinned():
                 with self.assertRaises(StateDenied):
                     create_product_h11_protocol(
                         self.service, max_connection_seconds=invalid)
         with self.pinned():
-            protocol = create_product_h11_protocol(self.service)
+            protocol = create_product_h11_protocol(self.service, max_connection_seconds=900)
         for field, value in (("loaded", False), ("http_protocol_class", FakeH11Protocol),
                              ("loaded_app", object()), ("proxy_headers", True),
                              ("ws", "auto"), ("ws_protocol_class", object()),
@@ -195,7 +196,7 @@ class UvicornTlsProtocolTests(unittest.IsolatedAsyncioTestCase):
         tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         with self.pinned():
             config = create_product_h11_config(
-                self.service, server_tls_context=tls)
+                self.service, server_tls_context=tls, budgets=TEST_BUDGETS)
         self.assertIs(config.options["app"], self.service)
         self.assertEqual((config.options["host"], config.options["port"]),
                          ("0.0.0.0", 8443))
@@ -203,20 +204,22 @@ class UvicornTlsProtocolTests(unittest.IsolatedAsyncioTestCase):
                           config.options["interface"], config.options["lifespan"]),
                          ("asyncio", "none", "asgi3", "on"))
         self.assertIs(config.options["proxy_headers"], False)
+        self.assertEqual(config.options["timeout_keep_alive"], 5)
+        self.assertIsNone(config.options["timeout_graceful_shutdown"])
         self.assertTrue(issubclass(config.options["http"], FakeH11Protocol))
         self.assertIs(config.options["ssl_context_factory"](None, None), tls)
         with self.pinned():
             with self.assertRaises(StateDenied):
                 create_product_h11_config(
-                    self.service, server_tls_context=None)
+                    self.service, server_tls_context=None, budgets=TEST_BUDGETS)
 
     async def test_default_and_missing_ports_do_not_start_server(self):
         FakeServer.served = False
         with self.pinned():
             with self.assertRaises(StateDenied):
-                await serve_product_proxy()
+                await serve_product_proxy(budgets=TEST_BUDGETS, bootstrap_seconds=35)
             with self.assertRaises(StateDenied):
-                await serve_product_proxy(enabled=True)
+                await serve_product_proxy(enabled=True, budgets=TEST_BUDGETS, bootstrap_seconds=35)
         self.assertFalse(FakeServer.served)
 
     async def test_explicit_source_composition_passes_exact_ports_to_server(self):
@@ -232,7 +235,7 @@ class UvicornTlsProtocolTests(unittest.IsolatedAsyncioTestCase):
                 resolve_bearer_sha256=lambda _: None,
                 ecs_client=object(), ec2_client=object(),
                 resolve_session=lambda _: None,
-            )
+             budgets=TEST_BUDGETS, bootstrap_seconds=35)
         self.assertTrue(FakeServer.served)
         self.assertIs(FakeServer.config.options["app"], self.service)
         self.assertIs(compose.call_args.kwargs["direct_tls_capture"], self.capture)
@@ -246,7 +249,7 @@ class UvicornTlsProtocolTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(StateDenied):
                 await serve_product_proxy(enabled=True, server_tls_context=tls,
                     direct_tls_capture=self.capture, resolve_bearer_sha256=lambda _value: None,
-                    ecs_client=object(), ec2_client=object(), resolve_session=lambda _life: None)
+                    ecs_client=object(), ec2_client=object(), resolve_session=lambda _life: None, budgets=TEST_BUDGETS, bootstrap_seconds=35)
 
 
 if __name__ == "__main__":

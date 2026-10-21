@@ -12,7 +12,7 @@ const sum=record=>Object.values(record).reduce((total,row)=>total+Object.values(
 
 test('owner service gate emits its poison transition once, independent of refusal rate limiting',()=>{
  const {lines,telemetry}=fixture(),legacy=[];
- const diagnostics=createOwnerDiagnostics({write:line=>legacy.push(line),burst:1,telemetry});
+ const diagnostics=createOwnerDiagnostics({burst:20,windowMs:60000,write:line=>legacy.push(line),burst:1,telemetry});
  diagnostics.refused('placement','facts',Error('private error'));diagnostics.refused('placement','facts',Error('private error'));
  const gate=createProductOwnerServiceGate({telemetry});const done=gate.begin();gate.poison();gate.poison();done();
  assert.equal(gate.available,false);assert.equal(gate.pending,0);
@@ -25,7 +25,7 @@ test('owner service gate emits its poison transition once, independent of refusa
 test('owner health telemetry failure leaves poison and legacy diagnostic behavior intact',()=>{
  const {telemetry}=fixture(()=>{throw Error('closed writer');});
  const gate=createProductOwnerServiceGate({telemetry});assert.doesNotThrow(()=>gate.poison());assert.equal(gate.available,false);
- const legacy=[],diagnostics=createOwnerDiagnostics({write:line=>legacy.push(line),telemetry});
+ const legacy=[],diagnostics=createOwnerDiagnostics({burst:20,windowMs:60000,write:line=>legacy.push(line),telemetry});
  assert.doesNotThrow(()=>diagnostics.health('facts','quarantined','PRODUCT_OWNER_FACTS_UNAVAILABLE'));
  diagnostics.refused('placement','facts',Error('sensitive'));assert.equal(legacy.length,1);
 });

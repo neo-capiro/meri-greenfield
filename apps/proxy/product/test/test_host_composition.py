@@ -1,4 +1,5 @@
 """Focused offline checks of the product host wiring; no model or SQL call."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import hashlib
 import importlib
 import inspect
@@ -132,7 +133,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
         ):
             with self.subTest(ports=tuple(k for k, v in ports.items() if v is None)):
                 with self.assertRaisesRegex(Exception, "PRODUCT_PROXY_COMPOSITION_REFUSED"):
-                    PRODUCT.create_product_proxy_app(**ports)
+                    PRODUCT.create_product_proxy_app(**ports, limits=TEST_LIFETIME_LIMITS)
 
     async def current(self, request):
         if self.archived:
@@ -506,7 +507,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
                 resolve_bearer_sha256=lambda _: None,
                 observe_task_eni=lambda *_: None,
                 resolve_session=resolve, invoke_litellm=invoke,
-                limits=LifetimeLimits(poll_seconds=.05, check_seconds=.5))
+                limits=LifetimeLimits(poll_seconds=.05, check_seconds=.5), bootstrap_seconds=35, max_connection_seconds=900)
         request = json.dumps({"model": PRODUCT.MODEL_ALIAS,
                               "messages": [{"role": "user", "content": "synthetic"}],
                               "tools": []}).encode()
@@ -565,7 +566,7 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
                 observe_task_eni=lambda *_: None,
                 resolve_session=lambda _: None,
                 invoke_litellm=lambda *_: None,
-                bootstrap_seconds=seconds)
+                bootstrap_seconds=seconds, limits=TEST_LIFETIME_LIMITS, max_connection_seconds=900)
 
     async def _call(self, app, scope):
         sent = []
@@ -646,7 +647,7 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
             gate.wait(2)
             raise PRODUCT.StateDenied("late")
 
-        diagnostics.install(write=lambda data: lines.append(data.decode("ascii")))
+        diagnostics.install(write=lambda data: lines.append(data.decode("ascii")), burst=20, window=60)
         app = self._app(slow, seconds=.03)
         try:
             self.assertEqual((await self._call(app, scope))[0]["status"], 403)
@@ -657,7 +658,8 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(lines, ["PRODUCT_PROXY_REFUSED gate=bootstrap step=timeout at=placement-read code=DEADLINE\n",
                                  "PRODUCT_PROXY_REFUSED gate=bootstrap step=poisoned code=REFUSED\n"])
         parameter = inspect.signature(PRODUCT.create_bearer_eni_product_proxy_app).parameters["bootstrap_seconds"]
-        self.assertEqual(parameter.default, 35.0)  # 25 s plus one 10 s owner carrier wait.
+        self.assertIs(parameter.default, inspect.Parameter.empty)
+        self.assertEqual(TEST_BUDGETS.seconds("proxy.bootstrap"), 35.0)
         self._app(lambda _: None, seconds=35)
         with self.assertRaises(PRODUCT.StateDenied):
             self._app(lambda _: None, seconds=35.5)
@@ -689,15 +691,15 @@ class BoundedBootstrapTests(unittest.IsolatedAsyncioTestCase):
 
 class ProductLifetimeLimitTests(unittest.TestCase):
     def test_product_requests_bound_owner_checks_and_close_by_the_exchange_budget(self):
-        from apps.proxy.product.budgets import MAX_OWNER_EXCHANGE_MS, OWNER_CARRIER_WAIT_MS
         from apps.proxy.product.host_composition import (
-            PRODUCT_LIFETIME_LIMITS, create_bearer_eni_product_proxy_app, create_product_proxy_app)
+            product_lifetime_limits, create_bearer_eni_product_proxy_app, create_product_proxy_app)
+        PRODUCT_LIFETIME_LIMITS = product_lifetime_limits(TEST_BUDGETS)
         # One owner exchange that may first wait for its carrier: the wait, the exchange budget and a second of margin.
-        self.assertEqual(PRODUCT_LIFETIME_LIMITS.check_seconds, (OWNER_CARRIER_WAIT_MS + MAX_OWNER_EXCHANGE_MS) / 1000 + 1)
+        self.assertEqual(PRODUCT_LIFETIME_LIMITS.check_seconds, (TEST_BUDGETS.ms("proxy.exchange.carrier") + TEST_BUDGETS.ms("proxy.exchange.max")) / 1000 + 1)
         self.assertGreaterEqual(PRODUCT_LIFETIME_LIMITS.cleanup_seconds, PRODUCT_LIFETIME_LIMITS.check_seconds)
         for factory in (create_product_proxy_app, create_bearer_eni_product_proxy_app):
             with self.subTest(factory=factory.__name__):
-                self.assertIs(inspect.signature(factory).parameters["limits"].default, PRODUCT_LIFETIME_LIMITS)
+                self.assertIs(inspect.signature(factory).parameters["limits"].default, inspect.Parameter.empty)
 
 
 if __name__ == "__main__":

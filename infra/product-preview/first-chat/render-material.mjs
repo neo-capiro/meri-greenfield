@@ -75,7 +75,7 @@ import {productRunnerMeasurement} from '../../../apps/runtime/native-authority/e
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
-import {OWNER_MAX_REQUEST_MS} from '../../../apps/proxy/product/service-pair-discovery.mjs';
+import {hotPathBudgets,budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION,PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
@@ -593,6 +593,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  // `input/admit` re-runs that recheck about five times (~2.4 s each), so 12000ms cancelled the first admit mid-flight
  // (control aborted its own Core call; ALB 460). 25000ms stays inside the frontend proxy's 30 s request budget.
  const limits={startupMs:30000,shutdownMs:10000,requestMs:25000,requestBytes:131072};
+ const hotBudgets=hotPathBudgets({limits,runWindowMs});
  const control={version:1,profile:'isolated-preview',sourceEnabled,limits,telemetry:{...d.telemetry},
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,loopback:false,maxResponseBytes:2097152},
   http:{hostname:'0.0.0.0',port:8080,frontendOrigin:k.frontendOrigin},database:{connectionFile:PATHS.database},temporal:temporal('control'),
@@ -600,7 +601,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   privateHttp:{hostname:'0.0.0.0',port:8082,frontendOrigin:controlPrivate},
   taskRouter:{enabled:true,runnerCaFile:PATHS.runnerCa,zone:taskRouterZone,vpcId:d.vpcId,poststart:{enabled:true,runnerCaKeyFile:PATHS.runnerCaKey,controlCaFile:PATHS.controlCa}},...featureKeys};
  // G1 applies to control and the Temporal worker; the runner receives it only through control's prepared delivery.
- const worker={version:1,profile:'isolated-preview',sourceEnabled,limits,
+ const worker={version:1,profile:'isolated-preview',sourceEnabled,limits,runWindowMs,
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,loopback:false,maxResponseBytes:2097152,preparedKickoff:true},
   http:{hostname:'0.0.0.0',port:8081,frontendOrigin:k.frontendOrigin},temporal:temporal('temporal-worker')};
 
@@ -637,12 +638,12 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   serviceTasks,pricing:{modelId:d.model.modelId,profileId:d.model.profileId,revision:d.model.pricingRevision,validUntilMs:expiresAtMs,
    actualInputMicroUSDPerK:d.model.actualInputMicroUSDPerK,reserveInputMicroUSDPerK:d.model.reserveInputMicroUSDPerK,outputMicroUSDPerK:d.model.outputMicroUSDPerK,
    maxInputTokens:d.model.maxInputTokens,maxOutputTokens:d.model.maxOutputTokens},
-  limits:{maxRequestMs:OWNER_MAX_REQUEST_MS,maxFactBytes:131072,maxLeaseMs:30000}};
+  limits:{maxRequestMs:budget(hotBudgets,'owner.request'),maxFactBytes:131072,maxLeaseMs:30000}};
  const ref=(path,bytes)=>({path,sha256:sha(bytes)});
- const proxy={schemaVersion:1,enabled:true,telemetry:{...d.telemetry},deploymentRevision,expiresAtMs,pricingRevision:PRODUCT_PROXY_PRICING_REVISION,
+ const proxy={schemaVersion:1,enabled:true,budgets:hotBudgets,telemetry:{...d.telemetry},deploymentRevision,expiresAtMs,pricingRevision:PRODUCT_PROXY_PRICING_REVISION,
   serverTls:{certificateFile:ref(PATHS.proxyServerCert,pki.certs['proxy-server']),privateKeyFile:ref(PATHS.proxyServerKey,pki.keys['proxy-server']),certificateSha256:pins.der['proxy-server']},
   ownerPeer:{origin:o.ownerOrigin,server_name:d.names.owner,server_cert_sha256:pins.der['owner-server'],server_issuer_sha256:pins.der['owner-bridge-ca'],
-   client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:OWNER_MAX_REQUEST_MS},
+   client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:budget(hotBudgets,'proxy.exchange.max')},
   ownerTls:{caFile:ref(PATHS.proxyOwnerCa,pki.certs['owner-bridge-ca']),certificateFile:ref(PATHS.proxyOwnerCert,pki.certs['proxy-owner-client']),privateKeyFile:ref(PATHS.proxyOwnerKey,pki.keys['proxy-owner-client'])},
   serviceTasks};
 

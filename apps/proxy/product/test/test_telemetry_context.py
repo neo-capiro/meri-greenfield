@@ -1,4 +1,5 @@
 """Concurrent request correlation, counts and product wiring without AWS calls."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 import json
 import threading
@@ -132,7 +133,7 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
                 return result
             def close(self):
                 pass
-        resources = _Resources(); client = resources.track_client(Client(), ['describe_tasks'])
+        resources = _Resources(budgets=TEST_BUDGETS); client = resources.track_client(Client(), ['describe_tasks'])
         with telemetry.request():
             self.assertIs(client.describe_tasks(), result)
             for error in errors:
@@ -170,7 +171,7 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_same_raw_diagnostics_writer_is_used_without_refusal_rate_limit(self):
         raw = []
-        diagnostics.install(write=raw.append, burst=1)
+        diagnostics.install(write=raw.append, burst=1, window=60)
         lines.install(write=diagnostics.raw_writer)
         diagnostics.refused('bootstrap', 'busy')
         for _ in range(3):

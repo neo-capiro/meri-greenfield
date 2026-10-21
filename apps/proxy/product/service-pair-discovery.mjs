@@ -1,5 +1,6 @@
 /** Fresh approved service tasks, never original runner placement authority.
  * Revision/certificate pins are reviewed configuration, not AWS attestation. */
+import {HOP} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
 import {health} from './owner-diagnostics.mjs';
 import {createRequire} from 'node:module';
@@ -11,7 +12,7 @@ const fail=()=>{throw Error('PRODUCT_SERVICE_TASK_LEASE_UNAVAILABLE');};
 /** One owner exchange: a fresh pair discovery before and after it on each side, placement or admission currentness in between.
  * Live each discovery takes 0.5-1.5 s, so one model request (two exchanges) needs about 5-13 s; the proxy's shared exchange
  * cutoff (ownerPeer.max_exchange_ms) and the owner's per-request limit are both bounded by this. */
-export const OWNER_MAX_REQUEST_MS=15000;
+export const OWNER_MAX_REQUEST_MS=HOP['owner.request.cap'].ms;
 const prefix='arn:aws:ecs:us-east-1:967807252336:',iam='arn:aws:iam::967807252336:role/';
 const name=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,255}$/u.test(v);
 const instant=v=>Number.isSafeInteger(v)&&v>0;

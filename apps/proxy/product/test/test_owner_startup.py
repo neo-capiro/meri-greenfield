@@ -1,4 +1,5 @@
 """Offline placement constructor boundary; no server or native dependencies."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 import json
 import ssl
@@ -51,7 +52,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
             deployment_revision='reviewed-v1',service_pair_reader=reader)
         gate=OwnerHostGate()
         startup=ProductOwnerStartup(policy=policy,exchange=transport,host_gate=gate,owner_loop=asyncio.get_running_loop(),
-            count_client=object(),make_provider_transport=lambda:None,pricing_revision='f'*64)
+            count_client=object(),make_provider_transport=lambda:None,pricing_revision='f'*64, budgets=TEST_BUDGETS)
         return issued,policy,transport,gate,startup
 
     async def test_a_slow_owner_placement_is_one_deadline_line_saying_where_the_time_went(self):
@@ -59,7 +60,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
         _issued,_policy,transport,gate,startup=self._startup(max_exchange_ms=300);lines=[]
         def late_owner(channel,path,body,cutoff):
             time.sleep(.6)
-        diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))
+        diagnostics.install(write=lambda data:lines.append(data.decode('ascii')), burst=20, window=60)
         try:
             with patch.object(transport,'_send',side_effect=late_owner),diagnostics.request():
                 with self.assertRaises(Exception):
@@ -78,7 +79,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
         lock=startup.state[3]['admission']
         await lock.acquire()
         try:
-            with (patch('apps.proxy.product.owner_startup.OWNER_CARRIER_WAIT_MS',50),
+            with (patch.object(startup, 'budgets', budget_fixture(**{'proxy.exchange.carrier': 50})),
                   patch.object(transport,'_send',side_effect=lambda *call:sent.append(call))):
                 with self.assertRaisesRegex(Exception,'^OWNER_CARRIER_BUSY$'):
                     await asyncio.to_thread(startup.resolve_bearer_sha256,'a'*64)

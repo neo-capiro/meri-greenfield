@@ -3,6 +3,7 @@
 These exercise the actual lifecycle and existing owner startup, not native
 LiteLLM success, an mTLS handshake, AWS authorization or a model dispatch.
 """
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 from contextlib import asynccontextmanager, contextmanager, nullcontext
 import hashlib
@@ -43,7 +44,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
         actual_app.router = app.router
         native = SimpleNamespace(app=actual_app)
         gate = SimpleNamespace(check_loaded=lambda: events.append("loaded-check"), close=lambda: None)
-        resources = main._Resources()
+        resources = main._Resources(budgets=TEST_BUDGETS)
         with patch.dict(os.environ, {}, clear=True), \
              patch.object(main.metadata, "version", return_value="1.104.2"), \
              patch.object(main, "import_module", return_value=native), \
@@ -60,7 +61,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
         await resources.close()
 
     async def test_lifespan_config_drift_and_pending_startup_cannot_pass(self):
-        resources = main._Resources()
+        resources = main._Resources(budgets=TEST_BUDGETS)
         ready = asyncio.Event()
         async def pending():
             await ready.wait()
@@ -75,7 +76,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
             await resources.close()  # Uncertainty stays sticky even after cancellation settles.
 
     async def test_native_factory_timeout_stays_unknown_after_thread_late_completion(self):
-        resources = main._Resources()
+        resources = main._Resources(budgets=TEST_BUDGETS)
         entered, release, completed = threading.Event(), threading.Event(), threading.Event()
         def factory():
             entered.set(); release.wait(1); completed.set()
@@ -100,7 +101,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
                 return {"synthetic": True}
             def close(self):
                 self.closed = True
-        client = Client(); resources = main._Resources()
+        client = Client(); resources = main._Resources(budgets=TEST_BUDGETS)
         resources.track_client(client, ("describe_tasks",))
         task = asyncio.create_task(asyncio.to_thread(client.describe_tasks))
         try:
@@ -213,6 +214,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
                          {"--from=assembly"})
 
 
+
 def _not_running(role):
     def change(reply, _kwargs):
         for s in reply['services']:
@@ -221,6 +223,7 @@ def _not_running(role):
                 s['pendingCount'] = s['deployments'][0]['pendingCount'] = 1
         return reply
     return change
+
 
 
 class RefusalDiagnosticsWiringTests(unittest.TestCase):
@@ -236,8 +239,8 @@ class RefusalDiagnosticsWiringTests(unittest.TestCase):
             events.append("run")
 
         with (patch.object(main, "_environment"), patch.object(main, "read_reviewed_file", return_value=b"{}"),
-              patch.object(main, "parse_product_proxy_startup", return_value=object()),
-              patch.object(main.diagnostics, "install_stderr", side_effect=lambda: events.append("install")),
+              patch.object(main, "parse_product_proxy_startup", return_value=SimpleNamespace(value={"budgets": budget_data()})),
+              patch.object(main.diagnostics, "install_stderr", side_effect=lambda **_options: events.append("install")),
               patch.object(main, "_quiet_native_output", quiet), patch.object(main, "run_product_proxy", run)):
             self.assertEqual(main.main(["--config", "/run/meri/proxy.json", "--config-sha256", "a" * 64]), 0)
         self.assertEqual(events, ["install", "quiet", "run"])
@@ -247,10 +250,12 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
     """Bounded startup wait for the service pair through the actual executable
     path; native, SDK, TLS and serving constructors stay synthetic."""
 
-    async def _run(self, services, *, tls_check=None, window=5, interval=.01):
+    async def _run(self, services, *, tls_check=None, window=5, interval=.01, clock_step=None):
         value = configuration()
         value['serviceTasks'] = services.configuration
         value['expiresAtMs'] = services.configuration['expiresAtMs']
+        value['budgets']['hops']['proxy.startup.pair.window']['ms'] = int(window * 1000)
+        value['budgets']['hops']['proxy.startup.pair.retry']['ms'] = int(interval * 1000)
         accepted = parse(value)
         served, tls = [], []
         async def serve(**kwargs):
@@ -264,17 +269,20 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
         class Client:
             def close(self):
                 pass
-        sleeps = []
+        sleeps, elapsed = [], [0.0]
         real_sleep = asyncio.sleep
+        # Keep a valid table margin while exercising expiry without a real multi-second wait.
+        clock = SimpleNamespace(monotonic=lambda: elapsed[0], time_ns=time.time_ns)
         async def sleep(seconds):
             sleeps.append(seconds)
+            if clock_step is not None:
+                elapsed[0] += clock_step
             await real_sleep(seconds)
         with patch.dict(os.environ, {}, clear=True), patch.object(main, "_running", False), \
              patch.object(main, "_environment"), patch.object(main.sys, "platform", "linux"), \
              patch.object(main.sys, "version_info", (3,13,5)), \
-             patch.object(main, "_PAIR_STARTUP_WINDOW_SECONDS", window), \
-             patch.object(main, "_PAIR_RETRY_INTERVAL_SECONDS", interval), \
              patch.object(main.asyncio, "sleep", sleep), \
+             (patch.object(main, "time", clock) if clock_step is not None else nullcontext()), \
              patch.object(main, "_check_reviewed_tls_files", side_effect=tls_check), \
              patch.object(main, "_tls", side_effect=compiled_tls), \
              patch.object(main, "_native_bootstrap", side_effect=native), \
@@ -356,7 +364,7 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
         services = service_fixture()
         services.changes['describe_services'] = _not_running('proxy')
         with self.assertRaises(main.StateDenied) as raised:
-            await self._run(services, window=.2, interval=.01)
+            await self._run(services, window=5, interval=.01, clock_step=1)
         # Not CleanupUnknown: main() still maps this to exit 78, not 75.
         self.assertIsNot(type(raised.exception), main.CleanupUnknown)
         self.assertEqual(str(raised.exception), 'PRODUCT_SERVICE_PAIR_DENIED')
@@ -375,13 +383,13 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.last.served, [])
 
     async def test_unsettled_native_read_or_retired_reader_is_terminal_without_retry(self):
-        resources, calls = main._Resources(), []
+        resources, calls = main._Resources(budgets=TEST_BUDGETS), []
         async def unsettled(_factory, _resources, _seconds=5):
             calls.append(1)
             raise main.CleanupUnknown()
         reader = SimpleNamespace(available=True)
         with patch.object(main, "_bounded_native", side_effect=unsettled), \
-             patch.object(main, "_PAIR_RETRY_INTERVAL_SECONDS", .01):
+             patch.object(resources, "budgets", budget_fixture(**{"proxy.startup.pair.retry": 10})):
             with self.assertRaises(main.CleanupUnknown):
                 await main._read_startup_service_pair(reader, resources, time.time_ns()//1000000+60000)
         self.assertEqual(calls, [1])
@@ -391,9 +399,9 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
             reader.abort()
             return _not_running('proxy')(reply, kwargs)
         services.changes['describe_services'] = retire
-        with patch.object(main, "_PAIR_RETRY_INTERVAL_SECONDS", .01):
+        with patch.object(resources, "budgets", budget_fixture(**{"proxy.startup.pair.retry": 10})):
             with self.assertRaises(main.StateDenied) as raised:
-                await main._read_startup_service_pair(reader, main._Resources(), services.configuration['expiresAtMs'])
+                await main._read_startup_service_pair(reader, main._Resources(budgets=TEST_BUDGETS), services.configuration['expiresAtMs'])
         self.assertIsNot(type(raised.exception), main.CleanupUnknown)
         self.assertEqual(len([c for c in services.calls if c[0] == 'describe_services']), 1)
 
@@ -417,7 +425,7 @@ class InstalledNativeStartup(unittest.IsolatedAsyncioTestCase):
         from apps.proxy.product import native_auth
         from apps.proxy.qualification.runtime.lifetime import _request_lifetime
         from apps.proxy.qualification.test.test_ingress import KEY
-        resources = main._Resources()
+        resources = main._Resources(budgets=TEST_BUDGETS)
         fixture = AuthTests(methodName="test_real_product_authority_refreshes_and_projects_sha_model_only")
         fixture_started = False
         gate = None

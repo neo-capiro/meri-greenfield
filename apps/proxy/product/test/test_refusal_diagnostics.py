@@ -14,7 +14,7 @@ from apps.proxy.qualification.state.pricing import StateDenied
 class RefusalDiagnosticsTests(unittest.TestCase):
     def setUp(self):
         self.lines = []
-        diagnostics.install(write=lambda data: self.lines.append(data.decode("ascii")))
+        diagnostics.install(write=lambda data: self.lines.append(data.decode("ascii")), burst=20, window=60)
 
     def tearDown(self):
         diagnostics.uninstall()
@@ -71,17 +71,17 @@ class RefusalDiagnosticsTests(unittest.TestCase):
         at[0] = 60
         diagnostics.refused("bootstrap", "poisoned")
         self.assertEqual(len(self.lines), 4)
-        diagnostics.install(write=lambda data: (_ for _ in ()).throw(OSError("closed")))
+        diagnostics.install(write=lambda data: (_ for _ in ()).throw(OSError("closed")), burst=20, window=60)
         diagnostics.refused("bootstrap", "poisoned")
         for kwargs in ({}, {"fd": 2, "write": print}, {"fd": -1}, {"write": print, "burst": 0}, {"write": print, "window": 0}):
             with self.assertRaisesRegex(ValueError, "PRODUCT_PROXY_DIAGNOSTICS_CONFIGURATION"):
-                diagnostics.install(**kwargs)
+                diagnostics.install(**{"burst": 20, "window": 60, **kwargs})
 
     def test_the_kept_stderr_still_receives_lines_while_native_output_is_silenced(self):
         read, write = os.pipe()
         try:
             with patch.object(diagnostics.os, "dup", return_value=write) as dup:
-                diagnostics.install_stderr()
+                diagnostics.install_stderr(burst=20, window=60)
             dup.assert_called_once_with(2)
             with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()) as silenced:
                 diagnostics.refused("service", "not-ready")
@@ -92,7 +92,7 @@ class RefusalDiagnosticsTests(unittest.TestCase):
         diagnostics.uninstall()
         diagnostics.refused("service", "not-ready")  # not installed: silent, never raises
         with patch.object(diagnostics.os, "dup", side_effect=OSError("no stderr")):
-            diagnostics.install_stderr()
+            diagnostics.install_stderr(burst=20, window=60)
 
 
 if __name__ == "__main__":

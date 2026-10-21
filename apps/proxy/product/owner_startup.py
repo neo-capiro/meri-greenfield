@@ -14,7 +14,7 @@ import uuid
 from .owner_channel import (OwnerPeerPolicy, OwnerHostGate, OPERATION, OwnerCarrierBusy,
                             acquire_owner_carrier, owner_exchange_state, validate_owner_reply,
                             make_product_owner_bridge)
-from .budgets import OWNER_CARRIER_WAIT_MS
+from .budgets import HotPathBudgets
 from .owner_admission import ProductOwnerAdmissionReader
 from .owner_https import ProductOwnerHttpsExchange
 from .bearer_eni_admission import IssuedTaskNetwork
@@ -42,7 +42,7 @@ def decode_product_placement(value):
 class ProductOwnerStartup:
     """Trusted startup callbacks for the existing concrete proxy service."""
     def __init__(self, *, policy, exchange, host_gate, owner_loop, count_client,
-                 make_provider_transport, pricing_revision, body_limits=None,
+                 make_provider_transport, pricing_revision, budgets, body_limits=None,
                  now_ms=None):
         if (type(policy) is not OwnerPeerPolicy or type(exchange) is not ProductOwnerHttpsExchange
                 or exchange.policy is not policy
@@ -52,11 +52,16 @@ class ProductOwnerStartup:
                 or type(pricing_revision) is not str or len(pricing_revision) != 64
                 or any(c not in "0123456789abcdef" for c in pricing_revision)):
             _deny()
+        if type(budgets) is not HotPathBudgets:
+            _deny()
+        self.budgets = budgets
         self.policy,self.exchange,self.gate,self.loop=policy,exchange,host_gate,owner_loop
         self.loop_thread=threading.get_ident()
         self.now_ms=now_ms or (lambda:time.time_ns()//1000000)
         self.reader=ProductOwnerAdmissionReader(policy=policy,exchange=exchange,host_gate=host_gate,
-            owner_loop=owner_loop,now_ms=self.now_ms,max_exchange_ms=policy.max_exchange_ms)
+            owner_loop=owner_loop,now_ms=self.now_ms,max_exchange_ms=policy.max_exchange_ms,
+            max_carrier_wait_ms=budgets.ms("proxy.exchange.carrier"),
+            min_exchange_ms=budgets.ms("proxy.exchange.min"), settle_ms=budgets.ms("proxy.owner.settle"))
         self.count_client,self.make_provider_transport=count_client,make_provider_transport
         self.pricing_revision,self.body_limits=pricing_revision,body_limits
         self.state=owner_exchange_state(exchange,policy,host_gate)
@@ -67,7 +72,7 @@ class ProductOwnerStartup:
         try:
             with diagnostics.phase("placement"):
                 # Waiting sends nothing (OwnerCarrierBusy on expiry); the exchange clock starts with the carrier held.
-                await acquire_owner_carrier(lock,min(OWNER_CARRIER_WAIT_MS,deadline-self.now_ms())/1000)
+                await acquire_owner_carrier(lock,min(self.budgets.ms("proxy.exchange.carrier"),deadline-self.now_ms())/1000)
                 try:
                     cutoff=min(deadline,self.now_ms()+self.policy.max_exchange_ms)
                     async with asyncio.timeout(max(.001,(cutoff-self.now_ms())/1000)):
@@ -105,13 +110,13 @@ class ProductOwnerStartup:
                 or any(c not in "0123456789abcdef" for c in capability)):
             _deny()
         started=self.now_ms();deadline=self.exchange.expires_at_ms
-        bound=min(deadline,started+OWNER_CARRIER_WAIT_MS+self.policy.max_exchange_ms)
+        bound=min(deadline,started+self.budgets.ms("proxy.exchange.carrier")+self.policy.max_exchange_ms)
         coroutine=self._placement(capability,uuid.uuid4().hex,started,deadline)
         future=None;step="placement"
         try:
             diagnostics.stage("placement-read")
             future=asyncio.run_coroutine_threadsafe(coroutine,self.loop)
-            issued,effective,cutoff=future.result(timeout=max(.001,(bound-self.now_ms())/1000+1))
+            issued,effective,cutoff=future.result(timeout=max(.001,(bound-self.now_ms())/1000+self.budgets.seconds("proxy.owner.settle")))
             step="admission";diagnostics.stage("admission-read")
             source=self.reader.resolve_for_issued_sync(issued=issued,capability_sha256=capability,
                 deadline_ms=min(cutoff,effective))
@@ -156,7 +161,8 @@ class ProductOwnerStartup:
             count_client=self.count_client,make_provider_transport=self.make_provider_transport,
             make_owner_bridge=make_product_owner_bridge(policy=self.policy,exchange=self.exchange,
                 host_gate=self.gate,request_id=request_id,binding=binding,deadline_ms=deadline,
-                grant_id=facts[1],capability_sha256=facts[2],now_ms=self.now_ms),
+                grant_id=facts[1],capability_sha256=facts[2],now_ms=self.now_ms,
+                max_carrier_wait_ms=self.budgets.ms("proxy.exchange.carrier")),
             check_current_conversation=current,limits=self.body_limits or BodyLimits())
 
     def close(self):

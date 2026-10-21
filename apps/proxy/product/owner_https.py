@@ -21,7 +21,6 @@ from .owner_channel import OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, 
 from .service_pair_discovery import ProductServicePairDiscovery
 from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
-from .budgets import MAX_OWNER_EXCHANGE_MS
 from ..qualification.state.pricing import StateDenied
 
 
@@ -116,7 +115,7 @@ class ProductOwnerHttpsExchange:
                 or material.context.verify_mode != ssl.CERT_REQUIRED
                 or material.context.check_hostname is not True
                 or material.client_cert_sha256 != policy.client_cert_sha256
-                or policy.max_exchange_ms > MAX_OWNER_EXCHANGE_MS
+                or policy.max_exchange_ms > 15000
                 or type(deployment_revision) is not str or not 1 <= len(deployment_revision) <= 128
                 or not deployment_revision.isascii()
                 or any(not (c.isalnum() or c in '_-') for c in deployment_revision)

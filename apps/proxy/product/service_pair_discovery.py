@@ -15,7 +15,6 @@ import time
 from ..qualification.state.pricing import StateDenied
 from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
-from .budgets import MAX_OWNER_EXCHANGE_MS
 
 _PREFIX = 'arn:aws:ecs:us-east-1:967807252336:'
 _IAM = 'arn:aws:iam::967807252336:role/'
@@ -79,7 +78,7 @@ def parse_owner_peer_template(raw):
             or v['origin'] != 'https://'+v['server_name']+':8444'
             or not all(_matches(r'[a-f0-9]{64}', v[k]) for k in ('server_cert_sha256', 'server_issuer_sha256', 'client_cert_sha256'))
             or v['server_cert_sha256'] == v['client_cert_sha256'] or not _matches(r'[A-Za-z0-9_-]{1,128}', v['client_subject'])
-            or type(v['max_exchange_ms']) is not int or not 1 <= v['max_exchange_ms'] <= MAX_OWNER_EXCHANGE_MS):
+            or type(v['max_exchange_ms']) is not int or not 1 <= v['max_exchange_ms'] <= 15000):
         _deny()
     return v
 
@@ -203,7 +202,7 @@ def _together(pool, *reads):
     return [future.result() for future in futures]
 
 class ProductServicePairDiscovery:
-    def __init__(self, *, configuration, ecs_client, ec2_client, now_ms=None, max_request_ms=3000, max_lease_ms=30000, enabled=False):
+    def __init__(self, *, configuration, ecs_client, ec2_client, max_request_ms, max_lease_ms, now_ms=None, enabled=False):
         self._pins = parse_service_pair_configuration(configuration)
         self._now = now_ms if now_ms is not None else (lambda: time.time_ns()//1000000)
         if (type(enabled) is not bool or type(max_request_ms) is not int or not 1 <= max_request_ms <= 3000

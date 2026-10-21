@@ -123,7 +123,7 @@ function policyCheck(value){
  */
 export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPorts,
  serviceGate,now,
- maxExchangeMs=3000}){
+ maxExchangeMs}){
  const policy=policyCheck(clientPolicy),telemetry=currentTurnTelemetry();
  if(!serviceGates.has(serviceGate)||!serviceGate.available||
     typeof persistedFacts?.resolve!=='function'||persistedFacts.available!==true||
@@ -345,7 +345,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
  * for createProductOwnerChannel. No listener or transport is supplied here.
  */
 export function createProductOwnerAdmissionChannel({clientPolicy,persistedFacts,ownerPorts,
- serviceGate,now,maxExchangeMs=3000}){
+ serviceGate,now,maxExchangeMs}){
  const policy=policyCheck(clientPolicy);
  if(typeof persistedFacts?.resolve!=='function'||persistedFacts.available!==true||
     typeof ownerPorts?.pool?.connect!=='function'||typeof ownerPorts.checkCurrentConversation!=='function'||

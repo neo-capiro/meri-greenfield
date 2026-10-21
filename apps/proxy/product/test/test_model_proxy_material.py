@@ -42,7 +42,8 @@ def _delivery(mutate=None):
                 ref["sha256"] = hashlib.sha256(_inert(ref["path"])).hexdigest()
     if mutate:
         mutate(value)
-    raw = json.dumps(value).encode()
+    # Match the compact JSON emitted by render-material.mjs inside the unchanged material byte cap.
+    raw = json.dumps(value, separators=(",", ":")).encode()
     files = {"/run/meri/proxy.json": raw}
     for section in ("serverTls", "ownerTls"):
         for key, ref in value[section].items():

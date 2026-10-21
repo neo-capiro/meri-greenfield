@@ -1,4 +1,5 @@
 """Synthetic private owner exchange; no TLS socket, owner or provider call."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 from dataclasses import replace
 import hashlib
@@ -124,7 +125,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
             "arn:aws:ecs:us-east-1:123456789012:task/owner-" +
             str(next(_SERVICE_SEQUENCE)),
             "arn:aws:ecs:us-east-1:123456789012:task/proxy-task", "a" * 64,
-            "b" * 64, "c" * 64, "proxy-task-v1")
+            "b" * 64, "c" * 64, "proxy-task-v1", max_exchange_ms=3000)
         self.host_gate = OwnerHostGate()
         self.now = lambda: self.value["deadlineMs"] - 5000
 
@@ -138,7 +139,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
             deadline_ms=self.value["deadlineMs"], grant_id="grant_A",
             capability_sha256=hashlib.sha256(
                 self.observation["proxyCredential"].encode()).hexdigest(),
-            now_ms=self.now)(captured)
+            now_ms=self.now, max_carrier_wait_ms=10000)(captured)
 
     def complete_observation(self):
         result = capture()
@@ -260,7 +261,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         next_port = FakeExchange(self.policy, request_id="request_B")
         next_bridge = self.bridge(next_port, request_id="request_B")
         reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=port,
-            host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now)
+            host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now, max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
         template = issued_fixture()[0].issued
         issued = replace(template, expires_at_ms=self.value["deadlineMs"],
             tags=tuple((key, str(self.value["deadlineMs"]) if key == "meri:expires-at-ms" else value)
@@ -290,7 +291,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
                 capability_sha256=bridge.capability_sha256, deadline_ms=self.value["deadlineMs"])
         with self.assertRaises(StateDenied):
             ProductOwnerAdmissionReader(policy=self.policy, exchange=next_port,
-                host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now)
+                host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now, max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
         self.assertEqual(port.calls, calls)
         self.assertEqual(next_port.calls, [], "no next reservation or provider dispatch is authorized")
 
@@ -411,7 +412,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
                 binding=self.value["binding"], deadline_ms=self.value["deadlineMs"],
                 grant_id="grant_A", capability_sha256=hashlib.sha256(
                     self.observation["proxyCredential"].encode()).hexdigest(),
-                now_ms=self.now)(lambda request: None)
+                now_ms=self.now, max_carrier_wait_ms=10000)(lambda request: None)
 
     async def test_malformed_reservation_receipt_aborts_without_reuse(self):
         class BadReceipt(FakeExchange):

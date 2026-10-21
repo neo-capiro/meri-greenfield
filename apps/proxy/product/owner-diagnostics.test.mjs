@@ -5,7 +5,7 @@ import {createOwnerDiagnostics,createDiagnosticPool,statementRelation,refusalCod
 const denied=()=>Object.assign(Error('permission denied for table initial_run_bindings'),{code:'42501',detail:'secret-detail',table:'x'});
 
 test('a refused statement leaves one line: SQLSTATE and the relation its own SQL names, never message or parameters',()=>{
- const lines=[],d=createOwnerDiagnostics({write:line=>lines.push(line)});
+ const lines=[],d=createOwnerDiagnostics({burst:20,windowMs:60000,write:line=>lines.push(line)});
  d.database(denied(),'SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE');
  assert.deepEqual(lines,['PRODUCT_OWNER_DB_REFUSED sqlstate=42501 relation=meri_conversations.initial_run_bindings\n']);
  for(const text of ['INSERT INTO meri_product_budget.requests(x) VALUES($1)','UPDATE meri_product_budget.budget SET x=1'])
@@ -19,7 +19,7 @@ test('a refused statement leaves one line: SQLSTATE and the relation its own SQL
 });
 
 test('a refused owner decision names the owner, its fixed step and a constant code only',()=>{
- const lines=[],d=createOwnerDiagnostics({write:line=>lines.push(line)});
+ const lines=[],d=createOwnerDiagnostics({burst:20,windowMs:60000,write:line=>lines.push(line)});
  d.refused('placement','initial-binding',Object.assign(Error('INITIAL_RUN_BINDING_STORE_UNAVAILABLE'),{code:'INITIAL_RUN_BINDING_STORE_UNAVAILABLE'}));
  d.refused('currentness','next-run',Error('free text with a 6bd78118-c496-4d4c-8f16-838aeafde5cc id'));
  d.refused('placement','Bad Step',Error('x'));d.refused('placement step','facts',Error('x'));
@@ -30,17 +30,17 @@ test('a refused owner decision names the owner, its fixed step and a constant co
 });
 
 test('lines are bounded per window, a suppressed burst says so once, and a failing writer never throws',()=>{
- let at=0;const lines=[],d=createOwnerDiagnostics({write:line=>lines.push(line),now:()=>at,burst:2,windowMs:1000});
+ let at=0;const lines=[],d=createOwnerDiagnostics({burst:20,write:line=>lines.push(line),now:()=>at,burst:2,windowMs:1000});
  for(let i=0;i<5;i++)d.refused('placement','facts',Error('x'));
  assert.deepEqual(lines.map(l=>l.trim().split(' ')[0]),['PRODUCT_OWNER_REFUSED','PRODUCT_OWNER_REFUSED','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED']);
  at=1000;d.refused('placement','facts',Error('x'));assert.equal(lines.length,4);
- const broken=createOwnerDiagnostics({write:()=>{throw Error('closed');}});
+ const broken=createOwnerDiagnostics({burst:20,windowMs:60000,write:()=>{throw Error('closed');}});
  assert.doesNotThrow(()=>broken.database(denied(),'SELECT * FROM meri_x.y'));
- assert.throws(()=>createOwnerDiagnostics({burst:0}),/PRODUCT_OWNER_DIAGNOSTICS_CONFIGURATION/u);
+ assert.throws(()=>createOwnerDiagnostics({burst:20,windowMs:60000,burst:0}),/PRODUCT_OWNER_DIAGNOSTICS_CONFIGURATION/u);
 });
 
 test('the diagnostic pool passes results and errors through unchanged and wraps each pooled client once',async()=>{
- const lines=[],d=createOwnerDiagnostics({write:line=>lines.push(line)});
+ const lines=[],d=createOwnerDiagnostics({burst:20,windowMs:60000,write:line=>lines.push(line)});
  const client={calls:0,async query(text){this.calls++;if(String(text?.text??text).includes('initial_run_bindings'))throw denied();return {rows:[{ok:1}]};},release(){}};
  const pool={async connect(){return client;},async query(){return {rows:[]};},async end(){pool.ended=true;}};
  const wrapped=createDiagnosticPool(pool,d);

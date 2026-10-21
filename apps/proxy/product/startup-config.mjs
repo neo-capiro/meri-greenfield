@@ -2,6 +2,7 @@
  * static material planning only. The Python proxy remains the startup authority:
  * it additionally rejects duplicate JSON keys, non-finite constants, floats and
  * an expired expiresAtMs against its own clock. No IO occurs on import. */
+import {assertHotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {parseProductServicePairConfiguration,OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 
@@ -34,7 +35,8 @@ function ownerPeer(raw){
 /** Closed proxy configuration and its explicit `{path,sha256}` file references. */
 export function parseProductProxyStartupConfiguration(raw){
  try{
-  const v=data(own(raw,['schemaVersion','enabled','deploymentRevision','expiresAtMs','pricingRevision','serverTls','ownerPeer','ownerTls','serviceTasks'],['telemetry']));
+  assertHotPathBudgets(raw?.budgets);
+  const v=data(own(raw,['schemaVersion','enabled','deploymentRevision','expiresAtMs','pricingRevision','serverTls','ownerPeer','ownerTls','serviceTasks','budgets'],['telemetry']));
   if(v.telemetry!==undefined){const telemetry=own(v.telemetry,['environment']);if(!['Preview','Production'].includes(telemetry.environment))fail();}
   if(v.schemaVersion!==1||v.enabled!==true||!instant(v.expiresAtMs)||!slot(v.deploymentRevision)||v.pricingRevision!==PRODUCT_PROXY_PRICING_REVISION)fail();
   const server=own(v.serverTls,['certificateFile','privateKeyFile','certificateSha256']),owner=own(v.ownerTls,['caFile','certificateFile','privateKeyFile']);
@@ -45,5 +47,5 @@ export function parseProductProxyStartupConfiguration(raw){
   if(pair.deploymentRevision!==v.deploymentRevision||pair.expiresAtMs!==v.expiresAtMs||
      pair.ownerCertSha256!==peer.server_cert_sha256||pair.proxyCertSha256!==peer.client_cert_sha256)fail();
   return Object.freeze({configuration:v,files});
- }catch{fail();}
+ }catch(error){if(error?.code==='HOT_PATH_BUDGET_CONFIGURATION')throw error;fail();}
 }

@@ -3,6 +3,8 @@
  * router VPC (which the prepared-run configuration digest does not cover).
  * Retain/pin-route that service for its originals on configuration rollover.
  * Importing this module loads no material, dependency client or listener. */
+import {HOP,hotPathBudgets,budget} from '../../../packages/runtime/hot-path-budgets.mjs';
+import {createHotPathFetch,createHotPathAwsRequestHandler} from '../../runtime/hot-path-transports.mjs';
 import {createTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
 import {countingFetch,countingAwsClient,countingPool} from '../../runtime/telemetry/counting.mjs';
 import {createHash} from 'node:crypto';
@@ -40,34 +42,33 @@ const frozenDisabled=()=>Object.freeze({available:false,async start(){fail();},a
  * rediscovery; material/config refusals fail before the first attempt. These
  * are reviewed constants rather than runtime configuration so the closed
  * runtime schema and its rendered bindings stay unchanged. */
-export const PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS=180000,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS=2500;
-const PAIR_ATTEMPT_SETTLE_MS=1000;
+export const PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS=HOP['owner.startup.pair.window'].ms,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS=HOP['owner.startup.pair.retry'].ms;
 // Config read + material phase + the window's last attempt + listen + cleanup,
 // with slack: the executable watchdog must outlast the bounded pair wait.
-const PRODUCT_OWNER_STARTUP_WATCHDOG_MS=PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS+20000;
+const PRODUCT_OWNER_STARTUP_WATCHDOG_MS=HOP['owner.startup.pair.watchdog'].ms;
 function defaultSleep(ms,signal){
  return new Promise(resolve=>{const timer=setTimeout(done,ms);function done(){clearTimeout(timer);signal?.removeEventListener('abort',done);resolve();}
   signal?.addEventListener('abort',done,{once:true});});
 }
 /** Re-reads the whole pair until admitted or the window closes. A retired or
  * quarantined reader, unsettled attempt or stop request is terminal at once. */
-async function readStartupPair({taskLeaseReader,now,sleep,maxRequestMs,expiresAtMs,signal}){
+async function readStartupPair({taskLeaseReader,now,sleep,maxRequestMs,expiresAtMs,signal,budgets}){
  const begun=now();if(!Number.isSafeInteger(begun))fail();
- const windowEndMs=Math.min(expiresAtMs,begun+PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS);
+ const windowEndMs=Math.min(expiresAtMs,begun+budget(budgets,'owner.startup.pair.window'));
  for(;;){
   const at=now();
   if(signal?.aborted||!taskLeaseReader.available||!Number.isSafeInteger(at)||at>=windowEndMs)fail();
   // The reader's own lifetime ends at at+maxRequestMs and settles its read;
   // this outer bound only catches a read that never settles (then terminal).
-  const attempt=createOperationLifetime({now,deadlineMs:at+maxRequestMs+PAIR_ATTEMPT_SETTLE_MS,signal,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
+  const attempt=createOperationLifetime({now,deadlineMs:at+maxRequestMs+budget(budgets,'owner.startup.pair.settle'),signal,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
   let pair=null;
   try{pair=await attempt.run(abort=>taskLeaseReader.read({deadlineMs:at+maxRequestMs,signal:abort}));}
   catch{pair=null;}
   finally{if(attempt.close().unsettledOperations>0)fail();}
   if(pair!==null)return {pair,deadlineMs:at+maxRequestMs};
   const after=now();
-  if(signal?.aborted||!taskLeaseReader.available||!Number.isSafeInteger(after)||after+PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS>=windowEndMs)fail();
-  await sleep(PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS,signal);
+  if(signal?.aborted||!taskLeaseReader.available||!Number.isSafeInteger(after)||after+budget(budgets,'owner.startup.pair.retry')>=windowEndMs)fail();
+  await sleep(budget(budgets,'owner.startup.pair.retry'),signal);
  }
 }
 
@@ -99,7 +100,7 @@ export function validateProductOwnerConfiguration(raw){
  }catch{fail();}
 }
 
-function databaseOptions(bytes,maxRequestMs){
+function databaseOptions(bytes,budgets){
  const connectionString=new TextDecoder('utf-8',{fatal:true}).decode(bytes).trim();let u;
  try{u=new URL(connectionString);}catch{fail();}
  // pg may adopt a different duplicate than URL.get: no other/duplicate query
@@ -107,12 +108,12 @@ function databaseOptions(bytes,maxRequestMs){
  if(!['postgres:','postgresql:'].includes(u.protocol)||!u.hostname||u.hash||
     u.searchParams.getAll('sslmode').length!==1||u.searchParams.get('sslmode')!=='verify-full'||
     [...u.searchParams.keys()].some(k=>k!=='sslmode'))fail();
- return {connectionString,max:10,connectionTimeoutMillis:maxRequestMs,idleTimeoutMillis:10000,query_timeout:maxRequestMs};
+ return {connectionString,max:10,connectionTimeoutMillis:budget(budgets,'pg.owner.connect'),idleTimeoutMillis:budget(budgets,'pg.owner.idle'),query_timeout:budget(budgets,'pg.owner.query')};
 }
 function defaultPool(options){const {Pool}=runtimeRequire('pg');return new Pool(options);}
 const awsOptions=data({
- ecs:{region:'us-east-1',maxAttempts:1,ignoreConfiguredEndpointUrls:true,useFipsEndpoint:false,useDualstackEndpoint:false,endpoint:'https://ecs.us-east-1.amazonaws.com'},
- ec2:{region:'us-east-1',maxAttempts:1,ignoreConfiguredEndpointUrls:true,useFipsEndpoint:false,useDualstackEndpoint:false,endpoint:'https://ec2.us-east-1.amazonaws.com'},
+ ecs:{region:'us-east-1',maxAttempts:HOP['aws.attempts'].ms,ignoreConfiguredEndpointUrls:true,useFipsEndpoint:false,useDualstackEndpoint:false,endpoint:'https://ecs.us-east-1.amazonaws.com'},
+ ec2:{region:'us-east-1',maxAttempts:HOP['aws.attempts'].ms,ignoreConfiguredEndpointUrls:true,useFipsEndpoint:false,useDualstackEndpoint:false,endpoint:'https://ec2.us-east-1.amazonaws.com'},
 });
 function defaultClients(options){
  const {ECSClient}=runtimeRequire('@aws-sdk/client-ecs'),{EC2Client}=runtimeRequire('@aws-sdk/client-ec2');
@@ -130,12 +131,12 @@ function defaultClients(options){
  * the bounded service-pair startup wait begin. */
 export async function startProductOwner(raw,dependencies={}){return assembleProductOwner(raw,dependencies);}
 async function assembleProductOwner(raw,dependencies,stopSignal){
- let server,nativeCurrentness,pool,clients,closing,telemetry,serviceGate,closed=false,started=false,life,closeMs=3000;
+ let server,nativeCurrentness,pool,clients,closing,telemetry,serviceGate,fetchTransport,closed=false,started=false,life,closeMs=HOP['native.client.request'].ms;
  const buffers=new Set();
  const close=()=>closing??=(async()=>{
   closed=true;serviceGate?.poison();let timer;
   const pending=Promise.allSettled([()=>server?.close(),()=>nativeCurrentness?.close(),()=>pool?.end(),
-   ()=>clients?.ecsClient.destroy(),()=>clients?.ec2Client.destroy()].map(action=>Promise.resolve().then(action)));
+   ()=>clients?.ecsClient.destroy(),()=>clients?.ec2Client.destroy(),()=>fetchTransport?.close()].map(action=>Promise.resolve().then(action)));
   let outcome;
   try{outcome=await Promise.race([pending,new Promise(resolve=>{timer=setTimeout(()=>resolve(null),closeMs);})]);}
   finally{clearTimeout(timer);for(const bytes of buffers)bytes.fill(0);buffers.clear();telemetry?.close();}
@@ -157,7 +158,7 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   if(![readMaterial,createPool,createAwsClients,createServer,now,rawFetch,sleep].every(v=>typeof v==='function'))fail();
   telemetry=createTurnTelemetry({service:'owner',environment:c.telemetry?.environment??'Preview',now,...(d.writeTelemetry?{write:d.writeTelemetry}:{})});
   telemetry.start();
-  const fetchImpl=countingFetch(rawFetch,telemetry);
+  let fetchImpl;
   return await telemetry.provisional(async()=>{
   serviceGate=createProductOwnerServiceGate({telemetry});
   const at=now();if(!Number.isSafeInteger(at)||at<0||c.serviceTasks.expiresAtMs<=at||c.pricing.validUntilMs<=at)fail();
@@ -175,42 +176,46 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   if(sha(controlBytes)!==c.controlConfigurationSha256)fail();
   const control=validateConfiguration(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(controlBytes)),'control'),candidate=control.nativeCandidate;
   if(candidate?.multiRun?.dynamicInitialRuns!==true||candidate.identity.commandContext.clientResolution.clientId!==c.clientPolicy.selectedClientId)fail();
-  const connectionBytes=await material(control.database.connectionFile),options=databaseOptions(connectionBytes,c.limits.maxRequestMs);
+  const budgets=hotPathBudgets({limits:control.limits,runWindowMs:candidate.multiRun.runWindowMs,ownerRequestMs:c.limits.maxRequestMs});
+  const ownerRequestMs=budget(budgets,'owner.request');
+  fetchTransport=createHotPathFetch(budgets,{fetchImpl:rawFetch});
+  fetchImpl=countingFetch(fetchTransport.fetch,telemetry);
+  const connectionBytes=await material(control.database.connectionFile),options=databaseOptions(connectionBytes,budgets);
   pool=createPool(options);if(typeof pool?.connect!=='function'||typeof pool?.end!=='function')fail();
   // Every refused statement and placement/currentness decision leaves one bounded line (owner-diagnostics.mjs).
-  const diagnostics=createOwnerDiagnostics({...(d.writeDiagnostic?{write:d.writeDiagnostic}:{}),now,telemetry});pool=createDiagnosticPool(countingPool(pool,telemetry),diagnostics);
-  clients=createAwsClients(awsOptions);own(clients,['ecsClient','ec2Client']);
+  const diagnostics=createOwnerDiagnostics({...(d.writeDiagnostic?{write:d.writeDiagnostic}:{}),now,telemetry,burst:budget(budgets,'owner.diagnostics.burst'),windowMs:budget(budgets,'owner.diagnostics.window')});pool=createDiagnosticPool(countingPool(pool,telemetry),diagnostics);
+  clients=createAwsClients({ecs:{...awsOptions.ecs,requestHandler:createHotPathAwsRequestHandler(budgets)},ec2:{...awsOptions.ec2,requestHandler:createHotPathAwsRequestHandler(budgets)}});own(clients,['ecsClient','ec2Client']);
   if([clients.ecsClient,clients.ec2Client].some(client=>typeof client?.send!=='function'||typeof client?.destroy!=='function'))fail();
   clients={ecsClient:countingAwsClient(clients.ecsClient,telemetry),ec2Client:countingAwsClient(clients.ec2Client,telemetry)};
-  const limits={maxRequestMs:c.limits.maxRequestMs,maxFactBytes:c.limits.maxFactBytes},
+  const limits={maxRequestMs:ownerRequestMs,maxFactBytes:c.limits.maxFactBytes},
    persistedFacts=createProductProxyPersistedFacts({pool,selectedClientId:c.clientPolicy.selectedClientId,now,limits,enabled:true}),
    initialBindings=createInitialRunBindingJournal({pool,now}),
    placement=createProductOwnerPlacement({configuration:control,pool,persistedFacts,initialBindings,now,limits,enabled:true,report:diagnostics.refused});
   nativeCurrentness=createProductOwnerNativeCurrentness({configuration:control,pool,credentialFileSha256:c.nativeCredentialFileSha256,
    now,limits,fetchImpl,enabled:true,report:diagnostics.refused},{readMaterial});
   const taskLeaseReader=await life.run(()=>createProductServiceTaskLeaseReader({ecsClient:clients.ecsClient,ec2Client:clients.ec2Client,
-   configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true}));
+   configuration:c.serviceTasks,now,limits:{maxRequestMs:ownerRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true}));
   const ca=await material(c.tls.caFile),cert=await material(c.tls.certFile),key=await material(c.tls.keyFile);
   life.check();life.close();
   // Raw configuration has no task ARN/IP. Only this fresh canonical pair may
   // compile the existing internal channel policy. Later drift retires reader.
   // The peer service may not be RUNNING yet: bounded full re-reads, see above.
-  const {pair,deadlineMs}=await readStartupPair({taskLeaseReader,now,sleep,maxRequestMs:c.limits.maxRequestMs,
-   expiresAtMs:c.serviceTasks.expiresAtMs,signal:stopSignal});
+  const {pair,deadlineMs}=await readStartupPair({taskLeaseReader,now,sleep,maxRequestMs:ownerRequestMs,
+   expiresAtMs:c.serviceTasks.expiresAtMs,signal:stopSignal,budgets});
   const admitted=now();if(closed||!Number.isSafeInteger(admitted)||admitted>=deadlineMs||c.pricing.validUntilMs<=admitted)fail();
   const clientPolicy=data({...c.clientPolicy,ownerTaskArn:pair.ownerTaskArn,proxyTaskArn:pair.proxyTaskArn});
   server=createServer({enabled:true,tlsMaterial:{origin:c.tls.origin,serverName:c.tls.serverName,ca,cert,key,
    certSha256:c.tls.certSha256,issuerSha256:c.tls.issuerSha256},clientPolicy,persistedFacts,
    ownerPorts:{pool,pricing:c.pricing,limits,checkCurrentConversation:nativeCurrentness.checkCurrentConversation},placement,taskLeaseReader,
-   serviceGate,now,maxRequestMs:c.limits.maxRequestMs,nativeCurrentness});
+   serviceGate,now,maxRequestMs:ownerRequestMs,nativeCurrentness});
   if(now()>=deadlineMs||server?.available!==true||typeof server.listen!=='function'||typeof server.close!=='function')fail();
   return Object.freeze({get available(){return !closed&&server.available&&nativeCurrentness.available&&serviceGate.available;},
    async start(){let startup;try{if(closed||started||!server.available)fail();started=true;
-     startup=createOperationLifetime({now,deadlineMs:now()+c.limits.maxRequestMs,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
+     startup=createOperationLifetime({now,deadlineMs:now()+ownerRequestMs,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
      await startup.run(()=>server.listen({host:'0.0.0.0',port:8444}));startup.check();if(closed)fail();}
     catch{await close();fail();}finally{if(startup?.close().unsettledOperations>0)serviceGate.poison();}},close});
   });
- }catch{try{await close();}catch{throw Error('PRODUCT_OWNER_CLEANUP_UNKNOWN');}fail();}
+ }catch(error){try{await close();}catch{throw Error('PRODUCT_OWNER_CLEANUP_UNKNOWN');}if(error?.code==='HOT_PATH_BUDGET_CONFIGURATION')throw error;fail();}
  finally{life?.close();for(const bytes of buffers)bytes.fill(0);buffers.clear();}
 }
 
@@ -229,13 +234,13 @@ export async function runProductOwnerMain(argv=process.argv.slice(2),env=process
   if(!c.enabled)fail();
   telemetryEnvironment=c.telemetry?.environment??'Preview';
   const stopping=new AbortController();
-  const completion=new Promise(resolve=>{stop=()=>{stopped=true;stopping.abort();shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',c.limits.maxRequestMs+1000);resolve();};});
+  const completion=new Promise(resolve=>{stop=()=>{stopped=true;stopping.abort();shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',c.limits.maxRequestMs+HOP['owner.startup.pair.settle'].ms);resolve();};});
   process.once('SIGTERM',stop);process.once('SIGINT',stop);
   runtime=await assembleProductOwner(c,dependencies,stopping.signal);if(!stopped)await runtime.start();clearTimeout(startupTimer);await completion;await runtime.close();clearTimeout(shutdownTimer);return 0;
  }catch(error){let cleanupUnknown=error?.message==='PRODUCT_OWNER_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
-  if(cleanupUnknown)shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',1000);else clearTimeout(shutdownTimer);
-  process.stderr.write('PRODUCT_OWNER_UNAVAILABLE\n');
+  if(cleanupUnknown)shutdownTimer??=watchdog('PRODUCT_OWNER_SHUTDOWN_TIMEOUT',HOP['owner.startup.pair.settle'].ms);else clearTimeout(shutdownTimer);
+  process.stderr.write((error?.code==='HOT_PATH_BUDGET_CONFIGURATION'?'HOT_PATH_BUDGET_CONFIGURATION':'PRODUCT_OWNER_UNAVAILABLE')+'\n');
   try{createTurnTelemetry({service:'owner',environment:telemetryEnvironment}).health('owner-gate','unavailable','PRODUCT_OWNER_UNAVAILABLE');}catch{}
   return 3;}
  finally{clearTimeout(startupTimer);if(stop){process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}}

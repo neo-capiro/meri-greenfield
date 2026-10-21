@@ -12,14 +12,14 @@ import time
 
 from ..qualification.state.pricing import StateDenied
 from .service_entrypoint import ProductProxyService, create_product_proxy_service
-from .budgets import BOOTSTRAP_SECONDS
+from .budgets import HotPathBudgets
 
 
 def _deny():
     raise StateDenied("PRODUCT_UVICORN_TLS_PROTOCOL_DENIED")
 
 
-def create_product_h11_protocol(service, *, max_connection_seconds=900):
+def create_product_h11_protocol(service, *, max_connection_seconds):
     """Return the exact HTTP protocol class for a separately configured server.
 
     The accepted connection timestamp is a conservative lower bound on every
@@ -105,7 +105,7 @@ def create_product_h11_protocol(service, *, max_connection_seconds=900):
     return ProductH11Protocol
 
 
-def create_product_h11_config(service, *, server_tls_context):
+def create_product_h11_config(service, *, server_tls_context, budgets):
     """Compose a stopped, plan-port Uvicorn Config from borrowed TLS material.
 
     The caller must supply an already reviewed server-authenticated TLS
@@ -117,7 +117,9 @@ def create_product_h11_config(service, *, server_tls_context):
             or not isinstance(server_tls_context, ssl.SSLContext)
             or server_tls_context.protocol != ssl.PROTOCOL_TLS_SERVER):
         _deny()
-    protocol = create_product_h11_protocol(service)
+    if type(budgets) is not HotPathBudgets:
+        raise StateDenied("HOT_PATH_BUDGET_CONFIGURATION")
+    protocol = create_product_h11_protocol(service, max_connection_seconds=budgets.seconds("proxy.connection"))
     try:
         config_type = import_module("uvicorn").Config
     except (ImportError, AttributeError):
@@ -126,6 +128,8 @@ def create_product_h11_config(service, *, server_tls_context):
         app=service, host="0.0.0.0", port=8443, loop="asyncio",
         http=protocol, ws="none", proxy_headers=False, interface="asgi3",
         lifespan="on", workers=1,
+        timeout_keep_alive=budgets.seconds("proxy.uvicorn.keepAlive"),
+        timeout_graceful_shutdown=budgets.seconds("proxy.uvicorn.shutdown"),
         ssl_context_factory=lambda _config, _default: server_tls_context,
     )
 
@@ -133,7 +137,7 @@ def create_product_h11_config(service, *, server_tls_context):
 async def serve_product_proxy(*, enabled=False, server_tls_context=None,
                               direct_tls_capture=None, resolve_bearer_sha256=None,
                               ecs_client=None, ec2_client=None,
-                              resolve_session=None, bootstrap_seconds=BOOTSTRAP_SECONDS):
+                              resolve_session=None, budgets, bootstrap_seconds):
     """Explicit opt-in entry point; no import-time or default listener.
 
     Enabled startup still needs real durable/session owner callbacks, a
@@ -148,10 +152,10 @@ async def serve_product_proxy(*, enabled=False, server_tls_context=None,
         enabled=True, direct_tls_capture=direct_tls_capture,
         resolve_bearer_sha256=resolve_bearer_sha256, ecs_client=ecs_client,
         ec2_client=ec2_client, resolve_session=resolve_session,
-        bootstrap_seconds=bootstrap_seconds,
+        budgets=budgets, bootstrap_seconds=bootstrap_seconds,
     )
     config = create_product_h11_config(
-        service, server_tls_context=server_tls_context)
+        service, server_tls_context=server_tls_context, budgets=budgets)
     try:
         server_type = import_module("uvicorn").Server
     except (ImportError, AttributeError):
@@ -166,7 +170,7 @@ async def serve_product_proxy_with_owner(*, enabled=False, server_tls_context=No
         owner_policy=None, owner_tls_material=None, owner_ipv4=None, proxy_ipv4=None,
         deployment_expires_at_ms=None, deployment_revision=None, ecs_client=None, ec2_client=None,
         count_client=None, make_provider_transport=None, pricing_revision=None,
-        body_limits=None, bootstrap_seconds=BOOTSTRAP_SECONDS, service_pair_reader=None):
+        body_limits=None, budgets, bootstrap_seconds, service_pair_reader=None):
     """Actual opt-in caller for placement, fresh admission and session composition.
 
     Externally delivered reviewed TLS material/deployment pins and bounded AWS
@@ -187,12 +191,12 @@ async def serve_product_proxy_with_owner(*, enabled=False, server_tls_context=No
         startup = ProductOwnerStartup(policy=owner_policy,exchange=exchange,
             host_gate=OwnerHostGate(),owner_loop=asyncio.get_running_loop(),
             count_client=count_client,make_provider_transport=make_provider_transport,
-            pricing_revision=pricing_revision,body_limits=body_limits)
+            pricing_revision=pricing_revision,body_limits=body_limits,budgets=budgets)
         await serve_product_proxy(enabled=True,server_tls_context=server_tls_context,
             direct_tls_capture=DirectTlsSocketCapture(),
             resolve_bearer_sha256=startup.resolve_bearer_sha256,
             resolve_session=startup.resolve_session,ecs_client=ecs_client,
-            ec2_client=ec2_client,bootstrap_seconds=bootstrap_seconds)
+            ec2_client=ec2_client,bootstrap_seconds=bootstrap_seconds,budgets=budgets)
     finally:
         if startup is not None:
             startup.close()

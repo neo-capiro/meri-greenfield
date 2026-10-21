@@ -10,7 +10,7 @@ import inspect
 
 from ..qualification.state.pricing import StateDenied
 from .bearer_eni_admission import FreshEcsEniReader
-from .budgets import BOOTSTRAP_SECONDS
+from .budgets import HotPathBudgets
 from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
 from .socket_capture import DirectTlsSocketCapture
@@ -107,7 +107,7 @@ class ProductProxyService:
 def create_product_proxy_service(*, enabled=False, direct_tls_capture=None,
                                  resolve_bearer_sha256=None, ecs_client=None,
                                  ec2_client=None, resolve_session=None,
-                                 bootstrap_seconds=BOOTSTRAP_SECONDS):
+                                 budgets, bootstrap_seconds):
     """Wire existing ingress, current ECS observer and native LiteLLM route.
 
     Enabled startup requires separately reviewed, bounded control-owned
@@ -121,11 +121,13 @@ def create_product_proxy_service(*, enabled=False, direct_tls_capture=None,
             or not callable(resolve_bearer_sha256)
             or not callable(resolve_session) or ecs_client is None or ec2_client is None):
         _deny()
+    if type(budgets) is not HotPathBudgets:
+        raise StateDenied("HOT_PATH_BUDGET_CONFIGURATION")
     observe_task_eni = FreshEcsEniReader(ecs_client, ec2_client)
     # These imports are intentionally after all required port checks. The
     # exact upstream version is checked by its loader at enabled startup.
     from .upstream_callback import load_pinned_product_litellm_invoker
-    from .host_composition import create_bearer_eni_product_proxy_app
+    from .host_composition import create_bearer_eni_product_proxy_app, product_lifetime_limits
 
     invoker = load_pinned_product_litellm_invoker()
     host = create_bearer_eni_product_proxy_app(
@@ -134,5 +136,6 @@ def create_product_proxy_service(*, enabled=False, direct_tls_capture=None,
         observe_task_eni=observe_task_eni,
         resolve_session=resolve_session,
         invoke_litellm=invoker,
-        bootstrap_seconds=bootstrap_seconds)
+        bootstrap_seconds=bootstrap_seconds, limits=product_lifetime_limits(budgets),
+        max_connection_seconds=budgets.seconds("proxy.connection"))
     return ProductProxyService(host, invoker, direct_tls_capture)

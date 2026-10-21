@@ -293,7 +293,7 @@ class FreshEcsEniReader:
 
 
 def create_bearer_eni_trusted_resolver(*, read_direct_tls_socket, resolve_bearer_sha256,
-                                       observe_task_eni, max_request_seconds=900):
+                                       observe_task_eni, max_request_seconds):
     """Return InferenceApp's sync resolver; no socket, credential, or AWS discovery.
 
     Direct use as InferenceApp's synchronous resolver is forbidden; the product

@@ -1,0 +1,1620 @@
+{
+  "version": "meri.hot-path-budgets/1",
+  "roots": {
+    "turn": {
+      "ms": 900000
+    },
+    "startup": {
+      "ms": 30000
+    },
+    "shutdown": {
+      "ms": 10000
+    },
+    "request": {
+      "ms": 25000
+    },
+    "original": {
+      "ms": 900000,
+      "expiresAtMs": 1800000900000
+    }
+  },
+  "hops": {
+    "native.remote.stdout.poll": {
+      "kind": "nested",
+      "ms": 100,
+      "parent": "native.transport.request"
+    },
+    "temporal.issuer.pg.connect.max": {
+      "kind": "derived",
+      "ms": 3000,
+      "reason": "Startup cap"
+    },
+    "temporal.issuer.pg.idle": {
+      "kind": "library",
+      "ms": 1000,
+      "boundedBy": "startup",
+      "reason": "Idle retirement"
+    },
+    "temporal.control.connect": {
+      "kind": "library",
+      "ms": 30000,
+      "boundedBy": "startup",
+      "reason": "Connect default"
+    },
+    "temporal.schedule.connect": {
+      "kind": "library",
+      "ms": 30000,
+      "boundedBy": "startup",
+      "reason": "Connect default"
+    },
+    "runtime.runWindow.cap": {
+      "kind": "derived",
+      "ms": 86400000,
+      "reason": "Run ceiling"
+    },
+    "aws.issuer.attempts": {
+      "kind": "library",
+      "ms": 3,
+      "boundedBy": "request",
+      "reason": "Retry default",
+      "unit": "count"
+    },
+    "runtime.shutdown.watchdog": {
+      "kind": "independent",
+      "ms": 11000,
+      "owner": "runtime.shutdown",
+      "reason": "Shutdown grace"
+    },
+    "runtime.startup": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Inherited root"
+    },
+    "runtime.request": {
+      "kind": "derived",
+      "ms": 25000,
+      "reason": "Inherited root"
+    },
+    "conversation.http.request": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "conversation.http",
+      "reason": "Request owner"
+    },
+    "native.allocator.request": {
+      "kind": "nested",
+      "ms": 30000,
+      "parent": "native.allocator.startup"
+    },
+    "gateway.runAllocation.read": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "gateway.completion.admission": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "gateway.document.vision": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Tariff ceiling"
+    },
+    "gateway.generalRead.defaultRuntime": {
+      "kind": "derived",
+      "ms": 900,
+      "unit": "seconds",
+      "reason": "Profile ceiling"
+    },
+    "authority.current.request": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "authority.gateway.request"
+    },
+    "authority.current.lease": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Lease age cap"
+    },
+    "authority.current.proposal": {
+      "kind": "derived",
+      "ms": 900000,
+      "reason": "Fact expiry"
+    },
+    "authority.gateway.request": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "gateway.dispatch",
+      "reason": "Dispatch owner"
+    },
+    "authority.gateway.cleanup": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "gateway.cleanup",
+      "reason": "After dispatch"
+    },
+    "native.read.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.retained.source": {
+      "kind": "nested",
+      "ms": 15000,
+      "parent": "request"
+    },
+    "native.continuation.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "native.continuation.authority"
+    },
+    "native.continuation.authority": {
+      "kind": "nested",
+      "ms": 30000,
+      "parent": "native.continuation.admission"
+    },
+    "native.continuation.admission": {
+      "kind": "nested",
+      "ms": 300000,
+      "parent": "turn"
+    },
+    "native.execution.skew": {
+      "kind": "derived",
+      "ms": 1000,
+      "reason": "Clock skew cap"
+    },
+    "native.execution.request": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "request"
+    },
+    "native.execution.cleanup": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "native.execution-cleanup",
+      "reason": "After dispatch"
+    },
+    "native.intent.prepare": {
+      "kind": "nested",
+      "ms": 30000,
+      "parent": "turn"
+    },
+    "proxy.diagnostics.burst": {
+      "kind": "derived",
+      "ms": 20,
+      "unit": "count",
+      "reason": "Rate count"
+    },
+    "proxy.diagnostics.window": {
+      "kind": "derived",
+      "ms": 60000,
+      "reason": "Rate window"
+    },
+    "conversation.window.slack": {
+      "kind": "derived",
+      "ms": 50,
+      "reason": "Deadline slack"
+    },
+    "conversation.retention.inventory": {
+      "kind": "independent",
+      "ms": 5000,
+      "owner": "retention.inventory",
+      "reason": "Discovery owner"
+    },
+    "objective.lifecycle.poll": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "objective.lifecycle",
+      "reason": "Durable poll"
+    },
+    "objective.lifecycle.retry": {
+      "kind": "independent",
+      "ms": 120000,
+      "owner": "objective.lifecycle",
+      "reason": "Durable retry"
+    },
+    "schedule.request.max": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Request ceiling"
+    },
+    "schedule.native.request": {
+      "kind": "derived",
+      "ms": 10000,
+      "reason": "Request ceiling"
+    },
+    "temporal.bootstrap.window": {
+      "kind": "independent",
+      "ms": 180000,
+      "owner": "temporal.bootstrap",
+      "reason": "Before service"
+    },
+    "temporal.bootstrap.retry": {
+      "kind": "nested",
+      "ms": 2500,
+      "parent": "temporal.bootstrap.window"
+    },
+    "temporal.bootstrap.reserve": {
+      "kind": "derived",
+      "ms": 10000,
+      "reason": "Startup reserve"
+    },
+    "temporal.issuer.retirement": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "temporal.issuer.retirement",
+      "reason": "After service"
+    },
+    "retention.journal.request": {
+      "kind": "independent",
+      "ms": 10000,
+      "owner": "retention.journal",
+      "reason": "Journal owner"
+    },
+    "retention.ledger.head": {
+      "kind": "independent",
+      "ms": 10000,
+      "owner": "retention.ledger",
+      "reason": "Storage owner"
+    },
+    "retention.storage.request": {
+      "kind": "independent",
+      "ms": 15000,
+      "owner": "retention.storage",
+      "reason": "Storage owner"
+    },
+    "native.pinned.transport": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "native.transport",
+      "reason": "Request signal"
+    },
+    "browser.action": {
+      "kind": "independent",
+      "ms": 5000,
+      "owner": "browser.action",
+      "reason": "Action owner"
+    },
+    "browser.navigation": {
+      "kind": "independent",
+      "ms": 60000,
+      "owner": "browser.navigation",
+      "reason": "Navigation owner"
+    },
+    "browser.takeover.settle": {
+      "kind": "derived",
+      "ms": 5000,
+      "reason": "Drain grace"
+    },
+    "browser.takeover.hard": {
+      "kind": "derived",
+      "ms": 130000,
+      "reason": "Drain ceiling"
+    },
+    "browser.takeover.idle": {
+      "kind": "derived",
+      "ms": 600000,
+      "reason": "Idle lease age"
+    },
+    "host.currentness": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Source age cap"
+    },
+    "host.process.fresh": {
+      "kind": "derived",
+      "ms": 1000,
+      "reason": "Process age cap"
+    },
+    "browser.process.exit": {
+      "kind": "nested",
+      "ms": 25000,
+      "parent": "browser.cleanup.default"
+    },
+    "host.teardown.max": {
+      "kind": "derived",
+      "ms": 130000,
+      "reason": "Cleanup ceiling"
+    },
+    "intents.snapshot": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "intents.availability-snapshot",
+      "reason": "Before SDK"
+    },
+    "reads.snapshot": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "reads.availability-snapshot",
+      "reason": "Before SDK"
+    },
+    "sandbox.observe": {
+      "kind": "nested",
+      "ms": 1000,
+      "parent": "sandbox.deadline"
+    },
+    "sandbox.cleanup": {
+      "kind": "independent",
+      "ms": 5000,
+      "owner": "sandbox.cleanup",
+      "reason": "After SDK"
+    },
+    "browser.cleanup.default": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "browser.cleanup",
+      "reason": "After query"
+    },
+    "browser.cleanup.max": {
+      "kind": "derived",
+      "ms": 130000,
+      "reason": "Cleanup ceiling"
+    },
+    "egress.admit": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "egress.idle"
+    },
+    "egress.idle": {
+      "kind": "independent",
+      "ms": 120000,
+      "owner": "egress.connection",
+      "reason": "Socket idle"
+    },
+    "egress.connect": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "egress.idle"
+    },
+    "host.process.timeout": {
+      "kind": "nested",
+      "ms": 25000,
+      "parent": "host.teardown.local"
+    },
+    "host.process.arm": {
+      "kind": "nested",
+      "ms": 5000,
+      "parent": "host.process.timeout"
+    },
+    "host.process.poll": {
+      "kind": "nested",
+      "ms": 100,
+      "parent": "host.process.timeout"
+    },
+    "browser.process.poll": {
+      "kind": "nested",
+      "ms": 100,
+      "parent": "browser.process.exit"
+    },
+    "host.teardown.local": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "host.teardown.local",
+      "reason": "After turn"
+    },
+    "host.teardown.host": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "host.teardown.host",
+      "reason": "After local stop"
+    },
+    "objective.runtime.request": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "objective.runtime",
+      "reason": "Result owner"
+    },
+    "sandbox.deadline": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "sandbox.sdk-startup",
+      "reason": "After probes"
+    },
+    "sandbox.probe": {
+      "kind": "independent",
+      "ms": 10000,
+      "owner": "sandbox.namespace-probe",
+      "reason": "Before SDK"
+    },
+    "browser.cleanup.settle": {
+      "kind": "independent",
+      "ms": 131000,
+      "owner": "conversation.browser-cleanup",
+      "reason": "Cleanup grace"
+    },
+    "native.tls.socket": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "native.transport.request",
+      "reason": "Request signal",
+      "unbounded": true
+    },
+    "temporal.issuer.challenge": {
+      "kind": "derived",
+      "ms": 15000,
+      "reason": "Fact expiry"
+    },
+    "temporal.issuer.certificate": {
+      "kind": "derived",
+      "ms": 300000,
+      "reason": "Certificate TTL"
+    },
+    "temporal.issuer.http.headers": {
+      "kind": "library",
+      "ms": 60000,
+      "boundedBy": "startup",
+      "reason": "HTTP default"
+    },
+    "temporal.issuer.http.request": {
+      "kind": "library",
+      "ms": 300000,
+      "boundedBy": "startup",
+      "reason": "HTTP default"
+    },
+    "temporal.issuer.http.keepAlive": {
+      "kind": "library",
+      "ms": 5000,
+      "boundedBy": "startup",
+      "reason": "HTTP default"
+    },
+    "reads.runtime.max": {
+      "kind": "derived",
+      "ms": 60000,
+      "reason": "Read ceiling"
+    },
+    "intents.runtime.max": {
+      "kind": "derived",
+      "ms": 60000,
+      "reason": "Intent ceiling"
+    },
+    "intents.availability": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "intents.availability",
+      "reason": "Snapshot owner"
+    },
+    "withdrawal.propagation": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Evidence bound"
+    },
+    "withdrawal.staleness": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Evidence age"
+    },
+    "artifact.download.ttl": {
+      "kind": "derived",
+      "ms": 60000,
+      "reason": "Link TTL"
+    },
+    "material.initialize.request": {
+      "kind": "independent",
+      "ms": 5000,
+      "owner": "material.initialize",
+      "reason": "Before runtime"
+    },
+    "temporal.issuer.registration.query": {
+      "kind": "library",
+      "ms": 3000,
+      "boundedBy": "request",
+      "reason": "Request signal"
+    },
+    "temporal.token.disabled.refresh": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "temporal.disabled-token",
+      "reason": "Inert interval"
+    },
+    "temporal.token.disabled.request": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "temporal.disabled-token",
+      "reason": "Inert request"
+    },
+    "native.gateway.read.request": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "native.gateway.read",
+      "reason": "Request owner"
+    },
+    "temporal.keepAlive.period": {
+      "kind": "library",
+      "ms": 30000,
+      "boundedBy": "turn",
+      "reason": "gRPC default"
+    },
+    "temporal.keepAlive.timeout": {
+      "kind": "library",
+      "ms": 15000,
+      "boundedBy": "turn",
+      "reason": "gRPC default"
+    },
+    "temporal.retry.attempts": {
+      "kind": "library",
+      "ms": 10,
+      "boundedBy": "request",
+      "reason": "gRPC default",
+      "unit": "count"
+    },
+    "temporal.retry.initial": {
+      "kind": "library",
+      "ms": 100,
+      "boundedBy": "request",
+      "reason": "Retry default"
+    },
+    "temporal.retry.resourceExhausted": {
+      "kind": "library",
+      "ms": 1000,
+      "boundedBy": "request",
+      "reason": "Retry default"
+    },
+    "temporal.retry.max": {
+      "kind": "library",
+      "ms": 5000,
+      "boundedBy": "request",
+      "reason": "Retry ceiling"
+    },
+    "native.process.poll": {
+      "kind": "nested",
+      "ms": 10,
+      "parent": "native.independent.request"
+    },
+    "native.process.leaseTick": {
+      "kind": "nested",
+      "ms": 1000,
+      "parent": "turn"
+    },
+    "native.tls.challenge": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "native.tls.exchange"
+    },
+    "native.tls.exchange": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "native.tls.exchange",
+      "reason": "TLS owner"
+    },
+    "native.allocator.settle": {
+      "kind": "independent",
+      "ms": 15000,
+      "owner": "native.allocator.containment",
+      "reason": "After task stop"
+    },
+    "native.allocator.poll": {
+      "kind": "nested",
+      "ms": 1000,
+      "parent": "native.allocator.settle"
+    },
+    "native.allocator.startupPoll": {
+      "kind": "nested",
+      "ms": 1000,
+      "parent": "native.allocator.startup"
+    },
+    "native.poststart.challenge": {
+      "kind": "derived",
+      "ms": 15000,
+      "reason": "Fact expiry"
+    },
+    "native.routine.receipt": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Receipt age"
+    },
+    "native.read.observation": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "native.read.observation",
+      "reason": "Read owner"
+    },
+    "host.expiry.tick": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "host.expiry-observer",
+      "reason": "Dynamic lease"
+    },
+    "temporal.issuer.settlement": {
+      "kind": "independent",
+      "ms": 2500,
+      "owner": "temporal.issuer.settlement",
+      "reason": "After shutdown"
+    },
+    "temporal.issuer.registration.cleanup": {
+      "kind": "independent",
+      "ms": 2000,
+      "owner": "temporal.issuer.registration-cleanup",
+      "reason": "After register"
+    },
+    "temporal.issuer.http.close": {
+      "kind": "independent",
+      "ms": 2000,
+      "owner": "temporal.issuer.http-close",
+      "reason": "After requests"
+    },
+    "core.request": {
+      "kind": "derived",
+      "ms": 25000,
+      "parent": "request",
+      "inherits": "request",
+      "reason": "Shared signal P6"
+    },
+    "memory.request.max": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Request ceiling"
+    },
+    "settings.tenant.request.max": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Request ceiling"
+    },
+    "settings.user.request.max": {
+      "kind": "derived",
+      "ms": 10000,
+      "reason": "Request ceiling"
+    },
+    "native.intent.availability": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.read.reference": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.delegation.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.delegation.attended": {
+      "kind": "derived",
+      "ms": 1800000,
+      "reason": "Signed expiry"
+    },
+    "native.delegation.occurrence": {
+      "kind": "derived",
+      "ms": 900000,
+      "reason": "Signed expiry"
+    },
+    "native.delegation.consent": {
+      "kind": "derived",
+      "ms": 2592000000,
+      "reason": "Signed expiry"
+    },
+    "native.delegation.token": {
+      "kind": "derived",
+      "ms": 60000,
+      "reason": "Signed expiry"
+    },
+    "owner.request.cap": {
+      "kind": "derived",
+      "ms": 15000,
+      "reason": "Request ceiling"
+    },
+    "artifact.authority.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.retained.credential": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Signed expiry cap"
+    },
+    "budget.margin": {
+      "kind": "derived",
+      "ms": 2000,
+      "reason": "Nesting policy"
+    },
+    "runner.call.load": {
+      "kind": "nested",
+      "ms": 23000,
+      "parent": "request"
+    },
+    "runner.checkpoint.complete": {
+      "kind": "nested",
+      "ms": 23000,
+      "parent": "request"
+    },
+    "runner.call.publish": {
+      "kind": "nested",
+      "ms": 23000,
+      "parent": "request"
+    },
+    "runner.replay.delays": {
+      "kind": "derived",
+      "ms": [
+        500,
+        1500
+      ],
+      "reason": "Request pauses"
+    },
+    "runner.stage.load": {
+      "kind": "serial",
+      "ms": 46500,
+      "children": [
+        "runner.call.load",
+        "runner.replay.pause",
+        "runner.call.load"
+      ],
+      "sumMs": 46500
+    },
+    "runner.replay.pause": {
+      "kind": "nested",
+      "ms": 500,
+      "parent": "runner.stage.load"
+    },
+    "runner.stage.runtime": {
+      "kind": "nested",
+      "ms": 23000,
+      "parent": "runtime.preparation"
+    },
+    "runner.stage.local": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "runtime.preparation"
+    },
+    "runner.stage.setup": {
+      "kind": "nested",
+      "ms": 23000,
+      "parent": "turn"
+    },
+    "runtime.preparation": {
+      "kind": "serial",
+      "parent": "turn",
+      "ms": 30000,
+      "children": [
+        "runner.stage.runtime",
+        "runner.stage.local"
+      ],
+      "sumMs": 33000
+    },
+    "runner.native.router": {
+      "kind": "nested",
+      "ms": 21000,
+      "parent": "runner.call.load"
+    },
+    "runner.native.receiver": {
+      "kind": "nested",
+      "ms": 19000,
+      "parent": "runner.native.router"
+    },
+    "runner.session.register": {
+      "kind": "nested",
+      "ms": 12000,
+      "parent": "request"
+    },
+    "control.session.register": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "runner.session.register"
+    },
+    "runner.session.append": {
+      "kind": "nested",
+      "ms": 7000,
+      "parent": "request"
+    },
+    "control.session.append": {
+      "kind": "nested",
+      "ms": 5000,
+      "parent": "runner.session.append"
+    },
+    "runner.session.load": {
+      "kind": "nested",
+      "ms": 6000,
+      "parent": "request"
+    },
+    "control.session.load": {
+      "kind": "nested",
+      "ms": 4000,
+      "parent": "runner.session.load"
+    },
+    "runner.session.list-subkeys": {
+      "kind": "nested",
+      "ms": 6000,
+      "parent": "request"
+    },
+    "control.session.list-subkeys": {
+      "kind": "nested",
+      "ms": 4000,
+      "parent": "runner.session.list-subkeys"
+    },
+    "runner.session.snapshot": {
+      "kind": "nested",
+      "ms": 8000,
+      "parent": "request"
+    },
+    "control.session.snapshot": {
+      "kind": "nested",
+      "ms": 6000,
+      "parent": "runner.session.snapshot"
+    },
+    "runner.session.store": {
+      "kind": "independent",
+      "ms": 15000,
+      "owner": "runner.session.store",
+      "reason": "Load then append"
+    },
+    "control.capture": {
+      "kind": "nested",
+      "ms": 21000,
+      "parent": "runner.call.load"
+    },
+    "control.capture.channel": {
+      "kind": "nested",
+      "ms": 19000,
+      "parent": "control.capture"
+    },
+    "router.capture": {
+      "kind": "nested",
+      "ms": 17000,
+      "parent": "control.capture.channel"
+    },
+    "runner.capture": {
+      "kind": "nested",
+      "ms": 15000,
+      "parent": "router.capture"
+    },
+    "runner.startup.minShutdown": {
+      "kind": "derived",
+      "ms": 10000,
+      "reason": "Shutdown floor"
+    },
+    "runner.startup.shutdownSteps": {
+      "kind": "derived",
+      "ms": 3,
+      "unit": "count",
+      "reason": "Shutdown count"
+    },
+    "runner.startup.settlement": {
+      "kind": "derived",
+      "ms": 115000,
+      "reason": "Publish reserve"
+    },
+    "runner.startup.catchCleanup": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "runner.startup.catch-cleanup",
+      "reason": "Before publish"
+    },
+    "runner.startup.cleanup": {
+      "kind": "derived",
+      "ms": 152000,
+      "reason": "Cleanup reserve"
+    },
+    "runner.startup.margin": {
+      "kind": "derived",
+      "ms": 2000,
+      "reason": "Startup slack"
+    },
+    "broker.poll.completionDefer": {
+      "kind": "derived",
+      "ms": 21000,
+      "parent": "control.capture",
+      "reason": "Capture bound"
+    },
+    "router.capture.selfStop": {
+      "kind": "derived",
+      "ms": 17000,
+      "parent": "router.capture",
+      "reason": "Capture retained"
+    },
+    "native.client.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.client.startup": {
+      "kind": "nested",
+      "ms": 23000,
+      "parent": "request"
+    },
+    "native.transport.request": {
+      "kind": "nested",
+      "ms": 8000,
+      "parent": "request"
+    },
+    "native.independent.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.independent.close": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "native.supervisor-close",
+      "reason": "After task stop"
+    },
+    "native.launch.shutdown": {
+      "kind": "nested",
+      "ms": 1000,
+      "parent": "shutdown"
+    },
+    "native.prepared.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "native.prepared.wait"
+    },
+    "native.prepared.wait": {
+      "kind": "nested",
+      "ms": 30000,
+      "parent": "turn"
+    },
+    "native.prepared.poll": {
+      "kind": "nested",
+      "ms": 100,
+      "parent": "native.prepared.wait"
+    },
+    "native.prepared.cleanup": {
+      "kind": "independent",
+      "ms": 30000,
+      "owner": "native.prepared-cleanup",
+      "reason": "After failure"
+    },
+    "native.session.registration": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.session.owner": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "native.session.http": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "runtime.original.reconcile": {
+      "kind": "independent",
+      "ms": 15000,
+      "owner": "original.reconcile",
+      "reason": "After lost run"
+    },
+    "runtime.objective.lifecycle": {
+      "kind": "nested",
+      "ms": 15000,
+      "parent": "request"
+    },
+    "runtime.objective.owner": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "request"
+    },
+    "http.request": {
+      "kind": "library",
+      "ms": 26000,
+      "boundedBy": "request",
+      "reason": "Response grace"
+    },
+    "http.headers": {
+      "kind": "library",
+      "ms": 25000,
+      "boundedBy": "request",
+      "reason": "Request limit"
+    },
+    "http.keepAlive": {
+      "kind": "library",
+      "ms": 125000,
+      "boundedBy": "request",
+      "reason": "Idle socket"
+    },
+    "pg.control.connect": {
+      "kind": "library",
+      "ms": 25000,
+      "boundedBy": "request",
+      "reason": "Request limit"
+    },
+    "pg.control.idle": {
+      "kind": "library",
+      "ms": 10000,
+      "boundedBy": "request",
+      "reason": "Idle retirement"
+    },
+    "pg.control.query": {
+      "kind": "library",
+      "ms": 25000,
+      "boundedBy": "request",
+      "reason": "Request limit"
+    },
+    "broker.native.request": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "request"
+    },
+    "broker.poll": {
+      "kind": "nested",
+      "ms": 1000,
+      "parent": "turn"
+    },
+    "runner.terminal.attempt": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "continuation.poll": {
+      "kind": "nested",
+      "ms": 100,
+      "parent": "turn"
+    },
+    "conversation.events.poll": {
+      "kind": "nested",
+      "ms": 100,
+      "parent": "conversation.events.subscription"
+    },
+    "conversation.events.idleRecheck": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "conversation.events.subscription"
+    },
+    "conversation.events.subscription": {
+      "kind": "nested",
+      "ms": 30000,
+      "parent": "turn"
+    },
+    "continuation.journal.deadline": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
+    "runner.bootstrap.files.request": {
+      "kind": "nested",
+      "ms": 5000,
+      "parent": "startup"
+    },
+    "runner.poststart.bootstrap": {
+      "kind": "nested",
+      "ms": 20000,
+      "parent": "startup"
+    },
+    "runner.poststart.step": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "runner.poststart.bootstrap"
+    },
+    "runner.poststart.pending.poll": {
+      "kind": "nested",
+      "ms": 250,
+      "parent": "runner.poststart.bootstrap"
+    },
+    "runner.poststart.challenge.ceiling": {
+      "kind": "derived",
+      "ms": 15000,
+      "reason": "Expiry cap"
+    },
+    "runner.poststart.transport.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "runner.poststart.bootstrap"
+    },
+    "runner.poststart.exchange.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "runner.poststart.bootstrap"
+    },
+    "runner.poststart.metadata.read": {
+      "kind": "nested",
+      "ms": 2000,
+      "parent": "runner.poststart.bootstrap"
+    },
+    "runner.task.bootstrap.poll": {
+      "kind": "nested",
+      "ms": 100,
+      "parent": "turn"
+    },
+    "temporal.connect": {
+      "kind": "library",
+      "ms": 10000,
+      "boundedBy": "startup",
+      "reason": "Connect default"
+    },
+    "worker.shutdown.grace": {
+      "kind": "library",
+      "ms": 10000,
+      "boundedBy": "shutdown",
+      "reason": "Shutdown limit"
+    },
+    "worker.shutdown.force": {
+      "kind": "library",
+      "ms": 11000,
+      "boundedBy": "shutdown",
+      "reason": "Shutdown grace"
+    },
+    "owner.startup.pair.window": {
+      "kind": "nested",
+      "ms": 180000,
+      "parent": "owner.startup.pair.watchdog"
+    },
+    "owner.startup.pair.retry": {
+      "kind": "nested",
+      "ms": 2500,
+      "parent": "owner.startup.pair.window"
+    },
+    "owner.startup.pair.settle": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "owner.pair-attempt-settlement",
+      "reason": "After request"
+    },
+    "owner.startup.pair.watchdog": {
+      "kind": "independent",
+      "ms": 200000,
+      "owner": "owner.startup",
+      "reason": "Before turn"
+    },
+    "owner.request": {
+      "kind": "independent",
+      "ms": 15000,
+      "owner": "owner.https-request",
+      "reason": "Request owner"
+    },
+    "pg.owner.idle": {
+      "kind": "library",
+      "ms": 10000,
+      "boundedBy": "owner.request",
+      "reason": "Idle retirement"
+    },
+    "owner.diagnostics.burst": {
+      "kind": "derived",
+      "ms": 20,
+      "unit": "count",
+      "reason": "Rate count"
+    },
+    "owner.diagnostics.window": {
+      "kind": "derived",
+      "ms": 60000,
+      "reason": "Rate window"
+    },
+    "owner.idle.keepAlive": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "owner.request",
+      "reason": "Idle disabled"
+    },
+    "owner.idle.initialDelay": {
+      "kind": "library",
+      "ms": 60000,
+      "boundedBy": "owner.request",
+      "reason": "TCP keepalive"
+    },
+    "proxy.exchange.max": {
+      "kind": "nested",
+      "ms": 15000,
+      "parent": "proxy.request.check"
+    },
+    "proxy.exchange.min": {
+      "kind": "nested",
+      "ms": 8000,
+      "parent": "proxy.exchange.max"
+    },
+    "proxy.exchange.carrier": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "proxy.request.check"
+    },
+    "proxy.request.check": {
+      "kind": "nested",
+      "ms": 26000,
+      "parent": "proxy.connection"
+    },
+    "proxy.request.cleanup": {
+      "kind": "independent",
+      "ms": 26000,
+      "owner": "proxy.request-cleanup",
+      "reason": "After expiry"
+    },
+    "proxy.bootstrap": {
+      "kind": "independent",
+      "ms": 35000,
+      "owner": "proxy.request-bootstrap",
+      "reason": "Before request"
+    },
+    "proxy.pair.fetch": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "proxy.pair.lease"
+    },
+    "proxy.pair.lease": {
+      "kind": "derived",
+      "ms": 30000,
+      "reason": "Fact expiry"
+    },
+    "proxy.boto.connect": {
+      "kind": "library",
+      "ms": 1000,
+      "boundedBy": "proxy.exchange.max",
+      "reason": "Boto default"
+    },
+    "proxy.boto.read": {
+      "kind": "library",
+      "ms": 1000,
+      "boundedBy": "proxy.exchange.max",
+      "reason": "Boto default"
+    },
+    "proxy.boto.attempts": {
+      "kind": "library",
+      "ms": 1,
+      "boundedBy": "proxy.exchange.max",
+      "reason": "Retry default",
+      "unit": "count"
+    },
+    "proxy.uvicorn.keepAlive": {
+      "kind": "library",
+      "ms": 5000,
+      "boundedBy": "proxy.exchange.max",
+      "reason": "Uvicorn default"
+    },
+    "proxy.uvicorn.shutdown": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "shutdown",
+      "reason": "No local timeout",
+      "unbounded": true
+    },
+    "fetch.connect": {
+      "kind": "library",
+      "ms": 10000,
+      "boundedBy": "request",
+      "reason": "Request signal"
+    },
+    "fetch.headers": {
+      "kind": "library",
+      "ms": 300000,
+      "boundedBy": "request",
+      "reason": "Request signal"
+    },
+    "fetch.body": {
+      "kind": "library",
+      "ms": 300000,
+      "boundedBy": "request",
+      "reason": "Request signal"
+    },
+    "aws.connection": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "request",
+      "reason": "Request signal",
+      "unbounded": true
+    },
+    "aws.request": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "request",
+      "reason": "Request signal",
+      "unbounded": true
+    },
+    "aws.attempts": {
+      "kind": "library",
+      "ms": 1,
+      "boundedBy": "request",
+      "reason": "Retry default",
+      "unit": "count"
+    },
+    "pg.control.statement": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "request",
+      "reason": "Operation signal",
+      "unbounded": true
+    },
+    "pg.control.lock": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "request",
+      "reason": "Operation signal",
+      "unbounded": true
+    },
+    "pg.control.idleInTransaction": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "request",
+      "reason": "Operation signal",
+      "unbounded": true
+    },
+    "pg.owner.statement": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "owner.request",
+      "reason": "Operation signal",
+      "unbounded": true
+    },
+    "pg.owner.lock": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "owner.request",
+      "reason": "Operation signal",
+      "unbounded": true
+    },
+    "pg.owner.idleInTransaction": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "owner.request",
+      "reason": "Operation signal",
+      "unbounded": true
+    },
+    "native.allocator.startup": {
+      "kind": "nested",
+      "ms": 180000,
+      "parent": "turn"
+    },
+    "native.release.request": {
+      "kind": "nested",
+      "ms": 10000,
+      "parent": "request"
+    },
+    "native.replay.minAttempt": {
+      "kind": "derived",
+      "ms": 1000,
+      "reason": "Replay floor"
+    },
+    "activity.cleanup.attempt": {
+      "kind": "independent",
+      "ms": 3000,
+      "owner": "activity.cleanup",
+      "reason": "After activity"
+    },
+    "activity.load": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "runtime.preparation"
+    },
+    "activity.runtime": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "runtime.preparation"
+    },
+    "activity.heartbeat": {
+      "kind": "nested",
+      "ms": 5000,
+      "parent": "workflow.conversation.heartbeat"
+    },
+    "continuation.cleanup.ack": {
+      "kind": "independent",
+      "ms": 100,
+      "owner": "continuation.cleanup-ack",
+      "reason": "Terminal cleanup"
+    },
+    "continuation.read.backoff.first": {
+      "kind": "nested",
+      "ms": 500,
+      "parent": "turn"
+    },
+    "continuation.read.backoff.max": {
+      "kind": "nested",
+      "ms": 5000,
+      "parent": "turn"
+    },
+    "continuation.read.unavailable.limit": {
+      "kind": "derived",
+      "ms": 2,
+      "unit": "count",
+      "reason": "Refusal count"
+    },
+    "runner.session.cleanup": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "runner.session-cleanup",
+      "reason": "After run"
+    },
+    "proxy.request.poll": {
+      "kind": "nested",
+      "ms": 5000,
+      "parent": "proxy.connection"
+    },
+    "proxy.connection": {
+      "kind": "independent",
+      "ms": 900000,
+      "owner": "proxy.connection",
+      "reason": "Connection owner"
+    },
+    "proxy.native.start": {
+      "kind": "nested",
+      "ms": 5000,
+      "parent": "startup"
+    },
+    "proxy.native.stop": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "proxy.native-stop",
+      "reason": "After request"
+    },
+    "proxy.resources.close": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "proxy.resources-close",
+      "reason": "After request"
+    },
+    "proxy.owner.settle": {
+      "kind": "independent",
+      "ms": 1000,
+      "owner": "proxy.owner-settlement",
+      "reason": "After request"
+    },
+    "proxy.startup.pair.window": {
+      "kind": "nested",
+      "ms": 180000,
+      "parent": "turn"
+    },
+    "proxy.startup.pair.retry": {
+      "kind": "nested",
+      "ms": 2500,
+      "parent": "proxy.startup.pair.window"
+    },
+    "pg.owner.connect": {
+      "kind": "library",
+      "ms": 15000,
+      "boundedBy": "owner.request",
+      "reason": "Request limit"
+    },
+    "pg.owner.query": {
+      "kind": "library",
+      "ms": 15000,
+      "boundedBy": "owner.request",
+      "reason": "Request limit"
+    },
+    "owner.shutdown.watchdog": {
+      "kind": "independent",
+      "ms": 16000,
+      "owner": "owner.shutdown",
+      "reason": "Shutdown grace"
+    },
+    "workflow.conversation.startToClose": {
+      "kind": "independent",
+      "ms": 1800000,
+      "duration": "30 minutes",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.conversation.heartbeat": {
+      "kind": "independent",
+      "ms": 30000,
+      "duration": "30 seconds",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.recovery.startToClose": {
+      "kind": "independent",
+      "ms": 20000,
+      "duration": "20 seconds",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.recovery.scheduleToClose": {
+      "kind": "independent",
+      "ms": 240000,
+      "duration": "240 seconds",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.recovery.retry.initial": {
+      "kind": "independent",
+      "ms": 1000,
+      "duration": "1 second",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.recovery.retry.maximum": {
+      "kind": "independent",
+      "ms": 10000,
+      "duration": "10 seconds",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.objective.startToClose": {
+      "kind": "independent",
+      "ms": 60000,
+      "duration": "1 minute",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.schedule.startToClose": {
+      "kind": "independent",
+      "ms": 60000,
+      "duration": "1 minute",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "workflow.schedule.settle": {
+      "kind": "independent",
+      "ms": 120000,
+      "duration": "2 minutes",
+      "owner": "temporal.workflow-policy",
+      "reason": "Durable policy"
+    },
+    "sdk.load": {
+      "kind": "library",
+      "ms": 60000,
+      "boundedBy": "turn",
+      "reason": "SDK default"
+    },
+    "sdk.runEnd": {
+      "kind": "library",
+      "ms": 600000,
+      "boundedBy": "turn",
+      "reason": "SDK ceiling"
+    },
+    "sdk.append.retryAttempts": {
+      "kind": "library",
+      "ms": 3,
+      "boundedBy": "turn",
+      "reason": "SDK default",
+      "unit": "count"
+    },
+    "sdk.append.retryDelays": {
+      "kind": "library",
+      "ms": [
+        200,
+        800
+      ],
+      "boundedBy": "turn",
+      "reason": "SDK default"
+    },
+    "sdk.api": {
+      "kind": "library",
+      "ms": 0,
+      "boundedBy": "turn",
+      "reason": "Pinned unset",
+      "unbounded": true
+    }
+  },
+  "startup": {
+    "originalExpiresAtMs": 1800000900000,
+    "reserveMs": 302000,
+    "stages": {
+      "session": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000598000
+      },
+      "nativeStart": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000575000
+      },
+      "nativePrepare": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000552000
+      },
+      "running": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000529000
+      },
+      "setup": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000506000
+      },
+      "starting": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000483000
+      },
+      "local": {
+        "maxMs": 10000,
+        "expiresAtMs": 1800000460000
+      },
+      "runtime": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000450000
+      },
+      "load": {
+        "maxMs": 46500,
+        "attemptMs": 23000,
+        "expiresAtMs": 1800000427000
+      },
+      "admittedAfter": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000380500
+      },
+      "admittedBefore": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000357500
+      },
+      "bootstrap": {
+        "maxMs": 23000,
+        "expiresAtMs": 1800000334500
+      }
+    }
+  }
+}

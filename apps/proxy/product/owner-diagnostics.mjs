@@ -28,7 +28,7 @@ export function refusalCode(error){
  const code=error?.code;return typeof code==='string'&&CODE.test(code)&&!SQLSTATE.test(code)?code:'REFUSED';
 }
 
-export function createOwnerDiagnostics({write=line=>process.stderr.write(line),now=Date.now,burst=20,windowMs=60000,telemetry=currentTurnTelemetry()}={}){
+export function createOwnerDiagnostics({write=line=>process.stderr.write(line),now=Date.now,burst,windowMs,telemetry=currentTurnTelemetry()}={}){
  if(typeof write!=='function'||typeof now!=='function'||!Number.isSafeInteger(burst)||burst<1||!Number.isSafeInteger(windowMs)||windowMs<1)
   throw Error('PRODUCT_OWNER_DIAGNOSTICS_CONFIGURATION');
  let windowStart=-Infinity,count=0,suppressed=false;

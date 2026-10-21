@@ -1,4 +1,5 @@
 """No socket, AWS, SQL or provider calls: exact bearer/ENI source controls."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
@@ -133,7 +134,7 @@ class DirectBearerTests(unittest.IsolatedAsyncioTestCase):
             resolve_bearer_sha256=lambda sha: grant if sha == SHA else None,
             observe_task_eni=reader(aws), max_request_seconds=60)
         lines = []
-        diagnostics.install(write=lambda data: lines.append(data.decode("ascii")))
+        diagnostics.install(write=lambda data: lines.append(data.decode("ascii")), burst=20, window=60)
         try:
             unsigned = dict(scope, headers=[row for row in scope["headers"] if row[0] != b"authorization"])
             with diagnostics.request(), self.assertRaises(StateDenied):
@@ -156,7 +157,7 @@ class DirectBearerTests(unittest.IsolatedAsyncioTestCase):
             return create_bearer_eni_trusted_resolver(
                 read_direct_tls_socket=lambda _scope: socket,
                 resolve_bearer_sha256=lambda sha: grant if sha == SHA else None,
-                observe_task_eni=reader(aws))
+                observe_task_eni=reader(aws), max_request_seconds=900)
 
         with self.assertRaises(StateDenied):
             make(DirectTlsSocketPeer("10.77.0.10", 4321, "TLSv1.3"))(scope)
@@ -187,7 +188,7 @@ class DirectBearerTests(unittest.IsolatedAsyncioTestCase):
     async def test_missing_trusted_ports_fail_closed(self):
         with self.assertRaises(StateDenied):
             create_bearer_eni_trusted_resolver(read_direct_tls_socket=None,
-                resolve_bearer_sha256=lambda _: None, observe_task_eni=lambda *_: None)
+                resolve_bearer_sha256=lambda _: None, observe_task_eni=lambda *_: None, max_request_seconds=900)
         with self.assertRaises(StateDenied):
             DirectTlsSocketPeer("10.77.0.9", 4321, "TLSv1.1")
         with self.assertRaises(StateDenied):

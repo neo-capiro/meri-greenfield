@@ -1,4 +1,5 @@
 """Stdlib synthetic owner replies only; no TLS, SQL, provider or network."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 from dataclasses import replace
 import copy
@@ -168,11 +169,11 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.issued = issued_fixture()[0].issued
         self.policy = OwnerPeerPolicy("https://owner.synthetic.invalid:8444", "owner.synthetic.invalid",
-            "owner-task", "proxy-task-"+uuid.uuid4().hex, "1"*64, "2"*64, "3"*64, "proxy-subject")
+            "owner-task", "proxy-task-"+uuid.uuid4().hex, "1"*64, "2"*64, "3"*64, "proxy-subject", max_exchange_ms=3000)
         self.exchange = Exchange(self.policy, self.issued)
         self.gate = OwnerHostGate()
         self.reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=self.exchange,
-            host_gate=self.gate, owner_loop=asyncio.get_running_loop())
+            host_gate=self.gate, owner_loop=asyncio.get_running_loop(), max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
 
     async def resolve(self):
         return await asyncio.to_thread(self.reader.resolve_for_issued_sync,
@@ -336,7 +337,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(self.exchange.aborted)
         with self.assertRaises(Exception):
             ProductOwnerAdmissionReader(policy=self.policy, exchange=Exchange(self.policy,self.issued),
-                host_gate=OwnerHostGate(),owner_loop=asyncio.get_running_loop())
+                host_gate=OwnerHostGate(),owner_loop=asyncio.get_running_loop(), max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
 
     async def test_real_bridge_capture_refresh_uses_second_connection_and_revokes_copied_context(self):
         deadline = milliseconds()+2000
@@ -347,7 +348,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             taskArn=self.issued.binding.worker_arn, grantId=self.issued.grant_id)
         exchange = ReservationExchange(self.policy, self.issued, value, observation)
         reader = ProductOwnerAdmissionReader(policy=self.policy,exchange=exchange,
-            host_gate=self.gate,owner_loop=asyncio.get_running_loop())
+            host_gate=self.gate,owner_loop=asyncio.get_running_loop(), max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
         source = await asyncio.to_thread(reader.resolve_for_issued_sync,
             issued=self.issued,capability_sha256=SHA,deadline_ms=deadline)
         peer = PeerLease("10.77.0.9",time.monotonic(),source.authority.binding,source.authority.grant_id)
@@ -378,7 +379,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             return observation
         bridge = ProductOwnerBridge(policy=self.policy,exchange=exchange,capture_call=capture,
             host_gate=self.gate,request_id=value["requestId"],binding=value["binding"],
-            deadline_ms=deadline,grant_id=self.issued.grant_id,capability_sha256=SHA)
+            deadline_ms=deadline,grant_id=self.issued.grant_id,capability_sha256=SHA, max_carrier_wait_ms=10000)
         try:
             await life.start(ingress_fixture()[2])
             result = await asyncio.wait_for(bridge.reserve(value,observation),.75)
@@ -406,7 +407,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         requests={key:{**template,"requestId":key} for key in ("request_A","request_B")}
         exchange=TwoReservationExchange(self.policy,self.issued,requests,observation)
         reader=ProductOwnerAdmissionReader(policy=self.policy,exchange=exchange,
-            host_gate=self.gate,owner_loop=asyncio.get_running_loop())
+            host_gate=self.gate,owner_loop=asyncio.get_running_loop(), max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
         source=await asyncio.to_thread(reader.resolve_for_issued_sync,
             issued=self.issued,capability_sha256=SHA,deadline_ms=deadline)
         peer=PeerLease("10.77.0.9",time.monotonic(),source.authority.binding,source.authority.grant_id)
@@ -424,7 +425,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
                 return {**observation,"requestId":key}
             bridges[key]=ProductOwnerBridge(policy=self.policy,exchange=exchange,capture_call=capture,
                 host_gate=self.gate,request_id=key,binding=template["binding"],deadline_ms=deadline,
-                grant_id=self.issued.grant_id,capability_sha256=SHA)
+                grant_id=self.issued.grant_id,capability_sha256=SHA, max_carrier_wait_ms=10000)
         tasks=[]
         try:
             for life in lives.values():await life.start(ingress_fixture()[2])
@@ -460,7 +461,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
     def held_reservation(self, exchange, value, observation, deadline, capture):
         bridge = ProductOwnerBridge(policy=self.policy, exchange=exchange, capture_call=capture,
             host_gate=self.gate, request_id=value["requestId"], binding=value["binding"],
-            deadline_ms=deadline, grant_id=self.issued.grant_id, capability_sha256=SHA)
+            deadline_ms=deadline, grant_id=self.issued.grant_id, capability_sha256=SHA, max_carrier_wait_ms=10000)
         return asyncio.create_task(bridge.reserve(value, observation))
 
     async def test_watch_refresh_never_queues_behind_a_held_reservation(self):
@@ -468,7 +469,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         value, observation = self.reservation_fixture(deadline)
         exchange = ReservationExchange(self.policy, self.issued, value, observation)
         reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=exchange,
-            host_gate=self.gate, owner_loop=asyncio.get_running_loop())
+            host_gate=self.gate, owner_loop=asyncio.get_running_loop(), max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
         source = await asyncio.to_thread(reader.resolve_for_issued_sync,
             issued=self.issued, capability_sha256=SHA, deadline_ms=deadline)
         entered, release = asyncio.Event(), asyncio.Event()
@@ -497,7 +498,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         value, observation = self.reservation_fixture(deadline)
         exchange = ReservationExchange(self.policy, self.issued, value, observation)
         reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=exchange, host_gate=self.gate,
-            owner_loop=asyncio.get_running_loop(), max_exchange_ms=1500, max_carrier_wait_ms=1000)
+            owner_loop=asyncio.get_running_loop(), max_exchange_ms=1500, max_carrier_wait_ms=1000, min_exchange_ms=8000, settle_ms=1000)
         source = await asyncio.to_thread(reader.resolve_for_issued_sync,
             issued=self.issued, capability_sha256=SHA, deadline_ms=deadline)
         expected = source.authority._product_owner[1]
@@ -529,7 +530,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         async def capture(_request):raise AssertionError("expired claim captured")
         bridge=ProductOwnerBridge(policy=self.policy,exchange=self.exchange,capture_call=capture,
             host_gate=self.gate,request_id=value["requestId"],binding=value["binding"],deadline_ms=deadline,
-            grant_id=self.issued.grant_id,capability_sha256=SHA)
+            grant_id=self.issued.grant_id,capability_sha256=SHA, max_carrier_wait_ms=10000)
         try:
             with self.assertRaises(Exception):await bridge.reserve(value,observation)
             self.assertEqual(self.exchange.calls,[])

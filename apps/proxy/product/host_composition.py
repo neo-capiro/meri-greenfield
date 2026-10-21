@@ -31,12 +31,16 @@ from .request_admission import ProductReservationAdapter
 from .response_settlement import NativeSettlementTransport, SettlementContext
 from .response_settlement import _settled_outcome
 from .bearer_eni_admission import create_bearer_eni_trusted_resolver
-from .budgets import BOOTSTRAP_SECONDS, IN_REQUEST_CHECK_SECONDS, REQUEST_CLEANUP_SECONDS
+from .budgets import HotPathBudgets
 from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
 
-# Every product request's freshness steps are owner exchanges: they and close's wait get the exchange budget (budgets.py).
-PRODUCT_LIFETIME_LIMITS = LifetimeLimits(check_seconds=IN_REQUEST_CHECK_SECONDS, cleanup_seconds=REQUEST_CLEANUP_SECONDS)
+def product_lifetime_limits(budgets):
+    if type(budgets) is not HotPathBudgets:
+        raise StateDenied("HOT_PATH_BUDGET_CONFIGURATION")
+    return LifetimeLimits(poll_seconds=budgets.seconds("proxy.request.poll"),
+        check_seconds=budgets.seconds("proxy.request.check"),
+        cleanup_seconds=budgets.seconds("proxy.request.cleanup"))
 from .upstream_callback import ProductNativeDispatchEvidence
 
 
@@ -198,7 +202,7 @@ async def create_guarded_product_handler(life, session):
 
 
 def create_product_proxy_app(*, trusted_resolver, resolve_session, invoke_litellm,
-                             limits=PRODUCT_LIFETIME_LIMITS, body_limits=BodyLimits()):
+                             limits, body_limits=BodyLimits()):
     """Mount the existing direct-ingress wrapper with one product HTTPX path.
 
     `trusted_resolver` must independently authenticate the TLS peer and current
@@ -260,8 +264,8 @@ def create_product_proxy_app(*, trusted_resolver, resolve_session, invoke_litell
 def create_bearer_eni_product_proxy_app(*, read_direct_tls_socket,
                                         resolve_bearer_sha256, observe_task_eni,
                                         resolve_session, invoke_litellm,
-                                        limits=PRODUCT_LIFETIME_LIMITS, body_limits=BodyLimits(),
-                                        bootstrap_seconds=BOOTSTRAP_SECONDS):
+                                        limits, body_limits=BodyLimits(),
+                                        bootstrap_seconds, max_connection_seconds):
     """Compose the one ingress/host path from required trusted product ports.
 
     This is import-inert. The real direct-socket callback, durable grant lookup,
@@ -270,14 +274,14 @@ def create_bearer_eni_product_proxy_app(*, read_direct_tls_socket,
     """
     if (type(bootstrap_seconds) not in (int, float)
             or not math.isfinite(bootstrap_seconds)
-            or not 0 < bootstrap_seconds <= BOOTSTRAP_SECONDS):
+            or not 0 < bootstrap_seconds <= 35):
         _deny()
     resolver = create_bearer_eni_trusted_resolver(
         read_direct_tls_socket=read_direct_tls_socket,
         resolve_bearer_sha256=resolve_bearer_sha256,
-        observe_task_eni=observe_task_eni)
+        observe_task_eni=observe_task_eni, max_request_seconds=max_connection_seconds)
     return _BoundedProductBootstrap(resolver, resolve_session, invoke_litellm,
-                                    limits, body_limits, bootstrap_seconds)
+                                    limits, body_limits, bootstrap_seconds, max_connection_seconds)
 
 
 @dataclass
@@ -296,9 +300,12 @@ class _BoundedProductBootstrap:
     """
 
     def __init__(self, resolver, resolve_session, invoke_litellm, limits,
-                 body_limits, bootstrap_seconds):
+                 body_limits, bootstrap_seconds, max_connection_seconds):
         self._resolver = resolver
         self._bootstrap_seconds = bootstrap_seconds
+        if type(max_connection_seconds) not in (int, float) or not 0 < max_connection_seconds <= 900:
+            _deny()
+        self._max_connection_seconds = max_connection_seconds
         self._request = ContextVar("product_bounded_trusted_request", default=None)
         self._poisoned = False
         self._outstanding = set()
@@ -376,7 +383,7 @@ class _BoundedProductBootstrap:
                 return
             # The original deadline includes admission time, never starts anew
             # after a slow durable/AWS lookup.
-            deadline = min(trusted.deadline, accepted_at + 900)
+            deadline = min(trusted.deadline, accepted_at + self._max_connection_seconds)
             if time.monotonic() >= deadline:
                 diagnostics.refused("bootstrap", "deadline", TimeoutError())
                 await self._inner._refuse(send)

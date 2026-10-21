@@ -43,7 +43,7 @@ async function dispatch(message){
  const body=decode(message.body),frame=parseOwnerWire(body),peer=peers[message.channel];
  if(!peer)throw Error('OFFLINE_CARRIER_REFUSED');
  if(message.path===OWNER_PATHS.open&&message.channel==='operation'){
-  const channel=createProductOwnerChannel({clientPolicy,persistedFacts,ownerPorts,serviceGate,now:Date.now});
+  const channel=createProductOwnerChannel({clientPolicy,persistedFacts,ownerPorts,serviceGate,now:Date.now,maxExchangeMs:3000});
   const reply=await channel.open(body,peer),session=parseOwnerWire(reply)[1];
   sessions.set(session,channel);return reply;
  }

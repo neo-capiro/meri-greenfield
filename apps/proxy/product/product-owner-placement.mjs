@@ -4,6 +4,7 @@
  * Its router VPC is independent startup authority: configurationSha256 does not cover it.
  * Retain that original service/config across rollover; missing/mismatched custody stays unavailable.
  */
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
@@ -68,7 +69,7 @@ export function createProductOwnerPlacement(configuration){
     if(expected.taskRequestSha256!==record.taskRequestSha256||record.resource.clusterArn!==expected.request.cluster||
        record.resource.taskDefinitionArn!==expected.request.taskDefinition||record.resource.containerName!==candidate.containerName||
        !same(Object.fromEntries(Object.keys(facts.resource).map(k=>[k,record.resource[k]])),facts.resource)||record.resource.taskArn!==model.qualificationBinding.workerArn)deny();
-    compileEcsTaskBinding({original:record.original,...facts.resource,now:c.now});
+    compileEcsTaskBinding({original:record.original,...facts.resource,now:c.now,maxRequestMs:fixedHotPathBudget('native.prepared.request')});
     step='run-request';const accepted=await life.run(()=>conversations.readOptional(binding,{limit:1},life.check));life.check();
     if(!accepted||!same(accepted.run,saved.run)||hash(accepted.request)!==facts.requestSha256)deny();
     if(binding.conversationId===configured.conversationId){if(binding.writerFence===1&&!same(binding,configured))deny();}

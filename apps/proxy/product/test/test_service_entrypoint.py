@@ -1,4 +1,5 @@
 """Source-only service activation controls; no TLS listener or native import."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 import unittest
 
@@ -20,7 +21,7 @@ class _Host:
 
 class ProductServiceTests(unittest.IsolatedAsyncioTestCase):
     async def test_disabled_by_default_refuses_http_and_startup(self):
-        app = create_product_proxy_service()
+        app = create_product_proxy_service(budgets=TEST_BUDGETS, bootstrap_seconds=35)
         self.assertFalse(app.ready)
         sent = []
 
@@ -40,9 +41,9 @@ class ProductServiceTests(unittest.IsolatedAsyncioTestCase):
     async def test_missing_enabled_ports_refuse_before_any_native_import(self):
         with self.assertRaisesRegex(Exception, "PRODUCT_PROXY_SERVICE_UNAVAILABLE"):
             create_product_proxy_service(enabled=True,
-                                         direct_tls_capture=DirectTlsSocketCapture())
+                                         direct_tls_capture=DirectTlsSocketCapture(), budgets=TEST_BUDGETS, bootstrap_seconds=35)
         with self.assertRaisesRegex(Exception, "PRODUCT_PROXY_SERVICE_UNAVAILABLE"):
-            create_product_proxy_service(enabled="true")
+            create_product_proxy_service(enabled="true", budgets=TEST_BUDGETS, bootstrap_seconds=35)
 
     async def test_http_requires_native_lifespan_and_current_callback(self):
         incoming = asyncio.Queue()

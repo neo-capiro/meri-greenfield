@@ -1,6 +1,7 @@
 /** Focused render test on THROWAWAY material only: pki.py writes a fresh PKI into a temp directory, database passwords and the
  * Core identity credential are synthetic, and every output goes to the OS temp directory. Run with
  * MERI_REVIEW_SOURCE_ROOT=<worktree root> (the shared fixture harness requires it) and Python 3 with `cryptography`. */
+import {hotPathBudgets,budget} from '../../../packages/runtime/hot-path-budgets.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -43,6 +44,10 @@ test('all five roles render from throwaway PKI and pass every repository validat
  parseTemporalIssuerRuntimeConfiguration(parsed('temporal-issuer'));
  assert.equal(validateProductOwnerConfiguration(parsed('model-owner')).enabled,true);
  parseProductProxyStartupConfiguration(parsed('model-proxy'));
+ const table=hotPathBudgets({limits:control.limits,runWindowMs:control.nativeCandidate.multiRun.runWindowMs});
+ assert.deepEqual(parsed('model-proxy').budgets,table);
+ assert.equal(parsed('temporal-worker').runWindowMs,control.nativeCandidate.multiRun.runWindowMs);
+ assert.equal(parsed('model-proxy').ownerPeer.max_exchange_ms,budget(table,'proxy.exchange.max'));
  // One model request makes two owner exchanges, each with fresh pair discoveries on both sides (adj-e-PROXY-DENIED.md, attempt 2).
  assert.equal(parsed('model-owner').limits.maxRequestMs,15000);assert.equal(parsed('model-proxy').ownerPeer.max_exchange_ms,15000);
  const longer=parsed('model-proxy');longer.ownerPeer.max_exchange_ms=15001;assert.throws(()=>parseProductProxyStartupConfiguration(longer));

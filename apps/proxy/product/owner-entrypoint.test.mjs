@@ -21,6 +21,8 @@ const refused={message:'PRODUCT_OWNER_STARTUP_UNAVAILABLE'},prefix='arn:aws:ecs:
  * seams only. No key generation, listener, PostgreSQL, AWS or provider call. */
 function fixture(){
  const {configuration,seed,model,binding,clientId,qualification:q}=productControlFixture(),c=configuration.nativeCandidate;
+ configuration.limits={...configuration.limits,startupMs:30000,shutdownMs:10000,requestMs:25000};
+ c.multiRun.runWindowMs=900000;
  const task={...structuredClone(model),grantId:id(44),capabilitySha256:'c'.repeat(64)},request={requestId:id(45),prompt:'synthetic accepted prompt',skill:null,window:null},expiresAtMs=NOW+8000,key=hash(binding),createdAt=new Date(NOW).toISOString();
  const run={binding,state:'running',scopes:[{kind:'client',tenantId:binding.tenantId,resourceId:clientId,policyRevision:q.policyRevision}],policyRevision:q.policyRevision,versions:configuration.versions,createdAt};
  const original={binding,executionKey:key,executionId:key,planSha256:'d'.repeat(64),expiresAtMs,versions:configuration.versions};
@@ -75,8 +77,8 @@ function fixture(){
  const material=new Map([[runtime.controlConfigurationFile,controlBytes],[configuration.database.connectionFile,Buffer.from('postgres://synthetic:synthetic@database.synthetic.invalid/meri?sslmode=verify-full')],
   [c.identity.credentialFile,nativeBytes],[runtime.tls.caFile,Buffer.from('synthetic-root')],[runtime.tls.certFile,Buffer.from('synthetic-leaf')],[runtime.tls.keyFile,Buffer.from('synthetic-key')]]);
  const dependencies={now:()=>NOW,async readMaterial(path){reads.push(path);assert.ok(material.has(path),'known constructor material only');const bytes=Buffer.from(material.get(path));materialBuffers.push(bytes);return bytes;},
-  createPool(options){lifecycle.push('pool.create');assert.equal(options.max,10);assert.equal(options.connectionTimeoutMillis,runtime.limits.maxRequestMs);return pool;},
-  createAwsClients(options){lifecycle.push('clients.create');assert.deepEqual(options.ecs,{region:'us-east-1',maxAttempts:1,ignoreConfiguredEndpointUrls:true,useFipsEndpoint:false,useDualstackEndpoint:false,endpoint:'https://ecs.us-east-1.amazonaws.com'});assert.equal(options.ec2.endpoint,'https://ec2.us-east-1.amazonaws.com');
+  createPool(options){lifecycle.push('pool.create');assert.equal(options.max,10);assert.equal(options.connectionTimeoutMillis,runtime.limits.maxRequestMs);assert.equal(options.query_timeout,runtime.limits.maxRequestMs);assert.equal(options.idleTimeoutMillis,10000);return pool;},
+  createAwsClients(options){lifecycle.push('clients.create');assert.ok(options.ecs.requestHandler);assert.deepEqual({...options.ecs,requestHandler:undefined},{requestHandler:undefined,region:'us-east-1',maxAttempts:1,ignoreConfiguredEndpointUrls:true,useFipsEndpoint:false,useDualstackEndpoint:false,endpoint:'https://ecs.us-east-1.amazonaws.com'});assert.equal(options.ec2.endpoint,'https://ec2.us-east-1.amazonaws.com');
    return Object.fromEntries(['ecs','ec2'].map(service=>[service+'Client',{async send(command,options){awsCalls.push({service,command});return pair.configuration[service+'Client'].send(command,options);},destroy(){lifecycle.push(service+'.destroy');}}]));},
   createServer(value){captured=value;lifecycle.push('server.create');if(serverFailure)throw serverFailure;return {available:true,async listen(address){lifecycle.push(['listen',address]);if(listenFailure)throw listenFailure;},async close(){lifecycle.push('server.close');return {listenerStopped:true,pendingRequests:0,physicalStopProven:false};}};},
   async fetchImpl(url,init){fetches.push({url,init});const body=JSON.parse(init.body),principal={tenantId:binding.tenantId,actorId:binding.actorId},identity={principal,identityRevision:'native-v1',checkedAtMs:NOW,expiresAtMs:NOW+5000};
@@ -288,4 +290,13 @@ test('quarantined reader (unsettled AWS work) and stop requests end the wait at 
  const path=resolve('synthetic-stopped-runtime.json'),bytes=Buffer.from(JSON.stringify(g.runtime));g.material.set(path,bytes);
  assert.equal(await runProductOwnerMain(['--config',path],{MERI_PRODUCT_OWNER_REQUIRED:'1',MERI_PRODUCT_OWNER_CONFIG_SHA256:sha(bytes)},g.dependencies),3);
  assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,5,'one denied first phase, then the stop');assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
+});
+
+
+test('invalid canonical budget nesting refuses owner before network constructors and preserves its code',async()=>{
+ const f=fixture();f.configuration.limits.requestMs=24000;
+ const bytes=Buffer.from(JSON.stringify(f.configuration));f.material.set(f.runtime.controlConfigurationFile,bytes);
+ f.runtime.controlConfigurationSha256=sha(bytes);
+ await assert.rejects(startProductOwner(f.runtime,f.dependencies),{code:'HOT_PATH_BUDGET_CONFIGURATION'});
+ assert.deepEqual(f.lifecycle,[]);assert.deepEqual(f.awsCalls,[]);assert.deepEqual(f.fetches,[]);
 });

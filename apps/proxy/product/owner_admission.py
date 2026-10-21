@@ -18,7 +18,6 @@ import uuid
 from .owner_channel import (OPERATION, OwnerPeerPolicy, OwnerReply, OwnerHostGate, OwnerCarrierBusy,
                             acquire_owner_carrier, owner_exchange_state, validate_owner_reply,
                             admission_carrier, validate_capture_admission_lease)
-from .budgets import MIN_OWNER_EXCHANGE_MS, OWNER_CARRIER_WAIT_MS
 from .bearer_eni_admission import IssuedTaskNetwork, ProductBearerSource
 from .binding import _binding as checked_binding
 from . import refusal_diagnostics as diagnostics
@@ -105,14 +104,14 @@ class ProductOwnerAdmissionReader:
     physical-stop proof is supplied by this source interface.
     """
     def __init__(self, *, policy, exchange, host_gate, owner_loop,
-                 now_ms=None, max_exchange_ms=3000, max_carrier_wait_ms=OWNER_CARRIER_WAIT_MS):
+                 max_exchange_ms, max_carrier_wait_ms, min_exchange_ms, settle_ms, now_ms=None):
         if (type(policy) is not OwnerPeerPolicy or type(host_gate) is not OwnerHostGate
                 or not host_gate.available or not callable(exchange)
                 or not callable(getattr(exchange, "abort", None))
                 or inspect.iscoroutinefunction(exchange.abort)
                 or asyncio.get_running_loop() is not owner_loop or not owner_loop.is_running()
                 or type(max_exchange_ms) is not int or not 1 <= max_exchange_ms <= policy.max_exchange_ms
-                or type(max_carrier_wait_ms) is not int or not 1 <= max_carrier_wait_ms <= OWNER_CARRIER_WAIT_MS):
+                or type(max_carrier_wait_ms) is not int or not 1 <= max_carrier_wait_ms <= 10000):
             _deny()
         self.policy, self.exchange, self.host_gate = policy, exchange, host_gate
         self.loop, self.loop_thread = owner_loop, threading.get_ident()
@@ -120,6 +119,10 @@ class ProductOwnerAdmissionReader:
         if not callable(self.now_ms):
             _deny()
         self.max_exchange_ms, self.max_carrier_wait_ms = max_exchange_ms, max_carrier_wait_ms
+        self.min_exchange_ms, self.settle_ms = min_exchange_ms, settle_ms
+        if not (type(min_exchange_ms) is int and 0 < min_exchange_ms <= 8000
+                and type(settle_ms) is int and 0 < settle_ms <= 1000):
+            _deny()
         self.state = owner_exchange_state(exchange, policy, host_gate)
         self._receipts, self._read_ids = {}, OrderedDict()
         self._initial_caps = {}
@@ -168,7 +171,7 @@ class ProductOwnerAdmissionReader:
                 acquired = True
                 at = _integer(self.now_ms())
                 cutoff = min(deadline, at + self.max_exchange_ms)
-                if waited and deadline - at < min(MIN_OWNER_EXCHANGE_MS, self.max_exchange_ms):
+                if waited and deadline - at < min(self.min_exchange_ms, self.max_exchange_ms):
                     raise OwnerCarrierBusy("OWNER_CARRIER_BUSY")
                 check_carrier()
                 step = "exchange"
@@ -240,7 +243,7 @@ class ProductOwnerAdmissionReader:
             self._abort()
             _deny()
         try:
-            result = future.result(timeout=max(.001, (bound - self.now_ms()) / 1000 + 1))
+            result = future.result(timeout=max(.001, (bound - self.now_ms()) / 1000 + self.settle_ms / 1000))
             validate_capture_admission_lease(lease, self.exchange, self.host_gate,
                 None if expected is None else _json(expected))
             return result

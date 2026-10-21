@@ -1,4 +1,5 @@
 """Offline projection controls with real product reader/lifetime, synthetic wire."""
+from apps.proxy.product.test.budget_fixture import TEST_BUDGETS, TEST_LIFETIME_LIMITS, budget_fixture, budget_data
 import asyncio
 from dataclasses import replace
 import json
@@ -31,11 +32,11 @@ class AuthTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.issued = issued_fixture()[0].issued
         self.policy = OwnerPeerPolicy("https://owner.invalid:8444", "owner.invalid", "owner-task",
-            "proxy-"+uuid.uuid4().hex, "1"*64, "2"*64, "3"*64, "proxy-subject")
+            "proxy-"+uuid.uuid4().hex, "1"*64, "2"*64, "3"*64, "proxy-subject", max_exchange_ms=3000)
         self.exchange = Exchange(self.policy, self.issued)
         self.exchange.source[2] = SHA
         self.reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=self.exchange,
-            host_gate=OwnerHostGate(), owner_loop=asyncio.get_running_loop())
+            host_gate=OwnerHostGate(), owner_loop=asyncio.get_running_loop(), max_exchange_ms=3000, max_carrier_wait_ms=10000, min_exchange_ms=8000, settle_ms=1000)
         result = await asyncio.to_thread(self.reader.resolve_for_issued_sync,
             issued=self.issued, capability_sha256=SHA, deadline_ms=milliseconds()+2000)
         peer = PeerLease("10.77.0.9", time.monotonic(), result.authority.binding, result.authority.grant_id)

@@ -27,6 +27,7 @@ from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
 from . import telemetry_lines
 from .owner_channel import OwnerPeerPolicy
+from .budgets import load_hot_path_budgets
 from .startup_config import (ProductProxyConfiguration, parse_product_proxy_startup,
                              read_reviewed_file, _environment)
 
@@ -35,11 +36,6 @@ _NATIVE_CONFIG = Path(__file__).with_name("litellm-product-config.yaml")
 # Updated only with an independently reviewed change of the fixed product file.
 _NATIVE_SHA = "fd33b4aaf5d3c2566d86691b3c895c21e10633ad4ed1c08a8a6a0f3c104ef06f"
 _running = False
-# Reviewed constants rather than startup configuration, so the closed proxy
-# schema and its rendered bindings stay unchanged. Each attempt is a complete
-# fresh rediscovery bounded by the existing 3s native-work ceiling.
-_PAIR_STARTUP_WINDOW_SECONDS = 180
-_PAIR_RETRY_INTERVAL_SECONDS = 2.5
 
 
 def _deny():
@@ -53,7 +49,8 @@ class CleanupUnknown(StateDenied):
 
 class _Resources:
     """Retirement precedes cleanup; unresolved borrowed native I/O is UNKNOWN."""
-    def __init__(self):
+    def __init__(self, budgets):
+        self.budgets = budgets
         self.lock = threading.Lock()
         self.retired = False
         self.active = 0
@@ -103,7 +100,7 @@ class _Resources:
             telemetry.health("resources", "retired", "RESOURCES_RETIRED")
         work = [asyncio.create_task(asyncio.to_thread(client.close)) for client in self.clients]
         work += [asyncio.create_task(item.aclose()) for item in self.transports]
-        done, pending = await asyncio.wait(work, timeout=1) if work else (set(), set())
+        done, pending = await asyncio.wait(work, timeout=self.budgets.seconds("proxy.resources.close")) if work else (set(), set())
         for task in pending:
             task.add_done_callback(lambda item: None if item.cancelled() else item.exception())
         failed = any(task.cancelled() or task.exception() is not None for task in done)
@@ -112,7 +109,7 @@ class _Resources:
             raise CleanupUnknown()
 
 
-async def _bounded_native(factory, resources, seconds=5):
+async def _bounded_native(factory, resources, seconds):
     task = asyncio.create_task(factory())
     resources.native_pending.add(task)
     def done(value):
@@ -149,7 +146,7 @@ def _native_bootstrap(resources):
         context = original_lifespan(app)
         entered = False
         try:
-            await _bounded_native(context.__aenter__, resources)
+            await _bounded_native(context.__aenter__, resources, resources.budgets.seconds("proxy.native.start"))
             entered = True
             read_reviewed_file(_NATIVE_CONFIG, _NATIVE_SHA)
             compatibility.check_loaded()
@@ -161,7 +158,7 @@ def _native_bootstrap(resources):
         finally:
             if entered:
                 try:
-                    await _bounded_native(lambda: context.__aexit__(None, None, None), resources, 1)
+                    await _bounded_native(lambda: context.__aexit__(None, None, None), resources, resources.budgets.seconds("proxy.native.stop"))
                     resources.native_stopped = True
                 except BaseException:
                     resources.native_failed = True
@@ -183,8 +180,8 @@ def _clients(resources):
     resolver.providers[:] = providers
     config_type = import_module("botocore.config").Config
     config = config_type(region_name="us-east-1", signature_version="v4",
-        connect_timeout=1, read_timeout=1, proxies={},
-        retries={"mode": "standard", "total_max_attempts": 1},
+        connect_timeout=resources.budgets.seconds("proxy.boto.connect"), read_timeout=resources.budgets.seconds("proxy.boto.read"), proxies={},
+        retries={"mode": "standard", "total_max_attempts": resources.budgets.ms("proxy.boto.attempts")},
         use_fips_endpoint=False, use_dualstack_endpoint=False,
         ignore_configured_endpoint_urls=True)
     clients = []
@@ -276,20 +273,20 @@ async def _read_startup_service_pair(service_pair, resources, expires_at_ms):
     a retired or expired reader are terminal at once; window exhaustion raises
     the same content-free denial a single failed read always raised.
     """
-    window_end = time.monotonic() + _PAIR_STARTUP_WINDOW_SECONDS
+    window_end = time.monotonic() + resources.budgets.seconds("proxy.startup.pair.window")
     while True:
         if not service_pair.available or resources.retired or resources.cleanup_unknown:
             _deny()
         try:
             return await _bounded_native(lambda: asyncio.to_thread(service_pair.read,
-                deadline_ms=min(expires_at_ms, time.time_ns()//1000000+3000)), resources, 3)
+                deadline_ms=min(expires_at_ms, time.time_ns()//1000000+resources.budgets.ms("proxy.pair.fetch"))), resources, resources.budgets.seconds("proxy.pair.fetch"))
         except CleanupUnknown:
             raise
         except StateDenied:
             if (not service_pair.available or resources.retired or resources.cleanup_unknown
-                    or time.monotonic() + _PAIR_RETRY_INTERVAL_SECONDS >= window_end):
+                    or time.monotonic() + resources.budgets.seconds("proxy.startup.pair.retry") >= window_end):
                 raise
-        await asyncio.sleep(_PAIR_RETRY_INTERVAL_SECONDS)
+        await asyncio.sleep(resources.budgets.seconds("proxy.startup.pair.retry"))
 
 
 def _tls(value, policy):
@@ -327,7 +324,8 @@ async def run_product_proxy(configuration):
     value = configuration.value
     if value["expiresAtMs"] <= time.time_ns()//1000000:
         _deny()
-    resources = _Resources()
+    budgets = load_hot_path_budgets(value.get("budgets"))
+    resources = _Resources(budgets)
     telemetry_lines.install(write=diagnostics.raw_writer, environment=value.get("telemetry", {}).get("environment", "Preview"))
     rollups = telemetry.start_rollups()
     operation = None
@@ -340,9 +338,10 @@ async def run_product_proxy(configuration):
         os.environ["AWS_EC2_METADATA_DISABLED"] = "true"
         os.environ["AWS_REGION"] = os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
         compatibility = _native_bootstrap(resources)
-        ecs, ec2, count = await _bounded_native(lambda: asyncio.to_thread(_clients, resources), resources)
+        ecs, ec2, count = await _bounded_native(lambda: asyncio.to_thread(_clients, resources), resources, budgets.seconds("proxy.native.start"))
         from .service_pair_discovery import ProductServicePairDiscovery, compile_owner_peer, parse_owner_peer_template
-        service_pair = ProductServicePairDiscovery(configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True)
+        service_pair = ProductServicePairDiscovery(configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True,
+            max_request_ms=budgets.ms("proxy.pair.fetch"), max_lease_ms=budgets.ms("proxy.pair.lease"))
         resources.transports.append(service_pair)
         # Reviewed material refuses before any pair read or startup wait.
         _check_reviewed_tls_files(value)
@@ -357,7 +356,8 @@ async def run_product_proxy(configuration):
             service_pair_reader=service_pair,
             deployment_expires_at_ms=value["expiresAtMs"], deployment_revision=value["deploymentRevision"],
             ecs_client=ecs, ec2_client=ec2, count_client=count,
-            make_provider_transport=_provider_factory(resources), pricing_revision=value["pricingRevision"]))
+            make_provider_transport=_provider_factory(resources), pricing_revision=value["pricingRevision"],
+            budgets=budgets, bootstrap_seconds=budgets.seconds("proxy.bootstrap")))
         ready, _ = await asyncio.wait({operation}, timeout=max(0, (value["expiresAtMs"]-time.time_ns()//1000000)/1000))
         if not ready:
             operation.cancel()
@@ -371,7 +371,7 @@ async def run_product_proxy(configuration):
             telemetry.rollup()
             if operation is not None and not operation.done():
                 operation.cancel()
-                ready, _ = await asyncio.wait({operation}, timeout=1)
+                ready, _ = await asyncio.wait({operation}, timeout=budgets.seconds("proxy.resources.close"))
                 if not ready:
                     resources.native_pending.add(operation)
             await resources.close()
@@ -405,7 +405,9 @@ def main(argv=None):
         configuration = parse_product_proxy_startup(raw, args.config_sha256)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        diagnostics.install_stderr()
+        diagnostic_budgets = load_hot_path_budgets(configuration.value["budgets"])
+        diagnostics.install_stderr(burst=diagnostic_budgets.ms("proxy.diagnostics.burst"),
+                                   window=diagnostic_budgets.seconds("proxy.diagnostics.window"))
         with _quiet_native_output():
             loop.run_until_complete(run_product_proxy(configuration))
         return 0
@@ -413,6 +415,10 @@ def main(argv=None):
         # asyncio.run waits indefinitely for a borrowed native thread. The
         # executable instead terminates its own process after sticky retirement.
         os._exit(75)
+    except StateDenied as error:
+        if str(error) == "HOT_PATH_BUDGET_CONFIGURATION":
+            sys.stderr.write("HOT_PATH_BUDGET_CONFIGURATION\n")
+        return 78
     except BaseException:
         return 78
     finally:

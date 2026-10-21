@@ -20,6 +20,8 @@ def _current_lifetime_check():
 
 @dataclass(frozen=True)
 class LifetimeLimits:
+    # Qualification-only defaults; the product composition supplies all three
+    # time budgets explicitly from its validated rendered hot-path table.
     poll_seconds: float = 5.0
     check_seconds: float = 5.0
     cleanup_seconds: float = 1.0

@@ -124,7 +124,7 @@ test('configuration is snapshotted; fresh original recheck detects a concurrent 
 test('pure workload identity preserves retargeting semantics and explicitly excludes independently pinned router VPC',()=>{
  const f=fixture(),before=compilePreparedRunConfigurationSha256(f.options.configuration),changed=structuredClone(f.options.configuration),c=changed.nativeCandidate;
  const noEffect=()=>assert.fail('pure digest and binding construction never resolve or issue material');
- const bindings=createPreparedRunBindings({configuration:f.options.configuration,pool:f.options.pool,store:{allocations:{read:noEffect},readOptional:noEffect},credentials:{control:'synthetic-control-only'},issuanceStore:createMemoryIssuanceStore(),capabilityAuthority:{generate:noEffect,retrieve:noEffect,status:noEffect},modelGrants:{issue:noEffect},initialBindings:f.options.initialBindings,now:()=>NOW});
+ const bindings=createPreparedRunBindings({configuration:f.options.configuration,pool:f.options.pool,limits:{maxRequestMs:3000},store:{allocations:{read:noEffect},readOptional:noEffect},credentials:{control:'synthetic-control-only'},issuanceStore:createMemoryIssuanceStore(),capabilityAuthority:{generate:noEffect,retrieve:noEffect,status:noEffect},modelGrants:{issue:noEffect},initialBindings:f.options.initialBindings,now:()=>NOW});
  assert.equal(bindings.configurationSha256,before,'existing issuance composition consumes the extracted canonical digest');
  const binding={...c.runtime.binding,conversationId:id(70),runId:id(71),attemptId:id(72),workerId:id(73)};
  c.runtime.binding=binding;c.identity.commandContext.binding=binding;c.runtime.deadlineMs--;

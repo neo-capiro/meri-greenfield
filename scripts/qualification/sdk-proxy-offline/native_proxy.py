@@ -165,6 +165,7 @@ async def serve(args, receipt):
     from botocore.stub import Stubber, ANY
     import uvicorn
     from apps.proxy.product import main
+    from apps.proxy.product.test.budget_fixture import TEST_BUDGETS
     from apps.proxy.product.host_composition import ProductSession, create_guarded_product_handler
     from apps.proxy.product.upstream_callback import load_pinned_product_litellm_invoker
     from apps.proxy.product.owner_channel import OwnerHostGate, OwnerPeerPolicy, make_product_owner_bridge
@@ -185,12 +186,13 @@ async def serve(args, receipt):
     metadata = await rpc.call("init")
     admission_gate = OwnerHostGate()
     policy = OwnerPeerPolicy("https://owner.invalid:8444", "owner.invalid", "owner-task", "proxy-task",
-                             "1" * 64, "2" * 64, "3" * 64, "proxy-subject")
+                             "1" * 64, "2" * 64, "3" * 64, "proxy-subject", max_exchange_ms=3000)
     issued = fixture_issued(metadata)
     exchange = pipe_owner_exchange(policy, issued, metadata, rpc, receipt)
     reader = ProductOwnerAdmissionReader(policy=policy, exchange=exchange, host_gate=admission_gate,
-                                         owner_loop=asyncio.get_running_loop())
-    resources, gate, server_task = main._Resources(), None, None
+                                         owner_loop=asyncio.get_running_loop(), max_exchange_ms=3000, max_carrier_wait_ms=10000,
+                                         min_exchange_ms=8000, settle_ms=1000)
+    resources, gate, server_task = main._Resources(TEST_BUDGETS), None, None
     counter = boto3.client("bedrock-runtime", region_name="us-east-1", aws_access_key_id="synthetic-offline",
                            aws_secret_access_key="synthetic-offline-never-an-account-key",
                            config=Config(region_name="us-east-1", signature_version="v4", connect_timeout=1,
@@ -251,7 +253,8 @@ async def serve(args, receipt):
                                      lambda: ProviderStub(args.mode, receipt, structured=args.output_format == "json-schema"),
                                      make_product_owner_bridge(policy=policy, exchange=exchange, host_gate=admission_gate,
                                          request_id=identifier, binding=metadata["binding"], deadline_ms=deadline,
-                                         grant_id=metadata["grantId"], capability_sha256=metadata["capabilitySha256"]),
+                                         grant_id=metadata["grantId"], capability_sha256=metadata["capabilitySha256"],
+                                         max_carrier_wait_ms=10000),
                                      current, limits=body_limits)
             handler = await create_guarded_product_handler(life, session)
             async def observe_native(request):
