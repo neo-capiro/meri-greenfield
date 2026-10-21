@@ -10,3 +10,7 @@ export const WORKFLOW_BUDGETS = Object.freeze({
   "workflow.schedule.startToClose": "1 minute",
   "workflow.schedule.settle": "2 minutes"
 } as const);
+export const WORKFLOW_TIMER_BUDGETS = Object.freeze({
+  "objective.lifecycle.poll": 30000,
+  "objective.lifecycle.retry": 120000
+} as const);

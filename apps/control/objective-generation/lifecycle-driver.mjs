@@ -1,6 +1,6 @@
-import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
+import {WORKFLOW_TIMER_BUDGETS} from '../conversations/hot-path-budgets.generated.ts';
 /**
- * Deterministic server-owned Objective generation lifecycle (no I/O, no imports).
+ * Deterministic server-owned Objective generation lifecycle (no I/O; generated budget data only).
  * Runs inside the Temporal workflow so it survives browser close and worker loss:
  *
  *   source  : Core admit + publish (Core replays both by job; safe to repeat)
@@ -17,7 +17,7 @@ import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs
  * Every wait is bounded by the server-set input.notAfterMs and, once known, the
  * Core admission effect expiry.
  */
-export const OBJECTIVE_GENERATION_POLL_MS=fixedHotPathBudget('objective.lifecycle.poll'),OBJECTIVE_GENERATION_RETRY_MS=fixedHotPathBudget('objective.lifecycle.retry');
+export const OBJECTIVE_GENERATION_POLL_MS=WORKFLOW_TIMER_BUDGETS['objective.lifecycle.poll'],OBJECTIVE_GENERATION_RETRY_MS=WORKFLOW_TIMER_BUDGETS['objective.lifecycle.retry'];
 const terminal=['completed','failed','cancelled'];
 
 export async function driveObjectiveGeneration(input,{source,startRun,readRun,complete,wait,publish,stopped,now,fatal=(_error)=>false}){
