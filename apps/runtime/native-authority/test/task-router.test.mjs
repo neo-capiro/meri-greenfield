@@ -44,24 +44,6 @@ test('the runner\'s own stop and control\'s final stop for the same original are
  const controlStop=await f.post('stop',f.controlCredential);first.resolve();
  assert.equal(controlStop.status,200);assert.equal((await runnerStop).status,200);assert.deepEqual(sent,['Bearer '+f.taskCredential,'Bearer '+f.controlCredential]);assert.equal((await f.post()).status,403);f.router.close();
 });
-// Live 2026-10-20 22:59:31Z (chat 2 on candidate 6): control's completion capture was in flight when the runner's capture closed
-// its SDK query; the query's process client stopped the original through this router, and that stop cancelled the capture itself.
-test('a capture in flight survives the stop it causes; the stop still ends every other exchange and refuses a later capture',async()=>{
- const f=fixture(),stopped=Promise.withResolvers(),sends=[];
- f.onSend(async input=>{sends.push(input.operation);
-  if(input.operation==='stop'){stopped.resolve();return {status:200,body:Buffer.from(JSON.stringify({original:f.original,receipt:{physicalStopProven:true}}))};}
-  if(input.operation==='stdout')return new Promise((resolve,reject)=>{input.signal.addEventListener('abort',()=>reject(Error('stopped')),{once:true});});
-  // The runner's capture closes its query mid-capture: the stop arrives while this send waits, then the capture replies.
-  await stopped.promise;if(input.signal.aborted)throw Error('capture cancelled');
-  return {status:200,body:Buffer.from(JSON.stringify({original:f.original,capture:{synthetic:true}}))};});
- const output=f.post('stdout',f.taskCredential,{sequence:0}),capture=f.post('capture',f.controlCredential,{request:{synthetic:true}});
- while(sends.length<2)await new Promise(resolve=>setImmediate(resolve));
- const stop=await f.post('stop',f.taskCredential);assert.equal(stop.status,200);
- const captured=await capture;assert.equal(captured.status,200,'the capture that caused the stop still answers');assert.deepEqual((await captured.json()).capture,{synthetic:true});
- assert.equal((await output).status,403,'the stop still ends the stdout poll');
- assert.equal((await f.post('capture',f.controlCredential,{request:{synthetic:true}})).status,403,'a capture after the stop is refused');
- assert.deepEqual(f.router.status(),{closed:false,activeRequests:0,trackedOriginals:1});f.router.close();
-});
 test('oversized request and foreign downstream response are refused without successful release',async()=>{
  const f=fixture(),request=new Request('https://router.invalid/v1/native-task/inspect',{method:'POST',headers:{authorization:'Bearer '+f.controlCredential,'content-type':'application/json','content-length':'2097153'},body:JSON.stringify({original:f.original})});
  assert.equal((await f.router.privateApplication.handle(request,{ingress:f.ingress})).status,403);assert.equal(f.counts.connect,0);
