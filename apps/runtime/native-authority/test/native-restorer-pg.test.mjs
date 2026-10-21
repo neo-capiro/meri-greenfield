@@ -24,3 +24,9 @@ for(const mode of ['resume','fork'])test(`${mode}: actual canonical SQL restorat
 test('actual canonical SQL UNKNOWN restoration cannot repeat filesystem effects',async t=>{
  const x=await setup(t,'resume');let currentChecks=0;x.input.revalidate=async()=>{if(++currentChecks===2)throw Error('synthetic-revocation-after-files');};await assert.rejects(x.owner.restore(x.input));const row=(await x.stack.store.restorations.read({binding:x.target,restoreKey:x.input.restoreKey},()=>{})).record;assert.equal(row.state,'UNKNOWN');const file=join(x.workspace,'notes/pinned.txt'),before=await stat(file);await assert.rejects(x.owner.restore(x.input));assert.equal((await stat(file)).ino,before.ino);assert.deepEqual(await readFile(file),x.payload);assert.deepEqual(await readdir(x.workspace),['notes']);
 });
+test('actual canonical SQL admits a restoration claim for a target the worker already claimed starting, never once it is running',async t=>{
+ for(const state of ['starting','running']){const x=await setup(t,'resume');await x.stack.store.append(x.target,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}},()=>{});if(state==='running')await x.stack.store.append(x.target,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state:'running',reasonCode:null}},()=>{});
+  x.input.revalidate=async()=>{assert.equal((await x.stack.store.read(x.target,{},()=>{})).run.state,state);};const row=()=>x.stack.store.restorations.read({binding:x.target,restoreKey:x.input.restoreKey},()=>{});
+  if(state==='starting'){await x.owner.restore(x.input);assert.deepEqual(await readFile(join(x.workspace,'notes/pinned.txt')),x.payload);assert.equal((await row()).record.state,'RESTORED');}
+  else{await assert.rejects(x.owner.restore(x.input),/NATIVE_PREPARATION_STATE_REFUSED/);assert.equal((await row()).record,null);assert.deepEqual(await readdir(x.workspace),[]);}}
+});

@@ -21,8 +21,9 @@ const gate = () => Promise.withResolvers();
 
 /** One composed control + runner pair for `binding`. `selfStop`: the capture's closeQuery closes the runner's process client, as the
  * runner's query close does. The capture's first snapshot waits for `x.release()`; `x.holdNextObserve()` parks the next router ENI
- * read. `x.stopped` resolves when a stop reached the runner. */
-export async function composeCapture(t, {binding, versions, sessionId, selfStop}) {
+ * read. `x.stopped` resolves when a stop reached the runner. `taskWorkspace` is the task-resident workspace port the receiver's
+ * `workspace-restore`/`workspace-verify` reach (a next turn's restore). */
+export async function composeCapture(t, {binding, versions, sessionId, selfStop, taskWorkspace}) {
   const root = mkdtempSync(join(tmpdir(), 'meri-capture-composition-')), workspace = join(root, 'workspace'), configDirectory = join(root, 'config');
   mkdirSync(workspace); mkdirSync(configDirectory); writeFileSync(join(workspace, 'note.txt'), 'captured');
   t.after(() => rmSync(root, {recursive: true, force: true}));
@@ -33,7 +34,8 @@ export async function composeCapture(t, {binding, versions, sessionId, selfStop}
   let closed = false;
   const nativeTask = {inspect: async () => ({...execution, taskId: 'scripted-native', state: closed ? 'stopped' : 'executing', physicalStopProven: closed}),
     close: async () => { closed = true; }, status: () => ({booted: true, supervisorPid: 10}),
-    retire: async () => ({...execution, taskId: 'scripted-native', state: 'stopped', physicalStopProven: true})};
+    retire: async () => ({...execution, taskId: 'scripted-native', state: 'stopped', physicalStopProven: true}),
+    ...(taskWorkspace ? {workspace: taskWorkspace} : {})};
   // Router stand-ins: the task authority (revocable) and the ENI reader (one read can be parked to keep an exchange in flight).
   let revoked = false, parked = null;
   const routerAuthority = {async verify({original: value}) {
@@ -80,7 +82,7 @@ export async function composeCapture(t, {binding, versions, sessionId, selfStop}
   t.after(async () => { router.close(); await runner.close(); await control.close(); });
   const controller = createRemoteNativeTaskController({original, origin: controlOrigin, credential: controlToken, fetchImpl: pinned});
   const outcome = promise => promise.then(() => 'answered', error => error.code);
-  return {original, plan, controller, router, routerLog, stopped: stopped.promise, release: () => released.resolve(),
+  return {original, plan, workspace, controller, router, routerLog, stopped: stopped.promise, release: () => released.resolve(),
     revoke() { revoked = true; },
     holdNextObserve() { parked = gate(); },
     capture: () => outcome(controller.capture({binding, controlId: id(864), sessionId})),
