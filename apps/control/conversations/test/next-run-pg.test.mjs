@@ -15,8 +15,11 @@ async function fixture(t,{retired=true}={}){const host=process.env.MERI_INSPECTI
  const revocation={async verifyRevoked({binding}){const a=admissions.get(hash(binding));if(!a?.revocation)throw Error('NEXT_RUN_REVOCATION_REQUIRED');const grants=(await pool.query('SELECT * FROM meri_product_budget.grants WHERE run_id=$1 ORDER BY grant_id',[binding.runId])).rows;if(grants.length!==1||grants[0].grant_id!==a.grantId||grants[0].state!=='REVOKED')throw Error('NEXT_RUN_REVOCATION_REQUIRED');return {receiptSha256:hash(a.revocation),grantIds:a.revocation.grantIds};}};
  const owner=createNextRunOwner({store,retirement,revocation,versions});
  const run1={tenantId,actorId,conversationId,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
- async function session(binding){const credential='native-'+randomUUID();contexts.set(credential,binding);return (await sessions.issue({identityCredential:credential,hints:{conversationId}})).credential;}
- const submit=(credential,prompt,requestId=randomUUID())=>service.submit({credential,input:{requestId,prompt}});
+ const fences=new Map();
+ async function session(binding){const credential='native-'+randomUUID();contexts.set(credential,binding);const issued=(await sessions.issue({identityCredential:credential,hints:{conversationId}})).credential;fences.set(issued,binding.writerFence);return issued;}
+ // A conversation's first run is admitted through its initial input (service.allocateInput, migrations 0016/0017) before submit; a reserved
+ // next run is submitted directly.
+ async function submit(credential,prompt,requestId=randomUUID()){const input={requestId,prompt};if(fences.get(credential)===1)await service.allocateInput({credential,input});return service.submit({credential,input});}
  const status=(state,reasonCode=null)=>({eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode}});
  async function complete(binding,final='completed'){await store.append(binding,status('starting'),check);await store.append(binding,status('running'),check);await store.append(binding,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'message.delta',data:{messageId:randomUUID(),text:'turn text'}},check);if(final==='completed')await capture(binding);else await store.append(binding,status(final,final==='cancelled'?'USER_CANCELLED':null),check);}
  async function capture(binding){const key={binding,scopes,selectedClientId:clientId},old=await store.completions.read(key,check);if(old?.state==='PUBLISHED')return {checkpointId:old.checkpointId,proofSha256:hash(old.proof)};const saved=await store.read(binding,{},check);if(saved.run.state!=='running')return null;const p=await store.completions.begin({...key,completionId:randomUUID(),checkpointId:randomUUID()},check);
@@ -25,6 +28,8 @@ async function fixture(t,{retired=true}={}){const host=process.env.MERI_INSPECTI
  async function allocate(binding){const allocationKey=hash(binding),grantId=randomUUID(),key={binding,allocationKey},expiresAtMs=Date.now()+60000,original={binding,executionKey:allocationKey,executionId:allocationKey,planSha256:'a'.repeat(64),expiresAtMs,versions},intent={...key,original,qualification:{attempt:1,policyRevision},grantIntents:[{grantId,capabilitySha256:hash({fixture:'next-run-allocation-capability',binding,grantId}),expiresAtMs}],allocationSha256:'d'.repeat(64),taskRequestSha256:'e'.repeat(64),expiresAtMs},resource={taskArn:'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/'+randomUUID().replaceAll('-',''),clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker',createdAtMs:Date.now()};await store.allocations.claim(intent,check);await store.allocations.record({...key,state:'ALLOCATED',resource},check);
  const manifest=selectSkill('quick_skill.relationship_brief','1.0.0').manifest,allocation={run:Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(k=>[k,binding[k]])),manifest,manifestSha256:hash(manifest),catalogSha256:hash(catalog),budgets:manifest.budgets,schedule:{revision:'b'.repeat(64),expiresAt:new Date(expiresAtMs).toISOString(),operations:manifest.allowedOperations.map(operation=>({operation,chargeMicrousd:1}))}};
  await pool.query('INSERT INTO meri_product_budget.budget(id,cap_micro_usd) VALUES(1,100000000) ON CONFLICT DO NOTHING');
+ // The tenant's budget policy, which native admission requires (gateway/budget/tenant/native-admission.mjs, migration 0002).
+ await pool.query('INSERT INTO meri_product_budget.tenant_budgets(tenant_id,monthly_cap_micro_usd,max_concurrent_runs) VALUES($1,25000000,10000) ON CONFLICT DO NOTHING',[tenantId]);
  const admission=createNativeAllocationAdmission({pool,allocationJson:JSON.stringify(allocation),grantIntents:intent.grantIntents,qualification:intent.qualification,binding,now:Date.now,limits:{maxRequestMs:3000,maxFactBytes:131072}});await admission.admit({taskArn:resource.taskArn});admissions.set(hash(binding),{admission,resource,grantId:intent.grantIntents[0].grantId});return {key,resource};}
  async function retire({key,resource},{revoke=true}={}){await store.allocations.record({...key,state:'RETIRED',resource:{...resource,physicalStopProven:true}},check);if(revoke){const a=admissions.get(hash(key.binding));a.revocation=await a.admission.revoke({taskArn:resource.taskArn});}}
  const principal={tenantId,actorId};
@@ -97,4 +102,16 @@ test('three accepted prompts refuse historical run 2 and SQL protects closed eve
  await assert.rejects(f.owner.currentRun(second),/NEXT_RUN_NOT_LATEST/);assert.deepEqual((await f.owner.currentRun(current)).binding,current);
  await assert.rejects(f.pool.query('UPDATE meri_conversations.runs SET last_sequence=last_sequence+1 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[second.tenantId,second.conversationId,second.runId]),/closed/);
  const saved=await f.store.nextRuns.execution({binding:current,scopes:f.scopes,selectedClientId:f.scopes[0].resourceId},check);assert.equal(saved.nextTurn.sourceRequest.prompt,'second prompt');assert.equal('continuation' in saved,false);
+});
+// O97: a stop or an error never erases the conversation. After a failed or cancelled turn the next prompt continues the conversation's
+// latest published checkpoint (turn 1's), through the canonical SQL of the next-run owner and journal.
+for(const final of ['failed','cancelled'])test(`turn 1 completes and turn 2 is ${final}: turn 3 continues turn 1's checkpoint`,async t=>{
+ const f=await fixture(t),select=()=>f.owner.selectRun({principal:f.principal,conversationId:f.conversationId});
+ await f.submit(await f.session(f.run1),'first prompt');const first=await f.allocate(f.run1);await f.complete(f.run1);await f.retire(first);const published=await f.capture(f.run1);
+ const second=(await select()).binding;await f.submit(await f.session(second),'second prompt');const allocation=await f.allocate(second);await f.complete(second,final);await f.retire(allocation);
+ const third=(await select()).binding;assert.equal(third.writerFence,3);await f.submit(await f.session(third),'third prompt');
+ const row=(await f.pool.query('SELECT reservation FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[third.tenantId,third.conversationId,third.runId])).rows[0];
+ assert.deepEqual(row.reservation.facts.checkpoint,published,"the reservation names turn 1's published checkpoint");
+ const saved=await f.store.nextRuns.execution({binding:third,scopes:f.scopes,selectedClientId:f.scopes[0].resourceId},check);
+ assert.equal(saved.nextTurn.checkpoint.checkpointId,published.checkpointId);assert.deepEqual(saved.nextTurn.checkpoint.binding,f.run1);assert.equal(saved.nextTurn.sourceRequest.prompt,'first prompt');
 });

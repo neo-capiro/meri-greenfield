@@ -179,6 +179,38 @@
         ]
       }
     },
+    "ControlSessionRefused": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-control-session-refused",
+        "FilterPattern": "\"CONTROL_SESSION_REFUSED\"",
+        "LogGroupName": "/meri/product-preview/control",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "ControlSessionRefusals",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
+    "ControlSessionDiagnosticsSuppressed": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "FilterName": "meri-preview-control-session-diagnostics-suppressed",
+        "FilterPattern": "\"CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED\"",
+        "LogGroupName": "/meri/product-preview/control",
+        "MetricTransformations": [
+          {
+            "DefaultValue": 0,
+            "MetricName": "DiagnosticsSuppressed",
+            "MetricNamespace": "Meri/Preview",
+            "MetricValue": "1"
+          }
+        ]
+      }
+    },
     "TurnFailureRate": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {

@@ -58,7 +58,20 @@ test('original expiry and authoritative target facts persist: a later target is 
  const later={...x.f.binding,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:2};const retargeted=JSON.parse(x.config.allocationJson);retargeted.run=Object.fromEntries(Object.keys(retargeted.run).map(k=>[k,later[k]]));
  const record={state:'RETIRED',original:{...prepared.original,binding:later},grantIntents:prepared.grantIntents,resource:{taskArn:'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/'+'d'.repeat(32),physicalStopProven:true},allocationSha256:hash(retargeted)};
  const admission=await second.admissionForBinding({binding:later,record});assert.equal(typeof admission.revoke,'function','the later binding is admissible against its own allocation');
- await assert.rejects(second.admissionForBinding({binding:later,record:{...record,allocationSha256:hash(JSON.parse(x.config.allocationJson))}}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'the first run\'s allocation hash does not admit the later target');
+ const foreign={...record,allocationSha256:hash(JSON.parse(x.config.allocationJson))};
+ await assert.rejects(second.admissionForBinding({binding:later,record:{...foreign,state:'ADMITTED'}}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'a live record naming another hash is refused without reading the budget store');
+ // A settled (RETIRED) source admitted under an earlier render is admitted only against its own stored allocation, pinned by its record's hash.
+ const stored=new Map(),storedPool={async connect(){return {async query(sql,params){assert.match(sql,/^SELECT allocation,allocation_sha256 FROM meri_product_budget\.tool_run_allocations WHERE run_id=\$1$/u);const row=stored.get(params[0]);return {rows:row?[row]:[]};},release(){}};}};
+ const third=createPreparedRunBindings({configuration:x.f.configuration,pool:storedPool,store:x.store,credentials:x.credentials,issuanceStore,capabilityAuthority:x.authority,modelGrants:x.modelGrants,now});
+ await assert.rejects(third.admissionForBinding({binding:later,record:foreign}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'the first run\'s allocation hash does not admit the later target: no such stored allocation');
+ const earlier={...retargeted,catalogSha256:'f'.repeat(64)},earlierSha256=hash(earlier);
+ stored.set(later.runId,{allocation:earlier,allocation_sha256:hash(retargeted)});
+ await assert.rejects(third.admissionForBinding({binding:later,record:{...record,allocationSha256:earlierSha256}}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'a stored row under another hash refuses');
+ stored.set(later.runId,{allocation:{...earlier,run:{...earlier.run,runId:randomUUID()}},allocation_sha256:earlierSha256});
+ await assert.rejects(third.admissionForBinding({binding:later,record:{...record,allocationSha256:earlierSha256}}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'a stored allocation of another run refuses');
+ stored.set(later.runId,{allocation:earlier,allocation_sha256:earlierSha256});
+ assert.equal(typeof (await third.admissionForBinding({binding:later,record:{...record,allocationSha256:earlierSha256}})).revoke,'function','an earlier render\'s settled source is admitted against its own stored allocation');
+ await assert.rejects(third.admissionForBinding({binding:later,record:{...record,state:'ADMITTED',allocationSha256:earlierSha256}}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'a live run of an earlier render is never admitted');
  // The fact producer binds the current durable run record: a later run without one is refused; another policy revision or versions refuse; a matching record compiles the retargeted allocation and this entry's transport.
  const laterIntent={binding:later,requestSha256:hash({prompt:'Second prompt'}),expiresAtMs:intent1.expiresAtMs,issuanceKey:hash(later)},laterIssuance={grantId:randomUUID(),capabilitySha256:'e'.repeat(64)};
  await assert.rejects(second.facts.compile({intent:laterIntent,issuance:laterIssuance}),/PREPARED_RUN_BINDINGS_RUN_RECORD_REQUIRED/);

@@ -7,6 +7,7 @@ import {assertProposalIntegrity,assertWorkspacePaths} from '../../../packages/co
 import {assertTypedResult,assertTypedSelection,MAX_OBJECTIVE_SELECTION_BYTES} from '../../../packages/runtime/objective-generation-custody.mjs';
 import {validateCompletionProof} from './completion-journal.mjs';
 import {assertNextRunReservation} from './next-run-reservation.mjs';
+import {continuesSession} from '../../../packages/contracts/session-continuity.mjs';
 
 const corrupt=()=>fail('STORE_CORRUPT');
 const requireFact=value=>{if(!value)corrupt();};
@@ -148,10 +149,10 @@ function decodeNextRun(row,owner,byRun,byCompletion){
  const p=assertNextRunReservation(row.reservation),source=byRun.get(row.source_run_id),target=byRun.get(row.target_run_id);
  requireFact(source&&same(p.source,source.projection.binding)&&row.source_run_id===p.source.runId&&
   row.target_run_id===p.target.runId&&p.target.actorId===owner.subject.ownerActorId&&
-  same(p.scopes,source.projection.scopes)&&same(p.versions,source.projection.versions)&&
+  same(p.scopes,source.projection.scopes)&&
   p.policyRevision===source.projection.policyRevision&&['RESERVED','ACCEPTED'].includes(row.state));
  if(row.state==='ACCEPTED')requireFact(target&&same(p.target,target.projection.binding)&&
-  same(p.scopes,target.projection.scopes)&&same(p.versions,target.projection.versions)&&
+  same(p.scopes,target.projection.scopes)&&
   p.policyRevision===target.projection.policyRevision&&
   source.public.sequenceEnd===target.public.sequenceBase);
  else requireFact(!target&&source.public.sequenceEnd===null);
@@ -159,11 +160,15 @@ function decodeNextRun(row,owner,byRun,byCompletion){
   same(target.continuation.checkpoint.binding,source.projection.binding)&&
   ['paused','waiting-for-approval'].includes(source.projection.state);
  requireFact(['completed','failed','cancelled'].includes(source.projection.state)||continued);
- requireFact((source.projection.state==='completed')===(p.facts.checkpoint!==null));
+ if(source.projection.state==='completed')requireFact(p.facts.checkpoint!==null);
  if(continued)requireFact(p.facts.checkpoint===null);
- if(p.facts.checkpoint!==null){const cp=byCompletion.get(p.facts.checkpoint.checkpointId);
-  requireFact(cp&&cp.row.run_id===row.source_run_id&&cp.row.state==='PUBLISHED'&&
-   cp.row.proof_sha256===p.facts.checkpoint.proofSha256);}
+ // The conversation's latest published checkpoint as of the source: a completed source's own, else the last completed turn's.
+ if(p.facts.checkpoint!==null){const cp=byCompletion.get(p.facts.checkpoint.checkpointId),fence=run=>byRun.get(run)?.projection.binding.writerFence;
+  requireFact(cp&&cp.row.state==='PUBLISHED'&&cp.row.proof_sha256===p.facts.checkpoint.proofSha256&&
+   (source.projection.state==='completed'?cp.row.run_id===row.source_run_id:fence(cp.row.run_id)<p.source.writerFence)&&
+   ![...byCompletion.values()].some(o=>o.row.state==='PUBLISHED'&&fence(o.row.run_id)>fence(cp.row.run_id)&&fence(o.row.run_id)<=p.source.writerFence));
+  // An accepted successor runs under its own release's versions; the checkpoint's session must continue there (session-continuity.mjs).
+  if(row.state==='ACCEPTED')requireFact(continuesSession(cp.public.checkpoint.versions,target.projection.versions));}
  return {row,reservation:p,public:{sourceRunId:row.source_run_id,targetRunId:row.target_run_id,
   state:row.state,reservationSha256:row.reservation_sha256}};
 }

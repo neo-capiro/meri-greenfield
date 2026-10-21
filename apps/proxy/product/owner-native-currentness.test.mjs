@@ -12,18 +12,25 @@ import {createProductOwnerNativeCurrentness} from './owner-native-currentness.mj
 
 const bytes=Buffer.from('synthetic-existing-native-session\n'),fileSha=createHash('sha256').update(bytes).digest('hex');
 const refused=/PRODUCT_OWNER_NATIVE_UNAVAILABLE/;
-function fixture({dynamic=false}={}){
+// `later`: the current run is the conversation's second (writerFence 2); its original record and first run were admitted under an
+// earlier render (another image and configuration). `allocationVersions` / `firstRunVersions` override what the fixture records.
+function fixture({dynamic=false,later=null}={}){
  const source=productControlFixture(),db=storeFixture(),c=source.configuration,n=c.nativeCandidate;
- const binding=dynamic?{...source.binding,writerFence:1}:n.runtime.binding,
+ const first=dynamic||later?{...source.binding,writerFence:1}:n.runtime.binding,earlier={...c.versions,imageDigest:`sha256:${'9'.repeat(64)}`};
+ const binding=later?{...first,runId:id(950),attemptId:id(951),workerId:id(952),writerFence:2}:first,
   scope={kind:'client',tenantId:binding.tenantId,resourceId:source.clientId,policyRevision:n.qualification.policyRevision},at=NOW,
   f={configuration:c,binding,scopes:[scope],now:at},createdAt=new Date(at).toISOString(),principal={tenantId:binding.tenantId,actorId:binding.actorId};
  const run={binding,state:'running',scopes:[scope],policyRevision:scope.policyRevision,versions:c.versions,createdAt};
  const request={requestId:id(900),prompt:'synthetic initial prompt',skill:null,window:null};
- const row={tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,projection:run,projection_sha256:hash(run),request_id:request.requestId,request,request_sha256:hash(request),last_sequence:1,sequence_base:0,sequence_end:null};
+ const row={tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,projection:run,projection_sha256:hash(run),request_id:request.requestId,request,request_sha256:hash(request),last_sequence:1,sequence_base:later?1:0,sequence_end:null};
  db.state.runs.set([binding.tenantId,binding.conversationId,binding.runId].join(':'),row);
+ if(later){const done={...run,binding:first,state:'completed',versions:later.firstRunVersions??earlier},ask={...request,requestId:id(903)};
+  db.state.runs.set([first.tenantId,first.conversationId,first.runId].join(':'),{tenant_id:first.tenantId,conversation_id:first.conversationId,run_id:first.runId,projection:done,projection_sha256:hash(done),request_id:ask.requestId,request:ask,request_sha256:hash(ask),last_sequence:1,sequence_base:0,sequence_end:1});
+  const done1={contractVersion:'0.1.0',eventId:id(904),binding:first,sequence:1,createdAt,scopes:done.scopes,type:'run.status',data:{state:'completed',reasonCode:null}};
+  db.state.events.set([first.tenantId,first.conversationId,first.runId].join(':'),[{sequence:1,event_id:done1.eventId,event:done1,event_sha256:hash(done1)}]);}
  const event={contractVersion:'0.1.0',eventId:id(901),binding,sequence:1,createdAt,scopes:run.scopes,type:'run.status',data:{state:'running',reasonCode:null}};
  db.state.events.set([binding.tenantId,binding.conversationId,binding.runId].join(':'),[{sequence:1,event_id:event.eventId,event,event_sha256:hash(event)}]);
- const original={binding,executionKey:hash(binding),executionId:hash(binding),planSha256:'d'.repeat(64),expiresAtMs:at+5000,versions:c.versions},
+ const original={binding,executionKey:hash(binding),executionId:hash(binding),planSha256:'d'.repeat(64),expiresAtMs:at+5000,versions:later?.allocationVersions??c.versions},
   grantIntents=n.grantIntents.map(g=>({...g,expiresAtMs:original.expiresAtMs})),
   resource={taskArn:source.qualification.workerArn,createdAtMs:at,clusterArn:n.taskRequest.cluster,taskDefinitionArn:n.taskRequest.taskDefinition,containerName:n.containerName},
   allocationSha256=hash(JSON.parse(n.allocationJson));
@@ -31,8 +38,8 @@ function fixture({dynamic=false}={}){
  const record={binding,allocationKey:hash(binding),original,allocationSha256,qualification:n.qualification,grantIntents,
   taskRequestSha256:compileNativeTaskRequest({original,taskRequest:n.taskRequest,containerName:n.containerName}).taskRequestSha256,expiresAtMs:original.expiresAtMs,state:'ADMITTED',resource};
  db.state.allocations.set([binding.tenantId,binding.conversationId,binding.runId].join(':'),{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,intent_key:record.allocationKey,record,record_sha256:hash(record)});
- let admission={schemaVersion:1,state:'ADMITTED',binding,selectedClientId:source.clientId,policyRevision:scope.policyRevision,versions:c.versions,
-  configurationSha256:compilePreparedRunConfigurationSha256(c),expiresAtMs:original.expiresAtMs,createdAtMs:at-1};
+ let admission={schemaVersion:1,state:'ADMITTED',binding:first,selectedClientId:source.clientId,policyRevision:scope.policyRevision,versions:later?earlier:c.versions,
+  configurationSha256:later?'9'.repeat(64):compilePreparedRunConfigurationSha256(c),expiresAtMs:original.expiresAtMs,createdAtMs:at-1};
  const pool={async connect(){const client=await db.pool.connect();return {async query(sql,p){
   if(sql.startsWith('BEGIN ISOLATION'))return client.query('BEGIN');
   if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings'))return {rows:admission?[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:admission.binding.runId,record:admission,record_sha256:hash(admission)}]:[]};
@@ -43,7 +50,7 @@ function fixture({dynamic=false}={}){
   fetchImpl:async(url,init)=>{state.fetches.push({url,init});const body=JSON.parse(init.body),identity={principal,identityRevision:'native-revision',checkedAtMs:at,expiresAtMs:at+5000};
    return state.response?.()??Response.json(state.change(url.endsWith(applicationAuthorityRoutes.identity)?identity:{identitySha256:body.identitySha256,principal,identityRevision:identity.identityRevision,conversationId:body.conversationId,selectedClientId:body.clientId,contextRevision:'native-context',checkedAtMs:at,expiresAtMs:at+5000}));}};
  const make=(extra={})=>createProductOwnerNativeCurrentness({...options,...extra},{readMaterial:async path=>{state.reads++;assert.equal(path,n.identity.credentialFile);return state.material();}});
- return {f,db,row,state,options,make,admission,record,setAdmission:value=>{admission=value;},call:()=>({binding,deadlineMs:at+900})};
+ return {f,db,row,state,options,make,admission,record,earlier,setAdmission:value=>{admission=value;},call:()=>({binding,deadlineMs:at+900})};
 }
 
 test('source construction is inert and disabled default releases no native material',async()=>{
@@ -93,4 +100,16 @@ test('a settled child denial with unretired native body quarantines every bindin
  assert.equal(f.state.reads,count,'another binding cannot reset the child quarantine');
  const replacement=f.make();assert.equal(replacement.available,false);
  await assert.rejects(replacement.checkCurrentConversation(f.call()),refused);assert.equal(f.state.reads,count,'new helpers cannot reset an uncertain pool authority');
+});
+
+// O102: image identity is a property of each run. A later run is current under this render although its conversation's original
+// record and first run were admitted under an earlier one; the current run's own allocation must still be this render's.
+test('a later run of a conversation admitted under an earlier render is current; its own allocation stays pinned',async()=>{
+ const f=fixture({later:{}}),current=await f.make().checkCurrentConversation(f.call());assert.equal(current.binding.runId,f.f.binding.runId);assert.equal(f.f.binding.writerFence,2);
+ for(const [option,change,step] of [
+  [{allocationVersions:fixture().earlier},()=>{},'allocation'],                      // the current run was allocated under the earlier render
+  [{},x=>{x.admission.policyRevision='f'.repeat(64);},'initial-binding'],           // the original's qualification policy changed
+  [{},x=>{x.admission.selectedClientId=id(996);},'initial-binding'],                // the original's client is another
+  [{firstRunVersions:{...fixture().earlier,sdk:'9.9.9'}},()=>{},'first-run'],         // the first run is not the original record's run
+ ]){const x=fixture({later:option}),steps=[];change(x);await assert.rejects(x.make({report:(scope,at)=>steps.push(at)}).checkCurrentConversation(x.call()),refused);assert.deepEqual(steps,[step]);}
 });
