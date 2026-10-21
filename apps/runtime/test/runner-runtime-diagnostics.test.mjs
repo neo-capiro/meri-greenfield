@@ -1,4 +1,4 @@
-import {testBudgetTable as runnerTestBudgets} from '../../../packages/runtime/test/budget-fixture.mjs';
+import {testBudgetTable as runnerTestBudgets,productionBudgetInputs} from '../../../packages/runtime/test/budget-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,rm,readFile} from 'node:fs/promises';
@@ -55,7 +55,9 @@ test('concurrent task contexts remain independent and successful completion emit
 
 test('CLI retains exit 3 and RUNTIME_UNAVAILABLE while adding the preflight diagnostic',async t=>{
  const root=await mkdtemp(join(tmpdir(),'meri-runner-diagnostic-')),file=join(root,'config.json'),lines=[];
- t.after(()=>rm(root,{recursive:true,force:true}));await writeFile(file,JSON.stringify(runner));
+ // Admit the CLI's budget table so this case reaches the intended missing-workspace preflight.
+ const configuration={...runner,limits:{...runner.limits,...productionBudgetInputs.limits},runWindowMs:productionBudgetInputs.runWindowMs};
+ t.after(()=>rm(root,{recursive:true,force:true}));await writeFile(file,JSON.stringify(configuration));
  t.mock.method(process.stderr,'write',line=>{lines.push(withoutDetail(String(line)));return true;});
  assert.equal(await main(['conversation-runner','--config',file]),3);
  assert.deepEqual(lines,['RUNNER_FIRST_FAILURE origin=runtime stage=runner-preflight code=ENOENT class=ERROR exit=none signal=none\n','RUNNER_RUNTIME_FAILED stage=runner-preflight code=ENOENT\n','RUNTIME_UNAVAILABLE\n']);

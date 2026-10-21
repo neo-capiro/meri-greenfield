@@ -1,6 +1,7 @@
 /** Root mount of the signed download link routes behind the startup readiness gate, through the real startControl/assembleControl
  * with the same synthetic pg/Temporal/native/listener stand-ins as first-run-mount. No network, database or cloud call occurs. */
 import test,{mock} from 'node:test';import assert from 'node:assert/strict';
+import {testBudgetTable} from '../../../packages/runtime/test/budget-fixture.mjs';
 import {WorkflowIdReusePolicy,WorkflowIdConflictPolicy} from '@temporalio/client';
 import {versions} from '../../control/conversations/test/store-fixture.mjs';
 import * as actualConfig from '../config.mjs';
@@ -37,7 +38,7 @@ const keyReads=()=>events.filter(e=>e.startsWith('secret:/run/secrets/')).length
 async function start(config,productPorts){
  events.length=0;let link,unrelated;abortOnVerify=undefined;
  listenHook=async({application})=>{link=await application.handle(request('/api/documents/links/issue',{versionId:'00000000-0000-4000-8000-0000000000b1'}));const r=await application.handle(request('/api/documents/inspect',{versionId:'00000000-0000-4000-8000-0000000000b1'}));unrelated={status:r.status,body:await r.json()};};
- const runtime=await startControl(config,{productPorts});
+ const runtime=await startControl(config,{budgets:testBudgetTable,productPorts});
  try{return {downloads:runtime.downloads,link:{status:link.status,headers:link.headers,body:await link.json()},unrelated,events:[...events]};}finally{await runtime.close();}
 }
 const closed=(result,reason)=>{
@@ -71,7 +72,7 @@ test('verified owners open the gate before the listener; the key is read once th
 });
 test('startup cancelled during the store proof fails closed, never reads the key and never listens',async()=>{
  events.length=0;const abort=new AbortController();abortOnVerify=()=>abort.abort();
- await assert.rejects(startControl(configuration(),{signal:abort.signal,productPorts:ports()}),{code:'CONTROL_STARTUP_FAILED'});
+ await assert.rejects(startControl(configuration(),{budgets:testBudgetTable,signal:abort.signal,productPorts:ports()}),{code:'CONTROL_STARTUP_FAILED'});
  assert.equal(events.includes('listen'),false);assert.equal(keyReads(),0);assert.deepEqual(events.slice(-2),['connection-close','pool-end']);abortOnVerify=undefined;
 });
 test('configuration admits only a closed control downloadLinks block with an absolute key file and a lifetime of at most five minutes',async()=>{

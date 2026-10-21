@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {compileProductMaterialPlan,productMaterialPolicy,productMaterialIdentity} from '../material-init-plan.mjs';
 import {parseStaticProductMaterialExpected,validateStaticProductDelivery,materializeStaticProductMaterial} from '../material-init.mjs';
@@ -53,7 +54,7 @@ function proxyConfiguration(){
   ownerPeer:{origin:'https://owner.invalid:8444',server_name:'owner.invalid',server_cert_sha256:pins.ownerCertSha256,server_issuer_sha256:'2'.repeat(64),
    client_cert_sha256:pins.proxyCertSha256,client_subject:'proxy-subject',max_exchange_ms:3000},
   ownerTls:{caFile:ref(proxyNames.ownerCa),certificateFile:ref(proxyNames.ownerCertificate),privateKeyFile:ref(proxyNames.ownerPrivateKey)},
-  serviceTasks:pins};
+  serviceTasks:pins,budgets:JSON.parse(readFileSync(new URL('../../proxy/product/test/budget-fixture.json',import.meta.url),'utf8'))};
 }
 function proxyDelivery(change){
  const c=proxyConfiguration();change?.(c);

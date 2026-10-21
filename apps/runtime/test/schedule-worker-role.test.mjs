@@ -7,6 +7,7 @@ import {join} from 'node:path';
 import {main} from '../cli.mjs';
 import {validateConfiguration} from '../config.mjs';
 import {versions} from '../../control/conversations/test/application-fixture.mjs';
+import {productionBudgetInputs} from '../../../packages/runtime/test/budget-fixture.mjs';
 
 const missing=join(tmpdir(),'meri-schedule-role-absent');
 function configuration(){
@@ -42,21 +43,23 @@ test('schedule settings are not admitted by any other role; the routine task ide
 
 test('bare CLI schedule-worker refuses as unavailable without trusted owners; the product preview refuses the role without the firing pin, native client and database',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'meri-schedule-role-')),file=join(directory,'schedule.json'),previous=process.env.MERI_PRODUCT_PREVIEW_REQUIRED,write=process.stderr.write,out=process.stdout.write;
+ // Exercise role/owner refusal after the CLI admits a valid budget table.
+ const cliConfiguration=()=>{const c=configuration();return {...c,limits:{...c.limits,...productionBudgetInputs.limits},runWindowMs:productionBudgetInputs.runWindowMs};};
  let diagnostic='',stdout='';
  try{
-  await writeFile(file,JSON.stringify(configuration()));
+  await writeFile(file,JSON.stringify(cliConfiguration()));
   process.stderr.write=value=>{diagnostic+=value;return true;};process.stdout.write=value=>{stdout+=value;return true;};
   delete process.env.MERI_PRODUCT_PREVIEW_REQUIRED;
   assert.equal(await main(['schedule-worker','--config',file]),3);assert.equal(diagnostic,'RUNTIME_UNAVAILABLE\n');assert.equal(stdout,'');
   diagnostic='';process.env.MERI_PRODUCT_PREVIEW_REQUIRED='1';
   assert.equal(await main(['schedule-worker','--config',file]),2);assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');assert.equal(stdout,'');
   for(const partial of [{routines:routines()},{routines:routines(),native:native()},{routines:{enabled:true,core:{origin:'https://core.synthetic.invalid',serviceSecretFile:join(missing,'routines-secret'),cancellationProof:{...pin,kid:'routine-cancel-1',publicKey:{...pin.publicKey,x:'hv0D4pz9N0ZQk8mo0z7l4t3Mvi6wW1a3xKk1n2wQ6l0'}}}},native:native()},{routines:routines(),native:{...native(),origin:'http://127.0.0.1:8082',loopback:true}}]){
-   const {database:_,...c}=configuration();await writeFile(file,JSON.stringify({...c,...partial,...(partial.native?.loopback?{database:configuration().database}:{})}));
+   const {database:_,...c}=cliConfiguration();await writeFile(file,JSON.stringify({...c,...partial,...(partial.native?.loopback?{database:configuration().database}:{})}));
    diagnostic='';assert.equal(await main(['schedule-worker','--config',file]),2,JSON.stringify(partial));assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');
   }
   // With the pin, the native client and the database file the preview starts the service, whose owner factory needs the secret files:
   // the refusal is the service's own (no poller, listener or connection), proving the composition is reached without any resource.
-  await writeFile(file,JSON.stringify({...configuration(),routines:routines(),native:native()}));
+  await writeFile(file,JSON.stringify({...cliConfiguration(),routines:routines(),native:native()}));
   diagnostic='';assert.equal(await main(['schedule-worker','--config',file]),3);assert.equal(diagnostic,'RUNTIME_UNAVAILABLE\n');assert.equal(stdout,'');
  }finally{
   process.stderr.write=write;process.stdout.write=out;

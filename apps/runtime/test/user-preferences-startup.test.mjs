@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../packages/runtime/test/budget-fixture.mjs';
 import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Actual control assembly/startup and preferences owners. SQL, secrets, Temporal, native startup and listeners are SYNTHETIC.
  * Prepared allocation/compiler and unrelated artifact recovery are borrowed; no live database, schema or service is qualified. */
@@ -59,7 +60,7 @@ test('prepared canonical membership joins actual startup/API/store read-save-rea
  const s=scenario({scripts:[{steps:[{match:/^SELECT revision,document/u,rows:[]}]},
   {steps:[{match:/^INSERT INTO meri_settings.user_preferences/u,rows:[row],inspect(params){assert.deepEqual(params.slice(0,2),['tenant-A','actor-A']);assert.equal(params[2],1);assert.deepEqual(JSON.parse(params[3]),preferences);}},{match:/^INSERT INTO meri_settings.settings_audit/u}]},
   {steps:[{match:/^SELECT revision,document/u,rows:[row]}]}]});
- const runtime=await startControl(s.configuration);
+ const runtime=await startControl(s.configuration,{budgets:testBudgetTable});
  try{
   assert.ok(s.events.indexOf('settings-schema')<s.events.indexOf('listen:private'));assert.ok(s.events.indexOf('listen:private')<s.events.indexOf('listen:public'));
   const app=s.listeners.public.application;assert.equal((await app.handle(request('read'))).status,200);
@@ -71,26 +72,26 @@ test('prepared canonical membership joins actual startup/API/store read-save-rea
  assert.deepEqual(s.events.slice(-5),cleanup);assert.equal(s.ends,1);assert.equal((await s.bound.handle(request('read'))).status,503);
 });
 test('startup false opt-in does not query settings or authenticate and still closes owned resources',async()=>{
- const s=scenario({enabled:false}),runtime=await startControl(s.configuration);assert.equal(s.events.includes('settings-schema'),false);
+ const s=scenario({enabled:false}),runtime=await startControl(s.configuration,{budgets:testBudgetTable});assert.equal(s.events.includes('settings-schema'),false);
  assert.equal((await s.listeners.public.application.handle(request('read'))).status,503);assert.equal(s.sql.connections(),0);assert.equal(s.identity.state.identities.length,0);
  await runtime.close();assert.equal(s.ends,1);assert.deepEqual(s.events.slice(-5),cleanup);
 });
 test('enabled missing membership or settings schema fails before listeners and preserves startup cleanup',async()=>{
  for(const options of [{membership:false},{missingSchema:true}]){
-  const s=scenario(options);await assert.rejects(startControl(s.configuration),error=>error.code==='CONTROL_STARTUP_FAILED'&&productFailure(error.cause)?.code==='USER_PREFERENCES_UNAVAILABLE');
+  const s=scenario(options);await assert.rejects(startControl(s.configuration,{budgets:testBudgetTable}),error=>error.code==='CONTROL_STARTUP_FAILED'&&productFailure(error.cause)?.code==='USER_PREFERENCES_UNAVAILABLE');
   assert.equal(s.events.some(event=>event.startsWith('listen:')),false);assert.equal(s.sql.connections(),0);assert.equal(s.ends,1);assert.deepEqual(s.events.slice(-3),['candidate-close','temporal-close','pool-end']);
  }
 });
 test('invalid feature declarations fail before secret reads or allocation',async()=>{
  for(const userPreferences of [{enabled:'true'},{enabled:true,authority:{}},null]){
-  const s=scenario();await assert.rejects(startControl({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),...s.configuration,userPreferences}));assert.deepEqual(s.events,[]);assert.equal(s.ends,0);
+  const s=scenario();await assert.rejects(startControl({...s.configuration,userPreferences},{budgets:testBudgetTable}));assert.deepEqual(s.events,[]);assert.equal(s.ends,0);
  }
 });
 test('cancellation during settings schema readiness cannot open listeners and closes owned startup resources',async()=>{
- const abort=new AbortController(),s=scenario({schemaHook(){abort.abort();}});await assert.rejects(startControl(s.configuration,{signal:abort.signal}),{code:'CONTROL_STARTUP_FAILED'});
+ const abort=new AbortController(),s=scenario({schemaHook(){abort.abort();}});await assert.rejects(startControl(s.configuration,{budgets:testBudgetTable,signal:abort.signal}),{code:'CONTROL_STARTUP_FAILED'});
  assert.equal(s.events.includes('settings-schema'),true);assert.equal(s.events.some(event=>event.startsWith('listen:')),false);assert.equal(s.sql.connections(),0);assert.deepEqual(s.events.slice(-3),['candidate-close','temporal-close','pool-end']);assert.equal(s.ends,1);
 });
 test('a failed public bind retires the open private listener and all startup owners once',async()=>{
- const s=scenario({failListener:'public'});await assert.rejects(startControl(s.configuration),{code:'CONTROL_STARTUP_FAILED'});
+ const s=scenario({failListener:'public'});await assert.rejects(startControl(s.configuration,{budgets:testBudgetTable}),{code:'CONTROL_STARTUP_FAILED'});
  assert.deepEqual(s.events.slice(-4),['listener-close:private','candidate-close','temporal-close','pool-end']);assert.equal(s.sql.connections(),0);assert.equal(s.ends,1);assert.equal((await s.bound.handle(request('read'))).status,503);
 });

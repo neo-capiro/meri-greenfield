@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../packages/runtime/test/budget-fixture.mjs';
 /** SYNTHETIC root startup boundary. No listener, SQL, secret read, native allocation or network. */
 import test,{mock} from 'node:test';import assert from 'node:assert/strict';
 import * as configurationModule from '../config.mjs';
@@ -15,11 +16,11 @@ mock.module('../http-server.mjs',{namedExports:{async listenRuntime(){stats.list
 mock.module('../prepared-candidate.mjs',{namedExports:{async startPreparedCandidate(options){stats.candidate++;received.push(options);return {controlCapabilitySha256:capabilityDigest(f.secret.control),native:{async readiness(){},async call(){assert.fail('No native effects');}},application:{async handle(){return null;}},bindApplication(){},async close(){stats.closed++;}};}}});
 const {startControl}=await import('../control.mjs');
 test('actual root forwards optional borrowed factory to candidate without invoking or logging it',async()=>{
- const factory=()=>{stats.factory++;assert.fail('No per-entry admission');},runtime=await startControl(f.configuration,{createReadsRuntime:factory});try{assert.equal(received.at(-1).createReadsRuntime,factory);assert.equal(stats.factory,0);assert.equal(stats.listen,1);}finally{await runtime.close();}assert.equal(stats.closed,1);
+ const factory=()=>{stats.factory++;assert.fail('No per-entry admission');},runtime=await startControl(f.configuration,{budgets:testBudgetTable,createReadsRuntime:factory});try{assert.equal(received.at(-1).createReadsRuntime,factory);assert.equal(stats.factory,0);assert.equal(stats.listen,1);}finally{await runtime.close();}assert.equal(stats.closed,1);
 });
 test('root rejects invalid or competing composition before secret/resources',async()=>{
- const before=stats.secrets;await assert.rejects(startControl(f.configuration,{createReadsRuntime:'module'}),/CONFIGURATION/);await assert.rejects(startControl(f.configuration,{createReadsRuntime:async()=>undefined}),/CONFIGURATION/);await assert.rejects(startControl(f.configuration,{createReadsRuntime:()=>{},generalReads:{readAvailability(){},execute(){}}}),/CONFIGURATION/);assert.equal(stats.secrets,before);
+ const before=stats.secrets;await assert.rejects(startControl(f.configuration,{budgets:testBudgetTable,createReadsRuntime:'module'}),/CONFIGURATION/);await assert.rejects(startControl(f.configuration,{budgets:testBudgetTable,createReadsRuntime:async()=>undefined}),/CONFIGURATION/);await assert.rejects(startControl(f.configuration,{budgets:testBudgetTable,createReadsRuntime:()=>{},generalReads:{readAvailability(){},execute(){}}}),/CONFIGURATION/);assert.equal(stats.secrets,before);
 });
 test('root cannot silently ignore factory when there is no prepared candidate',async()=>{
- const {nativeCandidate,...configuration}=f.configuration,before=stats.secrets;await assert.rejects(startControl(configuration,{createReadsRuntime:()=>{}}),/PREPARED_CANDIDATE_CONFIGURATION/);assert.equal(stats.secrets,before);
+ const {nativeCandidate,...configuration}=f.configuration,before=stats.secrets;await assert.rejects(startControl(configuration,{budgets:testBudgetTable,createReadsRuntime:()=>{}}),/PREPARED_CANDIDATE_CONFIGURATION/);assert.equal(stats.secrets,before);
 });

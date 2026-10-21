@@ -1,3 +1,4 @@
+import {testBudgetTable} from '../../../packages/runtime/test/budget-fixture.mjs';
 import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Actual merged control/startup, public/private boundary and both application owners.
  * SQL/Temporal/listener/native preparation, identity and Core Fetch boundaries are SYNTHETIC; no service is contacted.
@@ -70,7 +71,7 @@ test('actual separate-listener startup opens preferences after schema readiness 
   assert.equal(Object.keys(state.listeners).length,0);assert.equal((await state.bound.handle(request(paths[2]))).status,503);
   for(const path of paths.slice(0,2))await unavailable(await state.bound.handle(request(path)));assert.equal(state.taskResolutions,0);
  }});
- const runtime=await startControl(s.configuration);
+ const runtime=await startControl(s.configuration,{budgets:testBudgetTable});
  try{
   const app=s.listeners.public.application;assert.ok(s.events.indexOf('settings-schema')<s.events.indexOf('listen:private'));assert.ok(s.events.indexOf('listen:private')<s.events.indexOf('listen:public'));
   assert.equal((await app.handle(request(paths[2]))).status,200);const saved=await app.handle(request(paths[3],{expectedRevision:0,preferences}));assert.equal(saved.status,200);

@@ -29,7 +29,7 @@ test('prepared SDK ports refuse before allocation, then borrow the same owner an
 });
 
 test('remote controller exposes exactly the durable session owner built with its canonical admission/verifier/registration',async()=>{
- const admission={},taskVerifier={async verify(){throw Error('No authority');}},supervisor={admission,taskVerifier},transport={original,origin:config.taskOrigin,credential:f.secret.control,async fetchImpl(){throw Error('No transport');}};
+ const admission={},taskVerifier={async verify(){throw Error('No authority');}},supervisor={admission,taskVerifier},transport={original,origin:config.taskOrigin,credential:f.secret.control,limits:{maxRequestMs:8000},async fetchImpl(){throw Error('No transport');}};
  const {capabilityDigest}=await import('../native-authority/task-verifier.mjs');
  const controller=createRemoteNativeController({runtimeConfiguration:{budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),maxRequestMs:3000,runtime:{...config.runtime,proxyCredential:f.secret.proxy},plan:config.plan,preparationIntent:config.preparationIntent,supervisor,store:{},taskCapability:f.secret.task,controlCapabilitySha256:capabilityDigest(f.secret.control),continuation,enabled:true},transport});
  assert.equal(controller.productPorts.sdkSessionOwner,sdkSessionOwner);assert.equal(controller.productPorts.sdkSessionSnapshot,continuation);

@@ -57,7 +57,7 @@ async function secondTurn(t,{resumeSessionAt=null}={}){
  }};
  let worker;const fetchImpl=(url,options)=>worker.application.handle(new Request(url,options));
  worker=createRemoteNativeWorker({budgets:hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000}),original,preparationIntent,controlCapabilitySha256:capabilityDigest(controlToken),taskCapabilitySha256:capabilityDigest(taskToken),taskArn,native,
-  processTransport:{original,origin:'https://synthetic-task.invalid',credential:taskToken,fetchImpl},session:second.mirror.session,enabled:true,limits:{maxRequestMs:12000}});
+  processTransport:{original,origin:'https://synthetic-task.invalid',credential:taskToken,fetchImpl,limits:{maxRequestMs:8000}},session:second.mirror.session,enabled:true,limits:{maxRequestMs:12000}});
  t.after(()=>worker.close());
  // conversation-runner prepareRuntime hands the SDK the mirror's store; the activity's options are otherwise the worker's.
  const query=worker.query({prompt:'A second prompt in the same conversation.',options:{...second.options,sessionStore:second.mirror.prepared.store}});

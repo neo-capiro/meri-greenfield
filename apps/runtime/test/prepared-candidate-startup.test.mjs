@@ -24,20 +24,20 @@ mock.module('../prepared-candidate.mjs',{namedExports:{async startPreparedCandid
 const {startControl,multiRunOwners}=await import('../control.mjs');
 test('a declared multi-run mode with the material directory reaches the candidate with the durable store over the pool and the file authority; without the directory the bindings refuse and startup fails after ordered cleanup',async()=>{
  const configured=structuredClone(f.configuration);configured.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:normalize('/run/meri/material')};
- const runtime=await startControl(configured,{});try{assert.equal(received.length,1);assert.equal(typeof received[0].issuanceStore?.claim,'function');assert.equal(typeof received[0].capabilityAuthority?.generate,'function');assert.equal(received[0].capabilityAuthority.directory,normalize('/run/meri/material'));assert.equal(typeof received[0].modelGrants?.issue,'function');}finally{await runtime.close();}
+ const runtime=await startControl(configured,{budgets:testBudgetTable});try{assert.equal(received.length,1);assert.equal(typeof received[0].issuanceStore?.claim,'function');assert.equal(typeof received[0].capabilityAuthority?.generate,'function');assert.equal(received[0].capabilityAuthority.directory,normalize('/run/meri/material'));assert.equal(typeof received[0].modelGrants?.issue,'function');}finally{await runtime.close();}
  assert.deepEqual(order,['candidate-close','temporal-close','pool-close']);order.length=0;received.length=0;
  const partial=structuredClone(f.configuration);partial.nativeCandidate.multiRun={runWindowMs:600000};
- await assert.rejects(startControl(partial,{}),/CONTROL_STARTUP_FAILED/,'a multi-run declaration without a material directory has no capability authority');assert.equal(received.length,1);assert.equal(received[0].capabilityAuthority,undefined);assert.equal(received[0].modelGrants,undefined);assert.equal(typeof received[0].issuanceStore?.claim,'function');
+ await assert.rejects(startControl(partial,{budgets:testBudgetTable}),/CONTROL_STARTUP_FAILED/,'a multi-run declaration without a material directory has no capability authority');assert.equal(received.length,1);assert.equal(received[0].capabilityAuthority,undefined);assert.equal(received[0].modelGrants,undefined);assert.equal(typeof received[0].issuanceStore?.claim,'function');
  assert.deepEqual(order,['temporal-close','pool-close'],'the failed startup still closes what it opened, in order');
  assert.deepEqual(multiRunOwners(f.configuration,{query(){}}),{},'no multi-run declaration composes no owners');
 });
 test('dynamic first-chat mount is explicit, uses the control pool, and invalid declarations fail before secret reads',async()=>{
  order.length=0;received.length=0;
  const configured=structuredClone(f.configuration);configured.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:normalize('/run/meri/material'),dynamicInitialRuns:true};
- const runtime=await startControl(configured,{});try{const supplied=received.at(-1);assert.equal(typeof supplied.initialBindings?.claim,'function');assert.equal(typeof supplied.initialBindings?.read,'function');assert.equal(typeof supplied.initialBindings?.readConversation,'function');assert.equal(typeof supplied.pool?.connect,'function');}finally{await runtime.close();}
+ const runtime=await startControl(configured,{budgets:testBudgetTable});try{const supplied=received.at(-1);assert.equal(typeof supplied.initialBindings?.claim,'function');assert.equal(typeof supplied.initialBindings?.read,'function');assert.equal(typeof supplied.initialBindings?.readConversation,'function');assert.equal(typeof supplied.pool?.connect,'function');}finally{await runtime.close();}
  assert.deepEqual(order,['candidate-close','temporal-close','pool-close']);order.length=0;received.length=0;
  for(const multiRun of [{runWindowMs:600000,dynamicInitialRuns:true},{runWindowMs:600000,materialDirectory:normalize('/run/meri/material'),dynamicInitialRuns:false},{runWindowMs:600000,materialDirectory:normalize('/run/meri/material'),dynamicInitialRuns:true,unknown:true}]){
-  const bad=structuredClone(f.configuration);bad.nativeCandidate.multiRun=multiRun;const before=secretReads;await assert.rejects(startControl(bad,{}),/PREPARED_CANDIDATE_CONFIGURATION|INVALID_COMMAND/);assert.equal(secretReads,before);assert.equal(received.length,0);assert.deepEqual(order,[]);
+  const bad=structuredClone(f.configuration);bad.nativeCandidate.multiRun=multiRun;const before=secretReads;await assert.rejects(startControl(bad,{budgets:testBudgetTable}),/PREPARED_CANDIDATE_CONFIGURATION|INVALID_COMMAND/);assert.equal(secretReads,before);assert.equal(received.length,0);assert.deepEqual(order,[]);
  }
  const staticMulti=structuredClone(f.configuration);staticMulti.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:normalize('/run/meri/material')};
  assert.equal(multiRunOwners(staticMulti,{connect(){},query(){}}).initialBindings,undefined);
@@ -52,7 +52,7 @@ test('declared retention serving composes the retention startup owner over the c
  assert.equal(composed.serving.isEnabled(),false,'fenced from composition');assert.equal(composed.startup.state().purgeEnabled,false);assert.equal(composed.startup.state().unavailable,'RETENTION_LEDGER_UNAVAILABLE');await assert.rejects(composed.gate.assertServable({tenantId:'t',kind:'conversation',subjectId:'00000000-0000-4000-8000-000000000001'}),/RETENTION_RECOVERY_BARRIER/);
  // The prepared candidate admits no product ports, so no ledger sink reaches it: declared retention cannot serve and startup fails closed.
  // A startup that unexpectedly succeeds is closed before the assertion fails, so a regression fails instead of leaking a listener.
- const refusedStart=config=>startControl(config,{}).then(async runtime=>{await runtime.close();throw Error('startup unexpectedly served');});
+ const refusedStart=config=>startControl(config,{budgets:testBudgetTable}).then(async runtime=>{await runtime.close();throw Error('startup unexpectedly served');});
  order.length=0;schema.missing=false;schema.queried.length=0;await assert.rejects(refusedStart(declared),e=>e.message==='CONTROL_STARTUP_FAILED'&&e.cause?.code==='RETENTION_LEDGER_UNAVAILABLE');assert.ok(schema.queried.some(q=>q.includes('unnest')),'readiness asked for the retention projections first');
  schema.missing=true;await assert.rejects(refusedStart(declared),e=>e.message==='CONTROL_STARTUP_FAILED'&&e.cause?.code==='RETENTION_SCHEMA_UNAVAILABLE','a missing retention projection fails readiness instead of serving ungated');schema.missing=false;
 });

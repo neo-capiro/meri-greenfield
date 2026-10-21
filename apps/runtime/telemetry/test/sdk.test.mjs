@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {testBudgetTable} from '../../../../packages/runtime/test/budget-fixture.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import net from 'node:net';
@@ -45,12 +46,12 @@ test('control startup failure after telemetry started still closes telemetry and
  // Observe the SDK's global registration and the owned close's unregistration on the shared API singleton.
  const calls=[],register=metrics.setGlobalMeterProvider,disable=metrics.disable;
  metrics.setGlobalMeterProvider=provider=>{calls.push('register');return register.call(metrics,provider);};metrics.disable=()=>{calls.push('disable');return disable.call(metrics);};
- try{await assert.rejects(startControl(configuration,{}),/CONTROL_STARTUP_FAILED/u);assert.deepEqual(calls,['register','disable']);assert.ok(noop());}
+ try{await assert.rejects(startControl(configuration,{budgets:testBudgetTable}),/CONTROL_STARTUP_FAILED/u);assert.deepEqual(calls,['register','disable']);assert.ok(noop());}
  finally{delete metrics.setGlobalMeterProvider;delete metrics.disable;await sink.close();}
 });
 test('disabled telemetry composes nothing: control never loads or starts the SDK',async()=>{
  const {startControl}=await import('../../control.mjs');const {candidateFixture}=await import('../../test/prepared-candidate-fixture.mjs');const {configuration}=candidateFixture();
  configuration.database.connectionFile='/nonexistent/meri-telemetry-test/db';configuration.telemetry={enabled:false,endpoint:'https://collector.synthetic.invalid'};
  const calls=[];metrics.setGlobalMeterProvider=()=>{calls.push('register');return false;};
- try{await assert.rejects(startControl(configuration,{}),/CONTROL_STARTUP_FAILED/u);assert.deepEqual(calls,[]);assert.ok(noop());}finally{delete metrics.setGlobalMeterProvider;}
+ try{await assert.rejects(startControl(configuration,{budgets:testBudgetTable}),/CONTROL_STARTUP_FAILED/u);assert.deepEqual(calls,[]);assert.ok(noop());}finally{delete metrics.setGlobalMeterProvider;}
 });

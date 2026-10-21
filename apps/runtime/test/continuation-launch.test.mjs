@@ -67,7 +67,7 @@ async function taskContinuation(binding,{nextTurn,continuation,sessionId}){
 function brokerPlan(intent,binding,descriptor,continuation){
  const expiresAtMs=Date.now()+60000,versions={...continuationFixture().target.versions,imageDigest:'sha256:'+intent.imageSha256};
  const runtime={binding,versions,proxyUrl:'https://proxy.synthetic.invalid/',proxyCredential:CREDENTIAL,model:'synthetic-model',deadlineMs:expiresAtMs,maxTurns:8,maxCostMicroUSD:500000,maxOutputBytes:65536};
- const launchConfiguration={binding,workspace:descriptor.cwd,configDirectory:descriptor.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:intent.secureStorageDirectory,versions:{sdk:'0.3.295',cli:'2.1.295'},expiresAtMs,executableSha256:intent.executableSha256,launch:{command:descriptor.command,args:descriptor.args,env:descriptor.env}};
+ const launchConfiguration={shutdownMs:1000,binding,workspace:descriptor.cwd,configDirectory:descriptor.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:intent.secureStorageDirectory,versions:{sdk:'0.3.295',cli:'2.1.295'},expiresAtMs,executableSha256:intent.executableSha256,launch:{command:descriptor.command,args:descriptor.args,env:descriptor.env}};
  return compileNativeBrokerPlan({runtime,plan:{purpose:'continuation-launch-test'},preparationIntent:intent,launchConfiguration,...(continuation?{continuation}:{})});
 }
 
