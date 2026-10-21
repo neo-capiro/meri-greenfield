@@ -6,6 +6,7 @@ import {once} from 'node:events';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {createClientKnowledgeHttpAdapter} from '../http-adapter.mjs';
 import {createClientKnowledgeReadHandler} from '../handler.mjs';
+import {safeFailure} from '../../../dispatch/operation-result.mjs';
 import {createHandlers as memoryHandlers} from '../../../general-reads/families/client-knowledge-memory.mjs';
 import {createHandlers as mondayHandlers} from '../../../general-reads/families/client-knowledge-monday.mjs';
 import {createClientKnowledgeFixture,endpoints,memoryText,NOW,uuid} from './fixtures.mjs';
@@ -242,15 +243,13 @@ test('one configured knowledge endpoint works without requiring the other source
   assert.deepEqual(memoryResult,memory.page());assert.deepEqual(memory.calls,['credentials','fetch','eligibility']);
 });
 
-test('separate memory and Monday family composition accepts only its own endpoint',async()=>{
+test('signed memory and Monday family composition refuses the legacy unsigned endpoint fixture',()=>{
   for(const [id,compose] of [['search_memory',memoryHandlers],['read_monday_client_boards',mondayHandlers]]){
     const f=createClientKnowledgeFixture(id),withoutEligibility={...f.config};delete withoutEligibility.readMemoryEligibility;
     const configuration={...withoutEligibility,endpoints:{[id]:endpoints[id]},
       ...(id==='search_memory'?{readMemoryEligibility:f.config.readMemoryEligibility}:{})};
-    const [handler]=compose(configuration);
-    assert.deepEqual(handler.operation,f.operation);
-    assert.deepEqual(JSON.parse(await handler.execute(f.call())).result,f.page());
-    assert.deepEqual(f.calls,id==='search_memory'?['credentials','fetch','eligibility']:['credentials','fetch']);
+    assert.throws(()=>compose(configuration),error=>safeFailure(error).message===(id==='search_memory'?'INVALID_ARGUMENTS':'GATEWAY_CONFIGURATION'));
+    assert.deepEqual(f.calls,[]);
   }
 });
 

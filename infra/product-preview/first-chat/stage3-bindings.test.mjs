@@ -267,7 +267,7 @@ test('live stacks: every update keeps owner, proxy, control and worker serving, 
 });
 
 test('secret upload plan: one new version per role under a fresh label, fixed idempotency token, bundles by path only',async()=>{
- const {inputs}=await setup();let n=0;
+ const inputs={deployment:await load('deployment-inputs.json')};let n=0;
  const secretLabels=labelReadback(inputs.deployment);
  const plan=uploadPlan({deployment:inputs.deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',secretLabels,newToken:()=>`token-${++n}`});
  assert.deepEqual(plan.map(p=>p.role),ROLES);
@@ -284,7 +284,7 @@ test('secret upload plan: one new version per role under a fresh label, fixed id
 });
 
 test('secret upload preconditions: a label already in use, a full secret or a missing readback refuses before any command exists',async()=>{
- const {inputs}=await setup(),d=inputs.deployment,arn=d.secrets['owner/material'];
+ const d=await load('deployment-inputs.json'),arn=d.secrets['owner/material'];
  const plan=extra=>()=>uploadPlan({deployment:d,renderedDirectory:'/w',label:'FIRST_CHAT_20261021A',secretLabels:labelReadback(d,extra)});
  // PutSecretValue would silently move a reused label off an older version: refuse instead.
  assert.throws(plan({[arn]:[{VersionId:'v-reused',VersionStages:['FIRST_CHAT_20261021A']}]}),/already on a version of model-owner/u);
@@ -299,4 +299,23 @@ test('secret upload preconditions: a label already in use, a full secret or a mi
  assert.deepEqual(secretLabelReadback(outputs),labelReadback(d));
  assert.throws(()=>secretLabelReadback([...outputs,outputs[0]]),/one list-secret-version-ids output per secret/u);
  assert.throws(()=>secretLabelReadback([{Versions:[]}]),/one list-secret-version-ids output per secret/u);
+});
+
+test('upload readbacks refuse incomplete pages and malformed version records before producing a plan',async()=>{
+ const d=await load('deployment-inputs.json'),ARN=d.secrets['control/material'];
+ const valid=labelReadback(d)[ARN];
+ for(const Versions of [valid,[]])assert.throws(()=>secretLabelReadback([{ARN,Versions,NextToken:'more'}]),/incomplete/u);
+ const malformed=[null,[],{}, {VersionId:''},{VersionId:'v',VersionStages:null},{VersionId:'v',VersionStages:'AWSCURRENT'},
+  {VersionId:'v',VersionStages:[null]},{VersionId:'v',VersionStages:['']},{VersionId:'v',VersionStages:['A','A']}];
+ for(const version of malformed){
+  const Versions=[version];
+  assert.throws(()=>secretLabelReadback([{ARN,Versions}]),/secret label readback/u);
+  assert.throws(()=>uploadPlan({deployment:d,renderedDirectory:'/w',label:'NEW',secretLabels:{...labelReadback(d),[ARN]:Versions}}),/secret label readback/u);
+ }
+ for(const Versions of [[valid[0],valid[0]],[valid[0],{VersionId:'different',VersionStages:['AWSCURRENT']}]])
+  assert.throws(()=>secretLabelReadback([{ARN,Versions}]),/secret label readback/u);
+ const Versions=[...valid,{VersionId:'deprecated-without-stages'}];
+ assert.deepEqual(secretLabelReadback([{ARN,Versions}]),{[ARN]:Versions});
+ const plan=uploadPlan({deployment:d,renderedDirectory:'/w',label:'NEW',secretLabels:{...labelReadback(d),[ARN]:Versions}});
+ assert.deepEqual(plan[0].labelsBefore,['AWSCURRENT','AWSPREVIOUS','FIRST_CHAT_20261020E']);
 });

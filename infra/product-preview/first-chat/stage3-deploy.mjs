@@ -110,11 +110,30 @@ const RESERVED_STAGES=new Set(['AWSCURRENT','AWSPREVIOUS','AWSPENDING']);
 /** Secrets Manager limits: at most 20 staging labels across all versions of a secret, and versions beyond 100 that carry no label are
  * removed. Every release keeps its label, so both bound how many releases a secret can hold. */
 export const SECRET_LIMITS=Object.freeze({stagingLabels:20,versions:100});
+function labelsFromVersions(versions){
+ if(!Array.isArray(versions))fail('secret label readback must contain version records');
+ const ids=new Set(),labels=new Set();
+ for(const version of versions){
+  if(!version||typeof version!=='object'||Array.isArray(version)||typeof version.VersionId!=='string'||!version.VersionId||ids.has(version.VersionId))
+   fail('secret label readback contains an invalid or duplicate version');
+  ids.add(version.VersionId);
+  // An unlabelled, deprecated version legitimately omits VersionStages, but still counts toward capacity.
+  const stages=version.VersionStages===undefined?[]:version.VersionStages;
+  if(!Array.isArray(stages)||stages.some(stage=>typeof stage!=='string'||!stage||stage.length>256))
+   fail('secret label readback contains invalid version stages');
+  for(const stage of stages){if(labels.has(stage))fail('secret label readback repeats a staging label');labels.add(stage);}
+ }
+ return [...labels].sort();
+}
 /** `list-secret-version-ids --include-deprecated` outputs, one per secret -> {ARN: Versions}. */
 export function secretLabelReadback(outputs){
+ if(!Array.isArray(outputs))fail('each secret label readback is one list-secret-version-ids output per secret');
  const byArn={};
  for(const output of outputs){
-  if(typeof output?.ARN!=='string'||!Array.isArray(output.Versions)||Object.hasOwn(byArn,output.ARN))fail('each secret label readback is one list-secret-version-ids output per secret');
+  if(typeof output?.ARN!=='string'||!output.ARN.startsWith('arn:')||!Array.isArray(output.Versions)||Object.hasOwn(byArn,output.ARN))fail('each secret label readback is one list-secret-version-ids output per secret');
+  // A partial page can conceal a reused label or a full secret. Only the complete CLI readback is admissible.
+  if(output.NextToken!==undefined)fail('secret label readback is incomplete: collect every page');
+  labelsFromVersions(output.Versions);
   byArn[output.ARN]=output.Versions;
  }
  return byArn;
@@ -131,7 +150,7 @@ export function uploadPlan({deployment,renderedDirectory,label,secretLabels,newT
   if(typeof secretArn!=='string'||!/^arn:aws:secretsmanager:us-east-1:967807252336:secret:meri\/preview\/[a-z]+\/material-[A-Za-z0-9]{6}$/u.test(secretArn))fail(`deployment.secrets.${MATERIAL_SECRET_KEYS[role]}`);
   const versions=secretLabels?.[secretArn];
   if(!Array.isArray(versions))fail(`no label readback for ${role} (${secretArn})`);
-  const labelsBefore=[...new Set(versions.flatMap(v=>v?.VersionStages??[]))].sort();
+  const labelsBefore=labelsFromVersions(versions);
   if(labelsBefore.includes(label))fail(`label ${label} is already on a version of ${role}: choose a new label`);
   if(versions.length>=SECRET_LIMITS.versions)fail(`${role} already holds ${versions.length} versions`);
   if(labelsBefore.length>=SECRET_LIMITS.stagingLabels)fail(`${role} is at the ${SECRET_LIMITS.stagingLabels} staging-label quota: retire an unpinned label first`);
