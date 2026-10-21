@@ -1,5 +1,5 @@
 {
-  "baseCommit": "3c56c3e981ba868a2af103c4cae9f65a0d47458d",
+  "baseCommit": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
   "inputs": {
     "limits": {
       "startupMs": 30000,
@@ -47,6 +47,8 @@
     "control.capture": 21000,
     "control.capture.channel": 19000,
     "control.session.append": 5000,
+    "control.session.diagnostics.burst": 20,
+    "control.session.diagnostics.window": 60000,
     "control.session.list-subkeys": 4000,
     "control.session.load": 4000,
     "control.session.register": 10000,
@@ -444,6 +446,14 @@
     "control.session.append": {
       "file": "packages/runtime/runner-load-budget.mjs",
       "symbol": "controlSessionRpcMs(append)"
+    },
+    "control.session.diagnostics.burst": {
+      "file": "apps/control/action-host/session/owner.mjs",
+      "symbol": "/createSessionRefusalDiagnostics\\(\\{[^}]*\\bburst=(\\d+)/"
+    },
+    "control.session.diagnostics.window": {
+      "file": "apps/control/action-host/session/owner.mjs",
+      "symbol": "/createSessionRefusalDiagnostics\\(\\{[^}]*\\bwindowMs=(\\d+)/"
     },
     "control.session.list-subkeys": {
       "file": "packages/runtime/runner-load-budget.mjs",

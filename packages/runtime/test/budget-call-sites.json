@@ -515,6 +515,30 @@
       ]
     },
     {
+      "file": "apps/control/action-host/session/owner.mjs",
+      "constructor": "createSessionRefusalDiagnostics",
+      "field": "windowMs",
+      "hop": "control.session.diagnostics.window",
+      "calls": [
+        {
+          "file": "apps/control/action-host/session/owner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "file": "apps/control/action-host/session/owner.mjs",
+      "constructor": "createSessionRefusalDiagnostics",
+      "field": "burst",
+      "hop": "control.session.diagnostics.burst",
+      "calls": [
+        {
+          "file": "apps/control/action-host/session/owner.mjs",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
       "file": "apps/proxy/product/owner-diagnostics.mjs",
       "constructor": "createOwnerDiagnostics",
       "field": "windowMs",

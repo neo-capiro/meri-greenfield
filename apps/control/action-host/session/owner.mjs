@@ -5,6 +5,7 @@ import {canonicalSha256,validateShape} from '../../../../packages/contracts/vali
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex'),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const transitionKeys=['controlId','intent','inputSha256','sourceBinding','targetBinding','scopes','selectedClientId','policyRevision','admissionReceiptId','retirementReceiptId','checkpointId','checkpointSha256','sourceRequestSha256','contextSha256','targetSessionId','resumeSessionAt'];
@@ -25,7 +26,8 @@ const REFUSAL_STEPS=new Set(['input','identity','membership-admit','context-pref
 const REFUSAL_CODE=/^(?:SESSION|APPLICATION_CONTEXT|NATIVE_AUTHORITY|INITIAL_BINDING|INITIAL_RUN_BINDING|NEXT_RUN|NEXT_TURN|PREPARED_NEXT_RUN|PREPARED_CANDIDATE)_[A-Z0-9_]{1,48}$/u;
 /** One line per refused issuance or recheck: the step it reached and an owned constant code. Never an identifier, credential or
  * message. At most `burst` lines per window; the first suppressed line in a window says so once. */
-export function createSessionRefusalDiagnostics({write=line=>process.stderr.write(line),now=Date.now,burst=20,windowMs=60000}={}){
+export function createSessionRefusalDiagnostics({write=line=>process.stderr.write(line),now=Date.now,burst,windowMs}={}){
+ if(typeof write!=='function'||typeof now!=='function'||!Number.isSafeInteger(burst)||burst<1||!Number.isSafeInteger(windowMs)||windowMs<1)deny('SESSION_CONFIGURATION');
  let windowStart=-Infinity,count=0,suppressed=false;
  return (step,error)=>{try{const at=now();if(at-windowStart>=windowMs){windowStart=at;count=0;suppressed=false;}
   if(count>=burst){if(!suppressed){suppressed=true;write('CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED\n');}return;}count++;
@@ -40,7 +42,7 @@ export function assertActionSessionReceipt(value,at){
  return v;
 }
 export function createActionSessionOwner(configuration){
- const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,refusals=createSessionRefusalDiagnostics()}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext','membership','refusals']);
+ const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,refusals=createSessionRefusalDiagnostics({burst:fixedHotPathBudget('control.session.diagnostics.burst'),windowMs:fixedHotPathBudget('control.session.diagnostics.window')})}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext','membership','refusals']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
  if(mode!=='process-local'||typeof verifyIdentity!=='function'||typeof resolveContext!=='function'||typeof now!=='function'||Object.values(l).some(n=>!Number.isSafeInteger(n)||n<1)||l.maxSessions>1000||l.maxRequestMs>30000||l.maxTtlMs>300000||l.maxFactBytes>131072)deny('SESSION_CONFIGURATION');
  if(typeof refusals!=='function')deny('SESSION_CONFIGURATION');

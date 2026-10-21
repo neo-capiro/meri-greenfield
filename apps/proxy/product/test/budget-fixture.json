@@ -185,6 +185,17 @@
       "ms": 30000,
       "parent": "turn"
     },
+    "control.session.diagnostics.burst": {
+      "kind": "derived",
+      "ms": 20,
+      "unit": "count",
+      "reason": "Rate count"
+    },
+    "control.session.diagnostics.window": {
+      "kind": "derived",
+      "ms": 60000,
+      "reason": "Rate window"
+    },
     "proxy.diagnostics.burst": {
       "kind": "derived",
       "ms": 20,

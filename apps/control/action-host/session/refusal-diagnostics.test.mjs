@@ -14,7 +14,7 @@ test('a refusal line carries only a fixed step and an owned code, at most a burs
  assert.deepEqual(lines,['CONTROL_SESSION_REFUSED step=initial-binding code=INITIAL_BINDING_VERSIONS_CHANGED\n','CONTROL_SESSION_REFUSED step=identity code=REFUSED\n',
   'CONTROL_SESSION_REFUSED step=context-preflight code=NATIVE_AUTHORITY_UNAVAILABLE\n','CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED\n'],'the window suppresses once, then stays silent');
  now=1000;report(`step-${uuid(9)}`,null);assert.equal(lines.at(-1),'CONTROL_SESSION_REFUSED step=input code=REFUSED\n','a new window reports again; an unknown step is never echoed');
- assert.doesNotThrow(()=>createSessionRefusalDiagnostics({write(){throw Error('closed stderr');}})('identity',Error('x')),'a failed write never changes the refusal');
+ assert.doesNotThrow(()=>createSessionRefusalDiagnostics({burst:20,windowMs:60000,write(){throw Error('closed stderr');}})('identity',Error('x')),'a failed write never changes the refusal');
  let traps=0;const hostile=new Proxy({},{get(){traps++;throw Error('SECRET');},getPrototypeOf(){traps++;throw Error('SECRET');},ownKeys(){traps++;throw Error('SECRET');}});
  now=5000;report('identity',hostile);assert.equal(lines.at(-1),'CONTROL_SESSION_REFUSED step=identity code=REFUSED\n');assert.equal(traps,0,'a hostile rejection is never read');
 });
@@ -25,7 +25,7 @@ function fixture(){
  const owner=createActionSessionOwner({mode:'process-local',now:clock,limits:{maxSessions:1,maxRequestMs:500,maxTtlMs:1000,maxFactBytes:65536},refusals:(step,error)=>lines.push({step,error}),
   async verifyIdentity(call){if(call.credential!=='native-opaque')throw Error('secret native denial');return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'identity-1',checkedAtMs:clock(),expiresAtMs:NOW+10000};},
   async resolveContext(call){if(state.context)throw state.context;return {identitySha256:canonicalSha256(call.identity),binding:{...binding},scopes:[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:'revision-1'}],selectedClientId:clientId,contextRevision:'context-1',checkedAtMs:clock(),expiresAtMs:NOW+10000};}});
- const written=()=>{const out=[],format=createSessionRefusalDiagnostics({write:line=>out.push(line)});for(const l of lines)format(l.step,l.error);return out;};
+ const written=()=>{const out=[],format=createSessionRefusalDiagnostics({burst:20,windowMs:60000,write:line=>out.push(line)});for(const l of lines)format(l.step,l.error);return out;};
  return {owner,state,lines,written,issue:(extra={})=>owner.issue({identityCredential:'native-opaque',...extra})};
 }
 

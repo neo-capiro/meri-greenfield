@@ -204,6 +204,8 @@ export async function extractBaseBudgetValues({root,base,dependenciesRoot=root})
  number('owner.request.cap','apps/proxy/product/service-pair-discovery.mjs',/OWNER_MAX_REQUEST_MS=(\d+)/);
  computed('core.request',request,'apps/runtime/prepared-candidate.mjs','configuration.limits.requestMs');
  number('native.retained.credential','apps/runtime/native-authority/retained-reads/credential-broker.mjs',/started\+(\d+)/);
+ number('control.session.diagnostics.burst','apps/control/action-host/session/owner.mjs',/createSessionRefusalDiagnostics\(\{[^}]*\bburst=(\d+)/);
+ number('control.session.diagnostics.window','apps/control/action-host/session/owner.mjs',/createSessionRefusalDiagnostics\(\{[^}]*\bwindowMs=(\d+)/);
  const proxy='apps/proxy/product/';
  number('proxy.diagnostics.burst',proxy+'refusal_diagnostics.py',/burst=(\d+)/);
  number('proxy.diagnostics.window',proxy+'refusal_diagnostics.py',/window=([\d.]+)/,1000);
