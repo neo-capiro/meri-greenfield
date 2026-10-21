@@ -88,6 +88,7 @@ class StartPreflightTests(unittest.TestCase):
         calls = [line for line in self.log.read_text().splitlines() if "batch-get-builds" in line]
         self.assertEqual([len(line.split("--ids ")[1].split(" --output")[0].split()) for line in calls], [100, 100, 5])
         self.assertNotIn("--max-items", self.log.read_text())
+        self.assertNotIn("--sort-order", self.log.read_text())  # refused by AWS once the list pages
         # About 800 KB per batch read must not depend on command-line argument limits.
         self.assertEqual(self.check("require_project_idle --profile p", STUB_LIST="many", STUB_BATCH="echo-large"), "PROVEN")
 
