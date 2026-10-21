@@ -7,6 +7,7 @@ import {validateCompletionProof} from './completion-journal.mjs';
 import {closeSequenceRange} from './sequence-ranges.mjs';
 import {FORECLOSED,foreclosed} from './native-preparation-journal.mjs';
 import {assertNextRunFacts as facts,assertNextRunReservation} from './next-run-reservation.mjs';
+import {continuesSession} from '../../../packages/contracts/session-continuity.mjs';
 /** Terminal states that may admit a next prompt once the original is retired and its grants revoked. */
 export const admitsNextRun=state=>state==='completed'||state==='failed'||state==='cancelled';
 const CHECKPOINTED=['paused','waiting-for-approval'];
@@ -67,14 +68,17 @@ export function createNextRunJournal({tx,rowRun}){
   return tx(source,check,async c=>{
    const rows=await conversationRows(c,source,check),runs=orderedRuns(rows);if(!runs.length)fail('STORE_CORRUPT');const latest=runs.at(-1);
    if(!same(latest.binding,source))fail('NEXT_RUN_NOT_LATEST');if(!admitsNextRun(latest.state))fail('NEXT_RUN_SOURCE_NOT_TERMINAL');
-   if(!same(latest.scopes,scopes)||latest.policyRevision!==policyRevision||!same(latest.versions,versions))fail('NEXT_RUN_SCOPE_REFUSED');
+   // The successor runs under the current deployment's versions (the owner's), which may postdate the source's: a run's image is its own.
+   if(!same(latest.scopes,scopes)||latest.policyRevision!==policyRevision)fail('NEXT_RUN_SCOPE_REFUSED');
    // The named checkpoint must be the conversation's latest published one: a completed source's own; a failed or cancelled source's
-   // last completed turn's, published under the same scopes, policy and versions (its run, never the source, is the lineage).
+   // last completed turn's, published under the same scopes and policy (its run, never the source, is the lineage), and its SDK session
+   // resumable under the successor's versions (session-continuity.mjs: a deploy that changed only image or skills digests still is).
    const lineage=await publishedThrough(c,rows,source,check),run=lineage?.run.projection;
    if(latest.state==='completed'&&lineage?.run.run_id!==source.runId)fail('NEXT_RUN_CHECKPOINT_REQUIRED');
    if(lineage===null?f.checkpoint!==null:f.checkpoint===null)fail(lineage===null?'NEXT_RUN_CHECKPOINT_REFUSED':'NEXT_RUN_CHECKPOINT_REQUIRED');
    if(lineage&&(f.checkpoint.checkpointId!==lineage.row.checkpoint_id||f.checkpoint.proofSha256!==lineage.row.proof_sha256))fail('NEXT_RUN_CHECKPOINT_REFUSED');
-   if(lineage&&(!same(run.scopes,scopes)||run.policyRevision!==policyRevision||!same(run.versions,versions)))fail('NEXT_RUN_SCOPE_REFUSED');
+   if(lineage&&(!same(run.scopes,scopes)||run.policyRevision!==policyRevision))fail('NEXT_RUN_SCOPE_REFUSED');
+   if(lineage&&!continuesSession(run.versions,versions))fail('NEXT_RUN_SESSION_INCOMPATIBLE');
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    if(existing.length){const r=row(existing[0]);if(r.state!=='RESERVED')fail('STORE_CORRUPT');if(!same(r.facts,f)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision)fail('NEXT_RUN_REPLAY_REFUSED');return {target:r.target,state:r.state,replayed:true};}
    if(runs.some(r=>r.binding.runId===target.runId||r.binding.attemptId===target.attemptId||r.binding.workerId===target.workerId))fail('NEXT_RUN_TARGET_REFUSED');
@@ -135,7 +139,7 @@ export function createNextRunJournal({tx,rowRun}){
   const runRows=await conversationRows(c,b,check),source=runRows.find(x=>x.run_id===r.source.runId);if(!source||!same(source.projection.binding,r.source))fail('STORE_CORRUPT');
   const resumed=continued(source,target);if(!(admitsNextRun(source.projection.state)||resumed)||source.projection.state==='completed'&&r.facts.checkpoint===null||resumed&&r.facts.checkpoint!==null)fail('STORE_CORRUPT');if(r.facts.checkpoint===null)return null;
   const lineage=await publishedThrough(c,runRows,r.source,check),cp=lineage?.row,from=lineage?.run,p=cp?.proof;
-  if(!lineage||cp.checkpoint_id!==r.facts.checkpoint.checkpointId||cp.proof_sha256!==r.facts.checkpoint.proofSha256||source.projection.state==='completed'&&from.run_id!==source.run_id||cp.identity.selectedClientId!==selectedClientId||p.sourceRequestSha256!==from.request_sha256||p.contextSha256!==hash({window:from.request.window,skill:from.request.skill,scopes})||!same(p.checkpoint.binding,from.projection.binding)||!same(p.checkpoint.scopes,scopes)||!same(p.checkpoint.versions,target.projection.versions))fail('STORE_CORRUPT');
+  if(!lineage||cp.checkpoint_id!==r.facts.checkpoint.checkpointId||cp.proof_sha256!==r.facts.checkpoint.proofSha256||source.projection.state==='completed'&&from.run_id!==source.run_id||cp.identity.selectedClientId!==selectedClientId||p.sourceRequestSha256!==from.request_sha256||p.contextSha256!==hash({window:from.request.window,skill:from.request.skill,scopes})||!same(p.checkpoint.binding,from.projection.binding)||!same(p.checkpoint.scopes,scopes)||!continuesSession(p.checkpoint.versions,target.projection.versions))fail('STORE_CORRUPT');
   return {nextTurn:{checkpoint:p.checkpoint,checkpointSha256:p.checkpointSha256,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,sourceRequest:from.request,targetBinding:b,resumeSessionAt:p.resumeSessionAt}};
  });}
  return Object.freeze({listRuns,latestCheckpoint,foreclosure,reserve,readTarget,current,accept,execution});

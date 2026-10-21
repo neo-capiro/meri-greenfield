@@ -28,9 +28,12 @@ export async function conversation(t) {
   const blobs = new Map(), objects = {
     async put(v) { const ref = {objectId: v.objectId, versionId: 'immutable-v1', scopes: v.scopes, sha256: sha(v.bytes), bytes: v.bytes.length}; blobs.set(ref.objectId, Buffer.from(v.bytes)); return ref; },
     async get(ref) { return Buffer.from(blobs.get(ref.objectId)); }};
-  const owner = createNextRunOwner({store: f.store, versions, newId: next,
+  // The deployment's runtime versions: turn 1 runs under `versions`; deploy() models a new image release before a later turn.
+  let deployed = versions, owner;
+  const deploy = v => { deployed = v; owner = createNextRunOwner({store: f.store, versions: v, newId: next,
     retirement: {async verifyRetired() { return {physicalStopProven: true}; }},
-    revocation: {async verifyRevoked({binding: b}) { return {grantIds: [id(240)], receiptSha256: hash({revoked: b.runId})}; }}});
+    revocation: {async verifyRevoked({binding: b}) { return {grantIds: [id(240)], receiptSha256: hash({revoked: b.runId})}; }}}); };
+  deploy(versions);
 
   /** Turn 1: queued, allocated, starting, running, then the real end-of-turn completion; its original retired and grants revoked. */
   async function firstCompleted() {
@@ -50,7 +53,7 @@ export async function conversation(t) {
   async function acceptNext(prompt) {
     const target = (await owner.selectRun({principal: {tenantId: binding.tenantId, actorId: binding.actorId}, conversationId: binding.conversationId})).binding;
     const conversation = {conversationId: target.conversationId, owner: {tenantId: target.tenantId, actorId: target.actorId}, scopes, createdAt: at(), policyRevision: scopes[0].policyRevision};
-    await f.store.nextRuns.accept({conversation, run: {binding: target, state: 'queued', scopes, createdAt: at(), policyRevision: scopes[0].policyRevision, versions},
+    await f.store.nextRuns.accept({conversation, run: {binding: target, state: 'queued', scopes, createdAt: at(), policyRevision: scopes[0].policyRevision, versions: deployed},
       request: {requestId: next(), prompt, skill: null, window: null, windowRequest: null},
       event: {contractVersion: '0.1.0', ...status(next(), 'queued'), binding: target, scopes, sequence: 1}}, check);
     return target;
@@ -70,7 +73,7 @@ export async function conversation(t) {
     const taskWorkspace = {
       async restore({signal: _signal, ...v}) { restored.push(v); return {binding: v.binding, restoreKey: v.restoreKey, workspaceSha256: v.workspaceSha256, checkedAtMs: Date.now(), expiresAtMs: composed.original.expiresAtMs}; },
       async verify({signal: _signal, ...v}) { return {binding: v.binding, restoreKey: v.restoreKey, workspaceSha256: v.workspaceSha256, checkedAtMs: Date.now(), expiresAtMs: composed.original.expiresAtMs}; }};
-    const composed = await composeCapture(t, {binding: target, versions, sessionId, selfStop: false, taskWorkspace});
+    const composed = await composeCapture(t, {binding: target, versions: deployed, sessionId, selfStop: false, taskWorkspace});
     // runner/load hands the runner its lineage (the service reads it through the next-run journal); the activity then claims `starting`.
     const lineage = await f.store.nextRuns.execution({binding: target, scopes, selectedClientId: id(5)}, check), saved = await f.store.read(target, {}, check);
     const claim = state => f.store.append(target, status(next(), state), check);
@@ -83,5 +86,5 @@ export async function conversation(t) {
       restoration: async () => (await f.store.restorations.read({binding: target, restoreKey: hash({binding: target, versions: saved.run.versions, request: saved.request, sourceRequest: lineage.nextTurn.sourceRequest, scopes, nextTurn: lineage.nextTurn})}, check)).record};
   }
 
-  return {firstCompleted, acceptNext, endTurn, runner};
+  return {firstCompleted, acceptNext, endTurn, runner, deploy};
 }

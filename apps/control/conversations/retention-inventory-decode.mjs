@@ -148,7 +148,7 @@ function decodeNextRun(row,owner,byRun,byCompletion){
  const p=assertNextRunReservation(row.reservation),source=byRun.get(row.source_run_id),target=byRun.get(row.target_run_id);
  requireFact(source&&same(p.source,source.projection.binding)&&row.source_run_id===p.source.runId&&
   row.target_run_id===p.target.runId&&p.target.actorId===owner.subject.ownerActorId&&
-  same(p.scopes,source.projection.scopes)&&same(p.versions,source.projection.versions)&&
+  same(p.scopes,source.projection.scopes)&&
   p.policyRevision===source.projection.policyRevision&&['RESERVED','ACCEPTED'].includes(row.state));
  if(row.state==='ACCEPTED')requireFact(target&&same(p.target,target.projection.binding)&&
   same(p.scopes,target.projection.scopes)&&same(p.versions,target.projection.versions)&&

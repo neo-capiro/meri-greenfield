@@ -1,7 +1,7 @@
 /** Synthetic (scripted SQL protocol fixture): Stop/failure/crash → next prompt through the canonical next-run owner and journal,
  * lifecycle store and run reconciler. Retirement/revocation ports read the canonical allocation journal and a synthetic receipt. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {binding,scopes,id} from './lifecycle-fixture.mjs';
+import {binding,scopes,id,versions} from './lifecycle-fixture.mjs';
 import {recordRetired} from './terminal-settlement-harness.mjs';
 import {fixture,check} from './next-run-recovery-fixture.mjs';
 import {hash} from '../boundary.mjs';
@@ -66,3 +66,18 @@ for(const [label,end] of Object.entries({
  await x.allocate(third);const later=await x.complete(third);await x.retire(third);const fourth=(await x.select()).binding;await x.accept(fourth,'fourth');
  assert.equal((await x.lineage(fourth)).nextTurn.checkpoint.checkpointId,later.checkpointId);}finally{x.f.close();}});
 test('a completed source must name its own checkpoint',async()=>{const y=await fixture();try{await y.first();await y.complete(binding);await y.retire(binding);await assert.rejects(y.reserveWith(binding,null),/NEXT_RUN_CHECKPOINT_REQUIRED/);}finally{y.f.close();}});
+// O102: a conversation survives a deploy. The successor is reserved under the current release's versions; a release that changes only
+// the image or skills digest still continues the latest published checkpoint, an SDK or CLI change does not resume it.
+test("a release between turns: turn 2 is reserved under the new versions and continues turn 1's checkpoint",async()=>{const x=await fixture();try{
+ await x.first();const done=await x.complete(binding);await x.retire(binding);
+ const released={...versions,imageDigest:'sha256:'+'5'.repeat(64),skillsDigest:'c'.repeat(64)};x.deploy(released);
+ const second=(await x.select()).binding;await x.accept(second,'after the release');
+ assert.deepEqual([...x.f.state.nextRuns.values()][0].reservation.versions,released);
+ const lineage=(await x.lineage(second)).nextTurn;assert.equal(lineage.checkpoint.checkpointId,done.checkpointId);assert.deepEqual(lineage.checkpoint.versions,versions);
+}finally{x.f.close();}});
+test('a release that changes the SDK or CLI never resumes the earlier session: the reservation is refused',async()=>{
+ for(const change of [{sdk:'0.3.296'},{cli:'2.1.296'}]){const x=await fixture();try{
+  await x.first();await x.complete(binding);await x.retire(binding);x.deploy({...versions,...change});
+  await assert.rejects(x.select(),/NEXT_RUN_SESSION_INCOMPATIBLE/);assert.equal(x.f.state.nextRuns.size,0);
+ }finally{x.f.close();}}
+});

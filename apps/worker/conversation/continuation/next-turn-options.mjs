@@ -3,6 +3,7 @@ import {validateShape,assertWorkspacePaths,canonicalSha256 as hash} from '../../
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {continuationContextSha256,lineageResumeOptions} from './options.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {continuesSession} from '../../../../packages/contracts/session-continuity.mjs';
 import AjvModule from 'ajv/dist/2020.js';
 import formatsModule from 'ajv-formats';
 import {conversationSchema} from '../../../../packages/contracts/conversation-application/schema.mjs';
@@ -35,7 +36,7 @@ export function buildNextTurnOptions(value,target){
   if(!validRequest(request)||(request.window===null)!==(request.windowRequest===null))fail();
   if(request.window!==null)assertWindowResolution(request.windowRequest,request.window);
  }
- if(!same(n.sourceRequest,t.sourceRequest)||!same(cp.scopes,t.scopes)||!same(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
+ if(!same(n.sourceRequest,t.sourceRequest)||!same(cp.scopes,t.scopes)||!continuesSession(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
   continuationContextSha256(t.request,t.scopes)!==n.contextSha256||!same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.sourceRequest.requestId===t.request.requestId)fail();
  if(t.request.skill!==null&&!same(selectSkill(t.request.skill.skillId,t.request.skill.skillVersion).pin,t.request.skill))fail();
  return lineageResumeOptions({sessionId:cp.sessionId,resumeSessionAt:n.resumeSessionAt,targetSessionId:null});
