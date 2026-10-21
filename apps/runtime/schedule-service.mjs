@@ -86,7 +86,8 @@ export async function startScheduleWorker(configuration,options={}){
  if((factory===null?!p.pool:true)&&plan.connectionFile===undefined)throw fault('SCHEDULE_SERVICE_CONFIGURATION');
  let ownedFetch,ownedPool,ownedClientConnection,ownedClientAuthorization,poller,closing;
  const close=()=>closing??=(async()=>{
-  const errors=[];for(const stop of [()=>poller?.close(),()=>ownedClientConnection?.close(),()=>ownedClientAuthorization?.close(),()=>ownedPool?.end(),()=>ownedFetch?.close()])try{await stop();}catch(error){errors.push(error);}
+  const errors=[];for(const stop of [()=>poller?.close(),()=>ownedClientConnection?.close(),()=>ownedClientAuthorization?.close(),()=>ownedPool?.end()])try{await stop();}catch(error){errors.push(error);}
+  void ownedFetch?.close().catch(()=>{});
   if(errors.length)throw new AggregateError(errors,'SCHEDULE_SERVICE_CLEANUP_UNKNOWN');
  })();
  try{

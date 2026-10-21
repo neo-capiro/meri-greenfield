@@ -137,5 +137,5 @@ export async function runConversation(configuration,{signal,query,sessionFactory
   markRunnerStage('activity');
  const sessions=sessionFactory??createRuntimeSdkSessionFactory({origin:configuration.native.origin,credential,binding:configuration.binding,fetchImpl:requestFetch,sessionTimeoutMs:budget(budgets,'runner.session.store')});
   return assembleConversationRunner({configuration,native,budgets,credentialForBinding:async()=>credential,sessionFactory:sessions,...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{})})({binding:configuration.binding,signal});
- }),{binding:configuration.binding,environment:configuration.telemetry?.environment});}finally{await ownedFetch?.close();}
+ }),{binding:configuration.binding,environment:configuration.telemetry?.environment});}finally{void ownedFetch?.close().catch(()=>{});}
 }

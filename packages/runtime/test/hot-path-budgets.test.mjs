@@ -20,8 +20,9 @@ test('production roots derive the frozen table and preserve all absolute runner 
 test('every nested edge rejects both a grown child and a shrunken parent, naming the edge',()=>{
  const edges=Object.entries(table.hops).filter(([,hop])=>hop.kind==='nested');assert.ok(edges.length>10);
  for(const[id,hop]of edges){
-  const grown=clone();grown.hops={[id]:grown.hops[id],...grown.hops};grown.hops[id].ms=budget(table,hop.parent)-HOT_PATH_BUDGET_MARGIN_MS+1;refusal(()=>assertHotPathBudgets(grown),id,hop.parent);
-  const shrunk=clone();shrunk.hops={[id]:shrunk.hops[id],...shrunk.hops};(shrunk.hops[hop.parent]??shrunk.roots[hop.parent]).ms=hop.ms+HOT_PATH_BUDGET_MARGIN_MS-1;refusal(()=>assertHotPathBudgets(shrunk),id,hop.parent);
+  const exception=HOT_PATH_BUDGET_EXCEPTIONS.find(row=>row.hop===id&&row.rule==='nested-margin');
+  const grown=clone();grown.hops={[id]:grown.hops[id],...grown.hops};grown.hops[id].ms=exception?exception.maxChildMs+1:budget(table,hop.parent)-HOT_PATH_BUDGET_MARGIN_MS+1;refusal(()=>assertHotPathBudgets(grown),id,hop.parent);
+  const shrunk=clone();shrunk.hops={[id]:shrunk.hops[id],...shrunk.hops};(shrunk.hops[hop.parent]??shrunk.roots[hop.parent]).ms=exception?exception.minParentMs-1:hop.ms+HOT_PATH_BUDGET_MARGIN_MS-1;refusal(()=>assertHotPathBudgets(shrunk),id,hop.parent);
  }
 });
 
@@ -113,8 +114,41 @@ test('rendered tables cannot relax or replace the fixed containment margin',()=>
 });
 
 
-test('durable workflow policy windows have their own lifetime beyond a single turn',()=>{
- const workflow=Object.entries(table.hops).filter(([id])=>id.startsWith('workflow.'));assert.equal(workflow.length,9);
- for(const[,hop]of workflow){assert.equal(hop.kind,'independent');assert.equal(hop.owner,'temporal.workflow-policy');assert.equal(hop.boundedBy,undefined);}
+test('durable activity windows keep workflow attempts and heartbeat/retry policy distinct',()=>{
  assert.ok(budget(table,'workflow.conversation.startToClose')>budget(table,'turn'));
+ assert.equal(table.hops['workflow.conversation.heartbeat'].parent,'workflow.conversation.startToClose');
+ assert.equal(table.hops['workflow.recovery.startToClose'].parent,'workflow.recovery.scheduleToClose');
+ for(const id of ['workflow.conversation.startToClose','workflow.recovery.scheduleToClose','workflow.objective.startToClose','workflow.schedule.startToClose'])assert.equal(table.hops[id].kind,'independent');
+ for(const id of ['workflow.recovery.retry.initial','workflow.recovery.retry.maximum'])assert.equal(table.hops[id].parent,'workflow.recovery.scheduleToClose');
+ assert.equal(table.hops['workflow.schedule.settle'].kind,'derived');
+});
+
+test('preserved two-second margin exceptions are exact and cannot exempt a changed bound',()=>{
+ const rows=HOT_PATH_BUDGET_EXCEPTIONS.filter(row=>row.rule==='nested-margin');
+ const violations=Object.entries(table.hops).filter(([,hop])=>hop.kind==='nested'&&hop.ms>budget(table,hop.parent)-HOT_PATH_BUDGET_MARGIN_MS).map(([id])=>id).sort();
+ assert.deepEqual(rows.map(row=>row.hop).sort(),violations);
+ assert.equal(rows.length,5);
+ for(const row of rows){assert.equal(row.parent,table.hops[row.hop].parent);assert.equal(row.maxChildMs,budget(table,row.hop));assert.equal(row.minParentMs,budget(table,row.parent));}
+ // A rendered exception or relabelled child has no authority to relax the code-owned policy.
+ const enlarged=clone();enlarged.hops['authority.gateway.request'].ms++;enlarged.exceptions=[{hop:'authority.gateway.request',maxChildMs:999999}];
+ refusal(()=>assertHotPathBudgets(enlarged),'authority.gateway.request','request');
+});
+
+test('audited request children cannot be relabelled or moved under a larger owner',()=>{
+ for(const id of ['conversation.http.request','authority.gateway.request','native.pinned.transport','native.gateway.read.request','reads.snapshot','intents.snapshot']){
+  assert.equal(table.hops[id].kind,'nested');assert.equal(table.hops[id].parent,'request');
+  for(const change of [{kind:'independent',owner:'invented',reason:'invented separate lifetime'},{parent:'turn'}]){
+   const altered=clone();Object.assign(altered.hops[id],change);refusal(()=>assertHotPathBudgets(altered),id);
+  }
+ }
+ const store=table.hops['runner.session.store'];assert.equal(store.kind,'serial');assert.equal(store.parent,'turn');assert.deepEqual(store.children,['runner.session.load','runner.session.append']);assert.equal(store.sumMs,13000);assert.equal(store.ms,15000);
+ assert.equal(table.hops['proxy.bootstrap'].parent,'proxy.connection');
+ assert.equal(table.hops['proxy.request.cleanup'].kind,'independent');assert.match(table.hops['proxy.request.cleanup'].reason,/asyncio.wait.*fresh 26 s/u);
+});
+
+test('worker native connect records an opaque sdk-core default and cannot supply a fictitious number',()=>{
+ const hop=table.hops['temporal.connect'];assert.equal(hop.kind,'library');assert.equal(hop.ms,null);assert.equal(hop.sdkOwned,true);assert.equal(hop.configurable,false);assert.equal(hop.owner,'sdk-core');assert.equal(hop.boundedBy,undefined);
+ refusal(()=>budget(table,'temporal.connect'),'temporal.connect');refusal(()=>fixedHotPathBudget('temporal.connect'),'temporal.connect');
+ for(const change of [{ms:10000},{ms:0,unbounded:true,boundedBy:'startup'},{boundedBy:'startup'},{reason:''},{configurable:true},{owner:'client-js'}]){const altered=clone();Object.assign(altered.hops['temporal.connect'],change);refusal(()=>assertHotPathBudgets(altered),'temporal.connect');}
+ const invented=clone();invented.hops['aws.connection']={...hop};refusal(()=>assertHotPathBudgets(invented),'aws.connection');
 });

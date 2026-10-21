@@ -62,7 +62,7 @@ test('original expiry and authoritative target facts persist: a later target is 
  await assert.rejects(second.admissionForBinding({binding:later,record:{...foreign,state:'ADMITTED'}}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'a live record naming another hash is refused without reading the budget store');
  // A settled (RETIRED) source admitted under an earlier render is admitted only against its own stored allocation, pinned by its record's hash.
  const stored=new Map(),storedPool={async connect(){return {async query(sql,params){assert.match(sql,/^SELECT allocation,allocation_sha256 FROM meri_product_budget\.tool_run_allocations WHERE run_id=\$1$/u);const row=stored.get(params[0]);return {rows:row?[row]:[]};},release(){}};}};
- const third=createPreparedRunBindings({configuration:x.f.configuration,pool:storedPool,store:x.store,credentials:x.credentials,issuanceStore,capabilityAuthority:x.authority,modelGrants:x.modelGrants,now});
+ const third=createPreparedRunBindings({limits:{maxRequestMs:3000,maxFactBytes:131072},configuration:x.f.configuration,pool:storedPool,store:x.store,credentials:x.credentials,issuanceStore,capabilityAuthority:x.authority,modelGrants:x.modelGrants,now});
  await assert.rejects(third.admissionForBinding({binding:later,record:foreign}),/PREPARED_RUN_BINDINGS_ALLOCATION_MISMATCH/,'the first run\'s allocation hash does not admit the later target: no such stored allocation');
  const earlier={...retargeted,catalogSha256:'f'.repeat(64)},earlierSha256=hash(earlier);
  stored.set(later.runId,{allocation:earlier,allocation_sha256:hash(retargeted)});

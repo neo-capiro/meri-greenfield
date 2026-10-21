@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hotPathBudgets} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {startTemporalWorker} from '../temporal-worker.mjs';
+import {startControl} from '../control.mjs';
 import {startScheduleWorker} from '../schedule-worker.mjs';
 import {runConversation} from '../conversation-runner.mjs';
 import {runRemoteConversation} from '../remote-conversation-runner.mjs';
@@ -31,4 +32,18 @@ test('worker and runner entrypoints require the rendered turn root before resour
   ()=>runRemoteConversation(missing,{fetchImpl:effect,execute:effect,listen:effect,createWorker:effect}),
  ])await assert.rejects(invoke,{code:'HOT_PATH_BUDGET_CONFIGURATION'});
  assert.equal(effects,0);
+});
+
+// Exercise the real composition input path: no pre-built `budgets` injection.
+test('control refuses a configuration-derived budget violation before any startup owner runs',async()=>{
+ const calls=[],effect=name=>()=>{calls.push(name);throw Error('RESOURCE_MUST_NOT_BE_ALLOCATED');};
+ const testOwners=Object.fromEntries(['authorization','readMaterial','tls','createPool','connect','createClient','startCandidate','assemble','listen'].map(name=>[name,effect(name)]));
+ const violating={...configuration,limits:{...configuration.limits,requestMs:10000}};
+ await assert.rejects(startControl(violating,{testOwners}),error=>{
+  assert.equal(error.code,'HOT_PATH_BUDGET_CONFIGURATION');
+  assert.equal(error.hop,'runner.native.router');
+  assert.equal(error.parent,'runner.call.load');
+  return true;
+ });
+ assert.deepEqual(calls,[],'neither pool nor public/private listener nor any other startup owner is allocated');
 });

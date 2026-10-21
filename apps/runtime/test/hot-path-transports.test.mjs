@@ -16,7 +16,7 @@ test('HTTP transports receive the canonical library caps and preserve the operat
  assert.strictEqual(forwarded[1].signal,signal);assert.equal(forwarded[1].method,'POST');
  assert.ok(forwarded[1].dispatcher instanceof Agent);
  assert.ok(createHotPathAwsRequestHandler(testBudgetTable) instanceof NodeHttpHandler);
- assert.deepEqual(handlerOptions,{connectionTimeout:0,requestTimeout:0});
+ assert.deepEqual(handlerOptions,{connectionTimeout:0,requestTimeout:0,socketAcquisitionWarningTimeout:3000});
  await owner.close();assert.equal(closed,1);
  assert.throws(()=>createHotPathFetch(testBudgetTable,{fetchImpl:null}),/HOT_PATH_FETCH_CONFIGURATION/u);
  mock.restoreAll();

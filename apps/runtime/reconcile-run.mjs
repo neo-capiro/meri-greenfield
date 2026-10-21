@@ -14,7 +14,7 @@ import {createReconcileActivity} from './temporal-worker.mjs';
 export async function reconcileRun({configuration,credential,binding,fetch:transport,budgets:injectedBudgets}){
  const budgets=assertHotPathBudgets(injectedBudgets??runtimeHotPathBudgets(configuration)),owner=transport?null:createHotPathFetch(budgets);
  try{return await createReconcileActivity({timeoutMs:budget(budgets,'runtime.original.reconcile'),native:createNativeCapabilityClient({configuration:configuration.native,credential,fetch:transport??owner.fetch,maxRequestMs:budget(budgets,'native.client.request'),loadMaxRequestMs:budget(budgets,'native.client.request')})})({binding});}
- finally{await owner?.close();}
+ finally{void owner?.close().catch(()=>{});}
 }
 export async function main(argv=process.argv.slice(2),{fetch:transport}={}){
  if(argv.length!==4||argv[0]!=='--config'||argv[2]!=='--binding'){process.stderr.write('RECONCILE_ARGUMENTS\n');return 2;}

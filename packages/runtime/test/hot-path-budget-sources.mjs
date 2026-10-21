@@ -256,7 +256,12 @@ export async function extractBaseBudgetValues({root,base,dependenciesRoot=root})
  libNumber('fetch.connect','packages/ui-stream/node_modules/undici/lib/core/connect.js',/timeout == null \? (\d+e?\d*)/);
  libNumber('fetch.headers','packages/ui-stream/node_modules/undici/lib/dispatcher/client.js',/headersTimeout : (\d+e\d+)/);
  libNumber('fetch.body','packages/ui-stream/node_modules/undici/lib/dispatcher/client.js',/bodyTimeout : (\d+e\d+)/);
- libNumber('temporal.connect','apps/runtime/node_modules/@temporalio/client/lib/connection.js',/connectTimeoutMs:[^\n]+\?\? ([\d_]+)/);
+ // Worker NativeConnection delegates to sdk-core. The JS client Connection's 10 s default is a different implementation.
+ const nativeOptionsFile='apps/runtime/node_modules/@temporalio/worker/lib/connection-options.d.ts',nativeConnectionFile='apps/runtime/node_modules/@temporalio/worker/lib/connection.js';
+ const nativeOptions=readFileSync(join(dependenciesRoot,nativeOptionsFile),'utf8'),nativeConnection=readFileSync(join(dependenciesRoot,nativeConnectionFile),'utf8');
+ if(!nativeOptions.includes('interface NativeConnectionOptions')||/connectTimeout/u.test(nativeOptions)||!nativeConnection.includes('await runtime.createNativeClient(options)'))throw Error('Worker native connection timeout evidence changed; re-audit sdk-core');
+ for(const [file,text]of [[nativeOptionsFile,nativeOptions],[nativeConnectionFile,nativeConnection]])libraryFiles[file]=createHash('sha256').update(text).digest('hex');
+ put('temporal.connect',null,nativeOptionsFile,'NativeConnectionOptions: no configurable connect timeout; native default is opaque to JavaScript');
  const temporalConnection='apps/runtime/node_modules/@temporalio/client/lib/connection.js',temporalRetry='apps/runtime/node_modules/@temporalio/client/lib/grpc-retry.js';
  libNumber('temporal.keepAlive.period',temporalConnection,/'grpc.keepalive_time_ms': ([\d_]+)/);
  libNumber('temporal.keepAlive.timeout',temporalConnection,/'grpc.keepalive_timeout_ms': ([\d_]+)/);
@@ -282,6 +287,9 @@ export async function extractBaseBudgetValues({root,base,dependenciesRoot=root})
  const smithy='apps/runtime/node_modules/@smithy/node-http-handler/dist-cjs/index.js';
  libNumber('aws.connection',smithy,/setConnectionTimeout = \(request, reject, timeoutInMs = (\d+)/);
  libNumber('aws.request',smithy,/setRequestTimeout = \(req, reject, timeoutInMs = (\d+)/);
+ const warning=/config\.socketAcquisitionWarningTimeout \?\? \(config\.requestTimeout \?\? (\d+)\) \+ \(config\.connectionTimeout \?\? (\d+)\)/u.exec(readFileSync(join(dependenciesRoot,smithy),'utf8'));
+ if(!warning)throw Error('Smithy socket acquisition warning default changed');
+ put('aws.socketAcquisitionWarning',Number(warning[1])+Number(warning[2]),smithy,'socketAcquisitionWarningTimeout implicit request fallback + connection fallback (logging only)');
  const uvicorn=execFileSync(process.env.P1_PYTHON??'python3',['-c','import inspect,uvicorn.config;print(inspect.getsource(uvicorn.config))'],{encoding:'utf8'});
  const keepAlive=/timeout_keep_alive: int = (\d+)/.exec(uvicorn);
  if(!keepAlive||!uvicorn.includes('timeout_graceful_shutdown: int | None = None'))throw Error('Uvicorn defaults changed');

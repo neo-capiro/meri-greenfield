@@ -44,10 +44,10 @@ test('the broker native client allows one control margin above a task router exc
  finally{await runtime.close();}
 });
 
-test('Temporal startup passes the explicit connection allowance before creating the worker',async()=>{
+test('Temporal startup passes only supported native connection options before creating the worker',async()=>{
  const b=boundaries(),connect=b.owners.connect;let options;
  b.owners.connect=async value=>{options=value;return connect(value);};
  const runtime=await startTemporalWorker(configuration,{testOwners:b.owners});
- try{assert.equal(options.connectTimeout,10000);assert.ok(b.calls.indexOf('connect')<b.calls.indexOf('create'));}
+ try{assert.deepEqual(Object.keys(options).sort(),['address','apiKey','tls']);assert.equal(options.address,configuration.temporal.address);assert.ok(b.calls.indexOf('connect')<b.calls.indexOf('create'));}
  finally{await runtime.close();}
 });

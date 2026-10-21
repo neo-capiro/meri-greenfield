@@ -65,9 +65,10 @@ export async function startTemporalWorker(configuration,{signal,testOwners={},bu
  const close=()=>closing??=(async()=>{
   fence.lose('RUNTIME_STOPPING');signal?.removeEventListener('abort',onExternalAbort);unwatch?.();const results=[];
   try{if(worker?.getState()==='RUNNING')worker.shutdown();}catch(reason){results.push({status:'rejected',reason});}
-  for(const step of [()=>listener?.close(),()=>run,()=>connection?.close(),()=>authorization?.close(),()=>nativeFetch?.close()]){
+  for(const step of [()=>listener?.close(),()=>run,()=>connection?.close(),()=>authorization?.close()]){
    try{results.push({status:'fulfilled',value:await step()});}catch(reason){results.push({status:'rejected',reason});}
   }
+  void nativeFetch?.close().catch(()=>{});
   // SDK 1.24 cannot publicly dispose an INITIALIZED worker. Do not run a stale
   // poller or mutate its private refs to manufacture a cleanup receipt.
   assertTemporalRuntimeCleanup(results,{...(worker?{workerState:worker.getState()}:{})});
@@ -80,7 +81,7 @@ export async function startTemporalWorker(configuration,{signal,testOwners={},bu
   nativeFetch=createHotPathFetch(budgets);
   const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential:bytes.toString('utf8').trim(),fetch:nativeFetch.fetch,maxRequestMs:budget(budgets,'broker.native.request'),loadMaxRequestMs:budget(budgets,'broker.native.request')});
   await native.readiness({signal:startupSignal});checkAuthorization();
-  connection=await (owners.connect??(options=>NativeConnection.connect(options)))({address:configuration.temporal.address,tls,connectTimeout:budget(budgets,'temporal.connect'),...(authorization?{apiKey:authorization.apiKey()}:{})});checkAuthorization();
+  connection=await (owners.connect??(options=>NativeConnection.connect(options)))({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});checkAuthorization();
   if(authorization)authorization.attach(connection);
   worker=await (owners.createWorker??(options=>Worker.create(options)))(workerOptions({configuration,connection,native,budgets}));checkAuthorization();
   run=worker.run();run.catch(()=>{});

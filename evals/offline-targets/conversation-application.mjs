@@ -1,12 +1,14 @@
 /** Loopback conversation HTTP application over scripted identity/context owners.
  * Reuses the canonical session owner, PostgreSQL store adapter (scripted wire fixture), service and Fetch mount.
  * No Temporal, PostgreSQL server, model or network. A LOCAL_FIXTURE, never evidence of live policy or durability. */
+import {hotPathBudgets,budget} from '../../packages/runtime/hot-path-budgets.mjs';
 import {createActionSessionOwner} from '../../apps/control/action-host/session/owner.mjs';
 import {createPostgresConversationStore} from '../../apps/control/conversations/postgres-store.mjs';
 import {createConversationService} from '../../apps/control/conversations/service.mjs';
 import {createConversationApplication} from '../../apps/control/conversations/http.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {storeFixture,versions} from '../../apps/control/conversations/test/store-fixture.mjs';
+const budgets=hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000});
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const hex4=/^[0-9a-f]{4}$/u;
 /** Deterministic synthetic UUID: a 4-hex owner tag plus an ordinal; never a real identifier. */
@@ -29,8 +31,8 @@ export async function createScriptedConversationApplication({principals,now=Date
   async resolveContext({identityCredential,identity}){const p=byCredential.get(identityCredential);if(!p)throw Error('scripted context refused');
    return {identitySha256:canonicalSha256(identity),binding:structuredClone(p.binding),scopes:structuredClone(p.scopes),selectedClientId:p.selectedClientId,contextRevision:'context1',checkedAtMs:now(),expiresAtMs:now()+ttlMs};}});
  const dispatcher={async start({binding}){state.starts.push(binding.runId);},async cancel({binding}){state.cancels.push(binding.runId);}};
- let ordinal=0;const service=createConversationService({sessions,store,dispatcher,versions,now,newId:()=>syntheticId('ffff',ordinal++)});
- const app=createConversationApplication({service,now});
+ let ordinal=0;const service=createConversationService({maxRequestMs:budget(budgets,'conversation.http.request'),sessions,store,dispatcher,versions,now,newId:()=>syntheticId('ffff',ordinal++)});
+ const app=createConversationApplication({maxRequestMs:budget(budgets,'conversation.http.request'),service,now});
  const request=({route,credential,body,method='POST',headers={}})=>{const h={...headers};if(credential!==undefined)h.authorization=`Bearer ${credential}`;if(method==='POST')h['content-type']='application/json';
   return new Request(`https://meri.invalid/api/conversations/${route}`,{method,headers:h,...(method==='POST'?{body:JSON.stringify(body)}:{})});};
  return Object.freeze({app,service,store,sessions,state,storeState:fixture.state,request,

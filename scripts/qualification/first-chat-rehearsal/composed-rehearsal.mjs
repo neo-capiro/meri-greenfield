@@ -12,6 +12,8 @@ import {join} from 'node:path';
 import {root,load,listener,tree,makeReceipt as makeRehearsalReceipt} from './rehearsal-support.mjs';
 const {fixture,sha,control}=await load('apps/runtime/native-authority/test/broker-pg-fixture.mjs');
 const {canonicalSha256:hash}=await load('packages/contracts/validate.mjs');
+const {hotPathBudgets,budget}=await load('packages/runtime/hot-path-budgets.mjs');
+const budgets=hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000});
 const {compileNativeBrokerPlan}=await load('apps/runtime/native-authority/broker-stack.mjs');
 const {createRemoteNativeController,createRemoteNativeWorker}=await load('apps/runtime/native-authority/remote-composition.mjs');
 const {createNativeCapabilityClient}=await load('apps/runtime/native-client.mjs');
@@ -54,16 +56,16 @@ async function compose(t,receipt,{onTaskRoute}={}){
    if(path==='/v1/runner/load'){const s=await f.stack.store.read(binding,{after:0,limit:1},()=>{});return Response.json({run:s.run,request:s.request});}
    await f.stack.store.append(binding,body.event,()=>{});return Response.json({published:true});}
   return controller.application.handle(r);});
- controller=createRemoteNativeController({runtimeConfiguration:{pool,store:f.stack.store,allocator:{async allocate(){allocations++;return admitted;},async stop(){retirements++;}},supervisor:config.supervisor,runtime,plan,preparationIntent,taskCapability:f.f.credential,controlCapabilitySha256:sha(control),verifyTask:async()=>({taskArn:resource.taskArn,imageSha256:preparationIntent.imageSha256,runnerSha256:preparationIntent.runnerSha256,checkedAtMs:Date.now(),expiresAtMs:original.expiresAtMs}),enabled:true,maxRequestMs:12000},transport:{original,origin:'https://synthetic-task.invalid',credential:control,fetchImpl:taskFetch,limits:{maxRequestMs:12000}}});
- const native=createNativeCapabilityClient({configuration:{origin:'https://synthetic-controller.invalid',maxResponseBytes:2097152},credential:f.f.credential,fetch:controlFetch});
- worker=createRemoteNativeWorker({original,preparationIntent,controlCapabilitySha256:sha(control),taskCapabilitySha256:facts.capabilitySha256,taskArn:resource.taskArn,native,processTransport:{original,origin:'https://synthetic-task.invalid',credential:f.f.credential,fetchImpl:taskFetch},enabled:true,limits:{maxRequestMs:12000}});
+ controller=createRemoteNativeController({runtimeConfiguration:{budgets,pool,store:f.stack.store,allocator:{async allocate(){allocations++;return admitted;},async stop(){retirements++;}},supervisor:config.supervisor,runtime,plan,preparationIntent,taskCapability:f.f.credential,controlCapabilitySha256:sha(control),verifyTask:async()=>({taskArn:resource.taskArn,imageSha256:preparationIntent.imageSha256,runnerSha256:preparationIntent.runnerSha256,checkedAtMs:Date.now(),expiresAtMs:original.expiresAtMs}),enabled:true,maxRequestMs:12000},transport:{original,origin:'https://synthetic-task.invalid',credential:control,fetchImpl:taskFetch,limits:{maxRequestMs:12000}}});
+ const native=createNativeCapabilityClient({maxRequestMs:budget(budgets,'native.client.request'),loadMaxRequestMs:budget(budgets,'native.client.request'),configuration:{origin:'https://synthetic-controller.invalid',maxResponseBytes:2097152},credential:f.f.credential,fetch:controlFetch});
+ worker=createRemoteNativeWorker({budgets,original,preparationIntent,controlCapabilitySha256:sha(control),taskCapabilitySha256:facts.capabilitySha256,taskArn:resource.taskArn,native,processTransport:{original,origin:'https://synthetic-task.invalid',credential:f.f.credential,fetchImpl:taskFetch,limits:{maxRequestMs:budget(budgets,'native.transport.request')}},enabled:true,limits:{maxRequestMs:12000}});
  t.after(async()=>{try{await worker.close();await controller.close();}finally{await taskFetch.close();await controlFetch.close();}});
  await controller.allocate();receipt.step('controller-allocated',{allocations});
- const sessionFactory=createRuntimeSdkSessionFactory({origin:'https://synthetic-controller.invalid',credential:f.f.credential,binding,fetchImpl:controlFetch});
- const configuration={binding,versions:runtime.versions,workspace:f.workspace,proxyOrigin:new URL(runtime.proxyUrl).origin,sourceEnabled:false,limits:{shutdownMs:1000},remoteTask:{preparationIntent}};
+ const sessionFactory=createRuntimeSdkSessionFactory({sessionTimeoutMs:budget(budgets,'runner.session.store'),origin:'https://synthetic-controller.invalid',credential:f.f.credential,binding,fetchImpl:controlFetch});
+ const configuration={binding,versions:runtime.versions,workspace:f.workspace,proxyOrigin:new URL(runtime.proxyUrl).origin,sourceEnabled:false,limits:{startupMs:budget(budgets,'startup'),requestMs:budget(budgets,'request'),shutdownMs:budget(budgets,'shutdown')},remoteTask:{original,preparationIntent}};
  await assertRunnerWorkspace(configuration);
  const query=input=>{try{return worker.query(input);}catch(error){receipt.queryRefusal={code:error?.code??null,message:String(error?.message??error)};throw error;}};
- const execute=assembleConversationRunner({configuration,native,query,sessionFactory});receipt.step('runner-assembled');
+ const execute=assembleConversationRunner({budgets,configuration,native,query,sessionFactory});receipt.step('runner-assembled');
  const history=()=>f.stack.store.read(binding,{after:0,limit:100},()=>{});
  return {f,binding,pool,key,original,controller,get worker(){return worker;},execute,history,routes,sdkConfigDirectory,secureStorageDirectory,counters:()=>({allocations,retirements})};
 }

@@ -15,7 +15,7 @@ test('both runner roots emit a single proof across recursive execution and none 
   try{await withRunnerDiagnostics(operation,{turnTelemetry:telemetry,write:()=>{}});return lines.filter(line=>line.event==='meri.budget.table');}
   finally{telemetry.close();}
  }
- const expected={schema:'meri.telemetry/1',event:'meri.budget.table',service:'runner',atMs:123,hops:278,
+ const expected={schema:'meri.telemetry/1',event:'meri.budget.table',service:'runner',atMs:123,hops:279,
   tableSha256:hotPathBudgetDigest(testBudgetTable),Service:'runner',_aws:{Timestamp:123,CloudWatchMetrics:[]}};
  // A refusal after budget validation avoids secret reads, workspace access, SDK initialization and network calls.
  for(const root of roots)assert.deepEqual(await capture(()=>refuseAfterBudget(root)),[expected]);

@@ -50,7 +50,7 @@ export async function startScheduleWorker(configuration,options={}){
  let connection,worker,listener,run,closing,authorization,unwatch;
  const close=()=>closing??=(async()=>{const errors=[];for(const step of [()=>listener?.close(),()=>{unwatch?.();if(worker?.getState()==='RUNNING')worker.shutdown();},()=>run?.catch(()=>{}),()=>connection?.close(),()=>authorization?.close()])try{await step();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'SCHEDULE_WORKER_CLEANUP_UNKNOWN');})();
  try{signal?.throwIfAborted();const tls=await temporalTls(configuration.temporal.tls);authorization=await temporalAuthorization(configuration,{signal});signal?.throwIfAborted();
-  connection=await NativeConnection.connect({address:configuration.temporal.address,tls,connectTimeout:budget(budgets,'temporal.connect'),...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);signal?.throwIfAborted();
+  connection=await NativeConnection.connect({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);signal?.throwIfAborted();
   worker=await Worker.create({...compiled,connection});if(authorization)unwatch=stopWorkerOnAuthorizationFailure({worker,authorization});run=worker.run();run.catch(()=>{});
   listener=await listenRuntime({configuration,budgets,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:createWorkerReadiness({worker,authorization}),signal});
   return Object.freeze({address:listener.address,completion:run,close});

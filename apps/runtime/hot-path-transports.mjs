@@ -11,5 +11,5 @@ export function createHotPathFetch(table,{fetchImpl=globalThis.fetch}={}){
 }
 
 export function createHotPathAwsRequestHandler(table){
- return new NodeHttpHandler({connectionTimeout:budget(table,'aws.connection'),requestTimeout:budget(table,'aws.request')});
+ return new NodeHttpHandler({connectionTimeout:budget(table,'aws.connection'),requestTimeout:budget(table,'aws.request'),socketAcquisitionWarningTimeout:budget(table,'aws.socketAcquisitionWarning')});
 }

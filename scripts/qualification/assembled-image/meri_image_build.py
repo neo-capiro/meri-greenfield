@@ -5,7 +5,7 @@ SOURCE = 'd741792b1672d6eac4c1c37835c3c3d1931e66a8'
 # Shipping must bind the reviewed qualification commit in a NEW staging copy.
 # This unsealed repair candidate does not authorize or prepare another paid attempt.
 QUALIFICATION_SOURCE = None
-PROBE_HASHES = {'image_probe.mjs': 'd86f1978bae8e7a544adc86ceb0b284b2bb750b8693c07116f2df800bad7239d', 'native-cli.mjs': '2626146c704b7ffc87a1dcfea4de7aa7be0e736e30aa02c328c6f794178d5e91', 'source-manifest.json': 'd7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f', 'temporal-binding.mjs': 'a0fbd5f94e93736c1b061a8e2ee9b23f18530f5c97ee123d580f736615f6a2dc'}
+PROBE_HASHES = {'image_probe.mjs': '0952e2d4880f79ca4dac6d5a73567d77d5a8b9ce1f8117781f0f04b5baae5a33', 'native-cli.mjs': '2626146c704b7ffc87a1dcfea4de7aa7be0e736e30aa02c328c6f794178d5e91', 'source-manifest.json': 'd7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f', 'temporal-binding.mjs': 'a0fbd5f94e93736c1b061a8e2ee9b23f18530f5c97ee123d580f736615f6a2dc'}
 CODE = None # New build recipe is not qualified as historical 0898fadd; shipping must bind it.
 ARCHIVE = 'runtime-source-'+SOURCE[:12]+'.tar.gz'
 ARCHIVE_SHA = '8c110a12036443071030bd0f66ca407310e109c78759e7599daa267e9b969e39'

@@ -186,7 +186,7 @@ test('control emits exactly one budget table proof before its first resource all
  let runtime;
  try{runtime=await startControl(f.configuration,{budgets:testBudgetTable,testOwners:f.owners,turnTelemetry});
   const proofs=lines.filter(line=>line.event==='meri.budget.table');assert.equal(proofs.length,1);
-  assert.deepEqual(proofs[0],{schema:'meri.telemetry/1',event:'meri.budget.table',service:'control',atMs:123,hops:278,tableSha256:hotPathBudgetDigest(testBudgetTable),Service:'control',_aws:{Timestamp:123,CloudWatchMetrics:[]}});
+  assert.deepEqual(proofs[0],{schema:'meri.telemetry/1',event:'meri.budget.table',service:'control',atMs:123,hops:279,tableSha256:hotPathBudgetDigest(testBudgetTable),Service:'control',_aws:{Timestamp:123,CloudWatchMetrics:[]}});
   assert.equal(f.events[0],'budget-proof');assert.ok(f.events.indexOf('budget-proof')<f.events.indexOf('authorization'));
  }finally{await runtime?.close();turnTelemetry.close();}
 });

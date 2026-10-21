@@ -153,8 +153,8 @@ export function createTemporalIssuerEntrypoint({configuration,registrationPool,s
   checkSignal(cancellation.signal);
   const created={};ownedClients=created;
   try{
-   created.ecs=new ECSClient({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request')})});created.ec2=new EC2Client({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request')})});
-   created.kms=new KMSClient({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request')})});
+   created.ecs=new ECSClient({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request'),socketAcquisitionWarningTimeout:fixedHotPathBudget('aws.socketAcquisitionWarning')})});created.ec2=new EC2Client({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request'),socketAcquisitionWarningTimeout:fixedHotPathBudget('aws.socketAcquisitionWarning')})});
+   created.kms=new KMSClient({region,maxAttempts:fixedHotPathBudget('aws.issuer.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request'),socketAcquisitionWarningTimeout:fixedHotPathBudget('aws.socketAcquisitionWarning')})});
   }catch{throw fault();}
   return ownedClients;
  }

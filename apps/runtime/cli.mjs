@@ -126,7 +126,7 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
  }catch(error){process.stderr.write(error?.code==='HOT_PATH_BUDGET_CONFIGURATION'?'HOT_PATH_BUDGET_CONFIGURATION\n':'RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
   if(cleanupUnknown)process.stderr.write('RUNTIME_CLEANUP_UNKNOWN\n');return 3;
- }finally{await controlFetch?.close();controlTurnTelemetry?.close();clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}
+ }finally{controlTurnTelemetry?.close();clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);void controlFetch?.close().catch(()=>{});}
 
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)process.exitCode=await main();

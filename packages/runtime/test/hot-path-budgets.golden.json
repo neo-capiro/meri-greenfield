@@ -24,6 +24,7 @@
     "aws.connection": 0,
     "aws.issuer.attempts": 3,
     "aws.request": 0,
+    "aws.socketAcquisitionWarning": 3000,
     "broker.native.request": 10000,
     "broker.poll": 1000,
     "broker.poll.completionDefer": 21000,
@@ -257,7 +258,7 @@
     "temporal.bootstrap.reserve": 10000,
     "temporal.bootstrap.retry": 2500,
     "temporal.bootstrap.window": 180000,
-    "temporal.connect": 10000,
+    "temporal.connect": null,
     "temporal.control.connect": 30000,
     "temporal.issuer.certificate": 300000,
     "temporal.issuer.challenge": 15000,
@@ -354,6 +355,10 @@
     "aws.request": {
       "file": "apps/runtime/node_modules/@smithy/node-http-handler/dist-cjs/index.js",
       "symbol": "/setRequestTimeout = \\(req, reject, timeoutInMs = (\\d+)/"
+    },
+    "aws.socketAcquisitionWarning": {
+      "file": "apps/runtime/node_modules/@smithy/node-http-handler/dist-cjs/index.js",
+      "symbol": "socketAcquisitionWarningTimeout implicit request fallback + connection fallback (logging only)"
     },
     "broker.native.request": {
       "file": "apps/runtime/temporal-worker.mjs",
@@ -1264,8 +1269,8 @@
       "symbol": "/TEMPORAL_BOOTSTRAP_STARTUP_WINDOW_MS\\s*[:=]\\s*(\\d+)/"
     },
     "temporal.connect": {
-      "file": "apps/runtime/node_modules/@temporalio/client/lib/connection.js",
-      "symbol": "/connectTimeoutMs:[^\\n]+\\?\\? ([\\d_]+)/"
+      "file": "apps/runtime/node_modules/@temporalio/worker/lib/connection-options.d.ts",
+      "symbol": "NativeConnectionOptions: no configurable connect timeout; native default is opaque to JavaScript"
     },
     "temporal.control.connect": {
       "file": "apps/runtime/control.mjs",
@@ -1422,6 +1427,8 @@
   "libraryFiles": {
     "packages/ui-stream/node_modules/undici/lib/core/connect.js": "67956a204fe3982edbf032dd44ff9c1c391daaa85c05e9750d245bdfb2b87fe0",
     "packages/ui-stream/node_modules/undici/lib/dispatcher/client.js": "07529b464fb6be9b42bd4a34d2ea0e090812b237ec3a1f047ab94df052fa428f",
+    "apps/runtime/node_modules/@temporalio/worker/lib/connection-options.d.ts": "1f8d25973b3b6ef115ac8dfb5eea0341736a5f6231cf1e104e264a5ab5f63ddd",
+    "apps/runtime/node_modules/@temporalio/worker/lib/connection.js": "94d8e283a2f86f9739ab27f34ea797b9cf37d104ded5eeb943ddc8d22a69625c",
     "apps/runtime/node_modules/@temporalio/client/lib/connection.js": "507806d4b0c5c23558e40d187bed0b1a3b2bfea86e9f527bfc24922ac3788182",
     "apps/runtime/node_modules/@temporalio/client/lib/grpc-retry.js": "77e176e0d6d75af187c6f85c7907f4c18e8afdc0dd80ea771b64468bbc2fae85",
     "apps/runtime/node_modules/@smithy/core/dist-es/submodules/retry/util-retry/config.js": "f212efaead76bb289cbe9d1f7da1298544a218fe308658d9c412e2a7c32d12b8",

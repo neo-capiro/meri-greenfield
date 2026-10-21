@@ -130,7 +130,7 @@ export function assemblePreparedCandidate(options){
  const productPorts=Object.freeze({identityContext,conversationMembership,conversationCurrentness,...(nextRunOwner?{conversationTurns:nextRunOwner}:{}),
   sdkSessionOwner:Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(method=>[method,sessionCall('sdkSessionOwner',method)]))),
   sdkSessionSnapshot:Object.freeze({readSnapshot:sessionCall('sdkSessionSnapshot','readSnapshot')})});
- return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,productPorts,native:localNative,application,bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){try{await runRegistry?.close();}finally{try{await kickoff.close();}finally{await ownedFetch?.close();if(!supplied.turnTelemetry)turnTelemetry.close();}}}});
+ return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,productPorts,native:localNative,application,bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){try{await runRegistry?.close();}finally{try{await kickoff.close();}finally{if(!supplied.turnTelemetry)turnTelemetry.close();void ownedFetch?.close().catch(()=>{});}}}});
 }
 /** The startup owners handed to assemblePreparedCandidate, the task router and the runner poststart authority. The
  * poststart authority signs runner certificates against the durable run issuer, so `issuer` must travel with the

@@ -25,7 +25,9 @@ const temporal = resolveTemporal(root);
 const temporalEntry = temporal.entry;
 const {bundleWorkflowCode,DefaultLogger}=await import(pathToFileURL(temporalEntry).href);
 const {workerOptions}=await import(root+'/apps/runtime/temporal-worker.mjs');
-const options=workerOptions({configuration:{temporal:{namespace:'synthetic-image-only',taskQueue:'synthetic-image-only'},limits:{shutdownMs:1000}},connection:{},native:{}});
+const {hotPathBudgets}=await import(root+'/packages/runtime/hot-path-budgets.mjs');
+const budgets=hotPathBudgets({limits:{startupMs:30000,shutdownMs:10000,requestMs:25000},runWindowMs:900000});
+const options=workerOptions({budgets,configuration:{temporal:{namespace:'synthetic-image-only',taskQueue:'synthetic-image-only'},limits:{shutdownMs:1000}},connection:{},native:{}});
 let bundle;
 try {bundle=await bundleWorkflowCode({workflowsPath:options.workflowsPath,logger:new DefaultLogger('ERROR',()=>{})});}
 catch(error){

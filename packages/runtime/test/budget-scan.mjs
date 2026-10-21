@@ -130,8 +130,16 @@ export async function checkRegisteredBudgets(root, registry) {
    }
   }
   for(const entry of registry.libraryExceptions??[]){
-   const calls=callExpressions(await read(entry.file),entry.constructor).filter(call=>call.text.includes(entry.anchor));
-   if(entry.scope!=='qualification'||!entry.reason||!entry.anchor||calls.length!==entry.occurrences)failures.push(`${entry.file}: stale or invalid library exception ${entry.constructor}`);
+   const source=withoutComments(await read(entry.file)),calls=callExpressions(source,entry.constructor).filter(call=>call.text.includes(entry.anchor));
+   const native=entry.scope==='sdk-unconfigurable'&&entry.constructor==='NativeConnection.connect'&&entry.hop==='temporal.connect'&&
+    JSON.stringify(entry.forbiddenOptions)===JSON.stringify(['connectTimeout','connectTimeoutMs']);
+   if(!(entry.scope==='qualification'||native)||!entry.reason?.trim()||!entry.anchor||calls.length!==entry.occurrences)failures.push(`${entry.file}: stale or invalid library exception ${entry.constructor}`);
+   if(native)for(const call of calls){
+    const start=entry.optionsSource?source.indexOf(entry.optionsSource.start):-1,end=entry.optionsSource?source.indexOf(entry.optionsSource.end,start):-1;
+    const scope=entry.optionsSource?(start<0||end<0?'':source.slice(start,end+entry.optionsSource.end.length)):call.text;
+    if(!scope||entry.optionsSource&&!call.text.includes(entry.optionsSource.argument))failures.push(`${entry.file}:${call.line}: native connection options cannot be traced`);
+    for(const option of entry.forbiddenOptions)if(new RegExp(`\\b${escaped(option)}['\"]?\\s*:`,'u').test(scope))failures.push(`${entry.file}:${call.line}: ${entry.constructor}.${option} is unsupported by the pinned worker SDK`);
+   }
   }
  }
  for(const entry of registry.libraries??[]){

@@ -30,7 +30,8 @@ export function createRunnableNativeRuntime(configuration){
    let native,closeNative;
    try{native=c.nativeFactory({original,launchConfiguration:compiled.launchConfiguration,metadata});if(types.isPromise(native)){void Promise.prototype.then.call(native,late=>{try{return storageMethod(late,'close')();}catch{}},()=>{}).catch(()=>{});throw executionFault('STACK_CONFIGURATION');}closeNative=storageMethod(native,'close');
     const tasksFactory=createAdmittedEcsTaskFactory({client:c.client,native,metadata,allocationJson:c.allocationJson,grantFactsJsons,grantId:c.grantId,enabled,now,maxRequestMs:limits.maxRequestMs});
-    const stack=createNativeBrokerStack({budgets:c.budgets,pool:c.pool,supervisor,runtime:compiled.runtime,plan:ownerPlan,launchConfiguration:compiled.launchConfiguration,taskCapability:c.taskCapability,controlCapabilitySha256:c.controlCapabilitySha256,tasksFactory,enabled,now,maxRequestMs:limits.maxRequestMs,...(objects?{continuationObjects:objects}:{})});
+    // The admitted owner already has its request cap; broker task defaults are not admitted-factory inputs.
+    const stack=createNativeBrokerStack({budgets:c.budgets,pool:c.pool,supervisor,runtime:compiled.runtime,plan:ownerPlan,launchConfiguration:compiled.launchConfiguration,taskCapability:c.taskCapability,controlCapabilitySha256:c.controlCapabilitySha256,tasksFactory:({original,launchConfiguration})=>tasksFactory({original,launchConfiguration}),enabled,now,maxRequestMs:limits.maxRequestMs,...(objects?{continuationObjects:objects}:{})});
     if(hash(stack.original)!==hash(original))throw executionFault('STACK_CONFIGURATION');return {...stack,async close(){try{await stack.close();}finally{await closeNative();}}};
    }catch(error){void supervisor.close().catch(()=>{});if(closeNative)void Promise.resolve().then(closeNative).catch(()=>{});throw error;}
   }});

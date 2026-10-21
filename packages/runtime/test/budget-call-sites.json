@@ -760,22 +760,6 @@
       ]
     },
     {
-      "file": "apps/runtime/temporal-worker.mjs",
-      "constructor": "NativeConnection.connect",
-      "occurrences": 1,
-      "options": [
-        "connectTimeout"
-      ],
-      "optionsSource": {
-        "start": "connection=await (owners.connect",
-        "end": "});checkAuthorization();",
-        "argument": "options"
-      },
-      "hops": {
-        "connectTimeout": "temporal.connect"
-      }
-    },
-    {
       "file": "apps/runtime/hot-path-transports.mjs",
       "constructor": "Agent",
       "occurrences": 1,
@@ -796,11 +780,13 @@
       "occurrences": 1,
       "options": [
         "connectionTimeout",
-        "requestTimeout"
+        "requestTimeout",
+        "socketAcquisitionWarningTimeout"
       ],
       "hops": {
         "connectionTimeout": "aws.connection",
-        "requestTimeout": "aws.request"
+        "requestTimeout": "aws.request",
+        "socketAcquisitionWarningTimeout": "aws.socketAcquisitionWarning"
       }
     },
     {
@@ -931,17 +917,6 @@
       ]
     },
     {
-      "file": "apps/runtime/schedule-worker.mjs",
-      "constructor": "NativeConnection.connect",
-      "occurrences": 1,
-      "options": [
-        "connectTimeout"
-      ],
-      "hops": {
-        "connectTimeout": "temporal.connect"
-      }
-    },
-    {
       "file": "apps/runtime/schedule-service.mjs",
       "constructor": "Pool",
       "occurrences": 1,
@@ -987,8 +962,12 @@
       "occurrences": 3,
       "options": [
         "connectionTimeout",
-        "requestTimeout"
-      ]
+        "requestTimeout",
+        "socketAcquisitionWarningTimeout"
+      ],
+      "tableExpressions": {
+        "socketAcquisitionWarningTimeout": "fixedHotPathBudget('aws.socketAcquisitionWarning')"
+      }
     },
     {
       "file": "apps/runtime/native-authority/runner-tls-client.mjs",
@@ -1048,6 +1027,37 @@
       "scope": "qualification",
       "anchor": "s=>s.pipe(s)",
       "reason": "egressLoopbackSelfTest creates an echo fixture on loopback for qualification; no product request listener."
+    },
+    {
+      "file": "apps/runtime/temporal-worker.mjs",
+      "constructor": "NativeConnection.connect",
+      "occurrences": 1,
+      "optionsSource": {
+        "start": "connection=await (owners.connect",
+        "end": "});checkAuthorization();",
+        "argument": "options"
+      },
+      "scope": "sdk-unconfigurable",
+      "anchor": "options",
+      "hop": "temporal.connect",
+      "forbiddenOptions": [
+        "connectTimeout",
+        "connectTimeoutMs"
+      ],
+      "reason": "@temporalio/worker 1.24.0 NativeConnectionOptions exposes no connect timeout; sdk-core owns the native default and JavaScript connectTimeout is dropped."
+    },
+    {
+      "file": "apps/runtime/schedule-worker.mjs",
+      "constructor": "NativeConnection.connect",
+      "occurrences": 1,
+      "scope": "sdk-unconfigurable",
+      "anchor": "address:configuration.temporal.address",
+      "hop": "temporal.connect",
+      "forbiddenOptions": [
+        "connectTimeout",
+        "connectTimeoutMs"
+      ],
+      "reason": "@temporalio/worker 1.24.0 NativeConnectionOptions exposes no connect timeout; sdk-core owns the native default and JavaScript connectTimeout is dropped."
     }
   ]
 }

@@ -248,7 +248,7 @@ const HOP_DEFINITIONS={
  ...Object.fromEntries(Object.entries(RUNNER_SESSION_RPC_MS).flatMap(([operation,ms])=>[
   ['runner.session.'+operation,nested(ms,'request')],['control.session.'+operation,nested(controlSessionRpcMs(operation),'runner.session.'+operation)],
  ])),
- 'runner.session.store':fixed(RUNNER_SESSION_STORE_CALL_MS),
+ 'runner.session.store':{kind:'serial',parent:'turn',ms:RUNNER_SESSION_STORE_CALL_MS,children:['runner.session.load','runner.session.append'],reason:'The SDK bound-store append may first load a subpath, then append; both RPCs run within its 15 s call and the active turn.'},
  'control.capture':nested(CONTROL_CHECKPOINT_CAPTURE_MS,'runner.call.load'),
  'control.capture.channel':nested(CONTROL_CAPTURE_CHANNEL_MS,'control.capture'),
  'router.capture':nested(TASK_ROUTER_CAPTURE_MS,'control.capture.channel'),
@@ -277,7 +277,7 @@ const HOP_DEFINITIONS={
  'runner.bootstrap.files.request':fixed(5000), 'runner.poststart.bootstrap':fixed(20000), 'runner.poststart.step':fixed(3000),
  'runner.poststart.pending.poll':fixed(250), 'runner.poststart.challenge.ceiling':fixed(15000),
  'runner.poststart.transport.request':fixed(3000), 'runner.poststart.exchange.request':fixed(3000), 'runner.poststart.metadata.read':fixed(2000),
- 'runner.task.bootstrap.poll':fixed(100), 'temporal.connect':library(10000,'startup','Connect default'),
+ 'runner.task.bootstrap.poll':fixed(100), 'temporal.connect':fixed(null,{kind:'library',sdkOwned:true,configurable:false,owner:'sdk-core',reason:'Worker NativeConnection has no configurable connect timeout; sdk-core owns the native default, which the JavaScript options do not expose.'}),
  'worker.shutdown.grace':fixed(({limits})=>limits.shutdownMs), 'worker.shutdown.force':fixed(({limits})=>limits.shutdownMs+1000),
  'owner.startup.pair.window':fixed(180000), 'owner.startup.pair.retry':fixed(2500), 'owner.startup.pair.settle':fixed(1000),
  'owner.startup.pair.watchdog':fixed(200000), 'owner.request':fixed(({ownerRequestMs})=>ownerRequestMs),
@@ -296,6 +296,7 @@ const HOP_DEFINITIONS={
  'fetch.body':library(300000,'request','Request signal'),
  'aws.connection':unbounded('request','Request signal'),
  'aws.request':unbounded('request','Request signal'),
+ 'aws.socketAcquisitionWarning':fixed(3000,{kind:'derived',reason:'Smithy socket pool warning delay only; preserves the implicit 2000 + 1000 ms logging threshold and does not bound an operation.'}),
  'aws.attempts':library(1,'request','Retry default',{unit:'count'}),
  ...Object.fromEntries(['control','owner'].flatMap(role=>['statement','lock','idleInTransaction'].map(kind=>['pg.'+role+'.'+kind,unbounded(role==='owner'?'owner.request':'request','Operation signal')]))),
  'native.allocator.startup':fixed(180000), 'native.release.request':fixed(10000), 'native.replay.minAttempt':fixed(1000),
@@ -403,7 +404,109 @@ const NESTED_PARENTS={
  "owner.startup.pair.retry": "owner.startup.pair.window",
  "proxy.startup.pair.retry": "proxy.startup.pair.window"
 };
+const AUDITED_NESTING={
+ "workflow.recovery.retry.maximum":["workflow.recovery.scheduleToClose","Temporal maximum backoff runs between recovery attempts inside their schedule-to-close window."],
+ "workflow.recovery.retry.initial":["workflow.recovery.scheduleToClose","Temporal initial backoff runs between recovery attempts inside their schedule-to-close window."],
+ "conversation.http.request": [
+  "request",
+  "Control HTTP handling encloses the conversation submit/history/cancel lifetime and forwards the request signal."
+ ],
+ "authority.gateway.request": [
+  "request",
+  "Control HTTP handling encloses general-read dispatch; its 30 s cap can outlast the 25 s request and is cut short by that signal."
+ ],
+ "conversation.retention.inventory": [
+  "request",
+  "Control retention discovery passes the serving request signal into the bounded inventory scan."
+ ],
+ "native.pinned.transport": [
+  "request",
+  "The pinned HTTPS transport is called by capability clients with their request AbortSignal; its 30 s socket ceiling is not a separate lifetime."
+ ],
+ "browser.action": [
+  "turn",
+  "Playwright action timeouts run only while the conversation owns the browser and its turn-bound egress grant."
+ ],
+ "browser.navigation": [
+  "turn",
+  "Playwright navigation runs within the conversation browser lifetime; the turn owner revokes egress and closes the query."
+ ],
+ "intents.snapshot": [
+  "request",
+  "Availability reads carry their caller signal during setup and per-tool rechecks; the 3 s snapshot is a request child."
+ ],
+ "reads.snapshot": [
+  "request",
+  "Availability reads carry their caller signal during setup and per-tool rechecks; the 3 s snapshot is a request child."
+ ],
+ "browser.cleanup.default": [
+  "browser.cleanup.settle",
+  "cleanupConversation awaits browserRun.settle under the 131 s cleanup wait; the lifecycle default owns 30 s within it."
+ ],
+ "egress.idle": [
+  "turn",
+  "Each run-owned proxy socket has an idle timeout while the grant expiry and run/host cancellation close the proxy."
+ ],
+ "objective.runtime.request": [
+  "turn",
+  "Objective prepare and result capture use the smaller of their 3 s cap and the caller original/turn deadline."
+ ],
+ "intents.availability": [
+  "request",
+  "The control intent mount is called through HTTP with the request signal; its 30 s cap can exceed the enclosing 25 s request."
+ ],
+ "native.gateway.read.request": [
+  "request",
+  "The control native gateway forwards availability reads within the incoming HTTP request signal."
+ ],
+ "native.tls.exchange": [
+  "native.transport.request",
+  "Task-router send runs inside the forwarding lifetime (ordinary native transport request; longer prepare/start/capture variants also cap it)."
+ ],
+ "native.read.observation": [
+  "request",
+  "The mode observation reader receives the execution caller deadline and signal through the control reads owner; the 3 s core-client cap is not a separate enclosing operation."
+ ],
+ "temporal.issuer.settlement": [
+  "temporal.issuer.retirement",
+  "The issuer CLI retirement lifetime encloses entrypoint.close, whose individual child settlement waits are 2.5 s."
+ ],
+ "temporal.issuer.registration.cleanup": [
+  "request",
+  "Despite its historical name this is the 2 s pool-borrow wait during a registration transaction, with the issuer request signal."
+ ],
+ "temporal.issuer.http.close": [
+  "temporal.issuer.settlement",
+  "Entrypoint closeChild(service) waits 2.5 s while service.close waits up to 2 s for the listener."
+ ],
+ "runtime.original.reconcile": [
+  "workflow.recovery.startToClose",
+  "The recovery activity has a 20 s Temporal attempt around createReconcileActivity's 15 s owner; the one-shot CLI uses the same cap."
+ ],
+ "proxy.bootstrap": [
+  "proxy.connection",
+  "ASGI admission occurs after the TLS connection arrival timestamp; the existing 35 s bootstrap is inside its 900 s connection lifetime."
+ ],
+ "workflow.conversation.heartbeat": [
+  "workflow.conversation.startToClose",
+  "Temporal heartbeat timeout belongs to the executeConversation activity attempt, whose start-to-close limit is 30 minutes."
+ ],
+ "workflow.recovery.startToClose": [
+  "workflow.recovery.scheduleToClose",
+  "Temporal limits each recovery attempt to 20 s inside its 4 minute schedule-to-close retry window."
+ ]
+};
 const DERIVED_REASONS={
+ "runner.session.cleanup":"Historical 1 s helper default; production createOwnedRuntimeSdkSession explicitly supplies the shutdown root, so this row does not start a separate cleanup timer.",
+ "objective.lifecycle.poll":"Durable workflow condition wait interval between activity calls; input.notAfterMs/effect expiry are dynamic, not a fixed enclosing request hop.",
+ "objective.lifecycle.retry":"Durable workflow retry delay between separate activity calls; not a timeout enclosing those activities.",
+ "temporal.token.disabled.refresh":"Inert validated placeholder when the token writer is disabled; no refresh timer or operation is started.",
+ "temporal.token.disabled.request":"Inert validated placeholder when the token writer is disabled; no request or timeout is started.",
+ "native.allocator.settle":"Containment polling allowance added to native.allocator.request for the fresh stop operation; not an independent operation timeout.",
+ "host.expiry.tick":"Maximum observation tick; each wait is shortened to the dynamically issued host/run expiry and ends on cancellation.",
+ "owner.startup.pair.settle":"Additive settlement slack on one startup pair read (maxRequestMs + 1 s), inside the owner startup watchdog; not a separate timer lifetime.",
+ "proxy.owner.settle":"Additive synchronous future settlement slack after the owner request deadline; not an independently started operation.",
+ "workflow.schedule.settle":"Durable workflow sleep between completed/unknown activity attempts; the schedule wrapper has no fixed end-to-end timeout.",
  "memory.request.max":"Request ceiling",
  "settings.tenant.request.max":"Request ceiling",
  "settings.user.request.max":"Request ceiling",
@@ -493,234 +596,136 @@ const LIBRARY_OWNERS={
  ]
 };
 const INDEPENDENT_OWNERS={
- "reads.snapshot":["reads.availability-snapshot","Before SDK"],
- "intents.snapshot":["intents.availability-snapshot","Before SDK"],
  "runtime.shutdown.watchdog": [
-  "runtime.shutdown",
-  "Shutdown grace"
- ],
- "conversation.http.request": [
-  "conversation.http",
-  "Request owner"
- ],
- "authority.gateway.request": [
-  "gateway.dispatch",
-  "Dispatch owner"
+  "runtime.process-exit",
+  "CLI process-exit backstop starts on termination outside the cancelled runtime; no request or turn encloses this watchdog."
  ],
  "authority.gateway.cleanup": [
   "gateway.cleanup",
-  "After dispatch"
+  "Gateway dispatch finally starts a fresh cleanup lifetime after its request closes; the expired dispatch signal is deliberately not inherited."
  ],
- "conversation.retention.inventory": [
-  "retention.inventory",
-  "Discovery owner"
- ],
- "objective.lifecycle.poll": [
-  "objective.lifecycle",
-  "Durable poll"
- ],
- "objective.lifecycle.retry": [
-  "objective.lifecycle",
-  "Durable retry"
+ "native.execution.cleanup": [
+  "intent.execution-cleanup",
+  "Durable command execution cleanup starts a fresh lifetime after dispatch fails or expires; no live request signal encloses settlement."
  ],
  "temporal.bootstrap.window": [
-  "temporal.bootstrap",
-  "Before service"
+  "temporal.bootstrap-command",
+  "The pre-service bootstrap command owns its whole retry window before runtime construction; runtime startupMs does not enclose it."
  ],
  "temporal.issuer.retirement": [
-  "temporal.issuer.retirement",
-  "After service"
+  "temporal.issuer-retirement",
+  "CLI retirement starts after aborting issuer startup/service and owns fresh cleanup; no live service request or startup deadline encloses it."
  ],
  "retention.journal.request": [
-  "retention.journal",
-  "Journal owner"
+  "retention.journal-wait",
+  "Each pool lease/statement wait has a fresh deadline, including offline recovery and unlock/rollback; the journal has no overall bounded transaction or enclosing request signal."
  ],
  "retention.ledger.head": [
-  "retention.ledger",
-  "Storage owner"
+  "retention.ledger-head",
+  "Ledger head creates its own lifetime for startup/recovery and readiness verification; those owners do not impose a common outer timed hop or forward a signal."
  ],
  "retention.storage.request": [
-  "retention.storage",
-  "Storage owner"
+  "retention.version-storage",
+  "Source-qualified retention storage starts a fresh timer per head/delete; the purge/recovery coordinator has no enclosing operation deadline, and live purge is disabled."
  ],
- "native.pinned.transport": [
-  "native.transport",
-  "Request signal"
- ],
- "browser.action": [
-  "browser.action",
-  "Action owner"
- ],
- "browser.navigation": [
-  "browser.navigation",
-  "Navigation owner"
+ "sandbox.cleanup": [
+  "sandbox.probe-retirement",
+  "Readiness cancels its SDK startup timer before closing the query and awaiting its consumer with a fresh cleanup timer; no active startup deadline encloses it."
  ],
  "host.teardown.local": [
-  "host.teardown.local",
-  "After turn"
+  "host.local-retirement",
+  "The source-qualified host teardown starts its local deadline after run cancellation, without the cancelled run signal or any outer cleanup timer."
  ],
  "host.teardown.host": [
-  "host.teardown.host",
-  "After local stop"
- ],
- "objective.runtime.request": [
-  "objective.runtime",
-  "Result owner"
+  "host.physical-retirement",
+  "Host destruction starts a fresh deadline after local cleanup completes or expires; the local phase cannot cancel this backstop."
  ],
  "sandbox.deadline": [
-  "sandbox.sdk-startup",
-  "After probes"
+  "sandbox.sdk-probe",
+  "The readiness CLI/source-qualified host probe starts this timer after namespace probes; no runtime preparation timer is composed around these entrypoints."
  ],
  "sandbox.probe": [
   "sandbox.namespace-probe",
-  "Before SDK"
- ],
- "sandbox.cleanup": [
-  "sandbox.cleanup",
-  "After SDK"
- ],
- "browser.cleanup.default": [
-  "browser.cleanup",
-  "After query"
+  "Each namespace subprocess is timed before probeSdkSandboxStartup starts its deadline; the readiness CLI has no enclosing operation timer."
  ],
  "browser.cleanup.settle": [
-  "conversation.browser-cleanup",
-  "Cleanup grace"
- ],
- "egress.idle": [
-  "egress.connection",
-  "Socket idle"
- ],
- "intents.availability": [
-  "intents.availability",
-  "Snapshot owner"
+  "conversation.browser-retirement",
+  "Conversation finally grants browser settlement its fresh 131 s wait after the query/turn is stopped; no live turn deadline encloses that cleanup wait."
  ],
  "material.initialize.request": [
-  "material.initialize",
-  "Before runtime"
- ],
- "temporal.token.disabled.refresh": [
-  "temporal.disabled-token",
-  "Inert interval"
- ],
- "temporal.token.disabled.request": [
-  "temporal.disabled-token",
-  "Inert request"
- ],
- "native.gateway.read.request": [
-  "native.gateway.read",
-  "Request owner"
- ],
- "native.tls.exchange": [
-  "native.tls.exchange",
-  "TLS owner"
- ],
- "native.allocator.settle": [
-  "native.allocator.containment",
-  "After task stop"
- ],
- "native.read.observation": [
-  "native.read.observation",
-  "Read owner"
- ],
- "host.expiry.tick": [
-  "host.expiry-observer",
-  "Dynamic lease"
- ],
- "temporal.issuer.settlement": [
-  "temporal.issuer.settlement",
-  "After shutdown"
- ],
- "temporal.issuer.registration.cleanup": [
-  "temporal.issuer.registration-cleanup",
-  "After register"
- ],
- "temporal.issuer.http.close": [
-  "temporal.issuer.http-close",
-  "After requests"
- ],
- "runner.session.store": [
-  "runner.session.store",
-  "Load then append"
+  "material.init-delivery",
+  "The one-shot init-container command bounds delivery before a runtime is created; no runtime startup or request lifetime encloses the material fetch."
  ],
  "runner.startup.catchCleanup": [
-  "runner.startup.catch-cleanup",
-  "Before publish"
+  "runner.failed-startup-cleanup",
+  "The activity catch path gives query close a fresh wait after the failed startup/turn lifetime; later publication and final cleanup have separately reserved time."
  ],
  "owner.startup.pair.watchdog": [
-  "owner.startup",
-  "Before turn"
+  "owner.process-startup",
+  "The executable watchdog surrounds config, material, pair discovery and listen before serving; no request or runtime startup hop encloses this process-level owner."
  ],
  "owner.request": [
   "owner.https-request",
-  "Request owner"
+  "The separate owner HTTPS service starts this request lifetime at ingress; a control request/turn does not own or enclose the owner server request."
  ],
  "owner.shutdown.watchdog": [
-  "owner.shutdown",
-  "Shutdown grace"
- ],
- "owner.startup.pair.settle": [
-  "owner.pair-attempt-settlement",
-  "After request"
- ],
- "proxy.bootstrap": [
-  "proxy.request-bootstrap",
-  "Before request"
+  "owner.process-exit",
+  "The executable starts this exit backstop after stopping the owner service; no live owner request or startup lifetime encloses it."
  ],
  "proxy.connection": [
-  "proxy.connection",
-  "Connection owner"
+  "proxy.tls-connection",
+  "The TLS protocol timestamps a newly accepted connection before request admission; no request or turn exists yet to enclose its maximum age."
  ],
  "proxy.request.cleanup": [
-  "proxy.request-cleanup",
-  "After expiry"
- ],
- "proxy.owner.settle": [
-  "proxy.owner-settlement",
-  "After request"
+  "proxy.request-retirement",
+  "RequestLifetime.close first denies/cancels the request, then asyncio.wait gets a fresh 26 s timeout; the expired request deadline does not enclose this quarantine wait."
  ],
  "native.independent.close": [
-  "native.supervisor-close",
-  "After task stop"
+  "native.supervisor-retirement",
+  "Supervisor close uses bounded(undefined, ...) after cancellation/lease expiry, with separate graceful and forced waits; no live task request signal encloses them."
  ],
  "native.prepared.cleanup": [
-  "native.prepared-cleanup",
-  "After failure"
- ],
- "runtime.original.reconcile": [
-  "original.reconcile",
-  "After lost run"
+  "native.prepared-retirement",
+  "Prepared kickoff close aborts startup then creates a fresh 30 s lifetime for allocation settlement/controller close, without the cancelled caller signal."
  ],
  "activity.cleanup.attempt": [
-  "activity.cleanup",
-  "After activity"
- ],
- "runner.session.cleanup": [
-  "runner.session-cleanup",
-  "After run"
+  "activity.resource-retirement",
+  "Conversation finally attempts each resource close with a fresh 3 s lifetime after the turn is stopped; no single active turn/request deadline encloses those attempts."
  ],
  "proxy.native.stop": [
-  "proxy.native-stop",
-  "After request"
+  "proxy.native-retirement",
+  "The native context exit runs in finally with a fresh bounded wait after service operation cancellation; no live request lifetime encloses it."
  ],
  "proxy.resources.close": [
-  "proxy.resources-close",
-  "After request"
- ],
- "native.execution.cleanup": [
-  "native.execution-cleanup",
-  "After dispatch"
+  "proxy.process-retirement",
+  "Executable finally retires clients/transports after cancelling its service operation; this process resource wait has no enclosing live request deadline."
  ],
  "continuation.cleanup.ack": [
-  "continuation.cleanup-ack",
-  "Terminal cleanup"
+  "continuation.terminal-ack",
+  "Lifecycle finish acknowledges pending controls with a fresh 100 ms lifetime after aborting the polling/turn signal; no live polling deadline encloses it."
+ ],
+ "workflow.conversation.startToClose": [
+  "temporal.conversation-attempt",
+  "Temporal owns the durable activity attempt before and beyond the runner turn, including kickoff/poll/cleanup; there is no enclosing fixed workflow timeout."
+ ],
+ "workflow.recovery.scheduleToClose": [
+  "temporal.recovery-window",
+  "Temporal owns the recovery retry window after a lost conversation activity; the workflow has no enclosing fixed timeout and the lost turn may already be expired."
+ ],
+ "workflow.objective.startToClose": [
+  "temporal.objective-attempt",
+  "Temporal bounds one objective lifecycle activity attempt; the durable driver spans multiple attempts and has dynamic input expiry rather than a fixed enclosing hop."
+ ],
+ "workflow.schedule.startToClose": [
+  "temporal.schedule-attempt",
+  "Temporal bounds each schedule dispatch/reconcile/cancel activity; the durable wrapper remains open across attempts and sleeps without a fixed enclosing timeout."
  ]
 };
 function ownedHop(id,row){
+ if(AUDITED_NESTING[id]){const [parent,reason]=AUDITED_NESTING[id];return {...row,kind:'nested',parent,reason};}
  if(NESTED_PARENTS[id])return {...row,kind:'nested',parent:NESTED_PARENTS[id]};
  if(DERIVED_REASONS[id])return {...row,kind:'derived',reason:DERIVED_REASONS[id]};
  if(LIBRARY_OWNERS[id]){const [boundedBy,reason]=LIBRARY_OWNERS[id];return {...row,kind:'library',boundedBy,reason};}
- if(id.startsWith('workflow.'))return {...row,kind:'independent',owner:'temporal.workflow-policy',reason:'Durable policy'};
  if(INDEPENDENT_OWNERS[id]){const [owner,reason]=INDEPENDENT_OWNERS[id];return {...row,kind:'independent',owner,reason};}
  if(row.kind==='independent')throw Error('Unclassified budget owner: '+id);
  return row;
@@ -729,8 +734,18 @@ export const HOP=freeze(Object.fromEntries(Object.entries(HOP_DEFINITIONS).map((
 
 export const WORKFLOW_BUDGETS=freeze(Object.fromEntries(Object.entries(HOP).filter(([id])=>id.startsWith('workflow.')).map(([id,row])=>[id,row.duration])));
 
-const exception=(hop,rule,removedBy,reason)=>({hop,rule,removedBy,reason,recordedAt:'2026-10-21'});
+const exception=(hop,rule,removedBy,reason,limits={})=>({hop,rule,removedBy,reason,recordedAt:'2026-10-21',...limits});
 export const HOT_PATH_BUDGET_EXCEPTIONS=freeze([
+ exception('authority.gateway.request','nested-margin','P6','The read-dispatch cap exceeds control HTTP; request cancellation remains the effective outer bound.',{parent:'request',maxChildMs:30000,minParentMs:25000}),
+ exception('authority.gateway.request','adr-margin','P6','The read-dispatch cap exceeds control HTTP; request cancellation remains the effective outer bound.'),
+ exception('native.pinned.transport','nested-margin','P6','The pinned socket ceiling exceeds the capability request; the supplied request signal aborts the transport first.',{parent:'request',maxChildMs:30000,minParentMs:25000}),
+ exception('native.pinned.transport','adr-margin','P6','The pinned socket ceiling exceeds the capability request; the supplied request signal aborts the transport first.'),
+ exception('intents.availability','nested-margin','P6','Intent availability retains its 30 s cap inside control HTTP and inherits request cancellation.',{parent:'request',maxChildMs:30000,minParentMs:25000}),
+ exception('intents.availability','adr-margin','P6','Intent availability retains its 30 s cap inside control HTTP and inherits request cancellation.'),
+ exception('native.tls.exchange','nested-margin','P5','TLS send retains its 30 s ceiling inside task-router forwarding; the forwarding signal and candidate expiry cut it short.',{parent:'native.transport.request',maxChildMs:30000,minParentMs:8000}),
+ exception('native.tls.exchange','adr-margin','P5','TLS send retains its 30 s ceiling inside task-router forwarding; the forwarding signal and candidate expiry cut it short.'),
+ exception('temporal.issuer.http.close','nested-margin','P5','Issuer service listener close retains only 500 ms before entrypoint child settlement expires.',{parent:'temporal.issuer.settlement',maxChildMs:2000,minParentMs:2500}),
+ exception('temporal.issuer.http.close','adr-margin','P5','Issuer service listener close retains only 500 ms before entrypoint child settlement expires.'),
  exception('core.request','shared-deadline','P6','Core 25 s allowance shares the enclosing 25 s request and AbortSignal; P6 removes per-hop Core calls.'),
  exception('native.client.startup','adr-margin','P5','Startup client keeps 23 s within the existing 25 s request root.'),
  exception('runner.checkpoint.complete','adr-margin','P2','23 s completion inside 25 s keeps the existing 2 s margin.'),
@@ -752,8 +767,14 @@ export const HOT_PATH_BUDGET_EXCEPTIONS=freeze([
 const refuse=(hop,parent,reason)=>{throw Object.assign(new TypeError('HOT_PATH_BUDGET_CONFIGURATION: '+hop+(parent?' inside '+parent:'')+' ('+reason+')'),{code:'HOT_PATH_BUDGET_CONFIGURATION',hop,parent});};
 const valueAt=(table,id)=>table.hops?.[id]??table.roots?.[id];
 const scalar=(value,hop)=>{if(!Number.isSafeInteger(value)||value<0)refuse(hop,undefined,'expected a nonnegative safe integer');return value;};
-export function fixedHotPathBudget(id){const hop=HOP[id];if(!hop||typeof hop.ms==='function')refuse(id,undefined,'fixed preconfiguration hop required');return hop.ms;}
-export function budget(table,id){const hop=valueAt(table,id);if(!hop)refuse(id,undefined,'unknown hop');return hop.ms;}
+export function fixedHotPathBudget(id){const hop=HOP[id];if(!hop||typeof hop.ms==='function'||hop.ms===null)refuse(id,undefined,'fixed preconfiguration hop required');return hop.ms;}
+export function budget(table,id){const hop=valueAt(table,id);if(!hop)refuse(id,undefined,'unknown hop');if(hop.ms===null)refuse(id,undefined,'sdk-owned timeout has no numeric budget');return hop.ms;}
+
+// Exceptions are code-owned, bounded to the reviewed existing child/parent values, and never read from rendered input.
+function admitsPreservedMargin(id,hop,table){
+ const row=HOT_PATH_BUDGET_EXCEPTIONS.find(row=>row.hop===id&&row.rule==='nested-margin');
+ return row?.parent===hop.parent&&hop.ms<=row.maxChildMs&&budget(table,hop.parent)>=row.minParentMs;
+}
 
 /** Validate the rendered table as well as locally derived tables; consumers must refuse before opening listeners. */
 export function assertHotPathBudgets(table){
@@ -764,14 +785,18 @@ export function assertHotPathBudgets(table){
  for(const id of ['turn','startup','shutdown','request','original']){const root=table.roots[id];if(!root||scalar(root.ms,id)<1)refuse(id,undefined,'missing positive root');}
  for(const [id,hop] of Object.entries(table.hops)){
   if(!hop||!['nested','serial','background','derived','library','independent'].includes(hop.kind))refuse(id,hop?.parent,'unknown kind');
-  if(Array.isArray(hop.ms)){for(const ms of hop.ms)scalar(ms,id);}else scalar(hop.ms,id);
+  if(id==='temporal.connect'){
+   if(hop.kind!=='library'||hop.ms!==null||hop.sdkOwned!==true||hop.configurable!==false||hop.owner!=='sdk-core'||hop.parent!==undefined||hop.boundedBy!==undefined||hop.unbounded!==undefined||typeof hop.reason!=='string'||!hop.reason.trim())refuse(id,undefined,'native connect timeout is opaque and not configurable');
+  }else if(Array.isArray(hop.ms)){for(const ms of hop.ms)scalar(ms,id);}else scalar(hop.ms,id);
   if(hop.inherits&&hop.ms!==budget(table,hop.inherits))refuse(id,hop.inherits,'shared deadline must equal its owning bound');
   if(hop.kind==='independent'&&(Array.isArray(hop.ms)||hop.ms<1||typeof hop.owner!=='string'||!hop.owner.trim()||typeof hop.reason!=='string'||!hop.reason.trim()))refuse(id,hop.parent,'independent lifetime requires a positive duration, owner and reason');
   if(hop.kind==='derived'&&(typeof hop.reason!=='string'||!hop.reason.trim()))refuse(id,hop.parent,'derived metadata requires its bound or validation meaning');
   if(hop.unbounded&&(!hop.boundedBy||!valueAt(table,hop.boundedBy)||typeof hop.reason!=='string'||!hop.reason.trim()))refuse(id,hop.boundedBy,'unbounded entries require an owner and reason');
   if(hop.parent&&!valueAt(table,hop.parent))refuse(id,hop.parent,'unknown parent');
-  if(hop.kind==='nested'){
-   if(!hop.parent||Array.isArray(hop.ms)||hop.ms>budget(table,hop.parent)-HOT_PATH_BUDGET_MARGIN_MS)refuse(id,hop.parent,'nested margin');
+  // Rendered metadata cannot relabel a child or choose a larger parent to evade containment.
+  if(HOP[id]&&(hop.kind!==HOP[id].kind||hop.parent!==HOP[id].parent))refuse(id,hop.parent,'canonical lifetime classification required');
+  if(hop.kind==='nested'||hop.kind==='serial'&&hop.parent){
+   if(!hop.parent||Array.isArray(hop.ms)||hop.ms>budget(table,hop.parent)-HOT_PATH_BUDGET_MARGIN_MS&&!admitsPreservedMargin(id,hop,table))refuse(id,hop.parent,'nested margin');
   }
   if(hop.kind==='serial'){
    if(!Array.isArray(hop.children)||!hop.children.length)refuse(id,hop.parent,'serial children required');

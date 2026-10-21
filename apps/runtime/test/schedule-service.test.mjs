@@ -21,6 +21,7 @@ function reset(){
  return state;
 }
 reset();
+mock.module('undici',{namedExports:{Agent:class{close(){return state.transportDrain?.()??Promise.resolve();}}}});
 mock.module('pg',{namedExports:{Pool:class{constructor(options){state.events.push('pool-create');state.poolOptions=options;if(!state.pool)throw Error('Synthetic pool boundary not supplied');return state.pool;}}}});
 mock.module('@temporalio/client',{namedExports:{WorkflowNotFoundError,WorkflowIdReusePolicy,WorkflowIdConflictPolicy,
  Connection:{async connect(options){state.events.push('client-connect');state.clientOptions=options;return {withDeadline:(_deadline,fn)=>fn(),withAbortSignal:(_signal,fn)=>fn(),async close(){state.events.push('client-close');}};}},
@@ -316,4 +317,22 @@ test('failed JS client construction closes its allocated connection and pool bef
  const {pool,client,...owners}=x.runtimePorts;
  await assert.rejects(startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:owners}),{code:'SCHEDULE_SERVICE_STARTUP_FAILED'});
  assert.equal(x.sql.ends,1);assert.deepEqual(state.events.slice(-2),['client-close','pool-end']);assert.equal(state.events.includes('poller-connect'),false);
+});
+
+
+test('schedule shutdown preserves its original cleanup when the new HTTP dispatcher drain is pending or rejects',async t=>{
+ for(const mode of ['pending','rejected'])await t.test(mode,async t=>{
+  const x=await actualComposition(t);reset();
+  const service=await startScheduleWorker(configuration,{runtimePorts:x.runtimePorts});
+  const drain=Promise.withResolvers();
+  state.transportDrain=()=>{state.events.push('dispatcher-close');return mode==='pending'?drain.promise:Promise.reject(Error('SYNTHETIC_DISPATCHER_DRAIN_FAILURE'));};
+  const closing=service.close();
+  try{
+   const completed=await Promise.race([closing.then(()=>true),new Promise(resolve=>setImmediate(()=>resolve(false)))]);
+   assert.equal(completed,true,'new dispatcher draining must neither hold nor fail schedule shutdown');
+   assert.ok(state.events.indexOf('dispatcher-close')>state.events.indexOf('poller-close'));
+   assert.equal(state.events.filter(event=>event==='dispatcher-close').length,1);
+   assert.equal(x.sql.ends,0,'borrowed pool stays with its owner');
+  }finally{drain.resolve();await closing;}
+ });
 });
