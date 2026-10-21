@@ -27,7 +27,7 @@ export function createBrowserHostRuntimePort(raw){
   binding=data(c.binding);validateShape('RunBinding',binding);
   if(typeof c.cwd!=='string'||!posix.isAbsolute(c.cwd)||posix.resolve(c.cwd)!==c.cwd||c.cwd.includes('\0')||!c.cwd.endsWith('/'+binding.conversationId)||typeof c.policy!=='function')configuration();
   readPolicy=storageMethod(c,'policy');
-  installation=validateBrowserInstallation(data(c.installation));
+  installation=validateBrowserInstallation(data(c.installation),binding);
   grant=storageMethod(c.egress,'grant');revoke=storageMethod(c.egress,'revoke');waitForExit=storageMethod(c.processes,'waitForExit');
   const endpoint=Object.getOwnPropertyDescriptor(c.egress,'endpoint');
   if(!endpoint||!Object.hasOwn(endpoint,'value')||endpoint.value!==installation.egressProxy)configuration();

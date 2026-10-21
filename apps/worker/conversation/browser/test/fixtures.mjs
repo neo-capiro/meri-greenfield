@@ -3,8 +3,11 @@
 import {buildOpenBrowserFragment} from '../fragment.mjs';
 import {validateBrowserPolicy} from '../policy.mjs';
 import {APPROVAL_RECEIPT_SCHEMA} from '../approval-binding.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 export const binding=Object.freeze({tenantId:'tenant-synthetic-browser',actorId:'actor-synthetic',conversationId:'00000011-b0a1-4000-8000-000000000000',runId:'00000012-b0a1-4000-8000-000000000000',attemptId:'00000013-b0a1-4000-8000-000000000000',workerId:'00000014-b0a1-4000-8000-000000000000',writerFence:1});
-export const installation=Object.freeze({nodePath:'/opt/scripted/node',cliPath:'/opt/scripted/@playwright/mcp/cli.js',browsersPath:'/opt/scripted/browsers',version:'0.0.83',egressProxy:'http://127.0.0.1:3128'});
+export const installationFor=runBinding=>Object.freeze({nodePath:'/opt/scripted/node',cliPath:'/opt/scripted/@playwright/mcp/cli.js',browsersPath:'/opt/scripted/browsers',version:'0.0.83',egressProxy:'http://127.0.0.1:3128',
+ launch:Object.freeze({shimPath:'/opt/meri/bin/meri-mcp-shim',socketPath:`/run/meri-launch/${canonicalSha256(runBinding)}.sock`,nonce:'e'.repeat(64)})});
+export const installation=installationFor(binding);
 export const sourceScopes=Object.freeze([{tenantId:binding.tenantId,kind:'public',resourceId:'public-web',policyRevision:'policy1'}]);
 /** Synthetic destinations standing in for a platform-approved list supplied as trusted configuration (never product content). */
 export const APPROVED=Object.freeze(['https://records.example','https://notices.example','https://archive.example']);
