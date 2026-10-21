@@ -1,3 +1,5 @@
+import {NodeHttpHandler} from '@smithy/node-http-handler';
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Actual AWS SDK commands; native S3 version identity is never a content digest. */
 import {S3Client,PutObjectCommand,GetObjectCommand,HeadObjectCommand,GetBucketVersioningCommand} from '@aws-sdk/client-s3';
 import {Readable} from 'node:stream';
@@ -50,5 +52,5 @@ export function createConfiguredS3ArtifactObjects(options){const {region,credent
  if(typeof region!=='string'||! /^[a-z]{2}(?:-gov)?-[a-z]+-[0-9]$/u.test(region)||typeof credentials!=='function')fail('ARTIFACT_STORAGE_CONFIGURATION');
  if(endpoint!==undefined){let url;try{url=new URL(endpoint);}catch{fail('ARTIFACT_STORAGE_CONFIGURATION');}if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)fail('ARTIFACT_STORAGE_CONFIGURATION');}
  // Validate all storage configuration before allocating the owned SDK client.
- createS3ArtifactObjects({...storage,client:{send(){}}});const client=new S3Client({region,credentials,maxAttempts:1,...(endpoint===undefined?{}:{endpoint})});
+ createS3ArtifactObjects({...storage,client:{send(){}}});const client=new S3Client({region,credentials,maxAttempts:fixedHotPathBudget('aws.attempts'),requestHandler:new NodeHttpHandler({connectionTimeout:fixedHotPathBudget('aws.connection'),requestTimeout:fixedHotPathBudget('aws.request')}),...(endpoint===undefined?{}:{endpoint})});
  try{const objects=createS3ArtifactObjects({...storage,client});return Object.freeze({...objects,close(){client.destroy();}});}catch(error){client.destroy();throw error;}}

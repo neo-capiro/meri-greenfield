@@ -71,7 +71,7 @@ test('integrated retained CONTROL consumer refuses absent genuine trust without 
 test('integrated input admission retains one canonical queued input and submit reuses it without a second event',async()=>{
  const f=await applicationFixture();
  try{
-  const application=createConversationInputApplication({service:f.service});
+  const application=createConversationInputApplication({maxRequestMs:3000,service:f.service});
   const make=()=>new Request('https://meri.invalid/api/conversations/input/admit',{
    method:'POST',headers:{authorization:`Bearer ${f.credential}`,'content-type':'application/json'},body:JSON.stringify(f.input)});
   const initial=await application.handle(make());

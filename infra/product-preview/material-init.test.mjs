@@ -86,9 +86,9 @@ test('optional static signing/token files are included while token rotation rema
 test('missing delivery/invalid deadline/unsupported host refuse before any delivery effect and forged cleanup receipts refuse',async()=>{
  const f=staticMaterialFixture();let calls=0;
  const delivery={async fetch(){calls++;return f.bundle;}};
- await assert.rejects(materializeStaticProductMaterial({expected:f.expected,delivery:{}}),{code:'STATIC_INIT_CONFIGURATION_REFUSED'});
+ await assert.rejects(materializeStaticProductMaterial({maxRequestMs:5000,expected:f.expected,delivery:{}}),{code:'STATIC_INIT_CONFIGURATION_REFUSED'});
  await assert.rejects(materializeStaticProductMaterial({expected:f.expected,delivery,maxRequestMs:0}),{code:'STATIC_INIT_CONFIGURATION_REFUSED'});
- if(process.platform!=='linux')await assert.rejects(materializeStaticProductMaterial({expected:f.expected,delivery}),{code:'STATIC_INIT_PLATFORM_REFUSED'});
+ if(process.platform!=='linux')await assert.rejects(materializeStaticProductMaterial({maxRequestMs:5000,expected:f.expected,delivery}),{code:'STATIC_INIT_PLATFORM_REFUSED'});
  await assert.rejects(releaseStaticProductMaterial({ready:true}),{code:'STATIC_INIT_RECEIPT_REFUSED'});
  assert.equal(calls,0);
 });

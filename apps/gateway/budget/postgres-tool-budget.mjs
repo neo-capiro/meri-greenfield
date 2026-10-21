@@ -1,3 +1,4 @@
+import {GATEWAY_COMPLETION_ADMISSION_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Concrete tool accounting over the proxy qualification state's shared authority. */
 import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { PostgresBudgetStore, refuse } from './postgres-budget-store.mjs';
@@ -148,7 +149,7 @@ function assembleBudget({ pool, allocationJson, now = Date.now, namespace }) {
   async function readCompletion(deliveryJson,requestJson,options={}){
     const d=deliveryRecord(deliveryJson,requestJson,a),o=own(options,[],['signal','deadlineMs']);
     const admission=createPostgresAdmittedRunOwner({pool,allocationJson,namespace,
-      grantFactsJsons:[JSON.stringify(grantFacts(d.context))],now,limits:{maxRequestMs:3000,maxFactBytes:131072}});
+      grantFactsJsons:[JSON.stringify(grantFacts(d.context))],now,limits:{maxRequestMs:GATEWAY_COMPLETION_ADMISSION_MS,maxFactBytes:131072}});
     return admission.withCurrentAllocation({binding:d.context.binding,signal:o.signal,deadlineMs:o.deadlineMs},
       ({client,current},limitDeadline)=>producer.readCompletion(client,d,current,limitDeadline));
   }

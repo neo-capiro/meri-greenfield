@@ -44,7 +44,7 @@ test('Exact calendar request replay retains original resolution across week roll
  const f=storeFixture(),store=createPostgresConversationStore({pool:f.pool});let at=Date.parse('2026-10-12T03:59:59Z'),starts=0,n=610;
  const authentication=()=>({principal:{sessionId:'session1',tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},sessionRevision:'revision1',checkedAtMs:at,expiresAtMs:at+30000});
  const sessions={async authenticateSession(){return authentication();},async readCurrentState({authentication:a}){return {authenticationSha256:hash(a),binding,scopes,selectedClientId:id(5),checkedAtMs:at,expiresAtMs:at+30000};}};
- const service=createConversationService({sessions,store,dispatcher:{async start(){starts++;},async cancel(){}},versions,now:()=>at,newId:()=>id(n++)});
+ const service=createConversationService({maxRequestMs:3000,sessions,store,dispatcher:{async start(){starts++;},async cancel(){}},versions,now:()=>at,newId:()=>id(n++)});
  const input={requestId:id(607),prompt:'Last week',windowRequest:{basis:'calendar-week',offset:-1,timezone:'America/New_York',weekStartsOn:'monday'}};
  const first=await service.submit({credential:'synthetic-session',input});
  const original=f.state.runs.values().next().value.request.window;
@@ -57,7 +57,7 @@ test('Exact calendar request replay retains original resolution across week roll
 });
 
 test('HTTP original lifetime bounds a slow service even if it ignores cancellation',async()=>{
- const app=createConversationApplication({maxRequestMs:10,service:{async submit(){await delay(35);return {ok:true};},async history(){return{};},async cancel(){return{};}}});
+ const app=createConversationApplication({eventBudgets:{maxSubscriptionMs:30000,pollMs:100,idleRecheckMs:10000},maxRequestMs:10,service:{async submit(){await delay(35);return {ok:true};},async history(){return{};},async cancel(){return{};}}});
  const response=await app.handle(new Request('https://meri.invalid/api/conversations/submit',{method:'POST',headers:{authorization:'Bearer synthetic-session','content-type':'application/json'},body:JSON.stringify({requestId:id(701),prompt:'Hello'})}));
  console.log(JSON.stringify({case:'HTTP outer deadline',status:response.status,body:await response.json()}));
  assert.equal(response.status,408,'HTTP must preserve its original outer deadline during service execution');

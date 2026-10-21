@@ -32,7 +32,7 @@ test('actual submit consumer normalizes trusted Sunday calendar window through D
   let clock=Date.parse('2026-11-01T16:00:00.000Z'),n=800;
   const authentication={principal:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},checkedAtMs:clock,expiresAtMs:clock+30000};
   const sessions={async authenticateSession(){return {...authentication,checkedAtMs:clock,expiresAtMs:clock+30000};},async readCurrentState({authentication:a}){return {authenticationSha256:hash(a),...f.state.context,checkedAtMs:clock,expiresAtMs:clock+30000};}};
-  const service=createConversationService({sessions,store:f.store,dispatcher:f.dispatcher,versions,now:()=>clock,newId:()=>id(n++)});
+  const service=createConversationService({maxRequestMs:3000,sessions,store:f.store,dispatcher:f.dispatcher,versions,now:()=>clock,newId:()=>id(n++)});
   await service.submit({credential:'synthetic-only-session',input:{...f.input,windowRequest:{basis:'calendar-week',offset:0,timezone:'America/New_York',weekStartsOn:'sunday'}}});
   const h=await service.history({credential:'synthetic-only-session'});assert.equal(h.request.window.startInclusive,'2026-11-01T04:00:00Z');assert.equal(h.request.window.endExclusive,'2026-11-08T05:00:00Z');assert.equal(h.request.window.basis,'calendar-week');assert.equal(h.request.window.weekStartsOn,'sunday');assert.equal(h.request.window.timezone,'America/New_York');
   assert.equal(Date.parse(h.request.window.endExclusive)-Date.parse(h.request.window.startInclusive),169*3600000);

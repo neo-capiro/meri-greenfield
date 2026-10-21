@@ -17,18 +17,18 @@ const row=a=>({allocation:a,allocation_sha256:canonicalSha256(a),max_tool_calls:
 const code=expected=>error=>error.message===expected;
 
 test('the run\'s admitted budgets come from one read-only SELECT of its own allocation row',async()=>{
- const p=pool([row(general)]),reader=createRunAllocationBudgetReader({pool:p});
+ const p=pool([row(general)]),reader=createRunAllocationBudgetReader({maxRequestMs:1000,pool:p});
  assert.deepEqual({...await reader.read({binding})},{maxToolCalls:40,maxOutputBytes:1048576,maxAggregateOutputBytes:2097152});
  assert.equal(p.queries[0].sql,'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
  const select=p.queries.filter(q=>q.sql.startsWith('SELECT'));assert.equal(select.length,1);assert.match(select[0].sql,/FROM meri_product_budget\.tool_run_allocations WHERE run_id=\$1$/u);assert.deepEqual(select[0].args,[binding.runId]);
  assert.ok(p.queries.every(q=>!/FOR UPDATE|INSERT|UPDATE |DELETE/u.test(q.sql)),'no lock or write');
 });
 
-test('no installed allocation yet answers null',async()=>{assert.equal(await createRunAllocationBudgetReader({pool:pool([])}).read({binding}),null);});
+test('no installed allocation yet answers null',async()=>{assert.equal(await createRunAllocationBudgetReader({maxRequestMs:1000,pool:pool([])}).read({binding}),null);});
 
 test('a row that disagrees with its own sha256, call count or run is refused',async()=>{
  for(const bad of [{...row(general),allocation_sha256:'0'.repeat(64)},{...row(general),max_tool_calls:'41'},row({...general,run:{...general.run,runId:'99999999-9999-4999-8999-999999999999'}})]){
-  await assert.rejects(createRunAllocationBudgetReader({pool:pool([bad])}).read({binding}),code('RUN_BUDGETS_REFUSED'));
+  await assert.rejects(createRunAllocationBudgetReader({maxRequestMs:1000,pool:pool([bad])}).read({binding}),code('RUN_BUDGETS_REFUSED'));
  }
- await assert.rejects(createRunAllocationBudgetReader({pool:pool([row(general),row(general)])}).read({binding}),code('RUN_BUDGETS_REFUSED'));
+ await assert.rejects(createRunAllocationBudgetReader({maxRequestMs:1000,pool:pool([row(general),row(general)])}).read({binding}),code('RUN_BUDGETS_REFUSED'));
 });

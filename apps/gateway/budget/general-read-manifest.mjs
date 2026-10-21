@@ -1,3 +1,4 @@
+import {GENERAL_READ_DEFAULT_RUNTIME_SECONDS} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** P3: the base general-read manifest, the allocation `manifest` of an ordinary conversation run that has no selected skill.
  * Proposal-local closed shape pending dot (SkillManifest's `skillId` is an enum of the 14 skills, so a base profile cannot be a
  * SkillManifest). It carries only operations, budgets and the Core-configuration evidence its tariffs rely on; it is never
@@ -19,7 +20,7 @@ export const GENERAL_READ_CEILINGS=Object.freeze({maxOutputBytes:16*MiB,maxAggre
 export const GENERAL_READ_DEFAULT_READ_BYTES=Object.freeze({maxOutputBytes:MiB,maxAggregateOutputBytes:2*MiB});
 /** D016 3 / D016-A 3: the default integration run profile (20 turns, 20 tool calls, 900 s, $2). Per-tenant and per-run values come
  * from the existing budget owners; this is the default, not a ceiling. */
-export const GENERAL_READ_DEFAULT_RUN_BUDGETS=Object.freeze({maxTurns:20,maxToolCalls:20,maxRuntimeSeconds:900,maxCostMicroUSD:2000000});
+export const GENERAL_READ_DEFAULT_RUN_BUDGETS=Object.freeze({maxTurns:20,maxToolCalls:20,maxRuntimeSeconds:GENERAL_READ_DEFAULT_RUNTIME_SECONDS,maxCostMicroUSD:2000000});
 const KEYS=['contractVersion','profile','profileVersion','allowedOperations','budgets','maxAggregateOutputBytes'],OPTIONAL=['tariffAssumptions','documentPricing'];
 export const DOCUMENT_READ='read_client_documents@0.2.0';
 export const DOCUMENT_TEXT_ONLY_MODE='source_text_only';

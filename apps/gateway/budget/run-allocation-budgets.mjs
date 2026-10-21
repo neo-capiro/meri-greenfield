@@ -11,7 +11,7 @@ import {allocation} from './tool-budget-binding.mjs';
 import {isGeneralReadManifest} from './general-read-manifest.mjs';
 
 export function createRunAllocationBudgetReader(configuration){
- const c=own(configuration,['pool'],['namespace','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??1000;
+ const c=own(configuration,['pool','maxRequestMs'],['namespace','now']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs;
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)refuse('RUN_BUDGETS_CONFIGURATION');
  const store=new PostgresBudgetStore(c.pool,{namespace:c.namespace??'product'});
  async function read(value){

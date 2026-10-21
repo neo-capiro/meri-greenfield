@@ -9,7 +9,7 @@ test('Cancellation binds current scopes to the exact locked run before append',a
  const f=await applicationFixture();try{
   await f.service.submit({credential:f.credential,input:f.input});const before=f.state.events.values().next().value.length;
   const store={accept:f.store.accept,append:f.store.append,async read(...args){const read=await f.store.read(...args);const row=f.state.runs.values().next().value;row.projection={...row.projection,scopes:[{...scopes[0],policyRevision:'policy2'}],policyRevision:'policy2'};row.projection_sha256=hash(row.projection);return read;}};
-  const service=createConversationService({sessions:f.sessions,store,dispatcher:f.dispatcher,versions});
+  const service=createConversationService({maxRequestMs:3000,sessions:f.sessions,store,dispatcher:f.dispatcher,versions});
   let error;try{await service.cancel({credential:f.credential});}catch(e){error=e.message;}
   const after=f.state.events.values().next().value.length;
   console.log(JSON.stringify({case:'cancel stored-scope change',error,before,after,state:f.state.runs.values().next().value.projection.state}));
@@ -21,9 +21,9 @@ test('Immutable fiscal replay uses retained window when current configuration is
   const fiscal={basis:'fiscal-year',calendarId:'state-florida',year:2027,stage:'appropriated',revisionId:'law-v2',timezone:'America/New_York',startInclusive:'2026-07-01T04:00:00Z',endExclusive:'2027-07-01T04:00:00Z'};
   const windowRequest=Object.fromEntries(Object.entries(fiscal).filter(([k])=>!['startInclusive','endExclusive'].includes(k)));
   const input={...f.input,windowRequest},configuration={sessions:f.sessions,store:f.store,dispatcher:f.dispatcher,versions};
-  const original=createConversationService({...configuration,fiscalCalendars:[fiscal]});
+  const original=createConversationService({maxRequestMs:3000,...configuration,fiscalCalendars:[fiscal]});
   await original.submit({credential:f.credential,input});const before=f.state.runs.values().next().value.request.window;
-  const reconstructed=createConversationService({...configuration,fiscalCalendars:[]});
+  const reconstructed=createConversationService({maxRequestMs:3000,...configuration,fiscalCalendars:[]});
   let replay,error;try{replay=await reconstructed.submit({credential:f.credential,input});}catch(e){error=e.code??e.message;}
   console.log(JSON.stringify({case:'fiscal config absent on exact replay',error,replay,before}));
   assert.equal(error,undefined,'Replay should not require resolving an already pinned fiscal window again');

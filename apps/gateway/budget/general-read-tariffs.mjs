@@ -1,3 +1,4 @@
+import {GENERAL_READ_VISION_TIMEOUT_MS} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** P3 tariff schedule for the 76 registered general reads. GENERATED from the registered reads and the Core cost evidence
  * gathered at capiro-backend #84 @ 7dd72a0e (all read paths of meri-tools.service.ts, federal-market-meri-tools.service.ts and
  * the adapters they call). One unit is 1 µUSD, the floor the budget owner accepts (as get_client_context is charged today).
@@ -22,7 +23,7 @@ export const GENERAL_READ_TARIFF_ASSUMPTIONS=Object.freeze(['rerankDisabled','we
  *    honestly. The unconditional tariff remains null; no source/image/config evidence means no document allocation.
  * The charge is 1 + max(vision, transcription), because Meri cannot tell from the operation which branch a call takes. */
 export const GENERAL_READ_DOCUMENT_BOUNDS=Object.freeze({textChargeMicrousd:1,
- vision:Object.freeze({pages:1,maxPageBytes:5242880,maxFileBytes:20971520,maxOutputTokens:8192,retries:0,timeoutMs:30000}),
+ vision:Object.freeze({pages:1,maxPageBytes:5242880,maxFileBytes:20971520,maxOutputTokens:8192,retries:0,timeoutMs:GENERAL_READ_VISION_TIMEOUT_MS}),
  transcription:Object.freeze({model:'whisper-1',maxUploadBytes:26214400,maxAudioSeconds:null})});
 /** The exact Core setting each assumption asserts. An allocation may price an assumption-gated read only with evidence binding
  * this setting to the measured Core (source commit, image digest, configuration digest); see assertTariffAssumptionEvidence. */
