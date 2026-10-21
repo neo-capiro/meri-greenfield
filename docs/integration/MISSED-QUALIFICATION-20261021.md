@@ -1,6 +1,6 @@
 # Missed qualification source recovery, 21 October 2026
 
-Base: `3c56c3e981ba868a2af103c4cae9f65a0d47458d` (current published main at audit start).
+Main baseline: `3c56c3e981ba868a2af103c4cae9f65a0d47458d` (current published main at audit start). Supplemental receiving base: existing `fable/pr190-on-main-20261021` at `be566bca526f9eb6814c82f0e4de39b449c6162b`, which already incorporates PR190 and that main baseline.
 
 The human requested complete source consolidation, then explicitly retained final merges and narrowed the work to gaps not already covered by existing consolidation branches or active owners. This supplemental branch recovers the remaining compatible qualification source; it is not another full runtime consolidation, a deployment, or a live database operation.
 
@@ -17,3 +17,13 @@ The human requested complete source consolidation, then explicitly retained fina
 Existing PR189 read composition, PR190 write composition, B1/B2 contract proposals, configuration adoption, P2 proof reuse and current c10 chat lanes remain separately identified in the audit ledger. Browser host qualification, memory tombstone owner reconciliation, application migrations and deployment remain held. The Core-owned Planner continuation replaces the old Meri Planner loop under D7-1; the old loop is not restored.
 
 The current first-response and next-turn SDK configuration-directory repairs remain on the base. No established branch or PR is merged by this work.
+
+## Additive contract recovery
+
+The branch also receives the incremental changes above common PR190 `29379ab1f7be9a7bb98613b4b7e27e17dad9ccf5` from B1 PR191 `53bbe3da88aaf6b4c7048bb0a89c06decf00d5df` and B2 PR192 `8eab537a8c60bf086afb56b2ceb24b79f6260b6b`. These have no newer consolidation receiver. B1 supplies the source of the exact frozen intents 0.1.0 browser contract already vendored by the frontend. B2 supplies an additive six-format inspect/download contract; the coordinated frontend supplement consumes the same receiver module for both operations. Existing 0.1.10 package version and frozen distribution files remain unchanged.
+
+Responsibilities remain with canonical owners: intent routes/approval semantics feed B1, artifact format admission and MIME/preview metadata feed B2, and generators produce their browser distributions. The package manifest unions both additive exports, generators, public tests and typecheck inputs. No handler is enabled, no renderer is qualified, and the task.create-only approval executor is unchanged. Check the new generator provenance and public receiver/type tests; do not regenerate unrelated frozen contracts to conceal baseline drift.
+
+## Focused validation
+
+Node 24.10.0: B1/B2 public receiver tests plus recovered invocation admission tests passed 240/240, with no skips. Both new generators passed `--check`, preserving all eight donor distribution blobs exactly. The complete package strict public typecheck passed. The recovered admission suite plus current invocation owner/transaction suites passed 37/37, with no skips. Native PostgreSQL qualification was deliberately not executed. On Windows, esbuild's filesystem resolver required a read-only check outside the filesystem sandbox; the initial sandboxed check failed to resolve dependency paths, and the permitted rerun passed.
