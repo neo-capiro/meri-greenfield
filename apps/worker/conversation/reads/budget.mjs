@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Per-run ceilings for general reads and the run-scoped ledger that enforces them in the worker.
  *
@@ -8,7 +9,7 @@
  * (`maxRecoveryAttempts` is 0): an UNKNOWN or failed outcome never licenses another dispatch. */
 export const GENERAL_READ_CEILINGS=Object.freeze({maxToolCalls:20,maxOutputBytes:1048576,maxReadBytes:2097152,maxRecoveryAttempts:0});
 /** Per-call timeout bounds for the SDK server (`createSdkMcpServer` `timeout`) and each call's own deadline. */
-export const READ_TIMEOUT_MS=Object.freeze({min:1000,max:60000});
+export const READ_TIMEOUT_MS=Object.freeze({min:1000,max:fixedHotPathBudget('reads.runtime.max')});
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
 const positive=(/** @type {unknown} */v)=>Number.isSafeInteger(v)&&/** @type {number} */(v)>=1;
 /** @typedef {{maxToolCalls:number,maxOutputBytes:number,maxReadBytes:number,maxRecoveryAttempts:0}} ReadBudgets */

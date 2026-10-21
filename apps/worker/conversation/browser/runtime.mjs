@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Activity-facing browser preparation for one conversation run: obtains the run's effective policy from the trusted
  * control owner, builds the fragment through the activation gate (`createBrowserCapability`), grants the run's egress
  * at the host control when the fragment is open, and returns the run's cleanup. Nothing is launched here: the SDK
@@ -38,7 +39,7 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal}
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');
  const policy=await port.policy({binding:structuredClone(binding),signal});
  const fragment=createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,now});
- const lifecycle=createBrowserRunLifecycle({fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
+ const lifecycle=createBrowserRunLifecycle({cleanupMs:fixedHotPathBudget('browser.cleanup.default'),fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
  if(fragment.activation==='open')await grantBrowserEgress({fragment,egress:port.egress,binding,deadlineMs,lifecycle,signal});
  return Object.freeze({fragment,status:fragment.status,settle:lifecycle.settle});
 }

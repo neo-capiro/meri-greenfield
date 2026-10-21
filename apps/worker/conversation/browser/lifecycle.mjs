@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Browser cleanup for one conversation run, run once on every lifecycle outcome (ended, failed, cancelled), after the
  * SDK query is closed. Order: revoke the run's egress grant at the host control, wait for the host to confirm the
  * Playwright MCP and browser processes have exited, then remove the profile, HOME and output directories and verify
@@ -11,12 +12,12 @@ import {browserPaths,disposeBrowserState} from './workspace.mjs';
 export const BROWSER_RUN_OUTCOMES=Object.freeze(['ended','failed','cancelled']);
 export const BROWSER_CLEANUP_SCHEMA='meri-browser-cleanup/1';
 /** Default and maximum cleanup budget; the drain hard limit (Q-T7) is the upper bound. */
-export const BROWSER_CLEANUP_MS=Object.freeze({default:30000,max:130000});
+export const BROWSER_CLEANUP_MS=Object.freeze({default:fixedHotPathBudget('browser.cleanup.default'),max:fixedHotPathBudget('browser.cleanup.max')});
 const fault=(code,receipt)=>Object.assign(new Error(code),{code,...(receipt?{receipt}:{})});
 /** Trusted host ports (open fragment only): `egress.revoke({binding,policySha256},{signal})` resolves `{revoked:true}`
  * and `processes.waitForExit({binding,profile},{signal})` resolves `{exited:true}` only when the host has observed
  * that no process of this run's browser remains. */
-export function createBrowserRunLifecycle({fragment,binding,cwd,egress,processes,now,cleanupMs=BROWSER_CLEANUP_MS.default}){
+export function createBrowserRunLifecycle({fragment,binding,cwd,egress,processes,now,cleanupMs}){
  const open=fragment?.activation==='open';
  if(typeof now!=='function'||!Number.isSafeInteger(cleanupMs)||cleanupMs<1||cleanupMs>BROWSER_CLEANUP_MS.max||open&&(typeof egress?.revoke!=='function'||typeof processes?.waitForExit!=='function'||typeof fragment.dispose!=='function'))throw fault('BROWSER_CONFIGURATION');
  const paths=open?fragment.paths:browserPaths(cwd);

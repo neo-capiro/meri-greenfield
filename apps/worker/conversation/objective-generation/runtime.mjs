@@ -5,7 +5,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {loadObjectiveStrategyCodec} from './typed-result.mjs';
 import {writeObjectiveResultFile} from './fixed-file.mjs';
 const refuse=()=>{throw typedFault();},same=(a,b)=>hash(a)===hash(b);
-export function createObjectiveGenerationRuntime({preparedFacts,querySelection,now=Date.now,codec=loadObjectiveStrategyCodec,writeFile=writeObjectiveResultFile,maxRequestMs=3000}){
+export function createObjectiveGenerationRuntime({preparedFacts,querySelection,now=Date.now,codec=loadObjectiveStrategyCodec,writeFile=writeObjectiveResultFile,maxRequestMs}){
  const read=storageMethod(preparedFacts,'read');if(typeof now!=='function'||typeof codec!=='function'||typeof writeFile!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  const readQuery=querySelection===undefined?null:storageMethod(querySelection,'read');
  async function prepare(value){

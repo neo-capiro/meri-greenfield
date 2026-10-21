@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Source-only process-absence port for one D005 per-conversation host generation. A recursive cgroup v2
  * `populated=0` covers every SDK, browser and Bash descendant only if the trusted launcher puts ALL untrusted
@@ -20,7 +21,7 @@ import {HOST_PROCESS_ABSENCE_SCHEMA} from './teardown.mjs';
 export const HOST_CGROUP_ROOT='/sys/fs/cgroup/meri/hosts';
 export const HOST_CGROUP_CONFINEMENT_SCHEMA='meri-d005-cgroup-confinement/1';
 const SCOPE='browser-bash-sdk-descendants';
-const MAX_FRESH_MS=1000;
+const MAX_FRESH_MS=fixedHotPathBudget('host.process.fresh');
 const GROUP_PATH=/^\/sys\/fs\/cgroup\/meri\/hosts\/[0-9a-f-]{36}-[1-9][0-9]*$/u;
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -86,7 +87,7 @@ function confinementCurrent(value,{allocation,binding,hostIdentity,groupIdentity
  * wait. The observer never accepts a bare `{exited:true}` or a user/model-provided confinement flag. */
 export function createHostWideProcessObserver({allocation,binding,hostIdentity,profile,verifyConfinement,
  ports=createLinuxHostCgroupPorts(),now=Date.now,monotonic=()=>performance.now(),pause=(ms,signal)=>sleep(ms,undefined,{signal}),
- timeoutMs=25000,armTimeoutMs=5000,pollMs=100}={}){
+ timeoutMs,armTimeoutMs,pollMs}={}){
  const scope=hostWideCgroup({allocation,binding,hostIdentity});
  if(typeof profile!=='string'||!posix.isAbsolute(profile)||posix.resolve(profile)!==profile||
   !profile.endsWith(`/${scope.binding.conversationId}/.browser/profile`)||typeof verifyConfinement!=='function'||
@@ -101,7 +102,7 @@ export function createHostWideProcessObserver({allocation,binding,hostIdentity,p
  const lifetime=(ms,signal)=>createOperationLifetime({deadlineMs:Date.now()+ms,now:Date.now,signal,errorFactory:()=>Object.assign(new Error('HOST_PROCESS_OBSERVATION_UNKNOWN'),{code:'HOST_PROCESS_OBSERVATION_UNKNOWN'})});
  const closeHandle=async held=>{
   if(!held)return;
-  const life=lifetime(Math.min(armTimeoutMs,5000));
+  const life=lifetime(Math.min(armTimeoutMs,fixedHotPathBudget('host.process.arm')));
   try{await life.run(()=>held.close());}finally{life.close();}
  };
  const closeGroup=async()=>{const held=group;group=undefined;await closeHandle(held);};

@@ -35,7 +35,7 @@ function fixture({events=['populated 1\nfrozen 0\n','populated 1\nfrozen 0\n','p
    observedAtMs:Date.now(),preExecPlacement:true,allEntrypointsConfined:true,
    untrustedCgroupfsUnavailable:true,untrustedMigrationDenied:true,...confinement};
  };
- const observer=createHostWideProcessObserver({allocation,binding,hostIdentity,profile,ports,verifyConfinement,
+ const observer=createHostWideProcessObserver({timeoutMs:25000,armTimeoutMs:5000,allocation,binding,hostIdentity,profile,ports,verifyConfinement,
   monotonic:()=>elapsed,pause:async()=>{elapsed+=tick;},timeoutMs,pollMs:Math.min(100,timeoutMs)});
  return {observer,scope,counts:()=>({reads,leaders,closed,checks})};
 }
@@ -72,7 +72,7 @@ test('untrusted cgroup migration remains a mandatory, fresh launcher prerequisit
   await assert.rejects(f.observer.arm({sdkLeaderPid:123}),code('HOST_PROCESS_OBSERVATION_UNKNOWN'));
   assert.equal(f.counts().closed,1);
  }
- assert.throws(()=>createHostWideProcessObserver({allocation,binding,hostIdentity,profile}),code('HOST_PROCESS_CONFIGURATION'),
+ assert.throws(()=>createHostWideProcessObserver({timeoutMs:25000,armTimeoutMs:5000,pollMs:100,allocation,binding,hostIdentity,profile}),code('HOST_PROCESS_CONFIGURATION'),
   'no permissive production confinement verifier exists');
 });
 
@@ -123,7 +123,7 @@ test('close during a pending arm cannot revive the observer and closes a late cg
  let deliver;
  const ports={async openGroup(path){assert.equal(path,scope.path);start();return new Promise(resolve=>{deliver=resolve;});},
   async readLeaderCgroup(){return scope.sdkLeaderRelative;},async readBootId(){return hostIdentity.bootId;}};
- const observer=createHostWideProcessObserver({allocation,binding,hostIdentity,profile,ports,verifyConfinement:async()=>{throw Error('should not run');},armTimeoutMs:100});
+ const observer=createHostWideProcessObserver({timeoutMs:25000,pollMs:100,allocation,binding,hostIdentity,profile,ports,verifyConfinement:async()=>{throw Error('should not run');},armTimeoutMs:100});
  const pending=observer.arm({sdkLeaderPid:123});await begun;
  await observer.close();release();
  await assert.rejects(pending,code('HOST_PROCESS_OBSERVATION_UNKNOWN'));

@@ -51,7 +51,7 @@ async function activity({capabilities,installed=true,skill}={}){
    return {installation:{installationId:id(80),baseCatalogSha256:canonicalSha256(catalog),executionCatalogSha256:'e'.repeat(64),operations:installed?ops:[],checkedAtMs:at,expiresAtMs:at+60000},
     discovery:{binding,policyRevision:saved.run.scopes[0].policyRevision,operations:ops,checkedAtMs:at,expiresAtMs:at+60000}};},async execute(){throw Error('not called');}};
  const query=args=>{seen=args.options;return {async *[Symbol.asyncIterator](){yield {type:'result',subtype:'success',is_error:false,result:'ok'};},close(){}};};
- const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(),query,newId:()=>id(n++),generalReads});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>runtime(),query,newId:()=>id(n++),generalReads});
  return {f,run:()=>execute({binding}),options:()=>seen,asked:()=>asked};
 }
 
@@ -67,5 +67,5 @@ test('the activity mounts meri_reads only when policy enables general reads and 
 });
 
 test('the activity refuses a malformed general-read port before any run state changes',()=>{
- assert.throws(()=>createConversationActivity({runOwner:{load(){},append(){}},prepareRuntime(){},generalReads:{readAvailability(){}}}),/READ_ACTIVITY_CONFIGURATION/);
+ assert.throws(()=>createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:{load(){},append(){}},prepareRuntime(){},generalReads:{readAvailability(){}}}),/READ_ACTIVITY_CONFIGURATION/);
 });

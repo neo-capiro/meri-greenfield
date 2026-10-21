@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Entry for general reads in one conversation run. Reads the trusted availability facts from the gateway port,
  * applies the six gates and, only when at least one read is available, builds the `meri_reads` server and returns
@@ -21,7 +22,7 @@ import {resolveAvailableReads,profileReads} from './availability.mjs';
 import {createGeneralReadServer} from './server.mjs';
 import {effectiveReadBudgets,READ_TIMEOUT_MS} from './budget.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
-const CATALOG_SHA256=canonicalSha256(catalog),SNAPSHOT_MS=3000;
+const CATALOG_SHA256=canonicalSha256(catalog),SNAPSHOT_MS=fixedHotPathBudget('reads.snapshot');
 /** Session id the SDK must report when continuing: the resumed checkpoint session, or the fork target.
  * @param {any} lineage @returns {string|undefined} */
 export function continuationSessionId(lineage){
@@ -35,13 +36,13 @@ export function continuationSessionId(lineage){
  *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,mount?:'available'|'profile'}} configuration
  */
 export async function createGeneralReadRuntime(configuration){
- const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','exclude','runBudgets','signal','mount']);
+ const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs','timeoutMs'],['expectedSessionId','skill','exclude','runBudgets','signal','mount']);
  const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','execute']);nativeSignal(c.signal);validateShape('RunBinding',binding);
  if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.execute!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount))throw fault('READ_CONFIGURATION');
  const profile=c.mount==='profile';
  scopes.forEach(s=>validateShape('Scope',s));const policyRevision=scopes[0].policyRevision;
  if(c.policy?.generalReads!==true)return null;
- const timeoutMs=Math.min(c.timeoutMs??READ_TIMEOUT_MS.max,READ_TIMEOUT_MS.max),budgets=effectiveReadBudgets(c.skill?.budgets,c.runBudgets);
+ const timeoutMs=Math.min(c.timeoutMs,READ_TIMEOUT_MS.max),budgets=effectiveReadBudgets(c.skill?.budgets,c.runBudgets);
  /** Fresh snapshot within a bounded wait; any failure is "not available". @param {AbortSignal|undefined} signal */
  const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+SNAPSHOT_MS,now:c.now,signal,errorFactory:fault});
   try{return assertAvailabilitySnapshot(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),{binding,policyRevision,catalogSha256:CATALOG_SHA256,now:c.now});}finally{life.close();}};

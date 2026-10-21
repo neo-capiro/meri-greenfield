@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** D005 browser process-exit evidence from one pinned Linux cgroup v2 subtree.
  *
@@ -20,7 +21,7 @@ import {assertHostAllocation,assertHostRunBinding} from './binding.mjs';
 
 export const BROWSER_CGROUP_ROOT='/sys/fs/cgroup/meri/hosts';
 export const CGROUP2_SUPER_MAGIC=0x63677270;
-export const PROCESS_EXIT_WAIT_MS=25000;
+export const PROCESS_EXIT_WAIT_MS=fixedHotPathBudget('browser.process.exit');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const unknown=()=>fail('BROWSER_PROCESS_OBSERVATION_UNKNOWN');
 const unknownError=()=>Object.assign(new Error('BROWSER_PROCESS_OBSERVATION_UNKNOWN'),{code:'BROWSER_PROCESS_OBSERVATION_UNKNOWN'});
@@ -90,7 +91,7 @@ export function createLinuxCgroupPorts(){
 /** @typedef {{identity:{dev:string,ino:string},readEvents:()=>Promise<string>,close:()=>Promise<void>}} GroupHandle */
 /** @typedef {{openGroup:(path:string)=>Promise<GroupHandle>,readLeaderCgroup:(pid:number)=>Promise<string|null>}} ObserverPorts */
 /** One browser run; its `waitForExit({binding,profile},{signal})` matches `browser/runtime.mjs`'s existing port. */
-export function createBrowserProcessObserver({allocation,binding,profile,ports=createLinuxCgroupPorts(),now=()=>performance.now(),pause=(ms,signal)=>sleep(ms,undefined,{signal}),timeoutMs=PROCESS_EXIT_WAIT_MS,pollMs=100}={}){
+export function createBrowserProcessObserver({allocation,binding,profile,ports=createLinuxCgroupPorts(),now=()=>performance.now(),pause=(ms,signal)=>sleep(ms,undefined,{signal}),timeoutMs,pollMs}={}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding),scope=browserRunCgroup({allocation:a,binding:b});
  if(typeof profile!=='string'||!posix.isAbsolute(profile)||posix.resolve(profile)!==profile||!profile.endsWith(`/${b.conversationId}/.browser/profile`)||
     typeof ports?.openGroup!=='function'||typeof ports?.readLeaderCgroup!=='function'||typeof now!=='function'||typeof pause!=='function'||

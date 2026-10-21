@@ -10,7 +10,7 @@ export {generalReadFixture,MAIL_OPERATIONS,NOW};
 export const SESSION='71000000-0000-4000-8000-000000000091';
 /** @param {Awaited<ReturnType<typeof generalReadFixture>>} f */
 export async function mountReads(f,{policy={generalReads:true},port=f.mount(),deadlineMs=f.deadlineMs,...rest}={}){
- const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy:assertCapabilityPolicy(policy),port,now:f.now,deadlineMs,...rest});
+ const runtime=await createGeneralReadRuntime({timeoutMs:60000,binding:f.binding,scopes:f.scopes,policy:assertCapabilityPolicy(policy),port,now:f.now,deadlineMs,...rest});
  if(runtime===null)return null;
  const client=new Client({name:'synthetic-sdk',version:'1.0.0'}),[a,b]=InMemoryTransport.createLinkedPair();
  await runtime.sdkOptions.mcpServers.meri_reads.instance.connect(a);await client.connect(b);

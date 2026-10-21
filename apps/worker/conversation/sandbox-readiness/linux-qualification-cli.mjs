@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Executable entry for the lane 8 Linux runtime qualification (`linux-qualification.mjs`). Run it inside the exact
  * target task (the Meri runner image on Fargate, or a candidate browser/Bash host) as the task user:
@@ -52,13 +53,13 @@ export async function main(argv=process.argv.slice(2),{write=t=>process.stdout.w
    canWrite,findExecutable:finder(pathEnv),run,nodePath:process.execPath,now:Date.now,
    ...(o.skipSdk?{}:{sdkReadiness:async()=>{
     const [{checkSandboxReadiness},{createHostPorts}]=await Promise.all([import('./readiness.mjs'),import('./host-probes.mjs')]);
-    const ports=await createHostPorts({pathEnv});try{return await checkSandboxReadiness(ports,{deadlineMs:30000});}finally{try{ports.close();}catch{}}
+    const ports=await createHostPorts({pathEnv,probeMs:fixedHotPathBudget('sandbox.probe')});try{return await checkSandboxReadiness(ports,{observeMs:fixedHotPathBudget('sandbox.observe'),cleanupMs:fixedHotPathBudget('sandbox.cleanup'),deadlineMs:fixedHotPathBudget('sandbox.deadline')});}finally{try{ports.close();}catch{}}
    }}),
    egressSelfTest:()=>egressLoopbackSelfTest({startEgressProxy,createBashEgressControl,net,http,now:Date.now}),
    ...(o.liveEgressName?{liveEgress:async()=>{
     const name=/** @type {string} */(o.liveEgressName);
     const control=createBashEgressControl({domains:[name],resolve:systemResolver,now:Date.now,expiresAtMs:Date.now()+60000});
-    const proxy=await startEgressProxy({control,httpPort:0});
+    const proxy=await startEgressProxy({limits:{admitMs:fixedHotPathBudget('egress.admit'),idleMs:fixedHotPathBudget('egress.idle'),connectMs:fixedHotPathBudget('egress.connect')},control,httpPort:0});
     const tunnel=(/** @type {string} */authority)=>new Promise(resolve=>{const r=http.request({host:'127.0.0.1',port:proxy.ports.http,method:'CONNECT',path:authority});r.on('connect',(res,s)=>{s.destroy();resolve(res.statusCode);});r.on('response',res=>{res.resume();resolve(res.statusCode);});r.on('error',()=>resolve(0));r.setTimeout(15000,()=>{r.destroy();resolve(0);});r.end();});
     try{const cases={allowlistedTunnel:await tunnel(`${name}:443`)===200,metadataLiteralRefused:await tunnel('169.254.169.254:80')===403,ecsCredentialsLiteralRefused:await tunnel('169.254.170.2:80')===403,unlistedRefused:await tunnel('example.com:443')===403||name==='example.com'};
      return {passed:Object.values(cases).every(Boolean),cases};}

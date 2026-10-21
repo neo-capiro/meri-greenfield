@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Destination control for SDK-sandboxed Bash. The SDK sandbox (bubblewrap) leaves sandboxed commands no network of
  * their own; their only route out is the sandbox's proxy bridge, which `bash-sandbox.mjs` points at Meri's egress proxy
@@ -99,7 +100,7 @@ export async function systemResolver(name){
 export async function startBashEgress({domains,expiresAtMs,now=Date.now,resolve=systemResolver,dial,onDecision}){
  const allow=assertBashEgressDomains(domains);if(!allow.length)fail('BASH_EGRESS_CONFIGURATION');
  const control=createBashEgressControl({domains:allow,resolve,now,expiresAtMs});
- const proxy=await startEgressProxy({control,httpPort:0,socksPort:0,...(dial?{dial}:{}),...(onDecision?{onDecision}:{})});
+ const proxy=await startEgressProxy({limits:{admitMs:fixedHotPathBudget('egress.admit'),idleMs:fixedHotPathBudget('egress.idle'),connectMs:fixedHotPathBudget('egress.connect')},control,httpPort:0,socksPort:0,...(dial?{dial}:{}),...(onDecision?{onDecision}:{})});
  const fact=Object.freeze({schema:BASH_EGRESS_SCHEMA,httpProxyPort:proxy.ports.http,socksProxyPort:/** @type {number} */(proxy.ports.socks),domainsSha256:control.domainsSha256});
  return Object.freeze({fact,proxy});
 }

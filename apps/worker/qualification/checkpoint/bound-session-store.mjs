@@ -43,8 +43,8 @@ export function scopedSessionKey(key, scope, mainOnly = false) {
  * Every other failed append is uncertain and prevents subsequent dispatch.
  */
 export function createRunBoundSessionStore(options) {
-  const { binding, sessionKey, transport, timeoutMs = 5000 } = sessionDataRecord(options,
-    { allowed: ['binding', 'sessionKey', 'transport', 'timeoutMs'], required: ['binding', 'sessionKey', 'transport'],
+  const { binding, sessionKey, transport, timeoutMs } = sessionDataRecord(options,
+    { allowed: ['binding', 'sessionKey', 'transport', 'timeoutMs'], required: ['binding', 'sessionKey', 'transport', 'timeoutMs'],
       code: 'SESSION_OPTIONS' });
   const ownedBinding = copySessionJson(binding, BATCH.bytes);
   try { validateShape('RunBinding', ownedBinding); } catch { fail('SESSION_RUN_BINDING'); }

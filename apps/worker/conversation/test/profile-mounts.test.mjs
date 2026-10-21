@@ -66,15 +66,15 @@ test('profile availability is capped by exact active operations; disabled or emp
  const open=resolveAvailableReads({policy,installation:{operations:all},discovery:{operations:all},scopes});
  assert.ok(open.available.length>rows.length,'the per-run gate alone can see more catalog reads than the fixed profile');
  const shared={binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,mount:'profile'};
- const runtime=await createGeneralReadRuntime({...shared,policy,port:readPort(all)});
+ const runtime=await createGeneralReadRuntime({timeoutMs:60000,...shared,policy,port:readPort(all)});
  try{assert.deepEqual(runtime.available,ACTIVE);assert.ok(runtime.available.every(op=>keys.has(canonicalSha256(op))));assert.equal(runtime.sdkOptions.allowedTools.length,ACTIVE.length);}finally{await runtime.close();}
  assert.equal(profileReads({policy:assertCapabilityPolicy({...PORTABLE,generalReads:false})}).length,0);
- assert.equal(await createGeneralReadRuntime({...shared,policy:assertCapabilityPolicy({...PORTABLE,activeReadOperations:[]}),port:readPort(all)}),null);
- assert.equal(await createGeneralReadRuntime({...shared,policy,port:UNAVAILABLE_READ_PORT,skill:{allowedOperations:[],budgets:{maxToolCalls:1,maxOutputBytes:65536}}}),null);
- assert.equal(await createGeneralReadRuntime({...shared,policy:assertCapabilityPolicy({governedIntents:true}),port:UNAVAILABLE_READ_PORT}),null);
- assert.equal(await createIntentRuntime({...shared,policy:assertCapabilityPolicy({generalReads:true}),port:UNAVAILABLE_INTENT_PORT}),null);
- await assert.rejects(createGeneralReadRuntime({...shared,mount:'other',policy,port:UNAVAILABLE_READ_PORT}),{code:'READ_CONFIGURATION'});
- await assert.rejects(createIntentRuntime({...shared,mount:'other',policy,port:UNAVAILABLE_INTENT_PORT}),{code:'INTENT_CONFIGURATION'});
+ assert.equal(await createGeneralReadRuntime({timeoutMs:60000,...shared,policy:assertCapabilityPolicy({...PORTABLE,activeReadOperations:[]}),port:readPort(all)}),null);
+ assert.equal(await createGeneralReadRuntime({timeoutMs:60000,...shared,policy,port:UNAVAILABLE_READ_PORT,skill:{allowedOperations:[],budgets:{maxToolCalls:1,maxOutputBytes:65536}}}),null);
+ assert.equal(await createGeneralReadRuntime({timeoutMs:60000,...shared,policy:assertCapabilityPolicy({governedIntents:true}),port:UNAVAILABLE_READ_PORT}),null);
+ assert.equal(await createIntentRuntime({timeoutMs:60000,...shared,policy:assertCapabilityPolicy({generalReads:true}),port:UNAVAILABLE_INTENT_PORT}),null);
+ await assert.rejects(createGeneralReadRuntime({timeoutMs:60000,...shared,mount:'other',policy,port:UNAVAILABLE_READ_PORT}),{code:'READ_CONFIGURATION'});
+ await assert.rejects(createIntentRuntime({timeoutMs:60000,...shared,mount:'other',policy,port:UNAVAILABLE_INTENT_PORT}),{code:'INTENT_CONFIGURATION'});
 });
 
 test('G2 carries an exact, immutable active operation set and rejects unqualified or widened refs',async()=>{

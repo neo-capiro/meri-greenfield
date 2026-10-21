@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Entry for governed write requests in one conversation run. Only when the run's capability policy enables
  * `governedIntents` does it read the trusted intent port's availability, intersect it with the intent catalog's
@@ -18,7 +19,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {INTENT_ROWS,INTENT_SERVER_NAME,assertIntentCatalog} from './catalog.mjs';
 import {createIntentServer,INTENT_TIMEOUT_MS} from './server.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
-const SNAPSHOT_MS=3000,OPERATION=/^[a-z][a-z_]{0,62}$/u;
+const SNAPSHOT_MS=fixedHotPathBudget('intents.snapshot'),OPERATION=/^[a-z][a-z_]{0,62}$/u;
 const key=(/** @type {{id:string,version:string}} */o)=>canonicalSha256({id:o.id,version:o.version});
 /** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses.
  * @param {unknown} raw @param {any} binding @param {number} at @returns {Set<string>} */
@@ -37,14 +38,14 @@ export function assertIntentAvailability(raw,binding,at){
  *  timeoutMs?:number,expectedSessionId?:string,signal?:AbortSignal,mount?:'available'|'profile'}} configuration
  */
 export async function createIntentRuntime(configuration){
- const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','signal','mount']);
+ const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs','timeoutMs'],['expectedSessionId','signal','mount']);
  const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','prepare']);nativeSignal(c.signal);validateShape('RunBinding',binding);
  if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.prepare!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount))throw fault('INTENT_CONFIGURATION');
  const profile=c.mount==='profile';
  scopes.forEach(s=>{validateShape('Scope',s);if(s.tenantId!==binding.tenantId)throw fault('INTENT_CONFIGURATION');});
  if(c.policy?.governedIntents!==true)return null;
  assertIntentCatalog();
- const timeoutMs=Math.min(c.timeoutMs??INTENT_TIMEOUT_MS.max,INTENT_TIMEOUT_MS.max);
+ const timeoutMs=Math.min(c.timeoutMs,INTENT_TIMEOUT_MS.max);
  /** @param {AbortSignal|undefined} signal */
  const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+SNAPSHOT_MS,now:c.now,signal,errorFactory:fault});
   try{return assertIntentAvailability(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),binding,c.now());}finally{life.close();}};

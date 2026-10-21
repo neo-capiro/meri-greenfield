@@ -16,7 +16,7 @@ export function intentFixture(options){
 }
 /** @param {ReturnType<typeof intentFixture>} f */
 export async function mountIntents(f,{policy={governedIntents:true},port=f.port,...rest}={}){
- const runtime=await createIntentRuntime({binding:f.binding,scopes:f.scopes,policy:assertCapabilityPolicy(policy),port,now:f.now,deadlineMs:f.deadlineMs,...rest});
+ const runtime=await createIntentRuntime({timeoutMs:60000,binding:f.binding,scopes:f.scopes,policy:assertCapabilityPolicy(policy),port,now:f.now,deadlineMs:f.deadlineMs,...rest});
  if(runtime===null)return null;
  const client=new Client({name:'synthetic-sdk',version:'1.0.0'}),[a,b]=InMemoryTransport.createLinkedPair();
  await runtime.sdkOptions.mcpServers.meri_intents.instance.connect(a);await client.connect(b);

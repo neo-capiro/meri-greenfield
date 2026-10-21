@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Source-only preparation of Bash facts on the D005 per-conversation host. This is not composed by the product
  * runner. The future host owner must supply an independently verified outer-isolation port and exact local host
@@ -67,8 +68,8 @@ export async function prepareHostBashRuntimeFacts({binding,policy,verifyOuterIso
  const identity=assertD005HostIdentity(proof.hostIdentity,binding,allocation);
  const receipt=assertD005IsolationReceipt(proof.receipt,{binding,allocation,hostIdentity:identity,now,expiresAtMs});checkSignals();
  let ports,report,probeError,portCleanupError;
- try{ports=await createReadinessPorts({pathEnv});if(typeof ports?.close!=='function')fail('BASH_READINESS_INCOMPLETE');
-  report=await checkSandboxReadiness(ports,{...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs:30000});}
+ try{ports=await createReadinessPorts({pathEnv,probeMs:fixedHotPathBudget('sandbox.probe')});if(typeof ports?.close!=='function')fail('BASH_READINESS_INCOMPLETE');
+  report=await checkSandboxReadiness(ports,{observeMs:fixedHotPathBudget('sandbox.observe'),cleanupMs:fixedHotPathBudget('sandbox.cleanup'),...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs:fixedHotPathBudget('sandbox.deadline')});}
  catch{probeError=fault('BASH_READINESS_INCOMPLETE');}
  finally{try{await ports?.close?.();}catch{portCleanupError=fault('BASH_READINESS_CLEANUP_UNKNOWN');}}
  if(portCleanupError)throw portCleanupError;
@@ -102,7 +103,7 @@ export async function prepareHostBashRuntimeFacts({binding,policy,verifyOuterIso
  const scheduleExpiry=()=>{if(closing)return;
   let left;try{left=Math.min(expiresAtMs-now(),monotonicDeadline-performance.now());}catch{onAbort();return;}
   if(!Number.isFinite(left)||left<=0){onAbort();return;}
-  expiryTimer=setTimeout(scheduleExpiry,Math.max(1,Math.ceil(Math.min(left,1000))));expiryTimer.unref?.();};
+  expiryTimer=setTimeout(scheduleExpiry,Math.max(1,Math.ceil(Math.min(left,fixedHotPathBudget('host.expiry.tick')))));expiryTimer.unref?.();};
  if(networked)scheduleExpiry();if(closing){await closing;fail('BASH_HOST_REVOKED');}
  const runtimeFacts=Object.freeze({bashSandbox:attestation,...(started?{bashEgress:egressFact,bashApprovals:approvals}:{})});
  return Object.freeze({runtimeFacts,allocation,hostIdentity:identity,isolationReceipt:receipt,close});

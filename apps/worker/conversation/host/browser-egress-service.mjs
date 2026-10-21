@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** One D005 host's run-bound browser proxy. The listener starts denied and admits a grant only after a fresh trusted
  * control read. This module owns proxy sockets and a local currentness timer; host network isolation and the
  * authenticated control channel are separate prerequisites, not facts this module can assert. */
@@ -34,7 +35,7 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
    return decision;},
   revoke(){control?.revoke();},
  });
- proxy=await startEgressProxy({control:gate,httpPort:0,...(onDecision?{onDecision}:{})});
+ proxy=await startEgressProxy({limits:{admitMs:fixedHotPathBudget('egress.admit'),idleMs:fixedHotPathBudget('egress.idle'),connectMs:fixedHotPathBudget('egress.connect')},control:gate,httpPort:0,...(onDecision?{onDecision}:{})});
  const endpoint=`http://127.0.0.1:${proxy.ports.http}`;
  const current=async(policySha256,signal)=>{
   const at=now(),deadline=Math.min(maxFreshMs,host.leaseDeadlineMs-at,grantExpiresAtMs-at,

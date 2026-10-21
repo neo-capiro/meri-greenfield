@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Internal D005 host/run identity and currentness checks. A receipt is authoritative only when returned by an
  * authenticated, trusted control port. Shape validation here does not authenticate a caller or allocate a host. */
 import {validateShape,canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -5,7 +6,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 
 export const HOST_ALLOCATION_SCHEMA='meri-conversation-host-allocation/1';
 export const D005_HOST_IDENTITY_SCHEMA='meri-d005-host-identity/1';
-export const MAX_HOST_CURRENTNESS_MS=30000; // Source ceiling, not a reviewed product revocation SLO.
+export const MAX_HOST_CURRENTNESS_MS=fixedHotPathBudget('host.currentness'); // Source ceiling, not a reviewed product revocation SLO.
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const INSTANCE=/^i-[0-9a-f]{8,17}$/u;
 const IMAGE=/^sha256:[0-9a-f]{64}$/u;

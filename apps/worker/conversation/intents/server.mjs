@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** The one `meri_intents` SDK in-process MCP server for a run (`createSdkMcpServer`); never a second model loop and
  * never read-only. It only PREPARES: each call goes to the trusted intent port, which reaches the capability's canonical
@@ -29,7 +30,7 @@ const SESSION=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,
  * @param {any} binding @param {string} sessionId @param {string} toolUseId */
 export const intentDeliveryId=(binding,sessionId,toolUseId)=>'sdk:'+canonicalSha256({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,sessionId,toolUseId,server:INTENT_SERVER_NAME});
 /** Per-call deadline bounds (the SDK server `timeout`). */
-export const INTENT_TIMEOUT_MS=Object.freeze({min:1000,max:60000});
+export const INTENT_TIMEOUT_MS=Object.freeze({min:1000,max:fixedHotPathBudget('intents.runtime.max')});
 /** PROPOSAL P-INT-4 (unqualified upper bound, pending dot): write requests one run may prepare. */
 export const MAX_INTENT_CALLS=8;
 const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/** @type {const} */('PreToolUse'),permissionDecision:/** @type {const} */('deny'),permissionDecisionReason:reason}});

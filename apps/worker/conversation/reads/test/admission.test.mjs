@@ -9,7 +9,7 @@ import {createGeneralReadRuntime} from '../runtime.mjs';
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 const IDS=['get_research_portfolio','get_research_portfolio_changes','get_florida_budget_project'];
 const policy=assertCapabilityPolicy({generalReads:true});
-const runtimeFor=(f,changes={})=>createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs,...changes});
+const runtimeFor=(f,changes={})=>createGeneralReadRuntime({timeoutMs:60000,binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs,...changes});
 async function connected(f){const runtime=await runtimeFor(f),client=new Client({name:'synthetic-admission',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  await runtime.sdkOptions.mcpServers.meri_reads.instance.connect(a);await client.connect(b);
  return {runtime,client,async call(){const decision=await runtime.sdkOptions.hooks.PreToolUse[0].hooks[0]({hook_event_name:'PreToolUse',

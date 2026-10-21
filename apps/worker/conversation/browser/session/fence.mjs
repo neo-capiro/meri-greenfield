@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../../packages/runtime/hot-path-budgets.mjs';
 /** S1 control fence and drain for the conversation browser (design FABLE-FIRST-SHIPMENT-FEATURES-DESIGN-20261015.md
  * section 1.1 S1; owner answers Q-T1 exclusive lease, Q-T5 10-minute idle lease with no auto-resume, Q-T7 drain bounds,
  * all accepted 15 October 2026 per FABLE-OWNER-DECISIONS-20261015.md decision 7).
@@ -16,7 +17,7 @@ export const FENCE_STATES=Object.freeze(['agent','fencing','drained','user','ret
 export const FENCE_REASONS=Object.freeze(['takeover','revocation','disconnect','session-end']);
 export const LEASE_END_REASONS=Object.freeze(['idle','viewer-disconnect','stream-lost','relay-failure','revocation']);
 /** Q-T7: settle bound = largest in-flight action/navigation timeout + 5 s, capped by the 130 s hard bound. Q-T5: 10 minutes. */
-export const TAKEOVER_LIMITS=Object.freeze({settleMarginMs:5000,hardBoundMs:130000,leaseIdleMs:600000});
+export const TAKEOVER_LIMITS=Object.freeze({settleMarginMs:fixedHotPathBudget('browser.takeover.settle'),hardBoundMs:fixedHotPathBudget('browser.takeover.hard'),leaseIdleMs:fixedHotPathBudget('browser.takeover.idle')});
 const REFUSAL=Object.freeze({takeover:'BROWSER_USER_IN_CONTROL',revocation:'BROWSER_REVOKED',disconnect:'BROWSER_SESSION_ENDING','session-end':'BROWSER_SESSION_ENDING'});
 const REQUEST=/^[A-Za-z0-9_.:-]{1,128}$/u;
 const fault=code=>Object.assign(new Error(code),{code});

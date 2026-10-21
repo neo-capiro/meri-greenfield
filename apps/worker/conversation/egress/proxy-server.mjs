@@ -22,7 +22,7 @@ import {createServer as createNetServer,connect as netConnect,isIP} from 'node:n
 export const PROXY_REFUSAL_HEADER='x-meri-egress-refusal';
 const LOOPBACK=Object.freeze(['127.0.0.1','::1']);
 const HOP_BY_HOP=Object.freeze(['connection','keep-alive','proxy-connection','proxy-authenticate','proxy-authorization','te','trailer','transfer-encoding','upgrade']);
-const DEFAULT_LIMITS=Object.freeze({admitMs:10000,idleMs:120000,connectMs:10000,maxHeaderSize:16384,maxConnections:256});
+const DEFAULT_LIMITS=Object.freeze({maxHeaderSize:16384,maxConnections:256});
 /** @param {string} code */
 const fault=code=>Object.assign(new Error(code),{code});
 /** @param {string} code @returns {never} */
@@ -66,10 +66,11 @@ function refuseRaw(socket,status,reason,code){
  * listener (it is also refused when the control has no `admitSocks`). `dial` is injected only by tests and the
  * qualification harness; production uses `dialAddress`.
  * @param {{control:EgressControl,dial?:(target:{address:string,port:number})=>import('node:net').Socket,host?:string,httpPort?:number,socksPort?:number,limits?:Partial<typeof DEFAULT_LIMITS>,onDecision?:(decision:ProxyDecision)=>void}} input */
-export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1',httpPort=0,socksPort,limits={},onDecision=()=>{}}){
+export async function startEgressProxy({control,dial=dialAddress,host='127.0.0.1',httpPort=0,socksPort,limits,onDecision=()=>{}}){
  if(typeof control?.admitProxyRequest!=='function'||typeof dial!=='function'||typeof onDecision!=='function'||!LOOPBACK.includes(host))fail('EGRESS_PROXY_CONFIGURATION');
  if(socksPort!==undefined&&typeof control.admitSocks!=='function')fail('EGRESS_PROXY_CONFIGURATION');
  const L={...DEFAULT_LIMITS,...limits};
+ for(const field of ['admitMs','idleMs','connectMs'])if(!Number.isSafeInteger(L[field])||L[field]<1)fail('EGRESS_PROXY_CONFIGURATION');
  for(const v of Object.values(L))if(!Number.isSafeInteger(v)||v<1)fail('EGRESS_PROXY_CONFIGURATION');
  /** @type {Set<import('node:stream').Duplex>} */const live=new Set();let revoked=false;
  const lifetime=new AbortController();

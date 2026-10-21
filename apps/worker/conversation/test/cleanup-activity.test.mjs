@@ -24,7 +24,7 @@ function execute({bad,mode,failed=false,signal,deadlineOffsetMs=5000}){
  active={calls:[],bad,mode};let n=600;
  const run={binding,versions,scopes,state:'queued',policyRevision:scopes[0].policyRevision,createdAt:new Date().toISOString()};
  const request={requestId:id(500),prompt:'Synthetic prompt',skill:selected.pin,window:null};
- const activity=createConversationActivity({cleanupAttemptMs:15,terminalAttemptMs:15,lifecycle:{},
+ const activity=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},cleanupAttemptMs:15,terminalAttemptMs:15,lifecycle:{...{pollMs:100},},
   runOwner:{async load(){return {run,request,capabilities:{generalReads:true,governedIntents:true}};},async append(){}},
   prepareRuntime:async()=>({binding,versions,cwd:`/workspace/${binding.conversationId}`,proxyUrl:'https://synthetic.invalid',proxyCredential:'synthetic',model:'qualified-model-pin',
    sessionStore:{load(){},append(){}},deadlineMs:Date.now()+deadlineOffsetMs,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024}),

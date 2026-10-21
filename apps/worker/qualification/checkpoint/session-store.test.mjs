@@ -25,7 +25,7 @@ function fixture(overrides = {}, options = {}) {
     return method === 'append' ? backend.append(request.key, request.entries) : backend[method](request.key);
   }]));
   Object.assign(transport, overrides);
-  return { backend, calls, ...createRunBoundSessionStore({ binding, sessionKey: key, transport, ...options }) };
+  return { backend, calls, ...createRunBoundSessionStore({...{timeoutMs:5000,}, binding, sessionKey: key, transport, ...options }) };
 }
 
 test('pinned SDK interface roundtrips unknown/compaction fields and repeated UUID-less entries', async () => {
@@ -243,7 +243,7 @@ test('captured normal keys and class dependency methods stay stable after caller
     marker = 'receiver';
   }
   const transport = new Transport(), mutableKey = { ...key };
-  const f = createRunBoundSessionStore({ binding, sessionKey: mutableKey, transport });
+  const f = createRunBoundSessionStore({...{timeoutMs:5000,}, binding, sessionKey: mutableKey, transport });
   const call = f.store.append(mutableKey, main);
   mutableKey.projectKey = 'foreign-project';
   transport.append = () => assert.fail('replacement method cannot run');

@@ -1,4 +1,5 @@
 /** Durable control delivery for one existing activity/query, never a model or workflow loop. */
+import {HOP} from '../../../../packages/runtime/hot-path-budgets.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -15,11 +16,11 @@ export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
  * tick" and the next read waits first: 0.5, 1, 2, 4 s, then 5 s at most. Control not answering within the read's allowance
  * (DEADLINE) is skipped for as long as the run lives. NATIVE_UNAVAILABLE is skipped at most twice in a row, because the native
  * client reports control's definitive authority refusal with the same code, so a revocation still ends the run on the third read. */
-export const LIFECYCLE_READ_BACKOFF_MS=Object.freeze({first:500,max:5000});
+export const LIFECYCLE_READ_BACKOFF_MS=Object.freeze({first:HOP['continuation.read.backoff.first'].ms,max:HOP['continuation.read.backoff.max'].ms});
 export const LIFECYCLE_READ_UNAVAILABLE_LIMIT=2;
 export const lifecycleReadBackoffMs=missed=>Math.min(LIFECYCLE_READ_BACKOFF_MS.max,LIFECYCLE_READ_BACKOFF_MS.first*2**Math.min(missed-1,4));
 export function assertLifecycleConfiguration(config,runOwner) {
- const {captureCheckpoint,captureCompletion,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
+ const {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose=false}=own(config,['captureCheckpoint','pollMs'],['captureCompletion','captureOwnsClose']);
  if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||captureCompletion!==undefined&&typeof captureCompletion!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
  ['nextControls','claimControl','ackControl','recordCheckpoint'].some(k=>typeof runOwner[k]!=='function'))throw fault('LIFECYCLE_CONFIGURATION');
  return {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose};
@@ -103,7 +104,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   await pumping;abort.abort();
   if(fenced&&!held)heldResult.reject(error??fault('HOLD_UNSETTLED'));
   // A dispatched but unacknowledged UUID remains UNKNOWN, never re-enqueued.
-  for(const entry of pending.values()){const cleanup=createOperationLifetime({deadlineMs:now()+100,now,errorFactory:fault});
+  for(const entry of pending.values()){const cleanup=createOperationLifetime({deadlineMs:now()+HOP['continuation.cleanup.ack'].ms,now,errorFactory:fault});
    try{await cleanup.run(signal=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,commandSha256:entry.commandSha256,outcome:'UNKNOWN'},signal}));}
    catch{}finally{cleanup.close();pending.delete(entry.command.controlId);}}
   poll.close();if(!keepInputOpen)input.close();

@@ -1,7 +1,7 @@
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 /** Independent bounded cleanup attempts. A timeout never proves physical stop; native retirement remains the stop owner. */
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {BROWSER_CLEANUP_MS} from './browser/lifecycle.mjs';
-export const CLEANUP_ATTEMPT_MS=3000;
+export const CLEANUP_ATTEMPT_MS=fixedHotPathBudget('activity.cleanup.attempt');
 export async function attemptCleanup(operation,{now,timeoutMs,onFailure}){
  let life;
  try{life=createOperationLifetime({deadlineMs:now()+timeoutMs,now,errorFactory:code=>Object.assign(Error(code),{code})});await life.run(operation);return true;}
@@ -14,6 +14,6 @@ export async function cleanupConversation({skillRuntime,readRuntime,intentRuntim
   ()=>controls?.close(),()=>input?.close(),closeQuery])if(!await attemptCleanup(operation,{now,timeoutMs,onFailure}))known=false;
  // An unconfirmed query close cannot block egress revocation. The browser owner separately proves process exit before profile deletion.
  // Preserve its full existing cleanup budget rather than racing it with the shorter SDK/resource budget.
- if(!await attemptCleanup(()=>browserRun?.settle({outcome:browserOutcome}),{now,timeoutMs:BROWSER_CLEANUP_MS.max+1000,onFailure}))known=false;
+ if(!await attemptCleanup(()=>browserRun?.settle({outcome:browserOutcome}),{now,timeoutMs:fixedHotPathBudget('browser.cleanup.settle'),onFailure}))known=false;
  return known;
 }

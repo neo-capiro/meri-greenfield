@@ -27,7 +27,7 @@ async function fixture(t,{table=TABLE,domains=DOMAINS,expiresAtMs=clock()+60000,
  const resolve=async name=>{lookups.push(name);const v=table[name];if(!v)throw new Error('NXDOMAIN');return typeof v==='function'?v():v;};
  const control=custom??createBashEgressControl({domains,resolve,now,expiresAtMs});
  const decisions=[];
- const proxy=await startEgressProxy({control,dial,httpPort:0,...(control.admitSocks?{socksPort:0}:{}),onDecision:d=>decisions.push(d),limits:{admitMs:2000,connectMs:2000,idleMs:5000}});
+ const proxy=await startEgressProxy({limits:{admitMs:10000,idleMs:120000,connectMs:10000},control,dial,httpPort:0,...(control.admitSocks?{socksPort:0}:{}),onDecision:d=>decisions.push(d),limits:{admitMs:2000,connectMs:2000,idleMs:5000}});
  t.after(async()=>{await proxy.close();web.close();echo.close();});
  return {proxy,dials,lookups,decisions,control};
 }
@@ -147,7 +147,7 @@ test('revocation at an admitted decision never dials an HTTP or CONNECT upstream
  for(const kind of ['http','connect']){
   let proxy,dials=0;
   const control={async admitProxyRequest(){return {ok:true,connect:{address:'93.184.215.14',port:80}};},revoke(){return {revoked:true};}};
-  proxy=await startEgressProxy({control,dial:()=>{dials++;return new Socket();},onDecision:decision=>{if(decision.ok)proxy.revoke();}});
+  proxy=await startEgressProxy({limits:{admitMs:10000,idleMs:120000,connectMs:10000},control,dial:()=>{dials++;return new Socket();},onDecision:decision=>{if(decision.ok)proxy.revoke();}});
   t.after(()=>proxy.close());
   if(kind==='http')await get(proxy,'http://records.example/').catch(()=>{});
   else await tunnel(proxy,'records.example:443').catch(()=>{});
@@ -164,12 +164,12 @@ test('the browser run control is enforced by the same proxy: allowlisted origins
  const unlisted=await tunnel(proxy,'unlisted.example:443');assert.equal(unlisted.status,403);assert.equal(unlisted.refusal,'BROWSER_ORIGIN_NOT_ALLOWED');
  const metadata=await get(proxy,'http://169.254.169.254/');assert.equal(metadata.status,403);
  assert.deepEqual(dials,['93.184.215.14:443']);
- await assert.rejects(startEgressProxy({control,socksPort:0}),e=>e.code==='EGRESS_PROXY_CONFIGURATION','no SOCKS listener for a control without SOCKS admission');
+ await assert.rejects(startEgressProxy({limits:{admitMs:10000,idleMs:120000,connectMs:10000},control,socksPort:0}),e=>e.code==='EGRESS_PROXY_CONFIGURATION','no SOCKS listener for a control without SOCKS admission');
 });
 
 test('the proxy listens on loopback only, dials IP literals only, and the Bash runtime fact binds its ports to the domain list',async t=>{
  const control=createBashEgressControl({domains:DOMAINS,resolve:async()=>[],now:clock,expiresAtMs:clock()+1});
- await assert.rejects(startEgressProxy({control,host:'0.0.0.0'}),e=>e.code==='EGRESS_PROXY_CONFIGURATION');
+ await assert.rejects(startEgressProxy({limits:{admitMs:10000,idleMs:120000,connectMs:10000},control,host:'0.0.0.0'}),e=>e.code==='EGRESS_PROXY_CONFIGURATION');
  assert.throws(()=>dialAddress({address:'records.example',port:443}),e=>e.code==='EGRESS_DIAL_REFUSED');
  const {fact,proxy}=await startBashEgress({domains:['records.example'],expiresAtMs:clock()+60000,now:clock,resolve:async()=>['93.184.215.14'],dial:()=>{throw new Error('no dial in this case');}});
  t.after(()=>proxy.close());
@@ -182,11 +182,11 @@ test('the proxy listens on loopback only, dials IP literals only, and the Bash r
 test('a stalled or failed upstream connect returns a refusal and leaves no late timeout crash',async t=>{
  const control=createBashEgressControl({domains:['records.example'],resolve:async()=>['93.184.215.14'],now:clock,expiresAtMs:clock()+60000});
  let stalled;
- const proxy=await startEgressProxy({control,dial:()=>{stalled=new Socket();return stalled;},limits:{connectMs:20,admitMs:1000,idleMs:1000}});
+ const proxy=await startEgressProxy({limits:{admitMs:10000,idleMs:120000,connectMs:10000},control,dial:()=>{stalled=new Socket();return stalled;},limits:{connectMs:20,admitMs:1000,idleMs:1000}});
  t.after(()=>proxy.close());
  const response=await tunnel(proxy,'records.example:443');
  assert.equal(response.status,502);assert.equal(response.refusal,'EGRESS_CONNECT_FAILED');assert.equal(stalled.destroyed,true);
- const failed=await startEgressProxy({control:createBashEgressControl({domains:['records.example'],resolve:async()=>['93.184.215.14'],now:clock,expiresAtMs:clock()+60000}),
+ const failed=await startEgressProxy({limits:{admitMs:10000,idleMs:120000,connectMs:10000},control:createBashEgressControl({domains:['records.example'],resolve:async()=>['93.184.215.14'],now:clock,expiresAtMs:clock()+60000}),
   dial:()=>{const socket=new Socket();queueMicrotask(()=>socket.emit('error',new Error('synthetic connect failure')));return socket;},
   limits:{connectMs:20,admitMs:1000,idleMs:1000}});
  t.after(()=>failed.close());
@@ -199,7 +199,7 @@ test('failure to bind the SOCKS listener closes the already-bound HTTP listener'
  const reservation=netServer();await once(reservation.listen(0,'127.0.0.1'),'listening');const port=reservation.address().port;
  await new Promise(resolve=>reservation.close(resolve));
  const control=createBashEgressControl({domains:['records.example'],resolve:async()=>['93.184.215.14'],now:clock,expiresAtMs:clock()+60000});
- await assert.rejects(startEgressProxy({control,httpPort:port,socksPort:port}),e=>e.code==='EADDRINUSE');
+ await assert.rejects(startEgressProxy({limits:{admitMs:10000,idleMs:120000,connectMs:10000},control,httpPort:port,socksPort:port}),e=>e.code==='EADDRINUSE');
  assert.deepEqual(await new Promise(resolve=>{const socket=connect({host:'127.0.0.1',port});socket.once('connect',()=>{socket.destroy();resolve('listening');});socket.once('error',e=>resolve(e.code));}), 'ECONNREFUSED');
  assert.deepEqual(await control.admit({host:'records.example',port:443}),{ok:false,code:'BASH_EGRESS_REVOKED'});
 });

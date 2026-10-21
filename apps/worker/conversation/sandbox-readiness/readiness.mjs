@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** Worker-host readiness for SDK-sandboxed Bash, run by the runtime preparation owner on the disposable worker host.
  * It measures; it does not qualify. A `ready` report is local evidence that the SDK sandbox started on this host
@@ -28,7 +29,7 @@ const NAMESPACE_BASE=Object.freeze(['--ro-bind','/','/','--dev','/dev','--unshar
 export const namespaceProbeArgs=(freshProc,node)=>[...NAMESPACE_BASE,...(freshProc?['--proc','/proc']:[]),'--',node,'-e','0'];
 /** @typedef {{findExecutable:(name:string)=>string|undefined,runProbe:(command:string,args:string[])=>Promise<boolean>,exists:(path:string)=>boolean,makeTempDir:(label:string)=>string,removeDir:(path:string)=>void,query:(args:any)=>any,sdkVersion:string,nodePath:string,pathEnv:string}} ReadinessPorts */
 /** Quiet window after initialisation in which any contrary frame still refuses; bounded cleanup wait after close. */
-export const OBSERVE_MS=1000,CLEANUP_MS=5000;
+export const OBSERVE_MS=fixedHotPathBudget('sandbox.observe'),CLEANUP_MS=fixedHotPathBudget('sandbox.cleanup');
 /** @param {number} ms @param {string} code */
 const timeout=(ms,code)=>{
  /** @type {ReturnType<typeof setTimeout>|undefined} */
@@ -49,7 +50,7 @@ const pause=ms=>{
  * frame and failure observed, including those during the deliberate shutdown (`startup-observation.mjs`).
  * @param {ReadinessPorts} ports @param {{weakerNestedSandbox:boolean,protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs:number,observeMs?:number,cleanupMs?:number}} input
  * @returns {Promise<import('./startup-observation.mjs').StartupVerdict>} */
-export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protectedPaths,deadlineMs,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS}){
+export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protectedPaths,deadlineMs,observeMs,cleanupMs}){
  const workspace=ports.makeTempDir('workspace'),config=ports.makeTempDir('config');
  const controller=new AbortController(),seen=createStartupObservation();
  /** @type {()=>void} */let release=()=>{};const hold=new Promise(resolve=>{release=()=>resolve(undefined);});
@@ -84,7 +85,8 @@ export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protecte
  return seen.verdict();
 }
 /** @param {ReadinessPorts} ports @param {{protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs?:number,observeMs?:number,cleanupMs?:number}} [options] */
-export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs=30000,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS}={}){
+export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs,observeMs,cleanupMs}={}){
+ if(![deadlineMs,observeMs,cleanupMs].every(value=>Number.isSafeInteger(value)&&value>0))throw Error('READINESS_CONFIGURATION');
  const bwrap=ports.findExecutable('bwrap'),socat=ports.findExecutable('socat');
  const freshProc=bwrap?await ports.runProbe(bwrap,namespaceProbeArgs(true,ports.nodePath)):false;
  const withoutProc=bwrap&&!freshProc?await ports.runProbe(bwrap,namespaceProbeArgs(false,ports.nodePath)):freshProc;

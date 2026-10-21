@@ -20,7 +20,7 @@ async function run(frames,{publishMs=40,runtime:extra,modelDeadlineInMs}={}){
  const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
  const published=[];let n=500;
  const runOwner={...f.runOwner,async append(value){if(value.event.type==='message.delta'){published.push(value.event.data);await new Promise(resolve=>setTimeout(resolve,publishMs));}return f.runOwner.append(value);}};
- const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(extra),query:()=>({async *[Symbol.asyncIterator](){yield* frames;},close(){}}),newId:()=>id(n++),
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>runtime(extra),query:()=>({async *[Symbol.asyncIterator](){yield* frames;},close(){}}),newId:()=>id(n++),
   modelDeadlineMs:modelDeadlineInMs===undefined?undefined:Date.now()+modelDeadlineInMs});
  try{const outcome=await execute({binding}).then(value=>value,error=>({error:error.message}));const history=await f.service.history({credential:f.credential});
   return {outcome,published,history,deltas:history.events.filter(e=>e.type==='message.delta').map(e=>e.data),state:history.run.state};}

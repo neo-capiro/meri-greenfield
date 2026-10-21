@@ -43,7 +43,7 @@ test('unconvertible/widened schemas fail configuration; union, required and arra
 });
 test('contacts canonical bytes and receipt hashes are preserved with a separate deferred-tool notice',async()=>{
  const f=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
- const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs});
+ const runtime=await createGeneralReadRuntime({timeoutMs:60000,binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs});
  const client=new Client({name:'synthetic',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  try{
   await runtime.sdkOptions.mcpServers.meri_reads.instance.connect(a);await client.connect(b);
@@ -63,7 +63,7 @@ test('contacts guidance counts toward the complete model-visible output limit',a
  const canonical=await measurement.execute('synthetic:measure-canonical');
  // Measuring must not spend or alter the tested run's durable allocation.
  const f=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
- const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs,
+ const runtime=await createGeneralReadRuntime({timeoutMs:60000,binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs,
   skill:{allowedOperations:[f.operation],budgets:{maxToolCalls:24,maxOutputBytes:Buffer.byteLength(canonical)}}});
  const client=new Client({name:'synthetic-output-bound',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  try{

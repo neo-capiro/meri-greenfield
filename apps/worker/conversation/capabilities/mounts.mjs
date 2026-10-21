@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 // @ts-check
 /** G3: the run's profile-bound MCP mounts. When the effective capability policy enables general reads or governed intents, the
  * `meri_reads` / `meri_intents` server mounts the profile's fixed active tool list (`mount:'profile'` in reads/runtime.mjs and
@@ -24,9 +25,9 @@ export const UNAVAILABLE_INTENT_PORT=Object.freeze({async readAvailability(){thr
 export async function createProfileMounts(c){
  const shared={binding:c.binding,scopes:c.scopes,policy:c.policy,now:c.now,deadlineMs:c.deadlineMs,mount:/** @type {const} */('profile'),...(c.expectedSessionId===undefined?{}:{expectedSessionId:c.expectedSessionId}),...(c.signal===undefined?{}:{signal:c.signal})};
  // The run's admitted budgets bound only the early read ledger (never the SDK options), so the measured template is unchanged.
- const reads=c.policy?.generalReads===true?await createGeneralReadRuntime({...shared,port:c.generalReads??UNAVAILABLE_READ_PORT,...(c.skill===undefined?{}:{skill:c.skill}),exclude:c.exclude??[],...(c.runBudgets===undefined?{}:{runBudgets:c.runBudgets})}):null;
+ const reads=c.policy?.generalReads===true?await createGeneralReadRuntime({...shared,timeoutMs:fixedHotPathBudget('reads.runtime.max'),port:c.generalReads??UNAVAILABLE_READ_PORT,...(c.skill===undefined?{}:{skill:c.skill}),exclude:c.exclude??[],...(c.runBudgets===undefined?{}:{runBudgets:c.runBudgets})}):null;
  let intents=null;
- try{intents=c.policy?.governedIntents===true?await createIntentRuntime({...shared,port:c.governedIntents??UNAVAILABLE_INTENT_PORT}):null;}
+ try{intents=c.policy?.governedIntents===true?await createIntentRuntime({...shared,timeoutMs:fixedHotPathBudget('intents.runtime.max'),port:c.governedIntents??UNAVAILABLE_INTENT_PORT}):null;}
  catch(error){await reads?.close();throw error;}
  return {reads,intents};
 }

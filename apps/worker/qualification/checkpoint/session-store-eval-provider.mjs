@@ -27,7 +27,7 @@ export default class SessionStoreQualificationProvider {
       load: request => backend.load(request.key),
       listSubkeys: request => backend.listSubkeys(request.key),
     };
-    const client = createRunBoundSessionStore({ binding, sessionKey: key, transport });
+    const client = createRunBoundSessionStore({...{timeoutMs:5000,}, binding, sessionKey: key, transport });
     const output = { scenario, errors: [] };
     const attempt = async operation => { try { return await operation(); } catch (error) { output.errors.push(error.code); return null; } };
     if (scenario === 'foreign-session') {

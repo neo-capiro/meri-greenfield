@@ -2,7 +2,7 @@
 import {query as sdkQuery} from '@anthropic-ai/claude-agent-sdk';
 import {randomUUID,createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {RUNNER_LOAD_STAGE_MAX_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {RUNNER_LOAD_STAGE_MAX_MS,ACTIVITY_PREPARATION_MAX_MS,HOP} from '../../../packages/runtime/hot-path-budgets.mjs';
 import {validateShape,canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertSkillManifest} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
@@ -27,18 +27,18 @@ const fault=code=>Object.assign(new Error(code),{code});
 const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory']);
 /** Acknowledgement bound for one terminal publication attempt: the control service's default per-request bound. Terminal
  * settlement makes at most two rounds over the (at most two) candidate events, so it is finite (here at most 12 s). */
-export const TERMINAL_ATTEMPT_MS=3000;
+export const TERMINAL_ATTEMPT_MS=HOP['runner.terminal.attempt'].ms;
 /** Text one folded `message.delta` publication carries at most: even fully JSON-escaped it stays inside the 128 KiB event bound. */
 export const DELTA_FOLD_MAX_BYTES=16384;
 // A streamed text delta outside any subagent; only these fold, and only with deltas of the same content block.
 const textDelta=m=>m?.type==='stream_event'&&!m.parent_tool_use_id&&m.event?.type==='content_block_delta'&&m.event.delta?.type==='text_delta';
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs,cleanupAttemptMs,loadMaxMs,loadExpiresAtMs,runtimeMaxMs,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
  // Optional trusted observers cannot affect execution, publication or bounded cleanup.
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
- if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
- if(!Number.isSafeInteger(cleanupAttemptMs)||cleanupAttemptMs<1||cleanupAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
+ if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>ACTIVITY_PREPARATION_MAX_MS)throw fault('ACTIVITY_CONFIGURATION');
+ if(!Number.isSafeInteger(cleanupAttemptMs)||cleanupAttemptMs<1||cleanupAttemptMs>ACTIVITY_PREPARATION_MAX_MS)throw fault('ACTIVITY_CONFIGURATION');
  if(!Number.isSafeInteger(loadMaxMs)||loadMaxMs<1||loadMaxMs>RUNNER_LOAD_STAGE_MAX_MS||loadExpiresAtMs!==undefined&&!Number.isSafeInteger(loadExpiresAtMs))throw fault('ACTIVITY_CONFIGURATION');
- if(!Number.isSafeInteger(runtimeMaxMs)||runtimeMaxMs<1||runtimeMaxMs>30000||runtimeExpiresAtMs!==undefined&&!Number.isSafeInteger(runtimeExpiresAtMs)||setupBudget!==undefined&&(!Number.isSafeInteger(setupBudget.maxMs)||setupBudget.maxMs<1||setupBudget.maxMs>30000||!Number.isSafeInteger(setupBudget.expiresAtMs)))throw fault('ACTIVITY_CONFIGURATION');
+ if(!Number.isSafeInteger(runtimeMaxMs)||runtimeMaxMs<1||runtimeMaxMs>ACTIVITY_PREPARATION_MAX_MS||runtimeExpiresAtMs!==undefined&&!Number.isSafeInteger(runtimeExpiresAtMs)||setupBudget!==undefined&&(!Number.isSafeInteger(setupBudget.maxMs)||setupBudget.maxMs<1||setupBudget.maxMs>ACTIVITY_PREPARATION_MAX_MS||!Number.isSafeInteger(setupBudget.expiresAtMs)))throw fault('ACTIVITY_CONFIGURATION');
  if(executionDeadlineMs!==undefined&&(!Number.isSafeInteger(executionDeadlineMs)||executionDeadlineMs<1))throw fault('ACTIVITY_CONFIGURATION');
  if(modelDeadlineMs!==undefined&&(!Number.isSafeInteger(modelDeadlineMs)||modelDeadlineMs<1||executionDeadlineMs!==undefined&&modelDeadlineMs>=executionDeadlineMs))throw fault('ACTIVITY_CONFIGURATION');
  if(lifecycle!==undefined)assertLifecycleConfiguration(lifecycle,runOwner);
@@ -99,7 +99,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    options.systemPrompt+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
     setupLife?.check();setupLife?.close();setupLife=undefined;
     diagnostic('stage','activity-running');await publish('run.status',{state:'running',reasonCode:null});
-   heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();
+   heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},HOP['activity.heartbeat'].ms);heartbeatTimer.unref?.();
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.
     diagnostic('stage','activity-query');modelLife=modelDeadlineMs===undefined?null:createOperationLifetime({deadlineMs:Math.min(modelDeadlineMs,runtime.deadlineMs-terminalAttemptMs),now,signal:life.signal,errorFactory:fault});if(lifecycle!==undefined)input=createConversationInput({requestId:saved.request.requestId,prompt:saved.request.prompt});
    stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');const iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId),progressParts=createProgressProjector({policy,newId});

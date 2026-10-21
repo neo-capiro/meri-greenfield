@@ -14,7 +14,7 @@ async function setup(c={}){
  const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});let n=200,calls=0;const seen={};
  const runOwner={load:async a=>{const saved=await f.runOwner.load(a);return 'capabilities' in c?{...saved,capabilities:c.capabilities}:saved;},append:a=>c.append?c.append(a.event,()=>f.runOwner.append(a)):f.runOwner.append(a)};
  const query=args=>{calls++;seen.options=args.options;return {async *[Symbol.asyncIterator](){for(const [index,frame] of frames.entries()){if(index===(c.duringAt??frames.length-1))await c.during?.(args.options);yield frame;}},close(){}};};
- const execute=createConversationActivity({runOwner,prepareRuntime:async()=>({...runtime(),...c.runtimeFacts}),query,newId:()=>id(n++)});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>({...runtime(),...c.runtimeFacts}),query,newId:()=>id(n++)});
  return {...f,execute,seen,calls:()=>calls,history:()=>f.service.history({credential:f.credential})};
 }
 const texts=h=>h.events.filter(e=>e.type==='message.delta').map(e=>e.data.text);

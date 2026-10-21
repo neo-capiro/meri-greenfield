@@ -30,7 +30,7 @@ function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,en
   if(!mode&&action!=='steer'){await stop.promise;return;}
   yield success;if(park)await new Promise(()=>{});
  },async interrupt(){state.interrupts++;return {still_queued:[]};},close(){state.closed++;stop.resolve();}};};
- const execute=createConversationActivity({runOwner,prepareRuntime,query,lifecycle:{captureCheckpoint,pollMs:5}});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime,query,lifecycle:{...{pollMs:100},captureCheckpoint,pollMs:5}});
  return {state,execute,binding,entry,saved,runOwner,captureCheckpoint,prepareRuntime,query,sessionId};
 }
 test('actual activity streams literal composed UUID inputs, claims once, observes exact echo and closes terminal input',async()=>{const f=fixture({park:true});assert.deepEqual(await f.execute({binding:f.binding}),{state:'completed'});assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);assert.equal(f.state.claims,1);assert.equal(f.state.messages[0].uuid,f.saved.request.requestId);assert.equal(f.state.messages[1].client_composed,true);assert.equal(f.state.messages[1].message.content,f.entry.command.prompt);assert.deepEqual(f.state.acks,[{controlId:f.entry.command.controlId,commandSha256:f.entry.commandSha256,outcome:'APPLIED',sdkUserMessageId:f.entry.command.controlId}]);});
@@ -40,7 +40,7 @@ for(const action of ['pause','waitForApproval'])test(`${action}: SDK interrupt/c
 for(const mode of ['resume','fork'])test(`${mode}: actual activity passes pinned native restore before one supported SDK query`,async()=>{const f=fixture({mode});await f.execute({binding:f.binding});assert.equal(f.state.prepare.continuation.mode,mode);assert.equal(f.state.options.resume,f.saved.continuation.checkpoint.sessionId);assert.equal(f.state.options.forkSession,mode==='fork'?true:undefined);assert.equal(f.state.options.sessionId,mode==='fork'?f.saved.continuation.targetSessionId:undefined);assert.deepEqual(f.state.options.settingSources,[]);assert.deepEqual(f.state.options.tools,[]);assert.equal(f.state.options.permissionMode,'default');assert.equal(f.state.closed,1);});
 for(const key of ['checkpointSha256','workspaceSha256','opaqueSessionSha256','contextSha256','sourceRequestSha256','binding','scopes','checkedAtMs','expiresAtMs'])test(`native restore ${key} substitution refuses before SDK`,async()=>{const f=fixture({mode:'resume',corrupt(r,stage){if(stage!=='restore')return;r[key]=key==='binding'?{...r.binding,workerId:id(200)}:key==='scopes'?[]:key==='checkedAtMs'?0:key==='expiresAtMs'?0:'e'.repeat(64);}});await assert.rejects(f.execute({binding:f.binding}));assert.equal(f.state.calls,0);});
 for(const key of ['checkpointSha256','workspaceReadbackSha256','opaqueSessionReadbackSha256','sourceRequestSha256','contextSha256','sessionId','checkedAtMs','expiresAtMs'])test(`native capture ${key} substitution refuses checkpoint ACK, retains UNKNOWN and fails the hold explicitly`,async()=>{const f=fixture({action:'pause',corrupt(r,stage){if(stage!=='capture')return;r[key]=key==='checkedAtMs'||key==='expiresAtMs'?0:key==='sessionId'?id(200):'e'.repeat(64);}});await assert.rejects(f.execute({binding:f.binding}));assert.equal(f.state.records,0);assert.equal(f.state.acks[0].outcome,'UNKNOWN');assert.deepEqual(f.state.events.filter(e=>['completed','failed'].includes(e.data.state)).map(e=>e.data),[{state:'failed',reasonCode:'HOLD_CHECKPOINT_FAILED'}]);});
-test('invalid lifecycle ports fail before invoking SDK',()=>{const f=fixture();assert.throws(()=>createConversationActivity({runOwner:{load:f.runOwner.load,append:f.runOwner.append},prepareRuntime:f.prepareRuntime,query:f.query,lifecycle:{captureCheckpoint:f.captureCheckpoint}}));assert.equal(f.state.calls,0);});
+test('invalid lifecycle ports fail before invoking SDK',()=>{const f=fixture();assert.throws(()=>createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:{load:f.runOwner.load,append:f.runOwner.append},prepareRuntime:f.prepareRuntime,query:f.query,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint}}));assert.equal(f.state.calls,0);});
 for(const [name,change] of Object.entries({uuid:m=>m.uuid=id(300),replay:m=>m.isReplay=true,subagent:m=>m.parent_tool_use_id='tool_child'}))test(`SDK ${name} echo cannot acknowledge this dispatched control`,async()=>{const f=fixture({echoChange:change});await f.execute({binding:f.binding});assert.equal(f.state.acks.length,1);assert.equal(f.state.acks[0].outcome,'UNKNOWN');});
 for(const [name,change] of Object.entries({text:m=>m.message.content='Changed',session:m=>m.session_id=id(300)}))test(`SDK ${name} echo substitution refuses APPLIED`,async()=>{const f=fixture({echoChange:change});await assert.rejects(f.execute({binding:f.binding}));assert.equal(f.state.acks[0].outcome,'UNKNOWN');assert.equal(f.state.closed,1);});
 for(const [name,change] of Object.entries({hash:e=>e.commandSha256='e'.repeat(64),binding:e=>{e.command.binding={...e.command.binding,attemptId:id(300)};e.commandSha256=canonicalSha256(e.command);},context:e=>{e.command.contextSha256='e'.repeat(64);e.commandSha256=canonicalSha256(e.command);},sequence:e=>e.controlSequence=0}))test(`journal ${name} substitution refuses before claim/delivery`,async()=>{const f=fixture({entryChange:change});await assert.rejects(f.execute({binding:f.binding}));assert.equal(f.state.claims,0);assert.equal(f.state.messages.length,1);assert.equal(f.state.closed,1);});
@@ -49,7 +49,7 @@ test('checkpoint persistence refusal never claims a paused run and fails the hol
 
 test('SDK failure before init closes promptly without waiting for an unused control reader',async()=>{
  const f=fixture(),started=Date.now();let closed=0;
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint},query(){return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'mirror_error',error:'synthetic'};},close(){closed++;}};}});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint},query(){return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'mirror_error',error:'synthetic'};},close(){closed++;}};}});
  await assert.rejects(execute({binding:f.binding}),/EXECUTION_FAILED/);assert.equal(closed,1);assert(Date.now()-started<500);assert.equal(f.state.claims,0);
 });
 
@@ -60,7 +60,7 @@ test('a display publication refused by a hold the reader has not yet seen is fen
  f.runOwner.claimControl=async args=>{claims++;return claim(args);};
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){hold=true;refused++;throw Object.assign(Error('NATIVE_UNAVAILABLE'),{code:'NATIVE_UNAVAILABLE'});}f.state.events.push(event);};
  const text=(id,t)=>({type:'assistant',parent_tool_use_id:null,message:{id,content:[{type:'text',text:t},{type:'text',text:t+' again'}]}});
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query(){return {async *[Symbol.asyncIterator](){
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint,pollMs:5},query(){return {async *[Symbol.asyncIterator](){
   yield {type:'system',subtype:'init',session_id:f.sessionId};yield text('m1','refused');yield text('m2','suppressed');await stop.promise;},async interrupt(){f.state.interrupts++;return {still_queued:[]};},close(){f.state.closed++;stop.resolve();}};}});
  assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
  assert.equal(refused,1,'no further display publication after the first refusal');assert.equal(claims,1);assert.equal(f.state.records,1);assert.equal(f.state.interrupts,1);
@@ -106,7 +106,7 @@ test('a fenced read that does not answer stays fatal: a refused publication must
  f.runOwner.nextControls=async()=>{if(hold)throw unanswered('DEADLINE');return [];};
  f.runOwner.claimControl=async()=>{claims++;throw Error('no claim expected');};
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){hold=true;throw unanswered('NATIVE_UNAVAILABLE');}f.state.events.push(event);};
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query(){return {async *[Symbol.asyncIterator](){
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint,pollMs:5},query(){return {async *[Symbol.asyncIterator](){
   yield {type:'system',subtype:'init',session_id:f.sessionId};yield {type:'assistant',parent_tool_use_id:null,message:{id:'m1',content:[{type:'text',text:'refused'}]}};await stop.promise;},async interrupt(){return {still_queued:[]};},close(){stop.resolve();}};}});
  await assert.rejects(execute({binding:f.binding}));
  assert.equal(claims,0);assert.equal(f.state.records,0);
@@ -125,7 +125,7 @@ test('a refused publication of streamed deltas fences: the deltas read ahead are
  const f=fixture({action:'pause'});let hold=false,emitted=false,refused=0;const stop=Promise.withResolvers();
  f.runOwner.nextControls=async()=>{if(!hold||emitted)return [];emitted=true;return [f.entry];};
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){hold=true;refused++;throw unanswered('NATIVE_UNAVAILABLE');}f.state.events.push(event);};
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
  assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
  assert.equal(refused,1,'one refused publication, then nothing');assert.equal(f.state.claims,1);assert.equal(f.state.records,1);
  assert.deepEqual(f.state.events.map(e=>e.data.state),['starting','running']);
@@ -136,7 +136,7 @@ test('a hold claimed while a delta publication is in flight ends display output:
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){published.push(event.data.text);
    if(published.length===1){gate=true;while(f.state.claims===0)await new Promise(resolve=>setTimeout(resolve,5));await new Promise(resolve=>setTimeout(resolve,20));}}
   f.state.events.push(event);};
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
  assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
  assert.deepEqual(published,['w0 '],'only the publication in flight when the hold was claimed');assert.equal(f.state.records,1);
 });
@@ -146,7 +146,7 @@ test('a lifecycle failure while a delta publication is in flight ends the run: n
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){published.push(event.data.text);
    if(published.length===1){gate=true;while(!refused)await new Promise(resolve=>setTimeout(resolve,5));await new Promise(resolve=>setTimeout(resolve,20));}}
   f.state.events.push(event);};
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
  await assert.rejects(execute({binding:f.binding}),/EXECUTION_FAILED/);
  assert.deepEqual(published,['w0 '],'only the publication in flight when the control reader failed');assert.equal(f.state.events.at(-1).data.state,'failed');
 });
@@ -159,7 +159,7 @@ test('with a lifecycle the SDK is never read past the result, though it arrived 
   ...['w0 ','w1 ','w2 '].map(text),event({type:'content_block_stop',index:0}),{type:'assistant',parent_tool_use_id:null,message:{id:'m1',content:[{type:'text',text:'w0 w1 w2 '}]}},success];
  // After its result the SDK waits for input that never comes, as it does while the input is kept open.
  const sdk=(async function*(){yield* frames;await new Promise(()=>{});})();
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{...{pollMs:100},captureCheckpoint:f.captureCheckpoint,pollMs:5},
   query:()=>({[Symbol.asyncIterator]:()=>({next:()=>{reads++;return sdk.next();}}),async interrupt(){return {still_queued:[]};},close(){}})});
  assert.deepEqual(await execute({binding:f.binding}),{state:'completed'});
  assert.deepEqual(published,['w0 ','w1 w2 ']);assert.equal(reads,frames.length,'one read per message and none past the result');

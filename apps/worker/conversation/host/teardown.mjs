@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Source-only D005 teardown coordinator. The trusted host owner supplies the proxy, process-observer and
  * destruction ports. This module does not launch a host or turn a termination request into proof of absence.
  * In particular, observeAbsent must read the exact instance, its network interfaces and its root volume after
@@ -16,7 +17,7 @@ export const HOST_PHYSICAL_ABSENCE_SCHEMA='meri-d005-physical-absence/1';
 const HEX=/^[0-9a-f]{64}$/u;
 const VOLUME=/^vol-[0-9a-f]{8,17}$/u;
 const INTERFACE=/^eni-[0-9a-f]{8,17}$/u;
-const MAX_PHASE_MS=130000;
+const MAX_PHASE_MS=fixedHotPathBudget('host.teardown.max');
 const fault=(code,receipt)=>Object.assign(new Error(code),{code,...(receipt?{receipt}:{})});
 const fail=code=>{throw fault(code);};
 const method=(port,name)=>{if(typeof port?.[name]!=='function')fail('HOST_TEARDOWN_CONFIGURATION');return port[name].bind(port);};
@@ -62,7 +63,7 @@ function physicallyAbsent(value,{allocation,binding,identity,resources,afterMs,n
  * returns HOST_PHYSICAL_ABSENCE_SCHEMA for those exact resources from fresh
  * cloud readbacks. The ports must bind every request to the control-owned allocation and host identity, not accept
  * these values as authority from the caller. Cleanup uses independent deadlines, never the cancelled run signal. */
-export function createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,now=Date.now,localCleanupMs=30000,hostCleanupMs=30000}={}){
+export function createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,now=Date.now,localCleanupMs,hostCleanupMs}={}){
  let a,b,i,raw;
  try{a=assertHostAllocation(allocation);b=assertHostRunBinding(a,binding);i=assertD005HostIdentity(hostIdentity,b,a);raw=own(ports,['browser','bash','processes','host']);}
  catch{fail('HOST_TEARDOWN_CONFIGURATION');}

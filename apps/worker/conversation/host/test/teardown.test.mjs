@@ -44,7 +44,7 @@ function fixture(cwd,overrides={}){
  for(const [key,methods] of Object.entries(overrides))Object.assign(ports[key],methods);
  return {calls,ports,processReceipt,requestReceipt,absenceReceipt};
 }
-const make=(cwd,ports,options={})=>createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,...options});
+const make=(cwd,ports,options={})=>createConversationHostTeardown({localCleanupMs:30000,hostCleanupMs:30000,allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,...options});
 
 test('verified teardown revokes both proxies, observes actual process absence, disposes state, then proves host and volume absence',()=>workspace(async cwd=>{
  const f=fixture(cwd),owner=make(cwd,f.ports),receipt=await owner.settle({reason:'conversation-end'});
@@ -102,7 +102,7 @@ test('a hung process observer is bounded; host destruction is still attempted an
 
 test('invalid host binding and missing trusted ports refuse before cleanup',()=>workspace(async cwd=>{
  const f=fixture(cwd);
- assert.throws(()=>createConversationHostTeardown({allocation:{...allocation,conversationId:'00000000-0000-4000-8000-000000000000'},
+ assert.throws(()=>createConversationHostTeardown({localCleanupMs:30000,hostCleanupMs:30000,allocation:{...allocation,conversationId:'00000000-0000-4000-8000-000000000000'},
   binding,hostIdentity,cwd,browserPolicySha256,ports:f.ports}),e=>e.code==='HOST_TEARDOWN_CONFIGURATION');
  assert.throws(()=>make(cwd,{...f.ports,host:{destroy:async()=>({requested:true})}}),e=>e.code==='HOST_TEARDOWN_CONFIGURATION');
  await assert.rejects(make(cwd,f.ports).settle({reason:'recycle'}),e=>e.code==='HOST_TEARDOWN_CONFIGURATION');

@@ -20,7 +20,7 @@ function ports({bwrap=true,socat=true,fresh=true,nested=true,managed=false,mode=
 }
 
 test('a ready host runs the SDK startup with the exact product sandbox settings and never sends a user message',async()=>{
- const {ports:p,seen}=ports();const report=await checkSandboxReadiness(p,{deadlineMs:2000});
+ const {ports:p,seen}=ports();const report=await checkSandboxReadiness(p,{observeMs:1000,cleanupMs:5000,deadlineMs:2000});
  assert.equal(report.ready,true);assert.deepEqual(report.sdkStartup,{status:'ready',reasonCode:null,userMessagesSent:0,modelTurns:0,costUsd:0,messagesObserved:0,resultsObserved:0,initialized:true,shutdown:'clean'});assert.equal(report.weakerNestedSandboxRequired,false);
  assert.match(report.scope,/^LOCAL_READINESS_ONLY/);assert.deepEqual(seen.probes,[['/usr/bin/bwrap',namespaceProbeArgs(true,'/usr/local/bin/node')]],'no second probe when a fresh /proc works');
  const o=seen.args.options,workspace=seen.dirs[0];
@@ -39,13 +39,13 @@ test('missing dependencies, a managed-settings file, an SDK refusal, a hang or a
   [{mode:'refused'},r=>assert.deepEqual(r.sdkStartup,{status:'refused',reasonCode:'SANDBOX_DEPENDENCIES_MISSING',userMessagesSent:0,modelTurns:0,costUsd:0,messagesObserved:1,resultsObserved:1,initialized:false,shutdown:'clean'})],
   [{mode:'hang'},r=>assert.equal(r.sdkStartup.status,'timeout')],
   [{sdkVersion:'0.3.296'},r=>assert.equal(r.sdkStartup.reasonCode,'SDK_VERSION_MISMATCH')]]){
-  const {ports:p,seen}=ports(opts);const r=await checkSandboxReadiness(p,{deadlineMs:200});check(r);assert.equal(r.ready,false,JSON.stringify(opts));
+  const {ports:p,seen}=ports(opts);const r=await checkSandboxReadiness(p,{observeMs:1000,cleanupMs:5000,deadlineMs:200});check(r);assert.equal(r.ready,false,JSON.stringify(opts));
   assert.equal(toBashSandboxAttestation(r,{outerIsolationBoundary:true}).available,false);assert.deepEqual(seen.removed.sort(),seen.dirs.sort());
  }
 });
 
 test('a host that only runs bubblewrap without a fresh /proc needs the weaker nested sandbox, admitted only with the outer boundary assertion',async()=>{
- const {ports:p,seen}=ports({fresh:false,nested:true});const r=await checkSandboxReadiness(p,{deadlineMs:2000});
+ const {ports:p,seen}=ports({fresh:false,nested:true});const r=await checkSandboxReadiness(p,{observeMs:1000,cleanupMs:5000,deadlineMs:2000});
  assert.equal(r.weakerNestedSandboxRequired,true);assert.equal(r.ready,true);assert.equal(seen.args.options.sandbox.enableWeakerNestedSandbox,true);assert.equal(Object.hasOwn(seen.args.options.managedSettings.sandbox,'enableWeakerNestedSandbox'),false);
  assert.deepEqual(seen.probes.map(([,args])=>args.includes('--proc')),[true,false]);
  const without=toBashSandboxAttestation(r,{outerIsolationBoundary:false});assert.equal(without.available,false);assert.equal(without.weakerNestedSandbox,false);
@@ -63,8 +63,8 @@ test('the CLI documents usage and exit codes and refuses bad arguments before al
 });
 
 test('real pinned SDK on this host: the sandbox startup gate is exercised with no model turn and the CLI process exits',{timeout:90000},async()=>{
- const {createHostPorts}=await import('../sandbox-readiness/host-probes.mjs');const p=await createHostPorts({pathEnv:process.env.PATH??''});
- try{const r=await checkSandboxReadiness(p,{deadlineMs:30000});
+ const {createHostPorts}=await import('../sandbox-readiness/host-probes.mjs');const p=await createHostPorts({probeMs:10000,pathEnv:process.env.PATH??''});
+ try{const r=await checkSandboxReadiness(p,{observeMs:1000,cleanupMs:5000,deadlineMs:30000});
   assert.equal(r.sdk,'0.3.295');assert.equal(r.sdkStartup.userMessagesSent,0);assert.equal(r.sdkStartup.modelTurns,0);assert.ok(['ready','refused'].includes(r.sdkStartup.status),r.sdkStartup.status);
   // On a host without bubblewrap/socat (this development container) the SDK must refuse rather than run unsandboxed.
   if(!r.dependencies.bwrap||!r.dependencies.socat){assert.equal(r.sdkStartup.status,'refused');assert.equal(r.sdkStartup.reasonCode,'SANDBOX_DEPENDENCIES_MISSING');assert.equal(r.ready,false);}

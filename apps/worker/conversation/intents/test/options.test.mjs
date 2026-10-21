@@ -35,7 +35,7 @@ async function activity({capabilities,offered=true}={}){
  const runOwner={load:async a=>{const saved=await f.runOwner.load(a);return {...saved,...(capabilities?{capabilities}:{})};},append:a=>f.runOwner.append(a)};
  const governedIntents={async readAvailability(){asked++;const at=Date.now();return {binding,operations:offered?[{id:'create_task',version:'0.2.0'}]:[],checkedAtMs:at,expiresAtMs:at+60000};},async prepare(){throw Error('not called');}};
  const query=args=>{seen=args.options;return {async *[Symbol.asyncIterator](){yield {type:'result',subtype:'success',is_error:false,result:'ok'};},close(){}};};
- const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(),query,newId:()=>id(n++),governedIntents});
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner,prepareRuntime:async()=>runtime(),query,newId:()=>id(n++),governedIntents});
  return {f,run:()=>execute({binding}),options:()=>seen,asked:()=>asked};
 }
 test('the activity mounts meri_intents only when policy enables governed intents and an owner can prepare one',async()=>{
@@ -45,5 +45,5 @@ test('the activity mounts meri_intents only when policy enables governed intents
  try{await none.run();assert.equal(none.asked(),1);assert.equal(none.options().mcpServers,undefined);assert.doesNotMatch(none.options().systemPrompt,SENTENCE);}finally{none.f.close();}
  const off=await activity({capabilities:{generalReads:false}});
  try{await off.run();assert.equal(off.asked(),0,'policy off: the port is never asked');assert.equal(off.options().mcpServers,undefined);}finally{off.f.close();}
- assert.throws(()=>createConversationActivity({runOwner:{load(){},append(){}},prepareRuntime(){},governedIntents:{readAvailability(){}}}),/INTENT_ACTIVITY_CONFIGURATION/);
+ assert.throws(()=>createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:{load(){},append(){}},prepareRuntime(){},governedIntents:{readAvailability(){}}}),/INTENT_ACTIVITY_CONFIGURATION/);
 });

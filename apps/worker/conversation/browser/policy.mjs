@@ -1,3 +1,4 @@
+import {fixedHotPathBudget} from '../../../../packages/runtime/hot-path-budgets.mjs';
 /** Browser capability policy. Recorded product direction (docs/coordination/reports/DOT-REVIEW-FABLE-P1C-e0f94fe0-20261015.md,
  * "Subsequent explicit product direction — 18:39 UTC"): "the browser capability be enabled by default as the desired
  * product behavior ... This is separate from network destinations being denied by default and pre-execution controls
@@ -28,7 +29,7 @@ export const BROWSER_LIMITS=Object.freeze({actionMs:Object.freeze([1000,60000]),
 /** Platform default: capability on, every bounded tool (interactions still need per-call approval), no destinations
  * until trusted platform configuration supplies approved origins. */
 export const DEFAULT_BROWSER_POLICY=Object.freeze({enabled:true,tools:BROWSER_TOOLS,allowedOrigins:Object.freeze([]),
- timeouts:Object.freeze({actionMs:5000,navigationMs:60000}),
+ timeouts:Object.freeze({actionMs:fixedHotPathBudget('browser.action'),navigationMs:fixedHotPathBudget('browser.navigation')}),
  downloads:Object.freeze({enabled:true,formats:DOWNLOAD_FORMATS,maxBytes:BROWSER_LIMITS.maxBytes[1],maxFiles:20})});
 export const DISABLED_BROWSER_POLICY=Object.freeze({enabled:false});
 const fail=(code,field)=>{throw Object.assign(new Error(field?`${code}:${field}`:code),{code,...(field?{field}:{})});};

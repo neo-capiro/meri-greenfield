@@ -13,7 +13,7 @@ async function setup({selected=frames,policy=async()=>undefined}={}){
  let n=300,seen;const policyCalls=[];
  const r=recorders(),browser={async policy(request){policyCalls.push(request);return policy();},installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort};
  const query=args=>{seen=args.options;return {async *[Symbol.asyncIterator](){for(const frame of selected)yield frame;},close(){}};};
- const execute=createConversationActivity({runOwner:f.runOwner,query,newId:()=>id(n++),browser,
+ const execute=createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:f.runOwner,query,newId:()=>id(n++),browser,
   prepareRuntime:async()=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+2000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024})});
  return {...f,cwd,execute,policyCalls,options:()=>seen,close:async()=>{f.close();await rm(root,{recursive:true,force:true});}};
 }
@@ -43,5 +43,5 @@ test('a browser cleanup that cannot be verified surfaces as SDK_CLEANUP_UNKNOWN 
  }finally{await f.close();}
 });
 test('activity configuration refuses a browser port without a policy source',()=>{
- assert.throws(()=>createConversationActivity({runOwner:{load(){},append(){}},prepareRuntime(){},browser:{}}),/BROWSER_ACTIVITY_CONFIGURATION/);
+ assert.throws(()=>createConversationActivity({...{terminalAttemptMs:3000,cleanupAttemptMs:3000,loadMaxMs:3000,runtimeMaxMs:3000,},runOwner:{load(){},append(){}},prepareRuntime(){},browser:{}}),/BROWSER_ACTIVITY_CONFIGURATION/);
 });
