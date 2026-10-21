@@ -15,7 +15,10 @@ function resultScopes(owner,result,original){
   if(result.status!=='approval_required'||hash(result.proposal?.command?.binding)!==hash(original.binding))deny();
   return result.proposal.command.scopes;
  }
- if(owner==='document'){
+ if(owner==='artifact'&&result.status==='analysis_pending'){
+  if(hash(result.binding)!==hash(original.binding))deny();return result.scopes;
+ }
+ if(owner==='document'||owner==='artifact'){
   if(result.status!=='draft'||hash(result.version?.binding)!==hash(original.binding))deny();return result.version.scopes;
  }
  if(owner==='schedule'){

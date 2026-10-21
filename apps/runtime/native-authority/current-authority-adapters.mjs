@@ -59,6 +59,7 @@ export const POLICY_PHASES=Object.freeze(['prepare','before_release','before_rea
 /** The approval-metadata actions this policy answers and their canonical operation (approval.mjs `APPROVABLE_ACTIONS`). */
 export const POLICY_OPERATIONS=Object.freeze({'task.create':Object.freeze({id:'create_task',version:'0.2.0'})});
 export const CREDENTIAL_PURPOSES=Object.freeze(['approval.execution']);
+const LOCAL_ARTIFACT_DRAFTS=Object.freeze(['create_word','create_excel','create_powerpoint','run_analysis']);
 const RUN_STATES=Object.freeze(['queued','starting','running']);
 const TOKEN=/^[\x21-\x7e]{1,8192}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,HEX64=/^[a-f0-9]{64}$/u;
 const sha=value=>createHash('sha256').update(value).digest('hex');
@@ -111,12 +112,13 @@ function createBearerSource({nativeCredentials,readSecret,reservedFiles,secretFi
 }
 
 export function createCurrentAuthorityAdapters(configuration){
- const c=own(configuration,['origin','nativeCredentials','readSecret','reservedFiles','now'],['fetchImpl','newId','secretFiles','serviceSecretFile','coreOrigin','sourceEnabled','limits','capabilityAction']);
+ const c=own(configuration,['origin','nativeCredentials','readSecret','reservedFiles','now'],['fetchImpl','newId','secretFiles','serviceSecretFile','coreOrigin','sourceEnabled','limits','capabilityAction','localArtifactDrafts']);
  const now=c.now,newId=c.newId??randomUUID,fetchImpl=c.fetchImpl??globalThis.fetch,capabilityAction=c.capabilityAction??'tool.read';
  const limits=compileCurrentAuthorityLimits(c.limits),sourceEnabled=c.sourceEnabled??false;
  let origin,coreOrigin;
  try{for(const value of [c.origin,c.coreOrigin??c.origin]){const url=new URL(value);if(url.protocol!=='https:'||url.origin!==value||url.username||url.password||url.search||url.hash||url.pathname!=='/')throw Error();}origin=c.origin;coreOrigin=c.coreOrigin??c.origin;}
  catch{deny('GATEWAY_CONFIGURATION');}
+ if(c.localArtifactDrafts!==undefined&&typeof c.localArtifactDrafts!=='boolean')deny('GATEWAY_CONFIGURATION');
  if(!ordinary(now)||!ordinary(newId)||!ordinary(fetchImpl)||!ordinary(c.readSecret)||typeof sourceEnabled!=='boolean'||!['tool.read','command.execute'].includes(capabilityAction)||
   !Array.isArray(c.reservedFiles)||!c.reservedFiles.length||c.secretFiles!==undefined&&!Array.isArray(c.secretFiles))deny('GATEWAY_CONFIGURATION');
  const reservedFiles=Object.freeze(c.reservedFiles.map(filePath)),secretFiles=Object.freeze((c.secretFiles??[]).map(filePath)),serviceSecretFile=c.serviceSecretFile===undefined?undefined:filePath(c.serviceSecretFile);
@@ -217,7 +219,8 @@ export function createCurrentAuthorityAdapters(configuration){
    // The grant must be one of the run's ADMITTED grant set, and the admitted facts must be exactly this allocation.
    if(!run.grantFactsJsons.some(text=>{try{return same(JSON.parse(text),facts);}catch{return false;}})||fact.policyRevision!==facts.qualificationBinding.policyRevision||hash(JSON.parse(run.allocationJson))!==facts.allocationSha256)deny('ACCESS_DENIED');
    const selected=await runRow(binding,l);if(selected.policyRevision!==fact.policyRevision)deny('ACCESS_DENIED');
-   const b=allocation.budgets,claims={capabilityId:facts.grantId,issuer:CURRENT_AUTHORITY_CLAIMS_ISSUER,audience:'meri-gateway',binding,actions:[capabilityAction],scopes:selected.scopes,
+   const artifactDraftAllowed=c.localArtifactDrafts===true&&allocation.manifest.allowedOperations.some(op=>op.version==='0.2.0'&&LOCAL_ARTIFACT_DRAFTS.includes(op.id));
+   const b=allocation.budgets,claims={capabilityId:facts.grantId,issuer:CURRENT_AUTHORITY_CLAIMS_ISSUER,audience:'meri-gateway',binding,actions:[capabilityAction,...(artifactDraftAllowed?['artifact.publish']:[])],scopes:selected.scopes,
     issuedAt:iso(startedAt),expiresAt:iso(Math.min(expiresAt,fact.deadlineMs)),policyRevision:fact.policyRevision,budgets:{maxTurns:b.maxTurns,maxRuntimeSeconds:b.maxRuntimeSeconds,maxCostMicrousd:b.maxCostMicroUSD,maxOutputBytes:b.maxOutputBytes}};
    try{validateShape('CapabilityClaims',claims);}catch{deny('ACCESS_DENIED');}
    l.life.check();return JSON.stringify(claims);
@@ -243,7 +246,12 @@ export function createCurrentAuthorityAdapters(configuration){
   const l=lifetime(Date.parse(claims.expiresAt),v.signal);
   try{
    const o=await observe({binding:claims.binding,selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true});
-   const grants=requiredGrants.filter(grant=>ROLE_GRANTS[o.actorRole].includes(grant)&&claims.actions.includes(grant));
+   const localDraft=c.localArtifactDrafts===true&&operation.version==='0.2.0'&&LOCAL_ARTIFACT_DRAFTS.includes(operation.id)&&same(requiredGrants,['artifact.publish']);
+   if(localDraft){
+    const {run}=await currentRunFact(claims.binding,l),allocation=JSON.parse(run.allocationJson);
+    if(!allocation.manifest.allowedOperations.some(op=>same(op,operation)))deny('ACCESS_DENIED');
+   }
+   const grants=requiredGrants.filter(grant=>(ROLE_GRANTS[o.actorRole].includes(grant)||localDraft&&grant==='artifact.publish')&&claims.actions.includes(grant));
    const decisionId=newId();if(typeof decisionId!=='string'||!UUID.test(decisionId))deny('UNAVAILABLE');
    const actor={tenantId:claims.binding.tenantId,actorId:claims.binding.actorId};
    const subject={kind:'client',entityType:'client',entityIds:[selectedClientId],tenantId:actor.tenantId,actorId:actor.actorId,authorizationDecisionId:decisionId,policyRevision:claims.policyRevision,scopes:claims.scopes,rosterVersionId:null};
@@ -369,9 +377,10 @@ export function createControlCurrentAuthority(options){
  const reservedFiles=[ownedValue(identity,'credentialFile'),ownedValue(candidate,'taskCapabilityFile'),ownedValue(candidate,'controlCapabilityFile'),ownedValue(candidate,'proxyCredentialFile')].map(filePath);
  const secretFiles=[ownedValue(reads,'serviceSecretFile'),ownedValue(reads,'readModeServiceSecretFile')].filter(value=>value!==undefined);
  const requestMs=ownedValue(limits,'requestMs');
- const adapters=createCurrentAuthorityAdapters({origin:ownedValue(identity,'origin'),nativeCredentials:c.nativeCredentials,readSecret:c.readSecret,reservedFiles,secretFiles,
+ const adapterOptions={origin:ownedValue(identity,'origin'),nativeCredentials:c.nativeCredentials,readSecret:c.readSecret,reservedFiles,secretFiles,
   ...(execution===undefined?{}:{coreOrigin:ownedValue(execution,'coreOrigin'),serviceSecretFile:ownedValue(execution,'serviceSecretFile')}),
   sourceEnabled:ownedValue(configuration,'sourceEnabled')===true,now:c.now??Date.now,...(c.fetchImpl===undefined?{}:{fetchImpl:c.fetchImpl}),...(c.newId===undefined?{}:{newId:c.newId}),
-  limits:{maxRequestMs:Math.min(Number.isSafeInteger(requestMs)?requestMs:10000,10000)}});
- return Object.freeze({gateway:Object.freeze({authority:adapters.authority,limits:compileGatewayLimits(ownedValue(reads,'gateway'))}),owners:adapters.owners,bind:adapters.bind,state:adapters.state,missing:adapters.missing});
+  limits:{maxRequestMs:Math.min(Number.isSafeInteger(requestMs)?requestMs:10000,10000)}};
+ const adapters=createCurrentAuthorityAdapters(adapterOptions),artifacts=createCurrentAuthorityAdapters({...adapterOptions,localArtifactDrafts:true});
+ return Object.freeze({gateway:Object.freeze({authority:adapters.authority,limits:compileGatewayLimits(ownedValue(reads,'gateway'))}),owners:adapters.owners,artifactAuthorityPorts:Object.freeze({verifyCapability:artifacts.ports.verifyCapability,authorizeBusiness:artifacts.ports.authorizeBusiness,authorizeSources:artifacts.ports.authorizeSources}),bind:context=>{adapters.bind(context);artifacts.bind(context);},state:adapters.state,missing:adapters.missing});
 }

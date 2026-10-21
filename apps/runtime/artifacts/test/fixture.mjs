@@ -7,6 +7,8 @@ import {listenActionApplication} from '../../../control/action-application/node-
 import {bindPreparedBriefArtifactOptions} from '../../../control/document-application/research-brief/binding.mjs';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {sqlFixture} from '../../../artifacts/storage/test/sql-fixture.mjs';
+import {publicationFixture} from '../../../artifacts/storage/test/publication-fixture.mjs';
+import {createPostgresArtifactVersions} from '../../../artifacts/storage/index.mjs';
 import {createRuntimeArtifactApplication,createRuntimeArtifactStorage,createRuntimeDocumentOptionsComposer} from '../index.mjs';
 const {GetBucketVersioningCommand,PutObjectCommand,GetObjectCommand}=createRequire(new URL('../../../artifacts/storage/package.json',import.meta.url))('@aws-sdk/client-s3');
 export const python='/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3',soffice='/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice';
@@ -16,7 +18,12 @@ export async function fixture(operation='create_word'){
  const client={async send(command){const a=command.input;if(command instanceof GetBucketVersioningCommand)return {Status:'Enabled'};
   if(command instanceof PutObjectCommand){if(stored.has(a.Key))throw {$metadata:{httpStatusCode:412}};stored.set(a.Key,{bytes:Buffer.from(a.Body),VersionId:'SYNTHETIC_MOUNT_NATIVE_'+(++native),Metadata:structuredClone(a.Metadata),ChecksumSHA256:a.ChecksumSHA256});}
   const o=stored.get(a.Key);if(!o||a.VersionId!==undefined&&a.VersionId!==o.VersionId)throw Error('SYNTHETIC_VERSION_MISSING');const response={VersionId:o.VersionId,Metadata:o.Metadata,ChecksumSHA256:o.ChecksumSHA256,ChecksumType:'FULL_OBJECT',ServerSideEncryption:'aws:kms',SSEKMSKeyId:kms,ContentLength:o.bytes.length};if(command instanceof GetObjectCommand)response.Body=Readable.from([o.bytes]);return response;}};
- const storage=createRuntimeArtifactStorage({s3:{client,bucket:'synthetic-mount-bucket',prefix:'runtime-artifacts',expectedBucketOwner:'111122223333',kmsKeyId:kms},versionsPool:db.pool,now:f.now,maxRequestMs:1000});
+ // The canonical version owner now requires durable publication custody. This
+ // source-local fixture supplies the existing synthetic CAS journal explicitly;
+ // production's absent-custody storage remains unavailable.
+ const transport=createRuntimeArtifactStorage({s3:{client,bucket:'synthetic-mount-bucket',prefix:'runtime-artifacts',expectedBucketOwner:'111122223333',kmsKeyId:kms},versionsPool:db.pool,now:f.now,maxRequestMs:1000});
+ const publication=publicationFixture(f.artifactOptions.context.binding.tenantId,f.now);
+ const storage=Object.freeze({...transport,versions:createPostgresArtifactVersions({pool:db.pool,now:f.now,maxRequestMs:1000,journal:db.journal,retention:db.retention,publication:publication.publication,tenantId:f.artifactOptions.context.binding.tenantId})});
  const compose=createRuntimeDocumentOptionsComposer({storage,executor:f.artifactOptions.executor,budgetPool:f.ledger.pool,sessions:f.sessions,now:f.now});
  const current=async(credential,signal)=>{const authentication=await f.sessions.authenticateSession({credential,signal}),now=await f.sessions.readCurrentState({authentication,signal});if(v.hash(now.binding)!==v.hash(f.artifactOptions.context.binding)||v.hash(now.scopes)!==v.hash(f.artifactOptions.context.scopes))throw Error('ACCESS_DENIED');};
  const owner={async resolve(call){state.resolved.push({intent:call.intent,requestSha256:call.requestSha256});await current(call.credential,call.signal);

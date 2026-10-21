@@ -1,0 +1,131 @@
+✔ every permitted element combination is laid out without overlap, in bounds and deterministically (767.161033ms)
+✔ dense, long and extreme-size content stays separated and inside the slide (281.046086ms)
+✔ HTTP preview: pending, publish, serve, idempotent republish; a revision has its own preview and the parent preview stays (777.485362ms)
+✔ HTTP preview: a PDF version previews as itself; TXT is unsupported before any write; revoked sessions are refused (322.984863ms)
+✔ HTTP preview: an Excel-bound application previews workbooks; without a preview store both routes are unavailable (447.116898ms)
+✖ runtime mount: preview record reads and commits are rechecked; a denial at commit is UNKNOWN and publishes nothing (195.287308ms)
+✔ signed preview links: issue binds the preview digest; redeem serves it inline; a suppression generation change revokes it; download links are unchanged (437.945396ms)
+✖ no signed link reaches process output, telemetry spans, span events, metric attributes or refusal bodies (157.938844ms)
+✔ issue verifies inspect and exact-version download authority, then binds bytes, actor, scope and generation; redeem releases the canonical bytes (23.47109ms)
+✔ an expired link is refused before any artifact read (4.999723ms)
+✔ a tampered or foreign-key token is refused without reading bytes (5.580718ms)
+✔ an advanced suppression generation revokes the link; current suppression and a closed barrier refuse (18.743251ms)
+✔ a revocation that lands during the canonical download is caught before release (4.293671ms)
+✔ another authenticated actor cannot redeem the link (3.478095ms)
+✔ changed bytes are refused whether the version record or the served bytes differ from the signed hash (11.161581ms)
+✔ canonical refusals pass through unchanged; malformed requests are closed codes (2.05364ms)
+✔ issue requires exact-version download authority, not only inspect: a denied canonical download signs nothing (1.285494ms)
+✔ a link is processed only for an authenticated caller and only from a JSON body, never a URL (3.446436ms)
+✔ link lifetime is short and bounded: the configured TTL, never beyond five minutes or the current session expiry (10.305398ms)
+✔ authority revoked, scope changed or session expired during the final body and suppression reads releases no bytes (15.112652ms)
+✔ the version suppressed during the final body read, or the link expiring during it, releases no bytes (9.415389ms)
+✔ authority revoked or the version suppressed during issuance reads signs no link (3.393236ms)
+✖ real canonical owners: a link issued for a generated workbook redeems its exact bytes and is revoked by a suppression cycle (556.606638ms)
+✔ a suppression or barrier closure committed during the final authority read releases no bytes (10.673963ms)
+✔ a suppression or barrier closure committed during the final authority read signs no link (3.044572ms)
+✔ authority revoked during the post-body generation read signs and releases nothing (3.456862ms)
+✔ linearization order: the final generation read is the last awaited read and follows the final authority read (5.161817ms)
+✔ missing native owner returns503 without creating artifact authority (7.113696ms)
+✖ real original compiler and generator traverse actual HTTP mount and reviewed S3/PG ports for create/revise/inspect/download (577.769054ms)
+✖ typed XLSX full replacement preserves original, exact parent and immutable bytes (289.814527ms)
+✔ boolean admission, session-owner substitution and caller context never grant publication (35.226891ms)
+✔ current runtime/source revoke after actual generation prevents storage publication and retains uncertain accounting (88.382643ms)
+✔ parked owner resolution is bounded by caller deadline and never dispatches document effects (21.58695ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 28
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3665.481433
+
+✖ failing tests:
+
+test at apps/control/document-application/test/preview-http.test.mjs:76:1
+✖ runtime mount: preview record reads and commits are rechecked; a denial at commit is UNKNOWN and publishes nothing (195.287308ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  502 !== 200
+
+      at TestContext.<anonymous> (file:///dev/shm/meri-artifact-baseline/apps/control/document-application/test/preview-http.test.mjs:83:127)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/artifacts/test/download-links-redaction.test.mjs:24:1
+✖ no signed link reaches process output, telemetry spans, span events, metric attributes or refusal bodies (157.938844ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  0 !== 10
+
+      at TestContext.<anonymous> (file:///dev/shm/meri-artifact-baseline/apps/runtime/artifacts/test/download-links-redaction.test.mjs:51:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 10,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/artifacts/test/download-links.test.mjs:122:1
+✖ real canonical owners: a link issued for a generated workbook redeems its exact bytes and is revoked by a suppression cycle (556.606638ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"ARTIFACT_EFFECT_UNKNOWN","outcome":"UNKNOWN"}}
+      at TestContext.<anonymous> (file:///dev/shm/meri-artifact-baseline/apps/runtime/artifacts/test/download-links.test.mjs:125:116)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/runtime/artifacts/test/runtime.test.mjs:13:1
+✖ real original compiler and generator traverse actual HTTP mount and reviewed S3/PG ports for create/revise/inspect/download (577.769054ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"ARTIFACT_EFFECT_UNKNOWN","outcome":"UNKNOWN"}}
+
+  502 !== 200
+
+      at json (file:///dev/shm/meri-artifact-baseline/apps/runtime/artifacts/test/runtime.test.mjs:6:69)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///dev/shm/meri-artifact-baseline/apps/runtime/artifacts/test/runtime.test.mjs:16:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/artifacts/test/runtime.test.mjs:29:1
+✖ typed XLSX full replacement preserves original, exact parent and immutable bytes (289.814527ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"ARTIFACT_EFFECT_UNKNOWN","outcome":"UNKNOWN"}}
+
+  502 !== 200
+
+      at json (file:///dev/shm/meri-artifact-baseline/apps/runtime/artifacts/test/runtime.test.mjs:6:69)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///dev/shm/meri-artifact-baseline/apps/runtime/artifacts/test/runtime.test.mjs:29:173)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

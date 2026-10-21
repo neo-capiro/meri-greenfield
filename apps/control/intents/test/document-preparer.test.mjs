@@ -32,8 +32,9 @@ test('unadmitted formats, other operations and argument authority are refused be
   await assert.rejects(s.mount.prepare({operation:WORD,arguments:args,deliveryId:delivery(10+n)}),code('INVALID_ARGUMENTS'));
  assert.equal(s.f.stats().generations,0);
 });
-test('only admitted document operations construct; PowerPoint and analysis stay unavailable',()=>{
- for(const op of ['create_powerpoint','run_analysis'])assert.throws(()=>createDocumentIntentPreparer({descriptor:descriptor(op),writes:{execute(){}},binding}),code('INTENT_CONFIGURATION'));
+test('only admitted document operations construct; general analysis keeps its separate owner',()=>{
+ assert.throws(()=>createDocumentIntentPreparer({descriptor:descriptor('run_analysis'),writes:{execute(){}},binding}),code('INTENT_CONFIGURATION'));
+ assert.equal(createDocumentIntentPreparer({descriptor:descriptor('create_powerpoint'),writes:{execute(){}},binding}).operation.id,'create_powerpoint');
  assert.equal(createDocumentIntentPreparer({descriptor:descriptor('create_excel'),writes:{execute(){}},binding}).operation.id,'create_excel');
 });
 test('a write-owner failure after the call is UNKNOWN and never re-prepared; a non-draft result is withheld as UNKNOWN',async()=>{

@@ -55,16 +55,17 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    const {createMemoryFamilyWith}=await import('./product-ports/memory.mjs');
    const memoryFamily=createMemoryFamilyWith(relay?{nativeCredentials:relay.port}:{});
    // Documents (D31): the Core artifact authority composes only with every input present; otherwise the store-only family stays
-   // and `missing` names the gaps by key (runOptions and executor are Meri-local owners not yet composed).
+   // and `missing` names absent declared bindings by key. Actual executor/image qualification remains separate.
    const [{createProductPortsFactory,PRODUCT_FAMILIES},{composeDocumentsFamily}]=await Promise.all([import('./product-ports/index.mjs'),import('./artifacts/authority-composition.mjs')]);
-   const documents=await composeDocumentsFamily({configuration:c,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
-   if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
    // Write-intent execution (lane E): the intents family and the per-run intent mount share one composition; both stay inert
    // unless control declares intents.execution and its Core owners exist.
    const [{createControlIntentExecution},{readSecret},{createControlCurrentAuthority}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs'),import('./native-authority/current-authority-adapters.mjs')]);
    // Current tool authority (lane T): one observation per port call over Core identity/membership/context through the relay; it
    // supplies the execution owners and the reads gateway authority/limits. Without a prepared candidate there is nothing to observe.
-   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin})});
+   const coreFetch=countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin});
+   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port,fetchImpl:coreFetch});
+   const documents=await composeDocumentsFamily({configuration:c,fetchImpl:coreFetch,nativeCredentials:relay.port,...(authority?{authorityPorts:authority.artifactAuthorityPorts}:{})});
+   if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
    const execution=createControlIntentExecution({readSecret,...(authority?{owners:authority.owners}:{})});
    const intents=authority?context=>{authority.bind(context);return execution.family(context);}:execution.family;
    productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(occurrences?{occurrenceRelay:occurrences}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};

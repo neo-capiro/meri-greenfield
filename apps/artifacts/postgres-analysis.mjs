@@ -8,9 +8,9 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const own=(value,required,optional=[])=>{if(!value||Array.isArray(value)||required.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>![...required,...optional].includes(k)))fail('ANALYSIS_BUDGET_CONFIGURATION');return value;};
 
 export function createPostgresAnalysisExecutor(options){
-  const {pool,allocationJson,producerContext,descriptor,context,validators:v,authority,port,verifyAdmission,now,newReservationId,limits,sourceEnabled=false}=own(options,
-    ['pool','allocationJson','producerContext','descriptor','context','validators','authority','port','verifyAdmission','now','newReservationId','limits'],['sourceEnabled']);
-  if(![v?.snapshot,v?.context,v?.normalizeArtifactInput,v?.assertArtifactOutput,authority?.check,port?.execute,verifyAdmission,now,newReservationId].every(x=>typeof x==='function')||typeof sourceEnabled!=='boolean')fail('ANALYSIS_BUDGET_CONFIGURATION');
+  const {pool,allocationJson,producerContext,descriptor,context,validators:v,authority,port,verifyAdmission,now,newReservationId,limits,sourceEnabled=false,namespace='qualification'}=own(options,
+    ['pool','allocationJson','producerContext','descriptor','context','validators','authority','port','verifyAdmission','now','newReservationId','limits'],['sourceEnabled','namespace']);
+  if(![v?.snapshot,v?.context,v?.normalizeArtifactInput,v?.assertArtifactOutput,authority?.check,port?.execute,verifyAdmission,now,newReservationId].every(x=>typeof x==='function')||typeof sourceEnabled!=='boolean'||!['qualification','product'].includes(namespace))fail('ANALYSIS_BUDGET_CONFIGURATION');
   const trusted=v.snapshot({producerContext,descriptor,context,limits});trusted.context=v.context(trusted.context);
   own(trusted.producerContext,['context','producer']);own(trusted.descriptor,['operation','requiredGrants','sourceRequirements']);
   if(!same(trusted.producerContext.context.binding,trusted.context.binding)||!same(trusted.descriptor.operation,{id:'run_analysis',version:'0.2.0'}))fail('ANALYSIS_BUDGET_CONFIGURATION');
@@ -35,7 +35,7 @@ export function createPostgresAnalysisExecutor(options){
   }
   // Per-call observations outlive a raced waiter, not the owned native operation.
   // They establish no stop/retry authority and never become a second ledger.
-  const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity:identity,
+  const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity:identity,namespace,
     createExecutor:ports=>({async execute(raw,credential,signal){
       const call=input(raw),requestSha256=requestHash(call),ctx=trusted.context;
       let deadlineMs=ctx.deadlineMs,current,selection,reservationId,result=null;

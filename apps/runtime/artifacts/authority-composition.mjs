@@ -9,8 +9,7 @@
  *    `authorizeBusiness`, `authorizeSources`, the decision-gated owners the general-reads gateway and write-intent execution also
  *    wait for) and the per-run tuple the prepared-run registry registers (`runOptions.register`, the `createReadsRuntime` tuple).
  * Anything missing leaves the production registration (private store only, `/api/documents/*` 503) and is named in `missing` by
- * key, never by value; control still starts. The production CLI supplies neither `authorityPorts` nor registers runs today, so it
- * reports `runOptions.authorityPorts` (and `artifacts.executor` until the control image carries the generator paths).
+ * key, never by value; control still starts. The CLI supplies dedicated current artifact authority ports; the prepared-run registry registers the admitted tuple. Missing image paths or owner inputs remain explicit and never qualify an executor.
  *
  * Returns `{family, authority, missing, runOptions}`. `family` is the `documents` entry for `createProductPortsFactory({families})`;
  * `runOptions` (when composed here) is the owner whose `register(tuple)` the registry calls per prepared run. */
@@ -26,7 +25,7 @@ import {createRuntimeDocumentRunOptions} from './run-options.mjs';
 import {documentsFamily,createDocumentsFamily} from '../product-ports/documents.mjs';
 
 export async function composeDocumentsFamily(options){
- let c;try{c=own(options,['configuration'],['runOptions','executor','authorityPorts','fetchImpl','readSecret','now']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
+ let c;try{c=own(options,['configuration'],['runOptions','executor','authorityPorts','fetchImpl','readSecret','now','nativeCredentials']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
  const now=c.now??Date.now,fetchImpl=c.fetchImpl??globalThis.fetch,configuration=c.configuration;
  if(typeof now!=='function'||typeof fetchImpl!=='function'||types.isProxy(fetchImpl))refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
  let declared;try{declared=compileRuntimeArtifactsConfiguration(configuration);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
@@ -59,5 +58,5 @@ export async function composeDocumentsFamily(options){
  const client=createCoreArtifactAuthorityClient({origin:declared.authority.origin,fetchImpl,now});
  const authority=createCoreArtifactAuthority({client,credentials,runOptions,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});
- return Object.freeze({family:documentsFamily({authority,executor,...(composedRunOptions?{bindVersionReader:value=>composedRunOptions.bindVersionReader(value)}:{})}),authority,missing:Object.freeze([]),runOptions:composedRunOptions});
+ return Object.freeze({family:documentsFamily({authority,executor,...(c.nativeCredentials?{nativeCredentials:c.nativeCredentials}:{}),...(composedRunOptions?{bindVersionReader:value=>composedRunOptions.bindVersionReader(value)}:{})}),authority,missing:Object.freeze([]),runOptions:composedRunOptions});
 }

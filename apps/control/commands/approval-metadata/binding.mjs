@@ -1,19 +1,23 @@
-/** Task metadata correlation only; policy and execution remain external owners. */
+/** Closed command metadata correlation; policy and execution remain external owners. */
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {validateCommandShape} from '../../../../packages/contracts/commands-0.2/validate.mjs';
-import {taskKind} from './task-kind.mjs';
+import {commandKind} from './command-kind.mjs';
 import {CommandError,data,deny,instant,own} from '../protocol.mjs';
 export {canonicalSha256,CommandError,data,deny,instant,own};
 export const operation=Object.freeze({id:'create_task',version:'0.2.0'}),action='task.create';
 export const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
-export function context(value,kindAction=action){const c=data(value);validateCommandShape(taskKind(kindAction).contextShape,c);return c;}
+export function context(value,kindAction=action){const c=data(value);validateCommandShape(commandKind(kindAction).contextShape,c);return c;}
 export function selected(value,c,kindAction=action){
  const v=data(value);own(v,['operation','action','binding']);
- if(!same(v.operation,taskKind(kindAction).operation)||v.action!==kindAction||!same(v.binding,c.binding))deny('COMMAND_PREPARATION_REFUSED');return v;
+ if(!same(v.operation,commandKind(kindAction).operation)||v.action!==kindAction||!same(v.binding,c.binding))deny('COMMAND_PREPARATION_REFUSED');return v;
 }
-export function input(request,c,kindAction=action){return data({arguments:taskKind(kindAction).normalize(request,c),attachments:[]});}
+export function input(request,c,kindAction=action){
+ const kind=commandKind(kindAction),normalized=data(kind.normalizeCommandInput?
+  kind.normalizeCommandInput(request,c):{arguments:kind.normalize(request,c),attachments:[]});
+ own(normalized,['arguments','attachments']);return normalized;
+}
 export function immutablePayload(value){
- const p=data(value);own(p,['record','commandContext','commandSha256']);const r=p.record,kind=taskKind(r.action),c=context(p.commandContext,r.action);
+ const p=data(value);own(p,['record','commandContext','commandSha256']);const r=p.record,kind=commandKind(r.action),c=context(p.commandContext,r.action);
  own(r,['operation','action','binding','request','inputSha256','commandId','idempotencyKey','proposalId','scopes','createdAt','expiresAt','requiredApprover']);
  selected({operation:r.operation,action:r.action,binding:r.binding},c,r.action);
  const normalized=input(r.request,c,r.action);if(canonicalSha256(normalized)!==r.inputSha256)deny('COMMAND_PREPARATION_REFUSED');
@@ -25,7 +29,7 @@ export function immutablePayload(value){
  return p;
 }
 export function makePayload(record,c){
- const kind=taskKind(record.action),normalized=input(record.request,c,record.action),command={contractVersion:kind.contractVersion,commandId:record.commandId,binding:record.binding,action:record.action,arguments:normalized.arguments,attachments:normalized.attachments,scopes:record.scopes,idempotencyKey:record.idempotencyKey};
+ const kind=commandKind(record.action),normalized=input(record.request,c,record.action),command={contractVersion:kind.contractVersion,commandId:record.commandId,binding:record.binding,action:record.action,arguments:normalized.arguments,attachments:normalized.attachments,scopes:record.scopes,idempotencyKey:record.idempotencyKey};
  return immutablePayload({record,commandContext:c,commandSha256:canonicalSha256(command)});
 }
 export function readKey(value){const k=data(value);own(k,['tenantId','actorId','proposalId']);validateShape('Identity',{tenantId:k.tenantId,actorId:k.actorId});assertReadIds({proposalId:k.proposalId,commandSha256:'0'.repeat(64)});return k;}

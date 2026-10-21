@@ -1,0 +1,25 @@
+c2359ee538b25691c3e8c4a351f206cfe4a0e662 docs: record conversational write scope and source gaps
+f6a9143c62edf9e15a5b863bb3eeb43cd79a88bd Compose pending memory proposal metadata through canonical owners
+34fbbc3b2e4a2672211a6e79cc2c7581733a908a Add canonical attachment-filing approval metadata codec
+4a062ac4490f72ce27692f9e8014729ad7e36591 Reuse immutable approval metadata owner across canonical command kinds
+9f72b7c4771c3b0a42d945c0222a2c6496c4aa94 feat(intents): admit canonical memory and filing preparation owners
+a516f4d5bb4ea79a72f643b8d25516fb86503f1d Cover memory proposal governance replay expiry and unknown outcomes
+60e75aff741a1e0c3a786648aa4c3da62503a44b Exercise pending memory proposals through the durable budget executor
+307c1d54be17b4fec2bd89d2232830aff56cec7b Inject lost metadata acknowledgment at the bound SQL boundary
+54e4c8b1e1a73f755f5fff9a95689b840bfce5e2 fix(sessions): prevent derived artifact sessions extending relay authority
+dff6c59669dd599dfbf682ddaacb414c9906baad Verify memory candidate persistence and suppression through canonical journal
+f2d836ed3f9f21ca7b1cb6f7733592dca5972581 Record memory conversational proposal source and native activation dependency
+d9818ffb0b08d1544ba6de7cb32ebeb1e242f166 Prepare PowerPoint and bounded analysis through existing artifact owners
+3cb0f77423c12adbe060fac82fc700338f4ed0f6 Prepare attachment filing through current immutable custody and canonical command owners
+74797ca2374338d1a31e856a33f6d724c6e5e865 docs: map conversational write producers and Core dependencies
+74d42aa442910f9a99337d4c2ad6f8a318f786f7 Bind general analysis accounting to an explicit canonical budget namespace
+6f46445edd022bc39520864ce33e1c488356cffc Bridge conversational document and typed analysis preparation through runtime authority
+30e4a53508827b68f7f263a7fd13c334dd239d2e Document attachment filing source integration, offline proof and native custody holds
+6d34da5670b2c59a65b8bc20937e2bec859a8c47 Document canonical intent routing and remaining execution contract dependencies
+2290468b4fa99988a94fe22b49d119e1227b0a6d Document artifact write preparation contracts and qualification boundaries
+138249bbf21c0fac44ba5d0c7d254f21665b5b76 feat(intents): compose governed document and typed analysis drafts in ordinary conversations
+5572d9c9c2448d4577e5051c35e370f0c8a5721b test(intents): validate ordinary artifact discovery and closed pending analysis results
+32651ceac6377bf02bcea51926160f085b553e31 Reconcile shared action-host fixture with signed read protocol
+a839a6589f3cc1b06c3ce4c4ebe22df5d26ab199 Reconcile artifact test custody and sticky preview uncertainty
+06e0423bb2da88a1e8fb58c554a15654a4f58d00 test: allocate canonical input in runner and intent fixtures
+927537b76a6be3f09866d9dda0a3b9f129e70b0e docs(intents): pin external custody contracts and reconcile inherited journal expectation

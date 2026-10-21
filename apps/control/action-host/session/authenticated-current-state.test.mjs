@@ -24,7 +24,7 @@ function fixture(t){
 
 test('one fresh owner observation correlates both immutable receipts and preserves the public session port',async t=>{
  const f=fixture(t),issued=await f.issue();
- assert.deepEqual(Object.keys(f.owner).sort(),['issue','authenticateSession','readCurrentState','verifyTransition','nativeCredentialFor','revoke','close','status'].sort());
+ assert.deepEqual(Object.keys(f.owner).sort(),['issue','issueDerived','authenticateSession','readCurrentState','verifyTransition','nativeCredentialFor','revoke','close','status'].sort());
  assert.deepEqual(Object.getOwnPropertySymbols(f.owner),[]);
  assert.doesNotThrow(()=>createActionSessionApplication({owner:f.owner}));
  let traps=0;const proxy=new Proxy(f.owner,{get(){traps++;throw Error('must not inspect');}});

@@ -1,0 +1,388 @@
+TAP version 13
+# Subtest: attachment codec preserves exact immutable objects and the trusted client destination
+ok 1 - attachment codec preserves exact immutable objects and the trusted client destination
+  ---
+  duration_ms: 25.816631
+  type: 'test'
+  ...
+# Subtest: attachment codec rejects model source URLs, filenames, paths and foreign destination/ref mutations
+ok 2 - attachment codec rejects model source URLs, filenames, paths and foreign destination/ref mutations
+  ---
+  duration_ms: 4.497496
+  type: 'test'
+  ...
+# Subtest: attachment intent prepares immutable metadata, then approved canonical filing executes once and retains its durable result
+ok 3 - attachment intent prepares immutable metadata, then approved canonical filing executes once and retains its durable result
+  ---
+  duration_ms: 243.237249
+  type: 'test'
+  ...
+# Subtest: concurrent approved deliveries share one claimed filing effect and changed preparation cannot reuse its delivery
+ok 4 - concurrent approved deliveries share one claimed filing effect and changed preparation cannot reuse its delivery
+  ---
+  duration_ms: 60.691789
+  type: 'test'
+  ...
+# Subtest: lost registration acknowledgement stays UNKNOWN and replay never repeats the effect
+ok 5 - lost registration acknowledgement stays UNKNOWN and replay never repeats the effect
+  ---
+  duration_ms: 36.645843
+  type: 'test'
+  ...
+# Subtest: lost source acknowledgement stays UNKNOWN and replay never repeats the effect
+ok 6 - lost source acknowledgement stays UNKNOWN and replay never repeats the effect
+  ---
+  duration_ms: 37.861973
+  type: 'test'
+  ...
+# Subtest: changed immutable source or destination, revoked approval/capability and expired proposal execute nothing
+ok 7 - changed immutable source or destination, revoked approval/capability and expired proposal execute nothing
+  ---
+  duration_ms: 84.473468
+  type: 'test'
+  ...
+# Subtest: suppression or cancellation after registration withholds success and cannot grant retry
+ok 8 - suppression or cancellation after registration withholds success and cannot grant retry
+  ---
+  duration_ms: 75.4762
+  type: 'test'
+  ...
+# Subtest: pending filing and indexing warnings remain partial, with no invented completion or replay effect
+ok 9 - pending filing and indexing warnings remain partial, with no invented completion or replay effect
+  ---
+  duration_ms: 40.504316
+  type: 'test'
+  ...
+# Subtest: metadata ACK loss remains one stored proposal and UNKNOWN delivery; no registration starts
+ok 10 - metadata ACK loss remains one stored proposal and UNKNOWN delivery; no registration starts
+  ---
+  duration_ms: 7.601332
+  type: 'test'
+  ...
+# Subtest: attachment proposal policy inspects exact current artifact bytes and returns only current policy metadata
+ok 11 - attachment proposal policy inspects exact current artifact bytes and returns only current policy metadata
+  ---
+  duration_ms: 135.079864
+  type: 'test'
+  ...
+# Subtest: source scopes retain their provenance independently from the approved client destination
+ok 12 - source scopes retain their provenance independently from the approved client destination
+  ---
+  duration_ms: 4.433119
+  type: 'test'
+  ...
+# Subtest: attachment proposal refuses changed tenant before any registration
+ok 13 - attachment proposal refuses changed tenant before any registration
+  ---
+  duration_ms: 1.266044
+  type: 'test'
+  ...
+# Subtest: attachment proposal refuses changed client before any registration
+ok 14 - attachment proposal refuses changed client before any registration
+  ---
+  duration_ms: 1.536672
+  type: 'test'
+  ...
+# Subtest: attachment proposal refuses changed conversation before any registration
+ok 15 - attachment proposal refuses changed conversation before any registration
+  ---
+  duration_ms: 1.328659
+  type: 'test'
+  ...
+# Subtest: attachment proposal refuses changed object before any registration
+ok 16 - attachment proposal refuses changed object before any registration
+  ---
+  duration_ms: 1.659627
+  type: 'test'
+  ...
+# Subtest: attachment proposal refuses changed hash before any registration
+ok 17 - attachment proposal refuses changed hash before any registration
+  ---
+  duration_ms: 2.925671
+  type: 'test'
+  ...
+# Subtest: attachment proposal refuses changed nativeVersion before any registration
+ok 18 - attachment proposal refuses changed nativeVersion before any registration
+  ---
+  duration_ms: 2.693392
+  type: 'test'
+  ...
+# Subtest: attachment proposal refuses changed size before any registration
+ok 19 - attachment proposal refuses changed size before any registration
+  ---
+  duration_ms: 3.251642
+  type: 'test'
+  ...
+# Subtest: canonical artifact owner refuses mime drift
+ok 20 - canonical artifact owner refuses mime drift
+  ---
+  duration_ms: 1.775642
+  type: 'test'
+  ...
+# Subtest: canonical artifact owner refuses filename drift
+ok 21 - canonical artifact owner refuses filename drift
+  ---
+  duration_ms: 1.783784
+  type: 'test'
+  ...
+# Subtest: canonical artifact owner refuses sourceProvenance drift
+ok 22 - canonical artifact owner refuses sourceProvenance drift
+  ---
+  duration_ms: 1.569592
+  type: 'test'
+  ...
+# Subtest: canonical artifact owner refuses bytes drift
+ok 23 - canonical artifact owner refuses bytes drift
+  ---
+  duration_ms: 1.790173
+  type: 'test'
+  ...
+# Subtest: current source suppression, revoked policy and expiry refuse custody release
+ok 24 - current source suppression, revoked policy and expiry refuse custody release
+  ---
+  duration_ms: 6.126377
+  type: 'test'
+  ...
+# Subtest: changed approver or client scope after custody inspection refuses release
+ok 25 - changed approver or client scope after custody inspection refuses release
+  ---
+  duration_ms: 4.307581
+  type: 'test'
+  ...
+# Subtest: aborted or parked custody check is bounded and cannot register or release a late result
+ok 26 - aborted or parked custody check is bounded and cannot register or release a late result
+  ---
+  duration_ms: 8.823664
+  type: 'test'
+  ...
+# Subtest: model paths/URLs and untrusted source methods refuse without custody reads
+ok 27 - model paths/URLs and untrusted source methods refuse without custody reads
+  ---
+  duration_ms: 2.449516
+  type: 'test'
+  ...
+# Subtest: synthetic: HTTP preparation cannot register attachments before the command claim
+ok 28 - synthetic: HTTP preparation cannot register attachments before the command claim
+  ---
+  duration_ms: 55.962054
+  type: 'test'
+  ...
+# Subtest: synthetic: completed filing and concurrent duplicate delivery register and save only once
+ok 29 - synthetic: completed filing and concurrent duplicate delivery register and save only once
+  ---
+  duration_ms: 95.883935
+  type: 'test'
+  ...
+# Subtest: synthetic: lost registration ACK becomes durable UNKNOWN and replay never registers again
+ok 30 - synthetic: lost registration ACK becomes durable UNKNOWN and replay never registers again
+  ---
+  duration_ms: 12.629425
+  type: 'test'
+  ...
+# Subtest: synthetic: lost claim ACK, failed budget reservation and revoked current authority prevent registration
+ok 31 - synthetic: lost claim ACK, failed budget reservation and revoked current authority prevent registration
+  ---
+  duration_ms: 22.730287
+  type: 'test'
+  ...
+# Subtest: namespace and aggregate-neutral per-object result are closed
+ok 32 - namespace and aggregate-neutral per-object result are closed
+  ---
+  duration_ms: 31.592876
+  type: 'test'
+  ...
+# Subtest: normalization correlates trusted destination and exact immutable objects
+ok 33 - normalization correlates trusted destination and exact immutable objects
+  ---
+  duration_ms: 2.002533
+  type: 'test'
+  ...
+# Subtest: one through ten selected immutable objects, never empty or eleven
+ok 34 - one through ten selected immutable objects, never empty or eleven
+  ---
+  duration_ms: 1.134066
+  type: 'test'
+  ...
+# Subtest: duplicate object and alternate version of same object refuse explicitly
+ok 35 - duplicate object and alternate version of same object refuse explicitly
+  ---
+  duration_ms: 1.520087
+  type: 'test'
+  ...
+# Subtest: raw selectors cannot replace trusted client or conversation
+ok 36 - raw selectors cannot replace trusted client or conversation
+  ---
+  duration_ms: 0.575015
+  type: 'test'
+  ...
+# Subtest: unknown raw/context authority fields refuse
+ok 37 - unknown raw/context authority fields refuse
+  ---
+  duration_ms: 0.923219
+  type: 'test'
+  ...
+# Subtest: object reference required fields and tenant scopes remain canonical
+ok 38 - object reference required fields and tenant scopes remain canonical
+  ---
+  duration_ms: 1.423576
+  type: 'test'
+  ...
+# Subtest: command action, normalized args and original full binding must match
+ok 39 - command action, normalized args and original full binding must match
+  ---
+  duration_ms: 3.811123
+  type: 'test'
+  ...
+# Subtest: every selected object has exactly one observation with exact version/hash/bytes/scopes
+ok 40 - every selected object has exactly one observation with exact version/hash/bytes/scopes
+  ---
+  duration_ms: 4.614301
+  type: 'test'
+  ...
+# Subtest: distinct-object observation order does not manufacture aggregate semantics
+ok 41 - distinct-object observation order does not manufacture aggregate semantics
+  ---
+  duration_ms: 0.785272
+  type: 'test'
+  ...
+# Subtest: saved source observation permits indexed or pending with reused preserved
+ok 42 - saved source observation permits indexed or pending with reused preserved
+  ---
+  duration_ms: 1.715201
+  type: 'test'
+  ...
+# Subtest: pending quarantine remains not_indexed and requires persisted identity and reason
+ok 43 - pending quarantine remains not_indexed and requires persisted identity and reason
+  ---
+  duration_ms: 2.509214
+  type: 'test'
+  ...
+# Subtest: failed before storage and failed persisted observation are distinct valid branches
+ok 44 - failed before storage and failed persisted observation are distinct valid branches
+  ---
+  duration_ms: 1.082188
+  type: 'test'
+  ...
+# Subtest: partial persisted tuples and contradictory saved/failed indexing refuse
+ok 45 - partial persisted tuples and contradictory saved/failed indexing refuse
+  ---
+  duration_ms: 5.160633
+  type: 'test'
+  ...
+# Subtest: no approval/readability/source-completeness flags on observations
+ok 46 - no approval/readability/source-completeness flags on observations
+  ---
+  duration_ms: 3.055135
+  type: 'test'
+  ...
+# Subtest: result digest must bind the full immutable command
+ok 47 - result digest must bind the full immutable command
+  ---
+  duration_ms: 0.960255
+  type: 'test'
+  ...
+# Subtest: receipt outcomes remain supplied observations independent of per-file success
+ok 48 - receipt outcomes remain supplied observations independent of per-file success
+  ---
+  duration_ms: 12.9624
+  type: 'test'
+  ...
+# Subtest: receipt may refer to recovered current executor while stable provenance is fixed
+ok 49 - receipt may refer to recovered current executor while stable provenance is fixed
+  ---
+  duration_ms: 2.99182
+  type: 'test'
+  ...
+# Subtest: receipt hash/idempotency/command/scope substitutions fail
+ok 50 - receipt hash/idempotency/command/scope substitutions fail
+  ---
+  duration_ms: 5.920476
+  type: 'test'
+  ...
+# Subtest: optional generated version correlates its object, not two distinct version IDs
+ok 51 - optional generated version correlates its object, not two distinct version IDs
+  ---
+  duration_ms: 12.804803
+  type: 'test'
+  ...
+# Subtest: valid artifact draft/pending preview never implies native or render validation
+ok 52 - valid artifact draft/pending preview never implies native or render validation
+  ---
+  duration_ms: 0.412561
+  type: 'test'
+  ...
+# Subtest: raw, output and receipt snapshots cannot alias caller data
+ok 53 - raw, output and receipt snapshots cannot alias caller data
+  ---
+  duration_ms: 1.180185
+  type: 'test'
+  ...
+# Subtest: inert admission rejects effectful getters/proxies without traps
+ok 54 - inert admission rejects effectful getters/proxies without traps
+  ---
+  duration_ms: 0.848106
+  type: 'test'
+  ...
+# Subtest: failed before storage has reason/fileName without fabricated document identity
+ok 55 - failed before storage has reason/fileName without fabricated document identity
+  ---
+  duration_ms: 0.884651
+  type: 'test'
+  ...
+# Subtest: found attachment observations require string filename while empty stored names survive
+ok 56 - found attachment observations require string filename while empty stored names survive
+  ---
+  duration_ms: 4.07454
+  type: 'test'
+  ...
+# Subtest: caught errors may have empty message but required reason key is preserved
+ok 57 - caught errors may have empty message but required reason key is preserved
+  ---
+  duration_ms: 1.084171
+  type: 'test'
+  ...
+# Subtest: pending only represents persisted quarantine, never missing source bytes
+ok 58 - pending only represents persisted quarantine, never missing source bytes
+  ---
+  duration_ms: 0.750078
+  type: 'test'
+  ...
+# Subtest: saved original bytes may retain an extraction limitation reason
+ok 59 - saved original bytes may retain an extraction limitation reason
+  ---
+  duration_ms: 30.29232
+  type: 'test'
+  ...
+# Subtest: saved extraction limitation never permits not_indexed or partial persistence
+ok 60 - saved extraction limitation never permits not_indexed or partial persistence
+  ---
+  duration_ms: 9.308713
+  type: 'test'
+  ...
+# Subtest: saved reason remains inert typed data without extra readiness claims
+ok 61 - saved reason remains inert typed data without extra readiness claims
+  ---
+  duration_ms: 2.558208
+  type: 'test'
+  ...
+# Subtest: saved reason cannot change exact immutable object identity
+ok 62 - saved reason cannot change exact immutable object identity
+  ---
+  duration_ms: 1.088668
+  type: 'test'
+  ...
+# Subtest: a saved reason is preserved in the detached admitted result
+ok 63 - a saved reason is preserved in the detached admitted result
+  ---
+  duration_ms: 0.592011
+  type: 'test'
+  ...
+1..63
+# tests 63
+# suites 0
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1178.778691

@@ -80,8 +80,17 @@ test('runtime mount: preview record reads and commits are rechecked; a denial at
  const mount=createRuntimeArtifactApplication({sessions:a.f.sessions,optionsOwner:owner,now:a.f.now,limits:a.f.limits});
  state.denyCommit=true;const denied=await mount.handle(a.request('preview-publish',{versionId:version.versionId}));assert.equal(denied.status,502);assert.equal((await denied.json()).error.outcome,'UNKNOWN');
  assert.ok(state.phases.includes('effect:commit'));assert.equal(await a.store.read(version.versionId),null);
- state.denyCommit=false;const published=await mount.handle(a.request('preview-publish',{versionId:version.versionId}));assert.equal(published.status,200);
- await previewBytes(await mount.handle(a.request('preview',{versionId:version.versionId})));assert.ok(state.phases.includes('release:other'));
+ // An uncertain claim remains owned even after access returns; it must never
+ // license a second render or overwrite of this source version's preview.
+ state.denyCommit=false;const conversions=a.office.calls.length;
+ const retried=await mount.handle(a.request('preview-publish',{versionId:version.versionId}));assert.equal(retried.status,502);assert.equal((await retried.json()).error.outcome,'UNKNOWN');
+ assert.equal(a.office.calls.length,conversions);assert.equal(await a.store.read(version.versionId),null);
+ await error(await mount.handle(a.request('preview',{versionId:version.versionId})),409,'ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE');
+ // Independent success uses a fresh immutable version, never the uncertain claim.
+ const created=await a.post('create',{deliveryId:'fresh-preview-source',request:{...specs.docx,title:'Independent source'}});assert.equal(created.status,200);const fresh=(await created.json()).version;assert.notEqual(fresh.versionId,version.versionId);
+ const published=await mount.handle(a.request('preview-publish',{versionId:fresh.versionId}));assert.equal(published.status,200);
+ await previewBytes(await mount.handle(a.request('preview',{versionId:fresh.versionId})));assert.ok(state.phases.includes('release:other'));
+ assert.equal(await a.store.read(version.versionId),null);
 });
 test('signed preview links: issue binds the preview digest; redeem serves it inline; a suppression generation change revokes it; download links are unchanged',async t=>{
  const a=await setup(t),version=await a.create('docx');await a.post('preview-publish',{versionId:version.versionId});

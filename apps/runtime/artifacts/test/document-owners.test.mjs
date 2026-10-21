@@ -134,7 +134,7 @@ test('run-options owner: unavailable without Core authority ports; registers the
  // The closed shape, per intent: the admitted allocation, the task grant as producer context, the operation's descriptor.
  const expectedDescriptor=id=>{const d=set.allocation.manifest;return {operation:{id,version:'0.2.0'}};};
  for(const [intent,body,operation] of [['create',createBody('create_word'),'create_word'],['create',createBody('create_excel'),'create_excel'],['revise',{...createBody('create_excel'),baseVersionId:'00000000-0000-4000-8000-00000000f001'},'create_excel'],
-  ['inspect',{versionId:'00000000-0000-4000-8000-00000000f001'},'create_word'],['download',{versionId:'00000000-0000-4000-8000-00000000f001'},'create_word'],['create',{deliveryId:'x',request:{operation:'create_powerpoint'}},'create_word']]){
+  ['inspect',{versionId:'00000000-0000-4000-8000-00000000f001'},'create_word'],['download',{versionId:'00000000-0000-4000-8000-00000000f001'},'create_word'],['create',{deliveryId:'x',request:{operation:'create_powerpoint'}},'create_powerpoint']]){
   const r=await owner.read(call(intent,body));
   assert.deepEqual(Object.keys(r).sort(),['allocationJson','assets','authority','credential','descriptor','evidence','maxBytes','producerContext','sourceEnabled']);
   assert.equal(r.allocationJson,set.allocationJson);assert.deepEqual(r.producerContext,{context:task,producer:{namespace:DOCUMENTS_PRODUCER_NAMESPACE,executionId:hash(BINDING)}});

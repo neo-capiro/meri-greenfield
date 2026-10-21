@@ -1,0 +1,41 @@
+✔ every permitted element combination is laid out without overlap, in bounds and deterministically (862.125296ms)
+✔ dense, long and extreme-size content stays separated and inside the slide (350.562927ms)
+✔ HTTP preview: pending, publish, serve, idempotent republish; a revision has its own preview and the parent preview stays (983.091742ms)
+✔ HTTP preview: a PDF version previews as itself; TXT is unsupported before any write; revoked sessions are refused (340.534572ms)
+✔ HTTP preview: an Excel-bound application previews workbooks; without a preview store both routes are unavailable (666.120911ms)
+✔ runtime mount: preview record reads and commits are rechecked; a denial at commit is UNKNOWN and publishes nothing (635.028889ms)
+✔ signed preview links: issue binds the preview digest; redeem serves it inline; a suppression generation change revokes it; download links are unchanged (588.181205ms)
+✔ no signed link reaches process output, telemetry spans, span events, metric attributes or refusal bodies (185.831033ms)
+✔ issue verifies inspect and exact-version download authority, then binds bytes, actor, scope and generation; redeem releases the canonical bytes (27.671439ms)
+✔ an expired link is refused before any artifact read (5.088734ms)
+✔ a tampered or foreign-key token is refused without reading bytes (9.016801ms)
+✔ an advanced suppression generation revokes the link; current suppression and a closed barrier refuse (27.157246ms)
+✔ a revocation that lands during the canonical download is caught before release (3.190118ms)
+✔ another authenticated actor cannot redeem the link (2.779721ms)
+✔ changed bytes are refused whether the version record or the served bytes differ from the signed hash (7.351858ms)
+✔ canonical refusals pass through unchanged; malformed requests are closed codes (1.673958ms)
+✔ issue requires exact-version download authority, not only inspect: a denied canonical download signs nothing (1.329099ms)
+✔ a link is processed only for an authenticated caller and only from a JSON body, never a URL (9.551136ms)
+✔ link lifetime is short and bounded: the configured TTL, never beyond five minutes or the current session expiry (5.506552ms)
+✔ authority revoked, scope changed or session expired during the final body and suppression reads releases no bytes (18.165523ms)
+✔ the version suppressed during the final body read, or the link expiring during it, releases no bytes (7.572559ms)
+✔ authority revoked or the version suppressed during issuance reads signs no link (2.787973ms)
+✔ real canonical owners: a link issued for a generated workbook redeems its exact bytes and is revoked by a suppression cycle (924.636167ms)
+✔ a suppression or barrier closure committed during the final authority read releases no bytes (7.855516ms)
+✔ a suppression or barrier closure committed during the final authority read signs no link (2.762405ms)
+✔ authority revoked during the post-body generation read signs and releases nothing (2.64594ms)
+✔ linearization order: the final generation read is the last awaited read and follows the final authority read (3.879455ms)
+✔ missing native owner returns503 without creating artifact authority (6.067596ms)
+✔ real original compiler and generator traverse actual HTTP mount and reviewed S3/PG ports for create/revise/inspect/download (1638.651621ms)
+✔ typed XLSX full replacement preserves original, exact parent and immutable bytes (818.764512ms)
+✔ boolean admission, session-owner substitution and caller context never grant publication (27.67674ms)
+✔ current runtime/source revoke after actual generation prevents storage publication and retains uncertain accounting (91.523226ms)
+✔ parked owner resolution is bounded by caller deadline and never dispatches document effects (20.731294ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5033.695132
