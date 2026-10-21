@@ -12,8 +12,8 @@ import {READ_FAMILIES,READ_FAMILY_IDS} from '../families.mjs';
 import {advertisedArguments} from '../schema.mjs';
 import {mountReads,SESSION} from './fixture.mjs';
 
-const family='research-legal-legislation',id='search_legislative_research',held='get_legal_reference',clientId=uuid('d'),foreign=uuid('e');
-const operation={id,version:'0.2.0'},sibling={id:held,version:'0.2.0'},name='Synthetic Research Client',referencePath='/api/clio/clients/check-ref';
+const family='research-legal-legislation',id='search_legislative_research',referenceId='get_legal_reference',clientId=uuid('d'),foreign=uuid('e');
+const operation={id,version:'0.2.0'},sibling={id:referenceId,version:'0.2.0'},name='Synthetic Research Client',referencePath='/api/clio/clients/check-ref';
 const requests={global:{sessionKey:'2026',query:'water'},client:{sessionKey:'2026',query:'water',clientId,folderId:'synthetic-folder'},
  named:{sessionKey:'2026',query:'water',clientId:`  ${name}  `,folderId:'synthetic-folder'}};
 function sceneFor(branch='global'){
@@ -40,14 +40,15 @@ async function mounted({branch='global',scene=sceneFor(branch)}={}){
 function noSource(f){assert.equal(f.wire.length,0);assert.equal(f.stateOwner.secrets,0);assert.equal(f.state.reservations.size,0);assert.equal(f.state.budget.consumed_micro_usd,0);}
 function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state,'UNKNOWN');assert.equal(r.hold_micro_usd,1);assert.equal(r.output_bytes,null);assert.equal(r.charged_micro_usd,null);assert.equal(f.state.budget.consumed_micro_usd,0);assert.equal([...f.state.produced.values()][0].completion,null);}
 
-test('legal SDK76/42: optional public search is the only exposed family operation despite forged sibling inventories',()=>{
- assert.equal(familyReads().length,76);assert.equal(READ_FAMILY_IDS.length,42);assert.equal(READ_FAMILIES[family].clientScope,'optional');assert.deepEqual(READ_FAMILIES[family].operationIds,[id]);
- assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation),[operation]);
+test('legal SDK81/45: optional family exposes search and the bounded reference read only under current gates',()=>{
+ assert.equal(familyReads().length,81);assert.equal(READ_FAMILY_IDS.length,45);assert.equal(READ_FAMILIES[family].clientScope,'optional');assert.deepEqual(READ_FAMILIES[family].operationIds,[id,referenceId]);
+ assert.deepEqual(familyReads().filter(row=>row.family===family).map(row=>row.operation),[operation,sibling]);
  for(const scopes of [[{kind:'private-user'}],[{kind:'client'}]]){
   const result=resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations:[operation,sibling]},discovery:{operations:[sibling,operation]},scopes});
-  assert.deepEqual(result.available.map(row=>row.operation),[operation]);
+  assert.deepEqual(result.available.map(row=>row.operation),[operation,sibling]);
+  assert.deepEqual(resolveAvailableReads({policy:{generalReads:true,readFamilies:[family]},installation:{operations:[operation]},discovery:{operations:[operation,sibling]},scopes}).available.map(row=>row.operation),[operation]);
  }
- assert.equal(familyReads().some(row=>row.operation.id===held),false);
+ assert.equal(familyReads().some(row=>row.operation.id===referenceId),true);
 });
 
 test('legal SDK: literal search schema admits no model resolution, current authority or nested request',()=>{
@@ -72,10 +73,28 @@ for(const branch of ['global','client','named'])test(`legal SDK ${branch}: actua
  }finally{await m.close();f.scope.abort();}
 });
 
-test('legal SDK: a constructor may hold both private handlers while overclaimed snapshots still mount search alone',async()=>{
- const f=await mounted(),port={execute:call=>f.port.execute(call),async readAvailability(options){const snapshot=await f.port.readAvailability(options);return {...snapshot,installation:{...snapshot.installation,operations:[operation,sibling]},discovery:{...snapshot.discovery,operations:[operation,sibling]}};}},m=await mountReads(f,{port});assert.notEqual(m,null);
- try{assert.deepEqual([...f.handlers.keys()].sort(),[`${held}@0.2.0`,`${id}@0.2.0`].sort());assert.deepEqual((await m.client.listTools()).tools.map(tool=>tool.name),[id]);assert.equal(m.runtime.available.some(row=>row.id===held),false);noSource(f);}
- finally{await m.close();f.scope.abort();}
+test('legal SDK: a constructor holding both handlers cannot advertise an unqualified sibling',async()=>{
+ const f=await mounted(),snapshot=await f.port.readAvailability({}),m=await mountReads(f,{port:f.port});assert.notEqual(m,null);
+ try{
+  assert.deepEqual([...f.handlers.keys()].sort(),[`${referenceId}@0.2.0`,`${id}@0.2.0`].sort());
+  assert.deepEqual(snapshot.installation.operations,[operation]);assert.deepEqual(snapshot.discovery.operations,[operation]);
+  assert.deepEqual((await m.client.listTools()).tools.map(tool=>tool.name),[id]);
+  assert.equal(m.runtime.available.some(row=>row.id===referenceId),false);noSource(f);
+ }finally{await m.close();f.scope.abort();}
+});
+
+test('legal SDK: overclaimed worker snapshots cannot grant an unallocated reference source read',async()=>{
+ const f=await mounted(),port={execute:call=>f.port.execute(call),async readAvailability(options){
+  const snapshot=await f.port.readAvailability(options);
+  return {...snapshot,installation:{...snapshot.installation,operations:[operation,sibling]},
+   discovery:{...snapshot.discovery,operations:[operation,sibling]}};
+ }},m=await mountReads(f,{port});assert.notEqual(m,null);
+ try{
+  assert.deepEqual((await m.client.listTools()).tools.map(tool=>tool.name),[id,referenceId]);
+  const result=await m.call(referenceId,storedCase(referenceId).arguments);
+  assert.equal(result.isError,true);assert.match(result.content[0].text,/^UNAVAILABLE:/u);
+  assert.deepEqual(m.runtime.receipts(),[]);noSource(f);
+ }finally{await m.close();f.scope.abort();}
 });
 
 for(const denial of ['ambiguous','hidden','foreign'])test(`legal SDK named ${denial}: actual native reference cannot widen the current client grant`,async()=>{

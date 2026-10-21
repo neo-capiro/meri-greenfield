@@ -7,16 +7,23 @@ import {readsFixture} from './reads-fixture.mjs';
 import {ownerFixture} from '../native-read-credentials/test/fixture.mjs';
 import {storedCase as kbCase} from '../../../gateway/sources/client-knowledge-search/test/fixture.mjs';
 import {nativeFamilyCase} from '../../../gateway/general-reads/test/native-family-cases.mjs';
+import {storedCase} from '../../../gateway/sources/business-development/test/fixture.mjs';
+import {NATIVE_READ_OPERATION_SUBSETS,nativeReadOperationAllowed} from '../../../gateway/sources/retained-reads/native-families.mjs';
+import {familyOperations} from '../../../gateway/general-reads/registration.mjs';
 import {NATIVE_READS_SCHEMA_VERSION as schemaVersion} from '../../../../packages/contracts/runtime-0.2/reads.mjs';
 
 const ref=id=>({id,version:'0.2.0'});
 // PR132 (bba4ef68) opened the whole public-data and program-elements families: the five Core PR68 read-mode candidates are complete source.
 const mode=['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline'].map(ref);
-const semantic=ref('search_client_knowledge'),selected=[ref('query_economic_data'),semantic,ref('query_knowledge_graph'),...mode];
-// Still absent: BD evidence (outside the finite business-development subset) and four reads with no registered family.
-const excluded=['get_business_development_evidence','get_certification_status','search_research_sources','get_state_rule_status','search_sam_opportunities'].map(ref);
-const forged=[excluded[0],selected[0],excluded[1],semantic,selected[2],...mode,...excluded.slice(2)];
-const args={query_economic_data:{source:'census',state:'TX',limit:1},search_client_knowledge:{query:'synthetic'},query_knowledge_graph:{depth:1}},argsFor=id=>args[id]??{query:'synthetic'};
+// PR189 completed two more: BD evidence joined the finite business-development subset, and search_research_sources has its own
+// research-legal-candidates family.
+const evidence=ref('get_business_development_evidence'),candidates=ref('search_research_sources');
+const semantic=ref('search_client_knowledge'),selected=[evidence,ref('query_economic_data'),semantic,ref('query_knowledge_graph'),...mode,candidates];
+// Still absent: three reads with no registered family.
+const excluded=['get_certification_status','get_state_rule_status','search_sam_opportunities'].map(ref);
+const forged=[evidence,excluded[0],selected[1],semantic,excluded[1],selected[3],...mode,candidates,excluded[2]];
+const args={query_economic_data:{source:'census',state:'TX',limit:1},search_client_knowledge:{query:'synthetic'},query_knowledge_graph:{depth:1},
+ [evidence.id]:storedCase(evidence.id).arguments},argsFor=id=>args[id]??{query:'synthetic'};
 const ids=operations=>operations.map(op=>op.id);
 const code=expected=>error=>error.message===expected;
 
@@ -59,7 +66,7 @@ test('all selected economic, mode-candidate, semantic and graph operations execu
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'borrowed synthetic gateway results do not claim source execution or settlement');
 });
 
-test('all five absent source reads never reach gateway execution despite all three inventories claiming them',async()=>{
+test('all three absent source reads never reach gateway execution despite all three inventories claiming them',async()=>{
  const x=await subsetFixture();
  for(const operation of excluded){
   const before=x.subset.snapshots;await assert.rejects(x.owner.handle('execute',x.executeRequest(operation),x.credential),code('UNAVAILABLE'));
@@ -160,16 +167,31 @@ test('post-dispatch discovery removal withholds selected bytes and never falls b
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0);
 });
 
-test('legal native runtime exposes only complete search while approved/install/discovery inventories overclaim the reference sibling',async()=>{
- const operation=ref('search_legislative_research'),sibling=ref('get_legal_reference'),operations=[sibling,operation];
+test('legal native runtime exposes the complete search and reference reads while the inventories also overclaim an absent read',async()=>{
+ const operation=ref('search_legislative_research'),reference=ref('get_legal_reference'),absent=excluded[0],operations=[reference,absent,operation];
  const x=await readsFixture({config:{operations}}),gateway=x.ownerConfiguration.gateway,executions=[];
  const owner=createNativeReadsOwner({...x.ownerConfiguration,gateway:{
   async readAvailability(options){const snapshot=await gateway.readAvailability(options);return {...snapshot,installation:{...snapshot.installation,operations},discovery:{...snapshot.discovery,operations}};},
   async execute(call){const result={synthetic:'runtime-eligibility-only',operation:call.operation,arguments:call.arguments,deliveryId:call.deliveryId};executions.push(result);return JSON.stringify(result);},
  }});
- const snapshot=await owner.handle('availability',x.request,x.credential);assert.deepEqual(x.config.operations,operations);assert.deepEqual(snapshot.installation.operations,[operation]);assert.deepEqual(snapshot.discovery.operations,[operation]);
+ const snapshot=await owner.handle('availability',x.request,x.credential);assert.deepEqual(x.config.operations,operations);
+ assert.deepEqual(snapshot.installation.operations,[reference,operation]);assert.deepEqual(snapshot.discovery.operations,[reference,operation]);
  const request={...x.executeRequest,operation,arguments:{sessionKey:'2026'},deliveryId:'legal:runtime-search'},out=await owner.handle('execute',request,x.credential);
  assert.equal(out.inputSha256,hash(request));assert.deepEqual(out.operation,operation);assert.equal(out.deliveryId,request.deliveryId);assert.equal(out.resultSha256,hash(executions[0]));assert.equal(out.outputBytes,Buffer.byteLength(out.resultJson));
- await assert.rejects(owner.handle('execute',{...request,operation:sibling,arguments:{view:'rules',noticeId:'synthetic-notice'},deliveryId:'legal:held-reference'},x.credential),code('UNAVAILABLE'));
- assert.equal(executions.length,1);assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'eligibility-only fake gateway results do not establish source execution or settlement');
+ const held={...request,operation:reference,arguments:{view:'rules',noticeId:'synthetic-notice'},deliveryId:'legal:runtime-reference'},referenced=await owner.handle('execute',held,x.credential);
+ assert.equal(referenced.inputSha256,hash(held));assert.deepEqual(referenced.operation,reference);assert.equal(referenced.resultSha256,hash(executions[1]));
+ await assert.rejects(owner.handle('execute',{...request,operation:absent,arguments:{query:'synthetic'},deliveryId:'legal:absent'},x.credential),code('UNAVAILABLE'));
+ assert.equal(executions.length,2);assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'eligibility-only fake gateway results do not establish source execution or settlement');
+});
+
+// After PR189 every finite subset equals its family's catalog reads, so no catalog read is left outside one to drive the runtime
+// with. The shared predicate (registration, native-handler routes and the native read credential owner) is pinned directly: an
+// unreviewed sibling added to the catalog later stays ineligible until it is reviewed into the subset.
+test('a finite family subset admits exactly its reviewed reads and never an unreviewed sibling of the same family',()=>{
+ for(const [family,reviewed] of Object.entries(NATIVE_READ_OPERATION_SUBSETS)){
+  assert.deepEqual(familyOperations(family).map(op=>op.id).sort(),[...reviewed].sort(),family);
+  for(const id of reviewed)assert.equal(nativeReadOperationAllowed(family,id),true,`${family}:${id}`);
+  assert.equal(nativeReadOperationAllowed(family,`${family.replaceAll('-','_')}_unreviewed_sibling`),false,family);
+ }
+ assert.equal(nativeReadOperationAllowed('rule-status','get_state_rule_status'),false,'a read whose family has no native registration');
 });

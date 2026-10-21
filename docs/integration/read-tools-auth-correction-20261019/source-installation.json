@@ -1,0 +1,1191 @@
+{
+  "kind": "source-measurement-only",
+  "sourceCommit": "7da5bbef9b52853c278999aa40de63e7e62e1b42",
+  "previousPublishedHead": "231122607ff16c67a8fe19f8e945b2f8776431ae",
+  "measurement": {
+    "schema": "meri.general-read-installation-measurement.v1",
+    "baseCatalogSha256": "58673ff38658c07e608ad209f007c4c6e30b9ee06a04c0f52afa97ac222bca9c",
+    "operations": [
+      {
+        "operation": {
+          "id": "actions.query",
+          "version": "0.2.0"
+        },
+        "family": "action-items-complete",
+        "descriptorSha256": "ee99e6ae6eab7eb6e21a6bf47c5b3f12cc60582dd50fddebb977717b63a008ff",
+        "handlerSourceSha256": "3bead31638700a58cefdc39aac9686284a4dceb345d2c7d0803d5c217c130cc3"
+      },
+      {
+        "operation": {
+          "id": "find_contacts",
+          "version": "0.2.0"
+        },
+        "family": "tenant-contacts",
+        "descriptorSha256": "810a969b33f2f3d1f16faab6ea7dc175bd69ab099f4b8e2b7f5f06376499694e",
+        "handlerSourceSha256": "ca96f161343f99e3e9127ca9c942c0d02a0cf5cf5ba46e2714cad10f9ba4574d"
+      },
+      {
+        "operation": {
+          "id": "get_acquisition_person",
+          "version": "0.2.0"
+        },
+        "family": "acquisition-personnel",
+        "descriptorSha256": "9892e9c922ca926ffd63639cf546d2346b2e9d3eb76a93820eb525c77009b681",
+        "handlerSourceSha256": "f5d28f18c48bbea3e16eebbfe80a71dfa38834abf7de10c660f3b21b25b45dbb"
+      },
+      {
+        "operation": {
+          "id": "get_bill_status",
+          "version": "0.2.0"
+        },
+        "family": "federal-legislation",
+        "descriptorSha256": "26e11b17a17d0b8517ecfc0f4c3e4503a522dedf182cfb171480dc54fdf91ca9",
+        "handlerSourceSha256": "be83823988ba50e52e3fab66b5820529abcc133cfd1f17871391597000a81d61"
+      },
+      {
+        "operation": {
+          "id": "get_business_development_context",
+          "version": "0.2.0"
+        },
+        "family": "business-development",
+        "descriptorSha256": "6d949955b5295a29741e5de14399aaf72fa996b676d766ac42096cd861686f3c",
+        "handlerSourceSha256": "9ebb2e9c29e23d8347a45a5808fedcc86457bb3d574cacb6705b9ff9a3367cf9"
+      },
+      {
+        "operation": {
+          "id": "get_business_development_evidence",
+          "version": "0.2.0"
+        },
+        "family": "business-development",
+        "descriptorSha256": "309add88943556e711c7e41fb3be2160471766c8851c6e8dbc7280d091df25d1",
+        "handlerSourceSha256": "9ebb2e9c29e23d8347a45a5808fedcc86457bb3d574cacb6705b9ff9a3367cf9"
+      },
+      {
+        "operation": {
+          "id": "get_business_development_recent_changes",
+          "version": "0.2.0"
+        },
+        "family": "business-development",
+        "descriptorSha256": "3f1d5fcb0dd8a0e181d226cad685e3bcf0fcbfc4bb7cac58a0bf5a232d360fed",
+        "handlerSourceSha256": "9ebb2e9c29e23d8347a45a5808fedcc86457bb3d574cacb6705b9ff9a3367cf9"
+      },
+      {
+        "operation": {
+          "id": "get_client_context",
+          "version": "0.3.0"
+        },
+        "family": "client-knowledge-profile",
+        "descriptorSha256": "16a3dbe00ff667bb512be2ccdc4ccd29a067d3edcd662a2e2261408b2e4add06",
+        "handlerSourceSha256": "46e34a077f648aab1c739d2c7f9c10413b1081c2f259d060755f48176a50ba38"
+      },
+      {
+        "operation": {
+          "id": "get_committee_roster",
+          "version": "0.2.0"
+        },
+        "family": "legislative-directory",
+        "descriptorSha256": "19b446d4502afbce14e4e4cf47ce5066a2f705a3d7b918051c701b0556bceec0",
+        "handlerSourceSha256": "364b58cd74e05b1614803de6452d76c2b7716df2489fa22e6017e36da2aed617"
+      },
+      {
+        "operation": {
+          "id": "get_district_federal_market",
+          "version": "0.2.0"
+        },
+        "family": "federal-market",
+        "descriptorSha256": "bc2363058bf9fa87e2e0882f1b73d6af4a7515b3cb39dd5371fd131e2c37d1a4",
+        "handlerSourceSha256": "f1fdc48d33e0176b09aa5572f9bbf4a501db32e993682c6e4ffeb4a296d24e1d"
+      },
+      {
+        "operation": {
+          "id": "get_district_nexus_changes",
+          "version": "0.2.0"
+        },
+        "family": "district-nexus",
+        "descriptorSha256": "4d265c2395f910177bb31b099d779639d292657d5e16ee976ad126f450e1e987",
+        "handlerSourceSha256": "46a2e96eaad809fe096824b0eb8b47974e4c774bdc920b805699b064c91e9d43"
+      },
+      {
+        "operation": {
+          "id": "get_district_nexus_context",
+          "version": "0.2.0"
+        },
+        "family": "district-nexus",
+        "descriptorSha256": "e573e8337a3b6a53b0a5c62221ba79acf9a56aa366aee75b5e3806a89505cbf6",
+        "handlerSourceSha256": "46a2e96eaad809fe096824b0eb8b47974e4c774bdc920b805699b064c91e9d43"
+      },
+      {
+        "operation": {
+          "id": "get_florida_budget_project",
+          "version": "0.2.0"
+        },
+        "family": "florida-budget",
+        "descriptorSha256": "e5f8da073c77361a1a4ac293ffc02917242198258d912142a8869ffd9838923c",
+        "handlerSourceSha256": "56e52e5ded1f4cae647ba60300e5471dfb74e5f197ed9bf5d4924b2e7ce9d102"
+      },
+      {
+        "operation": {
+          "id": "get_funding_opportunity_requirements",
+          "version": "0.2.0"
+        },
+        "family": "funding-opportunities",
+        "descriptorSha256": "27cc70ee48248c3403109cfbd23d93e3668f946b2f2e850d9af7b06fdd5fc631",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "get_funding_opportunity",
+          "version": "0.2.0"
+        },
+        "family": "funding-opportunities",
+        "descriptorSha256": "30d502f21f80e69ddb7d8bef916bc4fc6c056313133a47c3b4fe7226e215247f",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "get_legal_reference",
+          "version": "0.2.0"
+        },
+        "family": "research-legal-legislation",
+        "descriptorSha256": "9feddf94e018f5b25998a2691c8cd8796c47b28912e296a389c8d1034026bb7c",
+        "handlerSourceSha256": "86a589e00ff8dbd2ed64f035898c53fc5fcc351a15af6ce6952be13e54eac248"
+      },
+      {
+        "operation": {
+          "id": "get_opportunity_client_context",
+          "version": "0.2.0"
+        },
+        "family": "funding-opportunities",
+        "descriptorSha256": "2299a866f594fd3a72bc08b39f83e26bf821ca6dae269b7515f8d661a5d59e36",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "get_opportunity_government_landscape",
+          "version": "0.2.0"
+        },
+        "family": "funding-opportunities",
+        "descriptorSha256": "4bf01e7ec3c8266351c8104d942447b74ab5c066ff3f042eed9b0a546a627fc0",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "get_pe_bills",
+          "version": "0.2.0"
+        },
+        "family": "pe-references",
+        "descriptorSha256": "a3eee41b85af331af0c4d6c8dd952caff07487ae9bf40a9e978646fc9c8b9193",
+        "handlerSourceSha256": "58853d3e2799b2c90ac65aa8d67f6495978fc3198ef43cb6c80dcb83cba02049"
+      },
+      {
+        "operation": {
+          "id": "get_pe_budget_timeline",
+          "version": "0.2.0"
+        },
+        "family": "program-elements",
+        "descriptorSha256": "f28004d1f2ecfda5ce18ea6ead55c5c22781e10fc70c8fafced5a4af00e524d2",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "get_pe_contractors",
+          "version": "0.2.0"
+        },
+        "family": "pe-references",
+        "descriptorSha256": "b3f78253d4e3410cc0fc38142cdef6f9e0c73faef4e3e772bea9199b72f3c3c9",
+        "handlerSourceSha256": "58853d3e2799b2c90ac65aa8d67f6495978fc3198ef43cb6c80dcb83cba02049"
+      },
+      {
+        "operation": {
+          "id": "get_pe_report_language",
+          "version": "0.2.0"
+        },
+        "family": "pe-references",
+        "descriptorSha256": "4cb34d518b3098d5161d8ebfc6494bbc570dea627b63cd58b1e297170dffeefb",
+        "handlerSourceSha256": "58853d3e2799b2c90ac65aa8d67f6495978fc3198ef43cb6c80dcb83cba02049"
+      },
+      {
+        "operation": {
+          "id": "get_program_element",
+          "version": "0.2.0"
+        },
+        "family": "program-elements",
+        "descriptorSha256": "68ce195ae2fd8888cc25f0410c2547c1479fc596c9c283f3a1ab2b8934a5b60f",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "get_representation",
+          "version": "0.2.0"
+        },
+        "family": "facility-representation",
+        "descriptorSha256": "e32eb68c2669e17a3b08ec1f9843f99cd1a2fb57c5836e74583aed9fa799bc08",
+        "handlerSourceSha256": "7f44361e729bc330ea8a1d0121d6bd8961ae89dfd054094ae1b692268710db3f"
+      },
+      {
+        "operation": {
+          "id": "get_research_evidence",
+          "version": "0.2.0"
+        },
+        "family": "research-portfolio-evidence",
+        "descriptorSha256": "2b8daed2c2b7d01dce947f079994c52425e86731b8e5d4b213cf62fc2696584c",
+        "handlerSourceSha256": "3c9d2c607b15762302948d5a02a171f12eada03cb25c11e64a5f30aeec80550e"
+      },
+      {
+        "operation": {
+          "id": "get_research_portfolio_changes",
+          "version": "0.2.0"
+        },
+        "family": "research-portfolio",
+        "descriptorSha256": "680da4067f3f10d00282cd7703bc99500b6b956ed5e9369cfb59ca3bcb974bbd",
+        "handlerSourceSha256": "f5621a97af9933554301faec8851a573f41ea9dfd787604ed0b1d7ddeca8dd4c"
+      },
+      {
+        "operation": {
+          "id": "get_research_portfolio",
+          "version": "0.2.0"
+        },
+        "family": "research-portfolio",
+        "descriptorSha256": "fbdbef03cfe68e0fe952dd5498037256c3cc512dab1396102fb5a5b30b37a73f",
+        "handlerSourceSha256": "f5621a97af9933554301faec8851a573f41ea9dfd787604ed0b1d7ddeca8dd4c"
+      },
+      {
+        "operation": {
+          "id": "get_state_bill_status",
+          "version": "0.2.0"
+        },
+        "family": "state-status-votes",
+        "descriptorSha256": "cf23258c053a814de222c1130b29e933907bc8346be1605be101ee26179f914b",
+        "handlerSourceSha256": "f843b89df843aa33529684882853250ef49237d3a24d555df64a5b7fa856a520"
+      },
+      {
+        "operation": {
+          "id": "get_state_legislator",
+          "version": "0.2.0"
+        },
+        "family": "state-legislation",
+        "descriptorSha256": "2285a7260b0ebdac0524876c34c0811e7ff1f7e74fb75b0b18b1326eb42173be",
+        "handlerSourceSha256": "13580e65caf323d9e36edd0208378fa6553992d1c5854d557590b039df2fc23b"
+      },
+      {
+        "operation": {
+          "id": "list_global_datasets",
+          "version": "0.2.0"
+        },
+        "family": "dataset-metadata",
+        "descriptorSha256": "d6aad7afbd472e82360b86f1c6a640d3e8b0247935cc931566745689d3187f3a",
+        "handlerSourceSha256": "b85b7a57c7154e7baf04aa1605e1902bd428f9b3c5b1f474a3629df380f03883"
+      },
+      {
+        "operation": {
+          "id": "list_members",
+          "version": "0.2.0"
+        },
+        "family": "legislative-directory",
+        "descriptorSha256": "17ee0e027a7c25275389a9bad67c100d5949714db8e2ee92d7d18e7ee251866b",
+        "handlerSourceSha256": "364b58cd74e05b1614803de6452d76c2b7716df2489fa22e6017e36da2aed617"
+      },
+      {
+        "operation": {
+          "id": "lookup_client_registry",
+          "version": "0.2.0"
+        },
+        "family": "client-registry",
+        "descriptorSha256": "f40ab2f22e5688e13661b61bd0ccd96a0fca2765583573d10c23d6275c985ab6",
+        "handlerSourceSha256": "f80163be0ff6cb68f878e00d3901210e651c2ef267333758bdfa3f6afd730c27"
+      },
+      {
+        "operation": {
+          "id": "mail.list_messages",
+          "version": "0.2.0"
+        },
+        "family": "mail",
+        "descriptorSha256": "deaae1d46eb76d273a2e738cfaf5f88d98992baed291b18e61177d67fc426499",
+        "handlerSourceSha256": "0a976e7f1fca32d26e583ec6a7fc73185bd78cd8336bc8f72d27278ce8fe001a"
+      },
+      {
+        "operation": {
+          "id": "mail.read_thread",
+          "version": "0.2.0"
+        },
+        "family": "mail",
+        "descriptorSha256": "8f9e6204dd6f6189fc9af90a57c6a45272be1f17ed41495bf9481e84e9f19543",
+        "handlerSourceSha256": "0a976e7f1fca32d26e583ec6a7fc73185bd78cd8336bc8f72d27278ce8fe001a"
+      },
+      {
+        "operation": {
+          "id": "mail.search_messages",
+          "version": "0.2.0"
+        },
+        "family": "mail",
+        "descriptorSha256": "5f7072ca4ca1d6511f66a252d8bb82d60e438e5e85d9ea53acb734fb85923a21",
+        "handlerSourceSha256": "0a976e7f1fca32d26e583ec6a7fc73185bd78cd8336bc8f72d27278ce8fe001a"
+      },
+      {
+        "operation": {
+          "id": "meeting.list_upcoming_meetings",
+          "version": "0.2.0"
+        },
+        "family": "meeting-source",
+        "descriptorSha256": "3a378d6cc7cdab7ade26e5c05df9d645b6d8898e6dba5122e6319727dc5d955c",
+        "handlerSourceSha256": "c4b6dce25ce0fb4b5ad384d86a93c26814d287bf8133333d52fb15cb81d44b44"
+      },
+      {
+        "operation": {
+          "id": "meeting.query_debriefs",
+          "version": "0.2.0"
+        },
+        "family": "meeting-source",
+        "descriptorSha256": "bcebc2a1214b0ec46a3da305c22859db49759ae993fcf9ad89904b54ef5ed627",
+        "handlerSourceSha256": "c4b6dce25ce0fb4b5ad384d86a93c26814d287bf8133333d52fb15cb81d44b44"
+      },
+      {
+        "operation": {
+          "id": "meeting.read_client_meetings",
+          "version": "0.2.0"
+        },
+        "family": "meeting-source",
+        "descriptorSha256": "033cc053bf4cd404e152bf2d44a367bf8e1d5fa17e9f9804749691a49b9663bd",
+        "handlerSourceSha256": "c4b6dce25ce0fb4b5ad384d86a93c26814d287bf8133333d52fb15cb81d44b44"
+      },
+      {
+        "operation": {
+          "id": "memory.list_own_proposals",
+          "version": "0.2.0"
+        },
+        "family": "memory-proposals",
+        "descriptorSha256": "b9a560ebbb7f9acac05bbdb1a172314832103944f937e42fc12dcb07b8b26fe6",
+        "handlerSourceSha256": "e2dfe6b8def5d679496b85cffe2e3108ee079f0a00ed3118e2b73986ee1a62b5"
+      },
+      {
+        "operation": {
+          "id": "query_action_items",
+          "version": "0.2.0"
+        },
+        "family": "operational-reads",
+        "descriptorSha256": "8860ad69c3cd22e1a94b63fe7c4a5a73a747972792a04c1f0e0f97e52ca8d61d",
+        "handlerSourceSha256": "b00e59bd7bea672b0c4abe3fd9d9776e3bba996d92794da670ce4161545b2cea"
+      },
+      {
+        "operation": {
+          "id": "query_economic_data",
+          "version": "0.2.0"
+        },
+        "family": "public-data",
+        "descriptorSha256": "837c328ee8f327749cb31ff02008d190599ee538659f7b8924ea4afb30caf19f",
+        "handlerSourceSha256": "a547dbeca05acfb95565f6ca8f491212c204a8c5a4ecfec6d6fbcc917d8aaad2"
+      },
+      {
+        "operation": {
+          "id": "query_global_data",
+          "version": "0.2.0"
+        },
+        "family": "public-domain-query",
+        "descriptorSha256": "bc3c6b1212321eaef5d7cfa6c67e6cdf823d783faf615101a910d38d1a229c33",
+        "handlerSourceSha256": "c03b1c1939958ee11abcb7c6c005b4d65eb12d598b145e849c13a70034b632f7"
+      },
+      {
+        "operation": {
+          "id": "query_intelligence",
+          "version": "0.2.0"
+        },
+        "family": "intelligence-summary",
+        "descriptorSha256": "34644bc7baf75a20de97e87e4d855b61f8eaf8c0cc6d546a152d371e71dad50b",
+        "handlerSourceSha256": "bfefd38b4a942e22e5e2d509417c0c043953e1b836936cc8c8d7ee5507648657"
+      },
+      {
+        "operation": {
+          "id": "query_knowledge_graph",
+          "version": "0.2.0"
+        },
+        "family": "client-knowledge-search",
+        "descriptorSha256": "1c6651bcc3259b9e4a66adda6f268b6fb69c8ef2436aa6c92d138313fcaa387e",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "query_outreach",
+          "version": "0.2.0"
+        },
+        "family": "outreach-query",
+        "descriptorSha256": "5d0fff2421a7035d272495406f8d6970596abd0715bbda18e108f75e93227ba0",
+        "handlerSourceSha256": "59dd9da37d7aab13ab0e6c40e3e1acec7aadfbd379acf3ec453f5221319a5754"
+      },
+      {
+        "operation": {
+          "id": "query_regulatory_dockets",
+          "version": "0.2.0"
+        },
+        "family": "regulatory-dockets",
+        "descriptorSha256": "43d28c248590b83f9d65a54ccc517fe7b63d88675f8ac880f9a6bdebf3c1d19d",
+        "handlerSourceSha256": "d78effc6fb586b85e5ab740f93e212783dec80279096137144fc1fe42b9799a2"
+      },
+      {
+        "operation": {
+          "id": "query_tasks",
+          "version": "0.2.0"
+        },
+        "family": "operational-reads",
+        "descriptorSha256": "d4759849397db18893c6514ab3f7a25bbadbe97d2352a4bac256524a9f670d54",
+        "handlerSourceSha256": "b00e59bd7bea672b0c4abe3fd9d9776e3bba996d92794da670ce4161545b2cea"
+      },
+      {
+        "operation": {
+          "id": "read_bill_text",
+          "version": "0.2.0"
+        },
+        "family": "bill-text",
+        "descriptorSha256": "bfaa72419f5900168001f71d701c6cb33d17689c246ac33ee515099f17fec168",
+        "handlerSourceSha256": "e655469fdc44557664cf8727b5c027419cd514ce7d57128d007e84c4ce84d706"
+      },
+      {
+        "operation": {
+          "id": "read_client_documents",
+          "version": "0.2.0"
+        },
+        "family": "client-documents",
+        "descriptorSha256": "582fab9533d4645078fc41cd510b8bb61c16f9aa685380d39460c5f3ad1d7c32",
+        "handlerSourceSha256": "d28924544ca1624cde9fc10fa64e223115ce5fff868ab68a4056b9395f40d125"
+      },
+      {
+        "operation": {
+          "id": "read_monday_client_boards",
+          "version": "0.2.0"
+        },
+        "family": "client-knowledge-monday",
+        "descriptorSha256": "fc35512de86bb0d1af81d062c708e9677b4e4da3969b2a178947fed5c13df1ca",
+        "handlerSourceSha256": "36d6be77f9d8eca07411e1e66a6df74eb8d925492756365799e3ccab3ad0de65"
+      },
+      {
+        "operation": {
+          "id": "resolve_entity",
+          "version": "0.2.0"
+        },
+        "family": "entity-candidates",
+        "descriptorSha256": "f299642b75ea6592ef52e5a603db5f62a923faa4357b16a52980a55fcd52abe2",
+        "handlerSourceSha256": "d978588e1b9c03d243a2db399146977984a4eddb214b4f31230dbdb8f74ff5c3"
+      },
+      {
+        "operation": {
+          "id": "scrape_web_page",
+          "version": "0.2.0"
+        },
+        "family": "public-web",
+        "descriptorSha256": "8800dc3e3b19527e5bbd3aab1e44607bfb418dd9c966b14edbe5a325dda4e12e",
+        "handlerSourceSha256": "93dff005ff9ea87efa18dc1737b6aefe9fce69ca87a12412d2614e0401e89a07"
+      },
+      {
+        "operation": {
+          "id": "search_acquisition_personnel",
+          "version": "0.2.0"
+        },
+        "family": "acquisition-personnel",
+        "descriptorSha256": "a6cbfb4ba4eefb6cadb4455520bac7d10cbe02670d55297208d47d8201d7782a",
+        "handlerSourceSha256": "f5d28f18c48bbea3e16eebbfe80a71dfa38834abf7de10c660f3b21b25b45dbb"
+      },
+      {
+        "operation": {
+          "id": "search_capiro_data",
+          "version": "0.2.0"
+        },
+        "family": "data-search",
+        "descriptorSha256": "657cf231b07ea26c4cf78016987426f6435589fc21744df6d8e9da7c6557132b",
+        "handlerSourceSha256": "67fd649a41a7df9ec5f55f61799716b42bb835c65ed90d6b34e714b7c72720d6"
+      },
+      {
+        "operation": {
+          "id": "search_cbo_cost_estimates",
+          "version": "0.2.0"
+        },
+        "family": "public-reports",
+        "descriptorSha256": "52b552cc4a45b0bc22d51a38c38ccd9f46ac3baca80d24a96f0d4f2cd350bd75",
+        "handlerSourceSha256": "92882278696de448346a9c991a149d58b7607a3457fd4c3c8ca0729dac83d2bc"
+      },
+      {
+        "operation": {
+          "id": "search_client_knowledge",
+          "version": "0.2.0"
+        },
+        "family": "client-knowledge-search",
+        "descriptorSha256": "7d40b5889d8f2d27e4881462a9a81f8364b4af690b34aeb0f31c315a41f0b12d",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "search_committee_hearings",
+          "version": "0.2.0"
+        },
+        "family": "public-domain-hearings",
+        "descriptorSha256": "31ad1ab30c20b38ab37ed31591e43a51599a7e82961ebedf03a9586e3c2369a7",
+        "handlerSourceSha256": "5535b6fb2ff3976b9c764007b9411c4f7c7173195bced0990753c908e0abf651"
+      },
+      {
+        "operation": {
+          "id": "search_congress_bills",
+          "version": "0.2.0"
+        },
+        "family": "bill-text",
+        "descriptorSha256": "bb002952b6d245edf19c9f7f0ebeba3ac8188f3be424d798d1ea9370d098a503",
+        "handlerSourceSha256": "e655469fdc44557664cf8727b5c027419cd514ce7d57128d007e84c4ce84d706"
+      },
+      {
+        "operation": {
+          "id": "search_contract_vehicles",
+          "version": "0.2.0"
+        },
+        "family": "federal-market",
+        "descriptorSha256": "1bd8dad33cc73f9705b7f3cd4fef8cc2c81bb8dc7bffca92ba3d2524013774a5",
+        "handlerSourceSha256": "f1fdc48d33e0176b09aa5572f9bbf4a501db32e993682c6e4ffeb4a296d24e1d"
+      },
+      {
+        "operation": {
+          "id": "search_crs_reports",
+          "version": "0.2.0"
+        },
+        "family": "public-reports",
+        "descriptorSha256": "66dbbe1ef8fc4fbe19d9fb6ef1b093a21a7d2e3806c0d01f169fa96df5a99953",
+        "handlerSourceSha256": "92882278696de448346a9c991a149d58b7607a3457fd4c3c8ca0729dac83d2bc"
+      },
+      {
+        "operation": {
+          "id": "search_fara_registrations",
+          "version": "0.2.0"
+        },
+        "family": "disclosures",
+        "descriptorSha256": "c876d9393abe000daba74fc8e328a805dda1706bfe80fd8f17473344a4021286",
+        "handlerSourceSha256": "f81119209dcc82d125b6aa3f70f67d8f51a23196524d1f8f2f379a09192af9c0"
+      },
+      {
+        "operation": {
+          "id": "search_federal_awards",
+          "version": "0.2.0"
+        },
+        "family": "public-data",
+        "descriptorSha256": "b87168c8b56a4aefb45bcf55a7f7a3b419207812977f0d83e008db7c3a39076b",
+        "handlerSourceSha256": "a547dbeca05acfb95565f6ca8f491212c204a8c5a4ecfec6d6fbcc917d8aaad2"
+      },
+      {
+        "operation": {
+          "id": "search_federal_contract_awards",
+          "version": "0.2.0"
+        },
+        "family": "federal-market",
+        "descriptorSha256": "51fcc534262bfc28505e7dc88bc7dd34ed3decb1fedf18642ad9100f36d44161",
+        "handlerSourceSha256": "f1fdc48d33e0176b09aa5572f9bbf4a501db32e993682c6e4ffeb4a296d24e1d"
+      },
+      {
+        "operation": {
+          "id": "search_federal_grants",
+          "version": "0.2.0"
+        },
+        "family": "public-data",
+        "descriptorSha256": "2b3d3f5787d75dcd718e642951819655ecec3860b889e9e52f4c6581fa32ae46",
+        "handlerSourceSha256": "a547dbeca05acfb95565f6ca8f491212c204a8c5a4ecfec6d6fbcc917d8aaad2"
+      },
+      {
+        "operation": {
+          "id": "search_federal_subawards",
+          "version": "0.2.0"
+        },
+        "family": "federal-market",
+        "descriptorSha256": "0f7a88433634300136d7ee6dd52a861aae8ceb401c38c2f18eaebe04163ec468",
+        "handlerSourceSha256": "f1fdc48d33e0176b09aa5572f9bbf4a501db32e993682c6e4ffeb4a296d24e1d"
+      },
+      {
+        "operation": {
+          "id": "search_floor_votes",
+          "version": "0.2.0"
+        },
+        "family": "federal-legislation",
+        "descriptorSha256": "3ef7e0bf622c34a7c735e470b311fb5c940d35dafdea5941e35a3d8258b64426",
+        "handlerSourceSha256": "be83823988ba50e52e3fab66b5820529abcc133cfd1f17871391597000a81d61"
+      },
+      {
+        "operation": {
+          "id": "search_funding_opportunities",
+          "version": "0.2.0"
+        },
+        "family": "funding-opportunities",
+        "descriptorSha256": "dc719f84bd7e9f81e987496edc48d53b2d898f493a72012046b0a6345ee087b6",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "search_gao_reports",
+          "version": "0.2.0"
+        },
+        "family": "public-reports",
+        "descriptorSha256": "d51f41f0a9eec7a623b0a4a69a31907d829115996cc75689d498ef15fe6fafcc",
+        "handlerSourceSha256": "92882278696de448346a9c991a149d58b7607a3457fd4c3c8ca0729dac83d2bc"
+      },
+      {
+        "operation": {
+          "id": "search_intel_articles",
+          "version": "0.2.0"
+        },
+        "family": "stored-intelligence",
+        "descriptorSha256": "dfc90e66e92c26ce441ecd0ae9119800633173c04755f95d1ce1d78ffbe974e3",
+        "handlerSourceSha256": "d2b8a5e925d2678fb04f86dbcda227ee0361a4e39de7e5fc68d6adfc3a126011"
+      },
+      {
+        "operation": {
+          "id": "search_lda_filings",
+          "version": "0.2.0"
+        },
+        "family": "disclosures",
+        "descriptorSha256": "d741ef7380289fca71a3bc9191815c9cb4c4a2fc2dfa58b2ce1e516a45fee8bb",
+        "handlerSourceSha256": "f81119209dcc82d125b6aa3f70f67d8f51a23196524d1f8f2f379a09192af9c0"
+      },
+      {
+        "operation": {
+          "id": "search_legislative_research",
+          "version": "0.2.0"
+        },
+        "family": "research-legal-legislation",
+        "descriptorSha256": "0a63a62b06466b8669201706728428a3b10ac56fb47415215d9c9b5f49a8054f",
+        "handlerSourceSha256": "86a589e00ff8dbd2ed64f035898c53fc5fcc351a15af6ce6952be13e54eac248"
+      },
+      {
+        "operation": {
+          "id": "search_legiwatch_news",
+          "version": "0.2.0"
+        },
+        "family": "research-legal-news",
+        "descriptorSha256": "ddb6de9cd99823e3464b5be4b9d6cb905e7d7674cf293e1fe481470cfeadd70f",
+        "handlerSourceSha256": "1cf03092942cda43b8e2933f75c850616ccc809cd6d8bcc429760c08fd51c275"
+      },
+      {
+        "operation": {
+          "id": "search_memory",
+          "version": "0.2.0"
+        },
+        "family": "client-knowledge-memory",
+        "descriptorSha256": "d5688a635fef321296ae5687ad242c84f5040631c0913e03b91ad4b1ff2f52d0",
+        "handlerSourceSha256": "fd1fd29d9b82a85fb50b97821bae33863a424a8ddaa2dc981d6e354daa5dff39"
+      },
+      {
+        "operation": {
+          "id": "search_procurement_forecasts",
+          "version": "0.2.0"
+        },
+        "family": "federal-market",
+        "descriptorSha256": "10b4f896d921881a74071469baf6462a6736b05bed712d85d92e88486a81b3b2",
+        "handlerSourceSha256": "f1fdc48d33e0176b09aa5572f9bbf4a501db32e993682c6e4ffeb4a296d24e1d"
+      },
+      {
+        "operation": {
+          "id": "search_program_elements",
+          "version": "0.2.0"
+        },
+        "family": "program-elements",
+        "descriptorSha256": "bfac94b0337a357c66d3051f410741c0ec93bbb6663071728fd4c7b4e0320250",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "search_public_web",
+          "version": "0.2.0"
+        },
+        "family": "public-web",
+        "descriptorSha256": "17b6176ad6e50856b838aec7a3f7a814c4fd98b815ff01d81053aee352a1e6e0",
+        "handlerSourceSha256": "93dff005ff9ea87efa18dc1737b6aefe9fce69ca87a12412d2614e0401e89a07"
+      },
+      {
+        "operation": {
+          "id": "search_research_sources",
+          "version": "0.2.0"
+        },
+        "family": "research-legal-candidates",
+        "descriptorSha256": "1f963b4edfb800de6816021391bb0975e09ba8af46d9ffe749fcd8c3a53d5ede",
+        "handlerSourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+      },
+      {
+        "operation": {
+          "id": "search_sec_filings",
+          "version": "0.2.0"
+        },
+        "family": "disclosures",
+        "descriptorSha256": "790f0be1dbe12d2e72c43a51dcc2e67c076d0ae78340db8603f4cae11b83ec40",
+        "handlerSourceSha256": "f81119209dcc82d125b6aa3f70f67d8f51a23196524d1f8f2f379a09192af9c0"
+      },
+      {
+        "operation": {
+          "id": "search_state_bills",
+          "version": "0.2.0"
+        },
+        "family": "state-legislation",
+        "descriptorSha256": "75786d722eb2ac9e21ac4eaa9cc1f9a6bc5b04e404beb1b186b7e06e8377325d",
+        "handlerSourceSha256": "13580e65caf323d9e36edd0208378fa6553992d1c5854d557590b039df2fc23b"
+      },
+      {
+        "operation": {
+          "id": "search_state_floor_votes",
+          "version": "0.2.0"
+        },
+        "family": "state-status-votes",
+        "descriptorSha256": "26ee2c274cff93b1d90c274b04cee203c539337c9abfbccaec733ac978fd7dab",
+        "handlerSourceSha256": "f843b89df843aa33529684882853250ef49237d3a24d555df64a5b7fa856a520"
+      },
+      {
+        "operation": {
+          "id": "search_tracked_bills",
+          "version": "0.2.0"
+        },
+        "family": "tracked-bills",
+        "descriptorSha256": "4d9d2bf17d687ca9db4218fd4082b6fd24bbab00f37b81426b09da339a33ea3c",
+        "handlerSourceSha256": "4c83c6cc8a76aaddc8f0cf9b59d3ec235d7808d38a36be1af46b6690c21927f0"
+      }
+    ]
+  },
+  "measurementSha256": "d0484f64b14b5e38d7412e1d11ca8c7c33372ddce2b000668d16a40201d9eba4",
+  "researchCandidateSources": {
+    "sourceFiles": [
+      {
+        "label": "apps/gateway/general-reads/integration.mjs",
+        "sha256": "cfa045e82ad7dfb4cb51093246f6491ac01afe7447a8d1f7c439df8c0aae26e2"
+      },
+      {
+        "label": "apps/gateway/general-reads/registration.mjs",
+        "sha256": "80c5a64e10f279ccf7201d85b04c7ded1739416b98d64eb84098ec8937a2300a"
+      },
+      {
+        "label": "apps/runtime/native-authority/native-read-credentials/client-reference.mjs",
+        "sha256": "e91f2152b115534250833b3a583d40123c768c25c2b2d9987c0be18f4b922305"
+      },
+      {
+        "label": "apps/runtime/native-authority/native-read-credentials/read-mode-observation.mjs",
+        "sha256": "94fe59b8b94f90445f105b274edde213dd55308d88e39a4d1a0aafa886115739"
+      },
+      {
+        "label": "apps/gateway/general-reads/families/program-elements.mjs",
+        "sha256": "ba49ead56079e718e46e437f70dc2dbc9a89704c36dc2b11e50f2de3e813009a"
+      },
+      {
+        "label": "apps/gateway/sources/program-elements/handler.mjs",
+        "sha256": "4fb9efac9d8d3be152830bed5ce34dd32889d479aeb9ce1affbefd63fa390fa1"
+      },
+      {
+        "label": "apps/gateway/sources/program-elements/request-context.mjs",
+        "sha256": "1b63c7479f92977234ce0945bf6d940515cb8619673665c22131e7b2e282f250"
+      },
+      {
+        "label": "apps/gateway/sources/public-data/handler.mjs",
+        "sha256": "1a32c7b6684da95ba25b98465b8f85e23a86287626824ec8a59f1957efa62e55"
+      },
+      {
+        "label": "apps/gateway/sources/public-data/request-context.mjs",
+        "sha256": "e6406ed7b35c907e53220e4b9b5e643a21752419958fcc744d35798a24bced86"
+      },
+      {
+        "label": "apps/gateway/sources/outreach-query/handler.mjs",
+        "sha256": "c46fda08b9967e5d57883d6ff0670da9e8e0e5c5f20ea809e5ad474d72f5464e"
+      },
+      {
+        "label": "apps/gateway/sources/outreach-query/request-context.mjs",
+        "sha256": "682da23f050dc0ec1bd0622209e44f970f5de2ac29068f5328b5896aa6f6a57c"
+      },
+      {
+        "label": "apps/runtime/native-authority/native-read-credentials/owner.mjs",
+        "sha256": "ac7135a4f803ee676e0cb87a90696a4c09c18fcad3af001da3680176b3ccf889"
+      },
+      {
+        "label": "apps/runtime/native-authority/native-read-credentials/core-client.mjs",
+        "sha256": "43177b3c6a7c40d3a558737b45bf8fda72ee33da4490391e0db97c175b176a34"
+      },
+      {
+        "label": "apps/runtime/native-authority/native-read-credentials/source-read-context.mjs",
+        "sha256": "3e2be81fad55a5e51f807869521753dbd0259d5d9141d254c1e436a8a2eefdb7"
+      },
+      {
+        "label": "apps/gateway/sources/state-status-votes/handler.mjs",
+        "sha256": "7efd5c17cbf07c8468648f7fe19189e685d1b4670fa3c3634f25109e5f16117a"
+      },
+      {
+        "label": "apps/gateway/sources/state-status-votes/request-context.mjs",
+        "sha256": "69b8f962f081171664863e5cb8c4f782700c430551e9238a1f4bfb6f69ce87ca"
+      },
+      {
+        "label": "apps/gateway/sources/tracked-bills/handler.mjs",
+        "sha256": "41e3b582039c3cf811798d77e60572742b9ce5ec8b4145294cf04cd9d48b0f19"
+      },
+      {
+        "label": "apps/gateway/sources/public-domain-hearings/handler.mjs",
+        "sha256": "6ae11ea568ca02ffdca13ab5f134563bda450141c369fff024ba40bc4988b6c9"
+      },
+      {
+        "label": "apps/gateway/sources/public-domain-hearings/request-context.mjs",
+        "sha256": "1d0484171a1325fa17e843062e07972b149f3c261c71e41262f21f68a2008ad5"
+      },
+      {
+        "label": "apps/gateway/sources/research-legal-legislation/handler.mjs",
+        "sha256": "2baf9f947ee9565f65b3f086060006982478d3411584de3e7fc6d8ae3317245e"
+      },
+      {
+        "label": "apps/worker/conversation/reads/families.mjs",
+        "sha256": "32cf38ef7dcacfbea960348b91856229854c109c317138b7d0714cced375b13e"
+      },
+      {
+        "label": "apps/worker/conversation/reads/schema.mjs",
+        "sha256": "a279b44daaa5ac04bc4c873387b756bb0347130816ed0405a0f0e1a19d0ce51c"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/validate.mjs",
+        "sha256": "f1cfbc75b473e558de870525841c1a0b66d2d3ef542a2fa0f49de673ac5204c3"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+        "sha256": "43f81480b0140cac416501b456c05899742acd3a353bfcfaa6b8bb9cc04182d6"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "053d2661e042c960a914fffc262bb89c486da785af7047165c88274c3b896fe4"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/client-knowledge-profile-v03.schema.json",
+        "sha256": "7d422f92a4771b2d7e869e45371396c12b8a69934f9cb8ca50f5821ccab514a2"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/client-knowledge-profile-v03-validation.mjs",
+        "sha256": "a2ae33e9f0dfd611b99c6c0fa5649d6701078ffe874a952f61464d1af7ad4948"
+      },
+      {
+        "label": "apps/gateway/sources/client-evidence/handler.mjs",
+        "sha256": "7fd5358469daf771226b14612ae40e302bb01b3bd0b3d418df3d5091d3e9d36f"
+      },
+      {
+        "label": "apps/gateway/sources/client-evidence/http-adapter.mjs",
+        "sha256": "46acbe3d23c06649adc291ea5e50fa320d6cc4d8630ab69fd81d156612d777f4"
+      },
+      {
+        "label": "apps/gateway/sources/client-evidence/request-context.mjs",
+        "sha256": "ecea7eed2449a8e1bde5e10ce8540b8ce163712b9680e12146c3b2443d657fc2"
+      },
+      {
+        "label": "apps/gateway/sources/identity-contacts/handler.mjs",
+        "sha256": "1bb60b6c32556205259afd312a02efb4408b9a5302ec292f419f04e417008508"
+      },
+      {
+        "label": "apps/gateway/sources/identity-contacts/http-adapter.mjs",
+        "sha256": "d4ee9fa369904ae44b3c9c87f159b167ac6a7ec390d4bc7a37c39c78352bbf4c"
+      },
+      {
+        "label": "apps/gateway/sources/identity-contacts/request-context.mjs",
+        "sha256": "b9a3c986097c7797d49f9b98aae57abd4190d2eb6293802dc29f589481df2d8d"
+      },
+      {
+        "label": "apps/gateway/sources/meetings/handler.mjs",
+        "sha256": "3cde9e24b9719e4b1ea6a2e70995d81037c89f577918076c177d77edc9a94294"
+      },
+      {
+        "label": "apps/gateway/sources/meetings/http-adapter.mjs",
+        "sha256": "6b0c72faad5c5d39e1c46562537dda29f46b423ee4677ca7735571fb051ad413"
+      },
+      {
+        "label": "apps/gateway/sources/meetings/request-context.mjs",
+        "sha256": "2fe59099939f3a68a70a8b57a8b84501e6482629b7a71290c90b56ebb67c8b16"
+      },
+      {
+        "label": "apps/runtime/native-authority/general-read-installation/configuration.mjs",
+        "sha256": "2c9472b150243f52ffb599f3b56ddf4d64cdc666ddde4e4c01017f6d3437ba85"
+      },
+      {
+        "label": "apps/runtime/native-authority/general-read-installation/runtime.mjs",
+        "sha256": "0fec2d6da8e107c0bce069fbae9b8aecc22801b14ecc1d95f3258496bc8f9072"
+      },
+      {
+        "label": "apps/gateway/dispatch/tool-dispatch.mjs",
+        "sha256": "f101a6ab814308967b7bcdc047de238f00c9941d24f51da0542bb6588807e011"
+      },
+      {
+        "label": "apps/gateway/dispatch/operation-context.mjs",
+        "sha256": "c4f146bdc2274e20f9b93dc40a76dbedcb8d28624b890fe297eef13637fac426"
+      },
+      {
+        "label": "apps/gateway/dispatch/action-read-context.mjs",
+        "sha256": "6fd65759d8557d35152e258e316d9ff9863e9ade65fd95b99cb433651c3d5519"
+      },
+      {
+        "label": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+        "sha256": "6a22a65e363b1b9c4e9a0b4ea46073add051b97975fdfb411523bcdae1227532"
+      },
+      {
+        "label": "apps/gateway/dispatch/read-result-envelope.mjs",
+        "sha256": "3935d1608b9361a7873baf67b62d40b8640804da2aa049c286e7cd9974f1cc95"
+      },
+      {
+        "label": "apps/gateway/dispatch/operation-result.mjs",
+        "sha256": "26e44f72ec13011a8c0960842d6a8abd53b8f67e9082f888f4bc2458b5c42468"
+      },
+      {
+        "label": "apps/gateway/sources/retained-reads/signed-source-operations.mjs",
+        "sha256": "03e923eb38bfc11a0aa57109ae0ebdc35f5271aee61623724d2a66fa047116cf"
+      },
+      {
+        "label": "apps/runtime/cli.mjs",
+        "sha256": "1cd2e52587c7d96f5b47af604e77e74c1d401319347a763acff811b5d98cfe06"
+      },
+      {
+        "label": "apps/runtime/native-authority/reads-composer.mjs",
+        "sha256": "3771bb764842ae0bffc018fe9da8ea446d3440b9bbc87580c166d9e263f2f310"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-read-credential-relay.mjs",
+        "sha256": "567a4141232923b3791e7d1c9ae6ca9d4231d19d103225428e8be891da66194c"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/client-scoped-source-task-ports.mjs",
+        "sha256": "b08c111eb3de24460e2913af7bc367dfe50243f9446c37b901c4272e89aa73c0"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/selected-task-ports.mjs",
+        "sha256": "646de6e999c21e9b1c79b5bc9b4fd14091585515654e36e336d8a8ecd321849d"
+      },
+      {
+        "label": "apps/runtime/config.mjs",
+        "sha256": "03ef7f46aa8e58ffd1deb92035d3f3ae2ad14b1b2ba618b0ab5671f81e64a857"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/configuration.mjs",
+        "sha256": "82ac30fd96dba0b327e7a098740f2f9cf3a43e16b9dfe47388fe7d32ac8432ae"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/research-florida-task-ports.mjs",
+        "sha256": "302b19896440cbc29ccff03cc934f9c9c9c86bec41e40523e6f9df7acbd40014"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/task-ports.mjs",
+        "sha256": "f966db847dd9e9591dd347cbb6a0349d316f2c2c3e2790b9a03054749866043c"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/research-evidence-task-port.mjs",
+        "sha256": "9f8052f203f8a654580435d525b4e7892759c6cfc9dff7794a47d21e41d4608b"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/runtime.mjs",
+        "sha256": "35cc925d7517aa31a828fb200e11298de5d8bca1e754333c90bb3e31946bd5f6"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/core-client.mjs",
+        "sha256": "f45eb0d3f480af59f8204be7caf289ad133de4b073740ee54db6d368923aa01e"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/meri-context.mjs",
+        "sha256": "df135ea980b0cb6d83082cca732466ee2e2f2c0effbd353269a2d3c5c45d5413"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/credential-broker.mjs",
+        "sha256": "5c57c35313ca11abef51e65be336859110b71d0a16077af9b6b7e1e07fa582f4"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/control-owner.mjs",
+        "sha256": "f6a2784e2d44788a9958d8ab44229ffa4a93553540627b73dd857278b47e17d5"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/source-transport.mjs",
+        "sha256": "0bfcbfd47c0d342ff2f67eb6b30ad50e28b7fdc68fb471eb0cafc3257b83d35c"
+      },
+      {
+        "label": "packages/contracts/runtime-0.2/retained-reads.mjs",
+        "sha256": "d1f92d8b2ffb5c5c8d1b7f6de22423adab2634dd26cbcec7f65607df701e0f1f"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/mail-monday-task-ports.mjs",
+        "sha256": "a5b5a0135dfa56e26126078ab350ef7e5c47973046fc30d265cac96e30f9a2c7"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge/monday-signed-adapter.mjs",
+        "sha256": "ce0234409b14c05825196b060321f9d277d96946bb1b87de29036c4f25f23b73"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge/monday-signed-handler.mjs",
+        "sha256": "b444c73f785da7a8e64b364c587ce7df123674944d471799d98475cd1837dbb2"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/memory-task-ports.mjs",
+        "sha256": "c6fa8fc72fca7459d4fcd122c0d9e30dcf77ec6bc6653e21e8804b939efad232"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/operational-task-ports.mjs",
+        "sha256": "b6e90b219daf9c3566497a280b2907542d063870717e603d9c27f423eed38f58"
+      },
+      {
+        "label": "apps/runtime/native-authority/retained-reads/dataset-metadata-port.mjs",
+        "sha256": "81826684e9b27bd47debd7dc3d4dc87110c1714dd0e81b64eb4bb26971f71ca3"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+        "sha256": "62672e810dbf7a86206bf42133bb827102e3d41af79e528bb3e2b4537fe0ba6f"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/public-domain-datasets.json",
+        "sha256": "ebfd0d113ef66c4151301a3b4432f4e78646921f0a74462d076611a3d25c0865"
+      },
+      {
+        "label": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+        "sha256": "faea00e1b12401a0012dfb89dfb927aaabeb544d6c98aef29b062794bfbacdc5"
+      },
+      {
+        "label": "apps/runtime/native-authority/read-delegation/contract.mjs",
+        "sha256": "2798e0a9169bb7c9640e2990a87e9f97b169e4c33007a3a6bbf395eb52841860"
+      },
+      {
+        "label": "apps/runtime/native-authority/read-delegation/delegation.mjs",
+        "sha256": "6684f005dfe41154eb5de6c271f8380afe5e5d576151fe43c10fb16ce837ba9b"
+      },
+      {
+        "label": "apps/runtime/native-authority/read-delegation/native-credentials.mjs",
+        "sha256": "91f4a3e553888b312814f433cfc73ab9e4bd8fb4f394e637c23c661a95e8cec7"
+      },
+      {
+        "label": "apps/runtime/native-authority/read-delegation/core-client.mjs",
+        "sha256": "93804c88c23f14c1ea68b967de3adebc4a6febf71e1285a22201f389aff42510"
+      },
+      {
+        "label": "packages/runtime/operation-lifetime.mjs",
+        "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f"
+      },
+      {
+        "label": "apps/gateway/general-reads/families/mail.mjs",
+        "sha256": "23442b41652196f7681ff44dadf02643edd0207499a990a8eef71bbc76be40bd"
+      },
+      {
+        "label": "apps/gateway/sources/mail/handler.mjs",
+        "sha256": "e822fea720b7b59e9ac81880aadde5cc2e9193260dcc3e4c50b064dc75614cb6"
+      },
+      {
+        "label": "apps/gateway/sources/mail/http-adapter.mjs",
+        "sha256": "95ddac6d690d20f6421310ead9de650069d90b757e36d65a34a880791227c02e"
+      },
+      {
+        "label": "apps/gateway/sources/mail/request-context.mjs",
+        "sha256": "4369b515f34cd13f868ae2d405279bd7bcd4d56df1e5ae896527c1cf3635298e"
+      },
+      {
+        "label": "apps/gateway/sources/retained-reads/native-families.mjs",
+        "sha256": "014e180388e05553d3b1bd21ca39f20e1a432e9cd6fda106a6a3b30e0859d80c"
+      },
+      {
+        "label": "apps/gateway/sources/source-admission.mjs",
+        "sha256": "7ca90f00425a58a0ced924db2a4d75116d4532814f1d462be80f74ce368d171e"
+      },
+      {
+        "label": "apps/gateway/sources/json-response.mjs",
+        "sha256": "7dcf9c8136c444a0b48b25022c4fad058e63f1ace66d0d5cad008385492d2ed1"
+      },
+      {
+        "label": "apps/gateway/general-reads/families/funding-opportunities.mjs",
+        "sha256": "056a354b15e9e96fdc25a8a6aed3c37c911f8435259b485c525a157e746a1530"
+      },
+      {
+        "label": "apps/gateway/sources/funding-opportunities/handler.mjs",
+        "sha256": "de7e192577b676423a085249e6af23df76882444d4029f0d2d3e8896de473836"
+      },
+      {
+        "label": "apps/gateway/sources/funding-opportunities/request-context.mjs",
+        "sha256": "fff73469a064a7b2db64b92e46b1734cd77f207f6f0c2bc96981000d13bbaddb"
+      },
+      {
+        "label": "packages/contracts/native-read-observation-0.2/schema.json",
+        "sha256": "c5451fb9e73cb8513d38270af54814c0c68216aacfee5325fcd1db41bdf4857f"
+      },
+      {
+        "label": "packages/contracts/native-read-observation-0.2/validate.mjs",
+        "sha256": "33bf8d112ed0ff1e2dcab5c3364528b1c449c9fec6a82224d18d88da2d2b697a"
+      },
+      {
+        "label": "apps/gateway/general-reads/families/client-knowledge-search.mjs",
+        "sha256": "d6ca1a2ad25449dd02a987cb4eb7c986153aef704ba69e3fe3eae5bfff53cad3"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge-search/handler.mjs",
+        "sha256": "ca34df9e6f00ba3b899015274a061067c910efece1b916076e02f1fdfcc723b8"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge-search/request-context.mjs",
+        "sha256": "58620b9ca1991105d0d5688324d170a336251e63d8bd61595abd810f74c9f803"
+      },
+      {
+        "label": "apps/gateway/sources/retained-reads/native-handler.mjs",
+        "sha256": "2aef6e852ce79d51336eef2ba5064709266686f2e68a4a31d2fdbd27b3f315d8"
+      },
+      {
+        "label": "apps/gateway/sources/retained-reads/http-transport.mjs",
+        "sha256": "c5df60736ae6fd2cc5e8b218ef1ca0782282ca2259890397adec7daf2fa392a3"
+      },
+      {
+        "label": "apps/gateway/sources/business-development/handler.mjs",
+        "sha256": "09c75ef67851666221a918e67135e73512091d22b467ca778fe501e7102ff591"
+      },
+      {
+        "label": "apps/gateway/sources/business-development/request-context.mjs",
+        "sha256": "762c06bee6ef03f88b99e3120b146a0d8eab726de511002da9a29334d9a9b93e"
+      },
+      {
+        "label": "apps/gateway/sources/research-legal-legislation/request-context.mjs",
+        "sha256": "f51a35acaec0638a9d81a006c5f92d8ccb08ef53a71251c676d61b8fb4f3d13f"
+      },
+      {
+        "label": "apps/gateway/general-reads/families/research-legal-candidates.mjs",
+        "sha256": "2d978bb028a8926b2af6c70eecd4eea4fc52af798b63634381c4edba2f5bea7b"
+      },
+      {
+        "label": "apps/gateway/sources/research-legal-candidates/handler.mjs",
+        "sha256": "0ac340a2249977e091a7006e3ee2be7d2f9ee307e27776880c3c1291a5544d19"
+      },
+      {
+        "label": "apps/gateway/sources/research-legal-candidates/request-context.mjs",
+        "sha256": "b896f4e156f21a029b6460c4b912e4af0d07e5d47faa67a3c1c56ca0e83a9657"
+      },
+      {
+        "label": "apps/gateway/general-reads/families/client-knowledge-memory.mjs",
+        "sha256": "22104978f7bd383598aec816429a8269932638da8bc1bdd5a3ed6cb1a75d5f2a"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge/handler.mjs",
+        "sha256": "5fb3e1ba663fb0d39e6f1c442ec62fb65c4ba3295f8ffa3b6425afe590c4a0fa"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge/request-context.mjs",
+        "sha256": "f2d0811f5b79f098a7b17b4c5c884eabdb35131d28472e04802e317d0c92c87f"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge/memory-eligibility.mjs",
+        "sha256": "b909b96e2d67c24e33be0397d9ca2d470ba69c179665631a94a4978f27e70c16"
+      },
+      {
+        "label": "apps/gateway/sources/client-knowledge/memory-signed-http-adapter.mjs",
+        "sha256": "501d76f949135ea0fef632df76707c776a4cef04a40767f92c97c81e9648c3c6"
+      },
+      {
+        "label": "apps/gateway/sources/memory-proposals/handler.mjs",
+        "sha256": "c1ad0d08dc7918c2557b257c68514d228a755391c0a71efe72db19c53b4fa0a9"
+      },
+      {
+        "label": "apps/gateway/sources/memory-proposals/request-context.mjs",
+        "sha256": "f208df532de3c37d2b435a457167236bcaf08fc8b6a5722643f4c226487a75fa"
+      },
+      {
+        "label": "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+        "sha256": "6fd4155138f6cc342e5e31b39d7edf69b1efae75e03114005a229051732a8b36"
+      },
+      {
+        "label": "apps/gateway/sources/retained-reads/call-context.mjs",
+        "sha256": "823817eefa93c6c1338baf44d28ba3b42ede4a5eb130c287214cac80dc5fc607"
+      },
+      {
+        "label": "apps/gateway/dispatch/native-read-context.mjs",
+        "sha256": "5273c72d1b35293118ed2b798a981e08ca02023062b1ea77ceebd33c08c67579"
+      },
+      {
+        "label": "apps/runtime/native-authority/native-read-credentials/conversation-authority.mjs",
+        "sha256": "4500232f0f65b8bee672b028c5461310d483bd0df045dd3e82a0817de44b6ac6"
+      },
+      {
+        "label": "apps/gateway/sources/research-legal-news/request-context.mjs",
+        "sha256": "99759e5f9bfdd26643bc4c7cf0a80d2d67f66c7d9fa0757a44bef0c2f7d123d3"
+      }
+    ],
+    "sourceSha256": "2ee0e0d4b8190746cca197f572148a1cdd5727234b1cdc9ad8bd50d6cf7dab53"
+  },
+  "qualification": "unrun; this is not an active installation or image receipt"
+}

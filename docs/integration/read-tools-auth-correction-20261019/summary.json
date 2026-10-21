@@ -1,0 +1,28 @@
+{
+  "base": "231122607ff16c67a8fe19f8e945b2f8776431ae",
+  "source": "7da5bbef9b52853c278999aa40de63e7e62e1b42",
+  "final": {
+    "tests": 290,
+    "pass": 290,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "exit": 0
+  },
+  "red": {
+    "tests": 5,
+    "pass": 1,
+    "fail": 4,
+    "negativeSourceCalls": 1
+  },
+  "runtimeTypes": {
+    "exit": 0,
+    "diagnostics": 0
+  },
+  "hashes": {
+    "red.tap": "0578339c686b55c8aa0e019decb16cebbc600381041740a50331cbab4ee36503",
+    "final.tap": "c7e7846335dc2eb907ccffaa5564e136b3acf3456bac1cba20cb76e5b836be8f",
+    "runtime-types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source-installation.json": "b366d0613bdbaa12a04dc957a4c4e0a279ad30a67e8b0b208d1b566265a9e8ca"
+  }
+}

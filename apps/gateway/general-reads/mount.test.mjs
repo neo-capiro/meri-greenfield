@@ -34,7 +34,7 @@ test('source disabled by default and an absent or revoked installation are expli
 test('an authorized mail read runs once through the durable owner; a duplicate delivery never reaches the source again',async()=>{
  const f=await generalReadFixture(),page=JSON.parse(await run(f));
  assert.deepEqual(page.operation,SEARCH);assert.deepEqual(page.binding,f.binding);assert.equal(page.subject.entityIds[0],f.clientId);
- assert.equal(f.wire.length,1);assert.equal(f.wire[0].url,'https://mail.example.invalid/mail.search_messages');assert.equal(JSON.stringify(f.wire[0].body).includes('tenantId'),false);
+ assert.equal(f.wire.length,1);assert.equal(f.wire[0].url,'https://mail.example.invalid/api/clio/tools/mail.search_messages');assert.equal(JSON.stringify(f.wire[0].body).includes('tenantId'),false);
  assert.equal(f.state.reservations.size,1);assert.equal([...f.state.reservations.values()][0].state,'SETTLED');assert.equal(f.state.budget.consumed_micro_usd,1);
  await assert.rejects(run(f),code('BUDGET_UNCERTAIN'));assert.equal(f.wire.length,1);assert.equal(f.state.budget.consumed_micro_usd,1);
 });

@@ -1,0 +1,93 @@
+{
+  "kind": "synthetic-source-checks-only",
+  "sourceCommit": "3751b35326aef3169cef98a16d2c1d7ba502c043",
+  "final": {
+    "files": 93,
+    "tests": 2511,
+    "pass": 2511,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "exit": 0
+  },
+  "initialIntegrated": {
+    "files": 72,
+    "tests": 2051,
+    "pass": 2028,
+    "fail": 23,
+    "exit": 1
+  },
+  "closeout": {
+    "files": 10,
+    "tests": 138,
+    "pass": 138,
+    "fail": 0,
+    "exit": 0
+  },
+  "logs": [
+    {
+      "file": "composition-initial.tap.gz",
+      "rawSha256": "2e1ec64d29395ff8cd42f29aea46dccf984961fafc72243a20eff39d76788f69",
+      "gzipSha256": "ca89c1ce8e022f7f10e76a8584588b4263d882fe6462d94131341f856ef94cc3",
+      "rawBytes": 43589,
+      "gzipBytes": 6366,
+      "summary": {
+        "tests": 377,
+        "pass": 373,
+        "fail": 4,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "file": "integrated.tap.gz",
+      "rawSha256": "9dbd46fa7adc14c11b61caeef9ef83c7ce6816ca403ec729080e98ce9906450b",
+      "gzipSha256": "ae18e03f5a3c8107324563a9674c9ee9f80156a5ec87c254df6c541e4b694f56",
+      "rawBytes": 253012,
+      "gzipBytes": 47106,
+      "summary": {
+        "tests": 2051,
+        "pass": 2028,
+        "fail": 23,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "file": "closeout.tap.gz",
+      "rawSha256": "3c1f18e8a98d8bb5cc0e28fce0c98a1e93d9f192524ae84cde56adfced98333c",
+      "gzipSha256": "a9f3b4741eff6d7fd3c1bcadb600793a161199049aff7d3cc066c8a5ccf3f633",
+      "rawBytes": 16319,
+      "gzipBytes": 5021,
+      "summary": {
+        "tests": 138,
+        "pass": 138,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "file": "final.tap.gz",
+      "rawSha256": "a7e974683f2586e03cf9381238adfb5c8615425f175ca3b5ef0fae664f000413",
+      "gzipSha256": "94fea661f720321186954fccb5a6b08557be5394624f015d36068f33e51a32a7",
+      "rawBytes": 276005,
+      "gzipBytes": 53309,
+      "summary": {
+        "tests": 2511,
+        "pass": 2511,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "unrun": [
+    "actual Core/provider",
+    "native PostgreSQL",
+    "exact-image startup",
+    "live authenticated chat",
+    "installed production source/skill custody",
+    "cross-task live durability"
+  ]
+}

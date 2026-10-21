@@ -32,11 +32,11 @@ export async function generalReadFixture(){
   // Business policy: this actor is authorized for its one client (and its own mail); any other client is denied.
   async authorizeBusiness({operation,requiredGrants,input}){if(input?.subject?.kind==='client'&&input.subject.entityId!==clientId)throw Error('PRIVATE synthetic client not authorized');return JSON.stringify({decision:{decisionId:subject.authorizationDecisionId,actor:{tenantId:binding.tenantId,actorId:binding.actorId},operation:`${operation.id}@${operation.version}`,scopes:subject.scopes,policyRevision:policy,evaluatedAt:new Date(state.now).toISOString(),decision:'allowed',reasonCode:'SYNTHETIC_ONLY'},subject,grants:requiredGrants});},
   async authorizeSources({sourceRequirements}){return JSON.stringify({sourceIds:[...new Set(sourceRequirements.map(s=>s.sourceId))],enabled:true,policyRevision:policy,checkedAtMs:state.now});}};
- const endpoints=Object.fromEntries(MAIL_OPERATIONS.map(op=>[op.id,`https://mail.example.invalid/${op.id}`]));
+ const endpoints=Object.fromEntries(MAIL_OPERATIONS.map(op=>[op.id,`https://mail.example.invalid/api/clio/tools/${op.id}`]));
  const sourceFiles=await Promise.all(MAIL_SOURCES.map(async label=>({label,sha256:sha(await readFile(new URL(`../../../${label}`,import.meta.url)))}))),sourceSha256=canonicalSha256(sourceFiles);
  const handlers=new Map(MAIL_OPERATIONS.map(operation=>{let pins;
   const adapter=createMailHttpAdapter({now:clock,maxRequestMs:1500,maxResponseBytes:1048576,endpoints,
-   async getCredentials(value){pins=value;const {input,deadlineMs,signal,...correlation}=value;return {...structuredClone(correlation),bearerToken:'SYNTHETIC_TOKEN',serviceSecret:'SYNTHETIC_SECRET',expiresAtMs:Math.min(deadlineMs,state.now+1500)};},
+   async getCredentials(value){pins=value;const {input,deadlineMs,signal,...correlation}=value;return {...structuredClone(correlation),authorizationScheme:'CapiroMeriRead',bearerToken:'SYNTHETIC_TOKEN',serviceSecret:'SYNTHETIC_SECRET',expiresAtMs:Math.min(deadlineMs,state.now+1500)};},
    async fetchImpl(url,options){wire.push({operation,url,body:JSON.parse(options.body)});state.afterFetch?.();if(state.parkFetch)return state.parkFetch(options.signal);
     const page=sourcePage({operation,request:JSON.parse(options.body).input,binding:pins.binding,subject:pins.subject,window:{basis:'unbounded'},normalizationContext:{nowMs:state.now}});
     return new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});}});

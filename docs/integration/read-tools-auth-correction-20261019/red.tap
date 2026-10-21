@@ -1,0 +1,83 @@
+✖ private research source refuses missing credential scheme before HTTP (48.666889ms)
+✖ private research source refuses Bearer credential scheme before HTTP (4.431673ms)
+✖ research sources: actual attended authority cannot dispatch the signed-only source (424.00354ms)
+✖ research sources: actual unavailable-attended-fallback authority cannot dispatch the signed-only source (208.657574ms)
+✔ research sources: actual admitted delegated authority dispatches one exact signed source request (297.829904ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 1
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1631.410518
+
+✖ failing tests:
+
+test at apps/gateway/sources/research-legal-candidates/test/handler.test.mjs:64:42
+✖ private research source refuses missing credential scheme before HTTP (48.666889ms)
+  AssertionError [ERR_ASSERTION]: ordinary attended credentials must never dispatch the private candidate source
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///dev/shm/meri-read-auth-fix/apps/gateway/sources/research-legal-candidates/test/handler.test.mjs:68:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/sources/research-legal-candidates/test/handler.test.mjs:64:42
+✖ private research source refuses Bearer credential scheme before HTTP (4.431673ms)
+  AssertionError [ERR_ASSERTION]: ordinary attended credentials must never dispatch the private candidate source
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///dev/shm/meri-read-auth-fix/apps/gateway/sources/research-legal-candidates/test/handler.test.mjs:68:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/native-authority/native-read-credentials/test/research-candidate-signed-admission.test.mjs:45:64
+✖ research sources: actual attended authority cannot dispatch the signed-only source (424.00354ms)
+  AssertionError [ERR_ASSERTION]: an actual ordinary native/fallback credential must be refused before source HTTP
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///dev/shm/meri-read-auth-fix/apps/runtime/native-authority/native-read-credentials/test/research-candidate-signed-admission.test.mjs:49:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/native-authority/native-read-credentials/test/research-candidate-signed-admission.test.mjs:45:64
+✖ research sources: actual unavailable-attended-fallback authority cannot dispatch the signed-only source (208.657574ms)
+  AssertionError [ERR_ASSERTION]: an actual ordinary native/fallback credential must be refused before source HTTP
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///dev/shm/meri-read-auth-fix/apps/runtime/native-authority/native-read-credentials/test/research-candidate-signed-admission.test.mjs:49:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

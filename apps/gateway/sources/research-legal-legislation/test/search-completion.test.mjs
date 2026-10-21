@@ -50,12 +50,13 @@ test('personal null-client folders delegate exactly without inferred client sele
  }
 });
 
-test('matching current client UUID and folder retain all raw selectors and ordinary source coverage',async()=>{
+test('matching current client UUID and folder retain other raw selectors while sending the trusted resolved client',async()=>{
  const request={sessionKey:'2026',clientId:` ${clientId.toUpperCase()} `,folderId:'native-folder',query:'energy',billIds:['bill-b','bill-a','bill-b'],kind:'text',versionStage:'enrolled'},f=storedCase(id,{request});
  f.state.page={...f.page,result:{...f.page.result,items:[{...f.page.result.items[0],billId:'bill-a'}]}};
- const out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(f.wire[0].body,request);assert.equal(out.result.result.scope.clientId,clientId);
+ const out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(f.wire[0].body,{...request,clientId});assert.equal(out.result.result.scope.clientId,clientId);
  assert.equal(out.result.result.scope.folderId,'native-folder');assert.equal(out.result.authority,authorityNote);assert.equal(out.result.result.coverage.retainedVersionsOnly,true);
  assert.equal(out.result.result.coverage.complete,false);assert.deepEqual(f.credentialCalls[0].normalizationContext,f.normalizationContext);
+ assert.equal(f.credentialCalls[0].requestSha256,hash(request));assert.notEqual(f.credentialCalls[0].requestSha256,hash(f.wire[0].body));
 });
 
 test('named search needs per-call credentials and replaces only clientId while retaining original proof and complete carrier',async()=>{

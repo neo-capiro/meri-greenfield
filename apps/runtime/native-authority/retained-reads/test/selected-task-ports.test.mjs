@@ -55,9 +55,27 @@ test('historical action family requires its exact receipt ref and a task-bound t
  assert.deepEqual(Object.keys(families),familyIds);
  assert.equal(typeof families['operational-reads'].getCredentials,'function');
  await assert.rejects(families['operational-reads'].getCredentials({operation:action}));
- for(const operationRefs of [[],[{id:'query_tasks',version:'0.2.0'}],
-  [action,{id:'query_tasks',version:'0.2.0'}]])
+ for(const operationRefs of [[{id:'query_tasks',version:'0.2.0'}],[action,{id:'query_tasks',version:'0.2.0'}]])
+  assert.equal(typeof createSelectedRetainedTaskPorts({familyIds,operationRefs,coreOrigin:origin,fetchImpl,now:()=>NOW}), 'function');
+ for(const operationRefs of [[],[{id:'query_tasks',version:'0.1.0'}],[{id:'unknown',version:'0.2.0'}]])
   assert.throws(()=>createSelectedRetainedTaskPorts({familyIds,operationRefs,coreOrigin:origin,fetchImpl,now:()=>NOW}));
+});
+
+test('selected research evidence receives the attended bearer with expiry and never the Option B handle',async()=>{
+ const f=fixture(),operation={id:'get_research_evidence',version:'0.2.0'},client={tenantId:f.binding.tenantId,
+  kind:'client',resourceId:uuid('d'),policyRevision:f.claims.policyRevision};
+ const task={binding:f.binding,original:{binding:f.binding,expiresAtMs:NOW+5000},scopes:[client],
+  grant:{binding:f.binding,qualificationBinding:{policyRevision:f.claims.policyRevision}},taskCapability:'SYNTHETIC_TASK',sourceEnabled:true,
+  approvedReads:{schemaVersion:NATIVE_READS_SCHEMA_VERSION,enabled:true,operations:[operation],maxExecuteMs:1000,maxRequestBytes:65536,maxResponseBytes:65536}};
+ const create=createSelectedRetainedTaskPorts({familyIds:['research-portfolio-evidence'],coreOrigin:origin,fetchImpl,now:()=>NOW});
+ let attended=0,delegated=0;
+ const supplied=create({task,getNativeCredentialWithExpiry:async()=>{delegated++;throw Error('OPAQUE_HANDLE_MUST_NOT_BE_BEARER');},
+  getAttendedCredentialWithExpiry:async()=>{attended++;return {credential:'SYNTHETIC_ATTENDED_BEARER',expiresAtMs:NOW+4000};}});
+ const subject={...f.subject,kind:'entity',entityType:'research-portfolio',entityIds:[uuid('e')],rosterVersionId:null,scopes:[client]};
+ const credentials=await supplied.families['research-portfolio-evidence'].getCredentials({binding:f.binding,subject,deadlineMs:NOW+1000});
+ assert.equal(credentials.bearerToken,'SYNTHETIC_ATTENDED_BEARER');assert.equal(credentials.expiresAtMs,NOW+1000);
+ assert.equal(attended,1);assert.equal(delegated,0);
+ assert.throws(()=>create({task,getNativeCredentialWithExpiry:async()=>({credential:'opaque',expiresAtMs:NOW+4000})}));
 });
 
 test('unlisted, duplicate, and originless remote families refuse before task or source access',()=>{
