@@ -35,7 +35,8 @@ export function createGeneralReadInstallationOwner(configuration){
   try{const started=c.now();
    const receipt=data(own(await life.run(s=>c.readCurrentInstallation({binding,scopes,policyRevision,signal:s})),RECEIPT_KEYS));
    assertReceipt(receipt,started);life.limitDeadline(receipt.expiresAtMs);
-   for(const row of receipt.operations)await registry.measure(row.operation,life);
+   // Each source file is read and hashed once per pass: 81 rows share about 200 files across about 9,000 manifest entries.
+   const verified=new Map();for(const row of receipt.operations)await registry.measure(row.operation,life,verified);
    life.check();return data({...receipt,checkedAtMs:c.now()});
   }catch{throw fault();}finally{life.close();}}
  return Object.freeze({readCurrent,handlers:registry.handlers});
