@@ -9,7 +9,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {PLAN} from '../first-chat-migrate.mjs';
-import {STAGE3_FAMILIES,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput} from './stage3-bindings.mjs';
+import {STAGE3_FAMILIES,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS,nextRevisions,stage3RenderInput} from './stage3-bindings.mjs';
 import {parseLatestTsv,uploadPlan} from './stage3-deploy.mjs';
 import {runnerSha256AtCommit} from './render-material.mjs';
 import {SCHEMA,planEntries,migrationDelta,buildShipPacket,renderMarkdown,main} from './ship-packet.mjs';
@@ -31,7 +31,8 @@ async function inputs(){
  const plan=entries=>entries.map(e=>({kind:e.kind,source:e.path,sha256:e.pinned,stage:e.stage}));
  return {deployment,previousDeployment,runtime:await json('runtime-values.json'),receipt:JSON.parse(receiptBytes.toString('utf8')),receiptSha256:sha(receiptBytes),
   imageScans:await json('image-scans.json'),stage3:stage3RenderInput({deployment,foundationOutputs,revisions:nextRevisions(parseLatestTsv(LATEST))}),
-  upload:{label:'FIRST_CHAT_20261021A',roles:uploadPlan({deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',newToken:()=>`token-${++n}`})},
+  upload:{label:'FIRST_CHAT_20261021A',roles:uploadPlan({deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',
+   secretLabels:Object.fromEntries(Object.values(MATERIAL_SECRET_KEYS).map(key=>[deployment.secrets[key],[{VersionId:'v-current',VersionStages:['AWSCURRENT']}]])),newToken:()=>`token-${++n}`})},
   measuredRunnerSha256:runnerSha256AtCommit(deployment.images.nodeRuntimeSourceCommit),migrations:migrationDelta(plan(PLAN),plan(PLAN)),
   ceilingUsd:5,work:'/w',hashes:{'deployment-inputs':'e'.repeat(64)}};
 }
@@ -82,6 +83,8 @@ test('fail closed: image, scan, runner, upload, previous release, ceiling and bi
  await refused(i=>{i.runtime.preparationIntent.runnerSha256='4'.repeat(64);},/runnerSha256/u);
  await refused(i=>{i.measuredRunnerSha256=null;},/fetch it/u);
  await refused(i=>{i.upload.roles[1].secretArn=i.upload.roles[0].secretArn;},/upload plan secret/u);
+ await refused(i=>{delete i.upload.roles[2].labelsBefore;},/before-upload label readback/u);
+ await refused(i=>{i.upload.roles[2].labelsBefore.push(i.upload.label);},/before-upload label readback/u);
  await refused(i=>{i.previousDeployment.clusterArn='arn:aws:ecs:us-east-1:967807252336:cluster/other';},/only in images/u);
  await refused(i=>{i.previousDeployment.images=structuredClone(i.deployment.images);},/nothing to ship/u);
  await refused(i=>{i.ceilingUsd=0;},/ceiling/u);

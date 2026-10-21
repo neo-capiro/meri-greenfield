@@ -24,7 +24,7 @@ function scriptedPool(allocationRow){
   throw Error('unexpected SQL '+sql);},release(){}};}};
  return {pool,s};
 }
-function owners({enabled=true,omit=[],allocation=true}={}){
+function owners({enabled=true,omit=[],allocation=true,extra={}}={}){
  const set=admittedSet(),row={allocation:set.allocation,allocation_sha256:hash(set.allocation)},sql=scriptedPool(allocation?row:null),calls=[];
  const allocations={async read({binding,allocationKey}){calls.push(['allocations.read',allocationKey]);return {run:{},record:{state:'ADMITTED',binding,allocationSha256:hash(set.allocation),resource:{grantFactsJsons:set.grantFactsJsons}}};}};
  const all={trust:productionTrust(),core:{origin:'https://core.example.test',getCredentials:async()=>{calls.push(['core.getCredentials']);throw Error('not reached');}},allocations,pool:sql.pool,
@@ -32,7 +32,7 @@ function owners({enabled=true,omit=[],allocation=true}={}){
   preparePolicy:async()=>{calls.push(['preparePolicy']);throw Error('not reached');},authorizeBusiness:async()=>{throw Error('not reached');},authorizeSources:async()=>{throw Error('not reached');},
   currentRights:async()=>{throw Error('not reached');},source:{origin:'https://core.example.test',getServiceSecret:async()=>'service-secret'},sourceEnabled:true};
  for(const k of omit)delete all[k];
- const owner=createIntentExecutionOwner({enabled,...all,now:()=>ISSUED_AT*1000+1000,fetchImpl:async()=>{calls.push(['fetch']);throw Error('not reached');}});
+ const owner=createIntentExecutionOwner({enabled,...all,...extra,now:()=>ISSUED_AT*1000+1000,fetchImpl:async()=>{calls.push(['fetch']);throw Error('not reached');}});
  return {owner,sql,calls,set};
 }
 const approvals={approvalStore:{getCurrent:async()=>{throw Error('not reached');}},readDecision:async()=>{throw Error('not reached');}};
@@ -132,4 +132,20 @@ test('control-startup helper: one owner per control over the trusted context; di
  await assert.rejects(withBlock.helper.intentMountFor({binding:RUN_BINDING,original:{binding:RUN_BINDING}}),code('UNAVAILABLE'));
  assert.throws(()=>withBlock.helper.family(context({enabled:true})),code('EXECUTION_CONFIGURATION'));
  assert.deepEqual(reads,[],'no secret is read at composition');
+});
+
+test('artifact preparation remains available without native task execution, while execution still refuses',async()=>{
+ const operation={id:'create_powerpoint',version:'0.2.0'},calls=[];
+ const f=owners({enabled:false,omit:['trust','core','source','preparePolicy'],extra:{preparationEnabled:true,
+  preparersFor:async value=>{calls.push(value);return [{owner:'document',operation,binding:RUN_BINDING,async prepare(){throw Error('not invoked');}}];}}});
+ assert.equal(f.owner.state(),'disabled');
+ const mount=await f.owner.intentMountFor({binding:RUN_BINDING,original:{binding:RUN_BINDING}});
+ assert.deepEqual((await mount.readAvailability()).operations,[operation]);assert.equal(calls.length,1);
+ assert.deepEqual(calls[0].clientResolution,{reference:CLIENT,clientId:CLIENT});
+ await assert.rejects(f.owner.issueExecution({proposal:productionProposal(CASES.clientAndDueDate)}),code('EXECUTION_OWNER_UNAVAILABLE'));
+ assert.equal(f.calls.some(c=>c[0]==='core.getCredentials'||c[0]==='fetch'),false);
+ await assert.rejects(f.owner.intentMountFor({binding:RUN_BINDING,original:{binding:{...RUN_BINDING,writerFence:2}}}),code('UNAVAILABLE'));
+ assert.equal(calls.length,1,'foreign original never reaches another preparer');
+ const missing=owners({enabled:false,omit:['currentRights'],extra:{preparationEnabled:true,preparersFor:async()=>{throw Error('must not run');}}});
+ await assert.rejects(missing.owner.intentMountFor({binding:RUN_BINDING,original:{binding:RUN_BINDING}}),code('UNAVAILABLE'));
 });

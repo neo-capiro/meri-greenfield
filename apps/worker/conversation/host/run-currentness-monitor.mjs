@@ -1,6 +1,7 @@
 // @ts-check
 /** A D005 host-side consumer of an authenticated control port. It does not implement or authenticate `readCurrent`.
- * The returned signal is a run lifetime input for networked Bash, including Bash-only runs. The control owner must
+ * The returned signal is the lifetime input for every isolated-host SDK run, including browser-only and offline
+ * Bash runs. A networked Bash proxy consumes the same signal. The control owner must
  * supply exact, fresh active receipts and honour the read's AbortSignal. Source bounds freshness to at most 30 s;
  * deployment must review the tighter refresh interval and revocation objective. */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -19,7 +20,7 @@ const fail=code=>{throw fault(code);};
  *   now?:()=>number,maxFreshMs:number,refreshEveryMs:number,signal?:AbortSignal}} input */
 export async function startHostRunCurrentnessMonitor({allocation,binding,capabilityPolicy,readCurrent,now=Date.now,maxFreshMs,refreshEveryMs,signal}={}){
  const host=assertHostAllocation(allocation),run=assertHostRunBinding(host,binding),policy=assertCapabilityPolicy(capabilityPolicy);
- if(!policy.bash||policy.sandboxNetworkDomains.length===0||typeof readCurrent!=='function'||typeof now!=='function'||
+ if(typeof readCurrent!=='function'||typeof now!=='function'||
   !Number.isSafeInteger(maxFreshMs)||maxFreshMs<2||maxFreshMs>MAX_HOST_CURRENTNESS_MS||
   !Number.isSafeInteger(refreshEveryMs)||refreshEveryMs<1||refreshEveryMs>Math.floor(maxFreshMs/2)||
   signal!==undefined&&!(signal instanceof AbortSignal))fail('HOST_CURRENTNESS_CONFIGURATION');
@@ -42,17 +43,21 @@ export async function startHostRunCurrentnessMonitor({allocation,binding,capabil
   try{
    const receipt=await Promise.race([Promise.resolve().then(()=>readCurrent({allocation:structuredClone(host),binding:structuredClone(run),policySha256,signal:combined})),stoppedPromise]);
    if(stopped||combined.aborted||performance.now()>=readMonoDeadline)fail('HOST_CURRENTNESS_REFUSED');
-   const checked=assertHostCurrent({allocation:host,binding:run,policySha256,current:receipt,nowMs:now(),maxFreshMs});
+   const checkedAtWallMs=now();
+   const checked=assertHostCurrent({allocation:host,binding:run,policySha256,current:receipt,
+    nowMs:checkedAtWallMs,maxFreshMs});
+   const validatedMonoMs=performance.now();
    if(stopped||untilMs&&(now()>=untilMs||performance.now()>=leaseMonoDeadline))fail('HOST_CURRENTNESS_REFUSED');
-   return checked;
+   return Object.freeze({currentUntilMs:checked.currentUntilMs,
+    monotonicUntilMs:validatedMonoMs+(checked.currentUntilMs-checkedAtWallMs)});
   }finally{combined.removeEventListener('abort',rejectStopped);}
  };
  const schedule=()=>{
   clearTimers();if(stopped)return;
-  let left;try{left=untilMs-now();}catch{stop();return;}
+  let left;try{left=Math.min(untilMs-now(),Math.ceil(leaseMonoDeadline-performance.now()));}
+  catch{stop();return;}
   if(!Number.isSafeInteger(left)||left<=0){stop();return;}
-  // Only a fresh authenticated receipt may extend this elapsed-time deadline. A wall-clock rollback cannot.
-  leaseMonoDeadline=performance.now()+left;
+  // The monotonic cutoff was anchored to validation's wall-clock sample, before any rollback in schedule().
   expiryTimer=setTimeout(()=>stop(),left);expiryTimer.unref?.();
   refreshTimer=setTimeout(()=>{refresh().catch(()=>{});},Math.min(refreshEveryMs,Math.max(1,Math.floor(left/2))));refreshTimer.unref?.();
  };
@@ -61,14 +66,15 @@ export async function startHostRunCurrentnessMonitor({allocation,binding,capabil
   if(refreshInFlight)return refreshInFlight;
   refreshInFlight=(async()=>{try{const checked=await read();
     if(stopped||now()>=untilMs||performance.now()>=leaseMonoDeadline)fail('HOST_CURRENTNESS_REFUSED');
-    untilMs=checked.currentUntilMs;schedule();
+    untilMs=checked.currentUntilMs;leaseMonoDeadline=checked.monotonicUntilMs;schedule();
     if(stopped)fail('HOST_CURRENTNESS_REFUSED');
     return Object.freeze({currentUntilMs:untilMs});
    }catch{stop();fail('HOST_CURRENTNESS_REFUSED');}
    finally{refreshInFlight=undefined;}})();
   return refreshInFlight;
  }
- try{const checked=await read();if(stopped)fail('HOST_CURRENTNESS_REFUSED');untilMs=checked.currentUntilMs;schedule();
+ try{const checked=await read();if(stopped)fail('HOST_CURRENTNESS_REFUSED');
+  untilMs=checked.currentUntilMs;leaseMonoDeadline=checked.monotonicUntilMs;schedule();
   if(stopped)fail('HOST_CURRENTNESS_REFUSED');}
  catch{stop();fail('HOST_CURRENTNESS_REFUSED');}
  return Object.freeze({signal:lifetime.signal,policySha256,allocation:host,binding:run,refresh,

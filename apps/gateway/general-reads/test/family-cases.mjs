@@ -39,6 +39,7 @@ const pins=p=>{const {input,deadlineMs,signal,...rest}=p;return {...structuredCl
 const signedPins=p=>{const {input,deadlineMs,signal,...rest}=p;return {...structuredClone(rest),
  authorizationScheme:'CapiroMeriRead',bearerToken:'SYNTHETIC_TOOL_TOKEN',
  serviceSecret:'SYNTHETIC_SERVICE_SECRET',expiresAtMs:deadlineMs};};
+const originalTrackingPins=p=>({...signedPins(p),input:structuredClone(p.input)});
 const response=page=>new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});
 // Durable signed-source fixtures use the actual invocation slot. The source
 // adapter still checks the exact Core path, body and correlation before Fetch.
@@ -83,8 +84,9 @@ export function familyCase(family,id){
  }else if(family==='client-knowledge-monday'){
   const f=createClientKnowledgeFixture(id);a=f.authority;args=f.args;
   transport={...f.config,endpoints:{[id]:`https://synthetic-core.example.invalid/api/clio/tools/${id}`},
-   getCredentials:async p=>({...f.credentials(p),invocationId:p.invocationId,authorizationScheme:'CapiroMeriRead',
-    target:p.target,correlationSha256:p.correlationSha256})};
+   getCredentials:async p=>({...f.receiptPins(p),invocationId:p.invocationId,authorizationScheme:'CapiroMeriRead',
+    target:p.target,correlationSha256:p.correlationSha256,bearerToken:'SYNTHETIC_KNOWLEDGE_TOKEN',
+    serviceSecret:'SYNTHETIC_SERVICE_SECRET',expiresAtMs:p.deadlineMs})};
  }else if(family==='research-portfolio-evidence'){
   const f=researchFixture();a=authority(f,operation);args=f.raw;transport=f.config;
  }else{
@@ -117,7 +119,7 @@ export function familyCase(family,id){
      coverage:{sourceStatus:'healthy',sourceReason:null,complete:true,partial:false,paginationComplete:true,hasMore:false,nextCursor:null,
       totalIsExactForScope:true,absenceSupported:true,note:'Synthetic native empty-page assertion, not Meri absence evidence.'}};
    }
-   transport={origin:'https://source.example.invalid',getCredentials:family==='memory-proposals'?signedPins:family==='operational-reads'?pins:async()=>({binding:a.binding,
+   transport={origin:'https://source.example.invalid',getCredentials:['memory-proposals','action-items-complete'].includes(family)?signedPins:family==='operational-reads'?originalTrackingPins:async()=>({binding:a.binding,
     bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:a.deadlineMs}),fetchImpl:async()=>response(page)};
   }
  }

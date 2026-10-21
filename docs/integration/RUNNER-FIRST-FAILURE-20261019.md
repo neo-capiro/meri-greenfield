@@ -87,7 +87,7 @@ The event is now:
 
 ```text
 RUNNER_FIRST_FAILURE origin=<origin> stage=<stage> code=<code> class=<class> exit=<0-255|none> signal=<SIGNAME|none>
-  cause=<code|none> msg=<12 hex|none> site=<module:line:column,…|none>
+  cause=<code|none> msg=<12 hex|templated|none> site=<module:line:column,…|none>
 ```
 
 (one line in the log; wrapped here)
@@ -102,10 +102,21 @@ RUNNER_FIRST_FAILURE origin=<origin> stage=<stage> code=<code> class=<class> exi
 - `stage` is on the first line because a hung cleanup never reaches the final line.
 - `cause`: the own `cause`, classified like `code`. The lifecycle controls' `LIFECYCLE_EXECUTION_UNKNOWN` now carries its
   original failure as `cause`.
-- `msg`: the first 12 hex characters of SHA-256 over the message, never the text. Resolve it with
-  `docs/integration/runner-first-failure-message-hashes.json`. That table holds the constant messages of the pinned SDK
-  bundle (including its plain `Error`s) and of the runner, worker and contract sources. Regenerate it with
-  `node scripts/diagnostics/runner-first-failure-message-hashes.mjs > docs/integration/runner-first-failure-message-hashes.json`.
+- `msg`: the first 12 hex characters of SHA-256 over the message, never the text. SDK-tagged failures and `SyntaxError`s
+  print `msg=templated` instead: their messages interpolate a stderr tail or an input snippet, so a hash would only
+  confirm guessed text, and their class, exit and signal already identify them.
+- Resolving `msg`: nothing is committed. Check out the commit the image was built from, with its installed dependencies,
+  and from the repository root run:
+
+  ```text
+  node scripts/diagnostics/runner-first-failure-message-hashes.mjs a6073a611574
+  a6073a611574	"LIFECYCLE_EXECUTION_UNKNOWN"	apps/worker/conversation/continuation/activity-lifecycle.mjs
+  ```
+
+  The script builds its table on demand from the pinned SDK bundle (including its plain `Error`s) and the runner, worker
+  and contract sources of that checkout. With no arguments it prints the whole table as JSON. It exits 1 when a value is
+  no constant message (templated, interpolated, or not on the runner path) and 2 on malformed input. Its test runs with
+  `node --test scripts/diagnostics/runner-first-failure-message-hashes.test.mjs`.
 - `site`: up to three innermost stack frames as module basename, line and column, for absolute file paths and `node:`
   modules only. The lines of the `name: message` header are skipped, so message text is never read as a frame.
 

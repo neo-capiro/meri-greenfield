@@ -29,8 +29,8 @@ test('pins exact allocation, full binding and effective capability policy digest
 
 test('invalid settings and mismatched, stale or widened control receipts refuse initial admission',async()=>{
  const a=allocation(),until=Date.now()+200;
- for(const options of [{maxFreshMs:MAX_HOST_CURRENTNESS_MS+1},{refreshEveryMs:201},{capabilityPolicy:{bash:false}},
-  {capabilityPolicy:{bash:true,sandboxNetworkDomains:[]}}]){
+ for(const options of [{maxFreshMs:MAX_HOST_CURRENTNESS_MS+1},{refreshEveryMs:201},
+  {capabilityPolicy:{bash:true,sandboxNetworkDomains:['bad.local']}}]){
   await assert.rejects(start(a,async()=>receipt(a,until),options),e=>['HOST_CURRENTNESS_CONFIGURATION','CAPABILITY_POLICY_REFUSED'].includes(e?.code));
  }
  for(const change of [{allocation:{...a,generation:2}},{binding:{...binding,writerFence:2}},
@@ -41,7 +41,7 @@ test('invalid settings and mismatched, stale or widened control receipts refuse 
  }
 });
 
-test('a failed refresh aborts the Bash lifetime signal before the old lease expires',async()=>{
+test('a failed refresh aborts the SDK run lifetime signal before the old lease expires',async()=>{
  const a=allocation();let reads=0;
  const monitor=await start(a,async()=>++reads===1?receipt(a,Date.now()+300):receipt(a,Date.now()+300,{phase:'draining'}));
  await assert.rejects(monitor.refresh(),{code:'HOST_CURRENTNESS_REFUSED'});
@@ -74,6 +74,14 @@ test('a wall-clock rollback cannot extend the last authenticated lease or admit 
  assert.equal(monitor.signal.aborted,true);
 });
 
+test('rollback between receipt validation and timer scheduling cannot lengthen the SDK lease',async()=>{
+ const a=allocation(),at=Date.now();let samples=0,reads=0;
+ const monitor=await start(a,async()=>++reads===1?receipt(a,at+90,{checkedAtMs:at}):new Promise(()=>{}),
+  {now:()=>++samples===3?at-10000:at,maxFreshMs:400,refreshEveryMs:150});
+ try{await waitForAbort(monitor.signal,180);assert.ok(reads>=1);}
+ finally{monitor.close();}
+});
+
 test('a hung initial authenticated-port read times out and aborts its read signal',async()=>{
  const a=allocation();let portSignal;
  await assert.rejects(start(a,async input=>{portSignal=input.signal;return new Promise(()=>{});},
@@ -89,10 +97,21 @@ test('an initial late receipt cannot beat a delayed timeout callback',async()=>{
  assert.equal(calls,1);
 });
 
-test('external host teardown aborts a pending read and the returned Bash lifetime signal',async()=>{
+test('external host teardown aborts a pending read and the returned SDK lifetime signal',async()=>{
  const a=allocation(),owner=new AbortController();let reads=0;
  const monitor=await start(a,async()=>++reads===1?receipt(a,Date.now()+300):new Promise(()=>{}),{signal:owner.signal});
  const pending=monitor.refresh();owner.abort();
  await assert.rejects(pending,{code:'HOST_CURRENTNESS_REFUSED'});
  assert.equal(monitor.signal.aborted,true);
+});
+
+test('offline Bash and browser-only runs still need a fresh canonical capability-policy lease',async()=>{
+ for(const effective of [{bash:true},{}]){
+  const a=allocation(),normalized=assertCapabilityPolicy(effective),expected=canonicalSha256(normalized);let reads=0;
+  const monitor=await start(a,async request=>{assert.equal(request.policySha256,expected);
+   return receipt(a,Date.now()+250,{policySha256:expected,...(++reads>1?{phase:'draining'}:{})});},
+   {capabilityPolicy:effective});
+  try{await assert.rejects(monitor.refresh(),{code:'HOST_CURRENTNESS_REFUSED'});
+   assert.equal(monitor.signal.aborted,true);assert.equal(reads,2);}finally{monitor.close();}
+ }
 });

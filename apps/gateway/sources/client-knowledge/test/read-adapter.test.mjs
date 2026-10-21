@@ -6,6 +6,9 @@ import {once} from 'node:events';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {createClientKnowledgeHttpAdapter} from '../http-adapter.mjs';
 import {createClientKnowledgeReadHandler} from '../handler.mjs';
+import {safeFailure} from '../../../dispatch/operation-result.mjs';
+import {createHandlers as memoryHandlers} from '../../../general-reads/families/client-knowledge-memory.mjs';
+import {createHandlers as mondayHandlers} from '../../../general-reads/families/client-knowledge-monday.mjs';
 import {createClientKnowledgeFixture,endpoints,memoryText,NOW,uuid} from './fixtures.mjs';
 const json=page=>new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});
 const readCall=(f,request=f.args,current=f.authority)=>({operation:f.operation,input:f.input(request),request,authority:current,normalizationContext:f.normalizationContext});
@@ -227,7 +230,46 @@ test('knowledge inert admission never reads proxy/accessor authority/receipts/si
   }
 });
 
-test('knowledge configured endpoints refuse missing/extra/nonHTTPS credentials/query/fragment before I/O',()=>{
+test('one configured knowledge endpoint works without requiring the other source',async()=>{
+  const monday=createClientKnowledgeFixture('read_monday_client_boards');
+  const mondayConfig={...monday.config};delete mondayConfig.readMemoryEligibility;
+  const mondayAdapter=createClientKnowledgeHttpAdapter({...mondayConfig,endpoints:{read_monday_client_boards:endpoints.read_monday_client_boards}});
+  const mondayHandler=createClientKnowledgeReadHandler({operation:monday.operation,adapter:mondayAdapter,now:monday.config.now});
+  const mondayResult=JSON.parse(await mondayHandler(monday.call())).result;
+  assert.deepEqual(mondayResult,monday.page());assert.deepEqual(monday.calls,['credentials','fetch']);
+
+  const memory=createClientKnowledgeFixture('search_memory');
+  const memoryResult=JSON.parse(await execute(memory,{endpoints:{search_memory:endpoints.search_memory}})).result;
+  assert.deepEqual(memoryResult,memory.page());assert.deepEqual(memory.calls,['credentials','fetch','eligibility']);
+});
+
+test('signed memory and Monday family composition refuses the legacy unsigned endpoint fixture',()=>{
+  for(const [id,compose] of [['search_memory',memoryHandlers],['read_monday_client_boards',mondayHandlers]]){
+    const f=createClientKnowledgeFixture(id),withoutEligibility={...f.config};delete withoutEligibility.readMemoryEligibility;
+    const configuration={...withoutEligibility,endpoints:{[id]:endpoints[id]},
+      ...(id==='search_memory'?{readMemoryEligibility:f.config.readMemoryEligibility}:{})};
+    assert.throws(()=>compose(configuration),error=>safeFailure(error).message===(id==='search_memory'?'INVALID_ARGUMENTS':'GATEWAY_CONFIGURATION'));
+    assert.deepEqual(f.calls,[]);
+  }
+});
+
+test('unconfigured operation refuses before credentials or HTTP; memory endpoint requires eligibility at construction',async()=>{
+  for(const [id,configured] of [['search_memory',{read_monday_client_boards:endpoints.read_monday_client_boards}],
+    ['read_monday_client_boards',{search_memory:endpoints.search_memory}]]){
+    const f=createClientKnowledgeFixture(id);
+    await assert.rejects(execute(f,{endpoints:configured,...(id==='search_memory'?{readMemoryEligibility:undefined}:{})}),
+      /GATEWAY_CONFIGURATION/);
+    assert.deepEqual(f.calls,[]);
+  }
+  const f=createClientKnowledgeFixture();
+  for(const missing of [undefined,null,'false']){
+    assert.throws(()=>createClientKnowledgeHttpAdapter({...f.config,endpoints:{search_memory:endpoints.search_memory},
+      readMemoryEligibility:missing}),/GATEWAY_CONFIGURATION/);
+  }
+  assert.deepEqual(f.calls,[]);
+});
+
+test('knowledge configured endpoints refuse empty/extra/nonHTTPS credentials/query/fragment before I/O',()=>{
   const f=createClientKnowledgeFixture();for(const value of [{},{...endpoints,extra:'https://source.invalid'},{...endpoints,search_memory:'http://source.invalid'},
     {...endpoints,search_memory:'https://x:y@source.invalid'},{...endpoints,search_memory:'https://source.invalid?actor=1'},{...endpoints,search_memory:'https://source.invalid#x'}])
     assert.throws(()=>createClientKnowledgeHttpAdapter({...f.config,endpoints:value}));assert.deepEqual(f.calls,[]);

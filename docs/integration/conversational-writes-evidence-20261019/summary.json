@@ -1,0 +1,43 @@
+{
+  "kind": "offline-source-only",
+  "base": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+  "sourceCommit": "927537b76a6be3f09866d9dda0a3b9f129e70b0e",
+  "initial": {
+    "files": 82,
+    "tests": 993,
+    "pass": 970,
+    "fail": 21,
+    "skip": 2,
+    "exit": 1
+  },
+  "final": {
+    "files": 84,
+    "tests": 1069,
+    "pass": 1067,
+    "fail": 0,
+    "skip": 2,
+    "cancelled": 0,
+    "exit": 0
+  },
+  "skips": [
+    "pdf-http real LibreOffice opt-in MERI_ARTIFACT_SOFFICE unset",
+    "pdf-lineage real LibreOffice opt-in MERI_ARTIFACT_SOFFICE unset"
+  ],
+  "runtimeTypes": {
+    "exit": 0,
+    "diagnostics": 0
+  },
+  "syntax": {
+    "files": 66,
+    "failures": 0
+  },
+  "pr189Correction": "e82d199fc88f8493fab6845770218a8ded29d41d",
+  "unrun": [
+    "actual Core/provider/PostgreSQL",
+    "exact-image SDK/tool/options installation",
+    "native PPTX rendering",
+    "production sandbox admission/execution",
+    "real authenticated UI approvals",
+    "live memory review/filing and cross-task recovery"
+  ]
+}

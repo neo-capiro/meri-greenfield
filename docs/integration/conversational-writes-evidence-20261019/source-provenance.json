@@ -1,0 +1,414 @@
+{
+  "kind": "successor-source-proof-only",
+  "base": "98d3c96a2c944a8211856e98b5bd62e824b4b5f7",
+  "sourceCommit": "927537b76a6be3f09866d9dda0a3b9f129e70b0e",
+  "sourceTree": "a33dccce8dc72479f326584c984842f1f50229ec",
+  "frozenBuildSource": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+  "imageQualified": false,
+  "sdkOptionsMeasuredInImage": false,
+  "pr189SourceIncluded": false,
+  "rows": [
+    {
+      "path": "apps/artifacts/postgres-analysis.mjs",
+      "baseSha256": "248b73760f296298fc5424b25fffee8aa02beccbccd8c4bd9c27c95c47fd51b5",
+      "sourceSha256": "c4358d8aff2ff9f69c2f49a7115f5da5fe6daa9b9fff772622bf456f144a322b",
+      "change": "modified"
+    },
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "baseSha256": "a583fbae165579626b30d49928585f6d43e621021d98259706fba1c4972ea1c6",
+      "sourceSha256": "cfe68d82f339d132428d69f83e438e4501499b2888a9129a0687a75a07e9a707",
+      "change": "modified"
+    },
+    {
+      "path": "apps/artifacts/recovery.mjs",
+      "baseSha256": "fc6ad5b43960aed502b600dcf26f68a69034c22aca3da1f9c239f49f232be7bc",
+      "sourceSha256": "648a582b85325435a5fbb9e097743bfbfb53f1e8c9f7afe8527a864ef0af5cbf",
+      "change": "modified"
+    },
+    {
+      "path": "apps/artifacts/test/analysis-product-namespace.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "de9d265a84e68f70de651b6f3846aa8e9cb1787c8dd572f9f360533559024de3",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/ports.mjs",
+      "baseSha256": "4a490fc255c5e0c10dfcd4fc297c54121ea293bdccece57af38ee3e556707505",
+      "sourceSha256": "643689efe78706309e13f00e7a065be468a6b58c7c687d4a7db9f9c769005341",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/action-host/session/http.mjs",
+      "baseSha256": "05b794bcc8cc52a2f7835fcd931db04243d4f691244bafef8faea21131052596",
+      "sourceSha256": "5b9d686f35b4cb2456e3f03247f994a4486a63ce28999ff0e1f2c6b87334054d",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/action-host/session/native-credential-relay.test.mjs",
+      "baseSha256": "5dabc76793019e1d7c89cb3237b3534963d9b3486606e7014926231186950d78",
+      "sourceSha256": "b242a74ff3e262fb240f340d4065e7ffacd2189bac3b2c91d1872c1724d8c53f",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/action-host/session/owner.mjs",
+      "baseSha256": "a86477b3dbaee1b32091f24417860b88ba1bad2eef553a74c17500ec7e029cbd",
+      "sourceSha256": "4fac62ac07dd35fb4e97b9acfd39fa9537bea5342f9f6bbcedc41149ed88b6eb",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/artifact-file-kind.mjs",
+      "baseSha256": null,
+      "sourceSha256": "693de2f4c3af2e5de619275ea390e3e459af0f1fd5f08b7ea57c4c9ff89db9da",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "baseSha256": "88d6edfb7a9ecd18e901caf20546a498ab7de4ccc7adcf469e6601ca966297d0",
+      "sourceSha256": "b9f71d1feca4a7f0dd8b243b81792655018a13d7638aa6a0fe0b25335bc30e03",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/command-kind.mjs",
+      "baseSha256": null,
+      "sourceSha256": "c9c6fbdc909e2a793841da819e2fda3aab69a8487d964b2c2e6fae24342820ed",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "baseSha256": "47e56d4711c1980866347db9bc498604586519e83a2fb525d21174c550d07503",
+      "sourceSha256": "d11ca1f8a0b2900fcc8650fa4ed8c88987f4810a0be725cea603b8ac9870c086",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/memory-kind.mjs",
+      "baseSha256": null,
+      "sourceSha256": "6d7e7584125af7a5d6db02110834bb93a913d3c485249f19845901d9c930b2ef",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/memory-owner.mjs",
+      "baseSha256": null,
+      "sourceSha256": "050d6598e39c51aad1b999a5896f3c1cd665dc5a6ab5d7cc7a3785d5ab8f99cd",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "baseSha256": "6f7b8f372abd79ce67d9392c027d8044d1010312cc0b073bc6b6dc96bff149cf",
+      "sourceSha256": "a13aa537fbccdab1823a8ae9e00021bf2cdf833c7101a77e8d4ddf0d27a4ee6b",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/artifact-file-kind.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "382f183d9cafb416172f1db67163450710222880fa050f58e2d06beebb2c4cd0",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/command-owner.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "0e6beb4c27e6636986855646077729ead2ad6292842ce578333548029c33ee71",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/document-application/README.md",
+      "baseSha256": "8f79312b472c9e8d606bc07029b058db08f993e4096552adabf504a4302b1b57",
+      "sourceSha256": "b795cc4a3dbf9bcdd5f9309e3a825ac1867dae95f1ee3daca9645d85d6542320",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/document-application/format-admission.mjs",
+      "baseSha256": "da746a47c0f4e0a5a3ee10da87655eb182dd590c67419316e2d3e71080bd14f2",
+      "sourceSha256": "3903a93cb0335bf371e01727e512616c28b0950776b34d8ee48b8b33b7cf0b99",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "baseSha256": "5921afc81e2aa34d2132f8d36e85bac36b1120bcaff010b16632a02eee35adb8",
+      "sourceSha256": "1daca1e42c00992f72fb3e8f23a754dd5c114344020785e1ecbb83bdeaec6f39",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/document-application/test/preview-http.test.mjs",
+      "baseSha256": "c1822d18e06611e089921d539a2085a4398c409fa2cbc92eeb0e9db664b856d1",
+      "sourceSha256": "f988421f60808c669ceea7d2fae7dd67978daf613c08db6cc99cc919a93184cf",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/document-application/test/workbook-application.test.mjs",
+      "baseSha256": "254fc9feb96760097b38e9bc7843ddf61c2cf3db7b95ea5bd718fc40efca677b",
+      "sourceSha256": "4adbac5a7785d6a2569c6d0ee97997f7473459b42ca19417447b593604ab6108",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/intents/analysis-preparer.mjs",
+      "baseSha256": null,
+      "sourceSha256": "3b2cf1fb3d469347736f8add03e9290d984d68f232558dff482cff8eadcb5d86",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/artifact-draft-result.mjs",
+      "baseSha256": null,
+      "sourceSha256": "f3851a0942b69ae51085a32dc6a4ca841808860544ee8ccb2b3714d270ba6382",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/attachment-filing-preparation.mjs",
+      "baseSha256": null,
+      "sourceSha256": "8423859d0e000332a969fdb34f987c9c1560d30861931d40c399df4dd37af207",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/attachment-filing-services.mjs",
+      "baseSha256": null,
+      "sourceSha256": "cd3c1d202e8d30ca5361b7f732a676e02e062089b49cdf4a749605016ae614e6",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/command-preparer.mjs",
+      "baseSha256": "0c8e2585dcb89ab122aeedfff9ae01f8d3a26a06ff9304014c244de2b98831d8",
+      "sourceSha256": "fc28e9d7cae9cf87f21a0f246a1644663ab4417d9c8f833eb5131cf445d5f26a",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/intents/document-preparer.mjs",
+      "baseSha256": "7971507c7230ea22f355d7c55b18e43b6158b4aa706262a6de275bd40dce8ffb",
+      "sourceSha256": "89b383923be8e1593902e68b76d91f6f84fc2efe3e4ad93c81e173421a229794",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/intents/memory-preparer.mjs",
+      "baseSha256": null,
+      "sourceSha256": "2748480f50708ae68f38e256a0905acbdd9b9a2e40d5f7dd5e64f36146b1b6e1",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/mount.mjs",
+      "baseSha256": "248ca57217976e33fefb7a2631005b8ca523e5333073794c4326909752a1cb17",
+      "sourceSha256": "5bd171f65d412858310f6417aaf1a8ef14f79fa2e5e87fbaa452cc338211e39f",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/intents/result-release.mjs",
+      "baseSha256": "08075fbcd78dcb8a1dbc352d74ae480cd50e34d73d6e81048d5bb2d20218c1db",
+      "sourceSha256": "0bda8d10e2f1491ba996df3e0d0ed17fe0e67ecf51fb30e9ea29ef03e7c69042",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/intents/test/analysis-preparer.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "062ba2dac389aaa1f41d295833376cbbcf05d1a8a577c198bd636f7b59d60c2c",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-execution-fixture.mjs",
+      "baseSha256": null,
+      "sourceSha256": "ca785e27b0d735fdc06fbe4270a2faa834908e362857b7280755f422033dbaff",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-execution.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "f8eb1ea4b0c25c05425027aced6c09fe0edf778c89a60f5255a54c88d2e57ceb",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-fixture.mjs",
+      "baseSha256": null,
+      "sourceSha256": "9bec1f7c1d5356bd3ed0c3c12a625c102b60d84e063499a4df1e5159380f1694",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-preparation.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "2dcfc1b22c0f0e933205d1fe33da9194cc58c7b905b8b09545e3ec749bb22e07",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/document-preparer-powerpoint.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "dac798e46d5fb187801c58c58c1ac2383e22521c8bd0286bc4ff3c1ad2fadee9",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/document-preparer.test.mjs",
+      "baseSha256": "80392b87d3f89e4428fa7111fe7dc3213a0345b7f5ece0167271078bd271291b",
+      "sourceSha256": "7ce518317f48742f4af1733477077cca00bdc0c5254044d1ca3cf604a7333f00",
+      "change": "modified"
+    },
+    {
+      "path": "apps/control/intents/test/memory-fixture.mjs",
+      "baseSha256": null,
+      "sourceSha256": "96f5b91746763c1da1b9d7716b4ab0c62f86fa9dec028ae2395c547f81f51aa0",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/memory-preparer.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "80a48b45a85e3bdaa408ae1b614c051b24b728dd6aae8a05baabe9d844c3461d",
+      "change": "added"
+    },
+    {
+      "path": "apps/control/intents/test/prepared-schedule-reader.test.mjs",
+      "baseSha256": "0417b518a08aed56a9f7cc53a7bc13d5ce7f6acd1eb8e34ab1251454da697025",
+      "sourceSha256": "8cb445333109be64af4a196aecc4ea8476c40296e86b2db511b2fb467235fa91",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/artifacts/authority-composition.mjs",
+      "baseSha256": "310e4ed79b77a1e9bb4aca9f1c49010fd45c5631914299c709f556ecd5a6d783",
+      "sourceSha256": "d8cd3111c8431e25b905fa57ae2e3a01664460b19d3a438212823f7ca19f5fb8",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/artifacts/intent-binding.mjs",
+      "baseSha256": null,
+      "sourceSha256": "0883b07db29c6fe5c53a13c59f329f1515b57ca1c18b651a7354193e5da4dd86",
+      "change": "added"
+    },
+    {
+      "path": "apps/runtime/artifacts/intent-preparers.mjs",
+      "baseSha256": null,
+      "sourceSha256": "f9b0043cf60c44dd703e9bf1f3ea6e2ef649d49a97cf293686b9a9bfc37409a2",
+      "change": "added"
+    },
+    {
+      "path": "apps/runtime/artifacts/run-options.mjs",
+      "baseSha256": "5c69dc179983702597247ae7b69b6aec4b47cfde98a8028f456920d5c636690b",
+      "sourceSha256": "0045f8586646df34dc86a08c83015708b606e2492615716107a8d157593a646d",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/artifacts/session-binding.mjs",
+      "baseSha256": "fe1fc5745f5988f2ea08275e4d33f81a2b5584f176ee2a17a88e8a4eb51104bb",
+      "sourceSha256": "b47eefb698459b451b5f1579c58810168a571c000bb9716aa1d07f4c3bf66e25",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/artifacts/test/document-owners.test.mjs",
+      "baseSha256": "7f213e39f3b6e4a9b16214c1697c4e3fb7b30d29fd6fef452d80464c9515fe49",
+      "sourceSha256": "32741f3d2181f614e93538dd18004ea7e266fc5d98b655ff71535cebc296fabd",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/artifacts/test/download-links-redaction.test.mjs",
+      "baseSha256": "de29196358c4e12cab7c200a58e3c416ac523901104876d69083ac8c3425524f",
+      "sourceSha256": "218dc525505328163bf40ec4dbaab31e7518196291bac9de2ad6be1d988fca55",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/artifacts/test/fixture.mjs",
+      "baseSha256": "e35656f9ff8147304c8fd58d79d62659025c7ba2154e0b5aea009e9aec7c4c82",
+      "sourceSha256": "16f44bcd878c22940926927bcdd4628cd277b3cfecbda98a2b870e8f74427021",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/artifacts/test/intent-preparers.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "ccbd464e35cddd3e3983d6ad2edccde1c21f9b25ead8e8b7de1e591d35c61761",
+      "change": "added"
+    },
+    {
+      "path": "apps/runtime/cli.mjs",
+      "baseSha256": "44684673fd157947aa93e486bce05317199f63220d5f1468b1073760a01142b5",
+      "sourceSha256": "4eb804d72ab9860a6623d2ee0bc149be59f5a6e8eedd3aaec1601ede0e8551a7",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "baseSha256": "77bb6239b62e8b217bc9ee187604bd2928d626f664672afc4a8092395a1aa3e0",
+      "sourceSha256": "2732c43814c09183b8332ff81ea1c228757f56f433514a6524e7ba901f26a450",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/native-authority/current-authority-adapters.mjs",
+      "baseSha256": "99c8c47baf4a3af14261c8a2deac58f93142265853f0aa4209ef51e3d1c0ae74",
+      "sourceSha256": "255c81e595745872f0d4cfe630b824ced7a73dde1531de2b23178b876bf6da90",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/native-authority/execution-composition.mjs",
+      "baseSha256": "9adbe73b2895216a47bdfc698db54426de2053e6981f9ec65d524efa2d38e0a0",
+      "sourceSha256": "dabf1e166876a3cd7119cd3a631a57ef559288e851a73cf0a0b3d029b7079fb8",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/artifact-draft-authority.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "e36390bba555a8bdd3473163cdd494f4b655ad1e0bf0b26af6b9c03983f912b2",
+      "change": "added"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/execution-composition.test.mjs",
+      "baseSha256": "ff157dd8f52fecb8e68adc5a557d368a5359ea34d899c0c6002b3ec805fccde1",
+      "sourceSha256": "68e0a61292c7eec9fa0e5157148a24873422f7183dac5251398558ef2f10de6f",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/product-ports/documents.mjs",
+      "baseSha256": "b3c6215fc19041fce2a01ffdb3d8fb3a62dc2f2211a646defce091fb4c42c93e",
+      "sourceSha256": "88346c112838a921a67fc809e21ab3e588a1f42dec23fbcfc4edb4a26405df8a",
+      "change": "modified"
+    },
+    {
+      "path": "apps/runtime/test/product-mount.test.mjs",
+      "baseSha256": "8eda6bfbeab76edf19b4f8de589ad7f68812350eafcc84d124d60d9190e1bd98",
+      "sourceSha256": "018b67fbb50aa90646148825d15936c249cebcaec233e1ecc87f00ece23df928",
+      "change": "modified"
+    },
+    {
+      "path": "apps/worker/conversation/intents/catalog.mjs",
+      "baseSha256": "9d01274875f19643ff4c4fe8df937529a3948620442588d1b0379c83f39c3425",
+      "sourceSha256": "4807815ec963a1c4893ccdbeb8ed5d4b0b4de21f74cf8a8b376abe97b95ca1bd",
+      "change": "modified"
+    },
+    {
+      "path": "apps/worker/conversation/intents/prepared.mjs",
+      "baseSha256": "f9456d4b66077761925db93af0cce785711cb9341370f08498bd187600962fc2",
+      "sourceSha256": "043b57627014abf23cda5dcee3362f39f9a1d4b598874a104361300aee0636ea",
+      "change": "modified"
+    },
+    {
+      "path": "apps/worker/conversation/intents/results.mjs",
+      "baseSha256": "47437ed196bc74ee8f6198461d3caa193890d14c909d0665b7bc8b33f417bcc6",
+      "sourceSha256": "4dac27d0e5be9463a8fe99a5ab6a0010a28a2d333d736dc873b693df5a01e667",
+      "change": "modified"
+    },
+    {
+      "path": "apps/worker/conversation/intents/server.mjs",
+      "baseSha256": "db30064a34f8f87545a9a20721b1a6eff820a09eddfd448f94bdf3bf2a0fecf6",
+      "sourceSha256": "6610a88ed8824da5700dcf55cc70296415e1d18bb3c40560efed0bfa9bde7bf1",
+      "change": "modified"
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/artifact-intents.test.mjs",
+      "baseSha256": null,
+      "sourceSha256": "451c8f326e21f050e87481fafbf024ab0d75517c3a3b0759247a372424a59602",
+      "change": "added"
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/catalog.test.mjs",
+      "baseSha256": "39d6ab0e53dca050ff14da3b4e912addde6fad91b63e9b6725786af90e6f7b7b",
+      "sourceSha256": "d7e35b39817757f835f5074e9ce5859209c81e0399165eb859be013beec20992",
+      "change": "modified"
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/intents.test.mjs",
+      "baseSha256": "0ceb10e30759b3ddb553e9e0e03894cb89b818394bcf8ab81e61c74c39e8915b",
+      "sourceSha256": "122ab72cd95cdf523dba249ecc9f9cad33bc772d15330d5b63f14c4672c5d5e2",
+      "change": "modified"
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/options.test.mjs",
+      "baseSha256": "477d00be30eff9ff1cc48ef65376ec521594f21042c463dd72263ca96ac629d1",
+      "sourceSha256": "42f7493da366e1aaea5692291c180579db8f800b35d261bb8b02347f4c58df8d",
+      "change": "modified"
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "baseSha256": "f356625d0024aa185925cae6bc84e813a3439cb6dcca17755b5d64edf4821880",
+      "sourceSha256": "65612e02995b87b158d4146dbb30cdffbddd113116d24f51f023c5feea4df70c",
+      "change": "modified"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ const keyed=reads.filter(binding=>(binding.contextKeys??[]).length);
 
 test('every registered read with context keys has a trusted producer for each key and never uses the generic path',()=>{
  const covered=keyed.filter(binding=>registered.has(binding.id));
- assert.equal(covered.length,34);
+ assert.equal(covered.length,38);
  for(const binding of covered){
   const supply=readContextSupply(binding);
   assert.notEqual(supply.path,'generic',binding.id);
@@ -23,7 +23,7 @@ test('every registered read with context keys has a trusted producer for each ke
 
 test('keys without a trusted producer exist only on unregistered reads, exactly these',()=>{
  const unsupplied=keyed.filter(binding=>readContextSupply(binding).keys.some(k=>k.source===null)).map(binding=>binding.id).sort();
- assert.deepEqual(unsupplied,['get_certification_status','get_state_rule_status','read_chat_attachments','search_research_sources','search_sam_opportunities']);
+ assert.deepEqual(unsupplied,['get_certification_status','get_state_rule_status','read_chat_attachments','search_sam_opportunities']);
  for(const id of unsupplied)assert.equal(registered.has(id),false,id);
 });
 

@@ -1,0 +1,51 @@
+[
+  {
+    "path": "final.tap.gz",
+    "rawSha256": "3c619206d08ded523711047fb3800857b11917a33bde9d9c4bc599f923a2a5a0",
+    "gzipSha256": "66bea6167855d0627b90a3a42e21e412010d121ef7a38847599348050f313119",
+    "rawBytes": 105761,
+    "gzipBytes": 30958
+  },
+  {
+    "path": "integrated.tap.gz",
+    "rawSha256": "3bc45456c4d19249eb67cc1bc240e2b4832ffbe4927b6d0fd3599422c308cc05",
+    "gzipSha256": "4dfc6c3289f7b387d77f2cbde5cc94adf815c3440b003911ca0779bdded0b5fd",
+    "rawBytes": 119603,
+    "gzipBytes": 31326
+  },
+  {
+    "path": "loader-closeout.tap.gz",
+    "rawSha256": "a917788f44512ee56673bd2c3bb4b803a66105dd8cd10b3ee4a9de7a5421ad16",
+    "gzipSha256": "0d88f97848c5275dea04e02aa5db91a5e33a06123223c48e888278b68939d104",
+    "rawBytes": 7477,
+    "gzipBytes": 2745
+  },
+  {
+    "path": "runner-fixture-baseline-loaded.tap.gz",
+    "rawSha256": "b42fe971238feac5b36c28248570451856baf310f7a3daad04f3d358b42ad11d",
+    "gzipSha256": "0ac678300d7e97a8f8d5b644913c9d98698eafcd5c8cbe0f1936e195eb74b177",
+    "rawBytes": 2505,
+    "gzipBytes": 858
+  },
+  {
+    "path": "runner-fixture-final.tap.gz",
+    "rawSha256": "78ae6f318dd8ec793f3f5f2c1d3f785def5152955bce800f73aa4a0ea8ab6979",
+    "gzipSha256": "d1fdaa8b917a3c7d96f7b03181ee62dca0b1924bad2340d561b5e78990669e83",
+    "rawBytes": 1143,
+    "gzipBytes": 642
+  },
+  {
+    "path": "runner-fixture-focused.tap.gz",
+    "rawSha256": "6541d41fdeeaf57a7d919f2386e7962db0f91cc27d6b0d84f50bcde1dc8ba7a4",
+    "gzipSha256": "d611273bab99149abadc5d575bf1679c4710b049ba2784200c988fbcdcc2204d",
+    "rawBytes": 2374,
+    "gzipBytes": 1044
+  },
+  {
+    "path": "setup-closeout.tap.gz",
+    "rawSha256": "295600ba9b65e9cb97d9304e8950c7eddd0ddb47f9d74a7ea9c1884ec1a3f189",
+    "gzipSha256": "e043138df8070e13fa74b0586114ddbdb4007b5de4ca10dc43fe90e212d7ee1c",
+    "rawBytes": 18070,
+    "gzipBytes": 2789
+  }
+]

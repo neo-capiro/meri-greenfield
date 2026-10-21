@@ -23,8 +23,9 @@ async function wired(id,{scene=storedCase(id,{personal:true}),withoutConversatio
  return {...f,owner,credentialCoreAuthority:withoutConversation?currentAuthority:f.configuration.coreAuthority,invoke:(extra={})=>port.execute({operation:f.operation,arguments:f.request,deliveryId:'bd-personal',...extra})};
 }
 
-test('BD native runtime: overclaimed inventories admit only context/recent and correlate exact request/delivery/result hashes',async()=>{
- const evidence={id:'get_business_development_evidence',version:'0.2.0'},operations=[...ids.map(id=>({id,version:'0.2.0'})),evidence];
+test('BD native runtime: selected-client evidence joins context/recent while absent families stay excluded',async()=>{
+ const evidence={id:'get_business_development_evidence',version:'0.2.0'},absent={id:'get_certification_status',version:'0.2.0'},
+  operations=[...ids.map(id=>({id,version:'0.2.0'})),evidence,absent];
  const x=await readsFixture({config:{operations}}),gateway=x.ownerConfiguration.gateway,dispatches=[];
  const owner=createNativeReadsOwner({...x.ownerConfiguration,gateway:{
   async readAvailability(options){const current=await gateway.readAvailability(options);return {...current,installation:{...current.installation,operations},discovery:{...current.discovery,operations}};},
@@ -34,7 +35,7 @@ test('BD native runtime: overclaimed inventories admit only context/recent and c
    dispatches.push(value);return JSON.stringify(value);
   },
  }});
- const snapshot=await owner.handle('availability',x.request,x.credential),allowed=operations.filter(op=>op.id!==evidence.id);
+ const snapshot=await owner.handle('availability',x.request,x.credential),allowed=operations.filter(op=>op.id!==absent.id);
  assert.deepEqual(snapshot.installation.operations,allowed);assert.deepEqual(snapshot.discovery.operations,allowed);assert.equal(snapshot.inputSha256,hash(x.request));
  for(const operation of allowed){
   const request={...x.executeRequest,operation,arguments:{...storedCase(operation.id).arguments,...(operation.id===ids[1]?{limit:25}:{})},deliveryId:`bd:native:${operation.id}`};
@@ -43,8 +44,8 @@ test('BD native runtime: overclaimed inventories admit only context/recent and c
   assert.deepEqual(dispatches.at(-1),expected);assert.deepEqual(result.operation,operation);assert.equal(result.deliveryId,request.deliveryId);assert.equal(result.inputSha256,hash(request));
   assert.deepEqual(JSON.parse(result.resultJson),expected);assert.equal(result.resultSha256,hash(expected));assert.equal(result.outputBytes,Buffer.byteLength(result.resultJson));
  }
- await assert.rejects(owner.handle('execute',{...x.executeRequest,operation:evidence,arguments:storedCase(ids[0]).arguments,deliveryId:'bd:native:withheld-evidence'},x.credential),{message:'UNAVAILABLE'});
- assert.equal(dispatches.length,2);assert.ok(x.commands.some(sql=>sql==='BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'));
+ await assert.rejects(owner.handle('execute',{...x.executeRequest,operation:absent,arguments:{query:'synthetic'},deliveryId:'bd:native:absent-family'},x.credential),{message:'UNAVAILABLE'});
+ assert.equal(dispatches.length,3);assert.ok(x.commands.some(sql=>sql==='BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'));
  assert.equal(x.wire.length,0);assert.equal(x.state.reservations.size,0,'this eligibility-only synthetic gateway is not source or settlement proof');
 });
 const contexts=f=>f.core.state.calls.filter(call=>call.path.endsWith('/context'));

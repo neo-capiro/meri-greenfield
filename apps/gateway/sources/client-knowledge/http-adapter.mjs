@@ -9,12 +9,16 @@ import {assertMemoryEligibility} from './memory-eligibility.mjs';
 
 export function createClientKnowledgeHttpAdapter(options) {
   const {endpoints:configured,getCredentials,readMemoryEligibility,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
-    ownFields(options,['endpoints','getCredentials','readMemoryEligibility','now'],['fetchImpl','maxRequestMs','maxResponseBytes']);
-  if([getCredentials,readMemoryEligibility,fetchImpl,now].some(value=>typeof value!=='function')||
+    ownFields(options,['endpoints','getCredentials','now'],['readMemoryEligibility','fetchImpl','maxRequestMs','maxResponseBytes']);
+  if([getCredentials,fetchImpl,now].some(value=>typeof value!=='function')||
       !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000||
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   const endpoints={};
-  for(const [id,value] of Object.entries(ownFields(configured,operationIds))) {
+  let selected;
+  try {selected=ownFields(configured,[],operationIds);}catch {deny('GATEWAY_CONFIGURATION');}
+  if(!Object.keys(selected).length||(Object.hasOwn(selected,'search_memory')&&typeof readMemoryEligibility!=='function')||
+      readMemoryEligibility!==undefined&&typeof readMemoryEligibility!=='function')deny('GATEWAY_CONFIGURATION');
+  for(const [id,value] of Object.entries(selected)) {
     try {if(typeof value!=='string')deny('GATEWAY_CONFIGURATION');const url=new URL(value);
       if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)deny('GATEWAY_CONFIGURATION');endpoints[id]=url.href;
     }catch {deny('GATEWAY_CONFIGURATION');}
@@ -24,6 +28,7 @@ export function createClientKnowledgeHttpAdapter(options) {
     let lifetime,acquired;
     try {
       const context=readContext(call,now),pins=requestPins(context);
+      if(!Object.hasOwn(endpoints,context.operation.id))deny('GATEWAY_CONFIGURATION');
       let cutoff=Math.min(context.deadlineMs,context.active()+maxRequestMs);
       lifetime=createDispatchLifetime({deadlineMs:cutoff,now,signal:context.signal});
       const active=()=>{lifetime.check();return context.active(cutoff);};

@@ -1,0 +1,176 @@
+{
+  "repository": "neo-capiro/capiro-backend",
+  "ref": "138c04373b18bb730b1ad0f8f9338342f628b8c6",
+  "files": [
+    {
+      "file": "admission.ts",
+      "bytes": 10358,
+      "sha256": "d436f10eeecece7904224cc2aadfcfe78b1bcb2487aee15d69cf2c7f8388a5f3"
+    },
+    {
+      "file": "bizdev-meri-scope.authorization.ts",
+      "bytes": 1634,
+      "sha256": "b8dae60639d5e738deba734891ad7a8fb12b97bf095834a4d258ddc1f066dc14"
+    },
+    {
+      "file": "bizdev-meri-scope.service.ts",
+      "bytes": 8412,
+      "sha256": "e90c6a3abf18ffb5eced132bb2f8f484d756def24de1b9c4ea9af2f17a251a37"
+    },
+    {
+      "file": "documents-monday.ts",
+      "bytes": 17802,
+      "sha256": "a6443914d55402c98c087aaa5da4fa23d00db720010e72a394a57308ab823be1"
+    },
+    {
+      "file": "engagement.service.ts",
+      "bytes": 507713,
+      "sha256": "7725d6c52c38a0aa75730b1bf613c3a56fded65dfe1c6f8ca44a8130b168a427"
+    },
+    {
+      "file": "evidence.service.ts",
+      "bytes": 35727,
+      "sha256": "36ddcf4b799aaf4831990be818d8209bfed246c859d2f8ec0d5a6073634d142c"
+    },
+    {
+      "file": "keyword-meri.controller.ts",
+      "bytes": 6936,
+      "sha256": "d6701da36f2473dc174be08520f4def15ddb6970d5046ef81a4064ae6e06ea37"
+    },
+    {
+      "file": "mail.ts",
+      "bytes": 29835,
+      "sha256": "dea0229691ab8605f72d57bf8498e89b79d456185101ff2f234d6026ab9cb42b"
+    },
+    {
+      "file": "meri-bizdev-tools.service.ts",
+      "bytes": 35241,
+      "sha256": "7e522547ee31488cc682f5e627b67a65b87b67c640c670709ca00d2bbc1e2139"
+    },
+    {
+      "file": "meri-chat-attachment-read.service.ts",
+      "bytes": 33410,
+      "sha256": "7ddff5cb1d24663de4dd2ae68ee0f9bc457456b16a160d0ded7654445b84a795"
+    },
+    {
+      "file": "meri-chat-attachment-transport.ts",
+      "bytes": 3659,
+      "sha256": "8e08c6c88c03a4398c47b0f7673d18acd51655992f555c956ed6d5de3d4fc20d"
+    },
+    {
+      "file": "meri-funding-read-observation.ts",
+      "bytes": 9330,
+      "sha256": "06b73e6c66a3b7eab1df551fba5f82ad59ca3b888287badfb0763ad6463e9bf3"
+    },
+    {
+      "file": "meri-rp-tool-transport.ts",
+      "bytes": 7197,
+      "sha256": "ffc2ad4407ff6b3ab383433f93e3208f4b60d883dc70d693093f7361e70150e6"
+    },
+    {
+      "file": "meri-tools.service.ts",
+      "bytes": 447292,
+      "sha256": "886016cf57ac1cbf65ac20dfe3da9c7ef3f72c68cb8df838449baaa6743ca60e"
+    },
+    {
+      "file": "meri.controller.ts",
+      "bytes": 55600,
+      "sha256": "4880b48bcaae3e419129d58923004dfa4ed00b73077d718c0981d897829aff35"
+    },
+    {
+      "file": "monday-current-source.ts",
+      "bytes": 4500,
+      "sha256": "ac862e5fc138e9ac23b0c714a966f9e133b18c2df8ff522182dfed33f336d613"
+    },
+    {
+      "file": "read-delegation-request.ts",
+      "bytes": 24443,
+      "sha256": "0c1f2864a4e0c6d3636b418d721d2ff42459e8aa498f16aac3c003b548fbdc83"
+    },
+    {
+      "file": "read-delegation.contract.ts",
+      "bytes": 19034,
+      "sha256": "05b39afc82d28db15078ecfcda45c80df3e8bbaa4e64573aed6aed5db75f6bfd"
+    },
+    {
+      "file": "read-delegation.controller.ts",
+      "bytes": 7099,
+      "sha256": "c86d2ec01031db60bd0f4cb94a58f64099baf554733ae60e5aa06d4aba41c7f8"
+    },
+    {
+      "file": "read-delegation.service.ts",
+      "bytes": 27912,
+      "sha256": "908b463a1311473bd19afd00d0258428cd6d186c0f56ad6676a6ff42d38c4be0"
+    },
+    {
+      "file": "receiver.ts",
+      "bytes": 6278,
+      "sha256": "d9c93da3a4b0cb24b0f8018a05f8fc2dba154ad3041e001bf1093f95057e59ac"
+    },
+    {
+      "file": "research-portfolio-review.service.ts",
+      "bytes": 65675,
+      "sha256": "f749c06b23cadaa79769e5022dccbd56cf86e81a66bc382f77723bf828b9645d"
+    },
+    {
+      "file": "research-portfolios.controller.ts",
+      "bytes": 25315,
+      "sha256": "600a1ca990a441fcfa93bee452e1c24f67f05720a93ee1f48895366a83d2315a"
+    },
+    {
+      "file": "research-portfolios.service.ts",
+      "bytes": 32302,
+      "sha256": "34b27f83520f85b2ca6e247c8a92ff0034381fd5c35fdf607b291e0ebc7f2b1e"
+    },
+    {
+      "file": "research.service.ts",
+      "bytes": 37619,
+      "sha256": "128f98fa32849c89573e694850d2014def813e1028cf301ca6c848384f9dd6ae"
+    },
+    {
+      "file": "retained-florida-current.controller.ts",
+      "bytes": 4012,
+      "sha256": "2da9d27ffece68f1007ecfc5742a6843fa550ea245db31af7b8760464c90cee2"
+    },
+    {
+      "file": "retained-principal.controller.ts",
+      "bytes": 3578,
+      "sha256": "87efb177040611443bbc9329761685f2a3e08ea39ae2085f994245b11126c3a1"
+    },
+    {
+      "file": "retained-principal.module.ts",
+      "bytes": 2008,
+      "sha256": "26d952f4300bd60c5f96197312b33ff55f98bc481bb387e4cdb066409efe2422"
+    },
+    {
+      "file": "retained-principal.service.ts",
+      "bytes": 12197,
+      "sha256": "3a5b7fd54f9ec93cd6d0860d5f69b4769eb0fcc5882b5bc64c624fa1f3c7c8d9"
+    },
+    {
+      "file": "retained-read-authority.controller.ts",
+      "bytes": 2654,
+      "sha256": "faa74d0b45955f7ff2f6da36102e0fc0e9ebd80f913481cc0974e851fa4f867b"
+    },
+    {
+      "file": "retained-read-authority.module.ts",
+      "bytes": 1294,
+      "sha256": "7a03696a220321b93b392b86be3c3da2ee31bd443f6c0e900d1a0833c1df3a73"
+    },
+    {
+      "file": "retained-read-authority.service.ts",
+      "bytes": 12800,
+      "sha256": "6c8bedf9f83d1f72142f1b4cba820a738c67a2935d35a83c6cd701c9b14cd658"
+    },
+    {
+      "file": "retained-trust.ts",
+      "bytes": 5477,
+      "sha256": "0ba50d11b88cfae04d222af6bf03307725134ee563453712b4c1c1bdfcc36f50"
+    },
+    {
+      "file": "tenant-context.middleware.ts",
+      "bytes": 51850,
+      "sha256": "a8018c366acbac38e487f00a22dbd48e016e2b3bba3d8514bcf1c5069274514a"
+    }
+  ]
+}

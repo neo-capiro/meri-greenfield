@@ -1,0 +1,1127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:intents-application:0.1.0",
+  "$defs": {
+    "IntentsConversationId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "IntentsDeliveryId": {
+      "type": "string",
+      "pattern": "^sdk:[a-f0-9]{64}$"
+    },
+    "IntentsOperation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z_]{0,62}$"
+        },
+        "version": {
+          "const": "0.2.0"
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsListRequest": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "$ref": "#/$defs/IntentsConversationId"
+        },
+        "after": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsDecideRequest": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "$ref": "#/$defs/IntentsConversationId"
+        },
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "proposalId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        }
+      },
+      "required": [
+        "conversationId",
+        "deliveryId",
+        "proposalId",
+        "commandSha256",
+        "decision"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsProposal": {
+      "$ref": "#/$defs/Canonical_ApprovalProposal_d1a3e74f"
+    },
+    "IntentsDecision": {
+      "$ref": "#/$defs/Canonical_ApprovalDecision_5e8bdbcf"
+    },
+    "IntentsTaskCreateArguments": {
+      "$ref": "#/$defs/Canonical_TaskCreateArguments_1202c301"
+    },
+    "IntentsExecutionOutcome": {
+      "type": "object",
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/Canonical_CommandReceipt_ac49ee1e"
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_TaskCreateResult_0501c509"
+        }
+      },
+      "required": [
+        "receipt",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsExecution": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "executing"
+            }
+          },
+          "required": [
+            "state"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "unknown"
+            }
+          },
+          "required": [
+            "state"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "completed"
+            },
+            "outcome": {
+              "$ref": "#/$defs/IntentsExecutionOutcome"
+            }
+          },
+          "required": [
+            "state",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "IntentsPendingItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "pending"
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsUnknownItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "unknown"
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsFailedItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "failed"
+        },
+        "code": {
+          "enum": [
+            "UNAVAILABLE",
+            "ACCESS_DENIED",
+            "REFUSED",
+            "INVALID_ARGUMENTS",
+            "DEADLINE",
+            "CANCELLED",
+            "CONFLICT",
+            "UNKNOWN"
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "code"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsDraftItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "draft"
+        },
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "versionId"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldDraftItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "draft"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsScheduleProposalItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "schedule_proposal"
+        },
+        "proposalId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposalId"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldProposalItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "proposal"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsProposalItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "proposal"
+        },
+        "proposal": {
+          "$ref": "#/$defs/IntentsProposal"
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsDecision"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        },
+        "execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsExecution"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        },
+        "phase": {
+          "enum": [
+            "awaiting_approval",
+            "approved",
+            "rejected",
+            "expired",
+            "executing",
+            "completed",
+            "unknown",
+            "unknown_decision"
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "decision",
+        "execution",
+        "phase"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsItem": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/IntentsPendingItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsUnknownItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsFailedItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsDraftItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldDraftItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsScheduleProposalItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldProposalItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsProposalItem"
+        }
+      ]
+    },
+    "IntentsListResponse": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "$ref": "#/$defs/IntentsConversationId"
+        },
+        "intents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/IntentsItem"
+          },
+          "maxItems": 50
+        },
+        "next": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversationId",
+        "intents",
+        "next"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsDecideResponse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "rejected"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "decision": {
+              "$ref": "#/$defs/IntentsDecision"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "decision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "executed"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "decision": {
+              "$ref": "#/$defs/IntentsDecision"
+            },
+            "outcome": {
+              "$ref": "#/$defs/IntentsExecutionOutcome"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "decision",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "indeterminate"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "decision": {
+              "$ref": "#/$defs/IntentsDecision"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "decision"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "IntentsErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "INVALID_REQUEST",
+                "UNAUTHENTICATED",
+                "ACCESS_DENIED",
+                "MEMBERSHIP_REVOKED",
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "DEADLINE",
+                "MEMBERSHIP_CHANGED",
+                "REQUEST_TOO_LARGE",
+                "UNSUPPORTED_MEDIA_TYPE",
+                "CANCELLED",
+                "PRODUCT_UNAVAILABLE",
+                "INTENT_APPROVALS_DISABLED",
+                "INTENT_NOT_FOUND",
+                "INTENT_NOT_PREPARED",
+                "INTENT_NOT_APPROVABLE",
+                "INTENT_MISMATCH",
+                "INTENT_EXPIRED",
+                "INTENT_SCOPE_WITHHELD",
+                "APPROVER_REFUSED",
+                "APPROVAL_OWNER_UNAVAILABLE",
+                "APPROVAL_DECISION_REFUSED",
+                "APPROVAL_DECISION_UNKNOWN",
+                "EXECUTION_OWNER_UNAVAILABLE",
+                "EXECUTION_AUTHORITY_REFUSED",
+                "INTENT_CROSS_RUN",
+                "COMMAND_APPROVAL_REFUSED",
+                "COMMAND_AUTHORITY_REFUSED",
+                "COMMAND_PREPARATION_REFUSED",
+                "COMMAND_REFUSED",
+                "COMMAND_OUTCOME_UNKNOWN",
+                "INTENT_RESULT_NOT_RELEASED",
+                "INTENT_EXECUTION_UNKNOWN",
+                "INTENT_JOURNAL_UNAVAILABLE",
+                "INTENT_REQUEST_INVALID"
+              ]
+            },
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "NOT_DISPATCHED",
+                "UNKNOWN",
+                "RESULT_NOT_RELEASED"
+              ]
+            },
+            "field": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+            }
+          },
+          "required": [
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Scope_f882edb5": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tenant",
+            "client",
+            "mailbox",
+            "memory",
+            "document",
+            "private-user",
+            "public"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "kind",
+        "resourceId",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ObjectReference_a099bd1c": {
+      "type": "object",
+      "properties": {
+        "objectId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "versionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "objectId",
+        "versionId",
+        "sha256",
+        "bytes",
+        "scopes"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Command_2099e1ba": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "memory.propose",
+            "task.create",
+            "artifact.file"
+          ]
+        },
+        "arguments": {
+          "type": "object"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+          }
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Identity_aba0a4e9": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ApprovalProposal_d1a3e74f": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_Command_2099e1ba"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ApprovalDecision_5e8bdbcf": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        },
+        "decidedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "approver": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "proposalId",
+        "commandSha256",
+        "decision",
+        "decidedAt",
+        "expiresAt",
+        "approver",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskCreateArguments_1202c301": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "clientId",
+        "dueDate"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_CommandReceipt_ac49ee1e": {
+      "type": "object",
+      "properties": {
+        "receiptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "succeeded",
+            "denied",
+            "failed",
+            "indeterminate"
+          ]
+        },
+        "sourceTransactionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "receiptId",
+        "commandId",
+        "commandSha256",
+        "idempotencyKey",
+        "binding",
+        "outcome",
+        "sourceTransactionId",
+        "completedAt",
+        "scopes",
+        "authorizationDecisionId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskCreateResult_0501c509": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "status": {
+          "const": "todo"
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "dueDate",
+        "clientId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

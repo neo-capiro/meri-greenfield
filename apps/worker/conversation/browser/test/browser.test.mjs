@@ -4,11 +4,12 @@ import {createBrowserCapability} from '../index.mjs';
 import {DEFAULT_BROWSER_POLICY,INTERACTION_TOOLS,BROWSER_TOOLS} from '../policy.mjs';
 import {BROWSER_ACTIVATION,EGRESS_REQUIREMENTS,activationOpen} from '../activation.mjs';
 import {PLATFORM_BLOCKED_ORIGINS} from '../public-web.mjs';
-import {NO_DESTINATION_ORIGIN} from '../server.mjs';
+import {NO_DESTINATION_ORIGIN,playwrightHostCommand,validateBrowserInstallation} from '../server.mjs';
+import {browserPaths} from '../workspace.mjs';
 import {buildOpenBrowserFragment} from '../fragment.mjs';
 import {validateBrowserPolicy} from '../policy.mjs';
 import {outputReference} from '../receipts.mjs';
-import {binding,enabledPolicy,recorders,clock,installation,sourceScopes,openFragment,APPROVED} from './fixtures.mjs';
+import {binding,enabledPolicy,recorders,clock,installation,installationFor,sourceScopes,openFragment,APPROVED} from './fixtures.mjs';
 const cwd=`/workspace/${binding.conversationId}`;
 const workspace=async()=>{const root=await realpath(await mkdtemp(join(tmpdir(),'meri-browser-')));const dir=join(root,binding.conversationId);await mkdir(join(dir,'.browser','output'),{recursive:true});return {root,cwd:dir};};
 const post=(tool,{input={},response=[{type:'text',text:'### Result\nok'}],id='toolu_01'}={})=>({hook_event_name:'PostToolUse',session_id:'00000000-0000-4000-8000-0000000000aa',transcript_path:'/x',cwd:'/x',tool_name:`mcp__meri_browser__${tool}`,tool_input:input,tool_response:response,tool_use_id:id});
@@ -42,23 +43,28 @@ test('the shipped activation record is held and only an evidence-bearing open re
  assert.equal(activationOpen({state:'open',evidence:'docs/qualification/egress-record',requirements:EGRESS_REQUIREMENTS}),true);
  assert.equal(createBrowserCapability.length,1,'no activation argument');
 });
-test('the scripted Playwright MCP config pins the sandbox, per-conversation profile, the egress proxy, the destination allowlist and platform blocked origins',()=>{
+test('the SDK can launch only the run-bound shim; the trusted supervisor pins Playwright sandbox, workspace and egress flags',()=>{
  const r=recorders(),open=policy=>buildOpenBrowserFragment({binding,cwd,policy:validateBrowserPolicy(policy),installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,now:clock});
- const def=open(DEFAULT_BROWSER_POLICY).mcpServers.meri_browser.args;
+ const installed=validateBrowserInstallation(installation,binding),host=policy=>playwrightHostCommand(validateBrowserPolicy(policy),installed,browserPaths(cwd));
+ const def=host(DEFAULT_BROWSER_POLICY).args;
  assert.equal(def[def.indexOf('--allowed-origins')+1],NO_DESTINATION_ORIGIN,'an empty allowlist must not become upstream allow-all');assert.equal(def[def.indexOf('--blocked-origins')+1],PLATFORM_BLOCKED_ORIGINS.join(';'));
  for(const entry of ['localhost','http://localhost:*','169.254.169.254','http://169.254.169.254:*','https://169.254.170.2:*','metadata.google.internal','http://[::1]','http://[fd00:ec2::254]'])assert.ok(PLATFORM_BLOCKED_ORIGINS.includes(entry),entry);
- const cap=open(enabledPolicy()),server=cap.mcpServers.meri_browser,args=server.args;
- assert.deepEqual(Object.keys(cap.mcpServers),['meri_browser']);assert.equal(server.type,'stdio');assert.equal(server.command,'/opt/scripted/node');
+ const cap=open(enabledPolicy()),server=cap.mcpServers.meri_browser,command=host(enabledPolicy()),args=command.args;
+ assert.deepEqual(Object.keys(cap.mcpServers),['meri_browser']);assert.equal(server.type,'stdio');assert.equal(server.command,installation.launch.shimPath);
+ assert.deepEqual(server.args,[installation.launch.socketPath,installation.launch.nonce]);assert.deepEqual(server.env,{});
+ assert.equal(command.command,installation.nodePath);
  assert.equal(args[0],'/opt/scripted/@playwright/mcp/cli.js');for(const flag of ['--sandbox','--headless','--no-webmcp','--block-service-workers'])assert.ok(args.includes(flag),flag);
  assert.equal(args[args.indexOf('--user-data-dir')+1],`${cwd}/.browser/profile`);assert.equal(args[args.indexOf('--output-dir')+1],`${cwd}/.browser/output`);
  assert.equal(args[args.indexOf('--allowed-origins')+1],'https://records.example;https://notices.example');
  assert.equal(args[args.indexOf('--proxy-server')+1],installation.egressProxy,'every browser request goes to the host egress control');
  assert.ok(!args.some(a=>a.startsWith('--proxy-bypass')),'no bypass: Playwright then proxies loopback too');
- assert.ok(!Object.keys(server.env).some(k=>k.startsWith('PLAYWRIGHT_DISABLE')),'forced loopback proxying is not disabled');
+ assert.ok(!Object.keys(command.env).some(k=>k.startsWith('PLAYWRIGHT_DISABLE')),'forced loopback proxying is not disabled');
  assert.equal(args[args.indexOf('--blocked-origins')+1],PLATFORM_BLOCKED_ORIGINS.join(';'));assert.equal(args.filter(a=>a==='--allowed-origins').length,1);
  for(const flag of ['--no-sandbox','--storage-state','--secrets','--extension','--cdp-endpoint','--save-session','--caps','--allow-unrestricted-file-access','--shared-browser-context','--config','--init-script'])assert.ok(!args.some(a=>a===flag||a.startsWith(`${flag}=`)),flag);
- assert.deepEqual(server.env,{PLAYWRIGHT_BROWSERS_PATH:'/opt/scripted/browsers',HOME:`${cwd}/.browser/home`});
- const other=buildOpenBrowserFragment({binding:{...binding,conversationId:'00000021-b0a1-4000-8000-000000000000'},cwd:'/workspace/00000021-b0a1-4000-8000-000000000000',policy:validateBrowserPolicy(enabledPolicy()),installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,now:clock}).mcpServers.meri_browser.args;
+ assert.deepEqual(command.env,{PLAYWRIGHT_BROWSERS_PATH:'/opt/scripted/browsers',HOME:`${cwd}/.browser/home`});
+ const otherBinding={...binding,conversationId:'00000021-b0a1-4000-8000-000000000000'},otherCwd='/workspace/00000021-b0a1-4000-8000-000000000000';
+ const otherInstallation=validateBrowserInstallation(installationFor(otherBinding),otherBinding);
+ const other=playwrightHostCommand(validateBrowserPolicy(enabledPolicy()),otherInstallation,browserPaths(otherCwd)).args;
  assert.notEqual(other[other.indexOf('--user-data-dir')+1],args[args.indexOf('--user-data-dir')+1]);
 });
 test('interaction tools are never pre-approved; unadmitted exposed tools are removed from the model context; both permission hooks are installed',()=>{
@@ -78,6 +84,12 @@ test('configuration refuses a workspace that is not this conversation, missing p
  const open=over=>buildOpenBrowserFragment({...base,cwd,policy:validateBrowserPolicy(enabledPolicy()),...over});
  assert.throws(()=>open({receipts:undefined}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({artifacts:{}}),/BROWSER_CONFIGURATION/);
  assert.throws(()=>open({installation:{...installation,version:'0.0.84'}}),/BROWSER_CONFIGURATION/);assert.throws(()=>open({installation:{...installation,cliPath:'cli.js'}}),/BROWSER_CONFIGURATION/);
+ for(const launch of [undefined,{}, {...installation.launch,shimPath:'/usr/bin/node'}, {...installation.launch,socketPath:'/tmp/launch.sock'},
+  {...installation.launch,socketPath:installationFor({...binding,writerFence:binding.writerFence+1}).launch.socketPath},
+  {...installation.launch,nonce:'f'.repeat(63)}, {...installation.launch,nonce:'Z'.repeat(64)}])
+  assert.throws(()=>open({installation:{...installation,launch}}),/BROWSER_CONFIGURATION/);
+ assert.throws(()=>open({installation:{...installation,nodePath:'/opt/scripted/../untrusted-node'}}),/BROWSER_CONFIGURATION/);
+ assert.throws(()=>open({installation:{...installation,nodePath:'/opt/scripted/node\0bad'}}),/BROWSER_CONFIGURATION/);
  for(const egressProxy of [undefined,'','http://127.0.0.1','https://127.0.0.1:3128','socks5://127.0.0.1:1080','http://u:p@127.0.0.1:3128','http://127.0.0.1:3128/path','http://127.0.0.1:3128/','http://127.0.0.1:3128?x=1','http://proxy.example:3128','http://169.254.169.254:3128','http://localhost:3128'])
   assert.throws(()=>open({installation:{...installation,egressProxy}}),/BROWSER_CONFIGURATION/,String(egressProxy));
  assert.equal(open({installation:{...installation,egressProxy:'http://[::1]:3128'}}).enabled,true,'a literal IPv6 loopback listener is valid');

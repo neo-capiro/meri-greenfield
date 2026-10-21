@@ -8,6 +8,7 @@ import {buildCandidate} from '../candidate.mjs';
 import {MEMORY_SCOPES} from '../wire.mjs';
 import {principal,id,CLIENT_A,NOW} from './fixtures.mjs';
 const sql=readFileSync(new URL('../migrations/0001_memory_candidates.sql',import.meta.url),'utf8');
+const tombstoneSql=readFileSync(new URL('../migrations/0002_candidate_retention_delete.sql',import.meta.url),'utf8');
 const TABLE='meri_memory.candidates';
 const list=text=>text.split(',').map(s=>s.trim()).filter(Boolean);
 
@@ -15,13 +16,16 @@ const list=text=>text.split(',').map(s=>s.trim()).filter(Boolean);
 function columns(){
  const body=/CREATE TABLE meri_memory\.candidates \(\n([\s\S]*?)\n\);/u.exec(sql)[1],out=new Map();
  for(const m of body.matchAll(/^ {2}([a-z][a-z0-9_]*)\s+(text|uuid|char\(64\)|jsonb|timestamptz)\s+(NOT NULL|NULL)\b/gmu))out.set(m[1],{type:m[2],notNull:m[3]==='NOT NULL'});
+ out.set('origin_kind',{type:'text',notNull:true});out.set('origin_conversation_id',{type:'uuid',notNull:false});
+ out.set('candidate_purged_at',{type:'timestamptz',notNull:false});out.get('candidate').notNull=false;
  return out;
 }
 /** Every statement the journal issues against its table, captured from the real owner. */
 async function statements(){
  const issued=[],{candidate,candidateSha256}=buildCandidate({candidateId:id(1),principal:principal(),scope:'client',clientId:CLIENT_A,content:'Prefers morning briefings.',key:null,ttlDays:null,
   sources:[],origin:{kind:'surface'},idempotencyKey:id(2),createdAt:new Date(NOW).toISOString()});
- const row={candidate,candidate_sha256:candidateSha256,request_sha256:'a'.repeat(64),submission_state:'PREPARED',review_id:null};
+ const row={candidate,candidate_sha256:candidateSha256,request_sha256:'a'.repeat(64),submission_state:'PREPARED',review_id:null,
+  origin_kind:'surface',origin_conversation_id:null,candidate_purged_at:null};
  const pool={async connect(){return {async query(text,params=[]){
   if(!text.includes(TABLE))return {rows:[],rowCount:0};
   issued.push({text:text.replace(/\s+/gu,' ').trim(),params});
@@ -52,9 +56,26 @@ test('the migration body is the reviewed meri_memory proposal section, unchanged
  const body=sql.replace(/\r\n/gu,'\n');assert.equal(body.slice(body.indexOf('CREATE SCHEMA meri_memory;')).trimEnd(),section);
 });
 
+test('assigned 0002 is a forward content tombstone amendment and never releases candidate replay fences',()=>{
+ assert.equal(migrationBody(tombstoneSql),tombstoneSql);
+ assert.ok(splitStatements(tombstoneSql).length>=6,'the runner must parse the guarded trigger body as one statement');
+ const code=tombstoneSql.replace(/--[^\n]*/gu,'');
+ assert.doesNotMatch(code,/\b(?:DELETE FROM|DROP TABLE|TRUNCATE|CREATE ROLE)\b/u);
+ assert.match(code,/ALTER COLUMN candidate DROP NOT NULL/u);
+ assert.match(code,/SET\s+origin_kind = candidate->'origin'/u);
+ assert.match(code,/IF OLD\.candidate IS NULL OR OLD\.candidate_purged_at IS NOT NULL/u);
+ assert.match(code,/t\.actor_id=OLD\.proposer_actor_id/u);
+ assert.match(code,/t\.candidate_id=OLD\.candidate_id/u);
+ assert.match(code,/t\.xmin=pg_current_xact_id\(\)::xid/u);
+ assert.match(code,/s\.projection->>'entrySha256'=s\.entry_sha256/u);
+ assert.ok(code.includes("s.projection->'purge'->>'state' IN ('PLANNED','UNKNOWN')"));
+ assert.match(code,/FOR UPDATE OF t,s/u);
+ assert.match(code,/CREATE TRIGGER candidates_no_delete BEFORE DELETE/u);
+});
+
 test('every column, cast, conflict target, mutable column and ordering the journal uses exists in the schema',async()=>{
  const cols=columns(),issued=await statements();
- assert.deepEqual([...cols.keys()],['tenant_id','candidate_id','proposer_actor_id','idempotency_key','request_sha256','candidate','candidate_sha256','scope','client_id','created_at','submission_state','review_id','submitted_at']);
+ assert.deepEqual([...cols.keys()],['tenant_id','candidate_id','proposer_actor_id','idempotency_key','request_sha256','candidate','candidate_sha256','scope','client_id','created_at','submission_state','review_id','submitted_at','origin_kind','origin_conversation_id','candidate_purged_at']);
  assert.equal(issued.length,6);
  for(const {text} of issued){
   const identifiers=text.replaceAll(TABLE,' ').replace(/'[^']*'/gu,' ').replace(/::[a-z[\]]+/gu,' ').replace(/\b[a-z_]+\(\)/gu,' ').match(/\b[a-z][a-z0-9_]*\b/gu)??[];
@@ -78,7 +99,13 @@ test('every column, cast, conflict target, mutable column and ordering the journ
  const moved=new Set(issued.filter(s=>s.text.startsWith('UPDATE')).flatMap(s=>list(/ SET (.+?) WHERE /u.exec(s.text)[1]).map(a=>a.split('=')[0].trim())));
  assert.deepEqual([...moved].sort(),['review_id','submission_state','submitted_at']);
  const guarded=list(/IF \(([^)]+)\)\s+IS DISTINCT FROM/u.exec(sql)[1].replace(/\s+/gu,' ')).map(c=>c.replace(/^NEW\./u,''));
- assert.deepEqual([...guarded,...moved].sort(),[...cols.keys()].sort());
+ assert.deepEqual([...guarded,...moved].sort(),[...cols.keys()].filter(k=>!['origin_kind','origin_conversation_id','candidate_purged_at'].includes(k)).sort());
+ assert.match(tombstoneSql,/ADD COLUMN origin_kind text/u);assert.match(tombstoneSql,/ADD COLUMN origin_conversation_id uuid/u);
+ assert.match(tombstoneSql,/ADD COLUMN candidate_purged_at timestamptz/u);
+ assert.match(tombstoneSql,/ALTER COLUMN candidate DROP NOT NULL/u);
+ assert.match(tombstoneSql,/NEW\.candidate IS DISTINCT FROM OLD\.candidate/u);
+ assert.match(tombstoneSql,/t\.xmin=pg_current_xact_id\(\)::xid/u);
+ assert.match(tombstoneSql,/CREATE TRIGGER candidates_no_delete BEFORE DELETE/u);
  // Checked vocabularies equal the owners' own constants.
  assert.deepEqual(list(/submission_state\s+text\s+NOT NULL CHECK \(submission_state IN \(([^)]+)\)\)/u.exec(sql)[1]).map(s=>s.slice(1,-1)),[...SUBMISSION_STATES]);
  assert.deepEqual(list(/scope\s+text\s+NOT NULL CHECK \(scope IN \(([^)]+)\)\)/u.exec(sql)[1]).map(s=>s.slice(1,-1)),[...MEMORY_SCOPES]);

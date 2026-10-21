@@ -1,0 +1,29 @@
+# Missed qualification source recovery, 21 October 2026
+
+Main baseline: `3c56c3e981ba868a2af103c4cae9f65a0d47458d` (current published main at audit start). Supplemental receiving base: existing `fable/pr190-on-main-20261021` at `be566bca526f9eb6814c82f0e4de39b449c6162b`, which already incorporates PR190 and that main baseline.
+
+The human requested complete source consolidation, then explicitly retained final merges and narrowed the work to gaps not already covered by existing consolidation branches or active owners. This supplemental branch recovers the remaining compatible qualification source; it is not another full runtime consolidation, a deployment, or a live database operation.
+
+## Implementation outline
+
+- Recover the three trusted invocation PostgreSQL qualification files from PR27 `7b2167834e624825d07a16950211c448a841865b`.
+- Reuse the current canonical direct authenticated loopback admission helper, trusted invocation owner, durable gateway and budget implementation. Do not revive PR25's prepared-container trust profile or introduce a second admission path.
+- Keep all twelve native assertions: trusted production and normalization, four post-COMMIT acknowledgement-loss phases, independent-pool contention and producer identity, read-only reconciliation, request/context substitution refusal, disabled execution, forged completion refusal, and preservation of UNKNOWN accounting.
+- Keep explicit admission and migration-0003 hash checks ahead of application imports or pool construction. The native entry remains outside ordinary test discovery and performs no migration/schema creation.
+- Adapt only the offline admission fixture to the current direct-loopback password profile and portable file URL handling. Verify the offline suite and parse all recovered modules. Actual PostgreSQL contention, narrow-role and image qualification remain unrun; this task does not allocate an engine or apply migrations.
+
+## Preserved ownership and holds
+
+This initial qualification outline was expanded by the final [source coverage receipt](SOURCE-COVERAGE-20261021.md). PR189 reads and B1/B2 contracts now compose above the existing PR190 receiver. Latest memory content-tombstone and unmounted M8 host source are also received; their canonical bindings, migrations and native qualification remain held. Configuration adoption needs the documented c10 descriptor reconciliation. P2 proof reuse and current c10 chat lanes remain with their active owners. The Core-owned Planner continuation replaces the old Meri Planner loop under D7-1; the old loop is not restored.
+
+The current first-response and next-turn SDK configuration-directory repairs remain on the base. No established branch or PR is merged by this work.
+
+## Additive contract recovery
+
+The branch also receives the incremental changes above common PR190 `29379ab1f7be9a7bb98613b4b7e27e17dad9ccf5` from B1 PR191 `53bbe3da88aaf6b4c7048bb0a89c06decf00d5df` and B2 PR192 `8eab537a8c60bf086afb56b2ceb24b79f6260b6b`. These have no newer consolidation receiver. B1 supplies the source of the exact frozen intents 0.1.0 browser contract already vendored by the frontend. B2 supplies an additive six-format inspect/download contract; the coordinated frontend supplement consumes the same receiver module for both operations. Existing 0.1.10 package version and frozen distribution files remain unchanged.
+
+Responsibilities remain with canonical owners: intent routes/approval semantics feed B1, artifact format admission and MIME/preview metadata feed B2, and generators produce their browser distributions. The package manifest unions both additive exports, generators, public tests and typecheck inputs. No handler is enabled, no renderer is qualified, and the task.create-only approval executor is unchanged. Check the new generator provenance and public receiver/type tests; do not regenerate unrelated frozen contracts to conceal baseline drift.
+
+## Focused validation
+
+Node 24.10.0: B1/B2 public receiver tests plus recovered invocation admission tests passed 240/240, with no skips. Both new generators passed `--check`, preserving all eight donor distribution blobs exactly. The complete package strict public typecheck passed. The recovered admission suite plus current invocation owner/transaction suites passed 37/37, with no skips. Native PostgreSQL qualification was deliberately not executed. On Windows, esbuild's filesystem resolver required a read-only check outside the filesystem sandbox; the initial sandboxed check failed to resolve dependency paths, and the permitted rerun passed.

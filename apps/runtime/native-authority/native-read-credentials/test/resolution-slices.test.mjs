@@ -50,10 +50,11 @@ test('resolution delta state unfiltered stored votes preserve null/blank source 
 });
 
 for(const [family,id] of research){
- test(`resolution delta ${id}: current UUID client context joins the exact native grant and settles raw request bytes`,async()=>{
+ test(`resolution delta ${id}: current UUID client context retains original request proof and sends the trusted resolved client`,async()=>{
   const base=nativeFamilyCase(family,id),request={...base.arguments,clientId:` ${clientId} `},f=await wired(nativeFamilyCase(family,id,{request}));
   try{
-   const out=JSON.parse(await f.invoke());assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));assert.deepEqual(f.wire[0].body,request);assert.equal(f.stateOwner.secretProof.requestSha256,hash(request));
+   const out=JSON.parse(await f.invoke());assert.deepEqual(out.result,JSON.parse(JSON.stringify(f.page)));assert.deepEqual(f.wire[0].body,{...request,clientId});assert.equal(f.stateOwner.secretProof.requestSha256,hash(request));
+   assert.notEqual(f.stateOwner.secretProof.requestSha256,hash(f.wire[0].body));
    assert.deepEqual(f.stateOwner.secretProof.normalizationContext,f.normalizationContext);assert.deepEqual(f.normalizationContext.clientResolution,{reference:clientId,clientId});assert.equal([...f.state.reservations.values()][0].state,'SETTLED');
    if(family==='research-legal-news')assert.equal(f.normalizationContext.effectiveScope.clientId,clientId);else assert.equal(out.result.result.scope.clientId,clientId);
   }finally{f.scope.abort();}

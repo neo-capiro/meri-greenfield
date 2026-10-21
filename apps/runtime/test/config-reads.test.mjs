@@ -1,5 +1,23 @@
 import test from 'node:test';import assert from 'node:assert/strict';
+import {generateKeyPairSync} from 'node:crypto';
 import {validateConfiguration} from '../config.mjs';
+test('retained reads accept only explicit public Ed25519 verifier pins and exact recipient origins',async()=>{
+ const {candidateFixture}=await import('./prepared-candidate-fixture.mjs');
+ const publicKeyJwk=generateKeyPairSync('ed25519').publicKey.export({format:'jwk'});
+ const authority={issuerId:'synthetic-core/retained',keyId:'synthetic-key',publicKeyJwk,
+  recipients:{get_research_portfolio:'https://core.synthetic.invalid',get_research_portfolio_changes:'https://core.synthetic.invalid',get_florida_budget_project:'https://intel.synthetic.invalid'}};
+ const control=(retainedAuthority,enabled=true)=>({...candidateFixture().configuration,reads:{enabled,
+  ...(enabled?{serviceSecretFile:'/run/meri/core-secret'}:{}),retainedAuthority}});
+ assert.doesNotThrow(()=>validateConfiguration(control(authority),'control'));
+ for(const mutate of [v=>v.issuerId='',v=>v.keyId='key\nvalue',v=>v.publicKeyJwk.d='private-key',
+  v=>v.publicKeyJwk.crv='X25519',v=>v.publicKeyJwk.x='invalid',v=>v.recipients.get_research_portfolio_changes='https://other.synthetic.invalid',
+  v=>v.recipients.get_florida_budget_project='http://intel.synthetic.invalid',v=>v.recipients.get_florida_budget_project+='/',
+  v=>v.recipients.foreign_operation='https://core.synthetic.invalid',v=>delete v.recipients.get_florida_budget_project]){
+  const invalid=structuredClone(authority);mutate(invalid);
+  assert.throws(()=>validateConfiguration(control(invalid),'control'),{code:'READS_CONFIGURATION'});
+ }
+ assert.throws(()=>validateConfiguration(control(authority,false),'control'));
+});
 test('control admits a closed reads block: enabled needs an absolute service secret file and never takes a bearer file',async()=>{
  const {candidateFixture}=await import('./prepared-candidate-fixture.mjs'),control=reads=>({...candidateFixture().configuration,reads});
  for(const r of [{enabled:false},{enabled:true,serviceSecretFile:'/run/meri/core-tool-service-secret'},{enabled:true,serviceSecretFile:'/run/meri/a',readModeServiceSecretFile:'/run/meri/b',defaultCongress:119}])

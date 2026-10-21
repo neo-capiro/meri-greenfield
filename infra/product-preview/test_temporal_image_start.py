@@ -118,6 +118,7 @@ class TemporalStartTests(unittest.TestCase):
     def test_preflights_prove_idle_and_tag_absence_or_refuse(self):
         self.assertEqual(self.check("require_project_idle --profile p", STUB_LIST="empty"), "PROVEN")
         self.assertEqual(self.check("require_project_idle --profile p", STUB_LIST="ok", STUB_BATCH="complete"), "PROVEN")
+        self.assertNotIn("--sort-order", self.log.read_text())  # refused by AWS once the list pages
         for stub in (dict(STUB_LIST="fail"), dict(STUB_LIST="paged", STUB_BATCH="complete"),
                      dict(STUB_LIST="ok", STUB_BATCH="active"), dict(STUB_LIST="ok", STUB_BATCH="fail")):
             with self.subTest(**stub):

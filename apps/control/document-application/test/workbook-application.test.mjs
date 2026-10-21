@@ -49,7 +49,8 @@ test('only the exact canonical Excel descriptor is admitted, without arbitrary r
  for(const mutate of[d=>{d.operation.version='0.1.0';},d=>{d.requiredGrants=[];},d=>{d.sourceRequirements=[];},d=>{d.operation.id='create_excel_typo';}]){
   const d=descriptor('create_excel');mutate(d);assert.throws(()=>createDocumentApplication({...a.options,artifactOptions:{...a.options.artifactOptions,descriptor:d}}));
  }
- for(const id of['create_powerpoint','run_analysis'])assert.throws(()=>createDocumentApplication({...a.options,artifactOptions:{...a.options.artifactOptions,descriptor:descriptor(id)}}));
+ assert.doesNotThrow(()=>createDocumentApplication({...a.options,artifactOptions:{...a.options.artifactOptions,descriptor:descriptor('run_analysis')}}));
+ assert.doesNotThrow(()=>createDocumentApplication({...a.options,artifactOptions:{...a.options.artifactOptions,descriptor:descriptor('create_powerpoint')}}));
  assert.equal(a.f.stats().generations,0);
 });
 for(const operation of['create_word','create_excel'])test(`${operation} read cannot release an otherwise valid opposite-family stored version`,async t=>{

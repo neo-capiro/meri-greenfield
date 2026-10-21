@@ -18,7 +18,8 @@ const MEMORY=Object.freeze({id:'search_memory',version:'0.2.0'});
 const MEMORY_HELPER_PATH='/api/clio/tools/search_memory_eligibility';
 
 /** `getCredentials` for the exact signed source adapters. A missing Option B
- * delegation, task selection, or current Monday mapping refuses before source Fetch. */
+ * delegation or task selection refuses before source Fetch. The exact Core
+ * Monday receiver rechecks its current managed mapping before and after reading. */
 export function createRetainedReadCredentialRelay({task,nativeCredentials,getServiceSecret,now}){
  if(typeof now!=='function'||typeof getServiceSecret!=='function'||
    typeof nativeCredentials?.getNativeCredential!=='function'||
@@ -77,9 +78,8 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   const correlation=canonicalize({binding,subject,policyRevision,normalizationContext});
   if(typeof correlation!=='string'||Buffer.byteLength(correlation,'utf8')>8192||
     sha(correlation)!==p.correlationSha256)refuse('ACCESS_DENIED');
-  // No current managed-board-mapping producer is connected to this task owner.
-  // A token alone cannot prove the Monday board wall.
-  if(operation.id==='read_monday_client_boards')refuse('UNAVAILABLE');
+  // Monday's exact Core receiver owns current mapping checks before and after
+  // this body-bound read. Its canonical page exports no mapping authority receipt.
   if(typeof nativeCredentials.toolCredential!=='function')refuse('UNAVAILABLE');
   const signal=p.signal===undefined?runSignal:runSignal===undefined?p.signal:AbortSignal.any([p.signal,runSignal]);
   let serviceSecret;try{serviceSecret=await getServiceSecret();}catch{refuse('UNAVAILABLE');}

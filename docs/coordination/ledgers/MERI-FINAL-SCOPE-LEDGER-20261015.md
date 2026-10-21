@@ -201,14 +201,15 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Selected source adapter coverage | 74 complete + 3 partial + 5 absent = 82 |
-| Single meri_reads registry | 76 operations / 42 families |
-| Registry accounting | 74 selected source reads + 1 product-state read + 1 historical contract |
+| Selected source adapter coverage | 75 complete + 4 partial + 3 absent = 82 |
+| Single meri_reads registry | 81 operations / 45 families |
+| Registry accounting | 79 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Complete source adapters lacking general-conversation registration | 0 |
-| Partial source adapters withheld from SDK exposure | 3 |
-| Selected source reads lacking complete adapters | 8 (3 partial + 5 absent; 4 declared by skills; 4 without a skill declaration) |
+| Partial source adapters with a declared slice exposed | 4 |
+| Partial source adapters withheld from SDK exposure | 0 |
+| Selected source reads lacking complete adapters | 7 (4 partial + 3 absent; 4 declared by skills; 3 without a skill declaration) |
 | Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
@@ -224,7 +225,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
 | `action-items-complete` | `actions.query` |
 | `bill-text` | `read_bill_text`, `search_congress_bills` |
-| `business-development` | `get_business_development_context`, `get_business_development_recent_changes` |
+| `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
 | `client-documents` | `read_client_documents` |
 | `client-knowledge-memory` | `search_memory` |
 | `client-knowledge-monday` | `read_monday_client_boards` |
@@ -247,6 +248,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `meeting-source` | `meeting.list_upcoming_meetings`, `meeting.query_debriefs`, `meeting.read_client_meetings` |
 | `memory-proposals` | `memory.list_own_proposals` |
 | `operational-reads` | `query_action_items`, `query_tasks` |
+| `outreach-query` | `query_outreach` |
 | `pe-references` | `get_pe_bills`, `get_pe_contractors`, `get_pe_report_language` |
 | `program-elements` | `get_pe_budget_timeline`, `get_program_element`, `search_program_elements` |
 | `public-data` | `query_economic_data`, `search_federal_awards`, `search_federal_grants` |
@@ -255,7 +257,9 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `public-reports` | `search_cbo_cost_estimates`, `search_crs_reports`, `search_gao_reports` |
 | `public-web` | `scrape_web_page`, `search_public_web` |
 | `regulatory-dockets` | `query_regulatory_dockets` |
-| `research-legal-legislation` | `search_legislative_research` |
+| `research-legal-candidates` | `search_research_sources` |
+| `research-legal-legislation` | `get_legal_reference`, `search_legislative_research` |
+| `research-legal-news` | `search_legiwatch_news` |
 | `research-portfolio` | `get_research_portfolio`, `get_research_portfolio_changes` |
 | `research-portfolio-evidence` | `get_research_evidence` |
 | `state-legislation` | `get_state_legislator`, `search_state_bills` |
@@ -266,13 +270,14 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 
 Every complete source adapter already present is SDK-exposed.
 
-The following incomplete source adapters have restricted input/resource coverage or a pending native bridge. They remain outside the SDK registry and are included in the missing-complete inventory. Constructor or source-path presence does not establish complete operation coverage:
+The following incomplete source adapters have restricted input/resource coverage or a pending native bridge. They remain in the missing-complete inventory. Only the explicitly described and test-referenced slices are SDK-exposed. Constructor or source-path presence does not establish complete operation coverage:
 
-| Partial adapter family | Incomplete operations (not SDK-exposed) |
-| --- | --- |
-| `outreach-query` | `query_outreach` |
-| `research-legal-legislation` | `get_legal_reference` |
-| `research-legal-news` | `search_legiwatch_news` |
+| Partial operation | State | Exposed slice | Evidence and covering tests |
+| --- | --- | --- | --- |
+| `search_legiwatch_news` | partial, slice exposed | source view plus explicit-year personnel only; implicit monitor/window context is refused. | `docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25`; `docs/integration/MERI-READ-GAPS-20261019.md:23-25`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary search_legiwatch_news: current synthetic gates discover and invoke the canonical signed read without a skill`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary search_legiwatch_news: revocation after discovery prevents dispatch and accepted receipts`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary search_legiwatch_news: source-release revocation withholds bytes and preserves UNKNOWN` |
+| `get_legal_reference` | partial, slice exposed | Parser-independent rules, versions and explicit-ID references only; no citation parsing. | `docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25`; `docs/integration/MERI-READ-GAPS-20261019.md:23-25`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_legal_reference: current synthetic gates discover and invoke the canonical signed read without a skill`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_legal_reference: revocation after discovery prevents dispatch and accepted receipts`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_legal_reference: source-release revocation withholds bytes and preserves UNKNOWN` |
+| `query_outreach` | partial, slice exposed | Campaign list only; outreachId detail and linked-resource expansion are refused. | `docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25`; `docs/integration/MERI-READ-GAPS-20261019.md:23-25`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary query_outreach: current synthetic gates discover and invoke the canonical signed read without a skill`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary query_outreach: revocation after discovery prevents dispatch and accepted receipts`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary query_outreach: source-release revocation withholds bytes and preserves UNKNOWN` |
+| `get_business_development_evidence` | partial, slice exposed | Client subjects only; facility subjects are refused. | `docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25`; `docs/integration/MERI-READ-GAPS-20261019.md:23-25`; `docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:26`; `docs/integration/MERI-READ-GAPS-20261019.md:26`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_business_development_evidence: current synthetic gates discover and invoke the canonical signed read without a skill`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_business_development_evidence: revocation after discovery prevents dispatch and accepted receipts`; `apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_business_development_evidence: source-release revocation withholds bytes and preserves UNKNOWN` |
 
 The finite native families listed above retain their receiving-contract truth limits and require current task, tenant/user and native credentials. Research portfolio, portfolio changes and Florida budget project reads remain exposed through their existing retained-context path. These source paths are not qualified or live. The remaining selected source reads lack complete adapters; producer mapping or a restricted request branch alone does not complete them. Their exact unresolved families and operations are:
 
@@ -281,7 +286,6 @@ The finite native families listed above retain their receiving-contract truth li
 | `business-development` | `get_business_development_evidence` |
 | `certification-status` | `get_certification_status` |
 | `outreach-query` | `query_outreach` |
-| `research-legal-candidates` | `search_research_sources` |
 | `research-legal-legislation` | `get_legal_reference` |
 | `research-legal-news` | `search_legiwatch_news` |
 | `rule-status` | `get_state_rule_status` |

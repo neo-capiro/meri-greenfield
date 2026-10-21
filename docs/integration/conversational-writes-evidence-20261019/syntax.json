@@ -1,0 +1,335 @@
+{
+  "source": "927537b76a6be3f09866d9dda0a3b9f129e70b0e",
+  "files": [
+    {
+      "path": "apps/artifacts/postgres-analysis.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/artifacts/recovery.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/artifacts/test/analysis-product-namespace.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/action-host/local-integration/ports.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/action-host/session/http.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/action-host/session/native-credential-relay.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/action-host/session/owner.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/artifact-file-kind.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/command-kind.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/memory-kind.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/memory-owner.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/artifact-file-kind.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/command-owner.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/document-application/format-admission.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/document-application/test/preview-http.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/document-application/test/workbook-application.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/analysis-preparer.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/artifact-draft-result.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/attachment-filing-preparation.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/attachment-filing-services.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/command-preparer.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/document-preparer.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/memory-preparer.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/mount.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/result-release.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/analysis-preparer.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-execution-fixture.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-execution.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-fixture.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/attachment-filing-preparation.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/document-preparer-powerpoint.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/document-preparer.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/memory-fixture.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/memory-preparer.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/control/intents/test/prepared-schedule-reader.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/authority-composition.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/intent-binding.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/intent-preparers.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/run-options.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/session-binding.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/test/document-owners.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/test/download-links-redaction.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/test/fixture.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/artifacts/test/intent-preparers.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/cli.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/native-authority/current-authority-adapters.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/native-authority/execution-composition.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/native-authority/test/artifact-draft-authority.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/native-authority/test/execution-composition.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/product-ports/documents.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/runtime/test/product-mount.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/catalog.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/prepared.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/results.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/server.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/artifact-intents.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/catalog.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/intents.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "apps/worker/conversation/intents/test/options.test.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "exit": 0,
+      "diagnostics": ""
+    }
+  ]
+}

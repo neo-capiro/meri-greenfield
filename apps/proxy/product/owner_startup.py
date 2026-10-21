@@ -64,8 +64,8 @@ class ProductOwnerStartup:
 
     async def _placement(self, capability, read_id, started, deadline):
         step="carrier";cutoff=deadline;lock=self.state[3]["admission"]
-        try:
-            with diagnostics.phase("placement"):
+        with diagnostics.phase("placement"):
+            try:
                 # Waiting sends nothing (OwnerCarrierBusy on expiry); the exchange clock starts with the carrier held.
                 await acquire_owner_carrier(lock,min(OWNER_CARRIER_WAIT_MS,deadline-self.now_ms())/1000)
                 try:
@@ -95,9 +95,9 @@ class ProductOwnerStartup:
                         return issued,frame[5],cutoff
                 finally:
                     lock.release()
-        except BaseException as error:
-            diagnostics.refused("placement",step,error,deadline_ms=cutoff,now_ms=self.now_ms)
-            raise
+            except BaseException as error:
+                diagnostics.refused("placement",step,error,deadline_ms=cutoff,now_ms=self.now_ms)
+                raise
 
     def resolve_bearer_sha256(self, capability):
         if (threading.get_ident()==self.loop_thread or self.loop.is_closed() or not self.loop.is_running()

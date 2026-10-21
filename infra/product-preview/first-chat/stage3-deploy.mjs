@@ -6,12 +6,13 @@
  *   stage3-input      latest task-definition ARNs (TSV) -> stage3.json for render-material.mjs --stage3
  *   core-values       Core membership response + bearer path -> core.json for render-material.mjs --core
  *   tenant-budget     core.json -> ECS RunTask overrides that insert the tenant_budgets row as meri_product_migrator
- *   upload-plan       rendered directory + a new version label -> the exact PutSecretValue commands (fixed idempotency tokens)
+ *   upload-plan       rendered directory + a new version label + the secrets' label readback -> the exact PutSecretValue
+ *                     commands (fixed idempotency tokens); refuses a label in use or a secret at its version/label capacity
  *   bindings          rendered directory + secret VersionIds + live app template -> the three bindings, templates and deploy plan
  *   verify-outputs    deployed stack outputs -> refuses unless every task definition ARN equals the rendered one
  *
  * Exit 0 done; 2 refused (one STAGE3_* line on stderr). Importing this module performs no IO. */
-import {readFile,writeFile,mkdir,lstat} from 'node:fs/promises';
+import {readFile,writeFile,mkdir,lstat,readdir} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {resolve,join,isAbsolute,relative} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -106,16 +107,55 @@ export function tenantBudgetOverrides(core,{containerName}){
 }
 
 const RESERVED_STAGES=new Set(['AWSCURRENT','AWSPREVIOUS','AWSPENDING']);
+/** Secrets Manager limits: at most 20 staging labels across all versions of a secret, and versions beyond 100 that carry no label are
+ * removed. Every release keeps its label, so both bound how many releases a secret can hold. */
+export const SECRET_LIMITS=Object.freeze({stagingLabels:20,versions:100});
+function labelsFromVersions(versions){
+ if(!Array.isArray(versions))fail('secret label readback must contain version records');
+ const ids=new Set(),labels=new Set();
+ for(const version of versions){
+  if(!version||typeof version!=='object'||Array.isArray(version)||typeof version.VersionId!=='string'||!version.VersionId||ids.has(version.VersionId))
+   fail('secret label readback contains an invalid or duplicate version');
+  ids.add(version.VersionId);
+  // An unlabelled, deprecated version legitimately omits VersionStages, but still counts toward capacity.
+  const stages=version.VersionStages===undefined?[]:version.VersionStages;
+  if(!Array.isArray(stages)||stages.some(stage=>typeof stage!=='string'||!stage||stage.length>256))
+   fail('secret label readback contains invalid version stages');
+  for(const stage of stages){if(labels.has(stage))fail('secret label readback repeats a staging label');labels.add(stage);}
+ }
+ return [...labels].sort();
+}
+/** `list-secret-version-ids --include-deprecated` outputs, one per secret -> {ARN: Versions}. */
+export function secretLabelReadback(outputs){
+ if(!Array.isArray(outputs))fail('each secret label readback is one list-secret-version-ids output per secret');
+ const byArn={};
+ for(const output of outputs){
+  if(typeof output?.ARN!=='string'||!output.ARN.startsWith('arn:')||!Array.isArray(output.Versions)||Object.hasOwn(byArn,output.ARN))fail('each secret label readback is one list-secret-version-ids output per secret');
+  // A partial page can conceal a reused label or a full secret. Only the complete CLI readback is admissible.
+  if(output.NextToken!==undefined)fail('secret label readback is incomplete: collect every page');
+  labelsFromVersions(output.Versions);
+  byArn[output.ARN]=output.Versions;
+ }
+ return byArn;
+}
 /** One new secret version per role, staged under a fresh label only: AWSCURRENT and every earlier label stay where they are (task
  * definitions reference exact VersionIds). Each role gets a fixed idempotency token, so a retry after an uncertain outcome sends the
- * same token with the same bytes and can never create a second version. Bundles are referenced by path; nothing here reads them. */
-export function uploadPlan({deployment,renderedDirectory,label,newToken=randomUUID}){
+ * same token with the same bytes and can never create a second version. Bundles are referenced by path; nothing here reads them.
+ * The before-upload label readback must show the label unused (PutSecretValue would otherwise silently move it off an older version)
+ * and room for one more version and one more label. */
+export function uploadPlan({deployment,renderedDirectory,label,secretLabels,newToken=randomUUID}){
  if(typeof label!=='string'||!/^[A-Za-z0-9_]{1,64}$/u.test(label)||RESERVED_STAGES.has(label))fail('--label must be a new custom staging label');
  return ROLES.map(role=>{
   const secretArn=deployment?.secrets?.[MATERIAL_SECRET_KEYS[role]];
   if(typeof secretArn!=='string'||!/^arn:aws:secretsmanager:us-east-1:967807252336:secret:meri\/preview\/[a-z]+\/material-[A-Za-z0-9]{6}$/u.test(secretArn))fail(`deployment.secrets.${MATERIAL_SECRET_KEYS[role]}`);
+  const versions=secretLabels?.[secretArn];
+  if(!Array.isArray(versions))fail(`no label readback for ${role} (${secretArn})`);
+  const labelsBefore=labelsFromVersions(versions);
+  if(labelsBefore.includes(label))fail(`label ${label} is already on a version of ${role}: choose a new label`);
+  if(versions.length>=SECRET_LIMITS.versions)fail(`${role} already holds ${versions.length} versions`);
+  if(labelsBefore.length>=SECRET_LIMITS.stagingLabels)fail(`${role} is at the ${SECRET_LIMITS.stagingLabels} staging-label quota: retire an unpinned label first`);
   const bundleFile=join(renderedDirectory,role,'bundle.json'),clientRequestToken=newToken();
-  return {role,secretArn,bundleFile,clientRequestToken,
+  return {role,secretArn,bundleFile,clientRequestToken,labelsBefore,
    command:['aws','secretsmanager','put-secret-value','--region','us-east-1','--secret-id',secretArn,'--client-request-token',clientRequestToken,
     '--version-stages',label,'--secret-string',`file://${bundleFile}`,'--query','VersionId','--output','text'],
    readback:['aws','secretsmanager','list-secret-version-ids','--region','us-east-1','--secret-id',secretArn,'--include-deprecated','--max-results','100']};
@@ -172,7 +212,8 @@ const USAGE=`Usage: node infra/product-preview/first-chat/stage3-deploy.mjs <com
   stage3-input   --deployment-inputs F --foundation-outputs F --latest latest.tsv --out stage3.json
   core-values    --membership membership.json --identity <bearer file> --frontend-origin URL [--client-id UUID] --out core.json
   tenant-budget  --core core.json --container <migrate container name> --out overrides.json
-  upload-plan    --deployment-inputs F --rendered DIR --label NEW_LABEL --out upload-plan.json
+  upload-plan    --deployment-inputs F --rendered DIR --label NEW_LABEL --secret-labels DIR --out upload-plan.json
+                 (DIR: one list-secret-version-ids --include-deprecated JSON output per material secret, read just before)
   bindings       --deployment-inputs F --foundation-outputs F --private-edge-outputs F --rendered DIR --secret-versions versions.tsv
                  --image-scans scans.json --live-app-template app.live.template.json --out NEW_DIR
   verify-outputs --bindings DIR --app F --model F --issuer F
@@ -206,10 +247,11 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
    out(JSON.stringify({status:'STAGE3_TENANT_BUDGET_OVERRIDES_WRITTEN',out:resolve(a.out),...TENANT_BUDGET})+'\n');return 0;
   }
   if(command==='upload-plan'){
-   need('deployment-inputs','rendered','label','out');
-   const rendered=resolve(a.rendered);
+   need('deployment-inputs','rendered','label','secret-labels','out');
+   const rendered=resolve(a.rendered),labels=resolve(a['secret-labels']);
    for(const role of ROLES)await lstat(join(rendered,role,'bundle.json'));
-   const plan=uploadPlan({deployment:await json(a['deployment-inputs']),renderedDirectory:rendered,label:a.label});
+   const readbacks=await Promise.all((await readdir(labels)).filter(name=>name.endsWith('.json')).sort().map(name=>json(join(labels,name))));
+   const plan=uploadPlan({deployment:await json(a['deployment-inputs']),renderedDirectory:rendered,label:a.label,secretLabels:secretLabelReadback(readbacks)});
    await writeNew(await outsideRepository(a.out),JSON.stringify({schemaVersion:1,label:a.label,roles:plan},null,1)+'\n');
    out(JSON.stringify({status:'STAGE3_UPLOAD_PLAN_WRITTEN',out:resolve(a.out),label:a.label,roles:plan.map(p=>p.role)})+'\n');return 0;
   }

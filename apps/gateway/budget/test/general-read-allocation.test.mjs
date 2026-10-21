@@ -23,7 +23,7 @@ const refused=(work,code)=>assert.throws(work,error=>error.code===code||error.me
 const evidence=id=>({id,...GENERAL_READ_TARIFF_ASSUMPTION_KEYS[id],coreSourceCommit:'a'.repeat(40),coreImageDigest:`sha256:${'b'.repeat(64)}`,configurationSha256:'e'.repeat(64)});
 const both=[evidence('rerankDisabled'),evidence('webSearchProviderDuckDuckGo')];
 
-test('the tariff table covers exactly the 76 registered reads with evidence; only read_client_documents is unpriced',()=>{
+test('the tariff table covers exactly the 81 registered reads with evidence; only read_client_documents is unpriced',()=>{
  assert.deepEqual(Object.keys(GENERAL_READ_TARIFFS).sort(),reads.map(op=>`${op.id}@${op.version}`).sort());
  for(const [key,t] of Object.entries(GENERAL_READ_TARIFFS)){assert.ok(t.evidence.length>20,key);assert.ok(t.chargeMicrousd===null||Number.isSafeInteger(t.chargeMicrousd)&&t.chargeMicrousd>=1,key);}
  assert.deepEqual(Object.entries(GENERAL_READ_TARIFFS).filter(([,t])=>t.chargeMicrousd===null).map(([k])=>k),['read_client_documents@0.2.0']);
@@ -40,7 +40,7 @@ test('the base allocation takes the run caps as configured (default 20 tool call
  assert.equal(a.manifest.budgets.maxRecoveryAttempts,0);assert.equal(a.manifest.budgets.maxCostMicroUSD,2000000);assert.equal(Object.hasOwn(a.manifest,'tariffAssumptions'),false);
  assert.doesNotThrow(()=>allocation(JSON.stringify(a)));
  assert.deepEqual(excluded.map(op=>op.id).sort(),['read_client_documents','search_capiro_data','search_committee_hearings','search_memory','search_public_web']);
- assert.equal(a.manifest.allowedOperations.length,71);
+ assert.equal(a.manifest.allowedOperations.length,76);
  // Per-tenant or per-run configuration (D016-A 3) moves the run cap; the base follows it in both directions.
  assert.equal(compose({runBudgets:{...preview,maxToolCalls:1}}).allocation.manifest.budgets.maxToolCalls,1);
  assert.equal(compose({runBudgets:{...preview,maxToolCalls:100}}).allocation.manifest.budgets.maxToolCalls,100);
@@ -57,7 +57,7 @@ test('the read-bytes profile is validated and configurable within the structural
 test('the allocation.json tariff proposal is exactly the tariff module, and its entries compose a valid schedule',()=>{
  const file=JSON.parse(readFileSync(new URL('../../../../docs/coordination/proposals/general-reads/allocation-read-tariffs.proposal.json',import.meta.url),'utf8'));
  const proposal=generalReadTariffProposal();assert.deepEqual(file,JSON.parse(JSON.stringify(proposal)));
- assert.equal(proposal.operations.length,71);assert.equal(proposal.assumptionGated.length,4);assert.deepEqual(proposal.excluded.map(e=>e.operation.id),['read_client_documents']);
+ assert.equal(proposal.operations.length,76);assert.equal(proposal.assumptionGated.length,4);assert.deepEqual(proposal.excluded.map(e=>e.operation.id),['read_client_documents']);
  assert.deepEqual(Object.keys(proposal.assumptionEvidenceRequired).sort(),['rerankDisabled','webSearchProviderDuckDuckGo']);
  for(const entry of proposal.operations)assert.deepEqual(Object.keys(entry),['operation','chargeMicrousd']);
  const full=compose({assumptions:both}).allocation.schedule.operations;
@@ -67,7 +67,7 @@ test('the allocation.json tariff proposal is exactly the tariff module, and its 
 
 test('assumption-gated reads are priced only with evidence of the measured Core setting, which travels in the allocation',()=>{
  const {allocation:a,excluded}=compose({assumptions:both});
- assert.deepEqual(excluded.map(op=>op.id),['read_client_documents']);assert.equal(a.manifest.allowedOperations.length,75);
+ assert.deepEqual(excluded.map(op=>op.id),['read_client_documents']);assert.equal(a.manifest.allowedOperations.length,80);
  assert.deepEqual(a.manifest.tariffAssumptions.map(e=>e.id),['rerankDisabled','webSearchProviderDuckDuckGo']);assert.doesNotThrow(()=>allocation(JSON.stringify(a)));
  assert.equal(generalReadTariff({id:'read_client_documents',version:'0.2.0'},['rerankDisabled','webSearchProviderDuckDuckGo']),null);
  // Only the evidence an allocated tariff needs is carried.
@@ -157,7 +157,7 @@ const sourceTextOnlyPricing={mode:DOCUMENT_TEXT_ONLY_MODE,route:DOCUMENT_TEXT_ON
 
 test('document text-only allocation requires pinned no-provider route evidence and its own manifest revision',()=>{
  const {allocation:a,excluded}=compose({documentPricing:sourceTextOnlyPricing,assumptions:both});
- assert.deepEqual(excluded,[]);assert.equal(a.manifest.allowedOperations.length,76);
+ assert.deepEqual(excluded,[]);assert.equal(a.manifest.allowedOperations.length,81);
  assert.equal(a.manifest.profileVersion,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION);
  assert.deepEqual(a.manifest.documentPricing,sourceTextOnlyPricing);
  assert.equal(a.schedule.operations.find(item=>item.operation.id==='read_client_documents').chargeMicrousd,1);

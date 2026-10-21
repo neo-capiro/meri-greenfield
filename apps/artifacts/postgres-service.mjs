@@ -42,7 +42,7 @@ export function createPostgresArtifactService(options){
   // reject before the inner service catches cancellation; do not lose effect identity.
   const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity,namespace,
     createExecutor:ports=>({async execute(raw,credential,signal){
-      const call=input(raw),requestSha256=v.hash(intent(call)),document=['create_word','create_excel'].includes(call.request.operation);
+      const call=input(raw),requestSha256=v.hash(intent(call)),document=['create_word','create_excel','create_powerpoint','run_analysis'].includes(call.request.operation);
       // Bookkeeping only; all artifact access below still requires current authority.
       const initial=document?await ports.budget.observe({signal}):null;
       const durableVersionId=document?documentInvocationVersion(initial):undefined;

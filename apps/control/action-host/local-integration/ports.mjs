@@ -1,9 +1,11 @@
 /** Explicit synthetic policy/source owner, never native authentication or source truth. */
 import {createHash} from 'node:crypto';
+import canonicalize from 'canonicalize';
 import {canonicalSha256,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {createCommandAuthority} from '../../../gateway/index.mjs';
 import {createCommandHttpSource} from '../../commands/source-http.mjs';
 import {data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {fixtureSignedActionReceipt} from '../../../gateway/local-action/fixture-gateway.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 export function createPorts(s){
  const {active,now,newId,binding,clientId,policy,scopes,state,deadlineMs,claims,descriptor}=s;
@@ -17,8 +19,23 @@ export function createPorts(s){
  }});
  const credentials=async({binding:value,signal})=>{active(signal);if(!same(value,binding))throw Error('LOCAL_SOURCE_REFUSED');return {binding,bearerToken:'synthetic-bearer',serviceSecret:'synthetic-service',expiresAtMs:deadlineMs};};
  const commandSource=createCommandHttpSource({origin:'https://local-application.invalid',getCredentials:credentials,now,maxResponseBytes:65536,fetchImpl:async(url,init)=>{active(init.signal);if(url!=='https://local-application.invalid/api/clio/tools/create_task'||init.method!=='POST')throw Error('LOCAL_SOURCE_REFUSED');const args=JSON.parse(init.body);state.taskEffects++;return new Response(JSON.stringify({tool:'create_task',generatedAt:new Date(now()).toISOString(),created:true,task:{id:newId(),title:args.title,status:'todo',dueDate:args.dueDate??null,clientId:args.clientId,createdAt:new Date(now()).toISOString()}}),{headers:{'content-type':'application/json'}});}});
- const actionId=newId(),sourceVersion=new Date(now()).toISOString();
- const source={origin:'https://local-application.invalid',getCredentials:credentials,fetchImpl:async(url,init)=>{active(init.signal);if(url!=='https://local-application.invalid/api/clio/tools/query_action_items'||init.method!=='POST')throw Error('LOCAL_SOURCE_REFUSED');const raw=JSON.parse(init.body);if(raw.clientId!==clientId||raw.cursor)throw Error('LOCAL_SOURCE_REFUSED');state.sourceReads++;
+ const actionId=newId(),sourceVersion=new Date(now()).toISOString();let readPins;
+ const source={origin:'https://local-application.invalid',getCredentials:async call=>{
+  active(call.signal);await s.identity.authorityPorts.verifyCapability(s.read.credential,{signal:call.signal});
+  if(!same(call.operation,{id:'actions.query',version:'0.2.0'})||!same(call.binding,binding)||
+   !same(call.subject.scopes,scopes)||call.policyRevision!==policy||call.input.selection.clientId!==clientId||call.metadata!==null||
+   call.requestSha256!==canonicalSha256({input:call.input,metadata:null})||
+   call.target?.method!=='POST'||call.target.path!=='/api/clio/tools/actions.query')throw Error('LOCAL_SOURCE_REFUSED');
+  readPins=call;return fixtureSignedActionReceipt(call,{bearerToken:'synthetic-bearer',serviceSecret:'synthetic-service',expiresAtMs:deadlineMs});
+ },fetchImpl:async(url,init)=>{active(init.signal);await s.identity.authorityPorts.verifyCapability(s.read.credential,{signal:init.signal});
+  if(url!=='https://local-application.invalid/api/clio/tools/actions.query'||init.method!=='POST'||
+   init.headers.authorization!=='CapiroMeriRead synthetic-bearer'||init.headers['x-internal-service-secret']!=='synthetic-service'||
+   !readPins||readPins.target.bodySha256!==createHash('sha256').update(init.body,'utf8').digest('hex')||
+   init.body!==JSON.stringify({input:readPins.input,metadata:readPins.metadata}))throw Error('LOCAL_SOURCE_REFUSED');
+  const correlation=Buffer.from(init.headers['x-meri-read-correlation'],'base64url').toString('utf8');
+  if(correlation!==canonicalize({binding:readPins.binding,subject:readPins.subject,policyRevision:readPins.policyRevision,normalizationContext:null})||
+   readPins.correlationSha256!==createHash('sha256').update(correlation,'utf8').digest('hex'))throw Error('LOCAL_SOURCE_REFUSED');
+  const protocol=JSON.parse(init.body),raw=protocol.input.selection;if(protocol.metadata!==null||raw.clientId!==clientId||protocol.input.cursor!==null)throw Error('LOCAL_SOURCE_REFUSED');state.sourceReads++;
   const row={id:actionId,districtKey:null,clientId,clientName:'Synthetic client',peCode:null,programId:null,deltaId:null,actionType:'protect_funding',issueTitle:'Review synthetic recommendation',whatChanged:'Synthetic change',whyItMatters:'Local source test',recommendedAction:'Review synthetic recommendation',targetAudience:[],suggestedArtifactType:null,deadline:null,deadlineSource:null,ownerUserId:null,priority:1,confidence:{},uncertainty:null,evidence:[],status:'new',dismissalReason:null,outcome:null,createdAt:sourceVersion,updatedAt:sourceVersion,title:'Review synthetic recommendation',body:'Review synthetic recommendation'};
   row.sourceProof={version:1,owner:'action_recommendation',sourceRecordId:actionId,currentClientId:clientId,sourceVersion,contentSha256:createHash('sha256').update(JSON.stringify(row)).digest('hex'),linkedSources:[]};Object.assign(row,{recordKind:'action_recommendation',recommendation:true,acceptedAsTask:false,nativeCompletion:{completed:false,evidence:null,establishesDeliveryOrAcceptance:false,note:'Synthetic recommendation only'}});
   return new Response(JSON.stringify({tool:'query_action_items',generatedAt:new Date(now()).toISOString(),clientId,total:1,returned:1,actions:[row],scope:{actionItemId:raw.actionItemId??null,status:raw.status??null,sort:raw.sort??'deadline',page:1,limit:raw.limit??20,cursorApplied:false},coverage:{sourceStatus:'healthy',sourceReason:null,complete:true,partial:false,paginationComplete:true,hasMore:false,nextCursor:null,totalIsExactForScope:true,absenceSupported:false,note:'Synthetic retained snapshot only'}}),{headers:{'content-type':'application/json'}});

@@ -21,9 +21,9 @@ function unknown(f){const [r]=f.state.reservations.values();assert.equal(r.state
 const execute=(f,suffix='source')=>f.client.execute({operation:f.operation,arguments:f.request,deliveryId:`installation:mode:${f.operation.id}:${suffix}`});
 function freshClient(f){const mounted=f.prepared();return createNativeReadsClient({origin:'https://native.synthetic.invalid',credential:f.tuple.taskCapability,binding:f.binding,approvedReads:f.tuple.approvedReads,fetchImpl:(url,init)=>mounted.application.handle(new Request(url,init)),now:f.now});}
 
-test('mode installation source checkpoint derives76eligible/42families and77canonical handlers with the legal sibling still held',()=>{
+test('mode installation source checkpoint derives81eligible/45families without qualifying those source handlers',()=>{
  const rows=installationReadOperations(),ids=[...new Set(rows.map(row=>row.family))],eligible=rows.map(row=>`${row.operation.id}@${row.operation.version}`),kernel=ids.flatMap(id=>familyOperations(id).map(op=>`${op.id}@${op.version}`));
- assert.equal(rows.length,76);assert.equal(ids.length,42);assert.equal(kernel.length,77);assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,44);assert.deepEqual(kernel.filter(key=>!eligible.includes(key)),['get_legal_reference@0.2.0']);
+ assert.equal(rows.length,81);assert.equal(ids.length,45);assert.equal(kernel.length,81);assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,45);assert.deepEqual(kernel.filter(key=>!eligible.includes(key)),[]);
 });
 
 for(const id of MODE_READ_OPERATIONS){

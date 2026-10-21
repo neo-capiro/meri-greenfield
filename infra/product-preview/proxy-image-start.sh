@@ -18,9 +18,11 @@ PROJECT=meri-greenfield-qualification-build
 require_project_idle() { # $@ = aws profile/region args
   # Every build of the project, not just the newest: the CLI paginates the full
   # list (no --max-items), then each chunk of <=100 IDs is read back and checked.
+  # No --sort-order: AWS refuses it with a nextToken, so it breaks past one page;
+  # order is irrelevant when every build is checked.
   # JSON goes to Python on stdin: a full batch read (hundreds of KB) exceeds argv limits.
   local listed chunks chunk builds
-  listed="$(aws "$@" codebuild list-builds-for-project --project-name "$PROJECT" --sort-order DESCENDING --output json)" || return 1
+  listed="$(aws "$@" codebuild list-builds-for-project --project-name "$PROJECT" --output json)" || return 1
   chunks="$(printf '%s' "$listed" | python3 -I -B -c 'import json,sys
 d=json.load(sys.stdin); ids=d.get("ids")
 assert type(ids) is list and all(type(i) is str and i and " " not in i for i in ids) and len(ids)==len(set(ids))

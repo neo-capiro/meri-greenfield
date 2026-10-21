@@ -197,6 +197,8 @@ node infra/product-preview/first-chat/render-material.mjs \
   --out "$W/rendered"
 ```
 
+`--runtime` must be the measured runtime values of the image being shipped. A new Node runtime image needs a fresh launch measurement first: see `infra/product-preview/launch-measurement/README.md`, then pass its verified output here.
+
 The output is `MERI_FIRST_CHAT_MATERIAL_RENDERED`. `$W/rendered/<role>/{config,bundle,expected}.json` and `summary.json` are written 0600, in a 0700 directory. `bundle.json` is **secret**.
 
 Validity:
@@ -205,14 +207,36 @@ Validity:
 
 ## 6. Stage each role bundle as a new exact secret version
 
-The task definitions reference exact VersionIds, so AWSCURRENT never moves. Each release stages its five versions under a **new custom label** (`FIRST_CHAT_<YYYYMMDD><letter>`; earlier labels stay on their versions). `upload-plan` writes the exact commands with one fixed idempotency token per role and never reads a bundle:
+The task definitions reference exact VersionIds, so AWSCURRENT never moves. Each release stages its five versions under a **new custom label** (`FIRST_CHAT_<YYYYMMDD><letter>`). Earlier labels stay on their versions.
+
+First, read each secret's labels just before the upload. `upload-plan` refuses the release in any of these cases:
+- the label is already on any version: `PutSecretValue` would silently move it off that version;
+- a secret already holds 100 versions;
+- a secret is at the 20-label quota.
+
+It then writes the exact commands, with one fixed idempotency token per role. Each role's entry records its `labelsBefore`. It never reads a bundle.
 
 ```bash
+mkdir "$W/secret-labels"
+for s in control worker issuer owner proxy; do
+  arn=$(node -e "const d=require(process.argv[1]);console.log(d.secrets[process.argv[2]+'/material'])" \
+    "$R/infra/product-preview/first-chat/deployment-inputs.json" "$s")
+  aws secretsmanager list-secret-version-ids --secret-id "$arn" --include-deprecated --max-results 100 > "$W/secret-labels/$s.json"
+done
 node "$R/$STAGE3" upload-plan --deployment-inputs "$R/infra/product-preview/first-chat/deployment-inputs.json" \
-  --rendered "$W/rendered" --label FIRST_CHAT_<YYYYMMDD><L> --out "$W/upload-plan.json"
+  --rendered "$W/rendered" --label FIRST_CHAT_<YYYYMMDD><L> --secret-labels "$W/secret-labels" --out "$W/upload-plan.json"
 ```
 
-Run each role's `command` once and append `role<TAB>VersionId` to `$W/secret-versions.tsv`, then check its `readback`: the new version carries only the label, and AWSCURRENT and earlier labels are unchanged. After an uncertain outcome, resend the **same** command (same token, same bytes); never generate a new token. Each secret holds at most 100 versions.
+Run each role's `command` once and append `role<TAB>VersionId` to `$W/secret-versions.tsv`. Then check its `readback`:
+- the new version carries only the new label;
+- every other label is exactly as listed in that role's `labelsBefore`;
+- AWSCURRENT has not moved.
+
+After an uncertain outcome, resend the **same** command, with the same token and the same bytes. Never generate a new token.
+
+**Capacity.** Secrets Manager attaches at most **20 staging labels** across all versions of a secret. Versions beyond **100** that carry no label are removed. Each release adds one permanent label. Each of the five secrets had 7 labels after release E (AWSCURRENT, AWSPREVIOUS, `FIRST_CHAT_20261019`, `…19B`, `…19C`, `…19D`, `…20E`; readback of 20 October). Release `FIRST_CHAT_20261020F` makes 8, which leaves room for 12 more releases.
+
+**Retirement rule.** Remove a release label only from a version that no ACTIVE or INACTIVE task-definition revision of its family still pins: check each revision's `valueFrom` `:::VersionId`. Never retire AWSCURRENT or AWSPREVIOUS. A version left with no label becomes deprecated and can be deleted once a secret passes 100 versions, so retire labels only from versions you will never redeploy. Retirement is an AWS write, so it needs its own approval; this runbook does not authorize it.
 
 | Role | Secret ARN (`arn:aws:secretsmanager:us-east-1:967807252336:secret:…`) |
 |---|---|
@@ -245,6 +269,8 @@ The templates are ready to update live stacks (`applyLiveServiceProfile` in `sta
 - Owner, proxy, control and worker stay at one task. The renderers' create-time `DesiredCount 0` would scale them to zero on update.
 - Control runs one task at a time: max 100 / min 0, with AZ rebalancing DISABLED, which ECS requires for max 100.
 - Control starts only after the runner task definition exists.
+
+This profile **supersedes** `build-update-compatible-v2.mjs`. That helper exists only on the historical `handoff/runner-diagnostic-release-20261020` branch, and releases C–E used it. Deploy the `bindings` templates directly. Applying the old helper on top is redundant, and it is no longer a supported step.
 
 `deploy-plan.json` lists the stacks in release order **model → issuer → app**, each with its `aws cloudformation deploy … --no-execute-changeset` command and its `wait stack-update-complete`. For each stack:
 

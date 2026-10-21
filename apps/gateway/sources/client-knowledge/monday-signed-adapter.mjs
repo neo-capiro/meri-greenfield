@@ -6,7 +6,6 @@ import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 import {cancelBody,responseBody,readJsonResponse} from '../json-response.mjs';
 import {assertPins,assertResult,frozenData,ownFields,readContext,requestPins} from './request-context.mjs';
-import {managedBoardMapping,assertMappedBoards} from './monday-mapping.mjs';
 
 const operationId='read_monday_client_boards';
 const path=`/api/clio/tools/${operationId}`;
@@ -53,7 +52,7 @@ export function createMondaySignedHttpAdapter(options) {
         target,correlationSha256,signal}));}));
       ownFields(credentials,['operation','argumentsSha256','metadata','normalizationContext','requestSha256','binding','subject',
         'policyRevision','sourceIds','invocationId','authorizationScheme','target','correlationSha256',
-        'bearerToken','serviceSecret','expiresAtMs','managedBoardMapping']);
+        'bearerToken','serviceSecret','expiresAtMs']);
       assertPins(credentials,pins);
       if(credentials.invocationId!==fields.invocationId||credentials.authorizationScheme!=='CapiroMeriRead'||
           !same(credentials.target,target)||credentials.correlationSha256!==correlationSha256||
@@ -62,7 +61,6 @@ export function createMondaySignedHttpAdapter(options) {
           ![credentials.bearerToken,credentials.serviceSecret].every(token=>typeof token==='string'&&
             token.length>0&&token.length<=8192&&/^[\x21-\x7e]+$/.test(token)))deny('ACCESS_DENIED');
       cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);active();
-      const mapping=managedBoardMapping(credentials.managedBoardMapping,context);
       const response=await lifetime.run(async signal=>{
         active();const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
           headers:{authorization:`CapiroMeriRead ${credentials.bearerToken}`,
@@ -71,10 +69,20 @@ export function createMondaySignedHttpAdapter(options) {
             'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')},body});
         acquired=result;try{active();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
       });
+      // The canonical signed Core receiver owns current managed mapping reads
+      // before and after retrieval. Its token reply has no mapping receipt.
+      // Do not fabricate one or accept a model-provided board as authority.
+      responseBody(response);
+      if([401,403].includes(response.status))deny('ACCESS_DENIED');
+      if([409,410,503].includes(response.status))deny('UNAVAILABLE');
+      if(response.status===429)deny('RESOURCE_LIMIT');
       const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
       const result=frozenData(await readJsonResponse(response,{lifetime:bounded,
         maxResponseBytes:Math.min(maxResponseBytes,context.authority.claims.budgets.maxOutputBytes)}));
-      active();assertResult(result,context);assertMappedBoards(result,mapping,context);active();return result;
+      active();assertResult(result,context);
+      for(const row of result.records)if(row.payload.clientId!==context.input.clientId||
+        row.payload.sourceActorUserId!==context.authority.binding.actorId)deny('INVALID_RESULT');
+      active();return result;
     }catch(error){throw safeFailure(error);}
     finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}lifetime?.close();}
   }

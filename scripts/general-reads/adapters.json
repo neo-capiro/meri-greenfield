@@ -32,9 +32,17 @@
       "path": "apps/gateway/sources/business-development",
       "family": "business-development",
       "declaredIn": ["apps/gateway/sources/business-development/handler.mjs", "apps/gateway/sources/business-development/request-context.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/general-reads/families/business-development.mjs"],
-      "operations": ["get_business_development_context", "get_business_development_recent_changes"],
-      "adapterChecks": ["complete context and recent-changes reads for an explicit Core conversation under a current canonical personal or closed one-client task authority", "personal authority requires nonempty coherent tenant/private-user scopes; native authorizeScope checks the current actor-owned active conversation and persisted prospect scope before basic domain reads", "client authority retains the exact native identity/context receipt, current visible one-client subject, revision/expiry vector and whole-output linked-client guard; no client-to-personal downgrade", "no broad conversation GET, new receipt, consumed-revision claim or stronger native snapshot guarantee; evidence/dossier operation remains absent"],
-      "subject": "current authorized personal actor with coherent tenant/private-user scopes or current closed one-client subject with its exact native conversation receipt; SDK exposure is limited to context and recent changes"
+      "operations": ["get_business_development_context", "get_business_development_recent_changes", "get_business_development_evidence"],
+      "adapterChecks": ["complete context and recent-changes reads for an explicit Core conversation under a current canonical personal or closed one-client task authority", "personal authority requires nonempty coherent tenant/private-user scopes; native authorizeScope checks the current actor-owned active conversation and persisted prospect scope before basic domain reads", "client authority retains the exact native identity/context receipt, current visible one-client subject, revision/expiry vector and whole-output linked-client guard; no client-to-personal downgrade", "no broad conversation GET, new receipt, consumed-revision claim or stronger native snapshot guarantee", "partial evidence read: canonical input {conversationId} under the current closed one-client subject only; facility subjects are refused, matching the registration's requiredClientOperations; a personal subject refuses before credentials; signed-only Core Option B admission (apps/gateway/sources/business-development/test/handler.test.mjs 'BD evidence: native stored producer adapter is ready but missing Core Option B admission releases nothing'); discover/invoke/revoke: apps/worker/conversation/reads/test/selected-continuation.test.mjs 'ordinary get_business_development_evidence: current synthetic gates discover and invoke the canonical signed read without a skill', 'ordinary get_business_development_evidence: revocation after discovery prevents dispatch and accepted receipts', 'ordinary get_business_development_evidence: source-release revocation withholds bytes and preserves UNKNOWN'"],
+      "subject": "current authorized personal actor with coherent tenant/private-user scopes or current closed one-client subject with its exact native conversation receipt; SDK exposure is context and recent changes, plus evidence for the current closed one-client subject",
+      "partialOperations": ["get_business_development_evidence"],
+      "exposedSlice": {
+        "get_business_development_evidence": {
+          "description": "Client subjects only; facility subjects are refused.",
+          "evidence": ["docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25", "docs/integration/MERI-READ-GAPS-20261019.md:23-25", "docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:26", "docs/integration/MERI-READ-GAPS-20261019.md:26"],
+          "tests": ["apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_business_development_evidence: current synthetic gates discover and invoke the canonical signed read without a skill", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_business_development_evidence: revocation after discovery prevents dispatch and accepted receipts", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_business_development_evidence: source-release revocation withholds bytes and preserves UNKNOWN"]
+        }
+      }
     },
     {
       "path": "apps/gateway/sources/outreach-query",
@@ -42,8 +50,15 @@
       "declaredIn": ["apps/gateway/sources/outreach-query/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/outreach-query/request-context.mjs", "apps/gateway/general-reads/families/outreach-query.mjs"],
       "operations": ["query_outreach"],
       "partialOperations": ["query_outreach"],
-      "adapterChecks": ["PARTIAL_INPUT: campaign list with an explicit UUID client only", "any outreachId key refuses before source; no owned-detail branch", "exact client subject, resource and current membership before HTTP; native stored recipient counts and closed scalar DTO preserved"],
-      "subject": "current authorized one-client subject; exact UUID client resolution; names, unscoped campaigns and owned detail remain outside SDK exposure"
+      "adapterChecks": ["PARTIAL_INPUT: campaign list with an explicit UUID client only", "any outreachId key refuses before source; no owned-detail branch", "exact client subject, resource and current membership before HTTP; native stored recipient counts and closed scalar DTO preserved", "SDK-registered as this slice only (PR189); discover/invoke/revoke: apps/worker/conversation/reads/test/selected-continuation.test.mjs 'ordinary query_outreach: current synthetic gates discover and invoke the canonical signed read without a skill', 'ordinary query_outreach: revocation after discovery prevents dispatch and accepted receipts', 'ordinary query_outreach: source-release revocation withholds bytes and preserves UNKNOWN'. These tests prove the slice, not the withheld inputs: the contract accepts outreachId; the adapter refuses it (request-context.mjs)"],
+      "subject": "current authorized one-client subject; exact UUID client resolution; names, unscoped campaigns and owned detail remain outside SDK exposure",
+      "exposedSlice": {
+        "query_outreach": {
+          "description": "Campaign list only; outreachId detail and linked-resource expansion are refused.",
+          "evidence": ["docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25", "docs/integration/MERI-READ-GAPS-20261019.md:23-25"],
+          "tests": ["apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary query_outreach: current synthetic gates discover and invoke the canonical signed read without a skill", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary query_outreach: revocation after discovery prevents dispatch and accepted receipts", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary query_outreach: source-release revocation withholds bytes and preserves UNKNOWN"]
+        }
+      }
     },
     {
       "path": "apps/gateway/sources/research-legal-news",
@@ -51,8 +66,15 @@
       "declaredIn": ["apps/gateway/sources/research-legal-news/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/research-legal-news/request-context.mjs", "apps/gateway/general-reads/families/research-legal-news.mjs"],
       "operations": ["search_legiwatch_news"],
       "partialOperations": ["search_legiwatch_news"],
-      "adapterChecks": ["PARTIAL_INPUT: exact typed source ID or explicit-year personnel only", "absent client or exact current visible client UUID; no truthy folder; branch-specific context is request-determined", "native fixed Intel bridge retains member/feature, current client wall, source rights and personnel evidence owners"],
-      "subject": "current native tenant/user and coherent general/client subject; names, folders, news windows, private monitors and implicit years remain outside SDK exposure"
+      "adapterChecks": ["PARTIAL_INPUT: exact typed source ID or explicit-year personnel only", "absent client or exact current visible client UUID; no truthy folder; branch-specific context is request-determined", "native fixed Intel bridge retains member/feature, current client wall, source rights and personnel evidence owners", "SDK-registered as this slice only (PR189); discover/invoke/revoke: apps/worker/conversation/reads/test/selected-continuation.test.mjs 'ordinary search_legiwatch_news: current synthetic gates discover and invoke the canonical signed read without a skill', 'ordinary search_legiwatch_news: revocation after discovery prevents dispatch and accepted receipts', 'ordinary search_legiwatch_news: source-release revocation withholds bytes and preserves UNKNOWN'. These tests prove the slice, not the withheld inputs: views other than source and explicit-year personnel refuse UNAVAILABLE (request-context.mjs)"],
+      "subject": "current native tenant/user and coherent general/client subject; names, folders, news windows, private monitors and implicit years remain outside SDK exposure",
+      "exposedSlice": {
+        "search_legiwatch_news": {
+          "description": "source view plus explicit-year personnel only; implicit monitor/window context is refused.",
+          "evidence": ["docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25", "docs/integration/MERI-READ-GAPS-20261019.md:23-25"],
+          "tests": ["apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary search_legiwatch_news: current synthetic gates discover and invoke the canonical signed read without a skill", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary search_legiwatch_news: revocation after discovery prevents dispatch and accepted receipts", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary search_legiwatch_news: source-release revocation withholds bytes and preserves UNKNOWN"]
+        }
+      }
     },
     {
       "path": "apps/gateway/sources/public-data",
@@ -108,8 +130,23 @@
       "declaredIn": ["apps/gateway/sources/research-legal-legislation/handler.mjs", "apps/gateway/sources/retained-reads/native-families.mjs", "apps/gateway/sources/research-legal-legislation/request-context.mjs", "apps/gateway/general-reads/families/research-legal-legislation.mjs"],
       "operations": ["search_legislative_research", "get_legal_reference"],
       "partialOperations": ["get_legal_reference"],
-      "adapterChecks": ["complete legislative search preserves raw folder/query arguments and native pre-search membership, folder/client equality and public-corpus query ownership", "named search requires actual current check-ref resolution, exact task/native client grant, pinned expiry and per-call UUID bridge with original raw proof", "PARTIAL_INPUT reference sibling retains absent/UUID client, no folder and parser-independent rules/versions or controlling explicit-reference citations; parser-dependent references stay SDK-withheld", "actual fixed Intel bridge retains feature/member, current client wall, legal identity, version and cursor owners"],
-      "subject": "current native tenant/user and coherent general/client subject; search resolves actual names and delegates existing folder authorization; reference sibling remains partial and SDK-withheld"
+      "adapterChecks": ["complete legislative search preserves raw folder/query arguments and native pre-search membership, folder/client equality and public-corpus query ownership", "named search requires actual current check-ref resolution, exact task/native client grant, pinned expiry and per-call UUID bridge with original raw proof", "PARTIAL_INPUT reference sibling retains absent/UUID client, no folder and parser-independent rules/versions or controlling explicit-reference citations; parser-dependent references stay SDK-withheld", "actual fixed Intel bridge retains feature/member, current client wall, legal identity, version and cursor owners", "SDK-registered as this slice only (PR189); discover/invoke/revoke: apps/worker/conversation/reads/test/selected-continuation.test.mjs 'ordinary get_legal_reference: current synthetic gates discover and invoke the canonical signed read without a skill', 'ordinary get_legal_reference: revocation after discovery prevents dispatch and accepted receipts', 'ordinary get_legal_reference: source-release revocation withholds bytes and preserves UNKNOWN'. These tests prove the slice, not the withheld inputs: parser-dependent citations stay unavailable (no citation parsing)"],
+      "subject": "current native tenant/user and coherent general/client subject; search resolves actual names and delegates existing folder authorization; reference sibling remains partial, with only the declared slice SDK-exposed",
+      "exposedSlice": {
+        "get_legal_reference": {
+          "description": "Parser-independent rules, versions and explicit-ID references only; no citation parsing.",
+          "evidence": ["docs/integration/MERI-READ-TOOLS-HANDOFF-20261019.md:23-25", "docs/integration/MERI-READ-GAPS-20261019.md:23-25"],
+          "tests": ["apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_legal_reference: current synthetic gates discover and invoke the canonical signed read without a skill", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_legal_reference: revocation after discovery prevents dispatch and accepted receipts", "apps/worker/conversation/reads/test/selected-continuation.test.mjs#ordinary get_legal_reference: source-release revocation withholds bytes and preserves UNKNOWN"]
+        }
+      }
+    },
+    {
+      "path": "apps/gateway/sources/research-legal-candidates",
+      "family": "research-legal-candidates",
+      "declaredIn": ["apps/gateway/sources/research-legal-candidates/handler.mjs", "apps/gateway/sources/research-legal-candidates/request-context.mjs", "packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs", "apps/gateway/general-reads/families/research-legal-candidates.mjs"],
+      "operations": ["search_research_sources"],
+      "adapterChecks": ["complete canonical request: no input refused; names require trusted resolution and only the authorized client UUID reaches Core", "six capped Core candidate branches preserved; no synthetic pagination, total, freshness or completeness proof is added", "private reads need the exact per-call signed CapiroMeriRead admission; no ambient credential fallback (apps/gateway/sources/research-legal-candidates/test/handler.test.mjs 'no ambient credential fallback is permitted for private candidate search', apps/runtime/native-authority/native-read-credentials/test/research-candidate-signed-admission.test.mjs 'research sources: actual admitted delegated authority dispatches one exact signed source request')", "post-source revocation withholds content (apps/runtime/native-authority/native-read-credentials/test/research-candidates.test.mjs 'post-source membership revocation withholds candidate content and preserves UNKNOWN hold')", "discover/invoke/revoke: apps/worker/conversation/reads/test/selected-continuation.test.mjs 'ordinary search_research_sources: current synthetic gates discover and invoke the canonical signed read without a skill', 'ordinary search_research_sources: revocation after discovery prevents dispatch and accepted receipts', 'ordinary search_research_sources: source-release revocation withholds bytes and preserves UNKNOWN'"],
+      "subject": "current native tenant/user and coherent general or selected-client subject; Core owns source visibility and ownership"
     },
     {
       "path": "apps/gateway/sources/public-web",

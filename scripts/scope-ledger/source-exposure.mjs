@@ -42,16 +42,26 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
   const operations=operationList(adapter.operations,'adapter operations');
   const partial=Object.hasOwn(adapter,'partialOperations')?operationList(adapter.partialOperations,'partialOperations'):[];
   if(partial.some(id=>!operations.includes(id)))fail('Partial adapter operation is not declared');
+  const slices=adapter.exposedSlice??{};
+  if(typeof slices!=='object'||Array.isArray(slices)||Object.keys(slices).some(id=>!partial.includes(id)))fail('Exposed slice must describe a partial adapter operation');
+  for(const [id,slice] of Object.entries(slices)){
+   if(!slice||typeof slice.description!=='string'||!slice.description.trim())fail(`Missing exposedSlice description: ${id}`);
+   for(const field of ['evidence','tests']){
+    const refs=operationList(slice[field],`exposedSlice ${field}`);
+    if(refs.some(ref=>!ref.trim()||(field==='tests'&&(!/\.test\.mjs#/u.test(ref)||!ref.slice(ref.indexOf('#')+1).trim()))))fail(`Invalid exposedSlice ${field}: ${id}`);
+   }
+  }
   for(const operation of operations){
    if(!byOperation.has(operation)||adapterByOperation.has(operation))fail(`Unmapped or duplicate adapter operation ${operation}`);
-   adapterByOperation.set(operation,{paths:adapter.paths,partial:partial.includes(operation)});
+   adapterByOperation.set(operation,{paths:adapter.paths,partial:partial.includes(operation),exposedSlice:slices[operation]});
   }
  }
  const operations=registeredOperations(catalog,byOperation,families);
  for(const descriptor of operations){
   if(descriptor.sideEffect!=='none'||descriptor.approvalBoundary!=='none'||excluded.some(row=>row.id===descriptor.operation.id))fail(`Unsafe general-read registration ${descriptor.operation.id}`);
   if(!adapterByOperation.has(descriptor.operation.id))fail(`Registered read lacks a canonical adapter: ${descriptor.operation.id}`);
-  if(adapterByOperation.get(descriptor.operation.id).partial)fail(`Incomplete source adapter cannot be SDK-exposed: ${descriptor.operation.id}`);
+  const adapter=adapterByOperation.get(descriptor.operation.id);
+  if(adapter.partial&&!adapter.exposedSlice)fail(`Incomplete source adapter lacks declared exposedSlice: ${descriptor.operation.id}`);
  }
  const registered=new Set(operations.map(descriptor=>descriptor.operation.id));
  const productGroups=new Set(['artifacts','schedule-tools','client-knowledge-attachments','memory-proposals','command-tools']);
@@ -64,7 +74,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
   const skillOperations=related.filter(id=>adapterByOperation.has(id)&&skills.some(skill=>admittedSkills.includes(skill.id)&&skill.operations.includes(id)));
   return {id:original.id,operation,family:binding.group,kind:productGroups.has(binding.group)?'product-or-governed':'source-read',
    currentContractDeclared:skills.some(skill=>skill.operations.includes(operation)),declaredBySkills:declared,sourceAdmittedSkills:admitted,sourceAdmittedOperations:skillOperations,generalOperations:related.filter(id=>registered.has(id)),
-   adapterPaths:adapterByOperation.get(operation)?.paths??[],requiredContextKeys:[...(binding.contextKeys??[])],
+   adapterPaths:adapterByOperation.get(operation)?.paths??[],...(adapterByOperation.get(operation)?.exposedSlice?{exposedSlice:structuredClone(adapterByOperation.get(operation).exposedSlice)}:{}),requiredContextKeys:[...(binding.contextKeys??[])],
    state:adapterByOperation.get(operation)?.partial?'adapter-partial':adapterByOperation.has(operation)?'adapter-present':productGroups.has(binding.group)?'separate-product-path':'adapter-missing'};
  });
  const sourceReads=rows.filter(row=>row.kind==='source-read'),missing=sourceReads.filter(row=>row.state!=='adapter-present'),partial=sourceReads.filter(row=>row.state==='adapter-partial');
@@ -80,7 +90,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
  }
  const unexposed=sourceReads.filter(row=>row.state==='adapter-present'&&!row.generalOperations.includes(row.operation));
  const groupRows=rows=>unique(rows.map(row=>row.family)).map(family=>({family,operations:rows.filter(row=>row.family===family).map(row=>row.operation).sort()}));
- return {schema:'meri-selected-source-exposure/1',note:'Source paths and manifest declarations are evidence only. Partial source adapters remain missing complete coverage and cannot be SDK-exposed. No qualification, authority, credential, native producer or live availability is inferred.',
+ return {schema:'meri-selected-source-exposure/1',note:`Source paths and manifest declarations are evidence only. Partial source adapters remain missing complete coverage${partial.some(row=>row.generalOperations.includes(row.operation))?'; only a declared, test-referenced slice may be SDK-exposed.':' and cannot be SDK-exposed.'} No qualification, authority, credential, native producer or live availability is inferred.`,
   provenance,...(backendMapping?{backendProducerEvidence:Object.fromEntries(Object.entries(backendMapping).filter(([key])=>key!=='operations'))}:{}),counts:{selectedCapabilities:rows.length,excludedCapabilities:excluded.length,selectedSourceReads:sourceReads.length,
    selectedProductOrGoverned:rows.length-sourceReads.length,registeredGeneralOperations:registered.size,registeredFamilies:Object.keys(families).length,
    generalSelectedSourceReads:sourceReads.filter(row=>row.generalOperations.includes(row.operation)).length,
@@ -92,7 +102,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
    sourceReadsWithAdmittedSkillSourceRoute:sourceReads.filter(row=>row.sourceAdmittedSkills.length).length,
    completeSourceAdapters:sourceReads.filter(row=>row.state==='adapter-present').length,partialSourceAdapters:partial.length,
    absentSourceAdapters:sourceReads.filter(row=>row.state==='adapter-missing').length,
-   existingSourceAdaptersWithoutGeneralExposure:unexposed.length,partialSourceAdaptersWithoutGeneralExposure:partial.filter(row=>!row.generalOperations.includes(row.operation)).length,missingSourceAdapters:missing.length,
+   existingSourceAdaptersWithoutGeneralExposure:unexposed.length,partialSourceAdaptersWithGeneralExposure:partial.filter(row=>row.generalOperations.includes(row.operation)).length,partialSourceAdaptersWithoutGeneralExposure:partial.filter(row=>!row.generalOperations.includes(row.operation)).length,missingSourceAdapters:missing.length,
    missingAdaptersDeclaredBySkills:missing.filter(row=>row.declaredBySkills.length).length,
    missingAdaptersWithoutSkillDeclaration:missing.filter(row=>!row.declaredBySkills.length).length,mappedBackendProducers:sourceReads.filter(row=>row.backendProducer).length,live:0},
   admittedSkills:[...admittedSkills],generalRegistration:groupRows(operations.map(descriptor=>({family:byOperation.get(descriptor.operation.id).group,operation:descriptor.operation.id}))),
@@ -111,7 +121,7 @@ export function loadSourceExposure(root){
  read('packages/contracts/retrieval-0.2/catalog-validation.mjs');read('apps/worker/conversation/reads/families.mjs');
  read('apps/worker/conversation/reads/server.mjs');read('apps/gateway/general-reads/registration.mjs');
  const integration=read('apps/gateway/general-reads/integration.mjs'),declared=JSON.parse(read('scripts/general-reads/adapters.json'));
- const adapters=declared.adapters.map(adapter=>({directory:adapter.path,operations:[...adapter.operations],...(Object.hasOwn(adapter,'partialOperations')?{partialOperations:adapter.partialOperations}:{}),paths:[`${adapter.path}/handler.mjs`,...adapter.declaredIn].filter((path,index,all)=>all.indexOf(path)===index)}));
+ const adapters=declared.adapters.map(adapter=>({directory:adapter.path,operations:[...adapter.operations],...(Object.hasOwn(adapter,'partialOperations')?{partialOperations:adapter.partialOperations}:{}),...(Object.hasOwn(adapter,'exposedSlice')?{exposedSlice:adapter.exposedSlice}:{}),paths:[`${adapter.path}/handler.mjs`,...adapter.declaredIn].filter((path,index,all)=>all.indexOf(path)===index)}));
  const selectedOperations=registeredOperations(catalog,new Map(CATALOG_OPERATION_BINDINGS.map(binding=>[binding.id,binding])),READ_FAMILIES);
  for(const family of Object.keys(READ_FAMILIES)){
   if(family==='mail')continue;
@@ -127,7 +137,13 @@ export function loadSourceExposure(root){
  }
  const directories=readdirSync(resolve(root,'apps/gateway/sources'),{withFileTypes:true}).filter(entry=>entry.isDirectory()&&existsSync(resolve(root,`apps/gateway/sources/${entry.name}/handler.mjs`))).map(entry=>`apps/gateway/sources/${entry.name}`);
  if(directories.some(directory=>!adapters.some(adapter=>adapter.directory===directory)))fail('Canonical source directory missing from reconciliation');
- for(const adapter of adapters){adapter.paths=unique(adapter.paths);for(const path of adapter.paths)read(path);}
+ for(const adapter of adapters){
+  adapter.paths=unique(adapter.paths);for(const path of adapter.paths)read(path);
+  for(const slice of Object.values(adapter.exposedSlice??{})){
+   for(const ref of slice.evidence??[])read(ref.replace(/:\d+(?:-\d+)?$/u,''));
+   for(const ref of slice.tests??[])read(ref.split('#')[0]);
+  }
+ }
  const assets=JSON.parse(read('packages/skills/assets.json'));
  // One row per skill identity: a skill with several immutable versions (bill_watch 1.0.0 and the plugin-admissible 1.0.1)
  // declares the union of its versions' operations once, so projections never list the same skill twice.

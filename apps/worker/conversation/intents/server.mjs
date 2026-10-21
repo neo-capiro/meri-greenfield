@@ -34,7 +34,7 @@ export const INTENT_TIMEOUT_MS=Object.freeze({min:1000,max:60000});
 export const MAX_INTENT_CALLS=8;
 const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/** @type {const} */('PreToolUse'),permissionDecision:/** @type {const} */('deny'),permissionDecisionReason:reason}});
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,outcome:'prepared'|'unknown',status:'approval_required'|'draft'|null,reference:string|null,resultSha256:string|null}} IntentReceipt */
+/** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,outcome:'prepared'|'unknown',status:'approval_required'|'draft'|'analysis_pending'|null,reference:string|null,resultSha256:string|null}} IntentReceipt */
 /**
  * `mounted` (G3 profile mount): the rows to register, a superset of `available` (which may then be empty); a mounted row outside
  * `available` answers UNAVAILABLE through `stillAvailable`. Without it exactly the available rows are registered, as before.

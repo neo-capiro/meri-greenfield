@@ -121,6 +121,13 @@
   },
   {
    "operation": {
+    "id": "get_business_development_evidence",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
     "id": "get_business_development_recent_changes",
     "version": "0.2.0"
    },
@@ -178,6 +185,13 @@
   {
    "operation": {
     "id": "get_funding_opportunity",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "get_legal_reference",
     "version": "0.2.0"
    },
    "chargeMicrousd": 1
@@ -380,6 +394,13 @@
   },
   {
    "operation": {
+    "id": "query_outreach",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
     "id": "query_regulatory_dockets",
     "version": "0.2.0"
    },
@@ -541,6 +562,13 @@
   },
   {
    "operation": {
+    "id": "search_legiwatch_news",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
     "id": "search_procurement_forecasts",
     "version": "0.2.0"
    },
@@ -549,6 +577,13 @@
   {
    "operation": {
     "id": "search_program_elements",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "search_research_sources",
     "version": "0.2.0"
    },
    "chargeMicrousd": 1

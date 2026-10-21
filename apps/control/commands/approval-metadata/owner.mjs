@@ -10,12 +10,12 @@ function safe(error,outcome,payload){
  return Object.assign(new CommandError(admitted),{outcome,...(payload?{metadataReference:data({proposalId:payload.record.proposalId,commandSha256:payload.commandSha256})}:{})});
 }
 export function createTaskCreateApprovalMetadataOwner(configuration){
- return createTaskApprovalMetadataOwner(configuration,'task.create');
+ return createCommandApprovalMetadataOwner(configuration,'task.create');
 }
 export function createTaskUpdateApprovalMetadataOwner(configuration){
- return createTaskApprovalMetadataOwner(configuration,'task.update');
+ return createCommandApprovalMetadataOwner(configuration,'task.update');
 }
-function createTaskApprovalMetadataOwner(configuration,action){
+export function createCommandApprovalMetadataOwner(configuration,action){
  const {store,commandContext,preparePolicy,now=Date.now,newId=randomUUID,maxRequestMs=60000}=own(configuration,['store','commandContext','preparePolicy'],['now','newId','maxRequestMs']);
  const c=context(commandContext,action);
  if(typeof preparePolicy!=='function'||typeof now!=='function'||typeof newId!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000)deny('COMMAND_CONFIGURATION');

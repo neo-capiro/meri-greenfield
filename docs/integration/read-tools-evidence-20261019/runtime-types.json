@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "0db7732b7a8cbcd703a787fed5e3e1e4e49ac472",
+  "argv": [
+    "apps/runtime/node_modules/.bin/tsc",
+    "--noEmit",
+    "-p",
+    "apps/runtime/tsconfig.json"
+  ],
+  "exit": 0
+}

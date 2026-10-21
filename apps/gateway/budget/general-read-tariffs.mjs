@@ -1,4 +1,4 @@
-/** P3 tariff schedule for the 76 registered general reads. GENERATED from the registered reads and the Core cost evidence
+/** P3 tariff schedule for the 81 registered general reads. GENERATED from the registered reads and the Core cost evidence
  * gathered at capiro-backend #84 @ 7dd72a0e (all read paths of meri-tools.service.ts, federal-market-meri-tools.service.ts and
  * the adapters they call). One unit is 1 µUSD, the floor the budget owner accepts (as get_client_context is charged today).
  *  - db / free-external / tenant-saas / quota: 1 µUSD (no per-call cost to Capiro beyond its own database).
@@ -7,7 +7,10 @@
  *  - `assumptions`: the tariff holds only under that Core configuration (rerankDisabled: RETRIEVAL_RERANK_ENABLED false, the
  *    default; webSearchProviderDuckDuckGo: CLIO_WEB_SEARCH_PROVIDER duckduckgo, the default). The allocation composer excludes these
  *    operations unless the render asserts the assumption from a reviewed Core configuration.
- *  - chargeMicrousd null: external cost unknown and unbounded in source; the operation is never allocated. */
+ *  - chargeMicrousd null: external cost unknown and unbounded in source; the operation is never allocated.
+ * The five reads PR189 registered (get_business_development_evidence, get_legal_reference, query_outreach,
+ * search_legiwatch_news, search_research_sources) carry evidence from capiro-backend @ 138c0437, the Core read line they
+ * are composed against. */
 export const GENERAL_READ_TARIFF_ASSUMPTIONS=Object.freeze(['rerankDisabled','webSearchProviderDuckDuckGo']);
 /** read_client_documents (Core #84 @ aabe0f17): one document, one section, at most one paid call per call.
  *  - text: listing, plain text, docx, xlsx, pptx and PDFs with a text layer are parsed locally: the 1 µUSD floor.
@@ -36,6 +39,7 @@ export const GENERAL_READ_TARIFFS=Object.freeze({
  'get_acquisition_person@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_acquisition_person: Capiro database only, no outbound paid call"}),
  'get_bill_status@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_bill_status: Capiro database only, no outbound paid call"}),
  'get_business_development_context@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_business_development_context: Capiro database only, no outbound paid call"}),
+ 'get_business_development_evidence@0.2.0':Object.freeze({chargeMicrousd:1,class:'free-external-quota',evidence:"Capiro database dossier (meri-bizdev-tools.service.ts:397 getEvidence → bizdev-dossier.service.ts prospectDossier with suppressJev, so no Jev is scheduled) plus at most one live SAM.gov entity lookup by exact UEI or CAGE when the tenant's SAM flag is on (bizdev-dossier.service.ts:1063-1066 → vendor-reference-sam.client.ts:114, api.sam.gov, no fee, API-key rate limit); Core @ 138c0437"}),
  'get_business_development_recent_changes@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_business_development_recent_changes: Capiro database only, no outbound paid call"}),
  'get_client_context@0.3.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_client_context: Capiro database only, no outbound paid call"}),
  'get_committee_roster@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_committee_roster: Capiro database only, no outbound paid call"}),
@@ -45,6 +49,7 @@ export const GENERAL_READ_TARIFFS=Object.freeze({
  'get_florida_budget_project@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Capiro intel-api SQL over internal HTTP (meri-tools.service.ts:2507-2533 → evidence.service.ts:247); other intel-api work on that request not traced"}),
  'get_funding_opportunity_requirements@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_funding_opportunity_requirements: Capiro database only, no outbound paid call"}),
  'get_funding_opportunity@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_funding_opportunity: Capiro database only, no outbound paid call"}),
+ 'get_legal_reference@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Capiro intel-api SQL over internal HTTP (meri-tools.service.ts:2666-2678 → keyword-meri.controller.ts:80-84 → research.service.ts rules/versions/references); research.service.ts's only outbound call (:801) is on the save path; Core @ 138c0437"}),
  'get_opportunity_client_context@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_opportunity_client_context: Capiro database only, no outbound paid call"}),
  'get_opportunity_government_landscape@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_opportunity_government_landscape: Capiro database only, no outbound paid call"}),
  'get_pe_bills@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/get_pe_bills: Capiro database only, no outbound paid call"}),
@@ -73,6 +78,7 @@ export const GENERAL_READ_TARIFFS=Object.freeze({
  'query_global_data@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_global_data: Capiro database only, no outbound paid call"}),
  'query_intelligence@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_intelligence: Capiro database only, no outbound paid call"}),
  'query_knowledge_graph@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_knowledge_graph: Capiro database only, no outbound paid call"}),
+ 'query_outreach@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"campaign list: one engagementCampaign.findMany (meri-tools.service.ts:9231-9262 → engagement.service.ts:10546); the outreachId detail branch is refused by the Meri slice (outreach-query/request-context.mjs:9); Core @ 138c0437"}),
  'query_regulatory_dockets@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_regulatory_dockets: Capiro database only, no outbound paid call"}),
  'query_tasks@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_tasks: Capiro database only, no outbound paid call"}),
  'read_bill_text@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/read_bill_text: Capiro database only, no outbound paid call"}),
@@ -99,10 +105,12 @@ export const GENERAL_READ_TARIFFS=Object.freeze({
  'search_intel_articles@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_intel_articles: Capiro database only, no outbound paid call"}),
  'search_lda_filings@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_lda_filings: Capiro database only, no outbound paid call"}),
  'search_legislative_research@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Capiro intel-api SQL over internal HTTP (research.service.ts:251); other intel-api work on that request not traced"}),
+ 'search_legiwatch_news@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Capiro intel-api SQL over internal HTTP (meri-tools.service.ts:2666-2678 → keyword-meri.controller.ts:50-64 → evidence.service.ts exact/personnel $queryRaw); the Meri slice admits only view source, or personnel with a year (research-legal-news/request-context.mjs:23), so the monitor scan's news-page fetch (evidence.service.ts:647) is unreachable; Core @ 138c0437"}),
  'search_memory@0.2.0':Object.freeze({chargeMicrousd:165,class:'embedding',assumptions:Object.freeze(['rerankDisabled']),evidence:"Bedrock Titan v2 embedding on every semantic search (meri-tools.service.ts:3431-3436 → institutional-knowledge-retrieval.adapter.ts:144); NVIDIA rerank only if RETRIEVAL_RERANK_ENABLED"}),
  'search_procurement_forecasts@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_procurement_forecasts: Capiro database only, no outbound paid call"}),
  'search_program_elements@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_program_elements: Capiro database only, no outbound paid call"}),
  'search_public_web@0.2.0':Object.freeze({chargeMicrousd:1,class:'conditional-paid-external',assumptions:Object.freeze(['webSearchProviderDuckDuckGo']),evidence:"CLIO_WEB_SEARCH_PROVIDER defaults to duckduckgo, a free HTML fetch (config.schema.ts:704, web-search.helpers.ts); Tavily/Serper when configured are paid and have no tariff here"}),
+ 'search_research_sources@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"six Prisma findMany branches (clients, own meetings, mail threads and messages, Meri notes, directory notes) and no outbound call (meri-tools.service.ts:6912-7114); Core @ 138c0437"}),
  'search_sec_filings@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_sec_filings: Capiro database only, no outbound paid call"}),
  'search_state_bills@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_state_bills: Capiro database only, no outbound paid call"}),
  'search_state_floor_votes@0.2.0':Object.freeze({chargeMicrousd:1,class:'free-external-quota',evidence:"same LegiScan fallback, only with billId (meri-tools.service.ts:5650 → :3706)"}),

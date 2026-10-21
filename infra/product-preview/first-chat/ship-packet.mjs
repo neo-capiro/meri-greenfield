@@ -64,6 +64,7 @@ export function checkInputs({deployment,previousDeployment,runtime,receipt,recei
  for(const [role,family] of Object.entries(STAGE3_FAMILIES))if(!new RegExp(`task-definition/${family}:[1-9][0-9]*$`,'u').test(stage3.taskDefinitions?.[role]??''))refuse(`stage3 task definition for ${role}`);
  if(JSON.stringify(upload?.roles?.map(r=>r.role))!==JSON.stringify(ROLES))refuse('upload plan roles');
  for(const r of upload.roles)if(r.secretArn!==deployment.secrets[MATERIAL_SECRET_KEYS[r.role]])refuse(`upload plan secret for ${r.role}`);
+ for(const r of upload.roles)if(!Array.isArray(r.labelsBefore)||r.labelsBefore.includes(upload.label))refuse(`upload plan for ${r.role} lacks a before-upload label readback without ${upload.label}`);
  const {images:a,...restNow}=deployment,{images:b,...restBefore}=previousDeployment??{};
  if(!previous||canonicalSha256(restNow)!==canonicalSha256(restBefore))refuse('previous deployment inputs must differ from these only in images');
  if(canonicalSha256(a)===canonicalSha256(b))refuse('the images equal the previous release: nothing to ship');
@@ -84,7 +85,7 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
   gate:'the d2-migrate one-shot task (docs/shipping/20261017/D2-DATABASE.md; its task definition is not in this repository) reports the ledger as the exact plan prefix'});
  steps.push({id:'upload',title:`Stage the five rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
   commands:upload.roles.flatMap(r=>[command(r.command,{note:`append "${r.role}<TAB>VersionId" to ${W('secret-versions.tsv')}; on an uncertain outcome resend this exact command`}),command(r.readback)]),
-  gate:`five new versions carry only ${upload.label}; AWSCURRENT and every earlier label unchanged`});
+  gate:`five new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
  steps.push({id:'bindings',title:'Live readbacks, then bindings and the update templates',
   commands:[command(['aws','cloudformation','get-template','--region','us-east-1','--stack-name',STAGE3_STACKS.app,'--template-stage','Original','--query','TemplateBody','--output','json'],{stdout:W('app.live.template.json')}),
    command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name','<foundation stack>','--query','Stacks[0].Outputs'],{stdout:W('foundation-live.json')}),
