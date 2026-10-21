@@ -1,5 +1,6 @@
 /** Next-turn owner: the run a fresh session binds is the live latest run, or one reserved next run once the latest is terminal, retired and
- * revoked (or failed/cancelled with the store's no-authority evidence that it never claimed an allocation); a completed latest run also needs its captured checkpoint, a failed or cancelled one seeds a fresh session (no checkpoint). */
+ * revoked (or failed/cancelled with the store's no-authority evidence that it never claimed an allocation). The next run continues the
+ * conversation's latest published checkpoint: a completed latest run's own (required), else the last completed turn's (none yet: a fresh session). */
 import {randomUUID} from 'node:crypto';
 import {own,bounded,validateShape,fail,terminal,same,uuid} from './boundary.mjs';
 export function createNextRunOwner({store,retirement,revocation,versions,now=Date.now,newId=randomUUID}){
@@ -7,13 +8,13 @@ export function createNextRunOwner({store,retirement,revocation,versions,now=Dat
  if(!journal||['reserve','readTarget','listRuns','latestCheckpoint','foreclosure','current'].some(k=>typeof journal[k]!=='function')||typeof retirement?.verifyRetired!=='function'||typeof revocation?.verifyRevoked!=='function'||typeof now!=='function'||typeof newId!=='function')fail('NEXT_RUN_CONFIGURATION');
  validateShape('RuntimeVersions',versions);versions=bounded(versions);
  const checking=signal=>()=>{if(signal?.aborted)fail('NEXT_RUN_CANCELLED');};
- /** The source's settlement facts, gathered before any reservation write: a completed run's captured checkpoint, or a failed/cancelled
-  * run's no-authority evidence, else its proven physical stop and revoked grants. */
+ /** The source's settlement facts, gathered before any reservation write: the conversation's latest published checkpoint (a completed
+  * run's own), and a failed/cancelled run's no-authority evidence, else its proven physical stop and revoked grants. */
  async function settlement(latest,signal,check){
-  const checkpoint=latest.state==='completed'?await journal.latestCheckpoint(latest.binding,check):null;if(latest.state==='completed'&&!checkpoint)fail('NEXT_RUN_CHECKPOINT_REQUIRED');
+  const checkpoint=await journal.latestCheckpoint(latest.binding,check);if(latest.state==='completed'&&!checkpoint)fail('NEXT_RUN_CHECKPOINT_REQUIRED');
   // A failed/cancelled source that never claimed an allocation carries the store's no-authority evidence instead (re-verified by the journal).
   const noAuthority=latest.state==='completed'?null:await journal.foreclosure(latest.binding,check);check();let facts;
-  if(noAuthority)facts={checkpoint:null,noAuthority:own(bounded(noAuthority),['foreclosureSha256'])};
+  if(noAuthority)facts={checkpoint,noAuthority:own(bounded(noAuthority),['foreclosureSha256'])};
   else{const retired=own(bounded(await retirement.verifyRetired({binding:latest.binding,signal})),['physicalStopProven']);if(retired.physicalStopProven!==true)fail('NEXT_RUN_RETIREMENT_REQUIRED');check();
    const revoked=own(bounded(await revocation.verifyRevoked({binding:latest.binding,signal})),['receiptSha256','grantIds']);check();facts={checkpoint,retirement:{physicalStopProven:true},revocation:revoked};}
   return facts;

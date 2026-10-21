@@ -24,7 +24,9 @@ export function assertNextTurnLineage(value,binding){
   continuationContextSha256(n.sourceRequest,cp.scopes)!==n.contextSha256||!uuid.test(cp.sessionId)||n.resumeSessionAt!==null&&!uuid.test(n.resumeSessionAt))fail();
  for(const key of ['tenantId','actorId','conversationId'])if(cp.binding[key]!==binding[key])fail();
  for(const key of ['runId','attemptId','workerId'])if(cp.binding[key]===binding[key])fail();
- if(binding.writerFence!==cp.binding.writerFence+1)fail();return n;
+ // The checkpoint is the conversation's latest published one: the previous run's, or an earlier completed turn's after a failed or
+ // cancelled one. Control verified which; here it need only precede the target.
+ if(binding.writerFence<=cp.binding.writerFence)fail();return n;
 }
 export function buildNextTurnOptions(value,target){
  const t=data(own(target,['binding','versions','scopes','request','sourceRequest'])),n=assertNextTurnLineage(value,t.binding),cp=n.checkpoint;

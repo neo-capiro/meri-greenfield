@@ -18,7 +18,7 @@ async function admittedOnEvidence(x,terminal){
  assert.equal(evidence.record.state,'FORECLOSED','the terminal transition recorded the no-authority evidence');assert.deepEqual(evidence.record.foreclosure,{eventId:last.eventId,eventSha256:hash(last),state:terminal});
  await assert.rejects(x.f.store.allocations.record({binding,allocationKey:hash(binding),state:'RETIRED',resource:null},check),/NATIVE_PREPARATION_REFUSED/,'the evidence is immutable');
  assert.deepEqual([...x.f.state.nextRuns.values()][0].reservation.facts,{checkpoint:null,noAuthority:{foreclosureSha256:evidence.record_sha256}});
- assert.equal((await x.accept(selected.binding,'try again')).replayed,false);assert.equal(await x.lineage(selected.binding),null,'a fresh SDK session; earlier model context is not restored');
+ assert.equal((await x.accept(selected.binding,'try again')).replayed,false);assert.equal(await x.lineage(selected.binding),null,'a fresh SDK session: no turn of the conversation has completed');
  await assert.rejects(x.allocate(binding),/NATIVE_PREPARATION_STATE_REFUSED/,'the foreclosed attempt can never be claimed');
  await x.allocate(selected.binding);assert.equal(row(x,selected.binding).record.state,'ALLOCATED','the successor is not blocked by the foreclosed attempt');}
 test('review reproduction: a queued run with no allocation reconciled to failed/ATTEMPT_LOST admits the next prompt on its explicit no-authority evidence',async()=>{const x=await fixture();try{
