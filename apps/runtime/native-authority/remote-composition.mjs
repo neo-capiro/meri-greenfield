@@ -81,7 +81,13 @@ export function createRemoteNativeWorker(configuration){
   const d=matchPreparedDescriptorShape(descriptor,i,continuation),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
   nativeTask=createIndependentNativeTask({original,launchConfiguration,deferredSpawn:true,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs})});return {task:nativeTask,launchConfiguration};
  },parkedWorkspace:workspace,...(capture?{capture}:{}),enabled:c.enabled??false,now:c.now??Date.now,...(c.limits?{limits:c.limits}:{})});
- return Object.freeze({application,workspace,query,capture,close:()=>application.close()});
+ // A resumed turn's SDK (resume + sessionStore) materializes the session into join(os.tmpdir(),'claude-resume-*') and launches the
+ // CLI with that directory as CLAUDE_CONFIG_DIR (claude-agent-sdk sdk.mjs). The descriptor policy above, and control's preparation
+ // authority (preparation-intent.mjs), admit only a config directory directly under the run's configParentDirectory, so while this
+ // worker lives the process's temporary root is that private parent; close() restores the previous one.
+ const temporaryRoot=process.env.TMPDIR;process.env.TMPDIR=i.configParentDirectory;
+ const restoreTemporaryRoot=()=>{if(process.env.TMPDIR!==i.configParentDirectory)return;if(temporaryRoot===undefined)delete process.env.TMPDIR;else process.env.TMPDIR=temporaryRoot;};
+ return Object.freeze({application,workspace,query,capture,close:()=>{try{return application.close();}finally{restoreTemporaryRoot();}}});
 }
 
 /** The canonical original allocator and its budget admission over exact allocation facts; shared by allocation and stop-only retirement. */
