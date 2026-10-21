@@ -43,7 +43,7 @@ test('profile mounts only exact active reads, with a stable list across changing
    const listing=new Client({name:'g3-list',version:'1'}),[left,right]=InMemoryTransport.createLinkedPair();
    await a.reads.sdkOptions.mcpServers.meri_reads.instance.connect(left);await listing.connect(right);
    try{assert.deepEqual((await listing.listTools()).tools.map(t=>t.name).sort(),ACTIVE.map(op=>op.id.replaceAll('.','_')).sort());}finally{await listing.close();}
-   assert.deepEqual(a.intents.sdkOptions.allowedTools,['mcp__meri_intents__request_document','mcp__meri_intents__propose_schedule','mcp__meri_intents__propose_schedule_change','mcp__meri_intents__propose_task','mcp__meri_intents__propose_task_update']);
+   assert.deepEqual(a.intents.sdkOptions.allowedTools,['mcp__meri_intents__request_document','mcp__meri_intents__request_analysis','mcp__meri_intents__propose_schedule','mcp__meri_intents__propose_schedule_change','mcp__meri_intents__propose_task','mcp__meri_intents__propose_task_update']);
    // A mounted tool this run does not expose answers a typed UNAVAILABLE through the server's own hook and handler (real MCP client);
    // the port is never asked to execute or prepare (both synthetic ports throw if they are).
    const session='71000000-0000-4000-8000-000000000091',signal=new AbortController().signal;
