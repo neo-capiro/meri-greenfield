@@ -2,6 +2,7 @@
 import {isIP} from 'node:net';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {compileEcsTaskBinding,assertEcsOwnedTask,assertEcsRunningTask} from './ecs-task-binding.mjs';
+import {fixedHotPathBudget} from '../../../packages/runtime/hot-path-budgets.mjs';
 
 const fail=()=>{throw Error('TASK_ROUTE_REFUSED');};
 const id=(prefix,value)=>typeof value==='string'&&new RegExp(`^${prefix}-[a-f0-9]+$`,'u').test(value);
@@ -30,7 +31,7 @@ export function observeOriginalTaskNetworkCandidate({original,resource,task,netw
      resource.clusterArn!==network.clusterArn||resource.taskDefinitionArn!==network.taskDefinitionArn||
      typeof resource.taskArn!=='string'||!Number.isSafeInteger(resource.createdAtMs)||typeof resource.containerName!=='string')fail();
   const binding=compileEcsTaskBinding({original,clusterArn:resource.clusterArn,taskDefinitionArn:resource.taskDefinitionArn,
-   taskArn:resource.taskArn,containerName:resource.containerName,createdAtMs:resource.createdAtMs,enabled:true,now});
+   taskArn:resource.taskArn,containerName:resource.containerName,createdAtMs:resource.createdAtMs,enabled:true,now,maxRequestMs:fixedHotPathBudget('native.ecs.binding.request')});
   assertEcsOwnedTask(task,binding);assertEcsRunningTask(task,binding);
   const attachments=task.attachments?.filter(item=>item?.type==='ElasticNetworkInterface');
   if(attachments?.length!==1||attachments[0].status!=='ATTACHED'||!Array.isArray(attachments[0].details))fail();

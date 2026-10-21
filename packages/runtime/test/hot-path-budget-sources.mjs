@@ -35,6 +35,7 @@ export async function extractBaseBudgetValues({root,base,dependenciesRoot=root})
  number('temporal.issuer.pg.connect.max','apps/runtime/temporal-issuer-cli.mjs',/connectionTimeoutMillis:Math.min\(c.issuer.startupTimeoutMs,(\d+)\)/);
  number('temporal.issuer.pg.idle','apps/runtime/temporal-issuer-cli.mjs',/idleTimeoutMillis:(\d+)/);
  number('native.remote.stdout.poll','apps/runtime/native-authority/remote-task-http.mjs',/setTimeout\(\(\)=>\{waiters.delete\(resolve\);resolve\(\);\},(\d+)\)/);
+ number('native.ecs.binding.request','apps/runtime/native-authority/ecs-task-binding.mjs',/maxRequestMs=c.maxRequestMs\?\?(\d+)/);
  const runtime='apps/runtime/',native=runtime+'native-authority/',conversation='apps/control/conversations/',worker='apps/worker/conversation/';
  for(const [id,file,pattern]of [
   ['native.client.request',runtime+'native-client.mjs',/maxRequestMs=(\d+)/],

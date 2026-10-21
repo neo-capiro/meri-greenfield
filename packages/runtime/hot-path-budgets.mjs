@@ -110,6 +110,7 @@ const unbounded=(boundedBy,reason)=>library(0,boundedBy,reason,{unbounded:true})
 
 /** Stable hop names. A derived entry describes a cap or rate whose owning lifetime is not a nested request. */
 const HOP_DEFINITIONS={
+ 'native.ecs.binding.request':nested(3000,'request'),
  'native.remote.stdout.poll':nested(100,'native.transport.request'),
  'temporal.issuer.pg.connect.max':fixed(3000,{kind:'derived',reason:'Startup cap'}),
  'temporal.issuer.pg.idle':library(1000,'startup','Idle retirement'),

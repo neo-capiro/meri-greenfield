@@ -100,6 +100,7 @@
     "native.delegation.occurrence": 900000,
     "native.delegation.request": 3000,
     "native.delegation.token": 60000,
+    "native.ecs.binding.request": 3000,
     "native.execution.cleanup": 3000,
     "native.execution.request": 10000,
     "native.execution.skew": 1000,
@@ -655,6 +656,10 @@
     "native.delegation.token": {
       "file": "apps/runtime/native-authority/read-delegation/contract.mjs",
       "symbol": "/MINUTE=(\\d+)/"
+    },
+    "native.ecs.binding.request": {
+      "file": "apps/runtime/native-authority/ecs-task-binding.mjs",
+      "symbol": "/maxRequestMs=c.maxRequestMs\\?\\?(\\d+)/"
     },
     "native.execution.cleanup": {
       "file": "apps/runtime/native-authority/execution-composition.mjs",

@@ -47,7 +47,7 @@ export function createRunnerPoststartAuthority(configuration){
   const pair=c.objectiveFacts===undefined?null:await life.run(signal=>c.objectiveFacts.pairFor({binding:issued.binding,executionSelection:c.objectiveExecutionSelection,signal}));check(life);
   if(hash(pair?{...facts,...pair}:facts)!==issued.factsSha256)fail();
   const resource=data(Object.fromEntries(['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName'].map(k=>[k,record.resource[k]])));
-  const binding=compileEcsTaskBinding({original,...resource,enabled:true,now});assertEcsOwnedTask(task,binding);assertEcsRunningTask(task,binding);
+  const binding=compileEcsTaskBinding({original,...resource,enabled:true,now,maxRequestMs:fixedHotPathBudget('native.ecs.binding.request')});assertEcsOwnedTask(task,binding);assertEcsRunningTask(task,binding);
   const candidate=await life.run(signal=>observe({original,resource,signal,check:()=>check(life)}));check(life);
   if(candidate?.taskArn!==taskArn||candidate.privateIPv4Address!==peerIPv4||candidate.executionKey!==original.executionKey||candidate.bindingSha256!==hash(original.binding)||candidate.expiresAtMs!==original.expiresAtMs||candidate.port!==8080||!Number.isSafeInteger(candidate.checkedAtMs)||candidate.checkedAtMs<began)fail();
   // A RUNNING task may start its pre-CLI bootstrap before canonical admission

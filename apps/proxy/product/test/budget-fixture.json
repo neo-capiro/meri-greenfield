@@ -19,6 +19,11 @@
     }
   },
   "hops": {
+    "native.ecs.binding.request": {
+      "kind": "nested",
+      "ms": 3000,
+      "parent": "request"
+    },
     "native.remote.stdout.poll": {
       "kind": "nested",
       "ms": 100,

@@ -623,6 +623,52 @@
           "sourceReason": "The lifecycle service passes its existing request/authority-limited absolute deadline; the journal no longer invents its own default."
         }
       ]
+    },
+    {
+      "file": "apps/runtime/native-authority/ecs-task-binding.mjs",
+      "constructor": "compileEcsTaskBinding",
+      "field": "maxRequestMs",
+      "hop": "native.ecs.binding.request",
+      "calls": [
+        {
+          "file": "apps/runtime/native-authority/runner-poststart-authority.mjs",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/native-authority/task-router-network.mjs",
+          "occurrences": 1
+        },
+        {
+          "file": "apps/runtime/native-authority/task-allocator.mjs",
+          "occurrences": 2,
+          "source": "now,maxRequestMs",
+          "sourceReason": "Allocator forwards its required and validated maxRequestMs into both metadata and containment binding compilation."
+        },
+        {
+          "file": "apps/runtime/native-authority/ecs-prepared-task-proof.mjs",
+          "occurrences": 1,
+          "source": "now,maxRequestMs",
+          "sourceReason": "Prepared proof owner forwards its required configuration maxRequestMs into the binding compiler."
+        },
+        {
+          "file": "apps/runtime/native-authority/task-router-network-reader.mjs",
+          "occurrences": 1,
+          "source": "maxRequestMs:c.maxRequestMs",
+          "sourceReason": "Router reader forwards the explicit request cap supplied by its composition owner."
+        },
+        {
+          "file": "apps/proxy/product/product-owner-placement.mjs",
+          "occurrences": 1,
+          "hop": "native.prepared.request"
+        },
+        {
+          "file": "apps/runtime/native-authority/ecs-task-owner.mjs",
+          "occurrences": 1,
+          "field": "binding",
+          "source": "raw.binding",
+          "sourceReason": "createEcsNativeTaskOwner forwards its binding object unchanged. createAdmittedEcsTaskFactory explicitly copies maxRequestMs from its options into that binding; runnable-runtime supplies limits.maxRequestMs to the factory."
+        }
+      ]
     }
   ],
   "libraries": [
