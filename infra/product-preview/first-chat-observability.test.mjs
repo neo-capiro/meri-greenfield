@@ -6,6 +6,7 @@ import {synthesizeFirstChatObservability,observabilityBindingFromDeployment,tele
 import {main} from './render-observability.mjs';
 import {createTurnTelemetry} from '../../apps/runtime/telemetry/turn-context.mjs';
 import {createOwnerDiagnostics} from '../../apps/proxy/product/owner-diagnostics.mjs';
+import {createSessionRefusalDiagnostics} from '../../apps/control/action-host/session/owner.mjs';
 
 const deployment=JSON.parse(await readFile(new URL('./first-chat/deployment-inputs.json',import.meta.url),'utf8'));
 const binding=()=>observabilityBindingFromDeployment(deployment);
@@ -14,10 +15,10 @@ const alarmMap=t=>Object.fromEntries(resources(t,'AWS::CloudWatch::Alarm').map(p
 const metricKey=m=>[m.MetricName,Object.fromEntries((m.Dimensions??[]).map(d=>[d.Name,d.Value]))];
 const resolveJson=value=>typeof value==='string'?value:value?.Ref==='AWS::Region'?'us-east-1':value?.['Fn::Join']?value['Fn::Join'][1].map(resolveJson).join(value['Fn::Join'][0]):value;
 
-test('standalone stack has only 10 text filters, 8 alarms, dashboard and conditional SNS; no IAM/log-group mutations',()=>{
+test('standalone stack has only 12 text filters, 8 alarms, dashboard and conditional SNS; no IAM/log-group mutations',()=>{
  const t=synthesizeFirstChatObservability(binding());
  assert.deepEqual(Object.values(t.Resources).reduce((counts,r)=>({...counts,[r.Type]:(counts[r.Type]??0)+1}),{}),{
-  'AWS::SNS::Topic':1,'AWS::SNS::Subscription':1,'AWS::Logs::MetricFilter':10,'AWS::CloudWatch::Alarm':8,'AWS::CloudWatch::Dashboard':1});
+  'AWS::SNS::Topic':1,'AWS::SNS::Subscription':1,'AWS::Logs::MetricFilter':12,'AWS::CloudWatch::Alarm':8,'AWS::CloudWatch::Dashboard':1});
  assert.equal(t.Parameters.AlarmEmail.Default,'');
  const subscription=Object.values(t.Resources).find(r=>r.Type==='AWS::SNS::Subscription');
  assert.equal(subscription.Condition,'HasAlarmEmail');
@@ -39,22 +40,27 @@ test('filters match existing exact text vocabularies in the proper groups with z
   ['/meri/product-preview/owner','"PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED"','DiagnosticsSuppressed'],
   ['/meri/product-preview/proxy','"PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED"','DiagnosticsSuppressed'],
   ['/meri/product-preview/control','"RUNTIME_UNAVAILABLE"','RuntimeUnavailable'],
-  ['/meri/product-preview/worker','"RUNTIME_UNAVAILABLE"','RuntimeUnavailable']]);
+  ['/meri/product-preview/worker','"RUNTIME_UNAVAILABLE"','RuntimeUnavailable'],
+  ['/meri/product-preview/control','"CONTROL_SESSION_REFUSED"','ControlSessionRefusals'],
+  ['/meri/product-preview/control','"CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED"','DiagnosticsSuppressed']]);
  for(const p of filters){const m=p.MetricTransformations[0];assert.equal(m.DefaultValue,0);assert.equal(m.MetricValue,'1');assert.equal(m.MetricNamespace,'Meri/Preview');assert.equal(m.Dimensions,undefined);}
 });
 
-test('suppression filters use the complete literal tokens emitted after the owner and proxy diagnostic budgets fill',()=>{
+test('suppression filters use the complete literal tokens emitted after the owner, proxy and control session diagnostic budgets fill',()=>{
  const ownerLines=[],diagnostics=createOwnerDiagnostics({write:line=>ownerLines.push(line.trim()),now:()=>0,burst:1});
  diagnostics.refused('budget','reserve',{code:'REFUSED'});diagnostics.refused('budget','reserve',{code:'REFUSED'});
  diagnostics.refused('budget','reserve',{code:'REFUSED'});
  assert.deepEqual(ownerLines,['PRODUCT_OWNER_REFUSED owner=budget step=reserve code=REFUSED','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED']);
+ const controlLines=[],sessions=createSessionRefusalDiagnostics({write:line=>controlLines.push(line.trim()),now:()=>0,burst:1});
+ for(let i=0;i<3;i++)sessions('identity',{code:'SESSION_REFUSED'});
+ assert.deepEqual(controlLines,['CONTROL_SESSION_REFUSED step=identity code=SESSION_REFUSED','CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED']);
  const script='import sys\nfrom apps.proxy.product import refusal_diagnostics as d\nd.install(write=sys.stdout.buffer.write, now=lambda: 0, burst=1)\nfor _ in range(3): d.refused("pair", "verify")\nd.uninstall()\n';
  const result=spawnSync(process.env.MERI_TEST_PYTHON??'python3',['-B','-c',script],{cwd:new URL('../../',import.meta.url),encoding:'utf8',timeout:10000});
  assert.equal(result.status,0,result.stderr);assert.equal(result.stderr,'');
  assert.deepEqual(result.stdout.trim().split('\n'),['PRODUCT_PROXY_REFUSED gate=pair step=verify code=REFUSED','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED']);
  const filters=resources(synthesizeFirstChatObservability(binding()),'AWS::Logs::MetricFilter').filter(p=>p.MetricTransformations[0].MetricName==='DiagnosticsSuppressed');
  assert.deepEqual(filters.map(p=>[p.LogGroupName,JSON.parse(p.FilterPattern)]),[
-  [binding().logGroups.owner,ownerLines[1]],[binding().logGroups.proxy,result.stdout.trim().split('\n')[1]]]);
+  [binding().logGroups.owner,ownerLines[1]],[binding().logGroups.proxy,result.stdout.trim().split('\n')[1]],[binding().logGroups.control,controlLines[1]]]);
 });
 
 test('all eight alarm thresholds, windows, evaluation counts and missing-data semantics are pinned',()=>{

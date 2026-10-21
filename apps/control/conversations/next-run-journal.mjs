@@ -9,6 +9,8 @@ import {assertNextRunFacts as facts,assertNextRunReservation} from './next-run-r
 /** Terminal states that may admit a next prompt once the original is retired and its grants revoked. */
 export const admitsNextRun=state=>state==='completed'||state==='failed'||state==='cancelled';
 const CHECKPOINTED=['paused','waiting-for-approval'];
+/** The parts of RuntimeVersions an SDK session and its checkpoint depend on (image digest and skills are per-run). */
+const sessionRuntime=({sdk,cli,contracts,checkpointFormat})=>({sdk,cli,contracts,checkpointFormat});
 /** A lifecycle resume's successor, as the lifecycle journal leaves it: the source stays in its checkpointed state (never terminal), its
  * sequence range closed by the successor, and the successor's run row carries the continuation envelope naming the source. */
 const continued=(source,target)=>target.continuation!=null&&same(target.continuation.continuation?.checkpoint?.binding,source.projection.binding)&&CHECKPOINTED.includes(source.projection.state)&&source.sequence_end!=null;
@@ -56,7 +58,8 @@ export function createNextRunJournal({tx,rowRun}){
   return tx(source,check,async c=>{
    const runs=await conversationRuns(c,source,check);if(!runs.length)fail('STORE_CORRUPT');const latest=runs.at(-1);
    if(!same(latest.binding,source))fail('NEXT_RUN_NOT_LATEST');if(!admitsNextRun(latest.state))fail('NEXT_RUN_SOURCE_NOT_TERMINAL');if((latest.state==='completed')!==(f.checkpoint!==null))fail(latest.state==='completed'?'NEXT_RUN_CHECKPOINT_REQUIRED':'NEXT_RUN_CHECKPOINT_REFUSED');
-   if(!same(latest.scopes,scopes)||latest.policyRevision!==policyRevision||!same(latest.versions,versions))fail('NEXT_RUN_SCOPE_REFUSED');
+   // The successor carries the reserving deployment's runtime versions; image identity is a property of each run, not of the conversation.
+   if(!same(latest.scopes,scopes)||latest.policyRevision!==policyRevision)fail('NEXT_RUN_SCOPE_REFUSED');
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    if(existing.length){const r=row(existing[0]);if(r.state!=='RESERVED')fail('STORE_CORRUPT');if(!same(r.facts,f)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision)fail('NEXT_RUN_REPLAY_REFUSED');return {target:r.target,state:r.state,replayed:true};}
    if(runs.some(r=>r.binding.runId===target.runId||r.binding.attemptId===target.attemptId||r.binding.workerId===target.workerId))fail('NEXT_RUN_TARGET_REFUSED');
@@ -96,7 +99,7 @@ export function createNextRunJournal({tx,rowRun}){
    const old=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows[0];check();
    if(!old||hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==b.actorId||!same({...old.projection,createdAt:conversation.createdAt},conversation))fail('CONVERSATION_SCOPE_REFUSED');
    const reserved=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();
-   if(reserved.length!==1)fail('NEXT_RUN_NOT_RESERVED');const r=row(reserved[0]);if(!same(r.target,b)||!same(r.scopes,run.scopes)||r.policyRevision!==run.policyRevision||!same(r.versions,run.versions))fail('NEXT_RUN_SCOPE_REFUSED');
+   if(reserved.length!==1)fail('NEXT_RUN_NOT_RESERVED');const r=row(reserved[0]);if(!same(r.target,b)||!same(r.scopes,run.scopes)||r.policyRevision!==run.policyRevision)fail('NEXT_RUN_SCOPE_REFUSED');
    const latest=(await conversationRuns(c,b,check)).at(-1);if(!latest||!(same(latest.binding,r.source)&&r.state==='RESERVED'||same(latest.binding,b)&&r.state==='ACCEPTED'))fail('NEXT_RUN_NOT_LATEST');
    const existing=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND (request_id=$3 OR run_id=$4) FOR UPDATE',[b.tenantId,b.conversationId,request.requestId,b.runId])).rows;check();
    if(existing.length){const e=rowRun(existing[0]);if(existing.length!==1||e.request_id!==request.requestId||!same({...e.request,window:request.window},request)||!same(e.projection.binding,b)||!same(e.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');return {run:e.projection,request:e.request,lastSequence:Number(e.last_sequence),replayed:true};}
@@ -115,11 +118,14 @@ export function createNextRunJournal({tx,rowRun}){
  async function execution({binding:b,scopes,selectedClientId},check){validateShape('RunBinding',b);uuid(selectedClientId);return tx(b,check,async c=>{
   const target=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(target.projection.binding,b)||!same(target.projection.scopes,scopes))fail('STALE_WRITER');
   const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=row(rows[0]);
-  if(r.state!=='ACCEPTED'||!same(r.target,b)||!same(r.scopes,scopes)||!same(r.versions,target.projection.versions))fail('STORE_CORRUPT');
+  if(r.state!=='ACCEPTED'||!same(r.target,b)||!same(r.scopes,scopes))fail('STORE_CORRUPT');
   const source=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,r.source.runId])).rows[0]);check();
   if(!same(source.projection.binding,r.source)||!(admitsNextRun(source.projection.state)||continued(source,target))||(source.projection.state==='completed')!==(r.facts.checkpoint!==null))fail('STORE_CORRUPT');if(r.facts.checkpoint===null)return null;
   const cpRows=(await c.query('SELECT * FROM meri_conversations.completion_checkpoints WHERE tenant_id=$1 AND checkpoint_id=$2 AND conversation_id=$3 AND run_id=$4',[b.tenantId,r.facts.checkpoint.checkpointId,b.conversationId,r.source.runId])).rows;check();const cp=cpRows[0],p=cp?.proof;
-  if(cpRows.length!==1||cp.state!=='PUBLISHED'||hash(cp.identity)!==cp.identity_sha256||hash(p)!==cp.proof_sha256||cp.proof_sha256!==r.facts.checkpoint.proofSha256||cp.identity.selectedClientId!==selectedClientId||!same(cp.identity.binding,r.source)||!same(source.projection.binding,r.source)||!same(cp.identity.sourceRequest,source.request)||cp.identity.sourceRequestSha256!==source.request_sha256||p.sourceRequestSha256!==source.request_sha256||p.contextSha256!==hash({window:source.request.window,skill:source.request.skill,scopes})||!same(p.checkpoint.binding,r.source)||!same(p.checkpoint.scopes,scopes)||!same(p.checkpoint.versions,target.projection.versions))fail('STORE_CORRUPT');
+  if(cpRows.length!==1||cp.state!=='PUBLISHED'||hash(cp.identity)!==cp.identity_sha256||hash(p)!==cp.proof_sha256||cp.proof_sha256!==r.facts.checkpoint.proofSha256||cp.identity.selectedClientId!==selectedClientId||!same(cp.identity.binding,r.source)||!same(source.projection.binding,r.source)||!same(cp.identity.sourceRequest,source.request)||cp.identity.sourceRequestSha256!==source.request_sha256||p.sourceRequestSha256!==source.request_sha256||p.contextSha256!==hash({window:source.request.window,skill:source.request.skill,scopes})||!same(p.checkpoint.binding,r.source)||!same(p.checkpoint.scopes,scopes))fail('STORE_CORRUPT');
+  // The SDK session resumes under a new image (digest, skills) when the session runtime and checkpoint format are unchanged;
+  // a checkpoint from another SDK/CLI or format is not resumed here: continuing it is the checkpoint-seeding owner's decision.
+  if(!same(sessionRuntime(p.checkpoint.versions),sessionRuntime(target.projection.versions)))fail('NEXT_RUN_CHECKPOINT_RUNTIME_CHANGED');
   completion(cp,source);
   return {nextTurn:{checkpoint:p.checkpoint,checkpointSha256:p.checkpointSha256,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,sourceRequest:source.request,targetBinding:b,resumeSessionAt:p.resumeSessionAt}};
  });}

@@ -51,7 +51,7 @@ export function createConversationHistoryStore({tx,rowRun}){
   const p=pending[0];if(p){const reservation=decode(()=>assertNextRunReservation(p.reservation)),{source,target}=reservation;
    if(hash(p.reservation)!==p.reservation_sha256||p.tenant_id!==key.tenantId||p.conversation_id!==conversationId||p.source_run_id!==source.runId||!same(source,runs.at(-1).projection.binding)||p.target_run_id!==target.runId||
     target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1||
-    !same(reservation.scopes,subject.scopes)||reservation.policyRevision!==subject.policyRevision||!same(reservation.versions,runs.at(-1).projection.versions))refuse('CONVERSATION_STORE_CORRUPT');
+    !same(reservation.scopes,subject.scopes)||reservation.policyRevision!==subject.policyRevision)refuse('CONVERSATION_STORE_CORRUPT');
   }
   return {schema:HISTORY_SCHEMA,conversation:subject,latestRun:runs.at(-1).projection,latestSequenceBase:Number(runs.at(-1).sequence_base),turns,events:selected,nextSequence:selected.at(-1)?.sequence??after,lastSequence:end,hasMore:events.length>limit,
    pendingTurn:p?{sourceBinding:p.reservation.source,targetBinding:p.reservation.target,state:p.state}:null};
