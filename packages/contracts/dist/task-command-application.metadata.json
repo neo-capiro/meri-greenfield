@@ -75,8 +75,8 @@
   "sources": [
     {
       "path": "../../apps/control/action-application/http.mjs",
-      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
-      "bytes": 4832
+      "sha256": "5cc1a6be3e5db1bd862f0c94d70bfbd0f7579dcd0ae2ed7241f15dc4aa488740",
+      "bytes": 4925
     },
     {
       "path": "../../apps/control/task-command-application/http.mjs",
@@ -95,8 +95,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "632e32d502317b7d9a491f3082cd62f263a16028b4280f2f0cd5eb2c1fce1f33",
-      "bytes": 11523
+      "sha256": "97fabf06602498c7e0596383a591fb8b56fe99d307c9728656b417b6ca60927a",
+      "bytes": 12979
     },
     {
       "path": "commands-0.2/task-update-validation.mjs",

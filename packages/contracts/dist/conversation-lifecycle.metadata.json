@@ -4,13 +4,13 @@
   "sources": [
     {
       "path": "../../apps/control/conversations/lifecycle/http.mjs",
-      "sha256": "a221b726ad7699d22c0da4d00523e904dc83c4ae05570255cad836c3c5302602",
-      "bytes": 3653
+      "sha256": "e9d5d453ed238a4c03d2a7ecec0792312bdc2ecbf70a7ad0ad8eeadb7de49bc7",
+      "bytes": 3674
     },
     {
       "path": "../../apps/control/conversations/lifecycle/service.mjs",
-      "sha256": "24436eff67d5b356aec2f8f991ea8881fa327fa6755aea8b3acaef526f6628bd",
-      "bytes": 21224
+      "sha256": "bae96dde7f5aa5c501e6ec318878cd76d6c922a0cde183a6abf99019c4046235",
+      "bytes": 26698
     },
     {
       "path": "conversation-lifecycle/protocol.mjs",

@@ -15,8 +15,8 @@
     },
     {
       "path": "../../apps/control/conversations/initial-input/http.mjs",
-      "sha256": "db139e3e099027e793708915ea17467be191657ab845b7cbf901c49d06e70ac8",
-      "bytes": 3785
+      "sha256": "ec04628849fa1c722b7645d97ad6b1e0abf8f5b6ae408411f061fada6af06a79",
+      "bytes": 3780
     },
     {
       "path": "../../apps/control/conversations/migrations/0016_initial_inputs.sql",
@@ -25,13 +25,13 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "3943e94931fc0843faa6dac8c10c7083178996182804abe8f28f8cfedfb53a79",
-      "bytes": 12659
+      "sha256": "e496b788cca732d5530ef79b2d5b17153072fbb25d35dd50213c8cb6bb40d1d1",
+      "bytes": 12988
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "121954d1a2b74bfd13eec8db5bd5df8ad34ca30542b420366a63e212a683486f",
-      "bytes": 24057
+      "sha256": "a6ff241ca95bd360965f07bbde140a6e8b80d07b4e1ff36bd901b674f444d5c8",
+      "bytes": 24180
     },
     {
       "path": "conversation-initial-input/protocol.mjs",
@@ -70,7 +70,7 @@
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "e2e599117987914037a20b43c7eef7eb9be573bed4608717fd5385a92c5d322a",
+      "sha256": "f14de849de80d8323cc1427b1975fc3c3f098938fb5f6ec7a009cb47dfa81ae3",
       "bytes": 2375
     },
     {
@@ -85,7 +85,7 @@
     },
     {
       "path": "dist/conversation-input.metadata.json",
-      "sha256": "b9b231485540b1d10520c509fb54c977fff7fa50ba944d681d178a612d697d58",
+      "sha256": "81ed850a3c58f5811a790aa0a4a472de740e4620e5791442cb1ed9555f904474",
       "bytes": 3402
     },
     {
