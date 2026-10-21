@@ -42,7 +42,7 @@ function fixture({dynamic=false,later=null}={}){
   configurationSha256:later?'9'.repeat(64):compilePreparedRunConfigurationSha256(c),expiresAtMs:original.expiresAtMs,createdAtMs:at-1};
  const pool={async connect(){const client=await db.pool.connect();return {async query(sql,p){
   if(sql.startsWith('BEGIN ISOLATION'))return client.query('BEGIN');
-  if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings'))return {rows:admission?[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:admission.binding.runId,record:admission,record_sha256:hash(admission)}]:[]};
+  if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings'))return {rows:admission?[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:admission.binding.runId,record:admission,record_sha256:hash(admission),generation:1}]:[]};
   return client.query(sql,p);
  },release:e=>client.release(e)};}};
  const state={reads:0,fetches:[],change:r=>r,material:()=>Buffer.from(bytes),pending:null};

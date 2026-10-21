@@ -34,7 +34,7 @@ function fixture(){
   issuance:{issuance_key:key,binding,request_sha256:hash(request),expires_at_ms:String(expiresAtMs),state:'ISSUED',claim_fence:id(46),version:'1',grant_id:model.grantId,capability_sha256:model.capabilitySha256,material_ref:'model-material:v1:'+key,facts_sha256:null,claimed_at:new Date(NOW),issued_at:new Date(NOW)},
   run:{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,request_id:request.requestId,request,request_sha256:hash(request),projection:run,projection_sha256:hash(run),last_sequence:1,sequence_base:0,sequence_end:null},
   native:{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,intent_key:key,record,record_sha256:hash(record)},
-  initial:{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,record:admission,record_sha256:hash(admission)},
+  initial:{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,record:admission,record_sha256:hash(admission),generation:1},
   event:{sequence:1,event_id:id(47),event:{contractVersion:'0.1.0',eventId:id(47),binding,sequence:1,createdAt,scopes:run.scopes,type:'run.status',data:{state:'running',reasonCode:null}}},
  };
  state.event.event_sha256=hash(state.event.event);

@@ -1,4 +1,4 @@
-/** Native 0017 qualification only. Run against a separately attested,
+/** Native 0017 qualification, followed by 0020 for the current generation-aware journal. Run against a separately attested,
  * disposable PostgreSQL 16 cluster, never a deployed database. The Windows
  * loopback and Unix-socket profiles are separate qualification evidence. */
 import test from 'node:test';
@@ -146,6 +146,8 @@ async function fixture(t,{preexisting=false,probeAbsent=false}={}){
  if(preexisting)assert.deepEqual(await snapshotExisting(client,before.binding),original,'0017 must preserve existing rows and hashes');
  const catalog=(await client.query("SELECT relname FROM pg_class WHERE oid='meri_conversations.initial_run_bindings'::regclass")).rows;
  assert.deepEqual(catalog,[{relname:'initial_run_bindings'}]);
+ // Preserve the predecessor/0017 checks above; the current journal requires the explicitly allocated 0020 schema.
+ await client.query(await readFile(new URL('0020_initial_generations.sql',migrations),'utf8'));
  const pool=new pg.Pool({...connection,database:name,max:4});pools.push(pool);
  const tenantId='initial-0017-'+randomUUID(),conversationId=randomUUID();
  const input={principal:{tenantId,actorId:'synthetic-actor'},conversationId,selectedClientId:randomUUID(),policyRevision:'synthetic-policy',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:1800000060000};
@@ -189,7 +191,8 @@ async function grantAppRole(f){
   `GRANT UPDATE(record_sha256) ON meri_conversations.initial_run_bindings TO ${quoted(role)}`,
   `GRANT SELECT,UPDATE(sequence_base) ON meri_conversations.runs TO ${quoted(role)}`,
   `GRANT SELECT,UPDATE(allocation_sha256) ON meri_conversations.initial_inputs TO ${quoted(role)}`,
-  `GRANT SELECT,UPDATE(reservation_sha256) ON meri_conversations.next_runs TO ${quoted(role)}`
+  `GRANT SELECT,UPDATE(reservation_sha256) ON meri_conversations.next_runs TO ${quoted(role)}`,
+  `GRANT SELECT ON meri_conversations.native_allocations TO ${quoted(role)}`
  ];
  for(const query of sql)await f.client.query(query);
  const pool=new pg.Pool({...f.connection,database:f.name,max:4});f.pools.push(pool);

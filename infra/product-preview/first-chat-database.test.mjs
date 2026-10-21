@@ -269,7 +269,7 @@ const BORROWED_FACTORIES={createPostgresConversationStore:'apps/control/conversa
 /** The statements each borrowed method runs ([] only for a module without SQL of its own). */
 const OWNER_BORROWED={
  'apps/control/conversations/initial-run-binding-journal.mjs#readConversation':[['apps/control/conversations/initial-run-binding-journal.mjs',
-  'SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE']],
+  'SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY generation DESC LIMIT 1 FOR UPDATE']],
  'apps/control/conversations/postgres-store.mjs#allocations.read':[['apps/control/conversations/native-preparation-journal.mjs',
   'SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE']],
  'apps/control/conversations/postgres-store.mjs#nextRuns.current':[
@@ -355,7 +355,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants',
   'first-chat-database-owner-reads.sql#owner_conversation_reads',
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
-  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants']);
+  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -546,7 +546,8 @@ test('owner reads grant the model owner only SELECT on the two tables and the lo
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
  const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
- assert.equal(integration.length,19);assert.equal(integration.at(-1).kind,'phase:integration_grants');
+ assert.equal(integration.length,20);assert.equal(integration.at(-2).kind,'phase:integration_grants');
+ assert.equal(integration.at(-1).path,'apps/control/conversations/migrations/0020_initial_generations.sql');
  const early=fakeDatabase();
  await assert.rejects(runStage({stage:'integration',plan,variables,connect:early.connect}),/MERI_D2_PRIOR_STAGE_INCOMPLETE/u);
  assert.equal(early.state.executed.length,0);
@@ -555,7 +556,11 @@ test('integration stage runs only after meri and temporal are ledgered; earlier 
  assert.equal(ready.state.executed.length,0);
  await runStage({stage:'integration',plan,variables,connect:ready.connect});
  assert.deepEqual(ready.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
- assert.equal(ready.state.executed.length,18);assert.ok(ready.state.phases.includes('integration_grants'));
+ assert.equal(ready.state.executed.length,19);assert.ok(ready.state.phases.includes('integration_grants'));
+ // The shared database already ledgered every earlier entry (D016): one `integration` run applies only 0020 (C12, appended).
+ const live=fakeDatabase();live.state.ledger=plan.slice(0,-1).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));live.state.ledgerTable=live.state.owner=true;
+ await runStage({stage:'integration',plan,variables,connect:live.connect});
+ assert.equal(live.state.executed.length,1);assert.deepEqual(live.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
 });
 test('runner refuses a changed applied file, a ledger gap and an early temporal stage before any bootstrap',async()=>{
  const plan=loadPlan();

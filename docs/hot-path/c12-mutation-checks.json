@@ -1,0 +1,407 @@
+{
+  "base": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
+  "handover": "0b6737d5ed525169e19a85696ed585cadf442094",
+  "method": "Isolated source copies; tests reach assertions or intended recovery refusals; product source restored. Synthetic local SQL protocols, not PostgreSQL.",
+  "journal": [
+    {
+      "name": "disable-supersession",
+      "edit": {
+        "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+        "before": "return {record:await insert(client,key,v,at,latest.generation+1,check),created:true,superseded:true};",
+        "after": "refuse('INITIAL_RUN_BINDING_EXPIRED');"
+      },
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=rebind supersedes",
+        "apps/control/conversations/test/initial-run-binding-journal.test.mjs"
+      ],
+      "exitCode": 1,
+      "failingTests": [
+        "\u2716 rebind supersedes an unstarted original once it expired or its render changed; the old generation stays dead history (1017.978163ms)",
+        "\u2716 rebind supersedes a reserved-but-never-accepted input with its original; a live matching original is returned unchanged (499.401554ms)",
+        "\u2716 failing tests:",
+        "\u2716 rebind supersedes an unstarted original once it expired or its render changed; the old generation stays dead history (1017.978163ms)",
+        "\u2716 rebind supersedes a reserved-but-never-accepted input with its original; a live matching original is returned unchanged (499.401554ms)"
+      ],
+      "expectedTestFailure": true
+    },
+    {
+      "name": "remove-started-check",
+      "edit": {
+        "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+        "before": "begun=await started(client,old,check)",
+        "after": "begun=false"
+      },
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=a started original|each durable start marker",
+        "apps/control/conversations/test/initial-run-binding-journal.test.mjs"
+      ],
+      "exitCode": 1,
+      "failingTests": [
+        "\u2716 a started original is never rebound; another actor, client or policy always refuses (66.552626ms)",
+        "\u2716 each durable start marker independently prevents replacing an original (13.133287ms)",
+        "\u2716 failing tests:",
+        "\u2716 a started original is never rebound; another actor, client or policy always refuses (66.552626ms)",
+        "\u2716 each durable start marker independently prevents replacing an original (13.133287ms)"
+      ],
+      "expectedTestFailure": true
+    },
+    {
+      "name": "remove-policy-pin",
+      "edit": {
+        "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+        "before": "||old.policyRevision!==v.policyRevision",
+        "after": ""
+      },
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=a started original",
+        "apps/control/conversations/test/initial-run-binding-journal.test.mjs"
+      ],
+      "exitCode": 1,
+      "failingTests": [
+        "\u2716 a started original is never rebound; another actor, client or policy always refuses (112.720063ms)",
+        "\u2716 failing tests:",
+        "\u2716 a started original is never rebound; another actor, client or policy always refuses (112.720063ms)"
+      ],
+      "expectedTestFailure": true
+    },
+    {
+      "name": "allow-clock-rollback",
+      "edit": {
+        "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+        "before": "if(current<at||current<old.createdAtMs)refuse('INITIAL_RUN_BINDING_CLOCK');",
+        "after": ""
+      },
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=clock rollback",
+        "apps/control/conversations/test/initial-run-binding-journal.test.mjs"
+      ],
+      "exitCode": 1,
+      "failingTests": [
+        "\u2716 clock rollback refuses supersession without appending a generation (55.861521ms)",
+        "\u2716 failing tests:",
+        "\u2716 clock rollback refuses supersession without appending a generation (55.861521ms)"
+      ],
+      "expectedTestFailure": true
+    },
+    {
+      "name": "disable-live-reuse",
+      "edit": {
+        "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+        "before": "if(matches&&live)return {record:old,created:false,superseded:false};",
+        "after": "if(false)return {record:old,created:false,superseded:false};"
+      },
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=concurrent rebinds",
+        "apps/control/conversations/test/initial-run-binding-journal.test.mjs"
+      ],
+      "exitCode": 1,
+      "failingTests": [
+        "\u2716 concurrent rebinds of one dead original create exactly one new generation (817.005001ms)",
+        "\u2716 failing tests:",
+        "\u2716 concurrent rebinds of one dead original create exactly one new generation (817.005001ms)"
+      ],
+      "expectedTestFailure": true
+    }
+  ],
+  "composed": [
+    {
+      "name": "disable-recovery",
+      "mutations": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "from": "const rebind=record&&dead(record)&&runId===undefined&&!await store.readOptional(record.binding,{},check(signal));",
+          "to": "const rebind=false;"
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "expired before its first turn|claimed under release A",
+          "exit": 1,
+          "summary": [
+            "\u2716 an original that expired before its first turn is re-prepared on the next issuance, and turn 1 runs (139.039814ms)",
+            "\u2716 an original claimed under release A and never started is re-prepared under release B, and turn 1 runs there (235.138854ms)",
+            "\u2139 tests 2",
+            "\u2139 pass 0",
+            "\u2139 fail 2",
+            "\u2716 failing tests:",
+            "\u2716 an original that expired before its first turn is re-prepared on the next issuance, and turn 1 runs (139.039814ms)",
+            "\u2716 an original claimed under release A and never started is re-prepared under release B, and turn 1 runs there (235.138854ms)"
+          ]
+        },
+        {
+          "testFile": "apps/runtime/test/conversation-survives-deploy.test.mjs",
+          "pattern": "never ran is re-prepared",
+          "exit": 1,
+          "summary": [
+            "\u2716 an original that never ran is re-prepared under the current render (335.349121ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 an original that never ran is re-prepared under the current render (335.349121ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "reserved-input-counts-as-started",
+      "mutations": [
+        {
+          "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+          "from": "return runs.length>0||inputs.length>0&&inputs[0].state==='ACCEPTED'||successors.length>0||allocations.length>0;",
+          "to": "return runs.length>0||inputs.length>0||successors.length>0||allocations.length>0;"
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "first send that reserved input",
+          "exit": 1,
+          "summary": [
+            "\u2716 a first send that reserved input but never ran: the rebind supersedes the input with it, and the retried send works (568.767466ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 a first send that reserved input but never ran: the rebind supersedes the input with it, and the retried send works (568.767466ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "started-rebind-guards-removed",
+      "mutations": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "from": "const rebind=record&&dead(record)&&runId===undefined&&!await store.readOptional(record.binding,{},check(signal));",
+          "to": "const rebind=record&&dead(record)&&runId===undefined;"
+        },
+        {
+          "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+          "from": "if(begun)refuse(matches?'INITIAL_RUN_BINDING_EXPIRED':'INITIAL_RUN_BINDING_CONFLICT');",
+          "to": "if(false)refuse(matches?'INITIAL_RUN_BINDING_EXPIRED':'INITIAL_RUN_BINDING_CONFLICT');"
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "a started original is never rebound",
+          "exit": 1,
+          "summary": [
+            "\u2716 a started original is never rebound; another principal or client, or a changed policy after the start, is refused (2993.7718ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 a started original is never rebound; another principal or client, or a changed policy after the start, is refused (2993.7718ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "live-generation-reuse-removed",
+      "mutations": [
+        {
+          "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+          "from": "if(matches&&live)return",
+          "to": "if(false)return"
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "two concurrent issuances",
+          "exit": 1,
+          "summary": [
+            "\u2716 two concurrent issuances of a dead unstarted original create exactly one new generation (156.014415ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 two concurrent issuances of a dead unstarted original create exactly one new generation (156.014415ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "exact-run-first-claim-allowed",
+      "mutations": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "from": "else if(runId!==undefined)refuseWith('INITIAL_BINDING_SUPERSEDED');",
+          "to": ""
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "an exact run constraint",
+          "exit": 1,
+          "summary": [
+            "\u2716 an exact run constraint never claims or rebinds an original before refusing (140.861964ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 an exact run constraint never claims or rebinds an original before refusing (140.861964ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "exact-run-rebind-allowed",
+      "mutations": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "from": "const rebind=record&&dead(record)&&runId===undefined&&!await store.readOptional(record.binding,{},check(signal));",
+          "to": "const rebind=record&&dead(record)&&(runId===undefined||runId===record.binding.runId)&&!await store.readOptional(record.binding,{},check(signal));"
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "an exact run constraint",
+          "exit": 1,
+          "summary": [
+            "\u2716 an exact run constraint never claims or rebinds an original before refusing (176.809576ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 an exact run constraint never claims or rebinds an original before refusing (176.809576ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "policy-pins-removed",
+      "mutations": [
+        {
+          "file": "apps/runtime/prepared-candidate.mjs",
+          "from": "if(record.policyRevision!==qualification.policyRevision)refuseWith('INITIAL_BINDING_POLICY_CHANGED');",
+          "to": ""
+        },
+        {
+          "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+          "from": "||old.policyRevision!==v.policyRevision",
+          "to": ""
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "an unstarted original preserves",
+          "exit": 1,
+          "summary": [
+            "\u2716 an unstarted original preserves principal, client and policy ownership across expiry and release (175.111725ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 an unstarted original preserves principal, client and policy ownership across expiry and release (175.111725ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "superseded-log-code-hidden",
+      "mutations": [
+        {
+          "file": "apps/control/action-host/session/owner.mjs",
+          "from": "REFUSAL_CODE.test(code)",
+          "to": "REFUSAL_CODE.test(code)&&code!=='INITIAL_BINDING_SUPERSEDED'"
+        }
+      ],
+      "results": [
+        {
+          "testFile": "apps/control/action-host/session/refusal-diagnostics.test.mjs",
+          "pattern": "a superseded original refusal",
+          "exit": 1,
+          "summary": [
+            "\u2716 a superseded original refusal is logged by the session owner with its owned code (56.134583ms)",
+            "\u2139 tests 1",
+            "\u2139 pass 0",
+            "\u2139 fail 1",
+            "\u2716 failing tests:",
+            "\u2716 a superseded original refusal is logged by the session owner with its owned code (56.134583ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "base-production-recovery-red-compatible-fixture",
+      "base": "bce707763f2cbabe1a73a99aee7b7ec206fa6996",
+      "note": "Base product modules; SQL-protocol fixture recognizes old conversation-only SELECT/UPDATE and DEFAULT generation 1 as PostgreSQL would. All three recovery scenarios reach issuance and fail SESSION_REFUSED. No production mutation.",
+      "results": [
+        {
+          "testFile": "apps/runtime/test/unstarted-original-rebind.test.mjs",
+          "pattern": "expired before its first turn|claimed under release A|first send that reserved input",
+          "exit": 1,
+          "summary": [
+            "\u2716 an original that expired before its first turn is re-prepared on the next issuance, and turn 1 runs (305.508169ms)",
+            "\u2716 an original claimed under release A and never started is re-prepared under release B, and turn 1 runs there (537.803997ms)",
+            "\u2716 a first send that reserved input but never ran: the rebind supersedes the input with it, and the retried send works (157.700669ms)",
+            "\u2139 tests 3",
+            "\u2139 pass 0",
+            "\u2139 fail 3",
+            "\u2716 failing tests:",
+            "\u2716 an original that expired before its first turn is re-prepared on the next issuance, and turn 1 runs (305.508169ms)",
+            "\u2716 an original claimed under release A and never started is re-prepared under release B, and turn 1 runs there (537.803997ms)",
+            "\u2716 a first send that reserved input but never ran: the rebind supersedes the input with it, and the retried send works (157.700669ms)"
+          ]
+        }
+      ]
+    }
+  ],
+  "realPostgres": {
+    "status": "NOT_RUN",
+    "reason": "No PostgreSQL or Docker in build environment",
+    "requiredMutations": [
+      "Remove initial_input_request_owner trigger: legacy request lock assertion must fail",
+      "Replace request-owner IF EXISTS with IF FALSE: legacy losing INSERT must be rejected",
+      "Remove isolation guard: REPEATABLE READ INSERT must be rejected",
+      "Disable immutable-row triggers: UPDATE/DELETE/TRUNCATE rejection must fail",
+      "Remove conversation advisory lock: concurrent accept/rebind and rebind/rebind must fail"
+    ]
+  },
+  "boundaries": {
+    "name": "public-readers-serve-oldest-generation",
+    "file": "apps/control/conversations/initial-run-binding-journal.mjs",
+    "edits": [
+      {
+        "before": "const saved=(await row(client,binding,check))?.record??null;",
+        "after": "const saved=decode((await client.query('SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY generation ASC LIMIT 1 FOR UPDATE',[binding.tenantId,binding.conversationId])).rows[0]);"
+      },
+      {
+        "before": "const saved=(await row(client,{tenantId:p.tenantId,conversationId},check))?.record??null;",
+        "after": "const saved=decode((await client.query('SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY generation ASC LIMIT 1 FOR UPDATE',[p.tenantId,conversationId])).rows[0]);"
+      }
+    ],
+    "command": [
+      "node",
+      "--experimental-test-module-mocks",
+      "--test",
+      "--test-concurrency=1",
+      "apps/runtime/test/unstarted-original-boundaries.test.mjs"
+    ],
+    "exitCode": 1,
+    "pass": 0,
+    "fail": 2,
+    "failures": [
+      "registry: stale admission is refused before run lookup (true !== false)",
+      "proxy: Missing expected rejection."
+    ],
+    "note": "claim/rebind remain latest-generation aware so the setup appends generation2; only read/readConversation choose generation1. Isolated copy; shared source unchanged."
+  }
+}
