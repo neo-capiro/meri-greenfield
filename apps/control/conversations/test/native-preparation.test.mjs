@@ -17,6 +17,12 @@ async function fixture(t){
  const store=createPostgresConversationStore({pool}),createdAt=new Date(at).toISOString(),scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:'11111111-1111-4111-8111-000000000066',policyRevision:q.policyRevision}];
  await store.accept({conversation:{conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt,policyRevision:q.policyRevision},run:{binding,state:'queued',scopes,createdAt,policyRevision:q.policyRevision,versions},request:{requestId:'11111111-1111-4111-8111-000000000006',prompt:'/status',skill:null,window:null},event:{contractVersion:'0.1.0',eventId:'11111111-1111-4111-8111-000000000007',binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},check);
  await pool.query('INSERT INTO meri_product_budget.budget(id,cap_micro_usd) VALUES(1,1000000)');
+ // The tenant's budget policy, which native allocation admission requires (gateway/budget/tenant/native-admission.mjs). Its tables come
+ // from gateway migration 0002; on a cluster without them the restoration and journal cases still run and admission refuses.
+ if((await pool.query("SELECT to_regclass('meri_product_budget.tenant_budgets') AS t")).rows[0].t!==null){
+  await pool.query('TRUNCATE meri_product_budget.tenant_budgets CASCADE');
+  await pool.query('INSERT INTO meri_product_budget.tenant_budgets(tenant_id,monthly_cap_micro_usd,max_concurrent_runs) VALUES($1,25000000,10000)',[binding.tenantId]);
+ }
  const config={pool,allocationJson:JSON.stringify(allocation),grantIntents,qualification,binding,now,limits:{maxRequestMs:3000,maxFactBytes:131072}};
  const original={binding,executionKey:hash(binding),executionId:hash(binding),planSha256:'d'.repeat(64),expiresAtMs,versions};
  const intent={binding,allocationKey:original.executionKey,original,allocationSha256:hash(allocation),qualification,grantIntents,taskRequestSha256:'e'.repeat(64),expiresAtMs},key={binding,allocationKey:intent.allocationKey};
