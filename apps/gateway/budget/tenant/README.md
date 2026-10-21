@@ -28,8 +28,10 @@ no existing allocation, grant, deadline, migration or SQL path is changed.
 - **Persistence.** The PostgreSQL adapter targets `meri_product_budget.tenant_budgets` and `meri_product_budget.tenant_run_reservations`
   in `../migrations/0002_tenant_budgets.sql` (centrally reserved for Fable, source authoring only, by
   `docs/coordination/tasks/CODEX-TENANT-BUDGET-0002-ALLOCATION-20261015.md` at central commit `1b61483d`; numbering, not DDL acceptance;
-  see `docs/coordination/proposals/FABLE-MIGRATION-REQUEST-TENANT-BUDGETS-20261015.md`). Nothing applies DDL; the adapter's real-engine test is skipped unless `MERI_TENANT_BUDGET_PG_SOCKET` names a socket of a database an operator
-  has already migrated.
+  see `docs/coordination/proposals/FABLE-MIGRATION-REQUEST-TENANT-BUDGETS-20261015.md`). Deploys apply it through the migration plan
+  (`infra/product-preview/first-chat-migrate.mjs`), and the disposable local qualification harness
+  (`scripts/qualification/local-baseline/provision-postgres.sh`) applies the same plan to throwaway databases; no other test path executes
+  it. The adapter's own real-engine test is skipped unless `MERI_TENANT_BUDGET_PG_SOCKET` names a socket of a migrated database.
 
 ## Intended call site (not wired here)
 

@@ -1,4 +1,4 @@
-/** Real task-owned PostgreSQL 16 with migrations 0001–0011 and artifacts 0001–0002 applied by provision-postgres.sh: the retention
+/** Real task-owned PostgreSQL 16 with the deployed migration plan applied by provision-postgres.sh: the retention
  * journal adapter, the absent-row compare-and-set under concurrency (finding 3), the exact database-row targets consulted by the
  * trigger amendments (finding 5), database artifact-version identity end to end (finding 6) and ledger-only recovery after a
  * simulated restore. Synthetic tenants, actors, objects and hashes; no bucket, credential or provider. */

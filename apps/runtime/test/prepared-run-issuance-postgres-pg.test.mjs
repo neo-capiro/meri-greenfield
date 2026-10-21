@@ -1,4 +1,4 @@
-/** Real task-owned PostgreSQL 16 with migration meri_conversations 0011 applied by provision-postgres.sh: the durable issuance store
+/** Real task-owned PostgreSQL 16 with the deployed migration plan (meri_conversations 0011 among it) applied by provision-postgres.sh: the durable issuance store
  * adapter and the issuer over it. Concurrency from two connections, restart (a new adapter and issuer over the same database), a
  * separate OS process that claims and completes, lost acknowledgement, conflicting intents, the claim fence, immutability, the facts
  * compare-or-set and the absence of any raw credential in the row. Synthetic bindings and material only. */

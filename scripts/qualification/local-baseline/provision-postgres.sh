@@ -14,22 +14,12 @@ PGBIN="${PGBIN:-/usr/lib/postgresql/16/bin}"
 # The existing fixtures pin these socket directories and database names.
 BROKER_SOCKET="/tmp/meri-broker-pg-socket-20261014"
 KICKOFF_SOCKET="/tmp/meri-prepared-kickoff-pg-20261014/socket"
-MIGRATIONS=(
- apps/control/conversations/migrations/0001_conversations.sql
- apps/control/conversations/migrations/0002_lifecycle.sql
- apps/control/conversations/migrations/0003_selected_outputs.sql
- apps/control/conversations/migrations/0004_sdk_sessions.sql
- apps/control/conversations/migrations/0005_selected_reads.sql
- apps/control/conversations/migrations/0006_native_executions.sql
- apps/control/conversations/migrations/0007_native_preparation.sql
- apps/control/conversations/migrations/0008_native_prepared_launch.sql
- apps/control/conversations/migrations/0009_next_runs.sql
- apps/control/conversations/migrations/0010_retention.sql
- apps/control/conversations/migrations/0011_run_issuance.sql
- apps/gateway/budget/migrations/0001_product_budget.sql
- apps/artifacts/migrations/0001_versions.sql
- apps/artifacts/migrations/0002_retention.sql
-)
+# The deployed migration plan's conversation, gateway budget and artifact migrations, in plan order and byte-checked against its pins
+# (migration-plan.mjs over infra/product-preview/first-chat-migrate.mjs PLAN): the same schema the preview database runs.
+NODE="${NODE:-node}"
+PLANNED="$("$NODE" "$REPO/scripts/qualification/local-baseline/migration-plan.mjs")" || { echo "migration plan unavailable or refused (set NODE)" >&2; exit 2; }
+mapfile -t MIGRATIONS <<<"$PLANNED"
+[ "${#MIGRATIONS[@]}" -gt 0 ] || { echo "migration plan is empty" >&2; exit 2; }
 for m in "${MIGRATIONS[@]}"; do [ -f "$REPO/$m" ] || { echo "missing migration source: $REPO/$m" >&2; exit 2; }; done
 # PostgreSQL refuses to run as root; delegate to the postgres account when invoked by root.
 if [ "$(id -u)" = "0" ]; then id postgres >/dev/null 2>&1 || { echo "root invocation requires a postgres account" >&2; exit 2; }; RUN=(su postgres -c); as_pg(){ su postgres -c "$*"; }; else as_pg(){ bash -c "$*"; }; fi
@@ -44,9 +34,21 @@ cluster(){ # name socket
  as_pg "$PGBIN/pg_isready -h '$sock' -q" || return 3
 }
 ensure_db(){ local sock="$1" db="$2"; as_pg "$PGBIN/psql -h '$sock' -U postgres -tAc \"SELECT 1 FROM pg_database WHERE datname='$db'\"" | grep -q 1 || as_pg "$PGBIN/psql -h '$sock' -U postgres -qc 'CREATE DATABASE $db'"; }
-apply(){ local sock="$1" db="$2"
- if as_pg "$PGBIN/psql -h '$sock' -U postgres -d '$db' -tAc \"SELECT to_regclass('meri_conversations.native_allocations') IS NOT NULL AND to_regclass('meri_product_budget.budget') IS NOT NULL AND to_regclass('meri_artifacts.versions') IS NOT NULL\"" | grep -q '^t$'; then echo "schema present: $db"; return 0; fi
- for m in "${MIGRATIONS[@]}"; do as_pg "$PGBIN/psql -h '$sock' -U postgres -d '$db' -v ON_ERROR_STOP=1 -q -f '$REPO/$m'" || { echo "migration failed: $m -> $db" >&2; return 3; }; done; echo "applied canonical migrations: $db"
+# Each database records the plan entries applied to it (path and sha256) and receives only the missing ones (each file is its own
+# transaction; its row is written only after it succeeds), so a cluster follows the plan as it grows. An entry whose bytes changed, or a cluster from before this ledger, is refused: recreate it
+# (stop, then remove the data root).
+apply(){ local sock="$1" db="$2" m sha seen psql
+ psql="$PGBIN/psql -h '$sock' -U postgres -d '$db' -v ON_ERROR_STOP=1"
+ if ! as_pg "$psql -tAc \"SELECT to_regclass('meri_local_baseline.applied') IS NOT NULL\"" | grep -q '^t$'; then
+  if as_pg "$psql -tAc \"SELECT to_regclass('meri_conversations.conversations') IS NOT NULL\"" | grep -q '^t$'; then echo "unledgered schema in $db: recreate the cluster (stop, then remove $DATA)" >&2; return 3; fi
+  as_pg "$psql -qc 'CREATE SCHEMA meri_local_baseline; CREATE TABLE meri_local_baseline.applied(path text PRIMARY KEY, sha256 text NOT NULL)'" || return 3
+ fi
+ for m in "${MIGRATIONS[@]}"; do
+  sha="$(sha256sum "$REPO/$m" | cut -d' ' -f1)"; seen="$(as_pg "$psql -tAc \"SELECT sha256 FROM meri_local_baseline.applied WHERE path='$m'\"")"
+  [ "$seen" = "$sha" ] && continue
+  [ -z "$seen" ] || { echo "migration changed since it was applied to $db: $m (recreate the cluster)" >&2; return 3; }
+  as_pg "$psql -q -f '$REPO/$m' -c \"INSERT INTO meri_local_baseline.applied VALUES('$m','$sha')\"" || { echo "migration failed: $m -> $db" >&2; return 3; }
+ done; echo "plan migrations applied: $db"
 }
 case "$ACTION" in
  start)

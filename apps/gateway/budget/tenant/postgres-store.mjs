@@ -1,5 +1,6 @@
-/** PostgreSQL tenant budget store over the proposed `meri_product_budget.tenant_budgets` / `tenant_run_reservations` tables
- * (`../migrations/0002_tenant_budgets.sql`: centrally reserved allocation, source authoring only, never applied by this source).
+/** PostgreSQL tenant budget store over the `meri_product_budget.tenant_budgets` / `tenant_run_reservations` tables
+ * (`../migrations/0002_tenant_budgets.sql`: deploys apply it through the migration plan, infra/product-preview/first-chat-migrate.mjs;
+ * the disposable local qualification harness applies the same plan to throwaway databases; no other test path executes it).
  * Each operation is one owned transaction of the canonical budget store: the tenant row is locked first, the reservation row second;
  * the rule itself is the shared policy kernel. The pool is borrowed and never ended. */
 import {PostgresBudgetStore,refuse} from '../postgres-budget-store.mjs';
