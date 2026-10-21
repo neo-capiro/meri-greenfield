@@ -98,3 +98,15 @@ test('three accepted prompts refuse historical run 2 and SQL protects closed eve
  await assert.rejects(f.pool.query('UPDATE meri_conversations.runs SET last_sequence=last_sequence+1 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[second.tenantId,second.conversationId,second.runId]),/closed/);
  const saved=await f.store.nextRuns.execution({binding:current,scopes:f.scopes,selectedClientId:f.scopes[0].resourceId},check);assert.equal(saved.nextTurn.sourceRequest.prompt,'second prompt');assert.equal('continuation' in saved,false);
 });
+// O97: a stop or an error never erases the conversation. After a failed or cancelled turn the next prompt continues the conversation's
+// latest published checkpoint (turn 1's), through the canonical SQL of the next-run owner and journal.
+for(const final of ['failed','cancelled'])test(`turn 1 completes and turn 2 is ${final}: turn 3 continues turn 1's checkpoint`,async t=>{
+ const f=await fixture(t),select=()=>f.owner.selectRun({principal:f.principal,conversationId:f.conversationId});
+ await f.submit(await f.session(f.run1),'first prompt');const first=await f.allocate(f.run1);await f.complete(f.run1);await f.retire(first);const published=await f.capture(f.run1);
+ const second=(await select()).binding;await f.submit(await f.session(second),'second prompt');const allocation=await f.allocate(second);await f.complete(second,final);await f.retire(allocation);
+ const third=(await select()).binding;assert.equal(third.writerFence,3);await f.submit(await f.session(third),'third prompt');
+ const row=(await f.pool.query('SELECT reservation FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[third.tenantId,third.conversationId,third.runId])).rows[0];
+ assert.deepEqual(row.reservation.facts.checkpoint,published,"the reservation names turn 1's published checkpoint");
+ const saved=await f.store.nextRuns.execution({binding:third,scopes:f.scopes,selectedClientId:f.scopes[0].resourceId},check);
+ assert.equal(saved.nextTurn.checkpoint.checkpointId,published.checkpointId);assert.deepEqual(saved.nextTurn.checkpoint.binding,f.run1);assert.equal(saved.nextTurn.sourceRequest.prompt,'first prompt');
+});
