@@ -50,9 +50,12 @@ export function foreclosureRecord(value,b){const r=data(value);own(r,['binding',
 export function foreclosed(value,b){try{foreclosureRecord(value,b);return true;}catch{return false;}}
 const allocationTransitions={CLAIMED:['ALLOCATED','UNKNOWN','RETIRED'],ALLOCATED:['ALLOCATED','ADMITTED','UNKNOWN','RETIRED'],UNKNOWN:['UNKNOWN','ALLOCATED','ADMITTED','RETIRED'],ADMITTED:['ADMITTED','UNKNOWN','RETIRED'],RETIRED:['RETIRED']};
 const restorationTransitions={CLAIMED:['UNKNOWN','RESTORED'],UNKNOWN:['UNKNOWN'],RESTORED:['RESTORED']};
+// The run states a claim is admitted in. An allocation precedes the run's claim. A restoration is runtime preparation, which runs after
+// the worker activity published its `starting` claim (worker/conversation/activity.mjs) and before `running`.
+const allocationClaimStates=['queued'],restorationClaimStates=['queued','starting'];
 export function createNativePreparationJournals({tx,rowRun}){
  const tuple=b=>[b.tenantId,b.conversationId,b.runId];
- function slot({table,key,fields,validateIntent,validateProof,transitions,proofKey,completed}){
+ function slot({table,key,fields,validateIntent,validateProof,transitions,proofKey,completed,claimStates}){
   function intent(value){const i=data(value);own(i,['binding',key,...fields,'expiresAtMs']);validateShape('RunBinding',i.binding);digest(i[key]);positive(i.expiresAtMs);validateIntent(i);return i;}
   function recordValue(value){const r=data(value);own(r,['binding',key,...fields,'expiresAtMs','state',proofKey]);const {state,[proofKey]:proof,...original}=r;intent(original);if(!Object.hasOwn(transitions,state))denied();validateProof(proof,original,state);return r;}
   function decode(row,b,k){try{if(!row||row.record_sha256!==hash(row.record))denied();const r=proofKey==='resource'&&row.record?.state===FORECLOSED?foreclosureRecord(row.record):recordValue(row.record);
@@ -98,7 +101,7 @@ export function createNativePreparationJournals({tx,rowRun}){
     async verifyExecutionClaim(c,original,versions,check){const saved=await load(c,original.binding,original.executionKey,check),r=saved.record;if(!r||r.state!=='ADMITTED'||r.resource.launchBinding?.state!=='CLAIMED'||!same(r.original,{...original,versions}))denied();return true;},prepareLaunch:(value,check)=>launch(value,check,'prepare'),consumeLaunch:(value,check)=>launch(value,check,'consume'),recordLaunch:(value,check)=>launch(value,check,'record')}:{}),
    async claim(value,check){const i=intent(value);return tx(i.binding,check,async c=>{
     const saved=await load(c,i.binding,i[key],check);if(saved.record?.state===FORECLOSED)fail('NATIVE_PREPARATION_STATE_REFUSED');if(saved.record){const {state,[proofKey]:proof,...old}=saved.record;if(!same(old,i))fail('NATIVE_PREPARATION_REPLAY_REFUSED');return {...saved,dispatch:false};}
-    if(saved.run.state!=='queued')fail('NATIVE_PREPARATION_STATE_REFUSED');
+    if(!claimStates.includes(saved.run.state))fail('NATIVE_PREPARATION_STATE_REFUSED');
     // Conversation exclusion: a replacement allocation is refused while any other allocation of the same tenant and conversation is live
     // or unresolved (not RETIRED with its physical stop proven). Exact replay of an existing claim returns above without redispatch; a fork
     // into another conversation is unaffected. Grant revocation is verified separately by the next-run and issuance owners.
@@ -123,5 +126,5 @@ export function createNativePreparationJournals({tx,rowRun}){
     });}
   });
  }
- return Object.freeze({allocations:slot({table:'meri_conversations.native_allocations',key:'allocationKey',fields:allocationFields,validateIntent:allocationIntent,validateProof:resource,transitions:allocationTransitions,proofKey:'resource',completed:'RETIRED'}),restorations:slot({table:'meri_conversations.native_restorations',key:'restoreKey',fields:restoreFields,validateIntent:i=>restoreFields.forEach(k=>digest(i[k])),validateProof:restorationReceipt,transitions:restorationTransitions,proofKey:'receipt',completed:'RESTORED'})});
+ return Object.freeze({allocations:slot({table:'meri_conversations.native_allocations',key:'allocationKey',fields:allocationFields,validateIntent:allocationIntent,validateProof:resource,transitions:allocationTransitions,proofKey:'resource',completed:'RETIRED',claimStates:allocationClaimStates}),restorations:slot({table:'meri_conversations.native_restorations',key:'restoreKey',fields:restoreFields,validateIntent:i=>restoreFields.forEach(k=>digest(i[k])),validateProof:restorationReceipt,transitions:restorationTransitions,proofKey:'receipt',completed:'RESTORED',claimStates:restorationClaimStates})});
 }
