@@ -62,19 +62,21 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
       record.qualification.policyRevision!==candidate.qualification.policyRevision||!same(record.original.versions,startup.versions)||
       record.original.expiresAtMs<=c.now()||record.taskRequestSha256!==compileNativeTaskRequest({original:record.original,
        taskRequest:candidate.taskRequest,containerName:candidate.containerName}).taskRequestSha256)fail();
-   let originalBinding=original;
+   let originalBinding=original,admission=null;
    if(binding.conversationId===original.conversationId){if(binding.writerFence===1&&!same(binding,original))fail();}
    else{
-    step='initial-binding';const admission=await initialBindings.readConversation({principal:{tenantId:binding.tenantId,actorId:binding.actorId},
+    step='initial-binding';admission=await initialBindings.readConversation({principal:{tenantId:binding.tenantId,actorId:binding.actorId},
      conversationId:binding.conversationId,selectedClientId},check);check();
-    if(!admission||admission.state!=='ADMITTED'||admission.createdAtMs>c.now()||admission.configurationSha256!==configurationSha256||
-       admission.policyRevision!==candidate.qualification.policyRevision||!same(admission.versions,startup.versions)||
-       admission.binding.writerFence!==1||binding.writerFence===1&&(!same(admission.binding,binding)||admission.expiresAtMs!==record.original.expiresAtMs))fail();
+    // The original record pins its deployment only for its own run; a later run's deployment is proven by its allocation above.
+    if(!admission||admission.state!=='ADMITTED'||admission.createdAtMs>c.now()||
+       admission.policyRevision!==candidate.qualification.policyRevision||admission.binding.writerFence!==1||
+       binding.writerFence===1&&(admission.configurationSha256!==configurationSha256||!same(admission.versions,startup.versions)||
+        !same(admission.binding,binding)||admission.expiresAtMs!==record.original.expiresAtMs))fail();
     originalBinding=admission.binding;
    }
    if(binding.writerFence>1){step='first-run';const first=await store.readOptional(originalBinding,{limit:1},check);check();
     if(!first||!same(first.run.binding,originalBinding)||!same(first.run.scopes,expected)||
-       first.run.policyRevision!==candidate.qualification.policyRevision||!same(first.run.versions,startup.versions))fail();
+       first.run.policyRevision!==candidate.qualification.policyRevision||!same(first.run.versions,admission?admission.versions:startup.versions))fail();
    }
    step='next-run';const current=await store.nextRuns.current(binding,check);check();
    if(current.reserved!==false||!same(current.binding,binding)||current.policyRevision!==before.run.policyRevision||!same(current.scopes,expected))fail();

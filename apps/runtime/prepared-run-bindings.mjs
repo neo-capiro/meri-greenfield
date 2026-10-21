@@ -8,6 +8,7 @@ import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {createPreparedRunIssuance} from './prepared-run-issuance.mjs';
 import {createPreparedRunIssuer} from './prepared-run-issuer.mjs';
 import {createNativeAllocationAdmission} from '../gateway/budget/native-allocation-admission.mjs';
+import {budgetTables} from '../gateway/budget/namespace.mjs';
 import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
@@ -49,15 +50,22 @@ export function createPreparedRunBindings(options){
  /** The authoritative allocation for a target binding: the reviewed static allocation retargeted to exactly that run. Its hash is what
   * the issued facts and the retired record carry; a record naming a different allocation hash is refused rather than admitted. */
  const retarget=binding=>{const alloc=JSON.parse(config.allocationJson);alloc.run=Object.fromEntries(Object.keys(alloc.run).map(k=>[k,binding[k]]));return JSON.stringify(alloc);};
- const admissionFor=(binding,record)=>{const allocationJson=retarget(binding);if(record.allocationSha256!==undefined&&record.allocationSha256!==hash(allocation(allocationJson)))fail('ALLOCATION_MISMATCH');
+ const admissionFor=(binding,record,allocationJson=retarget(binding))=>{if(record.allocationSha256!==undefined&&record.allocationSha256!==hash(allocation(allocationJson)))fail('ALLOCATION_MISMATCH');
   return createNativeAllocationAdmission({pool:o.pool,allocationJson,qualification:record?.qualification??config.qualification,grantIntents:record.grantIntents,binding,now,limits});};
+ /** A settled (RETIRED) source admitted under an earlier render keeps the allocation it ran with: its revocation is proven against that
+  * exact stored allocation, pinned by the hash in its own durable record. A live run is still admitted only under the current render. */
+ async function settledAdmissionFor(binding,record){const current=retarget(binding);
+  if(record.state!=='RETIRED'||record.allocationSha256===undefined||record.allocationSha256===hash(allocation(current)))return admissionFor(binding,record,current);
+  const client=await o.pool.connect();let rows;try{rows=(await client.query(`SELECT allocation,allocation_sha256 FROM ${budgetTables('product').tool_run_allocations} WHERE run_id=$1`,[binding.runId])).rows;}finally{client.release();}
+  if(rows.length!==1||rows[0].allocation_sha256!==record.allocationSha256)fail('ALLOCATION_MISMATCH');const stored=JSON.stringify(rows[0].allocation),a=allocation(stored);
+  if(hash(a)!==record.allocationSha256||!Object.keys(a.run).every(k=>a.run[k]===binding[k]))fail('ALLOCATION_MISMATCH');return admissionFor(binding,record,stored);}
  /** Existing admission owner per target binding; the next-run owner calls its `revoke` with the retired task ARN. */
- async function admissionForBinding({binding,record}){const r=data(own(record,['state','original','grantIntents','resource'],['qualification','allocationSha256','taskRequestSha256','allocationKey']));return admissionFor(binding,r);}
+ async function admissionForBinding({binding,record}){const r=data(own(record,['state','original','grantIntents','resource'],['qualification','allocationSha256','taskRequestSha256','allocationKey']));return settledAdmissionFor(binding,r);}
  /** Source retirement facade for the issuance owner: the allocation record read for a source is remembered by task ARN so that the
   * revocation goes through the admission of that exact source binding. */
  const sources=new Map();
  const sourceOwners={allocations:{async read(query,check){const saved=await o.store.allocations.read(query,check);if(saved?.record?.resource?.taskArn)sources.set(saved.record.resource.taskArn,{binding:query.binding,record:saved.record});return saved;}},
-  admission:{async revoke({taskArn,signal}){const s=sources.get(taskArn);if(!s)fail('SOURCE_UNKNOWN');return admissionFor(s.binding,s.record).revoke({taskArn,signal});}}};
+  admission:{async revoke({taskArn,signal}){const s=sources.get(taskArn);if(!s)fail('SOURCE_UNKNOWN');return (await settledAdmissionFor(s.binding,s.record)).revoke({taskArn,signal});}}};
  /** Trusted fact producer: the reviewed static configuration retargeted to the intent's binding and the issued grant, bound to the
   * current durable run record (binding, versions, policy revision) when one exists; a later run must have one. The per-entry
   * transport contract is part of the facts. */

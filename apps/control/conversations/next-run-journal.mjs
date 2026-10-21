@@ -116,8 +116,11 @@ export function createNextRunJournal({tx,rowRun}){
    if(!old||hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==b.actorId||!same({...old.projection,createdAt:conversation.createdAt},conversation))fail('CONVERSATION_SCOPE_REFUSED');
    const reserved=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();
    if(reserved.length!==1)fail('NEXT_RUN_NOT_RESERVED');const r=row(reserved[0]);if(!same(r.target,b)||!same(r.scopes,run.scopes)||r.policyRevision!==run.policyRevision)fail('NEXT_RUN_SCOPE_REFUSED');
-   // A turn reserved before an image-only deploy is accepted after it; never across an SDK, CLI or format change.
-   const discontinuity=sessionDiscontinuity(r.versions,run.versions);if(discontinuity)fail(discontinuity);
+   // A successor reserved before a deploy is accepted under the accepting render's versions (a run's image is its own); the checkpoint it
+   // names must still resume there (session-continuity.mjs), refused here, before anything persists, rather than at its execution.
+   if(r.facts.checkpoint!==null&&!same(r.versions,run.versions)){const named=(await c.query('SELECT * FROM meri_conversations.completion_checkpoints WHERE tenant_id=$1 AND checkpoint_id=$2 AND conversation_id=$3',[b.tenantId,r.facts.checkpoint.checkpointId,b.conversationId])).rows;check();
+    if(named.length!==1||named[0].state!=='PUBLISHED'||named[0].proof_sha256!==r.facts.checkpoint.proofSha256||hash(named[0].proof)!==named[0].proof_sha256)fail('STORE_CORRUPT');
+    const discontinuity=sessionDiscontinuity(named[0].proof.checkpoint.versions,run.versions);if(discontinuity)fail(discontinuity);}
    const latest=(await conversationRuns(c,b,check)).at(-1);if(!latest||!(same(latest.binding,r.source)&&r.state==='RESERVED'||same(latest.binding,b)&&r.state==='ACCEPTED'))fail('NEXT_RUN_NOT_LATEST');
    const existing=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND (request_id=$3 OR run_id=$4) FOR UPDATE',[b.tenantId,b.conversationId,request.requestId,b.runId])).rows;check();
    if(existing.length){const e=rowRun(existing[0]);if(existing.length!==1||e.request_id!==request.requestId||!same({...e.request,window:request.window},request)||!same(e.projection.binding,b)||!same(e.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');return {run:e.projection,request:e.request,lastSequence:Number(e.last_sequence),replayed:true};}
@@ -137,7 +140,7 @@ export function createNextRunJournal({tx,rowRun}){
  async function execution({binding:b,scopes,selectedClientId},check){validateShape('RunBinding',b);uuid(selectedClientId);return tx(b,check,async c=>{
   const target=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(target.projection.binding,b)||!same(target.projection.scopes,scopes))fail('STALE_WRITER');
   const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=row(rows[0]);
-  if(r.state!=='ACCEPTED'||!same(r.target,b)||!same(r.scopes,scopes)||!continuesSession(r.versions,target.projection.versions))fail('STORE_CORRUPT');
+  if(r.state!=='ACCEPTED'||!same(r.target,b)||!same(r.scopes,scopes))fail('STORE_CORRUPT');
   const runRows=await conversationRows(c,b,check),source=runRows.find(x=>x.run_id===r.source.runId);if(!source||!same(source.projection.binding,r.source))fail('STORE_CORRUPT');
   const resumed=continued(source,target);if(!(admitsNextRun(source.projection.state)||resumed)||source.projection.state==='completed'&&r.facts.checkpoint===null||resumed&&r.facts.checkpoint!==null)fail('STORE_CORRUPT');if(r.facts.checkpoint===null)return null;
   const lineage=await publishedThrough(c,runRows,r.source,check),cp=lineage?.row,from=lineage?.run,p=cp?.proof;

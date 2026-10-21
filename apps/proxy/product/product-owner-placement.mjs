@@ -77,7 +77,8 @@ export function createProductOwnerPlacement(configuration){
      own(admission,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']);validateShape('RunBinding',admission.binding);
      if(admission.schemaVersion!==1||admission.state!=='ADMITTED'||admission.binding.writerFence!==1||admission.binding.tenantId!==binding.tenantId||
         admission.binding.actorId!==binding.actorId||admission.binding.conversationId!==binding.conversationId||admission.selectedClientId!==selectedClientId||
-        admission.configurationSha256!==configurationSha256||admission.policyRevision!==record.qualification.policyRevision||!same(admission.versions,startup.versions)||
+        admission.policyRevision!==record.qualification.policyRevision||
+        binding.writerFence===1&&(admission.configurationSha256!==configurationSha256||!same(admission.versions,startup.versions))||
         !Number.isSafeInteger(admission.createdAtMs)||admission.createdAtMs<1||admission.createdAtMs>at||!Number.isSafeInteger(admission.expiresAtMs)||admission.expiresAtMs<=admission.createdAtMs||
         binding.writerFence===1&&(!same(admission.binding,binding)||admission.expiresAtMs!==record.original.expiresAtMs)||originalAdmission&&!same(originalAdmission,admission))deny();
      originalAdmission??=admission;
@@ -87,7 +88,7 @@ export function createProductOwnerPlacement(configuration){
      // The first run may be terminal and expired; this never extends the active successor's own issuance window.
      step='first-run';const firstBinding=originalAdmission?.binding??configured;
      const firstRun=await life.run(()=>conversations.readOptional(firstBinding,{limit:1},life.check));life.check();
-     if(!firstRun||!same(firstRun.run.binding,firstBinding)||!same(firstRun.run.versions,startup.versions)||
+     if(!firstRun||!same(firstRun.run.binding,firstBinding)||!same(firstRun.run.versions,originalAdmission?originalAdmission.versions:startup.versions)||
         firstRun.run.policyRevision!==record.qualification.policyRevision||!same(firstRun.run.scopes,saved.run.scopes))deny();
     }
     life.limitDeadline(record.original.expiresAtMs);return {record,expected};

@@ -1,12 +1,21 @@
 /** Joins native authority facts to a fixed run or a trusted control-selected run. */
+import {types} from 'node:util';
 import {assertAuthorityIdentityReceipt,assertAuthorityContextReceipt} from '../../../../packages/contracts/action-authority-0.2/validate.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
-const refuse=()=>{throw Error('APPLICATION_CONTEXT_REFUSED');};
+// The refusal names only the step it reached and the cause's own code (a fixed constant of our owners), for the session owner's
+// refusal line (session/owner.mjs); never a message, identifier or Core answer.
+// A cause is read only when it is a plain object, never a proxy: no trap runs and nothing it holds is reflected.
+const ownedCode=value=>typeof value==='string'&&/^[A-Z][A-Z0-9_]{2,63}$/u.test(value)?value:undefined;
+const inspectable=value=>value!==null&&typeof value==='object'&&!types.isProxy(value);
+/** The step and owned reason code a refusal carries, for a layer that replaces it with its own public error. */
+export const refusalDiagnostic=cause=>{if(!inspectable(cause))return {};const step=typeof cause.step==='string'?cause.step:undefined,reason=ownedCode(cause.reason);
+ return {...(step===undefined?{}:{step}),...(reason===undefined?{}:{reason})};};
+const refuse=(step,cause)=>{throw Object.assign(Error('APPLICATION_CONTEXT_REFUSED'),step===undefined?{}:{step,reason:inspectable(cause)?ownedCode(cause.code)??ownedCode(cause.message):undefined});};
 // A dependency that did not answer keeps its mark; every other failure is this adapter's refusal.
-const refuseUnless=error=>{if(isAuthorityUnavailable(error))throw error;refuse();};
+const refuseUnless=(error,step)=>{if(isAuthorityUnavailable(error)){try{if(step!==undefined&&inspectable(error)&&error.step===undefined)error.step=step;}catch{}throw error;}refuse(step,error);};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b),uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 export function createApplicationContextAdapters(configuration){
  // Optional trusted port: selectRun({principal,conversationId,signal,deadlineMs,runId?}) returns
@@ -27,7 +36,7 @@ export function createApplicationContextAdapters(configuration){
   const call=own(value,['identityCredential','identity','identitySha256','hints','deadlineMs'],['signal']),original=assertAuthorityIdentityReceipt(snapshot(call.identity)),hints=snapshot(call.hints);identity(original);own(hints,[],['conversationId','runId','clientId']);
   const conversationId=hints.conversationId??context.binding.conversationId,dynamic=conversationId!==context.binding.conversationId;
   if(call.identitySha256!==canonicalSha256(original)||typeof conversationId!=='string'||!uuid.test(conversationId)||hints.clientId!==undefined&&hints.clientId!==context.clientResolution.clientId||dynamic&&!admitInitialConversation||!dynamic&&!selectRun&&Object.hasOwn(hints,'runId')&&hints.runId!==context.binding.runId)refuse();
-  const life=start(call),exact=Object.hasOwn(hints,'runId')?{runId:hints.runId}:{};let cutoff=Math.min(life.deadline(),original.expiresAtMs),binding=context.binding,selected,preflight;
+  const life=start(call),exact=Object.hasOwn(hints,'runId')?{runId:hints.runId}:{};let cutoff=Math.min(life.deadline(),original.expiresAtMs),binding=context.binding,selected,preflight,step='input';
   function runFact(raw,started){if(typeof raw!=='string')refuse();const r=snapshot(raw);own(r,['binding','policyRevision','deadlineMs','checkedAtMs']);validateShape('RunBinding',r.binding);const at=now();life.check();if(typeof r.policyRevision!=='string'||!r.policyRevision||r.policyRevision.length>256||!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.deadlineMs)||r.deadlineMs<=at)refuse();cutoff=Math.min(cutoff,r.deadlineMs);life.limitDeadline(cutoff);return r;}
   async function run(){const started=now(),r=runFact(await life.run(signal=>currentRun(binding,{signal})),started);if(!same(r.binding,binding)||(selected&&r.policyRevision!==selected.policyRevision))refuse();return r;}
   try{
@@ -36,20 +45,20 @@ export function createApplicationContextAdapters(configuration){
    // it finishes before the start acknowledgement; currentRun and fresh Core context still prove the retained target below.
    if(retained)binding=retained.transition.targetBinding;
    else if(dynamic){
-    const started=now();preflight=fact(await life.run(signal=>ports.readContext({credential:call.identityCredential,identitySha256:call.identitySha256,conversationId,clientId:context.clientResolution.clientId,signal,deadlineMs:cutoff})),assertAuthorityContextReceipt,started,life);identity(preflight);
+    step='context-preflight';const started=now();preflight=fact(await life.run(signal=>ports.readContext({credential:call.identityCredential,identitySha256:call.identitySha256,conversationId,clientId:context.clientResolution.clientId,signal,deadlineMs:cutoff})),assertAuthorityContextReceipt,started,life);identity(preflight);
     if(preflight.identitySha256!==call.identitySha256||preflight.identityRevision!==original.identityRevision||preflight.conversationId!==conversationId||preflight.selectedClientId!==context.clientResolution.clientId||typeof preflight.contextRevision!=='string'||!preflight.contextRevision||preflight.contextRevision.length>256)refuse();
-    const selectedAt=now();selected=runFact(await life.run(signal=>admitInitialConversation({principal,conversationId,selectedClientId:context.clientResolution.clientId,signal,deadlineMs:cutoff,...exact})),selectedAt);binding=selected.binding;
-   }else if(selectRun){const started=now();selected=runFact(await life.run(signal=>selectRun({principal,conversationId,signal,deadlineMs:cutoff,...exact})),started);binding=selected.binding;}
+    step='initial-binding';const selectedAt=now();selected=runFact(await life.run(signal=>admitInitialConversation({principal,conversationId,selectedClientId:context.clientResolution.clientId,signal,deadlineMs:cutoff,...exact})),selectedAt);binding=selected.binding;
+   }else if(selectRun){step='run-select';const started=now();selected=runFact(await life.run(signal=>selectRun({principal,conversationId,signal,deadlineMs:cutoff,...exact})),started);binding=selected.binding;}
    if(selected&&(binding.tenantId!==principal.tenantId||binding.actorId!==principal.actorId||binding.conversationId!==conversationId||Object.hasOwn(hints,'runId')&&hints.runId!==binding.runId))refuse();
-   const before=await run(),started=now();const native=fact(await life.run(signal=>ports.readContext({credential:call.identityCredential,identitySha256:call.identitySha256,conversationId:binding.conversationId,clientId:context.clientResolution.clientId,signal,deadlineMs:cutoff})),assertAuthorityContextReceipt,started,life);identity(native);
-   if(native.identitySha256!==call.identitySha256||native.identityRevision!==original.identityRevision||native.conversationId!==binding.conversationId||native.selectedClientId!==context.clientResolution.clientId||typeof native.contextRevision!=='string'||!native.contextRevision||native.contextRevision.length>256||preflight&&preflight.contextRevision!==native.contextRevision)refuse();cutoff=Math.min(cutoff,native.expiresAtMs);const after=await run();if(before.policyRevision!==after.policyRevision)refuse();
+   step='current-run';const before=await run();step='context';const started=now();const native=fact(await life.run(signal=>ports.readContext({credential:call.identityCredential,identitySha256:call.identitySha256,conversationId:binding.conversationId,clientId:context.clientResolution.clientId,signal,deadlineMs:cutoff})),assertAuthorityContextReceipt,started,life);identity(native);
+   if(native.identitySha256!==call.identitySha256||native.identityRevision!==original.identityRevision||native.conversationId!==binding.conversationId||native.selectedClientId!==context.clientResolution.clientId||typeof native.contextRevision!=='string'||!native.contextRevision||native.contextRevision.length>256||preflight&&preflight.contextRevision!==native.contextRevision)refuse();cutoff=Math.min(cutoff,native.expiresAtMs);step='current-run';const after=await run();if(before.policyRevision!==after.policyRevision)refuse();
    const scopes=[{kind:'client',tenantId:principal.tenantId,resourceId:native.selectedClientId,policyRevision:after.policyRevision}];validateShape('Scope',scopes[0]);
    if(retained){const {sourceContext,transition}=retained;
     const sourceRevision=canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding:sourceContext.binding,policyRevision:after.policyRevision});
     if(!same(binding,transition.targetBinding)||after.policyRevision!==transition.policyRevision||!same(scopes,sourceContext.scopes)||!same(scopes,transition.scopes)||sourceRevision!==sourceContext.contextRevision)refuse();
    }
    const result=data({identitySha256:call.identitySha256,binding,scopes,selectedClientId:native.selectedClientId,contextRevision:canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding,policyRevision:after.policyRevision}),checkedAtMs:now(),expiresAtMs:Math.min(original.expiresAtMs,native.expiresAtMs,before.deadlineMs,after.deadlineMs,selected?.deadlineMs??Infinity)});life.check();if(call.signal?.aborted)refuse();return result;
-  }catch(error){refuseUnless(error);}finally{life.close();}
+  }catch(error){refuseUnless(error,step);}finally{life.close();}
  }
  const resolveContext=value=>resolve(value);
  async function resolveTransitionContext(value){

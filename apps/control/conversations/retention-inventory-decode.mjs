@@ -152,7 +152,7 @@ function decodeNextRun(row,owner,byRun,byCompletion){
   same(p.scopes,source.projection.scopes)&&
   p.policyRevision===source.projection.policyRevision&&['RESERVED','ACCEPTED'].includes(row.state));
  if(row.state==='ACCEPTED')requireFact(target&&same(p.target,target.projection.binding)&&
-  same(p.scopes,target.projection.scopes)&&continuesSession(p.versions,target.projection.versions)&&
+  same(p.scopes,target.projection.scopes)&&
   p.policyRevision===target.projection.policyRevision&&
   source.public.sequenceEnd===target.public.sequenceBase);
  else requireFact(!target&&source.public.sequenceEnd===null);
@@ -166,7 +166,9 @@ function decodeNextRun(row,owner,byRun,byCompletion){
  if(p.facts.checkpoint!==null){const cp=byCompletion.get(p.facts.checkpoint.checkpointId),fence=run=>byRun.get(run)?.projection.binding.writerFence;
   requireFact(cp&&cp.row.state==='PUBLISHED'&&cp.row.proof_sha256===p.facts.checkpoint.proofSha256&&
    (source.projection.state==='completed'?cp.row.run_id===row.source_run_id:fence(cp.row.run_id)<p.source.writerFence)&&
-   ![...byCompletion.values()].some(o=>o.row.state==='PUBLISHED'&&fence(o.row.run_id)>fence(cp.row.run_id)&&fence(o.row.run_id)<=p.source.writerFence));}
+   ![...byCompletion.values()].some(o=>o.row.state==='PUBLISHED'&&fence(o.row.run_id)>fence(cp.row.run_id)&&fence(o.row.run_id)<=p.source.writerFence));
+  // An accepted successor runs under its own release's versions; the checkpoint's session must continue there (session-continuity.mjs).
+  if(row.state==='ACCEPTED')requireFact(continuesSession(cp.public.checkpoint.versions,target.projection.versions));}
  return {row,reservation:p,public:{sourceRunId:row.source_run_id,targetRunId:row.target_run_id,
   state:row.state,reservationSha256:row.reservation_sha256}};
 }
