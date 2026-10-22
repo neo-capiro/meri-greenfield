@@ -55,6 +55,26 @@ Actual CLI ordinary controls are wired to existing activity lifecycle; continuat
 
 Artifact DOCX/XLSX routes are mounted through `product-applications.mjs`; absent native artifact/runtime options and source admission still refuse before effects. The parallel S3/PostgreSQL storage adapters must be wired through the existing document/artifact service, with the reviewed product version migration, dedicated bucket/versioning/KMS and current output grant. FS storage and callback booleans are not substituted. Original selected skills likewise fail closed until their canonical selected runtime/compiler/output and current native allocation/installation owners are connected over the approved private boundary. Process-local opaque sessions do not satisfy replica/restart durability. These, native capability provider/launch broker, durable SessionStore, protected-budget-to-product schema mapping, real provider qualification and browser sandbox remain release blockers.
 
+## Historical Stop receipts
+
+Authenticated historical `execution/kickoff/stop` uses immutable allocation and
+issuance custody without preparing an original, opening model material, issuing
+grants, allocating, restoring or invoking the model. Existing original expiry
+takes precedence; a dynamic first attempt without an original retains its
+immutable initial-admission expiry. For a **later** allocation durably
+`FORECLOSED` before any original existed, the existing `expiresAtMs` receipt field
+instead reports the persisted terminal UIEvent's `createdAt` as an **event-time
+cutoff** at which that allocation ceased being usable. It is not database commit
+time, a newly minted timestamp or permission to execute.
+
+The reader verifies the exact pinned event ID and whole-event hash, full binding,
+scope and failed/cancelled state through the existing paged store reader within
+the same bounded Stop operation. Missing or mismatched custody stays unknown;
+repeated reads preserve the same cutoff and cannot reclaim the allocation.
+Broader command/environment profiles and legacy rows without sufficient historical
+custody remain fail-closed. This source behavior does not qualify physical task
+absence, grant revocation, PostgreSQL durability or a deployed release.
+
 ## Dependencies, build and evidence
 
 Own lockfile pins `@hono/node-server` 2.1.5, pg 8.23.1 and Temporal 1.24.0 (MIT). Claude SDK remains the existing 0.3.295/CLI 2.1.295 owner; TypeScript is 5.9.3. No root/shared lock changed. The Node server adapter deliberately sets `overrideGlobalObjects: false` and materializes a native Fetch Request because canonical owners validate native brands. Upstream references: [Node adapter](https://github.com/honojs/node-server), [Temporal workers](https://docs.temporal.io/develop/typescript/workers), [pg pool](https://node-postgres.com/apis/pool).

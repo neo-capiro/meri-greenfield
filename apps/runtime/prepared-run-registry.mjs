@@ -3,6 +3,7 @@ import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execu
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {createRunReconciler} from '../control/conversations/run-reconciler.mjs';
+import {foreclosureRecord} from '../control/conversations/native-preparation-journal.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {types} from 'node:util';
 import {currentTurnTelemetry} from './telemetry/turn-context.mjs';
@@ -57,6 +58,22 @@ export function createPreparedRunRegistry(configuration){
   if(pinnedInitial!==undefined&&!same(admission,pinnedInitial)||!same(row.run.binding,binding)||!stopOnly&&!['queued','starting','running'].includes(row.run.state)||!isStaticOriginal(binding)&&!admission&&(!reservation||reservation.state!=='ACCEPTED'||!same(reservation.target,binding)||!same(reservation.scopes,row.run.scopes)||reservation.policyRevision!==row.run.policyRevision)||admission&&(admission.policyRevision!==row.run.policyRevision||!same(admission.versions,row.run.versions)||!exactInitialScopes(row.run.scopes,binding,admission))||original&&(original.policyRevision!==row.run.policyRevision||reservation&&!same(reservation.source?.conversationId,binding.conversationId))||selected.reserved!==false||!same(selected.binding,binding)||selected.policyRevision!==row.run.policyRevision||!same(selected.scopes,row.run.scopes)||expected&&!same(row.request,expected))fail();return {row,reservation,admission};
  }
  function lifetime(signal,expiresAtMs=now()+limits.maxRequestMs){nativeSignal(signal);return createOperationLifetime({now,signal:signal?AbortSignal.any([signal,cancellation.signal]):cancellation.signal,deadlineMs:Math.min(expiresAtMs,now()+limits.maxRequestMs),errorFactory:()=>Error('PREPARED_RUN_REGISTRY_REFUSED')});}
+ // A later attempt foreclosed before any original has no execution expiry. Its
+ // pinned terminal event supplies only the event-time cutoff, never new authority.
+ async function foreclosureCutoff(binding,record,scopes,life){
+  const proof=foreclosureRecord(record,binding);if(binding.writerFence<=1)fail();let after=0;
+  for(;;){
+   const page=await life.run(()=>read(binding,{after,limit:100},life.check));life.check();
+   if(!same(page.run.binding,binding)||!same(page.run.scopes,scopes)||page.run.state!==proof.foreclosure.state)fail();
+   const event=page.events.find(event=>event.eventId===proof.foreclosure.eventId);
+   if(event){
+    validateShape('UIEvent',event);
+    if(hash(event)!==proof.foreclosure.eventSha256||!same(event.binding,binding)||!same(event.scopes,scopes)||event.type!=='run.status'||event.data.state!==proof.foreclosure.state)fail();
+    const cutoff=Date.parse(event.createdAt);if(!Number.isSafeInteger(cutoff))fail();return cutoff;
+   }
+   if(!page.hasMore||!Number.isSafeInteger(page.nextSequence)||page.nextSequence<=after)fail();after=page.nextSequence;
+  }
+ }
  /** A stop-only entry (the stop route after a restart) may serve a run that is already terminal but whose original is not yet retired; it
   * never allocates. A source that never claimed an allocation is named by the store's no-authority evidence the reservation carries. */
  async function build(binding,signal,record,stopOnly){
@@ -160,7 +177,7 @@ export function createPreparedRunRegistry(configuration){
     const reconciler=createRunReconciler({store:c.store,retirement:{retire},now,maxReconcileMs:limits.cleanupMs??3000});
     const result=await life.run(signal=>reconciler.reconcile({binding,signal}));if(result.outcome==='unknown')throw Error('PREPARED_KICKOFF_UNKNOWN');
     const allocation=await life.run(()=>readAllocation({binding,allocationKey:hash(binding)},life.check));life.check();
-    const expiresAtMs=allocation.record?.original?.expiresAtMs??admitted?.expiresAtMs;if(!Number.isSafeInteger(expiresAtMs))fail();
+    const expiresAtMs=allocation.record?.original?.expiresAtMs??admitted?.expiresAtMs??await foreclosureCutoff(binding,allocation.record,scopes,life);if(!Number.isSafeInteger(expiresAtMs))fail();
     return reply({binding,executionId:hash(binding),expiresAtMs});
    }catch{return reply({error:{code:'PREPARED_KICKOFF_UNKNOWN'}},503);}
   }

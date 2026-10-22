@@ -69,7 +69,7 @@ async function fixture({later=false,allocated=true,legacy=false,claimed=true,pri
 const changedRender=(configuration,credentials)=>{configuration.versions.imageDigest='sha256:'+'f'.repeat(64);configuration.nativeCandidate.runtime.versions=configuration.versions;configuration.nativeCandidate.preparationIntent.imageSha256='f'.repeat(64);configuration.nativeCandidate.taskRequest.taskDefinition='arn:aws:ecs:us-east-1:967807252336:task-definition/new-render:99';credentials.control='synthetic-rotated-control';};
 for(const later of [false,true])test(`MR01 ${later?'later':'first'} run retires through a fresh render and rotated control without opening material`,async()=>{
  const x=await fixture({later}),before=x.counts(),p=x.fresh(changedRender);
- try{assert.equal((await p.stop()).status,200);assert.equal((await x.read()).state,'RETIRED');assert.equal(x.ecs.stopped(),true);assert.equal((await x.store.read(x.binding,{},check)).run.state,'failed');
+ try{const response=await p.stop();assert.equal(response.status,200);assert.equal((await response.json()).expiresAtMs,x.custody.original.expiresAtMs);assert.equal((await x.read()).state,'RETIRED');assert.equal(x.ecs.stopped(),true);assert.equal((await x.store.read(x.binding,{},check)).run.state,'failed');
   assert.deepEqual(x.counts(),{...before,stops:1,revokes:1});assert.equal(p.registry.entries().length,0);
   await assert.rejects(p.registry.ensure({binding:x.binding}),'historical cleanup grants no current execution');
   const again=x.fresh(changedRender);try{assert.equal((await again.stop()).status,200);assert.deepEqual(x.counts(),{...before,stops:1,revokes:1});}finally{await again.registry.close();}
@@ -126,7 +126,7 @@ test('MR01 SDK-incompatible current render still retires the original without re
  try{assert.equal((await p.stop()).status,200);assert.deepEqual(x.counts(),{...before,stops:1,revokes:1});await assert.rejects(p.registry.ensure({binding:x.binding}));}finally{await p.registry.close();}
 });
 test('MR01 foreclosed first attempt performs no cleanup and cannot reclaim allocation',async()=>{
- const x=await fixture({claimed:false}),before=x.counts(),p=x.fresh(changedRender);try{assert.equal((await p.stop()).status,200);assert.equal((await x.read()).state,'FORECLOSED');assert.deepEqual(x.counts(),before);await assert.rejects(x.store.allocations.claim(x.allocator.intent,check));assert.equal((await p.stop()).status,200);}finally{await p.registry.close();}
+ const x=await fixture({claimed:false}),before=x.counts(),p=x.fresh(changedRender);try{const response=await p.stop();assert.equal(response.status,200);assert.equal((await response.json()).expiresAtMs,x.admission.expiresAtMs);assert.notEqual(x.admission.expiresAtMs,x.state.clock);assert.equal((await x.read()).state,'FORECLOSED');assert.deepEqual(x.counts(),before);await assert.rejects(x.store.allocations.claim(x.allocator.intent,check));assert.equal((await p.stop()).status,200);}finally{await p.registry.close();}
 });
 test('MR01 selectors and caller-supplied history never authorize effects, including retired receipt replay',async()=>{
  const x=await fixture(),p=x.fresh(changedRender);try{const before=x.counts();for(const field of ['tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence']){const binding={...x.binding,[field]:field==='writerFence'?99:id(1999)};assert.notEqual((await p.stop({binding,executionId:hash(binding)})).status,200);}assert.notEqual((await p.stop({retirementFacts:x.custody})).status,200);assert.deepEqual(x.counts(),before);
@@ -141,6 +141,67 @@ test('MR01 canonical allocator persists custody before RunTask and a fresh proce
  const x=await fixture({launch:true}),before=x.counts(),p=x.fresh(changedRender);try{assert.equal(x.ecs.state.runs,1);assert.equal(x.budget.state.admits,1);assert.deepEqual((await x.read()).retirementFacts,x.custody);assert.equal((await x.read()).state,'ADMITTED');assert.equal((await p.stop()).status,200);assert.equal((await x.read()).state,'RETIRED');assert.deepEqual(x.counts(),{...before,stops:1,revokes:1});}finally{await p.registry.close();}
 });
 
-test('MR01 later foreclosure does not invent an original expiry or a successful cleanup receipt',async()=>{
- const x=await fixture({later:true,claimed:false}),before=x.counts(),p=x.fresh(changedRender);try{assert.equal((await p.stop()).status,503);const record=await x.read();assert.equal(record.state,'FORECLOSED');assert.equal(Object.hasOwn(record,'original'),false);assert.deepEqual(x.counts(),before);assert.equal((await p.stop()).status,503);assert.deepEqual(x.counts(),before);await assert.rejects(x.store.allocations.claim(x.allocator.intent,check));}finally{await p.registry.close();}
+// The real store writes both the terminal event and FORECLOSED custody atomically.
+// Deliberate row tampering below re-hashes storage envelopes, so pinned whole-event
+// custody, rather than only the outer row checksum, must reject substitutions.
+async function forecloseForReceipt(x,state='failed'){
+ return x.store.append(x.binding,{eventId:id(1700),createdAt:new Date(x.f.now-12345).toISOString(),type:'run.status',data:{state,reasonCode:null}},check);
+}
+for(const terminal of ['failed','cancelled'])test(`MR01 later ${terminal} foreclosure returns the pinned event-time cutoff without effects`,async()=>{
+ const x=await fixture({later:true,claimed:false}),event=await forecloseForReceipt(x,terminal),before=x.counts(),record=await x.read(),p=x.fresh(changedRender);
+ try{
+  assert.equal(record.state,'FORECLOSED');assert.equal(Object.hasOwn(record,'original'),false);
+  assert.deepEqual(record.foreclosure,{eventId:event.eventId,eventSha256:hash(event),state:terminal});
+  for(let attempt=0;attempt<2;attempt++){
+   x.state.clock+=1000;
+   const response=await p.stop();assert.equal(response.status,200);
+   assert.deepEqual(await response.json(),{binding:x.binding,executionId:hash(x.binding),expiresAtMs:Date.parse(event.createdAt)});
+   assert.equal(response.headers.get('cache-control'),'no-store');assert.deepEqual(x.counts(),before);
+   assert.deepEqual(await x.read(),record);assert.equal(p.registry.entries().length,0);
+  }
+  await assert.rejects(x.store.allocations.claim(x.allocator.intent,check));
+  assert.equal((await x.store.read(x.binding,{},check)).run.state,terminal);
+ }finally{await p.registry.close();}
+});
+test('MR01 later foreclosure created by reconciliation is readable on a fresh repeated Stop',async()=>{
+ const x=await fixture({later:true,claimed:false}),before=x.counts(),p=x.fresh(changedRender);
+ try{
+  const response=await p.stop();assert.equal(response.status,200);
+  const record=await x.read(),event=(await x.store.read(x.binding,{},check)).events.find(e=>e.eventId===record.foreclosure.eventId);
+  assert.equal((await response.json()).expiresAtMs,Date.parse(event.createdAt));assert.deepEqual(x.counts(),before);
+  const fresh=x.fresh(changedRender);try{x.state.clock+=1000;const repeated=await fresh.stop();assert.equal(repeated.status,200);assert.equal((await repeated.json()).expiresAtMs,Date.parse(event.createdAt));assert.deepEqual(x.counts(),before);}finally{await fresh.registry.close();}
+ }finally{await p.registry.close();}
+});
+test('MR01 foreclosure proof is found through canonical event pagination',async()=>{
+ const x=await fixture({later:true,claimed:false}),event=await forecloseForReceipt(x),before=x.counts(),pages=[];
+ const store={...x.store,async read(binding,cursor,check){if(cursor?.limit===100){pages.push(cursor.after);return x.store.read(binding,{...cursor,limit:1},check);}return x.store.read(binding,cursor,check);}};
+ const p=x.fresh(changedRender,{store});try{const response=await p.stop();assert.equal(response.status,200);assert.equal((await response.json()).expiresAtMs,Date.parse(event.createdAt));assert.deepEqual(pages,[0,1]);assert.deepEqual(x.counts(),before);}finally{await p.registry.close();}
+});
+for(const mutation of ['event-id','event-hash','event-body','nonterminal-event','terminal-state','foreign-binding','foreign-scopes','missing-timestamp','invalid-timestamp','missing-custody'])test(`MR01 foreclosure ${mutation} refuses without effects`,async()=>{
+ const x=await fixture({later:true,claimed:false}),event=await forecloseForReceipt(x),before=x.counts();
+ const allocation=[...x.sql.state.allocations.values()][0],events=[...x.sql.state.events.values()][0],terminal=events.find(e=>e.event_id===event.eventId);
+ if(mutation==='event-id')allocation.record.foreclosure.eventId=id(1799);
+ if(mutation==='event-hash')allocation.record.foreclosure.eventSha256='e'.repeat(64);
+ if(mutation==='event-body')terminal.event.data.reasonCode='SUBSTITUTED';
+ if(mutation==='nonterminal-event'){const first=events[0];allocation.record.foreclosure.eventId=first.event.eventId;allocation.record.foreclosure.eventSha256=hash(first.event);}
+ if(mutation==='terminal-state')allocation.record.foreclosure.state='cancelled';
+ if(mutation==='foreign-binding')terminal.event.binding.workerId=id(1798);
+ if(mutation==='foreign-scopes')terminal.event.scopes[0].resourceId=id(1798);
+ if(mutation==='missing-timestamp')delete terminal.event.createdAt;
+ if(mutation==='invalid-timestamp')terminal.event.createdAt='not-a-date';
+ if(['foreign-binding','foreign-scopes','missing-timestamp','invalid-timestamp'].includes(mutation))allocation.record.foreclosure.eventSha256=hash(terminal.event);
+ terminal.event_sha256=hash(terminal.event);allocation.record_sha256=hash(allocation.record);
+ if(mutation==='missing-custody')x.sql.state.allocations.clear();
+ const p=x.fresh(changedRender);try{assert.notEqual((await p.stop()).status,200);assert.deepEqual(x.counts(),before);assert.equal(p.registry.entries().length,0);}finally{await p.registry.close();}
+});
+for(const mode of ['missing-event','stalled-cursor'])test(`MR01 foreclosure ${mode} page refuses without effects`,async()=>{
+ const x=await fixture({later:true,claimed:false});await forecloseForReceipt(x);const before=x.counts();let pages=0;
+ const store={...x.store,async read(binding,cursor,check){const page=await x.store.read(binding,cursor,check);if(cursor?.limit===100&&++pages>1)throw Error('repeated nonadvancing proof page');return cursor?.limit===100?{...page,events:[],hasMore:mode==='stalled-cursor',nextSequence:cursor.after}:page;}};
+ const p=x.fresh(changedRender,{store});try{assert.equal((await p.stop()).status,503);assert.equal(pages,1);assert.deepEqual(x.counts(),before);}finally{await p.registry.close();}
+});
+test('MR01 foreclosure preserves a valid epoch timestamp as the pinned cutoff',async()=>{
+ const x=await fixture({later:true,claimed:false}),event=await forecloseForReceipt(x),before=x.counts();
+ const allocation=[...x.sql.state.allocations.values()][0],terminal=[...x.sql.state.events.values()][0].find(e=>e.event_id===event.eventId);
+ terminal.event.createdAt='1970-01-01T00:00:00.000Z';terminal.event_sha256=hash(terminal.event);allocation.record.foreclosure.eventSha256=hash(terminal.event);allocation.record_sha256=hash(allocation.record);
+ const p=x.fresh(changedRender);try{const response=await p.stop();assert.equal(response.status,200);assert.equal((await response.json()).expiresAtMs,0);assert.deepEqual(x.counts(),before);}finally{await p.registry.close();}
 });
