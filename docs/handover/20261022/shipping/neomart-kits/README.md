@@ -18,3 +18,19 @@ Copied from `C:\dev\fable\` on neomart, with source archives (`*.zip`, `*.tar`),
 - **Docker gates** ran in WSL `Ubuntu-24.04` with native Docker.
 
 See `../../SHIPPING-RUNBOOK.md` for the procedures and `../../decision-log/DECISION-LOG.md` (through O195) for every decision.
+
+## Private PKI is in AWS (2026-10-22, O196)
+
+The private PKI is no longer neomart-only. Its contents are stored as Secrets Manager secret **`meri/preview/private-pki`** (binary tar.gz, 45 files). The tag `ContentSha256` = `79f0c3c75d5246f68f2595fdf5de2b9254988a76579d9624aa0f5a9554171c3b`.
+
+On any machine with `capiro-dev` access, a Meri release runs as follows:
+```bash
+bash ship-kit/tools/fetch-private-pki.sh <owner-only scratch dir>   # verifies the hash; prints no contents
+export MERI_PKI_DIR=<scratch dir>/meri-preview-private-pki
+export MERI_PREP_DIR=<checkout>/docs/handover/20261022/shipping/stage3-prep
+# make the kit, run release-candidate.sh … 11-private-core, 12-private-render, 13–19 as usual
+rm -rf <scratch dir>/meri-preview-private-pki                        # when the release is done
+```
+`make-ship-kit.mjs` reads `MERI_PKI_DIR` and `MERI_PREP_DIR` (the defaults are the old neomart paths). The Core bearer was already in Secrets Manager (`meri/preview/core/identity-bearer`). The stage-3 helper scripts are in `../stage3-prep/`; they contain no secrets.
+
+**If the PKI rotates:** re-upload with `put-secret-value --secret-binary` and update the `ContentSha256` tag in the same change.
