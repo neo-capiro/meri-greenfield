@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {setTimeout as realSetTimeout,clearTimeout as realClearTimeout} from 'node:timers';
 import {createConversationActivity} from '../activity.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {continuationFixture,id} from '../continuation/test/fixtures.mjs';
-import {LIFECYCLE_READ_BACKOFF_MS,LIFECYCLE_READ_UNAVAILABLE_LIMIT,lifecycleReadBackoffMs} from '../continuation/activity-lifecycle.mjs';
+import {LIFECYCLE_READ_BACKOFF_MS,lifecycleReadBackoffMs} from '../continuation/activity-lifecycle.mjs';
+import {markAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 const success={type:'result',subtype:'success',is_error:false};
 function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,entryChange,park=false,runtimeMs=1500}={}) {
  const f=continuationFixture(mode??'resume'),{target}=f;
@@ -15,7 +17,7 @@ function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,en
   ...(mode?{continuation:f.continuation,sourceRequest:target.sourceRequest}:{})};
  const command={controlId:id(101),action,binding,contextSha256,...(action==='steer'?{prompt:'Literal /command @file text'}:action==='waitForApproval'?{proposalId:id(102),proposalSha256:'d'.repeat(64)}:{})};
  const entry={controlSequence:1,commandSha256:canonicalSha256(command),command};if(entryChange)entryChange(entry);
- const state={calls:0,closed:0,interrupts:0,acks:[],events:[],messages:[],claims:0,records:0};let emitted=false;const stop=Promise.withResolvers(),started=Promise.withResolvers();
+ const state={calls:0,closed:0,interrupts:0,acks:[],events:[],messages:[],claims:0,records:0,failures:[]};let emitted=false;const stop=Promise.withResolvers(),started=Promise.withResolvers();
  const runOwner={async load(){return saved;},async append({event}){state.events.push(event);},
   async nextControls(){await started.promise;if(emitted)return [];emitted=true;return mode?[]:[entry];},
   async claimControl(){state.claims++;return claim?{claimed:true,control:entry}:{claimed:false,receipt:{state:'UNKNOWN'}};},
@@ -30,7 +32,7 @@ function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,en
   if(!mode&&action!=='steer'){await stop.promise;return;}
   yield success;if(park)await new Promise(()=>{});
  },async interrupt(){state.interrupts++;return {still_queued:[]};},close(){state.closed++;stop.resolve();}};};
- const execute=createConversationActivity({runOwner,prepareRuntime,query,lifecycle:{captureCheckpoint,pollMs:5}});
+ const execute=createConversationActivity({runOwner,prepareRuntime,query,lifecycle:{captureCheckpoint,pollMs:5},diagnostics:{failure:error=>state.failures.push(error)}});
  return {state,execute,binding,entry,saved,runOwner,captureCheckpoint,prepareRuntime,query,sessionId};
 }
 test('actual activity streams literal composed UUID inputs, claims once, observes exact echo and closes terminal input',async()=>{const f=fixture({park:true});assert.deepEqual(await f.execute({binding:f.binding}),{state:'completed'});assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);assert.equal(f.state.claims,1);assert.equal(f.state.messages[0].uuid,f.saved.request.requestId);assert.equal(f.state.messages[1].client_composed,true);assert.equal(f.state.messages[1].message.content,f.entry.command.prompt);assert.deepEqual(f.state.acks,[{controlId:f.entry.command.controlId,commandSha256:f.entry.commandSha256,outcome:'APPLIED',sdkUserMessageId:f.entry.command.controlId}]);});
@@ -67,30 +69,100 @@ test('a display publication refused by a hold the reader has not yet seen is fen
  assert.deepEqual(f.state.events.map(e=>e.data.state),['starting','running']);
 });
 
-// A control-page read that did not answer (control's ~80 serial Core rechecks outlasting the read allowance) is "no controls this
-// tick"; only that read is skippable.
+// A request-local timeout or marked authority nonanswer is "no controls this tick". An unmarked native refusal is definitive.
 const unanswered=code=>Object.assign(Error(code),{code});
-for(const code of ['DEADLINE','NATIVE_UNAVAILABLE'])test(`a control read that ended ${code} counts as no controls, and a later read still claims and applies the steer`,async()=>{
+const nonanswers={DEADLINE:()=>unanswered('DEADLINE'),marked:()=>markAuthorityUnavailable(unanswered('NATIVE_UNAVAILABLE'))};
+for(const [kind,nonanswer] of Object.entries(nonanswers))test(`a ${kind} control nonanswer counts as no controls, and a later read still claims and applies the steer`,async()=>{
  const f=fixture({park:true}),read=f.runOwner.nextControls;let reads=0;
- f.runOwner.nextControls=async args=>{if(++reads===1)throw unanswered(code);return read(args);};
+ f.runOwner.nextControls=async args=>{if(++reads===1)throw nonanswer();return read(args);};
  assert.deepEqual(await f.execute({binding:f.binding}),{state:'completed'});
  assert(reads>=2);assert.equal(f.state.claims,1);assert.equal(f.state.messages[1].message.content,'Literal /command @file text');
- assert.deepEqual(f.state.acks.map(a=>a.outcome),['APPLIED']);
+ assert.deepEqual(f.state.messages.map(m=>m.uuid),[f.saved.request.requestId,f.entry.command.controlId]);
+ assert.deepEqual(f.state.acks.map(a=>a.outcome),['APPLIED']);assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);
 });
-test('control not answering in time is never fatal by count; reads back off 0.5, 1, 2 s and the steer still applies',async()=>{
+for(const [kind,nonanswer] of Object.entries(nonanswers))test(`${kind} control nonanswers are never fatal by count; reads back off 0.5, 1, 2 s and the steer still applies once`,async()=>{
  const f=fixture({park:true,runtimeMs:10000}),read=f.runOwner.nextControls,at=[];
- f.runOwner.nextControls=async args=>{at.push(Date.now());if(at.length<=3)throw unanswered('DEADLINE');return read(args);};
+ f.runOwner.nextControls=async args=>{at.push(Date.now());if(at.length<=3)throw nonanswer();return read(args);};
  assert.deepEqual(await f.execute({binding:f.binding}),{state:'completed'});
  const gaps=at.slice(1,4).map((t,i)=>t-at[i]);
  for(const [i,gap] of gaps.entries())assert(gap>=lifecycleReadBackoffMs(i+1)-20&&gap<lifecycleReadBackoffMs(i+1)+400,JSON.stringify(gaps));
- assert.equal(f.state.claims,1);
+ assert.equal(f.state.claims,1);assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);
+ assert.deepEqual(f.state.messages.map(m=>m.uuid),[f.saved.request.requestId,f.entry.command.controlId]);
+ assert.deepEqual(f.state.acks,[{controlId:f.entry.command.controlId,commandSha256:f.entry.commandSha256,outcome:'APPLIED',sdkUserMessageId:f.entry.command.controlId}]);
 });
-test('NATIVE_UNAVAILABLE reads are skipped at most twice in a row, so a refusal still ends the run on the third',async()=>{
- const f=fixture({runtimeMs:10000});let reads=0;
- f.runOwner.nextControls=async()=>{reads++;throw unanswered('NATIVE_UNAVAILABLE');};
- await assert.rejects(f.execute({binding:f.binding}));
- assert.equal(reads,LIFECYCLE_READ_UNAVAILABLE_LIMIT+1);assert.equal(f.state.claims,0);
- assert.equal(f.state.events.some(e=>e.data?.state==='completed'),false);
+for(const code of ['NATIVE_UNAVAILABLE','NATIVE_RESPONSE_INVALID','CANCELLED'])test(`an unmarked ${code} control refusal fails on the first read with its diagnostic cause intact`,async()=>{
+ const f=fixture(),refusal=unanswered(code);let reads=0;
+ f.runOwner.nextControls=async()=>{reads++;throw refusal;};
+ await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.equal(reads,1);assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);
+ assert.equal(f.state.failures[0].code,'LIFECYCLE_EXECUTION_UNKNOWN');assert.equal(f.state.failures[0].cause,refusal);
+ assert.equal(f.state.closed,1);assert.equal(f.state.events.some(e=>e.data?.state==='completed'),false);
+});
+test('a definitive native refusal after two marked misses stops immediately without another claim or UUID',async()=>{
+ const f=fixture({runtimeMs:5000}),refusal=unanswered('NATIVE_UNAVAILABLE');let reads=0;
+ f.runOwner.nextControls=async()=>{if(++reads<=2)throw nonanswers.marked();throw refusal;};
+ await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.equal(reads,3);assert.equal(f.state.failures[0].cause,refusal);assert.equal(f.state.claims,0);assert.deepEqual(f.state.acks,[]);
+ assert.deepEqual(f.state.messages.map(m=>m.uuid),[f.saved.request.requestId]);assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);
+});
+test('an original run deadline during nonanswer backoff stops the query before another read or control effect',async t=>{
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
+ const f=fixture({runtimeMs:100}),started=Date.now(),wallStarted=performance.now(),entered=Promise.withResolvers(),abort=new AbortController();let reads=0,settled=false,bodyFailure;
+ // Capture a real watchdog outside the frozen semantic clock. The same absolute
+ // ceiling covers reaching the reader, execution and failure cleanup.
+ let wallTimer;const wallTimeout=new Promise((_,reject)=>{wallTimer=realSetTimeout(()=>reject(Error('CONTROL_READ_WALL_TIMEOUT')),Math.max(0,500-(performance.now()-wallStarted)));});
+ wallTimeout.catch(()=>{});
+ f.runOwner.nextControls=async()=>{reads++;entered.resolve();throw nonanswers.marked();};
+ const executing=f.execute({binding:f.binding,signal:abort.signal});executing.then(()=>{settled=true;},()=>{settled=true;});
+ const executionOutcome=executing.then(()=>{throw Error('CONTROL_READ_EXECUTION_FINISHED');},cause=>{throw Error('CONTROL_READ_EXECUTION_FAILED',{cause});});
+ const rejected=assert.rejects(executing,/EXECUTION_STOPPED/);rejected.catch(()=>{});
+ try{
+  await Promise.race([entered.promise,executionOutcome,wallTimeout]);await new Promise(resolve=>setImmediate(resolve));
+  t.mock.timers.tick(99);await new Promise(resolve=>setImmediate(resolve));assert.equal(settled,false,'the run is live at99ms during the500ms backoff');
+  t.mock.timers.tick(1);await new Promise(resolve=>setImmediate(resolve));assert.equal(settled,true,'the original deadline stops the run at100ms');
+  await Promise.race([rejected,wallTimeout]);
+  assert.equal(reads,1);assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);
+  assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);assert(Date.now()-started<500);
+  assert(performance.now()-wallStarted<500,'the existing500ms wall-time ceiling remains independently enforced');
+  assert.deepEqual(f.state.events.at(-1).data,{state:'cancelled',reasonCode:'EXECUTION_STOPPED'});
+ }catch(error){bodyFailure=error;throw error;}
+ finally{
+  abort.abort();t.mock.timers.tick(1);
+  try{await Promise.race([rejected,wallTimeout]);}catch(error){if(!bodyFailure)throw error;}
+  finally{realClearTimeout(wallTimer);}
+ }
+});
+test('runtime expiry before lifetime installation preserves setup failure and never opens an SDK query',async t=>{
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
+ const f=fixture({runtimeMs:100}),execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:async args=>{
+  const runtime=await f.prepareRuntime(args);t.mock.timers.tick(100);return runtime;
+ },query:f.query,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},diagnostics:{failure:error=>f.state.failures.push(error)}});
+ await assert.rejects(execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.equal(f.state.failures[0].code,'DEADLINE');assert.equal(f.state.calls,0);assert.equal(f.state.closed,0);
+ assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);
+ assert.deepEqual(f.state.events.at(-1).data,{state:'failed',reasonCode:'EXECUTION_FAILED'});
+});
+test('a revoked task lease is a definitive native 403 after an authority miss, not another unavailable tick',async()=>{
+ const f=fixture(),cause=unanswered('PINNED_NATIVE_STATUS_403'),refusal=Object.assign(unanswered('NATIVE_UNAVAILABLE'),{cause});let reads=0;
+ f.runOwner.nextControls=async()=>{if(++reads===1)throw nonanswers.marked();throw refusal;};
+ await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.equal(reads,2);assert.equal(f.state.failures[0].cause,refusal);assert.equal(f.state.failures[0].cause.cause,cause);
+ assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);assert.equal(f.state.closed,1);
+});
+test('cancellation before SDK initialization closes without reading or claiming a control',async()=>{
+ const f=fixture(),abort=new AbortController(),opened=Promise.withResolvers();let reads=0,closed=0;
+ f.runOwner.nextControls=async()=>{reads++;return [f.entry];};
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},
+  query(){opened.resolve();return {async *[Symbol.asyncIterator](){await new Promise(()=>{});},close(){closed++;}};}});
+ const executing=execute({binding:f.binding,signal:abort.signal});await opened.promise;await new Promise(resolve=>setImmediate(resolve));abort.abort();
+ await assert.rejects(executing,/EXECUTION_STOPPED/);
+ assert.equal(reads,0);assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);assert.equal(closed,1);
+});
+test('a malformed control page is definitive after a marked authority miss',async()=>{
+ const f=fixture();let reads=0;
+ f.runOwner.nextControls=async()=>{if(++reads===1)throw nonanswers.marked();return {controls:[]};};
+ await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.equal(reads,2);assert.equal(f.state.failures[0].cause.code,'CONTROL_PAGE_REFUSED');assert.equal(f.state.claims,0);assert.equal(f.state.closed,1);
 });
 test('the read backoff is capped and never grows past five seconds',()=>{
  assert.deepEqual([1,2,3,4,5,6].map(lifecycleReadBackoffMs),[500,1000,2000,4000,5000,5000]);
@@ -101,15 +173,15 @@ for(const [name,port] of [['claim','claimControl'],['ack','ackControl']])test(`a
  await assert.rejects(f.execute({binding:f.binding}));
  assert.equal(f.state.events.some(e=>e.data?.state==='completed'),false);
 });
-test('a fenced read that does not answer stays fatal: a refused publication must find its hold',async()=>{
- const f=fixture({action:'pause'});let hold=false,claims=0;const stop=Promise.withResolvers();
- f.runOwner.nextControls=async()=>{if(hold)throw unanswered('DEADLINE');return [];};
+for(const [kind,nonanswer] of Object.entries(nonanswers))test(`a fenced ${kind} nonanswer stays fatal: a refused publication must find its hold`,async()=>{
+ const f=fixture({action:'pause'});let hold=false,claims=0,fencedReads=0;const stop=Promise.withResolvers();
+ f.runOwner.nextControls=async()=>{if(hold){fencedReads++;throw nonanswer();}return [];};
  f.runOwner.claimControl=async()=>{claims++;throw Error('no claim expected');};
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){hold=true;throw unanswered('NATIVE_UNAVAILABLE');}f.state.events.push(event);};
  const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query(){return {async *[Symbol.asyncIterator](){
   yield {type:'system',subtype:'init',session_id:f.sessionId};yield {type:'assistant',parent_tool_use_id:null,message:{id:'m1',content:[{type:'text',text:'refused'}]}};await stop.promise;},async interrupt(){return {still_queued:[]};},close(){stop.resolve();}};}});
  await assert.rejects(execute({binding:f.binding}));
- assert.equal(claims,0);assert.equal(f.state.records,0);
+ assert.equal(fencedReads,1);assert.equal(claims,0);assert.equal(f.state.records,0);
 });
 
 // Delta coalescing (activity.mjs foldDeltas): the SDK is read ahead while a publication is in flight, so these pin that a refusal,

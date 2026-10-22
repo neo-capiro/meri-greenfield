@@ -12,9 +12,12 @@ import {createOriginalReconciler} from '../original-stop.mjs';
 import {originalFacts,fakeEcs,syntheticAdmission,processAllocator} from '../native-authority/test/original-retirement-fixture.mjs';
 const check=()=>{};
 function publicStop(x,p){
- const f=x.f;let cancels=0;
- const service=createConversationLifecycleService({retention:null,service:f.service,store:f.store,sessions:f.sessions,checkpoints:f.checkpoints,reconcileOriginal:createOriginalReconciler({native:p.native,timeoutMs:5000}),maxRequestMs:5000,dispatcher:{...f.dispatcher,async cancel({binding}){assert.deepEqual(binding,x.binding);cancels++;return {workflow:'NOT_FOUND'};}}});
- return {cancel:()=>service.cancel({credential:f.credential}),cancels:()=>cancels};
+ const f=x.f,pending=[],reconciled=[];let cancels=0;
+ // Public Stop acknowledges the durable terminal fence before cleanup settles. Observe the real reconciler promise independently,
+ // as stop-races.test.mjs does; its rejection remains an UNKNOWN cleanup outcome and cannot turn the fence response into retirement.
+ const reconcile=createOriginalReconciler({native:p.native,timeoutMs:5000}),reconcileOriginal=input=>{const outcome=reconcile(input);pending.push(outcome.then(()=>reconciled.push('reconciled'),()=>reconciled.push('UNKNOWN')));return outcome;};
+ const service=createConversationLifecycleService({retention:null,service:f.service,store:f.store,sessions:f.sessions,checkpoints:f.checkpoints,reconcileOriginal,maxRequestMs:5000,dispatcher:{...f.dispatcher,async cancel({binding}){assert.deepEqual(binding,x.binding);cancels++;return {workflow:'NOT_FOUND'};}}});
+ return {cancel:()=>service.cancel({credential:f.credential}),cancels:()=>cancels,async drain(){await Promise.allSettled(pending);return [...reconciled];}};
 }
 async function crashed(t,{admitted=false,state='running'}={}){
  const o=originalFacts(),f=await lifecycleFixture(),binding=o.original.binding,key={binding,allocationKey:o.original.executionKey},ecs=fakeEcs(o.original,o.config.taskRequest),budget=syntheticAdmission(o),processes=[];let n=700,retirements=0;
@@ -56,14 +59,19 @@ test('re-entry after finite reconciliation exhaustion: once the stop owner recov
  const later=x.fresh();await x.stop(later);assert.equal((await x.terminals()).length,1);assert.equal(x.effects().stops,1,'a later process finds it settled without repeating the stop');assert.equal(p.allocations()+later.allocations(),0);assert.ok(x.retirements()>=4);});
 
 for(const state of ['running','failed'])test(`public Stop after a cold restart retires the ${state} original despite Temporal NOT_FOUND, without new authority`,async t=>{
- const x=await crashed(t,{state,admitted:true}),p=x.fresh(),stop=publicStop(x,p);
- assert.deepEqual(await stop.cancel(),{state:state==='running'?'cancelled':'failed'});assert.equal(stop.cancels(),1);assert.equal((await x.record()).state,'RETIRED');assert.equal((await x.record()).resource.physicalStopProven,true);assert.ok(x.ecs.stopped());
- assert.deepEqual((await x.terminals()).map(e=>e.data.reasonCode),[state==='running'?'USER_CANCELLED':'EXECUTION_FAILED']);assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});assert.equal(p.allocations(),0);
- const later=x.fresh();assert.deepEqual(await publicStop(x,later).cancel(),{state:state==='running'?'cancelled':'failed'});assert.equal((await x.terminals()).length,1);assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});assert.equal(later.allocations(),0);
+ const x=await crashed(t,{state,admitted:true}),p=x.fresh(),stop=publicStop(x,p),starts=x.f.state.starts;
+ assert.deepEqual(await stop.cancel(),{state:state==='running'?'cancelled':'failed'});assert.equal(stop.cancels(),1);
+ assert.deepEqual((await x.terminals()).map(e=>e.data.reasonCode),[state==='running'?'USER_CANCELLED':'EXECUTION_FAILED']);
+ assert.deepEqual(await stop.drain(),['reconciled']);assert.equal((await x.record()).state,'RETIRED');assert.equal((await x.record()).resource.physicalStopProven,true);assert.ok(x.ecs.stopped());
+ assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});assert.equal(p.allocations(),0);assert.equal(x.f.state.starts,starts);
+ const later=x.fresh(),repeat=publicStop(x,later);assert.deepEqual(await repeat.cancel(),{state:state==='running'?'cancelled':'failed'});assert.deepEqual(await repeat.drain(),['reconciled']);assert.equal(repeat.cancels(),1);
+ assert.equal((await x.terminals()).length,1);assert.equal((await x.record()).state,'RETIRED');assert.equal((await x.record()).resource.physicalStopProven,true);assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});assert.equal(later.allocations(),0);assert.equal(x.f.state.starts,starts);
 });
 
 test('public Stop preserves UNKNOWN on grant revocation failure; a repeated Stop after restart cleans up without redispatch',async t=>{
- const x=await crashed(t,{admitted:true}),p=x.fresh(),stop=publicStop(x,p);x.budget.state.revokeWorks=false;
- await assert.rejects(stop.cancel(),error=>error.code==='LIFECYCLE_STOP_UNKNOWN'&&error.outcome==='UNKNOWN');assert.equal(stop.cancels(),1);assert.notEqual((await x.record()).state,'RETIRED');assert.deepEqual((await x.terminals()).map(e=>e.data.reasonCode),['USER_CANCELLED']);assert.equal(p.allocations(),0);
- x.budget.state.revokeWorks=true;const later=x.fresh();assert.deepEqual(await publicStop(x,later).cancel(),{state:'cancelled'});assert.equal((await x.record()).state,'RETIRED');assert.ok(x.ecs.stopped());assert.equal((await x.terminals()).length,1);assert.equal(x.effects().runs,0);assert.equal(x.effects().admits,0);assert.equal(later.allocations(),0);
+ const x=await crashed(t,{admitted:true}),p=x.fresh(),stop=publicStop(x,p),starts=x.f.state.starts;x.budget.state.revokeWorks=false;
+ assert.deepEqual(await stop.cancel(),{state:'cancelled'});assert.equal(stop.cancels(),1);assert.deepEqual((await x.terminals()).map(e=>e.data.reasonCode),['USER_CANCELLED']);
+ assert.deepEqual(await stop.drain(),['UNKNOWN']);assert.equal((await x.record()).state,'ADMITTED');assert.ok(x.ecs.stopped(),'physical containment alone cannot prove grant retirement');assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:1});assert.equal(p.allocations(),0);assert.equal(x.f.state.starts,starts);
+ x.budget.state.revokeWorks=true;const later=x.fresh(),repeat=publicStop(x,later);assert.deepEqual(await repeat.cancel(),{state:'cancelled'});assert.deepEqual(await repeat.drain(),['reconciled']);assert.equal(repeat.cancels(),1);
+ assert.equal((await x.record()).state,'RETIRED');assert.equal((await x.record()).resource.physicalStopProven,true);assert.ok(x.ecs.stopped());assert.equal((await x.terminals()).length,1);assert.deepEqual(x.effects(),{runs:0,admits:0,stops:1,revokes:2});assert.equal(later.allocations(),0);assert.equal(x.f.state.starts,starts);
 });
