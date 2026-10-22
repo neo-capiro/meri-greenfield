@@ -43,7 +43,7 @@ const core=dictionary(CORE_ROUTES,statusCounts),aws=dictionary(AWS_OPERATIONS,di
 const exchanges=dictionary(['operation','capture','admission'],dictionary(['OPEN','OPERATION','POLL','REPLY'],number));
 const db=value=>({statements:number(value?.statements),ms:number(value?.ms)});
 const COMMON={service:choice(SERVICES),runId:safeId,attemptId:safeId,atMs:number};
-const COUNTERS={core,coreMs:number,clerkReadsEstimate:number,aws,awsMs:number,db,runOwner:dictionary(RUN_OWNER_OPERATIONS,statusCounts),runOwnerMs:number};
+const COUNTERS={core,coreMs:number,clerkReadsEstimate:number,authorityFresh:number,authorityReuses:number,aws,awsMs:number,db,runOwner:dictionary(RUN_OWNER_OPERATIONS,statusCounts),runOwnerMs:number};
 export const LINE_SCHEMAS=Object.freeze({
  'meri.turn.stage':{...COMMON,stage:choice(STAGES)},
  'meri.turn.summary':{...COMMON,conversationId:safeId,state:choice(['completed','failed','cancelled']),reasonCode:safeCode,
@@ -86,6 +86,7 @@ function metricsFor(event,line){
   if(background)line.Attribution='background';
   if(line.service==='runner'){add('RunOwnerCalls',sum(line.runOwner));add('RunOwnerMs',line.runOwnerMs,'Milliseconds');}
   else {add('CoreCalls',sum(line.core),'Count',dimensions);add('ClerkReadsEstimate',line.clerkReadsEstimate,'Count',dimensions);
+   add('CurrentAuthorityFresh',line.authorityFresh,'Count',dimensions);add('CurrentAuthorityReuses',line.authorityReuses,'Count',dimensions);
    add('AwsCalls',sum(line.aws),'Count',dimensions);add('DbStatements',line.db?.statements,'Count',dimensions);}
   if(background)add('TelemetryDropped',line.telemetryDropped);
  }else if(event==='meri.core.counters'){

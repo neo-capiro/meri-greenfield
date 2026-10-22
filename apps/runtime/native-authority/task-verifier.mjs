@@ -45,8 +45,13 @@ export function createNativeTaskVerifier(configuration){
    limit(fact.deadlineMs);return fact;
   }
   await snapshot();
-  const native=await life.run(signal=>identity({credential:c.identityCredential,signal,deadlineMs:cutoff}));limit(native.expiresAtMs);
-  const resolved=await life.run(signal=>context({identityCredential:c.identityCredential,identity:native,identitySha256:hash(native),hints:{conversationId:binding.conversationId,runId:binding.runId},signal,deadlineMs:cutoff}));limit(resolved.expiresAtMs);
+  const observe=async()=>{
+   const native=await life.run(signal=>identity({credential:c.identityCredential,signal,deadlineMs:cutoff}));limit(native.expiresAtMs);
+   const resolved=await life.run(signal=>context({identityCredential:c.identityCredential,identity:native,identitySha256:hash(native),hints:{conversationId:binding.conversationId,runId:binding.runId},signal,deadlineMs:cutoff}));limit(resolved.expiresAtMs);
+   return {native,resolved};
+  };
+  const withAuthority=Object.getOwnPropertyDescriptor(c.identityContext,'withAuthority')?.value;
+  const {native,resolved}=typeof withAuthority==='function'?await life.run(signal=>withAuthority({credential:c.identityCredential,binding,sessionFence:'task:'+grant.grantId,requireOrigin:true,hints:{conversationId:binding.conversationId,runId:binding.runId},fresh:input.operation!=='next-controls',signal,deadlineMs:cutoff},observe)):await observe();
   if(hash(resolved.binding)!==hash(binding)||resolved.identitySha256!==hash(native)||resolved.scopes.some(s=>s.policyRevision!==policy))throw taskFault('REFUSED');
   await snapshot();life.check();const checkedAtMs=now();
   const receipt={binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:c.identityCredential,scopes:resolved.scopes,

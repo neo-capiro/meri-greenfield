@@ -19,7 +19,7 @@ export const SESSION_BEARER='clerk_session_jwt_SYNTHETIC_2nT4kQ7vXbR9mWc3LpY8sHd
 export const SERVICE_SECRET='INTERNAL_SERVICE_SECRET_SYNTHETIC';
 export const CONTROL_CREDENTIAL='MARKED_CONTROL_CREDENTIAL_SYNTHETIC';
 const IDENTITY_REVISION='a'.repeat(64),CONTEXT_REVISION='d'.repeat(64),MEMBERSHIP_REVISION='e'.repeat(64);
-export const PATHS=Object.freeze({identity:'/api/clio/application-authority/identity',membership:'/api/clio/application-authority/membership',context:'/api/clio/application-authority/context'});
+export const PATHS=Object.freeze({current:'/api/clio/application-authority/current',identity:'/api/clio/application-authority/identity',membership:'/api/clio/application-authority/membership',context:'/api/clio/application-authority/context'});
 
 /** Golden Core receipts for the fixture principal at Meri time `at`. */
 export function coreVectors(at,state){
@@ -27,6 +27,7 @@ export function coreVectors(at,state){
  return {
   identity:{principal,identityRevision:state.identityRevision??IDENTITY_REVISION,checkedAtMs:at,expiresAtMs:at+60000},
   membership:{tenantId:principal.tenantId,actorId:principal.actorId,status:state.membershipStatus??'active',role:state.role??'standard_user',permissions:['memory.propose.firm'],clientIds:[...(state.clientIds??[CLIENT])],membershipRevision:MEMBERSHIP_REVISION,checkedAtMs:at,expiresAtMs:at+60000},
+  current:body=>({principal,role:state.role??'standard_user',permissions:['memory.propose.firm'],clientIds:[...(state.clientIds??[CLIENT])],identityRevision:state.identityRevision??IDENTITY_REVISION,membershipRevision:MEMBERSHIP_REVISION,contextRevision:CONTEXT_REVISION,conversationId:body.conversationId,selectedClientId:state.contextClient??body.clientId,checkedAtMs:at,expiresAtMs:at+60000}),
   context:body=>({identitySha256:body.identitySha256,principal,identityRevision:state.identityRevision??IDENTITY_REVISION,conversationId:body.conversationId,selectedClientId:state.contextClient??body.clientId,contextRevision:CONTEXT_REVISION,checkedAtMs:at,expiresAtMs:at+60000}),
  };
 }
@@ -45,7 +46,8 @@ export function fixture(options={}){
   if(bearer!==state.session?.credential&&bearer!==state.acceptedBearer)return Response.json({statusCode:401,message:'Unauthorized'},{status:401});
   if(state.status[path]!==undefined)return Response.json({statusCode:state.status[path],message:'refused'},{status:state.status[path]});
   const vectors=coreVectors(now(),state);
-  const value=path===PATHS.identity?vectors.identity:path===PATHS.membership?vectors.membership:path===PATHS.context?vectors.context(body):null;
+  if(path===PATHS.current&&state.membershipStatus&&state.membershipStatus!=='active')return Response.json({}, {status:403});
+  const value=path===PATHS.current?vectors.current(body):path===PATHS.identity?vectors.identity:path===PATHS.membership?vectors.membership:path===PATHS.context?vectors.context(body):null;
   if(value===null)return Response.json({statusCode:404,message:'Cannot POST '+path},{status:404});
   state.mutate?.(value,path,state.core.length);
   return state.respond?.(value,path)??Response.json(value);
