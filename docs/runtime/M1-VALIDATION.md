@@ -2,7 +2,7 @@
 
 Brief: [Fable M1 runtime, comment 6329870986](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6329870986).
 Base: `eb6579204f495eb35140f4e1cb013b641913da5f`; tree: `3d21c62f6cabacf0cc21378f887f2e55c281bffc`.
-Branch: `feat/meri-m1-runtime`. This is a draft source-validation checkpoint, not completion of every M1 ticket or release acceptance. The deduplicated combined checkpoint below remains **not green**. Its one failure has a bounded investigation receipt; the later MR-01 correction has separate focused qualification.
+Branch: `feat/meri-m1-runtime`. This is a draft source-validation checkpoint, not completion of every M1 ticket or release acceptance. The deduplicated combined checkpoint below remains **not green**. Its one failure has a bounded investigation receipt; the later MR-01 and MX-13 corrections have separate focused qualification.
 
 ## Evidence boundary
 
@@ -27,8 +27,9 @@ Counts below are per-ticket suite results. Do not sum them: E12 repeats MR-02's 
 | Candidate 9 running assertion / C10 router TLS | Existing composed admission **2/2** with `PATH=/missing`; base passes 2/2 with OpenSSL and fails to load without it. | Unrelated refusal and foreign leaf SAN mutations killed. No new test cases. Node-only throwaway certificates preserve real TLS checks. `followups/summary.json`. |
 | Native restorer PG fixture | Transition-authority/retirement seeding repaired; syntax checked. | **Fable-run** native PostgreSQL 16 suite; no SQL executed locally. |
 | MX-13 restart fixture | **8/8 head**, versus **5 pass / 3 fail** on exact base. | Three mutations killed across all three changed cases. The public cancellation response proves a durable fence; tests separately drain real cleanup and require physical-stop/revocation evidence. UNKNOWN remains unretired. `mx13-restart/summary.json`, `mx13-restart/justification.md`. |
+| MX-13 continuation fixture | Original exact-base fixture **3 pass / 4 fail** with `LIFECYCLE_CONFIGURATION`; corrected fixture **7/7 over exact-base modules and 7/7 M1 source**. | Four directed mutations killed across the four affected cases. The fixture supplies the already-required reconciler, proves it is unused for continuation, and asks the canonical current-run owner instead of keeping a historical source current. Exact `SESSION_REFUSED` preserves durable `APPLIED` readback and all no-extra-effect assertions. No production change. `mx13-lifecycle-continuation/summary.json`, `run-receipts.json`, `mutation-results.json`. |
 | MR-09 provider accounting | Source inventory/handoff only; no proxy/accounting qualification result claimed here. | **Blocked owner handoff:** provider terminal/EOF/usage matrix, proxy-death custody and exact historical settlement `readOutcome`; UNKNOWN must retain liability. No proxy/gateway edits in M1. |
-| MX-13 regression receipt | Existing EX-06 receipt/inventory machinery reused. | Global inventory repair remains a separate shared-manifest draft under [clarification 6330636339](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6330636339); see gates below. |
+| MX-13 regression receipt | Existing EX-06 receipt/inventory machinery reused. | Separate shared-manifest draft [#207](https://github.com/neo-capiro/meri-greenfield/pull/207) accounts for all 193 gaps; see gates below. |
 
 MR-06 and M1-X1 public integration is tracked by [owner handoff 6330070395](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6330070395). An internal source pass does not close that handoff.
 
@@ -190,6 +191,9 @@ PATH=/missing /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/no
 # Recorded source checks; these do not execute PostgreSQL.
 node --check apps/runtime/native-authority/test/native-restorer-pg.test.mjs
 npm --prefix apps/runtime run typecheck
+
+# MX-13 continuation fixture: 7, qualified separately after the combined run.
+node --test --test-concurrency=1 --test-timeout=20000 apps/runtime/product-ports/test/lifecycle-continuation.test.mjs
 ```
 
 MR-02's original adjacent command also named a nonexistent `commands.test.mjs`; Node ran the two existing suites (seven cases). The real continuation suite was then explicitly run (43). Do not count that missing selector as a pass. MR-06's parallel timing failures and MR-08's initial loader/short-window fixture failures are retained in their evidence; final serial/corrected fixture results above do not erase them or change production deadlines.
@@ -214,9 +218,28 @@ These are named source witnesses and explicit blockers, not claims of live accep
 
 - **P1 first:** rebase M1 only after P1 merges onto the coordinated main; fix conflicts and rerun selected gates at that exact head. No rebase or shipping claim is made here.
 - **Zero P1/cross-lane collisions:** current diff from the brief base has no changes under `apps/proxy/product`, `apps/gateway/budget` or `packages/contracts`. Recheck before publication and after rebase.
+- **Later FORECLOSED receipt policy:** [Fable proposal 6330762076](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6330762076) would use the verified foreclosure event time as `expiresAtMs` when no original exists. That changes this field's meaning; [clarification 6330843533](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6330843533) requests Neo's semantic confirmation. The proposal is read, but no such code or contract change is included while that decision is held.
 - **MX13-I1 inherited inventory drift:** the initial sparse-filesystem scan found 1,376 files and 192 uncovered. Exact full-tree enumeration corrected this to **1,377 files: 948 covered, 236 excluded, 193 uncovered**. The missing file was the sparse retained-package `infra/product-preview/runtime-packages/complete-pending-additions.test.mjs`. All 15 runtime product-port test files and `prepared-candidate.test.mjs` are uncovered. The earlier runtime-only split and owner-routing question are superseded by [clarification 6330636339](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6330636339): all **193 uncovered files** may be classified in a separate EX-06 shared-manifest repair draft. Runtime execution is assigned for **123 runtime-owned files**; execution for the **70 other-owner or ownership-uncertain files** remains held for their owners. Outside-lane permission is manifest classification only, with **no product edits** or expansion of execution/file ownership. No replacement runner or silent exclusion.
 - **Ledger-load classification:** `apps/control/conversations/test/run-budgets-load.test.mjs` passed **3/3 exact-base and 3/3 head**. No failure reproduced. This is a scripted SQL fixture, not an external PostgreSQL prerequisite; see `mr08-terminal/budgets-receipt.json`.
 - **Fable-run:** nonroot Linux PostgreSQL 16, real transaction/process ACK loss, native restoration, task absence/grant revocation, Docker/pinned runtime/proxy image, actual SDK/CLI closure, current Core identity, service-backed history/stream and authorized cloud/live-provider gates. No SQL/AWS/merge/deployment execution is authorized to this agent by these commands.
 - **Separate owner gates:** public history/lifecycle/initial-input generators and package provenance through the contracts owner; Python provider-terminal accounting through MR-09's owner. Offline checkpoint synthesis/security is a separate gate and is not included in the Node counts above.
 
-The combined checkpoint remains **344/345**, with the isolated timing investigation retained separately. The later cached-generic MR-01 correction is qualified by its focused 44-case result and directed mutant, not by the earlier combined run. Public/accounting handoffs, native gates and the named historical-custody boundaries remain open. This ledger must not be used to mark every ticket closed.
+EX-06 draft [#207](https://github.com/neo-capiro/meri-greenfield/pull/207), head
+`7d50f9a4a3edbb043adfdf7e158e78609ba6e850`, changes only the suite manifest.
+Its inventory is **1,377 files: 1,141 covered, 236 existing exclusions, zero gaps**;
+the inventory suite passes **5/5**. Serial execution of the 123 newly covered runtime
+files on exact base recorded **1,775 pass / 10 fail / 6 skipped**. Restoring missing
+exact-base retained APK/index blobs resolved one fixture failure in a separately
+recorded **1/1** targeted rerun; nine base failures across five files remain in that
+PR's historical report. Four are the continuation fixture corrected above; five
+are deadline-sensitive findings, not confirmed flakes. The other 70 files are
+classified only and remain unrun; native prerequisites are Fable-run. No base
+failure was excluded, and no test or source fix is bundled in #207.
+
+The continuation fixture has SHA-256
+`375f5b8433a059ed17f00fb4d0eb7b39ba55829fc2939c673555f25b8ba8b323`.
+Its qualified local commit is `dcc70fb854cf07aef66cb3c8abaa6f7786e5d9e0`, tree
+`b0a18409c4c549c12a3f9c2eb2b80c37c68ef5fd`. The exact-base-module run retains
+this candidate test; it does not replace #207's pristine-base failure receipt.
+
+The combined checkpoint remains **344/345**, with the isolated timing investigation retained separately. The later cached-generic MR-01 correction and MX-13 continuation fixture are qualified by their focused results and directed mutants, not by the earlier combined run. Public/accounting handoffs, native gates and the named historical-custody boundaries remain open. This ledger must not be used to mark every ticket closed.
