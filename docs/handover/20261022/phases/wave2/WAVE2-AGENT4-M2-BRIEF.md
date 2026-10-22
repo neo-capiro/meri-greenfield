@@ -32,6 +32,16 @@ The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets b
 ## Neo's decision 2
 General chats read across the clients a user can see, with walls enforced per result. Keep it simple: if letting actions span clients is easier, that's fine. No new authorization machinery.
 
+## UI libraries for this phase (FINAL-PLAN §10, Neo 2026-10-22)
+
+- AI Elements: Conversation, Message, PromptInput, Suggestion (masters `337:34389`, `337:34390`, `340:34888`)
+- cmdk: Meri search and command palette (01.05 `1064:144529`, 01.05A `3034:37943`), conversation switching (MF-09)
+- Motion: Artifact workspace panel (`358:35394`), workspace rail (`350:35446`), history filter menus. **No Figma motion spec yet:** agent 4 adds durations, easing and enter/exit to 06 · Shared UI patterns (`1103:280888`) before building. Honour Reduced motion (09.01)
+- Animate UI: Animated icon button (`1103:280937`) for send, stop, copy and regenerate
+- Sonner: Copied, Conversation deleted overlays ("Capiro 3.4 / Library patterns / Sonner …"), shown only after the receipt
+- Fonts: Geist Sans and Geist Mono; Newsreader only where Figma uses it
+- Rules: Figma first, pinned versions and licenses, one library per pattern, lazy-load heavy libraries, receipts decide success (§10.4).
+
 ## Tickets (verbatim)
 #### MF-09 — Add conversation management only after its public contract (P1 core history; P2 optional destructive actions)
 

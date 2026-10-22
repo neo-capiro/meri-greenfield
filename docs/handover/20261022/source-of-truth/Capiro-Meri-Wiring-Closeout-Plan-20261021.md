@@ -4347,3 +4347,22 @@ A capability can be **source-complete, activation-held**; it cannot be called de
 - Representative model quality, actual Office/PDF usability, current end-to-end mail/calendar connection, exact revocation latency, concurrency/scaling and disaster recovery require the stated separately approved acceptance.
 - Product decisions remain for the semantics of unsupported fixture actions, model/provider alternatives, broad mutation scope, advanced workflows and configuration adoption. Original full-product thresholds remain the baseline; a changed threshold qualifies only an explicitly named limited release unless the user approves a product-scope change. Choosing a smaller release is not completion of deferred rows.
 - The plan closes known source and lifecycle gaps at implementation-ready depth; it does not claim exhaustive runtime execution or guarantee absence of every defect.
+
+---
+
+## Addendum A: UI library and font stack (Neo, 22 October 2026)
+
+Neo approved this UI stack. It **extends** the component-adoption rule (GF-02: "adopt SDK/AI Elements …") and the AI Elements/shadcn reuse rule; it changes no ticket text above. The full table (purpose, Figma node IDs, code status, waves) and the rules are in FINAL-PLAN §10. Rules in brief: Figma first, where a library has no Figma reference; pin versions, hashes and licenses, with free tiers only unless Neo approves; one library per pattern; lazy-load heavy libraries; honour Reduced motion; receipts, not toasts or charts, decide success. Fonts: **Geist Sans** (interface), **Geist Mono** (IDs and numbers), **Newsreader** (editorial and document headings).
+
+| Ticket(s) | Library to use |
+|---|---|
+| MF-01, MF-02, MF-06, MF-07, MF-09, MF-10 (chat, history, switching) | AI Elements (Conversation, Message, PromptInput), cmdk (search and command palette 01.05), Motion (panels and menus), Animate UI (composer and message icon actions), Sonner (copy, conversation deleted) |
+| MF-16 (citations and evidence) | AI Elements Sources and InlineCitation; Media Chrome + Vidstack for hearing citations at a timestamp |
+| MF-03, MF-04, MF-05, MF-12, MF-13 (approvals) | AI Elements Confirmation; coss ui for approval and action lists (Meri · Action table); Sonner (task created) |
+| MF-14, MF-15, MF-19, MM-08 to MM-19, MB-04 (artifacts and documents) | AI Elements Artifact, Attachments and FileTree; Plate (artifact editor and revision); Recharts (chart artifacts, report deliverables MM-16); Sonner (artifact filed, export ready) |
+| MF-17, MM-01 to MM-07 (memory) | coss ui (memory review lists and panels) |
+| MF-11, MF-18, MR-03, MR-04, MR-10 (runs and routines) | AI Elements Plan, Task and Queue; Schedule-X (routine schedules); Kibo UI (run boards); coss Origin (run history) |
+| MO-06 (LegiWatch watches) | Media Chrome + Vidstack (hearing playback) |
+| MP (model choice; FINAL-PLAN phase) | ReUI Cascader (provider → model → reasoning level picker) |
+| M8 graph views | React Flow |
+| MF-20, MG-03 (keyboard, mobile, Figma reconciliation) | Verify every library component against its Figma master; Reduced motion honoured |

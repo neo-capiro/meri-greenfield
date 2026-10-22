@@ -12,6 +12,12 @@ The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets b
 ## Neo's decision 9 (plan §8)
 Keep the current Claude model on Bedrock **and add the Claude API as a second code path, with every model and reasoning level selectable** (a default in Settings, plus a per-conversation picker). SDK upgrades still need the transcript-recap handover first (O103).
 
+## UI libraries for this phase (FINAL-PLAN §10, Neo 2026-10-22)
+
+- ReUI Cascader: provider → model → reasoning-level picker for the Settings default and the per-conversation picker (masters `563:44165`, `563:44221`, `563:44282`; review `563:44623`). Agent 4 builds the picker UI in lane U; agent 2 owns the proxy and model paths
+- Sonner: model default saved, only after the receipt
+- Rules: Figma first, pinned versions and licenses, one library per pattern, lazy-load heavy libraries, receipts decide success (§10.4).
+
 ## Acceptance
 - The whole-flow chat check passes on both paths.
 - Switching model or provider mid-conversation works.

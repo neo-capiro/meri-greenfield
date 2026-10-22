@@ -3511,3 +3511,25 @@ This audit is exhaustive at the enumerated source route/action-family inventory 
 
 These limits are verification tasks with clear owners, not permission to declare the requested product fully wired before acceptance.
 
+---
+
+## Addendum A: UI library and font stack (Neo, 22 October 2026)
+
+Neo approved this UI stack. It **extends** the component-adoption rule (GF-02: "adopt SDK/AI Elements …") and the AI Elements/shadcn reuse rule; it changes no ticket text above. The full table (purpose, Figma node IDs, code status, waves) and the rules are in FINAL-PLAN §10. Rules in brief: Figma first, where a library has no Figma reference; pin versions, hashes and licenses, with free tiers only unless Neo approves; one library per pattern; lazy-load heavy libraries; honour Reduced motion; receipts, not toasts or charts, decide success. Fonts: **Geist Sans** (interface), **Geist Mono** (IDs and numbers), **Newsreader** (editorial and document headings).
+
+| Ticket(s) | Library to use |
+|---|---|
+| ST-05, ST-06, ST-20 (Team, invitations, HQ broadcasts) | coss ui (tables and panels on shadcn primitives) |
+| ML-11, ML-12, ML-17 (mail connections) | coss ui; Sonner (connection disconnected) |
+| ML-13 to ML-15 (sync and reconnect history) | coss Origin (vertical timeline) |
+| ML-14 (partial health and backfill progress) | Recharts |
+| ST-19 (feedback) | Sonner (problem report sent), only after the real receipt |
+| PF-07 (Objective associations), PF-14 (Quick Log) | ReUI Cascader (client → objective → commitment) |
+| PF-16 (Files multi-select), PF-18 (prospect conversion) | coss ui (tables and cards) |
+| WS-05 to WS-21 (Workspace documents, rich newsletters) | Plate (replaces the custom document and workbook editors) |
+| PF-25, ML-20 (Timeline reply) | coss Origin |
+| PF-06, PF-15 (Objective Planner, Strategy projection) | Kibo UI (Gantt, Kanban, list, milestone) |
+| PF-20 (government forecast calendar) | Schedule-X |
+| A5 facilities map, prospect and district geography (product contracts) | MapLibre + react-map-gl (Figma map frame first; Map marker master exists) |
+| Portfolio relationships (existing) | React Flow (in use) |
+| All screens | shadcn/ui foundation, Lucide icons, Motion for sheets, dialogs and popovers (Reduced motion honoured) |

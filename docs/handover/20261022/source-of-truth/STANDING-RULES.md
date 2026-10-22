@@ -145,3 +145,7 @@ A supported feature/action is closed only when all relevant layers are proven. A
 - Source, fixture, real DB, deployed and provider-live evidence tiers are labeled separately. Every relevant negative/failure case passes or the feature stays explicitly held.
 - Existing architecture/tests/security holds are preserved; no unrelated rewrite or donor duplication was introduced.
 - Merge, migration, deployment, provider permission and actual send/share actions have the required separate owner authorization. None is authorized or performed by this plan.
+
+## UI library and font stack (Neo, 22 October 2026)
+
+Build UI with the approved stack in FINAL-PLAN §10: AI Elements, Plate, Schedule-X, React Flow, Kibo UI, ReUI Cascader, coss Origin, coss ui, shadcn/ui, Recharts, Motion, Animate UI, Sonner, cmdk, MapLibre + react-map-gl, Media Chrome + Vidstack, Lucide; fonts Geist Sans, Geist Mono, Newsreader. Use the library assigned to your ticket (Closeout plan Addendum A). Figma first: where a library has no Figma reference, the UI lane adds it before you build it. Pin versions, hashes and licenses, with free tiers only unless Neo approves. One library per pattern, and replace the custom code it supersedes. Lazy-load heavy libraries. Honour Reduced motion. Receipts, not toasts or charts, decide success.

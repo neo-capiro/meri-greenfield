@@ -12,6 +12,17 @@ The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets b
 ## Standing decisions
 No Workspace approvals (O143). No new email functionality (Neo, 10-21). ML-09 skip-and-continue (O146). Schema changes need an idempotent, forward-safe migration (the one-database rule, O175).
 
+## UI libraries for this phase (FINAL-PLAN §10, Neo 2026-10-22)
+
+- coss ui: tables and panels for ST-05, ST-06, ST-20, ML-11, ML-12, ML-17, PF-16, PF-18. **Not in Figma yet:** add coss-ui-based table, card and panel masters to the Components page first; use shadcn where it already covers the pattern
+- coss Origin: sync and reconnect history (ML-13 to ML-15), using Timeline event · coss icon vertical (`284:31060`)
+- Recharts: ML-14 health and backfill progress, deterministic data only
+- ReUI Cascader: PF-07 Objective associations, PF-14 Quick Log (client → objective → commitment), using masters `563:44165`, `563:44221`, `563:44282`
+- Sonner: ST-19 problem report sent, ML-17 connection disconnected, preferences saved, only after the receipt
+- Motion: sheets, dialogs and popovers in Settings and Portfolio. Honour Reduced motion
+- Fonts: Geist Sans, Geist Mono; Newsreader for Portfolio editorial headings (existing)
+- Rules: Figma first, pinned versions and licenses, one library per pattern, lazy-load heavy libraries, receipts decide success (§10.4).
+
 ## Tickets (verbatim)
 #### ST-03 — Make Settings honest and usable in read-only preview (P1, CONFIG + concrete query defect)
 

@@ -171,6 +171,8 @@ The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace 
 | 6 (weeks 14–16) | M8 | M6 memory and preferences | M6 screens | A5 | M6, then **L2 internal tenant** |
 | 7 (weeks 17+) | M8 | M8 | M8 screens | A5 | L3 first customers, then L4 |
 
+**UI libraries by wave:** see §10.3. Each phase adopts the libraries assigned to it, Figma first (§10.4).
+
 **Staging (A0) is deferred.** A1–A3 merge and ship as far as the restricted preview allows. Live checks for actions (M4 onward) and the app's write features need staging, so Fable will raise decision 1 again at the start of Wave 3.
 
 - **Can always run together:** lanes R, D, U and A, because they edit different files.
@@ -256,3 +258,58 @@ E01–E04 Phase 0 · E05–E12 M1 (E08, E09 also in Phase 0) · E13–E17 M4 · 
   - transcript-recap handover before any SDK upgrade (O103);
   - alarm email routing.
 - **S4 decision:** the capirov2 comparison, on hold.
+
+## 10. UI library and font stack (Neo, 22 October 2026)
+
+Neo named these libraries and fonts as the approved UI stack. Each one is assigned below to the phase and wave that builds its feature. The Figma column points at the reference in "Capiro 3.4 — Meri" (`IXJzJUkXcUTkySHir5JNea`). Where Figma has no reference, the row gives Fable's recommended placement, and **the UI lane adds the Figma master or frame first** (§10.4). Code status is capiro-frontend `main` `e5f1f263` (22 October).
+
+### 10.1 Libraries
+
+| Library | Purpose | Figma reference | In code today | Where it applies (phase · wave · tickets) |
+|---|---|---|---|---|
+| **AI Elements** | Meri chat, tools, sources and artifacts | Masters: Prompt Input `337:34389`, Suggestion `337:34390`, Source `337:34392`, Tool `337:34425`, Plan step `337:34443`, Confirmation `340:34887`, Message user `340:34888`, Skill suggestion `338:34356`. Screen: Meri · Review map `1064:143241` | **Yes** (`packages/ui/src/ai-elements`, `packages/meri-client`) | M1 (done). **M2** chat shell and conversation switching (MF-09), Wave 2. **M3** Source and InlineCitation (MF-16), Wave 3. **M4** Confirmation for approvals (MF-03 to MF-05, MF-12), Wave 4. **M5** Artifact, Attachments and FileTree (MF-14, MF-15), Wave 5. **M7** Plan, Task and Queue for runs (MF-11, MF-18), Wave 5 |
+| **Plate** | Document drafting and editing | Masters: Plate toolbar `526:43330`, Floating selection `526:43331`, Block menu `526:43373`, Meri revision `526:43409`, Comment thread `526:43441`. Screens: 13.24–13.28 document comments, Document overlay · blocks `1064:150601` | No (custom `DocumentEditor` / `WorkbookEditor`) | **A3** Workspace documents and rich newsletters (WS-05 to WS-21, especially WS-15 to WS-17), Wave 3. **M5** artifact editor and natural-language revision (MM-09 to MM-19, MB-04), Wave 5. Replaces the custom editors; it doesn't run alongside them |
+| **Schedule-X** | Calendars and schedules | Calendar event · Schedule-X `293:31360`, Calendar week event `313:32568` | **Yes** (both `CalendarGrid`s) | Existing Portfolio and Modules calendars. **A5** government forecast calendar (PF-20), Wave 5–6. **M7** routine schedules (MF-11, MF-18, MR-03), Wave 5 |
+| **React Flow** | Organization charts and hierarchies | Org person · React Flow `300:31334` | **Yes** (Portfolio `OrganizationChart`) | Existing Portfolio relationships. **M8** graph views (M8 row "Graph"), Wave 6–7 |
+| **Kibo UI** | Roadmaps, Gantt and Planner boards | Gantt bar `542:43607`, Kanban card `542:43644`, Group header `542:43701`, List row `542:43765`, Milestone `542:43784`; review `542:43793` | No (custom planner and roadmap) | **A5** Governed Objective Planner and Strategy intake (PF-06), Strategy projection on target cards (PF-15), Wave 5–6. **M7** routine and run boards (MF-11), Wave 5. Replaces the custom planner and roadmap views |
+| **ReUI Cascader** | Hierarchical selectors | Trigger `563:44165`, Option `563:44221`, Panel `563:44282`; review `563:44623` | No | **MP** provider → model → reasoning-level picker (Settings default plus per-conversation), Wave 2. **A2** Objective association authoring (PF-07) and Quick Log client → objective → commitment selection (PF-14; Figma "Overlay · Quick log · Client · Objective menu" `1064:141773`), Wave 2 |
+| **coss Origin** | Vertical timelines | Timeline event · coss icon vertical `284:31060`; Advocacy history compact vertical event `414:80880`; Timeline item `20:453` | No (custom timelines) | **A2** mail sync and reconnect history in Settings (ML-13 to ML-15), Wave 2. **A4** Timeline reply (PF-25, ML-20), Wave 4. **M7** run history (MF-11), Wave 5 |
+| **coss ui** | Cards, panels and tables | **Not in Figma.** Recommended: the table, card and panel masters on the Components page. Meri · Action table `353:35383` is the closest existing pattern | No | **A2** Settings tables and panels (Team and invitations ST-05, ST-06; HQ broadcasts ST-20; mail connections ML-11, ML-12, ML-17) and Portfolio cards and tables (Files multi-select PF-16, prospect conversion PF-18), Wave 2. **M4** approval and action lists (MF-03 to MF-05), Wave 4. **M6** memory review lists (MF-17, ST-07 to ST-13), Wave 6. **Rule:** use coss ui only for a card, panel or table pattern that shadcn doesn't already cover, so that one library owns each pattern |
+| **shadcn/ui** | Shared interface foundation | **Not named in Figma.** Recommended: tag the Component sheet masters (`4:2`, `12:338`) and Capiro 3.1 shared header and sidebar with their shadcn component names during MG-03 | **Yes** (`radix-ui` 1.7, `packages/ui/src/shadcn`) | Every phase. Primitives such as Button, Dialog, Sheet, Popover, Command, Tabs and Form come from shadcn |
+| **Recharts** | Charts and reporting | Artifact card Type=Chart Ready / Generating / Error `350:35125`–`350:35127`; Funding visual View=Chart `353:35322`. Screens: 03.04 Spreadsheet preview `1064:145539`, 03.04A `3026:32155` | No (custom charts) | **A2** mail partial health and backfill progress (ML-14), Wave 2. **M5** chart artifacts and report deliverables (MM-08 chart correctness, MM-16), Wave 5. Charts render deterministic data only (GF rule) |
+| **Motion** | Layout and panel motion | **Not in Figma.** Only the "Reduced motion" preference exists: 09.01 Personal preferences `3022:29587`, 10.33 `3033:32256`, 10.34 `3033:32515`. Recommended: add a motion spec (durations, easing, enter/exit) to **06 · Shared UI patterns** `1103:280888` | No | **M2** Meri workspace: artifact panel open/close (Artifact workspace `358:35394`), workspace rail collapse (`350:35446`), history filter menus (13.21, 13.22), streamed tool and plan-step layout changes; Wave 2. **A2** app shell sheets, dialogs and popovers, Wave 2. **Must honour** the Reduced motion preference and `prefers-reduced-motion` |
+| **Animate UI** | Animated icon controls | Animated icon button `1103:280937` (06 · Shared UI patterns; review `1103:280953`) | No | **M2** composer and message actions (send, stop, copy, regenerate) and sidebar toggles, Wave 2. Honours Reduced motion |
+| **Sonner** | Toast notifications | About 15 prototype overlays using "Capiro 3.4 / Library patterns / Sonner …": Copied, Saved, Download ready, Conversation deleted, Research account connected, Task created, Artifact filed, Preferences saved, Connection disconnected, Problem report sent, Export ready, Deletion requested, Signed out, Quick log · Logged | No (custom toasts) | **M2** copy and conversation deleted, Wave 2. **A2** Settings outcomes (feedback sent ST-19, connection disconnected ML-17, preferences saved), Wave 2. **M4** task created, Wave 4. **M5** artifact filed, download and export ready, Wave 5. **Rule (existing):** a toast never signals completion on its own; completion comes from the server receipt, with no placeholder success |
+| **cmdk** | Search and command palettes | 01.05 Search and command palette `1064:144529`; 01.05A no matches `3034:37943`; Global search overlays desktop `1064:141068`, tablet `1064:141241`, phone `1064:141406` | **Yes** (through shadcn `command.tsx`) | **M2** Meri search, command palette and conversation switching (MF-09), Wave 2. Global sidebar search when its live search is enabled (parity list) |
+| **MapLibre + react-map-gl** | Maps | Map marker `20:461` (sheet `20:454`) and `icon/map-pin` `20:382` only; **no map screen** | No | Recommended: **client facilities map** on the Portfolio client profile (facilities and geocoding already exist), and prospect and district geography, in **A5** (product contracts), Wave 5–6. The UI lane designs the map frame using the Map marker master first. Lazy-load per route |
+| **Media Chrome + Vidstack** | Hearing media controls | **Media Chrome:** Modules / Media Chrome / Hearing player `955:186700`, `1064:267525`. **Vidstack: not in Figma** | No | Hearing playback: **M3** citations that open a hearing at its timestamp (MF-16), Wave 3. **M4** LegiWatch watches (MO-06), Wave 4. Recommended split: **Media Chrome supplies the controls Figma specifies; Vidstack supplies the playback engine** (HLS providers, captions, keyboard). If they conflict, Media Chrome's UI wins because Figma specifies it. Lazy-load |
+| **Lucide** | Icons | 50 `icon/*` masters on the Components page, used on 223 prototype screens | **Yes** (`lucide-react` 0.577) | Every phase |
+
+### 10.2 Fonts
+
+| Font | Use | Figma | Code |
+|---|---|---|---|
+| **Geist Sans** | All interface text | 15,218 text layers | **Yes** (`geist` package, root layout) |
+| **Geist Mono** | IDs, code, numeric and tabular values | 273 text layers | **Yes** |
+| **Newsreader** | Editorial and document headings (Portfolio, artifacts, documents) | 78 prototype text layers plus 50 on components | **Yes** (self-hosted variable font; `--font-newsreader`) |
+
+### 10.3 Libraries by wave (added to §6)
+
+| Wave | New library adoption |
+|---|---|
+| 1 (done) | AI Elements, shadcn/ui, Schedule-X, React Flow, cmdk, Lucide, Geist Sans/Mono, Newsreader (already in code) |
+| 2 | **M2:** Motion, Animate UI, Sonner (plus AI Elements and cmdk). **MP:** ReUI Cascader. **A2:** coss ui, coss Origin, Recharts (ML-14), ReUI Cascader, Sonner, Motion |
+| 3 | **A3:** Plate. **M3:** Media Chrome + Vidstack (hearing citations), AI Elements Source and InlineCitation |
+| 4 | **M4:** AI Elements Confirmation, coss ui approval lists, Sonner. **A4:** coss Origin Timeline reply. LegiWatch hearing playback (MO-06) |
+| 5 | **M5:** Plate (artifacts), Recharts (chart artifacts). **M7:** Schedule-X routine schedules, Kibo UI run boards. **A5:** Kibo UI (PF-06, PF-15), Schedule-X forecasts (PF-20), MapLibre + react-map-gl (facilities and geography) |
+| 6–7 | **M6:** coss ui memory lists. **M8:** React Flow graph views |
+| L1 | **MG-03 Figma reconciliation** confirms every library-built component matches its Figma master |
+
+### 10.4 Rules for every library
+
+1. **Figma first.** Before building a component from a library row marked "Not in Figma", or one without a screen, the UI lane adds the Figma master or frame. Code Connect `get_design_context` is the spec; never a screenshot. Today that's coss ui, Motion (spec), Vidstack and the map screen.
+2. **Pin and license.** Pin every package version, and pin registry components (AI Elements, shadcn, Kibo UI, ReUI, coss, Animate UI are copied into `packages/ui`) by source hash. Record the license (GF-02). Use only free or open tiers. A paid tier (for example Schedule-X premium plugins, React Flow Pro, Plate Plus) needs Neo's approval.
+3. **One library per pattern.** No two libraries for the same UI pattern (shadcn vs coss ui; Media Chrome controls vs Vidstack UI). A library replaces the custom code it supersedes in the same phase, with no parallel implementation left behind.
+4. **Performance.** Heavy libraries load lazily, on the route that needs them: Plate, Recharts, React Flow, the Kibo Gantt, MapLibre, the media players.
+5. **Accessibility.** Motion and Animate UI respect the Reduced motion preference and `prefers-reduced-motion`. Every library component keeps keyboard and screen-reader behaviour (MF-20).
+6. **Truthful UI is unchanged.** Libraries change presentation, not completion semantics. Server receipts still decide success. Toasts, charts and status chips never invent an outcome.
