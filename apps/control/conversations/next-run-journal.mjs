@@ -116,12 +116,15 @@ export function createNextRunJournal({tx,rowRun}){
    if(!old||hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==b.actorId||!same({...old.projection,createdAt:conversation.createdAt},conversation))fail('CONVERSATION_SCOPE_REFUSED');
    const reserved=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();
    if(reserved.length!==1)fail('NEXT_RUN_NOT_RESERVED');const r=row(reserved[0]);if(!same(r.target,b)||!same(r.scopes,run.scopes)||r.policyRevision!==run.policyRevision)fail('NEXT_RUN_SCOPE_REFUSED');
+   const sourceRows=await conversationRows(c,b,check),latest=orderedRuns(sourceRows).at(-1);
    // A successor reserved before a deploy is accepted under the accepting render's versions (a run's image is its own); the checkpoint it
    // names must still resume there (session-continuity.mjs), refused here, before anything persists, rather than at its execution.
    if(r.facts.checkpoint!==null&&!same(r.versions,run.versions)){const named=(await c.query('SELECT * FROM meri_conversations.completion_checkpoints WHERE tenant_id=$1 AND checkpoint_id=$2 AND conversation_id=$3',[b.tenantId,r.facts.checkpoint.checkpointId,b.conversationId])).rows;check();
     if(named.length!==1||named[0].state!=='PUBLISHED'||named[0].proof_sha256!==r.facts.checkpoint.proofSha256||hash(named[0].proof)!==named[0].proof_sha256)fail('STORE_CORRUPT');
+    // This extra continuity read may only refuse. Bind the named identity back to its stored source run with the existing completion validator.
+    const checkpointRun=sourceRows.find(r=>r.run_id===named[0].run_id);if(!checkpointRun)fail('STORE_CORRUPT');completion(named[0],checkpointRun);
     const discontinuity=sessionDiscontinuity(named[0].proof.checkpoint.versions,run.versions);if(discontinuity)fail(discontinuity);}
-   const latest=(await conversationRuns(c,b,check)).at(-1);if(!latest||!(same(latest.binding,r.source)&&r.state==='RESERVED'||same(latest.binding,b)&&r.state==='ACCEPTED'))fail('NEXT_RUN_NOT_LATEST');
+   if(!latest||!(same(latest.binding,r.source)&&r.state==='RESERVED'||same(latest.binding,b)&&r.state==='ACCEPTED'))fail('NEXT_RUN_NOT_LATEST');
    const existing=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND (request_id=$3 OR run_id=$4) FOR UPDATE',[b.tenantId,b.conversationId,request.requestId,b.runId])).rows;check();
    if(existing.length){const e=rowRun(existing[0]);if(existing.length!==1||e.request_id!==request.requestId||!same({...e.request,window:request.window},request)||!same(e.projection.binding,b)||!same(e.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');return {run:e.projection,request:e.request,lastSequence:Number(e.last_sequence),replayed:true};}
    const source=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,r.source.runId])).rows[0]);check();
