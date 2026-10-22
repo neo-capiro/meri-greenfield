@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import threading
 import time
 import unittest
-from apps.proxy.product.service_pair_discovery import (ProductServicePairDiscovery,
+from apps.proxy.product.service_pair_discovery import (ProductServicePairDiscovery, PairProofError,
     parse_service_pair_configuration, parse_owner_peer_template, compile_owner_peer)
 
 PREFIX = 'arn:aws:ecs:us-east-1:967807252336:'
@@ -268,7 +268,7 @@ class DiscoveryTests(unittest.TestCase):
         f.changes['list_tasks'] = slow
         f.changes['describe_services'] = lambda v, _: v['services'][1].update(pendingCount=1) or v
         r = f.reader()
-        with self.assertRaisesRegex(Exception, 'PRODUCT_SERVICE_PAIR_DENIED'):
+        with self.assertRaisesRegex(PairProofError, '^PAIR_DRIFT$'):
             r.read(deadline_ms=f.at+2000)
         self.assertEqual(finished, ['list_tasks', 'list_tasks'], 'no SDK call outlives the refused read')
         self.assertEqual(r._active, 0)

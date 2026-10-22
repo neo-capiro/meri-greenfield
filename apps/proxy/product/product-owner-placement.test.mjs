@@ -38,7 +38,7 @@ function fixture({successor=false}={}){
   run:{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,request_id:request.requestId,request,request_sha256:hash(request),projection:run,projection_sha256:hash(run),last_sequence:1},
   native:{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,intent_key:issuanceKey,record,record_sha256:hash(record)},
   event:{sequence:1,event_id:id(47),event:{contractVersion:'0.1.0',eventId:id(47),binding,sequence:1,createdAt,scopes:run.scopes,type:'run.status',data:{state:'running',reasonCode:null}}},admission:null};
- state.event.event_sha256=hash(state.event.event);
+ state.event.event_sha256=hash(state.event.event);state.admissionGeneration=1;
  const calls=[],releases=[];let before=()=>{},initialReads=0;
  async function query(sql,p=[]){
   calls.push({sql,p});await before(sql,p);const rows=value=>({rows:structuredClone(value),rowCount:value.length});
@@ -59,7 +59,7 @@ function fixture({successor=false}={}){
   if(sql.startsWith('SELECT * FROM meri_conversations.events WHERE'))return rows([state.firstRun?.run_id===p[2]?state.firstEvent:state.event]);
   if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings')){
    initialReads++;const record=state.admission;
-   return rows(record?[{tenant_id:record.binding.tenantId,conversation_id:record.binding.conversationId,run_id:record.binding.runId,record,record_sha256:hash(record)}]:[]);
+   return rows(record?[{tenant_id:record.binding.tenantId,conversation_id:record.binding.conversationId,run_id:record.binding.runId,generation:state.admissionGeneration,record,record_sha256:hash(record)}]:[]);
   }
   assert.fail('Unexpected scripted placement SQL: '+sql);
  }
@@ -94,6 +94,16 @@ test('disabled, caller placement and already-aborted requests refuse before borr
  const active=f.make(),controller=new AbortController();controller.abort();
  await assert.rejects(active.resolve({...f.query(),subnetId:'subnet-ffffffff'}),refused);
  await assert.rejects(active.resolve({...f.query(),signal:controller.signal}),refused);assert.equal(f.calls.length,0);
+});
+
+test('canonical initial journal accepts a later generation and refuses missing or invalid generation custody',async()=>{
+ const f=fixture();f.state.admissionGeneration=2;
+ assert.deepEqual((await f.make().resolve(f.query())).issuedTaskNetwork.execution_binding,f.model.binding);
+ assert.equal(f.initialReads(),2,'both placement observations read the canonical current generation');
+ for(const generation of [undefined,0,-1,1.5,Number.MAX_SAFE_INTEGER+1,'foreign']){
+  const g=fixture();g.state.admissionGeneration=generation;
+  await assert.rejects(g.make().resolve(g.query()),refused);
+ }
 });
 
 test('original placement, request identity, config or immutable custody drift is never repaired from observations',async t=>{

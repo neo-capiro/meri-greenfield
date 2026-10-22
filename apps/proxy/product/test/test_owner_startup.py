@@ -93,7 +93,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
     async def test_a_refused_placement_frame_is_one_line_labelled_with_the_placement_phase(self):
         issued,policy,transport,gate,startup=self._startup();lines=[]
         synthetic=Exchange(policy,issued)
-        def foreign_frame(channel,path,body,cutoff):
+        def foreign_frame(channel,path,body,cutoff,cancelled=None):
             frame=json.loads(body)
             return synthetic.reply(['meri.proxy.placement/1','f'*32,frame[2],[],time.time_ns()//1000000,frame[3]],channel)
         diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))

@@ -20,11 +20,23 @@ class RefusalDiagnosticsTests(unittest.TestCase):
         diagnostics.uninstall()
 
     def test_pair_reproof_audit_is_outside_the_refusal_budget(self):
-        diagnostics.install(write=lambda data: self.lines.append(data.decode("ascii")), burst=1)
-        diagnostics.refused("pair", "snapshot")
-        diagnostics.refused("pair", "snapshot")
-        diagnostics.pair_reproven()
-        self.assertEqual(self.lines[-2:], ["PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\n", "PRODUCT_PROXY_PAIR_REPROVEN\n"])
+        for background in (False, True):
+            with self.subTest(background=background):
+                self.lines.clear()
+                diagnostics.install(write=lambda data: self.lines.append(data.decode("ascii")),
+                                    burst=1, background_burst=1)
+                diagnostics.pair_reproven()  # An audit must not consume either refusal budget.
+                for _ in range(2):
+                    if background:
+                        diagnostics.refused("pair", "snapshot")
+                    else:
+                        with diagnostics.request():
+                            diagnostics.refused("pair", "snapshot")
+                diagnostics.pair_reproven()  # Exhausting either budget must not suppress the audit.
+                notice = "PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED" + (" scope=background" if background else "") + "\n"
+                self.assertEqual(self.lines, ["PRODUCT_PROXY_PAIR_REPROVEN\n",
+                    "PRODUCT_PROXY_REFUSED gate=pair step=snapshot code=REFUSED\n", notice,
+                    "PRODUCT_PROXY_PAIR_REPROVEN\n"])
         diagnostics.install(write=lambda _data: (_ for _ in ()).throw(OSError("secret")))
         diagnostics.pair_reproven()
 
