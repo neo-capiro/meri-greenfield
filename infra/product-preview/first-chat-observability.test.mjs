@@ -54,13 +54,18 @@ test('suppression filters use the complete literal tokens emitted after the owne
  const controlLines=[],sessions=createSessionRefusalDiagnostics({write:line=>controlLines.push(line.trim()),now:()=>0,burst:1});
  for(let i=0;i<3;i++)sessions('identity',{code:'SESSION_REFUSED'});
  assert.deepEqual(controlLines,['CONTROL_SESSION_REFUSED step=identity code=SESSION_REFUSED','CONTROL_SESSION_DIAGNOSTICS_SUPPRESSED']);
- const script='import sys\nfrom apps.proxy.product import refusal_diagnostics as d\nd.install(write=sys.stdout.buffer.write, now=lambda: 0, burst=1)\nfor _ in range(3): d.refused("pair", "verify")\nd.uninstall()\n';
+ // Background refusals have their own default burst of five; exhausting it must not spend the request budget.
+ const script='import sys\nfrom apps.proxy.product import refusal_diagnostics as d\nd.install(write=sys.stdout.buffer.write, now=lambda: 0, burst=1)\nfor _ in range(7): d.refused("pair", "verify")\nfor _ in range(3):\n with d.request(): d.refused("exchange", "call")\nd.uninstall()\n';
  const result=spawnSync(process.env.MERI_TEST_PYTHON??'python3',['-B','-c',script],{cwd:new URL('../../',import.meta.url),encoding:'utf8',timeout:10000});
  assert.equal(result.status,0,result.stderr);assert.equal(result.stderr,'');
- assert.deepEqual(result.stdout.trim().split('\n'),['PRODUCT_PROXY_REFUSED gate=pair step=verify code=REFUSED','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED']);
+ const proxyLines=result.stdout.trim().split('\n');
+ assert.deepEqual(proxyLines,[...Array(5).fill('PRODUCT_PROXY_REFUSED gate=pair step=verify code=REFUSED'),
+  'PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED scope=background','PRODUCT_PROXY_REFUSED gate=exchange step=call code=REFUSED','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED']);
  const filters=resources(synthesizeFirstChatObservability(binding()),'AWS::Logs::MetricFilter').filter(p=>p.MetricTransformations[0].MetricName==='DiagnosticsSuppressed');
  assert.deepEqual(filters.map(p=>[p.LogGroupName,JSON.parse(p.FilterPattern)]),[
-  [binding().logGroups.owner,ownerLines[1]],[binding().logGroups.proxy,result.stdout.trim().split('\n')[1]],[binding().logGroups.control,controlLines[1]]]);
+  [binding().logGroups.owner,ownerLines[1]],[binding().logGroups.proxy,proxyLines[7]],[binding().logGroups.control,controlLines[1]]]);
+ // The same complete literal filter token also matches the background notice's fixed suffix.
+ assert.equal(proxyLines[5],`${JSON.parse(filters.find(p=>p.LogGroupName===binding().logGroups.proxy).FilterPattern)} scope=background`);
 });
 
 test('all eight alarm thresholds, windows, evaluation counts and missing-data semantics are pinned',()=>{

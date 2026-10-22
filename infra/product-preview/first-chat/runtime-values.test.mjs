@@ -4,7 +4,7 @@
  * with the shared throwaway PKI fixture. Run with MERI_REVIEW_SOURCE_ROOT=<worktree root> and Python 3 with `cryptography`. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {spawnSync} from 'node:child_process';
+import {execFileSync,spawnSync} from 'node:child_process';
 import {readFile,mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -61,10 +61,10 @@ test('committed allocation.json and policy.json are self-consistent and admitted
 
 test('assembled runtime.json renders all five roles through every render-material validator with throwaway PKI',async()=>{
  const {runtime,policyRevision,skillsDigest}=await assemble();
+ const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:SOURCE_ROOT,encoding:'utf8'}).trim();
  const {roles,summary}=await fixture.render(i=>{i.runtime=runtime;
-  // This throwaway image has a synthetic digest; select the reviewed source
-  // commit so the renderer still verifies the runner blob without claiming an N21 image remeasure.
-  i.deployment.images.nodeRuntimeSourceCommit='a1876afaeaa59d9da47729487d490cba8cfc9d9c';
+  // Match the host-measured runner to this checkout's committed Git blob. This synthetic image is not an image remeasure.
+  i.deployment.images.nodeRuntimeSourceCommit=sourceCommit;
  });
  const control=JSON.parse(roles.control.configBytes.toString('utf8')),c=control.nativeCandidate,{receipt}=await committed();
  assert.equal(c.qualification.policyRevision,policyRevision);assert.equal(control.versions.skillsDigest,skillsDigest);
@@ -108,7 +108,8 @@ test('P2 active subset: reviewed refs bind the image measurement, source measure
  const context=x=>({policy:x.policy,deployment:x.deployment,policyRevision:x.policyRevision,sourceSkillsDigest:x.receipt.skills.digest,
   sourceSdkOptionsSha256:x.receipt.sdkOptions.sha256,sourceInstallation:v.receipt.generalReadInstallation,sourceInventory:inventory});
  assert.equal(parseReceipt(v.receipt,context(v)).generalReadInstallation.measurement.operations.length,2);
- assert.equal(inventory.measurement.operations.length,76);
+ // PR197 added five read operations to the full source inventory; the admitted subset still contains exactly two.
+ assert.equal(inventory.measurement.operations.length,81);
  const refuses=(change,pattern)=>{const changed=change(structuredClone(v));assert.throws(()=>parseReceipt(changed.receipt,context(changed)),{code:'RUNTIME_VALUES_REFUSED',message:pattern});};
  await refuses(x=>{delete x.receipt.inputs.activeReadOperationsSha256;return x;},/activeReadOperationsSha256/u);
  await refuses(x=>{delete x.receipt.generalReadInstallation;return x;},/no active P2 measurement/u);

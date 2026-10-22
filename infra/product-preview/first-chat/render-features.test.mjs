@@ -1,7 +1,7 @@
 /** Product-family activation (`features`) in render-material.mjs and the G3 profile plumbing in runtime-values.mjs, on THROWAWAY
  * material only (the shared fixture: pki.py PKI in a temp directory, synthetic passwords, bearer and Core secrets).
  *
- * The default render is compared byte for byte with the render module as committed at BASE (the reviewed first chat), under the same
+ * The default render is compared byte for byte with the render module as committed at BASE (the reviewed current baseline), under the same
  * deterministic randomness, so no `features` (or an empty block) provably changes nothing.
  *
  * Reads secret delivery needs one runtime change that is proposed, not made here: apps/runtime/material-init-plan.mjs must list the
@@ -40,8 +40,8 @@ const {validateProductOwnerConfiguration}=await import('../../../apps/proxy/prod
 const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
 const {canonicalSha256}=await import('../../../packages/contracts/validate.mjs');
 
-/** The reviewed first-chat render this branch must reproduce exactly when no feature is set. */
-export const BASE='eaf2b4ac';
+/** Reviewed main includes telemetry, the current owner budget and composite CA delivery; keep this oracle fixed, not HEAD. */
+export const BASE='d3cf54962a954daf4382df535a9c518aff791b0e';
 const NOW=Date.now();
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const fixture=createRenderFixture();test.after(()=>fixture.cleanup());
@@ -95,6 +95,9 @@ test('no features (absent or {}) renders byte-identical material and summary to 
  // The comparison is meaningful: the seeded render is stable and the fixture really renders the full material.
  assert.equal(JSON.stringify(bytesOf(await render())),JSON.stringify(bytesOf(current)));
  assert.equal(Object.hasOwn(current.summary,'features'),false);
+ for(const role of ['control','model-owner','model-proxy'])assert.deepEqual(config(current,role).telemetry,{environment:'Preview'});
+ assert.equal(config(current,'model-owner').limits.maxRequestMs,15000);
+ assert.equal(config(current,'model-proxy').ownerPeer.max_exchange_ms,15000);
  for(const key of ['userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads'])assert.equal(Object.hasOwn(config(current,'control'),key),false);
 });
 
@@ -371,12 +374,17 @@ test('runtime values: the capability profile reaches the measurement and the ass
  assert.ok(Buffer.byteLength(JSON.stringify(shipped))<=8192);assert.match(shipped.containerOverrides[0].command[0],/'--capability-profile' '[A-Za-z0-9_-]+'/u);
  // G3: the measurement module projects the profile (capabilities/measured-options.mjs), so its source template differs from the
  // first-chat one and assembly no longer refuses on projection; only the receipt decides. An empty receipt refuses on its schema, and the
- // committed first-chat receipt (measured without the profile) on its capabilityProfileSha256 input, never pinning unmeasured options.
- const {probeTemplateSha256}=await import(pathToFileURL(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)).href),{capabilityProfileSha256:_,...plain}=RV.measurementInputs({policy,deployment:featured,policyRevision});
+ // historical receipt refuses on its old model first. A fresh unprofiled measurement must assemble without the feature,
+ // then refuse on capabilityProfileSha256 when the feature is enabled, never pinning unmeasured options.
+ const {probeTemplateSha256,measureFirstChatLaunch}=await import(pathToFileURL(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)).href),{capabilityProfileSha256:_,...plain}=RV.measurementInputs({policy,deployment:featured,policyRevision});
  assert.notEqual(await probeTemplateSha256({...plain,capabilityProfile:profile.profile},{root:SOURCE_ROOT}),await probeTemplateSha256(plain,{root:SOURCE_ROOT}));
  const allocationFile=JSON.parse(await readFile(join(here,'allocation.json'),'utf8')),committedReceipt=JSON.parse(await readFile(join(here,'launch-measurement-receipt.json'),'utf8'));
  await assert.rejects(RV.runtimeValues({receipt:{},allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/receipt\.schema/u});
- await assert.rejects(RV.runtimeValues({receipt:committedReceipt,allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/capabilityProfileSha256/u});
+ await assert.rejects(RV.runtimeValues({receipt:committedReceipt,allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/receipt\.inputs\.model/u});
+ const unprofiledReceipt=await measureFirstChatLaunch(plain,{root:SOURCE_ROOT});
+ const unprofiled=await RV.runtimeValues({receipt:unprofiledReceipt,allocation:allocationFile,policy,deployment,requireLinux:false});
+ assert.equal(Object.hasOwn(unprofiled.runtime,'capabilityProfileSha256'),false);
+ await assert.rejects(RV.runtimeValues({receipt:unprofiledReceipt,allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/receipt\.inputs\.capabilityProfileSha256/u});
  const assembled=RV.assembleRuntimeValues({receipt:{versions:{sdk:'0.3.295',cli:'2.1.295'},skills:{digest:'b'.repeat(64)},launchTemplate:{command:'/x',args:[],env:{}},executable:{sha256:'c'.repeat(64)},
   sdkOptions:{sha256:'d'.repeat(64)},runner:{sha256:'e'.repeat(64)}},allocation:(await inputs()).runtime.allocation,policy,policyRevision,capabilityProfileSha256:profile.profileSha256});
  assert.equal(assembled.capabilityProfileSha256,profile.profileSha256);assert.equal(R.parseRuntimeValues(assembled).capabilityProfileSha256,profile.profileSha256);
