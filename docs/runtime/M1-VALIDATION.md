@@ -784,3 +784,43 @@ Fresh targeted and full32-file results at the new exact published head will be
 posted to #204 without rewriting any earlier failure. Until reviewed and gated,
 ship HOLD and acceptance STOP2/6 remain. S2 starts only after M1 merges on verified
 main, uses Core89fcf2bb and waits for Fable's copied-database live qualification.
+
+## O205: restore immutable reservation refusal precedence
+
+Fable's gate report6349362014 compared head
+`31f7b40e58b35a090a622c4be62208bce2c4369a` (tree
+`5d4778b10ca321fc3fd6ab35d1a7378d6f2ca886`) against base
+`d3cf54962a954daf4382df535a9c518aff791b0e`. Native PostgreSQL16.15
+reported63pass/79fail/3skip on head and64/78/3 on base: one new deterministic
+failure, with the other78 failures reported inherited. The unchanged pending-
+reservation test expected NEXT_RUN_REPLAY_REFUSED for changed immutable facts,
+but received NEXT_RUN_REVOCATION_REQUIRED. The direct failing call is journal
+reserve(), not the next-run owner. M1's extraction had moved the grant comparison
+ahead of the existing reservation comparison.
+
+O205 (6349634872) approves restoring the immutable-facts refusal precedence and
+preserving the expectation. The canonical source/lineage checks and settlement
+checks remain in next-run-journal.mjs as two stages. reserve() compares the
+stored reservation between those stages. Both a replay return and a new insert
+still require durable retirement/foreclosure and revocation eligibility. Latest-
+source, terminal, scope/policy, checkpoint/SDK, target and transaction/check()
+guards remain. assess() retains its prior order and both canonical stages.
+No test, assertion, deadline, retry, schema, dependency or generated-file change.
+
+Local verification is syntax and diff review only; no native/mock substitute or
+new targeted/combined run. PostgreSQL16 and Docker remain unavailable locally.
+Fable explicitly owns native qualification on neomart using the exact27-apply
+fixture, whose extra-migrations.sh SHA256 is
+`ef07046e12e468220584c3f866fa6d51495edcdf32b068e9b2e874d24690c933`.
+Fable also owns a fresh head image, first-turn/D3 rehearsals, targeted and full
+combined runs and the base/head comparison at the published resulting SHA.
+Those gates are pending; earlier passes do not qualify this runtime change.
+
+All contrary evidence remains: Fable's image combined387/389 (inherited N21 and
+measured base/head timing failures), targeted116/116, author combined389/389,
+earlier115/116 timing failure, controlled180100ms timeout, historical900208ms
+timeout/eight partial failures and unknown historical stacks. Fable's rehearsal
+passes remain flagged unverified due to WSL clock step. Full neomart raw logs
+are not locally accessible; supplied excerpts and attribution are not independent
+execution. This bounded correction does not explain historical timeouts.
+No ship request or release clearance. S2 waits for verified M1 merge; STOP2/6.

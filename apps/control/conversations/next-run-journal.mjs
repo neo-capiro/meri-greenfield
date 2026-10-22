@@ -59,9 +59,8 @@ export function createNextRunJournal({tx,rowRun}){
   * when it completed), or null when no turn up to it completed. */
  async function latestCheckpoint(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=await conversationRows(c,b,check),run=rows.find(r=>r.run_id===b.runId);if(!run||!same(run.projection.binding,b))fail('STALE_WRITER');
   const latest=await publishedThrough(c,rows,b,check);return latest&&{checkpointId:latest.row.checkpoint_id,proofSha256:latest.row.proof_sha256};});}
- /** One canonical eligibility check for reservation writes and read-only assessment. The caller supplies settlement facts,
-  * but the locked journal proves their source, checkpoint lineage and durable retirement/foreclosure before either can succeed. */
- async function eligible(c,{source,facts:f,scopes,versions,policyRevision},check){
+ /** Canonical source and checkpoint eligibility, shared by reservation writes and read-only assessment. */
+ async function eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check){
    const rows=await conversationRows(c,source,check),runs=orderedRuns(rows);if(!runs.length)fail('STORE_CORRUPT');const latest=runs.at(-1);
    if(!same(latest.binding,source))fail('NEXT_RUN_NOT_LATEST');if(!admitsNextRun(latest.state))fail('NEXT_RUN_SOURCE_NOT_TERMINAL');
    // The successor runs under the current deployment's versions (the owner's), which may postdate the source's: a run's image is its own.
@@ -75,20 +74,24 @@ export function createNextRunJournal({tx,rowRun}){
    if(lineage&&(f.checkpoint.checkpointId!==lineage.row.checkpoint_id||f.checkpoint.proofSha256!==lineage.row.proof_sha256))fail('NEXT_RUN_CHECKPOINT_REFUSED');
    if(lineage&&(!same(run.scopes,scopes)||run.policyRevision!==policyRevision))fail('NEXT_RUN_SCOPE_REFUSED');
    const discontinuity=lineage&&sessionDiscontinuity(run.versions,versions);if(discontinuity)fail(discontinuity);
+   return runs;
+ }
+ /** Caller facts never suffice: both paths must prove durable retirement/foreclosure and revocation before success. */
+ async function eligibleSettlement(c,{source,facts:f},latest,check){
    const allocation=(await c.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[source.tenantId,source.conversationId,source.runId])).rows;check();
    if(allocation.length!==1||hash(allocation[0].record)!==allocation[0].record_sha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');const a=allocation[0].record;
    // A missing row is never safe: no-authority admission needs the foreclosure row written with the source's own terminal transition.
    if(f.noAuthority){if(a.state!==FORECLOSED||!foreclosed(a,source)||a.foreclosure.state!==latest.state||allocation[0].record_sha256!==f.noAuthority.foreclosureSha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');}
    else{if(a.state!=='RETIRED'||a.resource?.physicalStopProven!==true)fail('NEXT_RUN_RETIREMENT_REQUIRED');
     if(!same([...f.revocation.grantIds].sort(),a.grantIntents.map(g=>g.grantId).sort()))fail('NEXT_RUN_REVOCATION_REQUIRED');}
-   return runs;
  }
  /** Read-only authority snapshot. A prior reservation is checked against current checkpoint compatibility as acceptance would be;
   * this neither creates a target nor repairs/revokes source authority. The public history owner supplies fresh identity separately. */
  async function assess({source,facts:rawFacts,scopes,versions,policyRevision},check){
   source=bounded(source);validateShape('RunBinding',source);validateShape('RuntimeVersions',versions);scopes=bounded(scopes);const f=facts(rawFacts);
   return tx(source,check,async c=>{
-   await eligible(c,{source,facts:f,scopes,versions,policyRevision},check);
+   const runs=await eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check);
+   await eligibleSettlement(c,{source,facts:f},runs.at(-1),check);
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    if(existing.length){if(existing.length!==1)fail('STORE_CORRUPT');const r=row(existing[0]);
     if(r.state!=='RESERVED'||!same(r.source,source)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision||!same(r.facts.checkpoint,f.checkpoint))fail('NEXT_RUN_REPLAY_REFUSED');
@@ -104,9 +107,13 @@ export function createNextRunJournal({tx,rowRun}){
   if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1)fail('NEXT_RUN_TARGET_REFUSED');
   const f=facts(rawFacts);if(typeof policyRevision!=='string'||!policyRevision||typeof reservedAt!=='string'||Number.isNaN(Date.parse(reservedAt)))fail('NEXT_RUN_FACTS_REFUSED');
   return tx(source,check,async c=>{
-   const runs=await eligible(c,{source,facts:f,scopes,versions,policyRevision},check);
+   const runs=await eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check);
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
-   if(existing.length){const r=row(existing[0]);if(r.state!=='RESERVED')fail('STORE_CORRUPT');if(!same(r.facts,f)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision)fail('NEXT_RUN_REPLAY_REFUSED');return {target:r.target,state:r.state,replayed:true};}
+   const r=existing.length?row(existing[0]):null;
+   // Changed facts cannot reinterpret an immutable reservation, even when their grant set is ineligible.
+   if(r){if(r.state!=='RESERVED')fail('STORE_CORRUPT');if(!same(r.facts,f)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision)fail('NEXT_RUN_REPLAY_REFUSED');}
+   await eligibleSettlement(c,{source,facts:f},runs.at(-1),check);
+   if(r)return {target:r.target,state:r.state,replayed:true};
    if(runs.some(r=>r.binding.runId===target.runId||r.binding.attemptId===target.attemptId||r.binding.workerId===target.workerId))fail('NEXT_RUN_TARGET_REFUSED');
    const reservation=assertNextRunReservation({source,target,facts:f,scopes,versions:bounded(versions),policyRevision,reservedAt});
    await c.query('INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7)',[source.tenantId,source.conversationId,source.runId,target.runId,reservation,hash(reservation),'RESERVED']);check();
