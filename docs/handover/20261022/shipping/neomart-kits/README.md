@@ -11,9 +11,9 @@ Copied from `C:\dev\fable\` on neomart, with source archives (`*.zip`, `*.tar`),
 | `ship-core-ca4de503/` | **The cut-over Core kit**: `backend-import` `ca4de503`. Steps 00–03 are done: image `capiro/preview-core@sha256:036b368c…`, probes PASS, 0 findings. Steps 04, 045, 05 and 06 run only in the cut-over (`../../plan/NEWSTACK-CUTOVER-PLAN.md`). `90-rollback` returns to `:3` | Built, not deployed |
 | `ship-fe-87a84951/` | The **live** frontend: `capiro-portfolio-preview:22`. `R1-rollback-to-21.sh` returns to 4e2c770f | Executed |
 
-## Things that only work on neomart
+## Portability notes
 
-- **Meri release steps 11-private-core and 12-private-render** read the private PKI (`C:\dev\fable\meri-preview-private-pki`). They write stage-3 render dirs (`C:\dev\fable\meri-stage3-<timestamp>`). Neither leaves neomart, and the credential-bearing steps are Neo's. Any Meri release therefore needs neomart for those two steps.
+- **Meri release steps 11-private-core and 12-private-render** read the private PKI. It is now fetched from Secrets Manager on any machine (next section). They write a stage-3 render dir; keep it owner-only and delete it after the release.
 - **Kits use absolute neomart paths** (`C:/dev/fable/...`) and the AWS CLI profile `capiro-dev`. On another machine, regenerate a kit with the generators rather than reusing these per-release folders.
 - **Docker gates** ran in WSL `Ubuntu-24.04` with native Docker.
 
