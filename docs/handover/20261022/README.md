@@ -8,6 +8,7 @@ Nothing here contains secrets. Credentials, rendered secret bundles and private 
 
 | # | File | What it is |
 |---|---|---|
+| 0 | `WORKFLOW.md` | **The end-to-end workflow:** roles, documents, communication, how a piece of work moves, who decides what, lanes, waves, escalation. Start here. |
 | 1 | `CURRENT-STATE.md` | What's live, what's merged but not deployed, open PRs and their review state, holds, and in-flight operations at handover. |
 | 2 | `source-of-truth/` | **The authoritative specs:** the two master closeout plans (20261021), plus `STANDING-RULES.md` (verbatim sections from both). Every ticket ID (MR-, MF-, MT-, MX-, MG-, MM-, WS-, PF-, ML-, ST-, E01–E45) is defined there. |
 | 3 | `plan/FINAL-PLAN-20261021.md` | The approved phased plan: phases, the seven-wave table, lanes, simplifications, Neo's decisions (§8) and the full ticket→phase index (§9). Also published at https://claude.ai/artifact/2LDTPZ43afpp2MW2YJaP8C (v4). |
