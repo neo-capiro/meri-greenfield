@@ -640,3 +640,101 @@ M1 ships before P1; P1 stays held, and agent2 retains stacked C9 ownership.
 Existing MR06/X1 public-facade and MR09/E40 accounting/settlement handoffs remain.
 No acceptance turn, new dependency/credential, merge, deployment, AWS or SQL
 execution is performed by this follow-up.
+
+
+## Agent 1 v3: separately traced five-failure diagnostic (2026-10-22)
+
+Recovery reconciled published `c040b501c166b95df21a57bc28f8df1d9bd79f90`
+with local `b74d0927af37c40be3a740be2f213a0742f06403`: identical tree
+`681dd1087cdf641de417473624f2f25d0135ce0f`. The published commit object was
+subsequently recovered through the approved GitHub GET route and accepted only
+when its exact Git object hash matched; predecessor checkouts and refs remain.
+Nine pre-existing untracked dependency links are preserved.
+
+The v3 diagnostic at that unchanged tree added only an external second reporter
+so that failure stacks survived without waiting for Node's final spec summary.
+The same 32-file selection, serial concurrency, module-mock flag, EX06 scrubber/
+subreaper and 900000ms cap completed **377/382 PASS, five FAIL**, exit1,
+653040ms, no skips/cancellations/timeout. Evidence:
+`/workspace/scratch/8228db2d6f3b/m1-diagnosis/`. All 33 recorded source pins
+match the earlier failed run, and the earlier stdout/stderr hashes match their
+receipts. All eight historical partial failures passed in this run; this neither
+explains them nor establishes flakiness. Their missing stacks/final summary and
+900208ms timeout remain unresolved. The complete diagnostic is also recorded at
+PR #204 comment6345207988.
+
+### Separate traces and bounded fixture corrections
+
+1. `product-ports/test/lifecycle-continuation.test.mjs` approval.wait positive:
+   captured DEADLINE from the basic conversation operation's lifetime/store
+   transaction. A controlled3100ms stall inside the already-started allocation
+   operation reproduces that deadline before the intended approval behavior.
+2. The same fixture's rejected/undecided test: captured DEADLINE in waiting()
+   at the approval.wait lifecycle setup. A separate3100ms stall armed at that
+   setup phase reproduces the lifecycle operation refusal.
+3. The unproven-stop barrier: captured LIFECYCLE_EFFECT_UNKNOWN followed by
+   stops.length0 versus1. A first injection expired before the guarded transition
+   and instead produced DEADLINE; that different failure is retained. Moving the
+   injection after DISPATCHING, before checkpoint proof inside the guarded
+   transition reproduces UNKNOWN and zero native-stop calls. This proves an
+   early-expiry mechanism, not retrospective telemetry of the original host.
+   The corrected scripted fixture owns Date/setTimeout. The original unproven
+   stop assertions remain; new approved/silent-stop cases advance to2999/3000ms
+   and require exactly one stop before expiry, none at expiry, no unproven target,
+   and durable UNKNOWN where appropriate.
+4. `continuation/test/continuation.test.mjs` waitForApproval: captured DEADLINE
+   from commands.mjs lifetime.check before its STOPPED check. A1100ms host stall
+   between the duplicate and new command reproduces it. Only the pause/wait
+   positive compositions own their clock; original real-clock parked interrupt
+   deadline and caller-cancellation cases are unchanged. Added999/1000ms cases
+   pin STOPPED before expiry and DEADLINE at expiry with no additional effects.
+5. `test/lifecycle-activity.test.mjs` original deadline during nonanswer backoff:
+   captured outer EXECUTION_FAILED. A150ms stall after minting its100ms runtime
+   expiry, before returning preparation, reproduces an inner DEADLINE before
+   the execution lifetime is installed, with EXECUTION_FAILED preserved. The
+   intended backoff test now explicitly reaches its first marked nonanswer before
+   ticking99ms (still live) and100ms (EXECUTION_STOPPED); its original assertions
+   and an independent500ms performance.now wall ceiling remain. A separate test
+   requires pre-installation expiry to remain EXECUTION_FAILED with zero SDK
+   opens, claims, acknowledgements or checkpoint effects.
+
+No production implementation, authority/session/operation deadline, cancellation,
+refusal classification, retry policy, stop barrier, generated provenance,
+dependency or canonical runner changed. The correction is limited to the three
+scripted test files above and this ledger. Seven new test identities were added.
+An assertion-expression audit retains all original sites except moving the one
+activity assert.rejects onto the same already-started execution promise so its
+clock can be advanced; its expected EXECUTION_STOPPED expression is unchanged.
+
+### Retained verification chronology
+
+Evidence root: `/workspace/scratch/8228db2d6f3b/m1-five-failures/`.
+- `before/`: controlled original fixtures0/5, exit1, five actual test failures;
+  `before-stop/`: refined stop reproduction fails the intended0-versus1 stop
+  assertion. The two other selected files contain no matching tests and their
+  file-level pass lines are not extra test coverage.
+- `after/`: three corrected approval-composition pass lines under the retained
+  3100ms stalls, then180100ms SIGTERM at the unchanged180000ms targeted cap;
+  no final summary. This run is FAILED/INCOMPLETE, not five passing tests. Shared
+  cgroup memory was observed near its8GiB limit, with cumulative OOM counters;
+  those counters do not establish whether this run suffered an OOM or its cause.
+- `after-remaining/`: exactly the two unreported SDK/activity controlled-stall
+  cases PASS2/2, exit0. This does not replace the incomplete earlier receipt.
+- `focused/`: all three changed suites PASS116/116, exit0, no skips/cancellations.
+- `mutations/` and `mutation-summary.json`: seven loader-only modeled faults
+  caught by intended test assertions; every process exit1, no timeout counted as
+  a kill. Shortening/lengthening3000ms kills the2999/3000ms approved and silent
+  stop cases; shortening1000ms kills the999ms STOPPED case; swapping stop/expiry
+  precedence kills1000ms; classifying pre-installation DEADLINE as cancelled kills
+  the setup refusal test; shortening/lengthening100ms kills its99/100ms checks.
+- The full unchanged32-file combined gate must now run at the exact committed
+  resulting source. Its result will be posted with that head on #204; it is not
+  inferred from focused results. No green-seeking blind rerun is authorized here.
+
+Source-only qualification remains distinct from native PostgreSQL, physical stop,
+image/build, current identity, first-turn/D3 and live acceptance gates. The older
+public506/506, typechecks and provenance records remain prior evidence over
+unchanged runtime/generated bytes; they are not duplicated for a test-only delta.
+No ship request or release clearance. Current order is **M1 #204 -> S2 -> P1 #200
+-> stacked C9 #203**. S2 uses Core89fcf2bb after M1 merges on verified main; its
+live qualification waits for Fable's copied-database cutover. Acceptance STOP2/6.

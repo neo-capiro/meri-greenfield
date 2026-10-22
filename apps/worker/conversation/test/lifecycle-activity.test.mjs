@@ -104,13 +104,32 @@ test('a definitive native refusal after two marked misses stops immediately with
  assert.equal(reads,3);assert.equal(f.state.failures[0].cause,refusal);assert.equal(f.state.claims,0);assert.deepEqual(f.state.acks,[]);
  assert.deepEqual(f.state.messages.map(m=>m.uuid),[f.saved.request.requestId]);assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);
 });
-test('an original run deadline during nonanswer backoff stops the query before another read or control effect',async()=>{
- const f=fixture({runtimeMs:100}),started=Date.now();let reads=0;
- f.runOwner.nextControls=async()=>{reads++;throw nonanswers.marked();};
- await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_STOPPED/);
- assert.equal(reads,1);assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);
- assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);assert(Date.now()-started<500);
- assert.deepEqual(f.state.events.at(-1).data,{state:'cancelled',reasonCode:'EXECUTION_STOPPED'});
+test('an original run deadline during nonanswer backoff stops the query before another read or control effect',async t=>{
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
+ const f=fixture({runtimeMs:100}),started=Date.now(),wallStarted=performance.now(),entered=Promise.withResolvers();let reads=0,settled=false;
+ f.runOwner.nextControls=async()=>{reads++;entered.resolve();throw nonanswers.marked();};
+ const executing=f.execute({binding:f.binding});executing.then(()=>{settled=true;},()=>{settled=true;});
+ const rejected=assert.rejects(executing,/EXECUTION_STOPPED/);
+ try{
+  await entered.promise;await new Promise(resolve=>setImmediate(resolve));
+  t.mock.timers.tick(99);await new Promise(resolve=>setImmediate(resolve));assert.equal(settled,false,'the run is live at99ms during the500ms backoff');
+  t.mock.timers.tick(1);await new Promise(resolve=>setImmediate(resolve));assert.equal(settled,true,'the original deadline stops the run at100ms');
+  await rejected;
+  assert.equal(reads,1);assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);
+  assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);assert(Date.now()-started<500);
+  assert(performance.now()-wallStarted<500,'the existing500ms wall-time ceiling remains independently enforced');
+  assert.deepEqual(f.state.events.at(-1).data,{state:'cancelled',reasonCode:'EXECUTION_STOPPED'});
+ }finally{t.mock.timers.tick(1);await rejected;}
+});
+test('runtime expiry before lifetime installation preserves setup failure and never opens an SDK query',async t=>{
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
+ const f=fixture({runtimeMs:100}),execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:async args=>{
+  const runtime=await f.prepareRuntime(args);t.mock.timers.tick(100);return runtime;
+ },query:f.query,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},diagnostics:{failure:error=>f.state.failures.push(error)}});
+ await assert.rejects(execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.equal(f.state.failures[0].code,'DEADLINE');assert.equal(f.state.calls,0);assert.equal(f.state.closed,0);
+ assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);
+ assert.deepEqual(f.state.events.at(-1).data,{state:'failed',reasonCode:'EXECUTION_FAILED'});
 });
 test('a revoked task lease is a definitive native 403 after an authority miss, not another unavailable tick',async()=>{
  const f=fixture(),cause=unanswered('PINNED_NATIVE_STATUS_403'),refusal=Object.assign(unanswered('NATIVE_UNAVAILABLE'),{cause});let reads=0;

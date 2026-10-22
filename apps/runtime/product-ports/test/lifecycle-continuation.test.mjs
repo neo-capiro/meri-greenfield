@@ -3,7 +3,7 @@
  * authority (retirement over a scripted native stop, derived admission) and the Core P-INT-10 approval forwarder over a scripted
  * Core answering with the approver's live-session bearer. Then the lifecycle family composition over a candidate configuration.
  * No PostgreSQL, Temporal, ECS task, live Core, key material or credential provisioning. */
-import test from 'node:test';import assert from 'node:assert/strict';
+import test,{beforeEach} from 'node:test';import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {lifecycleFixture,binding,scopes,id,versions} from '../../../control/conversations/test/lifecycle-fixture.mjs';
 import {allocateOriginal,recordRetired} from '../../../control/conversations/test/terminal-settlement-harness.mjs';
@@ -21,6 +21,9 @@ import {createIntentsFamilyWith,intentsComposition} from '../intents.mjs';
 import {captureRuntimePorts,composeRuntimePorts} from '../../product-applications.mjs';
 import {productReadiness} from '../../product-readiness.mjs';
 import {candidateFixture} from '../../test/prepared-candidate-fixture.mjs';
+// Scripted SQL/Core composition owns authority time; explicit boundary cases below
+// advance it. Host scheduling must not silently expire a setup or select its refusal.
+beforeEach(t=>t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()}));
 const check=()=>{},NATIVE='synthetic-native',principal={tenantId:binding.tenantId,actorId:binding.actorId},UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const status=(n,state)=>({eventId:id(n),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}});
 /** The production composition shape of assembleControl, over the scripted pool: store with the continuation authority, session
@@ -43,7 +46,7 @@ async function composition(){
   reservedCredentials:createReservedCredentialDigests({files:['/run/meri/control'],readSecret}),readProposal:async({proposalId})=>proposalId===f.proposal.proposalId?structuredClone(f.proposal):null,now:Date.now,fetchImpl:synthetic.fetchImpl,maxRequestMs:5000});
  const dispatcher={async start(v){calls.starts.push(v.binding);},async cancel(){},async continued(v){calls.continued.push(v.input);},async signal(){calls.signals++;}};
  const basic=createConversationService({sessions,store,dispatcher,versions,newId:()=>id(n++)});
- const approvals={async read({proposalId}){if(proposalId!==f.proposal.proposalId)throw Object.assign(Error('APPROVAL_REFUSED'),{code:'APPROVAL_REFUSED'});return structuredClone(f.proposal);},readDecision:v=>forwarder.readDecision(v)};
+ const approvals={async read({proposalId}){if(proposalId!==f.proposal.proposalId)throw Object.assign(Error('APPROVAL_REFUSED'),{code:'APPROVAL_REFUSED'});return structuredClone(f.proposal);},readDecision:async v=>{await state.beforeDecision?.();return forwarder.readDecision(v);}};
  const service=createConversationLifecycleService({retention:null,service:basic,store,dispatcher,reconcileOriginal:async()=>{calls.reconciles++;assert.fail('unexpected public cancellation reconciliation in continuation fixture');},checkpoints:f.checkpoints,nativeAdmission:authority.continuationAdmission,approvals,sessions,newId:()=>id(n++)});
  const control=input=>service.control({credential,input});
  async function waiting(){
@@ -94,6 +97,22 @@ test('an unproven native stop is a barrier: no admission, no target run, the con
  const c=await composition();t.after(c.close);const proof=await c.waiting();await c.decide('approved');c.state.stopMode='silent';
  await assert.rejects(c.resume(id(780),proof),/LIFECYCLE_EFFECT_UNKNOWN/);
  assert.equal(c.stops.length,1);assert.equal(c.projection(id(780)).state,'UNKNOWN');assert.equal(c.projection(id(780)).target,null);assert.equal(c.calls.starts.length,1,'only the original submit started a workflow');assert.equal(c.f.state.runs.size,1);
+});
+// Keep expiry precedence independent from the scripted approval/native-stop outcome.
+for(const stopMode of ['record','silent'])for(const elapsed of [2999,3000])test(`approval continuation ${stopMode} at ${elapsed}ms keeps the 3000ms authority boundary`,async t=>{
+ const c=await composition();t.after(c.close);const proof=await c.waiting();await c.decide('approved');c.state.stopMode=stopMode;
+ c.state.beforeDecision=()=>t.mock.timers.tick(elapsed);
+ const R=id(781),pending=c.resume(R,proof);
+ if(elapsed===2999&&stopMode==='record')assert.equal((await pending).state,'APPLIED');
+ else await assert.rejects(pending,/LIFECYCLE_EFFECT_UNKNOWN/);
+ assert.equal(c.stops.length,elapsed===2999?1:0);
+ assert.equal(c.projection(R).state,elapsed===2999&&stopMode==='record'?'APPLIED':'UNKNOWN');
+ assert.equal(c.calls.starts.length,elapsed===2999&&stopMode==='record'?2:1);
+ assert.equal(c.calls.continued.length,elapsed===2999&&stopMode==='record'?1:0);
+ if(elapsed===3000||stopMode==='silent'){
+  assert.equal(c.projection(R).target,null);assert.equal(c.f.state.runs.size,1);
+  assert.equal((await c.base.allocations.read({binding,allocationKey:hash(binding)},check)).record.state,'ALLOCATED');
+ }
 });
 test('without a live approver session the decision read refuses before Core and nothing is dispatched',async t=>{
  const c=await composition();t.after(c.close);const proof=await c.waiting();await c.decide('approved');
