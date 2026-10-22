@@ -116,7 +116,7 @@
   "registrationRole": "meri_temporal_issuer_service"
  },
  "database": {
-  "host": "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv.cluster-csryw28ai752.us-east-1.rds.amazonaws.com",
+  "host": "capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com",
   "port": 5432,
   "database": "capiro",
   "roles": {

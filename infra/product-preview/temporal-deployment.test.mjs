@@ -35,6 +35,24 @@ function binding(){return {
 const resources=(template,type)=>Object.values(template.Resources).filter(x=>x.Type===type).map(x=>x.Properties);
 const task=(template,role)=>resources(template,'AWS::ECS::TaskDefinition').find(x=>x.Family===`meri-product-preview-temporal-${role}`);
 
+test('committed application and Temporal inputs select the copied cluster and refuse the former cluster',()=>{
+ const endpoint='capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com';
+ const clusterArn='arn:aws:rds:us-east-1:967807252336:cluster:capiro-newstack-preview-clone';
+ const deployment=JSON.parse(readFileSync(new URL('./first-chat/deployment-inputs.json',import.meta.url),'utf8'));
+ const temporal=JSON.parse(readFileSync(new URL('./first-chat/temporal-binding.json',import.meta.url),'utf8'));
+ assert.equal(TEMPORAL_EXISTING_DATABASE.endpoint,endpoint);assert.equal(TEMPORAL_EXISTING_DATABASE.clusterArn,clusterArn);
+ assert.equal(deployment.database.host,endpoint);assert.equal(deployment.database.port,5432);assert.equal(deployment.database.database,'capiro');
+ assert.equal(validateTemporalPreviewBinding(temporal),temporal);
+ assert.equal(temporal.database.endpoint,endpoint);assert.equal(temporal.database.clusterArn,clusterArn);
+ assert.equal(temporal.database.rdsCaSha256,deployment.database.rdsCaPemSha256);
+ const previous='capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv';
+ for(const [key,value] of [['clusterArn',`arn:aws:rds:us-east-1:967807252336:cluster:${previous}`],
+  ['endpoint',`${previous}.cluster-csryw28ai752.us-east-1.rds.amazonaws.com`]]){
+  const changed=structuredClone(temporal);changed.database[key]=value;
+  assert.throws(()=>validateTemporalPreviewBinding(changed),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+ }
+});
+
 test('fully bound synthesis emits five stopped private roles using the approved existing Aurora endpoint',()=>{
  const b=binding(),t=synthesizeTemporalPreview(b);
  assert.equal(resources(t,'AWS::ECS::Service').length,5);
