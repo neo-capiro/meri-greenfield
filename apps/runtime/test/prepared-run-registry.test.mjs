@@ -177,3 +177,14 @@ test('a successor of a conversation admitted under an earlier render prepares; o
  // The first run must be the original record's own run.
  const h=fixture({dynamic:{...earlier,firstRun:{...earlier.versions,sdk:'9.9.9'}}}),third=h.create();try{await assert.rejects(third.ensure({binding:h.binding}));assert.equal(h.stats.prepare,0);}finally{await third.close();}
 });
+
+test('MR01 registry supplies immutable issuance-bound custody at the allocation boundary before any task dispatch',async()=>{
+ const f=fixture(),allocate=f.options.allocate;f.facts.taskRequest.overrides.containerOverrides[0].command=['start'];let seen;f.options.allocate=async input=>{seen=input;assert.equal(input.retirementFacts.schemaVersion,2);assert.deepEqual(input.retirementFacts.issuance,f.issued.issuance);const {issuance,factsSha256,...projection}=f.issued;assert.deepEqual(input.retirementFacts.issuedFacts,projection);assert.equal(hash(projection),issuance.factsSha256);assert.equal(JSON.stringify(input.retirementFacts).includes(input.taskCapability),false);assert.equal(JSON.stringify(input.retirementFacts).includes(input.runtime.proxyCredential),false);return allocate(input);};
+ const registry=f.create();try{const entry=await registry.ensure({binding:f.binding});assert.equal(seen,undefined);await kickoff(entry);assert.equal(f.stats.allocate,1);assert.deepEqual(seen.retirementFacts.original,entry.original);}finally{await registry.close();}
+});
+
+test('MR01 existing non-profile task commands and environments still allocate without secret-bearing custody',async()=>{
+ for(const environment of [false,true]){const f=fixture(),allocate=f.options.allocate;let seen;if(environment){f.facts.taskRequest.overrides.containerOverrides[0].command=['start'];f.facts.taskRequest.overrides.containerOverrides[0].environment=[{name:'MERI_WORKLOAD_OPTION',value:'synthetic-private-value'}];}
+  f.options.allocate=input=>{seen=input;return allocate(input);};const registry=f.create();try{const entry=await registry.ensure({binding:f.binding});await kickoff(entry);assert.equal(f.stats.allocate,1);assert.equal(Object.hasOwn(seen,'retirementFacts'),false);assert.deepEqual(seen.taskRequest,f.facts.taskRequest);}finally{await registry.close();}
+ }
+});

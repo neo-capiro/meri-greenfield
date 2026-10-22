@@ -1,4 +1,5 @@
 /** Runnable controller/task/runner composition; cloud clients and credentials stay injected. */
+import {assertHistoricalStopFacts,matchHistoricalStopAllocation} from './historical-stop-facts.mjs';
 import {types} from 'node:util';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
@@ -91,9 +92,9 @@ export function createRemoteNativeWorker(configuration){
 }
 
 /** The canonical original allocator and its budget admission over exact allocation facts; shared by allocation and stop-only retirement. */
-function originalAllocator({store,pool,client,original,allocationJson,qualification,grantIntents,taskRequest,containerName,limits,authority,admission,enabled,now}){
+function originalAllocator({store,pool,client,original,allocationJson,qualification,grantIntents,taskRequest,containerName,limits,authority,admission,enabled,now,retirementFacts}){
  const owner=admission??createNativeAllocationAdmission({pool,allocationJson,qualification,grantIntents,binding:original.binding,limits,now});
- return {admission:owner,allocator:createNativeTaskAllocator({journal:store.allocations,authority,admission:owner,client,original,taskRequest,qualification,grantIntents,allocationSha256:hash(JSON.parse(allocationJson)),containerName,enabled,now,maxRequestMs:limits.maxRequestMs})};
+ return {admission:owner,allocator:createNativeTaskAllocator({journal:store.allocations,authority,admission:owner,client,original,taskRequest,qualification,grantIntents,allocationSha256:hash(JSON.parse(allocationJson)),containerName,enabled,now,maxRequestMs:limits.maxRequestMs,...(retirementFacts===undefined?{}:{retirementFacts})})};
 }
 /** Stop-only retirement of an original this process holds no controller for (for example after a hard control restart), rebuilt from the
  * exact durable allocation facts. It exposes only the canonical allocator's stop: grant revocation, ECS containment, then RETIRED with the
@@ -101,24 +102,28 @@ function originalAllocator({store,pool,client,original,allocationJson,qualificat
  * refuses. A journal record that differs from the rebuilt intent is refused; an uncertain step stays UNKNOWN (nothing is recorded). Each
  * stop is a fresh bounded attempt over durable state, so a later reconciliation can resume after an earlier one gave up. */
 export function createOriginalRetirement(configuration){
- const c=own(configuration,['store','pool','client','allocationJson','qualification','grantIntents','runtime','plan','preparationIntent','taskRequest','containerName','limits'],['admission','now']),now=c.now??Date.now;
- const {original}=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),key={binding:original.binding,allocationKey:original.executionKey},read=storageMethod(c.store.allocations,'read');
- const {allocator}=originalAllocator({store:c.store,pool:c.pool,client:c.client,original,allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,taskRequest:c.taskRequest,containerName:c.containerName,limits:c.limits,authority:{async verify(){throw executionFault('ALLOCATION_REFUSED');}},...(c.admission?{admission:c.admission}:{}),enabled:true,now});
+ const historical=configuration?.retirementFacts!==undefined;
+ const c=own(configuration,['store','pool','client','limits',...(historical?['retirementFacts']:['allocationJson','qualification','grantIntents','runtime','plan','preparationIntent','taskRequest','containerName'])],['admission','now']),now=c.now??Date.now;
+ const facts=historical?assertHistoricalStopFacts(c.retirementFacts):c;
+ if(historical&&facts.schemaVersion!==2)throw executionFault('ALLOCATION_REPLAY_REFUSED');
+ const original=historical?facts.original:compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}).original,key={binding:original.binding,allocationKey:original.executionKey},read=storageMethod(c.store.allocations,'read');
+ const {allocator}=originalAllocator({store:c.store,pool:c.pool,client:c.client,original,allocationJson:facts.allocationJson,qualification:facts.qualification,grantIntents:facts.grantIntents,taskRequest:facts.taskRequest,containerName:facts.containerName,limits:c.limits,authority:{async verify(){throw executionFault('ALLOCATION_REFUSED');}},...(historical?{retirementFacts:facts}:{}),...(c.admission?{admission:c.admission}:{}),enabled:true,now});
  async function stop(){const record=(await read(key,()=>{})).record;if(!record||record.state==='FORECLOSED')throw executionFault('ALLOCATION_UNKNOWN');
+  if(historical)matchHistoricalStopAllocation(facts,record);
   if(hash(Object.fromEntries(Object.entries(record).filter(([k])=>!['state','resource'].includes(k))))!==hash(allocator.intent))throw executionFault('ALLOCATION_REPLAY_REFUSED');
   if(record.state==='RETIRED'&&record.resource?.physicalStopProven===true)return {physicalStopProven:true};return allocator.stop();}
  return Object.freeze({original,stop});
 }
 /** Concrete controller entry: durable RunTask/admission, then parked task authority. */
 export async function allocateRemoteNativeController(configuration){
- const c=own(configuration,['pool','client','identity','allocationJson','qualification','grantIntents','grantId','operations','taskCapability','controlCapabilitySha256','runtime','plan','preparationIntent','taskRequest','containerName','limits','transportFactory'],['verifyTask','objects','continuation','continuationObjects','enabled','now','approvedReads','readCurrentEntry','runRequestSha256','issuanceFactsSha256','scopes','generalReads','createReadsRuntime','sourceEnabled']);
+ const c=own(configuration,['pool','client','identity','allocationJson','qualification','grantIntents','grantId','operations','taskCapability','controlCapabilitySha256','runtime','plan','preparationIntent','taskRequest','containerName','limits','transportFactory'],['verifyTask','objects','continuation','continuationObjects','enabled','now','approvedReads','readCurrentEntry','runRequestSha256','issuanceFactsSha256','scopes','generalReads','createReadsRuntime','sourceEnabled','retirementFacts']);
  captureReadRuntimeOptions(Object.fromEntries(['createReadsRuntime','generalReads'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]])));
  const now=c.now??Date.now,enabled=c.enabled??false,compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),{original}=compiled,store=createPostgresConversationStore({pool:c.pool});
  const identity=own(c.identity,['origin','credential','commandContext','fetchImpl']),intents=data(c.grantIntents),operations=compileNativeTaskAccess({identityCredential:identity.credential,taskCapabilitySha256:capabilityDigest(c.taskCapability),operations:c.operations});
  if(!operations.includes('load')||sdkSessionOperations.some(op=>!operations.includes('runner/session/'+op))||!intents.some(i=>i.grantId===c.grantId&&i.capabilitySha256===capabilityDigest(c.taskCapability))||intents.some(i=>i.capabilitySha256===c.controlCapabilitySha256||i.expiresAtMs<original.expiresAtMs)||typeof c.controlCapabilitySha256!=='string'||! /^[a-f0-9]{64}$/u.test(c.controlCapabilitySha256)||typeof c.transportFactory!=='function'||types.isProxy(c.transportFactory)||types.isAsyncFunction(c.transportFactory)||c.verifyTask!==undefined&&(typeof c.verifyTask!=='function'||types.isProxy(c.verifyTask)))throw executionFault('PREPARATION_CONFIGURATION');
  if(c.objects){storageMethod(c.objects,'get');storageMethod(c.objects,'put');}if(c.continuationObjects)storageMethod(c.continuationObjects,'get');if(c.continuation){storageMethod(c.continuation,'prepare');storageMethod(c.continuation,'readSnapshot');}
  const authority=createPreallocationAuthority({store,identity:c.identity,binding:original.binding,expiresAtMs:original.expiresAtMs,limits:c.limits,enabled,now});
- const {admission,allocator}=originalAllocator({store,pool:c.pool,client:c.client,original,allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,taskRequest:c.taskRequest,containerName:c.containerName,limits:c.limits,authority,enabled,now});let supervisor,controller,mayOwnResource=false;
+ const {admission,allocator}=originalAllocator({store,pool:c.pool,client:c.client,original,allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,taskRequest:c.taskRequest,containerName:c.containerName,limits:c.limits,authority,enabled,now,...(c.retirementFacts===undefined?{}:{retirementFacts:c.retirementFacts})});let supervisor,controller,mayOwnResource=false;
  try{
   const saved=await store.allocations.read({binding:original.binding,allocationKey:original.executionKey},()=>{});let admitted,recovered=false;
   if(saved.record?.state==='ADMITTED'&&saved.record.resource?.launchBinding?.state==='STARTED'){

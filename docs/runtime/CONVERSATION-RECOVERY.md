@@ -25,6 +25,22 @@ accept caller-provided historical configuration, allocate another task, mint a
 grant, restore a checkpoint or rerun the SDK to repair Stop. Any operator repair,
 schema change or cloud action requires its separate authorization.
 
+New historical custody covers the reviewed first-chat task override: `start` with
+an empty environment. Other validated task commands keep their execution behavior
+but receive no custody containing arbitrary command or environment values. Their
+cross-render cleanup remains unqualified. Legacy later-run rows without custody
+also remain held; a same-render legacy first-run fallback may use its original
+strict pins. Neither fallback may reopen model credentials or prepare another turn.
+For Objective runs, custody contains the exact already-issued request/context
+needed to verify the immutable facts digest. It is bounded by the existing
+Objective selection limit plus bounded capsule overhead; never log its content.
+
+A FORECLOSED row proves no native allocation authority. A first attempt retains
+its initial-admission expiry for the existing Stop receipt. A later foreclosed
+attempt has no original allocation expiry: cleanup preserves that proof and
+returns 503 rather than inventing the receipt's required expiry. This case needs
+an owner-approved receipt/recovery decision; no task or grant effect is attempted.
+
 A committed lifecycle receipt may be inspected without dispatching the command
 again. An unobserved SDK message remains UNKNOWN; final text, timeout or task death
 does not prove APPLIED. Operator escalation must preserve the unresolved control

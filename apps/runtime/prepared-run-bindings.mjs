@@ -15,6 +15,8 @@ import {compilePreparedCandidateConfiguration} from './prepared-candidate-config
 import {compilePreparedRunConfigurationSha256} from './prepared-run-configuration.mjs';
 import {issueRunModelGrant} from './run-model-grant.mjs';
 import {createOriginalRunPreparation} from './original-run-preparation.mjs';
+import {matchHistoricalStopAllocation} from './native-authority/historical-stop-facts.mjs';
+import {createHistoricalRunRetirement} from './historical-run-retirement.mjs';
 import {createNativeTaskAllocator} from './native-authority/task-allocator.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
@@ -54,13 +56,15 @@ export function createPreparedRunBindings(options){
   return createNativeAllocationAdmission({pool:o.pool,allocationJson,qualification:record?.qualification??config.qualification,grantIntents:record.grantIntents,binding,now,limits});};
  /** A settled (RETIRED) source admitted under an earlier render keeps the allocation it ran with: its revocation is proven against that
   * exact stored allocation, pinned by the hash in its own durable record. A live run is still admitted only under the current render. */
- async function settledAdmissionFor(binding,record){const current=retarget(binding);
+ async function settledAdmissionFor(binding,record){
+  if(record.state==='RETIRED'&&record.retirementFacts!==undefined){const facts=matchHistoricalStopAllocation(record.retirementFacts,{...record,binding,expiresAtMs:record.original.expiresAtMs});return admissionFor(binding,record,facts.allocationJson);}
+  const current=retarget(binding);
   if(record.state!=='RETIRED'||record.allocationSha256===undefined||record.allocationSha256===hash(allocation(current)))return admissionFor(binding,record,current);
   const client=await o.pool.connect();let rows;try{rows=(await client.query(`SELECT allocation,allocation_sha256 FROM ${budgetTables('product').tool_run_allocations} WHERE run_id=$1`,[binding.runId])).rows;}finally{client.release();}
   if(rows.length!==1||rows[0].allocation_sha256!==record.allocationSha256)fail('ALLOCATION_MISMATCH');const stored=JSON.stringify(rows[0].allocation),a=allocation(stored);
   if(hash(a)!==record.allocationSha256||!Object.keys(a.run).every(k=>a.run[k]===binding[k]))fail('ALLOCATION_MISMATCH');return admissionFor(binding,record,stored);}
  /** Existing admission owner per target binding; the next-run owner calls its `revoke` with the retired task ARN. */
- async function admissionForBinding({binding,record}){const r=data(own(record,['state','original','grantIntents','resource'],['qualification','allocationSha256','taskRequestSha256','allocationKey']));return settledAdmissionFor(binding,r);}
+ async function admissionForBinding({binding,record}){const r=data(own(record,['state','original','grantIntents','resource'],['qualification','allocationSha256','taskRequestSha256','allocationKey','retirementFacts']));return settledAdmissionFor(binding,r);}
  /** Source retirement facade for the issuance owner: the allocation record read for a source is remembered by task ARN so that the
   * revocation goes through the admission of that exact source binding. */
  const sources=new Map();
@@ -97,8 +101,11 @@ export function createPreparedRunBindings(options){
  /** Rebuild only the canonical allocator's stop from the immutable allocation and issuance rows. The model credential is not read,
   * and neither an issuance nor a task is created. An expired admission remains usable for cleanup, never fresh execution. */
  const retireInitial=readInitial?async value=>{const {binding,client,signal}=own(value,['binding','client'],['signal']);nativeSignal(signal);const life=createOperationLifetime({now,signal,deadlineMs:now()+limits.maxRequestMs,errorFactory:()=>Object.assign(Error('PREPARED_RUN_BINDINGS_INITIAL_STOP_UNKNOWN'),{code:'PREPARED_RUN_BINDINGS_INITIAL_STOP_UNKNOWN'})});try{
-  const b=data(binding),{admission:admitted,saved}=await life.run(()=>initialRecord(b,life.check,true)),key={binding:b,allocationKey:hash(b)};
+  const b=data(binding),key={binding:b,allocationKey:hash(b)};
   const allocationSaved=await life.run(()=>o.store.allocations.read(key,life.check));life.check();const record=allocationSaved?.record;
+  if(record?.retirementFacts)return await life.run(signal=>retireHistorical({binding:b,client,signal}));
+  // Legacy only: all old current-config checks and whole-facts comparison remain.
+  const {admission:admitted,saved}=await life.run(()=>initialRecord(b,life.check,true));
   if(!record||record.state==='FORECLOSED'||hash(record.original?.binding)!==hash(b)||record.original.expiresAtMs!==admitted.expiresAtMs||hash(record.original.versions)!==hash(admitted.versions)||hash(record.qualification)!==hash(config.qualification)||!Array.isArray(record.grantIntents))fail('INITIAL_STOP_REFUSED');
   const issued=await life.run(()=>o.issuanceStore.read({issuanceKey:key.allocationKey}));life.check();
   if(issued?.state!=='ISSUED'||issued.issuanceKey!==key.allocationKey||hash(issued.binding)!==hash(b)||issued.expiresAtMs!==admitted.expiresAtMs||issued.requestSha256!==hash(saved.request)||typeof issued.factsSha256!=='string'||!/^[a-f0-9]{64}$/u.test(issued.factsSha256)||!record.grantIntents.some(g=>g.grantId===issued.grantId&&g.capabilitySha256===issued.capabilitySha256&&g.expiresAtMs===admitted.expiresAtMs))fail('INITIAL_STOP_REFUSED');
@@ -110,6 +117,7 @@ export function createPreparedRunBindings(options){
   const allocationJson=retarget(b),admission=admissionFor(b,record),allocator=createNativeTaskAllocator({journal:o.store.allocations,authority:{async verify(){fail('INITIAL_STOP_REFUSED');}},admission,client,original:record.original,taskRequest:config.taskRequest,qualification:config.qualification,grantIntents:record.grantIntents,allocationSha256:hash(allocation(allocationJson)),containerName:config.containerName,enabled:true,now,maxRequestMs:limits.maxRequestMs});
   const {state:_,resource:__,...persistedIntent}=record;if(hash(persistedIntent)!==hash(allocator.intent))fail('INITIAL_STOP_CONFLICT');life.check();if(record.state==='RETIRED'&&record.resource?.physicalStopProven===true)return {physicalStopProven:true};return await life.run(()=>allocator.stop());
  }finally{life.close();}}:undefined;
+ const retireHistorical=createHistoricalRunRetirement({store:o.store,issuanceStore:o.issuanceStore,initialBindings:o.initialBindings,principal:{tenantId:configuredBinding.tenantId,actorId:configuredBinding.actorId},selectedClientId,pool:o.pool,limits,now});
  function proposeInitialExpiry({signal}={}){nativeSignal(signal);if(signal?.aborted)fail('CANCELLED');const expiresAtMs=Math.min(now()+config.multiRun.runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())fail('WINDOW_EXPIRED');return expiresAtMs;}
  /** The run's expiry. An issuance already recorded durably for this binding keeps its original expiry across process recreation
   * (the window is never recomputed from a later clock); otherwise the reviewed window, never beyond the allocation schedule, never
@@ -118,5 +126,5 @@ export function createPreparedRunBindings(options){
   const issuanceKey=hash(binding),existing=await o.issuanceStore.read({issuanceKey,signal});
   if(existing){if(existing.issuanceKey!==issuanceKey||hash(existing.binding)!==issuanceKey||!Number.isSafeInteger(existing.expiresAtMs))fail('ISSUANCE_RECORD_REFUSED');return {expiresAtMs:existing.expiresAtMs,persisted:true};}
   return {expiresAtMs:proposeInitialExpiry({signal}),persisted:false};}
- return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,facts,prepareOriginal,...(prepareInitial?{prepareInitial,retireInitial,proposeInitialExpiry}:{}),runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256});
+ return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,facts,prepareOriginal,retireHistorical,...(prepareInitial?{prepareInitial,retireInitial,proposeInitialExpiry}:{}),runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256});
 }
