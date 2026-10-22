@@ -47,7 +47,7 @@ class ProductPairLease:
     before notifying session owners; no new generation is visible until every
     old-generation close callback has returned. A callback failure retires.
     """
-    def __init__(self, discovery, *, now_ms=None, monotonic_ms=None, random_value=None):
+    def __init__(self, discovery, *, now_ms=None, monotonic_ms=None, random_value=None, on_retire=None):
         if type(discovery) is not ProductServicePairDiscovery:
             raise PairProofError('PAIR_UNAVAILABLE')
         self._reader = discovery
@@ -56,6 +56,9 @@ class ProductPairLease:
         self._now = now_ms or discovery._now
         self._mono = monotonic_ms or (lambda: time.monotonic()*1000)
         self._random = random_value or random.random
+        if on_retire is not None and not callable(on_retire):
+            raise PairProofError('PAIR_UNAVAILABLE')
+        self._on_retire = on_retire or (lambda: None)
         self._ttl = min(PAIR_LEASE_TTL_MS, discovery.max_lease_ms)
         if self._ttl < 2 * PAIR_RENEW_MS:
             raise PairProofError('PAIR_UNAVAILABLE')
@@ -150,7 +153,7 @@ class ProductPairLease:
             if replacement:
                 self._reproofs = [stamp for stamp in self._reproofs if at-stamp < PAIR_REPROOF_WINDOW_MS]
                 if len(self._reproofs) >= PAIR_REPROOFS_PER_10_MIN:
-                    self.retire()
+                    self.retire('PAIR_REPROOF_LIMIT')
                     raise PairProofError('PAIR_DRIFT')
                 self._reproofs.append(at)
                 # Refuse the old generation before closing even its first socket.
@@ -252,9 +255,11 @@ class ProductPairLease:
                 telemetry.health('pair', 'reproven', 'PAIR_REPROVEN')
                 diagnostics.pair_reproven()
 
-    def retire(self):
+    def retire(self, reason='PAIR_DRIFT'):
+        if reason not in ('PAIR_DRIFT', 'CARRIER_RESET_LIMIT', 'PAIR_REPROOF_LIMIT'):
+            raise ValueError('PAIR_RETIRE_REASON')
         with self._state:
-            if self._retired:
+            if self._retired or self._closed:
                 return
             self._retired = True
             self._lease = None
@@ -265,7 +270,8 @@ class ProductPairLease:
                     callback(self._generation)
                 except BaseException:
                     pass
-            telemetry.health('pair', 'retired', 'PAIR_DRIFT')
+            telemetry.health('pair', 'retired', reason)
+            self._on_retire()  # Process owner exits after socket/session invalidation and health.
 
     def start(self):
         with self._state:

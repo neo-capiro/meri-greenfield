@@ -13,7 +13,7 @@ import {createProductOwnerHttpsServer} from '../owner-https.mjs';
 
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 export async function createP2OwnerFixture({persistedFacts,ownerPorts,placement,now=Date.now,
- monotonicNow=()=>performance.now(),maxRequestMs=1000,telemetry,pairIdentities}={}){
+ monotonicNow=()=>performance.now(),maxRequestMs=1000,telemetry,pairIdentities,afterPlacement,readiness}={}){
  const directory=mkdtempSync(join(tmpdir(),'meri-p2-owner-'));
  const run=args=>execFileSync('openssl',args,{cwd:directory,stdio:'ignore'});
  const events=[],health=[],counts={pairProofs:0,placement:0};let unavailable=false,hook=null;
@@ -52,9 +52,14 @@ export async function createP2OwnerFixture({persistedFacts,ownerPorts,placement,
     started_by:'started',group:'group',created_at_ms:now()-1000,expires_at_ms:now()+60000,vpc_id:'vpc',subnet_id:'subnet',security_group_ids:['sg'],tags:[]},
     checkedAtMs:now(),effectiveExpiresAtMs:Math.min(value.deadlineMs,now()+1000)};
   }};
-  const wrappedPlacement={get available(){return suppliedPlacement.available;},resolve:value=>{counts.placement++;return suppliedPlacement.resolve(value);}};
+  const wrappedPlacement={get available(){return suppliedPlacement.available;},async resolve(value){
+   counts.placement++;const result=await suppliedPlacement.resolve(value);await afterPlacement?.();return result;
+  }};
+  // Readiness can be tested independently of socket-bound authority. All proof,
+  // generation and monotonic lease checks still use the real holder above.
+  const taskLeaseReader=readiness?Object.create(reader,{ready:{get:readiness}}):reader;
   const create=()=>createProductOwnerHttpsServer({enabled:true,tlsMaterial,clientPolicy,persistedFacts:facts,ownerPorts:ports,
-   placement:wrappedPlacement,taskLeaseReader:reader,serviceGate,now,maxRequestMs});
+   placement:wrappedPlacement,taskLeaseReader,serviceGate,now,maxRequestMs});
   server=telemetry?telemetry.provisional(create):create();await server.listen();
   const clientTls={ca,cert:clientCert,key:material('proxy.key'),minVersion:'TLSv1.3',maxVersion:'TLSv1.3',ALPNProtocols:['http/1.1'],servername:'owner.synthetic.invalid'};
   const agent=()=>{const value=new Agent({...clientTls,keepAlive:true,maxSockets:1,maxFreeSockets:1});agents.add(value);return value;};

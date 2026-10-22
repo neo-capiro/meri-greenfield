@@ -2,8 +2,11 @@
 import asyncio
 import dataclasses
 import http.client
+import hashlib
+import json
 import socket
 import ssl
+import threading
 import time
 import unittest
 from types import SimpleNamespace
@@ -11,9 +14,11 @@ from unittest.mock import patch
 
 from apps.proxy.product.owner_https import (ProductOwnerHttpsExchange,OwnerClientTlsMaterial,OwnerExchangeUnavailable,
     validate_owner_http_reply,load_owner_client_tls_material)
-from apps.proxy.product.owner_channel import OwnerPeerPolicy,OPEN,OPERATION,POLL,REPLY
-from apps.proxy.product import refusal_diagnostics as diagnostics
-from apps.proxy.product.service_pair_discovery import compile_owner_peer
+from apps.proxy.product.owner_channel import (OwnerPeerPolicy,OwnerTlsEvidence,OwnerHostGate,
+    make_product_owner_bridge,OPEN,OPERATION,POLL,REPLY)
+from apps.proxy.product import refusal_diagnostics as diagnostics,telemetry_lines
+from apps.proxy.product.service_pair_discovery import compile_owner_peer,PairProofError
+from apps.proxy.product.test_boundary_codec import reservation
 from apps.proxy.product.test.test_service_pair_discovery import fixture, peer_template
 
 
@@ -36,6 +41,146 @@ def exchange():
 
 
 class HttpsTests(unittest.IsolatedAsyncioTestCase):
+    async def test_reply_read_cannot_return_after_monotonic_lease_expiry(self):
+        item=exchange();self.addCleanup(item.close)
+        wall=item.fixture.at;item.now_ms=lambda:wall;item.pair_lease._now=lambda:wall
+        mono=[item.pair_lease.current.checked_at_mono_ms];item.pair_lease._mono=lambda:mono[0]
+        entered,release=threading.Event(),threading.Event()
+        sent,closed,replies=[],[],[]
+        def read(_size):
+            entered.set()
+            if not release.wait(2): raise TimeoutError('test did not release reply read')
+            return b'[]'
+        response=SimpleNamespace(status=200,version=11,will_close=False,length=0,
+            getheaders=lambda:[('content-type','application/json'),('content-length','2'),
+                ('cache-control','no-store'),('x-meri-owner-revision','reviewed-v1')],read=read)
+        connection=SimpleNamespace(sock=SimpleNamespace(settimeout=lambda _:None),
+            request=lambda *a,**kw:sent.append((a,kw)),getresponse=lambda:response,close=lambda:closed.append(True))
+        item._connections['operation']=connection
+        item._connection_generations['operation']=item.generation
+        try:
+            with patch.object(item,'_evidence',return_value='verified-held-carrier'):
+                pending=asyncio.create_task(item('operation',OPERATION,b'[]',1))
+                self.assertTrue(await asyncio.to_thread(entered.wait,1),'reply read must be in flight')
+                mono[0]=item.pair_lease.current.expires_at_mono_ms+1
+                release.set()
+                with self.assertRaisesRegex(PairProofError,'^PAIR_UNAVAILABLE$'):
+                    replies.append(await pending)
+            self.assertEqual(replies,[],'an expired reply must never become an OwnerReply')
+            self.assertEqual(len(sent),1);self.assertEqual(closed,[True])
+            self.assertNotIn('operation',item._connections)
+            self.assertEqual(item.now_ms(),wall,'wall time must not cause the refusal')
+            self.assertTrue(item.available)
+        finally:
+            release.set()
+            if 'pending' in locals():
+                await asyncio.gather(pending,return_exceptions=True)
+
+    async def test_reservation_timeout_after_native_write_is_never_resent_by_call_or_bridge(self):
+        # The real exchange and bridge serialize actual HTTP bytes over native
+        # socket pairs. Only the already-proven carrier's TLS evidence is scripted.
+        item=exchange();self.addCleanup(item.close)
+        wall=item.fixture.at;item.now_ms=lambda:wall;item.pair_lease._now=lambda:wall
+        item._policy=dataclasses.replace(item.policy,max_exchange_ms=1000)
+        value,observation=reservation();value['deadlineMs']=wall+10000
+        frames,threads,servers,exchange_errors,socket_errors=[],[],[],[],[]
+        received,stop=threading.Event(),threading.Event()
+        session='owner_timeout_session'
+
+        class NativeReadTimeout:
+            def __init__(self,sock): self.sock=sock
+            def settimeout(self,seconds): self.sock.settimeout(min(seconds,.1))
+            def __getattr__(self,name): return getattr(self.sock,name)
+
+        def serve(sock):
+            try:
+                with sock.makefile('rb') as stream:
+                    while not stop.is_set():
+                        line=stream.readline()
+                        if not line: return
+                        method,path,_=line.decode('ascii').strip().split(' ')
+                        headers={}
+                        while (line:=stream.readline()) not in (b'\r\n',b''):
+                            key,header=line.decode('ascii').split(':',1);headers[key.lower()]=header.strip()
+                        body=stream.read(int(headers['content-length']))
+                        frame=json.loads(body);frames.append((method,path,frame))
+                        if path==OPEN:
+                            answer=['meri.proxy.session/1',session,frame[1],frame[2]]
+                        elif path==POLL:
+                            answer=['meri.proxy.capture-call/1',value['requestId'],
+                                [value['binding'][key] for key in ('tenantId','actorId','conversationId',
+                                    'runId','attemptId','workerId','writerFence')],value['deadlineMs']]
+                        elif path==REPLY:
+                            answer=['meri.proxy.capture-ack/1',session,value['requestId'],'call']
+                        else:
+                            self.assertEqual(frame[0],'meri.proxy.operation/1')
+                            self.assertEqual(frame[2][0],'meri.proxy.reservation/1')
+                            received.set()
+                            # Request bytes reached the owner; no reply is sent.
+                            stop.wait(3)
+                            return
+                        encoded=json.dumps(answer,separators=(',',':')).encode()
+                        sock.sendall(b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: '+
+                            str(len(encoded)).encode()+b'\r\nCache-Control: no-store\r\nX-Meri-Owner-Revision: reviewed-v1\r\n\r\n'+encoded)
+            except BaseException as error:
+                if not stop.is_set(): socket_errors.append(error)
+
+        def connect(channel,_cutoff):
+            client,server=socket.socketpair();servers.append(server)
+            connection=http.client.HTTPConnection(item.policy.server_name,8444)
+            connection.sock=NativeReadTimeout(client);connection.auto_open=0
+            item._register(connection.sock,channel,item.generation)
+            item._connections[channel]=connection;item._connection_generations[channel]=item.generation
+            thread=threading.Thread(target=serve,args=(server,),daemon=True);threads.append(thread);thread.start()
+            return connection
+
+        def evidence(sock):
+            p=item.policy
+            return OwnerTlsEvidence(p.origin,p.server_name,p.owner_task_arn,p.proxy_task_arn,
+                p.server_cert_sha256,p.server_issuer_sha256,p.client_cert_sha256,p.client_subject,
+                'TLSv1.3','http/1.1',f'scripted_native_{id(sock)}')
+
+        original_call=ProductOwnerHttpsExchange.__call__
+        async def observed_call(exchange,channel,path,body,timeout):
+            try:
+                return await original_call(exchange,channel,path,body,timeout)
+            except OwnerExchangeUnavailable as error:
+                exchange_errors.append(error);raise
+        async def capture(_request): return observation
+        from apps.proxy.product import owner_channel
+        with patch.dict(owner_channel._SERVICE_GATES,clear=True), \
+             patch.object(item,'_connect',side_effect=connect),patch.object(item,'_evidence',side_effect=evidence), \
+             patch.object(ProductOwnerHttpsExchange,'__call__',observed_call):
+            bridge=make_product_owner_bridge(policy=item.policy,exchange=item,host_gate=OwnerHostGate(),
+                request_id=value['requestId'],binding=value['binding'],deadline_ms=value['deadlineMs'],
+                grant_id='grant_A',capability_sha256=hashlib.sha256(observation['proxyCredential'].encode()).hexdigest(),
+                now_ms=lambda:wall)(capture)
+            try:
+                with self.assertRaisesRegex(Exception,'^PRODUCT_OWNER_CHANNEL_DENIED$'):
+                    await bridge.reserve(value,observation)
+                self.assertTrue(received.is_set(),'the complete reservation frame must reach the owner')
+                self.assertEqual(len(exchange_errors),1)
+                self.assertIsInstance(exchange_errors[0],OwnerExchangeUnavailable)
+                reservations=[frame for method,path,frame in frames if method=='POST' and path==OPERATION]
+                self.assertEqual(len(reservations),1,'__call__ must never resend the timed-out reservation')
+                self.assertNotIn('operation',item._connections)
+                self.assertGreaterEqual(len(item._resets),1)
+                before=len(frames)
+                with self.assertRaisesRegex(Exception,'^PRODUCT_OWNER_CHANNEL_DENIED$'):
+                    await bridge.reserve(value,observation)
+                self.assertEqual(len(frames),before,'a later reserve on the failed request sends nothing')
+                self.assertEqual(bridge._state,'FAILED')
+                self.assertEqual(socket_errors,[])
+            finally:
+                stop.set();item.close()
+                for server in servers:
+                    try: server.shutdown(socket.SHUT_RDWR)
+                    except OSError: pass
+                    server.close()
+                for thread in threads:
+                    await asyncio.to_thread(thread.join,2)
+                    self.assertFalse(thread.is_alive())
+
     def test_observed_socket_addresses_must_match_selected_service_pair(self):
         item=exchange()
         class SocketBoundary:
@@ -334,12 +479,15 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(closed,[True]);item.abort()
 
     def test_fourth_actual_carrier_reset_retires_but_duplicate_reset_does_not(self):
-        item=exchange()
+        item=exchange();health=[]
+        telemetry_lines.install(write=lambda line:health.append(json.loads(line)))
+        self.addCleanup(telemetry_lines.uninstall)
         for index in range(4):
             item._connections['operation']=SimpleNamespace(close=lambda:None)
             item._sent_channels['operation']=item._connections['operation']
             item.reset('operation');item.reset('operation')
             self.assertEqual(item.available,index<3)
+        self.assertEqual([line['code'] for line in health if line.get('transition')=='retired'],['CARRIER_RESET_LIMIT'])
         self.assertEqual(len(item._resets),4)
 
     def test_replacement_connect_failures_do_not_spend_sent_carrier_reset_quota(self):

@@ -120,7 +120,7 @@ export function createProductOwnerHttpsServer(configuration){
  const initialPolicy=Object.freeze(data(c.clientPolicy));
  if(t.origin!==`https://${t.serverName}:8444`||!/^https:\/\/[a-z0-9.-]+:8444$/u.test(t.origin)||
     typeof c.placement?.resolve!=='function'||c.placement.available!==true||
-    ['read','ensure','current','proveConnection','assertConnection','subscribe','nowMono'].some(key=>typeof c.taskLeaseReader?.[key]!=='function')||c.taskLeaseReader.available!==true||
+    ['read','ensure','current','proveConnection','assertConnection','subscribe','nowMono','retire'].some(key=>typeof c.taskLeaseReader?.[key]!=='function')||c.taskLeaseReader.available!==true||
     c.serviceGate?.available!==true)fail();
  digest(t.certSha256);digest(t.issuerSha256);
  if(initialPolicy.issuerSha256!==t.issuerSha256)fail();
@@ -285,7 +285,7 @@ export function createProductOwnerHttpsServer(configuration){
   s.binding=bindSocket(socket,handshakeAtMonoMs);void s.binding.catch(()=>socket.destroy());
  });
  server.on('clientError',(_error,socket)=>socket.destroy());server.on('tlsClientError',()=>{});
- server.on('error',retire);
+ server.on('error',()=>{retire();if(!closed)c.taskLeaseReader.retire();});
  const listener=createProductOwnerListenerLifecycle(server,{retire,pendingRequests:()=>controllers.size,maxCloseMs:maxRequestMs});
  return Object.freeze({get available(){return available();},get pendingRequests(){return controllers.size;},
   async listen(value){if(!available())fail();await listener.listen(value);},

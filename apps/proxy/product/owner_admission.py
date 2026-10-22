@@ -141,6 +141,7 @@ class ProductOwnerAdmissionReader:
         self._bootstrap = weakref.WeakKeyDictionary()
         self._lifetimes = weakref.WeakKeyDictionary()
         self._receipt_lifetimes = {}
+        self._receipt_lock = threading.RLock()
         self._closed = False
         subscribe = getattr(exchange, "subscribe_generation_close", None)
         self._unsubscribe = subscribe(self._generation_closed) if callable(subscribe) else None
@@ -177,6 +178,7 @@ class ProductOwnerAdmissionReader:
         return (cutoff - at) / 1000
 
     async def _read(self, read_id, capability_sha256, expected, started, deadline, carrier, lease):
+        read_at = self.monotonic()
         acquired, step, cutoff = False, "carrier", deadline
         task = asyncio.current_task()
         self._pending_tasks.add(task)
@@ -239,9 +241,9 @@ class ProductOwnerAdmissionReader:
                         or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
                     _deny()
                 check_carrier()
-                read_at = self.monotonic()
                 result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease,
-                    _json(current), read_at, read_at + min(ADMISSION_LEASE_MS, frame[7] - at) / 1000,
+                    _json(current), read_at, min(read_at + ADMISSION_LEASE_MS / 1000,
+                        self.monotonic() + (frame[7] - at) / 1000),
                     self.generation)
                 self._receipts[id(result)] = result
                 return result
@@ -337,29 +339,33 @@ class ProductOwnerAdmissionReader:
         return state
 
     def _install(self, life, state, receipt):
-        if (life.reason is not None or self._lifetimes.get(life) is not state
-                or receipt.source_bytes != state.source
-                or receipt.generation != state.generation
-                or id(receipt) in self._receipt_lifetimes):
-            _deny()
-        self._consume(receipt, json.loads(state.source))
-        previous = state.receipt
-        if previous is not None:
-            # A late renewal cannot revive a request after the old lease expired,
-            # even if its watcher was starved and has not published deny yet.
-            self._consume(previous, json.loads(state.source), lifetime=life)
-        state.receipt = receipt
-        receipt_id = id(receipt)
-        self._receipt_lifetimes[receipt_id] = weakref.ref(life,
-            lambda _ref: self._receipt_lifetimes.pop(receipt_id, None))
-        if previous is not None:
-            self._receipts.pop(id(previous), None)
-            self._receipt_lifetimes.pop(id(previous), None)
+        with self._receipt_lock:
+            if (life.reason is not None or self._lifetimes.get(life) is not state
+                    or receipt.source_bytes != state.source
+                    or receipt.generation != state.generation
+                    or id(receipt) in self._receipt_lifetimes):
+                _deny()
+            self._consume(receipt, json.loads(state.source))
+            previous = state.receipt
+            if previous is not None:
+                # A late renewal cannot revive a request after the old lease expired,
+                # even if its watcher was starved and has not published deny yet.
+                self._consume(previous, json.loads(state.source), lifetime=life)
+            receipt_id = id(receipt)
+            self._receipt_lifetimes[receipt_id] = weakref.ref(life,
+                lambda _ref: self._receipt_lifetimes.pop(receipt_id, None))
+            # A concurrent request check must see either the still-bound old receipt
+            # or the fully-bound new one, never a published but unowned receipt.
+            state.receipt = receipt
+            if previous is not None:
+                self._receipts.pop(id(previous), None)
+                self._receipt_lifetimes.pop(id(previous), None)
 
     def current_lifetime(self, life):
-        state = self._lifetime(life)
-        self._consume(state.receipt, json.loads(state.source), lifetime=life)
-        return state.receipt
+        with self._receipt_lock:
+            state = self._lifetime(life)
+            self._consume(state.receipt, json.loads(state.source), lifetime=life)
+            return state.receipt
 
     def renew_lifetime_sync(self, life):
         state = self._lifetime(life)
@@ -432,9 +438,10 @@ class ProductOwnerAdmissionReader:
         from ..qualification.runtime.lifetime import _request_lifetime
         life = _request_lifetime.get()
         if life is not None:
-            receipt = self.current_lifetime(life)
-            self._consume(receipt, expected, lifetime=life)
-            return None
+            with self._receipt_lock:
+                receipt = self.current_lifetime(life)
+                self._consume(receipt, expected, lifetime=life)
+                return None
         receipt = self._sync_read(expected[2], expected, expires_at_ms)
         try:
             self._consume(receipt, expected)
@@ -448,9 +455,10 @@ class ProductOwnerAdmissionReader:
         expected = json.loads(expected_source)
         life = _request_lifetime.get()
         if life is not None:
-            receipt = self.current_lifetime(life)
-            self._consume(receipt, expected, lifetime=life)
-            return self._conversation(receipt)
+            with self._receipt_lock:
+                receipt = self.current_lifetime(life)
+                self._consume(receipt, expected, lifetime=life)
+                return self._conversation(receipt)
         receipt = self._sync_read(expected[2], expected, expires_at_ms)
         try:
             self._consume(receipt, expected)

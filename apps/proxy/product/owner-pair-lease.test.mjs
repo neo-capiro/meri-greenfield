@@ -124,6 +124,29 @@ test('one renewer serializes every discovery and renews independently of request
  await f.holder.close();assert.equal(f.timers.at(-1).cancelled,true);
 });
 
+test('unavailable renewals back off with bounded jitter and reset after a successful proof',async()=>{
+ for(const [random,expected]of [[0,[1000,1000,3000,7000,9000,9000]],[.5,[1000,2000,4000,8000,10000,10000]],[1,[2000,3000,5000,9000,10000,10000]]]){
+  const f=await fixture({random:()=>random});await f.read();f.unavailable();f.holder.start();
+  const tick=async()=>{f.advance(f.timers.at(-1).delay);f.timers.at(-1).fn();await new Promise(resolve=>setImmediate(resolve));return f.timers.at(-1).delay;};
+  const delays=[];for(let i=0;i<expected.length;i++)delays.push(await tick());
+  assert.deepEqual(delays,expected);assert.equal(f.holder.available,true);
+  f.recover();assert.equal(await tick(),PAIR_RENEW_MS+(random*2-1)*1000);
+  f.unavailable();assert.equal(await tick(),expected[0],'success resets the outage backoff');
+  await f.holder.close();
+ }
+});
+
+test('retirement notifies the process owner once after resource invalidation; ordinary close never exits',async()=>{
+ const order=[];let f;
+ f=await fixture({onRetire:()=>{assert.equal(f.holder.available,false);order.push('exit');}});
+ await f.read();f.holder.subscribe(reason=>order.push(reason));
+ f.holder.retire();f.holder.retire();
+ assert.deepEqual(order,['retired','exit']);assert.equal(f.health.filter(row=>row[1]==='retired').length,1);
+ await f.holder.close();
+ const g=await fixture({onRetire:()=>assert.fail('ordinary close must not terminate the process')});
+ await g.read();await g.holder.close();g.holder.retire();
+});
+
 test('unsettled SDK quarantine belongs to the renewer and recreates discovery only after bounded cooldown',async()=>{
  const f=await fixture();await f.read();f.quarantine();await assert.rejects(f.read(),{code:'PAIR_UNAVAILABLE'});
  assert.equal(f.holder.quarantined,true);assert.equal(f.holder.available,true);assert.equal(f.created,1);

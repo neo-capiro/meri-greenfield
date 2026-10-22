@@ -1,4 +1,4 @@
-/** Offline boundary controls; no certificate generation, listener or AWS. */
+/** Offline boundary controls; synthetic certificates, no bound listener or AWS. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
@@ -6,8 +6,10 @@ import {assertProductServiceTaskLease,productOwnerRoute,encodeProductPlacement,
  createProductOwnerHttpsServer,acquireProductOwnerRequest,retireProductOwnerRequests,
  createProductOwnerListenerLifecycle,consumeProductPlacementRead,PRODUCT_OWNER_IDLE_SOCKETS} from './owner-https.mjs';
 import {createServer} from 'node:https';
+import {Server,Socket} from 'node:net';
 import {readFileSync} from 'node:fs';
 import {OWNER_PATHS,createProductOwnerServiceGate} from './owner-channel.mjs';
+import {createP2OwnerFixture} from './test/p2-owner-fixture.mjs';
 
 const policy={deploymentRevision:'reviewed-v1',ownerTaskArn:'owner',proxyTaskArn:'proxy',clientCertSha256:'b'.repeat(64)};
 const tls={certSha256:'a'.repeat(64)};
@@ -94,6 +96,35 @@ test('close owns pending listen and denies a late bind callback without reopenin
  assert.equal(closed.pendingRequests,1);assert.equal(closed.physicalStopProven,false);
  server.bound();await Promise.resolve();assert.equal(server.stops,2);
  await assert.rejects(life.listen());
+});
+test('fatal error on the started HTTPS listener closes sockets and retires its pair once',async t=>{
+ let native;
+ t.mock.method(Server.prototype,'listen',function(_options,callback){native=this;queueMicrotask(callback);return this;});
+ const f=await createP2OwnerFixture();
+ try{
+  assert.equal(f.server.available,true);
+  const socket=new Socket();
+  native.emit('connection',socket);
+  const retired=[];
+  f.reader.subscribe(reason=>{retired.push({reason,socketDestroyed:socket.destroyed,pairAvailable:f.reader.available});});
+  native.emit('error',Error('synthetic fatal listener error'));
+  native.emit('error',Error('duplicate fatal listener error'));
+  assert.deepEqual(retired,[{reason:'retired',socketDestroyed:true,pairAvailable:false}]);
+  assert.equal(f.server.available,false);assert.equal(f.serviceGate.available,false);
+  assert.deepEqual(f.health.filter(([,event])=>event==='retired'),[['pair','retired','PAIR_DRIFT']]);
+ }finally{await f.close();}
+});
+test('normal owner close and a late listener error do not retire the pair',async t=>{
+ let native;
+ t.mock.method(Server.prototype,'listen',function(_options,callback){native=this;queueMicrotask(callback);return this;});
+ const f=await createP2OwnerFixture();
+ try{
+  const retired=[];f.reader.subscribe(reason=>{if(reason==='retired')retired.push(reason);});
+  await f.server.close();
+  native.emit('error',Error('synthetic late listener error'));
+  assert.deepEqual(retired,[]);assert.equal(f.reader.available,true);
+  assert.deepEqual(f.health.filter(([,event])=>event==='retired'),[]);
+ }finally{await f.close();}
 });
 test('placement replay capacity exhaustion retires readiness without evicting IDs',()=>{
  const reads=new Set(Array.from({length:4096},(_,i)=>'read_'+i)),gate=createProductOwnerServiceGate();

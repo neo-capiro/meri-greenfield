@@ -5,6 +5,7 @@ import copy
 import contextvars
 import hashlib
 import json
+import threading
 import time
 import unittest
 from unittest.mock import patch
@@ -689,6 +690,99 @@ class AdmissionLeaseTests(unittest.IsolatedAsyncioTestCase):
             life.check()
         self.assertEqual(len(self.exchange.calls), 1)
 
+    async def test_delayed_reply_cannot_restart_the_admission_read_clock(self):
+        started = self.mono[0]
+        wall = self.wall[0]
+        def delayed(frame):
+            self.mono[0] += 8
+            return frame
+        self.exchange.mutate = delayed
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        receipt = life._admission_lease.receipt
+        self.assertEqual(self.wall[0], wall)
+        self.mono[0] = started + 10
+        with self.assertRaises(StateDenied):
+            life.check()
+        self.assertEqual(life.reason, "ADMISSION_LEASE_EXPIRED")
+        self.assertEqual(receipt.read_at_mono, started)
+        self.assertEqual(receipt.expires_at_mono, started + 10)
+
+    async def test_concurrent_check_during_receipt_binding_keeps_valid_admission(self):
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        previous = life._admission_lease.receipt
+        entered, release = threading.Event(), threading.Event()
+        class PausedBinding(dict):
+            def __setitem__(self, key, value):
+                entered.set()
+                if not release.wait(1):
+                    raise AssertionError("receipt binding was not released")
+                super().__setitem__(key, value)
+        self.reader._receipt_lifetimes = PausedBinding(self.reader._receipt_lifetimes)
+        renewal = asyncio.create_task(self.renew(life))
+        checking = None
+        try:
+            self.assertTrue(await asyncio.to_thread(entered.wait, 1))
+            # The renewer thread is publishing a valid receipt while the request
+            # concurrently checks admission. Publication and consumption must
+            # complete atomically, with no false denial in between.
+            checking = asyncio.create_task(asyncio.to_thread(life.check))
+            await asyncio.wait({checking}, timeout=.02)
+            release.set()
+            await asyncio.wait_for(renewal, 1)
+            await asyncio.wait_for(checking, 1)
+            life.check()
+            self.assertIsNone(life.reason)
+            self.assertIsNot(life._admission_lease.receipt, previous)
+            self.assertNotIn(id(previous), self.reader._receipt_lifetimes)
+        finally:
+            release.set()
+            await asyncio.gather(*(task for task in (renewal, checking) if task is not None),
+                return_exceptions=True)
+
+    async def test_concurrent_check_cannot_consume_a_receipt_retired_during_publication(self):
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        previous = life._admission_lease.receipt
+        with patch(__name__ + ".milliseconds", lambda: self.wall[0]):
+            replacement = await asyncio.to_thread(self.reader._sync_read,
+                SHA, self.exchange.source, self.issued.expires_at_ms)
+        selected, resume, installing = threading.Event(), threading.Event(), threading.Event()
+        consume = self.reader._consume
+        checker_thread = []
+        def paused(receipt, expected=None, *, lifetime=None):
+            if (receipt is previous and lifetime is life
+                    and threading.get_ident() == checker_thread[0]):
+                selected.set()
+                if not resume.wait(1):
+                    raise AssertionError("receipt check was not released")
+            return consume(receipt, expected, lifetime=lifetime)
+        def check():
+            checker_thread.append(threading.get_ident())
+            life.check()
+        def install():
+            installing.set()
+            self.reader._install(life, life._admission_lease, replacement)
+        checking = publication = None
+        with patch.object(self.reader, "_consume", paused):
+            try:
+                checking = asyncio.create_task(asyncio.to_thread(check))
+                self.assertTrue(await asyncio.to_thread(selected.wait, 1))
+                publication = asyncio.create_task(asyncio.to_thread(install))
+                self.assertTrue(await asyncio.to_thread(installing.wait, 1))
+                await asyncio.wait({publication}, timeout=.02)
+                resume.set()
+                await asyncio.wait_for(asyncio.gather(checking, publication), 1)
+                life.check()
+                self.assertIsNone(life.reason)
+                self.assertIs(self.reader.current_lifetime(life), replacement)
+                self.assertNotIn(id(previous), self.reader._receipts)
+            finally:
+                resume.set()
+                await asyncio.gather(*(task for task in (checking, publication) if task is not None),
+                    return_exceptions=True)
+
     async def test_receipt_expiry_shorter_than_ten_seconds_is_the_cap(self):
         def shorten(frame):
             frame[7] = frame[6]+250
@@ -728,6 +822,42 @@ class AdmissionLeaseTests(unittest.IsolatedAsyncioTestCase):
         self.mono[0] = receipt.expires_at_mono
         with self.assertRaises(StateDenied):
             life.check()
+
+    async def test_next_tick_reads_again_after_an_unanswered_renewal(self):
+        life = self.lifetime(await self.source(),
+            limits=LifetimeLimits(check_seconds=.05, cleanup_seconds=.5))
+        await life.refresh()
+        entered, release = asyncio.Event(), asyncio.Event()
+        original = Exchange.__call__
+        reads = []
+        async def held_first(exchange, channel, path, body, timeout):
+            reads.append(json.loads(body)[1])
+            if len(reads) == 1:
+                entered.set()
+                await release.wait()
+            return await original(exchange, channel, path, body, timeout)
+        with patch.object(Exchange, "__call__", held_first):
+            first = asyncio.create_task(self.renew(life))
+            second = None
+            try:
+                await asyncio.wait_for(entered.wait(), .5)
+                await first  # The bounded wait is unanswered; the read remains owned.
+                self.assertIsNone(life.reason)
+                second = asyncio.create_task(self.renew(life))
+                # Release the old read while the next tick is waiting. It may
+                # refresh its receipt, but must not substitute for the new read.
+                asyncio.get_running_loop().call_later(.005, release.set)
+                await asyncio.wait_for(second, .5)
+                self.assertEqual(len(reads), 2)
+                self.assertNotEqual(reads[0], reads[1])
+                self.assertEqual(len(self.exchange.calls), 3)  # Bootstrap and both reads.
+                self.assertEqual(life._admission_lease.receipt.read_id, reads[1])
+                self.assertIsNone(life.reason)
+                self.assertTrue(self.gate.available)
+            finally:
+                release.set()
+                await asyncio.gather(*(task for task in (first, second) if task is not None),
+                    return_exceptions=True)
 
     async def test_watch_keeps_five_second_renewal_and_expiry_owner_is_independent(self):
         life = self.lifetime(await self.source())

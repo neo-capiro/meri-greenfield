@@ -13,7 +13,7 @@ export const PAIR_REPROOFS_PER_10_MIN=3;
 export const CARRIER_RESETS_PER_MIN=3;
 export const ADMISSION_LEASE_MS=10000;
 export const PAIR_RENEWER_QUARANTINE_COOLDOWN_MS=30000;
-const RENEW_JITTER_MS=1000,RETRY_MIN_MS=1000,REPROOF_WINDOW_MS=10*60000;
+const RENEW_JITTER_MS=1000,RETRY_MIN_MS=1000,RETRY_MAX_MS=PAIR_RENEW_MS,REPROOF_WINDOW_MS=10*60000;
 if(PAIR_LEASE_TTL_MS<2*PAIR_RENEW_MS)throw Error('PAIR_CONFIGURATION');
 export function pairFailure(code='PAIR_UNAVAILABLE'){const error=Error(code);error.code=code;return error;}
 const refuse=code=>{throw pairFailure(code);};
@@ -25,14 +25,14 @@ const finite=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0;
  * A completed post-handshake proof is the only operation that admits that replacement. */
 export async function createOwnerPairLease({pins,createDiscovery,now=Date.now,monotonicNow=()=>performance.now(),
  maxLeaseMs=PAIR_LEASE_TTL_MS,maxRequestMs,enabled=true,schedule=setTimeout,unschedule=clearTimeout,
- random=Math.random,telemetry=currentTurnTelemetry(),writeDiagnostic=line=>process.stderr.write(line)}){
+ random=Math.random,telemetry=currentTurnTelemetry(),writeDiagnostic=line=>process.stderr.write(line),onRetire=()=>{}}){
  if(typeof createDiscovery!=='function'||typeof now!=='function'||typeof monotonicNow!=='function'||
     !Number.isSafeInteger(maxLeaseMs)||maxLeaseMs<2*PAIR_RENEW_MS||maxLeaseMs>PAIR_LEASE_TTL_MS||
     !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||typeof enabled!=='boolean'||
-    ![schedule,unschedule,random,writeDiagnostic].every(value=>typeof value==='function'))refuse();
+    ![schedule,unschedule,random,writeDiagnostic,onRetire].every(value=>typeof value==='function'))refuse();
  const configuration=data(pins),listeners=new Set(),seenPartners=new Set(),reproofs=[];
  let discovery=await createDiscovery(),lease=null,ownIdentity=null,partnerIdentity=null,generation=0,closed=false,retired=false,
-  reprovingAt=null,quarantineUntil=null,timer=null,running=false,tail=Promise.resolve(),pending=0;
+  reprovingAt=null,quarantineUntil=null,timer=null,running=false,tail=Promise.resolve(),pending=0,retryMs=RETRY_MIN_MS;
  const stop=new AbortController();
  function clocks(){const wall=now(),mono=monotonicNow();if(!Number.isSafeInteger(wall)||wall<0||!finite(mono))refuse();return {wall,mono};}
  function alive(){const {wall}=clocks();if(!enabled||closed)refuse();if(retired)refuse('PAIR_DRIFT');if(wall>=configuration.expiresAtMs)refuse();}
@@ -47,6 +47,7 @@ export async function createOwnerPairLease({pins,createDiscovery,now=Date.now,mo
   // A broken subscriber must never prevent the remaining resources closing.
   for(const listener of listeners)try{listener('retired',old);}catch{}
   health('pair','retired','PAIR_DRIFT',telemetry);
+  onRetire(); // The process owner terminates only after sockets and sessions have closed.
  }
  function valid(value=lease){
   alive();const {wall,mono}=clocks();
@@ -146,8 +147,15 @@ export async function createOwnerPairLease({pins,createDiscovery,now=Date.now,mo
    const run=()=>read({deadlineMs:Math.min(configuration.expiresAtMs,now()+maxRequestMs)});
    await (telemetry?.background?telemetry.background(run):run());
   }catch{unavailable=true;}
-  // Start-to-start period, with no overlapping discovery and at least a 1s retry delay.
-  scheduleNext(unavailable?Math.max(RETRY_MIN_MS,RETRY_MIN_MS+jitter()):Math.max(RETRY_MIN_MS,PAIR_RENEW_MS+jitter()-(monotonicNow()-begun)));
+  // A repeated outage must not keep polling AWS every second. Jitter stays inside
+  // the 1–10s bound; a successful proof restores the ordinary 10s cadence.
+  if(unavailable){
+   const delay=Math.max(RETRY_MIN_MS,Math.min(RETRY_MAX_MS,retryMs+jitter()));
+   retryMs=Math.min(RETRY_MAX_MS,retryMs*2);scheduleNext(delay);
+  }else{
+   retryMs=RETRY_MIN_MS;
+   scheduleNext(Math.max(RETRY_MIN_MS,PAIR_RENEW_MS+jitter()-(monotonicNow()-begun)));
+  }
  }
  return Object.freeze({
   get available(){return available();},get retired(){return retired;},get ready(){return ready();},

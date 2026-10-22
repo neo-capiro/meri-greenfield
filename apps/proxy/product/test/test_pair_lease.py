@@ -120,6 +120,9 @@ class LeaseTests(unittest.TestCase):
 
     def test_fourth_reproof_within_rolling_ten_minutes_retires(self):
         f, holder, wall, mono = self.build()
+        health = []
+        telemetry_lines.install(write=lambda line: health.append(json.loads(line)))
+        self.addCleanup(telemetry_lines.uninstall)
         for token in ('3', '4', '5'):
             replace_partner(f, token)
             lease = holder.renew(deadline_ms=wall[0]+1000)
@@ -128,6 +131,27 @@ class LeaseTests(unittest.TestCase):
         with self.assertRaisesRegex(PairProofError, 'PAIR_DRIFT'):
             holder.renew(deadline_ms=wall[0]+1000)
         self.assertFalse(holder.available)
+        self.assertEqual([line['code'] for line in health if line.get('transition') == 'retired'], ['PAIR_REPROOF_LIMIT'])
+
+    def test_retirement_preserves_reason_and_exits_once_after_resource_invalidation(self):
+        for reason in ('PAIR_DRIFT', 'CARRIER_RESET_LIMIT', 'PAIR_REPROOF_LIMIT'):
+            with self.subTest(reason=reason):
+                f = fixture()
+                order, health = [], []
+                telemetry_lines.install(write=lambda line: health.append(json.loads(line)))
+                self.addCleanup(telemetry_lines.uninstall)
+                holder = ProductPairLease(f.reader(), on_retire=lambda: order.append(('exit', holder.available)))
+                self.addCleanup(holder.close)
+                holder.renew(deadline_ms=f.at+1000)
+                holder.subscribe_generation_close(lambda generation: order.append(('closed', holder.current)))
+                holder.retire(reason)
+                holder.retire(reason)
+                self.assertEqual(order, [('closed', None), ('exit', False)])
+                self.assertEqual([line['code'] for line in health if line.get('transition') == 'retired'], [reason])
+        f = fixture()
+        holder = ProductPairLease(f.reader(), on_retire=lambda: self.fail('normal close must not terminate'))
+        holder.close()
+        holder.retire()
 
     def test_every_contradicting_pin_retires_the_holder(self):
         cases = (

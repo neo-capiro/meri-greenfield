@@ -56,28 +56,48 @@ export function parseProductServicePairConfiguration(raw){
 // checked. A missing partner or failure entry must not hide observed drift.
 function observePairRows(rows,idKey,ids,inspect,failures){
  if(!Array.isArray(rows))unavailable();
- let missing=false;
+ let missing=false,unanswered=false;
  const observations=ids.map((id,index)=>{
   const matches=rows.filter(row=>row?.[idKey]===id);
   if(matches.length>1)drift();
   if(matches.length===0){missing=true;return undefined;}
-  return observe(()=>inspect(matches[0],index));
+  try{return observe(()=>inspect(matches[0],index));}
+  catch(error){if(error?.code!=='PAIR_UNAVAILABLE')throw error;unanswered=true;return undefined;}
  });
- if(rows.length>2||rows.length===2&&missing||failures!==undefined&&!Array.isArray(failures))drift();
- if(missing||failures?.length)unavailable();
+ if(rows.length>ids.length||rows.some(row=>!ids.includes(row?.[idKey]))||failures!==undefined&&!Array.isArray(failures))drift();
+ if(missing||unanswered||failures?.length)unavailable();
  return observations;
 }
-function serviceObservation(s,p){
+function serviceObservation(s,p,partner=false){
  if(s.clusterArn!==p.clusterArn||s.serviceName!==p.serviceArn.split('/').at(-1)||s.status!=='ACTIVE'||s.taskDefinition!==p.taskDefinitionArn||
-    s.desiredCount!==1||s.runningCount!==1||s.pendingCount!==0||s.launchType!=='FARGATE'||s.platformVersion!=='1.4.0'||
+    s.desiredCount!==1||s.launchType!=='FARGATE'||s.platformVersion!=='1.4.0'||
     s.enableExecuteCommand!==false||!Array.isArray(s.deployments)||s.deployments.length<1||s.deployments.length>8)drift();
  const primary=s.deployments.filter(d=>d?.status==='PRIMARY');if(primary.length!==1)drift();const d=primary[0];
- if(typeof d.id!=='string'||!/^ecs-svc\/[0-9]{1,32}$/u.test(d.id)||d.taskDefinition!==p.taskDefinitionArn||d.desiredCount!==1||d.runningCount!==1||d.pendingCount!==0||
-    !(d.rolloutState==='COMPLETED'||p.allowPrimaryInProgress&&d.rolloutState==='IN_PROGRESS')||
-    s.deployments.some(other=>other!==d&&(other?.desiredCount!==0||other?.runningCount!==0||other?.pendingCount!==0)))drift();
+ const count=(v,max)=>Number.isSafeInteger(v)&&v>=0&&v<=max;
+ // Even an inactive/draining deployment is an observed revision, not a reason
+ // to hide another task definition behind a temporary count mismatch.
+ if(s.deployments.some(v=>!v||typeof v.id!=='string'||!/^ecs-svc\/[0-9]{1,32}$/u.test(v.id)||
+    v.taskDefinition!==p.taskDefinitionArn||!['PRIMARY','ACTIVE','INACTIVE'].includes(v.status)||
+    !count(v.desiredCount,1)||!count(v.runningCount,1)||!count(v.pendingCount,1))||
+    new Set(s.deployments.map(v=>v.id)).size!==s.deployments.length||d.desiredCount!==1||
+    !(d.rolloutState==='COMPLETED'||(partner||p.allowPrimaryInProgress)&&d.rolloutState==='IN_PROGRESS'))drift();
+ const other=s.deployments.filter(v=>v!==d);
+ const quiet=other.every(v=>v.desiredCount===0&&v.runningCount===0&&v.pendingCount===0);
+ const drained=other.every(v=>v.runningCount===0&&v.pendingCount===0&&
+  (v.desiredCount===0||partner&&d.rolloutState==='IN_PROGRESS'&&v.status==='ACTIVE'));
+ const stable=s.runningCount===1&&s.pendingCount===0&&d.runningCount===1&&d.pendingCount===0&&drained;
+ const rolling=partner&&d.rolloutState==='IN_PROGRESS'&&other.some(v=>v.status==='ACTIVE')&&
+  other.every(v=>v.pendingCount===0&&(v.runningCount===0||v.status==='ACTIVE'))&&
+  other.reduce((sum,v)=>sum+v.runningCount,0)<=1;
+ if(!partner){
+  if(!stable||!quiet)drift();
+ }else if(!count(s.runningCount,2)||!count(s.pendingCount,1)||!quiet&&!rolling||
+    s.runningCount===2&&!rolling||s.runningCount===1&&s.pendingCount===1&&!rolling)drift();
+ // Aggregate counts can lag deployment counts during the same pinned rollout.
+ // Such disagreement with a nonempty drainer cannot issue a proof.
  const network=s.networkConfiguration?.awsvpcConfiguration;
  if(!network||network.assignPublicIp!=='DISABLED'||!sameSet(network.subnets,p.subnetIds)||!sameSet(network.securityGroups,p.securityGroupIds))drift();
- return {deploymentId:d.id};
+ return {deploymentId:d.id,deploymentIds:rolling?s.deployments.map(v=>v.id):[d.id],rolling,transitional:!stable};
 }
 function definitionObservation(reply,p){
  const d=reply?.taskDefinition;if(!d)unavailable();
@@ -88,45 +108,61 @@ function definitionObservation(reply,p){
  const containers=d.containerDefinitions.filter(v=>v?.name===p.containerName);
  if(containers.length!==1||containers[0].image!==p.imageUri||containers[0].essential!==true)drift();
 }
-function taskObservation(task,p,id,deploymentId,started){
+function taskObservation(task,p,id,service,started,partner=false){
+ const pending=partner&&['PROVISIONING','PENDING','ACTIVATING'].includes(task?.lastStatus);
+ const matches=(actual,expected)=>pending&&actual===undefined||actual===expected;
  if(!task||task.taskArn!==id||task.clusterArn!==p.clusterArn||task.taskDefinitionArn!==p.taskDefinitionArn||
-    task.group!=='service:'+p.serviceArn.split('/').at(-1)||task.startedBy!==deploymentId||
-    !(task.createdAt instanceof Date)||!instant(task.createdAt.getTime())||task.createdAt.getTime()>started||
-    task.launchType!=='FARGATE'||task.platformFamily!=='Linux'||task.platformVersion!=='1.4.0'||task.enableExecuteCommand!==false||
-    task.lastStatus!=='RUNNING'||task.desiredStatus!=='RUNNING'||!Array.isArray(task.containers))drift();
- // Live DescribeTasks always reports `inferenceAcceleratorOverrides: []` and one name-only containerOverrides entry
- // per task container (material-init included). Those override nothing; any field beyond `name`, a foreign name or
- // an accelerator still fails.
- const o=task.overrides,ownNames=new Set(task.containers.map(v=>v?.name));
+    task.group!=='service:'+p.serviceArn.split('/').at(-1)||!service.deploymentIds.includes(task.startedBy)||
+    !(pending&&task.createdAt===undefined)&&(!(task.createdAt instanceof Date)||!instant(task.createdAt.getTime())||task.createdAt.getTime()>started)||
+    !matches(task.launchType,'FARGATE')||!matches(task.platformFamily,'Linux')||!matches(task.platformVersion,'1.4.0')||!matches(task.enableExecuteCommand,false)||
+    !pending&&task.lastStatus!=='RUNNING'||task.desiredStatus!=='RUNNING'||
+    !(pending&&task.containers===undefined)&&!Array.isArray(task.containers))drift();
+ const containers=task.containers??[];
+ // Name-only init-container overrides and empty accelerator lists change no pin.
+ const o=task.overrides,ownNames=new Set(containers.map(v=>v?.name));
  if(o!==undefined){
   own(o,[],['taskRoleArn','executionRoleArn','containerOverrides','inferenceAcceleratorOverrides']);
   if(o.taskRoleArn!==undefined&&o.taskRoleArn!==p.taskRoleArn||o.executionRoleArn!==undefined&&o.executionRoleArn!==p.executionRoleArn||
      o.inferenceAcceleratorOverrides!==undefined&&(!Array.isArray(o.inferenceAcceleratorOverrides)||o.inferenceAcceleratorOverrides.length!==0)||
      o.containerOverrides!==undefined&&(!Array.isArray(o.containerOverrides)||o.containerOverrides.some(v=>{
-      try{return !ownNames.has(own(v,['name']).name);}catch{return true;}
+      try{return !(pending&&containers.length===0)&&!ownNames.has(own(v,['name']).name)||!name(own(v,['name']).name);}catch{return true;}
      })))drift();
  }
- const names=task.containers.map(v=>v?.name),matched=task.containers.filter(v=>v?.name===p.containerName);
- if(names.some(v=>!name(v))||new Set(names).size!==names.length||matched.length!==1)drift();
+ const names=containers.map(v=>v?.name),matched=containers.filter(v=>v?.name===p.containerName);
+ if(names.some(v=>!name(v))||new Set(names).size!==names.length||matched.length>1||!pending&&matched.length!==1)drift();
  const c=matched[0],containerPrefix=p.clusterArn.replace('cluster/','container/')+'/'+id.split('/').at(-1)+'/';
- if(c.lastStatus!=='RUNNING'||c.image!==p.imageUri||c.imageDigest!==p.imageUri.split('@')[1]||
-    c.taskArn!==undefined&&c.taskArn!==id||typeof c.containerArn!=='string'||!c.containerArn.startsWith(containerPrefix)||
-    !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(c.containerArn.slice(containerPrefix.length)))drift();
- const a=task.attachments?.filter(v=>v?.type==='ElasticNetworkInterface');
- if(a?.length!==1||a[0].status!=='ATTACHED'||!Array.isArray(a[0].details))drift();
- const details=new Map();for(const r of a[0].details){if(!r||typeof r.name!=='string'||typeof r.value!=='string'||details.has(r.name))drift();details.set(r.name,r.value);}
- const eni=details.get('networkInterfaceId'),ip=privateIPv4(details.get('privateIPv4Address')),subnet=details.get('subnetId');
- if(!awsId('eni',eni)||!p.subnetIds.includes(subnet)||c.networkInterfaces!==undefined&&
-    (!Array.isArray(c.networkInterfaces)||c.networkInterfaces.length!==1||c.networkInterfaces[0]?.privateIpv4Address!==ip))drift();
- return {taskArn:id,createdAtMs:task.createdAt.getTime(),privateIpv4Address:ip,networkInterfaceId:eni,subnetId:subnet};
+ if(c&&(!pending&&c.lastStatus!=='RUNNING'||!matches(c.image,p.imageUri)||!matches(c.imageDigest,p.imageUri.split('@')[1])||
+    c.taskArn!==undefined&&c.taskArn!==id||!(pending&&c.containerArn===undefined)&&
+    (typeof c.containerArn!=='string'||!c.containerArn.startsWith(containerPrefix)||
+     !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(c.containerArn.slice(containerPrefix.length)))))drift();
+ const a=task.attachments?.filter(v=>v?.type==='ElasticNetworkInterface')??[];
+ if(a.length>1||!pending&&a.length!==1||a.length&&(!['ATTACHED',...(pending?['PRECREATED','ATTACHING']:[])].includes(a[0].status)||
+    !(pending&&a[0].details===undefined)&&!Array.isArray(a[0].details)))drift();
+ const details=new Map();for(const r of a[0]?.details??[]){if(!r||typeof r.name!=='string'||typeof r.value!=='string'||details.has(r.name))drift();details.set(r.name,r.value);}
+ if(['publicIPv4Address','publicIpAddress'].some(key=>details.has(key)))drift();
+ const eni=details.get('networkInterfaceId'),rawIp=details.get('privateIPv4Address'),subnet=details.get('subnetId');
+ if(!(pending&&eni===undefined)&&!awsId('eni',eni)||!(pending&&subnet===undefined)&&!p.subnetIds.includes(subnet))drift();
+ const ip=pending&&rawIp===undefined?undefined:privateIPv4(rawIp);
+ if(c?.networkInterfaces!==undefined&&(!Array.isArray(c.networkInterfaces)||c.networkInterfaces.length>1||
+    !pending&&c.networkInterfaces.length!==1||c.networkInterfaces.some(v=>
+     ['publicIpv4Address','publicIPv4Address','publicIpAddress'].some(key=>v?.[key]!==undefined)||
+     typeof v?.privateIpv4Address!=='string'||privateIPv4(v.privateIpv4Address)!==(ip??v.privateIpv4Address))))drift();
+ return {taskArn:id,createdAtMs:task.createdAt?.getTime(),privateIpv4Address:ip,networkInterfaceId:eni,subnetId:subnet,pending,primary:task.startedBy===service.deploymentId};
 }
 function networkObservation(n,v,p){
- if(!n||n.NetworkInterfaceId!==v.networkInterfaceId||n.SubnetId!==v.subnetId||n.VpcId!==p.vpcId||n.PrivateIpAddress!==v.privateIpv4Address||
-    n.OwnerId!=='967807252336'||n.Status!=='in-use'||n.Attachment?.Status!=='attached'||n.Association?.PublicIp!==undefined||
-    n.Association?.CarrierIp!==undefined||!sameSet(n.Groups?.map(g=>g?.GroupId),p.securityGroupIds)||
-    !Array.isArray(n.PrivateIpAddresses)||n.PrivateIpAddresses.length<1||n.Ipv6Addresses!==undefined&&(!Array.isArray(n.Ipv6Addresses)||n.Ipv6Addresses.length))drift();
- const ips=n.PrivateIpAddresses.map(r=>{if(r?.Association?.PublicIp!==undefined||r?.Association?.CarrierIp!==undefined)drift();return privateIPv4(r?.PrivateIpAddress);});
- if(new Set(ips).size!==ips.length||!ips.includes(v.privateIpv4Address))drift();
+ const matches=(actual,expected)=>v.pending&&actual===undefined||actual===expected;
+ if(!n||n.NetworkInterfaceId!==v.networkInterfaceId||
+    !matches(n.SubnetId,v.subnetId??n.SubnetId)||n.SubnetId!==undefined&&!p.subnetIds.includes(n.SubnetId)||
+    !matches(n.VpcId,p.vpcId)||!matches(n.PrivateIpAddress,v.privateIpv4Address??n.PrivateIpAddress)||
+    !matches(n.OwnerId,'967807252336')||!(v.pending?['in-use','available',undefined].includes(n.Status):n.Status==='in-use')||
+    !(v.pending?['attached','attaching',undefined].includes(n.Attachment?.Status):n.Attachment?.Status==='attached')||
+    n.Association?.PublicIp!==undefined||n.Association?.CarrierIp!==undefined||
+    !(v.pending&&n.Groups===undefined)&&!sameSet(n.Groups?.map(g=>g?.GroupId),p.securityGroupIds)||
+    !(v.pending&&n.PrivateIpAddresses===undefined)&&(!Array.isArray(n.PrivateIpAddresses)||n.PrivateIpAddresses.length<1)||
+    n.Ipv6Addresses!==undefined&&(!Array.isArray(n.Ipv6Addresses)||n.Ipv6Addresses.length))drift();
+ if(n.PrivateIpAddress!==undefined)privateIPv4(n.PrivateIpAddress);
+ const ips=(n.PrivateIpAddresses??[]).map(r=>{if(r?.Association?.PublicIp!==undefined||r?.Association?.CarrierIp!==undefined)drift();return privateIPv4(r?.PrivateIpAddress);});
+ if(new Set(ips).size!==ips.length||!(v.pending&&v.privateIpv4Address===undefined)&&!ips.includes(v.privateIpv4Address))drift();
 }
 /** Borrowed pinned task-role clients; unknown work quarantines this discovery instance. */
 export async function createProductServicePairDiscovery(raw){
@@ -160,32 +196,47 @@ export async function createProductServicePairDiscovery(raw){
    const services=async()=>{
     const reply=await send(DescribeServicesCommand,{cluster:pins.owner.clusterArn,services:[pins.owner.serviceArn,pins.proxy.serviceArn]});
     const [owner,proxy]=observePairRows(reply?.services,'serviceArn',[pins.owner.serviceArn,pins.proxy.serviceArn],
-     (row,index)=>serviceObservation(row,index===0?pins.owner:pins.proxy),reply?.failures);
+     (row,index)=>serviceObservation(row,index===0?pins.owner:pins.proxy,index===1),reply?.failures);
     return {owner,proxy};
    };
-   const member=async p=>{
+   const member=async(p,partner=false)=>{
     const ids=new Set(),tokens=new Set();let nextToken;
     for(let page=0;page<4;page++){
      const reply=await send(ListTasksCommand,{cluster:p.clusterArn,serviceName:p.serviceArn.split('/').at(-1),desiredStatus:'RUNNING',maxResults:100,...(nextToken?{nextToken}:{})});
      if(!Array.isArray(reply?.taskArns))unavailable();if(reply.taskArns.length>100)drift();
-     for(const id of reply.taskArns){if(!taskArn(id,p)||ids.has(id))drift();ids.add(id);if(ids.size>1)drift();}
-     if(reply.nextToken===undefined||reply.nextToken===null){if(ids.size!==1)drift();return [...ids][0];}
+     for(const id of reply.taskArns){if(!taskArn(id,p)||ids.has(id))drift();ids.add(id);if(ids.size>(partner?2:1))drift();}
+     if(reply.nextToken===undefined||reply.nextToken===null){if(!partner&&ids.size!==1)drift();return [...ids];}
      if(typeof reply.nextToken!=='string'||!reply.nextToken||reply.nextToken.length>1024||tokens.has(reply.nextToken))unavailable();tokens.add(reply.nextToken);nextToken=reply.nextToken;
     }unavailable();
    };
-   // Phase 1: both services, both members and both task definitions. The task observation below still needs each service's
-   // primary deployment and member, read before it; the final services and members re-read still follows the network read.
-   const [first,ownerId,proxyId]=await together([services,()=>member(pins.owner),()=>member(pins.proxy),()=>definition(pins.owner),()=>definition(pins.proxy)]);if(ownerId===proxyId)drift();
-   const reply=await send(DescribeTasksCommand,{cluster:pins.owner.clusterArn,tasks:[ownerId,proxyId],include:['TAGS']});
-   const [owner,proxy]=observePairRows(reply?.tasks,'taskArn',[ownerId,proxyId],(row,index)=>index===0?
-    taskObservation(row,pins.owner,ownerId,first.owner.deploymentId,started):
-    taskObservation(row,pins.proxy,proxyId,first.proxy.deploymentId,started),reply?.failures);
-   if(owner.networkInterfaceId===proxy.networkInterfaceId||owner.privateIpv4Address===proxy.privateIpv4Address)drift();
-   const networks=await send(DescribeNetworkInterfacesCommand,{NetworkInterfaceIds:[owner.networkInterfaceId,proxy.networkInterfaceId]},ec2);
-   observePairRows(networks?.NetworkInterfaces,'NetworkInterfaceId',[owner.networkInterfaceId,proxy.networkInterfaceId],
-    (row,index)=>index===0?networkObservation(row,owner,pins.owner):networkObservation(row,proxy,pins.proxy));
-   const [last,ownerAgain,proxyAgain]=await together([services,()=>member(pins.owner),()=>member(pins.proxy)]);
-   if(last.owner.deploymentId!==first.owner.deploymentId||last.proxy.deploymentId!==first.proxy.deploymentId||ownerAgain!==ownerId||proxyAgain!==proxyId)drift();
+   // The partner's empty/pending/rolling inventory is not a proof. Still inspect
+   // every listed task and ENI before refusing so a transition cannot mask drift.
+   const [first,ownerIds,proxyIds]=await together([services,()=>member(pins.owner),()=>member(pins.proxy,true),()=>definition(pins.owner),()=>definition(pins.proxy)]);
+   if(proxyIds.length===2&&!first.proxy.rolling)drift();
+   const ids=[...ownerIds,...proxyIds];if(new Set(ids).size!==ids.length)drift();
+   const reply=await send(DescribeTasksCommand,{cluster:pins.owner.clusterArn,tasks:ids,include:['TAGS']});
+   const observed=observePairRows(reply?.tasks,'taskArn',ids,(row,index)=>index===0?
+    taskObservation(row,pins.owner,ids[index],first.owner,started):
+    taskObservation(row,pins.proxy,ids[index],first.proxy,started,true),reply?.failures);
+   const connected=observed.filter(v=>v.networkInterfaceId!==undefined);
+   if(new Set(connected.map(v=>v.networkInterfaceId)).size!==connected.length||
+      new Set(observed.filter(v=>v.privateIpv4Address!==undefined).map(v=>v.privateIpv4Address)).size!==observed.filter(v=>v.privateIpv4Address!==undefined).length)drift();
+   if(connected.length){
+    const networks=await send(DescribeNetworkInterfacesCommand,{NetworkInterfaceIds:connected.map(v=>v.networkInterfaceId)},ec2);
+    observePairRows(networks?.NetworkInterfaces,'NetworkInterfaceId',connected.map(v=>v.networkInterfaceId),
+     (row,index)=>networkObservation(row,connected[index],connected[index]===observed[0]?pins.owner:pins.proxy));
+   }
+   const [last,ownerAgain,proxyAgain]=await together([services,()=>member(pins.owner),()=>member(pins.proxy,true)]);
+   if(last.owner.deploymentId!==first.owner.deploymentId||!sameSet(ownerAgain,ownerIds))drift();
+   if(last.proxy.deploymentId!==first.proxy.deploymentId||!sameSet(proxyAgain,proxyIds)){
+    // A stop/drain can finish during this proof. Only a subset of tasks already
+    // fully inspected above can be unavailable; a new final ARN stays drift.
+    if(last.proxy.deploymentId===first.proxy.deploymentId&&proxyAgain.every(id=>proxyIds.includes(id))&&
+       (first.proxy.transitional||last.proxy.transitional||proxyAgain.length<proxyIds.length))unavailable();
+    drift();
+   }
+   if(first.proxy.transitional||last.proxy.transitional||proxyIds.length!==1||observed.some(v=>v.pending)||!observed[1]?.primary)unavailable();
+   const [owner,proxy]=observed;
    check();const checkedAtMs=now(),expiresAtMs=Math.min(pins.expiresAtMs,checkedAtMs+limits.maxLeaseMs);
    if(!instant(checkedAtMs)||checkedAtMs<started||checkedAtMs>=deadline||expiresAtMs<=checkedAtMs)unavailable();
    const project=v=>({taskArn:v.taskArn,createdAtMs:v.createdAtMs,privateIpv4Address:v.privateIpv4Address,networkInterfaceId:v.networkInterfaceId});

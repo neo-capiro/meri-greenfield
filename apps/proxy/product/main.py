@@ -344,7 +344,8 @@ async def run_product_proxy(configuration):
         from .service_pair_discovery import ProductServicePairDiscovery, compile_owner_peer, parse_owner_peer_template
         from .pair_lease import ProductPairLease
         service_pair = ProductPairLease(ProductServicePairDiscovery(
-            configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True))
+            configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True),
+            on_retire=lambda: os._exit(78))
         resources.transports.append(service_pair)
         # Reviewed material refuses before any pair read or startup wait.
         _check_reviewed_tls_files(value)

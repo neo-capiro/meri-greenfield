@@ -38,6 +38,29 @@ test('expired held-socket lease makes one bounded proof and refuses unavailable 
  }finally{await f.close();}
 });
 
+for(const independentReadiness of [false,true])test(`in-flight owner work cannot return after monotonic lease expiry${independentReadiness?' even while process readiness is true':''}`,async()=>{
+ // Certificate creation can cross a second boundary; freeze after its notBefore.
+ const wall=Date.now()+60000;let mono=0,entered,finish;
+ const working=new Promise(resolve=>{entered=resolve;}),release=new Promise(resolve=>{finish=resolve;});
+ const f=await createP2OwnerFixture({now:()=>wall,monotonicNow:()=>mono,maxRequestMs:5000,
+  afterPlacement:async()=>{entered();await release;},
+  // N14 must remain independently guarded: a ready process is not socket authority.
+  readiness:independentReadiness?()=>true:undefined});
+ try{
+  let closed;
+  const pending=f.request(OWNER_PATHS.operation,placement('expires-in-flight',wall+5000),{
+   onSocket:socket=>{closed=new Promise(resolve=>socket.once('close',resolve));},
+  });
+  await Promise.race([working,pending.then(()=>assert.fail('owner work never entered'))]);assert.equal(f.counts.placement,1);
+  mono=f.reader.current().expiresAtMonoMs+1;finish();
+  const refused=await pending;
+  assert.equal(refused.status,403);assert.equal(refused.body.length,0);
+  assert.equal(refused.headers.connection,'close');await closed;assert.equal(refused.socket.destroyed,true);
+  assert.equal(f.serviceGate.available,true);assert.equal(f.counts.pairProofs,2);
+  assert.equal(f.pins.expiresAtMs,wall+3600000,'the wall clock stayed fixed throughout owner work');
+ }finally{finish();await f.close();}
+});
+
 test('replacement destroys the old physical socket before new-generation serving; revision drift retires',async()=>{
  const f=await createP2OwnerFixture();
  try{

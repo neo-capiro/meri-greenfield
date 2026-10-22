@@ -239,9 +239,9 @@ class ProductOwnerHttpsExchange:
         for callback in callbacks:
             callback(generation)
 
-    def abort(self):
+    def abort(self, reason='PAIR_DRIFT'):
         self._retired = True
-        self.pair_lease.retire()
+        self.pair_lease.retire(reason)
 
     def close(self):
         self._closed = True
@@ -279,7 +279,7 @@ class ProductOwnerHttpsExchange:
         for callback in callbacks:
             callback(channel)
         if exceeded:
-            self.abort()
+            self.abort('CARRIER_RESET_LIMIT')
 
     def _remaining(self, cutoff, *, warmup=False):
         at = self.now_ms()

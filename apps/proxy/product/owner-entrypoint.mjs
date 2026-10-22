@@ -189,7 +189,8 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   nativeCurrentness=createProductOwnerNativeCurrentness({configuration:control,pool,credentialFileSha256:c.nativeCredentialFileSha256,
    now,limits,fetchImpl,enabled:true,report:diagnostics.refused},{readMaterial});
   taskLeaseReader=await life.run(()=>createProductServiceTaskLeaseReader({ecsClient:clients.ecsClient,ec2Client:clients.ec2Client,
-   configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true},{...(d.monotonicNow?{monotonicNow:d.monotonicNow}:{}),telemetry,writeDiagnostic:()=>diagnostics.pairReproven()}));
+   configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true},{...(d.monotonicNow?{monotonicNow:d.monotonicNow}:{}),telemetry,writeDiagnostic:()=>diagnostics.pairReproven(),
+   onRetire:()=>process.exit(3)}));
   const ca=await material(c.tls.caFile),cert=await material(c.tls.certFile),key=await material(c.tls.keyFile);
   life.check();life.close();
   // Raw configuration has no task ARN/IP. Only this fresh canonical pair may

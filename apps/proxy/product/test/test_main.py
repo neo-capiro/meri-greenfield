@@ -11,6 +11,8 @@ from importlib import metadata, import_module
 import os
 from pathlib import Path
 import ssl
+import subprocess
+import sys
 import threading
 import time
 from types import SimpleNamespace
@@ -248,7 +250,7 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
     """Bounded startup wait for the service pair through the actual executable
     path; native, SDK, TLS and serving constructors stay synthetic."""
 
-    async def _run(self, services, *, tls_check=None, window=5, interval=.01):
+    async def _run(self, services, *, tls_check=None, window=5, interval=.01, retire=False):
         value = configuration()
         value['serviceTasks'] = services.configuration
         value['expiresAtMs'] = services.configuration['expiresAtMs']
@@ -256,6 +258,17 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
         served, tls = [], []
         async def serve(**kwargs):
             served.append(kwargs)
+            if retire:
+                holder = kwargs['service_pair_reader']
+                holder.subscribe_generation_close(lambda _: print('pair-close', flush=True))
+                # Retirement can originate on the renewer thread. A live owner
+                # loop must not turn SystemExit-on-that-thread into a false pass.
+                def retire_on_thread():
+                    holder.retire()
+                    print('retire-returned', flush=True)
+                    os._exit(0)  # A missing termination callback is an observable wrong exit.
+                threading.Thread(target=retire_on_thread, daemon=True).start()
+                await asyncio.Future()
         def native(resources):
             resources.native_started = resources.native_stopped = True
             return SimpleNamespace(close=lambda: None)
@@ -290,6 +303,17 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
                 self.last = result
         return result
 
+    async def test_production_proxy_retirement_exits_process_from_renewer_thread(self):
+        script = (
+            'import asyncio; '
+            'from apps.proxy.product.test.test_main import StartupPairWaitTests, service_fixture; '
+            'asyncio.run(StartupPairWaitTests()._run(service_fixture(), retire=True))'
+        )
+        child = subprocess.run([sys.executable, '-B', '-c', script], capture_output=True,
+                               text=True, timeout=30)
+        self.assertEqual(child.returncode, 78, child.stderr)
+        self.assertEqual(child.stdout, 'pair-close\n')
+
     async def test_telemetry_writer_is_released_on_shutdown_startup_refusal_and_cleanup_failure(self):
         original_close = main._Resources.close
         cleanup_error = main.CleanupUnknown()
@@ -318,7 +342,7 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_peer_or_own_service_not_yet_running_is_reread_until_admitted(self):
         for role in ('proxy', 'owner'):
-            services, denials = service_fixture(), [2]
+            services, denials = service_fixture(), [4 if role == 'owner' else 2]
             def change(reply, kwargs, role=role, denials=denials):
                 if denials[0] > 0:
                     denials[0] -= 1
@@ -327,10 +351,10 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
             services.changes['describe_services'] = change
             result = await self._run(services)
             self.assertEqual(len(result.sleeps), 2)
-            # Two denied attempts stop after their first phase (services, both members and both task
-            # definitions read together); the admitted attempt is a complete fresh read (services first and last).
-            self.assertEqual(len(result.services), 2+2)
-            self.assertEqual(len(services.calls), 2*5+10)
+            # Partner transitions inspect every task/network before unavailable;
+            # own-service drift still stops at the first phase.
+            self.assertEqual(len(result.services), (4 if role == 'owner' else 2)+2)
+            self.assertEqual(len(services.calls), 2*(10 if role == 'owner' else 5)+10)
             self.assertEqual(len(result.served), 1)
             self.assertEqual((result.served[0]['owner_ipv4'], result.served[0]['proxy_ipv4']), ('10.40.4.1', '10.40.4.2'))
             self.assertEqual(result.tls[0].owner_task_arn, services.task_id('owner'))

@@ -170,7 +170,11 @@ class RequestLifetime:
             timeout = min(timeout, receipt.expires_at_mono-self._owner_reader.monotonic())
         done, _ = await asyncio.wait({task}, timeout=max(0, timeout))
         if not done:
-            if not thread:
+            if thread:
+                # Keep the unanswered work tracked for late refusal and close,
+                # but the next watch tick must initiate its own fresh read.
+                self._admission_renewal_task = None
+            else:
                 task.cancel()
             raise TimeoutError("ADMISSION_RENEWAL_UNANSWERED")
         if thread:

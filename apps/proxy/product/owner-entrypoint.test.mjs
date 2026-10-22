@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {writeSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {NOW} from '../../gateway/budget/product-scripted-fixture.mjs';
@@ -84,6 +86,26 @@ function fixture(){
  return {runtime,configuration,binding,clientId,model,state,pool,dependencies,material,materialBuffers,reads,calls,lifecycle,fetches,awsCalls,pair,captured:()=>captured,
   failServer:()=>{serverFailure=Error('synthetic-private-failure-detail');},failListen:()=>{listenFailure=Error('synthetic-private-listener-detail');}};
 }
+
+if(process.env.MERI_OWNER_RETIRE_CHILD==='1'){
+ const f=fixture();await startProductOwner(f.runtime,f.dependencies);
+ // A live listener/event-loop resource prevents exitCode alone from passing.
+ setInterval(()=>{},60000);
+ const holder=f.captured().taskLeaseReader;
+ holder.subscribe(reason=>{if(reason==='retired')writeSync(1,'pair-close\n');});
+ holder.retire();
+ writeSync(1,'retire-returned\n');process.exit(0);
+}
+
+test('production owner retirement exits nonzero after closing the generation even with live handles',()=>{
+ const child=spawnSync(process.execPath,[import.meta.filename],{
+  env:{...process.env,MERI_OWNER_RETIRE_CHILD:'1'},encoding:'utf8',timeout:30000,
+ });
+ assert.equal(child.error,undefined);assert.equal(child.signal,null);
+ assert.equal(child.status,3);
+ const lines=child.stdout.trim().split('\n');assert.equal(lines[0],'pair-close');
+ assert.equal(lines.length,2);assert.equal(JSON.parse(lines[1]).code,'PAIR_DRIFT');
+});
 
 test('omitted enablement is inert before material, clients, pool or server constructors',async()=>{
  const f=fixture();delete f.runtime.enabled;const runtime=await startProductOwner(f.runtime,new Proxy({},{get(){assert.fail('disabled must not inspect dependencies');}}));
@@ -219,11 +241,11 @@ const kinds=f=>f.awsCalls.map(x=>x.command.constructor.name);
 
 test('peer (or own) service not yet RUNNING is re-read in full until the pair is admitted',async()=>{
  for(const role of ['proxy','owner']){
-  const f=fixture(),clock=retryClock(f);let denials=2;
+  const f=fixture(),clock=retryClock(f),callsPerDenial=role==='proxy'?10:5;let denials=role==='proxy'?4:2;
   f.pair.change('DescribeServicesCommand',reply=>denials-->0?notRunning(role)(reply):reply);
   const runtime=await startProductOwner(f.runtime,f.dependencies),ports=f.captured();
   assert.equal(runtime.available,true);assert.deepEqual(clock.sleeps,[PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS,PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS]);
-  assert.equal(f.awsCalls.length,2*5+10,'each denied attempt stops after its first phase (services, members, definitions); the admitted one is a full read');
+  assert.equal(f.awsCalls.length,2*callsPerDenial+10,'partner transitions inspect every task/network; own drift stops after its first phase');
   assert.equal(ports.clientPolicy.ownerTaskArn,f.pair.id('owner'));assert.equal(ports.clientPolicy.proxyTaskArn,f.pair.id('proxy'));
   assert.ok(f.materialBuffers.every(b=>b.every(n=>n===0)));
   await runtime.start();await runtime.close();assert.deepEqual(f.lifecycle.slice(-4),['server.close','pool.end','ecs.destroy','ec2.destroy']);
@@ -233,9 +255,9 @@ test('peer (or own) service not yet RUNNING is re-read in full until the pair is
  const f=fixture(),clock=retryClock(f);let pending=true;
  f.pair.change('DescribeTasksCommand',reply=>{if(pending){pending=false;reply.tasks.find(t=>t.group==='service:meri-proxy').lastStatus='PENDING';}return reply;});
  const runtime=await startProductOwner(f.runtime,f.dependencies);assert.equal(runtime.available,true);assert.equal(clock.sleeps.length,1);
- const calls=kinds(f);assert.equal(calls.length,6+10);assert.equal(calls[5],'DescribeTasksCommand');
- assert.equal(calls[6],'DescribeServicesCommand');
- assert.equal(calls.slice(6).filter(k=>k==='DescribeNetworkInterfacesCommand').length,1);
+ const calls=kinds(f);assert.equal(calls.length,10+10);assert.equal(calls[5],'DescribeTasksCommand');
+ assert.equal(calls[10],'DescribeServicesCommand');
+ assert.equal(calls.filter(k=>k==='DescribeNetworkInterfacesCommand').length,2,'pending partner observations still validate observed networks');
  await runtime.close();
 });
 
@@ -244,7 +266,7 @@ test('an exhausted startup window keeps the same content-free terminal refusal a
  f.runtime.serviceTasks.expiresAtMs=NOW+10*PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS;f.runtime.pricing.validUntilMs=NOW+10*PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS;
  f.pair.change('DescribeServicesCommand',notRunning('proxy'));
  await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);
- const attempts=kinds(f).filter(k=>k==='DescribeServicesCommand').length;
+ const attempts=kinds(f).filter(k=>k==='DescribeServicesCommand').length/2;
  assert.equal(attempts,clock.sleeps.length+1);assert.ok(attempts>1);
  assert.ok(clock.at()-NOW<PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS,'no attempt starts after the window');
  assert.ok(clock.at()-NOW+PRODUCT_OWNER_PAIR_RETRY_INTERVAL_MS>=PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS,'the whole window was used');
@@ -288,5 +310,5 @@ test('quarantined discovery retries only after cooldown within startup window; s
  const sleep=g.dependencies.sleep;g.dependencies.sleep=async(ms,signal)=>{await sleep(ms);process.emit('SIGTERM');assert.equal(signal.aborted,true);};
  const path=resolve('synthetic-stopped-runtime.json'),bytes=Buffer.from(JSON.stringify(g.runtime));g.material.set(path,bytes);
  assert.equal(await runProductOwnerMain(['--config',path],{MERI_PRODUCT_OWNER_REQUIRED:'1',MERI_PRODUCT_OWNER_CONFIG_SHA256:sha(bytes)},g.dependencies),3);
- assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,5,'one denied first phase, then the stop');assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
+ assert.equal(stop.sleeps.length,1);assert.equal(kinds(g).length,10,'one fully checked partner transition, then the stop');assert.deepEqual(g.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
 });
