@@ -549,3 +549,85 @@ trigger proof and M1 release. Existing cross-owner feature handoffs remain expli
 P1 starts only after M1's gates and release; agent2 retains C9. No #207 rebase,
 acceptance turns, duplicate qualification runner, merge, deployment or SQL execution
 is performed in this checkpoint.
+
+## Receipt-readback setup deadline correction after7206cff1
+
+The retained post-#205 result above remains373/376, not waived. dot's source
+review6342913751 accepted only the rebase/provenance delta and held shipping.
+This follow-up changes only
+`apps/control/conversations/test/lifecycle-receipt-readback.test.mjs` and this ledger.
+It does not rebase again or edit runtime/generated/contract/other-owner files.
+
+The failures occur before receipt assertions: the selector case in `resumed()`'s
+claim setup (`DEADLINE`), and the corruption/cancellation cases in continuation
+setup (`LIFECYCLE_EFFECT_UNKNOWN`). A controlled load-hook reproduction injects a
+3100ms synchronous scheduling stall during claim or dispatch-start authorization.
+On the original fixture, measured wall/semantic elapsed pairs are3117/3118ms,
+3127/3127ms and3199/3199ms. All three original identities fail, and instrumentation
+reveals inner `DEADLINE` for both UNKNOWN results. This demonstrates a sufficient
+failure mechanism and the fixture's host-time dependency; original receipts do
+not contain inner timing telemetry, so this does not reconstruct the exact host
+schedule of the historical run.
+
+The receipt suite now uses the same Node test-owned Date/setTimeout convention
+as the reviewed lifecycle composition suites. Each test owns and automatically
+restores its timers. The same injected real stalls measure3107ms,3126ms and3101ms
+with zero semantic elapsed, and all three original tests pass their unchanged
+negative assertions. No production lifetime or authority deadline changes.
+All original test/helper body bytes and27 static assertion sites are preserved;
+there are44 sites after adding six boundary cases. The same32 combined files
+remain selected; six new test identities increase the expected total376→382.
+
+New cases advance semantic time inside the claim query or transition-context
+read, with real service/journal/owner compositions over scripted SQL. Claim,
+resume and fork each succeed at2999ms and refuse at3000ms. An expired claim stays
+PENDING; expired continuations stay UNKNOWN and start/continue no workflow.
+Readback and control replay preserve UNKNOWN without another effect. This is not
+PostgreSQL/native/physical-stop proof. All existing foreign identity/client/scope,
+recomputed custody, write-refusal and caller cancellation assertions remain.
+
+The first focused development run was11/13: the two new expiry cases incorrectly
+expected control replay to reject. Canonical `control()` explicitly returns the
+durable UNKNOWN replay receipt. Only those new expectations were corrected to
+UNKNOWN, preserving unchanged effect counters; the corrected suite is13/13.
+Both outcomes remain in evidence. Original combined/development failures remain
+visible and are not recategorized as passes.
+
+Four loader-only modeled faults are caught by their intended assertions: disabling
+receipt selector refusal, bypassing continuation-custody execution validation,
+discarding caller cancellation, and shortening the lifecycle bound3000→2999ms.
+The first three kill the corresponding original negative test; the short-bound
+fault kills all three new2999ms positive cases. No mutation is a product edit.
+
+The final combined attempt on the source qualification commit used the unchanged
+32-file selector, flags, concurrency1, scrubber/subreaper and900000ms cap. It
+**timed out after900208ms**, exit null, signal SIGTERM, with no final Node summary
+(started2026-10-22T14:27:16.114Z). This remains a **failed/incomplete gate**.
+The parser's empty counts do not mean zero tests ran: raw output has173 pass lines
+and8 failure lines. All13 receipt cases pass in that output. The eight observed
+failures are five parked RPC cases (start target/admission; continued target/
+admission/retirement), both image-only-deploy continuation positive cases, and
+the stopped-source conversation-survives-deploy case. Full stacks are absent
+because Node had not printed its final summary before timeout. Their cause is
+not established or waived. The five parked cases retain their220ms semantic
+cutoff,5000ms test timeout and independent1500ms wall bound. No deadline or
+assertion is relaxed, and no green-seeking retry is run. Tests not reported
+before timeout remain unqualified. This result supersedes no historical failure
+with a pass: it confirms the receipt correction locally while leaving the
+combined gate held for triage and qualification.
+
+Evidence: `/dev/shm/agent1-v2-m1-receipt-evidence/`, including the implementation
+outline, original fixture snapshot, before/after delay receipts and loader,
+`delay-comparison.json`, assertion preservation, focused development results,
+mutation sources/results and final combined receipt/source pins. Instrumentation
+and modeled faults are loader-only and are not product edits.
+Source qualification commit is `924195af666f253c9e47fcdbc44dd2cad19e1f90`;
+subsequent ledger-only commit has identical runtime/test/generated bytes.
+Existing public506/506, three typechecks and provenance checks from the preceding
+checkpoint cover unchanged product/generated bytes; they are not duplicated here.
+
+Exact-head delta review and all Fable image/native/rehearsal/release gates remain.
+M1 ships before P1; P1 stays held, and agent2 retains stacked C9 ownership.
+Existing MR06/X1 public-facade and MR09/E40 accounting/settlement handoffs remain.
+No acceptance turn, new dependency/credential, merge, deployment, AWS or SQL
+execution is performed by this follow-up.
