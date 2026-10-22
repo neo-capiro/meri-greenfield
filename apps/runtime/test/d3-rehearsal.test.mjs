@@ -165,4 +165,6 @@ for(const profile of Object.keys(CORE_PROFILES))for(const stopMs of [1000,20000]
   const r=await rehearseDuplicateAndStop({profile,stopMs});t.diagnostic(JSON.stringify(r));
   // Stop answers the committed fence inside its request, however long the native stop takes (D5); a repeat answers the same.
   assert.equal(r.stop.status,200,JSON.stringify(r.stop));assert.equal(r.stopAgain.status,200,JSON.stringify(r.stopAgain));assert.equal(r.statuses.at(-1),'cancelled');
+  assert.equal(r.sameRun,true,'same-bytes duplicate must replay onto the original run: '+JSON.stringify(r.sends));
+  for(const send of r.sends)for(const step of Object.values(send))assert.notEqual(step.code,'INITIAL_INPUT_UNAVAILABLE','same-bytes replay cannot fail unavailable: '+JSON.stringify(send));
  });

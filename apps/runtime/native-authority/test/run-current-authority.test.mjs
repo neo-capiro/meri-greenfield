@@ -50,3 +50,19 @@ test('O208 a timeout with a warm cache refuses and leaves no positive fallback',
 test('O208 the Core request deadline is at most three monotonic seconds',async()=>{
  const f=fixture();f.s.wait=async()=>{f.s.mono=3000;};await assert.rejects(f.read(),e=>e.status===503);assert.equal(f.owner.status().entries,0);
 });
+
+
+test('S2 concurrent fresh positives both succeed without sharing admission or refreshing the older age',{timeout:5000},async t=>{
+ const f=fixture();let resume,entered;const barrier=new Promise(r=>entered=r),wait=new Promise(r=>resume=r);t.after(()=>resume?.());
+ f.s.wait=async()=>{f.s.wait=null;entered();await wait;};
+ const first=f.read({fresh:true}),settled=Promise.allSettled([first]);await Promise.race([barrier,first.then(()=>{throw Error('first settled before entering');},e=>{throw e;})]);
+ f.s.mono=100;const second=await Promise.allSettled([f.read({fresh:true})]);resume();const older=await settled;
+ assert.deepEqual([older[0].status,second[0].status],['fulfilled','fulfilled']);assert.equal(f.s.calls.length,2,'each effect admission observed Core freshly');
+ f.s.mono=20000;await f.read();assert.equal(f.s.calls.length,2,'the newer successful sendStart100 remains cached');f.s.mono=20100;await f.read();assert.equal(f.s.calls.length,3,'reuse never moves the newest sendStart');
+});
+test('S2 a refusal invalidates older observations but not a later successful fresh observation',{timeout:5000},async t=>{
+ const f=fixture();await f.read();let resume,entered;const barrier=new Promise(r=>entered=r),wait=new Promise(r=>resume=r);t.after(()=>resume?.());
+ f.s.wait=async()=>{f.s.wait=null;entered();await wait;};const first=f.read({fresh:true}),outcome=Promise.allSettled([first]);await Promise.race([barrier,first.then(()=>{throw Error('first settled before entering');},e=>{throw e;})]);
+ f.s.status=403;await assert.rejects(f.read({fresh:true}),e=>e.status===403);f.s.status=200;await f.read({fresh:true});resume();
+ assert.equal((await outcome)[0].status,'rejected','an older positive cannot cover a concurrent refusal');assert.equal(f.owner.status().entries,1,'the post-refusal fresh observation remains valid');await f.read();assert.equal(f.s.calls.length,4);assert.equal(f.owner.status().reuses,1);
+});

@@ -193,8 +193,9 @@ passing latencies. D3's historical publish cadence and native Stop delays stay.
 
 Both rehearsal mocks share this model. D3 late-binds its actual canonical session
 owner to the candidate, as production startup does, to exercise real S2 reuse;
-its diagnostics capture existing fresh/reuse counters. All D3 and first-turn test
-registration/assertion blocks remain byte-identical. No product code/deadline/
+its diagnostics capture existing fresh/reuse counters. At33e83584, all D3 and first-turn test
+registration/assertion blocks remained byte-identical; the later duplicate-submit
+correction below adds coverage without removing an original assertion. No product code/deadline/
 retry/Stop barrier or assertion is changed.
 
 Why first-turn passed before: its historical fixture constructs the session owner
@@ -209,3 +210,38 @@ here; Fable has been asked to run them at the corrected exact head. Local Node
 model/receipt-owner checks and any local rehearsals are separate author evidence,
 never image or live qualification. Host-clock steps retain their unverified
 caveat. Prior621/632 and all failures above remain; no carryover green claim.
+
+## S2 duplicate-submit regression correction (6353887193)
+
+Fable's source report compares base/M1 double-submit diagnostics (sameRun true6/6,
+no INITIAL_INPUT_UNAVAILABLE) with33e83584's quiet replay503/sameRun false. Its
+full423dd414 base comparison and changed-test142/152 reconciliation were still
+running; these are not a final reconciled PASS or new-head qualification.
+
+New assertions were run first against33e83584 product source: the concurrent
+fresh-positive test and unchanged quiet D3 Stop1000ms scenario with the added
+sameRun assertion both FAIL; the post-refusal recovery control passes (1/3,
+exit1, raw red evidence retained). The D3 same-bytes assertions require sameRun
+true and explicitly exclude INITIAL_INPUT_UNAVAILABLE; every original assertion
+and Stop/latency/deadline remains, with no retry or expectation weakening.
+
+Cause: pending generation tracked latest request start as though another start
+were a refusal. A valid earlier fresh/current response therefore threw503 when
+another valid fresh admission overlapped, before initial-input admission. The
+fix separates successful request ordering from refusal invalidation: a bounded
+per-key in-flight group tracks active readers, latest send and failure epoch.
+Each caller still makes its own fresh request under its original3s lifetime;
+no receipt is shared for side-effect admission and no queue/deadline extension
+is introduced. Other successful fresh observations do not refuse that caller.
+Only the newest eligible send is cached, using its original sendStart. Any real
+failure still clears cache and advances the epoch, preventing every older
+positive from covering it. An epoch-refused older result cannot delete a newer
+post-refusal fresh cache. Cache reads still refuse reuse while a fresh read is
+pending; full key,20s age/no extension,3s request bound, status classes, and
+local run/fence/Stop/deadline/session checks are retained.
+
+Focused owner/composed/model diagnostic24/24 passed before publication. Final
+exact-head full source selection, quiet D3 regression and mutation results are
+recorded in the PR handoff separately. Docker/Podman/head-image limitation and
+all earlier failures remain; full9 D3/image/nativePG/base diff belong to Fable.
+No ship request, live SQL/model/acceptance execution, P1/C9 or A2 work. STOP2/6.

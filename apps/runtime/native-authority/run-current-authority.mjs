@@ -32,18 +32,27 @@ export function createRunCurrentAuthority(configuration){
    const expected=selectors.expect??(prior?currentRevisions(prior.receipt):undefined);
    // No reader may cover a fresh request's failure with the previous positive answer.
    if(!pending.has(key)&&pending.size>=1000)throw unavailable();
-   entries.delete(key);const generation=++sequence;pending.set(key,generation);
-   const sendStart=clock(),wallSend=now();count('fresh');
+   entries.delete(key);let group=pending.get(key);
+   if(!group){group={active:0,latest:0,epoch:0};pending.set(key,group);}
+   const generation=++sequence,epoch=group.epoch;group.active++;group.latest=generation;
    try{
-    const receipt=currentReceipt(await life.run(signal=>readCurrent({credential:call.credential,...selectors,...(expected?{expect:expected}:{}),deadlineMs:Math.min(call.deadlineMs,now()+3000),signal})));
-    life.check();const age=clock()-sendStart;
-    if(age>=3000)throw unavailable();
-    if(pending.get(key)!==generation)throw unavailable();
-    if(receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId||receipt.conversationId!==binding.conversationId||receipt.selectedClientId!==call.selectedClientId||receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()||receipt.expiresAtMs<=now()||age<0||age>=CURRENT_REUSE_MS||expected&&Object.entries(expected).some(([k,v])=>receipt[k]!==v))refuse();
-    if(entries.size>=1000)entries.delete(entries.keys().next().value);
-    entries.set(key,{receipt,sendStart});return receipt;
-   }catch(error){if(pending.get(key)===generation)entries.delete(key);throw error;}
-   finally{if(pending.get(key)===generation)pending.delete(key);}
+    const sendStart=clock(),wallSend=now();count('fresh');
+    let receipt;
+    try{
+     receipt=currentReceipt(await life.run(signal=>readCurrent({credential:call.credential,...selectors,...(expected?{expect:expected}:{}),deadlineMs:Math.min(call.deadlineMs,now()+3000),signal})));
+     life.check();const age=clock()-sendStart;
+     if(age>=3000)throw unavailable();
+     if(receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId||receipt.conversationId!==binding.conversationId||receipt.selectedClientId!==call.selectedClientId||receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()||receipt.expiresAtMs<=now()||age<0||age>=CURRENT_REUSE_MS||expected&&Object.entries(expected).some(([k,v])=>receipt[k]!==v))refuse();
+    }catch(error){group.epoch++;entries.delete(key);throw error;}
+    // Another successful fresh observation cannot refuse this caller's independently fresh admission.
+    // A refusal/timeout still bars every older in-flight positive, without deleting a later fresh recovery.
+    if(group.epoch!==epoch)throw unavailable();
+    if(group.latest===generation){
+     if(entries.size>=1000)entries.delete(entries.keys().next().value);
+     entries.set(key,{receipt,sendStart});
+    }
+    return receipt;
+   }finally{if(--group.active===0&&pending.get(key)===group)pending.delete(key);}
   }finally{life.close();}
  }
  return Object.freeze({read,status:()=>Object.freeze({freshCalls,reuses,entries:entries.size})});
