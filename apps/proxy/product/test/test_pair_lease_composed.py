@@ -80,17 +80,37 @@ def loopback_only(original):
     return validate
 
 
+def require_node(test):
+    node = shutil.which('node')
+    if node is None:
+        test.skipTest('UNRUN: composed pair lease requires Node.js')
+    if not (ROOT/'node_modules').is_dir():
+        test.skipTest('UNRUN: composed pair lease requires installed workspace node_modules')
+    for module in ('apps/proxy/product/test/p2-composed-owner.mjs',
+                   'apps/gateway/budget/product-scripted-fixture.mjs', 'packages/contracts/validate.mjs'):
+        if not (ROOT/module).is_file():
+            test.skipTest('UNRUN: composed pair lease requires workspace module '+module)
+    return node
+
+
+class FixtureLeaseClockTests(unittest.IsolatedAsyncioTestCase):
+    async def test_synthetic_lease_uses_one_clock_sample(self):
+        node = require_node(self)
+        child = await asyncio.create_subprocess_exec(node, str(Path(__file__).with_name('p2-composed-owner.mjs')),
+            '--lease-clock-check', cwd=ROOT, env={**os.environ, 'MERI_REVIEW_SOURCE_ROOT': str(ROOT)},
+            stdin=asyncio.subprocess.DEVNULL, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        try:
+            output, errors = await asyncio.wait_for(child.communicate(), 20)
+        finally:
+            if child.returncode is None:
+                child.kill(); await child.wait()
+        self.assertEqual(child.returncode, 0, errors.decode())
+        self.assertEqual(json.loads(output), {'leaseWindows': [30000, 30000]})
+
+
 class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        node = shutil.which('node')
-        if node is None:
-            self.skipTest('UNRUN: composed pair lease requires Node.js')
-        if not (ROOT/'node_modules').is_dir():
-            self.skipTest('UNRUN: composed pair lease requires installed workspace node_modules')
-        for module in ('apps/proxy/product/test/p2-composed-owner.mjs',
-                       'apps/gateway/budget/product-scripted-fixture.mjs', 'packages/contracts/validate.mjs'):
-            if not (ROOT/module).is_file():
-                self.skipTest('UNRUN: composed pair lease requires workspace module '+module)
+        node = require_node(self)
         # Each child models a new owner/proxy process; isolate the proxy's
         # process-lifetime one-gate registry while preserving other suites.
         gates = patch.dict(owner_channel._SERVICE_GATES, clear=True)

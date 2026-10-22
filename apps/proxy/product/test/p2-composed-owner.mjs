@@ -10,6 +10,22 @@ import {createP2OwnerFixture} from './p2-owner-fixture.mjs';
 import {OWNER_PATHS} from '../owner-channel.mjs';
 
 const output=value=>process.stdout.write(JSON.stringify(value)+'\n');
+async function checkLeaseClock(){
+ // Every clock read advances across a millisecond boundary. One observation
+ // must still derive its expiry from the same sample as its checked time.
+ let wall=Date.now()+60000;
+ const fixture=await createP2OwnerFixture({now:()=>wall++,maxRequestMs:15000});
+ try{
+  const initial=fixture.reader.current();
+  assert.equal(initial.expiresAtMs-initial.checkedAtMs,30000);
+  const renewed=await fixture.reader.read({deadlineMs:wall+15000});
+  assert.equal(renewed.expiresAtMs-renewed.checkedAtMs,30000);
+  output({leaseWindows:[initial.expiresAtMs-initial.checkedAtMs,renewed.expiresAtMs-renewed.checkedAtMs]});
+ }finally{await fixture.close();}
+}
+if(process.argv[2]==='--lease-clock-check'){
+ await checkLeaseClock();
+}else{
 let recoveryArmed=false,settlementSocket,oldCloseObserved=false,closeListenersBeforeRecovery,native;
 const recoveryOrder=[];
 // Observe the production body iterator without a second consumer. The old
@@ -129,3 +145,4 @@ for await(const line of lines){const input=JSON.parse(line);
  else throw Error('unknown composed command');
 }
 lines.close();process.stdin.destroy();
+}

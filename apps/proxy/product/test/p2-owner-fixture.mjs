@@ -42,7 +42,8 @@ export async function createP2OwnerFixture({persistedFacts,ownerPorts,placement,
   reader=await createOwnerPairLease({pins,now,monotonicNow,maxRequestMs,
    telemetry:telemetry??{health:(...args)=>health.push(args)},writeDiagnostic:()=>{},
    createDiscovery:async()=>({available:true,async read(){counts.pairProofs++;events.push(['proof',monotonicNow()]);if(hook)await hook();if(unavailable)throw pairFailure();
-    return structuredClone({...pair,checkedAtMs:now(),expiresAtMs:Math.min(pins.expiresAtMs,now()+30000)});}})});
+    const checkedAtMs=now();
+    return structuredClone({...pair,checkedAtMs,expiresAtMs:Math.min(pins.expiresAtMs,checkedAtMs+30000)});}})});
   await reader.read({deadlineMs:now()+maxRequestMs});
   const serviceGate=createProductOwnerServiceGate({telemetry});
   const seed=productFixture(),grant=seed.context(),binding=grant.binding;
