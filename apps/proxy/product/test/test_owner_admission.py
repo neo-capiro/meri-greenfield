@@ -216,10 +216,15 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             self.exchange.mutate = lambda frame: frame[:6] + [1] + frame[7:]
             with diagnostics.request(), self.assertRaises(Exception):
                 await asyncio.to_thread(authority.check)
+            await self.asyncSetUp()
+            self.exchange.mutate = lambda frame: frame[:4] + [None] + frame[5:]
+            with diagnostics.request(), self.assertRaises(Exception):
+                await self.resolve()
         finally:
             diagnostics.uninstall()
         self.assertEqual(lines, ["PRODUCT_PROXY_REFUSED gate=admission step=frame phase=admission code=REFUSED\n",
-                                 "PRODUCT_PROXY_REFUSED gate=admission step=current phase=session code=REFUSED\n"])
+                                 "PRODUCT_PROXY_REFUSED gate=admission step=current phase=session code=REFUSED\n",
+                                 "PRODUCT_PROXY_REFUSED gate=admission step=source phase=admission code=REFUSED\n"])
 
     async def test_owner_loop_sync_call_refuses_before_scheduling(self):
         with self.assertRaises(Exception):

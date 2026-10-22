@@ -192,6 +192,9 @@ class ProductOwnerAdmissionReader:
                     None if expected is None else _json(expected)) != carrier:
                 _deny()
             return self._remaining(cutoff)
+        def record_step(value):
+            nonlocal step
+            step = value
         with diagnostics.phase("admission" if expected is None else "session"):
             try:
                 if read_id in self._read_ids:
@@ -221,7 +224,7 @@ class ProductOwnerAdmissionReader:
                 frame = validate_owner_reply(self.policy, reply, carrier, self.state[4])
                 check_carrier()
                 return self._verify_frame(frame, read_id, capability_sha256, expected,
-                    started, cutoff, read_at, lease)
+                    started, cutoff, read_at, lease, on_step=record_step)
             except OwnerCarrierBusy as error:
                 # Nothing was sent on this carrier: a plain refusal, never a poisoned gate.
                 diagnostics.refused("admission", step, error, deadline_ms=cutoff, now_ms=self.now_ms)
@@ -233,16 +236,23 @@ class ProductOwnerAdmissionReader:
                 if acquired:
                     self.state[3][carrier].release()
 
-    def _verify_frame(self, frame, read_id, capability_sha256, expected, started, cutoff, read_at, lease=None):
+    def _verify_frame(self, frame, read_id, capability_sha256, expected, started, cutoff, read_at, lease=None,
+                      *, on_step=None):
         self._remaining(cutoff)
+        if on_step is not None:
+            on_step("frame")
         _tuple(frame, 8)
         if frame[:3] != ["meri.proxy.admission/1", read_id, capability_sha256]:
             _deny()
+        if on_step is not None:
+            on_step("source")
         binding = _source(frame[4])
         if frame[4][2] != capability_sha256 or _sha(frame[3]) != _hash(frame[4]):
             _deny()
         if expected is not None and _json(expected) != _json(frame[4]):
             _deny()
+        if on_step is not None:
+            on_step("current")
         current = _tuple(frame[5], 7)
         _sha(current[0]); _sha(current[4]); _binding(current[1])
         scopes = [["client", binding["tenantId"], frame[4][7], frame[4][3][4]]]
