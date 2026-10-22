@@ -4,24 +4,19 @@
 import test, {mock} from 'node:test';
 import * as fsp from 'node:fs/promises';
 import {request as httpsRequest} from 'node:https';
-import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
-import {mkdtempSync, readFileSync, rmSync, writeFileSync, chmodSync} from 'node:fs';
+import {mkdtempSync, rmSync, writeFileSync, chmodSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {listenRuntime} from '../../http-server.mjs';
+import {syntheticServerCertificates} from './synthetic-certificates.mjs';
 
 export const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const certificates = mkdtempSync(join(tmpdir(), 'meri-router-tls-'));
-const openssl = process.platform === 'win32' ? 'C:\\Program Files\\Git\\mingw64\\bin\\openssl.exe' : 'openssl';
-const run = args => execFileSync(openssl, args, {cwd: certificates, stdio: 'ignore'});
-run(['req', '-x509', '-newkey', 'ec', '-pkeyopt', 'ec_paramgen_curve:prime256v1', '-nodes', '-keyout', 'ca.key', '-out', 'ca.pem', '-days', '2',
-  '-subj', '/CN=synthetic-control-ca', '-addext', 'basicConstraints=critical,CA:TRUE', '-addext', 'keyUsage=critical,keyCertSign,cRLSign']);
-run(['req', '-newkey', 'ec', '-pkeyopt', 'ec_paramgen_curve:prime256v1', '-nodes', '-keyout', 'srv.key', '-out', 'srv.csr', '-subj', '/CN=localhost']);
-writeFileSync(join(certificates, 'srv.ext'), 'subjectAltName=DNS:localhost\nextendedKeyUsage=serverAuth\nbasicConstraints=CA:FALSE\n');
-run(['x509', '-req', '-in', 'srv.csr', '-CA', 'ca.pem', '-CAkey', 'ca.key', '-CAcreateserial', '-out', 'srv.pem', '-days', '2', '-extfile', 'srv.ext']);
-export const ca = readFileSync(join(certificates, 'ca.pem'));
-const serverTls = {key: readFileSync(join(certificates, 'srv.key')), cert: readFileSync(join(certificates, 'srv.pem')), minVersion: 'TLSv1.3'};
+const generated = syntheticServerCertificates();
+export const ca = generated.ca;
+writeFileSync(join(certificates, 'ca.pem'), ca, {mode: 0o600});
+const serverTls = {key: generated.key, cert: generated.cert, minVersion: 'TLSv1.3'};
 export let caFile = join(certificates, 'ca.pem');
 if (process.platform === 'win32') {
   caFile = '/synthetic/control-ca.pem';
