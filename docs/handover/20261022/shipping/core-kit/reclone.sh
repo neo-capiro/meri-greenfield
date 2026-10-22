@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# O140: discard the copy-on-write clone (two migrations ran as the app user and own their tables)
+# and take a fresh clone of the shared cluster, so every migration runs as the master user like live.
+# Touches ONLY capiro-newstack-preview-clone; the source cluster is read, never modified.
+set -euo pipefail
+export AWS_PROFILE=capiro-dev AWS_REGION=us-east-1 MSYS_NO_PATHCONV=1
+C=capiro-newstack-preview-clone W=capiro-newstack-preview-clone-writer
+SRC=capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv
+arn=$(aws rds describe-db-clusters --db-cluster-identifier $C --query 'DBClusters[0].DBClusterArn' --output text | tr -d '\r')
+purpose=$(aws rds list-tags-for-resource --resource-name "$arn" --query "TagList[?Key=='Purpose'].Value|[0]" --output text | tr -d '\r')
+[ "$purpose" = newstack-preview ] || { echo "STOP: $C is not tagged Purpose=newstack-preview"; exit 1; }
+[ "$C" != "$SRC" ]
+
+aws rds delete-db-instance --db-instance-identifier $W --skip-final-snapshot --query 'DBInstance.DBInstanceStatus' --output text
+aws rds wait db-instance-deleted --db-instance-identifier $W
+aws rds delete-db-cluster --db-cluster-identifier $C --skip-final-snapshot --query 'DBCluster.Status' --output text
+while aws rds describe-db-clusters --db-cluster-identifier $C >/dev/null 2>&1; do sleep 20; done
+echo "OLD_CLONE_DELETED"
+
+aws rds restore-db-cluster-to-point-in-time --source-db-cluster-identifier $SRC --db-cluster-identifier $C \
+  --restore-type copy-on-write --use-latest-restorable-time \
+  --db-subnet-group-name capiro-dev-data-auroraclustersubnetsf3e9e6ad-qihnujilmfnt --vpc-security-group-ids sg-059b4e4de0b1dcca5 \
+  --kms-key-id arn:aws:kms:us-east-1:967807252336:key/efe8a18d-192e-4f30-8eea-b3f65ae7755e \
+  --db-cluster-parameter-group-name capiro-dev-data-dbparametergroupd5340a4d-ftyviierduoh --enable-iam-database-authentication \
+  --serverless-v2-scaling-configuration MinCapacity=0,MaxCapacity=4,SecondsUntilAutoPause=1800 \
+  --tags Key=Project,Value=capiro Key=Environment,Value=dev Key=Purpose,Value=newstack-preview \
+  --query 'DBCluster.Status' --output text
+until [ "$(aws rds describe-db-clusters --db-cluster-identifier $C --query 'DBClusters[0].Status' --output text | tr -d '\r')" = available ]; do sleep 30; done
+aws rds create-db-instance --db-instance-identifier $W --db-cluster-identifier $C --db-instance-class db.serverless \
+  --engine aurora-postgresql --tags Key=Project,Value=capiro Key=Environment,Value=dev Key=Purpose,Value=newstack-preview \
+  --query 'DBInstance.DBInstanceStatus' --output text
+aws rds wait db-instance-available --db-instance-identifier $W
+echo "NEW_CLONE_AVAILABLE $(aws rds describe-db-clusters --db-cluster-identifier $C --query 'DBClusters[0].Endpoint' --output text)"
