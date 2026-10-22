@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import time
 import unittest
 from unittest.mock import patch
@@ -80,11 +81,20 @@ def loopback_only(original):
 
 class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
+        node = shutil.which('node')
+        if node is None:
+            self.skipTest('UNRUN: composed pair lease requires Node.js')
+        if not (ROOT/'node_modules').is_dir():
+            self.skipTest('UNRUN: composed pair lease requires installed workspace node_modules')
+        for module in ('apps/proxy/product/test/p2-composed-owner.mjs',
+                       'apps/gateway/budget/product-scripted-fixture.mjs', 'packages/contracts/validate.mjs'):
+            if not (ROOT/module).is_file():
+                self.skipTest('UNRUN: composed pair lease requires workspace module '+module)
         # Each child models a new owner/proxy process; isolate the proxy's
         # process-lifetime one-gate registry while preserving other suites.
         gates = patch.dict(owner_channel._SERVICE_GATES, clear=True)
         gates.start(); self.addCleanup(gates.stop)
-        self.child = await asyncio.create_subprocess_exec('node', str(Path(__file__).with_name('p2-composed-owner.mjs')),
+        self.child = await asyncio.create_subprocess_exec(node, str(Path(__file__).with_name('p2-composed-owner.mjs')),
             cwd=ROOT, env={**os.environ, 'MERI_REVIEW_SOURCE_ROOT': str(ROOT)},
             stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         self.addAsyncCleanup(self.close_child)

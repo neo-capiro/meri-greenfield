@@ -2,6 +2,7 @@
 import copy
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import unittest
 
@@ -61,7 +62,17 @@ def frames(counted=65536, maximum=8192, output=8192):
 
 class OwnerWireEnvelopeTests(unittest.TestCase):
     def decode(self, payload):
-        result = subprocess.run(["node", "--input-type=module", "-e", DECODE],
+        node = shutil.which('node')
+        if node is None:
+            self.skipTest('UNRUN: owner wire decoder requires Node.js')
+        if not (ROOT/'node_modules').is_dir():
+            self.skipTest('UNRUN: owner wire decoder requires installed workspace node_modules')
+        for module in ('apps/proxy/product/owner-wire-codec.mjs',
+                       'apps/gateway/model-proxy/product-boundary-codec.mjs',
+                       'apps/gateway/model-proxy/product-envelope.mjs'):
+            if not (ROOT/module).is_file():
+                self.skipTest('UNRUN: owner wire decoder requires workspace module '+module)
+        result = subprocess.run([node, "--input-type=module", "-e", DECODE],
                                 input=json.dumps(payload), text=True, capture_output=True,
                                 cwd=ROOT, timeout=10, check=True)
         return json.loads(result.stdout)

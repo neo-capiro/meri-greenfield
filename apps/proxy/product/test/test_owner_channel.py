@@ -1,5 +1,6 @@
 """Synthetic private owner exchange; no TLS socket, owner or provider call."""
 import asyncio
+import contextvars
 from dataclasses import replace
 import hashlib
 import importlib
@@ -101,6 +102,7 @@ class FakeExchange:
     async def __call__(self, channel, path, body, timeout):
         self._connected.add(channel)
         self.calls.append((channel, path))
+        owner_channel.report_owner_write_completed(self)
         frame = json.loads(body)
         if path == OPEN:
             self.challenge.clear()
@@ -198,13 +200,169 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         port = FakeExchange(self.policy)
         lock = owner_channel.owner_exchange_state(port, self.policy, self.host_gate)[3]["operation"]
         await lock.acquire()
+        bridge = self.bridge(port)
         try:
-            with self.assertRaisesRegex(Exception, "^OWNER_CARRIER_BUSY$"):
-                await self.bridge(port).reserve(self.value, self.observation)
+            with patch.object(port, "reset", wraps=port.reset) as reset:
+                with self.assertRaisesRegex(Exception, "^OWNER_CARRIER_BUSY$"):
+                    await bridge.reserve(self.value, self.observation)
+                reset.assert_not_called()
         finally:
             lock.release()
         self.assertEqual(port.calls, [])
+        self.assertFalse(bridge._sent)
         self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
+
+    async def test_exchange_entry_without_a_completed_write_never_marks_sent_or_retries(self):
+        class NeverWritten(FakeExchange):
+            attempts = 0
+            error = None
+
+            async def __call__(self, channel, path, body, timeout):
+                self.attempts += 1
+                raise self.error
+
+        for error in (owner_channel.OwnerCarrierBusy("OWNER_CARRIER_BUSY"),
+                      StateDenied("synthetic handshake refusal"),
+                      TimeoutError("synthetic timeout before write")):
+            with self.subTest(error=type(error).__name__):
+                port = NeverWritten(self.policy)
+                port.error = error
+                bridge = self.bridge(port)
+                with self.assertRaises(StateDenied):
+                    await bridge.reserve(self.value, self.observation)
+                self.assertFalse(bridge._sent)
+                self.assertEqual(port.calls, [])
+                self.assertEqual(port.attempts, 1)
+                with self.assertRaises(StateDenied):
+                    await bridge.reserve(self.value, self.observation)
+                self.assertEqual(port.attempts, 1)
+                self.assertTrue(self.host_gate.available)
+
+    async def test_completed_write_signal_belongs_to_its_exchange_and_live_dispatch(self):
+        foreign = FakeExchange(self.policy)
+        copied = []
+        bridge = None
+        parent = self
+
+        class ReportedOpen(FakeExchange):
+            async def __call__(self, channel, path, body, timeout):
+                copied.append(contextvars.copy_context())
+                owner_channel.report_owner_write_completed(foreign)
+                parent.assertFalse(bridge._sent, "another exchange did not write this request")
+                reply = await super().__call__(channel, path, body, timeout)
+                parent.assertTrue(bridge._sent, "this exchange completed its request write")
+                return reply
+
+        port = ReportedOpen(self.policy)
+        bridge = self.bridge(port)
+        await bridge._open()
+        self.assertTrue(bridge._sent)
+        bridge._sent = False  # The next logical claim begins with no write.
+        owner_channel.report_owner_write_completed(port)
+        self.assertFalse(bridge._sent, "dispatch context must not escape to its caller")
+        copied[0].run(owner_channel.report_owner_write_completed, port)
+        self.assertFalse(bridge._sent, "a copied old dispatch cannot report for a later claim")
+
+    async def test_outer_timeout_counts_only_its_completed_write_not_prior_writes_or_cancellation(self):
+        class HeldExchange(FakeExchange):
+            def __init__(self, policy):
+                super().__init__(policy)
+                self.entered, self.exited = asyncio.Event(), asyncio.Event()
+                self.reset_requests = []
+                self.held = False
+                self.complete_write = False
+
+            async def __call__(self, channel, path, body, timeout):
+                if not self.held:
+                    return await super().__call__(channel, path, body, timeout)
+                self._connected.add(channel)
+                if self.complete_write:
+                    owner_channel.report_owner_write_completed(self)
+                self.entered.set()
+                try:
+                    await asyncio.Future()
+                finally:
+                    self.exited.set()
+
+            def reset(self, channel, *, count_timeout=False):
+                self.reset_requests.append(count_timeout)
+                super().reset(channel)
+
+        for prior_write, complete_write, cancel in ((False, True, False),
+                (False, False, False), (True, False, False),
+                (False, False, True), (False, True, True)):
+            with self.subTest(prior_write=prior_write, complete_write=complete_write, cancel=cancel):
+                port = HeldExchange(self.policy)
+                bridge = self.bridge(port)
+                if prior_write:
+                    await bridge._open()
+                    self.assertTrue(bridge._sent)
+                port.held, port.complete_write = True, complete_write
+                if cancel:
+                    pending = asyncio.create_task(bridge._open())
+                    await asyncio.wait_for(port.entered.wait(), .5)
+                    pending.cancel()
+                    with self.assertRaises(asyncio.CancelledError):
+                        await pending
+                else:
+                    async def unanswered(tasks, *, timeout):
+                        await asyncio.wait_for(port.entered.wait(), .5)
+                        return set(), set(tasks)
+                    with patch.object(owner_channel.asyncio, "wait", unanswered):
+                        with self.assertRaisesRegex(TimeoutError, "^PRODUCT_OWNER_CHANNEL_DEADLINE$"):
+                            await bridge._open()
+                await asyncio.wait_for(port.exited.wait(), .5)
+                self.assertEqual(port.reset_requests.count(True), int(complete_write and not cancel))
+                self.assertEqual(port.reset_requests[0], complete_write and not cancel)
+                self.assertTrue(self.host_gate.available)
+                self.assertFalse(port.aborted)
+
+    async def test_timeout_reset_supports_legacy_ports_without_retrying_an_internal_typeerror(self):
+        port = FakeExchange(self.policy)  # Its reset intentionally has no count_timeout keyword.
+        bridge = self.bridge(port)
+        await bridge._open()
+        bridge._reset("operation", count_timeout=True)
+        self.assertEqual(port.resets, ["operation"])
+        self.assertTrue(self.host_gate.available)
+        calls = []
+        def broken(channel, *, count_timeout=False):
+            calls.append((channel, count_timeout))
+            raise TypeError("synthetic error inside native reset")
+        with patch.object(port, "reset", broken):
+            bridge._reset("operation", count_timeout=True)
+        self.assertEqual(calls, [("operation", True)])
+        self.assertFalse(self.host_gate.available)
+        self.assertTrue(port.aborted)
+
+    async def test_settle_timeout_before_any_completed_write_is_not_commit_uncertainty(self):
+        class NoSettleWrite(FakeExchange):
+            never_write = False
+            attempts = 0
+
+            async def __call__(self, channel, path, body, timeout):
+                if self.never_write:
+                    self.attempts += 1
+                    raise TimeoutError("synthetic timeout before write")
+                return await super().__call__(channel, path, body, timeout)
+
+        port = NoSettleWrite(self.policy)
+        bridge = self.bridge(port)
+        await bridge.reserve(self.value, self.observation)
+        async def complete_capture(_request):
+            return self.complete_observation()
+        bridge.bind_complete_capture(complete_capture)
+        before = list(port.calls)
+        port.never_write = True
+        with self.assertRaises(StateDenied):
+            await bridge.settle_complete("request_A", usage())
+        self.assertFalse(bridge._sent)
+        self.assertEqual(bridge._state, "FAILED")
+        self.assertEqual(port.calls, before)
+        attempts = port.attempts
+        with self.assertRaises(StateDenied):
+            await bridge.settle_complete("request_A", usage())
+        self.assertEqual(port.attempts, attempts)
         self.assertTrue(self.host_gate.available)
 
     async def test_the_reserve_exchange_clock_starts_once_its_carrier_is_held(self):
@@ -533,6 +691,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
         self.assertEqual(port.hold, "UNKNOWN")
+        self.assertTrue(bridge._sent)
         self.assertEqual(port.reserve_calls, 1)
         before = list(port.calls)
         with self.assertRaises(StateDenied):
@@ -571,6 +730,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(SettlementCommitUncertain):
             await bridge.settle_complete("request_A", usage())
         self.assertEqual(port.hold, "UNKNOWN")
+        self.assertTrue(bridge._sent)
         self.assertEqual(port.settle_calls, 1)
         self.assertIn("operation", port.resets)
         self.assertTrue(self.host_gate.available)

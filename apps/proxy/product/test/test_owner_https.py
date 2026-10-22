@@ -164,7 +164,7 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
                 reservations=[frame for method,path,frame in frames if method=='POST' and path==OPERATION]
                 self.assertEqual(len(reservations),1,'__call__ must never resend the timed-out reservation')
                 self.assertNotIn('operation',item._connections)
-                self.assertGreaterEqual(len(item._resets),1)
+                self.assertEqual(item._resets,[],'a mutating reservation timeout must not spend the read-only reset quota')
                 before=len(frames)
                 with self.assertRaisesRegex(Exception,'^PRODUCT_OWNER_CHANNEL_DENIED$'):
                     await bridge.reserve(value,observation)
@@ -349,7 +349,7 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(item._connection_generations['operation'],item.generation)
         item.abort();self.assertTrue(raw.closed and tls.closed)
 
-    def _assert_post_handshake_drift_sends_no_http_bytes(self, change):
+    def _assert_post_handshake_refusal_sends_no_http_bytes(self, change, *, code="PAIR_DRIFT"):
         item=exchange();sent=[];events=[]
         class SocketBoundary:
             def __init__(self): self.closed=False
@@ -370,15 +370,20 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
              patch.object(item.material.context,'wrap_socket',return_value=tls), \
              patch.object(item,'_evidence',return_value='verified'), \
              patch.object(http.client.HTTPConnection,'request',side_effect=lambda *_a,**_kw:sent.append(1)):
-            with self.assertRaisesRegex(Exception,'PAIR_DRIFT'):
+            with self.assertRaisesRegex(PairProofError,'^'+code+'$'):
                 item._send('operation',OPERATION,b'[]',item.now_ms()+1000)
         self.assertEqual(events,['handshake'])
-        self.assertEqual(sent,[]);self.assertFalse(item.available);self.assertFalse(item.ready)
+        self.assertEqual(sent,[])
+        self.assertEqual(item.available,code=='PAIR_UNAVAILABLE')
+        self.assertEqual(item.ready,code=='PAIR_UNAVAILABLE')
+        self.assertEqual(item.pair_lease.available,code=='PAIR_UNAVAILABLE')
+        self.assertEqual(item._retired,code!='PAIR_UNAVAILABLE')
         self.assertTrue(raw.closed and tls.closed)
+        self.addCleanup(item.close)
         return item
 
     def test_post_handshake_drift_sends_no_http_bytes(self):
-        self._assert_post_handshake_drift_sends_no_http_bytes(lambda f:f.ids.update(proxy='3'))
+        self._assert_post_handshake_refusal_sends_no_http_bytes(lambda f:f.ids.update(proxy='3'))
 
     def test_post_handshake_reused_ip_and_eni_do_not_admit_a_foreign_service_task(self):
         for mode in ('foreign-service', 'foreign-deployment', 'not-listed'):
@@ -403,7 +408,7 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
                         if mode == 'foreign-deployment': owner['startedBy']='ecs-svc/999'
                         return value
                     f.changes['describe_tasks']=tasks
-                self._assert_post_handshake_drift_sends_no_http_bytes(change)
+                self._assert_post_handshake_refusal_sends_no_http_bytes(change)
 
     def test_post_handshake_two_distinct_running_members_send_no_http_bytes(self):
         def change(f):
@@ -415,7 +420,7 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
                     value['taskArns'].append(second)
                 return value
             f.changes['list_tasks']=members
-        item=self._assert_post_handshake_drift_sends_no_http_bytes(change)
+        item=self._assert_post_handshake_refusal_sends_no_http_bytes(change)
         self.assertNotIn('describe_tasks',[method for method,_ in item.fixture.calls[10:]],
                          'two RUNNING members must fail in the post-handshake inventory phase')
 
@@ -434,9 +439,26 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
                                 value['taskArns']=[f.task_id('owner').rsplit('/',1)[0]+'/'+'3'*32]
                         return value
                     f.changes['describe_services' if mode=='deployment' else 'list_tasks']=final
-                item=self._assert_post_handshake_drift_sends_no_http_bytes(change)
+                item=self._assert_post_handshake_refusal_sends_no_http_bytes(change,code='PAIR_UNAVAILABLE')
                 self.assertIn('describe_network_interfaces',[method for method,_ in item.fixture.calls[10:]],
                               'the final recheck must follow the complete network observation')
+
+    def test_post_handshake_final_own_membership_and_deployment_changes_remain_drift(self):
+        for mode in ('membership','deployment'):
+            with self.subTest(mode=mode):
+                def change(f):
+                    seen=[0]
+                    def final(value,kwargs):
+                        if mode=='deployment':
+                            seen[0]+=1
+                            if seen[0]==2: value['services'][0]['deployments'][0]['id']='ecs-svc/99'
+                        elif kwargs['serviceName']=='meri-proxy':
+                            seen[0]+=1
+                            if seen[0]==2:
+                                value['taskArns']=[f.task_id('proxy').rsplit('/',1)[0]+'/'+'3'*32]
+                        return value
+                    f.changes['describe_services' if mode=='deployment' else 'list_tasks']=final
+                self._assert_post_handshake_refusal_sends_no_http_bytes(change)
 
     def test_post_handshake_changed_task_definition_and_image_are_never_repinned(self):
         for mode in ('task-definition','image-digest'):
@@ -450,7 +472,7 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
                             owner['containers'][1]['imageDigest']='sha256:'+'f'*64
                         return value
                     f.changes['describe_tasks']=tasks
-                self._assert_post_handshake_drift_sends_no_http_bytes(change)
+                self._assert_post_handshake_refusal_sends_no_http_bytes(change)
 
     def test_read_timeout_resets_only_its_carrier_then_next_request_serves(self):
         item=exchange();sent=[];closed=[]
@@ -478,17 +500,20 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(sent,[1,1], 'the failed frame was not retried')
         self.assertEqual(closed,[True]);item.abort()
 
-    def test_fourth_actual_carrier_reset_retires_but_duplicate_reset_does_not(self):
-        item=exchange();health=[]
+    def test_manual_carrier_cleanup_does_not_spend_read_timeout_quota(self):
+        item=exchange();health=[];self.addCleanup(item.close)
         telemetry_lines.install(write=lambda line:health.append(json.loads(line)))
         self.addCleanup(telemetry_lines.uninstall)
-        for index in range(4):
-            item._connections['operation']=SimpleNamespace(close=lambda:None)
-            item._sent_channels['operation']=item._connections['operation']
+        for _ in range(5):
+            connection=SimpleNamespace(close=lambda:None)
+            attempt=threading.Event()
+            item._connections['operation']=connection
+            item._attempts['operation']=attempt
+            item._pending_reads['operation']=(attempt,connection,threading.Event())
             item.reset('operation');item.reset('operation')
-            self.assertEqual(item.available,index<3)
-        self.assertEqual([line['code'] for line in health if line.get('transition')=='retired'],['CARRIER_RESET_LIMIT'])
-        self.assertEqual(len(item._resets),4)
+            self.assertTrue(item.available)
+        self.assertEqual([line['code'] for line in health if line.get('transition')=='retired'],[])
+        self.assertEqual(item._resets,[])
 
     def test_replacement_connect_failures_do_not_spend_sent_carrier_reset_quota(self):
         from apps.proxy.product.test.test_pair_lease import replace_partner

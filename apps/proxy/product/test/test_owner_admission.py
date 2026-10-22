@@ -13,7 +13,7 @@ import uuid
 
 from apps.proxy.product.owner_admission import ProductOwnerAdmissionReader, _hash
 from apps.proxy.product.owner_channel import (OwnerPeerPolicy, OwnerTlsEvidence, OwnerReply,
-    OwnerHostGate, ProductOwnerBridge, OPEN, OPERATION, POLL, REPLY)
+    OwnerHostGate, ProductOwnerBridge, OPEN, OPERATION, POLL, REPLY, report_owner_write_completed)
 from apps.proxy.product.binding import _binding
 from apps.proxy.product.test.test_bearer_eni_admission import source as issued_fixture
 from apps.proxy.qualification.state.admission import GrantAdmission
@@ -71,6 +71,7 @@ class Exchange:
 
     async def __call__(self, channel, path, body, timeout):
         self.calls.append((channel, path, json.loads(body), timeout))
+        report_owner_write_completed(self)
         if self.delay:
             try:
                 await asyncio.sleep(self.delay)
@@ -126,6 +127,7 @@ class ReservationExchange(Exchange):
                 self.read_during_pending = self.read_during_pending or channel == "capture"
             return await super().__call__(channel, path, body, timeout)
         self.calls.append((channel, path, frame, timeout))
+        report_owner_write_completed(self)
         if path == OPEN:
             answer = ["meri.proxy.session/1", "session_A", frame[1], frame[2]]
         elif path == POLL:
@@ -163,6 +165,7 @@ class TwoReservationExchange(Exchange):
         if frame[0] == "meri.proxy.admission-read/1":
             self.trace.append(("admission",channel))
             return await super().__call__(channel,path,body,timeout)
+        report_owner_write_completed(self)
         if path == OPEN:
             request_id = frame[1]
             self.trace.append(("open",request_id))

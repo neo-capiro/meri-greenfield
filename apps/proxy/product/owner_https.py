@@ -18,7 +18,8 @@ import ssl
 import threading
 import time
 
-from .owner_channel import OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, OPERATION, POLL, REPLY
+from .owner_channel import (OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, OPERATION, POLL, REPLY,
+                            report_owner_write_completed)
 from .service_pair_discovery import ProductServicePairDiscovery, PairProofError
 from .pair_lease import ProductPairLease
 from . import refusal_diagnostics as diagnostics
@@ -107,6 +108,39 @@ def validate_owner_http_reply(status, headers, *, expected_revision, max_bytes=1
     return int(length)
 
 
+def _read_only_exchange(path, body):
+    """Only explicit read frames can spend the unanswered-read reset quota."""
+    try:
+        frame = json.loads(body)
+    except (ValueError, TypeError, UnicodeError):
+        return False
+    if type(frame) is not list or not frame:
+        return False
+    if path == OPEN:
+        return len(frame) == 5 and frame[0] == 'meri.proxy.session-open/1'
+    if path == POLL:
+        return len(frame) == 4 and frame[0] == 'meri.proxy.capture-poll/1'
+    if path != OPERATION:
+        return False
+    if frame[0] in ('meri.proxy.admission-read/1', 'meri.proxy.placement-read/1'):
+        return len(frame) == (5 if frame[0] == 'meri.proxy.admission-read/1' else 4)
+    return (len(frame) == 3 and frame[0] == 'meri.proxy.operation/1'
+            and type(frame[2]) is list and len(frame[2]) == 2
+            and frame[2][0] == 'meri.proxy.outcome/1')
+
+
+class _StatusObservedResponse(http.client.HTTPResponse):
+    """Observe a parsed status before HTTPResponse waits for the headers."""
+    def __init__(self, *args, status_received, **kwargs):
+        self._status_received = status_received
+        super().__init__(*args, **kwargs)
+
+    def _read_status(self):
+        value = super()._read_status()
+        self._status_received.set()
+        return value
+
+
 class ProductOwnerHttpsExchange:
     """Three independent generation-bound carriers; resets never retry a frame.
 
@@ -146,7 +180,7 @@ class ProductOwnerHttpsExchange:
         self._connections, self._sockets = {}, set()
         self._channel_sockets = {name: set() for name in self._locks}
         self._connection_generations = {}
-        self._sent_channels = {}
+        self._pending_reads = {}
         self._attempts = {}
         self._resets = []
         self._reset_listeners, self._close_listeners, self._install_listeners = [], [], []
@@ -221,7 +255,7 @@ class ProductOwnerHttpsExchange:
             self._sockets.clear()
             self._connections.clear()
             self._connection_generations.clear()
-            self._sent_channels.clear()
+            self._pending_reads.clear()
             for owned in self._channel_sockets.values():
                 owned.clear()
             callbacks = tuple(self._close_listeners)
@@ -249,7 +283,7 @@ class ProductOwnerHttpsExchange:
         self._unsubscribe_close()
         self._unsubscribe_install()
 
-    def reset(self, channel, *, expected_connection=None, expected_attempt=None):
+    def reset(self, channel, *, expected_connection=None, expected_attempt=None, count_timeout=False):
         if channel not in self._locks:
             _deny()
         with self._state:
@@ -261,17 +295,19 @@ class ProductOwnerHttpsExchange:
             sockets = tuple(self._channel_sockets[channel])
             if connection is None and not sockets:
                 return
-            sent_connection = self._sent_channels.pop(channel, None)
-            sent = connection is not None and sent_connection is connection
+            pending = self._pending_reads.pop(channel, None)
+            timed_out_read = (count_timeout and pending is not None
+                             and pending[0] is self._attempts.get(channel)
+                             and pending[1] is connection and not pending[2].is_set())
             self._connections.pop(channel, None)
             self._connection_generations.pop(channel, None)
             self._channel_sockets[channel].clear()
             self._sockets.difference_update(sockets)
             at = time.monotonic()*1000
             self._resets = [stamp for stamp in self._resets if at-stamp < CARRIER_RESET_WINDOW_MS]
-            # TCP/TLS warmup failures have sent no application frame. Closing
-            # those attempts must not spend the timeout-after-send reset quota.
-            if sent:
+            # Closing an answered, unwritten or mutating exchange is ordinary
+            # cleanup. Only an unanswered read timeout consumes this quota.
+            if timed_out_read:
                 self._resets.append(at)
             exceeded = len(self._resets) > CARRIER_RESETS_PER_MIN
             callbacks = tuple(self._reset_listeners)
@@ -369,6 +405,7 @@ class ProductOwnerHttpsExchange:
         began, acquired, step = time.monotonic(), False, "lock"
         cancelled = cancelled or threading.Event()
         attempt, connection = cancelled, None
+        status_received = threading.Event()
         try:
             acquired = self._locks[channel].acquire(timeout=self._remaining(cutoff))
             if not acquired or cancelled.is_set():
@@ -387,14 +424,20 @@ class ProductOwnerHttpsExchange:
             evidence = self._evidence(sock)
             sock.settimeout(self._remaining(cutoff))
             step = "request"; diagnostics.stage("exchange-wait")
-            with self._state:
-                # Mark before the native write: an exception can follow a
-                # partial write, which never proves that nothing was sent.
-                self._sent_channels[channel] = connection
             connection.request("POST", path, body=body, headers={
                 "host": f"{self.policy.server_name}:8444", "content-type": "application/json",
                 "content-length": str(len(body)), "accept-encoding": "identity", "connection": "keep-alive"})
+            # A completed native write is explicit transport evidence for the
+            # request bridge; entering dispatch or a partial write is not.
+            if _read_only_exchange(path, body):
+                with self._state:
+                    self._pending_reads[channel] = (attempt, connection, status_received)
+            report_owner_write_completed(self)
+            step = "reply-wait"
+            connection.response_class = lambda *args, **kwargs: _StatusObservedResponse(
+                *args, status_received=status_received, **kwargs)
             response = connection.getresponse()
+            status_received.set()  # Also covers injected HTTP connections.
             step = "reply-status"
             length = validate_owner_http_reply(response.status, response.getheaders(),
                                                expected_revision=self.deployment_revision)
@@ -413,7 +456,7 @@ class ProductOwnerHttpsExchange:
         except BaseException as error:
             diagnostics.refused("exchange", step, error, deadline_ms=cutoff, now_ms=self.now_ms)
             if acquired and step not in ("lock", "lease"):
-                self.reset(channel, expected_attempt=attempt)
+                self.reset(channel, expected_attempt=attempt, count_timeout=isinstance(error, TimeoutError))
             if isinstance(error, PairProofError):
                 if error.code == 'PAIR_DRIFT':
                     self.abort()
@@ -427,6 +470,7 @@ class ProductOwnerHttpsExchange:
                 with self._state:
                     if self._attempts.get(channel) is attempt:
                         self._attempts.pop(channel, None)
+                        self._pending_reads.pop(channel, None)
                 self._locks[channel].release()
 
     async def __call__(self, channel, path, body, timeout):
@@ -439,15 +483,22 @@ class ProductOwnerHttpsExchange:
             _deny()
         reads = {"capture": ("meri.proxy.admission-read/1",),
                  "admission": ("meri.proxy.admission-read/1", "meri.proxy.placement-read/1")}
+        read_deadline = None
         if channel in reads and path == OPERATION:
             try:
                 frame = json.loads(body)
                 if (type(frame) is not list or not frame or frame[0] not in reads[channel]
                         or len(frame) != (5 if frame[0] == "meri.proxy.admission-read/1" else 4)):
                     _deny()
+                if type(frame[-1]) is int:
+                    read_deadline = frame[-1]
             except (ValueError, TypeError, UnicodeError):
                 _deny()
         cutoff = min(self.expires_at_ms, self.now_ms()+max(1, int(timeout*1000)))
+        # Admission/placement callers enforce the deadline carried in the read
+        # frame too. Keep their outer timer and this adapter on the same bound.
+        if read_deadline is not None:
+            cutoff = min(cutoff, read_deadline)
         cancelled = threading.Event()
         # The native socket timeout is the primary bound. The event prevents a
         # queued native worker from sending after cancellation; reset releases I/O.
@@ -456,7 +507,9 @@ class ProductOwnerHttpsExchange:
                                           self._remaining(cutoff))
         except BaseException as error:
             cancelled.set()
-            self.reset(channel, expected_attempt=cancelled)
+            timed_out = (isinstance(error, TimeoutError)
+                         or isinstance(error, asyncio.CancelledError) and self.now_ms() >= cutoff)
+            self.reset(channel, expected_attempt=cancelled, count_timeout=timed_out)
             diagnostics.refused("exchange", "call", error, deadline_ms=cutoff, now_ms=self.now_ms)
             if isinstance(error, TimeoutError):
                 raise OwnerExchangeUnavailable() from None

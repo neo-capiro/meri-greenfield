@@ -41,7 +41,15 @@ _SERVICE_GATES_LOCK = threading.Lock()
 _EXCHANGE_STATES = WeakKeyDictionary()
 _EXCHANGE_HOOKS = WeakSet()
 _CAPTURE_ADMISSION = ContextVar("product_owner_capture_admission", default=None)
+_OWNER_WRITE_COMPLETION = ContextVar("product_owner_write_completion", default=None)
 CARRIERS = ("operation", "capture", "admission")
+
+
+def report_owner_write_completed(exchange):
+    """The native transport reports only a completed request write, before reading its reply."""
+    pending = _OWNER_WRITE_COMPLETION.get()
+    if pending is not None and pending[0] is exchange:
+        pending[1]()
 
 
 class OwnerCarrierBusy(StateDenied):
@@ -310,6 +318,8 @@ class ProductOwnerBridge:
     its own independent I/O bound. Its synchronous `reset(channel)` closes that
     carrier immediately; cancelling a Python task cannot cancel native socket
     I/O. A new carrier must pass the transport's post-handshake pair proof.
+    After the native request write completes, the exchange must call
+    `report_owner_write_completed(self)` before waiting for response bytes.
     """
 
     def __init__(self, *, policy, exchange, capture_call, host_gate, request_id,
@@ -371,12 +381,21 @@ class ProductOwnerBridge:
         return (self.generation == self.exchange.generation
                 and self.policy == self.exchange.policy)
 
-    def _reset(self, channel):
+    def _reset(self, channel, *, count_timeout=False):
         """Called while this request still owns the carrier or claim lock."""
         if not self._generation_current():
             return  # The generation owner already closed every old carrier.
         try:
-            result = self.exchange.reset(channel)
+            reset = self.exchange.reset
+            keywords = {}
+            if count_timeout:
+                try:
+                    inspect.signature(reset).bind(channel, count_timeout=True)
+                except (TypeError, ValueError):
+                    pass  # Older synthetic ports have only reset(channel).
+                else:
+                    keywords["count_timeout"] = True
+            result = reset(channel, **keywords)
             if inspect.isawaitable(result):
                 if inspect.iscoroutine(result):
                     result.close()
@@ -423,8 +442,24 @@ class ProductOwnerBridge:
             lock.release()
             raise
         active = True
+        write_completed = False
+        completion_lock = threading.Lock()
+
+        def written():
+            nonlocal write_completed
+            with completion_lock:
+                if active:
+                    write_completed = True
+                    self._sent = True
+
+        def deactivate():
+            nonlocal active
+            with completion_lock:
+                active = False
+                return write_completed
 
         async def dispatch():
+            context = _OWNER_WRITE_COMPLETION.set((self.exchange, written))
             try:
                 result = await self.exchange(channel, path, body, timeout)
                 if not active:
@@ -439,18 +474,19 @@ class ProductOwnerBridge:
                 self._reset(channel)
                 raise
             finally:
+                deactivate()
+                _OWNER_WRITE_COMPLETION.reset(context)
                 lock.release()
-        self._sent = True
         task = asyncio.create_task(dispatch())
         try:
             done, _ = await asyncio.wait({task}, timeout=timeout)
             if not done:
                 raise TimeoutError("PRODUCT_OWNER_CHANNEL_DEADLINE")
             return task.result()
-        except BaseException:
-            active = False
+        except BaseException as error:
+            completed = deactivate()
             if not task.done():
-                self._reset(channel)
+                self._reset(channel, count_timeout=isinstance(error, TimeoutError) and completed)
             task.cancel()
             if task.done():
                 try:
