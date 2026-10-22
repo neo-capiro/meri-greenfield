@@ -138,9 +138,9 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
                 await asyncio.sleep(.01)
         self.calls, self.lost_ack, self.bridges = [], False, []
         original = ProductOwnerHttpsExchange.__call__
-        async def counted(exchange, channel, path, body, timeout):
+        async def counted(exchange, channel, path, body, timeout, *, cutoff_ms=None):
             frame = json.loads(body); self.calls.append((channel, path, frame))
-            result = await original(exchange, channel, path, body, timeout)
+            result = await original(exchange, channel, path, body, timeout, cutoff_ms=cutoff_ms)
             if self.lost_ack and json.loads(result.body)[0] == 'meri.proxy.settlement-receipt/1':
                 self.lost_ack = False
                 exchange.reset(channel)
