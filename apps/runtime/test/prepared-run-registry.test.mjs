@@ -188,3 +188,16 @@ test('MR01 existing non-profile task commands and environments still allocate wi
   f.options.allocate=input=>{seen=input;return allocate(input);};const registry=f.create();try{const entry=await registry.ensure({binding:f.binding});await kickoff(entry);assert.equal(f.stats.allocate,1);assert.equal(Object.hasOwn(seen,'retirementFacts'),false);assert.deepEqual(seen.taskRequest,f.facts.taskRequest);}finally{await registry.close();}
  }
 });
+
+test('MR01 cached generic Stop retries held facts after memoized close failure without historical material reconstruction',async()=>{
+ const f=fixture(),x=stopOnly(f,{fail:1}),allocate=f.options.allocate;let historical=0;
+ f.state.targetRecord=undefined;
+ f.options.retireHistorical=async()=>{historical++;throw Error('Generic profile has no immutable custody');};
+ f.options.allocate=async input=>{const controller=await allocate(input);assert.equal(Object.hasOwn(input,'retirementFacts'),false);return {...controller,async close(){f.stats.close++;throw Error('Synthetic first close uncertainty');}};};
+ const registry=f.create();try{const entry=await registry.ensure({binding:f.binding});await kickoff(entry);f.state.run='running';const prepared=f.stats.prepare;
+  assert.equal((await registry.handle(post('/v1/execution/kickoff/stop',x.body,f.options.controlCapability))).status,503);assert.notEqual(f.state.targetRecord?.state,'RETIRED');
+  assert.equal((await registry.handle(post('/v1/execution/kickoff/stop',x.body,f.options.controlCapability))).status,200);
+  assert.equal(historical,0);assert.equal(x.calls.length,2);assert.equal(f.stats.close,1);assert.equal(f.stats.prepare,prepared);assert.equal(f.stats.allocate,1);assert.equal(f.state.targetRecord.state,'RETIRED');assert.deepEqual(x.appended,[{state:'failed',reasonCode:'ATTEMPT_LOST'}]);
+  for(const k of ['allocationJson','qualification','grantIntents','runtime','plan','preparationIntent','taskRequest','containerName'])assert.deepEqual(x.calls[1][k],f.facts[k]);
+ }finally{await assert.rejects(registry.close(),{code:'PREPARED_RUN_REGISTRY_REFUSED'});}
+});
