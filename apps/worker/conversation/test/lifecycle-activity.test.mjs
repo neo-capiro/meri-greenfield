@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {setTimeout as realSetTimeout,clearTimeout as realClearTimeout} from 'node:timers';
 import {createConversationActivity} from '../activity.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {continuationFixture,id} from '../continuation/test/fixtures.mjs';
@@ -106,20 +107,30 @@ test('a definitive native refusal after two marked misses stops immediately with
 });
 test('an original run deadline during nonanswer backoff stops the query before another read or control effect',async t=>{
  t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
- const f=fixture({runtimeMs:100}),started=Date.now(),wallStarted=performance.now(),entered=Promise.withResolvers();let reads=0,settled=false;
+ const f=fixture({runtimeMs:100}),started=Date.now(),wallStarted=performance.now(),entered=Promise.withResolvers(),abort=new AbortController();let reads=0,settled=false,bodyFailure;
+ // Capture a real watchdog outside the frozen semantic clock. The same absolute
+ // ceiling covers reaching the reader, execution and failure cleanup.
+ let wallTimer;const wallTimeout=new Promise((_,reject)=>{wallTimer=realSetTimeout(()=>reject(Error('CONTROL_READ_WALL_TIMEOUT')),Math.max(0,500-(performance.now()-wallStarted)));});
+ wallTimeout.catch(()=>{});
  f.runOwner.nextControls=async()=>{reads++;entered.resolve();throw nonanswers.marked();};
- const executing=f.execute({binding:f.binding});executing.then(()=>{settled=true;},()=>{settled=true;});
- const rejected=assert.rejects(executing,/EXECUTION_STOPPED/);
+ const executing=f.execute({binding:f.binding,signal:abort.signal});executing.then(()=>{settled=true;},()=>{settled=true;});
+ const executionOutcome=executing.then(()=>{throw Error('CONTROL_READ_EXECUTION_FINISHED');},cause=>{throw Error('CONTROL_READ_EXECUTION_FAILED',{cause});});
+ const rejected=assert.rejects(executing,/EXECUTION_STOPPED/);rejected.catch(()=>{});
  try{
-  await entered.promise;await new Promise(resolve=>setImmediate(resolve));
+  await Promise.race([entered.promise,executionOutcome,wallTimeout]);await new Promise(resolve=>setImmediate(resolve));
   t.mock.timers.tick(99);await new Promise(resolve=>setImmediate(resolve));assert.equal(settled,false,'the run is live at99ms during the500ms backoff');
   t.mock.timers.tick(1);await new Promise(resolve=>setImmediate(resolve));assert.equal(settled,true,'the original deadline stops the run at100ms');
-  await rejected;
+  await Promise.race([rejected,wallTimeout]);
   assert.equal(reads,1);assert.equal(f.state.claims,0);assert.equal(f.state.records,0);assert.deepEqual(f.state.acks,[]);
   assert.equal(f.state.calls,1);assert.equal(f.state.closed,1);assert(Date.now()-started<500);
   assert(performance.now()-wallStarted<500,'the existing500ms wall-time ceiling remains independently enforced');
   assert.deepEqual(f.state.events.at(-1).data,{state:'cancelled',reasonCode:'EXECUTION_STOPPED'});
- }finally{t.mock.timers.tick(1);await rejected;}
+ }catch(error){bodyFailure=error;throw error;}
+ finally{
+  abort.abort();t.mock.timers.tick(1);
+  try{await Promise.race([rejected,wallTimeout]);}catch(error){if(!bodyFailure)throw error;}
+  finally{realClearTimeout(wallTimer);}
+ }
 });
 test('runtime expiry before lifetime installation preserves setup failure and never opens an SDK query',async t=>{
  t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
