@@ -13,6 +13,7 @@ import {createPostgresConversationStore} from '../../../control/conversations/po
 import {createInitialRunBindingJournal} from '../../../control/conversations/initial-run-binding-journal.mjs';
 import {createConversationService} from '../../../control/conversations/service.mjs';
 import {createConversationLifecycleService} from '../../../control/conversations/lifecycle/service.mjs';
+import {createConversationLifecycleApplication} from '../../../control/conversations/lifecycle/http.mjs';
 import {createActionSessionOwner} from '../../../control/action-host/session/owner.mjs';
 import {createContinuationAuthority,derivedUuid} from '../../native-authority/continuation-authority.mjs';
 import {capabilityDigest} from '../../native-authority/task-verifier.mjs';
@@ -67,7 +68,7 @@ async function composition({retire,onStart}={}){
  const store=createPostgresConversationStore({pool:f.pool,transitionAuthority:authority.transitionAuthority});
  const nextRunOwner=createPreparedNextRunOwner({store:base,versions,admissionForBinding:async()=>{throw Error('no revocation in this suite');}});
  const core={requests:[]};
- const coreFetch=async(url,options)=>{const path=new URL(url).pathname,body=JSON.parse(options.body);core.requests.push({path,body});if(new Headers(options.headers).get('authorization')!=='Bearer '+NATIVE)return Response.json({error:'PRIVATE_NATIVE'},{status:401});const at=Date.now();
+ const coreFetch=async(url,options)=>{const path=new URL(url).pathname,body=JSON.parse(options.body);core.requests.push({path,body});if(core.revoked||new Headers(options.headers).get('authorization')!=='Bearer '+NATIVE)return Response.json({error:'PRIVATE_NATIVE'},{status:401});const at=Date.now();
   return Response.json(path===applicationAuthorityRoutes.identity?{principal,identityRevision:'identity1',checkedAtMs:at,expiresAtMs:at+30000}:{identitySha256:body.identitySha256,principal,identityRevision:'identity1',conversationId:body.conversationId,selectedClientId:body.clientId,contextRevision:'context1',checkedAtMs:at,expiresAtMs:at+30000});};
  const identityContext=createPreparedCandidateIdentity({store:base,identity:{origin:c.identity.origin,commandContext:c.identity.commandContext,fetchImpl:coreFetch},qualification:c.qualification,now:Date.now,limits:{maxRequestMs:3000,maxFactBytes:65536},nextRunOwner,initialBindings:journal,configurationSha256,versions:c.runtime.versions,proposeInitialExpiry,factWindowMs:c.multiRun.runWindowMs});
  const sessions=createActionSessionOwner({mode:'process-local',limits:{maxSessions:20,maxRequestMs:3000,maxTtlMs:30000,maxFactBytes:65536},verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,
@@ -92,10 +93,31 @@ async function composition({retire,onStart}={}){
  }
  const continuation=(intent,controlId,proof)=>control({controlId,intent,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256});
  const row=b=>[...f.state.runs.values()].find(r=>r.run_id===b.runId),projection=controlId=>f.state.controls.get(`${binding.tenantId}:${controlId}`)?.projection;
- return {f,base,store,journal,registry,authority,issuance:stats,sessions,credential,core,stops,state,calls,service,basic,POLICY,scopes,paused,session,row,projection,
+ return {f,base,store,journal,registry,authority,identityContext,issuance:stats,sessions,credential,core,stops,state,calls,service,basic,POLICY,scopes,paused,session,row,projection,
   resume:(controlId,proof)=>continuation('resume',controlId,proof),fork:(controlId,proof)=>continuation('fork',controlId,proof),
   async close(){await registry.close();sessions.close();f.close();}};
 }
+test('MR-06: lost resume response is recovered from immutable custody after session-owner restart, with no command replay',async t=>{
+ const c=await composition();t.after(c.close);const proof=await c.paused(),R=id(795),input={controlId:R,intent:'resume',checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256};
+ const app=createConversationLifecycleApplication({service:c.service});
+ // The actual lifecycle HTTP owner completes, but the response is discarded before it reaches its caller.
+ await assert.rejects((async()=>{const response=await app.handle(new Request('https://meri.invalid/api/conversations/control',{method:'POST',headers:{authorization:`Bearer ${c.credential}`,'content-type':'application/json'},body:JSON.stringify(input)}));assert.equal(response.status,200);throw Error('SYNTHETIC_RESPONSE_LOST');})(),/SYNTHETIC_RESPONSE_LOST/);
+ const p=c.projection(R),target=p.target.binding;assert.equal(p.state,'APPLIED');
+ const before={starts:c.calls.starts.length,continued:c.calls.continued.length,stops:c.stops.length,runs:c.f.state.runs.size,issuance:c.issuance.prepare.length};
+ await assert.rejects(c.service.control({credential:c.credential,input}),/SESSION_REFUSED/);
+ const targetCredential=await c.session({conversationId:target.conversationId,runId:target.runId});
+ await assert.rejects(c.service.control({credential:targetCredential,input}));
+ c.sessions.close();
+ const sessions=createActionSessionOwner({mode:'process-local',limits:{maxSessions:20,maxRequestMs:3000,maxTtlMs:30000,maxFactBytes:65536},verifyIdentity:c.identityContext.verifyIdentity,resolveContext:c.identityContext.resolveContext});t.after(()=>sessions.close());
+ await assert.rejects(sessions.authenticateSession({credential:targetCredential}),/SESSION_REFUSED/);
+ const fresh=await sessions.issue({identityCredential:NATIVE,hints:{conversationId:target.conversationId,runId:target.runId,clientId:id(5)}}),authentication=await sessions.authenticateSession({credential:fresh.credential}),current=await sessions.readCurrentState({authentication});
+ assert.deepEqual(current.binding,target);
+ // Internal port only. The public fresh-membership/currentness/retention facade remains a separate contract-owner handoff.
+ const receipt=await c.store.lifecycle.readReceipt({principal:{tenantId:authentication.principal.tenantId,actorId:authentication.principal.actorId},binding,scopes:current.scopes,selectedClientId:current.selectedClientId,controlId:R},check);
+ assert.deepEqual(receipt,{controlId:R,intent:'resume',state:'APPLIED',sourceBinding:binding,targetBinding:target,checkpointId:proof.checkpoint.checkpointId,admissionReceiptId:p.target.admissionReceiptId,retirementReceiptId:p.retirement.retirementReceiptId});
+ c.core.revoked=true;await assert.rejects(sessions.authenticateSession({credential:fresh.credential}),/SESSION_REFUSED/);
+ assert.deepEqual({starts:c.calls.starts.length,continued:c.calls.continued.length,stops:c.stops.length,runs:c.f.state.runs.size,issuance:c.issuance.prepare.length},before);
+});
 for(const mode of ['resume','fork'])for(const terminal of ['completed','failed'])test(`${mode}: a naturally ${terminal} successor finishes the committed transition through the production authority`,async t=>{
  const c=await composition({async onStart({binding:target,store}){if(target.runId===binding.runId)return;for(const [i,state] of ['starting','running',terminal].entries())await store.append(target,{...status(980+i,state),data:{state,reasonCode:state==='failed'?'EXECUTION_FAILED':null}},check);}});t.after(c.close);
  const proof=await c.paused(),controlId=id(800),receipt=await c[mode](controlId,proof),target=receipt.targetBinding;

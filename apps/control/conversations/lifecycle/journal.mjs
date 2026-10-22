@@ -6,6 +6,7 @@ import {nativeSignal} from '../../../../packages/contracts/commands-0.2/executio
 import {closeSequenceRange} from '../sequence-ranges.mjs';
 import {recordContinuationReservation} from '../next-run-journal.mjs';
 import {readTransitionAuthority,requireTransitionAuthority} from './authority.mjs';
+import {createLifecycleReceiptReader} from './receipt-readback.mjs';
 /** The single worker failure a control hold admits (see failUncheckpointedHold); run.status reasonCode is free-form in the frozen UIEvent contract. */
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 const selectRun=async(c,b)=>{const r=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0];return r;};
@@ -56,7 +57,9 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   pins(control,r,b,scopes,selectedClientId);return {row,control};
  }
  async function readCheckpoint({binding:b,scopes,selectedClientId,checkpointId},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes),{row,control}=await checkpointOwner(c,b,r,scopes,selectedClientId,checkpointId,check);return {proof:row.proof,approval:control.approval};});}
- async function execution({binding:b,scopes,selectedClientId},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);check();if(!r.continuation)return null;if(hash(r.continuation)!==r.continuation_sha256)fail('STORE_CORRUPT');own(r.continuation,['continuation','sourceRequest']);const envelope=assertContinuationEnvelope(r.continuation.continuation),source=envelope.checkpoint.binding,p=await lookup(c,source,envelope.controlId);check();if(!p||!p.target||p.sourceSelectedClientId!==selectedClientId||p.target.selectedClientId!==selectedClientId||!same(p.target.binding,b)||p.input.intent!==envelope.mode||!same(p.sourceRequest,r.continuation.sourceRequest)||!same({...p.sourceRequest,requestId:r.request.requestId},r.request)||!same(p.proof?.checkpoint,envelope.checkpoint)||p.sourceRequestSha256!==envelope.sourceRequestSha256||p.contextSha256!==envelope.contextSha256||p.proof?.resumeSessionAt!==envelope.resumeSessionAt||p.target.targetSessionId!==envelope.targetSessionId||!same(p.versions,r.projection.versions)||!same(p.scopes,r.projection.scopes))fail('STORE_CORRUPT');return r.continuation;});}
+ async function readExecution(c,b,scopes,selectedClientId,check){const r=await verifyRun(c,b,scopes);check();if(!r.continuation)return null;if(hash(r.continuation)!==r.continuation_sha256)fail('STORE_CORRUPT');own(r.continuation,['continuation','sourceRequest']);const envelope=assertContinuationEnvelope(r.continuation.continuation),source=envelope.checkpoint.binding,p=await lookup(c,source,envelope.controlId);check();if(!p||!p.target||p.sourceSelectedClientId!==selectedClientId||p.target.selectedClientId!==selectedClientId||!same(p.target.binding,b)||p.input.intent!==envelope.mode||!same(p.sourceRequest,r.continuation.sourceRequest)||!same({...p.sourceRequest,requestId:r.request.requestId},r.request)||!same(p.proof?.checkpoint,envelope.checkpoint)||p.sourceRequestSha256!==envelope.sourceRequestSha256||p.contextSha256!==envelope.contextSha256||p.proof?.resumeSessionAt!==envelope.resumeSessionAt||p.target.targetSessionId!==envelope.targetSessionId||!same(p.versions,r.projection.versions)||!same(p.scopes,r.projection.scopes))fail('STORE_CORRUPT');return r.continuation;}
+ const execution=({binding:b,scopes,selectedClientId},check)=>tx(b,check,c=>readExecution(c,b,scopes,selectedClientId,check));
+ const readReceipt=createLifecycleReceiptReader({tx,verifyRun,lookup,pins,readExecution});
  async function continuation({binding:b,scopes,selectedClientId,controlId,admission,retirement,proof,conversation,run,request,continuation,event,signal,deadlineMs=now()+3000},check){
   // The native admission receipt nominates a target; it does not replace current product authority. Verify the still-current source
   // before closing its range or persisting a target. Missing/denied owners cannot leave an undispatched successor behind.
@@ -132,5 +135,5 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    }
    return {state:r.projection.state,cancelCommitted:!!row};
   });try{if(committed&&onPublished)Promise.resolve(onPublished(committed)).catch(()=>{});}catch{}return result;}
- return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
+ return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
 }
