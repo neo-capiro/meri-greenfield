@@ -23,13 +23,13 @@ export function createRunCurrentAuthority(configuration){
   const binding=data(call.binding);validateShape('RunBinding',binding);
   const selectors=currentRequest({conversationId:binding.conversationId,clientId:call.selectedClientId,...(call.expect===undefined?{}:{expect:call.expect})});
   if(typeof call.credential!=='string'||!/^\S{1,8192}$/u.test(call.credential)||typeof call.sessionFence!=='string'||!call.sessionFence||call.sessionFence.length>512||call.fresh!==undefined&&typeof call.fresh!=='boolean'||!Number.isSafeInteger(call.deadlineMs))refuse();
-  const key=hash({binding,clientId:call.selectedClientId,sessionFence:call.sessionFence,credential:hash(call.credential)});
+  const key=hash({binding,clientId:call.selectedClientId,sessionFence:call.sessionFence,credential:hash(call.credential),expect:selectors.expect??null});
   const life=createOperationLifetime({now,deadlineMs:Math.min(call.deadlineMs,now()+3000),signal:call.signal,errorFactory:code=>code==='DEADLINE'?unavailable():Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403})});
   try{
    life.check();const prior=entries.get(key),age=prior===undefined?Infinity:clock()-prior.sendStart;
    if(call.fresh!==true&&!pending.has(key)&&prior&&age>=0&&age<CURRENT_REUSE_MS&&prior.receipt.expiresAtMs>now()&&
-    (!call.expect||Object.entries(call.expect).every(([k,v])=>prior.receipt[k]===v))){count('reuse');return prior.receipt;}
-   const expected=call.expect??(prior?currentRevisions(prior.receipt):undefined);
+    (!selectors.expect||Object.entries(selectors.expect).every(([k,v])=>prior.receipt[k]===v))){count('reuse');return prior.receipt;}
+   const expected=selectors.expect??(prior?currentRevisions(prior.receipt):undefined);
    // No reader may cover a fresh request's failure with the previous positive answer.
    if(!pending.has(key)&&pending.size>=1000)throw unavailable();
    entries.delete(key);const generation=++sequence;pending.set(key,generation);

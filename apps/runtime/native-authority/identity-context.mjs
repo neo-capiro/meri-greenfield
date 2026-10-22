@@ -27,29 +27,30 @@ export function createNativeIdentityContext(configuration){
  // step and owned reason code (fixed vocabularies) ride along for the session owner's refusal line only.
  const unavailable=cause=>{const error=Object.assign(Error('NATIVE_AUTHORITY_UNAVAILABLE'),{code:'NATIVE_AUTHORITY_UNAVAILABLE',status:503},refusalDiagnostic(cause));throw carryAuthorityUnavailable(cause,error);};
  return Object.freeze({
-  async withAuthority({credential,hints={},binding,sessionFence,fresh=false,requireOrigin=false,signal,deadlineMs},operation){
+  async withAuthority({credential,hints={},binding,sessionFence,expect,fresh=false,requireOrigin=false,signal,deadlineMs},operation){
    if(!enabled)unavailable();const conversationId=hints.conversationId??commandContext.binding.conversationId,clientId=hints.clientId??commandContext.clientResolution.clientId;
    const borrow=requireOrigin?originatingAuthoritySession(fetchImpl):undefined;
    const origin=borrow?borrow({binding,selectedClientId:clientId,signal}):undefined;
-   if(origin)sessionFence=hash(origin.credential);
-   const reusable=binding!==undefined&&(!requireOrigin||origin!==undefined);
+   if(origin){sessionFence=hash(origin.credential);expect=origin.expect;}
+   const reusable=binding!==undefined&&(!requireOrigin||origin?.expect!==undefined);
    let receipt,sendStart=performance.now(),wallSend=now();
    // Initial issuance has not selected its fenced run yet: it is always a fresh, non-reusable observation.
    if(!reusable){currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,signal,deadlineMs:Math.min(deadlineMs,now()+3000)}));}
-   else receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,fresh,signal,deadlineMs});
+   else receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,...(expect?{expect}:{}),fresh,signal,deadlineMs});
    if(receipt.principal.tenantId!==commandContext.binding.tenantId||receipt.principal.actorId!==commandContext.binding.actorId||receipt.conversationId!==conversationId||receipt.selectedClientId!==clientId||receipt.expiresAtMs<=now()||!reusable&&(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()))unavailable();
    // Each canonical port recheck re-enters the age check; a slow local await cannot carry a19.9s receipt past20s.
    const read=async()=>{
     let currentOrigin;if(borrow){currentOrigin=borrow({binding,selectedClientId:clientId,signal});if(currentOrigin.credential!==origin.credential)unavailable();}
     let r;
-    if(reusable)r=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,signal,deadlineMs});
+    if(reusable)r=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,...(expect?{expect}:{}),signal,deadlineMs});
     else{if(signal?.aborted||now()>=deadlineMs||receipt.expiresAtMs<=now())unavailable();if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,expect:currentRevisions(receipt),signal,deadlineMs:Math.min(deadlineMs,now()+3000)}));if(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now())unavailable();}else currentTurnTelemetry()?.recordAuthority?.('reuse');r=receipt;}
+    receipt=r;
     if(borrow){const after=borrow({binding,selectedClientId:clientId,signal});if(after.credential!==origin.credential)unavailable();return data({...r,expiresAtMs:Math.min(r.expiresAtMs,currentOrigin.expiresAtMs,after.expiresAtMs)});}
     return r;
    };
    const result=await observations.run({read,credential},operation);
    if(borrow&&borrow({binding,selectedClientId:clientId,signal}).credential!==origin.credential)unavailable();
-   return result;
+   return result!==null&&typeof result==='object'?{...result,authorityRevisions:data(currentRevisions(receipt))}:result;
   },
   async readMembership(){const scope=observations.getStore();if(!scope)return undefined;const r=await scope.read();return data({tenantId:r.principal.tenantId,actorId:r.principal.actorId,status:'active',role:r.role,permissions:r.permissions,clientIds:r.clientIds,membershipRevision:r.membershipRevision,checkedAtMs:now(),expiresAtMs:r.expiresAtMs});},
   async verifyIdentity(call){if(!enabled)unavailable();try{return await mapped.verifyIdentity(call);}catch(error){unavailable(error);}},

@@ -101,3 +101,27 @@ prior alternating experiment, N21 environment limits, WSL clock-step unverified
 rehearsals and historical incomplete/unknown timeouts remain preserved. M1 merge
 does not mean deployment. Main remains frozen except#209 until cutover; S2 has
 no merge/deployment authority. P1 and C9 remain sequenced after S2. STOP2/6.
+
+## Originating revision-pin follow-up
+
+At prior candidate c87cebfa8b91bf2dea4cbdd56281b42375d5d5aa, the exact
+affected selection finished502/513, exit1,125488ms, zero skips/cancellations.
+All11 failing names reproduce at base14853f34 (7/18 in the three failing files):
+old mounting-context/native-reference fixtures and schema-readiness fixtures,
+including the original cleanup failure. Their raw outputs remain retained. No
+assertion or production readiness guard was changed to remove them. All17 new
+tests passed, and17/17 exact-head loader faults were caught by assertions.
+
+The follow-up retains the originating session's frozen three Core revisions
+in private process memory. Canonical session and task consumers pass those
+expected revisions on every fresh call and recheck, including after a cached
+positive was invalidated; the cache key includes them. The private borrower
+returns that proof to the existing relay only. Sessions without this provenance
+are observed fresh and cannot enable task reuse. A new assertion in the origin
+test covers warm503 invalidation followed by a changed-context200: the old
+session pins still refuse it. Transport also refuses a200 that violates an
+explicit revision precondition, rather than relying solely on Core's409.
+Public session receipts and persistent schemas are unchanged.
+
+The follow-up head needs its own exact-head qualification. Earlier c87 receipts
+do not carry over. All native/image/live gates and acceptance holds remain.

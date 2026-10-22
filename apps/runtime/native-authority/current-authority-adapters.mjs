@@ -131,9 +131,9 @@ export function createCurrentAuthorityAdapters(configuration){
   try{
    const issued=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));l.limit(issued.expiresAtMs);
    let r;
-   if(borrowSession){
+   if(borrowSession&&borrowSession({binding,selectedClientId,signal:l.life.signal}).expect!==undefined){
     const session=borrowSession({binding,selectedClientId,signal:l.life.signal});l.limit(session.expiresAtMs);
-    r=await l.life.run(signal=>receipts.read({credential:issued.credential,binding,selectedClientId,sessionFence:sha(session.credential),fresh:forceFresh||capabilityAction==='command.execute'||c.localArtifactDrafts===true,signal,deadlineMs:l.deadline()}));
+    r=await l.life.run(signal=>receipts.read({credential:issued.credential,binding,selectedClientId,sessionFence:sha(session.credential),expect:session.expect,fresh:forceFresh||capabilityAction==='command.execute'||c.localArtifactDrafts===true,signal,deadlineMs:l.deadline()}));
     const current=borrowSession({binding,selectedClientId,signal:l.life.signal});if(current.credential!==session.credential)deny('ACCESS_DENIED');l.limit(current.expiresAtMs);
    }else{
     // A port without canonical originating-session provenance gets a fresh observation, never reuse.
