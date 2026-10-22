@@ -36,9 +36,9 @@ test('readCurrent answers the durable currentness of the exact run with a Meri-s
  await assert.rejects(readCurrent({binding,scopes,selectedClientId:id(5),policyRevision:'policy1',deadlineMs:Date.now()+1000}),code('CONTINUATION_REFUSED'));
 });
 test('resume admission derives one target per control from the verified source and checkpoint, idempotently',async t=>{
- const h=await pausedSource();t.after(h.close);const {admit}=h.authority.continuationAdmission;
- const started=Date.now(),a=await admit(h.admitInput(id(630)));
- assert.deepEqual(Object.keys(a),['binding','scopes','selectedClientId','admissionReceiptId','targetSessionId','expiresAtMs']);
+ const started=Date.now(),h=await pausedSource({now:()=>started});t.after(h.close);const {admit}=h.authority.continuationAdmission;
+ const a=await admit(h.admitInput(id(630)));
+ assert.deepEqual(Object.keys(a),['binding','scopes','selectedClientId','admissionReceiptId','targetSessionId','expiresAtMs','versions']);
  assert.deepEqual({...a.binding,runId:null,attemptId:null,workerId:null},{...binding,writerFence:2,runId:null,attemptId:null,workerId:null});
  for(const k of ['runId','attemptId','workerId']){assert.match(a.binding[k],UUID);assert.notEqual(a.binding[k],binding[k]);}
  assert.equal(new Set([a.binding.runId,a.binding.attemptId,a.binding.workerId]).size,3);assert.match(a.admissionReceiptId,UUID);assert.equal(a.targetSessionId,null);

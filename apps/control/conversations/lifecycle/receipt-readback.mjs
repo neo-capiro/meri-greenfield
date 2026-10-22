@@ -31,7 +31,7 @@ export function createLifecycleReceiptReader({tx,verifyRun,lookup,pins,readExecu
    if(!same(target,discovered))refused();
    if(target===null&&p.retirement!==null||target!==null&&p.state==='PENDING')refused();
    if(target!==null){
-    own(p.target,['binding','scopes','selectedClientId','admissionReceiptId','targetSessionId','expiresAtMs']);
+    own(p.target,['binding','scopes','selectedClientId','admissionReceiptId','targetSessionId','expiresAtMs'],['versions']);if(p.target.versions!==undefined)validateShape('RuntimeVersions',p.target.versions);
     if(!['resume','fork'].includes(p.input.intent)||!p.proof||p.input.checkpointId!==p.checkpointId||p.input.checkpointSha256!==p.proof.checkpointSha256||!same(p.target.scopes,v.scopes)||p.target.selectedClientId!==v.selectedClientId||!Number.isSafeInteger(p.target.expiresAtMs)||p.target.expiresAtMs<1)refused();
     const saved=await verifyRun(c,target,v.scopes),execution=await readExecution(c,target,v.scopes,v.selectedClientId,check);check();
     if(saved.projection.policyRevision!==run.projection.policyRevision||execution?.continuation.controlId!==v.controlId)refused();
