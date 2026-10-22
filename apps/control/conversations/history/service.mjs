@@ -14,11 +14,11 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
  async function currentAll(recheckConversation,conversations,readScheduleOriginRows){let next=0,failure;
   const worker=async()=>{while(!failure&&next<conversations.length){const conversation=conversations[next++];try{await current(recheckConversation,conversation,readScheduleOriginRows);}catch(error){failure??={error};}}};
   await Promise.all(Array.from({length:Math.min(CURRENTNESS_CONCURRENCY,conversations.length)},worker));if(failure)throw failure.error;}
- async function transcript({principal,request,signal,recheckConversation}){
+ async function transcript({principal,request,signal,recheckConversation},deferCurrentness=false){
   // Subject ownership/client authorization precedes subject-specific retention observations.
   const result=await store.history.transcript({principal,...request},check(signal));
-  await servable(principal,request.conversationId);await current(recheckConversation,result.conversation);
-  // Core currentness is awaited: suppression can take effect while that authorization check is in flight.
+  await servable(principal,request.conversationId);if(!deferCurrentness)await current(recheckConversation,result.conversation);
+  // Keep both local retention observations; final fenced release checks retention again after its fresh Core read.
   await servable(principal,request.conversationId);return result;
  }
  return Object.freeze({
@@ -29,7 +29,8 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    for(const c of result.conversations){try{await servable(principal,c.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(c);}
    return {...result,conversations:visible};
   }),
-  transcript:guard(transcript),
+  // Read-only transcript releases only through the final serving fence, like list; nextTurn keeps every early/fresh check.
+  transcript:guard(call=>transcript(call,true)),
   // One fence spans ALL subjects, final native membership/Core checks and response serialization.
   recheckRelease:guard(async({principal,request,result,operation,signal,deadlineMs,recheckMembership,recheckConversation,publish})=>{
    if(typeof recheckMembership!=='function'||typeof publish!=='function')refuse('PRODUCT_CONFIGURATION');
@@ -41,7 +42,7 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
     if(retention&&typeof assertReleaseServable!=='function')refuse('PRODUCT_CONFIGURATION');
     const releaseServable=conversationId=>retention?assertReleaseServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId}):Promise.resolve();
     check(signal)();await recheckMembership();
-    // Core's current context wire does not distinguish archive from outage; withhold the whole page on either failure.
+    // Any Core refusal or outage withholds the whole page; no refused row is skipped.
     await currentAll(recheckConversation,conversations,readScheduleOriginRows);
     if(operation==='list'){const visible=[];
      for(const conversation of conversations){try{await releaseServable(conversation.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(conversation);}

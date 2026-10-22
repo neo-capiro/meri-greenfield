@@ -125,3 +125,39 @@ Public session receipts and persistent schemas are unchanged.
 
 The follow-up head needs its own exact-head qualification. Earlier c87 receipts
 do not carry over. All native/image/live gates and acceptance holds remain.
+
+## O214 history currentness follow-up
+
+Decision6352459577 adds the native history adapter to this same PR. The adapter
+uses one fresh `/current` per row/invocation with the canonical membership
+admission's available membershipRevision precondition. Identity/context revision
+pins are not invented from local stored policy scopes. Stored scopes, principal,
+configured client, membership roster, freshness, cancellation and deadline checks
+remain. No history receipt cache exists: no reuse across rows/requests/principals.
+Fresh observations contribute to the existing authorityFresh counter.
+
+Read-only transcript now performs its single Core observation inside the existing
+final serving fence, as list already does. Both earlier local retention checks
+remain; the final check after Core remains too. Next-turn's initial/pre-effect/
+post-effect/final-release observations are unchanged. The bounded four-reader
+list pool still settles every started read and withholds the whole page after a
+refusal, rather than skipping refused rows or releasing partial content.
+
+Wire/classification boundary: adapter errors retain401/403/409 and mark503 or a
+Core timeout transient, all with the owned CONVERSATION_UNAVAILABLE domain code.
+The existing frozen public history envelope stays CONVERSATION_UNAVAILABLE503;
+no shared error/status contract or frontend change is included. Thus the409
+revision-drift assertion is at the current transport/native-adapter boundary,
+not a new public history409 status. This distinction must remain visible in
+review and Fable's qualification; no claim that preview history is repaired.
+
+O214 diagnostic:79/80, exit1, one retention-count assertion expected2 but observed3
+for transcript: retaining both earlier local checks plus final post-Core retention
+requires3. The assertion is strengthened to exact `[0,0,1]` Core-observation counts
+at those three checks (list remains `[0,1]`), preserving suppression/error/no-content
+assertions. Corrected selection80/80 before the final telemetry assertion; raw
+outputs remain under `o214/`. Final exact-head results go in the PR handoff.
+Prior7f6c2d73 source accept and502/513 qualification remain historical, not carried
+to this new source head. All M1 and S2 failed/incomplete evidence above is retained.
+Fable owns exact-head native/image/PG/rehearsal/base-head gates and live acceptance.
+STOP2/6 and A2 HOLD; no UI/model/acceptance execution is authorized here.
