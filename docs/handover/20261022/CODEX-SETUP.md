@@ -14,7 +14,7 @@ Pinned transfer: [90c250288647a738df2f8a92dd1db6fb549655f8](https://github.com/n
 
 All use codex/setup-agents-md-20261022. Existing Meri/frontend histories and worktrees are preserved; backend was cloned to C:/dev/fable/capiro-backend without checking out its primary tree. Setup owns only instruction files and the new CODEX-* documentation. Existing Meri checkout has two pre-existing modified docs, untouched. No active product task was reassigned.
 
-Codex coordinates and ships; dot relays/reviews; agents 1–4 implement; astra 6 verifies live acceptance. Investigator/reviewer subagents may read diagnostics and Codex's own docs/kits, never product-code review or implementation. Writers, if separately authorized, need their own worktree and exact unclaimed paths. Worktrees share AWS, DBs, Docker, ports and immutable ECR tags.
+Codex coordinates and ships; dot relays/reviews; agents 1â€“4 implement; astra 6 verifies live acceptance. Investigator/reviewer subagents may read diagnostics and Codex's own docs/kits, never product-code review or implementation. Writers, if separately authorized, need their own worktree and exact unclaimed paths. Worktrees share AWS, DBs, Docker, ports and immutable ECR tags.
 
 ## Host audit: verified, not assumed
 
@@ -25,7 +25,7 @@ Codex coordinates and ships; dot relays/reviews; agents 1–4 implement; astra 6
 | Node | PATH is 22.23.3; Meri/frontend require 24.x | Use a separately installed Node24 toolchain before gates; no global replacement performed |
 | Python | 3.14.7; cryptography missing | Isolated Python environment with cryptography >=42 before infra gates |
 | Docker/WSL | Docker29.8.1 server OS Windows; WSL not installed | Qualify Linux Docker and Ubuntu24.04 before Linux/PG16 gates |
-| AWS | Only default profile listed; capiro-dev STS attempt fails because profile missing | Neo configures own profile; verify account967807252336/us-east-1, never silently use default |
+| AWS | Neo selected default; STS verified account967807252336, arn:aws:iam::967807252336:user/jump-cli | Use explicit --profile default, region us-east-1; secret permissions unverified; adapt hardcoded capiro-dev kit settings before execution |
 | Codex | CLI0.161.0; multi_agent and hooks enabled; app tools available | No extra MCP, database connector or suite-per-edit hook needed |
 | Instructions/CI | Meri and FE root AGENTS existed; Core had none; no CLAUDE.md or .github/workflows in these checked integration trees | Preserve FE apps/web rules; required exact-head gates remain mandatory; absence of workflow files is not a pass |
 | Transfer | New pinned kits, Wave2 briefs and O195 present | Old release kits are evidence; regenerate for this host, do not execute copied per-release folders |
