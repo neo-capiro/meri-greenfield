@@ -1,7 +1,7 @@
 # M1 runtime validation ledger
 
 Brief: [Fable M1 runtime, comment 6329870986](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6329870986).
-Base: `eb6579204f495eb35140f4e1cb013b641913da5f`; tree: `3d21c62f6cabacf0cc21378f887f2e55c281bffc`.
+Original brief base: `eb6579204f495eb35140f4e1cb013b641913da5f`; tree: `3d21c62f6cabacf0cc21378f887f2e55c281bffc`.
 Branch: `feat/meri-m1-runtime`. This is a draft source-validation checkpoint, not completion of every M1 ticket or release acceptance. The historical 31-file combined checkpoint below remains **not green**. Its one failure has a bounded investigation receipt. The Agent 1 v2 section separately records the later MR-01 correction and final combined qualification; no historical failure is erased.
 
 ## Evidence boundary
@@ -216,7 +216,7 @@ These are named source witnesses and explicit blockers, not claims of live accep
 
 ## Remaining qualification and sequencing gates
 
-- **P1 first:** rebase M1 only after P1 and inherited provenance integrate onto the coordinated main; fix conflicts and rerun selected gates at that exact head. [Fable sequencing 6339188619](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339188619) requires P2.1 and the #207/#205 prerequisites. The later [C9 correction 6339760482](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339760482) keeps #203 stacked on P1, with #200 then #203 merged after combined gates; P1 does not wait for #203 to merge first. The explicit [P2.1 merged notice 6339328189](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339328189) unblocks those dependency steps, not an immediate P1/M1 rebase. Their completion is not claimed here. The retained 1/50 LEDGER_ADMISSION_FAILED from that notice is not erased by its merge judgment.
+- **Current order: #205 → M1 → P1 → C9.** [Decision6341932764](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6341932764) supersedes the old P1-before-M1 sequence. [Notice6342277568](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6342277568) explicitly confirms #205 merged and authorizes M1 rebase onto `d3cf54962a954daf4382df535a9c518aff791b0e`, lifecycle-only regeneration, combined suite and `test:public`. P1 remains held until M1's gates and release. C9 stays with agent 2, stacked on P1. Fable owns image/native/rehearsal/release gates; no agent merge/deploy.
 - **Zero P1/cross-lane collisions:** current diff from the brief base has no changes under `apps/proxy/product`, `apps/gateway/budget` or `packages/contracts`. Recheck before publication and after rebase.
 - **Later FORECLOSED receipt policy:** [decision 6331244090, revision 2](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6331244090), reiterated by [resume 6338385182](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6338385182), supersedes the earlier semantic hold. Only a later attempt durably FORECLOSED before any original existed uses the verified pinned terminal UIEvent's persisted `createdAt` as its existing `expiresAtMs` event-time cutoff, never database commit time. Existing original/admission precedence and dynamic-first immutable expiry remain. Missing/mismatched proof refuses; no public schema, version, route, migration or new execution effect is introduced. See the Agent 1 v2 source correction below.
 - **MX13-I1 inherited inventory drift:** the initial sparse-filesystem scan found 1,376 files and 192 uncovered. Exact full-tree enumeration corrected this to **1,377 files: 948 covered, 236 excluded, 193 uncovered**. The missing file was the sparse retained-package `infra/product-preview/runtime-packages/complete-pending-additions.test.mjs`. All 15 runtime product-port test files and `prepared-candidate.test.mjs` are uncovered. The earlier runtime-only split and owner-routing question are superseded by [clarification 6330636339](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6330636339): all **193 uncovered files** may be classified in a separate EX-06 shared-manifest repair draft. Runtime execution is assigned for **123 runtime-owned files**; execution for the **70 other-owner or ownership-uncertain files** remains held for their owners. Outside-lane permission is manifest classification only, with **no product edits** or expansion of execution/file ownership. No replacement runner or silent exclusion.
@@ -469,3 +469,83 @@ Final tested fixture hashes:
 |---|---|
 | `apps/control/conversations/test/lifecycle-transition.test.mjs` | `f9b44875a8d12941f3542f805ce0a1a6eed617e26215fed5d3b1c29d36cd27d5` |
 | `apps/runtime/product-ports/test/lifecycle-continuation-servability.test.mjs` | `bb5ddec833ffcfd9767d3d8f734010a59ad552173ca82ea2bf208bc2f2ab8cc0` |
+
+
+## Post-#205 M1 integration checkpoint
+
+[Fable's revised order6341932764](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6341932764)
+and explicit [#205 merged notice6342277568](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6342277568)
+supersede the historical P1-before-M1 hold. GitHub independently records #205 merged
+at2026-10-22T13:43:48Z and main `d3cf54962a954daf4382df535a9c518aff791b0e`, tree
+`2281bed7585bd6515b46503e66e80f118fee79cf`. M1 now precedes P1; C9 remains stacked
+on P1 with agent2 ownership.
+
+All18 commits through reviewed #204 `046048cb4461a1e2876ecb60ed9c2d2c94f9a9ef`
+rebased cleanly onto that exact main. The incoming main and M1 changed-file sets
+have no overlap; range-diff preserves all18 patches. Direct blob comparisons verify
+all existing M1 source/test bytes and incoming P2/provenance bytes before generation.
+No runtime edit or conflict resolution was added. The only generated delta is
+`packages/contracts/dist/conversation-lifecycle.metadata.json`: the existing
+lifecycle service source hash changes `dd12fcd10e43…`→`d3c7eeafcfb5…`, and its byte
+length26703→27033. Other metadata fields, schemas, browser JavaScript, declarations,
+package versions, generators, dependencies and lockfiles remain unchanged.
+
+Generation uses only `node packages/contracts/generate-lifecycle.mjs`, followed by
+that same generator with `--check`. All155 source-provenance rows across11 metadata
+families match actual source bytes/hashes. No other family was regenerated, and
+no hash was edited by hand. Source qualification head before this ledger-only
+update is `2826e0c9b10177a2113bc9c3ba7c458d16a58f47`.
+
+The unchanged combined run on source head `2826e0c9` completed with **376 tests,
+373 passed, 3 failed, 0 skipped/cancelled** (541143ms; started
+2026-10-22T13:55:36.798Z). This is a failed gate, not a green qualification.
+The retained failures are `readReceipt rejects foreign principal, client, scope,
+control and full source binding selectors` (`DEADLINE`), `readReceipt refuses
+recomputed-hash source, target and conversation custody corruption`, and
+`readReceipt caller cancellation withholds a receipt before and during discovery`
+(the latter two `LIFECYCLE_EFFECT_UNKNOWN`). Every stack originates in the
+`resumed()` fixture setup before the receipt assertions. The first expires during
+pause/claim setup; the latter two fail the positive resume setup. Their observed
+wall durations are3217ms,8276ms and5488ms. Fixture deadline expiry under host load
+is the leading explanation; this checkpoint does not establish a product defect
+or classify the failures as waived. No rerun, deadline change or extra test edit
+was made to obtain green. The raw output and failure receipts are retained.
+
+The existing `test:public` passed **506/506**, with no skipped/cancelled tests.
+Contracts declaration, runtime and conversations typechecks each exited0.
+The lifecycle generator final `--check` exited0. The reviewed correction's two
+previously failing test identities pass in this run; the three newly observed
+fixture failures remain open for review and bounded correction. This ledger-only
+update changes no qualified source, test or generated bytes.
+
+The existing32-file selector and376 test identities are preserved, with the same
+module flag, serial concurrency, EX06 runner/scrubber/subreaper and900000ms combined
+cap. `test:public` executes the existing package script without a name filter,
+assertion/skip change or generator side effect. Root UID0 and Node24.19.0 are
+recorded. TMPDIR points to a task-owned `/dev/shm` directory because the overlay
+filesystem is full. No product/native SQL, cloud action or new dependency is used.
+
+The first generator check exposed local tool-layout drift: borrowing dependencies
+through an external symlink made esbuild embed those external paths in bundle
+labels/browserInputs. This was not a source or contract change. Its output and
+failure are retained. Exact already-installed dependency bytes were materialized
+under this checkout, as in #205, and the generator reran. The original symlink is
+preserved outside Git. Final generation leaves the browser bundle byte-identical
+to main and changes only the lifecycle service provenance row. Tool versions remain
+Ajv8.20.0, ajv-formats3.0.1, esbuild0.28.2, json-schema-to-typescript16.0.0 and
+TypeScript5.9.3. No installer, generator modification or hand-edited artifact is
+used to normalize the output.
+
+Evidence: `/dev/shm/agent1-v2-m1-post205-evidence/`, including
+`source-reconciliation.json`, `range-diff.txt`, `generated-delta.json`,
+`provenance-source-audit.json`, generator outputs/checks, `candidate-source-pins.json`
+and unchanged-runner receipts. All earlier failed and successful checkpoints remain
+historical evidence; the #205 merge resolves the inherited public provenance drift
+recorded above, while this generation closes only M1's lifecycle source delta.
+
+Exact-head re-review remains required for the rebase/provenance delta. Fable then
+owns image build/measurement, first-turn/D3 rehearsals, native PostgreSQL custody
+trigger proof and M1 release. Existing cross-owner feature handoffs remain explicit.
+P1 starts only after M1's gates and release; agent2 retains C9. No #207 rebase,
+acceptance turns, duplicate qualification runner, merge, deployment or SQL execution
+is performed in this checkpoint.
