@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-22T12:49:07.807Z",
+  "state": [
+    {
+      "name": "meri-product-preview-temporal-issuer",
+      "desired": 1,
+      "running": 1,
+      "pending": 0,
+      "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:47",
+      "deployments": [
+        {
+          "status": "PRIMARY",
+          "rollout": "COMPLETED",
+          "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:47",
+          "running": 1
+        }
+      ]
+    }
+  ],
+  "reviewLines": 0
+}

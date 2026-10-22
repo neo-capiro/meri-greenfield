@@ -1,0 +1,10 @@
+--- previous/receipt-joins.mjs
++++ successor/receipt-joins.mjs
+@@ -5 +5 @@
+-export const SOURCE_COMMIT='5b395d4ce9218b872b21c420dc00a3af31739824';
++export const SOURCE_COMMIT='2b4421f612f9fbb728d6da52927aac228d712d40';
+--- previous/measurement-build-wrapper.py
++++ successor/measurement-build-wrapper.py
+@@ -19 +19 @@
+-SOURCE = "5b395d4ce9218b872b21c420dc00a3af31739824"
++SOURCE = "2b4421f612f9fbb728d6da52927aac228d712d40"

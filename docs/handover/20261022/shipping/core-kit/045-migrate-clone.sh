@@ -6,6 +6,7 @@
 # (ECR pull + logs + read of the master secret only) and Core's log group.
 # It runs the image's `migrate` verb (prisma migrate deploy; never edits the ledger). After 04, before 05.
 set -euo pipefail
+export PYTHONUTF8=1 PYTHONIOENCODING=utf-8
 source "$(dirname "$0")/kit.env"
 cd "$STATE"
 

@@ -1,0 +1,54 @@
+# One-shot inline buildspecOverride for capiro-frontend 87a8495138f0af5303bc93397438238c6cc5081b
+# (fix(meri): align history filter menus to verified Figma composition), = serving 4e2c770f + 1 commit(s).
+# Written by C:/dev/fable/ship-fe-kit/make-fe-ship-kit.mjs. Repeats the serving rev-18 recipe (CodeBuild 8b5264dc for 67fdf56b) with the
+# later e6180219 run's (78d8240f) source checks before npm ci, ABORT on failure and one worker per suite, plus the suites this change
+# touches. The ECR scan is gated by the operator after the build (the build role lacks ecr:DescribeImageScanFindings).
+version: 0.2
+env:
+  shell: bash
+phases:
+  install:
+    on-failure: ABORT
+    runtime-versions:
+      nodejs: 24
+    commands:
+      - set -euo pipefail
+      - test "$EXPECTED_SHA" = "87a8495138f0af5303bc93397438238c6cc5081b"
+      - printf '%s\n' "$EXPECTED_SHA" | cmp -s - source-commit.txt
+      - test -n "${EXPECTED_S3_VERSION:-}"
+      - test "$CODEBUILD_SOURCE_VERSION" = "$EXPECTED_S3_VERSION"
+      - node --version
+      - node -e 'if (Number(process.versions.node.split(".")[0]) !== 24) process.exit(1)'
+      - npm --version
+      - npm ci --ignore-scripts --no-audit --no-fund
+      - npm exec --workspace @capiro/web -- playwright install --with-deps chromium
+  build:
+    on-failure: ABORT
+    commands:
+      - set -euo pipefail
+      - node --test scripts/preview-config.test.mjs
+      - npm exec --workspace @capiro/web -- vitest run tests/preview-read-receiving.test.ts tests/first-chat-intent.test.ts tests/first-chat-bootstrap.test.ts tests/meri-first-chat-core.test.ts tests/meri-first-chat-preview-policy.test.ts tests/meri-first-chat-route.test.ts tests/meri-first-chat-host.test.ts tests/meri-client-selector.test.ts tests/meri-conversation-host.test.ts tests/meri-conversation-route.test.ts tests/meri-conversation-proxy.test.ts tests/meri-history-proxy.test.ts tests/meri-preview-route-activation.test.ts tests/meri-document-proxy.test.ts tests/preview-backend-containment.test.ts --maxWorkers=1 --no-file-parallelism
+      - NODE_OPTIONS=--max-old-space-size=4096 npm run typecheck --workspace @capiro/web
+      - npm run lint --workspace @capiro/web
+      - npm run architecture
+      - node apps/web/deployment/portfolio/qualify-elements.mjs "$(mktemp -d)/elements"
+      - npm exec --workspace @capiro/web -- playwright test meri-new-conversation.spec.ts --config test/browser/playwright.config.ts --workers=1
+      - npm run test:browser:modules --workspace @capiro/web -- --grep 'unknown Meri input|a finished run accepts|Stop requests|a foreign native actor|an uncertain reserved-turn|navigation keeps the uncertain|selected conversation reload|synthetic lost reservation|synthetic desktop held admission|synthetic desktop interrupted initial|synthetic desktop hard reload' --workers=1
+      - npm run test:browser -- --workers=1 tests/browser/facility-action-lifetime.spec.ts tests/browser/profile-current-state.spec.ts tests/browser/work-boundary.spec.ts tests/browser/work-documents.spec.ts
+      - NODE_OPTIONS= node -p 'JSON.stringify({node:process.version,heapLimitMiB:Math.round(require("node:v8").getHeapStatistics().heap_size_limit/1048576),constrainedMemory:process.constrainedMemory()})'
+      - CIRCLE_NODE_TOTAL=2 NODE_OPTIONS=--max-old-space-size=4096 npm run build
+      - npm run test:production
+      - test "$REPOSITORY_URI" = "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview"
+      - test "$AWS_DEFAULT_REGION" = "us-east-1"
+      - test "$(sha256sum apps/web/Dockerfile | cut -d' ' -f1)" = "b737adc84f9b46da019ee652ddee60e91e7b33a102a535ed921ca6d2872279fd"
+      - test "$(grep -c '^RUN npm run build$' apps/web/Dockerfile)" -eq 1
+      - awk '/^RUN npm run build$/ { print "ARG CAPIRO_BUILD_NODE_OPTIONS"; print "ARG CAPIRO_BUILD_CIRCLE_NODE_TOTAL"; print "RUN NODE_OPTIONS=\"$CAPIRO_BUILD_NODE_OPTIONS\" CIRCLE_NODE_TOTAL=\"$CAPIRO_BUILD_CIRCLE_NODE_TOTAL\" npm run build"; next } { print }' apps/web/Dockerfile > /tmp/Dockerfile.nodeheap
+      - test "$(sha256sum /tmp/Dockerfile.nodeheap | cut -d' ' -f1)" = "e6178ba292977e7a0527de25e5d0e03709b6278445e89a077302e18ab15f7137"
+      - test "$(grep -c '^ARG CAPIRO_BUILD_NODE_OPTIONS$' /tmp/Dockerfile.nodeheap)" -eq 1
+      - test "$(grep -c '^ARG CAPIRO_BUILD_CIRCLE_NODE_TOTAL$' /tmp/Dockerfile.nodeheap)" -eq 1
+      - test "$(grep -c '^RUN NODE_OPTIONS=' /tmp/Dockerfile.nodeheap)" -eq 1
+      - docker build --pull --platform linux/amd64 --build-arg CAPIRO_BUILD_NODE_OPTIONS=--max-old-space-size=4096 --build-arg CAPIRO_BUILD_CIRCLE_NODE_TOTAL=2 -f /tmp/Dockerfile.nodeheap -t "$REPOSITORY_URI:$EXPECTED_SHA" .
+      - bash apps/web/deployment/portfolio/smoke.sh "$REPOSITORY_URI:$EXPECTED_SHA"
+      - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "${REPOSITORY_URI%%/*}"
+      - docker push "$REPOSITORY_URI:$EXPECTED_SHA"
+      - aws ecr describe-images --repository-name capiro/portfolio-preview --image-ids "imageTag=$EXPECTED_SHA" --query 'imageDetails[0].{imageDigest:imageDigest,imageTags:imageTags,imageScanStatus:imageScanStatus}' --output json --no-cli-pager

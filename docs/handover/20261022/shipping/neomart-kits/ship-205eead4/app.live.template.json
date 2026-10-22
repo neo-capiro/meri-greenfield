@@ -1,0 +1,580 @@
+{
+  "Resources": {
+    "controlTask": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "write",
+              "--control-node-ca"
+            ],
+            "EntryPoint": [
+              "node",
+              "apps/runtime/material-init-cli.mjs"
+            ],
+            "Environment": [
+              {
+                "Name": "MERI_STATIC_MATERIAL_EXPECTED",
+                "Value": "{\"schemaVersion\":1,\"role\":\"control\",\"runtimeUser\":\"1000:1000\",\"sourceCommit\":\"bfe98e96f3b65579202b5b8a1c239adea5613ff3\",\"imageDigest\":\"sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4\",\"sha256ByPath\":{\"/run/meri/control.json\":\"3abf57345faf56efa74d45dca79b8464808d59e670162709e29b333fba1b4783\",\"/run/meri/database.uri\":\"eb13e911f3af128b97054f32735f9454d87950e24c7943accc4d37aab14fb2fb\",\"/run/meri/identity\":\"e078d40cbe439dd06bc9d1e8e31100e0da99cc6b3e643730cefcafae18588655\",\"/run/meri/task-capability\":\"05d907e9cc9d9648f3059376233a1eee5bf182019bc5924319f1aadc750b28f1\",\"/run/meri/control-capability\":\"4704a74f91b933c5fadf1d2c4cc641f746cfa77e015ee1e04858e5d3f4c71a61\",\"/run/meri/proxy-capability\":\"8e246157768a354731c808de4a1a5952da21f5ab184ad9e887c3617659bef371\",\"/run/meri/temporal-ca.pem\":\"42e00ade162ca58647d8a65e2f23be58c99fb31d2c1e268536432a90b7e094eb\",\"/run/meri/temporal-client.pem\":\"2169cee3d0cb1fceaec78f9e5350084d1f12bcaa3b9f119fe6487bf7f8abf093\",\"/run/meri/temporal-client.key\":\"3bde3d87753729b560304a6a41e1dadbb3d3537f775bde07c105d7febfff15a8\",\"/run/meri/issuer-jwks.json\":\"a2b21d210a300a994e3e5fd318c597380978a0f7580b609d152d9089d1fa664d\",\"/run/meri/issuer-ca.pem\":\"2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88\",\"/run/meri/issuer-client-ca.pem\":\"f8984fff0b8068d88d71e7de104c96be5666c9304d3da51f40acf8dccf163193\",\"/run/meri/runner-ca.pem\":\"29f3e9cc07b5c39862eeab81a7927a400fd1f58c402d6142b8f2c9ad47467e0d\",\"/run/meri/runner-ca.key\":\"355a1af008cc312be58cba9775db73c602209e01d5d6e4fcab4be5729c78d8e8\",\"/run/meri/control-ca.pem\":\"2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88\"},\"materialContractSha256\":\"73c174d8a11b56570e4d728a7bbe3268829f334ab30ba3e7cb9abe4bdcb73f2c\"}"
+              }
+            ],
+            "Essential": false,
+            "Image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4",
+            "LinuxParameters": {
+              "Capabilities": {
+                "Drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": "/meri/product-preview/control",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "product-preview-control-init",
+                "mode": "blocking"
+              }
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/run/meri",
+                "ReadOnly": false,
+                "SourceVolume": "material"
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp"
+              }
+            ],
+            "Name": "material-init",
+            "Privileged": false,
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "MERI_STATIC_MATERIAL_BUNDLE",
+                "ValueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV:::b10ff47a-472d-4060-8a0e-f0fffacb869d"
+              }
+            ],
+            "User": "1000:1000"
+          },
+          {
+            "Command": [
+              "control",
+              "--config",
+              "/run/meri/control.json"
+            ],
+            "DependsOn": [
+              {
+                "Condition": "SUCCESS",
+                "ContainerName": "material-init"
+              }
+            ],
+            "EntryPoint": [
+              "node",
+              "apps/runtime/cli.mjs"
+            ],
+            "Environment": [
+              {
+                "Name": "MERI_PRODUCT_PREVIEW_REQUIRED",
+                "Value": "1"
+              },
+              {
+                "Name": "NODE_EXTRA_CA_CERTS",
+                "Value": "/tmp/meri-control-ca/ca-bundle.pem"
+              }
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "node",
+                "-e",
+                "fetch('http://127.0.0.1:8080/health/live').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))"
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "StartPeriod": 60,
+              "Timeout": 5
+            },
+            "Image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4",
+            "LinuxParameters": {
+              "Capabilities": {
+                "Drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": "/meri/product-preview/control",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "product-preview-control",
+                "mode": "blocking"
+              }
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/workspace",
+                "ReadOnly": false,
+                "SourceVolume": "workspace"
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp"
+              },
+              {
+                "ContainerPath": "/run/meri",
+                "ReadOnly": true,
+                "SourceVolume": "material"
+              },
+              {
+                "ContainerPath": "/run/meri-temporal",
+                "ReadOnly": false,
+                "SourceVolume": "temporal-token"
+              }
+            ],
+            "Name": "control",
+            "PortMappings": [
+              {
+                "ContainerPort": 8080,
+                "Protocol": "tcp"
+              },
+              {
+                "ContainerPort": 8082,
+                "Protocol": "tcp"
+              }
+            ],
+            "Privileged": false,
+            "ReadonlyRootFilesystem": true,
+            "StopTimeout": 60,
+            "User": "1000:1000"
+          }
+        ],
+        "Cpu": "512",
+        "EphemeralStorage": {
+          "SizeInGiB": 21
+        },
+        "ExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-execution",
+        "Family": "meri-product-preview-control",
+        "Memory": "1024",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "X86_64",
+          "OperatingSystemFamily": "LINUX"
+        },
+        "TaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-task",
+        "Volumes": [
+          {
+            "Name": "workspace"
+          },
+          {
+            "Name": "tmp"
+          },
+          {
+            "Name": "material"
+          },
+          {
+            "Name": "temporal-token"
+          }
+        ]
+      }
+    },
+    "temporalWorkerTask": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "write"
+            ],
+            "EntryPoint": [
+              "node",
+              "apps/runtime/material-init-cli.mjs"
+            ],
+            "Environment": [
+              {
+                "Name": "MERI_STATIC_MATERIAL_EXPECTED",
+                "Value": "{\"schemaVersion\":1,\"role\":\"temporal-worker\",\"runtimeUser\":\"1000:1000\",\"sourceCommit\":\"bfe98e96f3b65579202b5b8a1c239adea5613ff3\",\"imageDigest\":\"sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4\",\"sha256ByPath\":{\"/run/meri/worker.json\":\"e511579c22ebbaab53a955d8e58418b50df1e6aedc87612eeb17cfc7ba743d0f\",\"/run/meri/control-capability\":\"4704a74f91b933c5fadf1d2c4cc641f746cfa77e015ee1e04858e5d3f4c71a61\",\"/run/meri/temporal-ca.pem\":\"42e00ade162ca58647d8a65e2f23be58c99fb31d2c1e268536432a90b7e094eb\",\"/run/meri/temporal-client.pem\":\"fa749776b1cff6e9433766b9312632e72ea1f772319f18ef1aa13e8f686dd1f8\",\"/run/meri/temporal-client.key\":\"681c74e06671ab3b0b0a3c3793b2d4dedb52cd0b93fca6f5538fb5383623e86b\",\"/run/meri/issuer-jwks.json\":\"a2b21d210a300a994e3e5fd318c597380978a0f7580b609d152d9089d1fa664d\",\"/run/meri/issuer-ca.pem\":\"2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88\",\"/run/meri/issuer-client-ca.pem\":\"f8984fff0b8068d88d71e7de104c96be5666c9304d3da51f40acf8dccf163193\"},\"materialContractSha256\":\"0248f3c1709d5de7ce906bed94acf0f0f2ee131087de8c918f85ed5086a04635\"}"
+              }
+            ],
+            "Essential": false,
+            "Image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4",
+            "LinuxParameters": {
+              "Capabilities": {
+                "Drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": "/meri/product-preview/worker",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "product-preview-temporal-worker-init",
+                "mode": "blocking"
+              }
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/run/meri",
+                "ReadOnly": false,
+                "SourceVolume": "material"
+              }
+            ],
+            "Name": "material-init",
+            "Privileged": false,
+            "ReadonlyRootFilesystem": true,
+            "Secrets": [
+              {
+                "Name": "MERI_STATIC_MATERIAL_BUNDLE",
+                "ValueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv:::262c991d-6b68-402a-83b9-113c99b3b361"
+              }
+            ],
+            "User": "1000:1000"
+          },
+          {
+            "Command": [
+              "temporal-worker",
+              "--config",
+              "/run/meri/worker.json"
+            ],
+            "DependsOn": [
+              {
+                "Condition": "SUCCESS",
+                "ContainerName": "material-init"
+              }
+            ],
+            "EntryPoint": [
+              "node",
+              "apps/runtime/cli.mjs"
+            ],
+            "Environment": [
+              {
+                "Name": "MERI_PRODUCT_PREVIEW_REQUIRED",
+                "Value": "1"
+              },
+              {
+                "Name": "NODE_EXTRA_CA_CERTS",
+                "Value": "/run/meri/issuer-ca.pem"
+              }
+            ],
+            "Essential": true,
+            "HealthCheck": {
+              "Command": [
+                "CMD",
+                "node",
+                "-e",
+                "fetch('http://127.0.0.1:8081/health/live').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))"
+              ],
+              "Interval": 30,
+              "Retries": 3,
+              "StartPeriod": 60,
+              "Timeout": 5
+            },
+            "Image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4",
+            "LinuxParameters": {
+              "Capabilities": {
+                "Drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": "/meri/product-preview/worker",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "product-preview-temporal-worker",
+                "mode": "blocking"
+              }
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/workspace",
+                "ReadOnly": false,
+                "SourceVolume": "workspace"
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp"
+              },
+              {
+                "ContainerPath": "/run/meri",
+                "ReadOnly": true,
+                "SourceVolume": "material"
+              },
+              {
+                "ContainerPath": "/run/meri-temporal",
+                "ReadOnly": false,
+                "SourceVolume": "temporal-token"
+              }
+            ],
+            "Name": "temporal-worker",
+            "PortMappings": [
+              {
+                "ContainerPort": 8081,
+                "Protocol": "tcp"
+              }
+            ],
+            "Privileged": false,
+            "ReadonlyRootFilesystem": true,
+            "StopTimeout": 60,
+            "User": "1000:1000"
+          }
+        ],
+        "Cpu": "512",
+        "EphemeralStorage": {
+          "SizeInGiB": 21
+        },
+        "ExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-worker-execution",
+        "Family": "meri-product-preview-temporal-worker",
+        "Memory": "1024",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "X86_64",
+          "OperatingSystemFamily": "LINUX"
+        },
+        "Volumes": [
+          {
+            "Name": "workspace"
+          },
+          {
+            "Name": "tmp"
+          },
+          {
+            "Name": "material"
+          },
+          {
+            "Name": "temporal-token"
+          }
+        ]
+      }
+    },
+    "runnerTask": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Command": [
+              "start"
+            ],
+            "EntryPoint": [
+              "node",
+              "apps/runtime/runner-poststart-cli.mjs"
+            ],
+            "Environment": [
+              {
+                "Name": "MERI_RUNNER_SHA256",
+                "Value": "174e66b2c24034fc6ccb3a406daa26874a8f3c56164ce80e9d60f419d567f542"
+              },
+              {
+                "Name": "MERI_PRODUCT_PREVIEW_REQUIRED",
+                "Value": "1"
+              },
+              {
+                "Name": "MERI_POSTSTART_CONTROL_ORIGIN",
+                "Value": "https://control.meri-preview.internal"
+              },
+              {
+                "Name": "MERI_POSTSTART_CA_BASE64",
+                "Value": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVVENDQWptZ0F3SUJBZ0lVUURROWVldHc0S0V3QWVkUVNJRlRIV2cwT2FNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd1B6RWNNQm9HQTFVRUNnd1RRMkZ3YVhKdklFMWxjbWtnY0hKbGRtbGxkekVmTUIwR0ExVUVBd3dXVFdWeQphU0J3Y21WMmFXVjNJSE5sY25abGNpQkRRVEFlRncweU5qRXdNVGN4TkRFNE5EUmFGdzB5TnpBeE1UVXhOREl6Ck5EUmFNRDh4SERBYUJnTlZCQW9NRTBOaGNHbHlieUJOWlhKcElIQnlaWFpwWlhjeEh6QWRCZ05WQkFNTUZrMWwKY21rZ2NISmxkbWxsZHlCelpYSjJaWElnUTBFd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFSwpBb0lCQVFDUHQ3SlF4NEtQUW05MGt0ZkZVR3NZb2JiR0RrRXZEVFFRQmFHRjRtY2tIOVFsNHZVOHByUmxKQ084CllwaFMwQ1lPZm53bVdPN1F2aTY3bllpaWVpZHB0RmNBamxicjR4TGFrZVRrRjlOTmMxSS9IYUh0czdDWXhQeEQKMHIzM2tLd3R6a0lPYWY0RmhsYmJVakgwVjUwY0xlWkxjeU5ZQWpCN28vTDczZWtVVjkwS29LL2c5dVI2c1F5Uwo3NkdhTFV6VjlFaXdwVWVXQk8zYjd5VzJJTHRKVmZXa0p4NXdQSkZNdDRoYkxwNXF0RkhtRXlQdU4xdDdsWTM1CkIvc3lYQlhabDZRNFJWU1hUNGpiWFpGUlJMRTNpNEtkSWMwbmI4d1E1bHNTaEdsYUQ0SzY0aEFiMEdPQkJhM2gKMjg4dW9VVVROaWtOelhEVGZDdkdyY2E5MFhhTkFnTUJBQUdqUlRCRE1CSUdBMVVkRXdFQi93UUlNQVlCQWY4QwpBUUF3RGdZRFZSMFBBUUgvQkFRREFnRUdNQjBHQTFVZERnUVdCQlMwdWMzaVJMTmlZajRHMURYdnA1RXgzR25CCkREQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFWcEtKUmNnRnd3bERkM1dRanFPdW9ZMmRKNXdMcFFZdlFmbU0KQkdYaFYyRXBUVUUvTm9jaGM4SnVFYURLaVJ0alY4Yy9WaUVJb0VjWHdnS0crV0hZNmt5UWY3UEhHNW96Nk1xegpKZUp2NW9DWXdCY2tmNjJhVEllZ3JqTGN2ekl6YUhQbE40WXZJVWxUc3ZzaHdPNnNIaEF2TmlXdXRNTjRnL0FoCmpJaGM2aWRrZ2wzSkQ4NjE1RzA4bkVZbG9jS1c2T3NPakdlT0ZBY2JIbUZjK25yWWRUVklncjJqODNmTnFTOUMKWHlZYjRjVkNKZldUcyttaE1JZkhvVG9aMUx3NGd3WUVYazF0akhubTJaUm8wRjV6ZFgzMnRLeStiRkY2amVEVgpCSDFvcktBMjE3VUVhUW83dWdaRFprK3Z2SXVzT1F2QXYwMEY3L0Z2M1A0SEwrYWdrUT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+              },
+              {
+                "Name": "MERI_POSTSTART_CA_SHA256",
+                "Value": "2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88"
+              }
+            ],
+            "Essential": true,
+            "Image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4",
+            "LinuxParameters": {
+              "Capabilities": {
+                "Drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": "/meri/product-preview/runner",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "product-preview-runner",
+                "mode": "blocking"
+              }
+            },
+            "MountPoints": [
+              {
+                "ContainerPath": "/workspace",
+                "ReadOnly": false,
+                "SourceVolume": "workspace"
+              },
+              {
+                "ContainerPath": "/tmp",
+                "ReadOnly": false,
+                "SourceVolume": "tmp"
+              },
+              {
+                "ContainerPath": "/run/meri",
+                "ReadOnly": false,
+                "SourceVolume": "material"
+              }
+            ],
+            "Name": "worker",
+            "PortMappings": [
+              {
+                "ContainerPort": 8080,
+                "Protocol": "tcp"
+              }
+            ],
+            "Privileged": false,
+            "ReadonlyRootFilesystem": true,
+            "StopTimeout": 60,
+            "User": "1000:1000"
+          }
+        ],
+        "Cpu": "1024",
+        "EphemeralStorage": {
+          "SizeInGiB": 21
+        },
+        "ExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-runner-execution",
+        "Family": "meri-product-preview-runner",
+        "Memory": "2048",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "RuntimePlatform": {
+          "CpuArchitecture": "X86_64",
+          "OperatingSystemFamily": "LINUX"
+        },
+        "Volumes": [
+          {
+            "Name": "workspace"
+          },
+          {
+            "Name": "tmp"
+          },
+          {
+            "Name": "material"
+          }
+        ]
+      }
+    },
+    "controlService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
+        "DesiredCount": 1,
+        "EnableExecuteCommand": false,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": [
+          {
+            "ContainerName": "control",
+            "ContainerPort": 8080,
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c"
+          },
+          {
+            "ContainerName": "control",
+            "ContainerPort": 8082,
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759"
+          }
+        ],
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": [
+              "sg-05a350c100574b21f",
+              "sg-0c3da023e9e8fb292",
+              "sg-0d5b5286baf28242e"
+            ],
+            "Subnets": [
+              "subnet-0920665f91c905f01",
+              "subnet-0e38bd390f8961fef",
+              "subnet-06db79cd21239de19"
+            ]
+          }
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "meri-product-preview-control",
+        "TaskDefinition": {
+          "Ref": "controlTask"
+        },
+        "DeploymentConfiguration": {
+          "MaximumPercent": 100,
+          "MinimumHealthyPercent": 0
+        },
+        "AvailabilityZoneRebalancing": "DISABLED"
+      },
+      "DependsOn": [
+        "runnerTask"
+      ]
+    },
+    "temporalWorkerService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
+        "DesiredCount": 1,
+        "EnableExecuteCommand": false,
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": [
+              "sg-00111cd0e475badfa",
+              "sg-0c3da023e9e8fb292"
+            ],
+            "Subnets": [
+              "subnet-0920665f91c905f01",
+              "subnet-0e38bd390f8961fef",
+              "subnet-06db79cd21239de19"
+            ]
+          }
+        },
+        "PlatformVersion": "1.4.0",
+        "ServiceName": "meri-product-preview-temporal-worker",
+        "TaskDefinition": {
+          "Ref": "temporalWorkerTask"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ControlTaskDefinitionArn": {
+      "Value": {
+        "Ref": "controlTask"
+      }
+    },
+    "TemporalWorkerTaskDefinitionArn": {
+      "Value": {
+        "Ref": "temporalWorkerTask"
+      }
+    },
+    "RunnerTaskDefinitionArn": {
+      "Value": {
+        "Ref": "runnerTask"
+      }
+    },
+    "RunnerClusterArn": {
+      "Value": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev"
+    },
+    "RunnerPrivateSubnetId": {
+      "Value": "subnet-0920665f91c905f01"
+    },
+    "RunnerSecurityGroupIds": {
+      "Value": "sg-098fc4f2ac89aa943"
+    }
+  }
+}

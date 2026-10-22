@@ -1,0 +1,26 @@
+[
+  {
+    "stack": "meri-first-chat-app",
+    "status": "UPDATE_COMPLETE",
+    "updated": "2026-10-22T04:39:20.957000+00:00"
+  },
+  {
+    "stack": "meri-first-chat-model",
+    "status": "UPDATE_COMPLETE",
+    "updated": "2026-10-22T04:27:10.792000+00:00"
+  },
+  {
+    "stack": "meri-first-chat-issuer",
+    "status": "UPDATE_COMPLETE",
+    "updated": "2026-10-22T04:33:59.639000+00:00"
+  },
+  {
+    "stack": "meri-first-chat-foundation",
+    "status": "UPDATE_COMPLETE",
+    "updated": "2026-10-17T14:50:45.334000+00:00"
+  },
+  {
+    "stack": "meri-first-chat-private-edge",
+    "status": "CREATE_COMPLETE"
+  }
+]

@@ -1,0 +1,11 @@
+{
+    "id": "meri-greenfield-qualification-build:9507f92b-69f5-4aa7-80fb-eded843a61cb",
+    "status": "IN_PROGRESS",
+    "sourceVersion": "dIj6SGj8_inUybHPaKpfIWH25Kvf6AaO",
+    "timeout": 30,
+    "queue": 5,
+    "retry": {
+        "autoRetryLimit": 0,
+        "autoRetryNumber": 0
+    }
+}

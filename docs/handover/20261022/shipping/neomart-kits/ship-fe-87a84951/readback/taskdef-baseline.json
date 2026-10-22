@@ -1,0 +1,216 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:21",
+  "containerDefinitions": [
+    {
+      "name": "portfolio-web",
+      "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview@sha256:8fc64defdc67c052d3eb31a7081194decf8bcedf3abb0166490ee2c3961d819b",
+      "cpu": 0,
+      "links": [],
+      "portMappings": [
+        {
+          "containerPort": 5188,
+          "hostPort": 5188,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "entryPoint": [],
+      "command": [],
+      "environment": [
+        {
+          "name": "CAPIRO_PREVIEW_MERI_CONVERSATION_ROUTES_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "CORE_API_BASE_URL",
+          "value": "https://portfolio-preview.app.capiro.ai/api"
+        },
+        {
+          "name": "CAPIRO_PREVIEW_READ_API_BASE_URL",
+          "value": "https://first-chat-preview.app-dev.capiro.ai/api"
+        },
+        {
+          "name": "MERI_DOCUMENT_WORKFLOW_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "CAPIRO_PREVIEW_MERI_RUNTIME_IMAGE_DIGEST",
+          "value": "sha256:5534edfe5805eec7a5d0bce66b2c85765fe2f957173ddd3ce2726bed67e322d8"
+        },
+        {
+          "name": "CAPIRO_REQUEST_ORIGIN",
+          "value": "https://portfolio-preview.app.capiro.ai"
+        },
+        {
+          "name": "MERI_CONVERSATION_WORKFLOW_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "CAPIRO_DEFAULT_PRODUCT",
+          "value": "portfolio"
+        },
+        {
+          "name": "CAPIRO_PREVIEW_FIRST_CHAT_BACKEND_SOURCE",
+          "value": "c64f0005cf14d69683aabafa11def4964d766832"
+        },
+        {
+          "name": "CAPIRO_EXISTING_APP_URL",
+          "value": "https://portfolio-preview.app.capiro.ai"
+        },
+        {
+          "name": "CAPIRO_PREVIEW_FIRST_CHAT_API_BASE_URL",
+          "value": "https://first-chat-preview.app-dev.capiro.ai/api"
+        },
+        {
+          "name": "INTELLIGENCE_API_BASE_URL",
+          "value": "https://portfolio-preview.app.capiro.ai/intel-api"
+        },
+        {
+          "name": "TRACKER_BACKEND",
+          "value": "intelligence"
+        },
+        {
+          "name": "MERI_API_BASE_URL",
+          "value": "https://meri-preview.capiro.ai"
+        },
+        {
+          "name": "CAPIRO_PREVIEW_MERI_CONTRACT_PACKAGE_VERSION",
+          "value": "0.1.10"
+        },
+        {
+          "name": "CAPIRO_PREVIEW_MERI_RUNTIME_ORIGIN",
+          "value": "https://meri-preview.capiro.ai"
+        },
+        {
+          "name": "MERI_ACTION_WORKFLOW_ENABLED",
+          "value": "false"
+        },
+        {
+          "name": "MERI_FIRST_CHAT_CLIENT_ID",
+          "value": "d1b0cb55-fd3a-49ef-847a-7bbe9175dc44"
+        },
+        {
+          "name": "STRATEGY_API_BASE_URL",
+          "value": ""
+        },
+        {
+          "name": "CAPIRO_PREVIEW_READ_ONLY",
+          "value": "true"
+        },
+        {
+          "name": "MERI_FIRST_CHAT_BOOTSTRAP_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "ONBOARD_API_BASE_URL",
+          "value": ""
+        },
+        {
+          "name": "CAPIRO_PREVIEW_MERI_RUNTIME_SOURCE",
+          "value": "176a8811a9b05d8613282e70bd7a57ebd75ca201"
+        },
+        {
+          "name": "CAPIRO_PREVIEW_READ_BACKEND_SOURCE",
+          "value": "6542f5b089656b6d255465edd464d06c2a0b408f"
+        },
+        {
+          "name": "WORKSPACE_API_BASE_URL",
+          "value": "https://portfolio-preview.app.capiro.ai/workspace-api"
+        },
+        {
+          "name": "MERI_DOCUMENT_OPERATION",
+          "value": ""
+        }
+      ],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "secrets": [
+        {
+          "name": "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/publishable-key-rAfesC"
+        },
+        {
+          "name": "CLERK_SECRET_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/secret-key-FT67tM"
+        }
+      ],
+      "dnsServers": [],
+      "dnsSearchDomains": [],
+      "extraHosts": [],
+      "dockerSecurityOptions": [],
+      "dockerLabels": {},
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/capiro/portfolio-preview",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "portfolio"
+        },
+        "secretOptions": []
+      },
+      "systemControls": [],
+      "credentialSpecs": []
+    }
+  ],
+  "family": "capiro-portfolio-preview",
+  "taskRoleArn": "arn:aws:iam::967807252336:role/Capiro-Portfolio-Preview-Service-TaskRole-XIjVo1KpHkGl",
+  "executionRoleArn": "arn:aws:iam::967807252336:role/Capiro-Portfolio-Preview-Service-TaskExecutionRole-xz6DdLDbl5EX",
+  "networkMode": "awsvpc",
+  "revision": 21,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.secrets.asm.environment-variables"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+    "EC2",
+    "MANAGED_INSTANCES",
+    "FARGATE"
+  ],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "registeredAt": "2026-10-22T11:41:43.235000-04:00",
+  "registeredBy": "arn:aws:iam::967807252336:user/capirocli"
+}

@@ -1,0 +1,79 @@
+{
+  "Changes": [
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "Action": "Modify",
+        "LogicalResourceId": "TemporalIssuerService",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-temporal-issuer",
+        "ResourceType": "AWS::ECS::Service",
+        "Replacement": "False",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "TaskDefinition",
+              "RequiresRecreation": "Never"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "ResourceReference",
+            "CausingEntity": "TemporalIssuerTask"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "PolicyAction": "ReplaceAndDelete",
+        "Action": "Modify",
+        "LogicalResourceId": "TemporalIssuerTask",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:46",
+        "ResourceType": "AWS::ECS::TaskDefinition",
+        "Replacement": "True",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "DirectModification"
+          }
+        ]
+      }
+    }
+  ],
+  "ChangeSetName": "awscli-cloudformation-package-deploy-1792672562",
+  "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/awscli-cloudformation-package-deploy-1792672562/5b008459-f1c5-452a-8739-9bd924a1d032",
+  "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/meri-first-chat-issuer/941d9e10-ca41-11f1-ac68-12fff3f5c239",
+  "StackName": "meri-first-chat-issuer",
+  "Description": "Created by AWS CLI at 2026-10-22T12:36:02.307358 UTC",
+  "Parameters": null,
+  "CreationTime": "2026-10-22T12:36:00.177000+00:00",
+  "ExecutionStatus": "AVAILABLE",
+  "Status": "CREATE_COMPLETE",
+  "StatusReason": null,
+  "NotificationARNs": [],
+  "RollbackConfiguration": {},
+  "Capabilities": [],
+  "Tags": null,
+  "ParentChangeSetId": null,
+  "IncludeNestedStacks": false,
+  "RootChangeSetId": null,
+  "OnStackFailure": null,
+  "ImportExistingResources": null,
+  "StackDriftStatus": null,
+  "DeploymentMode": null,
+  "DeploymentConfig": {
+    "Mode": "STANDARD",
+    "DisableRollback": false
+  }
+}

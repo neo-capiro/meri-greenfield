@@ -1,0 +1,441 @@
+{
+  "ARN": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/owner/material-05kED4",
+  "Versions": [
+    {
+      "VersionId": "5154fbd4-9513-46c7-9f9a-45ff34d2dd55",
+      "CreatedDate": "2026-10-17T14:39:27.179000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "5bc2bbbc-d7a7-460e-bbee-be774caf53b3",
+      "CreatedDate": "2026-10-17T14:43:27.592000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "999db03b-883c-4cac-bbd4-07fd06b1b32a",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T14:43:53.696000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "16354c08-b233-4544-a0ad-3b9e35c94bb3",
+      "CreatedDate": "2026-10-17T15:04:35.455000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "b1f00dd8-3234-47aa-ab0c-b64c29c8b7ba",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T15:05:45.927000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "f5d2eed9-8740-40ab-bff0-05a6bfbcc5ca",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T15:40:26.907000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "469598ba-9890-4a29-be57-40c14c9a0754",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T16:06:33.644000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "3bfd0861-fa8e-46dc-a315-c85d5a894c0a",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T16:26:44.415000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "a2741b50-bf01-4ad5-9819-3aa0d67e976c",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T16:36:46.412000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "08a06af3-49f9-40bc-86f6-016c65c86125",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T16:50:30.825000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "51cdf995-d50c-46ad-872d-30be046fbde9",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T17:05:33.280000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "c0cc1eb3-e4f6-4603-9c9f-d923d70aeb1a",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T17:19:12.462000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "5b495929-8466-49d4-8c93-867c95653467",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T17:33:44.010000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "e79652ef-bf92-46cd-9744-fedb7d266519",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T18:41:27.582000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "33ad3f99-7b76-4d40-b9a0-de87c43de18d",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T19:24:10.707000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "614478f8-bfa5-4d7a-ae3d-2524f1eaa0c5",
+      "LastAccessedDate": "2026-10-16T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T19:52:18.852000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "d6755647-0db3-405b-b56f-913c43964e9a",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T20:12:03.547000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "1b13bb01-d46f-4389-85b4-7c51bc1359b0",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T20:34:50.738000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "87b02d2e-9698-47f9-8bb4-f9cc518e56fc",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T21:04:56.429000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "06228379-36b2-4b8f-8d22-9b8334c1e9da",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T21:14:26.337000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "d563f89e-b6ea-4e39-9f95-75e2701002fe",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T21:24:06.737000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "dfa40828-7664-4aa7-90e5-0215d639d850",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T21:50:42.503000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "04b913b0-6743-444b-96b1-c11ed97c5457",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T22:06:40.364000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "ebd5f3d8-b2af-451f-a9a8-632ea75d8af0",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T22:24:27.531000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "eb754a82-8ecd-4379-9175-e36b323a929d",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T22:37:28.029000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "1b37f39f-2102-4b27-a175-8c479d6eed32",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T22:52:25.327000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "a8c193aa-5298-40ac-959e-aa3858ac7eef",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T23:07:55.804000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "92fd35ae-ebd9-4b0e-8e0b-05c0f93cd4b6",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-17T23:20:46.117000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "5bf98bc2-43ea-4f8b-8a6f-4ea9038d3d1e",
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-18T09:00:57.969000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "59270c4e-9b79-4044-a9b6-14982e688dea",
+      "VersionStages": [
+        "AWSPREVIOUS"
+      ],
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-18T13:23:41.780000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "de7c01b7-d209-4a27-b9c9-49f3adbe40e4",
+      "VersionStages": [
+        "AWSCURRENT"
+      ],
+      "LastAccessedDate": "2026-10-17T20:00:00-04:00",
+      "CreatedDate": "2026-10-18T15:46:53.373000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "5890dbb6-aae2-4a4e-9636-b655b340a47d",
+      "LastAccessedDate": "2026-10-18T20:00:00-04:00",
+      "CreatedDate": "2026-10-19T07:34:56.121000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "903792aa-8f0f-47b2-b9c5-cde42ee734a2",
+      "LastAccessedDate": "2026-10-18T20:00:00-04:00",
+      "CreatedDate": "2026-10-19T09:25:23.824000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "eae1bf25-23d7-4e14-b272-ae394eed37a4",
+      "LastAccessedDate": "2026-10-18T20:00:00-04:00",
+      "CreatedDate": "2026-10-19T13:46:32.283000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "290f3f19-1dcf-4046-b629-0a116b79fe1b",
+      "LastAccessedDate": "2026-10-18T20:00:00-04:00",
+      "CreatedDate": "2026-10-19T17:31:21.555000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "67dfd78d-dd1a-46fd-9520-4f3b11a05ba9",
+      "VersionStages": [
+        "FIRST_CHAT_20261020E"
+      ],
+      "LastAccessedDate": "2026-10-19T20:00:00-04:00",
+      "CreatedDate": "2026-10-19T20:49:06.460000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "cbe5ab36-7e07-41c4-bc7f-7cf050694dca",
+      "VersionStages": [
+        "FIRST_CHAT_20261020F"
+      ],
+      "LastAccessedDate": "2026-10-19T20:00:00-04:00",
+      "CreatedDate": "2026-10-20T02:10:33.939000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "2f7d4819-f412-4308-932b-d8ba156719bb",
+      "VersionStages": [
+        "FIRST_CHAT_20261020G"
+      ],
+      "LastAccessedDate": "2026-10-19T20:00:00-04:00",
+      "CreatedDate": "2026-10-20T03:58:24.264000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "c740675e-2c5c-4400-874c-3dc0505086b4",
+      "VersionStages": [
+        "FIRST_CHAT_20261020H"
+      ],
+      "LastAccessedDate": "2026-10-19T20:00:00-04:00",
+      "CreatedDate": "2026-10-20T05:26:24.597000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "6b9594c0-c134-469f-bac4-c1f16d314a72",
+      "VersionStages": [
+        "FIRST_CHAT_20261020I"
+      ],
+      "LastAccessedDate": "2026-10-19T20:00:00-04:00",
+      "CreatedDate": "2026-10-20T07:30:15.146000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "753b4e40-edb0-45c1-8222-b263085f3408",
+      "VersionStages": [
+        "FIRST_CHAT_20261020J"
+      ],
+      "CreatedDate": "2026-10-20T12:34:58.260000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "85ebd688-4305-428b-99db-fc69922bf6ce",
+      "VersionStages": [
+        "FIRST_CHAT_20261020K"
+      ],
+      "LastAccessedDate": "2026-10-19T20:00:00-04:00",
+      "CreatedDate": "2026-10-20T18:03:10.242000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "5a3271f3-3cab-4b45-b741-e46d01c0af81",
+      "VersionStages": [
+        "FIRST_CHAT_20261021A"
+      ],
+      "LastAccessedDate": "2026-10-20T20:00:00-04:00",
+      "CreatedDate": "2026-10-20T21:29:10.984000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "ccdaf553-29d9-4688-ba19-c512243602ca",
+      "VersionStages": [
+        "FIRST_CHAT_20261021B"
+      ],
+      "LastAccessedDate": "2026-10-20T20:00:00-04:00",
+      "CreatedDate": "2026-10-21T00:39:09.263000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "54f2304b-27db-41d7-ada3-f01087d2ac1c",
+      "VersionStages": [
+        "FIRST_CHAT_20261021C"
+      ],
+      "LastAccessedDate": "2026-10-20T20:00:00-04:00",
+      "CreatedDate": "2026-10-21T05:35:15.721000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "c217ade3-b119-4138-8fd6-9bc52838d33d",
+      "VersionStages": [
+        "FIRST_CHAT_20261021D"
+      ],
+      "LastAccessedDate": "2026-10-20T20:00:00-04:00",
+      "CreatedDate": "2026-10-21T07:21:13.035000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "2c3c6806-129e-49d7-a4d3-5e0f85d47fd4",
+      "VersionStages": [
+        "FIRST_CHAT_20261021E"
+      ],
+      "LastAccessedDate": "2026-10-20T20:00:00-04:00",
+      "CreatedDate": "2026-10-21T13:01:28.297000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "78e5600a-1c8a-4c5d-b662-aad7d846843d",
+      "VersionStages": [
+        "FIRST_CHAT_20261021F"
+      ],
+      "LastAccessedDate": "2026-10-20T20:00:00-04:00",
+      "CreatedDate": "2026-10-21T19:11:52.229000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    },
+    {
+      "VersionId": "af65915b-4e2b-4547-91e8-c7b4e7070342",
+      "VersionStages": [
+        "FIRST_CHAT_20261022A"
+      ],
+      "LastAccessedDate": "2026-10-21T20:00:00-04:00",
+      "CreatedDate": "2026-10-22T00:23:31.766000-04:00",
+      "KmsKeyIds": [
+        "DefaultEncryptionKey"
+      ]
+    }
+  ]
+}

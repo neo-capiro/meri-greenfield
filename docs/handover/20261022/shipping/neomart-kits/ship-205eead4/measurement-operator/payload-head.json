@@ -1,0 +1,13 @@
+{
+  "AcceptRanges": "bytes",
+  "LastModified": "2026-10-22T12:27:19+00:00",
+  "ContentLength": 78746,
+  "ChecksumSHA256": "JTqyF6IYek5siBTwp7R4p+pOJeK2Z0QQWCG1x5/5TwQ=",
+  "ChecksumType": "FULL_OBJECT",
+  "ETag": "\"4f72047e8e885c3ed94087d123a76bba\"",
+  "VersionId": "L.3T9sRiD.YaXxtwp6fyhqqMEJyaFNiQ",
+  "ContentType": "binary/octet-stream",
+  "ServerSideEncryption": "aws:kms",
+  "Metadata": {},
+  "SSEKMSKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+}

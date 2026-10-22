@@ -1,0 +1,18 @@
+[
+  {
+    "Target": {
+      "Id": "10.90.1.68",
+      "Port": 5188,
+      "AvailabilityZone": "us-east-1a"
+    },
+    "HealthCheckPort": "5188",
+    "TargetHealth": {
+      "State": "healthy"
+    },
+    "AdministrativeOverride": {
+      "State": "no_override",
+      "Reason": "AdministrativeOverride.NoOverride",
+      "Description": "No override is currently active on target"
+    }
+  }
+]

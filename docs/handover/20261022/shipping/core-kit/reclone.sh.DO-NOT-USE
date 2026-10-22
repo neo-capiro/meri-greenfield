@@ -11,9 +11,11 @@ purpose=$(aws rds list-tags-for-resource --resource-name "$arn" --query "TagList
 [ "$purpose" = newstack-preview ] || { echo "STOP: $C is not tagged Purpose=newstack-preview"; exit 1; }
 [ "$C" != "$SRC" ]
 
-aws rds delete-db-instance --db-instance-identifier $W --skip-final-snapshot --query 'DBInstance.DBInstanceStatus' --output text
-aws rds wait db-instance-deleted --db-instance-identifier $W
-aws rds delete-db-cluster --db-cluster-identifier $C --skip-final-snapshot --query 'DBCluster.Status' --output text
+if aws rds describe-db-instances --db-instance-identifier $W >/dev/null 2>&1; then
+  aws rds delete-db-instance --db-instance-identifier $W --skip-final-snapshot --query 'DBInstance.DBInstanceStatus' --output text || true
+  aws rds wait db-instance-deleted --db-instance-identifier $W
+fi
+aws rds describe-db-clusters --db-cluster-identifier $C >/dev/null 2>&1 && { aws rds delete-db-cluster --db-cluster-identifier $C --skip-final-snapshot --query 'DBCluster.Status' --output text || true; }
 while aws rds describe-db-clusters --db-cluster-identifier $C >/dev/null 2>&1; do sleep 20; done
 echo "OLD_CLONE_DELETED"
 

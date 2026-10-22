@@ -1,0 +1,154 @@
+{
+  "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/Capiro-Portfolio-Preview-Service/147eaab0-c5a4-11f1-b872-1240a3e9568b",
+  "StackName": "Capiro-Portfolio-Preview-Service",
+  "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/fable-fe-meri-fe-m1-4e2c770f-4e2c770f/c814db04-e3b3-4826-9e15-79ea5c2d6b5f",
+  "Description": "Isolated ECS/ALB network for the Capiro Portfolio preview frontend",
+  "Parameters": [
+    {
+      "ParameterKey": "PreviewFirstChatApiBaseUrl",
+      "ParameterValue": "https://first-chat-preview.app-dev.capiro.ai/api"
+    },
+    {
+      "ParameterKey": "TrackerBackend",
+      "ParameterValue": "intelligence"
+    },
+    {
+      "ParameterKey": "ExistingAppUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai"
+    },
+    {
+      "ParameterKey": "AllowedIngressCidr",
+      "ParameterValue": "18.209.88.38/32"
+    },
+    {
+      "ParameterKey": "CoreApiBaseUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai/api"
+    },
+    {
+      "ParameterKey": "PreviewReadOnly",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "ClerkPublishableKeySecretArn",
+      "ParameterValue": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/publishable-key-rAfesC"
+    },
+    {
+      "ParameterKey": "PreviewReadBackendSource",
+      "ParameterValue": "6542f5b089656b6d255465edd464d06c2a0b408f"
+    },
+    {
+      "ParameterKey": "MeriFirstChatBootstrapEnabled",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "PreviewMeriContractPackageVersion",
+      "ParameterValue": "0.1.10"
+    },
+    {
+      "ParameterKey": "MeriApiBaseUrl",
+      "ParameterValue": "https://meri-preview.capiro.ai"
+    },
+    {
+      "ParameterKey": "MeriFirstChatClientId",
+      "ParameterValue": "d1b0cb55-fd3a-49ef-847a-7bbe9175dc44"
+    },
+    {
+      "ParameterKey": "StrategyApiBaseUrl",
+      "ParameterValue": ""
+    },
+    {
+      "ParameterKey": "PreviewFirstChatBackendSource",
+      "ParameterValue": "c64f0005cf14d69683aabafa11def4964d766832"
+    },
+    {
+      "ParameterKey": "PreviewMeriRuntimeImageDigest",
+      "ParameterValue": "sha256:5534edfe5805eec7a5d0bce66b2c85765fe2f957173ddd3ce2726bed67e322d8"
+    },
+    {
+      "ParameterKey": "MeriConversationWorkflowEnabled",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "PreviewMeriConversationRoutesEnabled",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "PreviewReadApiBaseUrl",
+      "ParameterValue": "https://first-chat-preview.app-dev.capiro.ai/api"
+    },
+    {
+      "ParameterKey": "IntelligenceApiBaseUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai/intel-api"
+    },
+    {
+      "ParameterKey": "ImageUri",
+      "ParameterValue": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview@sha256:8fc64defdc67c052d3eb31a7081194decf8bcedf3abb0166490ee2c3961d819b"
+    },
+    {
+      "ParameterKey": "ClerkKmsKeyArn",
+      "ParameterValue": "arn:aws:kms:us-east-1:967807252336:key/f47b4c53-b9c0-4d91-ad57-4d882f87767e"
+    },
+    {
+      "ParameterKey": "ClerkSecretKeySecretArn",
+      "ParameterValue": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/secret-key-FT67tM"
+    },
+    {
+      "ParameterKey": "WorkspaceApiBaseUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai/workspace-api"
+    },
+    {
+      "ParameterKey": "PreviewMeriRuntimeSource",
+      "ParameterValue": "176a8811a9b05d8613282e70bd7a57ebd75ca201"
+    },
+    {
+      "ParameterKey": "CertificateArn",
+      "ParameterValue": "arn:aws:acm:us-east-1:967807252336:certificate/edcc6113-12f5-4154-bfdf-64c7da1037cd"
+    }
+  ],
+  "CreationTime": "2026-10-11T18:46:33.523000+00:00",
+  "LastUpdatedTime": "2026-10-22T15:41:37.493000+00:00",
+  "RollbackConfiguration": {},
+  "StackStatus": "UPDATE_COMPLETE",
+  "DisableRollback": false,
+  "DeploymentConfig": {
+    "Mode": "STANDARD",
+    "DisableRollback": false
+  },
+  "NotificationARNs": [],
+  "Capabilities": [
+    "CAPABILITY_IAM"
+  ],
+  "Outputs": [
+    {
+      "OutputKey": "TargetGroupArn",
+      "OutputValue": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734"
+    },
+    {
+      "OutputKey": "AlbDnsName",
+      "OutputValue": "Capiro-Previ-6bbPz0Y2cqPc-1570175071.us-east-1.elb.amazonaws.com"
+    },
+    {
+      "OutputKey": "VpcId",
+      "OutputValue": "vpc-007845c8bf4ec0b30"
+    },
+    {
+      "OutputKey": "ServiceArn",
+      "OutputValue": "arn:aws:ecs:us-east-1:967807252336:service/capiro-portfolio-preview/capiro-portfolio-preview"
+    },
+    {
+      "OutputKey": "AlbHostedZoneId",
+      "OutputValue": "Z35SXDOTRQ7X7K"
+    }
+  ],
+  "Tags": [],
+  "EnableTerminationProtection": false,
+  "DriftInformation": {
+    "StackDriftStatus": "NOT_CHECKED"
+  },
+  "LastOperations": [
+    {
+      "OperationType": "UPDATE_STACK",
+      "OperationId": "bd4cb171-4213-4420-8d2f-ebded0ddc2be"
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "Changes": [
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "Action": "Modify",
+        "LogicalResourceId": "ModelOwnerService",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-owner",
+        "ResourceType": "AWS::ECS::Service",
+        "Replacement": "False",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "TaskDefinition",
+              "RequiresRecreation": "Never"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "ResourceReference",
+            "CausingEntity": "ModelOwnerTask"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "PolicyAction": "ReplaceAndDelete",
+        "Action": "Modify",
+        "LogicalResourceId": "ModelOwnerTask",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:45",
+        "ResourceType": "AWS::ECS::TaskDefinition",
+        "Replacement": "True",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "DirectModification"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "Action": "Modify",
+        "LogicalResourceId": "ModelProxyService",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-proxy",
+        "ResourceType": "AWS::ECS::Service",
+        "Replacement": "False",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "TaskDefinition",
+              "RequiresRecreation": "Never"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "ResourceReference",
+            "CausingEntity": "ModelProxyTask"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "PolicyAction": "ReplaceAndDelete",
+        "Action": "Modify",
+        "LogicalResourceId": "ModelProxyTask",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:45",
+        "ResourceType": "AWS::ECS::TaskDefinition",
+        "Replacement": "True",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "DirectModification"
+          }
+        ]
+      }
+    }
+  ],
+  "ChangeSetName": "awscli-cloudformation-package-deploy-1792672547",
+  "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/awscli-cloudformation-package-deploy-1792672547/d88d25fe-1e58-435c-a1f7-2bf86265807f",
+  "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/meri-first-chat-model/7c073d80-ca5b-11f1-8157-12ffd9c5e733",
+  "StackName": "meri-first-chat-model",
+  "Description": "Created by AWS CLI at 2026-10-22T12:35:47.826301 UTC",
+  "Parameters": null,
+  "CreationTime": "2026-10-22T12:35:45.746000+00:00",
+  "ExecutionStatus": "AVAILABLE",
+  "Status": "CREATE_COMPLETE",
+  "StatusReason": null,
+  "NotificationARNs": [],
+  "RollbackConfiguration": {},
+  "Capabilities": [
+    "CAPABILITY_IAM"
+  ],
+  "Tags": null,
+  "ParentChangeSetId": null,
+  "IncludeNestedStacks": false,
+  "RootChangeSetId": null,
+  "OnStackFailure": null,
+  "ImportExistingResources": null,
+  "StackDriftStatus": null,
+  "DeploymentMode": null,
+  "DeploymentConfig": {
+    "Mode": "STANDARD",
+    "DisableRollback": false
+  }
+}

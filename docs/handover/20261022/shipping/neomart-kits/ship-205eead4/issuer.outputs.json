@@ -1,0 +1,14 @@
+[
+  {
+    "OutputKey": "TemporalIssuerTaskDefinitionArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:47"
+  },
+  {
+    "OutputKey": "TemporalIssuerOrigin",
+    "OutputValue": "https://issuer.meri.internal:8445"
+  },
+  {
+    "OutputKey": "TemporalIssuerServiceArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-temporal-issuer"
+  }
+]

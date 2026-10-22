@@ -1,0 +1,46 @@
+{
+ "artifactsOverride": {
+  "type": "NO_ARTIFACTS"
+ },
+ "autoRetryLimitOverride": 0,
+ "buildspecOverride": "version: 0.2\nphases:\n  build:\n    commands:\n      - echo '187a595f7462b409ced4adf7bf91bc03b5000ed01d101a029e957ec7c2271c6f  repo/infra/product-preview/proxy-image-build.sh' | sha256sum -c -\n      - bash repo/infra/product-preview/proxy-image-build.sh\n",
+ "environmentVariablesOverride": [
+  {
+   "name": "COMMIT",
+   "type": "PLAINTEXT",
+   "value": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c"
+  },
+  {
+   "name": "ATTEMPT",
+   "type": "PLAINTEXT",
+   "value": "e1a015a633f6e1d1509ac19842e181ce"
+  },
+  {
+   "name": "KMS_KEY_ARN",
+   "type": "PLAINTEXT",
+   "value": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+  },
+  {
+   "name": "REPOSITORY_URI",
+   "type": "PLAINTEXT",
+   "value": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker"
+  },
+  {
+   "name": "REPOSITORY_NAME",
+   "type": "PLAINTEXT",
+   "value": "meri-greenfield/qualification-worker"
+  },
+  {
+   "name": "RESULT_BUCKET",
+   "type": "PLAINTEXT",
+   "value": "meri-greenfield-qual-build-967807252336-us-east-1"
+  }
+ ],
+ "idempotencyToken": "e1a015a633f6e1d1509ac19842e181ce",
+ "projectName": "meri-greenfield-qualification-build",
+ "queuedTimeoutInMinutesOverride": 5,
+ "sourceLocationOverride": "meri-greenfield-qual-build-967807252336-us-east-1/inputs/proxy-image/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/proxy-context.zip",
+ "sourceTypeOverride": "S3",
+ "sourceVersion": "dIj6SGj8_inUybHPaKpfIWH25Kvf6AaO",
+ "timeoutInMinutesOverride": 30
+}

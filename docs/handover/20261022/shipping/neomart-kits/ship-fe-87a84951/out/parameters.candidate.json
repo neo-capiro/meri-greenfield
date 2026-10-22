@@ -1,0 +1,102 @@
+[
+  {
+    "ParameterKey": "AllowedIngressCidr",
+    "ParameterValue": "18.209.88.38/32"
+  },
+  {
+    "ParameterKey": "CertificateArn",
+    "ParameterValue": "arn:aws:acm:us-east-1:967807252336:certificate/edcc6113-12f5-4154-bfdf-64c7da1037cd"
+  },
+  {
+    "ParameterKey": "ClerkKmsKeyArn",
+    "ParameterValue": "arn:aws:kms:us-east-1:967807252336:key/f47b4c53-b9c0-4d91-ad57-4d882f87767e"
+  },
+  {
+    "ParameterKey": "ClerkPublishableKeySecretArn",
+    "ParameterValue": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/publishable-key-rAfesC"
+  },
+  {
+    "ParameterKey": "ClerkSecretKeySecretArn",
+    "ParameterValue": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/secret-key-FT67tM"
+  },
+  {
+    "ParameterKey": "CoreApiBaseUrl",
+    "ParameterValue": "https://portfolio-preview.app.capiro.ai/api"
+  },
+  {
+    "ParameterKey": "ExistingAppUrl",
+    "ParameterValue": "https://portfolio-preview.app.capiro.ai"
+  },
+  {
+    "ParameterKey": "ImageUri",
+    "ParameterValue": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview@sha256:18dad6581368b44aea7e6f6d39b34a67fb7a07f2c3af5117251dac42efbfd26e"
+  },
+  {
+    "ParameterKey": "IntelligenceApiBaseUrl",
+    "ParameterValue": "https://portfolio-preview.app.capiro.ai/intel-api"
+  },
+  {
+    "ParameterKey": "MeriApiBaseUrl",
+    "ParameterValue": "https://meri-preview.capiro.ai"
+  },
+  {
+    "ParameterKey": "MeriConversationWorkflowEnabled",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "MeriFirstChatBootstrapEnabled",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "MeriFirstChatClientId",
+    "ParameterValue": "d1b0cb55-fd3a-49ef-847a-7bbe9175dc44"
+  },
+  {
+    "ParameterKey": "PreviewFirstChatApiBaseUrl",
+    "ParameterValue": "https://first-chat-preview.app-dev.capiro.ai/api"
+  },
+  {
+    "ParameterKey": "PreviewFirstChatBackendSource",
+    "ParameterValue": "c64f0005cf14d69683aabafa11def4964d766832"
+  },
+  {
+    "ParameterKey": "PreviewMeriContractPackageVersion",
+    "ParameterValue": "0.1.10"
+  },
+  {
+    "ParameterKey": "PreviewMeriConversationRoutesEnabled",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "PreviewMeriRuntimeImageDigest",
+    "ParameterValue": "sha256:5534edfe5805eec7a5d0bce66b2c85765fe2f957173ddd3ce2726bed67e322d8"
+  },
+  {
+    "ParameterKey": "PreviewMeriRuntimeSource",
+    "ParameterValue": "176a8811a9b05d8613282e70bd7a57ebd75ca201"
+  },
+  {
+    "ParameterKey": "PreviewReadApiBaseUrl",
+    "ParameterValue": "https://first-chat-preview.app-dev.capiro.ai/api"
+  },
+  {
+    "ParameterKey": "PreviewReadBackendSource",
+    "ParameterValue": "6542f5b089656b6d255465edd464d06c2a0b408f"
+  },
+  {
+    "ParameterKey": "PreviewReadOnly",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "StrategyApiBaseUrl",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "TrackerBackend",
+    "ParameterValue": "intelligence"
+  },
+  {
+    "ParameterKey": "WorkspaceApiBaseUrl",
+    "ParameterValue": "https://portfolio-preview.app.capiro.ai/workspace-api"
+  }
+]

@@ -1,0 +1,104 @@
+{
+ "schema": "meri.product-model-proxy.plan/2",
+ "account": "967807252336",
+ "region": "us-east-1",
+ "placement": {
+  "vpcId": "vpc-0ac26cfac7ed972be",
+  "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
+  "privateSubnetIds": [
+   "subnet-0920665f91c905f01",
+   "subnet-0e38bd390f8961fef",
+   "subnet-06db79cd21239de19"
+  ]
+ },
+ "images": {
+  "proxy": {
+   "uri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:dd40ed4dbaaa7843a6d5ecd2655a73d0990613abe8ae93bcbf2e42cd83e16a73",
+   "sourceCommit": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+   "litellmVersion": "1.104.2",
+   "upstreamDigest": "sha256:3d88bd757134a00e8c00237b85a021ab1f6d54abb9c1df750f411dbe7256a500",
+   "reviewedScanSha256": "8dd822c9ffa4c1eb9673c38c711a1ac2981279d8708ff35752be4571b7020e92"
+  },
+  "nodeRuntime": {
+   "uri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:1f138115e69de0fb8df3c787ed077f50c7828a8e827bdbc5a0d8a6b55d7ab43c",
+   "sourceCommit": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+   "reviewedScanSha256": "c87fbcb156929d24d17f60e267a9205fdbf54c0e2fbcc26144610185f8b90ea7"
+  }
+ },
+ "roles": {
+  "proxyExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-proxy-execution",
+  "proxyTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-proxy-task",
+  "ownerExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-owner-execution",
+  "ownerTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-owner-task"
+ },
+ "logGroups": {
+  "proxy": "/meri/product-preview/proxy",
+  "owner": "/meri/product-preview/owner"
+ },
+ "serviceDiscovery": {
+  "proxyRegistryArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dv43rzktx7mvrh6m",
+  "ownerRegistryArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-fqjjiu4dmuqsg5mo"
+ },
+ "network": {
+  "proxySecurityGroupId": "sg-02c3cc26b435e2516",
+  "ownerSecurityGroupId": "sg-05f76fcb9a014a73e",
+  "dbClientSecurityGroupId": "sg-0d5b5286baf28242e",
+  "runnerSecurityGroupIds": [
+   "sg-098fc4f2ac89aa943"
+  ],
+  "endpointSecurityGroupId": "sg-01def4e5c0fe44d4a",
+  "s3Gateway": {
+   "endpointId": "vpce-0cdaa6b79d616aa1c",
+   "prefixListId": "pl-63a5400a"
+  },
+  "bedrockRuntimeEndpoint": null
+ },
+ "material": {
+  "proxy": {
+   "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/proxy/material-kpYYOE:::cc3ea069-b87e-4894-8196-7f3d455e618f",
+   "expected": {
+    "schemaVersion": 1,
+    "role": "model-proxy",
+    "runtimeUser": "10001:10001",
+    "sourceCommit": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+    "imageDigest": "sha256:dd40ed4dbaaa7843a6d5ecd2655a73d0990613abe8ae93bcbf2e42cd83e16a73",
+    "sha256ByPath": {
+     "/run/meri/proxy.json": "6adc5f7d4de3713e9a861fa1ae644d80ed580cd62e86c421d50dccb23bebab15",
+     "/run/meri/proxy-server.pem": "06056a8edde855484ee0b327905b48704cf8ab9775a4d2dc8096f3eae748ae53",
+     "/run/meri/proxy-server.key": "3090a1560162cbc75ef5b6481b1dc011ce27f2402203e0913b2a05792ffcf2b0",
+     "/run/meri/proxy-owner-ca.pem": "336983e0ed1f3392990719a72f1b412220716fe6d26c5cc3e41c58b6bbe43f0f",
+     "/run/meri/proxy-owner-client.pem": "9c1b6db2e3ebd5bd601824466154ea894df195c9839c88c90ca38ac529156fe9",
+     "/run/meri/proxy-owner-client.key": "688c311bdebcff19e9ec9db869d7ed7d6f72400cd8e383ef2008aa6399c15614"
+    },
+    "materialContractSha256": "ad905fee197bc25afcb15e862040ee806b858c6c4d4df1485ab200217588f976"
+   }
+  },
+  "owner": {
+   "valueFrom": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/owner/material-05kED4:::6ee2a06b-8ef3-405c-a792-4a7bbc24205b",
+   "expected": {
+    "schemaVersion": 1,
+    "role": "model-owner",
+    "runtimeUser": "1000:1000",
+    "sourceCommit": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+    "imageDigest": "sha256:1f138115e69de0fb8df3c787ed077f50c7828a8e827bdbc5a0d8a6b55d7ab43c",
+    "sha256ByPath": {
+     "/run/meri/owner.json": "38907dd53a78d337f03d6ffda112d406af4768b6bfb1aeb4e223ff4fb4cd088e",
+     "/run/meri/control.json": "39a87713b7aa186234e1929a99c0a355d8b6017dbe9035f62327436beb25784b",
+     "/run/meri/database.uri": "7bc312e02074662668dd3b7f4e909ef5faf9b1512b3743d24f082ba2dfe11fa3",
+     "/run/meri/identity": "e078d40cbe439dd06bc9d1e8e31100e0da99cc6b3e643730cefcafae18588655",
+     "/run/meri/owner-bridge-ca.pem": "336983e0ed1f3392990719a72f1b412220716fe6d26c5cc3e41c58b6bbe43f0f",
+     "/run/meri/owner-server.pem": "3ac31b38c72d8f68ba0c0655563780eb8cd0f46884197f006edee42dd61e6cf6",
+     "/run/meri/owner-server.key": "9ede8047129988c8c832020315213a9a2b4c574a993ff2e555a4cdc6bd37998c"
+    },
+    "materialContractSha256": "c84c49daa0202f9a565a60ff767252b4ab213d38736abd9f8513edbd5e64c0d8"
+   }
+  }
+ },
+ "startup": {
+  "proxyConfigSha256": "6adc5f7d4de3713e9a861fa1ae644d80ed580cd62e86c421d50dccb23bebab15",
+  "ownerConfigSha256": "38907dd53a78d337f03d6ffda112d406af4768b6bfb1aeb4e223ff4fb4cd088e"
+ },
+ "owner": {
+  "budgetNamespace": "meri_product_budget"
+ }
+}

@@ -1,0 +1,3 @@
+serving proxy: arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:45 desired=1 running=1 image=sha256:98722d65e5a0e587b8a803827da4ca1b31340da3fdf54e9748628cee09196bf4
+NOTE: the serving proxy image is not 967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:734a20ec036a9aacb1f99cd8f8d2a0d5a3319a44a27e13e14781e396ebec3551 (rollback reference in kit.env is stale)
+PREFLIGHT_OK

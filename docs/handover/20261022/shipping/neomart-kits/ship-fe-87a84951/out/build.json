@@ -1,0 +1,198 @@
+{
+  "id": "capiro-portfolio-preview-build:760a2a7d-3215-4559-ba84-428db6e82125",
+  "arn": "arn:aws:codebuild:us-east-1:967807252336:build/capiro-portfolio-preview-build:760a2a7d-3215-4559-ba84-428db6e82125",
+  "buildNumber": 81,
+  "startTime": "2026-10-22T12:56:57.793000-04:00",
+  "endTime": "2026-10-22T13:05:58.337000-04:00",
+  "currentPhase": "COMPLETED",
+  "buildStatus": "SUCCEEDED",
+  "sourceVersion": "_p1hkslbhyPx8pRbkL0R_pOIXLmCsT5j",
+  "projectName": "capiro-portfolio-preview-build",
+  "phases": [
+    {
+      "phaseType": "SUBMITTED",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T12:56:57.793000-04:00",
+      "endTime": "2026-10-22T12:56:57.858000-04:00",
+      "durationInSeconds": 0
+    },
+    {
+      "phaseType": "QUEUED",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T12:56:57.858000-04:00",
+      "endTime": "2026-10-22T12:56:58.524000-04:00",
+      "durationInSeconds": 0
+    },
+    {
+      "phaseType": "PROVISIONING",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T12:56:58.524000-04:00",
+      "endTime": "2026-10-22T12:57:07.138000-04:00",
+      "durationInSeconds": 8,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "DOWNLOAD_SOURCE",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T12:57:07.138000-04:00",
+      "endTime": "2026-10-22T12:57:32.073000-04:00",
+      "durationInSeconds": 24,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "INSTALL",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T12:57:32.073000-04:00",
+      "endTime": "2026-10-22T12:58:53.633000-04:00",
+      "durationInSeconds": 81,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "PRE_BUILD",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T12:58:53.633000-04:00",
+      "endTime": "2026-10-22T12:58:53.674000-04:00",
+      "durationInSeconds": 0,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "BUILD",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T12:58:53.674000-04:00",
+      "endTime": "2026-10-22T13:05:57.758000-04:00",
+      "durationInSeconds": 424,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "POST_BUILD",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T13:05:57.758000-04:00",
+      "endTime": "2026-10-22T13:05:57.798000-04:00",
+      "durationInSeconds": 0,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "UPLOAD_ARTIFACTS",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T13:05:57.798000-04:00",
+      "endTime": "2026-10-22T13:05:58.032000-04:00",
+      "durationInSeconds": 0,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "FINALIZING",
+      "phaseStatus": "SUCCEEDED",
+      "startTime": "2026-10-22T13:05:58.032000-04:00",
+      "endTime": "2026-10-22T13:05:58.337000-04:00",
+      "durationInSeconds": 0,
+      "contexts": [
+        {
+          "statusCode": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "phaseType": "COMPLETED",
+      "startTime": "2026-10-22T13:05:58.337000-04:00"
+    }
+  ],
+  "source": {
+    "type": "S3",
+    "location": "capiro-portfolio-preview-source-967807252336-us-east-1/inputs/portfolio-source.zip",
+    "buildspec": "# One-shot inline buildspecOverride for capiro-frontend 87a8495138f0af5303bc93397438238c6cc5081b\n# (fix(meri): align history filter menus to verified Figma composition), = serving 4e2c770f + 1 commit(s).\n# Written by C:/dev/fable/ship-fe-kit/make-fe-ship-kit.mjs. Repeats the serving rev-18 recipe (CodeBuild 8b5264dc for 67fdf56b) with the\n# later e6180219 run's (78d8240f) source checks before npm ci, ABORT on failure and one worker per suite, plus the suites this change\n# touches. The ECR scan is gated by the operator after the build (the build role lacks ecr:DescribeImageScanFindings).\nversion: 0.2\nenv:\n  shell: bash\nphases:\n  install:\n    on-failure: ABORT\n    runtime-versions:\n      nodejs: 24\n    commands:\n      - set -euo pipefail\n      - test \"$EXPECTED_SHA\" = \"87a8495138f0af5303bc93397438238c6cc5081b\"\n      - printf '%s\\n' \"$EXPECTED_SHA\" | cmp -s - source-commit.txt\n      - test -n \"${EXPECTED_S3_VERSION:-}\"\n      - test \"$CODEBUILD_SOURCE_VERSION\" = \"$EXPECTED_S3_VERSION\"\n      - node --version\n      - node -e 'if (Number(process.versions.node.split(\".\")[0]) !== 24) process.exit(1)'\n      - npm --version\n      - npm ci --ignore-scripts --no-audit --no-fund\n      - npm exec --workspace @capiro/web -- playwright install --with-deps chromium\n  build:\n    on-failure: ABORT\n    commands:\n      - set -euo pipefail\n      - node --test scripts/preview-config.test.mjs\n      - npm exec --workspace @capiro/web -- vitest run tests/preview-read-receiving.test.ts tests/first-chat-intent.test.ts tests/first-chat-bootstrap.test.ts tests/meri-first-chat-core.test.ts tests/meri-first-chat-preview-policy.test.ts tests/meri-first-chat-route.test.ts tests/meri-first-chat-host.test.ts tests/meri-client-selector.test.ts tests/meri-conversation-host.test.ts tests/meri-conversation-route.test.ts tests/meri-conversation-proxy.test.ts tests/meri-history-proxy.test.ts tests/meri-preview-route-activation.test.ts tests/meri-document-proxy.test.ts tests/preview-backend-containment.test.ts --maxWorkers=1 --no-file-parallelism\n      - NODE_OPTIONS=--max-old-space-size=4096 npm run typecheck --workspace @capiro/web\n      - npm run lint --workspace @capiro/web\n      - npm run architecture\n      - node apps/web/deployment/portfolio/qualify-elements.mjs \"$(mktemp -d)/elements\"\n      - npm exec --workspace @capiro/web -- playwright test meri-new-conversation.spec.ts --config test/browser/playwright.config.ts --workers=1\n      - npm run test:browser:modules --workspace @capiro/web -- --grep 'unknown Meri input|a finished run accepts|Stop requests|a foreign native actor|an uncertain reserved-turn|navigation keeps the uncertain|selected conversation reload|synthetic lost reservation|synthetic desktop held admission|synthetic desktop interrupted initial|synthetic desktop hard reload' --workers=1\n      - npm run test:browser -- --workers=1 tests/browser/facility-action-lifetime.spec.ts tests/browser/profile-current-state.spec.ts tests/browser/work-boundary.spec.ts tests/browser/work-documents.spec.ts\n      - NODE_OPTIONS= node -p 'JSON.stringify({node:process.version,heapLimitMiB:Math.round(require(\"node:v8\").getHeapStatistics().heap_size_limit/1048576),constrainedMemory:process.constrainedMemory()})'\n      - CIRCLE_NODE_TOTAL=2 NODE_OPTIONS=--max-old-space-size=4096 npm run build\n      - npm run test:production\n      - test \"$REPOSITORY_URI\" = \"967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview\"\n      - test \"$AWS_DEFAULT_REGION\" = \"us-east-1\"\n      - test \"$(sha256sum apps/web/Dockerfile | cut -d' ' -f1)\" = \"b737adc84f9b46da019ee652ddee60e91e7b33a102a535ed921ca6d2872279fd\"\n      - test \"$(grep -c '^RUN npm run build$' apps/web/Dockerfile)\" -eq 1\n      - awk '/^RUN npm run build$/ { print \"ARG CAPIRO_BUILD_NODE_OPTIONS\"; print \"ARG CAPIRO_BUILD_CIRCLE_NODE_TOTAL\"; print \"RUN NODE_OPTIONS=\\\"$CAPIRO_BUILD_NODE_OPTIONS\\\" CIRCLE_NODE_TOTAL=\\\"$CAPIRO_BUILD_CIRCLE_NODE_TOTAL\\\" npm run build\"; next } { print }' apps/web/Dockerfile > /tmp/Dockerfile.nodeheap\n      - test \"$(sha256sum /tmp/Dockerfile.nodeheap | cut -d' ' -f1)\" = \"e6178ba292977e7a0527de25e5d0e03709b6278445e89a077302e18ab15f7137\"\n      - test \"$(grep -c '^ARG CAPIRO_BUILD_NODE_OPTIONS$' /tmp/Dockerfile.nodeheap)\" -eq 1\n      - test \"$(grep -c '^ARG CAPIRO_BUILD_CIRCLE_NODE_TOTAL$' /tmp/Dockerfile.nodeheap)\" -eq 1\n      - test \"$(grep -c '^RUN NODE_OPTIONS=' /tmp/Dockerfile.nodeheap)\" -eq 1\n      - docker build --pull --platform linux/amd64 --build-arg CAPIRO_BUILD_NODE_OPTIONS=--max-old-space-size=4096 --build-arg CAPIRO_BUILD_CIRCLE_NODE_TOTAL=2 -f /tmp/Dockerfile.nodeheap -t \"$REPOSITORY_URI:$EXPECTED_SHA\" .\n      - bash apps/web/deployment/portfolio/smoke.sh \"$REPOSITORY_URI:$EXPECTED_SHA\"\n      - aws ecr get-login-password --region \"$AWS_DEFAULT_REGION\" | docker login --username AWS --password-stdin \"${REPOSITORY_URI%%/*}\"\n      - docker push \"$REPOSITORY_URI:$EXPECTED_SHA\"\n      - aws ecr describe-images --repository-name capiro/portfolio-preview --image-ids \"imageTag=$EXPECTED_SHA\" --query 'imageDetails[0].{imageDigest:imageDigest,imageTags:imageTags,imageScanStatus:imageScanStatus}' --output json --no-cli-pager\n",
+    "insecureSsl": false
+  },
+  "secondarySources": [],
+  "secondarySourceVersions": [],
+  "artifacts": {
+    "location": ""
+  },
+  "cache": {
+    "type": "NO_CACHE"
+  },
+  "environment": {
+    "type": "LINUX_CONTAINER",
+    "image": "aws/codebuild/standard:8.0",
+    "computeType": "BUILD_GENERAL1_LARGE",
+    "environmentVariables": [
+      {
+        "name": "REPOSITORY_URI",
+        "value": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview",
+        "type": "PLAINTEXT"
+      },
+      {
+        "name": "EXPECTED_S3_VERSION",
+        "value": "_p1hkslbhyPx8pRbkL0R_pOIXLmCsT5j",
+        "type": "PLAINTEXT"
+      },
+      {
+        "name": "AWS_DEFAULT_REGION",
+        "value": "us-east-1",
+        "type": "PLAINTEXT"
+      },
+      {
+        "name": "EXPECTED_SHA",
+        "value": "87a8495138f0af5303bc93397438238c6cc5081b",
+        "type": "PLAINTEXT"
+      }
+    ],
+    "privilegedMode": true,
+    "imagePullCredentialsType": "CODEBUILD"
+  },
+  "serviceRole": "arn:aws:iam::967807252336:role/Capiro-Portfolio-Preview-Build-BuildRole-npFg91tn0Hvb",
+  "logs": {
+    "groupName": "/capiro/portfolio-preview/build",
+    "streamName": "760a2a7d-3215-4559-ba84-428db6e82125",
+    "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Fcapiro$252Fportfolio-preview$252Fbuild/log-events/760a2a7d-3215-4559-ba84-428db6e82125",
+    "cloudWatchLogsArn": "arn:aws:logs:us-east-1:967807252336:log-group:/capiro/portfolio-preview/build:log-stream:760a2a7d-3215-4559-ba84-428db6e82125",
+    "cloudWatchLogs": {
+      "status": "ENABLED",
+      "groupName": "/capiro/portfolio-preview/build"
+    }
+  },
+  "timeoutInMinutes": 60,
+  "queuedTimeoutInMinutes": 10,
+  "buildComplete": true,
+  "initiator": "capirocli",
+  "encryptionKey": "arn:aws:kms:us-east-1:967807252336:alias/aws/s3",
+  "autoRetryConfig": {
+    "autoRetryLimit": 0,
+    "autoRetryNumber": 0
+  }
+}
