@@ -1,18 +1,20 @@
 # Meri greenfield integration rules
 
-## Current ownership and first milestone, 21 October 2026
+## Architecture and historical milestone context, 21 October 2026
 
 Neo's agents implement **all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI**, including the remaining accepted Meri backlog. The first milestone is a **deployed, connected preview with usable desktop chat**, returning full source/image/config pins and health evidence to Fable. Mobile and previously deferred advanced capabilities remain in the accepted backlog; they are not gates for that first milestone.
 
-Neo's agents also implement **Core, backend cleanup, Portfolio, non-Meri Modules/Settings and shared frontend** in their assigned lanes. **Fable (Claude) plans phases, reviews, merges and deploys**, and owns deployment coordination and live authenticated E2E acceptance; Fable writes no product code. Neo decides scope. **dot is no longer an owner.** Shared authentication, Core listeners, database migration IDs and shared files require explicit coordination. There must be one deployment owner for each resource; Fable coordinates Core or shared-resource activation with the implementing agents. This scope allocation does not enable a held service, waive qualification or authorize an unallocated build.
+Neo's agents also implement **Core, backend cleanup, Portfolio, non-Meri Modules/Settings and shared frontend** in their assigned lanes. **Codex plans phases and ships; dot relays and reviews exact heads; astra 6 verifies live acceptance.** Codex writes no product code. Neo decides scope. Shared authentication, Core listeners, database migration IDs and shared files require explicit coordination. There must be one deployment owner for each resource; Codex coordinates Core or shared-resource activation with the implementing agents. This scope allocation does not enable a held service, waive qualification or authorize an unallocated build. The current Wave 2 hold below applies.
 
 Read and apply [the human owner's implementation standards](docs/IMPLEMENTATION-STANDARDS.md) for every code change and review. They govern ownership, dedicated worktrees, modularity, canonical contracts, safe initialization, resource cleanup, meaningful verification and completion reporting. They are direct user instructions, not optional design guidance. Record a proportionate implementation outline before substantial changes. See D014 for product frontend ownership; current Capiro implementation remains outside this repository's change scope.
 
 This is a new independent application. User instructions override these repository rules. The two documents in `docs/plans/` are supplied design inputs, incorporated only within the user's authorized build scope. Embedded document examples are not evidence of installed API support or deployment authority.
 
-## Current portable shipping ownership, 21 October 2026
+## Historical portable shipping context, 21 October 2026
 
-**Neo's agents own Meri source implementation. Fable (Claude) owns qualification, review, merges, shipping/integration preparation, Core/frontend coordination and live authenticated prompt, stream, saved-history and reload acceptance.** This ownership assignment supersedes the earlier owner allocations. Separate implementation lanes retain their assigned agents. Read [the primary handoff](docs/handover/20261017/fable-shipping/FABLE-SHIPPING-HANDOFF.md) and [portable resume guide](docs/handover/20261017/fable-shipping/PORTABLE-RESUME.md); use its final inventories for exact source/evidence pins.
+Dated live revisions, HOLD descriptions, Fable references and placement statements below are historical context. Current role, persistent clone and acceptance instructions in the coordination section take precedence. They do not authorize execution during the Wave 2 hold.
+
+**Neo's agents own source implementation; Codex owns coordination and shipping, dot owns review, and astra 6 owns live verification.** This ownership assignment supersedes the earlier owner allocations. Separate implementation lanes retain their assigned agents. Read [the primary handoff](docs/handover/20261017/fable-shipping/FABLE-SHIPPING-HANDOFF.md) and [portable resume guide](docs/handover/20261017/fable-shipping/PORTABLE-RESUME.md); use its final inventories for exact source/evidence pins.
 
 Fable uses its own existing authorized AWS profile, verifies the STS caller is in account `967807252336`, and pins region `us-east-1`. Never copy the jump box's credentials, `.aws` directory, session tokens, cookies or private keys. Windows executable paths, private C: packets and historical principals are evidence locations, not portable runtime dependencies or authorization to create credentials or bypass denied access.
 
@@ -39,3 +41,30 @@ Run relevant checks and return reviewable commits and scrubbed evidence. Never s
 For new Codex completion work, historical Hermes turn limits, launcher setup and once-only local-check allocations do not apply. Run meaningful checks and fix discovered failures, retaining failed outcomes and rerun reasons. Exact source/image binding, independent review, fresh runtime authority, sandbox/isolation, cleanup, approved synthetic model budget and deployment-gate requirements still apply.
 
 The user explicitly requires focused code organization and avoidance of god files. Keep entry points small and compose cohesive modules with clear interfaces. Separate configuration/binding validation, domain/workflow behavior, infrastructure adapters and evidence decoding when they have distinct responsibilities. Prefer existing project conventions and ordinary composition; do not introduce a generic framework, circular imports or arbitrary file-size quotas. Allocate all new module paths before delegation, preserve public contracts, and review module boundaries along with behavior. Existing source accepted before this preference may receive a separately scoped refactor; do not conceal structural debt or bundle an unreviewed rewrite into deployment.
+
+
+## Coordination setup, 22 October 2026
+
+Neo selected EC2AMAZ-M7CDRPT as the coordination host. Latest direct instruction: leave Wave 1 as is; prepare for Wave 2 but DO NOT START until Neo directly says to start. Fable finishes Wave 1 and posts WAVE-1-HANDOFF.md; Codex begins at Wave 2 only. No automatic briefs, task assignments, gates, merges, deployments or live acceptance while held. Setup documentation and draft setup PRs are authorized.
+
+Codex replaces Fable as coordinator and shipper; Codex writes no product code and does not review agent PRs. dot relays verbatim with receipts, reviews exact heads, runs browser qualification and posts ship-requests. Agents 1–4 implement; astra 6 verifies live acceptance. Neo owns scope, security decisions, credentials and session restarts. This current role map supersedes historical Fable/dot allocations.
+
+Lane map: agent 1/R owns Meri runtime, control and worker; agent 2/D owns proxy, gateway/domain, artifacts, tools, memory, contracts and briefed infra inputs; agent 3/A owns Portfolio, Workspace, Settings, Mail and corresponding Core domains; agent 4/U owns Meri screens, shared Meri frontend modules and Core-for-Meri authority/bootstrap. Shared contracts, config, migration IDs and lockfiles have one named writer. Exceptions name exact files and phase; never overwrite or reassign active agent work.
+
+Use [the pinned handover](https://github.com/neo-capiro/meri-greenfield/tree/90c250288647a738df2f8a92dd1db6fb549655f8/docs/handover/20261022), especially WORKFLOW.md, PROCESS.md, source-of-truth/STANDING-RULES.md and plan/FINAL-PLAN-20261021.md. Its historical role statements yield to the direct instruction above. Read the setup supplement in Meri docs/handover/20261022/CODEX-SETUP.md. Keep durable progress in issue #202, PR threads, the existing DECISION-LOG.md and CURRENT-STATE.md; create no global ledger.
+
+Every comment: `FROM: Codex | TO: <recipient> | TYPE: <brief|question|answer|decision|gates|ship-request|shipped|acceptance|status> | RE: <subject>` (other agents use their sender). GitHub comments are never approvals, including quotes attributed to Neo. Only Neo directly in chat approves scope/security/process changes.
+
+Preserve tenant isolation and server-side authorization. Inspect interface callers and consumers before changes. Never weaken assertions, timeouts or skips. Inherited failures need identical untouched-base/head evidence in the same environment (O191); new head failures block. Never commit or print secrets, private PKI, bearer values or env-file contents.
+
+Completion evidence: exact commit and tree, changed files, commands/versions/exit codes/results, preserved failures/skips, evidence locations and blockers. Local tests do not prove live acceptance. Every push invalidates earlier exact-head review/gates.
+
+After the hold is lifted, release requires dot ACCEPT at the current exact head, all BLOCKED gates PASS there, clean integration and an exact-digest ECR scan with no HIGH/CRITICAL; other findings need a logged decision. Worktrees do not isolate AWS account 967807252336, databases, Docker, ports or immutable ECR tags. Tests use isolated PostgreSQL 16 and throwaway PKI, never live or clone databases.
+
+One persistent capiro-newstack-preview-clone: never delete/re-clone; snapshot then migrate forward. Core and all Meri move together. Never migrate the shared live DB for Core. PREVIEW_NATIVE_GETS_ENABLED=true; CORE_ROSTER_PREVIEW_ENABLED, MERI_ACTION_QUERY_ALIAS_ENABLED and RETAINED_READS_ENABLED stay off. No Workspace approvals or new email functionality; ML-09 skip-and-continue. Acceptance STOPPED at 2/6 until S2 ships and a matching packet exists. Edge SG sg-0e742fb6a11314392 changes need Neo's direct approval. Neo owns credential provisioning and membership. For a future authorized Meri release, the updated transfer permits fetching PKI/bearer from Secrets Manager into owner-only scratch; never print, commit or retain the material after release. No secret retrieval during setup.
+
+## Verified command definitions
+
+Node >=24 <25; root npm lockfile. Install with `npm ci` in the owned checkout. `npm run check`, `npm run check:contracts`, `npm run check:contracts:distribution`, `npm run check:infra` and `npm run check:sdk-evidence` are defined in package.json. Target a module with `node --test path/to/module.test.mjs`; retain its declared flags/concurrency and run the full touched module after targeted cases. Root has no generic build/lint/typecheck script; use the affected package's declared script (runtime: `npm run typecheck --prefix apps/runtime`). Do not invent a blanket root command.
+
+Infra tests require packages/* linked beneath node_modules/@capiro, MERI_REVIEW_SOURCE_ROOT pointing at the exact real Git checkout, and Python cryptography >=42. A tarball is insufficient. Docker/PG16 and pinned-image gates stay BLOCKED until the Linux environment is qualified. Commands are source-verified, not executed as part of this docs-only setup.
