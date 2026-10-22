@@ -1,5 +1,6 @@
 /** Durable control delivery for one existing activity/query, never a model or workflow loop. */
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertWorkerControl,assertLifecycleReceipt} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
@@ -13,10 +14,9 @@ const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 /** An unfenced control-page read that did not answer observed nothing and changed nothing, so it counts as "no controls this
  * tick" and the next read waits first: 0.5, 1, 2, 4 s, then 5 s at most. Control not answering within the read's allowance
- * (DEADLINE) is skipped for as long as the run lives. NATIVE_UNAVAILABLE is skipped at most twice in a row, because the native
- * client reports control's definitive authority refusal with the same code, so a revocation still ends the run on the third read. */
+ * (DEADLINE), or a marked authority nonanswer, is skipped only while the original run lifetime remains live. A native refusal
+ * without that mark stays definitive even when it uses the same NATIVE_UNAVAILABLE code. */
 export const LIFECYCLE_READ_BACKOFF_MS=Object.freeze({first:500,max:5000});
-export const LIFECYCLE_READ_UNAVAILABLE_LIMIT=2;
 export const lifecycleReadBackoffMs=missed=>Math.min(LIFECYCLE_READ_BACKOFF_MS.max,LIFECYCLE_READ_BACKOFF_MS.first*2**Math.min(missed-1,4));
 export function assertLifecycleConfiguration(config,runOwner) {
  const {captureCheckpoint,captureCompletion,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
@@ -52,12 +52,12 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   function done(){clearTimeout(timer);wakeIdle=undefined;signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);wakeIdle=undefined;reject(fault('CANCELLED'));}
   signal.addEventListener('abort',cancel,{once:true});if(signal.aborted)cancel();}));}
  // Only the read is skippable: a fenced read (a hold must be found), the run's own lifetime ending, claims, acks and checkpoints stay fatal.
- const skippableRead=(e,fencedRead)=>!fencedRead&&!poll.signal.aborted&&['DEADLINE','NATIVE_UNAVAILABLE'].includes(e?.code);
- async function pump(){try{await poll.run(()=>initialized.promise);let missed=0,unavailable=0;while(!stopped&&!held){const fencedRead=fenced;let raw;
+ const skippableRead=(e,fencedRead)=>!fencedRead&&!poll.signal.aborted&&(e?.code==='DEADLINE'||isAuthorityUnavailable(e));
+ async function pump(){try{await poll.run(()=>initialized.promise);let missed=0;while(!stopped&&!held){const fencedRead=fenced;let raw;
   try{raw=await poll.run(signal=>runOwner.nextControls({binding,after,signal}));}
-  catch(e){if(!skippableRead(e,fencedRead)||e.code==='NATIVE_UNAVAILABLE'&&++unavailable>LIFECYCLE_READ_UNAVAILABLE_LIMIT)throw e;
+  catch(e){if(!skippableRead(e,fencedRead))throw e;
    missed++;if(!stopped&&!held&&!fenced)await idle(lifecycleReadBackoffMs(missed));continue;}
-  missed=0;unavailable=0;
+  missed=0;
   if(!Array.isArray(raw)||raw.length>32)throw fault('CONTROL_PAGE_REFUSED');
   for(const row of raw){const entry=envelope(row);if(stopped||held)break;if(pending.size>=32)throw fault('CONTROL_PENDING_LIMIT');
    const claim=data(await poll.run(signal=>runOwner.claimControl({binding,input:{controlId:entry.command.controlId,commandSha256:entry.commandSha256},signal})));
