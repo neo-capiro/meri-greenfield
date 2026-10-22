@@ -26,13 +26,14 @@ const status=(n,state)=>({eventId:id(n),createdAt:new Date().toISOString(),type:
 /** The production composition shape of assembleControl, over the scripted pool: store with the continuation authority, session
  * owner with the journal's transition reader, basic + lifecycle services; Temporal and the native stop are scripted. */
 async function composition(){
- const f=await lifecycleFixture(),base=createPostgresConversationStore({pool:f.pool}),stops=[],calls={starts:[],continued:[],signals:0},state={stopMode:'record'};let n=700,allocation=null;
+ const f=await lifecycleFixture(),base=createPostgresConversationStore({pool:f.pool}),stops=[],calls={starts:[],continued:[],signals:0,reconciles:0},state={stopMode:'record'};let n=700,allocation=null;
  const authority=createContinuationAuthority({store:base,stop:async({binding:b})=>{stops.push(b);if(state.stopMode==='record')await recordRetired(base,allocation);},selectedClientId:id(5),policyRevision:'policy1',versions,now:Date.now});
  const store=createPostgresConversationStore({pool:f.pool,transitionAuthority:authority.transitionAuthority});
  const context={binding,scopes,selectedClientId:id(5)};
  const sessions=createActionSessionOwner({mode:'process-local',limits:{maxSessions:20,maxRequestMs:3000,maxTtlMs:30000,maxFactBytes:65536},
   verifyIdentity:async()=>({principal,identityRevision:'identity1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000}),
-  resolveContext:async({identity})=>({identitySha256:hash(identity),...context,contextRevision:'context1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000}),
+  // Before the first allocation the fixture admits its fixed initial binding; thereafter the canonical current-run owner must prove it.
+  resolveContext:async({identity})=>{const current=allocation===null?context:await store.nextRuns.current(binding,check);return {identitySha256:hash(identity),...context,binding:current.binding,scopes:current.scopes,contextRevision:'context1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
   readTransition:input=>store.lifecycle.readTransition(input),
   resolveTransitionContext:async({identity,transition})=>{const current=await store.nextRuns.current(transition.targetBinding,check);return {identitySha256:hash(identity),binding:current.binding,scopes:current.scopes,selectedClientId:id(5),contextRevision:hash({binding:current.binding,policyRevision:current.policyRevision}),checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
  const credential=(await sessions.issue({identityCredential:NATIVE})).credential;
@@ -43,7 +44,7 @@ async function composition(){
  const dispatcher={async start(v){calls.starts.push(v.binding);},async cancel(){},async continued(v){calls.continued.push(v.input);},async signal(){calls.signals++;}};
  const basic=createConversationService({sessions,store,dispatcher,versions,newId:()=>id(n++)});
  const approvals={async read({proposalId}){if(proposalId!==f.proposal.proposalId)throw Object.assign(Error('APPROVAL_REFUSED'),{code:'APPROVAL_REFUSED'});return structuredClone(f.proposal);},readDecision:v=>forwarder.readDecision(v)};
- const service=createConversationLifecycleService({retention:null,service:basic,store,dispatcher,checkpoints:f.checkpoints,nativeAdmission:authority.continuationAdmission,approvals,sessions,newId:()=>id(n++)});
+ const service=createConversationLifecycleService({retention:null,service:basic,store,dispatcher,reconcileOriginal:async()=>{calls.reconciles++;assert.fail('unexpected public cancellation reconciliation in continuation fixture');},checkpoints:f.checkpoints,nativeAdmission:authority.continuationAdmission,approvals,sessions,newId:()=>id(n++)});
  const control=input=>service.control({credential,input});
  async function waiting(){
   await basic.allocateInput({credential,input:f.input});await basic.submit({credential,input:f.input});allocation=await allocateOriginal(base,binding);
@@ -58,7 +59,7 @@ async function composition(){
  const resume=(controlId,proof)=>control({controlId,intent:'resume',checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256});
  const history=()=>basic.history({credential,after:0,limit:1});
  const projection=controlId=>f.state.controls.get(`${binding.tenantId}:${controlId}`)?.projection;
- return {f,base,store,sessions,credential,core,synthetic,forwarder,authority,stops,state,calls,service,basic,waiting,decide,resume,history,projection,close:()=>{sessions.close();f.close();}};
+ return {f,base,store,sessions,credential,core,synthetic,forwarder,authority,stops,state,calls,service,basic,waiting,decide,resume,history,projection,close:()=>{sessions.close();f.close();assert.equal(calls.reconciles,0,'continuation uses its retirement owner, not public cancellation cleanup');}};
 }
 test('approval.wait settles: the approved decision read from Core with the live session, the source retired and the derived successor APPLIED',async t=>{
  const c=await composition();t.after(c.close);
@@ -74,10 +75,12 @@ test('approval.wait settles: the approved decision read from Core with the live 
  assert.equal(c.f.state.runs.size,2);const row=[...c.f.state.runs.values()].find(r=>r.run_id===t2.runId);assert.equal(row.projection.state,'queued');assert.equal(row.continuation.continuation.checkpointSha256,proof.checkpointSha256);
  // The decision was read from Core for exactly this proposal and run, with the approver's bearer, after the approval was recorded.
  const decisionReads=c.core.requests.filter(r=>r.url.endsWith('/decision'));assert.ok(decisionReads.length>=1);for(const r of decisionReads){assert.equal(r.headers.authorization,'Bearer '+NATIVE);assert.deepEqual(r.body,{proposalId:c.f.proposal.proposalId,commandSha256:c.f.proposal.commandSha256,binding});}
- // The target's session verification and a replay of the same control are effect-free.
+ // Historical transition readback remains valid, but its source session cannot replay a command after the successor becomes current.
  const verified=await c.sessions.verifyTransition({credential:c.credential,controlId:R,sourceBinding:binding,targetBinding:t2,admissionReceiptId:receipt.admissionReceiptId,retirementReceiptId:receipt.retirementReceiptId,purpose:'receipt-readback',deadlineMs:Date.now()+1000});
  assert.match(verified.transitionSha256,/^[a-f0-9]{64}$/);
- const replay=await c.resume(R,proof);assert.equal(replay.state,'APPLIED');assert.equal(replay.replayed,true);assert.deepEqual(c.stops,[binding]);assert.equal(c.calls.starts.length,2);
+ const committed=structuredClone(c.projection(R)),requests=c.core.requests.length;
+ await assert.rejects(c.resume(R,proof),error=>error.code==='SESSION_REFUSED');assert.deepEqual(c.projection(R),committed);assert.equal(committed.state,'APPLIED');
+ assert.deepEqual(c.stops,[binding]);assert.deepEqual(c.calls.starts,[binding,t2]);assert.equal(c.calls.continued.length,1);assert.equal(c.f.state.runs.size,2);assert.equal(c.f.state.nextRuns.size,1);assert.equal(c.core.requests.length,requests);
 });
 test('a rejected or undecided proposal never retires, admits or dispatches',async t=>{
  for(const decision of [null,'rejected']){
