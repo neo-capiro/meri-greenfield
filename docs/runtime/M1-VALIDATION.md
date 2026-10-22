@@ -216,7 +216,7 @@ These are named source witnesses and explicit blockers, not claims of live accep
 
 ## Remaining qualification and sequencing gates
 
-- **P1 first:** rebase M1 only after P1 and inherited provenance integrate onto the coordinated main; fix conflicts and rerun selected gates at that exact head. [Fable sequencing 6339188619](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339188619) requires P2.1, then #207/#205/#203, then P1. The explicit [P2.1 merged notice 6339328189](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339328189) unblocks those dependency steps, not an immediate P1/M1 rebase. Their completion is not claimed here. The retained 1/50 LEDGER_ADMISSION_FAILED from that notice is not erased by its merge judgment.
+- **P1 first:** rebase M1 only after P1 and inherited provenance integrate onto the coordinated main; fix conflicts and rerun selected gates at that exact head. [Fable sequencing 6339188619](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339188619) requires P2.1 and the #207/#205 prerequisites. The later [C9 correction 6339760482](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339760482) keeps #203 stacked on P1, with #200 then #203 merged after combined gates; P1 does not wait for #203 to merge first. The explicit [P2.1 merged notice 6339328189](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6339328189) unblocks those dependency steps, not an immediate P1/M1 rebase. Their completion is not claimed here. The retained 1/50 LEDGER_ADMISSION_FAILED from that notice is not erased by its merge judgment.
 - **Zero P1/cross-lane collisions:** current diff from the brief base has no changes under `apps/proxy/product`, `apps/gateway/budget` or `packages/contracts`. Recheck before publication and after rebase.
 - **Later FORECLOSED receipt policy:** [decision 6331244090, revision 2](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6331244090), reiterated by [resume 6338385182](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6338385182), supersedes the earlier semantic hold. Only a later attempt durably FORECLOSED before any original existed uses the verified pinned terminal UIEvent's persisted `createdAt` as its existing `expiresAtMs` event-time cutoff, never database commit time. Existing original/admission precedence and dynamic-first immutable expiry remain. Missing/mismatched proof refuses; no public schema, version, route, migration or new execution effect is introduced. See the Agent 1 v2 source correction below.
 - **MX13-I1 inherited inventory drift:** the initial sparse-filesystem scan found 1,376 files and 192 uncovered. Exact full-tree enumeration corrected this to **1,377 files: 948 covered, 236 excluded, 193 uncovered**. The missing file was the sparse retained-package `infra/product-preview/runtime-packages/complete-pending-additions.test.mjs`. All 15 runtime product-port test files and `prepared-candidate.test.mjs` are uncovered. The earlier runtime-only split and owner-routing question are superseded by [clarification 6330636339](https://github.com/neo-capiro/meri-greenfield/issues/202#issuecomment-6330636339): all **193 uncovered files** may be classified in a separate EX-06 shared-manifest repair draft. Runtime execution is assigned for **123 runtime-owned files**; execution for the **70 other-owner or ownership-uncertain files** remains held for their owners. Outside-lane permission is manifest classification only, with **no product edits** or expansion of execution/file ownership. No replacement runner or silent exclusion.
@@ -286,7 +286,7 @@ The integrated failures are:
 1. `parked continued RPC receives the shorter retirement deadline and no later effect dispatches`, in `apps/control/conversations/test/lifecycle-transition.test.mjs`. The existing 220 ms receipt expires before the awaited effect hook is entered, yielding `LIFECYCLE_EFFECT_UNKNOWN` from the pending-operation side of the fixture's race.
 2. `resume: a naturally completed successor finishes the committed transition through the production authority`, in `apps/runtime/product-ports/test/lifecycle-continuation-servability.test.mjs`, also `LIFECYCLE_EFFECT_UNKNOWN`. Its default lifecycle operation limit is 3000 ms; total test duration was 4870.824397 ms. Timing is a plausible contributor, but the wrapped error does not prove that root cause.
 
-Both test files and `apps/control/conversations/lifecycle/service.mjs` are byte-identical to the recovered parent. The MR-01 fallback is reached only by historical Stop; these failed calls were lifecycle continuation operations. Isolated candidate and exact-parent-registry passes did not reproduce a semantic regression. Classification remains **unresolved deadline-sensitive integrated failures**, not confirmed flakes or a green gate. No assertion, fixture deadline, allowance or production limit was changed to obtain the diagnostic passes. `diagnostic-pins.json` records the exact comparison; the failed combined receipt remains authoritative for that run.
+Both test files and `apps/control/conversations/lifecycle/service.mjs` are byte-identical to the recovered parent. The MR-01 fallback is reached only by historical Stop; these failed calls were lifecycle continuation operations. Isolated candidate and exact-parent-registry passes did not reproduce a semantic regression. At that checkpoint, classification was **unresolved deadline-sensitive integrated failures**; the failed gate is retained. The later deadline-fixture correction below is a separate source result. No assertion, fixture deadline, allowance or production limit was changed to obtain the diagnostic passes. `diagnostic-pins.json` records the exact comparison; the failed combined receipt remains authoritative for that run.
 
 
 The final 15 directed mutants separately remove event-ID, whole-event-hash,
@@ -356,3 +356,116 @@ physical task/grant, installed SDK/CLI, image, current identity or live UI gates
 MR06/X1 public facade/contracts/frontend and MR09/E40 accounting remain the named
 owner handoffs above. This bounded MR-01 source correction is not full M1 release
 acceptance, a ship request, or authorization for merge/deploy/SQL.
+
+
+## M1 integrated deadline-fixture correction after `4109aadd`
+
+Direct Neo continuation requires correcting the two failed integrated cases while
+preserving deadlines and negative coverage. The two canonical-composition suites
+mixed real host time with semantic authority time: the short-RPC matrix required
+ownership/journal work to reach a parked hook inside 220 ms, and natural-successor
+cases assumed their entire scripted composition would fit the default 3000 ms
+operation. Correct refusal after expiry then appeared as a positive-case failure.
+Controlled host delays reproduced both old failures; a process-local diagnostic
+loader exposed inner `DEADLINE`, without editing production source. The original
+integrated errors did not preserve that inner cause, so this reproduction is the
+bounded diagnosis of the fixture defect, not a claim to recover missing telemetry.
+
+Only these two test files and this ledger change after the MR-01 publication:
+
+- `apps/control/conversations/test/lifecycle-transition.test.mjs`
+- `apps/runtime/product-ports/test/lifecycle-continuation-servability.test.mjs`
+
+Node's test-context Date/setTimeout control now owns semantic time throughout each
+of these scripted suites. Test contexts reset it after each case. Canonical session,
+journal, authority, store, lifecycle service and Temporal adapter are still composed
+unchanged. Existing cancellation, revocation, corruption, wrong-purpose, lost-ACK,
+retirement and no-extra-effect cases remain. No production clock, bound, dependency,
+runner, contract or manifest changed.
+
+The six parked-RPC cases retain the 220 ms limit, existing 5000 ms test timeout and
+all original assertions. They now verify no abort at 219 ms and abort exactly at
+220 ms; late ACK and historical replay still cannot produce another effect. The
+original 1500 ms outer wall-time ceiling is additionally checked with independent
+`performance.now()`, so test-owned Date does not turn that wall bound into a virtual
+assertion. Three new cases expire target/admission/retirement authority before
+dispatch and require zero starts/continued calls, UNKNOWN and effect-free replay.
+Four new resume/fork cases require completed targets to finish at 2999 ms and
+refuse at exactly 3000 ms, preserving durable UNKNOWN and no extra replay effects.
+Natural completed/failed positive cases explicitly advance semantic time by 1 ms.
+
+A TypeScript AST comparison, using the repository's existing runtime toolchain,
+verifies every original assertion expression remains: **94→106** in the transition
+suite and **126→134** in the servability suite. These are static assertion sites,
+not distinct test counts. Seven new generated test identities are added. The
+unchanged real-clock lifetime/worker suites remain in the full combined selection;
+these synthetic suites are not a host-throughput or live-provider qualification.
+
+| Check | Result | Evidence / limit |
+|---|---|---|
+| Final integrated selection, unchanged 32 files | **376/376 PASS; zero failed/skipped/cancelled; exit0.** Duration 459854 ms. | `m1-deadline-combined/RESULTS.json`, `receipts/m1-deadline-combined.json`; 2026-10-22 12:54:15–13:01:55UTC. This includes every original case plus seven new boundary cases. |
+| Exact-boundary focused baseline | **13/13 PASS**. | `mutations/BASELINE/`; both sides of220ms/3000ms and pre-dispatch expiry. |
+| Final modeled faults | **7/7 killed by intended assertions**; no timeout/cancellation counted as a kill. | `final-mutation-summary.json`; partial surviving injections are separately retained below. |
+| Controlled host-latency reproduction | Old fixtures **0/2**; corrected clock fixtures **2/2** with the same delays. | `old-host-delay/` and `fixed-host-delay/`. Exact source/loader chronology retained; later additions strengthen assertions. |
+| Runtime/conversations typechecks | **Both exit0**, two suites passed. `typechecks/receipts/runtime-typecheck.json` and `typechecks/receipts/conversations-typecheck.json`. | Existing npm selectors; no worker typecheck selector invented. |
+
+The final combined run uses the original 32-file selection, declared module-mock
+flag, concurrency1, existing EX06 runner/environment scrubber/subreaper and unchanged
+900000ms harness cap. No name filter or exclusion is used. All production and test
+hashes were pinned before the run and checked unchanged afterward. Only this ledger
+changes after execution. The original 367pass/2fail and 344pass/1fail combined receipts
+remain historical outcomes, with no silent replacement or claim that isolation
+alone qualified them. The new full combined pass follows the demonstrated fixture
+correction and strengthened boundary coverage.
+
+```sh
+node /dev/shm/agent1-v2-m1-deadline-evidence/run-combined.mjs
+node /dev/shm/agent1-v2-m1-deadline-evidence/typechecks.mjs
+```
+
+
+The directed faults remove target/admission/retirement deadline propagation,
+remove timer delivery, reorder dispatch before current proof, or move the composed
+service/session ceiling by one millisecond in either direction. All injection is
+per-process loader source; production files remain byte-identical to `4109aadd`.
+Two partial mutations survived because independent defenses still enforced the
+bound: changing only the service default left the session-owner ceiling intact;
+removing only timer rescheduling left the Temporal dispatcher's fresh timer intact.
+These are retained as survivors, not counted as kills. The final compound faults
+remove both relevant defenses and are caught. Baseline/mutation/file-placeholder
+counts are not added to the integrated result.
+
+Retained development evidence includes the first focused result **35 pass/3 fail**:
+two adjacent positive cases exposed the same wall-clock assumption, and a new fork
+replay assertion incorrectly demanded rejection instead of allowing an inert UNKNOWN
+receipt. The latter assertion was corrected before publication; the new test still
+forbids APPLIED and every extra effect after expiry. The next focused result is
+**38/38**, followed by adding the two just-before-boundary witnesses and the
+independent wall assertion; final combined pins govern the published tests. No
+failed receipt or original 367/369 outcome is erased. Evidence-only root TypeScript
+resolution initially failed; the AST check then used the already-installed runtime
+copy, with no dependency installation.
+
+New evidence: `/dev/shm/agent1-v2-m1-deadline-evidence/`; the original evidence at
+`/dev/shm/agent1-v2-m1-evidence/` and recovered old checkout remain preserved.
+`old-host-delay/`, `fixed-host-delay/`, `mutation-results*.json`,
+`mutation-boundaries.md`, `assertion-preservation.json`,
+`final-test-source-pins.json` and the combined receipt retain exact selectors,
+source hashes, failure traces and rerun reasons. Earlier mutation results preceded
+only the additional monotonic wall assertion; that assertion strengthens the final
+candidate and is exercised by the combined run. No test is rerun merely to replace
+a failed receipt with a pass.
+
+P1 remains held until #205 merges and its explicit dependency gate clears. C9 stays
+with agent 2, stacked on P1 under decision6339760482. #207's completed manifest rebase
+at `5a9c0b16b28da77ab59ffb0498a2d703aa36b141` is not repeated. MR06/X1 public
+contracts/frontend, MR09/E40 accounting, broader legacy custody and native/image/
+identity/live qualification remain their existing owner gates. This source check
+introduces no merge, deployment, cloud or real SQL execution authority.
+
+Final tested fixture hashes:
+
+| File | SHA-256 |
+|---|---|
+| `apps/control/conversations/test/lifecycle-transition.test.mjs` | `f9b44875a8d12941f3542f805ce0a1a6eed617e26215fed5d3b1c29d36cd27d5` |
+| `apps/runtime/product-ports/test/lifecycle-continuation-servability.test.mjs` | `bb5ddec833ffcfd9767d3d8f734010a59ad552173ca82ea2bf208bc2f2ab8cc0` |

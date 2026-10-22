@@ -4,7 +4,7 @@
  * (derived admission, retirement over a scripted native stop, fork claim through the real initial-run-binding journal) and the real
  * prepared-run registry serving each successor over the same store. Task issuance is the registry suite's inert synthetic issuer.
  * No PostgreSQL, Temporal, ECS task, live Core, key material or credential provisioning. */
-import test from 'node:test';import assert from 'node:assert/strict';
+import test,{beforeEach} from 'node:test';import assert from 'node:assert/strict';
 import {normalize,resolve} from 'node:path';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {applicationAuthorityRoutes} from '../../../../packages/contracts/action-authority-0.2/validate.mjs';
@@ -24,6 +24,9 @@ import {compilePreparedRunFacts} from '../../prepared-run-issuance.mjs';
 import {compilePreparedRunConfigurationSha256} from '../../prepared-run-configuration.mjs';
 import {candidateFixture} from '../../test/prepared-candidate-fixture.mjs';
 const check=()=>{},NATIVE='synthetic-native',TOKEN='synthetic-target-task-token',UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+// Canonical authority and persistence are real; elapsed time is test-owned. The
+// unchanged 3000ms operation boundary has an explicit expiry witness below.
+beforeEach(t=>t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()}));
 const status=(n,state)=>({eventId:id(n),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}});
 /** The scripted pool extended with the 0017 initial-run-binding relation and the journal's narrow reads of runs/next_runs, sharing the
  * fixture's serialized connection and rollback. No DB engine. */
@@ -119,7 +122,7 @@ test('MR-06: lost resume response is recovered from immutable custody after sess
  assert.deepEqual({starts:c.calls.starts.length,continued:c.calls.continued.length,stops:c.stops.length,runs:c.f.state.runs.size,issuance:c.issuance.prepare.length},before);
 });
 for(const mode of ['resume','fork'])for(const terminal of ['completed','failed'])test(`${mode}: a naturally ${terminal} successor finishes the committed transition through the production authority`,async t=>{
- const c=await composition({async onStart({binding:target,store}){if(target.runId===binding.runId)return;for(const [i,state] of ['starting','running',terminal].entries())await store.append(target,{...status(980+i,state),data:{state,reasonCode:state==='failed'?'EXECUTION_FAILED':null}},check);}});t.after(c.close);
+ const c=await composition({async onStart({binding:target,store}){if(target.runId===binding.runId)return;for(const [i,state] of ['starting','running',terminal].entries())await store.append(target,{...status(980+i,state),data:{state,reasonCode:state==='failed'?'EXECUTION_FAILED':null}},check);t.mock.timers.tick(1);}});t.after(c.close);
  const proof=await c.paused(),controlId=id(800),receipt=await c[mode](controlId,proof),target=receipt.targetBinding;
  assert.equal(receipt.state,'APPLIED');assert.equal(c.projection(controlId).state,'APPLIED');assert.equal(c.row(target).projection.state,terminal);
  assert.deepEqual(c.calls.starts,[binding,target]);assert.equal(c.calls.continued.length,mode==='resume'?1:0);
@@ -128,6 +131,16 @@ for(const mode of ['resume','fork'])for(const terminal of ['completed','failed']
  await assert.rejects(c.authority.transitionAuthority.readCurrent(current),{code:'CONTINUATION_REFUSED'});
  const verified=await c.authority.transitionAuthority.readCurrent({...current,committedContinuation:{sourceBinding:binding,controlId}});assert.deepEqual(verified.binding,target);
  for(const reference of [{sourceBinding:binding,controlId:id(801)},{sourceBinding:{...binding,runId:id(802)},controlId}])await assert.rejects(c.authority.transitionAuthority.readCurrent({...current,committedContinuation:reference}),{code:'CONTINUATION_REFUSED'});
+});
+for(const mode of ['resume','fork'])for(const elapsed of [2999,3000])test(`${mode}: a completed successor ${elapsed===2999?'finishes just before':'cannot finish at'} the lifecycle operation deadline`,async t=>{
+ const c=await composition({async onStart({binding:target,store}){if(target.runId===binding.runId)return;for(const [i,state] of ['starting','running','completed'].entries())await store.append(target,status(980+i,state),check);t.mock.timers.tick(elapsed);}});t.after(c.close);
+ const proof=await c.paused(),controlId=id(800);
+ if(elapsed===3000)await assert.rejects(c[mode](controlId,proof),/LIFECYCLE_EFFECT_UNKNOWN/);
+ else assert.equal((await c[mode](controlId,proof)).state,'APPLIED');
+ const expected=elapsed===3000?'UNKNOWN':'APPLIED',p=c.projection(controlId);assert.equal(p.state,expected);assert.equal(c.row(p.target.binding).projection.state,'completed');
+ assert.deepEqual(c.calls.starts,[binding,p.target.binding]);assert.equal(c.calls.continued.length,mode==='resume'&&elapsed===2999?1:0);
+ const before={starts:c.calls.starts.length,continued:c.calls.continued.length,stops:c.stops.length,runs:c.f.state.runs.size};
+ const replay=await c[mode](controlId,proof).then(result=>({result}),error=>({error}));if(replay.result)assert.equal(replay.result.state,expected);assert.deepEqual({starts:c.calls.starts.length,continued:c.calls.continued.length,stops:c.stops.length,runs:c.f.state.runs.size},before);
 });
 test('a cancelled successor cannot finish the committed transition through the production authority',async t=>{
  const c=await composition({async onStart({binding:target,store}){if(target.runId!==binding.runId)await store.lifecycle.cancel(target,{...status(990,'cancelled'),data:{state:'cancelled',reasonCode:'USER_CANCELLED'}},check);}});t.after(c.close);

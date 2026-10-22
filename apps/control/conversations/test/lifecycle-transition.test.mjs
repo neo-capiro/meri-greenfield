@@ -1,12 +1,15 @@
 /** Actual session/journal/lifecycle/Temporal adapter over scripted SQL and RPC scopes.
  * No PostgreSQL, Temporal server, native task, provider or credential is claimed. */
-import test from 'node:test';import assert from 'node:assert/strict';
+import test,{beforeEach} from 'node:test';import assert from 'node:assert/strict';
 import {lifecycleFixture,binding,scopes,id,versions,allocateOriginal,retireAllocation} from './lifecycle-fixture.mjs';
 import {createConversationLifecycleService} from '../lifecycle/service.mjs';
 import {createTemporalConversationDispatcher} from '../temporal-dispatch.mjs';
 import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {hash} from '../boundary.mjs';
 const check=()=>{},controlId=id(900),pauseId=id(901);
+// These scripted authority/state compositions use one test-owned clock. CPU and
+// host scheduling do not consume leases; expiry is advanced and asserted below.
+beforeEach(t=>t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()}));
 async function fixture(mode='resume'){
  const f=await lifecycleFixture(),calls={starts:[],continued:[],controls:[],scopes:[]},hooks={};let rpcDeadline,rpcSignal,n=910;
  const connection={async withDeadline(deadline,fn){rpcDeadline=deadline;return fn();},async withAbortSignal(signal,fn){rpcSignal=signal;calls.scopes.push({deadline:rpcDeadline,signal});return fn();}};
@@ -41,7 +44,9 @@ test('a completed successor does not turn a lost start acknowledgement into an a
 test('target cancellation before start acknowledgement still fences the continuation signal',async()=>{
  const f=await fixture();try{f.hooks.start=async()=>{await f.store.append(f.saved().target.binding,{eventId:id(985),createdAt:new Date().toISOString(),type:'run.status',data:{state:'cancelled',reasonCode:'USER_CANCELLED'}},check);};await assert.rejects(f.run(),/LIFECYCLE_EFFECT_UNKNOWN/);assert.equal(f.saved().state,'UNKNOWN');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,0);}finally{f.close();}
 });
-for(const effect of ['start','continued'])for(const shorter of ['target','admission','retirement'])test(`parked ${effect} RPC receives the shorter ${shorter} deadline and no later effect dispatches`,{timeout:5000},async()=>{
+// The clock measures authority lifetime, not the host time spent hashing scripted
+// rows. Keep the 220ms cutoff and exercise both sides of it after the RPC enters.
+for(const effect of ['start','continued'])for(const shorter of ['target','admission','retirement'])test(`parked ${effect} RPC receives the shorter ${shorter} deadline and no later effect dispatches`,{timeout:5000},async t=>{
  const f=await fixture();let release;try{
   const entered=Promise.withResolvers(),late=Promise.withResolvers();release=late.resolve;let cutoff;
   const originalAdmit=f.nativeAdmission.admit,originalRetire=f.nativeAdmission.retire;
@@ -49,11 +54,24 @@ for(const effect of ['start','continued'])for(const shorter of ['target','admiss
   if(shorter==='retirement')f.nativeAdmission.retire=async value=>{const receipt=await originalRetire(value);cutoff=Date.now()+220;return {...receipt,expiresAtMs:cutoff};};
   if(shorter==='target')f.state.targetDeadline=Date.now()+220;
   f.hooks[effect]=async call=>{entered.resolve(call);await late.promise;};
-  const started=Date.now(),pending=f.run().then(value=>({value}),error=>({error})),call=await Promise.race([entered.promise,pending.then(outcome=>{throw outcome.error??Error('effect did not enter');})]);
-  const deadline=shorter==='target'?f.state.targetDeadline:cutoff;assert.ok(call.deadlineMs<=deadline);assert.ok(call.deadlineMs>started);const outcome=await pending;
+  const started=Date.now(),wallStarted=performance.now(),pending=f.run().then(value=>({value}),error=>({error})),call=await Promise.race([entered.promise,pending.then(outcome=>{throw outcome.error??Error('effect did not enter');})]);
+  const deadline=shorter==='target'?f.state.targetDeadline:cutoff;assert.ok(call.deadlineMs<=deadline);assert.ok(call.deadlineMs>started);assert.equal(deadline-started,220);
+  t.mock.timers.tick(219);assert.equal(call.signal.aborted,false,'RPC remains authorized just before the exact cutoff');
+  t.mock.timers.tick(1);assert.equal(call.signal.aborted,true,'RPC aborts at the exact cutoff');const outcome=await pending;
   assert.match(outcome.error?.message??'',/LIFECYCLE_EFFECT_UNKNOWN/);assert.equal(call.signal.aborted,true,'Temporal withAbortSignal receives cancellation');assert.ok(Date.now()-started<1500,'outer effect is bounded by the verified short deadline');assert.equal(f.saved().state,'UNKNOWN');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,effect==='start'?0:1);
+  assert.ok(performance.now()-wallStarted<1500,'the existing outer-effect wall-time ceiling is preserved independently of the controlled clock');
   release();await new Promise(resolve=>setImmediate(resolve));assert.equal(f.saved().state,'UNKNOWN','late ACK cannot restore DISPATCHING or APPLIED');await assert.rejects(f.run());assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,effect==='start'?0:1);
  }finally{release?.();f.close();}
+});
+for(const shorter of ['target','admission','retirement'])test(`expired ${shorter} authority before dispatch refuses without starting an RPC`,{timeout:5000},async t=>{
+ const f=await fixture();try{
+  if(shorter==='target')f.state.targetDeadline=Date.now()+220;
+  else{const original=f.nativeAdmission[shorter==='admission'?'admit':'retire'];f.nativeAdmission[shorter==='admission'?'admit':'retire']=async value=>({...await original(value),expiresAtMs:Date.now()+220});}
+  let expired=false;f.state.onTransitionContext=async()=>{if(!expired){expired=true;t.mock.timers.tick(220);}};
+  await assert.rejects(f.run(),/LIFECYCLE_EFFECT_UNKNOWN/);assert.equal(expired,true);assert.equal(f.saved().state,'UNKNOWN');
+  assert.equal(f.calls.starts.length,0);assert.equal(f.calls.continued.length,0);
+  await assert.rejects(f.run());assert.equal(f.calls.starts.length,0);assert.equal(f.calls.continued.length,0);
+ }finally{f.close();}
 });
 test('target cancellation between commit authorization and finish transaction prevents APPLIED',async()=>{
  const f=await fixture();try{f.hooks.beforeFinish=async()=>{await f.store.append(f.saved().target.binding,{eventId:id(930),createdAt:new Date().toISOString(),type:'run.status',data:{state:'cancelled',reasonCode:'USER_CANCELLED'}},check);};await assert.rejects(f.run(),/LIFECYCLE_EFFECT_UNKNOWN/);assert.equal(f.saved().state,'UNKNOWN');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,1);}finally{f.close();}
