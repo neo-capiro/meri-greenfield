@@ -159,6 +159,18 @@ export function createProductOwnerHttpsServer(configuration){
    persistedFacts:c.persistedFacts,ownerPorts:c.ownerPorts,serviceGate:c.serviceGate,now:c.now,maxExchangeMs:maxRequestMs});initialAdmission=null;}
   return s.admission;
  }
+ function waitForSocketClose(socket,signal){
+  if(!sockets.has(socket))return;
+  return new Promise((resolve,reject)=>{
+   const finish=error=>{
+    socket.off('close',onClose);signal.removeEventListener('abort',onAbort);
+    if(error)reject(error);else resolve();
+   };
+   const onClose=()=>finish(),onAbort=()=>finish(Error('PRODUCT_OWNER_HTTPS_UNAVAILABLE'));
+   socket.once('close',onClose);signal.addEventListener('abort',onAbort,{once:true});
+   if(signal.aborted)onAbort();
+  });
+ }
  async function dispatch(path,body,socket,p,deadline,signal){
   const f=parseOwnerWire(body),s=state(socket),policy=s.policy;
   const assertLive=()=>{if(signal.aborted||socket.destroyed||c.now()>=deadline)fail();assertBound(socket);};
@@ -199,7 +211,13 @@ export function createProductOwnerHttpsServer(configuration){
   const id=f[1],session=sessions.get(id);if(!session||session.generation!==s.lease.generation)fail();
   if(path===OWNER_PATHS.operation){
    if(session.operation!==socket){
-    if(!session.operation.destroyed||!session.channel.canReadOutcome)fail();
+    // A reconnect can reach OUTCOME before the old carrier's close is observed.
+    // Keep recovery read-only and bounded by this request's existing abort/deadline.
+    assertLive();if(!session.channel.canReadOutcome)fail();
+    await waitForSocketClose(session.operation,signal);
+    assertLive();
+    if(!available()||sessions.get(id)!==session||session.generation!==s.lease.generation||
+       !session.operation.destroyed||!session.channel.canReadOutcome)fail();
     role(socket,'operation');return session.channel.readOutcome(body,p,{signal});
    }
    role(socket,'operation');return session.channel.operation(body,p);
@@ -273,7 +291,7 @@ export function createProductOwnerHttpsServer(configuration){
       Number(headers.get('content-length'))<1||Number(headers.get('content-length'))>MAX||
       [...headers.keys()].some(v=>v==='transfer-encoding'||v==='authorization'||v==='content-encoding'||v==='forwarded'||v.startsWith('x-')))fail();
    const parts=[];let bytes=0;
-   timer=setTimeout(()=>{abort.abort();socket.destroy();},maxRequestMs);
+   timer=setTimeout(()=>{abort.abort();socket.destroy();},Math.max(0,deadline-c.now()));
    for await(const part of req){bytes+=part.length;if(bytes>MAX||c.now()>=deadline)fail();parts.push(part);}
    if(bytes!==Number(headers.get('content-length'))||req.rawTrailers.length)fail();
    const result=await dispatch(req.url,Buffer.concat(parts,bytes),socket,p,deadline,abort.signal);

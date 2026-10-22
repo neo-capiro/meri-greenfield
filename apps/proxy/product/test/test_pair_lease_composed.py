@@ -25,6 +25,7 @@ from apps.proxy.product.owner_https import (ProductOwnerHttpsExchange,
     OwnerExchangeUnavailable, load_owner_client_tls_material)
 from apps.proxy.product.owner_startup import ProductOwnerStartup
 from apps.proxy.product.pair_lease import ProductPairLease
+from apps.proxy.product.response_settlement import SettlementCommitUncertain
 from apps.proxy.product.service_pair_discovery import compile_owner_peer
 from apps.proxy.product.test.test_service_pair_discovery import fixture as aws_fixture
 from apps.proxy.qualification.runtime.bedrock_transport import CountObservation
@@ -137,18 +138,55 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
             while (await self.stats())['pairProofs'] != 4:
                 await asyncio.sleep(.01)
         self.calls, self.lost_ack, self.bridges = [], False, []
+        self.retained_carrier, self.abort_recovery = None, False
+        self.addCleanup(self.release_retained_carrier)
         original = ProductOwnerHttpsExchange.__call__
         async def counted(exchange, channel, path, body, timeout, *, cutoff_ms=None):
             frame = json.loads(body); self.calls.append((channel, path, frame))
+            if self.retained_carrier and frame[0] == 'meri.proxy.operation/2' and frame[2][0] == 'meri.proxy.outcome/1':
+                # Submit exactly once on a new real TLS carrier. The child emits
+                # this barrier after consuming OUTCOME, before dispatch can
+                # observe any close I/O from the original carrier.
+                pending = asyncio.create_task(original(exchange, channel, path, body, timeout, cutoff_ms=cutoff_ms))
+                try:
+                    barrier = json.loads(await asyncio.wait_for(self.child.stdout.readline(), 5))
+                    self.assertEqual(barrier, {'event': 'outcome-before-close',
+                        'distinctSocket': True, 'oldCloseObserved': False})
+                    if self.abort_recovery:
+                        self.child.stdin.write(b'{"command":"abort-recovery"}\n')
+                        await self.child.stdin.drain()
+                        aborted = json.loads(await asyncio.wait_for(self.child.stdout.readline(), 5))
+                        self.assertEqual(aborted, {'aborted': True, 'waitListenerRemovedBeforeClose': True})
+                    else:
+                        self.release_retained_carrier()
+                    return await pending
+                finally:
+                    self.release_retained_carrier()
+                    if not pending.done():
+                        pending.cancel()
+                    await asyncio.gather(pending, return_exceptions=True)
             result = await original(exchange, channel, path, body, timeout, cutoff_ms=cutoff_ms)
             if self.lost_ack and json.loads(result.body)[0] == 'meri.proxy.settlement-receipt/1':
                 self.lost_ack = False
-                exchange.reset(channel)
-                await asyncio.sleep(.05)  # Let the real owner close the original session socket.
+                # Detach ownership as production reset does, but hold the real
+                # TCP connection open to force OUTCOME to beat the old close.
+                close_owned = exchange._close_owned
+                def retain(sockets, connections):
+                    self.assertIsNone(self.retained_carrier)
+                    self.assertTrue(sockets)
+                    self.retained_carrier = (close_owned, sockets, connections)
+                with patch.object(exchange, '_close_owned', retain):
+                    exchange.reset(channel)
                 raise OwnerExchangeUnavailable()
             return result
         self.counter_patch = patch.object(ProductOwnerHttpsExchange, '__call__', counted)
         self.counter_patch.start(); self.addCleanup(self.counter_patch.stop)
+
+    def release_retained_carrier(self):
+        retained, self.retained_carrier = self.retained_carrier, None
+        if retained:
+            close_owned, sockets, connections = retained
+            close_owned(sockets, connections)
 
     @staticmethod
     def now():
@@ -243,11 +281,19 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(after['requests'][0]['state'], 'SETTLED')
         self.assertEqual(after['budget']['consumed_micro_usd'], '90')
 
-    async def test_lost_settle_ack_recovers_read_only_on_new_tls_carrier(self):
+    async def arm_lost_settle(self):
+        self.child.stdin.write(b'{"command":"arm-lost-settle"}\n')
+        await self.child.stdin.drain()
+        self.assertEqual(json.loads(await asyncio.wait_for(self.child.stdout.readline(), 5)), {'armed': True})
         self.lost_ack = True
+
+    async def test_lost_settle_ack_recovers_read_only_on_new_tls_carrier(self):
+        await self.arm_lost_settle()
         session, _ = await self.invoke(0)
         after = await self.stats()
         self.assertFalse(self.lost_ack)
+        self.assertEqual(after['recoveryOrder'], ['outcome-before-close', 'old-close', 'outcome-read'])
+        self.assertTrue(after['oldCloseObserved'])
         operations = [call[2] for call in self.calls if call[2][0] == 'meri.proxy.operation/2']
         words = [frame[2][0] for frame in operations]
         self.assertEqual(words.count('meri.proxy.settlement/1'), 1)
@@ -268,3 +314,20 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         foreign = json.loads(await asyncio.wait_for(self.child.stdout.readline(), 5))
         self.assertTrue(foreign['refused'])
         self.assertEqual(foreign['commands'], after['commands'])
+
+    async def test_aborted_lost_settle_recovery_keeps_unknown_and_removes_close_wait(self):
+        await self.arm_lost_settle()
+        self.abort_recovery = True
+        with self.assertRaises(AssertionError) as failure:
+            await self.invoke(0)
+        self.assertIsInstance(failure.exception.__cause__, SettlementCommitUncertain)
+        self.assertEqual(str(failure.exception.__cause__), 'CANONICAL_SETTLEMENT_ACK_UNKNOWN')
+        after = await self.stats()
+        self.assertEqual(after['recoveryOrder'], ['outcome-before-close', 'recovery-aborted', 'old-close'])
+        operations = [call[2][2][0] for call in self.calls if call[2][0] == 'meri.proxy.operation/2']
+        self.assertEqual(operations, ['meri.proxy.reservation/1', 'meri.proxy.settlement/1', 'meri.proxy.outcome/1'])
+        # The committed settlement is never replayed. With no read-only outcome
+        # receipt, the proxy still refuses to release its uncertain liability.
+        self.assertEqual(after['requests'][0]['state'], 'SETTLED')
+        self.assertEqual(after['budget']['consumed_micro_usd'], '90')
+        self.assertEqual(sum(sql.startswith('UPDATE meri_product_budget.requests SET') for sql in after['commands']), 1)

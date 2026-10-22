@@ -1,12 +1,38 @@
 /** Scripted AWS/SQL plus the real owner TLS/channel/budget path. No network qualification. */
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {Agent} from 'node:https';
+import {once} from 'node:events';
+import {Agent,Server} from 'node:https';
 import {createInterface} from 'node:readline';
 import {productFixture} from '../../../gateway/budget/product-scripted-fixture.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createP2OwnerFixture} from './p2-owner-fixture.mjs';
 import {OWNER_PATHS} from '../owner-channel.mjs';
+
+const output=value=>process.stdout.write(JSON.stringify(value)+'\n');
+let recoveryArmed=false,settlementSocket,oldCloseObserved=false,closeListenersBeforeRecovery,native;
+const recoveryOrder=[];
+// Observe the production body iterator without a second consumer. The old
+// carrier stays physically open in Python until this complete OUTCOME arrives.
+function observeRecovery(server){native=server;server.prependListener('request',req=>{
+ const iterate=req[Symbol.asyncIterator].bind(req);
+ req[Symbol.asyncIterator]=async function*(){
+  const parts=[];for await(const part of {[Symbol.asyncIterator]:iterate}){parts.push(part);yield part;}
+  if(parts.length===0)return;
+  const frame=JSON.parse(Buffer.concat(parts).toString());
+  if(!recoveryArmed||frame[0]!=='meri.proxy.operation/2')return;
+  if(frame[2][0]==='meri.proxy.settlement/1'){
+   assert.equal(settlementSocket,undefined);settlementSocket=req.socket;
+   settlementSocket.once('close',()=>{oldCloseObserved=true;recoveryOrder.push('old-close');});
+  }else if(frame[2][0]==='meri.proxy.outcome/1'&&recoveryOrder.length===0){
+   assert.ok(settlementSocket);assert.notEqual(req.socket,settlementSocket);
+   assert.equal(settlementSocket.destroyed,false);assert.equal(oldCloseObserved,false);
+   closeListenersBeforeRecovery=new Set(settlementSocket.rawListeners('close'));
+   recoveryOrder.push('outcome-before-close');
+   output({event:'outcome-before-close',distinctSocket:true,oldCloseObserved});
+  }
+ };
+});}
 
 const at=Date.now(),expiry=at+300000,seed=productFixture(),fact=seed.context(),allocation=structuredClone(seed.allocation);
 for(const budgets of [allocation.budgets,allocation.manifest.budgets])Object.assign(budgets,{maxRuntimeSeconds:600,maxCostMicroUSD:10000000});
@@ -38,7 +64,9 @@ const pool={async connect(){let local,readOnly=false;return {async query(sql,p=[
  if(sql==='SELECT * FROM meri_product_budget.budget WHERE id=1 FOR UPDATE'||sql==='SELECT cap_micro_usd,consumed_micro_usd,quarantined FROM meri_product_budget.budget WHERE id=1')return rows([local.budget]);
  for(const [table,key] of [['runs','run'],['tool_run_allocations','allocation'],['grants','grant'],['tool_grant_bindings','binding']])
   if(sql.startsWith('SELECT * FROM meri_product_budget.'+table+' WHERE'))return rows([local[key]]);
- if(sql.startsWith('SELECT * FROM meri_product_budget.requests WHERE'))return rows(local.requests.has(p[0])?[local.requests.get(p[0])]:[]);
+ if(sql.startsWith('SELECT * FROM meri_product_budget.requests WHERE')){
+  if(readOnly&&recoveryArmed){assert.equal(oldCloseObserved,true);recoveryOrder.push('outcome-read');}
+  return rows(local.requests.has(p[0])?[local.requests.get(p[0])]:[]);}
  const all=[...local.requests.values()];
  if(sql.startsWith('SELECT 1 FROM meri_product_budget.budget_liabilities'))return rows(all.filter(r=>r.slot===p[0]||r.grant_id===p[1]&&r.state==='UNKNOWN').map(()=>({one:1})));
  if(sql.includes(' AS run_total FROM meri_product_budget.budget_liabilities'))return rows([{held:String(all.filter(r=>r.state==='UNKNOWN').reduce((v,r)=>v+BigInt(r.hold_micro_usd),0n)),run_total:String(all.filter(r=>r.run_id===p[0]).reduce((v,r)=>v+BigInt(r.state==='UNKNOWN'?r.hold_micro_usd:r.actual_micro_usd),0n))}]);
@@ -57,16 +85,39 @@ const issued={binding:{run_id:fact.qualificationBinding.runId,attempt:1,worker_a
  vpc_id:'vpc-aaaaaaaaaaaaaaaaa',subnet_id:'subnet-bbbbbbbbbbbbbbbbb',security_group_ids:['sg-ccccccccccccccccc'],
  tags:[['meri:execution-id',execution],['meri:binding-sha256',execution],['meri:plan-sha256','d'.repeat(64)],['meri:expires-at-ms',String(expiry)]]};
 const pairIdentities=Object.fromEntries(['owner','proxy'].map((role,i)=>[role,{taskArn:'arn:aws:ecs:us-east-1:967807252336:task/capiro-dev/'+String(i+1).repeat(32),createdAtMs:at-10000}]));
-const fixture=await createP2OwnerFixture({pairIdentities,maxRequestMs:15000,
+const listen=Server.prototype.listen;
+Server.prototype.listen=function(...args){observeRecovery(this);return Reflect.apply(listen,this,args);};
+let fixture;
+try{fixture=await createP2OwnerFixture({pairIdentities,maxRequestMs:15000,
  persistedFacts:{available:true,async resolve({capabilitySha256}){assert.equal(capabilitySha256,fact.capabilitySha256);factReads++;return structuredClone(facts);}},
  ownerPorts:{pool,pricing,limits:{maxRequestMs:15000,maxFactBytes:65536},async checkCurrentConversation(){coreCalls++;return {identitySha256:'a'.repeat(64),binding:fact.binding,
   scopes:[{kind:'client',tenantId:fact.binding.tenantId,resourceId:clientId,policyRevision:fact.qualificationBinding.policyRevision}],selectedClientId:clientId,contextRevision:'b'.repeat(64),checkedAtMs:Date.now(),expiresAtMs:Date.now()+15000};}},
- placement:{available:true,async resolve(value){assert.equal(value.capabilitySha256,fact.capabilitySha256);return {issuedTaskNetwork:issued,checkedAtMs:Date.now(),effectiveExpiresAtMs:Math.min(value.deadlineMs,expiry)};}}});
-const output=value=>process.stdout.write(JSON.stringify(value)+'\n');
+ placement:{available:true,async resolve(value){assert.equal(value.capabilitySha256,fact.capabilitySha256);return {issuedTaskNetwork:issued,checkedAtMs:Date.now(),effectiveExpiresAtMs:Math.min(value.deadlineMs,expiry)};}}});}finally{Server.prototype.listen=listen;}
 output({at,pins:fixture.pins,clientPolicy:fixture.clientPolicy,clientFiles:fixture.clientFiles,credential,capability:fact.capabilitySha256,pricingRevision:pricing.revision,binding:fact.binding,grantId:fact.grantId});
 const lines=createInterface({input:process.stdin});
 for await(const line of lines){const input=JSON.parse(line);
- if(input.command==='stats')output({coreCalls,factReads,pairProofs:fixture.counts.pairProofs,placement:fixture.counts.placement,commands,requests:[...state.requests.values()],budget:state.budget});
+ if(input.command==='arm-lost-settle'){recoveryArmed=true;output({armed:true});}
+ else if(input.command==='abort-recovery'){
+  // Production retirement aborts the existing request before closing sockets.
+  // Prove the wait removes its listener on that abort, before close can fire.
+  assert.equal(oldCloseObserved,false);
+  const waitListeners=settlementSocket.rawListeners('close').filter(listener=>!closeListenersBeforeRecovery.has(listener));
+  assert.equal(waitListeners.length,1);
+  const destroy=settlementSocket.destroy;let checked=false;
+  settlementSocket.destroy=function(...args){
+   if(!checked){
+    assert.equal(settlementSocket.rawListeners('close').includes(waitListeners[0]),false);
+    assert.equal(oldCloseObserved,false);recoveryOrder.push('recovery-aborted');checked=true;
+   }
+   return Reflect.apply(destroy,this,args);
+  };
+  try{native.emit('error',Error('synthetic recovery cancellation'));}
+  finally{settlementSocket.destroy=destroy;}
+  assert.equal(checked,true);assert.equal(fixture.server.available,false);
+  if(!oldCloseObserved)await once(settlementSocket,'close');
+  output({aborted:true,waitListenerRemovedBeforeClose:true});
+ }
+ else if(input.command==='stats')output({recoveryOrder,oldCloseObserved,coreCalls,factReads,pairProofs:fixture.counts.pairProofs,placement:fixture.counts.placement,commands,requests:[...state.requests.values()],budget:state.budget});
  else if(input.command==='foreign-principal'){
   // The same CA's owner certificate is not the pinned proxy principal and has
   // serverAuth, not clientAuth. A real TLS attempt must reach no budget query.
