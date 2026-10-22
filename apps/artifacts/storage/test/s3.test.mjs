@@ -1,6 +1,7 @@
 /** Actual upstream SDK commands/client with synthetic replies; never AWS acceptance. */
 import test from 'node:test';import assert from 'node:assert/strict';import {Readable} from 'node:stream';import {createHash} from 'node:crypto';
 import {S3Client,PutObjectCommand,GetObjectCommand,HeadObjectCommand,GetBucketVersioningCommand} from '@aws-sdk/client-s3';
+import {NodeHttpHandler} from '@smithy/node-http-handler';
 import {createS3ArtifactObjects,createConfiguredS3ArtifactObjects} from '../s3-objects.mjs';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 const NOW=Date.parse('2026-10-13T18:00:00Z'),ID='11111111-1111-4111-8111-111111111111',KMS='arn:aws:kms:us-east-1:111122223333:key/22222222-2222-4222-8222-222222222222';
@@ -43,6 +44,12 @@ test('constructor/import are inert; credentials required explicitly and borrowed
  const f=fixture();let credentialReads=0;const owned=createConfiguredS3ArtifactObjects({...config,region:'us-east-1',credentials:async()=>{credentialReads++;return {accessKeyId:'SYNTHETIC',secretAccessKey:'SYNTHETIC'};}});assert.equal(credentialReads,0);owned.close();
  assert.throws(()=>createConfiguredS3ArtifactObjects({...config,region:'us-east-1'}));assert.throws(()=>createConfiguredS3ArtifactObjects({...config,region:'us-east-1',credentials:()=>{},endpoint:'http://unsafe.invalid'}));
  assert.equal(f.calls.length,0);assert.throws(()=>f.create({prefix:'../escape'}));
+});
+test('configured S3 handler keeps the canonical 3000 ms socket acquisition warning',t=>{
+ const resolve=t.mock.method(NodeHttpHandler.prototype,'resolveDefaultConfig');
+ const objects=createConfiguredS3ArtifactObjects({...config,region:'us-east-1',credentials:async()=>({accessKeyId:'SYNTHETIC',secretAccessKey:'SYNTHETIC'})});
+ try{assert.equal(resolve.mock.callCount(),1);assert.deepEqual(resolve.mock.calls[0].arguments[0],{connectionTimeout:0,requestTimeout:0,socketAcquisitionWarningTimeout:3000});}
+ finally{objects.close();}
 });
 test('actual installed S3Client serialization/deserialization runs through an injected handler without network',async()=>{
  const f=fixture(),requests=[];let credentialCalls=0;
