@@ -85,6 +85,10 @@ export function synthesizeFirstChatObservability(raw){
   expression('rate','IF(total>=20,100*errors/total,0)',true)],{evaluationPeriods:2,datapointsToAlarm:2});
  alarms('PairRefusalsSustained','pair-refusals-sustained',1,'GreaterThanOrEqualToThreshold',[
   metric('pair','ProxyPairRefusals',{},60),metric('exchange','ProxyExchangeRefusals',{},60),expression('refusals','SUM([pair,exchange])',true)],{evaluationPeriods:3,datapointsToAlarm:3});
+ // Three breaching minute samples tolerate an isolated startup refusal while detecting sustained session refusal.
+ // Match the plain-text control filter exactly: it emits ControlSessionRefusals without dimensions.
+ alarms('SessionRefusalsSustained','session-refusals-sustained',1,'GreaterThanOrEqualToThreshold',[
+  {...metric('session','ControlSessionRefusals',{},60),returnData:true}],{evaluationPeriods:3,datapointsToAlarm:3});
  alarms('TelemetryDropped','telemetry-dropped',1,'GreaterThanOrEqualToThreshold',[
   ...['control','owner','proxy','runner'].map(service=>metric(service,'TelemetryDropped',{Service:service},900)),expression('drops','SUM([control,owner,proxy,runner])',true)]);
 

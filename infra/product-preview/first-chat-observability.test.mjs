@@ -15,10 +15,10 @@ const alarmMap=t=>Object.fromEntries(resources(t,'AWS::CloudWatch::Alarm').map(p
 const metricKey=m=>[m.MetricName,Object.fromEntries((m.Dimensions??[]).map(d=>[d.Name,d.Value]))];
 const resolveJson=value=>typeof value==='string'?value:value?.Ref==='AWS::Region'?'us-east-1':value?.['Fn::Join']?value['Fn::Join'][1].map(resolveJson).join(value['Fn::Join'][0]):value;
 
-test('standalone stack has only 12 text filters, 8 alarms, dashboard and conditional SNS; no IAM/log-group mutations',()=>{
+test('standalone stack has only 12 text filters, 9 alarms, dashboard and conditional SNS; no IAM/log-group mutations',()=>{
  const t=synthesizeFirstChatObservability(binding());
  assert.deepEqual(Object.values(t.Resources).reduce((counts,r)=>({...counts,[r.Type]:(counts[r.Type]??0)+1}),{}),{
-  'AWS::SNS::Topic':1,'AWS::SNS::Subscription':1,'AWS::Logs::MetricFilter':12,'AWS::CloudWatch::Alarm':8,'AWS::CloudWatch::Dashboard':1});
+  'AWS::SNS::Topic':1,'AWS::SNS::Subscription':1,'AWS::Logs::MetricFilter':12,'AWS::CloudWatch::Alarm':9,'AWS::CloudWatch::Dashboard':1});
  assert.equal(t.Parameters.AlarmEmail.Default,'');
  const subscription=Object.values(t.Resources).find(r=>r.Type==='AWS::SNS::Subscription');
  assert.equal(subscription.Condition,'HasAlarmEmail');
@@ -68,7 +68,7 @@ test('suppression filters use the complete literal tokens emitted after the owne
  assert.equal(proxyLines[5],`${JSON.parse(filters.find(p=>p.LogGroupName===binding().logGroups.proxy).FilterPattern)} scope=background`);
 });
 
-test('all eight alarm thresholds, windows, evaluation counts and missing-data semantics are pinned',()=>{
+test('all nine alarm thresholds, windows, evaluation counts and missing-data semantics are pinned',()=>{
  const alarms=alarmMap(synthesizeFirstChatObservability(binding()));
  const expected={
   'turn-failure-rate':[20,'GreaterThanThreshold',1800,1],
@@ -78,6 +78,7 @@ test('all eight alarm thresholds, windows, evaluation counts and missing-data se
   'budget-quarantine':[1,'GreaterThanOrEqualToThreshold',300,1],
   'core-error-rate':[5,'GreaterThanThreshold',600,2],
   'pair-refusals-sustained':[1,'GreaterThanOrEqualToThreshold',60,3],
+  'session-refusals-sustained':[1,'GreaterThanOrEqualToThreshold',60,3],
   'telemetry-dropped':[1,'GreaterThanOrEqualToThreshold',900,1]
  };
  assert.deepEqual(Object.keys(alarms).sort(),Object.keys(expected).map(s=>`meri-preview-${s}`).sort());
@@ -104,6 +105,25 @@ test('all eight alarm thresholds, windows, evaluation counts and missing-data se
   ['CoreCalls',{Service}],...['5xx','503','timeout','unanswered'].map(StatusClass=>['CoreCalls',{Service,StatusClass}])]));
  const unavailable=alarms['meri-preview-proxy-owner-unavailable'].Metrics.filter(m=>m.MetricStat).map(m=>metricKey(m.MetricStat.Metric));
  assert.deepEqual(unavailable,[['HealthEvents',{Service:'owner'}],['HealthEvents',{Service:'proxy'}],['OwnerUnavailableLines',{}]]);
+});
+
+test('sustained session-refusal alarm matches the emitted filter namespace and dimensions with a three-minute policy',()=>{
+ for(const [environment,prefix,namespace] of [['Preview','meri-preview','Meri/Preview'],['Production','meri-production','Meri/Production']]){
+  const t=synthesizeFirstChatObservability({...binding(),environment});
+  const filter=resources(t,'AWS::Logs::MetricFilter').find(p=>p.FilterName===`${prefix}-control-session-refused`);
+  assert.ok(filter,'control session-refusal filter exists');
+  assert.equal(filter.LogGroupName,binding().logGroups.control);
+  assert.equal(filter.FilterPattern,'"CONTROL_SESSION_REFUSED"');
+  assert.deepEqual(filter.MetricTransformations,[{MetricName:'ControlSessionRefusals',MetricNamespace:namespace,MetricValue:'1',DefaultValue:0}]);
+  const alarm=alarmMap(t)[`${prefix}-session-refusals-sustained`];
+  assert.ok(alarm,'sustained session-refusal alarm exists');
+  assert.deepEqual(alarm.Metrics,[{Id:'session',ReturnData:true,MetricStat:{
+   Metric:{Namespace:namespace,MetricName:'ControlSessionRefusals',Dimensions:[]},Period:60,Stat:'Sum'}}]);
+  assert.equal(alarm.Threshold,1);assert.equal(alarm.ComparisonOperator,'GreaterThanOrEqualToThreshold');
+  assert.equal(alarm.EvaluationPeriods,3);assert.equal(alarm.DatapointsToAlarm,3);
+  assert.equal(alarm.TreatMissingData,'notBreaching');
+  assert.deepEqual(alarm.AlarmActions,[{Ref:'AlarmsTopic'}]);
+ }
 });
 
 test('actual EMF emitter series satisfy alarm dimensions and aggregate background errors exactly once',()=>{
