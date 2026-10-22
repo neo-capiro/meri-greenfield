@@ -2,8 +2,8 @@
 
 The wire format is a versioned tree of positional JSON arrays and primitives.
 It contains no JSON objects, so duplicate object keys cannot be hidden by a
-parser. Encoding is not authentication: the JavaScript bridge still requires
-its independent, constructor-captured host observation before budget SQL.
+parser. Encoding is not authentication: the JavaScript bridge still compares
+the independent host observation against the claim before budget SQL.
 """
 import base64
 import hashlib
@@ -14,7 +14,8 @@ from ..qualification.runtime.bedrock_body import ENVELOPE_MAX_INPUT_TOKENS, ENVE
 from ..qualification.runtime.native_usage import UsageBinding, UsageResult
 
 
-_WIRE_LIMIT = 12 * 1024 * 1024
+# operation/2 carries two independent raw/native samples; each body stays 4 MiB.
+_WIRE_LIMIT = 24 * 1024 * 1024
 _BODY_LIMIT = 4 * 1024 * 1024
 _SLOT = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
 _UUID = re.compile(r"(?:urn:uuid:)?[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\Z",
@@ -89,6 +90,73 @@ def _wire(frame):
     if len(raw) > _WIRE_LIMIT:
         _deny()
     return raw
+
+
+def encode_admit(request_id, capability_sha256, deadline_ms):
+    """One request for owner placement, admission and a bound session."""
+    return _wire(["meri.proxy.admit/1", _text(request_id, 128, pattern=_SLOT),
+                  _text(capability_sha256, 64, pattern=_HASH),
+                  _integer(deadline_ms, 1, 9007199254740991)])
+
+
+def _positional_frame(raw):
+    if type(raw) is not bytes or not 1 <= len(raw) <= _WIRE_LIMIT:
+        _deny()
+    try:
+        frame = json.loads(raw.decode("utf-8", "strict"))
+    except (ValueError, UnicodeError, RecursionError):
+        _deny()
+
+    def check(value, depth=0):
+        if depth > 10:
+            _deny()
+        if type(value) is list:
+            if len(value) > 128:
+                _deny()
+            for item in value:
+                check(item, depth + 1)
+        elif type(value) is str:
+            try:
+                value.encode("utf-8", "strict")
+            except UnicodeError:
+                _deny()
+        elif value is None or type(value) is bool:
+            pass
+        elif type(value) is not int or abs(value) > 9007199254740991:
+            _deny()
+
+    if type(frame) is not list:
+        _deny()
+    check(frame)
+    return frame
+
+
+def encode_operation(session_id, claim_bytes, capture_bytes):
+    """Carry a claim and separately sampled capture in one version-2 exchange.
+
+    Only outcome recovery omits capture. This does not manufacture a capture
+    from a claim or grant authority to either sample.
+    """
+    session_id = _text(session_id, 128, pattern=_SLOT)
+    claim = _positional_frame(claim_bytes)
+    capture = None if capture_bytes is None else _positional_frame(capture_bytes)
+    if not claim:
+        _deny()
+    if claim[0] == "meri.proxy.reservation/1":
+        if (len(claim) != 3 or type(capture) is not list or len(capture) != 3
+                or capture[0] != "meri.proxy.reservation/1" or claim[1] != capture[1]):
+            _deny()
+    elif claim[0] == "meri.proxy.settlement/1":
+        if (len(claim) != 3 or type(capture) is not list or len(capture) != 7
+                or capture[0] != "meri.proxy.complete-capture/1" or claim[1] != capture[1]):
+            _deny()
+    elif claim[0] == "meri.proxy.outcome/1":
+        if len(claim) != 2 or capture is not None:
+            _deny()
+        _text(claim[1], 128, pattern=_SLOT)
+    else:
+        _deny()
+    return _wire(["meri.proxy.operation/2", session_id, claim, capture])
 
 
 def encode_reservation(value, observation):

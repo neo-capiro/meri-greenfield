@@ -60,7 +60,7 @@ function fixture(){
    expiresAtMs:requestDeadline})};
  const channel=(maxExchangeMs=3000)=>createProductOwnerChannel({clientPolicy,
   persistedFacts,ownerPorts,serviceGate,now:()=>NOW,maxExchangeMs});
- const open=wire(['meri.proxy.session-open/1',id,sha(credential),bindingTuple,requestDeadline]);
+ const open={requestId:id,capabilitySha256:sha(credential),binding,deadlineMs:requestDeadline};
  const operationPeer={...peerBase,connectionId:'operation-A'};
  const capturePeer={...peerBase,connectionId:'capture-A'};
  return {channel,open,operationPeer,capturePeer,lookedUp,facts,selected,
@@ -120,18 +120,18 @@ test('admission carriers share distinct physical connection roles with budget ch
  await assert.rejects(f.channel.read(f.read('same-id'),f.operationPeer,'capture'));
  await assert.rejects(f.channel.read(f.read('swap-id'),f.capturePeer,'operation'));
  const budget=createProductOwnerChannel({...f,now:()=>NOW});
- await assert.rejects(budget.open(f.open,f.capturePeer));
+ await assert.rejects(budget.admit(f.open,f.capturePeer));
  const fresh=createProductOwnerChannel({...f,now:()=>NOW});
- await fresh.open(f.open,f.operationPeer);
+ await fresh.admit(f.open,f.operationPeer);
  const session='unused';
- await assert.rejects(fresh.poll(wire(['meri.proxy.capture-poll/1',session,id,'call']),f.operationPeer));
+ await assert.rejects(fresh.operation(wire(['meri.proxy.capture-poll/1',session,id,'call']),f.operationPeer));
  const second=createProductOwnerAdmissionChannel({...f,now:()=>NOW});
  await assert.rejects(second.read(f.read('instance-swap'),f.operationPeer,'capture'));
  await assert.rejects(second.read(f.read('invalid-carrier'),f.capturePeer,'header-selected'));
  await second.read(f.read('next-pair-operation'),{...f.operationPeer,connectionId:'operation-B'});
  await second.read(f.read('next-pair-capture'),{...f.capturePeer,connectionId:'capture-B'},'capture');
  const next=createProductOwnerChannel({...f,now:()=>NOW});
- await next.open(f.open,{...f.operationPeer,connectionId:'operation-B'});
+ await next.admit(f.open,{...f.operationPeer,connectionId:'operation-B'});
 });
 
 test('read IDs remain single-use across admission carriers',async()=>{
@@ -171,7 +171,7 @@ test('hung owner read refuses only its request before and after a late completio
 test('open selects current persisted facts by observed bearer digest and reveals no facts',async()=>{
  const f=fixture(),channel=f.channel();
  assert.equal(new Set([f.proxyTaskArn,f.ownerTaskArn,f.workerTaskArn]).size,3);
- const ack=JSON.parse(await channel.open(f.open,f.operationPeer));
+ const ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
  assert.deepEqual(ack.slice(0,1),['meri.proxy.session/1']);
  assert.equal(ack.length,4);
  assert.equal(ack[2],id);
@@ -182,7 +182,7 @@ test('open selects current persisted facts by observed bearer digest and reveals
  assert.equal(f.lookedUp[0].deadlineMs,NOW+3000);
  assert.ok(f.lookedUp[0].signal instanceof AbortSignal);
  assert.equal(f.sql(),0);
- await assert.rejects(channel.open(f.open,f.operationPeer),/PRODUCT_OWNER_CHANNEL_DENIED/);
+ await assert.rejects(channel.admit(f.open,f.operationPeer),/PRODUCT_OWNER_CHANNEL_DENIED/);
 });
 
 test('foreign worker, proxy, grant selector, model grant and client cannot select a session',async()=>{
@@ -199,85 +199,53 @@ test('foreign worker, proxy, grant selector, model grant and client cannot selec
   const channel=f.channel();
   const peer=wrong==='proxy'?{...f.operationPeer,proxyTaskArn:'foreign-proxy'}:
    f.operationPeer;
-  await assert.rejects(channel.open(f.open,peer),/PRODUCT_OWNER_CHANNEL_DENIED/,
+  await assert.rejects(channel.admit(f.open,peer),/PRODUCT_OWNER_CHANNEL_DENIED/,
    wrong);
   assert.equal(channel.available,false);
   assert.equal(f.sql(),0);
  }
 });
 
-test('operation-first and capture-poll-first each require independent fresh capture before SQL',async()=>{
- for(const first of ['operation','poll']){
-  const f=fixture(),channel=f.channel();
-  const ack=JSON.parse(await channel.open(f.open,f.operationPeer));
-  const session=ack[1];
-  const operationBody=wire(['meri.proxy.operation/1',session,f.reservation]);
-  const pollBody=wire(['meri.proxy.capture-poll/1',session,id,'call']);
-  let operation,poll;
-  if(first==='operation'){
-   operation=channel.operation(operationBody,f.operationPeer);
-   await Promise.resolve();
-   poll=channel.poll(pollBody,f.capturePeer);
-  }else{
-   poll=channel.poll(pollBody,f.capturePeer);
-   await Promise.resolve();
-   operation=channel.operation(operationBody,f.operationPeer);
-  }
-  const challenge=JSON.parse(await poll);
-  assert.deepEqual(challenge.slice(0,2),['meri.proxy.capture-call/1',id]);
-  assert.deepEqual(challenge[2],f.reservation[1][1]);
-  const reply=JSON.parse(await channel.reply(wire([
-   'meri.proxy.capture-reply/1',session,f.reservation]),f.capturePeer));
-  assert.deepEqual(reply,['meri.proxy.capture-ack/1',session,id,'call']);
-  await assert.rejects(operation,/PRODUCT_OWNER_CHANNEL_DENIED/);
-  assert.equal(f.sql(),1);
-  assert.equal(channel.available,false);
+test('combined reservation requires a matching independent capture before owner work',async()=>{
+ for(const wrong of ['claim','capture','request','absent','old-version']){
+  const f=fixture(),channel=f.channel(),ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
+  const claim=structuredClone(f.reservation),capture=structuredClone(f.reservation);
+  if(wrong==='claim')claim[2][5][0]++;
+  if(wrong==='capture')capture[2][5][0]++;
+  if(wrong==='request')capture[1][2]++;
+  const frame=wrong==='old-version'?['meri.proxy.operation/1',ack[1],claim]:
+   ['meri.proxy.operation/2',ack[1],claim,wrong==='absent'?null:capture];
+  let current=0;f.ownerPorts.checkCurrentConversation=async()=>{current++;throw Error('unexpected owner work');};
+  await assert.rejects(channel.operation(wire(frame),f.operationPeer));
+  assert.equal(f.sql(),0,wrong);assert.equal(current,0,wrong);
  }
+ const f=fixture(),channel=f.channel(),ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
+ await assert.rejects(channel.operation(wire(['meri.proxy.operation/2',ack[1],f.reservation,f.reservation]),f.operationPeer));
+ assert.equal(f.sql(),1); // Exact match reaches canonical SQL; synthetic pool refuses.
 });
 
-test('separate capture channel and exact selector are mandatory',async()=>{
- const f=fixture(),channel=f.channel();
- await channel.open(f.open,f.operationPeer);
- await assert.rejects(channel.poll(wire(['meri.proxy.capture-poll/1','wrong',id,'call']),
-  {...f.capturePeer,connectionId:f.operationPeer.connectionId}),
- /PRODUCT_OWNER_CHANNEL_DENIED/);
- assert.equal(channel.available,false);
- assert.equal(f.sql(),0);
- const fresh=fixture(),bad=JSON.parse(fresh.open);
- bad[2]='f'.repeat(64);
- fresh.persistedFacts.resolve=async()=>fresh.facts;
- await assert.rejects(fresh.channel().open(wire(bad),fresh.operationPeer),
-  /PRODUCT_OWNER_CHANNEL_DENIED/);
- assert.equal(fresh.sql(),0);
+test('operation socket and exact selector are mandatory',async()=>{
+ const f=fixture(),channel=f.channel(),ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
+ await assert.rejects(channel.operation(wire(['meri.proxy.operation/2',ack[1],f.reservation,f.reservation]),f.capturePeer));
+ assert.equal(channel.available,false);assert.equal(f.sql(),0);
+ const fresh=fixture(),bad={...fresh.open,capabilitySha256:'f'.repeat(64)};
+ await assert.rejects(fresh.channel().admit(bad,fresh.operationPeer));assert.equal(fresh.sql(),0);
 });
 
-test('duplicate capture poll refuses the outstanding exchange without poisoning other requests',async()=>{
- const f=fixture(),channel=f.channel();
- const ack=JSON.parse(await channel.open(f.open,f.operationPeer));
- const body=wire(['meri.proxy.capture-poll/1',ack[1],id,'call']);
- const first=channel.poll(body,f.capturePeer);
- const replay=channel.poll(body,f.capturePeer);
- const results=await Promise.allSettled([first,replay]);
+test('duplicate combined reservation refuses without poisoning other requests',async()=>{
+ const f=fixture(),channel=f.channel(),ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
+ const body=wire(['meri.proxy.operation/2',ack[1],f.reservation,f.reservation]);
+ const results=await Promise.allSettled([channel.operation(body,f.operationPeer),channel.operation(body,f.operationPeer)]);
  assert.deepEqual(results.map(result=>result.status),['rejected','rejected']);
- assert.equal(channel.available,false);
- assert.equal(f.serviceGate.available,true);
- assert.equal(f.sql(),0);
+ assert.equal(channel.available,false);assert.equal(f.serviceGate.available,true);
+ assert.ok(f.sql()<=1);
 });
 
 test('fresh capture with a foreign worker task is refused before canonical SQL',async()=>{
- const f=fixture(),channel=f.channel();
- const ack=JSON.parse(await channel.open(f.open,f.operationPeer));
+ const f=fixture(),channel=f.channel(),ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
  f.reservation[2][1][1]='arn:aws:ecs:us-east-1:967807252336:task/foreign-worker';
- const operation=channel.operation(wire(['meri.proxy.operation/1',ack[1],f.reservation]),
-  f.operationPeer);
- const challenge=JSON.parse(await channel.poll(wire([
-  'meri.proxy.capture-poll/1',ack[1],id,'call']),f.capturePeer));
- assert.equal(challenge[0],'meri.proxy.capture-call/1');
- await channel.reply(wire(['meri.proxy.capture-reply/1',ack[1],f.reservation]),
-  f.capturePeer);
- await assert.rejects(operation,/PRODUCT_OWNER_CHANNEL_DENIED/);
- assert.equal(f.sql(),0);
- assert.equal(channel.available,false);
+ await assert.rejects(channel.operation(wire(['meri.proxy.operation/2',ack[1],f.reservation,f.reservation]),f.operationPeer));
+ assert.equal(f.sql(),0);assert.equal(channel.available,false);
 });
 
 test('unresolved persisted read aborts only its session and cannot revive on late completion',async()=>{
@@ -285,7 +253,7 @@ test('unresolved persisted read aborts only its session and cannot revive on lat
  let release;
  f.persistedFacts.resolve=()=>new Promise(resolve=>{release=resolve;});
  const channel=f.channel(10);
- await assert.rejects(channel.open(f.open,f.operationPeer),/PRODUCT_OWNER_CHANNEL_DENIED/);
+ await assert.rejects(channel.admit(f.open,f.operationPeer),/PRODUCT_OWNER_CHANNEL_DENIED/);
  assert.equal(f.serviceGate.available,true);
  assert.equal(f.serviceGate.pending,1);
  assert.equal(f.channel().available,true);
@@ -318,12 +286,9 @@ test('unresolved pool checkout refuses its session without poisoning the shared 
   return new Promise((_,reject)=>{release=reject;});
  };
  const channel=f.channel(100);
- const ack=JSON.parse(await channel.open(f.open,f.operationPeer));
- const operation=channel.operation(wire(['meri.proxy.operation/1',ack[1],f.reservation]),
+ const ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
+ const operation=channel.operation(wire(['meri.proxy.operation/2',ack[1],f.reservation,f.reservation]),
   f.operationPeer);
- await channel.poll(wire(['meri.proxy.capture-poll/1',ack[1],id,'call']),f.capturePeer);
- await channel.reply(wire(['meri.proxy.capture-reply/1',ack[1],f.reservation]),
-  f.capturePeer);
  await entered;
  await assert.rejects(operation,/PRODUCT_OWNER_CHANNEL_DENIED/);
  assert.equal(f.serviceGate.available,true);
@@ -344,9 +309,8 @@ test('closing a generation aborts pending admission and capture without poisonin
  release(f.facts);await new Promise(resolve=>setImmediate(resolve));
  assert.equal(admission.available,false);assert.equal(f.serviceGate.available,true);
  f.persistedFacts.resolve=async()=>f.facts;
- const channel=createProductOwnerChannel({...f,now:()=>NOW}),ack=JSON.parse(await channel.open(f.open,f.operationPeer));
- const poll=channel.poll(wire(['meri.proxy.capture-poll/1',ack[1],id,'call']),f.capturePeer);
- channel.close();await assert.rejects(poll);assert.equal(channel.available,false);assert.equal(channel.canReadOutcome,false);
- await assert.rejects(channel.readOutcome(wire(['meri.proxy.operation/1',ack[1],['meri.proxy.outcome/1',id]]),f.operationPeer));
+ const channel=createProductOwnerChannel({...f,now:()=>NOW}),ack=JSON.parse(await channel.admit(f.open,f.operationPeer));
+ channel.close();await assert.rejects(channel.operation(wire(['meri.proxy.operation/2',ack[1],f.reservation,f.reservation]),f.operationPeer));assert.equal(channel.available,false);assert.equal(channel.canReadOutcome,false);
+ await assert.rejects(channel.readOutcome(wire(['meri.proxy.operation/2',ack[1],['meri.proxy.outcome/1',id],null]),f.operationPeer));
  assert.equal(f.serviceGate.available,true);assert.equal(f.sql(),0);
 });

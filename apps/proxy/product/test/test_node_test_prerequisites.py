@@ -81,3 +81,28 @@ class NodeTestPrerequisites(unittest.TestCase):
         self.assertTrue(result.wasSuccessful(), (result.errors, result.failures))
         self.assertEqual(result.skipped, [])
         run.assert_not_called()
+
+    def test_combined_wire_skips_missing_prerequisites_and_runs_when_present(self):
+        modules = ('apps/proxy/product/owner-wire-codec.mjs',
+                   'apps/gateway/model-proxy/product-boundary-codec.mjs',
+                   'apps/gateway/model-proxy/product-envelope.mjs')
+        for missing in ('node', 'node_modules', *modules, None):
+            with self.subTest(missing=missing):
+                root = self.workspace(modules, missing=missing)
+                node = None if missing == 'node' else '/synthetic/node'
+                case = wire.OwnerWireEnvelopeTests('test_combined_python_frames_cross_actual_versioned_owner_decoders')
+                result = unittest.TestResult()
+                with patch.object(wire, 'ROOT', root), patch.object(wire.shutil, 'which', return_value=node), \
+                        patch.object(wire.subprocess, 'run', side_effect=RuntimeError('NODE_SUBPROCESS_REACHED')) as run:
+                    case.run(result)
+                if missing is not None:
+                    self.assertEqual(result.errors, [])
+                    self.assertEqual(len(result.skipped), 1)
+                    self.assertIn('Node.js' if missing == 'node' else missing, result.skipped[0][1])
+                    run.assert_not_called()
+                else:
+                    self.assertEqual(result.skipped, [])
+                    self.assertEqual(len(result.errors), 1)
+                    self.assertIn('NODE_SUBPROCESS_REACHED', result.errors[0][1])
+                    run.assert_called_once()
+                    self.assertEqual(run.call_args.args[0][0], node)

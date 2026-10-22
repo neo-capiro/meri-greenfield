@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createP2OwnerFixture} from './test/p2-owner-fixture.mjs';
 import {OWNER_PATHS} from './owner-channel.mjs';
-const placement=(id,deadline=Date.now()+5000)=>['meri.proxy.placement-read/1',id,'a'.repeat(64),deadline];
+const placement=(id,deadline=Date.now()+5000)=>['meri.proxy.admit/1',id,'a'.repeat(64),deadline];
 
 test('real TLS accepts only a post-handshake proof then reuses the lease on held HTTP exchanges',async()=>{
  const f=await createP2OwnerFixture();
@@ -88,4 +88,43 @@ test('aborted read-only HTTPS request closes its socket but the next request sti
   await entered;await rejected;assert.equal(f.serviceGate.available,true);assert.equal(f.server.available,true);
   block=false;const next=await f.request('/health/ready');assert.equal(next.status,200);
  }finally{await f.close();}
+});
+
+for(const mismatch of ['binding','grant','worker'])test(`ADMIT refuses a placement/admission ${mismatch} mismatch before session construction`,async()=>{
+ const f=await createP2OwnerFixture({afterPlacement:value=>{
+  const p=value.issuedTaskNetwork;
+  if(mismatch==='binding')p.execution_binding={...p.execution_binding,runId:'99999999-9999-4999-8999-999999999999'};
+  if(mismatch==='grant')p.grant_id='foreign-grant';
+  if(mismatch==='worker')p.binding={...p.binding,worker_arn:'foreign-worker'};
+ }});
+ try{
+  const reply=await f.request(OWNER_PATHS.operation,placement('mismatch-'+mismatch));
+  assert.equal(reply.status,403);assert.equal(reply.body.length,0);
+  assert.equal(f.counts.facts,2,'only the admission read ran; no request session was constructed');
+ }finally{await f.close();}
+});
+
+for(const invalidation of ['socket-close','generation-change'])test(`ADMIT closes its unpublished channel after ${invalidation} during final facts lookup`,async()=>{
+ const {createTurnTelemetry}=await import('../../runtime/telemetry/turn-context.mjs');
+ const lines=[],telemetry=createTurnTelemetry({service:'owner',write:line=>lines.push(JSON.parse(line))});
+ let entered,release,clientSocket;
+ const working=new Promise(resolve=>{entered=resolve;}),unblock=new Promise(resolve=>{release=resolve;});
+ const requestId='admit-'+invalidation;
+ const f=await createP2OwnerFixture({telemetry,maxRequestMs:5000,afterFacts:async(_facts,call)=>{
+  if(call===3){entered();await unblock;}
+ }});
+ try{
+  const pending=f.request(OWNER_PATHS.operation,placement(requestId),{onSocket:socket=>{clientSocket=socket;}});
+  const rejected=assert.rejects(pending);
+  await working;
+  if(invalidation==='socket-close')clientSocket.destroy();
+  else{f.replaceProxy();await f.reader.read({deadlineMs:Date.now()+1000});}
+  await rejected;release();
+  const until=Date.now()+1000;
+  while(f.server.pendingRequests&&Date.now()<until)await new Promise(resolve=>setTimeout(resolve,5));
+  assert.equal(f.server.pendingRequests,0);
+  assert.equal(lines.filter(line=>line.event==='meri.turn.counters'&&line.requestId===requestId).length,1,
+   'closing the unpublished channel drains its request slot before server shutdown');
+  assert.equal(f.serviceGate.available,true);
+ }finally{release();await f.close();telemetry.close();}
 });

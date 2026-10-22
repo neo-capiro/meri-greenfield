@@ -16,6 +16,7 @@ from .owner_channel import (OwnerPeerPolicy, OwnerHostGate, OPERATION, OwnerCarr
                             acquire_owner_carrier, owner_exchange_state, validate_owner_reply,
                             make_product_owner_bridge)
 from .budgets import OWNER_CARRIER_WAIT_MS
+from .boundary_codec import encode_admit
 from .owner_admission import ProductOwnerAdmissionReader
 from .owner_https import ProductOwnerHttpsExchange
 from .bearer_eni_admission import IssuedTaskNetwork
@@ -59,6 +60,7 @@ class ProductOwnerStartup:
         self.count_client,self.make_provider_transport=count_client,make_provider_transport
         self.pricing_revision,self.body_limits=pricing_revision,body_limits
         self._authorities=weakref.WeakValueDictionary()
+        self._sessions=weakref.WeakKeyDictionary()
         self._closed=False
         self._install_generation(getattr(exchange,"generation",0))
         self._subscriptions=[]
@@ -69,7 +71,7 @@ class ProductOwnerStartup:
 
     def _close_generation(self,generation):
         if generation!=self.generation:return
-        self._authorities.clear()
+        self._authorities.clear();self._sessions.clear()
         self.reader.close()
 
     def _schedule_generation(self,generation):
@@ -92,7 +94,7 @@ class ProductOwnerStartup:
     async def _placement(self, capability, read_id, started, deadline):
         generation=self.generation;policy=self.policy;state=self.state
         self._check_generation(generation)
-        step="carrier";cutoff=deadline;lock=state[3]["admission"]
+        step="carrier";cutoff=deadline;lock=state[3]["operation"]
         with diagnostics.phase("placement"):
             try:
                 # Waiting sends nothing (OwnerCarrierBusy on expiry); the exchange clock starts with the carrier held.
@@ -104,26 +106,29 @@ class ProductOwnerStartup:
                         if not self.gate.available or self.now_ms()>=cutoff:
                             _deny()
                         step="exchange"
-                        raw=json.dumps(["meri.proxy.placement-read/1",read_id,capability,cutoff],
-                            separators=(",",":")).encode("ascii")
-                        reply=await self.exchange("admission",OPERATION,raw,(cutoff-self.now_ms())/1000)
+                        requested=min(deadline,self.now_ms()+900000)
+                        read_at=self.reader.monotonic()
+                        raw=encode_admit(read_id,capability,requested)
+                        reply=await self.exchange("operation",OPERATION,raw,(cutoff-self.now_ms())/1000,
+                            cutoff_ms=cutoff)
                         step="reply"
                         self._check_generation(generation)
-                        frame=validate_owner_reply(policy,reply,"admission",state[4])
+                        frame=validate_owner_reply(policy,reply,"operation",state[4])
                         at=self.now_ms()
                         step="frame"
-                        if (type(frame) is not list or len(frame)!=6
-                                or frame[:3]!=["meri.proxy.placement/1",read_id,capability]
-                                or type(frame[4]) is not int or not started<=frame[4]<=at
-                                or type(frame[5]) is not int or not at<frame[5]<=cutoff):
+                        if (type(frame) is not list or len(frame)!=7
+                                or frame[:3]!=["meri.proxy.admitted/1",read_id,capability]
+                                or type(frame[5]) is not str or not frame[5] or len(frame[5])>128
+                                or not all(c.isascii() and (c.isalnum() or c in "_-") for c in frame[5])
+                                or type(frame[6]) is not int or not at<frame[6]<=requested):
                             _deny()
-                        step="decode"
                         issued=decode_product_placement(frame[3])
-                        step="expiry"
-                        if frame[5]>issued.expires_at_ms or not self.gate.available:
+                        if frame[6]>issued.expires_at_ms or not self.gate.available:
                             _deny()
-                        telemetry.bind(issued.execution_binding)
-                        return issued,frame[5],cutoff
+                        receipt=self.reader._verify_frame(frame[4],read_id,capability,None,
+                            started,cutoff,read_at)
+                        telemetry.bind(issued.execution_binding,read_id)
+                        return issued,receipt,frame[5],frame[6]
                 finally:
                     lock.release()
             except BaseException as error:
@@ -139,18 +144,20 @@ class ProductOwnerStartup:
         self._check_generation(generation)
         started=self.now_ms();deadline=self.exchange.expires_at_ms
         bound=min(deadline,started+OWNER_CARRIER_WAIT_MS+self.policy.max_exchange_ms)
-        coroutine=self._placement(capability,uuid.uuid4().hex,started,deadline)
+        read_id=uuid.uuid4().hex
+        coroutine=self._placement(capability,read_id,started,deadline)
         future=None;step="placement"
         try:
             diagnostics.stage("placement-read")
             future=asyncio.run_coroutine_threadsafe(coroutine,self.loop)
-            issued,effective,cutoff=future.result(timeout=max(.001,(bound-self.now_ms())/1000+1))
+            issued,receipt,session_id,session_deadline=future.result(timeout=max(.001,(bound-self.now_ms())/1000+1))
             step="admission";diagnostics.stage("admission-read")
             self._check_generation(generation)
             source=reader.resolve_for_issued_sync(issued=issued,capability_sha256=capability,
-                deadline_ms=min(cutoff,effective))
+                deadline_ms=session_deadline,receipt=receipt)
             self._check_generation(generation)
             self._authorities[id(source.authority)]=source.authority
+            self._sessions[source.authority]=(read_id,session_id,session_deadline)
             return source
         except OwnerCarrierBusy as error:
             # A carrier stayed held: nothing of this resolution was sent on it. Refuse the request, keep the gate.
@@ -178,9 +185,12 @@ class ProductOwnerStartup:
         binding=dict(zip(("tenantId","actorId","conversationId","runId","attemptId","workerId","writerFence"),facts[0]))
         if authority.binding!=life.peer.binding or authority.grant_id!=life.peer.grant_id:
             _deny()
-        remaining=max(0,int((life.deadline-time.monotonic())*1000))
-        deadline=min(facts[4][3],self.now_ms()+remaining)
-        request_id=uuid.uuid4().hex
+        session=self._sessions.pop(authority,None)
+        if session is None:
+            _deny()
+        request_id,session_id,deadline=session
+        if self.now_ms()>=deadline or deadline>facts[4][3]:
+            _deny()
         telemetry.bind(binding, request_id)
         async def current(value):
             if (type(value) is not dict or value!={"binding":binding,"requestId":request_id,"deadlineMs":deadline}):
@@ -193,7 +203,7 @@ class ProductOwnerStartup:
             count_client=self.count_client,make_provider_transport=self.make_provider_transport,
             make_owner_bridge=make_product_owner_bridge(policy=self.policy,exchange=self.exchange,
                 host_gate=self.gate,request_id=request_id,binding=binding,deadline_ms=deadline,
-                grant_id=facts[1],capability_sha256=facts[2],now_ms=self.now_ms),
+                grant_id=facts[1],capability_sha256=facts[2],session_id=session_id,now_ms=self.now_ms),
             check_current_conversation=current,limits=self.body_limits or BodyLimits())
 
     def close(self):
@@ -203,4 +213,4 @@ class ProductOwnerStartup:
             if callable(unsubscribe):unsubscribe()
         self._subscriptions.clear()
         self.reader.close()
-        self.gate.poison();self.exchange.close();self._authorities.clear()
+        self.gate.poison();self.exchange.close();self._authorities.clear();self._sessions.clear()

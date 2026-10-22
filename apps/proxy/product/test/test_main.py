@@ -139,9 +139,12 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
         observed = []
         def wire(exchange, channel, path, body, cutoff, cancelled=None):
             frame = json.loads(body)
-            if frame[0] == "meri.proxy.placement-read/1":
-                return synthetic.reply(["meri.proxy.placement/1",frame[1],frame[2],placement,
-                    time.time_ns()//1000000,frame[3]],channel)
+            if frame[0] == "meri.proxy.admit/1":
+                admission=["meri.proxy.admission-read/1",frame[1],frame[2],None,cutoff]
+                future=asyncio.run_coroutine_threadsafe(synthetic(channel,path,json.dumps(admission).encode(),1),loop)
+                reply=future.result(timeout=1)
+                return synthetic.reply(["meri.proxy.admitted/1",frame[1],frame[2],placement,
+                    json.loads(reply.body),"admitted_session",min(frame[3],issued.expires_at_ms)],channel)
             future = asyncio.run_coroutine_threadsafe(synthetic(channel,path,body,1),loop)
             return future.result(timeout=1)
         async def server_boundary(**kwargs):

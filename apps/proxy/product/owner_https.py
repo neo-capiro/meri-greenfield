@@ -18,7 +18,7 @@ import ssl
 import threading
 import time
 
-from .owner_channel import (OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPEN, OPERATION, POLL, REPLY,
+from .owner_channel import (OwnerPeerPolicy, OwnerReply, OwnerTlsEvidence, OPERATION,
                             report_owner_write_completed)
 from .service_pair_discovery import ProductServicePairDiscovery, PairProofError
 from .pair_lease import ProductPairLease
@@ -87,7 +87,7 @@ def load_owner_client_tls_material(*, ca_file, certificate_file, private_key_fil
         _deny()
 
 
-def validate_owner_http_reply(status, headers, *, expected_revision, max_bytes=12*1024*1024):
+def validate_owner_http_reply(status, headers, *, expected_revision, max_bytes=24*1024*1024):
     """Closed HTTP framing, independent of the admission/budget body codec."""
     if status != 200 or type(headers) is not list or len(headers) > 64:
         _deny()
@@ -116,17 +116,13 @@ def _read_only_exchange(path, body):
         return False
     if type(frame) is not list or not frame:
         return False
-    if path == OPEN:
-        return len(frame) == 5 and frame[0] == 'meri.proxy.session-open/1'
-    if path == POLL:
-        return len(frame) == 4 and frame[0] == 'meri.proxy.capture-poll/1'
     if path != OPERATION:
         return False
-    if frame[0] in ('meri.proxy.admission-read/1', 'meri.proxy.placement-read/1'):
+    if frame[0] in ('meri.proxy.admission-read/1', 'meri.proxy.admit/1'):
         return len(frame) == (5 if frame[0] == 'meri.proxy.admission-read/1' else 4)
-    return (len(frame) == 3 and frame[0] == 'meri.proxy.operation/1'
+    return (len(frame) == 4 and frame[0] == 'meri.proxy.operation/2'
             and type(frame[2]) is list and len(frame[2]) == 2
-            and frame[2][0] == 'meri.proxy.outcome/1')
+            and frame[2][0] == 'meri.proxy.outcome/1' and frame[3] is None)
 
 
 class _StatusObservedResponse(http.client.HTTPResponse):
@@ -465,7 +461,7 @@ class ProductOwnerHttpsExchange:
                 raise OwnerExchangeUnavailable() from None
             raise
         finally:
-            telemetry.count("ownerExchanges", channel, {OPEN: "OPEN", OPERATION: "OPERATION", POLL: "POLL", REPLY: "REPLY"}.get(path), (time.monotonic() - began) * 1000)
+            telemetry.count("ownerExchanges", channel, "OPERATION" if path == OPERATION else None, (time.monotonic() - began) * 1000)
             if acquired:
                 with self._state:
                     if self._attempts.get(channel) is attempt:
@@ -473,32 +469,33 @@ class ProductOwnerHttpsExchange:
                         self._pending_reads.pop(channel, None)
                 self._locks[channel].release()
 
-    async def __call__(self, channel, path, body, timeout):
-        if (channel not in self._locks or path not in (OPEN, OPERATION, POLL, REPLY)
-                or path == OPEN and channel != "operation" or path in (POLL, REPLY) and channel != "capture"
-                or channel == "admission" and path != OPERATION
-                or type(body) is not bytes or not 1 <= len(body) <= 12*1024*1024
+    async def __call__(self, channel, path, body, timeout, *, cutoff_ms=None):
+        if (channel not in self._locks or path != OPERATION
+                or type(body) is not bytes or not 1 <= len(body) <= 24*1024*1024
                 or type(timeout) not in (int, float) or not math.isfinite(timeout)
-                or not 0 < timeout <= self.policy.max_exchange_ms/1000):
+                or not 0 < timeout <= self.policy.max_exchange_ms/1000
+                or cutoff_ms is not None and (type(cutoff_ms) is not int or cutoff_ms <= 0)):
             _deny()
         reads = {"capture": ("meri.proxy.admission-read/1",),
-                 "admission": ("meri.proxy.admission-read/1", "meri.proxy.placement-read/1")}
+                 "admission": ("meri.proxy.admission-read/1",)}
         read_deadline = None
         if channel in reads and path == OPERATION:
             try:
                 frame = json.loads(body)
                 if (type(frame) is not list or not frame or frame[0] not in reads[channel]
-                        or len(frame) != (5 if frame[0] == "meri.proxy.admission-read/1" else 4)):
+                        or len(frame) != 5):
                     _deny()
                 if type(frame[-1]) is int:
                     read_deadline = frame[-1]
             except (ValueError, TypeError, UnicodeError):
                 _deny()
         cutoff = min(self.expires_at_ms, self.now_ms()+max(1, int(timeout*1000)))
-        # Admission/placement callers enforce the deadline carried in the read
-        # frame too. Keep their outer timer and this adapter on the same bound.
+        # Periodic reads carry their I/O deadline. ADMIT supplies its shorter
+        # local cutoff separately from the longer wire authority deadline.
         if read_deadline is not None:
             cutoff = min(cutoff, read_deadline)
+        if cutoff_ms is not None:
+            cutoff = min(cutoff, cutoff_ms)
         cancelled = threading.Event()
         # The native socket timeout is the primary bound. The event prevents a
         # queued native worker from sending after cancellation; reset releases I/O.

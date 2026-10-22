@@ -15,7 +15,7 @@ from unittest.mock import patch
 from apps.proxy.product.owner_https import (ProductOwnerHttpsExchange,OwnerClientTlsMaterial,OwnerExchangeUnavailable,
     validate_owner_http_reply,load_owner_client_tls_material)
 from apps.proxy.product.owner_channel import (OwnerPeerPolicy,OwnerTlsEvidence,OwnerHostGate,
-    make_product_owner_bridge,OPEN,OPERATION,POLL,REPLY)
+    make_product_owner_bridge,OPERATION)
 from apps.proxy.product import refusal_diagnostics as diagnostics,telemetry_lines
 from apps.proxy.product.service_pair_discovery import compile_owner_peer,PairProofError
 from apps.proxy.product.test_boundary_codec import reservation
@@ -104,24 +104,16 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
                             key,header=line.decode('ascii').split(':',1);headers[key.lower()]=header.strip()
                         body=stream.read(int(headers['content-length']))
                         frame=json.loads(body);frames.append((method,path,frame))
-                        if path==OPEN:
-                            answer=['meri.proxy.session/1',session,frame[1],frame[2]]
-                        elif path==POLL:
-                            answer=['meri.proxy.capture-call/1',value['requestId'],
-                                [value['binding'][key] for key in ('tenantId','actorId','conversationId',
-                                    'runId','attemptId','workerId','writerFence')],value['deadlineMs']]
-                        elif path==REPLY:
-                            answer=['meri.proxy.capture-ack/1',session,value['requestId'],'call']
-                        else:
-                            self.assertEqual(frame[0],'meri.proxy.operation/1')
-                            self.assertEqual(frame[2][0],'meri.proxy.reservation/1')
-                            received.set()
-                            # Request bytes reached the owner; no reply is sent.
-                            stop.wait(3)
-                            return
-                        encoded=json.dumps(answer,separators=(',',':')).encode()
-                        sock.sendall(b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: '+
-                            str(len(encoded)).encode()+b'\r\nCache-Control: no-store\r\nX-Meri-Owner-Revision: reviewed-v1\r\n\r\n'+encoded)
+                        self.assertEqual(path,OPERATION)
+                        self.assertEqual(frame[:2],['meri.proxy.operation/2',session])
+                        self.assertEqual(len(frame),4)
+                        self.assertEqual(frame[2][0],'meri.proxy.reservation/1')
+                        self.assertEqual(frame[3][0],'meri.proxy.reservation/1')
+                        received.set()
+                        # Both claim and independent capture reached the owner;
+                        # no reply is sent and neither frame may be retried.
+                        stop.wait(3)
+                        return
             except BaseException as error:
                 if not stop.is_set(): socket_errors.append(error)
 
@@ -154,7 +146,7 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
             bridge=make_product_owner_bridge(policy=item.policy,exchange=item,host_gate=OwnerHostGate(),
                 request_id=value['requestId'],binding=value['binding'],deadline_ms=value['deadlineMs'],
                 grant_id='grant_A',capability_sha256=hashlib.sha256(observation['proxyCredential'].encode()).hexdigest(),
-                now_ms=lambda:wall)(capture)
+                session_id=session,now_ms=lambda:wall)(capture)
             try:
                 with self.assertRaisesRegex(Exception,'^PRODUCT_OWNER_CHANNEL_DENIED$'):
                     await bridge.reserve(value,observation)
@@ -288,13 +280,13 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
     async def test_capture_connection_cannot_submit_a_budget_claim(self):
         item=exchange()
         with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
-            await item('capture',OPERATION,b'["meri.proxy.operation/1"]',.1)
+            await item('capture',OPERATION,b'["meri.proxy.operation/2"]',.1)
         item.abort()
 
     async def test_admission_connection_carries_only_owner_reads(self):
         item=exchange()
-        for path,body in ((OPEN,b'["meri.proxy.session-open/1"]'),(POLL,b'["meri.proxy.capture-poll/1"]'),
-                          (REPLY,b'["meri.proxy.capture-reply/1"]'),(OPERATION,b'["meri.proxy.operation/1","s",[]]'),
+        for path,body in (("/v1/internal/product-model/owner/session/open",b'["meri.proxy.session-open/1"]'),("/v1/internal/product-model/owner/capture/poll",b'["meri.proxy.capture-poll/1"]'),
+                          ("/v1/internal/product-model/owner/capture/reply",b'["meri.proxy.capture-reply/1"]'),(OPERATION,b'["meri.proxy.operation/2","s",[],null]'),
                           (OPERATION,b'["meri.proxy.admission-read/1","r","a"]'),(OPERATION,b'["meri.proxy.placement-read/1","r"]')):
             with self.assertRaisesRegex(Exception,'PRODUCT_OWNER_HTTPS_DENIED'):
                 await item('admission',path,body,.1)

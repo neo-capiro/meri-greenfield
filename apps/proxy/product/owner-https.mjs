@@ -7,7 +7,7 @@ import {X509Certificate,createHash,randomBytes,constants} from 'node:crypto';
 import {isIPv4} from 'node:net';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createProductOwnerChannel,createProductOwnerAdmissionChannel,OWNER_PATHS} from './owner-channel.mjs';
-import {parseOwnerWire} from './owner-wire-codec.mjs';
+import {parseOwnerWire,decodeAdmitFrame} from './owner-wire-codec.mjs';
 import {OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
 import {PAIR_LEASE_TTL_MS} from './owner-pair-lease.mjs';
 
@@ -19,7 +19,7 @@ export const PRODUCT_OWNER_IDLE_SOCKETS=Object.freeze({keepAliveTimeout:0,keepAl
 const sha=v=>createHash('sha256').update(v).digest('hex');
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)?v:fail();
 const slot=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,128}$/u.test(v)?v:fail();
-const MAX=12*1024*1024;
+const MAX=24*1024*1024;
 const tuple=(v,n)=>Array.isArray(v)&&v.length===n?v:fail();
 const wire=v=>Buffer.from(JSON.stringify(v));
 const fields=['binding','grant_id','cluster_arn','task_definition_arn','container_name','image_digest',
@@ -161,28 +161,40 @@ export function createProductOwnerHttpsServer(configuration){
  }
  async function dispatch(path,body,socket,p,deadline,signal){
   const f=parseOwnerWire(body),s=state(socket),policy=s.policy;
+  const assertLive=()=>{if(signal.aborted||socket.destroyed||c.now()>=deadline)fail();assertBound(socket);};
   for(const [id,session]of sessions)if(session.expiry<=c.now()){finishOwnerChannel(session.channel);sessions.delete(id);}
-  if(path===OWNER_PATHS.operation&&f[0]==='meri.proxy.placement-read/1'){
-   role(socket,'operation');tuple(f,4);slot(f[1]);digest(f[2]);
-   if(!Number.isSafeInteger(f[3])||f[3]<=c.now())fail();consumeProductPlacementRead(reads,f[1],c.serviceGate);
-   const v=await c.placement.resolve({capabilitySha256:f[2],deadlineMs:Math.min(f[3],deadline),signal});
-   if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<deadline-maxRequestMs||v.checkedAtMs>c.now()||
+  if(path===OWNER_PATHS.operation&&f[0]==='meri.proxy.admit/1'){
+   role(socket,'operation');
+   const request=decodeAdmitFrame(f);if(sessions.size>=1024)fail();
+   consumeProductPlacementRead(reads,request.requestId,c.serviceGate);
+   const started=c.now();
+   if(request.deadlineMs<=started||request.deadlineMs-started>900000)fail();
+   const v=await c.placement.resolve({capabilitySha256:request.capabilitySha256,
+    deadlineMs:Math.min(request.deadlineMs,deadline),signal});
+   assertLive();
+   if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>c.now()||
       !Number.isSafeInteger(v.effectiveExpiresAtMs)||v.effectiveExpiresAtMs<=c.now())fail();
-   try{telemetry?.bind(v.issuedTaskNetwork.execution_binding);}catch{}
-   return wire(['meri.proxy.placement/1',f[1],f[2],encodeProductPlacement(v),v.checkedAtMs,
-    Math.min(v.effectiveExpiresAtMs,f[3],deadline)]);
+   const receipt=parseOwnerWire(await admission(s).read(wire(['meri.proxy.admission-read/1',request.requestId,
+    request.capabilitySha256,null,Math.min(request.deadlineMs,deadline)]),p,'operation'));
+   assertLive();
+   const sessionDeadline=Math.min(request.deadlineMs,v.issuedTaskNetwork.expires_at_ms,receipt[4][4][3]);
+   const binding=Object.fromEntries(bindingFields.map((key,index)=>[key,receipt[4][0][index]]));
+   if(bindingFields.some(key=>binding[key]!==v.issuedTaskNetwork.execution_binding[key])||
+      receipt[4][1]!==v.issuedTaskNetwork.grant_id||receipt[4][3][2]!==v.issuedTaskNetwork.binding.worker_arn)fail();
+   const channel=createProductOwnerChannel({clientPolicy:policy,persistedFacts:c.persistedFacts,
+    ownerPorts:c.ownerPorts,serviceGate:c.serviceGate,now:c.now,maxExchangeMs:maxRequestMs});
+   try{
+    const reply=parseOwnerWire(await channel.admit({requestId:request.requestId,capabilitySha256:request.capabilitySha256,
+     binding,deadlineMs:sessionDeadline},p));
+    assertLive();
+    sessions.set(reply[1],{channel,operation:socket,admission:admission(s),expiry:sessionDeadline,generation:s.lease.generation});
+    return wire(['meri.proxy.admitted/1',request.requestId,request.capabilitySha256,encodeProductPlacement(v),receipt,reply[1],sessionDeadline]);
+   }catch(error){channel.close();throw error;}
   }
   if(path===OWNER_PATHS.operation&&f[0]==='meri.proxy.admission-read/1'){
    if(s.role===null)role(socket,'operation');
    if(!s.admission)admission(s);
    return s.admission.read(body,p,s.role);
-  }
-  if(path===OWNER_PATHS.open){
-   role(socket,'operation');tuple(f,5);if(sessions.size>=1024)fail();
-   const channel=createProductOwnerChannel({clientPolicy:policy,persistedFacts:c.persistedFacts,
-    ownerPorts:c.ownerPorts,serviceGate:c.serviceGate,now:c.now,maxExchangeMs:maxRequestMs});
-   const reply=await channel.open(body,p),id=tuple(parseOwnerWire(reply),4)[1];
-   sessions.set(id,{channel,operation:socket,capture:null,admission:admission(s),expiry:f[4],generation:s.lease.generation});return reply;
   }
   const id=f[1],session=sessions.get(id);if(!session||session.generation!==s.lease.generation)fail();
   if(path===OWNER_PATHS.operation){
@@ -192,19 +204,15 @@ export function createProductOwnerHttpsServer(configuration){
    }
    role(socket,'operation');return session.channel.operation(body,p);
   }
-  if(socket===session.operation||session.capture!==null&&session.capture!==socket)fail();
-  if(session.capture===null&&path!==OWNER_PATHS.poll)fail();
-  role(socket,'capture');session.capture=socket;
-  if(s.admission!==null&&s.admission!==session.admission)fail();s.admission=session.admission;
-  return path===OWNER_PATHS.poll?session.channel.poll(body,p):session.channel.reply(body,p);
+  fail();
  }
  function closeSocketSessions(socket){
   const s=states.get(socket);s?.abort?.abort();
-  for(const [id,session]of sessions)if(session.operation===socket||session.capture===socket){
+  for(const [id,session]of sessions)if(session.operation===socket){
    session.channel.close();
    if(!session.channel.canReadOutcome){finishOwnerChannel(session.channel);sessions.delete(id);}
   }
-  // Admission channels can be shared with a surviving capture socket.
+  // Retire the admission reader when no session still owns it.
   if(s?.admission&&![...sessions.values()].some(session=>session.admission===s.admission))s.admission.close();
  }
  function closeGeneration(){

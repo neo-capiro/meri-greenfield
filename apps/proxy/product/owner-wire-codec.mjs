@@ -1,14 +1,15 @@
 /** Bounded positional values for the private HTTPS product-owner bridge.
  *
  * Python's boundary_codec emits arrays, never object maps. This parser grants
- * no authority: the owner must obtain fresh request/response captures through
- * its separately authenticated host channel before calling the canonical
- * reservation and settlement composition. It opens no socket or listener.
+ * no authority: the owner compares the independently sampled claim and host
+ * capture carried together on the authenticated channel before calling the
+ * canonical reservation and settlement composition. It opens no listener.
  */
 import {TextDecoder} from 'node:util';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/model-proxy/product-envelope.mjs';
 
-const MAX_WIRE=12*1024*1024;
+// operation/2 carries two independent samples, each with raw and native bodies.
+const MAX_WIRE=24*1024*1024;
 const MAX_BODY=4*1024*1024;
 const MAX_SAFE=Number.MAX_SAFE_INTEGER;
 const SLOT=/^[A-Za-z0-9_-]{1,128}$/u;
@@ -39,8 +40,10 @@ function identity(value){
 }
 function body(value){
  if(typeof value!=='string'||value.length<4||value.length>Math.ceil(MAX_BODY/3)*4||
-    !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/u.test(value))deny();
+    value.length%4!==0)deny();
  const decoded=Buffer.from(value,'base64');
+ // Exact round-trip enforces the alphabet, padding and pad bits without a
+ // repeated-group regexp that overflows on a permitted 4 MiB body.
  if(decoded.length<1||decoded.length>MAX_BODY||decoded.toString('base64')!==value)deny();
  return decoded;
 }
@@ -84,6 +87,39 @@ export function parseOwnerWire(raw){
  if(!Array.isArray(value))deny();
  walk(value,0);
  return value;
+}
+
+/** Placement, admission and session creation are one request-bound exchange. */
+export function decodeAdmitFrame(value){
+ const frame=array(value,4);
+ if(frame[0]!=='meri.proxy.admit/1')deny();
+ return {requestId:string(frame[1],128,{pattern:SLOT}),
+  capabilitySha256:string(frame[2],64,{pattern:SHA}),deadlineMs:integer(frame[3],1)};
+}
+
+/** Version 2 requires both independent samples in the same bounded envelope.
+ * Full claim/capture equality is still enforced by the canonical budget bridge.
+ */
+export function decodeOperationFrame(value){
+ const frame=array(value,4);
+ if(frame[0]!=='meri.proxy.operation/2')deny();
+ const sessionId=string(frame[1],128,{pattern:SLOT}),claim=frame[2];
+ if(!Array.isArray(claim))deny();
+ if(claim[0]==='meri.proxy.reservation/1'){
+  const submitted=decodeReservationFrame(claim),captured=decodeReservationFrame(frame[3]);
+  if(JSON.stringify(submitted.request)!==JSON.stringify(captured.request))deny();
+  return {sessionId,kind:'reserve',submitted,captured};
+ }
+ if(claim[0]==='meri.proxy.settlement/1'){
+  const submitted=decodeSettlementFrame(claim),captured=decodeCompleteCaptureFrame(frame[3]);
+  if(submitted.requestId!==captured.reservation.requestId)deny();
+  return {sessionId,kind:'settle',submitted,captured};
+ }
+ if(claim[0]==='meri.proxy.outcome/1'){
+  array(claim,2);if(frame[3]!==null)deny();
+  return {sessionId,kind:'outcome',submitted:{requestId:string(claim[1],128,{pattern:SLOT})},captured:null};
+ }
+ deny();
 }
 
 /** Decode both the untrusted operation claim and independent host capture. */

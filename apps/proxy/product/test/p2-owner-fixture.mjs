@@ -7,16 +7,18 @@ import {join} from 'node:path';
 import {X509Certificate,createHash} from 'node:crypto';
 import {Agent,request as httpsRequest} from 'node:https';
 import {performance} from 'node:perf_hooks';
+import {productFixture} from '../../../gateway/budget/product-scripted-fixture.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createOwnerPairLease,pairFailure} from '../owner-pair-lease.mjs';
 import {createProductOwnerServiceGate} from '../owner-channel.mjs';
 import {createProductOwnerHttpsServer} from '../owner-https.mjs';
 
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 export async function createP2OwnerFixture({persistedFacts,ownerPorts,placement,now=Date.now,
- monotonicNow=()=>performance.now(),maxRequestMs=1000,telemetry,pairIdentities,afterPlacement,readiness}={}){
+ monotonicNow=()=>performance.now(),maxRequestMs=1000,telemetry,pairIdentities,afterPlacement,afterFacts,readiness}={}){
  const directory=mkdtempSync(join(tmpdir(),'meri-p2-owner-'));
  const run=args=>execFileSync('openssl',args,{cwd:directory,stdio:'ignore'});
- const events=[],health=[],counts={pairProofs:0,placement:0};let unavailable=false,hook=null;
+ const events=[],health=[],counts={pairProofs:0,placement:0,facts:0};let unavailable=false,hook=null;
  let server,reader;
  const agents=new Set();
  try{
@@ -43,22 +45,37 @@ export async function createP2OwnerFixture({persistedFacts,ownerPorts,placement,
     return structuredClone({...pair,checkedAtMs:now(),expiresAtMs:Math.min(pins.expiresAtMs,now()+30000)});}})});
   await reader.read({deadlineMs:now()+maxRequestMs});
   const serviceGate=createProductOwnerServiceGate({telemetry});
-  const facts=persistedFacts??{available:true,resolve:async()=>{throw Error('SYNTHETIC_FACTS_NOT_CONFIGURED');}};
-  const ports=ownerPorts??{pool:{connect:async()=>{throw Error('SYNTHETIC_SQL_NOT_CONFIGURED');}},pricing:{},limits:{},checkCurrentConversation:async()=>{throw Error('SYNTHETIC_CURRENTNESS_NOT_CONFIGURED');}};
-  const suppliedPlacement=placement??{available:true,resolve:async value=>{
-   const binding={run_id:'run',attempt:1,worker_arn:'worker',fence:1,policy_revision:'policy'};
-   return {issuedTaskNetwork:{binding,grant_id:'grant',cluster_arn:'cluster',task_definition_arn:'definition',container_name:'worker',image_digest:'sha256:image',
-    execution_binding:{tenantId:'tenant',actorId:'actor',conversationId:'conversation',runId:'run',attemptId:'attempt',workerId:'worker',writerFence:1},
-    started_by:'started',group:'group',created_at_ms:now()-1000,expires_at_ms:now()+60000,vpc_id:'vpc',subnet_id:'subnet',security_group_ids:['sg'],tags:[]},
-    checkedAtMs:now(),effectiveExpiresAtMs:Math.min(value.deadlineMs,now()+1000)};
-  }};
+  const seed=productFixture(),grant=seed.context(),binding=grant.binding;
+  grant.capabilitySha256='a'.repeat(64);
+  const expiry=now()+60000,execution=canonicalSha256(binding),clientId=clientPolicy.selectedClientId;
+  const resource={taskArn:grant.qualificationBinding.workerArn,createdAtMs:now()-1000,
+   clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',
+   taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker'};
+  const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
+  const facts=persistedFacts??{available:true,resolve:async()=>({binding,allocationJson:JSON.stringify(seed.allocation),grantFactsJsons:[JSON.stringify(grant)],
+   modelGrantId:grant.grantId,selectedClientId:clientId,original:{binding,executionKey:execution,executionId:execution,planSha256:'d'.repeat(64),expiresAtMs:expiry,versions},
+   resource,requestSha256:'e'.repeat(64),expiresAtMs:expiry})};
+  const ports=ownerPorts??{pool:{connect:async()=>{throw Error('SYNTHETIC_SQL_NOT_CONFIGURED');}},pricing:{},limits:{},
+   checkCurrentConversation:async()=>({identitySha256:'a'.repeat(64),binding,
+    scopes:[{kind:'client',tenantId:binding.tenantId,resourceId:clientId,policyRevision:grant.qualificationBinding.policyRevision}],
+    selectedClientId:clientId,contextRevision:'b'.repeat(64),checkedAtMs:now(),expiresAtMs:expiry})};
+  const suppliedPlacement=placement??{available:true,resolve:async value=>({issuedTaskNetwork:{
+   binding:{run_id:binding.runId,attempt:1,worker_arn:resource.taskArn,fence:binding.writerFence,policy_revision:grant.qualificationBinding.policyRevision},
+   grant_id:grant.grantId,cluster_arn:resource.clusterArn,task_definition_arn:resource.taskDefinitionArn,container_name:resource.containerName,image_digest:versions.imageDigest,
+   execution_binding:binding,started_by:execution,group:'meri:'+execution,created_at_ms:resource.createdAtMs,expires_at_ms:expiry,
+   vpc_id:'vpc-aaaaaaaaaaaaaaaaa',subnet_id:'subnet-bbbbbbbbbbbbbbbbb',security_group_ids:['sg-ccccccccccccccccc'],
+   tags:[['meri:execution-id',execution],['meri:binding-sha256',execution],['meri:plan-sha256','d'.repeat(64)],['meri:expires-at-ms',String(expiry)]]},
+   checkedAtMs:now(),effectiveExpiresAtMs:Math.min(value.deadlineMs,expiry)})};
   const wrappedPlacement={get available(){return suppliedPlacement.available;},async resolve(value){
-   counts.placement++;const result=await suppliedPlacement.resolve(value);await afterPlacement?.();return result;
+   counts.placement++;const result=await suppliedPlacement.resolve(value);await afterPlacement?.(result);return result;
   }};
   // Readiness can be tested independently of socket-bound authority. All proof,
   // generation and monotonic lease checks still use the real holder above.
   const taskLeaseReader=readiness?Object.create(reader,{ready:{get:readiness}}):reader;
-  const create=()=>createProductOwnerHttpsServer({enabled:true,tlsMaterial,clientPolicy,persistedFacts:facts,ownerPorts:ports,
+  const wrappedFacts={get available(){return facts.available;},async resolve(value){
+   counts.facts++;const result=await facts.resolve(value);await afterFacts?.(result,counts.facts);return result;
+  }};
+  const create=()=>createProductOwnerHttpsServer({enabled:true,tlsMaterial,clientPolicy,persistedFacts:wrappedFacts,ownerPorts:ports,
    placement:wrappedPlacement,taskLeaseReader,serviceGate,now,maxRequestMs});
   server=telemetry?telemetry.provisional(create):create();await server.listen();
   const clientTls={ca,cert:clientCert,key:material('proxy.key'),minVersion:'TLSv1.3',maxVersion:'TLSv1.3',ALPNProtocols:['http/1.1'],servername:'owner.synthetic.invalid'};

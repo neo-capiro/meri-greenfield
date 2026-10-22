@@ -35,7 +35,7 @@ test('owner settlement drains pending run reads once and keeps concurrent model 
  telemetry.within(binding,()=>telemetry.recordCore('identity','2xx',4));
  let releaseA;const blocked=new Promise(resolve=>{releaseA=resolve;});
  function channel(requestId,wait){let finished=false;
-  return observeOwnerChannel({available:true,async operation(){telemetry.recordDb(2);telemetry.recordCore('context','2xx',3);await wait;finished=true;return requestId;},async open(){},async poll(){},async reply(){}},
+  return observeOwnerChannel({available:true,async operation(){telemetry.recordDb(2);telemetry.recordCore('context','2xx',3);await wait;finished=true;return requestId;},async admit(){}},
    {telemetry,identity:()=>({requestId,binding,settled:finished})});
  }
  const a=channel(id(3),blocked),b=channel(id(4),Promise.resolve());
@@ -50,8 +50,8 @@ test('owner settlement drains pending run reads once and keeps concurrent model 
  assert.equal(counters.reduce((n,line)=>n+sum(line.core),0),3);
  assert.equal(counters.reduce((n,line)=>n+sum(line.aws),0),4);
  assert.equal(counters.reduce((n,line)=>n+line.clerkReadsEstimate,0),5);
- // A further poll/reply after settlement must not re-emit the model counters.
- await runOwnerHttpRequest(telemetry,()=>b.reply());assert.equal(lines.filter(line=>line.event==='meri.turn.counters').length,2);
+ // Re-reading an observed channel after settlement must not re-emit counters.
+ await runOwnerHttpRequest(telemetry,()=>b.admit());assert.equal(lines.filter(line=>line.event==='meri.turn.counters').length,2);
 });
 
 test('rejected owner work preserves the error and leaves unknown binding work in the background',async()=>{
@@ -65,11 +65,11 @@ test('rejected owner work preserves the error and leaves unknown binding work in
 
 test('failed or retired owner channels flush known binding counts once and release their request slots',async()=>{
  const {lines,telemetry}=fixture(),failure=Error('private failed model'),failureId=id(5),retiredId=id(6);
- let failed=false;const channel=observeOwnerChannel({available:true,async operation(){telemetry.recordDb(2);failed=true;throw failure;},async open(){},async poll(){},async reply(){}},
+ let failed=false;const channel=observeOwnerChannel({available:true,async operation(){telemetry.recordDb(2);failed=true;throw failure;},async admit(){}},
   {telemetry,identity:()=>({requestId:failureId,binding,failed})});
  await assert.rejects(runOwnerHttpRequest(telemetry,()=>channel.operation()),error=>error===failure);
  finishOwnerChannel(channel);finishOwnerChannel(channel);
- const retired=observeOwnerChannel({available:true,async operation(){telemetry.recordDb(3);return 'held';},async open(){},async poll(){},async reply(){}},
+ const retired=observeOwnerChannel({available:true,async operation(){telemetry.recordDb(3);return 'held';},async admit(){}},
   {telemetry,identity:()=>({requestId:retiredId,binding})});
  assert.equal(await runOwnerHttpRequest(telemetry,()=>retired.operation()),'held');
  finishOwnerChannel(retired);finishOwnerChannel(retired);

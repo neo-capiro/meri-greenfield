@@ -3,7 +3,7 @@ import hashlib
 import json
 import unittest
 
-from .boundary_codec import encode_reservation, encode_settlement
+from .boundary_codec import _positional_frame, encode_admit, encode_operation, encode_reservation, encode_settlement
 from ..qualification.runtime.native_usage import UsageBinding, UsageResult
 
 
@@ -45,6 +45,60 @@ def usage():
 
 
 class CodecTests(unittest.TestCase):
+    def test_admit_encodes_exact_request_and_refuses_invalid_fields(self):
+        self.assertEqual(json.loads(encode_admit("request_A", "a" * 64, 9000000000000)),
+                         ["meri.proxy.admit/1", "request_A", "a" * 64, 9000000000000])
+        for args in (("bad slot", "a" * 64, 1), ("request_A", "bad", 1),
+                     ("request_A", "a" * 64, 0), ("request_A", "a" * 64, True)):
+            with self.assertRaisesRegex(ValueError, "PRODUCT_PROXY_CODEC_REFUSED"):
+                encode_admit(*args)
+
+    def test_operation_v2_preserves_independent_samples_and_outcome_recovery(self):
+        value, observation = reservation()
+        claim = encode_reservation(value, observation)
+        observation["count"]["inputTokens"] = 11
+        capture = encode_reservation(value, observation)
+        frame = json.loads(encode_operation("session_A", claim, capture))
+        self.assertEqual(frame[0:2], ["meri.proxy.operation/2", "session_A"])
+        self.assertEqual(frame[2], json.loads(claim))
+        self.assertEqual(frame[3], json.loads(capture))
+        self.assertNotEqual(frame[2], frame[3])
+        outcome = json.dumps(["meri.proxy.outcome/1", "request_A"]).encode()
+        self.assertEqual(json.loads(encode_operation("session_A", outcome, None)),
+                         ["meri.proxy.operation/2", "session_A", ["meri.proxy.outcome/1", "request_A"], None])
+
+    def test_operation_v2_refuses_missing_capture_old_frames_and_nonpositional_data(self):
+        value, observation = reservation()
+        claim = encode_reservation(value, observation)
+        for bad_claim, bad_capture in (
+                (claim, None), (claim, b'{}'),
+                (b'["meri.proxy.operation/1","session_A",[]]', claim),
+                (b'["meri.proxy.reservation/1",{},[]]', claim),
+                (b'["meri.proxy.reservation/1",[],[1.5]]', claim),
+                (b'["meri.proxy.outcome/1","request_A"]', claim),
+                (b'[]', None), (b'\xff', claim)):
+            with self.assertRaisesRegex(ValueError, "PRODUCT_PROXY_CODEC_REFUSED"):
+                encode_operation("session_A", bad_claim, bad_capture)
+        value["deadlineMs"] -= 1
+        with self.assertRaisesRegex(ValueError, "PRODUCT_PROXY_CODEC_REFUSED"):
+            encode_operation("session_A", claim, encode_reservation(value, observation))
+
+    def test_combined_maximum_samples_fit_without_widening_body_or_wire_limits(self):
+        value, observation = reservation()
+        observation["rawRequestBody"] = b"a" * (4 * 1024 * 1024)
+        observation["nativeRequest"]["body"] = b"b" * (4 * 1024 * 1024)
+        claim = encode_reservation(value, observation)
+        result = encode_operation("session_A", claim, claim)
+        self.assertGreater(len(result), 12 * 1024 * 1024)
+        self.assertLessEqual(len(result), 24 * 1024 * 1024)
+        frame = json.loads(result)
+        self.assertEqual(frame[2], frame[3])
+        observation["rawRequestBody"] += b"x"
+        with self.assertRaisesRegex(ValueError, "PRODUCT_PROXY_CODEC_REFUSED"):
+            encode_reservation(value, observation)
+        with self.assertRaisesRegex(ValueError, "PRODUCT_PROXY_CODEC_REFUSED"):
+            _positional_frame(json.dumps(["x" * (24 * 1024 * 1024)]).encode())
+
     def test_reservation_preserves_distinct_non_utf8_byte_sequences(self):
         value, observation = reservation()
         wire = encode_reservation(value, observation)

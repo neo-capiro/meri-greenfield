@@ -220,7 +220,7 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         session, peer_checks = await self.invoke(20.2)
         after = await self.stats()
         self.assertEqual(peer_checks, 5)
-        self.assertEqual(len(self.calls), 13)
+        self.assertEqual(len(self.calls), 7)
         self.assertEqual(len(self.aws.calls)-discoveries, 0)
         self.assertEqual(after['pairProofs']-before['pairProofs'], 0)
         self.assertEqual(after['coreCalls']-before['coreCalls'], 12)
@@ -234,7 +234,7 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         session, _ = await self.invoke(0)
         after = await self.stats()
         self.assertFalse(self.lost_ack)
-        operations = [call[2] for call in self.calls if call[2][0] == 'meri.proxy.operation/1']
+        operations = [call[2] for call in self.calls if call[2][0] == 'meri.proxy.operation/2']
         words = [frame[2][0] for frame in operations]
         self.assertEqual(words.count('meri.proxy.settlement/1'), 1)
         self.assertEqual(words.count('meri.proxy.reservation/1'), 1)
@@ -244,8 +244,8 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(sum(sql.startswith('UPDATE meri_product_budget.requests SET') for sql in after['commands']), 1)
         outcome = next(frame for frame in operations if frame[2][0] == 'meri.proxy.outcome/1')
         # A fresh authenticated socket cannot use another session or request.
-        for changed in ([outcome[0], uuid.uuid4().hex, outcome[2]],
-                        [outcome[0], outcome[1], [outcome[2][0], uuid.uuid4().hex]]):
+        for changed in ([outcome[0], uuid.uuid4().hex, outcome[2], None],
+                        [outcome[0], outcome[1], [outcome[2][0], uuid.uuid4().hex], None]):
             with self.assertRaises(Exception):
                 await self.exchange('operation', OPERATION, self.frame(changed), 15)
             self.assertEqual((await self.stats())['commands'], after['commands'])

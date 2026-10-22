@@ -78,7 +78,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_a_held_admission_carrier_refuses_the_bootstrap_without_poisoning(self):
         _issued,_policy,transport,gate,startup=self._startup();sent=[]
-        lock=startup.state[3]['admission']
+        lock=startup.state[3]['operation']
         await lock.acquire()
         try:
             with (patch('apps.proxy.product.owner_startup.OWNER_CARRIER_WAIT_MS',50),
@@ -95,7 +95,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
         synthetic=Exchange(policy,issued)
         def foreign_frame(channel,path,body,cutoff,cancelled=None):
             frame=json.loads(body)
-            return synthetic.reply(['meri.proxy.placement/1','f'*32,frame[2],[],time.time_ns()//1000000,frame[3]],channel)
+            return synthetic.reply(['meri.proxy.admitted/1','f'*32,frame[2],[],[],'admitted_session',frame[3]],channel)
         diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))
         try:
             with patch.object(transport,'_send',side_effect=foreign_frame),diagnostics.request():
@@ -139,9 +139,12 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
         calls,carriers=[],set()
         def wire_only(channel,path,body,cutoff,cancelled=None):
             frame=json.loads(body);calls.append(frame[0]);carriers.add(channel)
-            if frame[0]=='meri.proxy.placement-read/1':
-                return synthetic.reply(['meri.proxy.placement/1',frame[1],frame[2],placement,
-                    time.time_ns()//1000000,frame[3]],channel)
+            if frame[0]=='meri.proxy.admit/1':
+                admission=['meri.proxy.admission-read/1',frame[1],frame[2],None,cutoff]
+                future=asyncio.run_coroutine_threadsafe(synthetic(channel,path,json.dumps(admission).encode(),1),loop)
+                reply=future.result(timeout=1)
+                return synthetic.reply(['meri.proxy.admitted/1',frame[1],frame[2],placement,
+                    json.loads(reply.body),'admitted_session',min(frame[3],issued.expires_at_ms)],channel)
             future=asyncio.run_coroutine_threadsafe(synthetic(channel,path,body,(cutoff-time.time_ns()//1000000)/1000),loop)
             return future.result(timeout=1)
         try:
@@ -155,8 +158,8 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
                     expected,issued.expires_at_ms)
                 self.assertEqual(receipt['binding'],issued.execution_binding)
                 self.assertEqual(receipt['selectedClientId'],'11111111-1111-4111-8111-111111111111')
-                self.assertEqual(calls,['meri.proxy.placement-read/1']+['meri.proxy.admission-read/1']*3)
-                self.assertEqual(carriers,{'admission'})
+                self.assertEqual(calls,['meri.proxy.admit/1']+['meri.proxy.admission-read/1']*2)
+                self.assertEqual(carriers,{'operation','admission'})
                 with self.assertRaises(Exception):startup.resolve_bearer_sha256('a'*64)
         finally:
             startup.close()

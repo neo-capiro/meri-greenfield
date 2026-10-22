@@ -31,7 +31,7 @@ export function observeOwnerChannel(channel,{telemetry=currentTurnTelemetry(),id
   const after=identity();
   if(reported||!after.binding)return;
   reported=true;
-  // An OPEN can discover its canonical binding and then fail before the first
+  // An ADMIT can discover its canonical binding and then fail before the first
   // model operation. Materialize the empty request slot to drain its run work.
   telemetry.withRequest(after.requestId,after.binding,()=>{});
   settled(telemetry,after.binding,after.requestId);
@@ -47,6 +47,6 @@ export function observeOwnerChannel(channel,{telemetry=currentTurnTelemetry(),id
   return currentTurnTelemetry()===telemetry?invoke():telemetry.provisional(invoke);
  };
  const wrapped=Object.freeze({get available(){return channel.available;},get canReadOutcome(){return channel.canReadOutcome;},
-  close(){channel.close();finish();},readOutcome:wrap('readOutcome'),open:wrap('open'),poll:wrap('poll'),reply:wrap('reply'),operation:wrap('operation')});
+  close(){channel.close();finish();},readOutcome:wrap('readOutcome'),admit:wrap('admit'),operation:wrap('operation')});
  finalizers.set(wrapped,finish);return wrapped;
 }

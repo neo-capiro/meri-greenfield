@@ -19,16 +19,12 @@ import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.m
 import {BudgetCommitUncertain} from '../../gateway/budget/postgres-budget-store.mjs';
 import {createProductProxyOwnerComposition} from './product-owner-composition.mjs';
 import {createOwnerRequestWork} from './owner-request-work.mjs';
-import {captureCallRequest,captureCompleteRequest,decodeCompleteCaptureFrame,
- decodeReservationFrame,decodeSettlementFrame,parseOwnerWire} from './owner-wire-codec.mjs';
+import {decodeOperationFrame,parseOwnerWire} from './owner-wire-codec.mjs';
 
 export const OWNER_PATHS=Object.freeze({
- open:'/v1/internal/product-model/owner/session/open',
  operation:'/v1/internal/product-model/owner/operation',
- poll:'/v1/internal/product-model/owner/capture/poll',
- reply:'/v1/internal/product-model/owner/capture/reply',
 });
-const MAX_WIRE=12*1024*1024;
+const MAX_WIRE=24*1024*1024;
 const SLOT=/^[A-Za-z0-9_-]{1,128}$/u;
 const SHA=/^[0-9a-f]{64}$/u;
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -111,7 +107,7 @@ function policyCheck(value){
  return Object.freeze({...value});
 }
 
-/** Return inert handlers for four fixed routes; the caller enforces HTTP POST,
+/** Return inert handlers for one admitted request; the caller enforces HTTP POST,
  * empty query, body cap, pinned mTLS listener and exact path before dispatch.
  * `persistedFacts` is createProductProxyPersistedFacts. Its resolve call is
  * bounded, read-only and locates the current canonical grant by the observed
@@ -137,8 +133,8 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
     !Number.isSafeInteger(maxExchangeMs)||maxExchangeMs<1||maxExchangeMs>30000)deny();
  bindServiceGate(serviceGate,persistedFacts,ownerPorts.pool);
  let state='NEW',id=null,requestId=null,binding=null,deadlineMs=null,grantId=null;
- let operationConnection=null,captureConnection=null,owner=null,ownerConfiguration=null,settlementStarted=false;
- let challenge=null,challengeDelivered=false,pollWaiter=null,replyWaiter=null,requestKind=null;
+ let operationConnection=null,owner=null,ownerConfiguration=null,settlementStarted=false;
+ let operationCapture=null;
  let localPending=0;
  const controllers=new Set(),databaseWork=createOwnerRequestWork({pool:ownerPorts.pool,onUnresolvedMutation:()=>serviceGate.poison()});
 
@@ -149,23 +145,17 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
   return Math.min(maxExchangeMs,deadlineMs-at);
  }
  function checkPeer(peer,channel){
+  if(channel!=='operation')deny();
   const connection=channelPeer(serviceGate,policy,peer,channel);
-  if(channel==='operation'){
-   if(operationConnection===null)operationConnection=connection;
-   if(connection!==operationConnection||connection===captureConnection)deny();
-  }else if(channel==='capture'){
-   if(captureConnection===null)captureConnection=connection;
-   if(connection!==captureConnection||connection===operationConnection)deny();
-  }else deny();
+  if(operationConnection===null)operationConnection=connection;
+  if(connection!==operationConnection)deny();
  }
  function exact(frame,expected){if(!isDeepStrictEqual(frame,expected))deny();}
  function failSession(error){
   state='FAILED';
   databaseWork.close();
   for(const controller of controllers)controller.abort(error);
-  if(pollWaiter){pollWaiter.reject(error);pollWaiter=null;}
-  if(replyWaiter){replyWaiter.reject(error);replyWaiter=null;}
-  challenge=null;challengeDelivered=false;
+  operationCapture=null;
  }
  async function bounded(work,duration=checkTime()){
   if(!serviceGate.available||!Number.isSafeInteger(duration)||duration<1)deny();
@@ -188,21 +178,14 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
   }finally{clearTimeout(timer);abort.signal.removeEventListener('abort',onAbort);controllers.delete(abort);}
  }
  async function captured(kind,request){
-  if(challenge!==null||replyWaiter!==null||
-     kind==='call'&&state!=='RESERVING'||
-     kind==='complete'&&state!=='SETTLING')deny();
-  const expected=kind==='call'
-   ?captureCallRequest(request):captureCompleteRequest(request);
-  if(request.requestId!==requestId||!isDeepStrictEqual(request.binding,binding)||
+  const capture=operationCapture;
+  if(!capture||capture.kind!==kind||
+     kind==='call'&&state!=='RESERVING'||kind==='complete'&&state!=='SETTLING'||
+     request.requestId!==requestId||!isDeepStrictEqual(request.binding,binding)||
      kind==='call'&&request.deadlineMs!==deadlineMs||
      kind==='complete'&&request.grantId!==grantId)deny();
-  requestKind=kind;challenge=expected;
-  if(pollWaiter){
-   const waiter=pollWaiter;pollWaiter=null;challengeDelivered=true;
-   waiter.resolve(bytes(expected));
-  }
-  const answer=new Promise((resolve,reject)=>{replyWaiter={resolve,reject};});
-  return bounded(()=>answer);
+  operationCapture=null;
+  return capture.value;
  }
  const hostChannel=Object.freeze({
   captureAuthenticatedCall:request=>captured('call',request),
@@ -219,7 +202,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
    // HTTPS owner checks generation and that the former socket is closed.
    if(signal?.aborted||!settlementStarted||!ownerConfiguration||!serviceGate.available)deny();
    channelPeer(serviceGate,policy,peer,'operation');
-   exact(parseOwnerWire(raw(body)),['meri.proxy.operation/1',id,['meri.proxy.outcome/1',requestId]]);
+   exact(parseOwnerWire(raw(body)),['meri.proxy.operation/2',id,['meri.proxy.outcome/1',requestId],null]);
    const duration=Math.min(maxExchangeMs,deadlineMs-now());if(!Number.isSafeInteger(duration)||duration<1)deny();
    const work=createOwnerRequestWork({pool:ownerPorts.pool,readOnly:true}),finish=serviceGate.begin();
    let timer,onAbort;
@@ -240,15 +223,14 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
     return bytes(['meri.proxy.outcome-receipt/1',id,[requestId,'SETTLED',result.actualMicroUSD]]);
    }finally{clearTimeout(timer);signal?.removeEventListener('abort',onAbort);work.close();}
   },
-  async open(body,peer){
+  async admit(request,peer){
    try{
     if(state!=='NEW')deny();state='OPENING';
     if(!serviceGate.available)deny();
     checkPeer(peer,'operation');
-    const frame=tuple(parseOwnerWire(raw(body)),5);
-    if(frame[0]!=='meri.proxy.session-open/1')deny();
-    const claimedId=slot(frame[1]),capabilitySha256=digest(frame[2]);
-    const claimedDeadline=frame[4],at=now();
+    const admitted=data(own(request,['requestId','capabilitySha256','binding','deadlineMs']));
+    const claimedId=slot(admitted.requestId),capabilitySha256=digest(admitted.capabilitySha256);
+    const claimedDeadline=admitted.deadlineMs,at=now();
     if(!Number.isSafeInteger(at)||!Number.isSafeInteger(claimedDeadline)||
        claimedDeadline<=at||claimedDeadline-at>900000)deny();
     const facts=await bounded(signal=>persistedFacts.resolve({
@@ -276,8 +258,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
     requestId=claimedId;grantId=slot(facts.modelGrantId);
     binding=facts.binding;deadlineMs=claimedDeadline;
     checkTime();
-    exact(frame,["meri.proxy.session-open/1",requestId,
-     capabilitySha256,captureCallRequest({requestId,binding,deadlineMs})[2],deadlineMs]);
+    exact(admitted.binding,binding);
     ownerConfiguration={pool:databaseWork.pool,
      allocationJson:facts.allocationJson,grantFactsJsons:facts.grantFactsJsons,
      modelGrantId:grantId,selectedClientId:policy.selectedClientId,
@@ -289,52 +270,21 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
     return bytes(['meri.proxy.session/1',id,requestId,capabilitySha256]);
    }catch(error){failSession(error);deny();}
   },
-  async poll(body,peer){
-   try{
-    if(!['OPEN','RESERVING','HELD','SETTLING'].includes(state)||pollWaiter||challengeDelivered)deny();
-    checkPeer(peer,'capture');checkTime();
-    exact(parseOwnerWire(raw(body)),['meri.proxy.capture-poll/1',id,requestId,
-     state==='HELD'||state==='SETTLING'?'complete':'call']);
-    if(challenge!==null){challengeDelivered=true;return bytes(challenge);}
-    const next=new Promise((resolve,reject)=>{pollWaiter={resolve,reject};});
-    return await bounded(()=>next);
-   }catch(error){failSession(error);deny();}
-  },
-  async reply(body,peer){
-   try{
-    if(!replyWaiter||challenge===null||!challengeDelivered)deny();
-    checkPeer(peer,'capture');checkTime();
-    const frame=tuple(parseOwnerWire(raw(body)),3);
-    if(frame[0]!=='meri.proxy.capture-reply/1'||frame[1]!==id)deny();
-    const result=requestKind==='call'
-     ?decodeReservationFrame(frame[2]):decodeCompleteCaptureFrame(frame[2]);
-    if(requestKind==='call'){
-     if(result.request.requestId!==requestId||
-        !isDeepStrictEqual(result.request.binding,binding)||
-        result.request.deadlineMs!==deadlineMs)deny();
-    }else if(result.completion.requestId!==requestId||
-             !isDeepStrictEqual(result.completion.binding,binding))deny();
-    const waiter=replyWaiter,kind=requestKind;
-    replyWaiter=null;challenge=null;challengeDelivered=false;requestKind=null;
-    waiter.resolve(kind==='call'?result.observation:
-     {reservation:result.reservation,rawRequestBody:result.rawRequestBody,
-      nativeRequestBody:result.nativeRequestBody,completion:result.completion,
-      usageResult:result.usageResult});
-    return bytes(['meri.proxy.capture-ack/1',id,requestId,kind]);
-   }catch(error){failSession(error);deny();}
-  },
   async operation(body,peer){
    try{
     if(!['OPEN','HELD','UNCERTAIN'].includes(state))deny();
     checkPeer(peer,'operation');checkTime();
-    const frame=tuple(parseOwnerWire(raw(body)),3);
-    if(frame[0]!=='meri.proxy.operation/1'||frame[1]!==id)deny();
-    const claim=frame[2];
+    const frame=decodeOperationFrame(parseOwnerWire(raw(body)));
+    if(frame.sessionId!==id)deny();
     if(state==='OPEN'){
-     const submitted=decodeReservationFrame(claim);
+     if(frame.kind!=='reserve')deny();
+     const {submitted,captured}=frame;
+     if(!isDeepStrictEqual(submitted.request,captured.request)||
+        !isDeepStrictEqual(submitted.observation,captured.observation))deny();
      if(submitted.request.requestId!==requestId||
         !isDeepStrictEqual(submitted.request.binding,binding)||
         submitted.request.deadlineMs!==deadlineMs)deny();
+     operationCapture={kind:'call',value:captured.observation};
      state='RESERVING';
      const receipt=await bounded(signal=>owner.reserve(
       {...submitted.request,signal},submitted.observation));
@@ -345,8 +295,12 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
       [requestId,receipt.nativeBodySha256,'UNKNOWN']]);
     }
     if(state==='HELD'){
-     const submitted=decodeSettlementFrame(claim);
+     if(frame.kind!=='settle')deny();
+     const {submitted,captured}=frame;
+     if(!isDeepStrictEqual(submitted.usageResult,captured.usageResult)||
+        !isDeepStrictEqual(captured.completion.binding,binding)||captured.completion.requestId!==requestId)deny();
      if(submitted.requestId!==requestId)deny();
+     operationCapture={kind:'complete',value:captured};
      state='SETTLING';settlementStarted=true;
      try{
       const result=await bounded(()=>owner.settleComplete(requestId,submitted.usageResult));
@@ -361,7 +315,7 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
       throw error;
      }
     }
-    exact(claim,['meri.proxy.outcome/1',requestId]);
+    if(frame.kind!=='outcome'||frame.submitted.requestId!==requestId)deny();
     state='OUTCOME';
     const result=await bounded(()=>owner.readOutcome(requestId));
     if(!result||result.requestId!==requestId||result.state!=='SETTLED'||

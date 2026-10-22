@@ -7,7 +7,7 @@ import subprocess
 import unittest
 
 from apps.proxy.product.boundary_codec import (
-    encode_complete_capture, encode_reservation, encode_settlement,
+    encode_admit, encode_operation, encode_complete_capture, encode_reservation, encode_settlement,
 )
 from apps.proxy.product.test_boundary_codec import reservation
 from apps.proxy.product.test.test_complete_capture_codec import ID, capture
@@ -61,7 +61,7 @@ def frames(counted=65536, maximum=8192, output=8192):
 
 
 class OwnerWireEnvelopeTests(unittest.TestCase):
-    def decode(self, payload):
+    def require_node(self):
         node = shutil.which('node')
         if node is None:
             self.skipTest('UNRUN: owner wire decoder requires Node.js')
@@ -72,10 +72,44 @@ class OwnerWireEnvelopeTests(unittest.TestCase):
                        'apps/gateway/model-proxy/product-envelope.mjs'):
             if not (ROOT/module).is_file():
                 self.skipTest('UNRUN: owner wire decoder requires workspace module '+module)
+        return node
+
+    def decode(self, payload):
+        node = self.require_node()
         result = subprocess.run([node, "--input-type=module", "-e", DECODE],
                                 input=json.dumps(payload), text=True, capture_output=True,
                                 cwd=ROOT, timeout=10, check=True)
         return json.loads(result.stdout)
+
+    def test_combined_python_frames_cross_actual_versioned_owner_decoders(self):
+        node = self.require_node()
+        request, observation, complete, typed = values(12, 16, 7)
+        claim = encode_reservation(request, observation)
+        payload = [json.loads(frame) for frame in (
+            encode_admit(ID, "a" * 64, 9000000000000),
+            encode_operation("session_A", claim, encode_reservation(request, observation)),
+            encode_operation("session_A", encode_settlement(ID, typed), encode_complete_capture(ID, complete)),
+            encode_operation("session_A", json.dumps(["meri.proxy.outcome/1", ID]).encode(), None))]
+        script = """
+import {readFileSync} from 'node:fs';
+import {parseOwnerWire,decodeAdmitFrame,decodeOperationFrame} from './apps/proxy/product/owner-wire-codec.mjs';
+const rows=JSON.parse(readFileSync(0,'utf8')).map(frame=>{
+ const parsed=parseOwnerWire(Buffer.from(JSON.stringify(frame)));
+ if(frame[0]==='meri.proxy.admit/1')return decodeAdmitFrame(parsed);
+ const v=decodeOperationFrame(parsed);
+ return {sessionId:v.sessionId,kind:v.kind,requestId:v.submitted.request?.requestId??v.submitted.requestId,
+  captured:v.captured!==null};
+});
+process.stdout.write(JSON.stringify(rows));
+"""
+        result = subprocess.run([node, "--input-type=module", "-e", script],
+                                input=json.dumps(payload), text=True, capture_output=True,
+                                cwd=ROOT, timeout=10, check=True)
+        self.assertEqual(json.loads(result.stdout), [
+            {"requestId": ID, "capabilitySha256": "a" * 64, "deadlineMs": 9000000000000},
+            {"sessionId": "session_A", "kind": "reserve", "requestId": ID, "captured": True},
+            {"sessionId": "session_A", "kind": "settle", "requestId": ID, "captured": True},
+            {"sessionId": "session_A", "kind": "outcome", "requestId": ID, "captured": False}])
 
     def test_python_frames_cross_actual_owner_at_approved_and_legacy_boundaries(self):
         for counted, maximum, output in ((65536, 8192, 8192), (8193, 257, 257),

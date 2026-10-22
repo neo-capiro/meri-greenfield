@@ -34,16 +34,18 @@ async function fixture(){
   modelGrantId:grantId,selectedClientId:policy.selectedClientId,original:{},resource:{taskArn:'runner'},requestSha256:'e'.repeat(64),expiresAtMs:deadline};
  const gate=createProductOwnerServiceGate(),channel=createProductOwnerChannel({clientPolicy:policy,persistedFacts:{available:true,async resolve(){return facts;}},
   ownerPorts:{pool,pricing:{},limits:{},async checkCurrentConversation(){}},serviceGate:gate,now:()=>at,maxExchangeMs:1000});
- const opened=JSON.parse(await channel.open(wire(['meri.proxy.session-open/1',requestId,sha(credential),tuple,deadline]),peer));
+ const opened=JSON.parse(await channel.admit({requestId,capabilitySha256:sha(credential),binding,deadlineMs:deadline},peer));
  const session=opened[1],reservation=['meri.proxy.reservation/1',[requestId,tuple,deadline],
   [requestId,[tuple,'runner',grantId,at],credential,raw.toString('base64'),
    ['POST','https://example.test/invoke','example.test','application/json',native.toString('base64'),[['host','example.test'],['content-type','application/json']]],
    [12,sha(native),'anthropic.claude-sonnet-4-6','aws-counttokens']]];
- await channel.operation(wire(['meri.proxy.operation/1',session,reservation]),peer);
+ await channel.operation(wire(['meri.proxy.operation/2',session,reservation,reservation]),peer);
  const settlement=['meri.proxy.settlement/1',requestId,['COMPLETE',[requestId,sha(native),sha(raw),'b'.repeat(64),12,16,[]],'e'.repeat(64),12,7,'COMPLETE_NATIVE_MESSAGE','native-usage-data']];
- await channel.operation(wire(['meri.proxy.operation/1',session,settlement]),peer);channel.close();
+ const complete=['meri.proxy.complete-capture/1',requestId,[requestId,sha(native),'UNKNOWN'],raw.toString('base64'),native.toString('base64'),
+  [requestId,tuple,'runner',sha(credential),sha(native),sha(raw),'anthropic.claude-sonnet-4-6','us.anthropic.claude-sonnet-4-6','b'.repeat(64),'e'.repeat(64),200,true,true,[12,7]],settlement[2]];
+ await channel.operation(wire(['meri.proxy.operation/2',session,settlement,complete]),peer);channel.close();
  return {channel,gate,releases,queryStarted,connects:()=>connects,releaseQuery(){resolveQuery();},serve(){stall=false;},
-  body:wire(['meri.proxy.operation/1',session,['meri.proxy.outcome/1',requestId]]),peer:{...peer,connectionId:'recovery'}};
+  body:wire(['meri.proxy.operation/2',session,['meri.proxy.outcome/1',requestId],null]),peer:{...peer,connectionId:'recovery'}};
 }
 
 test('aborting recovery evicts its read client and keeps the service serving',async()=>{

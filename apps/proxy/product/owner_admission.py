@@ -219,34 +219,9 @@ class ProductOwnerAdmissionReader:
                 if type(reply) is not OwnerReply or type(reply.body) is not bytes or len(reply.body) > 16384:
                     _deny()
                 frame = validate_owner_reply(self.policy, reply, carrier, self.state[4])
-                step = "frame"
-                _tuple(frame, 8)
-                if frame[:3] != ["meri.proxy.admission/1", read_id, capability_sha256]:
-                    _deny()
-                step = "source"
-                binding = _source(frame[4])
-                if frame[4][2] != capability_sha256 or _sha(frame[3]) != _hash(frame[4]):
-                    _deny()
-                if expected is not None and _json(expected) != _json(frame[4]):
-                    _deny()
-                step = "current"
-                current = _tuple(frame[5], 7)
-                _sha(current[0]); _sha(current[4]); _binding(current[1])
-                scopes = [["client", binding["tenantId"], frame[4][7], frame[4][3][4]]]
-                at = _integer(self.now_ms())
-                if (current[1] != frame[4][0] or current[2] != scopes or current[3] != frame[4][7]
-                        or not started <= _integer(current[5]) <= at
-                        or not started <= _integer(frame[6]) <= at
-                        or _integer(frame[7], 1) <= at or frame[7] > cutoff
-                        or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
-                    _deny()
                 check_carrier()
-                result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease,
-                    _json(current), read_at, min(read_at + ADMISSION_LEASE_MS / 1000,
-                        self.monotonic() + (frame[7] - at) / 1000),
-                    self.generation)
-                self._receipts[id(result)] = result
-                return result
+                return self._verify_frame(frame, read_id, capability_sha256, expected,
+                    started, cutoff, read_at, lease)
             except OwnerCarrierBusy as error:
                 # Nothing was sent on this carrier: a plain refusal, never a poisoned gate.
                 diagnostics.refused("admission", step, error, deadline_ms=cutoff, now_ms=self.now_ms)
@@ -257,6 +232,33 @@ class ProductOwnerAdmissionReader:
             finally:
                 if acquired:
                     self.state[3][carrier].release()
+
+    def _verify_frame(self, frame, read_id, capability_sha256, expected, started, cutoff, read_at, lease=None):
+        self._remaining(cutoff)
+        _tuple(frame, 8)
+        if frame[:3] != ["meri.proxy.admission/1", read_id, capability_sha256]:
+            _deny()
+        binding = _source(frame[4])
+        if frame[4][2] != capability_sha256 or _sha(frame[3]) != _hash(frame[4]):
+            _deny()
+        if expected is not None and _json(expected) != _json(frame[4]):
+            _deny()
+        current = _tuple(frame[5], 7)
+        _sha(current[0]); _sha(current[4]); _binding(current[1])
+        scopes = [["client", binding["tenantId"], frame[4][7], frame[4][3][4]]]
+        at = _integer(self.now_ms())
+        if (current[1] != frame[4][0] or current[2] != scopes or current[3] != frame[4][7]
+                or not started <= _integer(current[5]) <= at
+                or not started <= _integer(frame[6]) <= at
+                or _integer(frame[7], 1) <= at or frame[7] > cutoff
+                or frame[7] > _integer(current[6], 1) or frame[7] > frame[4][4][3]):
+            _deny()
+        result = _VerifiedAdmission(read_id, _json(frame[4]), frame[6], frame[7], lease,
+            _json(current), read_at, min(read_at + ADMISSION_LEASE_MS / 1000,
+                self.monotonic() + (frame[7] - at) / 1000),
+            self.generation)
+        self._receipts[id(result)] = result
+        return result
 
     def _sync_read(self, capability_sha256, expected, deadline_ms):
         if threading.get_ident() == self.loop_thread or self.loop.is_closed() or not self.loop.is_running():
@@ -398,13 +400,16 @@ class ProductOwnerAdmissionReader:
     def conversation_for_lifetime(self, life):
         return self._conversation(self.current_lifetime(life))
 
-    def resolve_for_issued_sync(self, *, issued, capability_sha256, deadline_ms):
+    def resolve_for_issued_sync(self, *, issued, capability_sha256, deadline_ms, receipt=None):
         if type(issued) is not IssuedTaskNetwork:
             _deny()
         # Snapshot before any await; the frozen issued object contains a mutable dict.
         execution = dict(issued.execution_binding)
-        receipt = self._sync_read(capability_sha256, None, min(deadline_ms, issued.expires_at_ms))
+        if receipt is None:
+            receipt = self._sync_read(capability_sha256, None, min(deadline_ms, issued.expires_at_ms))
         source = self._consume(receipt)
+        if source[2] != capability_sha256:
+            _deny()
         q, original, resource = source[3], source[4], source[5]
         if (_binding(source[0]) != execution or source[1] != issued.grant_id
                 or q != [issued.binding.run_id, issued.binding.attempt, issued.binding.worker_arn,

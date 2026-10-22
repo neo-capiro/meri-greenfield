@@ -23,16 +23,13 @@ from weakref import WeakKeyDictionary, WeakSet, ref
 
 from ..qualification.state.pricing import StateDenied
 from .boundary_codec import (_binding, _wire, encode_complete_capture,
-                             encode_reservation, encode_settlement)
+                             encode_reservation, encode_settlement, encode_operation)
 from .binding import _binding as _host_binding
 from .budgets import OWNER_CARRIER_WAIT_MS
 
 
-OPEN = "/v1/internal/product-model/owner/session/open"
 OPERATION = "/v1/internal/product-model/owner/operation"
-POLL = "/v1/internal/product-model/owner/capture/poll"
-REPLY = "/v1/internal/product-model/owner/capture/reply"
-_WIRE_MAX = 12 * 1024 * 1024
+_WIRE_MAX = 24 * 1024 * 1024
 _SLOT = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
 _SHA = re.compile(r"[0-9a-f]{64}\Z")
 _ORIGIN = re.compile(r"https://[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?:8444\Z")
@@ -323,7 +320,7 @@ class ProductOwnerBridge:
     """
 
     def __init__(self, *, policy, exchange, capture_call, host_gate, request_id,
-                 binding, deadline_ms, grant_id, capability_sha256, now_ms=None):
+                 binding, deadline_ms, grant_id, capability_sha256, session_id, now_ms=None):
         if (type(policy) is not OwnerPeerPolicy or not callable(exchange)
                 or not callable(getattr(exchange, "abort", None))
                 or inspect.iscoroutinefunction(exchange.abort)
@@ -350,7 +347,7 @@ class ProductOwnerBridge:
         self.deadline_ms, self.grant_id = deadline_ms, _slot(grant_id)
         self.capability_sha256 = _sha(capability_sha256)
         self.now_ms = now_ms or (lambda: time.time_ns() // 1_000_000)
-        self.session_id = None
+        self.session_id = _slot(session_id)
         self._operation_connection = self._capture_connection = None
         self._complete_capture = None
         self._capture_token = None
@@ -367,9 +364,9 @@ class ProductOwnerBridge:
         if self._aborted:
             return
         self._aborted = True
-        if self._sent:
-            self._reset("operation")
-            self._reset("capture")
+        # _exchange closes failed native I/O while it owns the carrier. Once
+        # the combined exchange releases its lock another request may own it;
+        # a late validation failure must never reset that request's socket.
 
     def _invalidate_generation(self):
         # The pair holder closes carriers before invoking this callback.
@@ -428,9 +425,7 @@ class ProductOwnerBridge:
         return min(OWNER_CARRIER_WAIT_MS, self.deadline_ms - at) / 1000
 
     async def _exchange(self, channel, path, body):
-        if (path not in (OPEN, OPERATION, POLL, REPLY)
-                or (channel == "operation") != (path in (OPEN, OPERATION))
-                or channel not in ("operation", "capture")
+        if (path != OPERATION or channel != "operation"
                 or type(body) is not bytes or not 1 <= len(body) <= _WIRE_MAX):
             _deny()
         lock = owner_exchange_state(self.exchange, self.policy, self.host_gate)[3][channel]
@@ -504,56 +499,25 @@ class ProductOwnerBridge:
             and request == {"requestId": self.request_id,
                             "binding": self.binding, "deadlineMs": self.deadline_ms})
 
-    async def _open(self):
-        body = _wire(["meri.proxy.session-open/1", self.request_id,
-                      self.capability_sha256, _binding(self.binding), self.deadline_ms])
-        result = await self._exchange("operation", OPEN, body)
-        if (len(result) != 4 or result[0] != "meri.proxy.session/1"
-                or result[2:] != [self.request_id, self.capability_sha256]):
-            _deny()
-        self.session_id = _slot(result[1])
-
     async def _capture(self, kind, token):
-        if self._capture_token is not token:
-            _deny()
-        challenge = await self._exchange("capture", POLL, _wire([
-            "meri.proxy.capture-poll/1", self.session_id, self.request_id, kind]))
+        """Capture from host observation at send time; the claim is never input."""
         if self._capture_token is not token:
             _deny()
         if kind == "call":
-            if (len(challenge) != 4 or challenge[0] != "meri.proxy.capture-call/1"
-                    or challenge[1:] != [self.request_id, _binding(self.binding),
-                                          self.deadline_ms]):
-                _deny()
-            captured = await self._capture_callback(self.capture_call,
-                {"requestId": self.request_id, "binding": self.binding.copy(),
-                 "deadlineMs": self.deadline_ms}, token)
-            if self._capture_token is not token:
-                _deny()
-            value = {"requestId": self.request_id, "binding": self.binding,
+            value = {"requestId": self.request_id, "binding": self.binding.copy(),
                      "deadlineMs": self.deadline_ms}
+            captured = await self._capture_callback(self.capture_call, value, token)
             frame = encode_reservation(value, captured)
-        elif kind == "complete":
-            if (len(challenge) != 4 or challenge[0] != "meri.proxy.capture-complete/1"
-                    or challenge[1:] != [self.request_id, _binding(self.binding), self.grant_id]
-                    or not callable(self._complete_capture)):
-                _deny()
+        elif kind == "complete" and callable(self._complete_capture):
             captured = await self._capture_callback(self._complete_capture,
                 {"requestId": self.request_id, "binding": self.binding.copy(),
                  "grantId": self.grant_id}, token)
-            if self._capture_token is not token:
-                _deny()
             frame = encode_complete_capture(self.request_id, captured)
         else:
             _deny()
         if self._capture_token is not token:
             _deny()
-        acknowledgement = await self._exchange("capture", REPLY, _wire([
-            "meri.proxy.capture-reply/1", self.session_id,
-            json.loads(frame.decode("ascii"))]))
-        if acknowledgement != ["meri.proxy.capture-ack/1", self.session_id,
-                               self.request_id, kind]:
-            _deny()
+        return frame
 
     async def _capture_callback(self, callback, request, token):
         lease = _CaptureAdmissionLease(self, token)
@@ -575,40 +539,30 @@ class ProductOwnerBridge:
         if self._capture_token is not None:
             _deny()
         self._capture_token = token
-        capture = asyncio.create_task(self._capture(kind, token))
+        capture_task = asyncio.create_task(self._capture(kind, token))
         try:
-            result = await self._exchange("operation", OPERATION, _wire([
-                "meri.proxy.operation/1", self.session_id,
-                json.loads(claim.decode("ascii"))]))
-            done, _ = await asyncio.wait({capture}, timeout=self._remaining())
+            done, _ = await asyncio.wait({capture_task}, timeout=self._remaining())
             if not done:
                 raise TimeoutError("PRODUCT_OWNER_CAPTURE_DEADLINE")
-            capture.result()
-            return result
-        except BaseException as error:
-            self._capture_token = None
-            if self._sent:
-                self._reset("operation")
-                self._reset("capture")
-            capture.cancel()
-            if capture.done():
-                try:
-                    capture.result()
-                except BaseException:
-                    pass
-            else:
-                capture.add_done_callback(
-                    lambda item: item.exception() if not item.cancelled() else None)
-            raise
+            capture = capture_task.result()
+            body = encode_operation(self.session_id, claim, capture)
+            claim_lock = await self._claim()
+            try:
+                return await self._exchange("operation", OPERATION, body)
+            finally:
+                claim_lock.release()
         finally:
             self._capture_token = None
+            if not capture_task.done():
+                capture_task.cancel()
+                capture_task.add_done_callback(
+                    lambda item: item.exception() if not item.cancelled() else None)
 
     async def _claim(self):
-        """Serialize a logical owner claim before OPEN or a capture poll starts.
+        """Serialize one combined exchange, after independent capture completes.
 
-        Admission may still use the capture carrier during the active callback.
-        A queued claim has performed no I/O and expiry must not abort another
-        bridge's live claim. Release after confirmed UNKNOWN, not provider EOF.
+        A queued claim has performed no I/O and cannot abort another request.
+        The lock never spans host capture or the provider stream.
         """
         lock = owner_exchange_state(self.exchange, self.policy, self.host_gate)[6]
         at = self.now_ms()
@@ -629,7 +583,6 @@ class ProductOwnerBridge:
         if self._state != "NEW" or not self.host_gate.available or not self._matches(value):
             _deny()
         self._state = "FAILED"
-        claim_lock = await self._claim()
         self._sent = False
         try:
             claim = encode_reservation(value, observation)
@@ -640,7 +593,6 @@ class ProductOwnerBridge:
                     hashlib.sha256(credential.encode("utf-8")).hexdigest(),
                     self.capability_sha256):
                 _deny()
-            await self._open()
             result = await self._operation(claim, "call")
             if (len(result) != 3 or result[:2] != [
                     "meri.proxy.reservation-receipt/1", self.session_id]
@@ -661,8 +613,6 @@ class ProductOwnerBridge:
         except Exception:
             self._abort()
             _deny()
-        finally:
-            claim_lock.release()
 
     def bind_complete_capture(self, capture):
         if self._state != "HELD" or self._complete_capture is not None or not callable(capture):
@@ -675,7 +625,6 @@ class ProductOwnerBridge:
                 or request_id != self.request_id):
             _deny()
         self._state = "FAILED"
-        claim_lock = await self._claim()
         self._sent = False
         try:
             result_frame = await self._operation(encode_settlement(request_id, result),
@@ -710,8 +659,6 @@ class ProductOwnerBridge:
         except Exception:
             self._abort()
             _deny()
-        finally:
-            claim_lock.release()
 
     async def read_outcome(self, request_id):
         if self._state != "UNCERTAIN" or request_id != self.request_id:
@@ -721,8 +668,8 @@ class ProductOwnerBridge:
         self._sent = False
         try:
             result = await self._exchange("operation", OPERATION, _wire([
-                "meri.proxy.operation/1", self.session_id,
-                ["meri.proxy.outcome/1", self.request_id]]))
+                "meri.proxy.operation/2", self.session_id,
+                ["meri.proxy.outcome/1", self.request_id], None]))
             if (len(result) != 3 or result[:2] != [
                     "meri.proxy.outcome-receipt/1", self.session_id]
                     or type(result[2]) is not list or len(result[2]) != 3
@@ -749,7 +696,7 @@ class ProductOwnerBridge:
 
 
 def make_product_owner_bridge(*, policy, exchange, host_gate, request_id, binding,
-                              deadline_ms, grant_id, capability_sha256,
+                              deadline_ms, grant_id, capability_sha256, session_id,
                               now_ms=None):
     """Adapt ProductSession.make_owner_bridge without inventing an HTTP client."""
     def make(capture_call):
@@ -758,5 +705,5 @@ def make_product_owner_bridge(*, policy, exchange, host_gate, request_id, bindin
             host_gate=host_gate,
             request_id=request_id, binding=binding, deadline_ms=deadline_ms,
             grant_id=grant_id, capability_sha256=capability_sha256,
-            now_ms=now_ms)
+            session_id=session_id, now_ms=now_ms)
     return make
