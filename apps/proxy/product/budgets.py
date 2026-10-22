@@ -32,3 +32,18 @@ refresh is often in flight when a request ends; close must outlast the bound tha
 BOOTSTRAP_SECONDS = 25.0 + OWNER_CARRIER_WAIT_MS / 1000
 """Cap and default for one request's bearer/ENI bootstrap: the exchange budget plus the runner ENI read, with margin, plus one
 carrier wait for its placement read. A bootstrap that overruns it still quarantines the proxy."""
+
+
+# P2 background proof/admission budgets. P1 will absorb these into its canonical
+# rendered table; no request-path deadline or provider budget is changed here.
+PAIR_LEASE_TTL_MS = 30000
+PAIR_RENEW_MS = 10000
+PAIR_RENEW_JITTER_MS = 1000
+PAIR_REPROOF_MS = 30000
+PAIR_REPROOFS_PER_10_MIN = 3
+PAIR_REPROOF_WINDOW_MS = 10 * 60 * 1000
+CARRIER_RESETS_PER_MIN = 3
+CARRIER_RESET_WINDOW_MS = 60 * 1000
+ADMISSION_LEASE_MS = 10000
+PAIR_RENEWER_QUARANTINE_COOLDOWN_MS = 30000
+assert PAIR_LEASE_TTL_MS >= 2 * PAIR_RENEW_MS

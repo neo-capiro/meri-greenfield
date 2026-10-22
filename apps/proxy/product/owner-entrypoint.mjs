@@ -13,12 +13,12 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {PRODUCT_MAX_INPUT_TOKENS,PRODUCT_MAX_OUTPUT_TOKENS} from '../../gateway/model-proxy/product-envelope.mjs';
 import {readSecret,validateConfiguration} from '../../runtime/config.mjs';
-import {createInitialRunBindingJournal} from '../../control/conversations/initial-run-binding-journal.mjs';
 import {createProductProxyPersistedFacts} from './product-owner-facts.mjs';
 import {createProductOwnerPlacement} from './product-owner-placement.mjs';
 import {createProductOwnerNativeCurrentness} from './owner-native-currentness.mjs';
 import {createProductServiceTaskLeaseReader} from './service-task-leases.mjs';
 import {parseProductServicePairConfiguration,OWNER_MAX_REQUEST_MS} from './service-pair-discovery.mjs';
+import {PAIR_LEASE_TTL_MS,PAIR_RENEW_MS} from './owner-pair-lease.mjs';
 import {createProductOwnerServiceGate} from './owner-channel.mjs';
 import {createProductOwnerHttpsServer} from './owner-https.mjs';
 import {createOwnerDiagnostics,createDiagnosticPool} from './owner-diagnostics.mjs';
@@ -49,8 +49,9 @@ function defaultSleep(ms,signal){
  return new Promise(resolve=>{const timer=setTimeout(done,ms);function done(){clearTimeout(timer);signal?.removeEventListener('abort',done);resolve();}
   signal?.addEventListener('abort',done,{once:true});});
 }
-/** Re-reads the whole pair until admitted or the window closes. A retired or
- * quarantined reader, unsettled attempt or stop request is terminal at once. */
+/** Re-reads the whole pair until admitted or the window closes. An established drift retirement,
+ * unsettled outer attempt or stop request is terminal. Discovery quarantine
+ * is retried only after the holder's cooldown, within this same startup window. */
 async function readStartupPair({taskLeaseReader,now,sleep,maxRequestMs,expiresAtMs,signal}){
  const begun=now();if(!Number.isSafeInteger(begun))fail();
  const windowEndMs=Math.min(expiresAtMs,begun+PRODUCT_OWNER_PAIR_STARTUP_WINDOW_MS);
@@ -90,7 +91,7 @@ export function validateProductOwnerConfiguration(raw){
      t.certSha256===p.clientCertSha256||t.issuerSha256!==p.issuerSha256||
      !slot(p.clientSubject)||!slot(p.deploymentRevision)||!uuid(p.selectedClientId)||
      s.deploymentRevision!==p.deploymentRevision||s.ownerCertSha256!==t.certSha256||s.proxyCertSha256!==p.clientCertSha256||
-     !integer(s.expiresAtMs,Number.MAX_SAFE_INTEGER)||!integer(l.maxRequestMs,OWNER_MAX_REQUEST_MS)||!integer(l.maxFactBytes,131072)||!integer(l.maxLeaseMs,30000)||
+     !integer(s.expiresAtMs,Number.MAX_SAFE_INTEGER)||!integer(l.maxRequestMs,OWNER_MAX_REQUEST_MS)||!integer(l.maxFactBytes,131072)||!integer(l.maxLeaseMs,PAIR_LEASE_TTL_MS)||l.maxLeaseMs<2*PAIR_RENEW_MS||
      price.modelId!=='anthropic.claude-sonnet-4-6'||price.profileId!=='us.anthropic.claude-sonnet-4-6'||!digest(price.revision)||
      !integer(price.validUntilMs,Number.MAX_SAFE_INTEGER)||
      ![price.actualInputMicroUSDPerK,price.reserveInputMicroUSDPerK,price.outputMicroUSDPerK].every(n=>integer(n,1_000_000_000))||
@@ -130,12 +131,12 @@ function defaultClients(options){
  * the bounded service-pair startup wait begin. */
 export async function startProductOwner(raw,dependencies={}){return assembleProductOwner(raw,dependencies);}
 async function assembleProductOwner(raw,dependencies,stopSignal){
- let server,nativeCurrentness,pool,clients,closing,telemetry,serviceGate,closed=false,started=false,life,closeMs=3000;
+ let server,nativeCurrentness,pool,clients,closing,telemetry,serviceGate,taskLeaseReader,closed=false,started=false,life,closeMs=3000;
  const buffers=new Set();
  const close=()=>closing??=(async()=>{
   closed=true;serviceGate?.poison();let timer;
   const pending=Promise.allSettled([()=>server?.close(),()=>nativeCurrentness?.close(),()=>pool?.end(),
-   ()=>clients?.ecsClient.destroy(),()=>clients?.ec2Client.destroy()].map(action=>Promise.resolve().then(action)));
+   ()=>clients?.ecsClient.destroy(),()=>clients?.ec2Client.destroy(),()=>taskLeaseReader?.close()].map(action=>Promise.resolve().then(action)));
   let outcome;
   try{outcome=await Promise.race([pending,new Promise(resolve=>{timer=setTimeout(()=>resolve(null),closeMs);})]);}
   finally{clearTimeout(timer);for(const bytes of buffers)bytes.fill(0);buffers.clear();telemetry?.close();}
@@ -150,7 +151,7 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   const c=validateProductOwnerConfiguration(raw);
   if(!c.enabled)return frozenDisabled();
   closeMs=c.limits.maxRequestMs;
-  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','fetchImpl','sleep','writeDiagnostic','writeTelemetry']),
+  const d=own(dependencies,[],['readMaterial','createPool','createAwsClients','createServer','now','monotonicNow','fetchImpl','sleep','writeDiagnostic','writeTelemetry']),
    readMaterial=d.readMaterial??readSecret,createPool=d.createPool??defaultPool,
    createAwsClients=d.createAwsClients??defaultClients,createServer=d.createServer??createProductOwnerHttpsServer,
    now=d.now??Date.now,rawFetch=d.fetchImpl??fetch,sleep=d.sleep??defaultSleep;
@@ -184,16 +185,15 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   clients={ecsClient:countingAwsClient(clients.ecsClient,telemetry),ec2Client:countingAwsClient(clients.ec2Client,telemetry)};
   const limits={maxRequestMs:c.limits.maxRequestMs,maxFactBytes:c.limits.maxFactBytes},
    persistedFacts=createProductProxyPersistedFacts({pool,selectedClientId:c.clientPolicy.selectedClientId,now,limits,enabled:true}),
-   initialBindings=createInitialRunBindingJournal({pool,now}),
-   placement=createProductOwnerPlacement({configuration:control,pool,persistedFacts,initialBindings,now,limits,enabled:true,report:diagnostics.refused});
+   placement=createProductOwnerPlacement({configuration:control,pool,persistedFacts,now,limits,enabled:true,report:diagnostics.refused});
   nativeCurrentness=createProductOwnerNativeCurrentness({configuration:control,pool,credentialFileSha256:c.nativeCredentialFileSha256,
    now,limits,fetchImpl,enabled:true,report:diagnostics.refused},{readMaterial});
-  const taskLeaseReader=await life.run(()=>createProductServiceTaskLeaseReader({ecsClient:clients.ecsClient,ec2Client:clients.ec2Client,
-   configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true}));
+  taskLeaseReader=await life.run(()=>createProductServiceTaskLeaseReader({ecsClient:clients.ecsClient,ec2Client:clients.ec2Client,
+   configuration:c.serviceTasks,now,limits:{maxRequestMs:c.limits.maxRequestMs,maxLeaseMs:c.limits.maxLeaseMs},enabled:true},{...(d.monotonicNow?{monotonicNow:d.monotonicNow}:{}),telemetry,writeDiagnostic:()=>diagnostics.pairReproven()}));
   const ca=await material(c.tls.caFile),cert=await material(c.tls.certFile),key=await material(c.tls.keyFile);
   life.check();life.close();
   // Raw configuration has no task ARN/IP. Only this fresh canonical pair may
-  // compile the existing internal channel policy. Later drift retires reader.
+  // compile the initial channel policy. The lease holder supplies each later generation.
   // The peer service may not be RUNNING yet: bounded full re-reads, see above.
   const {pair,deadlineMs}=await readStartupPair({taskLeaseReader,now,sleep,maxRequestMs:c.limits.maxRequestMs,
    expiresAtMs:c.serviceTasks.expiresAtMs,signal:stopSignal});
@@ -207,7 +207,7 @@ async function assembleProductOwner(raw,dependencies,stopSignal){
   return Object.freeze({get available(){return !closed&&server.available&&nativeCurrentness.available&&serviceGate.available;},
    async start(){let startup;try{if(closed||started||!server.available)fail();started=true;
      startup=createOperationLifetime({now,deadlineMs:now()+c.limits.maxRequestMs,errorFactory:()=>Error('PRODUCT_OWNER_STARTUP_UNAVAILABLE')});
-     await startup.run(()=>server.listen({host:'0.0.0.0',port:8444}));startup.check();if(closed)fail();}
+     await startup.run(()=>server.listen({host:'0.0.0.0',port:8444}));startup.check();if(closed)fail();taskLeaseReader.start();}
     catch{await close();fail();}finally{if(startup?.close().unsettledOperations>0)serviceGate.poison();}},close});
   });
  }catch{try{await close();}catch{throw Error('PRODUCT_OWNER_CLEANUP_UNKNOWN');}fail();}

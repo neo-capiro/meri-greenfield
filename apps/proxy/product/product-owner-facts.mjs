@@ -15,8 +15,7 @@
  * grant bound to this exact run, allocation and qualification; its state and expiry
  * never bound the model lease. Any other row on the run still refuses.
  */
-import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
-import {health} from './owner-diagnostics.mjs';
+import {createOwnerRequestWork} from './owner-request-work.mjs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
@@ -45,13 +44,8 @@ export function createProductProxyPersistedFacts(configuration){
     typeof c.selectedClientId!=='string'||!uuid.test(c.selectedClientId)||
     !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000||
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)deny();
- const budget=new PostgresBudgetStore(c.pool,{namespace:'product'});
- const conversations=createPostgresConversationStore({pool:c.pool,now:c.now});
- const telemetry=currentTurnTelemetry();
- let quarantined=false;
-
  /** The model grant the digest locates: its own binding facts and the run's installed allocation. No run-wide grant set yet. */
- async function locate(capabilitySha256,life){
+ async function locate(capabilitySha256,life,budget){
   return life.run(()=>budget.transact(async client=>{
    const grants=(await client.query('SELECT * FROM meri_product_budget.grants WHERE capability_sha256=$1',[capabilitySha256])).rows;
    life.check();if(grants.length!==1)deny();const grant=grants[0];
@@ -73,7 +67,7 @@ export function createProductProxyPersistedFacts(configuration){
  /** The run's grant set, AFTER the allocation record is known: the admitted set is exactly the record's own grant intents;
   * every other grant/binding row on the run must be an execution-capability grant bound to this exact run, allocation and
   * qualification (`assertExecutionGrantBinding`), and neither its state nor its expiry bounds the model lease. */
- async function grantSet(located,record,life){
+ async function grantSet(located,record,life,budget){
   const intents=record?.grantIntents;
   if(!Array.isArray(intents)||intents.length<1||intents.length>16||intents.some(i=>typeof i?.grantId!=='string'))deny();
   const admittedIds=new Set(intents.map(i=>i.grantId));if(admittedIds.size!==intents.length||!admittedIds.has(located.selected.grantId))deny();
@@ -113,15 +107,19 @@ export function createProductProxyPersistedFacts(configuration){
   },life.check,undefined,true));
  }
 
- return Object.freeze({get available(){return enabled&&!quarantined;},async resolve(value){
-  let life;
+ return Object.freeze({get available(){return enabled;},async resolve(value){
+  let life,work;
   try{
    const v=own(value,['capabilitySha256','deadlineMs'],['signal']);nativeSignal(v.signal);
    digest(v.capabilitySha256);
    const at=c.now();
-   if(!enabled||quarantined||!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=at)deny();
+   if(!enabled||!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=at)deny();
    life=createOperationLifetime({deadlineMs:Math.min(v.deadlineMs,at+limits.maxRequestMs),now:c.now,signal:v.signal,errorFactory:()=>Error('PRODUCT_PROXY_FACTS_UNAVAILABLE')});
-   const located=await locate(v.capabilitySha256,life),{selected}=located,binding=selected.binding,issuanceKey=hash(binding);
+   work=createOwnerRequestWork({pool:c.pool,readOnly:true});
+   life.signal.addEventListener('abort',work.close,{once:true});
+   const budget=new PostgresBudgetStore(work.pool,{namespace:'product'}),
+    conversations=createPostgresConversationStore({pool:work.pool,now:c.now});
+   const located=await locate(v.capabilitySha256,life,budget),{selected}=located,binding=selected.binding,issuanceKey=hash(binding);
    // A generic ACTIVE task grant cannot substitute for the distinct model
    // grant: the canonical model table must own this exact issued identity.
    // Keep the canonical issuance SELECT/decoder, but execute it through the
@@ -141,7 +139,7 @@ export function createProductProxyPersistedFacts(configuration){
    const record=saved?.record;
    if(!record||record.state!=='ADMITTED')deny();
    // The record's own grant intents name the admitted set; the run-wide grant set is read only now, against them.
-   const set=await grantSet(located,record,life);life.check();
+   const set=await grantSet(located,record,life,budget);life.check();
    Object.assign(located,set);
    const modelIntent=record.grantIntents.find(grant=>grant.grantId===selected.grantId);
    if(!active(saved.run)||!modelIntent||
@@ -161,7 +159,7 @@ export function createProductProxyPersistedFacts(configuration){
    if(!same(saved.run.scopes,expectedScopes)||saved.run.policyRevision!==selected.qualificationBinding.policyRevision)deny();
    const accepted=await life.run(()=>conversations.readOptional(binding,{limit:1},life.check));life.check();
    if(!accepted||!same(accepted.run,saved.run)||hash(accepted.request)!==issued.requestSha256)deny();
-   const current=createPostgresAdmittedRunOwner({pool:c.pool,allocationJson:located.allocationJson,
+   const current=createPostgresAdmittedRunOwner({pool:work.pool,allocationJson:located.allocationJson,
     grantFactsJsons:located.grantFactsJsons,namespace:'product',now:c.now,limits});
    const observation=JSON.parse(await life.run(signal=>current.currentTaskRun(binding,{signal})));life.check();
    const observed=own(observation,['binding','policyRevision','deadlineMs','checkedAtMs']);
@@ -172,9 +170,9 @@ export function createProductProxyPersistedFacts(configuration){
     resource:Object.fromEntries(['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName'].map(key=>[key,record.resource[key]])),
     requestSha256:issued.requestSha256,expiresAtMs:Math.min(nativeExpiresAtMs,issued.expiresAtMs,observed.deadlineMs)});
   }catch{deny();}finally{
-   // A deadline races I/O; it cannot prove a hung pool/driver stopped. Refuse
-   // every later lookup on this instance rather than accumulating new work.
-   if(life?.close().unsettledOperations>0&&!quarantined){quarantined=true;health('facts','quarantined','PRODUCT_OWNER_FACTS_UNAVAILABLE',telemetry);}
+   // These are read-only transactions. Retire this request's clients (including
+   // late acquisitions), not the shared resolver or another request's clients.
+   life?.signal.removeEventListener('abort',work?.close);life?.close();work?.close();
   }
  }});
 }

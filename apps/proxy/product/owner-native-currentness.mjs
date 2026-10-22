@@ -1,7 +1,6 @@
 /** Private startup join over the existing native material, conversation and Core owners.
  * No credential is issued, persisted, logged or returned by this facade. */
-import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
-import {health} from './owner-diagnostics.mjs';
+import {createOwnerRequestWork} from './owner-request-work.mjs';
 import {createHash} from 'node:crypto';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -18,7 +17,7 @@ const fail=()=>{throw Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE');};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const same=(a,b)=>hash(a)===hash(b);
 const active=run=>['queued','starting','running'].includes(run.state);
-// A process cannot replace an uncertain helper over the same borrowed authority.
+// A borrowed pool cannot be rebound to different deployment authority.
 const poolAuthorities=new WeakMap();
 
 /** configuration is the same SHA-pinned control-file snapshot used for placement.
@@ -37,20 +36,19 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
     !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>OWNER_MAX_REQUEST_MS||
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)fail();
  const original=candidate.runtime.binding,selectedClientId=candidate.identity.commandContext.clientResolution.clientId,
-  store=createPostgresConversationStore({pool:c.pool,now:c.now}),initialBindings=createInitialRunBindingJournal({pool:c.pool,now:c.now}),
-  configurationSha256=compilePreparedRunConfigurationSha256(startup),owners=new Map();
+  configurationSha256=compilePreparedRunConfigurationSha256(startup),lives=new Set();
  const fingerprint=hash({configuration:startup,credentialFileSha256:c.credentialFileSha256});
- if(!poolAuthorities.has(c.pool))poolAuthorities.set(c.pool,{fingerprint,quarantined:false});
- const authorityState=poolAuthorities.get(c.pool);if(authorityState.fingerprint!==fingerprint)fail();
- const telemetry=currentTurnTelemetry();
+ if(!poolAuthorities.has(c.pool))poolAuthorities.set(c.pool,fingerprint);
+ if(poolAuthorities.get(c.pool)!==fingerprint)fail();
  let closed=false;
- function quarantine(){if(!authorityState.quarantined){authorityState.quarantined=true;health('currentness','quarantined','PRODUCT_OWNER_NATIVE_UNAVAILABLE',telemetry);}}
  function scoped(binding){validateShape('RunBinding',binding);if(binding.tenantId!==original.tenantId||binding.actorId!==original.actorId)fail();}
- function make(binding){
+ function make(binding,pool){
+  const store=createPostgresConversationStore({pool,now:c.now}),
+   initialBindings=createInitialRunBindingJournal({pool,now:c.now});
   const currentOwner={async currentRun(request,{signal}={}){
    // The step reached is reported on refusal (owner-diagnostics.mjs); the refusal itself is unchanged.
    let step='input';try{
-   scoped(request);if(closed||authorityState.quarantined||!same(request,binding))fail();const started=c.now(),check=()=>{signal?.throwIfAborted();if(closed||authorityState.quarantined)fail();};
+   scoped(request);if(closed||!same(request,binding))fail();const started=c.now(),check=()=>{signal?.throwIfAborted();if(closed)fail();};
    check();step='run';const before=await store.readOptional(binding,{limit:1},check);check();
    if(!before||!active(before.run)||!same(before.run.binding,binding)||!same(before.run.versions,startup.versions)||
       before.run.policyRevision!==candidate.qualification.policyRevision)fail();
@@ -89,7 +87,7 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
   }};
   const delivery={async read(value){
    const v=own(value,['binding','selectedClientId','deadlineMs'],['signal']);nativeSignal(v.signal);
-   if(closed||authorityState.quarantined||!same(v.binding,binding)||v.selectedClientId!==selectedClientId)fail();
+   if(closed||!same(v.binding,binding)||v.selectedClientId!==selectedClientId)fail();
    v.signal?.throwIfAborted();let bytes;
    try{
     bytes=await readMaterial(candidate.identity.credentialFile);v.signal?.throwIfAborted();
@@ -105,15 +103,16 @@ export function createProductOwnerNativeCurrentness(configuration,{readMaterial=
    origin:candidate.identity.origin,currentOwner,delivery,fetchImpl:c.fetchImpl,now:c.now,
    limits:{...limits,maxCredentialMs:limits.maxRequestMs},enabled});
  }
- return Object.freeze({get available(){return enabled&&!closed&&!authorityState.quarantined;},async checkCurrentConversation(value){
-  let life,owner;
+ return Object.freeze({get available(){return enabled&&!closed;},async checkCurrentConversation(value){
+  let life,work;
   try{
    const v=own(value,['binding','deadlineMs'],['signal']);nativeSignal(v.signal);const binding=data(v.binding);scoped(binding);
-   const at=c.now();if(!enabled||closed||authorityState.quarantined||!Number.isSafeInteger(v.deadlineMs)||!Number.isSafeInteger(at)||v.deadlineMs<=at)fail();
-   const key=hash(binding);if(!owners.has(key)){if(owners.size>=1024)fail();owners.set(key,make(binding));}
-   owner=owners.get(key);if(!owner.available){quarantine();fail();}
+   const at=c.now();if(!enabled||closed||!Number.isSafeInteger(v.deadlineMs)||!Number.isSafeInteger(at)||v.deadlineMs<=at)fail();
    life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs:Math.min(v.deadlineMs,at+limits.maxRequestMs),errorFactory:code=>Object.assign(Error('PRODUCT_OWNER_NATIVE_UNAVAILABLE'),code==='DEADLINE'?{code}:{})});
+   lives.add(life);work=createOwnerRequestWork({pool:c.pool,readOnly:true});
+   life.signal.addEventListener('abort',work.close,{once:true});
+   const owner=make(binding,work.pool);
    const receipt=await life.run(signal=>owner.checkCurrentConversation({binding,deadlineMs:v.deadlineMs,signal}));life.check();return receipt;
-  }catch{fail();}finally{if(life?.close().unsettledOperations>0||owner?.available===false)quarantine();}
- },close(){closed=true;if(enabled)quarantine();owners.clear();}});
+  }catch{fail();}finally{life?.signal.removeEventListener('abort',work?.close);life?.close();work?.close();lives.delete(life);}
+ },close(){closed=true;for(const life of lives)life.close();lives.clear();}});
 }

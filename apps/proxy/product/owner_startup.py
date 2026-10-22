@@ -10,6 +10,7 @@ import json
 import threading
 import time
 import uuid
+import weakref
 
 from .owner_channel import (OwnerPeerPolicy, OwnerHostGate, OPERATION, OwnerCarrierBusy,
                             acquire_owner_carrier, owner_exchange_state, validate_owner_reply,
@@ -55,15 +56,43 @@ class ProductOwnerStartup:
         self.policy,self.exchange,self.gate,self.loop=policy,exchange,host_gate,owner_loop
         self.loop_thread=threading.get_ident()
         self.now_ms=now_ms or (lambda:time.time_ns()//1000000)
-        self.reader=ProductOwnerAdmissionReader(policy=policy,exchange=exchange,host_gate=host_gate,
-            owner_loop=owner_loop,now_ms=self.now_ms,max_exchange_ms=policy.max_exchange_ms)
         self.count_client,self.make_provider_transport=count_client,make_provider_transport
         self.pricing_revision,self.body_limits=pricing_revision,body_limits
-        self.state=owner_exchange_state(exchange,policy,host_gate)
-        self._authorities={}
+        self._authorities=weakref.WeakValueDictionary()
+        self._closed=False
+        self._install_generation(getattr(exchange,"generation",0))
+        self._subscriptions=[]
+        for name,callback in (("subscribe_generation_close",self._close_generation),
+                              ("subscribe_generation_install",self._schedule_generation)):
+            subscribe=getattr(exchange,name,None)
+            if callable(subscribe):self._subscriptions.append(subscribe(callback))
+
+    def _close_generation(self,generation):
+        if generation!=self.generation:return
+        self._authorities.clear()
+        self.reader.close()
+
+    def _schedule_generation(self,generation):
+        if not self._closed and not self.loop.is_closed():
+            self.loop.call_soon_threadsafe(self._install_generation,generation)
+
+    def _install_generation(self,generation):
+        if self._closed or generation!=getattr(self.exchange,"generation",0):return
+        policy=self.exchange.policy
+        reader=ProductOwnerAdmissionReader(policy=policy,exchange=self.exchange,host_gate=self.gate,
+            owner_loop=self.loop,now_ms=self.now_ms,max_exchange_ms=policy.max_exchange_ms)
+        state=owner_exchange_state(self.exchange,policy,self.gate)
+        self.policy,self.reader,self.state,self.generation=policy,reader,state,generation
+
+    def _check_generation(self,generation):
+        if (self._closed or generation!=self.generation
+                or generation!=getattr(self.exchange,"generation",0)
+                or self.policy is not self.exchange.policy):_deny()
 
     async def _placement(self, capability, read_id, started, deadline):
-        step="carrier";cutoff=deadline;lock=self.state[3]["admission"]
+        generation=self.generation;policy=self.policy;state=self.state
+        self._check_generation(generation)
+        step="carrier";cutoff=deadline;lock=state[3]["admission"]
         with diagnostics.phase("placement"):
             try:
                 # Waiting sends nothing (OwnerCarrierBusy on expiry); the exchange clock starts with the carrier held.
@@ -71,6 +100,7 @@ class ProductOwnerStartup:
                 try:
                     cutoff=min(deadline,self.now_ms()+self.policy.max_exchange_ms)
                     async with asyncio.timeout(max(.001,(cutoff-self.now_ms())/1000)):
+                        self._check_generation(generation)
                         if not self.gate.available or self.now_ms()>=cutoff:
                             _deny()
                         step="exchange"
@@ -78,7 +108,8 @@ class ProductOwnerStartup:
                             separators=(",",":")).encode("ascii")
                         reply=await self.exchange("admission",OPERATION,raw,(cutoff-self.now_ms())/1000)
                         step="reply"
-                        frame=validate_owner_reply(self.policy,reply,"admission",self.state[4])
+                        self._check_generation(generation)
+                        frame=validate_owner_reply(policy,reply,"admission",state[4])
                         at=self.now_ms()
                         step="frame"
                         if (type(frame) is not list or len(frame)!=6
@@ -104,6 +135,8 @@ class ProductOwnerStartup:
                 or type(capability) is not str or len(capability)!=64
                 or any(c not in "0123456789abcdef" for c in capability)):
             _deny()
+        generation=self.generation;reader=self.reader
+        self._check_generation(generation)
         started=self.now_ms();deadline=self.exchange.expires_at_ms
         bound=min(deadline,started+OWNER_CARRIER_WAIT_MS+self.policy.max_exchange_ms)
         coroutine=self._placement(capability,uuid.uuid4().hex,started,deadline)
@@ -113,8 +146,10 @@ class ProductOwnerStartup:
             future=asyncio.run_coroutine_threadsafe(coroutine,self.loop)
             issued,effective,cutoff=future.result(timeout=max(.001,(bound-self.now_ms())/1000+1))
             step="admission";diagnostics.stage("admission-read")
-            source=self.reader.resolve_for_issued_sync(issued=issued,capability_sha256=capability,
+            self._check_generation(generation)
+            source=reader.resolve_for_issued_sync(issued=issued,capability_sha256=capability,
                 deadline_ms=min(cutoff,effective))
+            self._check_generation(generation)
             self._authorities[id(source.authority)]=source.authority
             return source
         except OwnerCarrierBusy as error:
@@ -126,7 +161,7 @@ class ProductOwnerStartup:
             diagnostics.refused("owner",step,error,deadline_ms=bound,now_ms=self.now_ms)
             if future is None:coroutine.close()
             else:future.cancel()
-            self.gate.poison();self.exchange.abort();_deny()
+            _deny()
 
     async def resolve_session(self, life):
         from ..qualification.runtime.lifetime import RequestLifetime
@@ -134,6 +169,8 @@ class ProductOwnerStartup:
         from ..qualification.runtime.bedrock_body import BodyLimits
         if type(life) is not RequestLifetime:
             _deny()
+        generation=self.generation
+        self._check_generation(generation)
         authority=life.admission.authority
         if self._authorities.get(id(authority)) is not authority or authority._product_owner[0] is not self.reader:
             _deny()
@@ -148,9 +185,9 @@ class ProductOwnerStartup:
         async def current(value):
             if (type(value) is not dict or value!={"binding":binding,"requestId":request_id,"deadlineMs":deadline}):
                 _deny()
-            return await asyncio.to_thread(self.reader.read_current_conversation_sync,expected,deadline)
-        life.check()
-        await asyncio.to_thread(self.reader.check_current_sync,expected,deadline)
+            return life.current_conversation()
+        await life.refresh()
+        self._check_generation(generation)
         return ProductSession(request_id=request_id,binding=binding,model_grant_id=facts[1],
             deadline_ms=deadline,selected_client_id=facts[7],pricing_revision=self.pricing_revision,
             count_client=self.count_client,make_provider_transport=self.make_provider_transport,
@@ -160,4 +197,10 @@ class ProductOwnerStartup:
             check_current_conversation=current,limits=self.body_limits or BodyLimits())
 
     def close(self):
-        self.gate.poison();self.exchange.abort();self._authorities.clear()
+        if self._closed:return
+        self._closed=True
+        for unsubscribe in self._subscriptions:
+            if callable(unsubscribe):unsubscribe()
+        self._subscriptions.clear()
+        self.reader.close()
+        self.gate.poison();self.exchange.close();self._authorities.clear()

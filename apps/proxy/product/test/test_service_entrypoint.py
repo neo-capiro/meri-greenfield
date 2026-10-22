@@ -62,7 +62,8 @@ class ProductServiceTests(unittest.IsolatedAsyncioTestCase):
 
         invoke.native_app = native
         invoke.registration_current = lambda: active[0]
-        service = ProductProxyService(host, invoke, DirectTlsSocketCapture())
+        pair_ready = [True]
+        service = ProductProxyService(host, invoke, DirectTlsSocketCapture(), lambda: pair_ready[0])
 
         async def collect(event):
             await observed.put(event)
@@ -83,6 +84,12 @@ class ProductServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(service.ready)
         self.assertEqual((await call_http())[0]["status"], 200)
         self.assertEqual(host.calls, 1)
+        pair_ready[0] = False
+        self.assertFalse(service.ready)
+        self.assertEqual((await call_http())[0]["status"], 403)
+        self.assertEqual(host.calls, 1)
+        pair_ready[0] = True
+        self.assertTrue(service.ready)
         active[0] = False
         self.assertEqual((await call_http())[0]["status"], 403)
         self.assertEqual(host.calls, 1)

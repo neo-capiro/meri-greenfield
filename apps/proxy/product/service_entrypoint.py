@@ -45,19 +45,22 @@ class _DisabledProductProxy:
 class ProductProxyService:
     """Forward pinned native lifespan; allow HTTP only after its startup ACK."""
 
-    def __init__(self, host_app, invoker, capture):
+    def __init__(self, host_app, invoker, capture, service_ready=None):
         if (not callable(host_app) or not callable(invoker)
                 or not callable(getattr(invoker, "native_app", None))
                 or not callable(getattr(invoker, "registration_current", None))
-                or type(capture) is not DirectTlsSocketCapture):
+                or type(capture) is not DirectTlsSocketCapture
+                or service_ready is not None and not callable(service_ready)):
             _deny()
         self.host_app, self.invoker, self.direct_tls_capture = host_app, invoker, capture
+        self.service_ready = service_ready or (lambda: True)
         self._started = False
         self._unavailable_reported = False
 
     @property
     def ready(self):
-        return self._started and self.invoker.registration_current() and self.host_app.ready
+        return (self._started and self.invoker.registration_current() and self.host_app.ready
+                and self.service_ready() is True)
 
     async def __call__(self, scope, receive, send):
         if type(scope) is not dict:
@@ -107,7 +110,7 @@ class ProductProxyService:
 def create_product_proxy_service(*, enabled=False, direct_tls_capture=None,
                                  resolve_bearer_sha256=None, ecs_client=None,
                                  ec2_client=None, resolve_session=None,
-                                 bootstrap_seconds=BOOTSTRAP_SECONDS):
+                                 bootstrap_seconds=BOOTSTRAP_SECONDS, service_ready=None):
     """Wire existing ingress, current ECS observer and native LiteLLM route.
 
     Enabled startup requires separately reviewed, bounded control-owned
@@ -135,4 +138,4 @@ def create_product_proxy_service(*, enabled=False, direct_tls_capture=None,
         resolve_session=resolve_session,
         invoke_litellm=invoker,
         bootstrap_seconds=bootstrap_seconds)
-    return ProductProxyService(host, invoker, direct_tls_capture)
+    return ProductProxyService(host, invoker, direct_tls_capture, service_ready)

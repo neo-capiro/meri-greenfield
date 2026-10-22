@@ -141,7 +141,7 @@ class DiscoveryTests(unittest.TestCase):
                 def change(v, _, mutate=mutate):
                     mutate(v); return v
                 f.changes[method] = change
-                with self.assertRaisesRegex(Exception, 'PRODUCT_SERVICE_PAIR_DENIED'):
+                with self.assertRaisesRegex(Exception, 'PAIR_DRIFT'):
                     f.reader().read(deadline_ms=f.at+1000)
 
     def test_explicit_inprogress_and_bounded_service_inventory(self):
@@ -160,14 +160,12 @@ class DiscoveryTests(unittest.TestCase):
             self.assertLessEqual(len(f.calls), 7)
             self.assertLessEqual({m for m, _ in f.calls}, {'describe_services', 'list_tasks', 'describe_task_definition'})
 
-    def test_replacement_drift_and_reversed_clock_never_restore_old_pair(self):
+    def test_discovery_returns_replacement_for_lease_owner_and_refuses_reversed_clock(self):
         f = fixture(); r = f.reader(); r.read(deadline_ms=f.at+1000); f.ids['proxy'] = '3'
-        with self.assertRaises(Exception):
-            r.read(deadline_ms=f.at+1000)
-        self.assertFalse(r.available); count = len(f.calls); f.ids['proxy'] = '2'
-        with self.assertRaises(Exception):
-            r.read(deadline_ms=f.at+1000)
-        self.assertEqual(len(f.calls), count)
+        observed = r.read(deadline_ms=f.at+1000)
+        self.assertEqual(observed['proxy']['taskArn'], f.task_id('proxy'))
+        self.assertIn('eni', observed['proxy'])
+        self.assertTrue(r.available, 'the lease owner classifies replacements, not discovery')
         f = fixture(); at = [f.at]; r = f.reader(now_ms=lambda: at[0])
         def reverse(v, _):
             at[0] -= 1; return v
@@ -189,13 +187,13 @@ class DiscoveryTests(unittest.TestCase):
                         v['taskArns'] = [f.task_id('proxy')]
                 return v
             f.changes['list_tasks' if mode == 'membership' else 'describe_services'] = change
-            with self.assertRaisesRegex(Exception, 'PRODUCT_SERVICE_PAIR_DENIED'):
+            with self.assertRaisesRegex(Exception, 'PAIR_DRIFT'):
                 f.reader().read(deadline_ms=f.at+1000)
 
     def test_queue_wait_consumes_original_deadline_before_any_sdk_command(self):
         f = fixture(); r = f.reader(); r._read_lock.acquire()
         try:
-            with self.assertRaisesRegex(Exception, 'PRODUCT_SERVICE_PAIR_DENIED'):
+            with self.assertRaisesRegex(Exception, 'PAIR_UNAVAILABLE'):
                 r.read(deadline_ms=time.time_ns()//1000000+10)
             self.assertEqual(f.calls, [])
         finally:
@@ -250,7 +248,7 @@ class DiscoveryTests(unittest.TestCase):
         f.changes['list_tasks'] = slow
         f.changes['describe_task_definition'] = lambda v, _: v.update(taskDefinition={}) or v
         r = f.reader()
-        with self.assertRaisesRegex(Exception, 'PRODUCT_SERVICE_PAIR_DENIED'):
+        with self.assertRaisesRegex(Exception, 'PAIR_UNAVAILABLE'):
             r.read(deadline_ms=f.at+2000)
         self.assertEqual(finished, ['list_tasks', 'list_tasks'], 'no SDK call outlives the refused read')
         self.assertEqual(r._active, 0)

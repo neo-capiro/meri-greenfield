@@ -19,7 +19,7 @@ import json
 import re
 import threading
 import time
-from weakref import WeakKeyDictionary
+from weakref import WeakKeyDictionary, WeakSet, ref
 
 from ..qualification.state.pricing import StateDenied
 from .boundary_codec import (_binding, _wire, encode_complete_capture,
@@ -39,6 +39,7 @@ _ORIGIN = re.compile(r"https://[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?:8444\Z")
 _SERVICE_GATES = {}
 _SERVICE_GATES_LOCK = threading.Lock()
 _EXCHANGE_STATES = WeakKeyDictionary()
+_EXCHANGE_HOOKS = WeakSet()
 _CAPTURE_ADMISSION = ContextVar("product_owner_capture_admission", default=None)
 CARRIERS = ("operation", "capture", "admission")
 
@@ -220,12 +221,45 @@ def owner_exchange_state(exchange, policy, host_gate):
         _SERVICE_GATES[key] = host_gate
     loop = asyncio.get_running_loop()
     try:
+        generation = getattr(exchange, "generation", 0)
+        if type(generation) is not int or generation < 0:
+            _deny()
+        if generation:
+            if (getattr(exchange, "policy", None) != policy
+                    or not callable(getattr(exchange, "subscribe_generation_close", None))
+                    or not callable(getattr(exchange, "subscribe_carrier_reset", None))):
+                _deny()
         state = _EXCHANGE_STATES.get(exchange)
-        if state is None:
+        if state is not None and (state[0] is not loop or state[2] is not host_gate):
+            _deny()
+        if state is None or state[7] != generation:
+            if state is not None and generation <= state[7]:
+                _deny()
             state = (loop, policy, host_gate,
                      {name: asyncio.Lock() for name in CARRIERS},
-                     dict.fromkeys(CARRIERS), {}, asyncio.Lock())
+                     dict.fromkeys(CARRIERS), {}, asyncio.Lock(), generation, WeakSet())
             _EXCHANGE_STATES[exchange] = state
+        if generation and exchange not in _EXCHANGE_HOOKS:
+            borrowed = ref(exchange)
+
+            def close_generation(old_generation):
+                target = borrowed()
+                current = _EXCHANGE_STATES.get(target) if target is not None else None
+                if current is not None and current[7] == old_generation:
+                    current[4].update(dict.fromkeys(CARRIERS))
+                    current[5].clear()
+                    for bridge in tuple(current[8]):
+                        bridge._invalidate_generation()
+
+            def reset_carrier(channel):
+                target = borrowed()
+                current = _EXCHANGE_STATES.get(target) if target is not None else None
+                if current is not None and channel in current[4]:
+                    current[4][channel] = None
+
+            exchange.subscribe_generation_close(close_generation)
+            exchange.subscribe_carrier_reset(reset_carrier)
+            _EXCHANGE_HOOKS.add(exchange)
         if state[0] is not loop or state[1] != policy or state[2] is not host_gate:
             _deny()
         return state
@@ -248,7 +282,8 @@ def validate_capture_admission_lease(lease, exchange, host_gate, expected_source
     if (type(lease) is not _CaptureAdmissionLease or not lease.active
             or lease.bridge.exchange is not exchange or lease.bridge.host_gate is not host_gate
             or lease.bridge._capture_token is not lease.token or not host_gate.available
-            or expected_source is None or lease.source is None or expected_source != lease.source):
+            or expected_source is None or lease.source is None or expected_source != lease.source
+            or not lease.bridge._generation_current()):
         _deny()
     source = json.loads(expected_source)
     if (source[0] != _binding(lease.bridge.binding)
@@ -272,9 +307,9 @@ class ProductOwnerBridge:
     exact fixed HTTPS origin and the mTLS client/server material, return
     transport-derived TLS evidence, enforce no redirects/cache/retries, and
     keep a distinct persistent TLS connection for each channel. It must have
-    its own independent I/O bound. Its synchronous `abort()` must immediately
-    close and permanently retire both connections; a timed-out Python task
-    cannot guarantee cancellation of socket I/O. The owner reauthenticates both.
+    its own independent I/O bound. Its synchronous `reset(channel)` closes that
+    carrier immediately; cancelling a Python task cannot cancel native socket
+    I/O. A new carrier must pass the transport's post-handshake pair proof.
     """
 
     def __init__(self, *, policy, exchange, capture_call, host_gate, request_id,
@@ -282,6 +317,10 @@ class ProductOwnerBridge:
         if (type(policy) is not OwnerPeerPolicy or not callable(exchange)
                 or not callable(getattr(exchange, "abort", None))
                 or inspect.iscoroutinefunction(exchange.abort)
+                or not callable(getattr(exchange, "reset", None))
+                or inspect.iscoroutinefunction(exchange.reset)
+                or type(getattr(exchange, "generation", None)) is not int
+                or exchange.generation < 1
                 or type(host_gate) is not OwnerHostGate or not host_gate.available
                 or not callable(capture_call) or not callable(now_ms or time.time_ns)
                 or type(deadline_ms) is not int or not 0 < deadline_ms <= 9007199254740991):
@@ -308,26 +347,47 @@ class ProductOwnerBridge:
         self._aborted = False
         self._sent = False
         self._state = "NEW"
+        self.generation = exchange.generation
+        owner_exchange_state(exchange, policy, host_gate)[8].add(self)
 
     def _abort(self):
+        """Invalidate only this request. The canonical owner retains its hold."""
         self._state = "FAILED"
         self._capture_token = None
-        self.host_gate.poison()
         if self._aborted:
             return
         self._aborted = True
+        if self._sent:
+            self._reset("operation")
+            self._reset("capture")
+
+    def _invalidate_generation(self):
+        # The pair holder closes carriers before invoking this callback.
+        self._state = "FAILED"
+        self._capture_token = None
+        self._aborted = True
+
+    def _generation_current(self):
+        return (self.generation == self.exchange.generation
+                and self.policy == self.exchange.policy)
+
+    def _reset(self, channel):
+        """Called while this request still owns the carrier or claim lock."""
+        if not self._generation_current():
+            return  # The generation owner already closed every old carrier.
         try:
-            result = self.exchange.abort()
+            result = self.exchange.reset(channel)
             if inspect.isawaitable(result):
                 if inspect.iscoroutine(result):
                     result.close()
                 _deny()
         except Exception:
-            # Never turn a broken close into permission to reuse a channel.
-            pass
+            # A broken native close cannot authorize another socket operation.
+            self.host_gate.poison()
+            self.exchange.abort()
 
     def _remaining(self):
-        if not self.host_gate.available:
+        if not self.host_gate.available or not self._generation_current():
             _deny()
         at = self.now_ms()
         if type(at) is not int or at >= self.deadline_ms:
@@ -341,7 +401,7 @@ class ProductOwnerBridge:
         self._capture_connection = connections["capture"]
 
     def _wait_seconds(self):
-        if not self.host_gate.available:
+        if not self.host_gate.available or not self._generation_current():
             _deny()
         at = self.now_ms()
         if type(at) is not int or at >= self.deadline_ms:
@@ -362,9 +422,22 @@ class ProductOwnerBridge:
         except BaseException:
             lock.release()
             raise
+        active = True
+
         async def dispatch():
             try:
-                return await self.exchange(channel, path, body, timeout)
+                result = await self.exchange(channel, path, body, timeout)
+                if not active:
+                    _deny()
+                if (type(result) is not OwnerReply or result.status != 200
+                        or result.content_type != "application/json"):
+                    _deny()
+                self._remaining()
+                self._peer(result.evidence, channel)
+                return _frame(result.body)
+            except BaseException:
+                self._reset(channel)
+                raise
             finally:
                 lock.release()
         self._sent = True
@@ -372,16 +445,12 @@ class ProductOwnerBridge:
         try:
             done, _ = await asyncio.wait({task}, timeout=timeout)
             if not done:
-                _deny()
-            result = task.result()
-            if (type(result) is not OwnerReply or result.status != 200
-                    or result.content_type != "application/json"):
-                _deny()
-            self._peer(result.evidence, channel)
-            self._remaining()
-            return _frame(result.body)
+                raise TimeoutError("PRODUCT_OWNER_CHANNEL_DEADLINE")
+            return task.result()
         except BaseException:
-            self._abort()
+            active = False
+            if not task.done():
+                self._reset(channel)
             task.cancel()
             if task.done():
                 try:
@@ -477,12 +546,14 @@ class ProductOwnerBridge:
                 json.loads(claim.decode("ascii"))]))
             done, _ = await asyncio.wait({capture}, timeout=self._remaining())
             if not done:
-                _deny()
+                raise TimeoutError("PRODUCT_OWNER_CAPTURE_DEADLINE")
             capture.result()
             return result
         except BaseException as error:
-            if not isinstance(error, OwnerCarrierBusy) or self._sent:
-                self._abort()
+            self._capture_token = None
+            if self._sent:
+                self._reset("operation")
+                self._reset("capture")
             capture.cancel()
             if capture.done():
                 try:
@@ -505,13 +576,15 @@ class ProductOwnerBridge:
         """
         lock = owner_exchange_state(self.exchange, self.policy, self.host_gate)[6]
         at = self.now_ms()
-        if not self.host_gate.available or type(at) is not int or at >= self.deadline_ms:
+        if (not self.host_gate.available or not self._generation_current()
+                or type(at) is not int or at >= self.deadline_ms):
             _deny()
         try:
             await asyncio.wait_for(lock.acquire(), (self.deadline_ms-at)/1000)
         except asyncio.TimeoutError:
             _deny()
-        if not self.host_gate.available or self.now_ms() >= self.deadline_ms:
+        if (not self.host_gate.available or not self._generation_current()
+                or self.now_ms() >= self.deadline_ms):
             lock.release()
             _deny()
         return lock
@@ -581,6 +654,16 @@ class ProductOwnerBridge:
             self._state = "SETTLED"
         except SettlementCommitUncertain:
             raise
+        except TimeoutError:
+            # Bytes may have reached the canonical writer. Never resend SETTLE
+            # or infer no-dispatch; only its existing read-only outcome query is
+            # eligible on a fresh, independently proven carrier.
+            if self._sent and self._generation_current():
+                self._capture_token = None
+                self._state = "UNCERTAIN"
+                raise SettlementCommitUncertain("CANONICAL_SETTLEMENT_ACK_UNKNOWN") from None
+            self._abort()
+            _deny()
         except asyncio.CancelledError:
             self._abort()
             raise

@@ -8,7 +8,7 @@ import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
 const requests=new AsyncLocalStorage(),finalizers=new WeakMap();
 const observe=work=>{try{return work();}catch{return undefined;}};
 
-/** Include both service-pair proofs in the settlement's counters. */
+/** Flush settled request counters after all work on the HTTP request. */
 export function runOwnerHttpRequest(telemetry,work){
  if(!telemetry)return work();
  return telemetry.provisional(()=>requests.run({settlements:[]},async()=>{
@@ -46,6 +46,7 @@ export function observeOwnerChannel(channel,{telemetry=currentTurnTelemetry(),id
   };
   return currentTurnTelemetry()===telemetry?invoke():telemetry.provisional(invoke);
  };
- const wrapped=Object.freeze({get available(){return channel.available;},open:wrap('open'),poll:wrap('poll'),reply:wrap('reply'),operation:wrap('operation')});
+ const wrapped=Object.freeze({get available(){return channel.available;},get canReadOutcome(){return channel.canReadOutcome;},
+  close(){channel.close();finish();},readOutcome:wrap('readOutcome'),open:wrap('open'),poll:wrap('poll'),reply:wrap('reply'),operation:wrap('operation')});
  finalizers.set(wrapped,finish);return wrapped;
 }

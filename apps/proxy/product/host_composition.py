@@ -35,7 +35,7 @@ from .budgets import BOOTSTRAP_SECONDS, IN_REQUEST_CHECK_SECONDS, REQUEST_CLEANU
 from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
 
-# Every product request's freshness steps are owner exchanges: they and close's wait get the exchange budget (budgets.py).
+# Watch renewal may wait for an owner exchange; request-path checks use the lifetime lease.
 PRODUCT_LIFETIME_LIMITS = LifetimeLimits(check_seconds=IN_REQUEST_CHECK_SECONDS, cleanup_seconds=REQUEST_CLEANUP_SECONDS)
 from .upstream_callback import ProductNativeDispatchEvidence
 

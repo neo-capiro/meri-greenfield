@@ -70,12 +70,15 @@ def _native_request(request, limits):
 
 async def require_current_conversation(life, *, binding, request_id, deadline_ms,
                                        selected_client_id, check_current_conversation):
-    """Fresh Core identity/context join shared by Messages and CountTokens."""
+    """Validate this lifetime's Core receipt; synthetic ports still read freshly."""
     started = time.time_ns() // 1_000_000
     try:
-        receipt = await life._bounded(lambda: check_current_conversation({
-            "binding": binding.copy(), "requestId": request_id,
-            "deadlineMs": deadline_ms}))
+        if life.has_admission_lease:
+            receipt = life.current_conversation()
+        else:
+            receipt = await life._bounded(lambda: check_current_conversation({
+                "binding": binding.copy(), "requestId": request_id,
+                "deadlineMs": deadline_ms}))
     except Exception:
         _deny()
     at = time.time_ns() // 1_000_000
@@ -97,7 +100,8 @@ async def require_current_conversation(life, *, binding, request_id, deadline_ms
                 "resourceId": selected_client_id,
                 "policyRevision": life.peer.binding.policy_revision}
             or type(receipt["checkedAtMs"]) is not int
-            or not started <= receipt["checkedAtMs"] <= at
+            or receipt["checkedAtMs"] > at
+            or not life.has_admission_lease and receipt["checkedAtMs"] < started
             or type(receipt["expiresAtMs"]) is not int
             or receipt["expiresAtMs"] <= at):
         _deny()

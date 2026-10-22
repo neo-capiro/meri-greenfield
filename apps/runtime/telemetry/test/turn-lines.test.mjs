@@ -70,3 +70,12 @@ test('durable reconciliation and hold-failure reasons retain canonical constants
  for(const reasonCode of ['ATTEMPT_LOST','HOLD_CHECKPOINT_FAILED'])emitter.emit('meri.turn.summary',{runId,attemptId,state:'failed',reasonCode,timeoutClass:'none'});
  assert.deepEqual(lines.map(line=>line.reasonCode),['ATTEMPT_LOST','HOLD_CHECKPOINT_FAILED']);
 });
+
+test('pair health uses the fixed P2 vocabulary and never serializes identity pins',()=>{
+ const output=[],emitter=createTurnLineEmitter({service:'owner',write:line=>output.push(JSON.parse(line))});
+ for(const code of ['PAIR_DRIFT','PAIR_REPROVEN','PAIR_UNAVAILABLE','PAIR_REPROVING']){
+  assert.equal(emitter.emit('meri.health',{component:'pair',transition:'reproven',code,taskArn:'secret-pin',ip:'192.0.2.99'}),true);
+ }
+ assert.deepEqual(output.map(line=>line.code),['PAIR_DRIFT','PAIR_REPROVEN','PAIR_UNAVAILABLE','PAIR_REPROVING']);
+ assert.ok(output.every(line=>line.transition==='reproven'&&!JSON.stringify(line).includes('secret-pin')&&!JSON.stringify(line).includes('192.0.2.99')));
+});

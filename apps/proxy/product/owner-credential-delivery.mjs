@@ -6,8 +6,6 @@
  * material in its result or error. The fixed original run/client and current
  * Core identity/context, not delivery metadata alone, authorize a receipt.
  */
-import {currentTurnTelemetry} from '../../runtime/telemetry/turn-context.mjs';
-import {health} from './owner-diagnostics.mjs';
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -45,32 +43,33 @@ export function createProductOwnerCredentialDelivery(configuration){
     !Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072||
     !Number.isSafeInteger(limits.maxCredentialMs)||limits.maxCredentialMs<1||limits.maxCredentialMs>300000)fail();
  const read=storageMethod(c.delivery,'read'),currentRun=storageMethod(c.currentOwner,'currentRun'),origin=retainedOrigin(c.origin);
- const telemetry=currentTurnTelemetry();
- let quarantined=false;
- return Object.freeze({get available(){return enabled&&!quarantined;},async checkCurrentConversation(value){
-  let life,cutoff;const pending=new Set(),bodies=new Set();
-  const track=operation=>{
-   const work=Promise.resolve().then(operation);pending.add(work);
-   work.then(()=>pending.delete(work),()=>pending.delete(work));return work;
-  };
+ return Object.freeze({get available(){return enabled;},async checkCurrentConversation(value){
+  let life,cutoff,closed=false;const bodies=new Set();
+  const invoke=operation=>Promise.resolve().then(operation);
   async function fetchObserved(...args){
-   const response=await track(()=>c.fetchImpl(...args));
+   const response=await invoke(()=>c.fetchImpl(...args));
    if(!response||types.isProxy(response)||!(response instanceof Response))return response;
    const sourceBody=responseGetters.body.call(response);if(!sourceBody)return response;
    const reader=sourceBody.getReader();let done=false,stopping;
    const state={stop(){
     if(done)return Promise.resolve();
-    return stopping??=(track(()=>reader.cancel()).then(()=>{
+    return stopping??=(invoke(()=>reader.cancel()).then(()=>{
      done=true;bodies.delete(state);reader.releaseLock();
     }));
    }};
    bodies.add(state);
+   // A fetch can resolve after the request deadline. Its response belongs to
+   // that closed request: stop the new body immediately, never return it to a
+   // later caller or let it survive just because cleanup ran before it arrived.
+   if(closed||life?.signal.aborted){void state.stop().catch(()=>{});fail();}
    // A wrapped Response cannot preserve redirected=true. Refuse that source
    // after an acknowledged body stop instead of erasing the native flag.
    if(responseGetters.redirected.call(response)){await state.stop();fail();}
    const body=new ReadableStream({
     async pull(controller){try{
-     const part=await track(()=>reader.read());
+     if(closed||life?.signal.aborted)fail();
+     const part=await invoke(()=>reader.read());
+     if(closed||life?.signal.aborted){void state.stop().catch(()=>{});fail();}
      if(part.done){done=true;bodies.delete(state);reader.releaseLock();controller.close();}
      else controller.enqueue(part.value);
     }catch{controller.error(unavailable());}},
@@ -82,18 +81,18 @@ export function createProductOwnerCredentialDelivery(configuration){
   try{
    const v=own(value,['binding','deadlineMs'],['signal']);nativeSignal(v.signal);
    const at=c.now();
-   if(!enabled||quarantined||!same(data(v.binding),binding)||!Number.isSafeInteger(at)||at<0||
+   if(!enabled||!same(data(v.binding),binding)||!Number.isSafeInteger(at)||at<0||
       !Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=at)fail();
    cutoff=Math.min(v.deadlineMs,c.expiresAtMs,at+limits.maxRequestMs);
    life=createOperationLifetime({deadlineMs:cutoff,now:c.now,signal:v.signal,errorFactory:unavailable});
    const identity=createNativeIdentityContext({origin,
-    currentOwner:{currentRun:(...args)=>track(()=>currentRun(...args))},
+    currentOwner:{currentRun:(...args)=>invoke(()=>currentRun(...args))},
     commandContext:{binding,clientResolution:{reference:c.selectedClientId,clientId:c.selectedClientId}},
     fetchImpl:fetchObserved,now:c.now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes},enabled});
    const limit=expiry=>{cutoff=Math.min(cutoff,expiry);life.limitDeadline(cutoff);};
    async function delivery(){
     const started=c.now();
-    const raw=own(await life.run(signal=>track(()=>read({binding,selectedClientId:c.selectedClientId,deadlineMs:cutoff,signal}))),
+    const raw=own(await life.run(signal=>invoke(()=>read({binding,selectedClientId:c.selectedClientId,deadlineMs:cutoff,signal}))),
      ['schemaVersion','leaseId','binding','selectedClientId','credential','credentialSha256','checkedAtMs','expiresAtMs']);
     const current=c.now();life.check();
     if(!Number.isSafeInteger(current)||current<started||raw.schemaVersion!==1||typeof raw.leaseId!=='string'||!slot.test(raw.leaseId)||
@@ -118,11 +117,13 @@ export function createProductOwnerCredentialDelivery(configuration){
    if(after.leaseId!==before.leaseId||after.credentialSha256!==before.credentialSha256)fail();
    life.check();return data({...receipt,expiresAtMs:cutoff});
   }catch{fail();}finally{
-   // The canonical transport may finish before its reader.cancel promise.
-   // Await the underlying body owner's stop within the original lifetime;
-   // known complete denials can retry, unresolved I/O closes this instance.
-   if(bodies.size&&life)try{await life.run(()=>Promise.all([...bodies].map(body=>body.stop())));}catch{}
-   if((life?.close().unsettledOperations>0||pending.size>0||bodies.size>0)&&!quarantined){quarantined=true;health('credential-delivery','quarantined','PRODUCT_OWNER_CREDENTIAL_UNAVAILABLE',telemetry);}
+   // A native read never owns a budget mutation. Abort its native signal and
+   // request cancellation for every body even when the lifetime already expired;
+   // an unanswered cancellation must not retire other independent reads.
+   closed=true;
+   const stopping=[...bodies].map(body=>body.stop().catch(()=>{}));
+   if(stopping.length&&life)try{await life.run(()=>Promise.all(stopping));}catch{}
+   life?.close();
   }
  }});
 }

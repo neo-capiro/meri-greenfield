@@ -133,7 +133,7 @@ def create_product_h11_config(service, *, server_tls_context):
 async def serve_product_proxy(*, enabled=False, server_tls_context=None,
                               direct_tls_capture=None, resolve_bearer_sha256=None,
                               ecs_client=None, ec2_client=None,
-                              resolve_session=None, bootstrap_seconds=BOOTSTRAP_SECONDS):
+                              resolve_session=None, bootstrap_seconds=BOOTSTRAP_SECONDS, service_ready=None):
     """Explicit opt-in entry point; no import-time or default listener.
 
     Enabled startup still needs real durable/session owner callbacks, a
@@ -148,7 +148,7 @@ async def serve_product_proxy(*, enabled=False, server_tls_context=None,
         enabled=True, direct_tls_capture=direct_tls_capture,
         resolve_bearer_sha256=resolve_bearer_sha256, ecs_client=ecs_client,
         ec2_client=ec2_client, resolve_session=resolve_session,
-        bootstrap_seconds=bootstrap_seconds,
+        bootstrap_seconds=bootstrap_seconds, service_ready=service_ready,
     )
     config = create_product_h11_config(
         service, server_tls_context=server_tls_context)
@@ -188,13 +188,14 @@ async def serve_product_proxy_with_owner(*, enabled=False, server_tls_context=No
             host_gate=OwnerHostGate(),owner_loop=asyncio.get_running_loop(),
             count_client=count_client,make_provider_transport=make_provider_transport,
             pricing_revision=pricing_revision,body_limits=body_limits)
+        exchange.start()
         await serve_product_proxy(enabled=True,server_tls_context=server_tls_context,
             direct_tls_capture=DirectTlsSocketCapture(),
             resolve_bearer_sha256=startup.resolve_bearer_sha256,
             resolve_session=startup.resolve_session,ecs_client=ecs_client,
-            ec2_client=ec2_client,bootstrap_seconds=bootstrap_seconds)
+            ec2_client=ec2_client,bootstrap_seconds=bootstrap_seconds,service_ready=lambda: exchange.ready)
     finally:
         if startup is not None:
             startup.close()
         else:
-            exchange.abort()
+            exchange.close()

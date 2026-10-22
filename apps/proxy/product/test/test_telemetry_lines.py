@@ -24,6 +24,14 @@ class TelemetryLineTests(unittest.TestCase):
                     aws={'DescribeTasks': {'success': 2}}, component='pair', transition='retired',
                     code='PAIR_RETIRED', windowMs=60000, telemetryDropped=0)
 
+    def test_pair_reproof_fixed_vocabulary_keeps_secret_pins_out(self):
+        for code in ("PAIR_DRIFT", "PAIR_REPROVEN", "PAIR_UNAVAILABLE", "PAIR_REPROVING"):
+            row = lines.build_line("meri.health", {"component": "pair", "transition": "reproven", "code": code, "taskArn": "secret-pin", "ip": "192.0.2.99"})
+            self.assertEqual(row["transition"], "reproven")
+            self.assertEqual(row["code"], code)
+            self.assertNotIn("secret-pin", str(row))
+            self.assertNotIn("192.0.2.99", str(row))
+
     def test_each_proxy_schema_has_only_safe_dimensions_and_bounded_emf(self):
         for event in sorted(lines.EVENTS):
             with self.subTest(event=event):

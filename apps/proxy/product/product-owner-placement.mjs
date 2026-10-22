@@ -7,8 +7,10 @@
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {createOwnerRequestWork} from './owner-request-work.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
+import {createInitialRunBindingJournal} from '../../control/conversations/initial-run-binding-journal.mjs';
 import {validateConfiguration,compileControlTaskRouterConfiguration} from '../../runtime/config.mjs';
 import {compileNativeTaskRequest} from '../../runtime/native-authority/task-request.mjs';
 import {compilePreparedRunConfigurationSha256} from '../../runtime/prepared-run-configuration.mjs';
@@ -21,7 +23,7 @@ const active=run=>['queued','starting','running'].includes(run.state);
 const sorted=rows=>[...rows].sort((a,b)=>a.grantId.localeCompare(b.grantId));
 
 export function createProductOwnerPlacement(configuration){
- const c=own(configuration,['configuration','pool','persistedFacts','initialBindings','now','limits'],['enabled','report']);
+ const c=own(configuration,['configuration','pool','persistedFacts','now','limits'],['enabled','report']);
  const enabled=c.enabled??false,limits=data(own(c.limits,['maxRequestMs','maxFactBytes']));
  if(typeof enabled!=='boolean'||typeof c.now!=='function'||typeof c.pool?.connect!=='function'||c.report!==undefined&&typeof c.report!=='function'||
     !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000||
@@ -34,18 +36,22 @@ export function createProductOwnerPlacement(configuration){
  for(const [kind,value] of [['vpc',router.network.vpcId],['subnet',router.network.subnetId],...router.network.securityGroupIds.map(value=>['sg',value])])
   if(typeof value!=='string'||!new RegExp(`^${kind}-[a-f0-9]{8,17}$`,'u').test(value))deny();
  const selectedClientId=candidate.identity.commandContext.clientResolution.clientId;
- const readFacts=storageMethod(c.persistedFacts,'resolve'),readInitial=storageMethod(c.initialBindings,'readConversation');
- const conversations=createPostgresConversationStore({pool:c.pool,now:c.now});let quarantined=false;
- const available=()=>{try{return enabled&&!quarantined&&c.persistedFacts.available===true;}catch{return false;}};
+ const readFacts=storageMethod(c.persistedFacts,'resolve');
+ const available=()=>{try{return enabled&&c.persistedFacts.available===true;}catch{return false;}};
  return Object.freeze({get available(){return available();},async resolve(value){
   // The step reached is reported on refusal (owner-diagnostics.mjs): a fixed word, never a value.
-  let life,step='input';
+  let life,work,step='input';
   try{
    const v=own(value,['capabilitySha256','deadlineMs'],['signal']);nativeSignal(v.signal);
    const at=c.now();if(!available()||!digest(v.capabilitySha256)||!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=at)deny();
    const deadlineMs=Math.min(v.deadlineMs,at+limits.maxRequestMs);
    // An expired request is reported as DEADLINE (owner-diagnostics.mjs); the caller's refusal is unchanged (deny below).
    life=createOperationLifetime({now:c.now,signal:v.signal,deadlineMs,errorFactory:code=>Object.assign(Error('PRODUCT_PROXY_PLACEMENT_UNAVAILABLE'),code==='DEADLINE'?{code}:{})});
+   work=createOwnerRequestWork({pool:c.pool,readOnly:true});
+   life.signal.addEventListener('abort',work.close,{once:true});
+   const conversations=createPostgresConversationStore({pool:work.pool,now:c.now}),
+    initialBindings=createInitialRunBindingJournal({pool:work.pool,now:c.now}),
+    readInitial=storageMethod(initialBindings,'readConversation');
    const resolveFacts=async(label='facts')=>{step=label;const facts=data(await life.run(signal=>readFacts({capabilitySha256:v.capabilitySha256,deadlineMs,signal})));life.check();
     own(facts,['binding','allocationJson','grantFactsJsons','modelGrantId','selectedClientId','original','resource','requestSha256','expiresAtMs']);
     own(facts.resource,['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName']);
@@ -102,6 +108,8 @@ export function createProductOwnerPlacement(configuration){
     image_digest:record.original.versions.imageDigest,execution_binding:binding,started_by:expected.spec.startedBy,group:expected.spec.group,
     created_at_ms:record.resource.createdAtMs,expires_at_ms:record.original.expiresAtMs,vpc_id:router.network.vpcId,subnet_id:router.network.subnetId,
     security_group_ids:router.network.securityGroupIds,tags:expected.spec.tags.map(t=>[t.key,t.value])},checkedAtMs:c.now(),effectiveExpiresAtMs:Math.min(facts.expiresAtMs,again.expiresAtMs,record.original.expiresAtMs,deadlineMs)});
-  }catch(error){try{c.report?.('placement',step,error);}catch{}deny();}finally{if(life?.close().unsettledOperations>0)quarantined=true;}
+  }catch(error){try{c.report?.('placement',step,error);}catch{}deny();}finally{
+   life?.signal.removeEventListener('abort',work?.close);life?.close();work?.close();
+  }
  }});
 }

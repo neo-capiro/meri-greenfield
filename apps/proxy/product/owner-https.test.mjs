@@ -106,6 +106,6 @@ test('the owner never closes an idle pinned proxy socket and reaps one whose pee
  assert.equal((source.match(/\.\.\.PRODUCT_OWNER_IDLE_SOCKETS\}/gu)??[]).length,1,'the owner TLS server takes the idle-socket policy');
  assert.equal((source.match(/keepAliveTimeout:/gu)??[]).length,1,'no keep-alive timeout outside the idle-socket policy');
  const server=createServer({...PRODUCT_OWNER_IDLE_SOCKETS});
- try{assert.equal(server.keepAliveTimeout,0,'no HTTP idle close: the proxy never reconnects a carrier');
+ try{assert.equal(server.keepAliveTimeout,0,'no HTTP idle close: healthy held carriers retain their lease');
   assert.equal(server.keepAlive,true,'TCP keep-alive probes detect a proxy task that is gone');}finally{server.close();}
 });

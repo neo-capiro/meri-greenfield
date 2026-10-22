@@ -31,6 +31,10 @@ class Exchange:
     def __init__(self, policy, issued):
         self.policy, self.issued = policy, issued
         self.calls, self.aborted, self.saved, self.mutate = [], False, None, None
+        self.generation = 1
+        self.resets = []
+        self._listeners = {"close": [], "install": [], "reset": []}
+        self._connections = {}
         self.delay = 0
         self.late_reply = False
         self.evidence_change = {}
@@ -41,6 +45,25 @@ class Exchange:
             [issued.started_by, issued.started_by, dict(issued.tags)["meri:plan-sha256"], issued.expires_at_ms, issued.image_digest],
             [issued.binding.worker_arn, issued.created_at_ms, issued.cluster_arn, issued.task_definition_arn, issued.container_name],
             "e"*64, "11111111-1111-4111-8111-111111111111"]
+
+    def _subscribe(self, kind, callback):
+        self._listeners[kind].append(callback)
+        return lambda: self._listeners[kind].remove(callback)
+
+    def subscribe_generation_close(self, callback):
+        return self._subscribe("close", callback)
+
+    def subscribe_generation_install(self, callback):
+        return self._subscribe("install", callback)
+
+    def subscribe_carrier_reset(self, callback):
+        return self._subscribe("reset", callback)
+
+    def reset(self, channel, expected_connection=None):
+        self.resets.append(channel)
+        self._connections[channel] = self._connections.get(channel, 0) + 1
+        for callback in tuple(self._listeners["reset"]):
+            callback(channel)
 
     def abort(self):
         self.aborted = True
@@ -71,7 +94,7 @@ class Exchange:
             self.policy.owner_task_arn, self.policy.proxy_task_arn, self.policy.server_cert_sha256,
             self.policy.server_issuer_sha256, self.policy.client_cert_sha256,
             self.policy.client_subject, "TLSv1.3", "http/1.1",
-            f"{channel}-A")
+            f"{channel}-A" + (str(self._connections[channel]) if channel in self._connections else ""))
         evidence = replace(evidence, **self.evidence_change)
         reply = OwnerReply(json.dumps(frame, ensure_ascii=False).encode(), evidence)
         if self.saved is None:
@@ -222,9 +245,10 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             if kind == "capture": self.reader.state[4]["capture"] = "admission-A"
             with self.subTest(kind=kind), self.assertRaises(Exception):
                 await self.resolve()
-            self.assertFalse(self.gate.available)
+            self.assertTrue(self.gate.available)
+            self.assertFalse(self.exchange.aborted)
 
-    async def test_existing_request_lifetime_uses_fresh_product_reader_on_start_and_refresh(self):
+    async def test_existing_request_lifetime_reuses_bootstrap_receipt_on_start_and_refresh(self):
         self.exchange.source[2] = SHA
         source = await asyncio.to_thread(self.reader.resolve_for_issued_sync,
             issued=self.issued, capability_sha256=SHA, deadline_ms=milliseconds()+2000)
@@ -238,7 +262,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         try:
             await life.start(scope)
             await life.refresh()
-            self.assertEqual(len(self.exchange.calls), 3)
+            self.assertEqual(len(self.exchange.calls), 1)
             self.assertIsNone(source.authority.store)
         finally:
             await life.close()
@@ -263,7 +287,8 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
                 self.exchange.mutate = mutate
             with self.subTest(kind=kind), self.assertRaises(Exception):
                 await asyncio.to_thread(authority.check)
-            self.assertFalse(self.gate.available)
+            self.assertTrue(self.gate.available)
+            self.assertFalse(self.exchange.aborted)
 
     async def test_foreign_issued_source_and_mutable_input_cannot_change_bound_identity(self):
         authority = (await self.resolve()).authority
@@ -348,15 +373,15 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(Exception):
             await self.resolve()
         await asyncio.sleep(.04)
-        self.assertFalse(self.gate.available)
-        self.assertEqual(self.reader._receipts, {})
+        self.assertTrue(self.gate.available)
+        self.assertEqual(dict(self.reader._receipts), {})
         self.assertEqual(self.reader._pending_tasks, set())
-        self.assertTrue(self.exchange.aborted)
+        self.assertFalse(self.exchange.aborted)
         with self.assertRaises(Exception):
             ProductOwnerAdmissionReader(policy=self.policy, exchange=Exchange(self.policy,self.issued),
                 host_gate=OwnerHostGate(),owner_loop=asyncio.get_running_loop())
 
-    async def test_real_bridge_capture_refresh_uses_second_connection_and_revokes_copied_context(self):
+    async def test_real_bridge_capture_reuses_lifetime_receipt_and_revokes_copied_context(self):
         deadline = milliseconds()+2000
         value, observation = reservation()
         value.update(binding=dict(self.issued.execution_binding), deadlineMs=deadline)
@@ -386,7 +411,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
                     json.dumps(foreign,ensure_ascii=False,separators=(",", ":")).encode(),deadline)
             with self.assertRaises(Exception):
                 await asyncio.to_thread(self.reader.check_current_sync,expected,deadline)
-            await life.refresh()  # Actual GrantAdmission.check through actual to_thread.
+            await life.refresh()  # This request's receipt; no nested capture read.
             context = contextvars.copy_context()
             async def late():
                 await late_ready.wait()
@@ -401,9 +426,9 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             await life.start(ingress_fixture()[2])
             result = await asyncio.wait_for(bridge.reserve(value,observation),.75)
             self.assertEqual(result["state"],"UNKNOWN")
-            self.assertTrue(exchange.read_during_pending)
+            self.assertFalse(exchange.read_during_pending)
             reads = [c for c in exchange.calls if c[2][0]=="meri.proxy.admission-read/1"]
-            self.assertEqual([c[0] for c in reads],["admission","admission","capture"])
+            self.assertEqual([c[0] for c in reads],["admission"])
             before = len(exchange.calls)
             late_ready.set(); await asyncio.gather(*copied)
             self.assertEqual(len(exchange.calls),before)
@@ -414,7 +439,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             if copied: await asyncio.gather(*copied)
             await life.close()
 
-    async def test_two_real_bridges_serialize_open_and_capture_while_each_refreshes_fresh_authority(self):
+    async def test_two_real_bridges_serialize_open_and_capture_with_separate_lifetime_receipts(self):
         deadline=milliseconds()+2000
         template,observation=reservation()
         template.update(binding=dict(self.issued.execution_binding),deadlineMs=deadline)
@@ -458,7 +483,7 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             results=await asyncio.wait_for(asyncio.gather(*tasks),1)
             self.assertEqual([item["state"] for item in results],["UNKNOWN","UNKNOWN"])
             self.assertEqual([item for item in exchange.trace if item[0]=="admission"],
-                [("admission","admission")]*3+[("admission","capture")]*2)
+                [("admission","admission")]*2)
             self.assertTrue(self.gate.available)
         finally:
             exchange.allow_first_open.set();continue_first.set()
@@ -563,6 +588,196 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(_hash(["ténant😀", 1]), "75dc0f8791835c10492de8c87c9306f1a0a247c98852230fce029bd6edff587c")
         for bad in ({**b, "writerFence": True}, {**b, "actorId": "\ud800"}):
             with self.assertRaises(Exception): _binding(bad)
+
+
+class AdmissionLeaseTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.issued = issued_fixture()[0].issued
+        self.wall = [milliseconds()]
+        self.mono = [time.monotonic()]
+        self.policy = OwnerPeerPolicy("https://owner.invalid:8444", "owner.invalid",
+            "owner-task", "proxy-"+uuid.uuid4().hex, "1"*64, "2"*64, "3"*64, "proxy-subject", 15000)
+        self.exchange = Exchange(self.policy, self.issued)
+        self.exchange.source[2] = SHA
+        self.gate = OwnerHostGate()
+        self.reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=self.exchange,
+            host_gate=self.gate, owner_loop=asyncio.get_running_loop(),
+            now_ms=lambda: self.wall[0], monotonic=lambda: self.mono[0], max_exchange_ms=15000)
+        self.lives = []
+        self.observations = []
+
+    async def asyncTearDown(self):
+        for life in self.lives:
+            await life.close()
+        self.reader.close()
+
+    async def source(self):
+        with patch(__name__ + ".milliseconds", lambda: self.wall[0]):
+            return await asyncio.to_thread(self.reader.resolve_for_issued_sync,
+                issued=self.issued, capability_sha256=SHA, deadline_ms=self.wall[0]+30000)
+
+    def lifetime(self, source, *, limits=LifetimeLimits()):
+        peer = PeerLease("10.77.0.9", time.monotonic(), source.authority.binding, source.authority.grant_id)
+        async def observe():
+            self.observations.append(1)
+            return replace(peer, observed_at=time.monotonic())
+        life = RequestLifetime(IngressAdmission(source.authority, peer), observe,
+            time.monotonic()+60, limits, PendingWork())
+        self.lives.append(life)
+        return life
+
+    async def renew(self, life):
+        with patch(__name__ + ".milliseconds", lambda: self.wall[0]):
+            await life.renew()
+
+    async def test_receipt_reuses_only_in_its_lifetime_with_no_request_path_reads(self):
+        source = await self.source()
+        first = self.lifetime(source)
+        await first.start(ingress_fixture()[2])
+        for _ in range(10):
+            await first.refresh()
+            self.assertEqual(first.current_conversation()["selectedClientId"], self.exchange.source[7])
+        self.assertEqual(len(self.exchange.calls), 1)
+        self.assertEqual(self.observations, [])  # Bootstrap already observed the runner.
+        second = self.lifetime(source)
+        self.assertIsNone(second._admission_lease.receipt)
+        with self.assertRaises(StateDenied):
+            self.reader._consume(first._admission_lease.receipt, self.exchange.source, lifetime=second)
+        await self.renew(second)
+        await second.refresh()
+        self.assertIsNot(first._admission_lease.receipt, second._admission_lease.receipt)
+        self.assertEqual(len(self.exchange.calls), 2)
+        # A caller cannot move the entire lease holder across lifetimes either.
+        second._admission_lease = first._admission_lease
+        with self.assertRaises(StateDenied):
+            second.current_conversation()
+
+    async def test_receipt_source_and_runner_peer_remain_bound(self):
+        for field in ("source", "ipv4", "grant", "binding", "cap"):
+            source = await self.source()
+            life = self.lifetime(source)
+            await life.refresh()
+            if field == "source":
+                reader, encoded, expiry = source.authority._product_owner
+                foreign = json.loads(encoded); foreign[6] = "f"*64
+                source.authority._product_owner = reader, json.dumps(foreign).encode(), expiry
+            elif field == "cap":
+                reader, encoded, expiry = source.authority._product_owner
+                source.authority._product_owner = reader, encoded, expiry+1
+            elif field == "ipv4":
+                life.peer = replace(life.peer, ipv4="10.77.0.10")
+            elif field == "grant":
+                life.peer = replace(life.peer, grant_id=life.peer.binding.run_id)
+            else:
+                life.peer = replace(life.peer, binding=replace(life.peer.binding, fence=2))
+            with self.subTest(field=field), self.assertRaises(StateDenied):
+                life.current_conversation()
+
+    async def test_monotonic_ten_second_cap_survives_wall_clock_steps_and_starved_watch(self):
+        source = await self.source()
+        life = self.lifetime(source)
+        await life.refresh()
+        receipt = life._admission_lease.receipt
+        self.assertEqual(receipt.expires_at_mono-receipt.read_at_mono, 10)
+        for delta in (-60000, 1000):
+            self.wall[0] = receipt.checked_at_ms + delta
+            self.mono[0] = receipt.read_at_mono+9.999
+            self.reader.current_lifetime(life)
+        self.wall[0] = receipt.checked_at_ms-60000
+        self.mono[0] = receipt.expires_at_mono
+        with self.assertRaises(StateDenied):
+            life.check()
+        self.assertEqual(len(self.exchange.calls), 1)
+
+    async def test_receipt_expiry_shorter_than_ten_seconds_is_the_cap(self):
+        def shorten(frame):
+            frame[7] = frame[6]+250
+            return frame
+        self.exchange.mutate = shorten
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        receipt = life._admission_lease.receipt
+        self.assertEqual(receipt.expires_at_mono-receipt.read_at_mono, .25)
+        self.mono[0] = receipt.expires_at_mono
+        with self.assertRaises(StateDenied):
+            life.current_conversation()
+
+    async def test_answered_refusal_cuts_immediately_without_poisoning(self):
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        self.exchange.mutate = lambda _frame: None
+        with self.assertRaises(StateDenied):
+            await self.renew(life)
+        self.assertTrue(life.denied.is_set())
+        self.assertLess(self.mono[0], life._admission_lease.receipt.expires_at_mono)
+        self.assertTrue(self.gate.available)
+        self.assertFalse(self.exchange.aborted)
+
+    async def test_unanswered_renewal_preserves_only_the_unexpired_receipt(self):
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        receipt = life._admission_lease.receipt
+        def unanswered(_frame):
+            raise TimeoutError("synthetic no answer")
+        self.exchange.mutate = unanswered
+        self.mono[0] += 5
+        await self.renew(life)
+        self.assertIs(life._admission_lease.receipt, receipt)
+        self.assertFalse(life.denied.is_set())
+        self.assertTrue(self.gate.available)
+        self.mono[0] = receipt.expires_at_mono
+        with self.assertRaises(StateDenied):
+            life.check()
+
+    async def test_watch_keeps_five_second_renewal_and_expiry_owner_is_independent(self):
+        life = self.lifetime(await self.source())
+        await life.start(ingress_fixture()[2])
+        self.assertEqual(life.limits.poll_seconds, 5)
+        self.assertEqual({task.get_coro().__qualname__ for task in life.tasks},
+            {"RequestLifetime._watch", "RequestLifetime._watch_admission_expiry"})
+        for second in (5, 10, 15, 20):
+            self.mono[0] += 5; self.wall[0] += 5000
+            await self.renew(life)
+        self.assertEqual(len(self.exchange.calls), 5)  # Bootstrap + four watch reads.
+        self.assertEqual(len(self.observations), 4)
+
+    async def test_late_renewal_cannot_revive_a_lease_after_monotonic_expiry(self):
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        receipt = life._admission_lease.receipt
+        def late(frame):
+            self.mono[0] = receipt.expires_at_mono
+            return frame
+        self.exchange.mutate = late
+        with self.assertRaises(StateDenied):
+            await self.renew(life)
+        self.assertIs(life._admission_lease.receipt, receipt)
+        self.assertTrue(life.denied.is_set())
+        self.assertTrue(self.gate.available)
+
+    async def test_late_answered_refusal_cuts_even_after_a_short_wait_returned_unanswered(self):
+        life = self.lifetime(await self.source(),
+            limits=LifetimeLimits(check_seconds=.01, cleanup_seconds=.5))
+        await life.refresh()
+        self.exchange.delay = .05
+        self.exchange.mutate = lambda _frame: None
+        await self.renew(life)
+        self.assertFalse(life.denied.is_set())
+        await asyncio.wait_for(life.denied.wait(), .5)
+        self.assertEqual(life.reason, "FRESH_ADMISSION_DENIED")
+        self.assertTrue(self.gate.available)
+
+    async def test_generation_change_closes_old_admission_even_with_valid_receipt(self):
+        life = self.lifetime(await self.source())
+        await life.refresh()
+        for callback in tuple(self.exchange._listeners["close"]):
+            callback(1)
+        with self.assertRaises(StateDenied):
+            life.current_conversation()
+        await asyncio.sleep(0)
+        self.assertTrue(life.denied.is_set())
+        self.assertTrue(self.gate.available)
+        self.assertEqual(dict(self.reader._receipts), {})
 
 
 if __name__ == "__main__":

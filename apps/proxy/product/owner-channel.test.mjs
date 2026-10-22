@@ -156,14 +156,16 @@ test('foreign source, archived Core, bad peer and stale/currentness contradictio
  }
 });
 
-test('hung owner read poisons the shared service before and after a late completion',async()=>{
+test('hung owner read refuses only its request before and after a late completion',async()=>{
  const f=admissionFixture();let release;
  f.persistedFacts.resolve=()=>new Promise(resolve=>{release=resolve;});
  const channel=createProductOwnerAdmissionChannel({...f,now:()=>NOW,maxExchangeMs:10});
  await assert.rejects(channel.read(f.read(),f.operationPeer),/DEADLINE/);
- assert.equal(f.serviceGate.available,false);release(f.facts);await new Promise(resolve=>setTimeout(resolve,0));
- await assert.rejects(channel.read(f.read('later'),f.operationPeer));
- assert.throws(()=>createProductOwnerAdmissionChannel({...f,now:()=>NOW}),/PRODUCT_OWNER_CHANNEL_DENIED/);
+ assert.equal(f.serviceGate.available,true);release(f.facts);await new Promise(resolve=>setTimeout(resolve,0));
+ f.persistedFacts.resolve=async()=>f.facts;
+ const later=await channel.read(f.read('later'),f.operationPeer);
+ assert.equal(JSON.parse(later)[0],'meri.proxy.admission/1');
+ assert.equal(createProductOwnerAdmissionChannel({...f,now:()=>NOW}).available,true);
 });
 
 test('open selects current persisted facts by observed bearer digest and reveals no facts',async()=>{
@@ -249,7 +251,7 @@ test('separate capture channel and exact selector are mandatory',async()=>{
  assert.equal(fresh.sql(),0);
 });
 
-test('duplicate capture poll poisons the outstanding single-flight exchange',async()=>{
+test('duplicate capture poll refuses the outstanding exchange without poisoning other requests',async()=>{
  const f=fixture(),channel=f.channel();
  const ack=JSON.parse(await channel.open(f.open,f.operationPeer));
  const body=wire(['meri.proxy.capture-poll/1',ack[1],id,'call']);
@@ -258,7 +260,7 @@ test('duplicate capture poll poisons the outstanding single-flight exchange',asy
  const results=await Promise.allSettled([first,replay]);
  assert.deepEqual(results.map(result=>result.status),['rejected','rejected']);
  assert.equal(channel.available,false);
- assert.equal(f.serviceGate.available,false);
+ assert.equal(f.serviceGate.available,true);
  assert.equal(f.sql(),0);
 });
 
@@ -278,15 +280,15 @@ test('fresh capture with a foreign worker task is refused before canonical SQL',
  assert.equal(channel.available,false);
 });
 
-test('unresolved persisted read aborts and quarantines all later service sessions',async()=>{
+test('unresolved persisted read aborts only its session and cannot revive on late completion',async()=>{
  const f=fixture();
  let release;
  f.persistedFacts.resolve=()=>new Promise(resolve=>{release=resolve;});
  const channel=f.channel(10);
  await assert.rejects(channel.open(f.open,f.operationPeer),/PRODUCT_OWNER_CHANNEL_DENIED/);
- assert.equal(f.serviceGate.available,false);
+ assert.equal(f.serviceGate.available,true);
  assert.equal(f.serviceGate.pending,1);
- assert.throws(()=>f.channel(),/PRODUCT_OWNER_CHANNEL_DENIED/);
+ assert.equal(f.channel().available,true);
  assert.throws(()=>createProductOwnerChannel({clientPolicy:f.clientPolicy,
   persistedFacts:f.persistedFacts,ownerPorts:f.ownerPorts,
   serviceGate:createProductOwnerServiceGate(),now:()=>NOW}),
@@ -294,7 +296,7 @@ test('unresolved persisted read aborts and quarantines all later service session
  release(f.facts);
  await new Promise(resolve=>setImmediate(resolve));
  assert.equal(f.serviceGate.pending,0);
- assert.equal(f.serviceGate.available,false);
+ assert.equal(f.serviceGate.available,true);
 });
 
 test('a second gate cannot replace an active gate for the same pool or facts',()=>{
@@ -307,7 +309,7 @@ test('a second gate cannot replace an active gate for the same pool or facts',()
  assert.equal(f.serviceGate.available,true);
 });
 
-test('unresolved canonical owner I/O quarantines the shared service gate',async()=>{
+test('unresolved pool checkout refuses its session without poisoning the shared service',async()=>{
  const f=fixture();
  let started,release;
  const entered=new Promise(resolve=>{started=resolve;});
@@ -324,11 +326,27 @@ test('unresolved canonical owner I/O quarantines the shared service gate',async(
   f.capturePeer);
  await entered;
  await assert.rejects(operation,/PRODUCT_OWNER_CHANNEL_DENIED/);
- assert.equal(f.serviceGate.available,false);
+ assert.equal(f.serviceGate.available,true);
  assert.equal(f.serviceGate.pending,1);
- assert.throws(()=>f.channel(),/PRODUCT_OWNER_CHANNEL_DENIED/);
+ assert.equal(f.channel().available,true);
  release(Error('late SQL completion'));
  await new Promise(resolve=>setImmediate(resolve));
  assert.equal(f.serviceGate.pending,0);
- assert.equal(f.serviceGate.available,false);
+ assert.equal(f.serviceGate.available,true);
+});
+
+test('closing a generation aborts pending admission and capture without poisoning the service',async()=>{
+ const f=admissionFixture();let signal,release;
+ f.persistedFacts.resolve=value=>{signal=value.signal;return new Promise(resolve=>{release=resolve;});};
+ const admission=createProductOwnerAdmissionChannel({...f,now:()=>NOW});
+ const read=admission.read(f.read('closing'),f.operationPeer);await Promise.resolve();
+ admission.close();assert.equal(signal.aborted,true);await assert.rejects(read);
+ release(f.facts);await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(admission.available,false);assert.equal(f.serviceGate.available,true);
+ f.persistedFacts.resolve=async()=>f.facts;
+ const channel=createProductOwnerChannel({...f,now:()=>NOW}),ack=JSON.parse(await channel.open(f.open,f.operationPeer));
+ const poll=channel.poll(wire(['meri.proxy.capture-poll/1',ack[1],id,'call']),f.capturePeer);
+ channel.close();await assert.rejects(poll);assert.equal(channel.available,false);assert.equal(channel.canReadOutcome,false);
+ await assert.rejects(channel.readOutcome(wire(['meri.proxy.operation/1',ack[1],['meri.proxy.outcome/1',id]]),f.operationPeer));
+ assert.equal(f.serviceGate.available,true);assert.equal(f.sql(),0);
 });

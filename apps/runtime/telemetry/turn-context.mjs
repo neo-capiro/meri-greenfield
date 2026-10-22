@@ -109,6 +109,7 @@ export function createTurnTelemetry({service,environment='Preview',write,now=Dat
    const record=safe(()=>runFor(binding))??{provisional:true,counts:empty()};return inContext({telemetry:api,record},fn);},
   withRequest(requestId,binding,fn){const existing=active();if(existing?.record?.requestId===requestId){bind(binding);return fn();}
    const record=safe(()=>requestFor(requestId,binding))??{provisional:true,counts:empty()};return inContext({telemetry:api,record},fn);},
+  background(fn){return ambient.run(undefined,fn);},
   provisional(fn){if(active())return fn();return inContext({telemetry:api,record:{provisional:true,counts:empty()}},fn);},
   bind,stage,summary,counters,finish,
   recordCore(route,status,ms){safe(()=>{const c=destination(),r=CORE_ROUTES.includes(route)?route:'other',s=STATUS_CLASSES.includes(status)?status:'unanswered';

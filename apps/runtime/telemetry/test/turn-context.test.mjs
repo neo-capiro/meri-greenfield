@@ -70,3 +70,15 @@ test('failed rollup preserves historical dropped count until successful recovery
  telemetry.rollup();assert.equal(telemetry.telemetryDropped,3);broken=false;telemetry.rollup();
  assert.equal(lines[0].telemetryDropped,3);assert.equal(telemetry.telemetryDropped,0);
 });
+
+test('scheduled background renewal does not inherit request attribution',async()=>{
+ const {telemetry,lines}=fixture('owner');
+ await telemetry.within(binding,async()=>{
+  telemetry.recordAws('DescribeTasks','success',1);
+  await telemetry.background(async()=>{await Promise.resolve();telemetry.recordAws('DescribeServices','success',1);});
+  telemetry.recordAws('DescribeTasks','success',1);
+ });
+ const counts=telemetry.counters(binding);telemetry.rollup();
+ assert.deepEqual(counts.aws,{DescribeTasks:{success:2}});
+ assert.deepEqual(lines.find(line=>line.event==='meri.process.rollup').aws,{DescribeServices:{success:1}});
+});

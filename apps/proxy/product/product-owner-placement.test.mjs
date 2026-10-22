@@ -10,6 +10,7 @@ import {createMemoryIssuanceStore} from '../../runtime/prepared-run-issuance-sto
 import {compileNativeTaskRequest} from '../../runtime/native-authority/task-request.mjs';
 import {createProductProxyPersistedFacts} from './product-owner-facts.mjs';
 import {createProductOwnerPlacement} from './product-owner-placement.mjs';
+import {createInitialRunBindingJournal} from '../../control/conversations/initial-run-binding-journal.mjs';
 import {refusalCode} from './owner-diagnostics.mjs';
 
 const id=n=>'11111111-1111-4111-8111-'+String(n).padStart(12,'0');
@@ -56,10 +57,13 @@ function fixture({successor=false}={}){
   if(sql.startsWith('SELECT * FROM meri_conversations.runs WHERE'))return rows([state.run,state.firstRun].filter(r=>r&&r.tenant_id===p[0]&&r.conversation_id===p[1]&&r.run_id===p[2]));
   if(sql.startsWith('SELECT * FROM meri_conversations.native_allocations WHERE'))return rows(state.native?[state.native]:[]);
   if(sql.startsWith('SELECT * FROM meri_conversations.events WHERE'))return rows([state.firstRun?.run_id===p[2]?state.firstEvent:state.event]);
+  if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings')){
+   initialReads++;const record=state.admission;
+   return rows(record?[{tenant_id:record.binding.tenantId,conversation_id:record.binding.conversationId,run_id:record.binding.runId,record,record_sha256:hash(record)}]:[]);
+  }
   assert.fail('Unexpected scripted placement SQL: '+sql);
  }
  const pool={query,async connect(){return {query,release:error=>releases.push(error)};}};
- const initialBindings={async read(){return null;},async readConversation(_input,check){check();initialReads++;return structuredClone(state.admission);}};
  const configurationSha256=compilePreparedRunConfigurationSha256(configuration);
  state.admission={schemaVersion:1,state:'ADMITTED',binding:firstBinding,selectedClientId:clientId,policyRevision:q.policyRevision,versions:configuration.versions,configurationSha256,expiresAtMs:successor?NOW-100:expiresAtMs,createdAtMs:NOW-1000};
  if(successor){
@@ -68,7 +72,7 @@ function fixture({successor=false}={}){
   state.firstEvent={...state.event,event:{...state.event.event,binding:firstBinding,data:{state:'completed',reasonCode:null}}};state.firstEvent.event_sha256=hash(state.firstEvent.event);
  }
  const facts=createProductProxyPersistedFacts({pool,selectedClientId:clientId,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:131072},enabled:true});
- const options={configuration,pool,persistedFacts:facts,initialBindings,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:131072},enabled:true};
+ const options={configuration,pool,persistedFacts:facts,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:131072},enabled:true};
  return {options,state,model,task,calls,releases,initialReads:()=>initialReads,make:extra=>createProductOwnerPlacement({...options,...extra}),query:()=>({capabilitySha256:model.capabilitySha256,deadlineMs:NOW+5000}),before:fn=>{before=fn;},rehash:()=>{state.native.record_sha256=hash(state.native.record);}};
 }
 
@@ -116,15 +120,15 @@ test('original placement, request identity, config or immutable custody drift is
 test('configuration is snapshotted; fresh original recheck detects a concurrent journal change',async()=>{
  const f=fixture(),owner=f.make();f.options.configuration.taskRouter.vpcId='vpc-ffffffff';
  assert.equal((await owner.resolve(f.query())).issuedTaskNetwork.vpc_id,'vpc-12345678');
- const g=fixture();let count=0;const original=g.options.initialBindings.readConversation;
- g.options.initialBindings.readConversation=async(...args)=>{const result=await original(...args);if(++count===2)result.configurationSha256='f'.repeat(64);return result;};
+ const g=fixture();let count=0;
+ g.before(sql=>{if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings')&&++count===2)g.state.admission.configurationSha256='f'.repeat(64);});
  await assert.rejects(g.make().resolve(g.query()),refused);
 });
 
 test('pure workload identity preserves retargeting semantics and explicitly excludes independently pinned router VPC',()=>{
  const f=fixture(),before=compilePreparedRunConfigurationSha256(f.options.configuration),changed=structuredClone(f.options.configuration),c=changed.nativeCandidate;
  const noEffect=()=>assert.fail('pure digest and binding construction never resolve or issue material');
- const bindings=createPreparedRunBindings({configuration:f.options.configuration,pool:f.options.pool,store:{allocations:{read:noEffect},readOptional:noEffect},credentials:{control:'synthetic-control-only'},issuanceStore:createMemoryIssuanceStore(),capabilityAuthority:{generate:noEffect,retrieve:noEffect,status:noEffect},modelGrants:{issue:noEffect},initialBindings:f.options.initialBindings,now:()=>NOW});
+ const bindings=createPreparedRunBindings({configuration:f.options.configuration,pool:f.options.pool,store:{allocations:{read:noEffect},readOptional:noEffect},credentials:{control:'synthetic-control-only'},issuanceStore:createMemoryIssuanceStore(),capabilityAuthority:{generate:noEffect,retrieve:noEffect,status:noEffect},modelGrants:{issue:noEffect},initialBindings:createInitialRunBindingJournal({pool:f.options.pool,now:()=>NOW}),now:()=>NOW});
  assert.equal(bindings.configurationSha256,before,'existing issuance composition consumes the extracted canonical digest');
  const binding={...c.runtime.binding,conversationId:id(70),runId:id(71),attemptId:id(72),workerId:id(73)};
  c.runtime.binding=binding;c.identity.commandContext.binding=binding;c.runtime.deadlineMs--;
@@ -145,12 +149,31 @@ test('fresh read leases may shorten independently without replacing immutable ex
  const out=await owner.resolve(f.query());assert.equal(out.effectiveExpiresAtMs,NOW+800);assert.equal(out.issuedTaskNetwork.expires_at_ms,NOW+8000);
 });
 
-test('a raced-out owner is quarantined; subsequent lookups cannot accumulate background work',async()=>{
- const f=fixture(),reports=[];let calls=0;const owner=f.make({limits:{maxRequestMs:20,maxFactBytes:131072},persistedFacts:{available:true,resolve(){calls++;return new Promise(()=>{});}},
+test('a raced-out placement read aborts its request and permits a fresh lookup',async()=>{
+ const f=fixture(),reports=[];let calls=0,signal;const owner=f.make({limits:{maxRequestMs:20,maxFactBytes:131072},persistedFacts:{available:true,resolve(value){calls++;if(calls===1){signal=value.signal;return new Promise(()=>{});}return f.options.persistedFacts.resolve(value);}},
   report:(name,step,error)=>reports.push([name,step,refusalCode(error)])});
- await assert.rejects(owner.resolve(f.query()),refused);assert.equal(owner.available,false);
+ await assert.rejects(owner.resolve(f.query()),refused);assert.equal(owner.available,true);assert.equal(signal.aborted,true);
  assert.deepEqual(reports,[['placement','facts','DEADLINE']],'an expired exchange is reported as DEADLINE, distinct from REFUSED');
- await assert.rejects(owner.resolve(f.query()),refused);assert.equal(calls,1);assert.equal(f.calls.length,0);
+ assert.equal(f.calls.length,0);await owner.resolve(f.query());assert.equal(calls,3);
+});
+
+test('aborted placement discards the canonical initial-journal client and permits a fresh request',async()=>{
+ const f=fixture(),connect=f.options.pool.connect,entered=Promise.withResolvers(),reply=Promise.withResolvers();
+ let suspended=true,evicted;
+ f.options.pool.connect=async()=>{
+  const client=await connect();let held=false;
+  return {async query(sql,p){
+   if(suspended&&sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings')){
+    held=true;entered.resolve();await reply.promise;
+   }
+   return client.query(sql,p);
+  },release(error){if(held)evicted=error;client.release(error);}};
+ };
+ const owner=f.make(),abort=new AbortController(),pending=owner.resolve({...f.query(),signal:abort.signal});
+ await entered.promise;abort.abort();await assert.rejects(pending,refused);
+ assert.ok(evicted instanceof Error,'the pending journal client is evicted before its SELECT answers');
+ assert.equal(owner.available,true);suspended=false;await owner.resolve(f.query());
+ reply.resolve();await new Promise(resolve=>setImmediate(resolve));assert.equal(owner.available,true);
 });
 
 test('active successor joins the actual original first-run row even after its admission window expired',async()=>{

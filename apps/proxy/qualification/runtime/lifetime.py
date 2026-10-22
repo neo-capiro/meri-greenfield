@@ -69,7 +69,14 @@ class RequestLifetime:
         self.tasks, self.threads = set(), set()
         self.original_body = None
         self.proxy_credential = None
+        self._owner_reader = self._admission_lease = None
+        self._admission_started = False
+        self._admission_renewal_task = None
         self.check()
+        product = getattr(admission.authority, "_product_owner", None)
+        if product is not None:
+            self._owner_reader = product[0]
+            self._admission_lease = self._owner_reader.bind_lifetime(self)
 
     def deny(self, reason):
         if self.reason is None:
@@ -88,6 +95,11 @@ class RequestLifetime:
                 self.peer.check()
             except StateDenied:
                 self.deny("PEER_OBSERVATION_EXPIRED")
+        if self.reason is None and self._owner_reader is not None and self._admission_started:
+            try:
+                self._owner_reader.current_lifetime(self)
+            except Exception:
+                self.deny("ADMISSION_LEASE_EXPIRED")
         if self.reason is not None:
             raise StateDenied(self.reason)
 
@@ -121,10 +133,65 @@ class RequestLifetime:
             raise StateDenied(self.reason)
         return task.result()
 
+    @property
+    def has_admission_lease(self):
+        return self._owner_reader is not None
+
+    def current_conversation(self):
+        self.check()
+        if self._owner_reader is None:
+            raise StateDenied("PRODUCT_ADMISSION_LEASE_REQUIRED")
+        return self._owner_reader.conversation_for_lifetime(self)
+
     async def refresh(self):
+        """Request-path checks reuse only this lifetime's successful receipt."""
+        self.check()
+        if self._owner_reader is not None:
+            if self._admission_lease.receipt is None:
+                await self.renew()
+            self._owner_reader.current_lifetime(self)
+            self._admission_started = True
+            self.check()
+            return
+        await self.renew()
+
+    async def _renewal_result(self, factory, *, thread=False):
+        # Renewal may be unanswered. Unlike _bounded(), it does not invalidate a
+        # still-valid lease on timeout; the independent expiry watcher does that.
+        self.check()
+        task = self._admission_renewal_task if thread else None
+        if task is None:
+            task = self.spawn(factory(), thread=thread)
+            if thread:
+                self._admission_renewal_task = task
+        timeout = min(self.limits.check_seconds, self.deadline-time.monotonic())
+        receipt = self._admission_lease.receipt
+        if receipt is not None:
+            timeout = min(timeout, receipt.expires_at_mono-self._owner_reader.monotonic())
+        done, _ = await asyncio.wait({task}, timeout=max(0, timeout))
+        if not done:
+            if not thread:
+                task.cancel()
+            raise TimeoutError("ADMISSION_RENEWAL_UNANSWERED")
+        if thread:
+            self._admission_renewal_task = None
+        if task.cancelled():
+            raise StateDenied("FRESH_ADMISSION_CANCELLED")
+        return task.result()
+
+    @staticmethod
+    def _unanswered(error):
+        from ...product.owner_channel import OwnerCarrierBusy
+        from ...product.service_pair_discovery import PairProofError
+        return (isinstance(error, (TimeoutError, ConnectionError, OwnerCarrierBusy))
+                or isinstance(error, PairProofError) and error.code == "PAIR_UNAVAILABLE")
+
+    async def renew(self):
+        """The five-second watcher owns runner observation and admission reads."""
         self.check()
         try:
-            peer = await self._bounded(self.observer)
+            bounded = self._renewal_result if self._owner_reader is not None else self._bounded
+            peer = await bounded(self.observer)
             if (type(peer) is not PeerLease or peer.ipv4 != self.peer.ipv4
                     or peer.binding != self.admission.authority.binding
                     or peer.grant_id != self.admission.authority.grant_id
@@ -132,11 +199,23 @@ class RequestLifetime:
                 raise StateDenied("PEER_RENEWAL_MISMATCH")
             peer.check()
             self.peer = peer
-            await self._bounded(lambda: asyncio.to_thread(self.admission.authority.check), thread=True)
+            if self._owner_reader is None:
+                await self._bounded(lambda: asyncio.to_thread(self.admission.authority.check), thread=True)
+            else:
+                await self._renewal_result(lambda: asyncio.to_thread(
+                    self._owner_reader.renew_lifetime_sync, self), thread=True)
+                self._admission_started = True
             self.check()
         except asyncio.CancelledError:
             raise
-        except Exception:
+        except Exception as error:
+            if self._owner_reader is not None and self._unanswered(error):
+                try:
+                    self._owner_reader.current_lifetime(self)
+                    self.check()
+                    return
+                except Exception:
+                    pass
             self.deny("FRESH_ADMISSION_DENIED")
             raise StateDenied(self.reason) from None
 
@@ -149,19 +228,35 @@ class RequestLifetime:
                                      if name == b"authorization")
         await self.refresh()
         self.spawn(self._watch(), mandatory="ADMISSION_WATCH_STOPPED")
+        if self._owner_reader is not None:
+            self.spawn(self._watch_admission_expiry(), mandatory="ADMISSION_EXPIRY_WATCH_STOPPED")
 
     async def _watch(self):
         try:
             while True:
                 await asyncio.sleep(min(self.limits.poll_seconds, max(0, self.deadline-time.monotonic())))
-                await self.refresh()
+                await self.renew()
         except asyncio.CancelledError:
             raise
         except Exception:
             self.deny("FRESH_ADMISSION_DENIED")
 
+    async def _watch_admission_expiry(self):
+        try:
+            while True:
+                receipt = self._owner_reader.current_lifetime(self)
+                await asyncio.sleep(max(0, min(self.deadline-time.monotonic(),
+                    receipt.expires_at_mono-self._owner_reader.monotonic())))
+                self.check()
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            self.deny("ADMISSION_LEASE_EXPIRED")
+
     async def close(self):
         self.deny("REQUEST_CLOSED")
+        if self._owner_reader is not None:
+            self._owner_reader.release_lifetime(self)
         self.original_body = None
         self.proxy_credential = None
         tasks = set(self.tasks)

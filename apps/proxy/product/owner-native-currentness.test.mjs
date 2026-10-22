@@ -79,11 +79,13 @@ test('credential rotation, foreign native actor/client, terminal run and latest-
  ]){const f=fixture();change(f);await assert.rejects(f.make().checkCurrentConversation(f.call()),refused);}
 });
 
-test('foreign requested binding is denied before material or SQL; pending delivery quarantines the whole owner',async()=>{
+test('foreign requested binding is denied before material or SQL; pending delivery refuses only its request',async()=>{
  const f=fixture(),owner=f.make();await assert.rejects(owner.checkCurrentConversation({...f.call(),binding:{...f.f.binding,actorId:'foreign'}}),refused);assert.equal(f.state.reads,0);
- f.state.material=()=>new Promise(()=>{});
- await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(owner.available,false);
- const reads=f.state.reads;await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(f.state.reads,reads);
+ let release;f.state.material=()=>new Promise(resolve=>{release=resolve;});
+ await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(owner.available,true);
+ f.state.material=()=>Buffer.from(bytes);await owner.checkCurrentConversation(f.call());
+ const late=Buffer.from(bytes);release(late);await new Promise(resolve=>setImmediate(resolve));
+ assert.deepEqual(late,Buffer.alloc(late.length),'a late credential buffer is erased after refusal');
 });
 
 test('dynamic original uses canonical journal and exact config custody; config rollover and replaced original binding deny',async()=>{
@@ -93,13 +95,32 @@ test('dynamic original uses canonical journal and exact config custody; config r
  }
 });
 
-test('a settled child denial with unretired native body quarantines every binding on the shared authority',async()=>{
+test('an unanswered native body stop refuses the request without retiring shared authority',async()=>{
  const f=fixture(),owner=f.make();f.state.response=()=>new Response(new ReadableStream({cancel(){throw Error('synthetic unresolved stop');}},{highWaterMark:0}),{status:503});
- await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(owner.available,false);
- const count=f.state.reads;await assert.rejects(owner.checkCurrentConversation({...f.call(),binding:{...f.f.binding,runId:id(997)}}),refused);
- assert.equal(f.state.reads,count,'another binding cannot reset the child quarantine');
- const replacement=f.make();assert.equal(replacement.available,false);
- await assert.rejects(replacement.checkCurrentConversation(f.call()),refused);assert.equal(f.state.reads,count,'new helpers cannot reset an uncertain pool authority');
+ await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(owner.available,true);
+ delete f.state.response;await owner.checkCurrentConversation(f.call());
+ const replacement=f.make();assert.equal(replacement.available,true);await replacement.checkCurrentConversation(f.call());
+});
+
+test('cancelled currentness evicts its read client before a late reply without poisoning the next request',async()=>{
+ const f=fixture(),connect=f.options.pool.connect,entered=Promise.withResolvers(),reply=Promise.withResolvers();
+ let suspended=true,evicted;
+ f.options.pool.connect=async()=>{
+  const client=await connect();let held=false;
+  return {async query(sql,p){
+   if(suspended&&sql.startsWith('SELECT * FROM meri_conversations.runs WHERE')){
+    held=true;entered.resolve();await reply.promise;
+   }
+   return client.query(sql,p);
+  },release(error){if(held)evicted=error;client.release(error);}};
+ };
+ const owner=f.make(),abort=new AbortController(),pending=owner.checkCurrentConversation({...f.call(),signal:abort.signal});
+ await entered.promise;abort.abort();await assert.rejects(pending,refused);
+ assert.ok(evicted instanceof Error,'cancelled read client is discarded before its query answers');
+ assert.equal(owner.available,true);assert.equal(f.state.fetches.length,1);
+ suspended=false;await owner.checkCurrentConversation(f.call());const sent=f.state.fetches.length;
+ reply.resolve();await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.state.fetches.length,sent,'late current-run read cannot authorize another Core call');
 });
 
 // O102: image identity is a property of each run. A later run is current under this render although its conversation's original

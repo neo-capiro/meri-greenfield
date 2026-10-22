@@ -57,7 +57,7 @@ export const LINE_SCHEMAS=Object.freeze({
    refusal:value=>({gate:choice(['pair','exchange','ingress','admission','reserve','settle','bootstrap','owner','request','other'])(value?.gate),step:safeCode(value?.step),code:safeCode(value?.code)}),
    bootstrapMs:nullable,bedrockHeadersMs:nullable,firstChunkMs:nullable,streamEndMs:nullable,settleMs:nullable,
    ownerExchanges:exchanges,ownerExchangeMs:number,aws,awsMs:number,inputTokens:number,outputTokens:number},
- 'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable']),code:safeCode},
+ 'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable','reproven']),code:safeCode},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},
 });

@@ -342,7 +342,9 @@ async def run_product_proxy(configuration):
         compatibility = _native_bootstrap(resources)
         ecs, ec2, count = await _bounded_native(lambda: asyncio.to_thread(_clients, resources), resources)
         from .service_pair_discovery import ProductServicePairDiscovery, compile_owner_peer, parse_owner_peer_template
-        service_pair = ProductServicePairDiscovery(configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True)
+        from .pair_lease import ProductPairLease
+        service_pair = ProductPairLease(ProductServicePairDiscovery(
+            configuration=value["serviceTasks"], ecs_client=ecs, ec2_client=ec2, enabled=True))
         resources.transports.append(service_pair)
         # Reviewed material refuses before any pair read or startup wait.
         _check_reviewed_tls_files(value)

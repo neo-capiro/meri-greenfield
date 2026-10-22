@@ -19,6 +19,15 @@ class RefusalDiagnosticsTests(unittest.TestCase):
     def tearDown(self):
         diagnostics.uninstall()
 
+    def test_pair_reproof_audit_is_outside_the_refusal_budget(self):
+        diagnostics.install(write=lambda data: self.lines.append(data.decode("ascii")), burst=1)
+        diagnostics.refused("pair", "snapshot")
+        diagnostics.refused("pair", "snapshot")
+        diagnostics.pair_reproven()
+        self.assertEqual(self.lines[-2:], ["PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED\n", "PRODUCT_PROXY_PAIR_REPROVEN\n"])
+        diagnostics.install(write=lambda _data: (_ for _ in ()).throw(OSError("secret")))
+        diagnostics.pair_reproven()
+
     def test_one_line_names_the_check_and_never_its_error_text(self):
         diagnostics.refused("exchange", "reply-status", StateDenied("PRODUCT_OWNER_HTTPS_DENIED 10.40.8.170 secret"))
         self.assertEqual(self.lines, ["PRODUCT_PROXY_REFUSED gate=exchange step=reply-status code=REFUSED\n"])

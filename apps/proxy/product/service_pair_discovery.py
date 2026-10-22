@@ -15,10 +15,27 @@ import time
 from ..qualification.state.pricing import StateDenied
 from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
-from .budgets import MAX_OWNER_EXCHANGE_MS
+from .budgets import MAX_OWNER_EXCHANGE_MS, PAIR_LEASE_TTL_MS
 
 _PREFIX = 'arn:aws:ecs:us-east-1:967807252336:'
 _IAM = 'arn:aws:iam::967807252336:role/'
+
+class PairProofError(StateDenied):
+    """Content-free distinction between absent evidence and contradictory evidence."""
+    def __init__(self, code):
+        if code not in ('PAIR_UNAVAILABLE', 'PAIR_DRIFT', 'PAIR_REPROVING'):
+            raise ValueError('PAIR_CODE')
+        self.code = code
+        super().__init__(code)
+
+
+def _unavailable():
+    raise PairProofError('PAIR_UNAVAILABLE')
+
+
+def _drift():
+    raise PairProofError('PAIR_DRIFT')
+
 
 def _deny():
     raise StateDenied('PRODUCT_SERVICE_PAIR_DENIED')
@@ -95,14 +112,7 @@ def _private(value):
         _deny()
     return value
 
-def _service(reply, pin):
-    rows = reply.get('services')
-    if type(rows) is not list or len(rows) != 2 or reply.get('failures', []) != []:
-        _deny()
-    rows = [v for v in rows if v.get('serviceArn') == pin['serviceArn']]
-    if len(rows) != 1:
-        _deny()
-    s = rows[0]
+def _service(s, pin):
     if (s.get('clusterArn') != pin['clusterArn'] or s.get('serviceName') != pin['serviceArn'].split('/')[-1]
             or s.get('status') != 'ACTIVE' or s.get('taskDefinition') != pin['taskDefinitionArn']
             or any(type(s.get(k)) is not int or s[k] != v for k, v in (('desiredCount', 1), ('runningCount', 1), ('pendingCount', 0)))
@@ -126,7 +136,9 @@ def _service(reply, pin):
     return d['id']
 
 def _definition(reply, p):
-    d = reply.get('taskDefinition', {})
+    d = reply.get('taskDefinition')
+    if type(d) is not dict or not d:
+        _unavailable()
     if (d.get('taskDefinitionArn') != p['taskDefinitionArn'] or d.get('status') != 'ACTIVE' or d.get('networkMode') != 'awsvpc'
             or 'FARGATE' not in d.get('requiresCompatibilities', []) or d.get('taskRoleArn') != p['taskRoleArn'] or d.get('executionRoleArn') != p['executionRoleArn']):
         _deny()
@@ -195,19 +207,29 @@ def _network(n, v, p):
     if len(set(ips)) != len(ips) or v['privateIpv4Address'] not in ips:
         _deny()
 
-def _together(pool, *reads):
-    """Independent reads at once. Every read started settles before any failure is raised, so no SDK call outlives
-    the proof; the first failure in argument order is raised."""
+def _together(pool, *reads, cutoff):
+    """Bound the read phase; the caller quarantines unfinished native work."""
     futures = [pool.submit(read) for read in reads]
-    wait(futures)
+    done, pending = wait(futures, timeout=max(0, cutoff-time.monotonic()))
+    for future in pending:
+        future.cancel()
+    # A contradictory observation is decisive even when another independent
+    # call timed out. Argument order must never hide an observed pin failure.
+    for future in futures:
+        if future in done and not future.cancelled():
+            error = future.exception()
+            if error is not None and (not isinstance(error, PairProofError) or error.code == 'PAIR_DRIFT'):
+                raise error
+    if pending:
+        _unavailable()
     return [future.result() for future in futures]
 
 class ProductServicePairDiscovery:
-    def __init__(self, *, configuration, ecs_client, ec2_client, now_ms=None, max_request_ms=3000, max_lease_ms=30000, enabled=False):
+    def __init__(self, *, configuration, ecs_client, ec2_client, now_ms=None, max_request_ms=3000, max_lease_ms=PAIR_LEASE_TTL_MS, enabled=False):
         self._pins = parse_service_pair_configuration(configuration)
         self._now = now_ms if now_ms is not None else (lambda: time.time_ns()//1000000)
         if (type(enabled) is not bool or type(max_request_ms) is not int or not 1 <= max_request_ms <= 3000
-                or type(max_lease_ms) is not int or not 1 <= max_lease_ms <= 30000 or not callable(self._now)):
+                or type(max_lease_ms) is not int or not 1 <= max_lease_ms <= PAIR_LEASE_TTL_MS or not callable(self._now)):
             _deny()
         self._ecs, self._ec2 = ecs_client, ec2_client
         for client, methods in ((ecs_client, ('describe_services', 'list_tasks', 'describe_task_definition', 'describe_tasks')), (ec2_client, ('describe_network_interfaces',))):
@@ -216,17 +238,39 @@ class ProductServicePairDiscovery:
         self._enabled, self._retired, self._active = enabled, False, 0
         self._max_request_ms, self._max_lease_ms = max_request_ms, max_lease_ms
         self._state, self._read_lock, self._identity = threading.Lock(), threading.Lock(), None
+        self._quarantined = False
+        self._last_observation = None
+        self._last_checked_mono_ms = None
 
     @property
     def available(self):
-        return self._enabled and not self._retired and self._now() < self._pins['expiresAtMs']
+        return self._enabled and not self._retired and not self._quarantined and self._now() < self._pins['expiresAtMs']
+
+    @property
+    def quarantined(self):
+        return self._quarantined
+
+    @property
+    def last_observation(self):
+        return copy.deepcopy(self._last_observation)
+
+    @property
+    def pins(self):
+        return copy.deepcopy(self._pins)
+
+    @property
+    def max_lease_ms(self):
+        return self._max_lease_ms
+
+    def recreate(self):
+        """New proof lifecycle, same borrowed clients and immutable configuration."""
+        return ProductServicePairDiscovery(configuration=self._pins, ecs_client=self._ecs,
+            ec2_client=self._ec2, now_ms=self._now, max_request_ms=self._max_request_ms,
+            max_lease_ms=self._max_lease_ms, enabled=self._enabled)
 
     def abort(self):
         with self._state:
-            transitioned = not self._retired
             self._retired = True
-        if transitioned:
-            telemetry.health("pair", "retired", "PAIR_RETIRED")
 
     def assert_transport(self, policy, owner_ipv4, proxy_ipv4, expires_at_ms, revision):
         # The expected socket pair is compiled from this reader's admitted
@@ -247,46 +291,64 @@ class ProductServicePairDiscovery:
             raise StateDenied('PRODUCT_PROXY_CLEANUP_UNKNOWN')
 
     def read(self, *, deadline_ms):
-        acquired, step, cutoff = False, 'unavailable', None
+        acquired, step, cutoff, pool = False, 'unavailable', None, None
         try:
             at = self._now()
             if not self.available or not _instant(at) or not _instant(deadline_ms) or deadline_ms <= at:
-                _deny()
+                _unavailable()
             cutoff = min(deadline_ms, self._pins['expiresAtMs'], at+self._max_request_ms)
             monotonic_cutoff = time.monotonic()+(cutoff-at)/1000
             def check():
                 if not self.available or self._now() < at or self._now() >= cutoff or time.monotonic() >= monotonic_cutoff:
-                    _deny()
+                    _unavailable()
             step = 'lock'
             acquired = self._read_lock.acquire(timeout=max(0, monotonic_cutoff-time.monotonic()))
             if not acquired:
-                _deny()
+                _unavailable()
             def call(client, method, **kwargs):
                 check()
                 with self._state:
-                    if self._retired:
-                        _deny()
+                    if self._retired or self._quarantined:
+                        _unavailable()
                     self._active += 1
                 try:
                     result = getattr(client, method)(**kwargs)
+                except Exception:
+                    _unavailable()
                 finally:
                     with self._state:
                         self._active -= 1
                 check()
                 if type(result) is not dict:
-                    _deny()
+                    _unavailable()
                 return result
             pins = self._pins
             def services():
                 reply = call(self._ecs, 'describe_services', cluster=pins['owner']['clusterArn'], services=[pins[r]['serviceArn'] for r in ('owner', 'proxy')])
-                return {r: _service(reply, pins[r]) for r in ('owner', 'proxy')}
+                rows = reply.get('services')
+                if type(rows) is not list:
+                    _unavailable()
+                expected = {pins[role]['serviceArn']: role for role in ('owner', 'proxy')}
+                observations = {}
+                for row in rows:
+                    role = expected.get(row.get('serviceArn')) if type(row) is dict else None
+                    if role is None or role in observations:
+                        _drift()
+                    # Validate every returned row before a missing peer/failure
+                    # can turn the aggregate result into unavailable.
+                    observations[role] = _service(row, pins[role])
+                if len(observations) != 2 or reply.get('failures', []) != []:
+                    _unavailable()
+                return observations
             def member(p):
                 ids, tokens, token = set(), set(), None
                 for _ in range(4):
                     reply = call(self._ecs, 'list_tasks', cluster=p['clusterArn'], serviceName=p['serviceArn'].split('/')[-1], desiredStatus='RUNNING', maxResults=100, **({'nextToken': token} if token else {}))
                     values = reply.get('taskArns')
-                    if type(values) is not list or len(values) > 100:
-                        _deny()
+                    if type(values) is not list:
+                        _unavailable()
+                    if len(values) > 100:
+                        _drift()
                     for v in values:
                         if not _matches(re.escape(p['clusterArn'].replace('cluster/', 'task/'))+r'/[a-f0-9]{32}', v) or v in ids:
                             _deny()
@@ -299,59 +361,77 @@ class ProductServicePairDiscovery:
                             _deny()
                         return next(iter(ids))
                     if type(token) is not str or not 1 <= len(token) <= 1024 or token in tokens:
-                        _deny()
+                        _unavailable()
                     tokens.add(token)
-                _deny()
+                _unavailable()
             def definition(p):
                 _definition(call(self._ecs, 'describe_task_definition', taskDefinition=p['taskDefinitionArn']), p)
             # Four phases instead of ten sequential round trips (5/1/1/3 calls, at most 5 at once); same reads and checks.
-            with ThreadPoolExecutor(max_workers=5, thread_name_prefix='meri-service-pair') as pool:
-                step = 'snapshot'; diagnostics.stage('pair-snapshot')
-                first, owner_id, proxy_id, _, _ = _together(pool, services, lambda: member(pins['owner']),
-                    lambda: member(pins['proxy']), lambda: definition(pins['owner']), lambda: definition(pins['proxy']))
-                ids = {'owner': owner_id, 'proxy': proxy_id}
-                if len(set(ids.values())) != 2:
-                    _deny()
-                step = 'tasks'; diagnostics.stage('pair-tasks')
-                reply = call(self._ecs, 'describe_tasks', cluster=pins['owner']['clusterArn'], tasks=list(ids.values()), include=['TAGS'])
-                rows = reply.get('tasks')
-                if type(rows) is not list or len(rows) != 2 or len({t.get('taskArn') for t in rows}) != 2 or reply.get('failures', []) != []:
-                    _deny()
-                tasks = {t.get('taskArn'): t for t in rows}
-                pair = {r: _task(tasks[ids[r]], pins[r], ids[r], first[r], at) for r in ('owner', 'proxy')}
-                if pair['owner']['eni'] == pair['proxy']['eni'] or pair['owner']['privateIpv4Address'] == pair['proxy']['privateIpv4Address']:
-                    _deny()
-                step = 'network'; diagnostics.stage('pair-network')
-                reply = call(self._ec2, 'describe_network_interfaces', NetworkInterfaceIds=[pair[r]['eni'] for r in ('owner', 'proxy')])
-                rows = reply.get('NetworkInterfaces')
-                if type(rows) is not list or len(rows) != 2 or len({n.get('NetworkInterfaceId') for n in rows}) != 2:
-                    _deny()
-                networks = {n.get('NetworkInterfaceId'): n for n in rows}
-                for r in ('owner', 'proxy'):
-                    _network(networks[pair[r]['eni']], pair[r], pins[r])
-                step = 'recheck'; diagnostics.stage('pair-recheck')
-                last, owner_again, proxy_again = _together(pool, services, lambda: member(pins['owner']), lambda: member(pins['proxy']))
-                if last != first or (owner_again, proxy_again) != (ids['owner'], ids['proxy']):
-                    _deny()
+            pool = ThreadPoolExecutor(max_workers=5, thread_name_prefix='meri-service-pair')
+            step = 'snapshot'; diagnostics.stage('pair-snapshot')
+            first, owner_id, proxy_id, _, _ = _together(pool, services, lambda: member(pins['owner']),
+                lambda: member(pins['proxy']), lambda: definition(pins['owner']), lambda: definition(pins['proxy']), cutoff=monotonic_cutoff)
+            ids = {'owner': owner_id, 'proxy': proxy_id}
+            if len(set(ids.values())) != 2:
+                _deny()
+            step = 'tasks'; diagnostics.stage('pair-tasks')
+            reply, = _together(pool, lambda: call(self._ecs, 'describe_tasks', cluster=pins['owner']['clusterArn'], tasks=list(ids.values()), include=['TAGS']), cutoff=monotonic_cutoff)
+            rows = reply.get('tasks')
+            if type(rows) is not list:
+                _unavailable()
+            expected = {task_id: role for role, task_id in ids.items()}
+            pair = {}
+            for row in rows:
+                role = expected.get(row.get('taskArn')) if type(row) is dict else None
+                if role is None or role in pair:
+                    _drift()
+                pair[role] = _task(row, pins[role], ids[role], first[role], at)
+            if len(pair) != 2 or reply.get('failures', []) != []:
+                _unavailable()
+            if pair['owner']['eni'] == pair['proxy']['eni'] or pair['owner']['privateIpv4Address'] == pair['proxy']['privateIpv4Address']:
+                _deny()
+            step = 'network'; diagnostics.stage('pair-network')
+            reply, = _together(pool, lambda: call(self._ec2, 'describe_network_interfaces', NetworkInterfaceIds=[pair[r]['eni'] for r in ('owner', 'proxy')]), cutoff=monotonic_cutoff)
+            rows = reply.get('NetworkInterfaces')
+            if type(rows) is not list:
+                _unavailable()
+            expected = {pair[role]['eni']: role for role in ('owner', 'proxy')}
+            observed = set()
+            for row in rows:
+                role = expected.get(row.get('NetworkInterfaceId')) if type(row) is dict else None
+                if role is None or role in observed:
+                    _drift()
+                _network(row, pair[role], pins[role])
+                observed.add(role)
+            if len(observed) != 2:
+                _unavailable()
+            step = 'recheck'; diagnostics.stage('pair-recheck')
+            last, owner_again, proxy_again = _together(pool, services, lambda: member(pins['owner']), lambda: member(pins['proxy']), cutoff=monotonic_cutoff)
+            if last != first or (owner_again, proxy_again) != (ids['owner'], ids['proxy']):
+                _deny()
             check()
-            step = 'identity'
-            identity = tuple(tuple(pair[r][k] for k in ('taskArn', 'createdAtMs', 'privateIpv4Address')) for r in ('owner', 'proxy'))
-            with self._state:
-                if self._retired or self._identity is not None and self._identity != identity:
-                    transitioned = not self._retired
-                    self._retired = True
-                    if transitioned:
-                        telemetry.health("pair", "retired", "PAIR_RETIRED")
-                    _deny()
-                self._identity = identity
             checked = self._now()
             if not _instant(checked) or checked < at or checked >= cutoff:
-                _deny()
-            return {**{r: {k: pair[r][k] for k in ('taskArn', 'createdAtMs', 'privateIpv4Address')} for r in ('owner', 'proxy')},
-                'checkedAtMs': checked, 'expiresAtMs': min(pins['expiresAtMs'], deadline_ms, checked+self._max_lease_ms)}
+                _unavailable()
+            observation = {**{r: {k: pair[r][k] for k in ('taskArn', 'createdAtMs', 'privateIpv4Address', 'eni')} for r in ('owner', 'proxy')},
+                'checkedAtMs': checked, 'expiresAtMs': min(pins['expiresAtMs'], checked+self._max_lease_ms)}
+            with self._state:
+                if self._retired or self._quarantined:
+                    _unavailable()
+                self._identity = tuple(tuple(pair[r][k] for k in ('taskArn', 'createdAtMs', 'privateIpv4Address')) for r in ('owner', 'proxy'))
+                self._last_observation = copy.deepcopy(observation)
+                self._last_checked_mono_ms = time.monotonic()*1000
+            return observation
         except Exception as error:
             diagnostics.refused('pair', step, error, deadline_ms=cutoff, now_ms=self._now)
-            _deny()
+            if isinstance(error, PairProofError):
+                raise
+            _drift()
         finally:
+            if pool is not None:
+                pool.shutdown(wait=False, cancel_futures=True)
+            with self._state:
+                if self._active:
+                    self._quarantined = True
             if acquired:
                 self._read_lock.release()

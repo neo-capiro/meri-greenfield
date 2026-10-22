@@ -40,6 +40,7 @@ export function createOwnerDiagnostics({write=line=>process.stderr.write(line),n
   }catch{}
  }
  return Object.freeze({
+  pairReproven(){try{write('PRODUCT_OWNER_PAIR_REPROVEN\n');}catch{}},
   health:(component,transition,code)=>health(component,transition,code,telemetry),
   budgetQuarantined:(binding,reason)=>budgetQuarantined(binding,reason,telemetry),
   /** One refused statement: `sqlstate` only when PostgreSQL supplied one. */

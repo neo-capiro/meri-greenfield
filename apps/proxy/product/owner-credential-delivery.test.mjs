@@ -103,14 +103,15 @@ test('foreign input and pre-cancellation refuse before private reads',async()=>{
  assert.equal(f.reads.length,0);
 });
 
-test('unresolved delivery and native fetch quarantine instance; repeat calls start no new work',async()=>{
+test('unresolved delivery and native fetch abort only their request and permit fresh reads',async()=>{
  for(const port of ['delivery','fetch']){
-  const f=fixture(),started=Date.now();f.configuration.now=()=>NOW+Date.now()-started;f.configuration.limits.maxRequestMs=30;
-  let count=0;
-  if(port==='delivery')f.configuration.delivery.read=()=>{count++;return new Promise(()=>{});};
-  else{f.setRead(r=>({...r,checkedAtMs:f.configuration.now()}));f.configuration.fetchImpl=()=>{count++;return new Promise(()=>{});};}
-  const owner=f.make();await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(owner.available,false);assert.equal(count,1);
-  await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(count,1);
+  const f=fixture();f.configuration.limits.maxRequestMs=30;
+  let count=0,signal;
+  const read=f.configuration.delivery.read,fetch=f.configuration.fetchImpl;
+  if(port==='delivery')f.configuration.delivery.read=value=>{count++;if(count>1)return read(value);signal=value.signal;return new Promise(()=>{});};
+  else f.configuration.fetchImpl=(url,options)=>{count++;if(count>1)return fetch(url,options);signal=options.signal;return new Promise(()=>{});};
+  const owner=f.make();await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(owner.available,true);assert.equal(count,1);assert.equal(signal.aborted,true);
+  await owner.checkCurrentConversation(f.call());
  }
 });
 
@@ -124,15 +125,25 @@ test('completed HTTP denial with acknowledged body stop can retry a valid native
  deny=false;await owner.checkCurrentConversation(f.call());assert.equal(owner.available,true);
 });
 
-for(const readBody of [true,false])test(`unacknowledged native body ${readBody?'read and ':''}stop quarantines without a second exchange`,async()=>{
- const f=fixture(),started=Date.now();f.configuration.now=()=>NOW+Date.now()-started;f.configuration.limits.maxRequestMs=40;
- f.setRead(r=>({...r,checkedAtMs:f.configuration.now()}));
- let sends=0,bodyReads=0,stops=0;
- f.configuration.fetchImpl=async()=>{sends++;return new Response(new ReadableStream({
+for(const readBody of [true,false])test(`unacknowledged native body ${readBody?'read and ':''}stop refuses only its request`,async()=>{
+ const f=fixture();f.configuration.limits.maxRequestMs=40;
+ const fetch=f.configuration.fetchImpl;
+ let sends=0,bodyReads=0,stops=0,suspended=true;
+ f.configuration.fetchImpl=async(...args)=>{if(!suspended)return fetch(...args);sends++;return new Response(new ReadableStream({
   pull(){bodyReads++;return new Promise(()=>{});},cancel(){stops++;return new Promise(()=>{});},
  },{highWaterMark:0}),{status:readBody?200:403,headers:{'content-type':'application/json'}});};
  const owner=f.make();await assert.rejects(owner.checkCurrentConversation(f.call()),refused);
- assert.equal(owner.available,false);assert.equal(sends,1);assert.equal(stops,1);
+ assert.equal(owner.available,true);assert.equal(sends,1);assert.equal(stops,1);
  if(readBody)assert.equal(bodyReads,1);else assert.equal(bodyReads,0);
- await assert.rejects(owner.checkCurrentConversation(f.call()),refused);assert.equal(sends,1);
+ suspended=false;await owner.checkCurrentConversation(f.call());assert.equal(sends,1);
+});
+
+test('a native response arriving after timeout is cancelled instead of becoming usable',async()=>{
+ const f=fixture();f.configuration.limits.maxRequestMs=25;
+ const original=f.configuration.fetchImpl;let resolve,stops=0,sends=0;
+ f.configuration.fetchImpl=(...args)=>++sends===1?new Promise(done=>{resolve=done;}):original(...args);
+ const owner=f.make();await assert.rejects(owner.checkCurrentConversation(f.call()),refused);
+ resolve(new Response(new ReadableStream({cancel(){stops++;}},{highWaterMark:0}),{status:200,headers:{'content-type':'application/json'}}));
+ await new Promise(done=>setImmediate(done));assert.equal(stops,1);
+ await owner.checkCurrentConversation(f.call());assert.equal(owner.available,true);
 });

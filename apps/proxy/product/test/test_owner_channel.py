@@ -50,6 +50,39 @@ class FakeExchange:
         self.kind = None
         self.calls = []
         self.aborted = False
+        self.generation = 1
+        self.resets = []
+        self._serial = dict.fromkeys(owner_channel.CARRIERS, 0)
+        self._connected = set()
+        self._generation_close = []
+        self._generation_install = []
+        self._carrier_reset = []
+
+    def subscribe_generation_close(self, callback):
+        self._generation_close.append(callback)
+
+    def subscribe_generation_install(self, callback):
+        self._generation_install.append(callback)
+
+    def subscribe_carrier_reset(self, callback):
+        self._carrier_reset.append(callback)
+
+    def reset(self, channel, *, expected_connection=None):
+        if channel in self._connected:
+            self._connected.remove(channel)
+            self.resets.append(channel)
+            self._serial[channel] += 1
+            for callback in self._carrier_reset:
+                callback(channel)
+
+    def replace_partner(self):
+        for callback in self._generation_close:
+            callback(self.generation)
+        self._connected.clear()
+        self.generation += 1
+        self.policy = replace(self.policy, owner_task_arn=self.policy.owner_task_arn + "-next")
+        for callback in self._generation_install:
+            callback(self.generation)
 
     def abort(self):
         self.aborted = True
@@ -63,13 +96,15 @@ class FakeExchange:
             self.policy.server_cert_sha256, self.policy.server_issuer_sha256,
             self.policy.client_cert_sha256, self.policy.client_subject,
             "TLSv1.3", "http/1.1",
-            "operation_A" if channel == "operation" or self.same_connection
-            else "capture_A")
+            "operation_A" if self.same_connection else f"{channel}_{self._serial[channel]}")
 
     async def __call__(self, channel, path, body, timeout):
+        self._connected.add(channel)
         self.calls.append((channel, path))
         frame = json.loads(body)
         if path == OPEN:
+            self.challenge.clear()
+            self.replied.clear()
             answer = ["meri.proxy.session/1", self.session_id, frame[1], frame[2]]
         elif path == POLL:
             if self.delay_poll:
@@ -247,7 +282,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([path for _, path in port.calls[calls:]].count(OPEN), 1)
         self.assertFalse(port.aborted)
 
-    async def test_unavailable_settlement_readback_stops_next_bridge_and_admission_without_exchange(self):
+    async def test_unavailable_settlement_readback_refuses_only_its_request(self):
         class UnavailableOutcome(FakeExchange):
             async def __call__(self, channel, path, body, timeout):
                 if path == OPERATION and json.loads(body)[2][0] == "meri.proxy.outcome/1":
@@ -259,13 +294,6 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         bridge = self.bridge(port)
         next_port = FakeExchange(self.policy, request_id="request_B")
         next_bridge = self.bridge(next_port, request_id="request_B")
-        reader = ProductOwnerAdmissionReader(policy=self.policy, exchange=port,
-            host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now)
-        template = issued_fixture()[0].issued
-        issued = replace(template, expires_at_ms=self.value["deadlineMs"],
-            tags=tuple((key, str(self.value["deadlineMs"]) if key == "meri:expires-at-ms" else value)
-                       for key, value in template.tags))
-        self.assertGreater(issued.expires_at_ms, self.now(), "admission input is not already expired")
         await bridge.reserve(self.value, self.observation)
         async def complete_capture(_request):
             return self.complete_observation()
@@ -276,30 +304,24 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(port.aborted)
         with self.assertRaises(StateDenied):
             await bridge.read_outcome("request_A")
-        self.assertFalse(self.host_gate.available)
-        self.assertTrue(port.aborted, "the real bridge retires the borrowed transport")
+        self.assertTrue(self.host_gate.available)
+        self.assertFalse(port.aborted)
         calls = list(port.calls)
         with self.assertRaises(StateDenied):
-            await next_bridge.reserve({**self.value, "requestId": "request_B"},
-                                      {**self.observation, "requestId": "request_B"})
-        with self.assertRaises(StateDenied):
-            self.bridge(next_port, request_id="request_B")
-        with self.assertRaises(StateDenied):
-            await asyncio.to_thread(reader.resolve_for_issued_sync,
-                issued=issued,
-                capability_sha256=bridge.capability_sha256, deadline_ms=self.value["deadlineMs"])
-        with self.assertRaises(StateDenied):
-            ProductOwnerAdmissionReader(policy=self.policy, exchange=next_port,
-                host_gate=self.host_gate, owner_loop=asyncio.get_running_loop(), now_ms=self.now)
-        self.assertEqual(port.calls, calls)
-        self.assertEqual(next_port.calls, [], "no next reservation or provider dispatch is authorized")
+            await bridge.read_outcome("request_A")
+        receipt = await next_bridge.reserve({**self.value, "requestId": "request_B"},
+            {**self.observation, "requestId": "request_B"})
+        self.assertEqual(receipt["state"], "UNKNOWN")
+        self.assertEqual(port.calls, calls, "failed outcome is not retried")
+        self.assertTrue(next_port.calls, "another request can reserve independently")
 
-    async def test_same_tls_connection_and_late_reply_poison_without_retry(self):
+    async def test_same_tls_connection_refuses_request_without_retry_or_poison(self):
         port = FakeExchange(self.policy, same_connection=True)
         bridge = self.bridge(port)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
-        self.assertTrue(port.aborted)
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
         before = len(port.calls)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
@@ -315,7 +337,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(receipt["state"], "UNKNOWN")
                 self.assertFalse(port.aborted)
 
-    async def test_caller_cancellation_aborts_persistent_connections(self):
+    async def test_caller_cancellation_resets_active_carrier_without_poison(self):
         started = asyncio.Event()
         release = asyncio.Event()
         parent = self
@@ -330,8 +352,8 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
                         await release.wait()  # Deliberately suppress cancellation.
                 return await super().__call__(channel, path, body, timeout)
 
-            def abort(self):
-                super().abort()
+            def reset(self, channel, *, expected_connection=None):
+                super().reset(channel, expected_connection=expected_connection)
                 release.set()
 
         port = HangingOpen(self.policy)
@@ -342,11 +364,12 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(asyncio.CancelledError):
             await task
         await asyncio.sleep(0)
-        self.assertTrue(port.aborted)
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
 
-    async def test_late_host_capture_poison_blocks_another_session(self):
+    async def test_late_host_capture_cannot_reply_but_another_session_can_serve(self):
         started, release = asyncio.Event(), asyncio.Event()
 
         async def late_capture(request):
@@ -364,15 +387,17 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         pending.cancel()
         with self.assertRaises(asyncio.CancelledError):
             await pending
-        self.assertTrue(port.aborted)
-        self.assertFalse(self.host_gate.available)
-        with self.assertRaises(StateDenied):
-            self.bridge(FakeExchange(self.policy))
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
+        next_bridge = self.bridge(FakeExchange(self.policy, request_id="request_B"), request_id="request_B")
+        receipt = await next_bridge.reserve({**self.value, "requestId": "request_B"},
+            {**self.observation, "requestId": "request_B"})
+        self.assertEqual(receipt["state"], "UNKNOWN")
         release.set()
         await asyncio.sleep(0)
         self.assertEqual([path for _, path in port.calls].count(REPLY), 0)
 
-    async def test_malformed_open_aborts_both_channels_without_reuse(self):
+    async def test_malformed_open_resets_request_carrier_without_reuse(self):
         class BadOpen(FakeExchange):
             async def __call__(self, channel, path, body, timeout):
                 reply = await super().__call__(channel, path, body, timeout)
@@ -385,7 +410,8 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         bridge = self.bridge(port)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
-        self.assertTrue(port.aborted)
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
         count = len(port.calls)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
@@ -397,7 +423,8 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         bridge.capability_sha256 = "f" * 64
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
-        self.assertTrue(port.aborted)
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
         self.assertEqual(port.calls, [])
 
     async def test_second_gate_for_same_service_is_refused_even_with_new_timeout(self):
@@ -413,7 +440,7 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
                     self.observation["proxyCredential"].encode()).hexdigest(),
                 now_ms=self.now)(lambda request: None)
 
-    async def test_malformed_reservation_receipt_aborts_without_reuse(self):
+    async def test_malformed_reservation_receipt_refuses_without_reuse(self):
         class BadReceipt(FakeExchange):
             async def __call__(self, channel, path, body, timeout):
                 reply = await super().__call__(channel, path, body, timeout)
@@ -428,7 +455,8 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         bridge = self.bridge(port)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
-        self.assertTrue(port.aborted)
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
         count = len(port.calls)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
@@ -454,12 +482,169 @@ class OwnerChannelTests(unittest.IsolatedAsyncioTestCase):
         pending.cancel()
         with self.assertRaises(asyncio.CancelledError):
             await pending
-        self.assertTrue(port.aborted)
+        self.assertFalse(port.aborted)
+        self.assertTrue(self.host_gate.available)
         release.set()
         await asyncio.sleep(0)
         with self.assertRaises(StateDenied):
             await bridge.reserve(self.value, self.observation)
         self.assertEqual([path for _, path in port.calls], [OPEN])
+
+    async def test_read_only_open_timeout_resets_then_next_request_uses_fresh_carrier(self):
+        class TimeoutOnce(FakeExchange):
+            failed = False
+
+            async def __call__(self, channel, path, body, timeout):
+                result = await super().__call__(channel, path, body, timeout)
+                if path == OPEN and not self.failed:
+                    self.failed = True
+                    raise TimeoutError("synthetic unanswered open")
+                return result
+
+        port = TimeoutOnce(self.policy)
+        bridge = self.bridge(port)
+        with self.assertRaises(StateDenied):
+            await bridge.reserve(self.value, self.observation)
+        self.assertEqual(port.resets, ["operation"])
+        self.assertTrue(self.host_gate.available)
+        self.assertFalse(port.aborted)
+        port.request_id, port.session_id = "request_B", "session_B"
+        next_bridge = self.bridge(port, request_id="request_B")
+        receipt = await next_bridge.reserve({**self.value, "requestId": "request_B"},
+            {**self.observation, "requestId": "request_B"})
+        self.assertEqual(receipt["state"], "UNKNOWN")
+        self.assertEqual(next_bridge._operation_connection, "operation_1")
+
+    async def test_reserve_timeout_retains_unknown_and_never_retries_reserve(self):
+        class LostReserveAcknowledgement(FakeExchange):
+            hold = None
+            reserve_calls = 0
+
+            async def __call__(self, channel, path, body, timeout):
+                reply = await super().__call__(channel, path, body, timeout)
+                if path == OPERATION and json.loads(body)[2][0] == "meri.proxy.reservation/1":
+                    self.reserve_calls += 1
+                    self.hold = "UNKNOWN"
+                    raise TimeoutError("synthetic lost reserve acknowledgement")
+                return reply
+
+        port = LostReserveAcknowledgement(self.policy)
+        bridge = self.bridge(port)
+        with self.assertRaises(StateDenied):
+            await bridge.reserve(self.value, self.observation)
+        self.assertEqual(port.hold, "UNKNOWN")
+        self.assertEqual(port.reserve_calls, 1)
+        before = list(port.calls)
+        with self.assertRaises(StateDenied):
+            await bridge.reserve(self.value, self.observation)
+        self.assertEqual(port.calls, before)
+        self.assertEqual(port.hold, "UNKNOWN")
+        self.assertTrue(self.host_gate.available)
+        self.assertFalse(port.aborted)
+
+    async def test_settle_timeout_preserves_unknown_then_reads_outcome_on_fresh_carrier(self):
+        class LostSettleAcknowledgement(FakeExchange):
+            hold = None
+            settle_calls = 0
+            outcome_calls = 0
+
+            async def __call__(self, channel, path, body, timeout):
+                reply = await super().__call__(channel, path, body, timeout)
+                if path == OPERATION:
+                    kind = json.loads(body)[2][0]
+                    if kind == "meri.proxy.reservation/1":
+                        self.hold = "UNKNOWN"
+                    elif kind == "meri.proxy.settlement/1":
+                        self.settle_calls += 1
+                        raise TimeoutError("synthetic unanswered settle")
+                    elif kind == "meri.proxy.outcome/1":
+                        self.outcome_calls += 1
+                        self.hold = "SETTLED"
+                return reply
+
+        port = LostSettleAcknowledgement(self.policy)
+        bridge = self.bridge(port)
+        await bridge.reserve(self.value, self.observation)
+        async def complete_capture(_request):
+            return self.complete_observation()
+        bridge.bind_complete_capture(complete_capture)
+        with self.assertRaises(SettlementCommitUncertain):
+            await bridge.settle_complete("request_A", usage())
+        self.assertEqual(port.hold, "UNKNOWN")
+        self.assertEqual(port.settle_calls, 1)
+        self.assertIn("operation", port.resets)
+        self.assertTrue(self.host_gate.available)
+        with self.assertRaises(StateDenied):
+            await bridge.settle_complete("request_A", usage())
+        receipt = await bridge.read_outcome("request_A")
+        self.assertEqual(receipt["state"], "SETTLED")
+        self.assertEqual(bridge._operation_connection, "operation_1")
+        self.assertEqual(port.outcome_calls, 1)
+        self.assertEqual(port.settle_calls, 1)
+        self.assertFalse(port.aborted)
+
+    async def test_generation_change_invalidates_old_bridge_and_source_before_new_request(self):
+        port = FakeExchange(self.policy)
+        bridge = self.bridge(port)
+        old_state = owner_channel.owner_exchange_state(port, self.policy, self.host_gate)
+        old_state[5][bridge.capability_sha256] = "old-source"
+        await bridge.reserve(self.value, self.observation)
+        port.replace_partner()
+        self.assertEqual(old_state[5], {})
+        self.assertEqual(old_state[4], dict.fromkeys(owner_channel.CARRIERS))
+        before = list(port.calls)
+        with self.assertRaises(StateDenied):
+            bridge.bind_complete_capture(lambda _request: None)
+        with self.assertRaises(StateDenied):
+            await bridge._exchange("operation", OPEN, b"[]")
+        self.assertEqual(port.calls, before)
+        self.assertEqual(bridge._state, "FAILED")
+        self.policy = port.policy
+        port.request_id, port.session_id = "request_B", "session_B"
+        next_bridge = self.bridge(port, request_id="request_B")
+        receipt = await next_bridge.reserve({**self.value, "requestId": "request_B"},
+            {**self.observation, "requestId": "request_B"})
+        self.assertEqual(receipt["state"], "UNKNOWN")
+        self.assertEqual(next_bridge.generation, 2)
+        self.assertIsNot(owner_channel.owner_exchange_state(port, self.policy, self.host_gate), old_state)
+
+    async def test_generation_mismatch_cannot_read_an_uncertain_outcome(self):
+        port = FakeExchange(self.policy, uncertain=True)
+        bridge = self.bridge(port)
+        await bridge.reserve(self.value, self.observation)
+        async def complete_capture(_request):
+            return self.complete_observation()
+        bridge.bind_complete_capture(complete_capture)
+        with self.assertRaises(SettlementCommitUncertain):
+            await bridge.settle_complete("request_A", usage())
+        port.replace_partner()
+        before = list(port.calls)
+        with self.assertRaises(StateDenied):
+            await bridge.read_outcome("request_A")
+        self.assertEqual(port.calls, before)
+
+    async def test_generation_check_refuses_even_before_close_notification_arrives(self):
+        port = FakeExchange(self.policy)
+        bridge = self.bridge(port)
+        port.generation += 1  # The per-use fence must not depend on callback timing.
+        with self.assertRaises(StateDenied):
+            await bridge._exchange("operation", OPEN, wire([
+                "meri.proxy.session-open/1", "request_A", bridge.capability_sha256,
+                frame_binding(self.value["binding"]), self.value["deadlineMs"]]))
+        self.assertEqual(port.calls, [])
+
+    async def test_bridge_requires_generation_and_synchronous_carrier_reset(self):
+        port = FakeExchange(self.policy)
+        del port.generation
+        with self.assertRaises(StateDenied):
+            self.bridge(port)
+        port.generation = 1
+        async def asynchronous_reset(channel):
+            pass
+        port.reset = asynchronous_reset
+        with self.assertRaises(StateDenied):
+            self.bridge(port)
+        self.assertEqual(port.calls, [])
 
 
 if __name__ == "__main__":

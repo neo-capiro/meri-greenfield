@@ -96,6 +96,14 @@ def raw_writer(data):
     return _sink.write(data)
 
 
+def pair_reproven():
+    """Fixed audit line; re-proof has its own bound, outside refusal suppression."""
+    try:
+        raw_writer(b"PRODUCT_PROXY_PAIR_REPROVEN\n")
+    except Exception:
+        pass
+
+
 def uninstall():
     global _sink
     _sink = None

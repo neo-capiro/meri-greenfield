@@ -230,8 +230,11 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
             read=lambda _: b'[]')
         sock = SimpleNamespace(settimeout=lambda _: None)
         connection = SimpleNamespace(sock=sock, request=lambda *a, **kw: None, getresponse=lambda: response)
+        # Model the held carrier after its socket proof has bound this generation.
+        item._connections['operation'] = connection
+        item._connection_generations['operation'] = item.generation
         with telemetry.request():
-            with patch.object(item, '_connect', return_value=connection), patch.object(item, '_evidence', return_value='fixture-only'):
+            with patch.object(item, '_connect', side_effect=AssertionError('held carrier reconnected')), patch.object(item, '_evidence', return_value='fixture-only'):
                 result = item._send('operation', OPERATION, b'[]', item.now_ms()+1000)
                 self.assertEqual(result.body, b'[]')
             item.abort(); item.abort()
@@ -250,7 +253,7 @@ class TelemetryContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(item.available)
         self.assertEqual([(row['component'], row['transition'], row['code'])
                           for row in self.records('meri.health')],
-                         [('pair', 'retired', 'PAIR_RETIRED')])
+                         [('pair', 'retired', 'PAIR_DRIFT')])
 
     async def test_startup_telemetry_option_is_closed_optional_and_validated(self):
         from apps.proxy.product.test.test_startup_config import configuration, parse

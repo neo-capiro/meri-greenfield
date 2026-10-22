@@ -54,3 +54,9 @@ test('the diagnostic pool passes results and errors through unchanged and wraps 
  const noQuery=createDiagnosticPool({connect:pool.connect,end:pool.end},d);assert.equal(noQuery.query,undefined);
  assert.throws(()=>createDiagnosticPool({},d),/PRODUCT_OWNER_DIAGNOSTICS_CONFIGURATION/u);
 });
+
+test('pair reproof audit bypasses the refusal suppression budget',()=>{
+ const output=[],d=createOwnerDiagnostics({write:line=>output.push(line),burst:1});
+ d.refused('pair','read',Error('secret'));d.refused('pair','read',Error('secret'));d.pairReproven();
+ assert.deepEqual(output,['PRODUCT_OWNER_REFUSED owner=pair step=read code=REFUSED\n','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED\n','PRODUCT_OWNER_PAIR_REPROVEN\n']);
+});

@@ -39,6 +39,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
         # The service-pair reader is mandatory: the owner/proxy peer policy and both
         # IPv4s come from the scripted discovery of exactly one owner/proxy pair.
         pair=fixture();reader=pair.reader()
+        self._pair_fixture=pair
         # The process-global owner gate is keyed by origin and task pair, so each test
         # uses its own origin instead of colliding with other scripted pairs.
         host='owner-'+uuid.uuid4().hex+'.invalid';template=peer_template()
@@ -57,13 +58,15 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
     async def test_a_slow_owner_placement_is_one_deadline_line_saying_where_the_time_went(self):
         # Attempt 2, 20 Oct: the owner answered the placement read after the exchange budget.
         _issued,_policy,transport,gate,startup=self._startup(max_exchange_ms=300);lines=[]
-        def late_owner(channel,path,body,cutoff):
+        def late_owner(channel,path,body,cutoff,cancelled=None):
             time.sleep(.6)
         diagnostics.install(write=lambda data:lines.append(data.decode('ascii')))
         try:
             with patch.object(transport,'_send',side_effect=late_owner),diagnostics.request():
                 with self.assertRaises(Exception):
                     await asyncio.to_thread(startup.resolve_bearer_sha256,'a'*64)
+            self.assertTrue(gate.available)
+            self.assertTrue(transport.available)
         finally:
             diagnostics.uninstall();startup.close()
         # Three checks share the same cutoff (the exchange call, the placement read and the bearer
@@ -103,6 +106,26 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(lines,['PRODUCT_PROXY_REFUSED gate=placement step=frame phase=placement at=placement-read code=REFUSED\n'])
         self.assertFalse(gate.available)
 
+    async def test_partner_replacement_discards_authorities_before_installing_new_reader(self):
+        _issued,_policy,transport,gate,startup=self._startup()
+        old=startup.reader
+        authority=source()[0].authority
+        startup._authorities[id(authority)]=authority
+        try:
+            self._pair_fixture.ids['owner']='3'
+            await asyncio.to_thread(transport.pair_lease.renew,deadline_ms=time.time_ns()//1000000+3000)
+            await asyncio.sleep(0)
+            self.assertTrue(old._closed)
+            self.assertEqual(dict(startup._authorities),{})
+            self.assertIsNot(startup.reader,old)
+            self.assertEqual(startup.generation,2)
+            self.assertEqual(startup.reader.generation,2)
+            self.assertEqual(startup.policy.owner_task_arn,self._pair_fixture.task_id('owner'))
+            self.assertIs(startup.policy,transport.policy)
+            self.assertTrue(gate.available)
+        finally:
+            startup.close()
+
     async def test_real_startup_joins_placement_and_fresh_admission_without_native_import(self):
         issued,policy,transport,gate,startup=self._startup()
         synthetic=Exchange(policy,issued)
@@ -114,7 +137,7 @@ class StartupCompositionTests(unittest.IsolatedAsyncioTestCase):
             issued.created_at_ms,issued.expires_at_ms,issued.vpc_id,issued.subnet_id,
             list(issued.security_group_ids),[list(row) for row in issued.tags]]
         calls,carriers=[],set()
-        def wire_only(channel,path,body,cutoff):
+        def wire_only(channel,path,body,cutoff,cancelled=None):
             frame=json.loads(body);calls.append(frame[0]);carriers.add(channel)
             if frame[0]=='meri.proxy.placement-read/1':
                 return synthetic.reply(['meri.proxy.placement/1',frame[1],frame[2],placement,

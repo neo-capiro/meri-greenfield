@@ -70,10 +70,10 @@ class AuthTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([row["model_name"] for row in config["model_list"]], [auth.MODEL])
         self.assertEqual([row["model_info"]["id"] for row in config["model_list"]], [auth.MODEL])
 
-    async def test_real_product_authority_refreshes_and_projects_sha_model_only(self):
+    async def test_real_product_authority_reuses_lifetime_receipt_and_projects_sha_model_only(self):
         before = len(self.exchange.calls)
         result = await self.dispatch(lambda req: auth.authenticate_product_request(req, KEY.decode()))
-        self.assertEqual(len(self.exchange.calls), before+2)
+        self.assertEqual(len(self.exchange.calls), before)
         self.assertEqual(vars(result), {"token": SHA, "models": [auth.MODEL], "user_role": "customer",
             "expires": result.expires, "metadata": {}, "request_route": "/v1/messages"})
         self.assertNotIn(KEY.decode(), repr(vars(result)))
@@ -103,11 +103,13 @@ class AuthTests(unittest.IsolatedAsyncioTestCase):
             with self.subTest(kind=kind), self.assertRaises(Exception):
                 await self.dispatch(call)
 
-    async def test_fresh_core_foreign_source_and_closed_lifetime_refuse(self):
+    async def test_watch_refusal_of_foreign_source_cuts_native_auth(self):
         self.exchange.source[0][1] = "foreign-actor"
         with self.assertRaises(Exception):
+            await self.life.renew()
+        with self.assertRaises(Exception):
             await self.dispatch(lambda req: auth.authenticate_product_request(req, KEY.decode()))
-        self.assertFalse(self.reader.host_gate.available)
+        self.assertTrue(self.reader.host_gate.available)
 
     async def test_closed_lifetime_and_mutated_native_scope_refuse_before_owner_read(self):
         before = len(self.exchange.calls)

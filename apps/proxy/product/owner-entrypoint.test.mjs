@@ -173,7 +173,7 @@ test('fulfilled listener close with stopped=false or pending work stays cleanup 
 test('TLS key completing at the startup deadline or exceeding the material cap is always erased',async()=>{
  for(const mode of ['deadline','oversize']){
   const f=fixture(),readMaterial=f.dependencies.readMaterial;let at=NOW,key;
-  f.dependencies.now=()=>at;
+  f.dependencies.now=()=>at;f.dependencies.monotonicNow=()=>at-NOW;
   if(mode==='oversize')f.material.set(f.runtime.tls.keyFile,Buffer.alloc(32769,107));
   f.dependencies.readMaterial=async path=>{
    const bytes=await readMaterial(path);
@@ -207,7 +207,7 @@ test('real main hashes runtime source, starts the actual assembly and closes on 
 
 /** Startup pair wait: a scripted clock advanced only by the injected sleep. */
 function retryClock(f){
- let at=NOW;const sleeps=[];f.dependencies.now=()=>at;
+ let at=NOW;const sleeps=[];f.dependencies.now=()=>at;f.dependencies.monotonicNow=()=>at-NOW;
  f.dependencies.sleep=async ms=>{sleeps.push(ms);at+=ms;};
  return {sleeps,at:()=>at};
 }
@@ -277,11 +277,12 @@ test('configuration and material refusals fail before any pair read or retry',as
  }
 });
 
-test('quarantined reader (unsettled AWS work) and stop requests end the wait at once',async()=>{
+test('quarantined discovery retries only after cooldown within startup window; stop requests end the wait at once',async()=>{
  const f=fixture(),clock=retryClock(f);f.runtime.limits.maxRequestMs=200;
  f.pair.change('DescribeServicesCommand',()=>new Promise(()=>{}));
  await assert.rejects(startProductOwner(f.runtime,f.dependencies),refused);
- assert.deepEqual(clock.sleeps,[],'a quarantined reader is never retried');assert.equal(kinds(f).length,5,'only the first phase was started');
+ assert.ok(clock.sleeps.length>0,'startup remains bounded while the holder waits for cooldown');
+ assert.equal(kinds(f).length,10,'only two first phases: the initial discovery and one recreation after 30 seconds');
  assert.deepEqual(f.lifecycle.slice(-3),['pool.end','ecs.destroy','ec2.destroy']);
  const g=fixture(),stop=retryClock(g);g.pair.change('DescribeServicesCommand',notRunning('proxy'));
  const sleep=g.dependencies.sleep;g.dependencies.sleep=async(ms,signal)=>{await sleep(ms);process.emit('SIGTERM');assert.equal(signal.aborted,true);};

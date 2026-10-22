@@ -135,7 +135,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
             list(issued.security_group_ids),[list(row) for row in issued.tags]]
         loop = asyncio.get_running_loop()
         observed = []
-        def wire(exchange, channel, path, body, cutoff):
+        def wire(exchange, channel, path, body, cutoff, cancelled=None):
             frame = json.loads(body)
             if frame[0] == "meri.proxy.placement-read/1":
                 return synthetic.reply(["meri.proxy.placement/1",frame[1],frame[2],placement,
@@ -170,6 +170,7 @@ class MainTests(unittest.IsolatedAsyncioTestCase):
              patch.object(main, "_clients", return_value=(services.ecs,services.ec2,Client())), \
              patch.object(main, "_provider_factory", return_value=lambda: None), \
              patch.object(ProductOwnerHttpsExchange, "_send", wire), \
+             patch.object(ProductOwnerHttpsExchange, "_warm"), \
              patch("apps.proxy.product.uvicorn_tls_protocol.serve_product_proxy", side_effect=server_boundary):
             await main.run_product_proxy(accepted)
         self.assertEqual(len(observed), 1)
@@ -359,7 +360,7 @@ class StartupPairWaitTests(unittest.IsolatedAsyncioTestCase):
             await self._run(services, window=.2, interval=.01)
         # Not CleanupUnknown: main() still maps this to exit 78, not 75.
         self.assertIsNot(type(raised.exception), main.CleanupUnknown)
-        self.assertEqual(str(raised.exception), 'PRODUCT_SERVICE_PAIR_DENIED')
+        self.assertEqual(str(raised.exception), 'PAIR_DRIFT')
         self.assertGreater(len(self.last.services), 1)
         self.assertEqual(len(self.last.services), len(self.last.sleeps)+1)
         self.assertEqual(self.last.served, [])
@@ -449,7 +450,7 @@ class InstalledNativeStartup(unittest.IsolatedAsyncioTestCase):
         from apps.proxy.qualification.runtime.lifetime import _request_lifetime
         from apps.proxy.qualification.test.test_ingress import KEY
         resources = main._Resources()
-        fixture = AuthTests(methodName="test_real_product_authority_refreshes_and_projects_sha_model_only")
+        fixture = AuthTests(methodName="test_real_product_authority_reuses_lifetime_receipt_and_projects_sha_model_only")
         fixture_started = False
         gate = None
         # HOME matches the assembly image's ENV, which production inherits; the nonroot

@@ -122,7 +122,7 @@ async def authenticate_product_request(request, api_key):
             or hashlib.sha256(credential).hexdigest() != life.admission.authority.capability_sha256):
         _deny()
     # The native Request consumes the same bounded ASGI receive stream. Never
-    # parse worker claims into an authority or use a cached successful receipt.
+    # parse worker claims into an authority. Only this lifetime's receipt is reused.
     raw = await life._bounded(request.body)
     _check(holder, request)
     if type(raw) is not bytes or raw != life.original_body:
@@ -135,8 +135,7 @@ async def authenticate_product_request(request, api_key):
         _deny()
     await life.refresh()
     source = _check(holder, request)
-    receipt = await life._bounded(lambda: asyncio.to_thread(
-        source[0].read_current_conversation_sync, holder.source, source[2]), thread=True)
+    receipt = life.current_conversation()
     _check(holder, request)
     at = time.time_ns() // 1_000_000
     facts = json.loads(holder.source)

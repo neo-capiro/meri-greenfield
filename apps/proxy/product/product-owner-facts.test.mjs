@@ -141,44 +141,43 @@ test('read commit uncertainty, cancellation and stalled pool never produce usabl
 });
 
 function deferred(){let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};}
-function ticking(f){const started=Date.now();f.configuration.now=()=>NOW+Date.now()-started;f.configuration.limits.maxRequestMs=40;}
-
-test('stalled acquisition quarantines once and late acquired connection is evicted without a query',async()=>{
- const f=fixture(),entered=deferred(),acquired=deferred(),released=deferred();ticking(f);
+test('stalled acquisition refuses only its request and late acquired connection is evicted without a query',async()=>{
+ const f=fixture(),entered=deferred(),acquired=deferred(),released=deferred();f.configuration.limits.maxRequestMs=40;
  let attempts=0,queries=0;
- f.configuration.pool.connect=()=>{attempts++;entered.resolve();return acquired.promise;};
+ const connect=f.configuration.pool.connect;
+ f.configuration.pool.connect=()=>{attempts++;if(attempts===1){entered.resolve();return acquired.promise;}return connect();};
  const resolver=f.resolver(),pending=resolver.resolve(f.query());await entered.promise;
- await assert.rejects(pending,refused);assert.equal(resolver.available,false);
- await assert.rejects(resolver.resolve(f.query()),refused);assert.equal(attempts,1);
+ await assert.rejects(pending,refused);assert.equal(resolver.available,true);
+ await resolver.resolve(f.query());assert.ok(attempts>1);
  acquired.resolve({async query(){queries++;assert.fail('late acquisition must not start SQL');},release:error=>released.resolve(error)});
  assert.ok(await released.promise);assert.equal(queries,0);
- await assert.rejects(resolver.resolve(f.query()),refused);assert.equal(attempts,1);assert.equal(resolver.available,false);
+ await resolver.resolve(f.query());assert.equal(resolver.available,true);
 });
 
-test('stalled canonical issuance SELECT quarantines once; late reply rolls back and cannot authorize a replay',async()=>{
- const f=fixture(),entered=deferred(),reply=deferred(),released=deferred();ticking(f);
+test('stalled canonical issuance SELECT evicts its client before a late reply and a fresh request succeeds',async()=>{
+ const f=fixture(),entered=deferred(),reply=deferred(),released=deferred();f.configuration.limits.maxRequestMs=40;
  const connect=f.configuration.pool.connect;
  f.configuration.pool.connect=async()=>{const client=await connect();let modelRead=false;return {
   query(sql,p){if(sql.includes('FROM meri_conversations.model_run_issuances'))modelRead=true;return client.query(sql,p);},
-  release(error){client.release(error);if(modelRead)released.resolve();}};};
+  release(error){client.release(error);if(modelRead)released.resolve(error);}};};
  f.before(sql=>{if(sql.includes('FROM meri_conversations.model_run_issuances')){entered.resolve();return reply.promise;}});
  const resolver=f.resolver(),pending=resolver.resolve(f.query());await entered.promise;
  const issuance=f.calls.find(call=>call.sql.includes('FROM meri_conversations.model_run_issuances'));
  const beforeReply=f.calls.filter(call=>call.connectionId===issuance.connectionId).map(call=>call.sql);
  assert.deepEqual(beforeReply.slice(0,3),['BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY',"SET LOCAL statement_timeout = '5s'","SET LOCAL lock_timeout = '2s'"]);
- await assert.rejects(pending,refused);assert.equal(resolver.available,false);
- const acquisitions=f.acquisitions(),count=f.calls.length;
- await assert.rejects(resolver.resolve(f.query()),refused);assert.equal(f.acquisitions(),acquisitions);assert.equal(f.calls.length,count);
+ await assert.rejects(pending,refused);assert.equal(resolver.available,true);
+ assert.ok(await Promise.race([released.promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('read client not evicted')),100))]));
+ const count=f.calls.filter(call=>call.connectionId===issuance.connectionId).length;
+ f.before(()=>{});await resolver.resolve(f.query());
  reply.resolve();
- // A healthy ROLLBACK may return the connection to its existing pool, but a
- // read after the expired life still yields no facts and the resolver stays
- // quarantined. Await the original connection's release, not a second query.
- await released.promise;
+ await new Promise(resolve=>setImmediate(resolve));
+ // The expired client's protocol is discarded immediately. Its late query
+ // cannot send ROLLBACK or any later statement through the closed scope.
  const transaction=f.calls.filter(call=>call.connectionId===issuance.connectionId).map(call=>call.sql);
- assert.equal(transaction.at(-1),'ROLLBACK');
- assert.ok(f.released.some(release=>release.connectionId===issuance.connectionId));
- assert.equal(resolver.available,false);
- await assert.rejects(resolver.resolve(f.query()),refused);assert.equal(f.acquisitions(),acquisitions);
+ assert.equal(transaction.length,count);
+ assert.ok(f.released.some(release=>release.connectionId===issuance.connectionId&&release.error));
+ assert.equal(f.released.filter(release=>release.connectionId===issuance.connectionId).length,1);
+ assert.equal(resolver.available,true);
 });
 
 /** An execution-capability grant installed on the same run (lane X, `gateway/budget/execution-grant-admission.mjs`): bound to the
