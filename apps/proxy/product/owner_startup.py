@@ -125,8 +125,12 @@ class ProductOwnerStartup:
                         issued=decode_product_placement(frame[3])
                         if frame[6]>issued.expires_at_ms or not self.gate.available:
                             _deny()
+                        if self.now_ms()>=cutoff:
+                            _deny()
+                        # The embedded receipt is bounded by the ADMIT deadline sent on the wire.
+                        # The transport cutoff above bounds this exchange, not the receipt lifetime.
                         receipt=self.reader._verify_frame(frame[4],read_id,capability,None,
-                            started,cutoff,read_at)
+                            started,requested,read_at)
                         telemetry.bind(issued.execution_binding,read_id)
                         return issued,receipt,frame[5],frame[6]
                 finally:

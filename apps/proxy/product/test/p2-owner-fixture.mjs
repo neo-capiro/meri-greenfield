@@ -67,7 +67,7 @@ export async function createP2OwnerFixture({persistedFacts,ownerPorts,placement,
    tags:[['meri:execution-id',execution],['meri:binding-sha256',execution],['meri:plan-sha256','d'.repeat(64)],['meri:expires-at-ms',String(expiry)]]},
    checkedAtMs:now(),effectiveExpiresAtMs:Math.min(value.deadlineMs,expiry)})};
   const wrappedPlacement={get available(){return suppliedPlacement.available;},async resolve(value){
-   counts.placement++;const result=await suppliedPlacement.resolve(value);await afterPlacement?.(result);return result;
+   counts.placement++;const result=await suppliedPlacement.resolve(value);await afterPlacement?.(result,value);return result;
   }};
   // Readiness can be tested independently of socket-bound authority. All proof,
   // generation and monotonic lease checks still use the real holder above.

@@ -215,6 +215,20 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
             _request_lifetime.reset(token)
             await life.close()
 
+    async def test_fast_request_uses_three_exchanges_and_canonical_budget_owner(self):
+        before = await self.stats()
+        session, _ = await self.invoke(0)
+        after = await self.stats()
+        self.assertEqual([call[2][0] for call in self.calls],
+            ['meri.proxy.admit/1', 'meri.proxy.operation/2', 'meri.proxy.operation/2'])
+        self.assertEqual([call[2][2][0] for call in self.calls[1:]],
+            ['meri.proxy.reservation/1', 'meri.proxy.settlement/1'])
+        self.assertEqual(after['pairProofs'], before['pairProofs'])
+        self.assertEqual(len(after['requests']), 1)
+        self.assertEqual(after['requests'][0]['request_id'], session.request_id)
+        self.assertEqual(after['requests'][0]['state'], 'SETTLED')
+        self.assertEqual(after['budget']['consumed_micro_usd'], '90')
+
     async def test_twenty_second_request_reuses_warm_pair_and_request_proofs(self):
         before, discoveries = await self.stats(), len(self.aws.calls)
         session, peer_checks = await self.invoke(20.2)

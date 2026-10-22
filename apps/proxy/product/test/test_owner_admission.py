@@ -565,7 +565,8 @@ class AdmissionTests(unittest.IsolatedAsyncioTestCase):
             host_gate=self.gate,request_id=value["requestId"],binding=value["binding"],deadline_ms=deadline,
             grant_id=self.issued.grant_id,capability_sha256=SHA,session_id="session_A")
         try:
-            with self.assertRaises(Exception):await bridge.reserve(value,observation)
+            with self.assertRaisesRegex(StateDenied, "^PRODUCT_OWNER_CHANNEL_DENIED$"):
+                await asyncio.wait_for(bridge.reserve(value,observation), .5)
             self.assertEqual(captured,[value], "capture completed before the queued claim expired")
             self.assertEqual(self.exchange.calls,[])
             self.assertTrue(lock.locked(), "expiry cannot release another request's claim")

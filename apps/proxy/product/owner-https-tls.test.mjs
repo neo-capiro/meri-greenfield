@@ -1,6 +1,7 @@
 /** Real TLS / HTTP transport with synthetic proof and placement ports. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {once} from 'node:events';
 import {createP2OwnerFixture} from './test/p2-owner-fixture.mjs';
 import {OWNER_PATHS} from './owner-channel.mjs';
 const placement=(id,deadline=Date.now()+5000)=>['meri.proxy.admit/1',id,'a'.repeat(64),deadline];
@@ -107,19 +108,21 @@ for(const mismatch of ['binding','grant','worker'])test(`ADMIT refuses a placeme
 for(const invalidation of ['socket-close','generation-change'])test(`ADMIT closes its unpublished channel after ${invalidation} during final facts lookup`,async()=>{
  const {createTurnTelemetry}=await import('../../runtime/telemetry/turn-context.mjs');
  const lines=[],telemetry=createTurnTelemetry({service:'owner',write:line=>lines.push(JSON.parse(line))});
- let entered,release,clientSocket;
+ let entered,release,clientSocket,requestSignal;
  const working=new Promise(resolve=>{entered=resolve;}),unblock=new Promise(resolve=>{release=resolve;});
- const requestId='admit-'+invalidation;
- const f=await createP2OwnerFixture({telemetry,maxRequestMs:5000,afterFacts:async(_facts,call)=>{
+ const requestId=invalidation==='socket-close'?'11111111111111111111111111111111':'22222222222222222222222222222222';
+ const f=await createP2OwnerFixture({telemetry,maxRequestMs:5000,
+  afterPlacement:(_value,request)=>{requestSignal=request.signal;},afterFacts:async(_facts,call)=>{
   if(call===3){entered();await unblock;}
  }});
  try{
   const pending=f.request(OWNER_PATHS.operation,placement(requestId),{onSocket:socket=>{clientSocket=socket;}});
   const rejected=assert.rejects(pending);
   await working;
-  if(invalidation==='socket-close')clientSocket.destroy();
+  const aborted=once(requestSignal,'abort',{signal:AbortSignal.timeout(1000)});
+  if(invalidation==='socket-close')clientSocket.end();
   else{f.replaceProxy();await f.reader.read({deadlineMs:Date.now()+1000});}
-  await rejected;release();
+  await rejected;await aborted;release();
   const until=Date.now()+1000;
   while(f.server.pendingRequests&&Date.now()<until)await new Promise(resolve=>setTimeout(resolve,5));
   assert.equal(f.server.pendingRequests,0);
