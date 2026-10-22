@@ -1,10 +1,14 @@
 /** MR-06: real journal/service over scripted SQL. No PostgreSQL, Core, provider or physical-stop proof is claimed. The internal
  * reader consumes trusted fresh identity pins; public authentication/currentness/retention release and its contract are a handoff. */
-import test from 'node:test';
+import test,{beforeEach} from 'node:test';
 import assert from 'node:assert/strict';
 import {lifecycleFixture,binding,scopes,id} from './lifecycle-fixture.mjs';
 import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {hash} from '../boundary.mjs';
+
+// Scripted custody/readback uses semantic time, independent of host scheduling.
+// The unchanged 3000ms setup bounds are exercised at their exact boundary below.
+beforeEach(t=>t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()}));
 
 const check=()=>{},principal={tenantId:binding.tenantId,actorId:binding.actorId},selectedClientId=id(5),pauseId=id(901),controlId=id(902);
 const pins=(control=controlId)=>({principal,binding,scopes,selectedClientId,controlId:control});
@@ -86,4 +90,24 @@ test('readReceipt caller cancellation withholds a receipt before and during disc
  await assert.rejects(r.journal.readReceipt(pins(),()=>{throw cancelled;}),{code:'CANCELLED'});assert.equal(r.statements.length,0);
  let checks=0;await assert.rejects(r.journal.readReceipt(pins(),()=>{if(++checks===8)throw cancelled;}),{code:'CANCELLED'});
  assert.equal(row(f).projection.state,'APPLIED');
+});
+
+// These setup operations are real service/journal compositions over scripted SQL.
+// Advancing time inside an owned query tests expiry, rather than lengthening it.
+for(const elapsed of [2999,3000])test(`receipt setup claim at ${elapsed}ms preserves the 3000ms bound`,async t=>{
+ const f=await lifecycleFixture();t.after(f.close);await f.running();await f.control({controlId:pauseId,intent:'pause'});
+ const connect=f.pool.connect;let advanced=false;
+ f.pool.connect=async()=>{const c=await connect();return {...c,async query(...args){const out=await c.query(...args);if(!advanced){advanced=true;t.mock.timers.tick(elapsed);}return out;}};};
+ if(elapsed===2999){assert.equal((await f.claim(pauseId)).claimed,true);}
+ else{const before=counts(f);await assert.rejects(f.claim(pauseId),{code:'DEADLINE'});assert.equal(row(f,pauseId).projection.state,'PENDING');assert.deepEqual(counts(f),before);}
+ assert.equal(advanced,true);
+});
+for(const mode of ['resume','fork'])for(const elapsed of [2999,3000])test(`receipt setup ${mode} at ${elapsed}ms preserves the 3000ms bound`,async t=>{
+ const f=await lifecycleFixture();t.after(f.close);await f.running();await f.control({controlId:pauseId,intent:'pause'});await f.claim(pauseId);await f.checkpoint(pauseId);
+ const proof=f.proofs.get(id(220)),input={controlId,intent:mode,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256};let advanced=false;
+ f.state.onTransitionContext=async()=>{if(!advanced){advanced=true;t.mock.timers.tick(elapsed);}};
+ const before=counts(f);
+ if(elapsed===2999){assert.equal((await f.control(input)).state,'APPLIED');assert.equal((await reader(f).journal.readReceipt(pins(),check)).state,'APPLIED');assert.equal(f.state.starts,before.starts+1);assert.equal(f.state.continued,before.continued+(mode==='resume'?1:0));}
+ else{await assert.rejects(f.control(input),{code:'LIFECYCLE_EFFECT_UNKNOWN'});assert.equal(row(f).projection.state,'UNKNOWN');assert.equal(f.state.starts,before.starts);assert.equal(f.state.continued,before.continued);const saved=counts(f);assert.equal((await reader(f).journal.readReceipt(pins(),check)).state,'UNKNOWN');assert.equal((await f.control(input)).state,'UNKNOWN');assert.deepEqual(counts(f),saved);}
+ assert.equal(advanced,true);
 });
