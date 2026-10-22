@@ -609,7 +609,16 @@ failures are five parked RPC cases (start target/admission; continued target/
 admission/retirement), both image-only-deploy continuation positive cases, and
 the stopped-source conversation-survives-deploy case. Full stacks are absent
 because Node had not printed its final summary before timeout. Their cause is
-not established or waived. The five parked cases retain their220ms semantic
+not established or waived. A subsequent targeted diagnostic selected exactly those eight identities to
+obtain the missing failure stacks. It passed8/8 (52970ms), with no source,
+assertion, timeout or runner change. This does not reproduce the failed combined
+conditions, establish flakiness, waive the eight failures or qualify the combined
+tree. Its receipt is retained under `partial-failure-diagnostic/`. No further
+full run is started merely to seek green. The combined run remains blocked on
+its cap and strict timing-gate failures; qualification/triage disposition is
+required before claiming completion.
+
+The five parked cases retain their220ms semantic
 cutoff,5000ms test timeout and independent1500ms wall bound. No deadline or
 assertion is relaxed, and no green-seeking retry is run. Tests not reported
 before timeout remain unqualified. This result supersedes no historical failure
