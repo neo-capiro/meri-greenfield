@@ -172,3 +172,40 @@ updates only that source SHA256/byte-count entry. Browser code, declarations,
 schema, package version and status/interface contracts remain byte-identical.
 Fifteen O214 mutation faults were caught by assertions at a23 before this refresh;
 final-head mutation and expanded-suite evidence will be posted separately.
+
+## Rehearsal model correction after Fable6353614236
+
+Fable reports D3 cases1–7 failing/timing out at423dd414 in an ongoing image gate;
+that is incomplete negative evidence, not a final table or PASS. The pre-S2 model
+omitted/current. It now returns the closed combined120s receipt with stable64hex
+identity/membership/context revisions and expected-revision409.401/403/409/503
+faults remain distinct; the model never caches positives. Production O208 still
+owns the real sendStart20s bound, reuse and fresh admissions.
+
+Latency basis: existing legacy profiles are unchanged, from the10:26Z measured
+Core log. There is no independent/current measurement available here. Derived
+current = context +100% of that profile's measured identity component:
+quiet250+85=335ms; median500+100=600ms; tail750+150=900ms. No overlap or positive
+Clerk-cache speedup is assumed, and no extra membership HTTP hop is charged for
+the membership join in that single RepeatableRead call. These are explicitly
+measured-component equivalents, not claimed new route measurements or chosen
+passing latencies. D3's historical publish cadence and native Stop delays stay.
+
+Both rehearsal mocks share this model. D3 late-binds its actual canonical session
+owner to the candidate, as production startup does, to exercise real S2 reuse;
+its diagnostics capture existing fresh/reuse counters. All D3 and first-turn test
+registration/assertion blocks remain byte-identical. No product code/deadline/
+retry/Stop barrier or assertion is changed.
+
+Why first-turn passed before: its historical fixture constructs the session owner
+without withAuthority and manually calls verifier identity/context. Its164-call
+median assertion remains; this baseline is not S2-reuse qualification. Adding
+current to its Core mock alone does not turn it into the canonical S2 composition.
+D3's prepared/control composition is the source rehearsal for S2 reuse/Stop.
+
+Environment: no Docker or Podman executable/socket, no head image, no P0 harness
+43b705c8 available locally. Head-image all9 D3 and first-turn gates are BLOCKED
+here; Fable has been asked to run them at the corrected exact head. Local Node
+model/receipt-owner checks and any local rehearsals are separate author evidence,
+never image or live qualification. Host-clock steps retain their unverified
+caveat. Prior621/632 and all failures above remain; no carryover green claim.
