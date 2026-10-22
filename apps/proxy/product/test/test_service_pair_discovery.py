@@ -173,22 +173,27 @@ class DiscoveryTests(unittest.TestCase):
         with self.assertRaises(Exception):
             r.read(deadline_ms=f.at+1000)
 
-    def test_final_service_and_membership_rechecks_reject_midproof_replacement(self):
-        for mode in ('membership', 'deployment'):
-            f = fixture(); seen = [0]
-            def change(v, kwargs):
-                if mode == 'deployment':
-                    seen[0] += 1
-                    if seen[0] == 2:
-                        v['services'][1]['deployments'][0]['id'] = 'ecs-svc/99'
-                elif kwargs['serviceName'] == 'meri-owner':
-                    seen[0] += 1
-                    if seen[0] == 2:
-                        v['taskArns'] = [f.task_id('proxy')]
-                return v
-            f.changes['list_tasks' if mode == 'membership' else 'describe_services'] = change
-            with self.assertRaisesRegex(Exception, 'PAIR_DRIFT'):
-                f.reader().read(deadline_ms=f.at+1000)
+    def test_final_service_and_membership_rechecks_distinguish_partner_and_own_replacement(self):
+        for role, service_index in (('owner', 1), ('proxy', 0)):
+            for mode in ('membership', 'deployment'):
+                with self.subTest(role=role, mode=mode):
+                    f = fixture(); seen = [0]
+                    def change(v, kwargs):
+                        if mode == 'deployment':
+                            seen[0] += 1
+                            if seen[0] == 2:
+                                v['services'][service_index]['deployments'][0]['id'] = 'ecs-svc/99'
+                        elif kwargs['serviceName'] == 'meri-'+role:
+                            seen[0] += 1
+                            if seen[0] == 2:
+                                v['taskArns'] = [PREFIX+'task/capiro-dev/'+'3'*32]
+                        return v
+                    f.changes['list_tasks' if mode == 'membership' else 'describe_services'] = change
+                    reader = f.reader()
+                    code = 'PAIR_UNAVAILABLE' if role == 'owner' else 'PAIR_DRIFT'
+                    with self.assertRaisesRegex(Exception, '^'+code+'$'):
+                        reader.read(deadline_ms=f.at+1000)
+                    self.assertIsNone(reader.last_observation)
 
     def test_queue_wait_consumes_original_deadline_before_any_sdk_command(self):
         f = fixture(); r = f.reader(); r._read_lock.acquire()

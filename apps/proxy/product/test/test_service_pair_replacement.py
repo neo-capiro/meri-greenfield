@@ -15,7 +15,8 @@ def replacement_fixture(*, rolling=False, pending_status='PENDING', unplaced=Fal
     owner_id = lambda token: PREFIX+'task/capiro-dev/'+token*32
 
     def selected():
-        return ([] if stage[0] == 'gap' else ['1', '3'] if stage[0] == 'rolling'
+        return (['1', '3', '4'] if stage[0] == 'overfull' else
+                [] if stage[0] == 'gap' else ['1', '3'] if stage[0] == 'rolling'
                 else ['1'] if stage[0] == 'running' else ['3'])
 
     def services(value, _):
@@ -31,7 +32,7 @@ def replacement_fixture(*, rolling=False, pending_status='PENDING', unplaced=Fal
             s['pendingCount'] = d['pendingCount'] = 1
         if rolling and stage[0] != 'running':
             d.update(id='ecs-svc/3', rolloutState='IN_PROGRESS')
-            if stage[0] == 'rolling':
+            if stage[0] in ('rolling', 'overfull'):
                 old = copy.deepcopy(d)
                 old.update(id='ecs-svc/1', status='ACTIVE', desiredCount=draining_desired, rolloutState='COMPLETED')
                 s['deployments'].append(old)
@@ -51,7 +52,7 @@ def replacement_fixture(*, rolling=False, pending_status='PENDING', unplaced=Fal
             task['taskArn'] = owner_id(token)
             if token == '3':
                 task['createdAt'] = datetime.fromtimestamp((f.at-1000)/1000, tz=timezone.utc)
-            task['startedBy'] = 'ecs-svc/'+token if rolling else 'ecs-svc/1'
+            task['startedBy'] = 'ecs-svc/'+('1' if token == '1' else '3') if rolling else 'ecs-svc/1'
             for container in task['containers']:
                 container['taskArn'] = task['taskArn']
             c = task['containers'][1]
@@ -128,6 +129,121 @@ class PartnerReplacementTests(unittest.TestCase):
         for desired in (0, 1):
             with self.subTest(draining_desired=desired):
                 self.complete_sequence(replacement_fixture(rolling=True, draining_desired=desired), ['rolling'])
+
+    def midproof_replacement_sequence(self, *, rolling, initial, final):
+        f = replacement_fixture(rolling=rolling)
+        h, wall, mono = self.holder(f)
+        with patch('apps.proxy.product.telemetry_context.health') as health:
+            lease = h.renew(deadline_ms=wall[0]+1000)
+            f.stage[0] = initial
+            original = f.changes['describe_network_interfaces']
+            def transition(value, args):
+                original(value, args)
+                f.stage[0] = final
+                return value
+            f.changes['describe_network_interfaces'] = transition
+            f.calls.clear()
+            with self.assertRaisesRegex(PairProofError, '^PAIR_UNAVAILABLE$'):
+                h.renew(deadline_ms=wall[0]+1000)
+            replacement_id = PREFIX+'task/capiro-dev/'+'3'*32
+            self.assertTrue(all(replacement_id not in args['tasks'] for method, args in f.calls
+                                if method == 'describe_tasks'), 'final newcomer was not inspected')
+            self.assertIs(h.current, lease, 'an uninspected newcomer publishes no lease')
+            self.assertEqual(h.generation, 1, 'an uninspected newcomer publishes no generation')
+            self.assertTrue(h.available, 'the survivor is not retired')
+            self.assertFalse(h.reproving)
+            health.assert_not_called()
+
+            # The next renewal inspects the newcomer fully; its pending/rolling
+            # snapshot remains unavailable until there is one running primary.
+            f.changes['describe_network_interfaces'] = original
+            f.calls.clear()
+            mono[0] += 1000
+            with self.assertRaisesRegex(PairProofError, '^PAIR_UNAVAILABLE$'):
+                h.renew(deadline_ms=wall[0]+1000)
+            self.assertTrue(any(replacement_id in args['tasks'] for method, args in f.calls
+                                if method == 'describe_tasks'))
+            self.assertIs(h.current, lease)
+            self.assertEqual(h.generation, 1)
+            self.assertTrue(h.available)
+            f.stage[0] = 'replacement'
+            fresh = h.renew(deadline_ms=wall[0]+1000)
+            self.assertEqual(fresh.generation, 2)
+            self.assertTrue(h.reproving)
+            proven = h.prove_socket(fresh, owner_ip='10.40.4.3', proxy_ip='10.40.4.2', deadline_ms=wall[0]+1000)
+            h.socket_ready(proven.generation)
+            h.socket_ready(proven.generation)
+            h.renew(deadline_ms=wall[0]+1000)
+            self.assertEqual(h.require().generation, 2)
+            self.assertTrue(h.ready)
+            self.assertEqual(health.call_args_list, [(('pair', 'reproven', 'PAIR_REPROVEN'),)])
+
+    def test_stop_task_replacement_arriving_during_proof_reproves_once_without_retirement(self):
+        self.midproof_replacement_sequence(rolling=False, initial='gap', final='pending')
+
+    def test_force_new_deployment_arriving_during_proof_reproves_once_without_retirement(self):
+        self.midproof_replacement_sequence(rolling=True, initial='running', final='rolling')
+
+    def test_final_two_partner_members_without_pinned_rolling_are_drift(self):
+        f = replacement_fixture()
+        network = f.changes['describe_network_interfaces']
+        def transition(value, args):
+            network(value, args)
+            # Membership overlaps, but the final service remains nonrolling.
+            f.stage[0] = 'rolling'
+            return value
+        f.changes['describe_network_interfaces'] = transition
+        reader = f.reader()
+        with self.assertRaisesRegex(PairProofError, '^PAIR_DRIFT$'):
+            reader.read(deadline_ms=f.at+1000)
+        self.assertIsNone(reader.last_observation)
+
+    def test_midproof_partner_replacement_preserves_final_pin_checks(self):
+        for mode in ('task-definition', 'primary-count', 'network', 'duplicate-member', 'foreign-member', 'cross-service-member'):
+            with self.subTest(mode=mode):
+                f = replacement_fixture(rolling=True)
+                network = f.changes['describe_network_interfaces']
+                services, members = f.changes['describe_services'], f.changes['list_tasks']
+                def transition(value, args):
+                    network(value, args)
+                    f.stage[0] = 'rolling'
+                    return value
+                def final_services(value, args):
+                    services(value, args)
+                    if f.stage[0] == 'rolling':
+                        owner = value['services'][1]
+                        if mode == 'task-definition':
+                            owner['deployments'][0]['taskDefinition'] = PREFIX+'task-definition/foreign:4'
+                        elif mode == 'primary-count':
+                            owner['deployments'][0]['runningCount'] = 2
+                        elif mode == 'network':
+                            owner['networkConfiguration']['awsvpcConfiguration']['securityGroups'] = ['sg-99999999']
+                    return value
+                def final_members(value, args):
+                    members(value, args)
+                    if f.stage[0] == 'rolling' and args['serviceName'] == 'meri-owner':
+                        if mode == 'duplicate-member':
+                            value['taskArns'] = [value['taskArns'][1]]*2
+                        elif mode == 'foreign-member':
+                            value['taskArns'] = ['foreign']
+                        elif mode == 'cross-service-member':
+                            value['taskArns'] = [f.task_id('proxy')]
+                    return value
+                f.changes.update(describe_network_interfaces=transition, describe_services=final_services,
+                                 list_tasks=final_members)
+                reader = f.reader()
+                with self.assertRaisesRegex(PairProofError, '^PAIR_DRIFT$'):
+                    reader.read(deadline_ms=f.at+1000)
+                self.assertIsNone(reader.last_observation)
+
+    def test_three_distinct_running_partner_members_are_drift_even_during_pinned_rolling(self):
+        for rolling in (False, True):
+            with self.subTest(rolling=rolling):
+                f = replacement_fixture(rolling=rolling); f.stage[0] = 'overfull'
+                reader = f.reader()
+                with self.assertRaisesRegex(PairProofError, '^PAIR_DRIFT$'):
+                    reader.read(deadline_ms=f.at+1000)
+                self.assertIsNone(reader.last_observation)
 
     def test_single_running_primary_in_progress_is_a_passing_proof_without_opt_in(self):
         f = replacement_fixture(rolling=True)

@@ -228,12 +228,13 @@ export async function createProductServicePairDiscovery(raw){
    }
    const [last,ownerAgain,proxyAgain]=await together([services,()=>member(pins.owner),()=>member(pins.proxy,true)]);
    if(last.owner.deploymentId!==first.owner.deploymentId||!sameSet(ownerAgain,ownerIds))drift();
+   if(proxyAgain.some(id=>ownerAgain.includes(id)))drift();
+   if(proxyAgain.length===2&&!last.proxy.rolling)drift();
    if(last.proxy.deploymentId!==first.proxy.deploymentId||!sameSet(proxyAgain,proxyIds)){
-    // A stop/drain can finish during this proof. Only a subset of tasks already
-    // fully inspected above can be unavailable; a new final ARN stays drift.
-    if(last.proxy.deploymentId===first.proxy.deploymentId&&proxyAgain.every(id=>proxyIds.includes(id))&&
-       (first.proxy.transitional||last.proxy.transitional||proxyAgain.length<proxyIds.length))unavailable();
-    drift();
+    // Final service pins have all passed. A replacement can appear or a drain
+    // finish during this proof; the next read must fully inspect the new pair.
+    // Never issue a proof from uninspected final members or deployment IDs.
+    unavailable();
    }
    if(first.proxy.transitional||last.proxy.transitional||proxyIds.length!==1||observed.some(v=>v.pending)||!observed[1]?.primary)unavailable();
    const [owner,proxy]=observed;

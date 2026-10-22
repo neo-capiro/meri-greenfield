@@ -52,11 +52,17 @@ for(const [label,change]of [
  ['a public IP',f=>f.change('DescribeNetworkInterfacesCommand',reply=>{reply.NetworkInterfaces[0].Association={PublicIp:'203.0.113.1'};return reply;})],
  ['changed security groups',f=>f.change('DescribeNetworkInterfacesCommand',reply=>{reply.NetworkInterfaces[0].Groups=[{GroupId:'sg-99999999'}];return reply;})],
  ['changed subnet',f=>f.change('DescribeNetworkInterfacesCommand',reply=>{reply.NetworkInterfaces[0].SubnetId='subnet-99999999';return reply;})],
- ['deployment drift in the final service read',f=>{let calls=0;f.change('DescribeServicesCommand',reply=>{
-  if(++calls===2)reply.services[0].deployments[0].id='ecs-svc/99';return reply;
+ ['a new final partner deployment with a contradictory service pin',f=>{let calls=0;f.change('DescribeServicesCommand',reply=>{
+  if(++calls===2){reply.services[0].deployments[0].id='ecs-svc/99';reply.services[0].taskDefinition='foreign';}return reply;
  });}],
- ['membership drift in the final service inventory',f=>{let calls=0;f.change('ListTasksCommand',(reply,input)=>{
-  if(input.serviceName==='meri-proxy'&&++calls===2)reply.taskArns=[f.id('proxy').replace(/2{32}$/u,'3'.repeat(32))];return reply;
+ ['own membership drift in the final service inventory',f=>{let calls=0;f.change('ListTasksCommand',(reply,input)=>{
+  if(input.serviceName==='meri-owner'&&++calls===2)reply.taskArns=[f.id('owner').replace(/1{32}$/u,'3'.repeat(32))];return reply;
+ });}],
+ ['own task listed as the final partner member',f=>{let calls=0;f.change('ListTasksCommand',(reply,input)=>{
+  if(input.serviceName==='meri-proxy'&&++calls===2)reply.taskArns=[f.id('owner')];return reply;
+ });}],
+ ['two final partner members without a rolling deployment',f=>{let calls=0;f.change('ListTasksCommand',(reply,input)=>{
+  if(input.serviceName==='meri-proxy'&&++calls===2)reply.taskArns.push(f.id('proxy').replace(/2{32}$/u,'3'.repeat(32)));return reply;
  });}],
  ['own task replacement',f=>f.replace('owner','4')],
 ])test('post-handshake canonical proof retires for '+label+' before admitting an exchange',async()=>{
@@ -68,5 +74,24 @@ for(const [label,change]of [
    remoteAddress:lease.proxyPrivateIpv4Address,handshakeAtMonoMs:mono,deadlineMs:NOW+1000}).then(()=>{exchanges++;}),{code:'PAIR_DRIFT'});
   assert.equal(exchanges,0);assert.equal(reader.available,false);assert.equal(reader.ready,false);
   assert.throws(()=>reader.assertConnection(lease),{code:'PAIR_DRIFT'});
+ }finally{await reader.close();}
+});
+
+for(const [label,change]of [
+ ['PRIMARY deployment',f=>{let calls=0;f.change('DescribeServicesCommand',reply=>{
+  if(++calls===2)reply.services[0].deployments[0].id='ecs-svc/99';return reply;
+ });}],
+ ['member',f=>{let calls=0;f.change('ListTasksCommand',(reply,input)=>{
+  if(input.serviceName==='meri-proxy'&&++calls===2)reply.taskArns=[f.id('proxy').replace(/2{32}$/u,'3'.repeat(32))];return reply;
+ });}],
+])test('post-handshake final partner '+label+' change is unavailable without an exchange or retirement',async()=>{
+ const f=servicePairFixture();let mono=0,exchanges=0;
+ const reader=await createProductServiceTaskLeaseReader(f.configuration,{monotonicNow:()=>mono});
+ try{
+  const lease=await reader.read({deadlineMs:NOW+1000});change(f);mono=10;
+  await assert.rejects(reader.proveConnection({generation:lease.generation,localAddress:lease.ownerPrivateIpv4Address,
+   remoteAddress:lease.proxyPrivateIpv4Address,handshakeAtMonoMs:mono,deadlineMs:NOW+1000}).then(()=>{exchanges++;}),{code:'PAIR_UNAVAILABLE'});
+  assert.equal(exchanges,0);assert.equal(reader.current(),lease);assert.equal(reader.generation,1);
+  assert.equal(reader.available,true);assert.equal(reader.ready,true);assert.equal(reader.retired,false);
  }finally{await reader.close();}
 });

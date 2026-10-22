@@ -477,16 +477,16 @@ class ProductServicePairDiscovery:
             last, owner_again, proxy_again = _together(pool, services, lambda: member(pins['owner'], partner=True), lambda: member(pins['proxy']), cutoff=monotonic_cutoff)
             if last['proxy']['deploymentId'] != first['proxy']['deploymentId'] or proxy_again != ids['proxy']:
                 _deny()
-            if last['owner']['deploymentId'] != first['owner']['deploymentId'] or owner_again != ids['owner']:
-                # A pinned gap/drainer disappearing during this proof is still
-                # unavailable. Only already-inspected tasks may remain; a new
-                # deployment or an unseen final member retains the drift fence.
-                if (last['owner']['deploymentId'] == first['owner']['deploymentId']
-                        and set(owner_again) <= set(ids['owner'])
-                        and (last['owner']['transitional'] or first['owner']['transitional']
-                             or len(owner_again) < len(ids['owner']))):
-                    _unavailable()
+            if set(owner_again) & set(proxy_again):
                 _deny()
+            if len(owner_again) > 1 and not last['owner']['rolling']:
+                _drift()
+            if last['owner']['deploymentId'] != first['owner']['deploymentId'] or owner_again != ids['owner']:
+                # Both final service and member snapshots passed their pins.
+                # A partner replacement can arrive during this proof, but its
+                # uninspected task/deployment cannot contribute to a lease.
+                # Retry with a complete observation on the next renewal.
+                _unavailable()
             # No observation is published for replacement gaps, pending members,
             # or the two pinned members of a same-revision rolling deployment.
             if (incomplete or first['owner']['transitional'] or last['owner']['transitional'] or len(owner_id) != 1

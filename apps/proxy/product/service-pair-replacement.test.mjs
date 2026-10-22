@@ -166,3 +166,56 @@ for(const [label,before,after,options]of [
   assert.deepEqual(health,[]);
  }finally{await reader.close();}
 });
+
+for(const [label,before,after,options]of [
+ ['StopTask replacement','gap','PENDING',{}],
+ ['force-new-deployment replacement','stable','rolling',{rolling:true}],
+])test(label+' first seen in the final read waits for inspection and re-proves exactly once',async()=>{
+ const f=replacementFixture(options),health=[],closures=[];let mono=0;
+ const reader=await createProductServiceTaskLeaseReader(f.configuration,{monotonicNow:()=>mono,
+  telemetry:{health:(...row)=>health.push(row)},writeDiagnostic:()=>{}});
+ reader.subscribe(reason=>closures.push(reason));
+ try{
+  const initial=await reader.read({deadlineMs:NOW+1000});f.setState(before);mono+=1000;
+  const racedCalls=f.calls.length;
+  f.change('DescribeNetworkInterfacesCommand',reply=>{f.setState(after);return reply;});
+  await assert.rejects(reader.read({deadlineMs:NOW+1000}),{code:'PAIR_UNAVAILABLE'});
+  assert.ok(f.calls.slice(racedCalls).filter(v=>v.kind==='DescribeTasksCommand')
+   .every(v=>!v.input.tasks.includes(f.nextId)),'the final replacement has not been inspected');
+  assert.equal(reader.current(),initial,'an uninspected replacement issues no lease');
+  assert.equal(reader.generation,1,'an uninspected replacement issues no generation');
+  assert.equal(reader.available,true);assert.equal(reader.retired,false);
+  assert.deepEqual(health,[]);assert.deepEqual(closures,[]);
+  f.change('DescribeNetworkInterfacesCommand',reply=>reply);mono+=1000;
+  await assert.rejects(reader.read({deadlineMs:NOW+1000}),{code:'PAIR_UNAVAILABLE'});
+  assert.equal(reader.current(),initial);assert.equal(reader.generation,1);assert.equal(reader.retired,false);
+  f.setState('replaced');mono+=1000;
+  const next=await reader.read({deadlineMs:NOW+1000});
+  assert.equal(next.generation,2);assert.equal(next.proxyTaskArn,f.nextId);assert.equal(reader.reproving,true);
+  const bind=()=>reader.proveConnection({generation:next.generation,localAddress:next.ownerPrivateIpv4Address,
+   remoteAddress:next.proxyPrivateIpv4Address,handshakeAtMonoMs:mono,deadlineMs:NOW+1000});
+  const bound=await bind();assert.equal(reader.assertConnection(bound).generation,2);await bind();
+  assert.deepEqual(health,[['pair','reproven','PAIR_REPROVEN']]);assert.deepEqual(closures,['replacement']);
+  assert.equal(reader.available,true);assert.equal(reader.retired,false);
+ }finally{await reader.close();}
+});
+
+for(const state of ['stable','rolling'])test('three distinct RUNNING partner members in a pinned '+state+' service are drift',async()=>{
+ const f=replacementFixture({rolling:state==='rolling'});f.setState(state);
+ const thirdId=f.id('proxy').replace(/2{32}$/u,'4'.repeat(32));
+ f.change('ListTasksCommand',(reply,input)=>input.serviceName==='meri-proxy'?{taskArns:[f.id('proxy'),f.nextId,thirdId]}:reply);
+ f.change('DescribeTasksCommand',(reply,input)=>{
+  const third=structuredClone(reply.tasks.find(v=>v.taskArn===f.id('proxy')));third.taskArn=thirdId;
+  for(const c of third.containers){c.taskArn=thirdId;if(c.containerArn)c.containerArn=c.containerArn.replace('2'.repeat(32),'4'.repeat(32));
+   if(c.networkInterfaces)c.networkInterfaces[0].privateIpv4Address='10.40.4.4';}
+  for(const d of third.attachments[0].details){if(d.name==='networkInterfaceId')d.value='eni-44444444';if(d.name==='privateIPv4Address')d.value='10.40.4.4';}
+  return {...reply,tasks:[...reply.tasks,third].filter(v=>input.tasks.includes(v.taskArn))};
+ });
+ f.change('DescribeNetworkInterfacesCommand',(reply,input)=>{
+  const third=structuredClone(reply.NetworkInterfaces.find(v=>v.NetworkInterfaceId==='eni-22222222'));
+  third.NetworkInterfaceId='eni-44444444';third.PrivateIpAddress=third.PrivateIpAddresses[0].PrivateIpAddress='10.40.4.4';
+  return {...reply,NetworkInterfaces:[...reply.NetworkInterfaces,third].filter(v=>input.NetworkInterfaceIds.includes(v.NetworkInterfaceId))};
+ });
+ const reader=await createProductServicePairDiscovery(f.configuration);
+ await assert.rejects(reader.read({deadlineMs:NOW+1000}),{code:'PAIR_DRIFT'});
+});

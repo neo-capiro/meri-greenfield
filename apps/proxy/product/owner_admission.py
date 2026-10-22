@@ -351,6 +351,11 @@ class ProductOwnerAdmissionReader:
                 # A late renewal cannot revive a request after the old lease expired,
                 # even if its watcher was starved and has not published deny yet.
                 self._consume(previous, json.loads(state.source), lifetime=life)
+                if receipt.read_at_mono < previous.read_at_mono:
+                    # Completion order can differ from read order after an
+                    # unanswered wait. Keep the later-started valid receipt.
+                    self._receipts.pop(id(receipt), None)
+                    return
             receipt_id = id(receipt)
             self._receipt_lifetimes[receipt_id] = weakref.ref(life,
                 lambda _ref: self._receipt_lifetimes.pop(receipt_id, None))
