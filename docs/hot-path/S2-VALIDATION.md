@@ -161,3 +161,14 @@ Prior7f6c2d73 source accept and502/513 qualification remain historical, not carr
 to this new source head. All M1 and S2 failed/incomplete evidence above is retained.
 Fable owns exact-head native/image/PG/rehearsal/base-head gates and live acceptance.
 STOP2/6 and A2 HOLD; no UI/model/acceptance execution is authorized here.
+
+At published O214 `a23ac2b6e927179688ae8c76298fd3778c7bf3a0`, expanded source
+qualification was620/632, exit1,131600.503841ms,0skip/cancel/todo. The earlier11
+base-name matches remain limited comparison evidence. A new twelfth failure in
+`conversation-history-public.test.mjs` detected stale generated source provenance:
+metadata still hashed the pre-O214 history service. This failure is head-caused
+and retained, not classified inherited. The existing focused history generator
+updates only that source SHA256/byte-count entry. Browser code, declarations,
+schema, package version and status/interface contracts remain byte-identical.
+Fifteen O214 mutation faults were caught by assertions at a23 before this refresh;
+final-head mutation and expanded-suite evidence will be posted separately.
