@@ -1,5 +1,5 @@
 /** CloudFormation for the private Temporal issuer ECS task definition and service
- * (approved change set Stage 3). Same idiom as model-proxy-template.mjs: a closed,
+ * (approved change set Stage 3). A closed,
  * validated binding in, raw CloudFormation JSON out.
  *
  * Consumed, never created here (foundation stack outputs): the issuer and dbClient
@@ -89,7 +89,7 @@ export function validateFirstChatIssuerBinding(binding){
 
  const startup=object(b.startup,['configSha256']);match(startup.configSha256,hex64);
 
- // Same static material-init contract as manifest.mjs and model-proxy-plan.mjs: exact-version bundle secret plus an
+ // Same static material-init contract as manifest.mjs: exact-version bundle secret plus an
  // independently pinned expected inventory bound to this image and to the container's --config-sha256.
  const m=object(b.material,['valueFrom','expected']);match(m.valueFrom,issuerSecretVersion);
  // The canonical parser also recomputes materialContractSha256 over the other fields.
@@ -131,7 +131,7 @@ function taskDefinition(b){
  return {Type:'AWS::ECS::TaskDefinition',Properties:{
   Family:S.family,RequiresCompatibilities:['FARGATE'],NetworkMode:'awsvpc',
   Cpu:String(S.sizing.cpu),Memory:String(S.sizing.memoryMiB),
-  RuntimePlatform:{CpuArchitecture:'X86_64',OperatingSystemFamily:'LINUX'},
+  RuntimePlatform:{CpuArchitecture:'ARM64',OperatingSystemFamily:'LINUX'},
   ExecutionRoleArn:b.roles.executionRoleArn,TaskRoleArn:b.roles.taskRoleArn,
   Volumes:[{Name:'material'},{Name:'tmp'}],ContainerDefinitions:[init,main]}};
 }

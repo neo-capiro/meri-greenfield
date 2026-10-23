@@ -9,8 +9,7 @@ import {assertCapabilityPolicy} from './policy.mjs';
 import {createWorkspaceTools,assertWorkspaceRoot,BUILTIN_TOOL_NAMES} from './workspace-tools.mjs';
 import {createBashSandbox} from './bash-sandbox.mjs';
 import {createSubagents} from './subagents.mjs';
-import {createSkillPlugin,assertSkillPluginDirectory,assertSkillPluginPath} from './skill-plugin.mjs';
-import {createAuditHooks,createCompactionHooks,createSubagentLifecycleHooks} from './hooks.mjs';
+import {createSkillPlugin} from './skill-plugin.mjs';
 import {assertCapabilityFragment,mergeHookSets,mergeSettings,chainPermissions} from './fragment.mjs';
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};
@@ -19,14 +18,7 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 /** @param {import('./policy.mjs').CapabilityPolicy} p */
 const withoutBash=p=>p.bash?assertCapabilityPolicy({...p,bash:false}):p;
 /** @param {unknown} policy @param {unknown} facts */
-export function createSdkCapabilities(policy,facts){return compose(policy,facts,assertSkillPluginDirectory);}
-/** G3: the same composition for the in-image measurement (apps/runtime/build/first-chat-launch-measurement.mjs), which projects the
- * options of a run whose workspace and skill plugin copy it never creates: the plugin path is checked lexically only. The options are
- * identical to createSdkCapabilities' for the same facts (a run's real directories are verified by createSdkCapabilities and by
- * options.mjs); nothing but the measurement may use it. @param {unknown} policy @param {unknown} facts */
-export function projectSdkCapabilities(policy,facts){return compose(policy,facts,assertSkillPluginPath);}
-/** @param {unknown} policy @param {unknown} facts @param {(directory:unknown,cwd:string)=>string} verifyPlugin */
-function compose(policy,facts,verifyPlugin){
+export function createSdkCapabilities(policy,facts){
  const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory']);
  if(typeof f.runOwner?.append!=='function'||typeof f.now!=='function'||typeof f.newId!=='function')fail('CAPABILITY_CONFIGURATION');validateShape('RunBinding',f.binding);assertWorkspaceRoot(f.cwd);
  const protectedPaths={...(f.sdkConfigDirectory===undefined?{}:{sdkConfigDirectory:f.sdkConfigDirectory}),...(f.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:f.sdkSecureStorageDirectory}),
@@ -38,16 +30,12 @@ function compose(policy,facts,verifyPlugin){
  // further event is attempted and `check()` throws, so the activity cannot complete, checkpoint or publish output.
  /** @type {import('./hooks.mjs').LatchPort} */
  const latch=error=>{failure??=Object.assign(Error('CAPABILITY_HOOK_FAILED'),{code:'CAPABILITY_HOOK_FAILED',cause:error});};
- /** @type {import('./hooks.mjs').PublishPort} */
- const publish=async(type,data,signal)=>{try{if(failure)throw failure;await f.runOwner.append({binding:f.binding,event:{eventId:f.newId(),createdAt:new Date(f.now()).toISOString(),type,data},signal});}catch{failure??=Object.assign(Error('CAPABILITY_EVENT_REFUSED'),{code:'CAPABILITY_EVENT_REFUSED'});throw failure;}};
- const ports={publish,latch};
  /** @type {ToolPiece[]} */const pieces=[];/** @type {Record<string,HookCallbackMatcher[]>[]} */const hookSets=[];
  if(p.workspaceTools)pieces.push(createWorkspaceTools(p,{cwd:f.cwd}));
  if(bash)pieces.push(bash);
- if(p.subagents){pieces.push(createSubagents(p,{latch}));hookSets.push(createSubagentLifecycleHooks(ports));}
- if(p.skillPlugin){if(f.skillPluginDirectory===undefined)fail('SKILL_PLUGIN_DIRECTORY_REQUIRED');pieces.push(createSkillPlugin(p,{skillPluginDirectory:f.skillPluginDirectory,cwd:f.cwd},verifyPlugin));}
- if(p.auditHooks)hookSets.push(createAuditHooks(ports));
- if(p.compactionHooks)hookSets.push(createCompactionHooks(ports));
+ if(p.subagents)pieces.push(createSubagents(p,{latch}));
+ if(p.skillPlugin){if(f.skillPluginDirectory===undefined)fail('SKILL_PLUGIN_DIRECTORY_REQUIRED');pieces.push(createSkillPlugin(p,{skillPluginDirectory:f.skillPluginDirectory,cwd:f.cwd}));}
+ // Native tool audit is collected once by the activity, independently of capability permission decisions.
  /** @type {Record<string,unknown>} */const options={};
  if(pieces.length){
   const tools=[...new Set(pieces.flatMap(piece=>piece.tools))];

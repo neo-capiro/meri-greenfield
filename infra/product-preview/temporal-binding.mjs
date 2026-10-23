@@ -2,6 +2,7 @@
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import pins from '../../apps/control/qualification-temporal/component-pins.json' with {type:'json'};
+import imagePins from './temporal-image-pins.json' with {type:'json'};
 import fixture from '../../apps/control/qualification-temporal/deployment.fixture.json' with {type:'json'};
 import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 
@@ -58,7 +59,7 @@ export function temporalEndpointSecurityGroupIds(network){
 }
 export function validateTemporalPreviewBinding(value){
  validateTemporalFixture();
- const b=closed(value,['account','region','enabled','activation','placement','clusterArn','vpcId','subnets','privateDnsName','serverImageUri','upstreamServerImageDigest','launchSourceCommit','launchContractSha256','logGroupName','executionRoleArn','taskRoleArns','network','auth','database']);
+ const b=closed(value,['account','region','enabled','activation','placement','clusterArn','vpcId','subnets','privateDnsName','serverImageUri','upstreamServerSourceCommit','launchSourceCommit','launchContractSha256','logGroupName','executionRoleArn','taskRoleArns','network','auth','database']);
  const placement=closed(b.placement,['kind','reviewSha256']);
  if(placement.kind!=='existing-capiro-dev-vpc'||!hex64.test(placement.reviewSha256)||
     b.vpcId!==TEMPORAL_EXISTING_DATABASE.databaseVpcId||
@@ -70,7 +71,8 @@ export function validateTemporalPreviewBinding(value){
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[a-zA-Z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !/^vpc-[a-f0-9]{8,17}$/u.test(b.vpcId)||!/^([a-z0-9-]+\.)+[a-z]{2,}$/u.test(b.privateDnsName)||
     !new RegExp(`^${b.account}\\.dkr\\.ecr\\.${b.region}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`,'u').test(b.serverImageUri)||
-    b.upstreamServerImageDigest!==pins.server.imageAmd64Digest||b.serverImageUri.endsWith(b.upstreamServerImageDigest)||
+    imagePins.platform!=='linux/arm64'||imagePins.serverVersion!==pins.server.version||
+    b.upstreamServerSourceCommit!==imagePins.serverSource.commit||
     !/^[a-f0-9]{40}$/u.test(b.launchSourceCommit)||b.launchContractSha256!==RENDERER_SHA256||
     !/^\/[a-zA-Z0-9_./-]{1,511}$/u.test(b.logGroupName))fail();
  if(!Array.isArray(b.subnets)||b.subnets.length<2||b.subnets.length>3)fail();

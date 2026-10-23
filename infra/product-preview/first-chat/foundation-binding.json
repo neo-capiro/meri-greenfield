@@ -29,12 +29,6 @@
   "issuer": [
    "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb"
   ],
-  "owner": [
-   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/owner/material-05kED4"
-  ],
-  "proxy": [
-   "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/proxy/material-kpYYOE"
-  ],
   "temporal": [
    "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP",
    "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL",
@@ -53,8 +47,6 @@
   "control": [],
   "worker": [],
   "issuer": [],
-  "owner": [],
-  "proxy": [],
   "temporal": [],
   "migrator": [
    "arn:aws:kms:us-east-1:967807252336:key/efe8a18d-192e-4f30-8eea-b3f65ae7755e"

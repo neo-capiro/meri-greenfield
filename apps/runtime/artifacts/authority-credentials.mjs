@@ -20,7 +20,7 @@ const posixFile=p=>typeof p==='string'&&p.length<=4096&&p.startsWith('/')&&!p.in
  * identity/context/membership, never this route. */
 export function reservedCredentialFiles(configuration){
  const candidate=configuration?.nativeCandidate;if(!candidate||typeof candidate!=='object')refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
- const files=[candidate.identity?.credentialFile,candidate.taskCapabilityFile,candidate.controlCapabilityFile,candidate.proxyCredentialFile];
+ const files=[candidate.identity?.credentialFile,candidate.taskCapabilityFile,candidate.controlCapabilityFile];
  if(files.some(file=>!posixFile(file)))refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
  return files;
 }

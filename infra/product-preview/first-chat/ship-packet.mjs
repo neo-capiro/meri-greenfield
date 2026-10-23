@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Meri first-chat release: the reviewable ship packet for one new Node runtime image on the live preview stacks. It joins the
  * reviewed NON-SECRET inputs of docs/shipping/20261017/STAGE3-DEPLOY-RUNBOOK.md (deployment inputs, measured runtime values, the
- * producer receipt, scan pins, stage3.json, the upload plan, the previous release) into one ordered packet: pins, evidence,
+ * standard image-build result, scan pins, stage3.json, the upload plan, the previous release) into one ordered packet: pins, evidence,
  * migration delta, cost limits, the exact commands with their gates, smoke checks, rollback, cleanup and known risks.
  *
  * It runs no AWS command, reads no secret and no material bundle, and writes only a new directory outside the repository:
@@ -16,17 +16,56 @@ import {pathToFileURL} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {ROLES,SOURCE_ROOT,runnerSha256AtCommit} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_SERVICES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS} from './stage3-bindings.mjs';
-import {TENANT_BUDGET} from './stage3-deploy.mjs';
 
-export const SCHEMA='meri.first-chat-ship-packet/1';
+export const SCHEMA='meri.first-chat-ship-packet/2';
 const STAGE3='infra/product-preview/first-chat/stage3-deploy.mjs';
 const MIGRATE='infra/product-preview/first-chat-migrate.mjs';
-const hex64=/^[a-f0-9]{64}$/u,commit=/^[a-f0-9]{40}$/u;
+const commit=/^[a-f0-9]{40}$/u;
+const hex64=/^[a-f0-9]{64}$/u;
 export const refuse=detail=>{throw Object.assign(Error(`SHIP_PACKET_REFUSED: ${detail}`),{code:'SHIP_PACKET_REFUSED'});};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const digestOf=uri=>/@sha256:([a-f0-9]{64})$/u.exec(String(uri))?.[1]??refuse(`image ${String(uri).slice(0,120)} is not pinned by digest`);
 const cluster=deployment=>/cluster\/([A-Za-z0-9_-]+)$/u.exec(deployment.clusterArn)?.[1]??refuse('deployment.clusterArn');
-const srv=arn=>/service\/(srv-[a-z0-9]+)$/u.exec(String(arn))?.[1]??refuse(`service discovery ARN ${String(arn).slice(0,120)}`);
+
+// One reviewed topology transition, not a general configuration-drift exception.
+const NATIVE_RETIRED_PATHS=Object.freeze([
+ 'database.roles.owner','foundation.OwnerExecutionRoleArn','foundation.OwnerTaskRoleArn','foundation.ProxyExecutionRoleArn','foundation.ProxyTaskRoleArn',
+ 'model','names.owner','names.proxy','origins.ownerOrigin','origins.proxyUrl',
+ 'pinsDer.owner-bridge-ca','pinsDer.owner-server','pinsDer.proxy-owner-client','pinsDer.proxy-server',
+ 'pinsPem.owner-bridge-ca','pinsPem.owner-server','pinsPem.proxy-owner-client','pinsPem.proxy-server',
+ 'proxyClientSubject','secrets.owner/material','secrets.proxy/material'
+]);
+function configurationChange(deployment,previousDeployment){
+ const {images:now,...current}=deployment,{images:before,...previous}=previousDeployment??{};
+ if(!before)refuse('previous deployment inputs must differ from these only in images or the exact first native SDK transition');
+ let change={kind:'image-only',removed:[],added:[]};
+ if(canonicalSha256(current)!==canonicalSha256(previous)){
+  const a=structuredClone(current),b=structuredClone(previous);
+  const denied=()=>refuse('previous deployment inputs must differ from these only in images or the exact first native SDK transition');
+  for(const path of NATIVE_RETIRED_PATHS){
+   const keys=path.split('.'),key=keys.pop(),parent=o=>keys.reduce((v,k)=>v?.[k],o);
+   const old=parent(b),next=parent(a);
+   if(!old||!Object.hasOwn(old,key)||next&&Object.hasOwn(next,key))denied();
+   delete old[key];
+  }
+  if(Object.hasOwn(b.foundation??{},'RunnerTaskRoleArn')||a.foundation?.RunnerTaskRoleArn!=='arn:aws:iam::967807252336:role/MeriPreview-runner-task')denied();
+  delete a.foundation.RunnerTaskRoleArn;
+  if(canonicalSha256(a)!==canonicalSha256(b))denied();
+  change={kind:'first-native-sdk',removed:[...NATIVE_RETIRED_PATHS],added:['foundation.RunnerTaskRoleArn']};
+ }
+ if(canonicalSha256(now)===canonicalSha256(before))refuse('the images equal the previous release: nothing to ship');
+ return change;
+}
+
+/** The CLI records its own clean operator checkout, independently of the image source. */
+export function readOperatorSource(sourceRoot=SOURCE_ROOT){
+ try{
+  const git=args=>execFileSync('git',['-C',sourceRoot,...args],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();
+  const [head,tree]=git(['rev-parse','HEAD','HEAD^{tree}']).split(/\r?\n/u);
+  if(!commit.test(head??'')||!commit.test(tree??'')||git(['status','--porcelain','--untracked-files=all']))refuse('operator checkout must be clean');
+  return {commit:head,tree};
+ }catch(error){if(error?.code==='SHIP_PACKET_REFUSED')throw error;refuse('a clean operator Git checkout is required');}
+}
 
 /** Every planned entry of a first-chat-migrate.mjs source text (the PLAN array is declared data): kind, source, sha256, stage. */
 export function planEntries(text){
@@ -35,39 +74,43 @@ export function planEntries(text){
  return [...block.matchAll(/\[\s*'([a-z_:]+)'\s*,\s*([^\n]*?),\s*'([a-f0-9]{64})'(?:\s*,\s*'([a-z]+)')?\s*\]/gu)].map(([,kind,source,digest,stage])=>
   ({kind,source:source.trim(),sha256:digest,stage:stage??(kind==='phase:temporal_grants'?'temporal':'meri')}));
 }
-/** The release's migration delta. The 'meri' and 'temporal' stages are ledgered, and the ledger accepts only an exact prefix, so
- * their entries may be appended, never removed, edited or reordered. 'integration' entries are applied only by an explicit
- * integration run (approved, not applied), so they are reported separately and never make the release's migrate run required. */
+/** All stages share one ordinal-exact ledger. Earlier entries may not be removed, edited, moved or reassigned to a stage.
+ * This is a source delta, not proof of database state: the actual ledger still determines every pending stage. */
 export function migrationDelta(previous,current){
- const ledgered=entries=>entries.filter(e=>e.stage!=='integration'),integration=entries=>entries.filter(e=>e.stage==='integration');
- const before=ledgered(previous),now=ledgered(current),kept=new Set(now.map(e=>e.sha256));
- const removed=before.filter(e=>!kept.has(e.sha256));
- if(removed.length)refuse(`migration plan drops or edits ledgered entries: ${removed.map(e=>e.source).join(', ')}`);
- if(now.slice(0,before.length).some((e,i)=>e.sha256!==before[i].sha256))refuse('migration plan reorders ledgered entries');
- const added=now.slice(before.length);
- return {previousEntries:before.length,currentEntries:now.length,added,required:added.length>0,
-  integrationChanged:canonicalSha256(integration(previous).map(e=>e.sha256))!==canonicalSha256(integration(current).map(e=>e.sha256))};
+ const identity=e=>[e.kind,e.source,e.sha256,e.stage];
+ if(current.length<previous.length)refuse('migration plan drops ledgered entries');
+ if(previous.some((e,i)=>canonicalSha256(identity(e))!==canonicalSha256(identity(current[i]))))refuse('migration plan edits or reorders ledgered entries');
+ const added=current.slice(previous.length),stages=added.map(e=>e.stage).filter((stage,i,a)=>i===0||stage!==a[i-1]);
+ return {previousEntries:previous.length,currentEntries:current.length,added,required:added.length>0,stages,
+  integrationChanged:added.some(e=>e.stage==='integration')};
 }
 
 /** Cross-checks the reviewed inputs; any disagreement refuses before a packet exists. */
 export function checkInputs({deployment,previousDeployment,runtime,receipt,receiptSha256,imageScans,stage3,upload,measuredRunnerSha256}){
- const images=deployment?.images,previous=previousDeployment?.images;
+ const images=deployment?.images;
  if(deployment?.schemaVersion!==1||!images)refuse('deployment inputs');
- if(`sha256:${digestOf(images.nodeRuntime)}`!==receipt.imageDigest||images.nodeRuntimeSourceCommit!==receipt.sourceCommit)refuse('deployment images.nodeRuntime is not the image the producer receipt describes');
+ // Root authenticates S3/CodeBuild provenance and fresh digest-bound scans before release.
+ // This offline packet binds the reviewed result bytes; local JSON is not an AWS attestation.
+ if(!receipt||typeof receipt!=='object'||Array.isArray(receipt)||typeof receipt.sourceCommit!=='string'||!commit.test(receipt.sourceCommit)||
+  typeof receipt.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(receipt.imageDigest))refuse('image build result source/digest');
+ if(typeof receipt.sourceVersion!=='string'||receipt.sourceVersion.length>1024||receipt.sourceVersion==='null'||
+  !/^[A-Za-z0-9._~+/=-]+$/u.test(receipt.sourceVersion))refuse('image build result sourceVersion');
+ if(receipt.platform!=='linux/arm64')refuse('image build result platform');
+ if(`sha256:${digestOf(images.nodeRuntime)}`!==receipt.imageDigest||images.nodeRuntimeSourceCommit!==receipt.sourceCommit)refuse('deployment images.nodeRuntime is not the image the build result describes');
  if(receipt.scanStatus!=='COMPLETE')refuse('image scan is not COMPLETE');
- for(const severity of ['CRITICAL','HIGH'])if(Number(receipt.findingSeverityCounts?.[severity]??0)!==0)refuse(`image scan has ${severity} findings`);
- if(imageScans?.nodeRuntime!==receiptSha256||!hex64.test(imageScans?.proxy??''))refuse('image-scans.nodeRuntime must be the sha256 of the producer receipt file');
+ const counts=receipt.findingSeverityCounts;
+ if(!counts||typeof counts!=='object'||Array.isArray(counts)||!Object.values(counts).every(n=>Number.isSafeInteger(n)&&n>=0))refuse('image scan findingSeverityCounts');
+ for(const severity of ['CRITICAL','HIGH'])if((counts[severity]??0)!==0)refuse(`image scan has ${severity} findings`);
+ if(typeof receiptSha256!=='string'||!hex64.test(receiptSha256)||imageScans?.nodeRuntime!==receiptSha256)refuse('image-scans.nodeRuntime must be the sha256 of the image build result file');
  const runner=runtime?.preparationIntent?.runnerSha256;
- if(!measuredRunnerSha256)refuse('the node runtime source commit is not available locally: fetch it');
- if(runner!==receipt.runnerSha256||runner!==measuredRunnerSha256)refuse('runnerSha256 differs between runtime values, producer receipt and conversation-runner.mjs at the source commit');
+ if(typeof measuredRunnerSha256!=='string'||!hex64.test(measuredRunnerSha256))refuse('the node runtime source commit is not available locally: fetch it');
+ if(runner!==measuredRunnerSha256)refuse('runnerSha256 differs between runtime values and conversation-runner.mjs at the image source commit');
  if(stage3?.schemaVersion!==1)refuse('stage3.json');
  for(const [role,family] of Object.entries(STAGE3_FAMILIES))if(!new RegExp(`task-definition/${family}:[1-9][0-9]*$`,'u').test(stage3.taskDefinitions?.[role]??''))refuse(`stage3 task definition for ${role}`);
  if(JSON.stringify(upload?.roles?.map(r=>r.role))!==JSON.stringify(ROLES))refuse('upload plan roles');
  for(const r of upload.roles)if(r.secretArn!==deployment.secrets[MATERIAL_SECRET_KEYS[r.role]])refuse(`upload plan secret for ${r.role}`);
  for(const r of upload.roles)if(!Array.isArray(r.labelsBefore)||r.labelsBefore.includes(upload.label))refuse(`upload plan for ${r.role} lacks a before-upload label readback without ${upload.label}`);
- const {images:a,...restNow}=deployment,{images:b,...restBefore}=previousDeployment??{};
- if(!previous||canonicalSha256(restNow)!==canonicalSha256(restBefore))refuse('previous deployment inputs must differ from these only in images');
- if(canonicalSha256(a)===canonicalSha256(b))refuse('the images equal the previous release: nothing to ship');
+ return configurationChange(deployment,previousDeployment);
 }
 
 const command=(argv,{stdout,note}={})=>({argv,...(stdout?{stdout}:{}),...(note?{note}:{})});
@@ -80,12 +123,13 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  const steps=[{id:'readback',title:'Revisions unchanged since stage3.json (any registration in between forces a new render)',
   commands:fam.flatMap(family=>['ACTIVE','INACTIVE'].map(status=>command(['aws','ecs','list-task-definitions','--region','us-east-1','--family-prefix',family,'--status',status,'--sort','DESC','--max-items','1','--query','taskDefinitionArns[0]','--output','text']))),
   gate:'the highest ACTIVE/INACTIVE revision of every family is one below stage3.json taskDefinitions (an unchanged runner keeps its revision)'}];
- if(migrations.required)steps.push({id:'migrate',title:`Apply ${migrations.added.length} new migration(s) (stage meri) before any stack update`,
-  commands:[command(['node',MIGRATE,'plan'],{note:'offline: confirms the planned files and hashes'})],
-  gate:'the d2-migrate one-shot task (docs/shipping/20261017/D2-DATABASE.md; its task definition is not in this repository) reports the ledger as the exact plan prefix'});
- steps.push({id:'upload',title:`Stage the five rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
+ steps.push({id:'migrate',title:'Verify the full migration ledger and apply any pending stages before uploads or stack updates',
+  commands:[command(['node',MIGRATE,'plan'],{note:'offline: confirms all planned files and hashes; the source delta does not establish applied database state'}),
+   ...migrations.stages.map(stage=>command(['node',MIGRATE,stage],{note:'run through the existing d2-migrate owner only after snapshot, isolated rehearsal and actual ledger verification; if earlier stages are pending, complete those first in plan order'}))],
+  gate:`inspect the one persistent preview clone ledger; before any forward SQL, verify a fresh snapshot and isolated rehearsal of its pending prefix and grants. The existing d2-migrate owner must report all ${migrations.currentEntries} entries applied with exact ordinals, names and hashes, including integration. Never infer completion from an unchanged source plan or re-clone the database`});
+ steps.push({id:'upload',title:`Stage the ${ROLES.length} rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
   commands:upload.roles.flatMap(r=>[command(r.command,{note:`append "${r.role}<TAB>VersionId" to ${W('secret-versions.tsv')}; on an uncertain outcome resend this exact command`}),command(r.readback)]),
-  gate:`five new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
+  gate:`${ROLES.length} new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
  steps.push({id:'bindings',title:'Live readbacks, then bindings and the update templates',
   commands:[command(['aws','cloudformation','get-template','--region','us-east-1','--stack-name',STAGE3_STACKS.app,'--template-stage','Original','--query','TemplateBody','--output','json'],{stdout:W('app.live.template.json')}),
    command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name','<foundation stack>','--query','Stacks[0].Outputs'],{stdout:W('foundation-live.json')}),
@@ -93,10 +137,7 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
    command(['node',STAGE3,'bindings','--deployment-inputs','<deployment-inputs.json>','--foundation-outputs',W('foundation-live.json'),'--private-edge-outputs',W('private-edge-outputs.json'),
     '--rendered',W('rendered'),'--secret-versions',W('secret-versions.tsv'),'--image-scans','<image-scans.json>','--live-app-template',W('app.live.template.json'),'--out',W('bindings')])],
   gate:'STAGE3_BINDINGS_WRITTEN; rerun this packet with --bindings to pin the template hashes'});
- const gates={model:{wait:wait('model-owner','model-proxy'),checks:[command(['aws','servicediscovery','list-instances','--region','us-east-1','--service-id',srv(f.OwnerDiscoveryServiceArn)]),
-   command(['aws','servicediscovery','list-instances','--region','us-east-1','--service-id',srv(f.ProxyDiscoveryServiceArn)]),logs(f.OwnerLogGroupName,'"PRODUCT_OWNER_UNAVAILABLE"'),logs(f.ProxyLogGroupName,'"REFUSED"')],
-   gate:'owner and proxy 1/1/0 on the new revisions, RUNNING past 120 s, one Cloud Map instance each; one owner restart (PRODUCT_OWNER_UNAVAILABLE ~184 s) is expected while the old proxy overlaps, its replacement must pass'},
-  issuer:{wait:wait('temporal-issuer'),checks:[logs(f.IssuerLogGroupName,'"runtime.listening"')],
+ const gates={issuer:{wait:wait('temporal-issuer'),checks:[logs(f.IssuerLogGroupName,'"runtime.listening"')],
    gate:'issuer runtime.listening on the new revision; from here the running control and worker are refused until the app update lands: continue immediately'},
   app:{wait:wait('control','temporal-worker'),checks:[logs(f.ControlLogGroupName,'"runtime.listening"'),logs(f.WorkerLogGroupName,'"runtime.listening"'),
    command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',deployment.privateEdge.controlPrivateTargetGroupArn]),
@@ -113,51 +154,64 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  }
  steps.push({id:'verify',title:'Every deployed task definition is the rendered revision',
   commands:[...STAGE3_DEPLOY_ORDER.map(key=>command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name',STAGE3_STACKS[key],'--query','Stacks[0].Outputs'],{stdout:W(`${key}.outputs.json`)})),
-   command(['node',STAGE3,'verify-outputs','--bindings',W('bindings'),'--app',W('app.outputs.json'),'--model',W('model.outputs.json'),'--issuer',W('issuer.outputs.json')])],
-  gate:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER for all six task definitions; a mismatch means re-render, never patch'});
+   command(['node',STAGE3,'verify-outputs','--bindings',W('bindings'),'--app',W('app.outputs.json'),'--issuer',W('issuer.outputs.json')])],
+  gate:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER for all four task definitions; a mismatch means re-render, never patch'});
  return steps;
 }
 
 /** The packet object. Pure: callers supply file bytes, git readings and the clock-free inputs. */
 export function buildShipPacket(i){
- checkInputs(i);
+ const configuration=checkInputs(i);
  const {deployment,previousDeployment,runtime,receipt,stage3,upload,bindings,migrations,ceilingUsd,work,hashes}=i;
+ if(!i.operatorSource||!commit.test(i.operatorSource.commit??'')||!commit.test(i.operatorSource.tree??''))refuse('operator source commit/tree');
  if(!Number.isFinite(ceilingUsd)||ceilingUsd<=0)refuse('--ceiling-usd must be the positive authorized allocation for this cycle');
  if(!isAbsolute(work))refuse('--work must be an absolute path');
  if(bindings){
   if(JSON.stringify(bindings.plan.order)!==JSON.stringify(STAGE3_DEPLOY_ORDER))refuse('deploy plan order');
   for(const [role,arn] of Object.entries(stage3.taskDefinitions))if(bindings.plan.expectedTaskDefinitions?.[role]!==arn)refuse(`bindings were rendered for another ${role} revision`);
  }
- const budget=runtime.allocation?.manifest?.budgets??{};
  const packet={schema:SCHEMA,phase:bindings?'pre-deploy':'pre-upload',
-  pins:{sourceCommit:deployment.images.nodeRuntimeSourceCommit,previousSourceCommit:previousDeployment.images.nodeRuntimeSourceCommit,images:structuredClone(deployment.images),
-   runnerSha256:runtime.preparationIntent.runnerSha256,executableSha256:runtime.preparationIntent.executableSha256,versions:structuredClone(runtime.versions),
+  pins:{sourceCommit:deployment.images.nodeRuntimeSourceCommit,previousSourceCommit:previousDeployment.images.nodeRuntimeSourceCommit,
+   operatorSource:{commit:i.operatorSource.commit,tree:i.operatorSource.tree},images:structuredClone(deployment.images),
+   runnerSha256:runtime.preparationIntent.runnerSha256,versions:structuredClone(runtime.versions),
    label:upload.label,taskDefinitions:structuredClone(stage3.taskDefinitions),inputs:structuredClone(hashes),
    ...(bindings?{templates:bindings.templates}:{})},
-  evidence:{producerBuild:receipt.buildId,scanStatus:receipt.scanStatus,findingSeverityCounts:structuredClone(receipt.findingSeverityCounts??{}),glibcVersion:receipt.glibcVersion,
-   nodeVersion:receipt.nodeVersion,archiveSha256:receipt.archiveSha256,sourceManifestSha256:receipt.sourceManifestSha256,
-   required:['24/24 Linux cases B01-B06 R01-R06 W01-W12 in the producer','launch measurement: 7/7 gates PASS and MEASUREMENT_VERIFIED_AND_ASSEMBLED','independent review of the measurement result']},
+  evidence:{sourceCommit:receipt.sourceCommit,sourceVersion:receipt.sourceVersion,imageDigest:receipt.imageDigest,platform:receipt.platform,
+   scanStatus:receipt.scanStatus,findingSeverityCounts:structuredClone(receipt.findingSeverityCounts),
+   required:['exact-source ARM64 image build, native SDK/Temporal/SWC imports and artifact execution under the service identity',
+    'digest-bound image scans with zero HIGH/CRITICAL and reviewed dispositions for other findings',
+    'independent exact-head review, native PostgreSQL migration/run accounting and Linux material gates']},
+  configuration,
+  prerequisites:[
+   'root authenticates the frozen previous inputs against actual release evidence; if the original archive is unavailable, label them reconstructed previous state and retain reviewed live readbacks, hashes and field lineage separately; never rewrite historical inputs to pass this comparison',
+   ...(configuration.kind==='first-native-sdk'?['before render, apply the reviewed additive foundation change: the canonical runner task role and Bedrock permissions, control PassRole and runner egress; retain old model resources and all six owner/proxy discovery, log and security-group outputs until replacement acceptance, then take fresh foundation readbacks']:[]),
+   'Temporal is a separate prerequisite: qualify its native ARM image and source-based binding, preserve the selected issuer CA and existing TLS/JWKS controls, and review its actual live service counts; the stopped DesiredCount0 template is not a live update',
+   'complete required review and gates, verify the clone snapshot and full ledger, then hold the preview deploy lock through the coordinated update; root performs live browser acceptance before retiring old resources'
+  ],
   migrations,
-  costLimits:{cycleCeilingUsd:ceilingUsd,perRunMaxUsd:Number(runtime.runtime?.maxCostMicroUSD??budget.maxCostMicroUSD??0)/1e6,maxTurns:runtime.runtime?.maxTurns??budget.maxTurns??null,
-   tenantMonthlyCapUsd:TENANT_BUDGET.monthlyCapMicroUsd/1e6,tenantMaxConcurrentRuns:TENANT_BUDGET.maxConcurrentRuns,
-   rule:'no CodeBuild retry, no fresh chat or model request without its own authorization; an uncertain submission is observed, never resubmitted'},
+  costLimits:{cycleCeilingUsd:ceilingUsd,policySource:'canonical tenant settings at run admission; SDK per-run limits and one terminal usage record',
+   rule:'the release does not initialize or override tenant caps; observe uncertain submissions before any retry'},
   steps:releaseSteps({deployment,stage3,upload,migrations,work,bindingsPlan:bindings?.plan}),
   smoke:[command(['curl','--fail','--max-time','10','https://meri-preview.capiro.ai/health/live']),
-   {note:'a chat is a separate, explicitly authorized acceptance (plan D3: two turns, reconnect, stop, isolation); this packet authorizes none'}],
+   {note:'after deployment health, root runs the required preview acceptance within the authorized Wave2 scope and records exact source/image pins'}],
   rollback:{rule:'forward redeploy: the rendered material pins exact task-definition revisions and a failed or rolled-back update burns them, so UpdateService to an old revision cannot roll back',
    images:structuredClone(previousDeployment.images),
-   steps:['readback revisions','render all five roles with the previous images and runtime values','upload under a NEW label','bindings','model, issuer, app with the gates above','verify-outputs']},
-  cleanup:['deregister any probe task definition used for diagnosis','keep the private working directory, tokens and upload receipts for audit','keep earlier secret versions; each secret holds at most 100 versions',
+   steps:configuration.kind==='first-native-sdk'?
+    ['old images alone cannot roll back this topology transition; preserve reviewed previous configuration, compatible historical renderer and model resources until acceptance',
+     'review a separate rollback against actual live topology and applied migrations, using fresh revisions and material; never feed old model-dependent images into the native renderer',
+     'after old model resources retire, use only a separately proven native-compatible forward recovery']:
+    ['readback revisions','verify rollback source compatibility with applied migrations and the current service topology','render current roles with compatible rollback images and runtime values','upload under a NEW label','bindings','issuer, app with the gates above','verify-outputs']},
+  cleanup:['deregister any probe task definition used for diagnosis','retain scrubbed command/upload receipts; remove scratch private PKI, secret-value files and rendered bundles on success or failure','prune obsolete version labels under the existing secret retention policy',
    'CloudFormation deregisters the replaced task-definition revisions'],
   risks:['the static candidate grant and deadline expire 15 minutes after render (real chats use dynamic runs)',
-   'material validity is 7 days after render: owner and proxy refuse to start after that, so re-render before then',
+   'static material expiry and certificate validity must cover startup; render immediately before deployment',
    'compatible image replacement: admitted conversations can continue from the latest published checkpoint when SDK, CLI, contracts and checkpoint format are unchanged; fresh authentication and owner, client and policy checks still apply',
    'incompatible SDK or format: changed SDK/CLI refuses checkpoint continuation with NEXT_TURN_SDK_CHANGED; changed contracts/checkpoint format refuses with NEXT_TURN_FORMAT_CHANGED; this packet neither migrates nor seeds an incompatible session',
    'unfinished or in-flight work: fresh issuance can re-prepare an unstarted original, but a started run is never rebound; a successor waits for terminal state and proven retirement/revocation (or proved no-authority), using the latest published checkpoint or a fresh SDK session if none exists, never partial work',
-   'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required; this packet authorizes no acceptance turns',
+   'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required',
    'between the issuer and app updates control and the worker are refused (RUNTIME_UNAVAILABLE): run the app update immediately',
    'worker AZ rebalancing stays ENABLED (only control changes); a first worker task can be refused while the old one overlaps',
-   'owner, proxy and Core authority have no positive readiness signal: only a real chat proves Core authority']};
+   'service health alone does not establish chat or Core data access; complete the live acceptance before announcing readiness']};
  return {...packet,packetSha256:canonicalSha256(packet)};
 }
 
@@ -166,7 +220,9 @@ const line=c=>c.argv?`${c.argv.map(shellWord).join(' ')}${c.stdout?` > ${shellWo
 export function renderMarkdown(p){
  const out=[`# Meri first-chat ship packet (${p.phase})`,'',`Packet sha256 \`${p.packetSha256}\`. Source \`${p.pins.sourceCommit}\` replaces \`${p.pins.previousSourceCommit}\`. Label \`${p.pins.label}\`.`,
   '','## Pins','','```json',JSON.stringify(p.pins,null,1),'```','','## Evidence','','```json',JSON.stringify(p.evidence,null,1),'```','',
-  '## Migrations','',p.migrations.required?`${p.migrations.added.length} new entries must be applied first:\n\n${p.migrations.added.map(e=>`- ${e.source} \`${e.sha256}\``).join('\n')}`:'None: the migration plan is unchanged since the previous release.',
+  '## Migrations','',p.migrations.required?`${p.migrations.added.length} new source-plan entries require ledger verification and application if pending:\n\n${p.migrations.added.map(e=>`- ${e.stage}: ${e.source} \`${e.sha256}\``).join('\n')}`:'No new source-plan entries. This does not prove database completion; verify the actual full ledger and apply any pending stages before release.',
+  '','## Configuration change','','```json',JSON.stringify(p.configuration,null,1),'```',
+  '','## Prerequisites','',...p.prerequisites.map(s=>`- ${s}`),
   '','## Cost limits','','```json',JSON.stringify(p.costLimits,null,1),'```','','## Steps',''];
  for(const [n,s] of p.steps.entries())out.push(`### ${n+1}. ${s.title}`,'','```bash',...s.commands.map(line),'```','',`Gate: ${s.gate}`,'');
  out.push('## Smoke','','```bash',...p.smoke.map(line),'```','','## Rollback','',p.rollback.rule,'',...p.rollback.steps.map(s=>`- ${s}`),'','## Cleanup','',...p.cleanup.map(s=>`- ${s}`),'','## Risks','',...p.risks.map(s=>`- ${s}`),'');
@@ -174,8 +230,10 @@ export function renderMarkdown(p){
 }
 
 const USAGE=`Usage: node infra/product-preview/first-chat/ship-packet.mjs --deployment-inputs F --previous-deployment-inputs F --runtime runtime-values.json
-  --node-receipt product-image-receipt.json --image-scans F --stage3 stage3.json --upload-plan upload-plan.json --work <private working dir>
-  --ceiling-usd N --out NEW_DIR [--bindings DIR]`;
+  --node-receipt image-evidence/result.json --image-scans F --stage3 stage3.json --upload-plan upload-plan.json --work <private working dir>
+  --ceiling-usd N --out NEW_DIR [--bindings DIR]
+Run from a clean operator checkout; its commit/tree are recorded separately from the image source.
+Root must authenticate the source/S3/CodeBuild result and obtain fresh digest-bound scans before release; this offline packet checks local pins only.`;
 const json=async path=>JSON.parse(await readFile(path,'utf8'));
 const gitShow=(rev,path)=>execFileSync('git',['-C',SOURCE_ROOT,'show',`${rev}:${path}`],{encoding:'utf8',maxBuffer:4*1024*1024,stdio:['ignore','pipe','ignore']});
 
@@ -185,6 +243,7 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
  for(let i=0;i<argv.length;i+=2){if(!argv[i].startsWith('--')||argv[i+1]===undefined){err(USAGE+'\n');return 2;}a[argv[i].slice(2)]=argv[i+1];}
  try{
   for(const key of ['deployment-inputs','previous-deployment-inputs','runtime','node-receipt','image-scans','stage3','upload-plan','work','ceiling-usd','out'])if(!a[key])refuse(`--${key} is required`);
+  const operatorSource=readOperatorSource();
   const files=Object.fromEntries(await Promise.all(['deployment-inputs','previous-deployment-inputs','runtime','node-receipt','image-scans','stage3','upload-plan'].map(async key=>[key,await readFile(a[key])])));
   const parse=key=>JSON.parse(files[key].toString('utf8'));
   const deployment=parse('deployment-inputs'),previousDeployment=parse('previous-deployment-inputs');
@@ -198,7 +257,7 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
    for(const key of STAGE3_DEPLOY_ORDER){const body=await readFile(join(dir,`${key}.template.json`));templates[key]={sha256:sha(body),bytes:body.length};}
    bindings={plan,templates};
   }
-  const packet=buildShipPacket({deployment,previousDeployment,runtime:parse('runtime'),receipt:parse('node-receipt'),receiptSha256:sha(files['node-receipt']),
+  const packet=buildShipPacket({deployment,previousDeployment,operatorSource,runtime:parse('runtime'),receipt:parse('node-receipt'),receiptSha256:sha(files['node-receipt']),
    imageScans:parse('image-scans'),stage3:parse('stage3'),upload:parse('upload-plan'),bindings,
    measuredRunnerSha256:runnerSha256AtCommit(deployment.images.nodeRuntimeSourceCommit),migrations:migrationDelta(previousPlan,currentPlan),
    ceilingUsd:Number(a['ceiling-usd']),work:a.work,hashes:Object.fromEntries(Object.entries(files).map(([key,bytes])=>[key,sha(bytes)]))});

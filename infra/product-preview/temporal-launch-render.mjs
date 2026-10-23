@@ -1,6 +1,7 @@
 /** Pure production configuration for the pinned Temporal 1.32.1 server. */
 import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
-const SERVER_DIGEST='sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e';
+import imagePins from './temporal-image-pins.json' with {type:'json'};
+const SERVER_SOURCE_COMMIT=imagePins.serverSource.commit;
 const SERVICE_ROLE=Object.freeze({frontend:'frontend',history:'history',matching:'matching','internal-worker':'worker','internal-frontend':'internal-frontend'});
 const ROLE_PORTS=Object.freeze({frontend:[7233,6933,7243],history:[7234,6934],matching:[7235,6935],worker:[7239,6939],'internal-frontend':[7236,6936,7246]});
 const fail=()=>{throw Error('TEMPORAL_LAUNCH_REFUSED');};
@@ -23,7 +24,7 @@ export function validateTemporalLaunch(env,argv){
  if(argv[0]!==role||env.MERI_TEMPORAL_ROLE!==role)fail();
  exact(env,'MERI_TEMPORAL_ACTIVATION','approved');
  exact(env,'MERI_TEMPORAL_PREVIEW_REQUIRED','1');
- exact(env,'MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST',SERVER_DIGEST);
+ exact(env,'MERI_TEMPORAL_UPSTREAM_SOURCE_COMMIT',SERVER_SOURCE_COMMIT);
  required(env,'MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256',hex64);
  const commit=required(env,'MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT',/^[a-f0-9]{40}$/u);
  exact(env,'MERI_TEMPORAL_IMAGE_SOURCE_COMMIT',commit);

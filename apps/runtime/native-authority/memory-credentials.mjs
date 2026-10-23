@@ -29,7 +29,7 @@ export function createMemoryCredentialBroker(options){
  if(relay!==null&&(typeof relay.nativeCredentialFor!=='function'||types.isProxy(c.nativeCredentials)||types.isProxy(relay.nativeCredentialFor)))throw fault('MEMORY_CREDENTIAL_CONFIGURATION');
  const secretFile=filePath(c.serviceSecretFile),candidate=c.configuration?.nativeCandidate;
  // Marked candidate credential files (absent outside the prepared-candidate deployment): never the secret file, never a bearer.
- const reserved=candidate===undefined?[]:[candidate.identity?.credentialFile,candidate.taskCapabilityFile,candidate.controlCapabilityFile,candidate.proxyCredentialFile].filter(p=>p!==undefined).map(filePath);
+ const reserved=candidate===undefined?[]:[candidate.identity?.credentialFile,candidate.taskCapabilityFile,candidate.controlCapabilityFile].filter(p=>p!==undefined).map(filePath);
  if(reserved.includes(secretFile))throw fault('MEMORY_CREDENTIAL_CONFIGURATION');
  let forbidden=null;
  /** Digests of the reserved credentials, read once on first use (the family factory is synchronous and reads nothing). */

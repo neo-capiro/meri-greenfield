@@ -16,7 +16,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from test_temporal_image_build import context, sealed_repository  # noqa: E402
+from test_temporal_image_build import BASH, context, sealed_repository  # noqa: E402
 
 SCRIPT = HERE / "temporal-image-start.sh"
 AWS_STUB = r"""#!/usr/bin/env bash
@@ -51,6 +51,7 @@ class TemporalStartTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.tmp = Path(tempfile.mkdtemp(prefix="temporal-start-"))
+        cls.addClassCleanup(shutil.rmtree, cls.tmp, True)
         cls.repo, cls.commit = sealed_repository(cls.tmp)
         (cls.tmp / "inputs").mkdir()
         cls.seal = context.seal(cls.repo, cls.commit, cls.tmp / "ca.pem", cls.tmp / "inputs" / "temporal-context.zip")
@@ -71,7 +72,7 @@ class TemporalStartTests(unittest.TestCase):
         return env
 
     def start(self, zip_sha, **extra):
-        return subprocess.run(["bash", SCRIPT.as_posix(), self.commit, (self.tmp / "inputs").as_posix(), zip_sha],
+        return subprocess.run([BASH, SCRIPT.as_posix(), self.commit, (self.tmp / "inputs").as_posix(), zip_sha],
                               env=self.env(**extra), capture_output=True, text=True, timeout=120)
 
     def test_dry_run_is_default_and_prints_the_exact_request_without_aws(self):
@@ -87,6 +88,8 @@ class TemporalStartTests(unittest.TestCase):
         self.assertEqual((req["projectName"], req["timeoutInMinutesOverride"], req["queuedTimeoutInMinutesOverride"],
                           req["autoRetryLimitOverride"], req["sourceTypeOverride"], req["artifactsOverride"]),
                          ("meri-greenfield-qualification-build", 30, 5, 0, "S3", {"type": "NO_ARTIFACTS"}))
+        self.assertEqual((req["environmentTypeOverride"], req["imageOverride"], req["computeTypeOverride"], req["privilegedModeOverride"]),
+                         ("ARM_CONTAINER", "aws/codebuild/amazonlinux2-aarch64-standard:3.0", "BUILD_GENERAL1_LARGE", True))
         self.assertEqual(req["sourceLocationOverride"],
                          f"meri-greenfield-qual-build-967807252336-us-east-1/inputs/temporal-image/{self.commit}/temporal-context.zip")
         self.assertEqual((req["idempotencyToken"], req["sourceVersion"]), ("<ATTEMPT_32_HEX>", "<SOURCE_VERSION_ID>"))
@@ -105,12 +108,12 @@ class TemporalStartTests(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("ZIP_SHA256_MISMATCH", r.stderr)
         self.assertEqual(r.stdout, "")
-        r = subprocess.run(["bash", SCRIPT.as_posix(), "abc", "x", "y"], env=self.env(), capture_output=True, text=True, timeout=60)
+        r = subprocess.run([BASH, SCRIPT.as_posix(), "abc", "x", "y"], env=self.env(), capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 2)
 
     def check(self, call, **stub):
         snippet = 'source "$1"; if ' + call + '; then echo PROVEN; else echo REFUSED; fi'
-        r = subprocess.run(["bash", "-c", snippet, "bash", SCRIPT.as_posix()],
+        r = subprocess.run([BASH, "-c", snippet, "bash", SCRIPT.as_posix()],
                            env=self.env(TEMPORAL_IMAGE_START_LIBRARY="1", **stub), capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stderr)
         return r.stdout.strip()

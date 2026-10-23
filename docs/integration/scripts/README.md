@@ -1,5 +1,7 @@
 # Operational scripts Fable used for the Meri preview (reference copies, 2026-10-18)
 
+> Historical evidence only, superseded on 23 October 2026 by the [Codex workflow](../../handover/20261022/CODEX-VALIDATION-AND-SHIPPING.md). The generated image-proof pipeline and its old qualification launchers/comparator helpers have been removed. Commands, roles, holds and source pins below describe the dated run; recover removed scripts from Git history only to inspect that evidence. Do not execute these procedures for a current release.
+
 These are the exact scripts Fable ran from a Windows host (Git Bash) against `capiro-dev` / us-east-1 for the first-chat preview cycles N8–N21 and the frontend rev 17 line. They are committed so that the procedure is in GitHub; **they are not runnable as-is elsewhere**: the `S=` / `W=` / `R=` variables point at Fable's local scratchpad and worktrees, and every AWS call assumes the `capiro-dev` profile with its existing authority. No credentials, tokens or secret values are embedded (they read nothing but resource names, ARNs and build ids).
 
 | Script | What it does |

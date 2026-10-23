@@ -17,8 +17,6 @@ import {parseTemporalIssuerRuntimeConfiguration,startTemporalIssuerRuntime} from
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
 import {assertFirstRunGrantBindings} from '../../../apps/runtime/prepared-candidate.mjs';
-import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
-import {parseProductProxyStartupConfiguration} from '../../../apps/proxy/product/startup-config.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const fixture=createRenderFixture();
@@ -27,7 +25,7 @@ async function setup(){inputs=await fixture.setup();work=fixture.work;pkiDir=fix
 async function render(change,options){await setup();return fixture.render(change,options);}
 test.after(()=>fixture.cleanup());
 
-test('all five roles render from throwaway PKI and pass every repository validator and material plan',async t=>{
+test('all three remaining roles render from throwaway PKI and pass every repository validator and material plan',async t=>{
  const {roles,summary}=await render();
  t.diagnostic('fileCount/bundleBytes/expectedBytes '+JSON.stringify(Object.fromEntries(ROLES.map(r=>[r,[summary.roles[r].fileCount,summary.roles[r].bundleBytes,summary.roles[r].expectedBytes]]))));
  const parsed=role=>JSON.parse(roles[role].configBytes.toString('utf8'));
@@ -41,13 +39,8 @@ test('all five roles render from throwaway PKI and pass every repository validat
  assert.deepEqual(summary.wiring.control.environment.find(e=>e.name==='NODE_EXTRA_CA_CERTS'),{name:'NODE_EXTRA_CA_CERTS',value:CONTROL_NODE_CA_FILE});
  assert.deepEqual(summary.wiring.control.init.command,['write','--control-node-ca']);
  parseTemporalIssuerRuntimeConfiguration(parsed('temporal-issuer'));
- assert.equal(validateProductOwnerConfiguration(parsed('model-owner')).enabled,true);
- parseProductProxyStartupConfiguration(parsed('model-proxy'));
- // One model request makes two owner exchanges, each with fresh pair discoveries on both sides (adj-e-PROXY-DENIED.md, attempt 2).
- assert.equal(parsed('model-owner').limits.maxRequestMs,15000);assert.equal(parsed('model-proxy').ownerPeer.max_exchange_ms,15000);
- const longer=parsed('model-proxy');longer.ownerPeer.max_exchange_ms=15001;assert.throws(()=>parseProductProxyStartupConfiguration(longer));
  for(const role of ROLES){
-  const plan=compileProductMaterialPlan({role,configuration:parsed(role),runtimeUser:RUNTIME_USERS[role],...(role==='model-owner'?{controlConfiguration:control}:{})});
+  const plan=compileProductMaterialPlan({role,configuration:parsed(role),runtimeUser:RUNTIME_USERS[role]});
   assert.deepEqual(plan.requiredFiles.map(f=>f.path).sort(),Object.keys(roles[role].expected.sha256ByPath).sort(),role);
   const receipt=validateStaticProductDelivery({expected:roles[role].expected,bundle:roles[role].bundle});
   assert.equal(receipt.fileCount,roles[role].bundle.files.length);assert.equal(receipt.role,role);
@@ -59,25 +52,18 @@ test('all five roles render from throwaway PKI and pass every repository validat
  });
  // Runtime grant rule (prepared-candidate.mjs) on the delivered capability files.
  const file=path=>Buffer.from(roles.control.bundle.files.find(f=>f.path===path).base64,'base64').toString('utf8');
- assertFirstRunGrantBindings(control.nativeCandidate.grantIntents,control.nativeCandidate.grantId,{control:file(PATHS.controlCapability),task:file(PATHS.taskCapability),proxy:file(PATHS.proxyCapability)});
- // Owner pins the exact control.json bytes and identity file; the owner database file is the owner login, control's is control's.
- const owner=parsed('model-owner'),ownerFile=path=>Buffer.from(roles['model-owner'].bundle.files.find(f=>f.path===path).base64,'base64');
- assert.equal(owner.controlConfigurationSha256,roles.control.configSha256);assert.ok(ownerFile(PATHS.control).equals(roles.control.configBytes));
- assert.equal(owner.nativeCredentialFileSha256,sha(IDENTITY));
- assert.match(ownerFile(PATHS.database).toString(),/^postgresql:\/\/meri_model_budget_owner:/u);assert.match(file(PATHS.database),/^postgresql:\/\/meri_control_runtime:synthetic-control%3Ap%40ss%2Fword%3F%23@/u);
- for(const [role,path] of [['control',PATHS.database],['model-owner',PATHS.database],['temporal-issuer',PATHS.issuerDatabase]]){
-  const bytes=Buffer.from(roles[role].bundle.files.find(f=>f.path===path).base64,'base64'),uri=new URL(bytes.toString('utf8'));
-  assert.equal(uri.hostname,'capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com',role);
-  assert.equal(uri.port,'5432');assert.equal(uri.pathname,'/capiro');assert.equal(uri.search,'?sslmode=verify-full');
-  assert.equal(roles[role].expected.sha256ByPath[path],sha(bytes));
- }
+ assertFirstRunGrantBindings(control.nativeCandidate.grantIntents,control.nativeCandidate.grantId,{control:file(PATHS.controlCapability),task:file(PATHS.taskCapability)});
+ assert.match(file(PATHS.database),/^postgresql:\/\/meri_control_runtime:synthetic-control%3Ap%40ss%2Fword%3F%23@/u);
+ assert.equal(control.nativeCandidate.grantIntents.length,1);
+ assert.equal(Object.hasOwn(control.nativeCandidate,'proxyCredentialFile'),false);
+ assert.deepEqual(Object.keys(roles),['control','temporal-worker','temporal-issuer']);
  // Topology pins.
  assert.equal(control.temporal.issuerBootstrap.configuration.serverCaSha256,summary.pinsDer['server-ca']);
  assert.equal(control.temporal.issuerBootstrap.configuration.clientCaSha256,summary.pinsDer['issuer-client-ca']);
  assert.equal(roles.control.expected.sha256ByPath[PATHS.controlCa],summary.runnerPoststart.MERI_POSTSTART_CA_SHA256);
  assert.equal(roles['temporal-worker'].expected.sha256ByPath[PATHS.issuerCa],summary.runnerPoststart.MERI_POSTSTART_CA_SHA256);
- assert.equal(control.nativeCandidate.preparationIntent.launchTemplate.env.NODE_EXTRA_CA_CERTS,'/run/meri/poststart/bootstrap/control-ca.pem');
- assert.equal(summary.taskDefinitionConfigPins.MERI_PRODUCT_OWNER_CONFIG_SHA256,roles['model-owner'].configSha256);
+ assert.equal(Object.hasOwn(control.nativeCandidate.preparationIntent,'launchTemplate'),false);
+ assert.equal(Object.hasOwn(summary.taskDefinitionConfigPins,'MERI_PRODUCT_OWNER_CONFIG_SHA256'),false);
  assert.equal(summary.roles['temporal-issuer'].taskDefinitionArn,TD('issuer'));
  const authority=parsed('temporal-issuer').issuer.taskAuthority;
  assert.equal(Object.hasOwn(authority,'securityGroupIds'),false);assert.deepEqual(authority.privateSubnetIds,inputs.deployment.privateSubnetIds);
@@ -89,7 +75,7 @@ test('all five roles render from throwaway PKI and pass every repository validat
  assert.deepEqual(control.nativeCandidate.taskRequest.networkConfiguration.awsvpcConfiguration,{subnets:[inputs.deployment.privateSubnetIds[0]],securityGroups:['sg-098fc4f2ac89aa943'],assignPublicIp:'DISABLED'});
  // The summary carries no secret: no password, capability token, identity credential or private key.
  const text=JSON.stringify(summary);
- for(const secret of [...Object.values(FAKE_PASSWORDS),IDENTITY,file(PATHS.taskCapability),file(PATHS.controlCapability),file(PATHS.proxyCapability),'PRIVATE KEY'])assert.equal(text.includes(secret),false);
+ for(const secret of [...Object.values(FAKE_PASSWORDS),IDENTITY,file(PATHS.taskCapability),file(PATHS.controlCapability),'PRIVATE KEY'])assert.equal(text.includes(secret),false);
  for(const role of ROLES)assert.equal(JSON.stringify(roles[role].expected).includes('PRIVATE KEY'),false);
 });
 
@@ -118,14 +104,6 @@ test('the actual cli.mjs product gates admit control and worker (startup then fa
  }
  // Negative: the worker without the pinned server CA trust is refused by the gate itself.
  const refused=run('temporal-worker',join(dir,'worker.json'),{});assert.equal(refused.status,2);assert.match(refused.stderr,/RUNTIME_CONFIGURATION/u);
-});
-
-test('Python parse_product_proxy_startup accepts the exact proxy.json bytes and pin',async()=>{
- const {roles}=await render(),file=join(work,'proxy.json');await writeFile(file,roles['model-proxy'].configBytes);
- const script='import sys\nfrom apps.proxy.product.startup_config import parse_product_proxy_startup\nraw=open(sys.argv[1],"rb").read()\nparse_product_proxy_startup(raw,sys.argv[2])\nprint("PROXY_STARTUP_ACCEPTED")\n';
- const ok=spawnSync(python,['-c',script,file,roles['model-proxy'].configSha256],{cwd:SOURCE_ROOT,encoding:'utf8',timeout:60000});
- assert.equal(ok.status,0,ok.stderr);assert.match(ok.stdout,/PROXY_STARTUP_ACCEPTED/u);
- const bad=spawnSync(python,['-c',script,file,'0'.repeat(64)],{cwd:SOURCE_ROOT,encoding:'utf8',timeout:60000});assert.notEqual(bad.status,0);
 });
 
 test('fail closed: PENDING values, foreign subnet, mismatched pins, validity beyond certificates',async()=>{

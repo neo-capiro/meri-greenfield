@@ -9,7 +9,8 @@
  * PGSSLMODE=verify-full and PGSSLROOTCERT=<RDS CA bundle>. Migrations run as meri_product_migrator through a
  * transaction-local SET ROLE, so that NOLOGIN role owns every object. Each migration is one transaction that
  * also records the file's sha256 in meri_migration_ledger.applied. An applied file whose bytes changed is
- * refused; applied unchanged files are skipped. Every run ends with phase_release. Nothing runs on import.
+ * refused; applied unchanged files are skipped. The lock owner ends with phase_release and restores NOLOGIN
+ * once the committed ledger verifies Temporal grants. Nothing runs on import.
  */
 import {createHash,createHmac,pbkdf2Sync,randomBytes} from 'node:crypto';
 import {readFileSync} from 'node:fs';
@@ -84,7 +85,9 @@ export const PLAN=Object.freeze([
  // C12 (O117): latest-generation original bindings and run-keyed original inputs. Appended (the ledger is ordinal-exact) to the
  // integration stage, so one `integration` run applies it whether or not the earlier integration entries are already ledgered.
  // Existing grants are table-level SELECT/INSERT, so the new column needs none.
- ['migration',conversation('0020_initial_generations.sql'),'366e1aff5eea618f5ef611fa8de7f1b6e24a9c2bc0738b70a43fdaa6aec11a80','integration']
+ ['migration',conversation('0020_initial_generations.sql'),'366e1aff5eea618f5ef611fa8de7f1b6e24a9c2bc0738b70a43fdaa6aec11a80','integration'],
+ ['migration',conversation('0021_sdk_run_usage.sql'),'234433e94a6fbc68ef76b74929f7e3e54fcba1db5d15a396dcaa0f817214933c','integration'],
+ ['migration',conversation('0022_sdk_run_usage_grants.sql'),'bc03d9ed37371b0841993f05d86c521c803cb58205f668913a5f0d7eabfde4fe','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
@@ -304,10 +307,10 @@ export async function runStage({stage,plan,variables,connect,log=()=>{}}){
  if(!['meri','temporal','integration'].includes(stage))refuse('MERI_D2_STAGE');
  const script=plan.find(entry=>entry.path===DATABASE_SCRIPT).text;
  const phase=(name,extra={})=>runPsqlScript({text:script,variables:{[`phase_${name}`]:'1',...extra},connect,log});
- const main=await connect('capiro');let failure;
+ const main=await connect('capiro');let locked=false;const failures=[];
  try{
-  const locked=(await main.query("SELECT pg_try_advisory_lock(hashtextextended('meri-first-chat-d2',0)) AS locked")).rows[0]?.locked;
-  if(locked!==true)refuse('MERI_D2_ANOTHER_RUN_ACTIVE');
+  locked=(await main.query("SELECT pg_try_advisory_lock(hashtextextended('meri-first-chat-d2',0)) AS locked")).rows[0]?.locked===true;
+  if(!locked)refuse('MERI_D2_ANOTHER_RUN_ACTIVE');
   const applied=verifyLedger(await readLedger(main),plan);
   if(stage==='temporal'&&applied<plan.findIndex(entry=>entry.stage==='temporal'))refuse('MERI_D2_MERI_STAGE_INCOMPLETE');
   if(stage==='integration'&&applied<plan.findIndex(entry=>entry.stage==='integration'))refuse('MERI_D2_PRIOR_STAGE_INCOMPLETE');
@@ -320,13 +323,25 @@ export async function runStage({stage,plan,variables,connect,log=()=>{}}){
    log({event:'applied',ordinal:entry.ordinal,name:entry.name,sha256:entry.sha256});
   }
   for(const entry of plan.slice(0,applied))if(entry.stage===stage)log({event:'skipped',ordinal:entry.ordinal,name:entry.name});
- }catch(error){failure=error;}
+ }catch(error){failures.push(error);}
  try{
-  const owner=(await main.query(`SELECT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='${OWNER}') AS owner`)).rows[0]?.owner;
-  if(owner)await phase('release');log({event:'phase',phase:'release'});
- }catch(error){failure??=error;}
- finally{await main.end().catch(()=>{});}
- if(failure)throw failure;
+  if(locked){
+   try{
+    // Bootstrap reopens this login even on replay. Read committed state, including an uncertain phase COMMIT;
+    // the first Meri stage must leave the pre-Temporal sql-tool login window open.
+    const applied=verifyLedger(await readLedger(main),plan);
+    if(plan.slice(0,applied).some(entry=>entry.kind==='phase:temporal_grants'))
+     await main.query('ALTER ROLE meri_temporal_migrator WITH NOLOGIN');
+   }catch(error){failures.push(error);}
+   finally{
+    const owner=(await main.query(`SELECT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='${OWNER}') AS owner`)).rows[0]?.owner;
+    if(owner)await phase('release');log({event:'phase',phase:'release'});
+   }
+  }
+ }catch(error){failures.push(error);}
+ finally{try{await main.end();}catch(error){failures.push(error);}}
+ if(failures.length===1)throw failures[0];
+ if(failures.length>1)throw Object.assign(new AggregateError(failures,failures.map(error=>error.message).join('; '),{cause:failures[0]}),{code:failures[0].code});
 }
 
 // ---------------------------------------------------------------- process entry

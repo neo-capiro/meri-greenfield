@@ -14,10 +14,10 @@ function closed(value,keys){
     keys.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>!keys.includes(k)))fail();
  return value;
 }
-export const FOUNDATION_SECRET_ROLES=Object.freeze(['control','worker','issuer','owner','proxy','temporal','migrator']);
-// Service names are fixed so dependent policies (issuer and owner DescribeServices) need no cross-stack lookup.
+export const FOUNDATION_SECRET_ROLES=Object.freeze(['control','worker','issuer','temporal','migrator']);
+// Service names are fixed so issuer DescribeServices needs no cross-stack lookup.
 export const SERVICE_NAMES=Object.freeze({control:'meri-product-preview-control',worker:'meri-product-preview-temporal-worker',
- issuer:'meri-product-preview-temporal-issuer',owner:'meri-product-preview-owner',proxy:'meri-product-preview-proxy'});
+ issuer:'meri-product-preview-temporal-issuer'});
 export const RUNNER_FAMILY='meri-product-preview-runner';
 
 export function validateFoundationBinding(value){
@@ -60,16 +60,16 @@ export function synthesizeFirstChatFoundation(binding){
  const alb=existing(b.albSecurityGroupId,'AlbSg'),aurora=existing(b.auroraSecurityGroupId,'AuroraSg'),endpoints=existing(b.endpointSecurityGroupId,'EndpointSg');
  const group=(id,description)=>new ec2.SecurityGroup(stack,id,{vpc,allowAllOutbound:false,description,securityGroupName:`meri-preview-${id.replace(/Sg$/u,'').toLowerCase()}`});
  const g={control:group('ControlSg','Meri preview control'),worker:group('WorkerSg','Meri preview Temporal worker'),runner:group('RunnerSg','Meri preview runner'),
-  issuer:group('IssuerSg','Meri preview Temporal issuer'),proxy:group('ProxySg','Meri preview model proxy'),owner:group('OwnerSg','Meri preview proxy budget owner'),
+  issuer:group('IssuerSg','Meri preview Temporal issuer'),
   migrator:group('MigratorSg','Meri preview one-shot migrator'),dbClient:group('DbClientSg','Meri preview Aurora client marker'),
   issuerClient:group('IssuerClientSg','Meri preview issuer client marker')};
  // Every task pulls images, writes logs and reads injected secrets through the shared interface endpoints and S3 gateway.
- for(const key of ['control','worker','runner','issuer','proxy','owner','migrator']){
+ for(const key of ['control','worker','runner','issuer','migrator']){
   g[key].addEgressRule(endpoints,ec2.Port.tcp(443),'interface endpoints: ECR, logs, secrets, KMS, STS');
   g[key].addEgressRule(ec2.Peer.prefixList(b.s3PrefixListId),ec2.Port.tcp(443),'S3 gateway: ECR layers, checkpoints');
  }
- // D6 (approved): NAT 443 for ECS/EC2 APIs, Core and Clerk (control, owner, issuer) and Bedrock (proxy); no endpoint exists for them.
- for(const key of ['control','worker','issuer','owner','proxy'])g[key].addEgressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(443),'NAT 443: AWS APIs without endpoints, Core, Clerk, Bedrock');
+ // Native SDK calls Bedrock directly through runner task IAM; no model proxy hop.
+ for(const key of ['control','worker','issuer','runner'])g[key].addEgressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(443),'NAT 443: AWS APIs without endpoints, Core, Clerk, Bedrock');
  // One-shot Temporal schema task pulls the digest-pinned temporalio/admin-tools image from Docker Hub.
  g.migrator.addEgressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(443),'NAT 443: digest-pinned admin-tools image pull');
  g.control.addIngressRule(alb,ec2.Port.tcp(8080),'public ALB to control 8080 (Meri host rule only)');
@@ -79,10 +79,6 @@ export function synthesizeFirstChatFoundation(binding){
  // out-of-band pair live since the first rollout, so adopting it into this stack is a reviewed import, not a second rule.
  g.control.addEgressRule(g.runner,ec2.Port.tcp(8080),'Meri preview control to original runner readiness');
  g.runner.addIngressRule(g.control,ec2.Port.tcp(8080),'Meri preview control to original runner readiness');
- g.runner.addEgressRule(g.proxy,ec2.Port.tcp(8443),'runner model traffic to proxy');
- g.proxy.addIngressRule(g.runner,ec2.Port.tcp(8443),'runner model traffic');
- g.proxy.addEgressRule(g.owner,ec2.Port.tcp(8444),'proxy to budget owner mTLS');
- g.owner.addIngressRule(g.proxy,ec2.Port.tcp(8444),'proxy to budget owner mTLS');
  for(const key of ['control','worker'])g[key].addEgressRule(ec2.Peer.ipv4(b.vpcCidr),ec2.Port.tcp(7233),'Temporal frontend (role SGs admit only these clients)');
  g.issuerClient.addEgressRule(g.issuer,ec2.Port.tcp(8445),'issuer bootstrap, token and JWKS');
  g.issuer.addIngressRule(g.issuerClient,ec2.Port.tcp(8445),'issuer clients carrying the marker SG');
@@ -91,7 +87,7 @@ export function synthesizeFirstChatFoundation(binding){
   sourceSecurityGroupId:g.dbClient.securityGroupId,description:'Meri preview tasks carrying the DB client marker'});
 
  const logGroups={};
- for(const key of ['control','worker','runner','issuer','proxy','owner','temporal','migrator'])
+ for(const key of ['control','worker','runner','issuer','temporal','migrator'])
   logGroups[key]=new logs.LogGroup(stack,`${key}Logs`,{logGroupName:`/meri/product-preview/${key}`,retention:logs.RetentionDays.ONE_MONTH,removalPolicy:'retain'});
 
  const execution=(key,secretArns)=>{
@@ -106,7 +102,7 @@ export function synthesizeFirstChatFoundation(binding){
   return role;
  };
  const exec={control:execution('control',b.secretArns.control),worker:execution('worker',b.secretArns.worker),runner:execution('runner'),
-  issuer:execution('issuer',b.secretArns.issuer),owner:execution('owner',b.secretArns.owner),proxy:execution('proxy',b.secretArns.proxy),
+  issuer:execution('issuer',b.secretArns.issuer),
   temporal:execution('temporal',b.secretArns.temporal),migrator:execution('migrator',b.secretArns.migrator)};
  const task=key=>new iam.Role(stack,`${key}TaskRole`,{roleName:`MeriPreview-${key}-task`,assumedBy:ecsTrust()});
  const cluster=b.clusterArn,tasks=`arn:aws:ecs:${REGION}:${ACCOUNT}:task/capiro-dev/*`,service=name=>`arn:aws:ecs:${REGION}:${ACCOUNT}:service/capiro-dev/${name}`;
@@ -116,23 +112,21 @@ export function synthesizeFirstChatFoundation(binding){
   role.addToPolicy(statement(['ecs:ListTasks'],['*'],{ArnEquals:{'ecs:cluster':cluster}}));
   role.addToPolicy(statement(['ecs:DescribeTaskDefinition','ec2:DescribeNetworkInterfaces'],['*']));
  };
- const control=task('control');
+ const control=task('control'),runner=task('runner');
  control.addToPolicy(statement(['ecs:RunTask'],[`arn:aws:ecs:${REGION}:${ACCOUNT}:task-definition/${RUNNER_FAMILY}:*`],
   {ArnEquals:{'ecs:cluster':cluster},'ForAllValues:StringEquals':{'aws:TagKeys':['meri:execution-id','meri:binding-sha256','meri:plan-sha256','meri:expires-at-ms']}}));
  control.addToPolicy(statement(['ecs:TagResource'],[tasks],{StringEquals:{'ecs:CreateAction':'RunTask'}}));
  control.addToPolicy(statement(['ecs:DescribeTasks','ecs:StopTask'],[tasks]));
  control.addToPolicy(statement(['ecs:ListTasks'],['*'],{ArnEquals:{'ecs:cluster':cluster}}));
  control.addToPolicy(statement(['ecs:DescribeTaskDefinition','ec2:DescribeNetworkInterfaces'],['*']));
- control.addToPolicy(statement(['iam:PassRole'],[exec.runner.roleArn],{StringEquals:{'iam:PassedToService':'ecs-tasks.amazonaws.com'}}));
+ control.addToPolicy(statement(['iam:PassRole'],[exec.runner.roleArn,runner.roleArn],{StringEquals:{'iam:PassedToService':'ecs-tasks.amazonaws.com'}}));
  control.addToPolicy(statement(['s3:GetBucketVersioning'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
  control.addToPolicy(statement(['s3:PutObject','s3:GetObject','s3:GetObjectVersion'],[`arn:aws:s3:::${b.checkpoint.bucket}/${b.checkpoint.prefix}/*`]));
  control.addToPolicy(statement(['kms:GenerateDataKey','kms:Decrypt'],[b.checkpoint.kmsKeyArn],{StringEquals:{'kms:ViaService':`s3.${REGION}.amazonaws.com`}}));
  const issuer=task('issuer');discoveryReads(issuer,[SERVICE_NAMES.control,SERVICE_NAMES.worker]);
- const owner=task('owner');discoveryReads(owner,[SERVICE_NAMES.owner,SERVICE_NAMES.proxy]);
- const proxy=task('proxy');discoveryReads(proxy,[SERVICE_NAMES.owner,SERVICE_NAMES.proxy]);
- proxy.addToPolicy(statement(['bedrock:InvokeModel','bedrock:InvokeModelWithResponseStream'],[b.bedrock.inferenceProfileArn]));
- proxy.addToPolicy(statement(['bedrock:InvokeModel','bedrock:InvokeModelWithResponseStream'],b.bedrock.foundationModelArns,{StringEquals:{'bedrock:InferenceProfileArn':b.bedrock.inferenceProfileArn}}));
- proxy.addToPolicy(statement(['bedrock:CountTokens'],[b.bedrock.countTokensModelArn]));
+ runner.addToPolicy(statement(['bedrock:InvokeModel','bedrock:InvokeModelWithResponseStream'],[b.bedrock.inferenceProfileArn]));
+ runner.addToPolicy(statement(['bedrock:InvokeModel','bedrock:InvokeModelWithResponseStream'],b.bedrock.foundationModelArns,{StringEquals:{'bedrock:InferenceProfileArn':b.bedrock.inferenceProfileArn}}));
+ runner.addToPolicy(statement(['bedrock:CountTokens'],[b.bedrock.countTokensModelArn]));
  const temporalTasks=Object.fromEntries(['frontend','history','matching','worker','internal-frontend'].map(r=>[r,task(`temporal-${r}`)]));
 
  const signingKey=new kms.CfnKey(stack,'IssuerSigningKey',{description:'Meri preview Temporal issuer JWT signing (RSA-2048)',keySpec:'RSA_2048',keyUsage:'SIGN_VERIFY',
@@ -147,7 +141,7 @@ export function synthesizeFirstChatFoundation(binding){
  const namespace=new discovery.PrivateDnsNamespace(stack,'MeriNamespace',{name:'meri.internal',vpc,description:'Meri preview private services'});
  const discoveryService=name=>namespace.createService(`${name}Discovery`,{name,dnsRecordType:discovery.DnsRecordType.A,dnsTtl:{toSeconds:()=>10},
   customHealthCheck:{failureThreshold:1},routingPolicy:discovery.RoutingPolicy.MULTIVALUE});
- const services={issuer:discoveryService('issuer'),control:discoveryService('control-private'),proxy:discoveryService('proxy'),owner:discoveryService('owner')};
+ const services={issuer:discoveryService('issuer'),control:discoveryService('control-private')};
 
  const targetGroup=new elbv2.CfnTargetGroup(stack,'ControlTargetGroup',{name:'meri-preview-control-8080',targetType:'ip',protocol:'HTTP',port:8080,vpcId:b.vpcId,
   healthCheckProtocol:'HTTP',healthCheckPath:'/health/live',healthCheckPort:'8080',healthCheckIntervalSeconds:15,healthyThresholdCount:2,unhealthyThresholdCount:3,
@@ -156,7 +150,7 @@ export function synthesizeFirstChatFoundation(binding){
  const out=(id,value)=>new CfnOutput(stack,id,{value});
  for(const [key,value] of Object.entries(g))out(`${key[0].toUpperCase()}${key.slice(1)}SecurityGroupId`,value.securityGroupId);
  for(const [key,value] of Object.entries(exec))out(`${key[0].toUpperCase()}${key.slice(1)}ExecutionRoleArn`,value.roleArn);
- for(const [key,value] of Object.entries({control,issuer,owner,proxy}))out(`${key[0].toUpperCase()}${key.slice(1)}TaskRoleArn`,value.roleArn);
+ for(const [key,value] of Object.entries({control,issuer,runner}))out(`${key[0].toUpperCase()}${key.slice(1)}TaskRoleArn`,value.roleArn);
  for(const [key,value] of Object.entries(temporalTasks))out(`Temporal${key.replace('-','')}TaskRoleArn`,value.roleArn);
  for(const [key,value] of Object.entries(logGroups))out(`${key[0].toUpperCase()}${key.slice(1)}LogGroupName`,value.logGroupName);
  for(const [key,value] of Object.entries(services))out(`${key[0].toUpperCase()}${key.slice(1)}DiscoveryServiceArn`,value.serviceArn);

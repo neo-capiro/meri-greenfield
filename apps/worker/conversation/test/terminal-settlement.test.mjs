@@ -1,7 +1,8 @@
 /** Terminal settlement over the real control service/store (scripted SQL), with the run owner's append wrapped to model
  * recording latency, lost acknowledgements and the remote runner's code-independent refusals (NATIVE_UNAVAILABLE). */
 import test from 'node:test';import assert from 'node:assert/strict';import {createConversationActivity,TERMINAL_ATTEMPT_MS} from '../activity.mjs';import {applicationFixture,binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
-const runtime=()=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:2});
+import {SDK_MODEL_CONFIGURATION} from '../../../control/conversations/usage.mjs';
+const runtime=()=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,...SDK_MODEL_CONFIGURATION,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:2});
 const frames=[{type:'assistant',parent_tool_use_id:null,message:{id:'msg_1',content:[{type:'text',text:'Too long for the limit'}]}},{type:'result',subtype:'success',is_error:false}];
 const terminal=event=>event.type==='run.status'&&['failed','cancelled'].includes(event.data.state);
 const unavailable=()=>Object.assign(Error('NATIVE_UNAVAILABLE'),{code:'NATIVE_UNAVAILABLE'});

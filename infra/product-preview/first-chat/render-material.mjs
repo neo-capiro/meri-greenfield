@@ -1,60 +1,9 @@
 #!/usr/bin/env node
-/** Meri first-chat preview: render the exact static material for control, temporal-worker, temporal-issuer, model-owner
- * and model-proxy from (a) deployment-inputs.json, (b) the private PKI/login directory, (c) Core values, (d) the Meri
- * runtime values and (e) the Stage 3 task-definition/service ARNs.
- *
- * Every rendered role is checked with the repository's own validators and material plans before anything is written:
- * config.mjs validateConfiguration and the cli.mjs product gates (control, temporal-worker), prepared-candidate-config,
- * temporal-issuer-cli parseTemporalIssuerRuntimeConfiguration, owner-entrypoint validateProductOwnerConfiguration,
- * proxy startup-config, material-init-plan compileProductMaterialPlan and material-init validateStaticProductDelivery.
- * Any value still starting with PENDING_ refuses.
- *
- * Circularity: control/worker/owner/proxy/issuer configs pin task-definition ARNs (family:revision) and the task
- * definitions pin these configs' hashes. ARNs are plain inputs: the deployer passes the revision each family WILL get
- * (a new family starts at :1 and only increments on re-registration), renders, then registers exactly once per family
- * and verifies the returned ARN equals the input. A mismatch means re-render with the actual revisions.
- *
- * Output (a NEW directory outside the repository, 0700/0600): <role>/config.json (exact bytes), <role>/bundle.json
- * (SECRET: Secrets Manager SecretString for MERI_STATIC_MATERIAL_BUNDLE), <role>/expected.json (MERI_STATIC_MATERIAL_EXPECTED)
- * and summary.json (non-secret pins and task-definition wiring). Importing this module performs no IO.
- *
- * Input shapes (all closed; see the parse* functions):
- *  core-values.json   {coreOrigin, frontendOrigin, tenantId, actorId, clientId (uuid), identityCredentialPath (local file, copied byte-exact)}
- *  runtime-values.json {schemaVersion:1, versions:{sdk,cli,contracts,skillsDigest,checkpointFormat},
- *    preparationIntent:{configParentDirectory, secureStorageDirectory, launchTemplate:{command,args,env}, executableSha256, sdkOptionsSha256, runnerSha256?},
- *      sdkOptionsSha256 is the run-invariant SDK option template hash (apps/runtime/native-authority/sdk-option-template.mjs), carried
- *      unchanged into the static candidate and every dynamic run (runner-query.mjs checks each run's per-run values against its intent).
- *    allocation:{manifest (SkillManifest incl. budgets), catalogSha256, scheduleRevision, operations:[{operation,chargeMicrousd}]},
- *    runtime:{maxTurns, maxOutputBytes}, qualification:{attempt, policyRevision (64 hex, Meri-owned)}, plan?, multiRun?:{runWindowMs},
- *    generalReadInstallation?:{measurement, measurementSha256}} (P2: the in-image installation measurement runtime-values.mjs verified
- *    against the source tree; needed to render features.reads.installation)
- *  stage3.json {schemaVersion:1, taskDefinitions:{control,'temporal-worker','temporal-issuer','model-owner','model-proxy',runner} (family:revision ARNs),
- *    services:{control,'temporal-worker','model-owner','model-proxy','temporal-issuer'?}, network:{control|temporal-worker|model-owner|model-proxy:
- *    {subnets,securityGroups} (the exact service ENI sets), runner:{subnet,securityGroups}}}
- *  private dir: <stem>.pem / <stem>.key.pem from pki.py, pins.json, db-logins.json {control, modelOwner, issuer} (password string or {password}).
- *
- * Product families (deployment-inputs.json `features`, OPTIONAL; see parseFeatures). Absent, or {}, renders byte-identical material to the
- * render without the block (the reviewed first chat). Each present entry renders exactly its own control key; nothing defaults on:
- *  features: {
- *   sourceEnabled?: boolean,                                  // G1: control and temporal-worker `sourceEnabled` (runner: delivered by control)
- *   userPreferences?|tenantSettings?|intents?|routines?: {enabled: boolean, task?, workflow?},
- *   retention?: {enabled: true},                              // artifacts tenantId (= core tenantId) and download links need it
- *   artifacts?: {enabled:false} | {enabled:true, region:'us-east-1', bucket, prefix, expectedBucketOwner:'967807252336', kmsKeyId (key ARN), authority?: {enabled:true} (needs reads)},
- *   memory?: {enabled: bool} (enabled needs reads: it reuses the Core service secret file),
- *   reads.delegation?: {enabled: bool} (option B run-bound Core read delegation; renders reads.delegation),
- *   intents?: {enabled, execution?: {issuer, keys: [Ed25519 public JWK with kid]}, core?: {enabled:true}} (execution and core need reads),
- *   routines?: {enabled, core?: {cancellationProof: {issuer, kid, publicKey}, unattendedGrant?: {issuer, kid, publicKey}}, task?: {taskId,version}, workflow?: {taskQueue,workflowIdPrefix}} (core needs reads),
- *   downloadLinks?: {enabled:false} | {enabled:true, ttlMs?},  // signing key generated per render -> /run/meri/download-link.key
- *   capabilityPlatform?: {maximum, defaults, roleCeilings},   // verbatim; runtime values must carry the matching capabilityProfileSha256 (G3)
- *   reads?: {enabled:false} | {enabled:true, serviceSecretArn, readModeServiceSecretArn?, defaultCongress?, approvedReads?,
- *            installation?: {enabled, activeOperations?: [{id,version}], revokedOperations?: [{id,version}]},
- *                         // P2: activeOperations is the reviewed source-only set; pins runtime.generalReadInstallation
- *            discovery?: {enabled}}                                           // P1: enabled needs capabilityPlatform (the G2 policy producer)
- *  }
- * Secret VALUES never enter Git or deployment inputs: reads names exact Secrets Manager ARNs, and the operator supplies the bytes fetched
- * at a recorded VersionId through --feature-secrets {"reads.serviceSecret"|"reads.readModeServiceSecret": {secretArn, versionId, path}}.
- * They travel only inside control's bundle (like the database login and identity credential): owner-only 0600 under /run/meri, pinned
- * by sha256 in expected.json and the material plan. */
+/** Render control, Temporal worker and issuer material for the native SDK path.
+ * Core/task authority and read-installation material stay until their owning
+ * Step3/4 replacement. Model calls use the runner task IAM role. No model
+ * credential, launch descriptor or SDK-options proof is generated here.
+ * Private inputs remain local and are never written inside the checkout. */
 import {createHash,createPrivateKey,createPublicKey,randomBytes,randomUUID,X509Certificate} from 'node:crypto';
 import {brotliCompressSync,brotliDecompressSync,constants as zlib} from 'node:zlib';
 import {readFile,mkdir,writeFile,lstat} from 'node:fs/promises';
@@ -70,13 +19,9 @@ import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepa
 import {parseTemporalIssuerRuntimeConfiguration} from '../../../apps/runtime/temporal-issuer-cli.mjs';
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
-import {RUNNER_SDK_CA_FILE} from '../../../apps/runtime/native-authority/preparation-intent.mjs';
 import {productRunnerMeasurement} from '../../../apps/runtime/native-authority/ecs-prepared-task-proof.mjs';
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
-import {validateProductOwnerConfiguration} from '../../../apps/proxy/product/owner-entrypoint.mjs';
-import {OWNER_MAX_REQUEST_MS} from '../../../apps/proxy/product/service-pair-discovery.mjs';
-import {parseProductProxyStartupConfiguration,PRODUCT_PROXY_PRICING_REVISION,PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -88,22 +33,19 @@ import retrievalCatalog from '../../../packages/contracts/retrieval-0.2/catalog.
 
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const ACCOUNT='967807252336',REGION='us-east-1',ECS=`arn:aws:ecs:${REGION}:${ACCOUNT}:`;
-export const ROLES=Object.freeze(['control','temporal-worker','temporal-issuer','model-owner','model-proxy']);
-export const RUNTIME_USERS=Object.freeze({control:'1000:1000','temporal-worker':'1000:1000','temporal-issuer':'1000:1000','model-owner':'1000:1000','model-proxy':'10001:10001'});
-export const CONTAINER_NAMES=Object.freeze({control:'control','temporal-worker':'temporal-worker','temporal-issuer':'temporal-issuer','model-owner':'model-owner','model-proxy':'model-proxy',runner:'worker'});
+export const ROLES=Object.freeze(['control','temporal-worker','temporal-issuer']);
+export const RUNTIME_USERS=Object.freeze({control:'1000:1000','temporal-worker':'1000:1000','temporal-issuer':'1000:1000'});
+export const CONTAINER_NAMES=Object.freeze({control:'control','temporal-worker':'temporal-worker','temporal-issuer':'temporal-issuer',runner:'worker'});
 /** Task-local /run/meri inventory. Every path is a direct child, as material-init-plan requires. */
 export const PATHS=Object.freeze({
- control:'/run/meri/control.json',worker:'/run/meri/worker.json',issuer:'/run/meri/issuer.json',owner:'/run/meri/owner.json',proxy:'/run/meri/proxy.json',
+ control:'/run/meri/control.json',worker:'/run/meri/worker.json',issuer:'/run/meri/issuer.json',
  database:'/run/meri/database.uri',identity:'/run/meri/identity',taskCapability:'/run/meri/task-capability',
- controlCapability:'/run/meri/control-capability',proxyCapability:'/run/meri/proxy-capability',
+ controlCapability:'/run/meri/control-capability',
  temporalCa:'/run/meri/temporal-ca.pem',temporalCert:'/run/meri/temporal-client.pem',temporalKey:'/run/meri/temporal-client.key',
  issuerJwks:'/run/meri/issuer-jwks.json',issuerCa:'/run/meri/issuer-ca.pem',issuerClientCa:'/run/meri/issuer-client-ca.pem',
  runnerCa:'/run/meri/runner-ca.pem',runnerCaKey:'/run/meri/runner-ca.key',controlCa:'/run/meri/control-ca.pem',
  issuerDatabase:'/run/meri/issuer-database.uri',issuerServerCert:'/run/meri/issuer-server.crt',issuerServerKey:'/run/meri/issuer-server.key',
  issuerClientCaKey:'/run/meri/issuer-client-ca.key',
- ownerCa:'/run/meri/owner-bridge-ca.pem',ownerCert:'/run/meri/owner-server.pem',ownerKey:'/run/meri/owner-server.key',
- proxyServerCert:'/run/meri/proxy-server.pem',proxyServerKey:'/run/meri/proxy-server.key',proxyOwnerCa:'/run/meri/proxy-owner-ca.pem',
- proxyOwnerCert:'/run/meri/proxy-owner-client.pem',proxyOwnerKey:'/run/meri/proxy-owner-client.key',
  // Delivered only when the matching feature is rendered (control only).
  readsServiceSecret:'/run/meri/core-service-secret',readsReadModeServiceSecret:'/run/meri/core-read-mode-service-secret',
  // The P2 measurement is brotli-compressed JSON (control decompresses it): the plain JSON (~27 KB base64) does not fit the 65,536-byte
@@ -148,12 +90,12 @@ export function parseStage3(raw,{clusterName}){
  const t=record(s.taskDefinitions,'stage3.taskDefinitions',[...ROLES,'runner']);
  for(const role of Object.keys(t))taskDefinitionArn(t[role],`stage3.taskDefinitions.${role}`);
  if(new Set(Object.values(t)).size!==Object.keys(t).length)fail('RENDER_INPUT_REFUSED','task definitions must be distinct');
- const sv=record(s.services,'stage3.services',['control','temporal-worker','model-owner','model-proxy'],['temporal-issuer']);
+ const sv=record(s.services,'stage3.services',['control','temporal-worker'],['temporal-issuer']);
  for(const role of Object.keys(sv))serviceArn(sv[role],clusterName,`stage3.services.${role}`);
  if(new Set(Object.values(sv)).size!==Object.keys(sv).length)fail('RENDER_INPUT_REFUSED','services must be distinct');
- const n=record(s.network,'stage3.network',['control','temporal-worker','model-owner','model-proxy','runner']);
+ const n=record(s.network,'stage3.network',['control','temporal-worker','runner']);
  const network={};
- for(const role of ['control','temporal-worker','model-owner','model-proxy']){const r=record(n[role],`stage3.network.${role}`,['subnets','securityGroups']);
+ for(const role of ['control','temporal-worker']){const r=record(n[role],`stage3.network.${role}`,['subnets','securityGroups']);
   network[role]={subnets:ids(r.subnets,'subnet',`stage3.network.${role}.subnets`),securityGroups:ids(r.securityGroups,'sg',`stage3.network.${role}.securityGroups`,{max:5})};}
  const r=record(n.runner,'stage3.network.runner',['subnet','securityGroups']);
  network.runner={subnet:ids([r.subnet],'subnet','stage3.network.runner.subnet')[0],securityGroups:ids(r.securityGroups,'sg','stage3.network.runner.securityGroups',{max:5})};
@@ -173,20 +115,15 @@ export function parseCoreValues(raw){
 
 /** Meri-owned runtime bindings derived from the reviewed image and budget owner (not Core, not secret). */
 export function parseRuntimeValues(raw){
- const r=record(raw,'runtime',['schemaVersion','versions','preparationIntent','allocation','runtime','qualification'],['plan','multiRun','capabilityProfileSha256','generalReadInstallation']);
+ const r=record(raw,'runtime',['schemaVersion','versions','preparationIntent','allocation','runtime','qualification'],['plan','multiRun','generalReadInstallation']);
  assertNoPending(r,'runtime');
- // G3: present only when the in-image measurement projected the SDK options with a capability profile (runtime-values.mjs).
- if(r.capabilityProfileSha256!==undefined&&!hex64.test(r.capabilityProfileSha256))fail('RENDER_INPUT_REFUSED','runtime.capabilityProfileSha256 must be 64 hex');
  if(r.schemaVersion!==1)fail('RENDER_INPUT_REFUSED','runtime.schemaVersion must be 1');
  const v=record(r.versions,'runtime.versions',['sdk','cli','contracts','skillsDigest','checkpointFormat']);
- const p=record(r.preparationIntent,'runtime.preparationIntent',['configParentDirectory','secureStorageDirectory','launchTemplate','executableSha256','sdkOptionsSha256'],['runnerSha256']);
- for(const k of ['executableSha256','sdkOptionsSha256',...(p.runnerSha256===undefined?[]:['runnerSha256'])])if(!hex64.test(p[k]))fail('RENDER_INPUT_REFUSED',`runtime.preparationIntent.${k} must be 64 hex`);
- const lt=record(p.launchTemplate,'runtime.preparationIntent.launchTemplate',['command','args','env']);
- if(lt.env.NODE_EXTRA_CA_CERTS!==undefined&&lt.env.NODE_EXTRA_CA_CERTS!==RUNNER_SDK_CA_FILE)fail('RENDER_INPUT_REFUSED',`launchTemplate.env.NODE_EXTRA_CA_CERTS must be ${RUNNER_SDK_CA_FILE}`);
- if(lt.env.CLAUDE_SECURESTORAGE_CONFIG_DIR!==undefined&&lt.env.CLAUDE_SECURESTORAGE_CONFIG_DIR!==p.secureStorageDirectory)fail('RENDER_INPUT_REFUSED','launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR must equal secureStorageDirectory');
+ const p=record(r.preparationIntent,'runtime.preparationIntent',['configParentDirectory','secureStorageDirectory'],['runnerSha256']);
+ if(p.runnerSha256!==undefined&&!hex64.test(p.runnerSha256))fail('RENDER_INPUT_REFUSED','runtime.preparationIntent.runnerSha256 must be 64 hex');
  const a=record(r.allocation,'runtime.allocation',['manifest','catalogSha256','scheduleRevision','operations']);
  if(!hex64.test(a.catalogSha256)||!hex64.test(a.scheduleRevision))fail('RENDER_INPUT_REFUSED','allocation catalogSha256/scheduleRevision must be 64 hex');
- const rt=record(r.runtime,'runtime.runtime',['maxTurns','maxOutputBytes']);
+ const rt=record(r.runtime,'runtime.runtime',['maxOutputBytes']);
  const q=record(r.qualification,'runtime.qualification',['attempt','policyRevision']);
  if(!Number.isSafeInteger(q.attempt)||q.attempt<1||q.attempt>2147483647||!hex64.test(q.policyRevision))fail('RENDER_INPUT_REFUSED','qualification.attempt 1..2^31-1 and policyRevision 64 hex');
  if(r.multiRun!==undefined)record(r.multiRun,'runtime.multiRun',[],['runWindowMs']);
@@ -198,8 +135,8 @@ export function parseRuntimeValues(raw){
   if(g.measurement?.baseCatalogSha256!==a.catalogSha256)fail('RENDER_INPUT_REFUSED','runtime.generalReadInstallation.measurement.baseCatalogSha256 must be the allocation catalog');
   installation={measurement:structuredClone(g.measurement),measurementSha256:g.measurementSha256};
  }
- return {versions:{...v},preparationIntent:{...p,launchTemplate:{command:lt.command,args:[...lt.args],env:{...lt.env}}},allocation:a,runtime:rt,qualification:{...q},plan:r.plan??DEFAULTS.plan,multiRun:r.multiRun??{},
-  capabilityProfileSha256:r.capabilityProfileSha256??null,generalReadInstallation:installation};
+ return {versions:{...v},preparationIntent:{...p},allocation:a,runtime:rt,qualification:{...q},plan:r.plan??DEFAULTS.plan,multiRun:r.multiRun??{},
+  generalReadInstallation:installation};
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
@@ -347,7 +284,7 @@ function featureSecretFiles(features,supplied={},identityCredential){
 }
 
 export function parseDeploymentInputs(raw){
- const d=record(raw,'deployment',['schemaVersion','account','region','clusterArn','vpcId','privateSubnetIds','images','foundation','privateEdge','names','proxyClientSubject','temporalClients','origins','temporal','issuer','database','checkpoint','model','secrets','pinsDer','pinsPem','core'],['features','telemetry']);
+ const d=record(raw,'deployment',['schemaVersion','account','region','clusterArn','vpcId','privateSubnetIds','images','foundation','privateEdge','names','temporalClients','origins','temporal','issuer','database','checkpoint','secrets','pinsDer','pinsPem','core'],['features','telemetry']);
  if(d.schemaVersion!==1||d.account!==ACCOUNT||d.region!==REGION)fail('RENDER_INPUT_REFUSED','deployment account/region');
  // P0 is log-based and always on; this label neither enables OTel nor grants exporter egress.
  const telemetry=d.telemetry===undefined?{environment:'Preview'}:record(d.telemetry,'deployment.telemetry',['environment']);
@@ -356,18 +293,17 @@ export function parseDeploymentInputs(raw){
  const {core:_core,origins,...rest}=d;void _core;const {coreOrigin:_c,frontendOrigin:_f,...finalOrigins}=origins;void _c;void _f;
  assertNoPending({...rest,origins:finalOrigins},'deployment');
  const cluster=/^arn:aws:ecs:us-east-1:967807252336:cluster\/([A-Za-z0-9_-]{1,255})$/u.exec(d.clusterArn);if(!cluster)fail('RENDER_INPUT_REFUSED','deployment.clusterArn');
- if(d.model.pricingRevision!==PRODUCT_PROXY_PRICING_REVISION)fail('RENDER_INPUT_REFUSED','deployment.model.pricingRevision differs from the proxy PRICING_REVISION');
  const jwk=d.issuer.publicJwk,jwkSha=sha(JSON.stringify({kty:jwk.kty,kid:jwk.kid,alg:jwk.alg,use:jwk.use,n:jwk.n,e:jwk.e}));
  if(jwkSha!==d.issuer.publicJwkSha256||jwk.kid!==d.issuer.kid)fail('RENDER_INPUT_REFUSED','deployment.issuer.publicJwkSha256 does not match the canonical JWK');
- for(const commit of [d.images.nodeRuntimeSourceCommit,d.images.proxySourceCommit])if(!/^[a-f0-9]{40}$/u.test(commit))fail('RENDER_INPUT_REFUSED','image source commits must be 40 hex');
- imageDigest(d.images.nodeRuntime);imageDigest(d.images.proxy);
+ for(const commit of [d.images.nodeRuntimeSourceCommit])if(!/^[a-f0-9]{40}$/u.test(commit))fail('RENDER_INPUT_REFUSED','image source commits must be 40 hex');
+ imageDigest(d.images.nodeRuntime);
  return {...d,telemetry:{...telemetry},clusterName:cluster[1],features:parseFeatures(d.features,{secrets:d.secrets,checkpoint:d.checkpoint})};
 }
 
 /** Throwaway-free private reader: only certificate/key PEMs, pins.json and db-logins.json named here are read. */
-const PKI_CERTS=['server-ca','issuer-server','proxy-server','control-private','issuer-client-ca','runner-ca','owner-bridge-ca','owner-server','proxy-owner-client',
+const PKI_CERTS=['server-ca','issuer-server','control-private','issuer-client-ca','runner-ca',
  'temporal-frontend-ca','temporal-client-ca','temporal-client-control','temporal-client-worker'];
-const PKI_KEYS=['issuer-server','proxy-server','issuer-client-ca','runner-ca','owner-server','proxy-owner-client','temporal-client-control','temporal-client-worker'];
+const PKI_KEYS=['issuer-server','issuer-client-ca','runner-ca','temporal-client-control','temporal-client-worker'];
 export async function readPrivateDirectory(directory,{readBytes=readFile}={}){
  if(typeof directory!=='string'||!isAbsolute(directory))fail('RENDER_INPUT_REFUSED','private directory must be absolute');
  const certs={},keys={};
@@ -413,10 +349,9 @@ function verifyPki(d,pki){
   notAfterMs=Math.min(notAfterMs,Date.parse(cert.validTo));
  }
  const issued=(leaf,ca)=>{if(!x[leaf].checkIssued(x[ca])||!x[leaf].verify(x[ca].publicKey)||x[leaf].ca)fail('RENDER_PRIVATE_REFUSED',`${leaf} is not a leaf issued by ${ca}`);};
- for(const ca of ['server-ca','issuer-client-ca','runner-ca','owner-bridge-ca','temporal-frontend-ca','temporal-client-ca'])if(!x[ca].ca)fail('RENDER_PRIVATE_REFUSED',`${ca} is not a CA`);
- for(const [leaf,ca,san] of [['issuer-server','server-ca',d.names.issuer],['proxy-server','server-ca',d.names.proxy],['control-private','server-ca',d.names.control_private],['owner-server','owner-bridge-ca',d.names.owner]]){
+ for(const ca of ['server-ca','issuer-client-ca','runner-ca','temporal-frontend-ca','temporal-client-ca'])if(!x[ca].ca)fail('RENDER_PRIVATE_REFUSED',`${ca} is not a CA`);
+ for(const [leaf,ca,san] of [['issuer-server','server-ca',d.names.issuer],['control-private','server-ca',d.names.control_private]]){
   issued(leaf,ca);if(x[leaf].subjectAltName!==`DNS:${san}`)fail('RENDER_PRIVATE_REFUSED',`${leaf} SAN must be DNS:${san}`);}
- issued('proxy-owner-client','owner-bridge-ca');if(x['proxy-owner-client'].subject!==`CN=${d.proxyClientSubject}`)fail('RENDER_PRIVATE_REFUSED','proxy-owner-client subject');
  for(const role of ['control','worker']){issued(`temporal-client-${role}`,'temporal-client-ca');if(x[`temporal-client-${role}`].subject!==`CN=${d.temporalClients[role]}`)fail('RENDER_PRIVATE_REFUSED',`temporal-client-${role} subject`);}
  for(const stem of PKI_KEYS){
   let pub;try{pub=createPublicKey(createPrivateKey(pki.keys[stem])).export({type:'spki',format:'der'});}catch{fail('RENDER_PRIVATE_REFUSED',`${stem}.key.pem is not a private key`);}
@@ -443,7 +378,7 @@ export const INSTALLATION_MEASUREMENT_MAX_JSON_BYTES=262144;
  * accepted the pin, the catalog, every descriptor and the revocations. The file is the measurement JSON (as runtime-values.json carries it)
  * brotli-compressed; byte-exact and digest-pinned like every other material file, re-hashed against the pin after decompression at startup. */
 function installationMaterial(installation,feature){
- if(installation===null)fail('RENDER_INPUT_REFUSED','features.reads.installation needs runtime.generalReadInstallation: re-measure the image with a first-chat-launch-measurement module that emits it');
+ if(installation===null)fail('RENDER_INPUT_REFUSED','features.reads.installation needs runtime.generalReadInstallation assembled from the exact image source');
  const installed=new Set((Array.isArray(installation.measurement?.operations)?installation.measurement.operations:[]).map(row=>operationKey(row?.operation??{})));
  const active=new Set(feature.activeOperations.map(operationKey));
  if(installed.size!==active.size||[...active].some(key=>!installed.has(key)))fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations differs from runtime.generalReadInstallation.measurement.operations');
@@ -475,11 +410,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  if(!Buffer.isBuffer(identityCredential)||identityCredential.length<1||identityCredential.length>32768)fail('RENDER_INPUT_REFUSED','identity credential must be 1..32768 bytes');
  if(identityCredential.toString('utf8').includes('PENDING_'))fail('RENDER_PENDING_VALUE','identity credential');
  const features=d.features??{},secretFiles=featureSecretFiles(features,featureSecrets,identityCredential);
- // G3: the one SDK-options pin was measured with exactly one capability profile (or none); the runs must resolve to the same one.
  const capability=capabilityProfileOf(features.capabilityPlatform);
- if((capability?.profileSha256??null)!==r.capabilityProfileSha256)fail('RENDER_INPUT_REFUSED',capability?
-  `capabilityPlatform resolves to capability profile ${capability.profileSha256}; runtime values must carry the in-image measurement taken with it (capabilityProfileSha256, G3)`:
-  'runtime values were measured with a capability profile but the rendered capabilityPlatform is absent or enables nothing (G3)');
  // P2: installation pins the verified in-image measurement and ships its exact bytes; the real control issuer must accept the pin against
  // this tree's catalog and contracts (descriptor drift refuses here, never at startup). Absent feature: no pin, no file, no key.
  const installation=features.reads?.installation,installationBytes=installation?.enabled===true?installationMaterial(r.generalReadInstallation,installation):null;
@@ -489,7 +420,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
    fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations must equal the G3 capability profile activeReadOperations when generalReads is enabled');
  }
  const {pins,notAfterMs}=verifyPki(d,pki);
- // Absolute expiries. schedule/serviceTasks/pricing/proxy = now + validity; grants and the static deadline additionally
+ // Absolute expiries. schedule = now + validity; grants and the static deadline additionally
  // must stay <= startup now + maxRuntimeSeconds (native-allocation-admission), so they use min(validity, maxRuntime).
  const validityMs=Math.round(validityDays*DAY_MS),expiresAtMs=nowMs+validityMs;
  if(expiresAtMs>=notAfterMs)fail('RENDER_VALIDITY_REFUSED',`validity ends after the earliest certificate notAfter ${new Date(notAfterMs).toISOString()}`);
@@ -498,8 +429,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const issuerOrigin=origin(o.issuerOrigin,'origins.issuerOrigin');
  if(issuerOrigin!==`https://${d.names.issuer}:8445`)fail('RENDER_INPUT_REFUSED','issuer origin must be https://names.issuer:8445');
  if(o.temporalAddress!==`${d.names.temporal_frontend}:7233`)fail('RENDER_INPUT_REFUSED','temporal address must be names.temporal_frontend:7233');
- if(o.proxyUrl!==`https://${d.names.proxy}:8443`||o.ownerOrigin!==`https://${d.names.owner}:8444`)fail('RENDER_INPUT_REFUSED','proxy/owner origins');
- const nodeImage=d.images.nodeRuntime,nodeDigest=imageDigest(nodeImage),proxyImage=d.images.proxy;
+ const nodeImage=d.images.nodeRuntime,nodeDigest=imageDigest(nodeImage);
  // Runner measurement: the image's source commit must be present locally (fetch it), and an explicit value must equal its git blob.
  const measured=runnerSha256AtCommit(d.images.nodeRuntimeSourceCommit,{sourceRoot});
  if(!measured)fail('RENDER_INPUT_REFUSED','the node runtime source commit is not available locally: fetch it before rendering');
@@ -512,7 +442,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  if(!issuerSubnets.includes(s.network.runner.subnet))fail('RENDER_INPUT_REFUSED','stage3.network.runner.subnet must be one of deployment privateSubnetIds');
 
  // Fresh capability tokens and static binding.
- const tokens={task:capabilityToken(),control:capabilityToken(),proxy:capabilityToken()};
+ const tokens={task:capabilityToken(),control:capabilityToken()};
  const capabilityBytes=Object.fromEntries(Object.entries(tokens).map(([key,value])=>[key,Buffer.from(value,'utf8')]));
  const binding={tenantId:k.tenantId,actorId:k.actorId,conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
  const versions={imageDigest:'sha256:'+nodeDigest,...r.versions};
@@ -524,21 +454,17 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
  const allocation={run:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},
   manifest:r.allocation.manifest,manifestSha256:canonicalSha256(r.allocation.manifest),catalogSha256:r.allocation.catalogSha256,budgets,
   schedule:{revision:r.allocation.scheduleRevision,expiresAt:new Date(expiresAtMs).toISOString(),operations:r.allocation.operations}};
- const taskGrantId=randomUUID(),modelGrantId=randomUUID();
- // prepared-candidate.mjs assertFirstRunGrantBindings: one intent for the task capability under grantId, one other for the proxy capability.
- const grantIntents=[{grantId:taskGrantId,capabilitySha256:sha(capabilityBytes.task),expiresAtMs:grantExpiresAtMs},
-  {grantId:modelGrantId,capabilitySha256:sha(capabilityBytes.proxy),expiresAtMs:grantExpiresAtMs}];
+ const taskGrantId=randomUUID();
+ const grantIntents=[{grantId:taskGrantId,capabilitySha256:sha(capabilityBytes.task),expiresAtMs:grantExpiresAtMs}];
  const policyRevision=r.qualification.policyRevision;
  const secureStorageDirectory=r.preparationIntent.secureStorageDirectory;
  const preparationIntent={workspace:`${DEFAULTS.workspaceRoot}/${binding.conversationId}`,configParentDirectory:r.preparationIntent.configParentDirectory,secureStorageDirectory,
-  launchTemplate:{command:r.preparationIntent.launchTemplate.command,args:r.preparationIntent.launchTemplate.args,
-   env:{...r.preparationIntent.launchTemplate.env,CLAUDE_SECURESTORAGE_CONFIG_DIR:secureStorageDirectory,NODE_EXTRA_CA_CERTS:RUNNER_SDK_CA_FILE}},
-  executableSha256:r.preparationIntent.executableSha256,imageSha256:nodeDigest,runnerSha256,sdkOptionsSha256:r.preparationIntent.sdkOptionsSha256,
+  imageSha256:nodeDigest,runnerSha256,
   authoritySha256:canonicalSha256({scopes:[{kind:'client',tenantId:binding.tenantId,resourceId:k.clientId,policyRevision}],selectedClientId:k.clientId,policyRevision})};
  const nativeCandidate={
   identity:{origin:k.coreOrigin,credentialFile:PATHS.identity,commandContext:{binding,clientResolution:{reference:k.clientId,clientId:k.clientId}}},
-  runtime:{binding,versions,proxyUrl:o.proxyUrl,model:PRODUCT_PROXY_MODEL_ALIAS,deadlineMs:grantExpiresAtMs,maxTurns:r.runtime.maxTurns,maxCostMicroUSD:d.model.perRunMaxCostMicroUSD,maxOutputBytes:r.runtime.maxOutputBytes},
-  proxyCredentialFile:PATHS.proxyCapability,plan:r.plan,preparationIntent,allocationJson:JSON.stringify(allocation),
+  runtime:{binding,versions,deadlineMs:grantExpiresAtMs,maxOutputBytes:r.runtime.maxOutputBytes},
+  plan:r.plan,preparationIntent,allocationJson:JSON.stringify(allocation),
   qualification:{attempt:r.qualification.attempt,policyRevision},grantIntents,grantId:taskGrantId,
   operations:[...Object.keys(runOwnerOperations),...sdkSessionOperations.map(op=>'runner/session/'+op)],
   taskCapabilityFile:PATHS.taskCapability,controlCapabilityFile:PATHS.controlCapability,
@@ -606,7 +532,6 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
 
  const db=d.database,logins=pki.logins;
  const controlDsn=Buffer.from(dsn(db.roles.control,password(logins,'control',db.roles.control),db.host,db.port,db.database));
- const ownerDsn=Buffer.from(dsn(db.roles.owner,password(logins,'modelOwner',db.roles.owner),db.host,db.port,db.database));
  const issuerDsn=Buffer.from(dsn(db.roles.issuer,password(logins,'issuer',db.roles.issuer),db.host,db.port,db.database));
  const jwks=Buffer.from(JSON.stringify({keys:[d.issuer.publicJwk]}));
  // allowPrimaryInProgress: control and worker bootstrap their Temporal identity during their own startup, while their
@@ -626,33 +551,14 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
    bootstrap:{caKeyFile:PATHS.issuerClientCaKey,caSha256:pins.der['issuer-client-ca']},registrationRole:d.issuer.registrationRole,startupTimeoutMs:60000}};
  if(issuer.issuer.registrationRole!==db.roles.issuer)fail('RENDER_INPUT_REFUSED','issuer.registrationRole must equal database.roles.issuer');
 
- const pairPin=(role,image,taskRole,executionRole)=>({clusterArn:d.clusterArn,serviceArn:s.services[role],taskDefinitionArn:s.taskDefinitions[role],containerName:CONTAINER_NAMES[role],
-  imageUri:image,taskRoleArn:taskRole,executionRoleArn:executionRole,vpcId:d.vpcId,subnetIds:s.network[role].subnets,securityGroupIds:s.network[role].securityGroups});
- const serviceTasks={schemaVersion:2,deploymentRevision,expiresAtMs,ownerCertSha256:pins.der['owner-server'],proxyCertSha256:pins.der['proxy-owner-client'],
-  owner:pairPin('model-owner',nodeImage,f.OwnerTaskRoleArn,f.OwnerExecutionRoleArn),proxy:pairPin('model-proxy',proxyImage,f.ProxyTaskRoleArn,f.ProxyExecutionRoleArn)};
  const controlBytes=Buffer.from(JSON.stringify(control));
- const owner={schemaVersion:1,sourceEnabled:false,enabled:true,telemetry:{...d.telemetry},controlConfigurationFile:PATHS.control,controlConfigurationSha256:sha(controlBytes),nativeCredentialFileSha256:sha(identityCredential),
-  tls:{origin:o.ownerOrigin,serverName:d.names.owner,caFile:PATHS.ownerCa,certFile:PATHS.ownerCert,keyFile:PATHS.ownerKey,certSha256:pins.der['owner-server'],issuerSha256:pins.der['owner-bridge-ca']},
-  clientPolicy:{clientCertSha256:pins.der['proxy-owner-client'],clientSubject:d.proxyClientSubject,deploymentRevision,issuerSha256:pins.der['owner-bridge-ca'],selectedClientId:k.clientId},
-  serviceTasks,pricing:{modelId:d.model.modelId,profileId:d.model.profileId,revision:d.model.pricingRevision,validUntilMs:expiresAtMs,
-   actualInputMicroUSDPerK:d.model.actualInputMicroUSDPerK,reserveInputMicroUSDPerK:d.model.reserveInputMicroUSDPerK,outputMicroUSDPerK:d.model.outputMicroUSDPerK,
-   maxInputTokens:d.model.maxInputTokens,maxOutputTokens:d.model.maxOutputTokens},
-  limits:{maxRequestMs:OWNER_MAX_REQUEST_MS,maxFactBytes:131072,maxLeaseMs:30000}};
- const ref=(path,bytes)=>({path,sha256:sha(bytes)});
- const proxy={schemaVersion:1,enabled:true,telemetry:{...d.telemetry},deploymentRevision,expiresAtMs,pricingRevision:PRODUCT_PROXY_PRICING_REVISION,
-  serverTls:{certificateFile:ref(PATHS.proxyServerCert,pki.certs['proxy-server']),privateKeyFile:ref(PATHS.proxyServerKey,pki.keys['proxy-server']),certificateSha256:pins.der['proxy-server']},
-  ownerPeer:{origin:o.ownerOrigin,server_name:d.names.owner,server_cert_sha256:pins.der['owner-server'],server_issuer_sha256:pins.der['owner-bridge-ca'],
-   client_cert_sha256:pins.der['proxy-owner-client'],client_subject:d.proxyClientSubject,max_exchange_ms:OWNER_MAX_REQUEST_MS},
-  ownerTls:{caFile:ref(PATHS.proxyOwnerCa,pki.certs['owner-bridge-ca']),certificateFile:ref(PATHS.proxyOwnerCert,pki.certs['proxy-owner-client']),privateKeyFile:ref(PATHS.proxyOwnerKey,pki.keys['proxy-owner-client'])},
-  serviceTasks};
-
- const configs={control,'temporal-worker':worker,'temporal-issuer':issuer,'model-owner':owner,'model-proxy':proxy};
+ const configs={control,'temporal-worker':worker,'temporal-issuer':issuer};
  const configBytes={control:controlBytes,...Object.fromEntries(Object.entries(configs).filter(([role])=>role!=='control').map(([role,value])=>[role,Buffer.from(JSON.stringify(value))]))};
  const temporalFiles=role=>[[PATHS.temporalCa,pki.certs['temporal-frontend-ca']],[PATHS.temporalCert,pki.certs[`temporal-client-${role==='control'?'control':'worker'}`]],
   [PATHS.temporalKey,pki.keys[`temporal-client-${role==='control'?'control':'worker'}`]],[PATHS.issuerJwks,jwks],[PATHS.issuerCa,pki.certs['server-ca']],[PATHS.issuerClientCa,pki.certs['issuer-client-ca']]];
  const files={
   control:new Map([[PATHS.control,controlBytes],[PATHS.database,controlDsn],[PATHS.identity,identityCredential],[PATHS.taskCapability,capabilityBytes.task],
-   [PATHS.controlCapability,capabilityBytes.control],[PATHS.proxyCapability,capabilityBytes.proxy],...temporalFiles('control'),
+   [PATHS.controlCapability,capabilityBytes.control],...temporalFiles('control'),
    [PATHS.runnerCa,pki.certs['runner-ca']],[PATHS.runnerCaKey,pki.keys['runner-ca']],[PATHS.controlCa,pki.certs['server-ca']],
    // Feature material, control only and only when rendered: the Core service secrets for reads and the download-link signing key.
    ...(secretFiles['reads.serviceSecret']?[[PATHS.readsServiceSecret,secretFiles['reads.serviceSecret'].bytes]]:[]),
@@ -663,21 +569,17 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,ident
   'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker')]),
   'temporal-issuer':new Map([[PATHS.issuer,configBytes['temporal-issuer']],[PATHS.issuerDatabase,issuerDsn],[PATHS.issuerServerKey,pki.keys['issuer-server']],
    [PATHS.issuerServerCert,pki.certs['issuer-server']],[PATHS.issuerClientCa,pki.certs['issuer-client-ca']],[PATHS.issuerClientCaKey,pki.keys['issuer-client-ca']]]),
-  // The owner reads control.json's database path and identity credential; its database file carries the owner login.
-  'model-owner':new Map([[PATHS.owner,configBytes['model-owner']],[PATHS.control,controlBytes],[PATHS.database,ownerDsn],[PATHS.identity,identityCredential],
-   [PATHS.ownerCa,pki.certs['owner-bridge-ca']],[PATHS.ownerCert,pki.certs['owner-server']],[PATHS.ownerKey,pki.keys['owner-server']]]),
-  'model-proxy':new Map([[PATHS.proxy,configBytes['model-proxy']],[PATHS.proxyServerCert,pki.certs['proxy-server']],[PATHS.proxyServerKey,pki.keys['proxy-server']],
-   [PATHS.proxyOwnerCa,pki.certs['owner-bridge-ca']],[PATHS.proxyOwnerCert,pki.certs['proxy-owner-client']],[PATHS.proxyOwnerKey,pki.keys['proxy-owner-client']]])};
- const image=role=>role==='model-proxy'?[proxyImage,d.images.proxySourceCommit]:[nodeImage,d.images.nodeRuntimeSourceCommit];
+ };
+ const image=()=>[nodeImage,d.images.nodeRuntimeSourceCommit];
  const roles={};
  for(const role of ROLES){
   const [img,commit]=image(role),expected=expectedEnvelope(role,img,commit,files[role]),bundle=bundleOf(files[role]);
-  roles[role]={config:configs[role],configBytes:configBytes[role],configSha256:sha(configBytes[role]),configPath:{control:PATHS.control,'temporal-worker':PATHS.worker,'temporal-issuer':PATHS.issuer,'model-owner':PATHS.owner,'model-proxy':PATHS.proxy}[role],
+  roles[role]={config:configs[role],configBytes:configBytes[role],configSha256:sha(configBytes[role]),configPath:{control:PATHS.control,'temporal-worker':PATHS.worker,'temporal-issuer':PATHS.issuer}[role],
    expected,bundle,image:img,sourceCommit:commit};
  }
  const workerEnvironment={NODE_EXTRA_CA_CERTS:PATHS.issuerCa},controlEnvironment={NODE_EXTRA_CA_CERTS:CONTROL_NODE_CA_FILE};
  validateRendered(roles,{workerEnvironment,controlEnvironment});
- const summary=summarize({d,k,r,s,roles,pins,binding,nativeCandidate,taskGrantId,modelGrantId,grantExpiresAtMs,expiresAtMs,nowMs,validityDays,notAfterMs,runtimeMs,runWindowMs,
+ const summary=summarize({d,k,r,s,roles,pins,binding,nativeCandidate,taskGrantId,grantExpiresAtMs,expiresAtMs,nowMs,validityDays,notAfterMs,runtimeMs,runWindowMs,
   taskRouterZone,deploymentRevision,controlPrivate,workerEnvironment,controlEnvironment,runnerSha256,policyRevision,allocation});
  // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
  // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
@@ -714,11 +616,8 @@ function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
   }
  }
  try{parseTemporalIssuerRuntimeConfiguration(parse('temporal-issuer'));}catch(error){fail('RENDER_VALIDATION_REFUSED',`temporal-issuer ${error.code??error.message}`);}
- try{const o=validateProductOwnerConfiguration(parse('model-owner'));if(o.enabled!==true)fail('RENDER_VALIDATION_REFUSED','owner disabled');}catch(error){fail('RENDER_VALIDATION_REFUSED',`model-owner ${error.message}`);}
- try{parseProductProxyStartupConfiguration(parse('model-proxy'));}catch(error){fail('RENDER_VALIDATION_REFUSED',`model-proxy ${error.message}`);}
  for(const role of ROLES){
-  const controlConfiguration=role==='model-owner'?parse('control'):undefined;
-  let plan;try{plan=compileProductMaterialPlan({role,configuration:parse(role),runtimeUser:RUNTIME_USERS[role],...(controlConfiguration?{controlConfiguration}:{})});}
+  let plan;try{plan=compileProductMaterialPlan({role,configuration:parse(role),runtimeUser:RUNTIME_USERS[role]});}
   catch(error){fail('RENDER_VALIDATION_REFUSED',`${role} material plan ${error.code??error.message}`);}
   const paths=plan.requiredFiles.map(file=>file.path).sort(),delivered=Object.keys(roles[role].expected.sha256ByPath).sort();
   if(JSON.stringify(paths)!==JSON.stringify(delivered))fail('RENDER_VALIDATION_REFUSED',`${role} inventory differs from the plan`);
@@ -731,10 +630,10 @@ function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
 
 function summarize(x){
  const {d,s,roles,pins}=x,env=(name,value)=>({name,value});
- const init=role=>({containerName:'material-init',image:role==='model-proxy'?d.images.nodeRuntime:roles[role].image,user:role==='model-proxy'?'0:0':RUNTIME_USERS[role],
+ const init=role=>({containerName:'material-init',image:roles[role].image,user:RUNTIME_USERS[role],
   entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='control'?['write','--control-node-ca']:['write'],
   environment:[env('MERI_STATIC_MATERIAL_EXPECTED',JSON.stringify(roles[role].expected))],
-  secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:`${d.secrets[{control:'control/material','temporal-worker':'worker/material','temporal-issuer':'issuer/material','model-owner':'owner/material','model-proxy':'proxy/material'}[role]]}:::<VersionId of the PutSecretValue with ${role}/bundle.json>`}]});
+  secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:`${d.secrets[{control:'control/material','temporal-worker':'worker/material','temporal-issuer':'issuer/material'}[role]]}:::<VersionId of the PutSecretValue with ${role}/bundle.json>`}]});
  const wiring={
   control:{family:s.taskDefinitions.control,containerName:'control',image:roles.control.image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['control','--config',PATHS.control],
    environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.controlEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8080,8082],volumes:{'/run/meri':'material (read-only)','/run/meri-temporal':'temporal-token (writable, empty)','/tmp':'tmp (writable; init writes control CA bundle; holds multiRun.materialDirectory)','/workspace':'workspace'},init:init('control')},
@@ -742,33 +641,29 @@ function summarize(x){
    environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.workerEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8081],volumes:{'/run/meri':'material (read-only)','/run/meri-temporal':'temporal-token (writable, empty)'},init:init('temporal-worker')},
   'temporal-issuer':{family:s.taskDefinitions['temporal-issuer'],containerName:'temporal-issuer',image:roles['temporal-issuer'].image,user:'1000:1000',entryPoint:['node','apps/runtime/temporal-issuer-cli.mjs'],
    command:['--config',PATHS.issuer,'--config-sha256',roles['temporal-issuer'].configSha256],environment:[env('MERI_TEMPORAL_ISSUER_REQUIRED','1')],ports:[8445],volumes:{'/run/meri':'material (read-only)'},init:init('temporal-issuer')},
-  'model-owner':{family:s.taskDefinitions['model-owner'],containerName:'model-owner',image:roles['model-owner'].image,user:'1000:1000',entryPoint:['node','apps/proxy/product/owner-entrypoint.mjs'],command:['--config',PATHS.owner],
-   environment:[env('MERI_PRODUCT_OWNER_REQUIRED','1'),env('MERI_PRODUCT_OWNER_CONFIG_SHA256',roles['model-owner'].configSha256)],ports:[8444],volumes:{'/run/meri':'material (read-only)'},init:init('model-owner')},
-  'model-proxy':{family:s.taskDefinitions['model-proxy'],containerName:'model-proxy',image:roles['model-proxy'].image,user:'10001:10001',command:['--config',PATHS.proxy,'--config-sha256',roles['model-proxy'].configSha256],
-   environment:[env('MERI_PRODUCT_PROXY_REQUIRED','1')],ports:[8443],volumes:{'/run/meri':'material (read-only)'},init:init('model-proxy')},
   runner:{family:s.taskDefinitions.runner,containerName:CONTAINER_NAMES.runner,image:d.images.nodeRuntime,user:'1000:1000',entryPoint:['node','apps/runtime/runner-poststart-cli.mjs'],command:['start'],
    environment:[env('MERI_RUNNER_SHA256',x.runnerSha256),env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('MERI_POSTSTART_CONTROL_ORIGIN',x.controlPrivate),
     env('MERI_POSTSTART_CA_BASE64',roles.control.bundle.files.find(f=>f.path===PATHS.controlCa).base64),env('MERI_POSTSTART_CA_SHA256',pins.pem['server-ca'])],ports:[8080]}};
  return {schemaVersion:1,generatedAtMs:x.nowMs,
   validity:{validityDays:x.validityDays,notAfterMs:x.expiresAtMs,notAfter:new Date(x.expiresAtMs).toISOString(),grantAndDeadlineMs:x.grantExpiresAtMs,
    earliestCertificateNotAfter:new Date(x.notAfterMs).toISOString(),
-   maxima:{scheduleExpiresAt:'no validator upper bound (Date.parse); past value refuses new chats',serviceTasksAndPricing:'> owner/proxy startup now, <= 9007199254740991 (Python proxy bound)',
-    grantIntentsAndDeadline:`<= control/owner startup Date.now() + budgets.maxRuntimeSeconds*1000 (${x.runtimeMs} ms); a past value is accepted`,
+   maxima:{scheduleExpiresAt:'no validator upper bound (Date.parse); past value refuses new chats',
+    grantIntentsAndDeadline:`<= control startup Date.now() + budgets.maxRuntimeSeconds*1000 (${x.runtimeMs} ms); a past value is accepted`,
     runWindowMs:`60000..min(86400000, maxRuntimeSeconds*1000) = ${x.runWindowMs}`,certificates:'every value is capped below the earliest certificate notAfter'}},
   roles:Object.fromEntries(ROLES.map(role=>[role,{configPath:roles[role].configPath,configSha256:roles[role].configSha256,materialContractSha256:roles[role].expected.materialContractSha256,
    fileCount:roles[role].bundle.files.length,bundleBytes:Buffer.byteLength(JSON.stringify(roles[role].bundle)),expectedBytes:Buffer.byteLength(JSON.stringify(roles[role].expected)),
    runtimeUser:RUNTIME_USERS[role],imageDigest:roles[role].expected.imageDigest,sourceCommit:roles[role].sourceCommit,taskDefinitionArn:s.taskDefinitions[role],
    sha256ByPath:roles[role].expected.sha256ByPath}])),
-  taskDefinitionConfigPins:{MERI_PRODUCT_OWNER_CONFIG_SHA256:roles['model-owner'].configSha256,proxyConfigSha256:roles['model-proxy'].configSha256,issuerConfigSha256:roles['temporal-issuer'].configSha256,
+  taskDefinitionConfigPins:{issuerConfigSha256:roles['temporal-issuer'].configSha256,
    controlConfigSha256:roles.control.configSha256,workerConfigSha256:roles['temporal-worker'].configSha256},
   runnerPoststart:{MERI_POSTSTART_CONTROL_ORIGIN:x.controlPrivate,MERI_POSTSTART_CA_BASE64:wiring.runner.environment[3].value,MERI_POSTSTART_CA_SHA256:pins.pem['server-ca'],
-   MERI_RUNNER_SHA256:x.runnerSha256,launchTemplateNodeExtraCaCerts:RUNNER_SDK_CA_FILE},
+   MERI_RUNNER_SHA256:x.runnerSha256},
   control:{NODE_EXTRA_CA_CERTS:x.controlEnvironment.NODE_EXTRA_CA_CERTS},
   worker:{NODE_EXTRA_CA_CERTS:x.workerEnvironment.NODE_EXTRA_CA_CERTS},
   taskRouter:{zone:x.taskRouterZone,runnerLeafSan:`<32-hex ECS task id>.${x.taskRouterZone}`,dns:'not required: control connects to the task private IPv4 with SNI = the SAN (runner-tls-client.mjs)'},
   deploymentRevision:x.deploymentRevision,
   staticCandidate:{binding:x.binding,clientId:x.k.clientId,policyRevision:x.policyRevision,qualificationAttempt:x.r.qualification.attempt,
-   taskGrantId:x.taskGrantId,modelGrantId:x.modelGrantId,grantCapabilitySha256:x.nativeCandidate.grantIntents.map(g=>({grantId:g.grantId,capabilitySha256:g.capabilitySha256})),
+   taskGrantId:x.taskGrantId,grantCapabilitySha256:x.nativeCandidate.grantIntents.map(g=>({grantId:g.grantId,capabilitySha256:g.capabilitySha256})),
    allocationSha256:canonicalSha256(x.allocation),manifestSha256:x.allocation.manifestSha256,runWindowMs:x.runWindowMs},
   pinsDer:pins.der,pinsPem:pins.pem,wiring};
 }

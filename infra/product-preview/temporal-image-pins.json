@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "platform": "linux/arm64",
+  "nodeVersion": "24.22.1",
+  "serverVersion": "1.32.1",
+  "bases": {
+    "nodeBinary": "public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8",
+    "glibcRuntime": "cgr.dev/chainguard/wolfi-base@sha256:4e354e15b41a49dc249d07a4e38974c4ef6db8a4cc70059c4d625f5cdaa92657",
+    "goBuilder": "public.ecr.aws/docker/library/golang@sha256:0849630945ae86e34645a0cf6944792922b80161f9e90c5f85d64e18a903da29"
+  },
+  "packages": [
+    "libatomic=16.2.0-r1",
+    "libstdc++=16.2.0-r1"
+  ],
+  "serverSource": {
+    "commit": "af08a5e5f2dd40f545f2afac7780daaa6987001e",
+    "url": "https://codeload.github.com/temporalio/temporal/tar.gz/af08a5e5f2dd40f545f2afac7780daaa6987001e",
+    "sha256": "ea2283c976d4aaf0b86d289bb5f17b4f514a5b56d01ec2d32f11078e48ab8cfd"
+  },
+  "goVersion": "1.26.10",
+  "securityModules": {
+    "golang.org/x/net": "v0.60.0"
+  }
+}

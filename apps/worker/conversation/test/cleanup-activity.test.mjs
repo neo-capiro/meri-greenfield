@@ -3,6 +3,7 @@ import {test,mock} from 'node:test';
 import assert from 'node:assert/strict';
 import {binding,versions,scopes,id} from '../../../control/conversations/test/store-fixture.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {SDK_MODEL_CONFIGURATION} from '../../../control/conversations/usage.mjs';
 let active;
 const close=name=>()=>{active.calls.push(name);if(active.bad===name&&(name!=='finish'||active.calls.filter(n=>n==='finish').length>1)){if(active.mode==='hang')return new Promise(()=>{});throw Error('synthetic close refusal');}};
 mock.module('../reads/runtime.mjs',{namedExports:{createGeneralReadRuntime:async()=>({close:close('read')}),continuationSessionId:()=>id(999)}});
@@ -26,7 +27,7 @@ function execute({bad,mode,failed=false,signal,deadlineOffsetMs=5000}){
  const request={requestId:id(500),prompt:'Synthetic prompt',skill:selected.pin,window:null};
  const activity=createConversationActivity({cleanupAttemptMs:15,terminalAttemptMs:15,lifecycle:{},
   runOwner:{async load(){return {run,request,capabilities:{generalReads:true,governedIntents:true}};},async append(){}},
-  prepareRuntime:async()=>({binding,versions,cwd:`/workspace/${binding.conversationId}`,proxyUrl:'https://synthetic.invalid',proxyCredential:'synthetic',model:'qualified-model-pin',
+  prepareRuntime:async()=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,...SDK_MODEL_CONFIGURATION,providerEnvironment:{},
    sessionStore:{load(){},append(){}},deadlineMs:Date.now()+deadlineOffsetMs,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024}),
   selectedSkills:{async prepare(){return {selected,async finish(){return {};},close:close('skill')};},async publish(){}},
   generalReads:{readAvailability(){},execute(){}},governedIntents:{readAvailability(){},prepare(){}},browser:{policy(){}},newId:()=>id(n++),

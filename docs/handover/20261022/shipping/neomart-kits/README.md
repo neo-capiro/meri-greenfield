@@ -1,12 +1,20 @@
 # neomart release kits (snapshot 2026-10-22 ~17:30 UTC)
 
+**Historical snapshot, not executable guidance for Wave 2.** The states below
+describe 22 October only. The current host is EC2AMAZ-M7CDRPT and AWS profile is
+`default`. Follow [the current runbook](../../SHIPPING-RUNBOOK.md) and
+[Codex validation/shipping](../../CODEX-VALIDATION-AND-SHIPPING.md). The active
+pair/measurement kit was removed with the native SDK image pipeline. These
+copied per-release folders preserve evidence and rollback inputs; do not execute
+their old generators, profile defaults, model-pair steps or database targets.
+
 Copied from `C:\dev\fable\` on neomart, with source archives (`*.zip`, `*.tar`), `node_modules` and `product-source-members.json` (4 MB, derivable) left out. No secret values are included. The kits do contain AWS identifiers (account, ARNs, Secrets Manager version IDs, digests) and neomart-local paths.
 
 | Folder | What it is | State |
 |---|---|---|
-| `ship-kit/` | Meri kit generator (`make-ship-kit.mjs`) and `tools/release-candidate.sh` | Current |
-| `ship-proxy-kit/` | Model-proxy image kit generator | Current |
-| `ship-fe-kit/` | Frontend kit generator (`make-fe-ship-kit.mjs`) | Current |
+| `ship-kit/` | Copied Meri pair/measurement kit generator and launcher | Historical |
+| `ship-proxy-kit/` | Copied model-proxy image kit generator | Historical |
+| `ship-fe-kit/` | Copied frontend kit generator | Historical |
 | `ship-205eead4/`, `ship-proxy-205eead4/` | The **live** Meri release (P2.1): control:48, worker:47, runner:33, owner:46, proxy:46, issuer:47. Its deployment inputs are the Meri rollback target for the cut-over | Executed |
 | `ship-core-ca4de503/` | **The cut-over Core kit**: `backend-import` `ca4de503`. Steps 00–03 are done: image `capiro/preview-core@sha256:036b368c…`, probes PASS, 0 findings. Steps 04, 045, 05 and 06 run only in the cut-over (`../../plan/NEWSTACK-CUTOVER-PLAN.md`). `90-rollback` returns to `:3` | Built, not deployed |
 | `ship-fe-87a84951/` | The **live** frontend: `capiro-portfolio-preview:22`. `R1-rollback-to-21.sh` returns to 4e2c770f | Executed |

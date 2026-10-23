@@ -6,7 +6,7 @@ import {copySessionJson} from '../../worker/qualification/checkpoint/session-sto
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {remoteOriginal} from './remote-task-boundary.mjs';
-import {assertNativeExecution} from './execution-broker.mjs';
+import {assertNativeExecution} from '../../control/conversations/execution-boundary.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
 import {createWorkspaceCapture} from './workspace-capture.mjs';
 const fault=()=>Error('TASK_CHECKPOINT_SOURCE_UNKNOWN'),refuse=()=>{throw fault();};

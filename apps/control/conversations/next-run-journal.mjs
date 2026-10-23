@@ -14,6 +14,11 @@ const CHECKPOINTED=['paused','waiting-for-approval'];
 /** A lifecycle resume's successor, as the lifecycle journal leaves it: the source stays in its checkpointed state (never terminal), its
  * sequence range closed by the successor, and the successor's run row carries the continuation envelope naming the source. */
 const continued=(source,target)=>target.continuation!=null&&same(target.continuation.continuation?.checkpoint?.binding,source.projection.binding)&&CHECKPOINTED.includes(source.projection.state)&&source.sequence_end!=null;
+const projected=r=>({binding:r.projection.binding,state:r.projection.state,requestId:r.request_id,sequenceBase:Number(r.sequence_base),lastSequence:Number(r.last_sequence),sequenceEnd:r.sequence_end==null?null:Number(r.sequence_end),scopes:r.projection.scopes,policyRevision:r.projection.policyRevision,versions:r.projection.versions,createdAt:r.projection.createdAt});
+/** Canonical writer ordering and sequence ranges; callers decode each persisted row first. */
+export function orderedConversationRuns(rows){const runs=rows.map(projected).sort((a,b)=>a.binding.writerFence-b.binding.writerFence);
+ for(let i=0;i<runs.length;i++){if(!Number.isSafeInteger(runs[i].sequenceBase)||runs[i].sequenceBase<0||runs.some((o,j)=>j!==i&&o.binding.writerFence===runs[i].binding.writerFence))fail('STORE_CORRUPT');if(i===0?runs[i].sequenceBase!==0:runs[i].sequenceBase!==runs[i-1].sequenceEnd)fail('STORE_CORRUPT');}
+ return runs;}
 /** The next-run mapping of a lifecycle resume (lifecycle/journal.mjs `continuation`), written inside that journal's locked source
  * transaction (same conversation lock) together with the successor's run row. The successor continues the checkpointed source rather
  * than opening a new prompt, so the mapping is born ACCEPTED and the prepared-run registry serves it exactly like an accepted next
@@ -31,17 +36,14 @@ export async function recordContinuationReservation(c,{source,target,scopes,vers
  await c.query('INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7)',[source.tenantId,source.conversationId,source.runId,target.runId,reservation,hash(reservation),'ACCEPTED']);check();
  return reservation;
 }
-export function createNextRunJournal({tx,rowRun}){
+export function createNextRunJournal({tx,rowRun,modelAdmission}){
  const row=r=>{if(!r||hash(r.reservation)!==r.reservation_sha256)fail('STORE_CORRUPT');const v=assertNextRunReservation(r.reservation);if(r.source_run_id!==v.source.runId||r.target_run_id!==v.target.runId||r.tenant_id!==v.target.tenantId||r.conversation_id!==v.target.conversationId||!['RESERVED','ACCEPTED'].includes(r.state))fail('STORE_CORRUPT');return {...v,state:r.state};};
  const key=value=>{const k=bounded(value);own(k,['tenantId','conversationId']);uuid(k.conversationId);if(typeof k.tenantId!=='string'||!k.tenantId||k.tenantId.length>256)fail('INVALID_REQUEST');return k;};
  /** Either retirement plus revocation of an allocation that existed, or (failed/cancelled source only) the store's explicit
   * no-authority evidence that the attempt never claimed one; the journal verifies whichever is named against the row itself. */
  function completion(r,source){if(!r||hash(r.identity)!==r.identity_sha256||r.tenant_id!==source.tenant_id||r.conversation_id!==source.conversation_id||r.run_id!==source.run_id||!same(r.identity.binding,source.projection.binding)||r.completion_id!==r.identity.completionId||r.checkpoint_id!==r.identity.checkpointId||!same(r.identity.sourceRequest,source.request)||r.identity.sourceRequestSha256!==source.request_sha256||r.identity.contextSha256!==hash({window:source.request.window,skill:source.request.skill,scopes:source.projection.scopes})||!same(r.identity.scopes,source.projection.scopes)||!same(r.identity.versions,source.projection.versions))fail('STORE_CORRUPT');if(r.state==='PUBLISHED'){if(hash(r.proof)!==r.proof_sha256)fail('STORE_CORRUPT');validateCompletionProof(r.proof,r.identity);}return r;}
- const projected=r=>({binding:r.projection.binding,state:r.projection.state,requestId:r.request_id,sequenceBase:Number(r.sequence_base),lastSequence:Number(r.last_sequence),sequenceEnd:r.sequence_end==null?null:Number(r.sequence_end),scopes:r.projection.scopes,policyRevision:r.projection.policyRevision,versions:r.projection.versions,createdAt:r.projection.createdAt});
  async function conversationRows(c,k,check){const rows=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[k.tenantId,k.conversationId])).rows.map(rowRun);check();return rows;}
- function orderedRuns(rows){const runs=rows.map(projected).sort((a,b)=>a.binding.writerFence-b.binding.writerFence);
-  for(let i=0;i<runs.length;i++){if(!Number.isSafeInteger(runs[i].sequenceBase)||runs[i].sequenceBase<0||runs.some((o,j)=>j!==i&&o.binding.writerFence===runs[i].binding.writerFence))fail('STORE_CORRUPT');if(i===0?runs[i].sequenceBase!==0:runs[i].sequenceBase!==runs[i-1].sequenceEnd)fail('STORE_CORRUPT');}
-  return runs;}
+ const orderedRuns=orderedConversationRuns;
  async function conversationRuns(c,k,check){return orderedRuns(await conversationRows(c,k,check));}
  /** The conversation's latest published completion checkpoint among its locked run rows up to `through` (fence order), each verified
   * against its own run, which publication completed; null when none. */
@@ -156,6 +158,7 @@ export function createNextRunJournal({tx,rowRun}){
    if(existing.length){const e=rowRun(existing[0]);if(existing.length!==1||e.request_id!==request.requestId||!same({...e.request,window:request.window},request)||!same(e.projection.binding,b)||!same(e.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');return {run:e.projection,request:e.request,lastSequence:Number(e.last_sequence),replayed:true};}
    const source=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,r.source.runId])).rows[0]);check();
    if(!admitsNextRun(source.projection.state)||source.projection.state==='completed'&&r.facts.checkpoint===null||!same(source.projection.binding,r.source))fail('NEXT_RUN_SOURCE_REFUSED');
+   if(typeof modelAdmission!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');await modelAdmission(c,b,check);
    const sequenceBase=await closeSequenceRange(c,r.source,rowRun,check);
    validateShape('UIEvent',event);if(!same(event.binding,b)||!same(event.scopes,run.scopes)||event.sequence!==1||event.type!=='run.status'||event.data.state!=='queued')fail('EVENT_BINDING_REFUSED');
    await c.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence,sequence_base) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,$9)',[b.tenantId,b.conversationId,b.runId,run,hash(run),request.requestId,request,hash(request),sequenceBase]);check();

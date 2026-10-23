@@ -1,3 +1,4 @@
+import imagePins from './temporal-image-pins.json' with {type:'json'};
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -17,7 +18,7 @@ function binding(){return {
  account,region,enabled:false,activation:'disabled',placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-1234abcd',availabilityZone:'us-east-1a'},{id:'subnet-abcd1234',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal-server@sha256:${sha}`,
- upstreamServerImageDigest:pins.server.imageAmd64Digest,launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
+ upstreamServerSourceCommit:imagePins.serverSource.commit,launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
  executionRoleArn:`arn:aws:iam::${account}:role/meri-temporal-execution`,
  taskRoleArns:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,`arn:aws:iam::${account}:role/meri-temporal-${i}`])),
  network:{clientSecurityGroupIds:['sg-11111111','sg-22222222'],issuerSecurityGroupId:'sg-33333333',
@@ -42,13 +43,18 @@ test('committed application and Temporal inputs select the copied cluster and re
  const temporal=JSON.parse(readFileSync(new URL('./first-chat/temporal-binding.json',import.meta.url),'utf8'));
  assert.equal(TEMPORAL_EXISTING_DATABASE.endpoint,endpoint);assert.equal(TEMPORAL_EXISTING_DATABASE.clusterArn,clusterArn);
  assert.equal(deployment.database.host,endpoint);assert.equal(deployment.database.port,5432);assert.equal(deployment.database.database,'capiro');
- assert.equal(validateTemporalPreviewBinding(temporal),temporal);
+ // This archived tuple names an amd64 image; it is not an ARM readiness input.
+ assert.throws(()=>validateTemporalPreviewBinding(temporal),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+ const candidate={...temporal,serverImageUri:binding().serverImageUri,upstreamServerSourceCommit:binding().upstreamServerSourceCommit,
+  launchSourceCommit:binding().launchSourceCommit,launchContractSha256:rendererSha};
+ delete candidate.upstreamServerImageDigest;
+ assert.equal(validateTemporalPreviewBinding(candidate),candidate);
  assert.equal(temporal.database.endpoint,endpoint);assert.equal(temporal.database.clusterArn,clusterArn);
  assert.equal(temporal.database.rdsCaSha256,deployment.database.rdsCaPemSha256);
  const previous='capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv';
  for(const [key,value] of [['clusterArn',`arn:aws:rds:us-east-1:967807252336:cluster:${previous}`],
   ['endpoint',`${previous}.cluster-csryw28ai752.us-east-1.rds.amazonaws.com`]]){
-  const changed=structuredClone(temporal);changed.database[key]=value;
+  const changed=structuredClone(candidate);changed.database[key]=value;
   assert.throws(()=>validateTemporalPreviewBinding(changed),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
  }
 });
@@ -80,6 +86,7 @@ test('fully bound synthesis emits five stopped private roles using the approved 
  }
  for(const role of TEMPORAL_ROLES){
   const definition=task(t,role),container=definition.ContainerDefinitions[0];
+  assert.deepEqual(definition.RuntimePlatform,{CpuArchitecture:'ARM64',OperatingSystemFamily:'LINUX'});
   assert.equal(definition.ExecutionRoleArn,b.executionRoleArn);assert.equal(definition.TaskRoleArn,b.taskRoleArns[role]);
   assert.equal(container.Image,b.serverImageUri);assert.deepEqual(container.PortMappings.map(x=>x.ContainerPort),TEMPORAL_PORTS[role]);
   assert.deepEqual(container.EntryPoint,['/opt/meri/temporal-launch']);
@@ -254,7 +261,7 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.placement.kind='reuse-capiro-dev';},x=>{x.vpcId='vpc-1234abcd';},
   x=>{x.subnets[1].availabilityZone=x.subnets[0].availabilityZone;},x=>{x.subnets=[x.subnets[0]];},
   x=>{x.serverImageUri=x.serverImageUri.replace('@sha256:','-mutable:');},
-  x=>{x.upstreamServerImageDigest='sha256:'+sha;},x=>{x.launchSourceCommit='';},
+  x=>{x.upstreamServerSourceCommit='sha256:'+sha;},x=>{x.launchSourceCommit='';},
   x=>{x.taskRoleArns.history=x.taskRoleArns.frontend;},x=>{x.taskRoleArns.matching=x.executionRoleArn;},
   x=>{x.auth.materialSecretVersionByRole.history=x.auth.materialSecretVersionByRole.frontend;},
   x=>{x.auth.materialSecretVersionByRole.history=x.auth.materialSecretVersionByRole.frontend.replace(/[^:]+$/u,'9'.repeat(32));},
@@ -341,6 +348,41 @@ function readback(b){
    n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
 }
 
+test('shared S3 gateway may serve additional route tables while retaining every Temporal task route',()=>{
+ const b=capiroDevBinding(),evidence=readback(b);
+ evidence.s3Gateway.RouteTableIds.push('rtb-44444444','rtb-55555555','rtb-66666666',
+  'rtb-77777777','rtb-88888888','rtb-99999999');
+ assert.equal(evidence.routeTables.length,3);
+ assert.equal(evidence.s3Gateway.RouteTableIds.length,9);
+ assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
+ evidence.s3Gateway.RouteTableIds.reverse();
+ assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
+});
+
+test('shared S3 gateway still refuses malformed associations and invalid required task routes',()=>{
+ const b=capiroDevBinding(),evidence=readback(b);
+ evidence.s3Gateway.RouteTableIds.push('rtb-44444444');
+ for(const [label,mutate] of [
+  ['missing required route',x=>{x.s3Gateway.RouteTableIds.shift();}],
+  ['empty associations',x=>{x.s3Gateway.RouteTableIds=[];}],
+  ['non-array associations',x=>{x.s3Gateway.RouteTableIds='rtb-11111111';}],
+  ['null associations',x=>{x.s3Gateway.RouteTableIds=null;}],
+  ['duplicate association',x=>{x.s3Gateway.RouteTableIds.push(x.s3Gateway.RouteTableIds[0]);}],
+  ['invalid extra ID',x=>{x.s3Gateway.RouteTableIds.push('not-a-route');}],
+  ['non-string extra ID',x=>{x.s3Gateway.RouteTableIds.push(12345678);}],
+  ['sparse extra association',x=>{x.s3Gateway.RouteTableIds.length+=1;}],
+  ['foreign gateway VPC',x=>{x.s3Gateway.VpcId='vpc-deadbeef';}],
+  ['foreign required route VPC',x=>{x.routeTables[0].VpcId='vpc-deadbeef';}],
+  ['inactive required S3 route',x=>{x.routeTables[0].Routes[1].State='blackhole';}],
+  ['different required S3 target',x=>{x.routeTables[0].Routes[1].GatewayId='vpce-deadbeef';}],
+  ['different required S3 prefix',x=>{x.routeTables[0].Routes[1].DestinationPrefixListId='pl-deadbeef';}],
+  ['wrong effective task route',x=>{x.routeTables[0].Associations[0].SubnetId='subnet-deadbeef';}],
+ ]){
+  const changed=structuredClone(evidence);mutate(changed);
+  assert.throws(()=>validateTemporalNetworkReadback(b,changed),/TEMPORAL_NETWORK_READBACK_REFUSED/u,label);
+ }
+});
+
 test('one shared capiro-dev endpoint SG binds, dedupes egress and still needs distinct endpoint IDs',()=>{
  const b=capiroDevBinding();
  assert.equal(validateTemporalPreviewBinding(b),b);
@@ -380,4 +422,13 @@ test('shared endpoint SG readback needs one SG row, exact service names and each
   x=>{x.interfaceEndpoints[4].VpcEndpointId='vpce-079ecbeb9a17f6188';},
   x=>{x.interfaceEndpoints.pop();}
  ]){const copy=structuredClone(evidence);mutate(copy);assert.throws(()=>validateTemporalNetworkReadback(b,copy),/TEMPORAL_NETWORK_READBACK_REFUSED/u);}
+});
+
+test('source-built ARM binding refuses historical image identity and wrong upstream source even with current renderer',()=>{
+ for(const identity of [pins.server.imageAmd64Digest,'a'.repeat(40),'',null]){
+  const b=binding();b.upstreamServerSourceCommit=identity;
+  assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+ }
+ const old=binding();old.upstreamServerImageDigest=pins.server.imageAmd64Digest;delete old.upstreamServerSourceCommit;
+ assert.throws(()=>validateTemporalPreviewBinding(old),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
 });

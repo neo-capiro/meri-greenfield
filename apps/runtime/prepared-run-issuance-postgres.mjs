@@ -6,7 +6,7 @@
  * key that was ever claimed. No raw credential or capability value is accepted, stored or returned. Borrowed pg-compatible pool. */
 import {randomUUID} from 'node:crypto';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
+import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 const fail=(code,cause)=>{throw Object.assign(Error('ISSUANCE_STORE_'+code),{code:'ISSUANCE_STORE_'+code,...(cause?{cause}:{})});};
 const hex64=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(v);
@@ -16,16 +16,10 @@ function rowOf(r){if(!r)return null;const row={state:r.state,issuanceKey:r.issua
  if(hash(row.binding)!==row.issuanceKey||!Number.isSafeInteger(row.expiresAtMs)||!Number.isSafeInteger(row.version))fail('CORRUPT');
  if(r.state==='ISSUED'){Object.assign(row,{grantId:r.grant_id,capabilitySha256:r.capability_sha256,materialRef:r.material_ref,issuedAt:new Date(r.issued_at).getTime()});if(r.facts_sha256!==null)row.factsSha256=r.facts_sha256;}
  return row;}
-/** Closed table selection: callers cannot choose a SQL namespace. The existing task export retains its original behavior. */
-export function createPostgresIssuanceStore({pool}){return issuanceStore(pool,'meri_conversations.run_issuances',false);}
-export function createPostgresModelGrantStore({pool}){return issuanceStore(pool,'meri_conversations.model_run_issuances',true);}
-function issuanceStore(pool,table,model){
+/** Existing task issuance only; model invocation uses the runner's task IAM role. */
+export function createPostgresIssuanceStore({pool}){
+ const table='meri_conversations.run_issuances',decode=rowOf;
  if(typeof pool?.query!=='function')fail('CONFIGURATION');
- const decode=value=>{const r=rowOf(value);if(!r||!model)return r;
-  validateShape('RunBinding',r.binding);
-  if(!['CLAIMED','ISSUED'].includes(r.state)||!hex64(r.requestSha256)||r.expiresAtMs<1||r.version<1||!uuid(r.claimFence)||!Number.isFinite(r.claimedAt))fail('CORRUPT');
-  if(r.state==='ISSUED'&&(!uuid(r.grantId)||!hex64(r.capabilitySha256)||r.materialRef!=='model-material:v1:'+r.issuanceKey||!Number.isFinite(r.issuedAt)))fail('CORRUPT');
-  return r;};
  const query=async(text,args)=>{try{return await pool.query(text,args);}catch(error){if(error?.code&&String(error.code).startsWith('ISSUANCE_STORE_'))throw error;fail('UNAVAILABLE',error);}};
  const readRow=async issuanceKey=>decode((await query(`SELECT ${COLUMNS} FROM ${table} WHERE issuance_key=$1`,[issuanceKey])).rows[0]??null);
  async function read({issuanceKey}){if(!hex64(issuanceKey))fail('INVALID');return readRow(issuanceKey);}
@@ -33,7 +27,6 @@ function issuanceStore(pool,table,model){
   * existing one, whose intent must be identical; a different binding for the same run collides on the unique run binding. */
  async function claim(intent){const i=data(own(intent,['issuanceKey','binding','requestSha256','expiresAtMs']));
   if(!hex64(i.issuanceKey)||!i.binding||typeof i.binding!=='object'||hash(i.binding)!==i.issuanceKey||!hex64(i.requestSha256)||!Number.isSafeInteger(i.expiresAtMs)||i.expiresAtMs<1)fail('INVALID');
-  if(model)validateShape('RunBinding',i.binding);
   const b=i.binding;if(typeof b.tenantId!=='string'||!b.tenantId||!uuid(b.conversationId)||!uuid(b.runId))fail('INVALID');
   const fence=randomUUID();let inserted;
   try{inserted=await pool.query(`INSERT INTO ${table}(issuance_key,tenant_id,conversation_id,run_id,binding,binding_sha256,request_sha256,expires_at_ms,state,claim_fence) VALUES($1,$2,$3,$4,$5,$1,$6,$7,'CLAIMED',$8) ON CONFLICT (issuance_key) DO NOTHING RETURNING ${COLUMNS}`,[i.issuanceKey,b.tenantId,b.conversationId,b.runId,b,i.requestSha256,i.expiresAtMs,fence]);}
@@ -43,12 +36,10 @@ function issuanceStore(pool,table,model){
  /** CLAIMED to ISSUED exactly once; with `claimFence` the row must still carry the caller's claim. A replay with the same identity returns the row. */
  async function complete(value){const v=data(own(value,['issuanceKey','grantId','capabilitySha256','materialRef'],['claimFence']));
   if(!hex64(v.issuanceKey)||!uuid(v.grantId)||!hex64(v.capabilitySha256)||typeof v.materialRef!=='string'||v.materialRef.length<1||v.materialRef.length>1024||v.claimFence!==undefined&&!uuid(v.claimFence))fail('INVALID');
-  if(model&&(!uuid(v.claimFence)||v.materialRef!=='model-material:v1:'+v.issuanceKey))fail('INVALID');
   const current=await readRow(v.issuanceKey);if(!current)fail('NOT_CLAIMED');
-  if(model&&current.claimFence!==v.claimFence)fail('CLAIM_FENCED');
   if(current.state==='ISSUED'){if(current.grantId!==v.grantId||current.capabilitySha256!==v.capabilitySha256||current.materialRef!==v.materialRef)fail('ISSUED_CONFLICT');return current;}
-  if(!model&&v.claimFence!==undefined&&current.claimFence!==v.claimFence)fail('CLAIM_FENCED');
-  const r=await query(`UPDATE ${table} SET state='ISSUED',grant_id=$2,capability_sha256=$3,material_ref=$4,issued_at=now(),version=version+1 WHERE issuance_key=$1 AND state='CLAIMED' AND version=$5${model?' AND claim_fence=$6':''} RETURNING ${COLUMNS}`,[v.issuanceKey,v.grantId,v.capabilitySha256,v.materialRef,current.version,...(model?[v.claimFence]:[])]);
+  if(v.claimFence!==undefined&&current.claimFence!==v.claimFence)fail('CLAIM_FENCED');
+  const r=await query(`UPDATE ${table} SET state='ISSUED',grant_id=$2,capability_sha256=$3,material_ref=$4,issued_at=now(),version=version+1 WHERE issuance_key=$1 AND state='CLAIMED' AND version=$5 RETURNING ${COLUMNS}`,[v.issuanceKey,v.grantId,v.capabilitySha256,v.materialRef,current.version]);
   if(r.rows[0])return decode(r.rows[0]);
   const after=await readRow(v.issuanceKey);if(after?.state==='ISSUED'){if(after.grantId!==v.grantId||after.capabilitySha256!==v.capabilitySha256||after.materialRef!==v.materialRef)fail('ISSUED_CONFLICT');return after;}fail('UNAVAILABLE');}
  /** Immutable compare-or-set of the facts hash on an ISSUED row. */

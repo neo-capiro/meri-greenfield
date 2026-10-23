@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {executionFault} from '../native-authority/execution-broker.mjs';
+import {executionFault} from '../native-authority/remote-task-boundary.mjs';
 import {withRunnerDiagnostics,atRunnerStage} from '../runner-runtime-diagnostics.mjs';
 import {withoutDetail} from './runner-diagnostic-lines.mjs';
 

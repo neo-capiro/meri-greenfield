@@ -1,24 +1,22 @@
 #!/usr/bin/env bash
 # One Meri Temporal server derivative image (D3) qualification inside CodeBuild
 # (privileged, no cache). Input: the extracted ZIP made by temporal-image-context.py:
-#   repo/infra/product-preview/**  exact Git blobs of COMMIT (Dockerfile, launcher, APK inputs)
+#   repo/infra/product-preview/**  exact Git blobs of COMMIT (Dockerfile, launcher, image pins)
 #   inputs/temporal-issuer-ca.pem  public issuer CA baked into the image
 #   context-manifest.json          {"commit", "bases", "issuerCaSha256", "files": {path: sha256}}
 # Order: verify -> build (3 digest-pinned bases, CA via BuildKit secret) -> locked-down
 # launcher smoke + image probe -> push -> scan COMPLETE with zero HIGH/CRITICAL -> receipt.
 # Any failure stops and writes a failure record; there is no retry.
 #
-# Scan coverage (recorded in the receipt): ECR basic scanning reads OS package
-# databases. It sees the upstream Alpine packages of temporalio/server. It does not
-# see the Go temporal-server binary (Go stdlib/module CVEs need enhanced scanning),
-# the Node binary, or the Wolfi glibc/libgcc/libstdc++ files copied without an APK
-# database. Those come from the zero-finding Wolfi set of the qualified Node runtime.
+# ECR basic scans the final Wolfi APK database. Copied Node/Go binaries require
+# separate exact-digest language-binary scanning before release; no coverage claim.
 set -Eeuo pipefail
 REGION=us-east-1
-NODE_BASE='public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63'
-GLIBC_BASE='cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4'
-TEMPORAL_BASE='temporalio/server@sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e'
-SCAN_COVERAGE='ecr-basic-os-packages-only: Alpine APK database of temporalio/server; not the Go temporal-server binary, the Node binary, or copied Wolfi glibc/libgcc/libstdc++ files'
+PINS_FILE="$(dirname "${BASH_SOURCE[0]}")/temporal-image-pins.json"
+read -r NODE_BASE GLIBC_BASE GO_BASE <<< "$(python3 -I -B -c 'import json,sys
+p=json.load(open(sys.argv[1])); assert p["platform"]=="linux/arm64"
+print(*(p["bases"][k] for k in ("nodeBinary","glibcRuntime","goBuilder")))' "$PINS_FILE" | tr -d '\r')"
+SCAN_COVERAGE='ecr-basic-os-packages-only: final Wolfi APK database; copied Node and Go temporal-server binaries require separate exact-digest scanning'
 PHASE=START
 DIGEST=''
 
@@ -78,10 +76,10 @@ finish_success() {
 a=sys.argv
 print(json.dumps({"schemaVersion":1,"status":"SUCCEEDED","commit":a[1],"attempt":a[2],"repository":a[3],
  "image":{"role":"deployable","tag":a[4],"digest":a[5],"scan":json.load(open(a[6])),"highFindings":json.load(open(a[7]))},
- "bases":{"nodeBinary":a[8],"glibcRuntime":a[9],"temporalServer":a[10]},"glibcRuntimePackages":["glibc-2.44=2.44-r8","ld-linux-2.44=2.44-r8","libgcc=16.2.0-r1","libstdc++=16.2.0-r1"],
- "issuerCaSha256":a[11],"contextManifestSha256":a[12],"probe":json.load(open(a[13])),"scanCoverage":a[14]},sort_keys=True))' \
+ "bases":{"nodeBinary":a[8],"glibcRuntime":a[9],"goBuilder":a[10]},"glibcRuntimePackages":json.load(open(a[13]))["apkPackages"],
+ "issuerCaSha256":a[11],"contextManifestSha256":a[12],"probe":json.load(open(a[13])),"scanCoverage":a[14],"serverSource":json.load(open(a[15]))["serverSource"]},sort_keys=True))' \
     "$COMMIT" "$ATTEMPT" "$REPOSITORY_URI" "$IMAGE_TAG" "$DIGEST" "$WORK/image.counts" "$WORK/high-findings.json" \
-    "$NODE_BASE" "$GLIBC_BASE" "$TEMPORAL_BASE" "$ISSUER_CA_SHA256" "$MANIFEST_SHA256" "$WORK/probe.json" "$SCAN_COVERAGE" \
+    "$NODE_BASE" "$GLIBC_BASE" "$GO_BASE" "$ISSUER_CA_SHA256" "$MANIFEST_SHA256" "$WORK/probe.json" "$SCAN_COVERAGE" "$PINS_FILE" \
     > "$WORK/temporal-image-receipt.json"
   PHASE=RECEIPT_UPLOAD
   RECEIPT_VERSION="$(record_file temporal-image-receipt.json "$WORK/temporal-image-receipt.json")"
@@ -100,13 +98,15 @@ scan_counts() { # $1 = [status, counts] JSON, $2 = gate|record
 # the Dockerfile names exactly the three digest-pinned bases in order and the CA hash
 # is the manifest's. Streams each file. Prints the manifest SHA-256.
 verify_context() { # $1 = root, $2 = commit
-  python3 -I -B - "$1" "$2" "$NODE_BASE" "$GLIBC_BASE" "$TEMPORAL_BASE" <<'PY'
+  python3 -I -B - "$1" "$2" "$PINS_FILE" <<'PY'
 import hashlib, json, os, sys
-root, commit, *bases = sys.argv[1:]
+root, commit, pins_file = sys.argv[1:]
+pins = json.load(open(pins_file, encoding="utf-8"))
+bases = pins["bases"]
 raw = open(os.path.join(root, "context-manifest.json"), "rb").read()
 m = json.loads(raw)
 assert m["schemaVersion"] == 1 and m["commit"] == commit, "MANIFEST_COMMIT"
-assert m["bases"] == dict(zip(("nodeBinary", "glibcRuntime", "temporalServer"), bases)), "MANIFEST_BASES"
+assert m["bases"] == bases, "MANIFEST_BASES"
 assert m["files"].get("inputs/temporal-issuer-ca.pem") == m["issuerCaSha256"], "MANIFEST_CA"
 seen = {}
 for base, _, files in os.walk(root):
@@ -121,7 +121,14 @@ for base, _, files in os.walk(root):
         seen[rel] = h.hexdigest()
 assert seen == m["files"], "CONTEXT_MEMBERS"
 froms = [l.split()[2] for l in open(os.path.join(root, "repo/infra/product-preview/temporal-launch.Dockerfile"), encoding="utf-8") if l.startswith("FROM ")]
-assert froms == bases, "DOCKERFILE_BASES"
+assert froms == [bases[k] for k in ("nodeBinary", "goBuilder", "glibcRuntime")], "DOCKERFILE_BASES"
+source = pins["serverSource"]
+adds = [l.split() for l in open(os.path.join(root, "repo/infra/product-preview/temporal-launch.Dockerfile"), encoding="utf-8") if l.startswith("ADD ")]
+assert adds == [["ADD", "--checksum=sha256:" + source["sha256"], source["url"], "/tmp/temporal.tar.gz"]], "SERVER_SOURCE"
+assert source["url"] == "https://codeload.github.com/temporalio/temporal/tar.gz/" + source["commit"], "SERVER_SOURCE_COMMIT"
+assert json.load(open(os.path.join(root, "repo/infra/product-preview/temporal-image-pins.json"))) == pins, "IMAGE_PINS"
+assert pins["platform"] == "linux/arm64", "IMAGE_PLATFORM"
+assert all(l.split()[1] == "--platform=" + pins["platform"] for l in open(os.path.join(root, "repo/infra/product-preview/temporal-launch.Dockerfile")) if l.startswith("FROM ")), "DOCKERFILE_PLATFORM"
 print(hashlib.sha256(raw).hexdigest())
 PY
 }
@@ -131,7 +138,7 @@ PY
 # in-image probe records Node/Go versions, binaries, the CA hash and the runtime user.
 # Every check returns explicitly, so the result holds even where errexit is suspended.
 smoke_run() {
-  timeout 180 docker run --rm --network none --read-only --tmpfs /tmp:rw,nosuid,nodev,size=64m \
+  timeout 180 docker run --rm --platform linux/arm64 --user 1000:1000 --network none --read-only --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 \
     --cap-drop ALL --security-opt no-new-privileges --pids-limit 64 --memory 768m --cpus 1 "$@"
 }
 smoke_image() { # $1 = image reference, $2 = expected issuer CA SHA-256
@@ -142,26 +149,44 @@ smoke_image() { # $1 = image reference, $2 = expected issuer CA SHA-256
   [[ $rc -eq 64 && "$(cat "$WORK/smoke.err")" == TEMPORAL_LAUNCH_USAGE ]] || return 1
   rc=0; smoke_run "$image" frontend >/dev/null 2>"$WORK/smoke.err" || rc=$?
   [[ $rc -eq 78 && "$(cat "$WORK/smoke.err")" == TEMPORAL_LAUNCH_REFUSED ]] || return 1
-  smoke_run --entrypoint /opt/meri/node-loader "$image" --library-path /opt/meri/node-lib /opt/meri/node -e "$PROBE_JS" > "$WORK/probe.json" || return 1
+  smoke_run --entrypoint /opt/meri/node "$image" -e "$PROBE_JS" > "$WORK/probe.json" || return 1
   python3 -I -B -c 'import json,sys
 p=json.load(open(sys.argv[1]))
-assert p["node"]=="v24.21.0" and p["uid"]!=0 and p["issuerCaSha256"]==sys.argv[2], "PROBE"
-assert p["temporalServer"] and p["runTemporalMode"]=="700", "PROBE"' "$WORK/probe.json" "$2"
+pins=json.load(open(sys.argv[3]))
+assert p["node"]=="v"+pins["nodeVersion"] and p["arch"]=="arm64" and p["uid"]==p["gid"]==1000 and p["issuerCaSha256"]==sys.argv[2], "PROBE"
+assert p["temporalServer"] and p["serverMachine"]==183 and p["serverStatic"] is True, "SERVER_BINARY"
+assert isinstance(p["buildBinarySha256"],str) and len(p["buildBinarySha256"])==64 and p["buildBinarySha256"]==p["temporalServerSha256"], "SERVER_BINARY_HASH"
+assert p["goVersion"]=="go"+pins["goVersion"], "GO_VERSION"
+assert all(p["goModules"].get(k)==v for k,v in pins["securityModules"].items()), "GO_MODULES"
+assert all(p["goSettings"].get(k)==v for k,v in {"CGO_ENABLED":"0","GOOS":"linux","GOARCH":"arm64"}.items()), "GO_SETTINGS"
+assert p["serverHelpExit"]==0 and p["serverVersionExit"]==0 and pins["serverVersion"] in p["serverVersion"].split(), "SERVER_EXEC"
+assert p["runTemporalMode"]=="700" and p["runTemporalUid"]==p["runTemporalGid"]==1000 and p["tmpMode"]=="1777", "MOUNTS"
+assert p["issuerCaMode"]=="444" and p["issuerCaUid"]==0, "CA_MODE"
+assert all(x in p["apkPackages"] for x in pins["packages"]), "PACKAGES"' "$WORK/probe.json" "$2" "$PINS_FILE"
 }
 # Go build info: magic, ptr size, flags; flag 2 means the version is an inline varint string at +32.
 PROBE_JS='const fs=require("node:fs"),cp=require("node:child_process"),crypto=require("node:crypto");
 const has=p=>{try{fs.accessSync(p);return true}catch{return false}};
 const bin="/usr/local/bin/temporal-server",buf=has(bin)?fs.readFileSync(bin):Buffer.alloc(0);
-let go=null;const i=buf.indexOf(Buffer.from("\xff Go buildinf:","latin1"));
-if(i>=0&&(buf[i+15]&2)){let o=i+32,n=0,s=0,b;do{b=buf[o++];n|=(b&127)<<s;s+=7}while(b&128);go=buf.subarray(o,o+n).toString("latin1");}
+let go=null,goModules={},goSettings={};const i=buf.indexOf(Buffer.from("\xff Go buildinf:","latin1"));
+if(i>=0&&(buf[i+15]&2)){let o=i+32;
+ const str=()=>{let n=0,s=0,b;do{if(o>=buf.length||s>28)throw Error("GO_BUILD_INFO");b=buf[o++];n+=(b&127)*2**s;s+=7}while(b&128);if(n>1048576||o+n>buf.length)throw Error("GO_BUILD_INFO");const t=buf.subarray(o,o+n).toString("utf8");o+=n;return t};
+ go=str();for(const line of str().split("\n")){const [kind,key,value]=line.split("\t");if(kind==="dep")goModules[key]=value;if(kind==="build"){const at=key.indexOf("=");if(at>0)goSettings[key.slice(0,at)]=key.slice(at+1)}}}
+const elf=buf.length>=64&&buf.subarray(0,6).equals(Buffer.from([127,69,76,70,2,1]));
+let serverStatic=elf;if(elf){const off=Number(buf.readBigUInt64LE(32)),size=buf.readUInt16LE(54),count=buf.readUInt16LE(56);if(count===0||size<56||off+size*count>buf.length)serverStatic=false;else for(let n=0;n<count;n++){if([2,3].includes(buf.readUInt32LE(off+n*size)))serverStatic=false}}
+const buildBinarySha256=fs.readFileSync("/opt/meri/temporal-server.sha256","utf8").match(/^([a-f0-9]{64})  temporal-server\n$/)?.[1]??null;
+const version=cp.spawnSync(bin,["--version"],{env:{PATH:"/usr/local/bin:/usr/bin:/bin"},timeout:20000,maxBuffer:4096,encoding:"utf8"});
+const packages=fs.readFileSync("/lib/apk/db/installed","utf8").split(/\n\n/).filter(Boolean).map(b=>{const p=b.match(/^P:(.+)$/m),v=b.match(/^V:(.+)$/m);if(!p||!v)throw Error("APK_DATABASE");return `${p[1]}=${v[1]}`}).sort();
+const run=fs.statSync("/run/temporal"),ca=fs.statSync("/opt/meri/issuer-ca.pem");
 const help=has(bin)?cp.spawnSync(bin,["--help"],{env:{PATH:"/usr/local/bin:/usr/bin:/bin"},timeout:20000,stdio:"ignore"}).status:null;
-console.log(JSON.stringify({node:process.version,uid:process.getuid(),gid:process.getgid(),
- alpineRelease:has("/etc/alpine-release")?fs.readFileSync("/etc/alpine-release","utf8").trim():null,
+console.log(JSON.stringify({node:process.version,arch:process.arch,uid:process.getuid(),gid:process.getgid(),
+ apkPackages:packages,serverMachine:buf.length>=64&&buf.subarray(0,6).equals(Buffer.from([127,69,76,70,2,1]))?buf.readUInt16LE(18):null,
+ serverVersion:version.stdout?.trim()??null,serverVersionExit:version.status,serverStatic,buildBinarySha256,goModules,goSettings,
  temporalServer:has(bin),temporalServerSha256:crypto.createHash("sha256").update(buf).digest("hex"),goVersion:go,serverHelpExit:help,
  usrLocalBin:fs.readdirSync("/usr/local/bin").sort(),temporalSqlTool:has("/usr/local/bin/temporal-sql-tool"),
- schemaDir:has("/etc/temporal/schema"),nodeLib:fs.readdirSync("/opt/meri/node-lib").sort(),
+ schemaDir:has("/etc/temporal/schema"),issuerCaMode:(ca.mode&0o7777).toString(8),issuerCaUid:ca.uid,
  issuerCaSha256:crypto.createHash("sha256").update(fs.readFileSync("/opt/meri/issuer-ca.pem")).digest("hex"),
- runTemporalMode:(fs.statSync("/run/temporal").mode&0o7777).toString(8)}));'
+ runTemporalMode:(run.mode&0o7777).toString(8),runTemporalUid:run.uid,runTemporalGid:run.gid,tmpMode:(fs.statSync("/tmp").mode&0o7777).toString(8)}));'
 
 main() {
 : "${COMMIT:?}" "${ATTEMPT:?}" "${REPOSITORY_URI:?}" "${REPOSITORY_NAME:?}" "${RESULT_BUCKET:?}" "${KMS_KEY_ARN:?}"
@@ -178,7 +203,7 @@ echo "TEMPORAL_CONTEXT_VERIFIED manifest=$MANIFEST_SHA256"
 
 # 2. Build from exactly the sealed repo subset; the CA is a BuildKit secret, not an arg.
 PHASE=BUILD
-docker buildx build --load --no-cache --pull --platform linux/amd64 \
+docker buildx build --load --no-cache --pull --platform linux/arm64 \
   --secret "id=temporal_issuer_ca,src=$ROOT/inputs/temporal-issuer-ca.pem" \
   --build-arg "LAUNCH_SOURCE_COMMIT=$COMMIT" \
   -f "$ROOT/repo/infra/product-preview/temporal-launch.Dockerfile" -t "$REPOSITORY_URI:$IMAGE_TAG" "$ROOT/repo"

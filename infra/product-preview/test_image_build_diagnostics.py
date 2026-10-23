@@ -1,274 +1,197 @@
-"""Task-local, offline checks for the unapplied producer diagnostic patch."""
-from contextlib import redirect_stderr
-import importlib.util
-import io
+"""Closed shell behavior tests. Every AWS/Docker invocation resolves to a fixture executable."""
+import contextlib
+import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
-from unittest import mock
+
+ROOT = Path(__file__).resolve().parents[2]
+BUILD = ROOT / 'infra/product-preview/image-build.sh'
+BASH = shutil.which('bash') if os.name != 'nt' else r'C:/Program Files/Git/bin/bash.exe'
+COMMIT = 'a' * 40
+DIGEST = 'sha256:' + 'b' * 64
+REPO = '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker'
 
 
-HERE = Path(__file__).resolve().parent
-spec = importlib.util.spec_from_file_location("product_diagnostic_candidate", HERE / "image-build-producer.py")
-producer = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(producer)
+def write(path, text):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding='utf-8', newline='\n')
+    path.chmod(0o755 if path.parent.name == 'bin' else 0o644)
 
 
-def request():
-    commit = "a" * 40
-    return {
-        "schemaVersion": 2,
-        "sourceCommit": commit,
-        "archive": {"bucket": "example-build-bucket", "key": "inputs/source.zip", "versionId": "version-one", "sha256": "b" * 64},
-        "manifest": {"bucket": "example-build-bucket", "key": "inputs/members.json", "versionId": "version-two", "sha256": "c" * 64},
-        "dockerfileSha256": "d" * 64,
-        "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:" + "e" * 64,
-        "nodeVersion": "v24.21.0", "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:" + "1" * 64,
-        "runtimePackagesSha256": "4" * 64, "runnerSha256": "f" * 64,
-        "runtimeUser": "1000:1000",
-        "codeBuildProjectArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
-        "ecrRepositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
-        "imageTag": "product-" + commit + "-" + "1" * 32,
-        "verifierSha256": "2" * 64, "producerSha256": "3" * 64,
-    }
+@contextlib.contextmanager
+def build_fixture(scenario='ok', overrides=None):
+    with tempfile.TemporaryDirectory(prefix='meri-build-test-') as temp:
+        root = Path(temp)
+        source, stubs = root/'source', root/'bin'
+        source.mkdir(); stubs.mkdir()
+        paths = ['infra/product-preview/image-build.sh', 'infra/product-preview/image-build-source.py',
+                 'infra/product-preview/runtime-packages.lock.json', 'apps/runtime/certs/rds-global-bundle.pem',
+                 'apps/runtime/certs/rds-global-bundle.lock.json']
+        rows = []
+        for name in paths:
+            payload = (ROOT/name).read_bytes()
+            if name.endswith('runtime-packages.lock.json') and scenario == 'wrong-runtime-base':
+                lock = json.loads(payload)
+                lock['runtimeImageUri'] = 'cgrXdev/chainguard/wolfi-base@sha256:' + 'a' * 64
+                payload = json.dumps(lock).encode()
+            target = source/name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(payload); target.chmod(0o644)
+            rows.append(dict(path=name, bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest(), mode='100644'))
+        manifest = json.dumps(dict(contract='meri.source-members.v1', sourceCommit=COMMIT, files=sorted(rows, key=lambda x:x['path']))).encode()
+        (root/'manifest.json').write_bytes(manifest)
+        inspect = [dict(Os='linux', Architecture='arm64', Size=1024, RepoDigests=[REPO+'@'+DIGEST],
+                        Config=dict(User='1000:1000', Entrypoint=['node','apps/runtime/cli.mjs'],
+                                    Labels={'org.opencontainers.image.revision':COMMIT},
+                                    Env=['NODE_EXTRA_CA_CERTS=/opt/meri/certs/rds-global-bundle.pem']))]
+        if scenario == 'wrong-image': inspect[0]['Architecture']='amd64'
+        if scenario == 'wrong-digest': inspect[0]['RepoDigests']=[REPO+'@sha256:'+'c'*64]
+        (root/'inspect.json').write_text(json.dumps(inspect))
+        scan = dict(repositoryName='meri-greenfield/qualification-worker', imageId=dict(imageDigest=DIGEST),
+                    imageScanStatus=dict(status='COMPLETE'), imageScanFindings=dict(findingSeverityCounts={'LOW':2}))
+        if scenario=='high': scan['imageScanFindings']['findingSeverityCounts']['HIGH']=1
+        if scenario=='critical': scan['imageScanFindings']['findingSeverityCounts']['CRITICAL']=1
+        if scenario=='bad-count': scan['imageScanFindings']['findingSeverityCounts']['LOW']=True
+        if scenario=='wrong-scan': scan['imageId']['imageDigest']='sha256:'+'c'*64
+        if scenario=='incomplete': scan['imageScanStatus']['status']='IN_PROGRESS'
+        (root/'scan.json').write_text(json.dumps(scan))
+        write(stubs/'uname', '#!/usr/bin/env bash\nif [[ $1 == -s ]]; then echo Linux; else echo aarch64; fi\n')
+        write(stubs/'python3', '#!/usr/bin/env bash\nexec "$TEST_PYTHON" "$@"\n')
+        # No real timeout command is invoked in the simulated timeout case. Other commands
+        # use GNU timeout normally; the Python parent independently bounds each full fixture.
+        write(stubs/'timeout', '''#!/usr/bin/env bash
+if [[ $SCENARIO == timeout && "$*" == *'docker build '* ]]; then exit 124; fi
+exec "$TEST_TIMEOUT" "$@"
+''')
+        record = '''printf '%s\\n' "BEGIN $0" "$@" END >> "$FIXTURE/calls"
+'''
+        write(stubs/'aws', '#!/usr/bin/env bash\nset -eu\n'+record+'''case "$*" in
+ *'s3api head-object'*)
+  if [[ $SCENARIO == oversized ]]; then echo '{"VersionId":"manifest-v1","ContentLength":999999999}';
+  else printf '{"VersionId":"manifest-v1","ContentLength":%s}\\n' "$(wc -c < "$FIXTURE/manifest.json")"; fi;;
+ *'s3api get-object'*)
+  args=("$@"); for ((i=0;i<$#;i++)); do if [[ ${args[i]} == --version-id ]]; then cp "$FIXTURE/manifest.json" "${args[i+2]}"; fi; done
+  echo '{"VersionId":"manifest-v1"}';;
+ *'ecr describe-repositories'*)
+  mutable=IMMUTABLE; [[ $SCENARIO != mutable ]] || mutable=MUTABLE
+  printf '{"repositories":[{"repositoryUri":"%s","imageTagMutability":"%s","imageScanningConfiguration":{"scanOnPush":true}}]}\\n' "$TEST_REPO" "$mutable";;
+ *'ecr get-login-password'*) echo synthetic-password;;
+ *'ecr describe-images'*) printf '{"imageDetails":[{"imageTags":["%s"],"imageDigest":"%s"}]}\\n' "$IMAGE_TAG" "$TEST_DIGEST";;
+ *'ecr wait image-scan-complete'*)
+  [[ -n $AWS_DATA_PATH && $AWS_DATA_PATH == */models ]] || exit 99
+  cp "$AWS_DATA_PATH/ecr/2015-09-21/waiters-2.json" "$FIXTURE/waiter.json"
+  case $SCENARIO in scan-not-found|scan-failed|scan-timeout|scan-unknown) echo 'private-fixture-error' >&2; exit 254;; esac;;
+ *'ecr describe-image-scan-findings'*) cat "$FIXTURE/scan.json";;
+ *) echo UNEXPECTED_AWS_CALL >&2; exit 99;;
+esac
+''')
+        write(stubs/'docker', '#!/usr/bin/env bash\nset -eu\n'+record+'''case "$*" in
+ 'ps -aq '*)
+  if [[ $SCENARIO == foreign-container || -f $FIXTURE/container ]]; then echo synthetic-container; fi;;
+ 'images -q '*)
+  if [[ $SCENARIO == foreign-image || -f $FIXTURE/image ]]; then echo synthetic-image; fi;;
+ 'build '*) touch "$FIXTURE/image"; [[ $SCENARIO != build-failure ]] || { echo private-fixture-error >&2; exit 13; };;
+ 'image inspect '*) cat "$FIXTURE/inspect.json";;
+ 'run '*)
+  touch "$FIXTURE/container"
+  if [[ $SCENARIO == probe-failure && "$*" == *runtime-base-probe.mjs* ]]; then echo private-fixture-error >&2; exit 12; fi
+  if [[ $SCENARIO == ca-failure && "$*" == *rds-global-bundle.lock.json* ]]; then exit 12; fi
+  rm "$FIXTURE/container";;
+ 'login '*) read -r password; [[ $password == synthetic-password ]];;
+ 'push '*) [[ $SCENARIO != push-failure ]] || exit 14;;
+ 'rm -f '*) [[ $SCENARIO != cleanup-failure ]] || exit 15; rm -f "$FIXTURE/container";;
+ 'image rm '*) [[ $SCENARIO != cleanup-failure ]] || exit 15; rm -f "$FIXTURE/image";;
+ *) echo UNEXPECTED_DOCKER_CALL >&2; exit 99;;
+esac
+''')
+        env = {**os.environ, 'SCENARIO':scenario, 'FIXTURE':root.as_posix(), 'TEST_PYTHON':sys.executable.replace('\\','/'),
+               'TEST_REPO':REPO, 'TEST_DIGEST':DIGEST, 'SOURCE_COMMIT':COMMIT, 'SOURCE_VERSION':'source-v1',
+               'CODEBUILD_SOURCE_VERSION':'source-v1', 'SOURCE_MANIFEST_KEY':'inputs/members.json',
+               'SOURCE_MANIFEST_VERSION':'manifest-v1', 'SOURCE_MANIFEST_SHA256':hashlib.sha256(manifest).hexdigest(),
+               'IMAGE_TAG':'product-'+COMMIT+'-'+'d'*32}
+        env.update(overrides or {})
+        if scenario=='foreign-evidence':
+            (root/'image-evidence').mkdir(); (root/'image-evidence/foreign').write_text('keep')
+        if scenario=='source-changed': (source/paths[0]).write_bytes((source/paths[0]).read_bytes()+b'\n# changed\n')
+        # Resolve the real timeout before prepending stubs, then prove every external boundary
+        # resolves to our closed fixture. No default cloud/Docker client can be reached.
+        command = 'export TEST_TIMEOUT=$(command -v timeout); export PATH="$FIXTURE/bin:$PATH"; [[ $(command -v aws) == "$FIXTURE/bin/aws" && $(command -v docker) == "$FIXTURE/bin/docker" ]] || exit 98; export CODEBUILD_SRC_DIR="$PWD"; exec bash infra/product-preview/image-build.sh'
+        # Git Bash represents C:/ paths differently in command -v; use cygpath in this local fixture.
+        if os.name=='nt': command='export FIXTURE=$(cygpath -u "$FIXTURE"); ulimit() { return 0; }; export -f ulimit; '+command
+        result=subprocess.run([BASH,'-c',command],cwd=source,env=env,capture_output=True,text=True,timeout=45)
+        yield root, result
 
 
-class ProducerDiagnosticTests(unittest.TestCase):
-    def test_only_static_codes_and_phases_escape(self):
-        diagnostic = {"phase": "DOCKER_BUILD"}
-        self.assertEqual(
-            producer.failure_line(diagnostic, ValueError("PRODUCT_IMAGE_COMMAND_FAILED")),
-            "PRODUCT_IMAGE_CHECK_FAILED phase=DOCKER_BUILD category=CHECK code=PRODUCT_IMAGE_COMMAND_FAILED",
-        )
-        for error in (RuntimeError("secret=top-secret"), ValueError("PRODUCT_IMAGE_SECRET_TOKEN"),
-                      ValueError("PRODUCT_IMAGE_COMMAND_FAILED secret=top-secret"),
-                      ValueError(["secret=top-secret"])):
-            line = producer.failure_line(diagnostic, error)
-            self.assertIn(line, (
-                "PRODUCT_IMAGE_CHECK_FAILED phase=DOCKER_BUILD category=VALUE code=PRODUCT_IMAGE_CHECK_FAILED",
-                "PRODUCT_IMAGE_CHECK_FAILED phase=DOCKER_BUILD category=UNEXPECTED code=PRODUCT_IMAGE_CHECK_FAILED",
-            ))
-            self.assertNotIn("secret", line.lower())
-        self.assertEqual(
-            producer.failure_line({"phase": "secret-phase"}, ValueError("PRODUCT_IMAGE_COMMAND_FAILED")),
-            "PRODUCT_IMAGE_CHECK_FAILED phase=REQUEST category=CHECK code=PRODUCT_IMAGE_COMMAND_FAILED",
-        )
-        self.assertEqual(
-            producer.failure_line({"phase": ["secret-phase"]}, ValueError("PRODUCT_IMAGE_COMMAND_FAILED")),
-            "PRODUCT_IMAGE_CHECK_FAILED phase=REQUEST category=CHECK code=PRODUCT_IMAGE_COMMAND_FAILED",
-        )
+class BuildFailures(unittest.TestCase):
+    def test_success_cleanup_and_no_credentials_in_public_output(self):
+        with build_fixture() as (root,result):
+            self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+            receipt=json.loads((root/'source/image-evidence/result.json').read_text())
+            self.assertEqual(receipt['imageDigest'],DIGEST)
+            self.assertEqual(json.loads((root/'source/image-evidence/cleanup.json').read_text()),dict(exitCode=0,cleanupFailed=0))
+            self.assertFalse((root/'image').exists()); self.assertFalse((root/'container').exists())
+            self.assertNotIn('synthetic-password',(root/'calls').read_text())
+            self.assertEqual(result.stdout+result.stderr,'')
 
-    def test_missing_request_is_bounded_before_produce_or_external_calls(self):
-        missing = HERE / "missing-secret-looking-request.json"
-        with tempfile.TemporaryDirectory(dir=HERE) as work:
-            receipt = Path(work) / "product-image-diagnostic.json"
-            with mock.patch.object(producer, "DIAGNOSTIC_FILE", receipt), \
-                    mock.patch.object(sys, "argv", ["producer", "--request", str(missing), "--output", str(HERE / "never-receipt.json")]), \
-                    mock.patch.object(producer, "produce", side_effect=AssertionError("must not run")) as produce, \
-                    redirect_stderr(io.StringIO()) as stderr:
-                self.assertEqual(producer.main(), 2)
-            produce.assert_not_called()
-            self.assertEqual(stderr.getvalue(), "PRODUCT_IMAGE_CHECK_FAILED phase=REQUEST category=MISSING_FILE code=PRODUCT_IMAGE_CHECK_FAILED\n")
-            self.assertEqual(json.loads(receipt.read_text())["primary"]["phase"], "REQUEST")
-            receipt.unlink()
-            malformed = Path(work) / "request.json"
-            malformed.write_text('{"secret":"do-not-log",', encoding="utf-8")
-            with mock.patch.object(producer, "DIAGNOSTIC_FILE", receipt), \
-                    mock.patch.object(sys, "argv", ["producer", "--request", str(malformed), "--output", str(HERE / "never-receipt.json")]), \
-                    mock.patch.object(producer, "produce", side_effect=AssertionError("must not run")) as produce, \
-                    redirect_stderr(io.StringIO()) as stderr:
-                self.assertEqual(producer.main(), 2)
-            produce.assert_not_called()
-            self.assertEqual(stderr.getvalue(), "PRODUCT_IMAGE_CHECK_FAILED phase=REQUEST category=JSON code=PRODUCT_IMAGE_CHECK_FAILED\n")
-            self.assertEqual(json.loads(receipt.read_text())["status"], "FAILED")
+    def test_failure_and_timeout_preserve_nonzero_and_clean_owned_resources(self):
+        for scenario in ['build-failure','probe-failure','ca-failure','push-failure','timeout','cleanup-failure']:
+            with self.subTest(scenario=scenario), build_fixture(scenario) as (root,result):
+                self.assertNotEqual(result.returncode,0)
+                self.assertTrue((root/'source/image-evidence/cleanup.json').exists(),result.stderr)
+                self.assertFalse((root/'source/image-evidence/result.json').exists())
+                self.assertNotIn('private-fixture-error',result.stdout+result.stderr)
+                cleanup=json.loads((root/'source/image-evidence/cleanup.json').read_text())
+                self.assertEqual(cleanup['cleanupFailed'],int(scenario=='cleanup-failure'))
+                if scenario!='cleanup-failure': self.assertFalse((root/'image').exists())
+                if scenario in ['build-failure','probe-failure','ca-failure','timeout']:
+                    self.assertNotIn('get-login-password',(root/'calls').read_text())
 
-    def test_repeated_calls_have_independent_phase_state(self):
-        value = request()
-        build_id = "meri-greenfield-qualification-build:12345678-1234-1234-1234-123456789abc"
-        with tempfile.TemporaryDirectory(dir=HERE) as work, \
-                mock.patch.object(producer.sys, "platform", "linux"), \
-                mock.patch.dict(os.environ, {"CODEBUILD_BUILD_ID": build_id, "CODEBUILD_PROJECT_ARN": value["codeBuildProjectArn"]}), \
-                mock.patch.object(producer, "aws", side_effect=ValueError("PRODUCT_IMAGE_COMMAND_FAILED")) as aws:
-            first = {"phase": "secret-prior-state"}
-            with self.assertRaises(ValueError):
-                producer.produce(value, Path(work) / "receipt.json", first)
-            self.assertEqual(first["phase"], "BUILD_READBACK")
-            second = {"phase": "secret-prior-state"}
-            with self.assertRaises(ValueError):
-                producer.produce({**value, "sourceCommit": "invalid"}, Path(work) / "receipt.json", second)
-            self.assertEqual(second["phase"], "REQUEST")
-            self.assertEqual(aws.call_count, 1)
+    def test_existing_resources_are_never_removed(self):
+        for scenario in ['foreign-image','foreign-container']:
+            with self.subTest(scenario=scenario), build_fixture(scenario) as (root,result):
+                self.assertNotEqual(result.returncode,0)
+                calls=(root/'calls').read_text()
+                self.assertNotIn('\nrm\n',calls); self.assertNotIn('\nbuild\n',calls)
 
-    def _fail_in_docker_build(self, cleanup_error, workdir_error=False):
-        value = request()
-        build_id = "meri-greenfield-qualification-build:12345678-1234-1234-1234-123456789abc"
-        def aws(service, operation, *args):
-            if (service, operation) == ("codebuild", "batch-get-builds"):
-                return {"builds": [{"projectName": "meri-greenfield-qualification-build", "sourceVersion": value["archive"]["versionId"],
-                                    "source": {"type": "S3", "location": value["archive"]["bucket"] + "/" + value["archive"]["key"]}}]}
-            if (service, operation) == ("ecr", "describe-repositories"):
-                return {"repositories": [{"repositoryUri": value["ecrRepositoryUri"], "imageTagMutability": "IMMUTABLE",
-                                          "imageScanningConfiguration": {"scanOnPush": True}}]}
-            raise AssertionError("unexpected mocked AWS operation")
-        def download(pin, target, maximum):
-            target.write_bytes(b'{"files":[{"path":"infra/product-preview/runtime-packages.lock.json","mode":"100644"}]}' if target.name == "members.json" else b"not-a-real-archive")
-        def run(args, **kwargs):
-            if "build" in args:
-                raise ValueError("PRODUCT_IMAGE_COMMAND_FAILED")
-            if ("image" in args or "container" in args) and "ls" in args:
-                return b""
-            raise AssertionError("unexpected mocked command")
-        def cleanup(*args):
-            if cleanup_error:
-                raise ValueError("PRODUCT_IMAGE_CLEANUP_UNKNOWN")
-        real_temp = tempfile.TemporaryDirectory
-        def temporary(**kwargs):
-            owned = real_temp(dir=HERE, **kwargs)
-            if not workdir_error:
-                return owned
-            class FailingRemoval:
-                name = owned.name
-                def cleanup(self):
-                    owned.cleanup()
-                    raise OSError("secret=never-print-this")
-            return FailingRemoval()
-        fake_zip = mock.MagicMock()
-        fake_zip.__enter__.return_value.read.return_value = json.dumps({"runtimeImageUri": value["runtimeBaseImageUri"], "nodeVersion": value["nodeVersion"], "glibcVersion": "2.41"}).encode()
-        with real_temp(dir=HERE) as work, \
-                mock.patch.object(producer.sys, "platform", "linux"), \
-                mock.patch.dict(os.environ, {"CODEBUILD_BUILD_ID": build_id, "CODEBUILD_PROJECT_ARN": value["codeBuildProjectArn"]}), \
-                mock.patch.object(producer, "aws", side_effect=aws), \
-                mock.patch.object(producer, "download", side_effect=download), \
-                mock.patch.object(producer, "verify", return_value={}), \
-                mock.patch.object(producer.zipfile, "ZipFile", return_value=fake_zip), \
-                mock.patch.object(producer, "run", side_effect=run), \
-                mock.patch.object(producer, "cleanup", side_effect=cleanup), \
-                mock.patch.object(producer.tempfile, "TemporaryDirectory", side_effect=temporary):
-            diagnostic = {"phase": "REQUEST"}
-            with self.assertRaises(Exception) as raised:
-                producer.produce(value, Path(work) / "receipt.json", diagnostic)
-            self.assertFalse((Path(work) / "receipt.json").exists())
-        return diagnostic, raised.exception
+    def test_source_and_size_refusals_precede_docker_and_auth(self):
+        for scenario in ['oversized','source-changed']:
+            with self.subTest(scenario=scenario), build_fixture(scenario) as (root,result):
+                self.assertNotEqual(result.returncode,0)
+                calls=(root/'calls').read_text()
+                self.assertNotIn('/docker',calls)
+                if scenario=='oversized': self.assertNotIn('get-object',calls)
 
-    def test_original_failed_phase_survives_successful_cleanup(self):
-        diagnostic, error = self._fail_in_docker_build(False)
-        self.assertEqual(producer.failure_line(diagnostic, error),
-                         "PRODUCT_IMAGE_CHECK_FAILED phase=DOCKER_BUILD category=CHECK code=PRODUCT_IMAGE_COMMAND_FAILED")
-        self.assertEqual(diagnostic["primary"]["phase"], "DOCKER_BUILD")
-        self.assertEqual(diagnostic["cleanup"]["status"], "OK")
+    def test_wrong_image_and_mutable_repository_precede_auth(self):
+        for scenario in ['wrong-image','mutable']:
+            with self.subTest(scenario=scenario), build_fixture(scenario) as (root,result):
+                self.assertNotEqual(result.returncode,0)
+                self.assertNotIn('get-login-password',(root/'calls').read_text())
 
-    def test_cleanup_unknown_overrides_original_failed_phase(self):
-        diagnostic, error = self._fail_in_docker_build(True)
-        self.assertEqual(producer.failure_line(diagnostic, error),
-                         "PRODUCT_IMAGE_CHECK_FAILED phase=CLEANUP category=CHECK code=PRODUCT_IMAGE_CLEANUP_UNKNOWN")
-        self.assertEqual(diagnostic["primary"]["phase"], "DOCKER_BUILD")
-        self.assertEqual(diagnostic["cleanup"]["failure"]["phase"], "CLEANUP")
-        with tempfile.TemporaryDirectory(dir=HERE) as work, mock.patch.object(producer, "DIAGNOSTIC_FILE", Path(work) / "product-image-diagnostic.json"):
-            self.assertTrue(producer._save_diagnostic(diagnostic, "FAILED"))
-            receipt = json.loads(producer.DIAGNOSTIC_FILE.read_text())
-            self.assertEqual(receipt["primary"]["phase"], "DOCKER_BUILD")
-            self.assertEqual(receipt["cleanup"]["failure"]["phase"], "CLEANUP")
+    def test_preexisting_evidence_is_not_moved_or_removed(self):
+        with build_fixture('foreign-evidence') as (root,result):
+            self.assertEqual(result.returncode,2)
+            self.assertEqual((root/'image-evidence/foreign').read_text(),'keep')
+            self.assertFalse((root/'source/image-evidence').exists())
+            self.assertFalse((root/'calls').exists())
 
-    def test_resource_and_workdir_cleanup_failures_both_survive(self):
-        diagnostic, error = self._fail_in_docker_build(True, True)
-        self.assertIsInstance(error, OSError)
-        self.assertEqual(diagnostic["primary"]["phase"], "DOCKER_BUILD")
-        self.assertEqual(diagnostic["cleanup"]["failure"]["phase"], "CLEANUP")
-        self.assertEqual([row["phase"] for row in diagnostic["cleanup"]["additionalFailures"]], ["WORKDIR_CLEANUP"])
-        self.assertNotIn("secret", json.dumps(producer._diagnostic_receipt(diagnostic, "FAILED")))
+    def test_source_version_mismatch_refuses_before_external_commands(self):
+        with build_fixture(overrides={'CODEBUILD_SOURCE_VERSION':'different'}) as (root,result):
+            self.assertEqual(result.returncode,2)
+            self.assertFalse((root/'calls').exists())
 
-    def test_failed_command_records_only_bounded_numeric_details(self):
-        diagnostic = {"phase": "LINUX_TESTS", "primary": None}
-        token = producer._active_diagnostic.set(diagnostic)
-        try:
-            with mock.patch.object(producer, "_deadline", None):
-                with self.assertRaises(ValueError) as raised:
-                    producer.run([sys.executable, "-I", "-B", "-S", "-c",
-                                  "import sys;sys.stdout.write('secret=top-secret');sys.stderr.write('other-secret');sys.exit(7)"])
-            producer._record_primary(diagnostic, raised.exception)
-        finally:
-            producer._active_diagnostic.reset(token)
-        primary = diagnostic["primary"]
-        self.assertEqual((primary["phase"], primary["category"], primary["code"]),
-                         ("LINUX_TESTS", "COMMAND", "PRODUCT_IMAGE_COMMAND_FAILED"))
-        self.assertEqual(primary["detail"]["status"], "EXIT_NONZERO")
-        self.assertEqual(primary["detail"]["exitCode"], 7)
-        self.assertGreaterEqual(primary["detail"]["outputBytes"], 20)
-        self.assertIsInstance(primary["detail"]["elapsedMs"], int)
-        self.assertNotIn("secret", json.dumps(producer._diagnostic_receipt(diagnostic, "FAILED")))
-
-    def test_reporter_denies_skipped_foreign_and_malformed_case_results(self):
-        complete = {"schemaVersion": 1, "observedCases": 24, "failedCaseIds": [],
-                    "unknownFailures": 0, "unknownOutcomes": 0, "duplicateCases": 0, "skippedCases": 0,
-                    "fileCaseCounts": {"B": 6, "R": 6, "W": 12}, "fileFailureIds": [], "failureDetails": [], "detailTruncated": False}
-        self.assertEqual(producer._read_linux_reporter(json.dumps(complete).encode())["status"], "COMPLETE")
-        self.assertIsNone(producer._read_linux_reporter(b'{"secret":"do-not-echo"}'))
-        detail = {"id": "W08", "stage": "FIRST_METADATA", "code": "ERR_ASSERTION", "checkId": 9,
-                  "exception": "AssertionError", "failureType": "testCodeFailure", "exitCode": None, "signal": "NONE"}
-        failed = {**complete, "failedCaseIds": ["W08"], "fileFailureIds": ["W"], "failureDetails": [detail]}
-        self.assertEqual(producer._read_linux_reporter(json.dumps(failed).encode())["failureDetails"], [detail])
-        for changed in ({"checkId": True}, {"checkId": 31}, {"checkId": 0}, {"exception": "private-name"},
-                        {"exception": "NONE"}, {"id": "B01"}, {"stage": "NONE"}):
-            self.assertIsNone(producer._read_linux_reporter(json.dumps({**failed, "failureDetails": [{**detail, **changed}]}).encode()))
-        with tempfile.TemporaryDirectory(dir=HERE) as work:
-            reporter = Path(work) / "infra/product-preview/image-build-test-reporter.mjs"
-            reporter.parent.mkdir(parents=True)
-            reporter.write_text("export default function* (){}", encoding="ascii")
-            members = {"infra/product-preview/image-build-test-reporter.mjs": {"sha256": producer.file_sha(reporter, 16384)}}
-            for changed in ({"observedCases": 23}, {"skippedCases": 1}, {"unknownOutcomes": 1}, {"duplicateCases": 1},
-                            {"failedCaseIds": ["W08"]}):
-                row = {**complete, **changed}
-                diagnostic = {"phase": "LINUX_TESTS"}
-                with mock.patch.object(producer, "_prepare_linux_fixture_sandbox", return_value=(["docker", "run"], members)), \
-                        mock.patch.object(producer._source, "bounded_command", return_value=(0, json.dumps(row).encode())):
-                    with self.assertRaisesRegex(ValueError, "PRODUCT_IMAGE_LINUX_CASES_UNPROVEN"):
-                        producer._run_linux_tests(["docker", "run"], Path(work), Path(work) / "unused.json", diagnostic)
-                self.assertNotIn("secret", json.dumps(diagnostic))
-
-    def test_diagnostic_serialization_failure_is_static_and_stops_before_work(self):
-        with tempfile.TemporaryDirectory(dir=HERE) as work, \
-                mock.patch.object(producer, "DIAGNOSTIC_FILE", Path(work) / "product-image-diagnostic.json"), \
-                mock.patch.object(sys, "argv", ["producer", "--request", str(Path(work) / "missing.json"), "--output", str(Path(work) / "receipt.json")]), \
-                mock.patch.object(producer.json, "dumps", side_effect=RuntimeError("secret=top-secret")), \
-                mock.patch.object(producer, "produce", side_effect=AssertionError("must not run")) as produce, \
-                redirect_stderr(io.StringIO()) as stderr:
-            self.assertEqual(producer.main(), 2)
-        produce.assert_not_called()
-        self.assertEqual(stderr.getvalue(), "PRODUCT_IMAGE_CHECK_FAILED phase=DIAGNOSTIC category=WRITE code=PRODUCT_IMAGE_CHECK_FAILED\n")
-
-    def test_unowned_existing_artifact_and_scratch_are_preserved(self):
-        with tempfile.TemporaryDirectory(dir=HERE) as work:
-            receipt = Path(work) / "product-image-diagnostic.json"
-            scratch = Path(work) / "product-image-diagnostic.json.tmp"
-            receipt.write_text("unrelated-artifact", encoding="ascii")
-            diagnostic = {"phase": "REQUEST", "diagnosticOwner": None}
-            with mock.patch.object(producer, "DIAGNOSTIC_FILE", receipt):
-                self.assertFalse(producer._save_diagnostic(diagnostic, "STARTED"))
-                self.assertEqual(receipt.read_text(), "unrelated-artifact")
-                receipt.unlink()
-                scratch.write_text("unrelated-scratch", encoding="ascii")
-                self.assertFalse(producer._save_diagnostic(diagnostic, "STARTED"))
-                self.assertEqual(scratch.read_text(), "unrelated-scratch")
-
-    def test_workdir_removal_failure_overrides_body_failure(self):
-        class Unremovable:
-            name = str(HERE)
-            def cleanup(self):
-                raise OSError("secret=never-print-this")
-        diagnostic = {"phase": "REQUEST"}
-        with mock.patch.object(producer.tempfile, "TemporaryDirectory", return_value=Unremovable()):
-            with self.assertRaises(OSError) as raised:
-                with producer._temporary_context(diagnostic):
-                    diagnostic["phase"] = "DOCKER_BUILD"
-                    raise ValueError("PRODUCT_IMAGE_COMMAND_FAILED")
-        self.assertEqual(producer.failure_line(diagnostic, raised.exception),
-                         "PRODUCT_IMAGE_CHECK_FAILED phase=WORKDIR_CLEANUP category=OS code=PRODUCT_IMAGE_CHECK_FAILED")
-        self.assertEqual(diagnostic["primary"]["phase"], "DOCKER_BUILD")
-        self.assertEqual(diagnostic["cleanup"]["failure"]["phase"], "WORKDIR_CLEANUP")
+    def test_wrong_runtime_registry_refuses_before_docker_or_auth(self):
+        with build_fixture('wrong-runtime-base') as (root,result):
+            self.assertNotEqual(result.returncode,0)
+            calls=(root/'calls').read_text()
+            self.assertNotIn('/docker',calls)
+            self.assertNotIn('get-login-password',calls)
+            self.assertFalse((root/'source/image-evidence/result.json').exists())
 
 
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == '__main__': unittest.main()

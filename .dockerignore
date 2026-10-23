@@ -26,29 +26,6 @@ packages/skills/evidence/*
 !packages/skills/evidence/typed-reads.mjs
 !packages/skills/evidence/material-records.mjs
 !packages/skills/evidence/record-pages.mjs
-# Exact source-provenance inputs read by the 45-file image gate; never test entrypoints.
-!apps/control/conversations/test/
-apps/control/conversations/test/*
-!apps/control/conversations/test/prepared-execution-claim-pg.test.mjs
-!apps/control/conversations/test/read-optional-pg.test.mjs
-!apps/runtime/native-authority/test/
-apps/runtime/native-authority/test/*
-!apps/runtime/native-authority/test/broker-pg-fixture.mjs
-!apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs
-!apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs
-!apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs
-!apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs
-!apps/runtime/native-authority/test/prepared-kickoff.test.mjs
-!apps/runtime/native-authority/test/recovered-controller-pg.test.mjs
-!apps/runtime/native-authority/test/remote-task.test.mjs
-!apps/runtime/test/
-apps/runtime/test/*
-!apps/runtime/test/prepared-candidate-bootstrap.test.mjs
-!apps/runtime/test/prepared-candidate-config.test.mjs
-!apps/runtime/test/prepared-candidate-control-lifetime.test.mjs
-!apps/runtime/test/prepared-candidate-fixture.mjs
-!apps/runtime/test/prepared-candidate.test.mjs
-!apps/runtime/test/prepared-temporal.test.mjs
 docs
 evals
 infra
@@ -57,6 +34,7 @@ infra/*
 !infra/product-preview/
 infra/product-preview/*
 !infra/product-preview/runtime-packages.lock.json
+!infra/product-preview/runtime-wheels.lock.json
 # Stage 1 one-shot database runner (D2), copied by apps/runtime/Dockerfile.
 !infra/product-preview/first-chat-migrate.mjs
 !infra/product-preview/first-chat-database.sql
@@ -66,8 +44,9 @@ infra/product-preview/*
 !infra/product-preview/first-chat-seed-budget.sql
 !infra/product-preview/runtime-packages/
 infra/product-preview/runtime-packages/*
-!infra/product-preview/runtime-packages/x86_64/
 !infra/product-preview/runtime-packages/wheels/
+!infra/product-preview/runtime-packages/requirements.lock.txt
+!infra/product-preview/runtime-packages/executor-generation-smoke.mjs
 scripts
 *.env
 **/*.env

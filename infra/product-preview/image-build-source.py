@@ -12,17 +12,12 @@ import stat
 import subprocess
 import sys
 import tempfile
-import threading
+import os
 import time
 import zipfile
 
 SHA = re.compile(r"[a-f0-9]{64}\Z")
 COMMIT = re.compile(r"[a-f0-9]{40}\Z")
-RUNNER = "apps/runtime/conversation-runner.mjs"
-VERIFIER = "infra/product-preview/image-build-source.py"
-PRODUCER = "infra/product-preview/image-build-producer.py"
-RUNTIME_LOCK = "infra/product-preview/runtime-packages.lock.json"
-CONTRACT = "meri.runner-entrypoint.v1"
 # The one public certificate file the sealed source may carry: the pinned Amazon
 # RDS global CA bundle baked into the image for node-postgres verify-full.
 RDS_CA_BUNDLE = "apps/runtime/certs/rds-global-bundle.pem"
@@ -103,148 +98,59 @@ def safe_path(value):
     return value
 
 
+def private_path(path):
+    need(not any(p in (".git", "node_modules", ".aws", ".codex", ".agents") for p in path.split("/")), "PRIVATE_MEMBER")
+    need(not any(p.startswith(".env") or p == "credentials" for p in path.split("/")) and (path == RDS_CA_BUNDLE or not path.endswith((".key", ".pem"))), "PRIVATE_MEMBER")
+
+
 def archive_members(archive):
     need(archive.stat().st_size <= 1024**3, "ARCHIVE_BOUND")
     result = {}
     with zipfile.ZipFile(archive) as source:
         rows = source.infolist()
         need(0 < len(rows) <= 50000 and sum(row.file_size for row in rows) <= 2 * 1024**3, "ARCHIVE_BOUND")
+        names = [safe_path(row.filename.rstrip("/") if row.is_dir() else row.filename) for row in rows]
+        need(len({name.casefold() for name in names}) == len(names), "DUPLICATE_MEMBER")
         seen = set()
         for row in rows:
             path = safe_path(row.filename.rstrip("/") if row.is_dir() else row.filename)
             need(path.casefold() not in seen, "DUPLICATE_MEMBER")
             seen.add(path.casefold())
+            private_path(path)
             mode = row.external_attr >> 16
             need(not row.flag_bits & 1 and not stat.S_ISLNK(mode), "MEMBER_TYPE")
             if row.is_dir():
                 need(stat.S_IFMT(mode) in (0, stat.S_IFDIR), "MEMBER_TYPE")
                 continue
             need(stat.S_IFMT(mode) in (0, stat.S_IFREG) and row.file_size <= 128 * 1024**2, "MEMBER_TYPE")
-            need(not any(p in (".git", "node_modules", ".aws", ".codex", ".agents") for p in path.split("/")), "PRIVATE_MEMBER")
-            need(not any(p.startswith(".env") or p == "credentials" for p in path.split("/")) and (path == RDS_CA_BUNDLE or not path.endswith((".key", ".pem"))), "PRIVATE_MEMBER")
             payload = source.read(row)
             if path == RDS_CA_BUNDLE:
                 certificate_count(payload)
             result[path] = {"path": path, "sha256": sha(payload), "bytes": len(payload), "mode": "100755" if mode & 0o111 else "100644"}
-    need(all(not any(str(ancestor) in result for ancestor in list(PurePosixPath(path).parents)[:-1]) for path in result), "MEMBER_ANCESTOR")
+    folded = {name.casefold() for name in result}
+    need(all(not any(str(ancestor).casefold() in folded for ancestor in list(PurePosixPath(path).parents)[:-1]) for path in result), "MEMBER_ANCESTOR")
     return result
 
 
-class ScanNotFoundPending(ValueError):
-    """Private static signal; raw CLI errors never cross the command boundary."""
-    def __init__(self):
-        super().__init__("PRODUCT_IMAGE_SCAN_INCOMPLETE")
-
-
-def _scan_read_command(args):
-    return (type(args) is list and len(args) == 12 and
-            args[:7] == ["aws", "--region", "us-east-1", "--no-cli-pager", "ecr", "describe-image-scan-findings", "--repository-name"] and
-            type(args[7]) is str and re.fullmatch(r"[a-z0-9][a-z0-9._/-]*", args[7]) is not None and
-            args[8] == "--image-id" and type(args[9]) is str and
-            re.fullmatch(r"imageDigest=sha256:[a-f0-9]{64}", args[9]) is not None and
-            args[10:] == ["--output", "json"])
-
-
-def bounded_command(args, timeout=30, input_bytes=None, report=None, scan_not_found=False):
-    """Drain both pipes while running; abort before combined output exceeds 16 MiB.
-
-    Failed command bytes and stderr are never returned or logged. This applies to
-    long Docker builds and short cleanup probes alike.
-    """
-    need(type(timeout) in (int, float) and 0 < timeout <= 1600, "COMMAND_BOUND")
-    need(input_bytes is None or type(input_bytes) is bytes and len(input_bytes) <= 16384, "COMMAND_BOUND")
-    need(type(scan_not_found) is bool and (not scan_not_found or _scan_read_command(args)), "COMMAND_BOUND")
-    process, started = None, time.monotonic()
-    def mark(status, exit_code=None, output_bytes=0):
-        if report is not None:
-            report({"status": status, "exitCode": exit_code if type(exit_code) is int and -255 <= exit_code <= 255 else None,
-                    "outputBytes": min(max(0, output_bytes), 17 * 1024**2),
-                    "elapsedMs": min(max(0, int((time.monotonic() - started) * 1000)), 1600000)})
-    try:
-        process = subprocess.Popen(args, stdin=subprocess.PIPE if input_bytes is not None else subprocess.DEVNULL,
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        chunks, errors, state, guard = [], bytearray(), {"bytes": 0, "overflow": False, "writeFailed": False, "errorBytes": 0}, threading.Lock()
-
-        def drain(stream, capture):
-            while True:
-                block = stream.read(65536)
-                if not block:
-                    return
-                with guard:
-                    state["bytes"] += len(block)
-                    if state["bytes"] > 16 * 1024**2:
-                        state["overflow"] = True
-                        try:
-                            process.kill()
-                        except OSError:
-                            pass
-                    elif capture:
-                        chunks.append(block)
-                    elif scan_not_found:
-                        state["errorBytes"] += len(block)
-                        if state["errorBytes"] <= 4096:
-                            errors.extend(block)
-
-        def write_input():
-            try:
-                process.stdin.write(input_bytes)
-                process.stdin.close()
-            except OSError:
-                state["writeFailed"] = True
-
-        readers = [threading.Thread(target=drain, args=(process.stdout, True), daemon=True),
-                   threading.Thread(target=drain, args=(process.stderr, False), daemon=True)]
-        for reader in readers:
-            reader.start()
-        writer = threading.Thread(target=write_input, daemon=True) if input_bytes is not None else None
-        if writer is not None:
-            writer.start()
+def run(args, timeout=30):
+    """Git only: bounded private output; failures never expose subprocess stderr."""
+    need(0 < timeout <= 120 and args[0] == "git", "COMMAND_BOUND")
+    with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
+        process = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=out, stderr=err)
+        started = time.monotonic()
         try:
-            process.wait(timeout=timeout)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait(timeout=5)
-            mark("TIMEOUT", output_bytes=state["bytes"])
-            raise ValueError("PRODUCT_IMAGE_COMMAND_UNAVAILABLE_OR_TIMEOUT") from None
-        for reader in readers:
-            reader.join(timeout=5)
-        if writer is not None:
-            writer.join(timeout=5)
-        bounded = not any(reader.is_alive() for reader in readers) and (writer is None or not writer.is_alive()) and not state["overflow"] and not state["writeFailed"]
-        if not bounded:
-            mark("BOUND", process.returncode, state["bytes"])
-        need(bounded, "COMMAND_BOUND")
-        if process.returncode != 0:
-            # AWS CLI v2's service-error exit plus its complete single-line
-            # envelope is recognized only for the exact digest-bound scan read.
-            # Oversized, mixed, unrelated and malformed errors remain fatal.
-            if (scan_not_found and process.returncode == 254 and not chunks and
-                    0 < state["errorBytes"] <= 4096 and
-                    re.fullmatch(rb"\r?\n?(?:aws: \[ERROR\]: )?An error occurred \(ScanNotFoundException\) when calling the DescribeImageScanFindings operation: [^\r\n]*\r?\n?", errors)):
-                raise ScanNotFoundPending() from None
-            mark("EXIT_NONZERO", process.returncode, state["bytes"])
-        return process.returncode, b"".join(chunks)
-    except OSError:
-        mark("UNAVAILABLE")
-        raise ValueError("PRODUCT_IMAGE_COMMAND_UNAVAILABLE_OR_TIMEOUT") from None
-    finally:
-        if process is not None:
+            while process.poll() is None:
+                need(time.monotonic() - started < timeout, "COMMAND_TIMEOUT")
+                need(os.fstat(out.fileno()).st_size + os.fstat(err.fileno()).st_size <= 16*1024**2, "COMMAND_BOUND")
+                time.sleep(0.01)
+            need(os.fstat(out.fileno()).st_size + os.fstat(err.fileno()).st_size <= 16*1024**2, "COMMAND_BOUND")
+            need(process.returncode == 0, "COMMAND_FAILED")
+            out.seek(0)
+            return out.read()
+        finally:
             if process.poll() is None:
                 process.kill()
                 process.wait(timeout=5)
-            for stream in (process.stdin, process.stdout, process.stderr):
-                if stream is not None:
-                    try:
-                        stream.close()
-                    except OSError:
-                        pass
-
-
-def run(args, timeout=30, input_bytes=None, report=None, scan_not_found=False):
-    # Never return/log a failed command's output (Docker/AWS may contain secrets).
-    code, stdout = bounded_command(args, timeout=timeout, input_bytes=input_bytes, report=report, scan_not_found=scan_not_found)
-    need(code == 0, "COMMAND_FAILED")
-    return stdout
 
 
 def seal(repository, commit, archive, output):
@@ -271,6 +177,8 @@ def seal(repository, commit, archive, output):
         run(["git", "-C", str(repository), "-c", "core.autocrlf=false", "-c", "core.eol=lf", "archive", "--format=zip", "--output=" + str(raw.resolve()), commit], timeout=120)
         members = archive_members(raw)
         need(set(members) == set(objects), "GIT_MEMBER_SET")
+        with zipfile.ZipFile(raw) as source:
+            rds_ca_lock(source.read(RDS_CA_LOCK), source.read(RDS_CA_BUNDLE))
         with zipfile.ZipFile(raw) as source, zipfile.ZipFile(archive, "x", compression=zipfile.ZIP_DEFLATED) as target:
             for path in sorted(objects):
                 mode, oid = objects[path]
@@ -290,74 +198,98 @@ def seal(repository, commit, archive, output):
     return {"status": "SEALED_SOURCE_ONLY", "sourceCommit": commit, "archiveSha256": file_sha(archive, 1024**3), "sourceManifestSha256": file_sha(output, 32*1024**2), "fileCount": len(members)}
 
 
-def verify(archive, manifest_path, pin):
-    need(file_sha(archive, 1024**3) == pin["archive"]["sha256"], "ARCHIVE_SHA_MISMATCH")
-    need(manifest_path.stat().st_size <= 32*1024**2, "MANIFEST_BOUND")
-    manifest_bytes = manifest_path.read_bytes()
-    need(sha(manifest_bytes) == pin["manifest"]["sha256"], "MANIFEST_SHA_MISMATCH")
-    manifest = exact(decode(manifest_bytes), ["contract", "sourceCommit", "files"])
-    need(manifest["contract"] == "meri.source-members.v1" and manifest["sourceCommit"] == pin["sourceCommit"], "SOURCE_COMMIT")
+def read_manifest(path, commit, digest):
+    need(type(commit) is str and COMMIT.fullmatch(commit) and type(digest) is str and SHA.fullmatch(digest), "SOURCE_PIN")
+    need(path.stat().st_size <= 32*1024**2, "MANIFEST_BOUND")
+    payload = path.read_bytes()
+    need(sha(payload) == digest, "MANIFEST_SHA_MISMATCH")
+    manifest = exact(decode(payload), ["contract", "sourceCommit", "files"])
+    need(manifest["contract"] == "meri.source-members.v1" and manifest["sourceCommit"] == commit, "SOURCE_COMMIT")
     rows = manifest["files"]
     need(type(rows) is list and 0 < len(rows) <= 50000, "MANIFEST_SHAPE")
-    expected = {}
+    expected, seen, total = {}, set(), 0
     for row in rows:
         exact(row, ["path", "sha256", "bytes", "mode"])
-        path = safe_path(row["path"])
-        need(path not in expected and SHA.fullmatch(row["sha256"]) and type(row["bytes"]) is int and row["bytes"] >= 0 and row["mode"] in ("100644", "100755"), "MANIFEST_SHAPE")
-        expected[path] = row
+        name = safe_path(row["path"])
+        private_path(name)
+        need(name.casefold() not in seen and type(row["sha256"]) is str and SHA.fullmatch(row["sha256"]) and
+             type(row["bytes"]) is int and 0 <= row["bytes"] <= 128*1024**2 and row["mode"] in ("100644", "100755"), "MANIFEST_SHAPE")
+        total += row["bytes"]
+        need(total <= 2*1024**3, "MANIFEST_BOUND")
+        expected[name] = row
+        seen.add(name.casefold())
     need(list(expected) == sorted(expected), "MANIFEST_ORDER")
+    need(all(not any(str(parent).casefold() in seen for parent in list(PurePosixPath(name).parents)[:-1]) for name in expected), "MEMBER_ANCESTOR")
+    need(RDS_CA_BUNDLE in expected and RDS_CA_LOCK in expected, "RDS_CA_LOCK")
+    return expected
+
+
+def verify(archive, manifest, commit, archive_sha, manifest_sha):
+    need(type(archive_sha) is str and SHA.fullmatch(archive_sha) and file_sha(archive, 1024**3) == archive_sha, "ARCHIVE_SHA_MISMATCH")
+    expected = read_manifest(manifest, commit, manifest_sha)
     measured = archive_members(archive)
     need(measured == expected, "SOURCE_MEMBERS_MISMATCH")
-    for path, digest in [("apps/runtime/Dockerfile", pin["dockerfileSha256"]), (RUNNER, pin["runnerSha256"]), (VERIFIER, pin["verifierSha256"]), (PRODUCER, pin["producerSha256"]), (RUNTIME_LOCK, pin["runtimePackagesSha256"])]:
-        need(path in measured and measured[path]["sha256"] == digest, "SOURCE_PIN_MISMATCH")
-    need(0 < measured[RUNNER]["bytes"] <= 1024**2, "RUNNER_BOUND")
-    need(0 < measured[RUNTIME_LOCK]["bytes"] <= 65536, "SOURCE_PIN_MISMATCH")
-    need(RDS_CA_BUNDLE in measured and RDS_CA_LOCK in measured, "RDS_CA_LOCK")
     with zipfile.ZipFile(archive) as source:
         rds_ca_lock(source.read(RDS_CA_LOCK), source.read(RDS_CA_BUNDLE))
-    return {"status": "VERIFIED_SOURCE_ONLY", "sourceCommit": pin["sourceCommit"], "archiveSha256": pin["archive"]["sha256"], "sourceManifestSha256": pin["manifest"]["sha256"], "runtimePackagesSha256": pin["runtimePackagesSha256"], "fileCount": len(measured), "runnerBytes": measured[RUNNER]["bytes"]}
+    return {"status": "VERIFIED_SOURCE_ONLY", "sourceCommit": commit, "fileCount": len(measured)}
 
 
-def validate_request(value):
-    p = exact(value, ["schemaVersion", "sourceCommit", "archive", "manifest", "dockerfileSha256", "nodeImageUri", "nodeVersion", "runtimeBaseImageUri", "runtimePackagesSha256", "runnerSha256", "runtimeUser", "codeBuildProjectArn", "ecrRepositoryUri", "imageTag", "verifierSha256", "producerSha256"])
-    need(type(p["schemaVersion"]) is int and p["schemaVersion"] == 2, "REQUEST_PIN")
-    need(COMMIT.fullmatch(p["sourceCommit"]), "REQUEST_PIN")
-    for key in ["dockerfileSha256", "runtimePackagesSha256", "runnerSha256", "verifierSha256", "producerSha256"]:
-        need(type(p[key]) is str and SHA.fullmatch(p[key]), "REQUEST_PIN")
-    for key in ["archive", "manifest"]:
-        item = exact(p[key], ["bucket", "key", "versionId", "sha256"])
-        need(re.fullmatch(r"[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]", item["bucket"]) and SHA.fullmatch(item["sha256"]), "REQUEST_OBJECT")
-        need(all(type(item[k]) is str and 0 < len(item[k]) <= 1024 and not re.search(r"[\x00-\x20\x7f]", item[k]) for k in ["key", "versionId"]), "REQUEST_OBJECT")
-        need(item["versionId"] != "null" and not item["key"].startswith("-"), "REQUEST_OBJECT")
-    need(re.fullmatch(r"public\.ecr\.aws/docker/library/node@sha256:[a-f0-9]{64}", p["nodeImageUri"]) and re.fullmatch(r"v24\.[0-9]+\.[0-9]+", p["nodeVersion"]), "NODE_PIN")
-    need(type(p["runtimeBaseImageUri"]) is str and re.fullmatch(r"cgr\.dev/chainguard/wolfi-base@sha256:[a-f0-9]{64}", p["runtimeBaseImageUri"]), "RUNTIME_BASE_PIN")
-    need(re.fullmatch(r"[1-9][0-9]*:[1-9][0-9]*", p["runtimeUser"]), "RUNTIME_USER")
-    need(re.fullmatch(r"arn:aws:codebuild:us-east-1:967807252336:project/[A-Za-z0-9_-]+", p["codeBuildProjectArn"]), "PROJECT_PIN")
-    need(re.fullmatch(r"967807252336\.dkr\.ecr\.us-east-1\.amazonaws\.com/[a-z0-9._/-]+", p["ecrRepositoryUri"]), "REPOSITORY_PIN")
-    need(re.fullmatch(r"product-" + p["sourceCommit"] + r"-[a-f0-9]{32}", p["imageTag"]), "TAG_PIN")
-    return p
-
+def verify_tree(directory, manifest, commit, manifest_sha):
+    """Validate CodeBuild's extracted source before Docker; never extract untrusted paths."""
+    expected = read_manifest(manifest, commit, manifest_sha)
+    need(directory.is_dir() and not directory.is_symlink(), "SOURCE_DIRECTORY")
+    found, seen = set(), set()
+    for base, dirs, files in os.walk(directory, followlinks=False):
+        for name in dirs + files:
+            path = Path(base) / name
+            relative = safe_path(path.relative_to(directory).as_posix())
+            private_path(relative)
+            need(relative.casefold() not in seen, "DUPLICATE_MEMBER")
+            seen.add(relative.casefold())
+            before = path.lstat()
+            need(not stat.S_ISLNK(before.st_mode), "MEMBER_TYPE")
+            if name in dirs:
+                need(stat.S_ISDIR(before.st_mode) and any(p.startswith(relative + "/") for p in expected), "SOURCE_MEMBERS_MISMATCH")
+                continue
+            need(relative in expected and stat.S_ISREG(before.st_mode), "SOURCE_MEMBERS_MISMATCH")
+            row = expected[relative]
+            need(before.st_size == row["bytes"] and file_sha(path, 128*1024**2) == row["sha256"] and
+                 ("100755" if before.st_mode & 0o111 else "100644") == row["mode"], "SOURCE_MEMBERS_MISMATCH")
+            after = path.lstat()
+            need((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns, before.st_mode) ==
+                 (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns, after.st_mode), "SOURCE_CHANGED")
+            found.add(relative)
+    need(found == set(expected), "SOURCE_MEMBERS_MISMATCH")
+    rds_ca_lock((directory / RDS_CA_LOCK).read_bytes(), (directory / RDS_CA_BUNDLE).read_bytes())
+    return {"status": "VERIFIED_SOURCE_ONLY", "sourceCommit": commit, "fileCount": len(found)}
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__, epilog="Exit: 0 success/help; 2 invalid input, failed check, unavailable command or timeout. No automatic retries.")
+    parser = argparse.ArgumentParser(description=__doc__, epilog="Exit: 0 success/help; 2 refused input/check. No automatic retries.")
     commands = parser.add_subparsers(dest="mode", required=True)
-    sealing = commands.add_parser("seal", help="Offline: create exact Git archive and member manifest; output paths must be absent")
+    sealing = commands.add_parser("seal", help="Create exact Git ZIP and member manifest; outputs must be absent")
     sealing.add_argument("--repository", type=Path, required=True)
     sealing.add_argument("--commit", required=True)
     sealing.add_argument("--archive", type=Path, required=True)
     sealing.add_argument("--output", type=Path, required=True)
-    command = commands.add_parser("verify", help="Offline source verification")
-    command.add_argument("--request", type=Path, required=True)
-    command.add_argument("--archive", type=Path, required=True)
-    command.add_argument("--manifest", type=Path, required=True)
+    for mode in ("verify", "verify-tree"):
+        command = commands.add_parser(mode, help="Offline exact source verification")
+        command.add_argument("--manifest", type=Path, required=True)
+        command.add_argument("--commit", required=True)
+        command.add_argument("--manifest-sha256", required=True)
+        if mode == "verify":
+            command.add_argument("--archive", type=Path, required=True)
+            command.add_argument("--archive-sha256", required=True)
+        else:
+            command.add_argument("--directory", type=Path, required=True)
     args = parser.parse_args()
     try:
         if args.mode == "seal":
             result = seal(args.repository, args.commit, args.archive, args.output)
+        elif args.mode == "verify":
+            result = verify(args.archive, args.manifest, args.commit, args.archive_sha256, args.manifest_sha256)
         else:
-            pin = validate_request(decode(args.request.read_bytes()))
-            result = verify(args.archive, args.manifest, pin)
+            result = verify_tree(args.directory, args.manifest, args.commit, args.manifest_sha256)
         print(json.dumps(result, sort_keys=True))
         return 0
     except Exception:

@@ -8,7 +8,7 @@ const plan=(role,configuration)=>compileProductMaterialPlan({role,configuration,
 test('control plan derives exactly the canonical static files, including candidate credentials, without material values',()=>{
  const c=control(),p=plan('control',c),paths=p.requiredFiles.map(file=>file.path);
  assert.deepEqual(paths,[
-  'control-capability','control.json','database-url','identity-capability','proxy-capability','runner-ca','task-capability','temporal-ca','temporal-cert','temporal-key',
+  'control-capability','control.json','database-url','identity-capability','runner-ca','task-capability','temporal-ca','temporal-cert','temporal-key',
  ].map(name=>root+name).sort());
  assert.deepEqual(p.requiredFiles.find(file=>file.path===c.native.capabilityFile).purposes,['control-capability','native-capability']);
  assert.equal(p.containerName,'control');assert.equal(p.configurationPath,root+'control.json');

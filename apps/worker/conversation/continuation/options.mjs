@@ -51,7 +51,6 @@ export function buildContinuationOptions(value,target) {
 }
 /** The target run a verified lifecycle envelope may continue into: same tenant and actor, a new run/attempt/worker; resume stays in the
  * checkpoint's conversation at a later writer fence, fork moves to another conversation under a new SDK session id.
- * Shared by buildContinuationOptions and the runner's SDK options pin (apps/runtime/native-authority/sdk-option-template.mjs).
  * @param {any} c assertContinuationEnvelope output @param {any} binding the target RunBinding */
 export function assertContinuationTarget(c,binding) {
   const cp=c.checkpoint;
@@ -62,7 +61,7 @@ export function assertContinuationTarget(c,binding) {
       cp.binding.conversationId===binding.conversationId||c.targetSessionId===null||c.targetSessionId===cp.sessionId)fail('CONTINUATION_TARGET_REFUSED');
 }
 /** The SDK continuation options of a verified lineage: resume the checkpoint session, optionally at a message, and for a fork write a
- * new target session. The one definition of these fields, shared by both lineage builders and the runner's SDK options pin.
+ * new target session. These legacy lineage builders remain until the native continuity cut in Step 5.
  * @param {{sessionId:string,resumeSessionAt:string|null,targetSessionId:string|null}} lineage
  * @returns {Pick<import('@anthropic-ai/claude-agent-sdk').Options,'resume'|'resumeSessionAt'|'forkSession'|'sessionId'>} */
 export function lineageResumeOptions({sessionId,resumeSessionAt,targetSessionId}) {

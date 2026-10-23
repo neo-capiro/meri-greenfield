@@ -4,7 +4,7 @@
 import {RunTaskCommand,DescribeTasksCommand,ListTasksCommand,StopTaskCommand} from '@aws-sdk/client-ecs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {compilePreparedCandidateConfiguration} from '../../prepared-candidate-config.mjs';
-import {compileNativeBrokerPlan} from '../broker-stack.mjs';
+import {compileNativeTaskPlan} from '../task-allocator.mjs';
 import {createNativeTaskAllocator} from '../task-allocator.mjs';
 import {candidateFixture} from '../../test/prepared-candidate-fixture.mjs';
 import {normalize} from 'node:path';
@@ -13,9 +13,8 @@ const prefix='arn:aws:ecs:us-east-1:967807252336:';
 export function originalFacts(){
  const f=candidateFixture(),intent=f.configuration.nativeCandidate.preparationIntent;
  for(const key of ['workspace','configParentDirectory','secureStorageDirectory'])intent[key]=normalize(intent[key]);
- intent.launchTemplate.command=normalize(intent.launchTemplate.command);intent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=intent.secureStorageDirectory;
- const config=compilePreparedCandidateConfiguration(f.configuration.nativeCandidate,f.configuration.versions),runtime={...config.runtime,proxyCredential:f.secret.proxy};
- const original=compileNativeBrokerPlan({runtime,plan:config.plan,preparationIntent:config.preparationIntent}).original,limits={maxRequestMs:1000,maxFactBytes:131072};
+ const config=compilePreparedCandidateConfiguration(f.configuration.nativeCandidate,f.configuration.versions),runtime={...config.runtime};
+ const original=compileNativeTaskPlan({runtime,plan:config.plan,preparationIntent:config.preparationIntent}).original,limits={maxRequestMs:1000,maxFactBytes:131072};
  const retirement=(store,client,extra={})=>({store,pool:{connect(){throw Error('no budget database in this synthetic test');}},client,allocationJson:config.allocationJson,qualification:config.qualification,grantIntents:config.grantIntents,runtime,plan:config.plan,preparationIntent:config.preparationIntent,taskRequest:config.taskRequest,containerName:config.containerName,limits,...extra});
  return {f,config,runtime,original,limits,retirement};
 }

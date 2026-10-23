@@ -1,3 +1,4 @@
+import imagePins from './temporal-image-pins.json' with {type:'json'};
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
@@ -14,7 +15,7 @@ const sha='a'.repeat(64),commit='b'.repeat(40);
 function env(service='frontend'){
  const role=service==='internal-worker'?'worker':service,conns=service==='history'?'20':'10';
  return {MERI_TEMPORAL_SERVICE_NAME:service,MERI_TEMPORAL_ROLE:role,MERI_TEMPORAL_ACTIVATION:'approved',
-  MERI_TEMPORAL_PREVIEW_REQUIRED:'1',MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST:'sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e',
+  MERI_TEMPORAL_PREVIEW_REQUIRED:'1',MERI_TEMPORAL_UPSTREAM_SOURCE_COMMIT:imagePins.serverSource.commit,
   MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256:sha,MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT:commit,MERI_TEMPORAL_IMAGE_SOURCE_COMMIT:commit,
   MERI_TEMPORAL_RENDER_DIR:'/run/temporal',DB:'postgres12',DB_PORT:'5432',DBNAME:'temporal',VISIBILITY_DBNAME:'temporal_visibility',
   NUM_HISTORY_SHARDS:'128',SQL_TLS_ENABLED:'true',SQL_HOST_VERIFICATION:'true',TEMPORAL_TLS_REQUIRE_CLIENT_AUTH:'true',
@@ -90,6 +91,8 @@ test('activation, role, issuer, SQL, cert scope and broadcast contradictions fai
   x=>{x.MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED='other_user';},
   x=>{x.MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED='other_user';},
   x=>{x.MERI_TEMPORAL_MIGRATION_PLAN_SHA256=sha;},
+  x=>{x.MERI_TEMPORAL_UPSTREAM_SOURCE_COMMIT='a'.repeat(40);},
+  x=>{delete x.MERI_TEMPORAL_UPSTREAM_SOURCE_COMMIT;x.MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST='sha256:'+sha;},
   x=>{x.MERI_TEMPORAL_INTERNODE_KEY_PEM='';},x=>{x.MERI_TEMPORAL_IMAGE_SOURCE_COMMIT='';}
  ];
  for(const change of changes){const e=env();change(e);assert.throws(()=>renderTemporalConfig(e,['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/u);}
@@ -107,6 +110,7 @@ test('ENI and JWKS preflight accept one scoped response and reject ambiguity',as
  assert.equal(await readTaskEniAddress(e,fetcher),'10.4.8.12');
  const trusted=rootCertificates.map(pem=>new X509Certificate(pem)).find(c=>
   c.ca&&c.publicKey.asymmetricKeyType==='rsa'&&c.publicKey.asymmetricKeyDetails.modulusLength>=2048&&
+  c.publicKey.asymmetricKeyDetails.publicExponent===65537n&&
   Date.parse(c.validFrom)<Date.now()&&Date.parse(c.validTo)>Date.now());
  assert(trusted);
  const jwk={...trusted.publicKey.export({format:'jwk'}),kid:'one',use:'sig',alg:'RS256'};
@@ -116,6 +120,7 @@ test('ENI and JWKS preflight accept one scoped response and reject ambiguity',as
  await assert.rejects(readTaskEniAddress(e,async()=>new Response(JSON.stringify(bad))),/TEMPORAL_LAUNCH_REFUSED/u);
  await assert.rejects(checkIssuerJwks(e,async()=>({keys:[]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
  await assert.rejects(checkIssuerJwks(e,async()=>({keys:[{...jwk,n:'synthetic'}]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
+ await assert.rejects(checkIssuerJwks(e,async()=>({keys:[{...jwk,e:'Aw'}]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
  await assert.rejects(checkIssuerJwks(e,async()=>({keys:[{...jwk,kid:'bad',d:'private'}]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
  await assert.rejects(checkIssuerJwks(e,async()=>({keys:[jwk,jwk]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
  e.ECS_CONTAINER_METADATA_URI_V4='https://example.org/v4/task-id';

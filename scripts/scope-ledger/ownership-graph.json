@@ -1,7 +1,7 @@
 {
   "schema": "meri-scope-ledger-ownership-graph/1",
-  "status": "PROPOSAL for dot (audit repair step 2). Not accepted. It assigns no shared file, contract, lockfile or migration; those remain allocated centrally and need dot's decision before implementation.",
-  "note": "Curated input. 'sourceModules' and 'persistence' paths are verified to exist at this base by ledger.test.mjs (paths marked atBase:false are in-flight branches and are not verified). ownedToday: 'owned' = one canonical owner exists and trusted startup composes it; 'partial' = a canonical domain owner exists in source but startup composition, recovery or a responsibility listed under 'unowned' is missing; 'unowned' = no canonical owner is composed or assigned for the responsibility. Source presence never implies runtime acceptance.",
+  "status": "PROPOSAL for dot (historical 20261015 audit repair step 2; superseded by item 0). Not accepted or current governing ownership. Only the cleanup domain's source references and bounded evidence description have been updated for item 0 step 2; all other domain assertions remain historical proposal material. Current allocations belong to the root Codex orchestrator.",
+  "note": "Curated input still consumed by the ledger generator, not a current acceptance record. 'sourceModules' and 'persistence' paths are checked by ledger.test.mjs (paths marked atBase:false are historical in-flight proposals and are not checked). In the historical vocabulary, ownedToday: 'owned' = one canonical owner exists and trusted startup composes it; 'partial' = a canonical domain owner exists in source but startup composition, recovery or a responsibility listed under 'unowned' is missing; 'unowned' = no canonical owner is composed or assigned for the responsibility. Source presence and path validation never imply runtime acceptance. Generated historical ledgers are not refreshed by this narrow cleanup.",
   "domains": [
     {
       "id": "startup-composition",
@@ -61,13 +61,13 @@
     {
       "id": "cleanup",
       "title": "Physical task cleanup and crash recovery",
-      "sourceModules": ["apps/runtime/native-authority/execution-broker.mjs", "apps/runtime/native-authority/execution-http.mjs", "apps/runtime/temporal-worker.mjs", "apps/control/qualification-temporal/recovery-activities.mjs"],
-      "persistence": ["apps/control/conversations/migrations/0006_native_executions.sql"],
-      "composedByStartup": "partial: prepared mode stops through an independent signal and refuses success when stop is unknown; non-prepared mode has no stop route (L5); recovery workflows are qualification-only",
+      "sourceModules": ["apps/runtime/original-stop.mjs", "apps/runtime/native-authority/prepared-kickoff.mjs", "apps/runtime/temporal-worker.mjs", "apps/control/conversations/run-reconciler.mjs"],
+      "persistence": ["apps/control/conversations/migrations/0001_conversations.sql", "apps/control/conversations/migrations/0007_native_preparation.sql"],
+      "composedByStartup": "partial: existing canonical kickoff/status/stop and Temporal execute/reconcile use persisted run/allocation state and a bounded cleanup signal; failed or unknown cleanup is not successful execution. Source and isolated PostgreSQL evidence do not establish physical SDK/CLI/Fargate cleanup at the current image.",
       "ownedToday": "partial",
-      "unowned": ["original-bound stop/revoke for non-prepared mode or a readiness refusal of that mode", "production crash reconciliation and retirement for one-attempt workflows (L4)"],
-      "proposedCanonicalOwner": "Fable lane A (native-authority execution broker and runtime worker registration); qualification fixture workflows stay separate and labelled",
-      "auditRefs": ["lifecycle-report.md L4, L5"]
+      "unowned": ["current-image physical task-stop, revocation and crash-recovery acceptance", "item 0 steps 4/5 simplification of retained non-model run/allocation guards and native session/task persistence"],
+      "proposedCanonicalOwner": "Existing canonical run/kickoff/stop owners and Temporal worker composition under the root Codex orchestrator; no replacement execution broker or cleanup protocol.",
+      "auditRefs": ["lifecycle-report.md L4, L5 (historical)", "scripts/qualification/first-chat-rehearsal/README.md (current source coverage and unmet acceptance)"]
     },
     {
       "id": "schedules",

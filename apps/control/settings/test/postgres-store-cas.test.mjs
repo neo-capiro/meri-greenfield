@@ -7,17 +7,20 @@ import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 import {createSettingsPoolFixture as scriptedPool} from './postgres-store-fixture.mjs';
 import {createUserPreferencesService} from '../user-service.mjs';
-import {USER_PREFERENCE_DEFAULTS} from '../documents.mjs';
+import {USER_PREFERENCE_DEFAULTS,DEFAULT_MODEL_LIMITS} from '../documents.mjs';
 
 const hash=canonicalSha256;
+const defaultModel={monthlyCapMicroUsd:null,...DEFAULT_MODEL_LIMITS};
+const view=(kind,value)=>kind==='tenant'?{...value,model:defaultModel}:value;
+const response=(kind,revision,value)=>({revision,documentSha256:hash(value),...(kind==='tenant'?{model:defaultModel}:{})});
 const failure=code=>error=>productFailure(error)?.code===code;
 const gate=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
 const row=(revision,document)=>({revision:String(revision),document,document_sha256:hash(document)});
 const table=kind=>`meri_settings.${kind==='user'?'user_preferences':'tenant_settings'}`;
 const escaped=kind=>table(kind).replace('.','\\.');
-const insert=kind=>new RegExp(`^INSERT INTO ${escaped(kind)}\\(.* ON CONFLICT \\(${kind==='user'?'tenant_id,actor_id':'tenant_id'}\\) DO NOTHING RETURNING revision,document,document_sha256$`,'u');
-const locked=kind=>new RegExp(`^SELECT revision,document,document_sha256 FROM ${escaped(kind)} WHERE .* FOR UPDATE$`,'u');
-const update=kind=>new RegExp(`^UPDATE ${escaped(kind)} SET .* WHERE .* AND revision=\\$${kind==='user'?7:6} RETURNING revision,document,document_sha256$`,'u');
+const insert=kind=>new RegExp(`^INSERT INTO ${escaped(kind)}\\(.* ON CONFLICT \\(${kind==='user'?'tenant_id,actor_id':'tenant_id'}\\) DO NOTHING RETURNING \\*$`,'u');
+const locked=kind=>new RegExp(`^SELECT \\* FROM ${escaped(kind)} WHERE .* FOR UPDATE$`,'u');
+const update=kind=>new RegExp(`^UPDATE ${escaped(kind)} SET .* WHERE .* AND revision=\\$${kind==='user'?7:6} RETURNING \\*$`,'u');
 const auditSql=/^INSERT INTO meri_settings\.settings_audit\(/u;
 function input(kind,{revision=0,document={theme:'dark'},signal}={}){
  return {kind,tenantId:'tenant-synthetic',...(kind==='user'?{actorId:'subject-synthetic'}:{}),expectedRevision:revision,document,signal,
@@ -27,28 +30,28 @@ for(const kind of ['user','tenant'])test(`${kind}: concurrent initial writers us
  const winnerEntered=gate(),loserEntered=gate(),releaseWinner=gate(),winnerCommitted=gate(),value={theme:'dark'};
  const p=scriptedPool([
   {steps:[{match:insert(kind),rows:[row(1,value)],async run(){winnerEntered.resolve();await releaseWinner.promise;}},
-   {match:auditSql,inspect(params){assert.deepEqual(params.slice(1),['tenant-synthetic',kind,kind==='user'?'subject-synthetic':null,'writer-synthetic',0,1,null,hash(value),kind==='tenant'?'f'.repeat(64):null,['theme']]);}}],commit:()=>winnerCommitted.resolve()},
+   {match:auditSql,inspect(params){assert.deepEqual(params.slice(1),['tenant-synthetic',kind,kind==='user'?'subject-synthetic':null,'writer-synthetic',0,1,null,hash(view(kind,value)),kind==='tenant'?'f'.repeat(64):null,kind==='tenant'?['model.maxBudgetMicroUsd','model.maxTurns','theme']:['theme']]);}}],commit:()=>winnerCommitted.resolve()},
   {steps:[{match:insert(kind),rows:[],async run(){loserEntered.resolve();await winnerCommitted.promise;}}]},
  ]),store=createPostgresSettingsStore({pool:p.pool});
  const winner=store.save(input(kind));await winnerEntered.promise;
  const loser=store.save(input(kind,{document:{theme:'light'}}));const lost=assert.rejects(loser,failure('SETTINGS_REVISION_CONFLICT'));
  await loserEntered.promise;releaseWinner.resolve();
- assert.deepEqual(await winner,{revision:1,documentSha256:hash(value)});await lost;
+ assert.deepEqual(await winner,response(kind,1,value));await lost;
  assert.deepEqual(p.committed.map(v=>v.kind),['document','audit']);assert.deepEqual(p.committed[0].row,row(1,value));
  assert.equal(p.calls.some(v=>v.id===1&&auditSql.test(v.sql)),false);assert.equal(p.calls.some(v=>v.id===1&&v.sql==='COMMIT'),false);
  assert.equal(p.calls.some(v=>v.id===1&&v.sql==='ROLLBACK'),true);assert.equal(p.calls.some(v=>v.sql.startsWith('SELECT')),false);
  assert.equal(p.released.length,2);assert.ok(p.released.every(v=>v.error===undefined));
  const params=p.calls.find(v=>v.id===0&&insert(kind).test(v.sql)).params;
- assert.deepEqual(params,kind==='user'?['tenant-synthetic','subject-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic']:['tenant-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic']);
+ assert.deepEqual(params,kind==='user'?['tenant-synthetic','subject-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic']:['tenant-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic',null,20,2000000]);
 });
 
 for(const kind of ['user','tenant'])test(`${kind}: existing revision is locked and conditionally updated with an atomic audit`,async()=>{
  const before={theme:'light'},value={theme:'dark'},p=scriptedPool([{steps:[
   {match:locked(kind),rows:[row(1,before)],inspect(params){assert.deepEqual(params,kind==='user'?['tenant-synthetic','subject-synthetic']:['tenant-synthetic']);}},
-  {match:update(kind),rows:[row(2,value)],inspect(params){assert.deepEqual(params.slice(kind==='user'?2:1),[2,JSON.stringify(value),hash(value),'writer-synthetic',1]);}},
-  {match:auditSql,inspect(params){assert.deepEqual(params.slice(5,9),[1,2,hash(before),hash(value)]);}},
+  {match:update(kind),rows:[row(2,value)],inspect(params){assert.deepEqual(params.slice(kind==='user'?2:1),[2,JSON.stringify(value),hash(value),'writer-synthetic',1,...(kind==='tenant'?[null,20,2000000]:[])]);}},
+  {match:auditSql,inspect(params){assert.deepEqual(params.slice(5,9),[1,2,hash(view(kind,before)),hash(view(kind,value))]);}},
  ]}]),store=createPostgresSettingsStore({pool:p.pool});
- assert.deepEqual(await store.save(input(kind,{revision:1})),{revision:2,documentSha256:hash(value)});
+ assert.deepEqual(await store.save(input(kind,{revision:1})),response(kind,2,value));
  assert.deepEqual(p.committed.map(v=>v.kind),['document','audit']);assert.equal(p.released[0].error,undefined);
 });
 

@@ -32,7 +32,7 @@ import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts
 import {artifactValidators as artifactV,resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {ARTIFACT_MIME_TYPES,artifactFilename} from '../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 import {createCurrentToolAuthority} from '../../gateway/authorization/current-tool-authority.mjs';
-import {createPostgresAdmittedRunOwner} from '../../gateway/budget/admitted-run-owner.mjs';
+import {createPostgresRunOwner} from '../../control/qualified-application/run-owner.mjs';
 import {parseAdmittedGrantSet} from '../../gateway/budget/admitted-run-binding.mjs';
 import {matchesCapability} from '../native-authority/task-verifier.mjs';
 import {INTENT_OPERATIONS} from './core-authority-wire.mjs';
@@ -81,7 +81,7 @@ export function createRuntimeDocumentRunOptions(configuration){
   const key=hash(binding),identity=hash({binding,scopes,grantId:t.grantId,allocationSha256:hash(set.allocation),capabilitySha256:grant.capabilitySha256,executionId:original.executionId});
   const existing=runs.get(key);
   if(existing){if(existing.identity!==identity)throw fault('ARTIFACT_RUN_OPTIONS_CONFLICT');return existing.handle;}
-  const owner=createPostgresAdmittedRunOwner({pool:t.pool,allocationJson:t.allocationJson,grantFactsJsons:t.grantFactsJsons,namespace:'product',now,limits});
+  const owner=createPostgresRunOwner({pool:t.pool,binding,grantId:t.grantId,expiresAtMs:original.expiresAtMs,now,maxRequestMs:limits.maxRequestMs});
   const entry={identity,pool:t.pool,binding,scopes,selectedClientId:selectedClientOf(scopes),grant,allocationJson:t.allocationJson,maxBytes:set.allocation.budgets.maxOutputBytes,credential:t.taskCapability,executionId:original.executionId,expiresAtMs:original.expiresAtMs,owner,handle:null};
   entry.handle=Object.freeze({release(){if(runs.get(key)===entry)runs.delete(key);}});
   runs.set(key,entry);return entry.handle;

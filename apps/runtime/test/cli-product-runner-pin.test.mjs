@@ -15,8 +15,8 @@ test('product runner CLI refuses absent or incorrect measured entrypoint pin bef
   const configured={version:1,profile:'isolated-preview',sourceEnabled:false,
    limits:{startupMs:3000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
    native:{origin:'https://native.example.invalid',capabilityFile:join(directory,'task-capability'),loopback:false,maxResponseBytes:131072},
-   binding,versions,workspace:directory.replaceAll('\\','/')+'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid',
-   captureOwnsClose:true,bootstrap:{expiresAtMs:Date.now()+30000,remote:true}};
+   binding,versions,workspace:directory.replaceAll('\\','/')+'/workspace/'+binding.conversationId,
+   bootstrap:{expiresAtMs:Date.now()+30000,remote:true}};
   assert.doesNotThrow(()=>validateConfiguration(configured,'conversation-runner'));
   await writeFile(file,JSON.stringify(configured));
   process.stderr.write=value=>{diagnostic+=value;return true;};
@@ -54,7 +54,7 @@ test('product runner refuses a bootstrap-free plaintext receiver before secret o
   const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,
    limits:{startupMs:3000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
    native:{origin:'https://native.example.invalid',capabilityFile:join(directory,'task-capability'),loopback:false,maxResponseBytes:131072},
-   binding,versions,workspace:directory.replaceAll('\\','/')+'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.example.invalid'};
+   binding,versions,workspace:directory.replaceAll('\\','/')+'/workspace/'+binding.conversationId};
   assert.doesNotThrow(()=>validateConfiguration(configuration,'conversation-runner'));
   await writeFile(file,JSON.stringify(configuration));process.stderr.write=value=>{diagnostic+=value;return true;};
   process.env.MERI_PRODUCT_PREVIEW_REQUIRED='1';

@@ -13,7 +13,7 @@ import {classifyStatus} from './telemetry/counting.mjs';
 const startupOperations=new Set([
  'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
  'runner/native/verify','runner/native/start','runner/native/started',
- 'runner/runtime','runner/publish','runner/checkpoint/capture','runner/checkpoint/complete',
+ 'runner/runtime','runner/publish','runner/record-usage','runner/checkpoint/capture','runner/checkpoint/complete',
  'runner/session/register','runner/session/load','runner/session/append',
  'runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint',
 ]);
@@ -29,7 +29,7 @@ export const unansweredNativeAnswer=(status,error)=>status===503&&(unansweredCod
 // Sent again after an unanswered attempt, and only inside the caller's absolute deadline: runner/load is a read, and
 // runner/publish carries a fixed eventId that control's store returns instead of appending twice
 // (apps/control/conversations/postgres-store.mjs appendEvent). No other operation is replayed.
-const replayable=new Set(['runner/load','runner/publish']);
+const replayable=new Set(['runner/load','runner/publish','runner/record-usage']);
 const REPLAY_DELAYS_MS=RUNNER_REPLAY_DELAYS_MS,REPLAY_MIN_ATTEMPT_MS=1000;
 // A transport that failed after dispatch before any answer: one of the pinned transport's no-answer rejections, or a plain
 // fetch's network TypeError. Its timeout or abort is a deadline, and a non-200 head arrives as a Response, never here.

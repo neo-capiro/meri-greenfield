@@ -12,7 +12,7 @@ import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupU
 import {createObjectiveWorkerActivities,objectiveWorkerPorts} from './objective-generation/worker-activities.mjs';
 import {stopOriginal,createOriginalReconciler as createReconcileActivity} from './original-stop.mjs';
 export {createReconcileActivity};
-/** The broker's control calls (kickoff, status, poll, stop) each cross control's task router, which allows 8 s per exchange
+/** The broker's control calls (kickoff, status, stop) each cross control's task router, which allows 8 s per exchange
  * (control.mjs), plus a Core-backed task verify. They get one control margin above that, the native client's cap, inside the
  * activity's 30 s heartbeat. The former 3 s client default and 3 s cleanup were below one router hop at tail latency. */
 export const BROKER_NATIVE_MS=10000;
@@ -31,8 +31,7 @@ export function createBrokerActivity({native,context=()=>Context.current(),now=D
   try{started=own(await native.call('execution/kickoff',{binding:input.binding,executionKey},{signal}),['binding','executionId','expiresAtMs']);if(canonicalSha256(started.binding)!==executionKey||started.executionId!==executionKey||!Number.isSafeInteger(started.expiresAtMs)||started.expiresAtMs<=now())throw fault('BROKER_START_REFUSED');
    const currentLease=()=>{signal.throwIfAborted();if(now()>=started.expiresAtMs)throw fault('BROKER_LEASE_EXPIRED');};
    const observe=(value,preparing=false)=>{const current=data(value);own(current,['binding','executionId','state'],preparing?['expiresAtMs']:[]);if(canonicalSha256(current.binding)!==executionKey||current.executionId!==started.executionId||!['executing','completed','failed','cancelled','paused','waiting-for-approval',...(preparing?['preparing']:[])].includes(current.state)||preparing&&current.expiresAtMs!==started.expiresAtMs)throw fault('BROKER_RECEIPT_REFUSED');activity.heartbeat({runId:input.binding.runId,executionId:started.executionId});currentLease();return current;};
-   for(;;){currentLease();const current=observe(await native.call('execution/kickoff/status',{binding:input.binding,executionId:started.executionId},{signal}),true);if(current.state==='executing')break;if(current.state!=='preparing'){await cleanup();return {state:current.state};}await sleep(signal,pollMs);}
-   for(;;){currentLease();const current=observe(await native.call('execution/poll',{binding:input.binding,executionId:started.executionId},{signal}));if(current.state!=='executing'){await cleanup();return {state:current.state};}await sleep(signal,pollMs);}
+   for(;;){currentLease();const current=observe(await native.call('execution/kickoff/status',{binding:input.binding,executionId:started.executionId},{signal}),true);if(!['preparing','executing'].includes(current.state)){await cleanup();return {state:current.state};}await sleep(signal,pollMs);}
   }catch(error){try{await cleanup();}catch(cleanupError){throw Object.assign(fault('BROKER_KICKOFF_CLEANUP_UNKNOWN'),{cause:cleanupError});}throw error;}
  };
 }

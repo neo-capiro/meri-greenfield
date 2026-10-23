@@ -59,7 +59,7 @@ test('task definition: Fargate x86_64 0.25 vCPU / 0.5 GiB, issuer roles, materia
  assert.equal(t.Family,'meri-product-preview-temporal-issuer');
  assert.deepEqual(t.RequiresCompatibilities,['FARGATE']);assert.equal(t.NetworkMode,'awsvpc');
  assert.equal(t.Cpu,'256');assert.equal(t.Memory,'512');
- assert.deepEqual(t.RuntimePlatform,{CpuArchitecture:'X86_64',OperatingSystemFamily:'LINUX'});
+ assert.deepEqual(t.RuntimePlatform,{CpuArchitecture:'ARM64',OperatingSystemFamily:'LINUX'});
  assert.equal(t.ExecutionRoleArn,b.roles.executionRoleArn);assert.equal(t.TaskRoleArn,b.roles.taskRoleArn);
  assert.deepEqual(t.Volumes,[{Name:'material'},{Name:'tmp'}]);
  assert.equal(t.ContainerDefinitions.length,2);

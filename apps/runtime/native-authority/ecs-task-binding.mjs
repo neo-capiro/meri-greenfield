@@ -1,7 +1,7 @@
 /** Correlate an original admitted Fargate resource; metadata is never run completion. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 const refused=()=>{throw executionFault('ECS_OWNERSHIP_REFUSED');};
 export function compileEcsTaskBinding(value){
  const c=own(value,['original','clusterArn','taskDefinitionArn','taskArn','containerName','createdAtMs'],['enabled','now','maxRequestMs','maxPages','maxTasks']);

@@ -8,7 +8,7 @@ const f=candidateFixture(),config=f.configuration.nativeCandidate,original=creat
 let lazy,sessionCalls=0,controllerClosed=0,allocations=0,captured;
 const sdkSessionOwner=Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(method=>[method,async function(value){sessionCalls++;return {method,request:value.request};}]))),continuation={async prepare(){},async readSnapshot(value){return value;}};
 mock.module('../prepared-candidate-config.mjs',{namedExports:{compilePreparedCandidateConfiguration(value){return value;}}});
-mock.module('../native-authority/broker-stack.mjs',{namedExports:{compileNativeBrokerPlan(){return {original,preparationIntent:config.preparationIntent};}}});
+mock.module('../native-authority/task-allocator.mjs',{namedExports:{compileNativeTaskPlan(){return {original,preparationIntent:config.preparationIntent};},createNativeTaskAllocator(){throw Error('No allocation');}}});
 mock.module('../native-authority/prepared-kickoff.mjs',{namedExports:{createPreparedTaskKickoff({controller}){lazy=controller;return {async kickoff(){},async status(){},async stop(){},async close(){await controller.close();}};}}});
 mock.module('../native-authority/prepared-runtime.mjs',{namedExports:{createPreparedNativeRuntime(){return {original,runtime:{taskCapabilitySha256:capabilityDigest(f.secret.task),async runtime(){}},preparationAuthorizer:{},async prepareAllocation(){throw Error('No allocation');},async close(){}};}}});
 mock.module('../native-authority/session-owner.mjs',{namedExports:{createDurableSdkSessionOwner(options){captured=options;return sdkSessionOwner;}}});
@@ -27,11 +27,11 @@ test('prepared SDK ports refuse before allocation, then borrow the same owner an
  await candidate.close();assert.equal(controllerClosed,1);assert.throws(()=>candidate.productPorts.sdkSessionOwner.load(value),{code:'SDK_SESSION_UNAVAILABLE'});
 });
 
-test('remote controller exposes exactly the durable session owner built with its canonical admission/verifier/registration',async()=>{
+test('remote controller exposes exactly the durable session owner built with its canonical run owner/verifier',async()=>{
  const admission={},taskVerifier={async verify(){throw Error('No authority');}},supervisor={admission,taskVerifier},transport={original,origin:config.taskOrigin,credential:f.secret.control,async fetchImpl(){throw Error('No transport');}};
  const {capabilityDigest}=await import('../native-authority/task-verifier.mjs');
- const controller=createRemoteNativeController({runtimeConfiguration:{runtime:{...config.runtime,proxyCredential:f.secret.proxy},plan:config.plan,preparationIntent:config.preparationIntent,supervisor,store:{},taskCapability:f.secret.task,controlCapabilitySha256:capabilityDigest(f.secret.control),continuation,enabled:true},transport});
+ const controller=createRemoteNativeController({runtimeConfiguration:{runtime:config.runtime,plan:config.plan,preparationIntent:config.preparationIntent,supervisor,store:{},taskCapability:f.secret.task,controlCapabilitySha256:capabilityDigest(f.secret.control),continuation,enabled:true},transport});
  assert.equal(controller.productPorts.sdkSessionOwner,sdkSessionOwner);assert.equal(controller.productPorts.sdkSessionSnapshot,continuation);
- assert.equal(captured.admission,admission);assert.equal(captured.authority,taskVerifier);assert.equal(typeof captured.registration.read,'function');
+ assert.equal(captured.admission,admission);assert.equal(captured.authority,taskVerifier);assert.equal(Object.hasOwn(captured,'registration'),false);
  assert.ok(Object.isFrozen(controller.productPorts));assert.equal(allocations,1);
 });

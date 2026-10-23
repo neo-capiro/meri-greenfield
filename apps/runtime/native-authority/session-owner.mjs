@@ -6,44 +6,53 @@ import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders} from '..
 import {copySessionEntries,copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
 import {copySessionJson,captureSessionMethods} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
-import {BudgetCommitUncertain} from '../../gateway/budget/postgres-budget-store.mjs';
+import {ProductError,productFailure} from '../../control/product-access/errors.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-const fail=code=>{throw Object.assign(Error(code),{code});},integer=n=>{const v=typeof n==='string'&&/^(0|[1-9][0-9]*)$/u.test(n)?Number(n):n;if(!Number.isSafeInteger(v)||v<0)fail('SDK_SESSION_CORRUPT');return v;};
+// These fixed local refusals cross the canonical run transaction. Only the existing
+// ProductError brand preserves them after a known rollback; foreign errors stay unavailable.
+const fail=code=>{throw Object.assign(new ProductError(code,code==='SDK_SESSION_COMMIT_UNKNOWN'?'UNKNOWN':null),{code});},integer=n=>{const v=typeof n==='string'&&/^(0|[1-9][0-9]*)$/u.test(n)?Number(n):n;if(!Number.isSafeInteger(v)||v<0)fail('SDK_SESSION_CORRUPT');return v;};
+// Historical rows retain their exact authenticated owner bytes. The old launch witness is stored provenance,
+// never a newly accepted registration input or a currentness grant.
+function storedOwner(value){
+ const owner=own(value,['binding','scopes','selectedClientId','policyRevision','key','allocationSha256','expiresAtMs'],['observationId','sessionEventSha256']);
+ const legacy=Object.hasOwn(owner,'observationId');
+ if(legacy!==Object.hasOwn(owner,'sessionEventSha256')||legacy&&(typeof owner.observationId!=='string'||!owner.observationId||owner.observationId.length>256||!/^[a-f0-9]{64}$/u.test(owner.sessionEventSha256)))fail('SDK_SESSION_CORRUPT');
+ return owner;
+}
+const comparableOwner=owner=>{const {observationId,sessionEventSha256,...current}=owner;return current;};
 export function createDurableSdkSessionOwner(configuration){
- const {admission,authority,registration,enabled=false,now=Date.now,maxRequestMs=3000}=own(configuration,['admission'],['authority','registration','enabled','now','maxRequestMs']);
+ const {admission,authority,enabled=false,now=Date.now,maxRequestMs=3000}=own(configuration,['admission'],['authority','enabled','now','maxRequestMs']);
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('SDK_SESSION_CONFIGURATION');
- const transaction=storageMethod(admission,'withCurrentAllocation'),authorize=authority?captureSessionMethods(authority,['verify'],'SDK_SESSION_CONFIGURATION'):null,observe=registration?captureSessionMethods(registration,['read'],'SDK_SESSION_CONFIGURATION'):null;
+ const transaction=storageMethod(admission,'withCurrentRun'),authorize=authority?captureSessionMethods(authority,['verify'],'SDK_SESSION_CONFIGURATION'):null;
  async function execute(operation,value){
-  const raw=own(value,['credential','request'],['signal','deadlineMs']);if(!enabled||!authorize||!observe)fail('SDK_SESSION_UNAVAILABLE');
+  const raw=own(value,['credential','request'],['signal','deadlineMs']);if(!enabled||!authorize)fail('SDK_SESSION_UNAVAILABLE');
   if(typeof raw.credential!=='string'||!raw.credential||raw.credential.length>8192)fail('SDK_SESSION_REFUSED');
   const request=assertSdkSessionRequestHeaders(operation,raw.request);let entries;
   if(operation==='append'){entries=copySessionEntries(Object.getOwnPropertyDescriptor(raw.request,'entries').value);if(hash(entries)!==request.entriesSha256)fail('INVALID_SDK_SESSION_REQUEST');}
   const input={...request,...(entries===undefined?{}:{entries})},inputSha256=hash(input),started=now(),deadlineMs=Math.min(raw.deadlineMs??started+maxRequestMs,started+maxRequestMs);
   const life=createOperationLifetime({now,signal:raw.signal,deadlineMs,errorFactory:code=>Object.assign(Error('SDK_SESSION_'+code),{code:'SDK_SESSION_'+code})});let pinned,attempted=false;let cutoff=deadlineMs;const limit=next=>{cutoff=Math.min(cutoff,next);life.limitDeadline(cutoff);};
-  // Task authority is verified where revocation must take effect, and only there: before the first stored read, after the
-  // registration observation (register), before a write commits (register, a new append), and before the result is released.
-  // A read costs 2 verifies, an append 3, a registration 4; each is two Core calls (pinned in test/session-owner.test.mjs).
+  // The authenticated runner correlates native SDK init with its SessionStore key. The existing run transaction
+  // pins exactly one main key to that task/run; registration is no longer a separate child-process witness.
   async function fresh(){const at=now(),receipt=assertWorkerAuthorization(await life.run(signal=>authorize.verify({capability:raw.credential,binding:request.binding,operation:'runner/session/'+operation,inputSha256,signal,deadlineMs:cutoff})),{binding:request.binding,operation:'runner/session/'+operation,inputSha256,started:at,now});
    const facts=data({binding:receipt.binding,scopes:receipt.scopes,selectedClientId:receipt.selectedClientId,policyRevision:receipt.policyRevision});if(pinned&&!same(pinned,facts))fail('SDK_SESSION_REFUSED');pinned??=facts;limit(receipt.expiresAtMs);return receipt;}
   try{
-   const auth=await fresh();let observation;
-   if(operation==='register'){observation=data(await life.run(signal=>observe.read({binding:request.binding,key:request.key,signal,deadlineMs:cutoff})));
-    own(observation,['binding','key','sdkVersion','cliVersion','observationId','sessionEventSha256','checkedAtMs','expiresAtMs']);
-    if(!same(observation.binding,request.binding)||!same(observation.key,request.key)||observation.sdkVersion!=='0.3.295'||observation.cliVersion!=='2.1.295'||typeof observation.observationId!=='string'||!observation.observationId||observation.observationId.length>256||!/^[a-f0-9]{64}$/u.test(observation.sessionEventSha256)||!Number.isSafeInteger(observation.checkedAtMs)||observation.checkedAtMs<started||observation.checkedAtMs>now()||!Number.isSafeInteger(observation.expiresAtMs)||observation.expiresAtMs<=now())fail('SDK_SESSION_REFUSED');limit(observation.expiresAtMs);await fresh();}
+   const auth=await fresh();
    const result=await life.run(()=>transaction({binding:request.binding,signal:life.signal,deadlineMs:cutoff},async({client,current})=>{
     life.check();if(!same(current.binding,pinned.binding)||current.policyRevision!==pinned.policyRevision||current.deadlineMs<=now())fail('SDK_SESSION_REFUSED');limit(current.deadlineMs);
     const b=request.binding,ownerArgs=[b.tenantId,b.conversationId,b.runId,request.key.sessionId];
     const query=async(sql,args)=>{if(operation==='append'&&/^(INSERT|UPDATE)/u.test(sql))attempted=true;const out=await client.query(sql,args);life.check();return out;};
     let row=(await query('SELECT * FROM meri_conversations.sdk_sessions WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 FOR UPDATE',ownerArgs)).rows[0];
-    if(row){own(row.owner,['binding','scopes','selectedClientId','policyRevision','key','allocationSha256','observationId','sessionEventSha256','expiresAtMs']);if(row.owner_sha256!==hash(row.owner)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.session_id!==request.key.sessionId||row.project_key!==row.owner.key?.projectKey)fail('SDK_SESSION_CORRUPT');}
+    if(row){storedOwner(row.owner);if(row.owner_sha256!==hash(row.owner)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.session_id!==request.key.sessionId||row.project_key!==row.owner.key?.projectKey)fail('SDK_SESSION_CORRUPT');}
     const tuple=(r,path)=>{if(r.tenant_id!==b.tenantId||r.conversation_id!==b.conversationId||r.run_id!==b.runId||r.session_id!==request.key.sessionId||path!==undefined&&r.subpath!==path)fail('SDK_SESSION_CORRUPT');};
     if(operation==='register'){
-     const owner=data({...pinned,key:request.key,allocationSha256:current.allocationSha256,observationId:observation.observationId,sessionEventSha256:observation.sessionEventSha256,expiresAtMs:Math.min(auth.expiresAtMs,observation.expiresAtMs,current.deadlineMs)});
-     if(row){if(!same({...row.owner,expiresAtMs:owner.expiresAtMs},owner)||row.owner.expiresAtMs<=now())fail('SDK_SESSION_REGISTRATION_CONFLICT');limit(row.owner.expiresAtMs);}
+     const keys=(await query('SELECT session_id,project_key FROM meri_conversations.sdk_sessions WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',ownerArgs.slice(0,3))).rows;
+     if(keys.length>1||keys.some(key=>key.session_id!==request.key.sessionId||key.project_key!==request.key.projectKey))fail('SDK_SESSION_REGISTRATION_CONFLICT');
+     const owner=data({...pinned,key:request.key,allocationSha256:current.allocationSha256,expiresAtMs:Math.min(auth.expiresAtMs,current.deadlineMs)});
+     if(row){if(!same({...comparableOwner(row.owner),expiresAtMs:owner.expiresAtMs},owner)||row.owner.expiresAtMs<=now())fail('SDK_SESSION_REGISTRATION_CONFLICT');limit(row.owner.expiresAtMs);}
      else await query('INSERT INTO meri_conversations.sdk_sessions(tenant_id,conversation_id,run_id,session_id,project_key,owner,owner_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[...ownerArgs,request.key.projectKey,owner,hash(owner)]);
      await fresh();return {registered:true,key:request.key};
     }
-    if(!row)fail('SDK_SESSION_NOT_REGISTERED');const owner=row.owner;own(owner,['binding','scopes','selectedClientId','policyRevision','key','allocationSha256','observationId','sessionEventSha256','expiresAtMs']);
+    if(!row)fail('SDK_SESSION_NOT_REGISTERED');const owner=storedOwner(row.owner);
     if(row.owner_sha256!==hash(owner)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.session_id!==request.key.sessionId||row.project_key!==owner.key?.projectKey||!same(owner.binding,pinned.binding)||!same(owner.scopes,pinned.scopes)||owner.selectedClientId!==pinned.selectedClientId||owner.policyRevision!==pinned.policyRevision||owner.allocationSha256!==current.allocationSha256||owner.expiresAtMs<=now())fail('SDK_SESSION_CORRUPT');
     limit(owner.expiresAtMs);scopedSessionKey(request.key,owner.key);const subpath=request.key.subpath??'',args=[...ownerArgs,subpath];
     if(operation==='list-subkeys'){
@@ -78,7 +87,7 @@ export function createDurableSdkSessionOwner(configuration){
     await query('UPDATE meri_conversations.sdk_sessions SET entries_count=$5,bytes=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4',[...ownerArgs,count,bytes]);
     await query('INSERT INTO meri_conversations.sdk_session_batches(tenant_id,conversation_id,run_id,session_id,append_id,request_sha256,receipt,receipt_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[...ownerArgs,request.appendId,inputSha256,receipt,hash(receipt)]);await fresh();return receipt;
    }));await fresh();life.check();const correlated={...result,binding:request.binding,key:request.key,requestSha256:inputSha256};return operation==='load'?{...correlated,entries:result.entries===null?null:copySessionTranscript(result.entries)}:data(correlated);
-  }catch(error){if(error instanceof BudgetCommitUncertain||attempted)fail('SDK_SESSION_COMMIT_UNKNOWN');throw error;}finally{life.close();}
+  }catch(error){if(productFailure(error)?.outcome==='UNKNOWN'||attempted)fail('SDK_SESSION_COMMIT_UNKNOWN');throw error;}finally{life.close();}
  }
  return Object.freeze(Object.fromEntries(['register','load','append','list-subkeys'].map(operation=>[operation==='list-subkeys'?'listSubkeys':operation,value=>execute(operation,value)])));
 }

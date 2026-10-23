@@ -1,5 +1,7 @@
 # Fable session status — 17 October 2026
 
+> Historical evidence only, superseded on 23 October 2026 by the [Codex workflow](../../20261022/CODEX-VALIDATION-AND-SHIPPING.md). The generated image-proof pipeline and its old qualification launchers/comparator helpers have been removed. Commands, roles, holds and source pins below describe the dated run; recover removed scripts from Git history only to inspect that evidence. Do not execute these procedures for a current release.
+
 Status record of the first Fable session after the portable handoff (`72fe5aec`). It covers what was done, what was verified, what changed in AWS and GitHub, and what still waits on a decision. Nothing here grants activation authority. Neo's rule for live changes is unchanged: **one concrete change set with costs and rollback, approved before any AWS or database write**. Image builds are the exception.
 
 ## Neo's decisions recorded this session

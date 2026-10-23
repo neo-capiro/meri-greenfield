@@ -7,7 +7,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {buildNextTurnOptions} from '../../worker/conversation/continuation/next-turn-options.mjs';
 import {buildContinuationOptions} from '../../worker/conversation/continuation/options.mjs';
 import {assertRestoreReceipt} from '../../worker/conversation/continuation/native-receipts.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 import {capabilityDigest,matchesCapability} from './task-verifier.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
 const same=(a,b)=>hash(a)===hash(b),hints=['continuation','nextTurn','sourceRequest','request','scopes'];

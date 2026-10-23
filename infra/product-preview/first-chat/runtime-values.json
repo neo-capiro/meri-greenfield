@@ -10,39 +10,6 @@
  "preparationIntent": {
   "configParentDirectory": "/run/meri",
   "secureStorageDirectory": "/run/meri/sdk-secure",
-  "launchTemplate": {
-   "command": "/opt/meri/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
-   "args": [
-    "--output-format",
-    "stream-json",
-    "--verbose",
-    "--input-format",
-    "stream-json",
-    "--max-turns=3",
-    "--max-budget-usd=2",
-    "--model=us.anthropic.claude-sonnet-4-6",
-    "--permission-prompt-tool=stdio",
-    "--tools=",
-    "--setting-sources=",
-    "--permission-mode=default",
-    "--include-partial-messages",
-    "--session-mirror",
-    "--settings",
-    "{\"autoMemoryEnabled\":false}"
-   ],
-   "env": {
-    "ANTHROPIC_BASE_URL": "https://proxy.meri.internal:8443/",
-    "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/run/meri/sdk-secure",
-    "NODE_EXTRA_CA_CERTS": "/run/meri/poststart/bootstrap/control-ca.pem",
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "8192",
-    "MAX_THINKING_TOKENS": "0",
-    "CLAUDE_CODE_ENTRYPOINT": "sdk-ts",
-    "CLAUDE_AGENT_SDK_VERSION": "0.3.295",
-    "CLAUDE_CODE_SDK_READS_SESSION_STATE": "1"
-   }
-  },
-  "executableSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
-  "sdkOptionsSha256": "af7f07b8f784884eae32e14e0b697d434d1668b0d68f55d203bf873c7af5431b",
   "runnerSha256": "7402dabf8e6cf75bdfff2344cdc266aaead75c387f3796259a13cbb01f1d3618"
  },
  "allocation": {
@@ -118,7 +85,6 @@
   ]
  },
  "runtime": {
-  "maxTurns": 3,
   "maxOutputBytes": 262144
  },
  "qualification": {
