@@ -51,8 +51,10 @@ export function createNativeToolAuthorityClient(configuration={}){
   // Core confirmed this equality ONLY for this fixed no-tenant/no-impersonation/no-cookie client.
   return assertNativeToolAuthority({principal:after.principal,identityRevision:after.identityRevision,actorRole:m.role,clientIds:m.clientIds,membershipRevision:m.membershipRevision,checkedAtMs:Math.min(before.checkedAtMs,m.checkedAtMs,after.checkedAtMs),expiresAtMs:Math.min(v.deadlineMs,before.expiresAtMs,m.expiresAtMs,after.expiresAtMs)},{started:began,now});
  }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
- const readConversation=createConversationAuthorityReader({available,authorityClient:identity,now,maxRequestMs});
- const readClientReference=createClientReferenceReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:identity,now,maxRequestMs});
- const readModeObservation=createReadModeObservationReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:identity,now,maxRequestMs});
+ // Borrow only the methods each reader declares; the combined current API is a separate owner.
+ const contextClient=identity===null?null:Object.freeze({readIdentity:identity.readIdentity,readContext:identity.readContext});
+ const readConversation=createConversationAuthorityReader({available,authorityClient:contextClient,now,maxRequestMs});
+ const readClientReference=createClientReferenceReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:contextClient,now,maxRequestMs});
+ const readModeObservation=createReadModeObservationReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:contextClient,now,maxRequestMs});
  return Object.freeze({available,origin,readCurrent,readConversation,readClientReference,readModeObservation});
 }

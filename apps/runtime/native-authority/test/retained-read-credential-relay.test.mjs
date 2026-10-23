@@ -255,3 +255,19 @@ test('Monday issues only its exact body-bound credential; Core owns current boar
  const foreign=structuredClone(x.pins);foreign.input.clientId='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
  await assert.rejects(x.create()(foreign),{message:'ACCESS_DENIED'});assert.equal(x.calls.tool.length,1);
 });
+
+
+test('General personal/firm memory keeps null target and exact signed parent/helper binding',async()=>{
+ const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:false})),helpers=[];
+ x.nativeCredentials.memoryEligibilityCredential=async request=>{helpers.push(request);return {bearerToken:'synthetic-helper-token',authorizationScheme:'CapiroMeriRead',expiresAtMs:x.pins.deadlineMs-3000};};
+ const relay=x.create(),parent=await relay(x.pins),pins=memoryHelperPins(x),helper=await relay.getMemoryEligibilityCredentials(pins);
+ assert.equal(parent.subject.kind,'personal');assert.equal(parent.subject.scopes[0].kind,'private-user');assert.deepEqual(x.calls.handle.map(r=>r.targetClientId),[null,null]);assert.equal(helpers.length,1);assert.equal(helper.pageProof,pins.pageProof);assert.equal(helper.resultSha256,pins.resultSha256);
+});
+test('General refuses client memory even when client is authorized and the request hashes are self-consistent',async()=>{
+ const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:true}));x.task.scopes=[{kind:'private-user',tenantId:x.task.binding.tenantId,resourceId:x.task.binding.actorId,policyRevision:x.pins.policyRevision}];
+ const relay=x.create();await assert.rejects(relay(x.pins));await assert.rejects(relay.getMemoryEligibilityCredentials(memoryHelperPins(x)));assert.equal(x.calls.handle.length,0);assert.equal(x.calls.secret,0);
+});
+test('General memory refuses foreign private actor/tenant, wrong kind, and changed helper page proof correlation',async()=>{
+ for(const mutate of [x=>x.task.scopes[0].resourceId='foreign',x=>x.task.scopes[0].tenantId='foreign',x=>x.task.scopes[0].kind='tenant']){const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:false}));mutate(x);assert.throws(()=>x.create());assert.equal(x.calls.handle.length,0);}
+ const x=relayFixture(createClientKnowledgeFixture('search_memory',{client:false})),relay=x.create(),pins=memoryHelperPins(x);await assert.rejects(relay.getMemoryEligibilityCredentials({...pins,recordsSha256:'0'.repeat(64)}));assert.equal(x.calls.handle.length,0);
+});

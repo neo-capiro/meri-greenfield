@@ -8,7 +8,7 @@ export async function generateInputContracts({check=false}={}){
  try{
   const originals=new Map(),sources=new Map();
   for(const path of ['meri.schema.json','dist/conversation-application.schema.json']){const bytes=await readFile(new URL(path,HERE)),schema=JSON.parse(bytes);originals.set(schema.$id,{schema,path,sha256:hash(bytes),bytes:bytes.length});}
-  for(const path of ['generate-input.mjs',...['protocol','schema','semantics','shape','validate','receive'].map(n=>'conversation-input/'+n+'.mjs'),'document-application/boundary.mjs',...['mjs','d.ts','metadata.json'].map(n=>'dist/conversation-application.'+n),'../../apps/control/conversations/input/http.mjs','../../apps/control/conversations/service.mjs']){const bytes=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(bytes),bytes:bytes.length});}
+  for(const path of ['generate-input.mjs',...['protocol','schema','semantics','shape','validate','receive'].map(n=>'conversation-input/'+n+'.mjs'),'conversation-scope.mjs','document-application/boundary.mjs',...['mjs','d.ts','metadata.json'].map(n=>'dist/conversation-application.'+n),'../../apps/control/conversations/input/http.mjs','../../apps/control/conversations/service.mjs']){const bytes=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(bytes),bytes:bytes.length});}
   const root=inputSchema(),defs={},seen=new Map();
   function transform(value,owner){if(Array.isArray(value))return value.map(v=>transform(v,owner));if(!value||typeof value!=='object')return value;const out={};
    for(const[key,v]of Object.entries(value)){if(key!=='$ref'){out[key]=transform(v,owner);continue;}const [urn,fragment]=v.split('#'),id=urn||owner,full=id+'#'+fragment;if(id===root.$id){out[key]='#'+fragment;continue;}

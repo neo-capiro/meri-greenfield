@@ -1,3 +1,4 @@
+import {isConversationClient,conversationScopeMatches,conversationClientFromScopes} from '../../../packages/contracts/conversation-scope.mjs';
 /** Production continuation authority for the conversation lifecycle (resume / fork; dot PR #121 6247464370 item 6), over the
  * existing durable run owners. It supplies the two lifecycle product ports `apps/runtime/product-applications.mjs` captures and
  * `apps/control/conversations/lifecycle/{service,journal,authority}.mjs` verify:
@@ -51,7 +52,7 @@ export function createContinuationAuthority(configuration){
  try{
   c=own(configuration,['store','stop','selectedClientId','policyRevision','versions','now'],['fork','limits']);
   for(const method of ['readOptional'])storageMethod(c.store,method);storageMethod(c.store.allocations,'read');storageMethod(c.store.nextRuns,'current');storageMethod(c.store.lifecycle,'get');
-  if(!ordinary(c.stop)||!ordinary(c.now)||typeof c.selectedClientId!=='string'||!UUID.test(c.selectedClientId)||typeof c.policyRevision!=='string'||!c.policyRevision||c.policyRevision.length>256)throw Error();
+  if(!ordinary(c.stop)||!ordinary(c.now)||!isConversationClient(c.selectedClientId)||typeof c.policyRevision!=='string'||!c.policyRevision||c.policyRevision.length>256)throw Error();
   validateShape('RuntimeVersions',data(c.versions));
   if(c.fork!==undefined){fork=own(c.fork,['initialBindings','configurationSha256','proposeInitialExpiry']);storageMethod(fork.initialBindings,'claim');storageMethod(fork.initialBindings,'readConversation');if(!ordinary(fork.proposeInitialExpiry)||typeof fork.configurationSha256!=='string'||!/^[a-f0-9]{64}$/u.test(fork.configurationSha256))throw Error();}
   const l=c.limits===undefined?{}:own(c.limits,[],['maxRequestMs','authorityWindowMs','admissionWindowMs']);
@@ -67,11 +68,10 @@ export function createContinuationAuthority(configuration){
  async function durable(life,fn){try{return data(await life.run(fn));}catch(error){if(owned(error))throw error;refuse(OUTAGE.includes(error?.code)?'UNAVAILABLE':'REFUSED');}}
  const uuid=value=>{if(typeof value!=='string'||!UUID.test(value))refuse('REFUSED');return value;};
  /** Scopes of this candidate's one client: tenant-bound, one policy revision, exactly one client scope naming the selected client. */
- function clientScopes(scopes,selectedClientId,tenantId){
+ function clientScopes(scopes,selectedClientId,binding){
   if(!Array.isArray(scopes)||!scopes.length||scopes.length>100)refuse('REFUSED');
-  for(const scope of scopes){try{validateShape('Scope',scope);}catch{refuse('REFUSED');}if(scope.tenantId!==tenantId||scope.policyRevision!==c.policyRevision)refuse('REFUSED');}
-  const clients=scopes.filter(s=>s.kind==='client');
-  if(clients.length!==1||clients[0].resourceId!==selectedClientId||selectedClientId!==c.selectedClientId)refuse('REFUSED');
+  for(const scope of scopes){try{validateShape('Scope',scope);}catch{refuse('REFUSED');}if(scope.tenantId!==binding.tenantId||scope.policyRevision!==c.policyRevision)refuse('REFUSED');}
+  if(!conversationScopeMatches(scopes,binding,selectedClientId,c.policyRevision)||!fork&&selectedClientId!==c.selectedClientId)refuse('REFUSED');
  }
  /** New work needs a nonterminal run. Only an independently verified committed continuation may use a naturally finished target. */
  async function record(life,binding,scopes,allowFinished=false){
@@ -90,7 +90,7 @@ export function createContinuationAuthority(configuration){
  async function readCurrent(value){
   const {signal,...raw}=own(value,['binding','scopes','selectedClientId','policyRevision','deadlineMs'],['signal','committedContinuation']);nativeSignal(signal);
   let v;try{v=data(raw);validateShape('RunBinding',v.binding);}catch{refuse('REFUSED');}
-  if(v.policyRevision!==c.policyRevision||!Number.isSafeInteger(v.deadlineMs))refuse('REFUSED');clientScopes(v.scopes,v.selectedClientId,v.binding.tenantId);
+  if(v.policyRevision!==c.policyRevision||!Number.isSafeInteger(v.deadlineMs))refuse('REFUSED');clientScopes(v.scopes,v.selectedClientId,v.binding);
   const life=lifetime(signal,v.deadlineMs),started=now();
   try{
    const reference=v.committedContinuation;
@@ -125,7 +125,7 @@ export function createContinuationAuthority(configuration){
   uuid(v.controlId);if(!['resume','fork'].includes(v.mode))refuse('REFUSED');
   const s=v.sourceBinding,cp=v.checkpoint;
   if(hash(cp)!==v.checkpointSha256||!same(cp.binding,s)||!same(cp.workspace.binding,s)||!same(cp.scopes,v.scopes)||!same(cp.workspace.scopes,v.scopes)||!same(cp.versions,v.versions)||!continuesSession(v.versions,versions)||cp.workspaceSha256!==hash(cp.workspace))refuse('REFUSED');
-  clientScopes(v.scopes,v.selectedClientId,s.tenantId);
+  clientScopes(v.scopes,v.selectedClientId,s);
   if(v.mode==='fork'&&fork===null)refuse('FORK_UNAVAILABLE');
   const life=lifetime(signal);
   try{
@@ -157,7 +157,7 @@ export function createContinuationAuthority(configuration){
   const life=lifetime(signal);
   try{
    const saved=await record(life,b,cp.scopes);
-   if(!CHECKPOINTED.includes(saved.run.state)||!same(saved.run.versions,cp.versions))refuse('REFUSED');clientScopes(saved.run.scopes,c.selectedClientId,b.tenantId);
+   if(!CHECKPOINTED.includes(saved.run.state)||!same(saved.run.versions,cp.versions))refuse('REFUSED');clientScopes(saved.run.scopes,conversationClientFromScopes(saved.run.scopes,b),b);
    const allocation=async()=>(await durable(life,()=>readAllocation({binding:b,allocationKey:hash(b)},life.check)))?.record??null;
    let r=await allocation();
    // A checkpointed run claimed an allocation: a missing or foreclosed row is never a proof of stop.

@@ -22,7 +22,7 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','intentApplication','settingsApplication','memoryApplication']);
+ const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationManagement','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','intentApplication','settingsApplication','memoryApplication']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
@@ -44,6 +44,7 @@ export function captureRuntimePorts(value={}){
   ...(c.taskCommandApplicationFactory===undefined?{}:{taskCommandApplicationFactory:methods(c.taskCommandApplicationFactory,['create','state'])}),
   ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState})})}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),
+  ...(c.conversationManagement===undefined?{}:{conversationManagement:methods(c.conversationManagement,['readMetadata','ownerOf','manage'])}),
   ...(c.conversationCurrentness===undefined?{}:{conversationCurrentness:methods(c.conversationCurrentness,['assertCurrent'])}),
   ...(c.conversationTurns===undefined?{}:{conversationTurns:methods(c.conversationTurns,['admitTurn'])}),
   ...(c.artifactOptionsOwner===undefined?{}:{artifactOptionsOwner:methods(c.artifactOptionsOwner,['resolve'])}),

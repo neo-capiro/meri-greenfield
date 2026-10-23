@@ -1,3 +1,4 @@
+import {isConversationClient,conversationScopeMatches,conversationClientFromScopes} from '../../packages/contracts/conversation-scope.mjs';
 /** Lazy per-run composition; existing issuance/allocation/admission owners retain durability. */
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
@@ -42,12 +43,12 @@ export function createPreparedRunRegistry(configuration){
  const readInitial=c.initialBindings===undefined?null:storageMethod(c.initialBindings,'read'),readInitialConversation=c.initialBindings===undefined?null:storageMethod(c.initialBindings,'readConversation'),readInitialRun=c.initialBindings===undefined?null:storageMethod(c.store,'readOptional'),isStaticOriginal=binding=>c.prepareOriginal!==undefined&&same(binding,rootIdentity.commandContext.binding);
  function check(signal){if(closed||signal?.aborted)fail();}
  function principal(binding){if(readInitial&&(binding.tenantId!==rootIdentity.commandContext.binding.tenantId||binding.actorId!==rootIdentity.commandContext.binding.actorId))fail();}
- const exactInitialScopes=(scopes,binding,admitted)=>Array.isArray(scopes)&&same(scopes,[{kind:'client',tenantId:binding.tenantId,resourceId:admitted.selectedClientId,policyRevision:admitted.policyRevision}]);
+ const exactInitialScopes=(scopes,binding,admitted)=>conversationScopeMatches(scopes,binding,admitted.selectedClientId,admitted.policyRevision);
  // The original record pins the deployment it was admitted under only while its own run is the one being executed (pinConfiguration);
  // a later run of the conversation carries the deployment that accepted it.
  function admittedRecord(raw,binding,allowExpired,pinConfiguration=true){
   const r=data(own(raw,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']));
-  if(r.schemaVersion!==1||r.state!=='ADMITTED'||r.binding.writerFence!==1||r.binding.tenantId!==binding.tenantId||r.binding.actorId!==binding.actorId||r.binding.conversationId!==binding.conversationId||r.selectedClientId!==rootIdentity.commandContext.clientResolution.clientId||pinConfiguration&&r.configurationSha256!==c.configurationSha256||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||!allowExpired&&r.expiresAtMs<=now()||r.expiresAtMs<=r.createdAtMs||pinConfiguration&&c.maximumExpiresAtMs!==undefined&&r.expiresAtMs>c.maximumExpiresAtMs)fail();return r;
+  if(r.schemaVersion!==1||r.state!=='ADMITTED'||r.binding.writerFence!==1||r.binding.tenantId!==binding.tenantId||r.binding.actorId!==binding.actorId||r.binding.conversationId!==binding.conversationId||!isConversationClient(r.selectedClientId)||pinConfiguration&&r.configurationSha256!==c.configurationSha256||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||!allowExpired&&r.expiresAtMs<=now()||r.expiresAtMs<=r.createdAtMs||pinConfiguration&&c.maximumExpiresAtMs!==undefined&&r.expiresAtMs>c.maximumExpiresAtMs)fail();return r;
  }
  async function initial(binding,life,allowExpired=false,pinConfiguration=true){
   principal(binding);if(!readInitial||isStaticOriginal(binding)||binding.writerFence!==1)return null;
@@ -56,7 +57,7 @@ export function createPreparedRunRegistry(configuration){
  }
  async function originalAdmission(binding,life){
   principal(binding);if(!readInitial||binding.conversationId===rootIdentity.commandContext.binding.conversationId||binding.writerFence===1)return null;
-  const raw=await life.run(()=>readInitialConversation({principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId,selectedClientId:rootIdentity.commandContext.clientResolution.clientId},life.check));life.check();if(raw===null)fail();const admitted=admittedRecord(raw,binding,true,false);
+  const raw=await life.run(()=>readInitialConversation({principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId},life.check));life.check();if(raw===null)fail();const admitted=admittedRecord(raw,binding,true,false);
   const saved=await life.run(()=>readInitialRun(admitted.binding,{},life.check));life.check();if(!saved||!same(saved.run?.binding,admitted.binding)||!same(saved.run.versions,admitted.versions)||saved.run.policyRevision!==admitted.policyRevision||!exactInitialScopes(saved.run.scopes,binding,admitted))fail();return admitted;
  }
  async function accepted(binding,life,expected,stopOnly=false,pinnedInitial){
@@ -107,7 +108,7 @@ export function createPreparedRunRegistry(configuration){
    // The delivery/transport contract is this entry's own, bound into the immutable facts hash above; nothing here is shared across entries.
    const transport=parseTransport(compiled.transport);if(!same(transport,issued.transport))fail();
    await accepted(binding,life,row.request,stopOnly,admission);life.check();
-   const original=compiled.original,identity={...rootIdentity,commandContext:{...rootIdentity.commandContext,binding}};let controller,pending,controllerClose;
+   const original=compiled.original,identity={...rootIdentity,commandContext:{...rootIdentity.commandContext,binding,clientResolution:{reference:conversationClientFromScopes(row.run.scopes,binding),clientId:conversationClientFromScopes(row.run.scopes,binding)}}};let controller,pending,controllerClose;
    // Use the same reviewed profile for custody and cached retirement. Other task
    // requests retain their exact in-memory Stop facts without opening historical material.
    const worker=facts.taskRequest.overrides.containerOverrides[0],historicalCustody=!isStaticOriginal(binding)&&same(worker.command,['start'])&&worker.environment.length===0;
@@ -117,7 +118,7 @@ export function createPreparedRunRegistry(configuration){
    const closeController=()=>{if(!controller)return Promise.resolve();return controllerClose??=Promise.resolve().then(()=>controller.close());};
    let entryClosed=false;
    // Read delegation (option B, lane RD): the run's Core read delegation is stopped on every terminal path of this entry (the stop
-   // route → cancelled, registry close → fenced, retirement → run_terminal). The hook never throws and is never awaited here: the
+   // route â†’ cancelled, registry close â†’ fenced, retirement â†’ run_terminal). The hook never throws and is never awaited here: the
    // delegation refuses locally at once and its Core revoke is best-effort, so a stop failure never blocks retirement.
    const stopDelegation=reason=>{if(c.readDelegationRunOptions===undefined)return;try{Promise.resolve(c.readDelegationRunOptions.stopRun({binding,reason})).catch(()=>{});}catch{}};
    const lazy={get prepared(){return controller?.prepared;},allocate({signal}={}){nativeSignal(signal);check(signal);if(entryClosed||stopOnly)fail();if(!pending)pending=Promise.resolve().then(async()=>{
@@ -146,7 +147,7 @@ export function createPreparedRunRegistry(configuration){
  const reply=(value,status=200)=>Response.json(value,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  // The canonical HTTP owner owns the full body-inclusive operation lifetime. Lookup cannot create an entry or use control authority.
  const reads=createNativeReadsApplication({...(c.approvedReads===undefined?{}:{approvedReads:c.approvedReads}),now,owner:{async handle(operation,input,credential,signal,deadlineMs){check(signal);if(matchesCapability(credential,controlDigest))throw nativeReadFault('ACCESS_DENIED');const request=assertNativeReadRequest('runner/reads/'+operation,input),entry=ready.get(hash(request.binding));if(!entry)throw nativeReadFault('UNAVAILABLE');return entry.read(operation,request,credential,signal,deadlineMs);}}});
- // P-INT-9 runner→control governed intents: task-authorized like reads, disabled unless control declares intents and a trusted
+ // P-INT-9 runnerâ†’control governed intents: task-authorized like reads, disabled unless control declares intents and a trusted
  // per-run intent mount owner exists (none yet: it needs Core's per-run result-release and execution grants), so it answers UNAVAILABLE.
  const intents=createRunnerIntentsApplication({enabled:c.intents?.enabled===true,controlCapabilitySha256:controlDigest,now,resolveRun:async({binding,credential,signal})=>{check(signal);const e=ready.get(hash(binding));if(!e)throw runnerIntentFault('UNAVAILABLE');if(!e.matchesTaskCapability(credential))throw runnerIntentFault('ACCESS_DENIED');if(typeof c.intentMountFor!=='function')throw runnerIntentFault('UNAVAILABLE');return c.intentMountFor({binding:e.binding,original:e.original,signal});}});
  async function handle(request){let life;try{

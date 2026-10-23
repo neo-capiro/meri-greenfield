@@ -1,3 +1,4 @@
+import {isGeneralTask,generalClientSelection,assertGeneralClientDelegation} from '../general-read-delegation.mjs';
 /** Task-bound CONTROL credential/context join over existing owners; no credential issuance, persistence or native fallback. */
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -60,24 +61,31 @@ export function createNativeReadCredentialOwner(configuration){
   let cutoff=Math.min(c.expiresAtMs,proof.deadlineMs,prior?.expiresAtMs??now()+approved.maxExecuteMs),life=createOperationLifetime({now,signal:signal?AbortSignal.any([scopeSignal,signal]):scopeSignal,deadlineMs:cutoff,errorFactory:nativeReadFault});
   const limit=expiry=>{cutoff=Math.min(cutoff,expiry);life.limitDeadline(cutoff);};
   async function admission(){const started=now(),operation='runner/reads/execute',inputSha256=hash(proof),r=assertNativeReadTaskAssertion(await life.run(signal=>verify({capability:c.taskCapability,binding,operation,inputSha256,deadlineMs:cutoff,signal})),{binding,operation,inputSha256,started,now});
-   if(r.policyRevision!==proof.policyRevision||r.allocationSha256!==hash(allocated)||proof.subject.scopes.some(scope=>!r.scopes.some(parent=>same(scope,parent))))refuse('ACCESS_DENIED');limit(r.expiresAtMs);
+   if(r.policyRevision!==proof.policyRevision||r.allocationSha256!==hash(allocated)||proof.subject.scopes.some(scope=>!r.scopes.some(parent=>same(scope,parent)))&&!isGeneralTask(binding,r.scopes,r.policyRevision))refuse('ACCESS_DENIED');if(isGeneralTask(binding,r.scopes,r.policyRevision)&&proof.subject.kind==='client')generalClientSelection({binding,scopes:r.scopes,policyRevision:r.policyRevision,subject:proof.subject});limit(r.expiresAtMs);
    const began=now(),entry=data(await life.run(signal=>c.readCurrentEntry({binding,signal,deadlineMs:cutoff})));own(entry,['binding','runRequestSha256','grantId','taskArn','issuanceFactsSha256','allocationSha256','scopes','policyRevision','readConfigurationSha256','checkedAtMs','expiresAtMs']);
    for(const key of ['binding','runRequestSha256','grantId','taskArn','issuanceFactsSha256','allocationSha256','scopes','policyRevision'])if(!same(entry[key],r[key]))refuse('ACCESS_DENIED');
    if(entry.readConfigurationSha256!==nativeReadConfigurationSha256(approved)||!Number.isSafeInteger(entry.checkedAtMs)||entry.checkedAtMs<began||entry.checkedAtMs>now())refuse('ACCESS_DENIED');limit(entry.expiresAtMs);return r;}
   try{
    const before=await admission(),row=data(await life.run(()=>read(binding,{},life.check)));validateShape('Run',row.run);
    if(!same(row.run.binding,binding)||!['queued','starting','running'].includes(row.run.state)||row.run.policyRevision!==proof.policyRevision||!same(row.run.scopes,before.scopes)||hash(row.request)!==before.runRequestSha256)refuse('ACCESS_DENIED');
-   const bearer=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,...(callKey===undefined?{}:{callKey}),signal,deadlineMs:cutoff}))),credential=bearer.credential;
+   const bearer=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,...(isGeneralTask(binding,before.scopes,before.policyRevision)?{targetClientId:proof.subject.kind==='client'?proof.subject.entityIds[0]:null}:{}),...(callKey===undefined?{}:{callKey}),signal,deadlineMs:cutoff}))),credential=bearer.credential;
    if(bearer.expiresAtMs!==undefined)limit(bearer.expiresAtMs);
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
    const contract=resolveOperationContract(proof.operation);let conversation=null,clientReferenceObservation=null,modeObservation=null;
+   const general=isGeneralTask(binding,before.scopes,before.policyRevision);
+   if(general){
+    if(!readConversation)refuse('UNAVAILABLE');const started=now();conversation=assertNativeConversationAuthority(await life.run(signal=>readConversation({credential,conversationId:binding.conversationId,clientId:null,signal,deadlineMs:cutoff})),{started,now,conversationId:binding.conversationId,clientId:null});
+    if(!same(conversation.principal,native.principal)||conversation.identityRevision!==native.identityRevision)refuse('ACCESS_DENIED');limit(conversation.expiresAtMs);
+    if(proof.subject.kind==='client')assertGeneralClientDelegation({binding,scopes:before.scopes,policyRevision:proof.policyRevision,subject:proof.subject,native,conversation});
+    else if(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||!same(proof.subject.entityIds,[binding.actorId])||!same(proof.subject.scopes,before.scopes))refuse('ACCESS_DENIED');
+   }
    if(contract.binding.group==='business-development'){
     const resource=captureBusinessDevelopmentResource(proof.operation,proof.request,proof.subject);
     // Client tasks retain their exact private resource upper bound. Personal tasks use the native
     // tool's existing owned-conversation/prospect authorization before its domain content read.
-    if(resource.clientId!==null){
+    if(resource.clientId!==null&&!general){
      assertNativeVisibleClients(native,[resource.clientId]);
      const started=now();conversation=assertNativeConversationAuthority(await life.run(signal=>readConversation({credential,...resource,signal,deadlineMs:cutoff})),{started,now,...resource});
      if(!same(conversation.principal,native.principal)||conversation.identityRevision!==native.identityRevision)refuse('ACCESS_DENIED');limit(conversation.expiresAtMs);
@@ -131,7 +139,7 @@ export function createNativeReadCredentialOwner(configuration){
   const cutoff=Math.min(v.deadlineMs,before.expiresAtMs);life=createOperationLifetime({now,signal:signal?AbortSignal.any([scopeSignal,signal]):scopeSignal,deadlineMs:cutoff,errorFactory:nativeReadFault});const secret=await life.run(signal=>c.getServiceSecret({binding,operation:v.operation,origin,requestSha256:v.requestSha256,argumentsSha256:v.argumentsSha256,normalizationContext:v.normalizationContext,signal,deadlineMs:cutoff}));if(!token(secret))refuse('UNAVAILABLE');
   const after=await observe({...proof,deadlineMs:cutoff},scopeSignal,signal);life.check();
   // Last check before dispatch: the same bearer must still be current; its expiry (if any) caps the transport.
-  const final=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:v.operation,requestSha256:v.requestSha256,...(after.callKey===undefined?{}:{callKey:after.callKey}),signal,deadlineMs:Math.min(cutoff,after.expiresAtMs)})));
+  const final=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:v.operation,requestSha256:v.requestSha256,...(isGeneralTask(binding,pinned.vector.task.scopes,pinned.vector.task.policyRevision)?{targetClientId:v.subject.kind==='client'?v.subject.entityIds[0]:null}:{}),...(after.callKey===undefined?{}:{callKey:after.callKey}),signal,deadlineMs:Math.min(cutoff,after.expiresAtMs)})));
   if(final.credential!==before.credential)refuse('ACCESS_DENIED');life.check();
   let expiresAtMs=Math.min(cutoff,after.expiresAtMs,final.expiresAtMs??Infinity);if(expiresAtMs<=now())refuse('UNAVAILABLE');
   // Option B: the per-call handle never leaves; the transport gets one tool token bound to its exact method, path and body.

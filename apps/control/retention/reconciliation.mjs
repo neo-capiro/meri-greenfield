@@ -25,7 +25,7 @@ export function createRecoveryReconciler({ledger,journal,storage=null,serving,ke
    const write=async row=>{if(JSON.stringify(current)===JSON.stringify(row))return;await journal.set(key,row,{expected,exclusive:true});};
    if(suppression?.state==='RELEASED'&&latest.state==='RELEASED'){const row={state:'RELEASED',ownerActorId:latest.subject.ownerActorId,releasedAtMs:suppression.atMs,ledgerSequence:suppression.sequence,entrySha256:suppression.entrySha256,authorization:suppression.facts.authorization,purge:null};if(!current||current.state!=='RELEASED'||current.ledgerSequence!==suppression.sequence){await write(row);report.released.push(key);}continue;}
    if(suppression?.state!=='SUPPRESSED')continue;
-   const base={state:'SUPPRESSED',ownerActorId:latest.subject.ownerActorId,suppressedAtMs:suppression.atMs,ledgerSequence:suppression.sequence,entrySha256:suppression.entrySha256,authorization:suppression.facts.authorization,outstandingAccess:suppression.facts.outstandingAccess,cancelled:suppression.facts.cancelled??[],purge:null};
+   const base={state:'SUPPRESSED',...(suppression.reason==='conversation-trash'?{purpose:'conversation-trash'}:{}),ownerActorId:latest.subject.ownerActorId,suppressedAtMs:suppression.atMs,ledgerSequence:suppression.sequence,entrySha256:suppression.entrySha256,authorization:suppression.facts.authorization,outstandingAccess:suppression.facts.outstandingAccess,cancelled:suppression.facts.cancelled??[],purge:null};
    if(!current||current.state!=='SUPPRESSED'||current.ledgerSequence!==suppression.sequence)report.reapplied.push(key);
    const purgeEntries=history.filter(e=>e.sequence>suppression.sequence&&e.state.startsWith('PURGE_'));const last=purgeEntries.at(-1);let row=base;
    if(last){const planSha256=last.facts.planSha256,factsSteps=last.facts.steps??[];
@@ -34,7 +34,16 @@ export function createRecoveryReconciler({ledger,journal,storage=null,serving,ke
      const plan=await replan(latest.subject,base,nowMs);
      if(plan.state==='PLANNED'){if(plan.planSha256!==planSha256){const e=await ledger.append({subject:latest.subject,state:'PURGE_PLANNED',reason:last.state==='PURGE_BLOCKED'?'RECONCILED_BLOCK_CLEARED':'RECONCILED_REPLANNED',facts:{planSha256:plan.planSha256,suppression:plan.suppression,policySha256:plan.policySha256,inventorySha256:plan.inventorySha256,steps:plan.steps.map(stepFacts),rowSteps:plan.rowSteps.map(rowStepFacts)}},{exclusive:true});row={...base,purge:{state:'PLANNED',planSha256:plan.planSha256,ledgerSequence:e.sequence,steps:[],rowSteps:[]}};report.replanned.push(key);}else row={...base,purge:{state:'PLANNED',planSha256,ledgerSequence:last.sequence,steps:[],rowSteps:[]}};}
      else{row={...base,purge:{state:'BLOCKED',planSha256:plan.planSha256??planSha256,ledgerSequence:last.sequence,steps:[],rowSteps:[],blocked:plan.blocks}};report.stillBlocked.push(key);}}
-    else{const verified=[];let revived=false,pending=false;
+    else{
+     // Managed Trash may never certify an older completed/unknown plan without its current canonical Core deadline and binding.
+     if(base.purpose==='conversation-trash'){
+      const currentPlan=await replan(latest.subject,base,nowMs);
+      if(currentPlan.state!=='PLANNED'||currentPlan.planSha256!==planSha256){
+       row={...base,purge:{state:'UNKNOWN',planSha256,ledgerSequence:last.sequence,steps:[],rowSteps:[],blocked:currentPlan.state==='PLANNED'?[{reason:'RETENTION_PLAN_DIGEST_REFUSED',detail:{}}]:currentPlan.blocks}};
+       report.unknown.push(key);report.stillBlocked.push(key);await write(row);continue;
+      }
+     }
+     const verified=[];let revived=false,pending=false;
      for(const f of factsSteps){const target=stepRow(f);if(!['EXECUTED','UNKNOWN','PENDING'].includes(f.state))fail('RETENTION_LEDGER_CORRUPT');
       const readback=storage?await storage.headVersion({key:keyFor(target),versionId:target.versionId}):{outcome:'UNKNOWN',reason:'STORAGE_UNAVAILABLE'};const state=readback.outcome==='ABSENT'?'EXECUTED':readback.outcome==='PRESENT'?'REVIVED':'UNKNOWN';if(state==='REVIVED')revived=true;if(state==='UNKNOWN')pending=true;verified.push({...target,readback,state});}
      // Database row targets recorded as deleted are re-verified too: a restored row is a revival; an unverifiable one stays UNKNOWN.

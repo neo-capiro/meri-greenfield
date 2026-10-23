@@ -14,8 +14,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "121954d1a2b74bfd13eec8db5bd5df8ad34ca30542b420366a63e212a683486f",
-      "bytes": 24057
+      "sha256": "c4aab818637883f9407b709c3606443d78571eacc5fe7b33c189fa6dc9d9f468",
+      "bytes": 24114
     },
     {
       "path": "conversation-application/protocol.mjs",

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "assets.json",
+      "sha256": "b54795381197ecc8ee8505e1d0e62f25d6aca1b746e327529fd88f30d7d1a23e"
+    },
+    {
+      "path": "index.mjs",
+      "sha256": "1bbd2dadbe6c791bdf9eb8561b3153a074e2b7ceb27129954cf92ba3ef2c5c94"
+    },
+    {
+      "path": "runtime-support.mjs",
+      "sha256": "71da8f20a99a0611236322c9aa0b090544a51320980e6c977fabbf4e3f9504f8"
+    },
+    {
+      "path": "generate-browser-catalog.mjs",
+      "sha256": "07018eb4e3401cfc1e5de223edeadf72d437d34dfb51342106410275ab8a2e94"
+    }
+  ],
+  "identities": 14,
+  "versions": 15
+}

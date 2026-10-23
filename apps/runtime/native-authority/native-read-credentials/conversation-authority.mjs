@@ -1,3 +1,4 @@
+import {isConversationClient} from '../../../../packages/contracts/conversation-scope.mjs';
 /** Private native conversation observation over the existing fixed authority HTTP client. */
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertAuthorityIdentityReceipt,assertAuthorityContextReceipt} from '../../../../packages/contracts/action-authority-0.2/validate.mjs';
@@ -15,7 +16,7 @@ export function assertNativeConversationAuthority(raw,{started,now,conversationI
   assertAuthorityIdentityReceipt({principal:v.principal,identityRevision:v.identityRevision,checkedAtMs:v.checkedAtMs,expiresAtMs:v.expiresAtMs});assertCorePrincipal(v.principal);
   const at=now();
   if(!Number.isSafeInteger(started)||started<0||!Number.isSafeInteger(at)||at<started||v.checkedAtMs<started||v.checkedAtMs>at||v.expiresAtMs<=at||!SHA.test(v.identityRevision)||
-   ![conversationId,clientId].every(id=>typeof id==='string'&&UUID.test(id))||v.conversationId!==conversationId||v.selectedClientId!==clientId||typeof v.contextRevision!=='string'||v.contextRevision.length<1||v.contextRevision.length>256)refuse('ACCESS_DENIED');
+   !(typeof conversationId==='string'&&UUID.test(conversationId))||!isConversationClient(clientId)||v.conversationId!==conversationId||v.selectedClientId!==clientId||typeof v.contextRevision!=='string'||v.contextRevision.length<1||v.contextRevision.length>256)refuse('ACCESS_DENIED');
   return v;
  }catch(error){throw nativeReadFault(nativeReadFailureCode(error)??'ACCESS_DENIED');}
 }
@@ -27,7 +28,7 @@ export function createConversationAuthorityReader({available,authorityClient,now
  return async function readConversation(raw){let life;try{
   if(!available)refuse('UNAVAILABLE');
   let call;try{call=own(raw,['credential','conversationId','clientId','deadlineMs'],['signal']);nativeSignal(call.signal);}catch{refuse('INVALID_ARGUMENTS');}
-  if(typeof call.credential!=='string'||!/^\S{1,8192}$/u.test(call.credential)||!['conversationId','clientId'].every(key=>typeof call[key]==='string'&&UUID.test(call[key]))||!Number.isSafeInteger(call.deadlineMs))refuse('INVALID_ARGUMENTS');
+  if(typeof call.credential!=='string'||!/^\S{1,8192}$/u.test(call.credential)||!(typeof call.conversationId==='string'&&UUID.test(call.conversationId))||!isConversationClient(call.clientId)||!Number.isSafeInteger(call.deadlineMs))refuse('INVALID_ARGUMENTS');
   if(call.signal?.aborted)refuse('CANCELLED');
   const began=now();if(!Number.isSafeInteger(began)||began<0)refuse('ACCESS_DENIED');let authorityExpiry=call.deadlineMs,cutoff=Math.min(call.deadlineMs,began+maxRequestMs);
   life=createOperationLifetime({now,deadlineMs:cutoff,signal:call.signal,errorFactory:nativeReadFault});

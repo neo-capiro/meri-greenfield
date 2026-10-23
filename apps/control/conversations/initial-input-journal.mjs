@@ -2,7 +2,7 @@
  * One input per original RUN (0020): the reserved input of a superseded original generation is dead history, never read. */
 import {bounded,hash,same,fail,validateShape} from './boundary.mjs';
 import {assertOriginalInputFacts,sameOriginalInputIdentity,assertOriginalInputAcceptance,assertOriginalInputActive,originalInputReceipt} from './initial-input-facts.mjs';
-export function createOriginalInputJournal({tx,rowRun,now}){
+export function createOriginalInputJournal({tx,rowRun,now,admission=async()=>{}}){
  if(typeof tx!=='function'||typeof rowRun!=='function'||typeof now!=='function')fail('STORE_CONFIGURATION');
  const decode=row=>{
   if(!row||hash(row.allocation)!==row.allocation_sha256)fail('INITIAL_INPUT_CORRUPT');let facts;try{facts=assertOriginalInputFacts(row.allocation);}catch{fail('INITIAL_INPUT_CORRUPT');}const b=facts.binding;
@@ -31,6 +31,7 @@ export function createOriginalInputJournal({tx,rowRun,now}){
   await current(c,b,check);await requestOwner(c,proposed,check);const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
   if(old){pinned=old.facts;check();if(!sameOriginalInputIdentity(old.facts,proposed))fail('INITIAL_INPUT_CONFLICT');consistent(old,existing);return originalInputReceipt(old.facts,old.state,false);}
   if(existing.length)fail('INITIAL_INPUT_ALREADY_EXISTS');
+  await admission(c,b,check);check();
   const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();
   const successors=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();if(conversations.length||successors.length)fail('INITIAL_INPUT_ALREADY_EXISTS');
   const inserted=(await c.query("INSERT INTO meri_conversations.initial_inputs(tenant_id,conversation_id,run_id,request_id,allocation,allocation_sha256,state,accepted_request_sha256) VALUES($1,$2,$3,$4,$5,$6,'RESERVED',NULL) ON CONFLICT DO NOTHING RETURNING *",[b.tenantId,b.conversationId,b.runId,proposed.requestId,proposed,hash(proposed)])).rows;check();

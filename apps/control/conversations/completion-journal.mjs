@@ -3,6 +3,7 @@
 import {bounded,hash,same,fail,validateShape,own,uuid,nextState} from './boundary.mjs';
 import {assertWorkspacePaths} from '../../../packages/contracts/validate.mjs';
 import {assertTypedResult,assertTypedSelection,MAX_OBJECTIVE_SELECTION_BYTES} from '../../../packages/runtime/objective-generation-custody.mjs';
+import {isConversationClient,conversationAuthorityIncludes} from '../../../packages/contracts/conversation-scope.mjs';
 const eventId=(id,n)=>{const h=hash({completionId:id,event:n});return `${h.slice(0,8)}-${h.slice(8,12)}-4${h.slice(13,16)}-8${h.slice(17,20)}-${h.slice(20,32)}`;};
 export function createCompletionJournal({tx,rowRun}){
  const context=r=>hash({window:r.request.window,skill:r.request.skill,scopes:r.projection.scopes});
@@ -14,8 +15,8 @@ export function createCompletionJournal({tx,rowRun}){
    return {typedResult,typedSelection};
   }catch{fail(stored?'STORE_CORRUPT':'COMPLETION_TYPED_REFUSED');}
  }
- async function run(c,b,scopes,selectedClientId){validateShape('RunBinding',b);uuid(selectedClientId);const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);
-  if(!same(r.projection.binding,b))fail('STALE_WRITER');if(!same(r.projection.scopes,scopes)||!scopes.some(s=>s.kind==='client'&&s.resourceId===selectedClientId))fail('SCOPE_REFUSED');return r;}
+ async function run(c,b,scopes,selectedClientId){validateShape('RunBinding',b);if(!isConversationClient(selectedClientId))fail('SCOPE_REFUSED');const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);
+  if(!same(r.projection.binding,b))fail('STALE_WRITER');if(!same(r.projection.scopes,scopes)||!conversationAuthorityIncludes(scopes,b,selectedClientId,r.projection.policyRevision))fail('SCOPE_REFUSED');return r;}
  const decode=(row,r,selectedClientId)=>{if(!row)return null;const p=row.identity;
   if(hash(p)!==row.identity_sha256||row.tenant_id!==p.binding.tenantId||row.conversation_id!==p.binding.conversationId||row.run_id!==p.binding.runId||row.completion_id!==p.completionId||row.checkpoint_id!==p.checkpointId||!same(p.binding,r.projection.binding)||p.selectedClientId!==selectedClientId||!same(p.scopes,r.projection.scopes)||!same(p.versions,r.projection.versions)||!same(p.sourceRequest,r.request)||p.sourceRequestSha256!==r.request_sha256||p.contextSha256!==context(r)||!Number.isSafeInteger(p.captureSequence)||p.captureSequence<1||p.captureSequence>Number(r.last_sequence)||!['CAPTURING','UNKNOWN','PUBLISHED'].includes(row.state))fail('STORE_CORRUPT');
   uuid(p.completionId);uuid(p.checkpointId);uuid(p.verifiedEventId);uuid(p.completedEventId);

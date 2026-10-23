@@ -1,3 +1,4 @@
+import {isConversationClient} from '../../../packages/contracts/conversation-scope.mjs';
 /** Product transcript/event persistence. Borrowed pg-compatible pool; no connection on import. */
 import {assertRun,bounded,hash,same,fail,nextState,terminal,validateShape,uuid,own} from './boundary.mjs';
 import {createLifecycleJournal,HOLD_CHECKPOINT_FAILED} from './lifecycle/journal.mjs';
@@ -11,8 +12,10 @@ import {productFailure} from '../product-access/errors.mjs';
 import {createOriginalInputJournal} from './initial-input-journal.mjs';
 import {assertOriginalInputActive} from './initial-input-facts.mjs';
 import {createMemoryProposalContextJournal} from './memory-proposal-context-journal.mjs';
-export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now,onPublished}){
+import {managementCommand,createConversationAdmissionGuard} from './management.mjs';
+export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,conversationManagement,now=Date.now,onPublished}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
+ const admission=conversationManagement===undefined?async()=>{}:createConversationAdmissionGuard(own(conversationManagement,['readMetadata']));
  async function tx(binding,check,body,{beforeConversation}={}){let c,begun=false,committing=false,reusable=false,failure,result;
   try{check();c=await pool.connect();check();await c.query('BEGIN');begun=true;check();await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");check();
    if(beforeConversation){
@@ -37,6 +40,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    else{await c.query('INSERT INTO meri_conversations.conversations(tenant_id,conversation_id,owner_actor_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5)',[b.tenantId,b.conversationId,b.actorId,conversation,hash(conversation)]);check();}
    const existing=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND (request_id=$3 OR run_id=$4) FOR UPDATE',[b.tenantId,b.conversationId,request.requestId,b.runId])).rows;check();
    if(existing.length){const r=rowRun(existing[0]);if(existing.length!==1||r.request_id!==request.requestId||!same({...r.request,window:request.window},request)||!same(r.projection.binding,b)||!same(r.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');if(allocation&&(allocation.state!=='ACCEPTED'||!same(r.request,request)))fail('INITIAL_INPUT_CORRUPT');return {run:r.projection,request:r.request,lastSequence:Number(r.last_sequence),replayed:true};}
+   await admission(c,b,check);check();
    if(allocation&&allocation.state!=='RESERVED')fail('INITIAL_INPUT_CORRUPT');
    const prior=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();if(prior.length)fail('NEXT_RUN_NOT_RESERVED');
    validateShape('UIEvent',event);if(!same(event.binding,b)||!same(event.scopes,run.scopes)||event.sequence!==1||event.type!=='run.status'||event.data.state!=='queued')fail('EVENT_BINDING_REFUSED');
@@ -74,8 +78,30 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  }
  const read=(binding,cursor,check)=>readState(binding,cursor,check),readOptional=(binding,cursor,check)=>readState(binding,cursor,check,true);
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
- const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,now,onPublished,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
- const preparation=createNativePreparationJournals({tx,rowRun});
- const initialInputs=createOriginalInputJournal({tx,rowRun,now}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
- return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
+ const lifecycle=createLifecycleJournal({tx,rowRun,admission,transitionAuthority,now,onPublished,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
+ const preparation=createNativePreparationJournals({tx,rowRun,admission});
+ const initialInputs=createOriginalInputJournal({tx,rowRun,now,admission}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(!isConversationClient(i.selectedClientId))fail('CONVERSATION_SCOPE_REFUSED');return accept(i,check,i.selectedClientId);}});
+ const management=Object.freeze({available:conversationManagement!==undefined,async withTerminalConversation(raw,work){
+  if(conversationManagement===undefined||typeof work!=='function')fail('CONVERSATION_MANAGEMENT_UNAVAILABLE');
+  const command=managementCommand(raw),key={...command.principal,conversationId:command.conversationId};let callbackError;
+  try{return await tx(key,()=>{},async c=>{
+   // Keep updates/deletion excluded while permitting retention's FK KEY SHARE on its separate connection.
+   const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR NO KEY UPDATE',[key.tenantId,key.conversationId])).rows;
+   if(conversations.length>1)fail('STORE_CORRUPT');const old=conversations[0];
+   if(old&&(hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==key.actorId||old.projection.owner.actorId!==key.actorId))fail('CONVERSATION_SCOPE_REFUSED');
+   const runs=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,key.conversationId])).rows.map(rowRun);
+   if(runs.some(r=>r.projection.binding.actorId!==key.actorId)||!old&&runs.length)fail('STORE_CORRUPT');
+   // The canonical retention projection requires a real Meri subject. Refuse before any ledger effect;
+   // a Core bootstrap alone supplies no transcript scope/retention row and must never be fabricated here.
+   if(!old&&command.operation==='trash')fail('CONVERSATION_MANAGEMENT_UNAVAILABLE');
+   if(command.operation!=='rename'){
+    // writerFence belongs to a run; successive runs can both start at one. A historical closed range is not current work.
+    if(runs.some(r=>r.sequence_end==null&&!terminal(r.projection.state)))fail('CONVERSATION_RUN_ACTIVE');
+    const pending=(await c.query("SELECT 1 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND state='RESERVED' LIMIT 1",[key.tenantId,key.conversationId])).rows;
+    if(pending.length)fail('CONVERSATION_RUN_ACTIVE');
+   }
+   try{return await work();}catch(error){callbackError=error;throw error;}
+  });}catch(error){if(callbackError!==undefined)throw callbackError;throw error;}
+ }});
+ return Object.freeze({management,accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun,admission}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
 }

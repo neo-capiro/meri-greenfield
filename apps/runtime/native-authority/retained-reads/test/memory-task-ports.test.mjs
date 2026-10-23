@@ -103,3 +103,12 @@ test('only canonical memory families and a strict Core origin are accepted',()=>
  for(const coreOrigin of ['http://core.synthetic.invalid','https://core.synthetic.invalid/path'])
   assert.throws(()=>createMemoryTaskPorts({familyIds:['client-knowledge-memory'],coreOrigin,fetchImpl,now:()=>NOW}));
 });
+
+
+test('exact private General task can construct only personal/firm recall with mandatory signed eligibility helper',()=>{
+ const t=task(),general={...t,scopes:[{...t.scopes[0],kind:'private-user',resourceId:t.binding.actorId}]};
+ const create=createMemoryTaskPorts({familyIds:['client-knowledge-memory'],coreOrigin:origin,fetchImpl,now:()=>NOW});
+ assert.equal(create({task:general,getSignedSourceCredentials:signed,getMemoryEligibilityCredentials:eligibility}).families['client-knowledge-memory'].getEligibilityCredentials,eligibility);
+ for(const scopes of [[{...general.scopes[0],resourceId:'foreign'}],[{...general.scopes[0],tenantId:'foreign'}]])assert.throws(()=>create({task:{...general,scopes},getSignedSourceCredentials:signed,getMemoryEligibilityCredentials:eligibility}));
+ const proposals=createMemoryTaskPorts({familyIds:['memory-proposals'],coreOrigin:origin,fetchImpl,now:()=>NOW,memoryContextPortsForTask:contextFactory});assert.throws(()=>proposals({task:general,getSignedSourceCredentials:signed}));
+});

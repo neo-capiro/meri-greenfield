@@ -1,3 +1,4 @@
+import {originalRuntimeSupports} from '../../../../packages/skills/runtime-support.mjs';
 /** Original selection over the existing opaque session and durable allocation owners. */
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
@@ -26,7 +27,7 @@ export function createOriginalSkillAdmissionOwner(configuration){
  async function check({request,scopes,selectedClientId,life,expectedInput}){
   request=data(request);scopes=data(scopes);scopes.forEach(s=>validateShape('Scope',s));
   const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);
-  if(!same(request.skill,selected.pin)||!['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(selected.pin.skillId)||!scopes.length||scopes.some(s=>s.tenantId!==binding.tenantId)||new Set(scopes.map(s=>s.policyRevision)).size!==1||typeof selectedClientId!=='string'||!selectedClientId)fail();
+  if(!same(request.skill,selected.pin)||!originalRuntimeSupports(selected.pin)||!scopes.length||scopes.some(s=>s.tenantId!==binding.tenantId)||new Set(scopes.map(s=>s.policyRevision)).size!==1||typeof selectedClientId!=='string'||!selectedClientId)fail();
   const beforeContext=await freshContext(life,{scopes,selectedClientId});
   const readSelection=async()=>selectionShape(await life.run(signal=>c.readSelection({binding,request,scopes,selectedClientId,signal})),request,scopes,selectedClientId);
   const selection=await readSelection(),input={binding,skill:selected.pin,requestSha256:canonicalSha256(request),selectionSha256:canonicalSha256(selection)};

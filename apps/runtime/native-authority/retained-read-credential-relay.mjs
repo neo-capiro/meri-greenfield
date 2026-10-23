@@ -8,6 +8,8 @@ import {canonicalSha256,validateShape} from '../../../packages/contracts/validat
 import {assertSubject,resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {nativeReadFault} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {signedRetainedSourceOperation} from '../../gateway/sources/retained-reads/signed-source-operations.mjs';
+import {conversationClientFromScopes,conversationScopeMatches} from '../../../packages/contracts/conversation-scope.mjs';
+import {generalClientSelection} from './general-read-delegation.mjs';
 
 const SHA=/^[a-f0-9]{64}$/u,CALL_KEY=/^[A-Za-z0-9_-]{1,128}$/u,TOKEN=/^[\x21-\x7e]{1,8192}$/u;
 const refuse=code=>{throw nativeReadFault(code);};
@@ -26,12 +28,18 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
    nativeCredentials.toolCredential!==undefined&&typeof nativeCredentials.toolCredential!=='function')refuse('CONFIGURATION');
  const binding=data(task.binding),scopes=data(task.scopes),grant=data(task.grant),original=data(task.original);
  validateShape('RunBinding',binding);
- const selected=Array.isArray(scopes)&&scopes.length===1&&scopes[0]?.kind==='client'?scopes[0]:null;
+ const clientId=conversationClientFromScopes(scopes,binding),selected=clientId===undefined?null:scopes[0],general=clientId===null;
  if(selected)try{validateShape('Scope',selected);}catch{refuse('UNAVAILABLE');}
  if(!selected||selected.tenantId!==binding.tenantId||!same(original.binding,binding)||
    grant.qualificationBinding?.policyRevision!==selected.policyRevision||
    !Number.isSafeInteger(original.expiresAtMs)||original.expiresAtMs<=now())refuse('UNAVAILABLE');
- const policyRevision=selected.policyRevision,clientId=selected.resourceId;
+ const policyRevision=selected.policyRevision;
+ const targetFor=(subject,operation)=>{
+  if(!general){if(!same(subject.scopes,scopes)||subject.policyRevision!==policyRevision||subject.kind==='personal'||subject.kind==='client'&&subject.entityIds[0]!==clientId)refuse('ACCESS_DENIED');return clientId;}
+  if(subject.kind==='client')return generalClientSelection({binding,scopes,policyRevision,subject});
+  if(operation.id!=='search_memory'||operation.version!=='0.2.0'||subject.kind!=='personal'||subject.entityType!=='user'||subject.entityIds?.length!==1||subject.entityIds[0]!==binding.actorId||subject.policyRevision!==policyRevision||!conversationScopeMatches(subject.scopes,binding,null,policyRevision))refuse('ACCESS_DENIED');
+  return null;
+ };
  const allocated=new Set(task.allocation.manifest.allowedOperations.map(op=>`${op.id}@${op.version}`));
  const approved=new Set(task.approvedReads.operations.map(op=>`${op.id}@${op.version}`));
  const runSignal=task.signal===undefined?nativeCredentials.stopSignal:
@@ -56,19 +64,19 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   const subject=data(p.subject);try{assertSubject(subject,binding);}catch{refuse('ACCESS_DENIED');}
   // The selected client is a current task fact. An unrelated or personal scope
   // cannot become a client grant by echoing it in the correlation header.
-  if(!same(subject.scopes,scopes)||subject.policyRevision!==policyRevision||subject.kind==='personal'||
-    subject.kind==='client'&&subject.entityIds[0]!==clientId)refuse('ACCESS_DENIED');
+  const targetClientId=targetFor(subject,operation);
+  if(general&&['search_memory','memory.list_own_proposals'].includes(operation.id)&&targetClientId!==null)refuse('ACCESS_DENIED');
   const input=data(p.input),metadata=data(p.metadata),sources=data(p.sourceIds);
   const required=[...new Set(resolveOperationContract(operation).descriptor.sourceRequirements.map(source=>source.sourceId))];
   if(!input||typeof input!=='object'||Array.isArray(input)||!Array.isArray(sources)||
     !same([...sources].sort(),required.sort())||
-    Object.hasOwn(input,'clientId')&&input.clientId!==clientId||
+    Object.hasOwn(input,'clientId')&&input.clientId!==targetClientId||
     operation.id==='memory.list_own_proposals'&&metadata!==null||
     operation.id==='search_memory'&&(!same(metadata,{sourceConnected:false,authoritative:false,
       currentPolicyQualified:false,cursorAuthenticated:false,absenceEvidence:false})||
       !same(p.normalizationContext,{tenantId:binding.tenantId,userId:binding.actorId}))||
     operation.id==='actions.query'&&
-      (input.mode!=='client_scoped'||input.selection?.clientId!==clientId||metadata!==null)||
+      (input.mode!=='client_scoped'||input.selection?.clientId!==targetClientId||metadata!==null)||
     canonicalSha256(input)!==p.argumentsSha256||
     canonicalSha256({input,metadata})!==p.requestSha256)refuse('ACCESS_DENIED');
   const target=data(own(p.target,['method','path','bodySha256']));
@@ -84,7 +92,7 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   const signal=p.signal===undefined?runSignal:runSignal===undefined?p.signal:AbortSignal.any([p.signal,runSignal]);
   let serviceSecret;try{serviceSecret=await getServiceSecret();}catch{refuse('UNAVAILABLE');}
   active(p.deadlineMs,signal);if(typeof serviceSecret!=='string'||!TOKEN.test(serviceSecret))refuse('UNAVAILABLE');
-  const handle=await nativeCredentials.getNativeCredential({binding,callKey:p.invocationId,deadlineMs:p.deadlineMs,signal});
+  const handle=await nativeCredentials.getNativeCredential({binding,callKey:p.invocationId,...(general?{targetClientId}:{}),deadlineMs:p.deadlineMs,signal});
   active(p.deadlineMs,signal);
   let issued;try{issued=own(handle,['credential','expiresAtMs']);}catch{refuse('UNAVAILABLE');}
   if(!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now())refuse('UNAVAILABLE');
@@ -123,7 +131,8 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   const subject=data(p.subject),input=data(p.input),metadata=data(p.metadata),sources=data(p.sourceIds);
   try{assertSubject(subject,binding);}catch{refuse('ACCESS_DENIED');}
   const required=[...new Set(resolveOperationContract(operation).descriptor.sourceRequirements.map(source=>source.sourceId))];
-  if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==clientId||
+  const targetClientId=targetFor(subject,operation);
+  if((general?targetClientId!==null:(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==clientId))||
     subject.policyRevision!==policyRevision||!same(subject.scopes,scopes)||
     input?.clientId!==clientId||
     !same(p.normalizationContext,{tenantId:binding.tenantId,userId:binding.actorId})||
@@ -150,7 +159,7 @@ export function createRetainedReadCredentialRelay({task,nativeCredentials,getSer
   const signal=p.signal===undefined?runSignal:runSignal===undefined?p.signal:AbortSignal.any([p.signal,runSignal]);
   let serviceSecret;try{serviceSecret=await getServiceSecret();}catch{refuse('UNAVAILABLE');}
   active(p.deadlineMs,signal);if(typeof serviceSecret!=='string'||!TOKEN.test(serviceSecret))refuse('UNAVAILABLE');
-  const handle=await nativeCredentials.getNativeCredential({binding,callKey:p.invocationId,deadlineMs:p.deadlineMs,signal});
+  const handle=await nativeCredentials.getNativeCredential({binding,callKey:p.invocationId,...(general?{targetClientId}:{}),deadlineMs:p.deadlineMs,signal});
   active(p.deadlineMs,signal);
   let issued;try{issued=own(handle,['credential','expiresAtMs']);}catch{refuse('UNAVAILABLE');}
   if(!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now())refuse('UNAVAILABLE');

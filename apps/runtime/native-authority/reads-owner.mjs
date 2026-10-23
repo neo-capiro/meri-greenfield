@@ -1,3 +1,5 @@
+import {supportsGeneralRead} from '../../worker/conversation/reads/general-support.mjs';
+import {isGeneralTask} from './general-read-delegation.mjs';
 /** Trusted control-side composition over one existing task verifier and canonical gateway. */
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -23,8 +25,8 @@ export function createNativeReadsOwner(configuration){
   async function task(){const began=now(),a=assertNativeReadTaskAssertion(await life.run(signal=>verify({capability,binding,operation:op,inputSha256,signal,deadlineMs})),{binding,operation:op,inputSha256,started:began,now});
    if(a.allocationSha256!==c.allocationSha256||a.policyRevision!==c.policyRevision||!same(a.scopes,scopes)||initial&&!same(stableTask(a),stableTask(initial)))deny('ACCESS_DENIED');initial??=a;authorityExpiry=Math.min(authorityExpiry,a.expiresAtMs);life.limitDeadline(authorityExpiry);return a;}
   async function snapshot(){const s=assertNativeReadSnapshot(await life.run(signal=>availability({signal})),{binding,policyRevision:c.policyRevision,now});if(s.installation.baseCatalogSha256!==hash(catalog))deny('UNAVAILABLE');life.limitDeadline(Math.min(s.installation.expiresAtMs,s.discovery.expiresAtMs));return s;}
-  function eligible(s){const installed=new Set(s.installation.operations.map(hash)),discovered=new Set(s.discovery.operations.map(hash)),client=scopes.some(s=>s.kind==='client');return config.operations.filter(op=>{
-   const {descriptor,binding:contract}=resolveOperationContract(op),family=READ_FAMILIES[contract?.group];return family&&(!family.operationIds||family.operationIds.includes(op.id))&&descriptor.sideEffect==='none'&&descriptor.approvalBoundary==='none'&&!deferred.has(op.id)&&!deferred.has(op.id.replaceAll('.','_'))&&installed.has(hash(op))&&discovered.has(hash(op))&&(client||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(op.id));});}
+  function eligible(s){const installed=new Set(s.installation.operations.map(hash)),discovered=new Set(s.discovery.operations.map(hash)),client=scopes.some(s=>s.kind==='client'),general=isGeneralTask(binding,scopes,c.policyRevision);return config.operations.filter(op=>{
+   const {descriptor,binding:contract}=resolveOperationContract(op),family=READ_FAMILIES[contract?.group];return family&&(!family.operationIds||family.operationIds.includes(op.id))&&descriptor.sideEffect==='none'&&descriptor.approvalBoundary==='none'&&!deferred.has(op.id)&&!deferred.has(op.id.replaceAll('.','_'))&&installed.has(hash(op))&&discovered.has(hash(op))&&(!general||supportsGeneralRead(op))&&(client||general||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(op.id));});}
   await task();const before=await snapshot();let result;
   if(operation==='execute'){
    if(request.installationId!==before.installation.installationId||request.executionCatalogSha256!==before.installation.executionCatalogSha256||!eligible(before).some(op=>same(op,request.operation)))deny('UNAVAILABLE');

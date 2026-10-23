@@ -1,3 +1,4 @@
+import {supportsGeneralPublicRead} from '../../../worker/conversation/reads/general-support.mjs';
 /** RC1 option B (D016-A 4): run-bound Core read delegation, Meri side. Bounds, closed wire shapes and per-slot token ceilings
  * that Meri enforces on its own, independently of Core (FABLE-RUN-BOUND-READ-DELEGATION-20261018.md). Nothing here mints,
  * stores or logs a credential: a delegation id is a reference, a read token is a single-use value held only for one request.
@@ -85,30 +86,34 @@ export function assertOccurrence(raw,{binding,clientId,operationsSha256,policyRe
 
 /** Create request. Attended carries no consent; unattended carries the consent and occurrence it runs under. */
 export function delegationCreateRequest({mode,binding,clientId,policyRevision,allocationSha256,operationsSha256,supersedes=null,occurrence}){
- validateShape('RunBinding',binding);if(!UUID.test(clientId)||!SHA.test(policyRevision)||!SHA.test(allocationSha256)||!SHA.test(operationsSha256)||supersedes!==null&&!UUID.test(supersedes))refuse('CONFIGURATION');
- const base={schemaVersion:1,mode,binding:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,attemptId:binding.attemptId,writerFence:binding.writerFence},
+ validateShape('RunBinding',binding);if(clientId!==null&&!UUID.test(clientId)||clientId===null&&mode!=='attended'||!SHA.test(policyRevision)||!SHA.test(allocationSha256)||!SHA.test(operationsSha256)||supersedes!==null&&!UUID.test(supersedes))refuse('CONFIGURATION');
+ const base={schemaVersion:clientId===null?2:1,...(clientId===null?{scopeKind:'general'}:{}),mode,binding:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,attemptId:binding.attemptId,writerFence:binding.writerFence},
   clientId,policyRevision,allocationSha256,operationsDigest:operationsSha256,supersedes};
  if(mode==='attended')return data(base);
  if(mode!=='unattended'||supersedes!==null)refuse('CONFIGURATION');
  return data({...base,consentId:occurrence.consentId,scheduleId:occurrence.scheduleId,occurrenceKey:occurrence.occurrenceKey});
 }
 /** Create receipt: a reference, not a credential. Its expiry must stay inside Meri's own bound. */
-export function assertDelegationReceipt(raw,{bound,started,now}){
+export function assertDelegationReceipt(raw,{bound,started,now,schemaVersion=1}){
  const v=data(own(raw,['schemaVersion','delegationId','expiresAtMs','checkedAtMs'])),at=now();
- if(v.schemaVersion!==1||!UUID.test(v.delegationId)||!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started-READ_DELEGATION_LIMITS.clockSkewMs||v.checkedAtMs>at+READ_DELEGATION_LIMITS.clockSkewMs||
+ if(v.schemaVersion!==schemaVersion||!UUID.test(v.delegationId)||!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started-READ_DELEGATION_LIMITS.clockSkewMs||v.checkedAtMs>at+READ_DELEGATION_LIMITS.clockSkewMs||
   !Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at||v.expiresAtMs>bound+READ_DELEGATION_LIMITS.clockSkewMs)refuse('ACCESS_DENIED');
  return Object.freeze({...v,expiresAtMs:Math.min(v.expiresAtMs,bound)});
 }
-export function tokenRequest({kind,callKey,method='POST',path,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,
+export function tokenRequest({schemaVersion=1,targetClientId,kind,callKey,method='POST',path,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,
  pageBodySha256=null,pageRequestSha256=null,resultSha256=null,recordsSha256=null,pageProof=null,retryOf=null}){
  if(!READ_TOKEN_KINDS.includes(kind)||method!=='POST'||typeof path!=='string'||!path.startsWith('/api/clio/')||!SHA.test(bodySha256)||retryOf!==null&&!SHA.test(retryOf))refuse('INVALID_ARGUMENTS');
  assertCallKey(callKey);
+ if(schemaVersion!==1&&schemaVersion!==2||schemaVersion===1&&targetClientId!==undefined||schemaVersion===2&&targetClientId!==null&&!UUID.test(targetClientId))refuse('INVALID_ARGUMENTS');
+ if(schemaVersion===2&&targetClientId===null&&kind!=='current'&&
+   !(kind==='tool'&&(operation?.id==='search_memory'&&operation.version==='0.2.0'||supportsGeneralPublicRead(operation)))&&kind!=='memory_eligibility')refuse('ACCESS_DENIED');
+ const version={schemaVersion,...(schemaVersion===2?{targetClientId}:{})};
  if(kind==='memory_eligibility'){
   assertReadOnlyOperation(operation);
   if(operation.id!=='search_memory'||operation.version!=='0.2.0'||path!=='/api/clio/tools/search_memory_eligibility'||
    ![argumentsSha256,pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,correlationSha256].every(v=>typeof v==='string'&&SHA.test(v))||
    typeof pageProof!=='string'||!TOKEN.test(pageProof)||toolRequestSha256!==null||referenceSha256!==null||retryOf!==null)refuse('INVALID_ARGUMENTS');
-  return data({schemaVersion:1,kind,callKey,method,path,bodySha256,operation:{id:operation.id,version:operation.version},
+  return data({...version,kind,callKey,method,path,bodySha256,operation:{id:operation.id,version:operation.version},
    argumentsSha256,pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,correlationSha256,pageProof,retryOf:null});
  }
  if([pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,pageProof].some(v=>v!==null)||
@@ -123,25 +128,28 @@ export function tokenRequest({kind,callKey,method='POST',path,bodySha256,operati
  else if(kind==='mode'){assertReadOnlyOperation(operation);if(!MODE_READ_OPERATIONS.includes(operation.id)||path!==READ_DELEGATION_ROUTES.mode||!SHA.test(toolRequestSha256)||referenceSha256!==null)refuse('INVALID_ARGUMENTS');}
  else if(kind==='reference'){if(operation!==null||path!==READ_DELEGATION_ROUTES.reference||!SHA.test(referenceSha256)||toolRequestSha256!==null)refuse('INVALID_ARGUMENTS');}
  else if(operation!==null||toolRequestSha256!==null||referenceSha256!==null||!/\/read-delegations\/[a-f0-9-]{36}\/current$/u.test(path))refuse('INVALID_ARGUMENTS');
- return data({schemaVersion:1,kind,callKey,method,path,bodySha256,operation:operation===null?null:{id:operation.id,version:operation.version},argumentsSha256,toolRequestSha256,referenceSha256,
+ return data({...version,kind,callKey,method,path,bodySha256,operation:operation===null?null:{id:operation.id,version:operation.version},argumentsSha256,toolRequestSha256,referenceSha256,
   ...(correlationSha256===undefined?{}:{correlationSha256}),retryOf});
 }
 /** Token receipt: at most 60 s, and never past the delegation's hard expiry. */
-export function assertTokenReceipt(raw,{hardExpiryMs,started,now}){
+export function assertTokenReceipt(raw,{hardExpiryMs,started,now,schemaVersion=1}){
  const v=data(own(raw,['schemaVersion','token','expiresAtMs'])),at=now();
- if(v.schemaVersion!==1||!isReadToken(v.token)||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at||
+ if(v.schemaVersion!==schemaVersion||!isReadToken(v.token)||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at||
   v.expiresAtMs>started+READ_DELEGATION_LIMITS.tokenMaxMs+READ_DELEGATION_LIMITS.clockSkewMs)refuse('ACCESS_DENIED');
  return Object.freeze({token:v.token,expiresAtMs:Math.min(v.expiresAtMs,hardExpiryMs,started+READ_DELEGATION_LIMITS.tokenMaxMs)});
 }
 /** Delegation-backed current-authority receipt (§3). `clientIds` must be exactly the delegated client: never a roster. */
-export function assertCurrentReceipt(raw,{delegationId,binding,clientId,conversation,started,now}){
- const v=data(own(raw,['schemaVersion','delegationId','principal','identityRevision','actorRole','membershipRevision','clientIds','checkedAtMs','expiresAtMs'],['conversation'])),at=now();
+export function assertCurrentReceipt(raw,{delegationId,binding,clientId,targetClientId,conversation,started,now}){
+ const general=clientId===null;
+ const v=data(own(raw,['schemaVersion','delegationId','principal','identityRevision','actorRole','membershipRevision','clientIds','checkedAtMs','expiresAtMs',...(general?['scopeKind','targetClientId']:[])],['conversation'])),at=now();
  assertCorePrincipal(v.principal);
- if(v.schemaVersion!==1||v.delegationId!==delegationId||v.principal.tenantId!==binding.tenantId||v.principal.actorId!==binding.actorId||!SHA.test(v.identityRevision)||!SHA.test(v.membershipRevision)||!ROLES.has(v.actorRole)||
-  !Array.isArray(v.clientIds)||v.clientIds.length!==1||v.clientIds[0]!==clientId||!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)refuse('ACCESS_DENIED');
+ if(v.schemaVersion!==(general?2:1)||v.delegationId!==delegationId||v.principal.tenantId!==binding.tenantId||v.principal.actorId!==binding.actorId||!SHA.test(v.identityRevision)||!SHA.test(v.membershipRevision)||!ROLES.has(v.actorRole)||
+  !Array.isArray(v.clientIds)||v.clientIds.length>10000||v.clientIds.some(id=>typeof id!=='string'||!UUID.test(id))||new Set(v.clientIds).size!==v.clientIds.length||
+  (general?(v.scopeKind!=='general'||v.targetClientId!==targetClientId||targetClientId!==null&&!v.clientIds.includes(targetClientId)):(v.clientIds.length!==1||v.clientIds[0]!==clientId))||
+  !Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)refuse('ACCESS_DENIED');
  if(conversation!==Object.hasOwn(v,'conversation'))refuse('ACCESS_DENIED');
- if(conversation){const c=data(own(v.conversation,['conversationId','selectedClientId','contextRevision']));
-  if(c.conversationId!==binding.conversationId||c.selectedClientId!==clientId||typeof c.contextRevision!=='string'||!c.contextRevision.length||c.contextRevision.length>256)refuse('ACCESS_DENIED');}
+ if(conversation){const c=data(own(v.conversation,['conversationId','selectedClientId','contextRevision',...(general?['scopeKind']:[])]));
+  if(c.conversationId!==binding.conversationId||c.selectedClientId!==clientId||general&&c.scopeKind!=='general'||typeof c.contextRevision!=='string'||!c.contextRevision.length||c.contextRevision.length>256)refuse('ACCESS_DENIED');}
  return v;
 }
 export function consentCreateRequest({scheduleId,clientId,operationsSha256,policyRevision,scheduleProjectionSha256,requestedExpiresAtMs,now}){

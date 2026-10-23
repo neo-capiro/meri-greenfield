@@ -1,3 +1,4 @@
+import {isConversationClient,conversationAuthorityIncludes} from '../../../packages/contracts/conversation-scope.mjs';
 /** Original-input identity facts. Validation supplies no authority and never infers freshness from an absent run or a grant. */
 import {bounded,own,hash,same,fail,uuid,validateShape} from './boundary.mjs';
 import {receiveConversationRequest} from '../../../packages/contracts/dist/conversation-application.mjs';
@@ -6,10 +7,10 @@ const identityKeys=['binding','scopes','versions','selectedClientId','requestId'
 const integer=v=>Number.isSafeInteger(v)&&v>=0;
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
 export function assertOriginalInputFacts(raw){
- const f=bounded(raw);own(f,[...identityKeys,'allocatedAtMs','expiresAtMs']);validateShape('RunBinding',f.binding);validateShape('RuntimeVersions',f.versions);uuid(f.requestId);uuid(f.selectedClientId);
+ const f=bounded(raw);own(f,[...identityKeys,'allocatedAtMs','expiresAtMs']);validateShape('RunBinding',f.binding);validateShape('RuntimeVersions',f.versions);uuid(f.requestId);if(!isConversationClient(f.selectedClientId))fail('INITIAL_INPUT_REFUSED');
  if(f.binding.writerFence!==1||!Array.isArray(f.scopes)||f.scopes.length<1||f.scopes.length>100||!integer(f.allocatedAtMs)||!integer(f.expiresAtMs)||f.expiresAtMs<=f.allocatedAtMs||!digest(f.inputSha256)||!digest(f.requestSha256))fail('INITIAL_INPUT_REFUSED');
  for(const scope of f.scopes){validateShape('Scope',scope);if(scope.tenantId!==f.binding.tenantId||scope.policyRevision!==f.scopes[0].policyRevision)fail('INITIAL_INPUT_REFUSED');}
- if(new Set(f.scopes.map(hash)).size!==f.scopes.length||!f.scopes.some(s=>s.kind==='client'&&s.resourceId===f.selectedClientId))fail('INITIAL_INPUT_REFUSED');return f;
+ if(new Set(f.scopes.map(hash)).size!==f.scopes.length||!conversationAuthorityIncludes(f.scopes,f.binding,f.selectedClientId))fail('INITIAL_INPUT_REFUSED');return f;
 }
 /** Trusted service prepares the canonical StoredRequest once using allocatedAtMs; public validators own its input correlation. */
 export async function prepareOriginalInputFacts({binding,scopes,versions,selectedClientId,input,request,allocatedAtMs,expiresAtMs}){

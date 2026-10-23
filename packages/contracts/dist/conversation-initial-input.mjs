@@ -150,7 +150,7 @@ async function digest(bytes2) {
 // initial-input-generated:./generated-validator.mjs
 var validateAllocatedResponse = validate27;
 var schema33 = { "type": "object", "properties": { "allocation": { "$ref": "#/$defs/ConversationInitialInputAllocation" }, "state": { "enum": ["RESERVED", "ACCEPTED"] }, "created": { "type": "boolean" } }, "required": ["allocation", "state", "created"], "additionalProperties": false };
-var schema34 = { "type": "object", "properties": { "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "maxItems": 100, "uniqueItems": true }, "versions": { "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc" }, "selectedClientId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "allocatedAtMs": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "expiresAtMs": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 } }, "required": ["binding", "scopes", "versions", "selectedClientId", "requestId", "inputSha256", "requestSha256", "allocatedAtMs", "expiresAtMs"], "additionalProperties": false };
+var schema34 = { "type": "object", "properties": { "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "maxItems": 100, "uniqueItems": true }, "versions": { "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc" }, "selectedClientId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "allocatedAtMs": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "expiresAtMs": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 } }, "required": ["binding", "scopes", "versions", "selectedClientId", "requestId", "inputSha256", "requestSha256", "allocatedAtMs", "expiresAtMs"], "additionalProperties": false };
 var schema36 = { "type": "object", "properties": { "tenantId": { "type": "string", "minLength": 1, "maxLength": 128 }, "kind": { "type": "string", "enum": ["tenant", "client", "mailbox", "memory", "document", "private-user", "public"] }, "resourceId": { "type": "string", "minLength": 1, "maxLength": 256 }, "policyRevision": { "type": "string", "minLength": 1, "maxLength": 128 } }, "required": ["tenantId", "kind", "resourceId", "policyRevision"], "additionalProperties": false };
 var func1 = Object.prototype.hasOwnProperty;
 var func2 = require_ucs2length().default;
@@ -686,15 +686,62 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                 if (data.selectedClientId !== void 0) {
                   let data21 = data.selectedClientId;
                   const _errs48 = errors2;
-                  if (errors2 === _errs48) {
+                  const _errs49 = errors2;
+                  let valid9 = false;
+                  const _errs50 = errors2;
+                  if (errors2 === _errs50) {
                     if (typeof data21 === "string") {
                       if (!pattern8.test(data21)) {
-                        validate23.errors = [{ instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
-                        return false;
+                        const err0 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf/0/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                        if (vErrors === null) {
+                          vErrors = [err0];
+                        } else {
+                          vErrors.push(err0);
+                        }
+                        errors2++;
                       }
                     } else {
-                      validate23.errors = [{ instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                      return false;
+                      const err1 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf/0/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                      if (vErrors === null) {
+                        vErrors = [err1];
+                      } else {
+                        vErrors.push(err1);
+                      }
+                      errors2++;
+                    }
+                  }
+                  var _valid0 = _errs50 === errors2;
+                  valid9 = valid9 || _valid0;
+                  const _errs52 = errors2;
+                  if (data21 !== null) {
+                    const err2 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf/1/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                    if (vErrors === null) {
+                      vErrors = [err2];
+                    } else {
+                      vErrors.push(err2);
+                    }
+                    errors2++;
+                  }
+                  var _valid0 = _errs52 === errors2;
+                  valid9 = valid9 || _valid0;
+                  if (!valid9) {
+                    const err3 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
+                    if (vErrors === null) {
+                      vErrors = [err3];
+                    } else {
+                      vErrors.push(err3);
+                    }
+                    errors2++;
+                    validate23.errors = vErrors;
+                    return false;
+                  } else {
+                    errors2 = _errs49;
+                    if (vErrors !== null) {
+                      if (_errs49) {
+                        vErrors.length = _errs49;
+                      } else {
+                        vErrors = null;
+                      }
                     }
                   }
                   var valid0 = _errs48 === errors2;
@@ -704,8 +751,8 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                 if (valid0) {
                   if (data.requestId !== void 0) {
                     let data22 = data.requestId;
-                    const _errs50 = errors2;
-                    if (errors2 === _errs50) {
+                    const _errs54 = errors2;
+                    if (errors2 === _errs54) {
                       if (typeof data22 === "string") {
                         if (!pattern8.test(data22)) {
                           validate23.errors = [{ instancePath: instancePath + "/requestId", schemaPath: "#/properties/requestId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
@@ -716,15 +763,15 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                         return false;
                       }
                     }
-                    var valid0 = _errs50 === errors2;
+                    var valid0 = _errs54 === errors2;
                   } else {
                     var valid0 = true;
                   }
                   if (valid0) {
                     if (data.inputSha256 !== void 0) {
                       let data23 = data.inputSha256;
-                      const _errs52 = errors2;
-                      if (errors2 === _errs52) {
+                      const _errs56 = errors2;
+                      if (errors2 === _errs56) {
                         if (typeof data23 === "string") {
                           if (!pattern7.test(data23)) {
                             validate23.errors = [{ instancePath: instancePath + "/inputSha256", schemaPath: "#/properties/inputSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
@@ -735,15 +782,15 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                           return false;
                         }
                       }
-                      var valid0 = _errs52 === errors2;
+                      var valid0 = _errs56 === errors2;
                     } else {
                       var valid0 = true;
                     }
                     if (valid0) {
                       if (data.requestSha256 !== void 0) {
                         let data24 = data.requestSha256;
-                        const _errs54 = errors2;
-                        if (errors2 === _errs54) {
+                        const _errs58 = errors2;
+                        if (errors2 === _errs58) {
                           if (typeof data24 === "string") {
                             if (!pattern7.test(data24)) {
                               validate23.errors = [{ instancePath: instancePath + "/requestSha256", schemaPath: "#/properties/requestSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
@@ -754,19 +801,19 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                             return false;
                           }
                         }
-                        var valid0 = _errs54 === errors2;
+                        var valid0 = _errs58 === errors2;
                       } else {
                         var valid0 = true;
                       }
                       if (valid0) {
                         if (data.allocatedAtMs !== void 0) {
                           let data25 = data.allocatedAtMs;
-                          const _errs56 = errors2;
+                          const _errs60 = errors2;
                           if (!(typeof data25 == "number" && (!(data25 % 1) && !isNaN(data25)) && isFinite(data25))) {
                             validate23.errors = [{ instancePath: instancePath + "/allocatedAtMs", schemaPath: "#/properties/allocatedAtMs/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
                             return false;
                           }
-                          if (errors2 === _errs56) {
+                          if (errors2 === _errs60) {
                             if (typeof data25 == "number" && isFinite(data25)) {
                               if (data25 > 9007199254740991 || isNaN(data25)) {
                                 validate23.errors = [{ instancePath: instancePath + "/allocatedAtMs", schemaPath: "#/properties/allocatedAtMs/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" }];
@@ -779,19 +826,19 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                               }
                             }
                           }
-                          var valid0 = _errs56 === errors2;
+                          var valid0 = _errs60 === errors2;
                         } else {
                           var valid0 = true;
                         }
                         if (valid0) {
                           if (data.expiresAtMs !== void 0) {
                             let data26 = data.expiresAtMs;
-                            const _errs58 = errors2;
+                            const _errs62 = errors2;
                             if (!(typeof data26 == "number" && (!(data26 % 1) && !isNaN(data26)) && isFinite(data26))) {
                               validate23.errors = [{ instancePath: instancePath + "/expiresAtMs", schemaPath: "#/properties/expiresAtMs/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
                               return false;
                             }
-                            if (errors2 === _errs58) {
+                            if (errors2 === _errs62) {
                               if (typeof data26 == "number" && isFinite(data26)) {
                                 if (data26 > 9007199254740991 || isNaN(data26)) {
                                   validate23.errors = [{ instancePath: instancePath + "/expiresAtMs", schemaPath: "#/properties/expiresAtMs/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" }];
@@ -804,7 +851,7 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                                 }
                               }
                             }
-                            var valid0 = _errs58 === errors2;
+                            var valid0 = _errs62 === errors2;
                           } else {
                             var valid0 = true;
                           }
@@ -989,6 +1036,18 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
   return errors2 === 0;
 }
 validate29.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
+
+// conversation-scope.mjs
+var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+var isConversationClient = (value) => value === null || typeof value === "string" && uuid.test(value);
+function conversationScopeMatches(scopes, binding, selectedClientId, policyRevision = scopes?.[0]?.policyRevision) {
+  if (!Array.isArray(scopes) || scopes.length !== 1 || !isConversationClient(selectedClientId)) return false;
+  const s = scopes[0];
+  return s !== null && typeof s === "object" && Object.keys(s).length === 4 && s.tenantId === binding.tenantId && s.policyRevision === policyRevision && typeof policyRevision === "string" && !!policyRevision && s.kind === (selectedClientId === null ? "private-user" : "client") && s.resourceId === (selectedClientId === null ? binding.actorId : selectedClientId);
+}
+function conversationAuthorityIncludes(scopes, binding, selectedClientId, policyRevision = scopes?.[0]?.policyRevision) {
+  return selectedClientId === null ? conversationScopeMatches(scopes, binding, null, policyRevision) : isConversationClient(selectedClientId) && Array.isArray(scopes) && scopes.some((s) => s.kind === "client" && s.tenantId === binding.tenantId && s.resourceId === selectedClientId);
+}
 
 // node_modules/canonicalize/lib/canonicalize.js
 function serializeString(value) {
@@ -1201,7 +1260,7 @@ var proofs = /* @__PURE__ */ new WeakMap();
 var bytes = (value) => new TextEncoder().encode(value);
 var same = (left, right) => canonicalize(left) === canonicalize(right);
 var contextKeys = ["tenantId", "actorId", "conversationId", "runId", "clientId"];
-var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+var uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 async function hash(value) {
   const encoded = canonicalize(value);
   if (typeof encoded !== "string") fail2("INVALID_CANONICAL_INPUT");
@@ -1214,10 +1273,10 @@ function initialInputContext(value) {
     if (keys.length !== contextKeys.length || keys.some((key) => typeof key !== "string" || !contextKeys.includes(key))) fail2("INITIAL_INPUT_CONTEXT_INVALID");
     for (const key of contextKeys) {
       const d = descriptors[key];
-      if (!d || !d.enumerable || !Object.hasOwn(d, "value") || typeof d.value !== "string") fail2("INITIAL_INPUT_CONTEXT_INVALID");
+      if (!d || !d.enumerable || !Object.hasOwn(d, "value") || !(typeof d.value === "string" || key === "clientId" && d.value === null)) fail2("INITIAL_INPUT_CONTEXT_INVALID");
       context[key] = d.value;
     }
-    if (["tenantId", "actorId"].some((key) => !context[key] || context[key].length > 128) || ["conversationId", "runId", "clientId"].some((key) => !uuid.test(context[key]))) fail2("INITIAL_INPUT_CONTEXT_INVALID");
+    if (["tenantId", "actorId"].some((key) => !context[key] || context[key].length > 128) || (["conversationId", "runId"].some((key) => !uuid2.test(context[key])) || !isConversationClient(context.clientId))) fail2("INITIAL_INPUT_CONTEXT_INVALID");
     return Object.freeze(context);
   } catch (error) {
     if (error instanceof ConversationInitialInputResponseError) throw error;
@@ -1230,7 +1289,7 @@ function active(allocation, now) {
 }
 function facts(allocation) {
   const { binding, scopes, selectedClientId, allocatedAtMs, expiresAtMs } = allocation;
-  if (binding.writerFence !== 1 || !Number.isSafeInteger(allocatedAtMs) || allocatedAtMs < 0 || !Number.isSafeInteger(expiresAtMs) || expiresAtMs <= allocatedAtMs || scopes.some((scope) => scope.tenantId !== binding.tenantId || scope.policyRevision !== scopes[0].policyRevision) || new Set(scopes.map((scope) => canonicalize(scope))).size !== scopes.length || !scopes.some((scope) => scope.kind === "client" && scope.resourceId === selectedClientId)) fail2("INITIAL_INPUT_FACTS_MISMATCH");
+  if (binding.writerFence !== 1 || !Number.isSafeInteger(allocatedAtMs) || allocatedAtMs < 0 || !Number.isSafeInteger(expiresAtMs) || expiresAtMs <= allocatedAtMs || scopes.some((scope) => scope.tenantId !== binding.tenantId || scope.policyRevision !== scopes[0].policyRevision) || new Set(scopes.map((scope) => canonicalize(scope))).size !== scopes.length || !conversationAuthorityIncludes(scopes, binding, selectedClientId)) fail2("INITIAL_INPUT_FACTS_MISMATCH");
 }
 function contextMatches(allocation, context) {
   const binding = allocation.binding;
