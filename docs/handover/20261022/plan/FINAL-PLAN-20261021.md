@@ -1,5 +1,12 @@
 # Capiro and Meri Final Plan
 
+> **UPDATE 2026-10-23 (Neo): read this before the plan below.**
+> Neo decided Meri runs on the Claude Agent SDK's full harness, direct to Bedrock, with Capiro data as tools. That is Wave 2 item 0 (`docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`) and it comes first. The layers built around the SDK are deleted, not completed.
+> - **Superseded:** S1, S2, S4, the owner/proxy pair, budget reservation, per-operation authority, the temporal-issuer, and tickets MR-01, MR-02, MR-07, MR-09. **Re-scoped:** M1, MP, M3, M4, L1 and the tickets listed in `docs/handover/20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md`. **Kept:** S3 (warm runner pool), every E-scenario except E39 and E40, and every phase not named here.
+> - Behaviour and quality gates stay binding. Mechanisms that only protected the removed layers do not.
+> - Rules for every change: `docs/handover/20261022/STANDING-REQUIREMENTS.md` (Claude handles the harness; simple standard architecture; leave no dead code; Capiro data must keep working).
+> - Inline `[SUPERSEDED]` and `[RE-SCOPED]` markers below show where. If a marker and an old instruction disagree, the marker wins.
+
 **Date:** 21 October 2026.
 **Roles:** Neo's agents build everything. Fable plans each phase, reviews it, merges it and deploys it; Fable's sessions write no product code. Neo decides scope.
 
@@ -43,6 +50,8 @@ While a phase is being validated and deployed, its agent starts the next phase i
 
 ## 3. Where we are today
 
+> **[STALE 2026-10-23]** This table describes 21 October. Current state: `docs/handover/20261022/WAVE-2-HANDOVER.md` §1 and `docs/handover/20261022/WAVE-1-HANDOFF.md`.
+
 | Area | State |
 |---|---|
 | Meri chat (preview) | **Two-turn chat works** (candidate 11, greenfield `main` `bce70776`): turn 2 recalls turn 1, and a reload keeps history. About 195 s to first text. |
@@ -58,7 +67,7 @@ While a phase is being validated and deployed, its agent starts the next phase i
 | Lane | Agent | Owns | Must not edit |
 |---|---|---|---|
 | **R · Runtime core** | Agent 1 | greenfield `apps/control`, `apps/worker`, `apps/runtime`, including `cli.mjs`, `config.mjs`, `product-ports`, `activity.mjs` and `action-host/session` | proxy and owner, gateway tools, frontend |
-| **D · Domain and proxy** | Agent 2 | greenfield `apps/proxy`, `apps/gateway`, tool catalog, memory, artifacts, contracts package | Lane R's files (it asks Lane R for seams) |
+| **D · Domain and proxy** **[RE-SCOPED 2026-10-23: `apps/proxy` ownership ends when item 0 deletes it]** | Agent 2 | greenfield `apps/proxy`, `apps/gateway`, tool catalog, memory, artifacts, contracts package | Lane R's files (it asks Lane R for seams) |
 | **U · Meri UI and Core-for-Meri** | Agent 4 | capiro-frontend `features/meri/**` and `shared/meri-*`; capiro-backend Meri bootstrap and application-authority | Portfolio, Workspace, Settings and Mail code |
 | **A · App** | Agent 3 | capiro-frontend Portfolio, Workspace, Settings and Mail; capiro-backend clients, objectives, BD, workspace, settings and engagement/mail | Meri code |
 | **Ops** | Fable | Briefs, reviews, merges, migrations, environments, releases, status table. Sole owner of shared files: frontend registry and config, migration numbering, deploy templates, generated contracts. | — |
@@ -95,20 +104,20 @@ While a phase is being validated and deployed, its agent starts the next phase i
 
 | Phase | Scope | Done when |
 |---|---|---|
-| **S1** · P1 + P2 PR-A | P1 budget table (agent 1). P2 PR-A owner/proxy proof reuse (#196). Dashboards from P0 telemetry [MX-08]. | No behaviour change. Owner exchanges ≤ 13 per model request. A partner restart re-pairs within 30 s (E39). Telemetry stays truthful (E41). |
-| **S2** · P2 PR-B + authority-lite | P2 PR-B (exchange collapse). **Authority-lite**, which replaces ADR P3: Meri control uses Core's combined current-authority receipt and its bounded Clerk cache (P6-Core, deployed in Phase 0) instead of separate identity, membership and context calls. Write intents use the run's own session instead of minting one per intent, which M4 needs. | Core calls per turn ≤ 30 (from about 151). Core time ≤ 3 s per turn. A revoked user loses access within 30 s. |
-| **S3** · Warm runner pool | ADR P5 with the approved settings: minimum 2, maximum 10, 10-minute idle timeout, one conversation per runner, never bound twice [MX-06, MX-09]. | Target: first text within 15 s at the median (from about 195 s). Pool depth and retirement alarms are in place. |
-| **S4** · Only if S3 misses its target | The full signed authority lease (ADR P3), Stop without the task router (ADR P4), or an in-process path for plain chat like os.capiro.ai's. Neo picks. | Target met. |
+| **S1** · P1 + P2 PR-A **[SUPERSEDED 2026-10-23]** | P1 budget table (agent 1). P2 PR-A owner/proxy proof reuse (#196). Dashboards from P0 telemetry [MX-08]. | No behaviour change. Owner exchanges ≤ 13 per model request. A partner restart re-pairs within 30 s (E39). Telemetry stays truthful (E41). |
+| **S2** · P2 PR-B + authority-lite **[SUPERSEDED 2026-10-23]** | P2 PR-B (exchange collapse). **Authority-lite**, which replaces ADR P3: Meri control uses Core's combined current-authority receipt and its bounded Clerk cache (P6-Core, deployed in Phase 0) instead of separate identity, membership and context calls. Write intents use the run's own session instead of minting one per intent, which M4 needs. | Core calls per turn ≤ 30 (from about 151). Core time ≤ 3 s per turn. A revoked user loses access within 30 s. |
+| **S3** · Warm runner pool **[KEPT 2026-10-23: Fargate cold start is about 60 s of every first turn; re-measure after item 0]** | ADR P5 with the approved settings: minimum 2, maximum 10, 10-minute idle timeout, one conversation per runner, never bound twice [MX-06, MX-09]. | Target: first text within 15 s at the median (from about 195 s). Pool depth and retirement alarms are in place. |
+| **S4** · Only if S3 misses its target **[SUPERSEDED 2026-10-23]** | The full signed authority lease (ADR P3), Stop without the task router (ADR P4), or an in-process path for plain chat like os.capiro.ai's. Neo picks. | Target met. |
 
 ### Meri track
 
 | Phase | Lanes | Scope | Needs | Done when |
 |---|---|---|---|---|
-| **M1** · Reliable chat | R + U | **Lifecycle:** MR-01, MR-02, MR-06, MR-08, MR-09; pause, resume and fork across a deploy (E12); the whole-flow chat check built into every release [MX-13]. **UI:** MF-01, MF-02 (including heartbeat and send acknowledgement), MF-06, MF-07, MF-10, and the pinned frontend acceptance matrix MF-21. **Also** the open review follow-ups from candidates 9–11. | Phase 0 | E01–E12 and E40 on preview |
+| **M1** · Reliable chat **[RE-SCOPED 2026-10-23: MR-01, MR-02, MR-09 superseded; MR-06, MR-08 re-scoped]** | R + U | **Lifecycle:** MR-01, MR-02, MR-06, MR-08, MR-09; pause, resume and fork across a deploy (E12); the whole-flow chat check built into every release [MX-13]. **UI:** MF-01, MF-02 (including heartbeat and send acknowledgement), MF-06, MF-07, MF-10, and the pinned frontend acceptance matrix MF-21. **Also** the open review follow-ups from candidates 9–11. | Phase 0 | E01–E12 and E40 on preview |
 | **M2** · General or client chat | R + U | **Client-optional chat** (details below). New conversation, conversation list, switching and history (MF-09). Automatic client context MG-05. Selected skill and scope kept MG-02. "Ask Meri about this client" PF-02. Cross-module context MF-19 (context part). | M1, and Neo's decision on reads across clients | E06, E45 (context part), and the client-optional checks below |
-| **M3** · Read tools on | D + U | MT-01, MT-04 to MT-09, MT-16, MO-14, MO-15, MG-06. Citations and evidence UI MF-16. Re-register the reads per O118. Bind each enabled capability to its dependencies [MX-03]. | Phase 0. Reads in General chats need M2. | E18–E20, E31, E44, and each family's positive, negative and paging cases. `reads` turned on. |
-| **MP** · Model choice: Claude API alongside Bedrock | D + U | **Two model paths:** Bedrock (today's) and the Claude API. Any current Claude model and reasoning level is selectable: a default in Settings, plus a per-conversation picker. The API key lives in AWS Secrets Manager. Both paths get the same budgets, usage records, telemetry and Stop behaviour. | S1 | The whole-flow chat check passes on both paths; switching model or provider mid-conversation works; usage is recorded per provider |
-| **M4** · Actions and approvals on | D + U | task.create MT-10, task.update MT-11, Research Portfolio actions MO-05, LegiWatch watches MO-06, prospect, client and note changes MO-08. Approval UI MF-03, MF-04, MF-05, MF-12, MF-13. | S2, and A0 (writes need staging) | E13–E17 in staging. `intents` and the approvals UI turned on together. |
+| **M3** · Read tools on **[RE-SCOPED 2026-10-23: read families become tools on the tool gateway]** | D + U | MT-01, MT-04 to MT-09, MT-16, MO-14, MO-15, MG-06. Citations and evidence UI MF-16. Re-register the reads per O118. Bind each enabled capability to its dependencies [MX-03]. | Phase 0. Reads in General chats need M2. | E18–E20, E31, E44, and each family's positive, negative and paging cases. `reads` turned on. |
+| **MP** · Model choice: Claude API alongside Bedrock **[RE-SCOPED 2026-10-23: an SDK provider setting, not a proxy feature]** | D + U | **Two model paths:** Bedrock (today's) and the Claude API. Any current Claude model and reasoning level is selectable: a default in Settings, plus a per-conversation picker. The API key lives in AWS Secrets Manager. Both paths get the same budgets, usage records, telemetry and Stop behaviour. | S1 | The whole-flow chat check passes on both paths; switching model or provider mid-conversation works; usage is recorded per provider |
+| **M4** · Actions and approvals on **[RE-SCOPED 2026-10-23: approvals via the SDK permission callback plus Core intents]** | D + U | task.create MT-10, task.update MT-11, Research Portfolio actions MO-05, LegiWatch watches MO-06, prospect, client and note changes MO-08. Approval UI MF-03, MF-04, MF-05, MF-12, MF-13. | S2, and A0 (writes need staging) | E13–E17 in staging. `intents` and the approvals UI turned on together. |
 | **M5** · Documents, files and research outputs | D + U + A | MM-09 to MM-19, MB-04. UI MF-14, MF-15, MF-19 (completion links). Portfolio PF-03, PF-23. Workspace WS-22, WS-23, WS-24. | M4 | E26–E31 and E45. All six formats open natively. `artifacts` turned on. |
 | **M6** · Memory and preferences | D + U + A | MM-01 to MM-07, MR-05. Settings ST-07 to ST-13, ST-18. UI MF-17. Migrations intents/0002 and memory/0002. | M4 and A0 | E23–E25 and E36. `memory` and the memory-review UI turned on together. |
 | **M7** · Routines, Cowork and skills | R + D + U | MR-03, MR-04, MR-10, MB-05, MT-12, MT-13 (all 14 skills), MO-01, MO-02, MO-10. Runs and routines UI MF-11, MF-18. Settings ST-15, ST-16, ST-17. | M4, M5 | E32–E35 |
@@ -147,7 +156,7 @@ While a phase is being validated and deployed, its agent starts the next phase i
 
 | Phase | Scope | Done when |
 |---|---|---|
-| **L1** · Launch qualification | One release packet [MX-04, MX-05, MX-07, MX-10, MX-11, MX-12, MX-14]. Disable and restore MO-09. Reliability corpus MG-01. Figma reconciliation MG-03. Optional Decisions/JEV MG-04. Keyboard and mobile MF-20. Register of original features and exclusions MT-15. Model default MO-13 (an SDK upgrade first needs the transcript-recap handover from O103). Production stacks kept separate from preview. The data path for os.capiro.ai. **A parity list of what users rely on in today's os.capiro.ai.** Alarm email routing. | Packet reviewed, E42 and E43 pass, and Neo signs off the scope |
+| **L1** · Launch qualification **[RE-SCOPED 2026-10-23: MX-05/06/07/09; no pair or issuer material in the packet]** | One release packet [MX-04, MX-05, MX-07, MX-10, MX-11, MX-12, MX-14]. Disable and restore MO-09. Reliability corpus MG-01. Figma reconciliation MG-03. Optional Decisions/JEV MG-04. Keyboard and mobile MF-20. Register of original features and exclusions MT-15. Model default MO-13 (an SDK upgrade first needs the transcript-recap handover from O103). Production stacks kept separate from preview. The data path for os.capiro.ai. **A parity list of what users rely on in today's os.capiro.ai.** Alarm email routing. | Packet reviewed, E42 and E43 pass, and Neo signs off the scope |
 | **L2** · Internal tenant | Capiro's own tenant moves to the new production stack | One clean week |
 | **L3** · First 3 customer tenants | Moves once the parity list is met | Two clean weeks |
 | **L4** · All tenants; retire the old runtime | MO-11, MO-12, ML-23 cutover; capirov2 Meri retired | Old paths removed |
@@ -158,6 +167,8 @@ While a phase is being validated and deployed, its agent starts the next phase i
 - **After launch:** M7, M8 and A5 continue.
 
 ## 6. Running in parallel
+
+> **[RE-SCOPED 2026-10-23]** This wave table predates Wave 2 item 0. Ignore the cells for P1, P2, S1, S2, S4 and MP-as-a-proxy-feature. Wave 2 starts with item 0; the other lanes continue as the handover says.
 
 The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace is known.
 
@@ -182,6 +193,8 @@ The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace 
   - migrations (Fable numbers and orders them).
 
 ## 7. What was simplified, and when to revisit
+
+> **2026-10-23:** the ADR P3/P4/P5 simplifications below are overtaken. Wave 2 item 0 removes the layers they would have optimised. S3 (the warm runner pool, ADR P5) stays.
 
 | Before | Now | Revisit if |
 |---|---|---|
@@ -209,6 +222,9 @@ The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace 
 | 10 | capirov2 comparison | **Deferred.** |
 | 11 | Workspace approvals (A1 WS-03) | **Removed** (21 Oct, 22:50 UTC). No approval workflow in Workspace, and no dead code left. Stored approval data stays untouched until an approved drop migration. Sharing, wall and ownership protections stay. Meri, release and Portfolio artifact approvals are unaffected (O143). |
 | 12 | New-stack database | **A copy-on-write clone** of the shared Aurora DB for preview Core; the live DB is never migrated by this programme. Data diverges from live from the clone date (O135, O140). |
+| 13 | Meri harness (Neo, 23 October 2026) | **Claude handles the harness as much as possible**, for Claude-quality answers: the SDK full harness, direct Bedrock, Capiro data as MCP tools. It is Wave 2 item 0. Wave 1 finishes on the current design first. |
+| 14 | Architecture (Neo, 23 October 2026) | **A simple, standard architecture, with no extra security layers.** The owner/proxy pair, budget reservation, per-operation authority and the temporal-issuer are deleted, not completed. Core stays the gatekeeper for Capiro data. |
+| 15 | Dead code (Neo, 23 October 2026) | **Leave no dead code behind.** Every change deletes what it replaces; temporary diagnostics are removed; nothing stays dark without an owner and a date (`STANDING-REQUIREMENTS.md` rule 3). |
 
 ## 9. Index: every item and its phase
 
@@ -236,6 +252,8 @@ The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace 
 E01–E04 Phase 0 · E05–E12 M1 (E08, E09 also in Phase 0) · E13–E17 M4 · E18–E20 M3 · E21–E22 A4 · E23–E25 M6 · E26–E31 M5 · E32–E35 M7 · E36 M6 · E37–E38 M8 · E39 S1 · E40 M1 · E41 S1 · E42–E43 L1 · E44 M3 · E45 M2 and M5
 
 ### Fable's open items
+
+> **[RE-SCOPED 2026-10-23]** The ADR P1 to P4 and S1 to S2 items are superseded (see the update at the top). ADR P5 (S3) stays.
 
 - **Phase 0:**
   - C12 (unstarted conversations); PR197 merge; consolidated Core and frontend deploys;

@@ -1,5 +1,7 @@
 # P1 validation: PR #200 "P1: centralize preserved hot-path budgets and startup proof"
 
+> **HISTORICAL (superseded 2026-10-23).** This file describes P1, the hot-path budget table / owner-proxy proof reuse. Wave 2 item 0 deletes those layers; P1 #200 and C9 #203 are not to be merged. Do not act on it. Read `STANDING-REQUIREMENTS.md`, `WAVE-1-HANDOFF.md` and `WAVE-2-HANDOVER.md` instead.
+
 adj-c, 2026-10-21. Review only: no edits, no pushes, no GitHub comments. Labels: **[M]** measured here, **[D]** derived from source and git.
 
 **PR:** greenfield #200, `feat/meri-p1-budget-table` @ **`f94ef9e1`**, draft. Base `main` @ `bce70776` (merge base). 578 files, +61,011 / −1,663, 18 commits.

@@ -1,5 +1,7 @@
 # P1: one nested budget table for the Meri hot path (implementation plan)
 
+> **HISTORICAL (superseded 2026-10-23).** This file describes P1, the hot-path budget table / owner-proxy proof reuse. Wave 2 item 0 deletes those layers; P1 #200 and C9 #203 are not to be merged. Do not act on it. Read `STANDING-REQUIREMENTS.md`, `WAVE-1-HANDOFF.md` and `WAVE-2-HANDOVER.md` instead.
+
 **Audience:** an implementer who has only this repository (GitHub) and a Linux box with Docker. **No AWS access is needed, and none may be used.** No knowledge of earlier work is assumed.
 
 **Companion files** (committed beside this plan in `docs/hot-path/`):

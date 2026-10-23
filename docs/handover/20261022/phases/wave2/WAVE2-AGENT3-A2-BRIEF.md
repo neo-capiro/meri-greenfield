@@ -1,7 +1,13 @@
 # Wave 2 · Agent 3 · A2: finish screens that already have a backend (DRAFT: send only after Wave 1 closes; Neo's rule, fresh "agent 3 v{next}" session)
 
 **From:** Fable. **Lane:** A (Portfolio, Workspace, Settings, Mail). **Repository:** neo-capiro/capiro-backend plus neo-capiro/capiro-frontend. Branch from the current default branch head at send time.
-**How we work:** you build; dot's reviewers review; Fable gates, merges and ships. Draft PRs only; no merges, no AWS; list tests run and not run; mutation-check every new test. Read `WORKFLOW.md` (meri-greenfield `docs/handover/20261022/`).
+**How we work:** you build; the Wave 2 orchestrator's reviewers review; the orchestrator gates, merges and ships (Fable stops after Wave 1). Draft PRs only; no merges, no AWS; list tests run and not run; mutation-check every new test. Read `WORKFLOW.md` (meri-greenfield `docs/handover/20261022/`).
+
+## Standing requirements (Neo, 2026-10-23). Read `STANDING-REQUIREMENTS.md` in the handover folder before anything else.
+1. **Claude handles the harness** (SDK full harness, direct Bedrock, Capiro data as tools). Never build a custom replacement for something the SDK or AWS already does.
+2. **Keep it simple and standard.** No per-hop re-verification, proxies, credential-minting services or reservation ledgers. Core is the gatekeeper for Capiro data.
+3. **Leave no dead code.** Delete what your change replaces in the same PR, remove temporary diagnostics, add no flag that nothing turns on, and show `git grep` proof in the PR description.
+4. **The old plans changed.** Tickets for the removed layers are superseded: check `source-of-truth/SUPERSEDED-BY-ITEM-0.md` before implementing any ticket. If a ticket and Wave 2 item 0 disagree, item 0 wins; ask on #202.
 
 ## Sources of truth
 The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets below, verbatim. Implement each ticket's bounded work and meet its acceptance exactly. If anything conflicts or is left open, ask on #202; don't decide.

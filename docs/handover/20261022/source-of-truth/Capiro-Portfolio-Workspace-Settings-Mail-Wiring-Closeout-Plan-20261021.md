@@ -1,5 +1,7 @@
 # Capiro Portfolio, Workspace, Settings and Mail Wiring Closeout Plan
 
+> **Note (Neo, 2026-10-23):** Meri's runtime architecture changed (Wave 2 item 0). No ticket in this plan is superseded. Where it says "canonical Meri context contract" or "authority DTO" for a Meri entry point, read context (tenant, client, entity ids), not an authority token, and build no authority machinery. Leave no dead code: see `../STANDING-REQUIREMENTS.md` and `SUPERSEDED-BY-ITEM-0.md`.
+
 **Prepared:** 21 October 2026. **Mode:** comprehensive read-only source audit and implementation-ready plan. **Implementation performed:** none. **Audited source refs:** exact table below; live deployment and provider acceptance remain unverified.
 
 ## Executive verdict

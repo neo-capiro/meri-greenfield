@@ -1,10 +1,19 @@
 # Standing rules for all agents (verbatim from the two master closeout plans)
 
+> **READ FIRST: SUPERSEDED IN PART (Neo, 2026-10-23).**
+> Neo decided Meri runs on the Claude Agent SDK's full harness, direct to Bedrock, with Capiro data as tools. The layers built around the SDK are **deleted, not completed**: the owner/proxy pair (`apps/proxy`), budget reservation and settlement, per-operation authority (native-authority, the task verifier, origin and run-current authority, ECS task proofs, read-credential relays, pins), the temporal-issuer, the P1 table, P2 proof reuse, authority-lite (S2), the signed lease (S4) and the custom checkpoint / dormant-original continuity.
+> - **Behaviour and quality gates in this plan stay binding:** the E-scenarios, the RG gates, the original release suite and every product acceptance.
+> - **Tickets, owner-map rows, stages and acceptance lines that exist to build, extend, qualify, measure or preserve a deleted layer are SUPERSEDED. Do not implement them.** They are marked inline `[SUPERSEDED]` or `[RE-SCOPED]` and listed in `SUPERSEDED-BY-ITEM-0.md`.
+> - Never recreate a deleted mechanism to satisfy an old ticket. If a ticket and Wave 2 item 0 disagree, **item 0 wins** (`../phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`); if it is unclear, ask on #202.
+> - **Leave no dead code:** every change deletes what it replaces (`../STANDING-REQUIREMENTS.md`).
+
 These rules apply to every task in every phase. Where your brief and a master file seem to differ, **stop and ask Fable**; don't improvise. Ownership note: where these sections name "dot" or "Fable" as owners, the current arrangement applies instead. Neo's agents implement; Fable reviews, merges and deploys.
 
 ## Meri: architecture to preserve and trace requirements
 
 ## Architecture to preserve
+
+> **[RE-SCOPED 2026-10-23]** Items 3 and 4 below are replaced: the runner runs the SDK, and data tools go through the tool gateway to Core, which enforces scope. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 The working architecture is:
 
@@ -16,6 +25,8 @@ The working architecture is:
 6. **Return and recovery:** current output authority → durable receipt/event → validated public DTO → UI observation/history/reload. A successful lower-level call alone does not complete the feature.
 
 ### Trace requirements by user-visible flow
+
+> **[RE-SCOPED 2026-10-23]** Chat/follow-up becomes control → runner (SDK) → Bedrock → durable events. Read/search becomes tool gateway → Core with the run token; Core enforces scope. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 | Flow | Complete trace that closure must prove |
 |---|---|
@@ -38,11 +49,11 @@ The working architecture is:
 | Boundary | Canonical owner / implementation unit | Other lanes consume, do not duplicate |
 |---|---|---|
 | Main + PR197 successor review | Existing Meri receiver; MX-02 | All new Meri source starts from one reconciled candidate; #189/190/191/192 donor work not reapplied |
-| P1 nested startup/deadline table | Existing active P1 runtime owner; MR references | MX-09 measures results; no second timeout table or ad hoc larger constants |
-| P2 proof reuse/replacement | Existing PR196 owner | Currentness/placement collision resolution and security review; PR-B follows existing PR-A gate |
+| P1 nested startup/deadline table | **[SUPERSEDED]** Existing active P1 runtime owner; MR references | MX-09 measures results; no second timeout table or ad hoc larger constants |
+| P2 proof reuse/replacement | **[SUPERSEDED]** Existing PR196 owner | Currentness/placement collision resolution and security review; PR-B follows existing PR-A gate |
 | Public contracts and generated browser receivers | Meri contracts owner with FE receiver | One exact B1/B2/lifecycle DTO; shared generators/package manifest single-owned |
 | FE Meri observation/session stores | Frontend Meri owner | Approvals and lifecycle controls reuse the same observer/cache/current identity, not local divergent state machines |
-| Action session/current run/context authority | Meri runtime/control + Core identity owner | UI cannot choose tenant/actor or turn legacy service credentials into user authority |
+| Action session/current run/context authority | **[RE-SCOPED: keep the action session; drop run-current authority]** Meri runtime/control + Core identity owner | UI cannot choose tenant/actor or turn legacy service credentials into user authority |
 | Generic intent preparation/approval/execution receipts | MT command/intent owner | Task.create remains canonical; Memory/filing/schedule commands require their own accepted domain contracts |
 | Core task mutation and task reads | Core domain owner with MT adapter | MF consumes; no direct UI/provider mutation bypassing Core grant/idempotency |
 | Routines/schedules/background firing | MR schedule lifecycle owner | MT owns conversational preparation/list/decision bridge; MF owns page; one occurrence/consent/cancel journal |
@@ -56,7 +67,7 @@ The working architecture is:
 | Portfolio/Workspace Meri entry | Prior PF-02/03 and WS-22/24 with MF/MT | One selected-client/entity/artifact contract; no label/name-based implicit authority |
 | Settings Memory/preferences and account connection | Prior ST-07–14 with MM/MF; provider identity ML owner | Owner review is not all Memory governance; account OAuth status is not Meri execution permission |
 | Migration/role/readiness packaging | MX-04 with service owners | Domain tickets define schema; one central order/hash/grant packet |
-| Image/material/release/operator qualification | Existing shipping owner, MX-05–14 | Source lanes prepare evidence, do not independently mutate cloud/runtime |
+| Image/material/release/operator qualification | **[RE-SCOPED]** Existing shipping owner, MX-05–14 | Source lanes prepare evidence, do not independently mutate cloud/runtime |
 
 **Collision rule:** a shared source file has one active owner per receiving batch. In particular, serialize changes to `apps/runtime/cli.mjs`, `apps/runtime/config.mjs`, `apps/runtime/product-ports/*`, `apps/control/action-host/session/owner.mjs`, `apps/worker/conversation/activity.mjs`, contract package manifests/generators, FE Meri chat/observer code, and migration/feature renderers. Parallel lanes may own separate modules/tests and submit explicit receiver patches. They may not overwrite one another's branches or guards.
 
@@ -65,6 +76,8 @@ The working architecture is:
 ## Meri: definition of done
 
 #### 7. Definition of done
+
+> **[RE-SCOPED 2026-10-23]** Item 3 ("fresh authority through every hop") is superseded: Core enforces scope on every data call. Item 5 applies to writes and external effects, not to model spend. Add: nothing the change replaced is left behind. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 For each requested capability, “wired” requires all applicable links:
 1. A real mounted UI or discoverable operation, not a fixture-only screen or catalog placeholder.

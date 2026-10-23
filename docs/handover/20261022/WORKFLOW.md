@@ -1,5 +1,7 @@
 # Meri programme workflow: who does what, and how work moves
 
+> **Roles changed 2026-10-23.** The roles below describe Wave 1. From Wave 2 the Codex orchestrator replaces Fable and dot (see `WAVE-2-HANDOVER.md` §0). `STANDING-REQUIREMENTS.md` applies to every step of every workflow here, including "leave no dead code" as part of done.
+
 **Status:** current as of 2026-10-22 (roles restored by Neo: Fable plans and ships, agents implement, dot reviews and relays).
 **Applies to:** neo-capiro/meri-greenfield, neo-capiro/capiro-backend (`backend-import`), neo-capiro/capiro-frontend (`main`), and the capiro-dev preview environment (AWS 967807252336, us-east-1).
 

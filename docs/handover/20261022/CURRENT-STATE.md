@@ -1,5 +1,7 @@
 # Current state at handover (2026-10-22 ~02:30 UTC)
 
+> **HISTORICAL (superseded 2026-10-23).** This file describes the preview as of 2026-10-22. Some of its instructions are now WRONG: for example "Re-clone before the next Core migrate". **Never delete or re-clone the new-stack clone database**; snapshot, then migrate forward in place. Do not act on it. Read `STANDING-REQUIREMENTS.md`, `WAVE-1-HANDOFF.md` and `WAVE-2-HANDOVER.md` instead.
+
 ## 1. Live on preview (portfolio-preview.app.capiro.ai)
 
 | Component | Version | Notes |

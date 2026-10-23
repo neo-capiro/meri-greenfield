@@ -1,5 +1,7 @@
 # How Fable planned, delegated and decided readiness
 
+> **Updated 2026-10-23.** This is how Fable worked in Wave 1; the Wave 2 orchestrator replaces Fable. Add to every readiness rule below: the change deletes what it replaces and carries `git grep` proof (`STANDING-REQUIREMENTS.md` rule 3), and it is not a ticket that `source-of-truth/SUPERSEDED-BY-ITEM-0.md` supersedes.
+
 This is the process Fable actually ran from 10-21 onward. Templates are in §6.
 
 ## 1. Inputs and authority

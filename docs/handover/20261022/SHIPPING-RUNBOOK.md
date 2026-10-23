@@ -1,5 +1,7 @@
 # Shipping runbook (as Fable ran it)
 
+> **Updated 2026-10-23.** The sections on the owner/proxy pair (step 16, restart rules, PKI) and on the Temporal issuer describe components that Wave 2 item 0 deletes. Follow them until each component is deleted, and delete the sections in the same PR that deletes the component. `STANDING-REQUIREMENTS.md` applies to every change.
+
 ## 1. Environment
 
 | Item | Value |

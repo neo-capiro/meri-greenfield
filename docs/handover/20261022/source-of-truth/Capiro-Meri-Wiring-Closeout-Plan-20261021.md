@@ -1,5 +1,12 @@
 # Capiro Meri Full-Completion and Wiring Closeout Plan
 
+> **READ FIRST: SUPERSEDED IN PART (Neo, 2026-10-23).**
+> Neo decided Meri runs on the Claude Agent SDK's full harness, direct to Bedrock, with Capiro data as tools. The layers built around the SDK are **deleted, not completed**: the owner/proxy pair (`apps/proxy`), budget reservation and settlement, per-operation authority (native-authority, the task verifier, origin and run-current authority, ECS task proofs, read-credential relays, pins), the temporal-issuer, the P1 table, P2 proof reuse, authority-lite (S2), the signed lease (S4) and the custom checkpoint / dormant-original continuity.
+> - **Behaviour and quality gates in this plan stay binding:** the E-scenarios, the RG gates, the original release suite and every product acceptance.
+> - **Tickets, owner-map rows, stages and acceptance lines that exist to build, extend, qualify, measure or preserve a deleted layer are SUPERSEDED. Do not implement them.** They are marked inline `[SUPERSEDED]` or `[RE-SCOPED]` and listed in `SUPERSEDED-BY-ITEM-0.md`.
+> - Never recreate a deleted mechanism to satisfy an old ticket. If a ticket and Wave 2 item 0 disagree, **item 0 wins** (`../phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`); if it is unclear, ask on #202.
+> - **Leave no dead code:** every change deletes what it replaces (`../STANDING-REQUIREMENTS.md`).
+
 **Prepared:** 21 October 2026. **Mode:** comprehensive read-only source audit and implementation-ready closure plan. **Implementation performed:** none. Repository/code/configuration/branch/PR state was not changed; no builds/tests, deployments, migrations, provider requests, actual mail, credential changes or live writes were performed. Local research snapshots and this document are the only written artifacts.
 
 ## Executive verdict
@@ -71,6 +78,8 @@ PR196's recorded focused 315 Node / 453 Python / 21 skips / 34 mutation kills ar
 
 ## Architecture to preserve
 
+> **[RE-SCOPED 2026-10-23]** Items 3 (worker: allocation/claim/lease) and 4 (gateway: budget/liability and receipt) are replaced: the runner runs the SDK, and data tools go through the tool gateway to Core, which enforces scope. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
+
 The working architecture is:
 
 1. **Frontend:** ordinary Meri routes and typed consumers; server-only native identity, source pin and feature gates; no direct browser access to internal credentials.
@@ -81,6 +90,8 @@ The working architecture is:
 6. **Return and recovery:** current output authority → durable receipt/event → validated public DTO → UI observation/history/reload. A successful lower-level call alone does not complete the feature.
 
 ### Trace requirements by user-visible flow
+
+> **[RE-SCOPED 2026-10-23]** Chat/follow-up becomes control → runner (SDK) → Bedrock → durable events. Read/search becomes tool gateway → Core with the run token; Core enforces scope; there is no one-use delegated authority or budget settlement. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 | Flow | Complete trace that closure must prove |
 |---|---|
@@ -152,14 +163,14 @@ This edition indexes **107 closure tickets**. They are not 107 bugs: the count i
 | [MO-07](#mo-07) | Complete graph paths, buyer workspaces and funding decision semantics | remaining-crosswalk |
 | [MO-08](#mo-08) | Finish governed prospect, client and note mutation workflows | remaining-crosswalk |
 | [MO-09](#mo-09) | Prove honest global/tenant disablement and restored continuity | remaining-crosswalk |
-| [MO-10](#mo-10) | Close complete-job cost, context integrity and fair capacity | remaining-crosswalk |
-| [MO-11](#mo-11) | Retire obsolete runtime code and configuration safely | remaining-crosswalk |
+| [MO-10](#mo-10) | **[RE-SCOPED]** Close complete-job cost, context integrity and fair capacity | remaining-crosswalk |
+| [MO-11](#mo-11) | **[RE-SCOPED]** Retire obsolete runtime code and configuration safely | remaining-crosswalk |
 | [MO-12](#mo-12) | Retire only verified obsolete Hermes cloud pilot resources | remaining-crosswalk |
 | [MO-13](#mo-13) | Close the model comparison and production-default decision | remaining-crosswalk |
 | [MO-14](#mo-14) | Wire source-change dependency refresh and scoped feedback lineage | remaining-crosswalk |
 | [MO-15](#mo-15) | Qualify every named connected-source capability | remaining-crosswalk |
 | [MF-01](#mf-01) | Publish truthful capability and route state (P0 activation gate) | frontend |
-| [MF-02](#mf-02) | Qualify identity, exact-run renewal and access-loss isolation (P0 before live activation) | frontend |
+| [MF-02](#mf-02) | **[RE-SCOPED]** Qualify identity, exact-run renewal and access-loss isolation (P0 before live activation) | frontend |
 | [MF-03](#mf-03) | Clear approval content on authority refusal (P0 before approvals activation) | frontend |
 | [MF-04](#mf-04) | Make approval decisions reload-safe and expiry-aware (P1 before approvals activation) | frontend |
 | [MF-05](#mf-05) | Resume run observation after approval or external state change (P1) | frontend |
@@ -167,7 +178,7 @@ This edition indexes **107 closure tickets**. They are not 107 bugs: the count i
 | [MF-07](#mf-07) | Design durable drafts and request recovery across reload (P1) | frontend |
 | [MF-08](#mf-08) | Preserve and qualify merged run-status truth correction (P1 regression gate, source already complete) | frontend |
 | [MF-09](#mf-09) | Add conversation management only after its public contract (P1 core history; P2 optional destructive actions) | frontend |
-| [MF-10](#mf-10) | Implement the existing public lifecycle consumer (P1) | frontend |
+| [MF-10](#mf-10) | **[RE-SCOPED]** Implement the existing public lifecycle consumer (P1) | frontend |
 | [MF-11](#mf-11) | Build run index/detail from durable read contracts (P1 if Runs is promised; otherwise P2) | frontend |
 | [MF-12](#mf-12) | Close legacy action/task-command approval and recovery handoffs (P1) | frontend |
 | [MF-13](#mf-13) | Create a real approval inbox without broadening authority (P1 if promised; otherwise P2) | frontend |
@@ -179,33 +190,33 @@ This edition indexes **107 closure tickets**. They are not 107 bugs: the count i
 | [MF-19](#mf-19) | Unify cross-module context and completion links (P1/P2, shared contract) | frontend |
 | [MF-20](#mf-20) | Qualify all ordinary controls across keyboard/mobile/state variants (P2, release acceptance) | frontend |
 | [MF-21](#mf-21) | Build a pinned composed frontend acceptance and release matrix (P0 activation gate) | frontend |
-| [MR-01](#mr-01) | P0 · Repair historical stop-only retirement after a control render change | runtime |
-| [MR-02](#mr-02) | P1 · Consume the existing transient-authority classification in the control pump | runtime |
+| [MR-01](#mr-01) | **[SUPERSEDED]** P0 · Repair historical stop-only retirement after a control render change | runtime |
+| [MR-02](#mr-02) | **[SUPERSEDED]** P1 · Consume the existing transient-authority classification in the control pump | runtime |
 | [MR-03](#mr-03) | P1 · Define and wire foreground routine management after the originating chat ends | runtime |
 | [MR-04](#mr-04) | P1 · Make routine read-consent receipt repair durable across dual-owner ACK loss | runtime |
 | [MR-05](#mr-05) | P1 · Compose complete retention suppression, purge and restore ownership | runtime |
-| [MR-06](#mr-06) | P1 · Close durable lifecycle outcome readback and recovery after process/request loss | runtime |
-| [MR-07](#mr-07) | P1 · Publish a precise checkpoint/version and dormant-original continuity contract | runtime |
-| [MR-08](#mr-08) | P1 · Qualify the complete admission-to-next-turn lifecycle, not only happy-path endpoints | runtime |
-| [MR-09](#mr-09) | P1 · Qualify provider terminal accounting and unresolved-liability recovery | runtime |
+| [MR-06](#mr-06) | **[RE-SCOPED]** P1 · Close durable lifecycle outcome readback and recovery after process/request loss | runtime |
+| [MR-07](#mr-07) | **[SUPERSEDED]** P1 · Publish a precise checkpoint/version and dormant-original continuity contract | runtime |
+| [MR-08](#mr-08) | **[RE-SCOPED]** P1 · Qualify the complete admission-to-next-turn lifecycle, not only happy-path endpoints | runtime |
+| [MR-09](#mr-09) | **[SUPERSEDED]** P1 · Qualify provider terminal accounting and unresolved-liability recovery | runtime |
 | [MR-10](#mr-10) | P1 · Qualify routine firing, overlap, cancellation and inbox continuity as one lifecycle | runtime |
-| [MT-01](#mt-01) | Make the exact installed capability set the release truth (P0, CONFIG/QUAL) | tools |
-| [MT-02](#mt-02) | Receive the bounded selected-read composition already supplied by PR197 (P1, source integration) | tools |
-| [MT-03](#mt-03) | Supply authoritative mail scopes and durable page context to ML-22 (P1, canonical ML-22 subtask) | tools |
-| [MT-04](#mt-04) | Admit research-source candidates without broadening source visibility (P1) | tools |
-| [MT-05](#mt-05) | Bind BD evidence to real conversation and prospect custody (P1) | tools |
-| [MT-06](#mt-06) | Connect the existing FedRAMP observation producer (P1) | tools |
-| [MT-07](#mt-07) | Connect existing rule stage and comment clocks (P1) | tools |
-| [MT-08](#mt-08) | Connect existing SAM generation, status and health observations (P1) | tools |
-| [MT-09](#mt-09) | Keep legal, news and Outreach claims inside reviewed slices (P1 parity; P2 expansion decision) | tools |
-| [MT-10](#mt-10) | Qualify the existing task.create approval and effect chain (P1, CONFIG/QUAL) | tools |
-| [MT-11](#mt-11) | Supply the missing task.update execution owner (P1) | tools |
-| [MT-12](#mt-12) | Bridge conversation schedule proposals and schedule-list reads (P1) | tools |
+| [MT-01](#mt-01) | **[RE-SCOPED]** Make the exact installed capability set the release truth (P0, CONFIG/QUAL) | tools |
+| [MT-02](#mt-02) | **[RE-SCOPED]** Receive the bounded selected-read composition already supplied by PR197 (P1, source integration) | tools |
+| [MT-03](#mt-03) | **[RE-SCOPED]** Supply authoritative mail scopes and durable page context to ML-22 (P1, canonical ML-22 subtask) | tools |
+| [MT-04](#mt-04) | **[RE-SCOPED]** Admit research-source candidates without broadening source visibility (P1) | tools |
+| [MT-05](#mt-05) | **[RE-SCOPED]** Bind BD evidence to real conversation and prospect custody (P1) | tools |
+| [MT-06](#mt-06) | **[RE-SCOPED]** Connect the existing FedRAMP observation producer (P1) | tools |
+| [MT-07](#mt-07) | **[RE-SCOPED]** Connect existing rule stage and comment clocks (P1) | tools |
+| [MT-08](#mt-08) | **[RE-SCOPED]** Connect existing SAM generation, status and health observations (P1) | tools |
+| [MT-09](#mt-09) | **[RE-SCOPED]** Keep legal, news and Outreach claims inside reviewed slices (P1 parity; P2 expansion decision) | tools |
+| [MT-10](#mt-10) | **[RE-SCOPED]** Qualify the existing task.create approval and effect chain (P1, CONFIG/QUAL) | tools |
+| [MT-11](#mt-11) | **[RE-SCOPED]** Supply the missing task.update execution owner (P1) | tools |
+| [MT-12](#mt-12) | **[RE-SCOPED]** Bridge conversation schedule proposals and schedule-list reads (P1) | tools |
 | [MT-13](#mt-13) | Complete all fourteen original skills through exact installed workflows (P1 full-completion requirement) | tools |
 | [MT-14](#mt-14) | Keep workspace, subagent, Bash and browser boundaries honest (P0 boundary QA; P2 browser activation) | tools |
 | [MT-15](#mt-15) | Reconcile every original exclusion to a full-completion owner (P1 full-scope crosswalk, not43 alias bugs) | tools |
-| [MT-16](#mt-16) | Close parameter, page, time and result-semantic parity (P1 cross-family regression receipt) | tools |
-| [MM-01](#mm-01) | Qualify memory recall and graph as current-authority reads (P0 activation gate) | memory-artifacts |
+| [MT-16](#mt-16) | **[RE-SCOPED]** Close parameter, page, time and result-semantic parity (P1 cross-family regression receipt) | tools |
+| [MM-01](#mm-01) | **[RE-SCOPED]** Qualify memory recall and graph as current-authority reads (P0 activation gate) | memory-artifacts |
 | [MM-02](#mm-02) | Close four-payload memory retention before command activation (P0) | memory-artifacts |
 | [MM-03](#mm-03) | Finish the bounded conversational memory command receiver (P1, blocked by MM-02) | memory-artifacts |
 | [MM-04](#mm-04) | Define the surface-memory retention subject before enabling writes (P0/P1 contract gate) | memory-artifacts |
@@ -217,7 +228,7 @@ This edition indexes **107 closure tickets**. They are not 107 bugs: the count i
 | [MM-10](#mm-10) | Connect qualified PDF conversion and preview custody end to end (P0/P1) | memory-artifacts |
 | [MM-11](#mm-11) | Add durable artifact discovery, history and post-run read authority (P1; WS-24 canonical) | memory-artifacts |
 | [MM-12](#mm-12) | Establish greenfield upload, extraction and evidence custody (P1/P0 before exposure) | memory-artifacts |
-| [MM-13](#mm-13) | Receive prior-chat attachment reads through canonical delegated authority (P1) | memory-artifacts |
+| [MM-13](#mm-13) | **[RE-SCOPED]** Receive prior-chat attachment reads through canonical delegated authority (P1) | memory-artifacts |
 | [MM-14](#mm-14) | Complete exact-version attachment filing, not an alternate uploader (P1) | memory-artifacts |
 | [MM-15](#mm-15) | Finish research output approval, durable completion and history (P1) | memory-artifacts |
 | [MM-16](#mm-16) | Admit congressional and report deliverables as actual workflows (P1/P2) | memory-artifacts |
@@ -229,11 +240,11 @@ This edition indexes **107 closure tickets**. They are not 107 bugs: the count i
 | [MX-02](#mx-02) | Receive existing source once, preserving current continuity and ownership | release |
 | [MX-03](#mx-03) | Bind each enabled capability to its actual end-to-end dependencies | release |
 | [MX-04](#mx-04) | Complete the capability-specific migration and least-privilege grant packet | release |
-| [MX-05](#mx-05) | Qualify the exact combined image and capability measurement | release |
-| [MX-06](#mx-06) | Prove topology, readiness and control scale assumptions | release |
-| [MX-07](#mx-07) | Close material expiry, renewal and PKI rotation operational lifecycles | release |
+| [MX-05](#mx-05) | **[RE-SCOPED]** Qualify the exact combined image and capability measurement | release |
+| [MX-06](#mx-06) | **[RE-SCOPED]** Prove topology, readiness and control scale assumptions | release |
+| [MX-07](#mx-07) | **[RE-SCOPED]** Close material expiry, renewal and PKI rotation operational lifecycles | release |
 | [MX-08](#mx-08) | Turn existing telemetry into a verified operational feedback loop | release |
-| [MX-09](#mx-09) | Measure latency, cost and resource behavior without duplicating P1/P2 | release |
+| [MX-09](#mx-09) | **[RE-SCOPED]** Measure latency, cost and resource behavior without duplicating P1/P2 | release |
 | [MX-10](#mx-10) | Replace scripted success with representative grounded task acceptance | release |
 | [MX-11](#mx-11) | Prove cross-boundary denial, revocation and uncertain-outcome safety | release |
 | [MX-12](#mx-12) | Verify restart, retention, restore and forward rollback as one recovery story | release |
@@ -655,7 +666,7 @@ Source: R2 lines214–233. These requirements remain specific, independently tes
 | R-03 | Calendar periods versus durations versus fiscal years; timezone/week policy; inclusive start/exclusive end; document/bill version and funding stage | MT-16, MG-02, MF-19, MM-16/17. Define this/last week, DST/month/year/FY rollovers and conflicting selected/text dates. No implicit 30-day fallback for an explicit period. |
 | R-04 | Separate candidate search, authoritative exact count/status/history/comparison and complete decisive source reads | MT-01/16, MM-12/13/17, MG-05/06, MF-16. Known IDs bypass unnecessary discovery; top-k/vector results cannot establish total count or complete negative. Preserve late-body/table qualifiers and exact debriefs. |
 | R-05 | Normalized outcome/method/authority/scope/filter/version/evidence/coverage/freshness/paging/continuation envelope | MT-16, MM-17, MF-16, MG-06. Test complete/partial/empty/unavailable/denied/error separately, stable reason/retryability, stale/unknown time and opaque reauthorized handles. |
-| R-06 | Small measured default surface; native SDK deferred discovery through actual pinned trusted proxy, reference/header/stream/compaction/resume compatibility | MT-01/14/16, MR-08, MX-05/09, MG-01. Unsupported proxy path gets documented measured bounded fallback, not old lexical dispatcher or unmeasured full preload. |
+| R-06 | **[RE-SCOPED]** Small measured default surface; native SDK deferred discovery through actual pinned trusted proxy, reference/header/stream/compaction/resume compatibility | MT-01/14/16, MR-08, MX-05/09, MG-01. Unsupported proxy path gets documented measured bounded fallback, not old lexical dispatcher or unmeasured full preload. |
 | R-07 | Explicit selected skill ID/version plus typed scope/dates; immutable manifest governs sources, operations, approvals, outputs, budgets and version migration | MT-13, **MG-02**, MR-07/08, MM-15/17. UI selection must survive submit/steer/reconnect/resume/fork; prompt text alone is insufficient. |
 | R-08 | All 14 named quick-action intents and Commitments & Deliverables, written as original scoped skills; ordinary questions remain light; firm/self-service skill management retains separate classification | MT-13 now all14 mandatory for full completion; MO-01 procedure/firm-skill management; MM-15/16; MG-02. Commitments distinguishes promise/suggestion, known/unknown owner/date, delivery evidence, conflict/dedup/coverage; extracted commitment does not auto-create a task. |
 | R-09 | Complexity budget follows requested work/evidence, not domain keywords; direct lookup light; diagnosed bounded recovery, partial/clarify/block outcomes | MO-10, MR-02/08/09, MT-16, MX-09, MG-01. Paired simple/comprehensive examples must prove no topic-triggered unnecessary research, blind repeated search or extra effects. |
@@ -691,7 +702,7 @@ Source: R2 lines302–326. Original REL identifiers remain aliases in the master
 | REL-02 Contracts/catalog | MT-01/16 + MG-02/05/06 + MM evidence owners | Frozen catalogue/scope/window/evidence/skill contracts and unavailable-recipe checks. Contributes to W01; no circular requirement to finish all implementation. |
 | REL-03 Adapters | MT-02–09/16 + MM-01/12/13/17 | Exact/search/read pages across agreed sources, complete policy/freshness/coverage fixtures. Live source qualification waits for W03. |
 | REL-04 Skills/UI identity | MT-13 + MG-02/03 + MF-18/19 + MM-15/16 | All14 original workflow identities, explicit typed invocation and completion checks; submit/steer/reconnect/resume/fork; calendar/portfolio/memory collisions. |
-| REL-05 SDK discovery/loop | MT-01/14/16 + MR-08/09 + MO-10 + MX-05/09 | First runtime/proxy checkpoint for W02, then full adapter/skill/continuity integration under W09. Small tool surface/budget evidence, not schema-only mocks. |
+| REL-05 SDK discovery/loop | **[RE-SCOPED]** MT-01/14/16 + MR-08/09 + MO-10 + MX-05/09 | First runtime/proxy checkpoint for W02, then full adapter/skill/continuity integration under W09. Small tool surface/budget evidence, not schema-only mocks. |
 | REL-06 Benchmark/domain truth | MG-01 + MX-10 independent QA | At least200 versioned labelled cases, frozen held-out split, exact domain truth, oracles, candidate result manifest and independent adjudication. |
 | REL-07 Decisions shadow | MG-04A conditional | Only after accepted baseline; verify current API availability, one bounded advisor, paired held-out multi-source/abstention/fallback/latency, explicit promote or remain disabled. |
 | REL-08 JEV shadow | MG-04B conditional | Only after baseline; task-labelled relevance/support/client-fit calibration, safeguards, paired evidence quality and latency. No mandatory adoption. |
@@ -710,7 +721,7 @@ Source: R2 lines401–455. Targets are inherited requirements/proposed gates awa
 | RG-05 | Zero false absence claims on partial/unavailable/stale coverage | MT-16/MM-17/MF-16/MG-01 |
 | RG-06 | 100% selected skill ID/version plus required evidence/completion, including client/portfolio/relationship/memory collisions and Commitments; continuity every lifecycle path | MT-13/MG-02/MM-15/MR-08 |
 | RG-07 | Zero unauthorized disclosure/mutation in cross-/within-tenant, mailbox/private-memory/stored-context/file/citation/revocation suite | MX-11/MF-02/03/MM-01/07/17 |
-| RG-08 | Native discovery actual-proxy compatibility and adversarial recall pass; supported fallback explicit | MT-01/14/16/MX-05/MR-08 |
+| RG-08 | **[RE-SCOPED]** Native discovery actual-proxy compatibility and adversarial recall pass; supported fallback explicit | MT-01/14/16/MX-05/MR-08 |
 | RG-09 | Warm simple lookup final-answer p95≤15s; optional-router added p95≤500ms and total p95 regression≤10%; retain stricter original ordinary-answer≤8s if applicable | MX-09/MG-01/04; freeze cohort/load before evaluation; no treating unfinished token as answer |
 | RG-10 | Optional classifier ≥25% relative held-out routing-error reduction, no material coverage/argument regression, powered paired data/CI and latency pass | MG-04A conditional |
 | RG-11 | Optional JEV task-specific evidence improvement, calibration/abstention and no mandatory-evidence loss; threshold and latency set before scoring | MG-04B conditional; no invented universal gain number |
@@ -734,7 +745,7 @@ Source: R2 lines401–455. Targets are inherited requirements/proposed gates awa
 | Accessibility | Keyboard, names/focus/dialog return/contrast/long content/reduced motion; exact scope/version preserved | MF-20/MG-03 |
 | Mode handoff | Meri active; actual Portfolio/Modules content separate; shared-shell authorized scope preserved or honest disabled destination | MF-19/MG-03/PF-ST owners |
 | Browser | Every enabled auth/cancel/upload/download/restart/isolation/revocation workflow qualifies independently | MT-14/MB-01–03 |
-| Performance/cost | At10 concurrent runs UIACKp95≤2s, fresh-worker readinessp95≤90s; tenant budget/concurrency/runtime;100% attempt usage including failures/retries/subagents | MX-09/MO-10/MR-09; not RG09 final-answer metric |
+| Performance/cost | **[RE-SCOPED]** At10 concurrent runs UIACKp95≤2s, fresh-worker readinessp95≤90s; tenant budget/concurrency/runtime;100% attempt usage including failures/retries/subagents | MX-09/MO-10/MR-09; not RG09 final-answer metric |
 | Data lifecycle | All transcripts/events/uploads/browser/snapshots/previews/artifacts retained/deleted/restored with no revived denied data | MR-05/MM-02/04/07/MX-12 |
 | Operations | Exact candidate staging, alerts, restore/rollback/in-flight compatibility | MX-05–08/12–14 |
 | Reuse | Pinned component/version/license/adoption; custom replacement justified by observed limitation | MX-01/05/MO-11/13; existing framework first |
@@ -1338,6 +1349,7 @@ For UI, memory, runtime and release details, the cited canonical ticket in front
 
 <a id="mo-10"></a>
 #### MO-10 · Close complete-job cost, context integrity and fair capacity
+> **[RE-SCOPED 2026-10-23]** Cost ceilings, context integrity and fair capacity stay: SDK `maxTurns` / `maxBudgetUsd` plus one tenant cap, SDK compaction, runner pool limits. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Original obligation:** R L377–401; A recovery/accounting and G. **Priority:** full-completion P1 unless explicitly gated below; safety/authority prerequisite P0 before activation.
 
@@ -1351,6 +1363,7 @@ For UI, memory, runtime and release details, the cited canonical ticket in front
 
 <a id="mo-11"></a>
 #### MO-11 · Retire obsolete runtime code and configuration safely
+> **[RE-SCOPED 2026-10-23]** KEEP, and do it now: Wave 2 item 0 step 5 is its largest instance. Do not wait for L4. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Original obligation:** R L403–424; historical D S1-7/10/11/12. **Priority:** full-completion P1 unless explicitly gated below; safety/authority prerequisite P0 before activation.
 
@@ -2278,6 +2291,7 @@ P0 means release/activation blocker for a promised surface, not a claim of an ob
 
 <a id="mf-02"></a>
 #### MF-02 — Qualify identity, exact-run renewal and access-loss isolation (P0 before live activation)
+> **[RE-SCOPED 2026-10-23]** A revoked user still loses access within 30 s. Use the ordinary Clerk session refresh plus one Core access check per turn; there is no "exact-run renewal". Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 - **Root cause / evidence:** Fresh token issuance and 45-second renewal already exist. Source presence does not prove backend bearer lifetime, account mapping, deployment origin or revocation behavior.
 - **Bounded files/owner:** `identity-token.server.ts`, `opaque-session-controller.ts`, `session-bootstrap.ts`, `host-controller.ts`, `useConversationConnection.ts`, `SelectedClient.tsx`, shared query scope and their tests. Fix only demonstrated gaps.
@@ -2350,6 +2364,7 @@ P0 means release/activation blocker for a promised surface, not a claim of an ob
 
 <a id="mf-10"></a>
 #### MF-10 — Implement the existing public lifecycle consumer (P1)
+> **[RE-SCOPED 2026-10-23]** Pause, resume and fork controls stay. Consume the lifecycle DTOs defined by Wave 2 item 0. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 - **Root cause / evidence:** Contracts0.1.10 already exports conversation-lifecycle. Main FE allows no control/checkpoints route and no real steer/pause/resume/fork/inspect consumer.
 - **Bounded files/owner:** New `packages/meri-client/src/conversation-lifecycle.ts` export or direct approved contracts import; bounded frontend lifecycle proxy/adapter; `useRunCommands`, run detail/checkpoint UI; targeted route/receiver/browser tests.
@@ -2629,6 +2644,7 @@ Other concrete closure work concerns worker control-read error classification, f
 
 <a id="mr-01"></a>
 #### MR-01 · P0 · Repair historical stop-only retirement after a control render change
+> **[SUPERSEDED 2026-10-23: do not implement]** The config-SHA and facts-hash pins this ticket repairs are deleted by Wave 2 item 0. Keep only: a Stop sent for a run that began before a deploy works (E10, T5). See `SUPERSEDED-BY-ITEM-0.md`.
 **Class:** S, with live consequence U. **Owner:** runtime/native lifecycle. **Release rule:** do not declare cross-render in-flight cleanup qualified until this is closed.
 
 **Exact mismatch**
@@ -2652,6 +2668,7 @@ Candidate11's helper retires the original before render B is constructed. Its de
 
 <a id="mr-02"></a>
 #### MR-02 · P1 · Consume the existing transient-authority classification in the control pump
+> **[SUPERSEDED 2026-10-23: do not implement]** The per-operation authority layer and its availability marker are deleted. Keep only: a transient Core outage retries with bounded backoff inside the run deadline; a definitive refusal fails at once. See `SUPERSEDED-BY-ITEM-0.md`.
 **Class:** S. **Owner:** worker lifecycle.
 
 **Root cause/evidence:** `native-client.mjs` now attaches the existing authority-unavailable marker only to a genuine unanswered dependency/transport. `activity-lifecycle.mjs` still decides using the string code alone. Its own comment documents the old conflation: DEADLINE can be skipped for the run lifetime; all NATIVE_UNAVAILABLE errors are skipped twice then fatal. Thus a known transient outage and a definitive refusal follow the same count path. [apps/runtime/native-client.mjs:21–32](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/runtime/native-client.mjs#L21-L32), [apps/runtime/native-client.mjs:65–80](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/runtime/native-client.mjs#L65-L80), [apps/worker/conversation/continuation/activity-lifecycle.mjs:14–20](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/worker/conversation/continuation/activity-lifecycle.mjs#L14-L20), [apps/worker/conversation/continuation/activity-lifecycle.mjs:54–73](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/worker/conversation/continuation/activity-lifecycle.mjs#L54-L73)
@@ -2712,6 +2729,7 @@ This is appropriate evidence for execution capability but is not by itself a dur
 
 <a id="mr-06"></a>
 #### MR-06 · P1 · Close durable lifecycle outcome readback and recovery after process/request loss
+> **[RE-SCOPED 2026-10-23]** Behaviour stays: durable outcome readback and recovery after process or request loss. Temporal plus the conversation DB are the durable record; there are no prepared-run registries. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 **Class:** S limited recovery surface; Q broader durability; U old-source-session replay behavior.
 
 **Existing behavior:** durable controls are claimed once; PENDING can dispatch, DISPATCHING/UNKNOWN cannot be automatically resent; steer becomes APPLIED only after the exact SDK user-message UUID. Completion has immutable PUBLISHED readback, and Stop has its own durable fence readback. These are intentional barriers. [apps/control/conversations/lifecycle/service.mjs:53–103](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/control/conversations/lifecycle/service.mjs#L53-L103), [apps/worker/conversation/continuation/activity-lifecycle.mjs:83–108](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/worker/conversation/continuation/activity-lifecycle.mjs#L83-L108)
@@ -2725,6 +2743,7 @@ This is appropriate evidence for execution capability but is not by itself a dur
 
 <a id="mr-07"></a>
 #### MR-07 · P1 · Publish a precise checkpoint/version and dormant-original continuity contract
+> **[SUPERSEDED 2026-10-23: do not implement]** The dormant-original, admitting-render, reserved-successor and mirror machinery is replaced by SDK `resume`. Keep only: the next turn after a deploy continues the conversation; an SDK upgrade needs the transcript-recap handover first (O103); an incompatible state shows a clear message. See `SUPERSEDED-BY-ITEM-0.md`.
 **Class:** D + Q, not permission to relax current refusal. **Owner:** runtime compatibility, release/adoption gate, FE messaging.
 
 **Evidence:** SDK and CLI are pinned; the original admission remains tied to its admitting render. Completed-conversation next turns survive image-only changes but refuse SDK/CLI changes; pre-existing successor reservations adopt the accepting image only when compatibility holds. [apps/worker/conversation/options.mjs:20–33](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/worker/conversation/options.mjs#L20-L33), [apps/runtime/test/conversation-survives-deploy.test.mjs:71–104](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/runtime/test/conversation-survives-deploy.test.mjs#L71-L104)
@@ -2741,6 +2760,7 @@ This is appropriate evidence for execution capability but is not by itself a dur
 
 <a id="mr-08"></a>
 #### MR-08 · P1 · Qualify the complete admission-to-next-turn lifecycle, not only happy-path endpoints
+> **[RE-SCOPED 2026-10-23]** Keep the behavioural crossings (duplicate submit, ACK loss, Stop repeated, stream reconnect with cursor, next turn after a failed or cancelled turn, deploy between turns, pause/resume/fork). Drop crossings that exist only for kickoff claim/lease, allocation and grants, native currentness or terminal usage capture. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 **Class:** Q. **Owner:** runtime supplies the semantic cases; release coordinator owns integrated test/release execution.
 
 **Bounded work:** turn §4 into a composed regression suite at the exact release commit and packed contracts. Retain existing unit/protocol tests and add missing crossings of process boundaries, real transaction ACK loss, identity renewal, native currentness and provider terminal evidence. No parallel workflow/model loop.
@@ -2762,6 +2782,7 @@ Minimum crossings:
 
 <a id="mr-09"></a>
 #### MR-09 · P1 · Qualify provider terminal accounting and unresolved-liability recovery
+> **[SUPERSEDED 2026-10-23: do not implement]** Reservations, UNKNOWN liability, quarantine and the CountTokens basis are deleted. Keep only: each run's cost comes from the SDK result and is recorded once; the tenant cap is enforced; a turn is never failed because accounting is uncertain. See `SUPERSEDED-BY-ITEM-0.md`.
 **Class:** Q + operational closure, not a new budget implementation. **Owner:** proxy/accounting runtime; P1/P2 retain their existing ownership.
 
 **Existing contract:** the Bedrock native parser accepts the supported model/stop/usage envelope, excludes unsupported cache/context-edit/tier shapes and requires a terminal message-stop/EOF. The reservation CountTokens basis is not required to equal billed input; exceeding liability holds/quarantines rather than refunding. [apps/proxy/qualification/runtime/native_usage.py:1–265](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/proxy/qualification/runtime/native_usage.py#L1-L265), [apps/proxy/product/response_settlement.py:1–296](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/proxy/product/response_settlement.py#L1-L296)
@@ -3174,6 +3195,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-01"></a>
 #### MT-01 · Make the exact installed capability set the release truth (P0, CONFIG/QUAL)
+> **[RE-SCOPED 2026-10-23]** The tool list a user's run can call, served by the tool gateway, is the release truth. SDK tool discovery runs directly against Bedrock; there is no "measured installation" or "pinned proxy" discovery path. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** Catalog preservation, family construction, runtime composition, installed source measurement, per-run discovery and authorized result release are different gates. The repository supplies many correct boundaries, but 97 descriptors or a passing local unit suite is not evidence of an available native tool.
 
@@ -3187,6 +3209,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-02"></a>
 #### MT-02 · Receive the bounded selected-read composition already supplied by PR197 (P1, source integration)
+> **[RE-SCOPED 2026-10-23]** DONE in Phase 0 (PR197). The read handlers stay; the authority composition around them is not extended. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** Main selected retained composition excludes Research Portfolio/detail changes/evidence, Florida and Monday and refuses query_tasks. #197 provides those existing composition seams and five missing family-discovery rows. This is not a request to rebuild current Core readers or enable every catalog entry.
 
@@ -3200,6 +3223,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-03"></a>
 #### MT-03 · Supply authoritative mail scopes and durable page context to ML-22 (P1, canonical ML-22 subtask)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** Mail page handlers and Core receivers exist. #197 conditional mail ports require task mailbox scopes and a durable mailContextPortsForTask owner, while COMPOSABLE_RETAINED_FAMILIES still excludes mail. Receiving #197 alone cannot make mail selected workflows work.
 
@@ -3213,6 +3237,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-04"></a>
 #### MT-04 · Admit research-source candidates without broadening source visibility (P1)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** #197 supplies the signed-only search_research_sources adapter and discovery, but current Core read-delegation admission omits it. Its six branches have materially different ownership; a client-selected query is not automatic permission to expose tenant-wide directory notes.
 
@@ -3226,6 +3251,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-05"></a>
 #### MT-05 · Bind BD evidence to real conversation and prospect custody (P1)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** Main supports BD context/recent changes but not evidence discovery; #197 adds a signed-only evidence handler. Current Core delegation still excludes evidence, and a greenfield conversation ID cannot be silently treated as a Core native conversation with persisted prospect/client custody.
 
@@ -3239,6 +3265,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-06"></a>
 #### MT-06 · Connect the existing FedRAMP observation producer (P1)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** get_certification_status has a selected descriptor but no Meri family. Current Core already observes and consumes a canonical comparison locale for every exact-ID/name comparison; old handoffs claiming the producer is absent are stale.
 
@@ -3252,6 +3279,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-07"></a>
 #### MT-07 · Connect existing rule stage and comment clocks (P1)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** get_state_rule_status has a descriptor but no actual read family. Current Core already passes separate observed stageAsOf/commentAsOf clocks into canonical lifecycle and comment helpers; rebuilding a rule-status producer would duplicate an existing fix.
 
@@ -3265,6 +3293,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-08"></a>
 #### MT-08 · Connect existing SAM generation, status and health observations (P1)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** search_sam_opportunities is descriptor-only in Meri. Current Core already observes three clocks and evidenceAccuracyMode, reads canonical source health and rechecks current mode after both source awaits; missing admission/wiring is not a missing SAM producer.
 
@@ -3278,6 +3307,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-09"></a>
 #### MT-09 · Keep legal, news and Outreach claims inside reviewed slices (P1 parity; P2 expansion decision)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** #197 discovers three adapters that intentionally implement narrower semantics than all historical Core inputs: parser-independent/exact legal references, explicit-source or explicit-year personnel news, and explicit-client campaign lists. Core104 improves Outreach current-client validation but does not expand these Meri adapters.
 
@@ -3291,6 +3321,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-10"></a>
 #### MT-10 · Qualify the existing task.create approval and effect chain (P1, CONFIG/QUAL)
+> **[RE-SCOPED 2026-10-23]** Approval, durable receipt and no blind redispatch stay. Approvals go through the SDK permission callback plus Core intents; no per-operation grant minting. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** Task creation already has actual runtime authority composition, immutable proposal/decision and exact Core effect dispatch. Some source comments still say no production owners or sourceEnabled cannot be true, but current CLI/config code supplies/permits them. Do not open a duplicate rebuild ticket or mark creation unsupported from stale prose.
 
@@ -3304,6 +3335,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-11"></a>
 #### MT-11 · Supply the missing task.update execution owner (P1)
+> **[RE-SCOPED 2026-10-23]** Approval, durable receipt and no blind redispatch stay. Approvals go through the SDK permission callback plus Core intents; no per-operation grant minting. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** update_task has a typed proposal/preparer and task-command application, but production createTasksFamily has no trusted grant owner; generic conversation APPROVABLE_ACTIONS allows only task.create. Merely exposing propose_task_update or the legacy Core update tool does not create a safe lifecycle.
 
@@ -3317,6 +3349,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-12"></a>
 #### MT-12 · Bridge conversation schedule proposals and schedule-list reads (P1)
+> **[RE-SCOPED 2026-10-23]** Approval, durable receipt and no blind redispatch stay. Approvals go through the SDK permission callback plus Core intents; no per-operation grant minting. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** schedule/update/cancel preparers and canonical routines application exist, but selected intentMountFor does not mount them and generic approval only accepts task.create. list_scheduled_tasks is deliberately not an intent yet has no read family; blindly adding it to retrieval-only schema loading also fails its different schema namespace.
 
@@ -3369,6 +3402,7 @@ Priorities: P0 = safety/qualification prerequisite; P1 = required selected capab
 
 <a id="mt-16"></a>
 #### MT-16 · Close parameter, page, time and result-semantic parity (P1 cross-family regression receipt)
+> **[RE-SCOPED 2026-10-23]** Behaviour and acceptance stay; implement it as tools on the control tool gateway that call the same Core endpoints, reusing the handlers under `apps/gateway/sources/*`. Do not extend native-authority, the relays or the measured-installation layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Root cause / current state.** Typed input/output contracts exist for all97 descriptors, but shape-valid results alone cannot prove preserved defaults, source completeness, current authority or honest evidence release. Each family must retain its own original producer semantics and the narrowed admitted slice.
 
@@ -3633,6 +3667,7 @@ The ledger covers every assigned lifecycle family found in the inspected main/re
 
 <a id="mm-01"></a>
 #### MM-01 — Qualify memory recall and graph as current-authority reads (P0 activation gate)
+> **[RE-SCOPED 2026-10-23]** Memory reads stay scoped to the current actor, client and permissions. Core decides on each tool call; there is no authority-receipt layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 Evidence: [signed memory adapter M L11–128](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/gateway/sources/client-knowledge/memory-signed-http-adapter.mjs#L11-L128), [eligibility M L6–31](https://github.com/neo-capiro/meri-greenfield/blob/bce707763f2cbabe1a73a99aee7b7ec206fa6996/apps/gateway/sources/client-knowledge/memory-eligibility.mjs#L6-L31), [Core graph C L490–529](https://github.com/neo-capiro/capiro-backend/blob/309af848f1aa403f6c8e54aa0d22990d4230f063/apps/api/src/memory/memory.controller.ts#L490-L529).
 
@@ -3759,6 +3794,7 @@ Tests: Interrupted/multipart/duplicate completion; mismatched hash/type/size; un
 
 <a id="mm-13"></a>
 #### MM-13 — Receive prior-chat attachment reads through canonical delegated authority (P1)
+> **[RE-SCOPED 2026-10-23]** Attachment reads stay scoped to the current actor, client and permissions. Core decides on each tool call; there is no authority-receipt layer. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 Evidence: [Core strict attachment envelope C L58–92](https://github.com/neo-capiro/capiro-backend/blob/309af848f1aa403f6c8e54aa0d22990d4230f063/apps/api/src/meri/meri-chat-attachment-transport.ts#L58-L92), [Core source entry C L685–719](https://github.com/neo-capiro/capiro-backend/blob/309af848f1aa403f6c8e54aa0d22990d4230f063/apps/api/src/meri/meri.controller.ts#L685-L719), [read owner C](https://github.com/neo-capiro/capiro-backend/blob/309af848f1aa403f6c8e54aa0d22990d4230f063/apps/api/src/meri/meri-chat-attachment-read.service.ts).
 
@@ -3979,6 +4015,7 @@ All links in this section pin Meri main `bce707763f2cbabe1a73a99aee7b7ec206fa699
 
 <a id="mx-05"></a>
 #### MX-05 · Qualify the exact combined image and capability measurement
+> **[RE-SCOPED 2026-10-23]** Exact-digest image scan and source-to-image proof stay. The "capability measurement" of the removed registry does not. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 **Priority / type:** P0 release gate; existing implementation plus missing fresh native evidence.
 
 **Evidence and root cause:** EX-02 returns METADATA_MATCH_ONLY until independent observations; EX-09's 24 Linux cases are bounded bootstrap/runner/token cases. Source/proxy/renderer/browser additions after an earlier image change its closure. EX-06 records hard-coded host Python/LibreOffice/pptxgenjs paths in some artifact tests; host success is not container inclusion.
@@ -3991,6 +4028,7 @@ All links in this section pin Meri main `bce707763f2cbabe1a73a99aee7b7ec206fa699
 
 <a id="mx-06"></a>
 #### MX-06 · Prove topology, readiness and control scale assumptions
+> **[RE-SCOPED 2026-10-23]** Readiness and control scale stay, and the warm runner pool (S3) stays. Pair and issuer topology do not. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 **Priority / type:** P0 activation gate; operational evidence absent from this audit.
 
 **Evidence and root cause:** EX-04's shipment gates require exactly one control task, distinct private/public health targets and owner/proxy/issuer sequencing. The general manifest README describes process-local poststart challenge custody and disallows overlapping control targets during a handshake. A `/health/live` response proves process liveness, not Core current identity, configured capabilities or a working model path.
@@ -4003,6 +4041,7 @@ All links in this section pin Meri main `bce707763f2cbabe1a73a99aee7b7ec206fa699
 
 <a id="mx-07"></a>
 #### MX-07 · Close material expiry, renewal and PKI rotation operational lifecycles
+> **[RE-SCOPED 2026-10-23]** Expiry and rotation stay for the secrets that remain (Core service secret, Temporal credential, Clerk). Pair mTLS PKI and issuer tokens do not. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 **Priority / type:** P0 for currentness and continuity; operator procedures/qualification, not credential handling in this audit.
 
 **Evidence and root cause:** EX-04 records short static grant deadlines, seven-day material validity, exact staged Secret versions and an issuer→app availability window. The runtime has currentness, issuer/token-writer and task-bound PKI source; no secret contents, private keys or live material versions were inspected here. A working chat before expiry does not prove the next renewal or a rotated issuer.
@@ -4027,6 +4066,7 @@ All links in this section pin Meri main `bce707763f2cbabe1a73a99aee7b7ec206fa699
 
 <a id="mx-09"></a>
 #### MX-09 · Measure latency, cost and resource behavior without duplicating P1/P2
+> **[RE-SCOPED 2026-10-23]** Measure on the new path against the targets in `STANDING-REQUIREMENTS.md` §6. "Without duplicating P1/P2" no longer applies: they are deleted. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 **Priority / type:** P1 performance qualification; existing owners retain implementation.
 
 **Evidence and root cause:** EX-07 local acknowledgement excludes LB/TLS/Clerk/PG/Temporal/deployed UI, and fresh-task readiness stays UNRUN without a real probe. PR195's historical 164-Core-call median is a measurement baseline, not a promised reduction. Current PR196's focused owner/proxy tests pass in its receipt, but broader paired host gate remains not green.
@@ -4166,6 +4206,8 @@ A passing source ticket may become **source-complete, activation-held**. It is n
 **Exit:** one reviewed source baseline, no duplicate donors, no changed activation flags, all parallel ownership clear.
 
 ##### Stage B · Close authority, durable receipt and recovery foundations
+
+> **[SUPERSEDED 2026-10-23: do not implement]** The runtime bullets (stop-only cleanup of older-render originals, transient-authority classification) belong to deleted layers. Keep only: the frontend, commands/tools, memory/artifacts and QA bullets. See `SUPERSEDED-BY-ITEM-0.md`.
 Run compatible work in parallel under separate owners:
 - **Frontend:** fail-closed approval/history/cache behavior on definitive access loss; persist pending action identity before dispatch; reconnect/reobserve after a successful decision; retain input/draft only under matching identity and intended retry semantics.
 - **Runtime:** reproduce and close stop-only cleanup of older render originals; distinguish marked transient authority nonanswers from definitive denial; retain current run/Stop/checkpoint/UNKNOWN invariants and source changes already present.
@@ -4262,15 +4304,15 @@ The following is a scenario inventory, not a command list to run now. Each must 
 | E07 | Stop at queue/load/start/model/tool/output phases | Logical stop fence and physical cleanup/unknown status are distinguishable; no later unauthorized effect |
 | E08 | Failed/cancelled turn after completed checkpoint | Next allowed turn uses last valid published checkpoint, not failed partial state |
 | E09 | Image-only release after completed turn | Existing conversation and pending reserved successor continue under candidate11-compatible rules |
-| E10 | Deploy/rotation while old original is in flight | Historical Stop/retirement can close old work safely; current execution checks are not weakened |
-| E11 | SDK/CLI/format incompatibility | Closed refusal before persistent successor acceptance; clear recovery/new-chat choice |
+| E10 | **[RE-SCOPED]** Deploy/rotation while old original is in flight | Historical Stop/retirement can close old work safely; current execution checks are not weakened |
+| E11 | **[RE-SCOPED]** SDK/CLI/format incompatibility | Closed refusal before persistent successor acceptance; clear recovery/new-chat choice |
 | E12 | Resume/fork/retry/steer/pause | Correct exported contract semantics, exact target, current scope and one receipt; unsupported cases explicitly unavailable |
 | E13 | Approval allow/reject/expiry/revoke | Captured decision persists before dispatch; exact command only; stale approval refuses |
 | E14 | Approval response lost/reload/paging denial | Read-only reconciliation, no automatic repost, current-access cache invalidation |
 | E15 | Approval advances waiting run | Chat observation restarts or rereads immediately; terminal/new output appears without reopening |
 | E16 | Task.create commits then visibility revoked | Durable tenant-bound effect recorded once; current result access denied; no duplicate retry |
 | E17 | Unsupported task mutation | UI/tool does not imply success; no fallback to raw Core mutation |
-| E18 | Read active-set and revoked operation | Only measured admitted operations are discoverable/executable; revoked/missing owner refuses |
+| E18 | **[RE-SCOPED]** Read active-set and revoked operation | Only measured admitted operations are discoverable/executable; revoked/missing owner refuses |
 | E19 | Research/Florida/Monday/task sources | Actual delegated Core endpoint, correct selected client/pagination/time semantics and cited evidence |
 | E20 | FedRAMP/rule/SAM adapter adoption | Existing Core observation fields consumed exactly; absent/not-admitted adapter remains unavailable |
 | E21 | Mail list/search/thread | Correct connected account/tenant/client policy, truthful unsupported attachments and no read→send escalation |
@@ -4291,10 +4333,10 @@ The following is a scenario inventory, not a command list to run now. Each must 
 | E36 | Retention suppression→purge→restart/restore | Suppressed data stays inaccessible, class-specific deletion receipts, no restore resurrection |
 | E37 | Browser/Bash denied or unqualified | No host/network/process starts; refusal before effect |
 | E38 | Approved browser/Bash isolated execution | Current host/egress policy, bounded output, no credential escape, complete cleanup/absence proof |
-| E39 | Owner/proxy partner replacement / fatal retirement | Current proof reuse semantics; old generation invalidated; no request resend after timeout |
-| E40 | Budget/terminal usage missing or contradictory | UNKNOWN liability preserved; no invented usage or release of reserved spend |
+| E39 | **[SUPERSEDED]** Owner/proxy partner replacement / fatal retirement | Current proof reuse semantics; old generation invalidated; no request resend after timeout |
+| E40 | **[SUPERSEDED]** Budget/terminal usage missing or contradictory | UNKNOWN liability preserved; no invented usage or release of reserved spend |
 | E41 | P0 telemetry failure/redaction | Underlying work semantics unchanged; dropped counter/alerts truthful; no secrets/prompt/client identifiers |
-| E42 | Forward rollback and schema compatibility | Previous image redeployed through new valid material/revisions; retained receipts and liabilities remain valid |
+| E42 | **[RE-SCOPED]** Forward rollback and schema compatibility | Previous image redeployed through new valid material/revisions; retained receipts and liabilities remain valid |
 | E43 | Mixed versions/frontends/contracts | Explicit version/source refusal or accepted backward compatibility; no silently misparsed approvals/output |
 | E44 | Inaccessible/empty/stale provider data | Truthful unavailable/no-results distinction, no fabricated success/evidence |
 | E45 | Canonical cross-module handoff | Portfolio/Workspace/Settings context preserved with entity IDs; effect appears in receiving module after reload |
@@ -4302,6 +4344,8 @@ The following is a scenario inventory, not a command list to run now. Each must 
 Every accepted named tool/route family also needs its table's positive, negative, pagination/bounds and currentness cases. These45 integrated scenarios are not substitutes for the finer per-ticket tests or a claim that all45 were executed.
 
 #### 6. Operator gates and order
+
+> **[RE-SCOPED 2026-10-23]** Gate O3 "PKI material" applies only to the secrets that remain; the pair mTLS PKI and issuer tokens are deleted. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 **Gate O0: scope/evidence freeze.** Exact FE/Core/Meri refs, selected capability profile, contracts/SDK/CLI/version compatibility, expected source/image hashes, current PR dispositions and active owners. Confirm ordinary product versus restricted preview; do not weaken preview to make demos pass.
 
@@ -4320,6 +4364,8 @@ Every accepted named tool/route family also needs its table's positive, negative
 **Gate O7: operability and user release.** Current metrics/alerts/renewal/retention/restore/Stop/rollback proofs, supported/held UI truthful, owner ratifies release scope. A limited preview and full-product launch are named differently. Existing fallback is retained unless explicitly authorized to remove or replace.
 
 #### 7. Definition of done
+
+> **[RE-SCOPED 2026-10-23]** Item 3 ("fresh tenant/actor/client/run authority through every hop") is superseded: Core enforces tenant, actor and client scope on every data call and the harness does not re-verify at each hop. Item 5 (UNKNOWN with read-only reconciliation) applies to writes and external effects, not to model spend. Add: nothing the change replaced is left behind (`STANDING-REQUIREMENTS.md` rule 3). Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
 
 For each requested capability, “wired” requires all applicable links:
 1. A real mounted UI or discoverable operation, not a fixture-only screen or catalog placeholder.

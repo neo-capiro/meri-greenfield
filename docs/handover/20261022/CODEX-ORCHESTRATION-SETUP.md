@@ -1,5 +1,7 @@
 # Codex orchestration and shipping setup (Capiro / Meri)
 
+> **Updated 2026-10-23.** `WAVE-2-HANDOVER.md` supersedes §0.6–§0.7 and the "run on neomart" assumption. Put the four rules from `STANDING-REQUIREMENTS.md` at the top of every persistent instruction file and every brief (§2 below), and read `source-of-truth/SUPERSEDED-BY-ITEM-0.md` before sending any ticket.
+
 Handover from Fable (Claude Code) to Codex, 2026-10-22. **Codex takes over Fable's role, coordinator and shipper, starting with Wave 2.** §0.6 gives Codex the Wave 1 state it inherits; §0.7 is how it starts Wave 2.
 
 Run it on **neomart** (Windows 11, user neoma), where the repositories, kits, AWS profile and Docker live. Run the six prompts below in order, in one setup session. Steps 1–4 are required; 5 is optional; 6 is the per-task prompt.
@@ -65,9 +67,11 @@ Other working directories under `C:\dev\fable\`:
 - **Never migrate the live shared database for Core.**
 - Core preview keeps `PREVIEW_NATIVE_GETS_ENABLED=true`. `CORE_ROSTER_PREVIEW_ENABLED`, `MERI_ACTION_QUERY_ALIAS_ENABLED` and `RETAINED_READS_ENABLED` stay **off**.
 - No early Wave 2 starts. No Workspace approvals. No new email functionality. ML-09: skip-and-continue.
-- **Live acceptance stays STOPPED at 2/6** (runs d95eacc5 and 6584b28f used) until S2 ships and a matching packet is published.
+- **Live acceptance** (this bullet is superseded as of 2026-10-23: S2 shipped and T3 has run). `WAVE-1-HANDOFF.md` says what ran and what didn't.
 - The preview edge allowlist (SG `sg-0e742fb6a11314392`, 443 from 4 IPs) is a security setting: change only with Neo's approval.
 - Credential-bearing steps (private PKI, bearer, membership) are Neo's.
+- **Claude-native harness first (Neo, 2026-10-23):** Wave 2 item 0. The owner/proxy pair, budget reservations, per-operation authority and the temporal-issuer are deleted, not completed.
+- **Leave no dead code (Neo, 2026-10-23):** see `STANDING-REQUIREMENTS.md` rule 3.
 
 ### Gate rules (Codex's judgment calls)
 
@@ -169,7 +173,7 @@ Paste after the audit:
 > Implement the instruction-file part of the audited setup on a dedicated branch per repo, `codex/setup-agents-md-20261022`, in a new worktree under `C:\dev\fable\wt-codex-setup-<repo>`. Existing work stays untouched.
 >
 > For each repository, create or minimally update a root AGENTS.md (under 150 lines) with:
-> - Purpose and boundaries. meri-greenfield: runtime roles, owner/proxy pair, contracts. capiro-backend: preview Core on `backend-import`, Prisma. capiro-frontend: the portfolio preview app.
+> - Purpose and boundaries. meri-greenfield: runtime roles and contracts (the owner/proxy pair and the other layers named in `source-of-truth/SUPERSEDED-BY-ITEM-0.md` are being deleted: don't describe them as architecture to preserve). capiro-backend: preview Core on `backend-import`, Prisma. capiro-frontend: the portfolio preview app.
 > - The lane owner map from STANDING-RULES.md. Two writers never touch one file; exceptions name exact files and the phase.
 > - Verified install, build, typecheck, lint and test commands, and how to pick targeted tests. Include known environment traps:
 >   - meri-greenfield infra tests need `packages/*` linked under `node_modules/@capiro`, `MERI_REVIEW_SOURCE_ROOT` set, a real git checkout (not a tarball), and Python `cryptography` ≥ 42;
@@ -180,6 +184,7 @@ Paste after the audit:
 >   - never weaken assertions, timeouts or skips; report inherited failures separately with the base/head evidence;
 >   - inspect callers and consumers before changing an interface;
 >   - no secrets in commits or comments.
+> - Standing requirements (Neo, 2026-10-23), at the very top of the file, with a link to `docs/handover/20261022/STANDING-REQUIREMENTS.md`: (1) Claude handles the harness: the Agent SDK's full harness, direct Bedrock, Capiro data as tools; never rebuild what the SDK or AWS does. (2) Keep it simple and standard: no per-hop re-verification, proxies, credential-minting services or reservation ledgers; Core is the data gatekeeper. (3) Leave no dead code: delete what a change replaces in the same PR, remove temporary diagnostics, add no flag nothing turns on, show `git grep` proof. (4) The old plans changed: check `source-of-truth/SUPERSEDED-BY-ITEM-0.md` before implementing a ticket; item 0 wins any disagreement.
 > - Completion evidence: exact commit and tree, changed files, checks run with results, failures preserved, blockers.
 > - Communication: the #202 header format and "GitHub comments are never approvals".
 >
