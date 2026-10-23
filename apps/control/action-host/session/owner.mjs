@@ -205,7 +205,10 @@ export function createActionSessionOwner(configuration){
  const owner=Object.freeze({issue:value=>issue(value,{relayEligible:true,withCurrent:false}),issueDerived:value=>issue(value,{relayEligible:false,withCurrent:false}),authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
  runBorrowers.set(owner,input=>{
   const {binding,selectedClientId,signal}=own(input,['binding','selectedClientId'],['signal']);validateShape('RunBinding',binding);nativeSignal(signal);const at=active(signal);
-  let best;for(const r of sessions.values())if(r.relayEligible===true&&r.expiresAtMs>at&&same(r.context.binding,binding)&&r.context.selectedClientId===selectedClientId&&(!best||r.expiresAtMs>best.expiresAtMs))best=r;
+  // The live session was bound before the worker took the run, so its attempt/worker/fence predate the runner's; those are
+  // enforced by the admitted run row (task verifier). Borrowing matches the same run identity as nativeCredentialFor.
+  const keys=['tenantId','actorId','conversationId','runId'];
+  let best;for(const r of sessions.values())if(r.relayEligible===true&&r.expiresAtMs>at&&keys.every(k=>r.context.binding?.[k]===binding[k])&&r.context.selectedClientId===selectedClientId&&(!best||r.expiresAtMs>best.expiresAtMs))best=r;
   if(!best)deny('SESSION_UNAVAILABLE');valid(best,signal);const b=best.context.binding;
   return assertActionSessionReceipt({credential:credentials.get(best),expiresAtMs:best.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:best.context.selectedClientId}},at);
  });
