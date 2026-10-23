@@ -58,7 +58,9 @@ test('S2 task bootstrap borrows when the runner attempt differs from the session
  const f=fixture(t);await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
  const runner={...f.binding,attemptId:id(12),workerId:id(13),writerFence:3};
  assert.equal(await f.identity.withAuthority({credential:'native',binding:runner,sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true),true);
- await assert.rejects(f.identity.withAuthority({credential:'native',binding:{...runner,runId:id(14)},sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true));
+ // Another run has no origin session: it is never served from the cache, only by a fresh Core read each time.
+ const other=()=>f.identity.withAuthority({credential:'native',binding:{...runner,runId:id(14)},sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true);
+ const before=f.state.calls.length;await other();await other();assert.equal(f.state.calls.length,before+2);
 });
 test('S2 one caller cancelling does not discard a concurrent fresh positive',async t=>{
  const f=fixture(t);await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
