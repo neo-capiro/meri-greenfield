@@ -32,8 +32,8 @@ export function createNativeIdentityContext(configuration){
    const borrow=requireOrigin?originatingAuthoritySession(fetchImpl):undefined;
    // No live originating session (expired, other run, other process): read Core fresh and never reuse, as before S2.
    let origin;if(borrow){try{origin=borrow({binding,selectedClientId:clientId,signal});}catch(error){if(error?.code!=='SESSION_UNAVAILABLE')throw error;}}
-   // The origin proves the live user session and fences the cache. Its revision pins belong to the browser credential's
-   // receipts; a task reads Core with its own configured credential (another Clerk session), so it pins only from its own cache.
+   // The origin only fences the cache to the live session it was found with; Core is re-read at least every 20 s, which is
+   // what enforces revocation. Pins come from this credential's own receipts (the browser's belong to another Clerk session).
    if(origin)sessionFence=hash(origin.credential);
    const reusable=binding!==undefined&&(!requireOrigin||origin!==undefined);
    let receipt,sendStart=performance.now(),wallSend=now();
@@ -43,16 +43,13 @@ export function createNativeIdentityContext(configuration){
    if(receipt.principal.tenantId!==commandContext.binding.tenantId||receipt.principal.actorId!==commandContext.binding.actorId||receipt.conversationId!==conversationId||receipt.selectedClientId!==clientId||receipt.expiresAtMs<=now()||!reusable&&(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()))unavailable();
    // Each canonical port recheck re-enters the age check; a slow local await cannot carry a19.9s receipt past20s.
    const read=async()=>{
-    let currentOrigin;if(origin){currentOrigin=borrow({binding,selectedClientId:clientId,signal});if(currentOrigin.credential!==origin.credential)unavailable();}
     let r;
     if(reusable)r=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,...(expect?{expect}:{}),signal,deadlineMs});
     else{if(signal?.aborted||now()>=deadlineMs||receipt.expiresAtMs<=now())unavailable();if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,expect:currentRevisions(receipt),signal,deadlineMs:Math.min(deadlineMs,now()+CURRENT_MAX_WAIT_MS)}));if(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now())unavailable();}else currentTurnTelemetry()?.recordAuthority?.('reuse');r=receipt;}
     receipt=r;
-    if(origin){const after=borrow({binding,selectedClientId:clientId,signal});if(after.credential!==origin.credential)unavailable();return data({...r,expiresAtMs:Math.min(r.expiresAtMs,currentOrigin.expiresAtMs,after.expiresAtMs)});}
     return r;
    };
    const result=await observations.run({read,credential},operation);
-   if(origin&&borrow({binding,selectedClientId:clientId,signal}).credential!==origin.credential)unavailable();
    return result!==null&&typeof result==='object'?{...result,authorityRevisions:data(currentRevisions(receipt))}:result;
   },
   async readMembership(){const scope=observations.getStore();if(!scope)return undefined;const r=await scope.read();return data({tenantId:r.principal.tenantId,actorId:r.principal.actorId,status:'active',role:r.role,permissions:r.permissions,clientIds:r.clientIds,membershipRevision:r.membershipRevision,checkedAtMs:now(),expiresAtMs:r.expiresAtMs});},
