@@ -11,6 +11,8 @@ const root=fileURLToPath(new URL('../../../',import.meta.url));
 export async function probeRuntimeImage() {
   assert.equal(process.platform,'linux'); assert.equal(process.arch,'arm64');
   assert.equal(process.version,'v24.22.1'); assert.equal(process.getuid(),1000); assert.equal(process.getgid(),1000);
+  assert.equal(execFileSync('npm',['--version'],{encoding:'utf8',timeout:15000,maxBuffer:65536}).trim(),'12.2.1');
+  assert.equal(execFileSync('npx',['--version'],{encoding:'utf8',timeout:15000,maxBuffer:65536}).trim(),'12.2.1');
   const rootMount=fs.readFileSync('/proc/self/mountinfo','utf8').split('\n').map(line=>line.split(' ')).find(fields=>fields[4]==='/');
   assert(rootMount?.[5].split(',').includes('ro'),'Qualification requires a read-only root mount');
   for(const parent of ['/tmp','/workspace','/run/meri','/run/meri-temporal']){
@@ -36,10 +38,13 @@ export async function probeRuntimeImage() {
   inspectNativeFile(cli);
   assert.match(execFileSync(cli,['--version'],{encoding:'utf8',timeout:15000,maxBuffer:65536}),/^2\.1\.295\b/);
   const python=String.raw`
-import importlib,importlib.metadata,json,platform,ssl,sys
+import importlib,importlib.metadata,json,platform,ssl,sys,sysconfig
 assert platform.machine()=='aarch64'
 assert sys.version_info[:3]==(3,13,16)
 with open(sys.argv[1]) as stream: lock=json.load(stream)
+assert sysconfig.get_path('purelib')==lock['sitePackages']
+import pip
+assert pip.__version__=='26.2.2'
 for row in lock['wheels']:
  assert importlib.metadata.version(row['name'])==row['version'],row['name']
  importlib.import_module(row['importName'])

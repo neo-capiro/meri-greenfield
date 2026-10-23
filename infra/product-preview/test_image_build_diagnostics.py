@@ -36,6 +36,10 @@ def build_fixture(scenario='ok', overrides=None):
         rows = []
         for name in paths:
             payload = (ROOT/name).read_bytes()
+            if name.endswith('runtime-packages.lock.json') and scenario == 'wrong-runtime-base':
+                lock = json.loads(payload)
+                lock['runtimeImageUri'] = 'cgrXdev/chainguard/wolfi-base@sha256:' + 'a' * 64
+                payload = json.dumps(lock).encode()
             target = source/name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(payload); target.chmod(0o644)
@@ -178,6 +182,14 @@ class BuildFailures(unittest.TestCase):
         with build_fixture(overrides={'CODEBUILD_SOURCE_VERSION':'different'}) as (root,result):
             self.assertEqual(result.returncode,2)
             self.assertFalse((root/'calls').exists())
+
+    def test_wrong_runtime_registry_refuses_before_docker_or_auth(self):
+        with build_fixture('wrong-runtime-base') as (root,result):
+            self.assertNotEqual(result.returncode,0)
+            calls=(root/'calls').read_text()
+            self.assertNotIn('/docker',calls)
+            self.assertNotIn('get-login-password',calls)
+            self.assertFalse((root/'source/image-evidence/result.json').exists())
 
 
 if __name__ == '__main__': unittest.main()

@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "platform": "linux/arm64",
   "pythonMinor": "3.13",
-  "sitePackages": "/usr/local/lib/python3.13/site-packages",
+  "sitePackages": "/usr/lib/python3.13/site-packages",
   "provenance": "PyPI release JSON and exact upstream wheel SHA256, retrieved 2026-10-23. Current runtime library versions retained; pandas/pypdf and their dependencies follow the existing worker requirements. Native wheels target CPython 3.13 manylinux aarch64; universal wheels are architecture-independent.",
   "wheels": [
     {

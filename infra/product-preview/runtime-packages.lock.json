@@ -4,37 +4,79 @@
   "nodeVersion": "v24.22.1",
   "pythonVersion": "3.13.16",
   "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8",
-  "runtimeImageUri": "public.ecr.aws/docker/library/python@sha256:ff089de2ebe52f328c4834221097e20eae7f7e4148ea06ac42bd8440d3c79094",
+  "runtimeImageUri": "cgr.dev/chainguard/wolfi-base@sha256:4e354e15b41a49dc249d07a4e38974c4ef6db8a4cc70059c4d625f5cdaa92657",
   "baseProvenance": {
     "node": "https://hub.docker.com/v2/repositories/library/node/tags/24.22.1-trixie-slim",
-    "python": "https://hub.docker.com/v2/repositories/library/python/tags/3.13.16-slim-trixie",
+    "runtime": "https://edu.chainguard.dev/open-source/wolfi/",
     "retrievedOn": "2026-10-23",
-    "selection": "Immutable linux/arm64 child manifests; both Debian trixie; public ECR mirror uses the same child digests"
+    "selection": "Immutable linux/arm64 child manifests; official Node binary on Wolfi glibc. Native compatibility and full-image scans remain required.",
+    "packageIndex": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
+    "packageIndexSha256": "3cde6570f92d6cc297aaa1b86ade2a3ffc420aa2c6330e9bf410d17c21ef1be1"
   },
   "systemPackages": [
     {
       "name": "bash",
-      "version": "5.2.37-2+b10",
-      "architecture": "arm64",
-      "source": "https://deb.debian.org/debian/pool/main/b/bash/bash_5.2.37-2+b10_arm64.deb",
-      "sha256": "9e2d2b3646b250f53be79b6128d9cff5e99cc5ff4a8c84e58efab59ad9bb0ddc"
+      "version": "5.3-r14",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/bash-5.3-r14.apk",
+      "sha256": "a418d69ce51bfeafd24a505e483b74fdb52cfc98a2d43cd8ce8d9670745801b9",
+      "bytes": 750934
     },
     {
-      "name": "libatomic1",
-      "version": "14.2.0-19",
-      "architecture": "arm64",
-      "source": "https://deb.debian.org/debian/pool/main/g/gcc-14/libatomic1_14.2.0-19_arm64.deb",
-      "sha256": "7ccff90234484bf21ae5ecb79d25b6a84b2f4038f65dd139085b2e3a937cd8dc"
+      "name": "libatomic",
+      "version": "16.2.0-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libatomic-16.2.0-r1.apk",
+      "sha256": "923cab5fcdc646ea76ddebfd38626998d787cc10baff0803e3365d1e2bd5ef41",
+      "bytes": 30762
     },
     {
-      "name": "libstdc++6",
-      "version": "14.2.0-19",
-      "architecture": "arm64",
-      "source": "https://deb.debian.org/debian/pool/main/g/gcc-14/libstdc++6_14.2.0-19_arm64.deb",
-      "sha256": "6669b0c52a2e7c6af9adfdabce3ff6e286065cdfbc7b85280862b5f799daebee"
+      "name": "libstdc++",
+      "version": "16.2.0-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r1.apk",
+      "sha256": "02f7d7bec8e641734b52855a33ff5474d6b0c0be24e9244b76c20c3f48c20768",
+      "bytes": 1179404
+    },
+    {
+      "name": "python-3.13",
+      "version": "3.13.16_git20261016-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
+      "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
+      "bytes": 15649
+    },
+    {
+      "name": "python-3.13-base",
+      "version": "3.13.16_git20261016-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
+      "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
+      "bytes": 11899055
+    },
+    {
+      "name": "py3.13-pip",
+      "version": "26.2.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r0.apk",
+      "sha256": "713630cff32fc4116b0aa491565bb1f0fdad210ea48bade2b502d3475d094dab",
+      "bytes": 16573
+    },
+    {
+      "name": "py3.13-pip-base",
+      "version": "26.2.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r0.apk",
+      "sha256": "83d295f369d1396bae0e9a84b6014e9857dba40a1ac4d5215662c34d229e01ce",
+      "bytes": 3999807
     }
   ],
   "pythonRequirements": "infra/product-preview/runtime-packages/requirements.lock.txt",
   "wheelLock": "infra/product-preview/runtime-wheels.lock.json",
-  "qualification": "Native ARM build, nonroot read-only import/artifact execution, and exact installed-image scans are required; base/image metadata alone does not qualify a release."
+  "qualification": "Native ARM build, nonroot read-only import/artifact execution, and exact installed-image scans are required; base/image metadata alone does not qualify a release.",
+  "npm": {
+    "version": "12.2.1",
+    "source": "https://registry.npmjs.org/npm/-/npm-12.2.1.tgz",
+    "sha256": "228bd64aaef23270dbdbd2cf3d5ef5c467602ef38c4066246cef1984adab9a67"
+  }
 }

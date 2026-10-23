@@ -2,32 +2,37 @@
 
 `apps/runtime/Dockerfile` builds the ordinary runtime image on native Linux
 ARM64. The builder is official Node 24.22.1 on Debian trixie; the final base is
-official CPython 3.13.16 on the same distribution. Both are pinned to complete
-ARM64 child-manifest digests in `infra/product-preview/runtime-packages.lock.json`.
-The default pulls use the public ECR Docker Library mirror with those same child
-digests; the upstream tag metadata remains the recorded source provenance.
+Wolfi with its native CPython 3.13.16 packages. Both are pinned to complete ARM64
+child-manifest digests in `infra/product-preview/runtime-packages.lock.json`.
+The Node image uses the public ECR Docker Library mirror; Wolfi uses Chainguard's
+public registry. Node's GNU/Linux binary and the retained native modules require
+the actual final-image compatibility probes on Wolfi's glibc.
 The Dockerfile rejects a different architecture or runtime version. It retains
 the repository's npm locks, Agent SDK 0.3.295 and its CLI 2.1.295. Bedrock uses the
 task role through the SDK; no credentials or model endpoint are baked into this image.
 
-The three explicit Debian runtime packages use exact versions. Their ARM64
-package hashes and upstream URLs are recorded in the package lock. The final
-image retains `ca-certificates` from its digest-pinned Python base: the former
-explicit `20250419` pin was older than that base's installed package and caused
-APT to refuse a downgrade. No downgrade is enabled. The existing final-image
-probe checks the system CA store. Apt still
-resolves their system dependencies against the configured Debian repository;
-this is not a snapshot of the entire Debian repository. Preserve the installed
-package inventory and exact image digest with each qualification result.
+Ordinary signed `apk add` installs the exact Bash, native libraries, Python and
+pip versions. The package lock records their ARM64 hashes and upstream URLs.
+The configured Wolfi repository resolves transitive system dependencies; this
+is not a repository snapshot or a custom APK installer. The build retains the
+installed package inventory and final image digest. System CA trust is checked
+by the actual Python interpreter. npm 12.2.1 is installed through npm from its
+official hash-pinned tarball; both npm and npx remain available and are probed.
 
 Python uses standard offline pip installation with `--require-hashes`,
 `--only-binary=:all:` and `pip check`. The 22 retained PyPI wheels total
-57,680,925 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
+57,933,097 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
 universal wheels are architecture independent. The wheel lock records the
 upstream URL, size and SHA256 of every archive. The set retains the former
 image's Python libraries and adds the pandas/pypdf dependencies already used
 by the canonical artifact source and worker requirements. It supports document,
-spreadsheet, presentation, chart and typed table-analysis generation.
+spreadsheet, presentation, chart and typed table-analysis generation. Pillow is
+13.0.0. pip installs these application libraries in the image's standard
+`/usr/lib/python3.13/site-packages`; `--break-system-packages` explicitly permits
+that build-time installation into Wolfi's managed interpreter. The pinned set
+does not replace pip or its distribution dependencies. Native probes check the
+installation path, exact library versions and every import. PptxGenJS retains
+its canonical generator with a scoped image-size 2.0.4 dependency override.
 
 The old x86 Wolfi APK installation helpers and tracked payload are retired.
 Historical receipts in `infra/product-preview/runtime-packages` remain history;
@@ -77,12 +82,12 @@ visual correctness. Those require the existing renderer and application gates.
 Release qualification also requires the final installed ARM64 image's ECR and
 Trivy results, with **zero HIGH/CRITICAL findings and no exclusions**, plus the
 current runtime/application gates. Windows source checks, base metadata and
-older x86 receipts are insufficient. A failing Debian scan requires an image
-repair or a new base selection before deployment.
+older x86 receipts are insufficient. A failing installed-image scan requires
+repair before deployment; no package metadata is removed or findings excluded.
 
 Primary provenance: [Node image source](https://github.com/nodejs/docker-node),
-[Python image source](https://github.com/docker-library/python),
+[Wolfi](https://edu.chainguard.dev/open-source/wolfi/),
 [pip secure installs](https://pip.pypa.io/en/stable/topics/secure-installs/),
-[Debian ARM64 package index](https://deb.debian.org/debian/dists/trixie/main/binary-arm64/Packages.xz).
+[Wolfi ARM64 package index](https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz).
 Exact base tag metadata URLs and retrieval date are retained in the package lock;
 each wheel's original PyPI URL and hash are retained in the wheel lock.

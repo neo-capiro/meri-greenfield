@@ -86,8 +86,8 @@ readarray -t bases < <(python3 -I -B -S - <<'PY'
 import json,re
 v=json.load(open('infra/product-preview/runtime-packages.lock.json'))
 assert v['platform']=='linux/arm64'
-for key,name in [('nodeImageUri','node'),('runtimeImageUri','python')]:
- value=v[key]; assert re.fullmatch('public.ecr.aws/docker/library/'+name+'@sha256:[a-f0-9]{64}',value); print(value)
+for key,repository in [('nodeImageUri','public.ecr.aws/docker/library/node'),('runtimeImageUri','cgr.dev/chainguard/wolfi-base')]:
+ value=v[key]; assert re.fullmatch(re.escape(repository)+'@sha256:[a-f0-9]{64}',value); print(value)
 PY
 )
 [[ ${#bases[@]} == 2 ]] || exit 2
@@ -118,6 +118,8 @@ run 30 cli-help.log "${common[@]}" "$image" --help
 run 180 runtime-probe.log "${common[@]}" --entrypoint node "$image" apps/runtime/build/runtime-base-probe.mjs --check
 run 300 artifact-generation.log "${common[@]}" --entrypoint node "$image" infra/product-preview/runtime-packages/executor-generation-smoke.mjs
 run 120 product-imports.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "await import('./apps/runtime/control.mjs');await import('./apps/runtime/temporal-worker.mjs');await import('./apps/runtime/conversation-runner.mjs');"
+run 30 installed-packages.log "${common[@]}" --entrypoint apk "$image" info -vv
+run 30 installed-python.json "${common[@]}" --entrypoint python3.13 "$image" -I -m pip list --format=json
 run 30 public-ca.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';const lock=JSON.parse(fs.readFileSync('apps/runtime/certs/rds-global-bundle.lock.json'));const path=process.env.NODE_EXTRA_CA_CERTS;assert.equal(path,lock.imagePath);const bytes=fs.readFileSync(path),s=fs.statSync(path);assert.equal(createHash('sha256').update(bytes).digest('hex'),lock.sha256);assert.equal(bytes.length,lock.bytes);assert.equal(s.mode&4095,292);assert.equal(s.uid,0);"
 run 30 repository.json "${aws[@]}" ecr describe-repositories --repository-names "$repository" --output json
 python3 -I -B -S - "$evidence/repository.json" "$registry/$repository" <<'PY'
