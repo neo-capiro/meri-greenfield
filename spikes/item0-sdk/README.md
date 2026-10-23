@@ -4,7 +4,7 @@ Base: `05d588c7c5d6da8b8e8a12ea4d47e16526af1aaf`. Requirements: PR206 handover `
 
 Implementation outline: use the pinned Claude Agent SDK as the only loop, its Claude Code preset, built-in tools, ordinary SDK skill/subagent configuration, and standard session store. A five-question synthetic fixture supplies content; it does not access Core or represent real permissions. The script records timing, observed tool use, usage and session behavior. Root owns container/AWS execution and quality comparison. No product runtime, old authority, infrastructure, database or shared package changes belong in this spike.
 
-The experiment will use a new scratch/config directory, explicit direct Bedrock configuration, per-query turn/cost/time bounds, and denied Bash. Tests cover malformed/missing configuration without network access and the actual pinned SDK API surface. Live results remain pending until root executes the bounded script.
+The experiment uses a new scratch/config directory, explicit direct Bedrock configuration, per-query turn/cost/time bounds, and denied Bash. Tests cover malformed/missing configuration without network access and the actual pinned SDK API surface. Root completed all five original questions at `f4aa9d25`; see [the report](../../docs/handover/item0-sdk-spike.md) for measured results, remaining quality/security gates and the Bedrock WebSearch limitation. The current correction opts in TaskCreate/TaskUpdate/TaskGet/TaskList and updates only the seed's task-tracking request. Its live replay remains pending; Agent stays unchanged because it succeeded in the original comparison.
 
 ## Local source checks (no model calls)
 
@@ -16,7 +16,7 @@ npm run typecheck
 node run.mjs --help
 ```
 
-The six tests exercise actual SDK store methods and a real loopback HTTP MCP server/client, with invalid-header/input controls. They do not run Claude or call AWS. TypeScript checks the actual JavaScript option construction and SDK message narrowing against 0.3.295. The explicit test script is this isolated experiment's smoke entrypoint; production CLI discovery is unchanged.
+The six tests exercise actual SDK store methods and a real loopback HTTP MCP server/client, with invalid-header/input controls, plus native task-tool opt-in and unchanged Agent. They do not run Claude or call AWS. TypeScript checks the actual JavaScript option construction, message narrowing and native task input types (including invalid ID/status controls) against 0.3.295. The explicit test script is this isolated experiment's smoke entrypoint; production CLI discovery is unchanged.
 
 ## Root execution
 
@@ -58,5 +58,7 @@ The fixture HTTP MCP server is bound only to `127.0.0.1`, requires a literal syn
 `success` means the SDK returned a successful result with no detected mirror error and the expected session identity. It does **not** mean a required tool was actually used, a question was answered well, or a production gate passed. Check tool names and matching result error flags. For resume/fork, require the remembered phrase, same/new session ID respectively, and unchanged original seed entries for the fork. Failure to recover the phrase is an adjust result even if the script's execution outcome is success.
 
 Compare all five answers with claude.ai using the identical synthetic questions and fixture content. Score grounding, explicit uncertainty, actionability, organization and continuity (0–2 each); record reviewer and both answers. No comparison has been run by this lane. TTFT starts at the SDK query, not ECS task admission. Core and DB are absent, so this cannot establish product overhead or the item 0 call-count limits.
+
+Use the original prompts at `f4aa9d25` for that five-question quality comparison. One extra corrected seed may verify native task tracking: require actual successful TaskCreate/TaskUpdate/TaskGet/TaskList results with completion after the brief is written. It retains the same bounds and is recorded separately; no changes to the four other question prompts or earlier evidence are needed. Root controls whether to execute it. WebSearch remains explicitly unavailable on Bedrock; keep the existing product public-web search capability until a supported replacement is proven.
 
 `modelUsage` includes main, subagent and query-pipeline side calls; `usage` is main-loop only. Resumed/forked result totals can include prior session totals. Do not sum successive cumulative results or bill a resumed run for the seed again. Persist the observed baseline and use a reviewed per-run delta plus the owned price table later. SDK estimates do not include every helper request and are not an invoice.

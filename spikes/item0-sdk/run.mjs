@@ -47,7 +47,7 @@ export function sdkOptions(config, {plugin, store, mcp, controller, configDirect
     systemPrompt: {type: 'preset', preset: 'claude_code', append:
       `You are Meri, Capiro's evidence-focused assistant. Rehearsal scope: ${question.scope}. All client records here are synthetic. State evidence gaps and label inference. Never perform external mutations.`},
     tools: {type: 'preset', preset: 'claude_code'},
-    allowedTools: ['Read', 'Write', 'Edit', 'Glob', 'Grep', 'TodoWrite', 'Agent', 'Skill',
+    allowedTools: ['Read', 'Write', 'Edit', 'Glob', 'Grep', 'TaskCreate', 'TaskUpdate', 'TaskGet', 'TaskList', 'Agent', 'Skill',
       'mcp__fixture__fixture_records', ...(question.id === 'web' ? ['WebSearch', 'WebFetch'] : [])],
     disallowedTools: ['Bash', 'NotebookEdit', ...(question.id === 'web' ? [] : ['WebSearch', 'WebFetch'])],
     canUseTool: async () => ({behavior: 'deny', message: 'Interactive permission is unavailable in this bounded synthetic experiment.'}),

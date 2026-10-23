@@ -44,6 +44,12 @@ test('pinned native surface and full preset configuration preserve supported mec
   assert.equal(options.thinking, undefined); assert.equal(options.maxThinkingTokens, undefined);
   assert.equal(options.sessionStoreFlush, 'batched'); assert.equal(options.maxTurns, 12); assert.equal(options.maxBudgetUsd, 1);
   assert(options.disallowedTools.includes('Bash')); assert(!options.allowedTools.includes('Bash'));
+  for (const tool of ['TaskCreate', 'TaskUpdate', 'TaskGet', 'TaskList']) {
+    assert(options.allowedTools.includes(tool)); assert(!options.disallowedTools.includes(tool));
+    assert(config.question.prompt.includes(tool));
+  }
+  assert(!options.allowedTools.includes('TodoWrite')); assert(!config.question.prompt.includes('TodoWrite'));
+  assert(options.allowedTools.includes('Agent')); // Observed successful alias in the original live compare.
   assert.equal(options.mcpServers.fixture.type, 'http');
   assert.equal(options.canUseTool && (await options.canUseTool('Bash', {}, {})).behavior, 'deny');
 });

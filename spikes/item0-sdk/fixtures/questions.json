@@ -2,7 +2,7 @@
   {
     "id": "seed",
     "scope": "Synthetic client Atlas",
-    "prompt": "/meri-original-skills:meri-meeting-prep Prepare a short meeting brief for synthetic client Atlas using only fixture-records.txt and the synthetic fixture_records MCP tool. Separate facts, inference, open commitments and unavailable sources. Cite record labels. Treat the fixtures as the entire supplied evidence, not complete Capiro coverage. Remember the private rehearsal phrase amber-lantern for the next turn. Use TodoWrite to track the brief and Write to save brief.md. Keep the answer below 400 words."
+    "prompt": "/meri-original-skills:meri-meeting-prep Prepare a short meeting brief for synthetic client Atlas using only fixture-records.txt and the synthetic fixture_records MCP tool. Separate facts, inference, open commitments and unavailable sources. Cite record labels. Treat the fixtures as the entire supplied evidence, not complete Capiro coverage. Remember the private rehearsal phrase amber-lantern for the next turn. Use TaskCreate to create one brief task and TaskUpdate to mark it in_progress. Save brief.md with Write, then mark the task completed with TaskUpdate and verify its final state with TaskGet and TaskList. Keep the answer below 400 words."
   },
   {
     "id": "resume",
