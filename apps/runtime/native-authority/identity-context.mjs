@@ -17,9 +17,9 @@ export function createNativeIdentityContext(configuration){
  const client=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled,limits:{maxRequestMs:l.maxRequestMs,maxResponseBytes:l.maxFactBytes}});
  const observations=new AsyncLocalStorage(),receipts=createRunCurrentAuthority({client,now});
  const projectedIdentity=r=>data({principal:r.principal,identityRevision:r.identityRevision,checkedAtMs:now(),expiresAtMs:r.expiresAtMs});
- const projected={readIdentity:async call=>{const scope=observations.getStore();if(scope&&call.credential!==scope.credential)throw Error('APPLICATION_AUTHORITY_REFUSED');return scope?projectedIdentity(await scope.read()):client.readIdentity(call);},readContext:async call=>{
+ const projected={readIdentity:async call=>{const scope=observations.getStore();if(scope&&call.credential!==scope.credential)throw Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{code:'SCOPE_IDENTITY_CREDENTIAL'});return scope?projectedIdentity(await scope.read()):client.readIdentity(call);},readContext:async call=>{
   const scope=observations.getStore();if(!scope)return client.readContext(call);const r=await scope.read();
-  if(call.credential!==scope.credential||call.conversationId!==r.conversationId||call.clientId!==r.selectedClientId)throw Error('APPLICATION_AUTHORITY_REFUSED');
+  if(call.credential!==scope.credential||call.conversationId!==r.conversationId||call.clientId!==r.selectedClientId)throw Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{code:call.credential!==scope.credential?'SCOPE_CONTEXT_CREDENTIAL':call.conversationId!==r.conversationId?'SCOPE_CONTEXT_CONVERSATION':'SCOPE_CONTEXT_CLIENT'});
   return data({...projectedIdentity(r),identitySha256:call.identitySha256,conversationId:r.conversationId,selectedClientId:r.selectedClientId,contextRevision:r.contextRevision});
  }};
  const mapped=createApplicationContextAdapters({client:projected,currentRun,commandContext,now,limits:l,...(selectRun?{selectRun}:{}),...(admitInitialConversation?{admitInitialConversation}:{})});
