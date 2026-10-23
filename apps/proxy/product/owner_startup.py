@@ -200,7 +200,7 @@ class ProductOwnerStartup:
             if (type(value) is not dict or value!={"binding":binding,"requestId":request_id,"deadlineMs":deadline}):
                 _deny()
             return life.current_conversation()
-        await life.refresh()
+        life.check()
         self._check_generation(generation)
         return ProductSession(request_id=request_id,binding=binding,model_grant_id=facts[1],
             deadline_ms=deadline,selected_client_id=facts[7],pricing_revision=self.pricing_revision,

@@ -105,7 +105,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
             return PeerLease(ingress.peer.ipv4, time.monotonic(), RUN, GRANT)
 
         self.life = RequestLifetime(ingress, observer, time.monotonic() + 10,
-                                    LifetimeLimits(poll_seconds=.05, check_seconds=.5), PendingWork())
+                                    LifetimeLimits(check_seconds=.5), PendingWork())
         await self.life.start(scope)
         self.life.original_body = RAW
         self.token = _request_lifetime.set(self.life)
@@ -341,7 +341,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
         app = PRODUCT.create_product_proxy_app(
             trusted_resolver=trusted, resolve_session=resolve,
             invoke_litellm=invoke,
-            limits=LifetimeLimits(poll_seconds=.05, check_seconds=.5))
+            limits=LifetimeLimits(check_seconds=.5))
         receive_queue = asyncio.Queue()
         receive_queue.put_nowait({"type": "http.request", "body": RAW, "more_body": False})
         sent = []
@@ -388,7 +388,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
         app = PRODUCT.create_product_proxy_app(
             trusted_resolver=lambda _: TrustedRequest(ingress, observe, time.monotonic() + 5),
             resolve_session=resolve, invoke_litellm=invoke,
-            limits=LifetimeLimits(poll_seconds=.05, check_seconds=.5))
+            limits=LifetimeLimits(check_seconds=.5))
         request = json.dumps({"model": PRODUCT.MODEL_ALIAS,
                               "messages": [{"role": "user", "content": "synthetic"}],
                               "tools": []}).encode()
@@ -427,7 +427,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
         app = PRODUCT.create_product_proxy_app(
             trusted_resolver=lambda _: TrustedRequest(ingress, observe, time.monotonic() + 5),
             resolve_session=resolve, invoke_litellm=invoke,
-            limits=LifetimeLimits(poll_seconds=.05, check_seconds=.5))
+            limits=LifetimeLimits(check_seconds=.5))
         request = json.dumps({"model": PRODUCT.MODEL_ALIAS,
                               "messages": [{"role": "user", "content": "synthetic"}],
                               "tools": []}).encode()
@@ -463,7 +463,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
         app = PRODUCT.create_product_proxy_app(
             trusted_resolver=lambda _: TrustedRequest(ingress, observe, time.monotonic() + 5),
             resolve_session=resolve, invoke_litellm=lambda *_: None,
-            limits=LifetimeLimits(poll_seconds=.05, check_seconds=.5))
+            limits=LifetimeLimits(check_seconds=.5))
         request = json.dumps({"model": PRODUCT.MODEL_ALIAS,
                               "messages": [{"role": "user", "content": "synthetic"}],
                               "tools": []}).encode()
@@ -506,7 +506,7 @@ class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
                 resolve_bearer_sha256=lambda _: None,
                 observe_task_eni=lambda *_: None,
                 resolve_session=resolve, invoke_litellm=invoke,
-                limits=LifetimeLimits(poll_seconds=.05, check_seconds=.5))
+                limits=LifetimeLimits(check_seconds=.5))
         request = json.dumps({"model": PRODUCT.MODEL_ALIAS,
                               "messages": [{"role": "user", "content": "synthetic"}],
                               "tools": []}).encode()

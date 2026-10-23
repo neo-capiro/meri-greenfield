@@ -13,7 +13,7 @@ from apps.proxy.qualification.runtime.lifetime import LifetimeLimits, PendingWor
 from apps.proxy.qualification.state.pricing import StateDenied
 from apps.proxy.qualification.test.test_ingress import fixture, BINDING, GRANT
 
-LIMITS = LifetimeLimits(poll_seconds=.01, check_seconds=.05, cleanup_seconds=.02)
+LIMITS = LifetimeLimits(check_seconds=.05, cleanup_seconds=.02)
 
 
 class LifetimeTests(unittest.IsolatedAsyncioTestCase):
@@ -61,20 +61,30 @@ class LifetimeTests(unittest.IsolatedAsyncioTestCase):
             await life.start(scope)
         await life.close()
 
-    async def test_canonical_fence_revocation_is_sticky(self):
+    async def test_canonical_fence_revocation_refuses_at_start(self):
         store, scope, life, _ = self.make()
-        await life.start(scope)
         store.run["fence"] = 2
-        await asyncio.wait_for(life.denied.wait(), .3)
-        store.run["fence"] = 1
         with self.assertRaises(StateDenied):
-            life.check()
+            await life.start(scope)
+        self.assertEqual(life.reason, "FRESH_ADMISSION_DENIED")
         await life.close()
 
-    async def test_original_deadline_not_reset_by_observer_renewal(self):
-        _, scope, life, _ = self.make(deadline=time.monotonic()+.04)
+    async def test_admitted_once_then_bounded_only_by_deadline(self):
+        observations = []
+        async def observe():
+            observations.append(1)
+            return PeerLease("10.77.0.9", time.monotonic(), BINDING, GRANT)
+        store, scope, life, _ = self.make(observe, deadline=time.monotonic()+.2)
         await life.start(scope)
-        await asyncio.wait_for(life.denied.wait(), .3)
+        calls = store.calls
+        self.assertEqual(life.tasks, set())  # No watcher runs beside the request.
+        store.run["fence"] = 2  # A later change is not re-read during the request.
+        await asyncio.sleep(.1)
+        life.check()
+        self.assertEqual((store.calls, len(observations)), (calls, 1))
+        await asyncio.sleep(.15)
+        with self.assertRaises(StateDenied):
+            life.check()
         self.assertEqual(life.reason, "ORIGINAL_DEADLINE_EXPIRED")
         await life.close()
 
@@ -96,24 +106,6 @@ class LifetimeTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(life.reason, expected)
                     self.assertEqual(life.deadline, deadline)
                     await life.close()
-
-        now, observations = [time.monotonic()], []
-        renewed = asyncio.Event()
-        async def observe():
-            observations.append(1)
-            if len(observations) >= 3:
-                renewed.set()
-            return PeerLease("10.77.0.9", time.monotonic(), BINDING, GRANT)
-        deadline = now[0] + .04
-        _, scope, life, _ = self.make(observe, deadline)
-        with patch.object(lifetime_module, "time", SimpleNamespace(monotonic=lambda: now[0])):
-            await life.start(scope)
-            await asyncio.wait_for(renewed.wait(), .3)
-            self.assertEqual(life.deadline, deadline)
-            now[0] = deadline
-            await asyncio.wait_for(life.denied.wait(), .3)
-            self.assertEqual(life.reason, "ORIGINAL_DEADLINE_EXPIRED")
-            await life.close()
 
     async def test_pending_state_thread_is_retained_no_new_poll_or_forced_stop(self):
         store, scope, life, pending = self.make()
@@ -181,13 +173,13 @@ class LifetimeTests(unittest.IsolatedAsyncioTestCase):
             if pending.tasks:
                 await asyncio.wait(set(pending.tasks), timeout=1)
 
-    async def test_mandatory_watcher_cancelled_before_start_denies(self):
+    async def test_mandatory_task_cancelled_before_start_denies(self):
         _, scope, life, _ = self.make()
         await life.start(scope)
-        watcher = next(task for task in life.tasks if task.get_coro().__qualname__ == "RequestLifetime._watch")
-        watcher.cancel()  # No scheduling turn: coroutine's except block cannot run.
+        task = life.spawn(asyncio.Event().wait(), mandatory="REQUEST_RECEIVE_STOPPED")
+        task.cancel()  # No scheduling turn: coroutine's except block cannot run.
         await asyncio.wait_for(life.denied.wait(), .3)
-        self.assertEqual(life.reason, "ADMISSION_WATCH_STOPPED")
+        self.assertEqual(life.reason, "REQUEST_RECEIVE_STOPPED")
         await life.close()
 
     async def test_intentional_close_keeps_reason_before_mandatory_cancellation(self):
@@ -201,14 +193,14 @@ class LifetimeTests(unittest.IsolatedAsyncioTestCase):
 
 class LimitTests(unittest.TestCase):
     def test_typed_finite_closed_limits(self):
-        for name in ("poll_seconds", "check_seconds", "cleanup_seconds", "max_body_bytes", "max_events"):
+        for name in ("check_seconds", "cleanup_seconds", "max_body_bytes", "max_events"):
             for value in (True, 0, -1, float("nan"), float("inf"), "1", 2**30):
                 with self.subTest(name=name, value=value), self.assertRaises(StateDenied):
                     LifetimeLimits(**{name: value})
 
     def test_check_and_cleanup_reach_the_owner_exchange_budget(self):
         LifetimeLimits(check_seconds=30, cleanup_seconds=30)
-        for name, value in (("check_seconds", 30.01), ("cleanup_seconds", 30.01), ("poll_seconds", 5.01)):
+        for name, value in (("check_seconds", 30.01), ("cleanup_seconds", 30.01)):
             with self.subTest(name=name), self.assertRaises(StateDenied):
                 LifetimeLimits(**{name: value})
 

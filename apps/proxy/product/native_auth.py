@@ -133,18 +133,15 @@ async def authenticate_product_request(request, api_key):
         _deny()
     if type(body) is not dict or body.get("model") != MODEL:
         _deny()
-    await life.refresh()
     source = _check(holder, request)
     receipt = life.current_conversation()
     _check(holder, request)
     at = time.time_ns() // 1_000_000
     facts = json.loads(holder.source)
-    if (type(receipt) is not dict or receipt.get("selectedClientId") != facts[7]
-            or type(receipt.get("expiresAtMs")) is not int
-            or not at < receipt["expiresAtMs"] <= source[2]):
+    if type(receipt) is not dict or receipt.get("selectedClientId") != facts[7]:
         _deny()
-    expiry = min(source[2], receipt["expiresAtMs"],
-                 at + max(0, int((life.deadline-time.monotonic())*1000)))
+    # The request was admitted at its start; its own deadline bounds it from here.
+    expiry = min(source[2], at + max(0, int((life.deadline-time.monotonic())*1000)))
     if expiry <= at:
         _deny()
     try:

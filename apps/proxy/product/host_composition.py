@@ -35,7 +35,7 @@ from .budgets import BOOTSTRAP_SECONDS, IN_REQUEST_CHECK_SECONDS, REQUEST_CLEANU
 from . import refusal_diagnostics as diagnostics
 from . import telemetry_context as telemetry
 
-# Watch renewal may wait for an owner exchange; request-path checks use the lifetime lease.
+# The opening admission and session resolution may each wait for an owner exchange.
 PRODUCT_LIFETIME_LIMITS = LifetimeLimits(check_seconds=IN_REQUEST_CHECK_SECONDS, cleanup_seconds=REQUEST_CLEANUP_SECONDS)
 from .upstream_callback import ProductNativeDispatchEvidence
 
@@ -235,7 +235,6 @@ def create_product_proxy_app(*, trusted_resolver, resolve_session, invoke_litell
 
     async def count(request):
         life, session = await current_session()
-        await life.refresh()
         await require_current_conversation(
             life, binding=session.binding, request_id=session.request_id,
             deadline_ms=session.deadline_ms,
@@ -244,7 +243,6 @@ def create_product_proxy_app(*, trusted_resolver, resolve_session, invoke_litell
         callback = create_fixed_cli_count_callback(
             session.count_client, allowed_tool_names=session.limits.allowed_tool_names)
         tokens = await callback(request)
-        await life.refresh()
         await require_current_conversation(
             life, binding=session.binding, request_id=session.request_id,
             deadline_ms=session.deadline_ms,

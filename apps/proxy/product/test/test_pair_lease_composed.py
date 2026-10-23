@@ -291,11 +291,11 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         before, discoveries = await self.stats(), len(self.aws.calls)
         session, peer_checks = await self.invoke(20.2)
         after = await self.stats()
-        self.assertEqual(peer_checks, 5)
-        self.assertEqual(len(self.calls), 7)
+        self.assertEqual(peer_checks, 1)  # Observed once before start; never re-observed in the request.
+        self.assertEqual(len(self.calls), 3)  # Admit, reserve and settle: no in-request admission reads.
         self.assertEqual(len(self.aws.calls)-discoveries, 0)
         self.assertEqual(after['pairProofs']-before['pairProofs'], 0)
-        self.assertEqual(after['coreCalls']-before['coreCalls'], 12)
+        self.assertEqual(after['coreCalls']-before['coreCalls'], 4)
         self.assertEqual(len(after['requests']), 1)
         self.assertEqual(after['requests'][0]['request_id'], session.request_id)
         self.assertEqual(after['requests'][0]['state'], 'SETTLED')
