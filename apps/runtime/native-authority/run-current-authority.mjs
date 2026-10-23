@@ -10,6 +10,8 @@ import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 const refuse=()=>{throw Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403});};
 const unavailable=()=>markAuthorityUnavailable(Object.assign(Error('APPLICATION_AUTHORITY_UNAVAILABLE'),{status:503}));
 export const CURRENT_REUSE_MS=20000;
+/** Longest wait for one Core /current answer. Live Core does a Clerk read plus a RepeatableRead transaction; 3 s discarded slow 2xx answers. */
+export const CURRENT_MAX_WAIT_MS=8000;
 export function createRunCurrentAuthority(configuration){
  const {client,now=Date.now,monotonic=()=>performance.now(),record=kind=>currentTurnTelemetry()?.recordAuthority?.(kind)}=own(configuration,['client'],['now','monotonic','record']);
  if(!client||typeof client!=='object'||types.isProxy(client))refuse();const reader=Object.getOwnPropertyDescriptor(client,'readCurrent');
@@ -24,7 +26,7 @@ export function createRunCurrentAuthority(configuration){
   const selectors=currentRequest({conversationId:binding.conversationId,clientId:call.selectedClientId,...(call.expect===undefined?{}:{expect:call.expect})});
   if(typeof call.credential!=='string'||!/^\S{1,8192}$/u.test(call.credential)||typeof call.sessionFence!=='string'||!call.sessionFence||call.sessionFence.length>512||call.fresh!==undefined&&typeof call.fresh!=='boolean'||!Number.isSafeInteger(call.deadlineMs))refuse();
   const key=hash({binding,clientId:call.selectedClientId,sessionFence:call.sessionFence,credential:hash(call.credential),expect:selectors.expect??null});
-  const life=createOperationLifetime({now,deadlineMs:Math.min(call.deadlineMs,now()+3000),signal:call.signal,errorFactory:code=>code==='DEADLINE'?unavailable():Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403})});
+  const life=createOperationLifetime({now,deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal:call.signal,errorFactory:code=>code==='DEADLINE'?unavailable():Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403})});
   try{
    life.check();const prior=entries.get(key),age=prior===undefined?Infinity:clock()-prior.sendStart;
    if(call.fresh!==true&&!pending.has(key)&&prior&&age>=0&&age<CURRENT_REUSE_MS&&prior.receipt.expiresAtMs>now()&&
@@ -39,11 +41,13 @@ export function createRunCurrentAuthority(configuration){
     const sendStart=clock(),wallSend=now();count('fresh');
     let receipt;
     try{
-     receipt=currentReceipt(await life.run(signal=>readCurrent({credential:call.credential,...selectors,...(expected?{expect:expected}:{}),deadlineMs:Math.min(call.deadlineMs,now()+3000),signal})));
+     receipt=currentReceipt(await life.run(signal=>readCurrent({credential:call.credential,...selectors,...(expected?{expect:expected}:{}),deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal})));
      life.check();const age=clock()-sendStart;
-     if(age>=3000)throw unavailable();
+     if(age>=CURRENT_MAX_WAIT_MS)throw unavailable();
      if(receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId||receipt.conversationId!==binding.conversationId||receipt.selectedClientId!==call.selectedClientId||receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()||receipt.expiresAtMs<=now()||age<0||age>=CURRENT_REUSE_MS||expected&&Object.entries(expected).some(([k,v])=>receipt[k]!==v))refuse();
-    }catch(error){group.epoch++;entries.delete(key);throw error;}
+    }catch(error){
+     // The caller's own cancellation is not a Core observation: it must not bar concurrent fresh positives.
+     if(!call.signal?.aborted)group.epoch++;entries.delete(key);throw error;}
     // Another successful fresh observation cannot refuse this caller's independently fresh admission.
     // A refusal/timeout still bars every older in-flight positive, without deleting a later fresh recovery.
     if(group.epoch!==epoch)throw unavailable();

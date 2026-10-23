@@ -45,17 +45,26 @@ test('S2 owner and control counters separate fresh calls from reused observation
  const counts=telemetry.counters(f.binding);assert.equal(counts.authorityFresh,2);assert.ok(counts.authorityReuses>=1);assert.equal(f.state.calls.length,2);telemetry.close();
  assert.ok(lines.some(l=>l.authorityFresh===2&&l.authorityReuses>=1));
 });
-test('S2 task reuse requires its live originating session, never a task grant alone',async t=>{
+test('S2 task reuse requires its live originating session; without one every check reads Core fresh',async t=>{
  const f=fixture(t),s=await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
  const observe=(extra={})=>f.identity.withAuthority({credential:'native',binding:f.binding,sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra},()=>true);
  await observe();const count=f.state.calls.length;await observe();assert.equal(f.state.calls.length,count);
  assert.deepEqual(JSON.parse(f.state.calls[count-1].init.body).expect,{identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64)});
  f.state.status=503;await assert.rejects(observe({fresh:true}));f.state.status=200;f.state.contextRevision='d'.repeat(64);await assert.rejects(observe(),'a cleared cache must retain the originating session revision pins');f.state.contextRevision=undefined;await observe();
- const beforeRevoke=f.state.calls.length;f.sessions.revoke(s.credential);await assert.rejects(observe());assert.equal(f.state.calls.length,beforeRevoke,'revoked origin refuses before Core/cache use');
+ const beforeRevoke=f.state.calls.length;f.sessions.revoke(s.credential);await observe();await observe();assert.equal(f.state.calls.length,beforeRevoke+2,'without an origin every check is a fresh Core read, never a cached reuse');
+ f.state.status=401;await assert.rejects(observe(),'Core refusing the revoked credential still refuses the task');
 });
 test('S2 task bootstrap borrows when the runner attempt differs from the session binding (live 10-23 regression)',async t=>{
  const f=fixture(t);await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
  const runner={...f.binding,attemptId:id(12),workerId:id(13),writerFence:3};
  assert.equal(await f.identity.withAuthority({credential:'native',binding:runner,sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true),true);
- await assert.rejects(f.identity.withAuthority({credential:'native',binding:{...runner,runId:id(14)},sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true));
+ // Another run has no origin session: it is never served from the cache, only by a fresh Core read each time.
+ const other=()=>f.identity.withAuthority({credential:'native',binding:{...runner,runId:id(14)},sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true);
+ const before=f.state.calls.length;await other();await other();assert.equal(f.state.calls.length,before+2);
+});
+test('S2 one caller cancelling does not discard a concurrent fresh positive',async t=>{
+ const f=fixture(t);await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
+ const ac=new AbortController(),args=extra=>({credential:'native',binding:f.binding,sessionFence:'task:grant',requireOrigin:true,fresh:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra});
+ const cancelled=f.identity.withAuthority(args({signal:ac.signal}),()=>true),kept=f.identity.withAuthority(args({}),()=>true);ac.abort();
+ await assert.rejects(cancelled);assert.equal(await kept,true);
 });

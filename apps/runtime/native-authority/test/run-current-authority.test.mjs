@@ -1,7 +1,7 @@
 /** SOURCE ONLY: scripted Core and clocks, real O208 receipt owner. No live qualification. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createRunCurrentAuthority} from '../run-current-authority.mjs';
+import {createRunCurrentAuthority,CURRENT_MAX_WAIT_MS} from '../run-current-authority.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 function fixture(){
@@ -48,7 +48,7 @@ test('O208 a timeout with a warm cache refuses and leaves no positive fallback',
  await assert.rejects(f.read({fresh:true,deadlineMs:f.s.wall+10}),e=>e.status===503);assert.equal(f.owner.status().entries,0);assert.equal(f.s.calls.length,2);
 });
 test('O208 the Core request deadline is at most three monotonic seconds',async()=>{
- const f=fixture();f.s.wait=async()=>{f.s.mono=3000;};await assert.rejects(f.read(),e=>e.status===503);assert.equal(f.owner.status().entries,0);
+ const f=fixture();f.s.wait=async()=>{f.s.mono=CURRENT_MAX_WAIT_MS;};await assert.rejects(f.read(),e=>e.status===503);assert.equal(f.owner.status().entries,0);
 });
 
 
