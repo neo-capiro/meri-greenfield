@@ -497,19 +497,25 @@ test('passwords become SCRAM-SHA-256 verifiers (RFC 7677 vector) and must be dis
 });
 
 /** In-memory database: enough of PostgreSQL to drive the runner's ordering, ledger and transaction rules. */
-function fakeDatabase({failOn}={}){
- const state={ledger:[],owner:false,ledgerTable:false,executed:[],phases:[],released:0,locked:false};
+function fakeDatabase({failOn,beforeQuery,commitAckOrdinal}={}){
+ const state={ledger:[],owner:false,ledgerTable:false,executed:[],phases:[],released:0,locked:false,
+  queries:[],temporalLogin:false,disabled:0,memberships:new Set()};
  const connect=async database=>{
-  let pending=null;
+  let pending=null,ownsLock=false;
   return {async query(q,params){
    const text=(typeof q==='object'?q.text:q).replace(/\s+/gu,' ').trim();
-   if(typeof q==='object')return {rows:[]};
-   if(/pg_try_advisory_lock/u.test(text)){const ok=!state.locked;state.locked=true;return {rows:[{locked:ok}]};}
+   state.queries.push(text);beforeQuery?.({text,params,database,state});
+   if(typeof q==='object')return {rows:/^SELECT format\('ALTER ROLE meri_temporal_migrator WITH LOGIN/u.test(text)
+    ?[['ALTER ROLE meri_temporal_migrator WITH LOGIN NOINHERIT;']]:[]};
+   if(/pg_try_advisory_lock/u.test(text)){ownsLock=!state.locked;if(ownsLock)state.locked=true;return {rows:[{locked:ownsLock}]};}
    if(/to_regclass\('meri_migration_ledger\.applied'\) IS NOT NULL AS ledger/u.test(text))return {rows:[{ledger:state.ledgerTable,owner:state.owner}]};
    if(/^SELECT EXISTS \(SELECT 1 FROM pg_roles/u.test(text))return {rows:[{owner:state.owner}]};
    if(/^SELECT ordinal,name,sha256 FROM/u.test(text))return {rows:state.ledger.map(r=>({...r}))};
    if(text==='BEGIN'){pending=[];return {rows:[]};}
-   if(text==='COMMIT'){state.ledger.push(...pending);pending=null;return {rows:[]};}
+   if(text==='COMMIT'){
+    const lostAck=pending.some(row=>row.ordinal===commitAckOrdinal);state.ledger.push(...pending);pending=null;
+    if(lostAck)throw Object.assign(Error('phase commit acknowledgement lost'),{code:'08006'});return {rows:[]};
+   }
    if(text==='ROLLBACK'){pending=null;return {rows:[]};}
    if(/^INSERT INTO meri_migration_ledger/u.test(text)){assert.ok(pending,'ledger write outside a transaction');pending.push({ordinal:params[0],name:params[1],sha256:params[2]});return {rows:[]};}
    if(/^SELECT CASE WHEN \(TRUE\)::int\s*\+/u.test(text)){state.phases.push('bootstrap');}
@@ -518,10 +524,14 @@ function fakeDatabase({failOn}={}){
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('release');
    if(/CREATE TABLE IF NOT EXISTS meri_migration_ledger\.applied/u.test(text)){state.ledgerTable=true;state.owner=true;}
+   if(/^ALTER ROLE meri_temporal_migrator WITH LOGIN\b/u.test(text))state.temporalLogin=true;
+   if(/^ALTER ROLE meri_temporal_migrator WITH NOLOGIN\b/u.test(text)){assert.equal(state.locked,true);state.temporalLogin=false;state.disabled++;}
+   const membership=/^(GRANT|REVOKE) (meri_product_migrator|meri_temporal_migrator) (?:TO|FROM) CURRENT_USER/u.exec(text);
+   if(membership)state.memberships[membership[1]==='GRANT'?'add':'delete'](membership[2]);
    if(/^REVOKE meri_product_migrator FROM CURRENT_USER/u.test(text))state.released++;
    if(pending&&!/^SET LOCAL/u.test(text)){state.executed.push(text);if(failOn&&text.includes(failOn))throw Object.assign(Error('boom'),{code:'XX000'});}
    return {rows:[]};
-  },async end(){if(database==='capiro')state.locked=false;}};
+  },async end(){if(ownsLock)state.locked=false;}};
  };
  return {state,connect};
 }
@@ -536,20 +546,140 @@ test('runner applies the meri stage in order, one transaction and ledger row eac
  assert.equal(db.state.executed.length,19);
  assert.ok(db.state.executed.every(sql=>!/^\s*BEGIN;|COMMIT;\s*$/u.test(sql)));
  assert.equal(db.state.released,1);
+ assert.equal(db.state.temporalLogin,true,'ordinal 20 preserves the official sql-tool login window');
+ assert.equal(db.state.disabled,0);assert.equal(db.state.memberships.size,0);
  // Re-run: nothing re-applied, bootstrap and release still run.
  const again=fakeDatabase();again.state.ledger=db.state.ledger;again.state.ledgerTable=again.state.owner=true;
  const log=[];await runStage({stage:'meri',plan,variables,connect:again.connect,log:e=>log.push(e)});
  assert.equal(again.state.executed.length,0);
  assert.equal(log.filter(e=>e.event==='skipped').length,20);
  assert.deepEqual(again.state.phases,['bootstrap','release']);
+ assert.equal(again.state.temporalLogin,true);assert.equal(again.state.disabled,0);
  // Temporal stage then applies only its phase and stops at the owner reads (stage meri, ordinal 22).
  await runStage({stage:'temporal',plan,variables,connect:again.connect});
  assert.deepEqual(again.state.ledger.map(r=>r.ordinal),plan.slice(0,21).map(e=>e.ordinal));
  assert.deepEqual(again.state.phases,['bootstrap','release','bootstrap','temporal_grants','release']);
+ assert.equal(again.state.temporalLogin,false);assert.equal(again.state.memberships.size,0);
  // A fresh database therefore runs meri, temporal, meri; the last run applies only the owner reads.
  await runStage({stage:'meri',plan,variables,connect:again.connect});
  assert.deepEqual(again.state.ledger.map(r=>r.ordinal),plan.filter(e=>e.stage!=='integration').map(e=>e.ordinal));
  assert.deepEqual(again.state.phases.slice(-3),['bootstrap','owner_conversation_reads','release']);
+ assert.equal(again.state.temporalLogin,false);assert.equal(again.state.memberships.size,0);
+});
+
+function databaseWithLedger(plan,count,options){
+ const db=fakeDatabase(options);
+ Object.assign(db.state,{ledger:plan.slice(0,count).map(({ordinal,name,sha256})=>({ordinal,name,sha256})),
+  ledgerTable:true,owner:true});
+ return db;
+}
+
+test('each stage replay closes bootstrap LOGIN from the verified committed Temporal ledger',async()=>{
+ const plan=loadPlan();
+ for(const stage of ['meri','temporal','integration']){
+  const db=databaseWithLedger(plan,44);db.state.temporalLogin=true;
+  await runStage({stage,plan,variables,connect:db.connect});
+  assert.equal(db.state.temporalLogin,false,stage);assert.equal(db.state.disabled,1,stage);
+  assert.equal(db.state.memberships.size,0,stage);assert.equal(db.state.released,1,stage);
+  assert.equal(db.state.executed.length,0);assert.equal(db.state.ledger.length,44);
+  assert.equal(db.state.queries.filter(sql=>/^SELECT ordinal,name,sha256 FROM/u.test(sql)).length,2);
+ }
+});
+
+test('a post-Temporal migration failure still closes LOGIN and releases memberships',async()=>{
+ const plan=loadPlan(),db=databaseWithLedger(plan,22,{failOn:'CREATE SCHEMA meri_settings'});
+ await assert.rejects(runStage({stage:'integration',plan,variables,connect:db.connect}),{code:'XX000'});
+ assert.equal(db.state.ledger.length,22);assert.equal(db.state.temporalLogin,false);
+ assert.equal(db.state.disabled,1);assert.equal(db.state.released,1);assert.equal(db.state.memberships.size,0);
+});
+
+test('an interrupted Temporal phase preserves the uncommitted sql-tool window or its already executed NOLOGIN',async()=>{
+ const plan=loadPlan();
+ for(const afterDisable of [false,true]){
+  const db=databaseWithLedger(plan,20,{beforeQuery({text,params,database}){
+   if((!afterDisable&&database==='temporal'&&text.startsWith('DO $$'))
+    ||(afterDisable&&text.startsWith('INSERT INTO meri_migration_ledger')&&params[0]===21))
+    throw Object.assign(Error('temporal interrupted'),{code:'XX001'});
+  }});
+  await assert.rejects(runStage({stage:'temporal',plan,variables,connect:db.connect}),{code:'XX001'});
+  assert.equal(db.state.ledger.length,20);assert.equal(db.state.temporalLogin,!afterDisable);
+  assert.equal(db.state.disabled,afterDisable?1:0,'no cleanup ALTER without a committed ordinal 21');
+  assert.equal(db.state.released,1);assert.equal(db.state.memberships.size,0);
+ }
+});
+
+test('cleanup reads the committed ordinal 21 after a lost phase COMMIT acknowledgement',async()=>{
+ const plan=loadPlan(),db=databaseWithLedger(plan,20,{commitAckOrdinal:21});
+ await assert.rejects(runStage({stage:'temporal',plan,variables,connect:db.connect}),{code:'08006'});
+ assert.equal(db.state.ledger.length,21);assert.equal(db.state.temporalLogin,false);
+ assert.equal(db.state.disabled,2,'phase disable plus cleanup based on actual committed ledger');
+ assert.equal(db.state.released,1);assert.equal(db.state.memberships.size,0);
+});
+
+test('changed, misnamed or gapped Temporal ledger entries never qualify for cleanup ALTER',async()=>{
+ const plan=loadPlan();
+ for(const corrupt of [rows=>{rows[20].sha256='f'.repeat(64);},rows=>{rows[20].name='wrong';},rows=>{rows.splice(19,1);}]){
+  const db=databaseWithLedger(plan,21);corrupt(db.state.ledger);db.state.temporalLogin=true;
+  await assert.rejects(runStage({stage:'meri',plan,variables,connect:db.connect}),error=>{
+   assert.match(error.code,/MERI_D2_(?:APPLIED_FILE_CHANGED|LEDGER_ORDER|LEDGER_GAP_OR_UNKNOWN)/u);return true;
+  });
+  assert.deepEqual(db.state.phases,['release']);assert.equal(db.state.disabled,0);
+  assert.equal(db.state.temporalLogin,true);assert.equal(db.state.memberships.size,0);
+ }
+});
+
+test('cleanup validates a fresh ledger read rather than trusting the previously verified prefix',async()=>{
+ const plan=loadPlan();let reads=0;
+ const db=databaseWithLedger(plan,44,{beforeQuery({text,state}){
+  if(text.startsWith('SELECT ordinal,name,sha256 FROM')&&++reads===2)state.ledger[20].sha256='f'.repeat(64);
+ }});
+ await assert.rejects(runStage({stage:'meri',plan,variables,connect:db.connect}),{code:'MERI_D2_APPLIED_FILE_CHANGED'});
+ assert.equal(db.state.disabled,0);assert.equal(db.state.temporalLogin,true);
+ assert.equal(db.state.released,1);assert.equal(db.state.memberships.size,0);
+});
+
+test('cleanup read or NOLOGIN failure still releases and is reported together with a primary failure',async()=>{
+ const plan=loadPlan();
+ for(const failRead of [false,true])for(const primary of [false,true]){
+  let reads=0;
+  const db=databaseWithLedger(plan,22,{failOn:primary?'CREATE SCHEMA meri_settings':undefined,
+   beforeQuery({text}){
+    if((failRead&&text.startsWith('SELECT ordinal,name,sha256 FROM')&&++reads===2)
+     ||(!failRead&&text==='ALTER ROLE meri_temporal_migrator WITH NOLOGIN'))
+     throw Object.assign(Error(failRead?'cleanup read failed':'cleanup disable failed'),{code:'XX002'});
+   }});
+  await assert.rejects(runStage({stage:'integration',plan,variables,connect:db.connect}),error=>{
+   if(primary){assert.ok(error instanceof AggregateError);assert.deepEqual(error.errors.map(e=>e.code),['XX000','XX002']);assert.equal(error.code,'XX000');}
+   else assert.equal(error.code,'XX002');
+   assert.match(error.message,failRead?/cleanup read failed/u:/cleanup disable failed/u);return true;
+  });
+  assert.equal(db.state.temporalLogin,true);assert.equal(db.state.disabled,0);
+  assert.equal(db.state.released,1);assert.equal(db.state.memberships.size,0);
+ }
+});
+
+test('release failures remain visible alongside primary and NOLOGIN failures',async()=>{
+ const plan=loadPlan(),db=databaseWithLedger(plan,22,{failOn:'CREATE SCHEMA meri_settings',
+  beforeQuery({text}){
+   if(text==='ALTER ROLE meri_temporal_migrator WITH NOLOGIN')throw Object.assign(Error('disable failed'),{code:'XX002'});
+   if(text.startsWith('REVOKE meri_product_migrator FROM'))throw Object.assign(Error('release failed'),{code:'XX003'});
+  }});
+ await assert.rejects(runStage({stage:'integration',plan,variables,connect:db.connect}),error=>{
+  assert.ok(error instanceof AggregateError);assert.deepEqual(error.errors.map(e=>e.code),['XX000','XX002','XX003']);
+  assert.equal(error.code,'XX000');assert.match(error.message,/boom; disable failed; release failed/u);return true;
+ });
+ assert.ok(db.state.phases.includes('release'));assert.equal(db.state.locked,false);
+ assert.equal(db.state.memberships.size,2,'failed release is reported, never claimed successful');
+});
+
+test('a lock contender performs no ledger grant, bootstrap, ALTER or release and leaves winner membership intact',async()=>{
+ const plan=loadPlan(),db=databaseWithLedger(plan,44);db.state.locked=true;db.state.temporalLogin=true;
+ db.state.memberships=new Set(['meri_product_migrator','meri_temporal_migrator']);
+ await assert.rejects(runStage({stage:'meri',plan,variables,connect:db.connect}),{code:'MERI_D2_ANOTHER_RUN_ACTIVE'});
+ assert.equal(db.state.queries.length,1);assert.match(db.state.queries[0],/pg_try_advisory_lock/u);
+ assert.deepEqual([...db.state.memberships],['meri_product_migrator','meri_temporal_migrator']);
+ assert.equal(db.state.locked,true);assert.equal(db.state.temporalLogin,true);assert.equal(db.state.disabled,0);
+ assert.deepEqual(db.state.phases,[]);assert.equal(db.state.released,0);
 });
 
 test('the live ledger (meri and temporal applied, 21 entries) takes the owner reads in one meri run and stops before integration',async()=>{
