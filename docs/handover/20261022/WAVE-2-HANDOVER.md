@@ -1,6 +1,6 @@
 # Wave 2 handover: Fable → Neo's local Codex orchestrator
 
-Written by Fable on 2026-10-23. Neo's decision (O226): **Wave 2 and later run in a local Codex session on another machine.** Fable finishes Wave 1 only, and the final Wave 1 numbers go in `WAVE-1-HANDOFF.md` next to this file.
+Written by Fable on 2026-10-23. Neo's decision (O226): **Wave 2 and later run in a local Codex session on another machine, which does all the shipping.** Fable finishes Wave 1 only, and the final Wave 1 numbers go in `WAVE-1-HANDOFF.md` next to this file.
 
 **Read alongside this file:**
 - `CODEX-ORCHESTRATION-SETUP.md`: roles, communication rules, gate rules, standing decisions, setup prompts.
@@ -9,6 +9,21 @@ Written by Fable on 2026-10-23. Neo's decision (O226): **Wave 2 and later run in
 - `plan/FINAL-PLAN-20261021.md`: waves (§6), decisions (§8), UI libraries (§10).
 
 **This file supersedes `CODEX-ORCHESTRATION-SETUP.md` §0.6–§0.7, and the "run on neomart" assumption.**
+
+## 0. Who ships what (Neo, 2026-10-23)
+
+**The new environment, the Codex orchestrator plus its own new agents, does everything for Wave 2:** briefs, reviews, gates, merges, deploys and migrations. Fable ships **only what's left of Wave 1**, then stops:
+1. The P1 #200 + C9 #203 Meri release. Agent 1 v3 is rebasing; one Meri release follows.
+2. Agent 4 v1's frontend read-allowlist PR. Neo's data request, O228; the ALB side is already done.
+3. Recording the S2 acceptance (astra 6, turns 3–6) and posting `WAVE-1-HANDOFF.md`.
+
+**Until `WAVE-1-HANDOFF.md` is posted on #202, both environments share the one preview, so:**
+- **Deploy lock:** post `TYPE: status | RE: DEPLOY LOCK <component>` on #202 before deploying Meri, Core or the frontend, and `RE: DEPLOY UNLOCK` after. Don't deploy a component someone else holds. No deploy of any kind during an astra 6 run.
+- **Integration branches:** before merging to meri-greenfield `main` or capiro-frontend `main`, check #202 for an open lock. Fable's releases build from exact SHAs, so a merge can't slip into them, but a release can still land on top of an untested merge.
+- **The clone database:** Wave 2 owns the migrations. Fable has no more planned. Snapshot first, every time.
+- **Agents in flight:** agent 1 v3 (P1/C9) and agent 4 v1 (read allowlist) finish their Wave 1 items under Fable. New agents stay off P1's files and `apps/web/src/shared/preview/*` until then.
+
+Wave 2 brief drafts are in `phases/wave2/` here (MP, A2, M2; S2 was already shipped and is dropped). Refresh each base SHA before sending.
 
 ---
 
