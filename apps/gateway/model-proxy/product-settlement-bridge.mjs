@@ -73,6 +73,10 @@ export function createProductProxySettlementBridge(configuration){
     return completion;
    }).settle({requestId});
   },
+  async abandon(requestId){
+   if(entered||requestId!==c.requestId)deny();entered=true;
+   return owner(async()=>deny()).abandon({requestId});
+  },
   async readOutcome(requestId){
    if(requestId!==c.requestId)deny();
    return owner(async()=>deny()).readOutcome({requestId});

@@ -96,6 +96,9 @@ class _Bridge:
     async def read_outcome(self, request_id):
         raise AssertionError("certain settlement has no reconciliation")
 
+    async def abandon(self):
+        self.abandoned = self.reservations > self.settlements
+
 
 class HostCompositionTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):

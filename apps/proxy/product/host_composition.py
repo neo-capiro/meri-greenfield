@@ -150,7 +150,10 @@ class _OneNativeTransport(httpx.AsyncBaseTransport):
         return response
 
     async def aclose(self):
-        await self.inner.aclose()
+        try:
+            await self.bridge.abandon()  # A no-op unless the request reserved and never settled.
+        finally:
+            await self.inner.aclose()
 
 
 async def create_guarded_product_handler(life, session):
@@ -169,6 +172,7 @@ async def create_guarded_product_handler(life, session):
     if (not callable(getattr(bridge, "reserve", None))
             or not callable(getattr(bridge, "settle_complete", None))
             or not callable(getattr(bridge, "read_outcome", None))
+            or not callable(getattr(bridge, "abandon", None))
             or not callable(getattr(bridge, "bind_complete_capture", None))):
         _deny()
     ledger = ProductReservationAdapter(bridge, host.claim_ingress,
