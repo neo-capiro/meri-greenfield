@@ -26,6 +26,10 @@ const fields=['binding','grant_id','cluster_arn','task_definition_arn','containe
  'execution_binding','started_by','group','created_at_ms','expires_at_ms','vpc_id','subnet_id','security_group_ids','tags'];
 const bindingFields=['tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence'];
 
+// Content-free owner request refusal line: fixed stage word, the cause's own code, socket state; one per key per 5 s.
+const ownerRefusalSeen=new Map();
+function ownerStage(){}
+function ownerRequestRefusal(stage,error,destroyed,headersSent){try{const code=[error?.code,error?.message].find(v=>typeof v==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(v))??'REFUSED',frame=String(error?.stack??'').split('\n').slice(1,3).map(l=>(/([a-z0-9_.-]+\.m?js):(\d+)/iu.exec(l)??[])[0]).filter(Boolean).join(','),key=stage+':'+code+':'+frame,at=Date.now();if((ownerRefusalSeen.get(key)??0)>at-5000)return;ownerRefusalSeen.set(key,at);if(ownerRefusalSeen.size>64)ownerRefusalSeen.delete(ownerRefusalSeen.keys().next().value);process.stderr.write(`PRODUCT_OWNER_REQUEST_REFUSED stage=${stage} code=${code} site=${frame||'none'} destroyed=${destroyed===true} headersSent=${headersSent===true}\n`);}catch{}}
 export function encodeProductPlacement(value){
  const v=data(own(value,['issuedTaskNetwork','checkedAtMs','effectiveExpiresAtMs']));
  const p=own(v.issuedTaskNetwork,fields),q=own(p.binding,['run_id','attempt','worker_arn','fence','policy_revision']);
@@ -176,7 +180,7 @@ export function createProductOwnerHttpsServer(configuration){
   const assertLive=()=>{if(signal.aborted||socket.destroyed||c.now()>=deadline)fail();assertBound(socket);};
   for(const [id,session]of sessions)if(session.expiry<=c.now()){finishOwnerChannel(session.channel);sessions.delete(id);}
   if(path===OWNER_PATHS.operation&&f[0]==='meri.proxy.admit/1'){
-   role(socket,'operation');
+   ownerStage(signal,'admit-role');role(socket,'operation');
    const request=decodeAdmitFrame(f);if(sessions.size>=1024)fail();
    consumeProductPlacementRead(reads,request.requestId,c.serviceGate);
    const started=c.now();
@@ -267,17 +271,17 @@ export function createProductOwnerHttpsServer(configuration){
   secureOptions:constants.SSL_OP_NO_TICKET,maxHeaderSize:16384,headersTimeout:maxRequestMs,
   requestTimeout:maxRequestMs,...PRODUCT_OWNER_IDLE_SOCKETS},(req,res)=>runOwnerHttpRequest(telemetry,async()=>{
   const socket=req.socket,s=state(socket),started=c.now(),deadline=started+maxRequestMs;
-  const abort=new AbortController();let timer,releaseRequest;
+  const abort=new AbortController();let timer,releaseRequest,stage='operational';
   req.once('aborted',()=>{if(releaseRequest){abort.abort();socket.destroy();}});
   try{
    const health=req.method==='GET'&&['/health/live','/health/ready'].includes(req.url);
    if(closed||!health&&!operational())fail();releaseRequest=acquireProductOwnerRequest(s);
    controllers.add(abort);s.abort=abort;
-   productOwnerRoute(req.method,req.url);
+   stage='route';productOwnerRoute(req.method,req.url);
    if(req.httpVersion!=='1.1'||req.rawHeaders.length>128)fail();
    const headers=new Map();for(let i=0;i<req.rawHeaders.length;i+=2){const name=req.rawHeaders[i].toLowerCase();if(headers.has(name))fail();headers.set(name,req.rawHeaders[i+1]);}
-   await s.binding;
-   await c.taskLeaseReader.ensure({deadlineMs:deadline,signal:abort.signal});
+   stage='binding';await s.binding;
+   stage='lease';await c.taskLeaseReader.ensure({deadlineMs:deadline,signal:abort.signal});
    assertBound(socket);const p=peer(socket),policy=s.policy;
    if(health){
     if(headers.has('transfer-encoding')||headers.has('authorization')||headers.has('content-encoding')||
@@ -290,16 +294,16 @@ export function createProductOwnerHttpsServer(configuration){
    if(headers.get('content-type')!=='application/json'||! /^(?:0|[1-9][0-9]*)$/u.test(headers.get('content-length')??'')||
       Number(headers.get('content-length'))<1||Number(headers.get('content-length'))>MAX||
       [...headers.keys()].some(v=>v==='transfer-encoding'||v==='authorization'||v==='content-encoding'||v==='forwarded'||v.startsWith('x-')))fail();
-   const parts=[];let bytes=0;
+   stage='body';const parts=[];let bytes=0;
    timer=setTimeout(()=>{abort.abort();socket.destroy();},Math.max(0,deadline-c.now()));
    for await(const part of req){bytes+=part.length;if(bytes>MAX||c.now()>=deadline)fail();parts.push(part);}
    if(bytes!==Number(headers.get('content-length'))||req.rawTrailers.length)fail();
-   const result=await dispatch(req.url,Buffer.concat(parts,bytes),socket,p,deadline,abort.signal);
+   stage='dispatch';const result=await dispatch(req.url,Buffer.concat(parts,bytes),socket,p,deadline,abort.signal);
    assertBound(socket);
    if(!available()||abort.signal.aborted||c.now()>=deadline||!Buffer.isBuffer(result)||result.length>MAX)fail();
    res.writeHead(200,{'content-type':'application/json','content-length':String(result.length),'cache-control':'no-store',
     'x-meri-owner-revision':policy.deploymentRevision});res.end(result);
-  }catch{if(!res.headersSent&&!socket.destroyed){res.writeHead(403,{'content-length':'0','cache-control':'no-store','connection':'close'}).end(()=>socket.destroy());}
+  }catch(error){ownerRequestRefusal(stage,error,socket.destroyed,res.headersSent);if(!res.headersSent&&!socket.destroyed){res.writeHead(403,{'content-length':'0','cache-control':'no-store','connection':'close'}).end(()=>socket.destroy());}
    else socket.destroy();}
   finally{clearTimeout(timer);controllers.delete(abort);if(s.abort===abort)s.abort=null;releaseRequest?.();}
  }));
