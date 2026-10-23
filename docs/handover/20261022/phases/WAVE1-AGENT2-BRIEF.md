@@ -1,5 +1,7 @@
 # Wave 1 brief: Agent 2 (lane D: domain, proxy, gateway, contracts)
 
+> **HISTORICAL (2026-10-23).** Wave 1 brief. Where it names the proxy, owner, budget or authority layers, those are superseded: see `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`. Do not send it again.
+
 Read `FINAL-PLAN-20261021.md` sections 1, 2 and 4 first.
 
 **How we work:** you build, and Fable reviews, merges and deploys.

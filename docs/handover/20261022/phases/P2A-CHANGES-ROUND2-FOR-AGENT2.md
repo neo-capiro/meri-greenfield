@@ -1,5 +1,7 @@
 # P2 PR-A (#196): change list, round 2 (for agent 2)
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 **Status:** the security re-check of `c703e9f3` found that most of round 1 is fixed: C2, C3, `retire` exiting non-zero, and M1–M5. The relaxation sign-off is now unconditional. **Four items remain.** Push them to the same branch (`feat/meri-p2-proof-reuse`), keep the PR a draft, and list each item's test and the mutation that turns it red.
 
 ## R1 · A replacement that appears *during* a proof still retires the survivor (both languages)

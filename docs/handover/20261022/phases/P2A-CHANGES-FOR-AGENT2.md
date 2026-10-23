@@ -1,5 +1,7 @@
 # P2 PR-A (#196): change list for agent 2
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 **PR:** `feat/meri-p2-proof-reuse` @ `e76a0eae`.
 **Reviews:** security by A (`P2A-VALIDATION-security.md`, CHANGES; the relaxation is signed off once item 3 lands) and conformance by D3 (`P2A-VALIDATION-conformance.md`, CHANGES; scope OK).
 

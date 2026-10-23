@@ -1,5 +1,7 @@
 # P2A independent security review: greenfield PR #196 `feat/meri-p2-proof-reuse` @ `e76a0eae`
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 adj-a, 2026-10-21. I neither wrote nor planned P2. I did not edit the PR, comment on GitHub or push anything.
 
 **Labels:** [R] run here; [D] derived from source; [L] live AWS read (read-only `DescribeServices`).

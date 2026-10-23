@@ -1,5 +1,7 @@
 P2 **PR-A** implements stages 1 and 2, partner re-proof, and the planned failure rules. Rebased from `main` at `96b6da6dc3e20efe218232af22806ad8f959eb67`. Keep this PR as a **draft**. PR-B remains dependent on PR-A merging and is not included.
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 Repeated pair discovery around each owner exchange adds request latency, and a same-revision partner replacement currently retires its survivor permanently. This change reuses bounded proofs while retaining the socket, task, generation and request-lifetime fences:
 
 - One discovery renewer per side, 10-second period with jitter, monotonic 30-second leases, bounded synchronous proof on expiry, and a fresh full proof after every new TLS handshake.

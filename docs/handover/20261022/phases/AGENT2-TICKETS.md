@@ -1,5 +1,7 @@
 # Agent 2: PR197 reception and the read slices (verbatim from the Meri master closeout plan)
 
+> **HISTORICAL (2026-10-23).** Wave 1 brief. Where it names the proxy, owner, budget or authority layers, those are superseded: see `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`. Do not send it again.
+
 #### MX-02 · Receive existing source once, preserving current continuity and ownership
 **Priority / type:** P0 before enabling affected receiver capabilities; source integration, not merge authorization.
 

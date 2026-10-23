@@ -1,5 +1,7 @@
 # Wave 1 brief: Agent 1 (lanes R and U: Meri runtime core and Meri UI)
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 Read `FINAL-PLAN-20261021.md` sections 1, 2 and 4 first.
 
 **How we work:** you build, and Fable reviews, merges and deploys.

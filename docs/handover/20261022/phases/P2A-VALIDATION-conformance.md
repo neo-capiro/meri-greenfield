@@ -1,5 +1,7 @@
 **Verdict: CHANGES.** Two blocking defects: **F1** (answered owner refusals retire the shared proxy; reproduced) and **F2** (a real ECS replacement retires instead of re-proving, and nothing replaces a retired process; this needs a plan decision). Scope, the clean merge onto `3c56c3e9`, image gate 24/24, the proxy suites in the deployed image, the secret pins and the critical mutations all pass. The change list is in §4.
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 Validation of meri-greenfield **PR #196** "P2 PR-A: reuse owner/proxy proofs and recover partner generations", `feat/meri-p2-proof-reuse` @ `e76a0eae`, against `phases/P2-PLAN.md` §4, §5, §9 and §13.
 - By adj-d3-readiness, 2026-10-21. Read-only: no edits and no GitHub comments.
 - AWS: describes only. One ECR pull of the deployed proxy image, with the token piped into `docker login` and logged out after.

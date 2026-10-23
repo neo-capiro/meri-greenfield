@@ -76,7 +76,7 @@ cd C:/dev/fable/ship-<sha8> && bash 16-execute-model.sh && bash 17-execute-issue
    - The live shared DB is never migrated by this programme.
    - Migrations run as the **Aurora master** user (`/capiro/dev/aurora/master`), as live does. A migration run as the app user leaves wrongly-owned tables; that's why O140 re-cloned.
    - The clone auto-pauses after 1800 s idle. The first connection after a pause fails Prisma's 5 s timeout (P1001), so retry once.
-   - **Re-clone:** `shipping/core-kit/reclone.sh`. It deletes and recreates `capiro-newstack-preview-clone` (copy-on-write from the shared cluster) and refuses unless the clone carries the `Purpose=newstack-preview` tag.
+   - **Never re-clone** (Neo, 2026-10-22): `capiro-newstack-preview-clone` is the one new-stack database. Snapshot, then migrate forward in place. The re-clone script was deleted from this package.
 6. **#108 must merge before any clone migration.** It moves self-declared source-only/reserved migrations out of `prisma/migrations`. Without it, migration `20281012020000` fails (42701 on `clients.account_owner_version`).
 
 ## 4. Preview frontend (capiro-frontend `main`)

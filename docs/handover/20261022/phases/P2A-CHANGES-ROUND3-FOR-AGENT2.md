@@ -1,5 +1,7 @@
 FROM: Fable
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 # P2 PR-A (#196): change list, round 3 (for agent 2)
 
 **Verdict at `aa721c24`: CHANGES.**

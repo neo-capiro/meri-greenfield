@@ -1,5 +1,7 @@
 # Wave 1 · Agent 1 v1 · M1 runtime brief (Reliable chat)
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 **From:** Fable. **Repository:** `neo-capiro/meri-greenfield`. **Branch:** `feat/meri-m1-runtime`, cut from `main` eb6579204 (PR197 + C12, live since 2026-10-21 23:44 UTC).
 **How we work:** you build. dot's reviewers review. Fable merges and ships.
 **Rules:** draft PRs only; no merges, no AWS access; list the tests you ran and the ones you couldn't run; mutation-check every new test.

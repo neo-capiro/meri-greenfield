@@ -1,5 +1,7 @@
 # Agent 1: C12 (MR-07) and M1 runtime (verbatim from the Meri master closeout plan)
 
+> **HISTORICAL (2026-10-23).** Wave 1 material for layers that Wave 2 item 0 deletes (the owner/proxy pair, budget reservations, per-operation authority, P1/P2/S2). Do not send or implement it. See `../STANDING-REQUIREMENTS.md` and `../source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+
 #### MR-07 · P1 · Publish a precise checkpoint/version and dormant-original continuity contract
 **Class:** D + Q, not permission to relax current refusal. **Owner:** runtime compatibility, release/adoption gate, FE messaging.
 
