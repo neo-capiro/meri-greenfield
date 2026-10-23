@@ -5,6 +5,7 @@ import {createCapiroApplicationAuthorityClient} from '../../control/action-host/
 import {ProductError,productFailure} from '../../control/product-access/errors.mjs';
 import {isAuthorityUnavailable,markAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
+import {CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
 
 const unavailable=()=>{throw new ProductError('CONVERSATION_UNAVAILABLE');};
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -30,7 +31,7 @@ export function createCoreConversationCurrentness(configuration){
    // Membership admission supplies this pin; no identity/context revision is invented from stored local policy scopes.
    const expect=principal.membershipRevision===undefined?undefined:{membershipRevision:principal.membershipRevision};
    currentTurnTelemetry()?.recordAuthority?.('fresh');
-   const receipt=await client.readCurrent({credential:call.credential,conversationId:call.conversationId,clientId:c.selectedClientId,...(expect?{expect}:{}),signal:call.signal,deadlineMs:Math.min(deadlineMs,started+3000)});
+   const receipt=await client.readCurrent({credential:call.credential,conversationId:call.conversationId,clientId:c.selectedClientId,...(expect?{expect}:{}),signal:call.signal,deadlineMs:Math.min(deadlineMs,started+CURRENT_MAX_WAIT_MS)});
    fresh(receipt,started);
    if(!samePrincipal(receipt,principal)||receipt.conversationId!==call.conversationId||receipt.selectedClientId!==c.selectedClientId)unavailable();
    if(call.signal?.aborted||c.now()>=Math.min(deadlineMs,receipt.expiresAtMs))unavailable();

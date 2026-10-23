@@ -6,7 +6,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {carryAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {performance} from 'node:perf_hooks';
-import {createRunCurrentAuthority,CURRENT_REUSE_MS} from './run-current-authority.mjs';
+import {createRunCurrentAuthority,CURRENT_REUSE_MS,CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
 import {currentReceipt,currentRevisions} from '../../control/action-host/application-adapters/current-receipt.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {originatingAuthoritySession} from '../read-credential-relay.mjs';
@@ -30,26 +30,27 @@ export function createNativeIdentityContext(configuration){
   async withAuthority({credential,hints={},binding,sessionFence,expect,fresh=false,requireOrigin=false,signal,deadlineMs},operation){
    if(!enabled)unavailable();const conversationId=hints.conversationId??commandContext.binding.conversationId,clientId=hints.clientId??commandContext.clientResolution.clientId;
    const borrow=requireOrigin?originatingAuthoritySession(fetchImpl):undefined;
-   const origin=borrow?borrow({binding,selectedClientId:clientId,signal}):undefined;
+   // No live originating session (expired, other run, other process): read Core fresh and never reuse, as before S2.
+   let origin;if(borrow){try{origin=borrow({binding,selectedClientId:clientId,signal});}catch(error){if(error?.code!=='SESSION_UNAVAILABLE')throw error;}}
    if(origin){sessionFence=hash(origin.credential);expect=origin.expect;}
    const reusable=binding!==undefined&&(!requireOrigin||origin?.expect!==undefined);
    let receipt,sendStart=performance.now(),wallSend=now();
    // Initial issuance has not selected its fenced run yet: it is always a fresh, non-reusable observation.
-   if(!reusable){currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,signal,deadlineMs:Math.min(deadlineMs,now()+3000)}));}
+   if(!reusable){currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,signal,deadlineMs:Math.min(deadlineMs,now()+CURRENT_MAX_WAIT_MS)}));}
    else receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,...(expect?{expect}:{}),fresh,signal,deadlineMs});
    if(receipt.principal.tenantId!==commandContext.binding.tenantId||receipt.principal.actorId!==commandContext.binding.actorId||receipt.conversationId!==conversationId||receipt.selectedClientId!==clientId||receipt.expiresAtMs<=now()||!reusable&&(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()))unavailable();
    // Each canonical port recheck re-enters the age check; a slow local await cannot carry a19.9s receipt past20s.
    const read=async()=>{
-    let currentOrigin;if(borrow){currentOrigin=borrow({binding,selectedClientId:clientId,signal});if(currentOrigin.credential!==origin.credential)unavailable();}
+    let currentOrigin;if(origin){currentOrigin=borrow({binding,selectedClientId:clientId,signal});if(currentOrigin.credential!==origin.credential)unavailable();}
     let r;
     if(reusable)r=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,...(expect?{expect}:{}),signal,deadlineMs});
-    else{if(signal?.aborted||now()>=deadlineMs||receipt.expiresAtMs<=now())unavailable();if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,expect:currentRevisions(receipt),signal,deadlineMs:Math.min(deadlineMs,now()+3000)}));if(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now())unavailable();}else currentTurnTelemetry()?.recordAuthority?.('reuse');r=receipt;}
+    else{if(signal?.aborted||now()>=deadlineMs||receipt.expiresAtMs<=now())unavailable();if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,expect:currentRevisions(receipt),signal,deadlineMs:Math.min(deadlineMs,now()+CURRENT_MAX_WAIT_MS)}));if(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now())unavailable();}else currentTurnTelemetry()?.recordAuthority?.('reuse');r=receipt;}
     receipt=r;
-    if(borrow){const after=borrow({binding,selectedClientId:clientId,signal});if(after.credential!==origin.credential)unavailable();return data({...r,expiresAtMs:Math.min(r.expiresAtMs,currentOrigin.expiresAtMs,after.expiresAtMs)});}
+    if(origin){const after=borrow({binding,selectedClientId:clientId,signal});if(after.credential!==origin.credential)unavailable();return data({...r,expiresAtMs:Math.min(r.expiresAtMs,currentOrigin.expiresAtMs,after.expiresAtMs)});}
     return r;
    };
    const result=await observations.run({read,credential},operation);
-   if(borrow&&borrow({binding,selectedClientId:clientId,signal}).credential!==origin.credential)unavailable();
+   if(origin&&borrow({binding,selectedClientId:clientId,signal}).credential!==origin.credential)unavailable();
    return result!==null&&typeof result==='object'?{...result,authorityRevisions:data(currentRevisions(receipt))}:result;
   },
   async readMembership(){const scope=observations.getStore();if(!scope)return undefined;const r=await scope.read();return data({tenantId:r.principal.tenantId,actorId:r.principal.actorId,status:'active',role:r.role,permissions:r.permissions,clientIds:r.clientIds,membershipRevision:r.membershipRevision,checkedAtMs:now(),expiresAtMs:r.expiresAtMs});},

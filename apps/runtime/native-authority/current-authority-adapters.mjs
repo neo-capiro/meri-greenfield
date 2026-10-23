@@ -20,7 +20,7 @@ import {createCurrentToolAuthority} from '../../gateway/authorization/current-to
 import {PostgresBudgetStore} from '../../gateway/budget/postgres-budget-store.mjs';
 import {allocation as parseAllocation,parseToolGrantFacts} from '../../gateway/budget/tool-budget-binding.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../control/action-host/application-adapters/authority-http.mjs';
-import {createRunCurrentAuthority} from './run-current-authority.mjs';
+import {createRunCurrentAuthority,CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
 import {originatingRelaySession} from '../read-credential-relay.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {productFailure} from '../../control/product-access/errors.mjs';
@@ -137,7 +137,7 @@ export function createCurrentAuthorityAdapters(configuration){
     const current=borrowSession({binding,selectedClientId,signal:l.life.signal});if(current.credential!==session.credential)deny('ACCESS_DENIED');l.limit(current.expiresAtMs);
    }else{
     // A port without canonical originating-session provenance gets a fresh observation, never reuse.
-    const began=now();currentTurnTelemetry()?.recordAuthority?.('fresh');r=await l.life.run(signal=>identity.readCurrent({credential:issued.credential,conversationId:binding.conversationId,clientId:selectedClientId,signal,deadlineMs:Math.min(l.deadline(),now()+3000)}));fresh(r,began,l);
+    const began=now();currentTurnTelemetry()?.recordAuthority?.('fresh');r=await l.life.run(signal=>identity.readCurrent({credential:issued.credential,conversationId:binding.conversationId,clientId:selectedClientId,signal,deadlineMs:Math.min(l.deadline(),now()+CURRENT_MAX_WAIT_MS)}));fresh(r,began,l);
    }
    if(r.principal.tenantId!==binding.tenantId||r.principal.actorId!==binding.actorId||r.conversationId!==binding.conversationId||r.selectedClientId!==selectedClientId||!Object.hasOwn(ROLE_GRANTS,r.role)||!r.clientIds.includes(selectedClientId)||r.expiresAtMs<=now())deny('ACCESS_DENIED');l.limit(r.expiresAtMs);
    const again=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));if(again.credential!==issued.credential)deny('UNAVAILABLE');
