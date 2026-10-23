@@ -105,6 +105,6 @@ test('composition yields an all-off empty fragment and per-capability additive f
  const malformed=createSdkCapabilities(all,facts(runOwner,{skillPluginDirectory:plugin}));
  const refused=await malformed.options.hooks.PreToolUse[0].hooks[0]({...agentEvent,tool_name:'Read'},'t1',hookOptions);
  assert.equal(refused.hookSpecificOutput.permissionDecision,'deny','an incorrectly dispatched hook still refuses malformed input');
- assert.throws(()=>malformed.check(),{code:'CAPABILITY_HOOK_FAILED',cause:{code:'SUBAGENT_HOOK_INPUT_REFUSED'}});
+ assert.throws(()=>malformed.check(),error=>{assert.equal(error.code,'CAPABILITY_HOOK_FAILED');assert.equal(error.cause?.code,'SUBAGENT_HOOK_INPUT_REFUSED');return true;});
  for(const bad of [{runOwner:{},binding,cwd,now:Date.now,newId:()=>'x'},{runOwner,binding:{...binding,tenantId:''},cwd,now:Date.now,newId:()=>'x'},{runOwner,binding,cwd:'/x/',now:Date.now,newId:()=>'x'},{runOwner,binding,cwd,now:Date.now,newId:()=>'x',extra:1}])assert.throws(()=>createSdkCapabilities(all,bad));
 });
