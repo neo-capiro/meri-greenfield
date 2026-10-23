@@ -26,7 +26,7 @@ export function createRunCurrentAuthority(configuration){
   const selectors=currentRequest({conversationId:binding.conversationId,clientId:call.selectedClientId,...(call.expect===undefined?{}:{expect:call.expect})});
   if(typeof call.credential!=='string'||!/^\S{1,8192}$/u.test(call.credential)||typeof call.sessionFence!=='string'||!call.sessionFence||call.sessionFence.length>512||call.fresh!==undefined&&typeof call.fresh!=='boolean'||!Number.isSafeInteger(call.deadlineMs))refuse();
   const key=hash({binding,clientId:call.selectedClientId,sessionFence:call.sessionFence,credential:hash(call.credential),expect:selectors.expect??null});
-  const life=createOperationLifetime({now,deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal:call.signal,errorFactory:code=>code==='DEADLINE'?unavailable():Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403})});
+  const life=createOperationLifetime({now,deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal:call.signal,errorFactory:code=>code==='DEADLINE'?unavailable():Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403,code:'CURRENT_CANCELLED'})});
   try{
    life.check();const prior=entries.get(key),age=prior===undefined?Infinity:clock()-prior.sendStart;
    if(call.fresh!==true&&!pending.has(key)&&prior&&age>=0&&age<CURRENT_REUSE_MS&&prior.receipt.expiresAtMs>now()&&
@@ -44,7 +44,7 @@ export function createRunCurrentAuthority(configuration){
      receipt=currentReceipt(await life.run(signal=>readCurrent({credential:call.credential,...selectors,...(expected?{expect:expected}:{}),deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal})));
      life.check();const age=clock()-sendStart;
      if(age>=CURRENT_MAX_WAIT_MS)throw unavailable();
-     if(receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId||receipt.conversationId!==binding.conversationId||receipt.selectedClientId!==call.selectedClientId||receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()||receipt.expiresAtMs<=now()||age<0||age>=CURRENT_REUSE_MS||expected&&Object.entries(expected).some(([k,v])=>receipt[k]!==v))refuse();
+     {const why=receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId?'RECEIPT_PRINCIPAL':receipt.conversationId!==binding.conversationId?'RECEIPT_CONVERSATION':receipt.selectedClientId!==call.selectedClientId?'RECEIPT_CLIENT':receipt.checkedAtMs<wallSend?'RECEIPT_CLOCK_BEHIND':receipt.checkedAtMs>now()?'RECEIPT_CLOCK_AHEAD':receipt.expiresAtMs<=now()?'RECEIPT_EXPIRED':age<0||age>=CURRENT_REUSE_MS?'RECEIPT_AGE':expected&&Object.entries(expected).some(([k,v])=>receipt[k]!==v)?'RECEIPT_PIN':null;if(why)throw Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403,code:why});}
     }catch(error){
      // The caller's own cancellation is not a Core observation: it must not bar concurrent fresh positives.
      if(!call.signal?.aborted)group.epoch++;entries.delete(key);throw error;}
