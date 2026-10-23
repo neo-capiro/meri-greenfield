@@ -13,7 +13,7 @@ try{
  await run('real Core owner, metadata, CAS and immutable idempotency; Core-only Trash has zero ledger effects',async()=>{
   const c=await f.conversation();assert.equal(await f.owner.ownerOf({tenantId:c.principal.tenantId,conversationId:c.conversationId}),c.principal.actorId);
   const rename=c.request('rename'),receipt=await c.manage(rename);assert.equal(receipt.conversation.revision,'1');assert.equal(receipt.conversation.title,rename.title);assert.deepEqual(await c.manage(rename),receipt);
-  await assert.rejects(c.manage({...rename,title:'Changed replay'}),/REQUEST_ID_CONFLICT/);await assert.rejects(c.manage(c.request('archive')),/STALE_REVISION/);
+  await assert.rejects(c.manage({...rename,title:'Changed replay'}),e=>e.message==='REQUEST_ID_CONFLICT'&&e.getStatus()===409);await assert.rejects(c.manage(c.request('archive')),e=>e.message==='STALE_REVISION'&&e.getStatus()===409);
   const before=await f.ledger.replay();await assert.rejects(c.manage(c.request('trash','1')),/CONVERSATION_MANAGEMENT_UNAVAILABLE/);assert.deepEqual(await f.ledger.replay(),before);
   assert.equal((await f.pool.query('SELECT count(*) FROM meri_conversations.conversations WHERE conversation_id=$1',[c.conversationId])).rows[0].count,'0');
   const legacy=await f.conversation({legacy:true});await assert.rejects(legacy.metadata());await assert.rejects(legacy.manage(legacy.request('rename')));

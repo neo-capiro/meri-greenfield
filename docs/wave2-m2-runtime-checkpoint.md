@@ -17,6 +17,8 @@ Exact public General operations: search_cbo_cost_estimates, search_gao_reports, 
 
 Management locks its Meri row FOR NO KEY UPDATE: updates/deletion still conflict, while suppression's FK KEY SHARE on another connection can complete. Every open nonterminal run is checked instead of sorting by writer fence. Native fixture preserves the actual migration's unique conversation-wide fence constraint; scripted coverage also checks repeated per-run values. Root's cross-owner harness imports real Core Prisma/metadata functions pinned to `eb0894f8a08063819476674fd183413f96e12352`, tree `c8c46303328b573b71c181b5a1f48ea693960578`. See [gate instructions](wave2-m2-cross-owner-gate.md) and [remaining owner proposals](wave2-m2-remaining-source-design.md).
 
+Root's first real PG run at `27ad5f4a` compiled canonical Core successfully but exposed retention wrapping Core's REQUEST_ID_CONFLICT 409 as unavailable. The follow-up captures only the canonical Core callback's outcome privately, carries a per-call opaque marker through bounded JSON store results, and rethrows the original outcome only after both lock owners return successfully. Commit/unlock/lease uncertainty takes precedence; no generic journal cause/status unwrapping or public outcome envelope exists. Unknown Core outcomes remain errors and keep suppression durable. 21 focused source tests pass, and removing the bridge kills the refusal regression. The native assertions now require exact REQUEST_ID_CONFLICT/STALE_REVISION and 409; root replay remains pending at the same Core pin.
+
 Validation selections overlap and must not be summed:
 
 - 125 delegated-read/signed-memory tests passed, plus the subsequent public/private-attribution and mixed-client output control.

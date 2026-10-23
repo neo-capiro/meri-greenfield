@@ -9,7 +9,7 @@ import {compose,owners} from '../../control/retention/test/fixture.mjs';
 import {hash} from '../../control/conversations/boundary.mjs';
 const principal={tenantId:binding.tenantId,actorId:binding.actorId},check=()=>{};
 const request=operation=>({version:'meri.conversation-management.v1',requestId:id(900),conversationId:binding.conversationId,expectedRevision:'0',operation});
-function fixture(){
+function fixture(coreWork){
  const f=initialInputFixture(),retained=compose();owners.set(`${binding.tenantId}:conversation:${binding.conversationId}`,binding.actorId);
  const row={conversationId:binding.conversationId,status:'active',scopeKind:'client',clientId:id(5),revision:'0'};
  const calls=[],prisma={async withTenant(){}};
@@ -18,6 +18,7 @@ function fixture(){
   async readManagedConversationOwner(p,w){assert.equal(p,prisma);assert.deepEqual(w,{tenantId:principal.tenantId,conversationId:binding.conversationId});calls.push('owner');return binding.actorId;},
   async manageConversation(p,ctx,r,port){assert.equal(p,prisma);assert.deepEqual(ctx,{tenantId:principal.tenantId,userId:principal.actorId});
    return port.withTerminalConversation({principal,...r},async fence=>{calls.push('core');
+    if(coreWork)return coreWork(fence,r);
     if(r.operation==='trash')await fence.suppress({reason:'conversation-trash',requestId:r.requestId,restoreUntil:'2026-11-23T00:00:00.000Z'});
     row.status=r.operation==='trash'?'trashed':r.operation==='archive'?'archived':'active';calls.push('commit');
     if(r.operation==='restore')await fence.release({reason:'conversation-restore',requestId:r.requestId});return structuredClone(row);
@@ -35,6 +36,16 @@ test('trusted Core exports, metadata admission and canonical suppression share t
  await f.runtime.manage({principal,request:request('trash')});assert.equal(await f.retained.suppression.isSuppressed({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId}),true);
  assert.equal(await conversationManagementOwnership(f.owner).ownerOf({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId}),binding.actorId);
  await assert.rejects(conversationManagementOwnership(f.owner).ownerOf({tenantId:binding.tenantId,kind:'artifact',subjectId:binding.conversationId}),/UNAVAILABLE/);
+});
+
+test('trusted Core unknown outcome remains a rejection and durable suppression survives; the captured fence expires',async()=>{
+ const unknown=Error('SYNTHETIC_CORE_COMMIT_UNKNOWN');let captured;
+ const f=fixture(async(fence,r)=>{captured=fence;await fence.suppress({reason:'conversation-trash',requestId:r.requestId,restoreUntil:'2026-11-23T00:00:00.000Z'});throw unknown;});
+ const p=await f.proposal(),conversation=p.acceptance.conversation;
+ f.state.conversations.set(`${binding.tenantId}:${binding.conversationId}`,{tenant_id:binding.tenantId,conversation_id:binding.conversationId,owner_actor_id:binding.actorId,projection:conversation,projection_sha256:hash(conversation)});
+ await assert.rejects(f.runtime.manage({principal,request:request('trash')}),e=>e===unknown);
+ await assert.rejects(f.retained.suppression.assertServable({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId}),/RETENTION_SUPPRESSED/);
+ await assert.rejects(captured.suppress({reason:'conversation-trash',requestId:id(900),restoreUntil:'2026-11-23T00:00:00.000Z'}),/CONVERSATION_MANAGEMENT_REFUSED/);
 });
 test('missing metadata or canonical retention owner refuses all new management/admission, with no fallback',async()=>{
  const f=fixture();for(const input of [{store:f.store},{owner:f.owner,store:f.store},{store:f.store,retention:{startup:{suppression:f.retained.suppression}}}]){

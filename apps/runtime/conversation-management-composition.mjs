@@ -1,4 +1,5 @@
 /** Trusted in-process bridge to Core's canonical metadata functions. No SQL, title cache, HTTP callback or purge owner. */
+import {randomUUID} from 'node:crypto';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {createConversationAdmissionGuard,createConversationManagementPort} from '../control/conversations/management.mjs';
@@ -14,7 +15,27 @@ export function createCoreConversationManagementOwner(options){
  return Object.freeze({
   readMetadata({principal,conversationId}){return read(prisma,principal,conversationId);},
   ownerOf({tenantId,conversationId}){return owner(prisma,{tenantId,conversationId});},
-  manage({principal,request},port){return manage(prisma,{tenantId:principal.tenantId,userId:principal.actorId},request,port);},
+  manage({principal,request},port){
+   const locked=storageMethod(port,'withTerminalConversation');
+   // This callback comes only from the captured canonical Core owner. Preserve its outcome outside both lock owners,
+   // without asking a generic journal to recognize HTTP exceptions or unwrap causes. A failed lock/commit/unlock rejects
+   // `locked` before the outcome is read, so an uncertain database lease can never be disguised as a business refusal.
+   const trustedPort=Object.freeze({async withTerminalConversation(command,work){
+    if(typeof work!=='function')return unavailable();
+    // The store deliberately copies bounded JSON returns. Only a per-call opaque marker crosses it; the actual
+    // value/error stays in this closure and is never accepted back from a port or serialized into a public receipt.
+    const marker=randomUUID();let outcome,invoked=false;
+    const result=await locked(command,async fence=>{
+     if(invoked)throw fault('CONVERSATION_MANAGEMENT_CONFIGURATION');invoked=true;
+     try{outcome=Object.freeze({value:await work(fence)});}catch(error){outcome=Object.freeze({error});}
+     return marker;
+    });
+    if(outcome===undefined||result!==marker)throw fault('CONVERSATION_MANAGEMENT_UNAVAILABLE');
+    if(Object.hasOwn(outcome,'error'))throw outcome.error;
+    return outcome.value;
+   }});
+   return manage(prisma,{tenantId:principal.tenantId,userId:principal.actorId},request,trustedPort);
+  },
  });
 }
 /** Only the explicit bootstrap owner can authorize conversation retention. Other subject kinds need their existing owners. */
