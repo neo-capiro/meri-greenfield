@@ -31,7 +31,7 @@ export function createCapiroApplicationAuthorityClient(configuration){
    const status=getters.status.call(response),headers=getters.headers.call(response),body=getters.body.call(response),header=k=>Headers.prototype.get.call(headers,k);
    answeredStatus=status;
    if(isUnavailableStatus(status)){unanswered=true;refused('HTTP_UNAVAILABLE_STATUS');}
-   if(status!==200||getters.redirected.call(response)||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!body)refused(status!==200?'HTTP_STATUS':'HTTP_RESPONSE_SHAPE');
+   if(status!==200||getters.redirected.call(response)||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!body)refused(status!==200?(Number.isSafeInteger(status)&&status>=100&&status<600?'HTTP_STATUS_'+status:'HTTP_STATUS'):'HTTP_RESPONSE_SHAPE');
    const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>bound.maxResponseBytes))refused();
    reader=body.getReader();let count=0;const chunks=[];
    for(;;){const part=await life.run(()=>reader.read().catch(noAnswer));life.check();if(part.done){complete=true;break;}if(!(part.value instanceof Uint8Array))refused();count+=part.value.byteLength;if(count>bound.maxResponseBytes)refused('HTTP_BODY_SIZE');chunks.push(part.value);}

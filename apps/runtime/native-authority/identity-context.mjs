@@ -32,8 +32,10 @@ export function createNativeIdentityContext(configuration){
    const borrow=requireOrigin?originatingAuthoritySession(fetchImpl):undefined;
    // No live originating session (expired, other run, other process): read Core fresh and never reuse, as before S2.
    let origin;if(borrow){try{origin=borrow({binding,selectedClientId:clientId,signal});}catch(error){if(error?.code!=='SESSION_UNAVAILABLE')throw error;}}
-   if(origin){sessionFence=hash(origin.credential);expect=origin.expect;}
-   const reusable=binding!==undefined&&(!requireOrigin||origin?.expect!==undefined);
+   // The origin proves the live user session and fences the cache. Its revision pins belong to the browser credential's
+   // receipts; a task reads Core with its own configured credential (another Clerk session), so it pins only from its own cache.
+   if(origin)sessionFence=hash(origin.credential);
+   const reusable=binding!==undefined&&(!requireOrigin||origin!==undefined);
    let receipt,sendStart=performance.now(),wallSend=now();
    // Initial issuance has not selected its fenced run yet: it is always a fresh, non-reusable observation.
    if(!reusable){currentTurnTelemetry()?.recordAuthority?.('fresh');receipt=currentReceipt(await client.readCurrent({credential,conversationId,clientId,signal,deadlineMs:Math.min(deadlineMs,now()+CURRENT_MAX_WAIT_MS)}));}
