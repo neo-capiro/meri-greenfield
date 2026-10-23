@@ -34,18 +34,15 @@ export function planEntries(text){
  return [...block.matchAll(/\[\s*'([a-z_:]+)'\s*,\s*([^\n]*?),\s*'([a-f0-9]{64})'(?:\s*,\s*'([a-z]+)')?\s*\]/gu)].map(([,kind,source,digest,stage])=>
   ({kind,source:source.trim(),sha256:digest,stage:stage??(kind==='phase:temporal_grants'?'temporal':'meri')}));
 }
-/** The release's migration delta. The 'meri' and 'temporal' stages are ledgered, and the ledger accepts only an exact prefix, so
- * their entries may be appended, never removed, edited or reordered. 'integration' entries are applied only by an explicit
- * integration run (approved, not applied), so they are reported separately and never make the release's migrate run required. */
+/** All stages share one ordinal-exact ledger. Earlier entries may not be removed, edited, moved or reassigned to a stage.
+ * This is a source delta, not proof of database state: the actual ledger still determines every pending stage. */
 export function migrationDelta(previous,current){
- const ledgered=entries=>entries.filter(e=>e.stage!=='integration'),integration=entries=>entries.filter(e=>e.stage==='integration');
- const before=ledgered(previous),now=ledgered(current),kept=new Set(now.map(e=>e.sha256));
- const removed=before.filter(e=>!kept.has(e.sha256));
- if(removed.length)refuse(`migration plan drops or edits ledgered entries: ${removed.map(e=>e.source).join(', ')}`);
- if(now.slice(0,before.length).some((e,i)=>e.sha256!==before[i].sha256))refuse('migration plan reorders ledgered entries');
- const added=now.slice(before.length);
- return {previousEntries:before.length,currentEntries:now.length,added,required:added.length>0,
-  integrationChanged:canonicalSha256(integration(previous).map(e=>e.sha256))!==canonicalSha256(integration(current).map(e=>e.sha256))};
+ const identity=e=>[e.kind,e.source,e.sha256,e.stage];
+ if(current.length<previous.length)refuse('migration plan drops ledgered entries');
+ if(previous.some((e,i)=>canonicalSha256(identity(e))!==canonicalSha256(identity(current[i]))))refuse('migration plan edits or reorders ledgered entries');
+ const added=current.slice(previous.length),stages=added.map(e=>e.stage).filter((stage,i,a)=>i===0||stage!==a[i-1]);
+ return {previousEntries:previous.length,currentEntries:current.length,added,required:added.length>0,stages,
+  integrationChanged:added.some(e=>e.stage==='integration')};
 }
 
 /** Cross-checks the reviewed inputs; any disagreement refuses before a packet exists. */
@@ -88,9 +85,10 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  const steps=[{id:'readback',title:'Revisions unchanged since stage3.json (any registration in between forces a new render)',
   commands:fam.flatMap(family=>['ACTIVE','INACTIVE'].map(status=>command(['aws','ecs','list-task-definitions','--region','us-east-1','--family-prefix',family,'--status',status,'--sort','DESC','--max-items','1','--query','taskDefinitionArns[0]','--output','text']))),
   gate:'the highest ACTIVE/INACTIVE revision of every family is one below stage3.json taskDefinitions (an unchanged runner keeps its revision)'}];
- if(migrations.required)steps.push({id:'migrate',title:`Apply ${migrations.added.length} new migration(s) (stage meri) before any stack update`,
-  commands:[command(['node',MIGRATE,'plan'],{note:'offline: confirms the planned files and hashes'})],
-  gate:'the d2-migrate one-shot task (docs/shipping/20261017/D2-DATABASE.md; its task definition is not in this repository) reports the ledger as the exact plan prefix'});
+ steps.push({id:'migrate',title:'Verify the full migration ledger and apply any pending stages before uploads or stack updates',
+  commands:[command(['node',MIGRATE,'plan'],{note:'offline: confirms all planned files and hashes; the source delta does not establish applied database state'}),
+   ...migrations.stages.map(stage=>command(['node',MIGRATE,stage],{note:'run through the existing d2-migrate owner only after snapshot, isolated rehearsal and actual ledger verification; if earlier stages are pending, complete those first in plan order'}))],
+  gate:`inspect the one persistent preview clone ledger; before any forward SQL, verify a fresh snapshot and isolated rehearsal of its pending prefix and grants. The existing d2-migrate owner must report all ${migrations.currentEntries} entries applied with exact ordinals, names and hashes, including integration. Never infer completion from an unchanged source plan or re-clone the database`});
  steps.push({id:'upload',title:`Stage the ${ROLES.length} rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
   commands:upload.roles.flatMap(r=>[command(r.command,{note:`append "${r.role}<TAB>VersionId" to ${W('secret-versions.tsv')}; on an uncertain outcome resend this exact command`}),command(r.readback)]),
   gate:`${ROLES.length} new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
@@ -171,7 +169,7 @@ const line=c=>c.argv?`${c.argv.map(shellWord).join(' ')}${c.stdout?` > ${shellWo
 export function renderMarkdown(p){
  const out=[`# Meri first-chat ship packet (${p.phase})`,'',`Packet sha256 \`${p.packetSha256}\`. Source \`${p.pins.sourceCommit}\` replaces \`${p.pins.previousSourceCommit}\`. Label \`${p.pins.label}\`.`,
   '','## Pins','','```json',JSON.stringify(p.pins,null,1),'```','','## Evidence','','```json',JSON.stringify(p.evidence,null,1),'```','',
-  '## Migrations','',p.migrations.required?`${p.migrations.added.length} new entries must be applied first:\n\n${p.migrations.added.map(e=>`- ${e.source} \`${e.sha256}\``).join('\n')}`:'None: the migration plan is unchanged since the previous release.',
+  '## Migrations','',p.migrations.required?`${p.migrations.added.length} new source-plan entries require ledger verification and application if pending:\n\n${p.migrations.added.map(e=>`- ${e.stage}: ${e.source} \`${e.sha256}\``).join('\n')}`:'No new source-plan entries. This does not prove database completion; verify the actual full ledger and apply any pending stages before release.',
   '','## Cost limits','','```json',JSON.stringify(p.costLimits,null,1),'```','','## Steps',''];
  for(const [n,s] of p.steps.entries())out.push(`### ${n+1}. ${s.title}`,'','```bash',...s.commands.map(line),'```','',`Gate: ${s.gate}`,'');
  out.push('## Smoke','','```bash',...p.smoke.map(line),'```','','## Rollback','',p.rollback.rule,'',...p.rollback.steps.map(s=>`- ${s}`),'','## Cleanup','',...p.cleanup.map(s=>`- ${s}`),'','## Risks','',...p.risks.map(s=>`- ${s}`),'');

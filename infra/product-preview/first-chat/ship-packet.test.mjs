@@ -18,12 +18,16 @@ const here=fileURLToPath(new URL('.',import.meta.url));
 const bytes=name=>readFile(join(here,name));
 const json=async name=>JSON.parse((await bytes(name)).toString('utf8'));
 const sha=b=>createHash('sha256').update(b).digest('hex');
-/** A reviewed earlier source commit present in history; its image digest here is synthetic. */
-const PREVIOUS_COMMIT='a1876afaeaa59d9da47729487d490cba8cfc9d9c';
+/** Reviewed sources present in history; all image receipts in this test are synthetic. */
+const PREVIOUS_COMMIT='05d588c7c5d6da8b8e8a12ea4d47e16526af1aaf';
+const CURRENT_COMMIT='9b678896544b03f32ed482d6cac639d978dd7e81';
 const LATEST=Object.values(STAGE3_FAMILIES).flatMap(f=>[`${f}\tarn:aws:ecs:us-east-1:967807252336:task-definition/${f}:7`,`${f}\tNone`]).join('\n')+'\n';
 
 async function inputs(){
  const deployment=await json('deployment-inputs.json'),foundationOutputs=await json('foundation-outputs.json');
+ // The archived deployment predates PREVIOUS_COMMIT and drops integration entries.
+ // Build a forward fixture without rewriting the historical checked-in inputs.
+ deployment.images.nodeRuntimeSourceCommit=CURRENT_COMMIT;
  // Canonical image-build.sh result shape. Immutable historical receipts remain historical.
  const receipt={sourceCommit:deployment.images.nodeRuntimeSourceCommit,sourceVersion:'reviewed-source-version',
   imageDigest:deployment.images.nodeRuntime.slice(deployment.images.nodeRuntime.indexOf('@')+1),platform:'linux/arm64',scanStatus:'COMPLETE',findingSeverityCounts:{}};
@@ -35,7 +39,8 @@ async function inputs(){
  previousDeployment.images.nodeRuntimeSourceCommit=PREVIOUS_COMMIT;
  let n=0;
  const plan=entries=>entries.map(e=>({kind:e.kind,source:e.path,sha256:e.pinned,stage:e.stage}));
- return {deployment,previousDeployment,runtime:await json('runtime-values.json'),receipt,receiptSha256,
+ const runtime=await json('runtime-values.json');runtime.preparationIntent.runnerSha256=runnerSha256AtCommit(CURRENT_COMMIT);
+ return {deployment,previousDeployment,runtime,receipt,receiptSha256,
   imageScans:{nodeRuntime:receiptSha256},stage3:stage3RenderInput({deployment,foundationOutputs,revisions:nextRevisions(parseLatestTsv(LATEST))}),
   upload:{label:'FIRST_CHAT_20261021A',roles:uploadPlan({deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',
    secretLabels:Object.fromEntries(Object.values(MATERIAL_SECRET_KEYS).map(key=>[deployment.secrets[key],[{VersionId:'v-current',VersionStages:['AWSCURRENT']}]])),newToken:()=>`token-${++n}`})},
@@ -46,15 +51,20 @@ async function inputs(){
 test('the migration plan parses exactly as first-chat-migrate.mjs declares it; the delta allows only appended entries',async()=>{
  const parsed=planEntries((await readFile(join(here,'..','first-chat-migrate.mjs'),'utf8')));
  assert.deepEqual(parsed.map(e=>[e.sha256,e.stage]),PLAN.map(e=>[e.pinned,e.stage]));
- const meri=parsed.filter(e=>e.stage==='meri'),integration=parsed.find(e=>e.stage==='integration');
- const ledgered=parsed.filter(e=>e.stage!=='integration').length;
- assert.deepEqual(migrationDelta(parsed,parsed),{previousEntries:ledgered,currentEntries:ledgered,added:[],required:false,integrationChanged:false});
+ const meri=parsed.filter(e=>e.stage==='meri');
+ assert.deepEqual(migrationDelta(parsed,parsed),{previousEntries:parsed.length,currentEntries:parsed.length,added:[],required:false,stages:[],integrationChanged:false});
  assert.equal(migrationDelta(meri.slice(0,-1),meri).required,true,'a new meri-stage entry must be applied before the stacks update');
  const extended=migrationDelta(parsed.slice(0,-1),parsed);
- assert.equal(extended.required,false,'integration-stage entries wait for an explicit integration run');assert.equal(extended.integrationChanged,true);
- // An unapplied integration entry may still be revised; a ledgered one may not.
- assert.equal(migrationDelta([...meri,integration],[...meri,{...integration,sha256:'9'.repeat(64)}]).integrationChanged,true);
- assert.throws(()=>migrationDelta(meri,meri.slice(1)),/drops or edits/u);
+ assert.equal(extended.required,true,'SDK usage requires its integration migration before release');assert.equal(extended.integrationChanged,true);
+ assert.deepEqual(extended.stages,['integration']);assert.equal(extended.previousEntries,42);assert.equal(extended.currentEntries,43);
+ assert.equal(extended.added[0].sha256,'234433e94a6fbc68ef76b74929f7e3e54fcba1db5d15a396dcaa0f817214933c');
+ assert.deepEqual(migrationDelta([],parsed).stages,['meri','temporal','meri','integration'],'stage order follows contiguous ledger entries, including the second meri stage');
+ for(const key of ['sha256','kind','source','stage']){
+  const changed=structuredClone(parsed);changed.at(-1)[key]=key==='sha256'?'9'.repeat(64):'changed';
+  assert.throws(()=>migrationDelta(parsed,changed),/edits or reorders/u,`integration ${key} is immutable`);
+ }
+ assert.throws(()=>migrationDelta(parsed,parsed.slice(0,-1)),/drops/u);
+ assert.throws(()=>migrationDelta(meri,meri.slice(1)),/drops/u);
  assert.throws(()=>migrationDelta(meri,[meri[1],meri[0],...meri.slice(2)]),/reorders/u);
 });
 
@@ -68,7 +78,10 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  for(const key of ['sourceCommit','sourceVersion','imageDigest','platform'])assert.equal(p.evidence[key],i.receipt[key]);
  for(const key of ['producerBuild','glibcVersion','nodeVersion','archiveSha256','sourceManifestSha256'])assert.equal(Object.hasOwn(p.evidence,key),false,key);
  assert.match(p.costLimits.policySource,/canonical tenant settings/u);assert.equal(p.costLimits.tenantMonthlyCapUsd,undefined);
- assert.deepEqual(p.steps.map(s=>s.id),['readback','upload','bindings',...STAGE3_DEPLOY_ORDER.map(k=>`deploy-${k}`),'verify']);
+ assert.deepEqual(p.steps.map(s=>s.id),['readback','migrate','upload','bindings',...STAGE3_DEPLOY_ORDER.map(k=>`deploy-${k}`),'verify']);
+ const migration=p.steps.find(s=>s.id==='migrate');
+ assert.deepEqual(migration.commands.map(c=>c.argv.at(-1)),['plan'],'an unchanged source still requires full actual-ledger verification');
+ assert.match(migration.gate,/all 43 entries applied/u);assert.match(migration.gate,/snapshot and isolated rehearsal/u);
  const upload=p.steps.find(s=>s.id==='upload').commands.filter(c=>c.argv.includes('put-secret-value'));
  assert.equal(upload.length,3);for(const c of upload)assert.equal(c.argv[c.argv.indexOf('--version-stages')+1],'FIRST_CHAT_20261021A');
  const bindings=p.steps.find(s=>s.id==='bindings').commands.at(-1).argv;assert.ok(bindings.includes('--live-app-template'));
@@ -81,6 +94,19 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  const md=renderMarkdown(p);assert.match(md,/^# Meri first-chat ship packet \(pre-upload\)/u);
  for(const forbidden of ['PRIVATE KEY','"password"','synthetic-'])assert.equal((md+JSON.stringify(p)).includes(forbidden),false,forbidden);
  assert.ok(md.includes("--version-stages FIRST_CHAT_20261021A"));
+ assert.match(md,/No new source-plan entries\. This does not prove database completion/u);
+});
+
+test('an integration-only source delta reaches the operator packet before uploads',async()=>{
+ const i=await inputs(),parsed=planEntries(await readFile(join(here,'..','first-chat-migrate.mjs'),'utf8'));
+ i.migrations=migrationDelta(parsed.slice(0,-1),parsed);
+ const p=buildShipPacket(i),step=p.steps.find(s=>s.id==='migrate'),md=renderMarkdown(p);
+ assert.deepEqual(step.commands.map(c=>c.argv.at(-1)),['plan','integration']);
+ assert.match(step.commands[1].note,/earlier stages are pending/u);
+ assert.ok(p.steps.indexOf(step)<p.steps.findIndex(s=>s.id==='upload'));
+ assert.match(md,/integration: conversation\('0021_sdk_run_usage.sql'\)/u);
+ assert.match(md,/node infra\/product-preview\/first-chat-migrate.mjs integration/u);
+ assert.doesNotMatch(md,/None: the migration plan|stage meri\) before/u);
 });
 
 test('packet risks distinguish compatible images, incompatible sessions and unfinished work without claiming live qualification',async()=>{
@@ -139,14 +165,18 @@ test('CLI writes ship-packet.json and SHIP-PACKET.md outside the repository; pre
  try{
   const quiet=async argv=>{const lines=[];const code=await main(argv,{out:t=>lines.push(t),err:t=>lines.push(t)});return {code,text:lines.join('')};};
   const write=async(name,value)=>{await writeFile(join(work,name),typeof value==='string'?value:JSON.stringify(value));return join(work,name);};
-  const args=['--deployment-inputs',join(here,'deployment-inputs.json'),'--previous-deployment-inputs',await write('previous.json',i.previousDeployment),
-   '--runtime',join(here,'runtime-values.json'),'--node-receipt',await write('result.json',i.receipt),'--image-scans',await write('image-scans.json',i.imageScans),
+  const args=['--deployment-inputs',await write('deployment.json',i.deployment),'--previous-deployment-inputs',await write('previous.json',i.previousDeployment),
+   '--runtime',await write('runtime.json',i.runtime),'--node-receipt',await write('result.json',i.receipt),'--image-scans',await write('image-scans.json',i.imageScans),
    '--stage3',await write('stage3.json',i.stage3),'--upload-plan',await write('upload-plan.json',i.upload),'--work',work,'--ceiling-usd','5'];
   let r=await quiet([...args,'--out',join(work,'packet')]);
   assert.equal(r.code,0,r.text);assert.match(r.text,/SHIP_PACKET_WRITTEN/u);
   const packet=JSON.parse(await readFile(join(work,'packet','ship-packet.json'),'utf8'));
   assert.equal(packet.phase,'pre-upload');assert.equal(typeof packet.migrations.required,'boolean');
   assert.match(await readFile(join(work,'packet','SHIP-PACKET.md'),'utf8'),new RegExp(packet.packetSha256,'u'));
+  // A historical source that drops integration entries is not a compatible rollback.
+  const backward=[...args];backward[1]=join(here,'deployment-inputs.json');
+  r=await quiet([...backward,'--out',join(work,'backward')]);assert.equal(r.code,2);assert.match(r.text,/drops ledgered entries/u);
+  await assert.rejects(readFile(join(work,'backward','ship-packet.json')),{code:'ENOENT'});
   // The CLI hashes actual result bytes, so a changed source version cannot reuse the old scan pin.
   await write('result.json',{...i.receipt,sourceVersion:'another-source-version'});
   r=await quiet([...args,'--out',join(work,'changed-result')]);assert.equal(r.code,2);assert.match(r.text,/sha256 of the image build result/u);
