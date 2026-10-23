@@ -42,8 +42,11 @@ Wave 2 brief drafts are in `phases/wave2/` here (MP, A2, M2; S2 was already ship
 
 ## 2. Wave 2 work, its exact state, and the next step
 
+**Do item 0 first (Neo, 2026-10-23).** It changes the runner, proxy, owner, budget and authority code that several items below depend on. Re-check each item against item 0's plan before sending it. MP, in particular, is redefined by item 0: with direct Bedrock from the SDK, the "Claude API path" is an SDK provider setting, not a proxy feature.
+
 | Item | Lane | State | Next for the orchestrator |
 |---|---|---|---|
+| **0. Claude-native harness**: SDK full harness, direct Bedrock, Capiro data as MCP tools; delete proxy, owner, temporal-issuer and per-operation authority | new lane | Spec: `phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md` | Start with the spec's §5 step 1 spike; ship each step and check it on preview before the next |
 | **M2** capiro-frontend **#123** (conversation history, switching, General/client chat) | agent 4 | Head **`0261e9e2`**, dot SOURCE ACCEPT. At the previous head `09bb4b9d`: unit 426/426, browser all pass, `next build` OK on Next 16.4.0 (the earlier SecurityFatalError is gone). The only failure was `test:production` `verify-documents.mjs:90`, which expected `/meri`; `0261e9e2` changes that one line to the exact `/meri/conversations`. The full gate at `0261e9e2` was **started and cancelled** (build `ba03601e`). Not merged | Run the full FE gate (`ship-fe-kit/make-fe-ship-kit.mjs 0261e9e2… --worktree <clean wt> --label m2`, then steps 00, 02–05; the kit generator already writes the archive, so skip 01). On PASS plus a clean merge, merge and deploy (06–08) |
 | **A2** capiro-backend **#111** (ML-13 and the A2 backend set) | agent 3 | **Merged** to `backend-import` `db96ad31`. Core image `11aa247a…` qualified with 0 findings. **Not deployed** (held until S2 acceptance) | After Wave 1 acceptance: register a new Core revision from `:7` changing only the image and `RELEASE_SHA` (don't use core-kit step 04, which copies `:3` and lacks `PREVIEW_NATIVE_GETS_ENABLED`). Snapshot the clone, apply any new Core migrations to the clone, roll Core |
 | **A2** remaining frontend tickets | agent 3 | Brief: `adj-reports/phases/wave2/WAVE2-AGENT3-A2-BRIEF.md` | Refresh the base SHAs, then send |
