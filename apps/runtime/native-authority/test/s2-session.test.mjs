@@ -49,7 +49,8 @@ test('S2 task reuse requires its live originating session; without one every che
  const f=fixture(t),s=await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
  const observe=(extra={})=>f.identity.withAuthority({credential:'native',binding:f.binding,sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra},()=>true);
  await observe();const count=f.state.calls.length;await observe();assert.equal(f.state.calls.length,count);
- assert.deepEqual(JSON.parse(f.state.calls[count-1].init.body).expect,{identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64)});
+ assert.equal(JSON.parse(f.state.calls[count-1].init.body).expect,undefined,'the first task read pins nothing from the browser session');
+ await observe({fresh:true});assert.deepEqual(JSON.parse(f.state.calls.at(-1).init.body).expect,{identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64)},'a fresh read pins the task credential own cached revisions');
  f.state.status=503;await assert.rejects(observe({fresh:true}));f.state.status=200;f.state.contextRevision='d'.repeat(64);const cleared=f.state.calls.length;await observe();assert.equal(JSON.parse(f.state.calls[cleared].init.body).expect,undefined,'a cleared cache pins nothing from the browser session');f.state.contextRevision=undefined;await assert.rejects(observe({fresh:true}),'its own cached revision is pinned on the next fresh read');await observe({fresh:true});
  const beforeRevoke=f.state.calls.length;f.sessions.revoke(s.credential);await observe();await observe();assert.equal(f.state.calls.length,beforeRevoke+2,'without an origin every check is a fresh Core read, never a cached reuse');
  f.state.status=401;await assert.rejects(observe(),'Core refusing the revoked credential still refuses the task');
