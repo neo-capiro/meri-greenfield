@@ -33,7 +33,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {runnerStartupBudget} from '../../../packages/runtime/runner-load-budget.mjs';
 import {withRunnerDiagnostics} from '../runner-runtime-diagnostics.mjs';
-import {CORE_PROFILES,recordHostClockSteps} from './rehearsal-support.mjs';
+import {CORE_PROFILES,recordHostClockSteps,createRehearsalCoreModel} from './rehearsal-support.mjs';
 import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {countingFetch} from '../telemetry/counting.mjs';
 import {createTurnPublishObserver} from '../telemetry/turn-publish.mjs';
@@ -65,15 +65,9 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
  const thrown=[],traced=(name,owner)=>{const copy={};for(const key of Reflect.ownKeys(owner)){const value=owner[key];copy[key]=typeof value!=='function'?value:async(...args)=>{
    try{return await value.apply(owner,args);}catch(error){const chain=[];for(let e=error;e&&chain.length<4;e=e.cause)chain.push(e.code??e.message??String(e));
     if(thrown.length<20)thrown.push({where:`${name}.${String(key)}`,atMs:at(),chain});throw error;}};}return Object.freeze(copy);};
- async function rawCoreFetch(url,init){
-  const path=new URL(url).pathname,route=path.endsWith('/identity')?'identity':path.endsWith('/context')?'context':path.endsWith('/membership')?'membership':null;
-  if(!route)throw Error('unknown local Core route');count(route);
-  if(++coreCalls===clerkTimeoutAt){await delay(CLERK_TIMEOUT_MS,init.signal);return Response.json({message:'Application authority unavailable'},{status:clerkStatus});}
-  await delay(latency[route],init.signal);const now=Date.now(),body=JSON.parse(init.body);
-  if(route==='identity')return Response.json({principal,identityRevision:'identity-revision',checkedAtMs:now,expiresAtMs:expiry()});
-  if(route==='membership')return Response.json({...principal,status:'active',role:'standard_user',permissions:[],clientIds:[clientId],membershipRevision:'membership-revision',checkedAtMs:now,expiresAtMs:expiry()});
-  return Response.json({principal,identityRevision:'identity-revision',identitySha256:body.identitySha256,conversationId:body.conversationId,selectedClientId:clientId,contextRevision:'context-revision',checkedAtMs:now,expiresAtMs:expiry()});
- }
+ const rawCoreFetch=createRehearsalCoreModel({principal,clientId,conversationId:binding.conversationId,latency,delay,before:async(route,_body,init)=>{
+  count(route);if(++coreCalls===clerkTimeoutAt){await delay(CLERK_TIMEOUT_MS,init.signal);return Response.json({message:'Application authority unavailable'},{status:clerkStatus});}
+ }});
  const coreFetch=countingFetch(rawCoreFetch,turnTelemetry);
  // Control: the dynamic first conversation selects this run; the task verifier keeps its own run-bound context.
  const runFact=()=>JSON.stringify({binding,policyRevision:scopes[0].policyRevision,deadlineMs:expiry(),checkedAtMs:Date.now()});
@@ -82,6 +76,8 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
   currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits,admitInitialConversation:async()=>runFact()}));
  const verifierContext=traced('verifier',createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding,clientResolution:{reference:clientId,clientId}},currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits}));
  const membership=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext,fetchImpl:coreFetch,now:Date.now,limits});
+ // Historical split-route runner baseline: no withAuthority is supplied here, and native below calls split verifier ports.
+ // Therefore164 median calls remain intentional; this is not evidence of S2 reuse. D3 uses the canonical S2 composition.
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,
   membership:{admit:membership.admit,recheck:membership.recheck},now:Date.now,limits:{maxSessions:16,maxRequestMs:25000,maxTtlMs:300000,maxFactBytes:65536}});
  const saved={run:{binding,state:'queued',scopes,versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request,lastSequence:1},events=[];

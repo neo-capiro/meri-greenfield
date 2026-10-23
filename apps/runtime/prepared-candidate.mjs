@@ -1,6 +1,7 @@
 /** Concrete bounded first-run composition over existing canonical owners. */
 import {ECSClient} from '@aws-sdk/client-ecs';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
+import {bindCurrentAuthoritySessions} from './read-credential-relay.mjs';
 import {countingFetch,countingAwsClient,countingPool} from './telemetry/counting.mjs';
 import {S3Client} from '../artifacts/storage/s3-sdk.mjs';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -130,10 +131,11 @@ export function assemblePreparedCandidate(options){
  // Stable ports borrow the same lazy controller's durable owner. No registration is inferred from configuration;
  // before an allocated controller exists every session operation refuses. Multi-run routes retain registry authority.
  const sessionCall=(port,method)=>value=>{if(closed)throw Object.assign(Error('SDK_SESSION_UNAVAILABLE'),{code:'SDK_SESSION_UNAVAILABLE'});const entry=value.request?.binding&&runRegistry?.get(value.request.binding);if(entry)return entry.session(port,method,value);if(!controller||!same(value.request?.binding,original.binding))throw Object.assign(Error('SDK_SESSION_UNAVAILABLE'),{code:'SDK_SESSION_UNAVAILABLE'});return controller.productPorts[port][method](value);};
+ let unbindAuthoritySessions;
  const productPorts=Object.freeze({identityContext,conversationMembership,conversationCurrentness,...(nextRunOwner?{conversationTurns:nextRunOwner}:{}),
   sdkSessionOwner:Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(method=>[method,sessionCall('sdkSessionOwner',method)]))),
   sdkSessionSnapshot:Object.freeze({readSnapshot:sessionCall('sdkSessionSnapshot','readSnapshot')})});
- return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,productPorts,native:localNative,application,bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){try{await runRegistry?.close();}finally{await kickoff.close();if(!supplied.turnTelemetry)turnTelemetry.close();}}});
+ return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,productPorts,native:localNative,application,bindSessions(sessions){if(unbindAuthoritySessions)refuse();unbindAuthoritySessions=bindCurrentAuthoritySessions(fetchImpl,sessions);},bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){unbindAuthoritySessions?.();try{await runRegistry?.close();}finally{await kickoff.close();if(!supplied.turnTelemetry)turnTelemetry.close();}}});
 }
 /** The startup owners handed to assemblePreparedCandidate, the task router and the runner poststart authority. The
  * poststart authority signs runner certificates against the durable run issuer, so `issuer` must travel with the

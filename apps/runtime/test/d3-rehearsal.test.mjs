@@ -15,12 +15,13 @@ import assert from 'node:assert/strict';
 import {AsyncLocalStorage} from 'node:async_hooks';
 import {performance} from 'node:perf_hooks';
 import {randomUUID} from 'node:crypto';
+import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {assemblePreparedCandidate} from '../prepared-candidate.mjs';
 import {assembleControl} from '../control.mjs';
 import {initialInputFixture} from '../../control/conversations/test/initial-input-fixture.mjs';
 import {id} from '../../control/conversations/test/application-fixture.mjs';
-import {CORE_PROFILES,recordHostClockSteps} from './rehearsal-support.mjs';
+import {CORE_PROFILES,recordHostClockSteps,createRehearsalCoreModel} from './rehearsal-support.mjs';
 
 /** Median runner/publish duration (ms) per profile, measured by first-turn-rehearsal on 4797f7da: the runner's event cadence. */
 export const PUBLISH_MS=Object.freeze({quiet:6300,'live-median':10500,'live-tail':15700});
@@ -38,22 +39,19 @@ function compose({profile,stopMs=1000}){
  // facts expire with requestMs and every session and input allocation lasts 25 s. 300 s is the fixture allocation's runtime.
  const configuration={...f.configuration,limits:LIMITS,nativeCandidate:{...f.configuration.nativeCandidate,multiRun:{runWindowMs:300000}}};
  const sql=initialInputFixture();sql.pool.query=async(query,args)=>query.startsWith('SELECT name,to_regclass')?{rows:args[0].map(name=>({name,relation:name}))}:{rows:[{cap_micro_usd:'1000',consumed_micro_usd:'0',quarantined:false}]};
- async function fetchImpl(url,init){
-  const path=new URL(url).pathname,kind=path.endsWith('/identity')?'identity':path.endsWith('/context')?'context':path.endsWith('/membership')?'membership':null;if(!kind)throw Error('unknown local Core route '+path);
+ const telemetryLines=[],turnTelemetry=createTurnTelemetry({service:'control',now:Date.now,write:line=>telemetryLines.push(JSON.parse(line))});
+ const fetchImpl=createRehearsalCoreModel({principal,clientId,conversationId:f.binding.conversationId,latency,delay,before(kind){
   const name=route.getStore()??'other';core[name]??={calls:0};core[name].calls++;core[name][kind]=(core[name][kind]??0)+1;
-  await delay(latency[kind],init.signal);const checkedAtMs=Date.now(),expiresAtMs=checkedAtMs+600000,body=JSON.parse(init.body);
-  if(kind==='identity')return Response.json({principal,identityRevision:'identity-revision',checkedAtMs,expiresAtMs});
-  if(kind==='membership')return Response.json({...principal,status:'active',role:'standard_user',permissions:[],clientIds:[clientId],membershipRevision:'membership-revision',checkedAtMs,expiresAtMs});
-  return Response.json({principal,identityRevision:'identity-revision',identitySha256:body.identitySha256,conversationId:f.binding.conversationId,selectedClientId:clientId,contextRevision:'context-revision',checkedAtMs,expiresAtMs});
- }
+ }});
+ const authorityTelemetry=()=>{turnTelemetry.rollup();return telemetryLines.filter(l=>['meri.turn.counters','meri.process.rollup'].includes(l.event)).map(({event,authorityFresh,authorityReuses})=>({event,authorityFresh,authorityReuses}));};
  const effects={starts:0,cancels:0,stops:0};
- const candidate=assemblePreparedCandidate({configuration,pool:sql.pool,ecs:{send(){throw Error('No AWS');}},objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:f.secret,fetchImpl,allocate(){throw Error('No allocation');}});
+ const candidate=assemblePreparedCandidate({configuration,turnTelemetry,pool:sql.pool,ecs:{send(){throw Error('No AWS');}},objects:{get(){throw Error('No objects');},put(){throw Error('No objects');}},credentials:f.secret,fetchImpl,allocate(){throw Error('No allocation');}});
  const client={connection:{withDeadline(_deadline,fn){return fn();},withAbortSignal(_signal,fn){return fn();}},
   workflow:{async start(){await delay(TEMPORAL_MS);effects.starts++;},getHandle(){return {async signal(){await delay(TEMPORAL_MS);},async cancel(){await delay(TEMPORAL_MS);effects.cancels++;}};}}};
  // control.mjs routes the stop-only native call around its fence; here it answers after the modelled ECS stop and revocation.
  const native=Object.freeze({...candidate.native,async call(operation,input,options={}){if(operation!=='execution/kickoff/stop')return candidate.native.call(operation,input,options);
   await delay(stopMs,options.signal);effects.stops++;return {binding:input.binding,executionId:input.executionId,expiresAtMs:Date.now()+600000};}});
- const assembly=assembleControl({configuration,pool:sql.pool,client,native,canonicalProductPorts:candidate.productPorts});candidate.bindApplication(assembly.application);
+ const assembly=assembleControl({configuration,turnTelemetry,pool:sql.pool,client,native,canonicalProductPorts:candidate.productPorts});candidate.bindSessions(assembly.sessions);candidate.bindApplication(assembly.application);
  const at=()=>Math.round(performance.now()-started);
  /** A browser request through the frontend's 30 s budget: status, body, duration and the Core calls it made. */
  async function call(name,method,path,{body,credential,headers={},signal}={}){
@@ -65,7 +63,7 @@ function compose({profile,stopMs=1000}){
  const json=async r=>({...r,body:await r.response.json()});
  // Host wall-clock steps, recorded only: rehearsal-support.mjs keeps this process's Date.now from going back.
  const clock=recordHostClockSteps(at);
- return {f,assembly,candidate,effects,core,at,call,json,hostClockSteps:clock.steps,close:async()=>{clock.stop();assembly.close();await candidate.close();}};
+ return {f,assembly,candidate,effects,core,at,call,json,authorityTelemetry,hostClockSteps:clock.steps,close:async()=>{clock.stop();try{assembly.close();await candidate.close();}finally{turnTelemetry.close();}}};
 }
 
 /** The runner as control sees it: one durable event per publish, at the measured cadence; stops at the first refusal. */
@@ -132,7 +130,7 @@ export async function rehearseStreamAndRefresh({profile,deltas=6}){
   const outcome=await run.done;
   const history=await c.json(await browser.request('history','POST','/api/conversations/history',{body:{after:0,limit:100}}));
   return {profile,session:summary(session),send:submit.steps,runner:outcome,stream,history:{...summary(history),events:history.body?.events?.length??null},
-   renewals:browser.renewals,core:c.core,effects:c.effects,hostClockSteps:c.hostClockSteps};
+   renewals:browser.renewals,core:c.core,effects:c.effects,authorityTelemetry:c.authorityTelemetry(),hostClockSteps:c.hostClockSteps};
  }finally{await c.close();}
 }
 
@@ -153,7 +151,7 @@ export async function rehearseDuplicateAndStop({profile,stopMs}){
   const history=await c.json(await browser.request('history','POST','/api/conversations/history',{body:{after:0,limit:100}}));
   const statuses=(history.body?.events??[]).filter(e=>e.type==='run.status').map(e=>e.data.state);
   return {profile,stopMs,session:summary(session),sends:[first.steps,second.steps],sameRun:first.ok&&second.ok&&first.body?.run?.binding?.runId===second.body?.run?.binding?.runId,
-   changedBytes:changed.steps,stopAtMs,stop:summary(stop),runner:outcome,stopAgain:summary(again),statuses,renewals:browser.renewals,core:c.core,effects:c.effects,hostClockSteps:c.hostClockSteps};
+   changedBytes:changed.steps,stopAtMs,stop:summary(stop),runner:outcome,stopAgain:summary(again),statuses,renewals:browser.renewals,core:c.core,effects:c.effects,authorityTelemetry:c.authorityTelemetry(),hostClockSteps:c.hostClockSteps};
  }finally{await c.close();}
 }
 
@@ -167,4 +165,6 @@ for(const profile of Object.keys(CORE_PROFILES))for(const stopMs of [1000,20000]
   const r=await rehearseDuplicateAndStop({profile,stopMs});t.diagnostic(JSON.stringify(r));
   // Stop answers the committed fence inside its request, however long the native stop takes (D5); a repeat answers the same.
   assert.equal(r.stop.status,200,JSON.stringify(r.stop));assert.equal(r.stopAgain.status,200,JSON.stringify(r.stopAgain));assert.equal(r.statuses.at(-1),'cancelled');
+  assert.equal(r.sameRun,true,'same-bytes duplicate must replay onto the original run: '+JSON.stringify(r.sends));
+  for(const send of r.sends)for(const step of Object.values(send))assert.notEqual(step.code,'INITIAL_INPUT_UNAVAILABLE','same-bytes replay cannot fail unavailable: '+JSON.stringify(send));
  });

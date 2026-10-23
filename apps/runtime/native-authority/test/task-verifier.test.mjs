@@ -43,7 +43,7 @@ test('committed grant revocation/fence/quarantine/expiry prevents receipt and la
  for(const kind of ['revoked','fence','quarantine','expiry']){const x=await setup(t);if(kind==='revoked')x.f.state().grant.state='REVOKED';if(kind==='fence')x.f.state().run.fence++;if(kind==='quarantine')x.f.state().budget.quarantined=true;if(kind==='expiry')x.f.state().grant.expires_at=new Date(NOW);await assert.rejects(verify(x));await assert.rejects(x.supervisor.prepareLaunch({capability:x.f.credential}));assert.equal(x.supervisor.status().launcher,null);}
 });
 test('revocation committed during native context await is caught by a fresh later snapshot',async t=>{
- const x=await setup(t);x.setHook(url=>{if(url.endsWith('/context'))x.f.state().grant.state='REVOKED';});await assert.rejects(verify(x));assert.equal(x.authorityCalls(),2);assert.equal(x.f.state().grant.state,'REVOKED');
+ const x=await setup(t);x.setHook(url=>{if(url.endsWith('/current'))x.f.state().grant.state='REVOKED';});await assert.rejects(verify(x));assert.equal(x.authorityCalls(),1);assert.equal(x.f.state().grant.state,'REVOKED');
 });
 test('held canonical allocation can refresh verifier without reacquiring budget row lock',async t=>{
  const x=await setup(t);let inside;

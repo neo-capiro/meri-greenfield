@@ -14,7 +14,7 @@ const getters=Object.fromEntries(['status','headers','body','redirected'].map(k=
 const credentialOk=v=>typeof v==='string'&&/^[A-Za-z0-9._~+/-]{1,8192}={0,2}$/u.test(v);
 function cancel(response){try{if(response&&!types.isProxy(response)&&response instanceof Response){const body=getters.body.call(response);if(body)Promise.resolve(body.cancel()).catch(()=>{});}}catch{}}
 export function createCoreMembershipGate(configuration){
- let origin,verifyIdentity,fetchImpl,now,limits;
+ let origin,verifyIdentity,fetchImpl,now,limits,combined;
  try{
   const c=own(configuration,['origin','identityContext','fetchImpl','now','limits']);
   limits=data(own(c.limits,['maxRequestMs','maxFactBytes']));fetchImpl=c.fetchImpl;now=c.now;
@@ -22,6 +22,7 @@ export function createCoreMembershipGate(configuration){
   const url=new URL(c.origin);
   if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||url.pathname!=='/'||url.origin!==c.origin)throw Error();
   origin=url.origin;verifyIdentity=storageMethod(c.identityContext,'verifyIdentity');
+  const member=Object.getOwnPropertyDescriptor(c.identityContext,'readMembership');if(member&&Object.hasOwn(member,'value')&&typeof member.value==='function')combined=()=>Reflect.apply(member.value,c.identityContext,[]);
  }catch{refuse('PRODUCT_CONFIGURATION');}
  async function readMembership(value){
   // Core did not answer: this request's own budget ran out, the network failed, or Core reported 408/429/5xx. Codes are unchanged.
@@ -29,6 +30,7 @@ export function createCoreMembershipGate(configuration){
   try{
    const call=own(value,['tenantId','actorId','credential','deadlineMs'],['signal']);nativeSignal(call.signal);
    if(!credentialOk(call.credential))refuse('UNAUTHENTICATED');
+   const observation=await combined?.();if(observation!==undefined)return observation;
    const at=now();if(!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(call.deadlineMs))refuse('CONVERSATION_UNAVAILABLE');
    const deadlineMs=Math.min(call.deadlineMs,at+limits.maxRequestMs);
    life=createOperationLifetime({deadlineMs,now,signal:call.signal,errorFactory:code=>{if(code==='DEADLINE'&&!call.signal?.aborted)unanswered=true;return new ProductError(code);}});
