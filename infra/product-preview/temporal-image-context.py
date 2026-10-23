@@ -23,7 +23,8 @@ BUILD_SCRIPT = D + "temporal-image-build.sh"
 DOCKERFILE = D + "temporal-launch.Dockerfile"
 PINS_FILE = D + "temporal-image-pins.json"
 MEMBERS = sorted([DOCKERFILE, BUILD_SCRIPT, PINS_FILE, D + "temporal-launch.sh",
-                  D + "temporal-launch-main.mjs", D + "temporal-launch-render.mjs", D + "temporal-migration-plan.mjs"])
+                  D + "temporal-launch-main.mjs", D + "temporal-launch-render.mjs", D + "temporal-migration-plan.mjs",
+                  D + "temporal-server-dependencies.patch"])
 CA_MEMBER = "inputs/temporal-issuer-ca.pem"
 PINS = json.loads(Path(__file__).with_name("temporal-image-pins.json").read_text(encoding="utf-8"))
 BASES = PINS["bases"]
@@ -108,7 +109,11 @@ def seal(repository, commit, issuer_ca, output):
     need(json.loads(small[PINS_FILE]) == PINS and PINS["platform"] == "linux/arm64", "IMAGE_PIN")
     dockerfile = small[DOCKERFILE].decode("utf-8")
     froms = [line.split()[2] for line in dockerfile.splitlines() if line.startswith("FROM ")]
-    need(froms == [BASES["nodeBinary"], BASES["temporalServer"], BASES["glibcRuntime"]], "BASE_PIN")
+    need(froms == [BASES["nodeBinary"], BASES["goBuilder"], BASES["glibcRuntime"]], "BASE_PIN")
+    source = PINS["serverSource"]
+    adds = [line.split() for line in dockerfile.splitlines() if line.startswith("ADD ")]
+    need(adds == [["ADD", "--checksum=sha256:" + source["sha256"], source["url"], "/tmp/temporal.tar.gz"]]
+         and source["url"] == "https://codeload.github.com/temporalio/temporal/tar.gz/" + source["commit"], "SERVER_SOURCE")
     need(all(line.split()[1] == "--platform=" + PINS["platform"]
              for line in dockerfile.splitlines() if line.startswith("FROM ")), "PLATFORM_PIN")
     files[CA_MEMBER] = hashlib.sha256(ca).hexdigest()

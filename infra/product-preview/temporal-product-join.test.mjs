@@ -16,7 +16,7 @@ function temporal(){return {
  clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-11111111',availabilityZone:'us-east-1a'},{id:'subnet-22222222',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal@sha256:${sha}`,
- upstreamServerImageDigest:imagePins.bases.temporalServer.split('@')[1],
+ upstreamServerSourceCommit:imagePins.serverSource.commit,
  launchSourceCommit:sourceCommit,
  launchContractSha256:createHash('sha256').update(readFileSync(new URL('./temporal-launch-render.mjs',import.meta.url))).digest('hex'),
  logGroupName:'/meri/temporal',executionRoleArn:`arn:aws:iam::${account}:role/temporal-execution`,

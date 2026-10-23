@@ -18,7 +18,7 @@ function binding(){return {
  account,region,enabled:false,activation:'disabled',placement:{kind:'existing-capiro-dev-vpc',reviewSha256:sha},clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-1234abcd',availabilityZone:'us-east-1a'},{id:'subnet-abcd1234',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal-server@sha256:${sha}`,
- upstreamServerImageDigest:imagePins.bases.temporalServer.split('@')[1],launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
+ upstreamServerSourceCommit:imagePins.serverSource.commit,launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
  executionRoleArn:`arn:aws:iam::${account}:role/meri-temporal-execution`,
  taskRoleArns:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,`arn:aws:iam::${account}:role/meri-temporal-${i}`])),
  network:{clientSecurityGroupIds:['sg-11111111','sg-22222222'],issuerSecurityGroupId:'sg-33333333',
@@ -45,8 +45,9 @@ test('committed application and Temporal inputs select the copied cluster and re
  assert.equal(deployment.database.host,endpoint);assert.equal(deployment.database.port,5432);assert.equal(deployment.database.database,'capiro');
  // This archived tuple names an amd64 image; it is not an ARM readiness input.
  assert.throws(()=>validateTemporalPreviewBinding(temporal),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
- const candidate={...temporal,serverImageUri:binding().serverImageUri,upstreamServerImageDigest:binding().upstreamServerImageDigest,
+ const candidate={...temporal,serverImageUri:binding().serverImageUri,upstreamServerSourceCommit:binding().upstreamServerSourceCommit,
   launchSourceCommit:binding().launchSourceCommit,launchContractSha256:rendererSha};
+ delete candidate.upstreamServerImageDigest;
  assert.equal(validateTemporalPreviewBinding(candidate),candidate);
  assert.equal(temporal.database.endpoint,endpoint);assert.equal(temporal.database.clusterArn,clusterArn);
  assert.equal(temporal.database.rdsCaSha256,deployment.database.rdsCaPemSha256);
@@ -260,7 +261,7 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.placement.kind='reuse-capiro-dev';},x=>{x.vpcId='vpc-1234abcd';},
   x=>{x.subnets[1].availabilityZone=x.subnets[0].availabilityZone;},x=>{x.subnets=[x.subnets[0]];},
   x=>{x.serverImageUri=x.serverImageUri.replace('@sha256:','-mutable:');},
-  x=>{x.upstreamServerImageDigest='sha256:'+sha;},x=>{x.launchSourceCommit='';},
+  x=>{x.upstreamServerSourceCommit='sha256:'+sha;},x=>{x.launchSourceCommit='';},
   x=>{x.taskRoleArns.history=x.taskRoleArns.frontend;},x=>{x.taskRoleArns.matching=x.executionRoleArn;},
   x=>{x.auth.materialSecretVersionByRole.history=x.auth.materialSecretVersionByRole.frontend;},
   x=>{x.auth.materialSecretVersionByRole.history=x.auth.materialSecretVersionByRole.frontend.replace(/[^:]+$/u,'9'.repeat(32));},
@@ -388,7 +389,11 @@ test('shared endpoint SG readback needs one SG row, exact service names and each
  ]){const copy=structuredClone(evidence);mutate(copy);assert.throws(()=>validateTemporalNetworkReadback(b,copy),/TEMPORAL_NETWORK_READBACK_REFUSED/u);}
 });
 
-test('active ARM binding refuses the historical amd64 donor even with current source and renderer',()=>{
- const b=binding();b.upstreamServerImageDigest=pins.server.imageAmd64Digest;
- assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+test('source-built ARM binding refuses historical image identity and wrong upstream source even with current renderer',()=>{
+ for(const identity of [pins.server.imageAmd64Digest,'a'.repeat(40),'',null]){
+  const b=binding();b.upstreamServerSourceCommit=identity;
+  assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
+ }
+ const old=binding();old.upstreamServerImageDigest=pins.server.imageAmd64Digest;delete old.upstreamServerSourceCommit;
+ assert.throws(()=>validateTemporalPreviewBinding(old),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
 });

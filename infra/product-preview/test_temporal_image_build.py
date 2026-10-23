@@ -184,7 +184,9 @@ class TemporalImageReceiptTests(unittest.TestCase):
     def test_smoke_requires_exact_launcher_exits_and_probe(self):
         good = {"node": "v24.22.1", "arch": "arm64", "uid": 1000, "gid": 1000,
                 "issuerCaSha256": "e" * 64, "issuerCaMode": "444", "issuerCaUid": 0,
-                "temporalServer": True, "serverMachine": 183, "temporalServerSha256": context.PINS["serverBinarySha256"],
+                "temporalServer": True, "serverMachine": 183, "temporalServerSha256": "b" * 64, "buildBinarySha256": "b" * 64, "serverStatic": True,
+                "goVersion": "go1.26.10", "goModules": context.PINS["securityModules"],
+                "goSettings": {"CGO_ENABLED": "0", "GOOS": "linux", "GOARCH": "arm64"},
                 "serverHelpExit": 0, "serverVersionExit": 0, "serverVersion": "temporal-server version 1.32.1",
                 "runTemporalMode": "700", "runTemporalUid": 1000, "runTemporalGid": 1000, "tmpMode": "1777",
                 "apkPackages": context.PINS["packages"]}
@@ -193,7 +195,10 @@ class TemporalImageReceiptTests(unittest.TestCase):
                                      ({"issuerCaSha256": "0" * 64}, "78", False), ({"node": "v24.19.0"}, "78", False),
                                      *[(change, "78", False) for change in [
                                          {"gid": 0}, {"arch": "x64"}, {"serverMachine": 62}, {"temporalServer": False},
-                                         {"temporalServerSha256": "a"*64}, {"serverHelpExit": 1}, {"serverVersionExit": None},
+                                         {"temporalServerSha256": "a"*64}, {"buildBinarySha256": None}, {"serverStatic": False},
+                                         {"goVersion": "go1.26.8"}, {"goModules": {}},
+                                         *[{"goModules": context.PINS["securityModules"] | {key: "v0.1.0"}} for key in context.PINS["securityModules"]],
+                                         {"goSettings": {"CGO_ENABLED": "1", "GOOS": "linux", "GOARCH": "arm64"}}, {"serverHelpExit": 1}, {"serverVersionExit": None},
                                          {"serverVersion": "temporal-server version 1.31.0"}, {"runTemporalMode": "777"},
                                          {"runTemporalUid": 0}, {"runTemporalGid": 0}, {"tmpMode": "755"},
                                          {"issuerCaMode": "666"}, {"issuerCaUid": 1000}, {"apkPackages": []}]]):
@@ -244,7 +249,7 @@ class TemporalContextSealTests(unittest.TestCase):
             self.assertEqual([r.filename for r in rows], sorted(r.filename for r in rows))
             self.assertTrue(all(r.date_time == (1980, 1, 1, 0, 0, 0) and r.create_system == 3 and not r.flag_bits & 8 for r in rows))
             m = json.loads(z.read("context-manifest.json"))
-            self.assertEqual((m["commit"], m["bases"], len(m["files"])), (self.commit, context.BASES, 8))
+            self.assertEqual((m["commit"], m["bases"], len(m["files"])), (self.commit, context.BASES, len(context.MEMBERS) + 1))
             self.assertEqual(z.getinfo("repo/infra/product-preview/temporal-image-build.sh").external_attr >> 16, 0o100755)
             self.assertEqual(z.getinfo("repo/infra/product-preview/temporal-launch.sh").external_attr >> 16, 0o100644)
             self.assertEqual(hashlib.sha256(z.read("repo/infra/product-preview/temporal-image-build.sh")).hexdigest(),
@@ -269,9 +274,12 @@ class TemporalContextSealTests(unittest.TestCase):
         root = self.extract("extra")
         (root / "repo/extra.txt").write_text("x")
         self.assertNotEqual(self.verify(root).returncode, 0)
+        root = self.extract("dependency-drift")
+        (root / "repo/infra/product-preview/temporal-server-dependencies.patch").write_bytes(b"unreviewed patch\n")
+        self.assertNotEqual(self.verify(root).returncode, 0)
 
     def test_seal_refuses_changed_source_pin_platform_or_symlink(self):
-        for kind, code in (("pins", "IMAGE_PIN"), ("platform", "PLATFORM_PIN"), ("symlink", "MEMBER_TYPE")):
+        for kind, code in (("pins", "IMAGE_PIN"), ("platform", "PLATFORM_PIN"), ("symlink", "MEMBER_TYPE"), ("source-url", "SERVER_SOURCE"), ("source-hash", "SERVER_SOURCE")):
             with self.subTest(kind=kind), tempfile.TemporaryDirectory(prefix="temporal-pin-") as temp:
                 tmp = Path(temp)
                 repo, _ = sealed_repository(tmp)
@@ -284,7 +292,10 @@ class TemporalContextSealTests(unittest.TestCase):
                     subprocess.run(g + ["update-index", "--cacheinfo", "120000," + oid + "," + context.DOCKERFILE], check=True)
                 else:
                     path = repo / (context.PINS_FILE if kind == "pins" else context.DOCKERFILE)
-                    path.write_text(path.read_text().replace("linux/arm64", "linux/amd64"), newline="\n")
+                    old, new = ("linux/arm64", "linux/amd64")
+                    if kind == "source-url": old, new = context.PINS["serverSource"]["commit"], "0" * 40
+                    if kind == "source-hash": old, new = context.PINS["serverSource"]["sha256"], "0" * 64
+                    path.write_text(path.read_text().replace(old, new), newline="\n")
                     subprocess.run(g + ["add", "--", str(path.relative_to(repo))], check=True)
                 subprocess.run(g + ["commit", "-q", "-m", "negative fixture"], check=True)
                 commit = subprocess.run(g + ["rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
@@ -294,10 +305,46 @@ class TemporalContextSealTests(unittest.TestCase):
 
 
 class TemporalBasePinTests(unittest.TestCase):
+    def test_embedded_go_metadata_and_static_elf_probe_without_binary_execution(self):
+        # Execute only the existing byte-reader prefix; server/child execution is outside this fixture.
+        probe = re.search(r"PROBE_JS='(.*?)'\n\nmain", SCRIPT.read_text(), re.S).group(1)
+        prefix = probe.split("const version=cp.spawnSync", 1)[0]
+        def go_string(text):
+            data = text.encode(); n = len(data); header = bytearray()
+            while n >= 128: header.append((n & 127) | 128); n >>= 7
+            return header + bytes([n]) + data
+        metadata = "\n" + "".join(f"dep\t{k}\t{v}\th1:synthetic\n" for k, v in context.PINS["securityModules"].items())
+        metadata += "build\tCGO_ENABLED=0\nbuild\tGOOS=linux\nbuild\tGOARCH=arm64\n"
+        binary = bytearray(256); binary[:6] = bytes([127, 69, 76, 70, 2, 1]); binary[18:20] = (183).to_bytes(2, "little")
+        binary[32:40] = (64).to_bytes(8, "little"); binary[54:56] = (56).to_bytes(2, "little"); binary[56:58] = (1).to_bytes(2, "little")
+        binary[64:68] = (1).to_bytes(4, "little")
+        header = bytearray(32); header[:14] = b"\xff Go buildinf:"; header[14:16] = bytes([8, 2])
+        binary.extend(header + go_string("go1.26.10") + go_string(metadata))
+        for kind in ["static", "dynamic", "missing-info", "truncated-info"]:
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory(prefix="temporal-go-info-") as temp:
+                tmp = Path(temp); candidate = bytearray(binary)
+                if kind == "dynamic": candidate[64:68] = (3).to_bytes(4, "little")
+                if kind == "missing-info": candidate[256] = 0
+                if kind == "truncated-info": candidate = candidate[:-20]
+                (tmp / "server").write_bytes(candidate)
+                (tmp / "hash").write_text(hashlib.sha256(candidate).hexdigest() + "  temporal-server\n", newline="\n")
+                js = prefix.replace('"/usr/local/bin/temporal-server"', json.dumps((tmp / "server").as_posix())).replace(
+                    '"/opt/meri/temporal-server.sha256"', json.dumps((tmp / "hash").as_posix()))
+                js += "console.log(JSON.stringify({go,goModules,goSettings,serverStatic,buildBinarySha256}));"
+                result = subprocess.run([shutil.which("node"), "-e", js], capture_output=True, text=True, timeout=15)
+                if kind == "truncated-info":
+                    self.assertNotEqual(result.returncode, 0); self.assertIn("GO_BUILD_INFO", result.stderr); continue
+                self.assertEqual(result.returncode, 0, result.stderr)
+                value = json.loads(result.stdout)
+                self.assertEqual(value["serverStatic"], kind != "dynamic")
+                self.assertEqual(value["go"], None if kind == "missing-info" else "go1.26.10")
+                if kind != "missing-info": self.assertEqual(value["goModules"], context.PINS["securityModules"])
+                self.assertEqual(value["buildBinarySha256"], hashlib.sha256(candidate).hexdigest())
+
     def test_dockerfile_pins_every_base_by_digest(self):
         text = (HERE / "temporal-launch.Dockerfile").read_text()
         froms = [l.split()[2] for l in text.splitlines() if l.startswith("FROM ")]
-        self.assertEqual(froms, [context.BASES["nodeBinary"], context.BASES["temporalServer"], context.BASES["glibcRuntime"]])
+        self.assertEqual(froms, [context.BASES["nodeBinary"], context.BASES["goBuilder"], context.BASES["glibcRuntime"]])
         self.assertTrue(all(re.search(r"@sha256:[0-9a-f]{64}$", f) for f in froms))
         self.assertFalse(any(l.lower().startswith("# syntax=") for l in text.splitlines()))
         self.assertNotIn("ARG NODE24_IMAGE", text)
@@ -305,13 +352,25 @@ class TemporalBasePinTests(unittest.TestCase):
         self.assertTrue(all(l.split()[1] == "--platform=linux/arm64" for l in text.splitlines() if l.startswith("FROM ")))
         self.assertIn("apk add --no-cache " + " ".join(context.PINS["packages"]), text)
         self.assertIn("USER 1000:1000", text)
-        self.assertIn("COPY --from=temporal-server /usr/local/bin/temporal-server /usr/local/bin/temporal-server", text)
+        self.assertIn("COPY --from=temporal-server /out/temporal-server /usr/local/bin/temporal-server", text)
+        self.assertIn("ENV CGO_ENABLED=0 GOOS=linux GOARCH=arm64 GOTOOLCHAIN=local", text)
+        self.assertIn('go build -mod=readonly -trimpath -ldflags="-s -w" -o /out/temporal-server ./cmd/server', text)
+        self.assertIn("go mod verify", text)
+        self.assertIn("go version -m /out/temporal-server", text)
+        self.assertIn("sha256sum temporal-server > temporal-server.sha256", text)
+        self.assertNotIn("go get -u", text)
+        self.assertNotIn("disable_grpc_modules", text)
+        self.assertIn("git -c core.autocrlf=false apply /tmp/temporal-server-dependencies.patch && go mod download && go mod verify", text)
+        patch = HERE / "temporal-server-dependencies.patch"
+        result = subprocess.run(["git", "apply", "--numstat", str(patch)], capture_output=True, text=True, check=True)
+        self.assertEqual([line.split("\t")[2] for line in result.stdout.splitlines()], ["go.mod", "go.sum"])
+        self.assertIn("+\tgolang.org/x/net v0.60.0 // indirect", patch.read_text())
         self.assertNotIn("runtime-packages/", text)
         self.assertNotIn("node-loader", text)
         self.assertNotIn("--library-path", (HERE / "temporal-launch.sh").read_text())
         render = (HERE / "temporal-launch-render.mjs").read_text()
         self.assertIn("import imagePins from './temporal-image-pins.json'", render)
-        self.assertIn("SERVER_DIGEST=imagePins.bases.temporalServer.split('@')[1]", render)
+        self.assertIn("SERVER_SOURCE_COMMIT=imagePins.serverSource.commit", render)
         self.assertIn("--mount=type=secret,id=temporal_issuer_ca,required=true", text)
         self.assertIn("new X509Certificate(t).ca!==true", text)
         self.assertIn('--secret "id=temporal_issuer_ca,src=$ROOT/inputs/temporal-issuer-ca.pem"', SCRIPT.read_text())

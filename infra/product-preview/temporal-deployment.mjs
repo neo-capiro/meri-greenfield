@@ -50,7 +50,7 @@ function roleEnvironment(b,role){
  const perStoreConnections=fixture.provisionalSizing.perRole[role].dbConnections/2;
  return [env('MERI_TEMPORAL_PREVIEW_REQUIRED','1'),env('MERI_TEMPORAL_ACTIVATION',b.activation),
   env('MERI_TEMPORAL_SERVICE_NAME',role),env('MERI_TEMPORAL_RENDER_DIR','/run/temporal'),env('MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256',b.launchContractSha256),
-  env('MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT',b.launchSourceCommit),env('MERI_TEMPORAL_UPSTREAM_IMAGE_DIGEST',b.upstreamServerImageDigest),
+  env('MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT',b.launchSourceCommit),env('MERI_TEMPORAL_UPSTREAM_SOURCE_COMMIT',b.upstreamServerSourceCommit),
   env('MERI_TEMPORAL_RDS_CA_SHA256',d.rdsCaSha256),env('MERI_TEMPORAL_ISSUER_CA_SHA256',auth.issuerCaSha256),
   env('MERI_TEMPORAL_MIGRATION_PLAN_SHA256',d.migrationPlanSha256),
   env('MERI_TEMPORAL_DB_GRANTS_SHA256',d.grantsSha256),

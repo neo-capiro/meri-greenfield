@@ -13,9 +13,9 @@
 set -Eeuo pipefail
 REGION=us-east-1
 PINS_FILE="$(dirname "${BASH_SOURCE[0]}")/temporal-image-pins.json"
-read -r NODE_BASE GLIBC_BASE TEMPORAL_BASE <<< "$(python3 -I -B -c 'import json,sys
+read -r NODE_BASE GLIBC_BASE GO_BASE <<< "$(python3 -I -B -c 'import json,sys
 p=json.load(open(sys.argv[1])); assert p["platform"]=="linux/arm64"
-print(*(p["bases"][k] for k in ("nodeBinary","glibcRuntime","temporalServer")))' "$PINS_FILE" | tr -d '\r')"
+print(*(p["bases"][k] for k in ("nodeBinary","glibcRuntime","goBuilder")))' "$PINS_FILE" | tr -d '\r')"
 SCAN_COVERAGE='ecr-basic-os-packages-only: final Wolfi APK database; copied Node and Go temporal-server binaries require separate exact-digest scanning'
 PHASE=START
 DIGEST=''
@@ -76,10 +76,10 @@ finish_success() {
 a=sys.argv
 print(json.dumps({"schemaVersion":1,"status":"SUCCEEDED","commit":a[1],"attempt":a[2],"repository":a[3],
  "image":{"role":"deployable","tag":a[4],"digest":a[5],"scan":json.load(open(a[6])),"highFindings":json.load(open(a[7]))},
- "bases":{"nodeBinary":a[8],"glibcRuntime":a[9],"temporalServer":a[10]},"glibcRuntimePackages":json.load(open(a[13]))["apkPackages"],
- "issuerCaSha256":a[11],"contextManifestSha256":a[12],"probe":json.load(open(a[13])),"scanCoverage":a[14]},sort_keys=True))' \
+ "bases":{"nodeBinary":a[8],"glibcRuntime":a[9],"goBuilder":a[10]},"glibcRuntimePackages":json.load(open(a[13]))["apkPackages"],
+ "issuerCaSha256":a[11],"contextManifestSha256":a[12],"probe":json.load(open(a[13])),"scanCoverage":a[14],"serverSource":json.load(open(a[15]))["serverSource"]},sort_keys=True))' \
     "$COMMIT" "$ATTEMPT" "$REPOSITORY_URI" "$IMAGE_TAG" "$DIGEST" "$WORK/image.counts" "$WORK/high-findings.json" \
-    "$NODE_BASE" "$GLIBC_BASE" "$TEMPORAL_BASE" "$ISSUER_CA_SHA256" "$MANIFEST_SHA256" "$WORK/probe.json" "$SCAN_COVERAGE" \
+    "$NODE_BASE" "$GLIBC_BASE" "$GO_BASE" "$ISSUER_CA_SHA256" "$MANIFEST_SHA256" "$WORK/probe.json" "$SCAN_COVERAGE" "$PINS_FILE" \
     > "$WORK/temporal-image-receipt.json"
   PHASE=RECEIPT_UPLOAD
   RECEIPT_VERSION="$(record_file temporal-image-receipt.json "$WORK/temporal-image-receipt.json")"
@@ -121,7 +121,11 @@ for base, _, files in os.walk(root):
         seen[rel] = h.hexdigest()
 assert seen == m["files"], "CONTEXT_MEMBERS"
 froms = [l.split()[2] for l in open(os.path.join(root, "repo/infra/product-preview/temporal-launch.Dockerfile"), encoding="utf-8") if l.startswith("FROM ")]
-assert froms == [bases[k] for k in ("nodeBinary", "temporalServer", "glibcRuntime")], "DOCKERFILE_BASES"
+assert froms == [bases[k] for k in ("nodeBinary", "goBuilder", "glibcRuntime")], "DOCKERFILE_BASES"
+source = pins["serverSource"]
+adds = [l.split() for l in open(os.path.join(root, "repo/infra/product-preview/temporal-launch.Dockerfile"), encoding="utf-8") if l.startswith("ADD ")]
+assert adds == [["ADD", "--checksum=sha256:" + source["sha256"], source["url"], "/tmp/temporal.tar.gz"]], "SERVER_SOURCE"
+assert source["url"] == "https://codeload.github.com/temporalio/temporal/tar.gz/" + source["commit"], "SERVER_SOURCE_COMMIT"
 assert json.load(open(os.path.join(root, "repo/infra/product-preview/temporal-image-pins.json"))) == pins, "IMAGE_PINS"
 assert pins["platform"] == "linux/arm64", "IMAGE_PLATFORM"
 assert all(l.split()[1] == "--platform=" + pins["platform"] for l in open(os.path.join(root, "repo/infra/product-preview/temporal-launch.Dockerfile")) if l.startswith("FROM ")), "DOCKERFILE_PLATFORM"
@@ -150,7 +154,11 @@ smoke_image() { # $1 = image reference, $2 = expected issuer CA SHA-256
 p=json.load(open(sys.argv[1]))
 pins=json.load(open(sys.argv[3]))
 assert p["node"]=="v"+pins["nodeVersion"] and p["arch"]=="arm64" and p["uid"]==p["gid"]==1000 and p["issuerCaSha256"]==sys.argv[2], "PROBE"
-assert p["temporalServer"] and p["serverMachine"]==183 and p["temporalServerSha256"]==pins["serverBinarySha256"], "SERVER_BINARY"
+assert p["temporalServer"] and p["serverMachine"]==183 and p["serverStatic"] is True, "SERVER_BINARY"
+assert isinstance(p["buildBinarySha256"],str) and len(p["buildBinarySha256"])==64 and p["buildBinarySha256"]==p["temporalServerSha256"], "SERVER_BINARY_HASH"
+assert p["goVersion"]=="go"+pins["goVersion"], "GO_VERSION"
+assert all(p["goModules"].get(k)==v for k,v in pins["securityModules"].items()), "GO_MODULES"
+assert all(p["goSettings"].get(k)==v for k,v in {"CGO_ENABLED":"0","GOOS":"linux","GOARCH":"arm64"}.items()), "GO_SETTINGS"
 assert p["serverHelpExit"]==0 and p["serverVersionExit"]==0 and pins["serverVersion"] in p["serverVersion"].split(), "SERVER_EXEC"
 assert p["runTemporalMode"]=="700" and p["runTemporalUid"]==p["runTemporalGid"]==1000 and p["tmpMode"]=="1777", "MOUNTS"
 assert p["issuerCaMode"]=="444" and p["issuerCaUid"]==0, "CA_MODE"
@@ -160,15 +168,20 @@ assert all(x in p["apkPackages"] for x in pins["packages"]), "PACKAGES"' "$WORK/
 PROBE_JS='const fs=require("node:fs"),cp=require("node:child_process"),crypto=require("node:crypto");
 const has=p=>{try{fs.accessSync(p);return true}catch{return false}};
 const bin="/usr/local/bin/temporal-server",buf=has(bin)?fs.readFileSync(bin):Buffer.alloc(0);
-let go=null;const i=buf.indexOf(Buffer.from("\xff Go buildinf:","latin1"));
-if(i>=0&&(buf[i+15]&2)){let o=i+32,n=0,s=0,b;do{b=buf[o++];n|=(b&127)<<s;s+=7}while(b&128);go=buf.subarray(o,o+n).toString("latin1");}
+let go=null,goModules={},goSettings={};const i=buf.indexOf(Buffer.from("\xff Go buildinf:","latin1"));
+if(i>=0&&(buf[i+15]&2)){let o=i+32;
+ const str=()=>{let n=0,s=0,b;do{if(o>=buf.length||s>28)throw Error("GO_BUILD_INFO");b=buf[o++];n+=(b&127)*2**s;s+=7}while(b&128);if(n>1048576||o+n>buf.length)throw Error("GO_BUILD_INFO");const t=buf.subarray(o,o+n).toString("utf8");o+=n;return t};
+ go=str();for(const line of str().split("\n")){const [kind,key,value]=line.split("\t");if(kind==="dep")goModules[key]=value;if(kind==="build"){const at=key.indexOf("=");if(at>0)goSettings[key.slice(0,at)]=key.slice(at+1)}}}
+const elf=buf.length>=64&&buf.subarray(0,6).equals(Buffer.from([127,69,76,70,2,1]));
+let serverStatic=elf;if(elf){const off=Number(buf.readBigUInt64LE(32)),size=buf.readUInt16LE(54),count=buf.readUInt16LE(56);if(count===0||size<56||off+size*count>buf.length)serverStatic=false;else for(let n=0;n<count;n++){if([2,3].includes(buf.readUInt32LE(off+n*size)))serverStatic=false}}
+const buildBinarySha256=fs.readFileSync("/opt/meri/temporal-server.sha256","utf8").match(/^([a-f0-9]{64})  temporal-server\n$/)?.[1]??null;
 const version=cp.spawnSync(bin,["--version"],{env:{PATH:"/usr/local/bin:/usr/bin:/bin"},timeout:20000,maxBuffer:4096,encoding:"utf8"});
 const packages=fs.readFileSync("/lib/apk/db/installed","utf8").split(/\n\n/).filter(Boolean).map(b=>{const p=b.match(/^P:(.+)$/m),v=b.match(/^V:(.+)$/m);if(!p||!v)throw Error("APK_DATABASE");return `${p[1]}=${v[1]}`}).sort();
 const run=fs.statSync("/run/temporal"),ca=fs.statSync("/opt/meri/issuer-ca.pem");
 const help=has(bin)?cp.spawnSync(bin,["--help"],{env:{PATH:"/usr/local/bin:/usr/bin:/bin"},timeout:20000,stdio:"ignore"}).status:null;
 console.log(JSON.stringify({node:process.version,arch:process.arch,uid:process.getuid(),gid:process.getgid(),
  apkPackages:packages,serverMachine:buf.length>=64&&buf.subarray(0,6).equals(Buffer.from([127,69,76,70,2,1]))?buf.readUInt16LE(18):null,
- serverVersion:version.stdout?.trim()??null,serverVersionExit:version.status,
+ serverVersion:version.stdout?.trim()??null,serverVersionExit:version.status,serverStatic,buildBinarySha256,goModules,goSettings,
  temporalServer:has(bin),temporalServerSha256:crypto.createHash("sha256").update(buf).digest("hex"),goVersion:go,serverHelpExit:help,
  usrLocalBin:fs.readdirSync("/usr/local/bin").sort(),temporalSqlTool:has("/usr/local/bin/temporal-sql-tool"),
  schemaDir:has("/etc/temporal/schema"),issuerCaMode:(ca.mode&0o7777).toString(8),issuerCaUid:ca.uid,
