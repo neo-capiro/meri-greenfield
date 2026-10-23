@@ -106,7 +106,7 @@ export function createCurrentAuthorityAdapters(configuration){
  const identity=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled:true,limits:{maxRequestMs:bound,maxResponseBytes:limits.maxFactBytes}});
  let stores=null;
 
- /** One bounded lifetime per port call: caller deadline ∧ maxRequestMs ∧ every receipt expiry folded in through `limit`. */
+ /** One bounded lifetime per port call: caller deadline âˆ§ maxRequestMs âˆ§ every receipt expiry folded in through `limit`. */
  function lifetime(deadlineMs,signal){
   nativeSignal(signal);const started=now();if(!Number.isSafeInteger(started)||started<0)deny('UNAVAILABLE');
   if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny('ACCESS_DENIED');
@@ -334,7 +334,7 @@ export function createControlCurrentAuthority(options){
  const candidate=ownedValue(configuration,'nativeCandidate'),identity=ownedValue(candidate,'identity');
  if(!candidate||typeof candidate!=='object'||!identity||typeof identity!=='object')deny('GATEWAY_CONFIGURATION');
  const reads=ownedValue(configuration,'reads')??{},execution=ownedValue(ownedValue(configuration,'intents'),'execution'),limits=ownedValue(configuration,'limits');
- const reservedFiles=[ownedValue(identity,'credentialFile'),ownedValue(candidate,'taskCapabilityFile'),ownedValue(candidate,'controlCapabilityFile'),ownedValue(candidate,'proxyCredentialFile')].map(filePath);
+ const reservedFiles=[ownedValue(identity,'credentialFile'),ownedValue(candidate,'taskCapabilityFile'),ownedValue(candidate,'controlCapabilityFile')].map(filePath);
  const secretFiles=[ownedValue(reads,'serviceSecretFile'),ownedValue(reads,'readModeServiceSecretFile')].filter(value=>value!==undefined);
  const requestMs=ownedValue(limits,'requestMs');
  const adapterOptions={origin:ownedValue(identity,'origin'),nativeCredentials:c.nativeCredentials,readSecret:c.readSecret,reservedFiles,secretFiles,

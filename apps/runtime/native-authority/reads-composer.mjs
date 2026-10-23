@@ -1,6 +1,6 @@
 /** The one CONTROL startup hook for general reads. Control startup calls `createControlReadsComposer` once and passes its
- * `createReadsRuntime` to `startControl(configuration,{signal,createReadsRuntime,readCredentialRelay})` (control.mjs →
- * prepared-candidate → remote-composition → prepared-reads → reads-owner). It composes only what exists: Core's native tool
+ * `createReadsRuntime` to `startControl(configuration,{signal,createReadsRuntime,readCredentialRelay})` (control.mjs â†’
+ * prepared-candidate â†’ remote-composition â†’ prepared-reads â†’ reads-owner). It composes only what exists: Core's native tool
  * authority at the configured Core origin, the read credential broker, and the installed read families. The gateway's current
  * tool authority, the P2 installation receipt and the P1 discovery grant are decision-gated inputs; while any is absent
  * every task gets the unavailable runtime (fail closed), never an empty success.
@@ -67,7 +67,7 @@ export async function createNativeReadCredentialBroker(options){
  const relay=c.nativeCredentials===undefined?null:own(c.nativeCredentials,['nativeCredentialFor']);
  if(relay!==null&&(typeof relay.nativeCredentialFor!=='function'||types.isProxy(c.nativeCredentials)||types.isProxy(relay.nativeCredentialFor)))refuse('CONFIGURATION');
  const candidate=c.configuration?.nativeCandidate;if(!candidate||typeof candidate!=='object')refuse('CONFIGURATION');
- const reserved=[candidate.identity?.credentialFile,candidate.taskCapabilityFile,candidate.controlCapabilityFile,candidate.proxyCredentialFile].map(filePath);
+ const reserved=[candidate.identity?.credentialFile,candidate.taskCapabilityFile,candidate.controlCapabilityFile].map(filePath);
  let configured;try{configured=own(c.secretFiles,[],READ_SECRET_FILE_KEYS);}catch{refuse('CONFIGURATION');}const files={};
  for(const key of READ_SECRET_FILE_KEYS)if(configured[key]!==undefined)files[key]=filePath(configured[key]);
  if(Object.values(files).some(path=>reserved.includes(path)))refuse('CONFIGURATION');
@@ -219,7 +219,7 @@ export async function createControlReadsComposer(options){
   return entry.delegation.stop(reason);
  }
  const preparation=await prepareGeneralReadInstallation({familyIds,newId,taskPorts,...(c.sourceRoot===undefined?{}:{sourceRoot:c.sourceRoot})});
- // `runOptions` (lane RD) is the registry-facing form of `stopRun` (`readDelegationRunOptions` of control → prepared candidate →
+ // `runOptions` (lane RD) is the registry-facing form of `stopRun` (`readDelegationRunOptions` of control â†’ prepared candidate â†’
  // prepared-run registry, registered like `documentsRunOptions`): it never throws and reports a failed stop instead.
  return Object.freeze({createReadsRuntime:preparation.createReadsRuntime,familyIds:Object.freeze([...familyIds]),missing,
   readDelegation:Object.freeze({enabled:Boolean(delegationClient?.available),stopRun,...(delegationClient?.available?{consents:createReadDelegationConsents({client:delegationClient,now}),runOptions:createReadDelegationRunOptions({stopRun})}:{})})});

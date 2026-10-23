@@ -18,15 +18,29 @@ export function releasedUserPreferences(stored,principal){
  return stored.defaultClientId!==null&&!principal.clientIds.includes(stored.defaultClientId)?Object.freeze({...stored,defaultClientId:null}):stored;
 }
 export const TENANT_SETTINGS_DEFAULTS=Object.freeze({defaultTimezone:'UTC',capabilityPolicy:Object.freeze({})});
+export const DEFAULT_MODEL_LIMITS=Object.freeze({maxTurns:20,maxBudgetMicroUsd:2000000});
+/** Explicit admin input cannot clear a configured cap. A missing persisted cap refuses run admission. */
+export function modelSettings(value){
+ const m=closed(value,['monthlyCapMicroUsd','maxTurns','maxBudgetMicroUsd'],[],'SETTINGS_MODEL_INVALID');
+ for(const key of ['monthlyCapMicroUsd','maxBudgetMicroUsd'])if(!Number.isSafeInteger(m[key])||m[key]<1)refuse('SETTINGS_MODEL_INVALID',null,`model.${key}`);
+ if(!Number.isSafeInteger(m.maxTurns)||m.maxTurns<1||m.maxTurns>100)refuse('SETTINGS_MODEL_INVALID',null,'model.maxTurns');
+ return Object.freeze({...m});
+}
+/** Existing typed columns are nullable only for the never-configured monthly cap. */
+export function storedModelSettings(row){
+ const monthlyCapMicroUsd=row.monthly_cap_micro_usd==null?null:Number(row.monthly_cap_micro_usd);
+ const limits={maxTurns:Number(row.sdk_max_turns??DEFAULT_MODEL_LIMITS.maxTurns),maxBudgetMicroUsd:Number(row.sdk_max_budget_micro_usd??DEFAULT_MODEL_LIMITS.maxBudgetMicroUsd)};
+ modelSettings({monthlyCapMicroUsd:monthlyCapMicroUsd??1,...limits});return Object.freeze({monthlyCapMicroUsd,...limits});
+}
 /** Tenant settings, validated against the current platform record. Admins may enable or restrict inside the platform maximum and only
  * narrow role ceilings; widening refuses (CAPABILITY_TENANT_WIDENING_REFUSED / CAPABILITY_ROLE_WIDENING_REFUSED / CAPABILITY_ROLE_UNKNOWN). */
 export function tenantSettings(value,platform){
- const t=closed(value,['defaultTimezone','capabilityPolicy'],[],'SETTINGS_DOCUMENT_INVALID');
+ const t=closed(value,['defaultTimezone','capabilityPolicy'],['model'],'SETTINGS_DOCUMENT_INVALID');
  const defaultTimezone=timezone(t.defaultTimezone,'defaultTimezone');
  try{assertTenantCapabilitySettings(t.capabilityPolicy,platform);}
  catch(error){
   const code=typeof error?.code==='string'&&/^CAPABILITY_[A-Z_]+$/u.test(error.code)?error.code:'CAPABILITY_TENANT_SETTINGS_REFUSED';
   throw new ProductError(code,null,typeof error?.field==='string'?`capabilityPolicy.${error.field}`:'capabilityPolicy');
  }
- return Object.freeze({defaultTimezone,capabilityPolicy:t.capabilityPolicy});
+ return Object.freeze({defaultTimezone,capabilityPolicy:t.capabilityPolicy,...(t.model===undefined?{}:{model:modelSettings(t.model)})});
 }

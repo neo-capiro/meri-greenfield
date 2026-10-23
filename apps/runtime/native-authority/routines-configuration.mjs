@@ -23,10 +23,10 @@ const X=/^[A-Za-z0-9_-]{43}$/u;
 /** The native candidate's credential files; a routines service secret file must differ from each by path (and, per call, by bytes). */
 export function routinesReservedSecretFiles(configuration){
  const candidate=configuration?.nativeCandidate;if(candidate===undefined)return Object.freeze([]);
- return Object.freeze([candidate?.identity?.credentialFile,candidate?.taskCapabilityFile,candidate?.controlCapabilityFile,candidate?.proxyCredentialFile].filter(path=>path!==undefined));
+ return Object.freeze([candidate?.identity?.credentialFile,candidate?.taskCapabilityFile,candidate?.controlCapabilityFile].filter(path=>path!==undefined));
 }
 function filePath(value){if(typeof value!=='string'||!isAbsolute(value)||value.includes('/../')||value.includes('\\..\\')||value.length>4096)throw fault();return value;}
-/** Pinned public JWK → `{kty,crv,x}` (validated: canonical base64url, 32 bytes, an Ed25519 key). */
+/** Pinned public JWK â†’ `{kty,crv,x}` (validated: canonical base64url, 32 bytes, an Ed25519 key). */
 export function routineCancellationPublicJwk(raw){
  const k=data(own(raw,['kty','crv','x']));
  if(k.kty!=='OKP'||k.crv!=='Ed25519'||typeof k.x!=='string'||!X.test(k.x)||Buffer.from(k.x,'base64url').length!==32||Buffer.from(k.x,'base64url').toString('base64url')!==k.x)throw fault();

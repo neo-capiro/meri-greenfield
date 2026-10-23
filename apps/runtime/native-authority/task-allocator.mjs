@@ -6,6 +6,16 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {compileEcsTaskBinding,assertEcsOwnedTask,assertEcsRunningTask} from './ecs-task-binding.mjs';
 import {executionFault} from './execution-broker.mjs';
+import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
+import {compileNativeRuntimePlan} from './runtime-provider.mjs';
+import {compileNativePreparationIntent} from './preparation-intent.mjs';
+/** Same canonical allocation identity, with no model-launch descriptor or proxy credential. */
+export function compileNativeTaskPlan(value){
+ const c=own(value,['runtime','plan','preparationIntent']),runtime=compileNativeRuntimePlan(c.runtime),preparationIntent=compileNativePreparationIntent(c.preparationIntent);
+ if(runtime.versions.imageDigest!=='sha256:'+preparationIntent.imageSha256)throw executionFault('ALLOCATION_CONFIGURATION');
+ const plan=data({ownerPlan:data(c.plan),runtimeSha256:hash(runtime),preparationSha256:hash(preparationIntent)});
+ return Object.freeze({runtime,preparationIntent,plan,original:createExecutionBinding({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs})});
+}
 import {compileNativeTaskRequest} from './task-request.mjs';
 import {matchHistoricalStopAllocation} from './historical-stop-facts.mjs';
 /** ECS acknowledges StopTask long before STOPPED: the runner's 60 s stopTimeout, then deprovisioning (47 s observed live). Containment

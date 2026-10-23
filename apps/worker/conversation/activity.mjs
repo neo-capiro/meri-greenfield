@@ -1,5 +1,6 @@
 /** One bounded Claude Agent SDK query per durable activity; no replacement model loop. */
 import {query as sdkQuery} from '@anthropic-ai/claude-agent-sdk';
+export {sdkQuery};
 import {randomUUID,createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {RUNNER_LOAD_STAGE_MAX_MS} from '../../../packages/runtime/runner-load-budget.mjs';
@@ -15,6 +16,9 @@ import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
 import {createSdkCapabilities} from './capabilities/index.mjs';
+import {createNativeHookBatch} from './capabilities/hooks.mjs';
+import {mergeHookSets} from './capabilities/fragment.mjs';
+import {projectSdkUsage} from '../../../packages/contracts/runtime-0.2/usage.mjs';
 import {createProgressProjector} from './capabilities/progress.mjs';
 import {continuationSessionId} from './reads/runtime.mjs';
 import {readRunBudgets} from './reads/budget.mjs';
@@ -51,6 +55,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  if(browser!==undefined&&typeof browser.policy!=='function')throw fault('BROWSER_ACTIVITY_CONFIGURATION');
  if(objectiveGeneration!==undefined&&typeof objectiveGeneration.prepare!=='function')throw fault('OBJECTIVE_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
+  const nativeAudit=createNativeHookBatch();
   diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(()=>stream.close?.());closing.catch(()=>{});}return closing;};
   // Startup allowances are separate and preserve every later stage before
   // the original execution lease's shutdown and settlement reserve.
@@ -63,7 +68,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     diagnostic('stage','activity-starting');preparation=createOperationLifetime({deadlineMs:Math.min(now()+runtimeMaxMs,runtimeExpiresAtMs??loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});
     await preparation.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}},signal}));preparation.check();preparation.close();claimed=true;
    // A run whose policy enables the skill plugin asks runtime preparation for its read-only plugin copy (the trusted skillPluginDirectory fact).
-    diagnostic('stage','runtime-prepare');preparation=createOperationLifetime({deadlineMs:Math.min(now()+runtimeMaxMs,runtimeExpiresAtMs??loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
+    diagnostic('stage','runtime-prepare');preparation=createOperationLifetime({deadlineMs:Math.min(now()+runtimeMaxMs,runtimeExpiresAtMs??loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,model:saved.model,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
     ...(lineage?{...lineage,sourceRequest,request:saved.request,scopes:saved.run.scopes}:{}),runtimeSignal:controller.signal,signal}));
     diagnostic('stage','activity-setup');life=createOperationLifetime({deadlineMs:Math.min(runtime.deadlineMs,executionDeadlineMs??Infinity),now,signal,errorFactory:fault});preparation.close();const abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});
    const publish=async(type,data,eventId=newId())=>{life.check();await life.run(signal=>runOwner.append({binding,event:{eventId,createdAt:new Date(now()).toISOString(),type,data},signal}));life.check();};
@@ -90,18 +95,28 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     try{browserRun=await setupRun(prepare);}
     catch(error){abandoned=true;if(prepared)browserRun=prepared;else if(!settled)browserPreparationCleanupUnknown=true;throw error;}
    }
-   const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,proxyUrl:runtime.proxyUrl,proxyCredentialSha256:createHash('sha256').update(runtime.proxyCredential).digest('hex'),deadlineMs:runtime.deadlineMs,signal}));
+   const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,deadlineMs:runtime.deadlineMs,signal}));
    if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');life.limitDeadline(objectiveRuntime.deadlineMs);}
    const options=buildConversationOptions(runtime,controller,lineage?{...lineage,request:saved.request,
     sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat);if(lineage)life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
-   if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}else assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt=selected.prose;}
-   // The one per-run prompt suffix; sdk-option-template.mjs parses exactly these bytes back for the runner's options pin.
-   options.systemPrompt+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
+   if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}else assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;}
+   // Add application context to the full native preset, never replace the SDK system prompt.
+   options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
+    options.hooks=mergeHookSets([options.hooks??{},nativeAudit.hooks]);
     setupLife?.check();setupLife?.close();setupLife=undefined;
     diagnostic('stage','activity-running');await publish('run.status',{state:'running',reasonCode:null});
    heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.
     diagnostic('stage','activity-query');modelLife=modelDeadlineMs===undefined?null:createOperationLifetime({deadlineMs:Math.min(modelDeadlineMs,runtime.deadlineMs-terminalAttemptMs),now,signal:life.signal,errorFactory:fault});if(lifecycle!==undefined)input=createConversationInput({requestId:saved.request.requestId,prompt:saved.request.prompt});
+   async function recordUsage(result){
+    // One existing run-owner delivery per terminal result. Failed/missing accounting does not fail an answer.
+    const attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});
+    try{if(typeof runOwner.recordUsage!=='function')throw fault('SDK_USAGE_UNAVAILABLE');let usage=null;
+     try{usage=projectSdkUsage(result,runtime.usageBasis);}catch{}
+     const receipt=await attempt.run(signal=>runOwner.recordUsage({binding,input:{usage,toolsUsed:nativeAudit.snapshot()},signal}));
+     diagnostic('usage',receipt.status);
+    }catch{diagnostic('usage','unavailable');}finally{attempt.close();}
+   }
    stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');const iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId),progressParts=createProgressProjector({policy,newId});
    // Every display publication is a full authorization round at control (seconds), so the deltas the SDK produced meanwhile join the
    // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order; nothing is
@@ -119,6 +134,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     while(true){diagnostic('stage','activity-stream');let next;try{next=await (controls?Promise.race([ahead.next(),controls.failure.then(error=>{throw error;})]):ahead.next());}
     catch(error){if(controls?.isHeld()){capabilities?.check();return await controls.heldResult();}throw error;}if(next.done)break;const m=next.value;
     capabilities?.check(); // A latched capability/hook failure stops observation, checkpointing and output before this frame is used.
+    if(m?.type==='system'&&m.subtype==='init')runtime.sessionStore.observeInit?.(m);
     if(m?.type==='system'&&m.subtype==='mirror_error')throw fault('SESSION_PERSISTENCE_FAILED');
     await controls?.observe(m);if(controls?.isHeld())continue;
     if(m?.parent_tool_use_id)continue; // Subagent/internal content is never a display event; only policy-admitted progress summaries are.
@@ -128,7 +144,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
      const text=textDelta(m)?await foldDeltas(m,part.text):part.text;if(controls?.isHeld())break;
      diagnostic('stage','activity-output');try{await ahead.during(()=>publish('message.delta',{messageId:part.messageId,text}));}catch(error){if(!controls?.fence())throw error;}diagnostic('stage','activity-stream');}
     if(controls?.isHeld())continue;
-    if(m?.type==='result'){diagnostic('stage','activity-result');if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');capabilities?.check();if(controls||skillRuntime){diagnostic('stage','activity-finalize');if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
+    if(m?.type==='result'){diagnostic('stage','activity-result');if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;await recordUsage(m);if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');capabilities?.check();if(controls||skillRuntime){diagnostic('stage','activity-finalize');if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
    }
     diagnostic('stage','activity-finalize');capabilities?.check();if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');if(skillRuntime){skillOutput=await life.run(()=>skillRuntime.finish(terminalResult));if(typeof selectedSkills.publish!=='function')throw fault('OUTPUT_PUBLICATION_UNAVAILABLE');await life.run(signal=>selectedSkills.publish({binding,output:skillOutput,signal}));}

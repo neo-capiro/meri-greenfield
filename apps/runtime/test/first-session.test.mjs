@@ -11,7 +11,7 @@ async function mirrorFixture(){
  const f=fixture(),app=createNativeSdkSessionApplication({owner:f.owner,now:()=>NOW}),calls=[];
  const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'opaque-native-task',binding:f.binding,now:()=>NOW,
   fetchImpl:async(url,options)=>{calls.push(new URL(url).pathname);return app.handle(new Request(url,options));}});
- return {...f,calls,factory,mirror:await factory({binding:f.binding,sessionKey:null})};
+ const mirror=await factory({binding:f.binding,sessionKey:null});mirror.store.observeInit({type:'system',subtype:'init',session_id:f.key.sessionId});return {...f,calls,factory,mirror};
 }
 
 test('fresh mirror is inert until actual main key and preserves ordered canonical native writes',async()=>{
@@ -27,7 +27,7 @@ test('first SDK append can complete a bounded register/load/write sequence beyon
  const f=fixture({maxRequestMs:6000}),app=createNativeSdkSessionApplication({owner:f.owner,now:()=>NOW,maxRequestMs:6000}),calls=[];
  const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'opaque-native-task',binding:f.binding,startupMaxRequestMs:5000,startupExpiresAtMs:Date.now()+30000,
   fetchImpl:async(url,options)=>{const operation=new URL(url).pathname.split('/').at(-1);calls.push(operation);if(operation==='load'||operation==='append')await new Promise(resolve=>setTimeout(resolve,1600));return app.handle(new Request(url,options));}});
- const mirror=await factory({binding:f.binding,sessionKey:null});
+ const mirror=await factory({binding:f.binding,sessionKey:null});mirror.store.observeInit({type:'system',subtype:'init',session_id:f.key.sessionId});
  try{await mirror.store.append(f.key,[{type:'system',marker:'first'}]);await mirror.settle();assert.deepEqual(calls,['register','load','append']);assert.equal(f.state().entries.length,1);}
  finally{await mirror.close();}
 });
@@ -47,11 +47,11 @@ test('invalid entries, first subkey and accessor keys refuse before registration
  }
 });
 
-test('first callback key must match independently observed native key; rejection is never registered again',async()=>{
- const f=await mirrorFixture(),foreign={...f.key,projectKey:'caller guess'};
+test('first callback session must match native init; rejection is never registered again',async()=>{
+ const f=await mirrorFixture(),foreign={...f.key,sessionId:id(88)};
  await assert.rejects(f.mirror.store.append(foreign,[{type:'system'}]));const count=f.calls.length;
  for(let retry=0;retry<3;retry++)await assert.rejects(f.mirror.store.append(foreign,[{type:'system'}]));
- assert.equal(f.calls.length,count);assert.equal(f.calls.filter(path=>path.endsWith('/register')).length,1);
+ assert.equal(f.calls.length,count);assert.equal(f.calls.filter(path=>path.endsWith('/register')).length,0);
  assert.equal(f.state().owner,null);await assert.rejects(f.mirror.settle());await assert.rejects(f.mirror.close());
 });
 
@@ -81,19 +81,19 @@ test('closing before registration acknowledgement retires queued effects without
  const f=fixture(),entered=Promise.withResolvers(),release=Promise.withResolvers(),calls=[];
  const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'opaque-native-task',binding:f.binding,
   fetchImpl:async(url,options)=>{calls.push(url);entered.resolve();await release.promise;const body=JSON.parse(options.body);return Response.json({binding:body.binding,key:body.key,requestSha256:hash(body),registered:true});}});
- const mirror=await factory({binding:f.binding,sessionKey:null}),write=mirror.store.append(f.key,[{type:'system'}]);
+ const mirror=await factory({binding:f.binding,sessionKey:null});mirror.store.observeInit({type:'system',subtype:'init',session_id:f.key.sessionId});const write=mirror.store.append(f.key,[{type:'system'}]);
  const writeRejected=assert.rejects(write);await entered.promise;const closed=assert.rejects(mirror.close());release.resolve();await Promise.all([writeRejected,closed]);
  assert.equal(calls.length,1);await assert.rejects(mirror.store.append(f.key,[{type:'system'}]));assert.equal(calls.length,1);
 });
 
 async function runner(mirrors){
- const f=await applicationFixture();await f.service.submit({credential:f.credential,input:f.input});const key={projectKey:'actual callback / opaque key',sessionId:id(5)},calls=[],events=[];let queryCalls=0;
+ const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});const key={projectKey:'actual callback / opaque key',sessionId:id(5)},calls=[],events=[];let queryCalls=0;
  const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'scripted-current-task',binding,
   fetchImpl:async(url,options)=>{const body=JSON.parse(options.body),common={binding:body.binding,key:body.key,requestSha256:hash(body)};calls.push(url);
    if(url.endsWith('/register'))return Response.json({...common,registered:true});if(url.endsWith('/load'))return Response.json({...common,entries:null,offset:0});
    if(url.endsWith('/append'))return Response.json({...common,committed:true,appendId:body.appendId,entriesSha256:body.entriesSha256,offset:body.expectedOffset+body.entries.length,added:body.entries.length});throw Error('unexpected synthetic route');}});
- const runtime={binding,versions,proxyUrl:'https://proxy.synthetic.invalid',proxyCredential:'scripted-task',model:'scripted-no-provider',deadlineMs:Date.now()+3000,maxTurns:1,maxCostMicroUSD:1,maxOutputBytes:1024,sdkSessionKey:null};
- const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,proxyOrigin:'https://proxy.synthetic.invalid',sourceEnabled:false},sessionFactory:factory,
+ const runtime={binding,versions,deadlineMs:Date.now()+3000,maxOutputBytes:1024,sdkSessionKey:null};
+ const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,sourceEnabled:false},sessionFactory:factory,
   native:{async call(path,input){if(path==='runner/load')return f.service.loadForExecution({credential:f.credential,binding});if(path==='runner/runtime')return runtime;if(path==='runner/publish'){events.push(input.event.data.state??input.event.type);if(input.event.data.state==='completed')assert.ok(calls.at(-1).endsWith('/append'));return f.service.publish({credential:f.credential,binding,event:input.event});}throw Error(path);}},
   query({options}){queryCalls++;assert.equal(calls.length,0,'fresh key cannot be registered before query');assert.equal(Object.hasOwn(options,'sdkSessionKey'),false);return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'init',session_id:key.sessionId};if(mirrors)await options.sessionStore.append(key,[{type:'user',uuid:id(40),message:'synthetic'}]);yield {type:'result',subtype:'success',is_error:false};},close(){}};}});
  return {f,execute,calls,events,queryCalls:()=>queryCalls};
@@ -105,4 +105,21 @@ test('one scripted SDK query obtains its first mirror key and settles before dur
 
 test('scripted success without first mirror cannot produce durable completed state',async()=>{
  const x=await runner(false);try{await assert.rejects(x.execute({binding}),/EXECUTION_FAILED/);assert.equal(x.queryCalls(),1);assert.equal(x.calls.length,0);assert.ok(!x.events.includes('completed'));assert.equal((await x.f.service.history({credential:x.f.credential})).run.state,'failed');}finally{x.f.close();}
+});
+
+test('first append waits for native init, then uses exactly its session; close cancels an uninitialized append',async()=>{
+ for(const cancel of [false,true]){
+  const f=fixture(),app=createNativeSdkSessionApplication({owner:f.owner,now:()=>NOW}),calls=[];
+  const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'opaque-native-task',binding:f.binding,now:()=>NOW,
+   fetchImpl:async(url,options)=>{calls.push(url);return app.handle(new Request(url,options));}});
+  const mirror=await factory({binding:f.binding,sessionKey:null});const pending=mirror.store.append(f.key,[{type:'system'}]);
+  await new Promise(r=>setImmediate(r));assert.equal(calls.length,0);
+  if(cancel){const rejected=assert.rejects(pending);await assert.rejects(mirror.close());await rejected;assert.equal(calls.length,0);}
+  else{mirror.store.observeInit({type:'system',subtype:'init',session_id:f.key.sessionId});await pending;await mirror.settle();await mirror.close();assert.equal(f.state().entries.length,1);}
+ }
+});
+test('conflicting native init poisons settlement and does not change the registered owner',async()=>{
+ const f=await mirrorFixture();await f.mirror.store.append(f.key,[{type:'system'}]);const owner=structuredClone(f.state().owner),count=f.calls.length;
+ assert.throws(()=>f.mirror.store.observeInit({type:'system',subtype:'init',session_id:id(99)}),/RUNNER_SDK_INIT_REFUSED/);
+ await assert.rejects(f.mirror.settle());await assert.rejects(f.mirror.close());assert.deepEqual(f.state().owner,owner);assert.equal(f.calls.length,count);
 });

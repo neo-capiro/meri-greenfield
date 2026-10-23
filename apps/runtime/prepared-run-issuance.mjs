@@ -9,7 +9,7 @@ import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execu
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
-import {compileNativeBrokerPlan} from './native-authority/broker-stack.mjs';
+import {compileNativeTaskPlan} from './native-authority/task-allocator.mjs';
 import {createNativeTaskAllocator} from './native-authority/task-allocator.mjs';
 import {compileNativeTaskAccess,matchesCapability} from './native-authority/task-verifier.mjs';
 import {createNativeAllocationAdmission} from '../gateway/budget/native-allocation-admission.mjs';
@@ -41,8 +41,8 @@ export function compilePreparedRunFacts(value,{intent,issuance,now=Date.now}){
  const i=intentOf(intent),r=receiptOf(issuance,i),c=data(own(value,['runtime','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskRequest','containerName','controlCapabilitySha256','transport'],['approvedReads'])),transport=parseTransport(c.transport);
  const reads=c.approvedReads===undefined?{}:{approvedReads:assertNativeReadConfiguration(c.approvedReads)};
  if(c.approvedReads!==undefined&&nativeReadOperations.some(op=>!c.operations.includes(op)))fail('FACTS_REFUSED');
- const compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),a=allocation(c.allocationJson);
- if(!same(compiled.original.binding,i.binding)||compiled.original.expiresAtMs!==i.expiresAtMs||i.expiresAtMs<=now()||!digest(c.controlCapabilitySha256)||r.capabilitySha256===c.controlCapabilitySha256||c.grantId!==r.grantId||c.runtime.maxTurns>a.budgets.maxTurns||c.runtime.maxCostMicroUSD>a.budgets.maxCostMicroUSD||c.runtime.maxOutputBytes>a.budgets.maxOutputBytes||i.expiresAtMs>Date.parse(a.schedule.expiresAt))fail('FACTS_REFUSED');
+ const compiled=compileNativeTaskPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),a=allocation(c.allocationJson);
+ if(!same(compiled.original.binding,i.binding)||compiled.original.expiresAtMs!==i.expiresAtMs||i.expiresAtMs<=now()||!digest(c.controlCapabilitySha256)||r.capabilitySha256===c.controlCapabilitySha256||c.grantId!==r.grantId||c.runtime.maxOutputBytes>a.budgets.maxOutputBytes||i.expiresAtMs>Date.parse(a.schedule.expiresAt))fail('FACTS_REFUSED');
  const taskGrant=c.grantIntents.find(g=>g.grantId===r.grantId);
  if(!taskGrant||taskGrant.capabilitySha256!==r.capabilitySha256||taskGrant.expiresAtMs!==i.expiresAtMs||c.grantIntents.some(g=>g.capabilitySha256===c.controlCapabilitySha256||g.expiresAtMs!==i.expiresAtMs))fail('FACTS_REFUSED');
  compileNativeTaskAccess({identityCredential:'inert-issuance-validation',taskCapabilitySha256:r.capabilitySha256,operations:c.operations});

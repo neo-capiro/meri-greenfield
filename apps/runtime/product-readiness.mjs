@@ -12,7 +12,6 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences,
   {name:'schedules.application',state:available.has('routinesApplicationFactory')?ports.routinesApplicationFactory.state():'unavailable'},
   {name:'schedules.inbox',state:available.has('routinesApplicationFactory')&&ports.routinesApplicationFactory.inboxState?ports.routinesApplicationFactory.inboxState():'unavailable'},
   {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
-  {name:'proxy.modelGrants',state:'unavailable'},
   {name:'schedules.dispatchWorker',state:'separate-service-required'});
  const recovery=retention?.artifactRecovery?.();if(recovery?.required)owners.push({name:'retention.artifactRecovery',state:recovery.state});
  if(userPreferences!==undefined)owners.push({name:'settings.userPreferences',state:userPreferences});

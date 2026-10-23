@@ -1,7 +1,7 @@
 /** Production composition of the three multi-run ports (S2): `runIssuance` (the canonical prepared-run issuance over the durable
  * issuer and a trusted fact producer), `issuanceIntent` (the next run's expiry from reviewed static bounds) and `admissionForBinding`
  * (the existing budget admission owner per target binding). Ports are built from startup-supplied owners; configuration names no
- * callback or module. Missing owners fail readiness. The raw proxy credential stays in trusted memory and never enters a receipt. */
+ * callback or module. Missing owners fail readiness. */
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
@@ -13,7 +13,6 @@ import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {compilePreparedRunConfigurationSha256} from './prepared-run-configuration.mjs';
-import {issueRunModelGrant} from './run-model-grant.mjs';
 import {createOriginalRunPreparation} from './original-run-preparation.mjs';
 import {matchHistoricalStopAllocation} from './native-authority/historical-stop-facts.mjs';
 import {createHistoricalRunRetirement} from './historical-run-retirement.mjs';
@@ -22,11 +21,10 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {assertNativeReadConfiguration,nativeReadOperations} from '../../packages/contracts/runtime-0.2/reads.mjs';
 const fail=code=>{throw Object.assign(Error('PREPARED_RUN_BINDINGS_'+code),{code:'PREPARED_RUN_BINDINGS_'+code});};
 export function createPreparedRunBindings(options){
- const o=own(options,['configuration','pool','store','credentials'],['issuanceStore','capabilityAuthority','modelGrants','now','limits','initialBindings','objectiveFacts','objectiveExecutionSelection']),now=o.now??Date.now,limits=o.limits??{maxRequestMs:3000,maxFactBytes:131072};
+ const o=own(options,['configuration','pool','store','credentials'],['issuanceStore','capabilityAuthority','now','limits','initialBindings','objectiveFacts','objectiveExecutionSelection']),now=o.now??Date.now,limits=o.limits??{maxRequestMs:3000,maxFactBytes:131072};
  const config=compilePreparedCandidateConfiguration(o.configuration.nativeCandidate,o.configuration.versions);if(config.multiRun===undefined)fail('NOT_CONFIGURED');
  if(!o.issuanceStore||!o.capabilityAuthority)fail('UNAVAILABLE');if(typeof o.pool?.connect!=='function'||typeof o.store?.allocations?.read!=='function'||typeof o.store?.readOptional!=='function'||typeof o.issuanceStore.read!=='function')fail('CONFIGURATION');
- if(typeof o.modelGrants?.issue!=='function')fail('MODEL_GRANT_UNAVAILABLE');
- const secrets=own(o.credentials,['control'],['proxy']);if(typeof secrets.control!=='string'||!/^\S{1,8192}$/u.test(secrets.control))fail('CONFIGURATION');
+ const secrets=own(o.credentials,['control']);if(typeof secrets.control!=='string'||!/^\S{1,8192}$/u.test(secrets.control))fail('CONFIGURATION');
  const controlDigest=capabilityDigest(secrets.control),a=allocation(config.allocationJson),scheduleExpiresAtMs=Date.parse(a.schedule.expiresAt);
  const configuredBinding=config.runtime.binding,selectedClientId=config.identity.commandContext.clientResolution.clientId,readInitial=o.initialBindings===undefined?null:storageMethod(o.initialBindings,'read');
  if((config.multiRun.dynamicInitialRuns===true)!==(readInitial!==null))fail('INITIAL_BINDING_UNAVAILABLE');
@@ -46,8 +44,6 @@ export function createPreparedRunBindings(options){
   return {admission:r,saved};
  };
  const checkedInitial=async(binding,check)=>{const {admission}=await initialRecord(binding,check);return admission;};
- // sdkOptionsSha256 is the run-invariant SDK option template (native-authority/sdk-option-template.mjs): carried unchanged, it
- // matches every retargeted run because the runner verifies cwd, CLAUDE_CONFIG_DIR and the prompt scopes against this intent.
  const retargetPreparation=(binding,scopes)=>{if(!readInitial||!workspaceParent)fail('WORKSPACE');return {...config.preparationIntent,workspace:workspaceParent+binding.conversationId,authoritySha256:hash({scopes,selectedClientId,policyRevision:config.qualification.policyRevision})};};
  /** The authoritative allocation for a target binding: the reviewed static allocation retargeted to exactly that run. Its hash is what
   * the issued facts and the retired record carry; a record naming a different allocation hash is refused rather than admitted. */
@@ -88,8 +84,7 @@ export function createPreparedRunBindings(options){
   if(intent.binding.conversationId!==configuredBinding.conversationId&&!readInitial)fail('INITIAL_BINDING_UNAVAILABLE');
   if(intent.binding.writerFence===1&&hash(intent.binding)!==hash(configuredBinding)){const admitted=await checkedInitial(intent.binding,check);if(intent.expiresAtMs!==admitted.expiresAtMs||!saved||!exactInitialScopes(saved.run.scopes,intent.binding,admitted.policyRevision))fail('INITIAL_EXPIRY_MISMATCH');}
   if(approvedReads!==undefined&&(!saved||hash(saved.request)!==intent.requestSha256))fail('RUN_REQUEST_MISMATCH');
-  const model=await issueRunModelGrant({owner:o.modelGrants,intent,taskGrant:issuance,controlSha256:controlDigest,now,signal});
-  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:model.proxyCredential},plan:c.plan,preparationIntent:intent.binding.conversationId===configuredBinding.conversationId?c.preparationIntent:retargetPreparation(intent.binding,saved.run.scopes),allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs},model.grantIntent],grantId:issuance.grantId,operations,...(approvedReads===undefined?{}:{approvedReads}),taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};},...(objective?{decorateObjective}:{})};
+  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs},plan:c.plan,preparationIntent:intent.binding.conversationId===configuredBinding.conversationId?c.preparationIntent:retargetPreparation(intent.binding,saved.run.scopes),allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs}],grantId:issuance.grantId,operations,...(approvedReads===undefined?{}:{approvedReads}),taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};},...(objective?{decorateObjective}:{})};
  const issuer=createPreparedRunIssuer({store:o.issuanceStore,authority:o.capabilityAuthority,now,maxRequestMs:limits.maxRequestMs});
  const runIssuance=createPreparedRunIssuance({issuer,facts,sourceOwners,now,maxRequestMs:limits.maxRequestMs});
  const prepareOriginal=createOriginalRunPreparation({binding:config.runtime.binding,expiresAtMs:config.runtime.deadlineMs,store:o.store,issuer,runIssuance,now,maxRequestMs:limits.maxRequestMs});

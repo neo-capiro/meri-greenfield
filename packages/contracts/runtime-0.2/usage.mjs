@@ -1,0 +1,43 @@
+/** Private content-free run accounting input. This is not a browser event or a permission receipt. */
+import {own,data} from '../commands-0.2/execution-boundary.mjs';
+const fail=()=>{throw Error('RUNTIME_USAGE_REFUSED');};
+const count=n=>Number.isSafeInteger(n)&&n>=0;
+const money=n=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=Number.MAX_SAFE_INTEGER/1e6;
+const identifier=v=>typeof v==='string'&&/^[a-zA-Z0-9][a-zA-Z0-9_:\-./]{0,199}$/u.test(v);
+export const MAX_TOOL_AUDIT_RECORDS=128;
+export function assertSdkUsageSnapshot(value){
+ const s=own(value,['sessionId','sdkEstimateUsd','models','basis']);
+ if(typeof s.sessionId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(s.sessionId)||!money(s.sdkEstimateUsd))fail();
+ const b=own(s.basis,['sdk','cli','provider','cacheWriteTtl','priceRevision']);
+ if(![b.sdk,b.cli].every(v=>typeof v==='string'&&/^\d+\.\d+\.\d+$/u.test(v))||b.provider!=='bedrock'||!['5m','1h'].includes(b.cacheWriteTtl)||!identifier(b.priceRevision))fail();
+ if(!s.models||typeof s.models!=='object'||Array.isArray(s.models)||Object.keys(s.models).length<1||Object.keys(s.models).length>32)fail();
+ for(const [key,model] of Object.entries(s.models)){
+  if(!identifier(key))fail();const m=own(model,['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens','webSearchRequests','sdkEstimateUsd','provider','costBasis']);
+  if(!['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens','webSearchRequests'].every(k=>count(m[k]))||!money(m.sdkEstimateUsd)||!['bedrock','unknown'].includes(m.provider)||!['list','unknown'].includes(m.costBasis))fail();
+ }
+ return s;
+}
+export function assertUsageInput(value){
+ const v=data(own(value,['usage','toolsUsed']));if(v.usage!==null)assertSdkUsageSnapshot(v.usage);
+ const a=own(v.toolsUsed,['tools','omitted']);if(!Array.isArray(a.tools)||a.tools.length>MAX_TOOL_AUDIT_RECORDS||!count(a.omitted))fail();
+ for(const value of a.tools){const t=own(value,['tool','toolUseId','outcome','durationMs']);if(!identifier(t.tool)||!identifier(t.toolUseId)||!['completed','failed'].includes(t.outcome)||t.durationMs!==null&&!count(t.durationMs))fail();}
+ if(Buffer.byteLength(JSON.stringify(v))>131072)fail();return v;
+}
+
+const COUNTERS=Object.freeze(['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens']);
+const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(value);
+const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
+const dollars=money,invalid=fail;
+/** Drop result text, thinking, errors, tool arguments and outputs before anything reaches persistence. */
+export function projectSdkUsage(result,basis){
+ if(!object(result)||result.type!=='result'||!uuid(result.session_id)||!dollars(result.total_cost_usd)||!object(result.modelUsage))invalid();
+ const entries=Object.entries(result.modelUsage);if(entries.length<1||entries.length>32)invalid();
+ const models={};
+ for(const [name,value] of entries.sort(([a],[b])=>a.localeCompare(b))){
+  if(!/^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$/u.test(name)||!object(value)||COUNTERS.some(key=>!count(value[key]))||!dollars(value.costUSD)||!count(value.webSearchRequests))invalid();
+  // Unknown provider/cost basis is retained as unknown, not assumed to be a priced Bedrock call.
+  models[name]={...Object.fromEntries(COUNTERS.map(key=>[key,value[key]])),webSearchRequests:value.webSearchRequests,
+   sdkEstimateUsd:value.costUSD,provider:value.provider==='bedrock'?'bedrock':'unknown',costBasis:value.costBasis==='list'?'list':'unknown'};
+ }
+ return assertSdkUsageSnapshot({sessionId:result.session_id,sdkEstimateUsd:result.total_cost_usd,models,basis:{...basis}});
+}

@@ -6,7 +6,6 @@ import {assertCapabilityPolicy,readCapabilityPolicy,SUBAGENT_TYPES,WORKSPACE_TOO
 import {READ_FAMILY_IDS} from '../reads/families.mjs';
 import {createWorkspaceTools,assertWorkspacePermissions,BUILTIN_TOOL_NAMES} from '../capabilities/workspace-tools.mjs';
 import {createSubagents,admitAgentInput} from '../capabilities/subagents.mjs';
-import {createAuditHooks,createCompactionHooks,createSubagentLifecycleHooks} from '../capabilities/hooks.mjs';
 import {createSkillPlugin} from '../capabilities/skill-plugin.mjs';
 import {createProgressProjector} from '../capabilities/progress.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
@@ -63,38 +62,6 @@ test('subagent definitions use declared SDK fields and the Agent gate bounds typ
  assert.equal((await s.canUseTool('Agent',{description:'d',prompt:'p',subagent_type:'research'},hookOptions)).behavior,'allow');assert.equal((await s.canUseTool('Agent',{description:'d',prompt:'p',subagent_type:'Explore'},hookOptions)).behavior,'deny');assert.equal((await s.canUseTool('Bash',{command:'ls'},hookOptions)).behavior,'deny');
 });
 
-test('audit, compaction and subagent hooks publish hashes and names only, never raw input, output, errors or summaries',async()=>{
- const published=[],latched=[];const publish=async(type,data,signal)=>{assert.ok(signal instanceof AbortSignal);published.push({type,data});},latch=e=>latched.push(e?.message);
- const audit=createAuditHooks({publish,latch}),compaction=createCompactionHooks({publish,latch}),lifecycle=createSubagentLifecycleHooks({publish,latch});
- for(const create of [createAuditHooks,createCompactionHooks,createSubagentLifecycleHooks])assert.throws(()=>create({publish}),/CAPABILITY_CONFIGURATION/,'a hook set without a latch is refused');
- const toolInput={command:`curl -H 'Authorization: ${SECRET}' https://x.invalid`},response={stdout:CONTENT};
- assert.deepEqual(await audit.PreToolUse[0].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'Bash',tool_input:toolInput,tool_use_id:'t1',agent_id:'ag1',agent_type:'research'},'t1',hookOptions),{});
- assert.deepEqual(await audit.PostToolUse[0].hooks[0]({...base,hook_event_name:'PostToolUse',tool_name:'Bash',tool_input:toolInput,tool_response:response,tool_use_id:'t1',duration_ms:12},'t1',hookOptions),{});
- assert.deepEqual(await audit.PostToolUseFailure[0].hooks[0]({...base,hook_event_name:'PostToolUseFailure',tool_name:'Read',tool_input:{file_path:`${cwd}/${SECRET}`},tool_use_id:'t2',error:`ENOENT ${CONTENT}`,is_interrupt:false},'t2',hookOptions),{});
- assert.deepEqual(await compaction.PreCompact[0].hooks[0]({...base,hook_event_name:'PreCompact',trigger:'auto',custom_instructions:null},undefined,hookOptions),{});
- assert.deepEqual(await compaction.PostCompact[0].hooks[0]({...base,hook_event_name:'PostCompact',trigger:'manual',compact_summary:`Summary with ${SECRET} and ${CONTENT}`},undefined,hookOptions),{});
- assert.deepEqual(await lifecycle.SubagentStart[0].hooks[0]({...base,hook_event_name:'SubagentStart',agent_id:'ag1',agent_type:'research'},undefined,hookOptions),{});
- assert.deepEqual(await lifecycle.SubagentStop[0].hooks[0]({...base,hook_event_name:'SubagentStop',stop_hook_active:false,agent_id:'ag1',agent_transcript_path:'/tmp/x',agent_type:'research',last_assistant_message:CONTENT},undefined,hookOptions),{});
- assert.deepEqual(published.map(e=>e.type),['tool.audit','tool.audit','tool.audit','compaction.boundary','compaction.boundary','subagent.lifecycle','subagent.lifecycle']);
- assert.deepEqual(published[0].data,{phase:'requested',toolUseId:'t1',tool:'Bash',inputSha256:sha(toolInput),agentId:'ag1',agentType:'research'});
- assert.deepEqual(published[1].data,{phase:'completed',toolUseId:'t1',tool:'Bash',inputSha256:sha(toolInput),agentId:null,agentType:null,responseSha256:sha(response),durationMs:12});
- assert.deepEqual(published[2].data,{phase:'failed',toolUseId:'t2',tool:'Read',inputSha256:sha({file_path:`${cwd}/${SECRET}`}),agentId:null,agentType:null,errorSha256:sha(`ENOENT ${CONTENT}`),interrupted:false,durationMs:null});
- assert.deepEqual(published[3].data,{phase:'pre',trigger:'auto',agentId:null,agentType:null});
- assert.deepEqual(published[4].data,{phase:'post',trigger:'manual',summarySha256:sha(`Summary with ${SECRET} and ${CONTENT}`),summaryBytes:Buffer.byteLength(`Summary with ${SECRET} and ${CONTENT}`),agentId:null,agentType:null});
- assert.deepEqual(published[5].data,{phase:'started',agentId:'ag1',agentType:'research'});assert.deepEqual(published[6].data,{phase:'stopped',agentId:'ag1',agentType:'research'});
- const serialized=JSON.stringify(published);assert.ok(!serialized.includes(SECRET)&&!serialized.includes(CONTENT)&&!serialized.includes('curl')&&!serialized.includes('/tmp/x'));
- // Malformed hook input and a refused publication fail closed.
- assert.deepEqual(latched,[]);
- const refused=async()=>{throw Error('EVENT_TYPE_REFUSED');},failing=createAuditHooks({publish:refused,latch}),failingCompaction=createCompactionHooks({publish:refused,latch});
- assert.equal((await failing.PreToolUse[0].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'Bash',tool_input:{},tool_use_id:'t1'},'t1',hookOptions)).hookSpecificOutput.permissionDecision,'deny');
- assert.deepEqual(await failing.PostToolUse[0].hooks[0]({...base,hook_event_name:'PostToolUse',tool_name:'Bash',tool_input:{},tool_response:{},tool_use_id:'t1'},'t1',hookOptions),{continue:false,stopReason:'AUDIT_UNAVAILABLE'});
- assert.deepEqual(await failingCompaction.PreCompact[0].hooks[0]({...base,hook_event_name:'PreCompact',trigger:'auto',custom_instructions:null},undefined,hookOptions),{continue:false,stopReason:'AUDIT_UNAVAILABLE'});
- assert.equal((await audit.PreToolUse[0].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'',tool_input:{},tool_use_id:'t9'},'t9',hookOptions)).hookSpecificOutput.permissionDecision,'deny');
- assert.deepEqual(await compaction.PostCompact[0].hooks[0]({...base,hook_event_name:'PostCompact',trigger:'other',compact_summary:''},undefined,hookOptions),{continue:false,stopReason:'AUDIT_UNAVAILABLE'});
- assert.equal(published.length,7);
- assert.deepEqual(latched,['EVENT_TYPE_REFUSED','EVENT_TYPE_REFUSED','EVENT_TYPE_REFUSED','AUDIT_INPUT_REFUSED','COMPACTION_INPUT_REFUSED'],'every refused publication and every malformed hook input is latched');
-});
-
 test('skill plugin binds the immutable image path and the original names; cwd discovery is refused',async()=>{
  const described=describeSkillPlugin();assert.equal(described.skills.length,14);assert.deepEqual(described.excluded,[{skillId:'quick_skill.bill_watch',skillVersion:'1.0.0',reason:'NO_SDK_FRONTMATTER'}]);
  const s=createSkillPlugin(assertCapabilityPolicy({skillPlugin:true}),{skillPluginDirectory:plugin,cwd});
@@ -121,23 +88,14 @@ test('composition yields an all-off empty fragment and per-capability additive f
  assert.deepEqual(createSdkCapabilities({},facts(runOwner)).options,{});
  const workspace=createSdkCapabilities({workspaceTools:true,workspaceToolNames:['Read']},facts(runOwner)).options;
  assert.deepEqual(Object.keys(workspace).sort(),['allowedTools','canUseTool','disallowedTools','managedSettings','settings','tools']);assert.deepEqual(workspace.tools,['Read']);assert.deepEqual(workspace.disallowedTools,BUILTIN_TOOL_NAMES.filter(n=>n!=='Read'));assert.equal(workspace.hooks,undefined);
- const audit=createSdkCapabilities({auditHooks:true,compactionHooks:true},facts(runOwner)).options;assert.deepEqual(Object.keys(audit),['hooks']);assert.deepEqual(Object.keys(audit.hooks),['PreToolUse','PostToolUse','PostToolUseFailure','PreCompact','PostCompact']);
- const subagents=createSdkCapabilities({subagents:true,subagentProgress:true},facts(runOwner)).options;assert.deepEqual(Object.keys(subagents).sort(),['agentProgressSummaries','agents','allowedTools','canUseTool','disallowedTools','hooks','tools']);assert.deepEqual(subagents.tools,['Agent']);assert.equal(subagents.agentProgressSummaries,true);assert.deepEqual(Object.keys(subagents.hooks),['PreToolUse','PostToolUse','PostToolUseFailure','SubagentStart','SubagentStop']);
+ assert.deepEqual(createSdkCapabilities({auditHooks:true,compactionHooks:true},facts(runOwner)).options,{},'audit is batched by the activity, never a permission or per-hook publication');
+ const subagents=createSdkCapabilities({subagents:true,subagentProgress:true},facts(runOwner)).options;assert.deepEqual(Object.keys(subagents).sort(),['agentProgressSummaries','agents','allowedTools','canUseTool','disallowedTools','hooks','tools']);assert.deepEqual(subagents.tools,['Agent']);assert.equal(subagents.agentProgressSummaries,true);assert.deepEqual(Object.keys(subagents.hooks),['PreToolUse','PostToolUse','PostToolUseFailure']);
  assert.equal(createSdkCapabilities({subagents:true},facts(runOwner)).options.agentProgressSummaries,undefined);
  const skill=createSdkCapabilities({skillPlugin:true},facts(runOwner,{skillPluginDirectory:plugin})).options;assert.deepEqual(Object.keys(skill).sort(),['allowedTools','canUseTool','disallowedTools','plugins','skills','tools']);
  assert.throws(()=>createSdkCapabilities({skillPlugin:true},facts(runOwner)),/SKILL_PLUGIN_DIRECTORY_REQUIRED/);
- const full=createSdkCapabilities(all,facts(runOwner,{skillPluginDirectory:plugin}));assert.deepEqual(full.options.tools,['Read','Write','Edit','Glob','Grep','Agent','Skill'],'Bash needs the sandbox attestation');assert.ok(full.options.disallowedTools.includes('Bash'));assert.equal(full.bashAdmitted,false);assert.ok(!full.policy.workspaceToolNames.includes('Bash'));assert.equal(full.options.sandbox,undefined);assert.equal(full.options.hooks.PreToolUse.length,2);assert.equal(full.options.forwardSubagentText,undefined);
+ const full=createSdkCapabilities(all,facts(runOwner,{skillPluginDirectory:plugin}));assert.deepEqual(full.options.tools,['Read','Write','Edit','Glob','Grep','Agent','Skill'],'Bash needs the sandbox attestation');assert.ok(full.options.disallowedTools.includes('Bash'));assert.equal(full.bashAdmitted,false);assert.ok(!full.policy.workspaceToolNames.includes('Bash'));assert.equal(full.options.sandbox,undefined);assert.equal(full.options.hooks.PreToolUse.length,1);assert.equal(full.options.forwardSubagentText,undefined);
  assert.equal((await full.options.canUseTool('Read',{file_path:`${cwd}/a`},hookOptions)).behavior,'deny','inside-workspace reads are pre-approved by SDK rules, never by the callback');assert.equal((await full.options.canUseTool('Agent',{description:'d',prompt:'p',subagent_type:'research'},hookOptions)).behavior,'allow');assert.equal((await full.options.canUseTool('WebFetch',{url:'https://x'},hookOptions)).behavior,'deny');assert.equal((await full.options.canUseTool('Read',{file_path:'/etc/hosts'},hookOptions)).behavior,'deny');
- await full.options.hooks.PreToolUse[1].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'Read',tool_input:{file_path:`${cwd}/a`},tool_use_id:'t1'},'t1',hookOptions);
- assert.deepEqual(events.map(e=>[e.eventId,e.createdAt,e.type]),[[id(300),'2025-10-09T08:53:20.000Z','tool.audit']]);full.check();
+ await full.options.hooks.PreToolUse[0].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'Read',tool_input:{file_path:`${cwd}/a`},tool_use_id:'t1'},'t1',hookOptions);
+ assert.deepEqual(events,[],'native audit never publishes per-hook events');full.check();
  for(const bad of [{runOwner:{},binding,cwd,now:Date.now,newId:()=>'x'},{runOwner,binding:{...binding,tenantId:''},cwd,now:Date.now,newId:()=>'x'},{runOwner,binding,cwd:'/x/',now:Date.now,newId:()=>'x'},{runOwner,binding,cwd,now:Date.now,newId:()=>'x',extra:1}])assert.throws(()=>createSdkCapabilities(all,bad));
-});
-
-test('a refused capability event is remembered and fails the run after the loop',async()=>{
- let calls=0;const refusing={append:async()=>{calls++;throw Error('EVENT_TYPE_REFUSED');}};
- const c=createSdkCapabilities({auditHooks:true},facts(refusing));c.check();
- assert.equal((await c.options.hooks.PreToolUse[0].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'Read',tool_input:{file_path:`${cwd}/a`},tool_use_id:'t1'},'t1',hookOptions)).hookSpecificOutput.permissionDecision,'deny');
- assert.throws(()=>c.check(),/CAPABILITY_EVENT_REFUSED/);
- assert.deepEqual(await c.options.hooks.PostToolUse[0].hooks[0]({...base,hook_event_name:'PostToolUse',tool_name:'Read',tool_input:{},tool_response:{},tool_use_id:'t1'},'t1',hookOptions),{continue:false,stopReason:'AUDIT_UNAVAILABLE'});
- assert.equal(calls,1,'after the first refusal no further publication is attempted');
 });

@@ -1,0 +1,18 @@
+{
+  "revision": "bedrock-us-sonnet-4-6-2026-10-23",
+  "unit": "microUSD-per-1000-tokens",
+  "sources": [
+    "https://platform.claude.com/docs/en/about-claude/pricing",
+    "https://aws.amazon.com/bedrock/pricing/"
+  ],
+  "models": {
+    "us.anthropic.claude-sonnet-4-6": {
+      "provider": "bedrock",
+      "inputTokens": 3300,
+      "outputTokens": 16500,
+      "cacheReadInputTokens": 330,
+      "cacheCreation5mTokens": 4125,
+      "cacheCreation1hTokens": 6600
+    }
+  }
+}

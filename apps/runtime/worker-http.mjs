@@ -1,3 +1,4 @@
+import {productFailure} from '../control/product-access/errors.mjs';
 /** Task capability -> current native identity -> existing opaque session -> canonical service. */
 import {jsonBody} from '../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
@@ -13,8 +14,8 @@ export function createWorkerRunApplication({service,sessions,native,configuratio
  let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  const authority=createNativeTaskAuthority({native,enabled:true,now,maxRequestMs:configuration.limits.requestMs});
  const issueCurrent=issuedCurrentState(sessions);
- return Object.freeze({async handle(request){const operation=async()=>{let life,session;try{
-  const url=new URL(request.url),route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||!Object.hasOwn(runOwnerOperations,route[1])||url.search)return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
+ return Object.freeze({async handle(request){const operation=async()=>{let life,session,route;try{
+  const url=new URL(request.url);route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||!Object.hasOwn(runOwnerOperations,route[1])||url.search)return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
   const capability=request.headers.get('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(capability??''))throw fault('WORKER_AUTHORITY_REFUSED');if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw fault('WORKER_REQUEST_REFUSED');
   let deadlineMs=now()+configuration.limits.requestMs;life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('WORKER_REQUEST_REFUSED');
   const input=assertRunOwnerRequest(route[1],await jsonBody({body:request.body,length:length===null?null:Number(length)},configuration.limits.requestBytes,life,life.check)),inputSha256=canonicalSha256(input);try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
@@ -49,6 +50,7 @@ export function createWorkerRunApplication({service,sessions,native,configuratio
  }catch(error){
   // An authority dependency (Core/Clerk, the task verifier) that did not answer decided nothing: 503 lets the runner replay an
   // idempotent call (native-client.mjs). Every refusal, mismatch and changed authority stays 403.
+  if(route?.[1]==='record-usage'){const failure=productFailure(error);if(failure&&['SDK_USAGE_STORE_UNAVAILABLE','SDK_USAGE_COMMIT_UNKNOWN'].includes(failure.code))return Response.json({error:{code:failure.code,outcome:failure.outcome}},{status:503});}
   if(isAuthorityUnavailable(error))return Response.json({error:{code:'WORKER_AUTHORITY_UNAVAILABLE'}},{status:503});
   const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{if(session)sessions.revoke(session.credential);life?.close();}};return turnTelemetry?turnTelemetry.provisional(operation):operation();}});
 }

@@ -120,7 +120,6 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser,contr
    add(c.nativeCandidate.identity.credentialFile,'identity-capability');
    add(c.nativeCandidate.taskCapabilityFile,'task-capability');
    add(c.nativeCandidate.controlCapabilityFile,'control-capability');
-   add(c.nativeCandidate.proxyCredentialFile,'proxy-capability');
   }
   if(c.taskRouter?.enabled)add(c.taskRouter.runnerCaFile,'runner-ca');
   if(c.taskRouter?.poststart?.enabled){add(c.taskRouter.poststart.runnerCaKeyFile,'runner-ca-key');add(c.taskRouter.poststart.controlCaFile,'poststart-control-ca');}

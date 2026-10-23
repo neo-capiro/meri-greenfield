@@ -1,4 +1,4 @@
-/** Runnable controller/task/runner composition; cloud clients and credentials stay injected. */
+/** Control composition of existing task admission, run ownership and SDK SessionStore APIs. */
 import {assertHistoricalStopFacts,matchHistoricalStopAllocation} from './historical-stop-facts.mjs';
 import {types} from 'node:util';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -6,91 +6,36 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
 import {createNativeAllocationAdmission} from '../../gateway/budget/native-allocation-admission.mjs';
 import {createPreallocationAuthority} from './preallocation-authority.mjs';
-import {createNativeTaskAllocator} from './task-allocator.mjs';
+import {createNativeTaskAllocator,compileNativeTaskPlan} from './task-allocator.mjs';
 import {createEcsPreparedTaskProof} from './ecs-prepared-task-proof.mjs';
 import {createAdmittedTaskAuthority} from './admitted-task-authority.mjs';
-import {compileNativeBrokerPlan} from './broker-stack.mjs';
 import {createNativeContinuationRuntime} from './continuation-runtime.mjs';
-import {createNativeCheckpointRestorer} from './native-restorer.mjs';
 import {createDurableSdkSessionOwner} from './session-owner.mjs';
 import {createNativeSdkSessionApplication} from './session-http.mjs';
 import {createNativeExecutionApplication} from './execution-http.mjs';
-import {createNativeCheckpointApplication} from './checkpoint-http.mjs';
-import {executionFault,assertNativeExecution} from './execution-broker.mjs';
+import {executionFault} from './execution-broker.mjs';
 import {createPreparedNativeRuntime} from './prepared-runtime.mjs';
-import {createNativePreparationApplication,createNativePreparationClient} from './preparation-http.mjs';
-import {createRemoteNativeTaskApplication} from './remote-task-http.mjs';
-import {createRemoteNativeTaskController} from './remote-task-client.mjs';
-import {createIndependentNativeTask} from './independent-task.mjs';
-import {createSupervisorWorkspace} from './supervisor-workspace.mjs';
-import {createTaskCheckpointSource} from './task-checkpoint-source.mjs';
-import {createNativeCheckpointCapture} from './checkpoint-capture.mjs';
-import {createNativeCompletionCapture} from './completion-capture.mjs';
-import {createRemoteRunnerQuery} from './runner-query.mjs';
-import {sdkOptionsPin,sdkOptionsRestoration} from './sdk-option-template.mjs';
-import {sdkOptionsContinuation} from './continuation-pin.mjs';
+import {createNativePreparationApplication} from './preparation-http.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {capabilityDigest,matchesCapability,compileNativeTaskAccess} from './task-verifier.mjs';
 import {exactOriginal} from './remote-task-boundary.mjs';
-import {compileNativePreparationIntent,matchPreparedDescriptorShape} from './preparation-intent.mjs';
 import {createPreparedNativeReads,captureReadRuntimeOptions} from './prepared-reads.mjs';
-import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 export function createRemoteNativeController(configuration){
- const {runtimeConfiguration,transport,objects}=own(configuration,['runtimeConfiguration','transport'],['objects']);
- const pinned=compileNativeBrokerPlan({runtime:runtimeConfiguration.runtime,plan:runtimeConfiguration.plan,preparationIntent:runtimeConfiguration.preparationIntent});exactOriginal(transport.original,pinned.original);if(!matchesCapability(transport.credential,runtimeConfiguration.controlCapabilitySha256))throw Error('REMOTE_CONTROL_BINDING_REFUSED');
- const remote=createRemoteNativeTaskController(transport),r={...runtimeConfiguration,...(objects&&!runtimeConfiguration.continuationObjects?{continuationObjects:objects}:{})},now=r.now??Date.now,enabled=r.enabled??false,maxRequestMs=r.maxRequestMs??3000,taskDigest=capabilityDigest(r.taskCapability);
- const restorer=r.continuationObjects?createNativeCheckpointRestorer({journal:r.store.restorations,objects:r.continuationObjects,workspace:r.preparationIntent.workspace,workspaceOwner:remote.workspace,expiresAtMs:pinned.original.expiresAtMs,now}):undefined;
- const preparedOptions={...r};for(const key of ['approvedReads','readCurrentEntry','allocationJson','grantFactsJsons','grantId','taskArn','issuanceFactsSha256','runRequestSha256','scopes','generalReads','createReadsRuntime','sourceEnabled'])delete preparedOptions[key];
- const continuation=r.continuation??createNativeContinuationRuntime({store:r.store,verifier:r.supervisor.taskVerifier,taskCapability:r.taskCapability,now,...(restorer?{restorer}:{})}),prepared=createPreparedNativeRuntime({...preparedOptions,continuation,tasksFactory:()=>remote});
- const preparationApplication=createNativePreparationApplication({owner:prepared.preparationAuthorizer,taskCapabilitySha256:capabilityDigest(runtimeConfiguration.taskCapability),enabled:runtimeConfiguration.enabled??false,now:runtimeConfiguration.now??Date.now,maxRequestMs:runtimeConfiguration.maxRequestMs??3000});
- const checkpoint=objects?createNativeCheckpointCapture({store:runtimeConfiguration.store,objects,authority:runtimeConfiguration.supervisor.taskVerifier,taskCapability:runtimeConfiguration.taskCapability,original:prepared.original,taskCapture:remote,enabled:runtimeConfiguration.enabled??false,now:runtimeConfiguration.now??Date.now,maxRequestMs:runtimeConfiguration.maxRequestMs??3000}):undefined;
- const sdkSessionOwner=createDurableSdkSessionOwner({admission:r.supervisor.admission,authority:r.supervisor.taskVerifier,registration:remote.registration,enabled,now,maxRequestMs});
+ const {runtimeConfiguration:r,transport}=own(configuration,['runtimeConfiguration','transport'],['objects']);
+ const pinned=compileNativeTaskPlan({runtime:r.runtime,plan:r.plan,preparationIntent:r.preparationIntent});exactOriginal(transport.original,pinned.original);if(!matchesCapability(transport.credential,r.controlCapabilitySha256))throw Error('REMOTE_CONTROL_BINDING_REFUSED');
+ const now=r.now??Date.now,enabled=r.enabled??false,maxRequestMs=r.maxRequestMs??3000,taskDigest=capabilityDigest(r.taskCapability);
+ // Fresh sessions are supported here. Existing checkpoint-based continuation remains unavailable until Step 5 replaces it with native session persistence.
+ const continuation=r.continuation??createNativeContinuationRuntime({store:r.store,verifier:r.supervisor.taskVerifier,taskCapability:r.taskCapability,now});
+ const prepared=createPreparedNativeRuntime({store:r.store,allocator:r.allocator,supervisor:r.supervisor,runtime:r.runtime,plan:r.plan,preparationIntent:r.preparationIntent,taskCapability:r.taskCapability,verifyTask:r.verifyTask,continuation,enabled,now,maxRequestMs});
+ const preparationApplication=createNativePreparationApplication({owner:prepared.preparationAuthorizer,taskCapabilitySha256:taskDigest,enabled,now,maxRequestMs});
+ const sdkSessionOwner=createDurableSdkSessionOwner({admission:r.supervisor.admission,authority:r.supervisor.taskVerifier,enabled,now,maxRequestMs});
  const sessions=createNativeSdkSessionApplication({owner:sdkSessionOwner,snapshot:continuation,now,maxRequestMs});
  const reads=createPreparedNativeReads({binding:pinned.original.binding,...(r.approvedReads===undefined?{}:{approvedReads:r.approvedReads}),...(r.readCurrentEntry===undefined?{}:{allocationJson:r.allocationJson,grantFactsJsons:r.grantFactsJsons,grantId:r.grantId,taskArn:r.taskArn,issuanceFactsSha256:r.issuanceFactsSha256,runRequestSha256:r.runRequestSha256,scopes:r.scopes,currentOwner:r.supervisor.admission,readCurrentEntry:r.readCurrentEntry,expiresAtMs:pinned.original.expiresAtMs}),...(r.generalReads?{gateway:r.generalReads}:{}),...(r.createReadsRuntime?{createReadsRuntime:r.createReadsRuntime,taskCapability:r.taskCapability}:{}),enabled:enabled&&r.sourceEnabled===true,now,...(r.supervisor.signal?{signal:r.supervisor.signal}:{})});
- const completion=objects&&r.store.completions?createNativeCompletionCapture({store:r.store,objects,authority:r.supervisor.taskVerifier,taskCapability:r.taskCapability,original:prepared.original,taskCapture:remote,enabled,now,maxRequestMs}):undefined;
- const execution=createNativeExecutionApplication({broker:{start:value=>{if(!prepared.stack)throw executionFault('PREPARATION_REQUIRED');return prepared.stack.broker.start(value);},poll:value=>{if(!prepared.stack)throw executionFault('PREPARATION_REQUIRED');return prepared.stack.broker.poll(value);}},runtime:prepared.runtime,taskCapabilitySha256:taskDigest,controlCapabilitySha256:r.controlCapabilitySha256,enabled,now,maxRequestMs}),checkpoints=checkpoint?createNativeCheckpointApplication({owner:checkpoint,...(completion?{completion}:{}),taskCapabilitySha256:taskDigest,enabled,now,maxRequestMs}):null;
- const application={async handle(request){const path=new URL(request.url).pathname;if(path.startsWith('/v1/runner/reads/'))return reads.application.handle(request);for(const app of [preparationApplication,execution,checkpoints])if(app){const reply=await app.handle(request);if(reply!==null)return reply;}if(path.startsWith('/v1/runner/session/'))return sessions.handle(request);return null;}};
- async function reconcile({signal}={}){const value=own(await remote.bindingRead({signal}),['original','taskArn','configDirectory','descriptorSha256','configTreeSha256','preparationId','native','configurationReadback']);exactOriginal(value.original,pinned.original);const native=assertNativeExecution(value.native,pinned.original);if(value.configurationReadback!==!native.physicalStopProven)throw executionFault('PREPARATION_REFUSED');const admitted=await prepared.prepareAllocation({signal});if(value.taskArn!==admitted.resource.taskArn)throw executionFault('PREPARATION_REFUSED');await prepared.reconcile({original:value.original,configDirectory:value.configDirectory,descriptorSha256:value.descriptorSha256,configTreeSha256:value.configTreeSha256,preparationId:value.preparationId,signal});return {original:pinned.original,taskArn:value.taskArn};}
- return Object.freeze({prepared,remote,checkpoint,application,readsOwner:reads.owner,continuation,restorer,runtime:prepared.runtime,productPorts:Object.freeze({sdkSessionOwner,sdkSessionSnapshot:continuation}),reconcile,allocate:prepared.prepareAllocation,
-  // The final control stop reaches the runner through the task router only while the task is still running and admitted, so it
-  // goes first; containment (grant revocation, ECS stop, physical-stop proof) always follows. In the other order the router
-  // refuses the stop and the runner waits for it until its shutdown timer.
-  async close(){try{await remote.close();}finally{await prepared.close();}}});
+ const execution=createNativeExecutionApplication({runtime:prepared.runtime,taskCapabilitySha256:taskDigest,controlCapabilitySha256:r.controlCapabilitySha256,enabled,now,maxRequestMs});
+ const application={async handle(request){const path=new URL(request.url).pathname;if(path.startsWith('/v1/runner/reads/'))return reads.application.handle(request);for(const app of [preparationApplication,execution]){const reply=await app.handle(request);if(reply!==null)return reply;}if(path.startsWith('/v1/runner/session/'))return sessions.handle(request);return null;}};
+ return Object.freeze({prepared,application,readsOwner:reads.owner,continuation,runtime:prepared.runtime,productPorts:Object.freeze({sdkSessionOwner,sdkSessionSnapshot:continuation}),allocate:prepared.prepareAllocation,close:prepared.close});
 }
-export function createRemoteNativeWorker(configuration){
- const c=own(configuration,['original','preparationIntent','controlCapabilitySha256','taskCapabilitySha256','taskArn','native','processTransport'],['capture','session','enabled','now','limits','preparationBudget']);
- exactOriginal(c.processTransport.original,c.original);if(!matchesCapability(c.processTransport.credential,c.taskCapabilitySha256))throw Error('REMOTE_TASK_BINDING_REFUSED');
- // The SDK options pin is the configured run-invariant template plus this run's facts from the same intent and original binding. A
- // continuation run's resume fields are checked against the restoration the runner initialized this task's SDK session mirror with
- // (remote-conversation-runner.mjs hands the same mirror's session here and its factory to the runner); without a mirror a run is fresh.
- const i=compileNativePreparationIntent(c.preparationIntent);
- // The first SDK process preparation has its own allowance below the control
- // HTTP bound. Byte-stream traffic keeps the ordinary transport limit.
- const startupMaxRequestMs=c.limits?.maxRequestMs===undefined?undefined:Math.max(1,Math.min(23000,c.limits.maxRequestMs-2000));
- // Workspace restore/verify rechecks admission while SDK preparation is
- // underway. The earlier gate proof cutoff does not apply to these reads.
- const taskPreparationBudget=c.preparationBudget?Object.freeze({...c.preparationBudget,admittedBefore:c.preparationBudget.nativePrepare,admittedAfter:c.preparationBudget.nativePrepare}):undefined;
- let nativeTask,activeQuery;const remoteQuery=createRemoteRunnerQuery({...c.processTransport,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs}),...(c.preparationBudget?{startupBudget:c.preparationBudget}:{}),sdkOptions:sdkOptionsPin(i,c.original.binding),...(c.session?{restoration:sdkOptionsRestoration(c.original.binding,c.session)}:{})}),query=input=>{activeQuery=remoteQuery(input);return activeQuery;};
- const workspace=createSupervisorWorkspace({binding:c.original.binding,workspace:i.workspace,expiresAtMs:c.original.expiresAtMs,now:c.now??Date.now});
- if(c.capture&&c.session)throw Error('REMOTE_CAPTURE_CONFIGURATION');
- const capture=c.session?createTaskCheckpointSource({original:c.original,workspace:i.workspace,session:c.session,native:{close:()=>nativeTask.close(),inspect:value=>nativeTask.inspect(value)},closeQuery:()=>activeQuery.close(),now:c.now??Date.now,maxRequestMs:Math.min(c.limits?.maxRequestMs??RUNNER_CAPTURE_MS,RUNNER_CAPTURE_MS)}):c.capture;
- const application=createRemoteNativeTaskApplication({original:c.original,controlCapabilitySha256:c.controlCapabilitySha256,taskCapabilitySha256:c.taskCapabilitySha256,taskArn:c.taskArn,descriptorPolicy:{workspace:i.workspace,command:i.launchTemplate.command,configParentDirectory:i.configParentDirectory,secureStorageDirectory:i.secureStorageDirectory},preparationAuthorizer:createNativePreparationClient({native:c.native,...(taskPreparationBudget?{startupBudget:taskPreparationBudget}:{})}),nativeFactory({original,descriptor}){
-  // Task-side shape check only; the preparation authority verifies the exact issued credential (and its own continuation) before any
-  // launch. A continuation run's arguments come from the restoration this task's SDK session mirror was initialized with; no mirror: fresh.
-  let continuation=null;if(c.session){try{continuation=sdkOptionsContinuation(storageMethod(c.session,'restoration')(),{binding:original.binding,workspace:i.workspace});}catch{throw executionFault('PREPARATION_REFUSED');}}
-  const d=matchPreparedDescriptorShape(descriptor,i,continuation),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
-  nativeTask=createIndependentNativeTask({original,launchConfiguration,deferredSpawn:true,...(startupMaxRequestMs===undefined?{}:{startupMaxRequestMs})});return {task:nativeTask,launchConfiguration};
- },parkedWorkspace:workspace,...(capture?{capture}:{}),enabled:c.enabled??false,now:c.now??Date.now,...(c.limits?{limits:c.limits}:{})});
- // A resumed turn's SDK (resume + sessionStore) materializes the session into join(os.tmpdir(),'claude-resume-*') and launches the
- // CLI with that directory as CLAUDE_CONFIG_DIR (claude-agent-sdk sdk.mjs). The descriptor policy above, and control's preparation
- // authority (preparation-intent.mjs), admit only a config directory directly under the run's configParentDirectory, so while this
- // worker lives the process's temporary root is that private parent; close() restores the previous one.
- const temporaryRoot=process.env.TMPDIR;process.env.TMPDIR=i.configParentDirectory;
- const restoreTemporaryRoot=()=>{if(process.env.TMPDIR!==i.configParentDirectory)return;if(temporaryRoot===undefined)delete process.env.TMPDIR;else process.env.TMPDIR=temporaryRoot;};
- return Object.freeze({application,workspace,query,capture,close:()=>{try{return application.close();}finally{restoreTemporaryRoot();}}});
-}
-
 /** The canonical original allocator and its budget admission over exact allocation facts; shared by allocation and stop-only retirement. */
 function originalAllocator({store,pool,client,original,allocationJson,qualification,grantIntents,taskRequest,containerName,limits,authority,admission,enabled,now,retirementFacts}){
  const owner=admission??createNativeAllocationAdmission({pool,allocationJson,qualification,grantIntents,binding:original.binding,limits,now});
@@ -106,7 +51,7 @@ export function createOriginalRetirement(configuration){
  const c=own(configuration,['store','pool','client','limits',...(historical?['retirementFacts']:['allocationJson','qualification','grantIntents','runtime','plan','preparationIntent','taskRequest','containerName'])],['admission','now']),now=c.now??Date.now;
  const facts=historical?assertHistoricalStopFacts(c.retirementFacts):c;
  if(historical&&facts.schemaVersion!==2)throw executionFault('ALLOCATION_REPLAY_REFUSED');
- const original=historical?facts.original:compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}).original,key={binding:original.binding,allocationKey:original.executionKey},read=storageMethod(c.store.allocations,'read');
+ const original=historical?facts.original:compileNativeTaskPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}).original,key={binding:original.binding,allocationKey:original.executionKey},read=storageMethod(c.store.allocations,'read');
  const {allocator}=originalAllocator({store:c.store,pool:c.pool,client:c.client,original,allocationJson:facts.allocationJson,qualification:facts.qualification,grantIntents:facts.grantIntents,taskRequest:facts.taskRequest,containerName:facts.containerName,limits:c.limits,authority:{async verify(){throw executionFault('ALLOCATION_REFUSED');}},...(historical?{retirementFacts:facts}:{}),...(c.admission?{admission:c.admission}:{}),enabled:true,now});
  async function stop(){const record=(await read(key,()=>{})).record;if(!record||record.state==='FORECLOSED')throw executionFault('ALLOCATION_UNKNOWN');
   if(historical)matchHistoricalStopAllocation(facts,record);
@@ -118,7 +63,7 @@ export function createOriginalRetirement(configuration){
 export async function allocateRemoteNativeController(configuration){
  const c=own(configuration,['pool','client','identity','allocationJson','qualification','grantIntents','grantId','operations','taskCapability','controlCapabilitySha256','runtime','plan','preparationIntent','taskRequest','containerName','limits','transportFactory'],['verifyTask','objects','continuation','continuationObjects','enabled','now','approvedReads','readCurrentEntry','runRequestSha256','issuanceFactsSha256','scopes','generalReads','createReadsRuntime','sourceEnabled','retirementFacts']);
  captureReadRuntimeOptions(Object.fromEntries(['createReadsRuntime','generalReads'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]])));
- const now=c.now??Date.now,enabled=c.enabled??false,compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),{original}=compiled,store=createPostgresConversationStore({pool:c.pool});
+ const now=c.now??Date.now,enabled=c.enabled??false,compiled=compileNativeTaskPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),{original}=compiled,store=createPostgresConversationStore({pool:c.pool});
  const identity=own(c.identity,['origin','credential','commandContext','fetchImpl']),intents=data(c.grantIntents),operations=compileNativeTaskAccess({identityCredential:identity.credential,taskCapabilitySha256:capabilityDigest(c.taskCapability),operations:c.operations});
  if(!operations.includes('load')||sdkSessionOperations.some(op=>!operations.includes('runner/session/'+op))||!intents.some(i=>i.grantId===c.grantId&&i.capabilitySha256===capabilityDigest(c.taskCapability))||intents.some(i=>i.capabilitySha256===c.controlCapabilitySha256||i.expiresAtMs<original.expiresAtMs)||typeof c.controlCapabilitySha256!=='string'||! /^[a-f0-9]{64}$/u.test(c.controlCapabilitySha256)||typeof c.transportFactory!=='function'||types.isProxy(c.transportFactory)||types.isAsyncFunction(c.transportFactory)||c.verifyTask!==undefined&&(typeof c.verifyTask!=='function'||types.isProxy(c.verifyTask)))throw executionFault('PREPARATION_CONFIGURATION');
  if(c.objects){storageMethod(c.objects,'get');storageMethod(c.objects,'put');}if(c.continuationObjects)storageMethod(c.continuationObjects,'get');if(c.continuation){storageMethod(c.continuation,'prepare');storageMethod(c.continuation,'readSnapshot');}
@@ -126,7 +71,7 @@ export async function allocateRemoteNativeController(configuration){
  const {admission,allocator}=originalAllocator({store,pool:c.pool,client:c.client,original,allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,taskRequest:c.taskRequest,containerName:c.containerName,limits:c.limits,authority,enabled,now,...(c.retirementFacts===undefined?{}:{retirementFacts:c.retirementFacts})});let supervisor,controller,mayOwnResource=false;
  try{
   const saved=await store.allocations.read({binding:original.binding,allocationKey:original.executionKey},()=>{});let admitted,recovered=false;
-  if(saved.record?.state==='ADMITTED'&&saved.record.resource?.launchBinding?.state==='STARTED'){
+  if(saved.record?.state==='ADMITTED'){
    if(hash(Object.fromEntries(Object.entries(saved.record).filter(([k])=>!['state','resource'].includes(k))))!==hash(allocator.intent))throw executionFault('ALLOCATION_REPLAY_REFUSED');mayOwnResource=true;const current=await admission.read({taskArn:saved.record.resource.taskArn});if(current.state!=='ADMITTED'||hash(current.grantFactsJsons)!==hash(saved.record.resource.grantFactsJsons))throw executionFault('ALLOCATION_REPLAY_REFUSED');admitted={original,resource:saved.record.resource,currentAllocationJson:current.currentAllocationJson};recovered=true;
   }else {mayOwnResource=true;admitted=await allocator.allocate();}
   supervisor=createAdmittedTaskAuthority({pool:c.pool,allocationJson:c.allocationJson,grantFactsJsons:admitted.resource.grantFactsJsons,grantId:c.grantId,identity:c.identity,operations:c.operations,callerCapabilitySha256:c.controlCapabilitySha256,binding:original.binding,expiresAtMs:original.expiresAtMs,limits:c.limits,enabled,now});

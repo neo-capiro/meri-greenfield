@@ -5,7 +5,7 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertPlatformCapabilityLimits,resolveCapabilityPolicy} from '../../worker/conversation/capabilities/policy-resolution.mjs';
 import {ProductError,asProductError,refuse} from '../product-access/errors.mjs';
 import {closed,intIn} from '../product-access/shape.mjs';
-import {TENANT_SETTINGS_DEFAULTS,tenantSettings} from './documents.mjs';
+import {TENANT_SETTINGS_DEFAULTS,tenantSettings,DEFAULT_MODEL_LIMITS} from './documents.mjs';
 import {createUserPreferencesService} from './user-service.mjs';
 import {settingsRevision,settingsAuditId} from './save-metadata.mjs';
 export {changedFields} from './save-metadata.mjs';
@@ -20,7 +20,7 @@ export function createSettingsService(options){
  const admin=principal=>{if(!principal.permissions.includes(TENANT_SETTINGS_PERMISSION))refuse('SETTINGS_ADMIN_REQUIRED');};
  async function tenantRecord(principal,signal){
   const stored=await store.read({kind:'tenant',tenantId:principal.tenantId,signal});
-  return {revision:stored?.revision??0,settings:stored?.document??TENANT_SETTINGS_DEFAULTS};
+  return {revision:stored?.revision??0,settings:stored?.document??TENANT_SETTINGS_DEFAULTS,model:stored?.model??{monthlyCapMicroUsd:null,...DEFAULT_MODEL_LIMITS}};
  }
  /** Effective capabilities for this member's role: platform maximum ∧ tenant settings ∧ role ceiling ∧ tenant role narrowing. A stored
   * tenant record that no longer fits a narrowed platform record yields no capabilities and names why, rather than being clipped. */
@@ -33,9 +33,9 @@ export function createSettingsService(options){
   ...user,
   /** Every member sees the tenant default timezone and their own effective capabilities; admins also see the record and platform limits. */
   readTenant:guard(async({principal,signal})=>{
-   const limits=await platform(signal),{revision,settings}=await tenantRecord(principal,signal);
+   const limits=await platform(signal),{revision,settings,model}=await tenantRecord(principal,signal);
    const view={revision,defaultTimezone:settings.defaultTimezone,...effective(limits,settings,principal)};
-   if(principal.permissions.includes(TENANT_SETTINGS_PERMISSION))Object.assign(view,{capabilityPolicy:settings.capabilityPolicy,platform:limits});
+   if(principal.permissions.includes(TENANT_SETTINGS_PERMISSION))Object.assign(view,{capabilityPolicy:settings.capabilityPolicy,platform:limits,model});
    return Object.freeze(view);
   }),
   saveTenant:guard(async({principal,body,signal})=>{
@@ -45,7 +45,7 @@ export function createSettingsService(options){
    // The store owns both CAS and audit differences from its actual locked revision.
    const saved=await store.save({kind:'tenant',tenantId:principal.tenantId,expectedRevision,document:settings,initialDocument:TENANT_SETTINGS_DEFAULTS,signal,
     audit:{auditId:id(),actorId:principal.actorId,platformSha256:canonicalSha256(limits)}});
-   return Object.freeze({revision:saved.revision,defaultTimezone:settings.defaultTimezone,capabilityPolicy:settings.capabilityPolicy,...effective(limits,settings,principal)});
+   return Object.freeze({revision:saved.revision,defaultTimezone:settings.defaultTimezone,capabilityPolicy:settings.capabilityPolicy,...(saved.model?{model:saved.model}:{}),...effective(limits,settings,principal)});
   }),
   readAudit:guard(async({principal,body,signal})=>{
    admin(principal);

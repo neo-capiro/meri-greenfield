@@ -11,6 +11,8 @@ import {assertConversationInputReceipt} from '../../../packages/contracts/conver
 import {assertOriginalInputFacts,assertOriginalInputActive,assertOriginalInputAcceptance,prepareOriginalInputFacts,sameOriginalInputIdentity,originalInputReceipt} from './initial-input-facts.mjs';
 import {ProductError} from '../product-access/errors.mjs';
 import {authenticatedCurrentState} from '../action-host/session/owner.mjs';
+import {SDK_MODEL_CONFIGURATION} from './usage.mjs';
+import {assertUsageInput} from '../../../packages/contracts/runtime-0.2/usage.mjs';
 import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary.mjs';
 /** Trusted lifecycle composition only. Keeps its read inside the basic load's authorization lifetime. */
 export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
@@ -131,6 +133,9 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   if(!same(c.binding,binding))fail('STALE_WRITER');
   if(readLifecycle!==undefined){uuid(c.selectedClientId);if(!c.scopes.some(scope=>scope.kind==='client'&&scope.resourceId===c.selectedClientId))fail('SCOPE_REFUSED');}
   const result=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(result.run.binding,c.binding))fail('STALE_WRITER');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');
+  if(typeof store.readModelPolicy!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');
+  const modelPolicy=await life.run(()=>store.readModelPolicy(binding,life.check));
+  const model={...SDK_MODEL_CONFIGURATION,maxTurns:modelPolicy.maxTurns,maxCostMicroUSD:modelPolicy.maxBudgetMicroUsd};
   const lineage=typeof store.nextRuns?.execution==='function'?await life.run(()=>store.nextRuns.execution({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check)):null;
   const capabilities=capabilityPort===undefined?null:await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,signal}));
   const budgets=runBudgetPort===undefined?null:runBudgetsOf(await life.run(signal=>runBudgetPort.read.call(runBudgets,{binding,signal})));
@@ -143,16 +148,29 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    if(!same(latest.run.binding,result.run.binding)||!same(latest.run.scopes,result.run.scopes)||!same(latest.run.versions,result.run.versions)||!same(latest.request,result.request))fail('SESSION_CHANGED');
   }
   if(extra&&lineage?.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');
-  return {run:result.run,request:result.request,...(lineage??{}),...(capabilities===null?{}:{capabilities}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
+  return {run:result.run,request:result.request,model,...(lineage??{}),...(capabilities===null?{}:{capabilities}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
  });}
  async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
+ async function recordUsage({credential,binding,input,signal}){
+  validateShape('RunBinding',binding);const value=assertUsageInput(input);
+  if(typeof store.recordUsage!=='function'||typeof store.nextRuns?.execution!=='function'||typeof store.lifecycle?.execution!=='function')fail('SDK_USAGE_UNAVAILABLE');
+  return operation(credential,signal,async(c,life)=>{
+   if(!same(c.binding,binding))fail('STALE_WRITER');
+   const context={binding,scopes:c.scopes,selectedClientId:c.selectedClientId};
+   // These are the current canonical journal readers, not a caller-supplied parent/session selector.
+   const next=await life.run(()=>store.nextRuns.execution(context,life.check)),continued=await life.run(()=>store.lifecycle.execution(context,life.check));
+   if(next&&continued)fail('SDK_USAGE_PARENT_REFUSED');
+   const lineage=continued?.continuation??(next?.nextTurn?.checkpoint?{...next.nextTurn,mode:'resume'}:null);
+   return life.run(()=>store.recordUsage({binding,scopes:c.scopes,input:value,lineage},life.check));
+  });
+ }
  async function publishSelectedOutput({credential,binding,output,signal}){validateShape('RunBinding',binding);if(!selectedOutputPublication)fail('OUTPUT_PUBLICATION_UNAVAILABLE');return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');const saved=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(saved.run.scopes,c.scopes)||saved.run.state!=='running')fail('RUN_NOT_WRITABLE');
   await fresh();const at=now(),value=bounded(await life.run(signal=>publicationPort.prepareEvent.call(selectedOutputPublication,{binding,request:saved.request,scopes:c.scopes,selectedClientId:c.selectedClientId,output,signal})),2097152);
   own(value,['event','checkedAtMs','expiresAtMs']);const e=own(value.event,['eventId','createdAt','type','data']);if(!['message.delta','artifact.available'].includes(e.type)||!Number.isSafeInteger(value.checkedAtMs)||value.checkedAtMs<at||value.checkedAtMs>now()||!Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<=now())fail('OUTPUT_PUBLICATION_REFUSED');life.limitDeadline(value.expiresAtMs);
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
- return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,publishSelectedOutput},loadWithLifecycle,{value:loadForExecution}));
+ return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,recordUsage,publishSelectedOutput},loadWithLifecycle,{value:loadForExecution}));
 }
 function failError(code){return Object.assign(new Error(code),{code});}
 /** Closed run budgets: positive integer calls and per-result bytes, and an optional run aggregate no smaller than one result. */

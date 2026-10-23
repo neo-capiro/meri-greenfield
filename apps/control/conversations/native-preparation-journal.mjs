@@ -54,6 +54,14 @@ export function foreclosureRecord(value,b){const r=data(value);own(r,['binding',
  if(r.state!==FORECLOSED||r.allocationKey!==hash(r.binding)||!['failed','cancelled'].includes(f.state)||b!==undefined&&!same(r.binding,b))denied();return r;}
 export function foreclosed(value,b){try{foreclosureRecord(value,b);return true;}catch{return false;}}
 const allocationTransitions={CLAIMED:['ALLOCATED','UNKNOWN','RETIRED'],ALLOCATED:['ALLOCATED','ADMITTED','UNKNOWN','RETIRED'],UNKNOWN:['UNKNOWN','ALLOCATED','ADMITTED','RETIRED'],ADMITTED:['ADMITTED','UNKNOWN','RETIRED'],RETIRED:['RETIRED']};
+function allocationRecord(value){const r=data(value);own(r,['binding','allocationKey',...allocationFields,'expiresAtMs','state','resource'],['retirementFacts']);
+ validateShape('RunBinding',r.binding);digest(r.allocationKey);positive(r.expiresAtMs);allocationIntent(r);
+ if(!Object.hasOwn(allocationTransitions,r.state))denied();resource(r.resource,r,r.state);return r;}
+/** Same immutable allocation decoder for the preparation journal and current run reader. */
+export function decodeNativeAllocation(row,b,k=hash(b)){try{
+ if(!row||row.record_sha256!==hash(row.record))denied();const r=row.record?.state===FORECLOSED?foreclosureRecord(row.record):allocationRecord(row.record);
+ if(!same(r.binding,b)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.intent_key!==r.allocationKey||r.allocationKey!==k)denied();return r;
+ }catch{fail('NATIVE_PREPARATION_CORRUPT');}}
 const restorationTransitions={CLAIMED:['UNKNOWN','RESTORED'],UNKNOWN:['UNKNOWN'],RESTORED:['RESTORED']};
 // The run states a claim is admitted in. An allocation precedes the run's claim. A restoration is runtime preparation, which runs after
 // the worker activity published its `starting` claim (worker/conversation/activity.mjs) and before `running`.
@@ -62,8 +70,8 @@ export function createNativePreparationJournals({tx,rowRun}){
  const tuple=b=>[b.tenantId,b.conversationId,b.runId];
  function slot({table,key,fields,validateIntent,validateProof,transitions,proofKey,completed,claimStates}){
   function intent(value){const i=data(value);own(i,['binding',key,...fields,'expiresAtMs'],proofKey==='resource'?['retirementFacts']:[]);validateShape('RunBinding',i.binding);digest(i[key]);positive(i.expiresAtMs);validateIntent(i);return i;}
-  function recordValue(value){const r=data(value);own(r,['binding',key,...fields,'expiresAtMs','state',proofKey],proofKey==='resource'?['retirementFacts']:[]);const {state,[proofKey]:proof,...original}=r;intent(original);if(!Object.hasOwn(transitions,state))denied();validateProof(proof,original,state);return r;}
-  function decode(row,b,k){try{if(!row||row.record_sha256!==hash(row.record))denied();const r=proofKey==='resource'&&row.record?.state===FORECLOSED?foreclosureRecord(row.record):recordValue(row.record);
+  function recordValue(value){if(proofKey==='resource')return allocationRecord(value);const r=data(value);own(r,['binding',key,...fields,'expiresAtMs','state',proofKey],[]);const {state,[proofKey]:proof,...original}=r;intent(original);if(!Object.hasOwn(transitions,state))denied();validateProof(proof,original,state);return r;}
+  function decode(row,b,k){if(proofKey==='resource')return decodeNativeAllocation(row,b,k);try{if(!row||row.record_sha256!==hash(row.record))denied();const r=recordValue(row.record);
    if(!same(r.binding,b)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.intent_key!==r[key]||r[key]!==k)denied();return r;
   }catch{fail('NATIVE_PREPARATION_CORRUPT');}}
   function lookup(value){const v=data(value);own(v,['binding',key]);validateShape('RunBinding',v.binding);digest(v[key]);return v;}

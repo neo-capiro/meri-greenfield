@@ -10,7 +10,6 @@ import {createWorkspaceTools,assertWorkspaceRoot,BUILTIN_TOOL_NAMES} from './wor
 import {createBashSandbox} from './bash-sandbox.mjs';
 import {createSubagents} from './subagents.mjs';
 import {createSkillPlugin,assertSkillPluginDirectory,assertSkillPluginPath} from './skill-plugin.mjs';
-import {createAuditHooks,createCompactionHooks,createSubagentLifecycleHooks} from './hooks.mjs';
 import {assertCapabilityFragment,mergeHookSets,mergeSettings,chainPermissions} from './fragment.mjs';
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};
@@ -38,16 +37,12 @@ function compose(policy,facts,verifyPlugin){
  // further event is attempted and `check()` throws, so the activity cannot complete, checkpoint or publish output.
  /** @type {import('./hooks.mjs').LatchPort} */
  const latch=error=>{failure??=Object.assign(Error('CAPABILITY_HOOK_FAILED'),{code:'CAPABILITY_HOOK_FAILED',cause:error});};
- /** @type {import('./hooks.mjs').PublishPort} */
- const publish=async(type,data,signal)=>{try{if(failure)throw failure;await f.runOwner.append({binding:f.binding,event:{eventId:f.newId(),createdAt:new Date(f.now()).toISOString(),type,data},signal});}catch{failure??=Object.assign(Error('CAPABILITY_EVENT_REFUSED'),{code:'CAPABILITY_EVENT_REFUSED'});throw failure;}};
- const ports={publish,latch};
  /** @type {ToolPiece[]} */const pieces=[];/** @type {Record<string,HookCallbackMatcher[]>[]} */const hookSets=[];
  if(p.workspaceTools)pieces.push(createWorkspaceTools(p,{cwd:f.cwd}));
  if(bash)pieces.push(bash);
- if(p.subagents){pieces.push(createSubagents(p,{latch}));hookSets.push(createSubagentLifecycleHooks(ports));}
+ if(p.subagents)pieces.push(createSubagents(p,{latch}));
  if(p.skillPlugin){if(f.skillPluginDirectory===undefined)fail('SKILL_PLUGIN_DIRECTORY_REQUIRED');pieces.push(createSkillPlugin(p,{skillPluginDirectory:f.skillPluginDirectory,cwd:f.cwd},verifyPlugin));}
- if(p.auditHooks)hookSets.push(createAuditHooks(ports));
- if(p.compactionHooks)hookSets.push(createCompactionHooks(ports));
+ // Native tool audit is collected once by the activity, independently of capability permission decisions.
  /** @type {Record<string,unknown>} */const options={};
  if(pieces.length){
   const tools=[...new Set(pieces.flatMap(piece=>piece.tools))];
