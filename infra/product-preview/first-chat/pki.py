@@ -21,13 +21,10 @@ from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
 # control origin behind the internal ALB.
 NAMES = {
     "issuer": "issuer.meri.internal",
-    "proxy": "proxy.meri.internal",
-    "owner": "owner.meri.internal",
     "control_private": "control.meri-preview.internal",
     "temporal_frontend": "frontend.temporal.meri.internal",
     "temporal_internode": "internode.temporal.meri.internal",
 }
-PROXY_CLIENT_SUBJECT = "meri-model-proxy"
 TEMPORAL_CLIENTS = {"control": "meri-temporal-control", "worker": "meri-temporal-worker"}
 
 
@@ -82,18 +79,14 @@ def main(out, days):
             pins[stem] = {"pem": hashlib.sha256(pem).hexdigest(), "der": hashlib.sha256(cert.public_bytes(serialization.Encoding.DER)).hexdigest(),
                           "subject": cert.subject.rfc4514_string(), "notAfter": cert.not_valid_after_utc.isoformat()}
 
-    # One server CA: control-private ALB, proxy and issuer server leaves (worker and runner trust it).
+    # One server CA: control-private ALB and issuer server leaves (worker and runner trust it).
     server_k, server = ca("Meri preview server CA", days); put("server-ca", server_k, server)
-    for stem, dns in (("issuer-server", NAMES["issuer"]), ("proxy-server", NAMES["proxy"]), ("control-private", NAMES["control_private"])):
+    for stem, dns in (("issuer-server", NAMES["issuer"]), ("control-private", NAMES["control_private"])):
         put(stem, *leaf(server_k, server, dns, days, dns=[dns], server=True))
     # Issuer client-auth CA: the issuer holds its key and mints per-task Temporal identity leaves.
     put("issuer-client-ca", *ca("Meri preview issuer client CA", days))
     # Runner CA: control holds its key and mints per-task runner server leaves.
     put("runner-ca", *ca("Meri preview runner CA", days))
-    # Owner bridge: one root; owner server leaf and proxy client leaf.
-    bridge_k, bridge = ca("Meri preview owner bridge CA", days); put("owner-bridge-ca", bridge_k, bridge)
-    put("owner-server", *leaf(bridge_k, bridge, NAMES["owner"], days, dns=[NAMES["owner"]], server=True))
-    put("proxy-owner-client", *leaf(bridge_k, bridge, PROXY_CLIENT_SUBJECT, days, client=True))
     # Temporal: frontend, client and internode CAs.
     fk, fca = ca("Meri preview Temporal frontend CA", days); put("temporal-frontend-ca", fk, fca)
     put("temporal-frontend", *leaf(fk, fca, NAMES["temporal_frontend"], days, dns=[NAMES["temporal_frontend"]], server=True))
@@ -108,7 +101,7 @@ def main(out, days):
         fd = os.open(p, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with os.fdopen(fd, "wb") as f:
             f.write(data)
-    (out / "pins.json").write_text(json.dumps({"schemaVersion": 1, "names": NAMES, "proxyClientSubject": PROXY_CLIENT_SUBJECT,
+    (out / "pins.json").write_text(json.dumps({"schemaVersion": 1, "names": NAMES,
                                                "temporalClients": TEMPORAL_CLIENTS, "certificates": pins}, indent=1, sort_keys=True) + "\n")
     print(json.dumps({"status": "MERI_PREVIEW_PKI_WRITTEN", "files": len(files), "certificates": len(pins), "days": days}))
 

@@ -7,7 +7,8 @@ import {fileURLToPath} from 'node:url';
 export const SUITES_SCHEMA='meri.local-baseline-suites.v1';
 export const TEST_FILE_PATTERNS=['**/*.test.{mjs,js,cjs,ts,mts}','**/test_*.py','**/*_test.py'];
 const here=dirname(fileURLToPath(import.meta.url));
-const skipped=path=>/(^|\/)(node_modules|\.git)$/u.test(path);
+const portable=path=>path.replaceAll('\\','/');
+const skipped=path=>/(^|\/)(node_modules|\.git)$/u.test(portable(path));
 const usage=message=>Object.assign(Error(message),{code:'USAGE'});
 
 export function loadSuites(file=join(here,'suites.json')){
@@ -18,14 +19,14 @@ export function loadSuites(file=join(here,'suites.json')){
  for(const e of definitions.exclusions??[])if(!e.paths?.length||typeof e.reason!=='string'||!e.reason.trim())throw usage('an exclusion needs paths and a reason');
  return definitions;
 }
-const globFrom=(cwd,patterns)=>[...new Set(patterns.flatMap(pattern=>globSync(pattern,{cwd,exclude:skipped}).filter(f=>!/(^|\/)node_modules\//u.test(f))))].sort();
+const globFrom=(cwd,patterns)=>[...new Set(patterns.flatMap(pattern=>globSync(pattern,{cwd,exclude:skipped}).map(portable).filter(f=>!/(^|\/)node_modules\//u.test(f))))].sort();
 /** The files a node-test suite passes to `node --test`, relative to its cwd, in run order. */
 export function suiteFiles(root,suite){return globFrom(resolve(root,suite.cwd??'.'),suite.files??[]);}
 export function testFiles(root){return globFrom(root,TEST_FILE_PATTERNS);}
 
 export function inventory(root,definitions=loadSuites()){
  const covered=new Map(),problems={uncovered:[],emptySuites:[],staleCovers:[],staleExclusions:[],excludedButCovered:[]};
- const cover=(file,name)=>{if(!covered.has(file))covered.set(file,[]);covered.get(file).push(name);};
+ const cover=(file,name)=>{file=portable(file);if(!covered.has(file))covered.set(file,[]);covered.get(file).push(name);};
  for(const suite of definitions.suites){
   if(suite.kind==='npm'){
    const prefix=suite.prefix??'.',scripts=Object.values(JSON.parse(readFileSync(join(root,prefix,'package.json'),'utf8')).scripts??{}).join('\n');

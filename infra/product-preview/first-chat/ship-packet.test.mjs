@@ -1,5 +1,5 @@
-/** Ship packet on reviewed NON-SECRET repository inputs only: the committed deployment inputs, N21 producer receipt, scan pins and
- * measured runtime values (a consistent set), a stage3.json built from the committed foundation outputs, a deterministic upload
+/** Ship packet on NON-SECRET fixtures: historical image receipt/scan pins and runtime values,
+ * a synthetic next-foundation runner task role, a deterministic upload
  * plan and a synthetic previous release. No PKI, render, bundle, AWS or network. Both release commits must be in the local clone. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -24,6 +24,8 @@ const LATEST=Object.values(STAGE3_FAMILIES).flatMap(f=>[`${f}\tarn:aws:ecs:us-ea
 
 async function inputs(){
  const deployment=await json('deployment-inputs.json'),receiptBytes=await bytes('n21-build-receipt.json'),foundationOutputs=await json('foundation-outputs.json');
+ // Planned fixture only: the historical live readback is deliberately unchanged.
+ foundationOutputs.RunnerTaskRoleArn='arn:aws:iam::967807252336:role/MeriPreview-runner-task';
  const previousDeployment=structuredClone(deployment);
  previousDeployment.images.nodeRuntime=deployment.images.nodeRuntime.replace(/@sha256:[a-f0-9]{64}$/u,`@sha256:${'1'.repeat(64)}`);
  previousDeployment.images.nodeRuntimeSourceCommit=PREVIOUS_COMMIT;
@@ -58,15 +60,16 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  assert.equal(p.pins.sourceCommit,i.deployment.images.nodeRuntimeSourceCommit);assert.equal(p.pins.previousSourceCommit,PREVIOUS_COMMIT);
  assert.equal(p.pins.runnerSha256,i.receipt.runnerSha256);assert.equal(p.pins.label,'FIRST_CHAT_20261021A');
  assert.deepEqual(p.pins.taskDefinitions,i.stage3.taskDefinitions);
- assert.equal(p.evidence.scanStatus,'COMPLETE');assert.equal(p.costLimits.perRunMaxUsd,2);assert.equal(p.costLimits.cycleCeilingUsd,5);
+ assert.equal(p.evidence.scanStatus,'COMPLETE');assert.equal(p.costLimits.cycleCeilingUsd,5);
+ assert.match(p.costLimits.policySource,/canonical tenant settings/u);assert.equal(p.costLimits.tenantMonthlyCapUsd,undefined);
  assert.deepEqual(p.steps.map(s=>s.id),['readback','upload','bindings',...STAGE3_DEPLOY_ORDER.map(k=>`deploy-${k}`),'verify']);
  const upload=p.steps.find(s=>s.id==='upload').commands.filter(c=>c.argv.includes('put-secret-value'));
- assert.equal(upload.length,5);for(const c of upload)assert.equal(c.argv[c.argv.indexOf('--version-stages')+1],'FIRST_CHAT_20261021A');
+ assert.equal(upload.length,3);for(const c of upload)assert.equal(c.argv[c.argv.indexOf('--version-stages')+1],'FIRST_CHAT_20261021A');
  const bindings=p.steps.find(s=>s.id==='bindings').commands.at(-1).argv;assert.ok(bindings.includes('--live-app-template'));
  const issuer=p.steps.find(s=>s.id==='deploy-issuer');assert.match(issuer.gate,/continue immediately/u);
  assert.ok(p.steps.find(s=>s.id==='deploy-app').commands.some(c=>c.argv?.includes(i.deployment.privateEdge.controlPrivateTargetGroupArn)));
  assert.deepEqual(p.rollback.images,i.previousDeployment.images);assert.match(p.rollback.rule,/forward redeploy/u);
- assert.ok(p.risks.some(r=>/15 minutes/u.test(r))&&p.risks.some(r=>/7 days/u.test(r)));
+ assert.ok(p.risks.some(r=>/15 minutes/u.test(r))&&p.risks.some(r=>/certificate validity/u.test(r)));
  // Deterministic: the same inputs give the same packet hash; nothing secret-shaped appears.
  assert.equal(buildShipPacket(await inputs()).packetSha256,p.packetSha256);
  const md=renderMarkdown(p);assert.match(md,/^# Meri first-chat ship packet \(pre-upload\)/u);
@@ -81,7 +84,7 @@ test('packet risks distinguish compatible images, incompatible sessions and unfi
   'compatible image replacement: admitted conversations can continue from the latest published checkpoint when SDK, CLI, contracts and checkpoint format are unchanged; fresh authentication and owner, client and policy checks still apply',
   'incompatible SDK or format: changed SDK/CLI refuses checkpoint continuation with NEXT_TURN_SDK_CHANGED; changed contracts/checkpoint format refuses with NEXT_TURN_FORMAT_CHANGED; this packet neither migrates nor seeds an incompatible session',
   'unfinished or in-flight work: fresh issuance can re-prepare an unstarted original, but a started run is never rebound; a successor waits for terminal state and proven retirement/revocation (or proved no-authority), using the latest published checkpoint or a fresh SDK session if none exists, never partial work',
-  'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required; this packet authorizes no acceptance turns'
+  'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required'
  ];
  assert.deepEqual(p.risks.slice(2,6),expected);
  for(const risk of expected)assert.ok(md.includes(`- ${risk}\n`),'each scenario and qualification caveat reaches the operator packet');
@@ -120,14 +123,14 @@ test('CLI writes ship-packet.json and SHIP-PACKET.md outside the repository; pre
   const packet=JSON.parse(await readFile(join(work,'packet','ship-packet.json'),'utf8'));
   assert.equal(packet.phase,'pre-upload');assert.equal(typeof packet.migrations.required,'boolean');
   assert.match(await readFile(join(work,'packet','SHIP-PACKET.md'),'utf8'),new RegExp(packet.packetSha256,'u'));
-  // Pre-deploy: a bindings directory with the deploy plan and three templates.
+  // Pre-deploy: a bindings directory with the deploy plan and two templates.
   await mkdir(join(work,'b'));
   await writeFile(join(work,'b','deploy-plan.json'),JSON.stringify({order:[...STAGE3_DEPLOY_ORDER],expectedTaskDefinitions:i.stage3.taskDefinitions,stacks:{}}));
   for(const key of STAGE3_DEPLOY_ORDER)await writeFile(join(work,'b',`${key}.template.json`),`{"${key}":1}`);
   r=await quiet([...args,'--bindings',join(work,'b'),'--out',join(work,'packet2')]);
   assert.equal(r.code,0,r.text);
   const deploy=JSON.parse(await readFile(join(work,'packet2','ship-packet.json'),'utf8'));
-  assert.equal(deploy.phase,'pre-deploy');assert.equal(deploy.pins.templates.model.sha256,sha(Buffer.from('{"model":1}')));
+  assert.equal(deploy.phase,'pre-deploy');assert.equal(deploy.pins.templates.app.sha256,sha(Buffer.from('{"app":1}')));
   // Refusals: inside the repository, an existing output, a missing input.
   r=await quiet([...args,'--out',join(here,'packet-should-not-exist')]);assert.equal(r.code,2);assert.match(r.text,/outside the repository/u);
   r=await quiet([...args,'--out',join(work,'packet')]);assert.equal(r.code,2);

@@ -1,22 +1,21 @@
-/** Meri first-chat preview, Stage 3: the exact, validator-passing bindings for the three CloudFormation sources, built
+/** Meri first-chat preview, Stage 3: the exact, validator-passing bindings for the two CloudFormation sources, built
  * mechanically from reviewed inputs. Pure: no AWS call, no file read, no secret. Importing this module performs no IO.
  *
  *  (a) infra/product-preview/manifest.mjs synthesizeProductPreview  -> stack meri-first-chat-app   (control, temporal-worker, runner)
- *  (b) infra/product-preview/model-proxy-template.mjs (plan v2)     -> stack meri-first-chat-model (model proxy, budget owner)
- *  (c) infra/product-preview/first-chat-issuer-service.mjs          -> stack meri-first-chat-issuer (existing; re-rendered material)
+ *  (b) infra/product-preview/first-chat-issuer-service.mjs          -> stack meri-first-chat-issuer (existing; re-rendered material)
  *
  * Inputs (all non-secret):
  *  deployment         first-chat/deployment-inputs.json (images, subnets, cluster, secret ARNs, foundation and private-edge copies)
  *  foundationOutputs  first-chat/foundation-outputs.json (must equal deployment.foundation)
  *  privateEdgeOutputs the private-edge stack outputs {ControlPrivateOrigin, ControlPrivateTargetGroupArn, PrivateAlbSecurityGroupId}
  *  renderSummary      <render out>/summary.json from render-material.mjs
- *  renderedExpected   {<role>: <render out>/<role>/expected.json} for the five material roles
+ *  renderedExpected   {<role>: <render out>/<role>/expected.json} for the three material roles
  *  secretVersions     {<role>: VersionId} returned by PutSecretValue of <render out>/<role>/bundle.json
- *  imageScans         {proxy, nodeRuntime}: sha256 of each image's reviewed build/scan receipt (model-proxy plan v2 pins them)
+ *  imageScans         {nodeRuntime}: sha256 of the image's reviewed build/scan receipt
  *  liveAppTemplate    `aws cloudformation get-template --stack-name meri-first-chat-app --stage Original` TemplateBody (public 8080 group)
  *
  * The render input stage3.json and these bindings derive every family, service, network set and role from ONE place
- * (stage3RenderInput / the constants below), so the issuer's and owner's pins and the task definitions cannot drift. */
+ * (stage3RenderInput / the constants below), so the issuer's pins and the task definitions cannot drift. */
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {ROLES,PATHS} from './render-material.mjs';

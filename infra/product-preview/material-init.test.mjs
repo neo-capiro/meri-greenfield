@@ -61,7 +61,7 @@ test('bundle refuses missing, duplicated, foreign, changed, malformed, empty and
 test('even fully repinned material must contain valid canonical role configuration with the exact declared inventory',()=>{
  for(const changed of [
   c=>{c.sourceEnabled='true';},c=>{c.temporal.tls.keyFile='/run/meri/undeclared-key';},
-  c=>{c.nativeCandidate.identity.credentialFile=c.nativeCandidate.proxyCredentialFile;},
+  c=>{c.nativeCandidate.identity.credentialFile=c.nativeCandidate.taskCapabilityFile;},
   c=>{c.database.connectionFile='/other/database';},c=>{c.http.port=9999;},c=>{c.nativeCandidate.multiRun={...c.nativeCandidate.multiRun,materialDirectory:'/tmp/dynamic'};},
  ]){
   const f=staticMaterialFixture(),c=controlMaterialConfiguration();changed(c);
@@ -80,7 +80,7 @@ test('optional static signing/token files are included while token rotation rema
  const c=controlMaterialConfiguration();c.downloadLinks={enabled:true,keyFile:'/run/meri/download-key',ttlMs:60000};
  c.temporal.authorization={tokenFile:'/run/meri/temporal-token',namespace:c.temporal.namespace,audience:'temporal.meri',issuer:'https://issuer.synthetic.invalid',refreshMs:5000,maxLifetimeMs:60000};
  const f=staticMaterialFixture('control',c),s=validateStaticProductDelivery(f);
- assert.equal(s.fileCount,12);assert.equal(f.plan.requiresTokenRotation,true);
+ assert.equal(s.fileCount,11);assert.equal(f.plan.requiresTokenRotation,true);
 });
 
 test('missing delivery/invalid deadline/unsupported host refuse before any delivery effect and forged cleanup receipts refuse',async()=>{

@@ -378,7 +378,7 @@ export const INSTALLATION_MEASUREMENT_MAX_JSON_BYTES=262144;
  * accepted the pin, the catalog, every descriptor and the revocations. The file is the measurement JSON (as runtime-values.json carries it)
  * brotli-compressed; byte-exact and digest-pinned like every other material file, re-hashed against the pin after decompression at startup. */
 function installationMaterial(installation,feature){
- if(installation===null)fail('RENDER_INPUT_REFUSED','features.reads.installation needs runtime.generalReadInstallation: re-measure the image with a first-chat-launch-measurement module that emits it');
+ if(installation===null)fail('RENDER_INPUT_REFUSED','features.reads.installation needs runtime.generalReadInstallation assembled from the exact image source');
  const installed=new Set((Array.isArray(installation.measurement?.operations)?installation.measurement.operations:[]).map(row=>operationKey(row?.operation??{})));
  const active=new Set(feature.activeOperations.map(operationKey));
  if(installed.size!==active.size||[...active].some(key=>!installed.has(key)))fail('RENDER_INPUT_REFUSED','features.reads.installation.activeOperations differs from runtime.generalReadInstallation.measurement.operations');

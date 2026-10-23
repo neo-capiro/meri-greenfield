@@ -16,17 +16,15 @@ import {pathToFileURL} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {ROLES,SOURCE_ROOT,runnerSha256AtCommit} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_SERVICES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS} from './stage3-bindings.mjs';
-import {TENANT_BUDGET} from './stage3-deploy.mjs';
 
-export const SCHEMA='meri.first-chat-ship-packet/1';
+export const SCHEMA='meri.first-chat-ship-packet/2';
 const STAGE3='infra/product-preview/first-chat/stage3-deploy.mjs';
 const MIGRATE='infra/product-preview/first-chat-migrate.mjs';
-const hex64=/^[a-f0-9]{64}$/u,commit=/^[a-f0-9]{40}$/u;
+const commit=/^[a-f0-9]{40}$/u;
 export const refuse=detail=>{throw Object.assign(Error(`SHIP_PACKET_REFUSED: ${detail}`),{code:'SHIP_PACKET_REFUSED'});};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const digestOf=uri=>/@sha256:([a-f0-9]{64})$/u.exec(String(uri))?.[1]??refuse(`image ${String(uri).slice(0,120)} is not pinned by digest`);
 const cluster=deployment=>/cluster\/([A-Za-z0-9_-]+)$/u.exec(deployment.clusterArn)?.[1]??refuse('deployment.clusterArn');
-const srv=arn=>/service\/(srv-[a-z0-9]+)$/u.exec(String(arn))?.[1]??refuse(`service discovery ARN ${String(arn).slice(0,120)}`);
 
 /** Every planned entry of a first-chat-migrate.mjs source text (the PLAN array is declared data): kind, source, sha256, stage. */
 export function planEntries(text){
@@ -56,7 +54,7 @@ export function checkInputs({deployment,previousDeployment,runtime,receipt,recei
  if(`sha256:${digestOf(images.nodeRuntime)}`!==receipt.imageDigest||images.nodeRuntimeSourceCommit!==receipt.sourceCommit)refuse('deployment images.nodeRuntime is not the image the producer receipt describes');
  if(receipt.scanStatus!=='COMPLETE')refuse('image scan is not COMPLETE');
  for(const severity of ['CRITICAL','HIGH'])if(Number(receipt.findingSeverityCounts?.[severity]??0)!==0)refuse(`image scan has ${severity} findings`);
- if(imageScans?.nodeRuntime!==receiptSha256||!hex64.test(imageScans?.proxy??''))refuse('image-scans.nodeRuntime must be the sha256 of the producer receipt file');
+ if(imageScans?.nodeRuntime!==receiptSha256)refuse('image-scans.nodeRuntime must be the sha256 of the producer receipt file');
  const runner=runtime?.preparationIntent?.runnerSha256;
  if(!measuredRunnerSha256)refuse('the node runtime source commit is not available locally: fetch it');
  if(runner!==receipt.runnerSha256||runner!==measuredRunnerSha256)refuse('runnerSha256 differs between runtime values, producer receipt and conversation-runner.mjs at the source commit');
@@ -83,9 +81,9 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  if(migrations.required)steps.push({id:'migrate',title:`Apply ${migrations.added.length} new migration(s) (stage meri) before any stack update`,
   commands:[command(['node',MIGRATE,'plan'],{note:'offline: confirms the planned files and hashes'})],
   gate:'the d2-migrate one-shot task (docs/shipping/20261017/D2-DATABASE.md; its task definition is not in this repository) reports the ledger as the exact plan prefix'});
- steps.push({id:'upload',title:`Stage the five rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
+ steps.push({id:'upload',title:`Stage the ${ROLES.length} rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
   commands:upload.roles.flatMap(r=>[command(r.command,{note:`append "${r.role}<TAB>VersionId" to ${W('secret-versions.tsv')}; on an uncertain outcome resend this exact command`}),command(r.readback)]),
-  gate:`five new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
+  gate:`${ROLES.length} new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
  steps.push({id:'bindings',title:'Live readbacks, then bindings and the update templates',
   commands:[command(['aws','cloudformation','get-template','--region','us-east-1','--stack-name',STAGE3_STACKS.app,'--template-stage','Original','--query','TemplateBody','--output','json'],{stdout:W('app.live.template.json')}),
    command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name','<foundation stack>','--query','Stacks[0].Outputs'],{stdout:W('foundation-live.json')}),
@@ -93,10 +91,7 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
    command(['node',STAGE3,'bindings','--deployment-inputs','<deployment-inputs.json>','--foundation-outputs',W('foundation-live.json'),'--private-edge-outputs',W('private-edge-outputs.json'),
     '--rendered',W('rendered'),'--secret-versions',W('secret-versions.tsv'),'--image-scans','<image-scans.json>','--live-app-template',W('app.live.template.json'),'--out',W('bindings')])],
   gate:'STAGE3_BINDINGS_WRITTEN; rerun this packet with --bindings to pin the template hashes'});
- const gates={model:{wait:wait('model-owner','model-proxy'),checks:[command(['aws','servicediscovery','list-instances','--region','us-east-1','--service-id',srv(f.OwnerDiscoveryServiceArn)]),
-   command(['aws','servicediscovery','list-instances','--region','us-east-1','--service-id',srv(f.ProxyDiscoveryServiceArn)]),logs(f.OwnerLogGroupName,'"PRODUCT_OWNER_UNAVAILABLE"'),logs(f.ProxyLogGroupName,'"REFUSED"')],
-   gate:'owner and proxy 1/1/0 on the new revisions, RUNNING past 120 s, one Cloud Map instance each; one owner restart (PRODUCT_OWNER_UNAVAILABLE ~184 s) is expected while the old proxy overlaps, its replacement must pass'},
-  issuer:{wait:wait('temporal-issuer'),checks:[logs(f.IssuerLogGroupName,'"runtime.listening"')],
+ const gates={issuer:{wait:wait('temporal-issuer'),checks:[logs(f.IssuerLogGroupName,'"runtime.listening"')],
    gate:'issuer runtime.listening on the new revision; from here the running control and worker are refused until the app update lands: continue immediately'},
   app:{wait:wait('control','temporal-worker'),checks:[logs(f.ControlLogGroupName,'"runtime.listening"'),logs(f.WorkerLogGroupName,'"runtime.listening"'),
    command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',deployment.privateEdge.controlPrivateTargetGroupArn]),
@@ -113,8 +108,8 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  }
  steps.push({id:'verify',title:'Every deployed task definition is the rendered revision',
   commands:[...STAGE3_DEPLOY_ORDER.map(key=>command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name',STAGE3_STACKS[key],'--query','Stacks[0].Outputs'],{stdout:W(`${key}.outputs.json`)})),
-   command(['node',STAGE3,'verify-outputs','--bindings',W('bindings'),'--app',W('app.outputs.json'),'--model',W('model.outputs.json'),'--issuer',W('issuer.outputs.json')])],
-  gate:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER for all six task definitions; a mismatch means re-render, never patch'});
+   command(['node',STAGE3,'verify-outputs','--bindings',W('bindings'),'--app',W('app.outputs.json'),'--issuer',W('issuer.outputs.json')])],
+  gate:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER for all four task definitions; a mismatch means re-render, never patch'});
  return steps;
 }
 
@@ -128,36 +123,36 @@ export function buildShipPacket(i){
   if(JSON.stringify(bindings.plan.order)!==JSON.stringify(STAGE3_DEPLOY_ORDER))refuse('deploy plan order');
   for(const [role,arn] of Object.entries(stage3.taskDefinitions))if(bindings.plan.expectedTaskDefinitions?.[role]!==arn)refuse(`bindings were rendered for another ${role} revision`);
  }
- const budget=runtime.allocation?.manifest?.budgets??{};
  const packet={schema:SCHEMA,phase:bindings?'pre-deploy':'pre-upload',
   pins:{sourceCommit:deployment.images.nodeRuntimeSourceCommit,previousSourceCommit:previousDeployment.images.nodeRuntimeSourceCommit,images:structuredClone(deployment.images),
-   runnerSha256:runtime.preparationIntent.runnerSha256,executableSha256:runtime.preparationIntent.executableSha256,versions:structuredClone(runtime.versions),
+   runnerSha256:runtime.preparationIntent.runnerSha256,versions:structuredClone(runtime.versions),
    label:upload.label,taskDefinitions:structuredClone(stage3.taskDefinitions),inputs:structuredClone(hashes),
    ...(bindings?{templates:bindings.templates}:{})},
   evidence:{producerBuild:receipt.buildId,scanStatus:receipt.scanStatus,findingSeverityCounts:structuredClone(receipt.findingSeverityCounts??{}),glibcVersion:receipt.glibcVersion,
    nodeVersion:receipt.nodeVersion,archiveSha256:receipt.archiveSha256,sourceManifestSha256:receipt.sourceManifestSha256,
-   required:['24/24 Linux cases B01-B06 R01-R06 W01-W12 in the producer','launch measurement: 7/7 gates PASS and MEASUREMENT_VERIFIED_AND_ASSEMBLED','independent review of the measurement result']},
+   required:['exact-source ARM64 image build, native SDK/Temporal/SWC imports and artifact execution under the service identity',
+    'digest-bound image scans with zero HIGH/CRITICAL and reviewed dispositions for other findings',
+    'independent exact-head review, native PostgreSQL migration/run accounting and Linux material gates']},
   migrations,
-  costLimits:{cycleCeilingUsd:ceilingUsd,perRunMaxUsd:Number(runtime.runtime?.maxCostMicroUSD??budget.maxCostMicroUSD??0)/1e6,maxTurns:runtime.runtime?.maxTurns??budget.maxTurns??null,
-   tenantMonthlyCapUsd:TENANT_BUDGET.monthlyCapMicroUsd/1e6,tenantMaxConcurrentRuns:TENANT_BUDGET.maxConcurrentRuns,
-   rule:'no CodeBuild retry, no fresh chat or model request without its own authorization; an uncertain submission is observed, never resubmitted'},
+  costLimits:{cycleCeilingUsd:ceilingUsd,policySource:'canonical tenant settings at run admission; SDK per-run limits and one terminal usage record',
+   rule:'the release does not initialize or override tenant caps; observe uncertain submissions before any retry'},
   steps:releaseSteps({deployment,stage3,upload,migrations,work,bindingsPlan:bindings?.plan}),
   smoke:[command(['curl','--fail','--max-time','10','https://meri-preview.capiro.ai/health/live']),
-   {note:'a chat is a separate, explicitly authorized acceptance (plan D3: two turns, reconnect, stop, isolation); this packet authorizes none'}],
+   {note:'after deployment health, root runs the required preview acceptance within the authorized Wave2 scope and records exact source/image pins'}],
   rollback:{rule:'forward redeploy: the rendered material pins exact task-definition revisions and a failed or rolled-back update burns them, so UpdateService to an old revision cannot roll back',
    images:structuredClone(previousDeployment.images),
-   steps:['readback revisions','render all five roles with the previous images and runtime values','upload under a NEW label','bindings','model, issuer, app with the gates above','verify-outputs']},
-  cleanup:['deregister any probe task definition used for diagnosis','keep the private working directory, tokens and upload receipts for audit','keep earlier secret versions; each secret holds at most 100 versions',
+   steps:['readback revisions','verify rollback source compatibility with applied migrations and the current service topology','render current roles with compatible rollback images and runtime values','upload under a NEW label','bindings','issuer, app with the gates above','verify-outputs']},
+  cleanup:['deregister any probe task definition used for diagnosis','retain scrubbed command/upload receipts; remove scratch private PKI, secret-value files and rendered bundles on success or failure','prune obsolete version labels under the existing secret retention policy',
    'CloudFormation deregisters the replaced task-definition revisions'],
   risks:['the static candidate grant and deadline expire 15 minutes after render (real chats use dynamic runs)',
-   'material validity is 7 days after render: owner and proxy refuse to start after that, so re-render before then',
+   'static material expiry and certificate validity must cover startup; render immediately before deployment',
    'compatible image replacement: admitted conversations can continue from the latest published checkpoint when SDK, CLI, contracts and checkpoint format are unchanged; fresh authentication and owner, client and policy checks still apply',
    'incompatible SDK or format: changed SDK/CLI refuses checkpoint continuation with NEXT_TURN_SDK_CHANGED; changed contracts/checkpoint format refuses with NEXT_TURN_FORMAT_CHANGED; this packet neither migrates nor seeds an incompatible session',
    'unfinished or in-flight work: fresh issuance can re-prepare an unstarted original, but a started run is never rebound; a successor waits for terminal state and proven retirement/revocation (or proved no-authority), using the latest published checkpoint or a fresh SDK session if none exists, never partial work',
-   'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required; this packet authorizes no acceptance turns',
+   'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required',
    'between the issuer and app updates control and the worker are refused (RUNTIME_UNAVAILABLE): run the app update immediately',
    'worker AZ rebalancing stays ENABLED (only control changes); a first worker task can be refused while the old one overlaps',
-   'owner, proxy and Core authority have no positive readiness signal: only a real chat proves Core authority']};
+   'service health alone does not establish chat or Core data access; complete the live acceptance before announcing readiness']};
  return {...packet,packetSha256:canonicalSha256(packet)};
 }
 
