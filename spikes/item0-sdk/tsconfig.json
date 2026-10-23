@@ -1,0 +1,5 @@
+{
+  "compilerOptions": {"target": "ES2023", "module": "NodeNext", "moduleResolution": "NodeNext", "noEmit": true,
+    "allowJs": true, "checkJs": true, "strict": false, "skipLibCheck": true},
+  "include": ["test/options.ts"]
+}

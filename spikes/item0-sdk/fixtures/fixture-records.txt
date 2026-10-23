@@ -1,0 +1,9 @@
+SYNTHETIC DATA ONLY. No actual company, client, user, bill, grant or record identifiers.
+As-of date for this rehearsal: 2026-10-23. Records are a deliberately incomplete sample.
+
+[A1] Atlas meeting note, October 20: procurement lead requested a two-page evidence summary before an October 28 hearing. Analyst Rowan promised a draft by October 24. The note records a promise, not a delivery.
+[A2] Atlas action tracker, October 22: draft task is marked completed. No attached draft or acceptance receipt is present.
+[A3] Atlas mail excerpt, October 23: procurement lead asked whether the summary distinguishes requested funding from enacted funding. No response is present in the supplied sample.
+[B1] Beacon meeting note, October 18: policy lead requested a monitoring plan by November 6. Analyst Avery is the owner; no completion claim appears.
+[B2] Beacon source coverage, October 23: current bill text and status have not been retrieved. No claim about passage or funding is supported.
+[S1] Coverage: fixture meetings, tracker and mail only. Core, external client records, approved memory, calendars and attachments are unavailable. A missing record in this sample does not prove it does not exist.
