@@ -10,6 +10,7 @@ import {
 
 const read=path=>readFileSync(resolve(ROOT,path),'utf8');
 const script=read(DATABASE_SCRIPT);
+const SDK_GRANTS='apps/control/conversations/migrations/0022_sdk_run_usage_grants.sql';
 const PHASES=['bootstrap','meri_grants','temporal_grants','release'];
 const passwords=Object.fromEntries(Object.keys(PASSWORD_VARIABLES).map((name,i)=>[name,`SCRAM-SHA-256$4096:c2FsdA==$${i}:${i}`]));
 const META_SCHEMAS=new Set(['meri_conversations','meri_product_budget','meri_service_identity','meri_migration_ledger']);
@@ -36,6 +37,13 @@ async function ownerReadsStatements(){
   connect:async()=>({async query(q){if(typeof q==='string')statements.push(q);return {rows:[]};},async end(){}})});
  return statements;
 }
+async function integrationStatements(){
+ const statements=[];
+ await runPsqlScript({text:read(INTEGRATION_SCRIPT),variables:{phase_integration_grants:'1'},
+  connect:async()=>({async query(q){if(typeof q==='string')statements.push(q);return {rows:[]};},async end(){}})});
+ return statements;
+}
+const sdkGrantStatements=()=>splitStatements(migrationBody(loadPlan().find(e=>e.path===SDK_GRANTS).text)).map(s=>s.text);
 
 /** GRANT parser: one tuple per role, privilege, object and column. */
 function grants(statements){
@@ -209,6 +217,9 @@ function resolveTemplates(sql,path){
 /** Required privileges, as grant tuples, for one SQL statement (meri_* relations only). */
 function required(sql){
  const need=[];const meri=t=>/^meri_[a-z_]+\.[a-z_]+$/u.test(t);
+ // Only this simple projection/equality form can prove column SELECT coverage. Any more complex
+ // expression/predicate falls back to table SELECT below; never infer access from partial parsing.
+ const columns=/^SELECT ([a-z_][a-z0-9_]*(?:,\s*[a-z_][a-z0-9_]*)*) FROM (meri_[a-z_]+\.[a-z_]+) WHERE ([a-z_][a-z0-9_]*)=\$[0-9]+(?: FOR (?:NO KEY UPDATE|UPDATE|KEY SHARE|SHARE))?$/u.exec(sql);
  const insert=/^INSERT INTO ([a-z_.]+)/u.exec(sql);if(insert&&meri(insert[1]))need.push(['INSERT',insert[1]]);
  const remove=/^DELETE FROM ([a-z_.]+)/u.exec(sql);if(remove&&meri(remove[1]))need.push(['DELETE',remove[1]]);
  const upd=/^UPDATE ([a-z_.]+)(?: [a-z])? SET (.+?)(?: WHERE | RETURNING |$)/u.exec(sql);
@@ -219,7 +230,9 @@ function required(sql){
   need.push(['SELECT',table]);
  }
  for(const m of sql.matchAll(/\b(?:FROM|JOIN) ([a-z_][a-z0-9_]*\.[a-z_][a-z0-9_]*)/gu))if(meri(m[1])){
-  need.push(['SELECT',m[1]]);if(/ FOR UPDATE\b/u.test(sql))need.push(['LOCK',m[1]]);
+  if(columns)for(const column of new Set([...columns[1].split(/,\s*/u),columns[3]]))need.push([`SELECT(${column})`,m[1]]);
+  else need.push(['SELECT',m[1]]);
+  if(/ FOR (?:NO KEY UPDATE|UPDATE|KEY SHARE|SHARE)\b/u.test(sql))need.push(['LOCK',m[1]]);
  }
  if(/RETURNING/u.test(sql)&&insert&&meri(insert[1]))need.push(['SELECT',insert[1]]);
  return need;
@@ -228,7 +241,8 @@ function required(sql){
 function uncovered(role,statements,granted){
  const has=(priv,table)=>granted.has(`${role} ${priv} TABLE ${table}`),out=[];
  for(const {sql,path} of statements)for(const [priv,table] of required(sql)){
-  const ok=priv==='LOCK'?[...granted].some(g=>g.startsWith(`${role} UPDATE(`)&&g.endsWith(` TABLE ${table}`)):has(priv,table);
+  const ok=priv==='LOCK'?has('UPDATE',table)||[...granted].some(g=>g.startsWith(`${role} UPDATE(`)&&g.endsWith(` TABLE ${table}`))
+   :has(priv,table)||(priv.startsWith('SELECT(')&&has('SELECT',table));
   if(!ok)out.push(`${path}: ${priv} ${table}`);
  }
  return [...new Set(out)];
@@ -248,7 +262,7 @@ const CONTROL_FILES=['apps/control/conversations/postgres-store.mjs','apps/contr
  'apps/runtime/native-authority/current-authority-adapters.mjs','apps/runtime/native-authority/execution-composition.mjs'];
 
 test('every table and column the control sources read, lock or write is granted to meri_control_runtime',async()=>{
- const granted=grants((await trace('meri_grants')).statements.map(s=>s.text));
+ const granted=grants([...(await trace('meri_grants')).statements.map(s=>s.text),...await integrationStatements(),...sdkGrantStatements()]);
  const statements=CONTROL_FILES.flatMap(path=>literals(path).flatMap(sql=>resolveTemplates(sql,path).map(s=>({sql:s,path}))));
  assert.ok(statements.length>80,String(statements.length));
  for(const path of CONTROL_FILES)assert.ok(statements.some(s=>s.path===path),`${path} yields no statement`);
@@ -259,6 +273,27 @@ test('every table and column the control sources read, lock or write is granted 
  assertCovered('meri_control_runtime',statements,granted);
  // The 0009 event trigger locks the parent run as the inserting role.
  assert.ok([...granted].some(g=>g.startsWith('meri_control_runtime UPDATE(')&&g.endsWith('TABLE meri_conversations.runs')));
+});
+
+test('SDK grants are column-only; the source audit refuses missing predicate/read/write grants and policy locks',async()=>{
+ const actual=grants(sdkGrantStatements()),role='meri_control_runtime',table='meri_settings.tenant_settings';
+ const reads=['tenant_id','monthly_cap_micro_usd','sdk_max_turns','sdk_max_budget_micro_usd'];
+ const writes=['sdk_usage','sdk_usage_sha256','sdk_charge_micro_usd','sdk_usage_recorded_at'];
+ assert.deepEqual([...actual].sort(),[
+  ...reads.map(c=>`${role} SELECT(${c}) TABLE ${table}`),
+  ...writes.map(c=>`${role} UPDATE(${c}) TABLE meri_conversations.runs`)
+ ].sort());
+ const statements=literals('apps/control/conversations/postgres-store.mjs').map(sql=>({sql,path:'store'}));
+ const policy=statements.find(s=>s.sql.includes('FROM '+table));assert.ok(policy);
+ const usage=statements.find(s=>s.sql.startsWith('UPDATE meri_conversations.runs SET sdk_usage='));assert.ok(usage);
+ const granted=grants([...(await trace('meri_grants')).statements.map(s=>s.text),...await integrationStatements(),...sdkGrantStatements()]);
+ assert.ok(granted.has(`${role} USAGE SCHEMA meri_settings`));
+ assertCovered(role,[policy,usage],granted);
+ for(const grant of actual){const missing=new Set(granted);missing.delete(grant);assert.notDeepEqual(uncovered(role,[policy,usage],missing),[],grant);}
+ for(const suffix of [' FOR SHARE',' FOR KEY SHARE',' FOR UPDATE',' FOR NO KEY UPDATE'])
+  assert.deepEqual(uncovered(role,[{...policy,sql:policy.sql+suffix}],granted),[`store: LOCK ${table}`]);
+ for(const sql of [policy.sql.replace('SELECT ','SELECT document,'),policy.sql+' AND revision=$2',policy.sql.replace(/SELECT .* FROM/u,'SELECT * FROM')])
+  assert.notDeepEqual(uncovered(role,[{...policy,sql}],granted),[],'additional columns/unknown forms must refuse');
 });
 
 /** The control and runtime stores the model owner borrows, by factory. */
@@ -355,7 +390,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants',
   'first-chat-database-owner-reads.sql#owner_conversation_reads',
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
-  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql']);
+  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -546,8 +581,8 @@ test('owner reads grant the model owner only SELECT on the two tables and the lo
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
  const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
- assert.equal(integration.length,20);assert.equal(integration.at(-2).kind,'phase:integration_grants');
- assert.equal(integration.at(-1).path,'apps/control/conversations/migrations/0020_initial_generations.sql');
+ assert.equal(plan.length,44);assert.equal(integration.length,22);assert.equal(integration.at(-4).kind,'phase:integration_grants');
+ assert.equal(integration.at(-1).path,SDK_GRANTS);
  const early=fakeDatabase();
  await assert.rejects(runStage({stage:'integration',plan,variables,connect:early.connect}),/MERI_D2_PRIOR_STAGE_INCOMPLETE/u);
  assert.equal(early.state.executed.length,0);
@@ -556,11 +591,15 @@ test('integration stage runs only after meri and temporal are ledgered; earlier 
  assert.equal(ready.state.executed.length,0);
  await runStage({stage:'integration',plan,variables,connect:ready.connect});
  assert.deepEqual(ready.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
- assert.equal(ready.state.executed.length,19);assert.ok(ready.state.phases.includes('integration_grants'));
- // The shared database already ledgered every earlier entry (D016): one `integration` run applies only 0020 (C12, appended).
+ assert.equal(ready.state.executed.length,21);assert.ok(ready.state.phases.includes('integration_grants'));
+ // An exact 43-entry ledger applies only the new forward grant migration.
  const live=fakeDatabase();live.state.ledger=plan.slice(0,-1).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));live.state.ledgerTable=live.state.owner=true;
  await runStage({stage:'integration',plan,variables,connect:live.connect});
  assert.equal(live.state.executed.length,1);assert.deepEqual(live.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
+ assert.deepEqual(live.state.executed,[migrationBody(plan.at(-1).text).replace(/\s+/gu,' ').trim()]);
+ const beforeSdk=fakeDatabase();beforeSdk.state.ledger=plan.slice(0,-2).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));beforeSdk.state.ledgerTable=beforeSdk.state.owner=true;
+ await runStage({stage:'integration',plan,variables,connect:beforeSdk.connect});
+ assert.equal(beforeSdk.state.executed.length,2);assert.deepEqual(beforeSdk.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
 });
 test('runner refuses a changed applied file, a ledger gap and an early temporal stage before any bootstrap',async()=>{
  const plan=loadPlan();

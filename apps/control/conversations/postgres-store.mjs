@@ -31,7 +31,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  }
  /** Admission cap only: no reservations. Concurrent admitted runs may finish above it; SDK bounds each run. */
  async function modelPolicy(c,b,check,admission=false){
-  const rows=(await c.query('SELECT monthly_cap_micro_usd,sdk_max_turns,sdk_max_budget_micro_usd FROM meri_settings.tenant_settings WHERE tenant_id=$1 FOR SHARE',[b.tenantId])).rows;check();
+  const rows=(await c.query('SELECT monthly_cap_micro_usd,sdk_max_turns,sdk_max_budget_micro_usd FROM meri_settings.tenant_settings WHERE tenant_id=$1',[b.tenantId])).rows;check();
   if(rows.length!==1)fail('MODEL_SETTINGS_UNAVAILABLE');const policy=storedModelSettings(rows[0]);if(policy.monthlyCapMicroUsd===null)fail('MODEL_SETTINGS_UNAVAILABLE');
   if(admission){const totals=(await c.query("SELECT COALESCE(SUM(sdk_charge_micro_usd),0)::text AS spent FROM meri_conversations.runs WHERE tenant_id=$1 AND sdk_usage_recorded_at >= (date_trunc('month',clock_timestamp() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC')",[b.tenantId])).rows;check();
    if(totals.length!==1||!/^\d+$/u.test(totals[0].spent))fail('SDK_USAGE_STORE_CORRUPT');if(BigInt(totals[0].spent)>=BigInt(policy.monthlyCapMicroUsd))fail('TENANT_MONTHLY_CAP_REACHED');}

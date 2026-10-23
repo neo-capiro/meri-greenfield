@@ -29,6 +29,14 @@ test('canonical binding and scope changes cannot record usage or read another te
  }
  const f=fixture();await f.start();await assert.rejects(f.record(payload(),binding,[{...scopes[0],resourceId:id(80)}]),/STALE_WRITER/);
 });
+
+test('policy reads need only the canonical columns and no row-lock write privilege',async()=>{
+ const f=fixture();await f.start();const policy=await f.store.readModelPolicy(binding,check);
+ assert.equal(policy.maxTurns,20);
+ const reads=f.state.calls.filter(sql=>sql.includes('FROM meri_settings.tenant_settings'));
+ assert.equal(reads.length,2,'admission and bound run policy read both use the canonical owner');
+ assert.ok(reads.every(sql=>sql==='SELECT monthly_cap_micro_usd,sdk_max_turns,sdk_max_budget_micro_usd FROM meri_settings.tenant_settings WHERE tenant_id=$1'));
+});
 test('missing SDK result is explicit unavailable on the existing run, never free',async()=>{
  const f=fixture();await f.start();assert.deepEqual(await f.record({usage:null,toolsUsed:{tools:[],omitted:0}}),{status:'unavailable',reason:'result_unavailable',replayed:false});assert.equal(f.saved().sdk_charge_micro_usd,null);
 });
