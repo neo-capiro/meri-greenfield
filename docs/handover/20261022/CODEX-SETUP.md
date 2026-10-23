@@ -18,7 +18,7 @@ These instruction PRs use `codex/setup-agents-md-20261022`. Their worktree names
 
 ## Roles and working loop
 
-Root assigns four logical sessions: A for Core/backend, U for frontend, R for Meri runtime/SDK, and D for data/tools/documentation as briefed. Use bounded assignments and independent GPT-6 Astra at Ultra reviews. Implementation and product-code review are authorized; reviewers must not review their own changes. Root may rotate or reuse sessions without creating another coordinator or relay owner.
+Root assigns four logical sessions: A for Core/backend, U for frontend, R for Meri runtime/SDK, and D for data/tools/documentation as briefed. Every implementation and independent review session uses GPT-6 Astra (`gpt-6-astra`) at Ultra. Use bounded assignments and independent exact-head reviews. Implementation and product-code review are authorized; reviewers must not review their own changes. Root may rotate or reuse sessions without creating another coordinator or relay owner.
 
 1. Read current requirements, source and acceptance; check dependencies and existing work before assigning exact files.
 2. Name one writer for each shared contract, lockfile, migration and config. Use dedicated worktrees and exact bases. Coordinate exceptions before edits.
