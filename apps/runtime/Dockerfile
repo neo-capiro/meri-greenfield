@@ -1,6 +1,6 @@
 # Native ARM64 child manifests; source provenance is in runtime-packages.lock.json.
-ARG NODE_IMAGE=docker.io/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8
-ARG RUNTIME_IMAGE=docker.io/library/python@sha256:ff089de2ebe52f328c4834221097e20eae7f7e4148ea06ac42bd8440d3c79094
+ARG NODE_IMAGE=public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8
+ARG RUNTIME_IMAGE=public.ecr.aws/docker/library/python@sha256:ff089de2ebe52f328c4834221097e20eae7f7e4148ea06ac42bd8440d3c79094
 FROM ${NODE_IMAGE} AS builder
 RUN test "$(uname -m)" = aarch64 && test "$(node --version)" = v24.22.1
 WORKDIR /opt/meri
@@ -35,9 +35,10 @@ RUN mkdir -p node_modules/@capiro node_modules/@anthropic-ai node_modules/@aws-s
 FROM ${RUNTIME_IMAGE} AS runtime
 USER root
 WORKDIR /opt/meri
+# Retain ca-certificates from the immutable Python base; do not downgrade its CA bundle.
 RUN test "$(uname -m)" = aarch64 && test "$(python3.13 --version)" = 'Python 3.13.16' && \
     apt-get update && apt-get install -y --no-install-recommends \
-      bash=5.2.37-2+b10 ca-certificates=20250419 libatomic1=14.2.0-19 libstdc++6=14.2.0-19 && \
+      bash=5.2.37-2+b10 libatomic1=14.2.0-19 libstdc++6=14.2.0-19 && \
     rm -rf /var/lib/apt/lists/*
 # Both stages use Debian trixie/glibc. Copy Node/npm only; preserve Python's
 # own /usr/local interpreter, libraries and ordinary system CA trust.

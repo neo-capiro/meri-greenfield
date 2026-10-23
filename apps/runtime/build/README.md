@@ -4,12 +4,18 @@
 ARM64. The builder is official Node 24.22.1 on Debian trixie; the final base is
 official CPython 3.13.16 on the same distribution. Both are pinned to complete
 ARM64 child-manifest digests in `infra/product-preview/runtime-packages.lock.json`.
+The default pulls use the public ECR Docker Library mirror with those same child
+digests; the upstream tag metadata remains the recorded source provenance.
 The Dockerfile rejects a different architecture or runtime version. It retains
 the repository's npm locks, Agent SDK 0.3.295 and its CLI 2.1.295. Bedrock uses the
 task role through the SDK; no credentials or model endpoint are baked into this image.
 
-The four added Debian runtime packages use exact versions. Their ARM64/all
-package hashes and upstream URLs are recorded in the package lock. Apt still
+The three explicit Debian runtime packages use exact versions. Their ARM64
+package hashes and upstream URLs are recorded in the package lock. The final
+image retains `ca-certificates` from its digest-pinned Python base: the former
+explicit `20250419` pin was older than that base's installed package and caused
+APT to refuse a downgrade. No downgrade is enabled. The existing final-image
+probe checks the system CA store. Apt still
 resolves their system dependencies against the configured Debian repository;
 this is not a snapshot of the entire Debian repository. Preserve the installed
 package inventory and exact image digest with each qualification result.

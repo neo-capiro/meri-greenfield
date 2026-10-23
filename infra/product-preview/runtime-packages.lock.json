@@ -3,13 +3,13 @@
   "platform": "linux/arm64",
   "nodeVersion": "v24.22.1",
   "pythonVersion": "3.13.16",
-  "nodeImageUri": "docker.io/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8",
-  "runtimeImageUri": "docker.io/library/python@sha256:ff089de2ebe52f328c4834221097e20eae7f7e4148ea06ac42bd8440d3c79094",
+  "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8",
+  "runtimeImageUri": "public.ecr.aws/docker/library/python@sha256:ff089de2ebe52f328c4834221097e20eae7f7e4148ea06ac42bd8440d3c79094",
   "baseProvenance": {
     "node": "https://hub.docker.com/v2/repositories/library/node/tags/24.22.1-trixie-slim",
     "python": "https://hub.docker.com/v2/repositories/library/python/tags/3.13.16-slim-trixie",
     "retrievedOn": "2026-10-23",
-    "selection": "Immutable linux/arm64 child manifests; both Debian trixie"
+    "selection": "Immutable linux/arm64 child manifests; both Debian trixie; public ECR mirror uses the same child digests"
   },
   "systemPackages": [
     {
@@ -18,13 +18,6 @@
       "architecture": "arm64",
       "source": "https://deb.debian.org/debian/pool/main/b/bash/bash_5.2.37-2+b10_arm64.deb",
       "sha256": "9e2d2b3646b250f53be79b6128d9cff5e99cc5ff4a8c84e58efab59ad9bb0ddc"
-    },
-    {
-      "name": "ca-certificates",
-      "version": "20250419",
-      "architecture": "all",
-      "source": "https://deb.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_20250419_all.deb",
-      "sha256": "ef590f89563aa4b46c8260d49d1cea0fc1b181d19e8df3782694706adf05c184"
     },
     {
       "name": "libatomic1",
