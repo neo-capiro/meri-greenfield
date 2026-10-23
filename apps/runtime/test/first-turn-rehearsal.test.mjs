@@ -175,7 +175,8 @@ for(const profile of ['quiet','live-median'])test(`first turn completes under th
  const counters=r.telemetry.filter(line=>line.event==='meri.turn.counters'&&line.service==='control');assert.equal(counters.length,1);
  const measured=Object.values(counters[0].core).reduce((sum,statuses)=>sum+Object.values(statuses).reduce((s,n)=>s+n,0),0);
  assert.equal(measured,r.coreCalls,'production counters equal the independent rehearsal Core counter');
- if(profile==='live-median')assert.equal(r.coreCalls,164,'the median fixture preserves the confirmed Core-call baseline');
+ // 164 before the standard task verifier: its per-operation Core identity/context reads (74 at the median) are gone.
+ if(profile==='live-median')assert.equal(r.coreCalls,90,'the median fixture preserves the confirmed Core-call baseline');
 });
 // Core call 31 is late in runner/load (32 Core calls): at the tail a replayed load needs the load stage's room for one replay.
 for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503],['live-tail',31,503]])
