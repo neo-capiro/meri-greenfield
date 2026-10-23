@@ -88,3 +88,12 @@ The chat was broken by a chain of failures that only appeared live, each one hid
 4. Start item 0, step 1 (the spike; nothing merges). Don't send MP, or anything that touches the runner, proxy or authority, before it.
 5. In parallel, if wanted: M2 (#123 gate and merge), A2 (deploy Core from `:9`), image hardening.
 6. Delete the temporary AWS diagnostics in §4 when the spike no longer needs them.
+
+## 7. What is not in PR #206
+
+- **The per-turn fix code** (commit `5e8a5ccee`, local on neomart). Its findings are in §5; pushing it needs Neo's yes.
+- **Credentials and private deploy inputs**, by design: AWS credentials; the preview client id the kit needs (`MERI_PREVIEW_CLIENT_ID`); the private PKI (it is in Secrets Manager `meri/preview/private-pki`; `shipping/ship-kit/tools/fetch-private-pki.sh` fetches it); the bearer and membership steps, which are Neo's.
+- **Task-definition dumps and one-off diagnostics** from the 2026-10-23 sessions. Live definitions come from `aws ecs describe-task-definition`; the generators are in `shipping/preview-backends/`.
+- **Per-release kit folders, build receipts and release logs on neomart** (`C:\devable\ship-*`, `release-logs`). The generators in `shipping/` recreate them, and `shipping/neomart-kits/` and `shipping/meri-release-example/` hold worked examples. The kits in the package are the versions used for the `05d588c7` release and the Core `:9` release.
+- **neomart housekeeping scripts** (disk cleanup, WSL compaction) and the P1/C9 merge work, which was dropped as superseded.
+- **Browser screenshots** from the preview-data checks.
