@@ -155,7 +155,7 @@ class HostObservationTests(unittest.IsolatedAsyncioTestCase):
             return PeerLease(ingress.peer.ipv4, time.monotonic(), RUN, GRANT)
 
         self.life = RequestLifetime(ingress, observer, time.monotonic() + 10,
-                                    LifetimeLimits(poll_seconds=.05, check_seconds=.5), PendingWork())
+                                    LifetimeLimits(check_seconds=.5), PendingWork())
         await self.life.start(scope)
         self.life.original_body = RAW
         self.token = _request_lifetime.set(self.life)

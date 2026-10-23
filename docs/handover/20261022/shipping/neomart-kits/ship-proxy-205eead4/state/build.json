@@ -1,0 +1,218 @@
+{
+    "builds": [
+        {
+            "id": "meri-greenfield-qualification-build:9507f92b-69f5-4aa7-80fb-eded843a61cb",
+            "arn": "arn:aws:codebuild:us-east-1:967807252336:build/meri-greenfield-qualification-build:9507f92b-69f5-4aa7-80fb-eded843a61cb",
+            "buildNumber": 116,
+            "startTime": "2026-10-22T07:34:15.993000-04:00",
+            "endTime": "2026-10-22T07:39:55.161000-04:00",
+            "currentPhase": "COMPLETED",
+            "buildStatus": "SUCCEEDED",
+            "sourceVersion": "dIj6SGj8_inUybHPaKpfIWH25Kvf6AaO",
+            "projectName": "meri-greenfield-qualification-build",
+            "phases": [
+                {
+                    "phaseType": "SUBMITTED",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:34:15.993000-04:00",
+                    "endTime": "2026-10-22T07:34:16.160000-04:00",
+                    "durationInSeconds": 0
+                },
+                {
+                    "phaseType": "QUEUED",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:34:16.160000-04:00",
+                    "endTime": "2026-10-22T07:34:16.793000-04:00",
+                    "durationInSeconds": 0
+                },
+                {
+                    "phaseType": "PROVISIONING",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:34:16.793000-04:00",
+                    "endTime": "2026-10-22T07:34:24.507000-04:00",
+                    "durationInSeconds": 7,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "DOWNLOAD_SOURCE",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:34:24.507000-04:00",
+                    "endTime": "2026-10-22T07:34:29.184000-04:00",
+                    "durationInSeconds": 4,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "INSTALL",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:34:29.184000-04:00",
+                    "endTime": "2026-10-22T07:34:29.260000-04:00",
+                    "durationInSeconds": 0,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "PRE_BUILD",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:34:29.260000-04:00",
+                    "endTime": "2026-10-22T07:34:29.301000-04:00",
+                    "durationInSeconds": 0,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "BUILD",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:34:29.301000-04:00",
+                    "endTime": "2026-10-22T07:39:54.749000-04:00",
+                    "durationInSeconds": 325,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "POST_BUILD",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:39:54.749000-04:00",
+                    "endTime": "2026-10-22T07:39:54.797000-04:00",
+                    "durationInSeconds": 0,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "UPLOAD_ARTIFACTS",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:39:54.797000-04:00",
+                    "endTime": "2026-10-22T07:39:54.850000-04:00",
+                    "durationInSeconds": 0,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "FINALIZING",
+                    "phaseStatus": "SUCCEEDED",
+                    "startTime": "2026-10-22T07:39:54.850000-04:00",
+                    "endTime": "2026-10-22T07:39:55.161000-04:00",
+                    "durationInSeconds": 0,
+                    "contexts": [
+                        {
+                            "statusCode": "",
+                            "message": ""
+                        }
+                    ]
+                },
+                {
+                    "phaseType": "COMPLETED",
+                    "startTime": "2026-10-22T07:39:55.161000-04:00"
+                }
+            ],
+            "source": {
+                "type": "S3",
+                "location": "meri-greenfield-qual-build-967807252336-us-east-1/inputs/proxy-image/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/proxy-context.zip",
+                "buildspec": "version: 0.2\nphases:\n  build:\n    commands:\n      - echo '187a595f7462b409ced4adf7bf91bc03b5000ed01d101a029e957ec7c2271c6f  repo/infra/product-preview/proxy-image-build.sh' | sha256sum -c -\n      - bash repo/infra/product-preview/proxy-image-build.sh\n",
+                "insecureSsl": false
+            },
+            "secondarySources": [],
+            "secondarySourceVersions": [],
+            "artifacts": {
+                "location": ""
+            },
+            "cache": {
+                "type": "NO_CACHE"
+            },
+            "environment": {
+                "type": "LINUX_CONTAINER",
+                "image": "aws/codebuild/standard:7.0",
+                "computeType": "BUILD_GENERAL1_SMALL",
+                "environmentVariables": [
+                    {
+                        "name": "REPOSITORY_NAME",
+                        "value": "meri-greenfield/qualification-worker",
+                        "type": "PLAINTEXT"
+                    },
+                    {
+                        "name": "IMAGE_TAG",
+                        "value": "UNSET-REQUIRES-ACCEPTED-COMMIT",
+                        "type": "PLAINTEXT"
+                    },
+                    {
+                        "name": "KMS_KEY_ARN",
+                        "value": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+                        "type": "PLAINTEXT"
+                    },
+                    {
+                        "name": "COMMIT",
+                        "value": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+                        "type": "PLAINTEXT"
+                    },
+                    {
+                        "name": "ATTEMPT",
+                        "value": "e1a015a633f6e1d1509ac19842e181ce",
+                        "type": "PLAINTEXT"
+                    },
+                    {
+                        "name": "REPOSITORY_URI",
+                        "value": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+                        "type": "PLAINTEXT"
+                    },
+                    {
+                        "name": "RESULT_BUCKET",
+                        "value": "meri-greenfield-qual-build-967807252336-us-east-1",
+                        "type": "PLAINTEXT"
+                    }
+                ],
+                "privilegedMode": true,
+                "imagePullCredentialsType": "CODEBUILD"
+            },
+            "serviceRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+            "logs": {
+                "groupName": "/meri-greenfield/qualification/build",
+                "streamName": "9507f92b-69f5-4aa7-80fb-eded843a61cb",
+                "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Fmeri-greenfield$252Fqualification$252Fbuild/log-events/9507f92b-69f5-4aa7-80fb-eded843a61cb",
+                "cloudWatchLogsArn": "arn:aws:logs:us-east-1:967807252336:log-group:/meri-greenfield/qualification/build:log-stream:9507f92b-69f5-4aa7-80fb-eded843a61cb",
+                "cloudWatchLogs": {
+                    "status": "ENABLED",
+                    "groupName": "/meri-greenfield/qualification/build"
+                }
+            },
+            "timeoutInMinutes": 30,
+            "queuedTimeoutInMinutes": 5,
+            "buildComplete": true,
+            "initiator": "capirocli",
+            "encryptionKey": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+            "autoRetryConfig": {
+                "autoRetryLimit": 0,
+                "autoRetryNumber": 0
+            }
+        }
+    ],
+    "buildsNotFound": []
+}

@@ -127,6 +127,23 @@ export function createProductModelSettlement(configuration){
    if(newlyQuarantined||pendingQuarantines.has(id))reportQuarantine(id);
    return result;
   },
+  async abandon(value){
+   // The proxy closed this request without a complete response. Its usage is unknown and the provider may have billed
+   // part of it, so charge the full hold (the most it could cost). That settles the grant's one UNKNOWN slot, so the
+   // run's next request can reserve.
+   const id=requestId(own(value,['requestId']).requestId);
+   return store.transact(async client=>{
+    await store.lock(client);
+    const row=await original(client,id);
+    if(row.state!=='UNKNOWN')refuse('PRODUCT_MODEL_SETTLEMENT_CONFLICT');
+    const hold=money(row.hold_micro_usd).toString();
+    const budgetChange=await client.query(`UPDATE ${t.budget} SET consumed_micro_usd=consumed_micro_usd+$1,quarantined=quarantined OR $2 WHERE id=1`,[hold,false]);
+    if(budgetChange.rowCount!==1)refuse('PRODUCT_MODEL_ACCOUNTING_REFUSED');
+    const requestChange=await client.query(`UPDATE ${t.requests} SET state='SETTLED',actual_micro_usd=$2,evidence_sha256=$3,settled_at=clock_timestamp() WHERE request_id=$1 AND state='UNKNOWN'`,[id,hold,canonicalSha256(['meri.proxy.abandoned/1',id,row.native_body_sha256])]);
+    if(requestChange.rowCount!==1)refuse('PRODUCT_MODEL_ACCOUNTING_REFUSED');
+    return Object.freeze({requestId:id,state:'SETTLED',actualMicroUSD:hold});
+   });
+  },
   async readOutcome(value){
    const id=requestId(own(value,['requestId']).requestId);
    // Snapshot for uncertain-COMMIT reconciliation. ABSENT is refusal, never

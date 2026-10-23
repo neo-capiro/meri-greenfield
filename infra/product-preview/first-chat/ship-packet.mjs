@@ -151,7 +151,10 @@ export function buildShipPacket(i){
    'CloudFormation deregisters the replaced task-definition revisions'],
   risks:['the static candidate grant and deadline expire 15 minutes after render (real chats use dynamic runs)',
    'material validity is 7 days after render: owner and proxy refuse to start after that, so re-render before then',
-   'every render re-mints grants: conversations admitted under the previous render refuse (SESSION_REFUSED)',
+   'compatible image replacement: admitted conversations can continue from the latest published checkpoint when SDK, CLI, contracts and checkpoint format are unchanged; fresh authentication and owner, client and policy checks still apply',
+   'incompatible SDK or format: changed SDK/CLI refuses checkpoint continuation with NEXT_TURN_SDK_CHANGED; changed contracts/checkpoint format refuses with NEXT_TURN_FORMAT_CHANGED; this packet neither migrates nor seeds an incompatible session',
+   'unfinished or in-flight work: fresh issuance can re-prepare an unstarted original, but a started run is never rebound; a successor waits for terminal state and proven retirement/revocation (or proved no-authority), using the latest published checkpoint or a fresh SDK session if none exists, never partial work',
+   'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required; this packet authorizes no acceptance turns',
    'between the issuer and app updates control and the worker are refused (RUNTIME_UNAVAILABLE): run the app update immediately',
    'worker AZ rebalancing stays ENABLED (only control changes); a first worker task can be refused while the old one overlaps',
    'owner, proxy and Core authority have no positive readiness signal: only a real chat proves Core authority']};

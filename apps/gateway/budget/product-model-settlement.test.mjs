@@ -57,6 +57,16 @@ test('historical complete native usage settles after grant revocation and pricin
  assert.equal(f.commands.some(x=>x.sql.includes('meri_qualification.')),false);
  assert.deepEqual(await owner.readOutcome({requestId:'request_A'}),{requestId:'request_A',state:'SETTLED',actualMicroUSD:'20'});
 });
+test('a request closed without a complete response is charged its full hold, once',async()=>{
+ const f=fixture(),owner=createProductModelSettlement(f.config);
+ assert.deepEqual(await owner.abandon({requestId:'request_A'}),{requestId:'request_A',state:'SETTLED',actualMicroUSD:'24'});
+ assert.equal(f.state().budget.consumed_micro_usd,'24');assert.equal(f.state().budget.quarantined,false);
+ assert.equal(f.state().request.evidence_sha256,canonicalSha256(['meri.proxy.abandoned/1','request_A','c'.repeat(64)]));
+ assert.deepEqual(await owner.readOutcome({requestId:'request_A'}),{requestId:'request_A',state:'SETTLED',actualMicroUSD:'24'});
+ await assert.rejects(owner.abandon({requestId:'request_A'}),/PRODUCT_MODEL_SETTLEMENT_CONFLICT/);
+ await assert.rejects(owner.settle({requestId:'request_A'}),/PRODUCT_MODEL_SETTLEMENT_CONFLICT/);
+ assert.equal(f.state().budget.consumed_micro_usd,'24');
+});
 test('incomplete native response and caller usage claims leave UNKNOWN without a connection',async()=>{
  const f=fixture(),owner=createProductModelSettlement(f.config);
  f.setCompletion({...f.completion(),eof:false});await assert.rejects(owner.settle({requestId:'request_A'}),/PRODUCT_MODEL_COMPLETION_REFUSED/);

@@ -28,13 +28,14 @@ export function captureRuntimePorts(value={}){
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
  const transitionResolver=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'resolveTransitionContext'),transitionContext=transitionResolver===undefined?{}:{resolveTransitionContext:transitionResolver};
+ const authorityScope=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'withAuthority');
  const artifactStore=c.artifactStore===undefined?undefined:methods(c.artifactStore,['verifyPrivate']);
  const routineFactory=c.routinesApplicationFactory===undefined?undefined:methods(c.routinesApplicationFactory,['create','state']);
  const routineHistory=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'historyCurrentness'),routineInboxState=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'inboxState');
  if(artifactStore){const recovery=runtimeArtifactRecovery(c.artifactStore)??capturedArtifactRecovery.get(c.artifactStore);if(recovery)capturedArtifactRecovery.set(artifactStore,recovery);}
  const captured=Object.freeze({
   configuredOwners:Object.freeze(Object.keys(c).filter(k=>c[k]!==undefined)),
-  identityContext:Object.freeze({...identity,...transitionContext}),
+  identityContext:Object.freeze({...identity,...transitionContext,...(authorityScope?{withAuthority:authorityScope}:{})}),
   ...(c.transitionAuthority===undefined?{}:{transitionAuthority:methods(c.transitionAuthority,['readCurrent'])}),
   ...(c.continuationAdmission===undefined?{}:{continuationAdmission:methods(c.continuationAdmission,['admit','retire'])}),
   ...(c.approvals===undefined?{}:{approvals:methods(c.approvals,['read','readDecision'])}),

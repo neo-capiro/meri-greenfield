@@ -74,6 +74,21 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  assert.ok(md.includes("--version-stages FIRST_CHAT_20261021A"));
 });
 
+test('packet risks distinguish compatible images, incompatible sessions and unfinished work without claiming live qualification',async()=>{
+ const p=buildShipPacket(await inputs()),md=renderMarkdown(p);
+ // The release packet must preserve the distinctions enforced by session-continuity.mjs, prepared-candidate.mjs and next-run.mjs.
+ const expected=[
+  'compatible image replacement: admitted conversations can continue from the latest published checkpoint when SDK, CLI, contracts and checkpoint format are unchanged; fresh authentication and owner, client and policy checks still apply',
+  'incompatible SDK or format: changed SDK/CLI refuses checkpoint continuation with NEXT_TURN_SDK_CHANGED; changed contracts/checkpoint format refuses with NEXT_TURN_FORMAT_CHANGED; this packet neither migrates nor seeds an incompatible session',
+  'unfinished or in-flight work: fresh issuance can re-prepare an unstarted original, but a started run is never rebound; a successor waits for terminal state and proven retirement/revocation (or proved no-authority), using the latest published checkpoint or a fresh SDK session if none exists, never partial work',
+  'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required; this packet authorizes no acceptance turns'
+ ];
+ assert.deepEqual(p.risks.slice(2,6),expected);
+ for(const risk of expected)assert.ok(md.includes(`- ${risk}\n`),'each scenario and qualification caveat reaches the operator packet');
+ assert.doesNotMatch(JSON.stringify(p.risks),/every render re-mints grants|conversations admitted under the previous render refuse/u);
+ assert.doesNotMatch(md,/every render re-mints grants|conversations admitted under the previous render refuse/u);
+});
+
 test('fail closed: image, scan, runner, upload, previous release, ceiling and bindings disagreements refuse',async()=>{
  const refused=async(mutate,pattern)=>{const i=await inputs();mutate(i);assert.throws(()=>buildShipPacket(i),pattern);};
  await refused(i=>{i.receipt.imageDigest=`sha256:${'2'.repeat(64)}`;},/producer receipt/u);

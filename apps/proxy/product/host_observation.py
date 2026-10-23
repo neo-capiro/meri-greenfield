@@ -70,7 +70,7 @@ def _native_request(request, limits):
 
 async def require_current_conversation(life, *, binding, request_id, deadline_ms,
                                        selected_client_id, check_current_conversation):
-    """Validate this lifetime's Core receipt; synthetic ports still read freshly."""
+    """Validate the Core receipt admitted at the lifetime's start; synthetic ports still read freshly."""
     started = time.time_ns() // 1_000_000
     try:
         if life.has_admission_lease:
@@ -101,9 +101,9 @@ async def require_current_conversation(life, *, binding, request_id, deadline_ms
                 "policyRevision": life.peer.binding.policy_revision}
             or type(receipt["checkedAtMs"]) is not int
             or receipt["checkedAtMs"] > at
-            or not life.has_admission_lease and receipt["checkedAtMs"] < started
             or type(receipt["expiresAtMs"]) is not int
-            or receipt["expiresAtMs"] <= at):
+            or not life.has_admission_lease and (receipt["checkedAtMs"] < started
+                                                 or receipt["expiresAtMs"] <= at)):
         _deny()
     life.check()
 
@@ -155,7 +155,6 @@ class HostRequestObservation:
         life = _request_lifetime.get()
         if type(life) is not RequestLifetime or life.original_body is None:
             _deny()
-        await life.refresh()
         life.check()
         await self._current(life)
         if type(life.original_body) is not bytes or not 1 <= len(life.original_body) <= 4 * 1024 * 1024:
@@ -200,7 +199,6 @@ class HostRequestObservation:
         if (type(life) is not RequestLifetime or self._request is None
                 or self._count is None or self._native is None):
             _deny()
-        await life.refresh()
         life.check()
         if require_current:
             await self._current(life)
@@ -224,7 +222,7 @@ class HostRequestObservation:
             _deny()
         if self._peer_at_ms is None:
             # Both independent reads report the same admitted host observation.
-            # Each read still refreshes and checks the live private lifetime.
+            # Each read still checks the live private lifetime.
             self._peer_at_ms = time.time_ns() // 1_000_000
         return {"requestId": self.request_id,
                 "peer": {"binding": self._binding.copy(), "taskArn": peer.binding.worker_arn,
@@ -345,7 +343,7 @@ class HostResponseObservationTransport(httpx.AsyncBaseTransport):
                 or self._result.status != "COMPLETE"):
             _deny()
         self.read = True
-        # Settlement records cost already incurred. It still refreshes the
+        # Settlement records cost already incurred. It still checks the
         # original peer/grant and bytes, but a later Core archive must not
         # suppress complete usage evidence or imply the hold was refunded.
         source = await self.request_capture._source(require_current=False)

@@ -6,11 +6,10 @@ import {initialInputFixture} from '../../control/conversations/test/initial-inpu
 import {binding,scopes,versions,id} from '../../control/conversations/test/store-fixture.mjs';
 import {createMembershipGate} from '../../control/product-access/membership.mjs';
 import {createCoreConversationCurrentness} from '../native-authority/conversation-currentness.mjs';
-import {applicationAuthorityRoutes} from '../../../packages/contracts/action-authority-0.2/validate.mjs';
 import {hash} from '../../control/conversations/boundary.mjs';
 const configuration={versions,sourceEnabled:false,http:{hostname:'127.0.0.1',port:0,frontendOrigin:'https://ui.invalid'},sessions:{maxSessions:10,maxTtlMs:30000},
  limits:{requestMs:1000,requestBytes:131072,shutdownMs:1000},temporal:{taskQueue:'synthetic'},native:{maxResponseBytes:2097152}};
-function fixture(){const f=initialInputFixture();let revoked=false,starts=0,nativeCalls=0,onHistoryRead;const member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:[id(5)],membershipRevision:'m1'};
+function fixture(){const f=initialInputFixture();let revoked=false,starts=0,nativeCalls=0,onHistoryRead;const member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:[id(5)],membershipRevision:'b'.repeat(64)};
  const pool={async connect(){const c=await f.pool.connect();return {...c,async query(sql,p){
   if(sql.includes('owner_actor_id=$2'))return {rows:[...f.state.conversations.values()].filter(r=>r.tenant_id===p[0]&&r.owner_actor_id===p[1])};
   if(sql.startsWith('SELECT e.*')){await onHistoryRead?.();return {rows:[...f.state.events.values()].flat().map(e=>({...e,tenant_id:e.event.binding.tenantId,conversation_id:e.event.binding.conversationId,run_id:e.event.binding.runId})).filter(e=>e.event.sequence>p[2]).slice(0,p[3])};}
@@ -22,11 +21,9 @@ function fixture(){const f=initialInputFixture();let revoked=false,starts=0,nati
   readMembership:async()=>({...member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000})});
  const conversationCurrentness=createCoreConversationCurrentness({origin:'https://core.startup.synthetic.invalid',selectedClientId:id(5),now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:131072},async fetchImpl(url,init){
   if(revoked)throw Error('revoked');assert.equal(init.method,'POST');assert.equal(init.headers.authorization,'Bearer native');
-  const request=JSON.parse(init.body),path=new URL(url).pathname,receipt={principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'native-m1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};
-  if(path===applicationAuthorityRoutes.identity){assert.deepEqual(request,{});return Response.json(receipt);}
-  assert.equal(path,applicationAuthorityRoutes.context);assert.deepEqual(Object.keys(request).sort(),['clientId','conversationId','identitySha256']);
-  assert.equal(request.conversationId,binding.conversationId);assert.equal(request.clientId,id(5));assert.match(request.identitySha256,/^[a-f0-9]{64}$/u);
-  return Response.json({...receipt,identitySha256:request.identitySha256,conversationId:request.conversationId,selectedClientId:request.clientId,contextRevision:'current-1'});
+  const request=JSON.parse(init.body);assert.equal(new URL(url).pathname,'/api/clio/application-authority/current');
+  assert.deepEqual(request,{conversationId:binding.conversationId,clientId:id(5),expect:{membershipRevision:member.membershipRevision}});
+  return Response.json({principal:{tenantId:binding.tenantId,actorId:binding.actorId},role:'standard_user',permissions:[],clientIds:[id(5)],identityRevision:'a'.repeat(64),membershipRevision:member.membershipRevision,contextRevision:'c'.repeat(64),conversationId:request.conversationId,selectedClientId:request.clientId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000});
  }});
  const client={connection:{async withDeadline(_at,fn){return fn();},async withAbortSignal(_s,fn){return fn();}},workflow:{async start(){starts++;},getHandle(){return {};}}};
  const assembly=assembleControl({configuration,pool,client,native:{async call(operation,input){nativeCalls++;if(operation==='worker/authorize'&&input.capability==='synthetic-task-cap')return {binding:input.binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'native',scopes,selectedClientId:id(5),policyRevision:'policy1',authorizationDecisionId:'synthetic-worker-decision',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};throw Error('uncomposed');}},productPorts:{identityContext:identity,conversationMembership:gate,conversationCurrentness}});

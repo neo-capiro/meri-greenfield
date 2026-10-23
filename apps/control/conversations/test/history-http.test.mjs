@@ -101,7 +101,7 @@ test('history requires a read-only currentness owner and confines the native bea
   assert.throws(()=>createConversationHistoryApplication({service:f.historyService,gate:f.gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}}),/PRODUCT_CONFIGURATION/);
   await f.service.submit({credential:f.credential,input:f.input});
   const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,200);
-  assert.equal(f.state.coreReads.length,2,'domain read and fenced release both recheck Core');assert.equal(f.state.coreReads[0].credential,'native');assert.deepEqual(f.state.coreReads[0].scopes,scopes);
+  assert.equal(f.state.coreReads.length,1,'read-only transcript checks Core once inside final fenced release');assert.equal(f.state.coreReads[0].credential,'native');assert.deepEqual(f.state.coreReads[0].scopes,scopes);
  }finally{f.close();}
 });
 test('archived or unavailable Core context withholds saved pages and cannot admit a next turn',async()=>{
@@ -180,12 +180,13 @@ test('member removal and retention suppression refuse history release',async()=>
  }finally{f.close();}
 });
 for(const path of ['transcript','list'])test(`suppression during awaited Core currentness withholds saved ${path}`,async()=>{
- const f=await fixture();try{await f.turn(1);f.state.retentionChecks=0;
+ const f=await fixture();try{await f.turn(1);f.state.retentionChecks=0;f.state.coreReads=[];const retentionOrder=[];f.state.onRetentionRead=()=>retentionOrder.push(f.state.coreReads.length);
   f.state.onCoreRead=async()=>{await Promise.resolve();f.state.suppressed=true;};
   const response=await f.post(path,path==='list'?{}:{conversationId:binding.conversationId});
   if(path==='list'){assert.equal(response.status,200);assert.deepEqual((await response.json()).conversations,[]);}
   else{assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE'}});}
-  assert.equal(f.state.retentionChecks,2,'retention must be read again after Core currentness');
+  assert.equal(f.state.retentionChecks,path==='transcript'?3:2,'all prior retention checks plus the post-Core fence check remain');
+  assert.deepEqual(retentionOrder,path==='transcript'?[0,0,1]:[0,1],'retention is checked again after the only fresh Core observation');
  }finally{f.close();}
 });
 test('suppression during final next-turn Core currentness withholds its admitted result',async()=>{

@@ -1,0 +1,84 @@
+# Source-only CodeBuild buildspec for the PR48 Alpine AMD64 qualification candidate image.
+# Define APPROVED_SOURCE_BUCKET and APPROVED_SOURCE_VERSION_ID on a dedicated
+# project after uploading the exact Git archive ZIP. No StartBuild overrides.
+version: 0.2
+env:
+  shell: bash
+  variables:
+    DOCKER_BUILDKIT: "1"
+phases:
+  build:
+    commands:
+      - |
+        set -euo pipefail
+        stage=initialize
+        trap 'printf "BLOCK: Core build stage %s failed\n" "$stage" >&2' ERR
+        SOURCE_SHA=dfc4a8587db8f2d1aac9c44035b07609811bf07f
+        SOURCE_KEY=inputs/core-dfc4a8587db8f2d1aac9c44035b07609811bf07f-lf.zip
+        ARCHIVE_SHA256=6d443bad3da27b887641bda8a1f2124a35ec4e86627af15e34d1bdc503cdc1d1
+        REPOSITORY=capiro/preview-core
+        REGISTRY=967807252336.dkr.ecr.us-east-1.amazonaws.com
+        IMAGE="$REGISTRY/$REPOSITORY:$SOURCE_SHA"
+        stage=architecture
+        test "$(uname -m)" = x86_64
+        stage=region
+        test "${AWS_REGION:-${AWS_DEFAULT_REGION:-}}" = us-east-1
+        stage=account
+        test "$(aws sts get-caller-identity --query Account --output text)" = 967807252336
+        # CodeBuild's source URL metadata is not used as build input. The
+        # versioned S3 download and full archive hash below select the bytes.
+        stage=source-pin
+        test "${APPROVED_SOURCE_BUCKET:?}" = capiro-portfolio-preview-source-967807252336-us-east-1
+        test "${APPROVED_SOURCE_VERSION_ID:?}" = __APPROVED_SOURCE_VERSION_ID__
+        stage=source-version
+        test "${CODEBUILD_SOURCE_VERSION:-}" = "${APPROVED_SOURCE_VERSION_ID:?}"
+        stage=resolved-source-version
+        test -z "${CODEBUILD_RESOLVED_SOURCE_VERSION:-}"
+        stage=repository-mutability
+        test "$(aws ecr describe-repositories --repository-names "$REPOSITORY" --query 'repositories[0].imageTagMutability' --output text)" = IMMUTABLE
+        stage=existing-image-tag
+        existing="$(aws ecr describe-images --repository-name "$REPOSITORY" --filter tagStatus=TAGGED --query "imageDetails[?contains(imageTags, '$SOURCE_SHA')].imageDigest" --output text)"
+        test -z "$existing"
+        stage=host-prerequisites
+        command -v unzip >/dev/null
+        command -v docker >/dev/null
+        command -v timeout >/dev/null
+        case "$(docker info --format '{{.Architecture}}')" in x86_64|amd64) ;; *) echo 'Native AMD64 Docker daemon required' >&2; exit 1 ;; esac
+        mkdir -p "$CODEBUILD_SRC_DIR/verified"
+        stage=pinned-source-download
+        observed_version="$(aws s3api get-object --bucket "$APPROVED_SOURCE_BUCKET" --key "$SOURCE_KEY" --version-id "$APPROVED_SOURCE_VERSION_ID" "$CODEBUILD_SRC_DIR/pinned-source.zip" --query VersionId --output text)"
+        stage=pinned-source-version
+        test "$observed_version" = "$APPROVED_SOURCE_VERSION_ID"
+        stage=pinned-source-checksum
+        printf '%s  %s\n' "$ARCHIVE_SHA256" "$CODEBUILD_SRC_DIR/pinned-source.zip" | sha256sum -c -
+        stage=source-extract
+        unzip -q "$CODEBUILD_SRC_DIR/pinned-source.zip" -d "$CODEBUILD_SRC_DIR/verified"
+        cd "$CODEBUILD_SRC_DIR/verified"
+        stage=receipt-migration-presence
+        test -f apps/api/prisma/migrations/20281016020000_clio_conversation_bootstrap_receipts/migration.sql
+        # O164/O170: #108 keeps 19 pending migrations byte-unchanged to RUN ON CLONE (Neo); no header-based gate.
+        stage=ecr-login
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$REGISTRY"
+        stage=docker-build
+        docker build --pull --platform linux/amd64 \
+          --label "org.opencontainers.image.revision=$SOURCE_SHA" \
+          --label org.opencontainers.image.source=https://github.com/neo-capiro/capiro-backend \
+          -f apps/api/Dockerfile.alpine-amd64-qualification -t "$IMAGE" .
+        stage=image-architecture
+        test "$(docker image inspect "$IMAGE" --format '{{.Architecture}}')" = amd64
+        stage=alpine-runtime-probe
+        sh apps/api/scripts/qualification/run-alpine-amd64-runtime-probes.sh "$IMAGE"
+        stage=isolated-entrypoint-db-gate
+        gate="$(sh apps/api/scripts/qualification/run-alpine-amd64-entrypoint-db-gate.sh "$IMAGE")"
+        test "$gate" = 'PASS_COMPILED_ENTRYPOINT_REACHES_ISOLATED_DB_GATE; FULL_API_STARTUP_UNVERIFIED'
+        printf '%s\n' "$gate"
+        stage=docker-push
+        docker push "$IMAGE"
+        stage=registry-digest
+        digest="$(aws ecr describe-images --repository-name "$REPOSITORY" --image-ids "imageTag=$SOURCE_SHA" --query 'imageDetails[0].imageDigest' --output text)"
+        [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+        stage=local-digest-match
+        docker image inspect "$IMAGE" --format '{{range .RepoDigests}}{{println .}}{{end}}' | grep -Fx "$REGISTRY/$REPOSITORY@$digest"
+        printf 'source=%s s3Version=%s archiveSha256=%s imageDigest=%s\n' "$SOURCE_SHA" "$observed_version" "$ARCHIVE_SHA256" "$digest"
+
+

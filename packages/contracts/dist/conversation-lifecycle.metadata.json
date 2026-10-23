@@ -9,8 +9,8 @@
     },
     {
       "path": "../../apps/control/conversations/lifecycle/service.mjs",
-      "sha256": "dd12fcd10e438b0e9d8a0f624968104a2831dd8b7e6933f762a7056b4704e8c7",
-      "bytes": 26703
+      "sha256": "d3c7eeafcfb5b720dd3a95ce0738f164b7141c47357d2c4b5cacdae21cce5ddb",
+      "bytes": 27033
     },
     {
       "path": "conversation-lifecycle/protocol.mjs",

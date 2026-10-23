@@ -294,6 +294,15 @@ export function createProductOwnerChannel({clientPolicy,persistedFacts,ownerPort
      return bytes(['meri.proxy.reservation-receipt/1',id,
       [requestId,receipt.nativeBodySha256,'UNKNOWN']]);
     }
+    if(state==='HELD'&&frame.kind==='abandon'){
+     // The proxy closed the request without a complete response: settle its hold so the run's next request can reserve.
+     if(frame.submitted.requestId!==requestId)deny();
+     state='ABANDONING';
+     const result=await bounded(()=>owner.abandon(requestId));
+     if(!result||result.requestId!==requestId||result.state!=='SETTLED')deny();
+     state='SETTLED';
+     return bytes(['meri.proxy.abandon-receipt/1',id,[requestId,'SETTLED']]);
+    }
     if(state==='HELD'){
      if(frame.kind!=='settle')deny();
      const {submitted,captured}=frame;

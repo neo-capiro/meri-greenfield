@@ -49,6 +49,8 @@ test('operation v2 golden frames carry both typed samples and separate outcome r
  assert.equal(settled.captured.completion.eof,true);
  assert.deepEqual(decodeOperationFrame(['meri.proxy.operation/2','session_A',['meri.proxy.outcome/1',id],null]),
   {sessionId:'session_A',kind:'outcome',submitted:{requestId:id},captured:null});
+ assert.deepEqual(decodeOperationFrame(['meri.proxy.operation/2','session_A',['meri.proxy.abandon/1',id],null]),
+  {sessionId:'session_A',kind:'abandon',submitted:{requestId:id},captured:null});
 });
 
 test('operation v2 refuses replaced wire frames and absent or foreign capture shapes',()=>{
@@ -63,6 +65,7 @@ test('operation v2 refuses replaced wire frames and absent or foreign capture sh
   ['meri.proxy.operation/2','session_A',reservation(),complete()],
   ['meri.proxy.operation/2','session_A',['meri.proxy.settlement/1',id,usage()],reservation()],
   ['meri.proxy.operation/2','session_A',['meri.proxy.outcome/1',id],complete()],
+  ['meri.proxy.operation/2','session_A',['meri.proxy.abandon/1',id],complete()],
   ['meri.proxy.operation/2','session_A',['meri.proxy.capture-call/1',id,binding,1],null],
  ])assert.throws(()=>decodeOperationFrame(bad),/PRODUCT_OWNER_WIRE_REFUSED/);
 });

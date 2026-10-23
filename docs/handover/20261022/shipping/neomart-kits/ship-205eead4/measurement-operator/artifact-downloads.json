@@ -1,0 +1,54 @@
+{
+  "schema": "meri.measurement-artifact-downloads.v1",
+  "buildId": "meri-greenfield-qualification-build:3a10677d-2014-4d98-affa-ffbb9060956e",
+  "files": [
+    {
+      "name": "launch-measurement.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/launch-measurement/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/36622fcb862c1f79243f1bc9141f1981/launch-measurement.json",
+      "versionId": "ly17A_QFMWbfTeQjU0wMO71jl6mrZPCO",
+      "bytes": 26456,
+      "sha256": "95cf61cbdcefe2700aa39cdbce54bd55a856991ac56cb34e90ad843f9e35cc3f"
+    },
+    {
+      "name": "launch-readback.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/launch-measurement/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/36622fcb862c1f79243f1bc9141f1981/launch-readback.json",
+      "versionId": "y2S00lFUTUzPSfkgldy3SM9fj1OhC8A8",
+      "bytes": 939,
+      "sha256": "1ca61bc3e94f504d7e893abd14b6844f155a7e6af2c236c4421c02bc5e1c3a76"
+    },
+    {
+      "name": "runtime-native.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/launch-measurement/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/36622fcb862c1f79243f1bc9141f1981/runtime-native.json",
+      "versionId": "AtWDP0ZpzvSv3ikCDJ7p4Y0WVenm3bhX",
+      "bytes": 371,
+      "sha256": "74d951ba8a15cad7ff00ae33678def8e779201090430e613da4dc838ea091f68"
+    },
+    {
+      "name": "runtime-packages.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/launch-measurement/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/36622fcb862c1f79243f1bc9141f1981/runtime-packages.json",
+      "versionId": "2XX29yTeiXYQpr8oWAp3g9edfK.qYlrL",
+      "bytes": 416,
+      "sha256": "3043530cccd35bda64e9e12d3a7a1ff2c4c0df732a5e5db52024f80f81dd6ee0"
+    },
+    {
+      "name": "measurement-provenance.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/launch-measurement/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/36622fcb862c1f79243f1bc9141f1981/measurement-provenance.json",
+      "versionId": "HnOIslTI.Tidbq.umMpI9ze3R9BCXmI9",
+      "bytes": 2204,
+      "sha256": "f796d8a0bb8b7ca2192ce6e9c9322d7d1edc9c08150c623a15e93ef2fb5e28f5"
+    },
+    {
+      "name": "measurement-diagnostic.json",
+      "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+      "key": "results/launch-measurement/205eead4c18882e4fc0e6c016c10dc4e5dd8c45c/36622fcb862c1f79243f1bc9141f1981/measurement-diagnostic.json",
+      "versionId": "GENwZsmNfzWdBDhXN90aPb0XGOnNnm1J",
+      "bytes": 103,
+      "sha256": "3be0663e6afb3cce0c75c31a0deea5104eb43856ccd2f596fed36151b3b38a68"
+    }
+  ]
+}

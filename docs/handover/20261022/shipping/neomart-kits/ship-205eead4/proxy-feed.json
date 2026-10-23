@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "proxyKit": "C:/dev/fable/ship-proxy-205eead4",
+  "meriCommit": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+  "before": {
+    "proxy": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:734a20ec036a9aacb1f99cd8f8d2a0d5a3319a44a27e13e14781e396ebec3551",
+    "proxySourceCommit": "34851020aa0d73fead4db59ba6e26a098e2d0313",
+    "proxyScanSha256": "04d24b4b22b39e0cd7690fce755b6069062a799f83d179852a73a904401b9f53"
+  },
+  "after": {
+    "proxy": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:dd40ed4dbaaa7843a6d5ecd2655a73d0990613abe8ae93bcbf2e42cd83e16a73",
+    "proxySourceCommit": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+    "proxyScanSha256": "8dd822c9ffa4c1eb9673c38c711a1ac2981279d8708ff35752be4571b7020e92"
+  },
+  "at": "2026-10-22T12:17:08.429136+00:00"
+}

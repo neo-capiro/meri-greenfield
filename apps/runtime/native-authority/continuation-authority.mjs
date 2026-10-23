@@ -12,7 +12,7 @@
  *    Cancellation always refuses, and admission/retirement still require a nonterminal source. The fact is Meri-stamped and
  *    valid for `authorityWindowMs`.
  *  continuationAdmission.admit({controlId,mode,sourceBinding,checkpoint,checkpointSha256,request,scopes,selectedClientId,versions,signal})
- *    -> {binding,scopes,selectedClientId,admissionReceiptId,targetSessionId,expiresAtMs}
+ *    -> {binding,scopes,selectedClientId,admissionReceiptId,targetSessionId,expiresAtMs,versions}
  *    Nominates the target run of one lifecycle control after verifying the source against the durable record it was captured
  *    from (exact request, scopes, versions, policy revision, checkpoint binding/scopes/versions/digest, checkpointed state for a
  *    resume, latest run of its conversation). The target binding, receipt id and fork session id are DERIVED (sha256 over the
@@ -31,6 +31,7 @@
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape,assertWorkspacePaths} from '../../../packages/contracts/validate.mjs';
+import {continuesSession} from '../../../packages/contracts/session-continuity.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 export const CONTINUATION_DERIVATION='meri.lifecycle.continuation/1';
@@ -75,7 +76,9 @@ export function createContinuationAuthority(configuration){
  /** New work needs a nonterminal run. Only an independently verified committed continuation may use a naturally finished target. */
  async function record(life,binding,scopes,allowFinished=false){
   const saved=await durable(life,()=>read(binding,{},life.check));
-  if(saved===null||!same(saved.run.binding,binding)||!same(saved.run.scopes,scopes)||saved.run.policyRevision!==c.policyRevision||!same(saved.run.versions,versions)||saved.run.state==='cancelled'||!allowFinished&&TERMINAL.includes(saved.run.state))refuse('REFUSED');
+  if(saved===null||!same(saved.run.binding,binding)||!same(saved.run.scopes,scopes)||saved.run.policyRevision!==c.policyRevision||
+   !(same(saved.run.versions,versions)||CHECKPOINTED.includes(saved.run.state)&&continuesSession(saved.run.versions,versions))||
+   saved.run.state==='cancelled'||!allowFinished&&TERMINAL.includes(saved.run.state))refuse('REFUSED');
   return saved;
  }
  /** The conversation's current-run join: this binding is its live latest run (never a reservation) with the same scopes. */
@@ -110,10 +113,10 @@ export function createContinuationAuthority(configuration){
   if(admitted===null){
    let proposedExpiresAtMs;try{proposedExpiresAtMs=fork.proposeInitialExpiry({...(life.signal===undefined?{}:{signal:life.signal})});}catch{refuse('UNAVAILABLE');}
    if(!Number.isSafeInteger(proposedExpiresAtMs)||proposedExpiresAtMs<=now())refuse('UNAVAILABLE');
-   admitted=(await durable(life,()=>claim({...query,policyRevision:c.policyRevision,versions:v.versions,configurationSha256:fork.configurationSha256,proposedExpiresAtMs},life.check))).record;
+   admitted=(await durable(life,()=>claim({...query,policyRevision:c.policyRevision,versions,configurationSha256:fork.configurationSha256,proposedExpiresAtMs},life.check))).record;
   }
   let r;try{r=own(admitted,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']);validateShape('RunBinding',r.binding);}catch{refuse('REFUSED');}
-  if(r.schemaVersion!==1||r.state!=='ADMITTED'||r.binding.tenantId!==principal.tenantId||r.binding.actorId!==principal.actorId||r.binding.conversationId!==conversationId||r.binding.writerFence!==1||r.selectedClientId!==v.selectedClientId||r.policyRevision!==c.policyRevision||!same(r.versions,v.versions)||r.configurationSha256!==fork.configurationSha256||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now())refuse('REFUSED');
+  if(r.schemaVersion!==1||r.state!=='ADMITTED'||r.binding.tenantId!==principal.tenantId||r.binding.actorId!==principal.actorId||r.binding.conversationId!==conversationId||r.binding.writerFence!==1||r.selectedClientId!==v.selectedClientId||r.policyRevision!==c.policyRevision||!same(r.versions,versions)||r.configurationSha256!==fork.configurationSha256||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now())refuse('REFUSED');
   return {binding:r.binding,expiresAtMs:r.expiresAtMs};
  }
  async function admit(value){
@@ -121,13 +124,13 @@ export function createContinuationAuthority(configuration){
   let v;try{v=data(raw);validateShape('RunBinding',v.sourceBinding);validateShape('Checkpoint',v.checkpoint);assertWorkspacePaths(v.checkpoint.workspace);validateShape('RuntimeVersions',v.versions);}catch{refuse('REFUSED');}
   uuid(v.controlId);if(!['resume','fork'].includes(v.mode))refuse('REFUSED');
   const s=v.sourceBinding,cp=v.checkpoint;
-  if(hash(cp)!==v.checkpointSha256||!same(cp.binding,s)||!same(cp.workspace.binding,s)||!same(cp.scopes,v.scopes)||!same(cp.workspace.scopes,v.scopes)||!same(cp.versions,v.versions)||!same(v.versions,versions)||cp.workspaceSha256!==hash(cp.workspace))refuse('REFUSED');
+  if(hash(cp)!==v.checkpointSha256||!same(cp.binding,s)||!same(cp.workspace.binding,s)||!same(cp.scopes,v.scopes)||!same(cp.workspace.scopes,v.scopes)||!same(cp.versions,v.versions)||!continuesSession(v.versions,versions)||cp.workspaceSha256!==hash(cp.workspace))refuse('REFUSED');
   clientScopes(v.scopes,v.selectedClientId,s.tenantId);
   if(v.mode==='fork'&&fork===null)refuse('FORK_UNAVAILABLE');
   const life=lifetime(signal);
   try{
    const saved=await record(life,s,v.scopes);
-   if(!same(saved.request,v.request)||cp.lastEventSequence>saved.lastSequence||v.mode==='resume'&&!CHECKPOINTED.includes(saved.run.state))refuse('REFUSED');
+   if(!same(saved.run.versions,v.versions)||!same(saved.request,v.request)||cp.lastEventSequence>saved.lastSequence||v.mode==='resume'&&!CHECKPOINTED.includes(saved.run.state))refuse('REFUSED');
    await latest(life,s,v.scopes);
    const facts={controlId:v.controlId,mode:v.mode,sourceBinding:s,checkpointSha256:v.checkpointSha256},field=name=>derivedUuid({...facts,field:name});
    let target,targetSessionId=null,expiresAtMs=now()+limits.admissionWindowMs;
@@ -144,7 +147,7 @@ export function createContinuationAuthority(configuration){
    }
    const admissionReceiptId=derivedUuid({...facts,field:'admissionReceiptId',targetBinding:target,targetSessionId});
    if(!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=now())refuse('REFUSED');life.check();
-   return data({binding:target,scopes:v.scopes,selectedClientId:v.selectedClientId,admissionReceiptId,targetSessionId,expiresAtMs});
+   return data({binding:target,scopes:v.scopes,selectedClientId:v.selectedClientId,admissionReceiptId,targetSessionId,expiresAtMs,versions});
   }finally{life.close();}
  }
  async function retire(value){

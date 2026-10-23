@@ -1,0 +1,6 @@
+{
+  "at": "2026-10-22T17:21:31.331Z",
+  "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:22",
+  "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview@sha256:18dad6581368b44aea7e6f6d39b34a67fb7a07f2c3af5117251dac42efbfd26e",
+  "onlyImageChanged": true
+}

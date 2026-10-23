@@ -74,6 +74,17 @@ class Provider(httpx.AsyncBaseTransport):
         return httpx.Response(200, stream=Body(), headers={'content-type': 'application/json'})
 
 
+class CutProvider(Provider):
+    """The provider answers, then the connection drops before the response completes."""
+    async def handle_async_request(self, request):
+        self.calls += 1
+        class Body(httpx.AsyncByteStream):
+            async def __aiter__(self):
+                yield MESSAGE[:20]
+                raise httpx.ReadError('synthetic connection cut mid-response')
+        return httpx.Response(200, stream=Body(), headers={'content-type': 'application/json'})
+
+
 def loopback_only(original):
     def validate(value):
         return value if value in ('127.0.0.1', '127.0.0.2') else original(value)
@@ -231,12 +242,15 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         self.child.stdin.write(b'{"command":"stats"}\n'); await self.child.stdin.drain()
         return json.loads(await asyncio.wait_for(self.child.stdout.readline(), 5))
 
-    async def invoke(self, delay):
-        provider, counter = Provider(delay), Counter()
-        startup = ProductOwnerStartup(policy=self.exchange.policy, exchange=self.exchange, host_gate=OwnerHostGate(),
-            owner_loop=asyncio.get_running_loop(), count_client=object(), make_provider_transport=lambda: provider,
-            pricing_revision=self.meta['pricingRevision'])
-        self.addCleanup(startup.close)
+    async def invoke(self, delay, provider=None):
+        provider, counter = provider or Provider(delay), Counter()
+        if getattr(self, 'startup', None) is None:
+            # One proxy process: every request of the run shares its startup and host gate.
+            self.startup = ProductOwnerStartup(policy=self.exchange.policy, exchange=self.exchange,
+                host_gate=OwnerHostGate(), owner_loop=asyncio.get_running_loop(), count_client=object(),
+                make_provider_transport=lambda: self.provider, pricing_revision=self.meta['pricingRevision'])
+            self.addCleanup(self.startup.close)
+        startup, self.provider = self.startup, provider
         source = await asyncio.to_thread(startup.resolve_bearer_sha256, self.meta['capability'])
         authority = source.authority
         peer_checks = []
@@ -291,15 +305,32 @@ class ComposedPairLeaseTests(unittest.IsolatedAsyncioTestCase):
         before, discoveries = await self.stats(), len(self.aws.calls)
         session, peer_checks = await self.invoke(20.2)
         after = await self.stats()
-        self.assertEqual(peer_checks, 5)
-        self.assertEqual(len(self.calls), 7)
+        self.assertEqual(peer_checks, 1)  # Observed once before start; never re-observed in the request.
+        self.assertEqual(len(self.calls), 3)  # Admit, reserve and settle: no in-request admission reads.
         self.assertEqual(len(self.aws.calls)-discoveries, 0)
         self.assertEqual(after['pairProofs']-before['pairProofs'], 0)
-        self.assertEqual(after['coreCalls']-before['coreCalls'], 12)
+        self.assertEqual(after['coreCalls']-before['coreCalls'], 4)
         self.assertEqual(len(after['requests']), 1)
         self.assertEqual(after['requests'][0]['request_id'], session.request_id)
         self.assertEqual(after['requests'][0]['state'], 'SETTLED')
         self.assertEqual(after['budget']['consumed_micro_usd'], '90')
+
+    async def test_cut_request_does_not_block_the_next_request_in_the_run(self):
+        # Live 2026-10-23: once a turn's first answer was cut after its reservation, every later request of the run was
+        # refused (PRODUCT_OWNER_CHANNEL_DENIED): the cut request's UNKNOWN hold blocked each next reservation of the grant.
+        with self.assertRaises(AssertionError):
+            await self.invoke(0, CutProvider(0))
+        cut = (await self.stats())['requests']
+        self.assertEqual([row['state'] for row in cut], ['SETTLED'])
+        self.assertEqual(cut[0]['actual_micro_usd'], cut[0]['hold_micro_usd'])  # Closed unsettled: charged its full hold.
+        session, _ = await self.invoke(0)
+        after = await self.stats()
+        self.assertEqual([row['state'] for row in after['requests']], ['SETTLED', 'SETTLED'])
+        self.assertEqual(after['requests'][1]['request_id'], session.request_id)
+        self.assertEqual(after['requests'][1]['actual_micro_usd'], '90')
+        self.assertEqual(after['budget']['consumed_micro_usd'], str(int(cut[0]['hold_micro_usd']) + 90))
+        self.assertEqual([call[2][2][0] for call in self.calls if call[2][0] == 'meri.proxy.operation/2'],
+            ['meri.proxy.reservation/1', 'meri.proxy.abandon/1', 'meri.proxy.reservation/1', 'meri.proxy.settlement/1'])
 
     async def arm_lost_settle(self):
         self.child.stdin.write(b'{"command":"arm-lost-settle"}\n')

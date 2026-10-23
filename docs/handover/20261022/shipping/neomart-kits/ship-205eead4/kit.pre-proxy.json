@@ -1,0 +1,77 @@
+{
+  "commit": "205eead4c18882e4fc0e6c016c10dc4e5dd8c45c",
+  "outDir": "C:/dev/fable/ship-205eead4",
+  "sourceRoot": "C:/dev/fable/ship-src-205eead4",
+  "attempt": "f11332108c34923aebd2565dae3a63a0",
+  "measurementAttempt": "36622fcb862c1f79243f1bc9141f1981",
+  "archiveSha256": "275a24a2ab2500817116d23c49eeeb14acb83158539ef1553372dd5f3f57e2c3",
+  "manifestSha256": "c5c009587576be3a9b9b188cabf8026812db04aacacc9e5b51ab471db7f01e8c",
+  "runnerSha256": "174e66b2c24034fc6ccb3a406daa26874a8f3c56164ce80e9d60f419d567f542",
+  "profile": "capiro-dev",
+  "region": "us-east-1",
+  "account": "967807252336",
+  "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+  "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+  "project": "meri-greenfield-qualification-build",
+  "projectArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
+  "projectRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+  "ecrRepositoryName": "meri-greenfield/qualification-worker",
+  "ecrRepositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+  "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+  "nodeVersion": "v24.21.0",
+  "runtimeBaseImageUri": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
+  "proxyScanSha256": "04d24b4b22b39e0cd7690fce755b6069062a799f83d179852a73a904401b9f53",
+  "ceilingUsd": 5,
+  "cluster": "capiro-dev",
+  "families": [
+    "meri-product-preview-control",
+    "meri-product-preview-temporal-worker",
+    "meri-product-preview-temporal-issuer",
+    "meri-product-preview-owner",
+    "meri-product-preview-proxy",
+    "meri-product-preview-runner"
+  ],
+  "services": {
+    "control": "meri-product-preview-control",
+    "temporal-worker": "meri-product-preview-temporal-worker",
+    "temporal-issuer": "meri-product-preview-temporal-issuer",
+    "model-owner": "meri-product-preview-owner",
+    "model-proxy": "meri-product-preview-proxy"
+  },
+  "logGroups": {
+    "control": "/meri/product-preview/control",
+    "temporal-worker": "/meri/product-preview/worker",
+    "temporal-issuer": "/meri/product-preview/issuer",
+    "model-owner": "/meri/product-preview/owner",
+    "model-proxy": "/meri/product-preview/proxy"
+  },
+  "stacks": {
+    "app": "meri-first-chat-app",
+    "model": "meri-first-chat-model",
+    "issuer": "meri-first-chat-issuer",
+    "foundation": "meri-first-chat-foundation",
+    "privateEdge": "meri-first-chat-private-edge"
+  },
+  "materialSecretKeys": [
+    "control/material",
+    "worker/material",
+    "issuer/material",
+    "owner/material",
+    "proxy/material"
+  ],
+  "discoveryServiceIds": [
+    "srv-fqjjiu4dmuqsg5mo",
+    "srv-dv43rzktx7mvrh6m"
+  ],
+  "controlTargetGroups": [
+    "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759",
+    "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c"
+  ],
+  "coreMembershipUrl": "https://first-chat-preview.app-dev.capiro.ai/api/clio/application-authority/membership",
+  "frontendOrigin": "https://portfolio-preview.app.capiro.ai",
+  "publicHealthUrl": "https://meri-preview.capiro.ai/health/live",
+  "pkiDir": "C:/dev/fable/meri-preview-private-pki",
+  "prepDir": "C:/dev/fable/meri-stage3-prep-20261018",
+  "privateWorkDir": "C:/dev/fable/meri-stage3-20261022T121427Z",
+  "label": "FIRST_CHAT_20261022B"
+}

@@ -8,11 +8,11 @@ import unittest
 from unittest.mock import patch
 
 from apps.proxy.qualification.runtime.ingress import PeerLease
-from apps.proxy.qualification.runtime.lifetime import LifetimeLimits, _current_lifetime_check
+from apps.proxy.qualification.runtime.lifetime import LifetimeLimits, _request_lifetime
 from apps.proxy.qualification.runtime.server import TrustedRequest, create_app
 from apps.proxy.qualification.test.test_ingress import fixture, BINDING, GRANT
 
-LIMITS = LifetimeLimits(poll_seconds=.01, check_seconds=.05, cleanup_seconds=.02)
+LIMITS = LifetimeLimits(check_seconds=.05, cleanup_seconds=.02)
 
 
 class ServerTests(unittest.IsolatedAsyncioTestCase):
@@ -33,7 +33,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
     async def test_actual_upstream_invoked_after_auth_with_private_context_and_body(self):
         calls = []
         async def upstream(scope, receive, send):
-            calls.append(_current_lifetime_check())
+            calls.append(_request_lifetime.get().check)
             self.assertGreater(store.calls, 0)
             self.assertEqual((await receive())["body"], b"{}")
             calls[0]()
@@ -43,7 +43,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         await app(scope, queue.get, send)
         self.assertEqual([x["type"] for x in sends], ["http.response.start", "http.response.body"])
         self.assertEqual(len(calls), 1)
-        self.assertIsNone(_current_lifetime_check())
+        self.assertIsNone(_request_lifetime.get())
         self.assertTrue(app.ready)
 
     async def test_complete_original_bytes_and_direct_peer_are_available_only_inside_lifetime(self):
@@ -67,7 +67,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(observations[0]["peer"]["taskArn"], BINDING.worker_arn)
         self.assertEqual(observations[0]["proxyCredential"],
                          scope["headers"][0][1][7:].decode("ascii"))
-        self.assertGreaterEqual(store.calls, 2)
+        self.assertEqual(store.calls, 1)  # Admitted once, at the start of the request.
         with self.assertRaises(Exception):
             await observe()
 
@@ -138,7 +138,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         class Counter:
             async def count(self, parameters):
                 raw = parameters["input"]["invokeModel"]["body"]
-                _current_lifetime_check().__self__.deny("SYNTHETIC_REVOKE_DURING_COUNT")
+                _request_lifetime.get().deny("SYNTHETIC_REVOKE_DURING_COUNT")
                 return CountObservation(1, hashlib.sha256(raw).hexdigest(), COUNT_MODEL_ID, "fixture")
         class Ledger:
             async def reserve_and_arm_once(self, *args):
@@ -146,8 +146,8 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         async def upstream(scope, receive, send):
             guard = BedrockSendGuard(request_id="synthetic-native-1", counter=Counter(), ledger=Ledger(),
                                      deadline=time.monotonic()+1, expected_count_origin="fixture",
-                                     lifetime_check=_current_lifetime_check())
-            self.assertIs(guard.lifetime_check.__self__, _current_lifetime_check().__self__)
+                                     lifetime_check=_request_lifetime.get().check)
+            self.assertIs(guard.lifetime_check.__self__, _request_lifetime.get())
             raw = json.dumps({"anthropic_version": "bedrock-2023-05-31", "max_tokens": 16,
                               "messages": [{"role": "user", "content": "synthetic"}]}).encode()
             request = httpx.Request("POST", "https://bedrock-runtime.us-east-1.amazonaws.com/model/us.anthropic.claude-sonnet-4-6/invoke",
@@ -159,7 +159,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         await app(scope, queue.get, send)
         self.assertEqual(observed, [False])
 
-    async def test_blocked_send_revokes_without_downstream_resume(self):
+    async def test_blocked_send_cut_by_disconnect_without_downstream_resume(self):
         entered, release, canceled = asyncio.Event(), asyncio.Event(), asyncio.Event()
         pulls = []
         async def upstream(scope, receive, send):
@@ -179,32 +179,31 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
                 await release.wait()
         task = asyncio.create_task(app(scope, queue.get, blocked))
         await asyncio.wait_for(entered.wait(), .3)
-        store.grant["state"] = "REVOKED"
+        queue.put_nowait({"type": "http.disconnect"})
         await asyncio.wait_for(task, .3)
         self.assertTrue(canceled.is_set())
         self.assertEqual(pulls, [1])
         self.assertFalse(release.is_set())
         self.assertTrue(app.ready)
 
-    async def test_quiet_upstream_current_fence_and_disconnect(self):
-        for cause in ("fence", "disconnect"):
-            started, canceled = asyncio.Event(), asyncio.Event()
-            async def upstream(scope, receive, send):
-                await receive()
-                started.set()
-                try:
-                    await asyncio.Event().wait()
-                finally:
-                    canceled.set()
-            store, scope, app, queue, sends, send = self.make(upstream)
-            task = asyncio.create_task(app(scope, queue.get, send))
-            await asyncio.wait_for(started.wait(), .3)
-            if cause == "fence":
-                store.run["fence"] = 2
-            else:
-                queue.put_nowait({"type": "http.disconnect"})
-            await asyncio.wait_for(task, .3)
-            self.assertTrue(canceled.is_set())
+    async def test_quiet_upstream_ends_on_disconnect_not_on_a_later_fence_change(self):
+        started, canceled = asyncio.Event(), asyncio.Event()
+        async def upstream(scope, receive, send):
+            await receive()
+            started.set()
+            try:
+                await asyncio.Event().wait()
+            finally:
+                canceled.set()
+        store, scope, app, queue, sends, send = self.make(upstream)
+        task = asyncio.create_task(app(scope, queue.get, send))
+        await asyncio.wait_for(started.wait(), .3)
+        store.run["fence"] = 2  # Admission happened at start; the request is not re-authorized.
+        await asyncio.sleep(.05)
+        self.assertFalse(task.done())
+        queue.put_nowait({"type": "http.disconnect"})
+        await asyncio.wait_for(task, .3)
+        self.assertTrue(canceled.is_set())
 
     async def test_body_bound_and_malformed_event_deny(self):
         for event in ({"type": "http.request", "body": b"x"*9}, {"type": "http.request", "body": "wrong"},
@@ -213,7 +212,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
             async def upstream(scope, receive, send):
                 await receive()
                 reached.append(1)
-            _, scope, app, queue, sends, send = self.make(upstream, limits=LifetimeLimits(.01, .05, .02, 8, 2))
+            _, scope, app, queue, sends, send = self.make(upstream, limits=LifetimeLimits(.05, .02, 8, 2))
             queue.get_nowait()
             queue.put_nowait(event)
             await asyncio.wait_for(app(scope, queue.get, send), .3)
@@ -258,7 +257,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         task = asyncio.create_task(app(scope, queue.get, send))
         try:
             await asyncio.wait_for(entered.wait(), .3)
-            store.grant["state"] = "REVOKED"
+            queue.put_nowait({"type": "http.disconnect"})
             await asyncio.wait_for(task, .3)
             self.assertFalse(app.ready)
             self.assertEqual(len(app.pending.tasks), 1)
@@ -270,78 +269,40 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
             if app.pending.tasks:
                 await asyncio.wait(set(app.pending.tasks), timeout=.3)
 
-    async def test_observer_mismatch_revokes_during_blocked_body(self):
-        wrong = False
-        async def observe():
-            return PeerLease("10.77.0.10" if wrong else "10.77.0.9", time.monotonic(), BINDING, GRANT)
-        entered = asyncio.Event()
+    async def test_composed_mandatory_receive_cancellation_denies(self):
+        entered, finished = asyncio.Event(), asyncio.Event()
+        lives = []
         async def upstream(scope, receive, send):
+            lives.append(_request_lifetime.get())
             entered.set()
-            await receive()
-        _, scope, app, queue, sends, send = self.make(upstream, observer=observe)
-        queue.get_nowait()
-        task = asyncio.create_task(app(scope, queue.get, send))
-        await asyncio.wait_for(entered.wait(), .3)
-        wrong = True
-        await asyncio.wait_for(task, .3)
-        self.assertEqual(sends[0]["status"], 403)
-
-    async def test_composed_mandatory_cancellation_and_ordinary_error_deny(self):
-        for mode, expected in (("observer-cancel", "FRESH_ADMISSION_CANCELLED"),
-                               ("state-cancel", "FRESH_ADMISSION_CANCELLED"),
-                               ("receive-cancel", "REQUEST_RECEIVE_CANCELLED"),
-                               ("observer-error", "FRESH_ADMISSION_DENIED")):
-            with self.subTest(mode=mode):
-                entered, finished = asyncio.Event(), asyncio.Event()
-                lives, observations = [], []
-                async def observe():
-                    observations.append(1)
-                    if len(observations) > 1:
-                        await entered.wait()  # Failure is strictly after initial admission/caller entry.
-                        if mode == "observer-cancel":
-                            raise asyncio.CancelledError()
-                        if mode == "observer-error":
-                            raise RuntimeError("synthetic private observer failure")
-                    return PeerLease("10.77.0.9", time.monotonic(), BINDING, GRANT)
-                async def upstream(scope, receive, send):
-                    lives.append(_current_lifetime_check().__self__)
-                    entered.set()
-                    try:
-                        await asyncio.Event().wait()
-                    finally:
-                        finished.set()
-                store, scope, app, queue, sends, send = self.make(upstream, observer=observe)
-                original_transact = store.transact
-                def transact(operation):
-                    if mode == "state-cancel" and store.calls >= 1:
-                        raise asyncio.CancelledError()
-                    return original_transact(operation)
-                store.transact = transact
-                async def receive():
-                    if mode == "receive-cancel":
-                        await entered.wait()
-                        raise asyncio.CancelledError()
-                    return await queue.get()
-                task = asyncio.create_task(app(scope, receive, send))
-                try:
-                    await asyncio.wait_for(entered.wait(), .3)
-                    await asyncio.wait_for(task, .3)
-                    self.assertTrue(finished.is_set())
-                    self.assertEqual(lives[0].reason, expected)
-                    self.assertTrue(lives[0].denied.is_set())
-                    self.assertEqual(lives[0].tasks, set())
-                    self.assertTrue(app.ready)
-                    self.assertEqual(sends[0]["status"], 403)
-                finally:
-                    if not task.done():
-                        task.cancel()
-                    await asyncio.gather(task, return_exceptions=True)
+            try:
+                await asyncio.Event().wait()
+            finally:
+                finished.set()
+        _, scope, app, _, sends, send = self.make(upstream)
+        async def receive():
+            await entered.wait()
+            raise asyncio.CancelledError()
+        task = asyncio.create_task(app(scope, receive, send))
+        try:
+            await asyncio.wait_for(entered.wait(), .3)
+            await asyncio.wait_for(task, .3)
+            self.assertTrue(finished.is_set())
+            self.assertEqual(lives[0].reason, "REQUEST_RECEIVE_CANCELLED")
+            self.assertTrue(lives[0].denied.is_set())
+            self.assertEqual(lives[0].tasks, set())
+            self.assertTrue(app.ready)
+            self.assertEqual(sends[0]["status"], 403)
+        finally:
+            if not task.done():
+                task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
 
     async def test_whole_request_cancellation_propagates_without_reason_replacement(self):
         entered, finished = asyncio.Event(), asyncio.Event()
         lives = []
         async def upstream(scope, receive, send):
-            lives.append(_current_lifetime_check().__self__)
+            lives.append(_request_lifetime.get())
             entered.set()
             try:
                 await asyncio.Event().wait()

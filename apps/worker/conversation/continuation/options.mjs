@@ -3,6 +3,7 @@
 import {validateShape,assertWorkspacePaths,canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertContinuationEnvelope} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
+import {continuesSession} from '../../../../packages/contracts/session-continuity.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import AjvModule from 'ajv/dist/2020.js';
 import formatsModule from 'ajv-formats';
@@ -35,7 +36,7 @@ export function buildContinuationOptions(value,target) {
       canonicalSha256(cp)!==c.checkpointSha256||canonicalSha256(t.sourceRequest)!==c.sourceRequestSha256||
       !same(cp.binding,cp.workspace.binding)||canonicalSha256(cp.workspace)!==cp.workspaceSha256||!same(cp.scopes,cp.workspace.scopes)||
       !same(cp.scopes,cp.opaqueSession.scopes)||cp.workspace.entries.some((/** @type {{object:{scopes:import('../../../../packages/contracts/dist/contracts.js').Scope[]}}} */ entry)=>entry.object.scopes.some(scope=>!cp.scopes.some((/** @type {import('../../../../packages/contracts/dist/contracts.js').Scope} */ parent)=>same(scope,parent))))||
-      !same(cp.scopes,t.scopes)||!same(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
+      !same(cp.scopes,t.scopes)||!continuesSession(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
       continuationContextSha256(t.sourceRequest,cp.scopes)!==c.contextSha256||continuationContextSha256(t.request,t.scopes)!==c.contextSha256||
       !same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.request.prompt!==t.sourceRequest.prompt||
       t.request.requestId===t.sourceRequest.requestId)fail('CONTINUATION_PIN_REFUSED');

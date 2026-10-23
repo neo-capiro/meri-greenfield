@@ -68,19 +68,19 @@ test('reads: check establishes current authority from Core with the live-session
  assert.deepEqual(result.subject,{kind:'client',entityType:'client',entityIds:[CLIENT],tenantId:TENANT,actorId:ACTOR,authorizationDecisionId:uuid('7'),policyRevision:POLICY,scopes:SCOPES,rosterVersionId:null});
  assert.deepEqual(result.decision,{decisionId:uuid('7'),actor:{tenantId:TENANT,actorId:ACTOR},operation:'search_tracked_bills@0.2.0',scopes:SCOPES,policyRevision:POLICY,evaluatedAt:new Date(NOW).toISOString(),decision:'allowed',reasonCode:'CORE_MEMBERSHIP_CONTEXT_CURRENT'});
  assert.deepEqual(result.sourceIds,['tracked_bills']);assert.ok(result.deadlineMs>NOW);
- // Business: identity, (identity+membership), context, identity; sources: identity, (identity+membership), identity. Fresh each.
+ // O208: one combined snapshot for business, one for sources. This unbranded test relay cannot reuse across calls.
  const calls=f.state.core.slice(before);
- assert.deepEqual(calls.map(c=>c.path),[PATHS.identity,PATHS.identity,PATHS.membership,PATHS.context,PATHS.identity,PATHS.identity,PATHS.identity,PATHS.membership,PATHS.identity]);
+ assert.deepEqual(calls.map(c=>c.path),[PATHS.current,PATHS.current]);
  assert.deepEqual([...f.bearers()],[SESSION_BEARER]);
  for(const c of calls){assert.equal(c.method,'POST');assert.equal(c.headers['x-internal-service-secret'],undefined,c.path);assert.equal(c.headers['cookie'],undefined);}
- assert.deepEqual(calls.find(c=>c.path===PATHS.context).body,{identitySha256:hash({principal:{tenantId:TENANT,actorId:ACTOR},identityRevision:'a'.repeat(64),checkedAtMs:NOW,expiresAtMs:NOW+60000}),conversationId:BINDING.conversationId,clientId:CLIENT});
+ assert.ok(calls.every(c=>hash(c.body)===hash({conversationId:BINDING.conversationId,clientId:CLIENT})));
  assert.ok(f.state.relay.length>=4);assert.ok(f.state.relay.every(r=>r.selectedClientId===CLIENT&&r.binding.runId===BINDING.runId));
  // Candidate credential digests are read once; service secret files are re-read on every bearer use.
  assert.equal(f.state.secretReads.filter(p=>p===FILES.identity).length,1);assert.ok(f.state.secretReads.filter(p=>p===FILES.service).length>=4);
  // A second check is a new observation: the same decision shape, no cache, and a Core refusal now refuses.
  const again=await a.authority.check({credential:TASK_CAPABILITY,descriptor,input:{clientId:'Acme Corp',query:'water'},limitDeadline});
- assert.deepEqual(again.subject,result.subject);assert.equal(f.state.core.length,before+18);
- f.state.status[PATHS.membership]=403;await assert.rejects(a.authority.check({credential:TASK_CAPABILITY,descriptor,input:{query:'water'},limitDeadline}),code('ACCESS_DENIED'));
+ assert.deepEqual(again.subject,result.subject);assert.equal(f.state.core.length,before+4);
+ f.state.status[PATHS.current]=403;await assert.rejects(a.authority.check({credential:TASK_CAPABILITY,descriptor,input:{query:'water'},limitDeadline}),code('ACCESS_DENIED'));
 });
 
 test('business and source ports answer typed codes: stale, future or expired Core clocks and every binding or client mismatch refuse',async()=>{
@@ -90,29 +90,29 @@ test('business and source ports answer typed codes: stale, future or expired Cor
  const policy=JSON.parse(await business({query:'water'}));assert.deepEqual(policy.grants,['tool.read']);
  const s=JSON.parse(await sources(policy.subject));assert.deepEqual(s,{sourceIds:['tracked_bills'],enabled:true,policyRevision:POLICY,checkedAtMs:NOW});
  const cases=[
-  ['stale membership',h=>{h.state.mutate=(v,p)=>{if(p===PATHS.membership)v.checkedAtMs=NOW-10000;};}],
-  ['future identity',h=>{h.state.mutate=(v,p)=>{if(p===PATHS.identity)v.checkedAtMs=NOW+1;};}],
+  ['stale membership',h=>{h.state.mutate=(v,p)=>{if(p===PATHS.current)v.checkedAtMs=NOW-10000;};}],
+  ['future identity',h=>{h.state.mutate=(v,p)=>{if(p===PATHS.current)v.checkedAtMs=NOW+1;};}],
   // Core's receipt is well formed (expires after its check) but Meri's clock has passed it when the answer is read.
-  ['context expired at the Meri clock',h=>{h.state.mutate=(v,p)=>{if(p===PATHS.context){v.expiresAtMs=NOW+1;h.clock.at=NOW+1;}};}],
-  ['identity revision rotates mid-check',h=>{let n=0;h.state.mutate=(v,p)=>{if(p===PATHS.identity&&++n===3)v.identityRevision='f'.repeat(64);};}],
+  ['context expired at the Meri clock',h=>{h.state.mutate=(v,p)=>{if(p===PATHS.current){v.expiresAtMs=NOW+1;h.clock.at=NOW+1;}};}],
+  ['Core current expected-revision conflict',h=>{h.state.status[PATHS.current]=409;}],
   ['foreign principal',h=>{h.state.principalActor=uuid('a');}],
   ['client not in the current roster',h=>{h.state.clientIds=[OTHER_CLIENT];}],
   ['context answers another client',h=>{h.state.contextClient=OTHER_CLIENT;}],
   ['membership suspended',h=>{h.state.membershipStatus='suspended';}],
   ['role below standard_user',h=>{h.state.role='client_portal_user';}],
-  ['membership 403',h=>{h.state.status[PATHS.membership]=403;}],
+  ['membership 403',h=>{h.state.status[PATHS.current]=403;}],
  ];
  // Each case on its own fresh fixture: the same claims, one armed Core answer, one typed refusal.
  for(const [name,arm] of cases){const h=fixture();arm(h);const c=bound(h);
   await assert.rejects(c.ports.authorizeBusiness({claims,operation:DESCRIPTOR.operation,requiredGrants:DESCRIPTOR.requiredGrants,input:{query:'water'},signal:undefined}),code('ACCESS_DENIED'),name);}
- // The authority HTTP client (`authority-http.mjs`) has no status mapping: an identity 401 is UNAVAILABLE, the membership gate's 401/403 are ACCESS_DENIED.
- {const h=fixture();h.state.status[PATHS.identity]=401;await assert.rejects(bound(h).ports.authorizeBusiness({claims,operation:DESCRIPTOR.operation,requiredGrants:DESCRIPTOR.requiredGrants,input:{},signal:undefined}),code('UNAVAILABLE'));}
+ // Combined answered401/403/409 are authority refusals;503 remains unavailable.
+ {const h=fixture();h.state.status[PATHS.current]=401;await assert.rejects(bound(h).ports.authorizeBusiness({claims,operation:DESCRIPTOR.operation,requiredGrants:DESCRIPTOR.requiredGrants,input:{},signal:undefined}),code('ACCESS_DENIED'));}
  // A UUID client selector that is not the run's client refuses before Core; a name is left to the native owner's check-ref.
  const n=f.state.core.length;await assert.rejects(business({clientId:OTHER_CLIENT,query:'water'}),code('ACCESS_DENIED'));assert.equal(f.state.core.length,n);
  await business({clientId:'Acme Corp',query:'water'});
  // Core unreachable, or a receipt Core itself malformed (expired at issue), is UNAVAILABLE, not a denial of record.
  f.state.respond=()=>{throw Object.assign(Error('ECONNREFUSED'),{code:'ECONNREFUSED'});};await assert.rejects(business({query:'water'}),code('UNAVAILABLE'));f.state.respond=null;
- f.state.mutate=(v,p)=>{if(p===PATHS.context)v.expiresAtMs=NOW;};await assert.rejects(business({query:'water'}),code('UNAVAILABLE'));f.state.mutate=null;
+ f.state.mutate=(v,p)=>{if(p===PATHS.current)v.expiresAtMs=NOW;};await assert.rejects(business({query:'water'}),code('UNAVAILABLE'));f.state.mutate=null;
  // Sources: a subject for another client, revision or scope is refused before Core; source enablement follows G1.
  const m=f.state.core.length;
  await assert.rejects(sources({...policy.subject,entityIds:[OTHER_CLIENT]}),code('ACCESS_DENIED'));

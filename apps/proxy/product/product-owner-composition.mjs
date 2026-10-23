@@ -40,6 +40,7 @@ export function createProductProxyOwnerComposition(configuration){
  return Object.freeze({
   reserve:(value,claim)=>reservation.reserve(value,claim),
   settleComplete:(requestId,claim)=>settlement.settleComplete(requestId,claim),
+  abandon:requestId=>settlement.abandon(requestId),
   readOutcome:requestId=>settlement.readOutcome(requestId),
  });
 }

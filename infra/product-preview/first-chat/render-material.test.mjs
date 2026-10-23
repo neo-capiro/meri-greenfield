@@ -65,6 +65,12 @@ test('all five roles render from throwaway PKI and pass every repository validat
  assert.equal(owner.controlConfigurationSha256,roles.control.configSha256);assert.ok(ownerFile(PATHS.control).equals(roles.control.configBytes));
  assert.equal(owner.nativeCredentialFileSha256,sha(IDENTITY));
  assert.match(ownerFile(PATHS.database).toString(),/^postgresql:\/\/meri_model_budget_owner:/u);assert.match(file(PATHS.database),/^postgresql:\/\/meri_control_runtime:synthetic-control%3Ap%40ss%2Fword%3F%23@/u);
+ for(const [role,path] of [['control',PATHS.database],['model-owner',PATHS.database],['temporal-issuer',PATHS.issuerDatabase]]){
+  const bytes=Buffer.from(roles[role].bundle.files.find(f=>f.path===path).base64,'base64'),uri=new URL(bytes.toString('utf8'));
+  assert.equal(uri.hostname,'capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com',role);
+  assert.equal(uri.port,'5432');assert.equal(uri.pathname,'/capiro');assert.equal(uri.search,'?sslmode=verify-full');
+  assert.equal(roles[role].expected.sha256ByPath[path],sha(bytes));
+ }
  // Topology pins.
  assert.equal(control.temporal.issuerBootstrap.configuration.serverCaSha256,summary.pinsDer['server-ca']);
  assert.equal(control.temporal.issuerBootstrap.configuration.clientCaSha256,summary.pinsDer['issuer-client-ca']);
@@ -95,7 +101,7 @@ test('temporal-issuer runtime admits the delivered database file and exact confi
   createPool:options=>{pools.push(options);return {async connect(){throw Error('no connection in tests');},async end(){}};},
   createEntrypoint:()=>{let up=false;return {async start(){up=true;},available:()=>up,async close(){up=false;return {unsettledOperations:0};}};}}});
  assert.equal(runtime.available(),true);await runtime.close();
- assert.equal(pools.length,1);assert.match(pools[0].connectionString,/^postgresql:\/\/meri_temporal_issuer_service:[^@]+@capiro-dev-data-.*:5432\/capiro\?sslmode=verify-full$/u);
+ assert.equal(pools.length,1);assert.match(pools[0].connectionString,/^postgresql:\/\/meri_temporal_issuer_service:[^@]+@capiro-newstack-preview-clone\.cluster-csryw28ai752\.us-east-1\.rds\.amazonaws\.com:5432\/capiro\?sslmode=verify-full$/u);
 });
 
 test('the actual cli.mjs product gates admit control and worker (startup then fails off-Linux, exit 3, not configuration exit 2)',async()=>{

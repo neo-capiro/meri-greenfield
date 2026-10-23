@@ -563,3 +563,28 @@ class HttpsTests(unittest.IsolatedAsyncioTestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+
+class CarrierDroppedTests(unittest.TestCase):
+    def test_idle_open_carrier_is_reusable_and_a_closed_one_is_not(self):
+        import socket as _socket
+        from apps.proxy.product.owner_https import _carrier_dropped
+        a, b = _socket.socketpair()
+        try:
+            self.assertFalse(_carrier_dropped(a), 'an idle open carrier is reused')
+            b.close()
+            self.assertTrue(_carrier_dropped(a), 'a carrier the peer closed is dropped before any write')
+        finally:
+            a.close()
+        self.assertTrue(_carrier_dropped(a), 'a closed descriptor is dropped')
+        self.assertTrue(_carrier_dropped(None))
+
+    def test_unexpected_idle_bytes_drop_the_carrier(self):
+        import socket as _socket
+        from apps.proxy.product.owner_https import _carrier_dropped
+        a, b = _socket.socketpair()
+        try:
+            b.sendall(b'x')
+            self.assertTrue(_carrier_dropped(a))
+        finally:
+            a.close(); b.close()

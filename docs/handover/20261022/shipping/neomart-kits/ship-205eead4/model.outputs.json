@@ -1,0 +1,26 @@
+[
+  {
+    "OutputKey": "ModelProxyServiceArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-proxy"
+  },
+  {
+    "OutputKey": "ModelProxyTaskDefinitionArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:46"
+  },
+  {
+    "OutputKey": "ModelOwnerServiceArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-owner"
+  },
+  {
+    "OutputKey": "ModelOwnerOrigin",
+    "OutputValue": "https://owner.meri.internal:8444"
+  },
+  {
+    "OutputKey": "ModelOwnerTaskDefinitionArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:46"
+  },
+  {
+    "OutputKey": "ModelProxyOrigin",
+    "OutputValue": "https://proxy.meri.internal:8443"
+  }
+]

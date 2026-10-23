@@ -115,9 +115,10 @@ export function decodeOperationFrame(value){
   if(submitted.requestId!==captured.reservation.requestId)deny();
   return {sessionId,kind:'settle',submitted,captured};
  }
- if(claim[0]==='meri.proxy.outcome/1'){
+ if(claim[0]==='meri.proxy.outcome/1'||claim[0]==='meri.proxy.abandon/1'){
   array(claim,2);if(frame[3]!==null)deny();
-  return {sessionId,kind:'outcome',submitted:{requestId:string(claim[1],128,{pattern:SLOT})},captured:null};
+  return {sessionId,kind:claim[0]==='meri.proxy.outcome/1'?'outcome':'abandon',
+   submitted:{requestId:string(claim[1],128,{pattern:SLOT})},captured:null};
  }
  deny();
 }

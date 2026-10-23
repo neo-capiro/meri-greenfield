@@ -788,6 +788,38 @@
         "TreatMissingData": "notBreaching"
       }
     },
+    "SessionRefusalsSustained": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "AlarmsTopic"
+          }
+        ],
+        "AlarmDescription": "Meri Preview P0: session-refusals-sustained",
+        "AlarmName": "meri-preview-session-refusals-sustained",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 3,
+        "EvaluationPeriods": 3,
+        "Metrics": [
+          {
+            "Id": "session",
+            "MetricStat": {
+              "Metric": {
+                "Dimensions": [],
+                "MetricName": "ControlSessionRefusals",
+                "Namespace": "Meri/Preview"
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            },
+            "ReturnData": true
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      }
+    },
     "TelemetryDropped": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {

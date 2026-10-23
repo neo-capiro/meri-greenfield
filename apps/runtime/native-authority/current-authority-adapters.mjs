@@ -1,34 +1,11 @@
-/** The run's CURRENT authority, Meri side, established per check from Core's existing routes with the user's own live-session
- * bearer (RC1 option A relay; lane T, PR #121 6247577743 item 5). Construction is inert: no secret read, SQL, fetch or timer.
- *
- * One supplier, two consumers:
- *  - reads: `reads-composer.mjs` `gateway.authority` = `createCurrentToolAuthority({capabilityAction:'tool.read'})` over the
- *    four ports here (`verifyCapability`, `currentRun`, `authorizeBusiness`, `authorizeSources`) and `gateway.limits`;
- *  - write intents: `execution-composition.mjs` `createControlIntentExecution({owners})` = `core.getCredentials`,
- *    `preparePolicy`, `authorizeBusiness`, `authorizeSources`, `currentRights`, in lane E's exact port shapes.
- *
- * Core routes (capiro-backend #84 @ 0304b0ef; all existing and mounted; native user bearer + `standard_user`; no service secret):
- *  - POST /api/clio/application-authority/identity    -> {principal,identityRevision,checkedAtMs,expiresAtMs}
- *  - POST /api/clio/application-authority/membership  -> {tenantId,actorId,status:'active',role,permissions,clientIds,membershipRevision,checkedAtMs,expiresAtMs}
- *  - POST /api/clio/application-authority/context     -> {identitySha256,principal,identityRevision,conversationId,selectedClientId,contextRevision,checkedAtMs,expiresAtMs}
- * The membership read is the canonical product gate (`product-access/core-membership.mjs`, the same owner the decide route and
- * the action sessions use). Core answers `permissions:['memory.propose.firm']` for a standard user (its spec, lines 243/365),
- * which `native-read-credentials/core-client.mjs` refuses; that client is therefore not used here.
- *
- * Meri-local facts (trusted owners, read fresh per call): the task grant row (`meri_product_budget.grants` by capability digest),
- * the run's ADMITTED allocation record and admitted-run owner (`createAdmittedRunSource` -> `createPostgresAdmittedRunOwner`),
- * the run row's scopes (exactly one client scope, `exactInitialScopes`) and the stored approval metadata.
- *
- * One observation = bearer lookup -> identity -> membership (gate: identity + membership) -> [context for the run's conversation
- * and selected client] -> identity -> bearer re-lookup (the same live session). Every receipt is a fresh correlated Core answer
- * bounded by its own clocks; `checkedAtMs` is Meri's clock after the last answer and `expiresAtMs` = min(every Core expiry, the
- * session expiry, the caller deadline, started + maxLeaseMs). Nothing is cached between calls.
- *
- * Credential invariant (Core #83): the relayed bearer is refused when it equals, by digest, any candidate credential file or any
- * configured service secret file (re-read per call). The marked control credential never reaches these routes through here.
- * Failures are closed `GatewayDenied` codes: UNAVAILABLE (no live session, Core unreachable, unbound pool, no route or owner),
- * ACCESS_DENIED (any mismatch, stale, future or expired fact), DEADLINE / CANCELLED from the lifetime. The reads authority
- * collapses every port failure to ACCESS_DENIED itself; the typed codes serve the execution owners and tests. */
+/** Current run authority from Core ca4de503's combined /current receipt (S2/O208).
+ * The canonical session relay supplies the live user's bearer, never a candidate or service credential. Every tool read and
+ * intent port call reads Core /current fresh once. Every call still verifies the admitted Meri run, grant, fence,
+ * selected client, deadline and live session through its existing owners. No persistence or stale unavailable fallback.
+ * ROLE_GRANTS remains the single role mapping; Core permissions remain data, not additional grants.
+ * The same supplier serves tool reads and the five intent execution ports. Generic non-conversation consumers retain
+ * their existing owners. The fixed execution credential path still refuses candidate/service-secret substitution.
+ */
 import {createHash,randomUUID,timingSafeEqual} from 'node:crypto';
 import {isAbsolute} from 'node:path';
 import {types} from 'node:util';
@@ -42,7 +19,8 @@ import {createCurrentToolAuthority} from '../../gateway/authorization/current-to
 import {PostgresBudgetStore} from '../../gateway/budget/postgres-budget-store.mjs';
 import {allocation as parseAllocation,parseToolGrantFacts} from '../../gateway/budget/tool-budget-binding.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../control/action-host/application-adapters/authority-http.mjs';
-import {createCoreMembershipGate} from '../../control/product-access/core-membership.mjs';
+import {CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
+import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {productFailure} from '../../control/product-access/errors.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
 import {createPostgresApprovalMetadataStore} from '../../control/commands/approval-metadata/index.mjs';
@@ -125,8 +103,7 @@ export function createCurrentAuthorityAdapters(configuration){
  if(new Set(reservedFiles).size!==reservedFiles.length||secretFiles.some(path=>reservedFiles.includes(path))||serviceSecretFile!==undefined&&reservedFiles.includes(serviceSecretFile))deny('GATEWAY_CONFIGURATION');
  const bearer=createBearerSource({nativeCredentials:c.nativeCredentials,readSecret:c.readSecret,reservedFiles,secretFiles:[...new Set([...secretFiles,...(serviceSecretFile===undefined?[]:[serviceSecretFile])])],now});
  const bound=Math.min(limits.maxRequestMs,30000);
- const identity=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled:true,limits:{maxRequestMs:bound,maxResponseBytes:16384}});
- const membership=createCoreMembershipGate({origin,identityContext:{verifyIdentity:call=>identity.readIdentity(call)},fetchImpl,now,limits:{maxRequestMs:bound,maxFactBytes:limits.maxFactBytes}});
+ const identity=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled:true,limits:{maxRequestMs:bound,maxResponseBytes:limits.maxFactBytes}});
  let stores=null;
 
  /** One bounded lifetime per port call: caller deadline ∧ maxRequestMs ∧ every receipt expiry folded in through `limit`. */
@@ -150,31 +127,14 @@ export function createCurrentAuthorityAdapters(configuration){
   const l=lifetime(deadlineMs,signal);
   try{
    const issued=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));l.limit(issued.expiresAtMs);
-   const credential=issued.credential;
-   const identify=async()=>{const began=now();let r;try{r=await l.life.run(signal=>identity.readIdentity({credential,deadlineMs:l.deadline(),signal}));}catch(error){throw closed(error,'UNAVAILABLE');}return fresh(r,began,l);};
-   const before=await identify();
-   if(before.principal.tenantId!==binding.tenantId||before.principal.actorId!==binding.actorId)deny('ACCESS_DENIED');
-   let admitted;try{admitted=await l.life.run(signal=>membership.admit({credential,signal,deadlineMs:l.deadline()}));}catch(error){throw closed(error,'UNAVAILABLE');}
-   let member;try{member=data(own(admitted,['principal','expiresAtMs']));own(member.principal,['tenantId','actorId','role','permissions','clientIds','membershipRevision']);}catch{deny('ACCESS_DENIED');}
-   if(!Number.isSafeInteger(member.expiresAtMs)||member.expiresAtMs<=now())deny('ACCESS_DENIED');l.limit(member.expiresAtMs);
-   const p=member.principal;
-   if(p.tenantId!==binding.tenantId||p.actorId!==binding.actorId||!Object.hasOwn(ROLE_GRANTS,p.role)||!Array.isArray(p.clientIds)||!p.clientIds.includes(selectedClientId))deny('ACCESS_DENIED');
-   let ctx=null;
-   if(context){
-    const began=now();let r;
-    try{r=await l.life.run(signal=>identity.readContext({credential,deadlineMs:l.deadline(),identitySha256:hash(before),conversationId:binding.conversationId,clientId:selectedClientId,signal}));}catch(error){throw closed(error,'UNAVAILABLE');}
-    ctx=fresh(r,began,l);
-    if(ctx.identitySha256!==hash(before)||!same(ctx.principal,before.principal)||ctx.identityRevision!==before.identityRevision||ctx.conversationId!==binding.conversationId||ctx.selectedClientId!==selectedClientId)deny('ACCESS_DENIED');
-   }
-   const after=await identify();
-   if(!same(after.principal,before.principal)||after.identityRevision!==before.identityRevision)deny('ACCESS_DENIED');
-   // The Core calls awaited: the same live session must still hold the same bearer.
-   const again=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));if(again.credential!==credential)deny('UNAVAILABLE');
+   // One fresh Core /current observation per tool read or intent port call.
+   const began=now();currentTurnTelemetry()?.recordAuthority?.('fresh');const r=await l.life.run(signal=>identity.readCurrent({credential:issued.credential,conversationId:binding.conversationId,clientId:selectedClientId,signal,deadlineMs:Math.min(l.deadline(),now()+CURRENT_MAX_WAIT_MS)}));fresh(r,began,l);
+   if(r.principal.tenantId!==binding.tenantId||r.principal.actorId!==binding.actorId||r.conversationId!==binding.conversationId||r.selectedClientId!==selectedClientId||!Object.hasOwn(ROLE_GRANTS,r.role)||!r.clientIds.includes(selectedClientId)||r.expiresAtMs<=now())deny('ACCESS_DENIED');l.limit(r.expiresAtMs);
+   const again=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));if(again.credential!==issued.credential)deny('UNAVAILABLE');
    const checkedAtMs=now(),expiresAtMs=Math.min(l.deadline(),l.started+limits.maxLeaseMs,issued.expiresAtMs,again.expiresAtMs);
-   l.life.check();if(!Number.isSafeInteger(checkedAtMs)||!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=checkedAtMs)deny('ACCESS_DENIED');
-   return Object.freeze({principal:Object.freeze({tenantId:p.tenantId,actorId:p.actorId}),identityRevision:before.identityRevision,actorRole:p.role,clientIds:p.clientIds,membershipRevision:p.membershipRevision,
-    contextRevision:ctx?.contextRevision??null,bearerSha256:issued.digest,checkedAtMs,expiresAtMs});
-  }catch(error){throw closed(error,'UNAVAILABLE');}finally{l.close();}
+   l.life.check();if(expiresAtMs<=checkedAtMs)deny('ACCESS_DENIED');
+   return Object.freeze({principal:r.principal,identityRevision:r.identityRevision,actorRole:r.role,clientIds:r.clientIds,membershipRevision:r.membershipRevision,contextRevision:context?r.contextRevision:null,bearerSha256:issued.digest,checkedAtMs,expiresAtMs});
+  }catch(error){if([401,403,409].includes(error?.status))deny('ACCESS_DENIED');throw closed(error,'UNAVAILABLE');}finally{l.close();}
  }
  /** The run row's current scopes and selected client (the trusted Meri selection the run was prepared with). */
  async function runRow(binding,l){

@@ -1,0 +1,154 @@
+{
+  "Changes": [
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "Action": "Modify",
+        "LogicalResourceId": "controlService",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-control",
+        "ResourceType": "AWS::ECS::Service",
+        "Replacement": "False",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "TaskDefinition",
+              "RequiresRecreation": "Never"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "ResourceReference",
+            "CausingEntity": "controlTask"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "PolicyAction": "ReplaceAndDelete",
+        "Action": "Modify",
+        "LogicalResourceId": "controlTask",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:47",
+        "ResourceType": "AWS::ECS::TaskDefinition",
+        "Replacement": "True",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "DirectModification"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "PolicyAction": "ReplaceAndDelete",
+        "Action": "Modify",
+        "LogicalResourceId": "runnerTask",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:32",
+        "ResourceType": "AWS::ECS::TaskDefinition",
+        "Replacement": "True",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "DirectModification"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "Action": "Modify",
+        "LogicalResourceId": "temporalWorkerService",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-temporal-worker",
+        "ResourceType": "AWS::ECS::Service",
+        "Replacement": "False",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "TaskDefinition",
+              "RequiresRecreation": "Never"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "ResourceReference",
+            "CausingEntity": "temporalWorkerTask"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "PolicyAction": "ReplaceAndDelete",
+        "Action": "Modify",
+        "LogicalResourceId": "temporalWorkerTask",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:46",
+        "ResourceType": "AWS::ECS::TaskDefinition",
+        "Replacement": "True",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "DirectModification"
+          }
+        ]
+      }
+    }
+  ],
+  "ChangeSetName": "awscli-cloudformation-package-deploy-1792672577",
+  "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/awscli-cloudformation-package-deploy-1792672577/70e2bb68-596b-4fed-a3fd-c11aed45da3a",
+  "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/meri-first-chat-app/81606950-ca5b-11f1-8e3c-0efffc1877a7",
+  "StackName": "meri-first-chat-app",
+  "Description": "Created by AWS CLI at 2026-10-22T12:36:17.310515 UTC",
+  "Parameters": null,
+  "CreationTime": "2026-10-22T12:36:15.346000+00:00",
+  "ExecutionStatus": "AVAILABLE",
+  "Status": "CREATE_COMPLETE",
+  "StatusReason": null,
+  "NotificationARNs": [],
+  "RollbackConfiguration": {},
+  "Capabilities": [],
+  "Tags": null,
+  "ParentChangeSetId": null,
+  "IncludeNestedStacks": false,
+  "RootChangeSetId": null,
+  "OnStackFailure": null,
+  "ImportExistingResources": null,
+  "StackDriftStatus": null,
+  "DeploymentMode": null,
+  "DeploymentConfig": {
+    "Mode": "STANDARD",
+    "DisableRollback": false
+  }
+}

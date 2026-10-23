@@ -10,18 +10,19 @@ export function createNextRunOwner({store,retirement,revocation,versions,now=Dat
  const checking=signal=>()=>{if(signal?.aborted)fail('NEXT_RUN_CANCELLED');};
  /** The source's settlement facts, gathered before any reservation write: the conversation's latest published checkpoint (a completed
   * run's own), and a failed/cancelled run's no-authority evidence, else its proven physical stop and revoked grants. */
- async function settlement(latest,signal,check){
+ async function settlement(latest,signal,check,{readOnly=false}={}){
   const checkpoint=await journal.latestCheckpoint(latest.binding,check);if(latest.state==='completed'&&!checkpoint)fail('NEXT_RUN_CHECKPOINT_REQUIRED');
   // A failed/cancelled source that never claimed an allocation carries the store's no-authority evidence instead (re-verified by the journal).
   const noAuthority=latest.state==='completed'?null:await journal.foreclosure(latest.binding,check);check();let facts;
   if(noAuthority)facts={checkpoint,noAuthority:own(bounded(noAuthority),['foreclosureSha256'])};
   else{const retired=own(bounded(await retirement.verifyRetired({binding:latest.binding,signal})),['physicalStopProven']);if(retired.physicalStopProven!==true)fail('NEXT_RUN_RETIREMENT_REQUIRED');check();
-   const revoked=own(bounded(await revocation.verifyRevoked({binding:latest.binding,signal})),['receiptSha256','grantIds']);check();facts={checkpoint,retirement:{physicalStopProven:true},revocation:revoked};}
+   const readRevocation=readOnly?revocation.readRevoked:revocation.verifyRevoked;if(typeof readRevocation!=='function')fail('NEXT_RUN_READINESS_UNAVAILABLE');
+   const revoked=own(bounded(await readRevocation.call(revocation,{binding:latest.binding,signal})),['receiptSha256','grantIds']);check();facts={checkpoint,retirement:{physicalStopProven:true},revocation:revoked};}
   return facts;
  }
  /** An explicit turn reports a refusal while gathering those facts as NEXT_RUN_SOURCE_UNSETTLED: nothing was reserved, so it may be
   * retried once the source settles (completion cleanup still retiring the original, or a pending reconciliation). An abort stays an abort. */
- async function explicitSettlement(latest,signal,check){try{return await settlement(latest,signal,check);}catch(error){if(signal?.aborted)throw error;throw Object.assign(new Error('NEXT_RUN_SOURCE_UNSETTLED',{cause:error}),{code:'NEXT_RUN_SOURCE_UNSETTLED'});}}
+ async function explicitSettlement(latest,signal,check,options){try{return await settlement(latest,signal,check,options);}catch(error){if(signal?.aborted)throw error;throw Object.assign(new Error('NEXT_RUN_SOURCE_UNSETTLED',{cause:error}),{code:'NEXT_RUN_SOURCE_UNSETTLED'});}}
  /** Selection under the conversation lock; a pending reservation is returned unchanged, a live run is bound as is, a terminal run yields its
   * reserved successor only after its original is physically retired and its grants revoked (a nonterminal crashed run is first settled by the run reconciler).
   * A session that names its exact `runId` never reserves: it binds that terminal latest run read-only (its next turn is reserved only by an
@@ -58,5 +59,23 @@ export function createNextRunOwner({store,retirement,revocation,versions,now=Dat
   if(!selected.reserved||!same(selected.source,source.binding))fail('NEXT_RUN_NOT_LATEST');
   return {sourceBinding:selected.source,targetBinding:selected.binding,state:'RESERVED',replayed:selected.replayed===true};
  }
- return Object.freeze({selectRun,currentRun,admitTurn});
+ /** Content-free next-turn eligibility for an exact source, without creating identifiers, reservation writes or revocation effects.
+  * This is a snapshot under the same journal guards as reserve; the eventual send still rechecks fresh authority and source state. */
+ async function assessNextTurn({principal,conversationId,sourceRunId,signal}){
+  const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);uuid(sourceRunId);const check=checking(signal);
+  if(typeof journal.assess!=='function')fail('NEXT_RUN_READINESS_UNAVAILABLE');
+  const {runs}=await journal.listRuns({tenantId:p.tenantId,conversationId},check),source=runs.find(r=>r.binding.runId===sourceRunId);check();
+  if(!source||runs.some(r=>r.binding.actorId!==p.actorId))fail('NEXT_RUN_OWNER_REFUSED');
+  if(!same(runs.at(-1).binding,source.binding))return {admissible:false,reason:'NEXT_RUN_NOT_LATEST'};
+  if(!terminal(source.state))return {admissible:false,reason:'NEXT_RUN_SOURCE_NOT_TERMINAL'};
+  try{
+   const facts=await explicitSettlement(source,signal,check,{readOnly:true});
+   return await journal.assess({source:source.binding,facts,scopes:source.scopes,versions,policyRevision:source.policyRevision},check);
+  }catch(error){
+   if(signal?.aborted)throw error;
+   if(['NEXT_RUN_SOURCE_UNSETTLED','NEXT_RUN_RETIREMENT_REQUIRED','NEXT_RUN_REVOCATION_REQUIRED','NEXT_RUN_CHECKPOINT_REQUIRED','NEXT_RUN_CHECKPOINT_REFUSED','NEXT_RUN_SCOPE_REFUSED','NEXT_RUN_NOT_LATEST','NEXT_RUN_SOURCE_NOT_TERMINAL','NEXT_RUN_REPLAY_REFUSED','NEXT_TURN_SDK_CHANGED','NEXT_TURN_FORMAT_CHANGED'].includes(error?.code))return {admissible:false,reason:error.code};
+   throw error;
+  }
+ }
+ return Object.freeze({selectRun,currentRun,admitTurn,assessNextTurn});
 }

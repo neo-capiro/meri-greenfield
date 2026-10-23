@@ -1,4 +1,8 @@
 import test from 'node:test';
+import {createHash} from 'node:crypto';
+import {objectiveProtectedFactsFixture} from '../../objective-source/test/protected-facts-fixture.mjs';
+import {decorateObjectiveBindFactsInput} from '../../objective-source/protected-facts.mjs';
+import {compilePreparedRunFacts} from '../../prepared-run-issuance.mjs';
 import assert from 'node:assert/strict';
 import {candidateFixture} from '../../test/prepared-candidate-fixture.mjs';
 import {createRenderFixture} from '../../../../infra/product-preview/first-chat/render-material.fixture.mjs';
@@ -110,4 +114,41 @@ test('old intent, configuration lineage, grant, request and derived digest drift
   {...record,taskRequestSha256:'f'.repeat(64)},
   {...record,grantIntents:record.grantIntents.map((g,i)=>i?g:{...g,grantId:'00000000-0000-4000-8000-000000000098'})}])
   assert.throws(()=>matchHistoricalStopAllocation(capsule,changed),{code:'HISTORICAL_STOP_FACTS_REFUSED'});
+});
+
+function custodyFixture(){
+ const x=fixture(),c=x.f.configuration.nativeCandidate,{configurationSha256,effectiveDescriptorSha256,...base}=x.input;
+ const issuedFacts={original:base.original,allocationSha256:x.capsule.allocationSha256,taskRequestSha256:x.capsule.taskRequestSha256,qualification:base.qualification,grantIntents:base.grantIntents,grantId:c.grantId,operations:c.operations,controlCapabilitySha256:hash({control:'original nonsecret digest'}),transport:{origin:c.taskOrigin,http:c.taskHttp}};
+ const grant=base.grantIntents.find(g=>g.grantId===c.grantId),issuance={issuanceKey:base.original.executionKey,binding:base.original.binding,requestSha256:hash({request:'immutable original'}),expiresAtMs:base.original.expiresAtMs,...grant,factsSha256:hash(issuedFacts)};
+ const input={...base,schemaVersion:2,issuance,issuedFacts},capsule=compileHistoricalStopFacts(input);
+ return {...x,input,capsule,record:{...x.record,retirementFacts:capsule}};
+}
+test('MR01 v2 custody retains the exact issuance projection with no credential material',()=>{
+ const {f,input,capsule,record}=custodyFixture();assert.deepEqual(assertHistoricalStopFacts(capsule),capsule);assert.deepEqual(matchHistoricalStopAllocation(capsule,record),capsule);
+ assert.equal(hash(capsule.issuedFacts),input.issuance.factsSha256);assert.equal(Object.hasOwn(capsule,'configurationSha256'),false);
+ for(const secret of Object.values(f.secret))assert.equal(JSON.stringify(capsule).includes(secret),false);
+});
+test('MR01 v2 custody refuses coherent receipt, fact, secret and immutable-intent substitutions',()=>{
+ const {input,capsule,record}=custodyFixture();
+ for(const change of [x=>{x.issuance.requestSha256='invalid';},x=>{x.issuance.binding.writerFence++;},x=>{x.issuance.factsSha256='f'.repeat(64);},x=>{x.issuedFacts.original.planSha256='f'.repeat(64);},x=>{x.issuedFacts.controlCapabilitySha256=x.grantIntents[0].capabilitySha256;},x=>{x.issuedFacts.transport.http.frontendOrigin='https://other.invalid';},x=>{x.issuedFacts.proxyCredential='SYNTHETIC-PRIVATE-MATERIAL';},x=>{x.taskRequest.overrides.containerOverrides[0].environment.push({name:'TOKEN',value:'SYNTHETIC-PRIVATE-MATERIAL'});},x=>{x.issuedFacts.objectiveStrategy={credential:'SYNTHETIC-PRIVATE-MATERIAL'};}]){
+  const changed=structuredClone(input);change(changed);if(changed.issuance.factsSha256===input.issuance.factsSha256)changed.issuance.factsSha256=hash(changed.issuedFacts);
+  assert.throws(()=>compileHistoricalStopFacts(changed),{code:'HISTORICAL_STOP_FACTS_REFUSED'});
+ }
+ const changed=structuredClone(record);changed.retirementFacts.issuance.requestSha256='e'.repeat(64);assert.throws(()=>matchHistoricalStopAllocation(capsule,changed));
+});
+
+test('MR01 Objective custody validates the canonical closed pair and rejects private extras or swapped context',()=>{
+ const f=objectiveProtectedFactsFixture(),raw=f.rawConfiguration;raw.taskRequest.overrides.containerOverrides[0].command=['start'];
+ const compiled=compilePreparedRunFacts(raw,{intent:f.intent,issuance:f.options.issuance,now:()=>f.options.nowMs}),decorated=decorateObjectiveBindFactsInput({preparedFacts:compiled,pair:f.compile()},f.options);
+ const {factsSha256,...issuedFacts}=decorated.facts,input={schemaVersion:2,original:compiled.original,allocationJson:raw.allocationJson,taskRequest:raw.taskRequest,containerName:raw.containerName,qualification:raw.qualification,grantIntents:raw.grantIntents,issuance:{...f.options.issuance,factsSha256},issuedFacts};
+ assert.deepEqual(assertHistoricalStopFacts(compileHistoricalStopFacts(input)).issuedFacts,issuedFacts);
+ for(const change of [x=>{x.objectiveStrategy.request.privateCredential='SYNTHETIC-PRIVATE-MATERIAL';},x=>{x.objectiveGeneration.sourceAdmission.privateCredential='SYNTHETIC-PRIVATE-MATERIAL';},x=>{x.objectiveStrategy.executionContext.extra='SYNTHETIC-PRIVATE-MATERIAL';},x=>{x.objectiveStrategy.executionContext.prompt='swapped context';},x=>{x.objectiveStrategy.executionSelection.extra='SYNTHETIC-PRIVATE-MATERIAL';},x=>{x.objectiveStrategy.request.context.draft.extra='SYNTHETIC-PRIVATE-MATERIAL';},x=>{x.objectiveStrategy.executionSelection.model='x'.repeat(131073);}]){const changed=structuredClone(input);change(changed.issuedFacts);changed.issuedFacts.objectiveStrategy.requestSha256=hash(changed.issuedFacts.objectiveStrategy.request);changed.issuance.factsSha256=hash(changed.issuedFacts);assert.throws(()=>compileHistoricalStopFacts(changed),{code:'HISTORICAL_STOP_FACTS_REFUSED'});}
+});
+
+test('MR01 custody preserves the existing Objective selection capacity above 128KiB',()=>{
+ const f=objectiveProtectedFactsFixture(),prompt='é'.repeat(65000);f.options.accepted.request.prompt=prompt;f.raw.executionContext.prompt=prompt;f.raw.executionContext.promptSha256=createHash('sha256').update(prompt).digest('hex');f.options.issuance.requestSha256=hash(f.options.accepted.request);f.intent.requestSha256=f.options.issuance.requestSha256;
+ const raw=f.rawConfiguration;raw.taskRequest.overrides.containerOverrides[0].command=['start'];const compiled=compilePreparedRunFacts(raw,{intent:f.intent,issuance:f.options.issuance,now:()=>f.options.nowMs}),decorated=decorateObjectiveBindFactsInput({preparedFacts:compiled,pair:f.compile()},f.options),{factsSha256,...issuedFacts}=decorated.facts;
+ const input={schemaVersion:2,original:compiled.original,allocationJson:raw.allocationJson,taskRequest:raw.taskRequest,containerName:raw.containerName,qualification:raw.qualification,grantIntents:raw.grantIntents,issuance:{...f.options.issuance,factsSha256},issuedFacts};assert.ok(Buffer.byteLength(JSON.stringify(input))>131072);assert.deepEqual(assertHistoricalStopFacts(compileHistoricalStopFacts(input)).issuedFacts,issuedFacts);
+ const oversized=structuredClone(input),context=oversized.issuedFacts.objectiveStrategy.executionContext;context.prompt='é'.repeat(300000);context.promptSha256=createHash('sha256').update(context.prompt).digest('hex');oversized.issuance.factsSha256=hash(oversized.issuedFacts);assert.throws(()=>compileHistoricalStopFacts(oversized),{code:'HISTORICAL_STOP_FACTS_REFUSED'});
+ const oversizedBase=structuredClone(input);oversizedBase.issuedFacts.operations=Array(10000).fill('runner/session/load');oversizedBase.issuance.factsSha256=hash(oversizedBase.issuedFacts);assert.throws(()=>compileHistoricalStopFacts(oversizedBase),{code:'HISTORICAL_STOP_FACTS_REFUSED'});
 });

@@ -4,7 +4,8 @@
  * conversation activity and its lifecycle pump, the native capability client, control's worker-http, the action session owner,
  * the native identity context, the Core membership gate, and the conversation and lifecycle services.
  * In process: Core (identity, membership, context) with per-route latency, plus Clerk's 2 s timeout answered as 401;
- * the task verifier's identity+context join (its grant/SQL/ECS checks are not modelled, so live is slower); an in-memory store;
+ * the task verifier, which authorizes each runner operation from the admitted run alone (no Core call; its grant/SQL checks are
+ * not modelled); an in-memory store;
  * the SDK (the real message sequence: system/init, stream events, assistant, result); runner/runtime and
  * runner/checkpoint/complete, whose owners are outside worker-http (they answer at once and are not counted).
  *
@@ -33,7 +34,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {runnerStartupBudget} from '../../../packages/runtime/runner-load-budget.mjs';
 import {withRunnerDiagnostics} from '../runner-runtime-diagnostics.mjs';
-import {CORE_PROFILES,recordHostClockSteps} from './rehearsal-support.mjs';
+import {CORE_PROFILES,recordHostClockSteps,createRehearsalCoreModel} from './rehearsal-support.mjs';
 import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {countingFetch} from '../telemetry/counting.mjs';
 import {createTurnPublishObserver} from '../telemetry/turn-publish.mjs';
@@ -65,23 +66,17 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
  const thrown=[],traced=(name,owner)=>{const copy={};for(const key of Reflect.ownKeys(owner)){const value=owner[key];copy[key]=typeof value!=='function'?value:async(...args)=>{
    try{return await value.apply(owner,args);}catch(error){const chain=[];for(let e=error;e&&chain.length<4;e=e.cause)chain.push(e.code??e.message??String(e));
     if(thrown.length<20)thrown.push({where:`${name}.${String(key)}`,atMs:at(),chain});throw error;}};}return Object.freeze(copy);};
- async function rawCoreFetch(url,init){
-  const path=new URL(url).pathname,route=path.endsWith('/identity')?'identity':path.endsWith('/context')?'context':path.endsWith('/membership')?'membership':null;
-  if(!route)throw Error('unknown local Core route');count(route);
-  if(++coreCalls===clerkTimeoutAt){await delay(CLERK_TIMEOUT_MS,init.signal);return Response.json({message:'Application authority unavailable'},{status:clerkStatus});}
-  await delay(latency[route],init.signal);const now=Date.now(),body=JSON.parse(init.body);
-  if(route==='identity')return Response.json({principal,identityRevision:'identity-revision',checkedAtMs:now,expiresAtMs:expiry()});
-  if(route==='membership')return Response.json({...principal,status:'active',role:'standard_user',permissions:[],clientIds:[clientId],membershipRevision:'membership-revision',checkedAtMs:now,expiresAtMs:expiry()});
-  return Response.json({principal,identityRevision:'identity-revision',identitySha256:body.identitySha256,conversationId:body.conversationId,selectedClientId:clientId,contextRevision:'context-revision',checkedAtMs:now,expiresAtMs:expiry()});
- }
+ const rawCoreFetch=createRehearsalCoreModel({principal,clientId,conversationId:binding.conversationId,latency,delay,before:async(route,_body,init)=>{
+  count(route);if(++coreCalls===clerkTimeoutAt){await delay(CLERK_TIMEOUT_MS,init.signal);return Response.json({message:'Application authority unavailable'},{status:clerkStatus});}
+ }});
  const coreFetch=countingFetch(rawCoreFetch,turnTelemetry);
- // Control: the dynamic first conversation selects this run; the task verifier keeps its own run-bound context.
+ // Control: the dynamic first conversation selects this run.
  const runFact=()=>JSON.stringify({binding,policyRevision:scopes[0].policyRevision,deadlineMs:expiry(),checkedAtMs:Date.now()});
  const currentOwner={async currentRun(){return runFact();},async withCurrentAllocation(){throw Error('unused');}},limits={maxRequestMs:25000,maxFactBytes:65536};
  const identityContext=traced('identity',createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding:{...binding,conversationId:id(901),runId:id(902)},clientResolution:{reference:clientId,clientId}},
   currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits,admitInitialConversation:async()=>runFact()}));
- const verifierContext=traced('verifier',createNativeIdentityContext({origin:'https://core.synthetic.invalid',commandContext:{binding,clientResolution:{reference:clientId,clientId}},currentOwner,fetchImpl:coreFetch,enabled:true,now:Date.now,limits}));
  const membership=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext,fetchImpl:coreFetch,now:Date.now,limits});
+ // Split-route session baseline: no withAuthority is supplied here. D3 uses the canonical S2 composition.
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,
   membership:{admit:membership.admit,recheck:membership.recheck},now:Date.now,limits:{maxSessions:16,maxRequestMs:25000,maxTtlMs:300000,maxFactBytes:65536}});
  const saved={run:{binding,state:'queued',scopes,versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request,lastSequence:1},events=[];
@@ -92,9 +87,9 @@ export async function rehearseFirstTurn({profile,clerkTimeoutAt,clerkStatus=401,
  const service=createTurnPublishObserver({telemetry:turnTelemetry}).observeRunOwner(createConversationLifecycleService({service:createConversationService({sessions,store,dispatcher:{start:unused,cancel:unused,signal:unused},versions,maxRequestMs:25000}),
   store,dispatcher:{start:unused,cancel:unused,signal:unused},sessions,maxRequestMs:25000,reconcileOriginal:unused,checkpoints:{read:unused},
   retention:null})); // no retention gate, as control.mjs passes without one (an explicit decision since L3)
+ // The task verifier: the admitted run row only, no Core call (task-verifier.mjs).
  const native={async call(name,input,{signal}={}){if(name!=='worker/authorize')throw Error('unexpected native operation');
-  const verified=await verifierContext.verifyIdentity({credential:'synthetic-native',deadlineMs:Date.now()+25000,signal});
-  await verifierContext.resolveContext({identityCredential:'synthetic-native',identity:verified,identitySha256:hash(verified),hints:{conversationId:binding.conversationId,runId:binding.runId},deadlineMs:Date.now()+25000,signal});
+  signal?.throwIfAborted();JSON.parse(await currentOwner.currentRun());
   const now=Date.now();return {binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-native',scopes,selectedClientId:clientId,
    policyRevision:scopes[0].policyRevision,authorizationDecisionId:'synthetic-decision',checkedAtMs:now,expiresAtMs:expiry()};}};
  // The session owner is passed as itself: worker-http finds its registered current-state issuer by the owner object, and a traced
@@ -180,7 +175,8 @@ for(const profile of ['quiet','live-median'])test(`first turn completes under th
  const counters=r.telemetry.filter(line=>line.event==='meri.turn.counters'&&line.service==='control');assert.equal(counters.length,1);
  const measured=Object.values(counters[0].core).reduce((sum,statuses)=>sum+Object.values(statuses).reduce((s,n)=>s+n,0),0);
  assert.equal(measured,r.coreCalls,'production counters equal the independent rehearsal Core counter');
- if(profile==='live-median')assert.equal(r.coreCalls,164,'the median fixture preserves the confirmed Core-call baseline');
+ // 164 before the standard task verifier: its per-operation Core identity/context reads (74 at the median) are gone.
+ if(profile==='live-median')assert.equal(r.coreCalls,90,'the median fixture preserves the confirmed Core-call baseline');
 });
 // Core call 31 is late in runner/load (32 Core calls): at the tail a replayed load needs the load stage's room for one replay.
 for(const [profile,clerkTimeoutAt,clerkStatus] of [['live-tail'],['live-median',40,401],['live-median',40,503],['live-tail',31,503]])

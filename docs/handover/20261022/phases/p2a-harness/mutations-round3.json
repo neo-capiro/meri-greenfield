@@ -1,0 +1,17 @@
+[
+ {"id":"F1a-count-every-reset (old behaviour)","lang":"py","file":"apps/proxy/product/owner_https.py","line":310,
+  "old":"if timed_out_read:","new":"if True:",
+  "tests":["apps.proxy.product.test.test_owner_https_resets","apps.proxy.product.test.repro_refusal_quota"]},
+ {"id":"F1b-never-count-a-timeout","lang":"py","file":"apps/proxy/product/owner_https.py","line":299,
+  "old":"timed_out_read = (count_timeout and","new":"timed_out_read = (False and",
+  "tests":["apps.proxy.product.test.test_owner_https_resets"]},
+ {"id":"F1c-count-even-after-status","lang":"py","file":"apps/proxy/product/owner_https.py","line":301,
+  "old":"and pending[1] is connection and not pending[2].is_set())","new":"and pending[1] is connection)",
+  "tests":["apps.proxy.product.test.test_owner_https_resets"]},
+ {"id":"F1d-mutating-frames-count-as-reads","lang":"py","file":"apps/proxy/product/owner_https.py","line":432,
+  "old":"if _read_only_exchange(path, body):","new":"if True:",
+  "tests":["apps.proxy.product.test.test_owner_https_resets"]},
+ {"id":"F1e-bridge-never-marked-sent","lang":"py","file":"apps/proxy/product/owner_channel.py","line":453,
+  "old":"self._sent = True","new":"pass",
+  "tests":["apps.proxy.product.test.test_owner_https_resets","apps.proxy.product.test.test_owner_channel"]}
+]

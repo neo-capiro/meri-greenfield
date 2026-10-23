@@ -13,15 +13,16 @@ function method(port,name){if(!port||typeof port!=='object'||types.isProxy(port)
 export function createRuntimeArtifactApplication(configuration){const c=own(configuration,['sessions','now','limits'],['optionsOwner','retention']),limits=data(own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']));
  if(typeof c.now!=='function'||Object.values(limits).some(n=>!Number.isSafeInteger(n)||n<1)||limits.maxRequestMs>60000||limits.maxRequestBytes>2097152||limits.maxResponseBytes>16777216||c.retention!==undefined&&typeof c.retention?.assertServable!=='function')fail('ARTIFACT_RUNTIME_CONFIGURATION');
  const resolve=c.optionsOwner===undefined?undefined:method(c.optionsOwner,'resolve');
- return Object.freeze({async handle(request){let life;const state={};try{const info=requestInfo(request);if(!resolve)fail('UNAVAILABLE');
-  const deadlineMs=c.now()+limits.maxRequestMs;life=createOperationLifetime({deadlineMs,now:c.now,signal:info.signal,errorFactory:code=>new CommandError(code)});
+ return Object.freeze({async handle(request,callerOptions={}){let life;const state={};try{const info=requestInfo(request);if(!resolve)fail('UNAVAILABLE');
+  const caller=own(callerOptions,[],['deadlineMs']);if(caller.deadlineMs!==undefined&&!Number.isSafeInteger(caller.deadlineMs))fail('ACCESS_DENIED');
+  const requestStarted=c.now(),deadlineMs=Math.min(requestStarted+limits.maxRequestMs,caller.deadlineMs??Infinity);life=createOperationLifetime({deadlineMs,now:c.now,signal:info.signal,errorFactory:code=>new CommandError(code)});
   const body=data(await jsonBody(info,limits.maxRequestBytes,life,life.check)),requestSha256=hash({intent:info.intent,body});
   const rawResolved=await life.run(signal=>resolve({credential:info.credential,intent:info.intent,body,requestSha256,deadlineMs,signal}));if(rawResolved===null||rawResolved===undefined)fail('UNAVAILABLE');
   const resolved=own(rawResolved,['documentOptions','recheck']),recheck=method(rawResolved,'recheck');
   const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled','admitPdf','previewOptions']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
   const innerLimits=documentLimits(options.limits);
   const effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
-  const effectiveDeadlineMs=deadlineMs-limits.maxRequestMs+effectiveLimits.maxRequestMs;life.limitDeadline(effectiveDeadlineMs);
+  const effectiveDeadlineMs=Math.min(deadlineMs,requestStarted+effectiveLimits.maxRequestMs);life.limitDeadline(effectiveDeadlineMs);
   const o=own(options.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
   // The runtime's canonical retention gate is bound here, never taken from the resolved owner options.
   if(c.retention!==undefined)o.retention=c.retention;

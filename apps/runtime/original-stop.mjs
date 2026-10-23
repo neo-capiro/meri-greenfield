@@ -4,7 +4,9 @@ import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs'
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {fault} from './config.mjs';
 
-/** Independent bounded cleanup: never borrows the cancelled execution/request signal or creates execution authority. */
+/** Independent bounded cleanup: never borrows the cancelled execution/request signal or creates execution authority.
+ * Existing originals retain their original expiry. Only a later attempt durably FORECLOSED before any original uses the
+ * pinned terminal UIEvent's createdAt as its event-time cutoff; it is not a database commit time or execution permission. */
 export async function stopOriginal({native,binding,expiresAtMs,now,timeoutMs,code}){
  const executionKey=canonicalSha256(binding),life=createOperationLifetime({now,deadlineMs:now()+timeoutMs,errorFactory:()=>fault(code)});
  try{const p=own(await life.run(signal=>native.call('execution/kickoff/stop',{binding,executionId:executionKey},{signal})),['binding','executionId','expiresAtMs']);if(canonicalSha256(p.binding)!==executionKey||p.executionId!==executionKey||!Number.isSafeInteger(p.expiresAtMs)||expiresAtMs!==undefined&&p.expiresAtMs!==expiresAtMs)throw fault(code);}finally{life.close();}

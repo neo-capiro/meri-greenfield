@@ -20,7 +20,7 @@ test('exact immutable whole-checkpoint prefix can omit resumeSessionAt without l
 const mutations={checkpointHash:f=>f.continuation.checkpointSha256='d'.repeat(64),requestHash:f=>f.continuation.sourceRequestSha256='d'.repeat(64),
  prompt:f=>f.target.request.prompt='Substituted original intent',requestId:f=>f.target.request.requestId=f.target.sourceRequest.requestId,
  window:f=>f.target.request.window={basis:'unbounded'},skill:f=>f.target.request.skill.proseSha256='d'.repeat(64),scope:f=>f.target.scopes=[{...f.target.scopes[0],resourceId:id(30)}],
- sdk:f=>f.target.versions={...f.target.versions,sdk:'0.0.0'},cli:f=>f.target.versions={...f.target.versions,cli:'0.0.0'},image:f=>f.target.versions={...f.target.versions,imageDigest:`sha256:${'d'.repeat(64)}`},
+ sdk:f=>f.target.versions={...f.target.versions,sdk:'0.0.0'},cli:f=>f.target.versions={...f.target.versions,cli:'0.0.0'},format:f=>f.target.versions={...f.target.versions,checkpointFormat:'0.2.0'},
  tenant:f=>f.target.binding.tenantId='other',actor:f=>f.target.binding.actorId='other',run:f=>f.target.binding.runId=f.binding.runId,
  attempt:f=>f.target.binding.attemptId=f.binding.attemptId,worker:f=>f.target.binding.workerId=f.binding.workerId,fence:f=>f.target.binding.writerFence=10,
  conversation:f=>f.target.binding.conversationId=id(30),sourceSessionAlias:f=>{f.continuation.checkpoint.sessionId='latest';f.continuation.checkpointSha256=canonicalSha256(f.continuation.checkpoint);},
@@ -75,12 +75,23 @@ test('steer preserves exact UUID; local duplicate never redispatches nor claims 
  await assert.rejects(f.adapter.apply({...f.command(),prompt:'Altered immutable intent'}),/REPLAY_REFUSED/);
  }finally {f.close();await iterator.return();}
 });
-for(const action of ['pause','waitForApproval'])test(`${action}: owned interrupt receiver, honest still-queued receipt and one close`,async()=>{
+for(const action of ['pause','waitForApproval'])test(`${action}: owned interrupt receiver, honest still-queued receipt and one close`,async t=>{
+ // The stopped-versus-expired ordering is semantic; dedicated cases below advance it.
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
  const f=commandFixture();try {const out=await f.adapter.apply(f.command(action));assert.equal(out.outcome,'UNKNOWN');assert.equal(out.physicalStopProven,false);
  assert.deepEqual(out.interruptReceipt,{still_queued:[id(50)]});assert.deepEqual(f.events,['interrupt','close']);
  assert.equal((await f.adapter.apply(f.command(action))).dispatched,false);assert.deepEqual(f.events,['interrupt','close']);
  await assert.rejects(f.adapter.apply({...f.command(),controlId:id(21)}),/STOPPED/);
  }finally {f.close();}assert.deepEqual(f.events,['interrupt','close']);
+});
+for(const elapsed of [999,1000])test(`stopped SDK control at ${elapsed}ms preserves lifetime-before-stop refusal`,async t=>{
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.now()});
+ const f=commandFixture();try{
+  await f.adapter.apply(f.command('waitForApproval'));t.mock.timers.tick(elapsed);
+  await assert.rejects(f.adapter.apply({...f.command(),controlId:id(21)}),new RegExp(elapsed===999?'SDK_CONTROL_STOPPED':'DEADLINE'));
+  assert.deepEqual(f.events,['interrupt','close']);
+  assert.equal((await f.adapter.apply(f.command('waitForApproval'))).dispatched,false,'durable UNKNOWN replay never dispatches again');
+ }finally{f.close();}assert.deepEqual(f.events,['interrupt','close']);
 });
 test('older interrupt API undefined receipt never becomes proof of empty queue or physical retirement',async()=>{
  const f=commandFixture({interrupt:()=>undefined});try {const out=await f.adapter.apply(f.command('pause'));assert.equal(out.interruptReceipt,null);assert.equal(out.physicalStopProven,false);}

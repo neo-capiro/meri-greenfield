@@ -1,0 +1,107 @@
+{
+  "schema": "capiro.fe-ship-kit.v1",
+  "madeAt": "2026-10-22T16:53:46.448Z",
+  "commit": "87a8495138f0af5303bc93397438238c6cc5081b",
+  "tree": "28f4a76cbdebc9eebeb2ecb011a35a00645a2726",
+  "subject": "fix(meri): align history filter menus to verified Figma composition",
+  "branch": "HEAD",
+  "servingCommit": "4e2c770fc6f888df4035ee2029bbf7f68a14f09d",
+  "repo": "C:/dev/fable/capiro-frontend",
+  "worktree": "C:/dev/fable/wt-fe-121",
+  "python": "C:/Users/neoma/AppData/Local/Python/pythoncore-3.14-64/python.exe",
+  "account": "967807252336",
+  "profile": "capiro-dev",
+  "region": "us-east-1",
+  "bucket": "capiro-portfolio-preview-source-967807252336-us-east-1",
+  "sourceKey": "inputs/portfolio-source.zip",
+  "project": "capiro-portfolio-preview-build",
+  "build": {
+    "timeoutMinutes": 60,
+    "queuedTimeoutMinutes": 10,
+    "attempt": "a1"
+  },
+  "ecrRepositoryName": "capiro/portfolio-preview",
+  "ecrRepositoryUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview",
+  "stack": "Capiro-Portfolio-Preview-Service",
+  "cluster": "capiro-portfolio-preview",
+  "service": "capiro-portfolio-preview",
+  "family": "capiro-portfolio-preview",
+  "containerName": "portfolio-web",
+  "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734",
+  "publicHealthUrl": "https://portfolio-preview.app.capiro.ai/healthz",
+  "appLogGroup": "/capiro/portfolio-preview",
+  "appLogStreamPrefix": "portfolio",
+  "templateSha256": "736a80c52991b5ca694f73727acccf4abd3446b360fa0666ad94258447f635ee",
+  "reviewedTemplate": "C:/dev/fable/frontend-meri-wire/REVIEWED_PREVIEW_TEMPLATE.yml",
+  "baseline": {
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:21",
+    "imageUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview@sha256:8fc64defdc67c052d3eb31a7081194decf8bcedf3abb0166490ee2c3961d819b",
+    "imageTag": "4e2c770fc6f888df4035ee2029bbf7f68a14f09d"
+  },
+  "changeSetName": "fable-fe-pr121-gate-87a84951",
+  "rollbackChangeSetName": "fable-fe-rollback-r21-87a84951",
+  "buildspecSha256": "3ed721b6088b6ec486fbe9f57150011de97c51cf560dc6e35a89f20c3b122768",
+  "dockerfile": {
+    "sha256": "b737adc84f9b46da019ee652ddee60e91e7b33a102a535ed921ca6d2872279fd",
+    "patchedSha256": "e6178ba292977e7a0527de25e5d0e03709b6278445e89a077302e18ab15f7137"
+  },
+  "wsl": {
+    "distro": "Ubuntu-24.04",
+    "nodeBin": "/opt/adj-b-transport/node/bin",
+    "workDir": "/opt/fe-ship-87a84951"
+  },
+  "tests": {
+    "vitest": [
+      "tests/preview-read-receiving.test.ts",
+      "tests/first-chat-intent.test.ts",
+      "tests/first-chat-bootstrap.test.ts",
+      "tests/meri-first-chat-core.test.ts",
+      "tests/meri-first-chat-preview-policy.test.ts",
+      "tests/meri-first-chat-route.test.ts",
+      "tests/meri-first-chat-host.test.ts",
+      "tests/meri-client-selector.test.ts",
+      "tests/meri-conversation-host.test.ts",
+      "tests/meri-conversation-route.test.ts",
+      "tests/meri-conversation-proxy.test.ts",
+      "tests/meri-history-proxy.test.ts",
+      "tests/meri-preview-route-activation.test.ts",
+      "tests/meri-document-proxy.test.ts",
+      "tests/preview-backend-containment.test.ts"
+    ],
+    "browserModules": [
+      "meri-new-conversation.spec.ts"
+    ],
+    "browserModulesGrep": "unknown Meri input|a finished run accepts|Stop requests|a foreign native actor|an uncertain reserved-turn|navigation keeps the uncertain|selected conversation reload|synthetic lost reservation|synthetic desktop held admission|synthetic desktop interrupted initial|synthetic desktop hard reload",
+    "browserPortfolio": [
+      "tests/browser/facility-action-lifetime.spec.ts",
+      "tests/browser/profile-current-state.spec.ts",
+      "tests/browser/work-boundary.spec.ts",
+      "tests/browser/work-documents.spec.ts"
+    ]
+  },
+  "files": {
+    "required": [
+      "scripts/preview-config.test.mjs",
+      "scripts/verify-preview-archive.py",
+      "apps/web/deployment/portfolio/qualify-elements.mjs",
+      "apps/web/deployment/portfolio/smoke.sh",
+      "apps/web/test/browser/playwright.config.ts",
+      "apps/web/playwright.config.ts",
+      "apps/web/Dockerfile"
+    ],
+    "npmScripts": {
+      "package.json": [
+        "architecture",
+        "build",
+        "test:production",
+        "test:browser"
+      ],
+      "apps/web/package.json": [
+        "typecheck",
+        "lint",
+        "test:browser",
+        "test:browser:modules"
+      ]
+    }
+  }
+}

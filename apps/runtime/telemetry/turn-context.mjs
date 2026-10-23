@@ -6,7 +6,7 @@ import {AsyncLocalStorage} from 'node:async_hooks';
 import {createTurnLineEmitter,STAGES,CORE_ROUTES,STATUS_CLASSES,AWS_OPERATIONS,RUN_OWNER_OPERATIONS,safeId,timeoutClass} from './turn-lines.mjs';
 const ambient=new AsyncLocalStorage();
 export const currentTurnTelemetry=()=>ambient.getStore()?.telemetry;
-const empty=()=>({core:{},coreMs:0,clerkReadsEstimate:0,aws:{},awsMs:0,db:{statements:0,ms:0},runOwner:{},runOwnerMs:0});
+const empty=()=>({core:{},coreMs:0,clerkReadsEstimate:0,authorityFresh:0,authorityReuses:0,aws:{},awsMs:0,db:{statements:0,ms:0},runOwner:{},runOwnerMs:0});
 const numeric=n=>typeof n==='number'&&Number.isFinite(n)&&n>=0?n:0;
 const clone=value=>structuredClone(value);
 const keyOf=binding=>binding&&safeId(binding.runId)!=='invalid'&&safeId(binding.attemptId)!=='invalid'?`${binding.runId}:${binding.attemptId}`:undefined;
@@ -16,7 +16,7 @@ function merge(target,source){
  for(const kind of ['core','aws','runOwner'])for(const [name,counts] of Object.entries(source[kind]))for(const [outcome,count] of Object.entries(counts)){
   target[kind][name]??={};add(target[kind][name],outcome,count);
  }
- for(const key of ['coreMs','clerkReadsEstimate','awsMs','runOwnerMs'])add(target,key,source[key]);
+ for(const key of ['coreMs','clerkReadsEstimate','authorityFresh','authorityReuses','awsMs','runOwnerMs'])add(target,key,source[key]);
  add(target.db,'statements',source.db.statements);add(target.db,'ms',source.db.ms);
  return target;
 }
@@ -114,6 +114,7 @@ export function createTurnTelemetry({service,environment='Preview',write,now=Dat
   bind,stage,summary,counters,finish,
   recordCore(route,status,ms){safe(()=>{const c=destination(),r=CORE_ROUTES.includes(route)?route:'other',s=STATUS_CLASSES.includes(status)?status:'unanswered';
    c.core[r]??={};add(c.core[r],s,1);add(c,'coreMs',ms);add(c,'clerkReadsEstimate',({identity:1,context:2,membership:2,current:1,other:0})[r]);});},
+  recordAuthority(kind){safe(()=>{if(kind==='fresh'||kind==='reuse')add(destination(),kind==='fresh'?'authorityFresh':'authorityReuses',1);});},
   recordAws(operation,outcome,ms){safe(()=>{const c=destination(),o=AWS_OPERATIONS.includes(operation)?operation:'other',s=['success','error','timeout','unanswered'].includes(outcome)?outcome:'other';
    c.aws[o]??={};add(c.aws[o],s,1);add(c,'awsMs',ms);});},
   recordDb(ms){safe(()=>{const c=destination();add(c.db,'statements',1);add(c.db,'ms',ms);});},

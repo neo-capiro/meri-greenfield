@@ -10,6 +10,11 @@ const launchTransitions={PREPARED:['CLAIMED'],CLAIMED:['STARTED','UNKNOWN'],STAR
 function launchPins(value){const v=own(value,launchFields);uuid(v.preparationId);digest(v.descriptorSha256);digest(v.configTreeSha256);return v;}
 function launchBinding(value){const v=own(value,[...launchFields,'state']);launchPins(Object.fromEntries(launchFields.map(k=>[k,v[k]])));if(!Object.hasOwn(launchTransitions,v.state))denied();return v;}
 function allocationIntent(i){
+ // Optional future Stop custody is part of the immutable allocation intent. Its semantic
+ // decoder belongs to the runtime Stop owner; this journal never treats it as authority.
+ // 1152KiB = existing 1MiB Objective selection bound + existing 128KiB capsule overhead bound.
+ if(i.retirementFacts!==undefined){const f=i.retirementFacts;if(!f||f.schemaVersion!==2||!same(f.original,i.original)||f.allocationSha256!==i.allocationSha256||f.taskRequestSha256!==i.taskRequestSha256||!same(f.qualification,i.qualification)||!same(f.grantIntents,i.grantIntents)||Buffer.byteLength(JSON.stringify(f))>1179648)denied();}
+
  const o=own(i.original,['binding','executionKey','executionId','planSha256','expiresAtMs','versions']);
  validateShape('RuntimeVersions',o.versions);digest(o.planSha256);
  if(!same(o.binding,i.binding)||o.executionKey!==hash(i.binding)||o.executionId!==o.executionKey||i.allocationKey!==o.executionKey||o.expiresAtMs!==i.expiresAtMs)denied();
@@ -56,8 +61,8 @@ const allocationClaimStates=['queued'],restorationClaimStates=['queued','startin
 export function createNativePreparationJournals({tx,rowRun}){
  const tuple=b=>[b.tenantId,b.conversationId,b.runId];
  function slot({table,key,fields,validateIntent,validateProof,transitions,proofKey,completed,claimStates}){
-  function intent(value){const i=data(value);own(i,['binding',key,...fields,'expiresAtMs']);validateShape('RunBinding',i.binding);digest(i[key]);positive(i.expiresAtMs);validateIntent(i);return i;}
-  function recordValue(value){const r=data(value);own(r,['binding',key,...fields,'expiresAtMs','state',proofKey]);const {state,[proofKey]:proof,...original}=r;intent(original);if(!Object.hasOwn(transitions,state))denied();validateProof(proof,original,state);return r;}
+  function intent(value){const i=data(value);own(i,['binding',key,...fields,'expiresAtMs'],proofKey==='resource'?['retirementFacts']:[]);validateShape('RunBinding',i.binding);digest(i[key]);positive(i.expiresAtMs);validateIntent(i);return i;}
+  function recordValue(value){const r=data(value);own(r,['binding',key,...fields,'expiresAtMs','state',proofKey],proofKey==='resource'?['retirementFacts']:[]);const {state,[proofKey]:proof,...original}=r;intent(original);if(!Object.hasOwn(transitions,state))denied();validateProof(proof,original,state);return r;}
   function decode(row,b,k){try{if(!row||row.record_sha256!==hash(row.record))denied();const r=proofKey==='resource'&&row.record?.state===FORECLOSED?foreclosureRecord(row.record):recordValue(row.record);
    if(!same(r.binding,b)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.intent_key!==r[key]||r[key]!==k)denied();return r;
   }catch{fail('NATIVE_PREPARATION_CORRUPT');}}

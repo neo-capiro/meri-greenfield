@@ -7,16 +7,18 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {compileEcsTaskBinding,assertEcsOwnedTask,assertEcsRunningTask} from './ecs-task-binding.mjs';
 import {executionFault} from './execution-broker.mjs';
 import {compileNativeTaskRequest} from './task-request.mjs';
+import {matchHistoricalStopAllocation} from './historical-stop-facts.mjs';
 /** ECS acknowledges StopTask long before STOPPED: the runner's 60 s stopTimeout, then deprovisioning (47 s observed live). Containment
  * re-describes once a second for at most CONTAINMENT_SETTLE_MS before it gives up on this attempt; only an owned STOPPED task proves the stop. */
 export const CONTAINMENT_SETTLE_MS=15000,CONTAINMENT_POLL_MS=1000;
 export function createNativeTaskAllocator(configuration){
- const c=own(configuration,['journal','authority','admission','client','original','taskRequest','qualification','grantIntents','allocationSha256','containerName'],['enabled','now','maxRequestMs','startupMs']);
+ const c=own(configuration,['journal','authority','admission','client','original','taskRequest','qualification','grantIntents','allocationSha256','containerName'],['enabled','now','maxRequestMs','startupMs','retirementFacts']);
  const {original,request,spec,taskRequestSha256}=compileNativeTaskRequest({original:c.original,taskRequest:c.taskRequest,containerName:c.containerName}),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??30000,startupMs=c.startupMs??180000;
  if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(startupMs)||startupMs<1||startupMs>900000)throw executionFault('ALLOCATION_CONFIGURATION');
  // A cold Fargate start (provisioning + image pull) routinely exceeds one request budget; only the RUNNING wait gets startupMs.
  const vpc=request.networkConfiguration.awsvpcConfiguration;
- const intent=data({binding:original.binding,allocationKey:original.executionKey,original,allocationSha256:c.allocationSha256,qualification:c.qualification,grantIntents:c.grantIntents,taskRequestSha256,expiresAtMs:original.expiresAtMs});
+ const intent=data({binding:original.binding,allocationKey:original.executionKey,original,allocationSha256:c.allocationSha256,qualification:c.qualification,grantIntents:c.grantIntents,taskRequestSha256,expiresAtMs:original.expiresAtMs,...(c.retirementFacts===undefined?{}:{retirementFacts:c.retirementFacts})});
+ if(c.retirementFacts!==undefined){if(c.retirementFacts.schemaVersion!==2)throw executionFault('ALLOCATION_CONFIGURATION');matchHistoricalStopAllocation(c.retirementFacts,{...intent,state:'CLAIMED',resource:null});}
  const send=storageMethod(c.client,'send'),verify=storageMethod(c.authority,'verify'),claim=storageMethod(c.journal,'claim'),read=storageMethod(c.journal,'read'),record=storageMethod(c.journal,'record'),admit=storageMethod(c.admission,'admit'),readAdmission=storageMethod(c.admission,'read'),revoke=storageMethod(c.admission,'revoke');
  async function operation(signal,body,budgetMs=maxRequestMs){nativeSignal(signal);if(!enabled)throw executionFault('ALLOCATION_UNAVAILABLE');const life=createOperationLifetime({now,signal,deadlineMs:now()+budgetMs,errorFactory:()=>executionFault('ALLOCATION_UNKNOWN')});try{return await body(life);}finally{life.close();}}
  // Each ECS API call keeps its own maxRequestMs bound even inside allocate()'s longer startup lifetime.

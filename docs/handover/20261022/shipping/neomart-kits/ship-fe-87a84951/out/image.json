@@ -1,0 +1,17 @@
+{
+  "imageDetails": [
+    {
+      "registryId": "967807252336",
+      "repositoryName": "capiro/portfolio-preview",
+      "imageDigest": "sha256:18dad6581368b44aea7e6f6d39b34a67fb7a07f2c3af5117251dac42efbfd26e",
+      "imageTags": [
+        "87a8495138f0af5303bc93397438238c6cc5081b"
+      ],
+      "imageSizeInBytes": 99127229,
+      "imagePushedAt": "2026-10-22T13:05:56.868000-04:00",
+      "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+      "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+      "imageStatus": "ACTIVE"
+    }
+  ]
+}

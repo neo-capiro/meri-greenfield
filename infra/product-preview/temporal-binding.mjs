@@ -12,12 +12,12 @@ export const TEMPORAL_INTERFACE_ENDPOINTS=Object.freeze({
  ecrApi:'com.amazonaws.us-east-1.ecr.api',ecrDkr:'com.amazonaws.us-east-1.ecr.dkr',
  secretsManager:'com.amazonaws.us-east-1.secretsmanager',logs:'com.amazonaws.us-east-1.logs',kms:'com.amazonaws.us-east-1.kms'
 });
-// Fresh 2026-10-16 jump-cli DescribeDBClusters metadata, no secret lookup.
-// The parent fixed existing Aurora use; this source creates no database instance.
+// Neo selected the copied new-stack cluster on 2026-10-22; Fable owns cutover.
+// Other placement pins retain the reviewed metadata; this source creates no database instance.
 export const TEMPORAL_EXISTING_DATABASE=Object.freeze({
  kind:'existing-aurora-postgresql',
- clusterArn:'arn:aws:rds:us-east-1:967807252336:cluster:capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv',
- endpoint:'capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv.cluster-csryw28ai752.us-east-1.rds.amazonaws.com',
+ clusterArn:'arn:aws:rds:us-east-1:967807252336:cluster:capiro-newstack-preview-clone',
+ endpoint:'capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com',
  port:5432,securityGroupId:'sg-059b4e4de0b1dcca5',databaseVpcId:'vpc-0ac26cfac7ed972be',
  engine:'aurora-postgresql',engineVersion:'16.11'
 });

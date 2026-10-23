@@ -1,5 +1,8 @@
 /** Real task-owned PostgreSQL; synthetic authority/task metadata, no AWS calls. */
 import test from 'node:test';import assert from 'node:assert/strict';
+import {candidateFixture} from '../../../runtime/test/prepared-candidate-fixture.mjs';
+import {compileHistoricalStopFacts} from '../../../runtime/native-authority/historical-stop-facts.mjs';
+import {compileNativeTaskRequest} from '../../../runtime/native-authority/task-request.mjs';
 import pg from '../../../runtime/node_modules/pg/lib/index.js';
 import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {createNativeAllocationAdmission} from '../../../gateway/budget/native-allocation-admission.mjs';
@@ -76,4 +79,20 @@ test('coherently rehashed malformed resource remains corrupt at canonical read b
  const raw=(await f.pool.query('SELECT record FROM meri_conversations.native_allocations')).rows[0].record,next={...raw,state:'ALLOCATED',resource:{...f.resource,taskArn:f.resource.taskArn.replace('967807252336','000000000000')}};
  await f.pool.query('UPDATE meri_conversations.native_allocations SET record=$1,record_sha256=$2',[next,hash(next)]);
  await assert.rejects(f.store.allocations.read(f.key,check),/CORRUPT/);
+});
+
+// Fable-run only in this task: this suite executes SQL; the implementation agent only authored this test.
+test('MR01 real PG keeps future retirement custody immutable across owner restart and nested rewrite attempts',async t=>{
+ const f=await fixture(t),c=candidateFixture().configuration.nativeCandidate,taskRequest=structuredClone(c.taskRequest);taskRequest.overrides.containerOverrides[0].command=['start'];
+ const request=compileNativeTaskRequest({original:f.intent.original,taskRequest,containerName:c.containerName}),grant=f.intent.grantIntents[1];
+ const issuedFacts={original:f.intent.original,allocationSha256:f.intent.allocationSha256,taskRequestSha256:request.taskRequestSha256,qualification:f.intent.qualification,grantIntents:f.intent.grantIntents,grantId:grant.grantId,operations:c.operations,controlCapabilitySha256:'0'.repeat(64),transport:{origin:c.taskOrigin,http:c.taskHttp}};
+ const issuance={issuanceKey:f.intent.allocationKey,binding:f.intent.binding,requestSha256:'1'.repeat(64),expiresAtMs:f.intent.expiresAtMs,grantId:grant.grantId,capabilitySha256:grant.capabilitySha256,factsSha256:hash(issuedFacts)};
+ const retirementFacts=compileHistoricalStopFacts({schemaVersion:2,original:f.intent.original,allocationJson:f.config.allocationJson,taskRequest,containerName:c.containerName,qualification:f.intent.qualification,grantIntents:f.intent.grantIntents,issuance,issuedFacts});
+ const intent={...f.intent,taskRequestSha256:request.taskRequestSha256,retirementFacts};await f.store.allocations.claim(intent,check);
+ const recovered=createPostgresConversationStore({pool:f.pool});assert.equal((await recovered.allocations.claim(intent,check)).dispatch,false);assert.deepEqual((await recovered.allocations.read(f.key,check)).record.retirementFacts,retirementFacts);
+ const raw=(await f.pool.query('SELECT record FROM meri_conversations.native_allocations')).rows[0].record;
+ for(const mutate of [v=>{delete v.retirementFacts;},v=>{v.retirementFacts.issuance.requestSha256='2'.repeat(64);},v=>{v.retirementFacts.issuedFacts.controlCapabilitySha256='3'.repeat(64);},v=>{v.retirementFacts.taskRequest.taskDefinition+='9';}]){
+  const changed=structuredClone(raw);mutate(changed);await assert.rejects(f.pool.query('UPDATE meri_conversations.native_allocations SET record=$1,record_sha256=$2',[changed,hash(changed)]));
+ }
+ assert.deepEqual((await recovered.allocations.read(f.key,check)).record.retirementFacts,retirementFacts);
 });

@@ -51,7 +51,9 @@ export function createNativeContinuationRuntime(configuration){
   const expiresAtMs=assertRestoreReceipt(restored.restoreReceipt,{...context,continuation:lineage(context),started,now}),key=assertSdkSessionKey(restored.sdkSessionKey,{main:true}),expected=context.nextTurn?context.nextTurn.checkpoint.sessionId:context.continuation.mode==='resume'?context.continuation.checkpoint.sessionId:context.continuation.targetSessionId;
   if(key.sessionId!==expected)throw executionFault('CONTINUATION_REFUSED');
   const final=await snapshot(input.binding,input.signal);
-  if(!same(pin(first),pin(final))||expiresAtMs>Math.min(first.receipt.expiresAtMs,final.receipt.expiresAtMs)||expiresAtMs<=now())throw executionFault('CONTINUATION_REFUSED');
+  // S2: authority receipts last ~120 s and each later operation re-verifies; the restored lease (the original's) is not
+  // bounded by them. Both authority snapshots must still be valid now and pin the same run.
+  if(!same(pin(first),pin(final))||Math.min(first.receipt.expiresAtMs,final.receipt.expiresAtMs)<=now()||expiresAtMs<=now())throw executionFault('CONTINUATION_REFUSED');
   return restored;
  }
  async function readSnapshot(value){

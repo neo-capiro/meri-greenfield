@@ -1,5 +1,5 @@
 /** Conversation document and typed ZIP intents enter the same current-session, Core-authorized, durable runtime application as HTTP.
- * Only trusted composition supplies these ports. A short-lived action session is issued for this call and always revoked;
+ * Only trusted composition supplies these ports. The originating run's action session is borrowed and never revoked here;
  * the native credential and session credential never enter an intent argument, prepared result or retained command.
  * Missing owners omit the preparers. Before the application is called, refusal has no document effect; afterward every
  * failure is conservatively UNKNOWN and the canonical intent journal prevents another preparation of that delivery. */
@@ -8,7 +8,7 @@ import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' wit
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {assertActionSessionReceipt} from '../../control/action-host/session/owner.mjs';
+import {assertActionSessionReceipt,borrowedRunSession} from '../../control/action-host/session/owner.mjs';
 import {createDocumentIntentPreparer,DOCUMENT_INTENT_OPERATIONS} from '../../control/intents/document-preparer.mjs';
 import {createAnalysisIntentPreparer,ANALYSIS_INTENT_OPERATIONS} from '../../control/intents/analysis-preparer.mjs';
 import {intentFault} from '../../control/intents/faults.mjs';
@@ -29,15 +29,15 @@ function method(owner,name){
 export function createRuntimeDocumentIntentPreparers(configuration){
  let c,binding,limits;
  try{
-  c=own(configuration,['binding','selectedClientId','now','limits'],['sessions','optionsOwner','nativeCredentials','retention']);
+  c=own(configuration,['binding','selectedClientId','now','limits'],['sessions','optionsOwner','nativeCredentials','retention','borrowSession']);
   binding=data(c.binding);validateShape('RunBinding',binding);limits=documentLimits(c.limits);
   if(!UUID.test(c.selectedClientId??'')||typeof c.now!=='function'||types.isProxy(c.now))throw 0;
  }catch{throw intentFault('INTENT_CONFIGURATION');}
  if(c.sessions===undefined||c.optionsOwner===undefined||c.nativeCredentials===undefined)return Object.freeze([]);
  if(!c.sessions||typeof c.sessions!=='object'||types.isProxy(c.sessions))throw intentFault('INTENT_CONFIGURATION');
- // Derived sessions cannot feed the native relay. Revoking the originating live action session must still stop this call.
- if(!Object.getOwnPropertyDescriptor(c.sessions,'issueDerived'))return Object.freeze([]);
- const issue=method(c.sessions,'issueDerived'),authenticate=method(c.sessions,'authenticateSession'),read=method(c.sessions,'readCurrentState'),revoke=method(c.sessions,'revoke');
+ const borrow=c.borrowSession??borrowedRunSession(c.sessions);if(borrow===undefined)return Object.freeze([]);
+ if(typeof borrow!=='function'||types.isProxy(borrow))throw intentFault('INTENT_CONFIGURATION');
+ const authenticate=method(c.sessions,'authenticateSession'),read=method(c.sessions,'readCurrentState');
  const nativeCredentialFor=method(c.nativeCredentials,'nativeCredentialFor');method(c.optionsOwner,'resolve');
  const app=createRuntimeArtifactApplication({sessions:c.sessions,optionsOwner:c.optionsOwner,now:c.now,limits,...(c.retention===undefined?{}:{retention:c.retention})});
  const preparers=[...DOCUMENT_INTENT_OPERATIONS,...ANALYSIS_INTENT_OPERATIONS].map(id=>{
@@ -59,7 +59,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
       clip(value.expiresAtMs);return value.credential;
      };
      const credential=native();
-     session=await life.run(signal=>issue({identityCredential:credential,hints:{conversationId:binding.conversationId,runId:binding.runId,clientId:c.selectedClientId},signal,deadlineMs}));
+     session=await life.run(signal=>borrow({binding,selectedClientId:c.selectedClientId,signal}));
      session=assertActionSessionReceipt(session,c.now());
      clip(session.expiresAtMs);
      const selected=session.context;
@@ -80,7 +80,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
       const body=JSON.stringify({deliveryId:write.deliveryId,request:write.request});
       // Both routing and credentials are fixed by this trusted adapter. No URL, context or bearer is model supplied.
       const request=new Request('https://meri-control.internal/api/documents/create',{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json','content-length':String(Buffer.byteLength(body))},body,signal});
-      started=true;const response=await life.run(()=>app.handle(request));
+      started=true;const response=await life.run(()=>app.handle(request,{deadlineMs}));
       if(response.status!==200)throw intentFault('UNKNOWN','unknown');
       const text=await life.run(()=>response.text());if(Buffer.byteLength(text)>limits.maxResponseBytes)throw intentFault('UNKNOWN','unknown');
       return JSON.parse(text);
@@ -92,7 +92,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
      if(started)throw intentFault('UNKNOWN','unknown');
      const code=['INVALID_ARGUMENTS','UNAVAILABLE','ACCESS_DENIED','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'ACCESS_DENIED';
      throw intentFault(code,'none');
-    }finally{try{if(session)revoke(session.credential);}finally{life?.close();}}
+    }finally{life?.close();}
    }});
  });
  return Object.freeze(preparers);

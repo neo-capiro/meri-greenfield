@@ -1,8 +1,11 @@
 /** Read-only native Core context join for an already member-owned saved conversation. */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
+import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../control/action-host/application-adapters/authority-http.mjs';
-import {ProductError} from '../../control/product-access/errors.mjs';
+import {ProductError,productFailure} from '../../control/product-access/errors.mjs';
+import {isAuthorityUnavailable,markAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
+import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
+import {CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
 
 const unavailable=()=>{throw new ProductError('CONVERSATION_UNAVAILABLE');};
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -24,13 +27,19 @@ export function createCoreConversationCurrentness(configuration){
    if(!scopes.some(scope=>scope.kind==='client'&&scope.resourceId===c.selectedClientId))unavailable();
    const started=c.now();if(!Number.isSafeInteger(started)||call.deadlineMs<=started)unavailable();
    const deadlineMs=Math.min(call.deadlineMs,started+limits.maxRequestMs);
-   const identity=await client.readIdentity({credential:call.credential,signal:call.signal,deadlineMs});
-   fresh(identity,started);if(!samePrincipal(identity,principal))unavailable();
-   const identitySha256=canonicalSha256(identity),contextStarted=c.now();if(!Number.isSafeInteger(contextStarted)||contextStarted<started)unavailable();
-   const context=await client.readContext({credential:call.credential,identitySha256,conversationId:call.conversationId,clientId:c.selectedClientId,signal:call.signal,deadlineMs:Math.min(deadlineMs,identity.expiresAtMs)});
-   fresh(context,contextStarted);
-   if(!samePrincipal(context,principal)||context.identitySha256!==identitySha256||context.identityRevision!==identity.identityRevision||context.conversationId!==call.conversationId||context.selectedClientId!==c.selectedClientId)unavailable();
-   if(call.signal?.aborted||c.now()>=Math.min(deadlineMs,identity.expiresAtMs,context.expiresAtMs))unavailable();
-  }catch{unavailable();}
+   // History is not a run: never enter the O208 receipt cache or retain a positive across rows/requests.
+   // Membership admission supplies this pin; no identity/context revision is invented from stored local policy scopes.
+   const expect=principal.membershipRevision===undefined?undefined:{membershipRevision:principal.membershipRevision};
+   currentTurnTelemetry()?.recordAuthority?.('fresh');
+   const receipt=await client.readCurrent({credential:call.credential,conversationId:call.conversationId,clientId:c.selectedClientId,...(expect?{expect}:{}),signal:call.signal,deadlineMs:Math.min(deadlineMs,started+CURRENT_MAX_WAIT_MS)});
+   fresh(receipt,started);
+   if(!samePrincipal(receipt,principal)||receipt.conversationId!==call.conversationId||receipt.selectedClientId!==c.selectedClientId)unavailable();
+   if(call.signal?.aborted||c.now()>=Math.min(deadlineMs,receipt.expiresAtMs))unavailable();
+  }catch(cause){
+   if(productFailure(cause))throw cause;
+   // Preserve the frozen content-free history envelope; status/availability classify the adapter observation only.
+   const error=Object.assign(new ProductError('CONVERSATION_UNAVAILABLE'),{status:[401,403,409].includes(cause?.status)?cause.status:503});
+   throw isAuthorityUnavailable(cause)?markAuthorityUnavailable(error):error;
+  }
  }});
 }

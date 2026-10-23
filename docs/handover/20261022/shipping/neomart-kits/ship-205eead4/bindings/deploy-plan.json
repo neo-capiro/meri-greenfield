@@ -1,0 +1,113 @@
+{
+ "order": [
+  "model",
+  "issuer",
+  "app"
+ ],
+ "stacks": {
+  "model": {
+   "stack": "meri-first-chat-model",
+   "templateFile": "C:\\dev\\fable\\ship-205eead4\\bindings\\model.template.json",
+   "bytes": 16281,
+   "viaS3": false,
+   "command": [
+    "aws",
+    "cloudformation",
+    "deploy",
+    "--region",
+    "us-east-1",
+    "--stack-name",
+    "meri-first-chat-model",
+    "--template-file",
+    "C:\\dev\\fable\\ship-205eead4\\bindings\\model.template.json",
+    "--capabilities",
+    "CAPABILITY_IAM",
+    "--no-execute-changeset",
+    "--no-fail-on-empty-changeset"
+   ],
+   "wait": [
+    "aws",
+    "cloudformation",
+    "wait",
+    "stack-update-complete",
+    "--region",
+    "us-east-1",
+    "--stack-name",
+    "meri-first-chat-model"
+   ]
+  },
+  "issuer": {
+   "stack": "meri-first-chat-issuer",
+   "templateFile": "C:\\dev\\fable\\ship-205eead4\\bindings\\issuer.template.json",
+   "bytes": 5922,
+   "viaS3": false,
+   "command": [
+    "aws",
+    "cloudformation",
+    "deploy",
+    "--region",
+    "us-east-1",
+    "--stack-name",
+    "meri-first-chat-issuer",
+    "--template-file",
+    "C:\\dev\\fable\\ship-205eead4\\bindings\\issuer.template.json",
+    "--no-execute-changeset",
+    "--no-fail-on-empty-changeset"
+   ],
+   "wait": [
+    "aws",
+    "cloudformation",
+    "wait",
+    "stack-update-complete",
+    "--region",
+    "us-east-1",
+    "--stack-name",
+    "meri-first-chat-issuer"
+   ]
+  },
+  "app": {
+   "stack": "meri-first-chat-app",
+   "templateFile": "C:\\dev\\fable\\ship-205eead4\\bindings\\app.template.json",
+   "bytes": 14505,
+   "viaS3": false,
+   "command": [
+    "aws",
+    "cloudformation",
+    "deploy",
+    "--region",
+    "us-east-1",
+    "--stack-name",
+    "meri-first-chat-app",
+    "--template-file",
+    "C:\\dev\\fable\\ship-205eead4\\bindings\\app.template.json",
+    "--no-execute-changeset",
+    "--no-fail-on-empty-changeset"
+   ],
+   "wait": [
+    "aws",
+    "cloudformation",
+    "wait",
+    "stack-update-complete",
+    "--region",
+    "us-east-1",
+    "--stack-name",
+    "meri-first-chat-app"
+   ]
+  }
+ },
+ "expectedTaskDefinitions": {
+  "control": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:48",
+  "temporal-worker": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:47",
+  "temporal-issuer": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:47",
+  "model-owner": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:46",
+  "model-proxy": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:46",
+  "runner": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:33"
+ },
+ "services": {
+  "control": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-control",
+  "temporal-worker": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-temporal-worker",
+  "temporal-issuer": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-temporal-issuer",
+  "model-owner": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-owner",
+  "model-proxy": "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-proxy"
+ }
+}

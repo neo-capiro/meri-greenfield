@@ -1,0 +1,8 @@
+{
+  "ETag": "\"4f72047e8e885c3ed94087d123a76bba\"",
+  "ChecksumSHA256": "JTqyF6IYek5siBTwp7R4p+pOJeK2Z0QQWCG1x5/5TwQ=",
+  "ChecksumType": "FULL_OBJECT",
+  "ServerSideEncryption": "aws:kms",
+  "VersionId": "L.3T9sRiD.YaXxtwp6fyhqqMEJyaFNiQ",
+  "SSEKMSKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+}
