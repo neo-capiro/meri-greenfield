@@ -20,7 +20,7 @@ const json=async name=>JSON.parse((await bytes(name)).toString('utf8'));
 const sha=b=>createHash('sha256').update(b).digest('hex');
 /** Reviewed sources present in history; all image receipts in this test are synthetic. */
 const PREVIOUS_COMMIT='05d588c7c5d6da8b8e8a12ea4d47e16526af1aaf';
-const CURRENT_COMMIT='9b678896544b03f32ed482d6cac639d978dd7e81';
+const CURRENT_COMMIT='e0b2243e35e5b08bb263868cd03523230363db89';
 const LATEST=Object.values(STAGE3_FAMILIES).flatMap(f=>[`${f}\tarn:aws:ecs:us-east-1:967807252336:task-definition/${f}:7`,`${f}\tNone`]).join('\n')+'\n';
 
 async function inputs(){
@@ -56,8 +56,12 @@ test('the migration plan parses exactly as first-chat-migrate.mjs declares it; t
  assert.equal(migrationDelta(meri.slice(0,-1),meri).required,true,'a new meri-stage entry must be applied before the stacks update');
  const extended=migrationDelta(parsed.slice(0,-1),parsed);
  assert.equal(extended.required,true,'SDK usage requires its integration migration before release');assert.equal(extended.integrationChanged,true);
- assert.deepEqual(extended.stages,['integration']);assert.equal(extended.previousEntries,42);assert.equal(extended.currentEntries,43);
- assert.equal(extended.added[0].sha256,'234433e94a6fbc68ef76b74929f7e3e54fcba1db5d15a396dcaa0f817214933c');
+ assert.deepEqual(extended.stages,['integration']);assert.equal(extended.previousEntries,43);assert.equal(extended.currentEntries,44);
+ assert.equal(extended.added[0].sha256,'bc03d9ed37371b0841993f05d86c521c803cb58205f668913a5f0d7eabfde4fe');
+ const beforeSdk=migrationDelta(parsed.slice(0,-2),parsed);
+ assert.equal(beforeSdk.previousEntries,42);assert.equal(beforeSdk.currentEntries,44);
+ assert.deepEqual(beforeSdk.stages,['integration']);
+ assert.deepEqual(beforeSdk.added.map(e=>e.sha256),['234433e94a6fbc68ef76b74929f7e3e54fcba1db5d15a396dcaa0f817214933c','bc03d9ed37371b0841993f05d86c521c803cb58205f668913a5f0d7eabfde4fe']);
  assert.deepEqual(migrationDelta([],parsed).stages,['meri','temporal','meri','integration'],'stage order follows contiguous ledger entries, including the second meri stage');
  for(const key of ['sha256','kind','source','stage']){
   const changed=structuredClone(parsed);changed.at(-1)[key]=key==='sha256'?'9'.repeat(64):'changed';
@@ -81,7 +85,7 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  assert.deepEqual(p.steps.map(s=>s.id),['readback','migrate','upload','bindings',...STAGE3_DEPLOY_ORDER.map(k=>`deploy-${k}`),'verify']);
  const migration=p.steps.find(s=>s.id==='migrate');
  assert.deepEqual(migration.commands.map(c=>c.argv.at(-1)),['plan'],'an unchanged source still requires full actual-ledger verification');
- assert.match(migration.gate,/all 43 entries applied/u);assert.match(migration.gate,/snapshot and isolated rehearsal/u);
+ assert.match(migration.gate,/all 44 entries applied/u);assert.match(migration.gate,/snapshot and isolated rehearsal/u);
  const upload=p.steps.find(s=>s.id==='upload').commands.filter(c=>c.argv.includes('put-secret-value'));
  assert.equal(upload.length,3);for(const c of upload)assert.equal(c.argv[c.argv.indexOf('--version-stages')+1],'FIRST_CHAT_20261021A');
  const bindings=p.steps.find(s=>s.id==='bindings').commands.at(-1).argv;assert.ok(bindings.includes('--live-app-template'));
@@ -99,12 +103,13 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
 
 test('an integration-only source delta reaches the operator packet before uploads',async()=>{
  const i=await inputs(),parsed=planEntries(await readFile(join(here,'..','first-chat-migrate.mjs'),'utf8'));
- i.migrations=migrationDelta(parsed.slice(0,-1),parsed);
+ i.migrations=migrationDelta(parsed.slice(0,-2),parsed);
  const p=buildShipPacket(i),step=p.steps.find(s=>s.id==='migrate'),md=renderMarkdown(p);
  assert.deepEqual(step.commands.map(c=>c.argv.at(-1)),['plan','integration']);
  assert.match(step.commands[1].note,/earlier stages are pending/u);
  assert.ok(p.steps.indexOf(step)<p.steps.findIndex(s=>s.id==='upload'));
  assert.match(md,/integration: conversation\('0021_sdk_run_usage.sql'\)/u);
+ assert.match(md,/integration: conversation\('0022_sdk_run_usage_grants.sql'\)/u);
  assert.match(md,/node infra\/product-preview\/first-chat-migrate.mjs integration/u);
  assert.doesNotMatch(md,/None: the migration plan|stage meri\) before/u);
 });
