@@ -93,3 +93,12 @@ test('P8 fields resolve platform Ã¢Ë†Â§ tenant Ã¢Ë†Â§ role: flags 
  assert.throws(()=>resolveCapabilityPolicy({platform:{...platform,maximum:{generalReads:false},roleCeilings:{admin:{}}},tenant:{capabilities:{generalReads:true}},role:'admin'}),e=>e.code==='CAPABILITY_TENANT_WIDENING_REFUSED'&&e.field==='generalReads');
  assert.deepEqual(intersectCapabilityPolicies(assertCapabilityPolicy({generalReads:true}),assertCapabilityPolicy({readFamilies:[]})),assertCapabilityPolicy({readFamilies:[]}));
 });
+
+
+test('General source support is exact, installed, read-only and bound to this private actor; other operations stay unavailable',()=>{
+ const op={id:'search_tracked_bills',version:'0.2.0'},binding={tenantId:'tenant',actorId:'actor'},scope={kind:'private-user',tenantId:'tenant',resourceId:'actor',policyRevision:'p'};
+ const input={policy:{generalReads:true,readFamilies:['tracked-bills','client-knowledge-profile','memory-proposals']},installation:{operations:[op]},discovery:{operations:[op]},scopes:[scope],binding};
+ assert.deepEqual(ids(resolveAvailableReads(input)),[op.id]);
+ for(const change of [{binding:undefined},{binding:{...binding,actorId:'foreign'}},{scopes:[{...scope,tenantId:'foreign'}]},{scopes:[scope,{...scope,resourceId:'foreign'}]},{installation:{operations:[]}},{discovery:{operations:[]}},{installation:{operations:[{...op,version:'0.3.0'}]}}])assert.deepEqual(ids(resolveAvailableReads({...input,...change})),[]);
+ for(const unsupported of [{id:'get_client_context',version:'0.3.0'},{id:'memory.list_own_proposals',version:'0.2.0'},{id:'create_task',version:'0.2.0'}])assert.deepEqual(ids(resolveAvailableReads({...input,installation:{operations:[unsupported]},discovery:{operations:[unsupported]}})),[]);
+});

@@ -1,3 +1,4 @@
+import {supportsGeneralRead} from './general-support.mjs';
 // @ts-check
 /** Which general reads appear in a run: the intersection of six gates over trusted inputs only
  * (FABLE-GENERAL-READ-TOOLS-20261015 §2.3). Model output, UI hints and repository flags never take part. Pure.
@@ -12,6 +13,7 @@
  *
  * A selected skill narrows to its allowed operations; operations another server already exposes are excluded.
  * Gates 3 to 6 are coarse pre-filters: the gateway's full current-authority chain still runs on every call. */
+import {conversationScopeMatches} from '../../../../packages/contracts/conversation-scope.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -34,12 +36,12 @@ export function familyReads(families=READ_FAMILIES){
   return typeof family==='string'&&Object.hasOwn(families,family)&&(!families[family].operationIds||families[family].operationIds.includes(descriptor.operation.id))?[{operation:descriptor.operation,family,descriptor}]:[];});
 }
 /** @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[]},installation:{operations:readonly OperationRef[]},
- *  discovery:{operations:readonly OperationRef[]},scopes:readonly {kind:string}[],families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,
+ *  discovery:{operations:readonly OperationRef[]},scopes:readonly {kind:string}[],binding?:any,families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,
  *  narrowTo?:readonly OperationRef[],exclude?:readonly OperationRef[]}} input
  * @returns {{available:AvailableRead[],unavailable:string[]}} */
-export function resolveAvailableReads({policy,installation,discovery,scopes,families=READ_FAMILIES,narrowTo,exclude=[]}){
+export function resolveAvailableReads({policy,installation,discovery,scopes,binding,families=READ_FAMILIES,narrowTo,exclude=[]}){
  const installed=among(installation.operations),eligible=among(discovery.operations),excluded=among(exclude),narrowed=narrowTo===undefined?()=>true:among(narrowTo);
- const deferred=new Set(DEFERRED_ORIGINALS),client=scopes.some(s=>s.kind==='client');
+ const deferred=new Set(DEFERRED_ORIGINALS),client=scopes.some(s=>s.kind==='client'),general=binding!==undefined&&conversationScopeMatches(scopes,binding,null);
  /** @type {AvailableRead[]} */const available=[];/** @type {string[]} */const unavailable=[];
  for(const row of familyReads(families)){
   const d=row.descriptor,family=families[row.family];
@@ -47,7 +49,8 @@ export function resolveAvailableReads({policy,installation,discovery,scopes,fami
    installed(row.operation)&&
    policy.generalReads===true&&(policy.readFamilies??[]).includes(row.family)&&
    eligible(row.operation)&&
-   (client||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(row.operation.id))&&
+   (!general||supportsGeneralRead(row.operation))&&
+   (client||general||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(row.operation.id))&&
    !deferred.has(row.operation.id)&&!deferred.has(sdkToolName(row.operation))&&
    narrowed(row.operation)&&!excluded(row.operation);
   if(open)available.push(row);else if(!excluded(row.operation))unavailable.push(d.displayName);

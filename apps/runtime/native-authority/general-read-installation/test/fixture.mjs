@@ -24,8 +24,8 @@ function combinedPool(budget,conversation){return {async connect(){let client;co
  return client.query(sql,args);
  },release(error){client?.release(error);}};}};}
 
-export async function installationFixture({scene=billTextCase()}={}){
- const f=await ownerFixture(scene.operation.id,{scene}),sf=storeFixture();Object.assign(sf.state,f.storeState);
+export async function installationFixture({scene=billTextCase(),general=false}={}){
+ const f=await ownerFixture(scene.operation.id,{scene,general}),sf=storeFixture();Object.assign(sf.state,f.storeState);
  const pool=combinedPool(f.gatewayConfiguration.pool,sf.pool),original=createExecutionBinding({binding:f.binding,versions,plan:{synthetic:true},expiresAtMs:f.deadlineMs}),grant=f.grant;
  const currentOwner=createPostgresAdmittedRunOwner({pool:admissionPool(f),allocationJson:f.allocationJson,grantFactsJsons:[JSON.stringify(grant)],now:f.now,limits:{maxRequestMs:1000,maxFactBytes:131072}});
  const tuple={pool,binding:f.binding,original,allocationJson:f.allocationJson,grantFactsJsons:[JSON.stringify(grant)],grantId:grant.grantId,taskArn:grant.qualificationBinding.workerArn,issuanceFactsSha256:f.entry.issuanceFactsSha256,runRequestSha256:f.entry.runRequestSha256,scopes:f.scopes,readCurrentEntry:f.configuration.readCurrentEntry,currentOwner,sourceEnabled:true,limits:{maxRequestMs:3000,maxFactBytes:131072},now:f.now,taskVerifier:f.configuration.taskVerifier,taskCapability:f.configuration.taskCapability,approvedReads:f.configuration.approvedReads};

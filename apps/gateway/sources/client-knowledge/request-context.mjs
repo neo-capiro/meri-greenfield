@@ -4,6 +4,7 @@ import {canonicalSha256,validateShape as publicShape} from '../../../../packages
 import {assertSubject,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {deny} from '../../dispatch/operation-result.mjs';
 import {frozenData,ownFields} from '../source-admission.mjs';
+import {conversationScopeMatches} from '../../../../packages/contracts/conversation-scope.mjs';
 export {frozenData,ownFields} from '../source-admission.mjs';
 export const operationIds=Object.freeze(['search_memory','read_monday_client_boards']);
 const aborted=Object.getOwnPropertyDescriptor(AbortSignal.prototype,'aborted').get;
@@ -51,13 +52,17 @@ export function readContext(call,now) {
   active();let normalized;
   try {normalized=contract.normalizeInput(request,normalizationContext);}catch {deny('INVALID_ARGUMENTS');}
   if(!same(normalized.input,input))deny('INVALID_ARGUMENTS');
-  if(operation.id==='search_memory'&&signed&&
+  const generalMemory=operation.id==='search_memory'&&signed&&input.clientId===null&&subject.kind==='personal'&&subject.entityType==='user'&&
+    subject.entityIds.length===1&&subject.entityIds[0]===authority.binding.actorId&&
+    conversationScopeMatches(subject.scopes,authority.binding,null,authority.policyRevision)&&
+    conversationScopeMatches(claims.scopes,authority.binding,null,authority.policyRevision);
+  if(operation.id==='search_memory'&&signed&&!generalMemory&&
       (input.clientId===null||subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==input.clientId||
         subject.scopes.length!==1||subject.scopes[0].kind!=='client'||subject.scopes[0].resourceId!==input.clientId))deny('ACCESS_DENIED');
   if(!(operation.id==='search_memory'&&signed)&&
       (input.clientId!==null ? subject.kind!=='client'||subject.entityIds[0]!==input.clientId : subject.kind!=='personal'))deny('ACCESS_DENIED');
   const metadata=normalized.metadata;
-  return {operation,contract,input,request,authority,normalizationContext,metadata,signal,deadlineMs,active,
+  return {operation,contract,input,request,authority,normalizationContext,metadata,signal,deadlineMs,active,generalMemory,
     invocationId:fields.invocationId,limitReleaseDeadline:fields.limitReleaseDeadline,
     argumentsSha256:normalized.argumentsSha256,requestSha256:canonicalSha256({input,metadata})};
 }
@@ -74,5 +79,8 @@ export function assertPins(receipt,pins) {
 }
 export function assertResult(result,context) {
   context.active();try {context.contract.assertOutput(result,{request:context.request,...context.normalizationContext});}
-  catch {deny('INVALID_RESULT');}context.active();return result;
+  catch {deny('INVALID_RESULT');}
+  // General recall can only return personal and firm memory. A current client grant never widens this path.
+  if(context.generalMemory&&result.records?.some(row=>!['user_private','firm'].includes(row.payload.scope)||row.payload.clientId!==null))deny('ACCESS_DENIED');
+  context.active();return result;
 }

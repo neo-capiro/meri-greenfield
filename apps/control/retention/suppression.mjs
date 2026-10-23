@@ -82,7 +82,7 @@ export function createSuppressionOwner({ledger,journal,ownership,authorization=r
    const current=await journal.get(key),expected=projectionToken(current);if(current&&current.state!=='RELEASED')return Object.freeze({...current,replayed:true});
    let cancelled=[];if(cancellation&&access.inFlightRuns.length){cancelled=data(await cancellation.cancelInFlight({principal:p,subject:s,runs:access.inFlightRuns,signal}));if(!Array.isArray(cancelled))fail('RETENTION_CANCELLATION_REFUSED');}
    barrier();const entry=await ledger.append({subject:s,state:'SUPPRESSED',reason,facts:{principal:p,authorization:auth,outstandingAccess:access,cancelled,revokes:['read','replay','restore','continuation','reservation','allocationClaim'],cannotRecall:['issuedSignedUrlsUntilExpiry','runningWorkerUntilOwnCleanup']}});
-   const row={state:'SUPPRESSED',ownerActorId:s.ownerActorId,suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,outstandingAccess:access,cancelled,purge:null};
+   const row={state:'SUPPRESSED',...(entry.reason==='conversation-trash'?{purpose:'conversation-trash'}:{}),ownerActorId:s.ownerActorId,suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,outstandingAccess:access,cancelled,purge:null};
    await project(key,row,expected);return Object.freeze({...row,replayed:false});
   });
  }

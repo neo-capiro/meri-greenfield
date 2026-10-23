@@ -48,7 +48,7 @@ export async function createGeneralReadRuntime(configuration){
  const narrowing={...(c.skill?{narrowTo:c.skill.allowedOperations}:{}),exclude:c.exclude??[]};
  // Profile mount: the exact active tool list is fixed by the profile before any availability is read.
  const mounted=profile?profileReads({policy:c.policy,...narrowing}):undefined;if(mounted&&!mounted.length)return null;
- const gates=(/** @type {ReturnType<typeof assertAvailabilitySnapshot>} */snapshot)=>resolveAvailableReads({policy:c.policy,installation:snapshot.installation,discovery:snapshot.discovery,scopes,
+ const gates=(/** @type {ReturnType<typeof assertAvailabilitySnapshot>} */snapshot)=>resolveAvailableReads({policy:c.policy,installation:snapshot.installation,discovery:snapshot.discovery,scopes,binding,
   ...(profile?{narrowTo:mounted?.map(row=>row.operation)??[],exclude:narrowing.exclude}:narrowing)});
  /** @type {ReturnType<typeof assertAvailabilitySnapshot>|undefined} */let initial;try{initial=await read(c.signal);}catch{if(!profile)return null;}
  const {available,unavailable}=initial?gates(initial):{available:[],unavailable:[]};if(!profile&&!available.length)return null;

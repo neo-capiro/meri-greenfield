@@ -1,3 +1,4 @@
+import {conversationScopeMatches} from '../../../../packages/contracts/conversation-scope.mjs';
 /** Task-local wiring for the two selected-client memory reads. Core owns the
  * canonical page and proposal sources; the gateway owns current authorization,
  * UNKNOWN reservation, continuation and final release. No token is issued here. */
@@ -50,7 +51,9 @@ export function createMemoryTaskPorts(configuration){
   const scope=Array.isArray(scopes)&&scopes.length===1?scopes[0]:null;
   if(scope===null)refuse('UNAVAILABLE');
   validateShape('Scope',scope);
-  if(scope.kind!=='client'||scope.tenantId!==binding.tenantId||!scope.resourceId||
+  const general=conversationScopeMatches(scopes,binding,null,scope.policyRevision);
+  if(general&&ids.includes('memory-proposals'))refuse('UNAVAILABLE');
+  if(!general&&scope.kind!=='client'||scope.tenantId!==binding.tenantId||!scope.resourceId||
    !same(original.binding,binding)||!same(grant.binding,binding)||
    grant.qualificationBinding?.policyRevision!==scope.policyRevision||
    !Number.isSafeInteger(original.expiresAtMs)||original.expiresAtMs<=c.now())refuse('UNAVAILABLE');

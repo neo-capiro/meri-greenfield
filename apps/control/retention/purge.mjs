@@ -3,7 +3,7 @@
  * targets) and to the policy and inventory hashes; its digest is recomputed from authoritative current facts immediately before any
  * effect, and any difference, any changed eligibility, holder, hold, liability or policy, or any missing authority refuses with zero
  * deletes. Execution is disabled by default. */
-import {own,data,fail,hash,subject,subjectKey,clock} from './boundary.mjs';
+import {own,data,fail,hash,subject,subjectKey,clock,uuid} from './boundary.mjs';
 import {purgeEligibility,requirePurgePolicy} from './policy.mjs';
 import {externalClasses,rowClasses,rowClassSubjectKind} from './inventory.mjs';
 import {externalRequestClasses} from './data-classes.mjs';
@@ -11,13 +11,30 @@ import {projectionToken} from './memory-journal.mjs';
 export const workflowIdentity=({tenantId,classes,objectId,versionId,policyVersion})=>hash({tenantId,classes,objectId,versionId,policyVersion});
 export const rowWorkflowIdentity=({tenantId,subjectId,target,policyVersion})=>hash({tenantId,subjectId,target,policyVersion});
 const hold=value=>{const h=own(data(value),['objectLockRetainUntilMs','legalHold']);if(h.objectLockRetainUntilMs!==null&&!Number.isSafeInteger(h.objectLockRetainUntilMs)||typeof h.legalHold!=='boolean')fail('RETENTION_INVALID_REQUEST');return h;};
+const managedTrash=journalState=>journalState?.purpose==='conversation-trash';
+/** Canonical Core proof. No title or user text enters the retention ledger. */
+export function conversationTrashProof(raw,subjectValue){
+ const s=subject(subjectValue),p=own(data(raw),['tenantId','conversationId','ownerActorId','scopeKind','clientId','status','revision','trashedAt','restoreUntil']);
+ uuid(p.conversationId);if(p.clientId!==null)uuid(p.clientId);
+ if(s.kind!=='conversation'||p.tenantId!==s.tenantId||p.conversationId!==s.subjectId||p.ownerActorId!==s.ownerActorId||
+  !['client','general'].includes(p.scopeKind)||(p.scopeKind==='general')!==(p.clientId===null)||!['active','archived','trashed'].includes(p.status)||
+  typeof p.revision!=='string'||!/^(0|[1-9][0-9]{0,17})$/u.test(p.revision))fail('RETENTION_AUTHORITY_UNAVAILABLE');
+ if(p.status==='trashed'){
+  const start=Date.parse(p.trashedAt),end=Date.parse(p.restoreUntil);
+  if(typeof p.trashedAt!=='string'||typeof p.restoreUntil!=='string'||!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||
+   new Date(start).toISOString()!==p.trashedAt||new Date(end).toISOString()!==p.restoreUntil||end-start!==30*86400000)fail('RETENTION_AUTHORITY_UNAVAILABLE');
+ }else if(p.trashedAt!==null||p.restoreUntil!==null)fail('RETENTION_AUTHORITY_UNAVAILABLE');
+ return p;
+}
+const trashBlocks=(proof,nowMs)=>proof.status!=='trashed'?['CONVERSATION_NOT_TRASHED']:Date.parse(proof.restoreUntil)>nowMs?['CONVERSATION_RESTORE_WINDOW']:[];
 const unpublished=inventory=>{const rows=inventory?.unpublishedCompletionCheckpoints;
  if(!Array.isArray(rows)||rows.length>65536)fail('RETENTION_INVALID_REQUEST');return rows;};
 export const stepFacts=st=>({workflowId:st.workflowId,classes:st.classes,objectId:st.objectId,versionId:st.versionId,sha256:st.sha256,artifactVersionIds:st.artifactVersionIds});
 export const rowStepFacts=st=>({workflowId:st.workflowId,className:st.className,target:st.target});
 /** Eligibility of this subject as a holder: every obligation on every object it binds must be clear. Used by other subjects' shared-reference checks. */
-export function holderEligibility({journalState,policy,inventory,holds,liabilities,lastActivityAtMs,nowMs}){
+export function holderEligibility({journalState,policy,inventory,holds,liabilities,lastActivityAtMs,nowMs,subject:holderSubject,conversationTrash}){
  const reasons=new Set();if(!journalState||journalState.state!=='SUPPRESSED'){reasons.add(journalState?.state==='RELEASED'?'HOLDER_RELEASED':'HOLDER_NOT_SUPPRESSED');return {eligible:false,reasons:[...reasons]};}
+ if(managedTrash(journalState)){try{for(const reason of trashBlocks(conversationTrashProof(conversationTrash,holderSubject),nowMs))reasons.add('HOLDER_'+reason);}catch{reasons.add('HOLDER_TRASH_AUTHORITY_REQUIRED');}}
  let p;try{p=requirePurgePolicy(policy);}catch{reasons.add('HOLDER_POLICY_REQUIRED');return {eligible:false,reasons:[...reasons]};}
  for(const l of liabilities??[])reasons.add('HOLDER_UNKNOWN_LIABILITY');
  if(unpublished(inventory).length)reasons.add('HOLDER_UNPUBLISHED_COMPLETION');
@@ -26,12 +43,13 @@ export function holderEligibility({journalState,policy,inventory,holds,liabiliti
  return {eligible:reasons.size===0,reasons:[...reasons].sort()};
 }
 /** The canonical digest covers the subject, the suppression generation, policy and inventory hashes and every target. */
-export const planDigest=plan=>hash({subject:plan.subject,suppression:plan.suppression,policySha256:plan.policySha256,inventorySha256:plan.inventorySha256,steps:plan.steps,rowSteps:plan.rowSteps,blocks:plan.blocks,state:plan.state});
-export function planPurge({subject:rawSubject,journalState,policy,inventory,shared,holds,liabilities,lastActivityAtMs,nowMs}){
+export const planDigest=plan=>hash({subject:plan.subject,suppression:plan.suppression,policySha256:plan.policySha256,inventorySha256:plan.inventorySha256,steps:plan.steps,rowSteps:plan.rowSteps,blocks:plan.blocks,state:plan.state,...(Object.hasOwn(plan,'conversationTrash')?{conversationTrash:plan.conversationTrash}:{})});
+export function planPurge({subject:rawSubject,journalState,policy,inventory,shared,holds,liabilities,lastActivityAtMs,nowMs,conversationTrash}){
  const s=subject(rawSubject),key=subjectKey(s);if(!journalState||journalState.state!=='SUPPRESSED')fail('RETENTION_NOT_SUPPRESSED');
  if(!Number.isSafeInteger(journalState.ledgerSequence)||typeof journalState.entrySha256!=='string')fail('RETENTION_INVALID_REQUEST');
  const p=requirePurgePolicy(policy);if(!Number.isSafeInteger(nowMs)||typeof holds!=='function'||!Array.isArray(shared)||!Array.isArray(liabilities))fail('RETENTION_INVALID_REQUEST');
- const blocks=[],steps=[],rowSteps=[];const sharedByKey=new Map(shared.map(x=>[`${x.object.objectId}@${x.object.versionId}`,x]));
+ const trash=managedTrash(journalState)?conversationTrashProof(conversationTrash,{...s,ownerActorId:journalState.ownerActorId}):null;
+ const blocks=trash?trashBlocks(trash,nowMs).map(reason=>({reason,detail:{restoreUntil:trash.restoreUntil}})):[],steps=[],rowSteps=[];const sharedByKey=new Map(shared.map(x=>[`${x.object.objectId}@${x.object.versionId}`,x]));
  for(const l of liabilities){const v=own(data(l),['runId','kind']);blocks.push({reason:'UNKNOWN_LIABILITY',detail:v});}
  for(const value of unpublished(inventory)){const row=own(data(value),['className','checkpointId','runId','state']);
   if(row.className!=='completionCheckpoints'||!['CAPTURING','UNKNOWN'].includes(row.state))fail('RETENTION_INVALID_REQUEST');
@@ -54,20 +72,21 @@ export function planPurge({subject:rawSubject,journalState,policy,inventory,shar
   if(rowClassSubjectKind[t.className]!==s.kind)blocks.push({reason:'ROW_TARGET_SUBJECT_MISMATCH',detail:{className:t.className,target:t,subjectKind:s.kind,requiredSubjectKind:rowClassSubjectKind[t.className]}});
   eligible(t.className,{target:t});rowSteps.push({workflowId:rowWorkflowIdentity({tenantId:s.tenantId,subjectId:s.subjectId,target:t,policyVersion:p.version}),className:t.className,target:t});}
  const unique=[...new Map(steps.map(st=>[st.workflowId,st])).values()].sort((a,b)=>a.workflowId.localeCompare(b.workflowId)),uniqueRows=[...new Map(rowSteps.map(st=>[st.workflowId,st])).values()].sort((a,b)=>a.workflowId.localeCompare(b.workflowId));
- const plan={subject:s,subjectKey:key,suppression:{ledgerSequence:journalState.ledgerSequence,entrySha256:journalState.entrySha256},policyId:p.policyId,policyVersion:p.version,policySha256:p.policySha256,inventorySha256:inventory.inventorySha256,steps:unique,rowSteps:uniqueRows,blocks,state:blocks.length?'BLOCKED':'PLANNED',plannedAtMs:nowMs};
+ const plan={subject:s,subjectKey:key,...(trash?{conversationTrash:trash}:{}),suppression:{ledgerSequence:journalState.ledgerSequence,entrySha256:journalState.entrySha256},policyId:p.policyId,policyVersion:p.version,policySha256:p.policySha256,inventorySha256:inventory.inventorySha256,steps:unique,rowSteps:uniqueRows,blocks,state:blocks.length?'BLOCKED':'PLANNED',plannedAtMs:nowMs};
  return Object.freeze({...plan,planSha256:planDigest(plan)});
 }
 const planFields=['subject','subjectKey','suppression','policyId','policyVersion','policySha256','inventorySha256','steps','rowSteps','blocks','state','plannedAtMs','planSha256'];
 /** Validates a claimed plan's shape and recomputes its digest from its own contents: a changed target under an unchanged claimed hash refuses. */
-export function verifyPlanDigest(plan){const p=own(data(plan),planFields);if(planDigest(p)!==p.planSha256)fail('RETENTION_PLAN_DIGEST_REFUSED');return p;}
+export function verifyPlanDigest(plan){const p=own(data(plan),planFields,['conversationTrash']);if(planDigest(p)!==p.planSha256)fail('RETENTION_PLAN_DIGEST_REFUSED');return p;}
 /** Authoritative current recomputation through the fact ports; any unavailable port or failure is a refusal, never a cleared block. */
 export async function recomputePlan(facts,subjectValue,journalState,nowMs){
  if(typeof facts?.policy!=='function'||typeof facts?.inventoryFor!=='function'||typeof facts?.sharedFor!=='function'||typeof facts?.holds!=='function'||typeof facts?.liabilities!=='function'||typeof facts?.lastActivityFor!=='function')fail('RETENTION_AUTHORITY_UNAVAILABLE');
- let policy,inventory,shared,liabilities,lastActivityAtMs;
- try{policy=await facts.policy(subjectValue);inventory=await facts.inventoryFor(subjectValue);shared=await facts.sharedFor(subjectValue,inventory);liabilities=await facts.liabilities(subjectValue);lastActivityAtMs=await facts.lastActivityFor(subjectValue);}catch{fail('RETENTION_AUTHORITY_UNAVAILABLE');}
+ let policy,inventory,shared,liabilities,lastActivityAtMs,conversationTrash;
+ if(managedTrash(journalState)&&typeof facts.conversationTrashFor!=='function')fail('RETENTION_AUTHORITY_UNAVAILABLE');
+ try{if(managedTrash(journalState))conversationTrash=await facts.conversationTrashFor({...subjectValue,ownerActorId:journalState.ownerActorId});policy=await facts.policy(subjectValue);inventory=await facts.inventoryFor(subjectValue);shared=await facts.sharedFor(subjectValue,inventory);liabilities=await facts.liabilities(subjectValue);lastActivityAtMs=await facts.lastActivityFor(subjectValue);}catch{fail('RETENTION_AUTHORITY_UNAVAILABLE');}
  if(!inventory||!Array.isArray(shared)||!Array.isArray(liabilities)||!Number.isSafeInteger(lastActivityAtMs))fail('RETENTION_AUTHORITY_UNAVAILABLE');
  const holds=o=>{try{return facts.holds(o);}catch{fail('RETENTION_AUTHORITY_UNAVAILABLE');}};
- return planPurge({subject:subjectValue,journalState,policy,inventory,shared,holds,liabilities,lastActivityAtMs,nowMs});
+ return planPurge({subject:subjectValue,journalState,policy,inventory,shared,holds,liabilities,lastActivityAtMs,nowMs,...(managedTrash(journalState)?{conversationTrash}:{})});
 }
 /** `rows` is the database-row purge port: `preflight(subjectKey, plan)` validates every row target against the row owner's routing
  * without any effect, `purge(subjectKey, plan)` deletes every row target inside one transaction that first records the exact targets

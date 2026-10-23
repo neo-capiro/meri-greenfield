@@ -1,3 +1,4 @@
+import {supportsGeneralPublicRead} from '../../../../worker/conversation/reads/general-support.mjs';
 /** Offline SQL protocol and HTTP JSON fixtures over real task/store owners. No live credentials or database. */
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
@@ -12,6 +13,7 @@ import {createReadTaskVerifier} from '../../read-task-verifier.mjs';
 import {createNativeToolAuthorityClient} from '../core-client.mjs';
 import {createNativeReadCredentialOwner} from '../owner.mjs';
 import {NATIVE_READ_FAMILIES} from '../../../../gateway/sources/retained-reads/native-families.mjs';
+import {conversationScopes} from '../../../../../packages/contracts/conversation-scope.mjs';
 export const uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8${d.repeat(3)}-${d.repeat(12)}`;
 export const origin='https://native-core.example.invalid';
 export function coreFixture(options={}){
@@ -32,9 +34,12 @@ function retarget(value,old,seen=new Set()){if(!value||typeof value!=='object'||
 export async function ownerFixture(id='read_bill_text',options={}){
  const operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),group=contract.binding.group;
  const scene=options.scene??(NATIVE_READ_FAMILIES.includes(group)&&group!=='bill-text'?nativeFamilyCase(group,id,options):billTextCase(['read_bill_text','search_congress_bills'].includes(id)?id:'read_bill_text'));retarget(scene,{...scene.binding});
- const request=NATIVE_READ_FAMILIES.includes(group)?scene.arguments:{};
+ const request=options.scene?scene.arguments:NATIVE_READ_FAMILIES.includes(group)?scene.arguments:{};
  scene.operation=operation;scene.authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))];scene.authority.decision.operation=`${id}@0.2.0`;scene.arguments=request;
+ const selectedScopes=scene.authority.claims.scopes;
+ if(options.general){scene.authority.claims.scopes=conversationScopes(scene.binding,null,scene.authority.policyRevision);if(supportsGeneralPublicRead(operation)){Object.assign(scene.authority.subject,{kind:'personal',entityType:'user',entityIds:[scene.binding.actorId],scopes:scene.authority.claims.scopes});scene.authority.decision.scopes=scene.authority.claims.scopes;}}
  const f=await durableFamilyFixture(scene),grant=[...f.state.bindings.values()][0].facts,allocated=[...f.state.allocations.values()][0].allocation;
+ if(options.general)scene.authority.claims.scopes=[...f.scopes,...selectedScopes];
  const sf=storeFixture(),store=createPostgresConversationStore({pool:sf.pool,now:f.now}),runRequest={requestId:uuid('e'),prompt:'Offline native read'},run={binding:f.binding,state:'queued',scopes:f.scopes,createdAt:new Date(f.now()).toISOString(),policyRevision:f.policyRevision,versions},conversation={conversationId:f.binding.conversationId,owner:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},scopes:f.scopes,createdAt:run.createdAt,policyRevision:f.policyRevision};
  await store.accept({conversation,run,request:runRequest,event:{contractVersion:'0.1.0',eventId:uuid('f'),binding:f.binding,sequence:1,createdAt:run.createdAt,scopes:f.scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},()=>{});
  const state={entryReads:0,nativeCredentials:0,secrets:0,modeSecrets:0,reads:[]};

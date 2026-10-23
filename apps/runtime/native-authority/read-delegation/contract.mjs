@@ -1,3 +1,4 @@
+import {supportsGeneralPublicRead} from '../../../worker/conversation/reads/general-support.mjs';
 /** RC1 option B (D016-A 4): run-bound Core read delegation, Meri side. Bounds, closed wire shapes and per-slot token ceilings
  * that Meri enforces on its own, independently of Core (FABLE-RUN-BOUND-READ-DELEGATION-20261018.md). Nothing here mints,
  * stores or logs a credential: a delegation id is a reference, a read token is a single-use value held only for one request.
@@ -105,7 +106,7 @@ export function tokenRequest({schemaVersion=1,targetClientId,kind,callKey,method
  assertCallKey(callKey);
  if(schemaVersion!==1&&schemaVersion!==2||schemaVersion===1&&targetClientId!==undefined||schemaVersion===2&&targetClientId!==null&&!UUID.test(targetClientId))refuse('INVALID_ARGUMENTS');
  if(schemaVersion===2&&targetClientId===null&&kind!=='current'&&
-   !(kind==='tool'&&operation?.id==='search_memory'&&operation.version==='0.2.0')&&kind!=='memory_eligibility')refuse('ACCESS_DENIED');
+   !(kind==='tool'&&(operation?.id==='search_memory'&&operation.version==='0.2.0'||supportsGeneralPublicRead(operation)))&&kind!=='memory_eligibility')refuse('ACCESS_DENIED');
  const version={schemaVersion,...(schemaVersion===2?{targetClientId}:{})};
  if(kind==='memory_eligibility'){
   assertReadOnlyOperation(operation);

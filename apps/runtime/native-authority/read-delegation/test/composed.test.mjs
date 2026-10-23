@@ -1,3 +1,4 @@
+import {supportsGeneralRead,supportsGeneralPublicRead} from '../../../../worker/conversation/reads/general-support.mjs';
 /** Option B through the real composer, installation, credential owner, durable dispatch, budget owner, action-session owner and
  * relay; Core is the synthetic delegation fixture over the scripted Meri owner state. Pins: delegated reads use single-use
  * per-route tokens and never the identity/membership routes; an attended delegation outlives its creating session; `tool` tokens
@@ -11,7 +12,7 @@ import {createReadCredentialRelay} from '../../../read-credential-relay.mjs';
 import {createNativeReadsClient} from '../../reads-client.mjs';
 import {createControlReadsComposer,selectedClientOf} from '../../reads-composer.mjs';
 import {installationFixture} from '../../general-read-installation/test/fixture.mjs';
-import {nativeFamilyCase} from '../../../../gateway/general-reads/test/native-family-cases.mjs';
+import {nativeFamilyCase,NATIVE_FAMILY_CASES} from '../../../../gateway/general-reads/test/native-family-cases.mjs';
 import {origin as coreOrigin} from '../../native-read-credentials/test/fixture.mjs';
 import {allocation} from '../../../../gateway/budget/tool-budget-binding.mjs';
 import {delegationCoreFixture} from './fixture.mjs';
@@ -37,15 +38,16 @@ function sessions({binding,scopes,now,ttlMs=60000}){
  return {owner,relay,issue:token=>owner.issue({identityCredential:token}),advance:ms=>{clock+=ms;},close:()=>{relay.close();owner.close();}};
 }
 
-async function composed({unattended=false,consent='active',delegation=true,hangTools=false,retainedProbe}={}){
+async function composed({unattended=false,consent='active',delegation=true,hangTools=false,retainedProbe,general=false,scene=nativeFamilyCase('tracked-bills','search_tracked_bills')}={}){
  const inflight=[];
  // An in-flight source request that ends only when its transport aborts it.
  const hanging=(url,init)=>{const entry={startedAt:Date.now(),abortedAt:null};inflight.push(entry);
   return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>{entry.abortedAt=Date.now();reject(init.signal.reason??Error('aborted'));},{once:true}));};
- const f=await installationFixture({scene:nativeFamilyCase('tracked-bills','search_tracked_bills')}),s=secrets(),clientId=f.scopes[0].resourceId;
+ const f=await installationFixture({scene,general}),s=secrets(),clientId=general?null:f.scopes[0].resourceId;
  const session=sessions({binding:f.binding,scopes:f.scopes,now:f.now}),live=new Set();
  const core=delegationCoreFixture({now:f.now,binding:f.binding,clientId,runDeadlineMs:f.deadlineMs,principal:f.core.principal,reservations:f.state.reservations,liveBearers:live,
   authority:f.core.fetchImpl,tools:hangTools?hanging:f.transport.fetchImpl});
+ if(general)core.state.clientIds=[...f.core.state.clientIds];
  const a=allocation(f.allocationJson),occurrences=[];
  if(unattended)core.state.consent={id:'c1234567-b123-4c12-8d12-e123456789ab',state:consent,expiresAtMs:f.now()+86400000};
  const readOccurrence=async({binding})=>{occurrences.push(binding);if(!unattended)return null;
@@ -83,6 +85,57 @@ test('an attended delegated read uses single-use per-route tokens and never the 
   assert.deepEqual(slot.counts,{current:(DISPATCH_OBSERVATIONS+CREDENTIAL_OBSERVATIONS)*OBSERVATION_CALLS.plain.current,tool:1,mode:0,reference:0});
   for(const [kind,count] of Object.entries(slot.counts))assert.ok(count<=READ_TOKEN_CEILINGS[kind],kind);
  }finally{x.close();}
+});
+
+test('General crosses the real composer/native owner/normalization/dispatch/release chain without changing client provenance',async()=>{
+ const x=await composed({general:true});
+ try{
+  await x.login('SYNTHETIC_GENERAL');const value=JSON.parse(await x.execute());
+  assert.equal(x.f.scopes[0].kind,'private-user');assert.equal(value.subject.kind,'client');
+  assert.equal(value.subject.scopes[0].kind,'client');assert.equal(value.subject.scopes[0].resourceId,x.f.authority.subject.entityIds[0]);
+  assert.equal(x.f.wire.length,1);assert.equal(x.calls(IDENTITY).length,0);
+  const [[,slot]]=[...x.core.state.slots];assert.equal(slot.targetClientId,x.f.authority.subject.entityIds[0]);
+  assert.equal(slot.counts.current,2*(DISPATCH_OBSERVATIONS+CREDENTIAL_OBSERVATIONS));
+  assert.ok(slot.counts.current<=READ_TOKEN_CEILINGS.current);
+ }finally{x.close();}
+});
+test('General client wall revoked after source read withholds the final result and retained retry',async()=>{
+ const x=await composed({general:true});
+ try{
+  await x.login('SYNTHETIC_GENERAL');x.f.state.afterSource=()=>{x.core.state.clientIds=[];};
+  await assert.rejects(x.execute());assert.equal(x.f.wire.length,1);
+  const again=x.mount();await assert.rejects(again());assert.equal(x.f.wire.length,1);
+ }finally{x.close();}
+});
+test('General cannot create from legacy clientless eligibility or use Option A when delegation is unavailable',async()=>{
+ for(const disabled of ['eligibility','delegation']){const x=await composed({general:true,delegation:disabled!=='delegation'});
+  try{await x.login('SYNTHETIC_GENERAL');if(disabled==='eligibility')x.core.state.generalEligible=false;await assert.rejects(x.execute());assert.equal(x.f.wire.length,0);}
+  finally{x.close();}
+ }
+});
+test('General public reads require fresh membership and explicit origin before source and again before release',async()=>{
+ for(const stage of ['before','after'])for(const field of ['memberActive','generalEligible']){
+  const x=await composed({general:true,scene:nativeFamilyCase('public-reports','search_cbo_cost_estimates')});
+  try{await x.login('SYNTHETIC_GENERAL');if(stage==='before')x.core.state[field]=false;else x.f.state.afterSource=()=>{x.core.state[field]=false;};
+   await assert.rejects(x.execute());assert.equal(x.f.wire.length,stage==='before'?0:1);
+  }finally{x.close();}
+ }
+});
+test('General public current receipts cannot substitute actor, tenant, kind, target or old current time',async()=>{
+ const mutations=[r=>{r.principal.actorId='00000099-0000-4000-8000-000000000000';},r=>{r.principal.tenantId='foreign-tenant';},
+  r=>{r.scopeKind='client';},r=>{r.targetClientId='00000099-0000-4000-8000-000000000000';},r=>{r.checkedAtMs-=60000;}];
+ for(const mutate of mutations){const x=await composed({general:true,scene:nativeFamilyCase('state-legislation','search_state_bills')});
+  try{await x.login('SYNTHETIC_GENERAL');x.core.state.currentMutator=mutate;await assert.rejects(x.execute());assert.equal(x.f.wire.length,0);}finally{x.close();}
+ }
+});
+
+test('General public output rejects private attribution and a client-targeted page cannot mix a foreign client',async()=>{
+ for(const mutate of [p=>{p.estimates[0].clientId='00000099-0000-4000-8000-000000000000';},p=>{p.tenantId='foreign-tenant';},p=>{p.estimates.push({...p.estimates[0],id:'foreign-record',scopeKind:'private-user',actorId:'foreign-actor'});}]){
+  const x=await composed({general:true,scene:nativeFamilyCase('public-reports','search_cbo_cost_estimates')});
+  try{await x.login('SYNTHETIC_GENERAL');x.f.state.resultMutator=mutate;await assert.rejects(x.execute());assert.equal(x.f.wire.length,1);}finally{x.close();}
+ }
+ const x=await composed({general:true,scene:nativeFamilyCase('outreach-query','query_outreach')});
+ try{await x.login('SYNTHETIC_GENERAL');x.f.state.resultMutator=p=>{p.campaigns.push({...p.campaigns[0],id:'00000098-0000-4000-8000-000000000000',clientId:'00000099-0000-4000-8000-000000000000'});};await assert.rejects(x.execute());assert.equal(x.f.wire.length,1);}finally{x.close();}
 });
 
 test('retained helper credentials stay behind their signed callback while the strict native owner admits Option B',async()=>{
@@ -214,4 +267,10 @@ test('lane RD: the composer offers the registry-facing stop hook (`runOptions`) 
  }finally{x.close();}
  const off=await composed({delegation:false});
  try{assert.deepEqual(Object.keys(off.composer.readDelegation).sort(),['enabled','stopRun']);assert.equal(off.composer.readDelegation.enabled,false);}finally{off.close();}
+});
+
+for(const [family,id]of NATIVE_FAMILY_CASES)test('General signed source composition '+id,async()=>{
+ const x=await composed({general:true,scene:nativeFamilyCase(family,id)});
+ try{await x.login('SYNTHETIC_GENERAL');if(!supportsGeneralRead(x.f.operation)){await assert.rejects(x.execute());assert.equal(x.f.wire.length,0);return;}const value=JSON.parse(await x.execute());assert.equal(value.subject.kind,supportsGeneralPublicRead(x.f.operation)?'personal':'client');assert.ok(x.f.wire.length>0);const [[,slot]]=[...x.core.state.slots];assert.equal(slot.targetClientId,supportsGeneralPublicRead(x.f.operation)?null:x.f.authority.subject.entityIds[0]);for(const [kind,count]of Object.entries(slot.counts))assert.ok(count<=READ_TOKEN_CEILINGS[kind],kind);}
+ finally{x.close();}
 });

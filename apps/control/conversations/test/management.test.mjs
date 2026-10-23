@@ -6,6 +6,7 @@ import {binding,id} from './store-fixture.mjs';
 import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {createConversationManagementPort,createConversationAdmissionGuard} from '../management.mjs';
 import {compose,owners} from '../../retention/test/fixture.mjs';
+import {hash} from '../boundary.mjs';
 const principal={tenantId:binding.tenantId,actorId:binding.actorId},check=()=>{};
 const command=(operation,expectedRevision='0')=>({version:'meri.conversation-management.v1',principal,conversationId:binding.conversationId,requestId:id(900),operation,expectedRevision,...(operation==='rename'?{title:'Owner title'}:{})});
 function fixture(){
@@ -45,7 +46,8 @@ test('Core outage refuses admission and malformed or absent metadata owners cann
  }
 });
 test('Trash suppresses before uncertain Core commit; exact Restore retry releases after commit; expired fences refuse',async()=>{
- const f=fixture();let captured;
+ const f=fixture(),p=await f.proposal();const conversation=p.acceptance.conversation;
+ f.state.conversations.set(`${binding.tenantId}:${binding.conversationId}`,{tenant_id:binding.tenantId,conversation_id:binding.conversationId,owner_actor_id:binding.actorId,projection:conversation,projection_sha256:hash(conversation)});let captured;
  await assert.rejects(f.port.withTerminalConversation(command('trash'),async fence=>{captured=fence;await fence.suppress({reason:'conversation-trash',requestId:id(900),restoreUntil:'2026-11-23T00:00:00.000Z'});f.metadata.status='trashed';throw Error('unknown Core commit');}),/unknown Core commit/);
  const subject={tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId};
  await assert.rejects(f.retention.suppression.assertServable(subject),/RETENTION_SUPPRESSED/);
@@ -53,4 +55,23 @@ test('Trash suppresses before uncertain Core commit; exact Restore retry release
  await f.port.withTerminalConversation(command('restore'),async fence=>{f.metadata.status='active';await fence.release({reason:'conversation-restore',requestId:id(900)});return null;});
  await f.retention.suppression.assertServable(subject);
  await f.port.withTerminalConversation(command('restore'),async fence=>{await fence.release({reason:'conversation-restore',requestId:id(900)});return null;});
+});
+
+test('Core-only Trash refuses before its callback or ledger; missing Meri subject cannot be fabricated',async()=>{
+ const f=fixture();let called=false;const before=await f.retention.ledger.replay();
+ await assert.rejects(f.port.withTerminalConversation(command('trash'),async()=>{called=true;}),/CONVERSATION_MANAGEMENT_UNAVAILABLE/);
+ assert.equal(called,false);assert.deepEqual(await f.retention.ledger.replay(),before);assert.equal(f.state.conversations.size,0);
+});
+
+test('terminal history cannot hide an open successor, and closed history does not make an empty range active',async()=>{
+ const f=fixture(),p=await f.proposal();await f.store.accept(p.acceptance,check);
+ const original=[...f.state.runs.values()][0];original.sequence_end=1;original.projection.state='completed';original.projection_sha256=hash(original.projection);
+ const later=structuredClone(original);later.run_id=id(902);later.request_id=id(903);later.request.requestId=later.request_id;later.request_sha256=hash(later.request);later.sequence_end=null;
+ later.projection.binding.runId=later.run_id;later.projection.state='queued';later.projection_sha256=hash(later.projection);
+ f.state.runs.set(`${binding.tenantId}:${binding.conversationId}:${later.run_id}`,later);
+ await assert.rejects(f.port.withTerminalConversation(command('archive'),async()=>true),/CONVERSATION_RUN_ACTIVE/);
+ const current=f.state.runs.get(`${binding.tenantId}:${binding.conversationId}:${later.run_id}`);current.projection.state='completed';current.projection_sha256=hash(current.projection);
+ assert.equal(await f.port.withTerminalConversation(command('archive'),async()=>true),true);
+ f.state.runs.clear();assert.equal(await f.port.withTerminalConversation(command('archive'),async()=>true),true);
+ assert.ok(f.state.calls.some(sql=>sql.endsWith('FOR NO KEY UPDATE')));
 });

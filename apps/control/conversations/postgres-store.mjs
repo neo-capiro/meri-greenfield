@@ -85,14 +85,18 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
   if(conversationManagement===undefined||typeof work!=='function')fail('CONVERSATION_MANAGEMENT_UNAVAILABLE');
   const command=managementCommand(raw),key={...command.principal,conversationId:command.conversationId};let callbackError;
   try{return await tx(key,()=>{},async c=>{
-   const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,key.conversationId])).rows;
+   // Keep updates/deletion excluded while permitting retention's FK KEY SHARE on its separate connection.
+   const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR NO KEY UPDATE',[key.tenantId,key.conversationId])).rows;
    if(conversations.length>1)fail('STORE_CORRUPT');const old=conversations[0];
    if(old&&(hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==key.actorId||old.projection.owner.actorId!==key.actorId))fail('CONVERSATION_SCOPE_REFUSED');
    const runs=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,key.conversationId])).rows.map(rowRun);
    if(runs.some(r=>r.projection.binding.actorId!==key.actorId)||!old&&runs.length)fail('STORE_CORRUPT');
+   // The canonical retention projection requires a real Meri subject. Refuse before any ledger effect;
+   // a Core bootstrap alone supplies no transcript scope/retention row and must never be fabricated here.
+   if(!old&&command.operation==='trash')fail('CONVERSATION_MANAGEMENT_UNAVAILABLE');
    if(command.operation!=='rename'){
-    const latest=[...runs].sort((a,b)=>b.projection.binding.writerFence-a.projection.binding.writerFence)[0];
-    if(latest&&!terminal(latest.projection.state))fail('CONVERSATION_RUN_ACTIVE');
+    // writerFence belongs to a run; successive runs can both start at one. A historical closed range is not current work.
+    if(runs.some(r=>r.sequence_end==null&&!terminal(r.projection.state)))fail('CONVERSATION_RUN_ACTIVE');
     const pending=(await c.query("SELECT 1 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND state='RESERVED' LIMIT 1",[key.tenantId,key.conversationId])).rows;
     if(pending.length)fail('CONVERSATION_RUN_ACTIVE');
    }

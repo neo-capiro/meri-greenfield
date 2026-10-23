@@ -11,7 +11,7 @@ const DELEGATION=/^\/api\/clio\/application-authority\/read-delegations\/([a-f0-
 export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,principal,reservations,liveBearers,serviceSecret='SYNTHETIC_SERVICE',authority,tools}){
  const state={delegations:new Map(),tokens:new Map(),slots:new Map(),calls:[],runState:'running',dropTokenResponses:0,failRevokes:0,createStatus:null,
   createExpiry:null,checkRefClientId:clientId,mode:'off',consent:null,unavailable:false,withholdAtRelease:false,role:'standard_user',consents:new Map(),consentStatus:null,
-  clientIds:clientId===null?[]:[clientId],generalEligible:true};
+  clientIds:clientId===null?[]:[clientId],generalEligible:true,memberActive:true,memoryParents:new Map()};
  /** Lane RD: the consent routes (§9-§10). Create needs a live bearer and supersedes the schedule's active consent; `paused` and
   * `revoked` need only the service identity; `active` (resume) needs a live bearer; revoked and superseded never change again. */
  function consents(path,scheme,authorization,service,bytes){
@@ -35,7 +35,7 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
  function consume(header,{kind,path,bodySha256}){
   const t=state.tokens.get(header.slice(READ_TOKEN_SCHEME.length+1)),d=t&&state.delegations.get(t.delegationId);
   if(!t||t.consumed||t.superseded||now()>=t.expiresAtMs||t.kind!==kind||t.path!==path||t.bodySha256!==bodySha256)return [null,json({error:'token'},401)];
-  if(!active(d))return [null,json({error:'changed'},409)];
+  if(!active(d)||!state.memberActive||d.request.schemaVersion===2&&!state.generalEligible)return [null,json({error:'changed'},409)];
   t.consumed=true;return [{t,d},null];
  }
  function receipt(d,conversation,targetClientId){
@@ -55,7 +55,7 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
   const service=headers['x-internal-service-secret']===serviceSecret;
   if(path.startsWith(READ_DELEGATION_ROUTES.consents)){const answer=consents(path,scheme,authorization,service,bytes);if(answer)return answer;}
   if(path==='/api/clio/application-authority/read-delegations'){
-   if(!service)return json({error:'service'},401);if(state.createStatus)return json({error:'refused'},state.createStatus);
+   if(!service)return json({error:'service'},401);if(!state.memberActive)return json({error:'member'},403);if(state.createStatus)return json({error:'refused'},state.createStatus);
    const body=JSON.parse(bytes);
    if(body.schemaVersion===2&&(body.scopeKind!=='general'||body.clientId!==null||body.mode!=='attended'||!state.generalEligible))return json({error:'general'},403);
    if(body.mode==='attended'&&(scheme!=='Bearer'||!liveBearers.has(authorization.slice(7))))return json({error:'session'},401);
@@ -71,7 +71,7 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
   }
   const route=DELEGATION.exec(path);
   if(route&&route[2]==='tokens'){
-   if(!service)return json({error:'service'},401);const d=state.delegations.get(route[1]);if(!active(d))return json({error:'changed'},409);
+   if(!service)return json({error:'service'},401);const d=state.delegations.get(route[1]);if(!active(d)||!state.memberActive)return json({error:'changed'},409);
    // Canonical request digest: the request with retryOf normalized to null, for first requests and retries alike.
    const body=JSON.parse(bytes),retryOf=body.retryOf,requestSha256=hash({...body,retryOf:null}),slotKey=`${binding.runId}|${body.callKey}`;
    if(d.request.schemaVersion===2&&(body.schemaVersion!==2||!state.generalEligible||body.targetClientId!==null&&!state.clientIds.includes(body.targetClientId)))return json({error:'wall'},403);
@@ -80,11 +80,16 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
    if(!slot){slot={targetClientId:body.targetClientId,counts:{current:0,tool:0,mode:0,reference:0},reissues:{current:0,tool:0,mode:0,reference:0}};state.slots.set(slotKey,slot);}
    if(body.kind==='tool'){const r=reservations.get(body.callKey);
     if(state.rejectTool||!r||r.state!=='UNKNOWN'||r.run_id!==binding.runId||hash(r.operation)!==hash(body.operation)||r.arguments_sha256!==body.argumentsSha256)return json({error:'reservation'},403);}
+   if(body.kind==='memory_eligibility'){
+    const parent=state.memoryParents.get(body.callKey);
+    if(!parent||body.targetClientId!==null||body.operation?.id!=='search_memory'||['pageProof','pageBodySha256','pageRequestSha256','resultSha256','recordsSha256'].some(k=>body[k]!==parent[k]))return json({error:'memory-proof'},403);
+    slot.counts.memory_eligibility??=0;slot.reissues.memory_eligibility??=0;
+   }
    const prior=retryOf?[...state.tokens.values()].find(t=>t.requestSha256===retryOf&&!t.consumed&&!t.superseded):null;
    if(retryOf){if(!prior||slot.reissues[body.kind]>=READ_TOKEN_REISSUES)return json({error:'retry'},429);prior.superseded=true;slot.reissues[body.kind]++;}
-   else{if(slot.counts[body.kind]>=READ_TOKEN_CEILINGS[body.kind])return json({error:'ceiling'},429);slot.counts[body.kind]++;}
+   else{if(slot.counts[body.kind]>=(body.kind==='memory_eligibility'?1:READ_TOKEN_CEILINGS[body.kind]))return json({error:'ceiling'},429);slot.counts[body.kind]++;}
    const token=`synthetic-read-token-${randomUUID()}`,expiresAtMs=Math.min(now()+READ_DELEGATION_LIMITS.tokenMaxMs,d.expiresAtMs);
-   state.tokens.set(token,{token,delegationId:d.id,kind:body.kind,callKey:body.callKey,path:body.path,bodySha256:body.bodySha256,requestSha256,expiresAtMs,consumed:false,superseded:false});
+   state.tokens.set(token,{request:body,token,delegationId:d.id,kind:body.kind,callKey:body.callKey,path:body.path,bodySha256:body.bodySha256,requestSha256,expiresAtMs,consumed:false,superseded:false});
    if(state.dropTokenResponses>0){state.dropTokenResponses--;return json({error:'lost'},503);}
    return json({schemaVersion:body.schemaVersion,token,expiresAtMs});
   }
@@ -94,7 +99,7 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
    if(use.d.id!==route[1])return json({error:'target'},403);
    const body=JSON.parse(bytes);
    if(use.d.request.schemaVersion===2&&(!state.generalEligible||body.targetClientId!==null&&!state.clientIds.includes(body.targetClientId)))return json({error:'wall'},403);
-   return json(receipt(use.d,body.conversation===true,body.targetClientId));
+   const value=receipt(use.d,body.conversation===true,body.targetClientId);state.currentMutator?.(value);return json(value);
   }
   if(route&&route[2]==='revocations'){
    if(!service)return json({error:'service'},401);if(state.failRevokes>0){state.failRevokes--;return json({error:'down'},500);}
@@ -109,11 +114,13 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
    const body=JSON.parse(bytes);return json({operation:body.operation,requestSha256:body.requestSha256,principal,surface:'chat',evidenceAccuracyMode:state.mode});
   }
   if(delegated&&path.startsWith('/api/clio/tools/')){
-   if(!service)return json({error:'service'},401);const [use,refused]=consume(authorization,{kind:'tool',path,bodySha256:sha(bytes)});if(refused)return refused;
+   if(!service)return json({error:'service'},401);const [use,refused]=consume(authorization,{kind:path.endsWith('/search_memory_eligibility')?'memory_eligibility':'tool',path,bodySha256:sha(bytes)});if(refused)return refused;
    const r=reservations.get(use.t.callKey);if(!r||r.state!=='UNKNOWN')return json({error:'reservation'},403);
    const response=await tools(url,init);
+   if(path.endsWith('/search_memory')&&response.ok){const result=await response.clone().json();state.memoryParents.set(use.t.callKey,{pageProof:response.headers.get('x-meri-memory-page-proof'),pageBodySha256:sha(bytes),pageRequestSha256:hash(JSON.parse(bytes)),resultSha256:hash(result),recordsSha256:hash(result.records.map(row=>({memoryItemId:row.recordId,recordSha256:hash(row)})))});}
+
    // Before release: the delegation, its expiry and the run are re-read; any change withholds the result.
-   if(state.withholdAtRelease||!active(state.delegations.get(use.d.id)))return json({error:'changed'},409);
+   if(state.withholdAtRelease||!state.memberActive||!state.generalEligible&&use.d.request.schemaVersion===2||!active(state.delegations.get(use.d.id)))return json({error:'changed'},409);
    return response;
   }
   return path.startsWith('/api/clio/tools/')?tools(url,init):authority(url,init);

@@ -14,8 +14,8 @@ const invocationId='synthetic_memory_call_1';
 const sha=value=>createHash('sha256').update(value,'utf8').digest('hex');
 const response=(body,headers={})=>new Response(JSON.stringify(body),{headers:{'content-type':'application/json',...headers}});
 
-function scene() {
-  const f=createClientKnowledgeFixture('search_memory',{client:true}),wire=[],pageRequests=[],helperRequests=[],limits=[];
+function scene({general=false}={}) {
+  const f=createClientKnowledgeFixture('search_memory',{client:!general}),wire=[],pageRequests=[],helperRequests=[],limits=[];
   const config={endpoints:{search_memory:`${origin}${pagePath}`},now:()=>f.state.now,
     maxRequestMs:1000,maxResponseBytes:1048576,
     async getCredentials(pins){pageRequests.push(pins);return {...f.credentials(pins),
@@ -169,4 +169,25 @@ test('memory endpoint must be the exact configured signed Core page route',()=>{
   const s=scene();for(const url of [`${origin}/memory`,`${origin}${pagePath}?client=other`,`${origin}/api/clio/tools/read_monday_client_boards`,
     `http://synthetic-core.example.invalid${pagePath}`])assert.throws(()=>createSignedMemoryHttpAdapter({...s.config,
       endpoints:{search_memory:url}}),/GATEWAY_CONFIGURATION/);
+});
+
+
+test('General signed memory preserves exact personal actor scope and mandatory page/eligibility proof for firm and personal records',async()=>{
+ for(const scope of ['firm','user_private']){const s=scene({general:true});const raw=s.f.page();raw.records[0].payload.scope=scope;
+  const value=JSON.parse(await s.execute({fetchImpl:async(url,options)=>url.endsWith(pagePath)?response(raw,{'x-meri-memory-page-proof':'SYNTHETIC_PAGE_PROOF'}):response(s.f.eligibility(JSON.parse(options.body)))}));
+  assert.equal(value.subject.kind,'personal');assert.equal(value.result.records[0].payload.clientId,null);assert.equal(s.pageRequests.length,1);assert.equal(s.helperRequests.length,1);
+ }
+});
+test('General signed memory refuses client records, mixed task scopes and changed identity before release',async()=>{
+ const client=scene({general:true}),page=client.f.page();page.records[0].payload.scope='client';page.records[0].payload.clientId=client.f.clientId;page.records[0].entityRef={type:'client',id:client.f.clientId};page.results[0].clientId=client.f.clientId;
+ await assert.rejects(client.execute({fetchImpl:async()=>response(page,{'x-meri-memory-page-proof':'SYNTHETIC_PAGE_PROOF'})}));assert.equal(client.helperRequests.length,0);
+ for(const mutate of [f=>f.claims.scopes.push({...f.claims.scopes[0],kind:'client',resourceId:f.clientId}),f=>f.subject.scopes[0].resourceId=f.clientId,f=>f.subject.actorId=f.clientId]){
+  const s=scene({general:true});mutate(s.f);await assert.rejects(s.execute());assert.equal(s.wire.length,0);
+ }
+});
+test('General signed memory refuses expired page/helper authority and stale or mismatched eligibility proof',async()=>{
+ for(const mutation of ['expiry','identity','result','record']){const s=scene({general:true});
+  await assert.rejects(s.execute({fetchImpl:async(url,options)=>{if(url.endsWith(pagePath))return response(s.f.page(),{'x-meri-memory-page-proof':'SYNTHETIC_PAGE_PROOF'});const r=s.f.eligibility(JSON.parse(options.body));if(mutation==='expiry')r.expiresAtMs=NOW;if(mutation==='identity')r.binding.actorId=s.f.clientId;if(mutation==='result')r.resultSha256='a'.repeat(64);if(mutation==='record')r.records[0].eligibleForRecall=false;return response(r);}}));
+  assert.equal(s.limits.length,0);
+ }
 });
