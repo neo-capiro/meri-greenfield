@@ -95,7 +95,16 @@ test('composition yields an all-off empty fragment and per-capability additive f
  assert.throws(()=>createSdkCapabilities({skillPlugin:true},facts(runOwner)),/SKILL_PLUGIN_DIRECTORY_REQUIRED/);
  const full=createSdkCapabilities(all,facts(runOwner,{skillPluginDirectory:plugin}));assert.deepEqual(full.options.tools,['Read','Write','Edit','Glob','Grep','Agent','Skill'],'Bash needs the sandbox attestation');assert.ok(full.options.disallowedTools.includes('Bash'));assert.equal(full.bashAdmitted,false);assert.ok(!full.policy.workspaceToolNames.includes('Bash'));assert.equal(full.options.sandbox,undefined);assert.equal(full.options.hooks.PreToolUse.length,1);assert.equal(full.options.forwardSubagentText,undefined);
  assert.equal((await full.options.canUseTool('Read',{file_path:`${cwd}/a`},hookOptions)).behavior,'deny','inside-workspace reads are pre-approved by SDK rules, never by the callback');assert.equal((await full.options.canUseTool('Agent',{description:'d',prompt:'p',subagent_type:'research'},hookOptions)).behavior,'allow');assert.equal((await full.options.canUseTool('WebFetch',{url:'https://x'},hookOptions)).behavior,'deny');assert.equal((await full.options.canUseTool('Read',{file_path:'/etc/hosts'},hookOptions)).behavior,'deny');
- await full.options.hooks.PreToolUse[0].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'Read',tool_input:{file_path:`${cwd}/a`},tool_use_id:'t1'},'t1',hookOptions);
+ const matching=tool=>full.options.hooks.PreToolUse.filter(group=>new RegExp(group.matcher).test(tool));
+ assert.deepEqual(matching('Read'),[],'the SDK does not dispatch file reads to Agent-only admission hooks');
+ const agentHooks=matching('Agent');assert.equal(agentHooks.length,1);
+ const agentEvent={...base,hook_event_name:'PreToolUse',tool_name:'Agent',tool_input:{description:'d',prompt:'p',subagent_type:'research'},tool_use_id:'t1'};
+ assert.equal((await agentHooks[0].hooks[0](agentEvent,'t1',hookOptions)).hookSpecificOutput.permissionDecision,'allow');
+ await full.options.hooks.PostToolUse[0].hooks[0]({...agentEvent,hook_event_name:'PostToolUse'},'t1',hookOptions);
  assert.deepEqual(events,[],'native audit never publishes per-hook events');full.check();
+ const malformed=createSdkCapabilities(all,facts(runOwner,{skillPluginDirectory:plugin}));
+ const refused=await malformed.options.hooks.PreToolUse[0].hooks[0]({...agentEvent,tool_name:'Read'},'t1',hookOptions);
+ assert.equal(refused.hookSpecificOutput.permissionDecision,'deny','an incorrectly dispatched hook still refuses malformed input');
+ assert.throws(()=>malformed.check(),{code:'CAPABILITY_HOOK_FAILED',cause:{code:'SUBAGENT_HOOK_INPUT_REFUSED'}});
  for(const bad of [{runOwner:{},binding,cwd,now:Date.now,newId:()=>'x'},{runOwner,binding:{...binding,tenantId:''},cwd,now:Date.now,newId:()=>'x'},{runOwner,binding,cwd:'/x/',now:Date.now,newId:()=>'x'},{runOwner,binding,cwd,now:Date.now,newId:()=>'x',extra:1}])assert.throws(()=>createSdkCapabilities(all,bad));
 });
