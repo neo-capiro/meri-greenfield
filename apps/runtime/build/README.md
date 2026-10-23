@@ -33,7 +33,10 @@ The old x86 Wolfi APK installation helpers and tracked payload are retired.
 Historical receipts in `infra/product-preview/runtime-packages` remain history;
 they do not qualify this image. SWC's actual upstream loader materializes its
 native addon at build time, then verifies a second load without an executable
-runtime cache. There is no launch descriptor or custom runtime measurement.
+runtime cache. The extracted addon is root-owned and mode `0444`, so the final
+UID1000 process can read it without gaining write access. The final-image probe
+must pass under that UID on the read-only root. There is no launch descriptor or
+custom runtime measurement.
 
 Source checks, without containers or model calls:
 

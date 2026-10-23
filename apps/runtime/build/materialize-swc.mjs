@@ -58,6 +58,10 @@ export function materializeSwc(root) {
     const {loaded}=load();
     inspectNativeFile(loaded);
     if(loaded!==binding.native)fs.copyFileSync(loaded,binding.native);
+    // The upstream extraction is owner-only; the final image runs as UID1000.
+    // Keep the baked addon root-owned and readable, without runtime write access.
+    fs.chmodSync(binding.native,0o444);
+    assert.equal(fs.statSync(binding.native).mode & 0o777,0o444);
     fs.rmSync(cache,{recursive:true});
     assert.equal(load().loaded,binding.native);
     assert(!fs.existsSync(cache),'Installed native image must not need a runtime cache');
