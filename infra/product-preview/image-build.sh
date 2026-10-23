@@ -144,7 +144,21 @@ python3 -I -B -S - "$evidence/pushed-image.json" "$registry/$repository@$digest"
 import json,sys
 rows=json.load(open(sys.argv[1])); assert len(rows)==1 and sys.argv[2] in rows[0]['RepoDigests']
 PY
-run 310 scan-wait.log "${aws[@]}" ecr wait image-scan-complete --repository-name "$repository" --image-id "imageDigest=$digest"
+# Keep the standard CLI waiter and its upstream cadence/bound. ECR can register
+# the scan after push/readback, so only ScanNotFoundException is additionally
+# retryable. Scope the supported model override to this invocation and scratch.
+mkdir -p "$scratch/models/ecr/2015-09-21"
+cat > "$scratch/models/ecr/2015-09-21/waiters-2.json" <<'JSON'
+{"version":2,"waiters":{"ImageScanComplete":{
+  "operation":"DescribeImageScanFindings","delay":5,"maxAttempts":60,
+  "acceptors":[
+    {"state":"success","matcher":"path","argument":"imageScanStatus.status","expected":"COMPLETE"},
+    {"state":"failure","matcher":"path","argument":"imageScanStatus.status","expected":"FAILED"},
+    {"state":"retry","matcher":"error","expected":"ScanNotFoundException"}
+  ]
+}}}
+JSON
+AWS_DATA_PATH="$scratch/models" run 310 scan-wait.log "${aws[@]}" ecr wait image-scan-complete --repository-name "$repository" --image-id "imageDigest=$digest"
 run 30 scan.json "${aws[@]}" ecr describe-image-scan-findings --repository-name "$repository" --image-id "imageDigest=$digest" --output json
 python3 -I -B -S - "$evidence/scan.json" "$digest" "$repository" "$SOURCE_COMMIT" "$SOURCE_VERSION" "$evidence/result.json" <<'PY'
 import json,sys

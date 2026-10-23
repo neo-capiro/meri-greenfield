@@ -84,7 +84,9 @@ exec "$TEST_TIMEOUT" "$@"
  *'ecr get-login-password'*) echo synthetic-password;;
  *'ecr describe-images'*) printf '{"imageDetails":[{"imageTags":["%s"],"imageDigest":"%s"}]}\\n' "$IMAGE_TAG" "$TEST_DIGEST";;
  *'ecr wait image-scan-complete'*)
-  case $SCENARIO in scan-not-found|scan-failed|scan-timeout) echo 'private-fixture-error' >&2; exit 254;; esac;;
+  [[ -n $AWS_DATA_PATH && $AWS_DATA_PATH == */models ]] || exit 99
+  cp "$AWS_DATA_PATH/ecr/2015-09-21/waiters-2.json" "$FIXTURE/waiter.json"
+  case $SCENARIO in scan-not-found|scan-failed|scan-timeout|scan-unknown) echo 'private-fixture-error' >&2; exit 254;; esac;;
  *'ecr describe-image-scan-findings'*) cat "$FIXTURE/scan.json";;
  *) echo UNEXPECTED_AWS_CALL >&2; exit 99;;
 esac

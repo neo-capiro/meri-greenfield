@@ -75,7 +75,7 @@ native materialization; this pipeline does not duplicate that implementation.
 
 After ordinary `docker build`, inspection requires Linux ARM64, UID:GID1000:1000,
 the expected CLI entrypoint/source label/RDS CA environment, and size at most
-3 GiB. The following five commands run in that exact image:
+3 GiB. The following seven commands run in that exact image:
 
 1. Product CLI help.
 2. Canonical `runtime-base-probe.mjs --check`: actual SWC transform, Temporal
@@ -84,8 +84,10 @@ the expected CLI entrypoint/source label/RDS CA environment, and size at most
 3. Existing artifact executor generation smoke for txt/docx/xlsx/pptx/zip.
 4. Direct imports of control, Temporal worker and conversation runner.
 5. Public RDS bundle's image path, raw SHA, byte count, root ownership and 0444 mode.
+6. Installed OS package inventory (`apk info -vv`).
+7. Installed Python package inventory (`python3.13 -I -m pip list --format=json`).
 
-All five use UID1000, a read-only root, no network, all capabilities dropped,
+All seven use UID1000, a read-only root, no network, all capabilities dropped,
 no-new-privileges, PID/CPU/memory limits and bounded noexec task tmpfs mounts.
 No host fallback path or mounted host dependencies are available. This is a
 native image smoke gate; it does not qualify model turns or full production
@@ -94,9 +96,14 @@ service behavior. Temporal workflow bundling remains its separate existing gate.
 Only then may registry authentication/push occur. Repository readback must show
 IMMUTABLE tags and scan-on-push. A private temporary Docker auth directory receives
 the password over stdin. Exact tag readback must agree with the pushed local
-RepoDigest. `aws ecr wait image-scan-complete` is the only waiter: FAILED,
-ScanNotFoundException, timeout and other errors all fail closed without a custom
-retry loop. A final digest-bound COMPLETE scan must have integer nonnegative
+RepoDigest. `aws ecr wait image-scan-complete` is the only waiter. A private,
+invocation-scoped [AWS_DATA_PATH](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html)
+model retains the standard 5-second cadence, 60-attempt limit and COMPLETE/FAILED
+acceptors, adding only `ScanNotFoundException` as retryable while ECR registers
+the scan after push. The AWS CLI owns the retry loop; no SDK installation,
+pre-scan sleep or application retry framework is needed. FAILED, other API
+errors, exhausted attempts and the 310-second outer timeout remain refusals.
+An unknown scan status never establishes success. A final digest-bound COMPLETE scan must have integer nonnegative
 counts and zero HIGH/CRITICAL findings. No failure produces a success result;
 a pushed image remains unadmitted if later scanning fails.
 
@@ -110,7 +117,13 @@ shell trap ran; the caller must retain that failed build and verify termination.
 
 Owned cleanup relocates its private evidence directory into the standard artifact
 base directory. CodeBuild `finally` requires the cleanup artifact; it never moves
-a preexisting directory. Configure existing artifact encryption/access
+a preexisting directory. The build phase uses `on-failure: CONTINUE` so a failed
+command remains a failed phase while CodeBuild can reach its normal artifact
+upload. There is no swallowed exit code, successful replacement command or custom
+uploader. [CodeBuild's phase semantics](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html)
+do not turn a failed command into success. Actual service replay must verify both
+overall FAILED and uploaded failure/cleanup evidence; local source tests cannot
+prove CodeBuild's service transitions. Configure existing artifact encryption/access
 and retention through the build owner. Success writes a small `result.json` with
 source commit/version, image digest and scan counts; `cleanup.json` must also
 report success. Logs are bounded private artifacts, not a new reporter protocol.
@@ -127,9 +140,14 @@ node --test infra/product-preview/image-build.test.mjs \
 The Python source tests use synthetic Git/ZIP/tree inputs. Shell tests run the
 actual script with closed `aws`/`docker` executables; unknown commands fail and no
 real service/client can be reached. They cover source/size/version rejection,
-preexisting-resource preservation, all five sandbox invocations, probe/build/
+preexisting-resource preservation, all seven sandbox invocations, probe/build/
 push/cleanup failure, timeout propagation, repository policy, digest mismatch,
-scan failure/not-found/incomplete/severity/count controls and success cleanup.
+scan failure/exhausted-not-found/incomplete/severity/count controls and success cleanup.
+The installed AWS CLI also runs against an unsigned, closed loopback HTTP fixture:
+registration-not-found then IN_PROGRESS then COMPLETE uses the production waiter
+cadence; FAILED/unknown API errors and bounded exhaustion stay nonzero. Exhaustion
+controls shorten only the test cadence/attempt count after checking the exact
+production model. No real AWS endpoint, inherited credential or proxy is used.
 Windows Git Bash cannot apply Linux RLIMIT_FSIZE: only its fixture overrides that
 builtin, and the actual file-limit/deadline test explicitly skips on Windows.
 The native Linux run must execute it; a stub timeout result is not deadline proof.

@@ -21,7 +21,8 @@ test('standard shell help and Python import/help are inert; missing configuratio
 
 test('checked-in buildspec uses one standard command and retains evidence after failure',()=>{
   const spec=readFileSync(new URL('./image-buildspec.yml',import.meta.url),'utf8');
-  assert.match(spec,/version: 0\.2/);assert.match(spec,/on-failure: ABORT/);
+  assert.match(spec,/version: 0\.2/);assert.match(spec,/on-failure: CONTINUE/);
+  assert.doesNotMatch(spec,/on-failure: (?:ABORT|RETRY)|\|\| true|exit 0|s3 (?:cp|sync)/);
   assert.match(spec,/- timeout --signal=TERM --kill-after=90s 25m bash infra\/product-preview\/image-build\.sh/);
   assert.match(spec,/finally:\n\s+- test -f image-evidence\/cleanup\.json/);
   assert.match(spec,/base-directory: image-evidence/);

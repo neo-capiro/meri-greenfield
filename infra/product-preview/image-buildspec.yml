@@ -3,7 +3,8 @@ env:
   shell: bash
 phases:
   build:
-    on-failure: ABORT
+    # Preserve the failed phase status while allowing standard artifact upload.
+    on-failure: CONTINUE
     commands:
       - timeout --signal=TERM --kill-after=90s 25m bash infra/product-preview/image-build.sh
     finally:
