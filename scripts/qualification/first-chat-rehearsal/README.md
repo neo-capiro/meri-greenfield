@@ -1,11 +1,58 @@
-# First-chat rehearsal tools
+# Retired first-chat rehearsals
 
-`capture-sdk-descriptor.mjs --out FILE [--options-module PATH] [--with-proposed-directories]` captures the launch descriptor the pinned Claude Agent SDK produces for the product option set (`apps/worker/conversation/options.mjs`, or an alternative copy of it) by interrupting the SDK at its spawn hook, and reports each remote launch gate's outcome on that descriptor: inert JSON, per-task config directories, secret-in-env observation, and `compileNativeLaunch` with directories injected. It spawns no process, performs no network or provider access, and hashes secret-shaped env values before writing. `--with-proposed-directories` supplies the per-run SDK directory pair in the shape the proposed (unapplied) runner change would derive from the admitted preparation intent; by default the capture passes exactly what the committed composition passes. Exit 0 with the receipt written (gate outcomes are inside, not an exit code), 2 usage, 3 if the SDK produced no descriptor. Tests: `node --test scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.test.mjs`.
+Item 0 replaces the model proxy, captured launch descriptor and custom child
+supervisor with the Claude Agent SDK's full harness and direct Bedrock path.
+The two composed rehearsals and their exclusive descriptor, provider stand-in,
+trust and receipt helpers were removed with that change. They must not be
+recreated to satisfy historical commands or receipts. See the current
+[standing requirements](../../../docs/handover/20261022/STANDING-REQUIREMENTS.md).
 
-`composed-rehearsal.mjs` is the composed rehearsal: real PostgreSQL 16 (the local broker cluster), the real remote controller, remote task application, independent supervisor process and the real pinned CLI 2.1.295, driven by the product runner (`assembleConversationRunner`), the product option builder and the durable SDK session path, for the accepted zero-turn request `/status`. ECS, identity, authority and proxy facts are synthetic and the proxy credential is a synthetic string. It is not collected by the suite globs because it launches the real CLI and takes several seconds. The runner derivation (gap 2) and the separate credential verification (gap 3) are in source after dot's review, so no patch is applied and the launch template carries no credential; the receipt still records whether the runner module differs from its PR86 bytes. Run it explicitly as a non-root user with the clusters started:
+Historical qualification receipts remain evidence of their recorded source and
+environment only. They are not acceptance of the current composition.
 
-```sh
-MERI_REVIEW_SOURCE_ROOT="$PWD" MERI_REHEARSAL_RECEIPT=/path/receipt.json node --test scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs
-```
+## Current source gates
 
-The receipt records head/tree, whether the runner module carries the patch, the CLI hash, the redacted descriptor, every route reached, the durable conversation events, the registered SDK session rows, the launch binding state and the physical-stop receipts; a failed run records the refusal code and the same facts. The retained PR86-runner receipts under the candidate's `composed/control-pr86-runner*.json` show the failure at the SDK options pin before the runner derivation existed.
+Run the relevant existing suites through the
+[local baseline runner](../local-baseline/README.md). PostgreSQL tests require
+an isolated database; the orchestrator allocates native gates and resources.
+
+| Behavior retained from the old rehearsals | Existing coverage | Limit |
+| --- | --- | --- |
+| First session, ordered delivery, completion after persistence and terminal usage | `apps/runtime/test/first-session.test.mjs` | Assembled runner/service/store; SDK iterator is scripted. Accounting failure does not erase the completed answer. |
+| Exact session replay, conflicting session refusal, current run and grant revocation, idempotent usage | `apps/control/qualified-application/run-owner-pg.test.mjs`; runtime `prepared-runtime-pg.test.mjs` | Real PostgreSQL/HTTP ownership; synthetic Core/task facts. |
+| Reconstructed controller cannot launch a completed execution again | Runtime `prepared-kickoff-pg.test.mjs` and `recovered-controller-pg.test.mjs` | Real persisted run/allocation state; synthetic ECS effects. |
+| Successor exclusion and retirement, fork coexistence, concurrent admission | Runtime `allocation-exclusion-pg.test.mjs` | Retained non-model allocation guards; not native SDK continuity. |
+| Existing continuation readback and immutable restored files | Runtime `native-restorer-pg.test.mjs` | Retained custom-checkpoint path only, pending Step 5 replacement. |
+| One query, foreign binding refusal, cancellation and cleanup uncertainty | `apps/runtime/test/remote-conversation-runner.test.mjs` and `broker-cleanup.test.mjs` | Scripted query/ECS; no claim of physical Fargate stop. |
+| TLS trust, timeout, abort, late responses and redaction | `apps/runtime/test/pinned-native-transport.test.mjs` | Real loopback transport with synthetic peers. |
+
+The runtime PG tests above live under `apps/runtime/native-authority/test/`. The isolated native
+gate on 2026-10-23 passed **98 tests, no skips**, at tested tree
+`94156a34de4a04490ccc5538f41266b8cd18294e` (run-owner PG 1, runtime PG 13,
+assembled runner/Linux filesystem 84). Checkpoint `b791b57a` differs from that
+tested tree only in README prose and one blank EOF line. The six
+`broker-cleanup.test.mjs` cases passed separately and are not part of the 98.
+This records that bounded result; it is not a new exact-head execution.
+
+The removed files contained eight static test declarations: three manually
+invoked composed cases and five glob-collected helper cases. Their launch
+descriptor, fake Messages endpoint and child-supervisor assertions no longer
+apply. The source gates above preserve the meaningful owner, transport and
+cleanup behavior; remaining acceptance is explicit below.
+
+## Acceptance still required
+
+- A real pinned SDK/CLI first turn through the current product, Core and direct
+  Bedrock path, including final delivery and native usage accounting.
+- Real product follow-up, native SessionStore resume/fork and separate native
+  task-file persistence, with reload/reconnect. The SDK spike's resume/fork
+  result does not qualify product persistence; Step 5 remains required.
+- Actual SDK/CLI/Fargate Stop, expiry, revocation and crash cleanup at the current
+  image. Synthetic ECS and scripted query cleanup do not prove physical stop.
+- Core tenant/member/client/wall negatives and tool parity, including foreign
+  tenant/conversation and revoked access. Both the retired rehearsals and the
+  bounded gate used synthetic Core facts.
+
+The orchestrator's current image and preview acceptance own these checks. No
+replacement harness, descriptor receipt or custom continuity protocol is added
+by this cleanup.
