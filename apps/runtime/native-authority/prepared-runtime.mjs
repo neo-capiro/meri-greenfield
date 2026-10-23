@@ -11,6 +11,11 @@ import {assertResumeOptions} from './continuation-pin.mjs';
 import {executionFault} from './execution-broker.mjs';
 import {capabilityDigest} from './task-verifier.mjs';
 import {preparationAck} from './remote-task-boundary.mjs';
+// Content-free preparation refusal line: operation word + the cause's own upper-case code, one per op/code per 5 s.
+const preparationSeen=new Map();
+function preparationRefusal(op,error){try{const code=[error?.code,error?.reason,error?.message].find(v=>typeof v==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(v))??'REFUSED',word=/^[a-z][a-zA-Z]{0,31}$/u.test(op)?op:'operation',key=word+':'+code,at=Date.now();
+ if((preparationSeen.get(key)??0)>at-5000)return;preparationSeen.set(key,at);if(preparationSeen.size>64)preparationSeen.delete(preparationSeen.keys().next().value);
+ process.stdout.write(`NATIVE_PREPARATION_REFUSED op=${word} code=${code}\n`);}catch{}}
 export function createPreparedNativeRuntime(configuration){
  const c=own(configuration,['pool','store','allocator','supervisor','runtime','plan','preparationIntent','taskCapability','controlCapabilitySha256','tasksFactory','verifyTask'],['continuation','continuationObjects','enabled','now','maxRequestMs']);
  const now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000,compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),{original,runtime,preparationIntent}=compiled;
@@ -18,7 +23,7 @@ export function createPreparedNativeRuntime(configuration){
  if(typeof enabled!=='boolean'||typeof now!=='function'||typeof c.verifyTask!=='function'||typeof c.tasksFactory!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw executionFault('PREPARATION_CONFIGURATION');
  const key={binding:original.binding,allocationKey:original.executionKey};let admitted,allocating,stack,closed=false;
  const same=(a,b)=>hash(a)===hash(b),check=signal=>{if(!enabled||closed||signal?.aborted||now()>=original.expiresAtMs)throw executionFault('PREPARATION_REFUSED');};
- async function operation(signal,body){nativeSignal(signal);const life=createOperationLifetime({now,signal,deadlineMs:Math.min(now()+maxRequestMs,original.expiresAtMs),errorFactory:()=>executionFault('PREPARATION_UNKNOWN')});try{check(signal);return await body(life);}finally{life.close();}}
+ async function operation(signal,body){nativeSignal(signal);const life=createOperationLifetime({now,signal,deadlineMs:Math.min(now()+maxRequestMs,original.expiresAtMs),errorFactory:()=>executionFault('PREPARATION_UNKNOWN')});try{check(signal);return await body(life);}catch(error){preparationRefusal(body.name||'operation',error);throw error;}finally{life.close();}}
  async function current(life){
   const started=now(),receipt=assertWorkerAuthorization(await life.run(signal=>verify({capability:c.taskCapability,binding:original.binding,operation:'load',inputSha256:hash({binding:original.binding}),signal})),{binding:original.binding,operation:'load',inputSha256:hash({binding:original.binding}),started,now});
   // S2: Core /current receipts last at most ~120 s and every operation re-verifies; a receipt must be valid now, not outlive the original lease.
