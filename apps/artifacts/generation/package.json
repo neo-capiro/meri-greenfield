@@ -9,5 +9,10 @@
   },
   "dependencies": {
     "pptxgenjs": "4.0.1"
+  },
+  "overrides": {
+    "pptxgenjs": {
+      "image-size": "2.0.4"
+    }
   }
 }
