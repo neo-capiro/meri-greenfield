@@ -1,3 +1,4 @@
+import imagePins from './temporal-image-pins.json' with {type:'json'};
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -15,7 +16,7 @@ function temporal(){return {
  clusterArn:`arn:aws:ecs:${region}:${account}:cluster/capiro-dev`,vpcId:'vpc-0ac26cfac7ed972be',
  subnets:[{id:'subnet-11111111',availabilityZone:'us-east-1a'},{id:'subnet-22222222',availabilityZone:'us-east-1b'}],
  privateDnsName:'temporal.meri.internal',serverImageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/temporal@sha256:${sha}`,
- upstreamServerImageDigest:'sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e',
+ upstreamServerImageDigest:imagePins.bases.temporalServer.split('@')[1],
  launchSourceCommit:sourceCommit,
  launchContractSha256:createHash('sha256').update(readFileSync(new URL('./temporal-launch-render.mjs',import.meta.url))).digest('hex'),
  logGroupName:'/meri/temporal',executionRoleArn:`arn:aws:iam::${account}:role/temporal-execution`,
@@ -51,6 +52,7 @@ function product(){return {
  imageUri:`${account}.dkr.ecr.${region}.amazonaws.com/meri/product@sha256:${sha}`,
  logGroupName:'/meri/product',executionRoleArn:`arn:aws:iam::${account}:role/product-execution`,
  controlTaskRoleArn:`arn:aws:iam::${account}:role/product-control`,runtimeUser:'1000:1000',runnerSha256:sha,
+ runnerTaskRoleArn:`arn:aws:iam::${account}:role/product-runner`,
  network:{privateSubnetIds:['subnet-abcdef12','subnet-abcdef34'],
   controlSecurityGroupIds:['sg-1234abcd','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e'],
   workerSecurityGroupIds:['sg-5678abcd','sg-0c3da023e9e8fb292'],runnerSecurityGroupIds:['sg-abcd1234']},

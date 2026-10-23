@@ -21,17 +21,12 @@ from pathlib import Path
 D = "infra/product-preview/"
 BUILD_SCRIPT = D + "temporal-image-build.sh"
 DOCKERFILE = D + "temporal-launch.Dockerfile"
-LOCK = D + "runtime-packages.lock.json"
-INDEX = D + "runtime-packages/x86_64/APKINDEX.tar.gz"
-LIBSTDCXX = D + "runtime-packages/x86_64/libstdc++-16.2.0-r1.apk"
-MEMBERS = sorted([DOCKERFILE, BUILD_SCRIPT, LOCK, INDEX, LIBSTDCXX, D + "temporal-launch.sh",
+PINS_FILE = D + "temporal-image-pins.json"
+MEMBERS = sorted([DOCKERFILE, BUILD_SCRIPT, PINS_FILE, D + "temporal-launch.sh",
                   D + "temporal-launch-main.mjs", D + "temporal-launch-render.mjs", D + "temporal-migration-plan.mjs"])
 CA_MEMBER = "inputs/temporal-issuer-ca.pem"
-BASES = {
-    "nodeBinary": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
-    "glibcRuntime": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
-    "temporalServer": "temporalio/server@sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e",
-}
+PINS = json.loads(Path(__file__).with_name("temporal-image-pins.json").read_text(encoding="utf-8"))
+BASES = PINS["bases"]
 STAMP = (1980, 1, 1, 0, 0, 0)
 BLOCK = 1024 ** 2
 LIMIT = 64 * 1024 ** 2
@@ -104,20 +99,18 @@ def seal(repository, commit, issuer_ca, output):
     small, files = {}, {}
     for path in MEMBERS:
         mode, oid, size = rows[path]
-        # Only the two small text files are retained for checks; never the APK inputs.
-        chunks = [] if path in (DOCKERFILE, LOCK) else None
+        # Retain only bounded configuration text for cross-checks.
+        chunks = [] if path in (DOCKERFILE, PINS_FILE) else None
         need(chunks is None or size <= 1024 ** 2, "MEMBER_BOUND")
         files["repo/" + path] = stream_blob(repository, oid, size, None if chunks is None else chunks.append)
         if chunks is not None:
             small[path] = b"".join(chunks)
-    lock = json.loads(small[LOCK])
-    lib = [p for p in lock["additionalPackages"] if p["file"] == Path(LIBSTDCXX).name]
-    need(lock["repositoryIndex"]["sha256"] == files["repo/" + INDEX] and len(lib) == 1
-         and lib[0]["sha256"] == files["repo/" + LIBSTDCXX], "LOCK_PIN")
+    need(json.loads(small[PINS_FILE]) == PINS and PINS["platform"] == "linux/arm64", "IMAGE_PIN")
     dockerfile = small[DOCKERFILE].decode("utf-8")
     froms = [line.split()[2] for line in dockerfile.splitlines() if line.startswith("FROM ")]
-    need(froms == [BASES["nodeBinary"], BASES["glibcRuntime"], BASES["temporalServer"]], "BASE_PIN")
-    need(all(h in dockerfile for h in (files["repo/" + INDEX], files["repo/" + LIBSTDCXX])), "LOCK_PIN")
+    need(froms == [BASES["nodeBinary"], BASES["temporalServer"], BASES["glibcRuntime"]], "BASE_PIN")
+    need(all(line.split()[1] == "--platform=" + PINS["platform"]
+             for line in dockerfile.splitlines() if line.startswith("FROM ")), "PLATFORM_PIN")
     files[CA_MEMBER] = hashlib.sha256(ca).hexdigest()
     manifest = {"schemaVersion": 1, "commit": commit, "bases": BASES, "issuerCaSha256": files[CA_MEMBER],
                 "files": dict(sorted(files.items()))}

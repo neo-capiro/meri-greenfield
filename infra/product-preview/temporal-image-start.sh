@@ -64,19 +64,22 @@ test -f temporal-context.zip
 
 # Bind ZIP bytes (streamed), manifest commit, base pins and build-script hash to Git at COMMIT.
 SCRIPT_SHA="$(git -C "$REPO" show "$C:$SCRIPT_PATH" | python3 -I -B -c 'import hashlib,sys;print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest())')"
-python3 -I -B - "$EXPECTED_ZIP" "$C" "$SCRIPT_PATH" "$SCRIPT_SHA" <<'EOF'
-import hashlib, json, os, sys, zipfile
-expected, commit, path, script = sys.argv[1:]
+python3 -I -B - "$EXPECTED_ZIP" "$C" "$SCRIPT_PATH" "$SCRIPT_SHA" "$REPO" <<'EOF'
+import hashlib, json, os, subprocess, sys, zipfile
+expected, commit, path, script, repo = sys.argv[1:]
 h = hashlib.sha256()
 with open("temporal-context.zip", "rb") as f:
     for block in iter(lambda: f.read(1 << 20), b""):
         h.update(block)
 assert h.hexdigest() == expected, "ZIP_SHA256_MISMATCH"
-bases = {"nodeBinary": "public.ecr.aws/docker/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
-         "glibcRuntime": "cgr.dev/chainguard/wolfi-base@sha256:030e45cb37187dff322bbefe9658bcaec31b824a5d523380771a64864c9f45d4",
-         "temporalServer": "temporalio/server@sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e"}
+pins_path = "infra/product-preview/temporal-image-pins.json"
+pins_bytes = subprocess.run(["git", "-C", repo, "show", commit+":"+pins_path], check=True, capture_output=True, timeout=30).stdout
+pins = json.loads(pins_bytes)
+assert pins["platform"] == "linux/arm64", "PINS_PLATFORM"
+bases = pins["bases"]
 with zipfile.ZipFile("temporal-context.zip") as z:
     m = json.loads(z.read("context-manifest.json"))
+    assert z.read("repo/"+pins_path) == pins_bytes, "PINS_MEMBER_MISMATCH"
     assert m["commit"] == commit, "MANIFEST_COMMIT_MISMATCH"
     assert m["bases"] == bases, "MANIFEST_BASES_MISMATCH"
     assert m["files"]["repo/" + path] == script, "SCRIPT_SHA256_MISMATCH"
@@ -100,6 +103,8 @@ print(json.dumps({"projectName": project, "sourceTypeOverride": "S3",
     "sourceLocationOverride": "%s/inputs/temporal-image/%s/temporal-context.zip" % (B, C), "sourceVersion": V,
     "buildspecOverride": spec, "idempotencyToken": A, "timeoutInMinutesOverride": 30,
     "queuedTimeoutInMinutesOverride": 5, "autoRetryLimitOverride": 0,
+    "environmentTypeOverride": "ARM_CONTAINER", "imageOverride": "aws/codebuild/amazonlinux2-aarch64-standard:3.0",
+    "computeTypeOverride": "BUILD_GENERAL1_LARGE", "privilegedModeOverride": True,
     "environmentVariablesOverride": env, "artifactsOverride": {"type": "NO_ARTIFACTS"}}, indent=1, sort_keys=True))
 EOF
 }

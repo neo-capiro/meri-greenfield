@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "platform": "linux/arm64",
+  "nodeVersion": "24.22.1",
+  "serverVersion": "1.32.1",
+  "serverIndexDigest": "sha256:acecbab5b0b8ae9cf4012b508866ca97feda3709577bf157b537239f40029049",
+  "serverBinarySha256": "3017afd8dd3631dfbcd8f01306eb3458b0fe323930cfb06aeb7c04ebd244518a",
+  "bases": {
+    "nodeBinary": "public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8",
+    "glibcRuntime": "cgr.dev/chainguard/wolfi-base@sha256:4e354e15b41a49dc249d07a4e38974c4ef6db8a4cc70059c4d625f5cdaa92657",
+    "temporalServer": "temporalio/server@sha256:2bc795fc7e740235f9afcbfcff7049a55c5a3f0d87b6512d82687a485467795b"
+  },
+  "packages": ["libatomic=16.2.0-r1", "libstdc++=16.2.0-r1"]
+}

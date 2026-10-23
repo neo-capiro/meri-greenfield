@@ -1,6 +1,7 @@
 /** Pure production configuration for the pinned Temporal 1.32.1 server. */
 import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
-const SERVER_DIGEST='sha256:2695f2564ec51aa84232bf3fa59b31e2cce99bec437a64f5bc487cbe21b2de0e';
+import imagePins from './temporal-image-pins.json' with {type:'json'};
+const SERVER_DIGEST=imagePins.bases.temporalServer.split('@')[1];
 const SERVICE_ROLE=Object.freeze({frontend:'frontend',history:'history',matching:'matching','internal-worker':'worker','internal-frontend':'internal-frontend'});
 const ROLE_PORTS=Object.freeze({frontend:[7233,6933,7243],history:[7234,6934],matching:[7235,6935],worker:[7239,6939],'internal-frontend':[7236,6936,7246]});
 const fail=()=>{throw Error('TEMPORAL_LAUNCH_REFUSED');};

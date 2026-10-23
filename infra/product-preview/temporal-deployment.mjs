@@ -73,7 +73,7 @@ function roleResources(stack,b,groups,namespace,role){
  const cpu=Number.parseInt(source.cpu,10)*1024,mem=Number.parseInt(source.memory,10);
  const task=new ecs.CfnTaskDefinition(stack,`${roleName(role)}Task`,{
   family:`meri-product-preview-temporal-${role}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
-  cpu:String(cpu),memory:String(mem),runtimePlatform:{cpuArchitecture:'X86_64',operatingSystemFamily:'LINUX'},
+  cpu:String(cpu),memory:String(mem),runtimePlatform:{cpuArchitecture:'ARM64',operatingSystemFamily:'LINUX'},
   executionRoleArn:b.executionRoleArn,taskRoleArn:b.taskRoleArns[role],volumes:[{name:'rendered-config'},{name:'tmp'}],
   containerDefinitions:[{name:role,image:b.serverImageUri,essential:true,readonlyRootFilesystem:true,privileged:false,
    entryPoint:['/opt/meri/temporal-launch'],command:[fixture.roles[role].temporalRole],
