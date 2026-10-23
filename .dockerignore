@@ -57,6 +57,7 @@ infra/*
 !infra/product-preview/
 infra/product-preview/*
 !infra/product-preview/runtime-packages.lock.json
+!infra/product-preview/runtime-wheels.lock.json
 # Stage 1 one-shot database runner (D2), copied by apps/runtime/Dockerfile.
 !infra/product-preview/first-chat-migrate.mjs
 !infra/product-preview/first-chat-database.sql
@@ -66,8 +67,9 @@ infra/product-preview/*
 !infra/product-preview/first-chat-seed-budget.sql
 !infra/product-preview/runtime-packages/
 infra/product-preview/runtime-packages/*
-!infra/product-preview/runtime-packages/x86_64/
 !infra/product-preview/runtime-packages/wheels/
+!infra/product-preview/runtime-packages/requirements.lock.txt
+!infra/product-preview/runtime-packages/executor-generation-smoke.mjs
 scripts
 *.env
 **/*.env

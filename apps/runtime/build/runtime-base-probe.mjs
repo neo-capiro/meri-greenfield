@@ -1,61 +1,66 @@
-/** Inert, network-free measurement of GNU native dependencies in the final image. */
+/** Offline final-image import and filesystem smoke; no launch descriptor or model query. */
+import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
+import {execFileSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
-import {swcBinding,inspectNativeImage} from './materialize-swc.mjs';
+import {inspectNativeFile,swcBinding} from './materialize-swc.mjs';
+const root=fileURLToPath(new URL('../../../',import.meta.url));
 
-const applicationRoot=fileURLToPath(new URL('../../../',import.meta.url));
-const need=value=>{if(!value)throw Error('RUNTIME_NATIVE_REFUSED');};
-const contained=(root,file)=>{const relative=path.relative(root,file);return relative!==''&&relative!=='..'&&!relative.startsWith('..'+path.sep)&&!path.isAbsolute(relative);};
-function nativeFile(root,file){
- need(!fs.lstatSync(file).isSymbolicLink());
- const resolved=fs.realpathSync(file),stat=fs.statSync(resolved);
- need(contained(root,resolved)&&stat.isFile()&&stat.size>0&&stat.size<=512*1024*1024);
- const bytes=fs.readFileSync(resolved);inspectNativeImage(bytes,'linux','x64');
- return {path:resolved,sha256:createHash('sha256').update(bytes).digest('hex')};
+export async function probeRuntimeImage() {
+  assert.equal(process.platform,'linux'); assert.equal(process.arch,'arm64');
+  assert.equal(process.version,'v24.22.1'); assert.equal(process.getuid(),1000); assert.equal(process.getgid(),1000);
+  const rootMount=fs.readFileSync('/proc/self/mountinfo','utf8').split('\n').map(line=>line.split(' ')).find(fields=>fields[4]==='/');
+  assert(rootMount?.[5].split(',').includes('ro'),'Qualification requires a read-only root mount');
+  for(const parent of ['/tmp','/workspace','/run/meri','/run/meri-temporal']){
+    const directory=fs.mkdtempSync(path.join(parent,'image-smoke-'));
+    try{fs.writeFileSync(path.join(directory,'fixture'),'ok');}finally{fs.rmSync(directory,{recursive:true});}
+  }
+  const require=createRequire(path.join(root,'apps/runtime/package.json'));
+  const binding=swcBinding(root),swc=require('@swc/core');
+  assert(swc.transformSync('const value: number = 7;',{jsc:{parser:{syntax:'typescript'}}}).code.includes('7'));
+  assert.equal(swc.getBinaryMetadata().target,'aarch64-unknown-linux-gnu');
+  assert(!fs.existsSync(path.join(root,'.build-native')));
+  const bridgePackage=require.resolve('@temporalio/core-bridge/package.json');
+  assert.equal(JSON.parse(fs.readFileSync(bridgePackage,'utf8')).version,'1.24.0');
+  const bridge=path.join(path.dirname(bridgePackage),'releases/aarch64-unknown-linux-gnu/index.node');
+  inspectNativeFile(bridge); require('@temporalio/core-bridge');
+  const workerRequire=createRequire(path.join(root,'apps/worker/conversation/package.json'));
+  const sdkFile=workerRequire.resolve('@anthropic-ai/claude-agent-sdk');
+  const sdkPackage=JSON.parse(fs.readFileSync(path.join(path.dirname(sdkFile),'package.json'),'utf8'));
+  assert.equal(sdkPackage.version,'0.3.295'); assert.equal(sdkPackage.claudeCodeVersion,'2.1.295');
+  assert.equal(typeof (await import(pathToFileURL(sdkFile).href)).query,'function');
+  const sdkRequire=createRequire(sdkFile);
+  const cli=path.join(path.dirname(sdkRequire.resolve('@anthropic-ai/claude-agent-sdk-linux-arm64/package.json')),'claude');
+  inspectNativeFile(cli);
+  assert.match(execFileSync(cli,['--version'],{encoding:'utf8',timeout:15000,maxBuffer:65536}),/^2\.1\.295\b/);
+  const python=String.raw`
+import importlib,importlib.metadata,json,platform,ssl,sys
+assert platform.machine()=='aarch64'
+assert sys.version_info[:3]==(3,13,16)
+with open(sys.argv[1]) as stream: lock=json.load(stream)
+for row in lock['wheels']:
+ assert importlib.metadata.version(row['name'])==row['version'],row['name']
+ importlib.import_module(row['importName'])
+assert len(ssl.create_default_context().get_ca_certs())>50
+import numpy,pandas
+assert int(numpy.dot([1,2],[3,4]))==11
+assert int(pandas.DataFrame({'value':[1,2]}).value.sum())==3
+print(json.dumps({'python':platform.python_version(),'imports':len(lock['wheels']),'nativeComputation':True,'caTrust':True}))
+`;
+  const directory=fs.mkdtempSync('/tmp/python-smoke-');
+  let pythonResult;
+  try {pythonResult=JSON.parse(execFileSync('/usr/bin/python3.13',['-I','-B','-c',python,path.join(root,'infra/product-preview/runtime-wheels.lock.json')],{
+    env:{PATH:'/usr/local/bin:/usr/bin:/bin',HOME:directory,MPLCONFIGDIR:directory,OPENBLAS_NUM_THREADS:'1',OMP_NUM_THREADS:'1'},
+    encoding:'utf8',timeout:30000,maxBuffer:65536,
+  }));}finally{fs.rmSync(directory,{recursive:true});}
+  return {platform:'linux/arm64',node:process.version,uid:process.getuid(),readOnlyRoot:true,writableTaskPaths:true,
+    swc:binding.version,temporal:'1.24.0',sdk:sdkPackage.version,cli:sdkPackage.claudeCodeVersion,python:pythonResult};
 }
-
-/** No worker/runtime/session is created. Native modules are loaded only on this call. */
-export function measureRuntimeNative({rootDirectory=applicationRoot}={}){
- need(process.platform==='linux'&&process.arch==='x64'&&process.version==='v24.21.0');
- const glibcVersion=process.report.getReport().header.glibcVersionRuntime;
- need(typeof glibcVersion==='string'&&/^\d+\.\d+$/u.test(glibcVersion));
- const root=fs.realpathSync(rootDirectory),require=createRequire(path.join(root,'apps/runtime/package.json'));
- const binding=swcBinding(root),swcNative=nativeFile(root,binding.native);
- need(!fs.existsSync(path.join(root,'.build-native')));
- const swc=require('@swc/core');
- const transformed=swc.transformSync('const runtimeBaseProof: number = 7;',{
-  jsc:{parser:{syntax:'typescript'}},sourceMaps:false,
- });
- need(typeof transformed?.code==='string'&&transformed.code.includes('7'));
- const swcTarget=swc.getBinaryMetadata().target;
- need(swcTarget==='x86_64-unknown-linux-gnu');
-
- const bridgeManifest=fs.realpathSync(require.resolve('@temporalio/core-bridge/package.json'));
- need(contained(root,bridgeManifest));
- const bridgeRoot=path.dirname(bridgeManifest),metadata=JSON.parse(fs.readFileSync(bridgeManifest,'utf8'));
- need(metadata.name==='@temporalio/core-bridge'&&metadata.version==='1.24.0');
- const temporalNative=nativeFile(bridgeRoot,path.join(bridgeRoot,'releases/x86_64-unknown-linux-gnu/index.node'));
- // Requiring the bridge loads its selected native binding without starting a
- // Temporal runtime, worker, connection, workflow or network listener.
- const bridge=require('@temporalio/core-bridge');
- need(bridge!==null&&typeof bridge==='object');
- const loaded=new Set(process.report.getReport().sharedObjects.filter(file=>file.endsWith('.node')).map(file=>fs.realpathSync(file)));
- need(loaded.has(swcNative.path)&&loaded.has(temporalNative.path));
- need([...loaded].every(file=>file===swcNative.path||file===temporalNative.path));
- need(!fs.existsSync(path.join(root,'.build-native')));
- return Object.freeze({schemaVersion:1,status:'RUNTIME_NATIVE_VERIFIED',nodeVersion:process.version,glibcVersion,
-  swcTarget,swcNativeSha256:swcNative.sha256,temporalNativeSha256:temporalNative.sha256,
-  swcCacheIndependent:true,temporalNativeLoaded:true});
-}
-
-const help='Final-image GNU native proof: node apps/runtime/build/runtime-base-probe.mjs --measure. Exit0 verified/help; exit2 refused. No services, credentials, runtime or network are created.';
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
- if(process.argv.length===3&&process.argv[2]==='--help')console.log(help);
- else if(process.argv.length===3&&process.argv[2]==='--measure'){
-  try{console.log(JSON.stringify(measureRuntimeNative()));}
-  catch{console.error('RUNTIME_NATIVE_REFUSED');process.exitCode=2;}
- }else{console.error('RUNTIME_NATIVE_REFUSED');process.exitCode=2;}
+  if(process.argv.length===3&&process.argv[2]==='--help')console.log('Native ARM64 image smoke: --check under UID1000/read-only root with writable task mounts. No model, service or database calls.');
+  else if(process.argv.length===3&&process.argv[2]==='--check'){
+    try{console.log(JSON.stringify(await probeRuntimeImage()));}catch(error){console.error('RUNTIME_IMAGE_REFUSED: '+error.message);process.exitCode=2;}
+  }else{console.error('RUNTIME_IMAGE_REFUSED');process.exitCode=2;}
 }
