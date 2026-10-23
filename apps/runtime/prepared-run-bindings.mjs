@@ -1,3 +1,4 @@
+import {isConversationClient,conversationScopeMatches,conversationClientFromScopes} from '../../packages/contracts/conversation-scope.mjs';
 /** Production composition of the three multi-run ports (S2): `runIssuance` (the canonical prepared-run issuance over the durable
  * issuer and a trusted fact producer), `issuanceIntent` (the next run's expiry from reviewed static bounds) and `admissionForBinding`
  * (the existing budget admission owner per target binding). Ports are built from startup-supplied owners; configuration names no
@@ -36,19 +37,19 @@ export function createPreparedRunBindings(options){
  const workspaceMatch=/^(.*[\\/])([0-9a-f-]{36})$/u.exec(workspace);
  if(readInitial&&(!workspaceMatch||workspaceMatch[2]!==configuredBinding.conversationId))fail('WORKSPACE');
  const workspaceParent=workspaceMatch?.[1],configurationSha256=compilePreparedRunConfigurationSha256(o.configuration);
- const exactInitialScopes=(scopes,binding,policyRevision)=>Array.isArray(scopes)&&hash(scopes)===hash([{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision}]);
+ const exactInitialScopes=(scopes,binding,policyRevision,clientId)=>conversationScopeMatches(scopes,binding,clientId,policyRevision);
  const initialRecord=async(binding,check,cleanup=false)=>{
   validateShape('RunBinding',binding);if(!readInitial||binding.writerFence!==1||hash(binding)===hash(configuredBinding)||binding.tenantId!==configuredBinding.tenantId||binding.actorId!==configuredBinding.actorId)fail('INITIAL_BINDING_UNAVAILABLE');
   check();const raw=await readInitial({binding},check);check();if(raw===null)fail('INITIAL_BINDING_UNAVAILABLE');
   const r=data(own(raw,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']));
-  if(r.schemaVersion!==1||r.state!=='ADMITTED'||hash(r.binding)!==hash(binding)||r.selectedClientId!==selectedClientId||r.policyRevision!==config.qualification.policyRevision||hash(r.versions)!==hash(config.runtime.versions)||r.configurationSha256!==configurationSha256||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||!cleanup&&r.expiresAtMs<=now()||r.expiresAtMs<=r.createdAtMs||r.expiresAtMs>r.createdAtMs+config.multiRun.runWindowMs||r.expiresAtMs>scheduleExpiresAtMs)fail('INITIAL_BINDING_REFUSED');
-  const saved=await o.store.readOptional(binding,{},check);check();if(!saved||hash(saved.run?.binding)!==hash(binding)||!cleanup&&!['queued','starting','running'].includes(saved.run.state)||hash(saved.run.versions)!==hash(r.versions)||saved.run.policyRevision!==r.policyRevision||!exactInitialScopes(saved.run.scopes,binding,r.policyRevision))fail('INITIAL_RUN_REFUSED');
+  if(r.schemaVersion!==1||r.state!=='ADMITTED'||hash(r.binding)!==hash(binding)||!isConversationClient(r.selectedClientId)||r.policyRevision!==config.qualification.policyRevision||hash(r.versions)!==hash(config.runtime.versions)||r.configurationSha256!==configurationSha256||!Number.isSafeInteger(r.createdAtMs)||r.createdAtMs<1||r.createdAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||!cleanup&&r.expiresAtMs<=now()||r.expiresAtMs<=r.createdAtMs||r.expiresAtMs>r.createdAtMs+config.multiRun.runWindowMs||r.expiresAtMs>scheduleExpiresAtMs)fail('INITIAL_BINDING_REFUSED');
+  const saved=await o.store.readOptional(binding,{},check);check();if(!saved||hash(saved.run?.binding)!==hash(binding)||!cleanup&&!['queued','starting','running'].includes(saved.run.state)||hash(saved.run.versions)!==hash(r.versions)||saved.run.policyRevision!==r.policyRevision||!exactInitialScopes(saved.run.scopes,binding,r.policyRevision,r.selectedClientId))fail('INITIAL_RUN_REFUSED');
   return {admission:r,saved};
  };
  const checkedInitial=async(binding,check)=>{const {admission}=await initialRecord(binding,check);return admission;};
  // sdkOptionsSha256 is the run-invariant SDK option template (native-authority/sdk-option-template.mjs): carried unchanged, it
  // matches every retargeted run because the runner verifies cwd, CLAUDE_CONFIG_DIR and the prompt scopes against this intent.
- const retargetPreparation=(binding,scopes)=>{if(!readInitial||!workspaceParent)fail('WORKSPACE');return {...config.preparationIntent,workspace:workspaceParent+binding.conversationId,authoritySha256:hash({scopes,selectedClientId,policyRevision:config.qualification.policyRevision})};};
+ const retargetPreparation=(binding,scopes)=>{if(!readInitial||!workspaceParent)fail('WORKSPACE');return {...config.preparationIntent,workspace:workspaceParent+binding.conversationId,authoritySha256:hash({scopes,selectedClientId:conversationClientFromScopes(scopes,binding),policyRevision:config.qualification.policyRevision})};};
  /** The authoritative allocation for a target binding: the reviewed static allocation retargeted to exactly that run. Its hash is what
   * the issued facts and the retired record carry; a record naming a different allocation hash is refused rather than admitted. */
  const retarget=binding=>{const alloc=JSON.parse(config.allocationJson);alloc.run=Object.fromEntries(Object.keys(alloc.run).map(k=>[k,binding[k]]));return JSON.stringify(alloc);};
@@ -86,7 +87,7 @@ export function createPreparedRunBindings(options){
   if(saved){if(hash(saved.run.binding)!==hash(intent.binding)||hash(saved.run.versions)!==hash(c.runtime.versions)||saved.run.policyRevision!==c.qualification.policyRevision)fail('RUN_RECORD_MISMATCH');}
   else if(intent.binding.writerFence>1)fail('RUN_RECORD_REQUIRED');
   if(intent.binding.conversationId!==configuredBinding.conversationId&&!readInitial)fail('INITIAL_BINDING_UNAVAILABLE');
-  if(intent.binding.writerFence===1&&hash(intent.binding)!==hash(configuredBinding)){const admitted=await checkedInitial(intent.binding,check);if(intent.expiresAtMs!==admitted.expiresAtMs||!saved||!exactInitialScopes(saved.run.scopes,intent.binding,admitted.policyRevision))fail('INITIAL_EXPIRY_MISMATCH');}
+  if(intent.binding.writerFence===1&&hash(intent.binding)!==hash(configuredBinding)){const admitted=await checkedInitial(intent.binding,check);if(intent.expiresAtMs!==admitted.expiresAtMs||!saved||!exactInitialScopes(saved.run.scopes,intent.binding,admitted.policyRevision,admitted.selectedClientId))fail('INITIAL_EXPIRY_MISMATCH');}
   if(approvedReads!==undefined&&(!saved||hash(saved.request)!==intent.requestSha256))fail('RUN_REQUEST_MISMATCH');
   const model=await issueRunModelGrant({owner:o.modelGrants,intent,taskGrant:issuance,controlSha256:controlDigest,now,signal});
   return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:model.proxyCredential},plan:c.plan,preparationIntent:intent.binding.conversationId===configuredBinding.conversationId?c.preparationIntent:retargetPreparation(intent.binding,saved.run.scopes),allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs},model.grantIntent],grantId:issuance.grantId,operations,...(approvedReads===undefined?{}:{approvedReads}),taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};},...(objective?{decorateObjective}:{})};

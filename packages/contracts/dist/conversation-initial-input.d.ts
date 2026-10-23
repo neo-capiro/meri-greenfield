@@ -16,7 +16,7 @@ export interface ConversationInitialInputAllocation {
    */
   scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
   versions: Canonical_RuntimeVersions_7Edb8Efc;
-  selectedClientId: string;
+  selectedClientId: string | null;
   requestId: string;
   inputSha256: string;
   requestSha256: string;

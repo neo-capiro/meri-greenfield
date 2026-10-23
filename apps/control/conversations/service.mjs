@@ -1,3 +1,4 @@
+import {conversationAuthorityIncludes} from '../../../packages/contracts/conversation-scope.mjs';
 /** Authenticated request/history control; policy remains in existing session owners. */
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -129,7 +130,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
  async function loadForExecution({credential,binding,signal},readLifecycle){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');
-  if(readLifecycle!==undefined){uuid(c.selectedClientId);if(!c.scopes.some(scope=>scope.kind==='client'&&scope.resourceId===c.selectedClientId))fail('SCOPE_REFUSED');}
+  if(readLifecycle!==undefined){if(!conversationAuthorityIncludes(c.scopes,binding,c.selectedClientId))fail('SCOPE_REFUSED');}
   const result=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(result.run.binding,c.binding))fail('STALE_WRITER');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');
   const lineage=typeof store.nextRuns?.execution==='function'?await life.run(()=>store.nextRuns.execution({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check)):null;
   const capabilities=capabilityPort===undefined?null:await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,signal}));

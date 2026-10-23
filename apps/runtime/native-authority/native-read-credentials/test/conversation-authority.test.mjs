@@ -98,7 +98,7 @@ for(const [label,response] of [
 
 test('closed exact UUID selectors and inert input refuse before HTTP',async()=>{
  const f=fixture();let getters=0;
- for(const changes of [{conversationId:'Client Name'},{conversationId:uuid('a').toUpperCase()},{clientId:` ${clientId} `},{clientId:null},{clientId:uuid('2')+'suffix'},
+ for(const changes of [{conversationId:'Client Name'},{conversationId:uuid('a').toUpperCase()},{clientId:` ${clientId} `},{clientId:uuid('2')+'suffix'},
   {deadlineMs:1.5},{credential:'contains space'},{binding:{}},{identitySha256:'0'.repeat(64)},
   {get conversationId(){getters++;return conversationId;}}]){
   // Build the request without evaluating accessor-bearing input.
@@ -143,4 +143,11 @@ test('the shared private projection validator enforces exact fields, canonical f
   const value=structuredClone(out);mutate(value);assert.throws(()=>assertNativeConversationAuthority(value,options),{message:'ACCESS_DENIED'});
  }
  let touched=false;assert.throws(()=>assertNativeConversationAuthority({...out,get contextRevision(){touched=true;return 'opaque';}},options),{message:'ACCESS_DENIED'});assert.equal(touched,false);
+});
+
+test('explicit General selector requires the fresh same-origin Core null context',async()=>{
+ const f=fixture(),result=await f.client.readConversation({...f.request(),clientId:null});
+ assert.equal(result.selectedClientId,null);assert.equal(f.state.calls[1].body.clientId,null);
+ f.state.mutate=(r,p)=>{if(p===contextPath)r.selectedClientId=clientId;};
+ await assert.rejects(f.client.readConversation({...f.request(),clientId:null}));
 });

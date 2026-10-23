@@ -28,7 +28,7 @@ export function createNativeIdentityContext(configuration){
  const unavailable=cause=>{const error=Object.assign(Error('NATIVE_AUTHORITY_UNAVAILABLE'),{code:'NATIVE_AUTHORITY_UNAVAILABLE',status:503},refusalDiagnostic(cause));throw carryAuthorityUnavailable(cause,error);};
  return Object.freeze({
   async withAuthority({credential,hints={},binding,sessionFence,expect,fresh=false,requireOrigin=false,signal,deadlineMs},operation){
-   if(!enabled)unavailable();const conversationId=hints.conversationId??commandContext.binding.conversationId,clientId=hints.clientId??commandContext.clientResolution.clientId;
+   if(!enabled)unavailable();const conversationId=hints.conversationId??commandContext.binding.conversationId,clientId=Object.hasOwn(hints,'clientId')?hints.clientId:commandContext.clientResolution.clientId;
    const borrow=requireOrigin?originatingAuthoritySession(fetchImpl):undefined;
    const origin=borrow?borrow({binding,selectedClientId:clientId,signal}):undefined;
    if(origin){sessionFence=hash(origin.credential);expect=origin.expect;}

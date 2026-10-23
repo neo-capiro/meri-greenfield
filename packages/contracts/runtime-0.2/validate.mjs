@@ -1,3 +1,4 @@
+import {conversationAuthorityIncludes} from '../conversation-scope.mjs';
 /** Private run-owner wire. Reuses existing domain validators; exports no browser API. */
 import {data,own} from '../commands-0.2/execution-boundary.mjs';
 import {validateShape,canonicalSha256} from '../validate.mjs';
@@ -7,5 +8,5 @@ export function assertRunOwnerRequest(operation,value){const v=data(value);if(!O
 export function assertWorkerAuthorization(value,{binding,operation,inputSha256,started,now}){
  const v=data(value);own(v,['binding','operation','inputSha256','identityCredential','scopes','selectedClientId','policyRevision','authorizationDecisionId','checkedAtMs','expiresAtMs']);validateShape('RunBinding',v.binding);
  if(!same(v.binding,binding)||v.operation!==operation||v.inputSha256!==inputSha256||typeof v.identityCredential!=='string'||!v.identityCredential||v.identityCredential.length>8192||!Array.isArray(v.scopes)||!v.scopes.length||v.scopes.length>100||typeof v.policyRevision!=='string'||typeof v.authorizationDecisionId!=='string'||!v.authorizationDecisionId||!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>now()||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=now())throw Error('WORKER_AUTHORITY_REFUSED');
- for(const s of v.scopes){validateShape('Scope',s);if(s.tenantId!==binding.tenantId||s.policyRevision!==v.policyRevision)throw Error('WORKER_AUTHORITY_REFUSED');}if(!v.scopes.some(s=>s.kind==='client'&&s.resourceId===v.selectedClientId)||new Set(v.scopes.map(canonicalSha256)).size!==v.scopes.length)throw Error('WORKER_AUTHORITY_REFUSED');return v;
+ for(const s of v.scopes){validateShape('Scope',s);if(s.tenantId!==binding.tenantId||s.policyRevision!==v.policyRevision)throw Error('WORKER_AUTHORITY_REFUSED');}if(!conversationAuthorityIncludes(v.scopes,binding,v.selectedClientId,v.policyRevision)||new Set(v.scopes.map(canonicalSha256)).size!==v.scopes.length)throw Error('WORKER_AUTHORITY_REFUSED');return v;
 }

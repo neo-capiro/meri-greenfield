@@ -17,18 +17,17 @@ import {allocation as parseAllocation} from '../../../gateway/budget/tool-budget
 import {READ_DELEGATION_LIMITS,READ_TOKEN_CEILINGS,READ_TOKEN_REISSUES,MEMORY_ELIGIBILITY_TOKEN_CEILING,delegationRoute,operationsDigest,assertOccurrence,delegationBound,
  delegationCreateRequest,assertDelegationReceipt,tokenRequest,assertTokenReceipt,assertCallKey} from './contract.mjs';
 import {responseLost,sha256,bodyBytes} from './core-client.mjs';
+import {conversationClientFromScopes} from '../../../../packages/contracts/conversation-scope.mjs';
 
 const refuse=code=>{throw nativeReadFault(code);};
 const STOP_REASONS=new Set(['run_terminal','cancelled','fenced','superseded']);
-/** The run's selected client: exactly one client scope. */
-const selectedClient=scopes=>Array.isArray(scopes)&&scopes.length===1&&scopes[0]?.kind==='client'&&typeof scopes[0].resourceId==='string'?scopes[0].resourceId:null;
 
 export function createRunReadDelegation(configuration){
  const c=own(configuration,['binding','scopes','allocationJson','runDeadlineMs','client','now'],['liveCredentialFor','readOccurrence','operations']);
- const binding=data(c.binding),scopes=data(c.scopes),now=c.now,a=parseAllocation(c.allocationJson),clientId=selectedClient(scopes);validateShape('RunBinding',binding);
- if(typeof now!=='function'||!Number.isSafeInteger(c.runDeadlineMs)||!c.client?.available||clientId===null||
+ const binding=data(c.binding),scopes=data(c.scopes),now=c.now,a=parseAllocation(c.allocationJson),clientId=conversationClientFromScopes(scopes,binding);validateShape('RunBinding',binding);
+ if(typeof now!=='function'||!Number.isSafeInteger(c.runDeadlineMs)||!c.client?.available||clientId===undefined||
   [c.liveCredentialFor,c.readOccurrence].some(f=>f!==undefined&&typeof f!=='function'))refuse('CONFIGURATION');
- const policyRevision=scopes[0].policyRevision,allocationSha256=hash(a),operations=data(c.operations??a.manifest.allowedOperations),operationsSha256=operationsDigest(operations);
+ const schemaVersion=clientId===null?2:1,policyRevision=scopes[0].policyRevision,allocationSha256=hash(a),operations=data(c.operations??a.manifest.allowedOperations),operationsSha256=operationsDigest(operations);
  const runDeadlineMs=Math.min(c.runDeadlineMs,Date.parse(a.schedule.expiresAt)),maxSlots=a.budgets.maxToolCalls;
  const controller=new AbortController(),slots=new Map();
  let current=null,pending=null,stopped=null,mode=null;
@@ -38,13 +37,14 @@ export function createRunReadDelegation(configuration){
  async function create(signal,deadlineMs){
   const started=now(),occurrence=c.readOccurrence?await c.readOccurrence({binding,signal}):null;active();
   if(occurrence!==null){
+   if(clientId===null)refuse('ACCESS_DENIED');
    mode='unattended';
    // Never renewed: one delegation per occurrence; when it ends, the occurrence's reads end.
    if(current!==null)refuse('UNAVAILABLE');
    const facts=assertOccurrence(occurrence,{binding,clientId,operationsSha256,policyRevision,now});
    const request=delegationCreateRequest({mode,binding,clientId,policyRevision,allocationSha256,operationsSha256,occurrence:facts});
    const bound=delegationBound({mode,issuedAtMs:started,runDeadlineMs,occurrence:facts});if(bound<=now())refuse('UNAVAILABLE');
-   return assertDelegationReceipt(await c.client.create({request,signal,deadlineMs}),{bound,started,now});
+   return assertDelegationReceipt(await c.client.create({request,signal,deadlineMs}),{bound,started,now,schemaVersion});
   }
   mode='attended';
   // Renewal requires a live login: no live session for this run and client means no new delegation.
@@ -53,7 +53,7 @@ export function createRunReadDelegation(configuration){
   active();if(liveCredential===null)refuse('UNAVAILABLE');
   const request=delegationCreateRequest({mode,binding,clientId,policyRevision,allocationSha256,operationsSha256,supersedes:current?.delegationId??null});
   const bound=delegationBound({mode,issuedAtMs:started,runDeadlineMs});if(bound<=now())refuse('UNAVAILABLE');
-  return assertDelegationReceipt(await c.client.create({request,liveCredential,signal,deadlineMs}),{bound,started,now});
+  return assertDelegationReceipt(await c.client.create({request,liveCredential,signal,deadlineMs}),{bound,started,now,schemaVersion});
  }
  /** The current delegation, creating (or, attended only, superseding) it when absent or expired. Single flight. */
  async function ensure({signal,deadlineMs}={}){
@@ -65,13 +65,16 @@ export function createRunReadDelegation(configuration){
  /** One single-use token for one call slot. Meri refuses past the per-slot ceilings and past the run's call allowance first;
   * Core enforces the same against Meri's own reservation counts. A lost response is re-requested at most twice, as a retry of
   * the same request, which Core answers by superseding the unconsumed token (no new slot, no new allowance). */
- async function token({kind,callKey,path,body,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,
+ async function token({kind,callKey,targetClientId,path,body,bodySha256,operation=null,argumentsSha256=null,toolRequestSha256=null,referenceSha256=null,correlationSha256,
   pageBodySha256=null,pageRequestSha256=null,resultSha256=null,recordsSha256=null,pageProof=null,signal,deadlineMs}){
-  active();assertCallKey(callKey);const d=await ensure({signal,deadlineMs});active();
+  active();assertCallKey(callKey);
+  if(schemaVersion===2&&targetClientId!==null&&!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(targetClientId)||schemaVersion===1&&targetClientId!==undefined)refuse('ACCESS_DENIED');
+  const d=await ensure({signal,deadlineMs});active();
   // Unattended: pause, revoke or any scope change of the consent ends authority mid-occurrence too, before Core is asked.
   if(mode==='unattended'){const o=await c.readOccurrence({binding,signal:lifetimeSignal(signal)});active();if(o===null)refuse('ACCESS_DENIED');assertOccurrence(o,{binding,clientId,operationsSha256,policyRevision,now});}
   let slot=slots.get(callKey);
-  if(!slot){if(slots.size>=maxSlots)refuse('RESOURCE_LIMIT');slot={counts:{current:0,tool:0,mode:0,reference:0,memory_eligibility:0},
+  if(slot&&slot.targetClientId!==targetClientId)refuse('ACCESS_DENIED');
+  if(!slot){if(slots.size>=maxSlots)refuse('RESOURCE_LIMIT');slot={targetClientId,counts:{current:0,tool:0,mode:0,reference:0,memory_eligibility:0},
    reissues:{current:0,tool:0,mode:0,reference:0}};slots.set(callKey,slot);}
   if(kind==='memory_eligibility'){
    const parent=slot.parentPage;
@@ -80,7 +83,7 @@ export function createRunReadDelegation(configuration){
    if(slot.counts.memory_eligibility>=MEMORY_ELIGIBILITY_TOKEN_CEILING)refuse('RESOURCE_LIMIT');
   }else if(slot.counts[kind]>=READ_TOKEN_CEILINGS[kind])refuse('RESOURCE_LIMIT');
   const target=kind==='current'?delegationRoute(d.delegationId,'current'):path;
-  const first=tokenRequest({kind,callKey,path:target,bodySha256:body===undefined?bodySha256:sha256(bodyBytes(body)),operation,argumentsSha256,
+  const first=tokenRequest({schemaVersion,...(schemaVersion===2?{targetClientId}:{}),kind,callKey,path:target,bodySha256:body===undefined?bodySha256:sha256(bodyBytes(body)),operation,argumentsSha256,
    toolRequestSha256,referenceSha256,correlationSha256,pageBodySha256,pageRequestSha256,resultSha256,recordsSha256,pageProof}),firstSha256=hash(first);
   const s=lifetimeSignal(signal),cutoff=Math.min(deadlineMs,hardExpiry());
   if(!Number.isSafeInteger(deadlineMs)||cutoff<=now())refuse('UNAVAILABLE');
@@ -91,7 +94,7 @@ export function createRunReadDelegation(configuration){
    try{
     const raw=await c.client.issueToken({delegationId:d.delegationId,request:attempt===0?first:{...first,retryOf:firstSha256},signal:s,deadlineMs:cutoff});active();
     if(current?.delegationId!==d.delegationId)refuse('ACCESS_DENIED');
-    const receipt=assertTokenReceipt(raw,{hardExpiryMs:hardExpiry(),started,now});
+    const receipt=assertTokenReceipt(raw,{hardExpiryMs:hardExpiry(),started,now,schemaVersion});
     const expiresAtMs=kind==='memory_eligibility'?Math.min(receipt.expiresAtMs,cutoff):receipt.expiresAtMs;
     if(expiresAtMs<=now())refuse('UNAVAILABLE');
     if(kind!=='memory_eligibility')slot.counts[kind]++;
@@ -120,7 +123,7 @@ export function createRunReadDelegation(configuration){
   const id=current?.delegationId;current=null;
   return Object.freeze({stopped:true,revoked:first&&id!==undefined?await revokeQuietly(id,reason):false});
  }
- return Object.freeze({binding,clientId,policyRevision,
+ return Object.freeze({binding,clientId,policyRevision,schemaVersion,
   get mode(){return mode;},get stopped(){return stopped!==null;},
   get delegationId(){return current?.delegationId??null;},
   /** min(delegation expiry, run deadline); 0 when there is no current delegation. */

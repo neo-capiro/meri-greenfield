@@ -1,3 +1,4 @@
+import {originalRuntimeSupports} from '../../../../packages/skills/runtime-support.mjs';
 /** Opt-in original skill execution inside the existing single SDK task. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
@@ -14,7 +15,7 @@ export async function createSelectedSkillExecutionRuntime(configuration) {
  const binding=data(c.binding),request=data(c.request),scopes=data(c.scopes),selection=data(own(c.selection,['subject','window','mondayBoardIds']));
  validateShape('RunBinding',binding);validateShape('RuntimeVersions',c.versions);scopes.forEach(s=>validateShape('Scope',s));assertSubject(selection.subject,binding);assertWindow(selection.window);
  const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);
- if(!['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(selected.pin.skillId)||!same(request.skill,selected.pin)||!same(selection.subject.scopes,scopes)||
+ if(!originalRuntimeSupports(selected.pin)||!same(request.skill,selected.pin)||!same(selection.subject.scopes,scopes)||
  !same(request.window,selection.window)||!selected.manifest.subjectKinds.includes(selection.subject.kind)||!selected.manifest.windowBases.includes(selection.window.basis)||
  c.versions.sdk!=='0.3.295'||c.versions.cli!=='2.1.295'||['readForSkill','currentSkillRun','compileArtifact','now'].some(k=>typeof c[k]!=='function')||typeof c.gateway?.execute!=='function')throw fault('SKILL_RUNTIME_CONFIGURATION');
  if(request.windowRequest!==null)assertWindowResolution(request.windowRequest,request.window);

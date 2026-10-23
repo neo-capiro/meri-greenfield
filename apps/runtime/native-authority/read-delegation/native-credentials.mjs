@@ -29,13 +29,17 @@ const MAX_HANDLES=4096;
 export function composeDelegatedNativeCredentials(configuration){
  const c=own(configuration,['delegation','client','now'],['fallback']),delegation=c.delegation,client=c.client,now=c.now;
  if(typeof now!=='function'||!client?.available||typeof delegation?.token!=='function')refuse('CONFIGURATION');
+ const general=delegation.clientId===null;
  const fallback=c.fallback===undefined?null:own(c.fallback,['coreAuthority','getNativeCredential']);
+ if(general&&fallback)refuse('CONFIGURATION');
  if(fallback&&(typeof fallback.getNativeCredential!=='function'||types.isProxy(fallback.getNativeCredential)||fallback.coreAuthority.origin!==client.origin))refuse('CONFIGURATION');
  const handles=new Map(),byCall=new Map(),choice=new Map();
  const prune=()=>{const at=now();for(const [handle,h] of handles)if(h.expiresAtMs<=at){handles.delete(handle);byCall.delete(h.callKey);}};
  const slotOf=credential=>{const h=typeof credential==='string'?handles.get(credential):undefined;if(!h)return null;if(h.expiresAtMs<=now())refuse('UNAVAILABLE');return h;};
  async function getNativeCredential(request){
   const callKey=request?.callKey;
+  const targetClientId=general?request?.targetClientId:undefined;
+  if(general&&targetClientId!==null&&(typeof targetClientId!=='string'||!UUID.test(targetClientId)))refuse('ACCESS_DENIED');
   if(callKey===undefined||choice.get(callKey)==='fallback'){if(fallback&&delegation.mode!=='unattended')return fallback.getNativeCredential(request);refuse('UNAVAILABLE');}
   assertCallKey(callKey);
   try{await delegation.ensure({signal:request.signal,deadlineMs:request.deadlineMs});}
@@ -47,13 +51,15 @@ export function composeDelegatedNativeCredentials(configuration){
   if(choice.get(callKey)==='fallback')refuse('ACCESS_DENIED');choice.set(callKey,'delegated');
   let handle=byCall.get(callKey);
   if(handle===undefined){prune();if(handles.size>=MAX_HANDLES)refuse('RESOURCE_LIMIT');handle=`mrd.${randomUUID()}`;byCall.set(callKey,handle);}
-  const expiresAtMs=delegation.hardExpiry();handles.set(handle,{callKey,expiresAtMs});
+  const previous=handles.get(handle);
+  if(previous&&previous.targetClientId!==targetClientId)refuse('ACCESS_DENIED');
+  const expiresAtMs=delegation.hardExpiry();handles.set(handle,{callKey,expiresAtMs,targetClientId});
   return Object.freeze({credential:handle,expiresAtMs});
  }
  async function current(h,{conversation,signal,deadlineMs}){
-  const body={schemaVersion:1,conversation},started=now(),issued=await delegation.token({kind:'current',callKey:h.callKey,body,signal,deadlineMs});
+  const body={schemaVersion:general?2:1,conversation,...(general?{targetClientId:h.targetClientId}:{})},started=now(),issued=await delegation.token({kind:'current',callKey:h.callKey,...(general?{targetClientId:h.targetClientId}:{}),body,signal,deadlineMs});
   const raw=await client.target({path:issued.path,body:bodyBytes(body),token:issued.token,signal,deadlineMs:Math.min(deadlineMs,issued.expiresAtMs)});
-  const v=assertCurrentReceipt(raw,{delegationId:issued.delegationId,binding:delegation.binding,clientId:delegation.clientId,conversation,started,now});
+  const v=assertCurrentReceipt(raw,{delegationId:issued.delegationId,binding:delegation.binding,clientId:delegation.clientId,...(general?{targetClientId:h.targetClientId}:{}),conversation,started,now});
   // A renewal between issue and use changes the delegation (and Core's identityRevision); the owner then refuses on drift.
   if(delegation.delegationId!==issued.delegationId)refuse('ACCESS_DENIED');
   return {...v,expiresAtMs:Math.min(v.expiresAtMs,delegation.hardExpiry(),deadlineMs)};
@@ -79,13 +85,13 @@ export function composeDelegatedNativeCredentials(configuration){
   const h=slotOf(raw?.credential);if(!h)return fallback?.coreAuthority.readClientReference?fallback.coreAuthority.readClientReference(raw):refuse('UNAVAILABLE');
   const v=call(raw,['credential','reference','deadlineMs']);if(typeof v.reference!=='string'||!v.reference.trim()||v.reference.length>80)refuse('INVALID_ARGUMENTS');
   const started=now(),cutoff=Math.min(v.deadlineMs,started+3000),before=await current(h,{conversation:false,signal:v.signal,deadlineMs:cutoff});
-  const body={ref:v.reference},issued=await delegation.token({kind:'reference',callKey:h.callKey,path:READ_DELEGATION_ROUTES.reference,body,referenceSha256:sha256(Buffer.from(v.reference,'utf8')),signal:v.signal,deadlineMs:cutoff});
+  const body={ref:v.reference},issued=await delegation.token({kind:'reference',callKey:h.callKey,...(general?{targetClientId:h.targetClientId}:{}),path:READ_DELEGATION_ROUTES.reference,body,referenceSha256:sha256(Buffer.from(v.reference,'utf8')),signal:v.signal,deadlineMs:cutoff});
   const result=await client.target({path:READ_DELEGATION_ROUTES.reference,body:bodyBytes(body),token:issued.token,signal:v.signal,deadlineMs:Math.min(cutoff,issued.expiresAtMs),maxResponseBytes:4096});
   if(result?.ok===false)refuse('UNAVAILABLE');let resolved;
   try{resolved=data(own(result,['ok','clientId']));}catch{refuse('INVALID_RESULT');}
   if(resolved.ok!==true||typeof resolved.clientId!=='string'||!UUID.test(resolved.clientId))refuse('INVALID_RESULT');
   // Result binding: a reference that resolves to any client but the delegated one is refused and never released.
-  if(resolved.clientId!==delegation.clientId)refuse('ACCESS_DENIED');
+  if(resolved.clientId!==(general?h.targetClientId:delegation.clientId))refuse('ACCESS_DENIED');
   const after=await current(h,{conversation:false,signal:v.signal,deadlineMs:cutoff});
   if(hash(identity(before))!==hash(identity(after)))refuse('ACCESS_DENIED');
   return {...identity(after),reference:v.reference,clientId:resolved.clientId,checkedAtMs:Math.min(before.checkedAtMs,after.checkedAtMs),expiresAtMs:Math.min(cutoff,before.expiresAtMs,after.expiresAtMs)};
@@ -97,7 +103,7 @@ export function composeDelegatedNativeCredentials(configuration){
   if(!MODE_READ_OPERATIONS.includes(operation.id)||typeof v.requestSha256!=='string'||!SHA.test(v.requestSha256))refuse('INVALID_ARGUMENTS');
   const started=now(),cutoff=Math.min(v.deadlineMs,started+3000),before=await current(h,{conversation:false,signal:v.signal,deadlineMs:cutoff});
   const body={operation,requestSha256:v.requestSha256};
-  const issued=await delegation.token({kind:'mode',callKey:h.callKey,path:READ_DELEGATION_ROUTES.mode,body,operation,toolRequestSha256:v.requestSha256,signal:v.signal,deadlineMs:cutoff});
+  const issued=await delegation.token({kind:'mode',callKey:h.callKey,...(general?{targetClientId:h.targetClientId}:{}),path:READ_DELEGATION_ROUTES.mode,body,operation,toolRequestSha256:v.requestSha256,signal:v.signal,deadlineMs:cutoff});
   const result=await client.target({path:READ_DELEGATION_ROUTES.mode,body:bodyBytes(body),token:issued.token,serviceSecret:v.serviceSecret,signal:v.signal,deadlineMs:Math.min(cutoff,issued.expiresAtMs),maxResponseBytes:4096});
   let r;try{r=data(own(result,['operation','requestSha256','principal','surface','evidenceAccuracyMode']));}catch{refuse('INVALID_RESULT');}
   if(r.surface!=='chat'||!MODES.has(r.evidenceAccuracyMode))refuse('INVALID_RESULT');
@@ -114,7 +120,7 @@ export function composeDelegatedNativeCredentials(configuration){
   const target=data(own(v.target,['method','path','bodySha256']));
   if(target.method!=='POST'||target.path!==toolRoute(operation)||typeof target.bodySha256!=='string'||!SHA.test(target.bodySha256))refuse('ACCESS_DENIED');
   delegation.assertReleasable();
-  const issued=await delegation.token({kind:'tool',callKey:h.callKey,path:target.path,bodySha256:target.bodySha256,operation,argumentsSha256:v.argumentsSha256,
+  const issued=await delegation.token({kind:'tool',callKey:h.callKey,...(general?{targetClientId:h.targetClientId}:{}),path:target.path,bodySha256:target.bodySha256,operation,argumentsSha256:v.argumentsSha256,
    ...(v.correlationSha256===undefined?{}:{correlationSha256:v.correlationSha256}),signal:v.signal,deadlineMs:v.deadlineMs});
   return Object.freeze({bearerToken:issued.token,authorizationScheme:READ_TOKEN_SCHEME,expiresAtMs:Math.min(issued.expiresAtMs,delegation.hardExpiry())});
  }
@@ -128,7 +134,7 @@ export function composeDelegatedNativeCredentials(configuration){
   if(operation.id!=='search_memory'||operation.version!=='0.2.0'||target.method!=='POST'||
    target.path!=='/api/clio/tools/search_memory_eligibility'||!SHA.test(target.bodySha256))refuse('ACCESS_DENIED');
   delegation.assertReleasable();
-  const issued=await delegation.token({kind:'memory_eligibility',callKey:h.callKey,path:target.path,bodySha256:target.bodySha256,
+  const issued=await delegation.token({kind:'memory_eligibility',callKey:h.callKey,...(general?{targetClientId:h.targetClientId}:{}),path:target.path,bodySha256:target.bodySha256,
    operation,argumentsSha256:v.argumentsSha256,pageBodySha256:v.pageBodySha256,pageRequestSha256:v.pageRequestSha256,
    resultSha256:v.resultSha256,recordsSha256:v.recordsSha256,correlationSha256:v.correlationSha256,
    pageProof:v.pageProof,signal:v.signal,deadlineMs:v.deadlineMs});

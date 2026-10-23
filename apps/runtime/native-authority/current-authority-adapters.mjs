@@ -1,3 +1,4 @@
+import {conversationClientFromScopes,conversationScopes,conversationScopeMatches} from '../../../packages/contracts/conversation-scope.mjs';
 /** Current run authority from Core ca4de503's combined /current receipt (S2/O208).
  * The canonical session relay supplies the live user's bearer, never a candidate or service credential. Only a branded
  * originating run session permits process-private20s receipt reuse, aged from monotonic sendStart. Unbranded ports read
@@ -139,7 +140,7 @@ export function createCurrentAuthorityAdapters(configuration){
     // A port without canonical originating-session provenance gets a fresh observation, never reuse.
     const began=now();currentTurnTelemetry()?.recordAuthority?.('fresh');r=await l.life.run(signal=>identity.readCurrent({credential:issued.credential,conversationId:binding.conversationId,clientId:selectedClientId,signal,deadlineMs:Math.min(l.deadline(),now()+3000)}));fresh(r,began,l);
    }
-   if(r.principal.tenantId!==binding.tenantId||r.principal.actorId!==binding.actorId||r.conversationId!==binding.conversationId||r.selectedClientId!==selectedClientId||!Object.hasOwn(ROLE_GRANTS,r.role)||!r.clientIds.includes(selectedClientId)||r.expiresAtMs<=now())deny('ACCESS_DENIED');l.limit(r.expiresAtMs);
+   if(r.principal.tenantId!==binding.tenantId||r.principal.actorId!==binding.actorId||r.conversationId!==binding.conversationId||r.selectedClientId!==selectedClientId||!Object.hasOwn(ROLE_GRANTS,r.role)||selectedClientId!==null&&!r.clientIds.includes(selectedClientId)||r.expiresAtMs<=now())deny('ACCESS_DENIED');l.limit(r.expiresAtMs);
    const again=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));if(again.credential!==issued.credential)deny('UNAVAILABLE');
    const checkedAtMs=now(),expiresAtMs=Math.min(l.deadline(),l.started+limits.maxLeaseMs,issued.expiresAtMs,again.expiresAtMs);
    l.life.check();if(expiresAtMs<=checkedAtMs)deny('ACCESS_DENIED');
@@ -154,7 +155,7 @@ export function createCurrentAuthorityAdapters(configuration){
   let run;try{run=data(saved.run);}catch{deny('ACCESS_DENIED');}
   if(!run||typeof run!=='object'||!same(run.binding,binding)||!RUN_STATES.includes(run.state)||typeof run.policyRevision!=='string'||!run.policyRevision||!Array.isArray(run.scopes))deny('ACCESS_DENIED');
   for(const scope of run.scopes){try{validateShape('Scope',scope);}catch{deny('ACCESS_DENIED');}if(scope.tenantId!==binding.tenantId||scope.policyRevision!==run.policyRevision)deny('ACCESS_DENIED');}
-  const selectedClientId=selectedClientOf(run.scopes);if(selectedClientId===null)deny('ACCESS_DENIED');
+  const selectedClientId=conversationClientFromScopes(run.scopes,binding);if(selectedClientId===undefined)deny('ACCESS_DENIED');
   return Object.freeze({scopes:run.scopes,policyRevision:run.policyRevision,selectedClientId});
  }
  /** The admitted run and its fresh current-run observation (`createPostgresAdmittedRunOwner.currentTaskRun`). */
@@ -190,7 +191,9 @@ export function createCurrentAuthorityAdapters(configuration){
    if(!run.grantFactsJsons.some(text=>{try{return same(JSON.parse(text),facts);}catch{return false;}})||fact.policyRevision!==facts.qualificationBinding.policyRevision||hash(JSON.parse(run.allocationJson))!==facts.allocationSha256)deny('ACCESS_DENIED');
    const selected=await runRow(binding,l);if(selected.policyRevision!==fact.policyRevision)deny('ACCESS_DENIED');
    const artifactDraftAllowed=c.localArtifactDrafts===true&&allocation.manifest.allowedOperations.some(op=>op.version==='0.2.0'&&LOCAL_ARTIFACT_DRAFTS.includes(op.id));
-   const b=allocation.budgets,claims={capabilityId:facts.grantId,issuer:CURRENT_AUTHORITY_CLAIMS_ISSUER,audience:'meri-gateway',binding,actions:[capabilityAction,...(artifactDraftAllowed?['artifact.publish']:[])],scopes:selected.scopes,
+   let claimScopes=selected.scopes;
+   if(selected.selectedClientId===null){if(capabilityAction!=='tool.read'||c.localArtifactDrafts===true)deny('ACCESS_DENIED');const o=await observe({binding,selectedClientId:null,signal:l.life.signal,deadlineMs:l.deadline(),context:true,fresh:true});claimScopes=[...selected.scopes,...o.clientIds.map(id=>conversationScopes(binding,id,fact.policyRevision)[0])];}
+   const b=allocation.budgets,claims={capabilityId:facts.grantId,issuer:CURRENT_AUTHORITY_CLAIMS_ISSUER,audience:'meri-gateway',binding,actions:[capabilityAction,...(artifactDraftAllowed?['artifact.publish']:[])],scopes:claimScopes,
     issuedAt:iso(startedAt),expiresAt:iso(Math.min(expiresAt,fact.deadlineMs)),policyRevision:fact.policyRevision,budgets:{maxTurns:b.maxTurns,maxRuntimeSeconds:b.maxRuntimeSeconds,maxCostMicrousd:b.maxCostMicroUSD,maxOutputBytes:b.maxOutputBytes}};
    try{validateShape('CapabilityClaims',claims);}catch{deny('ACCESS_DENIED');}
    l.life.check();return JSON.stringify(claims);
@@ -203,19 +206,32 @@ export function createCurrentAuthorityAdapters(configuration){
   try{return (await currentRunFact(b,l)).raw;}catch(error){throw closed(error,'UNAVAILABLE');}finally{l.close();}
  }
  function claimsOf(value){let claims;try{claims=data(value);validateShape('CapabilityClaims',claims);}catch{deny('ACCESS_DENIED');}return claims;}
+ /** Ephemeral General claim projection: only the server-observed roster, never tenant-wide scope. */
+ function validGeneralClaims(claims,row,observation){
+  if(claims.actions.length!==1||claims.actions[0]!=='tool.read'||claims.scopes.length!==observation.clientIds.length+1)return false;
+  const expected=[...row.scopes,...observation.clientIds.map(id=>conversationScopes(claims.binding,id,claims.policyRevision)[0])];
+  return new Set(claims.scopes.map(hash)).size===claims.scopes.length&&expected.every(scope=>claims.scopes.some(candidate=>same(scope,candidate)));
+ }
  /** Core's current membership, client visibility and conversation context for the claims' run -> one allowed decision. */
  async function authorizeBusiness(value){
   const v=own(value,['claims','operation','requiredGrants'],['input','signal']);nativeSignal(v.signal);
   const claims=claimsOf(v.claims);let operation,requiredGrants,input;
   try{operation=data(own(v.operation,['id','version']));requiredGrants=data(v.requiredGrants);input=v.input===undefined?undefined:data(v.input);}catch{deny('ACCESS_DENIED');}
   if(typeof operation.id!=='string'||typeof operation.version!=='string'||!Array.isArray(requiredGrants)||!requiredGrants.length||requiredGrants.some(g=>typeof g!=='string'))deny('ACCESS_DENIED');
-  const selectedClientId=selectedClientOf(claims.scopes);if(selectedClientId===null)deny('ACCESS_DENIED');
-  // A UUID client selector in the input must be the run's client; a name is resolved later by the native owner (check-ref).
-  const named=input!==null&&typeof input==='object'&&typeof input.clientId==='string'?input.clientId.trim().toLowerCase():null;
-  if(named!==null&&UUID.test(named)&&named!==selectedClientId)deny('ACCESS_DENIED');
   const l=lifetime(Date.parse(claims.expiresAt),v.signal);
   try{
-   const o=await observe({binding:claims.binding,selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true,fresh:claims.actions.includes('command.execute')});
+   const row=await runRow(claims.binding,l),general=row.selectedClientId===null;
+   const named=input!==null&&typeof input==='object'&&typeof input.clientId==='string'?input.clientId.trim().toLowerCase():null;
+   if(row.policyRevision!==claims.policyRevision)deny('ACCESS_DENIED');if(!general&&!same(claims.scopes,row.scopes))deny('UNAVAILABLE');
+   if(general&&(capabilityAction!=='tool.read'||claims.actions.some(action=>action!=='tool.read')||c.localArtifactDrafts===true||operation.id==='search_memory'&&named!==null))deny('ACCESS_DENIED');
+   if(!general&&named!==null&&UUID.test(named)&&named!==row.selectedClientId)deny('ACCESS_DENIED');
+   // General requires a canonical client ID. A name is never resolved by enumerating another client's data.
+   if(general&&named!==null&&!UUID.test(named))deny('ACCESS_DENIED');
+   const o=await observe({binding:claims.binding,selectedClientId:row.selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true,fresh:general||claims.actions.includes('command.execute')});
+   if(general&&!validGeneralClaims(claims,row,o))deny('ACCESS_DENIED');
+   const selectedClientId=general?named:row.selectedClientId;
+   if(selectedClientId!==null&&!o.clientIds.includes(selectedClientId))deny('ACCESS_DENIED');
+   const scopes=selectedClientId===null?row.scopes:conversationScopes(claims.binding,selectedClientId,claims.policyRevision);
    const localDraft=c.localArtifactDrafts===true&&operation.version==='0.2.0'&&LOCAL_ARTIFACT_DRAFTS.includes(operation.id)&&same(requiredGrants,['artifact.publish']);
    if(localDraft){
     const {run}=await currentRunFact(claims.binding,l),allocation=JSON.parse(run.allocationJson);
@@ -224,8 +240,8 @@ export function createCurrentAuthorityAdapters(configuration){
    const grants=requiredGrants.filter(grant=>(ROLE_GRANTS[o.actorRole].includes(grant)||localDraft&&grant==='artifact.publish')&&claims.actions.includes(grant));
    const decisionId=newId();if(typeof decisionId!=='string'||!UUID.test(decisionId))deny('UNAVAILABLE');
    const actor={tenantId:claims.binding.tenantId,actorId:claims.binding.actorId};
-   const subject={kind:'client',entityType:'client',entityIds:[selectedClientId],tenantId:actor.tenantId,actorId:actor.actorId,authorizationDecisionId:decisionId,policyRevision:claims.policyRevision,scopes:claims.scopes,rosterVersionId:null};
-   const decision={decisionId,actor,operation:`${operation.id}@${operation.version}`,scopes:claims.scopes,policyRevision:claims.policyRevision,evaluatedAt:iso(o.checkedAtMs),decision:'allowed',reasonCode:'CORE_MEMBERSHIP_CONTEXT_CURRENT'};
+   const subject={kind:selectedClientId===null?'personal':'client',entityType:selectedClientId===null?'user':'client',entityIds:[selectedClientId??actor.actorId],tenantId:actor.tenantId,actorId:actor.actorId,authorizationDecisionId:decisionId,policyRevision:claims.policyRevision,scopes,rosterVersionId:null};
+   const decision={decisionId,actor,operation:`${operation.id}@${operation.version}`,scopes,policyRevision:claims.policyRevision,evaluatedAt:iso(o.checkedAtMs),decision:'allowed',reasonCode:'CORE_MEMBERSHIP_CONTEXT_CURRENT'};
    try{validateShape('AuthorizationDecision',decision);assertSubject(subject,claims.binding);}catch{deny('ACCESS_DENIED');}
    l.life.check();return JSON.stringify({decision,subject,grants});
   }catch(error){throw closed(error,'UNAVAILABLE');}finally{l.close();}
@@ -235,13 +251,15 @@ export function createCurrentAuthorityAdapters(configuration){
   const v=own(value,['claims','subject','sourceRequirements'],['signal']);nativeSignal(v.signal);
   const claims=claimsOf(v.claims);let subject,requirements;
   try{subject=data(v.subject);assertSubject(subject,claims.binding);requirements=data(v.sourceRequirements);}catch{deny('ACCESS_DENIED');}
-  const selectedClientId=selectedClientOf(claims.scopes);
-  if(selectedClientId===null||subject.policyRevision!==claims.policyRevision||subject.scopes.some(scope=>!claims.scopes.some(candidate=>same(candidate,scope)))||
-   (subject.kind==='client'||subject.entityType==='client')&&(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds.length!==1||subject.entityIds[0].toLowerCase()!==selectedClientId)||
-   !Array.isArray(requirements)||requirements.some(r=>typeof r?.sourceId!=='string'||!r.sourceId))deny('ACCESS_DENIED');
+  if(subject.policyRevision!==claims.policyRevision||subject.scopes.some(scope=>!claims.scopes.some(candidate=>same(candidate,scope)))||!Array.isArray(requirements)||requirements.some(r=>typeof r?.sourceId!=='string'||!r.sourceId))deny('ACCESS_DENIED');
   const sourceIds=[...new Set(requirements.map(r=>r.sourceId))],l=lifetime(Date.parse(claims.expiresAt),v.signal);
   try{
-   const o=await observe({binding:claims.binding,selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:false});
+   const row=await runRow(claims.binding,l),general=row.selectedClientId===null;
+   if(row.policyRevision!==claims.policyRevision||!general&&!same(row.scopes,claims.scopes))deny('ACCESS_DENIED');
+   const selectedClientId=subject.kind==='client'&&subject.entityType==='client'&&subject.entityIds.length===1?subject.entityIds[0]:null;
+   if(!general&&selectedClientId!==row.selectedClientId||selectedClientId===null&&(subject.kind!=='personal'||subject.entityType!=='user'||!same(subject.entityIds,[claims.binding.actorId]))||!conversationScopeMatches(subject.scopes,claims.binding,selectedClientId,claims.policyRevision))deny('ACCESS_DENIED');
+   const o=await observe({binding:claims.binding,selectedClientId:row.selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:false,fresh:general});
+   if(general&&!validGeneralClaims(claims,row,o)||selectedClientId!==null&&!o.clientIds.includes(selectedClientId))deny('ACCESS_DENIED');
    l.life.check();return JSON.stringify({sourceIds,enabled:sourceEnabled===true,policyRevision:claims.policyRevision,checkedAtMs:o.checkedAtMs});
   }catch(error){throw closed(error,'UNAVAILABLE');}finally{l.close();}
  }
@@ -267,7 +285,7 @@ export function createCurrentAuthorityAdapters(configuration){
   const binding=s.binding,requiredApprover={tenantId:binding.tenantId,actorId:binding.actorId},l=lifetime(undefined,v.signal);
   try{
    const {fact}=await currentRunFact(binding,l);v.limitDeadline?.(fact.deadlineMs);
-   const row=await runRow(binding,l);if(row.policyRevision!==fact.policyRevision)deny('ACCESS_DENIED');
+   const row=await runRow(binding,l);if(row.selectedClientId===null||row.policyRevision!==fact.policyRevision)deny('ACCESS_DENIED');
    const o=await observe({binding,selectedClientId:row.selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true,fresh:true});
    let proposalExpiresAt;
    if(v.phase==='prepare'){
@@ -300,7 +318,7 @@ export function createCurrentAuthorityAdapters(configuration){
   if(serviceSecretFile===undefined)deny('UNAVAILABLE');
   const l=lifetime(v.deadlineMs,v.signal);
   try{
-   const row=await runRow(binding,l),selectedClientId=row.selectedClientId;
+   const row=await runRow(binding,l),selectedClientId=row.selectedClientId;if(selectedClientId===null)deny('ACCESS_DENIED');
    const issued=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));l.limit(issued.expiresAtMs);
    const began=now();let receipt;
    try{receipt=await l.life.run(signal=>identity.readIdentity({credential:issued.credential,deadlineMs:l.deadline(),signal}));}catch(error){throw closed(error,'UNAVAILABLE');}

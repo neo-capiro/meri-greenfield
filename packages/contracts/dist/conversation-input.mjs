@@ -6759,15 +6759,62 @@ function validate45(data, { instancePath = "", parentData, parentDataProperty, r
                   if (data.clientId !== void 0) {
                     let data4 = data.clientId;
                     const _errs10 = errors2;
-                    if (errors2 === _errs10) {
+                    const _errs11 = errors2;
+                    let valid1 = false;
+                    const _errs12 = errors2;
+                    if (errors2 === _errs12) {
                       if (typeof data4 === "string") {
                         if (!pattern4.test(data4)) {
-                          validate45.errors = [{ instancePath: instancePath + "/clientId", schemaPath: "#/properties/clientId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
-                          return false;
+                          const err0 = { instancePath: instancePath + "/clientId", schemaPath: "#/properties/clientId/anyOf/0/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                          if (vErrors === null) {
+                            vErrors = [err0];
+                          } else {
+                            vErrors.push(err0);
+                          }
+                          errors2++;
                         }
                       } else {
-                        validate45.errors = [{ instancePath: instancePath + "/clientId", schemaPath: "#/properties/clientId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                        return false;
+                        const err1 = { instancePath: instancePath + "/clientId", schemaPath: "#/properties/clientId/anyOf/0/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                        if (vErrors === null) {
+                          vErrors = [err1];
+                        } else {
+                          vErrors.push(err1);
+                        }
+                        errors2++;
+                      }
+                    }
+                    var _valid0 = _errs12 === errors2;
+                    valid1 = valid1 || _valid0;
+                    const _errs14 = errors2;
+                    if (data4 !== null) {
+                      const err2 = { instancePath: instancePath + "/clientId", schemaPath: "#/properties/clientId/anyOf/1/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                      if (vErrors === null) {
+                        vErrors = [err2];
+                      } else {
+                        vErrors.push(err2);
+                      }
+                      errors2++;
+                    }
+                    var _valid0 = _errs14 === errors2;
+                    valid1 = valid1 || _valid0;
+                    if (!valid1) {
+                      const err3 = { instancePath: instancePath + "/clientId", schemaPath: "#/properties/clientId/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
+                      if (vErrors === null) {
+                        vErrors = [err3];
+                      } else {
+                        vErrors.push(err3);
+                      }
+                      errors2++;
+                      validate45.errors = vErrors;
+                      return false;
+                    } else {
+                      errors2 = _errs11;
+                      if (vErrors !== null) {
+                        if (_errs11) {
+                          vErrors.length = _errs11;
+                        } else {
+                          vErrors = null;
+                        }
                       }
                     }
                     var valid0 = _errs10 === errors2;
@@ -6862,6 +6909,18 @@ function validate46(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate46.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 
+// conversation-scope.mjs
+var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+var isConversationClient = (value) => value === null || typeof value === "string" && uuid.test(value);
+function conversationScopeMatches(scopes, binding, selectedClientId, policyRevision = scopes?.[0]?.policyRevision) {
+  if (!Array.isArray(scopes) || scopes.length !== 1 || !isConversationClient(selectedClientId)) return false;
+  const s = scopes[0];
+  return s !== null && typeof s === "object" && Object.keys(s).length === 4 && s.tenantId === binding.tenantId && s.policyRevision === policyRevision && typeof policyRevision === "string" && !!policyRevision && s.kind === (selectedClientId === null ? "private-user" : "client") && s.resourceId === (selectedClientId === null ? binding.actorId : selectedClientId);
+}
+function conversationAuthorityIncludes(scopes, binding, selectedClientId, policyRevision = scopes?.[0]?.policyRevision) {
+  return selectedClientId === null ? conversationScopeMatches(scopes, binding, null, policyRevision) : isConversationClient(selectedClientId) && Array.isArray(scopes) && scopes.some((s) => s.kind === "client" && s.tenantId === binding.tenantId && s.resourceId === selectedClientId);
+}
+
 // conversation-input/semantics.mjs
 import { receiveConversationRequest, receiveConversationResponse, ConversationResponseError } from "./conversation-application.mjs";
 var fail2 = (code) => {
@@ -6869,7 +6928,7 @@ var fail2 = (code) => {
 };
 var bytes = (value) => new TextEncoder().encode(JSON.stringify(value));
 var contextKeys = ["tenantId", "actorId", "conversationId", "runId", "clientId"];
-var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+var uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 function expectedContext(value) {
   try {
     if (!value || typeof value !== "object" || Array.isArray(value) || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) fail2("INPUT_CONTEXT_INVALID");
@@ -6878,10 +6937,10 @@ function expectedContext(value) {
     const context = {};
     for (const key of contextKeys) {
       const d = descriptors[key];
-      if (!d || !Object.hasOwn(d, "value") || !d.enumerable || typeof d.value !== "string") fail2("INPUT_CONTEXT_INVALID");
+      if (!d || !Object.hasOwn(d, "value") || !d.enumerable || !(typeof d.value === "string" || key === "clientId" && d.value === null)) fail2("INPUT_CONTEXT_INVALID");
       context[key] = d.value;
     }
-    if (["tenantId", "actorId"].some((key) => !context[key] || context[key].length > 128) || ["conversationId", "runId", "clientId"].some((key) => !uuid.test(context[key]))) fail2("INPUT_CONTEXT_INVALID");
+    if (["tenantId", "actorId"].some((key) => !context[key] || context[key].length > 128) || (["conversationId", "runId"].some((key) => !uuid2.test(context[key])) || !isConversationClient(context.clientId))) fail2("INPUT_CONTEXT_INVALID");
     return Object.freeze(context);
   } catch (error) {
     if (error instanceof ConversationResponseError) throw error;
@@ -6890,7 +6949,7 @@ function expectedContext(value) {
 }
 function assertInputContext(receipt, context) {
   const b = receipt.run.binding;
-  if (["tenantId", "actorId", "conversationId", "runId"].some((key) => b[key] !== context[key]) || !receipt.run.scopes.some((scope) => scope.kind === "client" && scope.tenantId === context.tenantId && scope.resourceId === context.clientId)) fail2("INPUT_CONTEXT_MISMATCH");
+  if (["tenantId", "actorId", "conversationId", "runId"].some((key) => b[key] !== context[key]) || !conversationAuthorityIncludes(receipt.run.scopes, b, context.clientId)) fail2("INPUT_CONTEXT_MISMATCH");
 }
 async function correlateInputReceipt(receipt, request, currentView) {
   const submitted = await receiveConversationResponse("submit", 200, bytes({ run: receipt.run, requestId: receipt.request.requestId, lastSequence: receipt.lastSequence, replayed: receipt.replayed }), request, currentView);

@@ -1,0 +1,3 @@
+// Generated launcher data. No authorization is implied.
+export type SkillCatalogEntry=Readonly<{skillId:string;skillVersion:string;manifestSha256:string;proseSha256:string;catalogSha256:string;label:string;runtimeSupported:boolean;available:false;unavailableReason:'CURRENT_INSTALLATION_REQUIRED'|'RUNTIME_NOT_QUALIFIED';subjectKinds:readonly string[];windowBases:readonly string[];requiredSources:readonly Readonly<{sourceId:string;authority:string;purpose:string}>[];operations:readonly Readonly<{id:string;version:string}>[]}>;
+export declare const skillCatalog:Readonly<{schemaVersion:1;skills:readonly SkillCatalogEntry[]}>;

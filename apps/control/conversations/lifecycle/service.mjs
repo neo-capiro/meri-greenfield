@@ -1,3 +1,4 @@
+import {conversationAuthorityIncludes} from '../../../../packages/contracts/conversation-scope.mjs';
 /** Opt-in controls compose current authorization through the existing service. */
 import {randomUUID} from 'node:crypto';
 import {assertWorkspacePaths,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
@@ -29,7 +30,7 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
    if(current.authenticationSha256!==hash(authentication)||['tenantId','actorId','conversationId','runId'].some(k=>authentication.principal?.[k]!==current.binding?.[k]))fail('SESSION_REFUSED');validateShape('RunBinding',current.binding);
    if(!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)fail('SCOPE_REFUSED');for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==current.binding.tenantId)fail('SCOPE_REFUSED');}
    if(new Set(current.scopes.map(hash)).size!==current.scopes.length||new Set(current.scopes.map(s=>s.policyRevision)).size!==1)fail('SCOPE_REFUSED');
-   uuid(current.selectedClientId);if(!current.scopes.some(s=>s.kind==='client'&&s.resourceId===current.selectedClientId))fail('SCOPE_REFUSED');
+   if(!conversationAuthorityIncludes(current.scopes,current.binding,current.selectedClientId))fail('SCOPE_REFUSED');
    const at=now();for(const r of [authentication,current])if(!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=at)fail('SESSION_REFUSED');active.limitDeadline(Math.min(authentication.expiresAtMs,current.expiresAtMs));
    return data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId});
   }
@@ -86,7 +87,7 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
    const targetVersions=admission.versions??saved.run.versions;validateShape('RuntimeVersions',targetVersions);
    if(!continuesSession(saved.run.versions,targetVersions))fail('NATIVE_ADMISSION_REFUSED');
    if(i.intent==='fork'){uuid(admission.targetSessionId);if(admission.targetSessionId===verified.checkpoint.sessionId)fail('NATIVE_ADMISSION_REFUSED');}
-   if(admission.selectedClientId!==saved.selectedClientId||!same(admission.scopes,scopes)||!scopes.some(s=>s.kind==='client'&&s.resourceId===admission.selectedClientId)||!Number.isSafeInteger(admission.expiresAtMs)||admission.expiresAtMs<=now())fail('NATIVE_ADMISSION_REFUSED');life.limitDeadline(admission.expiresAtMs);
+   if(admission.selectedClientId!==saved.selectedClientId||!same(admission.scopes,scopes)||!conversationAuthorityIncludes(scopes,admission.binding,admission.selectedClientId)||!Number.isSafeInteger(admission.expiresAtMs)||admission.expiresAtMs<=now())fail('NATIVE_ADMISSION_REFUSED');life.limitDeadline(admission.expiresAtMs);
    const proposed={...p,target:admission,retirement};receipt(proposed);const t=admission.binding,continuation=assertContinuationEnvelope({mode:i.intent,controlId:i.controlId,checkpoint:verified.checkpoint,checkpointSha256:i.checkpointSha256,sourceRequestSha256:hash(saved.request),contextSha256:contextHash(saved),resumeSessionAt:verified.resumeSessionAt,targetSessionId:admission.targetSessionId});
    const createdAt=new Date(now()).toISOString(),run={...saved.run,binding:t,versions:targetVersions,state:'queued',createdAt},request={...saved.request,requestId:newId()},conversation={conversationId:t.conversationId,owner:{tenantId:t.tenantId,actorId:t.actorId},scopes,createdAt,policyRevision:run.policyRevision};const queued={...event('run.status',{state:'queued',reasonCode:null}),binding:t,scopes,sequence:1};
    p=await life.run(signal=>journal.continuation({binding:b,scopes,selectedClientId:saved.selectedClientId,controlId:i.controlId,admission,retirement,proof:verified,conversation,run,request,continuation,event:queued,signal,deadlineMs:life.deadline()},life.check));
@@ -108,7 +109,7 @@ export function createConversationLifecycleService({service,store,dispatcher,rec
  });}
  async function nextControls({credential,binding,after=0,signal}){return operation(credential,signal,async(saved,life,fresh)=>{if(!same(binding,saved.run.binding))fail('STALE_WRITER');const rows=await life.run(()=>journal.controls({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,after},life.check));await fresh();return controlPage(rows,after);});}
  // The journal re-reads the run row for this exact binding and scopes and pins every control to it and the selected client.
- async function controlsForTask({binding,scopes,selectedClientId,after=0,signal}){validateShape('RunBinding',binding);uuid(selectedClientId);if(!Array.isArray(scopes)||!scopes.length)fail('SCOPE_REFUSED');
+ async function controlsForTask({binding,scopes,selectedClientId,after=0,signal}){validateShape('RunBinding',binding);if(!conversationAuthorityIncludes(scopes,binding,selectedClientId))fail('SCOPE_REFUSED');
   const life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:code=>Object.assign(new Error(code),{code})});
   try{const rows=await life.run(()=>journal.controls({binding,scopes,selectedClientId,after},life.check));life.check();return bounded(controlPage(rows,after),2097152);}finally{life.close();}}
  async function claimControl({credential,binding,input,signal}){const i=bounded(input);own(i,['controlId','commandSha256']);return operation(credential,signal,async(saved,life,fresh)=>{if(!same(binding,saved.run.binding))fail('STALE_WRITER');const result=await life.run(()=>journal.claim({binding,scopes:saved.run.scopes,selectedClientId:saved.selectedClientId,...i},life.check));await fresh();const p=result.projection;return result.claimed?{claimed:true,control:{controlSequence:p.controlSequence,commandSha256:p.commandSha256,command:p.command}}:{claimed:false,receipt:receipt(p)};});}

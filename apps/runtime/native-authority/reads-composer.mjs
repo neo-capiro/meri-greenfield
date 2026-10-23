@@ -42,6 +42,7 @@ import {composeDelegatedNativeCredentials} from './read-delegation/native-creden
 import {createReadDelegationConsents} from './read-delegation/consent.mjs';
 import {createReadDelegationRunOptions} from './read-delegation/run-options.mjs';
 import {createRetainedReadCredentialRelay} from './retained-read-credential-relay.mjs';
+import {conversationClientFromScopes} from '../../../packages/contracts/conversation-scope.mjs';
 
 /** Server-side secret files the control role renders for reads (absolute paths). `readModeServiceSecret` may name the same
  * file as `serviceSecret`. There is no bearer file: the bearer comes from the live-session relay. */
@@ -81,7 +82,7 @@ export async function createNativeReadCredentialBroker(options){
  if(files.readModeServiceSecret!==undefined)getters.getReadModeServiceSecret=async()=>current('readModeServiceSecret');
  /** Per task. Resolves the bearer at call time; nothing is cached past the call. */
  function bearerFor({binding,scopes}){
-  const pinned=data(binding),selectedClientId=selectedClientOf(data(scopes)),same=value=>{try{return canonicalSha256(data(value))===canonicalSha256(pinned);}catch{return false;}};
+  const pinned=data(binding),selectedClientId=conversationClientFromScopes(data(scopes),pinned),same=value=>{try{return canonicalSha256(data(value))===canonicalSha256(pinned);}catch{return false;}};
   // One live-session lookup: exact run binding and selected client, a well-formed token, unexpired, never a candidate credential.
   const lookup=request=>{
    let issued;try{issued=data(own(relay.nativeCredentialFor({binding:pinned,selectedClientId,...(request.signal===undefined?{}:{signal:request.signal})}),['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
@@ -92,7 +93,7 @@ export async function createNativeReadCredentialBroker(options){
   // Returns `{credential, expiresAtMs}`: the credential owner folds the session expiry into every later Core call and the
   // source transport deadline (owner.mjs `nativeBearer`), so no read stays in flight past the live session.
   return async request=>{
-   if(relay===null||selectedClientId===null||!request||!same(request.binding))refuse('UNAVAILABLE');
+   if(relay===null||selectedClientId===undefined||!request||!same(request.binding))refuse('UNAVAILABLE');
    const first=lookup(request);
    for(const key of Object.keys(files))if(sha(await current(key))===sha(first.credential))refuse('UNAVAILABLE');
    // The service-file reads above are awaits: the same session must still be live (not expired, revoked or replaced).
@@ -195,8 +196,9 @@ export async function createControlReadsComposer(options){
  }
  /** Option A only, or option B with A as the attended fallback. One delegation per run attempt (binding), reused across its tasks. */
  function nativeCredentialsFor(t,bearer){
-  const fallback=broker.available?{coreAuthority,getNativeCredential:bearer}:undefined;
-  if(!delegationClient?.available)return {coreAuthority,getNativeCredential:bearer};
+  const general=conversationClientFromScopes(t.scopes,t.binding)===null;
+  const fallback=broker.available&&!general?{coreAuthority,getNativeCredential:bearer}:undefined;
+  if(!delegationClient?.available)return {coreAuthority,getNativeCredential:general?async()=>refuse('UNAVAILABLE'):bearer};
   const key=canonicalSha256(t.binding);let entry=delegations.get(key);
   if(!entry){
    // A stopped run keeps its (refusing) entry until its deadline, so a later task of the same run never creates a new delegation.

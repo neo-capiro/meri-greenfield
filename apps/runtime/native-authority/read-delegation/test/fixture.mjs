@@ -10,7 +10,8 @@ const DELEGATION=/^\/api\/clio\/application-authority\/read-delegations\/([a-f0-
 
 export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,principal,reservations,liveBearers,serviceSecret='SYNTHETIC_SERVICE',authority,tools}){
  const state={delegations:new Map(),tokens:new Map(),slots:new Map(),calls:[],runState:'running',dropTokenResponses:0,failRevokes:0,createStatus:null,
-  createExpiry:null,checkRefClientId:clientId,mode:'off',consent:null,unavailable:false,withholdAtRelease:false,role:'standard_user',consents:new Map(),consentStatus:null};
+  createExpiry:null,checkRefClientId:clientId,mode:'off',consent:null,unavailable:false,withholdAtRelease:false,role:'standard_user',consents:new Map(),consentStatus:null,
+  clientIds:clientId===null?[]:[clientId],generalEligible:true};
  /** Lane RD: the consent routes (§9-§10). Create needs a live bearer and supersedes the schedule's active consent; `paused` and
   * `revoked` need only the service identity; `active` (resume) needs a live bearer; revoked and superseded never change again. */
  function consents(path,scheme,authorization,service,bytes){
@@ -37,10 +38,11 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
   if(!active(d))return [null,json({error:'changed'},409)];
   t.consumed=true;return [{t,d},null];
  }
- function receipt(d,conversation){
+ function receipt(d,conversation,targetClientId){
   const identityRevision=sha(JSON.stringify({user:principal.actorId,delegation:d.id,revision:d.revision}));
-  return {schemaVersion:1,delegationId:d.id,principal,identityRevision,actorRole:state.role,membershipRevision:'b'.repeat(64),clientIds:[d.clientId],
-   ...(conversation?{conversation:{conversationId:d.binding.conversationId,selectedClientId:d.clientId,contextRevision:'d'.repeat(64)}}:{}),
+  const general=d.request.schemaVersion===2;
+  return {schemaVersion:general?2:1,...(general?{scopeKind:'general',targetClientId}:{}),delegationId:d.id,principal,identityRevision,actorRole:state.role,membershipRevision:sha(JSON.stringify(state.clientIds)),clientIds:general?state.clientIds:[d.clientId],
+   ...(conversation?{conversation:{conversationId:d.binding.conversationId,selectedClientId:d.clientId,contextRevision:'d'.repeat(64),...(general?{scopeKind:'general'}:{})}}:{}),
    checkedAtMs:now(),expiresAtMs:Math.min(now()+30000,d.expiresAtMs,runDeadlineMs)};
  }
  async function fetchImpl(url,init){
@@ -55,24 +57,27 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
   if(path==='/api/clio/application-authority/read-delegations'){
    if(!service)return json({error:'service'},401);if(state.createStatus)return json({error:'refused'},state.createStatus);
    const body=JSON.parse(bytes);
+   if(body.schemaVersion===2&&(body.scopeKind!=='general'||body.clientId!==null||body.mode!=='attended'||!state.generalEligible))return json({error:'general'},403);
    if(body.mode==='attended'&&(scheme!=='Bearer'||!liveBearers.has(authorization.slice(7))))return json({error:'session'},401);
    if(body.mode==='unattended'&&(authorization!==undefined||!state.consent||state.consent.state!=='active'||state.consent.id!==body.consentId))return json({error:'consent'},403);
    const expected={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,attemptId:binding.attemptId,writerFence:binding.writerFence};
    if(hash(body.binding)!==hash(expected)||body.clientId!==clientId)return json({error:'binding'},403);
    const {supersedes,...identity}=body,key=hash(identity);
-   const same=[...state.delegations.values()].find(d=>d.key===key&&d.state==='active'&&!supersedes);if(same)return json({schemaVersion:1,delegationId:same.id,expiresAtMs:same.expiresAtMs,checkedAtMs:now()});
+   const same=[...state.delegations.values()].find(d=>d.key===key&&d.state==='active'&&!supersedes);if(same)return json({schemaVersion:body.schemaVersion,delegationId:same.id,expiresAtMs:same.expiresAtMs,checkedAtMs:now()});
    if(supersedes){const old=state.delegations.get(supersedes);if(old)old.state='superseded';}
    const bound=body.mode==='attended'?Math.min(now()+READ_DELEGATION_LIMITS.attendedMaxMs,runDeadlineMs):Math.min(now()+READ_DELEGATION_LIMITS.occurrenceMaxMs,runDeadlineMs,state.consent.expiresAtMs);
    const d={id:randomUUID(),key,mode:body.mode,binding:body.binding,clientId:body.clientId,revision:1,state:'active',issuedAtMs:now(),expiresAtMs:state.createExpiry?state.createExpiry(bound):bound,request:body};
-   state.delegations.set(d.id,d);return json({schemaVersion:1,delegationId:d.id,expiresAtMs:d.expiresAtMs,checkedAtMs:now()},201);
+   state.delegations.set(d.id,d);return json({schemaVersion:body.schemaVersion,delegationId:d.id,expiresAtMs:d.expiresAtMs,checkedAtMs:now()},201);
   }
   const route=DELEGATION.exec(path);
   if(route&&route[2]==='tokens'){
    if(!service)return json({error:'service'},401);const d=state.delegations.get(route[1]);if(!active(d))return json({error:'changed'},409);
    // Canonical request digest: the request with retryOf normalized to null, for first requests and retries alike.
    const body=JSON.parse(bytes),retryOf=body.retryOf,requestSha256=hash({...body,retryOf:null}),slotKey=`${binding.runId}|${body.callKey}`;
+   if(d.request.schemaVersion===2&&(body.schemaVersion!==2||!state.generalEligible||body.targetClientId!==null&&!state.clientIds.includes(body.targetClientId)))return json({error:'wall'},403);
    let slot=state.slots.get(slotKey);
-   if(!slot){slot={counts:{current:0,tool:0,mode:0,reference:0},reissues:{current:0,tool:0,mode:0,reference:0}};state.slots.set(slotKey,slot);}
+   if(slot&&slot.targetClientId!==body.targetClientId)return json({error:'target'},403);
+   if(!slot){slot={targetClientId:body.targetClientId,counts:{current:0,tool:0,mode:0,reference:0},reissues:{current:0,tool:0,mode:0,reference:0}};state.slots.set(slotKey,slot);}
    if(body.kind==='tool'){const r=reservations.get(body.callKey);
     if(state.rejectTool||!r||r.state!=='UNKNOWN'||r.run_id!==binding.runId||hash(r.operation)!==hash(body.operation)||r.arguments_sha256!==body.argumentsSha256)return json({error:'reservation'},403);}
    const prior=retryOf?[...state.tokens.values()].find(t=>t.requestSha256===retryOf&&!t.consumed&&!t.superseded):null;
@@ -81,13 +86,15 @@ export function delegationCoreFixture({now,binding,clientId,runDeadlineMs,princi
    const token=`synthetic-read-token-${randomUUID()}`,expiresAtMs=Math.min(now()+READ_DELEGATION_LIMITS.tokenMaxMs,d.expiresAtMs);
    state.tokens.set(token,{token,delegationId:d.id,kind:body.kind,callKey:body.callKey,path:body.path,bodySha256:body.bodySha256,requestSha256,expiresAtMs,consumed:false,superseded:false});
    if(state.dropTokenResponses>0){state.dropTokenResponses--;return json({error:'lost'},503);}
-   return json({schemaVersion:1,token,expiresAtMs});
+   return json({schemaVersion:body.schemaVersion,token,expiresAtMs});
   }
   if(route&&route[2]==='current'){
    if(!service||!delegated)return json({error:'credential'},401);
    const [use,refused]=consume(authorization,{kind:'current',path,bodySha256:sha(bytes)});if(refused)return refused;
    if(use.d.id!==route[1])return json({error:'target'},403);
-   return json(receipt(use.d,JSON.parse(bytes).conversation===true));
+   const body=JSON.parse(bytes);
+   if(use.d.request.schemaVersion===2&&(!state.generalEligible||body.targetClientId!==null&&!state.clientIds.includes(body.targetClientId)))return json({error:'wall'},403);
+   return json(receipt(use.d,body.conversation===true,body.targetClientId));
   }
   if(route&&route[2]==='revocations'){
    if(!service)return json({error:'service'},401);if(state.failRevokes>0){state.failRevokes--;return json({error:'down'},500);}

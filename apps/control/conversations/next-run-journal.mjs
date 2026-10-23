@@ -8,6 +8,7 @@ import {closeSequenceRange} from './sequence-ranges.mjs';
 import {FORECLOSED,foreclosed} from './native-preparation-journal.mjs';
 import {assertNextRunFacts as facts,assertNextRunReservation} from './next-run-reservation.mjs';
 import {continuesSession,sessionDiscontinuity} from '../../../packages/contracts/session-continuity.mjs';
+import {conversationAuthorityIncludes} from '../../../packages/contracts/conversation-scope.mjs';
 /** Terminal states that may admit a next prompt once the original is retired and its grants revoked. */
 export const admitsNextRun=state=>state==='completed'||state==='failed'||state==='cancelled';
 const CHECKPOINTED=['paused','waiting-for-approval'];
@@ -31,7 +32,7 @@ export async function recordContinuationReservation(c,{source,target,scopes,vers
  await c.query('INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7)',[source.tenantId,source.conversationId,source.runId,target.runId,reservation,hash(reservation),'ACCEPTED']);check();
  return reservation;
 }
-export function createNextRunJournal({tx,rowRun}){
+export function createNextRunJournal({tx,rowRun,admission=async()=>{}}){
  const row=r=>{if(!r||hash(r.reservation)!==r.reservation_sha256)fail('STORE_CORRUPT');const v=assertNextRunReservation(r.reservation);if(r.source_run_id!==v.source.runId||r.target_run_id!==v.target.runId||r.tenant_id!==v.target.tenantId||r.conversation_id!==v.target.conversationId||!['RESERVED','ACCEPTED'].includes(r.state))fail('STORE_CORRUPT');return {...v,state:r.state};};
  const key=value=>{const k=bounded(value);own(k,['tenantId','conversationId']);uuid(k.conversationId);if(typeof k.tenantId!=='string'||!k.tenantId||k.tenantId.length>256)fail('INVALID_REQUEST');return k;};
  /** Either retirement plus revocation of an allocation that existed, or (failed/cancelled source only) the store's explicit
@@ -90,6 +91,7 @@ export function createNextRunJournal({tx,rowRun}){
  async function assess({source,facts:rawFacts,scopes,versions,policyRevision},check){
   source=bounded(source);validateShape('RunBinding',source);validateShape('RuntimeVersions',versions);scopes=bounded(scopes);const f=facts(rawFacts);
   return tx(source,check,async c=>{
+   await admission(c,source,check);check();
    const runs=await eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check);
    await eligibleSettlement(c,{source,facts:f},runs.at(-1),check);
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
@@ -107,6 +109,7 @@ export function createNextRunJournal({tx,rowRun}){
   if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1)fail('NEXT_RUN_TARGET_REFUSED');
   const f=facts(rawFacts);if(typeof policyRevision!=='string'||!policyRevision||typeof reservedAt!=='string'||Number.isNaN(Date.parse(reservedAt)))fail('NEXT_RUN_FACTS_REFUSED');
   return tx(source,check,async c=>{
+   await admission(c,source,check);check();
    const runs=await eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check);
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    const r=existing.length?row(existing[0]):null;
@@ -154,6 +157,7 @@ export function createNextRunJournal({tx,rowRun}){
    if(!latest||!(same(latest.binding,r.source)&&r.state==='RESERVED'||same(latest.binding,b)&&r.state==='ACCEPTED'))fail('NEXT_RUN_NOT_LATEST');
    const existing=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND (request_id=$3 OR run_id=$4) FOR UPDATE',[b.tenantId,b.conversationId,request.requestId,b.runId])).rows;check();
    if(existing.length){const e=rowRun(existing[0]);if(existing.length!==1||e.request_id!==request.requestId||!same({...e.request,window:request.window},request)||!same(e.projection.binding,b)||!same(e.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');return {run:e.projection,request:e.request,lastSequence:Number(e.last_sequence),replayed:true};}
+   await admission(c,b,check);check();
    const source=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,r.source.runId])).rows[0]);check();
    if(!admitsNextRun(source.projection.state)||source.projection.state==='completed'&&r.facts.checkpoint===null||!same(source.projection.binding,r.source))fail('NEXT_RUN_SOURCE_REFUSED');
    const sequenceBase=await closeSequenceRange(c,r.source,rowRun,check);
@@ -167,7 +171,7 @@ export function createNextRunJournal({tx,rowRun}){
  /** Explicit next-prompt lineage; this never constructs a lifecycle resume envelope. The reserved checkpoint, re-verified as the
   * conversation's latest published one as of the source, against its own completed run: that run's request is the source request.
   * Null when the reservation names none (no completed turn yet, or a lifecycle resume's mapping). */
- async function execution({binding:b,scopes,selectedClientId},check){validateShape('RunBinding',b);uuid(selectedClientId);return tx(b,check,async c=>{
+ async function execution({binding:b,scopes,selectedClientId},check){validateShape('RunBinding',b);if(!conversationAuthorityIncludes(scopes,b,selectedClientId))fail('SCOPE_REFUSED');return tx(b,check,async c=>{
   const target=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(target.projection.binding,b)||!same(target.projection.scopes,scopes))fail('STALE_WRITER');
   const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=row(rows[0]);
   if(r.state!=='ACCEPTED'||!same(r.target,b)||!same(r.scopes,scopes))fail('STORE_CORRUPT');

@@ -152,7 +152,7 @@ export interface ConversationInputExpectedContext {
   actorId: string;
   conversationId: string;
   runId: string;
-  clientId: string;
+  clientId: string | null;
 }
 export interface Canonical_ConversationErrorResponse_68Bab4E3 {
   error: {

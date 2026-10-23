@@ -58,7 +58,7 @@ const restorationTransitions={CLAIMED:['UNKNOWN','RESTORED'],UNKNOWN:['UNKNOWN']
 // The run states a claim is admitted in. An allocation precedes the run's claim. A restoration is runtime preparation, which runs after
 // the worker activity published its `starting` claim (worker/conversation/activity.mjs) and before `running`.
 const allocationClaimStates=['queued'],restorationClaimStates=['queued','starting'];
-export function createNativePreparationJournals({tx,rowRun}){
+export function createNativePreparationJournals({tx,rowRun,admission=async()=>{}}){
  const tuple=b=>[b.tenantId,b.conversationId,b.runId];
  function slot({table,key,fields,validateIntent,validateProof,transitions,proofKey,completed,claimStates}){
   function intent(value){const i=data(value);own(i,['binding',key,...fields,'expiresAtMs'],proofKey==='resource'?['retirementFacts']:[]);validateShape('RunBinding',i.binding);digest(i[key]);positive(i.expiresAtMs);validateIntent(i);return i;}
@@ -92,6 +92,7 @@ export function createNativePreparationJournals({tx,rowRun}){
       if(!launchTransitions[previous.state].includes(v.state))denied();if(previous.state===v.state)return saved;state=v.state;
      }
     }
+    if(operation!=='record'){await admission(c,v.binding,check);check();}
     const record=recordValue({...old,resource:{...old.resource,launchBinding:{...pins,state}}});
     await c.query('UPDATE '+table+' SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[...tuple(v.binding),record,hash(record)]);check();return {...saved,record,...(operation==='consume'?{dispatch:true}:{})};
    });
@@ -107,6 +108,7 @@ export function createNativePreparationJournals({tx,rowRun}){
    async claim(value,check){const i=intent(value);return tx(i.binding,check,async c=>{
     const saved=await load(c,i.binding,i[key],check);if(saved.record?.state===FORECLOSED)fail('NATIVE_PREPARATION_STATE_REFUSED');if(saved.record){const {state,[proofKey]:proof,...old}=saved.record;if(!same(old,i))fail('NATIVE_PREPARATION_REPLAY_REFUSED');return {...saved,dispatch:false};}
     if(!claimStates.includes(saved.run.state))fail('NATIVE_PREPARATION_STATE_REFUSED');
+    await admission(c,i.binding,check);check();
     // Conversation exclusion: a replacement allocation is refused while any other allocation of the same tenant and conversation is live
     // or unresolved (not RETIRED with its physical stop proven). Exact replay of an existing claim returns above without redispatch; a fork
     // into another conversation is unaffected. Grant revocation is verified separately by the next-run and issuance owners.

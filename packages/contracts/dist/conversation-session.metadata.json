@@ -1,0 +1,38 @@
+{
+  "packageVersion": "0.1.11",
+  "schemaId": "urn:meri:conversation-session:1.0.0",
+  "sources": [
+    {
+      "path": "session-receipt/schema.mjs",
+      "sha256": "d500dfd7900b4ea3b83a0df3b588a54ba0d3369a460ced291879cbf89a86c1c7",
+      "bytes": 1679
+    },
+    {
+      "path": "session-receipt/validate.mjs",
+      "sha256": "3464a864efab74548ecc82c1759a39b6d11165280065a33ebcc7423ca153790d",
+      "bytes": 499
+    },
+    {
+      "path": "conversation-session/receive.mjs",
+      "sha256": "8b013e32d349a038dfdcb9c70fce1f4d74a0863b449f7477af3f763a3408d07b",
+      "bytes": 1461
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
+      "bytes": 2216
+    },
+    {
+      "path": "generate-session.mjs",
+      "sha256": "889715d6f2baf2e963e5e9beaaee19785ddbd68fc752f71be969a70cc7c40895",
+      "bytes": 4020
+    }
+  ],
+  "browserInputs": [
+    "conversation-session/receive.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "session:validator"
+  ],
+  "browserImports": []
+}

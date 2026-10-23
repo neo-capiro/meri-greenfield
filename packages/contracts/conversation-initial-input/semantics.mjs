@@ -1,3 +1,4 @@
+import {isConversationClient,conversationAuthorityIncludes} from '../conversation-scope.mjs';
 /** Allocation-specific facts and private provenance. The accepted input module alone owns genuine input requests/receipts/views. */
 import canonicalize from 'canonicalize';
 import {digest} from '../document-application/boundary.mjs';
@@ -15,8 +16,8 @@ export function initialInputContext(value){
   if(!value||typeof value!=='object'||Array.isArray(value)||![Object.prototype,null].includes(Object.getPrototypeOf(value)))fail('INITIAL_INPUT_CONTEXT_INVALID');
   const descriptors=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(descriptors),context={};
   if(keys.length!==contextKeys.length||keys.some(key=>typeof key!=='string'||!contextKeys.includes(key)))fail('INITIAL_INPUT_CONTEXT_INVALID');
-  for(const key of contextKeys){const d=descriptors[key];if(!d||!d.enumerable||!Object.hasOwn(d,'value')||typeof d.value!=='string')fail('INITIAL_INPUT_CONTEXT_INVALID');context[key]=d.value;}
-  if(['tenantId','actorId'].some(key=>!context[key]||context[key].length>128)||['conversationId','runId','clientId'].some(key=>!uuid.test(context[key])))fail('INITIAL_INPUT_CONTEXT_INVALID');
+  for(const key of contextKeys){const d=descriptors[key];if(!d||!d.enumerable||!Object.hasOwn(d,'value')||!(typeof d.value==='string'||key==='clientId'&&d.value===null))fail('INITIAL_INPUT_CONTEXT_INVALID');context[key]=d.value;}
+  if(['tenantId','actorId'].some(key=>!context[key]||context[key].length>128)||(['conversationId','runId'].some(key=>!uuid.test(context[key]))||!isConversationClient(context.clientId)))fail('INITIAL_INPUT_CONTEXT_INVALID');
   return Object.freeze(context);
  }catch(error){if(error instanceof ConversationInitialInputResponseError)throw error;fail('INITIAL_INPUT_CONTEXT_INVALID');}
 }
@@ -24,7 +25,7 @@ function active(allocation,now){const at=now();if(!Number.isSafeInteger(at)||at<
 function facts(allocation){
  const {binding,scopes,selectedClientId,allocatedAtMs,expiresAtMs}=allocation;
  if(binding.writerFence!==1||!Number.isSafeInteger(allocatedAtMs)||allocatedAtMs<0||!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=allocatedAtMs||
-  scopes.some(scope=>scope.tenantId!==binding.tenantId||scope.policyRevision!==scopes[0].policyRevision)||new Set(scopes.map(scope=>canonicalize(scope))).size!==scopes.length||!scopes.some(scope=>scope.kind==='client'&&scope.resourceId===selectedClientId))fail('INITIAL_INPUT_FACTS_MISMATCH');
+  scopes.some(scope=>scope.tenantId!==binding.tenantId||scope.policyRevision!==scopes[0].policyRevision)||new Set(scopes.map(scope=>canonicalize(scope))).size!==scopes.length||!conversationAuthorityIncludes(scopes,binding,selectedClientId))fail('INITIAL_INPUT_FACTS_MISMATCH');
 }
 function contextMatches(allocation,context){const binding=allocation.binding;if(['tenantId','actorId','conversationId','runId'].some(key=>binding[key]!==context[key])||allocation.selectedClientId!==context.clientId)fail('INITIAL_INPUT_CONTEXT_MISMATCH');}
 /** Shape validation precedes this kernel. It checks immutable input/facts but does not mint public proof or authority. */
