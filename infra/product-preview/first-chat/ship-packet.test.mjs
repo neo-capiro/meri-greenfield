@@ -4,15 +4,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join,resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {PLAN} from '../first-chat-migrate.mjs';
 import {STAGE3_FAMILIES,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS,nextRevisions,stage3RenderInput} from './stage3-bindings.mjs';
 import {parseLatestTsv,uploadPlan} from './stage3-deploy.mjs';
-import {runnerSha256AtCommit} from './render-material.mjs';
-import {SCHEMA,planEntries,migrationDelta,buildShipPacket,renderMarkdown,main} from './ship-packet.mjs';
+import {SOURCE_ROOT,runnerSha256AtCommit} from './render-material.mjs';
+import {SCHEMA,planEntries,migrationDelta,buildShipPacket,renderMarkdown,readOperatorSource,main} from './ship-packet.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 const bytes=name=>readFile(join(here,name));
@@ -21,6 +22,7 @@ const sha=b=>createHash('sha256').update(b).digest('hex');
 /** Reviewed sources present in history; all image receipts in this test are synthetic. */
 const PREVIOUS_COMMIT='05d588c7c5d6da8b8e8a12ea4d47e16526af1aaf';
 const CURRENT_COMMIT='e0b2243e35e5b08bb263868cd03523230363db89';
+const OPERATOR_SOURCE={commit:'cd59adbbebec7eb9c4d2d7d9c0ff0595c046d80a',tree:'47ee3ef7c0b98f8e8203fa82d6c6c13ec272fd23'};
 const LATEST=Object.values(STAGE3_FAMILIES).flatMap(f=>[`${f}\tarn:aws:ecs:us-east-1:967807252336:task-definition/${f}:7`,`${f}\tNone`]).join('\n')+'\n';
 
 async function inputs(){
@@ -40,12 +42,22 @@ async function inputs(){
  let n=0;
  const plan=entries=>entries.map(e=>({kind:e.kind,source:e.path,sha256:e.pinned,stage:e.stage}));
  const runtime=await json('runtime-values.json');runtime.preparationIntent.runnerSha256=runnerSha256AtCommit(CURRENT_COMMIT);
- return {deployment,previousDeployment,runtime,receipt,receiptSha256,
+ return {deployment,previousDeployment,operatorSource:OPERATOR_SOURCE,runtime,receipt,receiptSha256,
   imageScans:{nodeRuntime:receiptSha256},stage3:stage3RenderInput({deployment,foundationOutputs,revisions:nextRevisions(parseLatestTsv(LATEST))}),
   upload:{label:'FIRST_CHAT_20261021A',roles:uploadPlan({deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',
    secretLabels:Object.fromEntries(Object.values(MATERIAL_SECRET_KEYS).map(key=>[deployment.secrets[key],[{VersionId:'v-current',VersionStages:['AWSCURRENT']}]])),newToken:()=>`token-${++n}`})},
   measuredRunnerSha256:runnerSha256AtCommit(deployment.images.nodeRuntimeSourceCommit),migrations:migrationDelta(plan(PLAN),plan(PLAN)),
   ceilingUsd:5,work:'/w',hashes:{'deployment-inputs':'e'.repeat(64)}};
+}
+
+async function nativeTransition(){
+ const i=await inputs();
+ // Repository-shape fixture only: this file is NOT the archived live05 release input.
+ i.previousDeployment=JSON.parse(execFileSync('git',['-C',SOURCE_ROOT,'show',`${PREVIOUS_COMMIT}:infra/product-preview/first-chat/deployment-inputs.json`],{encoding:'utf8'}));
+ // Select the reviewed migration source for this synthetic fixture, not a historical receipt correction.
+ i.previousDeployment.images.nodeRuntimeSourceCommit=PREVIOUS_COMMIT;
+ i.deployment.foundation.RunnerTaskRoleArn='arn:aws:iam::967807252336:role/MeriPreview-runner-task';
+ return i;
 }
 
 test('the migration plan parses exactly as first-chat-migrate.mjs declares it; the delta allows only appended entries',async()=>{
@@ -76,6 +88,8 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  const i=await inputs(),p=buildShipPacket(i);
  assert.equal(p.schema,SCHEMA);assert.equal(p.phase,'pre-upload');assert.match(p.packetSha256,/^[a-f0-9]{64}$/u);
  assert.equal(p.pins.sourceCommit,i.deployment.images.nodeRuntimeSourceCommit);assert.equal(p.pins.previousSourceCommit,PREVIOUS_COMMIT);
+ assert.deepEqual(p.pins.operatorSource,OPERATOR_SOURCE);assert.notEqual(p.pins.operatorSource.commit,p.pins.sourceCommit);
+ assert.deepEqual(p.configuration,{kind:'image-only',removed:[],added:[]});
  assert.equal(i.receipt.runnerSha256,undefined);assert.equal(p.pins.runnerSha256,i.measuredRunnerSha256);assert.equal(p.pins.label,'FIRST_CHAT_20261021A');
  assert.deepEqual(p.pins.taskDefinitions,i.stage3.taskDefinitions);
  assert.equal(p.evidence.scanStatus,'COMPLETE');assert.equal(p.costLimits.cycleCeilingUsd,5);
@@ -99,6 +113,69 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  for(const forbidden of ['PRIVATE KEY','"password"','synthetic-'])assert.equal((md+JSON.stringify(p)).includes(forbidden),false,forbidden);
  assert.ok(md.includes("--version-stages FIRST_CHAT_20261021A"));
  assert.match(md,/No new source-plan entries\. This does not prove database completion/u);
+});
+
+test('first native transition records exactly the retired paths and canonical runner role without changing either input',async()=>{
+ const i=await nativeTransition(),before=structuredClone(i),p=buildShipPacket(i);
+ assert.deepEqual(i,before);
+ assert.deepEqual(p.configuration,{kind:'first-native-sdk',removed:[
+  'database.roles.owner','foundation.OwnerExecutionRoleArn','foundation.OwnerTaskRoleArn','foundation.ProxyExecutionRoleArn','foundation.ProxyTaskRoleArn',
+  'model','names.owner','names.proxy','origins.ownerOrigin','origins.proxyUrl',
+  'pinsDer.owner-bridge-ca','pinsDer.owner-server','pinsDer.proxy-owner-client','pinsDer.proxy-server',
+  'pinsPem.owner-bridge-ca','pinsPem.owner-server','pinsPem.proxy-owner-client','pinsPem.proxy-server',
+  'proxyClientSubject','secrets.owner/material','secrets.proxy/material'
+ ],added:['foundation.RunnerTaskRoleArn']});
+ const md=renderMarkdown(p);
+ assert.match(md,/reviewed additive foundation change/u);assert.match(md,/fresh foundation readbacks/u);
+ assert.match(md,/reconstructed previous state/u);assert.match(md,/never rewrite historical inputs/u);
+ assert.match(md,/DesiredCount0 template is not a live update/u);
+ assert.match(md,/old images alone cannot roll back/u);assert.match(md,/never feed old model-dependent images into the native renderer/u);
+ assert.equal(p.rollback.steps.includes('render current roles with compatible rollback images and runtime values'),false);
+ for(const path of p.configuration.removed)assert.ok(md.includes(path),path);
+});
+
+test('the transition requires every exact retirement and addition; retained fields and later cleanup are not exempt',async()=>{
+ const base=await nativeTransition(),change=buildShipPacket(base).configuration;
+ const parent=(o,path)=>{const keys=path.split('.'),key=keys.pop();return [keys.reduce((v,k)=>v[k],o),key];};
+ const refused=mutate=>{const i=structuredClone(base);mutate(i);assert.throws(()=>buildShipPacket(i),{code:'SHIP_PACKET_REFUSED'});};
+ for(const path of change.removed){
+  refused(i=>{const [o,k]=parent(i.previousDeployment,path);delete o[k];});
+  refused(i=>{const [o,k]=parent(i.deployment,path),[old]=parent(base.previousDeployment,path);o[k]=structuredClone(old[k]);});
+ }
+ for(const value of [undefined,null,'arn:aws:iam::967807252336:role/another-role','arn:aws:iam::111111111111:role/MeriPreview-runner-task'])
+  refused(i=>{if(value===undefined)delete i.deployment.foundation.RunnerTaskRoleArn;else i.deployment.foundation.RunnerTaskRoleArn=value;});
+ refused(i=>{i.previousDeployment.foundation.RunnerTaskRoleArn=i.deployment.foundation.RunnerTaskRoleArn;});
+ // Walk the actual retained fixture leaves, not a second production allowlist.
+ const leaves=(value,path=[])=>value&&typeof value==='object'?Object.entries(value).flatMap(([key,v])=>leaves(v,[...path,key])):[path];
+ for(const path of leaves(base.deployment).filter(p=>p[0]!=='images'&&p.join('.')!=='foundation.RunnerTaskRoleArn')){
+  refused(i=>{const [o,k]=parent(i.deployment,path.join('.'));o[k]=typeof o[k]==='string'?o[k]+'-changed':typeof o[k]==='number'?o[k]+1:!o[k];});
+ }
+ for(const owner of ['Owner','Proxy'])for(const suffix of ['DiscoveryServiceArn','LogGroupName','SecurityGroupId'])
+  refused(i=>{delete i.deployment.foundation[`${owner}${suffix}`];});
+ for(const side of ['deployment','previousDeployment'])refused(i=>{i[side].unexpected='drift';});
+ refused(i=>{delete i.deployment.origins;});
+});
+
+test('operator provenance requires real clean Git state; staged, unstaged, untracked and non-Git sources refuse',async()=>{
+ const repo=await mkdtemp(join(tmpdir(),'meri-ship-operator-'));
+ const git=args=>execFileSync('git',['-C',repo,...args],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();
+ try{
+  assert.throws(()=>readOperatorSource(repo),/Git checkout/u);
+  git(['init']);await writeFile(join(repo,'operator.mjs'),'export const value=1;\n');git(['add','operator.mjs']);
+  git(['-c','user.name=Packet Test','-c','user.email=packet-test@example.invalid','commit','-m','operator fixture']);
+  const expected={commit:git(['rev-parse','HEAD']),tree:git(['rev-parse','HEAD^{tree}'])};
+  assert.deepEqual(readOperatorSource(repo),expected);
+  await writeFile(join(repo,'operator.mjs'),'export const value=2;\n');
+  assert.throws(()=>readOperatorSource(repo),/must be clean/u);git(['add','operator.mjs']);
+  assert.throws(()=>readOperatorSource(repo),/must be clean/u);
+  git(['restore','--staged','operator.mjs']);git(['restore','operator.mjs']);
+  await writeFile(join(repo,'untracked.mjs'),'export const value=3;\n');
+  assert.throws(()=>readOperatorSource(repo),/must be clean/u);
+  await rm(join(repo,'untracked.mjs'));assert.deepEqual(readOperatorSource(repo),expected);
+ }finally{assert.equal(dirname(resolve(repo)),resolve(tmpdir()));await rm(repo,{recursive:true,force:true});}
+ const i=await inputs();
+ for(const invalid of [undefined,null,{}, {commit:'bad',tree:OPERATOR_SOURCE.tree},{commit:OPERATOR_SOURCE.commit,tree:'bad'}])
+  assert.throws(()=>buildShipPacket({...i,operatorSource:invalid}),/operator source commit\/tree/u);
 });
 
 test('an integration-only source delta reaches the operator packet before uploads',async()=>{
@@ -176,6 +253,8 @@ test('CLI writes ship-packet.json and SHIP-PACKET.md outside the repository; pre
   let r=await quiet([...args,'--out',join(work,'packet')]);
   assert.equal(r.code,0,r.text);assert.match(r.text,/SHIP_PACKET_WRITTEN/u);
   const packet=JSON.parse(await readFile(join(work,'packet','ship-packet.json'),'utf8'));
+  assert.deepEqual(packet.pins.operatorSource,readOperatorSource());
+  assert.notEqual(packet.pins.operatorSource.commit,packet.pins.sourceCommit,'operator updates do not relabel the image source');
   assert.equal(packet.phase,'pre-upload');assert.equal(typeof packet.migrations.required,'boolean');
   assert.match(await readFile(join(work,'packet','SHIP-PACKET.md'),'utf8'),new RegExp(packet.packetSha256,'u'));
   // A historical source that drops integration entries is not a compatible rollback.
@@ -195,10 +274,18 @@ test('CLI writes ship-packet.json and SHIP-PACKET.md outside the repository; pre
   assert.equal(r.code,0,r.text);
   const deploy=JSON.parse(await readFile(join(work,'packet2','ship-packet.json'),'utf8'));
   assert.equal(deploy.phase,'pre-deploy');assert.equal(deploy.pins.templates.app.sha256,sha(Buffer.from('{"app":1}')));
+  // First native transition uses the historical topology shape and preserves the supplied prior bytes.
+  const native=await nativeTransition();await write('deployment.json',native.deployment);await write('previous.json',native.previousDeployment);
+  const previousBytes=await readFile(join(work,'previous.json'));
+  r=await quiet([...args,'--out',join(work,'native-packet')]);assert.equal(r.code,0,r.text);
+  const transition=JSON.parse(await readFile(join(work,'native-packet','ship-packet.json'),'utf8'));
+  assert.equal(transition.configuration.kind,'first-native-sdk');assert.equal(transition.configuration.removed.length,21);
+  assert.equal(transition.pins.inputs['previous-deployment-inputs'],sha(previousBytes));
+  assert.deepEqual(await readFile(join(work,'previous.json')),previousBytes);
   // Refusals: inside the repository, an existing output, a missing input.
   r=await quiet([...args,'--out',join(here,'packet-should-not-exist')]);assert.equal(r.code,2);assert.match(r.text,/outside the repository/u);
   r=await quiet([...args,'--out',join(work,'packet')]);assert.equal(r.code,2);
   r=await quiet(args.slice(2));assert.equal(r.code,2);assert.match(r.text,/--deployment-inputs is required/u);
   r=await quiet(['--help']);assert.equal(r.code,0);assert.match(r.text,/fresh digest-bound scans before release/u);
- }finally{await rm(work,{recursive:true,force:true});}
+ }finally{assert.equal(dirname(resolve(work)),resolve(tmpdir()));await rm(work,{recursive:true,force:true});}
 });

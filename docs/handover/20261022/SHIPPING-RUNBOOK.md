@@ -39,6 +39,45 @@ constructing a release. Source and exact image digest bind the rendered tasks;
 the removed launch-measurement producer, model owner/proxy and five-role kit
 steps are not dependencies of the direct SDK release.
 
+Keep the runtime image source and operator source distinct. Assemble runtime
+values from a clean checkout at the qualified image commit; the renderer reads
+the runner blob at that commit. Run `ship-packet.mjs` from a separate clean,
+reviewed operator checkout: the packet records its commit/tree alongside the
+unchanged image source, image digest and raw input hashes. A packet-only change
+does not rebuild or relabel the runtime image.
+
+The ordinary packet permits only image changes. Its first native SDK transition
+requires exactly the 21 retired model/owner/proxy paths listed in
+`ship-packet.mjs` to disappear and the canonical
+`foundation.RunnerTaskRoleArn` to be added; every retained non-image value must
+match. The six owner/proxy discovery, log and security-group outputs stay equal
+in this first cut. Other drift needs a separate reviewed change, never editing
+previous inputs to make them look current.
+
+The original per-release05 input archive was not handed over. If it cannot be
+recovered, freeze a reviewed **reconstructed previous state**, explicitly labeled
+as such with live template/task-definition/secret-version metadata, historical
+source, evidence hashes and field lineage in private release scratch. Do not
+claim it is the original archive or substitute the older repository example.
+The packet hashes the supplied previous file; that hash binds bytes, not their
+historical authenticity. Root verifies the reconstruction before using it.
+
+Before the first native render, apply a reviewed **additive** foundation change
+from the fresh live template: canonical runner task IAM/Bedrock permissions,
+control PassRole and runner egress. Retain old model resources unchanged while
+they are still referenced, check actual SG rules before adopting them, and take
+fresh outputs including `RunnerTaskRoleArn`. Do not apply the full current
+foundation deletion set while the old model stack still runs.
+
+Temporal is qualified and updated separately from the issuer/app deploy order.
+Use its current source-based binding and qualified ARM digest, preserve the
+selected issuer CA and current TLS/JWKS controls, and review actual live service
+counts. Its raw stopped `DesiredCount: 0` template is not a ready live update.
+After these prerequisites, use `stage3-input`, runtime-value assembly, render,
+upload-plan and the packet; after upload regenerate bindings and the packet,
+then review and execute issuer followed immediately by app. Verify outputs and
+have root open Meri for live acceptance before retiring superseded resources.
+
 The current material renderer retains control, worker and issuer bundles and
 four task families while the separate Temporal-auth replacement is unfinished.
 Use its generated deploy order and verify deployed outputs against the rendered
@@ -59,6 +98,12 @@ Prepare rollback from the last accepted source/image/configuration inputs and
 fresh live state. Do not assume a historical task revision remains registered:
 CloudFormation may deregister it. Verify rollback targets remain on the one
 preview clone and preserve live ALB rules.
+For the first native transition, old05 images depend on the old model topology
+and cannot be used with the native renderer. Retain the reviewed previous
+configuration, compatible historical renderer and model resources until
+acceptance; any rollback needs its own reviewed topology, migration
+compatibility, fresh revisions and material. After those resources retire,
+use only a separately proven native-compatible forward recovery.
 
 ## Core and frontend
 
