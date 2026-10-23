@@ -30,6 +30,9 @@ const bindingFields=['tenantId','actorId','conversationId','runId','attemptId','
 const ownerRefusalSeen=new Map();
 function ownerStage(){}
 function ownerRequestRefusal(stage,error,destroyed,headersSent){try{const code=[error?.code,error?.message].find(v=>typeof v==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(v))??'REFUSED',frame=String(error?.stack??'').split('\n').slice(1,3).map(l=>(/([a-z0-9_.-]+\.m?js):(\d+)/iu.exec(l)??[])[0]).filter(Boolean).join(','),key=stage+':'+code+':'+frame,at=Date.now();if((ownerRefusalSeen.get(key)??0)>at-5000)return;ownerRefusalSeen.set(key,at);if(ownerRefusalSeen.size>64)ownerRefusalSeen.delete(ownerRefusalSeen.keys().next().value);process.stderr.write(`PRODUCT_OWNER_REQUEST_REFUSED stage=${stage} code=${code} site=${frame||'none'} destroyed=${destroyed===true} headersSent=${headersSent===true}\n`);}catch{}}
+// Content-free carrier trace (fixed words and counts only), at most one per key per 5 s.
+const ownerTraceSeen=new Map();
+function ownerTrace(event,fields){try{const parts=Object.entries(fields).map(([k,v])=>`${k}=${typeof v==='number'&&Number.isSafeInteger(v)?v:typeof v==='boolean'?v:/^[a-zA-Z0-9_-]{1,32}$/u.test(String(v))?v:'other'}`),line=`PRODUCT_OWNER_CARRIER ${event} ${parts.join(' ')}`,at=Date.now();if((ownerTraceSeen.get(line)??0)>at-5000)return;ownerTraceSeen.set(line,at);if(ownerTraceSeen.size>64)ownerTraceSeen.delete(ownerTraceSeen.keys().next().value);process.stderr.write(line+'\n');}catch{}}
 export function encodeProductPlacement(value){
  const v=data(own(value,['issuedTaskNetwork','checkedAtMs','effectiveExpiresAtMs']));
  const p=own(v.issuedTaskNetwork,fields),q=own(p.binding,['run_id','attempt','worker_arn','fence','policy_revision']);
@@ -139,7 +142,7 @@ export function createProductOwnerHttpsServer(configuration){
  let closed=false;
  const operational=()=>!closed&&c.serviceGate.available&&c.persistedFacts.available&&c.placement.available&&c.taskLeaseReader.available&&c.nativeCurrentness?.available!==false;
  const available=()=>operational()&&c.taskLeaseReader.ready;
- function retire(){retireProductOwnerRequests(c.serviceGate,controllers);for(const socket of sockets)socket.destroy();}
+ function retire(){ownerTrace('retire',{sockets:sockets.size});retireProductOwnerRequests(c.serviceGate,controllers);for(const socket of sockets)socket.destroy();}
  function state(socket){
   if(!states.has(socket))states.set(socket,{id:randomBytes(24).toString('hex'),role:null,busy:false,admission:null,lease:null,policy:null,binding:null,abort:null});
   return states.get(socket);
@@ -237,14 +240,15 @@ export function createProductOwnerHttpsServer(configuration){
   // Retire the admission reader when no session still owns it.
   if(s?.admission&&![...sessions.values()].some(session=>session.admission===s.admission))s.admission.close();
  }
- function closeGeneration(){
+ function closeGeneration(reason='close'){
+  ownerTrace('generation-close',{reason,sockets:sockets.size,sessions:sessions.size});
   for(const controller of controllers)controller.abort();
   for(const session of sessions.values()){session.channel.close();session.admission.close();finishOwnerChannel(session.channel);}
   sessions.clear();reads.clear();initialAdmission?.close();initialAdmission=null;
   for(const socket of sockets)socket.destroy();
  }
  const unsubscribe=c.taskLeaseReader.subscribe(reason=>{
-  closeGeneration();if(reason==='retired')c.serviceGate.poison();
+  closeGeneration(reason);if(reason==='retired')c.serviceGate.poison();
  });
  function assertBound(socket){
   const s=state(socket),lease=c.taskLeaseReader.assertConnection(s.lease);
@@ -310,11 +314,11 @@ export function createProductOwnerHttpsServer(configuration){
  server.maxConnections=16;
  server.on('connection',socket=>{sockets.add(socket);socket.on('error',()=>{});socket.once('close',()=>sockets.delete(socket));});
  server.on('secureConnection',socket=>{
-  sockets.add(socket);socket.once('close',()=>{sockets.delete(socket);closeSocketSessions(socket);});
+  sockets.add(socket);ownerTrace('accepted',{sockets:sockets.size});socket.once('close',hadError=>{ownerTrace('closed',{byOwner:socket.destroyed&&!socket.readableEnded,error:hadError===true,role:state(socket).role??'none'});sockets.delete(socket);closeSocketSessions(socket);});
   const s=state(socket),handshakeAtMonoMs=c.taskLeaseReader.nowMono();
-  s.binding=bindSocket(socket,handshakeAtMonoMs);void s.binding.catch(()=>socket.destroy());
+  s.binding=bindSocket(socket,handshakeAtMonoMs);void s.binding.catch(error=>{ownerTrace('bind-refused',{code:typeof error?.code==='string'?error.code:'none'});socket.destroy();});
  });
- server.on('clientError',(_error,socket)=>socket.destroy());server.on('tlsClientError',()=>{});
+ server.on('clientError',(error,socket)=>{ownerTrace('client-error',{code:typeof error?.code==='string'?error.code:'none'});socket.destroy();});server.on('tlsClientError',()=>{});
  server.on('error',()=>{retire();if(!closed)c.taskLeaseReader.retire();});
  const listener=createProductOwnerListenerLifecycle(server,{retire,pendingRequests:()=>controllers.size,maxCloseMs:maxRequestMs});
  return Object.freeze({get available(){return available();},get pendingRequests(){return controllers.size;},
