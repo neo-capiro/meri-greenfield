@@ -13,9 +13,9 @@ phases:
         set -euo pipefail
         stage=initialize
         trap 'printf "BLOCK: Core build stage %s failed\n" "$stage" >&2' ERR
-        SOURCE_SHA=51e265bd5b5170abffb32a62ffc39a52a788fe60
-        SOURCE_KEY=inputs/core-51e265bd5b5170abffb32a62ffc39a52a788fe60-lf.zip
-        ARCHIVE_SHA256=8c1bc0608edc2f46b0027b71e11e4e2c586db7caf77f99c6a582ad1c2113800c
+        SOURCE_SHA=dfc4a8587db8f2d1aac9c44035b07609811bf07f
+        SOURCE_KEY=inputs/core-dfc4a8587db8f2d1aac9c44035b07609811bf07f-lf.zip
+        ARCHIVE_SHA256=6d443bad3da27b887641bda8a1f2124a35ec4e86627af15e34d1bdc503cdc1d1
         REPOSITORY=capiro/preview-core
         REGISTRY=967807252336.dkr.ecr.us-east-1.amazonaws.com
         IMAGE="$REGISTRY/$REPOSITORY:$SOURCE_SHA"
@@ -56,9 +56,7 @@ phases:
         cd "$CODEBUILD_SRC_DIR/verified"
         stage=receipt-migration-presence
         test -f apps/api/prisma/migrations/20281016020000_clio_conversation_bootstrap_receipts/migration.sql
-        # O137: the consolidated release carries all 11 new migrations (applied to the clone only, O135).
-        stage=consolidated-migrations-presence
-        for m in 20281015040000_engagement_plans 20281016010000_client_objective_workload_delegations 20281017010000_client_objective_strategy_intake 20281018010000_clio_meri_approval_decisions 20281018020000_clio_meri_memory_submissions 20281018030000_clio_meri_routine_authority 20281018040000_clio_meri_execution_authority 20281018050000_clio_meri_routine_unattended 20281018060000_meri_read_delegation 20281018080000_clio_memory_scope_unique 20281018090000_clio_meri_memory_submissions_content_free; do test -f "apps/api/prisma/migrations/$m/migration.sql"; done
+        # O164/O170: #108 keeps 19 pending migrations byte-unchanged to RUN ON CLONE (Neo); no header-based gate.
         stage=ecr-login
         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$REGISTRY"
         stage=docker-build

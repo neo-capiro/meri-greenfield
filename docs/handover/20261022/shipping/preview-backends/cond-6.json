@@ -1,0 +1,1 @@
+[{"Field":"host-header","HostHeaderConfig":{"Values":["first-chat-preview.app-dev.capiro.ai"]}},{"Field":"http-request-method","HttpRequestMethodConfig":{"Values":["GET","HEAD"]}},{"Field":"path-pattern","PathPatternConfig":{"Values":["/intel-api/*"]}}]

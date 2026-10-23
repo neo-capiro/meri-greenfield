@@ -26,11 +26,9 @@ c['image'] = image
 assert env['value'] == old_sha, env['value']
 env['value'] = sha
 # O135: point Core at the copy-on-write clone instead of the shared live cluster.
+# The rollback revision already serves the clone; only the image and RELEASE_SHA change.
 (host,) = [e for e in c['environment'] if e['name'] == 'DB_HOST']
-# DATABASE_URL is empty here; the entrypoint composes it from DB_* (so only DB_HOST moves).
-(url,) = [e for e in c['environment'] if e['name'] == 'DATABASE_URL']
-assert url['value'] == '' and host['value'] != clone_host
-host['value'] = clone_host
+assert host['value'] == clone_host, host['value']
 json.dump(td, open('td-new.json', 'w'))
 EOF
 arn="$(awst ecs register-task-definition --cli-input-json file://td-new.json --query taskDefinition.taskDefinitionArn)"
@@ -50,7 +48,7 @@ diff = sorted(k for k in set(oc) | set(nc) if oc.get(k) != nc.get(k))
 assert diff == ['environment', 'image'], diff
 oe = {e['name']: e['value'] for e in oc['environment']}
 ne = {e['name']: e['value'] for e in nc['environment']}
-assert sorted(k for k in set(oe) | set(ne) if oe.get(k) != ne.get(k)) == ['DB_HOST', 'RELEASE_SHA']
-print('TD_DIFF_OK image + RELEASE_SHA + DB_HOST -> clone')
+assert sorted(k for k in set(oe) | set(ne) if oe.get(k) != ne.get(k)) == ['RELEASE_SHA']
+print('TD_DIFF_OK image + RELEASE_SHA')
 EOF
 echo "REGISTERED $arn"

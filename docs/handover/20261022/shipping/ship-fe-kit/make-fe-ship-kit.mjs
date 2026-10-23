@@ -54,7 +54,7 @@ const importing=modules.flatMap(m=>(sh('git',['-C',REPO,'grep','-l','-F',m,commi
  .split('\n').filter(Boolean).map(l=>l.slice(commit.length+1+'apps/web/'.length)));
 const vitest=[...new Set([...BASE_TESTS,...changedTests,...importing,...list('--tests')])];
 const BROWSER_MODULES_GREP='unknown Meri input|a finished run accepts|Stop requests|a foreign native actor|an uncertain reserved-turn|navigation keeps the uncertain|selected conversation reload|synthetic lost reservation|synthetic desktop held admission|synthetic desktop interrupted initial|synthetic desktop hard reload';
-const BROWSER_PORTFOLIO=['tests/browser/facility-action-lifetime.spec.ts','tests/browser/profile-current-state.spec.ts','tests/browser/work-boundary.spec.ts','tests/browser/work-documents.spec.ts'];
+const BROWSER_PORTFOLIO=['tests/browser/facility-action-lifetime.spec.ts','tests/browser/profile-current-state.spec.ts','tests/browser/work-boundary.spec.ts','tests/browser/work-documents.spec.ts',...(process.env.FE_EXTRA_PORTFOLIO_SPECS?process.env.FE_EXTRA_PORTFOLIO_SPECS.split(','):[])];
 const browserModules=['meri-new-conversation.spec.ts',...list('--browser-specs')];
 const dockerfile=Buffer.from(sh('git',['-C',REPO,'show',`${commit}:apps/web/Dockerfile`]));
 const patchedDockerfile=dockerfile.toString('utf8').replace(/\n$/u,'').split('\n').flatMap(l=>l==='RUN npm run build'?['ARG CAPIRO_BUILD_NODE_OPTIONS','ARG CAPIRO_BUILD_CIRCLE_NODE_TOTAL','RUN NODE_OPTIONS="$CAPIRO_BUILD_NODE_OPTIONS" CIRCLE_NODE_TOTAL="$CAPIRO_BUILD_CIRCLE_NODE_TOTAL" npm run build']:[l]).join('\n')+'\n';

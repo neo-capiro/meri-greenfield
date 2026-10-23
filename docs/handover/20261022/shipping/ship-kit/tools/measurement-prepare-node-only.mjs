@@ -12,7 +12,8 @@ const O=K.outDir,SRC=K.sourceRoot;
 const json=f=>JSON.parse(readFileSync(f,'utf8'));
 if(existsSync(`${O}/measurement-prepared`))throw new Error('already prepared');
 const candidate=json(`${O}/deployment-inputs.candidate.json`),baseline=json(`${O}/baseline-C.deployment-inputs.pre-proxy.json`);
-const measurement={...candidate,images:{...candidate.images,proxy:baseline.images.proxy,proxySourceCommit:baseline.images.proxySourceCommit}};
+// O231: the measurement packet pins the C baseline's database block; render/deploy keep the candidate's clone database.
+const measurement={...candidate,database:baseline.database,images:{...candidate.images,proxy:baseline.images.proxy,proxySourceCommit:baseline.images.proxySourceCommit}};
 writeFileSync(`${O}/deployment-inputs.measurement.json`,JSON.stringify(measurement,null,2)+'\n',{flag:'wx'});
 const r=spawnSync(process.execPath,[`${O}/measurement-packet/prepare-measurement.mjs`,'--source-root',SRC,'--request',`${O}/request.json`,
  '--product-receipt',`${O}/product-image-receipt.json`,'--deployment',`${O}/deployment-inputs.measurement.json`,

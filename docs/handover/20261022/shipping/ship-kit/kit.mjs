@@ -163,6 +163,11 @@ const steps={
   const counts=scan.imageScanFindings?.findingSeverityCounts??{};need(scan.imageScanStatus?.status==='COMPLETE'&&!counts.HIGH&&!counts.CRITICAL,'ECR scan gate');
   if(!existsSync(p(O,'ecr-image.json')))writeNew(p(O,'ecr-image.json'),image);if(!existsSync(p(O,'ecr-scan.json')))writeNew(p(O,'ecr-scan.json'),scan);
   const deployment=json(p(O,'baseline-C.deployment-inputs.json'));deployment.images.nodeRuntime=`${K.ecrRepositoryUri}@${receipt.imageDigest}`;deployment.images.nodeRuntimeSourceCommit=K.commit;
+  // O231: the database block comes from the release's own pinned inputs (#209 new-stack clone), never the C baseline's shared Aurora.
+  const pinned=json(p(SRC,'infra/product-preview/first-chat/deployment-inputs.json'));need(JSON.stringify(Object.keys(pinned.database).sort())===JSON.stringify(Object.keys(deployment.database).sort()),'database input shape changed');
+  need(pinned.database.host==='capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com','release database is not the new-stack clone');deployment.database=pinned.database;
+  // O231: the rollback target (release E) keeps the clone database too, so the ship packet's images-only diff holds.
+  {const e=json(p(O,'release-E.deployment-inputs.json'));e.database=pinned.database;if(!existsSync(p(O,'release-E.clone.deployment-inputs.json')))writeNew(p(O,'release-E.clone.deployment-inputs.json'),JSON.stringify(e,null,2)+'\n');}
   if(!existsSync(p(O,'deployment-inputs.candidate.json')))writeNew(p(O,'deployment-inputs.candidate.json'),JSON.stringify(deployment,null,2)+'\n');
   if(!existsSync(p(O,'image-scans.candidate.json')))writeNew(p(O,'image-scans.candidate.json'),{proxy:K.proxyScanSha256,nodeRuntime:shaFile(p(O,'product-image-receipt.json'))});
   say(`OUTCOME image ${receipt.imageDigest} scan COMPLETE 0 HIGH/0 CRITICAL. NEXT 05-measurement-prepare`);
@@ -285,7 +290,7 @@ const steps={
   node([p(SRC,'infra/product-preview/first-chat/stage3-deploy.mjs'),'bindings','--deployment-inputs',p(O,'deployment-inputs.candidate.json'),'--foundation-outputs',p(O,'foundation-live.json'),
    '--private-edge-outputs',p(O,'private-edge-outputs.json'),'--rendered',p(W,'rendered'),'--secret-versions',p(O,'secret-versions.tsv'),'--image-scans',p(O,'image-scans.candidate.json'),
    '--live-app-template',p(O,'app.live.template.json'),'--out',p(O,'bindings')]);
-  node([p(SRC,'infra/product-preview/first-chat/ship-packet.mjs'),'--deployment-inputs',p(O,'deployment-inputs.candidate.json'),'--previous-deployment-inputs',p(O,'release-E.deployment-inputs.json'),
+  node([p(SRC,'infra/product-preview/first-chat/ship-packet.mjs'),'--deployment-inputs',p(O,'deployment-inputs.candidate.json'),'--previous-deployment-inputs',p(O,'release-E.clone.deployment-inputs.json'),
    '--runtime',p(O,'runtime-values.measured.json'),'--node-receipt',p(O,'product-image-receipt.json'),'--image-scans',p(O,'image-scans.candidate.json'),'--stage3',p(O,'stage3.json'),
    '--upload-plan',p(O,'upload-plan.json'),'--work',W,'--ceiling-usd',String(K.ceilingUsd),'--bindings',p(O,'bindings'),'--out',p(O,'ship-packet')]);
   say('OUTCOME bindings + SHIP-PACKET.md. Review ship-packet/SHIP-PACKET.md. NEXT 15-changesets');

@@ -1,0 +1,70 @@
+# ARM64 image build of one Capiro backend service for portfolio-preview (O219).
+# Rendered per service by 20-build.sh; source c96675e0; placeholders are workspace, apps/workspace, capiro/preview-workspace.
+version: 0.2
+env:
+  shell: bash
+  variables:
+    DOCKER_BUILDKIT: "1"
+phases:
+  build:
+    commands:
+      - |
+        set -euo pipefail
+        stage=initialize
+        trap 'printf "BLOCK: workspace build stage %s failed\n" "$stage" >&2' ERR
+        SOURCE_SHA=c96675e014ab8b5b339049e14aa4bf01881074e9
+        SOURCE_BUCKET=capiro-portfolio-preview-source-967807252336-us-east-1
+        SOURCE_KEY=inputs/core-c96675e014ab8b5b339049e14aa4bf01881074e9-lf.zip
+        SOURCE_VERSION_ID=wMYRssq28WYPiYxmJE1_o0Wj.Kuh_RBZ
+        ARCHIVE_SHA256=546905656040364d230e379843857377e4f1fc68493bf29cc23c8ad3b1528467
+        REPOSITORY=capiro/preview-workspace
+        REGISTRY=967807252336.dkr.ecr.us-east-1.amazonaws.com
+        IMAGE="$REGISTRY/$REPOSITORY:$SOURCE_SHA"
+        DOCKERFILE=apps/workspace/Dockerfile
+        stage=architecture
+        test "$(uname -m)" = aarch64
+        stage=account
+        test "$(aws sts get-caller-identity --query Account --output text)" = 967807252336
+        stage=repository-mutability
+        test "$(aws ecr describe-repositories --repository-names "$REPOSITORY" --query 'repositories[0].imageTagMutability' --output text)" = IMMUTABLE
+        stage=existing-image-tag
+        test -z "$(aws ecr describe-images --repository-name "$REPOSITORY" --filter tagStatus=TAGGED --query "imageDetails[?contains(imageTags, '$SOURCE_SHA')].imageDigest" --output text)"
+        stage=pinned-source-download
+        mkdir -p "$CODEBUILD_SRC_DIR/verified"
+        observed="$(aws s3api get-object --bucket "$SOURCE_BUCKET" --key "$SOURCE_KEY" --version-id "$SOURCE_VERSION_ID" "$CODEBUILD_SRC_DIR/pinned-source.zip" --query VersionId --output text)"
+        test "$observed" = "$SOURCE_VERSION_ID"
+        stage=pinned-source-checksum
+        printf '%s  %s\n' "$ARCHIVE_SHA256" "$CODEBUILD_SRC_DIR/pinned-source.zip" | sha256sum -c -
+        stage=source-extract
+        unzip -q "$CODEBUILD_SRC_DIR/pinned-source.zip" -d "$CODEBUILD_SRC_DIR/verified"
+        cd "$CODEBUILD_SRC_DIR/verified"
+        test -f "$DOCKERFILE"
+        # Docker Hub's anonymous pull limit has failed CodeBuild builds before (see intel-api's Dockerfile).
+        # Pre-pull each node:<tag> base from the ECR Public mirror of the same official image and tag it
+        # under its Docker Hub name; the Dockerfile itself is used unchanged.
+        stage=base-images
+        node_version="$(sed -n 's/^ARG NODE_VERSION=//p' "$DOCKERFILE" | head -1)"
+        test -n "$node_version"
+        mirror="public.ecr.aws/docker/library/node:${node_version}-bookworm-slim"
+        docker pull --platform linux/arm64 "$mirror"
+        docker tag "$mirror" "node:${node_version}-bookworm-slim"
+        docker image inspect "$mirror" --format 'base={{index .RepoDigests 0}} arch={{.Architecture}}'
+        stage=ecr-login
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$REGISTRY"
+        stage=docker-build
+        docker build --platform linux/arm64 \
+          --label "org.opencontainers.image.revision=$SOURCE_SHA" \
+          --label org.opencontainers.image.source=https://github.com/neo-capiro/capiro-backend \
+          -f "$DOCKERFILE" -t "$IMAGE" .
+        stage=image-architecture
+        test "$(docker image inspect "$IMAGE" --format '{{.Architecture}}')" = arm64
+        stage=entrypoint-present
+        docker run --rm --entrypoint /bin/sh "$IMAGE" -c 'test -x /usr/local/bin/entrypoint.sh && node --version'
+        stage=docker-push
+        docker push "$IMAGE"
+        stage=registry-digest
+        digest="$(aws ecr describe-images --repository-name "$REPOSITORY" --image-ids "imageTag=$SOURCE_SHA" --query 'imageDetails[0].imageDigest' --output text)"
+        [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+        stage=local-digest-match
+        docker image inspect "$IMAGE" --format '{{range .RepoDigests}}{{println .}}{{end}}' | grep -Fx "$REGISTRY/$REPOSITORY@$digest"
+        printf 'svc=workspace source=%s s3Version=%s archiveSha256=%s imageDigest=%s\n' "$SOURCE_SHA" "$observed" "$ARCHIVE_SHA256" "$digest"

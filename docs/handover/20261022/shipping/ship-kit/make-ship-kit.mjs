@@ -80,7 +80,7 @@ const K={commit:X,outDir:O,sourceRoot:SRC,attempt:randomBytes(16).toString('hex'
  controlTargetGroups:['arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759','arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c'],
  coreMembershipUrl:'https://first-chat-preview.app-dev.capiro.ai/api/clio/application-authority/membership',frontendOrigin:'https://portfolio-preview.app.capiro.ai',
  publicHealthUrl:'https://meri-preview.capiro.ai/health/live',
- pkiDir:'C:/dev/fable/meri-preview-private-pki',prepDir:'C:/dev/fable/meri-stage3-prep-20261018',
+ pkiDir:process.env.MERI_PKI_DIR??'C:/dev/fable/meri-preview-private-pki',prepDir:process.env.MERI_PREP_DIR??'C:/dev/fable/meri-stage3-prep-20261018',
  privateWorkDir:`C:/dev/fable/meri-stage3-${new Date().toISOString().replace(/[-:]/gu,'').replace(/\.\d+Z$/u,'Z')}`};
 mkdirSync(`${O}/dry`);
 const dry={schemaVersion:2,sourceCommit:X,archive:{bucket:K.bucket,key:`inputs/product-runtime/${X}/product-source.zip`,versionId:'dry-run-placeholder',sha256:K.archiveSha256},
