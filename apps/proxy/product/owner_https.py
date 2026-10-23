@@ -33,6 +33,8 @@ from ..qualification.state.pricing import StateDenied
 def _carrier_dropped(sock):
     """An idle pinned carrier never has bytes waiting between exchanges: readable, buffered TLS data or a closed
     descriptor means the owner side closed or reset it. Checked before a request is written, so nothing is resent."""
+    if sock is not None and not isinstance(sock, socket.socket):
+        return False  # injected carriers (tests, bridges) are not OS sockets: nothing to observe
     try:
         if sock is None or sock.fileno() < 0:
             return True
