@@ -252,6 +252,8 @@ class TemporalContextSealTests(unittest.TestCase):
         (root / "repo/extra.txt").write_text("x")
         self.assertNotEqual(self.verify(root).returncode, 0)
 
+
+class TemporalBasePinTests(unittest.TestCase):
     def test_dockerfile_pins_every_base_by_digest(self):
         text = (HERE / "temporal-launch.Dockerfile").read_text()
         froms = [l.split()[2] for l in text.splitlines() if l.startswith("FROM ")]
@@ -260,14 +262,11 @@ class TemporalContextSealTests(unittest.TestCase):
         self.assertFalse(any(l.lower().startswith("# syntax=") for l in text.splitlines()))
         self.assertNotIn("ARG NODE24_IMAGE", text)
         self.assertNotIn("ld-musl", text)
-        # Same Node binary as the qualified runtime; same Temporal pin as the launcher renderer.
-        qualify = (ROOT / "docs/handover/20261017/fable-shipping/scripts/qualify-start.sh").read_text()
-        self.assertIn('"nodeImageUri":"%s"' % context.BASES["nodeBinary"], qualify)
+        # Temporal owns these base pins; the ARM application runtime has a separate
+        # recipe. This source check does not qualify Temporal's retained x86/APK
+        # packaging: the context-seal tests still require its complete inputs.
         render = (HERE / "temporal-launch-render.mjs").read_text()
         self.assertIn("SERVER_DIGEST='%s'" % context.BASES["temporalServer"].split("@")[1], render)
-        lock = json.loads((HERE / "runtime-packages.lock.json").read_text())
-        self.assertEqual(lock["runtimeImageUri"], context.BASES["glibcRuntime"])
-        self.assertIn(lock["repositoryIndex"]["sha256"], text)
         self.assertIn('--secret "id=temporal_issuer_ca,src=$ROOT/inputs/temporal-issuer-ca.pem"', SCRIPT.read_text())
 
 

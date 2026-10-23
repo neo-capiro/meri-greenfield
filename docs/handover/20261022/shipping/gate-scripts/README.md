@@ -1,8 +1,30 @@
-# Gate scripts (as Fable runs them on neomart), published 2026-10-22
+# Current gate pointers and historical neomart scripts
 
-These are local qualification gates. They run only in **throwaway Docker containers**. **None of them touches AWS or any real database**: every PostgreSQL here is a disposable `pgvector/pgvector:pg16` container with `--network=none`, deleted after the run. Real migrations (the new-stack clone) are a separate, shipping-only step (`../SHIPPING-RUNBOOK.md`, `../neomart-kits/`).
+Root Codex owns current qualification under [CODEX-VALIDATION-AND-SHIPPING.md](../../CODEX-VALIDATION-AND-SHIPPING.md). Use the current source owners below at the exact reviewed head. New images are ARM64. Root schedules shared native gates and AWS work; source tests use isolated synthetic databases, never the preview clone or live data.
 
-## Machine prerequisites
+The remaining scripts in this directory record the 2026-10-22 neomart setup. They are historical inputs for review, not a current release recipe. In particular, the old M1 launcher that reconstructed the P0 image verifier from Git history has been deleted; do not recreate it. Frontend CodeBuild recipes described below use AWS and require root's resource allocation.
+
+## Current Meri gates
+
+Run bounded source checks from the repository root with the current lockfiles installed:
+
+```bash
+node --test infra/product-preview/image-build.test.mjs \
+  apps/runtime/build/runtime-base-probe.test.mjs \
+  scripts/qualification/local-baseline/inventory.test.mjs
+```
+
+The [standard image build](../../../../../infra/product-preview/image-buildspec-design.md) owns exact source/member verification, ARM build/probes and digest-bound scan checks. The command above uses offline fixtures; it does not execute Docker or AWS and does not qualify a native image. Linux deadline/file-bound controls, actual image COPY/import closure, native dependency failures, retained Temporal bundle checks and exact-image scans remain required.
+
+The [local baseline runner and suite inventory](../../../../../scripts/qualification/local-baseline/README.md) own retained source selections and test flags. Root selects affected suites and isolated PostgreSQL resources, records every failure/skip, and compares suspected inherited failures with an untouched base in the same environment. No historical count is a waiver for a current failure.
+
+| Retained behavior | Current source or acceptance owner |
+| --- | --- |
+| First session, native usage, terminal delivery, cleanup, hold/steer and backoff | Runtime `first-session.test.mjs`; worker `activity-usage.test.mjs`, `cleanup-activity.test.mjs`, `lifecycle-activity.test.mjs` and `terminal-settlement.test.mjs`, with their registered flags and dependencies. |
+| Current run/session ownership, conflicts, successor exclusion, recovery and retention | Canonical control/runtime suites in the local baseline inventory; root provisions isolated PostgreSQL and applies the current fixture migration chain. The dated `meri/combined-m1.txt` and `meri/extra-migrations.sh` are not the current selection or migration owner. |
+| Real first turn, Core access negatives, follow-up/resume/fork, reconnect, Stop and revocation | The [retired-rehearsal coverage map and unmet acceptance](../../../../../scripts/qualification/first-chat-rehearsal/README.md). Scripted SDK/Core/ECS facts do not prove these native behaviors. |
+
+## Historical machine prerequisites
 
 - **Linux or Windows WSL2, with native Docker**, not Docker Desktop (unreliable on neomart). Builds are `linux/amd64`; arm64 hosts need `docker buildx` with amd64 emulation.
 - About 16 GB RAM and 60 GB free disk. One gate run at a time: two concurrent runs rebuild the same image tags and add timing noise.
@@ -10,26 +32,9 @@ These are local qualification gates. They run only in **throwaway Docker contain
 - Images: `pgvector/pgvector:pg16` (server 16.15), `node:24`, and for frontend browser repros `mcr.microsoft.com/playwright:v<version>-noble` with the version from the frontend `package-lock.json`.
 - **Clone from GitHub** (`git clone https://github.com/neo-capiro/meri-greenfield.git`). A clone made from a partial local repo can silently miss blobs ("unable to read sha1 file").
 
-## Meri
+## Historical Meri selections
 
-### `meri/m1-gates.sh`: head vs base, image + rehearsals + native PostgreSQL
-
-```bash
-HEAD_SHA=<full sha> BASE_SHA=<full sha of the PR parent> GATE_WORKDIR=/opt/gate-<sha8> \
-  [CHANGED_TESTS_JSON='["apps/…/x.test.mjs",…]'] [COMBINED_FILE=…] [TARGETED="…"] \
-  bash meri/m1-gates.sh setup head-runtime combined targeted pg-head base-runtime pg-base
-```
-
-| Step | What it does |
-|---|---|
-| `setup` | Fetches both SHAs from GitHub, plus the P0 harness at `43b705c8` (`scripts/qualification/p0-telemetry/{verify.py,evidence.py,in-image.sh}`) |
-| `head-runtime` / `base-runtime` | `verify.py runtime`: builds image `meri-p0-runtime:<sha12>`, then runs the 24-case image gate, the runner-diagnostics, control, worker, owner and telemetry groups, the changed tests (`CHANGED_TESTS_JSON`, the PR's changed `*.test.mjs` excluding `*-pg`), and the **first-turn** and **D3 rehearsals** |
-| `combined` / `targeted` | Runs a test selection inside the head image (`combined-m1.txt` is M1's 32-file set) |
-| `pg-head` / `pg-base` | A native PostgreSQL 16 container: the repo's `scripts/qualification/local-baseline/provision-postgres.sh start`, then **`extra-migrations.sh`** (27 applies, expect 0 failed), then every `*-pg.test.mjs` under `apps/control/conversations/test`, `apps/runtime/test`, `apps/runtime/native-authority/test` and `apps/control/retention/test` |
-
-Results go to `$GATE_WORKDIR/out/steps.txt`, plus per-step logs.
-
-**Judging (O191):** diff head against base, test by test. Only a failure **new on head** blocks. On base `d3cf5496`, 78 PostgreSQL failures and the N21 renderer test are inherited, and the "nonanswers back off 0.5, 1, 2 s" case is timing-flaky on both sides. Rehearsals marked "unverified (clockSteps)" are a WSL clock artefact; check that the clock-retry also passes.
+The M1 launcher contained no test declarations; its head/base orchestration and historical image reconstruction were removed, not the underlying behavior suites. Its old 32-file selection and migration helper remain dated evidence. The current owners above determine applicable files and migrations; the earlier 78 PostgreSQL failures, renderer failure and clock-retry observations do not establish an inherited failure at a new integration base.
 
 ### `meri/m1-repro.sh`
 The D3 runner's isolated reproduction: reruns one case N times on head and base (used for the backoff flake: head 3/10, base 1/10).
@@ -44,9 +49,9 @@ This runs observability, render-features, runtime-values, render-material and te
 - it needs a real git checkout, not a tarball (the renderer reads the runtime source commit from git);
 - Python `cryptography` ≥ 42 is needed for `pki.py`, so Debian's packaged version is too old.
 
-Expected at current `main`: all green (for example 61/61 at #209).
+The historical example was 61/61 at #209. Re-run applicable current suites; that result does not qualify today's source.
 
-## Frontend
+## Historical frontend recipes
 
 ### Composed production gate
 Use the kit generator in `../neomart-kits/ship-fe-kit/make-fe-ship-kit.mjs <composed sha> --worktree <clean worktree> --label <x>`, with `FE_EXTRA_PORTFOLIO_SPECS=tests/browser/a.spec.ts,…` for new required browser specs. Run steps 00 and 02–05 (CodeBuild: typecheck, lint, `npm run architecture` exit 0, vitest, browser, `next build`, container smoke, ECR scan with 0 findings). This step uses AWS CodeBuild with the shipper's identity.
@@ -64,6 +69,6 @@ Pass = wrapper exit 0, plus a child report with **57/57** exact identities (21 s
 ### `frontend/repro-form.sh`
 Reruns one browser spec in the Playwright image against an installed composed tree, with a local-only diagnostic edit that adds method and URL to the harness guard. That's how the Vite `/@fs/…/api/provider.tsx` abort was found.
 
-## Not covered yet: Core migration rehearsal
+## Historical gap: Core migration rehearsal
 
-Core Prisma migrations are **not** rehearsed before they're applied to the clone; the snapshot is the safety net. The planned step is a schema-only dump of the clone, produced by an AWS-side task (never typed credentials), restored into a `pgvector/pgvector:pg16` container. The Core image's `migrate` verb then runs against it and must report "All migrations have been successfully applied" before the clone is touched.
+The neomart handover recorded that Core Prisma migrations were not rehearsed before clone application. This is a historical gap, not permission to omit current migration checks. Root owns isolated PostgreSQL rehearsal, exact migration-byte review and a verified snapshot before any forward migration of the persistent clone; see the current validation/shipping workflow above.
