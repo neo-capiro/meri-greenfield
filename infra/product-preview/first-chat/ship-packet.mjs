@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Meri first-chat release: the reviewable ship packet for one new Node runtime image on the live preview stacks. It joins the
  * reviewed NON-SECRET inputs of docs/shipping/20261017/STAGE3-DEPLOY-RUNBOOK.md (deployment inputs, measured runtime values, the
- * producer receipt, scan pins, stage3.json, the upload plan, the previous release) into one ordered packet: pins, evidence,
+ * standard image-build result, scan pins, stage3.json, the upload plan, the previous release) into one ordered packet: pins, evidence,
  * migration delta, cost limits, the exact commands with their gates, smoke checks, rollback, cleanup and known risks.
  *
  * It runs no AWS command, reads no secret and no material bundle, and writes only a new directory outside the repository:
@@ -21,6 +21,7 @@ export const SCHEMA='meri.first-chat-ship-packet/2';
 const STAGE3='infra/product-preview/first-chat/stage3-deploy.mjs';
 const MIGRATE='infra/product-preview/first-chat-migrate.mjs';
 const commit=/^[a-f0-9]{40}$/u;
+const hex64=/^[a-f0-9]{64}$/u;
 export const refuse=detail=>{throw Object.assign(Error(`SHIP_PACKET_REFUSED: ${detail}`),{code:'SHIP_PACKET_REFUSED'});};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const digestOf=uri=>/@sha256:([a-f0-9]{64})$/u.exec(String(uri))?.[1]??refuse(`image ${String(uri).slice(0,120)} is not pinned by digest`);
@@ -51,13 +52,22 @@ export function migrationDelta(previous,current){
 export function checkInputs({deployment,previousDeployment,runtime,receipt,receiptSha256,imageScans,stage3,upload,measuredRunnerSha256}){
  const images=deployment?.images,previous=previousDeployment?.images;
  if(deployment?.schemaVersion!==1||!images)refuse('deployment inputs');
- if(`sha256:${digestOf(images.nodeRuntime)}`!==receipt.imageDigest||images.nodeRuntimeSourceCommit!==receipt.sourceCommit)refuse('deployment images.nodeRuntime is not the image the producer receipt describes');
+ // Root authenticates S3/CodeBuild provenance and fresh digest-bound scans before release.
+ // This offline packet binds the reviewed result bytes; local JSON is not an AWS attestation.
+ if(!receipt||typeof receipt!=='object'||Array.isArray(receipt)||typeof receipt.sourceCommit!=='string'||!commit.test(receipt.sourceCommit)||
+  typeof receipt.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(receipt.imageDigest))refuse('image build result source/digest');
+ if(typeof receipt.sourceVersion!=='string'||receipt.sourceVersion.length>1024||receipt.sourceVersion==='null'||
+  !/^[A-Za-z0-9._~+/=-]+$/u.test(receipt.sourceVersion))refuse('image build result sourceVersion');
+ if(receipt.platform!=='linux/arm64')refuse('image build result platform');
+ if(`sha256:${digestOf(images.nodeRuntime)}`!==receipt.imageDigest||images.nodeRuntimeSourceCommit!==receipt.sourceCommit)refuse('deployment images.nodeRuntime is not the image the build result describes');
  if(receipt.scanStatus!=='COMPLETE')refuse('image scan is not COMPLETE');
- for(const severity of ['CRITICAL','HIGH'])if(Number(receipt.findingSeverityCounts?.[severity]??0)!==0)refuse(`image scan has ${severity} findings`);
- if(imageScans?.nodeRuntime!==receiptSha256)refuse('image-scans.nodeRuntime must be the sha256 of the producer receipt file');
+ const counts=receipt.findingSeverityCounts;
+ if(!counts||typeof counts!=='object'||Array.isArray(counts)||!Object.values(counts).every(n=>Number.isSafeInteger(n)&&n>=0))refuse('image scan findingSeverityCounts');
+ for(const severity of ['CRITICAL','HIGH'])if((counts[severity]??0)!==0)refuse(`image scan has ${severity} findings`);
+ if(typeof receiptSha256!=='string'||!hex64.test(receiptSha256)||imageScans?.nodeRuntime!==receiptSha256)refuse('image-scans.nodeRuntime must be the sha256 of the image build result file');
  const runner=runtime?.preparationIntent?.runnerSha256;
- if(!measuredRunnerSha256)refuse('the node runtime source commit is not available locally: fetch it');
- if(runner!==receipt.runnerSha256||runner!==measuredRunnerSha256)refuse('runnerSha256 differs between runtime values, producer receipt and conversation-runner.mjs at the source commit');
+ if(typeof measuredRunnerSha256!=='string'||!hex64.test(measuredRunnerSha256))refuse('the node runtime source commit is not available locally: fetch it');
+ if(runner!==measuredRunnerSha256)refuse('runnerSha256 differs between runtime values and conversation-runner.mjs at the image source commit');
  if(stage3?.schemaVersion!==1)refuse('stage3.json');
  for(const [role,family] of Object.entries(STAGE3_FAMILIES))if(!new RegExp(`task-definition/${family}:[1-9][0-9]*$`,'u').test(stage3.taskDefinitions?.[role]??''))refuse(`stage3 task definition for ${role}`);
  if(JSON.stringify(upload?.roles?.map(r=>r.role))!==JSON.stringify(ROLES))refuse('upload plan roles');
@@ -128,8 +138,8 @@ export function buildShipPacket(i){
    runnerSha256:runtime.preparationIntent.runnerSha256,versions:structuredClone(runtime.versions),
    label:upload.label,taskDefinitions:structuredClone(stage3.taskDefinitions),inputs:structuredClone(hashes),
    ...(bindings?{templates:bindings.templates}:{})},
-  evidence:{producerBuild:receipt.buildId,scanStatus:receipt.scanStatus,findingSeverityCounts:structuredClone(receipt.findingSeverityCounts??{}),glibcVersion:receipt.glibcVersion,
-   nodeVersion:receipt.nodeVersion,archiveSha256:receipt.archiveSha256,sourceManifestSha256:receipt.sourceManifestSha256,
+  evidence:{sourceCommit:receipt.sourceCommit,sourceVersion:receipt.sourceVersion,imageDigest:receipt.imageDigest,platform:receipt.platform,
+   scanStatus:receipt.scanStatus,findingSeverityCounts:structuredClone(receipt.findingSeverityCounts),
    required:['exact-source ARM64 image build, native SDK/Temporal/SWC imports and artifact execution under the service identity',
     'digest-bound image scans with zero HIGH/CRITICAL and reviewed dispositions for other findings',
     'independent exact-head review, native PostgreSQL migration/run accounting and Linux material gates']},
@@ -169,8 +179,9 @@ export function renderMarkdown(p){
 }
 
 const USAGE=`Usage: node infra/product-preview/first-chat/ship-packet.mjs --deployment-inputs F --previous-deployment-inputs F --runtime runtime-values.json
-  --node-receipt product-image-receipt.json --image-scans F --stage3 stage3.json --upload-plan upload-plan.json --work <private working dir>
-  --ceiling-usd N --out NEW_DIR [--bindings DIR]`;
+  --node-receipt image-evidence/result.json --image-scans F --stage3 stage3.json --upload-plan upload-plan.json --work <private working dir>
+  --ceiling-usd N --out NEW_DIR [--bindings DIR]
+Root must authenticate the source/S3/CodeBuild result and obtain fresh digest-bound scans before release; this offline packet checks local pins only.`;
 const json=async path=>JSON.parse(await readFile(path,'utf8'));
 const gitShow=(rev,path)=>execFileSync('git',['-C',SOURCE_ROOT,'show',`${rev}:${path}`],{encoding:'utf8',maxBuffer:4*1024*1024,stdio:['ignore','pipe','ignore']});
 

@@ -1,4 +1,4 @@
-/** Ship packet on NON-SECRET fixtures: historical image receipt/scan pins and runtime values,
+/** Ship packet on NON-SECRET fixtures: standard synthetic build result and historical runtime values,
  * a synthetic next-foundation runner task role, a deterministic upload
  * plan and a synthetic previous release. No PKI, render, bundle, AWS or network. Both release commits must be in the local clone. */
 import test from 'node:test';
@@ -23,7 +23,11 @@ const PREVIOUS_COMMIT='a1876afaeaa59d9da47729487d490cba8cfc9d9c';
 const LATEST=Object.values(STAGE3_FAMILIES).flatMap(f=>[`${f}\tarn:aws:ecs:us-east-1:967807252336:task-definition/${f}:7`,`${f}\tNone`]).join('\n')+'\n';
 
 async function inputs(){
- const deployment=await json('deployment-inputs.json'),receiptBytes=await bytes('n21-build-receipt.json'),foundationOutputs=await json('foundation-outputs.json');
+ const deployment=await json('deployment-inputs.json'),foundationOutputs=await json('foundation-outputs.json');
+ // Canonical image-build.sh result shape. Immutable historical receipts remain historical.
+ const receipt={sourceCommit:deployment.images.nodeRuntimeSourceCommit,sourceVersion:'reviewed-source-version',
+  imageDigest:deployment.images.nodeRuntime.slice(deployment.images.nodeRuntime.indexOf('@')+1),platform:'linux/arm64',scanStatus:'COMPLETE',findingSeverityCounts:{}};
+ const receiptSha256=sha(Buffer.from(JSON.stringify(receipt)));
  // Planned fixture only: the historical live readback is deliberately unchanged.
  foundationOutputs.RunnerTaskRoleArn='arn:aws:iam::967807252336:role/MeriPreview-runner-task';
  const previousDeployment=structuredClone(deployment);
@@ -31,8 +35,8 @@ async function inputs(){
  previousDeployment.images.nodeRuntimeSourceCommit=PREVIOUS_COMMIT;
  let n=0;
  const plan=entries=>entries.map(e=>({kind:e.kind,source:e.path,sha256:e.pinned,stage:e.stage}));
- return {deployment,previousDeployment,runtime:await json('runtime-values.json'),receipt:JSON.parse(receiptBytes.toString('utf8')),receiptSha256:sha(receiptBytes),
-  imageScans:await json('image-scans.json'),stage3:stage3RenderInput({deployment,foundationOutputs,revisions:nextRevisions(parseLatestTsv(LATEST))}),
+ return {deployment,previousDeployment,runtime:await json('runtime-values.json'),receipt,receiptSha256,
+  imageScans:{nodeRuntime:receiptSha256},stage3:stage3RenderInput({deployment,foundationOutputs,revisions:nextRevisions(parseLatestTsv(LATEST))}),
   upload:{label:'FIRST_CHAT_20261021A',roles:uploadPlan({deployment,renderedDirectory:'/w/rendered',label:'FIRST_CHAT_20261021A',
    secretLabels:Object.fromEntries(Object.values(MATERIAL_SECRET_KEYS).map(key=>[deployment.secrets[key],[{VersionId:'v-current',VersionStages:['AWSCURRENT']}]])),newToken:()=>`token-${++n}`})},
   measuredRunnerSha256:runnerSha256AtCommit(deployment.images.nodeRuntimeSourceCommit),migrations:migrationDelta(plan(PLAN),plan(PLAN)),
@@ -58,9 +62,11 @@ test('packet: pins, evidence, cost limits, ordered steps with gates, rollback an
  const i=await inputs(),p=buildShipPacket(i);
  assert.equal(p.schema,SCHEMA);assert.equal(p.phase,'pre-upload');assert.match(p.packetSha256,/^[a-f0-9]{64}$/u);
  assert.equal(p.pins.sourceCommit,i.deployment.images.nodeRuntimeSourceCommit);assert.equal(p.pins.previousSourceCommit,PREVIOUS_COMMIT);
- assert.equal(p.pins.runnerSha256,i.receipt.runnerSha256);assert.equal(p.pins.label,'FIRST_CHAT_20261021A');
+ assert.equal(i.receipt.runnerSha256,undefined);assert.equal(p.pins.runnerSha256,i.measuredRunnerSha256);assert.equal(p.pins.label,'FIRST_CHAT_20261021A');
  assert.deepEqual(p.pins.taskDefinitions,i.stage3.taskDefinitions);
  assert.equal(p.evidence.scanStatus,'COMPLETE');assert.equal(p.costLimits.cycleCeilingUsd,5);
+ for(const key of ['sourceCommit','sourceVersion','imageDigest','platform'])assert.equal(p.evidence[key],i.receipt[key]);
+ for(const key of ['producerBuild','glibcVersion','nodeVersion','archiveSha256','sourceManifestSha256'])assert.equal(Object.hasOwn(p.evidence,key),false,key);
  assert.match(p.costLimits.policySource,/canonical tenant settings/u);assert.equal(p.costLimits.tenantMonthlyCapUsd,undefined);
  assert.deepEqual(p.steps.map(s=>s.id),['readback','upload','bindings',...STAGE3_DEPLOY_ORDER.map(k=>`deploy-${k}`),'verify']);
  const upload=p.steps.find(s=>s.id==='upload').commands.filter(c=>c.argv.includes('put-secret-value'));
@@ -94,10 +100,11 @@ test('packet risks distinguish compatible images, incompatible sessions and unfi
 
 test('fail closed: image, scan, runner, upload, previous release, ceiling and bindings disagreements refuse',async()=>{
  const refused=async(mutate,pattern)=>{const i=await inputs();mutate(i);assert.throws(()=>buildShipPacket(i),pattern);};
- await refused(i=>{i.receipt.imageDigest=`sha256:${'2'.repeat(64)}`;},/producer receipt/u);
+ await refused(i=>{i.receipt.imageDigest=`sha256:${'2'.repeat(64)}`;},/build result/u);
+ await refused(i=>{i.receipt.sourceCommit='2'.repeat(40);},/build result/u);
  await refused(i=>{i.receipt.findingSeverityCounts={HIGH:1};},/HIGH findings/u);
  await refused(i=>{i.receipt.scanStatus='IN_PROGRESS';},/not COMPLETE/u);
- await refused(i=>{i.receiptSha256='3'.repeat(64);},/sha256 of the producer receipt/u);
+ await refused(i=>{i.receiptSha256='3'.repeat(64);},/sha256 of the image build result/u);
  await refused(i=>{i.runtime.preparationIntent.runnerSha256='4'.repeat(64);},/runnerSha256/u);
  await refused(i=>{i.measuredRunnerSha256=null;},/fetch it/u);
  await refused(i=>{i.upload.roles[1].secretArn=i.upload.roles[0].secretArn;},/upload plan secret/u);
@@ -110,19 +117,41 @@ test('fail closed: image, scan, runner, upload, previous release, ceiling and bi
  await refused(i=>{i.bindings={plan:{order:[...STAGE3_DEPLOY_ORDER],expectedTaskDefinitions:{...i.stage3.taskDefinitions,runner:'x'}},templates:{}};},/another runner revision/u);
 });
 
+test('standard build result requires all fields, safe immutable source version and numeric scan counts',async()=>{
+ const base=await inputs();
+ const refused=mutate=>{const i=structuredClone(base);mutate(i);assert.throws(()=>buildShipPacket(i),{code:'SHIP_PACKET_REFUSED'});};
+ for(const key of Object.keys(base.receipt))refused(i=>{delete i.receipt[key];});
+ for(const receipt of [null,[],false,'result'])refused(i=>{i.receipt=receipt;});
+ for(const sourceCommit of ['',12,'A'.repeat(40),'1'.repeat(39)])refused(i=>{i.receipt.sourceCommit=sourceCommit;});
+ for(const sourceVersion of ['',null,12,'null','bad version','version\n','version;command','a'.repeat(1025)])refused(i=>{i.receipt.sourceVersion=sourceVersion;});
+ for(const imageDigest of ['',null,'sha256:'+'A'.repeat(64),'2'.repeat(64)])refused(i=>{i.receipt.imageDigest=imageDigest;});
+ for(const platform of ['',null,'linux/amd64'])refused(i=>{i.receipt.platform=platform;});
+ for(const counts of [null,[],false,'0',{HIGH:'0'},{HIGH:null},{HIGH:false},{MEDIUM:-1},{LOW:0.5},{LOW:Number.MAX_SAFE_INTEGER+1}])
+  refused(i=>{i.receipt.findingSeverityCounts=counts;});
+ for(const severity of ['HIGH','CRITICAL'])refused(i=>{i.receipt.findingSeverityCounts={[severity]:1};});
+ for(const receiptSha256 of [undefined,null,'',12,'A'.repeat(64)])refused(i=>{i.receiptSha256=receiptSha256;i.imageScans.nodeRuntime=receiptSha256;});
+ const i=structuredClone(base);i.receipt.sourceVersion='Ab_c.~+/=-9';i.receipt.findingSeverityCounts={HIGH:0,CRITICAL:0,MEDIUM:2};
+ assert.deepEqual(buildShipPacket(i).evidence.findingSeverityCounts,i.receipt.findingSeverityCounts);
+});
+
 test('CLI writes ship-packet.json and SHIP-PACKET.md outside the repository; pre-deploy phase pins the templates',async()=>{
  const i=await inputs(),work=await mkdtemp(join(tmpdir(),'meri-ship-packet-'));
  try{
   const quiet=async argv=>{const lines=[];const code=await main(argv,{out:t=>lines.push(t),err:t=>lines.push(t)});return {code,text:lines.join('')};};
   const write=async(name,value)=>{await writeFile(join(work,name),typeof value==='string'?value:JSON.stringify(value));return join(work,name);};
   const args=['--deployment-inputs',join(here,'deployment-inputs.json'),'--previous-deployment-inputs',await write('previous.json',i.previousDeployment),
-   '--runtime',join(here,'runtime-values.json'),'--node-receipt',join(here,'n21-build-receipt.json'),'--image-scans',join(here,'image-scans.json'),
+   '--runtime',join(here,'runtime-values.json'),'--node-receipt',await write('result.json',i.receipt),'--image-scans',await write('image-scans.json',i.imageScans),
    '--stage3',await write('stage3.json',i.stage3),'--upload-plan',await write('upload-plan.json',i.upload),'--work',work,'--ceiling-usd','5'];
   let r=await quiet([...args,'--out',join(work,'packet')]);
   assert.equal(r.code,0,r.text);assert.match(r.text,/SHIP_PACKET_WRITTEN/u);
   const packet=JSON.parse(await readFile(join(work,'packet','ship-packet.json'),'utf8'));
   assert.equal(packet.phase,'pre-upload');assert.equal(typeof packet.migrations.required,'boolean');
   assert.match(await readFile(join(work,'packet','SHIP-PACKET.md'),'utf8'),new RegExp(packet.packetSha256,'u'));
+  // The CLI hashes actual result bytes, so a changed source version cannot reuse the old scan pin.
+  await write('result.json',{...i.receipt,sourceVersion:'another-source-version'});
+  r=await quiet([...args,'--out',join(work,'changed-result')]);assert.equal(r.code,2);assert.match(r.text,/sha256 of the image build result/u);
+  await assert.rejects(readFile(join(work,'changed-result','ship-packet.json')),{code:'ENOENT'});
+  await write('result.json',i.receipt);
   // Pre-deploy: a bindings directory with the deploy plan and two templates.
   await mkdir(join(work,'b'));
   await writeFile(join(work,'b','deploy-plan.json'),JSON.stringify({order:[...STAGE3_DEPLOY_ORDER],expectedTaskDefinitions:i.stage3.taskDefinitions,stacks:{}}));
@@ -135,5 +164,6 @@ test('CLI writes ship-packet.json and SHIP-PACKET.md outside the repository; pre
   r=await quiet([...args,'--out',join(here,'packet-should-not-exist')]);assert.equal(r.code,2);assert.match(r.text,/outside the repository/u);
   r=await quiet([...args,'--out',join(work,'packet')]);assert.equal(r.code,2);
   r=await quiet(args.slice(2));assert.equal(r.code,2);assert.match(r.text,/--deployment-inputs is required/u);
+  r=await quiet(['--help']);assert.equal(r.code,0);assert.match(r.text,/fresh digest-bound scans before release/u);
  }finally{await rm(work,{recursive:true,force:true});}
 });
