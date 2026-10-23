@@ -7,7 +7,7 @@ Apply [standing requirements](STANDING-REQUIREMENTS.md), [Wave 2 handover](WAVE-
 | Repository | Bounded checks | Wider evidence selected from the current brief and changed consumers |
 |---|---|---|
 | Meri | `npm run check:contracts`; `node --test` on touched modules with their flags | Relevant root `check`, `check:contracts:distribution`, `check:infra`, `check:sdk-evidence`; `npm run typecheck --prefix apps/runtime`; current image/DB gates |
-| Core | `pnpm --filter @capiro/api test --runInBand --runTestsByPath src/<owned>.spec.ts` | API build/lint/typecheck and affected suites; closure regeneration for manifest/lock/schema changes; image probes and isolated PostgreSQL 16 |
+| Core | `pnpm --filter @capiro/api run test --runInBand --runTestsByPath src/<owned>.spec.ts` | API build/lint/typecheck and affected suites; closure regeneration for manifest/lock/schema changes; image probes and isolated PostgreSQL 16 |
 | Frontend | `node --test` on touched `.mjs` modules; web workspace Vitest paths | Root `npm test`, `npm run typecheck`, `npm run build`; web lint; affected browser, visual/accessibility and production-container checks |
 
 These definitions were checked against current manifests; recheck at each integration base. Select checks for current behavior, not obsolete suites preserving mechanisms item 0 deletes. Remove replaced tests with their owner and retain equivalent behavior coverage.
