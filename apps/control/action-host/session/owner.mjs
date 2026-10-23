@@ -17,10 +17,8 @@ const currentReaders=new WeakMap();
 export const authenticatedCurrentState=owner=>currentReaders.get(owner);
 const currentIssuers=new WeakMap();
 const runBorrowers=new WeakMap();
-const runAuthorities=new WeakMap();
 /** Trusted in-process borrowing only. The caller must still authenticate/recheck; borrowing grants no authority. */
 export const borrowedRunSession=owner=>runBorrowers.get(owner);
-export const originatingRunAuthority=owner=>runAuthorities.get(owner);
 /** Trusted per-request composition (worker HTTP): issuance plus the binding, scopes and selected client its own complete resolve
  * just observed, so the caller can compare them without resolving the new session again. */
 export const issuedCurrentState=owner=>currentIssuers.get(owner);
@@ -109,7 +107,7 @@ export function createActionSessionOwner(configuration){
  }
  async function resolve(nativeCredential,selected,t,record,ceiling=Infinity,progress={},fresh=false){
   const observe=()=>resolveFacts(nativeCredential,selected,t,record,ceiling,progress);
-  return withAuthority?t.run(signal=>withAuthority({credential:nativeCredential,hints:selected,...(record?{binding:record.context.binding,sessionFence:record.sessionId+':'+record.sessionRevision,...(record.authorityRevisions?{expect:record.authorityRevisions}:{})}:{}),fresh:!record||fresh,signal,deadlineMs:t.deadline()},observe)):observe();
+  return withAuthority?t.run(signal=>withAuthority({credential:nativeCredential,hints:selected,...(record?{binding:record.context.binding,sessionFence:record.sessionId+':'+record.sessionRevision}:{}),fresh:!record||fresh,signal,deadlineMs:t.deadline()},observe)):observe();
  }
  async function resolveFacts(nativeCredential,selected,t,record,ceiling=Infinity,progress={}){
   progress.step='identity';let started=active(t.signal);const identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);
@@ -159,7 +157,7 @@ export function createActionSessionOwner(configuration){
    r=sessions.get(hash(credential));valid(r,signal);if(!same(input.sourceBinding,r.context.binding))deny();
    const revision=r.sessionRevision,sourceContext=r.context,originalIdentity=r.identity,nativeCredential=r.nativeCredential;
    t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-   if(withAuthority)await t.run(signal=>withAuthority({credential:nativeCredential,hints:boundHints(r),binding:sourceContext.binding,sessionFence:r.sessionId+':'+r.sessionRevision,...(r.authorityRevisions?{expect:r.authorityRevisions}:{}),fresh:true,signal,deadlineMs:t.deadline()},()=>undefined));
+   if(withAuthority)await t.run(signal=>withAuthority({credential:nativeCredential,hints:boundHints(r),binding:sourceContext.binding,sessionFence:r.sessionId+':'+r.sessionRevision,fresh:true,signal,deadlineMs:t.deadline()},()=>undefined));
    const check=()=>{valid(r,t.signal);if(r.sessionRevision!==revision||r.context!==sourceContext||r.identity!==originalIdentity||r.nativeCredential!==nativeCredential)deny();t.limitDeadline(r.expiresAtMs);t.check();};
    let identity;try{
     const started=active(t.signal);identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);check();
@@ -212,6 +210,5 @@ export function createActionSessionOwner(configuration){
   if(!best)deny('SESSION_UNAVAILABLE');valid(best,signal);const b=best.context.binding;
   return assertActionSessionReceipt({credential:credentials.get(best),expiresAtMs:best.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:best.context.selectedClientId}},at);
  });
- runAuthorities.set(owner,input=>{const receipt=runBorrowers.get(owner)(input),r=sessions.get(hash(receipt.credential));return Object.freeze({...receipt,expect:r.authorityRevisions});});
  currentReaders.set(owner,value=>authenticate(value,true));currentIssuers.set(owner,value=>issue(value,{relayEligible:true,withCurrent:true}));return owner;
 }

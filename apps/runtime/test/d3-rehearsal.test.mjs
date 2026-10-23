@@ -51,7 +51,7 @@ function compose({profile,stopMs=1000}){
  // control.mjs routes the stop-only native call around its fence; here it answers after the modelled ECS stop and revocation.
  const native=Object.freeze({...candidate.native,async call(operation,input,options={}){if(operation!=='execution/kickoff/stop')return candidate.native.call(operation,input,options);
   await delay(stopMs,options.signal);effects.stops++;return {binding:input.binding,executionId:input.executionId,expiresAtMs:Date.now()+600000};}});
- const assembly=assembleControl({configuration,turnTelemetry,pool:sql.pool,client,native,canonicalProductPorts:candidate.productPorts});candidate.bindSessions(assembly.sessions);candidate.bindApplication(assembly.application);
+ const assembly=assembleControl({configuration,turnTelemetry,pool:sql.pool,client,native,canonicalProductPorts:candidate.productPorts});candidate.bindApplication(assembly.application);
  const at=()=>Math.round(performance.now()-started);
  /** A browser request through the frontend's 30 s budget: status, body, duration and the Core calls it made. */
  async function call(name,method,path,{body,credential,headers={},signal}={}){

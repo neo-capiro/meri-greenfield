@@ -1,7 +1,6 @@
 /** Current run authority from Core ca4de503's combined /current receipt (S2/O208).
- * The canonical session relay supplies the live user's bearer, never a candidate or service credential. Only a branded
- * originating run session permits process-private20s receipt reuse, aged from monotonic sendStart. Unbranded ports read
- * fresh; command/approval/artifact admission reads fresh. Every call still verifies the admitted Meri run, grant, fence,
+ * The canonical session relay supplies the live user's bearer, never a candidate or service credential. Every tool read and
+ * intent port call reads Core /current fresh once. Every call still verifies the admitted Meri run, grant, fence,
  * selected client, deadline and live session through its existing owners. No persistence or stale unavailable fallback.
  * ROLE_GRANTS remains the single role mapping; Core permissions remain data, not additional grants.
  * The same supplier serves tool reads and the five intent execution ports. Generic non-conversation consumers retain
@@ -20,8 +19,7 @@ import {createCurrentToolAuthority} from '../../gateway/authorization/current-to
 import {PostgresBudgetStore} from '../../gateway/budget/postgres-budget-store.mjs';
 import {allocation as parseAllocation,parseToolGrantFacts} from '../../gateway/budget/tool-budget-binding.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../control/action-host/application-adapters/authority-http.mjs';
-import {createRunCurrentAuthority,CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
-import {originatingRelaySession} from '../read-credential-relay.mjs';
+import {CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {productFailure} from '../../control/product-access/errors.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
@@ -106,7 +104,6 @@ export function createCurrentAuthorityAdapters(configuration){
  const bearer=createBearerSource({nativeCredentials:c.nativeCredentials,readSecret:c.readSecret,reservedFiles,secretFiles:[...new Set([...secretFiles,...(serviceSecretFile===undefined?[]:[serviceSecretFile])])],now});
  const bound=Math.min(limits.maxRequestMs,30000);
  const identity=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled:true,limits:{maxRequestMs:bound,maxResponseBytes:limits.maxFactBytes}});
- const receipts=createRunCurrentAuthority({client:identity,now}),borrowSession=originatingRelaySession(c.nativeCredentials);
  let stores=null;
 
  /** One bounded lifetime per port call: caller deadline ∧ maxRequestMs ∧ every receipt expiry folded in through `limit`. */
@@ -126,19 +123,12 @@ export function createCurrentAuthorityAdapters(configuration){
  const bound_=()=>{if(stores===null)deny('UNAVAILABLE');return stores;};
 
  /** One current-authority observation for a run and its selected client (see the module header). */
- async function observe({binding,selectedClientId,signal,deadlineMs,context,fresh:forceFresh=false}){
+ async function observe({binding,selectedClientId,signal,deadlineMs,context}){
   const l=lifetime(deadlineMs,signal);
   try{
    const issued=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));l.limit(issued.expiresAtMs);
-   let r;
-   if(borrowSession&&borrowSession({binding,selectedClientId,signal:l.life.signal}).expect!==undefined){
-    const session=borrowSession({binding,selectedClientId,signal:l.life.signal});l.limit(session.expiresAtMs);
-    r=await l.life.run(signal=>receipts.read({credential:issued.credential,binding,selectedClientId,sessionFence:sha(session.credential),expect:session.expect,fresh:forceFresh||capabilityAction==='command.execute'||c.localArtifactDrafts===true,signal,deadlineMs:l.deadline()}));
-    const current=borrowSession({binding,selectedClientId,signal:l.life.signal});if(current.credential!==session.credential)deny('ACCESS_DENIED');l.limit(current.expiresAtMs);
-   }else{
-    // A port without canonical originating-session provenance gets a fresh observation, never reuse.
-    const began=now();currentTurnTelemetry()?.recordAuthority?.('fresh');r=await l.life.run(signal=>identity.readCurrent({credential:issued.credential,conversationId:binding.conversationId,clientId:selectedClientId,signal,deadlineMs:Math.min(l.deadline(),now()+CURRENT_MAX_WAIT_MS)}));fresh(r,began,l);
-   }
+   // One fresh Core /current observation per tool read or intent port call.
+   const began=now();currentTurnTelemetry()?.recordAuthority?.('fresh');const r=await l.life.run(signal=>identity.readCurrent({credential:issued.credential,conversationId:binding.conversationId,clientId:selectedClientId,signal,deadlineMs:Math.min(l.deadline(),now()+CURRENT_MAX_WAIT_MS)}));fresh(r,began,l);
    if(r.principal.tenantId!==binding.tenantId||r.principal.actorId!==binding.actorId||r.conversationId!==binding.conversationId||r.selectedClientId!==selectedClientId||!Object.hasOwn(ROLE_GRANTS,r.role)||!r.clientIds.includes(selectedClientId)||r.expiresAtMs<=now())deny('ACCESS_DENIED');l.limit(r.expiresAtMs);
    const again=await l.life.run(()=>bearer.bearerFor({binding,selectedClientId,signal:l.life.signal}));if(again.credential!==issued.credential)deny('UNAVAILABLE');
    const checkedAtMs=now(),expiresAtMs=Math.min(l.deadline(),l.started+limits.maxLeaseMs,issued.expiresAtMs,again.expiresAtMs);
@@ -215,7 +205,7 @@ export function createCurrentAuthorityAdapters(configuration){
   if(named!==null&&UUID.test(named)&&named!==selectedClientId)deny('ACCESS_DENIED');
   const l=lifetime(Date.parse(claims.expiresAt),v.signal);
   try{
-   const o=await observe({binding:claims.binding,selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true,fresh:claims.actions.includes('command.execute')});
+   const o=await observe({binding:claims.binding,selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true});
    const localDraft=c.localArtifactDrafts===true&&operation.version==='0.2.0'&&LOCAL_ARTIFACT_DRAFTS.includes(operation.id)&&same(requiredGrants,['artifact.publish']);
    if(localDraft){
     const {run}=await currentRunFact(claims.binding,l),allocation=JSON.parse(run.allocationJson);
@@ -268,7 +258,7 @@ export function createCurrentAuthorityAdapters(configuration){
   try{
    const {fact}=await currentRunFact(binding,l);v.limitDeadline?.(fact.deadlineMs);
    const row=await runRow(binding,l);if(row.policyRevision!==fact.policyRevision)deny('ACCESS_DENIED');
-   const o=await observe({binding,selectedClientId:row.selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true,fresh:true});
+   const o=await observe({binding,selectedClientId:row.selectedClientId,signal:l.life.signal,deadlineMs:l.deadline(),context:true});
    let proposalExpiresAt;
    if(v.phase==='prepare'){
     if(s.proposalId!==null||s.commandSha256!==null||s.recordSha256!==null||typeof s.inputSha256!=='string'||!HEX64.test(s.inputSha256))deny('ACCESS_DENIED');
