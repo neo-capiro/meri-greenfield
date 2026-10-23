@@ -22,10 +22,12 @@ test('S2 one combined observation serves issuance; read rechecks still read the 
  await f.sessions.readCurrentState({authentication:a});await f.sessions.readCurrentState({authentication:a});assert.equal(f.state.calls.length,2,'read rechecks reuse');assert.equal(f.state.local,local+4,'no local current-run check was cached');
  await f.sessions.authenticateSession({credential:s.credential});assert.equal(f.state.calls.length,3,'the next effect admission must call fresh');
 });
-test('S2 borrows the exact originating session, never another attempt/fence, and revocation removes it',async t=>{
+test('S2 borrows the originating session for the same run, never another run, and revocation removes it',async t=>{
  const f=fixture(t),s=await f.issue(),borrow=borrowedRunSession(f.sessions),input={binding:f.binding,selectedClientId:id(5)};
  assert.equal(borrow(input).credential,s.credential);assert.equal(borrow(input).credential,s.credential);assert.equal(f.sessions.status().sessions,1);
- for(const binding of [{...f.binding,attemptId:id(8)},{...f.binding,writerFence:2},{...f.binding,runId:id(9)}])assert.throws(()=>borrow({...input,binding}));
+ // Live: the session is issued before the worker takes the run, so the runner's attempt/worker/fence differ (run row owns the fence).
+ for(const binding of [{...f.binding,attemptId:id(8)},{...f.binding,workerId:id(10)},{...f.binding,writerFence:2}])assert.equal(borrow({...input,binding}).credential,s.credential);
+ for(const binding of [{...f.binding,runId:id(9)},{...f.binding,conversationId:id(11)},{...f.binding,actorId:'other'}])assert.throws(()=>borrow({...input,binding}));
  assert.throws(()=>borrow({...input,selectedClientId:id(7)}));f.sessions.revoke(s.credential);assert.throws(()=>borrow(input));assert.equal(f.sessions.status().sessions,0);
 });
 test('S2 fresh admission403 invalidates the session while503 refuses without stale fallback',async t=>{
@@ -50,4 +52,10 @@ test('S2 task reuse requires its live originating session, never a task grant al
  assert.deepEqual(JSON.parse(f.state.calls[count-1].init.body).expect,{identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64)});
  f.state.status=503;await assert.rejects(observe({fresh:true}));f.state.status=200;f.state.contextRevision='d'.repeat(64);await assert.rejects(observe(),'a cleared cache must retain the originating session revision pins');f.state.contextRevision=undefined;await observe();
  const beforeRevoke=f.state.calls.length;f.sessions.revoke(s.credential);await assert.rejects(observe());assert.equal(f.state.calls.length,beforeRevoke,'revoked origin refuses before Core/cache use');
+});
+test('S2 task bootstrap borrows when the runner attempt differs from the session binding (live 10-23 regression)',async t=>{
+ const f=fixture(t);await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
+ const runner={...f.binding,attemptId:id(12),workerId:id(13),writerFence:3};
+ assert.equal(await f.identity.withAuthority({credential:'native',binding:runner,sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true),true);
+ await assert.rejects(f.identity.withAuthority({credential:'native',binding:{...runner,runId:id(14)},sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true));
 });
