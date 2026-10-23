@@ -59,18 +59,26 @@ The chat was broken by a chain of failures that only appeared live, each one hid
 
 ## 5. Per-turn overhead fix: exact state
 
-**Not shipped, not merged, and not needed for item 0.** An agent was part-way through it when Neo asked for the handover (branch `fable/runner-ops-per-run`, 22 files, +238 / −218, tests only partly run, not reviewed). It was asked to push the branch as a **draft PR titled "WIP (optional, superseded by item 0 step 4): runner operations proven once per run"**; look for that PR in meri-greenfield. If it isn't there, the work is still local on neomart (`C:\devable\wt-per-run`) and the design below is all that is kept.
+**Not shipped, not merged, and not needed for item 0.** The work is committed locally as `5e8a5ccee`, one commit on branch `fable/runner-ops-per-run` on top of `05d588c7` (on neomart, in `C:\devable\wt-per-run`). **It has not been pushed:** publishing it needs Neo's yes. If that branch is gone, the findings below are what is kept.
 
-The design it implements, for T3's 372 Core calls, about 800 ECS describes and about 73,000 DB statements per turn:
+**Where T3's overhead came from.** This is from reading the code against the live counts; nothing was instrumented live.
 
-- prove the runner's ECS task identity **once per run** (at admission) and bind it to the run and fence, not once per runner operation;
-- keep run currentness **in memory**, refreshed on a coarse timer (about 20 s) or on a terminal or cancel signal, not by a database query per operation or per chunk;
-- call Core `/current` **at most once per turn**, and reuse it for tool reads and intent ports in the same run;
-- **batch the delta saves** (about 250 ms or a size threshold) instead of a database write path per chunk.
+1. **Per runner operation.** The receiver's `fresh()` asked control to verify, which ran `prepared-runtime current()`: a task-verifier snapshot transaction (about 11 SQL statements), an allocation read, and `verifyTask` (2 `DescribeTasks`, 1 `DescribeTaskDefinition`, and a hash of the runner file). The 253 `DescribeTaskDefinition` calls match one `verifyTask` per receiver operation.
+2. **Per router exchange.** Each exchange did 3 authority joins (issuance, allocation, admission reads), 3 task and network-interface observations, and a TLS connect.
+3. **Core `/current`.** It was read fresh for every publish, session issue and recheck, and read again for every tool read and intent port.
+4. **Delta publishing.** One durable publish per SDK message while the previous one was in flight.
 
-It also looks into why the proxy logged the one model request as `outcome: failed` although the stream ended and settled in 25 ms (the new `meri.proxy.abandon/1` path from #227 may be firing on a normal close).
+**What the branch does about it.** The receiver re-asks control at most every 20 s, the ECS task is proven once per run, and the verifier reads the run row at most every 20 s. Router authority is read once per 20 s per original, operation and credential, and the network is observed once per original task. There is one Core receipt per credential, conversation and client, shared for 20 s (concurrent callers share the read; failures are never cached). Delta publishing is at most one per 250 ms (`DELTA_PUBLISH_INTERVAL_MS`). It removes the session fence, the `fresh` flag, the sequence/epoch bookkeeping, the router's recheck-after phases and `pinSha256`.
 
-What survives item 0: the **batched delta saves** (`apps/worker/conversation/activity.mjs`) belong in item 0 step 5. The rest edits `apps/runtime/native-authority`, which step 4 deletes, so don't merge it unless item 0 is delayed and chat speed matters in the meantime.
+**What it did not show.** The numbers are from unit tests only: 5 receiver operations make 0 control verifies; one router exchange pair makes 1 authority read and 1 network observation (3 and 3 on `origin/main`); 30 deltas over 600 ms make at most about 5 publishes. There are no live "after" numbers, and the first-turn rehearsal can't show the effect (it uses a stub verifier and no router, receiver or `prepared-runtime`), so **the ≤ 30 Core-call target is not demonstrated.** The once-per-run ECS proof has no unit test, and the PostgreSQL-backed `prepared-runtime` tests were not run.
+
+**Still polling every 100 ms, the likely remaining DB and AWS sources:** kickoff readiness during the Fargate start (one router exchange and one `DescribeTasks` per attempt), the runner controls, and the browser stream poll. Item 0 should not recreate any 100 ms polling.
+
+**A separate real bug, in the proxy that item 0 deletes.** The proxy logged the one T3 model request as `outcome: failed` although it settled normally. After a complete response, an `http.disconnect` was treated as `CLIENT_DISCONNECTED`, which cancelled the request, and `InferenceApp` then recorded `failed` (`apps/proxy/qualification/runtime/server.py`). It is not the `meri.proxy.abandon/1` path (that is a no-op once a request has settled). The branch fixes it with a unit test that fails before and passes after; it was reproduced in a unit test only.
+
+**Tests on the branch.** Passing: `run-current-authority` 7/7, `s2-session` 7/7, `rehearsal-support` 5/5, `current-authority-adapters` 7/7 (3 tests updated), `task-router` 11/11, `activity-delta-coalescing` 8/8, and, in the proxy image, `test_server` 14/14. Of 95 affected files run on Windows against `origin/main`, 90 have identical counts. The inherited failures match `origin/main`: the Windows and PostgreSQL environment (`pipeline`, `next-run-pg`, `prepared-kickoff-pg`, `prepared-runtime-pg`, `read-composer`, `remote-task`) and the in-image D3 live-tail "double submit and Stop" cases (408 `DEADLINE`). Not run: the first-turn and D3 rehearsals on the branch, the in-image Linux runs of `remote-task`, `native-start-router-budget` and `capture-self-stop`, and the full unit-suite comparison.
+
+**What survives item 0:** the **batched delta saves** (`apps/worker/conversation/activity.mjs`) belong in item 0 step 5, and the lesson about 100 ms polling. The rest edits `apps/runtime/native-authority`, which step 4 deletes, so don't merge it unless item 0 is delayed and chat speed matters in the meantime.
 
 ## 6. First actions for the orchestrator
 
