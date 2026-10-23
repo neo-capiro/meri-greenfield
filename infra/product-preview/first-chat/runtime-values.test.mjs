@@ -1,198 +1,43 @@
-/** runtime-values.mjs on THROWAWAY material: the receipt is a real host measurement (same module the image runs) whose only
- * Linux-specific facts (platform, CLI executable path/hash, Linux path gates) are replaced by clearly synthetic Linux values,
- * because the claude CLI is platform-specific. The assembled runtime.json then goes through render-material's full validation
- * with the shared throwaway PKI fixture. Run with MERI_REVIEW_SOURCE_ROOT=<worktree root> and Python 3 with `cryptography`. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {execFileSync,spawnSync} from 'node:child_process';
-import {readFile,mkdtemp,rm} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
-import {join} from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {readFile} from 'node:fs/promises';
+import {parsePolicy,parseAllocationFile,policyRevisionOf,activeReadOperationsOf,runtimeValues,main} from './runtime-values.mjs';
+import {parseRuntimeValues} from './render-material.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {measureFirstChatLaunch,generalReadInstallation} from '../../../apps/runtime/build/first-chat-launch-measurement.mjs';
-import {runtimeValues,parseReceipt,policyRevisionOf,measurementOverrides,measurementCommand,embeddedNodeArguments,decodeEmbeddedModule,measurementArguments,MEASUREMENT_MODULE,CONTAINER,main} from './runtime-values.mjs';
-import {SOURCE_ROOT,withPosixPaths,parseRuntimeValues} from './render-material.mjs';
-import {createRenderFixture} from './render-material.fixture.mjs';
-import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
-import {allocation as parseAllocation} from '../../../apps/gateway/budget/tool-budget-binding.mjs';
-import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../../../apps/runtime/product-ports/capability-policy.mjs';
-import {PRODUCT_PROXY_MODEL_ALIAS} from '../../../apps/proxy/product/startup-config.mjs';
+const json=async name=>JSON.parse(await readFile(new URL(name,import.meta.url),'utf8'));
 
-const here=fileURLToPath(new URL('.',import.meta.url)),json=async name=>JSON.parse(await readFile(join(here,name),'utf8'));
-const fixture=createRenderFixture();test.after(()=>fixture.cleanup());
-const LINUX_CLI='/opt/meri/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude';
-let base;
-async function committed(){
- if(base)return structuredClone(base);
- const policy=await json('policy.json'),allocation=await json('allocation.json'),deployment=(await fixture.setup()).deployment,policyRevision=policyRevisionOf(policy);
- const host=await measureFirstChatLaunch({proxyUrl:deployment.origins.proxyUrl,model:PRODUCT_PROXY_MODEL_ALIAS,maxTurns:policy.runtime.maxTurns,maxCostMicroUSD:deployment.model.perRunMaxCostMicroUSD,
-  maxOutputBytes:policy.runtime.maxOutputBytes,configParentDirectory:policy.runnerLayout.configParentDirectory,secureStorageDirectory:policy.runnerLayout.secureStorageDirectory,policyRevision},{root:SOURCE_ROOT});
- // SYNTHETIC Linux facts only; every other receipt value is the host measurement.
- const receipt={...host,platform:{os:'linux',arch:'x64',node:host.platform.node,uid:1000},executable:{path:LINUX_CLI,sha256:'9'.repeat(64),bytes:host.executable.bytes},
-  launchTemplate:{...host.launchTemplate,command:LINUX_CLI},gates:Object.fromEntries(Object.keys(host.gates).map(k=>[k,'PASS']))};
- base={policy,allocation,deployment,receipt,policyRevision};return structuredClone(base);
-}
-const assemble=async(change=x=>x,options={})=>{const v=await committed();change(v);return runtimeValues({...v,...options});};
-
-test('SDK alias equals the sole pinned product proxy route while provider and pricing identities stay fixed',async()=>{
- const product=JSON.parse(await readFile(join(SOURCE_ROOT,'apps/proxy/product/litellm-product-config.yaml'),'utf8'));
- const policy=await json('policy.json');
- assert.equal(product.model_list.length,1);
- assert.equal(product.model_list[0].model_name,PRODUCT_PROXY_MODEL_ALIAS);
- assert.equal(product.model_list[0].model_info.id,PRODUCT_PROXY_MODEL_ALIAS);
- assert.equal(product.model_list[0].litellm_params.model,`bedrock/invoke/${policy.model.profileId}`);
- const args=measurementArguments({policy,deployment:(await fixture.setup()).deployment,policyRevision:policyRevisionOf(policy)});
- assert.equal(args[args.indexOf('--model')+1],PRODUCT_PROXY_MODEL_ALIAS);
- assert.notEqual(PRODUCT_PROXY_MODEL_ALIAS,policy.model.profileId);
+test('native material retains read allocation and layout without a deployment model policy',async()=>{
+ const policy=await json('policy.json'),allocation=await json('allocation.json');
+ assert.equal(parsePolicy(policy),policy);
+ assert.deepEqual(await parseAllocationFile(allocation,policy),allocation);
+ assert.equal(policyRevisionOf(policy),canonicalSha256(policy));
+ for(const change of [p=>{p.model={};},p=>{p.runtime.maxTurns=3;},p=>{p.runnerLayout.workspaceRoot='/foreign';},p=>{p.runnerLayout.configParentDirectory='/';}]){
+  const p=structuredClone(policy);change(p);assert.throws(()=>parsePolicy(p));
+ }
+ const altered=structuredClone(allocation);altered.operations.pop();
+ await assert.rejects(parseAllocationFile(altered,policy));
 });
 
-test('committed allocation.json and policy.json are self-consistent and admitted by the gateway allocation parser',async()=>{
- const {policy,allocation}=await committed();
- assert.equal(policy.allocationSha256,canonicalSha256(allocation));assert.match(policyRevisionOf(policy),/^[a-f0-9]{64}$/u);
- assert.deepEqual(allocation.manifest.budgets,{maxTurns:3,maxToolCalls:1,maxRecoveryAttempts:0,maxRuntimeSeconds:900,maxCostMicroUSD:2000000,maxOutputBytes:262144});
- assert.equal(allocation.scheduleRevision,canonicalSha256(allocation.operations));
- // Worst-case model hold per call (product-model-budget.mjs) at the D1 envelope; maxTurns of them fit inside the per-run cap.
- const hold=Math.ceil((6600*65536+16500*8192)/1000);assert.ok(hold*allocation.manifest.budgets.maxTurns<=2000000&&hold*(allocation.manifest.budgets.maxTurns+1)>2000000);
- const run={tenantId:'t',actorId:'a',conversationId:'00000000-0000-4000-8000-000000000001',runId:'00000000-0000-4000-8000-000000000002'};
- parseAllocation(JSON.stringify({run,manifest:allocation.manifest,manifestSha256:canonicalSha256(allocation.manifest),catalogSha256:allocation.catalogSha256,budgets:allocation.manifest.budgets,
-  schedule:{revision:allocation.scheduleRevision,expiresAt:'2100-01-01T00:00:00.000Z',operations:allocation.operations}}));
+test('runtime parser refuses the retired launch and model-limit inputs',async()=>{
+ const source=await json('runtime-values.json');parseRuntimeValues(source);
+ for(const key of ['launchTemplate','executableSha256','sdkOptionsSha256']){
+  const copy=structuredClone(source);copy.preparationIntent[key]='retired';
+  assert.throws(()=>parseRuntimeValues(copy));
+ }
+ const copy=structuredClone(source);copy.runtime.maxTurns=3;
+ assert.throws(()=>parseRuntimeValues(copy));
 });
 
-test('assembled runtime.json renders all five roles through every render-material validator with throwaway PKI',async()=>{
- const {runtime,policyRevision,skillsDigest}=await assemble();
- const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:SOURCE_ROOT,encoding:'utf8'}).trim();
- const {roles,summary}=await fixture.render(i=>{i.runtime=runtime;
-  // Match the host-measured runner to this checkout's committed Git blob. This synthetic image is not an image remeasure.
-  i.deployment.images.nodeRuntimeSourceCommit=sourceCommit;
- });
- const control=JSON.parse(roles.control.configBytes.toString('utf8')),c=control.nativeCandidate,{receipt}=await committed();
- assert.equal(c.qualification.policyRevision,policyRevision);assert.equal(control.versions.skillsDigest,skillsDigest);
- assert.equal(c.preparationIntent.executableSha256,receipt.executable.sha256);assert.equal(c.preparationIntent.sdkOptionsSha256,receipt.sdkOptions.sha256);
- assert.equal(c.preparationIntent.runnerSha256,receipt.runner.sha256);assert.deepEqual(c.preparationIntent.launchTemplate,receipt.launchTemplate);
- assert.equal(c.runtime.model,PRODUCT_PROXY_MODEL_ALIAS);assert.equal(receipt.inputs.model,PRODUCT_PROXY_MODEL_ALIAS);
- assert.ok(receipt.launchTemplate.args.includes(`--model=${PRODUCT_PROXY_MODEL_ALIAS}`));
- assert.equal(c.preparationIntent.configParentDirectory,'/run/meri');assert.equal(c.preparationIntent.secureStorageDirectory,'/run/meri/sdk-secure');
- assert.deepEqual(JSON.parse(c.allocationJson).budgets,runtime.allocation.manifest.budgets);assert.equal(c.runtime.maxTurns,3);assert.equal(c.runtime.maxOutputBytes,262144);
- assert.equal(c.runtime.maxCostMicroUSD,2000000);assert.equal(c.multiRun.runWindowMs,900000);assert.equal(summary.staticCandidate.policyRevision,policyRevision);
- withPosixPaths(()=>compilePreparedCandidateConfiguration(c,control.versions));
- // P2: the receipt's installation measurement is carried verbatim (the render pins it only under features.reads.installation).
- assert.deepEqual(runtime.generalReadInstallation,receipt.generalReadInstallation);
- assert.equal(runtime.generalReadInstallation.measurementSha256,(await generalReadInstallation({root:SOURCE_ROOT})).measurementSha256);
- assert.equal(Object.hasOwn(control,'reads'),false);
+test('assembler refuses a foreign image source before projecting any material',async()=>{
+ await assert.rejects(runtimeValues({allocation:await json('allocation.json'),policy:await json('policy.json'),deployment:{images:{nodeRuntimeSourceCommit:'0'.repeat(40)}}}),/clean image checkout/u);
 });
 
-test('P2: a receipt that predates generalReadInstallation assembles without it; a drifted or inconsistent measurement refuses',async()=>{
- const {runtime}=await assemble(v=>{delete v.receipt.generalReadInstallation;});
- assert.equal(Object.hasOwn(runtime,'generalReadInstallation'),false);assert.equal(parseRuntimeValues(runtime).generalReadInstallation,null);
- const refused=(change,pattern)=>assert.rejects(assemble(change),{code:'RUNTIME_VALUES_REFUSED',message:pattern});
- await refused(v=>{v.receipt.generalReadInstallation.measurementSha256='a'.repeat(64);},/canonical sha256/u);
- await refused(v=>{v.receipt.generalReadInstallation.measurement.operations.pop();},/canonical sha256/u);
- await refused(v=>{v.receipt.generalReadInstallation={measurementSha256:'a'.repeat(64)};},/exactly/u);
- // Internally consistent but not what this source tree measures (a handler, descriptor or catalog changed since the image was measured).
- await refused(v=>{const g=v.receipt.generalReadInstallation;g.measurement.operations[0].handlerSourceSha256='0'.repeat(64);g.measurementSha256=canonicalSha256(g.measurement);},/differs from the source general-read installation measurement/u);
- await refused(v=>{const g=v.receipt.generalReadInstallation;g.measurement.operations.pop();g.measurementSha256=canonicalSha256(g.measurement);},/differs from the source/u);
+test('disabled read installation has no generated material',()=>{
+ assert.equal(activeReadOperationsOf({}),null);
+ assert.equal(activeReadOperationsOf({features:{reads:{enabled:false}}}),null);
 });
 
-test('P2 active subset: reviewed refs bind the image measurement, source measurement, and separate full inventory',async()=>{
- const v=await committed(),inventory=structuredClone(v.receipt.generalReadInstallation);
- const activeOperations=[structuredClone(inventory.measurement.operations[1].operation),structuredClone(inventory.measurement.operations[0].operation)];
- v.deployment.features={sourceEnabled:true,reads:{enabled:true,
-  serviceSecretArn:'arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/core/measurement-Ab12Cd',
-  installation:{enabled:true,activeOperations}}};
- v.receipt.inputs.activeReadOperationsSha256=canonicalSha256(activeOperations);
- v.receipt.generalReadInventory=inventory;
- v.receipt.generalReadInstallation=await generalReadInstallation({root:SOURCE_ROOT,activeReadOperations:activeOperations});
- const args=measurementArguments({...v,root:SOURCE_ROOT}),index=args.indexOf('--active-read-operations');
- assert.ok(index>0);assert.deepEqual(JSON.parse(Buffer.from(args[index+1],'base64url').toString('utf8')),activeOperations);
- const context=x=>({policy:x.policy,deployment:x.deployment,policyRevision:x.policyRevision,sourceSkillsDigest:x.receipt.skills.digest,
-  sourceSdkOptionsSha256:x.receipt.sdkOptions.sha256,sourceInstallation:v.receipt.generalReadInstallation,sourceInventory:inventory});
- assert.equal(parseReceipt(v.receipt,context(v)).generalReadInstallation.measurement.operations.length,2);
- // PR197 added five read operations to the full source inventory; the admitted subset still contains exactly two.
- assert.equal(inventory.measurement.operations.length,81);
- const refuses=(change,pattern)=>{const changed=change(structuredClone(v));assert.throws(()=>parseReceipt(changed.receipt,context(changed)),{code:'RUNTIME_VALUES_REFUSED',message:pattern});};
- await refuses(x=>{delete x.receipt.inputs.activeReadOperationsSha256;return x;},/activeReadOperationsSha256/u);
- await refuses(x=>{delete x.receipt.generalReadInstallation;return x;},/no active P2 measurement/u);
- await refuses(x=>{delete x.receipt.generalReadInventory;return x;},/generalReadInventory/u);
- await refuses(x=>{const g=x.receipt.generalReadInventory;g.measurement.operations.pop();g.measurementSha256=canonicalSha256(g.measurement);return x;},/full general-read inventory differs/u);
- await refuses(x=>{x.receipt.generalReadInstallation=structuredClone(inventory);return x;},/source general-read installation measurement/u);
- await refuses(x=>{x.deployment.features.reads.installation.activeOperations=[structuredClone(inventory.measurement.operations[2].operation)];return x;},/activeReadOperationsSha256/u);
- await refuses(x=>{delete x.deployment.features.reads.installation.activeOperations;return x;},/activeOperations/u);
- const mismatch=structuredClone(v),platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),wrong=[structuredClone(inventory.measurement.operations[2].operation)];
- for(const section of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])section.activeReadOperations=wrong;
- mismatch.deployment.features.capabilityPlatform=platform;
- assert.throws(()=>measurementArguments({...mismatch,root:SOURCE_ROOT}),{code:'RUNTIME_VALUES_REFUSED',message:/capability profile active read operations differ/u});
-});
-
-test('fail closed: non-template SDK option pin, foreign platform, drifted inputs, skills, allocation or envelope',async()=>{
- const refused=(change,code='RUNTIME_VALUES_REFUSED',options={})=>assert.rejects(assemble(change,options),{code});
- // A per-run (probe) value, a template the runner gate did not admit, or one the source options code does not reproduce.
- await refused(v=>{v.receipt.sdkOptions.runInvariant=false;v.receipt.sdkOptions.secondProbeSha256='a'.repeat(64);});
- await refused(v=>{v.receipt.sdkOptions.schema=undefined;});
- await refused(v=>{v.receipt.gates.runnerSdkOptions='FAIL: SDK_OPTIONS_REFUSED';});
- await refused(v=>{delete v.receipt.gates.runnerSdkOptions;});
- await refused(v=>{v.receipt.sdkOptions.sha256=v.receipt.sdkOptions.secondProbeSha256='b'.repeat(64);});
- await refused(v=>{v.receipt.schema='meri.first-chat-launch-measurement.v1';});
- await refused(v=>{v.receipt.platform.os='win32';});
- await refused(v=>{v.receipt.platform.uid=0;});
- await refused(v=>{v.receipt.gates.matchPreparedDescriptor='FAIL: x';});
- await refused(v=>{v.receipt.inputs.maxTurns=4;});
- await refused(v=>{v.receipt.inputs.model=v.policy.model.profileId;});
- await refused(v=>{v.receipt.launchTemplate.args=v.receipt.launchTemplate.args.map(arg=>arg===`--model=${PRODUCT_PROXY_MODEL_ALIAS}`?`--model=${v.policy.model.profileId}`:arg);});
- await refused(v=>{v.receipt.inputs.policyRevision='0'.repeat(64);});
- await refused(v=>{v.receipt.skills.digest='a'.repeat(64);});
- await refused(v=>{v.receipt.launchTemplate.env.ANTHROPIC_AUTH_TOKEN='leak';});
- await refused(v=>{v.receipt.launchTemplate.command='/usr/bin/other';});
- await refused(v=>{v.allocation.manifest.budgets.maxToolCalls=2;});
- await refused(v=>{v.allocation.scheduleRevision='0'.repeat(64);});
- await refused(v=>{v.policy.runtime.maxTurns=4;});
- await refused(v=>{v.policy.model.maxOutputTokens=16384;});
- await refused(v=>{v.deployment.model.perRunMaxCostMicroUSD=3000000;});
- await refused(v=>{const a=v.allocation;a.manifest.budgets.maxCostMicroUSD=1000000;v.policy.allocationSha256=canonicalSha256(a);});
-});
-
-test('measurement override: the embedded form embeds the exact module but no longer fits ECS (refuses with --shipped); the shipped form fits; the loader produces a receipt for the policy inputs',async()=>{
- const {policy,deployment,policyRevision}=await committed(),moduleBytes=await readFile(join(SOURCE_ROOT,MEASUREMENT_MODULE));
- // The P2 installation measurement grew the committed module past the 8192-byte embedded override (8184 bytes at ec8d3bd0), so the
- // embedded form (images that predate the module) refuses exactly as it does for a capability profile; the image ships the module.
- assert.throws(()=>measurementOverrides({moduleBytes,policy,deployment,policyRevision}),{code:'RUNTIME_VALUES_REFUSED',message:/use --shipped/u});
- const command=measurementCommand({moduleBytes,policy,deployment,policyRevision}),decoded=decodeEmbeddedModule(command);
- assert.ok(Buffer.byteLength(JSON.stringify({containerOverrides:[{name:CONTAINER,command:[command]}]}))>8192);
- assert.ok(decoded.bytes.equals(moduleBytes));assert.match(command,/^set -euo pipefail; umask 077; exec -c \/usr\/local\/bin\/node /u);
- const shippedOverrides=measurementOverrides({moduleBytes,policy,deployment,policyRevision,mode:'shipped'});
- assert.ok(Buffer.byteLength(JSON.stringify(shippedOverrides))<=8192);assert.equal(shippedOverrides.containerOverrides[0].name,CONTAINER);
- const shipped=shippedOverrides.containerOverrides[0].command[0];
- assert.match(shipped,/exec -c \/usr\/local\/bin\/node 'apps\/runtime\/build\/first-chat-launch-measurement\.mjs'/u);
- // The embedded loader end to end on this host: write directory and image root redirected, injected secret dropped.
- const dir=await mkdtemp(join(tmpdir(),'meri-measure-'));
- try{
-  const args=embeddedNodeArguments({moduleBytes,policy,deployment,policyRevision,root:SOURCE_ROOT,directory:join(dir,'measure')});
-  const r=spawnSync(process.execPath,args,{encoding:'utf8',timeout:120000,env:{...(process.platform==='win32'?{SystemRoot:process.env.SystemRoot}:{}),PGPASSWORD:'synthetic-secret'}});
-  assert.equal(r.status,0,r.stderr);const receipt=JSON.parse(r.stdout);
-  assert.deepEqual(measurementArguments({policy,deployment,policyRevision,root:SOURCE_ROOT}).filter((_,i)=>i%2===1).slice(0,9).map(String),
-   [receipt.inputs.proxyUrl,receipt.inputs.model,String(receipt.inputs.maxTurns),String(receipt.inputs.maxCostMicroUSD),String(receipt.inputs.maxOutputBytes),
-    receipt.inputs.configParentDirectory,receipt.inputs.secureStorageDirectory,receipt.inputs.policyRevision,SOURCE_ROOT]);
-  assert.equal(r.stdout.includes('synthetic-secret'),false);
-  assert.equal(receipt.generalReadInstallation.measurementSha256,(await generalReadInstallation({root:SOURCE_ROOT})).measurementSha256);
-  const tampered=[...args];tampered[4]='0'.repeat(64);assert.equal(spawnSync(process.execPath,tampered,{encoding:'utf8',timeout:60000}).status,3);
- }finally{await rm(dir,{recursive:true,force:true});}
-});
-
-test('CLI assemble writes runtime-values.json, refuses the removed acknowledgement flag; policy-revision prints canonicalSha256(policy.json)',async()=>{
- const {receipt,policyRevision}=await committed(),dir=await mkdtemp(join(tmpdir(),'meri-runtime-values-'));
- const capture=async argv=>{const out=[],err=[],o=process.stdout.write.bind(process.stdout),e=process.stderr.write.bind(process.stderr);
-  process.stdout.write=t=>{out.push(String(t));return true;};process.stderr.write=t=>{err.push(String(t));return true;};
-  try{return {code:await main(argv),out:out.join(''),err:err.join('')};}finally{process.stdout.write=o;process.stderr.write=e;}};
- try{
-  const {writeFile}=await import('node:fs/promises');const receiptFile=join(dir,'receipt.json'),deploymentFile=join(dir,'deployment.json');
-  await writeFile(receiptFile,JSON.stringify(receipt));await writeFile(deploymentFile,JSON.stringify((await committed()).deployment));
-  // The escape hatch is gone: the flag is now an unknown argument (usage, exit 2) and writes nothing.
-  const refused=await capture(['assemble','--receipt',receiptFile,'--deployment-inputs',deploymentFile,'--out',join(dir,'a.json'),'--acknowledge-per-run-sdk-options']);
-  assert.equal(refused.code,2);assert.match(refused.err,/Usage:/u);
-  const ok=await capture(['assemble','--receipt',receiptFile,'--deployment-inputs',deploymentFile,'--out',join(dir,'b.json')]);
-  assert.equal(ok.code,0,ok.err);assert.equal(JSON.parse(ok.out).policyRevision,policyRevision);
-  assert.equal(JSON.parse(ok.out).generalReadInstallationSha256,receipt.generalReadInstallation.measurementSha256);
-  assert.equal(JSON.parse(await readFile(join(dir,'b.json'),'utf8')).qualification.policyRevision,policyRevision);
-  const revision=await capture(['policy-revision']);assert.equal(revision.code,0);assert.equal(revision.out.trim(),policyRevision);
- }finally{await rm(dir,{recursive:true,force:true});}
+test('CLI refuses retired measurement and receipt commands',async()=>{
+ assert.equal(await main(['measurement-override']),2);
+ assert.equal(await main(['assemble','--receipt','retired.json','--out','unused.json']),2);
 });

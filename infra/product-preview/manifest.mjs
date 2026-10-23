@@ -88,7 +88,7 @@ const TASK_ROLES=Object.freeze(['control','temporalWorker','runner']);
 /** Exactly one form per setting: one value shared by all three task definitions (executionRoleArn / logGroupName), or
  * one DISTINCT value per task definition (executionRoleArns / logGroupNames: {control,temporalWorker,runner}). The
  * per-role form matches a foundation that scopes each execution role to its own material secret and log group. The
- * runner's execution role is then the one role control's task role may iam:PassRole when it runs the runner task. */
+ * Control may pass only the runner execution role and its direct Bedrock task role. */
 function perRole(b,single,map,pattern,forbidden){
  if((b[single]===undefined)===(b[map]===undefined))fail();
  const values=b[single]!==undefined?[b[single]]:TASK_ROLES.map(role=>record(b[map],TASK_ROLES)[role]);
@@ -96,15 +96,16 @@ function perRole(b,single,map,pattern,forbidden){
 }
 const roleValue=(b,single,map,role)=>b[single]??b[map][role];
 function validate(value){
- const b=record(value,['account','region','enabled','materialDelivery','runnerPoststart','clusterArn','imageUri','controlTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],
+ const b=record(value,['account','region','enabled','materialDelivery','runnerPoststart','clusterArn','imageUri','controlTaskRoleArn','runnerTaskRoleArn','runtimeUser','network','sizing','runnerSha256'],
   ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit','temporalTokenWriters']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
-    !ROLE_ARN.test(b.controlTaskRoleArn)||
+    !ROLE_ARN.test(b.controlTaskRoleArn)||!ROLE_ARN.test(b.runnerTaskRoleArn)||b.runnerTaskRoleArn===b.controlTaskRoleArn||
     b.runtimeUser!=='1000:1000'||!hex64.test(b.runnerSha256)||
     b.sourceCommit!==undefined&&!/^[a-f0-9]{40}$/u.test(b.sourceCommit))fail();
  perRole(b,'executionRoleArn','executionRoleArns',ROLE_ARN,b.controlTaskRoleArn);
+ if(TASK_ROLES.some(role=>roleValue(b,'executionRoleArn','executionRoleArns',role)===b.runnerTaskRoleArn))fail();
  perRole(b,'logGroupName','logGroupNames',LOG_GROUP);
  const targetGroup=/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u;
  if([b.controlTargetGroupArn,b.controlPrivateTargetGroupArn].some(arn=>arn!==undefined&&!targetGroup.test(arn))||
@@ -156,8 +157,8 @@ function task(stack,b,role,port){
  const size=b.sizing[role];
  return new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
-  runtimePlatform:{cpuArchitecture:'X86_64',operatingSystemFamily:'LINUX'},executionRoleArn:roleValue(b,'executionRoleArn','executionRoleArns',role),
-  ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
+  runtimePlatform:{cpuArchitecture:'ARM64',operatingSystemFamily:'LINUX'},executionRoleArn:roleValue(b,'executionRoleArn','executionRoleArns',role),
+  ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:role==='runner'?{taskRoleArn:b.runnerTaskRoleArn}:{}),
   volumes:[{name:'workspace'},{name:'tmp'},...(delivery||role==='runner'?[{name:'material'}]:[]),...(tokenWriter?[{name:'temporal-token'}]:[])],containerDefinitions:[...(init?[init]:[]),c]});
 }
 function service(stack,b,role,definition,securityGroupIds){

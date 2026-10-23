@@ -1,33 +1,14 @@
-/** Product-family activation (`features`) in render-material.mjs and the G3 profile plumbing in runtime-values.mjs, on THROWAWAY
- * material only (the shared fixture: pki.py PKI in a temp directory, synthetic passwords, bearer and Core secrets).
- *
- * The default render is compared byte for byte with the render module as committed at BASE (the reviewed current baseline), under the same
- * deterministic randomness, so no `features` (or an empty block) provably changes nothing.
- *
- * Reads secret delivery needs one runtime change that is proposed, not made here: apps/runtime/material-init-plan.mjs must list the
- * reads secret files in control's inventory (otherwise the render refuses "control inventory differs from the plan"). When the source
- * plan lacks it, this file loads the plan with exactly that proposed line (a load hook, no file is edited); once the real change lands
- * the hook is a no-op. Run with MERI_REVIEW_SOURCE_ROOT=<worktree root> and Python 3 with `cryptography`. */
+/** Product-family activation with native SDK deployment material. Uses the real
+ * material planner and throwaway PKI/secrets; no patched source or launch receipt.
+ * Run with MERI_REVIEW_SOURCE_ROOT=<worktree root> and Python cryptography. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import crypto,{createHash} from 'node:crypto';
-import {registerHooks,syncBuiltinESMExports} from 'node:module';
-import {execFileSync} from 'node:child_process';
-import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {syncBuiltinESMExports} from 'node:module';
+import {mkdtemp,writeFile,readFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {pathToFileURL,fileURLToPath} from 'node:url';
+import {fileURLToPath} from 'node:url';
 
-const PLAN_ANCHOR="  if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');\n";
-export const PROPOSED_PLAN_LINE="  if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');}\n";
-let planPatched=false;
-registerHooks({load(url,context,next){
- const result=next(url,context);
- if(!url.endsWith('/apps/runtime/material-init-plan.mjs'))return result;
- const source=String(result.source);if(source.includes('c.reads'))return result;
- if(!source.includes(PLAN_ANCHOR))throw Error('material-init-plan.mjs changed: update the reads proposal in render-features.test.mjs');
- planPatched=true;return {...result,source:source.replace(PLAN_ANCHOR,PLAN_ANCHOR+PROPOSED_PLAN_LINE)};
-}});
 const here=fileURLToPath(new URL('.',import.meta.url));
 const R=await import('./render-material.mjs');
 const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,capabilityProfileOf,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
@@ -36,12 +17,10 @@ const RV=await import('./runtime-values.mjs');
 const {validateConfiguration}=await import('../../../apps/runtime/config.mjs');
 const {compileProductMaterialPlan}=await import('../../../apps/runtime/material-init-plan.mjs');
 const {validateStaticProductDelivery}=await import('../../../apps/runtime/material-init.mjs');
-const {validateProductOwnerConfiguration}=await import('../../../apps/proxy/product/owner-entrypoint.mjs');
+const {generalReadInstallation}=await import('../../../apps/runtime/build/read-assets.mjs');
 const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
 const {canonicalSha256}=await import('../../../packages/contracts/validate.mjs');
 
-/** Reviewed main includes telemetry, the current owner budget and composite CA delivery; keep this oracle fixed, not HEAD. */
-export const BASE='d3cf54962a954daf4382df535a9c518aff791b0e';
 const NOW=Date.now();
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const fixture=createRenderFixture();test.after(()=>fixture.cleanup());
@@ -77,31 +56,24 @@ const bytesOf=rendered=>Object.fromEntries(ROLES.map(role=>[role,{config:rendere
 let defaults;
 async function baseline(){return defaults??=await render();}
 
-/** The render module exactly as committed at BASE, importing this tree's validators (absolute specifiers), or null without git. */
-async function baseModule(){
- let source;try{source=execFileSync('git',['-C',SOURCE_ROOT,'show',`${BASE}:infra/product-preview/first-chat/render-material.mjs`],{encoding:'utf8',maxBuffer:8*1024*1024,stdio:['ignore','pipe','ignore']});}catch{return null;}
- const dir=await mkdtemp(join(tmpdir(),'meri-render-base-')),file=join(dir,'render-material.base.mjs');
- await writeFile(file,source.replaceAll("'../../../",`'${pathToFileURL(SOURCE_ROOT).href.replace(/\/?$/u,'/')}`));
- try{return await import(pathToFileURL(file).href);}finally{await rm(dir,{recursive:true,force:true});}
-}
-
-test('no features (absent or {}) renders byte-identical material and summary to the reviewed render at BASE',async t=>{
- const base=await baseModule();if(!base){t.skip(`git object ${BASE} unavailable`);return;}
- const reviewed=await render(x=>x,{},base),current=await baseline(),empty=await render(withFeatures({}));
- for(const other of [current,empty]){
-  assert.deepEqual(bytesOf(other),bytesOf(reviewed));
-  assert.equal(JSON.stringify(other.summary),JSON.stringify(reviewed.summary));
- }
+test('absent and empty features render the same three native SDK service roles',async()=>{
+ const current=await baseline(),empty=await render(withFeatures({}));
+ assert.deepEqual(bytesOf(empty),bytesOf(current));
+ assert.deepEqual(empty.summary,current.summary);
+ assert.deepEqual(ROLES,['control','temporal-worker','temporal-issuer']);
  // The comparison is meaningful: the seeded render is stable and the fixture really renders the full material.
  assert.equal(JSON.stringify(bytesOf(await render())),JSON.stringify(bytesOf(current)));
  assert.equal(Object.hasOwn(current.summary,'features'),false);
- for(const role of ['control','model-owner','model-proxy'])assert.deepEqual(config(current,role).telemetry,{environment:'Preview'});
- assert.equal(config(current,'model-owner').limits.maxRequestMs,15000);
- assert.equal(config(current,'model-proxy').ownerPeer.max_exchange_ms,15000);
+ assert.deepEqual(config(current,'control').telemetry,{environment:'Preview'});
+ const candidate=config(current,'control').nativeCandidate;
+ assert.equal(Object.hasOwn(candidate,'model'),false);
+ assert.equal(candidate.grantIntents.length,1);
+ assert.equal(candidate.grantIntents[0].grantId,candidate.grantId);
+ assert.equal(Object.hasOwn(candidate,'modelCapabilityFile'),false);
  for(const key of ['userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads'])assert.equal(Object.hasOwn(config(current,'control'),key),false);
 });
 
-/** Control differs from the default by exactly `keys` (and the owner only by control's hash); the other roles are identical. */
+/** Control differs from the default by exactly `keys`; unrelated service material stays identical. */
 function assertOnly(rendered,keys,{worker={},extraControlFiles=[]}={}){
  const d=defaults,control=config(rendered,'control'),base=config(d,'control');
  const strip=(c,names)=>Object.fromEntries(Object.entries(c).filter(([k])=>!names.includes(k)));
@@ -111,15 +83,13 @@ function assertOnly(rendered,keys,{worker={},extraControlFiles=[]}={}){
  assert.deepEqual(strip(control,[...keys,'nativeCandidate','sourceEnabled']),strip(base,['nativeCandidate','sourceEnabled']));
  assert.deepEqual(strip(control.nativeCandidate,['approvedReads']),base.nativeCandidate);
  assert.deepEqual(config(rendered,'temporal-worker'),{...config(d,'temporal-worker'),...worker});
- for(const role of ['temporal-issuer','model-proxy'])assert.ok(rendered.roles[role].configBytes.equals(d.roles[role].configBytes),role);
- const owner=config(rendered,'model-owner');assert.deepEqual({...owner,controlConfigurationSha256:null},{...config(d,'model-owner'),controlConfigurationSha256:null});
- assert.equal(owner.controlConfigurationSha256,rendered.roles.control.configSha256);assert.equal(owner.sourceEnabled,false);
+ assert.ok(rendered.roles['temporal-issuer'].configBytes.equals(d.roles['temporal-issuer'].configBytes));
  const paths=r=>Object.keys(r.roles.control.expected.sha256ByPath);
  assert.deepEqual(paths(rendered),[...paths(d),...extraControlFiles]);
- for(const role of ['temporal-issuer','model-proxy',...(Object.keys(worker).length?[]:['temporal-worker'])])assert.deepEqual(rendered.roles[role].expected,d.roles[role].expected);
+ for(const role of ['temporal-issuer',...(Object.keys(worker).length?[]:['temporal-worker'])])assert.deepEqual(rendered.roles[role].expected,d.roles[role].expected);
  assert.deepEqual(Object.keys(rendered.roles['temporal-worker'].expected.sha256ByPath),Object.keys(d.roles['temporal-worker'].expected.sha256ByPath));
  // Every repository validator and plan ran inside the render; re-check the two the features touch, on the exact bytes.
- withPosixPaths(()=>{validateConfiguration(control,'control');validateProductOwnerConfiguration(owner);
+ withPosixPaths(()=>{validateConfiguration(control,'control');
   const plan=compileProductMaterialPlan({role:'control',configuration:control,runtimeUser:RUNTIME_USERS.control});
   assert.deepEqual(plan.requiredFiles.map(f=>f.path).sort(),paths(rendered).sort());
   assert.ok(plan.requiredFiles.every(f=>f.mode==='0600'&&f.path.startsWith('/run/meri/')));
@@ -140,7 +110,7 @@ test('G1 sourceEnabled renders into control and the temporal worker only (the ru
  assert.equal(JSON.stringify(bytesOf(await render(withFeatures({sourceEnabled:false})))),JSON.stringify(bytesOf(defaults)));
  const on=await render(withFeatures({sourceEnabled:true}));
  const control=assertOnly(on,['sourceEnabled'],{worker:{sourceEnabled:true}});
- assert.equal(control.sourceEnabled,true);assert.equal(config(on,'model-owner').sourceEnabled,false);
+ assert.equal(control.sourceEnabled,true);
  withPosixPaths(()=>validateConfiguration(config(on,'temporal-worker'),'temporal-worker'));
 });
 
@@ -157,7 +127,7 @@ test('artifacts, retention custody and download links render their keys; the lin
  const key=Buffer.from(links.roles.control.bundle.files.find(f=>f.path===PATHS.downloadLinkKey).base64,'base64');
  assert.ok(key.length>=32);assert.equal(links.roles.control.expected.sha256ByPath[PATHS.downloadLinkKey],sha(key));
  assertNotInJson(links,key.toString('utf8'));
- assert.equal(links.roles['model-owner'].bundle.files.some(f=>f.path===PATHS.downloadLinkKey),false);
+ for(const role of ROLES.filter(role=>role!=='control'))assert.equal(links.roles[role].bundle.files.some(f=>f.path===PATHS.downloadLinkKey),false);
  const again=await fixture.render(withFeatures({retention:{enabled:true},artifacts:ARTIFACTS,downloadLinks:{enabled:true}}));
  assert.notEqual(again.roles.control.expected.sha256ByPath[PATHS.downloadLinkKey],links.roles.control.expected.sha256ByPath[PATHS.downloadLinkKey]);
  assert.deepEqual(links.summary.features.generatedFiles[PATHS.downloadLinkKey]!==undefined,true);
@@ -170,9 +140,8 @@ function assertNotInJson(rendered,secret){
  for(const text of texts)for(const form of forms)assert.equal(text.includes(form),false);
 }
 
-test('reads: the Core service secrets come from the exact ARNs, travel only in control material (0600, digest-pinned), never in JSON',async t=>{
+test('reads: the Core service secrets come from the exact ARNs, travel only in control material (0600, digest-pinned), never in JSON',async()=>{
  await baseline();
- if(planPatched)t.diagnostic('material-init-plan.mjs loaded WITH the proposed reads inventory line (runtime change not in source yet)');
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS}),{featureSecrets:featureSecrets()});
  const control=assertOnly(rendered,['sourceEnabled','reads'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
  assert.deepEqual(control.reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,readModeServiceSecretFile:PATHS.readsReadModeServiceSecret,defaultCongress:119});
@@ -197,7 +166,6 @@ test('reads: the Core service secrets come from the exact ARNs, travel only in c
 
 test('reads.installation pins the in-image P2 measurement and ships its exact bytes to control only; reads.discovery needs capabilityPlatform; drift, absence and bad revocations refuse',async()=>{
  await baseline();
- const {generalReadInstallation}=await import(pathToFileURL(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)).href);
  const g=await generalReadInstallation({root:SOURCE_ROOT}),pin=runtime=>{runtime.generalReadInstallation={measurement:structuredClone(g.measurement),measurementSha256:g.measurementSha256};};
  const activeOperations=g.measurement.operations.map(row=>structuredClone(row.operation));
  const enabledInstallation=(rest={})=>({enabled:true,activeOperations,...rest});
@@ -228,7 +196,7 @@ test('reads.installation pins the in-image P2 measurement and ships its exact by
  for(const policy of [activePlatform.maximum,activePlatform.defaults,...Object.values(activePlatform.roleCeilings)])policy.activeReadOperations=structuredClone(profileActive);
  const profile=capabilityProfileOf(activePlatform);
  const on=await render(withFeatures({sourceEnabled:true,capabilityPlatform:activePlatform,reads:{...READS,installation:enabledInstallation({activeOperations:profileActive}),discovery:{enabled:true}}},
-  runtime=>{pinProfile(runtime);runtime.capabilityProfileSha256=profile.profileSha256;}),{featureSecrets:featureSecrets()});
+  pinProfile),{featureSecrets:featureSecrets()});
  assert.deepEqual(config(on,'control').reads.discovery,{enabled:true});
  assert.deepEqual(config(on,'control').reads.installation,{enabled:true,measurementSha256:profileMeasurement.measurementSha256,measurementFile:PATHS.readsInstallationMeasurement});
  assert.equal(on.summary.features.installation.revokedOperations,0);
@@ -238,7 +206,7 @@ test('reads.installation pins the in-image P2 measurement and ships its exact by
  const reordered=await render(withFeatures({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:reversed})}},pinProfile),{featureSecrets:featureSecrets()});
  assert.equal(reordered.summary.features.installation.measurementSha256,profileMeasurement.measurementSha256);
  await assert.rejects(render(withFeatures({sourceEnabled:true,capabilityPlatform:activePlatform,reads:{...READS,installation:enabledInstallation({activeOperations:reversed})}},
-  runtime=>{pinProfile(runtime);runtime.capabilityProfileSha256=profile.profileSha256;}),{featureSecrets:featureSecrets()}),
+  pinProfile),{featureSecrets:featureSecrets()}),
   {code:'RENDER_INPUT_REFUSED',message:/must equal the G3 capability profile/u});
  // The capability platform record and the measurement together stay inside the 65,536-byte control bundle (one SecretString).
  assert.ok(on.summary.roles.control.bundleBytes<=65536,`control bundle ${on.summary.roles.control.bundleBytes}`);
@@ -256,8 +224,8 @@ test('reads.installation pins the in-image P2 measurement and ships its exact by
  await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[{id:'not_in_catalog',version:'0.2.0'}]})}},pin,/not in the retrieval catalog/u);
  await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[{...activeOperations[0],extra:true}]})}},pin,/exact OperationRefs/u);
  await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:activeOperations.slice(1)})}},pin,/differs from runtime\.generalReadInstallation\.measurement/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()} ,capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},runtime=>{pin(runtime);runtime.capabilityProfileSha256=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM).profileSha256;},/must equal the G3 capability profile/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false}},capabilityPlatform:activePlatform},runtime=>{pinProfile(runtime);runtime.capabilityProfileSha256=profile.profileSha256;},/must equal the G3 capability profile/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()} ,capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},pin,/must equal the G3 capability profile/u);
+ await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false}},capabilityPlatform:activePlatform},pinProfile,/must equal the G3 capability profile/u);
  await refuse({sourceEnabled:true,reads:{...READS,discovery:{enabled:true}}},pin,/needs features\.capabilityPlatform/u);
  await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false,revokedOperations:revoked}}},pin,/revokes nothing/u);
  await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[]})}},pin,/1\.\.128/u);
@@ -276,19 +244,17 @@ test('reads.installation pins the in-image P2 measurement and ships its exact by
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);}),{featureSecrets:featureSecrets()}),{code:'RENDER_INPUT_REFUSED'});
 });
 
-test('capability platform renders verbatim only with the matching G3 measurement pin',async()=>{
+test('capability platform keeps product capabilities without an SDK launch pin',async()=>{
  await baseline();
  const profile=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
- assert.equal(profile.profileSha256,createConfiguredRunCapabilityPolicy({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}).profileSha256);
- const pinned=await render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},runtime=>{runtime.capabilityProfileSha256=profile.profileSha256;}));
- const control=assertOnly(pinned,['capabilityPlatform']);
+ const rendered=await render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}));
+ const control=assertOnly(rendered,['capabilityPlatform']);
  assert.deepEqual(control.capabilityPlatform,structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM));
- assert.equal(createConfiguredRunCapabilityPolicy(control).profileSha256,profile.profileSha256);assert.equal(pinned.summary.features.capabilityProfileSha256,profile.profileSha256);
- // Unmeasured profile, a pin for a different profile, or a pin without a profile: every run would refuse SDK_OPTIONS_REFUSED.
- await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM})),{code:'RENDER_INPUT_REFUSED',message:/G3/u});
- await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},r=>{r.capabilityProfileSha256='a'.repeat(64);})),{code:'RENDER_INPUT_REFUSED'});
- await assert.rejects(render(x=>{x.runtime.capabilityProfileSha256=profile.profileSha256;}),{code:'RENDER_INPUT_REFUSED',message:/G3/u});
- // A platform that enables nothing resolves to no profile, so the first-chat options (and pin) still hold.
+ assert.equal(createConfiguredRunCapabilityPolicy(control).profileSha256,profile.profileSha256);
+ assert.equal(rendered.summary.features.capabilityProfileSha256,profile.profileSha256);
+ assert.equal(Object.hasOwn(control.nativeCandidate.runtime,'capabilityProfileSha256'),false);
+ // Retired deployment fields fail at the boundary; they cannot restore measured SDK options.
+ await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},r=>{r.capabilityProfileSha256=profile.profileSha256;})),{code:'RENDER_INPUT_REFUSED'});
  assert.deepEqual(assertOnly(await render(withFeatures({capabilityPlatform:NO_CAPABILITY_PLATFORM})),['capabilityPlatform']).capabilityPlatform,structuredClone(NO_CAPABILITY_PLATFORM));
 });
 
@@ -358,43 +324,29 @@ test('CLI: --feature-secrets reads each secret file by path and the render write
  assert.equal(Buffer.from(bundle.files.find(f=>f.path===PATHS.readsServiceSecret).base64,'base64').toString(),SECRET.service);
 });
 
-test('runtime values: the capability profile reaches the measurement and the assembled pin; without the feature nothing changes',async()=>{
- const policy=JSON.parse(await readFile(join(here,'policy.json'),'utf8')),deployment=(await inputs()).deployment,policyRevision=RV.policyRevisionOf(policy);
- const moduleBytes=await readFile(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)),profile=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
- const featured={...structuredClone(deployment),features:{capabilityPlatform:structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM)}};
- // Default: identical arguments, inputs and override with or without an empty features block.
- assert.deepEqual(RV.measurementArguments({policy,deployment:{...deployment,features:{}},policyRevision}),RV.measurementArguments({policy,deployment,policyRevision}));
- assert.equal(Object.hasOwn(RV.measurementInputs({policy,deployment,policyRevision}),'capabilityProfileSha256'),false);
- // Featured: the exact profile travels as one argument and its digest is a receipt input.
- const args=RV.measurementArguments({policy,deployment:featured,policyRevision}),at=args.indexOf('--capability-profile');
- assert.ok(at>0);const sent=JSON.parse(Buffer.from(args[at+1],'base64url').toString('utf8'));
- assert.equal(canonicalSha256(sent),profile.profileSha256);assert.equal(RV.measurementInputs({policy,deployment:featured,policyRevision}).capabilityProfileSha256,profile.profileSha256);
- assert.throws(()=>RV.measurementOverrides({moduleBytes,policy,deployment:featured,policyRevision}),/use --shipped/u);
- const shipped=RV.measurementOverrides({moduleBytes,policy,deployment:featured,policyRevision,mode:'shipped'});
- assert.ok(Buffer.byteLength(JSON.stringify(shipped))<=8192);assert.match(shipped.containerOverrides[0].command[0],/'--capability-profile' '[A-Za-z0-9_-]+'/u);
- // G3: the measurement module projects the profile (capabilities/measured-options.mjs), so its source template differs from the
- // first-chat one and assembly no longer refuses on projection; only the receipt decides. An empty receipt refuses on its schema, and the
- // historical receipt refuses on its old model first. A fresh unprofiled measurement must assemble without the feature,
- // then refuse on capabilityProfileSha256 when the feature is enabled, never pinning unmeasured options.
- const {probeTemplateSha256,measureFirstChatLaunch}=await import(pathToFileURL(join(SOURCE_ROOT,RV.MEASUREMENT_MODULE)).href),{capabilityProfileSha256:_,...plain}=RV.measurementInputs({policy,deployment:featured,policyRevision});
- assert.notEqual(await probeTemplateSha256({...plain,capabilityProfile:profile.profile},{root:SOURCE_ROOT}),await probeTemplateSha256(plain,{root:SOURCE_ROOT}));
- const allocationFile=JSON.parse(await readFile(join(here,'allocation.json'),'utf8')),committedReceipt=JSON.parse(await readFile(join(here,'launch-measurement-receipt.json'),'utf8'));
- await assert.rejects(RV.runtimeValues({receipt:{},allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/receipt\.schema/u});
- await assert.rejects(RV.runtimeValues({receipt:committedReceipt,allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/receipt\.inputs\.model/u});
- const unprofiledReceipt=await measureFirstChatLaunch(plain,{root:SOURCE_ROOT});
- const unprofiled=await RV.runtimeValues({receipt:unprofiledReceipt,allocation:allocationFile,policy,deployment,requireLinux:false});
- assert.equal(Object.hasOwn(unprofiled.runtime,'capabilityProfileSha256'),false);
- await assert.rejects(RV.runtimeValues({receipt:unprofiledReceipt,allocation:allocationFile,policy,deployment:featured,requireLinux:false}),{code:'RUNTIME_VALUES_REFUSED',message:/receipt\.inputs\.capabilityProfileSha256/u});
- const assembled=RV.assembleRuntimeValues({receipt:{versions:{sdk:'0.3.295',cli:'2.1.295'},skills:{digest:'b'.repeat(64)},launchTemplate:{command:'/x',args:[],env:{}},executable:{sha256:'c'.repeat(64)},
-  sdkOptions:{sha256:'d'.repeat(64)},runner:{sha256:'e'.repeat(64)}},allocation:(await inputs()).runtime.allocation,policy,policyRevision,capabilityProfileSha256:profile.profileSha256});
- assert.equal(assembled.capabilityProfileSha256,profile.profileSha256);assert.equal(R.parseRuntimeValues(assembled).capabilityProfileSha256,profile.profileSha256);
- assert.throws(()=>R.parseRuntimeValues({...assembled,capabilityProfileSha256:'xyz'}),{code:'RENDER_INPUT_REFUSED'});
+test('runtime values select the reviewed read operations without coupling SDK options to deployment',async()=>{
+ const deployment=(await inputs()).deployment;
+ assert.equal(RV.activeReadOperationsOf(deployment),null);
+ assert.equal(RV.activeReadOperationsOf({...deployment,features:{capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}}),null);
+ const activeOperations=(await generalReadInstallation({root:SOURCE_ROOT})).measurement.operations.slice(0,2).map(row=>structuredClone(row.operation));
+ assert.equal(activeOperations.length,2);
+ const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
+ for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])policy.activeReadOperations=structuredClone(activeOperations);
+ const features={sourceEnabled:true,capabilityPlatform:platform,
+  reads:{...READS,installation:{enabled:true,activeOperations}}};
+ assert.deepEqual(RV.activeReadOperationsOf({...deployment,features}),activeOperations);
+ const inconsistent=structuredClone(features);inconsistent.reads.installation.activeOperations=[...activeOperations].reverse();
+ assert.throws(()=>RV.activeReadOperationsOf({...deployment,features:inconsistent}),{code:'RUNTIME_VALUES_REFUSED'});
+ const policy=JSON.parse(await readFile(join(here,'policy.json'),'utf8'));
+ assert.deepEqual(RV.parsePolicy(policy),policy);
+ assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,maxTurns:20}}),{code:'RUNTIME_VALUES_REFUSED'});
+ assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,model:'deployment-model'}}),{code:'RUNTIME_VALUES_REFUSED'});
 });
 
 test('Stage 3: feature material rides the existing control/material secret; templates carry digests, never the secret',async()=>{
  const {STAGE3_FAMILIES,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3}=await import('./stage3-bindings.mjs');
  const {parseLatestTsv}=await import('./stage3-deploy.mjs');
- const foundationOutputs=JSON.parse(await readFile(join(here,'foundation-outputs.json'),'utf8'));
+ await fixture.setup();const foundationOutputs=fixture.foundationOutputs;
  const features={sourceEnabled:true,retention:{enabled:true},artifacts:ARTIFACTS,downloadLinks:{enabled:true},reads:READS};
  const i=await inputs(withFeatures(features));
  const stage3=stage3RenderInput({deployment:i.deployment,foundationOutputs,revisions:nextRevisions(parseLatestTsv(Object.values(STAGE3_FAMILIES).map(f=>`${f}\tNone\n${f}\tNone`).join('\n')))});
@@ -402,7 +354,7 @@ test('Stage 3: feature material rides the existing control/material secret; temp
  const versions=Object.fromEntries(ROLES.map((role,n)=>[role,`${n+1}`.repeat(8)+'-aaaa-4bbb-8ccc-'+`${n+1}`.repeat(12)]));
  const p=i.deployment.privateEdge,bindings=buildStage3Bindings({deployment:i.deployment,foundationOutputs,
   privateEdgeOutputs:{ControlPrivateOrigin:p.controlPrivateOrigin,ControlPrivateTargetGroupArn:p.controlPrivateTargetGroupArn,PrivateAlbSecurityGroupId:p.privateAlbSecurityGroupId},
-  renderSummary:rendered.summary,renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),secretVersions:versions,imageScans:{proxy:'c'.repeat(64),nodeRuntime:'d'.repeat(64)},
+  renderSummary:rendered.summary,renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),secretVersions:versions,imageScans:{nodeRuntime:'d'.repeat(64)},
   liveAppTemplate:{Resources:{controlService:{Properties:{LoadBalancers:[{ContainerPort:8080,TargetGroupArn:foundationOutputs.ControlTargetGroupArn}]}}}}});
  const {bodies}=synthesizeStage3(bindings),key=rendered.roles.control.bundle.files.find(f=>f.path===PATHS.downloadLinkKey).base64;
  assert.equal(bindings.app.materialDelivery.control.valueFrom,`${i.deployment.secrets['control/material']}:::${versions.control}`);

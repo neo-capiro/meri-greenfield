@@ -131,7 +131,7 @@ function taskDefinition(b){
  return {Type:'AWS::ECS::TaskDefinition',Properties:{
   Family:S.family,RequiresCompatibilities:['FARGATE'],NetworkMode:'awsvpc',
   Cpu:String(S.sizing.cpu),Memory:String(S.sizing.memoryMiB),
-  RuntimePlatform:{CpuArchitecture:'X86_64',OperatingSystemFamily:'LINUX'},
+  RuntimePlatform:{CpuArchitecture:'ARM64',OperatingSystemFamily:'LINUX'},
   ExecutionRoleArn:b.roles.executionRoleArn,TaskRoleArn:b.roles.taskRoleArn,
   Volumes:[{Name:'material'},{Name:'tmp'}],ContainerDefinitions:[init,main]}};
 }

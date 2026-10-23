@@ -15,6 +15,7 @@ function binding(){return {
  logGroupName:'/meri-greenfield/product-preview/runtime',
  executionRoleArn:'arn:aws:iam::967807252336:role/MeriGreenfield-ProductPreview-Execution',
  controlTaskRoleArn:'arn:aws:iam::967807252336:role/MeriGreenfield-ProductPreview-Control',
+ runnerTaskRoleArn:'arn:aws:iam::967807252336:role/MeriPreview-runner-task',
  runtimeUser:'1000:1000',runnerSha256:b,
  network:{privateSubnetIds:['subnet-0920665f91c905f01','subnet-0e38bd390f8961fef','subnet-06db79cd21239de19'],
   controlSecurityGroupIds:['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e'],
@@ -54,7 +55,7 @@ test('offline source has only two stopped services and three immutable role task
  }
  assert.equal(byFamily(tasks,'control').TaskRoleArn,input.controlTaskRoleArn);
  assert.equal(byFamily(tasks,'temporal-worker').TaskRoleArn,undefined);
- assert.equal(byFamily(tasks,'runner').TaskRoleArn,undefined);
+ assert.equal(byFamily(tasks,'runner').TaskRoleArn,input.runnerTaskRoleArn);
  assert.equal(byFamily(tasks,'runner').ContainerDefinitions[0].Name,'worker','matches nativeCandidate taskRequest containerName');
  assert.deepEqual(byFamily(tasks,'runner').ContainerDefinitions[0].Environment,[{Name:'MERI_RUNNER_SHA256',Value:b},{Name:'MERI_PRODUCT_PREVIEW_REQUIRED',Value:'1'},
   {Name:'MERI_POSTSTART_CONTROL_ORIGIN',Value:input.runnerPoststart.controlOrigin},
@@ -193,6 +194,7 @@ test('missing inventory, foreign refs, runnable state and claimed material deliv
   x=>{x.logGroupName='not-an-absolute-log-group';},
   x=>{x.executionRoleArn='arn:aws:iam::000000000000:role/foreign';},
   x=>{x.controlTaskRoleArn='arn:aws:iam::000000000000:role/foreign';},
+  x=>{delete x.runnerTaskRoleArn;},x=>{x.runnerTaskRoleArn=x.controlTaskRoleArn;},x=>{x.runnerTaskRoleArn=x.executionRoleArn;},
   x=>{x.enabled=true;},
   x=>{x.materialDelivery='unmounted';},
   x=>{x.materialDelivery='ready';},

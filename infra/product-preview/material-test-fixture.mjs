@@ -9,7 +9,6 @@ export const runtimeUser='1000:1000',materialRoot='/run/meri/';
 export function controlMaterialConfiguration(){
  const c=structuredClone(candidateFixture().configuration),n=c.nativeCandidate,i=n.preparationIntent;
  for(const key of ['workspace','configParentDirectory','secureStorageDirectory'])i[key]=normalize(i[key]);
- i.launchTemplate.command=normalize(i.launchTemplate.command);i.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=i.secureStorageDirectory;
  c.native.capabilityFile=materialRoot+'control-capability';c.database.connectionFile=materialRoot+'database-url';
  c.privateHttp={hostname:'0.0.0.0',port:8082,frontendOrigin:c.native.origin};
  n.taskOrigin=c.native.origin;n.taskHttp.frontendOrigin=c.native.origin;
@@ -17,7 +16,7 @@ export function controlMaterialConfiguration(){
  c.taskRouter={enabled:true,runnerCaFile:materialRoot+'runner-ca',zone:'tasks.meri.internal',vpcId:'vpc-1234abcd'};
  c.temporal.tls={caFile:materialRoot+'temporal-ca',certFile:materialRoot+'temporal-cert',keyFile:materialRoot+'temporal-key'};
  n.identity.credentialFile=materialRoot+'identity-capability';n.taskCapabilityFile=materialRoot+'task-capability';
- n.controlCapabilityFile=c.native.capabilityFile;n.proxyCredentialFile=materialRoot+'proxy-capability';return c;
+ n.controlCapabilityFile=c.native.capabilityFile;return c;
 }
 export function workerMaterialConfiguration(){
  const c=controlMaterialConfiguration();delete c.database;delete c.sessions;delete c.versions;delete c.nativeCandidate;delete c.privateHttp;delete c.taskRouter;
