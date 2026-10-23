@@ -4,7 +4,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {remoteOriginal,exactOriginal} from './remote-task-boundary.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 import {createRunReconciler} from '../../control/conversations/run-reconciler.mjs';
 // A launch that has not reached STARTED is over once its run reached one of these (the runner published its own outcome).
 const terminalRuns=new Set(['completed','failed','cancelled']);

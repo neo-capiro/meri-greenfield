@@ -1,7 +1,7 @@
 /** Closed explicit configuration. Parsing never opens a network connection. */
 import {readFile,open} from 'node:fs/promises';
 import {constants} from 'node:fs';
-import {isAbsolute} from 'node:path';
+import {isAbsolute,sep} from 'node:path';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
@@ -68,7 +68,7 @@ export function validateConfiguration(raw,role){
  // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
  // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask','telemetry']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database','native','routines']:role==='temporal-worker'?['objectiveGeneration']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace'])],role==='conversation-runner'?['bootstrap','remoteTask','telemetry']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database','native','routines']:role==='temporal-worker'?['objectiveGeneration']:[]);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
  // `routines` is also the schedule worker's firing declaration (lane B2/B3); `routines.task` is control's routine task identity.
@@ -90,8 +90,7 @@ export function validateConfiguration(raw,role){
  // G1: source connectivity is an explicit boolean (decided: 10-15 #5, D015 #4a). The schedule worker stays source-disabled
  // (schedule-service-configuration.mjs); every source owner keeps its own enablement, authority and fail-closed checks.
  requireValue(c.version===1&&c.profile==='isolated-preview'&&typeof c.sourceEnabled==='boolean'&&(role!=='schedule-worker'||c.sourceEnabled===false));
- if(c.captureOwnsClose!==undefined)requireValue(typeof c.captureOwnsClose==='boolean','RUNNER_CAPTURE_CONFIGURATION');
- if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.captureOwnsClose===true&&c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}
+ if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}
  own(c.limits,['startupMs','shutdownMs','requestMs','requestBytes']);requireValue(integer(c.limits.startupMs,100,30000)&&integer(c.limits.shutdownMs,100,30000)&&integer(c.limits.requestMs,10,30000)&&integer(c.limits.requestBytes,1,131072));
  if(role!=='schedule-worker'||c.native!==undefined){own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],role==='temporal-worker'?['preparedKickoff']:[]);
  // The poller admits only the prepared original kickoff (stop-owned cleanup); the legacy execution/start mode has no original stop owner (audit L5).
@@ -159,13 +158,13 @@ export function validateConfiguration(raw,role){
   const r=own(c.remoteTask,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads','tls','intents']),o=remoteOriginal(r.original),i=compileNativePreparationIntent(r.preparationIntent);
   if(r.approvedReads!==undefined)assertNativeReadConfiguration(r.approvedReads);
   if(r.intents!==undefined){own(r.intents,['enabled']);requireValue(typeof r.intents.enabled==='boolean','INTENTS_CONFIGURATION');}
-  requireValue(role==='conversation-runner'&&c.captureOwnsClose===true&&hash(o.binding)===hash(c.binding)&&hash(o.versions)===hash(c.versions)&&i.workspace===c.workspace&&o.versions.imageDigest==='sha256:'+i.imageSha256&&typeof r.controlCapabilitySha256==='string'&&/^[a-f0-9]{64}$/u.test(r.controlCapabilitySha256)&&typeof r.taskArn==='string'&&/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[a-f0-9]{32}$/u.test(r.taskArn)&&r.processOrigin===endpoint(r.processOrigin),'REMOTE_RUNNER_CONFIGURATION');
+  requireValue(role==='conversation-runner'&&hash(o.binding)===hash(c.binding)&&hash(o.versions)===hash(c.versions)&&i.workspace===c.workspace&&o.versions.imageDigest==='sha256:'+i.imageSha256&&typeof r.controlCapabilitySha256==='string'&&/^[a-f0-9]{64}$/u.test(r.controlCapabilitySha256)&&typeof r.taskArn==='string'&&/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[a-f0-9]{32}$/u.test(r.taskArn)&&r.processOrigin===endpoint(r.processOrigin),'REMOTE_RUNNER_CONFIGURATION');
   own(r.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(r.http.hostname)&&integer(r.http.port,0,65535)&&r.http.frontendOrigin===endpoint(r.http.frontendOrigin),'REMOTE_RUNNER_CONFIGURATION');
   if(r.tls!==undefined){own(r.tls,['zone','caFile','certFile','keyFile','candidateFile','metadataFile']);requireValue(taskZone(r.tls.zone)&&r.http.hostname==='0.0.0.0'&&r.http.port===8080,'RUNNER_TLS_CONFIGURATION');for(const name of ['caFile','certFile','keyFile','candidateFile','metadataFile'])file(r.tls[name]);}
   if(r.preparedKickoff!==undefined)requireValue(r.preparedKickoff===true,'REMOTE_RUNNER_CONFIGURATION');
   if(c.bootstrap)requireValue(c.bootstrap.expiresAtMs===o.expiresAtMs,'REMOTE_RUNNER_CONFIGURATION');
  }
- if(role==='conversation-runner'){validateShape('RunBinding',c.binding);validateShape('RuntimeVersions',c.versions);file(c.workspace);requireValue(c.workspace.endsWith('/'+c.binding.conversationId));}
+ if(role==='conversation-runner'){validateShape('RunBinding',c.binding);validateShape('RuntimeVersions',c.versions);file(c.workspace);requireValue(c.workspace.endsWith('/'+c.binding.conversationId)||c.workspace.endsWith(sep+c.binding.conversationId));}
  return Object.freeze(c);
 }
 export async function loadConfiguration(path,role){file(path);const bytes=await readFile(path);requireValue(bytes.length<=32768);let raw;try{raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw fault('RUNTIME_CONFIGURATION');}return validateConfiguration(raw,role);}

@@ -18,7 +18,6 @@ import {inspect} from 'node:util';
 import {getEventListeners} from 'node:events';
 import {createRunnerTlsCertificateFixture} from '../native-authority/test/runner-tls-fixture.mjs';
 import {withRunnerDiagnostics, markRunnerStage, captureRunnerFailure, PINNED_NATIVE_FAILURE_CODES, classifyPinnedStatus} from '../runner-runtime-diagnostics.mjs';
-import {createRemoteSdkProcessClient} from '../native-authority/remote-task-client.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
 import {isAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
@@ -53,7 +52,7 @@ const {createPinnedNativeFetch, classifyPinnedRequestError} = await import('../p
 
 const SECRET = {credential: 'SECRETCREDENTIAL0123', prompt: 'SECRET-PROMPT-7f3a', body: 'SECRET-BODY-91c2', header: 'SECRET-HEADER-55e1',
   status: 'SECRET-STATUS-TEXT', cn: 'ignored-cn', ca: 'synthetic-test-ca'};
-const descriptor = {command: '/synthetic/node', args: [], cwd: '/synthetic/workspace', env: {}};
+const probe = {binding};
 
 // --- servers ---------------------------------------------------------------------------------------------------------
 const open = new Set();
@@ -64,17 +63,15 @@ const secretReply = (res, status) => {res.writeHead(status, SECRET.status, {'con
 function control(req, res) {
   const chunks = []; req.on('data', chunk => chunks.push(chunk));
   req.on('end', () => {
-    const text = Buffer.concat(chunks).toString('utf8'), operation = req.url.split('/').at(-1);
+    const text = Buffer.concat(chunks).toString('utf8');
     seen.push({method: req.method, url: req.url, headers: {...req.headers}, text});
-    if (req.url.startsWith('/v1/runner/')) return runner(req, res, text);
+    if (req.url === '/v1/runner/publish') return runner(req, res, text);
     const {original} = JSON.parse(text);
-    if (operation === 'prepare') return json(res, 200, {original, descriptorSha256: hash(descriptor)});
-    if (operation === 'stop') return json(res, 200, {original, receipt: {physicalStopProven: false, notAllocated: true}});
     onRequest(res);
-    const ok = () => json(res, 200, {original, descriptorSha256: hash(descriptor)});
+    const ok = () => json(res, 200, {original, probeSha256: hash(probe)});
     switch (mode) {
       case 'ok': return ok();
-      case 'ok-chunked': res.writeHead(200, {'content-type': 'application/json'}); res.write('{"original":'); res.end(JSON.stringify(original ?? null) + ',"descriptorSha256":"' + hash(descriptor) + '"}'); return;
+      case 'ok-chunked': res.writeHead(200, {'content-type': 'application/json'}); res.write('{"original":'); res.end(JSON.stringify(original ?? null) + ',"probeSha256":"' + hash(probe) + '"}'); return;
       case 'ok-delayed': realSetTimeout(ok, 5); return;
       case 's403': return secretReply(res, 403);
       case 's400': return secretReply(res, 400);
@@ -154,14 +151,14 @@ function assertSanitized(error, code) {
 }
 const request = (signal, extra = {}) => ({method: 'POST', redirect: 'error', headers: {authorization: 'Bearer ' + SECRET.credential, 'content-type': 'application/json'},
   body: JSON.stringify({original: {prompt: SECRET.prompt}}), ...(signal ? {signal} : {}), ...extra});
-const startUrl = base => base + '/v1/native-task/start';
+const admittedUrl = base => base + '/v1/runner/native/admitted';
 const fetchFor = (base = origin, options = {}) => createPinnedNativeFetch({origin: base, caFile, caSha256, ...options});
 async function outcome(promise) {return promise.then(value => ({value}), error => ({error}));}
 async function expectClass(selected, code, {base = origin, options, signal} = {}) {
   mode = selected; seen = [];
   const baseline = await snapshot(), controller = signal ? null : new AbortController(), used = signal ?? controller.signal;
   const fetchImpl = await fetchFor(base, options);
-  const {value, error} = await outcome(fetchImpl(startUrl(base), request(used)));
+  const {value, error} = await outcome(fetchImpl(admittedUrl(base), request(used)));
   assert.equal(value, undefined, `${selected} must not resolve`);
   assertSanitized(error, code);
   assert.equal(getEventListeners(used, 'abort').length, 0, 'abort listener removed');
@@ -209,14 +206,14 @@ test(`${label} 200 resolves a fully buffered Response and sends exactly the pinn
   for (const selected of ['ok', 'ok-chunked']) {
     mode = selected; seen = [];
     const baseline = await snapshot(), controller = new AbortController(), fetchImpl = await fetchFor();
-    const response = await fetchImpl(startUrl(origin), request(controller.signal));
+    const response = await fetchImpl(admittedUrl(origin), request(controller.signal));
     assert.ok(response instanceof Response); assert.equal(response.status, 200);
-    assert.equal(JSON.parse(await response.text()).descriptorSha256, hash(descriptor));
+    assert.equal(JSON.parse(await response.text()).probeSha256, hash(probe));
     assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
     controller.abort(); // after settlement: inert
     assert.equal(seen.length, 1);
     const [{method, url, headers}] = seen;
-    assert.equal(method, 'POST'); assert.equal(url, '/v1/native-task/start');
+    assert.equal(method, 'POST'); assert.equal(url, '/v1/runner/native/admitted');
     assert.deepEqual(Object.keys(headers).sort(), ['accept', 'accept-encoding', 'authorization', 'connection', 'content-length', 'content-type', 'host']);
     assert.equal(headers.connection, 'close'); assert.equal(headers['accept-encoding'], 'identity');
     await quiesce(baseline);
@@ -226,7 +223,7 @@ for (const selected of ['s403', 's400', 's404', 's429', 's503', 's500', 's502'])
   test(`${label} a ${selected.slice(1)} answer resolves with only its status, content type and bounded body`, async () => {
     mode = selected; seen = [];
     const baseline = await snapshot(), controller = new AbortController(), fetchImpl = await fetchFor();
-    const response = await fetchImpl(startUrl(origin), request(controller.signal));
+    const response = await fetchImpl(admittedUrl(origin), request(controller.signal));
     assert.ok(response instanceof Response); assert.equal(response.status, Number(selected.slice(1)));
     assert.equal(response.statusText, '', 'the status text never escapes');
     assert.deepEqual([...response.headers.keys()], ['content-type'], 'no other header escapes');
@@ -273,7 +270,7 @@ for (const [selected, options] of [['truncated-length'], ['truncated-chunked'], 
 // --- cancellation, deadline, races --------------------------------------------------------------------------------------
 test(`${label} an already aborted signal is ABORTED and opens no connection`, async () => {
   const baseline = await snapshot(), fetchImpl = await fetchFor(); seen = [];
-  const {error} = await outcome(fetchImpl(startUrl(origin), request(AbortSignal.abort())));
+  const {error} = await outcome(fetchImpl(admittedUrl(origin), request(AbortSignal.abort())));
   assertSanitized(error, 'PINNED_NATIVE_ABORTED'); assert.equal(seen.length, 0); await quiesce(baseline);
 });
 test(`${label} outer cancellation while control is silent is ABORTED and closes the socket`, async () => {
@@ -281,7 +278,7 @@ test(`${label} outer cancellation while control is silent is ABORTED and closes 
   const baseline = await snapshot(), controller = new AbortController(), fetchImpl = await fetchFor();
   onRequest = () => realSetTimeout(() => controller.abort(), 10);
   try {
-    const {error} = await outcome(fetchImpl(startUrl(origin), request(controller.signal)));
+    const {error} = await outcome(fetchImpl(admittedUrl(origin), request(controller.signal)));
     assertSanitized(error, 'PINNED_NATIVE_ABORTED'); assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
   } finally {onRequest = () => {};}
   await quiesce(baseline);
@@ -290,14 +287,14 @@ test(`${label} cancellation after a 200 head, mid-body, is ABORTED (not RESPONSE
   mode = 'head-then-hang'; seen = [];
   const baseline = await snapshot(), controller = new AbortController(), fetchImpl = await fetchFor();
   onRequest = () => realSetTimeout(() => controller.abort(), 30);
-  try {assertSanitized((await outcome(fetchImpl(startUrl(origin), request(controller.signal)))).error, 'PINNED_NATIVE_ABORTED');} finally {onRequest = () => {};}
+  try {assertSanitized((await outcome(fetchImpl(admittedUrl(origin), request(controller.signal)))).error, 'PINNED_NATIVE_ABORTED');} finally {onRequest = () => {};}
   await quiesce(baseline);
 });
 test(`${label} the adapter's own 30 s ceiling is TIMEOUT and closes the socket`, async t => {
   mode = 'hang'; seen = [];
   const baseline = await snapshot(), fetchImpl = await fetchFor();
   t.mock.timers.enable({apis: ['setTimeout']});
-  const pending = outcome(fetchImpl(startUrl(origin), request()));
+  const pending = outcome(fetchImpl(admittedUrl(origin), request()));
   const until = Date.now() + 5000; while (!seen.length) {if (Date.now() > until) assert.fail('request never arrived'); await delay(5);}
   t.mock.timers.tick(29999); await delay(20); assert.equal(open.size, 1, 'still pending before the ceiling');
   t.mock.timers.tick(1);
@@ -311,7 +308,7 @@ test(`${label} a late response after abort neither resolves nor raises`, async (
   onRequest = () => realSetTimeout(() => controller.abort(), 20);
   let settled = 0;
   try {
-    const pending = fetchImpl(startUrl(origin), request(controller.signal)).finally(() => {settled++;});
+    const pending = fetchImpl(admittedUrl(origin), request(controller.signal)).finally(() => {settled++;});
     assertSanitized((await outcome(pending)).error, 'PINNED_NATIVE_ABORTED');
     await delay(250); // the server's late write lands on a destroyed socket
     assert.equal(settled, 1);
@@ -326,9 +323,9 @@ test(`${label} abort racing the response settles exactly once as a full 200 or A
     onRequest = () => {if (wait === 0) queueMicrotask(() => controller.abort()); else if (wait === 1) setImmediate(() => controller.abort()); else realSetTimeout(() => controller.abort(), wait - 1);};
     let settlements = 0;
     try {
-      const result = await outcome(fetchImpl(startUrl(origin), request(controller.signal)).finally(() => {settlements++;}));
+      const result = await outcome(fetchImpl(admittedUrl(origin), request(controller.signal)).finally(() => {settlements++;}));
       if (result.error) {assertSanitized(result.error, 'PINNED_NATIVE_ABORTED'); outcomes.set('ABORTED', (outcomes.get('ABORTED') ?? 0) + 1);}
-      else {assert.equal(result.value.status, 200); assert.equal(JSON.parse(await result.value.text()).descriptorSha256, hash(descriptor)); outcomes.set('OK', (outcomes.get('OK') ?? 0) + 1);}
+      else {assert.equal(result.value.status, 200); assert.equal(JSON.parse(await result.value.text()).probeSha256, hash(probe)); outcomes.set('OK', (outcomes.get('OK') ?? 0) + 1);}
       assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
     } finally {onRequest = () => {};}
     await delay(10); assert.equal(settlements, 1);
@@ -341,17 +338,17 @@ test(`${label} abort racing the response settles exactly once as a full 200 or A
 test(`${label} local refusals are REFUSED and send nothing`, async () => {
   const fetchImpl = await fetchFor(); seen = []; const baseline = await snapshot();
   const bad = [
-    [origin + '/v1/native-task/start?x=1', request()], [strangerOrigin + '/v1/native-task/start', request()], [origin + '/v2/native-task/start', request()],
-    [startUrl(origin), request(undefined, {method: 'GET'})], [startUrl(origin), request(undefined, {redirect: 'follow'})],
-    [startUrl(origin), request(undefined, {body: Buffer.from('{}')})], [startUrl(origin), request(undefined, {body: ''})],
-    [startUrl(origin), request(undefined, {headers: {authorization: 'Bearer ' + SECRET.credential, 'content-type': 'application/json', 'x-extra': '1'}})],
-    [startUrl(origin), request(undefined, {headers: {authorization: 'Basic abc', 'content-type': 'application/json'}})],
-    [startUrl(origin), request(undefined, {headers: {authorization: 'Bearer ' + SECRET.credential, 'content-type': 'text/plain'}})],
+    [origin + '/v1/runner/native/admitted?x=1', request()], [strangerOrigin + '/v1/runner/native/admitted', request()], [origin + '/v2/runner/native/admitted', request()],
+    [admittedUrl(origin), request(undefined, {method: 'GET'})], [admittedUrl(origin), request(undefined, {redirect: 'follow'})],
+    [admittedUrl(origin), request(undefined, {body: Buffer.from('{}')})], [admittedUrl(origin), request(undefined, {body: ''})],
+    [admittedUrl(origin), request(undefined, {headers: {authorization: 'Bearer ' + SECRET.credential, 'content-type': 'application/json', 'x-extra': '1'}})],
+    [admittedUrl(origin), request(undefined, {headers: {authorization: 'Basic abc', 'content-type': 'application/json'}})],
+    [admittedUrl(origin), request(undefined, {headers: {authorization: 'Bearer ' + SECRET.credential, 'content-type': 'text/plain'}})],
     ['not a url', request()],
   ];
   for (const [address, init] of bad) assertSanitized((await outcome(fetchImpl(address, init))).error, 'PINNED_NATIVE_REFUSED');
   const small = await fetchFor(origin, {maxRequestBytes: 8});
-  assertSanitized((await outcome(small(startUrl(origin), request()))).error, 'PINNED_NATIVE_REFUSED');
+  assertSanitized((await outcome(small(admittedUrl(origin), request()))).error, 'PINNED_NATIVE_REFUSED');
   assert.equal(seen.length, 0); await quiesce(baseline);
 });
 test(`${label} adapter configuration refusals are CONFIGURATION`, async () => {
@@ -382,45 +379,6 @@ test(`${label} a CA file owned by another uid is refused even at mode 0600`, {sk
 });
 
 // --- through the product client and runner diagnostics -------------------------------------------------------------------
-async function driveStart(selected, {base = origin, startupBudget} = {}) {
-  mode = selected; seen = [];
-  const baseline = await snapshot(), executionKey = hash(binding);
-  const original = {binding, versions, executionKey, executionId: executionKey, planSha256: hash(descriptor), expiresAtMs: Date.now() + 120000};
-  const fetchImpl = await fetchFor(base);
-  const client = createRemoteSdkProcessClient({original, origin: base, credential: SECRET.credential, fetchImpl, ...(startupBudget ? {startupBudget: startupBudget(original)} : {})});
-  const lines = [], raw = [];
-  const failure = await withRunnerDiagnostics(async () => {markRunnerStage('activity-stream'); client.spawnClaudeCodeProcess(descriptor); await client.startPreparedProcess();},
-    {write: line => {raw.push(line); lines.push(withoutDetail(line));}}).then(() => null, error => error);
-  await client.close().catch(() => {});
-  await quiesce(baseline);
-  return {lines, raw, failure};
-}
-for (const [selected, code] of [['s403', 'PINNED_NATIVE_STATUS_403'], ['s400', 'PINNED_NATIVE_STATUS_4XX'], ['s503', 'PINNED_NATIVE_STATUS_503'], ['s502', 'PINNED_NATIVE_STATUS_5XX']]) {
-  test(`${label} native-start ${selected} is REMOTE_TASK_REFUSED with only the fixed class ${code} as cause`, async () => {
-    const {lines, raw, failure} = await driveStart(selected);
-    assert.equal(failure.code, 'REMOTE_TASK_REFUSED');
-    assertSanitized(failure.cause, code);
-    assert.deepEqual(lines, ['RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=REMOTE_TASK_REFUSED class=ERROR exit=none signal=none\n', 'RUNNER_RUNTIME_FAILED stage=activity-stream code=REMOTE_TASK_REFUSED\n']);
-    assert.match(raw[0], new RegExp(` cause=${code} `, 'u'));
-  });
-}
-for (const [selected, code] of [['reset-before-headers', 'PINNED_NATIVE_SOCKET'], ['truncated-length', 'PINNED_NATIVE_RESPONSE']]) {
-  test(`${label} native-start ${selected} prints only the fixed class ${code}`, async () => {
-    const {lines, failure} = await driveStart(selected);
-    assertSanitized(failure, code);
-    assert.deepEqual(lines, [`RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=${code} class=ERROR exit=none signal=none\n`, `RUNNER_RUNTIME_FAILED stage=activity-stream code=${code}\n`]);
-  });
-}
-test(`${label} native-start succeeds with no diagnostic line`, async () => {
-  const {lines, failure} = await driveStart('ok'); assert.equal(failure, null); assert.deepEqual(lines, []);
-});
-test(`${label} the client's native-start lifetime deadline wins as REMOTE_TASK_REFUSED and the pinned socket is closed`, async () => {
-  const budget = original => ({nativePrepare: {maxMs: 23000, expiresAtMs: original.expiresAtMs - 1000}, nativeStart: {maxMs: 50, expiresAtMs: original.expiresAtMs - 1000}});
-  const {lines, failure} = await driveStart('hang', {startupBudget: budget});
-  assert.equal(failure.code, 'REMOTE_TASK_REFUSED');
-  assert.equal(lines[0], 'RUNNER_FIRST_FAILURE origin=native-start stage=activity-stream code=REMOTE_TASK_REFUSED class=ERROR exit=none signal=none\n');
-});
-
 // --- run-owner replay through this transport (native-client.mjs) -----------------------------------------------------
 async function publishThroughPinned(answers) {
   mode = 'ok'; seen = []; runnerAnswers = [...answers]; runnerStore = createPostgresConversationStore(storeFixture());

@@ -17,3 +17,20 @@ test('an unacknowledged COMMIT is uncertainty with an UNKNOWN outcome and evicts
  await assert.rejects(transact(p,async()=>1,{uncertain:'X_COMMIT_UNKNOWN'}),e=>productFailure(e)?.code==='X_COMMIT_UNKNOWN'&&productFailure(e).outcome==='UNKNOWN');
  assert.deepEqual(p.released,['evicted']);assert.equal(p.log.includes('ROLLBACK'),false);
 });
+test('a forged domain code is not an owned refusal',async()=>{
+ const p=pool();await assert.rejects(transact(p,async()=>{throw Object.assign(Error('forged'),{code:'SDK_SESSION_REGISTRATION_CONFLICT',status:409});}),e=>productFailure(e)?.code==='STORE_UNAVAILABLE');
+ assert.equal(p.log.at(-1),'ROLLBACK');assert.deepEqual(p.released,['reused']);
+});
+test('failed rollback takes precedence over a domain refusal or an unexpected callback failure',async()=>{
+ for(const error of [new ProductError('SDK_SESSION_REGISTRATION_CONFLICT'),Error('raw driver text')]){
+  const p=pool(sql=>sql==='ROLLBACK');await assert.rejects(transact(p,async()=>{throw error;}),e=>productFailure(e)?.code==='STORE_COMMIT_UNKNOWN'&&productFailure(e).outcome==='UNKNOWN');
+  assert.deepEqual(p.released,['evicted']);assert.equal(p.log.includes('COMMIT'),false);
+ }
+});
+test('connection release failure takes precedence over a rolled-back domain refusal and an acknowledged success',async()=>{
+ for(const refused of [true,false]){
+  const p=pool(),connect=p.connect;p.connect=async()=>{const c=await connect();return {...c,release(error){c.release(error);throw Error('release unknown');}};};
+  await assert.rejects(transact(p,async()=>{if(refused)throw new ProductError('SDK_SESSION_REGISTRATION_CONFLICT');return 'completed';}),e=>productFailure(e)?.code==='STORE_COMMIT_UNKNOWN'&&productFailure(e).outcome==='UNKNOWN');
+  assert.equal(p.log.at(-1),refused?'ROLLBACK':'COMMIT');
+ }
+});

@@ -1,41 +1,28 @@
-/** The SDK subprocess env replaces process.env: its one extra TLS anchor is the pinned runner CA runtime fact, never a free path. */
-import test from 'node:test';
-import assert from 'node:assert/strict';
+/** Public pinned SDK options are built directly from trusted run configuration. */
+import test from 'node:test';import assert from 'node:assert/strict';
 import {buildConversationOptions} from '../options.mjs';
-import {projectNativeSdkOptions} from '../../../runtime/native-authority/sdk-option-projection.mjs';
-import {RUNNER_SDK_CA_FILE} from '../../../runtime/native-authority/preparation-intent.mjs';
-import {PRODUCT_PROXY_MODEL_ALIAS} from '../../../proxy/product/startup-config.mjs';
 import {binding,versions} from '../../../control/conversations/test/application-fixture.mjs';
-const runtime=extra=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,proxyUrl:'https://proxy.meri.internal:8443',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024,...extra});
-const directories={sdkConfigDirectory:'/task/config/sdk-run',sdkSecureStorageDirectory:'/task/secure'};
-test('the pinned runner CA reaches the SDK subprocess env exactly once and is covered by the SDK options digest',()=>{
- const o=buildConversationOptions(runtime({...directories,sdkCaFile:RUNNER_SDK_CA_FILE}),new AbortController());
- assert.equal(o.env.NODE_EXTRA_CA_CERTS,'/run/meri/poststart/bootstrap/control-ca.pem');
- assert.equal(o.env.ANTHROPIC_BASE_URL,'https://proxy.meri.internal:8443/');
- assert.ok(Object.values(o.env).every(v=>typeof v==='string'));
- const without=buildConversationOptions(runtime(directories),new AbortController());
- assert.ok(!Object.hasOwn(without.env,'NODE_EXTRA_CA_CERTS'));
- assert.equal(projectNativeSdkOptions(o).env.NODE_EXTRA_CA_CERTS,RUNNER_SDK_CA_FILE);
- assert.notDeepEqual(projectNativeSdkOptions(o),projectNativeSdkOptions(without));
+import {BEDROCK_MODEL} from '../provider.mjs';
+const runtime=extra=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:20,maxCostMicroUSD:2000000,maxOutputBytes:1024,...extra});
+test('full native preset, supported task tools and owned 5m cache basis reach the SDK directly',()=>{
+ const o=buildConversationOptions(runtime(),new AbortController());
+ assert.deepEqual(o.tools,{type:'preset',preset:'claude_code'});assert.equal(o.systemPrompt.preset,'claude_code');assert.equal(o.skills,'all');
+ for(const tool of ['TaskCreate','TaskUpdate','TaskGet','TaskList','Agent','Skill','WebFetch'])assert.ok(o.allowedTools.includes(tool));
+ assert.equal(o.settings.promptCacheTtl,'5m');assert.equal(o.settings.subagentPromptCacheTtl,'5m');assert.equal(o.sessionStoreFlush,'batched');
+ assert.equal(o.env.CLAUDE_CODE_USE_BEDROCK,'1');assert.equal(o.env.AWS_REGION,'us-east-1');
+ for(const key of ['ANTHROPIC_BASE_URL','ANTHROPIC_AUTH_TOKEN','NODE_EXTRA_CA_CERTS','DISABLE_PROMPT_CACHING','CLAUDE_CODE_EFFORT_LEVEL'])assert.equal(o.env[key],undefined);
+ assert.equal(o.thinking,undefined);assert.equal(o.spawnClaudeCodeProcess,undefined);
 });
-test('any other CA path, or a CA without the admitted per-task SDK directories, refuses',()=>{
- for(const sdkCaFile of ['/tmp/attacker.pem','/run/meri/poststart/tls/runner-ca.pem','/opt/meri/certs/rds-global-bundle.pem','',null,1])
-  assert.throws(()=>buildConversationOptions(runtime({...directories,sdkCaFile}),new AbortController()),/RUNTIME_CONFIGURATION/,String(sdkCaFile));
- assert.throws(()=>buildConversationOptions(runtime({sdkCaFile:RUNNER_SDK_CA_FILE}),new AbortController()),/RUNTIME_CONFIGURATION/);
+test('canonical native limits and output schema remain intact without a model proxy',()=>{
+ const r=runtime(),format={type:'json_schema',schema:{type:'object',properties:{answer:{type:'string'}},required:['answer'],additionalProperties:false}};
+ const o=buildConversationOptions(r,new AbortController(),undefined,undefined,undefined,undefined,undefined,undefined,format);
+ assert.equal(o.model,BEDROCK_MODEL);assert.equal(o.maxBudgetUsd,2);assert.equal(o.maxTurns,20);assert.deepEqual(o.outputFormat,format);
 });
-test('public SDK controls identify the fixed proxy model and keep schema, tool and budget authority intact',()=>{
- const r=runtime({model:PRODUCT_PROXY_MODEL_ALIAS}),schema={type:'object',properties:{answer:{type:'string'}},required:['answer'],additionalProperties:false};
- const format={type:'json_schema',schema},o=buildConversationOptions(r,new AbortController(),undefined,undefined,undefined,undefined,undefined,undefined,format);
- assert.equal(o.model,PRODUCT_PROXY_MODEL_ALIAS);assert.deepEqual(o.settings,{autoMemoryEnabled:false,modelOverrides:{'claude-sonnet-4-6':PRODUCT_PROXY_MODEL_ALIAS}});
- assert.deepEqual(o.thinking,{type:'disabled'});assert.equal(o.env.DISABLE_PROMPT_CACHING,'1');assert.equal(o.env.CLAUDE_CODE_EFFORT_LEVEL,'unset');
- assert.equal(o.env.CLAUDE_CODE_MODEL_CAPABILITIES,undefined);assert.equal(o.env.CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS,undefined);
- assert.deepEqual(o.outputFormat,format);assert.deepEqual(o.tools,[]);assert.deepEqual(o.allowedTools,[]);assert.equal(o.maxBudgetUsd,r.maxCostMicroUSD/1000000);assert.equal(o.maxTurns,r.maxTurns);
- const projected=projectNativeSdkOptions(o);assert.deepEqual(projected.thinking,{type:'disabled'});assert.deepEqual(projected.settings,o.settings);assert.equal(projected.env.DISABLE_PROMPT_CACHING,'1');
- const {thinking,...old}=o;assert.notDeepEqual(projectNativeSdkOptions(old),projected,'disabled thinking is included in the measured options');
+test('old proxy/CA/hash controls and malformed native limits refuse before querying',()=>{
+ for(const extra of [{proxyUrl:'https://synthetic.invalid'},{proxyCredential:'synthetic-only'},{sdkCaFile:'/tmp/ca'},{sdkOptionsSha256:'a'.repeat(64)},{model:'other'},{region:'eu-west-1'},{maxTurns:101},{maxCostMicroUSD:0},{maxOutputTokens:0}])assert.throws(()=>buildConversationOptions(runtime(extra),new AbortController()));
 });
-test('the native options projection refuses every enabled or malformed thinking setting without invoking getters',()=>{
- let reads=0,traps=0;
- for(const thinking of [null,{},'disabled',{type:'adaptive'},{type:'enabled',budgetTokens:1},{type:'disabled',budgetTokens:0},{type:'disabled',extra:true},{get type(){reads++;return 'disabled';}},new Proxy({type:'disabled'},{ownKeys(){traps++;return ['type'];}})])
-  assert.throws(()=>projectNativeSdkOptions({thinking}));
- assert.equal(reads,0);assert.equal(traps,0);
+test('quality adjustment is one short native append, without a validation loop',()=>{
+ const o=buildConversationOptions(runtime(),new AbortController());const append=o.systemPrompt.append;
+ for(const sentence of ['Preserve the supplied as-of date','Distinguish source deadlines from proposed dates','Uncorroborated completion is not a contradiction','an unknown owner is not unassigned','only after actually invoking one'])assert.ok(append.includes(sentence));
+ assert.ok(append.length<1200);assert.equal(o.hooks,undefined);
 });

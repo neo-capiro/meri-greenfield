@@ -14,11 +14,11 @@ export async function transact(pool,operation,{check=()=>{},readOnly=false,unava
  }catch(error){
   if(committing)failure=new ProductError(uncertain,'UNKNOWN');
   else{
-   if(begun){try{await client.query('ROLLBACK');reusable=true;}catch{}}
-   failure=productFailure(error)?error:new ProductError(unavailable);
+   if(begun){try{await client.query('ROLLBACK');reusable=true;}catch{failure=new ProductError(uncertain,'UNKNOWN');}}
+   failure??=productFailure(error)?error:new ProductError(unavailable);
   }
  }finally{
-  if(client){try{client.release(reusable?undefined:failure??new Error('evict'));}catch{failure??=new ProductError(uncertain,'UNKNOWN');}}
+  if(client){try{client.release(reusable?undefined:failure??new Error('evict'));}catch{failure=new ProductError(uncertain,'UNKNOWN');}}
  }
  if(failure)throw failure;
  return result;

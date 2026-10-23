@@ -14,7 +14,6 @@ import {RUNNER_LOAD_MAX_MS,RUNNER_LOAD_CONTROL_MARGIN_MS,RUNNER_SESSION_RPC_MS,R
  CONTROL_CHECKPOINT_CAPTURE_MS,CONTROL_CAPTURE_CHANNEL_MS,TASK_ROUTER_CAPTURE_MS,RUNNER_CAPTURE_MS,runnerStartupBudget} from '../../../../packages/runtime/runner-load-budget.mjs';
 import {createNativeSdkSessionClient,createNativeBoundSdkSessionStore} from '../session-client.mjs';
 import {createNativeSdkSessionApplication} from '../session-http.mjs';
-import {createRemoteNativeTaskController} from '../remote-task-client.mjs';
 import {createTaskCheckpointSource} from '../task-checkpoint-source.mjs';
 import {fixture as sessionFixture} from './fixture.mjs';
 
@@ -94,15 +93,6 @@ test('a bound-store call slower than the old three-second default completes on i
 });
 
 function original(){const {binding,target}=continuationFixture(),executionKey=hash(binding);return {binding,executionKey,executionId:executionKey,planSha256:'a'.repeat(64),expiresAtMs:Date.now()+600000,versions:target.versions};}
-
-test('the control capture channel waits for a capture longer than an ordinary eight-second exchange',async t=>{
- t.mock.timers.enable({apis:['setTimeout','Date'],now:Date.now()});
- const o=original(),delay=CONTROL_CAPTURE_CHANNEL_MS-1000;
- const controller=createRemoteNativeTaskController({original:o,origin:'https://runner.invalid',credential:'synthetic-control',
-  fetchImpl:()=>new Promise(resolve=>setTimeout(()=>resolve(Response.json({original:o,capture:{synthetic:true}})),delay))});
- assert.ok(delay>8000);const pending=controller.capture({binding:o.binding,controlId:id(860),sessionId:id(861)});await settle();t.mock.timers.tick(delay);
- assert.deepEqual(await pending,{synthetic:true});
-});
 
 test('the runner capture holds two frozen snapshots that together outlast the old eight-second capture',async t=>{
  t.mock.timers.enable({apis:['setTimeout','Date'],now:Date.now()});

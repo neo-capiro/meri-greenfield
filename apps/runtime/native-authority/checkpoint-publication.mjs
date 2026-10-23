@@ -5,7 +5,7 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {canonicalSha256 as hash,validateShape,assertWorkspacePaths} from '../../../packages/contracts/validate.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
-import {assertNativeExecution} from './execution-broker.mjs';
+import {assertNativeExecution} from '../../control/conversations/execution-boundary.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
 import {verifyCheckpointReadback} from './checkpoint-readback.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';

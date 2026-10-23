@@ -6,9 +6,11 @@ import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders} from '..
 import {copySessionEntries,copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
 import {copySessionJson,captureSessionMethods} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
-import {productFailure} from '../../control/product-access/errors.mjs';
+import {ProductError,productFailure} from '../../control/product-access/errors.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-const fail=code=>{throw Object.assign(Error(code),{code});},integer=n=>{const v=typeof n==='string'&&/^(0|[1-9][0-9]*)$/u.test(n)?Number(n):n;if(!Number.isSafeInteger(v)||v<0)fail('SDK_SESSION_CORRUPT');return v;};
+// These fixed local refusals cross the canonical run transaction. Only the existing
+// ProductError brand preserves them after a known rollback; foreign errors stay unavailable.
+const fail=code=>{throw Object.assign(new ProductError(code,code==='SDK_SESSION_COMMIT_UNKNOWN'?'UNKNOWN':null),{code});},integer=n=>{const v=typeof n==='string'&&/^(0|[1-9][0-9]*)$/u.test(n)?Number(n):n;if(!Number.isSafeInteger(v)||v<0)fail('SDK_SESSION_CORRUPT');return v;};
 // Historical rows retain their exact authenticated owner bytes. The old launch witness is stored provenance,
 // never a newly accepted registration input or a currentness grant.
 function storedOwner(value){

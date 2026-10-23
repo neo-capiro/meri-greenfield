@@ -4,7 +4,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {jsonBody} from '../../control/action-application/http.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {matchesCapability} from './task-verifier.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 const getters=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createNativeExecutionApplication(configuration){
  const c=own(configuration,['runtime','controlCapabilitySha256','taskCapabilitySha256'],['enabled','now','maxRequestMs','readiness']);

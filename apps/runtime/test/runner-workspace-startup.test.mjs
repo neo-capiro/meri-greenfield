@@ -25,7 +25,7 @@ function startupFixture(){
  const expected={binding:f.configuration.binding,versions:f.configuration.versions,taskArn,taskRevision:1,expiresAtMs:f.original.expiresAtMs,origin,san:['control.invalid'],caSha256:caSha,capabilitySha256:'c'.repeat(64),materialRef:'material:'+f.original.executionKey,bootstrapRef:'d'.repeat(64)};
  f.configuration={version:1,profile:'isolated-preview',sourceEnabled:false,limits:{startupMs:5000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
   ...f.configuration,native:{origin,capabilityFile:'/run/meri/poststart/bootstrap/task-capability',loopback:false,maxResponseBytes:2097152},
-  proxyOrigin:'https://proxy.invalid',bootstrap:{remote:true,expiresAtMs:f.original.expiresAtMs},captureOwnsClose:true};
+  bootstrap:{remote:true,expiresAtMs:f.original.expiresAtMs}};
  validateConfiguration(f.configuration,'conversation-runner');
  const response={schemaVersion:1,original:f.original,expected,delivery:{synthetic:true},tls:{zone:'runner.invalid',ca:ca.toString('base64'),cert:ca.toString('base64'),candidate:{taskArn,executionKey:f.original.executionKey,bindingSha256:hash(expected.binding),expiresAtMs:f.original.expiresAtMs}}};
  const dependencies={

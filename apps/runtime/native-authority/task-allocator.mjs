@@ -5,7 +5,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {compileEcsTaskBinding,assertEcsOwnedTask,assertEcsRunningTask} from './ecs-task-binding.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {compileNativeRuntimePlan} from './runtime-provider.mjs';
 import {compileNativePreparationIntent} from './preparation-intent.mjs';

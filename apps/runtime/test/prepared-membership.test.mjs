@@ -5,7 +5,7 @@ import {createExecutionBinding} from '../../control/conversations/execution-boun
 import {productFailure} from '../../control/product-access/errors.mjs';
 const f=candidateFixture(),config=f.configuration.nativeCandidate,original=createExecutionBinding({binding:f.binding,versions:f.configuration.versions,plan:config.plan,expiresAtMs:config.runtime.deadlineMs});
 mock.module('../prepared-candidate-config.mjs',{namedExports:{compilePreparedCandidateConfiguration(value){return value;}}});
-mock.module('../native-authority/broker-stack.mjs',{namedExports:{compileNativeBrokerPlan(){return {original,preparationIntent:config.preparationIntent};},createNativeBrokerStack(){throw Error('No broker stack');}}});
+mock.module('../native-authority/task-allocator.mjs',{namedExports:{compileNativeTaskPlan(){return {original,preparationIntent:config.preparationIntent};},createNativeTaskAllocator(){throw Error('No allocation');}}});
 mock.module('../native-authority/prepared-kickoff.mjs',{namedExports:{createPreparedTaskKickoff({controller}){return {async kickoff(){throw Error('No kickoff');},async status(){},async stop(){},async close(){await controller.close();}};}}});
 const {assemblePreparedCandidate}=await import('../prepared-candidate.mjs');
 test('prepared startup installs the real request-local membership gate while retaining the same identity and lazy SDK owners',async()=>{

@@ -7,7 +7,7 @@ import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
 import {restoreWorkspaceBytes,verifyWorkspaceBytes} from './workspace-restore.mjs';
 import {buildNextTurnOptions} from '../../worker/conversation/continuation/next-turn-options.mjs';
 import {buildContinuationOptions} from '../../worker/conversation/continuation/options.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 export function createNativeCheckpointRestorer(configuration){
  const c=own(configuration,['journal','objects','workspace','expiresAtMs'],['now','workspaceOwner']),now=c.now??Date.now,get=storageMethod(c.objects,'get'),claim=storageMethod(c.journal,'claim'),read=storageMethod(c.journal,'read'),record=storageMethod(c.journal,'record');

@@ -6,7 +6,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {compileNativeTaskPlan} from './task-allocator.mjs';
 import {createNativeRuntimeProvider} from './runtime-provider.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 import {capabilityDigest} from './task-verifier.mjs';
 export function createPreparedNativeRuntime(configuration){
  const c=own(configuration,['store','allocator','supervisor','runtime','plan','preparationIntent','taskCapability','verifyTask'],['continuation','enabled','now','maxRequestMs']);

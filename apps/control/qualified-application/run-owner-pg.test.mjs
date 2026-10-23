@@ -53,6 +53,11 @@ test('actual migration, canonical current run/session, contention and idempotent
  const c=state.conversation,r=state.runs[0],q=state.qualified,g=state.grants.find(g=>g.grant_id===grantId),fact=state.bound.find(g=>g.grant_id===grantId).facts;
  await pool.query('INSERT INTO meri_conversations.conversations(tenant_id,conversation_id,owner_actor_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5)',[c.tenant_id,c.conversation_id,c.owner_actor_id,c.projection,c.projection_sha256]);
  await pool.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[...tuple,r.projection,r.projection_sha256,r.request_id,r.request,r.request_sha256,r.last_sequence]);
+ // The current run projection has reached sequence 3; readback requires its complete event history.
+ for(const [index,state] of ['queued','starting','running'].entries()){
+  const event={contractVersion:'0.1.0',eventId:id(30+index),binding,sequence:index+1,createdAt:r.projection.createdAt,scopes:r.projection.scopes,type:'run.status',data:{state,reasonCode:null}};
+  await pool.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[...tuple,event.sequence,event.eventId,event,hash(event)]);
+ }
  await pool.query('INSERT INTO meri_conversations.native_allocations(tenant_id,conversation_id,run_id,intent_key,record,record_sha256) VALUES($1,$2,$3,$4,$5,$6)',[...tuple,state.allocation.intent_key,state.allocation.record,state.allocation.record_sha256]);
  await pool.query('INSERT INTO meri_product_budget.runs(run_id,attempt,worker_arn,fence,policy_revision) VALUES($1,$2,$3,$4,$5)',[q.run_id,q.attempt,q.worker_arn,q.fence,q.policy_revision]);
  await pool.query('INSERT INTO meri_product_budget.grants(grant_id,run_id,attempt,worker_arn,fence,policy_revision,capability_sha256,expires_at,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[grantId,q.run_id,q.attempt,q.worker_arn,q.fence,q.policy_revision,g.capability_sha256,g.expires_at,g.state]);

@@ -5,13 +5,12 @@ import {createPreparedRunIssuance,compilePreparedRunFacts} from '../prepared-run
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
-import {compileNativeBrokerPlan} from '../native-authority/broker-stack.mjs';
+import {compileNativeTaskPlan} from '../native-authority/task-allocator.mjs';
 import {id} from '../../control/conversations/test/application-fixture.mjs';
 import {NATIVE_READS_SCHEMA_VERSION as schemaVersion,nativeReadOperations} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 function fixture(){
  const f=candidateFixture(),config=f.configuration.nativeCandidate,rows=new Map(),stats={issue:0,resolve:0,revoke:0,compile:0},state={now:f.now,readUnknown:false,throwIssue:false,loseAck:false,wrongCapability:false,changeFacts:false};
  for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])config.preparationIntent[k]=normalize(config.preparationIntent[k]);
- config.preparationIntent.launchTemplate.command=normalize(config.preparationIntent.launchTemplate.command);config.preparationIntent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=config.preparationIntent.secureStorageDirectory;
  const input={binding:f.binding,requestSha256:hash({prompt:'First prompt'}),expiresAtMs:config.runtime.deadlineMs};
  const issuer={
   async read({issuanceKey}){return state.readUnknown?{state:'UNKNOWN'}:rows.get(issuanceKey)??{state:'ABSENT'};},
@@ -27,9 +26,9 @@ function fixture(){
  const facts={async compile({intent,issuance}){
   stats.compile++;const c=structuredClone(config),allocation=JSON.parse(c.allocationJson);
   allocation.run=Object.fromEntries(Object.keys(allocation.run).map(k=>[k,intent.binding[k]]));
-  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:f.secret.proxy},plan:{...c.plan,...(state.changeFacts?{changed:true}:{})},preparationIntent:c.preparationIntent,allocationJson:JSON.stringify(allocation),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs}],grantId:issuance.grantId,operations:c.operations,taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:capabilityDigest(f.secret.control),transport:{origin:c.taskOrigin,http:c.taskHttp}};
+  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs},plan:{...c.plan,...(state.changeFacts?{changed:true}:{})},preparationIntent:c.preparationIntent,allocationJson:JSON.stringify(allocation),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs}],grantId:issuance.grantId,operations:c.operations,taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:capabilityDigest(f.secret.control),transport:{origin:c.taskOrigin,http:c.taskHttp}};
  }};
- const original=compileNativeBrokerPlan({runtime:{...config.runtime,proxyCredential:f.secret.proxy},plan:config.plan,preparationIntent:config.preparationIntent}).original;
+ const original=compileNativeTaskPlan({runtime:{...config.runtime},plan:config.plan,preparationIntent:config.preparationIntent}).original;
  const sourceRecord={state:'RETIRED',original,grantIntents:[{grantId:id(77),capabilitySha256:'a'.repeat(64),expiresAtMs:input.expiresAtMs}],resource:{taskArn:'synthetic-owned-task',physicalStopProven:true}};
  const sourceOwners={allocations:{async read(){return {record:sourceRecord};}},admission:{async revoke({taskArn}){stats.revoke++;if(state.rejectRevocation)throw Error('Synthetic revocation rejected');return {state:'REVOKED',taskArn,grantIds:sourceRecord.grantIntents.map(g=>g.grantId),revocationProven:!state.unrevoked};}}};
  const create=()=>createPreparedRunIssuance({issuer,facts,sourceOwners,now:()=>state.now,maxRequestMs:1000}),owner=create();

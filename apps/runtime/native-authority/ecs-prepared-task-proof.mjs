@@ -13,7 +13,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {compileEcsTaskBinding,assertEcsOwnedTask,assertEcsRunningTask} from './ecs-task-binding.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 const fields=['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName'],digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v),refuse=()=>{throw executionFault('ECS_PREPARATION_REFUSED');};
 export const productRunnerMeasurement=Object.freeze({contract:'meri.runner-entrypoint.v1',path:'apps/runtime/conversation-runner.mjs'});
 const imageRoot=resolve(fileURLToPath(new URL('../../../',import.meta.url)));

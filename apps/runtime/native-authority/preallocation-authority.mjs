@@ -3,7 +3,7 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createNativeIdentityContext} from './identity-context.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 export function createPreallocationAuthority(configuration){
  const c=own(configuration,['store','identity','binding','expiresAtMs','limits'],['enabled','now']),binding=data(c.binding),i=own(c.identity,['origin','commandContext','fetchImpl','credential']),read=storageMethod(c.store,'read'),now=c.now??Date.now,commandContext=data(i.commandContext);own(commandContext,['binding','clientResolution']);
  if(hash(commandContext.binding)!==hash(binding)||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<1)throw executionFault('ALLOCATION_CONFIGURATION');

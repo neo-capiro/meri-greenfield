@@ -247,26 +247,24 @@ test('actual journal-backed schedule admission is accepted by existing native pr
  let createPreparedRunBindings;try{({createPreparedRunBindings}=await import('../../prepared-run-bindings.mjs'));}finally{hook.deregister();}
  const candidate=candidateFixture(),c=candidate.configuration.nativeCandidate,at=candidate.now;
  for(const key of ['workspace','configParentDirectory','secureStorageDirectory'])c.preparationIntent[key]=normalize(c.preparationIntent[key]);
- c.preparationIntent.launchTemplate.command=normalize(c.preparationIntent.launchTemplate.command);
- c.preparationIntent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=c.preparationIntent.secureStorageDirectory;
+
+
  c.multiRun={runWindowMs:60000,materialDirectory:resolve('synthetic-schedule-material'),dynamicInitialRuns:true};
  c.runtime.deadlineMs=at+120000;const a=JSON.parse(c.allocationJson);a.schedule.expiresAt=new Date(c.runtime.deadlineMs).toISOString();c.allocationJson=JSON.stringify(a);
  for(const intent of c.grantIntents)intent.expiresAtMs=c.runtime.deadlineMs;
  const f=await scheduledAdmissionFixture({nativeCandidate:c,clockMs:at}),initialBindings=createInitialRunBindingJournal({pool:f.pool,now:f.now});
- const calls={task:0,model:0};
+ const calls={task:0};
  // Explicit synthetic material producers; native records, preparation and issuance logic are the actual existing owners.
- const capability='synthetic-scheduled-task-grant-0001',proxyCredential='synthetic-scheduled-model-grant-0001';
+ const capability='synthetic-scheduled-task-grant-0001';
  const capabilityAuthority={async generate(){calls.task++;return {grantId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',capability,materialRef:'synthetic-scheduled-material'};},async retrieve(){return {state:'PRESENT',capability};},async status(){return {state:'ABSENT'};}};
- const modelRows=new Map(),modelGrants={async issue({intent}){const old=modelRows.get(intent.issuanceKey);if(old){assert.deepEqual(Object.fromEntries(Object.keys(intent).map(k=>[k,old[k]])),intent);return old;}
-  calls.model++;const receipt={...intent,grantId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',capabilitySha256:capabilityDigest(proxyCredential),proxyCredential};modelRows.set(intent.issuanceKey,receipt);return receipt;}};
  const native=createPreparedRunBindings({configuration:candidate.configuration,pool:f.pool,store:f.store,credentials:{control:candidate.secret.control},
-  issuanceStore:createMemoryIssuanceStore(),capabilityAuthority,modelGrants,initialBindings,now:f.now});
+  issuanceStore:createMemoryIssuanceStore(),capabilityAuthority,initialBindings,now:f.now});
  f.template.configurationSha256=native.configurationSha256;
  const receipt=await createScheduledNativeAdmission(f.options).admit(f.request);
  const prepared=await native.prepareInitial({binding:receipt.binding});assert.deepEqual(prepared.original.binding,receipt.binding);assert.equal(prepared.original.expiresAtMs,receipt.expiresAtMs);
  const facts=await native.runIssuance.resolveFacts(prepared.issuance);
  assert.equal(facts.runtime.deadlineMs,receipt.expiresAtMs);assert.equal(facts.preparationIntent.workspace.endsWith(receipt.binding.conversationId),true);
  assert.deepEqual(JSON.parse(facts.allocationJson).run,Object.fromEntries(Object.keys(a.run).map(k=>[k,receipt.binding[k]])));
- assert.deepEqual(await native.prepareInitial({binding:receipt.binding}),prepared);assert.deepEqual(calls,{task:1,model:1});
+ assert.deepEqual(await native.prepareInitial({binding:receipt.binding}),prepared);assert.deepEqual(calls,{task:1});
  assert.equal(f.conversations.state.allocations.size,0,'preparation/issuance never starts an ECS task');
 });

@@ -60,9 +60,9 @@ function assembled(state){
 }
 function preferenceScripts(preferences){
  const row={revision:'1',document:preferences,document_sha256:canonicalSha256(preferences)};
- return [{steps:[{match:/^SELECT revision,document/u,rows:[]}]},
+ return [{steps:[{match:/^SELECT \* FROM meri_settings.user_preferences/u,rows:[]}]},
   {steps:[{match:/^INSERT INTO meri_settings.user_preferences/u,rows:[row],inspect(params){assert.deepEqual(params.slice(0,2),['tenant-A','actor-A']);assert.deepEqual(JSON.parse(params[3]),preferences);}},{match:/^INSERT INTO meri_settings.settings_audit/u}]},
-  {steps:[{match:/^SELECT revision,document/u,rows:[row]}]}];
+  {steps:[{match:/^SELECT \* FROM meri_settings.user_preferences/u,rows:[row]}]}];
 }
 test('actual separate-listener startup opens preferences after schema readiness while captured task commands remain disabled',async()=>{
  const preferences={...membershipFixture().preferences,theme:'dark',density:'compact'},s=scenario({scripts:preferenceScripts(preferences),async schemaHook(state){
@@ -80,7 +80,7 @@ test('actual separate-listener startup opens preferences after schema readiness 
  assert.equal(s.ends,1);assert.equal((await s.bound.handle(request(paths[2]))).status,503);
 });
 test('explicit synthetic source-enabled composition reaches both actual APIs through the public boundary and keeps separate approval',async()=>{
- const s=scenario({sourceEnabled:true,scripts:[{steps:[{match:/^SELECT revision,document/u,rows:[]}]}]}),{assembly,routes}=assembled(s);
+ const s=scenario({sourceEnabled:true,scripts:[{steps:[{match:/^SELECT \* FROM meri_settings.user_preferences/u,rows:[]}]}]}),{assembly,routes}=assembled(s);
  try{
   await assembly.userPreferences.readiness();assert.equal((await routes.public.handle(request(paths[2]))).status,200);
   const prepared=await routes.public.handle(request(paths[0],{arguments:{taskId:id(21),title:'Updated',status:'open'}}));assert.equal(prepared.status,200);const {proposal}=await prepared.json();
@@ -91,7 +91,7 @@ test('explicit synthetic source-enabled composition reaches both actual APIs thr
  }finally{assembly.close();}assert.equal(s.ends,0,'assembly must not dispose its borrowed pool');
 });
 test('source-enabled synthetic composition without a trusted task application stays closed while preferences still reads',async()=>{
- const s=scenario({sourceEnabled:true,taskOwner:false,scripts:[{steps:[{match:/^SELECT revision,document/u,rows:[]}]}]}),{assembly,routes}=assembled(s);
+ const s=scenario({sourceEnabled:true,taskOwner:false,scripts:[{steps:[{match:/^SELECT \* FROM meri_settings.user_preferences/u,rows:[]}]}]}),{assembly,routes}=assembled(s);
  try{await assembly.userPreferences.readiness();assert.equal((await routes.public.handle(request(paths[2]))).status,200);for(const path of paths.slice(0,2))await unavailable(await routes.public.handle(request(path)));
   assert.equal(assembly.productReadiness().owners.find(owner=>owner.name==='tasks.commands').state,'unavailable');assert.equal(s.taskResolutions,0);assert.equal(s.task.f.state.fetches,0);
  }finally{assembly.close();}
@@ -99,7 +99,8 @@ test('source-enabled synthetic composition without a trusted task application st
 test('public mounts are exact and both applications remain excluded from the protected listener',async()=>{
  const s=scenario(),{assembly,routes}=assembled(s);
  try{
-  for(const path of ['/api/task-commands','/api/task-commands/prepares','/api/task-commands/prepare/extra','/api/task-commands/%70repare','/api/settings/tenant/read','/api/settings/user/read/extra','/v1/native-task/probe'])assert.equal((await routes.public.handle(request(path))).status,404,path);
+  for(const path of ['/api/task-commands','/api/task-commands/prepares','/api/task-commands/prepare/extra','/api/task-commands/%70repare','/api/settings/user/read/extra','/v1/native-task/probe'])assert.equal((await routes.public.handle(request(path))).status,404,path);
+  assert.equal((await routes.public.handle(request('/api/settings/tenant/read'))).status,503,'tenant settings has its own unavailable owner');assert.equal((await routes.private.handle(request('/api/settings/tenant/read'))).status,404);
   for(const path of paths)assert.equal((await routes.private.handle(request(path))).status,404,path);assert.equal(s.privateCalls,0);
   assert.equal((await routes.private.handle(request('/v1/native-task/probe'))).status,200);assert.equal(s.privateCalls,1);assert.equal(s.taskResolutions,0);assert.equal(s.sql.connections(),0);
  }finally{assembly.close();}
@@ -114,6 +115,6 @@ test('actual configuration takes source enablement only as an explicit boolean (
 test('readiness distinguishes disabled, missing and composed task ownership without claiming live readiness',()=>{
  for(const [sourceEnabled,configuredOwners,expected]of [[false,[],'disabled'],[false,['taskCommandApplication'],'disabled'],[true,[],'unavailable'],[true,['taskCommandApplication'],'composed']]){
   const census=productReadiness({ports:{configuredOwners},sourceEnabled,userPreferences:'composed'});assert.equal(census.owners.find(owner=>owner.name==='tasks.commands').state,expected);assert.equal(census.ready,false);
-  assert.ok(census.missingOwners.includes('sources.currentInstallation'));assert.ok(census.missingOwners.includes('proxy.modelGrants'));
+  assert.ok(census.missingOwners.includes('sources.currentInstallation'));assert.ok(!census.missingOwners.includes('proxy.modelGrants'));
  }
 });

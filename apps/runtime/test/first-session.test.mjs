@@ -86,21 +86,31 @@ test('closing before registration acknowledgement retires queued effects without
  assert.equal(calls.length,1);await assert.rejects(mirror.store.append(f.key,[{type:'system'}]));assert.equal(calls.length,1);
 });
 
-async function runner(mirrors){
- const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});const key={projectKey:'actual callback / opaque key',sessionId:id(5)},calls=[],events=[];let queryCalls=0;
+async function runner(mirrors,{accountingUnknown=false}={}){
+ const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});const key={projectKey:'actual callback / opaque key',sessionId:id(5)},calls=[],events=[],usageCalls=[],usageReceipts=[];let queryCalls=0;
  const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'scripted-current-task',binding,
   fetchImpl:async(url,options)=>{const body=JSON.parse(options.body),common={binding:body.binding,key:body.key,requestSha256:hash(body)};calls.push(url);
    if(url.endsWith('/register'))return Response.json({...common,registered:true});if(url.endsWith('/load'))return Response.json({...common,entries:null,offset:0});
    if(url.endsWith('/append'))return Response.json({...common,committed:true,appendId:body.appendId,entriesSha256:body.entriesSha256,offset:body.expectedOffset+body.entries.length,added:body.entries.length});throw Error('unexpected synthetic route');}});
  const runtime={binding,versions,deadlineMs:Date.now()+3000,maxOutputBytes:1024,sdkSessionKey:null};
- const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,sourceEnabled:false},sessionFactory:factory,
-  native:{async call(path,input){if(path==='runner/load')return f.service.loadForExecution({credential:f.credential,binding});if(path==='runner/runtime')return runtime;if(path==='runner/publish'){events.push(input.event.data.state??input.event.type);if(input.event.data.state==='completed')assert.ok(calls.at(-1).endsWith('/append'));return f.service.publish({credential:f.credential,binding,event:input.event});}throw Error(path);}},
-  query({options}){queryCalls++;assert.equal(calls.length,0,'fresh key cannot be registered before query');assert.equal(Object.hasOwn(options,'sdkSessionKey'),false);return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'init',session_id:key.sessionId};if(mirrors)await options.sessionStore.append(key,[{type:'user',uuid:id(40),message:'synthetic'}]);yield {type:'result',subtype:'success',is_error:false};},close(){}};}});
- return {f,execute,calls,events,queryCalls:()=>queryCalls};
+ const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,sourceEnabled:false},sessionFactory:factory,credentialForBinding:async()=>f.credential,
+  native:{async call(path,input){assert.deepEqual(input.binding,binding);if(path==='runner/load')return f.service.loadForExecution({credential:f.credential,binding});if(path==='runner/runtime')return runtime;if(path==='runner/next-controls')return {controls:[],nextControlSequence:0};if(path==='runner/record-usage'){usageCalls.push(input);if(accountingUnknown)throw Error('accounting transport unknown');const receipt=await f.service.recordUsage({credential:f.credential,binding,input:input.input});usageReceipts.push(receipt);return receipt;}if(path==='runner/publish'){events.push(input.event.data.state??input.event.type);if(input.event.data.state==='completed')assert.ok(calls.at(-1).endsWith('/append'));return f.service.publish({credential:f.credential,binding,event:input.event});}throw Error(path);}},
+  query({options}){queryCalls++;assert.equal(calls.length,0,'fresh key cannot be registered before query');assert.equal(Object.hasOwn(options,'sdkSessionKey'),false);return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'init',session_id:key.sessionId};if(mirrors)await options.sessionStore.append(key,[{type:'user',uuid:id(40),message:'synthetic'}]);yield {type:'result',subtype:'success',is_error:false,session_id:key.sessionId,total_cost_usd:0.01,modelUsage:{'us.anthropic.claude-sonnet-4-6':{inputTokens:100,outputTokens:10,cacheReadInputTokens:20,cacheCreationInputTokens:30,webSearchRequests:0,costUSD:0.01,provider:'bedrock',costBasis:'list'}},result:'PRIVATE_RESULT',errors:['PRIVATE_ERROR']};},close(){}};}});
+ return {f,execute,calls,events,usageCalls,usageReceipts,key,queryCalls:()=>queryCalls};
 }
 
 test('one scripted SDK query obtains its first mirror key and settles before durable completion',async()=>{
  const x=await runner(true);try{assert.deepEqual(await x.execute({binding}),{state:'completed'});assert.equal(x.queryCalls(),1);assert.equal(x.events.at(-1),'completed');assert.equal((await x.f.service.history({credential:x.f.credential})).run.state,'completed');assert.equal(x.execute.cleanupStatus().physicalStopProven,false);}finally{x.f.close();}
+});
+
+for(const accountingUnknown of [false,true])test(`assembled lifecycle runner records one terminal usage batch; accounting ${accountingUnknown?'uncertainty preserves completion':'reaches the canonical run store'}`,async()=>{
+ const x=await runner(true,{accountingUnknown});try{
+  assert.deepEqual(await x.execute({binding}),{state:'completed'});assert.equal(x.usageCalls.length,1);assert.equal(x.queryCalls(),1);
+  const {input}=x.usageCalls[0];assert.equal(input.usage.sessionId,x.key.sessionId);assert.equal(input.usage.models['us.anthropic.claude-sonnet-4-6'].inputTokens,100);
+  assert.deepEqual(input.toolsUsed,{tools:[],omitted:0});assert.equal(JSON.stringify(input).includes('PRIVATE'),false);
+  assert.equal(x.usageReceipts.length,accountingUnknown?0:1);if(!accountingUnknown)assert.equal(x.usageReceipts[0].status,'recorded');
+  assert.equal((await x.f.service.history({credential:x.f.credential})).run.state,'completed');
+ }finally{x.f.close();}
 });
 
 test('scripted success without first mirror cannot produce durable completed state',async()=>{

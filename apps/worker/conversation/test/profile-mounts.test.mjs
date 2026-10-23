@@ -6,7 +6,6 @@ import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {projectNativeSdkOptions} from '../../../runtime/native-authority/sdk-option-projection.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy} from '../../../runtime/product-ports/capability-policy.mjs';
 import {createProfileMounts,UNAVAILABLE_READ_PORT,UNAVAILABLE_INTENT_PORT} from '../capabilities/mounts.mjs';
 import {assertCapabilityPolicy} from '../capabilities/policy.mjs';
@@ -38,7 +37,7 @@ test('profile mounts only exact active reads, with a stable list across changing
    assert.deepEqual(a.reads.available,some,'run A exposes two active reads');assert.deepEqual(b.reads.available,[]);assert.deepEqual(c.reads.available,[]);
    assert.deepEqual(a.intents.available,[{id:'create_word',version:'0.2.0'}]);assert.deepEqual(b.intents.available,[]);
    for(const x of [b,c]){assert.deepEqual(x.reads.sdkOptions.allowedTools,a.reads.sdkOptions.allowedTools);assert.deepEqual(x.intents.sdkOptions.allowedTools,a.intents.sdkOptions.allowedTools);
-    assert.deepEqual(projectNativeSdkOptions({mcpServers:{...x.reads.sdkOptions.mcpServers,...x.intents.sdkOptions.mcpServers}}),projectNativeSdkOptions({mcpServers:{...a.reads.sdkOptions.mcpServers,...a.intents.sdkOptions.mcpServers}}));}
+    assert.deepEqual(Object.keys({...x.reads.sdkOptions.mcpServers,...x.intents.sdkOptions.mcpServers}),Object.keys({...a.reads.sdkOptions.mcpServers,...a.intents.sdkOptions.mcpServers}));}
    assert.equal(a.reads.sdkOptions.allowedTools.length,ACTIVE.length,'only measured active reads are mounted');
    const listing=new Client({name:'g3-list',version:'1'}),[left,right]=InMemoryTransport.createLinkedPair();
    await a.reads.sdkOptions.mcpServers.meri_reads.instance.connect(left);await listing.connect(right);

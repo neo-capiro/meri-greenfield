@@ -2,7 +2,7 @@
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 /** Shared inert validation before any allocation or borrowed-port invocation. */
 export function compileNativeRuntimePlan(value){
  const r=data(own(value,['binding','versions','deadlineMs','maxOutputBytes'],['sdkSessionKey']));

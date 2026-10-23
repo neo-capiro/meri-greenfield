@@ -1,13 +1,6 @@
 // @ts-check
-/** G3: the run's profile-bound MCP mounts. When the effective capability policy enables general reads or governed intents, the
- * `meri_reads` / `meri_intents` server mounts the profile's fixed active tool list (`mount:'profile'` in reads/runtime.mjs and
- * intents/runtime.mjs), so the SDK options are a function of the profile alone and one measured sdkOptionsSha256 covers every run of
- * that profile. Per-run availability (installation receipt, discovery grant, client scope, intent owners, an absent or failing port)
- * only decides which mounted tools answer; a registered but unavailable call answers a typed UNAVAILABLE and never reaches a port. A trusted port the
- * runtime composition does not supply is the unavailable port below: the server is still mounted and every call answers UNAVAILABLE.
- *
- * The activity (`activity.mjs`) and the in-image measurement (`apps/runtime/build/first-chat-launch-measurement.mjs`) both build the
- * mounts with this one function, so the measured template is the runner's. */
+/** Existing profile tool mounts. Per-run installation and scope decide which mounted tools answer.
+ * Missing trusted ports return UNAVAILABLE. Step 3 replaces the remaining admission presentation. */
 import {createGeneralReadRuntime} from '../reads/runtime.mjs';
 import {createIntentRuntime} from '../intents/runtime.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});

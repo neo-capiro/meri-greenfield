@@ -3,7 +3,7 @@
  * the real budget admission; exact replay never redispatches; a fork into its own conversation coexists. Synthetic: task ARNs, grant
  * digests, checkpoint bytes. No native process, image, provider or cloud resource. */
 import test from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
-import {fixture} from './broker-pg-fixture.mjs';import {seedContinuation,pauseSource,continueFrom} from './lifecycle-seed.mjs';
+import {fixture} from './run-pg-fixture.mjs';import {seedContinuation,pauseSource,continueFrom} from './lifecycle-seed.mjs';
 import {createNextRunOwner} from '../../../control/conversations/next-run.mjs';
 import {createNativeAllocationAdmission} from '../../../gateway/budget/native-allocation-admission.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
@@ -13,7 +13,7 @@ const arn=()=>'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/'+randomUUID().
 function allocationIntent(binding,expiresAtMs,policyRevision,grantId=randomUUID()){const key=hash(binding);return {binding,allocationKey:key,original:{binding,executionKey:key,executionId:key,planSha256:'a'.repeat(64),expiresAtMs,versions},allocationSha256:'d'.repeat(64),qualification:{attempt:1,policyRevision},grantIntents:[{grantId,capabilitySha256:hash({grantId}),expiresAtMs}],taskRequestSha256:'c'.repeat(64),expiresAtMs};}
 const resource=at=>({taskArn:arn(),clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker',createdAtMs:at});
 async function conversation(t,f){
- const store=f.stack.store,saved=await f.stack.store.read(f.binding,{},check),scopes=saved.run.scopes,policyRevision=saved.run.policyRevision,createdAt=saved.run.createdAt;
+ const store=f.store,saved=await f.store.read(f.binding,{},check),scopes=saved.run.scopes,policyRevision=saved.run.policyRevision,createdAt=saved.run.createdAt;
  const source={...f.binding,conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
  await store.accept({conversation:{conversationId:source.conversationId,owner:{tenantId:source.tenantId,actorId:source.actorId},scopes,createdAt,policyRevision},run:{...saved.run,binding:source,state:'queued'},request:{requestId:randomUUID(),prompt:'/status',skill:null,window:null,windowRequest:null},event:{contractVersion:'0.1.0',eventId:randomUUID(),binding:source,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},check);
  const sourceSaved=await store.read(source,{},check);
@@ -26,12 +26,10 @@ test('a replacement allocation in the same conversation is refused while the pre
  const target={...source,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:2},forkTarget={...source,conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1};
  const first=allocationIntent(source,expiresAtMs,policyRevision),second=allocationIntent(target,expiresAtMs,policyRevision),forked=allocationIntent(forkTarget,expiresAtMs,policyRevision),key={binding:source,allocationKey:first.allocationKey};
  assert.equal((await store.allocations.claim(first,check)).dispatch,true,'the predecessor claims its allocation while queued');
- // One pause and checkpoint of the source run; the fork control runs first (the source stays paused), then the resume control retires it
- // and creates the same-conversation replacement target. The predecessor allocation is still CLAIMED: no physical stop has been proven.
+ // The fork leaves the source paused. A same-conversation resume cannot create a replacement until the predecessor is retired.
  const paused=await pauseSource(store,source,c.sourceSaved,c.checkpointFor(source));
  await continueFrom(store,source,c.sourceSaved,paused,{mode:'fork',target:forkTarget,expiresAtMs});
- await continueFrom(store,source,c.sourceSaved,paused,{mode:'resume',target,expiresAtMs});
- const busy=async label=>{await assert.rejects(store.allocations.claim(second,check),/NATIVE_PREPARATION_CONVERSATION_BUSY/,label);assert.equal((await store.allocations.read({binding:target,allocationKey:second.allocationKey},check)).record,null,label+': no replacement row was written');};
+ const busy=async label=>{await assert.rejects(continueFrom(store,source,c.sourceSaved,paused,{mode:'resume',target,expiresAtMs}),/NEXT_RUN_RETIREMENT_REQUIRED/,label);assert.equal((await f.pool.query('SELECT count(*)::int AS n FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[target.tenantId,target.conversationId,target.runId])).rows[0].n,0,label+': no replacement run was written');};
  await busy('predecessor CLAIMED');
  const res=resource(at);await store.allocations.record({...key,state:'ALLOCATED',resource:res},check);await busy('predecessor ALLOCATED');
  const admitted={...res,grantFactsJsons:[JSON.stringify({grantId:first.grantIntents[0].grantId,binding:source,qualificationBinding:{runId:source.runId,attempt:1,workerArn:res.taskArn,fence:1,policyRevision},capabilitySha256:first.grantIntents[0].capabilitySha256,allocationSha256:first.allocationSha256})]};
@@ -44,6 +42,7 @@ test('a replacement allocation in the same conversation is refused while the pre
  // Exact replay of the predecessor's own claim never redispatches, whatever its state.
  assert.equal((await store.allocations.claim(first,check)).dispatch,false,'exact original replay');
  await store.allocations.record({...key,state:'RETIRED',resource:{...admitted,physicalStopProven:true}},check);
+ await continueFrom(store,source,c.sourceSaved,paused,{mode:'resume',target,expiresAtMs});
  assert.equal((await store.allocations.claim(second,check)).dispatch,true,'the replacement claims once the predecessor is RETIRED with its physical stop proven');
  assert.equal((await store.allocations.claim(first,check)).dispatch,false,'the retired predecessor still replays without redispatch');
  // A further same-conversation replacement cannot be created over the retired source (its sequence range is closed); if the lifecycle
@@ -64,8 +63,8 @@ test('a launched predecessor (launch claimed, STARTED, then resource UNKNOWN) ex
  const admitted={...res,grantFactsJsons:[JSON.stringify({grantId:first.grantIntents[0].grantId,binding:source,qualificationBinding:{runId:source.runId,attempt:1,workerArn:res.taskArn,fence:1,policyRevision},capabilitySha256:first.grantIntents[0].capabilitySha256,allocationSha256:first.allocationSha256})]};
  await store.allocations.record({...key,state:'ADMITTED',resource:admitted},check);
  const pins={...key,preparationId:randomUUID(),descriptorSha256:'f'.repeat(64),configTreeSha256:'0'.repeat(64)};await store.allocations.prepareLaunch(pins,check);assert.equal((await store.allocations.consumeLaunch(pins,check)).dispatch,true,'the predecessor consumes its launch');
- const paused=await pauseSource(store,source,c.sourceSaved,c.checkpointFor(source));await continueFrom(store,source,c.sourceSaved,paused,{mode:'resume',target,expiresAtMs});
- const busy=async label=>{await assert.rejects(store.allocations.claim(second,check),/NATIVE_PREPARATION_CONVERSATION_BUSY/,label);assert.equal((await store.allocations.read({binding:target,allocationKey:second.allocationKey},check)).record,null,label+': no replacement row was written');};
+ const paused=await pauseSource(store,source,c.sourceSaved,c.checkpointFor(source));
+ const busy=async label=>{await assert.rejects(continueFrom(store,source,c.sourceSaved,paused,{mode:'resume',target,expiresAtMs}),/NEXT_RUN_RETIREMENT_REQUIRED/,label);assert.equal((await f.pool.query('SELECT count(*)::int AS n FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[target.tenantId,target.conversationId,target.runId])).rows[0].n,0,label+': no replacement run was written');};
  await busy('predecessor ADMITTED with its launch claimed');
  await store.allocations.recordLaunch({...pins,state:'STARTED'},check);await busy('predecessor launched (STARTED)');
  // The launch binding stays STARTED (its only transition); the resource-level UNKNOWN is the unresolved predecessor fact.
@@ -73,6 +72,7 @@ test('a launched predecessor (launch claimed, STARTED, then resource UNKNOWN) ex
  const live=(await store.allocations.read(key,check)).record;
  await assert.rejects(store.allocations.record({...key,state:'RETIRED',resource:{...live.resource}},check),/NATIVE_PREPARATION_REFUSED/,'RETIRED without physicalStopProven is refused');await busy('retirement acknowledged without physical proof');
  await store.allocations.record({...key,state:'RETIRED',resource:{...live.resource,physicalStopProven:true}},check);
+ await continueFrom(store,source,c.sourceSaved,paused,{mode:'resume',target,expiresAtMs});
  assert.equal((await store.allocations.claim(second,check)).dispatch,true,'the replacement claims once the launched predecessor is RETIRED with its physical stop proven');
  assert.equal((await store.allocations.claim(first,check)).dispatch,false,'the retired predecessor replays without redispatch');
 });
@@ -91,7 +91,7 @@ test('concurrent replacement claims after retirement admit exactly one under the
  if(second)assert.ok(results.some(r=>r.status==='rejected'&&/CONVERSATION_BUSY/.test(String(r.reason?.code??r.reason?.message))),'the loser is excluded by the winner');
 });
 test('physical stop without grant revocation is refused by the next-run owner; revocation through the real budget admission admits the reservation',async t=>{
- const f=await fixture(t,{leaseMs:120000}),store=f.stack.store,binding=f.binding,saved=await store.read(binding,{},check),scopes=saved.run.scopes,policyRevision=saved.run.policyRevision,clientId=scopes[0].resourceId,expiresAtMs=f.expiry,at=Date.now();
+ const f=await fixture(t,{leaseMs:120000}),store=f.store,binding=f.binding,saved=await store.read(binding,{},check),scopes=saved.run.scopes,policyRevision=saved.run.policyRevision,clientId=scopes[0].resourceId,expiresAtMs=f.expiry,at=Date.now();
  const intent={binding,allocationKey:hash(binding),original:{binding,executionKey:hash(binding),executionId:hash(binding),planSha256:'a'.repeat(64),expiresAtMs,versions},allocationSha256:f.facts.allocationSha256,qualification:{attempt:1,policyRevision},grantIntents:[{grantId:f.facts.grantId,capabilitySha256:f.facts.capabilitySha256,expiresAtMs}],taskRequestSha256:'c'.repeat(64),expiresAtMs},key={binding,allocationKey:intent.allocationKey};
  await store.allocations.claim(intent,check);const res={...resource(at),taskArn:f.facts.qualificationBinding.workerArn};await store.allocations.record({...key,state:'ALLOCATED',resource:res},check);
  const status=state=>({eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}});await store.append(binding,status('starting'),check);await store.append(binding,status('running'),check);

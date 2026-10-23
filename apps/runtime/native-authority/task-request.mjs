@@ -1,7 +1,7 @@
 /** Canonical inert RunTask request. Expected placement always comes from reviewed control configuration. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 
 export function compileNativeTaskRequest(configuration){
  const c=own(configuration,['original','taskRequest','containerName']);

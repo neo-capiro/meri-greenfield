@@ -23,7 +23,7 @@ const check=()=>{};
 async function fixture({later=false,allocated=true,legacy=false,claimed=true,priorSdk=false,launch=false}={}){
  const f=candidateFixture(),c=f.configuration.nativeCandidate,sql=initialInputFixture();
  for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])c.preparationIntent[k]=normalize(c.preparationIntent[k]);
- c.preparationIntent.launchTemplate.command=normalize(c.preparationIntent.launchTemplate.command);c.preparationIntent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=c.preparationIntent.secureStorageDirectory;
+
  c.taskRequest.overrides.containerOverrides[0].command=['start'];c.multiRun={runWindowMs:60000,materialDirectory:resolve('synthetic-meri-material'),dynamicInitialRuns:true};
  const originalBinding={...f.binding,conversationId:id(1300),runId:id(1301),attemptId:id(1302),workerId:id(1303)},binding={...originalBinding,...(later?{runId:id(1311),attemptId:id(1312),workerId:id(1313),writerFence:2}:{})};
  const proposal=await sql.proposal({context:{binding:originalBinding,scopes:f.scopes,versions:c.runtime.versions}});
@@ -31,13 +31,12 @@ async function fixture({later=false,allocated=true,legacy=false,claimed=true,pri
  const durable=createPostgresConversationStore({pool:sql.pool});await durable.accept(proposal.acceptance,check);
  // Later-run admission/reservation is a scripted accepted owner answer; the allocation and Stop journals are real modules.
  const store=later?{...durable,nextRuns:{...durable.nextRuns,async readTarget(){return {state:'ACCEPTED',source:originalBinding,target:binding,scopes:f.scopes,policyRevision:c.qualification.policyRevision};}}}:durable;
- const state={clock:f.now,issues:0,model:0,material:0,allocation:0,capture:0,reservations:0};
+ const state={clock:f.now,issues:0,material:0,allocation:0,capture:0,reservations:0};
  const admission={schemaVersion:1,state:'ADMITTED',binding:originalBinding,selectedClientId:id(5),policyRevision:c.qualification.policyRevision,versions:c.runtime.versions,configurationSha256:'0'.repeat(64),expiresAtMs:f.now+60000,createdAtMs:f.now};
  const initialBindings={async read({binding:b}){return hash(b)===hash(originalBinding)?structuredClone(admission):null;},async readConversation(){return structuredClone(admission);}};
- const issuanceStore=createMemoryIssuanceStore(),capability='synthetic-historical-task-material',proxyCredential='synthetic-historical-model-material';
+ const issuanceStore=createMemoryIssuanceStore(),capability='synthetic-historical-task-material';
  const capabilityAuthority={async generate(){state.issues++;return {grantId:id(1320),capability,materialRef:'synthetic-existing-ref'};},async retrieve(){state.material++;throw Error('Stop must not open material');},async status(){throw Error('Stop must not reconcile issuance');}};
- const modelGrants={async issue({intent}){state.model++;return {...intent,grantId:id(1321),capabilitySha256:capabilityDigest(proxyCredential),proxyCredential};}};
- const options={configuration:f.configuration,pool:sql.pool,store,credentials:{control:f.secret.control},issuanceStore,capabilityAuthority,modelGrants,initialBindings,now:()=>state.clock,limits:{maxRequestMs:1000,maxFactBytes:131072}};
+ const options={configuration:f.configuration,pool:sql.pool,store,credentials:{control:f.secret.control},issuanceStore,capabilityAuthority,initialBindings,now:()=>state.clock,limits:{maxRequestMs:1000,maxFactBytes:131072}};
  const ports=createPreparedRunBindings(options);admission.configurationSha256=ports.configurationSha256;
  const request=(await store.read(binding,{},check)).request,intent={binding,issuanceKey:hash(binding),requestSha256:hash(request),expiresAtMs:admission.expiresAtMs};
  const rawIssued=await ports.issuer.issue(intent),rawFacts=await ports.facts.compile({intent,issuance:rawIssued.issuance}),compiled=structuredClone(compilePreparedRunFacts(rawFacts,{intent,issuance:rawIssued.issuance,now:()=>state.clock}));
@@ -63,7 +62,7 @@ async function fixture({later=false,allocated=true,legacy=false,claimed=true,pri
   const stop=(extra={})=>registry.handle(new Request('https://control.invalid/v1/execution/kickoff/stop',{method:'POST',headers:{authorization:'Bearer '+credentials.control,'content-type':'application/json'},body:JSON.stringify({binding,executionId:hash(binding),...extra})}));
   return {registry,stop,ports:p};
  }
- const counts=()=>({issues:state.issues,model:state.model,material:state.material,allocation:state.allocation,capture:state.capture,reservations:state.reservations,runs:ecs.state.runs,stops:ecs.state.stops,revokes:budget.state.revokes});
+ const counts=()=>({issues:state.issues,material:state.material,allocation:state.allocation,capture:state.capture,reservations:state.reservations,runs:ecs.state.runs,stops:ecs.state.stops,revokes:budget.state.revokes});
  return {f,c,sql,store,ports,state,admission,binding,initialBindings,issuanceStore,custody,allocator,ecs,budget,fresh,counts,read,publish};
 }
 const changedRender=(configuration,credentials)=>{configuration.versions.imageDigest='sha256:'+'f'.repeat(64);configuration.nativeCandidate.runtime.versions=configuration.versions;configuration.nativeCandidate.preparationIntent.imageSha256='f'.repeat(64);configuration.nativeCandidate.taskRequest.taskDefinition='arn:aws:ecs:us-east-1:967807252336:task-definition/new-render:99';credentials.control='synthetic-rotated-control';};
@@ -85,7 +84,7 @@ test('MR01 claimed allocation discovers its exact old task without installing a 
 });
 test('MR01 terminal outcome is retained, unknown revocation blocks settlement and fresh reentry settles once',async()=>{
  const x=await fixture();await x.publish('failed');x.budget.state.revokeWorks=false;const before=x.counts(),p=x.fresh(changedRender);
- try{assert.equal((await p.stop()).status,503);assert.notEqual((await x.read()).state,'RETIRED');assert.equal((await x.store.read(x.binding,{},check)).run.state,'failed');assert.equal(x.counts().model,before.model);
+ try{assert.equal((await p.stop()).status,503);assert.notEqual((await x.read()).state,'RETIRED');assert.equal((await x.store.read(x.binding,{},check)).run.state,'failed');
   x.budget.state.revokeWorks=true;const next=x.fresh(changedRender);try{assert.equal((await next.stop()).status,200);assert.equal((await x.read()).state,'RETIRED');assert.equal((await x.store.read(x.binding,{},check)).events.filter(e=>e.type==='run.status'&&e.data.state==='failed').length,1);}finally{await next.registry.close();}
  }finally{await p.registry.close();}
 });

@@ -30,9 +30,7 @@ function assertPlainTree(root){
    if(entry.isDirectory())walk(join(dir,entry.name),depth+1);else if(!entry.isFile())fail('SKILL_PLUGIN_DIRECTORY_REFUSED');}};
  walk(root,0);
 }
-/** The lexical part of assertSkillPluginDirectory alone: an absolute, normalized path disjoint from the workspace path. Only the
- * in-image measurement uses it on its own (index.mjs projectSdkCapabilities), to project the options of a run whose directories it
- * never creates; every run verifies the real directories with assertSkillPluginDirectory.
+/** The lexical part of assertSkillPluginDirectory: an absolute, normalized path disjoint from the workspace path.
  * @param {unknown} directory @param {string} cwd @returns {string} */
 export function assertSkillPluginPath(directory,cwd){
  if(typeof directory!=='string'||!isAbsolute(directory)||directory.includes('/../')||directory.endsWith('/')||directory.includes('\0')||directory===cwd||directory.startsWith(cwd+'/')||cwd.startsWith(directory+'/'))fail('SKILL_PLUGIN_DIRECTORY_REFUSED');
@@ -49,10 +47,9 @@ export function assertSkillPluginDirectory(directory,cwd){
  try{assertPlainTree(real);}catch{fail('SKILL_PLUGIN_DIRECTORY_REFUSED');}
  return real;
 }
-/** @param {import('./policy.mjs').CapabilityPolicy} policy @param {{skillPluginDirectory:unknown,cwd:string}} facts
- * @param {(directory:unknown,cwd:string)=>string} [verify] assertSkillPluginDirectory; assertSkillPluginPath only for the measurement projection */
-export function createSkillPlugin(policy,{skillPluginDirectory,cwd},verify=assertSkillPluginDirectory){
- const path=verify(skillPluginDirectory,cwd),available=describeSkillPlugin().skills.map(skill=>skill.name);
+/** @param {import('./policy.mjs').CapabilityPolicy} policy @param {{skillPluginDirectory:unknown,cwd:string}} facts */
+export function createSkillPlugin(policy,{skillPluginDirectory,cwd}){
+ const path=assertSkillPluginDirectory(skillPluginDirectory,cwd),available=describeSkillPlugin().skills.map(skill=>skill.name);
  const names=policy.skillNames===null?available:[...policy.skillNames];if(names.some(name=>!available.includes(name)))fail('SKILL_PLUGIN_NAME_REFUSED');
  const skills=names.map(name=>`${PLUGIN_NAME}:${name}`);
  return Object.freeze({plugins:[{type:/** @type {const} */('local'),path,skipMcpDiscovery:true}],skills,tools:[SKILL_TOOL],allowedTools:[],
@@ -62,8 +59,7 @@ export function createSkillPlugin(policy,{skillPluginDirectory,cwd},verify=asser
 /** G3: the run's read-only skill plugin copy. The runner (conversation-runner.mjs prepareRuntime) materializes the image's original
  * skills (`packages/skills`: assets.json catalog pins, the same assets `skillsDigest` measures) into the one run-invariant path
  * `sdkSkillPluginDirectory(configParentDirectory)` under the admitted private SDK configuration parent, then seals it read-only and
- * verifies the exact tree before any SDK option is built. The path carries no per-run value, so the `--plugin-dir-no-mcp` launch
- * argument stays inside the one measured launch template; the SDK option template places it (sdk-option-template.mjs).
+ * verifies the exact tree before passing the plugin directory to the native SDK options.
  * An existing copy (a later run of the same task) is never rewritten: it must verify exactly, or the run refuses.
  *
  * Exact tree: `.claude-plugin/plugin.json` naming this plugin and version, and one `skills/<name>/SKILL.md` per described skill whose

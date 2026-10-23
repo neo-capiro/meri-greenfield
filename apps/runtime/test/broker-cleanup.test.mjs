@@ -1,6 +1,6 @@
 /**
  * Audit L5: every Temporal broker exit after dispatch closes the original through its stop owner.
- * Synthetic: the native owner's controller.close stands in for the admitted supervisor's physical task stop and grant
+ * Synthetic: the native owner's controller.close stands in for the canonical run owner's physical task stop and grant
  * revocation, which its own suites and real ECS/PostgreSQL qualification own. No Temporal server, ECS, database or model.
  */
 import test from 'node:test';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
@@ -12,7 +12,6 @@ import {validateConfiguration} from '../config.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
 import {createPreparedTaskKickoff} from '../native-authority/prepared-kickoff.mjs';
 import {createPreparedKickoffApplication} from '../native-authority/prepared-kickoff-http.mjs';
-import {createNativeExecutionApplication} from '../native-authority/execution-http.mjs';
 import {listenFetch} from '../native-authority/test/task-verifier-fixture.mjs';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 
@@ -27,10 +26,9 @@ test('audit probe: a default-constructed broker never uses execution/start and s
   if(op==='execution/start')throw Error('legacy start must not be called');
   if(op==='execution/kickoff/stop'){stopLive=!signal.aborted;return {binding,executionId,expiresAtMs};}
   if(op==='execution/kickoff')return {binding,executionId,expiresAtMs};
-  if(op==='execution/kickoff/status')return {binding,executionId,expiresAtMs,state:'executing'};
-  assert.equal(op,'execution/poll');polls++;return {binding,executionId,state:'executing'};}}});
+  assert.equal(op,'execution/kickoff/status');polls++;return {binding,executionId,expiresAtMs,state:'executing'};}}});
  await assert.rejects(run({binding}),/synthetic-heartbeat-cancel/u);
- assert.deepEqual(calls,['execution/kickoff','execution/kickoff/status','execution/poll','execution/kickoff/stop']);
+ assert.deepEqual(calls,['execution/kickoff','execution/kickoff/status','execution/kickoff/stop']);
  assert.equal(stopLive,true,'the original stop runs on an independent live signal');
 });
 
@@ -45,22 +43,19 @@ async function composition(t,{loseKickoffAck=false,blockPoll=false,now}={}){
  const original=createExecutionBinding({binding,versions,plan:{synthetic:'broker-cleanup'},expiresAtMs:Date.now()+30000});
  const effects={terminated:false,revoked:false,closedAt:null,closes:0,stopRequests:0,kickoffs:0,polls:0,starts:0};
  const pollEntered=Promise.withResolvers(),teardown=Promise.withResolvers();teardown.promise.catch(()=>{});
- let record={state:'CLAIMED',original,resource:null};
+ let runState='queued',record={state:'CLAIMED',original,resource:null};
  const proof=released=>({original,taskArn,checkedAtMs:Date.now(),expiresAtMs:original.expiresAtMs,released});
  const controller={
   allocate:async()=>{record={state:'ADMITTED',original,resource:{taskArn}};return {original,resource:{taskArn}};},
-  close:async()=>{effects.closes++;effects.terminated=true;effects.revoked=true;effects.closedAt??=Date.now();},
-  prepared:{stack:{broker:{poll:async()=>({binding,executionId:original.executionId,state:'executing'})}}}};
- const owner=createPreparedTaskKickoff({original,controller,store:{allocations:{read:async()=>({record,run:{binding,state:'queued'}})}},
-  runner:{readiness:async()=>proof(false),release:async()=>{record.resource.launchBinding={state:'STARTED'};return proof(true);}},
+  close:async()=>{effects.closes++;effects.terminated=true;effects.revoked=true;effects.closedAt??=Date.now();}};
+ const owner=createPreparedTaskKickoff({original,controller,store:{allocations:{read:async()=>({record,run:{binding,state:runState}})}},
+  runner:{readiness:async()=>proof(false),release:async()=>{runState='running';return proof(true);}},
   enabled:true,maxWaitMs:2000,pollMs:10,cleanupMs:2000});
- const observed={kickoff:owner.kickoff,status:owner.status,stop:value=>{effects.stopRequests++;return owner.stop(value);}};
- const kickoffApp=createPreparedKickoffApplication({owner:{...observed,kickoff:value=>{effects.kickoffs++;return owner.kickoff(value);}},controlCapabilitySha256:sha(control),enabled:true});
- const executionApp=createNativeExecutionApplication({broker:{start:async()=>{effects.starts++;throw Error('legacy start must not be called');},poll:async({signal})=>{effects.polls++;
-   if(!blockPoll)return {binding,executionId:original.executionId,state:'executing'};
-   pollEntered.resolve();await new Promise((resolve,reject)=>{signal.addEventListener('abort',()=>reject(Error('poll-aborted')),{once:true});teardown.promise.then(()=>reject(Error('poll-teardown')));});}},
-  runtime:{taskCapabilitySha256:sha(task),runtime:async()=>{throw Error('unused');}},controlCapabilitySha256:sha(control),taskCapabilitySha256:sha(task),enabled:true,maxRequestMs:30000});
- const listener=await listenFetch({async handle(request){return await kickoffApp.handle(request)??await executionApp.handle(request);}});
+ const observed={kickoff:owner.kickoff,async status(value){effects.polls++;
+  if(blockPoll){pollEntered.resolve();await new Promise((resolve,reject)=>{value.signal.addEventListener('abort',()=>reject(Error('poll-aborted')),{once:true});teardown.promise.then(()=>reject(Error('poll-teardown')));});}
+  return owner.status(value);},stop:value=>{effects.stopRequests++;return owner.stop(value);}};
+ const kickoffApp=createPreparedKickoffApplication({owner:{...observed,kickoff:value=>{effects.kickoffs++;return owner.kickoff(value);}},controlCapabilitySha256:sha(control),enabled:true,maxRequestMs:30000});
+ const listener=await listenFetch(kickoffApp);
  t.after(async()=>{teardown.resolve();await owner.close().catch(()=>{});await listener.close();});
  const transport=async(url,init)=>{const response=await fetch(url,init);if(loseKickoffAck&&url.endsWith('/v1/execution/kickoff')){await response.body?.cancel();throw new TypeError('synthetic lost kickoff acknowledgment');}return response;};
  const native=createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,fetch:transport});

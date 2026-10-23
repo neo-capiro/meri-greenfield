@@ -13,7 +13,7 @@ import {createNativeContinuationRuntime} from './continuation-runtime.mjs';
 import {createDurableSdkSessionOwner} from './session-owner.mjs';
 import {createNativeSdkSessionApplication} from './session-http.mjs';
 import {createNativeExecutionApplication} from './execution-http.mjs';
-import {executionFault} from './execution-broker.mjs';
+import {executionFault} from './remote-task-boundary.mjs';
 import {createPreparedNativeRuntime} from './prepared-runtime.mjs';
 import {createNativePreparationApplication} from './preparation-http.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
