@@ -42,7 +42,7 @@ for(const change of ['scope','client','cancel'])test(`canonical ${change} change
  await assert.rejects(createNativeContinuationRuntime(x.config).prepare(x.input));assert.equal(x.counts().restores,1);
 });
 for(const field of ['checkpointSha256','opaqueSessionSha256','expiresAtMs','sdkSessionKey'])test(`native ${field} mismatch refuses`,async()=>{
- const x=fixture();if(field==='sdkSessionKey')x.restored.sdkSessionKey.sessionId=id(99);else x.restored.restoreReceipt[field]=field==='expiresAtMs'?NOW+20000:'e'.repeat(64);
+ const x=fixture();if(field==='sdkSessionKey')x.restored.sdkSessionKey.sessionId=id(99);else x.restored.restoreReceipt[field]=field==='expiresAtMs'?NOW-1:'e'.repeat(64);
  await assert.rejects(createNativeContinuationRuntime(x.config).prepare(x.input));
 });
 test('worker snapshot key is refused without immutable object read; worker receipt fields are inert',async()=>{
