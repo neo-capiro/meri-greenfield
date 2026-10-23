@@ -21,13 +21,14 @@ official hash-pinned tarball; both npm and npx remain available and are probed.
 
 Python uses standard offline pip installation with `--require-hashes`,
 `--only-binary=:all:` and `pip check`. The 22 retained PyPI wheels total
-57,933,097 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
+57,936,521 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
 universal wheels are architecture independent. The wheel lock records the
 upstream URL, size and SHA256 of every archive. The set retains the former
 image's Python libraries and adds the pandas/pypdf dependencies already used
 by the canonical artifact source and worker requirements. It supports document,
 spreadsheet, presentation, chart and typed table-analysis generation. Pillow is
-13.0.0. pip installs these application libraries in the image's standard
+13.0.0; pypdf 6.21.1 includes the upstream PDF parsing fixes. pip installs these
+application libraries in the image's standard
 `/usr/lib/python3.13/site-packages`; `--break-system-packages` explicitly permits
 that build-time installation into Wolfi's managed interpreter. The pinned set
 does not replace pip or its distribution dependencies. Native probes check the
