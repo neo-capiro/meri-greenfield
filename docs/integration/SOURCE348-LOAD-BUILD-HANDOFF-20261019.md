@@ -1,5 +1,7 @@
 # Source348 load repair: source-only image handoff (2026-10-19)
 
+> Historical evidence only, superseded on 23 October 2026 by the [Codex workflow](../handover/20261022/CODEX-VALIDATION-AND-SHIPPING.md). The generated image-proof pipeline and its old qualification launchers/comparator helpers have been removed. Commands, roles, holds and source pins below describe the dated run; recover removed scripts from Git history only to inspect that evidence. Do not execute these procedures for a current release.
+
 ## Pins and status
 
 The exact repaired **code** commit is `de104e80d0876ac62bccbafb81055b0832cfc953` on `diagnostic/source348-load-amplification-20261019`, based on `34851020aa0d73fead4db59ba6e26a098e2d0313`. This handoff lives on a separate docs successor; its commit is not the reviewed code pin. Use the exact code commit in any new source seal and image request unless a later code commit receives its own review and seal.

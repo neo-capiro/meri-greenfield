@@ -1,5 +1,7 @@
 # Runtime-base source candidate checks
 
+> Historical evidence only, superseded on 23 October 2026 by the [Codex workflow](../../20261022/CODEX-VALIDATION-AND-SHIPPING.md). The generated image-proof pipeline and its old qualification launchers/comparator helpers have been removed. Commands, roles, holds and source pins below describe the dated run; recover removed scripts from Git history only to inspect that evidence. Do not execute these procedures for a current release.
+
 These commands check the revision-2 image source candidate offline. Run them from the `meri-greenfield` repository root with an explicit Node.js 24 executable and Python 3 executable. The local receipts below used Node.js `v24.19.0` and Python `3.12.14` on the Windows jump box. The final image request pins Node.js `v24.21.0`; the local checks do not measure that Linux image.
 
 ## Focused commands

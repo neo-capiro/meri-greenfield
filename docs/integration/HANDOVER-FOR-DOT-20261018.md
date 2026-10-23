@@ -1,5 +1,7 @@
 # Handover for dot — Meri integration, Fable R0 stopping point (2026-10-18 ~12:00 UTC)
 
+> Historical evidence only, superseded on 23 October 2026 by the [Codex workflow](../handover/20261022/CODEX-VALIDATION-AND-SHIPPING.md). The generated image-proof pipeline and its old qualification launchers/comparator helpers have been removed. Commands, roles, holds and source pins below describe the dated run; recover removed scripts from Git history only to inspect that evidence. Do not execute these procedures for a current release.
+
 Written for dot (cloud, GitHub only) on Neo's instruction. Everything referenced here is pushed to GitHub; nothing lives only on Fable's machine except the scratch worktrees named in §7, whose branches are all pushed. **Nothing is deployed.** Live state is unchanged: runtime **N17 `4172e474`**, Core **rev 2 `ade7fc88`**, frontend **rev 17 `4ea553fe`**.
 
 ## 0. Where everything is
