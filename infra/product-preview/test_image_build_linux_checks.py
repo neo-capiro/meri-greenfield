@@ -144,12 +144,12 @@ class SourceControls(unittest.TestCase):
         with self.assertRaises(ValueError): self.verify()
 
 class ShellIsolation(unittest.TestCase):
-    def test_all_five_probes_are_current_readonly_nonroot_networkless_and_bounded(self):
+    def test_all_probes_and_inventories_are_readonly_nonroot_networkless_and_bounded(self):
         with fixture.build_fixture() as (root,result):
             self.assertEqual(result.returncode,0,result.stderr)
             records=[part.splitlines() for part in (root/'calls').read_text().split('BEGIN ')[1:]]
             runs=[r[1:-1] for r in records if r[0].endswith('/docker') and r[1]=='run']
-            self.assertEqual(len(runs),5)
+            self.assertEqual(len(runs),7)
             for args in runs:
                 for value in ['--rm','--read-only','1000:1000','none','ALL','no-new-privileges','256','2g']:
                     self.assertIn(value,args)
@@ -157,6 +157,8 @@ class ShellIsolation(unittest.TestCase):
                 self.assertFalse(any(x in args for x in ['-v','--volume','--env-file','--privileged']))
             joined='\n'.join('\n'.join(x) for x in runs)
             self.assertIn('runtime-base-probe.mjs',joined); self.assertIn('executor-generation-smoke.mjs',joined)
+            self.assertIn('apk\n',joined); self.assertIn('info\n-vv',joined)
+            self.assertIn('python3.13\n',joined); self.assertIn('-m\npip\nlist\n--format=json',joined)
             self.assertNotIn('image_probe',joined); self.assertNotIn('native-cli.mjs',joined)
 
     @unittest.skipIf(os.name=='nt','Git Bash cannot enforce Linux RLIMIT_FSIZE; native Linux check remains required')
