@@ -2,6 +2,7 @@
  * recheck current membership/conversation access and retention before release. This port accepts no session credential or dispatch
  * authority. Historical source/target rows and original effect expiry remain evidence, never authority to start work again. */
 import {bounded,own,uuid,validateShape,hash,same,fail} from '../boundary.mjs';
+import {isConversationClient,conversationAuthorityIncludes} from '../../../../packages/contracts/conversation-scope.mjs';
 
 export function createLifecycleReceiptReader({tx,verifyRun,lookup,pins,readExecution}){
  const refused=()=>fail('LIFECYCLE_RECEIPT_REFUSED');
@@ -13,10 +14,10 @@ export function createLifecycleReceiptReader({tx,verifyRun,lookup,pins,readExecu
  }
  return async function readReceipt(value,check){
   const v=own(bounded(value),['principal','binding','scopes','selectedClientId','controlId']),b=v.binding;
-  own(v.principal,['tenantId','actorId']);validateShape('RunBinding',b);uuid(v.controlId);uuid(v.selectedClientId);
+  own(v.principal,['tenantId','actorId']);validateShape('RunBinding',b);uuid(v.controlId);if(!isConversationClient(v.selectedClientId))refused();
   if(v.principal.tenantId!==b.tenantId||v.principal.actorId!==b.actorId||!Array.isArray(v.scopes)||!v.scopes.length||v.scopes.length>100)refused();
   for(const scope of v.scopes){validateShape('Scope',scope);if(scope.tenantId!==v.principal.tenantId)refused();}
-  if(new Set(v.scopes.map(hash)).size!==v.scopes.length||new Set(v.scopes.map(s=>s.policyRevision)).size!==1||!v.scopes.some(s=>s.kind==='client'&&s.resourceId===v.selectedClientId))refused();
+  if(new Set(v.scopes.map(hash)).size!==v.scopes.length||new Set(v.scopes.map(s=>s.policyRevision)).size!==1||!conversationAuthorityIncludes(v.scopes,b,v.selectedClientId))refused();
   async function source(c){
    const run=await verifyRun(c,b,v.scopes),p=await lookup(c,b,v.controlId);check();if(!p)refused();
    pins(p,run,b,v.scopes,v.selectedClientId);

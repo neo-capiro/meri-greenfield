@@ -1,5 +1,7 @@
 # Cross-owner management source gate
 
+**Superseded runtime plan:** read [the item 0 suspension record](wave2-m2-suspended-for-item0.md) first. This historical record does not authorize further native-authority, reservation, proxy, issuer or custom continuity work. Behavior requirements carry forward to the SDK architecture; retention redesign is pending root review.
+
 This is an explicit root-run, synthetic, disposable PostgreSQL 16 test. It is not a product composition or deployment recipe. R has syntax-checked the harness and has not executed a database. Use a fresh database in an isolated Linux network namespace listening only on `127.0.0.1`; do not use any ambient database URL or a Windows native client.
 
 Core is pinned to commit `eb0894f8a08063819476674fd183413f96e12352`, tree `c8c46303328b573b71c181b5a1f48ea693960578`. `apps/runtime/test/management-core-pin.json` records the exact Git blob SHA256s. Read from a clean Linux checkout with LF Git blob bytes. Never normalize bytes to make a hash pass. This deliberately revised pin includes U's baseline bootstrap-guard repair. The original baseline migration remains unchanged; the forward General migration recognizes and repairs its exact known guard. Root must rehearse the complete pinned stack.

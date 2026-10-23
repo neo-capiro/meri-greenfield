@@ -1,5 +1,7 @@
 # Remaining M2 owner work and proposed allocations
 
+**Superseded runtime plan:** read [the item 0 suspension record](wave2-m2-suspended-for-item0.md) first. This historical record does not authorize further native-authority, reservation, proxy, issuer or custom continuity work. Behavior requirements carry forward to the SDK architecture; retention redesign is pending root review.
+
 These are reviewable source proposals, not enabled capabilities. No new migration ID, public endpoint, issuer, purge job or production placement is claimed by this document.
 
 ## Managed Trash finalization

@@ -24,7 +24,7 @@ function combinedPool(budget,conversation){return {async connect(){let client;co
  return client.query(sql,args);
  },release(error){client?.release(error);}};}};}
 
-export async function installationFixture({scene=billTextCase(),general=false}={}){
+export async function installationFixture({scene=billTextCase(),general=false,mountNative=true}={}){
  const f=await ownerFixture(scene.operation.id,{scene,general}),sf=storeFixture();Object.assign(sf.state,f.storeState);
  const pool=combinedPool(f.gatewayConfiguration.pool,sf.pool),original=createExecutionBinding({binding:f.binding,versions,plan:{synthetic:true},expiresAtMs:f.deadlineMs}),grant=f.grant;
  const currentOwner=createPostgresAdmittedRunOwner({pool:admissionPool(f),allocationJson:f.allocationJson,grantFactsJsons:[JSON.stringify(grant)],now:f.now,limits:{maxRequestMs:1000,maxFactBytes:131072}});
@@ -39,6 +39,6 @@ export async function installationFixture({scene=billTextCase(),general=false}={
  };
  const preparation=await prepareGeneralReadInstallation({familyIds:[f.family],newId:randomUUID,taskPorts});
  const prepared=configuration=>createPreparedNativeReads({...Object.fromEntries(['binding','allocationJson','grantFactsJsons','grantId','taskArn','issuanceFactsSha256','runRequestSha256','scopes','currentOwner','readCurrentEntry','taskCapability','approvedReads','now'].map(key=>[key,tuple[key]])),expiresAtMs:f.deadlineMs,enabled:true,...configuration,createReadsRuntime:configuration?.createReadsRuntime??(inner=>preparation.createReadsRuntime({...tuple,...inner}))});
- const mounted=prepared(),client=createNativeReadsClient({origin:'https://native.synthetic.invalid',credential:tuple.taskCapability,binding:f.binding,approvedReads:tuple.approvedReads,fetchImpl:(url,init)=>mounted.application.handle(new Request(url,init)),now:f.now});
+ const mounted=mountNative?prepared():null,client=mounted===null?null:createNativeReadsClient({origin:'https://native.synthetic.invalid',credential:tuple.taskCapability,binding:f.binding,approvedReads:tuple.approvedReads,fetchImpl:(url,init)=>mounted.application.handle(new Request(url,init)),now:f.now});
  return {...f,pool,tuple,stateComposition:state,preparation,taskPorts,prepared,mounted,client};
 }

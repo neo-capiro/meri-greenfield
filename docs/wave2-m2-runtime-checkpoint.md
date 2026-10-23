@@ -1,5 +1,7 @@
 # M2 runtime source checkpoint
 
+**Superseded runtime plan:** read [the item 0 suspension record](wave2-m2-suspended-for-item0.md) first. This historical record does not authorize further native-authority, reservation, proxy, issuer or custom continuity work. Behavior requirements carry forward to the SDK architecture; retention redesign is pending root review.
+
 Pinned base: `0e5e6f8765abcdebcc88db32fee79d349ddf523c`. Draft PR215 is incomplete M2 source work, not activation or acceptance. The preceding public checkpoint is `16a93e7fafd648c13a9289d8a7d623d89967366a`; this increment preserves its immutable contracts package.
 
 | Requirement | Implemented source | Remaining source and evidence |

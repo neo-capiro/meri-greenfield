@@ -17,6 +17,9 @@ import {origin as coreOrigin} from '../../native-read-credentials/test/fixture.m
 import {allocation} from '../../../../gateway/budget/tool-budget-binding.mjs';
 import {delegationCoreFixture} from './fixture.mjs';
 import {datasetMetadataTaskPort} from '../../retained-reads/dataset-metadata-port.mjs';
+import {createMemoryTaskPorts} from '../../retained-reads/memory-task-ports.mjs';
+import {familyCase} from '../../../../gateway/general-reads/test/family-cases.mjs';
+import {conversationScopes} from '../../../../../packages/contracts/conversation-scope.mjs';
 import {OBSERVATION_CALLS,DISPATCH_OBSERVATIONS,CREDENTIAL_OBSERVATIONS,READ_TOKEN_CEILINGS,operationsDigest} from '../contract.mjs';
 
 const CANDIDATE={identity:'/run/meri/identity',task:'/run/meri/task-capability',control:'/run/meri/control-capability',proxy:'/run/meri/proxy-capability'};
@@ -43,20 +46,22 @@ async function composed({unattended=false,consent='active',delegation=true,hangT
  // An in-flight source request that ends only when its transport aborts it.
  const hanging=(url,init)=>{const entry={startedAt:Date.now(),abortedAt:null};inflight.push(entry);
   return new Promise((_,reject)=>init.signal.addEventListener('abort',()=>{entry.abortedAt=Date.now();reject(init.signal.reason??Error('aborted'));},{once:true}));};
- const f=await installationFixture({scene,general}),s=secrets(),clientId=general?null:f.scopes[0].resourceId;
+ const f=await installationFixture({scene,general,mountNative:scene.family!=='client-knowledge-memory'}),s=secrets(),clientId=general?null:f.scopes[0].resourceId;
  const session=sessions({binding:f.binding,scopes:f.scopes,now:f.now}),live=new Set();
  const core=delegationCoreFixture({now:f.now,binding:f.binding,clientId,runDeadlineMs:f.deadlineMs,principal:f.core.principal,reservations:f.state.reservations,liveBearers:live,
   authority:f.core.fetchImpl,tools:hangTools?hanging:f.transport.fetchImpl});
  if(general)core.state.clientIds=[...f.core.state.clientIds];
  const a=allocation(f.allocationJson),occurrences=[];
+ const memoryPorts=f.family==='client-knowledge-memory'?createMemoryTaskPorts({coreOrigin,fetchImpl:core.fetchImpl,now:f.now,familyIds:[f.family]}):null;
  if(unattended)core.state.consent={id:'c1234567-b123-4c12-8d12-e123456789ab',state:consent,expiresAtMs:f.now()+86400000};
  const readOccurrence=async({binding})=>{occurrences.push(binding);if(!unattended)return null;
   return {consentId:core.state.consent.id,consentState:consent,consentExpiresAtMs:core.state.consent.expiresAtMs,consentCreatedAtMs:f.now()-1000,scheduleId:'d1234567-b123-4c12-8d12-e123456789ab',
    occurrenceKey:'e'.repeat(64),startedAtMs:f.now(),clientId,operationsDigest:operationsDigest(a.manifest.allowedOperations),policyRevision:f.policyRevision,runBinding:f.binding};};
  const composer=await createControlReadsComposer({configuration:s.configuration,secretFiles:READ,readSecret:s.readSecret,now:f.now,fetchImpl:core.fetchImpl,
-  gateway:{authority:f.gatewayConfiguration.authority,limits:f.gatewayConfiguration.limits,discoveryOwner:f.gatewayConfiguration.discoveryOwner,readCurrentInstallation:proof=>f.installationOwner.readCurrent({signal:proof.signal})},
+  gateway:{authority:f.gatewayConfiguration.authority,limits:memoryPorts?{...f.gatewayConfiguration.limits,maxRequestMs:10000}:f.gatewayConfiguration.limits,discoveryOwner:f.gatewayConfiguration.discoveryOwner,readCurrentInstallation:proof=>f.installationOwner.readCurrent({signal:proof.signal})},
   ...(unattended?{}:{nativeCredentials:session.relay.port}),familyIds:[f.family,...(retainedProbe?['dataset-metadata']:[])],
   ...(retainedProbe?{retainedTaskPorts:ports=>{retainedProbe(ports);return {families:{'dataset-metadata':datasetMetadataTaskPort()}};}}:{}),
+  ...(memoryPorts?{retainedTaskPorts:ports=>memoryPorts({task:ports.task,getSignedSourceCredentials:ports.getSignedSourceCredentials,getMemoryEligibilityCredentials:ports.getMemoryEligibilityCredentials})}:{}),
   ...(delegation?{delegation:{enabled:true,readOccurrence}}:{})});
  let n=0;
  /** A new task of the same run: fresh reads runtime, task ports and credential owner over the same composer. */
@@ -68,6 +73,67 @@ async function composed({unattended=false,consent='active',delegation=true,hangT
  const calls=pattern=>core.state.calls.filter(call=>pattern.test(call.path));
  return {f,core,session,composer,execute,mount,login,calls,occurrences,clientId,inflight,close:()=>{session.close();f.scope.abort();}};
 }
+
+function generalMemoryScene(){
+ const scene=familyCase('client-knowledge-memory','search_memory'),a=scene.authority;
+ // This synthetic scene represents the already-authorized personal/firm source. It provides no Core eligibility proof.
+ scene.binding=a.binding;scene.arguments={query:scene.arguments.query};
+ a.claims.scopes=conversationScopes(a.binding,null,a.policyRevision);
+ Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId],scopes:structuredClone(a.claims.scopes)});
+ a.decision.scopes=structuredClone(a.claims.scopes);
+ const fetch=scene.transport.fetchImpl;scene.transport.fetchImpl=async(url,options)=>{
+  const response=await fetch(url,options);
+  const helper=url.endsWith('/search_memory_eligibility'),value=await response.json();
+  if(helper)value.expiresAtMs=Math.min(value.expiresAtMs,value.checkedAtMs+5000);
+  scene.state[helper?'helperMutator':'pageMutator']?.(value);
+  scene.state[helper?'afterHelper':'afterPage']?.();
+  return Response.json(value,{headers:response.headers});
+ };return scene;
+}
+
+test('General memory crosses the mounted source owner and signed parent/helper before final release',async()=>{
+ const x=await composed({general:true,scene:generalMemoryScene()});
+ try{await x.login('SYNTHETIC_GENERAL');const value=JSON.parse(await x.execute());
+  assert.equal(value.subject.kind,'personal');assert.equal(value.result.records[0].payload.scope,'firm');
+  assert.deepEqual(x.f.wire.map(([url])=>new URL(url).pathname),['/api/clio/tools/search_memory','/api/clio/tools/search_memory_eligibility']);
+  const tokens=[...x.core.state.tokens.values()];assert.ok(tokens.some(t=>t.kind==='memory_eligibility'));
+  assert.ok(tokens.every(t=>t.request.schemaVersion===2&&t.request.targetClientId===null));
+  assert.equal(x.calls(IDENTITY).length,0);assert.equal(x.f.state.reservations.size,1);
+  const [[,slot]]=[...x.core.state.slots];assert.equal(slot.counts.memory_eligibility,1);
+  for(const kind of Object.keys(READ_TOKEN_CEILINGS))assert.ok(slot.counts[kind]<=READ_TOKEN_CEILINGS[kind],`${kind}: ${slot.counts[kind]}`);
+ }finally{x.close();}
+});
+
+test('mounted General memory withholds revoked origin/member and changed installation at every release stage',async()=>{
+ for(const stage of ['before','page','helper'])for(const field of ['memberActive','generalEligible']){
+  const x=await composed({general:true,scene:generalMemoryScene()});
+  try{await x.login('SYNTHETIC_GENERAL');if(stage==='before')x.core.state[field]=false;
+   else x.f.state[stage==='page'?'afterPage':'afterHelper']=()=>{x.core.state[field]=false;};
+   await assert.rejects(x.execute());assert.equal(x.f.wire.length,stage==='before'?0:stage==='page'?1:2);
+   assert.equal([...x.f.state.reservations.values()].some(r=>r.state==='SETTLED'),false);
+  }finally{x.close();}
+ }
+ const x=await composed({general:true,scene:generalMemoryScene()});
+ try{await x.login('SYNTHETIC_GENERAL');x.f.state.afterHelper=()=>{x.f.state.installRevoked=true;};
+  await assert.rejects(x.execute());assert.equal(x.f.wire.length,2);
+ }finally{x.close();}
+});
+
+test('mounted General memory rejects mixed client records and stale or altered eligibility without release',async()=>{
+ const cases=[
+  ['pageMutator',p=>{const record=structuredClone(p.records[0]);record.recordId='aaaaaaaa-0000-4000-8000-000000000001';record.payload.memoryItemId=record.recordId;record.payload.scope='client';record.payload.clientId='aaaaaaaa-0000-4000-8000-000000000002';p.records.push(record);},1],
+  ['helperMutator',p=>{p.checkedAtMs-=5001;},2],
+  ['helperMutator',p=>{p.resultSha256='0'.repeat(64);},2],
+  ['helperMutator',p=>{p.subject.actorId='aaaaaaaa-0000-4000-8000-000000000003';},2],
+  ['helperMutator',p=>{p.records[0].eligibleForRecall=false;},2],
+ ];
+ for(const [hook,mutate,calls]of cases){const x=await composed({general:true,scene:generalMemoryScene()});
+  try{await x.login('SYNTHETIC_GENERAL');x.f.state[hook]=mutate;await assert.rejects(x.execute());
+   assert.equal(x.f.wire.length,calls);assert.equal([...x.f.state.reservations.values()].some(r=>r.state==='SETTLED'),false);
+   if(calls===1)assert.equal([...x.core.state.tokens.values()].filter(t=>t.kind==='memory_eligibility').length,0);
+  }finally{x.close();}
+ }
+});
 
 test('an attended delegated read uses single-use per-route tokens and never the identity, context or membership routes',async()=>{
  const x=await composed();

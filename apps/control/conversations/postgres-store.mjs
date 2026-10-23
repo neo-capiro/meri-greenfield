@@ -8,7 +8,7 @@ import {createNativePreparationJournals} from './native-preparation-journal.mjs'
 import {createCompletionJournal} from './completion-journal.mjs';
 import {createNextRunJournal} from './next-run-journal.mjs';
 import {createConversationHistoryStore} from './history/store.mjs';
-import {productFailure} from '../product-access/errors.mjs';
+import {ProductError,productFailure} from '../product-access/errors.mjs';
 import {createOriginalInputJournal} from './initial-input-journal.mjs';
 import {assertOriginalInputActive} from './initial-input-facts.mjs';
 import {createMemoryProposalContextJournal} from './memory-proposal-context-journal.mjs';
@@ -83,8 +83,8 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  const initialInputs=createOriginalInputJournal({tx,rowRun,now,admission}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(!isConversationClient(i.selectedClientId))fail('CONVERSATION_SCOPE_REFUSED');return accept(i,check,i.selectedClientId);}});
  const management=Object.freeze({available:conversationManagement!==undefined,async withTerminalConversation(raw,work){
   if(conversationManagement===undefined||typeof work!=='function')fail('CONVERSATION_MANAGEMENT_UNAVAILABLE');
-  const command=managementCommand(raw),key={...command.principal,conversationId:command.conversationId};let callbackError;
-  try{return await tx(key,()=>{},async c=>{
+  const command=managementCommand(raw),key={...command.principal,conversationId:command.conversationId};let callbackError,refusal;
+  try{const result=await tx(key,()=>{},async c=>{
    // Keep updates/deletion excluded while permitting retention's FK KEY SHARE on its separate connection.
    const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR NO KEY UPDATE',[key.tenantId,key.conversationId])).rows;
    if(conversations.length>1)fail('STORE_CORRUPT');const old=conversations[0];
@@ -93,15 +93,18 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(runs.some(r=>r.projection.binding.actorId!==key.actorId)||!old&&runs.length)fail('STORE_CORRUPT');
    // The canonical retention projection requires a real Meri subject. Refuse before any ledger effect;
    // a Core bootstrap alone supplies no transcript scope/retention row and must never be fabricated here.
-   if(!old&&command.operation==='trash')fail('CONVERSATION_MANAGEMENT_UNAVAILABLE');
+   if(!old&&command.operation==='trash'){refusal=new ProductError('CONVERSATION_MANAGEMENT_UNAVAILABLE');return null;}
    if(command.operation!=='rename'){
     // writerFence belongs to a run; successive runs can both start at one. A historical closed range is not current work.
-    if(runs.some(r=>r.sequence_end==null&&!terminal(r.projection.state)))fail('CONVERSATION_RUN_ACTIVE');
+    if(runs.some(r=>r.sequence_end==null&&!terminal(r.projection.state))){refusal=new ProductError('CONVERSATION_RUN_ACTIVE');return null;}
     const pending=(await c.query("SELECT 1 FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND state='RESERVED' LIMIT 1",[key.tenantId,key.conversationId])).rows;
-    if(pending.length)fail('CONVERSATION_RUN_ACTIVE');
+    if(pending.length){refusal=new ProductError('CONVERSATION_RUN_ACTIVE');return null;}
    }
    try{return await work();}catch(error){callbackError=error;throw error;}
-  });}catch(error){if(callbackError!==undefined)throw callbackError;throw error;}
+  });
+   // Expected pre-callback refusals are exposed only after COMMIT and lease release succeed. No rollback error can be hidden.
+   if(refusal)throw refusal;return result;
+  }catch(error){if(callbackError!==undefined)throw callbackError;throw error;}
  }});
  return Object.freeze({management,accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun,admission}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
 }

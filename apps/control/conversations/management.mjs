@@ -1,5 +1,7 @@
 /** Meri's management fence, composed with the canonical Core metadata owner. No title store, metadata cache or purge owner. */
 import {own,bounded,uuid,fail} from './boundary.mjs';
+import {randomUUID} from 'node:crypto';
+import {productFailure} from '../product-access/errors.mjs';
 import {isConversationClient} from '../../../packages/contracts/conversation-scope.mjs';
 const operations=new Set(['rename','archive','restore','trash']);
 export function managementCommand(raw){
@@ -31,7 +33,11 @@ export function createConversationManagementPort({store,suppression}){
   const command=managementCommand(raw);if(typeof work!=='function')fail('CONVERSATION_MANAGEMENT_REFUSED');
   const subject={tenantId:command.principal.tenantId,kind:'conversation',subjectId:command.conversationId,ownerActorId:command.principal.actorId};
   const selection={principal:command.principal,subject};
-  return suppression.withTransition(selection,()=>store.management.withTerminalConversation(command,async()=>{
+  // Only canonical store guards may report these owned refusals before callback entry. The marker and error stay per-call;
+  // transition cleanup must succeed before either refusal is exposed. Foreign codes and callback errors never select this path.
+  const marker=randomUUID();let entered=false,refusal;
+  const result=await suppression.withTransition(selection,async()=>{try{return await store.management.withTerminalConversation(command,async()=>{
+   entered=true;
    let active=true;
    const check=(input,operation,reason)=>{const v=own(bounded(input),['reason','requestId'],operation==='trash'?['restoreUntil']:[]);
     if(!active||command.operation!==operation||v.reason!==reason||v.requestId!==command.requestId)fail('CONVERSATION_MANAGEMENT_REFUSED');return v;};
@@ -46,7 +52,11 @@ export function createConversationManagementPort({store,suppression}){
      return suppression.release({...selection,reason:'conversation-restore'});},
    });
    try{return await work(fence);}finally{active=false;}
-  }));
+  });}catch(error){const owned=productFailure(error);
+   if(entered||owned===null||!['CONVERSATION_MANAGEMENT_UNAVAILABLE','CONVERSATION_RUN_ACTIVE'].includes(owned.code)||owned.outcome!==null||owned.field!==null)throw error;
+   refusal=error;return marker;
+  }});
+  if(refusal){if(result!==marker)fail('CONVERSATION_MANAGEMENT_UNAVAILABLE');throw refusal;}return result;
  }
  return Object.freeze({withTerminalConversation});
 }

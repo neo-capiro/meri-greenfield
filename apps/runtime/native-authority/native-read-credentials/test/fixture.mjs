@@ -39,7 +39,7 @@ export async function ownerFixture(id='read_bill_text',options={}){
  const selectedScopes=scene.authority.claims.scopes;
  if(options.general){scene.authority.claims.scopes=conversationScopes(scene.binding,null,scene.authority.policyRevision);if(supportsGeneralPublicRead(operation)){Object.assign(scene.authority.subject,{kind:'personal',entityType:'user',entityIds:[scene.binding.actorId],scopes:scene.authority.claims.scopes});scene.authority.decision.scopes=scene.authority.claims.scopes;}}
  const f=await durableFamilyFixture(scene),grant=[...f.state.bindings.values()][0].facts,allocated=[...f.state.allocations.values()][0].allocation;
- if(options.general)scene.authority.claims.scopes=[...f.scopes,...selectedScopes];
+ if(options.general)scene.authority.claims.scopes=[...new Map([...f.scopes,...selectedScopes].map(scope=>[hash(scope),scope])).values()];
  const sf=storeFixture(),store=createPostgresConversationStore({pool:sf.pool,now:f.now}),runRequest={requestId:uuid('e'),prompt:'Offline native read'},run={binding:f.binding,state:'queued',scopes:f.scopes,createdAt:new Date(f.now()).toISOString(),policyRevision:f.policyRevision,versions},conversation={conversationId:f.binding.conversationId,owner:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},scopes:f.scopes,createdAt:run.createdAt,policyRevision:f.policyRevision};
  await store.accept({conversation,run,request:runRequest,event:{contractVersion:'0.1.0',eventId:uuid('f'),binding:f.binding,sequence:1,createdAt:run.createdAt,scopes:f.scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},()=>{});
  const state={entryReads:0,nativeCredentials:0,secrets:0,modeSecrets:0,reads:[]};

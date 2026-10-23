@@ -1,0 +1,22 @@
+# M2 runtime checkpoint suspended for item 0
+
+The orchestrator stopped this lane's old-mechanism work on 23 October 2026 after reading the user-referenced handover at `c31da36810aadd131faa6531240e07fe4c0ee505`. Its `STANDING-REQUIREMENTS.md`, `source-of-truth/SUPERSEDED-BY-ITEM-0.md`, item 0 harness spec and updated M2 brief supersede this branch's earlier runtime plan. This draft is a preserved work checkpoint, not a merge candidate or an activation-held feature intended to ship unchanged.
+
+Item 0 uses the Claude Agent SDK full harness and Claude Code preset, direct Bedrock with task IAM, Core as data gatekeeper, a control-hosted tool gateway, and SDK continuity. Native authority, repeated per-operation proofs, model reservation/settlement, the owner/proxy pair, Temporal issuer and custom continuity are scheduled for removal. Do not extend or qualify those mechanisms to finish the old M2 checklist. Keep General/client isolation, personal/firm General memory, conversation storage, management, skill/window identity and canonical context as behavioral requirements on the new architecture. The root orchestrator owns the spike and every operational action.
+
+## Work preserved at the stop
+
+- General lifecycle receipt readback now accepts null only through the canonical exact private-actor scope validator; existing client behavior and stored identity/hash checks remain intact. Its five new tests and existing lifecycle/transition cases passed **69 tests**.
+- The canonical store's two expected pre-callback management refusals are held until transaction cleanup completes, then carried privately through retention lock cleanup. Foreign codes, errors after callback entry and infrastructure uncertainty do not become business refusals. Four new tests plus existing management and composition cases passed **18 tests**. The generic retention wrapper was not changed.
+- Mounted General personal/firm memory reached the signed page, mandatory eligibility helper, durable dispatch and final release in the synthetic fixture. The exact `search_memory@0.2.0` source-support entry was retained before the stop. The mounted/coupled group passed **75 tests**; the worker availability and signed-adapter group passed **61 tests**. These overlap and are not an additive total. They do not qualify the replacement tool gateway or real Core service.
+- The memory fixture uses a 10-second task/gateway deadline and the Core helper's five-second receipt bound. A three-second outer dispatcher rejects a longer helper expiry under its existing rule. No production budget or token ceiling changed.
+- The real-Core PostgreSQL harness still pins Core `eb0894f8a08063819476674fd183413f96e12352`. Root's previous replay passed the Core request-conflict assertion and then failed the pre-callback empty-chat refusal. The newly preserved repair was **not replayed on PostgreSQL** before the stop. The fixture now requires an owned refusal for those two domain outcomes and the existing generic retention wrapper for deliberate store corruption. No old-mechanism gate is requested now.
+- The proposed retention claim/retirement/remaining-authorization design remains documentation only. No 0021, 0022 or Core finalization migration was authored. Its complexity and reuse of the existing purger are under separate root review.
+
+## Explicitly unfinished
+
+The new retention-inventory fixture reproduced six passing client cases and six failing General cases (steer, pause, resume, fork, capturing and published completion). The decoder still requires a nonnull client. The untracked failing fixture was archived in the orchestrator's private work packet instead of added to the source test suite; it is evidence for re-scoping, not a passing test. No decoder edit followed the stop.
+
+The new tests have not received mutation controls or independent review. No tests or old-mechanism qualification were continued after the stop. Full 14-skill lifecycle/availability, canonical context delivery, managed empty-chat Trash and permanent deletion remain unfinished behaviors. Their implementation must follow item 0 and the pending simpler retention design, not the historical frozen-proof or per-operation machinery.
+
+The contracts `0.1.11` artifact remains pinned to `16a93e7fafd648c13a9289d8a7d623d89967366a`; stream `0.1.1` remains pinned to `54aa8278b354db030a11a77c9c06aa8eb9e50393`. Neither artifact was rebuilt or overwritten. No worker Docker, database, AWS, deployment or live-chat action occurred.

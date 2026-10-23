@@ -5,6 +5,8 @@
 export const GENERAL_PUBLIC_READ_OPERATIONS=Object.freeze(['search_cbo_cost_estimates','search_gao_reports','search_crs_reports','search_state_bills','get_state_legislator'].map(id=>Object.freeze({id,version:'0.2.0'})));
 export const supportsGeneralPublicRead=operation=>GENERAL_PUBLIC_READ_OPERATIONS.some(candidate=>candidate.id===operation?.id&&candidate.version===operation.version);
 export const GENERAL_NATIVE_READ_OPERATIONS=Object.freeze([
+ // Signed personal/firm memory uses a null target and its mandatory page-bound eligibility child.
+ 'search_memory',
  'get_representation',
  'get_district_nexus_context',
  'get_district_nexus_changes',

@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {managementPgFixture,check,gate} from './management-pg-fixture.mjs';
 import {hash} from '../../control/conversations/boundary.mjs';
+import {productFailure} from '../../control/product-access/errors.mjs';
 import {createConversationManagementComposition} from '../conversation-management-composition.mjs';
 if(process.argv.includes('--help')){console.log('Usage: node apps/runtime/test/conversation-management-cross-owner-pg.mjs --config <json>. Explicit fresh loopback PG16 only; root owns provisioning and removal. Exit 0 pass, nonzero failure.');process.exit(0);}
 if(process.argv.length!==4||process.argv[2]!=='--config')throw Error('Explicit --config required; ambient DATABASE_URL is never read');
@@ -14,7 +15,7 @@ try{
   const c=await f.conversation();assert.equal(await f.owner.ownerOf({tenantId:c.principal.tenantId,conversationId:c.conversationId}),c.principal.actorId);
   const rename=c.request('rename'),receipt=await c.manage(rename);assert.equal(receipt.conversation.revision,'1');assert.equal(receipt.conversation.title,rename.title);assert.deepEqual(await c.manage(rename),receipt);
   await assert.rejects(c.manage({...rename,title:'Changed replay'}),e=>e.message==='REQUEST_ID_CONFLICT'&&e.getStatus()===409);await assert.rejects(c.manage(c.request('archive')),e=>e.message==='STALE_REVISION'&&e.getStatus()===409);
-  const before=await f.ledger.replay();await assert.rejects(c.manage(c.request('trash','1')),/CONVERSATION_MANAGEMENT_UNAVAILABLE/);assert.deepEqual(await f.ledger.replay(),before);
+  const before=await f.ledger.replay();await assert.rejects(c.manage(c.request('trash','1')),e=>productFailure(e)?.code==='CONVERSATION_MANAGEMENT_UNAVAILABLE');assert.deepEqual(await f.ledger.replay(),before);
   assert.equal((await f.pool.query('SELECT count(*) FROM meri_conversations.conversations WHERE conversation_id=$1',[c.conversationId])).rows[0].count,'0');
   const legacy=await f.conversation({legacy:true});await assert.rejects(legacy.metadata());await assert.rejects(legacy.manage(legacy.request('rename')));
   await assert.rejects(f.owner.readMetadata({principal:{...c.principal,actorId:randomUUID()},conversationId:c.conversationId}));
@@ -34,7 +35,7 @@ try{
   await entered.promise;const admission=f.store.initialInputs.accept(p.acceptance,check);const refused=assert.rejects(admission,/CONVERSATION_NOT_ACTIVE/);release.release();await archive;await refused;
   assert.equal((await f.pool.query('SELECT count(*) FROM meri_conversations.runs WHERE conversation_id=$1',[c.conversationId])).rows[0].count,'0');
   await c.manage(c.request('restore','1'));await f.store.initialInputs.accept(p.acceptance,check);
-  await assert.rejects(c.manage(c.request('archive','2')),/CONVERSATION_RUN_ACTIVE/);assert.equal((await c.manage(c.request('rename','2'))).conversation.revision,'3');
+  await assert.rejects(c.manage(c.request('archive','2')),e=>productFailure(e)?.code==='CONVERSATION_RUN_ACTIVE');assert.equal((await c.manage(c.request('rename','2'))).conversation.revision,'3');
   for(const state of ['starting','running','completed'])await f.store.append(c.binding,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}},check,c.scopes);
   await c.manage(c.request('archive','3'));assert.equal((await f.store.initialInputs.accept(p.acceptance,check)).replayed,true);assert.equal((await f.store.read(c.binding,{},check)).run.state,'completed');
  });
@@ -47,10 +48,10 @@ try{
    await db.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence,sequence_base) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,4)',[b.tenantId,b.conversationId,b.runId,run,hash(run),request.requestId,request,hash(request)]);
    await db.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,1,$4,$5,$6)',[b.tenantId,b.conversationId,b.runId,event.eventId,event,hash(event)]);await db.query('COMMIT');
   }catch(error){await db.query('ROLLBACK');throw error;}finally{db.release();}
-  await assert.rejects(c.manage(c.request('archive')),/CONVERSATION_RUN_ACTIVE/);
+  await assert.rejects(c.manage(c.request('archive')),e=>productFailure(e)?.code==='CONVERSATION_RUN_ACTIVE');
   const empty=await f.conversation({meri:true}),e=await empty.proposal(),r=e.acceptance.run,q=e.acceptance.request;
   await f.pool.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,0)',[r.binding.tenantId,r.binding.conversationId,r.binding.runId,r,hash(r),q.requestId,q,hash(q)]);
-  await assert.rejects(empty.manage(empty.request('archive')),/STORE_CORRUPT/);
+  await assert.rejects(empty.manage(empty.request('archive')),e=>e.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause?.code==='STORE_CORRUPT'&&productFailure(e)===null);
  });
  await run('history release and management use transition then conversation ordering',async()=>{
   const c=await f.conversation({meri:true}),entered=gate(),release=gate();
