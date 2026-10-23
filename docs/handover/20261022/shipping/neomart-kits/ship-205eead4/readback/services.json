@@ -1,0 +1,52 @@
+[
+  {
+    "name": "meri-product-preview-control",
+    "desired": 1,
+    "running": 1,
+    "pending": 0,
+    "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:47",
+    "rollouts": [
+      "COMPLETED"
+    ]
+  },
+  {
+    "name": "meri-product-preview-temporal-worker",
+    "desired": 1,
+    "running": 1,
+    "pending": 0,
+    "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:46",
+    "rollouts": [
+      "COMPLETED"
+    ]
+  },
+  {
+    "name": "meri-product-preview-temporal-issuer",
+    "desired": 1,
+    "running": 1,
+    "pending": 0,
+    "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:46",
+    "rollouts": [
+      "COMPLETED"
+    ]
+  },
+  {
+    "name": "meri-product-preview-owner",
+    "desired": 1,
+    "running": 1,
+    "pending": 0,
+    "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-owner:45",
+    "rollouts": [
+      "COMPLETED"
+    ]
+  },
+  {
+    "name": "meri-product-preview-proxy",
+    "desired": 1,
+    "running": 1,
+    "pending": 0,
+    "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-proxy:45",
+    "rollouts": [
+      "COMPLETED"
+    ]
+  }
+]

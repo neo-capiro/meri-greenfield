@@ -1,0 +1,192 @@
+{
+  "Changes": [
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "Action": "Modify",
+        "LogicalResourceId": "PreviewService",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:service/capiro-portfolio-preview/capiro-portfolio-preview",
+        "ResourceType": "AWS::ECS::Service",
+        "Replacement": "False",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "TaskDefinition",
+              "RequiresRecreation": "Never"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "ResourceReference",
+            "CausingEntity": "PreviewTaskDefinition"
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Resource",
+      "ResourceChange": {
+        "PolicyAction": "ReplaceAndDelete",
+        "Action": "Modify",
+        "LogicalResourceId": "PreviewTaskDefinition",
+        "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:21",
+        "ResourceType": "AWS::ECS::TaskDefinition",
+        "Replacement": "True",
+        "Scope": [
+          "Properties"
+        ],
+        "Details": [
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Static",
+            "ChangeSource": "ParameterReference",
+            "CausingEntity": "ImageUri"
+          },
+          {
+            "Target": {
+              "Attribute": "Properties",
+              "Name": "ContainerDefinitions",
+              "RequiresRecreation": "Always"
+            },
+            "Evaluation": "Dynamic",
+            "ChangeSource": "DirectModification"
+          }
+        ]
+      }
+    }
+  ],
+  "ChangeSetName": "fable-fe-pr121-gate-87a84951",
+  "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/fable-fe-pr121-gate-87a84951/4601f56b-10a7-43f7-8e3c-c0619bfda793",
+  "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/Capiro-Portfolio-Preview-Service/147eaab0-c5a4-11f1-b872-1240a3e9568b",
+  "StackName": "Capiro-Portfolio-Preview-Service",
+  "Description": "Frontend 87a84951 image only (Fable kit)",
+  "Parameters": [
+    {
+      "ParameterKey": "PreviewFirstChatApiBaseUrl",
+      "ParameterValue": "https://first-chat-preview.app-dev.capiro.ai/api"
+    },
+    {
+      "ParameterKey": "TrackerBackend",
+      "ParameterValue": "intelligence"
+    },
+    {
+      "ParameterKey": "ExistingAppUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai"
+    },
+    {
+      "ParameterKey": "AllowedIngressCidr",
+      "ParameterValue": "18.209.88.38/32"
+    },
+    {
+      "ParameterKey": "CoreApiBaseUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai/api"
+    },
+    {
+      "ParameterKey": "PreviewReadOnly",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "ClerkPublishableKeySecretArn",
+      "ParameterValue": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/publishable-key-rAfesC"
+    },
+    {
+      "ParameterKey": "PreviewReadBackendSource",
+      "ParameterValue": "6542f5b089656b6d255465edd464d06c2a0b408f"
+    },
+    {
+      "ParameterKey": "MeriFirstChatBootstrapEnabled",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "PreviewMeriContractPackageVersion",
+      "ParameterValue": "0.1.10"
+    },
+    {
+      "ParameterKey": "MeriApiBaseUrl",
+      "ParameterValue": "https://meri-preview.capiro.ai"
+    },
+    {
+      "ParameterKey": "MeriFirstChatClientId",
+      "ParameterValue": "<CLIENT_ID>"
+    },
+    {
+      "ParameterKey": "StrategyApiBaseUrl",
+      "ParameterValue": ""
+    },
+    {
+      "ParameterKey": "PreviewFirstChatBackendSource",
+      "ParameterValue": "c64f0005cf14d69683aabafa11def4964d766832"
+    },
+    {
+      "ParameterKey": "PreviewMeriRuntimeImageDigest",
+      "ParameterValue": "sha256:5534edfe5805eec7a5d0bce66b2c85765fe2f957173ddd3ce2726bed67e322d8"
+    },
+    {
+      "ParameterKey": "MeriConversationWorkflowEnabled",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "PreviewMeriConversationRoutesEnabled",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "PreviewReadApiBaseUrl",
+      "ParameterValue": "https://first-chat-preview.app-dev.capiro.ai/api"
+    },
+    {
+      "ParameterKey": "IntelligenceApiBaseUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai/intel-api"
+    },
+    {
+      "ParameterKey": "ImageUri",
+      "ParameterValue": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview@sha256:18dad6581368b44aea7e6f6d39b34a67fb7a07f2c3af5117251dac42efbfd26e"
+    },
+    {
+      "ParameterKey": "ClerkKmsKeyArn",
+      "ParameterValue": "arn:aws:kms:us-east-1:967807252336:key/f47b4c53-b9c0-4d91-ad57-4d882f87767e"
+    },
+    {
+      "ParameterKey": "ClerkSecretKeySecretArn",
+      "ParameterValue": "arn:aws:secretsmanager:us-east-1:967807252336:secret:/capiro/dev/clerk/secret-key-FT67tM"
+    },
+    {
+      "ParameterKey": "WorkspaceApiBaseUrl",
+      "ParameterValue": "https://portfolio-preview.app.capiro.ai/workspace-api"
+    },
+    {
+      "ParameterKey": "PreviewMeriRuntimeSource",
+      "ParameterValue": "176a8811a9b05d8613282e70bd7a57ebd75ca201"
+    },
+    {
+      "ParameterKey": "CertificateArn",
+      "ParameterValue": "arn:aws:acm:us-east-1:967807252336:certificate/edcc6113-12f5-4154-bfdf-64c7da1037cd"
+    }
+  ],
+  "CreationTime": "2026-10-22T17:14:07.666000+00:00",
+  "ExecutionStatus": "AVAILABLE",
+  "Status": "CREATE_COMPLETE",
+  "StatusReason": null,
+  "NotificationARNs": [],
+  "RollbackConfiguration": {},
+  "Capabilities": [
+    "CAPABILITY_IAM"
+  ],
+  "Tags": null,
+  "ParentChangeSetId": null,
+  "IncludeNestedStacks": false,
+  "RootChangeSetId": null,
+  "OnStackFailure": null,
+  "ImportExistingResources": null,
+  "StackDriftStatus": null,
+  "DeploymentMode": null,
+  "DeploymentConfig": {
+    "Mode": "STANDARD",
+    "DisableRollback": false
+  }
+}

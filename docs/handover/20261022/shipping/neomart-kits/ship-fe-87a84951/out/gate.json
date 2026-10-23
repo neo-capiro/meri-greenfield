@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-22T17:21:28.552Z",
+  "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:22",
+  "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview@sha256:18dad6581368b44aea7e6f6d39b34a67fb7a07f2c3af5117251dac42efbfd26e",
+  "service": {
+    "running": 1,
+    "desired": 1,
+    "pending": 0,
+    "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:22"
+  },
+  "task": {
+    "arn": "arn:aws:ecs:us-east-1:967807252336:task/capiro-portfolio-preview/b7cd10cea2be483c9fea8ff778332fae",
+    "startedAt": "2026-10-22T13:15:25.118000-04:00",
+    "ip": "10.90.1.165"
+  },
+  "target": {
+    "Target": {
+      "Id": "10.90.1.165",
+      "Port": 5188,
+      "AvailabilityZone": "us-east-1a"
+    },
+    "HealthCheckPort": "5188",
+    "TargetHealth": {
+      "State": "healthy"
+    },
+    "AdministrativeOverride": {
+      "State": "no_override",
+      "Reason": "AdministrativeOverride.NoOverride",
+      "Description": "No override is currently active on target"
+    }
+  },
+  "logs": {
+    "stream": "portfolio/portfolio-web/b7cd10cea2be483c9fea8ff778332fae",
+    "ready": true,
+    "errors": 0,
+    "lines": 5
+  },
+  "publicHealth": {
+    "reachable": true,
+    "status": 200,
+    "ok": true
+  }
+}

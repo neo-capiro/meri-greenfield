@@ -1,0 +1,26 @@
+[
+  {
+    "OutputKey": "RunnerPrivateSubnetId",
+    "OutputValue": "subnet-0920665f91c905f01"
+  },
+  {
+    "OutputKey": "RunnerClusterArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev"
+  },
+  {
+    "OutputKey": "TemporalWorkerTaskDefinitionArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:47"
+  },
+  {
+    "OutputKey": "RunnerTaskDefinitionArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:33"
+  },
+  {
+    "OutputKey": "RunnerSecurityGroupIds",
+    "OutputValue": "sg-098fc4f2ac89aa943"
+  },
+  {
+    "OutputKey": "ControlTaskDefinitionArn",
+    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control:48"
+  }
+]

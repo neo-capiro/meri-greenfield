@@ -1,0 +1,603 @@
+{
+  "serviceArn": "arn:aws:ecs:us-east-1:967807252336:service/capiro-portfolio-preview/capiro-portfolio-preview",
+  "serviceName": "capiro-portfolio-preview",
+  "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-portfolio-preview",
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734",
+      "containerName": "portfolio-web",
+      "containerPort": 5188
+    }
+  ],
+  "serviceRegistries": [],
+  "status": "ACTIVE",
+  "desiredCount": 1,
+  "runningCount": 1,
+  "pendingCount": 0,
+  "launchType": "FARGATE",
+  "platformVersion": "LATEST",
+  "platformFamily": "Linux",
+  "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:21",
+  "deploymentConfiguration": {
+    "deploymentCircuitBreaker": {
+      "enable": true,
+      "rollback": true,
+      "resetOnHealthyTask": true,
+      "thresholdConfiguration": {
+        "type": "BOUNDED_PERCENT",
+        "value": 50
+      }
+    },
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 100,
+    "strategy": "ROLLING",
+    "bakeTimeInMinutes": 0
+  },
+  "deployments": [
+    {
+      "id": "ecs-svc/7711880896602730369",
+      "status": "PRIMARY",
+      "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/capiro-portfolio-preview:21",
+      "desiredCount": 1,
+      "pendingCount": 0,
+      "runningCount": 1,
+      "failedTasks": 0,
+      "createdAt": "2026-10-22T11:41:47.280000-04:00",
+      "updatedAt": "2026-10-22T11:44:25.959000-04:00",
+      "launchType": "FARGATE",
+      "platformVersion": "1.4.0",
+      "platformFamily": "Linux",
+      "networkConfiguration": {
+        "awsvpcConfiguration": {
+          "subnets": [
+            "subnet-0f02b541312e4faa2",
+            "subnet-0cd6eaf9a8dabfdaa"
+          ],
+          "securityGroups": [
+            "sg-0b51b5fdcb2766303"
+          ],
+          "assignPublicIp": "ENABLED"
+        }
+      },
+      "rolloutState": "COMPLETED",
+      "rolloutStateReason": "ECS deployment ecs-svc/7711880896602730369 completed."
+    }
+  ],
+  "roleArn": "arn:aws:iam::967807252336:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
+  "events": [
+    {
+      "id": "f4d78da2-47d5-4c91-8ed4-47d33be94bb7",
+      "createdAt": "2026-10-22T11:44:25.965000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "e23efd75-ca95-4e74-ad2e-9d10d5b2e6f6",
+      "createdAt": "2026-10-22T11:44:25.964000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/7711880896602730369) deployment completed."
+    },
+    {
+      "id": "c85f0483-7055-4c48-8b95-d006d804b96d",
+      "createdAt": "2026-10-22T11:43:34.412000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/7615255536968935229) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "bcac7dd5-7468-4b4b-b7ee-abca32aa1879",
+      "createdAt": "2026-10-22T11:43:34.406000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "cce240b2-0e63-49ed-b2ca-d92a425c4a7e",
+      "createdAt": "2026-10-22T11:43:24.791000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 26a7970894024f5984b924180c63da6c)."
+    },
+    {
+      "id": "cff8d18e-10fb-4cdc-a7b6-da3390c2df5c",
+      "createdAt": "2026-10-22T11:42:34.374000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "b83bd5d4-3789-404f-a3c0-2ace6c2135bd",
+      "createdAt": "2026-10-22T11:42:04.749000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task c164425dab5d43d58272beff60fb7b8e)."
+    },
+    {
+      "id": "bd1fce61-93c4-4d19-9a2c-f35a5639ae4b",
+      "createdAt": "2026-10-22T09:57:53.323000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "9b6ad97f-9344-4679-874a-f631e5fccbfa",
+      "createdAt": "2026-10-22T03:57:28.131000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "56c8eb55-c91f-4618-bf4f-3afe5ecae94a",
+      "createdAt": "2026-10-21T21:56:52.631000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "4fe7cbb0-34af-4a98-854d-865b0832e87c",
+      "createdAt": "2026-10-21T15:56:30.407000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "25cd850b-86f2-4979-940a-13c9b3f05c5c",
+      "createdAt": "2026-10-21T09:56:01.867000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "a9c15506-5374-4fc9-a0df-c3be82d7caf3",
+      "createdAt": "2026-10-21T03:55:53.785000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "7e05ca76-8434-4eda-af92-b75a7eb04ce8",
+      "createdAt": "2026-10-20T21:55:30.660000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "b351ac59-c4ec-4648-8797-ccba234dd887",
+      "createdAt": "2026-10-20T21:55:30.659000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/7615255536968935229) deployment completed."
+    },
+    {
+      "id": "796f279f-7ad1-467e-876c-8ada71b43b51",
+      "createdAt": "2026-10-20T21:54:38.684000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/9280858835434832723) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "eb758a55-45d6-49bc-95b9-ef4afe93f3ea",
+      "createdAt": "2026-10-20T21:54:38.679000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "40eccea8-7347-4528-93bd-211dea7c5ae3",
+      "createdAt": "2026-10-20T21:54:29.324000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 3f1a10ca6fa94a77ba3be02c06686115)."
+    },
+    {
+      "id": "32474b6b-487e-4468-9499-48577c721d4d",
+      "createdAt": "2026-10-20T21:53:39.184000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "1f9b8a9f-7ac8-4a16-92cd-33eaba95b586",
+      "createdAt": "2026-10-20T21:53:09.520000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 26a7970894024f5984b924180c63da6c)."
+    },
+    {
+      "id": "06f20aae-efc1-4631-b8da-022f086ad248",
+      "createdAt": "2026-10-20T17:56:21.183000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "f551a38b-1f50-41c6-94a3-f71c7ae7b282",
+      "createdAt": "2026-10-20T17:56:21.182000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/9280858835434832723) deployment completed."
+    },
+    {
+      "id": "29761e6a-fbf1-4aa3-b695-03ac8b49af75",
+      "createdAt": "2026-10-20T17:55:21.350000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/1793693347347998393) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "fe7f46c9-4bef-4593-ba0c-3c10595e7fcc",
+      "createdAt": "2026-10-20T17:55:21.345000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "41376aa6-b9f5-4024-9481-94589cc73d9d",
+      "createdAt": "2026-10-20T17:55:10.962000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task e09c2809018542508dfc55780b4c12c3)."
+    },
+    {
+      "id": "8e2e611d-ae92-497f-a2e6-0cf8321adfc0",
+      "createdAt": "2026-10-20T17:54:20.056000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "8529d0d5-37bc-4ffb-85f3-e00f7cac150a",
+      "createdAt": "2026-10-20T17:53:50.384000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 3f1a10ca6fa94a77ba3be02c06686115)."
+    },
+    {
+      "id": "37f5df3f-cd88-4f7b-bdbb-80b7f0330d43",
+      "createdAt": "2026-10-20T17:44:10.787000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "eae81f97-2a3d-4942-b5d9-80db32231a8c",
+      "createdAt": "2026-10-20T11:44:05.263000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "1b59285f-3111-4c78-a316-f36d557bfc19",
+      "createdAt": "2026-10-20T05:43:44.657000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "bda36ad7-59bf-4601-978e-e6cfaae47573",
+      "createdAt": "2026-10-19T23:43:22.520000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "8266e4e2-e45d-486b-b6c4-fc9d39edd5cc",
+      "createdAt": "2026-10-19T17:42:54.422000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "a41727f0-391d-406d-950d-18d96d2d68ff",
+      "createdAt": "2026-10-19T11:42:13.749000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "5504203c-cbb8-4ff5-9fe5-a6e64ab0a9a5",
+      "createdAt": "2026-10-19T05:41:38.952000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "20d97230-c31c-45bb-8ead-4ca4f8586ad1",
+      "createdAt": "2026-10-18T23:41:28.791000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "60b21e3d-11ee-42d7-a8a3-9d0a43b0629e",
+      "createdAt": "2026-10-18T17:41:02.861000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "ae06f8f6-1c0e-4201-8e6b-d4d03b9a96d8",
+      "createdAt": "2026-10-18T11:40:30.399000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "f2ae4e44-d507-4c44-bab8-d9ea3b95fa98",
+      "createdAt": "2026-10-18T11:40:30.397000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/1793693347347998393) deployment completed."
+    },
+    {
+      "id": "bd428e9d-6419-45ba-be05-d882f3c0baf5",
+      "createdAt": "2026-10-18T11:39:39.019000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/5164507402315066254) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "79cdfa82-42c9-4614-9697-9596a7a303d7",
+      "createdAt": "2026-10-18T11:39:39.014000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "483d2041-4031-43c8-85d2-3ecf81ed2e82",
+      "createdAt": "2026-10-18T11:39:28.600000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 2bf643a0871d45e98461e1d60ec7efd8)."
+    },
+    {
+      "id": "64e326ea-913c-4376-b0cf-b43ffecbafcb",
+      "createdAt": "2026-10-18T11:38:38.560000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "95dc5fe5-a31f-4ac4-8a28-b9bdce42891e",
+      "createdAt": "2026-10-18T11:38:09.363000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task e09c2809018542508dfc55780b4c12c3)."
+    },
+    {
+      "id": "74d3f6f0-7269-46f8-86db-d05c204c665c",
+      "createdAt": "2026-10-18T10:33:16.880000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "edacc083-4ae6-4228-b717-9fa78dfc9f1f",
+      "createdAt": "2026-10-18T04:32:36.115000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "ccc4bcf3-6185-4349-873a-e5b771750066",
+      "createdAt": "2026-10-17T22:32:26.962000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "91940342-905d-4348-a6f7-a46f465e477f",
+      "createdAt": "2026-10-17T22:32:26.961000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/5164507402315066254) deployment completed."
+    },
+    {
+      "id": "aabb411b-8ce6-4bc9-95ca-b24a2999c01a",
+      "createdAt": "2026-10-17T22:31:25.146000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/8255601059652896378) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "07207c48-281f-4c4c-88ab-ffc69f087e2a",
+      "createdAt": "2026-10-17T22:31:25.140000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "3ef29a86-6836-4eb3-84c9-48f8302b2de0",
+      "createdAt": "2026-10-17T22:31:15.902000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 8416203c16714712a0b8557a73e1a2f3)."
+    },
+    {
+      "id": "c3bdc066-1a1e-450c-ab14-1967ed4828c6",
+      "createdAt": "2026-10-17T22:30:26.164000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "0538215a-303a-47a0-a549-6cd723fac95d",
+      "createdAt": "2026-10-17T22:30:05.681000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 2bf643a0871d45e98461e1d60ec7efd8)."
+    },
+    {
+      "id": "bc3d4e06-9849-4143-a62a-b8b5299dcf6a",
+      "createdAt": "2026-10-17T22:19:38.964000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "11f75d6a-907b-491e-a606-8e5c2498d139",
+      "createdAt": "2026-10-17T22:19:38.963000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/8255601059652896378) deployment completed."
+    },
+    {
+      "id": "6c862bec-cd27-449b-99a5-90c5f7d6bcf3",
+      "createdAt": "2026-10-17T22:18:37.852000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/5485189490291762176) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "edd45c3f-64ad-49a2-82fa-5af61707356d",
+      "createdAt": "2026-10-17T22:18:37.847000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "729aa50a-4c49-4a64-9511-f0f1416be853",
+      "createdAt": "2026-10-17T22:18:28.079000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 8f84e1b9298c43e4bcd6db4b64b28166)."
+    },
+    {
+      "id": "a1ea6bf6-c4e4-4d06-9012-53654b362f01",
+      "createdAt": "2026-10-17T22:17:38.265000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "eebc049a-557d-4d68-a7a0-01b1673fcc38",
+      "createdAt": "2026-10-17T22:17:08.095000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 8416203c16714712a0b8557a73e1a2f3)."
+    },
+    {
+      "id": "6dcdc8d4-f076-4b3e-87c2-74dc0c65bd6e",
+      "createdAt": "2026-10-17T21:43:47.120000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "dc3ed787-2467-4307-8349-9bc89a3297c1",
+      "createdAt": "2026-10-17T21:43:47.119000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/5485189490291762176) deployment completed."
+    },
+    {
+      "id": "39282cad-bfa8-43e3-84a6-36a6eea93b12",
+      "createdAt": "2026-10-17T21:42:47.167000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/2029275279393332753) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "a9134011-c153-4d5e-a54f-fcb5c413abed",
+      "createdAt": "2026-10-17T21:42:47.150000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "22323c09-d96e-4354-a6bb-355f093b50d3",
+      "createdAt": "2026-10-17T21:42:37.289000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 6d2f58feb6ff435eab6e039c1c0678e8)."
+    },
+    {
+      "id": "b91db404-3a2a-414f-b9f4-c5b2742d475a",
+      "createdAt": "2026-10-17T21:41:46.783000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "d997ec00-cb80-4c79-bd0a-ea4b23c55492",
+      "createdAt": "2026-10-17T21:41:16.796000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 8f84e1b9298c43e4bcd6db4b64b28166)."
+    },
+    {
+      "id": "7dcf9769-8517-4451-b1b2-8162303f28fc",
+      "createdAt": "2026-10-17T19:30:49.917000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "6bd7e5b5-06a9-4515-8ed5-1f11957e2b20",
+      "createdAt": "2026-10-17T19:30:49.916000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/2029275279393332753) deployment completed."
+    },
+    {
+      "id": "f94bd03e-e187-459c-a452-fa0d1115b41c",
+      "createdAt": "2026-10-17T19:29:49.695000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/7439045549631627298) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "7581ac70-f881-49c6-a40a-79ac0fc868b6",
+      "createdAt": "2026-10-17T19:29:49.688000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "e3b9d2b8-c6f7-494f-aac7-7b87e6d03b59",
+      "createdAt": "2026-10-17T19:29:39.677000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 5793b714edaa4dfd9cd59538c2c5a837)."
+    },
+    {
+      "id": "bac5cc21-7601-4248-b75e-87b90d8120a4",
+      "createdAt": "2026-10-17T19:28:48.867000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "38b4d26b-6c55-4d82-b646-407f66483e59",
+      "createdAt": "2026-10-17T19:28:28.578000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 6d2f58feb6ff435eab6e039c1c0678e8)."
+    },
+    {
+      "id": "daddca30-447f-41c2-b6b7-fb9f85278050",
+      "createdAt": "2026-10-17T18:21:19.401000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "6fc4c253-00aa-400f-b79d-54519cbc22ff",
+      "createdAt": "2026-10-17T18:21:19.400000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/7439045549631627298) deployment completed."
+    },
+    {
+      "id": "f47f6417-0ede-4322-a907-5bc780cf6a0f",
+      "createdAt": "2026-10-17T18:20:19.672000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/9783703709560712382) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "aa8525d1-316a-4d52-a73a-5c1bd137b183",
+      "createdAt": "2026-10-17T18:20:19.666000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "70bdf91c-af33-46bd-87bc-ab8f23e5321c",
+      "createdAt": "2026-10-17T18:20:09.440000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 2e71bc119cec444ca9f484db5fceb32a)."
+    },
+    {
+      "id": "07fc82f8-275c-4597-80c7-ef14045432b2",
+      "createdAt": "2026-10-17T18:19:18.771000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "d4b73fda-18cf-4e2f-8f22-d9caf976a8f2",
+      "createdAt": "2026-10-17T18:18:48.536000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 5793b714edaa4dfd9cd59538c2c5a837)."
+    },
+    {
+      "id": "ab7381b3-7cf9-48eb-ad7d-cf48a39b3e53",
+      "createdAt": "2026-10-17T15:49:32.786000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "cf1848d9-c9fc-4126-be1c-afab75ef424e",
+      "createdAt": "2026-10-17T15:49:32.785000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/9783703709560712382) deployment completed."
+    },
+    {
+      "id": "8cbdede7-7be0-4081-b93a-b1980dce85c5",
+      "createdAt": "2026-10-17T15:48:41.724000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/2430968192711396905) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "6b5e3225-4a41-462f-807c-996ba69d6a3b",
+      "createdAt": "2026-10-17T15:48:41.718000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "a1e81188-d36a-4b67-8919-97d822dc18d6",
+      "createdAt": "2026-10-17T15:48:31.019000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 1a0e9ce1bec84a7cb9c9c1ff909239eb)."
+    },
+    {
+      "id": "27f1c349-252f-4f95-9ad2-c34b3a354288",
+      "createdAt": "2026-10-17T15:47:41.434000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "03f69507-a65f-438e-bb8b-62c1be235421",
+      "createdAt": "2026-10-17T15:47:11.779000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 2e71bc119cec444ca9f484db5fceb32a)."
+    },
+    {
+      "id": "b8e7ea20-605b-400b-87fe-50ac4ecd833a",
+      "createdAt": "2026-10-17T12:37:30.153000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "6b6da04e-a492-4a7b-af1c-cb9ff71e2b26",
+      "createdAt": "2026-10-17T06:37:09.856000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "3ad7c6b8-d308-4821-82b7-c66ba2f97048",
+      "createdAt": "2026-10-17T00:36:47.073000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "8a61daa5-1823-4054-adc0-1e07a6617cfe",
+      "createdAt": "2026-10-16T18:36:24.080000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "b23d4f06-3cd3-42f5-8e0a-6995673516f2",
+      "createdAt": "2026-10-16T12:36:20.027000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "3ef97601-267c-4f1a-aafe-1f78d36fb604",
+      "createdAt": "2026-10-16T06:35:44.266000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "c8f1d0b0-1a8b-4a16-a3cc-0ecd65846356",
+      "createdAt": "2026-10-16T00:35:15.382000-04:00",
+      "message": "(service capiro-portfolio-preview) has reached a steady state."
+    },
+    {
+      "id": "fdfd0cf7-bfd0-4764-b974-88d4d6a9d721",
+      "createdAt": "2026-10-16T00:35:15.381000-04:00",
+      "message": "(service capiro-portfolio-preview) (deployment ecs-svc/2430968192711396905) deployment completed."
+    },
+    {
+      "id": "a420c803-ad49-4b2a-9f44-23e68baa1b8c",
+      "createdAt": "2026-10-16T00:34:05.710000-04:00",
+      "message": "(service capiro-portfolio-preview, taskSet ecs-svc/9670380484811429622) has begun draining connections on 1 tasks."
+    },
+    {
+      "id": "e2066868-6870-4c23-8e39-d0b78eb3a78d",
+      "createdAt": "2026-10-16T00:34:05.702000-04:00",
+      "message": "(service capiro-portfolio-preview) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "4661e895-0945-4f1e-beea-0fbf1aac52c4",
+      "createdAt": "2026-10-16T00:33:55.669000-04:00",
+      "message": "(service capiro-portfolio-preview) has stopped 1 running tasks: (task 22f1ac4c69184d3da422bd1b91035973)."
+    },
+    {
+      "id": "1164bcdb-5f22-455a-b958-7a5a852a98be",
+      "createdAt": "2026-10-16T00:33:04.684000-04:00",
+      "message": "(service capiro-portfolio-preview) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/Capiro-Previ-WL9NVROQB7K7/04a70c09a11ec734)"
+    },
+    {
+      "id": "6a5edf01-cb81-4bea-abe4-c3fa3818205c",
+      "createdAt": "2026-10-16T00:32:35.131000-04:00",
+      "message": "(service capiro-portfolio-preview) has started 1 tasks: (task 1a0e9ce1bec84a7cb9c9c1ff909239eb)."
+    }
+  ],
+  "createdAt": "2026-10-11T14:49:37.104000-04:00",
+  "currentServiceRevisions": [
+    {
+      "arn": "arn:aws:ecs:us-east-1:967807252336:service-revision/capiro-portfolio-preview/capiro-portfolio-preview/7711880896602730369",
+      "requestedTaskCount": 1,
+      "runningTaskCount": 1,
+      "pendingTaskCount": 0
+    }
+  ],
+  "placementConstraints": [],
+  "placementStrategy": [],
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": [
+        "subnet-0f02b541312e4faa2",
+        "subnet-0cd6eaf9a8dabfdaa"
+      ],
+      "securityGroups": [
+        "sg-0b51b5fdcb2766303"
+      ],
+      "assignPublicIp": "ENABLED"
+    }
+  },
+  "healthCheckGracePeriodSeconds": 90,
+  "schedulingStrategy": "REPLICA",
+  "deploymentController": {
+    "type": "ECS"
+  },
+  "createdBy": "arn:aws:iam::967807252336:user/hermes-cli",
+  "enableECSManagedTags": false,
+  "propagateTags": "NONE",
+  "enableExecuteCommand": false,
+  "availabilityZoneRebalancing": "ENABLED",
+  "resourceManagementType": "CUSTOMER"
+}

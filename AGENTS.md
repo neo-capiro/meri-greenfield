@@ -1,5 +1,19 @@
 # Meri greenfield integration rules
 
+## READ FIRST: standing requirements and ownership update (Neo, 2026-10-23)
+
+These override everything below and everything in `docs/` that says otherwise.
+
+- **Read `docs/handover/20261022/STANDING-REQUIREMENTS.md` before any task.** In short:
+  1. **Claude handles the harness:** the Agent SDK's full harness, direct to Bedrock, with Capiro data as tools. Never build a custom replacement for something the SDK or AWS already does.
+  2. **Simple, standard architecture.** No per-hop re-verification, proxies, credential-minting services or reservation ledgers. Core is the gatekeeper for Capiro data.
+  3. **Leave no dead code.** Delete what your change replaces in the same PR, remove temporary diagnostics, add no flag that nothing turns on, and show `git grep` proof in the PR (see `.github/pull_request_template.md`).
+  4. **The old plans changed.** The owner/proxy pair, budget reservations, per-operation authority, the temporal-issuer, P1/P2/S2 and the custom checkpoint continuity are being deleted, not completed. Tickets for them are superseded: see `docs/handover/20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md`. Never recreate one to satisfy an old ticket; if a task seems to need one, stop and ask on #202.
+- **Order of work:** Wave 2 item 0, the Claude-native harness, comes first: `docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`.
+- **Ownership from Wave 2:** the Wave 2 orchestrator (a local Codex session) writes briefs and does reviews, gates, merges, deploys and migrations. Fable (Claude) ships only what is left of Wave 1. The two ownership sections below describe Wave 1.
+- **Never post customer IDs** (UUIDs, prefixes or other customer-linked identifiers) in commits, PRs, issues or comments. This repository is public.
+
+
 ## Current ownership and first milestone, 21 October 2026
 
 Neo's agents implement **all Meri runtime/services/tools/documents/memory/settings/routines and Meri-specific UI**, including the remaining accepted Meri backlog. The first milestone is a **deployed, connected preview with usable desktop chat**, returning full source/image/config pins and health evidence to Fable. Mobile and previously deferred advanced capabilities remain in the accepted backlog; they are not gates for that first milestone.

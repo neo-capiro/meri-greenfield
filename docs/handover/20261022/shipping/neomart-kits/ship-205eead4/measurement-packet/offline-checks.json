@@ -1,0 +1,59 @@
+{
+  "status": "HELPERS_READY_IMAGE_AND_RECEIPTS_PENDING",
+  "sourceCommit": "2b4421f612f9fbb728d6da52927aac228d712d40",
+  "checks": [
+    {
+      "check": "node --check",
+      "file": "prepare-measurement.mjs",
+      "status": "PASS"
+    },
+    {
+      "check": "node --check",
+      "file": "finalize-measurement.mjs",
+      "status": "PASS"
+    },
+    {
+      "check": "node --check",
+      "file": "verify-measurement.mjs",
+      "status": "PASS"
+    },
+    {
+      "check": "node --check",
+      "file": "receipt-joins.mjs",
+      "status": "PASS"
+    },
+    {
+      "check": "node --check",
+      "file": "measurement-payload.mjs",
+      "status": "PASS"
+    },
+    {
+      "check": "node --check",
+      "file": "receipt-joins.test.mjs",
+      "status": "PASS"
+    },
+    {
+      "check": "node --check",
+      "file": "measurement-payload.test.mjs",
+      "status": "PASS"
+    },
+    {
+      "check": "Python AST parse (no import/execution)",
+      "files": [
+        "measurement-build-wrapper.py",
+        "payload-bootstrap-check.py"
+      ],
+      "status": "PASS"
+    },
+    {
+      "check": "two source pins, exact two-file diff, 10/5/0 limits, 14 canonical source byte joins, C baseline hash",
+      "status": "PASS"
+    }
+  ],
+  "fullOldSuitesRerun": false,
+  "networkCalls": 0,
+  "awsCalls": 0,
+  "builds": 0,
+  "uploads": 0,
+  "sourceModified": false
+}

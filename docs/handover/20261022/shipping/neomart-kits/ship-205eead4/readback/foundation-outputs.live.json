@@ -1,0 +1,166 @@
+[
+  {
+    "OutputKey": "DbClientSecurityGroupId",
+    "OutputValue": "sg-0d5b5286baf28242e"
+  },
+  {
+    "OutputKey": "IssuerSigningKeyArn",
+    "OutputValue": "arn:aws:kms:us-east-1:967807252336:key/7faa3b91-82bb-4913-b039-3bffe46cbd5c"
+  },
+  {
+    "OutputKey": "ControlSecurityGroupId",
+    "OutputValue": "sg-05a350c100574b21f"
+  },
+  {
+    "OutputKey": "ControlDiscoveryServiceArn",
+    "OutputValue": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dzaxdlxlpxxbxpef"
+  },
+  {
+    "OutputKey": "MigratorExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-migrator-execution"
+  },
+  {
+    "OutputKey": "WorkerSecurityGroupId",
+    "OutputValue": "sg-00111cd0e475badfa"
+  },
+  {
+    "OutputKey": "IssuerClientSecurityGroupId",
+    "OutputValue": "sg-0c3da023e9e8fb292"
+  },
+  {
+    "OutputKey": "ProxySecurityGroupId",
+    "OutputValue": "sg-02c3cc26b435e2516"
+  },
+  {
+    "OutputKey": "ProxyTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-proxy-task"
+  },
+  {
+    "OutputKey": "RunnerExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-runner-execution"
+  },
+  {
+    "OutputKey": "TemporalinternalfrontendTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-temporal-internal-frontend-task"
+  },
+  {
+    "OutputKey": "IssuerExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-issuer-execution"
+  },
+  {
+    "OutputKey": "OwnerExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-owner-execution"
+  },
+  {
+    "OutputKey": "ProxyExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-proxy-execution"
+  },
+  {
+    "OutputKey": "RunnerSecurityGroupId",
+    "OutputValue": "sg-098fc4f2ac89aa943"
+  },
+  {
+    "OutputKey": "TemporalExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution"
+  },
+  {
+    "OutputKey": "IssuerTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-issuer-task"
+  },
+  {
+    "OutputKey": "ProxyDiscoveryServiceArn",
+    "OutputValue": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dv43rzktx7mvrh6m"
+  },
+  {
+    "OutputKey": "MigratorSecurityGroupId",
+    "OutputValue": "sg-0c9f0505c552ce469"
+  },
+  {
+    "OutputKey": "IssuerSecurityGroupId",
+    "OutputValue": "sg-06fdc7ce3a117a478"
+  },
+  {
+    "OutputKey": "RunnerLogGroupName",
+    "OutputValue": "/meri/product-preview/runner"
+  },
+  {
+    "OutputKey": "TemporalworkerTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-temporal-worker-task"
+  },
+  {
+    "OutputKey": "OwnerLogGroupName",
+    "OutputValue": "/meri/product-preview/owner"
+  },
+  {
+    "OutputKey": "ControlExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-control-execution"
+  },
+  {
+    "OutputKey": "OwnerDiscoveryServiceArn",
+    "OutputValue": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-fqjjiu4dmuqsg5mo"
+  },
+  {
+    "OutputKey": "MeriNamespaceId",
+    "OutputValue": "ns-7nkuqqgldorh23i4"
+  },
+  {
+    "OutputKey": "ControlTargetGroupArn",
+    "OutputValue": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c"
+  },
+  {
+    "OutputKey": "TemporalLogGroupName",
+    "OutputValue": "/meri/product-preview/temporal"
+  },
+  {
+    "OutputKey": "OwnerSecurityGroupId",
+    "OutputValue": "sg-05f76fcb9a014a73e"
+  },
+  {
+    "OutputKey": "OwnerTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-owner-task"
+  },
+  {
+    "OutputKey": "ControlLogGroupName",
+    "OutputValue": "/meri/product-preview/control"
+  },
+  {
+    "OutputKey": "WorkerExecutionRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-worker-execution"
+  },
+  {
+    "OutputKey": "IssuerLogGroupName",
+    "OutputValue": "/meri/product-preview/issuer"
+  },
+  {
+    "OutputKey": "TemporalhistoryTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-temporal-history-task"
+  },
+  {
+    "OutputKey": "WorkerLogGroupName",
+    "OutputValue": "/meri/product-preview/worker"
+  },
+  {
+    "OutputKey": "TemporalmatchingTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-temporal-matching-task"
+  },
+  {
+    "OutputKey": "ProxyLogGroupName",
+    "OutputValue": "/meri/product-preview/proxy"
+  },
+  {
+    "OutputKey": "MigratorLogGroupName",
+    "OutputValue": "/meri/product-preview/migrator"
+  },
+  {
+    "OutputKey": "ControlTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-control-task"
+  },
+  {
+    "OutputKey": "TemporalfrontendTaskRoleArn",
+    "OutputValue": "arn:aws:iam::967807252336:role/MeriPreview-temporal-frontend-task"
+  },
+  {
+    "OutputKey": "IssuerDiscoveryServiceArn",
+    "OutputValue": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-v7ppowfuwb7ub6me"
+  }
+]

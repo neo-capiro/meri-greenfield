@@ -1,0 +1,17 @@
+{
+    "imageDetails": [
+        {
+            "registryId": "967807252336",
+            "repositoryName": "capiro/preview-core",
+            "imageDigest": "sha256:036b368c3de9cfd8cb191bb8849760efeb2530d131e3317f7e6c357ccda54f23",
+            "imageTags": [
+                "ca4de503fb6ec09caf0daf8b976a0f649c6b9665"
+            ],
+            "imageSizeInBytes": 276126196,
+            "imagePushedAt": "2026-10-22T12:59:04.058000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "imageStatus": "ACTIVE"
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "imageScanFindings": {
+        "findings": [],
+        "imageScanCompletedAt": "2026-10-22T12:59:22-04:00",
+        "vulnerabilitySourceUpdatedAt": "2026-10-22T12:59:22-04:00",
+        "findingSeverityCounts": {}
+    },
+    "registryId": "967807252336",
+    "repositoryName": "capiro/preview-core",
+    "imageId": {
+        "imageDigest": "sha256:036b368c3de9cfd8cb191bb8849760efeb2530d131e3317f7e6c357ccda54f23"
+    },
+    "imageScanStatus": {
+        "status": "COMPLETE",
+        "description": "The scan was completed successfully."
+    }
+}
