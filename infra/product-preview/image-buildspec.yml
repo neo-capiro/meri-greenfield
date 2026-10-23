@@ -1,0 +1,15 @@
+version: 0.2
+env:
+  shell: bash
+phases:
+  build:
+    on-failure: ABORT
+    commands:
+      - timeout --signal=TERM --kill-after=90s 25m bash infra/product-preview/image-build.sh
+    finally:
+      - test -f image-evidence/cleanup.json
+artifacts:
+  files:
+    - '**/*'
+  base-directory: image-evidence
+  discard-paths: no
