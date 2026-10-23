@@ -87,7 +87,7 @@
         },
         {
           "name": "MERI_FIRST_CHAT_CLIENT_ID",
-          "value": "d1b0cb55-fd3a-49ef-847a-7bbe9175dc44"
+          "value": "<CLIENT_ID>"
         },
         {
           "name": "STRATEGY_API_BASE_URL",

@@ -9,7 +9,7 @@
 set -uo pipefail
 SHA="${1:?usage: release-candidate.sh <sha> [--reuse-proxy-kit DIR]}"; shift
 REUSE=""; [ "${1:-}" = "--reuse-proxy-kit" ] && REUSE="$2"
-CLIENT=d1b0cb55-fd3a-49ef-847a-7bbe9175dc44
+CLIENT="${MERI_PREVIEW_CLIENT_ID:?set MERI_PREVIEW_CLIENT_ID from the private deploy inputs}"
 TOOLS="$(cd "$(dirname "$0")" && pwd)"
 LOG=C:/dev/fable/release-logs; mkdir -p "$LOG"
 step() { local name="$1"; shift; echo "== $name $(date -u +%H:%M:%SZ)"; "$@" > "$LOG/$SHA8-$name.log" 2>&1; local rc=$?

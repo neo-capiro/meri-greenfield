@@ -50,7 +50,7 @@
     },
     {
       "ParameterKey": "MeriFirstChatClientId",
-      "ParameterValue": "d1b0cb55-fd3a-49ef-847a-7bbe9175dc44"
+      "ParameterValue": "<CLIENT_ID>"
     },
     {
       "ParameterKey": "StrategyApiBaseUrl",

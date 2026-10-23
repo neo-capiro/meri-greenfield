@@ -26,7 +26,7 @@ It does the following, failing on any non-zero step (logs in `C:/dev/fable/relea
    - 01–04: source put, build request, image build, image readback.
    - 05: node-only measurement prep.
    - 06–10: measurement payload, finalize, build, readback, stage3 input.
-4. **11-private-core** (`--client-id d1b0cb55-fd3a-49ef-847a-7bbe9175dc44`), then **12-private-render** within 15 minutes, then:
+4. **11-private-core** (`--client-id <CLIENT_ID>`), then **12-private-render** within 15 minutes, then:
    - **13-secret-upload:** five new secret versions under a **new label only**; AWSCURRENT doesn't move. PR197 requires `--secret-labels`, and `kit.mjs` now passes it.
    - **14-bindings:** writes SHIP-PACKET.md.
    - **15-changesets:** three CloudFormation change sets (model, issuer, app). These touch TaskDefinition/Service only.

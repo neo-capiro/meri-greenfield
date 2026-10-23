@@ -25,7 +25,7 @@ Times are UTC on 2026-10-20.
 | O19 | ~05:50 | All gates passed: B/C, F and D3 reviews were APPROVE-WITH-FOLLOWUPS, and the Linux gate on `3dc993ef` was 24/24. Shipping `3dc993ef` with E's kit (`C:\dev\fable\ship-3dc993ef`, label `FIRST_CHAT_20261020F`). Step 1 put the S3 source. Step 3 started CodeBuild `c18776bb-d9d4-46c6-9ee3-e0d552dc2492`, product job 1 of this cycle (30-min cap). Spend authority: Neo's "You Can deploy", plus the 10-17 "go over budget" grant. Each build costs about $1 of CodeBuild time. | — | — |
 | O20 | ~06:15 | Shipped through step 15:
 - Image `sha256:d7995b75…`; scan 0 HIGH / 0 CRITICAL; measurement `d441f856` VERIFIED.
-- Private core and render done by the orchestrator (`--client-id` Anduril `d1b0cb55…`, the same binding as the frontend's MERI_FIRST_CHAT_CLIENT_ID). The membership holds 15 clients; the bearer expires 10-24.
+- Private core and render done by the orchestrator (`--client-id` Anduril `<CLIENT_ID>`, the same binding as the frontend's MERI_FIRST_CHAT_CLIENT_ID). The membership holds 15 clients; the bearer expires 10-24.
 - Secrets uploaded under `FIRST_CHAT_20261020F` only.
 - Change sets contain TaskDefinition/Service changes only.
 - Executing model → issuer → app with gates. Predicted revisions: control:36, worker:35, issuer:35, owner:34, proxy:34, runner:21.
@@ -854,3 +854,58 @@ Proxy kit 00–03 run manually, then `release-candidate.sh --reuse-proxy-kit shi
 - O193 — #109 fast-forwarded backend-import to ca4de503; Core cut-over image = preview-core@sha256:036b368c3de9cfd8cb191bb8849760efeb2530d131e3317f7e6c357ccda54f23 (built, probes PASS, 0 findings), not deployed.
 - O194 — #210 gated at 9c7948ac (5 modules all PASS) and fast-forwarded to main; #209 needs a rebase onto 9c7948ac.
 - O195 — #121 fast-forwarded capiro-frontend main to 87a84951 and deployed (portfolio-preview:22, image 18dad658); rollback R1 to 21.
+- O196 — Neo: private PKI must be in AWS. Created Secrets Manager meri/preview/private-pki (binary tgz, 45 files, ContentSha256 79f0c3c7…, round trip verified); ship-kit/tools/fetch-private-pki.sh; make-ship-kit reads MERI_PKI_DIR/MERI_PREP_DIR; stage3-prep scripts published. neomart copy kept (Neo to decide on deletion).
+- O197 — A2 brief posted (6347169292) then put on HOLD at Neo's request before relay; awaiting Neo.
+- O198 — Neo approved MX-01 to agent 2 (lane D): session-refusal alarm on ControlSessionRefusals (none exists) + ship-packet risk text; status table stays Fable. Base main 9c7948ac.
+- O199 — MX-01 #212 alarm numbers approved: ControlSessionRefusals Sum/60s >=1, 3/3, notBreaching (mirrors pair-refusals-sustained).
+- O200 — #212 fast-forwarded main to 2588526e; observability stack updated (one Add: SessionRefusalsSustained); 9 meri-preview alarms live.
+- O201 — main frozen at 2588526e until cut-over except #204 then #209 (rebase after #204 merges).
+- O202 — A1 size reviews: dot reviews the 50 proposed reasons; agent 3 granted bounded exception to add accepted entries to scripts/architecture/reviews.mjs (no threshold/baseline change).
+- O203 — #204 gates at 31f7b40e: one head-only regression (next-run-pg.test.mjs:49 REVOCATION_REQUIRED vs REPLAY_REFUSED; next-run.mjs changed) back to agent 1; N21 + backoff flake inherited; D3 session hit usage limit, Fable finished the disposition.
+- O204 — A1 size records go in scripts/architecture/reviewed-size-findings.json (corrects O202); PF-CAP-1, MAIL-RECOVERY-1, PF-FIXTURE-1 fixed in #118 now; reconciliation cancelled-notes inherited -> A2 follow-up.
+- O205 — #204 regression fix approved (restore REPLAY_REFUSED precedence in next-run-journal reserve()); agent 1 pushes without local PG; Fable runs native PG + fresh image gates; fixture scripts posted.
+- O206 — #204 gated PASS at f3bcf4a6 (PG identical to base, regression fixed) and merged as 14853f34 (merge commit, no overlap). S2 start + #209 rebase relayed.
+- O207 — A1 composed FE gate PASS at 7d2ffcc5 (#117 89cb85da + #118 248baf5d); image 6afdc16a, 0 findings; 36 guarded skips must run in A1 acceptance after cut-over.
+- O208 — S2 receipt reuse: same run/session/principal/client/conversation, in-process, age <20s from local send start, no renewal; fresh for first check + side-effecting admission; 401/403/409 invalidate, 503 fails closed; counters for fresh vs reuse.
+- O209 — corrects O207: Fable runs the 57-identity joined suites in the isolated loopback harness (0 skipped) before A1 deploy; agent 3 adds bounded Playwright/Vite harness so the 8 Settings form assertions execute.
+- O210 — NEW-STACK CUT-OVER DONE ~21:35Z: main 872ae61f (#209 FF), clone snapshot newstack-pre-cutover-20261022, clone min 0.5 ACU, Core A1 migration on clone (483/483), Temporal :2 on clone (desired-count reset incident ~3 min, restored to 1), Meri 872ae61f (control:49, worker:48, owner:47, proxy:47, issuer:48), Core :7 ca4de503 (from :6, flag on). UI-only acceptance packet posted.
+- O211 — WS03 joined suites PASS 57/57 (21+36, 0 skipped) at backend ca4de503 + frontend 7f8a3969 in isolated loopback harness.
+- O212 — Meri history unavailable post-cutover (pre-existing; Core context 403s). Read-only diagnosis assigned to agent 4; Fable answers DB fact questions on clone.
+- O213 — Posted identifiers (client/tenant/actor/conversation IDs) in public #202 comment 6352281538; redacted by edit (edit history still holds them); PII-free handoff reposted. Rule: never post customer-linked IDs on GitHub.
+- O214 — S2 #213 must also switch conversation-currentness (history list/transcript) to /current (one fresh call per row; no cross-row reuse); RP/prospect metadata 0/30 on clone.
+- O215 — A1 frontend shipped: capiro-frontend main e5f1f263 (#117 0ba2abf9 + #118 248baf5d), portfolio-preview:23 image 461135af; gates 40/40 browser, 57/57 joined, 0 findings.
+- O216 — S2 public history keeps content-free 503 CONVERSATION_UNAVAILABLE; O214 distinction is adapter-level (done). PII-free refusal-class logging = post-S2 follow-up if needed.
+- O217 — Neo: approved UI library + font stack added to FINAL-PLAN §10 (+§6 pointer), Addendum A in both closeout plans, STANDING-RULES, Wave 2 briefs (M2/A2/MP). Not-in-Figma: coss ui, Motion spec, Vidstack, map screen -> Figma first.
+- O218 — S2 #213 423dd414: D3 rehearsal fails all cases on head; rehearsal-support.mjs Core model lacks /current (identity/membership/context only). Back to agent 1 to model /current with measured latency; S2 blocked.
+- O219 — Neo: run preview as production — all reads, all writes, real external effects (Clerk, mail, providers, billing); deploy all backing services; full test before live cutover.
+- O220 — S2 duplicate-submit regression: base/M1 D3 sameRun:true 6/6, S2 33e83584 sameRun:false + 503 INITIAL_INPUT_UNAVAILABLE; agent 1 to single-flight fresh observations + add sameRun assertion. S2 held.
+- O221 — A2 #111 (ML-13) gated (image 11aa247a, 0 findings) and merged to backend-import db96ad31; deploy held by freeze until S2 acceptance.
+- O222 — Agent 1 starts P1 #200 rebase stacked on S2 9d1e5f6f (S2 wins conflicts); C9 #203 after P1 review.
+- O223 — P1 exception extended to pair_lease.py + owner-pair-lease.mjs + tests: same-value budget-table migration only, pinned equality tests.
+- O224 — Neo: preview new build uses only Core + intel-api + api-strategy; harden those two to 0 HIGH/CRITICAL (Alpine Dockerfiles, agent 2); workspace/onboard/engagement left alone (retiring).
+- O225 — Neo: re-register preview workspace/onboard/engagement TDs (:2 ACTIVE); hardening widened to workspace + engagement-api (onboard out). S2 two head-only failures = interpreter path; rerun with image python3.13 head 16/17 = base 16/17 → merged.
+- O226 — Neo: Wave 2+ runs in a local Codex orchestrator on another machine; Fable = Wave 1 only. M2 gate ba03601e cancelled (not merged); A2 deploy held; image hardening paused → Wave 2 handover. Fable owes WAVE-1-HANDOFF + Wave 2 handover.
+- O227 — S2 0e5e6f87 DEPLOYED to preview 02:12Z: control:50, worker:49, owner/proxy:48, issuer:49, runner:35; Meri migration already ledgered (ord 22, same sha). Acceptance packet T3-T6/H1/H2/R1 posted for astra 6.
+- O228 — Neo: open Core-backed preview data. capiro-prod-alb 443 rule 2 (preview host only) widened from /api/me|clients|clients/:id GET to /api/* GET+HEAD; rollback = restore rule 2 from prod-alb-443-rules-0241.json. Frontend allowlist widening briefed to agent 4 (READ_ONLY kept; flipping it breaks Meri routes).
+- O229 — Neo: the new Codex environment ships all of Wave 2; Fable ships only the remaining Wave 1 (P1+C9 release, agent 4 allowlist FE, acceptance, handoff). DEPLOY LOCK convention on #202 until WAVE-1-HANDOFF.
+- O230 — S2 live refusal root cause: control session REFUSED (logged step=capacity, the initial progress label) because S2 withAuthority POST /api/clio/application-authority/current was 404 at capiro-prod-alb rule 1 (preview allowlist lacked current). Added current to rule 1. Gate gap: edge allowlist not part of release kit checks.
+- O231 — CUT-OVER DEFECT: ship kit built deployment inputs from baseline-C (shared live Aurora) so Meri runtime (872ae61f and 0e5e6f87) ran on the SHARED DB while Core ran on the clone; repo #209 pins the clone. Symptom: history list 503 (Core 403 on rows only on live). Kit patched to take database block from repo inputs + assert clone host. Snapshot newstack-pre-meri-db-move-20261023. Also #214 borrower fix (runner bootstrap 403 x1251).
+- O232 — #217 merged (55da2e7f): no-origin fresh /current read, 8 s Core wait, cancellation-safe cache (sweep findings 1,2,4); #216 diagnostics live. Release blocked by Secrets Manager 20-label quota on the 5 material secrets: removed FIRST_CHAT_20261020*/20261021* labels (13 each); live TD-pinned versions verified present. Kit should prune labels >7 per secret (Wave 2 note).
+- O233 — Live sweep fixes merged: #218 refusal codes; #219 task authority pins only its own receipts (409 from browser-session pins with configured identity credential); #220 receipts valid-now not lease-long (prepared-runtime admitted/checkpoint/completion); #221 launcher keeps original lease + continuation not bounded by ~120 s receipts. main 2e53ddce releasing.
+- O234 — proxy image for 1316ee23 (owner diagnostics in apps/proxy): accepted UNDEFINED CVE-2026-111943 in ca-certificates(-bundle) per O144 precedent; 0 HIGH/CRITICAL.
+- O235 — Neo asked for live tracing/packet capture: VPC flow logs (tcp-flags, 60 s) on owner/proxy service subnets -> /meri/preview/flowlogs (7 d), role meri-preview-flowlogs (scoped); carrier trace lines (owner+proxy) in fable/carrier-trace; #224 proxy reconnects on dropped carrier. Root cause hypothesis: P2 closeGeneration destroys all owner sockets on lease change; proxy never reconnected (same class as 10-20 900 s idle close).
+- O236 — Neo: "simplify and have chat working in a standard architecture. we dont need all this extra security layers. just make the changes now". Decision: authorize the user once per turn at admission (control session + one Core /current); runner operations authorized by local run/grant facts only (no per-op Core, no origin borrowing, no receipt pins); proxy-owner plain mTLS + reconnect; remove 10-23 temporary diagnostics. Branch fable/authority-standard (in progress).
+
+## O237 — 2026-10-23 T3 on bec934d4: proxy admission lease cuts the stream; simplify to authorize-once
+- T3 submitted 200; model streamed ~1 s to first chunk, then proxy `gate=admission step=consume` (10 s ADMISSION_LEASE_MS, renewed every 5 s by a ~6 s owner exchange: 14 Core calls, ~1100 DB statements). Later requests in the run: owner `PRODUCT_OWNER_CHANNEL_DENIED` (owner-channel.mjs:327). Runner task verifier then refused on Core `HTTP_UNAVAILABLE_STATUS` (removed by O236).
+- Per Neo ("standard architecture… we dont need all this extra security layers"): proxy authorizes a model request once at start, streams to its deadline; no in-request lease renewal/expiry/peer re-observation; a cut request must not poison the run. Branch `fable/proxy-request-once` off `1e0acd93b` (worktree `C:\dev\fable\wt-proxy-once`), merged with O236 into one release.
+
+## O238 — 2026-10-23 ~14:35 Release 05d588c7 (#227): T3 COMPLETES; per-turn overhead fails limits
+- Deployed 05d588c7 (new proxy). First control task exited at +5 min (TEMPORAL_AUTHORIZATION_UNAVAILABLE, exit 3); ECS replacement stable >6 min; 19-verify passed on rerun.
+- T3 (new conversation, Anduril): submit 200 → Completed, full answer, proxy no cut. Stages: run.starting 61 s (Fargate cold start), first delta 80.7 s, terminal 217 s; model stream 4.7 s.
+- Limits FAIL: control per turn Core current=372 (coreMs 20.6 s), DescribeTasks 555, DescribeTaskDefinition 253, DB 72,919 stmts/72.8 s. Owner 8 Core calls. Proxy logged outcome=failed despite settle 25 ms (check abandon path).
+- Fix: prove runner once per run, in-memory currentness, Core /current once per turn, coalesce delta publishes — branch `fable/runner-ops-per-run` (wt-per-run).
+
+## O239 — 2026-10-23 Neo: Claude-native harness is Wave 2 item 0
+- Neo: "i want claude to handle the harness as much as possible because i want responses to be as good as claudes quality." Chose: finish Wave 1 on the current design; Claude-native harness (SDK full harness, direct Bedrock, Capiro data as MCP tools; delete proxy/owner/temporal-issuer/per-op authority) is the first Wave 2 item with a full spec.
+- Spec: handover branch `docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`; WAVE-2-HANDOVER §2 row 0.
