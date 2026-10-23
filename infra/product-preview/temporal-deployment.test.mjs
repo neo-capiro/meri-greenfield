@@ -348,6 +348,41 @@ function readback(b){
    n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
 }
 
+test('shared S3 gateway may serve additional route tables while retaining every Temporal task route',()=>{
+ const b=capiroDevBinding(),evidence=readback(b);
+ evidence.s3Gateway.RouteTableIds.push('rtb-44444444','rtb-55555555','rtb-66666666',
+  'rtb-77777777','rtb-88888888','rtb-99999999');
+ assert.equal(evidence.routeTables.length,3);
+ assert.equal(evidence.s3Gateway.RouteTableIds.length,9);
+ assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
+ evidence.s3Gateway.RouteTableIds.reverse();
+ assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
+});
+
+test('shared S3 gateway still refuses malformed associations and invalid required task routes',()=>{
+ const b=capiroDevBinding(),evidence=readback(b);
+ evidence.s3Gateway.RouteTableIds.push('rtb-44444444');
+ for(const [label,mutate] of [
+  ['missing required route',x=>{x.s3Gateway.RouteTableIds.shift();}],
+  ['empty associations',x=>{x.s3Gateway.RouteTableIds=[];}],
+  ['non-array associations',x=>{x.s3Gateway.RouteTableIds='rtb-11111111';}],
+  ['null associations',x=>{x.s3Gateway.RouteTableIds=null;}],
+  ['duplicate association',x=>{x.s3Gateway.RouteTableIds.push(x.s3Gateway.RouteTableIds[0]);}],
+  ['invalid extra ID',x=>{x.s3Gateway.RouteTableIds.push('not-a-route');}],
+  ['non-string extra ID',x=>{x.s3Gateway.RouteTableIds.push(12345678);}],
+  ['sparse extra association',x=>{x.s3Gateway.RouteTableIds.length+=1;}],
+  ['foreign gateway VPC',x=>{x.s3Gateway.VpcId='vpc-deadbeef';}],
+  ['foreign required route VPC',x=>{x.routeTables[0].VpcId='vpc-deadbeef';}],
+  ['inactive required S3 route',x=>{x.routeTables[0].Routes[1].State='blackhole';}],
+  ['different required S3 target',x=>{x.routeTables[0].Routes[1].GatewayId='vpce-deadbeef';}],
+  ['different required S3 prefix',x=>{x.routeTables[0].Routes[1].DestinationPrefixListId='pl-deadbeef';}],
+  ['wrong effective task route',x=>{x.routeTables[0].Associations[0].SubnetId='subnet-deadbeef';}],
+ ]){
+  const changed=structuredClone(evidence);mutate(changed);
+  assert.throws(()=>validateTemporalNetworkReadback(b,changed),/TEMPORAL_NETWORK_READBACK_REFUSED/u,label);
+ }
+});
+
 test('one shared capiro-dev endpoint SG binds, dedupes egress and still needs distinct endpoint IDs',()=>{
  const b=capiroDevBinding();
  assert.equal(validateTemporalPreviewBinding(b),b);

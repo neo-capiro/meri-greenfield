@@ -70,7 +70,11 @@ export function validateTemporalNetworkReadback(binding,readback){
  if(gateway.VpcEndpointId!==b.network.s3Gateway.endpointId||gateway.VpcId!==b.vpcId||
     gateway.ServiceName!=='com.amazonaws.us-east-1.s3'||gateway.VpcEndpointType!=='Gateway'||
     gateway.State!=='available'||
-    !exactSet(gateway.RouteTableIds,[...routes.keys()]))fail();
+    !Array.isArray(gateway.RouteTableIds)||gateway.RouteTableIds.length===0||
+    new Set(gateway.RouteTableIds).size!==gateway.RouteTableIds.length||
+    [...gateway.RouteTableIds].some(id=>typeof id!=='string'||!/^rtb-[a-f0-9]{8,17}$/u.test(id))||
+    // A shared VPC gateway may serve other route tables as well as these tasks.
+    [...routes.keys()].some(id=>!gateway.RouteTableIds.includes(id)))fail();
  // One row per distinct SG: the capiro-dev interface endpoints share one group.
  const peerIds=[...temporalEndpointSecurityGroupIds(b.network),b.network.issuerSecurityGroupId,
   b.network.migrationSecurityGroupId,b.network.issuerClientSecurityGroupId,b.network.dbClientSecurityGroupId];
