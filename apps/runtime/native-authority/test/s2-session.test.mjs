@@ -6,7 +6,6 @@ import {createCoreMembershipGate} from '../../../control/product-access/core-mem
 import {createActionSessionOwner,borrowedRunSession} from '../../../control/action-host/session/owner.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../../control/action-host/application-adapters/authority-http.mjs';
 import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
-import {bindCurrentAuthoritySessions} from '../../read-credential-relay.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 function fixture(t){
  const at=1800000000000,binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1},state={calls:[],local:0,status:200};
@@ -45,27 +44,19 @@ test('S2 owner and control counters separate fresh calls from reused observation
  const counts=telemetry.counters(f.binding);assert.equal(counts.authorityFresh,2);assert.ok(counts.authorityReuses>=1);assert.equal(f.state.calls.length,2);telemetry.close();
  assert.ok(lines.some(l=>l.authorityFresh===2&&l.authorityReuses>=1));
 });
-test('S2 task reuse requires its live originating session; without one every check reads Core fresh',async t=>{
- const f=fixture(t),s=await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
- const observe=(extra={})=>f.identity.withAuthority({credential:'native',binding:f.binding,sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra},()=>true);
- await observe();const count=f.state.calls.length;await observe();assert.equal(f.state.calls.length,count);
- assert.equal(JSON.parse(f.state.calls[count-1].init.body).expect,undefined,'the first task read pins nothing from the browser session');
- await observe({fresh:true});assert.deepEqual(JSON.parse(f.state.calls.at(-1).init.body).expect,{identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64)},'a fresh read pins the task credential own cached revisions');
- f.state.status=503;await assert.rejects(observe({fresh:true}));f.state.status=200;f.state.contextRevision='d'.repeat(64);const cleared=f.state.calls.length;await observe();assert.equal(JSON.parse(f.state.calls[cleared].init.body).expect,undefined,'a cleared cache pins nothing from the browser session');f.state.contextRevision=undefined;await assert.rejects(observe({fresh:true}),'its own cached revision is pinned on the next fresh read');await observe({fresh:true});
- const beforeRevoke=f.state.calls.length;f.sessions.revoke(s.credential);await observe();await observe();assert.equal(f.state.calls.length,beforeRevoke+2,'without an origin every check is a fresh Core read, never a cached reuse');
- f.state.status=401;await assert.rejects(observe(),'Core refusing the revoked credential still refuses the task');
-});
-test('S2 task bootstrap borrows when the runner attempt differs from the session binding (live 10-23 regression)',async t=>{
- const f=fixture(t);await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
- const runner={...f.binding,attemptId:id(12),workerId:id(13),writerFence:3};
- assert.equal(await f.identity.withAuthority({credential:'native',binding:runner,sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true),true);
- // Another run has no origin session: it is never served from the cache, only by a fresh Core read each time.
- const other=()=>f.identity.withAuthority({credential:'native',binding:{...runner,runId:id(14)},sessionFence:'task:grant',requireOrigin:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000},()=>true);
- const before=f.state.calls.length;await other();await other();assert.equal(f.state.calls.length,before+2);
+test('S2 a session recheck reuses only its own fenced receipt and never pins revisions',async t=>{
+ const f=fixture(t);await f.issue();
+ const observe=(extra={})=>f.identity.withAuthority({credential:'native',binding:f.binding,sessionFence:'session:revision',hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra},()=>true);
+ const first=f.state.calls.length;await observe();const count=f.state.calls.length;assert.equal(count,first+1);
+ await observe();assert.equal(f.state.calls.length,count,'the same session fence reuses its receipt');
+ await observe({sessionFence:'other:revision'});assert.equal(f.state.calls.length,count+1,'another session fence reads Core fresh');
+ await observe({fresh:true});assert.equal(f.state.calls.length,count+2,'a fresh recheck always reads Core');
+ for(const call of f.state.calls.slice(first))assert.equal(JSON.parse(call.init.body).expect,undefined,'no revision pins are sent');
+ f.state.status=401;await assert.rejects(observe({fresh:true}),'Core refusing the credential refuses the recheck');
 });
 test('S2 one caller cancelling does not discard a concurrent fresh positive',async t=>{
- const f=fixture(t);await f.issue();const stop=bindCurrentAuthoritySessions(f.fetchImpl,f.sessions);t.after(stop);
- const ac=new AbortController(),args=extra=>({credential:'native',binding:f.binding,sessionFence:'task:grant',requireOrigin:true,fresh:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra});
+ const f=fixture(t);await f.issue();
+ const ac=new AbortController(),args=extra=>({credential:'native',binding:f.binding,sessionFence:'session:revision',fresh:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra});
  const cancelled=f.identity.withAuthority(args({signal:ac.signal}),()=>true),kept=f.identity.withAuthority(args({}),()=>true);ac.abort();
  await assert.rejects(cancelled);assert.equal(await kept,true);
 });

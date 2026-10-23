@@ -81,7 +81,7 @@ test('request and completion claims require independent captures before canonica
 test('both exact captures reach the same canonical pool and retain slot isolation',async()=>{
  const {configuration,observation,usage,request,calls}=fixture();
  const owner=createProductProxyOwnerComposition(configuration);
- assert.deepEqual(Object.keys(owner),['reserve','settleComplete','readOutcome']);
+ assert.deepEqual(Object.keys(owner),['reserve','settleComplete','abandon','readOutcome']);
  await assert.rejects(owner.reserve(request,observation),/BUDGET_STATE_UNAVAILABLE/);
  await assert.rejects(owner.settleComplete(requestId,usage),/BUDGET_STATE_UNAVAILABLE/);
  assert.deepEqual(calls(),{sql:2,requestCaptures:1,completeCaptures:1});

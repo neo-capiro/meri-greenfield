@@ -26,7 +26,7 @@ and read timeouts with no retry; it cannot prove task-role or network
 configuration. No such service bootstrap is mounted. Actual Linux NLB source
 IP preservation and the pinned CLI wire need a native check.
 The existing `InferenceApp` invokes its resolver synchronously before the
-request watcher. `create_bearer_eni_product_proxy_app` now resolves the durable
+request is admitted. `create_bearer_eni_product_proxy_app` now resolves the durable
 grant and ECS/ENI lease off the ASGI loop with a five-second maximum bootstrap
 wait. The original deadline starts at request arrival. Timeout or cancellation
 of an unfinished lookup permanently poisons host readiness; a late result
@@ -46,9 +46,9 @@ observation hook before the existing send guard, wraps the CountTokens client,
 and nests the response observation and settlement transports around the one
 provider transport. Only this composed HTTPX handler is passed to the pinned
 LiteLLM request invoker. The separate CountTokens route uses the same admitted
-ASGI lifetime and pinned model, but cannot reserve or send inference. It
-refreshes the direct peer/grant and rechecks current Core conversation context
-both before and after its CountTokens call.
+ASGI lifetime and pinned model, but cannot reserve or send inference. Like
+every request it is admitted once at its start; it checks that admitted Core
+conversation context before and after its CountTokens call.
 
 `product-owner-composition.mjs` joins the two existing JavaScript product
 reservation/settlement bridges using the **same borrowed canonical pool**,

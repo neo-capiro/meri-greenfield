@@ -660,6 +660,26 @@ class ProductOwnerBridge:
             self._abort()
             _deny()
 
+    async def abandon(self):
+        """Settle the hold of a reserved request that closed without a complete response.
+
+        The owner charges the full hold; this frees the grant's one UNKNOWN slot for the run's next request. A request
+        that never reserved, or whose settlement already started, has nothing to release here.
+        """
+        if self._state != "HELD":
+            return
+        self._state = "FAILED"
+        claim_lock = await self._claim()
+        try:
+            result = await self._exchange("operation", OPERATION, _wire([
+                "meri.proxy.operation/2", self.session_id,
+                ["meri.proxy.abandon/1", self.request_id], None]))
+            if result != ["meri.proxy.abandon-receipt/1", self.session_id, [self.request_id, "SETTLED"]]:
+                _deny()
+            self._state = "SETTLED"
+        finally:
+            claim_lock.release()
+
     async def read_outcome(self, request_id):
         if self._state != "UNCERTAIN" or request_id != self.request_id:
             _deny()

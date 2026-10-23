@@ -10,7 +10,7 @@ import math
 import re
 
 from ..qualification.runtime.bedrock_body import ENVELOPE_MAX_INPUT_TOKENS
-from ..qualification.runtime.lifetime import _current_lifetime_check
+from ..qualification.runtime.lifetime import _request_lifetime
 from ..qualification.state.pricing import StateDenied
 
 
@@ -240,9 +240,10 @@ def create_cli_count_tokens_app(count_tokens, *, model, allowed_tool_names=()):
     allowed_tool_names = frozenset(allowed_tool_names)
 
     async def app(scope, receive, send):
-        check = _current_lifetime_check()
-        if check is None:
+        life = _request_lifetime.get()
+        if life is None:
             _deny("COUNT_TRUSTED_LIFETIME_REQUIRED")
+        check = life.check
         check()
         raw = await _read_body(receive, check)
         request = parse_cli_count_request(scope, raw, model=model,

@@ -17,7 +17,7 @@ export function createNativeExecutionBroker(configuration){
  function request(value,fields){const v=own(value,['binding',...fields],['signal']);nativeSignal(v.signal);if(!enabled||hash(data(v.binding))!==executionKey)throw executionFault('REFUSED');return v;}
  async function operation(signal,body){const life=createOperationLifetime({now,signal,deadlineMs:now()+maxRequestMs,errorFactory:()=>executionFault('UNAVAILABLE')});try{return await body(life);}finally{life.close();}}
  async function fresh(life){const receipt=await life.run(signal=>verify({capability:c.taskCapability,binding,operation:'load',inputSha256:hash({binding}),signal}));
-  // S2: Core /current receipts last ~120 s and each operation re-verifies; a receipt must be valid now, not outlive the lease.
+  // Each operation re-verifies against the admitted run; a receipt must be valid now, not outlive the lease.
   if(hash(receipt.binding)!==executionKey||receipt.expiresAtMs<=now()||now()>=c.expiresAtMs)throw executionFault('ADMISSION_REFUSED');life.check();}
  async function observe(life,saved,{stop=false}={}){if(!saved.record)throw executionFault('NOT_STARTED');
   // Inspect/retire remain possible with original ownership after revocation/expiry.

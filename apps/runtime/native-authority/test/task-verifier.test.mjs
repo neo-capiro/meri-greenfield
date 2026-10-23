@@ -23,17 +23,17 @@ test('actual native authorization HTTP/client returns canonical task receipt wit
  const authority=createNativeTaskAuthority({native,enabled:true,now:x.f.now,maxRequestMs:1000});
  const receipt=await authority.verify({capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:hash({binding:x.binding})});
  assert.deepEqual(receipt.binding,x.binding);assert.equal(receipt.identityCredential,x.identity.credential);assert.equal(receipt.expiresAtMs,NOW+8000,'request1000ms must not shorten original authority lease');
- assert.equal(receipt.scopes[0].resourceId,x.clientId);assert.ok(x.reads.filter(s=>s.startsWith('BEGIN ISOLATION')).length>=4);assert.equal(x.reads.some(s=>s.includes('FOR UPDATE')),false);assert.equal(x.f.commands.length,0,'verification has no writes/locking transaction');
+ assert.equal(receipt.scopes[0].resourceId,x.clientId);assert.equal(x.reads.filter(s=>s.startsWith('BEGIN ISOLATION')).length,1,'one read-only admitted-run snapshot per operation');assert.equal(x.authorityCalls(),0);assert.equal(x.reads.some(s=>s.includes('FOR UPDATE')),false);assert.equal(x.f.commands.length,0,'verification has no writes/locking transaction');
  const worker=await fetch(listener.origin+'/v1/worker/authorize',{method:'POST',headers:{authorization:'Bearer '+x.f.credential,'content-type':'application/json'},body:JSON.stringify({capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:'a'.repeat(64)})});assert.equal(worker.status,403);assert.equal((await worker.text()).includes(x.identity.credential),false);
 });
-test('a Core read that did not answer reaches control as transient; a refused task stays refused',async t=>{
+test('a refused task stays refused over HTTP and never reaches Core',async t=>{
  const x=await setup(t),listener=await listenFetch(x.supervisor.application);t.after(()=>listener.close());
  const native=createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential:control,now:x.f.now});
  const authority=createNativeTaskAuthority({native,enabled:true,now:x.f.now,maxRequestMs:1000}),input={capability:x.f.credential,binding:x.binding,operation:'load',inputSha256:hash({binding:x.binding})};
  x.setHook(()=>{throw new TypeError('fetch failed');});
- await assert.rejects(authority.verify(input),e=>e.code==='WORKER_AUTHORITY_UNAVAILABLE'&&isAuthorityUnavailable(e));
- x.setHook(()=>{});x.f.state().grant.state='REVOKED';
- await assert.rejects(authority.verify(input),e=>e.code==='WORKER_AUTHORITY_REFUSED'&&!isAuthorityUnavailable(e));
+ assert.deepEqual((await authority.verify(input)).binding,x.binding,'an unreachable Core does not matter once the run is admitted');
+ x.f.state().grant.state='REVOKED';
+ await assert.rejects(authority.verify(input),e=>e.code==='WORKER_AUTHORITY_REFUSED'&&!isAuthorityUnavailable(e));assert.equal(x.authorityCalls(),0);
 });
 test('foreign capability/binding, unsupported operation and hostile input refuse before SQL/native reads',async t=>{
  const x=await setup(t);for(const extra of [{capability:'wrong'},{binding:{...x.binding,writerFence:9}},{operation:'publish'},{inputSha256:'x'}])await assert.rejects(verify(x,extra));
@@ -42,8 +42,20 @@ test('foreign capability/binding, unsupported operation and hostile input refuse
 test('committed grant revocation/fence/quarantine/expiry prevents receipt and launch preparation',async t=>{
  for(const kind of ['revoked','fence','quarantine','expiry']){const x=await setup(t);if(kind==='revoked')x.f.state().grant.state='REVOKED';if(kind==='fence')x.f.state().run.fence++;if(kind==='quarantine')x.f.state().budget.quarantined=true;if(kind==='expiry')x.f.state().grant.expires_at=new Date(NOW);await assert.rejects(verify(x));await assert.rejects(x.supervisor.prepareLaunch({capability:x.f.credential}));assert.equal(x.supervisor.status().launcher,null);}
 });
-test('revocation committed during native context await is caught by a fresh later snapshot',async t=>{
- const x=await setup(t);x.setHook(url=>{if(url.endsWith('/current'))x.f.state().grant.state='REVOKED';});await assert.rejects(verify(x));assert.equal(x.authorityCalls(),1);assert.equal(x.f.state().grant.state,'REVOKED');
+test('an admitted run authorizes every runner operation from local facts with zero Core calls',async t=>{
+ const x=await setup(t);
+ for(const operation of ['load','runner/session/register','runner/session/append','runner/session/load']){
+  const receipt=await verify(x,{operation});assert.equal(receipt.operation,operation);assert.deepEqual(receipt.binding,x.binding);
+  assert.equal(receipt.selectedClientId,x.clientId);assert.deepEqual(receipt.scopes,[{kind:'client',tenantId:x.binding.tenantId,resourceId:x.clientId,policyRevision:receipt.policyRevision}]);
+  assert.ok(receipt.expiresAtMs<=NOW+8000&&receipt.expiresAtMs>NOW);
+ }
+ assert.equal(x.authorityCalls(),0,'no Core identity, context or /current call after admission');
+});
+test('a cancelled or expired run, a wrong capability or a wrong binding is refused without Core',async t=>{
+ const cases={cancelled:x=>{x.f.state().grant.state='REVOKED';},expired:x=>{x.f.state().grant.expires_at=new Date(NOW);},capability:()=>({capability:'another-task-capability'}),
+  binding:x=>({binding:{...x.binding,runId:'11111111-1111-4111-8111-000000000099'}}),fence:x=>({binding:{...x.binding,writerFence:x.binding.writerFence+1}}),operation:()=>({operation:'runner/session/list-subkeys'})};
+ for(const [name,change] of Object.entries(cases)){const x=await setup(t);await verify(x);const extra=change(x)??{};
+  await assert.rejects(verify(x,extra),e=>e.code==='NATIVE_TASK_REFUSED'&&!isAuthorityUnavailable(e),name);assert.equal(x.authorityCalls(),0,name);}
 });
 test('held canonical allocation can refresh verifier without reacquiring budget row lock',async t=>{
  const x=await setup(t);let inside;
@@ -75,7 +87,7 @@ test('compiled production ports bind admitted real child registration to canonic
  assert.equal((await client.register({key:x.key})).registered,true);assert.notEqual(x.journal.state().owner.owner.observationId,'explicit-synthetic-observation');assert.deepEqual(x.journal.state().owner.owner.binding,x.binding);assert.equal(x.journal.state().owner.owner.expiresAtMs,NOW+8000);
  await x.supervisor.close();assert.equal(launcher.status().process.physicalStopProven,true);const calls=x.reads.length;await assert.rejects(client.load({key:x.key}));assert.equal(x.reads.length,calls);
 });
-test('supervisor close aborts parked launch preparation before any native context or process dispatch',async t=>{
- const x=await setup(t),entered=Promise.withResolvers();x.setHook(()=>{entered.resolve();return new Promise(()=>{});});
- const preparing=x.supervisor.prepareLaunch({capability:x.f.credential});await entered.promise;await x.supervisor.close();await assert.rejects(preparing);assert.equal(x.supervisor.status().launcher,null);assert.equal(x.authorityCalls(),1);
+test('supervisor close aborts parked launch preparation before any process dispatch',async t=>{
+ const x=await setup(t),entered=Promise.withResolvers();x.setSqlHook(()=>{entered.resolve();return new Promise(()=>{});});
+ const preparing=x.supervisor.prepareLaunch({capability:x.f.credential});await entered.promise;await x.supervisor.close();await assert.rejects(preparing);assert.equal(x.supervisor.status().launcher,null);assert.equal(x.authorityCalls(),0);
 });

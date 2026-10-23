@@ -12,7 +12,7 @@ function fixture(){
  return {s,owner,read,receipt};
 }
 test('O208 reuses at19.9s and sends fresh at20.0s',async()=>{
- const f=fixture();await f.read();f.s.mono=19900;await f.read();assert.equal(f.s.calls.length,1);f.s.mono=20000;await f.read();assert.equal(f.s.calls.length,2);assert.deepEqual(f.s.calls[1].expect,{identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64)});
+ const f=fixture();await f.read();f.s.mono=19900;await f.read();assert.equal(f.s.calls.length,1);f.s.mono=20000;await f.read();assert.equal(f.s.calls.length,2);assert.equal(f.s.calls[1].expect,undefined,'a refresh pins no revisions');
  assert.deepEqual(f.owner.status(),{freshCalls:2,reuses:1,entries:1});assert.deepEqual(f.s.recorded,['fresh','reuse','fresh']);
 });
 test('O208 revocation is observed at next recheck after20s',async()=>{
@@ -24,9 +24,9 @@ test('O208 fresh403 mid-run invalidates the positive receipt',async()=>{
 test('O208 warm cache cannot cover503,401 or409',async()=>{
  for(const status of [503,401,409]){const f=fixture();await f.read();f.s.status=status;await assert.rejects(f.read({fresh:true}),e=>e.status===status);await assert.rejects(f.read(),e=>e.status===status);assert.equal(f.s.calls.length,3);assert.equal(f.owner.status().entries,0);}
 });
-test('O208 cross-run/conversation/principal/session/fence/credential/revisions never reuse',async()=>{
+test('O208 cross-run/conversation/principal/session/fence/credential never reuse',async()=>{
  const f=fixture();await f.read();
- const variations=[{binding:{...binding,runId:id(6)}},{binding:{...binding,conversationId:id(7)}},{binding:{...binding,actorId:'foreign'}},{binding:{...binding,tenantId:'foreign'}},{sessionFence:'another:revision'},{binding:{...binding,writerFence:2}},{credential:'replaced-native'},{expect:{identityRevision:'d'.repeat(64)}}];
+ const variations=[{binding:{...binding,runId:id(6)}},{binding:{...binding,conversationId:id(7)}},{binding:{...binding,actorId:'foreign'}},{binding:{...binding,tenantId:'foreign'}},{sessionFence:'another:revision'},{binding:{...binding,writerFence:2}},{credential:'replaced-native'}];
  for(const extra of variations){const count=f.s.calls.length;await f.read(extra).catch(e=>{assert.equal(e.status,403);});assert.equal(f.s.calls.length,count+1);}
  assert.equal(f.owner.status().reuses,0);
 });

@@ -21,13 +21,13 @@ smaller) is refused before sending: an exchange needs about 4-8 s at live-tail l
 would overrun and poison. A carrier that was free at once never applies this rule."""
 
 IN_REQUEST_CHECK_SECONDS = (OWNER_CARRIER_WAIT_MS + MAX_OWNER_EXCHANGE_MS) / 1000 + 1
-"""Bound on each in-request freshness step (the opening refresh, session resolution and every watch refresh). Each is one
-owner exchange that may first wait for its carrier, so it gets the carrier wait plus the exchange budget and a second of
-margin; a shorter bound would cut a read that is still within its own limits and leave it running in its thread."""
+"""Bound on each owner step at a request's start (its one admission and session resolution). Each is one owner exchange
+that may first wait for its carrier, so it gets the carrier wait plus the exchange budget and a second of margin; a shorter
+bound would cut a read that is still within its own limits and leave it running in its thread."""
 
 REQUEST_CLEANUP_SECONDS = IN_REQUEST_CHECK_SECONDS
-"""How long close waits for an owner exchange still running in a thread before quarantining the proxy until restart. A
-refresh is often in flight when a request ends; close must outlast the bound that refresh is still inside."""
+"""How long close waits for an owner exchange still running in a thread before quarantining the proxy until restart; close
+must outlast the bound that exchange is still inside."""
 
 BOOTSTRAP_SECONDS = 25.0 + OWNER_CARRIER_WAIT_MS / 1000
 """Cap and default for one request's bearer/ENI bootstrap: the exchange budget plus the runner ENI read, with margin, plus one
@@ -44,6 +44,5 @@ PAIR_REPROOFS_PER_10_MIN = 3
 PAIR_REPROOF_WINDOW_MS = 10 * 60 * 1000
 CARRIER_RESETS_PER_MIN = 3
 CARRIER_RESET_WINDOW_MS = 60 * 1000
-ADMISSION_LEASE_MS = 10000
 PAIR_RENEWER_QUARANTINE_COOLDOWN_MS = 30000
 assert PAIR_LEASE_TTL_MS >= 2 * PAIR_RENEW_MS

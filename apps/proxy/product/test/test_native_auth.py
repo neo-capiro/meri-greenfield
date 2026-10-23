@@ -103,14 +103,6 @@ class AuthTests(unittest.IsolatedAsyncioTestCase):
             with self.subTest(kind=kind), self.assertRaises(Exception):
                 await self.dispatch(call)
 
-    async def test_watch_refusal_of_foreign_source_cuts_native_auth(self):
-        self.exchange.source[0][1] = "foreign-actor"
-        with self.assertRaises(Exception):
-            await self.life.renew()
-        with self.assertRaises(Exception):
-            await self.dispatch(lambda req: auth.authenticate_product_request(req, KEY.decode()))
-        self.assertTrue(self.reader.host_gate.available)
-
     async def test_closed_lifetime_and_mutated_native_scope_refuse_before_owner_read(self):
         before = len(self.exchange.calls)
         async def altered(req):

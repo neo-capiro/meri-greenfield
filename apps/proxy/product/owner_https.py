@@ -16,7 +16,6 @@ import math
 import select
 import socket
 import ssl
-import sys
 import threading
 import time
 
@@ -46,16 +45,6 @@ def _carrier_dropped(sock):
         return bool(readable)
     except (OSError, ValueError):
         return True
-
-
-def _trace_carrier(event, channel):
-    """Content-free carrier trace: a fixed event word and the channel name only."""
-    try:
-        word = channel if isinstance(channel, str) and channel.isidentifier() and len(channel) <= 32 else "other"
-        sys.stderr.write(f"PRODUCT_PROXY_CARRIER {event} channel={word}\n")
-        sys.stderr.flush()
-    except Exception:
-        pass
 
 class OwnerExchangeUnavailable(TimeoutError):
     """No authenticated owner answer was received; never means not dispatched."""
@@ -444,11 +433,8 @@ class ProductOwnerHttpsExchange:
             # A cached carrier the owner already closed would fail at reply-wait with no reply (live 10-22/10-23):
             # drop it and prove a fresh one before any byte of this request is written.
             if cached is not None and _carrier_dropped(cached.sock):
-                _trace_carrier("dropped", channel)
                 self.reset(channel, expected_connection=cached)
                 cached = None
-            if cached is None:
-                _trace_carrier("connect", channel)
             connection = cached or self._connect(channel, cutoff)
             generation = self._connection_generations.get(channel)
             self.pair_lease.require(generation=generation)
