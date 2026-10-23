@@ -19,6 +19,12 @@ export function compileNativeTaskAccess(configuration){
  if(typeof c.taskCapabilitySha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.taskCapabilitySha256)||typeof c.identityCredential!=='string'||!/^\S{1,8192}$/u.test(c.identityCredential)||matchesCapability(c.identityCredential,c.taskCapabilitySha256)||!Array.isArray(operations)||!operations.length||operations.length>vocabulary.size||new Set(operations).size!==operations.length||operations.some(op=>!vocabulary.has(op)))throw taskFault('CONFIGURATION');
  return operations;
 }
+// Content-free verifier refusal line (fixed sub-step + the cause's own code), at most one per step/code per 5 s.
+const verifierRefusalSeen=new Map();
+function verifierRefusal(step,error){try{const code=[error?.code,error?.reason,error?.message].find(v=>typeof v==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(v))??'REFUSED',key=step+':'+code,at=Date.now();
+ if((verifierRefusalSeen.get(key)??0)>at-5000)return;verifierRefusalSeen.set(key,at);if(verifierRefusalSeen.size>64)verifierRefusalSeen.delete(verifierRefusalSeen.keys().next().value);
+ process.stdout.write(`TASK_VERIFIER_REFUSED step=${step} code=${code}
+`);}catch{}}
 export function createNativeTaskVerifier(configuration){
  const c=own(configuration,['allocationJson','grantFactsJsons','grantId','identityCredential','currentOwner','identityContext','operations','expiresAtMs'],['enabled','now','maxRequestMs','signal']);nativeSignal(c.signal);
  const {facts}=parseAdmittedGrantSet(c),grant=facts.find(f=>f.grantId===c.grantId);if(!grant)throw taskFault('CONFIGURATION');const operations=compileNativeTaskAccess({identityCredential:c.identityCredential,taskCapabilitySha256:grant.capabilitySha256,operations:c.operations});
@@ -27,7 +33,7 @@ export function createNativeTaskVerifier(configuration){
   !Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<=now())throw taskFault('CONFIGURATION');
  const current=storageMethod(c.currentOwner,'currentTaskRun'),identity=storageMethod(c.identityContext,'verifyIdentity'),context=storageMethod(c.identityContext,'resolveContext');
  const binding=data(grant.binding),policy=grant.qualificationBinding.policyRevision;
- async function verify(value){let life;try{
+ async function verify(value){let life,vstep='input';try{
   if(!enabled)throw taskFault('UNAVAILABLE');
   if(c.signal?.aborted)throw taskFault('REFUSED');
   const input=own(value,['capability','binding','operation','inputSha256'],['signal','deadlineMs']);nativeSignal(input.signal);
@@ -44,19 +50,20 @@ export function createNativeTaskVerifier(configuration){
    if(hash(fact.binding)!==hash(binding)||fact.policyRevision!==policy||!Number.isSafeInteger(fact.checkedAtMs)||fact.checkedAtMs<began||fact.checkedAtMs>now()||!Number.isSafeInteger(fact.deadlineMs)||fact.deadlineMs<=now())throw taskFault('REFUSED');
    limit(fact.deadlineMs);return fact;
   }
-  await snapshot();
+  vstep='snapshot';await snapshot();
   const observe=async()=>{
-   const native=await life.run(signal=>identity({credential:c.identityCredential,signal,deadlineMs:cutoff}));limit(native.expiresAtMs);
-   const resolved=await life.run(signal=>context({identityCredential:c.identityCredential,identity:native,identitySha256:hash(native),hints:{conversationId:binding.conversationId,runId:binding.runId},signal,deadlineMs:cutoff}));limit(resolved.expiresAtMs);
+   vstep='identity';const native=await life.run(signal=>identity({credential:c.identityCredential,signal,deadlineMs:cutoff}));limit(native.expiresAtMs);
+   vstep='context';const resolved=await life.run(signal=>context({identityCredential:c.identityCredential,identity:native,identitySha256:hash(native),hints:{conversationId:binding.conversationId,runId:binding.runId},signal,deadlineMs:cutoff}));limit(resolved.expiresAtMs);
    return {native,resolved};
   };
   const withAuthority=Object.getOwnPropertyDescriptor(c.identityContext,'withAuthority')?.value;
-  const {native,resolved}=typeof withAuthority==='function'?await life.run(signal=>withAuthority({credential:c.identityCredential,binding,sessionFence:'task:'+grant.grantId,requireOrigin:true,hints:{conversationId:binding.conversationId,runId:binding.runId},fresh:input.operation!=='next-controls',signal,deadlineMs:cutoff},observe)):await observe();
+  vstep='authority';const {native,resolved}=typeof withAuthority==='function'?await life.run(signal=>withAuthority({credential:c.identityCredential,binding,sessionFence:'task:'+grant.grantId,requireOrigin:true,hints:{conversationId:binding.conversationId,runId:binding.runId},fresh:input.operation!=='next-controls',signal,deadlineMs:cutoff},observe)):await observe();
+  vstep=hash(resolved.binding)!==hash(binding)?'compare-binding':resolved.identitySha256!==hash(native)?'compare-identity':'compare-policy';
   if(hash(resolved.binding)!==hash(binding)||resolved.identitySha256!==hash(native)||resolved.scopes.some(s=>s.policyRevision!==policy))throw taskFault('REFUSED');
-  await snapshot();life.check();const checkedAtMs=now();
+  vstep='snapshot-after';await snapshot();vstep='receipt';life.check();const checkedAtMs=now();
   const receipt={binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:c.identityCredential,scopes:resolved.scopes,
    selectedClientId:resolved.selectedClientId,policyRevision:policy,authorizationDecisionId:hash({grantId:grant.grantId,binding,operation:input.operation,inputSha256:input.inputSha256,identitySha256:hash(native),contextRevision:resolved.contextRevision,checkedAtMs}),checkedAtMs,expiresAtMs:authorityExpiry};
   return assertWorkerAuthorization(receipt,{binding,operation:input.operation,inputSha256:input.inputSha256,started,now});
- }catch(error){throw carryAuthorityUnavailable(error,taskFault(!enabled?'UNAVAILABLE':'REFUSED'));}finally{life?.close();}}
+ }catch(error){verifierRefusal(vstep,error);throw carryAuthorityUnavailable(error,taskFault(!enabled?'UNAVAILABLE':'REFUSED'));}finally{life?.close();}}
  return Object.freeze({verify});
 }
