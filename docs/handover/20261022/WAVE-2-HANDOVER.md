@@ -46,7 +46,7 @@ From the moment `WAVE-1-HANDOFF.md` is posted on #202:
 
 **What preview shows from Core (checked in Chrome):** Portfolio lists 18 profiles with the saved card order. A client's Overview, Work and Bill Tracker show real data (profile, owner, activity timeline, district nexus, strategies and steps, tracked bills with passage estimates). Workspace documents load; the test client simply has none matched by name. Still empty or placeholder: Engagement pulse, Engagement health, Deadline stress, Open requests and Program funding context are hard-coded in the frontend with no backend (product work); Objectives are empty because the clone has none; `clients.list` for module pickers is blocked because it routes to a roster backend that isn't configured on preview.
 
-**Wave 1 acceptance:** the S2 packet (turns T3 to T6, H1, H2, R1) is on #202 (comment 6355731525). Only T3 was run on the current release. See `WAVE-1-HANDOFF.md`.
+**Wave 1 acceptance:** the S2 packet is on #202 (comment 6355731525): T3 first turn completes; T4 follow-up in the same conversation; T5 reload while streaming reconnects; T6 Stop mid-stream ends cleanly; H1 history loads; H2 history filter menus; R1 revocation within 30 s (Neo arranges). Only T3 was run on the current release. See `WAVE-1-HANDOFF.md`.
 
 ---
 

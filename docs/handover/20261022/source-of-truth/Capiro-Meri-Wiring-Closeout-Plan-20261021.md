@@ -2644,7 +2644,7 @@ Other concrete closure work concerns worker control-read error classification, f
 
 <a id="mr-01"></a>
 #### MR-01 · P0 · Repair historical stop-only retirement after a control render change
-> **[SUPERSEDED 2026-10-23: do not implement]** The config-SHA and facts-hash pins this ticket repairs are deleted by Wave 2 item 0. Keep only: a Stop sent for a run that began before a deploy works (E10, T5). See `SUPERSEDED-BY-ITEM-0.md`.
+> **[SUPERSEDED 2026-10-23: do not implement]** The config-SHA and facts-hash pins this ticket repairs are deleted by Wave 2 item 0. Keep only: a Stop sent for a run that began before a deploy works (E10). See `SUPERSEDED-BY-ITEM-0.md`.
 **Class:** S, with live consequence U. **Owner:** runtime/native lifecycle. **Release rule:** do not declare cross-render in-flight cleanup qualified until this is closed.
 
 **Exact mismatch**

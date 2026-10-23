@@ -40,7 +40,7 @@ Do not build, extend, qualify, measure or preserve any of these. The paths are a
 
 | Ticket | Disposition | Keep as acceptance | Dropped |
 |---|---|---|---|
-| **MR-01** historical stop-only retirement | **SUPERSEDED** | A Stop sent for a run that began before a deploy works (E10, T5) | The config-SHA / facts-hash pins the ticket repairs no longer exist |
+| **MR-01** historical stop-only retirement | **SUPERSEDED** | A Stop sent for a run that began before a deploy works (E10) | The config-SHA / facts-hash pins the ticket repairs no longer exist |
 | **MR-02** transient-authority classification in the control pump | **SUPERSEDED** | A transient Core outage retries with bounded backoff inside the run deadline; a definitive refusal fails at once | The authority-availability marker and the per-operation authority layer |
 | **MR-06** durable lifecycle outcome readback | **RE-SCOPED** | Outcome readback and recovery after process or request loss | Temporal plus the conversation DB are the durable record; drop the prepared-run registries |
 | **MR-07** checkpoint / dormant-original continuity | **SUPERSEDED** | The next turn after a deploy continues the conversation. An SDK upgrade needs the transcript-recap handover first (O103). An incompatible state shows a clear message | Admitting render, reserved successor, mirror append and dormant-original states |
@@ -67,7 +67,7 @@ Unlisted Meri tickets (MG, MB, MO except MO-10/11, MF except MF-02/10, MT-13 to 
 
 | Scenario | Disposition | Note |
 |---|---|---|
-| E09 image-only release after a completed turn | KEEP | The conversation continues after a deploy (T5) |
+| E09 image-only release after a completed turn | KEEP | The conversation continues after a deploy |
 | **E10** deploy or rotation while an old run is in flight | **RE-SCOPED** | Stop works and the run closes or resumes cleanly. No pins |
 | **E11** SDK, CLI or format incompatibility | **RE-SCOPED** | A clear message and a recap or new-chat choice (O103); no silent session loss |
 | **E18** read active-set and revoked operation | **RE-SCOPED** | The tools a user can call are those Core allows for that user and client; a revoked tool refuses |
