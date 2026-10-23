@@ -13,6 +13,7 @@ import http.client
 import ipaddress
 import json
 import math
+import select
 import socket
 import ssl
 import threading
@@ -27,6 +28,21 @@ from . import telemetry_context as telemetry
 from .budgets import MAX_OWNER_EXCHANGE_MS, CARRIER_RESETS_PER_MIN, CARRIER_RESET_WINDOW_MS
 from ..qualification.state.pricing import StateDenied
 
+
+
+def _carrier_dropped(sock):
+    """An idle pinned carrier never has bytes waiting between exchanges: readable, buffered TLS data or a closed
+    descriptor means the owner side closed or reset it. Checked before a request is written, so nothing is resent."""
+    try:
+        if sock is None or sock.fileno() < 0:
+            return True
+        pending = getattr(sock, "pending", None)
+        if callable(pending) and pending() > 0:
+            return True
+        readable, _, _ = select.select([sock], [], [], 0)
+        return bool(readable)
+    except (OSError, ValueError):
+        return True
 
 class OwnerExchangeUnavailable(TimeoutError):
     """No authenticated owner answer was received; never means not dispatched."""
@@ -411,7 +427,13 @@ class ProductOwnerHttpsExchange:
             step = "lease"
             lease = self.pair_lease.require(deadline_ms=cutoff)
             step = "connect"
-            connection = self._connections.get(channel) or self._connect(channel, cutoff)
+            cached = self._connections.get(channel)
+            # A cached carrier the owner already closed would fail at reply-wait with no reply (live 10-22/10-23):
+            # drop it and prove a fresh one before any byte of this request is written.
+            if cached is not None and _carrier_dropped(cached.sock):
+                self.reset(channel, expected_connection=cached)
+                cached = None
+            connection = cached or self._connect(channel, cutoff)
             generation = self._connection_generations.get(channel)
             self.pair_lease.require(generation=generation)
             if generation != lease.generation or cancelled.is_set():
