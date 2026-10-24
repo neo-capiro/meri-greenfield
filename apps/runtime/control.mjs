@@ -134,7 +134,9 @@ export async function startControl(configuration,options={}){
  compileAgentCoreConfiguration(configuration.agentcore);
  const objectiveDeclared=compileObjectiveGenerationConfiguration(configuration,'control');
  if(objectiveDeclared.runs&&typeof configuration.reads?.serviceSecretFile!=='string')throw fault('OBJECTIVE_CORE_CONFIGURATION');
- const getCoreServiceSecret=objectiveDeclared.runs?async()=>{const bytes=await (owners.readMaterial??readSecret)(configuration.reads.serviceSecretFile);return bytes.toString('utf8').trim();}:undefined;
+ // Automatic client context and conversation management use the same Core read
+ // credential independently of Objective generation. Keep the secret control-only.
+ const getCoreServiceSecret=typeof configuration.reads?.serviceSecretFile==='string'?async()=>{const bytes=await (owners.readMaterial??readSecret)(configuration.reads.serviceSecretFile);return bytes.toString('utf8').trim();}:undefined;
  if(createReadsRuntime!==undefined&&typeof createReadsRuntime!=='function')throw fault('READS_CONFIGURATION');
  compileControlUserPreferencesConfiguration(configuration);
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment});turnTelemetry.start();
