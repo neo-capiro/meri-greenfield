@@ -1,5 +1,7 @@
 # Wave 2 · Agent 3 · A2: finish screens that already have a backend
 
+> **Execution refresh, 24 October 2026, 21:37 UTC cutoff.** All 25 tickets remain in scope. Reviewed Settings/Mail/Portfolio/contact inputs are composed in FE 6118/Core 4ce7; their qualified images and applied Core schema do not close provider/live behavior. Support, PF16, Undo/contact are implemented. PF13 residual owners, separate PF18 carry-over and PF14 broader-ticket versus note-only allocation remain explicit. See [FINAL-PLAN §0](../../plan/FINAL-PLAN-20261021.md#0-current-wave-2-execution--24-october-2026) and [current release state](../../CURRENT-STATE.md). Original ticket text below preserves acceptance; it is not a new source-gap inventory.
+
 **From:** root Codex under Neo's current authorization. **Lane:** A (Portfolio, Workspace, Settings, Mail). **Repository:** neo-capiro/capiro-backend plus neo-capiro/capiro-frontend. Branch from the current default branch head at send time.
 **How we work:** root assigns exact files/heads; the author implements and runs meaningful affected checks; a separate Astra Ultra reviewer reviews the exact result. Root owns integration, heavy gates, AWS and shipping. Preserve one-writer ownership and other work. Use `../../CODEX-SETUP.md` and `../../CODEX-VALIDATION-AND-SHIPPING.md`.
 

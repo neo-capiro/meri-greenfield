@@ -1,9 +1,15 @@
-# Standing rules for all agents (verbatim from the two master closeout plans)
+# Standing rules for all agents
 
 > **Current architecture and authority — 24 October 2026.** Neo approved autonomous completion on **AgentCore Runtime standard V1**, hosting the actual Claude Agent SDK with durable native SessionStore/artifacts and canonical Core permissions. Root is sole orchestrator and shipping owner; A/U/R/D work on exact disjoint allocations with independent review. Follow the [migration and completion plan](../plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md), [standing requirements](../STANDING-REQUIREMENTS.md) and [supersession register](SUPERSEDED-BY-ITEM-0.md).
 > Replace per-turn Fargate/custom warm pools, model proxy/budget machinery, duplicate authority chains, custom checkpoints and the Temporal issuer. Retain required Temporal durability, native SDK history, every product outcome, all memory/data and 14 skills. Dated source/evidence is historical; bounded work and acceptance use the current owner. No old hold creates a new permission step, and no failed or unrun gate becomes a pass.
 
 These rules apply to every task. Resolve routine implementation within the current allocation; root resolves shared ownership or scope conflicts. Older dot/Fable role assignments are historical, not a second approval or shipping authority.
+
+## Necessary qualification only — Neo, 24 October 2026
+
+Follow the [delivery lessons in WORKFLOW](../WORKFLOW.md#delivery-lessons-from-24-october-2026): exercise the actual route/configuration and producer/receiver integration early; select checks by changed behavior and risk; reuse unaffected evidence; build each candidate once; diagnose the failing boundary before rebuilding; use ordinary Git/CI evidence; remove approved temporary preview holds through coherent existing routing; and report only demonstrated readiness. Once affected checks and independent review pass, proceed instead of adding gates. Do not introduce another packet, census, fingerprint, replay or approval framework.
+
+The inherited regression matrices below are **coverage inventories, not mandatory full reruns per change**. Strong checks remain appropriate for actual authorization, tenant isolation, irreversible effects, grants, migrations, retention and concurrency changes. A failing or unrun case is never a pass; unrelated cases stay assigned without blocking a limited release they do not affect. Existing user authorization is not reset by a new branch, reviewer or handoff.
 
 ## Meri: architecture to preserve and trace requirements
 
@@ -117,7 +123,7 @@ A domain's **P1 release blocker** is mandatory before the affected action activa
 
 ### Universal regression matrix
 
-These apply to every domain in addition to its detailed tests:
+These describe coverage across the product. Select relevant cases for the changed behavior and reuse unaffected evidence under the necessary-qualification rule above:
 
 | Dimension | Required cases |
 |---|---|

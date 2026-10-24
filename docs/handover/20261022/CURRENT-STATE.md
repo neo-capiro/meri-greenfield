@@ -1,6 +1,27 @@
-# Current state at handover (2026-10-22 ~02:30 UTC)
+# Current Wave 2 release state
 
-> **HISTORICAL (superseded 2026-10-23).** This file describes the preview as of 2026-10-22. Some of its instructions are now WRONG: for example "Re-clone before the next Core migrate". **Never delete or re-clone the new-stack clone database**; snapshot, then migrate forward in place. Do not act on it. Read `STANDING-REQUIREMENTS.md`, `WAVE-1-HANDOFF.md` and `WAVE-2-HANDOVER.md` instead.
+Documentation cutoff **24 October 2026, 21:37 UTC**, incorporating root's Core migration verification at 21:30 and subsequent rollout handoff, on Meri main `5f1e166ea9919789dbe9d2e17bd451e846c0c6fa`. This is a fixed receipt, not a continuously refreshed environment inventory. Root owns later readbacks. No cloud, deployment, database or browser action was performed for this documentation update.
+
+| Component | Implemented / reviewed / merged | Built and deployed state | Acceptance still required |
+|---|---|---|---|
+| General binding repair | Meri PR243, source `b7be7ddf46408cb00caec89c5e412f698eae6045`, merged `289f4379959399c87d01c5393ba486223fa4e55e` | Migration 49 applied; earlier 48 unchanged | General chat and follow-up passed. This does not close authorized client/General data reads or full lifecycle acceptance. |
+| Runtime text projection | Meri PR242, source `5430b1311d0412aa2d544556525f53f3a7183b3b`, merged `5f1e166ea9919789dbe9d2e17bd451e846c0c6fa` | AgentCore V1 version 4, image `sha256:a1bc1bc86346a9304c66d2039b498e17021303a92f1c5af0c41f13650174835c`, control 67 stable | New General follow-up text appears once. Keep remaining client/General data, Stop, reconnect and feature cases open. |
+| Integrated Core | PR126, source `4ce7cf634cfaed49f99b537f110240ac74703508`, merged `2edec026c912c2f6155a6ac8d04ae08bc70030b3` | Image `sha256:edf6fd19319d221474875d46c0e681c146a4a4ec81d6a679878d93843e4ffbcc` built, smoked and scanned. Four migrations verified: 674→678, prior 674 preserved, Meri 49 unchanged. Core revision 11 is deployed: CloudFormation UPDATE_COMPLETE, ECS COMPLETED, one desired/running task, zero pending, target HEALTHY. | Authorized data-read acceptance pending; healthy deployment alone does not establish data behavior. Do not reapply these migrations or rebuild unchanged source to rediscover their result. |
+| Composed frontend | PR138, source `6118da8075c542229c0e88039cb6043fef13acb5`, merged `d01ea554…` | Image `e2af…` built, smoked and scanned; the existing image-only change set is executed and **rollout is in progress**, with no rebuild | Finish rollout, verify health, then accept affected Settings/Portfolio/Mail/MP and completed-turn/Stop behavior. MF09 management is absent from 6118. |
+
+Short image/merge prefixes are identifiers from root's handoff, not executable deployment pins. Use the complete exact values in the release owner before action. Earlier frontend session recovery/history success remains evidence; the complete advertised chat/data acceptance set remains open. A separate history-only initial retry limitation remains when the original model omission is reconstructed as an explicit resolved model.
+
+The four new Core migration directories are `20281024020000_meri_conversation_management`, `20281024030000_support_requests`, `20281024060000_client_activity_command_undo` and `20281024070000_client_person_create_receipts`. Existing migration files and applied ledger prefixes remain unchanged. Meri purge ordinals 50–52 were reserved, not applied by this receipt; root reconciles their final source and current ledger before any later migration.
+
+**Next:** finish frontend rollout/health and Core data-read/live UI acceptance; integrate MG05/MF09 paired follow-ons; allocate the remaining source and acceptance work in [FINAL-PLAN §0](plan/FINAL-PLAN-20261021.md#0-current-wave-2-execution--24-october-2026). All 25 A2 tickets are accounted for there. Root's [current workflow](WORKFLOW.md) supersedes historical Fable/dot roles and old holds. AgentCore plus the full Claude SDK is chosen; the durable local environment stays preserved across waves.
+
+Evidence is local under `C:/dev/wave2-evidence-20261024`: `root/general-scope-release/verified.json`, root's General/follow-up observations, `root/text-projection-release/runtime-live-verified.json` (21:26:42), `root/core-integration-release/migration-verified.json` (21:30:21), the Core/frontend image qualification receipts and root's release handoff. The source inventory is `settings/wave2-remaining-refresh/REPORT.md` (21:25 cutoff); this receipt supersedes its earlier build/deployment stages, not its unfinished feature assessment.
+
+---
+
+## Historical 22 October handover snapshot
+
+The following receipt and holds are retained as history only. They do not govern current work. In particular, **never delete or re-clone the preview database**, use the shared live database, revive removed services, or reinstate a Fable/dot approval flow from this section.
 
 ## 1. Live on preview (portfolio-preview.app.capiro.ai)
 
