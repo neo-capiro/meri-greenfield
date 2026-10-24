@@ -18,9 +18,10 @@ const ROUTE=/^\/api\/(?:[a-z][a-z-]{0,31}\/){1,3}[a-z][a-z-]{0,31}$/u;
  * `effect:true` reports UNKNOWN when an invoked route has an indeterminate outcome, and RESULT_NOT_RELEASED when its returned
  * result is withheld. Starting a route is not proof of an effect or of physical cancellation; callers must reconcile by identity. */
 export function createProductApplication(options){
- const {gate,routes,now=Date.now,limits,conversationCurrentness}=options??{};
+ const {gate,routes,now=Date.now,limits,conversationCurrentness,conversationManagement}=options??{};
  if(!gate||['admit','recheck'].some(k=>typeof gate[k]!=='function')||typeof now!=='function'||!routes||typeof routes!=='object')throw new ProductError('PRODUCT_CONFIGURATION');
  if(conversationCurrentness!==undefined&&typeof conversationCurrentness?.assertCurrent!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
+ if(conversationManagement!==undefined&&typeof conversationManagement?.forRequest!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const {maxRequestMs,maxRequestBytes,maxResponseBytes}=limits??{};
  if(!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>1048576||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)throw new ProductError('PRODUCT_CONFIGURATION');
  const table=new Map();
@@ -62,13 +63,20 @@ export function createProductApplication(options){
     return readScheduleOriginRows!==undefined&&acceptsServingReader(conversationCurrentness)?
      conversationCurrentness.assertCurrent(call,readScheduleOriginRows):conversationCurrentness.assertCurrent(call);
    });
-   let result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership,recheckConversation});handled=true;return result;});
+   const management=conversationManagement?.forRequest({credential:auth.slice(7),principal,signal:lifetime.signal,deadlineMs:accessDeadline});
+   // Only the actual scheduled owner may select its positively verified origin.
+   // Core refusals never select that path. Ordinary metadata remains request-bound.
+   const recheckMetadata=management===undefined?undefined:({conversationId,scopes},readScheduleOriginRows)=>lifetime.run(signal=>{
+    const read=()=>management.metadata(conversationId);
+    return acceptsServingReader(conversationCurrentness)?conversationCurrentness.assertCurrent({credential:auth.slice(7),principal,conversationId,scopes,signal,deadlineMs:accessDeadline},readScheduleOriginRows,read):read();
+   });
+   let result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership,recheckConversation,recheckMetadata,management});handled=true;return result;});
    // Materialize bytes synchronously inside the domain fence, after its final authorization.
    let published,releaseMembershipChecked=false;const finalMembership=async()=>{await recheckMembership();releaseMembershipChecked=true;};
    const publish=value=>{lifetime.check();if(published||route.release&&!releaseMembershipChecked)refuse('PRODUCT_UNAVAILABLE');
     const text=JSON.stringify(value);if(Buffer.byteLength(text)>maxResponseBytes)refuse('PRODUCT_UNAVAILABLE');
     lifetime.check();published=serializedResponse(text,200);return published;};
-   if(route.release){const released=await lifetime.run(signal=>route.release({principal,body,result,signal,deadlineMs:accessDeadline,recheckMembership:finalMembership,recheckConversation,publish}));
+   if(route.release){const released=await lifetime.run(signal=>route.release({principal,body,result,signal,deadlineMs:accessDeadline,recheckMembership:finalMembership,recheckConversation,recheckMetadata,management,publish}));
     if(!published||released!==published)refuse('PRODUCT_UNAVAILABLE');return released;}
    await recheckMembership();return publish(result);
   }catch(error){

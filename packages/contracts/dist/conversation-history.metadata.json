@@ -1,12 +1,12 @@
 {
-  "packageVersion": "0.1.6",
-  "historyVersion": "1.0.0",
-  "schemaId": "urn:meri:conversation-history:1.0.0",
+  "packageVersion": "0.1.13",
+  "historyVersion": "1.1.0",
+  "schemaId": "urn:meri:conversation-history:1.1.0",
   "sources": [
     {
       "path": "../../apps/control/conversations/history/http.mjs",
-      "sha256": "f7e4b0377203a324579030515c782121df91deea9b19384c452aa375b1a80eaf",
-      "bytes": 1816
+      "sha256": "21f45da8f6f1c0d566116d575e1246b787ba904cacc9964728bceed7edf9c71e",
+      "bytes": 1750
     },
     {
       "path": "../../apps/control/conversations/history/lineage.mjs",
@@ -15,18 +15,18 @@
     },
     {
       "path": "../../apps/control/conversations/history/protocol.mjs",
-      "sha256": "0cfc2c49d281c086a9dd2ba2735ebcf1f1ecbbb21a78f748e5165ac815d3debf",
-      "bytes": 760
+      "sha256": "0d1fbc1c16613675bbec9a44f4bd45f7b5dd098211af6d3c21ac106f1583e644",
+      "bytes": 842
     },
     {
       "path": "../../apps/control/conversations/history/service.mjs",
-      "sha256": "aaf715e93e46addb757eeceffe45ffb97baeaa25ed4c4b4c84db33c9b82305b6",
-      "bytes": 7290
+      "sha256": "d31c551acd2b322cb93139e877c9378d6668af2ad9e353337dccc533cdd61b13",
+      "bytes": 9039
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",
-      "sha256": "5d3de65d350c9e36e4fc65aa1add33fee5dce6652913473d031c42ede28fc94a",
-      "bytes": 6714
+      "sha256": "cc55186272040e983b0eb93485d3cf7d8435053c9454684497fe3e509263cacf",
+      "bytes": 6906
     },
     {
       "path": "../../apps/control/conversations/next-run-reservation.mjs",
@@ -35,23 +35,23 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "6d276f1fdc1fec65a00b90170c332145484ac103821f6b30486128a53e412707",
-      "bytes": 2235
+      "sha256": "25c9b8ec761f41ef70ca7b3c4ac4ed71cac631fb0d66f23927304b28a959983e",
+      "bytes": 2449
     },
     {
       "path": "conversation-history/receive.mjs",
-      "sha256": "f5097218e948ea53f6ea7d70d0ed11ba85ddc60c753aada96934b15540892c88",
-      "bytes": 3063
+      "sha256": "4df8652d90093a7e2830dd740eea2925b7a3151674d6e95e46f6fa8a87fb0d08",
+      "bytes": 3328
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "0efe3a996c1d4d550812d03100472ec6071ee490d10481aeb9e5022d9a043d19",
-      "bytes": 3314
+      "sha256": "c0abb6a8ec4bf90f5d608114f62b88fed5fe2a248d944b1e423da1bc79b19ba3",
+      "bytes": 4827
     },
     {
       "path": "conversation-history/semantics.mjs",
-      "sha256": "e0b6238b2899fbfdb3e8a8f9fe8370e05e8f5bda7b2fd685801e7938d154779a",
-      "bytes": 7009
+      "sha256": "221c6e3e527edffcce25d45756baa3b113c32083a831c97d724e84276365d601",
+      "bytes": 10077
     },
     {
       "path": "conversation-history/shape.mjs",
@@ -60,8 +60,8 @@
     },
     {
       "path": "conversation-history/validate.mjs",
-      "sha256": "fe4322eff2fd9891a202ea438a92790737690ba813e3d6346afa92689ab0c9ae",
-      "bytes": 1020
+      "sha256": "c83a6c6cf3d3116a3b17255e1dc71b9fe7c6a13f51f2f0a1b7705222e71e96d4",
+      "bytes": 1271
     },
     {
       "path": "dist/conversation-application.schema.json",
@@ -75,8 +75,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "300d808ea1fc86f176d5bb10c6678b39f30fc95991105f4a1998071f46d906d1",
-      "bytes": 8288
+      "sha256": "61c748dffb7885468604223c6eb3239fa1e2dc34aff2b55cc02cc7def8352e84",
+      "bytes": 8830
     },
     {
       "path": "meri.schema.json",
@@ -84,18 +84,18 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "64507f94d5b71e5730996ea85054d9310cb6ac92cc3dc5d3c137e8c259fec927",
+  "schemaSha256": "91978d0c9a65b98fd36294bca28935314b3d13ce3419131a26e878d8366b08e4",
   "browserInputs": [
+    "../../../wave2-root-terminal-ack/packages/contracts/node_modules/ajv-formats/dist/formats.js",
+    "../../../wave2-root-terminal-ack/packages/contracts/node_modules/ajv/dist/runtime/equal.js",
+    "../../../wave2-root-terminal-ack/packages/contracts/node_modules/ajv/dist/runtime/ucs2length.js",
+    "../../../wave2-root-terminal-ack/packages/contracts/node_modules/canonicalize/lib/canonicalize.js",
+    "../../../wave2-root-terminal-ack/packages/contracts/node_modules/fast-deep-equal/index.js",
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",
     "conversation-history/protocol.mjs",
     "conversation-history/semantics.mjs",
     "document-application/boundary.mjs",
-    "history-generated:./generated-validator.mjs",
-    "node_modules/ajv-formats/dist/formats.js",
-    "node_modules/ajv/dist/runtime/equal.js",
-    "node_modules/ajv/dist/runtime/ucs2length.js",
-    "node_modules/canonicalize/lib/canonicalize.js",
-    "node_modules/fast-deep-equal/index.js"
+    "history-generated:./generated-validator.mjs"
   ]
 }

@@ -1,5 +1,6 @@
 /** Shared post-schema correlation and request normalization; receives parsed/snapshotted JSON only. */
 import canonicalize from 'canonicalize';
+import {MANAGEMENT_VERSION} from './protocol.mjs';
 export class ConversationHistoryResponseError extends Error{constructor(code){super(code);this.name='ConversationHistoryResponseError';this.code=code;}}
 export const fail=code=>{throw new ConversationHistoryResponseError(code);};
 const same=(a,b)=>canonicalize(a)===canonicalize(b),uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(v);
@@ -7,6 +8,16 @@ const integer=(v,min,max=Number.MAX_SAFE_INTEGER)=>Number.isSafeInteger(v)&&v>=m
 function closed(value,required,optional,code){if(!value||typeof value!=='object'||Array.isArray(value)||required.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>![...required,...optional].includes(k)))fail(code);return value;}
 const page=value=>{const n=value===undefined?50:value;if(!integer(n,1,100))fail('CONVERSATION_CURSOR_INVALID');return n;};
 export function normalizeHistoryRequest(route,value){
+ if(route==='summaries'){
+  const v=closed(value,['version','status','title','before'],[],'CONVERSATION_REQUEST_INVALID');
+  if(v.version!==MANAGEMENT_VERSION||!['active','archived','trashed'].includes(v.status)||typeof v.title!=='string'||v.title!==v.title.trim()||v.title.length>200)fail('CONVERSATION_REQUEST_INVALID');
+  if(v.before!==null){const b=closed(v.before,['updatedAt','conversationId'],[],'CONVERSATION_CURSOR_INVALID');if(!uuid(b.conversationId)||!iso(b.updatedAt))fail('CONVERSATION_CURSOR_INVALID');}
+  return v;
+ }
+ if(route==='manage'){
+  const v=closed(value,['version','requestId','conversationId','expectedRevision','operation',...(value?.operation==='rename'?['title']:[])],[],'CONVERSATION_REQUEST_INVALID');
+  if(v.version!==MANAGEMENT_VERSION||!uuid(v.requestId)||!uuid(v.conversationId)||typeof v.expectedRevision!=='string'||!/^(0|[1-9][0-9]{0,17})$/.test(v.expectedRevision)||!['rename','archive','restore','trash'].includes(v.operation)||v.operation==='rename'&&(!validTitle(v.title)))fail('CONVERSATION_REQUEST_INVALID');return v;
+ }
  if(route==='list'){const v=closed(value,[],['before','limit'],'CONVERSATION_REQUEST_INVALID');let before=null;
   if(v.before!==undefined&&v.before!==null){before=closed(v.before,['createdAt','conversationId'],[],'CONVERSATION_CURSOR_INVALID');if(!uuid(before.conversationId))fail('CONVERSATION_REQUEST_INVALID');if(typeof before.createdAt!=='string'||!Number.isFinite(Date.parse(before.createdAt))||new Date(before.createdAt).toISOString()!==before.createdAt)fail('CONVERSATION_CURSOR_INVALID');}
   return {before,limit:page(v.limit)};
@@ -16,10 +27,27 @@ export function normalizeHistoryRequest(route,value){
  fail('INVALID_ROUTE');
 }
 const order=(a,b)=>a.createdAt<b.createdAt?-1:a.createdAt>b.createdAt?1:a.conversationId<b.conversationId?-1:a.conversationId>b.conversationId?1:0;
+const iso=value=>typeof value==='string'&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString()===value;
+const validTitle=value=>typeof value==='string'&&value.length>0&&value.length<=200&&value===value.trim();
+const summaryOrder=(a,b)=>order({...a,createdAt:a.updatedAt},{...b,createdAt:b.updatedAt});
+export function assertConversationMetadataSemantics(c){
+ if(!validTitle(c.title)||!iso(c.updatedAt)||(c.scopeKind==='general'?c.clientId!==null:c.clientId===null))fail('METADATA_MISMATCH');
+ for(const key of ['archivedAt','trashedAt','restoreUntil'])if(c[key]!==null&&!iso(c[key]))fail('METADATA_MISMATCH');
+ if(c.status==='active'&&(c.archivedAt!==null||c.trashedAt!==null||c.restoreUntil!==null)||c.status==='archived'&&(c.archivedAt===null||c.trashedAt!==null||c.restoreUntil!==null)||c.status==='trashed'&&(c.trashedAt===null||c.restoreUntil===null||Date.parse(c.restoreUntil)-Date.parse(c.trashedAt)!==30*24*60*60*1000))fail('METADATA_MISMATCH');
+}
+const managed=assertConversationMetadataSemantics;
 function conversation(c){if(c.scopes.some(s=>s.tenantId!==c.owner.tenantId||s.policyRevision!==c.policyRevision))fail('SCOPE_MISMATCH');}
 function run(r,c){if(r.binding.tenantId!==c.owner.tenantId||r.binding.actorId!==c.owner.actorId||r.binding.conversationId!==c.conversationId||r.policyRevision!==c.policyRevision||!same(r.scopes,c.scopes))fail('RUN_MISMATCH');}
 function target(source,target){if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||['runId','attemptId','workerId'].some(k=>target[k]===source[k])||target.writerFence!==source.writerFence+1)fail('TARGET_MISMATCH');}
 export function assertHistoryResponseSemantics(route,request,result){
+ if(route==='summaries'){
+  let previous;const ids=new Set();for(const c of result.conversations){managed(c);if(c.status!==request.status||ids.has(c.conversationId)||previous&&summaryOrder(c,previous)>=0||request.before&&summaryOrder(c,request.before)>=0)fail('DISCOVERY_MISMATCH');ids.add(c.conversationId);previous=c;}
+  if(result.nextBefore&&(!previous||!same(result.nextBefore,{updatedAt:previous.updatedAt,conversationId:previous.conversationId})))fail('CURSOR_MISMATCH');return result;
+ }
+ if(route==='manage'){
+  const c=result.conversation;managed(c);if(result.requestId!==request.requestId||c.conversationId!==request.conversationId||BigInt(c.revision)!==BigInt(request.expectedRevision)+1n)fail('REQUEST_MISMATCH');
+  const status={archive:'archived',trash:'trashed',restore:'active'}[request.operation];if(status?c.status!==status:c.title!==request.title||c.status==='trashed')fail('METADATA_MISMATCH');return result;
+ }
  if(route==='list'){
   if(result.conversations.length>request.limit)fail('PAGE_MISMATCH');const ids=new Set();let previous;
   for(const c of result.conversations){conversation(c);if(ids.has(c.conversationId)||request.before&&order(c,request.before)>=0||previous&&(order(c,previous)>=0||!same(c.owner,previous.owner)))fail('DISCOVERY_MISMATCH');ids.add(c.conversationId);previous=c;}

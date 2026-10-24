@@ -7,7 +7,11 @@ export type ConversationHistoryEnvelope =
   | ConversationHistoryListResponse
   | ConversationHistoryTranscriptResponse
   | ConversationHistoryNextTurnResponse
-  | ConversationHistoryErrorResponse;
+  | ConversationHistoryErrorResponse
+  | ConversationHistorySummariesRequest
+  | ConversationHistoryManageRequest
+  | ConversationHistorySummariesResponse
+  | ConversationHistoryManageResponse;
 export type CanonicalRequestId_32De93Cd = string;
 export type CanonicalPrompt_7Bf1Da21 = string;
 export type CanonicalSkillBa3B01C2 = Canonical_ConversationSkillAssetPin_338818F9 | null;
@@ -262,6 +266,22 @@ export type Canonical_UIEvent_1691B714 =
         message: string;
       };
     };
+export type ConversationHistoryManageRequest =
+  | {
+      version: 'meri.conversation-management.v1';
+      requestId: string;
+      conversationId: string;
+      expectedRevision: string;
+      operation: 'rename';
+      title: string;
+    }
+  | {
+      version: 'meri.conversation-management.v1';
+      requestId: string;
+      conversationId: string;
+      expectedRevision: string;
+      operation: 'archive' | 'restore' | 'trash';
+    };
 
 export interface ConversationHistoryListRequest {
   before?: ConversationHistoryBefore | null;
@@ -425,6 +445,8 @@ export interface ConversationHistoryErrorResponse {
       | 'CONVERSATION_CURSOR_INVALID'
       | 'CONVERSATION_NOT_FOUND'
       | 'CONVERSATION_TURN_CONFLICT'
+      | 'CONVERSATION_MANAGEMENT_CONFLICT'
+      | 'CONVERSATION_RESTORE_EXPIRED'
       | 'CONVERSATION_STORE_CORRUPT'
       | 'CONVERSATION_TURN_UNAVAILABLE'
       | 'CONVERSATION_UNAVAILABLE';
@@ -432,18 +454,298 @@ export interface ConversationHistoryErrorResponse {
     field?: string;
   };
 }
+export interface ConversationHistorySummariesRequest {
+  version: 'meri.conversation-management.v1';
+  status: 'active' | 'archived' | 'trashed';
+  title: string;
+  before: ConversationSummaryBefore | null;
+}
+export interface ConversationSummaryBefore {
+  updatedAt: string;
+  conversationId: string;
+}
+export interface ConversationHistorySummariesResponse {
+  version: 'meri.conversation-management.v1';
+  /**
+   * @maxItems 20
+   */
+  conversations:
+    | []
+    | [ConversationSummary]
+    | [ConversationSummary, ConversationSummary]
+    | [ConversationSummary, ConversationSummary, ConversationSummary]
+    | [ConversationSummary, ConversationSummary, ConversationSummary, ConversationSummary]
+    | [ConversationSummary, ConversationSummary, ConversationSummary, ConversationSummary, ConversationSummary]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ]
+    | [
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary,
+        ConversationSummary
+      ];
+  nextBefore: ConversationSummaryBefore | null;
+}
+export interface ConversationSummary {
+  conversationId: string;
+  title: string;
+  status: 'active' | 'archived' | 'trashed';
+  revision: string;
+  scopeKind: 'client' | 'general';
+  clientId: string | null;
+  updatedAt: string;
+  archivedAt: string | null;
+  trashedAt: string | null;
+  restoreUntil: string | null;
+  hasTranscript: boolean;
+  canManage: boolean;
+}
+export interface ConversationHistoryManageResponse {
+  version: 'meri.conversation-management.v1';
+  requestId: string;
+  conversation: ConversationMetadata;
+}
+export interface ConversationMetadata {
+  conversationId: string;
+  title: string;
+  status: 'active' | 'archived' | 'trashed';
+  revision: string;
+  scopeKind: 'client' | 'general';
+  clientId: string | null;
+  updatedAt: string;
+  archivedAt: string | null;
+  trashedAt: string | null;
+  restoreUntil: string | null;
+}
 
-export type ConversationHistoryRoute='list'|'transcript'|'nextTurn';
+export type ConversationHistoryRoute='list'|'transcript'|'nextTurn'|'summaries'|'manage';
 declare const admittedHistoryRequest:unique symbol;
-export interface ConversationHistoryRequestMap {list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;}
+export interface ConversationHistoryRequestMap {list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;summaries:ConversationHistorySummariesRequest;manage:ConversationHistoryManageRequest;}
 export type AdmittedConversationHistoryRequest<R extends ConversationHistoryRoute>=Readonly<ConversationHistoryRequestMap[R]>&{readonly [admittedHistoryRequest]:R};
-export interface ConversationHistoryResponseMap {list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;}
+export interface ConversationHistoryResponseMap {list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;}
 export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=ConversationHistoryResponseMap[R]|ConversationHistoryErrorResponse;
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
-  "packageVersion": "0.1.6",
-  "historyVersion": "1.0.0",
-  "schemaId": "urn:meri:conversation-history:1.0.0",
+  "packageVersion": "0.1.13",
+  "historyVersion": "1.1.0",
+  "schemaId": "urn:meri:conversation-history:1.1.0",
   "routes": {
     "list": {
       "method": "POST",
@@ -456,6 +758,14 @@ export declare const conversationHistoryMetadata: {
     "nextTurn": {
       "method": "POST",
       "path": "/api/conversations/next-turn"
+    },
+    "summaries": {
+      "method": "POST",
+      "path": "/api/conversations/summaries"
+    },
+    "manage": {
+      "method": "POST",
+      "path": "/api/conversations/manage"
     }
   },
   "authentication": {
@@ -536,6 +846,12 @@ export declare const conversationHistoryMetadata: {
     "CONVERSATION_TURN_CONFLICT": [
       409
     ],
+    "CONVERSATION_MANAGEMENT_CONFLICT": [
+      409
+    ],
+    "CONVERSATION_RESTORE_EXPIRED": [
+      410
+    ],
     "CONVERSATION_STORE_CORRUPT": [
       500
     ],
@@ -547,11 +863,14 @@ export declare const conversationHistoryMetadata: {
     ]
   }
 };
-export declare const conversationHistoryVersion:'1.0.0';
+export declare const conversationHistoryVersion:'1.1.0';
+export declare const MANAGEMENT_VERSION:'meri.conversation-management.v1';
 export declare const HISTORY_PATHS: {
   "list": "/api/conversations/list",
   "transcript": "/api/conversations/transcript",
-  "nextTurn": "/api/conversations/next-turn"
+  "nextTurn": "/api/conversations/next-turn",
+  "summaries": "/api/conversations/summaries",
+  "manage": "/api/conversations/manage"
 };
 export declare const DISCOVERY_SCHEMA:'meri.conversation-list/1',HISTORY_SCHEMA:'meri.conversation-transcript/1',TURN_SCHEMA:'meri.conversation-turn/1';
 export declare function receiveConversationHistoryRequest<R extends ConversationHistoryRoute>(route:R,utf8Bytes:Uint8Array):AdmittedConversationHistoryRequest<R>;

@@ -10,6 +10,10 @@ if(!('error'in listed)){const c:Conversation|undefined=listed.conversations[0];v
 const request=receiveConversationHistoryRequest('transcript',bytes),response=await receiveConversationHistoryResponse('transcript',200,bytes,request);
 if(!('error'in response)){const run:Run=response.latestRun,conversation:Conversation=response.conversation,binding:RunBinding=response.latestRun.binding,scopes:Scope[]=response.latestRun.scopes,event:UIEvent|undefined=response.events[0]?.event,lineage:ConversationPromptLineage|undefined=response.turns[0]?.promptLineage;void [run,conversation,binding,scopes,event,lineage];}
 const cap:number=conversationHistoryMetadata.limits.responseBytes;void cap;
+const summaries=receiveConversationHistoryRequest('summaries',bytes),summary=await receiveConversationHistoryResponse('summaries',200,bytes,summaries);
+if(!('error'in summary)){const title:string|undefined=summary.conversations[0]?.title,client:string|null|undefined=summary.conversations[0]?.clientId;void [title,client];}
+const manage=receiveConversationHistoryRequest('manage',bytes),managed=await receiveConversationHistoryResponse('manage',200,bytes,manage);
+if(!('error'in managed)){const revision:string=managed.conversation.revision;void revision;}
 // @ts-expect-error route names are fixed, no invented search
 receiveConversationHistoryRequest('search',bytes);
 // @ts-expect-error a plain request has no local byte-admission provenance

@@ -12,6 +12,7 @@ import {rowClassSubjectKind} from './inventory.mjs';
 import {assertExactProjection} from './projection-proof.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {SCHEDULED_ORIGIN_SQL} from '../schedules/scheduled-origin-query.mjs';
+import {AsyncLocalStorage} from 'node:async_hooks';
 const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
 const tables={conversation:{schema:'meri_conversations',id:'conversation_id'},artifact:{schema:'meri_artifacts',id:'artifact_id'}};
 function parseKey(key){if(typeof key!=='string')fail('RETENTION_INVALID_REQUEST');const parts=key.split(':');if(parts.length<3)fail('RETENTION_INVALID_REQUEST');const kind=parts.at(-2),subjectId=parts.at(-1),tenantId=parts.slice(0,-2).join(':');if(!tables[kind])fail('RETENTION_INVALID_REQUEST');return {tenantId,kind,subjectId};}
@@ -21,6 +22,9 @@ function parseKey(key){if(typeof key!=='string')fail('RETENTION_INVALID_REQUEST'
 export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=10000,memoryContinuationPurgeSourceQualified=false}){
  if(typeof pool?.connect!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000||typeof memoryContinuationPurgeSourceQualified!=='boolean'||memoryContinuationPurgeSourceQualified&&pool?.retentionSourceQualificationOnly!==true)fail('RETENTION_CONFIGURATION');
  const storeError=(code,cause)=>Object.assign(new Error(code),{code,cause});
+ // A transition's existing SQL owners share its one held lease. This scope is
+ // private to this journal and expires before that lease returns to the pool.
+ const transitionLease=new AsyncLocalStorage();
  const wrap=e=>storeError(e?.code&&String(e.code).startsWith('RETENTION_')?e.code:'RETENTION_STORE_UNAVAILABLE',e);
  /** One client-side bounded wait; a deadline leaves the lease's state unknown (`deadline` marks it), and the late result is discarded. */
  async function bounded(operation,ms=maxRequestMs){const life=createOperationLifetime({deadlineMs:now()+ms,now,errorFactory:reason=>Object.assign(storeError('RETENTION_STORE_UNAVAILABLE'),{deadline:reason})});
@@ -34,15 +38,20 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   * already holds the exclusive side on its own session). Atomic read snapshots explicitly select READ COMMITTED so a borrowed
   * session's default isolation cannot freeze the data snapshot before lock acquisition. A failed COMMIT is UNKNOWN and is never rolled
   * back over; a body failure is rolled back within a short bound, and only a confirmed ROLLBACK makes the lease reusable. */
- async function tx(body,{exclusive=false,shared=!exclusive,readCommitted=false}={}){
-  let c,begun=false,committing=false,reusable=false,uncertain=false,failure,result;const acquiring=Promise.resolve().then(()=>pool.connect());
+ async function tx(body,options={}){
+  const held=transitionLease.getStore();return held?held.run(()=>transaction(body,options,held)):transaction(body,options);
+ }
+ async function transaction(body,{exclusive=false,shared=!exclusive,readCommitted=false}={},held){
+  let c,begun=false,committing=false,reusable=false,uncertain=false,failure,result;const acquiring=Promise.resolve().then(()=>held?held.client:pool.connect());
   const call=operation=>bounded(operation).catch(error=>{if(error?.deadline)uncertain=true;throw error;});
   try{c=await call(()=>acquiring);await call(()=>c.query(readCommitted?'BEGIN ISOLATION LEVEL READ COMMITTED':'BEGIN'));begun=true;await call(()=>c.query("SET LOCAL statement_timeout = '5s'"));await call(()=>c.query("SET LOCAL lock_timeout = '2s'"));
    if(shared)await call(()=>c.query(`SELECT pg_advisory_xact_lock_shared(${RECOVERY_LOCK})`));
    result=await body(Object.freeze({query:(sql,values)=>call(()=>c.query(sql,values))}));committing=true;await call(()=>c.query('COMMIT'));reusable=true;}
   catch(error){failure=committing?storeError('RETENTION_COMMIT_UNKNOWN',error):wrap(error);
    if(c&&begun&&!committing&&!uncertain)try{await bounded(()=>c.query('ROLLBACK'),Math.min(maxRequestMs,1000));reusable=true;}catch{}}
-  failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;return result;}
+  if(held){if(!reusable)held.failure??=failure??storeError('RETENTION_LEASE_UNKNOWN');}
+  else failure=retire(c,acquiring,reusable,failure);
+  if(failure)throw failure;return result;}
  const subjectLock=(c,key)=>c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['meri_retention_subject:'+key]);
  const rowValue=r=>{if(hash(r.projection)!==r.projection_sha256)fail('RETENTION_STORE_CORRUPT');return r.projection;};
  async function readRow(c,k){const t=tables[k.kind];const rows=(await c.query(`SELECT * FROM ${t.schema}.retention_subjects WHERE tenant_id=$1 AND ${t.id}=$2 FOR UPDATE`,[k.tenantId,k.subjectId])).rows;return rows[0]??null;}
@@ -104,10 +113,24 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   * transactions. The session lock spans the authoritative ledger append and
   * projection, but no database transaction stays open during external IO. */
  async function withTransition(key,fn){parseKey(key);if(typeof fn!=='function')fail('RETENTION_INVALID_REQUEST');
+  if(transitionLease.getStore())fail('RETENTION_INVALID_REQUEST');
   let c,reusable=false,failure,outcome,result;const acquiring=Promise.resolve().then(()=>pool.connect());
   try{c=await bounded(()=>acquiring);
    await bounded(()=>c.query('SELECT pg_advisory_lock(hashtextextended($1,0))',[`meri_retention_transition:${key}`]));
-   try{result=await fn();}catch(error){outcome=error;}
+   let accepting=true,tail=Promise.resolve();const pending=[];
+   const held={client:c,failure:null,run(operation){
+    if(!accepting)return Promise.reject(storeError('RETENTION_INVALID_REQUEST'));
+    const work=tail.then(()=>{if(held.failure)throw held.failure;return operation();});
+    pending.push(work);tail=work.catch(()=>{});return work;
+   }};
+   const scoped=Object.freeze({
+    query:(sql,args)=>held.run(()=>bounded(()=>c.query(sql,args)).catch(error=>{held.failure??=error;throw error;})),
+    tx:(body,options)=>held.run(()=>transaction(body,options,held)),
+    invalidate:error=>{if(!accepting)fail('RETENTION_INVALID_REQUEST');held.failure??=error??storeError('RETENTION_LEASE_UNKNOWN');},
+   });
+   try{result=await transitionLease.run(held,()=>fn(scoped));}catch(error){outcome=error;}
+   finally{accepting=false;await Promise.allSettled(pending);}
+   if(held.failure)throw held.failure;
    const unlocked=await bounded(()=>c.query('SELECT pg_advisory_unlock(hashtextextended($1,0)) AS unlocked',[`meri_retention_transition:${key}`]));
    if(unlocked?.rows?.[0]?.unlocked!==true)fail('RETENTION_UNLOCK_UNKNOWN');reusable=true;}
   catch(error){failure=wrap(outcome??error);}
@@ -188,8 +211,8 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  const rows=Object.freeze({preflight:preflightRows,purge:purgeRows,present:rowPresent});
  /** Trusted ownership reader for the suppression owner: the application's own record of the subject's owner. */
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
-  const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
-  return rows[0]?.owner??null;}
+  return tx(async c=>{const rows=kind==='conversation'?(await c.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await c.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
+   return rows[0]?.owner??null;});}
  return Object.freeze({get,set,keys,exclusive,withTransition,withServing,planRows,rows,tx,readProjection,assertProjection,ownerOf,rowClasses:Object.freeze([...Object.keys(rowWhere),...(memoryContinuationPurgeSourceQualified?['conversation']:[])])});
 }
 export {parseSubject};
