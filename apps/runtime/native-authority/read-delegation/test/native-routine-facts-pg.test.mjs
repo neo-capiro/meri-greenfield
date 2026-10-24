@@ -8,6 +8,7 @@ import {readFileSync} from 'node:fs';
 import {PLAN,migrationBody} from '../../../../../infra/product-preview/first-chat-migrate.mjs';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 import {versions,id} from '../../../../control/conversations/test/store-fixture.mjs';
+import {scheduledJobFixture} from '../../../../control/schedules/test/scheduled-job-fixture.mjs';
 
 const file='../migrations/0003_native_routine_facts.sql',source=readFileSync(new URL(file,import.meta.url),'utf8');
 test('routine facts append ordinal 53 without broadening the existing Core facts grants',()=>{
@@ -15,7 +16,7 @@ test('routine facts append ordinal 53 without broadening the existing Core facts
  assert.equal(last.path,'apps/runtime/native-authority/read-delegation/migrations/0003_native_routine_facts.sql');
  assert.equal(last.pinned,createHash('sha256').update(source).digest('hex'));
  assert.match(migrationBody(source),/CREATE VIEW meri_read_delegation_facts\.routine_runs_v1 WITH \(security_barrier = true\)/u);
- assert.doesNotMatch(source,/GRANT (?!SELECT ON TABLE meri_read_delegation_facts\.routine_runs_v1 TO capiro_app;)|CREATE ROLE|ALTER TABLE|\br\.request\b|\bi\.intent\b/u);
+ assert.doesNotMatch(source,/GRANT (?!SELECT ON TABLE meri_read_delegation_facts\.routine_(?:runs|resume_steps)_v1 TO capiro_app;)|CREATE ROLE|ALTER TABLE|\bi\.intent\b/u);
 });
 
 test('actual PG native routine facts preserve canonical hashes, current writer, successor and narrow Core grants',
@@ -36,7 +37,7 @@ test('actual PG native routine facts preserve canonical hashes, current writer, 
   for(let n=0;n<40;n++){if(call(['exec',name,'pg_isready','-U','postgres','-d','routine_facts_53']).status===0)break;await new Promise(r=>setTimeout(r,250));}
   assert.match(sql('SHOW server_version;'),/^16\./u);
   sql('CREATE ROLE meri_product_migrator NOLOGIN; CREATE ROLE capiro_app NOLOGIN NOSUPERUSER NOBYPASSRLS; CREATE ROLE routine_unrelated NOLOGIN; GRANT CREATE ON DATABASE routine_facts_53 TO meri_product_migrator;');
-  const base=['0001_conversations.sql','0002_lifecycle.sql','0003_selected_outputs.sql','0004_sdk_sessions.sql','0005_selected_reads.sql','0006_native_executions.sql','0007_native_preparation.sql','0008_native_prepared_launch.sql','0009_next_runs.sql'];
+  const base=['0001_conversations.sql','0002_lifecycle.sql','0003_selected_outputs.sql','0004_sdk_sessions.sql','0005_selected_reads.sql','0006_native_executions.sql','0007_native_preparation.sql','0008_native_prepared_launch.sql','0009_next_runs.sql','0016_initial_inputs.sql'];
   for(const name of base)sql('SET ROLE meri_product_migrator; '+readFileSync(new URL('../../../../control/conversations/migrations/'+name,import.meta.url),'utf8'));
   for(const name of ['0001_schedule_owner.sql','0002_occurrences.sql'])sql('SET ROLE meri_product_migrator; '+readFileSync(new URL('../../../../control/schedules/migrations/'+name,import.meta.url),'utf8'));
   sql('SET ROLE meri_product_migrator; CREATE SCHEMA meri_read_delegation_facts; REVOKE ALL ON SCHEMA meri_read_delegation_facts FROM PUBLIC; GRANT USAGE ON SCHEMA meri_read_delegation_facts TO capiro_app;');
@@ -82,6 +83,47 @@ test('actual PG native routine facts preserve canonical hashes, current writer, 
    const f=fixtures[0];sql(`SET ROLE meri_product_migrator; UPDATE meri_schedules.projections SET generation=2,active_intent='${id(19)}',projection_sha256='${'d'.repeat(64)}' WHERE tenant_id=${literal(f.tenantId)};`);
    const [r]=query(`SELECT * FROM meri_read_delegation_facts.routine_runs_v1 WHERE tenant_id=${literal(f.tenantId)}`);assert.equal(r.generation,2);assert.equal(r.active_intent,id(19));assert.notEqual(hash(r.projection),r.projection_sha256);assert.equal(r.occurrence.generation,1);
   });
+  const h=await scheduledJobFixture({agentcore:true});
+  try{
+   await h.running();await h.pause();const target=await h.resume();
+   const insert=(table,rows)=>{for(const row of rows){const entries=Object.entries(row).filter(([,value])=>value!==undefined);sql(`SET ROLE meri_product_migrator; INSERT INTO ${table}(${entries.map(([key])=>key).join(',')}) VALUES (${entries.map(([,value])=>value===null?'NULL':typeof value==='object'?json(value):literal(value)).join(',')});`);}};
+   for(const [table,key]of [['conversations','conversations'],['runs','runs'],['controls','controls'],['next_runs','nextRuns'],['native_executions','executions']])insert('meri_conversations.'+table,h.conversations.state[key].values());
+   insert('meri_conversations.initial_inputs',h.conversations.allocations.values());
+   insert('meri_schedules.projections',h.scheduleSql.state.projections.values());insert('meri_schedules.occurrences',h.scheduleSql.state.occurrences.values());
+   const predicate=`tenant_id=${literal(target.tenantId)} AND conversation_id='${target.conversationId}'`,steps=()=>query(`SELECT * FROM meri_read_delegation_facts.routine_resume_steps_v1 WHERE ${predicate} ORDER BY (run_projection#>>'{binding,writerFence}')::integer`);
+   const original=[...h.conversations.state.runs.values()].find(row=>row.run_id!==target.runId),child=[...h.conversations.state.runs.values()].find(row=>row.run_id===target.runId);
+   const control=[...h.conversations.state.controls.values()].find(row=>row.projection.input.intent==='resume');
+   await t.test('actual admission pause resume owners produce a complete canonical two-step projection without private payloads',()=>{
+    const rows=steps();assert.equal(rows.length,2);const [first,last]=rows;
+    for(const row of rows){assert.equal(hash(row.run_projection),row.run_projection_sha256);assert.equal(hash(row.execution_record),row.execution_record_sha256);}
+    assert.equal(hash(first.initial_input),first.initial_input_sha256);assert.equal(first.initial_input_state,'ACCEPTED');assert.equal(first.accepted_request_sha256,first.request_sha256);
+    assert.equal(hash(first.next_run_reservation),first.next_run_reservation_sha256);assert.equal(first.next_run_state,'ACCEPTED');assert.deepEqual(first.next_run_reservation.target,target);
+    assert.equal(first.continuation,null);assert.equal(first.control,null);assert.equal(first.outgoing_controls.length,1);assert.equal(first.outgoing_controls[0].state,'APPLIED');
+    assert.equal(last.next_run_reservation,null);assert.equal(last.initial_input,null);assert.deepEqual(last.outgoing_controls,[]);
+    assert.deepEqual(last.continuation.sdkSession.binding,original.projection.binding);assert.deepEqual(last.control.target.binding,target);
+    for(const key of ['source_request_matches','target_request_matches','proof_matches','sequence_contiguous'])assert.equal(last[key],true,key);
+    assert.doesNotMatch(JSON.stringify(rows),/"(?:prompt|sourceRequest|files|command|approval|instruction)"/u);
+    assert.equal(query(`SELECT * FROM meri_read_delegation_facts.routine_resume_steps_v1 WHERE tenant_id='not-this-tenant'`).length,0);
+   });
+   await t.test('transition phase and private request or proof inconsistencies remain visible for Core refusal',()=>{
+    const update=(table,key,column,value)=>sql(`SET ROLE meri_product_migrator; UPDATE meri_conversations.${table} SET ${column}=${json(value)} WHERE tenant_id=${literal(target.tenantId)} AND ${key};`);
+    for(const state of ['DISPATCHING','UNKNOWN','PENDING']){update('controls',`control_id='${control.control_id}'`,'projection',{...control.projection,state});const [first,last]=steps();assert.equal(first.outgoing_controls[0].state,state);assert.equal(last.control.state,state);}
+    update('controls',`control_id='${control.control_id}'`,'projection',control.projection);
+    update('runs',`run_id='${target.runId}'`,'request',{...child.request,prompt:'changed private prompt'});assert.equal(steps()[1].target_request_matches,false);
+    update('runs',`run_id='${target.runId}'`,'request',child.request);
+    update('runs',`run_id='${target.runId}'`,'continuation',{...child.continuation,sourceRequest:{...child.continuation.sourceRequest,prompt:'changed private source'}});assert.equal(steps()[1].source_request_matches,false);
+    update('runs',`run_id='${target.runId}'`,'continuation',child.continuation);
+    update('controls',`control_id='${control.control_id}'`,'projection',{...control.projection,proof:{...control.projection.proof,files:{private:'changed'}}});assert.equal(steps()[1].proof_matches,false);
+    update('controls',`control_id='${control.control_id}'`,'projection',control.projection);
+   });
+   await t.test('an incomplete extra run is enumerated and Core receives only SELECT on the resume view',()=>{
+    const binding={...target,runId:id(5999),writerFence:3},run={...child.projection,binding};insert('meri_conversations.runs',[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,projection:run,projection_sha256:hash(run),request_id:id(5998),request:{},request_sha256:hash({})}]);
+    const rows=steps();assert.equal(rows.length,3);assert.equal(rows[2].execution_record,null);assert.equal(rows[2].continuation,null);
+    assert.equal(asCore("SELECT has_table_privilege(current_user,'meri_read_delegation_facts.routine_resume_steps_v1','SELECT'),has_table_privilege(current_user,'meri_read_delegation_facts.routine_resume_steps_v1','INSERT'),has_table_privilege(current_user,'meri_read_delegation_facts.routine_resume_steps_v1','UPDATE'),has_table_privilege(current_user,'meri_read_delegation_facts.routine_resume_steps_v1','DELETE');"),'t|f|f|f');
+    sql('SET ROLE routine_unrelated; SELECT * FROM meri_read_delegation_facts.routine_resume_steps_v1;',{refused:true});
+    assert.equal(sql("SELECT reloptions FROM pg_class WHERE oid='meri_read_delegation_facts.routine_resume_steps_v1'::regclass;"),'{security_barrier=true}');
+   });
+  }finally{await h.close();}
   t.diagnostic('Owned disposable container '+name+'; PostgreSQL 16; network none; no host mount/port; no persistent services changed.');
  }finally{
   if(created){const identity=JSON.parse(docker(['inspect',name]))[0];assert.equal(identity.Config.Labels['meri-test-owner'],name);assert.equal(identity.HostConfig.NetworkMode,'none');assert.deepEqual(identity.HostConfig.Tmpfs,{'/var/lib/postgresql/data':''});assert.equal(identity.Mounts.length,0);
