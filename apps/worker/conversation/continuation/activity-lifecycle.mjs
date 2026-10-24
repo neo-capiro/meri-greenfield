@@ -20,7 +20,7 @@ export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 export const LIFECYCLE_READ_BACKOFF_MS=Object.freeze({first:500,max:5000});
 export const lifecycleReadBackoffMs=missed=>Math.min(LIFECYCLE_READ_BACKOFF_MS.max,LIFECYCLE_READ_BACKOFF_MS.first*2**Math.min(missed-1,4));
 export function assertLifecycleConfiguration(config,runOwner) {
- const {captureCheckpoint,captureCompletion,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
+ const {captureCheckpoint,captureCompletion,pollMs=1000,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
  if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||captureCompletion!==undefined&&typeof captureCompletion!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
  ['nextControls','claimControl','ackControl','recordCheckpoint'].some(k=>typeof runOwner[k]!=='function'))throw fault('LIFECYCLE_CONFIGURATION');
  return {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose};
