@@ -14,8 +14,163 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "edf220b461a4c199732a804052f0d325e58edb2e446acae045de05e35d692231",
-      "bytes": 27078
+      "sha256": "c2fd901e3a013a0e3e49123939fbbbaaa79e41de48208fe7ebbe4630b6a156dc",
+      "bytes": 27603
+    },
+    {
+      "path": "../skills/./originals/bill_watch/1.0.1/manifest.json",
+      "sha256": "f1bf173354354562cfa8b5e8f441b358793c3961b45c9a1697ea079c353668ce",
+      "bytes": 2375
+    },
+    {
+      "path": "../skills/./originals/bill_watch/1.0.1/SKILL.md",
+      "sha256": "b73c8406c7525a437292ac6055bc60d5f9c1fa6b457158cf45eb125bac18f58c",
+      "bytes": 2423
+    },
+    {
+      "path": "../skills/./originals/client_changes/1.0.1/manifest.json",
+      "sha256": "c245c6d8de96e5eaf2080308aa78fb54da854e0b3524cca89ce81a1c4e63c660",
+      "bytes": 4135
+    },
+    {
+      "path": "../skills/./originals/client_changes/1.0.1/SKILL.md",
+      "sha256": "a301ff3409d72d822d90a366693ec918288c3c0cf3870cf430759e8905623333",
+      "bytes": 3402
+    },
+    {
+      "path": "../skills/./originals/commitments_audit/1.0.0/manifest.json",
+      "sha256": "8e1d487efdfc71ce4858e081f4432f650dd0b9749bf859a9d9d9c6a5944ab955",
+      "bytes": 3523
+    },
+    {
+      "path": "../skills/./originals/commitments_audit/1.0.0/SKILL.md",
+      "sha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+      "bytes": 4059
+    },
+    {
+      "path": "../skills/./originals/funding_opportunity_match/1.0.1/manifest.json",
+      "sha256": "9936382b374964f2f27690e1ec00f51d6c75e2c33858a6e4de7fb9a02d01d970",
+      "bytes": 3143
+    },
+    {
+      "path": "../skills/./originals/funding_opportunity_match/1.0.1/SKILL.md",
+      "sha256": "7fcb2c315a84d5b5bb5438b0739672858083c210a15b33490c8ac8a52a262c7e",
+      "bytes": 3472
+    },
+    {
+      "path": "../skills/./originals/hearing_watch/1.0.1/manifest.json",
+      "sha256": "f3b3fe7f685a4ce28d49c2938c0d3020d068b9e7b12947ffc9fef496b3068745",
+      "bytes": 3100
+    },
+    {
+      "path": "../skills/./originals/hearing_watch/1.0.1/SKILL.md",
+      "sha256": "8113ddb40117410862987ca0d1eded9f911518d2511d14d6b5d28f83332f3999",
+      "bytes": 3404
+    },
+    {
+      "path": "../skills/./originals/mail_history/1.0.0/manifest.json",
+      "sha256": "bfa1a83dbfbe8fb55bb62018791575984dfba623d0dc198f8f79475ec8612b91",
+      "bytes": 2696
+    },
+    {
+      "path": "../skills/./originals/mail_history/1.0.0/SKILL.md",
+      "sha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+      "bytes": 3433
+    },
+    {
+      "path": "../skills/./originals/meeting_prep/1.0.1/manifest.json",
+      "sha256": "a85170833f77eec39fd89e3bce412578ec74e46ec317836a8247dd4cca97cb70",
+      "bytes": 4608
+    },
+    {
+      "path": "../skills/./originals/meeting_prep/1.0.1/SKILL.md",
+      "sha256": "f229e324b2465501c5eb53d6dc0b1084e56c99002a9495bbf1376dbf89eb78ef",
+      "bytes": 3427
+    },
+    {
+      "path": "../skills/./originals/pe_deep_dive/1.0.0/manifest.json",
+      "sha256": "0a7a626ea1e43de2b27b71ae1f3aba154c0d15c37ac9767d1ac154bc6ee109d6",
+      "bytes": 3256
+    },
+    {
+      "path": "../skills/./originals/pe_deep_dive/1.0.0/SKILL.md",
+      "sha256": "8032b4dcdf812f0b8ba60de5c5f1c9cc2a633aff6f19b71dcf5feadba83b4d8e",
+      "bytes": 3373
+    },
+    {
+      "path": "../skills/./originals/portfolio_changes/1.0.1/manifest.json",
+      "sha256": "905daf274afbfcc88e4f39c5c4d21bb29521b7cd28fd3daa2b999c84e2a9db0a",
+      "bytes": 5884
+    },
+    {
+      "path": "../skills/./originals/portfolio_changes/1.0.1/SKILL.md",
+      "sha256": "c6632efe7264570dad0ae7380bb33bd34c187c79631e77d315d22e526725ae3d",
+      "bytes": 3486
+    },
+    {
+      "path": "../skills/./originals/portfolio_overlap/1.0.1/manifest.json",
+      "sha256": "b98432396d3f43b84b87251161f1f81dbdc2344bbe0eb261b219a374f513b6c8",
+      "bytes": 5317
+    },
+    {
+      "path": "../skills/./originals/portfolio_overlap/1.0.1/SKILL.md",
+      "sha256": "2c3a84fa2a4cd334202a005b6bf2b0253aaf85404d441be0ba2ace44eb009f11",
+      "bytes": 3341
+    },
+    {
+      "path": "../skills/./originals/regulatory_docket_brief/1.0.1/manifest.json",
+      "sha256": "be552a402ffa19c78644d1e3e3ac094fc66a82aaf70000b55865f08951bd916f",
+      "bytes": 3170
+    },
+    {
+      "path": "../skills/./originals/regulatory_docket_brief/1.0.1/SKILL.md",
+      "sha256": "413fe92d76e3e68282906fc93412e3f06afec07e2cb1e321e8df038e36d86c4e",
+      "bytes": 3515
+    },
+    {
+      "path": "../skills/./originals/relationship_brief/1.0.0/manifest.json",
+      "sha256": "a4ee2cd51cac83d82326439ec93baf4a50860bdbb110ec1c1f40daa0f1420ace",
+      "bytes": 3855
+    },
+    {
+      "path": "../skills/./originals/relationship_brief/1.0.0/SKILL.md",
+      "sha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+      "bytes": 3432
+    },
+    {
+      "path": "../skills/./originals/representation_lookup/1.0.1/manifest.json",
+      "sha256": "0c24bc311032588fdf118344c67bbb188ca875c1ee5ed08a4322432881982e88",
+      "bytes": 3106
+    },
+    {
+      "path": "../skills/./originals/representation_lookup/1.0.1/SKILL.md",
+      "sha256": "d49f44ac5afa0e04f27f516613cda54a1e8813de75090d7f650fc63a2c22e6bf",
+      "bytes": 3420
+    },
+    {
+      "path": "../skills/./originals/research_company/1.0.1/manifest.json",
+      "sha256": "f169da379384c26b50e98caec1f06193a7ead55362f809c2f4ebe81d5f05b976",
+      "bytes": 4873
+    },
+    {
+      "path": "../skills/./originals/research_company/1.0.1/SKILL.md",
+      "sha256": "9139d0bed0bb1919386dd26c0407ad2e8e10303865a0c52a418cc6beb3c42929",
+      "bytes": 3605
+    },
+    {
+      "path": "../skills/assets.json",
+      "sha256": "5fc45a70daf4740561d0fa9f50d855799286783382dba27cef44b83ee9eb70cc",
+      "bytes": 6390
+    },
+    {
+      "path": "../skills/index.mjs",
+      "sha256": "1bbd2dadbe6c791bdf9eb8561b3153a074e2b7ceb27129954cf92ba3ef2c5c94",
+      "bytes": 3456
+    },
+    {
+      "path": "../skills/plugin.mjs",
+      "sha256": "9b53b8e04a748955aa8d7f46f6c77a78b7514370d4f50e6c65a020f485a14a3c",
+      "bytes": 3371
     },
     {
       "path": "conversation-application/protocol.mjs",
@@ -60,15 +215,15 @@
   ],
   "schemaSha256": "4c94af8ff703722ded98962183090c1c73bc1d9ec801ebb714994fba76f61712",
   "browserInputs": [
+    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/ajv-formats/dist/formats.js",
+    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/ajv/dist/runtime/equal.js",
+    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/ajv/dist/runtime/ucs2length.js",
+    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/canonicalize/lib/canonicalize.js",
+    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/fast-deep-equal/index.js",
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",
     "conversation-application/protocol.mjs",
     "conversation-generated:./generated-validator.mjs",
-    "document-application/boundary.mjs",
-    "node_modules/ajv-formats/dist/formats.js",
-    "node_modules/ajv/dist/runtime/equal.js",
-    "node_modules/ajv/dist/runtime/ucs2length.js",
-    "node_modules/canonicalize/lib/canonicalize.js",
-    "node_modules/fast-deep-equal/index.js"
+    "document-application/boundary.mjs"
   ]
 }

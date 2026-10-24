@@ -5,13 +5,29 @@ import {readFile,writeFile,mkdir,cp,rm,mkdtemp} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {receiveConversationRequest,receiveConversationResponse,createConversationCursor,receiveConversationEvent,conversationReconnect,conversationApplicationMetadata,ConversationResponseError} from '@capiro/meri-contracts/conversation-application';
+import {receiveConversationRequest,receiveConversationResponse,createConversationCursor,receiveConversationEvent,conversationReconnect,conversationApplicationMetadata,ConversationResponseError,CONVERSATION_SKILLS} from '@capiro/meri-contracts/conversation-application';
+import {describeSkillPlugin} from '../../skills/plugin.mjs';
+import {selectSkill} from '../../skills/index.mjs';
 const utf8=value=>new TextEncoder().encode(JSON.stringify(value));
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={tenantId:'synthetic',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const scopes=[{tenantId:'synthetic',kind:'client',resourceId:id(5),policyRevision:'p1'}];
 const run={binding,scopes,state:'queued',policyRevision:'p1',createdAt:'2026-10-13T12:00:00Z',versions:{imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'}};
 const submit={requestId:id(6),prompt:'Hello'};
+test('public skill choices preserve the fourteen active immutable assets and make no runtime availability claim',()=>{
+ assert.equal(CONVERSATION_SKILLS.length,14);
+ assert.deepEqual(CONVERSATION_SKILLS.map(s=>[s.skillId,s.version]),describeSkillPlugin().skills.map(s=>[s.skillId,s.skillVersion]));
+ for(const descriptor of CONVERSATION_SKILLS){
+  const selected=selectSkill(descriptor.skillId,descriptor.version);
+  assert.equal(descriptor.manifestSha256,selected.pin.manifestSha256);assert.equal(descriptor.proseSha256,selected.pin.proseSha256);
+  assert.deepEqual(descriptor.subjectKinds,selected.manifest.subjectKinds);assert.deepEqual(descriptor.windowBases,selected.manifest.windowBases);
+  assert.deepEqual(Object.keys(descriptor).sort(),['displayName','manifestSha256','proseSha256','skillId','subjectKinds','version','windowBases'].sort());
+  const request=receiveConversationRequest('submit',utf8({...submit,skill:{skillId:descriptor.skillId,skillVersion:descriptor.version}}));
+  assert.equal(request.skill.skillId,descriptor.skillId);
+  assert.throws(()=>{descriptor.windowBases.push('invented');},TypeError);assert.throws(()=>{descriptor.version='latest';},TypeError);
+ }
+ assert.throws(()=>CONVERSATION_SKILLS.pop(),TypeError);
+});
 const event=(sequence=1,change={})=>({contractVersion:'0.1.0',eventId:id(20+sequence),binding,scopes,sequence,createdAt:'2026-10-13T12:00:00Z',type:'run.status',data:{state:'queued',reasonCode:null},...change});
 const submitted=()=>({run:structuredClone(run),requestId:submit.requestId,lastSequence:1,replayed:false});
 const history=()=>({run:structuredClone(run),request:{...submit,skill:null,window:null,windowRequest:null},events:[event()],nextSequence:1,hasMore:false,lastSequence:1});
