@@ -7,15 +7,24 @@ import {mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {renderMaterial,readPrivateDirectory} from './render-material.mjs';
+import {renderMaterial,readPrivateDirectory,deploymentRoles} from './render-material.mjs';
 import {MODEL_CATALOG} from '../../../packages/contracts/test/model-selection-fixture.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 export const python=process.env.MERI_TEST_PYTHON??'python';
 export const TD=name=>`arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-${name}:1`;
 export const SVC=name=>`arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-${name}`;
-export const FAKE_PASSWORDS={control:'synthetic-control:p@ss/word?#'};
+export const FAKE_PASSWORDS={control:'synthetic-control:p@ss/word?#',schedule:'synthetic-schedule:p@ss/word?#'};
 export const IDENTITY='synthetic-core-identity-bearer-not-real';
+
+/** Explicit synthetic infrastructure bindings; never used by production rendering. */
+export function addScheduleBindings(i){
+ i.deployment.database.roles.schedule='meri_schedule_synthetic';
+ i.deployment.secrets['schedule/material']='arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/schedule/material-Syn123';
+ Object.assign(i.deployment.foundation,{ScheduleExecutionRoleArn:'arn:aws:iam::967807252336:role/MeriPreview-schedule-execution',ScheduleLogGroupName:'/meri/product-preview/schedule'});
+ i.stage3.taskDefinitions['schedule-worker']=TD('schedule-worker');i.stage3.services['schedule-worker']=SVC('schedule-worker');
+ i.stage3.network['schedule-worker']={subnets:[...i.deployment.privateSubnetIds],securityGroups:[i.deployment.foundation.WorkerSecurityGroupId,i.deployment.foundation.DbClientSecurityGroupId]};
+}
 
 /** One throwaway PKI/input set per process. `work` and `pkiDir` are exposed for tests that write their own files. */
 export function createRenderFixture(){
@@ -28,6 +37,8 @@ export function createRenderFixture(){
   await writeFile(join(state.pkiDir,'db-logins.json'),JSON.stringify(FAKE_PASSWORDS));
   const pins=JSON.parse(await readFile(join(state.pkiDir,'pins.json'),'utf8')).certificates;
   const deployment=JSON.parse(await readFile(join(here,'deployment-inputs.json'),'utf8'));
+  // Baseline material tests opt features in explicitly; deployment examples may enable live families.
+  delete deployment.features;
   // The committed foundation readback remains historical evidence.
   state.foundationOutputs=JSON.parse(await readFile(join(here,'foundation-outputs.json'),'utf8'));
   deployment.images.nodeRuntime='967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:'+'7'.repeat(64);
@@ -46,7 +57,7 @@ export function createRenderFixture(){
  }
  async function render(change=x=>x,options={}){
   const i=structuredClone(await setup());change(i);
-  return renderMaterial({...i,private:await readPrivateDirectory(state.pkiDir),...options});
+  return renderMaterial({...i,private:await readPrivateDirectory(state.pkiDir,{scheduleWorker:deploymentRoles(i.deployment).includes('schedule-worker')}),...options});
  }
  async function cleanup(){if(state.work)await rm(state.work,{recursive:true,force:true});}
  return {setup,render,cleanup,get work(){return state.work;},get pkiDir(){return state.pkiDir;},get inputs(){return state.inputs;},get foundationOutputs(){return state.foundationOutputs;}};

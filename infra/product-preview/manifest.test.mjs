@@ -31,6 +31,39 @@ function expected(role){
 function delivery(){return {control:{valueFrom:`arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control-ABC123:::${'1'.repeat(32)}`,expected:expected('control')},
  temporalWorker:{valueFrom:`arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker-DEF456:::${'2'.repeat(32)}`,expected:expected('temporal-worker')}};}
 
+function withSchedule(){
+ const input=binding(),e=expected('schedule-worker');
+ e.sha256ByPath['/run/meri/schedule-worker.json']=e.sha256ByPath['/run/meri/worker.json'];delete e.sha256ByPath['/run/meri/worker.json'];
+ delete e.materialContractSha256;e.materialContractSha256=canonicalSha256(e);
+ input.materialDelivery.scheduleWorker={valueFrom:`arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/schedule-ABC123:::${'3'.repeat(32)}`,expected:e};
+ input.sizing.scheduleWorker={...input.sizing.temporalWorker};
+ input.network.scheduleSecurityGroupIds=[...input.network.workerSecurityGroupIds,'sg-00000001'];
+ return input;
+}
+
+test('optional schedule worker reuses the runtime role and immutable material without SDK compute or public exposure',()=>{
+ const input=withSchedule(),template=synthesizeProductPreview(input),base=synthesizeProductPreview(binding());
+ for(const [id,resource] of Object.entries(base.Resources))assert.deepEqual(template.Resources[id],resource,'existing resource stays identical');
+ const task=byFamily(byType(template,'AWS::ECS::TaskDefinition'),'schedule-worker'),runtime=task.ContainerDefinitions.at(-1);
+ assert.deepEqual(runtime.Command,['schedule-worker','--config','/run/meri/schedule-worker.json']);
+ assert.equal(runtime.ReadonlyRootFilesystem,true);assert.equal(runtime.User,'1000:1000');assert.equal(task.TaskRoleArn,undefined);
+ assert.equal(runtime.PortMappings[0].ContainerPort,8083);assert.equal(runtime.Secrets,undefined);
+ assert.deepEqual(task.ContainerDefinitions[0].Secrets,[{Name:'MERI_STATIC_MATERIAL_BUNDLE',ValueFrom:input.materialDelivery.scheduleWorker.valueFrom}]);
+ const service=template.Resources.scheduleWorkerService.Properties;
+ assert.equal(service.DesiredCount,0);assert.equal(service.LoadBalancers,undefined);assert.equal(service.ServiceRegistries,undefined);
+ assert.deepEqual(service.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,input.network.scheduleSecurityGroupIds);
+ assert.ok(template.Outputs.ScheduleWorkerTaskDefinitionArn);
+});
+
+test('optional schedule service refuses incomplete role bindings and mismatched private-control trust',()=>{
+ for(const change of [b=>{delete b.network.scheduleSecurityGroupIds;},b=>{delete b.sizing.scheduleWorker;},
+  b=>{b.materialDelivery.scheduleWorker.valueFrom=b.materialDelivery.temporalWorker.valueFrom;},
+  b=>{b.materialDelivery.scheduleWorker.expected=b.materialDelivery.temporalWorker.expected;},
+  b=>{const e=b.materialDelivery.scheduleWorker.expected;e.sha256ByPath['/run/meri/control-ca.pem']='9'.repeat(64);delete e.materialContractSha256;e.materialContractSha256=canonicalSha256(e);}]){
+  const input=withSchedule();change(input);assert.throws(()=>synthesizeProductPreview(input),/PRODUCT_PREVIEW_BINDING_REFUSED/);
+ }
+});
+
 test('offline source has only two stopped services and two immutable role tasks; AgentCore owns SDK compute',()=>{
  const input=binding(),template=synthesizeProductPreview(input),types=Object.values(template.Resources).map(r=>r.Type).sort();
  assert.deepEqual(types,[...Array(2).fill('AWS::ECS::Service'),...Array(2).fill('AWS::ECS::TaskDefinition')].sort());

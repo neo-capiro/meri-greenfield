@@ -12,7 +12,7 @@ import {fileURLToPath} from 'node:url';
 const here=fileURLToPath(new URL('.',import.meta.url));
 const R=await import('./render-material.mjs');
 const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,capabilityProfileOf,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
-const {createRenderFixture,IDENTITY,FAKE_PASSWORDS}=await import('./render-material.fixture.mjs');
+const {createRenderFixture,addScheduleBindings,IDENTITY,FAKE_PASSWORDS}=await import('./render-material.fixture.mjs');
 const RV=await import('./runtime-values.mjs');
 const {validateConfiguration}=await import('../../../apps/runtime/config.mjs');
 const {compileProductMaterialPlan}=await import('../../../apps/runtime/material-init-plan.mjs');
@@ -80,7 +80,7 @@ function seeded(fn){
  try{return fn();}finally{Object.assign(crypto,saved);syncBuiltinESMExports();}
 }
 let pki;
-async function inputs(change=x=>x){const i=structuredClone(await fixture.setup());delete i.deployment.features;pki??=await readPrivateDirectory(fixture.pkiDir);change(i);return i;}
+async function inputs(change=x=>x){const i=structuredClone(await fixture.setup());delete i.deployment.features;pki??=await readPrivateDirectory(fixture.pkiDir,{scheduleWorker:true});change(i);return i;}
 async function render(change,options={},module=R){
  const i=await inputs(change);
  return seeded(()=>module.renderMaterial({...i,private:pki,nowMs:NOW,sourceRoot:SOURCE_ROOT,...options}));
@@ -353,7 +353,7 @@ test('intents.execution and routines.core render the Core origin, the reads serv
  assert.deepEqual(control.intents,{enabled:true,execution:{coreOrigin:origin,issuer:execution.issuer,keys:execution.keys,serviceSecretFile:PATHS.readsServiceSecret}});
  assert.deepEqual(control.routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core}});
  const task={taskId:'11111111-1111-4111-8111-000000000009',version:1},workflow={taskQueue:'meri-schedule-worker',workflowIdPrefix:'meri/routine/'};
- const targeted=await render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core,task,workflow}}),{featureSecrets:featureSecrets()});
+ const targeted=await render(i=>{withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core,task,workflow}})(i);addScheduleBindings(i);},{featureSecrets:featureSecrets()});
  assert.deepEqual(config(targeted,'control').routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core},task,workflow});
  await assert.rejects(render(withFeatures({routines:{enabled:false,task}})),/needs features.routines.enabled true/u);
  await assert.rejects(render(withFeatures({routines:{enabled:true,workflow:{...workflow,taskQueue:'bad queue'}}})),/features.routines.workflow target/u);

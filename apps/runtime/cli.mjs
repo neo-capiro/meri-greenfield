@@ -19,7 +19,7 @@ export async function main(argv=process.argv.slice(2)){
   // native client to control's private occurrence operations (HTTPS) and its own database file; its owners compose at startup below.
   if(role==='schedule-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.routines?.enabled!==true||c.routines.core?.unattendedGrant===undefined||c.native===undefined||c.native.loopback!==false||
-      !c.native.origin.startsWith('https://')||c.database===undefined))throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
+      !c.native.origin.startsWith('https://')||c.database===undefined||c.http.port!==8083||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
  }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
  const controller=new AbortController();let runtime,shutdownTimer,controlTurnTelemetry,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();

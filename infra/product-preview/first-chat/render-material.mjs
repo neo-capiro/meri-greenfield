@@ -25,11 +25,14 @@ import {compileRoutinesCoreConfiguration} from '../../../apps/runtime/native-aut
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const ACCOUNT='967807252336',REGION='us-east-1',ECS=`arn:aws:ecs:${REGION}:${ACCOUNT}:`;
 export const ROLES=Object.freeze(['control','temporal-worker']);
-export const RUNTIME_USERS=Object.freeze({control:'1000:1000','temporal-worker':'1000:1000'});
-export const CONTAINER_NAMES=Object.freeze({control:'control','temporal-worker':'temporal-worker'});
+export const ALL_ROLES=Object.freeze([...ROLES,'schedule-worker']);
+/** An explicit routine workflow target opts in its existing Temporal schedule poller. */
+export const deploymentRoles=d=>d?.features?.routines?.workflow===undefined?ROLES:ALL_ROLES;
+export const RUNTIME_USERS=Object.freeze({control:'1000:1000','temporal-worker':'1000:1000','schedule-worker':'1000:1000'});
+export const CONTAINER_NAMES=Object.freeze({control:'control','temporal-worker':'temporal-worker','schedule-worker':'schedule-worker'});
 /** Task-local /run/meri inventory. Every path is a direct child, as material-init-plan requires. */
 export const PATHS=Object.freeze({
- control:'/run/meri/control.json',worker:'/run/meri/worker.json',
+ control:'/run/meri/control.json',worker:'/run/meri/worker.json',schedule:'/run/meri/schedule-worker.json',
  database:'/run/meri/database.uri',
  controlCapability:'/run/meri/control-capability',
  temporalCa:'/run/meri/temporal-ca.pem',temporalCert:'/run/meri/temporal-client.pem',temporalKey:'/run/meri/temporal-client.key',
@@ -67,18 +70,18 @@ const ids=(values,kind,name,{min=1,max=16}={})=>{if(!Array.isArray(values)||valu
 const revisionOf=arn=>Number(arn.slice(arn.lastIndexOf(':')+1));
 
 /** Non-secret Stage 3 identifiers. */
-export function parseStage3(raw,{clusterName}){
+export function parseStage3(raw,{clusterName,roles=ROLES}){
  const s=record(raw,'stage3',['schemaVersion','taskDefinitions','services','network']);
  if(s.schemaVersion!==1)fail('RENDER_INPUT_REFUSED','stage3.schemaVersion must be 1');
- const t=record(s.taskDefinitions,'stage3.taskDefinitions',[...ROLES]);
+ const t=record(s.taskDefinitions,'stage3.taskDefinitions',[...roles]);
  for(const role of Object.keys(t))taskDefinitionArn(t[role],`stage3.taskDefinitions.${role}`);
  if(new Set(Object.values(t)).size!==Object.keys(t).length)fail('RENDER_INPUT_REFUSED','task definitions must be distinct');
- const sv=record(s.services,'stage3.services',['control','temporal-worker']);
+ const sv=record(s.services,'stage3.services',[...roles]);
  for(const role of Object.keys(sv))serviceArn(sv[role],clusterName,`stage3.services.${role}`);
  if(new Set(Object.values(sv)).size!==Object.keys(sv).length)fail('RENDER_INPUT_REFUSED','services must be distinct');
- const n=record(s.network,'stage3.network',['control','temporal-worker']);
+ const n=record(s.network,'stage3.network',[...roles]);
  const network={};
- for(const role of ['control','temporal-worker']){const r=record(n[role],`stage3.network.${role}`,['subnets','securityGroups']);
+ for(const role of roles){const r=record(n[role],`stage3.network.${role}`,['subnets','securityGroups']);
   network[role]={subnets:ids(r.subnets,'subnet',`stage3.network.${role}.subnets`),securityGroups:ids(r.securityGroups,'sg',`stage3.network.${role}.securityGroups`,{max:5})};}
  return {taskDefinitions:{...t},services:{...sv},network};
 }
@@ -238,22 +241,32 @@ export function parseDeploymentInputs(raw){
  record(d.temporal,'deployment.temporal',['namespace','taskQueue']);
  record(d.temporalClients,'deployment.temporalClients',['control','worker','schedule']);
  for(const role of ['control','worker','schedule'])if(d.temporalClients[role]!==`meri-temporal-${role}`)fail('RENDER_INPUT_REFUSED','Temporal client certificate identity');
- record(d.database.roles,'deployment.database.roles',['control']);
+ const features=parseFeatures(d.features,{secrets:d.secrets}),schedule=deploymentRoles(d).includes('schedule-worker');
+ record(d.database.roles,'deployment.database.roles',['control',...(schedule?['schedule']:[])]);
+ if(schedule){
+  if(features?.sourceEnabled!==true||features.routines?.enabled!==true||!features.routines.task||!features.routines.core?.unattendedGrant||features.reads?.enabled!==true)
+   fail('RENDER_INPUT_REFUSED','schedule-worker requires sourceEnabled, routines task/Core unattendedGrant and enabled reads');
+  if(features.routines.workflow.taskQueue===d.temporal.taskQueue)fail('RENDER_INPUT_REFUSED','schedule-worker queue must differ from conversation queue');
+  if(typeof d.database.roles.schedule!=='string'||!/^[a-z_][a-z0-9_]{0,62}$/u.test(d.database.roles.schedule)||d.database.roles.schedule===d.database.roles.control)
+   fail('RENDER_INPUT_REFUSED','schedule-worker requires a distinct reviewed database role');
+  if(!SECRET_ARN.test(d.secrets['schedule/material']??'')||Object.entries(d.secrets).some(([key,value])=>key!=='schedule/material'&&value===d.secrets['schedule/material']))
+   fail('RENDER_INPUT_REFUSED','schedule-worker requires a distinct schedule/material secret');
+ }
  if(Object.hasOwn(d.secrets,'issuer/material'))fail('RENDER_INPUT_REFUSED','retired issuer material');
  for(const commit of [d.images.nodeRuntimeSourceCommit])if(!/^[a-f0-9]{40}$/u.test(commit))fail('RENDER_INPUT_REFUSED','image source commits must be 40 hex');
  imageDigest(d.images.nodeRuntime);
- return {...d,telemetry:{...telemetry},clusterName:cluster[1],features:parseFeatures(d.features,{secrets:d.secrets})};
+ return {...d,telemetry:{...telemetry},clusterName:cluster[1],features};
 }
 
 /** Throwaway-free private reader: only certificate/key PEMs, pins.json and db-logins.json named here are read. */
 const PKI_CERTS=['server-ca','control-private',
  'temporal-frontend-ca','temporal-client-ca','temporal-client-control','temporal-client-worker'];
 const PKI_KEYS=['temporal-client-control','temporal-client-worker'];
-export async function readPrivateDirectory(directory,{readBytes=readFile}={}){
+export async function readPrivateDirectory(directory,{readBytes=readFile,scheduleWorker=false}={}){
  if(typeof directory!=='string'||!isAbsolute(directory))fail('RENDER_INPUT_REFUSED','private directory must be absolute');
  const certs={},keys={};
- for(const stem of PKI_CERTS)certs[stem]=await readBytes(join(directory,`${stem}.pem`));
- for(const stem of PKI_KEYS)keys[stem]=await readBytes(join(directory,`${stem}.key.pem`));
+ for(const stem of [...PKI_CERTS,...(scheduleWorker?['temporal-client-schedule']:[])])certs[stem]=await readBytes(join(directory,`${stem}.pem`));
+ for(const stem of [...PKI_KEYS,...(scheduleWorker?['temporal-client-schedule']:[])])keys[stem]=await readBytes(join(directory,`${stem}.key.pem`));
  const pins=JSON.parse((await readBytes(join(directory,'pins.json'))).toString('utf8'));
  const logins=JSON.parse((await readBytes(join(directory,'db-logins.json'))).toString('utf8'));
  return {certs,keys,pins,logins};
@@ -286,7 +299,8 @@ const capabilityToken=()=>'meri-cap.'+randomBytes(32).toString('base64url');
 /** Chain/SAN/key checks plus deployment pins. Returns DER/PEM pins and the earliest notAfter of every certificate used. */
 function verifyPki(d,pki){
  const x={},pins={der:{},pem:{}};let notAfterMs=Number.MAX_SAFE_INTEGER;
- for(const stem of PKI_CERTS){
+ const schedule=deploymentRoles(d).includes('schedule-worker');
+ for(const stem of [...PKI_CERTS,...(schedule?['temporal-client-schedule']:[])]){
   let cert;try{cert=new X509Certificate(pki.certs[stem]);}catch{fail('RENDER_PRIVATE_REFUSED',`${stem}.pem is not a certificate`);}
   x[stem]=cert;pins.der[stem]=sha(cert.raw);pins.pem[stem]=sha(pki.certs[stem]);
   if(d.pinsDer[stem]!==pins.der[stem]||d.pinsPem[stem]!==pins.pem[stem])fail('RENDER_PRIVATE_REFUSED',`${stem} does not match deployment-inputs pins`);
@@ -297,8 +311,8 @@ function verifyPki(d,pki){
  for(const ca of ['server-ca','temporal-frontend-ca','temporal-client-ca'])if(!x[ca].ca)fail('RENDER_PRIVATE_REFUSED',`${ca} is not a CA`);
  for(const [leaf,ca,san] of [['control-private','server-ca',d.names.control_private]]){
   issued(leaf,ca);if(x[leaf].subjectAltName!==`DNS:${san}`)fail('RENDER_PRIVATE_REFUSED',`${leaf} SAN must be DNS:${san}`);}
- for(const role of ['control','worker']){issued(`temporal-client-${role}`,'temporal-client-ca');if(x[`temporal-client-${role}`].subject!==`CN=${d.temporalClients[role]}`)fail('RENDER_PRIVATE_REFUSED',`temporal-client-${role} subject`);}
- for(const stem of PKI_KEYS){
+ for(const role of ['control','worker',...(schedule?['schedule']:[])]){issued(`temporal-client-${role}`,'temporal-client-ca');if(x[`temporal-client-${role}`].subject!==`CN=${d.temporalClients[role]}`)fail('RENDER_PRIVATE_REFUSED',`temporal-client-${role} subject`);}
+ for(const stem of [...PKI_KEYS,...(schedule?['temporal-client-schedule']:[])]){
   let pub;try{pub=createPublicKey(createPrivateKey(pki.keys[stem])).export({type:'spki',format:'der'});}catch{fail('RENDER_PRIVATE_REFUSED',`${stem}.key.pem is not a private key`);}
   if(!pub.equals(x[stem].publicKey.export({type:'spki',format:'der'})))fail('RENDER_PRIVATE_REFUSED',`${stem}.key.pem does not match ${stem}.pem`);
  }
@@ -315,12 +329,13 @@ const bundleOf=files=>({files:[...files].map(([path,bytes])=>({path,base64:Buffe
 export function assertProductCliGates(role,c,environment){
  if(role==='control'&&!(c.privateHttp!==undefined&&c.agentcore!==undefined&&productControlTrustsCompositeCa(environment)))fail('RENDER_GATE_REFUSED','PRODUCT_LISTENER_REFUSED');
  if(role==='temporal-worker'&&!(c.native.preparedKickoff===true&&c.native.loopback===false&&c.native.origin.startsWith('https://')&&c.http.port===8081&&productWorkerTrustsPinnedServerCa(c,environment)))fail('RENDER_GATE_REFUSED','PRODUCT_WORKER_REFUSED');
+ if(role==='schedule-worker'&&!(c.routines?.enabled===true&&c.routines.core?.unattendedGrant!==undefined&&c.native?.loopback===false&&c.native.origin.startsWith('https://')&&c.database!==undefined&&c.http.port===8083&&productWorkerTrustsPinnedServerCa(c,environment)))fail('RENDER_GATE_REFUSED','PRODUCT_SCHEDULE_WORKER_REFUSED');
 }
 
 /** Pure render (reads only the private material passed in). Returns every role's exact bytes plus the non-secret summary. */
 export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs=Date.now(),validityDays=DEFAULTS.validityDays,
  deploymentRevision=DEFAULTS.deploymentRevision,featureSecrets={}}){
- const d=parseDeploymentInputs(deployment),k=parseCoreValues(core),r=parseRuntimeValues(runtime),s=parseStage3(stage3,{clusterName:d.clusterName});
+ const d=parseDeploymentInputs(deployment),activeRoles=deploymentRoles(d),schedule=activeRoles.includes('schedule-worker'),k=parseCoreValues(core),r=parseRuntimeValues(runtime),s=parseStage3(stage3,{clusterName:d.clusterName,roles:activeRoles});
  if(!Number.isSafeInteger(nowMs)||nowMs<1)fail('RENDER_INPUT_REFUSED','nowMs');
  if(!Number.isFinite(validityDays)||validityDays<=0)fail('RENDER_INPUT_REFUSED','validityDays must be positive');
  if(!/^[A-Za-z0-9_-]{1,128}$/u.test(deploymentRevision))fail('RENDER_INPUT_REFUSED','deploymentRevision');
@@ -334,7 +349,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  if(controlPrivate!==`https://${d.names.control_private}`)fail('RENDER_INPUT_REFUSED','control private origin must be https://names.control_private');
  if(o.temporalAddress!==`${d.names.temporal_frontend}:7233`)fail('RENDER_INPUT_REFUSED','temporal address must be names.temporal_frontend:7233');
  const nodeImage=d.images.nodeRuntime,nodeDigest=imageDigest(nodeImage);
- for(const role of ROLES)if(s.network[role].subnets.some(id=>!d.privateSubnetIds.includes(id)))fail('RENDER_INPUT_REFUSED',`stage3.network.${role}.subnets must be within deployment privateSubnetIds`);
+ for(const role of activeRoles)if(s.network[role].subnets.some(id=>!d.privateSubnetIds.includes(id)))fail('RENDER_INPUT_REFUSED',`stage3.network.${role}.subnets must be within deployment privateSubnetIds`);
 
  // One control-to-worker credential; user authority never comes from this material.
  const capabilityBytes={control:Buffer.from(capabilityToken(),'utf8')};
@@ -382,9 +397,15 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  const controlDsn=Buffer.from(dsn(db.roles.control,password(logins,'control',db.roles.control),db.host,db.port,db.database));
  const controlBytes=Buffer.from(JSON.stringify(control));
  const configs={control,'temporal-worker':worker};
+ if(schedule)configs['schedule-worker']={version:1,profile:'isolated-preview',sourceEnabled:false,limits,versions,
+  native:{...control.native},http:{hostname:'0.0.0.0',port:8083,frontendOrigin:k.frontendOrigin},database:{connectionFile:PATHS.database},
+  temporal:{...temporal(),taskQueue:features.routines.workflow.taskQueue},
+  scheduledDispatch:{enabled:true,conversationTaskQueue:d.temporal.taskQueue,maxConcurrentActivities:1},
+  routines:{enabled:true,core:structuredClone(control.routines.core)}};
  const configBytes={control:controlBytes,...Object.fromEntries(Object.entries(configs).filter(([role])=>role!=='control').map(([role,value])=>[role,Buffer.from(JSON.stringify(value))]))};
- const temporalFiles=role=>[[PATHS.temporalCa,pki.certs['temporal-frontend-ca']],[PATHS.temporalCert,pki.certs[`temporal-client-${role==='control'?'control':'worker'}`]],
-  [PATHS.temporalKey,pki.keys[`temporal-client-${role==='control'?'control':'worker'}`]],[PATHS.serverCa,pki.certs['server-ca']]];
+ const temporalIdentity=role=>({control:'control','temporal-worker':'worker','schedule-worker':'schedule'}[role]);
+ const temporalFiles=role=>[[PATHS.temporalCa,pki.certs['temporal-frontend-ca']],[PATHS.temporalCert,pki.certs[`temporal-client-${temporalIdentity(role)}`]],
+  [PATHS.temporalKey,pki.keys[`temporal-client-${temporalIdentity(role)}`]],[PATHS.serverCa,pki.certs['server-ca']]];
  const files={
   control:new Map([[PATHS.control,controlBytes],[PATHS.database,controlDsn],
    [PATHS.controlCapability,capabilityBytes.control],...temporalFiles('control'),
@@ -394,11 +415,14 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
    ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[])]),
   'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker')]),
  };
+ if(schedule)files['schedule-worker']=new Map([[PATHS.schedule,configBytes['schedule-worker']],
+  [PATHS.database,Buffer.from(dsn(db.roles.schedule,password(logins,'schedule',db.roles.schedule),db.host,db.port,db.database))],
+  [PATHS.controlCapability,capabilityBytes.control],[PATHS.readsServiceSecret,secretFiles['reads.serviceSecret'].bytes],...temporalFiles('schedule-worker')]);
  const image=()=>[nodeImage,d.images.nodeRuntimeSourceCommit];
  const roles={};
- for(const role of ROLES){
+ for(const role of activeRoles){
   const [img,commit]=image(role),expected=expectedEnvelope(role,img,commit,files[role]),bundle=bundleOf(files[role]);
-  roles[role]={config:configs[role],configBytes:configBytes[role],configSha256:sha(configBytes[role]),configPath:{control:PATHS.control,'temporal-worker':PATHS.worker}[role],
+  roles[role]={config:configs[role],configBytes:configBytes[role],configSha256:sha(configBytes[role]),configPath:{control:PATHS.control,'temporal-worker':PATHS.worker,'schedule-worker':PATHS.schedule}[role],
    expected,bundle,image:img,sourceCommit:commit};
  }
  const workerEnvironment={NODE_EXTRA_CA_CERTS:PATHS.serverCa},controlEnvironment={NODE_EXTRA_CA_CERTS:CONTROL_NODE_CA_FILE};
@@ -428,7 +452,7 @@ export function withPosixPaths(fn){
 export function validateRendered(roles,options){return withPosixPaths(()=>validateRenderedLinux(roles,options));}
 function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
  const parse=role=>JSON.parse(roles[role].configBytes.toString('utf8'));
- for(const role of ['control','temporal-worker']){
+ for(const role of Object.keys(roles)){
   const c=parse(role);
   try{validateConfiguration(c,role);}catch(error){fail('RENDER_VALIDATION_REFUSED',`${role} validateConfiguration ${error.code??error.message}`);}
   assertProductCliGates(role,c,role==='control'?controlEnvironment:workerEnvironment);
@@ -436,7 +460,7 @@ function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
    try{compileAgentCoreConfiguration(c.agentcore);}catch(error){fail('RENDER_VALIDATION_REFUSED',`control AgentCore configuration ${error.message}`);}
   }
  }
- for(const role of ROLES){
+ for(const role of Object.keys(roles)){
   let plan;try{plan=compileProductMaterialPlan({role,configuration:parse(role),runtimeUser:RUNTIME_USERS[role]});}
   catch(error){fail('RENDER_VALIDATION_REFUSED',`${role} material plan ${error.code??error.message}`);}
   const paths=plan.requiredFiles.map(file=>file.path).sort(),delivered=Object.keys(roles[role].expected.sha256ByPath).sort();
@@ -453,20 +477,22 @@ function summarize(x){
  const init=role=>({containerName:'material-init',image:roles[role].image,user:RUNTIME_USERS[role],
   entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='control'?['write','--control-node-ca']:['write'],
   environment:[env('MERI_STATIC_MATERIAL_EXPECTED',JSON.stringify(roles[role].expected))],
-  secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:`${d.secrets[{control:'control/material','temporal-worker':'worker/material'}[role]]}:::<VersionId of the PutSecretValue with ${role}/bundle.json>`}]});
+  secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:`${d.secrets[{control:'control/material','temporal-worker':'worker/material','schedule-worker':'schedule/material'}[role]]}:::<VersionId of the PutSecretValue with ${role}/bundle.json>`}]});
  const wiring={
   control:{family:s.taskDefinitions.control,containerName:'control',image:roles.control.image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['control','--config',PATHS.control],
    environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.controlEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8080,8082],volumes:{'/run/meri':'material (read-only)','/tmp':'tmp (writable; init writes control CA bundle)','/workspace':'workspace'},init:init('control')},
   'temporal-worker':{family:s.taskDefinitions['temporal-worker'],containerName:'temporal-worker',image:roles['temporal-worker'].image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['temporal-worker','--config',PATHS.worker],
    environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.workerEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8081],volumes:{'/run/meri':'material (read-only)'},init:init('temporal-worker')},
  };
+ if(roles['schedule-worker'])wiring['schedule-worker']={family:s.taskDefinitions['schedule-worker'],containerName:'schedule-worker',image:roles['schedule-worker'].image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['schedule-worker','--config',PATHS.schedule],
+  environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.workerEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8083],volumes:{'/run/meri':'material (read-only)'},init:init('schedule-worker')};
  return {schemaVersion:1,generatedAtMs:x.nowMs,
   validity:{validityDays:x.validityDays,notAfterMs:x.expiresAtMs,notAfter:new Date(x.expiresAtMs).toISOString(),earliestCertificateNotAfter:new Date(x.notAfterMs).toISOString(),runWindowMs:x.runWindowMs},
-  roles:Object.fromEntries(ROLES.map(role=>[role,{configPath:roles[role].configPath,configSha256:roles[role].configSha256,materialContractSha256:roles[role].expected.materialContractSha256,
+  roles:Object.fromEntries(Object.keys(roles).map(role=>[role,{configPath:roles[role].configPath,configSha256:roles[role].configSha256,materialContractSha256:roles[role].expected.materialContractSha256,
    fileCount:roles[role].bundle.files.length,bundleBytes:Buffer.byteLength(JSON.stringify(roles[role].bundle)),expectedBytes:Buffer.byteLength(JSON.stringify(roles[role].expected)),
    runtimeUser:RUNTIME_USERS[role],imageDigest:roles[role].expected.imageDigest,sourceCommit:roles[role].sourceCommit,taskDefinitionArn:s.taskDefinitions[role],
    sha256ByPath:roles[role].expected.sha256ByPath}])),
-  taskDefinitionConfigPins:{controlConfigSha256:roles.control.configSha256,workerConfigSha256:roles['temporal-worker'].configSha256},
+  taskDefinitionConfigPins:{controlConfigSha256:roles.control.configSha256,workerConfigSha256:roles['temporal-worker'].configSha256,...(roles['schedule-worker']?{scheduleConfigSha256:roles['schedule-worker'].configSha256}:{})},
   control:{NODE_EXTRA_CA_CERTS:x.controlEnvironment.NODE_EXTRA_CA_CERTS},worker:{NODE_EXTRA_CA_CERTS:x.workerEnvironment.NODE_EXTRA_CA_CERTS},
   deploymentRevision:x.deploymentRevision,agentcore:{runtimeArn:x.agentcore.runtimeArn,runtimeVersion:x.agentcore.runtimeVersion,qualifier:x.agentcore.qualifier,policyRevision:x.policyRevision,runWindowMs:x.runWindowMs},
   pinsDer:pins.der,pinsPem:pins.pem,wiring};
@@ -479,7 +505,7 @@ export async function writeRendered(out,{roles,summary},{sourceRoot=SOURCE_ROOT}
  try{await lstat(target);fail('RENDER_OUTPUT_REFUSED','output directory already exists');}catch(error){if(error.code==='RENDER_OUTPUT_REFUSED')throw error;}
  await mkdir(target,{recursive:false,mode:0o700});
  const put=(path,text)=>writeFile(path,text,{mode:0o600,flag:'wx'});
- for(const role of ROLES){
+ for(const role of Object.keys(roles)){
   const dir=join(target,role);await mkdir(dir,{mode:0o700});
   await put(join(dir,'config.json'),roles[role].configBytes);
   await put(join(dir,'bundle.json'),JSON.stringify(roles[role].bundle));
@@ -500,8 +526,8 @@ export async function main(argv=process.argv.slice(2)){
  const json=async path=>JSON.parse(await readFile(path,'utf8'));
  try{
   for(const key of ['deployment-inputs','private','core','runtime','stage3','out'])if(!a[key])fail('RENDER_ARGUMENTS',`--${key} is required`);
-  const core=await json(a.core),pki=await readPrivateDirectory(resolve(a.private));
-  const rendered=renderMaterial({deployment:await json(a['deployment-inputs']),core,runtime:await json(a.runtime),stage3:await json(a.stage3),private:pki,
+  const deployment=await json(a['deployment-inputs']),core=await json(a.core),pki=await readPrivateDirectory(resolve(a.private),{scheduleWorker:deploymentRoles(deployment).includes('schedule-worker')});
+  const rendered=renderMaterial({deployment,core,runtime:await json(a.runtime),stage3:await json(a.stage3),private:pki,
    ...(a['now-ms']?{nowMs:Number(a['now-ms'])}:{}),...(a['validity-days']?{validityDays:Number(a['validity-days'])}:{}),
    ...(a['deployment-revision']?{deploymentRevision:a['deployment-revision']}:{}),
    ...(a['feature-secrets']?{featureSecrets:await readFeatureSecrets(await json(resolve(a['feature-secrets'])))}:{})});

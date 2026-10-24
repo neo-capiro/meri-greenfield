@@ -12,6 +12,24 @@ export const foundationBinding=()=>({account:'967807252336',region:'us-east-1',v
  secretKmsKeyArns:Object.fromEntries(FOUNDATION_SECRET_ROLES.map(k=>[k,k==='migrator'?['arn:aws:kms:us-east-1:967807252336:key/efe8a18d-192e-4f30-8eea-b3f65ae7755e']:[]]))});
 const ofType=(t,type)=>Object.entries(t.Resources).filter(([,r])=>r.Type===type);
 
+test('optional schedule execution binding adds only its isolated material/log owner and preserves existing resources',()=>{
+ const b=foundationBinding(),base=synthesizeFirstChatFoundation(b);
+ b.secretArns.schedule=secret('schedule/material');b.secretKmsKeyArns.schedule=[];
+ const t=synthesizeFirstChatFoundation(b);
+ for(const [id,resource] of Object.entries(base.Resources))assert.deepEqual(t.Resources[id],resource,'no existing resource changes');
+ assert.equal(ofType(t,'AWS::EC2::SecurityGroup').length,ofType(base,'AWS::EC2::SecurityGroup').length);
+ assert.equal(ofType(t,'AWS::IAM::Role').length,ofType(base,'AWS::IAM::Role').length+1);
+ const policy=ofType(t,'AWS::IAM::Policy').find(([,r])=>JSON.stringify(r.Properties.Roles).includes('scheduleExecutionRole'))[1].Properties.PolicyDocument.Statement;
+ assert.deepEqual(policy.filter(s=>[].concat(s.Action).includes('secretsmanager:GetSecretValue')).flatMap(s=>[].concat(s.Resource)),b.secretArns.schedule);
+ assert.ok(policy.every(s=>![].concat(s.Action).some(a=>a.startsWith('ecs:')||a.startsWith('bedrock:')||a==='iam:PassRole')));
+ assert.ok(t.Outputs.ScheduleExecutionRoleArn);assert.ok(t.Outputs.ScheduleLogGroupName);
+ const logs=ofType(t,'AWS::Logs::LogGroup').find(([,r])=>r.Properties.LogGroupName==='/meri/product-preview/schedule')[1];
+ assert.equal(logs.DeletionPolicy,'Retain');assert.equal(logs.UpdateReplacePolicy,'Retain');
+ for(const change of [x=>{delete x.secretKmsKeyArns.schedule;},x=>{x.secretArns.schedule=['*'];}]){
+  const x=structuredClone(b);change(x);assert.throws(()=>synthesizeFirstChatFoundation(x),/FIRST_CHAT_FOUNDATION_BINDING_REFUSED/);
+ }
+});
+
 test('closed binding refuses foreign accounts, clusters, extra keys, wildcard secrets and shared SG reuse',()=>{
  assert.ok(validateFoundationBinding(foundationBinding()));
  for(const change of [b=>{b.account='111111111111';},b=>{b.clusterArn=b.clusterArn.replace('capiro-dev','other');},b=>{b.extra=1;},
