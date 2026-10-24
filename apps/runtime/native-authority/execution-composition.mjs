@@ -61,6 +61,7 @@ import {executionGrantFacts,bindExecutionGrant} from './execution-grant.mjs';
 import {documentIntentPreparersFor} from '../artifacts/intent-binding.mjs';
 import {assertExecutionIdentity} from '../../control/conversations/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {createNativeTaskPreparers} from './native-task-preparers.mjs';
 const entry=resolveOperationContract({id:'create_task',version:'0.2.0'}).descriptor;
 const DESCRIPTOR=Object.freeze({action:'task.create',operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements});
 export const EXECUTION_PRODUCER_NAMESPACE='meri.intents.execution';
@@ -212,7 +213,7 @@ export function createControlIntentExecution({readSecret,owners={}}={}){
   state:()=>built===null?'unbuilt':built.owner.state(),missing:()=>built===null?[]:built.owner.missing()});
 }
 
-/** Native document preparation uses the active AgentCore execution and the same fresh Core transition authority as
+/** Native preparation uses the active AgentCore execution and the same fresh Core transition authority as
  * conversation continuation. It does not issue command grants or install the retired prepared-run allocation. */
 export function createAgentCoreIntentResolver({context,execution,transitionAuthority}){
  const {configuration,pool,now}=context;
@@ -242,7 +243,9 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
   const first=await fresh(signal);
   // Availability is a description of composed preparers, but it still belongs to the same current authorized run.
   await currentRights({signal,policyRevision:first.policyRevision});
-  const preparers=documentIntentPreparersFor(context,{binding,clientResolution:{clientId:first.selectedClientId},signal});
+  const preparers=[...documentIntentPreparersFor(context,{binding,clientResolution:{clientId:first.selectedClientId},signal}),
+   ...(configuration.intents.core?[...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,
+    expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs})]:[])];
   if(!preparers.length)throw intentFault('UNAVAILABLE');
   return createIntentMount({binding,preparers,journalStore:createPostgresIntentJournalStore({pool}),now,
    limits:{maxRequestMs:configuration.limits.requestMs},enabled:true,
