@@ -9,6 +9,8 @@ import {initialInputFixture} from '../../control/conversations/test/initial-inpu
 import {binding,id} from '../../control/conversations/test/application-fixture.mjs';
 import {hash} from '../../control/conversations/boundary.mjs';
 import {productFailure} from '../../control/product-access/errors.mjs';
+import {registerDocumentIntentOwner} from '../artifacts/intent-binding.mjs';
+import {createControlRouteApplications} from '../control-route-boundary.mjs';
 
 test('AgentCore startup installs the real request-local membership gate with the same identity and lazy SDK owner',async()=>{
  let now=1800000000000,effects=0;const calls=[],configuration=agentcoreControlFixture().configuration;
@@ -35,6 +37,7 @@ test('AgentCore startup installs the real request-local membership gate with the
 
 test('public action session and submit reach the real execution and private worker without any task allocation',async t=>{
  const f=initialInputFixture(),configuration=agentcoreControlFixture().configuration,relay=createReadCredentialRelay();
+ configuration.sourceEnabled=true;configuration.intents={enabled:true};
  const clientId=id(5);
  const pending=Promise.withResolvers();pending.promise.catch(()=>{});let invocation,starts=0,coreCalls=0;
  const fetchImpl=async(url,request)=>{assert.ok(url.endsWith('/current'));assert.equal(request.headers.authorization,'Bearer actual-user-bearer');coreCalls++;
@@ -43,8 +46,10 @@ test('public action session and submit reach the real execution and private work
  const candidate=assembleAgentCoreCandidate({configuration,pool:f.pool,controlCredential:'synthetic-control-credential-long-enough',nativeCredentials:relay.port,fetchImpl,
   provider:{async invoke(input){invocation=input;return pending.promise;},async stop(){throw Error('No stop in this completed invocation');}}});
  const client={connection:{withDeadline(_deadline,operation){return operation();},withAbortSignal(_signal,operation){return operation();}},workflow:{async start(){starts++;},getHandle(){return {async signal(){},async cancel(){}};}}};
- const assembly=assembleControl({configuration,pool:f.pool,client,native:candidate.native,execution:candidate.execution,canonicalProductPorts:candidate.productPorts});
+ const assembly=assembleControl({configuration,pool:f.pool,client,native:candidate.native,execution:candidate.execution,canonicalProductPorts:candidate.productPorts,
+  productPortsFactory:context=>{registerDocumentIntentOwner(context,({binding})=>[{binding,owner:'document',operation:{id:'create_word',version:'0.2.0'},prepare(){assert.fail('availability does not prepare');}}]);return {};}});
  candidate.bindApplication(assembly.application);relay.bind(assembly.sessions);
+ const routes=createControlRouteApplications({assembly:assembly.application,candidate:candidate.application});
  const call=(path,body,credential)=>new Request('https://control.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)});
  try{
   const response=await assembly.application.handle(call('/api/action-followthrough/session',{conversationId:binding.conversationId,clientId},'actual-user-bearer'));
@@ -54,6 +59,11 @@ test('public action session and submit reach the real execution and private work
   const selected=await assembly.sessions.authenticateSession({credential:session.credential});const current=await assembly.sessions.readCurrentState({authentication:selected});
   const activeBinding=current.binding;
   await candidate.native.call('execution/kickoff',{binding:activeBinding,executionKey:hash(activeBinding)});assert.ok(invocation);
+  const intentRequest=credential=>call('/v1/runner/intents/availability',{binding:activeBinding},credential);
+  assert.equal((await routes.public.handle(intentRequest(invocation.credential))).status,404);
+  assert.equal((await routes.private.handle(intentRequest('synthetic-control-credential-long-enough'))).status,403);
+  const available=await routes.private.handle(intentRequest(invocation.credential));assert.equal(available.status,200);
+  assert.deepEqual((await available.json()).operations,[{id:'create_word',version:'0.2.0'}]);
   const before=coreCalls;
   const load=await candidate.application.handle(call('/v1/runner/load',{binding:activeBinding},invocation.credential));assert.equal(load.status,200);
   assert.deepEqual((await load.json()).run.binding,activeBinding);assert.equal(coreCalls,before,'local worker persistence does not repeat Core admission');

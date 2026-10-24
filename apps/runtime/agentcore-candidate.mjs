@@ -231,6 +231,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   if(path==='/v1/runner/runtime')return runtime.handle(request);
   if(path.startsWith('/v1/runner/reads/'))return reads(request);
   if(path.startsWith('/v1/runner/session/'))return outerApplication?outerApplication.handle(request):absent('SDK_SESSION_UNAVAILABLE');
+  if(/^\/v1\/runner\/intents\/(availability|prepare)$/u.test(path))return outerApplication?outerApplication.handle(request):absent('UNAVAILABLE');
   if(Object.hasOwn(NATIVE_FILE_PATHS,path))return outerApplication?outerApplication.handle(request):absent('NATIVE_FILES_UNAVAILABLE');
   if(/^\/v1\/runner\/[a-z-]+$/u.test(path)||/^\/v1\/runner\/selected\/(prepare|read|finish|publish)$/u.test(path)){
    if(!outerApplication)return absent('EXECUTION_UNAVAILABLE');

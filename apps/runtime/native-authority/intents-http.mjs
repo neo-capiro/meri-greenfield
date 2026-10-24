@@ -24,7 +24,8 @@ export {RUNNER_INTENT_FAILURES,RUNNER_INTENT_PATHS,runnerIntentFault};
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 export function createRunnerIntentsApplication(configuration){
- const c=own(configuration,['resolveRun'],['enabled','now','limits','controlCapabilitySha256']),now=c.now??Date.now,enabled=c.enabled??false;
+ const c=own(configuration,['resolveRun'],['enabled','now','limits','controlCapabilitySha256','retention']),now=c.now??Date.now,enabled=c.enabled??false;
+ const servable=c.retention===undefined?null:storageMethod(c.retention,'assertServable'),withRelease=c.retention===undefined?null:storageMethod(c.retention,'withRelease');
  const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
  if(typeof c.resolveRun!=='function'||types.isProxy(c.resolveRun)||typeof now!=='function'||typeof enabled!=='boolean'||!integer(limits.maxRequestBytes,1,1048576)||!integer(limits.maxResponseBytes,1,2097152)||!integer(limits.maxPrepareMs,1000,60000)||
   c.controlCapabilitySha256!==undefined&&(typeof c.controlCapabilitySha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.controlCapabilitySha256)))throw runnerIntentFault('UNAVAILABLE');
@@ -41,15 +42,21 @@ export function createRunnerIntentsApplication(configuration){
   const deadlineMs=now()+(route==='prepare'?limits.maxPrepareMs:RUNNER_INTENT_AVAILABILITY_MS);life=createOperationLifetime({now,deadlineMs,signal:info.signal,errorFactory:runnerIntentFault});
   let input;try{input=await jsonBody({...info,length:length===null?null:Number(length)},limits.maxRequestBytes,life,life.check);}catch(error){if(closed(error))throw error;const tooLarge=error&&!types.isProxy(error)&&error instanceof ApplicationError&&error.message==='REQUEST_TOO_LARGE';throw runnerIntentFault(tooLarge?'RESOURCE_LIMIT':'INVALID_ARGUMENTS');}
   const v=runnerIntentRequest(route,input);
+  const subject={tenantId:v.binding.tenantId,kind:'conversation',subjectId:v.binding.conversationId};
+  const release=result=>withRelease?life.run(signal=>withRelease([subject],async(fenceSignal,assertServable)=>{
+   if(typeof assertServable!=='function')throw runnerIntentFault('UNAVAILABLE');
+   life.check();fenceSignal.throwIfAborted();await assertServable(subject);life.check();fenceSignal.throwIfAborted();return response(result);
+  },{signal,deadlineMs})):response(result);
   let mount;try{mount=await life.run(signal=>resolveRun({binding:v.binding,credential,operation:'runner/intents/'+route,signal,deadlineMs}));}catch(error){const code=closed(error);throw runnerIntentFault(code==='ACCESS_DENIED'||code==='DEADLINE'||code==='CANCELLED'?code:'UNAVAILABLE');}
+  if(servable)await life.run(()=>servable(subject));
   let readAvailability,prepare;try{readAvailability=storageMethod(mount,'readAvailability');prepare=storageMethod(mount,'prepare');}catch{throw runnerIntentFault('UNAVAILABLE');}
   if(route==='availability'){const raw=await life.run(signal=>readAvailability({signal}));life.check();const result=runnerIntentAvailability(raw,v.binding,now());
-   if(Buffer.byteLength(JSON.stringify(result),'utf8')>limits.maxResponseBytes)throw runnerIntentFault('UNAVAILABLE');return response(result);}
+   if(Buffer.byteLength(JSON.stringify(result),'utf8')>limits.maxResponseBytes)throw runnerIntentFault('UNAVAILABLE');return await release(result);}
   dispatched=true;const raw=await life.run(signal=>prepare({operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,signal}));
   // The preparation exists from here on. A result that cannot be released intact is UNKNOWN, never a refusal inviting a retry.
   let result;try{result=data(raw);}catch{throw runnerIntentFault('UNKNOWN');}
   if(result===null||typeof result!=='object'||Array.isArray(result)||Buffer.byteLength(JSON.stringify(result),'utf8')>limits.maxResponseBytes)throw runnerIntentFault('UNKNOWN');
-  life.check();return response(result);
+  life.check();return await release(result);
  }catch(error){let code=closed(error)??(dispatched?'UNKNOWN':'UNAVAILABLE');if(dispatched&&(code==='DEADLINE'||code==='CANCELLED'||code==='RESOURCE_LIMIT'))code='UNKNOWN';return response({error:{code}},RUNNER_INTENT_FAILURES[code]);}
  finally{life?.close();try{if(info?.body&&!info.body.locked)void info.body.cancel().catch(()=>{});}catch{}}}});
 }

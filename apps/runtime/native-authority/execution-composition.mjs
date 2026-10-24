@@ -59,6 +59,8 @@ import {compilePreparedCandidateConfiguration} from '../prepared-candidate-confi
 import {compileIntentsConfiguration,createIntentsFamilyWith} from '../product-ports/intents.mjs';
 import {executionGrantFacts,bindExecutionGrant} from './execution-grant.mjs';
 import {documentIntentPreparersFor} from '../artifacts/intent-binding.mjs';
+import {assertExecutionIdentity} from '../../control/conversations/execution-boundary.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 const entry=resolveOperationContract({id:'create_task',version:'0.2.0'}).descriptor;
 const DESCRIPTOR=Object.freeze({action:'task.create',operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements});
 export const EXECUTION_PRODUCER_NAMESPACE='meri.intents.execution';
@@ -208,4 +210,44 @@ export function createControlIntentExecution({readSecret,owners={}}={}){
   family(context){if(built===null)built={context,owner:build(context)};else if(built.context!==context)throw configurationFault();return createIntentsFamilyWith({execution:built.owner})(context);},
   async intentMountFor(value){if(built===null)throw intentFault('UNAVAILABLE');return built.owner.intentMountFor(value);},
   state:()=>built===null?'unbuilt':built.owner.state(),missing:()=>built===null?[]:built.owner.missing()});
+}
+
+/** Native document preparation uses the active AgentCore execution and the same fresh Core transition authority as
+ * conversation continuation. It does not issue command grants or install the retired prepared-run allocation. */
+export function createAgentCoreIntentResolver({context,execution,transitionAuthority}){
+ const {configuration,pool,now}=context;
+ if(!ordinary(execution?.authenticate)||!ordinary(transitionAuthority?.readCurrent))throw configurationFault();
+ return async function resolveRun({binding,credential,signal,deadlineMs}){
+  if(configuration.sourceEnabled!==true||configuration.intents?.enabled!==true)throw intentFault('UNAVAILABLE');
+  validateShape('RunBinding',binding);let pinned;
+  async function fresh(signal){
+   let current;try{current=await execution.authenticate({binding,credential,signal});}catch{throw intentFault('ACCESS_DENIED');}
+   const identity=assertExecutionIdentity(current.execution);
+   if(!same(identity.binding,binding)||['completed','failed','cancelled'].includes(current.state)||identity.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');
+   assertNativeConversationScope({binding,scopes:current.scopes,selectedClientId:current.selectedClientId});
+   const facts=data({execution:identity,scopes:current.scopes,selectedClientId:current.selectedClientId,policyRevision:current.policyRevision});
+   if(pinned&&!same(pinned,facts))throw intentFault('ACCESS_DENIED');pinned??=facts;
+   return facts;
+  }
+  async function currentRights({signal,policyRevision}){
+   const first=await fresh(signal),started=now();
+   if(policyRevision!==first.policyRevision)throw intentFault('ACCESS_DENIED');
+   const current=data(own(await transitionAuthority.readCurrent({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision,
+    deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),signal}),['binding','scopes','selectedClientId','policyRevision','checkedAtMs','expiresAtMs']));
+   if(!same(current.binding,binding)||!same(current.scopes,first.scopes)||current.selectedClientId!==first.selectedClientId||current.policyRevision!==policyRevision||
+    !Number.isSafeInteger(current.checkedAtMs)||current.checkedAtMs<started||current.checkedAtMs>now()||!Number.isSafeInteger(current.expiresAtMs)||current.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');
+   await fresh(signal);
+   return {tenantId:binding.tenantId,actorId:binding.actorId,scopes:current.scopes,checkedAtMs:current.checkedAtMs,expiresAtMs:current.expiresAtMs};
+  }
+  const first=await fresh(signal);
+  // Availability is a description of composed preparers, but it still belongs to the same current authorized run.
+  await currentRights({signal,policyRevision:first.policyRevision});
+  const preparers=documentIntentPreparersFor(context,{binding,clientResolution:{clientId:first.selectedClientId},signal});
+  if(!preparers.length)throw intentFault('UNAVAILABLE');
+  return createIntentMount({binding,preparers,journalStore:createPostgresIntentJournalStore({pool}),now,
+   limits:{maxRequestMs:configuration.limits.requestMs},enabled:true,
+   resultRelease:createIntentResultReleaseAuthority({binding,now,currentRights,async currentRun(_binding,{signal}){
+    const current=await fresh(signal);return JSON.stringify({binding,policyRevision:current.policyRevision,deadlineMs:current.execution.expiresAtMs,checkedAtMs:now()});
+   }})});
+ };
 }

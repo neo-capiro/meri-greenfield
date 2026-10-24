@@ -42,6 +42,8 @@ import {createRuntimeUserPreferences} from './user-preferences.mjs';
 import {createPostgresScheduleOwner} from '../control/schedules/postgres-schedule-owner.mjs';
 import {createConfiguredRunCapabilityPolicy} from './product-ports/capability-policy.mjs';
 import {bindDocumentsSessions} from './artifacts/session-binding.mjs';
+import {createAgentCoreIntentResolver} from './native-authority/execution-composition.mjs';
+import {createRunnerIntentsApplication,RUNNER_INTENT_PATHS} from './native-authority/intents-http.mjs';
 import {bindApprovalSessions} from './native-authority/approval-forwarder.mjs';
 import {createObjectiveReaderApplication} from './product-ports/objective.mjs';
 import {createObjectiveGenerationReadback} from './objective-generation/retained-result.mjs';
@@ -114,6 +116,10 @@ export function assembleControl(options){
  if(productContext)bindDocumentsSessions(productContext,sessions,retention?.gate,store);
  // Approval forwarder (lane L): the per-context approver session binder reaches these exact sessions.
  if(productContext)bindApprovalSessions(productContext,sessions);
+ const nativeIntentsEnabled=Boolean(productContext&&configuration.sourceEnabled&&configuration.intents?.enabled&&ports.transitionAuthority);
+ const nativeIntents=createRunnerIntentsApplication({now,enabled:nativeIntentsEnabled,
+  resolveRun:productContext&&ports.transitionAuthority?createAgentCoreIntentResolver({context:productContext,execution,transitionAuthority:ports.transitionAuthority}):async()=>{throw fault('UNAVAILABLE');},
+  ...(retention?{retention:retention.gate}:{})});
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
  const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration);
  const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime,serviceFor:value=>createWorkerService(value),now}):null;
@@ -135,10 +141,10 @@ export function assembleControl(options){
  const approvalMetadataReadback=ports.intentApplication&&configuration.intents?.core?createApprovalMetadataReadback({metadata:createPostgresApprovalMetadataReader({pool}),store,retention:retention?.gate,now,maxRequestMs:configuration.limits.requestMs}):null;
  const products=createRuntimeProductApplications({configuration,sessions,ports,now,conversationStore:store,userPreferences,...(retention?{retention:retention.gate,managementSuppression:retention.startup.suppression,suppression:{journal:retention.journal,serving:retention.serving}}:{})});
  // Composed intents need their journal table; a disabled family adds no table, so first-chat readiness is unchanged.
- const intentTables=Object.freeze(ports.intentApplication?['meri_intents.preparations','meri_commands.command_journal','meri_commands.approval_metadata']:selected?['meri_intents.preparations','meri_commands.approval_metadata']:[]);
+ const intentTables=Object.freeze(ports.intentApplication?['meri_intents.preparations','meri_commands.command_journal','meri_commands.approval_metadata']:selected?['meri_intents.preparations','meri_commands.approval_metadata']:nativeIntentsEnabled?['meri_intents.preparations']:[]);
  const memoryTables=Object.freeze(ports.memoryApplication?['meri_memory.candidates']:[]);
  if(!injectedTurnTelemetry)turnTelemetry.start();
- return Object.freeze({service,store,sessions,retention,objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
+ return Object.freeze({service,store,sessions,retention,objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return Object.values(RUNNER_INTENT_PATHS).includes(path)?nativeIntents.handle(request):path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
 }
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.
