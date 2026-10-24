@@ -29,7 +29,13 @@ browser -> control: authenticated conversation/run ownership, events and outcome
 
 No command is invented here for an unimplemented AgentCore release owner. Read its final checked-in contract after implementation; do not reuse the old Fargate ship packet by relabeling it AgentCore.
 
-## Current release checkpoint — 24 October, 15:26 UTC; frontend observation at15:31
+## Current release checkpoint — 24 October, 21:37 UTC documentation cutoff
+
+Use [CURRENT-STATE](../CURRENT-STATE.md) for the release receipt and [FINAL-PLAN §0](FINAL-PLAN-20261021.md#0-current-wave-2-execution--24-october-2026) for exact remaining work. General 49 is applied and chat/follow-up passed. Runtime 5430, merged 5f1e166 (PR242), is stable on V1 version 4/image a1bc/control 67; new General follow-up text appears once. Core 4ce7, merged 2edec026 (PR126), and FE 6118, merged d01ea554 (PR138), are built/smoked/scanned. Core migration 674→678 is verified with Meri 49 unchanged; Core revision 11 is deployed and healthy (CloudFormation UPDATE_COMPLETE; ECS COMPLETED, desired/running 1/1, pending 0). The existing FE 6118 image-only change set is executed; frontend rollout is in progress with no rebuild. Data-read and full product acceptance remain open.
+
+Use those qualified images and valid checks; no extra diagnostic build or unchanged blanket suite is required. A source change or real failure receives affected review/checks. Reconcile the exact current deployment before the next root-owned operation. These docs do not perform a release.
+
+## Historical release checkpoint — 24 October, 15:26 UTC; frontend observation at15:31
 
 The AgentCore replacement is partially deployed; advertised chat readiness is still unproven. Root remains sole shipper under the preview lock. Control64 and worker63 run qualified source7eea/image1421; the app stack is UPDATE_COMPLETE, both control targets are healthy, and worker liveness passes. The independently reviewed PR236 retention/private-storage configuration repair resolved the control startup failure. AgentCore V1 endpoint version2 and five native mTLS Temporal roles are deployed. Product-wide readiness, native worker readiness and live chat are distinct evidence scopes; do not suppress unavailable feature reports to label the full product ready.
 
@@ -74,22 +80,22 @@ At approximately 06:20 UTC an external disk-cleanup script deleted the active da
 
 After source/build gates, qualify and deploy the actual ARM runtime/control/Core/frontend release, then execute client and General chat, authorized reads, follow-up, Stop, reconnect and restoration in the browser before notifying Neo that the preview is testable.
 
-## Current completion matrix (24 October source integration; not preview acceptance)
+## Current completion matrix
 
-| Work | State at this plan revision | Required closure |
+| Work | State at the 21:37 documentation cutoff, from root's handoff | Required closure |
 |---|---|---|
-| AgentCore Runtime V1 target and autonomous implementation | **Qualified version2 deployed; paired release and live acceptance incomplete** | Reviewed integrated source, actual platform/image gates and deployed acceptance |
-| Native Claude SDK/direct Bedrock/full harness | **Qualified runtime image deployed; actual product acceptance open** | Same real SDK, tools, skills, subagents, artifact functionality and constraints on V1 |
-| Native continuation repair `0425d9af` | **Independently reviewed; native-only PG passed; not claimed shipped** | Actual image/security gates and live second/third-turn context; no legacy checkpoint dependency |
-| Retention inventory/schema/role closure | **Meri48 applied; control storage/retention composition deployed; full purge unresolved** | Physical-purge owner and live serving/recovery/restore evidence beyond local rehearsal |
-| Tool gateway, all typed read families and Core permission parity | **Required; completion not established** | Every retained positive/negative/paging case, real General/client answers, revocation and all memory/data access |
-| Temporal durability and standard authentication | **Qualified native TLS server roles deployed; worker63 live; private readiness/product acceptance and issuer retirement open** | Existing durable runs, schedules, consent, cancellation and outcomes preserved; remove issuer only after standard auth passes |
-| A2, M2, MP, full frontend and remaining features | **All retained; General/native-artifact overlay and MP backend source have bounded gates, not full completion** | Each closeout ticket and accepted feature matrix passes at its integrated deployment; General scope, client writes and provider alternatives are not dropped |
-| All memory classes, 14 skills, artifacts, browser/Bash and original read families | **All retained; some acceptance unresolved** | Feature-specific permissions, durability, native output quality and live behavior; no reduced tool profile used to manufacture a pass |
-| Old hosting/authority/model services and configuration | **Deletion required; absence not yet proved** | Source/import/config/test inventory and post-cutover live absence, with retained history clearly labeled |
-| Latency, cost, reliability and user experience | **Measured old startup roughly 44 seconds; new service unmeasured** | Measure cold first turn, warm follow-up and idle restore separately, p50/p95, Core/AWS/DB work and billed usage; no vendor latency promise presented as Meri evidence |
+| Standard AgentCore V1/full Claude SDK | Version4/image a1bc/control 67 stable; General chat/follow-up and single text projection passed | Remaining client/General lifecycle/data/Stop/reconnect/permission and complete product acceptance |
+| Native continuation and durable restore | Existing native owners and deployed General follow-up/recovery evidence | Third turn, idle/stop/crash/deploy restore, fork, exact artifacts/substreams and uncertain outcomes; no legacy checkpoint recreation |
+| Core/FE integrated release | Core 4ce7 image-qualified, four migrations applied 674→678, revision 11 healthy; FE 6118 image-qualified, existing image-only rollout in progress | Frontend rollout/health and actual Core data/affected UI behavior; reuse exact images and prior checks |
+| Conversation management/retention | Existing Core/runtime/FE management packets; Core schema applied. MF09 absent from 6118; physical-purge composition/PG still pending | Actual management public receiver/integration, exact Trash/Restore/recovery, storage erasure and consumed-key tombstone evidence before purge activation |
+| Tool gateway/read parity/MG05 | Core profile DTO repair in4ce7; reviewed automatic context pair awaits follow-on integration | Authorized/denied/paged/current/revoked General/client data; MG05 Core route before runtime; measure actual overhead |
+| Temporal/schedules/Objective | Native TLS roles and existing schedule/inbox/lifecycle/Objective owners have reviewed source and bounded gates | Confirm deployed composition/task placement, real occurrence, consent/overlap/pause/resume/cancel/recovery/inbox and Objective publication |
+| A2/M2/MP | All 25 A2 tickets inventoried; support/PF16/Undo/contact/MP picker now implemented/reviewed. MG02/PF02/PF13/PF18 gaps remain explicit | Paired release plus exact feature/provider acceptance; PF14 scope reconciliation. Claude API remains unqualified |
+| Institutional memory, 14  skills and outputs | Existing memory/retention/skills/native DOCX owners and valid evidence retained | Real current-authority/correction/recall/review, selected-skill lifecycle, approval/publish/download/replay and native output quality; full tools/harness preserved |
+| Legacy live hosting/resources | Existing retirement inventory; final live absence not proved | Refresh after replacement acceptance/rollback closure, remove obsolete callers/resources and verify absence; retain local environment/history |
+| Latency/cost | No new measured budget pass in this handoff | Measure simple-turn≤30 Core calls/≤3 seconds plus agreed cold/warm/restore/usage behavior; source dispatch counts and vendor claims are not measurements |
 
-The native-only PostgreSQL receipt is `work/wave2-current/d-native-continuation/pg-native-only/20261024T030859Z-native-only-0425-961796`: eight total Node tests, source unchanged and cleanup verified by root. It covers the canonical subset, not a new full 44-entry ledger or retention qualification. Scrubbed independent source review is under `work/wave2-current/a-review-native-continuation/`. These local evidence paths are pointers, not shipped artifacts.
+Earlier native-only PG and image results remain attributed to their original source and scope in the historical checkpoints. Reuse valid checks; do not add overlapping counts or treat them as full deployed acceptance.
 
 ## Deletion inventory (required, not a claim of deletion)
 

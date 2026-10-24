@@ -1,6 +1,6 @@
 # How Fable planned, delegated and decided readiness
 
-> **Updated 2026-10-23.** This is how Fable worked in Wave 1; the Wave 2 orchestrator replaces Fable. Add to every readiness rule below: the change deletes what it replaces and carries `git grep` proof (`STANDING-REQUIREMENTS.md` rule 3), and it is not a ticket that `source-of-truth/SUPERSEDED-BY-ITEM-0.md` supersedes.
+> **Historical Wave 1 process, superseded 24 October 2026.** Preserve this record; do not execute its Fable/dot relay, approval, watcher, shared-live database or removed-service instructions. Current work uses [WORKFLOW.md](WORKFLOW.md), [CODEX-HANDOFF-TEMPLATE.md](CODEX-HANDOFF-TEMPLATE.md) and [CODEX-VALIDATION-AND-SHIPPING.md](CODEX-VALIDATION-AND-SHIPPING.md). Root Codex has Neo's autonomous authority, independent Astra 6 Ultra reviews and profile default on EC2AMAZ-M7CDRPT. Existing direct authorization covers routine work; only necessary affected gates run.
 
 This is the process Fable actually ran from 10-21 onward. Templates are in §6.
 

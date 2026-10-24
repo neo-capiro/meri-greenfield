@@ -1,5 +1,7 @@
 # Wave 2 · Agent 2 · MP: Claude API path alongside Bedrock (RE-SCOPED 2026-10-23 by Wave 2 item 0; send only after item 0 step 2 is released)
 
+> **Execution refresh, 24 October 2026, 21:37 UTC cutoff.** Preferences/admission/usage and Settings/conversation picker are implemented; the picker is in qualified FE 6118, whose existing image-only rollout is in progress at the handoff. Reuse those owners. Only actually qualified Bedrock options are enabled; real Claude API/model/effort/provider-switch/usage/Stop acceptance remains. Do not restart proxy or picker implementation. See [FINAL-PLAN §0](../../plan/FINAL-PLAN-20261021.md#0-current-wave-2-execution--24-october-2026) and [current release state](../../CURRENT-STATE.md). Original ticket text below preserves acceptance; it is not a new source-gap inventory.
+
 **From:** root Codex under Neo's current authorization. **Lane:** D (domain, contracts). Its `apps/proxy` ownership ends when item 0 deletes the proxy. **Repository:** neo-capiro/meri-greenfield, plus a capiro-frontend handoff for the picker via agent 4. Branch from the current default branch head at send time.
 **How we work:** root assigns exact files/heads; the author implements and runs meaningful affected checks; a separate Astra Ultra reviewer reviews the exact result. Root owns integration, heavy gates, AWS and shipping. Preserve one-writer ownership and other work. Use `../../CODEX-SETUP.md` and `../../CODEX-VALIDATION-AND-SHIPPING.md`.
 
