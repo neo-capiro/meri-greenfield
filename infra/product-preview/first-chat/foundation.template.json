@@ -634,7 +634,10 @@
     "PolicyDocument": {
      "Statement": [
       {
-       "Action": "s3:GetBucketVersioning",
+       "Action": [
+        "s3:GetBucketVersioning",
+        "s3:ListBucket"
+       ],
        "Effect": "Allow",
        "Resource": "arn:aws:s3:::meri-greenfield-qual-checkpoint-967807252336-us-east-1"
       },

@@ -1,112 +1,2247 @@
 {
- "schemaVersion": 1,
- "account": "967807252336",
- "region": "us-east-1",
- "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
- "vpcId": "vpc-0ac26cfac7ed972be",
- "privateSubnetIds": [
-  "subnet-0920665f91c905f01",
-  "subnet-0e38bd390f8961fef",
-  "subnet-06db79cd21239de19"
- ],
- "images": {
-  "nodeRuntime": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:5534edfe5805eec7a5d0bce66b2c85765fe2f957173ddd3ce2726bed67e322d8",
-  "nodeRuntimeSourceCommit": "176a8811a9b05d8613282e70bd7a57ebd75ca201",
-  "temporalServer": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:f73ce01ef4739a77fad6ace3fbfbbe1f1aeaa553b5c263d705053a2f5063cf2d",
-  "temporalServerSourceCommit": "989a4227e6da6f176975d798826904d71c3a9f9c"
- },
- "foundation": {
-  "ControlDiscoveryServiceArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dzaxdlxlpxxbxpef",
-  "ControlExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-execution",
-  "ControlLogGroupName": "/meri/product-preview/control",
-  "ControlSecurityGroupId": "sg-05a350c100574b21f",
-  "ControlTargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c",
-  "ControlTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-task",
-  "DbClientSecurityGroupId": "sg-0d5b5286baf28242e",
-  "MeriNamespaceId": "ns-7nkuqqgldorh23i4",
-  "MigratorExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-migrator-execution",
-  "MigratorLogGroupName": "/meri/product-preview/migrator",
-  "MigratorSecurityGroupId": "sg-0c9f0505c552ce469",
-  "TemporalExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
-  "TemporalLogGroupName": "/meri/product-preview/temporal",
-  "TemporalfrontendTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-frontend-task",
-  "TemporalhistoryTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-history-task",
-  "TemporalinternalfrontendTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-internal-frontend-task",
-  "TemporalmatchingTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-matching-task",
-  "TemporalworkerTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-worker-task",
-  "WorkerExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-worker-execution",
-  "WorkerLogGroupName": "/meri/product-preview/worker",
-  "WorkerSecurityGroupId": "sg-00111cd0e475badfa"
- },
- "privateEdge": {
-  "controlPrivateOrigin": "https://control.meri-preview.internal",
-  "controlPrivateTargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759",
-  "privateAlbSecurityGroupId": "sg-0c3fe2e509b22ee5c"
- },
- "names": {
-  "control_private": "control.meri-preview.internal",
-  "temporal_frontend": "frontend.temporal.meri.internal",
-  "temporal_internode": "internode.temporal.meri.internal"
- },
- "temporalClients": {
-  "control": "meri-temporal-control",
-  "worker": "meri-temporal-worker",
-  "schedule": "meri-temporal-schedule"
- },
- "origins": {
-  "temporalAddress": "frontend.temporal.meri.internal:7233",
-  "controlPublicOrigin": "https://meri-preview.capiro.ai"
- },
- "temporal": {
-  "namespace": "meri",
-  "taskQueue": "meri-conversations"
- },
- "database": {
-  "host": "capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com",
-  "port": 5432,
-  "database": "capiro",
-  "roles": {
-   "control": "meri_control_runtime"
+  "schemaVersion": 1,
+  "account": "967807252336",
+  "region": "us-east-1",
+  "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev",
+  "vpcId": "vpc-0ac26cfac7ed972be",
+  "privateSubnetIds": [
+    "subnet-0920665f91c905f01",
+    "subnet-0e38bd390f8961fef",
+    "subnet-06db79cd21239de19"
+  ],
+  "images": {
+    "nodeRuntime": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:1421f5cb090a010be2c3e3faa8c549f2c570c30a7432641efcca839dd8a8e35d",
+    "nodeRuntimeSourceCommit": "7eea1e852f177c17e3675429830b886b906e4cd6",
+    "temporalServer": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:2cbf22ccbc124ca58e60027715fc386c41ed7b148fea009e81c32f9b37a9d6d3",
+    "temporalServerSourceCommit": "7eea1e852f177c17e3675429830b886b906e4cd6"
   },
-  "rdsCaPemSha256": "839eef936a95e8a5687f37f8ef4dc08bb72bb12adfafc9fde7b365fa36b40043"
- },
- "secrets": {
-  "control/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV",
-  "worker/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv",
-  "temporal/frontend/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP",
-  "temporal/history/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL",
-  "temporal/matching/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS",
-  "temporal/worker/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB",
-  "temporal/internal-frontend/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1",
-  "temporal/db-default": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw",
-  "temporal/db-visibility": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i",
-  "migrator/logins": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/migrator/logins-4XlR74"
- },
- "pinsDer": {
-  "control-private": "eceb9ce678670dc6a102378a06d6c480d29a68047091ffdccb9d91d70a233880",
-  "server-ca": "e177a1bc059a0fd7c54740f6db6619c992af01d1fda804d6c2058f0bd53995d4",
-  "temporal-client-ca": "2ab60e49dd3540077f2a5dd2ac36890a682f45a465e36f96afabb11fcf3dfab6",
-  "temporal-client-control": "efe24104da52220f45bc6e8a99eb00faa76fd6ab032700d3cc601b02ccb6bd77",
-  "temporal-client-worker": "1aa858cf31d9e2b386c9d2876d6fd39922fbcdd8aa1f391f024a41f0d2163b44",
-  "temporal-frontend": "4a482ab1794cf28ace3736bc202a64b717f50f1dea11006c2e6e034d36796252",
-  "temporal-frontend-ca": "7c7a4b7404f8c6d3d70cba4b01afa6a0d22744cbd4a41ae7e24f68756e6bb572",
-  "temporal-internode": "34537835d1ec403b885531615efa86e9dad96a01088242a1b7db0f6807260820",
-  "temporal-internode-ca": "23a976067529ae30f2017fd6d486438bd43688e51789b3a488e6cd4eaf333032"
- },
- "pinsPem": {
-  "control-private": "973df3e6002a611b5b286ec6a937ccad793c42436eadaca477670c29eea4e349",
-  "server-ca": "2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88",
-  "temporal-client-ca": "1e35bb089ec6b1e0da105d9f8fb72783a53081c93eeae7840dd29d856e434592",
-  "temporal-client-control": "2169cee3d0cb1fceaec78f9e5350084d1f12bcaa3b9f119fe6487bf7f8abf093",
-  "temporal-client-worker": "fa749776b1cff6e9433766b9312632e72ea1f772319f18ef1aa13e8f686dd1f8",
-  "temporal-frontend": "8a3f24c2b8fa3fa5df236f27776a1fea8ea964f515b3f2fa904f88209a46b489",
-  "temporal-frontend-ca": "42e00ade162ca58647d8a65e2f23be58c99fb31d2c1e268536432a90b7e094eb",
-  "temporal-internode": "72a27130818f4fef8db738faa73852a615a434655a5af423c96e69885fce5b79",
-  "temporal-internode-ca": "23fa1cf8fecabf1f9c4587b2152916ee0c45fe0df37b70bef12fe51213038042"
- },
- "agentcore": {
-  "runtimeArn": "PENDING_QUALIFIED_AGENTCORE_RUNTIME_ARN",
-  "runtimeVersion": "PENDING_QUALIFIED_AGENTCORE_RUNTIME_VERSION",
-  "qualifier": "preview"
- }
+  "foundation": {
+    "ControlDiscoveryServiceArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dzaxdlxlpxxbxpef",
+    "ControlExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-execution",
+    "ControlLogGroupName": "/meri/product-preview/control",
+    "ControlSecurityGroupId": "sg-05a350c100574b21f",
+    "ControlTargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c",
+    "ControlTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-task",
+    "DbClientSecurityGroupId": "sg-0d5b5286baf28242e",
+    "MeriNamespaceId": "ns-7nkuqqgldorh23i4",
+    "MigratorExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-migrator-execution",
+    "MigratorLogGroupName": "/meri/product-preview/migrator",
+    "MigratorSecurityGroupId": "sg-0c9f0505c552ce469",
+    "TemporalExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
+    "TemporalLogGroupName": "/meri/product-preview/temporal",
+    "TemporalfrontendTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-frontend-task",
+    "TemporalhistoryTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-history-task",
+    "TemporalinternalfrontendTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-internal-frontend-task",
+    "TemporalmatchingTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-matching-task",
+    "TemporalworkerTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-worker-task",
+    "WorkerExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-worker-execution",
+    "WorkerLogGroupName": "/meri/product-preview/worker",
+    "WorkerSecurityGroupId": "sg-00111cd0e475badfa"
+  },
+  "privateEdge": {
+    "controlPrivateOrigin": "https://control.meri-preview.internal",
+    "controlPrivateTargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759",
+    "privateAlbSecurityGroupId": "sg-0c3fe2e509b22ee5c"
+  },
+  "names": {
+    "control_private": "control.meri-preview.internal",
+    "temporal_frontend": "frontend.temporal.meri.internal",
+    "temporal_internode": "internode.temporal.meri.internal"
+  },
+  "temporalClients": {
+    "control": "meri-temporal-control",
+    "worker": "meri-temporal-worker",
+    "schedule": "meri-temporal-schedule"
+  },
+  "origins": {
+    "temporalAddress": "frontend.temporal.meri.internal:7233",
+    "controlPublicOrigin": "https://meri-preview.capiro.ai"
+  },
+  "temporal": {
+    "namespace": "meri",
+    "taskQueue": "meri-conversations"
+  },
+  "database": {
+    "host": "capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com",
+    "port": 5432,
+    "database": "capiro",
+    "roles": {
+      "control": "meri_control_runtime"
+    },
+    "rdsCaPemSha256": "90a6f1a7978a1b1b096dca6c57511ca48d3b8cf052f8e704baf358f34ea2f21b"
+  },
+  "secrets": {
+    "control/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV",
+    "worker/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv",
+    "temporal/frontend/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP",
+    "temporal/history/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL",
+    "temporal/matching/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS",
+    "temporal/worker/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/worker/material-1Qm4jB",
+    "temporal/internal-frontend/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/internal-frontend/material-GGIaW1",
+    "temporal/db-default": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-default-uoHJhw",
+    "temporal/db-visibility": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/db-visibility-L1SU3i",
+    "migrator/logins": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/migrator/logins-4XlR74"
+  },
+  "pinsDer": {
+    "control-private": "eceb9ce678670dc6a102378a06d6c480d29a68047091ffdccb9d91d70a233880",
+    "server-ca": "e177a1bc059a0fd7c54740f6db6619c992af01d1fda804d6c2058f0bd53995d4",
+    "temporal-client-ca": "2ab60e49dd3540077f2a5dd2ac36890a682f45a465e36f96afabb11fcf3dfab6",
+    "temporal-client-control": "efe24104da52220f45bc6e8a99eb00faa76fd6ab032700d3cc601b02ccb6bd77",
+    "temporal-client-worker": "1aa858cf31d9e2b386c9d2876d6fd39922fbcdd8aa1f391f024a41f0d2163b44",
+    "temporal-frontend": "4a482ab1794cf28ace3736bc202a64b717f50f1dea11006c2e6e034d36796252",
+    "temporal-frontend-ca": "7c7a4b7404f8c6d3d70cba4b01afa6a0d22744cbd4a41ae7e24f68756e6bb572",
+    "temporal-internode": "34537835d1ec403b885531615efa86e9dad96a01088242a1b7db0f6807260820",
+    "temporal-internode-ca": "23a976067529ae30f2017fd6d486438bd43688e51789b3a488e6cd4eaf333032"
+  },
+  "pinsPem": {
+    "control-private": "973df3e6002a611b5b286ec6a937ccad793c42436eadaca477670c29eea4e349",
+    "server-ca": "2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88",
+    "temporal-client-ca": "1e35bb089ec6b1e0da105d9f8fb72783a53081c93eeae7840dd29d856e434592",
+    "temporal-client-control": "2169cee3d0cb1fceaec78f9e5350084d1f12bcaa3b9f119fe6487bf7f8abf093",
+    "temporal-client-worker": "fa749776b1cff6e9433766b9312632e72ea1f772319f18ef1aa13e8f686dd1f8",
+    "temporal-frontend": "8a3f24c2b8fa3fa5df236f27776a1fea8ea964f515b3f2fa904f88209a46b489",
+    "temporal-frontend-ca": "42e00ade162ca58647d8a65e2f23be58c99fb31d2c1e268536432a90b7e094eb",
+    "temporal-internode": "72a27130818f4fef8db738faa73852a615a434655a5af423c96e69885fce5b79",
+    "temporal-internode-ca": "23fa1cf8fecabf1f9c4587b2152916ee0c45fe0df37b70bef12fe51213038042"
+  },
+  "agentcore": {
+    "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:967807252336:runtime/meri_preview-q0PlTi5uB3",
+    "runtimeVersion": "2",
+    "qualifier": "preview"
+  },
+  "features": {
+    "sourceEnabled": true,
+    "userPreferences": {
+      "enabled": true
+    },
+    "tenantSettings": {
+      "enabled": true
+    },
+    "capabilityPlatform": {
+      "maximum": {
+        "generalReads": true,
+        "governedIntents": true,
+        "skillPlugin": true,
+        "skillNames": [
+          "meri-client-changes",
+          "meri-commitments-audit",
+          "meri-funding-opportunity-match",
+          "meri-hearing-watch",
+          "meri-mail-history",
+          "meri-meeting-prep",
+          "meri-pe-deep-dive",
+          "meri-portfolio-changes",
+          "meri-portfolio-overlap",
+          "meri-regulatory-docket-brief",
+          "meri-relationship-brief",
+          "meri-representation-lookup",
+          "meri-research-company",
+          "meri-bill-watch"
+        ],
+        "workspaceTools": true,
+        "subagents": true,
+        "maxParallelSubagents": 4,
+        "subagentProgress": true,
+        "auditHooks": true,
+        "compactionHooks": true,
+        "bash": true,
+        "activeReadOperations": [
+          {
+            "id": "meeting.list_upcoming_meetings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "meeting.read_client_meetings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "meeting.query_debriefs",
+            "version": "0.2.0"
+          },
+          {
+            "id": "actions.query",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_tasks",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_action_items",
+            "version": "0.2.0"
+          },
+          {
+            "id": "find_contacts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "resolve_entity",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_client_context",
+            "version": "0.3.0"
+          },
+          {
+            "id": "read_client_documents",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_memory",
+            "version": "0.2.0"
+          },
+          {
+            "id": "read_monday_client_boards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "list_global_datasets",
+            "version": "0.2.0"
+          },
+          {
+            "id": "memory.list_own_proposals",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_evidence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_portfolio",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_portfolio_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_florida_budget_project",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_congress_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "read_bill_text",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_cbo_cost_estimates",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_gao_reports",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_crs_reports",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_acquisition_personnel",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_acquisition_person",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_sec_filings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_fara_registrations",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_lda_filings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_committee_roster",
+            "version": "0.2.0"
+          },
+          {
+            "id": "list_members",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_contractors",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_report_language",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_bill_status",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_floor_votes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_state_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_state_legislator",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_intel_articles",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_regulatory_dockets",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_intelligence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_public_web",
+            "version": "0.2.0"
+          },
+          {
+            "id": "scrape_web_page",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_capiro_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_global_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_representation",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_nexus_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_nexus_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "lookup_client_registry",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_contract_awards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_subawards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_contract_vehicles",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_procurement_forecasts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_federal_market",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_economic_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_grants",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_awards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_client_knowledge",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_knowledge_graph",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_state_bill_status",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_state_floor_votes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_tracked_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_committee_hearings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_legislative_research",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_legal_reference",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_legiwatch_news",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_outreach",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_evidence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_recent_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_funding_opportunities",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_funding_opportunity_requirements",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_funding_opportunity",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_opportunity_client_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_opportunity_government_landscape",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.read_thread",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.list_messages",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.search_messages",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_program_elements",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_program_element",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_budget_timeline",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_research_sources",
+            "version": "0.2.0"
+          }
+        ]
+      },
+      "defaults": {
+        "generalReads": true,
+        "governedIntents": true,
+        "skillPlugin": true,
+        "skillNames": [
+          "meri-client-changes",
+          "meri-commitments-audit",
+          "meri-funding-opportunity-match",
+          "meri-hearing-watch",
+          "meri-mail-history",
+          "meri-meeting-prep",
+          "meri-pe-deep-dive",
+          "meri-portfolio-changes",
+          "meri-portfolio-overlap",
+          "meri-regulatory-docket-brief",
+          "meri-relationship-brief",
+          "meri-representation-lookup",
+          "meri-research-company",
+          "meri-bill-watch"
+        ],
+        "workspaceTools": true,
+        "subagents": true,
+        "maxParallelSubagents": 4,
+        "subagentProgress": true,
+        "auditHooks": true,
+        "compactionHooks": true,
+        "bash": true,
+        "activeReadOperations": [
+          {
+            "id": "meeting.list_upcoming_meetings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "meeting.read_client_meetings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "meeting.query_debriefs",
+            "version": "0.2.0"
+          },
+          {
+            "id": "actions.query",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_tasks",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_action_items",
+            "version": "0.2.0"
+          },
+          {
+            "id": "find_contacts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "resolve_entity",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_client_context",
+            "version": "0.3.0"
+          },
+          {
+            "id": "read_client_documents",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_memory",
+            "version": "0.2.0"
+          },
+          {
+            "id": "read_monday_client_boards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "list_global_datasets",
+            "version": "0.2.0"
+          },
+          {
+            "id": "memory.list_own_proposals",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_evidence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_portfolio",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_portfolio_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_florida_budget_project",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_congress_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "read_bill_text",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_cbo_cost_estimates",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_gao_reports",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_crs_reports",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_acquisition_personnel",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_acquisition_person",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_sec_filings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_fara_registrations",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_lda_filings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_committee_roster",
+            "version": "0.2.0"
+          },
+          {
+            "id": "list_members",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_contractors",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_report_language",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_bill_status",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_floor_votes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_state_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_state_legislator",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_intel_articles",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_regulatory_dockets",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_intelligence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_public_web",
+            "version": "0.2.0"
+          },
+          {
+            "id": "scrape_web_page",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_capiro_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_global_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_representation",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_nexus_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_nexus_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "lookup_client_registry",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_contract_awards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_subawards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_contract_vehicles",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_procurement_forecasts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_federal_market",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_economic_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_grants",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_awards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_client_knowledge",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_knowledge_graph",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_state_bill_status",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_state_floor_votes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_tracked_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_committee_hearings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_legislative_research",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_legal_reference",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_legiwatch_news",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_outreach",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_evidence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_recent_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_funding_opportunities",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_funding_opportunity_requirements",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_funding_opportunity",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_opportunity_client_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_opportunity_government_landscape",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.read_thread",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.list_messages",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.search_messages",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_program_elements",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_program_element",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_budget_timeline",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_research_sources",
+            "version": "0.2.0"
+          }
+        ]
+      },
+      "roleCeilings": {
+        "standard_user": {
+          "generalReads": true,
+          "governedIntents": true,
+          "skillPlugin": true,
+          "skillNames": [
+            "meri-client-changes",
+            "meri-commitments-audit",
+            "meri-funding-opportunity-match",
+            "meri-hearing-watch",
+            "meri-mail-history",
+            "meri-meeting-prep",
+            "meri-pe-deep-dive",
+            "meri-portfolio-changes",
+            "meri-portfolio-overlap",
+            "meri-regulatory-docket-brief",
+            "meri-relationship-brief",
+            "meri-representation-lookup",
+            "meri-research-company",
+            "meri-bill-watch"
+          ],
+          "workspaceTools": true,
+          "subagents": true,
+          "maxParallelSubagents": 4,
+          "subagentProgress": true,
+          "auditHooks": true,
+          "compactionHooks": true,
+          "bash": true,
+          "activeReadOperations": [
+            {
+              "id": "meeting.list_upcoming_meetings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "meeting.read_client_meetings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "meeting.query_debriefs",
+              "version": "0.2.0"
+            },
+            {
+              "id": "actions.query",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_tasks",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_action_items",
+              "version": "0.2.0"
+            },
+            {
+              "id": "find_contacts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "resolve_entity",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_client_context",
+              "version": "0.3.0"
+            },
+            {
+              "id": "read_client_documents",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_memory",
+              "version": "0.2.0"
+            },
+            {
+              "id": "read_monday_client_boards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "list_global_datasets",
+              "version": "0.2.0"
+            },
+            {
+              "id": "memory.list_own_proposals",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_evidence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_portfolio",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_portfolio_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_florida_budget_project",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_congress_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "read_bill_text",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_cbo_cost_estimates",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_gao_reports",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_crs_reports",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_acquisition_personnel",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_acquisition_person",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_sec_filings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_fara_registrations",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_lda_filings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_committee_roster",
+              "version": "0.2.0"
+            },
+            {
+              "id": "list_members",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_contractors",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_report_language",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_bill_status",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_floor_votes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_state_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_state_legislator",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_intel_articles",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_regulatory_dockets",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_intelligence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_public_web",
+              "version": "0.2.0"
+            },
+            {
+              "id": "scrape_web_page",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_capiro_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_global_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_representation",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_nexus_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_nexus_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "lookup_client_registry",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_contract_awards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_subawards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_contract_vehicles",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_procurement_forecasts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_federal_market",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_economic_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_grants",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_awards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_client_knowledge",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_knowledge_graph",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_state_bill_status",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_state_floor_votes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_tracked_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_committee_hearings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_legislative_research",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_legal_reference",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_legiwatch_news",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_outreach",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_evidence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_recent_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_funding_opportunities",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_funding_opportunity_requirements",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_funding_opportunity",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_opportunity_client_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_opportunity_government_landscape",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.read_thread",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.list_messages",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.search_messages",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_program_elements",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_program_element",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_budget_timeline",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_research_sources",
+              "version": "0.2.0"
+            }
+          ]
+        },
+        "user_admin": {
+          "generalReads": true,
+          "governedIntents": true,
+          "skillPlugin": true,
+          "skillNames": [
+            "meri-client-changes",
+            "meri-commitments-audit",
+            "meri-funding-opportunity-match",
+            "meri-hearing-watch",
+            "meri-mail-history",
+            "meri-meeting-prep",
+            "meri-pe-deep-dive",
+            "meri-portfolio-changes",
+            "meri-portfolio-overlap",
+            "meri-regulatory-docket-brief",
+            "meri-relationship-brief",
+            "meri-representation-lookup",
+            "meri-research-company",
+            "meri-bill-watch"
+          ],
+          "workspaceTools": true,
+          "subagents": true,
+          "maxParallelSubagents": 4,
+          "subagentProgress": true,
+          "auditHooks": true,
+          "compactionHooks": true,
+          "bash": true,
+          "activeReadOperations": [
+            {
+              "id": "meeting.list_upcoming_meetings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "meeting.read_client_meetings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "meeting.query_debriefs",
+              "version": "0.2.0"
+            },
+            {
+              "id": "actions.query",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_tasks",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_action_items",
+              "version": "0.2.0"
+            },
+            {
+              "id": "find_contacts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "resolve_entity",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_client_context",
+              "version": "0.3.0"
+            },
+            {
+              "id": "read_client_documents",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_memory",
+              "version": "0.2.0"
+            },
+            {
+              "id": "read_monday_client_boards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "list_global_datasets",
+              "version": "0.2.0"
+            },
+            {
+              "id": "memory.list_own_proposals",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_evidence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_portfolio",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_portfolio_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_florida_budget_project",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_congress_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "read_bill_text",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_cbo_cost_estimates",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_gao_reports",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_crs_reports",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_acquisition_personnel",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_acquisition_person",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_sec_filings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_fara_registrations",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_lda_filings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_committee_roster",
+              "version": "0.2.0"
+            },
+            {
+              "id": "list_members",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_contractors",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_report_language",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_bill_status",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_floor_votes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_state_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_state_legislator",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_intel_articles",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_regulatory_dockets",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_intelligence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_public_web",
+              "version": "0.2.0"
+            },
+            {
+              "id": "scrape_web_page",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_capiro_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_global_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_representation",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_nexus_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_nexus_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "lookup_client_registry",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_contract_awards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_subawards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_contract_vehicles",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_procurement_forecasts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_federal_market",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_economic_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_grants",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_awards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_client_knowledge",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_knowledge_graph",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_state_bill_status",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_state_floor_votes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_tracked_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_committee_hearings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_legislative_research",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_legal_reference",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_legiwatch_news",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_outreach",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_evidence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_recent_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_funding_opportunities",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_funding_opportunity_requirements",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_funding_opportunity",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_opportunity_client_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_opportunity_government_landscape",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.read_thread",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.list_messages",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.search_messages",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_program_elements",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_program_element",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_budget_timeline",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_research_sources",
+              "version": "0.2.0"
+            }
+          ]
+        },
+        "capiro_admin": {
+          "generalReads": true,
+          "governedIntents": true,
+          "skillPlugin": true,
+          "skillNames": [
+            "meri-client-changes",
+            "meri-commitments-audit",
+            "meri-funding-opportunity-match",
+            "meri-hearing-watch",
+            "meri-mail-history",
+            "meri-meeting-prep",
+            "meri-pe-deep-dive",
+            "meri-portfolio-changes",
+            "meri-portfolio-overlap",
+            "meri-regulatory-docket-brief",
+            "meri-relationship-brief",
+            "meri-representation-lookup",
+            "meri-research-company",
+            "meri-bill-watch"
+          ],
+          "workspaceTools": true,
+          "subagents": true,
+          "maxParallelSubagents": 4,
+          "subagentProgress": true,
+          "auditHooks": true,
+          "compactionHooks": true,
+          "bash": true,
+          "activeReadOperations": [
+            {
+              "id": "meeting.list_upcoming_meetings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "meeting.read_client_meetings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "meeting.query_debriefs",
+              "version": "0.2.0"
+            },
+            {
+              "id": "actions.query",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_tasks",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_action_items",
+              "version": "0.2.0"
+            },
+            {
+              "id": "find_contacts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "resolve_entity",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_client_context",
+              "version": "0.3.0"
+            },
+            {
+              "id": "read_client_documents",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_memory",
+              "version": "0.2.0"
+            },
+            {
+              "id": "read_monday_client_boards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "list_global_datasets",
+              "version": "0.2.0"
+            },
+            {
+              "id": "memory.list_own_proposals",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_evidence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_portfolio",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_research_portfolio_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_florida_budget_project",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_congress_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "read_bill_text",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_cbo_cost_estimates",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_gao_reports",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_crs_reports",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_acquisition_personnel",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_acquisition_person",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_sec_filings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_fara_registrations",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_lda_filings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_committee_roster",
+              "version": "0.2.0"
+            },
+            {
+              "id": "list_members",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_contractors",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_report_language",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_bill_status",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_floor_votes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_state_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_state_legislator",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_intel_articles",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_regulatory_dockets",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_intelligence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_public_web",
+              "version": "0.2.0"
+            },
+            {
+              "id": "scrape_web_page",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_capiro_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_global_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_representation",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_nexus_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_nexus_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "lookup_client_registry",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_contract_awards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_subawards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_contract_vehicles",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_procurement_forecasts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_district_federal_market",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_economic_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_grants",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_federal_awards",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_client_knowledge",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_knowledge_graph",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_state_bill_status",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_state_floor_votes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_tracked_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_committee_hearings",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_legislative_research",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_legal_reference",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_legiwatch_news",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_outreach",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_evidence",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_recent_changes",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_funding_opportunities",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_funding_opportunity_requirements",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_funding_opportunity",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_opportunity_client_context",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_opportunity_government_landscape",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.read_thread",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.list_messages",
+              "version": "0.2.0"
+            },
+            {
+              "id": "mail.search_messages",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_program_elements",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_program_element",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_pe_budget_timeline",
+              "version": "0.2.0"
+            },
+            {
+              "id": "search_research_sources",
+              "version": "0.2.0"
+            }
+          ]
+        }
+      }
+    },
+    "reads": {
+      "enabled": true,
+      "serviceSecretArn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:capiro/dev/internal-service-secret-6cEZG4",
+      "defaultCongress": 119,
+      "approvedReads": {
+        "schemaVersion": "meri-native-general-reads/1",
+        "enabled": true,
+        "operations": [
+          {
+            "id": "meeting.list_upcoming_meetings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "meeting.read_client_meetings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "meeting.query_debriefs",
+            "version": "0.2.0"
+          },
+          {
+            "id": "actions.query",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_tasks",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_action_items",
+            "version": "0.2.0"
+          },
+          {
+            "id": "find_contacts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "resolve_entity",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_client_context",
+            "version": "0.3.0"
+          },
+          {
+            "id": "read_client_documents",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_memory",
+            "version": "0.2.0"
+          },
+          {
+            "id": "read_monday_client_boards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "list_global_datasets",
+            "version": "0.2.0"
+          },
+          {
+            "id": "memory.list_own_proposals",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_evidence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_portfolio",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_research_portfolio_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_florida_budget_project",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_congress_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "read_bill_text",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_cbo_cost_estimates",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_gao_reports",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_crs_reports",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_acquisition_personnel",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_acquisition_person",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_sec_filings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_fara_registrations",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_lda_filings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_committee_roster",
+            "version": "0.2.0"
+          },
+          {
+            "id": "list_members",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_contractors",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_report_language",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_bill_status",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_floor_votes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_state_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_state_legislator",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_intel_articles",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_regulatory_dockets",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_intelligence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_public_web",
+            "version": "0.2.0"
+          },
+          {
+            "id": "scrape_web_page",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_capiro_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_global_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_representation",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_nexus_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_nexus_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "lookup_client_registry",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_contract_awards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_subawards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_contract_vehicles",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_procurement_forecasts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_district_federal_market",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_economic_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_grants",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_federal_awards",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_client_knowledge",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_knowledge_graph",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_state_bill_status",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_state_floor_votes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_tracked_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_committee_hearings",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_legislative_research",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_legal_reference",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_legiwatch_news",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_outreach",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_evidence",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_recent_changes",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_funding_opportunities",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_funding_opportunity_requirements",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_funding_opportunity",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_opportunity_client_context",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_opportunity_government_landscape",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.read_thread",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.list_messages",
+            "version": "0.2.0"
+          },
+          {
+            "id": "mail.search_messages",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_program_elements",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_program_element",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_pe_budget_timeline",
+            "version": "0.2.0"
+          },
+          {
+            "id": "search_research_sources",
+            "version": "0.2.0"
+          }
+        ],
+        "maxExecuteMs": 20000,
+        "maxRequestBytes": 65536,
+        "maxResponseBytes": 1048576
+      }
+    },
+    "memory": {
+      "enabled": true
+    },
+    "retention": {
+      "enabled": true
+    },
+    "artifacts": {
+      "enabled": true,
+      "region": "us-east-1",
+      "bucket": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+      "prefix": "product-preview/checkpoints",
+      "expectedBucketOwner": "967807252336",
+      "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/3a04f062-40de-4ed8-9a24-dad87c488e0c"
+    }
+  }
 }

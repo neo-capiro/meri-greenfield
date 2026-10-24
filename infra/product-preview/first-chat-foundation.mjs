@@ -85,7 +85,8 @@ export function synthesizeFirstChatFoundation(binding){
   temporal:execution('temporal',b.secretArns.temporal),migrator:execution('migrator',b.secretArns.migrator)};
  const task=key=>new iam.Role(stack,`${key}TaskRole`,{roleName:`MeriPreview-${key}-task`,assumedBy:ecsTrust()});
  const control=task('control');
- control.addToPolicy(statement(['s3:GetBucketVersioning'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
+ // S3 reports a missing first ledger object as 404 only when this bucket can be listed.
+ control.addToPolicy(statement(['s3:GetBucketVersioning','s3:ListBucket'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
  control.addToPolicy(statement(['s3:PutObject','s3:GetObject','s3:GetObjectVersion'],[`arn:aws:s3:::${b.checkpoint.bucket}/${b.checkpoint.prefix}/*`]));
  control.addToPolicy(statement(['kms:GenerateDataKey','kms:Decrypt'],[b.checkpoint.kmsKeyArn],{StringEquals:{'kms:ViaService':`s3.${REGION}.amazonaws.com`}}));
  const temporalTasks=Object.fromEntries(['frontend','history','matching','worker','internal-frontend'].map(r=>[r,task(`temporal-${r}`)]));
