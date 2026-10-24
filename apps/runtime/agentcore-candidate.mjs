@@ -116,7 +116,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    if(origin&&!same(await continuationOrigin(binding,run,context,signal),origin))refuse();
   }};
  }
- async function readCurrent({binding,run,context,signal,deadlineMs=now()+requestMs,beforeExecution=false}){
+ async function readCurrent({binding,run,context,signal,deadlineMs=now()+requestMs,beforeExecution=false,transition=false}){
   const start=await runStarts.read({binding,signal});
   if(start.state!=='ABSENT'){
    if(start.state!=='STARTED'||!objectiveCore)refuse();
@@ -125,7 +125,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    return {...current,expiresAtMs:Math.min(current.effectExpiresAtMs,start.record.effectExpiresAtMs)};
   }
   if(routineCore){
-   const routine=await routineCore[beforeExecution?'beforeExecution':'forBinding']({binding,signal,deadlineMs});
+   const routine=await routineCore[beforeExecution?'admitExecution':transition?'forTransition':'forBinding']({binding,signal,deadlineMs});
    if(routine!==null){const record=beforeExecution?routine:routine.record;
     if(record.selectedClientId!==context.selectedClientId||!same(record.scopes,run.scopes))refuse();
     return {expiresAtMs:record.expiresAtMs,routine:true};
@@ -189,12 +189,13 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    }else if(run.state==='failed')refuse();
    const latest=await store.nextRuns.current(v.binding,life.check);life.check();
    if(latest.reserved!==false||!same(latest.binding,v.binding)||!same(latest.scopes,v.scopes)||latest.policyRevision!==v.policyRevision)refuse();
-   const current=await readCurrent({binding:v.binding,run,context,signal:life.signal,deadlineMs:life.deadline()});life.check();
+   const current=await readCurrent({binding:v.binding,run,context,signal:life.signal,deadlineMs:life.deadline(),transition:true});life.check();
    return {binding:v.binding,scopes:v.scopes,selectedClientId:v.selectedClientId,policyRevision:v.policyRevision,checkedAtMs:now(),expiresAtMs:current.expiresAtMs};
   }finally{life.close();}
  }});
  const execution=createAgentCoreExecutionOwner({store,provider,versions,
-  plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now});
+  plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,
+  ...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{})});
  const reconciler=createRunReconciler({store,stopExecution:execution.stopExecution,now,maxReconcileMs:Math.min(120000,configuration.limits.shutdownMs)});
  async function stop({binding,executionId,signal}){
   if(executionId!==hash(binding))refuse();

@@ -51,11 +51,11 @@ export function createScheduledRunProfile(configuration){
    !q.scopes.some(v=>v.kind===(c.selectedClientId===null?'private-user':'client')&&v.resourceId===(c.selectedClientId??b.actorId)))fail('ORIGIN');
   return {r,s};
  }
- function restrict(selection,l,q){
+ function restrict(selection,l,q,transition=false){
   const p=selection.s.occurrence.projection;
-  if(l.occupiedReason!==null||!same(l.originBinding,selection.s.effect.binding)||!same(l.currentBinding,q.binding)||
+  if(l.occupiedReason!==null&&!(transition&&l.occupiedReason==='SCHEDULE_JOB_CONTROL_UNRESOLVED')||!same(l.originBinding,selection.s.effect.binding)||!same(l.currentBinding,q.binding)||
    l.selectedClientId!==c.selectedClientId||!same(l.scopes,q.scopes)||!l.run||!same(l.run.binding,q.binding)||
-   !['queued','starting','running'].includes(l.run.state)||!Number.isSafeInteger(l.allocatedAtMs)||l.allocatedAtMs<0||
+   !['queued','starting','running',...(transition?['paused','waiting-for-approval','completed','failed']:[])].includes(l.run.state)||!Number.isSafeInteger(l.allocatedAtMs)||l.allocatedAtMs<0||
    !integer(l.expiresAtMs)||l.expiresAtMs<=l.allocatedAtMs)fail('LINEAGE');
   const runtimeEnd=l.allocatedAtMs+p.maxRuntimeSeconds*1000;
   if(!Number.isSafeInteger(runtimeEnd))fail('EXPIRY');
@@ -72,7 +72,7 @@ export function createScheduledRunProfile(configuration){
   const allocationJson=JSON.stringify({...a,run,occurrenceCostScope}),sealed=allocation(allocationJson);
   return data({allocationJson,allocationSha256:hash(sealed),maxCostMicroUSD:Math.min(c.maxCostMicroUSD,a.budgets.maxCostMicroUSD,p.maxCostMicrousd),expiresAtMs,occurrenceCostScope});
  }
- return Object.freeze({async read(raw){
+ async function inspect(raw,transition=false){
   let life;
   try{
    const q=request(raw),at=c.now();
@@ -84,10 +84,12 @@ export function createScheduledRunProfile(configuration){
    }
    const selected=origin(first,q),selection={occurrence:selected.s.occurrence,effect:selected.s.effect};
    const before=await life.run(()=>lineage.read(selection,life.check));
-   const result=restrict(selected,before,q);life.limitDeadline(result.expiresAtMs);
+   const result=restrict(selected,before,q,transition);life.limitDeadline(result.expiresAtMs);
    const after=await life.run(()=>lineage.read(selection,life.check)),last=await lookup();
    if(!same(before,after)||!same(selected.r,last))fail('CHANGED');
-   origin(last,q);restrict(selected,after,q);life.check();return result;
+   origin(last,q);restrict(selected,after,q,transition);life.check();return result;
   }catch(error){throw errors.has(error)?error:fault('REFUSED');}finally{life?.close();}
- }});
+ }
+ // Used only with the Core current owner for journal preparation/acknowledgment. Data execution uses strict read().
+ return Object.freeze({read:raw=>inspect(raw),readTransition:raw=>inspect(raw,true)});
 }

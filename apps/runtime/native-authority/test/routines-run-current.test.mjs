@@ -3,18 +3,20 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createNativeRoutineCurrent} from '../routines-run-current.mjs';
 import {createRoutinesCoreClient} from '../routines-core-client.mjs';
 import {scheduledRunProfileFixture,id} from './scheduled-run-profile-fixture.mjs';
+import {createAgentCoreExecutionOwner} from '../../agentcore-execution.mjs';
+import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 
 async function fixture({general=false}={}){
  const h=await scheduledRunProfileFixture({agentcore:true,general,allocated:false,occurrenceCap:750});
  const state={firingCalls:0,currentCalls:0,allowed:true,rewrite:r=>r};
  const p=h.occurrence.projection,binding=h.identity.binding;
- const response=()=>({schemaVersion:1,tenantId:binding.tenantId,actorId:binding.actorId,clerkUserId:'synthetic-clerk',tenantSlug:'synthetic',role:'standard_user',scheduleId:p.scheduleId,occurrenceKey:h.identity.occurrenceKey,generation:1,consentId:id(444),binding,scopes:h.scopes,clientIds:general?[]:[h.template.selectedClientId],policyRevision:h.template.policyRevision,limits:{maxCostMicrousd:p.maxCostMicrousd,maxRuntimeSeconds:p.maxRuntimeSeconds,retryLimit:p.retryLimit},checkedAtMs:h.now(),effectExpiresAtMs:h.now()+10000});
+ const response=(binding)=>({schemaVersion:1,tenantId:binding.tenantId,actorId:binding.actorId,clerkUserId:'synthetic-clerk',tenantSlug:'synthetic',role:'standard_user',scheduleId:p.scheduleId,occurrenceKey:h.identity.occurrenceKey,generation:1,consentId:id(444),binding,scopes:h.scopes,clientIds:general?[]:[h.template.selectedClientId],policyRevision:h.template.policyRevision,limits:{maxCostMicrousd:p.maxCostMicrousd,maxRuntimeSeconds:p.maxRuntimeSeconds,retryLimit:p.retryLimit},checkedAtMs:h.now(),effectExpiresAtMs:h.now()+10000});
  const wires=createRoutinesCoreClient({origin:'https://core.synthetic.invalid',getServiceSecret:async()=> 'synthetic-routine-service-secret',now:h.now,
   nativeCredentials:{nativeCredentialFor(){assert.fail('No unattended bearer');}},fetchImpl:async(url,options)=>{
    state.currentCalls++;assert.equal(url,'https://core.synthetic.invalid/api/internal/routines/current');assert.equal(options.headers.authorization,undefined);
    assert.equal(options.headers['x-internal-service-secret'],'synthetic-routine-service-secret');
-   assert.deepEqual(JSON.parse(options.body),{schemaVersion:1,tenantId:binding.tenantId,scheduleId:p.scheduleId,occurrenceKey:h.identity.occurrenceKey,binding});
-   return state.allowed?Response.json(state.rewrite(response())):Response.json({error:'refused'},{status:403});
+   const body=JSON.parse(options.body);assert.deepEqual(body,{schemaVersion:1,tenantId:binding.tenantId,scheduleId:p.scheduleId,occurrenceKey:h.identity.occurrenceKey,binding:body.binding});
+   return state.allowed?Response.json(state.rewrite(response(body.binding))):Response.json({error:'refused'},{status:403});
   }});
  const firing={async authorize(q){state.firingCalls++;assert.equal(q.phase,'before_start');assert.deepEqual(q.projection,p);return {authorized:state.allowed,occurrenceKey:h.identity.occurrenceKey,scopes:h.scopes,expiresAtMs:h.now()+1000};}};
  const owner=createNativeRoutineCurrent({configuration:{limits:{requestMs:1000},agentcore:{runWindowMs:60000,policyRevision:h.template.policyRevision}},task:h.template.task,store:h.store,scheduleOwner:h.scheduleOwner,wires,firing,now:h.now});
@@ -45,4 +47,34 @@ test('positive changed custody does not fall back to ordinary session authority'
 test('confirmed ordinary conversation leaves its native model policy intact',async t=>{
  const h=await fixture();t.after(h.close);h.scheduleSql.state.occurrences.clear();const policy=await h.store.readModelPolicy(h.identity.binding,()=>{});
  assert.equal(await h.owner.beforeExecution(h.call()),null);assert.deepEqual(await h.owner.modelPolicy(h.identity.binding,()=>{}),policy);assert.equal(h.state.firingCalls,0);
+});
+
+for(const general of [false,true])test(`actual ${general?'General':'client'} resume can start Temporal before APPLIED while SDK/data remain gated`,async t=>{
+ const h=await fixture({general});t.after(h.close);await h.claim();await h.running();await h.pause();
+ assert.ok(await h.owner.forTransition(h.call()));await assert.rejects(h.owner.forBinding(h.call()));
+ const entered=Promise.withResolvers(),finished=Promise.withResolvers();let invocations=0,target;
+ const execution=createAgentCoreExecutionOwner({store:h.store,versions:h.template.versions,plan:{runtime:'synthetic'},credentialSecret:'synthetic-routine-execution-secret',now:h.now,
+  contextFor:async()=>({selectedClientId:h.template.selectedClientId}),beforeInvocation:h.owner.beforeInvocation,
+  admit:async({binding,signal})=>({run:(await h.store.read(binding,{},()=>{})).run,expiresAtMs:(await h.owner.admitExecution({binding,signal})).expiresAtMs}),
+  provider:{async invoke(value){invocations++;entered.resolve(value);return finished.promise;},async stop(){assert.fail('No stop');}}});
+ t.after(async()=>{finished.reject(Error('fixture cleanup'));await execution.close();});finished.promise.catch(()=>{});
+ h.f.dispatcher.start=async({binding})=>{
+  target=binding;const receipt=await execution.kickoff({binding,executionKey:hash(binding)});assert.equal(receipt.expiresAtMs,h.now()+10000);
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(invocations,0);assert.equal((await execution.status({binding,executionId:hash(binding)})).state,'preparing');
+  await assert.rejects(h.owner.forBinding({binding}));
+ };
+ const proof=h.f.proofs.get(h.identity.binding.runId),result=await h.f.control({controlId:id(780),intent:'resume',checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256});assert.equal(result.state,'APPLIED');
+ const invocation=await entered.promise;assert.equal(invocations,1);assert.deepEqual(invocation.execution.binding,target);
+ assert.equal((await h.owner.modelPolicy(target,()=>{})).maxBudgetMicroUsd,750);assert.ok(await h.owner.forBinding({binding:target}));
+ await assert.rejects(h.owner.forTransition(h.call()),'superseded source does not remain current');
+ await h.status('failed',target);assert.ok(await h.owner.forTransition({binding:target}));await assert.rejects(h.owner.forBinding({binding:target}));
+ finished.resolve(await execution.settle({credential:invocation.credential,execution:invocation.execution,state:'failed'}));
+});
+
+test('an uncertain committed resume never starts the SDK and cannot release reads',async t=>{
+ const h=await fixture();t.after(h.close);await h.claim();await h.running();await h.pause();let target;
+ h.f.dispatcher.start=async({binding})=>{target=binding;throw Error('lost start acknowledgment');};
+ const proof=h.f.proofs.get(h.identity.binding.runId);await assert.rejects(h.f.control({controlId:id(781),intent:'resume',checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256}));
+ await assert.rejects(h.owner.beforeInvocation({binding:target,signal:new AbortController().signal,deadlineMs:h.now()+1000}));
+ await assert.rejects(h.owner.forBinding({binding:target}));
 });
