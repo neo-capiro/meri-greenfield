@@ -78,8 +78,11 @@ export function synthesizeAgentCoreRuntime(binding){
    MERI_CONTROL_ORIGIN:b.controlOrigin,MERI_CONTROL_CA_BASE64:b.controlCaBase64,MERI_CONTROL_CA_SHA256:b.controlCaSha256,
    ...(b.claudeApiSecretArn===null?{}:{MERI_CLAUDE_API_SECRET_ARN:b.claudeApiSecretArn})},
   tags:{Application:'meri',Environment:'preview',SourceCommit:b.sourceCommit}});
+ // Explicit dependencies wait for readiness; GetAtt can resolve during optimistic creation.
+ runtime.node.addDependency(role);
  const endpoint=new agentcore.CfnRuntimeEndpoint(stack,'PreviewEndpoint',{agentRuntimeId:runtime.attrAgentRuntimeId,
   agentRuntimeVersion:qualifiedVersion.valueAsString,name:ENDPOINT,description:'Qualified Meri preview runtime version'});
+ endpoint.node.addDependency(runtime);
  // The control service alone invokes/stops sessions. Browser-supplied session IDs never select compute.
  new iam.CfnPolicy(stack,'ControlInvocationPolicy',{policyName:'MeriAgentCoreInvocation',roles:[b.controlTaskRoleName],
   policyDocument:{Version:'2012-10-17',Statement:[{Effect:'Allow',Action:['bedrock-agentcore:InvokeAgentRuntime','bedrock-agentcore:StopRuntimeSession'],
