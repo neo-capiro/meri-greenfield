@@ -136,7 +136,12 @@ export function parseFeatures(raw,{secrets={}}={}){
   if(v.core!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.routines.core needs features.routines.enabled true');const c=record(v.core,'features.routines.core',[],['cancellationProof','unattendedGrant']);
    try{if(compileRoutinesCoreConfiguration({routines:{enabled:true,core:{origin:'https://placeholder.invalid',serviceSecretFile:'/run/meri/placeholder',...structuredClone(c)}}})===null)throw Error();}catch{fail('RENDER_INPUT_REFUSED','features.routines.core (apps/runtime/native-authority/routines-configuration.mjs)');}
    out.routines={enabled:true,core:structuredClone(c),...(task?{task}:{}),...(workflow?{workflow}:{})};}else out.routines={enabled,...(task?{task}:{}),...(workflow?{workflow}:{})};}
- if(f.retention!==undefined){if(toggle('retention').enabled!==true)fail('RENDER_INPUT_REFUSED','features.retention.enabled must be true (omit retention to leave it undeclared)');out.retention={enabled:true};}
+ if(f.retention!==undefined){
+  const retention=record(f.retention,'features.retention',['enabled'],['purge']);
+  if(!bool(retention.enabled,'features.retention.enabled'))fail('RENDER_INPUT_REFUSED','features.retention.enabled must be true (omit retention to leave it undeclared)');
+  const purge=retention.purge===undefined?undefined:{enabled:bool(record(retention.purge,'features.retention.purge',['enabled']).enabled,'features.retention.purge.enabled')};
+  out.retention={enabled:true,...(purge===undefined?{}:{purge})};
+ }
  if(f.artifacts!==undefined){
   const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority','executor']);
   if(!bool(a.enabled,'features.artifacts.enabled')){if([...storage,'authority','executor'].some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}

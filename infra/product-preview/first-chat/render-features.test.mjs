@@ -60,6 +60,17 @@ test('artifact authority rejects a mistyped enabled flag instead of silently dis
  assert.throws(()=>parseFeatures({artifacts:{...ARTIFACTS,authority:{enabled:'true'}}}),/must be a boolean/u);
 });
 
+test('retention rendering carries the existing explicit Trash purge switch to control only',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,retention:{enabled:true,purge:{enabled:true}}}));
+ const control=assertOnly(rendered,['sourceEnabled','retention'],{worker:{sourceEnabled:true}});
+ assert.deepEqual(control.retention,{enabled:true,purge:{enabled:true}});
+ withPosixPaths(()=>validateConfiguration(control,'control'));
+ assert.deepEqual(parseFeatures({retention:{enabled:true,purge:{enabled:false}}}).retention,{enabled:true,purge:{enabled:false}});
+ for(const purge of [{enabled:'true'},{enabled:true,bypassRetention:true},{}])
+  assert.throws(()=>parseFeatures({retention:{enabled:true,purge}}),/RENDER_INPUT_REFUSED/u);
+});
+
 /** Deterministic randomBytes/randomUUID for the duration of one synchronous render (the render's only entropy). */
 function seeded(fn){
  const saved={randomBytes:crypto.randomBytes,randomUUID:crypto.randomUUID};let n=0;
