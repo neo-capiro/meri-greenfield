@@ -15,16 +15,82 @@ This plan puts everything left into a sequence of deployed phases. It merges thr
 
 The two closeout plans stay the detailed specs: each ticket there already has its evidence, work and acceptance. This plan sets the order, grouping, owner and deployment. **Every ticket appears in exactly one phase**; the index is in section 9.
 
+## 0. Current Wave 2 execution — 24 October 2026
+
+This reconciles the accepted source inventory at 21:25 with root's subsequent release handoff at the 21:37 documentation cutoff. [CURRENT-STATE](../CURRENT-STATE.md) owns exact release/migration stages; [WORKFLOW](../WORKFLOW.md) owns the execution loop. The original phase/ticket/decision tables below retain scope and lineage. **Implemented, reviewed, built/qualified, deployed and accepted are distinct states.** A missing live receipt is not proof that implementation is missing.
+
+### Immediate release and remaining source work
+
+General migration 49 is applied and General chat/follow-up passed. Runtime version 4/control 67 is stable and new follow-up text appears once. Core 4ce7 and frontend 6118 are image-qualified and merged; Core's four forward migrations are applied and revision 11 is healthy. The existing frontend image-only change set is executed and its rollout is in progress, without a rebuild. Authorized data reads remain unaccepted. Reuse those exact builds and passed checks.
+
+| Work | What remains, using existing owners | Dependency / closure |
+|---|---|---|
+| Basic chat/data | Finish actual paired rollout and remaining client/General first/follow-up/third turn, Stop, reconnect/history, current wall/permission and data-read cases. Keep the separately reproduced history-only initial model-omission retry limitation open. | Core 4ce7 contains the strict-profile DTO repair; FE 6118 contains completed-turn hold/Stop wording. Those fixes are not new source gaps. Preserve passed General/recovery cases. |
+| MF09 conversations | Reviewed Core metadata/search/CAS/Trash/Restore plus runtime/FE packets exist. Finish existing physical-purge production composition and exact deletion/expired-Restore/consumed-key PG coverage; do not build another purger/journal. | Publish/install the actual management receiver and integrate runtime/FE; the history 0.1.13 package is not proof of management support. MF09 is absent from 6118. Keep purge unenabled until its owner, storage custody and 30-day erasure evidence pass. |
+| MG05 automatic context | Core PR122 and paired runtime/clock repair are reviewed. Integrate them; fix source only for a demonstrated omission/cost defect. | Core automatic-context route first, then runtime. Accept rich/sparse/denied/current/revoked context, other-subject handling, critical corrections and measured cost. Source read-dispatch estimates are not measured network calls. No new cache/profile store. |
+| MG02 / MT13 skills | Complete the missing ordinary composer launcher and typed selected-skill scope/window consumer using existing registry/contracts. | Preserve exact skill ID/version/window through submit/steer/reload/reconnect/resume/fork. All 14 identities/15 assets still need relevant lifecycle and real-output acceptance; installation alone is not completion. |
+| PF02 / MF19 context | The client Ask Meri action is still disabled in 6118. Connect existing canonical bootstrap/context and reviewed draft; finish allocated source handoffs/result links. | Current client/object authority; reload/back/client-switch isolation; no auto-dispatch or private context in URLs. No full later-wave Mail/Workspace action expansion. |
+| PF13 remaining writes | Undo and contact creation are now reviewed with actual PG evidence. Inspect and finish only missing semantics in meeting create/update, notes/debrief/approval, sharing, calendar sync and non-PF16 file metadata/delete/folder owners. | Reuse domain receipts and exact recovery/refusal owners. Qualify paired deployed behavior without rerunning unchanged contact/Undo gates. |
+| PF18 carry-over | New-client conversion/recovery exists. Separate opt-in contact/file/research transfer is missing. | Root resolves finite category/merge/custody choices. Contact-create receipts are not transfer proof; files have immutable prospect origin; existing saved-brief copy remains prospect-bound. No implicit copy-all, email-only merge or generic transfer framework. |
+| MP provider/model/effort | Preferences/admission/usage and the Settings/conversation picker exist; ship 6118 and qualify exposed choices. | Only actually qualified Bedrock catalogue entries are enabled. Claude API needs the existing runtime-only secret/IAM path and real provider/continuity/usage/Stop evidence before enabling. No new proxy or credential platform. |
+
+**Schedules/runs:** lifecycle/application/inbox/Temporal code and the reviewed native Objective pair already exist. Confirm actual production mounting/task placement, finish only a missing composition splice, then accept one real occurrence, current consent, overlap, pause/resume/cancel/Stop, restart/inbox/history and Objective initial/regeneration publication. Healthy native TLS or an SDK Task tool does not establish these product outcomes.
+
+**Institutional memory and outputs:** preserve existing memory classes, serving/review/correction/retention owners and their valid PG evidence. Accept current role/wall and General personal/firm restrictions, approved correction in a new thread, actual review consumers and critical-correction recall beyond MG05's bounded first page. For selected documents/skills, retain native DOCX/source results and complete real Core decision→publication→inspection/download→replay and output quality. Do not replace the full SDK/tools with a reduced qualification profile or pull all later M6/Cowork governance into this work.
+
+### A2: 25 tickets, not 25 new screens
+
+All 10 Settings, 6 Portfolio and 9 Mail tickets remain accounted for. Reviewed owner inputs are in FE 6118/Core 4ce7 where applicable; image qualification and the applied Core schema do not close feature/provider acceptance.
+
+| Ticket | Current source and necessary remaining work |
+|---|---|
+| ST03 | Settings reads repaired; accept admitted reads/permitted writes while preserving preview clone routing. |
+| ST04 | Real Clerk profile opener implemented; accept identity opener/return/focus and denial. |
+| ST05 | Current Team eligibility/member states implemented; accept real role/billing/member states. |
+| ST06 | Existing canonical invitation paging/resend controls retained; real multi-page and partial-failure acceptance remains. |
+| ST19 | Authenticated support owner/UI reviewed; 6/6 actual PG passed and migration now applied. Accept receipt/recovery/HQ paging/audit; do not invent a timed retention policy. |
+| ST20 | Authenticated broadcast consumer/exact acknowledgment exists; qualify route activation and recipient/reload/multi-tab/admin-count behavior. |
+| ST24 | Affected forms repaired; reconcile remaining named HQ/key/bulk/analyst call sites and fix only demonstrated gaps. |
+| ST25 | Stripe customer/subscription defect fixed; qualify existing hosted flow/config/return/webhook, not new card/invoice screens. |
+| ST27 | Branding save/provider outcomes and bodyless retry reviewed; actual Clerk convergence/lost-ACK acceptance remains. |
+| ST28 | Scope navigation/protection implemented; accept actual account/client switches and stale responses; richer handoff is PF02/MF19. |
+| PF07 | Canonical Objective associations implemented; accept paired Strategy/Planner/Outreach/meeting persistence and scope. |
+| PF09 | Canonical client-ID document filtering implemented; Workspace saved revision/writer and deployed revocation remain. |
+| PF13 | Quick Log/Directory/Undo/contact repairs exist; remaining domain owners and deployed checks are listed above. |
+| PF14 | Current accepted Directory allocation is explicitly note-only. Root must reconcile the broader beyond-Note ticket before closure or expansion; not a new basic-chat blocker. |
+| PF16 | Hearing-aware atomic batch move reviewed; 18 actual PG cases passed. Additive Intel metadata must precede Core behavior; paired real-flow acceptance remains. |
+| PF18 | Conversion/recovery exists; accept conversion and separately implement the bounded carry-over stage above. |
+| ML11 | Callback reconciliation implemented; real Microsoft/Google/wrong-account outcomes remain. |
+| ML12 | Requested/granted/runtime scopes separated; accept actual provider grants/capabilities. |
+| ML13 | Permanent reconnect state retained; accept invalid-grant/reconnect lifecycle. |
+| ML14 | Resource partial/backfill health implemented; accept real partial/hasMore/backfill outcomes. |
+| ML15 | Subscription readiness/recovery implemented; accept actual Microsoft renewal/recovery. |
+| ML16 | Bounded call/body/claim behavior implemented; finish provider/ordinary-role contention acceptance; preserve one-dispatch unknown outcomes. |
+| ML17 | Truthful disconnect/retained-data behavior implemented; accept real revoke and later access. |
+| ML18 | Bounded paging/search/thread behavior exists; rerun only the remaining folder-filter interaction after locator-only 84242999, then provider completeness. |
+| ML26 | Unsupported IMAP registration removed; accept truthful capabilities. No new adapter requirement. |
+
+Mail has 30/31 unique selected browser cases across runs, not one all-green run; the remaining locator repair preserved 52 assertions and only collected the case. Its provider checklist remains unrun. The earlier support PG setup timeout is superseded by 6/6 success. Stale inventories calling support, PF16, Undo/contact or the MP picker unimplemented must not restart those owners.
+
+### Order and wave boundaries
+
+1. Finish current Core/frontend rollout and remaining real chat/data acceptance; retain General 49, Core 678 and passed recovery/General evidence.
+2. Integrate MG05 and MF09 through existing paired Core/public/runtime/FE owners. Reconcile reserved Meri purge 50–52 against the actual ledger; never renumber applied history.
+3. Allocate MG02, PF02/MF19, residual PF13, PF18 and PF14 scope reconciliation. Continue independent schedule/memory/skill/provider acceptance in parallel where ownership allows. Activate qualified targets through coherent existing authenticated routing and configuration. Obsolete preview holds may be removed after target/credential compatibility is verified; preserve canonical authorization, tenant isolation and unrelated service boundaries.
+4. After replacement acceptance and rollback closure, refresh and execute the existing legacy-hosting retirement inventory. Its earlier resource counts are historical; preserve active V1/Temporal, durable local services and applied history.
+
+Wave 3 A3/Workspace breadth, new M3 citation/index products beyond retained read parity, broader M4 actions/full mail send, full M6 memory Settings/procedure/Cowork governance, browser takeover/device bridge and customer rollout remain separately sequenced unless explicitly pulled forward. The agreed simple-turn budget remains ≤30 Core calls/≤3 seconds; proposed tighter targets are not newly imposed gates.
+
 ## 1. Rules
 
-1. **One theme per release.** Each phase ships as its own deploy and is checked live before the next one on the same service.
+1. **One coherent release candidate.** Root composes compatible accepted changes in dependency order, builds the candidate once, smokes/scans that image and checks affected live behavior. A phase label does not require a separate unchanged build.
 2. **Features stay off until proven.**
-   - A new capability stays off until its phase's live checks pass.
-   - A feature's UI flag and backend flag turn on together.
+   - Root activates a capability only against its qualified compatible owners and verifies its actual preview behavior before claiming completion.
+   - Coordinate required UI/backend capability settings; source-only work has an owner and next release step, not an indefinite hold.
    - Use only required capability flags; remove replaced flags and callers after acceptance.
 3. **Reuse what exists.** No new frameworks, senders, storage platforms or second implementations. Missing pieces are added at the boundary the closeout plans name.
 4. **Measure before building anything heavy.** Expensive designs are built only if telemetry after the cheaper steps shows they're needed (section 7).
-5. **Every release passes the whole-flow chat check:**
+5. **Chat/session changes retain whole-flow acceptance.** Reuse valid evidence for unchanged behavior; rerun cases affected by the integrated release:
    - turn 1, then turn 2 straight after;
    - a page reload;
    - reopening after the deploy;
@@ -39,15 +105,15 @@ The two closeout plans stay the detailed specs: each ticket there already has it
 |---|---|---|
 | Brief | Root | One brief per phase, written one phase ahead: scope (ticket IDs), files, flags and acceptance. It points to the closeout-plan tickets for detail. |
 | Build | Allocated agent | Exact bounded source and deletion inventory, with tests run and not run. Root owns shared integration and shipping. |
-| Validate | Independent reviewer / root | Targeted independent review, plus a security review for phases that change authority (A1, M2, M4, M6, M8). The repos' gates: unit and composed tests, real PostgreSQL where touched, and the Meri image gate. Target: one day. |
+| Validate | Independent reviewer / root | Targeted independent review, plus a security review for phases that change authority (A1, M2, M4, M6, M8). Run only required affected checks, actual PostgreSQL for changed data/transaction behavior and the ordinary image gate; reuse valid exact-source evidence. |
 | Deploy | Root | Merge. Take a database snapshot before any migration. Deploy the backend first, then Meri, then the frontend. |
-| Accept | Root | Run the phase's live checks, turn its flag on only after they pass, and update the status table. |
+| Accept | Root | Qualify the compatible target, activate within its allocated preview scope, verify actual behavior and update the status. |
 
 While a phase is being validated and deployed, its agent starts the next phase in its lane.
 
 ## 3. Where we are today
 
-> **Historical 21 October snapshot.** The current completion states are in the [AgentCore migration matrix](AGENTCORE-RUNTIME-MIGRATION-20261024.md#current-completion-matrix-baseline-0425d9af-update-with-evidence) and the latest root release receipts. Neither this table nor the historical handoff table is a live status report.
+> **Historical 21 October snapshot.** The current completion states are in the [AgentCore migration matrix](AGENTCORE-RUNTIME-MIGRATION-20261024.md#current-completion-matrix) and the latest root release receipts. Neither this table nor the historical handoff table is a live status report.
 
 | Area | State |
 |---|---|
@@ -184,7 +250,7 @@ The following dated wave schedule is historical sequencing, not a current calend
 
 **Current preview authorization:** Neo lifted the client-record read-only restriction, with exact routing and canonical online tenant/member/client/capacity checks. Selected-client requirements and other feature/provider gates remain. Root qualifies each real target; an old deferred staging decision does not create a fresh approval hold or waive any feature acceptance.
 
-- **Can always run together:** lanes R, D, U and A, because they edit different files.
+- **Can run together when allocated:** independent A/U/R/D and visible-lane work with disjoint files and non-conflicting shared resources. Root names the writer and dependencies; lane labels alone do not guarantee isolation.
 - **Must never overlap:**
   - two changes to the same runtime-core file (lane R works through them one at a time);
   - two releases to the same environment (root runs deploys one at a time);
@@ -206,7 +272,7 @@ The following dated wave schedule is historical sequencing, not a current calend
 
 ## 8. Decision history and current superseding instructions
 
-Rows 1–15 preserve the dated decisions. The current authorization and hosting decision in rows 16–17 supersede conflicting operational holds and mechanisms; they do not remove product scope.
+Rows 1–17 preserve the recorded decisions. Rows 18–20 append the current execution agreements; they supersede conflicting operational holds/process assumptions without removing product scope.
 
 | # | Decision | Neo's answer |
 |---|---|---|
@@ -227,6 +293,9 @@ Rows 1–15 preserve the dated decisions. The current authorization and hosting 
 | 15 | Dead code (Neo, 23 October 2026) | **Leave no dead code behind.** Every change deletes what it replaces; temporary diagnostics are removed; nothing stays dark without an owner and a date (`STANDING-REQUIREMENTS.md` rule 3). |
 | 16 | Hosting (Neo, 24 October 2026) | **Implement AgentCore Runtime standard V1 now**, retaining the real Claude Agent SDK, Core permissions, durable native sessions/artifacts, all memory/data/skills and required Temporal durability. Replace per-turn Fargate and S3 warm-pool machinery; leave no dead code. |
 | 17 | Completion and authority (Neo, 24 October 2026) | **Finish autonomously and in parallel under root's sole orchestration.** Update all plans, retain every accepted feature, run real acceptance and report gaps. Client-record preview writes are approved without removing selected-client or access walls. |
+| 18 | Current execution (Neo, 24 October 2026) | Root Codex on EC2AMAZ-M7CDRPT is the sole orchestrator using profile default. Implementation and separate review sessions use GPT-6 Astra at Ultra, with useful parallel work bounded by root; Fable/dot roles and old work/AWS holds are historical. |
+| 19 | Durable development environment (Neo, 24 October 2026) | Preserve WSL, persistent local app/DB services and data, private development configuration, active checkouts and reusable caches across waves. Repair in place; clean only owned disposable tests/temporary release material. |
+| 20 | Necessary work only (Neo, 24 October 2026) | Reuse existing owners and valid checks; check the changed behavior, build the release image once, smoke/scan it and verify deployment. Do not add parallel frameworks or blanket gate reruns. Actual source changes/failures and required security/data checks still receive proportionate qualification. |
 
 ## 9. Index: every item and its phase
 

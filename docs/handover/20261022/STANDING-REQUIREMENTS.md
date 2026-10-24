@@ -6,6 +6,8 @@ Neo's current direct instruction is to finish Wave 2 autonomously, migrate the a
 
 **Local environment retention (Neo, 24 October 2026):** preserve and reuse the local development environment throughout future waves for faster testing and shipping. Keep the WSL distribution, persistent local services/database data, development configuration, active working source and reusable tooling/dependency caches. Repair and upgrade in place. This supersedes the earlier broad disk-cleanup request for these resources; cleanup remains scoped to verified disposable tests and temporary release secrets. Root maintains the private host inventory in `C:/dev/LOCAL-DEVELOPMENT-ENVIRONMENT.md`.
 
+**Necessary qualification only (Neo, 24 October 2026):** check the real integrated path early, select tests by changed behavior and risk, reuse unaffected evidence, review once plus relevant final changes, build each candidate once, and verify the deployed advertised scope. Do not add qualification frameworks or repeat broad gates after the affected requirements pass. Diagnose a demonstrated failure before rebuilding. The [workflow delivery lessons](WORKFLOW.md#delivery-lessons-from-24-october-2026) govern older checklists and matrices; actual authorization, tenant isolation and data integrity remain required.
+
 Neo's words, verbatim:
 
 - "follow best practices and have simple chat work. dont over engineer and dont leave deadcodd befind. just make it work"
@@ -61,11 +63,11 @@ A change is not done until what it replaced is gone.
 - Reuse the existing read handlers under `apps/gateway/sources/*` and their typed schemas. Delete the authority, relay and measurement wrappers around them.
 - Parity: every read family that works today must be reachable as a tool with the same results and the same permission outcomes. A parity checklist is part of the item 0 spec.
 - Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
-- Writes stay out of the first cut. When added, they go through the SDK permission callback plus Core intents, with the same receipts as today.
+- The original read-only first cut is historical. Neo subsequently authorized preview client-record writes and autonomous Wave 2 completion. Activate accepted writes through their existing authenticated domain/intent owners and receipts, with the actual route/configuration and effect semantics verified. This does not authorize the assistant to send external mail without the user's specific send instruction.
 
 ## 5. Components being removed: do not build, extend, qualify, measure or preserve
 
-The owner/proxy pair (`apps/proxy`); budget reservation, settlement and liability recovery (`apps/gateway/budget`); per-operation authority (`apps/runtime/native-authority`, the task verifier, origin and run-current authority, ECS task proofs, read-credential relays, revision pins); the temporal-issuer; the P1 timeout/budget table and P2 proof reuse; authority-lite (S2) and the signed lease (S4); and the custom checkpoint / dormant-original continuity.
+The owner/proxy pair (`apps/proxy`); budget reservation, settlement and liability recovery (`apps/gateway/budget`); obsolete task/allocation proofs and redundant per-hop authority, credential relays and revision-pin machinery; the temporal-issuer; the P1 timeout/budget table and P2 proof reuse; authority-lite (S2) and the signed lease (S4); and the custom checkpoint / dormant-original continuity. This is a mechanism-level removal list, not permission to delete the entire `apps/runtime/native-authority` directory: retain any current canonical identity, membership, session and access checks still owned there until their replacement is proved.
 
 The register `source-of-truth/SUPERSEDED-BY-ITEM-0.md` lists every ticket, scenario and plan row affected, and what to keep as behaviour. If an old ticket and item 0 disagree, **item 0 wins**. Resolve routine implementation within root's existing allocation; escalate only an actual scope or ownership conflict. Never recreate a removed mechanism to satisfy an old ticket.
 

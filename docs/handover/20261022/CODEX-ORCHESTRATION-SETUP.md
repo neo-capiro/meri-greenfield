@@ -1,6 +1,6 @@
 # Codex orchestration and shipping setup (Capiro / Meri)
 
-> **Updated 2026-10-23.** `WAVE-2-HANDOVER.md` supersedes §0.6–§0.7 and the "run on neomart" assumption. Put the four rules from `STANDING-REQUIREMENTS.md` at the top of every persistent instruction file and every brief (§2 below), and read `source-of-truth/SUPERSEDED-BY-ITEM-0.md` before sending any ticket.
+> **Historical setup prompts, superseded 24 October 2026.** Do not run the six prompts below as a current setup or authority flow. [CODEX-SETUP.md](CODEX-SETUP.md) and [WORKFLOW.md](WORKFLOW.md) govern root Codex on EC2AMAZ-M7CDRPT, profile default, Astra 6 Ultra implementation/independent review, AgentCore V1 plus the full Claude SDK and the preserved durable local environment. Fable/dot roles, neomart assumptions, old holds and removed-service commands below are lineage only. Read [standing requirements](STANDING-REQUIREMENTS.md) and the [supersession register](source-of-truth/SUPERSEDED-BY-ITEM-0.md) before using any historical detail.
 
 Handover from Fable (Claude Code) to Codex, 2026-10-22. **Codex takes over Fable's role, coordinator and shipper, starting with Wave 2.** §0.6 gives Codex the Wave 1 state it inherits; §0.7 is how it starts Wave 2.
 
