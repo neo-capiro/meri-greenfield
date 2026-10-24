@@ -87,6 +87,60 @@ export function createAttendedRoutinesContextOwner({base,sessions,scheduleOwner,
   async authorizeRequest(value){const owner=await select(value);return owner.authorizeRequest(value);}});
 }
 
+/** AgentCore foreground actions use the existing live action session and current run/model-policy owners.
+ * They do not require a running SDK invocation: reviewing an already prepared proposal after completion
+ * still requires the same current conversation selection and a fresh signed-in Core policy decision. */
+export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,store,now=Date.now,newId,runCancellation}){
+ let c,authenticate,readState,readRun,readModelPolicy,readHead;
+ try{
+  c=own(base,['template','workflow','policy','limits','versions','maxRuntimeSeconds']);
+  validateShape('RuntimeVersions',c.versions);
+  authenticate=storageMethod(sessions,'authenticateSession');readState=storageMethod(sessions,'readCurrentState');
+  readRun=storageMethod(store,'read');readModelPolicy=storageMethod(store,'readModelPolicy');readHead=storageMethod(facet(store,'nextRuns'),'current');
+  if(!ordinary(now)||!ordinary(newId)||!Number.isSafeInteger(c.maxRuntimeSeconds)||c.maxRuntimeSeconds<1||
+   !Number.isSafeInteger(c.limits.maxRequestMs)||c.limits.maxRequestMs<1||c.limits.maxRequestMs>30000)throw Error();
+ }catch{throw fault();}
+ async function select(value){
+  let request,life;
+  try{
+   request=own(value,['credential','operation','request','deadlineMs'],['signal','proposal']);nativeSignal(request.signal);
+   if(typeof request.credential!=='string'||!request.credential||!Number.isSafeInteger(request.deadlineMs))throw Error();
+   const deadlineMs=Math.min(request.deadlineMs,now()+c.limits.maxRequestMs);
+   life=createOperationLifetime({now,signal:request.signal,deadlineMs,errorFactory:contextRefuse});
+   const auth=data(own(await life.run(signal=>authenticate({credential:request.credential,signal,deadlineMs})),['principal','sessionRevision','checkedAtMs','expiresAtMs']));
+   let selected=null,budget=null;
+   async function currentFor(call){
+    const check=()=>{call.signal?.throwIfAborted();if(now()>=call.deadlineMs)throw contextRefuse();};
+    const current=data(own(await readState(call),['authenticationSha256','binding','scopes','selectedClientId','checkedAtMs','expiresAtMs']));check();
+    const b=current.binding;validateShape('RunBinding',b);
+    const principal=data(own(call.authentication.principal,['sessionId','tenantId','actorId','conversationId','runId']));
+    if(current.authenticationSha256!==hash(call.authentication)||['tenantId','actorId','conversationId','runId'].some(key=>principal[key]!==b[key])||
+     !uuid.test(current.selectedClientId)||!Array.isArray(current.scopes)||current.scopes.length!==1||
+     current.scopes[0].tenantId!==b.tenantId||current.scopes[0].kind!=='client'||current.scopes[0].resourceId!==current.selectedClientId||
+     current.expiresAtMs<=now()||call.authentication.expiresAtMs<=now())throw contextRefuse();
+    const choice={binding:b,scopes:current.scopes,selectedClientId:current.selectedClientId};
+    if(selected!==null&&!same(choice,selected))throw contextRefuse();
+    const {run}=await readRun(b,{after:0,limit:1},check),head=await readHead(b,check),policy=await readModelPolicy(b,check);check();
+    if(!same(run.binding,b)||!same(run.scopes,current.scopes)||!same(run.versions,c.versions)||run.policyRevision!==current.scopes[0].policyRevision||
+     !['starting','running','paused','waiting-for-approval','completed'].includes(run.state)||head.reserved!==false||!same(head.binding,b)||
+     !same(head.scopes,current.scopes)||head.policyRevision!==run.policyRevision||!Number.isSafeInteger(policy.maxBudgetMicroUsd)||policy.maxBudgetMicroUsd<1)throw contextRefuse();
+    // A changed tenant budget never reuses the old proposal/authorization silently.
+    if(budget!==null&&budget!==policy.maxBudgetMicroUsd)throw contextRefuse();
+    selected??=data(choice);budget??=policy.maxBudgetMicroUsd;
+    return {...current,checkedAtMs:now(),expiresAtMs:Math.min(current.expiresAtMs,call.authentication.expiresAtMs,deadlineMs)};
+   }
+   const first=await life.run(signal=>currentFor({authentication:auth,signal,deadlineMs}));life.check();
+   return createScheduleRuntimeContext({sessions:{authenticateSession:authenticate,readCurrentState:currentFor},
+    commandContext:{binding:first.binding,clientResolution:{reference:first.selectedClientId,clientId:first.selectedClientId}},
+    executionLimits:{expiresAtMs:first.expiresAtMs,maxCostMicrousd:budget,maxRuntimeSeconds:c.maxRuntimeSeconds,retryLimit:0},
+    template:c.template,workflow:c.workflow,policy:c.policy,limits:c.limits,scheduleOwner,now,newId,
+    ...(runCancellation===undefined?{}:{runCancellation})});
+  }catch{throw contextRefuse();}finally{life?.close();}
+ }
+ return Object.freeze({async resolve(value){const owner=await select(value);return owner.resolve(value);},
+  async authorizeRequest(value){const owner=await select(value);return owner.authorizeRequest(value);}});
+}
+
 /** The native stop port is the candidate's existing execution/kickoff/stop route for initial and successor runs.
  * A successful route response is insufficient: re-read the durable allocation and require physical-stop proof. */
 export function createAttendedRoutinesRetirement({native,allocations,principal,now=Date.now,maxRequestMs}){
