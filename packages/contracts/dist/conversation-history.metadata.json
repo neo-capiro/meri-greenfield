@@ -35,8 +35,8 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "28123dbbb5d2f7eb7a3380e47d2ed9f08370a5d5fcd0ede991bc850de3fd4c7e",
-      "bytes": 2464
+      "sha256": "ad4eb3f95de3c0ec052ff39f24b068957941926524d10915d8d001c9fd1216d0",
+      "bytes": 2449
     },
     {
       "path": "conversation-history/receive.mjs",
