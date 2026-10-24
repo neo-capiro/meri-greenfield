@@ -5,7 +5,7 @@ import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
 const f=candidateFixture(),config=f.configuration.nativeCandidate,original=createExecutionBinding({binding:f.binding,versions:f.configuration.versions,plan:config.plan,expiresAtMs:config.runtime.deadlineMs});
-let lazy,sessionCalls=0,controllerClosed=0,allocations=0,captured;
+let lazy,sessionCalls=0,controllerClosed=0,allocations=0,observations=0,captured;
 const sdkSessionOwner=Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(method=>[method,async function(value){sessionCalls++;return {method,request:value.request};}]))),continuation={async prepare(){},async readSnapshot(value){return value;}};
 mock.module('../prepared-candidate-config.mjs',{namedExports:{compilePreparedCandidateConfiguration(value){return value;}}});
 mock.module('../native-authority/task-allocator.mjs',{namedExports:{compileNativeTaskPlan(){return {original,preparationIntent:config.preparationIntent};},createNativeTaskAllocator(){throw Error('No allocation');}}});
@@ -18,13 +18,13 @@ const pool={connect(){throw Error('No SQL');}},objects={async get(){throw Error(
 
 test('prepared SDK ports refuse before allocation, then borrow the same owner and refuse foreign bindings/after close',async()=>{
  const candidate=assemblePreparedCandidate({configuration:f.configuration,pool,ecs:{},objects,credentials:f.secret,
-  allocate(){allocations++;return {resource:{taskArn:'synthetic'},productPorts:{sdkSessionOwner,sdkSessionSnapshot:continuation},async close(){controllerClosed++;}};}});
+  allocate(){allocations++;return {resource:{taskArn:'synthetic'},observe(value){observations++;return value;},productPorts:{sdkSessionOwner,sdkSessionSnapshot:continuation},async close(){controllerClosed++;}};}});
  const value={credential:'synthetic-task',request:{binding:f.binding}};
- assert.equal(allocations,0);assert.equal(candidate.productPorts.identityContext,candidate.identityContext);assert.equal(candidate.productPorts.conversationTurns,undefined);
+ assert.throws(()=>lazy.observe({}));assert.equal(observations,0);assert.equal(allocations,0);assert.equal(candidate.productPorts.identityContext,candidate.identityContext);assert.equal(candidate.productPorts.conversationTurns,undefined);
  assert.throws(()=>candidate.productPorts.sdkSessionOwner.load(value),{code:'SDK_SESSION_UNAVAILABLE'});assert.equal(sessionCalls,0);
- await lazy.allocate();assert.equal(allocations,1);assert.deepEqual(await candidate.productPorts.sdkSessionOwner.load(value),{method:'load',request:value.request});
+ await lazy.allocate();assert.equal(allocations,1);const signal=new AbortController().signal;assert.deepEqual(lazy.observe({signal}),{signal});assert.equal(observations,1);assert.deepEqual(await candidate.productPorts.sdkSessionOwner.load(value),{method:'load',request:value.request});
  assert.throws(()=>candidate.productPorts.sdkSessionOwner.load({...value,request:{binding:{...f.binding,actorId:'foreign'}}}),{code:'SDK_SESSION_UNAVAILABLE'});assert.equal(sessionCalls,1);
- await candidate.close();assert.equal(controllerClosed,1);assert.throws(()=>candidate.productPorts.sdkSessionOwner.load(value),{code:'SDK_SESSION_UNAVAILABLE'});
+ await candidate.close();assert.equal(controllerClosed,1);assert.throws(()=>lazy.observe({}));assert.equal(observations,1);assert.throws(()=>candidate.productPorts.sdkSessionOwner.load(value),{code:'SDK_SESSION_UNAVAILABLE'});
 });
 
 test('remote controller exposes exactly the durable session owner built with its canonical run owner/verifier',async()=>{

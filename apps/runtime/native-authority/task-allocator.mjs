@@ -56,5 +56,12 @@ export function createNativeTaskAllocator(configuration){
    const resource=data({...m,grantFactsJsons:active.grantFactsJsons});await life.run(()=>record({...key,state:'ADMITTED',resource},life.check));return {original,resource,currentAllocationJson:active.currentAllocationJson};
   }catch(error){try{await operation(undefined,l=>l.run(()=>record({...key,state:'UNKNOWN',resource:null},l.check)));}catch{}if(m){let refused=false;try{await retireAuthority(m);}catch{refused=true;}try{await containment(m);}catch{refused=true;}if(refused)throw executionFault('ALLOCATION_CLEANUP_UNKNOWN');}throw error;}
  },Math.max(1,Math.min(maxRequestMs+startupMs,original.expiresAtMs-now())));}
- return Object.freeze({allocate,async stop(){const saved=await read(key,()=>{});if(!saved.record)throw executionFault('ALLOCATION_UNKNOWN');const m=saved.record.resource??await operation(undefined,async life=>metadata(await discover(life)).m);let revoked=true;try{await retireAuthority(m);}catch{revoked=false;}const stopped=await containment(m);if(!revoked)throw executionFault('ALLOCATION_CLEANUP_UNKNOWN');await record({...key,state:'RETIRED',resource:{...m,physicalStopProven:true}},()=>{});return stopped;},intent});
+ // Read-only liveness of this journaled original. STOPPED is evidence to stop waiting, not a retirement or terminal-write receipt.
+ async function observe({signal}={}){return operation(signal,async life=>{
+  const {record:saved}=await life.run(()=>read(key,life.check));if(!saved?.resource||!['ADMITTED','RETIRED'].includes(saved.state))throw executionFault('ALLOCATION_UNKNOWN');
+  if(hash(Object.fromEntries(Object.entries(saved).filter(([k])=>!['state','resource'].includes(k))))!==hash(intent))throw executionFault('ALLOCATION_REPLAY_REFUSED');
+  const m=saved.resource,p=compileEcsTaskBinding({taskArn:m.taskArn,createdAtMs:m.createdAtMs,clusterArn:m.clusterArn,taskDefinitionArn:m.taskDefinitionArn,containerName:m.containerName,original,enabled:true,now});
+  const state=assertEcsOwnedTask((await describe(life,[m.taskArn]))[0],p);life.check();return {taskArn:m.taskArn,stopped:state.stopped};
+ });}
+ return Object.freeze({allocate,observe,async stop(){const saved=await read(key,()=>{});if(!saved.record)throw executionFault('ALLOCATION_UNKNOWN');const m=saved.record.resource??await operation(undefined,async life=>metadata(await discover(life)).m);let revoked=true;try{await retireAuthority(m);}catch{revoked=false;}const stopped=await containment(m);if(!revoked)throw executionFault('ALLOCATION_CLEANUP_UNKNOWN');await record({...key,state:'RETIRED',resource:{...m,physicalStopProven:true}},()=>{});return stopped;},intent});
 }

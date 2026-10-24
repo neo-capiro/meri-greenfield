@@ -46,6 +46,7 @@ async function composition(t,{loseKickoffAck=false,blockPoll=false,now}={}){
  let runState='queued',record={state:'CLAIMED',original,resource:null};
  const proof=released=>({original,taskArn,checkedAtMs:Date.now(),expiresAtMs:original.expiresAtMs,released});
  const controller={
+  observe:async()=>({taskArn,stopped:false}),
   allocate:async()=>{record={state:'ADMITTED',original,resource:{taskArn}};return {original,resource:{taskArn}};},
   close:async()=>{effects.closes++;effects.terminated=true;effects.revoked=true;effects.closedAt??=Date.now();}};
  const owner=createPreparedTaskKickoff({original,controller,store:{allocations:{read:async()=>({record,run:{binding,state:runState}})}},
