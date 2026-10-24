@@ -11,9 +11,10 @@ import {occurrenceIdentity} from '../../../control/schedules/scheduled-occurrenc
 import {workflowId,createTemporalConversationDispatcher} from '../../../control/conversations/temporal-dispatch.mjs';
 import {createTemporalRunEvidence} from '../../../control/conversations/temporal-run-evidence.mjs';
 import {createScheduledNativeAdmission} from '../scheduled-admission.mjs';
+import {MODEL_CATALOG} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
 export {versions,instruction};
 
-export async function scheduledAdmissionFixture({nativeCandidate,clockMs}={}){
+export async function scheduledAdmissionFixture({nativeCandidate,clockMs,agentcore=false}={}){
  const conversations=initialInputFixture(),bindings=new Map(),queries=[],releases=[],faults={onQuery:null,onCommit:null,onRelease:null,loseBindingCommit:false,loseAcceptanceCommit:false};
  if(clockMs!==undefined)conversations.advance(clockMs-conversations.now());
  const key=p=>p.slice(0,2).join(':'),copy=v=>structuredClone(v);
@@ -38,7 +39,7 @@ export async function scheduledAdmissionFixture({nativeCandidate,clockMs}={}){
   if(sql.startsWith('UPDATE meri_conversations.initial_inputs'))stage='accept';
   return client.query(sql,p);
  },release(reason){releases.push(reason);client.release(reason);faults.onRelease?.(stage);}};}};
- const now=conversations.now,store=createPostgresConversationStore({pool,now}),scheduleSql=scheduleOwnerFixture(),scheduleOwner=createPostgresScheduleOwner({pool:scheduleSql.pool});
+ const now=conversations.now,store=createPostgresConversationStore({pool,now,modelCatalog:MODEL_CATALOG}),scheduleSql=scheduleOwnerFixture(),scheduleOwner=createPostgresScheduleOwner({pool:scheduleSql.pool});
  const nativeAllocation=nativeCandidate===undefined?null:JSON.parse(nativeCandidate.allocationJson);
  const manifest=nativeAllocation?.manifest??JSON.parse(readFileSync(new URL('../../../../packages/skills/originals/relationship_brief/1.0.0/manifest.json',import.meta.url)));
  const principal=nativeAllocation?{tenantId:nativeAllocation.run.tenantId,actorId:nativeAllocation.run.actorId}:{tenantId:'tenant-a',actorId:'actor-a'},selectedClientId=nativeCandidate?.identity.commandContext.clientResolution.clientId??id(5),policyRevision=nativeCandidate?.qualification.policyRevision??'policy1',scopes=[{...principal,kind:'client',resourceId:selectedClientId,policyRevision}].map(({actorId,...s})=>s);
@@ -47,6 +48,7 @@ export async function scheduledAdmissionFixture({nativeCandidate,clockMs}={}){
  const task={taskId:id(9),manifestSha256:allocation.manifestSha256,version:1};
  const selectedVersions=nativeCandidate?.runtime.versions??versions;
  const template={principal,selectedClientId,policyRevision,versions:selectedVersions,task,configurationSha256:'c'.repeat(64),allocationJson:JSON.stringify(allocation),runWindowMs:60000,destinationId:'meri-inbox'};
+ if(agentcore)delete template.allocationJson;
  const intent={...createIntent(),projection:projection({owner:principal,scopes,maxCostMicrousd:manifest.budgets.maxCostMicroUSD,maxRuntimeSeconds:20,retryLimit:0,destinationId:template.destinationId,createdAt:new Date(now()-1000).toISOString()}),configuration:configuration({task,catchupWindowMs:60000})};
  const occurrence={workflowId:'synthetic-native-schedule-firing',temporalScheduleId:intent.projection.temporalScheduleId,scheduledAt:new Date(now()).toISOString(),projection:intent.projection,generation:1,task};
  const identity=occurrenceIdentity(occurrence),effect={binding:identity.binding,requestId:identity.requestId,eventId:identity.eventId,workflowId:workflowId(identity.binding)};

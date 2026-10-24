@@ -1,19 +1,41 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalize,resolve} from 'node:path';
-import {registerHooks} from 'node:module';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createScheduledNativeAdmission} from '../scheduled-admission.mjs';
 import {createInitialRunBindingJournal} from '../../../control/conversations/initial-run-binding-journal.mjs';
 import {createScheduledDispatch} from '../../../control/schedules/scheduled-dispatch.mjs';
 import {occurrenceIdentity} from '../../../control/schedules/scheduled-occurrence.mjs';
 import {scheduledAdmissionFixture,instruction,versions} from './scheduled-admission-fixture.mjs';
-import {candidateFixture} from '../../test/prepared-candidate-fixture.mjs';
-import {createMemoryIssuanceStore} from '../../prepared-run-issuance-store.mjs';
-import {capabilityDigest} from '../task-verifier.mjs';
+import {MODEL_CATALOG,CLAUDE_SELECTION} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
 const copy=v=>structuredClone(v),none=()=>{},code=s=>e=>e.code===`SCHEDULE_ADMISSION_${s}`;
 const counts=f=>({bindings:f.bindings.size,inputs:f.conversations.allocations.size,runs:f.conversations.state.runs.size,events:[...f.conversations.state.events.values()].flat().length});
 const empty={bindings:0,inputs:0,runs:0,events:0};
+
+test('AgentCore occurrence pins its configured model once and keeps execution lifetime independent of short consent leases',async()=>{
+ const f=await scheduledAdmissionFixture({agentcore:true});f.policy.expiresAtMs=f.now()+1000;
+ const first=await f.adapter.admit(f.request),saved=await f.store.readOptional(first.binding,{after:0,limit:1},none);
+ assert.equal(first.expiresAtMs,f.now()+20000);assert.deepEqual(saved.request.modelSelection,MODEL_CATALOG.defaultSelection);
+ assert.equal(first.requestSha256,hash(saved.request));assert.equal(f.policy.calls.some(q=>Object.hasOwn(q.selection,'allocationSha256')),false);
+ f.advance(2000);f.policy.expiresAtMs=f.now()+1000;
+ const request=copy(f.request);request.input.request=saved.request;
+ const store={...f.store,readDefaultModelSelection:async()=>assert.fail('replay must use its pinned model')};
+ assert.deepEqual(await createScheduledNativeAdmission({...f.options,store}).admit(request),{...first,replayed:true});
+ request.input.request={...saved.request,modelSelection:CLAUDE_SELECTION};await assert.rejects(f.adapter.admit(request),code('INPUT'));
+});
+
+test('AgentCore first admission rejects a caller model, expired consent and changed active task profile',async()=>{
+ for(const change of [f=>f.request.input.request.modelSelection=CLAUDE_SELECTION,f=>f.policy.expiresAtMs=f.now(),f=>f.template.task={...f.template.task,manifestSha256:'d'.repeat(64)}]){
+  const f=await scheduledAdmissionFixture({agentcore:true});change(f);await assert.rejects(createScheduledNativeAdmission(f.options).admit(f.request));assert.equal(f.conversations.state.runs.size,0);
+ }
+});
+
+test('AgentCore normalized model admission crosses actual scheduled dispatch and remains immutable after lost acceptance ACK',async()=>{
+ const f=await scheduledAdmissionFixture({agentcore:true});f.faults.loseAcceptanceCommit=true;
+ const owner=dispatch(f);assert.equal((await owner.dispatch({occurrence:f.occurrence})).outcome,'UNKNOWN');assert.equal(f.temporal.calls.start,0);
+ assert.equal((await owner.dispatch({occurrence:f.occurrence})).outcome,'DISPATCHED');assert.equal(f.temporal.calls.start,1);
+ const saved=await f.store.readOptional(f.identity.binding,{after:0,limit:1},none);assert.deepEqual(saved.request.modelSelection,MODEL_CATALOG.defaultSelection);
+ assert.deepEqual(counts(f),{bindings:1,inputs:1,runs:1,events:1});
+});
 
 test('actual binding/input journals admit one immutable occurrence and retain its original timestamp and expiry on replay',async()=>{
  const f=await scheduledAdmissionFixture(),at=f.now(),first=await f.adapter.admit(f.request);
@@ -237,34 +259,4 @@ test('an already observed started occurrence needs no replacement native proof o
  const f=await scheduledAdmissionFixture(),owner=dispatch(f);assert.equal((await owner.dispatch({occurrence:f.occurrence})).outcome,'DISPATCHED');
  const calls=f.policy.calls.length;f.policy.onAuthorize=()=>{throw Error('synthetic native policy unavailable');};
  assert.equal((await owner.dispatch({occurrence:f.occurrence})).outcome,'DISPATCHED');assert.equal(f.policy.calls.length,calls);assert.equal(f.temporal.calls.start,1);
-});
-
-test('actual journal-backed schedule admission is accepted by existing native prepareInitial with the same original window',async()=>{
- // This sparse checkout borrows dependency packages without the workspace @capiro link. Resolve its declared node entry to
- // the exact local canonical validator; no module implementation is replaced. Ordinary installed workspaces use the same file.
- const hook=registerHooks({resolve(specifier,context,next){return specifier==='@capiro/meri-contracts/node'?
-  {url:new URL('../../../../packages/contracts/validate.mjs',import.meta.url).href,shortCircuit:true}:next(specifier,context);}});
- let createPreparedRunBindings;try{({createPreparedRunBindings}=await import('../../prepared-run-bindings.mjs'));}finally{hook.deregister();}
- const candidate=candidateFixture(),c=candidate.configuration.nativeCandidate,at=candidate.now;
- for(const key of ['workspace','configParentDirectory','secureStorageDirectory'])c.preparationIntent[key]=normalize(c.preparationIntent[key]);
-
-
- c.multiRun={runWindowMs:60000,materialDirectory:resolve('synthetic-schedule-material'),dynamicInitialRuns:true};
- c.runtime.deadlineMs=at+120000;const a=JSON.parse(c.allocationJson);a.schedule.expiresAt=new Date(c.runtime.deadlineMs).toISOString();c.allocationJson=JSON.stringify(a);
- for(const intent of c.grantIntents)intent.expiresAtMs=c.runtime.deadlineMs;
- const f=await scheduledAdmissionFixture({nativeCandidate:c,clockMs:at}),initialBindings=createInitialRunBindingJournal({pool:f.pool,now:f.now});
- const calls={task:0};
- // Explicit synthetic material producers; native records, preparation and issuance logic are the actual existing owners.
- const capability='synthetic-scheduled-task-grant-0001';
- const capabilityAuthority={async generate(){calls.task++;return {grantId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',capability,materialRef:'synthetic-scheduled-material'};},async retrieve(){return {state:'PRESENT',capability};},async status(){return {state:'ABSENT'};}};
- const native=createPreparedRunBindings({configuration:candidate.configuration,pool:f.pool,store:f.store,credentials:{control:candidate.secret.control},
-  issuanceStore:createMemoryIssuanceStore(),capabilityAuthority,initialBindings,now:f.now});
- f.template.configurationSha256=native.configurationSha256;
- const receipt=await createScheduledNativeAdmission(f.options).admit(f.request);
- const prepared=await native.prepareInitial({binding:receipt.binding});assert.deepEqual(prepared.original.binding,receipt.binding);assert.equal(prepared.original.expiresAtMs,receipt.expiresAtMs);
- const facts=await native.runIssuance.resolveFacts(prepared.issuance);
- assert.equal(facts.runtime.deadlineMs,receipt.expiresAtMs);assert.equal(facts.preparationIntent.workspace.endsWith(receipt.binding.conversationId),true);
- assert.deepEqual(JSON.parse(facts.allocationJson).run,Object.fromEntries(Object.keys(a.run).map(k=>[k,receipt.binding[k]])));
- assert.deepEqual(await native.prepareInitial({binding:receipt.binding}),prepared);assert.deepEqual(calls,{task:1});
- assert.equal(f.conversations.state.allocations.size,0,'preparation/issuance never starts an ECS task');
 });

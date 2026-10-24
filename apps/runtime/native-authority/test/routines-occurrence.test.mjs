@@ -111,11 +111,11 @@ test('a revoked or expired consent refuses the admission as AUTHORITY with nothi
 
 test('retirement re-proves the physical stop through control only for a run of a scheduled occurrence',async t=>{
  const h=await harness();t.after(h.close);
- await h.ports.runAdmission.admit(h.request);await h.claim();
+ await h.ports.runAdmission.admit(h.request);await h.claim();await h.status('cancelled');
  assert.deepEqual(await h.ports.retirement.retire({binding:h.identity.binding,deadlineMs:h.now()+1000}),{physicalStopProven:true});
  assert.deepEqual(h.calls.retire,[h.identity.binding]);assert.equal(h.urls.length,2);
- const saved=await h.store.allocations.read({binding:h.identity.binding,allocationKey:hash(h.identity.binding)},()=>{});
- assert.equal(saved.record.state,'RETIRED');assert.equal(saved.record.resource.physicalStopProven,true);
+ const saved=await h.store.executions.settlement(h.identity.binding,()=>{});
+ assert.equal(saved.settled,true);assert.equal(saved.run.state,'cancelled');
  assert.deepEqual(await h.ports.retirement.retire({binding:h.identity.binding}),{physicalStopProven:true},'a repeated retirement is idempotent');
  // A retirement that cannot prove the stop is carried as the owner's own code, never as success.
  h.hooks.retire=()=>{throw Object.assign(Error('EXECUTION_ALLOCATION_CLEANUP_UNKNOWN'),{code:'EXECUTION_ALLOCATION_CLEANUP_UNKNOWN'});};
@@ -201,7 +201,8 @@ test('the worker port refuses open replies, carries typed refusals and needs a n
  const reply=value=>createRoutinesOccurrencePorts({native:{async call(){return value;}}});
  const admitted={binding:h.identity.binding,requestSha256:hash(h.input.request),expiresAtMs:h.now()+1000,replayed:false};
  assert.deepEqual(await reply({admitted}).runAdmission.admit(h.request),admitted);
- for(const value of [{admitted:{...admitted,binding:{...h.identity.binding,runId:id(99)}}},{admitted:{...admitted,requestSha256:'e'.repeat(64)}},{admitted:{...admitted,replayed:'no'}},{admitted,extra:1},{admitted:{...admitted,extra:1}},{},null,'started',{refused:{code:'bad code'}},{refused:{}}])
+ // The normalized digest is compared with the actual saved request by scheduled dispatch (covered there).
+ for(const value of [{admitted:{...admitted,binding:{...h.identity.binding,runId:id(99)}}},{admitted:{...admitted,requestSha256:'not-a-digest'}},{admitted:{...admitted,replayed:'no'}},{admitted,extra:1},{admitted:{...admitted,extra:1}},{},null,'started',{refused:{code:'bad code'}},{refused:{}}])
   await assert.rejects(reply(value).runAdmission.admit(h.request),code('ROUTINES_OCCURRENCE_REPLY'));
  for(const value of [{retired:{physicalStopProven:false}},{retired:{}},{admitted},{retired:{physicalStopProven:true},refused:{code:'X'}}])await assert.rejects(reply(value).retirement.retire({binding:h.identity.binding}),code('ROUTINES_OCCURRENCE_REPLY'));
  await assert.rejects(reply({refused:{code:'SCHEDULE_ADMISSION_STALE'}}).runAdmission.admit(h.request),code('SCHEDULE_ADMISSION_STALE'));

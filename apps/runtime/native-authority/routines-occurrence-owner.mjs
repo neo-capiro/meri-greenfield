@@ -31,7 +31,7 @@ const fault=code=>Object.assign(Error('ROUTINES_OCCURRENCE_'+code),{code:'ROUTIN
 const refuse=code=>{throw fault(code);};
 /** The admission's three proof phases, all covered by one Core purpose: the occurrence's `before_admission` grant. */
 export const ADMISSION_PHASES=Object.freeze(['before_claim','before_accept','before_release']);
-const SELECTION_KEYS=['phase','occurrenceKey','binding','intentSha256','effectSha256','requestSha256','configurationSha256','allocationSha256','scopes','selectedClientId','policyRevision','versions','task','destinationId','expiresAtMs'];
+const SELECTION_KEYS=['phase','occurrenceKey','binding','intentSha256','effectSha256','requestSha256','configurationSha256','scopes','selectedClientId','policyRevision','versions','task','destinationId','expiresAtMs'];
 const sortedScopes=scopes=>scopes.map(hash).sort();
 
 export function createOccurrenceConsentAuthority(options){
@@ -40,7 +40,7 @@ export function createOccurrenceConsentAuthority(options){
   const o=own(options,['firing','template','occurrence','occurrenceKey'],['now']);
   authorize=sdkMethod(o.firing,'authorize');occ=snapshotOccurrence(o.occurrence);id=occurrenceIdentity(occ);now=o.now??Date.now;
   // The whole scheduled-run template (scheduled-admission.mjs validates it); the receipt needs these three facts of it.
-  const {selectedClientId,policyRevision,configurationSha256}=own(o.template,['principal','selectedClientId','policyRevision','versions','task','configurationSha256','allocationJson','runWindowMs','destinationId']);
+  const {selectedClientId,policyRevision,configurationSha256}=own(o.template,['principal','selectedClientId','policyRevision','versions','task','configurationSha256','runWindowMs','destinationId'],['allocationJson']);
   t=data({selectedClientId,policyRevision,configurationSha256});
   if(o.occurrenceKey!==id.occurrenceKey||typeof t.selectedClientId!=='string'||typeof t.policyRevision!=='string'||!HEX64.test(t.configurationSha256)||typeof now!=='function'||types.isProxy(now))throw Error();
  }catch{throw fault('CONFIGURATION');}
@@ -49,7 +49,7 @@ export function createOccurrenceConsentAuthority(options){
   let v,s;
   try{
    v=own(value,['phase','selection','selectionSha256'],['signal','deadlineMs']);nativeSignal(v.signal);
-   s=data(own(v.selection,SELECTION_KEYS));validateShape('RunBinding',s.binding);
+   s=data(own(v.selection,SELECTION_KEYS,['allocationSha256']));validateShape('RunBinding',s.binding);
   }catch{refuse('REQUEST');}
   if(!ADMISSION_PHASES.includes(v.phase)||s.phase!==v.phase||v.selectionSha256!==hash(s)||s.occurrenceKey!==id.occurrenceKey||!same(s.binding,id.binding)||
    s.selectedClientId!==t.selectedClientId||s.policyRevision!==t.policyRevision||s.configurationSha256!==t.configurationSha256||!Array.isArray(s.scopes)||!s.scopes.length)refuse('REQUEST');
