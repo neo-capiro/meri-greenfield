@@ -12,6 +12,7 @@ import {createTextProjector} from './text-projector.mjs';
 import {createSdkReadAhead} from './sdk-read-ahead.mjs';
 import {buildConversationOptions} from './options.mjs';
 import {requestContextSuffix} from './request-context.mjs';
+import {assertAutomaticClientContext} from './automatic-client-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
@@ -114,11 +115,13 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    }
    const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,deadlineMs:runtime.deadlineMs,signal}));
    if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');life.limitDeadline(objectiveRuntime.deadlineMs);}
-   const options=buildConversationOptions(runtime,controller,lineage?{...lineage,request:saved.request,
+   const {automaticClientContext,...sdkRuntime}=runtime;
+   if(automaticClientContext!=null)assertAutomaticClientContext(automaticClientContext,{binding,scopes:saved.run.scopes});
+   const options=buildConversationOptions(sdkRuntime,controller,lineage?{...lineage,request:saved.request,
     sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat);if(lineage&&!saved.nextTurn?.sdkSession&&saved.continuation?.kind!=='native-session')life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
    if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}else assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;}
    // Add application context to the full native preset, never replace the SDK system prompt.
-   options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
+   options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill,automaticClientContext});
     options.hooks=mergeHookSets([options.hooks??{},nativeAudit.hooks]);
     setupLife?.check();setupLife?.close();setupLife=undefined;
     diagnostic('stage','activity-running');await publish('run.status',{state:'running',reasonCode:null});

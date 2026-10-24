@@ -19,7 +19,7 @@ function fixture({mode='fork',general=false,...options}={}){
  const runs=new Map([[hash(sourceBinding),source],[hash(targetBinding),target]]),check=f=>f?.();
  const saved=b=>{const run=runs.get(hash(b));assert.ok(run);return {run,events:[],lastSequence:1};};
  const pending=Promise.withResolvers();pending.promise.catch(()=>{});
- const store={async append(){throw Error('No append in admission control');},async read(b,_cursor,c){check(c);return saved(b);},async readOptional(b){return runs.has(hash(b))?saved(b):null;},
+ const store={async readModelPolicy(){assert.fail('Absent Objective must not read model policy');},async readModelSelection(){assert.fail('Absent Objective must not read model selection');},async append(){throw Error('No append in admission control');},async read(b,_cursor,c){check(c);return saved(b);},async readOptional(b){return runs.has(hash(b))?saved(b):null;},
   lifecycle:{async continuationOrigin(value,c){check(c);assert.deepEqual(value,{binding:targetBinding,scopes,selectedClientId});state.originReads++;if(state.mappingUnknown)throw Error('LIFECYCLE_TRANSITION_REFUSED');return structuredClone(state.originReads>1&&state.changedOrigin?state.changedOrigin:state.origin);},
    async get(){return state.control??{state:'DISPATCHING',input:{intent:mode},target:{binding:targetBinding,scopes,selectedClientId}};},async execution(){return null;},async readSessionCapture(){throw Error('Not used in this boundary control');}},
   nextRuns:{async execution(){return null;},async sessionSnapshot(){throw Error('No snapshot in this admission fixture');},async current(b,c){check(c);return {binding:b,scopes,policyRevision,reserved:false,...state.latest};},async readTarget(){return null;},async reserve(){},async listRuns(){},async latestCheckpoint(){},async settlement(){}},
@@ -48,7 +48,10 @@ function fixture({mode='fork',general=false,...options}={}){
   return Response.json({principal:{tenantId:binding.tenantId,actorId:binding.actorId},role:'standard_user',permissions:[],clientIds:general?[]:[selectedClientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:body.conversationId,selectedClientId,checkedAtMs:at,expiresAtMs:at+120000,...state.currentReceipt});
  };
  const provider={async invoke(value){state.invocations++;state.invocation=value;return pending.promise;},async stop(){throw Error('No Stop effect in admission control');}};
- const candidate=assembleAgentCoreCandidate({configuration,pool:{query(){throw Error('No readiness DB');}},provider,controlCredential,nativeCredentials,store,initialBindings,fetchImpl,now:()=>at});
+ const candidate=assembleAgentCoreCandidate({configuration,pool:{query(){throw Error('No readiness DB');},async connect(){return {async query({text,values}){
+  if(text.includes('FROM meri_objective_source.run_starts')){assert.match(text,/WHERE tenant_id=\$1 AND conversation_id=\$2 AND run_id=\$3$/);assert.equal(values[0],binding.tenantId);assert.ok([sourceBinding,targetBinding].some(b=>b.conversationId===values[1]&&b.runId===values[2]));return {rows:[]};}
+  assert.ok(['BEGIN ISOLATION LEVEL READ COMMITTED',"SELECT set_config('statement_timeout',$1,true),set_config('lock_timeout',$2,true)",'SELECT pg_advisory_xact_lock(hashtextextended($1,0))','COMMIT'].includes(text),text);return {rows:[],command:text==='COMMIT'?'COMMIT':undefined};
+ },release(){}};}},provider,controlCredential,nativeCredentials,store,initialBindings,fetchImpl,now:()=>at});
  return {candidate,state,sourceBinding,targetBinding,scopes,selectedClientId,bootstrap,
   kickoff:signal=>candidate.native.call('execution/kickoff',{binding:targetBinding,executionKey:hash(targetBinding)},{signal}),
   fork:signal=>candidate.admitFork({controlId,sourceBinding,scopes,selectedClientId,versions,signal}),

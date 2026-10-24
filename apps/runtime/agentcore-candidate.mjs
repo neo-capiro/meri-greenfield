@@ -20,6 +20,7 @@ import {createDurableSdkSessionOwner} from './sdk-session-owner.mjs';
 import {createNativeSessionContinuation} from './sdk-continuation-owner.mjs';
 import {createObjectiveSelectionOwner} from './objective-generation/selection-owner.mjs';
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
+import {createAutomaticClientContextReader} from './automatic-client-context.mjs';
 import {createObjectiveCorePorts} from './objective-generation/core-ports.mjs';
 import {createNativeSessionContinuationApplication} from './sdk-continuation-http.mjs';
 import {createNativeLifecycleAdmission} from './product-ports/lifecycle.mjs';
@@ -76,14 +77,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   }else refuse();
   return origin;
  }
- async function readCurrent({binding,run,context,signal,deadlineMs=now()+requestMs}){
-  const start=await runStarts.read({binding,signal});
-  if(start.state!=='ABSENT'){
-   if(start.state!=='STARTED'||!objectiveCore)refuse();
-   const current=await objectiveCore.currentRecord({record:start.record,signal});
-   if(current.clientId!==context.selectedClientId||current.tenantId!==binding.tenantId||current.actorId!==binding.actorId)refuse();
-   return {...current,expiresAtMs:Math.min(current.effectExpiresAtMs,start.record.effectExpiresAtMs)};
-  }
+ async function nativeAccess({binding,run,context,signal}){
   let origin,credentialBinding=binding,borrowed;
   try{borrowed=nativeCredentials.nativeCredentialFor({binding,selectedClientId:context.selectedClientId,signal});}
   catch(error){
@@ -94,16 +88,28 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    if(!same(source.scopes,run.scopes)||!same(sourceContext,context))refuse();
    borrowed=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
   }
-  const started=now();
-  if(typeof borrowed?.credential!=='string'||!Number.isSafeInteger(borrowed.expiresAtMs)||borrowed.expiresAtMs<=started)refuse();
-  const current=await core.readCurrent({credential:borrowed.credential,conversationId:binding.conversationId,clientId:context.selectedClientId,signal,deadlineMs:Math.min(deadlineMs,started+requestMs)});
-  check(signal)();
-  const after=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
-  if(after.credential!==borrowed.credential||after.expiresAtMs<=now()||current.checkedAtMs<started||current.checkedAtMs>now()||current.expiresAtMs<=now()||
-   current.principal.tenantId!==binding.tenantId||current.principal.actorId!==binding.actorId||current.conversationId!==binding.conversationId||current.selectedClientId!==context.selectedClientId)refuse();
-  if(origin&&!same(await continuationOrigin(binding,run,context,signal),origin))refuse();
+  if(typeof borrowed?.credential!=='string'||!Number.isSafeInteger(borrowed.expiresAtMs)||borrowed.expiresAtMs<=now())refuse();
+  return {credential:borrowed.credential,async verify(){
+   check(signal)();const after=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
+   if(after.credential!==borrowed.credential||after.expiresAtMs<=now())refuse();
+   if(origin&&!same(await continuationOrigin(binding,run,context,signal),origin))refuse();
+  }};
+ }
+ async function readCurrent({binding,run,context,signal,deadlineMs=now()+requestMs}){
+  const start=await runStarts.read({binding,signal});
+  if(start.state!=='ABSENT'){
+   if(start.state!=='STARTED'||!objectiveCore)refuse();
+   const current=await objectiveCore.currentRecord({record:start.record,signal});
+   if(current.clientId!==context.selectedClientId||current.tenantId!==binding.tenantId||current.actorId!==binding.actorId)refuse();
+   return {...current,expiresAtMs:Math.min(current.effectExpiresAtMs,start.record.effectExpiresAtMs)};
+  }
+  const access=await nativeAccess({binding,run,context,signal}),started=now();
+  const current=await core.readCurrent({credential:access.credential,conversationId:binding.conversationId,clientId:context.selectedClientId,signal,deadlineMs:Math.min(deadlineMs,started+requestMs)});
+  await access.verify();
+  if(current.checkedAtMs<started||current.checkedAtMs>now()||current.expiresAtMs<=now()||current.principal.tenantId!==binding.tenantId||current.principal.actorId!==binding.actorId||current.conversationId!==binding.conversationId||current.selectedClientId!==context.selectedClientId)refuse();
   return current;
  }
+
  async function admit({binding,signal}){
   const run=(await store.read(binding,{after:0,limit:1},check(signal))).run,context=await contextFor({binding,run,signal});
   await readCurrent({binding,run,context,signal});
@@ -186,7 +192,14 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const control=createAgentCoreControlApplication({owner,controlCredential,now,maxRequestMs:requestMs,maxRequestBytes:configuration.limits.requestBytes});
  const sdkSessionOwner=createDurableSdkSessionOwner({admission:store.executions,authority:execution,enabled:true,now,maxRequestMs:requestMs});
  const objectiveSelection=createObjectiveSelectionOwner({runStarts,store,now,maxRequestMs:requestMs});
- const sdkSessionSnapshot=createNativeSessionContinuation({store,execution,versions,maxOutputBytes:config.maxOutputBytes,objectiveSelection,now,maxRequestMs:requestMs});
+ const automaticReader=createAutomaticClientContextReader({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs});
+ const automaticContext=Object.freeze({async read({binding,run,selectedClientId,signal,deadlineMs}){
+  const context=await contextFor({binding,run,signal});if(context.selectedClientId!==selectedClientId)refuse();
+  const access=await nativeAccess({binding,run,context,signal});
+  const packet=await automaticReader.read({binding,selectedClientId,credential:access.credential,signal,deadlineMs});
+  await access.verify();return packet;
+ }});
+ const sdkSessionSnapshot=createNativeSessionContinuation({store,execution,versions,maxOutputBytes:config.maxOutputBytes,objectiveSelection,automaticContext,now,maxRequestMs:requestMs});
  const runtime=createNativeSessionContinuationApplication({owner:sdkSessionSnapshot,now,maxRequestMs:requestMs});
  let outerApplication,closed=false;
  async function reads(request){
