@@ -2061,7 +2061,9 @@ function validate34(data, { instancePath = "", parentData, parentDataProperty, r
   return errors2 === 0;
 }
 validate34.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
+var schema63 = { "type": "object", "properties": { "provider": { "enum": ["bedrock", "claude-api"] }, "modelId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, "effort": { "anyOf": [{ "type": "null" }, { "type": "string", "enum": ["low", "medium", "high", "xhigh", "max"] }] } }, "required": ["provider", "modelId", "effort"], "additionalProperties": false };
 var pattern16 = new RegExp("\\S", "u");
+var pattern30 = new RegExp("^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$", "u");
 var schema57 = { "type": "string", "enum": ["quick_skill.research_company", "quick_skill.relationship_brief", "quick_skill.client_changes", "quick_skill.portfolio_changes", "quick_skill.portfolio_overlap", "quick_skill.mail_history", "quick_skill.meeting_prep", "quick_skill.commitments_audit", "quick_skill.funding_opportunity_match", "quick_skill.pe_deep_dive", "quick_skill.bill_watch", "quick_skill.hearing_watch", "quick_skill.representation_lookup", "quick_skill.regulatory_docket_brief"] };
 var pattern17 = new RegExp("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$", "u");
 function validate40(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
@@ -4223,7 +4225,7 @@ function validate38(data, { instancePath = "", parentData, parentDataProperty, r
       } else {
         const _errs1 = errors2;
         for (const key0 in data) {
-          if (!(key0 === "requestId" || key0 === "prompt" || key0 === "skill" || key0 === "window" || key0 === "windowRequest")) {
+          if (!(key0 === "requestId" || key0 === "prompt" || key0 === "skill" || key0 === "window" || key0 === "windowRequest" || key0 === "modelSelection")) {
             validate38.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
             return false;
             break;
@@ -4312,6 +4314,134 @@ function validate38(data, { instancePath = "", parentData, parentDataProperty, r
                   } else {
                     var valid0 = true;
                   }
+                  if (valid0) {
+                    if (data.modelSelection !== void 0) {
+                      let data5 = data.modelSelection;
+                      const _errs11 = errors2;
+                      const _errs12 = errors2;
+                      if (errors2 === _errs12) {
+                        if (data5 && typeof data5 == "object" && !Array.isArray(data5)) {
+                          let missing1;
+                          if (data5.provider === void 0 && (missing1 = "provider") || data5.modelId === void 0 && (missing1 = "modelId") || data5.effort === void 0 && (missing1 = "effort")) {
+                            validate38.errors = [{ instancePath: instancePath + "/modelSelection", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/required", keyword: "required", params: { missingProperty: missing1 }, message: "must have required property '" + missing1 + "'" }];
+                            return false;
+                          } else {
+                            const _errs14 = errors2;
+                            for (const key1 in data5) {
+                              if (!(key1 === "provider" || key1 === "modelId" || key1 === "effort")) {
+                                validate38.errors = [{ instancePath: instancePath + "/modelSelection", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key1 }, message: "must NOT have additional properties" }];
+                                return false;
+                                break;
+                              }
+                            }
+                            if (_errs14 === errors2) {
+                              if (data5.provider !== void 0) {
+                                let data6 = data5.provider;
+                                const _errs15 = errors2;
+                                if (!(data6 === "bedrock" || data6 === "claude-api")) {
+                                  validate38.errors = [{ instancePath: instancePath + "/modelSelection/provider", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/properties/provider/enum", keyword: "enum", params: { allowedValues: schema63.properties.provider.enum }, message: "must be equal to one of the allowed values" }];
+                                  return false;
+                                }
+                                var valid4 = _errs15 === errors2;
+                              } else {
+                                var valid4 = true;
+                              }
+                              if (valid4) {
+                                if (data5.modelId !== void 0) {
+                                  let data7 = data5.modelId;
+                                  const _errs16 = errors2;
+                                  if (errors2 === _errs16) {
+                                    if (typeof data7 === "string") {
+                                      if (!pattern30.test(data7)) {
+                                        validate38.errors = [{ instancePath: instancePath + "/modelSelection/modelId", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/properties/modelId/pattern", keyword: "pattern", params: { pattern: "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, message: 'must match pattern "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"' }];
+                                        return false;
+                                      }
+                                    } else {
+                                      validate38.errors = [{ instancePath: instancePath + "/modelSelection/modelId", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/properties/modelId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                      return false;
+                                    }
+                                  }
+                                  var valid4 = _errs16 === errors2;
+                                } else {
+                                  var valid4 = true;
+                                }
+                                if (valid4) {
+                                  if (data5.effort !== void 0) {
+                                    let data8 = data5.effort;
+                                    const _errs18 = errors2;
+                                    const _errs19 = errors2;
+                                    let valid5 = false;
+                                    const _errs20 = errors2;
+                                    if (data8 !== null) {
+                                      const err0 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/properties/effort/anyOf/0/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                                      if (vErrors === null) {
+                                        vErrors = [err0];
+                                      } else {
+                                        vErrors.push(err0);
+                                      }
+                                      errors2++;
+                                    }
+                                    var _valid0 = _errs20 === errors2;
+                                    valid5 = valid5 || _valid0;
+                                    const _errs22 = errors2;
+                                    if (typeof data8 !== "string") {
+                                      const err1 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/properties/effort/anyOf/1/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                      if (vErrors === null) {
+                                        vErrors = [err1];
+                                      } else {
+                                        vErrors.push(err1);
+                                      }
+                                      errors2++;
+                                    }
+                                    if (!(data8 === "low" || data8 === "medium" || data8 === "high" || data8 === "xhigh" || data8 === "max")) {
+                                      const err2 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/properties/effort/anyOf/1/enum", keyword: "enum", params: { allowedValues: schema63.properties.effort.anyOf[1].enum }, message: "must be equal to one of the allowed values" };
+                                      if (vErrors === null) {
+                                        vErrors = [err2];
+                                      } else {
+                                        vErrors.push(err2);
+                                      }
+                                      errors2++;
+                                    }
+                                    var _valid0 = _errs22 === errors2;
+                                    valid5 = valid5 || _valid0;
+                                    if (!valid5) {
+                                      const err3 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/properties/effort/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
+                                      if (vErrors === null) {
+                                        vErrors = [err3];
+                                      } else {
+                                        vErrors.push(err3);
+                                      }
+                                      errors2++;
+                                      validate38.errors = vErrors;
+                                      return false;
+                                    } else {
+                                      errors2 = _errs19;
+                                      if (vErrors !== null) {
+                                        if (_errs19) {
+                                          vErrors.length = _errs19;
+                                        } else {
+                                          vErrors = null;
+                                        }
+                                      }
+                                    }
+                                    var valid4 = _errs18 === errors2;
+                                  } else {
+                                    var valid4 = true;
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        } else {
+                          validate38.errors = [{ instancePath: instancePath + "/modelSelection", schemaPath: "#/$defs/Canonical_modelSelection_c59b527f/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                          return false;
+                        }
+                      }
+                      var valid0 = _errs11 === errors2;
+                    } else {
+                      var valid0 = true;
+                    }
+                  }
                 }
               }
             }
@@ -4327,7 +4457,7 @@ function validate38(data, { instancePath = "", parentData, parentDataProperty, r
   return errors2 === 0;
 }
 validate38.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
-var schema63 = { "oneOf": [{ "type": "object", "properties": { "kind": { "const": "submission" }, "logicalRequestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sourceBinding": { "type": "null" }, "sourceRequestId": { "type": "null" } }, "required": ["kind", "logicalRequestId", "sourceBinding", "sourceRequestId"], "additionalProperties": false }, { "type": "object", "properties": { "kind": { "enum": ["resume", "fork"] }, "logicalRequestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sourceBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sourceRequestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" } }, "required": ["kind", "logicalRequestId", "sourceBinding", "sourceRequestId"], "additionalProperties": false }] };
+var schema64 = { "oneOf": [{ "type": "object", "properties": { "kind": { "const": "submission" }, "logicalRequestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sourceBinding": { "type": "null" }, "sourceRequestId": { "type": "null" } }, "required": ["kind", "logicalRequestId", "sourceBinding", "sourceRequestId"], "additionalProperties": false }, { "type": "object", "properties": { "kind": { "enum": ["resume", "fork"] }, "logicalRequestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sourceBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sourceRequestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" } }, "required": ["kind", "logicalRequestId", "sourceBinding", "sourceRequestId"], "additionalProperties": false }] };
 function validate48(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -4496,7 +4626,7 @@ function validate48(data, { instancePath = "", parentData, parentDataProperty, r
             let data4 = data.kind;
             const _errs14 = errors2;
             if (!(data4 === "resume" || data4 === "fork")) {
-              const err10 = { instancePath: instancePath + "/kind", schemaPath: "#/oneOf/1/properties/kind/enum", keyword: "enum", params: { allowedValues: schema63.oneOf[1].properties.kind.enum }, message: "must be equal to one of the allowed values" };
+              const err10 = { instancePath: instancePath + "/kind", schemaPath: "#/oneOf/1/properties/kind/enum", keyword: "enum", params: { allowedValues: schema64.oneOf[1].properties.kind.enum }, message: "must be equal to one of the allowed values" };
               if (vErrors === null) {
                 vErrors = [err10];
               } else {
@@ -5114,8 +5244,8 @@ function validate36(data, { instancePath = "", parentData, parentDataProperty, r
   return errors2 === 0;
 }
 validate36.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
-var schema66 = { "oneOf": [{ "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "run.status" }, "data": { "type": "object", "properties": { "state": { "type": "string", "enum": ["queued", "starting", "running", "waiting-for-approval", "paused", "completed", "failed", "cancelled"] }, "reasonCode": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] } }, "required": ["state", "reasonCode"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "message.delta" }, "data": { "type": "object", "properties": { "messageId": { "type": "string", "format": "uuid" }, "text": { "type": "string", "minLength": 1 } }, "required": ["messageId", "text"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "tool.started" }, "data": { "type": "object", "properties": { "requestId": { "type": "string", "format": "uuid" }, "tool": { "type": "string", "minLength": 1 } }, "required": ["requestId", "tool"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "tool.completed" }, "data": { "type": "object", "properties": { "requestId": { "type": "string", "format": "uuid" }, "resultReference": { "type": "string", "format": "uuid" } }, "required": ["requestId", "resultReference"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "source.available" }, "data": { "$ref": "#/$defs/Canonical_SourceEvidence_d9008775" } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "approval.required" }, "data": { "type": "object", "properties": { "proposalId": { "type": "string", "format": "uuid" }, "commandSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "expiresAt": { "type": "string", "format": "date-time", "pattern": "Z$" } }, "required": ["proposalId", "commandSha256", "expiresAt"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "artifact.available" }, "data": { "type": "object", "properties": { "artifactId": { "type": "string", "format": "uuid" }, "versionId": { "type": "string", "format": "uuid" } }, "required": ["artifactId", "versionId"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "checkpoint.verified" }, "data": { "type": "object", "properties": { "checkpointId": { "type": "string", "format": "uuid" } }, "required": ["checkpointId"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "usage.recorded" }, "data": { "type": "object", "properties": { "usageId": { "type": "string", "format": "uuid" } }, "required": ["usageId"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "run.error" }, "data": { "type": "object", "properties": { "code": { "type": "string", "minLength": 1 }, "retryable": { "type": "boolean" }, "message": { "type": "string", "minLength": 1 } }, "required": ["code", "retryable", "message"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }] };
-var schema77 = { "type": "object", "properties": { "sourceId": { "type": "string", "minLength": 1 }, "recordId": { "type": "string", "minLength": 1 }, "sourceVersionId": { "type": "string", "minLength": 1 }, "observedAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "sourceUpdatedAt": { "anyOf": [{ "type": "string", "format": "date-time", "pattern": "Z$" }, { "type": "null" }] }, "citationId": { "type": "string", "format": "uuid" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "contentSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "authorizationDecisionId": { "type": "string", "format": "uuid" } }, "required": ["sourceId", "recordId", "sourceVersionId", "observedAt", "sourceUpdatedAt", "citationId", "scopes", "contentSha256", "authorizationDecisionId"], "additionalProperties": false };
+var schema67 = { "oneOf": [{ "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "run.status" }, "data": { "type": "object", "properties": { "state": { "type": "string", "enum": ["queued", "starting", "running", "waiting-for-approval", "paused", "completed", "failed", "cancelled"] }, "reasonCode": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] } }, "required": ["state", "reasonCode"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "message.delta" }, "data": { "type": "object", "properties": { "messageId": { "type": "string", "format": "uuid" }, "text": { "type": "string", "minLength": 1 } }, "required": ["messageId", "text"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "tool.started" }, "data": { "type": "object", "properties": { "requestId": { "type": "string", "format": "uuid" }, "tool": { "type": "string", "minLength": 1 } }, "required": ["requestId", "tool"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "tool.completed" }, "data": { "type": "object", "properties": { "requestId": { "type": "string", "format": "uuid" }, "resultReference": { "type": "string", "format": "uuid" } }, "required": ["requestId", "resultReference"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "source.available" }, "data": { "$ref": "#/$defs/Canonical_SourceEvidence_d9008775" } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "approval.required" }, "data": { "type": "object", "properties": { "proposalId": { "type": "string", "format": "uuid" }, "commandSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "expiresAt": { "type": "string", "format": "date-time", "pattern": "Z$" } }, "required": ["proposalId", "commandSha256", "expiresAt"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "artifact.available" }, "data": { "type": "object", "properties": { "artifactId": { "type": "string", "format": "uuid" }, "versionId": { "type": "string", "format": "uuid" } }, "required": ["artifactId", "versionId"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "checkpoint.verified" }, "data": { "type": "object", "properties": { "checkpointId": { "type": "string", "format": "uuid" } }, "required": ["checkpointId"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "usage.recorded" }, "data": { "type": "object", "properties": { "usageId": { "type": "string", "format": "uuid" } }, "required": ["usageId"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }, { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "eventId": { "type": "string", "format": "uuid" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "type": { "const": "run.error" }, "data": { "type": "object", "properties": { "code": { "type": "string", "minLength": 1 }, "retryable": { "type": "boolean" }, "message": { "type": "string", "minLength": 1 } }, "required": ["code", "retryable", "message"], "additionalProperties": false } }, "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"], "additionalProperties": false }] };
+var schema78 = { "type": "object", "properties": { "sourceId": { "type": "string", "minLength": 1 }, "recordId": { "type": "string", "minLength": 1 }, "sourceVersionId": { "type": "string", "minLength": 1 }, "observedAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "sourceUpdatedAt": { "anyOf": [{ "type": "string", "format": "date-time", "pattern": "Z$" }, { "type": "null" }] }, "citationId": { "type": "string", "format": "uuid" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "contentSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "authorizationDecisionId": { "type": "string", "format": "uuid" } }, "required": ["sourceId", "recordId", "sourceVersionId", "observedAt", "sourceUpdatedAt", "citationId", "scopes", "contentSha256", "authorizationDecisionId"], "additionalProperties": false };
 function validate53(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -5135,7 +5265,7 @@ function validate53(data, { instancePath = "", parentData, parentDataProperty, r
       } else {
         const _errs1 = errors2;
         for (const key0 in data) {
-          if (!func13.call(schema77.properties, key0)) {
+          if (!func13.call(schema78.properties, key0)) {
             validate53.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
             return false;
             break;
@@ -6305,7 +6435,7 @@ function validate52(data, { instancePath = "", parentData, parentDataProperty, r
                                       errors2++;
                                     }
                                     if (!(data20 === "queued" || data20 === "starting" || data20 === "running" || data20 === "waiting-for-approval" || data20 === "paused" || data20 === "completed" || data20 === "failed" || data20 === "cancelled")) {
-                                      const err52 = { instancePath: instancePath + "/data/state", schemaPath: "#/oneOf/0/properties/data/properties/state/enum", keyword: "enum", params: { allowedValues: schema66.oneOf[0].properties.data.properties.state.enum }, message: "must be equal to one of the allowed values" };
+                                      const err52 = { instancePath: instancePath + "/data/state", schemaPath: "#/oneOf/0/properties/data/properties/state/enum", keyword: "enum", params: { allowedValues: schema67.oneOf[0].properties.data.properties.state.enum }, message: "must be equal to one of the allowed values" };
                                       if (vErrors === null) {
                                         vErrors = [err52];
                                       } else {
@@ -14752,7 +14882,7 @@ function validate69(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate69.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateNextTurnResponse = validate75;
-var schema93 = { "type": "object", "properties": { "schema": { "const": "meri.conversation-turn/1" }, "sourceBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "targetBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "state": { "enum": ["RESERVED", "ACCEPTED"] }, "replayed": { "type": "boolean" } }, "required": ["schema", "sourceBinding", "targetBinding", "state", "replayed"], "additionalProperties": false };
+var schema94 = { "type": "object", "properties": { "schema": { "const": "meri.conversation-turn/1" }, "sourceBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "targetBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "state": { "enum": ["RESERVED", "ACCEPTED"] }, "replayed": { "type": "boolean" } }, "required": ["schema", "sourceBinding", "targetBinding", "state", "replayed"], "additionalProperties": false };
 function validate75(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -15182,7 +15312,7 @@ function validate75(data, { instancePath = "", parentData, parentDataProperty, r
                   let data17 = data.state;
                   const _errs39 = errors2;
                   if (!(data17 === "RESERVED" || data17 === "ACCEPTED")) {
-                    validate75.errors = [{ instancePath: instancePath + "/state", schemaPath: "#/properties/state/enum", keyword: "enum", params: { allowedValues: schema93.properties.state.enum }, message: "must be equal to one of the allowed values" }];
+                    validate75.errors = [{ instancePath: instancePath + "/state", schemaPath: "#/properties/state/enum", keyword: "enum", params: { allowedValues: schema94.properties.state.enum }, message: "must be equal to one of the allowed values" }];
                     return false;
                   }
                   var valid0 = _errs39 === errors2;
@@ -15216,8 +15346,8 @@ function validate75(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate75.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateError = validate76;
-var schema97 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["INVALID_REQUEST", "UNAUTHENTICATED", "ACCESS_DENIED", "MEMBERSHIP_REVOKED", "NOT_FOUND", "METHOD_NOT_ALLOWED", "DEADLINE", "MEMBERSHIP_CHANGED", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "CANCELLED", "PRODUCT_UNAVAILABLE", "CONVERSATION_REQUEST_INVALID", "CONVERSATION_CURSOR_INVALID", "CONVERSATION_NOT_FOUND", "CONVERSATION_TURN_CONFLICT", "CONVERSATION_STORE_CORRUPT", "CONVERSATION_TURN_UNAVAILABLE", "CONVERSATION_UNAVAILABLE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN", "RESULT_NOT_RELEASED"] }, "field": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$" } }, "required": ["code"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
-var pattern48 = new RegExp("^[A-Za-z][A-Za-z0-9_.-]{0,127}$", "u");
+var schema98 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["INVALID_REQUEST", "UNAUTHENTICATED", "ACCESS_DENIED", "MEMBERSHIP_REVOKED", "NOT_FOUND", "METHOD_NOT_ALLOWED", "DEADLINE", "MEMBERSHIP_CHANGED", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "CANCELLED", "PRODUCT_UNAVAILABLE", "CONVERSATION_REQUEST_INVALID", "CONVERSATION_CURSOR_INVALID", "CONVERSATION_NOT_FOUND", "CONVERSATION_TURN_CONFLICT", "CONVERSATION_STORE_CORRUPT", "CONVERSATION_TURN_UNAVAILABLE", "CONVERSATION_UNAVAILABLE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN", "RESULT_NOT_RELEASED"] }, "field": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$" } }, "required": ["code"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
+var pattern49 = new RegExp("^[A-Za-z][A-Za-z0-9_.-]{0,127}$", "u");
 function validate76(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -15267,7 +15397,7 @@ function validate76(data, { instancePath = "", parentData, parentDataProperty, r
                       let data1 = data0.code;
                       const _errs5 = errors2;
                       if (!(data1 === "INVALID_REQUEST" || data1 === "UNAUTHENTICATED" || data1 === "ACCESS_DENIED" || data1 === "MEMBERSHIP_REVOKED" || data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "DEADLINE" || data1 === "MEMBERSHIP_CHANGED" || data1 === "REQUEST_TOO_LARGE" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "CANCELLED" || data1 === "PRODUCT_UNAVAILABLE" || data1 === "CONVERSATION_REQUEST_INVALID" || data1 === "CONVERSATION_CURSOR_INVALID" || data1 === "CONVERSATION_NOT_FOUND" || data1 === "CONVERSATION_TURN_CONFLICT" || data1 === "CONVERSATION_STORE_CORRUPT" || data1 === "CONVERSATION_TURN_UNAVAILABLE" || data1 === "CONVERSATION_UNAVAILABLE")) {
-                        validate76.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/enum", keyword: "enum", params: { allowedValues: schema97.properties.error.properties.code.enum }, message: "must be equal to one of the allowed values" }];
+                        validate76.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/enum", keyword: "enum", params: { allowedValues: schema98.properties.error.properties.code.enum }, message: "must be equal to one of the allowed values" }];
                         return false;
                       }
                       var valid1 = _errs5 === errors2;
@@ -15279,7 +15409,7 @@ function validate76(data, { instancePath = "", parentData, parentDataProperty, r
                         let data2 = data0.outcome;
                         const _errs6 = errors2;
                         if (!(data2 === "NOT_DISPATCHED" || data2 === "UNKNOWN" || data2 === "RESULT_NOT_RELEASED")) {
-                          validate76.errors = [{ instancePath: instancePath + "/error/outcome", schemaPath: "#/properties/error/properties/outcome/enum", keyword: "enum", params: { allowedValues: schema97.properties.error.properties.outcome.enum }, message: "must be equal to one of the allowed values" }];
+                          validate76.errors = [{ instancePath: instancePath + "/error/outcome", schemaPath: "#/properties/error/properties/outcome/enum", keyword: "enum", params: { allowedValues: schema98.properties.error.properties.outcome.enum }, message: "must be equal to one of the allowed values" }];
                           return false;
                         }
                         var valid1 = _errs6 === errors2;
@@ -15292,7 +15422,7 @@ function validate76(data, { instancePath = "", parentData, parentDataProperty, r
                           const _errs7 = errors2;
                           if (errors2 === _errs7) {
                             if (typeof data3 === "string") {
-                              if (!pattern48.test(data3)) {
+                              if (!pattern49.test(data3)) {
                                 validate76.errors = [{ instancePath: instancePath + "/error/field", schemaPath: "#/properties/error/properties/field/pattern", keyword: "pattern", params: { pattern: "^[A-Za-z][A-Za-z0-9_.-]{0,127}$" }, message: 'must match pattern "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"' }];
                                 return false;
                               }
