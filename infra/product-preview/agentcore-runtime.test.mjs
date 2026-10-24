@@ -49,6 +49,14 @@ test('only the runtime role reads the exact Claude API secret; each model keeps 
  assert.deepEqual(conditioned.map(s=>s.Condition.StringEquals['bedrock:InferenceProfileArn']).sort(),b.bedrock.map(m=>m.inferenceProfileArn).sort());
  for(const arn of ['*',b.claudeApiSecretArn.replace('967807252336','111111111111'),'sk-ant-secret'])assert.throws(()=>synthesizeAgentCoreRuntime({...b,claudeApiSecretArn:arn}));
 });
+test('creation waits for ECR permissions and runtime stabilization before the preview endpoint',()=>{
+ const {Resources:resources}=synthesizeAgentCoreRuntime(binding());
+ const rolePolicy=Object.entries(resources).find(([,r])=>r.Type==='AWS::IAM::Policy'&&r.Properties.PolicyName!=='MeriAgentCoreInvocation')[0];
+ // GetAtt alone allowed CloudFormation's optimistic creation to call the endpoint
+ // while version1 was still CREATING. Explicit ordering must reach the policy too.
+ assert(resources.Runtime.DependsOn?.includes(rolePolicy));
+ assert(resources.PreviewEndpoint.DependsOn?.includes('Runtime'));
+});
 test('rejects unpinned image, public/credentialed control URL, CA mismatch and undeclared credentials',()=>{
  for(const edit of [b=>b.imageUri=b.imageUri.split('@')[0]+':latest',b=>b.controlOrigin='http://control.example.test',
   b=>b.controlOrigin='https://user:password@control.example.test',b=>b.controlCaSha256='0'.repeat(64),
