@@ -8,6 +8,7 @@ import {validateShape,canonicalSha256} from '../../../packages/contracts/validat
 import {assertSkillManifest} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {selectSkill} from '../../../packages/skills/index.mjs';
+import {describeSkillPlugin} from '../../../packages/skills/plugin.mjs';
 import {createTextProjector} from './text-projector.mjs';
 import {createSdkReadAhead} from './sdk-read-ahead.mjs';
 import {buildConversationOptions} from './options.mjs';
@@ -119,7 +120,15 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    if(automaticClientContext!=null)assertAutomaticClientContext(automaticClientContext,{binding,scopes:saved.run.scopes});
    const options=buildConversationOptions(sdkRuntime,controller,lineage?{...lineage,request:saved.request,
     sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat);if(lineage&&!saved.nextTurn?.sdkSession&&saved.continuation?.kind!=='native-session')life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
-   if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}else assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;}
+   if(saved.request.skill){
+    selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');
+    if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}
+    else if(selectedSkills!==undefined){
+     const nativeSkill=describeSkillPlugin().skills.find(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion);
+     if(!nativeSkill||!policy?.skillPlugin||!policy.generalReads||generalReads===undefined||!runtime.skillPluginDirectory||policy.skillNames!==null&&!policy.skillNames.includes(nativeSkill.name))throw fault('SKILL_RUNTIME_REFUSED');
+    }else assertSkillManifest(selected.manifest,catalog);
+    options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;
+   }
    // Add application context to the full native preset, never replace the SDK system prompt.
    options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill,automaticClientContext});
     options.hooks=mergeHookSets([options.hooks??{},nativeAudit.hooks]);

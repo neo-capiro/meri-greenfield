@@ -1,16 +1,18 @@
-import {nextTurnSessionId} from '../../worker/conversation/continuation/next-turn-options.mjs';
 import {buildNextTurnOptions} from '../../worker/conversation/continuation/next-turn-options.mjs';
+import {buildContinuationOptions} from '../../worker/conversation/continuation/options.mjs';
+import {continuationSessionId} from '../../worker/conversation/reads/runtime.mjs';
 /** Isolated SDK task: original MCP tools and opaque trusted-control completion only. */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertSubject,assertWindow} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {selectSkill} from '../../../packages/skills/index.mjs';
+import {describeSkillPlugin} from '../../../packages/skills/plugin.mjs';
 import {createOriginalSkillServer} from '../../worker/conversation/skills/mcp.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {fault} from '../config.mjs';
 import {assertSelectedCompletion} from '../../../packages/contracts/runtime-0.2/selected.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
-import {selectedOutputFormat} from './output-format.mjs';
+import {selectedOutputFormat,selectedOutputCompiler} from './output-format.mjs';
 const hash=canonicalSha256,same=(a,b)=>hash(a)===hash(b),uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(value);
 export function createTaskSelectedSkills(configuration){
  const {native,now=Date.now,sourceEnabled=false}=own(configuration,['native'],['now','sourceEnabled']);
@@ -19,15 +21,20 @@ export function createTaskSelectedSkills(configuration){
  async function prepare(raw){
   if(!sourceEnabled)throw fault('UNAVAILABLE');if(active.size>=64)throw fault('SELECTED_SESSION_LIMIT');const args=own(raw,['binding','versions','request','scopes'],['signal','continuation','nextTurn','sourceRequest']);nativeSignal(args.signal);
   const binding=data(args.binding),request=data(args.request),scopes=data(args.scopes);validateShape('RunBinding',binding);validateShape('RuntimeVersions',args.versions);
-  if(args.continuation!==undefined)throw fault('SELECTED_CONTINUATION_UNAVAILABLE');if(args.nextTurn!==undefined)buildNextTurnOptions(args.nextTurn,{binding,versions:args.versions,scopes,request,sourceRequest:args.sourceRequest});scopes.forEach(scope=>validateShape('Scope',scope));
-  const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!same(selected.pin,request.skill))throw fault('SELECTED_TASK_PIN_REFUSED');const outputFormat=selectedOutputFormat(selected);
+  if(args.continuation!==undefined)buildContinuationOptions(args.continuation,{binding,versions:args.versions,scopes,request,sourceRequest:args.sourceRequest});if(args.nextTurn!==undefined)buildNextTurnOptions(args.nextTurn,{binding,versions:args.versions,scopes,request,sourceRequest:args.sourceRequest});scopes.forEach(scope=>validateShape('Scope',scope));
+  const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!same(selected.pin,request.skill))throw fault('SELECTED_TASK_PIN_REFUSED');
+  if(!describeSkillPlugin().skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))throw fault('SELECTED_TASK_PIN_REFUSED');
+  // The other immutable skills run through the existing native SDK tools and output
+  // capture. Only these two recipes have a separately approved document compiler.
+  if(!selectedOutputCompiler(selected))return null;
+  const outputFormat=selectedOutputFormat(selected);
   const life=createOperationLifetime({deadlineMs:now()+selected.manifest.budgets.maxRuntimeSeconds*1000,now,signal:args.signal,errorFactory:fault});let server,closed=false,attempted,completion;
   try{
    const started=now(),session=data(await life.run(signal=>call('selected/prepare',{binding,requestSha256:hash(request)},{signal})));own(session,['sessionId','binding','requestSha256','selection','checkedAtMs','expiresAtMs']);
    if(!uuid(session.sessionId)||!same(session.binding,binding)||session.requestSha256!==hash(request)||!Number.isSafeInteger(session.checkedAtMs)||session.checkedAtMs<started||session.checkedAtMs>now()||!Number.isSafeInteger(session.expiresAtMs)||session.expiresAtMs<=now())throw fault('SELECTED_TASK_SESSION_REFUSED');
    assertSubject(session.selection.subject,binding);assertWindow(session.selection.window);if(!same(session.selection.subject.scopes,scopes)||!same(session.selection.window,request.window))throw fault('SELECTED_TASK_SESSION_REFUSED');life.limitDeadline(session.expiresAtMs);
    const selector={binding,sessionId:session.sessionId,requestSha256:hash(request),selectionSha256:hash(session.selection)};
-   server=createOriginalSkillServer({selected,binding,timeoutMs:selected.manifest.budgets.maxRuntimeSeconds*1000,expectedSessionId:args.nextTurn?nextTurnSessionId(args.nextTurn):args.continuation?(args.continuation.mode==='resume'?args.continuation.checkpoint.sessionId:args.continuation.targetSessionId):undefined,read:async(operation,argumentsValue,signal,deliveryId)=>{
+   server=createOriginalSkillServer({selected,binding,timeoutMs:selected.manifest.budgets.maxRuntimeSeconds*1000,expectedSessionId:continuationSessionId(args),read:async(operation,argumentsValue,signal,deliveryId)=>{
     if(closed)throw fault('SELECTED_TASK_CLOSED');const response=data(await life.run(owned=>call('selected/read',{...selector,operation,arguments:argumentsValue,deliveryId},{signal:signal?AbortSignal.any([owned,signal]):owned})));own(response,['result']);if(typeof response.result!=='string'||Buffer.byteLength(response.result)>selected.manifest.budgets.maxOutputBytes)throw fault('SELECTED_TASK_RESULT_REFUSED');life.check();return response.result;
    }});
    const runtime={selected,sdkOptions:{mcpServers:{meri_original_reads:server.server},allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks,outputFormat},finish(raw){
