@@ -2,7 +2,7 @@
 import {randomUUID} from 'node:crypto';import {types} from 'node:util';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
-import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders,assertNativeSessionReference} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createRunBoundSessionStore,copySessionEntries,copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
@@ -31,7 +31,13 @@ export function createNativeSdkSessionClient(configuration){
    const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>maxResponseBytes))fail('SDK_SESSION_RESPONSE_LIMIT');reader=stream.getReader();let bytes=0;const chunks=[];
    while(true){const next=await life.run(()=>reader.read());if(next.done)break;bytes+=next.value.byteLength;if(bytes>maxResponseBytes)fail('SDK_SESSION_RESPONSE_LIMIT');chunks.push(next.value);}if(length!==null&&Number(length)!==bytes)fail('SDK_SESSION_UNAVAILABLE');
    const value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks)));if(operation!=='snapshot')assertSdkSessionResponseHeaders(operation,value,hash({...headers,...(entries===undefined?{}:{entries})}),ownedBinding,headers.key);let result;
-   if(operation==='snapshot'){const fields=own(value,['binding','key','checkpointSha256','opaqueSessionSha256','transcripts']);if(hash(fields.binding)!==hash(ownedBinding)||[fields.checkpointSha256,fields.opaqueSessionSha256].some(x=>typeof x!=='string'||! /^[a-f0-9]{64}$/u.test(x)))fail('SDK_SESSION_UNAVAILABLE');result=copySessionJson(fields,maxResponseBytes);}
+   if(operation==='snapshot'){
+    const native=Object.hasOwn(value,'sdkSession'),fields=own(value,['binding','key','transcripts',...(native?['sdkSession']:['checkpointSha256','opaqueSessionSha256'])]);
+    if(hash(fields.binding)!==hash(ownedBinding))fail('SDK_SESSION_UNAVAILABLE');
+    if(native){const session=assertNativeSessionReference(fields.sdkSession);if(hash(session.key)!==hash(fields.key))fail('SDK_SESSION_UNAVAILABLE');}
+    else if([fields.checkpointSha256,fields.opaqueSessionSha256].some(x=>typeof x!=='string'||! /^[a-f0-9]{64}$/u.test(x)))fail('SDK_SESSION_UNAVAILABLE');
+    result=copySessionJson(fields,maxResponseBytes);
+   }
    else if(operation==='load'){if(!Number.isSafeInteger(value.offset)||value.offset<0||value.offset>100000)fail('SDK_SESSION_UNAVAILABLE');result={entries:value.entries===null?null:copySessionTranscript(value.entries),offset:value.offset};if(result.entries===null?result.offset!==0:result.entries.length!==result.offset)fail('SDK_SESSION_UNAVAILABLE');}
    else if(operation==='list-subkeys'){if(!Array.isArray(value.subkeys)||value.subkeys.length>255||new Set(value.subkeys).size!==value.subkeys.length)fail('SDK_SESSION_UNAVAILABLE');for(const subpath of value.subkeys)scopedSessionKey({...headers.key,subpath},headers.key);result=copySessionJson(value,maxResponseBytes);}
    else if(operation==='register'){if(value.registered!==true||hash(value.key)!==hash(headers.key))fail('SDK_SESSION_UNAVAILABLE');result=copySessionJson(value,maxResponseBytes);}

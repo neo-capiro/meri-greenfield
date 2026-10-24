@@ -29,7 +29,8 @@ export function buildConversationOptions(value,abortController,continuationConte
  if(r.brokerSocketDirectory!==undefined&&r.brokerSocketDirectory!=='/run/meri-launch')fail();
  let continuation={};if(continuationContext!==undefined){const c=own(continuationContext,['request','sourceRequest','scopes','started','now'],['continuation','nextTurn']);if((c.continuation===undefined)===(c.nextTurn===undefined))fail();
   continuation=c.nextTurn===undefined?buildContinuationOptions(c.continuation,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest}):buildNextTurnOptions(c.nextTurn,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest});
-  assertRestoreReceipt(r.restoreReceipt,{continuation:c.nextTurn??c.continuation,binding:r.binding,request:c.request,scopes:c.scopes,started:c.started,now:c.now});}
+  if(c.nextTurn?.sdkSession){if(r.restoreReceipt!==undefined)fail();}
+  else assertRestoreReceipt(r.restoreReceipt,{continuation:c.nextTurn??c.continuation,binding:r.binding,request:c.request,scopes:c.scopes,started:c.started,now:c.now});}
  /** @type {Partial<import('@anthropic-ai/claude-agent-sdk').Options>} */
  let mounted={};if(skillOptions!==undefined){const s=own(skillOptions,['mcpServers','allowedTools','canUseTool'],['outputFormat','hooks']);own(s.mcpServers,['meri_original_reads']);
   if(s.mcpServers.meri_original_reads.type!=='sdk'||s.mcpServers.meri_original_reads.name!=='meri_original_reads'||typeof s.mcpServers.meri_original_reads.instance?.close!=='function'||typeof s.canUseTool!=='function'||!Array.isArray(s.allowedTools)||s.allowedTools.length>11||!s.allowedTools.length||new Set(s.allowedTools).size!==s.allowedTools.length||s.allowedTools.some(t=>typeof t!=='string'||!/^mcp__meri_original_reads__[a-z_]+$/u.test(t)))fail();

@@ -160,7 +160,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    // These are the current canonical journal readers, not a caller-supplied parent/session selector.
    const next=await life.run(()=>store.nextRuns.execution(context,life.check)),continued=await life.run(()=>store.lifecycle.execution(context,life.check));
    if(next&&continued)fail('SDK_USAGE_PARENT_REFUSED');
-   const lineage=continued?.continuation??(next?.nextTurn?.checkpoint?{...next.nextTurn,mode:'resume'}:null);
+   const lineage=continued?.continuation??(next?.nextTurn?{...next.nextTurn,mode:'resume'}:null);
    return life.run(()=>store.recordUsage({binding,scopes:c.scopes,input:value,lineage},life.check));
   });
  }

@@ -20,7 +20,7 @@ export function createNativeRuntimeProvider(configuration){
   if(!continuation&&['continuation','nextTurn','sourceRequest','request','scopes'].some(k=>Object.hasOwn(input,k)))throw executionFault('CONTINUATION_REFUSED');
   let restored;try{
    restored=continuation?await continuation(input):null;
-   if(restored&&restored.restoreReceipt.expiresAtMs>r.deadlineMs)throw executionFault('CONTINUATION_REFUSED');
+   if(restored?.restoreReceipt&&restored.restoreReceipt.expiresAtMs>r.deadlineMs)throw executionFault('CONTINUATION_REFUSED');
   }finally{await current(r.binding,{signal:input.signal});}
   return data({...r,...(restored??{sdkSessionKey:r.sdkSessionKey??null})});
  },taskCapabilitySha256:c.taskCapabilitySha256});

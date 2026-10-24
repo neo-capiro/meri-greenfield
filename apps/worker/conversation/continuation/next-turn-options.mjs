@@ -4,6 +4,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {continuationContextSha256,lineageResumeOptions} from './options.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {continuesSession} from '../../../../packages/contracts/session-continuity.mjs';
+import {assertNativeSessionReference} from '../../../../packages/contracts/runtime-0.2/session.mjs';
 import AjvModule from 'ajv/dist/2020.js';
 import formatsModule from 'ajv-formats';
 import {conversationSchema} from '../../../../packages/contracts/conversation-application/schema.mjs';
@@ -16,7 +17,18 @@ for(const schema of [publicSchema,commonSchema,skillSchema,conversationSchema()]
 const validRequest=ajv.compile({$ref:'urn:meri:conversation-application:0.1.0#/$defs/ConversationStoredRequest'});
 const same=(a,b)=>hash(a)===hash(b),uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const fail=()=>{throw Error('NEXT_TURN_REFUSED');};
+export const nextTurnSessionId=value=>value.sdkSession?value.sdkSession.key.sessionId:value.checkpoint.sessionId;
 export function assertNextTurnLineage(value,binding){
+ if(Object.hasOwn(value,'sdkSession')){
+  const n=data(own(value,['sdkSession','sourceRequestSha256','contextSha256','sourceRequest','targetBinding','versions','scopes'])),source=assertNativeSessionReference(n.sdkSession).binding;
+  validateShape('RunBinding',binding);validateShape('RuntimeVersions',n.versions);
+  if(!Array.isArray(n.scopes)||!n.scopes.length)fail();for(const scope of n.scopes)validateShape('Scope',scope);
+  if(!same(n.targetBinding,binding)||!validRequest(n.sourceRequest)||hash(n.sourceRequest)!==n.sourceRequestSha256||continuationContextSha256(n.sourceRequest,n.scopes)!==n.contextSha256||binding.writerFence<=source.writerFence)fail();
+  for(const key of ['tenantId','actorId','conversationId'])if(source[key]!==binding[key])fail();
+  for(const key of ['runId','attemptId','workerId'])if(source[key]===binding[key])fail();
+  if(n.scopes.some(s=>s.tenantId!==binding.tenantId))fail();return n;
+ }
+
  const n=data(own(value,['checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','sourceRequest','targetBinding','resumeSessionAt']));
  const cp=n.checkpoint;validateShape('Checkpoint',cp);assertWorkspacePaths(cp.workspace);validateShape('RunBinding',binding);
  if(!same(n.targetBinding,binding)||!validRequest(n.sourceRequest)||hash(cp)!==n.checkpointSha256||hash(n.sourceRequest)!==n.sourceRequestSha256||
@@ -30,14 +42,14 @@ export function assertNextTurnLineage(value,binding){
  if(binding.writerFence<=cp.binding.writerFence)fail();return n;
 }
 export function buildNextTurnOptions(value,target){
- const t=data(own(target,['binding','versions','scopes','request','sourceRequest'])),n=assertNextTurnLineage(value,t.binding),cp=n.checkpoint;
+ const t=data(own(target,['binding','versions','scopes','request','sourceRequest'])),n=assertNextTurnLineage(value,t.binding),cp=n.checkpoint,scopes=n.sdkSession?n.scopes:cp.scopes,versions=n.sdkSession?n.versions:cp.versions;
  validateShape('RuntimeVersions',t.versions);
  for(const request of [t.request,t.sourceRequest]){
   if(!validRequest(request)||(request.window===null)!==(request.windowRequest===null))fail();
   if(request.window!==null)assertWindowResolution(request.windowRequest,request.window);
  }
- if(!same(n.sourceRequest,t.sourceRequest)||!same(cp.scopes,t.scopes)||!continuesSession(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
+ if(!same(n.sourceRequest,t.sourceRequest)||!same(scopes,t.scopes)||!continuesSession(versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
   continuationContextSha256(t.request,t.scopes)!==n.contextSha256||!same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.sourceRequest.requestId===t.request.requestId)fail();
  if(t.request.skill!==null&&!same(selectSkill(t.request.skill.skillId,t.request.skill.skillVersion).pin,t.request.skill))fail();
- return lineageResumeOptions({sessionId:cp.sessionId,resumeSessionAt:n.resumeSessionAt,targetSessionId:null});
+ return lineageResumeOptions({sessionId:nextTurnSessionId(n),resumeSessionAt:n.sdkSession?null:n.resumeSessionAt,targetSessionId:null});
 }

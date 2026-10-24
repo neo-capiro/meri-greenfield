@@ -1,4 +1,4 @@
-/** Immutable checkpoint reads bootstrap SDK; genuine target init gates all writes. */
+/** Immutable persisted SDK entries bootstrap resume; genuine target init gates all writes. */
 import {randomUUID} from 'node:crypto';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
@@ -15,8 +15,10 @@ export async function createContinuationRuntimeSdkSession(configuration){
  if((c.continuation===undefined)===(c.nextTurn===undefined))throw fault('RUNNER_SDK_RESTORE_REFUSED');
  const continuation=c.nextTurn!==undefined?assertNextTurnLineage(c.nextTurn,c.binding):assertContinuationEnvelope(c.continuation);
  const target=assertSdkSessionKey(c.sessionKey,{main:true}),methods=Object.fromEntries(['snapshot','register','load','append','listSubkeys'].map(k=>[k,storageMethod(c.client,k)])),abort=new AbortController(),signal=AbortSignal.any([abort.signal,...[c.runtimeSignal].filter(Boolean)]);
- const raw=own(await methods.snapshot({},{signal:AbortSignal.any([signal,...[c.signal].filter(Boolean)])}),['binding','key','checkpointSha256','opaqueSessionSha256','transcripts']);
- if(hash(raw.binding)!==hash(c.binding)||raw.key.sessionId!==continuation.checkpoint.sessionId||raw.key.projectKey!==target.projectKey||raw.checkpointSha256!==continuation.checkpointSha256||raw.opaqueSessionSha256!==continuation.checkpoint.opaqueSession.sha256||target.sessionId!==(c.nextTurn!==undefined||continuation.mode==='resume'?raw.key.sessionId:continuation.targetSessionId))throw fault('RUNNER_SDK_RESTORE_REFUSED');
+ const native=Boolean(c.nextTurn?.sdkSession),raw=own(await methods.snapshot({},{signal:AbortSignal.any([signal,...[c.signal].filter(Boolean)])}),['binding','key','transcripts',...(native?['sdkSession']:['checkpointSha256','opaqueSessionSha256'])]);
+ if(hash(raw.binding)!==hash(c.binding)||raw.key.projectKey!==target.projectKey||target.sessionId!==(c.nextTurn!==undefined||continuation.mode==='resume'?raw.key.sessionId:continuation.targetSessionId))throw fault('RUNNER_SDK_RESTORE_REFUSED');
+ if(native){if(hash(raw.sdkSession)!==hash(c.nextTurn.sdkSession)||hash(raw.key)!==hash(c.nextTurn.sdkSession.key))throw fault('RUNNER_SDK_RESTORE_REFUSED');}
+ else if(raw.key.sessionId!==continuation.checkpoint.sessionId||raw.checkpointSha256!==continuation.checkpointSha256||raw.opaqueSessionSha256!==continuation.checkpoint.opaqueSession.sha256)throw fault('RUNNER_SDK_RESTORE_REFUSED');
  const source=await createCheckpointSdkSnapshot({key:raw.key,transcripts:raw.transcripts}),batches=[];
  for(const row of source.transcripts()){
   const key={...target,...(row.subpath===undefined?{}:{subpath:row.subpath})};let part=[],bytes=2,offset=0;

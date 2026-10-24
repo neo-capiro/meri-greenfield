@@ -6,6 +6,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {assertWorkerControl,assertLifecycleReceipt} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
 import {createSdkCommandAdapter} from './commands.mjs';
 import {continuationContextSha256} from './options.mjs';
+import {nextTurnSessionId} from './next-turn-options.mjs';
 import {assertCaptureReceipt} from './native-receipts.mjs';
 import {assertTypedResult} from '../../../../packages/runtime/objective-generation-custody.mjs';
 const fault=(code,cause)=>Object.assign(new Error(code,cause===undefined?undefined:{cause}),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -76,7 +77,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  async function observe(message){if(stopped)return;
   if(message?.type==='system'&&message.subtype==='init'){
    if(typeof message.session_id!=='string'||!uuid.test(message.session_id)||sessionId&&sessionId!==message.session_id)throw fault('SDK_SESSION_REFUSED');
-   const expected=saved.nextTurn?saved.nextTurn.checkpoint.sessionId:saved.continuation?(saved.continuation.mode==='resume'?saved.continuation.checkpoint.sessionId:saved.continuation.targetSessionId):null;
+   const expected=saved.nextTurn?nextTurnSessionId(saved.nextTurn):saved.continuation?(saved.continuation.mode==='resume'?saved.continuation.checkpoint.sessionId:saved.continuation.targetSessionId):null;
    if(expected!==null&&expected!==message.session_id)throw fault('SDK_SESSION_REFUSED');sessionId=message.session_id;initialized.resolve();
   }
   if(held)return;

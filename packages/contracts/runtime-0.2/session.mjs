@@ -3,6 +3,11 @@ import {own,data} from '../commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../validate.mjs';
 const fail=()=>{throw Object.assign(Error('INVALID_SDK_SESSION_REQUEST'),{code:'INVALID_SDK_SESSION_REQUEST'});};
 export const sdkSessionOperations=Object.freeze(['register','load','append','list-subkeys']);
+/** Private immutable next-turn reference, not authority and not a legacy checkpoint. */
+export function assertNativeSessionReference(raw){
+ const value=data(own(raw,['binding','key','ownerSha256','entriesCount']));validateShape('RunBinding',value.binding);assertSdkSessionKey(value.key,{main:true});
+ if(!/^[a-f0-9]{64}$/u.test(value.ownerSha256)||!Number.isSafeInteger(value.entriesCount)||value.entriesCount<1||value.entriesCount>100000)fail();return value;
+}
 export function assertSdkSessionKey(raw,{main=false}={}){const key=data(own(raw,['projectKey','sessionId'],['subpath']));
  if(typeof key.projectKey!=='string'||!key.projectKey||key.projectKey.length>256||typeof key.sessionId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/u.test(key.sessionId)||key.subpath!==undefined&&(main||typeof key.subpath!=='string'||!key.subpath||key.subpath.length>1024))fail();return key;}
 export function assertSdkSessionRequestHeaders(operation,raw){try{

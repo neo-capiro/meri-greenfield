@@ -15,9 +15,12 @@ import {createMemoryProposalContextJournal} from './memory-proposal-context-jour
 import {assertUsageInput} from '../../../packages/contracts/runtime-0.2/usage.mjs';
 import {accountSdkSnapshot} from './usage.mjs';
 import {storedModelSettings} from '../settings/documents.mjs';
+import {assertNativeSessionReference} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {assertNextRunReservation} from './next-run-reservation.mjs';
+import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now,onPublished}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
- async function tx(binding,check,body,{beforeConversation}={}){let c,begun=false,committing=false,reusable=false,failure,result;
+ async function tx(binding,check,body,{beforeConversation,sessionSnapshot=false}={}){let c,begun=false,committing=false,reusable=false,failure,result;
   try{check();c=await pool.connect();check();await c.query('BEGIN');begun=true;check();await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");check();
    if(beforeConversation){
     await c.query('SELECT pg_advisory_xact_lock_shared(hashtextextended($1,0))',
@@ -27,7 +30,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${binding.tenantId}:${binding.conversationId}`]);check();result=await body(c);check();committing=true;await c.query('COMMIT');reusable=true;check();
   }catch(e){failure=!committing&&productFailure(e)?e:Object.assign(new Error(committing?'STORE_COMMIT_UNKNOWN':e.code??'STORE_UNAVAILABLE'),{code:committing?'STORE_COMMIT_UNKNOWN':e.code??'STORE_UNAVAILABLE'});if(begun&&!committing)try{await c.query('ROLLBACK');reusable=true;}catch{}}
   finally{if(c)try{c.release(reusable?undefined:failure);}catch{failure??=Object.assign(new Error('STORE_RELEASE_UNKNOWN'),{code:'STORE_RELEASE_UNKNOWN'});}}
-  if(failure)throw failure;return bounded(result,2097152);
+  if(failure)throw failure;return sessionSnapshot?copySessionJson(result,34*1024*1024):bounded(result,2097152);
  }
  /** Admission cap only: no reservations. Concurrent admitted runs may finish above it; SDK bounds each run. */
  async function modelPolicy(c,b,check,admission=false){
@@ -51,14 +54,21 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(r.sdk_usage!==null&&r.sdk_usage!==undefined){if(hash(r.sdk_usage)!==r.sdk_usage_sha256)usageRefuse('SDK_USAGE_STORE_CORRUPT');if(r.sdk_usage.inputSha256!==inputSha256)usageRefuse('SDK_USAGE_REPLAY_REFUSED');return {status:r.sdk_usage.status,reason:r.sdk_usage.reason,replayed:true};}
    if(!['running','completed','failed','cancelled'].includes(r.projection.state))usageRefuse('SDK_USAGE_STATE_REFUSED');
    let mode='new',parentSessionId=null,baseline=null,parentRunId=null;
-   if(lineage){const l=bounded(lineage),source=l.checkpoint?.binding;validateShape('RunBinding',source);
+   if(lineage){const l=bounded(lineage),native=l.sdkSession?assertNativeSessionReference(l.sdkSession):null,source=native?.binding??l.checkpoint?.binding;validateShape('RunBinding',source);
+    if(native){
+     if(l.mode!=='resume'||l.checkpoint!==undefined||l.resumeSessionAt!==undefined||source.conversationId!==b.conversationId||source.writerFence>=b.writerFence||!same(l.targetBinding,b))usageRefuse('SDK_USAGE_PARENT_REFUSED');
+     const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();
+     if(rows.length!==1||hash(rows[0].reservation)!==rows[0].reservation_sha256||rows[0].state!=='ACCEPTED')usageRefuse('SDK_USAGE_PARENT_REFUSED');
+     const reservation=assertNextRunReservation(rows[0].reservation);
+     if(!same(reservation.target,b)||!same(reservation.facts.sdkSession,native)||rows[0].tenant_id!==b.tenantId||rows[0].conversation_id!==b.conversationId||rows[0].target_run_id!==b.runId||rows[0].source_run_id!==reservation.source.runId)usageRefuse('SDK_USAGE_PARENT_REFUSED');
+    }
     if(source.tenantId!==b.tenantId||source.actorId!==b.actorId||source.runId===b.runId||!['resume','fork'].includes(l.mode))usageRefuse('SDK_USAGE_PARENT_REFUSED');
-    mode=l.mode;parentSessionId=l.checkpoint.sessionId;parentRunId=source.runId;uuid(parentSessionId);
+    mode=l.mode;parentSessionId=native?.key.sessionId??l.checkpoint.sessionId;parentRunId=source.runId;uuid(parentSessionId);
     const parent=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[source.tenantId,source.conversationId,source.runId])).rows[0]);check();
-    if(!same(parent.projection.binding,source))usageRefuse('SDK_USAGE_PARENT_REFUSED');
+    if(!same(parent.projection.binding,source)||native&&(parent.projection.state!=='completed'||!same(parent.projection.scopes,scopes)))usageRefuse('SDK_USAGE_PARENT_REFUSED');
     if(parent.sdk_usage!=null){if(hash(parent.sdk_usage)!==parent.sdk_usage_sha256)usageRefuse('SDK_USAGE_STORE_CORRUPT');
      // The saved latest result cannot price a rewind to an earlier transcript position.
-     if(l.resumeSessionAt===null)baseline=parent.sdk_usage.cumulative??null;}
+     if(native||l.resumeSessionAt===null)baseline=parent.sdk_usage.cumulative??null;}
    }
    const usage={...accountSdkSnapshot(i.usage,{mode,parentSessionId,baseline}),parentRunId,inputSha256,toolsUsed:i.toolsUsed};
    const written=(await c.query('UPDATE meri_conversations.runs SET sdk_usage=$4,sdk_usage_sha256=$5,sdk_charge_micro_usd=$6,sdk_usage_recorded_at=clock_timestamp() WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND sdk_usage IS NULL RETURNING sdk_usage_sha256',[b.tenantId,b.conversationId,b.runId,usage,hash(usage),usage.chargeMicroUsd])).rows;check();

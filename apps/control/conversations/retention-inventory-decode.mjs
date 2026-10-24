@@ -160,8 +160,17 @@ function decodeNextRun(row,owner,byRun,byCompletion){
   same(target.continuation.checkpoint.binding,source.projection.binding)&&
   ['paused','waiting-for-approval'].includes(source.projection.state);
  requireFact(['completed','failed','cancelled'].includes(source.projection.state)||continued);
- if(source.projection.state==='completed')requireFact(p.facts.checkpoint!==null);
- if(continued)requireFact(p.facts.checkpoint===null);
+ if(source.projection.state==='completed')requireFact(p.facts.checkpoint!==null||p.facts.sdkSession);
+ if(continued)requireFact(p.facts.checkpoint===null&&!p.facts.sdkSession);
+ if(p.facts.sdkSession){
+  // This inventory validates the retained reservation's lineage; it grants no SDK read or purge authority.
+  const binding=p.facts.sdkSession.binding,native=byRun.get(binding.runId);
+  requireFact(native&&same(native.projection.binding,binding)&&native.projection.state==='completed'&&
+   binding.tenantId===p.source.tenantId&&binding.actorId===p.source.actorId&&binding.conversationId===p.source.conversationId&&
+   binding.writerFence<=p.source.writerFence&&same(native.projection.scopes,p.scopes)&&native.projection.policyRevision===p.policyRevision&&
+   ![...byRun.values()].some(other=>other.projection.state==='completed'&&other.projection.binding.writerFence>binding.writerFence&&other.projection.binding.writerFence<=p.source.writerFence));
+  requireFact(continuesSession(native.projection.versions,target?.projection.versions??p.versions));
+ }
  // The conversation's latest published checkpoint as of the source: a completed source's own, else the last completed turn's.
  if(p.facts.checkpoint!==null){const cp=byCompletion.get(p.facts.checkpoint.checkpointId),fence=run=>byRun.get(run)?.projection.binding.writerFence;
   requireFact(cp&&cp.row.state==='PUBLISHED'&&cp.row.proof_sha256===p.facts.checkpoint.proofSha256&&

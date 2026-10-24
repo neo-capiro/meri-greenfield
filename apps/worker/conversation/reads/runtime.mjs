@@ -18,6 +18,7 @@ import {canonicalSha256,validateShape} from '../../../../packages/contracts/vali
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {assertAvailabilitySnapshot} from './snapshot.mjs';
 import {resolveAvailableReads,profileReads} from './availability.mjs';
+import {nextTurnSessionId} from '../continuation/next-turn-options.mjs';
 import {createGeneralReadServer} from './server.mjs';
 import {effectiveReadBudgets,READ_TIMEOUT_MS} from './budget.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
@@ -26,7 +27,7 @@ const CATALOG_SHA256=canonicalSha256(catalog),SNAPSHOT_MS=3000;
  * @param {any} lineage @returns {string|undefined} */
 export function continuationSessionId(lineage){
  if(lineage?.continuation)return lineage.continuation.mode==='resume'?lineage.continuation.checkpoint.sessionId:lineage.continuation.targetSessionId;
- if(lineage?.nextTurn)return lineage.nextTurn.checkpoint.sessionId;
+ if(lineage?.nextTurn)return nextTurnSessionId(lineage.nextTurn);
  return undefined;
 }
 /**

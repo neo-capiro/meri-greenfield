@@ -25,7 +25,7 @@ export function createRemoteNativeController(configuration){
  const {runtimeConfiguration:r,transport}=own(configuration,['runtimeConfiguration','transport'],['objects']);
  const pinned=compileNativeTaskPlan({runtime:r.runtime,plan:r.plan,preparationIntent:r.preparationIntent});exactOriginal(transport.original,pinned.original);if(!matchesCapability(transport.credential,r.controlCapabilitySha256))throw Error('REMOTE_CONTROL_BINDING_REFUSED');
  const now=r.now??Date.now,enabled=r.enabled??false,maxRequestMs=r.maxRequestMs??3000,taskDigest=capabilityDigest(r.taskCapability);
- // Fresh sessions are supported here. Existing checkpoint-based continuation remains unavailable until Step 5 replaces it with native session persistence.
+ // Native next turns read the reserved SDK session under target authority; legacy workspace restoration is not installed.
  const continuation=r.continuation??createNativeContinuationRuntime({store:r.store,verifier:r.supervisor.taskVerifier,taskCapability:r.taskCapability,now});
  const prepared=createPreparedNativeRuntime({store:r.store,allocator:r.allocator,supervisor:r.supervisor,runtime:r.runtime,plan:r.plan,preparationIntent:r.preparationIntent,taskCapability:r.taskCapability,verifyTask:r.verifyTask,continuation,enabled,now,maxRequestMs});
  const preparationApplication=createNativePreparationApplication({owner:prepared.preparationAuthorizer,taskCapabilitySha256:taskDigest,enabled,now,maxRequestMs});

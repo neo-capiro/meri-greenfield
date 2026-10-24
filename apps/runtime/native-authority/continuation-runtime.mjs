@@ -1,4 +1,4 @@
-/** Persisted target joins and borrowed native restore provenance; no session codec/storage owner. */
+/** Target-authorized native session reads, with historical checkpoint restoration only when that owner is supplied. */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {assertWorkerAuthorization} from '../../../packages/contracts/runtime-0.2/validate.mjs';
@@ -17,6 +17,7 @@ export function createNativeContinuationRuntime(configuration){
  const c=own(configuration,['store','verifier','taskCapability'],['restorer','now']);
  const read=storageMethod(c.store,'read'),execution=storageMethod(c.store.lifecycle,'execution'),verify=storageMethod(c.verifier,'verify'),now=c.now??Date.now;
  const nextExecution=c.store.nextRuns?storageMethod(c.store.nextRuns,'execution'):null;
+ const nativeSnapshot=c.store.nextRuns?.sessionSnapshot?storageMethod(c.store.nextRuns,'sessionSnapshot'):null;
  const nativeOwner=c.restorer?own(c.restorer,['restore','snapshot']):null;
  const restore=nativeOwner?storageMethod(c.restorer,'restore'):null,readNativeSnapshot=nativeOwner?storageMethod(c.restorer,'snapshot'):null;
  if(typeof now!=='function')throw executionFault('CONTINUATION_CONFIGURATION');
@@ -43,7 +44,12 @@ export function createNativeContinuationRuntime(configuration){
   if(!same(first.target.run.versions,input.versions))throw executionFault('CONTINUATION_REFUSED');
   if(first.saved===null){if(provided.length)throw executionFault('CONTINUATION_REFUSED');return null;}
   const kind=first.saved.nextTurn?'nextTurn':'continuation',required=[kind,'sourceRequest','request','scopes'];
-  if(provided.length!==required.length||!required.every(k=>provided.includes(k))||!same(input[kind],first.saved[kind])||!same(input.sourceRequest,first.saved.nextTurn?.sourceRequest??first.saved.sourceRequest)||!same(input.request,first.target.request)||!same(input.scopes,first.receipt.scopes)||!restore)throw executionFault('CONTINUATION_REFUSED');
+  if(provided.length!==required.length||!required.every(k=>provided.includes(k))||!same(input[kind],first.saved[kind])||!same(input.sourceRequest,first.saved.nextTurn?.sourceRequest??first.saved.sourceRequest)||!same(input.request,first.target.request)||!same(input.scopes,first.receipt.scopes))throw executionFault('CONTINUATION_REFUSED');
+  if(first.saved.nextTurn?.sdkSession){
+   const final=await snapshot(input.binding,input.signal);if(!same(pin(first),pin(final))||Math.min(first.receipt.expiresAtMs,final.receipt.expiresAtMs)<=now())throw executionFault('CONTINUATION_REFUSED');
+   return {sdkSessionKey:assertSdkSessionKey(first.saved.nextTurn.sdkSession.key,{main:true})};
+  }
+  if(!restore)throw executionFault('CONTINUATION_REFUSED');
   const context=savedContext(first),started=now();
   // The borrowed owner must durably deduplicate this original target; uncertain
   // restoration must remain UNKNOWN rather than repeat physical writes.
@@ -59,7 +65,15 @@ export function createNativeContinuationRuntime(configuration){
  async function readSnapshot(value){
   const input=own(value,['credential','request'],['signal','deadlineMs']),request=own(input.request,['binding']);
   if(!matchesCapability(input.credential,capabilityDigest(c.taskCapability)))throw executionFault('CONTINUATION_REFUSED');
-  const first=await snapshot(request.binding,input.signal);if(!first.saved||!readNativeSnapshot)throw executionFault('CONTINUATION_REFUSED');
+  const first=await snapshot(request.binding,input.signal);if(!first.saved)throw executionFault('CONTINUATION_REFUSED');
+  if(first.saved.nextTurn?.sdkSession){
+   if(!nativeSnapshot)throw executionFault('CONTINUATION_REFUSED');const check=()=>{if(input.signal?.aborted)throw executionFault('REFUSED');};
+   const raw=own(await nativeSnapshot({binding:request.binding,scopes:first.receipt.scopes,selectedClientId:first.receipt.selectedClientId},check),['binding','key','sdkSession','transcripts']);
+   if(!same(raw.binding,request.binding)||!same(raw.sdkSession,first.saved.nextTurn.sdkSession)||!same(raw.key,raw.sdkSession.key))throw executionFault('CONTINUATION_REFUSED');
+   const source=await createCheckpointSdkSnapshot({key:raw.key,transcripts:raw.transcripts}),final=await snapshot(request.binding,input.signal);
+   if(!same(pin(first),pin(final)))throw executionFault('CONTINUATION_REFUSED');return {...raw,transcripts:source.transcripts()};
+  }
+  if(!readNativeSnapshot)throw executionFault('CONTINUATION_REFUSED');
   const context=savedContext(first);
   const raw=own(await readNativeSnapshot({...context,restoreKey:hash(context),signal:input.signal,revalidate:async()=>{const current=await snapshot(request.binding,input.signal);if(!same(pin(first),pin(current)))throw executionFault('CONTINUATION_REFUSED');}}),['binding','key','checkpointSha256','opaqueSessionSha256','transcripts']);
   const {transcripts,...headers}=raw,header=data(headers),cp=lineage(first.saved).checkpoint;
