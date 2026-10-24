@@ -5,6 +5,8 @@ import {createRoutinesCoreClient} from '../routines-core-client.mjs';
 import {scheduledRunProfileFixture,id} from './scheduled-run-profile-fixture.mjs';
 import {createAgentCoreExecutionOwner} from '../../agentcore-execution.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
+import {sdkUsageSnapshot} from '../../../control/conversations/usage.mjs';
+const usage=cost=>({usage:sdkUsageSnapshot({type:'result',session_id:id(223),total_cost_usd:cost/1e6,modelUsage:{'us.anthropic.claude-sonnet-4-6':{inputTokens:10,outputTokens:2,cacheReadInputTokens:0,cacheCreationInputTokens:0,webSearchRequests:0,costUSD:cost/1e6,provider:'bedrock',costBasis:'list'}}}),toolsUsed:{tools:[],omitted:0}});
 
 async function fixture({general=false}={}){
  const h=await scheduledRunProfileFixture({agentcore:true,general,allocated:false,occurrenceCap:750});
@@ -50,7 +52,7 @@ test('confirmed ordinary conversation leaves its native model policy intact',asy
 });
 
 for(const general of [false,true])test(`actual ${general?'General':'client'} resume can start Temporal before APPLIED while SDK/data remain gated`,async t=>{
- const h=await fixture({general});t.after(h.close);await h.claim();await h.running();await h.pause();
+ const h=await fixture({general});t.after(h.close);await h.claim();await h.running();await h.store.recordUsage({binding:h.identity.binding,scopes:h.scopes,input:usage(300)},()=>{});await h.pause();
  assert.ok(await h.owner.forTransition(h.call()));await assert.rejects(h.owner.forBinding(h.call()));
  const entered=Promise.withResolvers(),finished=Promise.withResolvers();let invocations=0,target;
  const execution=createAgentCoreExecutionOwner({store:h.store,versions:h.template.versions,plan:{runtime:'synthetic'},credentialSecret:'synthetic-routine-execution-secret',now:h.now,
@@ -65,10 +67,20 @@ for(const general of [false,true])test(`actual ${general?'General':'client'} res
  };
  const proof=h.f.proofs.get(h.identity.binding.runId),result=await h.f.control({controlId:id(780),intent:'resume',checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256});assert.equal(result.state,'APPLIED');
  const invocation=await entered.promise;assert.equal(invocations,1);assert.deepEqual(invocation.execution.binding,target);
- assert.equal((await h.owner.modelPolicy(target,()=>{})).maxBudgetMicroUsd,750);assert.ok(await h.owner.forBinding({binding:target}));
+ assert.equal((await h.owner.modelPolicy(target,()=>{})).maxBudgetMicroUsd,450);assert.ok(await h.owner.forBinding({binding:target}));
  await assert.rejects(h.owner.forTransition(h.call()),'superseded source does not remain current');
  await h.status('failed',target);assert.ok(await h.owner.forTransition({binding:target}));await assert.rejects(h.owner.forBinding({binding:target}));
  finished.resolve(await execution.settle({credential:invocation.credential,execution:invocation.execution,state:'failed'}));
+});
+
+for(const [cause,input,mutate] of [
+ ['absent',null,null],['unavailable',{usage:null,toolsUsed:{tools:[],omitted:0}},null],['exhausted',usage(750),null],
+ ['over budget',usage(751),null],['corrupt hash',usage(300),r=>{r.sdk_usage_sha256='0'.repeat(64);}],
+ ['session mismatch',usage(300),r=>{r.sdk_usage.cumulative.sessionId=id(999);r.sdk_usage_sha256=hash(r.sdk_usage);}],
+])test(`routine resume refuses ${cause} prior usage instead of restoring the full cap`,async t=>{
+ const h=await fixture();t.after(h.close);await h.claim();await h.running();if(input)await h.store.recordUsage({binding:h.identity.binding,scopes:h.scopes,input},()=>{});
+ await h.pause();const target=await h.resume();if(mutate)mutate(h.row(h.identity.binding));
+ await assert.rejects(h.owner.modelPolicy(target,()=>{}));
 });
 
 test('an uncertain committed resume never starts the SDK and cannot release reads',async t=>{

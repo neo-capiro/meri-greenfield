@@ -58,6 +58,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  if(objectiveGeneration!==undefined&&typeof objectiveGeneration.prepare!=='function')throw fault('OBJECTIVE_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
   const nativeAudit=createNativeHookBatch();
+  const drained=Promise.withResolvers();drained.promise.catch(()=>{});
   diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
    // The pinned SDK's close() starts cleanup but returns void. Query.return()
    // awaits that same cleanup (including its transcript batch flush), then ends
@@ -150,13 +151,16 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     return text;
    }
    if(lifecycle!==undefined)controls=createActivityLifecycle({config:lifecycle,runOwner,binding,saved,runtime,input,
-    query:{interrupt:()=>stream.interrupt(),close:closeQuery},life,now});
+    query:{interrupt:()=>stream.interrupt(),close:closeQuery,drain:()=>drained.promise},life,now});
     while(true){diagnostic('stage','activity-stream');let next;try{next=await (controls?Promise.race([ahead.next(),controls.failure.then(error=>{throw error;})]):ahead.next());}
-    catch(error){if(controls?.isHeld()){capabilities?.check();return await controls.heldResult();}throw error;}if(next.done)break;const m=next.value;
+    catch(error){drained.reject(error);if(controls?.isHeld()){capabilities?.check();return await controls.heldResult();}throw error;}if(next.done){drained.reject(fault('SDK_RESULT_MISSING'));break;}const m=next.value;
     capabilities?.check(); // A latched capability/hook failure stops observation, checkpointing and output before this frame is used.
     if(m?.type==='system'&&m.subtype==='init')runtime.sessionStore.observeInit?.(m);
     if(m?.type==='system'&&m.subtype==='mirror_error')throw fault('SESSION_PERSISTENCE_FAILED');
-    await controls?.observe(m);if(controls?.isHeld())continue;
+    await controls?.observe(m);if(controls?.isHeld()){
+     if(m?.type==='result'&&!m.parent_tool_use_id){if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;await recordUsage(m);drained.resolve();return await controls.heldResult();}
+     continue;
+    }
     if(m?.parent_tool_use_id)continue; // Subagent/internal content is never a display event; only policy-admitted progress summaries are.
     // A refused display publication may be a committed pause/approval hold the control reader has not yet
     // claimed: the lifecycle fences output and settles it through the checkpoint, never a generic close.
@@ -164,7 +168,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
      const text=textDelta(m)?await foldDeltas(m,part.text):part.text;if(controls?.isHeld())break;
      diagnostic('stage','activity-output');try{await ahead.during(()=>publish('message.delta',{messageId:part.messageId,text}));}catch(error){if(!controls?.fence())throw error;}diagnostic('stage','activity-stream');}
     if(controls?.isHeld())continue;
-    if(m?.type==='result'){diagnostic('stage','activity-result');if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;await recordUsage(m);if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');capabilities?.check();if(controls||skillRuntime){diagnostic('stage','activity-finalize');if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
+    if(m?.type==='result'){diagnostic('stage','activity-result');if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;await recordUsage(m);drained.resolve();if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');capabilities?.check();if(controls||skillRuntime){diagnostic('stage','activity-finalize');if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
    }
     diagnostic('stage','activity-finalize');capabilities?.check();if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');if(skillRuntime){skillOutput=await life.run(()=>skillRuntime.finish(terminalResult));if(typeof selectedSkills.publish!=='function')throw fault('OUTPUT_PUBLICATION_UNAVAILABLE');await life.run(signal=>selectedSkills.publish({binding,output:skillOutput,signal}));}

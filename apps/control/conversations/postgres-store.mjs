@@ -19,6 +19,7 @@ import {storedModelSettings} from '../settings/documents.mjs';
 import {assertNativeSessionReference} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {assertNextRunReservation} from './next-run-reservation.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
+import {assertContinuationEnvelope} from '../../../packages/contracts/conversation-lifecycle/validate.mjs';
 import {assertModelCatalog,availableModelSelection,storedModelSelection} from '../../../packages/contracts/model-selection.mjs';
 import {storedUserPreferencesDocument} from '../../../packages/contracts/user-preferences-application/document.mjs';
 export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now,onPublished,modelCatalog,assertConversationActive}){
@@ -56,6 +57,11 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  });}
  async function readModelPolicy(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{
   const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(r.projection.binding,b))fail('STALE_WRITER');return modelPolicy(c,b,check);});}
+ /** Internal accounting read over the same immutable usage row; callers supply canonical lineage, never a browser selector. */
+ async function readUsage(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{
+  const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();
+  if(!same(r.projection.binding,b))fail('STALE_WRITER');if(r.sdk_usage==null)return null;
+  if(hash(r.sdk_usage)!==r.sdk_usage_sha256)fail('SDK_USAGE_STORE_CORRUPT');return bounded(r.sdk_usage);});}
  /** Same run row is the idempotency key. The service supplies lineage from the existing canonical run journals. */
  async function recordUsage({binding,scopes,input,lineage=null},check){
   const usageRefuse=code=>{throw new ProductError(code);};
@@ -68,7 +74,12 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(!['running','completed','failed','cancelled'].includes(r.projection.state))usageRefuse('SDK_USAGE_STATE_REFUSED');
    let mode='new',parentSessionId=null,baseline=null,parentRunId=null;
    if(lineage){const l=bounded(lineage),native=l.sdkSession?assertNativeSessionReference(l.sdkSession):null,source=native?.binding??l.checkpoint?.binding;validateShape('RunBinding',source);
-    if(native){
+    const nativeContinuation=native&&l.kind==='native-session';
+    if(nativeContinuation){
+     assertContinuationEnvelope(l);
+     if(!r.continuation||hash(r.continuation)!==r.continuation_sha256||!same(r.continuation.continuation,l)||
+      (l.mode==='resume'?(source.conversationId!==b.conversationId||b.writerFence!==source.writerFence+1):(source.conversationId===b.conversationId||b.writerFence!==1)))usageRefuse('SDK_USAGE_PARENT_REFUSED');
+    }else if(native){
      if(l.mode!=='resume'||l.checkpoint!==undefined||l.resumeSessionAt!==undefined||source.conversationId!==b.conversationId||source.writerFence>=b.writerFence||!same(l.targetBinding,b))usageRefuse('SDK_USAGE_PARENT_REFUSED');
      const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();
      if(rows.length!==1||hash(rows[0].reservation)!==rows[0].reservation_sha256||rows[0].state!=='ACCEPTED')usageRefuse('SDK_USAGE_PARENT_REFUSED');
@@ -78,7 +89,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
     if(source.tenantId!==b.tenantId||source.actorId!==b.actorId||source.runId===b.runId||!['resume','fork'].includes(l.mode))usageRefuse('SDK_USAGE_PARENT_REFUSED');
     mode=l.mode;parentSessionId=native?.key.sessionId??l.checkpoint.sessionId;parentRunId=source.runId;uuid(parentSessionId);
     const parent=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[source.tenantId,source.conversationId,source.runId])).rows[0]);check();
-    if(!same(parent.projection.binding,source)||native&&(parent.projection.state!=='completed'||!same(parent.projection.scopes,scopes)))usageRefuse('SDK_USAGE_PARENT_REFUSED');
+    if(!same(parent.projection.binding,source)||native&&(!(nativeContinuation?['paused','waiting-for-approval',...(l.mode==='fork'?['completed']:[])]:['completed']).includes(parent.projection.state)||!same(parent.projection.scopes,scopes)))usageRefuse('SDK_USAGE_PARENT_REFUSED');
     if(parent.sdk_usage!=null){if(hash(parent.sdk_usage)!==parent.sdk_usage_sha256)usageRefuse('SDK_USAGE_STORE_CORRUPT');
      // The saved latest result cannot price a rewind to an earlier transcript position.
      if(native||l.resumeSessionAt===null)baseline=parent.sdk_usage.cumulative??null;}
@@ -142,5 +153,5 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  const preparation=createNativePreparationJournals({tx,rowRun});
  const initialInputs=createOriginalInputJournal({tx,rowRun,now,assertConversationActive}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
  const nextRuns=createNextRunJournal({tx,rowRun,modelAdmission,assertConversationActive});
- return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,recordUsage,readModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
+ return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
 }

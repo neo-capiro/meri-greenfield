@@ -31,9 +31,9 @@ function fixture({action='steer',mode,echo=true,claim=true,corrupt,echoChange,en
  const query=args=>{state.calls++;state.options=args.options;return {async *[Symbol.asyncIterator](){
   yield {type:'system',subtype:'init',session_id:sessionId};const iter=args.prompt[Symbol.asyncIterator]();state.messages.push((await iter.next()).value);started.resolve();
   if(!mode&&claim&&action==='steer'){const next=await Promise.race([iter.next(),stop.promise.then(()=>({done:true}))]);if(next.done)return;state.messages.push(next.value);if(echo){const m=structuredClone(state.messages[1]);if(echoChange)echoChange(m);yield m;}}
-  if(!mode&&action!=='steer'){await stop.promise;return;}
+  if(!mode&&action!=='steer'){await stop.promise;yield success;return;}
   yield success;if(park)await stop.promise;
- },async interrupt(){state.interrupts++;return {still_queued:[]};},close(){state.closed++;stop.resolve();}};};
+ },async interrupt(){state.interrupts++;stop.resolve();return {still_queued:[]};},close(){state.closed++;stop.resolve();}};};
  const execute=createConversationActivity({runOwner,prepareRuntime,query,lifecycle:{captureCheckpoint,pollMs:5},diagnostics:{failure:error=>state.failures.push(error)}});
  return {state,execute,binding,entry,saved,runOwner,captureCheckpoint,prepareRuntime,query,sessionId};
 }
@@ -66,7 +66,7 @@ test('a display publication refused by a hold the reader has not yet seen is fen
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){hold=true;refused++;throw Object.assign(Error('NATIVE_UNAVAILABLE'),{code:'NATIVE_UNAVAILABLE'});}f.state.events.push(event);};
  const text=(id,t)=>({type:'assistant',parent_tool_use_id:null,message:{id,content:[{type:'text',text:t},{type:'text',text:t+' again'}]}});
  const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query(){return {async *[Symbol.asyncIterator](){
-  yield {type:'system',subtype:'init',session_id:f.sessionId};yield text('m1','refused');yield text('m2','suppressed');await stop.promise;},async interrupt(){f.state.interrupts++;return {still_queued:[]};},close(){f.state.closed++;stop.resolve();}};}});
+  yield {type:'system',subtype:'init',session_id:f.sessionId};yield text('m1','refused');yield text('m2','suppressed');await stop.promise;yield success;},async interrupt(){f.state.interrupts++;stop.resolve();return {still_queued:[]};},close(){f.state.closed++;stop.resolve();}};}});
  assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
  assert.equal(refused,1,'no further display publication after the first refusal');assert.equal(claims,1);assert.equal(f.state.records,1);assert.equal(f.state.interrupts,1);
  assert.deepEqual(f.state.events.map(e=>e.data.state),['starting','running']);
@@ -195,7 +195,7 @@ const streamed=(f,count,stop)=>({async *[Symbol.asyncIterator](){
  yield {type:'stream_event',parent_tool_use_id:null,event:{type:'message_start',message:{id:'m1'}}};
  yield {type:'stream_event',parent_tool_use_id:null,event:{type:'content_block_start',index:0,content_block:{type:'text',text:''}}};
  for(let i=0;i<count;i++)yield {type:'stream_event',parent_tool_use_id:null,event:{type:'content_block_delta',index:0,delta:{type:'text_delta',text:`w${i} `}}};
- await stop.promise;},async interrupt(){f.state.interrupts++;return {still_queued:[]};},close(){f.state.closed++;stop.resolve();}});
+ await stop.promise;yield success;},async interrupt(){f.state.interrupts++;stop.resolve();return {still_queued:[]};},close(){f.state.closed++;stop.resolve();}});
 test('a refused publication of streamed deltas fences: the deltas read ahead are never published and the hold settles',async()=>{
  const f=fixture({action:'pause'});let hold=false,emitted=false,refused=0;const stop=Promise.withResolvers();
  f.runOwner.nextControls=async()=>{if(!hold||emitted)return [];emitted=true;return [f.entry];};

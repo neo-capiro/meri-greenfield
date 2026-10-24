@@ -7,6 +7,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {createScheduledRunProfile} from './scheduled-run-profile.mjs';
 import {occurrenceIdentity} from '../../control/schedules/scheduled-occurrence.mjs';
 import {setTimeout as pause} from 'node:timers/promises';
+import {accountSdkSnapshot} from '../../control/conversations/usage.mjs';
 
 const same=(a,b)=>hash(a)===hash(b),fault=()=>Object.assign(Error('ROUTINE_CURRENT_UNAVAILABLE'),{code:'ROUTINE_CURRENT_UNAVAILABLE'});
 export function createNativeRoutineCurrent({configuration,task,store,scheduleOwner,firing,wires,now=Date.now}){
@@ -62,8 +63,21 @@ export function createNativeRoutineCurrent({configuration,task,store,scheduleOwn
  // Used only by the canonical worker model-policy read. The SDK keeps its normal model loop and cost enforcement.
  async function modelPolicy(binding,check){
   check();const policy=await store.readModelPolicy(binding,check);check();
-  const profile=await select({binding},async({record})=>record);check();
-  return profile===null?policy:{...policy,maxBudgetMicroUsd:Math.min(policy.maxBudgetMicroUsd,profile.maxCostMicroUSD)};
+  const profile=await select({binding},async({record,life})=>{
+   let spent=0;
+   if(binding.writerFence>1){
+    const saved=await life.run(()=>store.lifecycle.execution({binding,scopes:record.scopes,selectedClientId:record.selectedClientId},life.check));
+    const source=saved?.continuation;
+    if(source?.kind!=='native-session'||source.mode!=='resume')throw fault();
+    const usage=await life.run(()=>store.readUsage(source.sdkSession.binding,life.check));
+    if(usage?.status!=='recorded'||usage.cumulative?.sessionId!==source.sdkSession.key.sessionId)throw fault();
+    // The native total is cumulative across this occurrence's same-session resume chain. maxBudgetUsd itself is per query.
+    const cumulative=accountSdkSnapshot(usage.cumulative,{mode:'new'});
+    if(cumulative.status!=='recorded'||!Number.isSafeInteger(cumulative.chargeMicroUsd))throw fault();spent=cumulative.chargeMicroUsd;
+   }
+   const remaining=record.maxCostMicroUSD-spent;if(!Number.isSafeInteger(remaining)||remaining<1)throw fault();return remaining;
+  });check();
+  return profile===null?policy:{...policy,maxBudgetMicroUsd:Math.min(policy.maxBudgetMicroUsd,profile)};
  }
  return Object.freeze({beforeExecution,admitExecution,beforeInvocation,forBinding:value=>current(value),forTransition:value=>current(value,true),modelPolicy});
 }
