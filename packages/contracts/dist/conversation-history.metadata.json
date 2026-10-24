@@ -75,8 +75,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "61c748dffb7885468604223c6eb3239fa1e2dc34aff2b55cc02cc7def8352e84",
-      "bytes": 8830
+      "sha256": "6316007a2a3d02abb2e26c1a588dc5e43d0fda61e3b147c230490ceaafe5d796",
+      "bytes": 8852
     },
     {
       "path": "meri.schema.json",
