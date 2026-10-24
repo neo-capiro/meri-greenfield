@@ -193,7 +193,7 @@ export async function startControl(configuration,options={}){
   const mountedApplication=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
   const objectiveRuns=composeObjectiveRuns({configuration,controlCapabilitySha256:capabilityDigest(capabilityBytes.toString('utf8').trim()),pool,store:assembly.store,client,
    ...(objectiveDeclared.runs?candidate.objective:{})});
-  const objectiveStart=objectiveDeclared.start===null?null:createObjectiveGenerationStartApplication({enabled:true,sessions:assembly.sessions,windowMs:objectiveDeclared.start.windowMs,maxRequestMs:configuration.limits.requestMs,
+  const objectiveStart=objectiveDeclared.start===null?null:createObjectiveGenerationStartApplication({enabled:true,identity:native,windowMs:objectiveDeclared.start.windowMs,maxRequestMs:configuration.limits.requestMs,
    authorizeJob:({source,signal})=>candidate.objective.core.clientFor(source).current({signal}),
    dispatcher:createObjectiveGenerationDispatcher({client,taskQueue:configuration.temporal.taskQueue,maxRequestMs:configuration.limits.requestMs})});
   const objectiveReader=createObjectiveReaderApplication(assembly.objectiveReadback?{reader:assembly.objectiveReadback,getServiceSecret:getCoreServiceSecret,maxRequestMs:configuration.limits.requestMs}:{});
