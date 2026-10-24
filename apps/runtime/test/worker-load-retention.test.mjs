@@ -7,11 +7,12 @@ import {setImmediate as nextTurn} from 'node:timers/promises';
 import {createExecutionSessions} from '../execution-sessions.mjs';
 import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {createConversationService} from '../../control/conversations/service.mjs';
-import {createConversationLifecycleService} from '../../control/conversations/lifecycle/service.mjs';
+import {createConversationLifecycleService,taskControlPage} from '../../control/conversations/lifecycle/service.mjs';
 import {composeStartup,subjectOf} from '../../control/retention/test/fixture.mjs';
 import {subjectKey} from '../../control/retention/boundary.mjs';
 import {binding as originalBinding,scopes as originalScopes,versions,id} from '../../control/conversations/test/store-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {MODEL_CATALOG} from '../../../packages/contracts/test/model-selection-fixture.mjs';
 
 // Same opt-in import-only configuration stub used by the existing load fixture.
 // The HTTP boundary uses only fault(); configuration/secret access stays forbidden.
@@ -38,21 +39,21 @@ async function fixture(t,{requestMs=2000,executionMs=60000}={}){
   },
  };
  const adapters=[];
- const saved={run:{binding,scopes,state:'queued',versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request:{requestId:id(6),prompt:'Synthetic retained prompt',skill:null,window:null,windowRequest:null},lastSequence:1};
+ const saved={run:{binding,scopes,state:'queued',versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request:{requestId:id(6),prompt:'Synthetic retained prompt',skill:null,window:null,windowRequest:null,modelSelection:MODEL_CATALOG.defaultSelection},lastSequence:1};
  const unused=()=>assert.fail('unexpected effect');
  const store={readModelPolicy:async()=>({maxTurns:20,maxBudgetMicroUsd:2000000}),accept:unused,append(){counts.writes++;return unused();},async read(){counts.reads++;return structuredClone(saved);},
-  lifecycle:{begin:unused,change:unused,get:unused,async controls(){counts.controls++;return [{controlSequence:1,commandSha256:'a'.repeat(64),command:{prompt:'Synthetic steer text'},state:'PENDING'}];},claim:unused,checkpoint:unused,readCheckpoint:unused,async execution(){counts.journal++;return {fixtureMarker:'journal-read'};},continuation:unused,cancel:unused,readStopFence:unused}};
+  lifecycle:{begin:unused,change:unused,get:unused,async controls(){counts.controls++;return [{controlSequence:1,commandSha256:'a'.repeat(64),command:{prompt:'Synthetic steer text'},state:'PENDING'}];},claim:unused,captureSession:unused,readSessionCapture:unused,async execution(){counts.journal++;return {fixtureMarker:'journal-read'};},continuation:unused,cancel:unused,readStopFence:unused}};
  const dispatcher={start:unused,cancel:unused,signal:unused};
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:'retention'},expiresAtMs:Date.now()+executionMs,runtimeSessionId:'conversation-'+hash(binding)});
  const execution={async authenticate(input){assert.equal(input.credential,'synthetic-task');assert.deepEqual(input.binding,binding);counts.task++;await state.taskHook?.(counts.task);
   return {execution:identity,versions,state:'queued',scopes,selectedClientId:id(5),policyRevision:scopes[0].policyRevision};
  }};
  const createService=({credential,binding})=>{const sessions=createExecutionSessions({execution,credential,binding});adapters.push(sessions);
-  const basic=createConversationService({sessions,store,dispatcher,versions,retention,maxRequestMs:requestMs});
+  const basic=createConversationService({sessions,store,dispatcher,versions,retention,modelCatalog:MODEL_CATALOG,maxRequestMs:requestMs});
   const lifecycle=createConversationLifecycleService({service:basic,store,dispatcher,sessions,retention,maxRequestMs:requestMs,reconcileOriginal:unused,checkpoints:{read:unused}});
   return {async loadForExecution(input){const result=await lifecycle.loadForExecution(input);state.returned=true;
    return {...result,toJSON(){counts.serialized++;state.serializeHook?.();return result;}};
-  },async nextControls(input){const result=await lifecycle.nextControls(input);state.returned=true;return result;}};
+  },async [taskControlPage](input){const result=await lifecycle[taskControlPage](input);state.returned=true;return result;}};
  };
  const configuration={retention:{enabled:true},limits:{requestMs,requestBytes:131072}};
  const options={execution,createService,configuration,retention};
@@ -149,7 +150,7 @@ test('a gate without its scoped assertion cannot serialize load data',async t=>{
 test('a runner control page is released under the same subject fence and withheld when suppression commits during its final verify',{timeout:5000},async t=>{
  const f=await fixture(t),page=await f.app.handle(f.request(undefined,'next-controls'));
  assert.equal(page.status,200);assert.deepEqual((await page.json()).controls.map(c=>c.command.prompt),['Synthetic steer text']);
- assert.deepEqual({task:f.counts.task,controls:f.counts.controls,release:f.counts.release,scoped:f.counts.scoped,reads:f.counts.reads},{task:6,controls:1,release:1,scoped:1,reads:2});
+ assert.deepEqual({task:f.counts.task,controls:f.counts.controls,release:f.counts.release,scoped:f.counts.scoped,reads:f.counts.reads},{task:2,controls:1,release:1,scoped:1,reads:0});
  assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
  const g=await fixture(t);g.state.taskHook=async count=>{if(g.state.returned)await g.suppress();};
  const withheld=await g.app.handle(g.request(undefined,'next-controls')),body=await withheld.text();

@@ -33,7 +33,7 @@ test('AgentCore startup installs the real request-local membership gate with the
  }finally{await candidate.close();}
 });
 
-test('public action session and submit reach the real execution and private worker without any task allocation',async()=>{
+test('public action session and submit reach the real execution and private worker without any task allocation',async t=>{
  const f=initialInputFixture(),configuration=agentcoreControlFixture().configuration,relay=createReadCredentialRelay();
  const clientId=id(5);
  const pending=Promise.withResolvers();pending.promise.catch(()=>{});let invocation,starts=0,coreCalls=0;
@@ -57,6 +57,12 @@ test('public action session and submit reach the real execution and private work
   const before=coreCalls;
   const load=await candidate.application.handle(call('/v1/runner/load',{binding:activeBinding},invocation.credential));assert.equal(load.status,200);
   assert.deepEqual((await load.json()).run.binding,activeBinding);assert.equal(coreCalls,before,'local worker persistence does not repeat Core admission');
+  const pollStart=f.state.calls.length;
+  const controls=await candidate.application.handle(call('/v1/runner/next-controls',{binding:activeBinding,after:0},invocation.credential));
+  assert.equal(controls.status,200);assert.deepEqual(await controls.json(),{controls:[],nextControlSequence:0});
+  const pollSql=f.state.calls.slice(pollStart);assert.equal(coreCalls,before);
+  t.diagnostic(JSON.stringify({controlPollStatements:pollSql.length,controlPageQueries:pollSql.filter(sql=>sql.includes('FROM meri_conversations.controls')).length}));
+  assert.equal(pollSql.filter(sql=>sql.includes('FROM meri_conversations.events')).length,0,'control polling does not reread conversation transcript');
   const denied=await candidate.application.handle(call('/v1/runner/load',{binding:activeBinding},'foreign-execution'));assert.equal(denied.status,403);
   // The same current private owner can publish a terminal failure; its committed receipt is acknowledged before settlement.
   const event={eventId:id(601),createdAt:new Date().toISOString(),type:'run.status',data:{state:'failed',reasonCode:'SYNTHETIC_TEST'}};
@@ -65,4 +71,15 @@ test('public action session and submit reach the real execution and private work
   assert.equal(f.state.allocations.size,0);assert.equal(f.state.executions.size,1);
   const readiness=assembly.productReadiness();assert.equal(readiness.ready,false);assert.ok(!readiness.missingOwners.includes('sessions.snapshot'));assert.ok(readiness.missingOwners.length>0,'other real business owners remain required');
  }finally{pending.reject(Error('fixture cleanup'));relay.close();await candidate.close();await assembly.close();}
+});
+
+test('read-enabled startup composes management and Objective Core ports without declaring Objective runs',async()=>{
+ const configuration=agentcoreControlFixture().configuration;
+ configuration.reads={enabled:true,serviceSecretFile:'/synthetic/core-secret'};
+ const unused=()=>assert.fail('lazy composition must not read secrets, SQL or Core');
+ const candidate=assembleAgentCoreCandidate({configuration,pool:{connect:unused,query:unused},
+  controlCredential:'synthetic-control-credential-long-enough',nativeCredentials:{nativeCredentialFor:unused},
+  getCoreServiceSecret:unused,fetchImpl:unused,provider:{invoke:unused,stop:unused}});
+ try{assert.equal(configuration.objectiveGeneration,undefined);assert.equal(typeof candidate.productPorts.conversationManagement.assertActiveBinding,'function');assert.ok(candidate.objective.core);}
+ finally{await candidate.close();}
 });

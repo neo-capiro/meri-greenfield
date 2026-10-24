@@ -8,6 +8,7 @@ import {assertRunOwnerRequest,same,runOwnerOperations} from '../../packages/cont
 import {fault} from './config.mjs';
 import {assertExecutionIdentity} from '../control/conversations/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
+import {taskControlPage} from '../control/conversations/lifecycle/service.mjs';
 export function createWorkerRunApplication({execution,createService,configuration,retention,now=Date.now,turnTelemetry}){
  let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  if(typeof execution?.authenticate!=='function'||typeof createService!=='function')throw fault('WORKER_EXECUTION_CONFIGURATION');
@@ -24,10 +25,13 @@ export function createWorkerRunApplication({execution,createService,configuratio
    if(pinned&&!same(pinned,current))throw fault('WORKER_AUTHORITY_CHANGED');pinned??=current;deadlineMs=Math.min(deadlineMs,identity.expiresAtMs);life.limitDeadline(deadlineMs);return current;
   }
   await fresh();const service=await life.run(()=>createService({credential,binding:input.binding}));
-  if(typeof service?.[runOwnerOperations[route[1]]]!=='function')throw fault('WORKER_REQUEST_REFUSED');
-  // The same credential is rechecked by each canonical service observation through the local execution-session adapter.
-  // No opaque user session, remote Core call, task identity or new authority receipt is minted here.
-  const result=await life.run(signal=>service[runOwnerOperations[route[1]]]({credential,...input,signal}));
+  const method=route[1]==='next-controls'?taskControlPage:runOwnerOperations[route[1]];
+  if(typeof service?.[method]!=='function')throw fault('WORKER_REQUEST_REFUSED');
+  // Control polling uses the canonical journal's task reader under these two current execution checks.
+  // Other operations retain their service observations; no user session or remote Core admission is minted here.
+  const result=await life.run(signal=>service[method](route[1]==='next-controls'
+   ?{binding:input.binding,scopes:pinned.scopes,selectedClientId:pinned.selectedClientId,after:input.after??0,signal}
+   :{credential,...input,signal}));
   // Terminal publication consumes current-run authority. Acknowledge only the
   // canonical event the service committed and rechecked; no further work is admitted.
   if(route[1]==='publish'&&input.event.type==='run.status'&&['completed','failed','cancelled'].includes(input.event.data?.state)){
