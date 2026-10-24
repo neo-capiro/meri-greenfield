@@ -60,7 +60,9 @@ export async function generateTaskCommandContracts({check=false,toolchainRoot,bu
   if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('Task command browser external import');
   const declarations=javascriptOnly?null:offline?await compileTaskCommandDeclarations(root,names,{typescriptRoot:bundleRoot,typeModulesRoot}):await compiler.compile({title:'TaskCommandApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'TaskCommandApplicationEnvelope',{bannerComment:'// Generated additive task-command contract from canonical schemas. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
   const metadata=createTaskCommandMetadata(errorStatuses,errorOutcomes),api=`
-export type TaskCommandRoute='prepare'|'execute';
+${offline?'':`export type TaskUpdateRaw=TaskCommandPrepareRequest['arguments'];
+export type TaskUpdateApprovalProposal=TaskCommandPrepareResponse['proposal'];
+`}export type TaskCommandRoute='prepare'|'execute';
 export interface TaskCommandRequestMap {prepare:TaskCommandPrepareRequest;execute:TaskCommandExecuteRequest;}
 export interface TaskCommandResponseMap {prepare:TaskCommandPrepareResponse;execute:TaskCommandExecuteResponse;}
 export interface TaskCommandExpectationMap {prepare:{binding:Readonly<TaskCommandExpectedBinding>;request:TaskCommandPrepareRequest};execute:{binding:Readonly<TaskCommandExpectedBinding>;proposal:TaskUpdateApprovalProposal};}

@@ -1,4 +1,4 @@
-import {receiveTaskCommandRequest,receiveTaskCommandResponse,taskCommandMetadata,taskCommandPaths,type TaskUpdateRaw,type TaskCommandExpectedBinding,type TaskCommandPrepareRequest,type TaskCommandPrepareResponse,type TaskCommandExecuteResponse,type TaskCommandErrorResponse} from '@capiro/meri-contracts/task-command-application';
+import {receiveTaskCommandRequest,receiveTaskCommandResponse,taskCommandMetadata,taskCommandPaths,type TaskUpdateRaw,type TaskUpdateApprovalProposal,type TaskCommandExpectedBinding,type TaskCommandPrepareRequest,type TaskCommandPrepareResponse,type TaskCommandExecuteResponse,type TaskCommandErrorResponse} from '@capiro/meri-contracts/task-command-application';
 const raw:TaskUpdateRaw={taskId:'id',title:'Updated',status:'open',dueDate:null};
 const prepare:TaskCommandPrepareRequest=await receiveTaskCommandRequest('prepare',JSON.stringify({arguments:raw}));
 const binding:TaskCommandExpectedBinding={tenantId:'tenant',actorId:'actor',conversationId:'id',runId:'id'};
@@ -16,3 +16,8 @@ await receiveTaskCommandResponse('prepare',200,'{}',{binding,proposal:{}});
 await receiveTaskCommandRequest('approve','{}');
 // @ts-expect-error exact HTTP vocabulary is closed
 const wrong:TaskCommandErrorResponse={error:{code:'NOT_A_COMMAND_ERROR',outcome:'UNKNOWN'}};void wrong;
+
+// @ts-expect-error raw task identity is still a string, not an untyped alias
+const invalidRaw:TaskUpdateRaw={taskId:42};void invalidRaw;
+// @ts-expect-error immutable command/hash/expiry/approver fields remain required
+const invalidProposal:TaskUpdateApprovalProposal={proposalId:'id'};void invalidProposal;

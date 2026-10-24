@@ -115,8 +115,8 @@
     },
     {
       "path": "generate-task-commands.mjs",
-      "sha256": "4a80574e68bae24f8c305c873fbdc179f102b600bfdd88930fc162a11ac0f4cd",
-      "bytes": 13453
+      "sha256": "e3064bfb0916ccd3536b3fa248c52081981ae388f13748ff97ba8638cb4dab6a",
+      "bytes": 13614
     },
     {
       "path": "meri.schema.json",

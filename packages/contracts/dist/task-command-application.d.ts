@@ -165,6 +165,8 @@ export interface Canonical_TaskUpdateContext_90C41Ed0 {
   binding: Canonical_RunBinding_84F2304C;
 }
 
+export type TaskUpdateRaw=TaskCommandPrepareRequest['arguments'];
+export type TaskUpdateApprovalProposal=TaskCommandPrepareResponse['proposal'];
 export type TaskCommandRoute='prepare'|'execute';
 export interface TaskCommandRequestMap {prepare:TaskCommandPrepareRequest;execute:TaskCommandExecuteRequest;}
 export interface TaskCommandResponseMap {prepare:TaskCommandPrepareResponse;execute:TaskCommandExecuteResponse;}
