@@ -3,6 +3,8 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {jsonBody} from '../control/action-application/http.mjs';
 import {assertAutomaticClientContext,AUTOMATIC_CONTEXT_MAX_BYTES} from '../worker/conversation/automatic-client-context.mjs';
 const fail=()=>{throw Object.assign(Error('AUTOMATIC_CONTEXT_UNAVAILABLE'),{code:'AUTOMATIC_CONTEXT_UNAVAILABLE'});};
+// Match existing client-evidence receipt correlation; local request/run deadlines remain strict.
+const receiptSkewMs=5000;
 export function createAutomaticClientContextReader({origin,getServiceSecret,fetchImpl=globalThis.fetch,now=Date.now,maxRequestMs}){
  const url=new URL('/api/clio/client-context/automatic',origin);
  if(url.protocol!=='https:'||url.username||url.password||typeof fetchImpl!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail();
@@ -18,7 +20,7 @@ export function createAutomaticClientContextReader({origin,getServiceSecret,fetc
    if(r.status!==200||r.redirected||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(r.headers.get('content-type')??'')){await r.body?.cancel();fail();}
    const length=r.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length)){await r.body?.cancel();fail();}
    const packet=assertAutomaticClientContext(await jsonBody({body:r.body,length:length===null?null:Number(length)},AUTOMATIC_CONTEXT_MAX_BYTES,life,life.check),{binding,selectedClientId});
-   if(Date.parse(packet.readWindow.startedAt)<started||Date.parse(packet.readWindow.completedAt)>now())fail();
+   if(Date.parse(packet.readWindow.startedAt)<started-receiptSkewMs||Date.parse(packet.readWindow.completedAt)>now()+receiptSkewMs)fail();
    return packet;
   }finally{life.close();}
  }});
