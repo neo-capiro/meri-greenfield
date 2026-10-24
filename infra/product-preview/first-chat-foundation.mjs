@@ -88,6 +88,13 @@ export function synthesizeFirstChatFoundation(binding){
  // S3 reports a missing first ledger object as 404 only when this bucket can be listed.
  control.addToPolicy(statement(['s3:GetBucketVersioning','s3:ListBucket'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
  control.addToPolicy(statement(['s3:PutObject','s3:GetObject','s3:GetObjectVersion'],[`arn:aws:s3:::${b.checkpoint.bucket}/${b.checkpoint.prefix}/*`]));
+ // Retention reads and deletes only immutable content versions. The fixed key
+ // shape excludes the retention ledger and artifact-publication custody index.
+ const contentPrefix=`${b.checkpoint.prefix}/${'?'.repeat(64)}/${'?'.repeat(36)}/${'?'.repeat(64)}`;
+ control.addToPolicy(statement(['s3:ListBucketVersions'],[`arn:aws:s3:::${b.checkpoint.bucket}`],
+  {StringLike:{'s3:prefix':contentPrefix}}));
+ control.addToPolicy(statement(['s3:GetObjectRetention','s3:GetObjectLegalHold','s3:DeleteObjectVersion'],
+  [`arn:aws:s3:::${b.checkpoint.bucket}/${contentPrefix}`]));
  control.addToPolicy(statement(['kms:GenerateDataKey','kms:Decrypt'],[b.checkpoint.kmsKeyArn],{StringEquals:{'kms:ViaService':`s3.${REGION}.amazonaws.com`}}));
  const temporalTasks=Object.fromEntries(['frontend','history','matching','worker','internal-frontend'].map(r=>[r,task(`temporal-${r}`)]));
 

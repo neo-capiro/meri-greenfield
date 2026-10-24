@@ -59,6 +59,32 @@ test('IAM retains storage and Temporal service identity without ECS runner or mo
  }
 });
 
+test('purge IAM admits exact content versions without ledger, custody, unversioned deletion or hold bypass',()=>{
+ const b=foundationBinding(),t=synthesizeFirstChatFoundation(b);
+ const policies=ofType(t,'AWS::IAM::Policy').map(([,r])=>r.Properties);
+ const statements=policies.find(p=>JSON.stringify(p.Roles).includes('controlTaskRole')).PolicyDocument.Statement;
+ const actions=s=>[].concat(s.Action),resources=s=>[].concat(s.Resource);
+ const content=`${b.checkpoint.prefix}/${'a'.repeat(64)}/11111111-1111-4111-8111-111111111111/${'b'.repeat(64)}`;
+ const bucket=`arn:aws:s3:::${b.checkpoint.bucket}`;
+ const globMatches=(pattern,value)=>new RegExp('^'+pattern.replace(/[.+^${}()|[\]\\]/gu,'\\$&').replaceAll('*','.*').replaceAll('?','.')+'$','u').test(value);
+ for(const action of ['s3:GetObjectRetention','s3:GetObjectLegalHold','s3:DeleteObjectVersion']){
+  const grants=statements.filter(s=>actions(s).includes(action));
+  assert.equal(grants.length,1);
+  assert.ok(resources(grants[0]).some(r=>globMatches(r,`${bucket}/${content}`)));
+  for(const key of [`${b.checkpoint.prefix}/retention/ledger.json`,
+   `${b.checkpoint.prefix}/artifact-publication/${'a'.repeat(64)}/index.json`,
+   `unrelated/${content}`,`${content}/extra`])
+   assert.ok(!resources(grants[0]).some(r=>globMatches(r,`${bucket}/${key}`)),`${action} must not admit ${key}`);
+ }
+ const [list]=statements.filter(s=>actions(s).includes('s3:ListBucketVersions'));
+ assert.deepEqual(resources(list),[bucket]);
+ const prefix=list.Condition.StringLike['s3:prefix'];
+ assert.ok(globMatches(prefix,content));
+ assert.ok(!globMatches(prefix,b.checkpoint.prefix));
+ assert.ok(!globMatches(prefix,`${b.checkpoint.prefix}/retention/ledger.json`));
+ assert.ok(statements.flatMap(actions).every(a=>!['s3:DeleteObject','s3:BypassGovernanceRetention','s3:PutObjectRetention','s3:PutObjectLegalHold'].includes(a)));
+});
+
 test('native TLS removes issuer signing, service discovery and network resources while retaining control',()=>{
  const t=synthesizeFirstChatFoundation(foundationBinding());
  assert.equal(ofType(t,'AWS::KMS::Key').length,0);assert.equal(ofType(t,'AWS::KMS::Alias').length,0);
