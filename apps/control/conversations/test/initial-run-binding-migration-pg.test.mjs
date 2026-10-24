@@ -200,6 +200,52 @@ async function grantAppRole(f){
  return {role,appPool};
 }
 
+test('0024 admits General originals without changing stored rows, authorization, hashes or other SQL guards',async t=>{
+ const f=await fixture(t,{preexisting:true}),{appPool}=await grantAppRole(f),j=f.journal(appPool);
+ const clientBinding=await j.claim(f.input,check),general={...f.input,conversationId:randomUUID(),selectedClientId:null};
+ await assert.rejects(j.claim(general,check),{code:'INITIAL_RUN_BINDING_STORE_UNAVAILABLE'});
+ const priorRows=(await f.client.query('SELECT * FROM meri_conversations.initial_run_bindings ORDER BY tenant_id,conversation_id,generation')).rows;
+ const accepted=await snapshotExisting(f.client,f.before.binding);
+ const constraints=async()=> (await f.client.query("SELECT conname,pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE conrelid='meri_conversations.initial_run_bindings'::regclass ORDER BY conname")).rows;
+ const guards=async()=>({
+  table:(await f.client.query("SELECT relowner,relacl,relrowsecurity,relforcerowsecurity FROM pg_class WHERE oid='meri_conversations.initial_run_bindings'::regclass")).rows,
+  triggers:(await f.client.query("SELECT tgname,pg_get_triggerdef(oid) AS definition FROM pg_trigger WHERE tgrelid='meri_conversations.initial_run_bindings'::regclass ORDER BY tgname")).rows,
+  policies:(await f.client.query("SELECT * FROM pg_policies WHERE schemaname='meri_conversations' ORDER BY tablename,policyname")).rows
+ });
+ const beforeChecks=await constraints(),beforeGuards=await guards();
+ const old=beforeChecks.find(c=>c.conname==='initial_run_bindings_record_check15');assert.match(old.definition,/selectedClientId/u);
+ await f.client.query(await readFile(new URL('0024_general_initial_binding_scope.sql',migrations),'utf8'));
+ assert.deepEqual(await guards(),beforeGuards);
+ assert.deepEqual((await constraints()).filter(c=>c.conname!=='initial_run_bindings_selected_client_scope_check'),beforeChecks.filter(c=>c!==old));
+ assert.deepEqual((await f.client.query('SELECT * FROM meri_conversations.initial_run_bindings ORDER BY tenant_id,conversation_id,generation')).rows,priorRows);
+ assert.deepEqual(await snapshotExisting(f.client,f.before.binding),accepted);
+ assert.deepEqual((await j.claim(f.input,check)).record,clientBinding.record);
+ const first=await j.claim(general,check);assert.equal(first.created,true);assert.equal(first.record.selectedClientId,null);
+ assert.deepEqual(await j.claim(general,check),{record:first.record,created:false});
+ const lookup={principal:general.principal,conversationId:general.conversationId,selectedClientId:null};
+ assert.deepEqual(await j.readConversation(lookup,check),first.record);
+ await assert.rejects(j.claim({...general,selectedClientId:f.input.selectedClientId},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
+ await assert.rejects(j.readConversation({...lookup,principal:{...general.principal,actorId:'other-actor'}},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
+ const denied={...general,conversationId:randomUUID()};
+ await assert.rejects(j.claim(denied,()=>{throw Error('AUTH_REFUSED');}),{code:'INITIAL_RUN_BINDING_STORE_UNAVAILABLE'});
+ assert.equal((await f.client.query('SELECT count(*)::int AS n FROM meri_conversations.initial_run_bindings WHERE conversation_id=$1',[denied.conversationId])).rows[0].n,0);
+ const app=await appPool.connect();
+ try{
+  const insert=r=>app.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256) VALUES($1,$2,$3,$4,$5)',[r.binding.tenantId,r.binding.conversationId,r.binding.runId,r,hash(r)]);
+  for(const value of [undefined,true,false,0,1,{},[],['client'],'','null','not-a-uuid','AAAAAAAA-0000-4000-8000-000000000000']){
+   const r=structuredClone(first.record);r.binding.conversationId=randomUUID();r.binding.runId=randomUUID();
+   if(value===undefined)delete r.selectedClientId;else r.selectedClientId=value;
+   await assert.rejects(insert(r),{code:'23514'});
+  }
+  await assert.rejects(app.query('UPDATE meri_conversations.initial_run_bindings SET record_sha256=record_sha256'),/INITIAL_RUN_BINDING_IMMUTABLE/u);
+  for(const sql of ['DELETE FROM meri_conversations.initial_run_bindings','TRUNCATE meri_conversations.initial_run_bindings','ALTER TABLE meri_conversations.initial_run_bindings DISABLE TRIGGER ALL'])await assert.rejects(app.query(sql),{code:'42501'});
+ }finally{app.release();}
+ await assert.rejects(f.client.query('TRUNCATE meri_conversations.initial_run_bindings'),/INITIAL_RUN_BINDING_IMMUTABLE/u);
+ const corrupt={...first.record,binding:{...first.record.binding,conversationId:randomUUID(),runId:randomUUID()}};
+ await f.client.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256) VALUES($1,$2,$3,$4,$5)',[corrupt.binding.tenantId,corrupt.binding.conversationId,corrupt.binding.runId,corrupt,'f'.repeat(64)]);
+ await assert.rejects(j.readConversation({...lookup,conversationId:corrupt.binding.conversationId},check),{code:'INITIAL_RUN_BINDING_CORRUPT'});
+});
+
 test('0017 fixture refuses unapproved servers before database creation',async()=>{
  const env={MERI_INSPECTION_TEST_SOCKET:'/tmp/meri-prepared-kickoff-pg-20261014/socket',MERI_INSPECTION_TEST_DATABASE:'meri_inspection_final',MERI_INITIAL_RUN_MIGRATION_TEST_ISOLATED:'1',MERI_INITIAL_RUN_MIGRATION_TEST_DATA_DIRECTORY:'/tmp/validator-owned-0017/data',MERI_INITIAL_RUN_MIGRATION_TEST_PORT:'55432'};
  const config=configuration(env);assert.doesNotThrow(()=>privateServer({version_num:'160015',listen_addresses:'',data_directory:config.dataDirectory,port:'55432'},config));

@@ -93,7 +93,9 @@ export const PLAN=Object.freeze([
  ['migration',conversation('0018_memory_candidate_targets.sql'),'e13b87c87972eaac4a5106a39ccd25d0da6396124719f1dc0dbcbfd2a0d1612d','integration'],
  ['migration',conversation('0019_memory_proposal_contexts.sql'),'117c105ba4fca00c3ee3e76816cae1b00fe5be7a7841f286c83af8d04be97d57','integration'],
  ['migration','apps/control/memory/migrations/0002_candidate_retention_delete.sql','ac0ec0b166832706d5fd5899cd0c3d2265de9ec806aae214df7494056608c5f4','integration'],
- ['migration','infra/product-preview/first-chat-native-retention-grants.sql','c85ce9ec7c9acd3e3ad7b66ce864cf62c35631475b90a30fd26321e0be6848f8','integration']
+ ['migration','infra/product-preview/first-chat-native-retention-grants.sql','c85ce9ec7c9acd3e3ad7b66ce864cf62c35631475b90a30fd26321e0be6848f8','integration'],
+ // General originals use JSON null; preserve the applied 48-entry prefix and 0017 bytes.
+ ['migration',conversation('0024_general_initial_binding_scope.sql'),'0e5c5449a0cf78ead63c8d4f90a76c0ef789e6a6b86ab128f57d45e9fa3938d3','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

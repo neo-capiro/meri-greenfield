@@ -33,6 +33,17 @@ function fixture(){
 }
 const check=()=>{};
 
+test('General original binding retains null scope on claim, retry and read; client scope cannot replay it',async()=>{
+ const f=fixture(),j=f.journal(),input={...f.input,selectedClientId:null};
+ const first=await j.claim(input,check);
+ assert.equal(first.created,true);assert.equal(first.record.selectedClientId,null);
+ const retry=await j.claim(input,check);assert.equal(retry.created,false);assert.deepEqual(retry.record,first.record);
+ assert.deepEqual(await j.readConversation({principal:input.principal,conversationId:input.conversationId,selectedClientId:null},check),first.record);
+ await assert.rejects(j.claim(f.input,check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
+ await assert.rejects(j.claim({...input,principal:{...input.principal,actorId:'another-actor'}},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
+ assert.equal(f.state.inserts,1);
+});
+
 test('first verified Core conversation gets one durable full original binding; retry recovers it and its original expiry',async()=>{
  const f=fixture(),j=f.journal();
  const first=await j.claim(f.input,check);

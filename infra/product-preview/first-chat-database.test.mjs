@@ -368,7 +368,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   'first-chat-database-owner-reads.sql#owner_conversation_reads',
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
-  '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql']);
+  '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql','0024_general_initial_binding_scope.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -689,8 +689,8 @@ test('owner reads grant the model owner only SELECT on the two tables and the lo
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
  const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
- assert.equal(plan.length,48);assert.equal(integration.length,26);assert.equal(plan[40].kind,'phase:integration_grants');
- assert.equal(integration.at(-1).path,RETENTION_GRANTS);
+ assert.equal(plan.length,49);assert.equal(integration.length,27);assert.equal(plan[40].kind,'phase:integration_grants');
+ assert.equal(integration.at(-1).path,'apps/control/conversations/migrations/0024_general_initial_binding_scope.sql');
  const early=fakeDatabase();
  await assert.rejects(runStage({stage:'integration',plan,variables,connect:early.connect}),/MERI_D2_PRIOR_STAGE_INCOMPLETE/u);
  assert.equal(early.state.executed.length,0);
@@ -699,15 +699,15 @@ test('integration stage runs only after meri and temporal are ledgered; earlier 
  assert.equal(ready.state.executed.length,0);
  await runStage({stage:'integration',plan,variables,connect:ready.connect});
  assert.deepEqual(ready.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
- assert.equal(ready.state.executed.length,25);assert.ok(ready.state.phases.includes('integration_grants'));
- // An exact 47-entry ledger applies only the new forward grant migration.
+ assert.equal(ready.state.executed.length,26);assert.ok(ready.state.phases.includes('integration_grants'));
+ // An exact 48-entry ledger applies only the General binding repair.
  const live=fakeDatabase();live.state.ledger=plan.slice(0,-1).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));live.state.ledgerTable=live.state.owner=true;
  await runStage({stage:'integration',plan,variables,connect:live.connect});
  assert.equal(live.state.executed.length,1);assert.deepEqual(live.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
  assert.deepEqual(live.state.executed,[migrationBody(plan.at(-1).text).replace(/\s+/gu,' ').trim()]);
  const beforeSdk=fakeDatabase();beforeSdk.state.ledger=plan.slice(0,42).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));beforeSdk.state.ledgerTable=beforeSdk.state.owner=true;
  await runStage({stage:'integration',plan,variables,connect:beforeSdk.connect});
- assert.equal(beforeSdk.state.executed.length,6);assert.deepEqual(beforeSdk.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
+ assert.equal(beforeSdk.state.executed.length,7);assert.deepEqual(beforeSdk.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
 });
 test('runner refuses a changed applied file, a ledger gap and an early temporal stage before any bootstrap',async()=>{
  const plan=loadPlan();
@@ -742,7 +742,7 @@ test('PLAN is frozen and every entry is pinned to a 64-hex digest',()=>{
 test('native retention appends exactly four integration entries to the unchanged 44-entry prefix',async()=>{
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,44))).digest('hex'),
   '0161989b7e2acb72729982fae3d24b2c58c203c60aa2a0502cce0a2dbab51011');
- const plan=loadPlan(),added=plan.slice(44);
+ const plan=loadPlan().slice(0,48),added=plan.slice(44);
  assert.deepEqual(added.map(e=>[e.ordinal,e.kind,e.stage]),[45,46,47,48].map(n=>[n,'migration','integration']));
  const db=databaseWithLedger(plan,44),prefix=structuredClone(db.state.ledger);
  for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
@@ -758,6 +758,22 @@ test('native retention appends exactly four integration entries to the unchanged
  await assert.rejects(runStage({stage:'integration',plan,variables,connect:failed.connect}),/boom/u);
  assert.equal(failed.state.ledger.length,47);assert.equal(failed.state.temporalLogin,false);
  assert.equal(failed.state.memberships.size,0,'failed forward grant still releases temporary ownership');
+});
+
+test('General binding repair appends only ordinal 49 and preserves every applied migration pin',async()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,48))).digest('hex'),
+  'eb0e42eb0cdc61d0c747698b464e85f439813fc39116da0e472bae8b5fc621f9');
+ const plan=loadPlan(),entry=plan[48];
+ assert.deepEqual([plan.length,entry.ordinal,entry.stage,entry.path],[49,49,'integration','apps/control/conversations/migrations/0024_general_initial_binding_scope.sql']);
+ const db=databaseWithLedger(plan,48),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,48),prefix);assert.equal(db.state.ledger.length,49);
+ assert.deepEqual(db.state.executed,[migrationBody(entry.text).replace(/\s+/gu,' ').trim()]);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,1,'ledgered forward repair is not reapplied');
+ assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
 });
 
 test('native retention grants only context locks and serving/recovery projection rights',()=>{
