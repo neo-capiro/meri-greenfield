@@ -1,3 +1,5 @@
+import {automaticContextFixture} from './automatic-context-fixture.mjs';
+import {scopes} from '../../../control/conversations/test/store-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {createConversationActivity} from '../activity.mjs';import {buildConversationOptions} from '../options.mjs';import {applicationFixture,binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {SDK_USAGE_BASIS} from '../../../control/conversations/usage.mjs';
 const runtime=()=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
@@ -39,4 +41,12 @@ for(const unavailable of [false,true])test(`native result accounting is batched 
   assert.deepEqual(recorded.input.toolsUsed,{tools:[{tool:'Read',toolUseId:'tool_synthetic',outcome:'completed',durationMs:null}],omitted:0});
   assert(!JSON.stringify(recorded.input).includes('PRIVATE'));assert.equal((await f.service.history({credential:f.credential})).run.state,'completed');
  }finally{await f.close();}
+});
+
+test('automatic client context reaches the first SDK query without a model-selected tool and preserves the full preset',async()=>{
+ const packet=automaticContextFixture(binding,scopes[0].resourceId),f=await setup(frames,{runtime:{automaticClientContext:packet}});
+ try{await f.execute({binding});const o=f.counts().seen.options;assert.equal(o.systemPrompt.type,'preset');assert.equal(o.systemPrompt.preset,'claude_code');assert.equal(o.tools.preset,'claude_code');assert.ok(o.systemPrompt.append.includes(JSON.stringify(packet)));assert.equal(o.systemPrompt.append.split(JSON.stringify(packet)).length-1,1);const history=await f.service.history({credential:f.credential});assert.equal(JSON.stringify(history).includes('SYNTHETICUEI'),false,'automatic context is query configuration, not a persisted user/assistant message');assert.equal(f.counts().calls,1);}finally{f.close();}
+});
+test('foreign selected-client context refuses before the SDK query',async()=>{
+ const packet=automaticContextFixture(binding,id(998)),f=await setup(frames,{runtime:{automaticClientContext:packet}});try{await assert.rejects(f.execute({binding}));assert.equal(f.counts().calls,0);}finally{f.close();}
 });
