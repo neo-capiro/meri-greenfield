@@ -1,11 +1,11 @@
 /** Fixed private session Fetch receiving. Existing task authority is checked by the owner. */
 import {types} from 'node:util';
-import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
-import {jsonBody,response} from '../../control/action-application/http.mjs';
-import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {captureSessionMethods} from '../../worker/qualification/checkpoint/session-store-data.mjs';
-import {controlSessionRpcMs} from '../../../packages/runtime/runner-load-budget.mjs';
+import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {sdkSessionOperations} from '../../packages/contracts/runtime-0.2/session.mjs';
+import {jsonBody,response} from '../control/action-application/http.mjs';
+import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {captureSessionMethods} from '../worker/qualification/checkpoint/session-store-data.mjs';
+import {controlSessionRpcMs} from '../../packages/runtime/runner-load-budget.mjs';
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 export function createNativeSdkSessionApplication(configuration){
  const {owner,snapshot,now=Date.now,maxRequestMs=3000,maxRequestBytes=9437184}=own(configuration,['owner'],['snapshot','now','maxRequestMs','maxRequestBytes']);

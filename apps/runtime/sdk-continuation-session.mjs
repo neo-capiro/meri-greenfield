@@ -7,7 +7,7 @@ import {assertContinuationEnvelope} from '../../packages/contracts/conversation-
 import {assertNextTurnLineage} from '../worker/conversation/continuation/next-turn-options.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {copySessionEntries,scopedSessionKey} from '../worker/qualification/checkpoint/bound-session-store.mjs';
-import {createNativeBoundSdkSessionStore} from './native-authority/session-client.mjs';
+import {createNativeBoundSdkSessionStore} from './sdk-session-client.mjs';
 import {createCheckpointSdkSnapshot} from './native-authority/checkpoint-snapshot.mjs';
 import {fault} from './config.mjs';
 export async function createContinuationRuntimeSdkSession(configuration){

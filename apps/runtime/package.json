@@ -7,11 +7,12 @@
   "scripts": {
     "start:control": "node cli.mjs control",
     "start:worker": "node cli.mjs temporal-worker",
-    "start:runner": "node cli.mjs conversation-runner",
+    "start:runner": "node agentcore-entrypoint.mjs",
     "test": "node --experimental-test-module-mocks --test test/*.test.mjs telemetry/test/*.test.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-agentcore": "3.1156.0",
     "@aws-sdk/client-ec2": "3.1151.0",
     "@aws-sdk/client-ecs": "3.1151.0",
     "@aws-sdk/client-kms": "3.1151.0",

@@ -11,6 +11,7 @@ import {classifyStatus} from './telemetry/counting.mjs';
 // Each caller must also pass its absolute lease-derived deadline; other operations
 // retain the ordinary 3s default (or the factory's configured cap).
 const startupOperations=new Set([
+ 'runner/execution','runner/execution/settle',
  'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
  'runner/native/verify','runner/native/start','runner/native/started',
  'runner/runtime','runner/publish','runner/record-usage','runner/checkpoint/capture','runner/checkpoint/complete',

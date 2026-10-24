@@ -1,10 +1,10 @@
 /** Worker-side two-method task transport. No user/provider credential or SQL dependency. */
 import {types} from 'node:util';
-import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
-import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
-import {NATIVE_READS_SCHEMA_VERSION as schemaVersion,assertNativeReadConfiguration,assertNativeReadRequest,assertNativeReadResponse,nativeReadFault,nativeReadFailureCode} from '../../../packages/contracts/runtime-0.2/reads.mjs';
-import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import catalog from '../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
+import {NATIVE_READS_SCHEMA_VERSION as schemaVersion,assertNativeReadConfiguration,assertNativeReadRequest,assertNativeReadResponse,nativeReadFault,nativeReadFailureCode} from '../../packages/contracts/runtime-0.2/reads.mjs';
+import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 const get=Object.fromEntries(['status','headers','body','redirected','url'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 const fail=code=>{throw nativeReadFault(code);};
 export function createNativeReadsClient(configuration){
@@ -20,12 +20,12 @@ export function createNativeReadsClient(configuration){
    while(true){const part=await life.run(()=>reader.read());if(part.done)break;if(!(part.value instanceof Uint8Array))fail('INVALID_RESULT');bytes+=part.value.byteLength;if(bytes>config.maxResponseBytes)fail('RESOURCE_LIMIT');chunks.push(part.value);}if(length!==null&&bytes!==Number(length))fail('INVALID_RESULT');
    let raw;try{raw=data(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks))));}catch{fail('INVALID_RESULT');}
    if(get.status.call(response)!==200){own(raw,['error']);own(raw.error,['code']);if(!['ACCESS_DENIED','UNAVAILABLE','DEADLINE','CANCELLED','INVALID_RESULT','RESOURCE_LIMIT','BUDGET_UNCERTAIN','INVALID_ARGUMENTS'].includes(raw.error.code))fail('UNAVAILABLE');fail(raw.error.code);}
-   const result=assertNativeReadResponse(full,raw,{request,started,now,policyRevision:pin?.policyRevision,allocationSha256:pin?.allocationSha256,maxResponseBytes:config.maxResponseBytes});
+   const result=assertNativeReadResponse(full,raw,{request,started,now,policyRevision:pin?.policyRevision,executionSha256:pin?.executionSha256,maxResponseBytes:config.maxResponseBytes});
    life.limitDeadline(Math.min(result.expiresAtMs,deadlineMs));life.check();return result;
   }catch(error){throw nativeReadFault(nativeReadFailureCode(error)??(operation==='execute'&&dispatched?'BUDGET_UNCERTAIN':'UNAVAILABLE'));}
   finally{try{if(reader){void reader.cancel().catch(()=>{});reader.releaseLock();}else if(response&&!types.isProxy(response)&&response instanceof Response)void get.body.call(response)?.cancel().catch(()=>{});}catch{}life.close();}
  }
- async function readAvailability(raw={}){const {signal}=own(raw,[],['signal']),result=await call('availability',{},signal),identity={installationId:result.installation.installationId,baseCatalogSha256:result.installation.baseCatalogSha256,executionCatalogSha256:result.installation.executionCatalogSha256,allocationSha256:result.allocationSha256,policyRevision:result.policyRevision};
+ async function readAvailability(raw={}){const {signal}=own(raw,[],['signal']),result=await call('availability',{},signal),identity={installationId:result.installation.installationId,baseCatalogSha256:result.installation.baseCatalogSha256,executionCatalogSha256:result.installation.executionCatalogSha256,executionSha256:result.executionSha256,policyRevision:result.policyRevision};
   const approved=new Set(config.operations.map(hash));if([...result.installation.operations,...result.discovery.operations].some(op=>!approved.has(hash(op))))fail('INVALID_RESULT');
   if(identity.baseCatalogSha256!==hash(catalog)||pin&&hash(pin)!==hash(identity))fail('UNAVAILABLE');pin??=data(identity);return data({installation:result.installation,discovery:result.discovery});}
  async function execute(raw){const v=own(raw,['operation','arguments','deliveryId'],['signal']);nativeSignal(v.signal);if(!pin)await readAvailability({signal:v.signal});if(!config.operations.some(op=>hash(op)===hash(v.operation)))fail('UNAVAILABLE');

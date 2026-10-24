@@ -1,14 +1,14 @@
 /** Additive native SDK-session RPC; opaque data never crosses ordinary depth64 decoding. */
 import {randomUUID} from 'node:crypto';import {types} from 'node:util';
-import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
-import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders,assertNativeSessionReference} from '../../../packages/contracts/runtime-0.2/session.mjs';
-import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {createRunBoundSessionStore,copySessionEntries,copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
-import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
-import {storageMethod} from '../../artifacts/storage/boundary.mjs';
-import {pinnedStatusRefusal} from '../runner-runtime-diagnostics.mjs';
-import {RUNNER_SESSION_RPC_MS,RUNNER_SESSION_STORE_CALL_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
+import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders,assertNativeSessionReference} from '../../packages/contracts/runtime-0.2/session.mjs';
+import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {createRunBoundSessionStore,copySessionEntries,copySessionTranscript,scopedSessionKey} from '../worker/qualification/checkpoint/bound-session-store.mjs';
+import {copySessionJson} from '../worker/qualification/checkpoint/session-store-data.mjs';
+import {storageMethod} from '../artifacts/storage/boundary.mjs';
+import {pinnedStatusRefusal} from './runner-runtime-diagnostics.mjs';
+import {RUNNER_SESSION_RPC_MS,RUNNER_SESSION_STORE_CALL_MS} from '../../packages/runtime/runner-load-budget.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});},get=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 export function createNativeSdkSessionClient(configuration){
  const {origin,credential,binding,fetchImpl,now=Date.now,maxRequestMs,maxResponseBytes=35651584,startupMaxRequestMs,startupExpiresAtMs}=own(configuration,['origin','credential','binding','fetchImpl'],['now','maxRequestMs','maxResponseBytes','startupMaxRequestMs','startupExpiresAtMs']);

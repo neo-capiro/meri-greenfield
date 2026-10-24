@@ -94,5 +94,6 @@ ENV HOME=/home/node
 RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal /workspace && chown node:node /run/meri /run/meri-temporal /workspace && chmod 0700 /run/meri /run/meri-temporal /workspace && chmod 1777 /tmp
 USER 1000:1000
 VOLUME ["/run/meri", "/run/meri-temporal", "/tmp", "/workspace"]
-ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
-CMD ["--help"]
+EXPOSE 8080
+ENTRYPOINT ["node"]
+CMD ["apps/runtime/agentcore-entrypoint.mjs"]

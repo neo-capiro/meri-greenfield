@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
-import {createNativeBoundSdkSessionStore} from '../session-client.mjs';
+import {createNativeBoundSdkSessionStore} from '../../sdk-session-client.mjs';
 import {fixture,id} from './fixture.mjs';
 const append=(entries,n=10,expectedOffset=0)=>({appendId:id(n),expectedOffset,entriesSha256:hash(entries),entries});
 for(const [label,change] of [

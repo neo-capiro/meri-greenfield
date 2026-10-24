@@ -1,8 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createNativeRunnerGateway} from '../native-runner-gateway.mjs';
 import {createWorkerRunApplication} from '../worker-http.mjs';
-import {createNativeSdkSessionApplication} from '../native-authority/session-http.mjs';
-import {createNativeSdkSessionClient} from '../native-authority/session-client.mjs';
+import {createNativeSdkSessionApplication} from '../sdk-session-http.mjs';
+import {createNativeSdkSessionClient} from '../sdk-session-client.mjs';
 import {applicationFixture,binding,scopes,id} from '../../control/conversations/test/application-fixture.mjs';
 import {fixture,NOW,id as sessionId} from '../native-authority/test/fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
