@@ -1,16 +1,18 @@
-# Wave 2 · Agent 3 · A2: finish screens that already have a backend (DRAFT: send only after Wave 1 closes; Neo's rule, fresh "agent 3 v{next}" session)
+# Wave 2 · Agent 3 · A2: finish screens that already have a backend
 
-**From:** Fable. **Lane:** A (Portfolio, Workspace, Settings, Mail). **Repository:** neo-capiro/capiro-backend plus neo-capiro/capiro-frontend. Branch from the current default branch head at send time.
-**How we work:** you build; the Wave 2 orchestrator's reviewers review; the orchestrator gates, merges and ships (Fable stops after Wave 1). Draft PRs only; no merges, no AWS; list tests run and not run; mutation-check every new test. Read `WORKFLOW.md` (meri-greenfield `docs/handover/20261022/`).
+**From:** root Codex under Neo's current authorization. **Lane:** A (Portfolio, Workspace, Settings, Mail). **Repository:** neo-capiro/capiro-backend plus neo-capiro/capiro-frontend. Branch from the current default branch head at send time.
+**How we work:** root assigns exact files/heads; the author implements and runs meaningful affected checks; a separate Astra Ultra reviewer reviews the exact result. Root owns integration, heavy gates, AWS and shipping. Preserve one-writer ownership and other work. Use `../../CODEX-SETUP.md` and `../../CODEX-VALIDATION-AND-SHIPPING.md`.
 
-## Standing requirements (Neo, 2026-10-23). Read `STANDING-REQUIREMENTS.md` in the handover folder before anything else.
-1. **Claude handles the harness** (SDK full harness, direct Bedrock, Capiro data as tools). Never build a custom replacement for something the SDK or AWS already does.
+## Standing requirements (Neo, updated2026-10-24). Read `STANDING-REQUIREMENTS.md` in the handover folder before anything else.
+1. **Claude handles the harness** (actual SDK full harness on AgentCore Runtime V1, direct Bedrock, Capiro data as tools). Never build a custom replacement for something the SDK or AWS already does.
 2. **Keep it simple and standard.** No per-hop re-verification, proxies, credential-minting services or reservation ledgers. Core is the gatekeeper for Capiro data.
 3. **Leave no dead code.** Delete what your change replaces in the same PR, remove temporary diagnostics, add no flag that nothing turns on, and show `git grep` proof in the PR description.
-4. **The old plans changed.** Tickets for the removed layers are superseded: check `source-of-truth/SUPERSEDED-BY-ITEM-0.md` before implementing any ticket. If a ticket and Wave 2 item 0 disagree, item 0 wins; ask on #202.
+4. **Keep Capiro data working.** Core owns canonical tenant/member/client/wall permissions and revocation; preserve General/client semantics, memory, all read families and their positive/negative/paging cases.
+
+Follow the [approved migration/completion plan](../../plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md): immutable conversation sessions, idle stop and durable SDK/artifact restore; Temporal retains required durable work. All accepted Item0/A2/M2/MP/14-skill/full-product scope remains. Per-run Fargate, custom warm pools and duplicate authority are superseded; no shipping completion is implied.
 
 ## Sources of truth
-The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets below, verbatim. Implement each ticket's bounded work and meet its acceptance exactly. If anything conflicts or is left open, ask on #202; don't decide.
+The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets below, verbatim. Implement each ticket's bounded work and meet its acceptance exactly. Resolve routine implementation autonomously within root's allocation; report actual scope/shared-owner conflicts to root. Older ticket mechanisms are historical where the current migration supersedes them; their product acceptance remains binding.
 
 ## Plan row (FINAL-PLAN §5)
 | **A2** · Finish screens that already have a backend | Settings ST-03 to ST-06, ST-19, ST-20, ST-24 (remaining forms), ST-25, ST-27, ST-28. Portfolio PF-07, PF-09, PF-13, PF-14, PF-16, PF-18. Mail status and sync ML-11 to ML-18, ML-26. | A1 | Every Settings, Portfolio and mail-read row in the closeout matrices is accepted in staging or explicitly held |

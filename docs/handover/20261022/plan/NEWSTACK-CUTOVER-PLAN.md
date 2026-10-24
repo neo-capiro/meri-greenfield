@@ -1,6 +1,6 @@
 # New-stack database cut-over: run plan (Fable)
 
-> **HISTORICAL.** This cut-over ran on 2026-10-22 (O210). Do not run it again. The clone database is never deleted or re-cloned.
+> **HISTORICAL.** This cut-over ran on 2026-10-22 (O210). Do not run it again. The clone database is never deleted or re-cloned. Current hosting and release requirements are in the [AgentCore migration plan](AGENTCORE-RUNTIME-MIGRATION-20261024.md); the old owner/proxy/issuer steps below are history, not current commands.
 
 **Goal:** Core (`backend-import` 89fcf2bb: consolidated Core plus A1) and the whole Meri runtime (control, worker, owner, proxy, issuer, Temporal) run on **one** database, `capiro-newstack-preview-clone` (Neo, O175/O183). The live shared cluster is never touched.
 

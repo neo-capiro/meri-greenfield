@@ -1,14 +1,11 @@
 # Capiro and Meri Final Plan
 
-> **UPDATE 2026-10-23 (Neo): read this before the plan below.**
-> Neo decided Meri runs on the Claude Agent SDK's full harness, direct to Bedrock, with Capiro data as tools. That is Wave 2 item 0 (`docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`) and it comes first. The layers built around the SDK are deleted, not completed.
-> - **Superseded:** S1, S2, S4, the owner/proxy pair, budget reservation, per-operation authority, the temporal-issuer, and tickets MR-01, MR-02, MR-07, MR-09. **Re-scoped:** M1, MP, M3, M4, L1 and the tickets listed in `docs/handover/20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md`. **Kept:** S3 (warm runner pool), every E-scenario except E39 and E40, and every phase not named here.
-> - Behaviour and quality gates stay binding. Mechanisms that only protected the removed layers do not.
-> - Rules for every change: `docs/handover/20261022/STANDING-REQUIREMENTS.md` (Claude handles the harness; simple standard architecture; leave no dead code; Capiro data must keep working).
-> - Inline `[SUPERSEDED]` and `[RE-SCOPED]` markers below show where. If a marker and an old instruction disagree, the marker wins.
+> **Current decision — 24 October 2026.** Neo approved the real Claude Agent SDK on **AgentCore Runtime standard V1**, conversation-scoped isolation, durable native SDK/artifact restore and canonical Core permissions. This replaces per-turn Fargate and the S3 custom warm-pool mechanism. The [migration plan and completion matrix](AGENTCORE-RUNTIME-MIGRATION-20261024.md) are current; this dated plan retains the complete ticket index and acceptance outcomes.
+> Item 0 removes the model owner/proxy, budget reservation, duplicate native-authority, custom checkpoint and Temporal-issuer mechanisms. It preserves the actual SDK SessionStore, all memory/data, 14 skills, durable outcomes and Temporal for required runs, schedules and background work. [Standing requirements](../STANDING-REQUIREMENTS.md) and the [supersession register](../source-of-truth/SUPERSEDED-BY-ITEM-0.md) define the boundary. All Item 0/A2/M2/MP/frontend features remain required; source review is not shipping acceptance.
+> Root has Neo's autonomous implementation and release authority. Dated source/status/decision tables below are historical evidence where identified, not an instruction to repeat completed migrations or revive removed services.
 
 **Date:** 21 October 2026.
-**Roles:** Neo's agents build everything. Fable plans each phase, reviews it, merges it and deploys it; Fable's sessions write no product code. Neo decides scope.
+**Roles:** root is the sole orchestrator and shipping owner. Four logical A/U/R/D sessions use Astra Ultra and independent reviews; root assigns exact files and shared contracts, serializes gates and owns AWS/default-profile operations. Neo's current scope and authorization govern all lanes.
 
 This plan puts everything left into a sequence of deployed phases. It merges three sources:
 
@@ -24,7 +21,7 @@ The two closeout plans stay the detailed specs: each ticket there already has it
 2. **Features stay off until proven.**
    - A new capability stays off until its phase's live checks pass.
    - A feature's UI flag and backend flag turn on together.
-   - One flag per release.
+   - Use only required capability flags; remove replaced flags and callers after acceptance.
 3. **Reuse what exists.** No new frameworks, senders, storage platforms or second implementations. Missing pieces are added at the boundary the closeout plans name.
 4. **Measure before building anything heavy.** Expensive designs are built only if telemetry after the cheaper steps shows they're needed (section 7).
 5. **Every release passes the whole-flow chat check:**
@@ -34,23 +31,23 @@ The two closeout plans stay the detailed specs: each ticket there already has it
    - a conversation left idle for 20 minutes.
 
    Each of today's turn-2 bugs slipped past a narrower test.
-6. **Change-controlled areas need Neo's yes at phase start:** Core auth, tenant context and sessions; Clerk; Microsoft and Google OAuth and token storage.
+6. **Keep canonical security owners.** Neo has authorized the work. Root allocates exact Core auth/session/OAuth boundaries and requires independent review and affected real gates; no parallel authorization layer or repeated approval request is inferred from this dated plan.
 
 ## 2. How each phase runs
 
 | Step | Who | Output |
 |---|---|---|
-| Brief | Fable | One brief per phase, written one phase ahead: scope (ticket IDs), files, flags and acceptance. It points to the closeout-plan tickets for detail. |
-| Build | Neo's agent | Draft PRs on GitHub, listing tests run and not run. No AWS and no merges. |
-| Validate | Fable | Targeted independent review, plus a security review for phases that change authority (A1, M2, M4, M6, M8). The repos' gates: unit and composed tests, real PostgreSQL where touched, and the Meri image gate. Target: one day. |
-| Deploy | Fable | Merge. Take a database snapshot before any migration. Deploy the backend first, then Meri, then the frontend. |
-| Accept | Fable | Run the phase's live checks, turn its flag on only after they pass, and update the status table. |
+| Brief | Root | One brief per phase, written one phase ahead: scope (ticket IDs), files, flags and acceptance. It points to the closeout-plan tickets for detail. |
+| Build | Allocated agent | Exact bounded source and deletion inventory, with tests run and not run. Root owns shared integration and shipping. |
+| Validate | Independent reviewer / root | Targeted independent review, plus a security review for phases that change authority (A1, M2, M4, M6, M8). The repos' gates: unit and composed tests, real PostgreSQL where touched, and the Meri image gate. Target: one day. |
+| Deploy | Root | Merge. Take a database snapshot before any migration. Deploy the backend first, then Meri, then the frontend. |
+| Accept | Root | Run the phase's live checks, turn its flag on only after they pass, and update the status table. |
 
 While a phase is being validated and deployed, its agent starts the next phase in its lane.
 
 ## 3. Where we are today
 
-> **[STALE 2026-10-23]** This table describes 21 October. Current state: `docs/handover/20261022/WAVE-2-HANDOVER.md` §1 and `docs/handover/20261022/WAVE-1-HANDOFF.md`.
+> **Historical 21 October snapshot.** The current completion states are in the [AgentCore migration matrix](AGENTCORE-RUNTIME-MIGRATION-20261024.md#current-completion-matrix-baseline-0425d9af-update-with-evidence) and the latest root release receipts. Neither this table nor the historical handoff table is a live status report.
 
 | Area | State |
 |---|---|
@@ -64,19 +61,20 @@ While a phase is being validated and deployed, its agent starts the next phase i
 
 ## 4. Lanes: who can work at the same time
 
-| Lane | Agent | Owns | Must not edit |
-|---|---|---|---|
-| **R · Runtime core** | Agent 1 | greenfield `apps/control`, `apps/worker`, `apps/runtime`, including `cli.mjs`, `config.mjs`, `product-ports`, `activity.mjs` and `action-host/session` | proxy and owner, gateway tools, frontend |
-| **D · Domain and proxy** **[RE-SCOPED 2026-10-23: `apps/proxy` ownership ends when item 0 deletes it]** | Agent 2 | greenfield `apps/proxy`, `apps/gateway`, tool catalog, memory, artifacts, contracts package | Lane R's files (it asks Lane R for seams) |
-| **U · Meri UI and Core-for-Meri** | Agent 4 | capiro-frontend `features/meri/**` and `shared/meri-*`; capiro-backend Meri bootstrap and application-authority | Portfolio, Workspace, Settings and Mail code |
-| **A · App** | Agent 3 | capiro-frontend Portfolio, Workspace, Settings and Mail; capiro-backend clients, objectives, BD, workspace, settings and engagement/mail | Meri code |
-| **Ops** | Fable | Briefs, reviews, merges, migrations, environments, releases, status table. Sole owner of shared files: frontend registry and config, migration numbering, deploy templates, generated contracts. | — |
+| Boundary | Current allocation rule |
+|---|---|
+| Runtime, control, contracts and infrastructure | Root assigns one writer per file; R implements the allocated SDK runtime, A/U the allocated control/frontend compatibility. Shared contract versions and migrations remain root-owned. |
+| App, data tools, Memory and artifacts | Existing domain owners stay canonical. A/U/R/D implement only their current allocation; no second sender, policy service or storage platform. |
+| Independent review and documentation | A different author reviews each final exact head; D maintains current plans and reviews other authors. |
+| Integration, native gates and shipping | Root alone schedules scarce local resources, operates AWS, owns deploy locks and records remaining acceptance. |
 
-**Four agents, one per lane** (Neo's decision 4).
+Four logical A/U/R/D sessions may run in parallel on disjoint files. This is the current Codex workflow, not the historical agent-number ownership map.
 
 ## 5. The phases
 
-### Phase 0 · Baseline (agents 1 and 2 build, Fable ships; about one week)
+### Phase 0 · Historical baseline sequence (21 October)
+
+This completed/superseded sequence is retained for ticket lineage. Use current ledgers and release receipts; do not execute these old merge, migration or runtime steps.
 
 **Goal:** everything already built is live, and the stuck-conversation bug is fixed.
 
@@ -106,7 +104,7 @@ While a phase is being validated and deployed, its agent starts the next phase i
 |---|---|---|
 | **S1** · P1 + P2 PR-A **[SUPERSEDED 2026-10-23]** | P1 budget table (agent 1). P2 PR-A owner/proxy proof reuse (#196). Dashboards from P0 telemetry [MX-08]. | No behaviour change. Owner exchanges ≤ 13 per model request. A partner restart re-pairs within 30 s (E39). Telemetry stays truthful (E41). |
 | **S2** · P2 PR-B + authority-lite **[SUPERSEDED 2026-10-23]** | P2 PR-B (exchange collapse). **Authority-lite**, which replaces ADR P3: Meri control uses Core's combined current-authority receipt and its bounded Clerk cache (P6-Core, deployed in Phase 0) instead of separate identity, membership and context calls. Write intents use the run's own session instead of minting one per intent, which M4 needs. | Core calls per turn ≤ 30 (from about 151). Core time ≤ 3 s per turn. A revoked user loses access within 30 s. |
-| **S3** · Warm runner pool **[KEPT 2026-10-23: Fargate cold start is about 60 s of every first turn; re-measure after item 0]** | ADR P5 with the approved settings: minimum 2, maximum 10, 10-minute idle timeout, one conversation per runner, never bound twice [MX-06, MX-09]. | Target: first text within 15 s at the median (from about 195 s). Pool depth and retirement alarms are in place. |
+| **S3** · Interactive session latency **[RE-SCOPED 2026-10-24]** | Standard V1 conversation reuse, idle stop and durable native SDK/artifact restore [MX-06, MX-09]. No Fargate warm pool. | Retain the median first-text target of 15 s and measure cold, warm and restored sessions separately; actual Runtime evidence, cost and cleanup are required. No target achievement is claimed. |
 | **S4** · Only if S3 misses its target **[SUPERSEDED 2026-10-23]** | The full signed authority lease (ADR P3), Stop without the task router (ADR P4), or an in-process path for plain chat like os.capiro.ai's. Neo picks. | Target met. |
 
 ### Meri track
@@ -116,8 +114,8 @@ While a phase is being validated and deployed, its agent starts the next phase i
 | **M1** · Reliable chat **[RE-SCOPED 2026-10-23: MR-01, MR-02, MR-09 superseded; MR-06, MR-08 re-scoped]** | R + U | **Lifecycle:** MR-01, MR-02, MR-06, MR-08, MR-09; pause, resume and fork across a deploy (E12); the whole-flow chat check built into every release [MX-13]. **UI:** MF-01, MF-02 (including heartbeat and send acknowledgement), MF-06, MF-07, MF-10, and the pinned frontend acceptance matrix MF-21. **Also** the open review follow-ups from candidates 9–11. | Phase 0 | E01–E12 and E40 on preview |
 | **M2** · General or client chat | R + U | **Client-optional chat** (details below). New conversation, conversation list, switching and history (MF-09). Automatic client context MG-05. Selected skill and scope kept MG-02. "Ask Meri about this client" PF-02. Cross-module context MF-19 (context part). | M1, and Neo's decision on reads across clients | E06, E45 (context part), and the client-optional checks below |
 | **M3** · Read tools on **[RE-SCOPED 2026-10-23: read families become tools on the tool gateway]** | D + U | MT-01, MT-04 to MT-09, MT-16, MO-14, MO-15, MG-06. Citations and evidence UI MF-16. Re-register the reads per O118. Bind each enabled capability to its dependencies [MX-03]. | Phase 0. Reads in General chats need M2. | E18–E20, E31, E44, and each family's positive, negative and paging cases. `reads` turned on. |
-| **MP** · Model choice: Claude API alongside Bedrock **[RE-SCOPED 2026-10-23: an SDK provider setting, not a proxy feature]** | D + U | **Two model paths:** Bedrock (today's) and the Claude API. Any current Claude model and reasoning level is selectable: a default in Settings, plus a per-conversation picker. The API key lives in AWS Secrets Manager. Both paths get the same budgets, usage records, telemetry and Stop behaviour. | S1 | The whole-flow chat check passes on both paths; switching model or provider mid-conversation works; usage is recorded per provider |
-| **M4** · Actions and approvals on **[RE-SCOPED 2026-10-23: approvals via the SDK permission callback plus Core intents]** | D + U | task.create MT-10, task.update MT-11, Research Portfolio actions MO-05, LegiWatch watches MO-06, prospect, client and note changes MO-08. Approval UI MF-03, MF-04, MF-05, MF-12, MF-13. | S2, and A0 (writes need staging) | E13–E17 in staging. `intents` and the approvals UI turned on together. |
+| **MP** · Model choice: Claude API alongside Bedrock **[RE-SCOPED 2026-10-23: an SDK provider setting, not a proxy feature]** | D + U | **Two model paths:** Bedrock (today's) and the Claude API. Any current Claude model and reasoning level is selectable: a default in Settings, plus a per-conversation picker. The API key lives in AWS Secrets Manager. Both paths get the same budgets, usage records, telemetry and Stop behaviour. | Item 0 SDK/Runtime provider owner | The whole-flow chat check passes on both paths; switching model or provider mid-conversation works; usage is recorded per provider |
+| **M4** · Actions and approvals on **[RE-SCOPED 2026-10-23: approvals via the SDK permission callback plus Core intents]** | D + U | task.create MT-10, task.update MT-11, Research Portfolio actions MO-05, LegiWatch watches MO-06, prospect, client and note changes MO-08. Approval UI MF-03, MF-04, MF-05, MF-12, MF-13. | Item 0 plus the affected Core/intent owner and a qualified target | E13–E17 in staging. `intents` and the approvals UI turned on together. |
 | **M5** · Documents, files and research outputs | D + U + A | MM-09 to MM-19, MB-04. UI MF-14, MF-15, MF-19 (completion links). Portfolio PF-03, PF-23. Workspace WS-22, WS-23, WS-24. | M4 | E26–E31 and E45. All six formats open natively. `artifacts` turned on. |
 | **M6** · Memory and preferences | D + U + A | MM-01 to MM-07, MR-05. Settings ST-07 to ST-13, ST-18. UI MF-17. Migrations intents/0002 and memory/0002. | M4 and A0 | E23–E25 and E36. `memory` and the memory-review UI turned on together. |
 | **M7** · Routines, Cowork and skills | R + D + U | MR-03, MR-04, MR-10, MB-05, MT-12, MT-13 (all 14 skills), MO-01, MO-02, MO-10. Runs and routines UI MF-11, MF-18. Settings ST-15, ST-16, ST-17. | M4, M5 | E32–E35 |
@@ -125,7 +123,7 @@ While a phase is being validated and deployed, its agent starts the next phase i
 
 ### Client-optional chat (in M2)
 
-**Today:** every Meri conversation belongs to one client, and preview admits a single client. On os.capiro.ai, users can ask anything with no client selected, or pick one.
+**Baseline before M2 activation:** native chat requires a selected client; client-record preview writes do not change that rule. On os.capiro.ai, users can ask anything with no client selected, or pick one.
 
 **M2 matches that with one rule:** a conversation is either **General** or **bound to one client**, decided when it is created.
 
@@ -145,14 +143,14 @@ While a phase is being validated and deployed, its agent starts the next phase i
 
 | Phase | Scope | Needs | Done when |
 |---|---|---|---|
-| **A0** · Ordinary staging environment (Fable + lane A). **Deferred** (Neo's decision 1). Until it exists, A1–A5 and M4–M7 are built, reviewed and merged, but their live checks wait for staging. | X-01, X-02, X-03, X-05, X-06; PF-01, PF-21, PF-24, WS-01, ST-26, ML-01. One ordinary (not restricted-preview) environment on capiro-dev with Core, Strategy, Workspace, Onboard, Engagement and Meri, plus a test tenant and test provider apps. | Neo approves it | Every service answers at its correct path on the exact images. Existing flows smoke-tested. |
+| **A0** · Ordinary staging environment (root + lane A). Original decision deferred a separate environment; this does not block currently authorized, narrowly qualified preview work. | X-01, X-02, X-03, X-05, X-06; PF-01, PF-21, PF-24, WS-01, ST-26, ML-01. One correct service/schema/provider topology with a controlled test tenant. | Root selects and qualifies the actual target under current authorization | Every service answers at its correct path on exact images; existing flows are smoke-tested. |
 | **A1** · Safety fixes | ST-01, ST-02, WS-02, WS-03, WS-04, PF-10, PF-11, PF-12, PF-22, ML-02, ML-03, ML-07, ML-08, ML-09, ML-10, X-04; ST-24 (security-sensitive writes) | Build can start now; live checks need A0 | Direct-API negative tests pass. Deployed to staging. Nothing new switched on. |
 | **A2** · Finish screens that already have a backend | Settings ST-03 to ST-06, ST-19, ST-20, ST-24 (remaining forms), ST-25, ST-27, ST-28. Portfolio PF-07, PF-09, PF-13, PF-14, PF-16, PF-18. Mail status and sync ML-11 to ML-18, ML-26. | A1 | Every Settings, Portfolio and mail-read row in the closeout matrices is accepted in staging or explicitly held |
 | **A3** · Workspace complete | WS-05 to WS-21: documents, Hill Day, newsletters, templates. System mail ML-24. | A1 | Every Workspace row accepted in staging or held |
 | **A4** · Sending mail, including from Meri | ML-04, ML-05, ML-06, ML-19, ML-20, ML-21, ML-22, ML-23, ML-25; ST-14; Timeline reply PF-25; Meri send and reply MO-04, MT-03 (lane D part) | A1 and M4 | Send, reply and forward work on Microsoft and Gmail test mailboxes, with durable receipts. No resend after an unknown outcome (E21, E22). |
-| **A5** · New product features | PF-04, PF-05, PF-06, PF-08, PF-15, PF-17, PF-19, PF-20, X-07, WS-25, ST-21, ST-22, ST-23, ST-29 | A2 | Each starts from a one-page contract that Fable writes and Neo approves, then ships like any other phase |
+| **A5** · New product features | PF-04, PF-05, PF-06, PF-08, PF-15, PF-17, PF-19, PF-20, X-07, WS-25, ST-21, ST-22, ST-23, ST-29 | A2 | Each starts from a proportionate contract from the existing owner, reviewed under root's allocation, then ships like any other phase |
 
-### Launch track (Fable)
+### Launch track (root)
 
 | Phase | Scope | Done when |
 |---|---|---|
@@ -170,13 +168,13 @@ While a phase is being validated and deployed, its agent starts the next phase i
 
 > **[RE-SCOPED 2026-10-23]** This wave table predates Wave 2 item 0. Ignore the cells for P1, P2, S1, S2, S4 and MP-as-a-proxy-feature. Wave 2 starts with item 0; the other lanes continue as the handover says.
 
-The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace is known.
+The following dated wave schedule is historical sequencing, not a current calendar or source allocation. Root updates the migration matrix and exact work allocations as gates complete.
 
 | Wave | Agent 1 · lane R | Agent 2 · lane D | Agent 4 · lane U | Agent 3 · lane A | Fable ships |
 |---|---|---|---|---|---|
 | 1 (weeks 1–2) | Finish P1, then C12, then M1 runtime | PR197 last test, `AGENTS.md`, P2 fixes, then PR-B | M1 screens | A1 safety fixes | Phase 0; S1 (P1 + P2 PR-A) |
 | 2 (weeks 3–4) | Finish M1, then S2 authority-lite | P2 PR-B, then MP (Claude API path) | M2 screens and Core (General chat, New conversation) | A2 | M1, A1 |
-| 3 (weeks 5–7) | M2 runtime, then S3 warm pool | M3 read tools | M3 screens | A3 | S2, MP, M2, M3, A2; production data-path question to Neo |
+| 3 (weeks 5–7) | M2 runtime and V1 conversation lifecycle | M3 read tools | M3 screens | A3 | S2, MP, M2, M3, A2; production data-path question to Neo |
 | 4 (weeks 8–10) | Finish S3, then M7 groundwork | M4 actions and approvals | M4 screens | A4 (with agent 2 for Meri mail) | S3, M4, A3 |
 | 5 (weeks 11–13) | M7 routines and skills | M5 documents and files | M5 and M7 screens | A5 | M5, A4, M7, then L1 |
 | 6 (weeks 14–16) | M8 | M6 memory and preferences | M6 screens | A5 | M6, then **L2 internal tenant** |
@@ -184,17 +182,17 @@ The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace 
 
 **UI libraries by wave:** see §10.3. Each phase adopts the libraries assigned to it, Figma first (§10.4).
 
-**Staging (A0) is deferred.** A1–A3 merge and ship as far as the restricted preview allows. Live checks for actions (M4 onward) and the app's write features need staging, so Fable will raise decision 1 again at the start of Wave 3.
+**Current preview authorization:** Neo lifted the client-record read-only restriction, with exact routing and canonical online tenant/member/client/capacity checks. Selected-client requirements and other feature/provider gates remain. Root qualifies each real target; an old deferred staging decision does not create a fresh approval hold or waive any feature acceptance.
 
 - **Can always run together:** lanes R, D, U and A, because they edit different files.
 - **Must never overlap:**
   - two changes to the same runtime-core file (lane R works through them one at a time);
-  - two releases to the same environment (Fable runs deploys one at a time);
-  - migrations (Fable numbers and orders them).
+  - two releases to the same environment (root runs deploys one at a time);
+  - migrations (root numbers and orders them).
 
 ## 7. What was simplified, and when to revisit
 
-> **2026-10-23:** the ADR P3/P4/P5 simplifications below are overtaken. Wave 2 item 0 removes the layers they would have optimised. S3 (the warm runner pool, ADR P5) stays.
+> **2026-10-24:** the historical ADR P3/P4/P5 alternatives below are superseded by Item 0 and Runtime V1. Keep behavior and latency requirements; do not reintroduce authority leases or a custom warm pool because an acceptance run is slow.
 
 | Before | Now | Revisit if |
 |---|---|---|
@@ -206,7 +204,9 @@ The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace 
 | More environments | Preview (read path), one staging, then production | Not applicable |
 | Full mutation campaigns on every PR | Targeted reviews; full campaigns only where authority changes | A phase ships a defect that a campaign would have caught |
 
-## 8. Decisions (Neo, 21 October 2026)
+## 8. Decision history and current superseding instructions
+
+Rows 1–15 preserve the dated decisions. The current authorization and hosting decision in rows 16–17 supersede conflicting operational holds and mechanisms; they do not remove product scope.
 
 | # | Decision | Neo's answer |
 |---|---|---|
@@ -225,6 +225,8 @@ The weeks are rough. Fable will re-estimate after Wave 1, once the agents' pace 
 | 13 | Meri harness (Neo, 23 October 2026) | **Claude handles the harness as much as possible**, for Claude-quality answers: the SDK full harness, direct Bedrock, Capiro data as MCP tools. It is Wave 2 item 0. Wave 1 finishes on the current design first. |
 | 14 | Architecture (Neo, 23 October 2026) | **A simple, standard architecture, with no extra security layers.** The owner/proxy pair, budget reservation, per-operation authority and the temporal-issuer are deleted, not completed. Core stays the gatekeeper for Capiro data. |
 | 15 | Dead code (Neo, 23 October 2026) | **Leave no dead code behind.** Every change deletes what it replaces; temporary diagnostics are removed; nothing stays dark without an owner and a date (`STANDING-REQUIREMENTS.md` rule 3). |
+| 16 | Hosting (Neo, 24 October 2026) | **Implement AgentCore Runtime standard V1 now**, retaining the real Claude Agent SDK, Core permissions, durable native sessions/artifacts, all memory/data/skills and required Temporal durability. Replace per-turn Fargate and S3 warm-pool machinery; leave no dead code. |
+| 17 | Completion and authority (Neo, 24 October 2026) | **Finish autonomously and in parallel under root's sole orchestration.** Update all plans, retain every accepted feature, run real acceptance and report gaps. Client-record preview writes are approved without removing selected-client or access walls. |
 
 ## 9. Index: every item and its phase
 

@@ -1,5 +1,8 @@
 # P0: production telemetry and alarms for Meri (implementation plan)
 
+> **Historical phase plan.** This dated source/evidence is retained for lineage. Current work follows the [approved Runtime V1 migration](../plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) and [standing requirements](../STANDING-REQUIREMENTS.md). Keep applicable canonical Core and telemetry behavior; do not execute obsolete per-turn Fargate, model-proxy, proof-reuse or warm-pool instructions. Root assigns current files and qualification.
+
+
 **Audience:** an engineer who knows this repository but not Meri's history. Everything you need is here or in `docs/hot-path/`. When the plan says "verify", check the cited file before relying on it.
 
 **References:**

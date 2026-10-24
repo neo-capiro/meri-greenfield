@@ -1,6 +1,6 @@
-# Wave 2 handover: Fable → Neo's local Codex orchestrator
+# Wave 2 handover and current execution pointers
 
-Written by Fable on 2026-10-23, at the Wave 1 stopping point. Neo's decisions: **Wave 2 and later run in a local Codex session on another machine, which does all the shipping** (O226, O229), and **Wave 2 starts with item 0, the Claude-native harness** (O239).
+Updated24 October2026 for Neo's approved autonomous AgentCore Runtime V1 migration. Root Codex owns implementation coordination, review, gates and shipping. The original23 October live observations below are historical, not current deployment pins. Read the [current migration/completion matrix](plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) before assigning work.
 
 ## Read these first, in this order
 
@@ -11,7 +11,7 @@ Written by Fable on 2026-10-23, at the Wave 1 stopping point. Neo's decisions: *
 5. **`source-of-truth/SUPERSEDED-BY-ITEM-0.md`**: check it before implementing any ticket from the old plans. The plans themselves are marked inline.
 
 **Also:**
-- `CODEX-ORCHESTRATION-SETUP.md`: roles, communication rules, gate rules, setup prompts. This file supersedes its §0.6–§0.7 and the "run on neomart" assumption.
+- `CODEX-SETUP.md` and `CODEX-VALIDATION-AND-SHIPPING.md`: current roles, local gates and shipping. Older orchestration setup is historical.
 - `SHIPPING-RUNBOOK.md`: release, migration and rollback procedures. Its owner/proxy and issuer sections describe components item 0 deletes.
 - `shipping/gate-scripts/README.md`: local gates.
 - `plan/FINAL-PLAN-20261021.md`: waves, decisions (§8, now 1–15), UI libraries (§10). Updated in place with a banner and inline markers.
@@ -31,7 +31,7 @@ From the moment `WAVE-1-HANDOFF.md` is posted on #202:
 
 ---
 
-## 1. Live on preview as of 2026-10-23 (portfolio-preview.app.capiro.ai)
+## 1. Historical preview receipt as of 2026-10-23 (portfolio-preview.app.capiro.ai)
 
 | Component | Version | Notes |
 |---|---|---|
@@ -50,21 +50,19 @@ From the moment `WAVE-1-HANDOFF.md` is posted on #202:
 
 ---
 
-## 2. Wave 2 work, its exact state, and the next step
+## 2. Current work and completion
 
-**Do item 0 first (Neo, 2026-10-23).** It changes the runner, proxy, owner, budget and authority code that several items below depend on. Re-check each item against item 0 before sending it.
+The [approved migration plan](plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) owns the current completion/deletion matrix. Reuse current exact reviewed sources; do not restart the historical SDK spike or execute old kit commands. AgentCore Runtime V1 is approved but not implemented/deployed in the0425 baseline. Native SDK continuation has independent source and native-only PG evidence; live follow-up, retention and the new hosting path remain distinct gates.
 
-| Item | Lane | State | Next for the orchestrator |
-|---|---|---|---|
-| **0. Claude-native harness**: SDK full harness, direct Bedrock, Capiro data as MCP tools; delete the proxy, owner, temporal-issuer, budget reservations and per-operation authority | new lane | Spec: `phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`. Nothing built | Start with the spec's §6 step 1 (the spike, no changes on `main`), then ship each step and check it on preview before the next |
-| **M2** capiro-frontend **#123** (conversation history, switching, General/client chat) | agent 4 | Head **`0261e9e2`**, dot SOURCE ACCEPT. At the previous head `09bb4b9d`: unit 426/426, browser all pass, `next build` OK on Next 16.4.0. The only failure was `test:production` `verify-documents.mjs:90`, which expected `/meri`; `0261e9e2` changes that one line to the exact `/meri/conversations`. The full gate at `0261e9e2` was **started and cancelled** (build `ba03601e`). Not merged | Run the full FE gate (`ship-fe-kit/make-fe-ship-kit.mjs 0261e9e2… --worktree <clean wt> --label m2`, then steps 00, 02–05; the kit generator already writes the archive, so skip 01). On PASS plus a clean merge, merge and deploy (06–08) |
-| **A2** capiro-backend **#111** (ML-13 and the A2 backend set) | agent 3 | **Merged** to `backend-import` `db96ad31`. Core image `11aa247a…` qualified with 0 findings. **Not deployed** | Use `shipping/core-kit/` (the newest kit: step 04 copies the serving revision and changes only the image and `RELEASE_SHA`; `make-core-kit.py` shows how a kit is derived from the previous one). Set `ROLLBACK_TD`, `ROLLBACK_DIGEST` and `ROLLBACK_SHA` in `kit.env` to the serving **`:9`**. Snapshot the clone, apply any new Core migrations to the clone (`045-migrate-clone.sh`), roll Core. Decide first how capiro-backend #115 and #116 fit |
-| **A2** remaining frontend tickets | agent 3 | Brief: `phases/wave2/WAVE2-AGENT3-A2-BRIEF.md` | Refresh the base SHAs, then send |
-| **MP** (Claude API alongside Bedrock) | agent 2 | **Re-scoped by item 0** to an SDK provider setting: `phases/wave2/WAVE2-AGENT2-MP-BRIEF.md` | Send after item 0 step 2 is released |
-| **M2** Core-for-Meri parts | agent 4 | In `WAVE2-AGENT4-M2-BRIEF.md`, with an item 0 note | Continue after #123 |
-| **Image hardening** (Neo, O224/O225): intel-api, api-strategy, **workspace**, **engagement-api** to **0 HIGH / 0 CRITICAL** | agent 2 | **Paused** by O226. Brief on #202 (comments 6355187204 and 6355270797). Today (preview `ca4de503`, CRITICAL/HIGH): intel-api 10/77, api-strategy 2/8, workspace and engagement similar to live (5/13 and 1/9). Everything is in Debian base OS packages plus ffmpeg | Re-send the brief. Model: Core's `apps/api/Dockerfile.alpine-qualification`. Gate: CodeBuild plus an exact-digest ECR scan, 0 HIGH/CRITICAL. onboard-api is out of scope |
-| **Preview as production** (Neo, O219): all reads, writes and real external effects on preview | orchestrator | **Partly done on 2026-10-23.** Services now run for api-strategy, workspace and intel-api (see §1); the preview read gate admits all Core GETs. Left: hardened images (above); services for onboard-api and engagement-api; frontend base URLs for their calls; `CAPIRO_PREVIEW_READ_ONLY=false` | Do the hardened images first, then the remaining services and ALB rules (see the trap below), then writes |
-| MX-01 session-refusal alarm and status table | — | **Done** (#212) | — |
+| Work | Current direction | Completion rule |
+|---|---|---|
+| Item0 | Actual Claude SDK/full harness on V1, durable native persistence, all data tools and simplified canonical authorization | Integrated image/platform, permissions, context, streaming, Stop, cost and live acceptance; delete replaced callers/resources |
+| A2 | Keep every accepted Core/frontend/Settings/Portfolio/Mail ticket, including ST24/ST27 and client record writes | Exact integration/native/API/browser/provider acceptance; source review alone is not delivery |
+| M2 | General/client chat, history/switching, entity context and full frontend/core contract | Preserve scope selection, current permissions and memory rules; activate only with actual compatible owners |
+| MP | Existing SDK provider setting and picker/contracts; Bedrock remains current default | Provider-specific qualification and parity; no model proxy recreation |
+| Image hardening | Continue required native ARM Core/backend/frontend images and exact-digest scans | Zero HIGH/CRITICAL, disclosed lesser findings, actual native/database/runtime gates |
+| Preview behavior | User lifted the client-record read-only restriction, with tenant/member/client walls and selected-client policy retained | Exact route/method and source-bound host admission; preserve Meri routing, do not globally flip the legacy preview marker to bypass guards |
+| Remaining product | All original read families, memory,14 skills, artifacts, browser/Bash, schedules and frontend features remain | Each closeout row accepted; no first-chat milestone or limited release closes the full scope |
 
 **ALB trap (capiro-prod-alb, listener 443, serves os.capiro.ai and app.capiro.ai live).** Current layout (snapshot in `shipping/alb-snapshots/`):
 - **Preview rules, host-scoped to `first-chat-preview.app-dev.capiro.ai`:** 1 (POST allowlist), 2 (GET/HEAD `/api/*`), 3 (`/strategy-api/*`), 5 (`/workspace-api/*`), 6 (`/intel-api/*`), and **7, the preview catch-all 404**. Rule 4 is a different host (`meri-preview.capiro.ai`).
@@ -77,7 +75,7 @@ From the moment `WAVE-1-HANDOFF.md` is posted on #202:
 
 ## 3. Running from a different machine
 
-Today's kits assume neomart paths (`C:/dev/fable/...`, Git Bash, the WSL `Ubuntu-24.04` native Docker). On the new machine:
+Historical kits assume neomart paths (`C:/dev/fable/...`, Git Bash, the WSL `Ubuntu-24.04` native Docker). On the new machine:
 
 1. **Repositories:** clone all three from GitHub (never from a partial local copy): meri-greenfield (`main`), capiro-backend (**`backend-import`**), capiro-frontend (`main`). The handover package is in meri-greenfield `docs/handover/20261022/` (branch **`fable/handover-20261022`**, PR #206, until it is merged).
 2. **Current gates and shipping:** follow [CODEX-VALIDATION-AND-SHIPPING.md](CODEX-VALIDATION-AND-SHIPPING.md) and [SHIPPING-RUNBOOK.md](SHIPPING-RUNBOOK.md). The [runtime image build](../../../infra/product-preview/image-buildspec-design.md) uses the checked-in ARM buildspec/shell and exact reviewed source; [gate-scripts/README.md](shipping/gate-scripts/README.md) points to current source checks and unmet native acceptance. Root coordinates qualification and shipping from current source and fresh live readback. The dated kits under `shipping/`, including copied `neomart-kits/`, preserve release history only; do not execute them as a current recipe or restore the removed Meri release launcher.
@@ -89,18 +87,18 @@ Today's kits assume neomart paths (`C:/dev/fable/...`, Git Bash, the WSL `Ubuntu
 
 ---
 
-## 4. Gate and ship traps learned in Wave 1 (each one cost a cycle)
+## 4. Historical Wave1 incidents and retained operational lessons
 
 - **Meri changed tests that use documents** need `MERI_DOCUMENT_PYTHON=/usr/bin/python3.13` and `MERI_PPTXGENJS=/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs` in the image run; the test default is a Codex-host path. "typed analysis … ZIP only" fails on base too, so it's inherited.
 - **Inherited baseline (O191):** about 120 unit failures on `main` that also fail on the base: openssl-backed owner TLS tests, tests that need the PostgreSQL socket, "typed analysis … ZIP only", the N21 renderer test, and the read-family fixtures that refuse `readCurrent`. Prove any failure inherited by running it on `origin/main`.
 - **Ship packet "Migrations: N new entries"** compares against an older baseline. Read the clone ledger first (`shipping/db-scripts/meri-ledger-read-clone.sh`, read-only); an entry already ledgered with the same sha needs nothing.
-- **Never restart the owner or the proxy alone.** Step 16 stops and starts both together. Wait 60 s after the proxy's last start-up `gate=pair` line before any chat. (Both go away with item 0.)
-- **The Temporal stack template declares a desired count of 0.** After any change set to it, set all five services back to 1.
+- **Historical model pair:** the old pair-restart protocol belongs only to its archived receipt. Remove the replaced services and instructions; it is not a native SDK or AgentCore prerequisite.
+- **Temporal:** compare the reviewed template to fresh live desired counts. A dated stopped template is not an executable update; preserve required durable services and authentication.
 - **After a Meri release, the first control task exited once** about 5 minutes after it started (exit code 3; cause not proven). The replacement stayed up for more than 35 minutes. Watch for a repeat after the next release.
-- **The first turn after a release looks stuck on "Queued"** for about 55–60 s: that is the runner's Fargate cold start, not a failure.
+- **Historical cold start:** per-turn Fargate launch consumed roughly44–60 seconds in observed releases. The approved V1 migration must measure real cold/warm/restore latency; a stuck queue is not assumed healthy.
 - **The release kit takes its deployment inputs from the repo's `infra/product-preview/first-chat/deployment-inputs.json`**, which points at the clone database (O231). The earlier kit pointed Meri at the shared live database by mistake; check the DB block before any release.
 - **Secrets Manager allows 20 version labels per secret.** Remove the old labels per release or the render step fails.
 - **Prisma:** `$queryRawUnsafe` on a function that returns void fails with P2010. Use `$executeRaw`. That is what broke Portfolio's saved card order.
 - **Bash tool traps (Windows):** it pre-expands `$VAR` and collapses `\\`, so put commands in script files. `MSYS_NO_PATHCONV=1` is needed for `aws logs` group names but breaks node paths.
 - **Never post customer-linked IDs** (the tenant, actor, conversation ids and the like) on GitHub, which is public. Use counts and booleans. Infrastructure identifiers (account, ARNs, digests, SHAs) are approved. Neo said the Anduril test client's id on GitHub was fine (2026-10-23: "thats fine on anduril"); that covers Anduril only.
-- **Only Neo approves**, directly in chat. A comment quoting Neo is not an approval.
+- **Current authority:** Neo directly authorized root to finish autonomously. Root allocates protected changes and releases; historical holds do not add a new approval loop. Quoted comments do not create new authority.

@@ -1,6 +1,6 @@
 # Codex workflow on EC2AMAZ-M7CDRPT
 
-Current as of 23 October 2026. Neo authorized autonomous completion of Wave 2 and lifted the earlier work and AWS-write holds. Root Codex is the sole orchestrator and owns implementation coordination, independent review, local gates, integration, AWS, migrations, shipping and live acceptance. Fable/Claude and dot have no active workflow role. This replaces the setup-only instructions from 22 October.
+Current as of 24 October 2026. Neo authorized autonomous completion of Wave 2 and lifted the earlier work and AWS-write holds. Root Codex is the sole orchestrator and owns implementation coordination, independent review, local gates, integration, AWS, migrations, shipping and live acceptance. Fable/Claude and dot have no active workflow role. This replaces the setup-only instructions from 22 October.
 
 ## Sources and integration branches
 
@@ -36,7 +36,7 @@ Root owns local gate scheduling and AWS operations. Worktrees share Docker, port
 
 ## Architecture and release constraints
 
-Item 0 precedes dependent runtime work: unmerged SDK spike, direct model path, tool gateway/read families, authority removal, native continuity/streaming, Temporal auth, cleanup. Preserve the full SDK preset, tools, skills and subagents; use its native storage interface. Core owns data authorization. Before deleting wrappers, prove tenant/member/client/wall and revocation behavior below them with negative tests. Do not reconstruct removed mechanisms from old briefs.
+Follow the [approved AgentCore Runtime migration](plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md). The completed SDK spike is historical; direct SDK/Bedrock and native persistence are the starting point. Current work replaces per-run Fargate with standard V1 conversation sessions, completes tool/read parity and removes duplicate authority, while preserving Temporal durability and all accepted features. Preserve the full SDK preset, tools, skills and subagents; use its native storage interface. Core owns data authorization. Before deleting wrappers, prove tenant/member/client/wall and revocation behavior below them with negative tests. Do not reconstruct removed mechanisms from old briefs.
 
 Keep one persistent `capiro-newstack-preview-clone`: snapshot before forward migrations, never delete/re-clone it, and never migrate shared live data for this work. New images are ARM64. Preview routing stays host-scoped before its catch-all; never modify or renumber live ALB rules. Archived kits and old revisions are evidence, not qualified recipes. Regenerate against exact source and fresh live state and run required gates.
 

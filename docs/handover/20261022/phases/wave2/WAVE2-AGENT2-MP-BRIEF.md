@@ -1,19 +1,19 @@
 # Wave 2 · Agent 2 · MP: Claude API path alongside Bedrock (RE-SCOPED 2026-10-23 by Wave 2 item 0; send only after item 0 step 2 is released)
 
-**From:** Fable. **Lane:** D (domain, contracts). Its `apps/proxy` ownership ends when item 0 deletes the proxy. **Repository:** neo-capiro/meri-greenfield, plus a capiro-frontend handoff for the picker via agent 4. Branch from the current default branch head at send time.
-**How we work:** you build; the Wave 2 orchestrator's reviewers review; the orchestrator gates, merges and ships (Fable stops after Wave 1). Draft PRs only; no merges, no AWS; list tests run and not run; mutation-check every new test. Read `WORKFLOW.md` (meri-greenfield `docs/handover/20261022/`).
+**From:** root Codex under Neo's current authorization. **Lane:** D (domain, contracts). Its `apps/proxy` ownership ends when item 0 deletes the proxy. **Repository:** neo-capiro/meri-greenfield, plus a capiro-frontend handoff for the picker via agent 4. Branch from the current default branch head at send time.
+**How we work:** root assigns exact files/heads; the author implements and runs meaningful affected checks; a separate Astra Ultra reviewer reviews the exact result. Root owns integration, heavy gates, AWS and shipping. Preserve one-writer ownership and other work. Use `../../CODEX-SETUP.md` and `../../CODEX-VALIDATION-AND-SHIPPING.md`.
 
-## Standing requirements (Neo, 2026-10-23). Read `STANDING-REQUIREMENTS.md` in the handover folder before anything else.
-1. **Claude handles the harness** (SDK full harness, direct Bedrock, Capiro data as tools). Never build a custom replacement for something the SDK or AWS already does.
+## Standing requirements (Neo, updated2026-10-24). Read `STANDING-REQUIREMENTS.md` in the handover folder before anything else.
+1. **Claude handles the harness** (actual SDK full harness on AgentCore Runtime V1, direct Bedrock, Capiro data as tools). Never build a custom replacement for something the SDK or AWS already does.
 2. **Keep it simple and standard.** No per-hop re-verification, proxies, credential-minting services or reservation ledgers. Core is the gatekeeper for Capiro data.
 3. **Leave no dead code.** Delete what your change replaces in the same PR, remove temporary diagnostics, add no flag that nothing turns on, and show `git grep` proof in the PR description.
-4. **The old plans changed.** Tickets for the removed layers are superseded: check `source-of-truth/SUPERSEDED-BY-ITEM-0.md` before implementing any ticket. If a ticket and Wave 2 item 0 disagree, item 0 wins; ask on #202.
+4. **Keep Capiro data working.** Core owns canonical tenant/member/client/wall permissions and revocation; preserve General/client semantics, memory, all read families and their positive/negative/paging cases.
 
 ## What changed
 
 The original MP added a second provider path *inside the owner/proxy*, with both paths sharing budgets, usage records, telemetry and Stop. Item 0 deletes the proxy, the owner and the budget reservations, so there is nothing to extend. MP is now a **provider setting on the runner's SDK**, per `phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`:
 
-- **Bedrock (default):** `CLAUDE_CODE_USE_BEDROCK=1` with the runner task's IAM role.
+- **Bedrock (default):** `CLAUDE_CODE_USE_BEDROCK=1` with the AgentCore runtime IAM role.
 - **Claude API:** `ANTHROPIC_API_KEY` from AWS Secrets Manager, readable by the runner task role only. It is never exposed to the model, the tool gateway or the browser.
 - **Choice:** a provider, model and reasoning level per conversation, with a default in Settings. They reach the runner as run configuration.
 

@@ -1,15 +1,15 @@
 # Meri Wave 2 implementation and shipping rules
 
-## Read first: Neo's standing requirements, 23 October 2026
+## Read first: Neo's standing requirements, updated 24 October 2026
 
 Read [STANDING-REQUIREMENTS.md](docs/handover/20261022/STANDING-REQUIREMENTS.md), then [WAVE-1-HANDOFF.md](docs/handover/20261022/WAVE-1-HANDOFF.md) and [WAVE-2-HANDOVER.md](docs/handover/20261022/WAVE-2-HANDOVER.md). Current direct user instructions take precedence over historical plans and roles.
 
-1. **Claude handles the harness.** Use the Claude Agent SDK's full harness and Claude Code prompt preset, direct Bedrock through task IAM, native tools, skills, subagents and session handling. Do not rebuild SDK or AWS responsibilities.
+1. **Claude handles the harness.** Use the Claude Agent SDK's full harness and Claude Code prompt preset, direct Bedrock through the AgentCore runtime IAM role, native tools, skills, subagents and session handling. Do not rebuild SDK or AWS responsibilities.
 2. **Keep the architecture simple.** Core is the canonical gatekeeper for Capiro tenant, member, client and wall access. Remove duplicate per-hop checks, model proxies, credential-minting services and reservation ledgers; prove the lower layer enforces each retained behavior before removing its old wrapper.
 3. **Leave no dead code.** Delete replaced code, tests, configuration, infrastructure and kit steps in the same change; remove temporary diagnostics and unused flags. Applied migrations remain immutable history. Show deletion searches and explain test-count changes.
 4. **Keep Capiro data working.** Expose the existing typed read families as tools through the control gateway to Core. Preserve positive, negative and paging behavior, including General/client scope and revocation. The runner must not receive the Core service secret or database credentials.
 
-Follow [item 0](docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md) before dependent runner, proxy or authority work: bounded unmerged spike; direct model path; tool gateway/read families; authority removal; native continuity/streaming; Temporal auth; cleanup. Review and verify each released step on preview before advancing. Consult the [superseded register](docs/handover/20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md); never recreate a removed mechanism to satisfy an old ticket. P1 #200 and C9 #203 are closed unmerged as superseded.
+Follow [item 0](docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md) before dependent runner, proxy or authority work: retain the completed spike evidence; direct model path; tool gateway/read families; authority removal; native continuity/streaming; Temporal auth; cleanup. The [approved AgentCore Runtime V1 migration](docs/handover/20261022/plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) now replaces per-run Fargate and custom warm-pool work. Implement the actual Claude SDK in isolated conversation sessions, with idle stop and existing durable SDK/artifact restore; independently qualify the integrated changes and verify each released capability on preview. Consult the [superseded register](docs/handover/20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md); never recreate a removed mechanism to satisfy an old ticket. P1 #200 and C9 #203 are closed unmerged as superseded.
 
 ## Current ownership and authority
 
@@ -25,7 +25,7 @@ Apply [IMPLEMENTATION-STANDARDS.md](docs/IMPLEMENTATION-STANDARDS.md): record a 
 
 Meri is independent from the old application: do not import its agent, retrieval, UI, queue or infrastructure implementation. Read schemas and capability metadata as references; use approved Core interfaces for data. `packages/contracts` owns Meri public wire contracts; consumers use versioned exports rather than private source paths or copied DTOs. Coordinate shared contract changes and migration IDs with root.
 
-Keep the Claude Agent SDK as the only model loop, AI SDK for UI transport, Temporal for durable runs and the qualified browser/renderer integration. Use original artifact skills; do not copy restricted Office skills or this host's Codex skills into the product. Preserve per-run isolation and verified non-root browser/renderer sandboxing. A dedicated browser-host exception is not evidence that its security gates passed.
+Keep the Claude Agent SDK as the only model loop, AI SDK for UI transport, Temporal for durable runs and the qualified browser/renderer integration. Use original artifact skills; do not copy restricted Office skills or this host's Codex skills into the product. Preserve isolated immutable tenant/actor/conversation sessions, canonical Core permission and revocation checks, serialized turns, durable outcomes and verified non-root browser/renderer sandboxing. Use standard AgentCore Runtime V1; do not add V2 snapshots or replace the Claude SDK with a managed agent harness. A dedicated browser-host exception is not evidence that its security gates passed.
 
 ## Validation and preview shipping
 
