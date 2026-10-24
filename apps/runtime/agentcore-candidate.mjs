@@ -22,6 +22,7 @@ import {createObjectiveSelectionOwner} from './objective-generation/selection-ow
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
 import {createObjectiveCorePorts} from './objective-generation/core-ports.mjs';
 import {createNativeSessionContinuationApplication} from './sdk-continuation-http.mjs';
+import {NATIVE_FILE_PATHS} from './artifacts/native-files-http.mjs';
 import {createNativeLifecycleAdmission} from './product-ports/lifecycle.mjs';
 import {countingFetch} from './telemetry/counting.mjs';
 import {fault} from './config.mjs';
@@ -211,6 +212,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   if(path==='/v1/runner/runtime')return runtime.handle(request);
   if(path.startsWith('/v1/runner/reads/'))return reads(request);
   if(path.startsWith('/v1/runner/session/'))return outerApplication?outerApplication.handle(request):absent('SDK_SESSION_UNAVAILABLE');
+  if(Object.hasOwn(NATIVE_FILE_PATHS,path))return outerApplication?outerApplication.handle(request):absent('NATIVE_FILES_UNAVAILABLE');
   if(/^\/v1\/runner\/[a-z-]+$/u.test(path)||/^\/v1\/runner\/selected\/(prepare|read|finish|publish)$/u.test(path)){
    if(!outerApplication)return absent('EXECUTION_UNAVAILABLE');
    const url=new URL(request.url);url.pathname=path.replace('/v1/runner/','/internal/conversations/');

@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import {assembleAgentCoreCandidate} from '../agentcore-candidate.mjs';
 import {compileAgentCoreConfiguration} from '../agentcore-configuration.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
+import {createControlRouteApplications} from '../control-route-boundary.mjs';
+import {createNativeFileApplication,NATIVE_FILE_PATHS} from '../artifacts/native-files-http.mjs';
+import {nativeFileBindingHeader} from '../../../packages/contracts/runtime-0.2/files.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {agentcoreConfig} from './agentcore-fixture.mjs';
 import {binding,versions,id} from '../../control/conversations/test/application-fixture.mjs';
@@ -79,8 +82,12 @@ test('no invocation Stop uses the actual committed failed event and never calls 
 test('candidate routes admitted/settle and existing worker body without task/bootstrap fallback',async()=>{
  const f=fixture();let forwarded;
  f.candidate.bindApplication({async handle(request){forwarded={path:new URL(request.url).pathname,body:await request.json(),auth:request.headers.get('authorization')};return Response.json({ok:true});}});
- const request=new Request('https://control.synthetic.invalid/v1/runner/load',{method:'POST',headers:{authorization:'Bearer execution-only','content-type':'application/json'},body:JSON.stringify({binding})});
- assert.equal((await f.candidate.application.handle(request)).status,200);assert.deepEqual(forwarded,{path:'/internal/conversations/load',body:{binding},auth:'Bearer execution-only'});
+ const routes=createControlRouteApplications({assembly:{handle(){assert.fail('No private fallback');}},candidate:f.candidate.application});
+ for(const operation of ['load','publish','record-usage','next-controls','claim-control','ack-control','record-checkpoint','selected/prepare','selected/read','selected/finish','selected/publish','session/register','session/load','session/append','session/list-subkeys','session/snapshot']){
+  const path='/v1/runner/'+operation,request=new Request('https://control.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer execution-only','content-type':'application/json'},body:JSON.stringify({binding})});
+  assert.equal((await routes.private.handle(request)).status,200);
+  assert.deepEqual(forwarded,{path:operation.startsWith('session/')?path:'/internal/conversations/'+operation,body:{binding},auth:'Bearer execution-only'});
+ }
  assert.equal(await f.candidate.application.handle(new Request('https://control.synthetic.invalid/v1/runner/native/bootstrap')),null);
  await assert.rejects(f.candidate.native.call('checkpoint/read',{}),/NATIVE_OPERATION_UNAVAILABLE/u);
  await f.candidate.native.readiness();await f.candidate.close();
@@ -90,6 +97,44 @@ test('read factory receives only execution, binding and declared reads; unopened
  const request=new Request('https://control.synthetic.invalid/v1/runner/reads/availability',{method:'POST',headers:{authorization:'Bearer synthetic-execution','content-type':'application/json'},body:JSON.stringify({binding})});
  assert.equal((await f.candidate.application.handle(request)).status,200);assert.equal(passed.execution,f.candidate.execution);assert.deepEqual(Object.keys(passed).sort(),['binding','execution']);
  assert.equal(typeof f.candidate.productPorts.sdkSessionSnapshot.readSnapshot,'function');assert.equal(f.candidate.productPorts.selectedController,undefined);await f.candidate.close();
+});
+
+test('private candidate mounts every declared native file operation with the original execution credential and binding',async t=>{
+ const f=fixture();await f.kickoff();t.after(()=>f.finish());const called=[];
+ const fileApplication=createNativeFileApplication({now:()=>at,owner:{authenticate:f.candidate.execution.authenticate,
+  ...Object.fromEntries(Object.values(NATIVE_FILE_PATHS).map(method=>[method,async({credential,request})=>{
+   assert.equal(credential,f.invocation().credential);assert.deepEqual(request.binding,binding);called.push(method);
+   return method==='restore'?{binding,files:null,upload:null}:{binding,operation:method};
+  }]))}});
+ f.candidate.bindApplication(fileApplication);
+ const routes=createControlRouteApplications({assembly:fileApplication,candidate:f.candidate.application}),statuses=[];
+ const client=createNativeCapabilityClient({configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:131072},credential:f.invocation().credential,now:()=>at,
+  fetch:async(url,options)=>{const response=await routes.private.handle(new Request(url,options));statuses.push(response.status);return response;}});
+ for(const [path,method] of Object.entries(NATIVE_FILE_PATHS)){
+  const input=method==='restore'?{binding}:{binding,sessionId:id(991),files:[],taskFiles:[],...(method==='capture'?{controlId:id(992)}:{})};
+  const result=await client.call(path.slice('/v1/'.length),input);assert.deepEqual(result,method==='restore'?{binding,files:null,upload:null}:{binding,operation:method});
+ }
+ assert.deepEqual(statuses,[200,200,200]);assert.deepEqual(called,Object.values(NATIVE_FILE_PATHS));assert.equal(f.counts().coreCalls,1);
+ const post=(path,{credential=f.invocation().credential,headerBinding=binding,bodyBinding=binding}={})=>new Request('https://control.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json','x-meri-run-binding':nativeFileBindingHeader(headerBinding)},body:JSON.stringify({binding:bodyBinding})});
+ for(const path of Object.keys(NATIVE_FILE_PATHS)){
+  assert.equal((await routes.public.handle(post(path))).status,404,'native files never become public');
+  assert.equal((await routes.private.handle(post(path,{credential:'unclaimed'}))).status,401);
+  assert.equal((await routes.private.handle(post(path,{headerBinding:{...binding,tenantId:id(993)}}))).status,401);
+  assert.equal((await routes.private.handle(post(path,{bodyBinding:{...binding,runId:id(994)}}))).status,403);
+ }
+ for(const path of ['/v1/runner/files/capture','/v1/runner/files/complete','/v1/runner/files/restore/extra','/v1/runner/checkpoint/read','/v1/runner/checkpoint/complete/extra']){
+  assert.equal((await routes.private.handle(post(path))).status,404,'only canonical file operations are mounted');
+ }
+ assert.equal(called.length,3,'denied and unmatched requests never reach file effects');assert.equal(f.counts().coreCalls,1);
+});
+
+test('declared native file routes without product composition are unavailable, never a successful fallback',async t=>{
+ const f=fixture();t.after(()=>f.candidate.close());const assembly={async handle(){assert.fail('No unbound fallback');}};
+ const routes=createControlRouteApplications({assembly,candidate:f.candidate.application});
+ for(const path of Object.keys(NATIVE_FILE_PATHS)){
+  const response=await routes.private.handle(new Request('https://control.synthetic.invalid'+path,{method:'POST'}));
+  assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'NATIVE_FILES_UNAVAILABLE'}});
+ }
 });
 test('candidate mounts real runtime preparation and refuses unclaimed credentials before any worker fallback',async()=>{
  const f=fixture();let forwarded=0;f.candidate.bindApplication({async handle(){forwarded++;return Response.json({unexpected:true});}});
