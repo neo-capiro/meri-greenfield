@@ -299,7 +299,6 @@ export interface Canonical_ResolvedSubject_470B2Bbc {
   entityIds: [string, ...string[]];
   tenantId: string;
   actorId: string;
-  authorizationDecisionId: string;
   policyRevision: string;
   /**
    * @minItems 1

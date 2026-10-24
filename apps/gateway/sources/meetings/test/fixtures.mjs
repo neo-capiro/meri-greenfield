@@ -19,7 +19,7 @@ export function meetingFixture(operation,request={},options={}) {
     resourceId:input.clientId??binding.actorId,policyRevision:'policy-1'};
   const subject={kind:input.clientId===null?'personal':'client',entityType:input.clientId===null?'user':'client',
     entityIds:[input.clientId??binding.actorId],tenantId:binding.tenantId,actorId:binding.actorId,
-    authorizationDecisionId:id('5'),policyRevision:'policy-1',scopes:[scope],rosterVersionId:null};
+    policyRevision:'policy-1',scopes:[scope],rosterVersionId:null};
   const claims={capabilityId:id('0'),issuer:'synthetic',audience:'meri-gateway',binding,actions:['tool.read'],scopes:[scope],
     issuedAt:new Date(NOW-1000).toISOString(),expiresAt:new Date(NOW+10000).toISOString(),policyRevision:'policy-1',
     budgets:{maxTurns:5,maxRuntimeSeconds:10,maxCostMicrousd:100,maxOutputBytes:65536}};

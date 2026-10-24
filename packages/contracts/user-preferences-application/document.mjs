@@ -1,4 +1,5 @@
 /** Canonical pure user preference document. Membership and persistence remain server owners. */
+import {MODEL_SELECTION_SCHEMA,assertModelSelection} from '../model-selection.mjs';
 const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 export const USER_PREFERENCE_THEMES=Object.freeze(['system','light','dark']);
 export const USER_PREFERENCE_DENSITIES=Object.freeze(['comfortable','compact']);
@@ -23,6 +24,7 @@ export function userPreferencesTimezone(value,name='timezone'){
  if(resolved!==value&&!(value==='UTC'&&resolved==='UTC'))field(name);return value;
 }
 const fields={
+ defaultModel:{schema:{anyOf:[MODEL_SELECTION_SCHEMA,{type:'null'}]},default:null,parse:value=>{if(value===null)return null;try{return assertModelSelection(value);}catch{field('defaultModel');}}},
  theme:{schema:{type:'string',enum:USER_PREFERENCE_THEMES},default:'system',parse:value=>{if(!USER_PREFERENCE_THEMES.includes(value))field('theme');return value;}},
  density:{schema:{type:'string',enum:USER_PREFERENCE_DENSITIES},default:'comfortable',parse:value=>{if(!USER_PREFERENCE_DENSITIES.includes(value))field('density');return value;}},
  timezone:{schema:{type:['string','null'],maxLength:64},default:null,parse:value=>value===null?null:userPreferencesTimezone(value)},
@@ -38,4 +40,9 @@ export const USER_PREFERENCES_DOCUMENT_SCHEMA=freeze({type:'object',properties:O
 export function userPreferencesDocument(value){
  const input=closed(value,USER_PREFERENCE_FIELDS,'SETTINGS_DOCUMENT_INVALID');
  return Object.freeze(Object.fromEntries(Object.entries(fields).map(([name,definition])=>[name,definition.parse(input[name])])));
+}
+/** The one pre-MP persisted shape is decoded after the store verifies its original hash. Never rewrites history. */
+export function storedUserPreferencesDocument(value){
+ if(value&&typeof value==='object'&&!Object.hasOwn(value,'defaultModel')){const old=closed(value,USER_PREFERENCE_FIELDS.filter(k=>k!=='defaultModel'),'SETTINGS_DOCUMENT_INVALID');return userPreferencesDocument({...old,defaultModel:null});}
+ return userPreferencesDocument(value);
 }

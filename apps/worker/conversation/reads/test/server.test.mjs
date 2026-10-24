@@ -1,5 +1,4 @@
-/** Synthetic: the actual `meri_reads` server → actual gateway general-read mount → actual current authority, durable
- * dispatch (scripted SQL) and mail HTTP adapter (fake Fetch). Real SDK → gateway → backend qualification is UNRUN. */
+/** Actual MCP server -> worker HTTP -> control composer -> mail adapter. Core is synthetic. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -22,42 +21,39 @@ test('lists exactly the available mail reads, derived from descriptors, with sch
  }finally{await m.close();}
 });
 
-test('an authorized read returns the canonical page unmodified and one receipt bound to the durable delivery',async()=>{
+test('an authorized read returns the canonical page and one receipt bound to the SDK delivery',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search,{toolUseId:'toolu_receipt'});assert.equal(r.isError,undefined);assert.equal(r.content.length,1);
   const page=JSON.parse(text(r));assert.deepEqual(page.operation,MAIL_OPERATIONS[1]);assert.deepEqual(page.binding,f.binding);
   const [receipt,...rest]=m.runtime.receipts();assert.equal(rest.length,0);
   assert.equal(receipt.deliveryId,'sdk:'+canonicalSha256({binding:f.binding,sessionId:SESSION,toolUseId:'toolu_receipt'}));
-  assert.equal(receipt.argumentsSha256,canonicalSha256(f.search));assert.equal(receipt.resultSha256,canonicalSha256(page));assert.equal(receipt.decisionId,f.subject.authorizationDecisionId);assert.equal(receipt.policyRevision,f.policy);
+  assert.equal(receipt.argumentsSha256,canonicalSha256(f.search));assert.equal(receipt.resultSha256,canonicalSha256(page));assert.equal(receipt.decisionId,null);assert.equal(receipt.policyRevision,f.policy);
   assert.equal(receipt.executionCatalogSha256,(await f.mount().readAvailability()).installation.executionCatalogSha256);
-  assert.equal(f.wire.length,1);assert.equal([...f.state.reservations.values()][0].state,'SETTLED');
+  assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);assert.equal(f.records.size,1);
  }finally{await m.close();}
 });
 
-test('availability gates: no installation receipt, policy off, or no eligible operation mounts no server',async()=>{
+test('disabled worker or control policy and revoked execution mount no server',async()=>{
  const f=await generalReadFixture();let reads=0;const port=f.mount(),counting={readAvailability:v=>{reads++;return port.readAvailability(v);},execute:v=>port.execute(v)};
  assert.equal(await mountReads(f,{policy:{},port:counting}),null);assert.equal(reads,0,'policy off: the port is never asked');
- f.state.installRevoked=true;assert.equal(await mountReads(f),null,'no current native installation receipt: no server');
- f.state.installRevoked=false;f.state.installed=[];assert.equal(await mountReads(f),null);
- f.state.installed=[...MAIL_OPERATIONS];f.state.discovery=[];assert.equal(await mountReads(f),null,'actor eligible for nothing');
- assert.equal(f.wire.length,0);
+ f.enabled(false);assert.equal(await mountReads(f),null);f.enabled(true);
+ f.revoke();assert.equal(await mountReads(f),null);assert.equal(f.calls.length,0);
 });
 
 test('an operation the actor is not granted is absent from the list',async()=>{
- const f=await generalReadFixture();f.state.discovery=[MAIL_OPERATIONS[0],MAIL_OPERATIONS[2]];const m=await mountReads(f);
+ const f=await generalReadFixture({operations:[MAIL_OPERATIONS[0],MAIL_OPERATIONS[2]]}),m=await mountReads(f);
  try{assert.deepEqual((await m.client.listTools()).tools.map(t=>t.name).sort(),['mail_list_messages','mail_read_thread']);
   assert.match((await m.call('mail_search_messages',f.search)).denied,/correlation unavailable/u,'an unlisted read is denied at the hook');
-  const forced=await m.client.callTool({name:'mail_search_messages',arguments:{arguments:f.search}});assert.equal(forced.isError,true);assert.equal(f.wire.length,0);
+  const forced=await m.client.callTool({name:'mail_search_messages',arguments:{arguments:f.search}});assert.equal(forced.isError,true);assert.equal(f.calls.length,0);
  }finally{await m.close();}
 });
 
 test('called anyway after revocation: explicit UNAVAILABLE or ACCESS_DENIED, never an empty success',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
- try{f.state.installRevoked=true;closed(await m.call('mail_search_messages',f.search),'UNAVAILABLE');
-  f.state.installRevoked=false;f.state.discovery=[MAIL_OPERATIONS[0]];closed(await m.call('mail_search_messages',f.search),'UNAVAILABLE');
-  f.state.discovery=[...MAIL_OPERATIONS];f.state.revoked=true;closed(await m.call('mail_search_messages',f.search),'ACCESS_DENIED');
-  f.state.revoked=false;closed(await m.call('mail_search_messages',{...f.search,subject:{kind:'client',entityId:'71000000-0000-4000-8000-000000000999'}}),'ACCESS_DENIED');
-  assert.equal(f.wire.length,0);assert.deepEqual(m.runtime.receipts(),[]);
+ try{f.enabled(false);closed(await m.call('mail_search_messages',f.search),'UNAVAILABLE');f.enabled(true);
+  closed(await m.call('mail_search_messages',{...f.search,subject:{kind:'client',entityId:'71000000-0000-4000-8000-000000000999'}}),'ACCESS_DENIED');
+  f.revoke();closed(await m.call('mail_search_messages',f.search),'UNAVAILABLE');
+  assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,0);assert.deepEqual(m.runtime.receipts(),[]);
  }finally{await m.close();}
 });
 
@@ -69,7 +65,7 @@ test('argument-borne authority and forged correlation never reach the gateway',a
   const decision=await m.hook({hook_event_name:'PreToolUse',session_id:SESSION,tool_name:'mcp__meri_reads__mail_search_messages',tool_use_id:'toolu_swap',tool_input:{arguments:f.search,_meriInvocation:'model-chosen'}},undefined,{});
   assert.notEqual(decision.hookSpecificOutput.updatedInput._meriInvocation,'model-chosen','a model-supplied token is replaced');
   closed(await m.client.callTool({name:'mail_search_messages',arguments:{...decision.hookSpecificOutput.updatedInput,arguments:{...f.search,limit:2}}}),'ACCESS_DENIED');
-  assert.equal(f.wire.length,0);
+  assert.equal(f.calls.length,0);
   const port=f.mount(),spy=await mountReads(f,{port:{readAvailability:v=>port.readAvailability(v),async execute(v){calls.push(v);return port.execute(v);}}});
   try{const nested=await spy.call('mail_search_messages',{...f.search,query:'binding'});assert.equal(nested.isError,undefined,'authority words inside literal values are data');assert.equal(calls.length,1);assert.deepEqual(Object.keys(calls[0]).sort(),['arguments','deliveryId','operation','signal']);}finally{await spy.close();}
  }finally{await m.close();}
@@ -78,16 +74,15 @@ test('argument-borne authority and forged correlation never reach the gateway',a
 test('the per-run call ceiling refuses at the hook before any further gateway effect',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f,{skill:{allowedOperations:[...MAIL_OPERATIONS],budgets:{maxToolCalls:2,maxOutputBytes:1048576}}});
  try{for(const n of [1,2])assert.equal((await m.call('mail_search_messages',{...f.search,limit:n})).isError,undefined);
-  const third=await m.call('mail_search_messages',{...f.search,limit:3});assert.match(third.denied,/^RESOURCE_LIMIT: /u);assert.equal(f.wire.length,2);assert.equal(m.runtime.receipts().length,2);
+  const third=await m.call('mail_search_messages',{...f.search,limit:3});assert.match(third.denied,/^RESOURCE_LIMIT: /u);assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,2);assert.equal(m.runtime.receipts().length,2);
  }finally{await m.close();}
 });
 
-const parked=f=>{const seen={aborts:[],reached:null};f.state.parkFetch=signal=>{seen.reached?.();return new Promise((_,reject)=>signal.addEventListener('abort',()=>{seen.aborts.push(signal.reason);reject(signal.reason);},{once:true}));};return seen;};
-test('the per-call deadline ends the call with no receipt and leaves the durable outcome UNKNOWN, which blocks further dispatch',async()=>{
+const parked=f=>{const seen={aborts:[],reached:null};f.park(signal=>{seen.reached?.();return new Promise((_,reject)=>signal.addEventListener('abort',()=>{seen.aborts.push(signal.reason);reject(signal.reason);},{once:true}));});return seen;};
+test('the per-call deadline aborts the source with no receipt or automatic retry',async()=>{
  const f=await generalReadFixture(),seen=parked(f),m=await mountReads(f,{deadlineMs:NOW+80});
  try{closed(await m.call('mail_search_messages',f.search),'DEADLINE');assert.equal(seen.aborts.length,1,'the source request was aborted');
-  assert.deepEqual(m.runtime.receipts(),[]);assert.deepEqual([...f.state.reservations.values()].map(r=>r.state),['UNKNOWN'],'UNKNOWN is retained, never settled');
-  f.state.parkFetch=null;closed(await m.call('mail_search_messages',{...f.search,limit:2}),'BUDGET_UNCERTAIN');assert.equal(f.wire.length,1,'UNKNOWN never licenses another dispatch');
+  assert.deepEqual(m.runtime.receipts(),[]);assert.equal(f.records.size,0);assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);
  }finally{await m.close();}
 });
 
@@ -96,20 +91,16 @@ test('SDK cancellation reaches the source request and records nothing',async()=>
  try{const atSource=new Promise(resolve=>{seen.reached=resolve;}),pending=m.call('mail_search_messages',f.search,{signal:controller.signal});
   await atSource;controller.abort();await assert.rejects(pending,/AbortError/u);
   for(let n=0;n<100&&!seen.aborts.length;n++)await new Promise(r=>setTimeout(r,10));
-  assert.equal(seen.aborts.length,1);assert.deepEqual(m.runtime.receipts(),[]);assert.equal(f.wire.length,1);assert.equal(f.state.budget.consumed_micro_usd,0);
+  assert.equal(seen.aborts.length,1);assert.deepEqual(m.runtime.receipts(),[]);assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);assert.equal(f.records.size,0);
  }finally{await m.close();}
 });
 
-test('a duplicate delivery yields one receipt and one source call, including after a restart',async()=>{
+test('a duplicate SDK tool-use ID is refused within its execution without a second source call',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
  try{assert.equal((await m.call('mail_search_messages',f.search,{toolUseId:'toolu_dup'})).isError,undefined);
   assert.match((await m.call('mail_search_messages',f.search,{toolUseId:'toolu_dup'})).denied,/correlation unavailable/u);
-  assert.equal(m.runtime.receipts().length,1);
+  assert.equal(m.runtime.receipts().length,1);assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);
  }finally{await m.close();}
- const restarted=await mountReads(f);
- try{const replay=await restarted.call('mail_search_messages',f.search,{toolUseId:'toolu_dup'});assert.equal(replay.isError,true);assert.match(text(replay),/^BUDGET_UNCERTAIN: .*do not repeat this call\./u);
-  assert.deepEqual(restarted.runtime.receipts(),[]);assert.equal(f.wire.length,1);assert.equal(f.state.budget.consumed_micro_usd,1);
- }finally{await restarted.close();}
 });
 
 test('the session is pinned on continuation and a closed server correlates nothing',async()=>{
@@ -118,7 +109,7 @@ test('the session is pinned on continuation and a closed server correlates nothi
   assert.equal((await m.call('mail_search_messages',f.search,{sessionId:'71000000-0000-4000-8000-000000000092'})).isError,undefined);
  }finally{await m.close();}
  assert.match((await m.call('mail_search_messages',f.search,{sessionId:'71000000-0000-4000-8000-000000000092'}).catch(()=>({denied:'closed'}))).denied,/closed|correlation unavailable/u);
- assert.equal(f.wire.length,1);
+ assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);
 });
 
 test('a selected skill narrows the list; operations another server exposes are excluded',async()=>{

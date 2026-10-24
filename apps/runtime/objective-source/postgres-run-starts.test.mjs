@@ -82,3 +82,27 @@ test('cancellation before connect never queries; a release failure after commit 
  await assert.rejects(s.store.putOnce({record:s.f.record,signal:controller.signal}),unavailable);assert.equal(s.state.trace.length,0);
  const r=setup();r.state.releaseThrows=true;await assert.rejects(r.store.putOnce({record:r.f.record}),unknown);
 });
+
+test('one dynamic store binds two tenants to their own immutable rows and conversation locks',async()=>{
+ const a=runStartFixture(),b=runStartFixture({tenantId:id(91),actorId:id(92),clientId:id(93),generationJobId:id(94),requestId:id(95)}),{pool,state}=syntheticObjectivePool();
+ const store=createPostgresObjectiveRunStartStore({enabled:true,pool,now:()=>NOW});assert.equal(store.available(),true);
+ for(const f of [a,b]){assert.equal((await store.putOnce({record:f.record})).created,true);assert.deepEqual(await store.read({binding:f.binding}),{state:'STARTED',record:f.record});}
+ const locks=state.trace.filter(t=>t.text.includes('pg_advisory_xact_lock')).map(t=>t.values[0]);
+ for(const f of [a,b])assert.ok(locks.includes(`${f.tenantId}:${f.binding.conversationId}`));
+ assert.deepEqual(await store.read({binding:{...a.binding,tenantId:b.tenantId}}),{state:'ABSENT'});assert.equal(inserts(state).length,2);
+ const conflict=runStartFixture({tenantId:id(91),actorId:id(92),clientId:id(93),generationJobId:a.generationJobId});
+ await assert.rejects(store.putOnce({record:conflict.record}),e=>e.code==='OBJECTIVE_RUN_START_CONFLICT');assert.equal(inserts(state).length,2);
+});
+
+test('private job read uses the saved tenant and preserves absent, unknown and immutable row checks',async()=>{
+ const s=setup();assert.deepEqual(await s.store.readByJob({generationJobId:s.f.generationJobId}),{state:'ABSENT'});
+ s.state.commitFailure='before';await assert.rejects(s.store.putOnce({record:s.f.record}),unknown);
+ assert.deepEqual(await s.store.readByJob({generationJobId:s.f.generationJobId}),{state:'UNKNOWN'});
+ const landed=setup();await landed.store.putOnce({record:landed.f.record});
+ assert.deepEqual(await landed.store.readByJob({generationJobId:landed.f.generationJobId}),{state:'STARTED',record:landed.f.record});
+ await assert.rejects(landed.store.readByJob({generationJobId:landed.f.generationJobId,tenantId:id(99)}),unavailable);
+ const narrowed=createPostgresObjectiveRunStartStore({enabled:true,pool:landed.pool,tenantId:id(99),now:()=>NOW});
+ await assert.rejects(narrowed.readByJob({generationJobId:landed.f.generationJobId}),unavailable);
+ landed.state.runStarts.get(landed.f.generationJobId).record_sha256='0'.repeat(64);
+ await assert.rejects(landed.store.readByJob({generationJobId:landed.f.generationJobId}),unavailable);
+});

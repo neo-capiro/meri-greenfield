@@ -5,7 +5,7 @@ import {ownFields} from '../source-admission.mjs';
 import {createStoredNativeReadHandlers} from '../retained-reads/native-handler.mjs';
 const routes=Object.freeze({lookup_client_registry:'/api/clio/tools/lookup_client_registry'});
 export function createClientRegistryHandlers(configuration,operations){
- const {authorizeResultForCall,...transport}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','fetchImpl','maxRequestMs','maxResponseBytes','authorizeResultForCall']);
+ const {authorizeResultForCall,...transport}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','readSource','fetchImpl','maxRequestMs','maxResponseBytes','authorizeResultForCall']);
  if(authorizeResultForCall!==undefined&&(typeof authorizeResultForCall!=='function'||types.isProxy(authorizeResultForCall)))deny('GATEWAY_CONFIGURATION');
  // Validate the finite operation set/configuration once without source I/O.
  const handlers=createStoredNativeReadHandlers(transport,operations,{family:'client-registry',routes});

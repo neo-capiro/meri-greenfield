@@ -13,7 +13,7 @@ export const TENANT_SETTINGS_PERMISSION='tenant.settings.manage';
 export function createSettingsService(options){
  const {store,readPlatformLimits,newId}=options??{};
  if(['read','save','listAudit'].some(k=>typeof store?.[k]!=='function')||typeof readPlatformLimits!=='function'||typeof newId!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
- const id=()=>settingsAuditId(newId),user=createUserPreferencesService({store,newId});
+ const id=()=>settingsAuditId(newId),user=createUserPreferencesService({store,newId,modelCatalog:options.modelCatalog});
  async function platform(signal){
   try{return assertPlatformCapabilityLimits(await readPlatformLimits({signal}));}catch{refuse('SETTINGS_PLATFORM_UNAVAILABLE');}
  }

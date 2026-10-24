@@ -9,7 +9,7 @@ const spec={operation:'create_word',format:'txt',title:'Retention document',cont
 async function setup(t,change=x=>x){
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:python});t.after(()=>f.close());
  const gate={suppressed:new Set(),calls:[],async assertServable(s){gate.calls.push(s);if(gate.suppressed.has(`${s.tenantId}:${s.kind}:${s.subjectId}`))throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
- const options={sessions:f.sessions,selectedClientId:f.selectedClientId,artifactOptions:{...f.artifactOptions,retention:gate},credential:f.credential,now:f.now,limits:f.limits,enabled:true};
+ const options={sessions:f.sessions,selectedClientId:f.selectedClientId,artifactOptions:{...f.artifactOptions,retention:gate},now:f.now,limits:f.limits,enabled:true};
  const app=createDocumentApplication(change(options)),session=await f.sessions.issue({identityCredential:f.nativeCredential});
  const post=(route,body)=>app.handle(new Request(`http://127.0.0.1/api/documents/${route}`,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${session.credential}`},body:JSON.stringify(body)}));
  return {f,gate,post,conversation:{tenantId:f.artifactOptions.context.binding.tenantId,kind:'conversation',subjectId:f.artifactOptions.context.binding.conversationId}};

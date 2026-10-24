@@ -70,8 +70,8 @@
     "expiry": "caller checks createdAt/expiresAt against a fresh clock before display and execution; server rechecks current authority",
     "resume": "attemptId, workerId and writerFence may change within the same stable tenant/actor/conversation/run binding"
   },
-  "declarations": "json-schema-to-ts/typescript",
-  "bundler": "rolldown",
+  "declarations": "json-schema-to-typescript",
+  "bundler": "esbuild",
   "sources": [
     {
       "path": "../../apps/control/action-application/http.mjs",
@@ -95,8 +95,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "97fabf06602498c7e0596383a591fb8b56fe99d307c9728656b417b6ca60927a",
-      "bytes": 12979
+      "sha256": "fd0b7597f998995b01677e41c74441f206ccab782baf153f3acb9990191ff21c",
+      "bytes": 14685
     },
     {
       "path": "commands-0.2/task-update-validation.mjs",
@@ -110,8 +110,8 @@
     },
     {
       "path": "document-application/boundary.mjs",
-      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
-      "bytes": 2216
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
     },
     {
       "path": "generate-task-commands.mjs",
@@ -166,6 +166,7 @@
   ],
   "schemaSha256": "7c932d10fa824723b3de6ea862d7b6c3791c9e00031be61b4e971631923e299c",
   "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/task-update-validation.mjs",
     "document-application/boundary.mjs",
     "node_modules/ajv-formats/dist/formats.js",
@@ -176,11 +177,10 @@
     "task-command-application/boundary.mjs",
     "task-command-application/normalizer-snapshot.mjs",
     "task-command-application/protocol.mjs",
-    "task-command-application/receive.mjs",
     "task-command-application/semantics.mjs",
-    "virtual:rolldown/runtime.js",
-    "virtual:task-command-generated-status",
-    "virtual:task-command-generated-validator"
+    "task-command-application/task-command-application-receiver.mjs",
+    "task-command-generated:./generated-status.mjs",
+    "task-command-generated:./generated-validator.mjs"
   ],
   "browserImports": []
 }

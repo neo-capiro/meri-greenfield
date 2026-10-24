@@ -1,3 +1,4 @@
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 /** Authenticated request/history control; policy remains in existing session owners. */
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -11,7 +12,8 @@ import {assertConversationInputReceipt} from '../../../packages/contracts/conver
 import {assertOriginalInputFacts,assertOriginalInputActive,assertOriginalInputAcceptance,prepareOriginalInputFacts,sameOriginalInputIdentity,originalInputReceipt} from './initial-input-facts.mjs';
 import {ProductError} from '../product-access/errors.mjs';
 import {authenticatedCurrentState} from '../action-host/session/owner.mjs';
-import {SDK_MODEL_CONFIGURATION} from './usage.mjs';
+import {resolveSdkModelConfiguration} from './usage.mjs';
+import {assertModelSelection,availableModelSelection,storedModelSelection,HISTORICAL_MODEL_SELECTION} from '../../../packages/contracts/model-selection.mjs';
 import {assertUsageInput} from '../../../packages/contracts/runtime-0.2/usage.mjs';
 import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary.mjs';
 /** Trusted lifecycle composition only. Keeps its read inside the basic load's authorization lifetime. */
@@ -20,7 +22,7 @@ export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
 const OBSERVE_PAGE_EVENTS=100;
 /** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
 const WINDOW_END_SLACK_MS=50;
-export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets}){
+export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets,modelCatalog}){
  const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
  if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function')fail('CONTROL_CONFIGURATION');
@@ -55,12 +57,13 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   try{const context=await fresh();const result=await body(context,life,fresh,()=>authorityExpiresAtMs);if(untilMs===undefined)await fresh();life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
- function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);return i;}
- function prepareInput(i,createdAt){let skill=null,window=i.windowRequest?resolveWindow(i.windowRequest,{referenceAt:createdAt,fiscalCalendars}):null;
+ function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest','modelSelection']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);if(Object.hasOwn(i,'modelSelection')){try{assertModelSelection(i.modelSelection);}catch{fail('INVALID_REQUEST');}}return i;}
+ const available=selection=>{try{return availableModelSelection(modelCatalog,selection);}catch(error){fail(error.code==='MODEL_SELECTION_UNAVAILABLE'?'MODEL_SELECTION_UNAVAILABLE':'MODEL_SETTINGS_UNAVAILABLE');}};
+ function prepareInput(i,createdAt,modelSelection){let skill=null,window=i.windowRequest?resolveWindow(i.windowRequest,{referenceAt:createdAt,fiscalCalendars}):null;
   if(i.skill){own(i.skill,['skillId','skillVersion']);const selected=selectSkill(i.skill.skillId,i.skill.skillVersion);if(!selectedSkillAdmission)assertSkillManifest(selected.manifest,catalog);if(!window)fail('SKILL_WINDOW_REQUIRED');if(!selected.manifest.subjectKinds.includes('client')||!selected.manifest.windowBases.includes(window.basis))fail('SKILL_SCOPE_REFUSED');skill=selected.pin;}
-  if(window)retrievalShape('NormalizedWindow',window);return {requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null};
+  if(window)retrievalShape('NormalizedWindow',window);return {requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null,...(modelSelection===undefined?{}:{modelSelection})};
  }
- async function admitPrepared(request,context,life,fresh){if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,signal})),{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}
+ async function admitPrepared(request,context,life,fresh){if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,deadlineMs:life.deadline(),signal})),{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}
  function initialPorts(){const ports=own(store.initialInputs,['claim','read','accept']);if(Object.values(ports).some(p=>typeof p!=='function'))fail('CONTROL_CONFIGURATION');return ports;}
  function pinOriginal(saved,context,i,life){own(saved,['facts','state']);if(!['RESERVED','ACCEPTED'].includes(saved.state))fail('INITIAL_INPUT_CORRUPT');const f=assertOriginalInputFacts(saved.facts);
   if(!same(f.binding,context.binding)||!same(f.scopes,context.scopes)||!same(f.versions,versions)||f.selectedClientId!==context.selectedClientId||f.requestId!==i.requestId||f.inputSha256!==hash(i))fail('INITIAL_INPUT_CONFLICT');assertOriginalInputActive(f,now());life.limitDeadline(f.expiresAtMs);return f;
@@ -68,7 +71,10 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  /** Only the existing store's conditional acknowledgement proves a new original allocation. No run/event/dispatcher is created. */
  async function allocateInput({credential,input,signal}){const i=inputIntent(input);let acknowledged=false;try{return await operation(credential,signal,async(context,life,fresh,authorityExpiry)=>{
   if(context.binding.writerFence!==1)fail('INITIAL_INPUT_CONFLICT');const ports=initialPorts(),saved=await life.run(()=>ports.read(context.binding,life.check));
-  const original=saved?pinOriginal(saved,context,i,life):null,allocatedAtMs=original?.allocatedAtMs??now(),request=prepareInput(i,new Date(allocatedAtMs).toISOString());
+  const original=saved?pinOriginal(saved,context,i,life):null,allocatedAtMs=original?.allocatedAtMs??now();
+  if(!original&&i.modelSelection===undefined&&typeof store.readDefaultModelSelection!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');
+  const selected=original?original.modelSelection:available(i.modelSelection??await life.run(()=>store.readDefaultModelSelection(context.binding,life.check)));
+  available(selected??HISTORICAL_MODEL_SELECTION);const request=prepareInput(i,new Date(allocatedAtMs).toISOString(),selected);
   await admitPrepared(request,context,life,fresh);await fresh();
   let facts=await prepareOriginalInputFacts({...context,versions,input:i,request,allocatedAtMs,expiresAtMs:original?.expiresAtMs??authorityExpiry()});life.check();await fresh();
   if(!original)facts=assertOriginalInputFacts({...facts,expiresAtMs:Math.min(facts.expiresAtMs,authorityExpiry())});
@@ -82,13 +88,16 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    async function release(saved){if(!same(saved.run.binding,b))fail('STALE_WRITER');if(!same(saved.run.scopes,context.scopes))fail('SCOPE_REFUSED');await fresh();await admit(saved.request);if(dispatch&&saved.run.state==='queued')await life.run(signal=>dispatcher.start({binding:b,signal}));await fresh();await admit(saved.request);return dispatch?{run:saved.run,requestId:i.requestId,lastSequence:saved.lastSequence,replayed:saved.replayed}:assertConversationInputReceipt({run:saved.run,request:saved.request,lastSequence:saved.lastSequence,replayed:saved.replayed},i);}
    if(typeof store.findRequest!=='function')fail('CONTROL_CONFIGURATION');const retained=await life.run(()=>store.findRequest(b,i.requestId,life.check));
    const originalPorts=b.writerFence===1?initialPorts():null,allocation=originalPorts?await life.run(()=>originalPorts.read(b,life.check)):null,original=allocation?pinOriginal(allocation,context,i,life):null;
-   if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
+   if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null)||i.modelSelection!==undefined&&!same(i.modelSelection,storedModelSelection(retained.request)))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
+   let inherited;
    if(!originalPorts){
     if(typeof store.nextRuns?.readTarget!=='function'||typeof store.nextRuns.accept!=='function')fail('CONTROL_CONFIGURATION');
     const candidate=await life.run(()=>store.nextRuns.readTarget(b,life.check)),reservation=candidate?bounded(candidate):null;
     if(!reservation||!['RESERVED','ACCEPTED'].includes(reservation.state)||!same(reservation.target,b))fail('NEXT_RUN_NOT_RESERVED');
+    if(i.modelSelection===undefined){const previous=await life.run(()=>store.read(reservation.source,{after:0,limit:1},life.check));if(!same(previous.run.binding,reservation.source)||!same(previous.run.scopes,context.scopes))fail('NEXT_RUN_SCOPE_REFUSED');inherited=storedModelSelection(previous.request);}
    }
-   if(originalPorts&&!original)fail('INITIAL_INPUT_REQUIRED');const createdAt=new Date(original?.allocatedAtMs??now()).toISOString(),request=prepareInput(i,createdAt),run={binding:b,state:'queued',scopes:context.scopes,createdAt,policyRevision:context.scopes[0].policyRevision,versions};
+   if(originalPorts&&!original)fail('INITIAL_INPUT_REQUIRED');const selected=original?original.modelSelection:available(i.modelSelection??inherited);available(selected??HISTORICAL_MODEL_SELECTION);
+   const createdAt=new Date(original?.allocatedAtMs??now()).toISOString(),request=prepareInput(i,createdAt,selected),run={binding:b,state:'queued',scopes:context.scopes,createdAt,policyRevision:context.scopes[0].policyRevision,versions};
    if(original)assertOriginalInputAcceptance(original,{run,request,selectedClientId:context.selectedClientId});
    const conversation={conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes:context.scopes,createdAt,policyRevision:run.policyRevision};
    await admit(request);
@@ -131,11 +140,11 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
  async function loadForExecution({credential,binding,signal},readLifecycle){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');
-  if(readLifecycle!==undefined){uuid(c.selectedClientId);if(!c.scopes.some(scope=>scope.kind==='client'&&scope.resourceId===c.selectedClientId))fail('SCOPE_REFUSED');}
+  if(readLifecycle!==undefined){try{assertNativeConversationScope(c);}catch{fail('SCOPE_REFUSED');}}
   const result=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(result.run.binding,c.binding))fail('STALE_WRITER');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');
   if(typeof store.readModelPolicy!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');
   const modelPolicy=await life.run(()=>store.readModelPolicy(binding,life.check));
-  const model={...SDK_MODEL_CONFIGURATION,maxTurns:modelPolicy.maxTurns,maxCostMicroUSD:modelPolicy.maxBudgetMicroUsd};
+  const model=resolveSdkModelConfiguration(available(storedModelSelection(result.request)),modelPolicy);
   const lineage=typeof store.nextRuns?.execution==='function'?await life.run(()=>store.nextRuns.execution({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check)):null;
   const capabilities=capabilityPort===undefined?null:await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,signal}));
   const budgets=runBudgetPort===undefined?null:runBudgetsOf(await life.run(signal=>runBudgetPort.read.call(runBudgets,{binding,signal})));
@@ -160,14 +169,14 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    // These are the current canonical journal readers, not a caller-supplied parent/session selector.
    const next=await life.run(()=>store.nextRuns.execution(context,life.check)),continued=await life.run(()=>store.lifecycle.execution(context,life.check));
    if(next&&continued)fail('SDK_USAGE_PARENT_REFUSED');
-   const lineage=continued?.continuation??(next?.nextTurn?.checkpoint?{...next.nextTurn,mode:'resume'}:null);
+   const lineage=continued?.continuation??(next?.nextTurn?{...next.nextTurn,mode:'resume'}:null);
    return life.run(()=>store.recordUsage({binding,scopes:c.scopes,input:value,lineage},life.check));
   });
  }
  async function publishSelectedOutput({credential,binding,output,signal}){validateShape('RunBinding',binding);if(!selectedOutputPublication)fail('OUTPUT_PUBLICATION_UNAVAILABLE');return operation(credential,signal,async(c,life,fresh)=>{
   if(!same(c.binding,binding))fail('STALE_WRITER');const saved=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));if(!same(saved.run.scopes,c.scopes)||saved.run.state!=='running')fail('RUN_NOT_WRITABLE');
   await fresh();const at=now(),value=bounded(await life.run(signal=>publicationPort.prepareEvent.call(selectedOutputPublication,{binding,request:saved.request,scopes:c.scopes,selectedClientId:c.selectedClientId,output,signal})),2097152);
-  own(value,['event','checkedAtMs','expiresAtMs']);const e=own(value.event,['eventId','createdAt','type','data']);if(!['message.delta','artifact.available'].includes(e.type)||!Number.isSafeInteger(value.checkedAtMs)||value.checkedAtMs<at||value.checkedAtMs>now()||!Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<=now())fail('OUTPUT_PUBLICATION_REFUSED');life.limitDeadline(value.expiresAtMs);
+  own(value,['event','checkedAtMs','expiresAtMs']);const e=own(value.event,['eventId','createdAt','type','data']);if(!['approval.required','artifact.available'].includes(e.type)||!Number.isSafeInteger(value.checkedAtMs)||value.checkedAtMs<at||value.checkedAtMs>now()||!Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<=now())fail('OUTPUT_PUBLICATION_REFUSED');life.limitDeadline(value.expiresAtMs);
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
  return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,recordUsage,publishSelectedOutput},loadWithLifecycle,{value:loadForExecution}));

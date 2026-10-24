@@ -1,8 +1,9 @@
 /** Correlation of an intent response with the request (and, for decide, the proposal) the caller captured, and internal consistency of what the
  * server retained. Nothing here approves, executes or authorizes anything; every check only refuses a response that does not describe what was asked.
  * Rules mirror the canonical owners: approval.mjs (decision/lifetime reads), validate.mjs assertProposalIntegrity, and commands-0.2
- * execution-intent.mjs `outcome` plus task-create-validation.mjs (receipt and task result). Only task.create outcomes have a typed shape. */
+ * execution-intent.mjs `outcome` plus task-create-validation.mjs, and the selected-document artifact publication owner. */
 import canonicalize from 'canonicalize';
+import {ARTIFACT_MIME_TYPES,assertNativeArtifactEvidenceBinding} from '../artifacts-0.2/artifact-formats.mjs';
 import {validators} from './generated-validator.mjs';
 import {intentsMetadata} from './generated-protocol.mjs';
 import {fail} from './boundary.mjs';
@@ -20,15 +21,34 @@ async function proposal(value,conversationId){
  if(await sha(command)!==value.commandSha256||value.requiredApprover.tenantId!==command.binding.tenantId||command.binding.conversationId!==conversationId||
   command.scopes.some(scope=>scope.tenantId!==command.binding.tenantId)||parsed(value.expiresAt)<=parsed(value.createdAt))conflict();
  if(command.action==='task.create'&&(!validators.IntentsTaskCreateArguments(command.arguments)||command.attachments.length!==0||command.arguments.title.trim()!==command.arguments.title))conflict();
+ if(command.action==='document.draft') {
+  exact(value.createdAt);exact(value.expiresAt);
+  if(command.arguments.title.trim()!==command.arguments.title||command.arguments.title.length>200||
+   command.arguments.baseVersionId!==null&&command.arguments.baseVersionId.toLowerCase()!==command.arguments.baseVersionId)conflict();
+ }
 }
 function decision(value,retained){
  parsed(value.decidedAt);parsed(value.expiresAt);
  if(value.proposalId!==retained.proposalId||value.commandSha256!==retained.commandSha256)conflict();
 }
-/** An observed execution is interpreted only for task.create: its receipt and result must be this command's, exactly as the executor's outcome check requires. */
+/** The public document result preserves the actual output binding. Backend publication owns its projected request hash and delivery derivation. */
+function documentOutcome(value,command) {
+ const {version,inspection,execution}=value;
+ if(!version||!inspection||execution?.kind!=='native-document'||version.contractVersion!=='0.2.0')conflict();
+ if(['tenantId','actorId','conversationId'].some(key=>version.binding[key]!==command.binding[key])||!same(version.scopes,command.scopes)||
+  !same(version.object.scopes,version.scopes)||version.parentVersionId!==command.arguments.baseVersionId||version.object.bytes>16*1024*1024||
+  inspection.format!=='docx'||version.mimeType!==ARTIFACT_MIME_TYPES.docx||!version.filename.endsWith('.docx')||
+  inspection.sha256!==version.object.sha256||inspection.bytes!==version.object.bytes)conflict();
+ try{assertNativeArtifactEvidenceBinding(version.binding,version.evidence);}catch{conflict();}
+ const scopes=new Set(version.scopes.map(canonicalize));
+ if(version.evidence.some(item=>item.scopes.some(scope=>!scopes.has(canonicalize(scope)))))conflict();
+ exact(version.createdAt);
+}
+/** A completed outcome must belong to the retained command's actual task or document owner. */
 function outcome(value,retained){
  const command=retained.command,receipt=value.receipt,result=value.result;
- if(command.action!=='task.create')conflict();
+ if(command.action==='document.draft')return documentOutcome(value,command);
+ if(command.action!=='task.create'||!receipt||!result)conflict();
  exact(receipt.completedAt);exact(result.createdAt);
  if(receipt.commandId!==command.commandId||receipt.commandSha256!==retained.commandSha256||receipt.idempotencyKey!==command.idempotencyKey||!same(receipt.scopes,command.scopes))conflict();
  // Attempt, worker and fence may change across resumption; the stable binding may not.

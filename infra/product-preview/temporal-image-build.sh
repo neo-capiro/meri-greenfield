@@ -2,9 +2,8 @@
 # One Meri Temporal server derivative image (D3) qualification inside CodeBuild
 # (privileged, no cache). Input: the extracted ZIP made by temporal-image-context.py:
 #   repo/infra/product-preview/**  exact Git blobs of COMMIT (Dockerfile, launcher, image pins)
-#   inputs/temporal-issuer-ca.pem  public issuer CA baked into the image
-#   context-manifest.json          {"commit", "bases", "issuerCaSha256", "files": {path: sha256}}
-# Order: verify -> build (3 digest-pinned bases, CA via BuildKit secret) -> locked-down
+#   context-manifest.json          {"commit", "bases", "files": {path: sha256}}
+# Order: verify -> build (3 digest-pinned bases, tested native certificate roles) -> locked-down
 # launcher smoke + image probe -> push -> scan COMPLETE with zero HIGH/CRITICAL -> receipt.
 # Any failure stops and writes a failure record; there is no retry.
 #
@@ -77,9 +76,9 @@ a=sys.argv
 print(json.dumps({"schemaVersion":1,"status":"SUCCEEDED","commit":a[1],"attempt":a[2],"repository":a[3],
  "image":{"role":"deployable","tag":a[4],"digest":a[5],"scan":json.load(open(a[6])),"highFindings":json.load(open(a[7]))},
  "bases":{"nodeBinary":a[8],"glibcRuntime":a[9],"goBuilder":a[10]},"glibcRuntimePackages":json.load(open(a[13]))["apkPackages"],
- "issuerCaSha256":a[11],"contextManifestSha256":a[12],"probe":json.load(open(a[13])),"scanCoverage":a[14],"serverSource":json.load(open(a[15]))["serverSource"]},sort_keys=True))' \
+ "authorizationMode":a[11],"contextManifestSha256":a[12],"probe":json.load(open(a[13])),"scanCoverage":a[14],"serverSource":json.load(open(a[15]))["serverSource"]},sort_keys=True))' \
     "$COMMIT" "$ATTEMPT" "$REPOSITORY_URI" "$IMAGE_TAG" "$DIGEST" "$WORK/image.counts" "$WORK/high-findings.json" \
-    "$NODE_BASE" "$GLIBC_BASE" "$GO_BASE" "$ISSUER_CA_SHA256" "$MANIFEST_SHA256" "$WORK/probe.json" "$SCAN_COVERAGE" "$PINS_FILE" \
+    "$NODE_BASE" "$GLIBC_BASE" "$GO_BASE" "meri-client-certificate" "$MANIFEST_SHA256" "$WORK/probe.json" "$SCAN_COVERAGE" "$PINS_FILE" \
     > "$WORK/temporal-image-receipt.json"
   PHASE=RECEIPT_UPLOAD
   RECEIPT_VERSION="$(record_file temporal-image-receipt.json "$WORK/temporal-image-receipt.json")"
@@ -95,8 +94,7 @@ scan_counts() { # $1 = [status, counts] JSON, $2 = gate|record
 }
 
 # Every member except the manifest is pinned, the set is exact, the commit matches,
-# the Dockerfile names exactly the three digest-pinned bases in order and the CA hash
-# is the manifest's. Streams each file. Prints the manifest SHA-256.
+# the Dockerfile names exactly the three digest-pinned bases in order. Streams each file. Prints the manifest SHA-256.
 verify_context() { # $1 = root, $2 = commit
   python3 -I -B - "$1" "$2" "$PINS_FILE" <<'PY'
 import hashlib, json, os, sys
@@ -107,7 +105,6 @@ raw = open(os.path.join(root, "context-manifest.json"), "rb").read()
 m = json.loads(raw)
 assert m["schemaVersion"] == 1 and m["commit"] == commit, "MANIFEST_COMMIT"
 assert m["bases"] == bases, "MANIFEST_BASES"
-assert m["files"].get("inputs/temporal-issuer-ca.pem") == m["issuerCaSha256"], "MANIFEST_CA"
 seen = {}
 for base, _, files in os.walk(root):
     for name in files:
@@ -135,13 +132,13 @@ PY
 
 # Launcher contract on the exact built image, no network, no capabilities:
 # --help exits 0, an invalid role 64, a role without activation/config 78. Then an
-# in-image probe records Node/Go versions, binaries, the CA hash and the runtime user.
+# in-image probe records Node/Go versions, binaries and the runtime user.
 # Every check returns explicitly, so the result holds even where errexit is suspended.
 smoke_run() {
   timeout 180 docker run --rm --platform linux/arm64 --user 1000:1000 --network none --read-only --tmpfs /tmp:rw,nosuid,nodev,size=64m,mode=1777 \
     --cap-drop ALL --security-opt no-new-privileges --pids-limit 64 --memory 768m --cpus 1 "$@"
 }
-smoke_image() { # $1 = image reference, $2 = expected issuer CA SHA-256
+smoke_image() { # $1 = image reference
   local image="$1" rc out
   out="$(smoke_run "$image" --help)" || return 1
   [[ "$out" == "Usage: temporal-launch"* ]] || return 1
@@ -152,8 +149,8 @@ smoke_image() { # $1 = image reference, $2 = expected issuer CA SHA-256
   smoke_run --entrypoint /opt/meri/node "$image" -e "$PROBE_JS" > "$WORK/probe.json" || return 1
   python3 -I -B -c 'import json,sys
 p=json.load(open(sys.argv[1]))
-pins=json.load(open(sys.argv[3]))
-assert p["node"]=="v"+pins["nodeVersion"] and p["arch"]=="arm64" and p["uid"]==p["gid"]==1000 and p["issuerCaSha256"]==sys.argv[2], "PROBE"
+pins=json.load(open(sys.argv[2]))
+assert p["node"]=="v"+pins["nodeVersion"] and p["arch"]=="arm64" and p["uid"]==p["gid"]==1000, "PROBE"
 assert p["temporalServer"] and p["serverMachine"]==183 and p["serverStatic"] is True, "SERVER_BINARY"
 assert isinstance(p["buildBinarySha256"],str) and len(p["buildBinarySha256"])==64 and p["buildBinarySha256"]==p["temporalServerSha256"], "SERVER_BINARY_HASH"
 assert p["goVersion"]=="go"+pins["goVersion"], "GO_VERSION"
@@ -161,8 +158,7 @@ assert all(p["goModules"].get(k)==v for k,v in pins["securityModules"].items()),
 assert all(p["goSettings"].get(k)==v for k,v in {"CGO_ENABLED":"0","GOOS":"linux","GOARCH":"arm64"}.items()), "GO_SETTINGS"
 assert p["serverHelpExit"]==0 and p["serverVersionExit"]==0 and pins["serverVersion"] in p["serverVersion"].split(), "SERVER_EXEC"
 assert p["runTemporalMode"]=="700" and p["runTemporalUid"]==p["runTemporalGid"]==1000 and p["tmpMode"]=="1777", "MOUNTS"
-assert p["issuerCaMode"]=="444" and p["issuerCaUid"]==0, "CA_MODE"
-assert all(x in p["apkPackages"] for x in pins["packages"]), "PACKAGES"' "$WORK/probe.json" "$2" "$PINS_FILE"
+assert all(x in p["apkPackages"] for x in pins["packages"]), "PACKAGES"' "$WORK/probe.json" "$PINS_FILE"
 }
 # Go build info: magic, ptr size, flags; flag 2 means the version is an inline varint string at +32.
 PROBE_JS='const fs=require("node:fs"),cp=require("node:child_process"),crypto=require("node:crypto");
@@ -177,15 +173,14 @@ let serverStatic=elf;if(elf){const off=Number(buf.readBigUInt64LE(32)),size=buf.
 const buildBinarySha256=fs.readFileSync("/opt/meri/temporal-server.sha256","utf8").match(/^([a-f0-9]{64})  temporal-server\n$/)?.[1]??null;
 const version=cp.spawnSync(bin,["--version"],{env:{PATH:"/usr/local/bin:/usr/bin:/bin"},timeout:20000,maxBuffer:4096,encoding:"utf8"});
 const packages=fs.readFileSync("/lib/apk/db/installed","utf8").split(/\n\n/).filter(Boolean).map(b=>{const p=b.match(/^P:(.+)$/m),v=b.match(/^V:(.+)$/m);if(!p||!v)throw Error("APK_DATABASE");return `${p[1]}=${v[1]}`}).sort();
-const run=fs.statSync("/run/temporal"),ca=fs.statSync("/opt/meri/issuer-ca.pem");
+const run=fs.statSync("/run/temporal");
 const help=has(bin)?cp.spawnSync(bin,["--help"],{env:{PATH:"/usr/local/bin:/usr/bin:/bin"},timeout:20000,stdio:"ignore"}).status:null;
 console.log(JSON.stringify({node:process.version,arch:process.arch,uid:process.getuid(),gid:process.getgid(),
  apkPackages:packages,serverMachine:buf.length>=64&&buf.subarray(0,6).equals(Buffer.from([127,69,76,70,2,1]))?buf.readUInt16LE(18):null,
  serverVersion:version.stdout?.trim()??null,serverVersionExit:version.status,serverStatic,buildBinarySha256,goModules,goSettings,
  temporalServer:has(bin),temporalServerSha256:crypto.createHash("sha256").update(buf).digest("hex"),goVersion:go,serverHelpExit:help,
  usrLocalBin:fs.readdirSync("/usr/local/bin").sort(),temporalSqlTool:has("/usr/local/bin/temporal-sql-tool"),
- schemaDir:has("/etc/temporal/schema"),issuerCaMode:(ca.mode&0o7777).toString(8),issuerCaUid:ca.uid,
- issuerCaSha256:crypto.createHash("sha256").update(fs.readFileSync("/opt/meri/issuer-ca.pem")).digest("hex"),
+ schemaDir:has("/etc/temporal/schema"),
  runTemporalMode:(run.mode&0o7777).toString(8),runTemporalUid:run.uid,runTemporalGid:run.gid,tmpMode:(fs.statSync("/tmp").mode&0o7777).toString(8)}));'
 
 main() {
@@ -198,18 +193,16 @@ trap fail ERR
 
 # 1. Exact sealed context.
 MANIFEST_SHA256="$(verify_context "$ROOT" "$COMMIT")"
-ISSUER_CA_SHA256="$(python3 -I -B -c 'import json,sys;print(json.load(open(sys.argv[1]))["issuerCaSha256"])' "$ROOT/context-manifest.json")"
 echo "TEMPORAL_CONTEXT_VERIFIED manifest=$MANIFEST_SHA256"
 
-# 2. Build from exactly the sealed repo subset; the CA is a BuildKit secret, not an arg.
+# 2. Build from exactly the sealed source, including tested native certificate mapping.
 PHASE=BUILD
 docker buildx build --load --no-cache --pull --platform linux/arm64 \
-  --secret "id=temporal_issuer_ca,src=$ROOT/inputs/temporal-issuer-ca.pem" \
   --build-arg "LAUNCH_SOURCE_COMMIT=$COMMIT" \
   -f "$ROOT/repo/infra/product-preview/temporal-launch.Dockerfile" -t "$REPOSITORY_URI:$IMAGE_TAG" "$ROOT/repo"
 
 PHASE=SMOKE
-smoke_image "$REPOSITORY_URI:$IMAGE_TAG" "$ISSUER_CA_SHA256"
+smoke_image "$REPOSITORY_URI:$IMAGE_TAG"
 
 # 3. Push and resolve the registry digest.
 PHASE=PUSH

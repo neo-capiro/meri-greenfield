@@ -12,12 +12,13 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
  try{
   const sources=new Map(),record=async path=>{const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});return raw;};
   const originals=new Map();
-  for(const path of ['meri.schema.json','commands-0.2/task-create.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
+  for(const path of ['meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/document-draft.schema.json','artifacts-0.2/artifact.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
   const errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
   for(const name of ['INTENTS_PATHS','INTENTS_LIMITS','INTENTS_ERROR_OUTCOMES','INTENTS_ERROR_STATUSES','INTENTS_APPROVABLE_ACTIONS','INTENTS_FAILURE_CODES'])if(application[name]===undefined)throw Error('Missing canonical intents declaration '+name);
   const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,fieldPattern};
   const metadata=createIntentsMetadata(config);
   for(const path of ['generate-intents.mjs',...['README.md','schema.mjs','protocol.mjs','boundary.mjs','semantics.mjs','receive.mjs'].map(name=>'intents-application/'+name),'document-application/boundary.mjs',
+   'artifacts-0.2/artifact-formats.mjs','commands-0.2/document-draft-validation.mjs',
    '../../apps/control/intents/application-protocol.mjs','../../apps/control/intents/http.mjs','../../apps/control/intents/approval.mjs','../../apps/control/intents/faults.mjs','../../apps/control/product-access/http.mjs'])await record(path);
   // Canonical shapes are copied into this schema as local definitions so the distribution has no external schema reference.
   const root=intentsSchema(config),defs={},seen=new Map();
@@ -42,7 +43,6 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
 export type IntentsRoute='list'|'decide';
 export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
 export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}
-export type IntentsProposal = IntentsProposalItem['proposal'];
 export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}

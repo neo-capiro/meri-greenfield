@@ -1,39 +1,34 @@
-/** Scripted SQL protocol composition, not native PostgreSQL or physical-stop evidence. Assessment and actual admission share the
- * canonical journal; prepared retirement reads are real, while the mutation-only admission/revoke port below is synthetic. */
+/** Scripted SQL composition. Assessment and admission share the canonical execution journal; no provider/database claim. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {binding,id,versions} from './lifecycle-fixture.mjs';
 import {fixture,check} from './next-run-recovery-fixture.mjs';
 import {hash} from '../boundary.mjs';
-import {createPreparedNextRunOwner} from '../../../runtime/prepared-next-run.mjs';
+import {createNextRunOwner} from '../next-run.mjs';
 
 const principal={tenantId:binding.tenantId,actorId:binding.actorId};
 const query=(source=binding)=>({principal,conversationId:source.conversationId,sourceRunId:source.runId});
 const key=b=>[b.tenantId,b.conversationId,b.runId].join(':');
 function prepared(x,release=versions){
- const effects={admission:0,revoke:0},owner=createPreparedNextRunOwner({store:x.f.store,versions:release,
-  admissionForBinding:async({record})=>{effects.admission++;return {async revoke({taskArn}){effects.revoke++;
-   return {state:'REVOKED',taskArn,grantIds:record.grantIntents.map(g=>g.grantId),revocationProven:true};}};}});
- return {owner,effects};
+ return {owner:createNextRunOwner({store:x.f.store,versions:release})};
 }
-const durable=x=>structuredClone(Object.fromEntries(['runs','events','allocations','nextRuns','completions','controls'].map(k=>[k,x.f.state[k]])));
+const durable=x=>structuredClone(Object.fromEntries(['runs','events','executions','nextRuns','completions','controls'].map(k=>[k,x.f.state[k]])));
 async function readOnly(x,p,source=binding,over={}){
- const before=durable(x),effects={...p.effects},offset=x.f.state.calls.length;
+ const before=durable(x),offset=x.f.state.calls.length;
  try{return await p.owner.assessNextTurn({...query(source),...over});}
  finally{assert.deepEqual(durable(x),before,'assessment cannot mutate any durable lifecycle row');
-  assert.deepEqual(p.effects,effects,'assessment cannot resolve admission or revoke grants');
   assert.ok(x.f.state.calls.slice(offset).every(sql=>!/^(?:INSERT|UPDATE|DELETE|ALTER|CREATE|DROP|TRUNCATE)\b/u.test(sql)),'assessment issues no mutating SQL');}
 }
-async function completed(x){await x.first();const checkpoint=await x.complete(binding);await x.retire(binding);return checkpoint;}
+async function completed(x){await x.first();const checkpoint=await x.complete(binding);await x.settle(binding);return checkpoint;}
 const ready={admissible:true,reason:null};
 
 test('X1 completed history remains unavailable until retirement; assessment then agrees with one admitted successor without effects',async()=>{
  const x=await fixture();try{await x.first();await x.complete(binding);const p=prepared(x);
   assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_SOURCE_UNSETTLED'});
   await assert.rejects(p.owner.admitTurn(query()),/NEXT_RUN_SOURCE_UNSETTLED/);
-  await x.retire(binding);assert.deepEqual(await readOnly(x,p),ready);assert.equal(x.f.state.nextRuns.size,0);
+  await x.settle(binding);assert.deepEqual(await readOnly(x,p),ready);assert.equal(x.f.state.nextRuns.size,0);
   const admitted=await p.owner.admitTurn(query());assert.equal(admitted.state,'RESERVED');assert.equal(x.f.state.nextRuns.size,1);
-  assert.equal(p.effects.revoke,1);await x.accept(admitted.targetBinding);
+  await x.accept(admitted.targetBinding);
   assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_NOT_LATEST'});
  }finally{x.f.close();}
 });
@@ -41,36 +36,32 @@ test('X1 completed history remains unavailable until retirement; assessment then
 for(const state of ['failed','cancelled'])test(`X1 ${state} source remains held while Stop is incomplete and becomes admissible after exact retirement`,async()=>{
  const x=await fixture();try{await x.first();await x.running(binding);await x.f.store.append(binding,x.status(state,state==='failed'?'EXECUTION_FAILED':'USER_CANCELLED'),check);
   const p=prepared(x);assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_SOURCE_UNSETTLED'});
-  await assert.rejects(p.owner.admitTurn(query()),/NEXT_RUN_SOURCE_UNSETTLED/);await x.retire(binding);
+  await assert.rejects(p.owner.admitTurn(query()),/NEXT_RUN_SOURCE_UNSETTLED/);await x.settle(binding);
   assert.deepEqual(await readOnly(x,p),ready);const admitted=await p.owner.admitTurn(query());await x.accept(admitted.targetBinding);
   assert.equal(await x.lineage(admitted.targetBinding),null,'no completed turn means no invented checkpoint');
  }finally{x.f.close();}
 });
 
-test('X1 live and paused work are not next-turn admissible even with a retired allocation',async()=>{
- const x=await fixture();try{await x.first();await x.running(binding);await x.retire(binding);const p=prepared(x);
+test('X1 live and paused work are not next-turn admissible, including a settled paused invocation',async()=>{
+ const x=await fixture();try{await x.first();await x.running(binding);await assert.rejects(x.settle(binding),/EXECUTION_SETTLEMENT_REFUSED/);const p=prepared(x);
   assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_SOURCE_NOT_TERMINAL'});
   await assert.rejects(p.owner.admitTurn(query()),/NEXT_RUN_SOURCE_NOT_TERMINAL/);
-  await x.f.store.append(binding,x.status('paused'),check);
+  await x.f.store.append(binding,x.status('paused'),check);await x.settle(binding);
   assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_SOURCE_NOT_TERMINAL'});
  }finally{x.f.close();}
 });
 
-test('X1 queued cancellation uses durable foreclosure; a missing allocation never substitutes for no-authority proof',async()=>{
+test('X1 queued cancellation without an invocation claim is safe; the canonical terminal fence forbids a late claim',async()=>{
  const x=await fixture();try{await x.f.service.allocateInput({credential:x.f.credential,input:x.f.input});await x.f.service.submit({credential:x.f.credential,input:x.f.input});
-  await x.f.service.cancel({credential:x.f.credential});const p=prepared(x),saved=structuredClone(x.f.state.allocations.get(key(binding)));
-  assert.equal(saved.record.state,'FORECLOSED');assert.deepEqual(await readOnly(x,p),ready);
-  x.f.state.allocations.delete(key(binding));assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_SOURCE_UNSETTLED'});
-  await assert.rejects(p.owner.admitTurn(query()),/NEXT_RUN_SOURCE_UNSETTLED/);
-  x.f.state.allocations.set(key(binding),saved);const admitted=await p.owner.admitTurn(query());assert.equal(admitted.state,'RESERVED');
-  assert.deepEqual(p.effects,{admission:0,revoke:0});
+  await x.f.service.cancel({credential:x.f.credential});const p=prepared(x);assert.equal(x.f.state.executions.size,0);assert.deepEqual(await readOnly(x,p),ready);
+  await assert.rejects(x.allocate(binding),/EXECUTION_NOT_QUEUED/);const admitted=await p.owner.admitTurn(query());assert.equal(admitted.state,'RESERVED');assert.equal(x.f.state.executions.size,0);
  }finally{x.f.close();}
 });
 
-test('X1 malformed retired grant custody and unproven physical stop both refuse without cleanup effects',async()=>{
- const x=await fixture();try{await completed(x);const p=prepared(x),original=structuredClone(x.f.state.allocations.get(key(binding)).record);
-  for(const change of [r=>r.resource.physicalStopProven=false,r=>r.grantIntents.push({...r.grantIntents[0]}),r=>r.original.binding.actorId='foreign']){
-   const row=x.f.state.allocations.get(key(binding));row.record=structuredClone(original);change(row.record);row.record_sha256=hash(row.record);
+test('X1 malformed execution identity and unconfirmed stopping refuse without cleanup effects',async()=>{
+ const x=await fixture();try{await completed(x);const p=prepared(x),original=structuredClone(x.f.state.executions.get(key(binding)).record);
+  for(const change of [r=>{r.phase='stopping';r.native=null;},r=>r.runtimeSessionId='invalid',r=>r.binding.actorId='foreign']){
+   const row=x.f.state.executions.get(key(binding));row.record=structuredClone(original);change(row.record);row.record_sha256=hash(row.record);
    assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_SOURCE_UNSETTLED'});
    await assert.rejects(p.owner.admitTurn(query()),/NEXT_RUN_SOURCE_UNSETTLED/);
   }
@@ -109,7 +100,7 @@ test('X1 a predeploy reservation stays read-only and image compatible; an SDK ch
   const release={...versions,imageDigest:'sha256:'+'6'.repeat(64)};x.deploy(release);const p=prepared(x,release);
   assert.deepEqual(await readOnly(x,p),ready);assert.deepEqual([...x.f.state.nextRuns.values()],before);
   const replay=await p.owner.admitTurn(query());assert.deepEqual(replay.targetBinding,reserved.binding);assert.equal(replay.replayed,true);
-  assert.deepEqual(p.effects,{admission:0,revoke:0});await x.accept(replay.targetBinding);
+  await x.accept(replay.targetBinding);
  }finally{x.f.close();}
 });
 
@@ -130,7 +121,7 @@ test('X1 incomplete checkpoint custody, altered reservation facts and storage no
  const x=await fixture();try{await completed(x);const p=prepared(x),cp=x.f.state.completions.get(key(binding));
   x.f.state.completions.delete(key(binding));assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_SOURCE_UNSETTLED'});
   await assert.rejects(p.owner.admitTurn(query()),/NEXT_RUN_SOURCE_UNSETTLED/);x.f.state.completions.set(key(binding),cp);
-  await x.select();const r=[...x.f.state.nextRuns.values()][0];r.reservation.facts.revocation.grantIds=[id(999)];r.reservation_sha256=hash(r.reservation);
+  await x.select();const r=[...x.f.state.nextRuns.values()][0];r.reservation.facts.execution.recordSha256='f'.repeat(64);r.reservation_sha256=hash(r.reservation);
   assert.deepEqual(await readOnly(x,p),{admissible:false,reason:'NEXT_RUN_REPLAY_REFUSED'});
   x.f.state.commitUnknown=true;await assert.rejects(readOnly(x,p),/STORE_COMMIT_UNKNOWN/);x.f.state.commitUnknown=false;
  }finally{x.f.close();}

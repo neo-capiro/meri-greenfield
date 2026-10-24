@@ -8,14 +8,15 @@ const freeze = value => {
   return value;
 };
 function continuationKey(authority, operation, cursor) {
-  const { authorizationDecisionId: ignored, ...subject } = authority.subject;
+  const subject = authority.subject;
   return freeze({ binding: authority.binding, operation, policyRevision: authority.policyRevision, subject, cursor });
 }
 
 export async function prepareMemoryReadContext({ ports, authority, identityDeadlineMs, operation, request, lifetime, now, maxBytes }) {
   if (!ports || typeof ports.loadPrevious !== 'function' || typeof ports.retain !== 'function') deny('GATEWAY_CONFIGURATION');
   let previous;
-  let expiresAtMs = Math.min(identityDeadlineMs, authority.deadlineMs);
+  let expiresAtMs = identityDeadlineMs;
+  if (!Number.isSafeInteger(expiresAtMs) || expiresAtMs <= now()) deny('ACCESS_DENIED');
   const fresh = (stamp, started) => {
     lifetime.check();
     if (!Number.isSafeInteger(stamp) || stamp < started || stamp > now()) deny('ACCESS_DENIED');
@@ -37,7 +38,7 @@ export async function prepareMemoryReadContext({ ports, authority, identityDeadl
   return Object.freeze({
     authority,
     options(current) { return { subject: current.subject, ...(previous === undefined ? {} : { previous }) }; },
-    observeAuthority(current) { expiresAtMs = Math.min(expiresAtMs, current.deadlineMs); },
+    observeAuthority() { lifetime.check(); },
     async retain({ current, normalized, result }) {
       lifetime.check();
       if (result.nextCursor === null) return;

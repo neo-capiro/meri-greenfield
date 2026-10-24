@@ -8,6 +8,7 @@ import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' wit
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {assertActionSessionReceipt,borrowedRunSession} from '../../control/action-host/session/owner.mjs';
 import {createDocumentIntentPreparer,DOCUMENT_INTENT_OPERATIONS} from '../../control/intents/document-preparer.mjs';
 import {createAnalysisIntentPreparer,ANALYSIS_INTENT_OPERATIONS} from '../../control/intents/analysis-preparer.mjs';
@@ -31,7 +32,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
  try{
   c=own(configuration,['binding','selectedClientId','now','limits'],['sessions','optionsOwner','nativeCredentials','retention','borrowSession']);
   binding=data(c.binding);validateShape('RunBinding',binding);limits=documentLimits(c.limits);
-  if(!UUID.test(c.selectedClientId??'')||typeof c.now!=='function'||types.isProxy(c.now))throw 0;
+  if(!(c.selectedClientId===null||UUID.test(c.selectedClientId??''))||typeof c.now!=='function'||types.isProxy(c.now))throw 0;
  }catch{throw intentFault('INTENT_CONFIGURATION');}
  if(c.sessions===undefined||c.optionsOwner===undefined||c.nativeCredentials===undefined)return Object.freeze([]);
  if(!c.sessions||typeof c.sessions!=='object'||types.isProxy(c.sessions))throw intentFault('INTENT_CONFIGURATION');
@@ -70,9 +71,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
       own(state,['authenticationSha256','binding','scopes','selectedClientId','checkedAtMs','expiresAtMs']);
       if(state.authenticationSha256!==hash(authentication)||!same(state.binding,binding)||state.selectedClientId!==c.selectedClientId||
        !Array.isArray(state.scopes)||state.scopes.length<1||state.scopes.length>100||!Number.isSafeInteger(state.checkedAtMs)||state.checkedAtMs>c.now())throw intentFault('ACCESS_DENIED','none');
-      for(const scope of state.scopes){validateShape('Scope',scope);if(scope.tenantId!==binding.tenantId)throw intentFault('ACCESS_DENIED','none');}
-      const clients=state.scopes.filter(scope=>scope.kind==='client');
-      if(clients.length!==1||clients[0].resourceId!==c.selectedClientId)throw intentFault('ACCESS_DENIED','none');
+      try{assertNativeConversationScope(state);}catch{throw intentFault('ACCESS_DENIED','none');}
       clip(state.expiresAtMs);if(native()!==credential)throw intentFault('ACCESS_DENIED','none');life.check();
      }
      await current();

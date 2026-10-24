@@ -263,12 +263,12 @@ test('generated bundle is independent of the checkout layout',async()=>{
  const layout=/\.\.\/|(?<![A-Za-z0-9])[A-Za-z]:[\\/](?!\/)|\/(?:home|Users)\/|wt-/u;
  assert(!layout.test(source),'no parent-relative, drive-letter, home or worktree path anywhere in the bundle');
  const labels=[...source.matchAll(/^\/\/ (.+)$/gmu)].map(m=>m[1]).filter(label=>/\.m?js$/u.test(label));
- assert(labels.length>=5&&labels.every(label=>/^(?:node_modules\/|intents-generated:\.\/generated-|(?:intents-application|document-application)\/)/u.test(label)),labels.join(', '));
+ assert(labels.length>=5&&labels.every(label=>/^(?:node_modules\/|intents-generated:\.\/generated-|(?:intents-application|document-application)\/|artifacts-0\.2\/artifact-formats\.mjs$)/u.test(label)),labels.join(', '));
  assert(metadata.browserInputs.every(entry=>!layout.test(entry)));
 });
 test('metadata, paths and vocabularies are the handlers\' own, and approval authority is not widened',async()=>{
  assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
- assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,['task.create']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
+ assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','document.draft']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
  assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,2,'no approve/execute route exists in this contract');
  assert(Object.isFrozen(intentsMetadata)&&Object.isFrozen(intentsMetadata.errorStatuses));
  const schema=JSON.parse(await readFile(new URL('../dist/intents-application.schema.json',import.meta.url),'utf8')),text=JSON.stringify(schema);

@@ -37,9 +37,8 @@ export function validateTemporalLaunch(env,argv){
  exact(env,'TEMPORAL_TLS_REQUIRE_CLIENT_AUTH','true');
  exact(env,'TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION','false');
  exact(env,'TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION','false');
- exact(env,'TEMPORAL_AUTH_AUTHORIZER','default');exact(env,'TEMPORAL_AUTH_CLAIM_MAPPER','default');
- exact(env,'TEMPORAL_AUTH_AUDIENCE','meri-temporal');
- exact(env,'TEMPORAL_JWT_KEY_REFRESH','300s');
+ exact(env,'TEMPORAL_AUTH_AUTHORIZER','default');exact(env,'TEMPORAL_AUTH_CLAIM_MAPPER','meri-client-certificate');
+ for(const key of ['TEMPORAL_AUTH_AUDIENCE','TEMPORAL_AUTH_ISSUER','TEMPORAL_JWT_KEY_REFRESH','TEMPORAL_JWT_KEY_SOURCE1','MERI_TEMPORAL_ISSUER_CA_SHA256'])if(env[key]!==undefined)fail();
  exact(env,'USE_INTERNAL_FRONTEND','true');
  exact(env,'TEMPORAL_NAMESPACE','meri');
  const queue=required(env,'TEMPORAL_TASK_QUEUE',/^[a-zA-Z0-9._-]{1,128}$/u);
@@ -48,9 +47,6 @@ export function validateTemporalLaunch(env,argv){
  const frontendName=required(env,'TEMPORAL_TLS_FRONTEND_SERVER_NAME',dns);
  const internodeName=required(env,'TEMPORAL_TLS_INTERNODE_SERVER_NAME',dns);
  if(!frontendName.startsWith('frontend.')||internodeName!==`internode.${frontendName.slice('frontend.'.length)}`)fail();
- const issuer=required(env,'TEMPORAL_AUTH_ISSUER',/^https:\/\/[a-z0-9.-]+:8445\/$/u);
- const jwks=required(env,'TEMPORAL_JWT_KEY_SOURCE1',/^https:\/\/[a-z0-9.-]+:8445\/\.well-known\/jwks\.json$/u);
- if(new URL(jwks).origin!==new URL(issuer).origin)fail();
  const conns=service==='history'?20:10;
  for(const key of ['SQL_MAX_CONNS','SQL_MAX_IDLE_CONNS','SQL_VIS_MAX_CONNS','SQL_VIS_MAX_IDLE_CONNS'])exact(env,key,String(conns));
  const primaryUser=required(env,'POSTGRES_USER',/^[a-z][a-z0-9_]{0,62}$/u);
@@ -60,7 +56,6 @@ export function validateTemporalLaunch(env,argv){
  if(primaryUser===visibilityUser||!env.POSTGRES_PWD||!env.VISIBILITY_POSTGRES_PWD||env.POSTGRES_PWD===env.VISIBILITY_POSTGRES_PWD)fail();
  for(const key of ['POSTGRES_PWD','VISIBILITY_POSTGRES_PWD'])if(typeof env[key]!=='string'||env[key].length>4096)fail();
  required(env,'MERI_TEMPORAL_RDS_CA_SHA256',hex64);
- required(env,'MERI_TEMPORAL_ISSUER_CA_SHA256',hex64);
  exact(env,'MERI_TEMPORAL_MIGRATION_PLAN_SHA256',TEMPORAL_MIGRATION_PLAN_SHA256);
  pem(env.MERI_TEMPORAL_INTERNODE_CERT_PEM,'CERTIFICATE');
  pem(env.MERI_TEMPORAL_INTERNODE_KEY_PEM,'PRIVATE KEY');
@@ -72,7 +67,7 @@ export function validateTemporalLaunch(env,argv){
   pem(env.MERI_TEMPORAL_FRONTEND_KEY_PEM,'PRIVATE KEY');
   pem(env.MERI_TEMPORAL_CLIENT_CA_PEM,'CERTIFICATE');
  }else if(['MERI_TEMPORAL_FRONTEND_CERT_PEM','MERI_TEMPORAL_FRONTEND_KEY_PEM','MERI_TEMPORAL_CLIENT_CA_PEM'].some(key=>env[key]!==undefined))fail();
- return Object.freeze({service,role,queue,databaseHost,frontendName,internodeName,issuer,jwks,conns,primaryUser,visibilityUser});
+ return Object.freeze({service,role,queue,databaseHost,frontendName,internodeName,conns,primaryUser,visibilityUser});
 }
 
 /** JSON is a YAML 1.2 flow document; this also avoids scalar-injection ambiguity. */
@@ -102,8 +97,7 @@ export function renderTemporalConfig(env,argv,broadcastAddress,files){
    tls:{internode:{server:{requireClientAuth:true,certFile:f.internodeCert,keyFile:f.internodeKey,clientCaFiles:[f.internodeCa]},
      client:{serverName:v.internodeName,disableHostVerification:false,rootCaFiles:[f.internodeCa]}},
     frontend:{...frontendServer,client:{serverName:v.frontendName,disableHostVerification:false,rootCaFiles:[f.frontendCa]}}},
-   authorization:{jwtKeyProvider:{keySourceURIs:[v.jwks],refreshInterval:'300s'},permissionsClaimName:'permissions',
-    authorizer:'default',claimMapper:'default',audience:'meri-temporal'}},
+   authorization:{authorizer:'default',claimMapper:'meri-client-certificate'}},
   services:{frontend:{rpc:rpc('frontend')},'internal-frontend':{rpc:rpc('internal-frontend')},
    history:{rpc:rpc('history')},matching:{rpc:rpc('matching')},worker:{rpc:rpc('worker')}},
   clusterMetadata:{enableGlobalNamespace:false,failoverVersionIncrement:10,masterClusterName:'active',currentClusterName:'active',

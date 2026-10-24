@@ -9,7 +9,7 @@ test('exact original promise is bound with scope/version/hash and visible six-so
  const f=fixture();f.reads.forEach(assertEvidence);const out=compile(f),row=out.commitments[0];
  assert.equal(out.coverage.length,6);assert.equal(out.status,'covered-extraction-unverified');assert.equal(out.negativeClaimSupported,false);
  assert.equal(row.promise.verification,'bound-source-excerpt');assert.equal(row.promise.quote,'We will send the draft memo.');
- assert.equal(row.promise.recordVersionId,'v1');assert.equal(row.promise.authorizationDecisionId,f.context.subject.authorizationDecisionId);assert.deepEqual(row.promise.scopes,f.context.subject.scopes);
+ assert.equal(row.promise.recordVersionId,'v1');assert.deepEqual(row.promise.binding,f.context.binding);assert.equal(Object.hasOwn(row.promise,'authorizationDecisionId'),false);assert.equal(row.promise.receiptSha256s.length,1);assert.deepEqual(row.promise.scopes,f.context.subject.scopes);
  assert.equal(row.owner.status,'unknown');assert.equal(row.dueDate.status,'unknown');assert.equal(row.completed,false);
  assert.equal(row.status,'no-linked-tracking-in-extracted-observations');assert.deepEqual(out.mutations,[]);assert(Object.isFrozen(out.commitments));
 });
@@ -53,7 +53,7 @@ for(const [name,edit]of [
  ['different conversation',f=>f.reads[0].binding.conversationId='70000000-0000-4000-8000-000000000099'],
  ['different run',f=>f.reads[0].binding.runId='70000000-0000-4000-8000-000000000099'],
  ['different attempt',f=>f.reads[0].binding.attemptId='70000000-0000-4000-8000-000000000099'],
- ['obsolete fence',f=>f.reads[0].binding.writerFence=2],['different decision',f=>f.reads[0].subject.authorizationDecisionId='70000000-0000-4000-8000-000000000099'],
+ ['obsolete fence',f=>f.reads[0].binding.writerFence=2],['obsolete decision field',f=>f.reads[0].subject.authorizationDecisionId='70000000-0000-4000-8000-000000000099'],
  ['substituted bytes',f=>f.reads[0].data.records[0].content.text='Substituted material'],['substituted hash',f=>f.reads[0].data.records[0].contentSha256='f'.repeat(64)],
  ['snippet',f=>{f.reads[0].data.records[0].content.kind='snippet';f.reads[0].data.records[0].content.readHandle='opaque';}],
  ['future read',f=>f.reads[0].sources[0].retrievedAt='2026-10-14T12:00:00.000Z'],['unknown operation',f=>f.reads[0].operation={id:'read_bill_text',version:'0.2.0'}],

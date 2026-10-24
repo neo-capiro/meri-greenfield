@@ -31,7 +31,7 @@ async function fixture({lifecycle=false,extraClient=false}={}){
    return {rows:entries.sort((a,b)=>a.global-b.global).filter(e=>e.global>p[2]).slice(0,p[3])};}
   return c.query(sql,p);
  }};}};
- const store=createPostgresConversationStore({pool}),owner=createNextRunOwner({store,versions,newId:()=>id(serial++),retirement:{async verifyRetired(){throw Error('not admitted');}},revocation:{async verifyRevoked(){throw Error('not admitted');}}});
+ const store=createPostgresConversationStore({pool}),owner=createNextRunOwner({store,versions,newId:()=>id(serial++)});
  state.member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:extraClient?[id(5),id(7)]:[id(5)],membershipRevision:'m1'};
  state.memberCredentialReads=[];const gate=createMembershipGate({now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:65536},verifyToken:async({credential})=>{if(credential!=='native')throw Error('invalid');return {tenantId:state.member.tenantId,actorId:state.member.actorId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
   readMembership:async({credential})=>{state.memberCredentialReads.push(credential);await state.onMembershipRead?.(state.memberCredentialReads.length);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});

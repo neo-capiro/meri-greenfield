@@ -1,9 +1,9 @@
 /** Mail source admission and correlation; current authorization remains in the dispatcher. */
 import {types} from 'node:util';
-import {canonicalSha256, validateShape as publicShape} from '../../../../packages/contracts/validate.mjs';
-import {assertSubject, resolveOperationContract, validateShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {resolveOperationContract, validateShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertResultLineage, deny} from '../../dispatch/operation-result.mjs';
-import {frozenData, ownFields} from '../source-admission.mjs';
+import {frozenData, ownFields,assertReadContext} from '../source-admission.mjs';
 export {frozenData, ownFields} from '../source-admission.mjs';
 
 const aborted = Object.getOwnPropertyDescriptor(AbortSignal.prototype, 'aborted').get;
@@ -29,30 +29,10 @@ export function readContext(call, now) {
   const {operation, contract} = mailContract(fields.operation);
   const input = frozenData(fields.input), request = frozenData(fields.request), authority = frozenData(fields.authority);
   validateShape(selections[operation.id], input);
-  try {
-    ownFields(authority, ['binding', 'subject', 'claims', 'policyRevision', 'decision', 'sourceIds', 'deadlineMs']);
-    publicShape('RunBinding', authority.binding); publicShape('CapabilityClaims', authority.claims);
-    publicShape('AuthorizationDecision', authority.decision); assertSubject(authority.subject, authority.binding);
-  } catch { deny('ACCESS_DENIED'); }
-  const {claims, decision, subject} = authority;
-  if (!same(authority.binding, authority.claims.binding) ||
-      authority.policyRevision !== authority.subject.policyRevision || authority.policyRevision !== authority.claims.policyRevision ||
-      authority.policyRevision !== decision.policyRevision || claims.audience !== 'meri-gateway' ||
-      !claims.actions.includes('tool.read') || decision.decision !== 'allowed' ||
-      decision.operation !== `${operation.id}@${operation.version}` || decision.decisionId !== subject.authorizationDecisionId ||
-      !same(decision.actor, {tenantId: authority.binding.tenantId, actorId: authority.binding.actorId}) ||
-      !same(decision.scopes, subject.scopes) ||
-      claims.scopes.some(scope => scope.tenantId !== authority.binding.tenantId || scope.policyRevision !== authority.policyRevision) ||
-      !['personal', 'client'].includes(authority.subject.kind) || input.subject.kind !== authority.subject.kind ||
-      (input.subject.kind === 'client' && input.subject.entityId !== authority.subject.entityIds[0]) ||
-      !authority.subject.scopes.some(scope => scope.kind === 'mailbox') ||
-      authority.subject.scopes.some(scope => !authority.claims.scopes.some(parent => same(scope, parent))) ||
-      !Array.isArray(authority.sourceIds) || !same([...authority.sourceIds].sort(),
-        [...new Set(contract.descriptor.sourceRequirements.map(source => source.sourceId))].sort())) deny('ACCESS_DENIED');
-  const issued = Date.parse(authority.claims.issuedAt), expiry = Date.parse(authority.claims.expiresAt);
-  if (!Number.isSafeInteger(issued) || !Number.isSafeInteger(expiry) || issued >= expiry ||
-      !Number.isSafeInteger(authority.deadlineMs)) deny('DEADLINE');
-  const signal = fields.signal, deadlineMs = Math.min(authority.deadlineMs, expiry);
+  assertReadContext(authority,operation,now);
+  const {subject}=authority;
+  if(!['personal','client'].includes(subject.kind)||input.subject.kind!==subject.kind||input.subject.kind==='client'&&input.subject.entityId!==subject.entityIds[0]||!subject.scopes.some(scope=>scope.kind==='mailbox'))deny('ACCESS_DENIED');
+ const deadlineMs=authority.deadlineMs,signal=fields.signal;
   if (signal !== undefined) {
     if (types.isProxy(signal)) deny('INVALID_ARGUMENTS');
     try { aborted.call(signal); } catch { deny('INVALID_ARGUMENTS'); }
@@ -60,7 +40,7 @@ export function readContext(call, now) {
   function active(cutoff = deadlineMs) {
     const stamp = now();
     if (signal !== undefined && aborted.call(signal)) deny('CANCELLED');
-    if (!Number.isSafeInteger(stamp) || stamp < 0 || stamp < issued || stamp >= Math.min(deadlineMs, cutoff)) deny('DEADLINE');
+    if (!Number.isSafeInteger(stamp) || stamp < 0 || stamp >= Math.min(deadlineMs, cutoff)) deny('DEADLINE');
     return stamp;
   }
   active();

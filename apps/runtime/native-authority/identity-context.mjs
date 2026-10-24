@@ -1,4 +1,4 @@
-/** Thin join of native authority and the canonical current-run owner, with optional trusted selection. */
+/** Fresh Core identity joined to the canonical durable conversation/run owner. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../control/action-host/application-adapters/authority-http.mjs';
 import {createApplicationContextAdapters,refusalDiagnostic} from '../../control/action-host/application-adapters/context-adapter.mjs';
@@ -10,7 +10,7 @@ import {createRunCurrentAuthority,CURRENT_REUSE_MS,CURRENT_MAX_WAIT_MS} from './
 import {currentReceipt} from '../../control/action-host/application-adapters/current-receipt.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 export function createNativeIdentityContext(configuration){
- const {origin,currentOwner,commandContext,fetchImpl,now,limits,enabled=false,selectRun,admitInitialConversation}=own(configuration,['origin','currentOwner','commandContext','fetchImpl','now','limits'],['enabled','selectRun','admitInitialConversation']);
+ const {origin,currentOwner,fetchImpl,now,limits,enabled=false,admitInitialConversation}=own(configuration,['origin','currentOwner','fetchImpl','now','limits','admitInitialConversation'],['enabled']);
  const l=data(own(limits,['maxRequestMs','maxFactBytes'])),currentRun=storageMethod(currentOwner,'currentRun');
  const client=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled,limits:{maxRequestMs:l.maxRequestMs,maxResponseBytes:l.maxFactBytes}});
  const observations=new AsyncLocalStorage(),receipts=createRunCurrentAuthority({client,now});
@@ -20,8 +20,12 @@ export function createNativeIdentityContext(configuration){
   const scope=observations.getStore();if(!scope)return client.readContext(call);const r=await scope.read();
   if(call.credential!==scope.credential||call.conversationId!==r.conversationId||call.clientId!==r.selectedClientId)refused();
   return data({...projectedIdentity(r),identitySha256:call.identitySha256,conversationId:r.conversationId,selectedClientId:r.selectedClientId,contextRevision:r.contextRevision});
+ },readCurrent:async call=>{
+  const scope=observations.getStore();if(!scope)return client.readCurrent(call);const r=await scope.read();
+  if(call.credential!==scope.credential||call.conversationId!==r.conversationId||call.clientId!==r.selectedClientId)refused();
+  return data({...r,checkedAtMs:now()});
  }};
- const mapped=createApplicationContextAdapters({client:projected,currentRun,commandContext,now,limits:l,...(selectRun?{selectRun}:{}),...(admitInitialConversation?{admitInitialConversation}:{})});
+ const mapped=createApplicationContextAdapters({client:projected,currentRun,now,limits:l,admitInitialConversation});
  // One public code for every failure; a dependency that did not answer keeps its transient mark. The context adapter's refusal
  // step and owned reason code (fixed vocabularies) ride along for the session owner's refusal line only.
  const unavailable=cause=>{const error=Object.assign(Error('NATIVE_AUTHORITY_UNAVAILABLE'),{code:'NATIVE_AUTHORITY_UNAVAILABLE',status:503},refusalDiagnostic(cause));throw carryAuthorityUnavailable(cause,error);};
@@ -29,18 +33,21 @@ export function createNativeIdentityContext(configuration){
   /** The action session's one Core /current observation per issuance or recheck. A recheck of an issued session (`binding`) may
    * reuse that session's own receipt for up to 20 s; issuance is always fresh. */
   async withAuthority({credential,hints={},binding,sessionFence,fresh=false,signal,deadlineMs},operation){
-   if(!enabled)unavailable();const conversationId=hints.conversationId??commandContext.binding.conversationId,clientId=hints.clientId??commandContext.clientResolution.clientId;
+   if(!enabled)unavailable();const conversationId=hints.conversationId,clientId=hints.clientId;
+   if(typeof conversationId!=='string'||!Object.hasOwn(hints,'clientId'))unavailable();
    const reusable=binding!==undefined;
    const readFresh=async()=>{currentTurnTelemetry()?.recordAuthority?.('fresh');return currentReceipt(await client.readCurrent({credential,conversationId,clientId,signal,deadlineMs:Math.min(deadlineMs,now()+CURRENT_MAX_WAIT_MS)}));};
    let receipt,sendStart=performance.now(),wallSend=now();
    if(!reusable)receipt=await readFresh();
    else receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,fresh,signal,deadlineMs});
-   if(receipt.principal.tenantId!==commandContext.binding.tenantId||receipt.principal.actorId!==commandContext.binding.actorId||receipt.conversationId!==conversationId||receipt.selectedClientId!==clientId||receipt.expiresAtMs<=now()||!reusable&&(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()))unavailable();
+   const principal=binding??receipt.principal;
+   const sameContext=r=>r.principal.tenantId===principal.tenantId&&r.principal.actorId===principal.actorId&&r.conversationId===conversationId&&r.selectedClientId===clientId&&r.expiresAtMs>now();
+   if(!sameContext(receipt)||!reusable&&(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()))unavailable();
    // Each canonical port recheck re-enters the age check; a slow local await cannot carry a 19.9 s receipt past 20 s.
    const read=async()=>{
-    if(reusable)return receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,signal,deadlineMs});
+    if(reusable){receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,signal,deadlineMs});if(!sameContext(receipt))unavailable();return receipt;}
     if(signal?.aborted||now()>=deadlineMs||receipt.expiresAtMs<=now())unavailable();
-    if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();receipt=await readFresh();if(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now())unavailable();}
+    if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();receipt=await readFresh();if(!sameContext(receipt)||receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now())unavailable();}
     else currentTurnTelemetry()?.recordAuthority?.('reuse');
     return receipt;
    };

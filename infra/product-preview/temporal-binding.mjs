@@ -8,12 +8,11 @@ import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 
 export const TEMPORAL_ROLES=Object.freeze(['frontend','history','matching','internal-worker','internal-frontend']);
 export const TEMPORAL_PORTS=Object.freeze({frontend:[7233,6933,7243],history:[7234,6934],matching:[7235,6935],'internal-worker':[7239,6939],'internal-frontend':[7236,6936,7246]});
-export const TEMPORAL_ISSUER_PORT=8445;
 export const TEMPORAL_INTERFACE_ENDPOINTS=Object.freeze({
  ecrApi:'com.amazonaws.us-east-1.ecr.api',ecrDkr:'com.amazonaws.us-east-1.ecr.dkr',
  secretsManager:'com.amazonaws.us-east-1.secretsmanager',logs:'com.amazonaws.us-east-1.logs',kms:'com.amazonaws.us-east-1.kms'
 });
-// Neo selected the copied new-stack cluster on 2026-10-22; Fable owns cutover.
+// Neo selected the copied new-stack cluster on 2026-10-22; Codex owns shipping.
 // Other placement pins retain the reviewed metadata; this source creates no database instance.
 export const TEMPORAL_EXISTING_DATABASE=Object.freeze({
  kind:'existing-aurora-postgresql',
@@ -84,7 +83,7 @@ export function validateTemporalPreviewBinding(value){
  closed(b.taskRoleArns,TEMPORAL_ROLES);
  for(const role of TEMPORAL_ROLES)if(!roleArn.test(b.taskRoleArns[role])||b.taskRoleArns[role]===b.executionRoleArn)fail();
  distinct(Object.values(b.taskRoleArns),5,roleArn);
- const n=closed(b.network,['clientSecurityGroupIds','issuerSecurityGroupId','issuerClientSecurityGroupId','dbClientSecurityGroupId',
+ const n=closed(b.network,['clientSecurityGroupIds','dbClientSecurityGroupId',
   'interfaceEndpoints','s3Gateway','taskRouteTableBySubnet','migrationSecurityGroupId']);
  if(n.clientSecurityGroupIds?.length!==2)fail();
  distinct(n.clientSecurityGroupIds,2,/^sg-[a-f0-9]{8,17}$/u);
@@ -92,7 +91,7 @@ export function validateTemporalPreviewBinding(value){
  const endpoints=Object.values(n.interfaceEndpoints).map(value=>closed(value,['endpointId','securityGroupId']));
  distinct(endpoints.map(value=>value.endpointId),5,/^vpce-[a-f0-9]{8,17}$/u);
  // capiro-dev interface endpoints share one SG; endpoint SGs may equal each
- // other, never a client, issuer, marker, migration or database SG.
+ // other, never a client, marker, migration or database SG.
  if(endpoints.some(value=>typeof value.securityGroupId!=='string'||!/^sg-[a-f0-9]{8,17}$/u.test(value.securityGroupId)))fail();
  const endpointGroups=temporalEndpointSecurityGroupIds(n);
  closed(n.s3Gateway,['endpointId','prefixListId']);
@@ -101,15 +100,11 @@ export function validateTemporalPreviewBinding(value){
     endpoints.some(value=>value.endpointId===n.s3Gateway.endpointId))fail();
  closed(n.taskRouteTableBySubnet,subnets.map(value=>value.id));
  if(Object.values(n.taskRouteTableBySubnet).some(value=>typeof value!=='string'||!/^rtb-[a-f0-9]{8,17}$/u.test(value)))fail();
- const ownGroups=[n.issuerSecurityGroupId,n.migrationSecurityGroupId,n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId];
+ const ownGroups=[n.migrationSecurityGroupId,n.dbClientSecurityGroupId];
  if(!ownGroups.every(x=>typeof x==='string'&&/^sg-[a-f0-9]{8,17}$/u.test(x)))fail();
  distinct([...n.clientSecurityGroupIds,...endpointGroups,...ownGroups],n.clientSecurityGroupIds.length+endpointGroups.length+ownGroups.length,/^sg-[a-f0-9]{8,17}$/u);
- const a=closed(b.auth,['issuer','jwksUrl','issuerCaSha256','audience','namespace','taskQueue','materialSecretVersionByRole']);
- let issuer,jwks;try{issuer=new URL(a.issuer);jwks=new URL(a.jwksUrl);}catch{fail();}
- if(issuer.protocol!=='https:'||issuer.username||issuer.password||issuer.search||issuer.hash||issuer.pathname!=='/'||
-    issuer.port!==String(TEMPORAL_ISSUER_PORT)||a.issuer!==issuer.origin+'/'||!hex64.test(a.issuerCaSha256)||
-    jwks.protocol!=='https:'||a.jwksUrl!==issuer.origin+'/.well-known/jwks.json'||
-    a.audience!==fixture.roles.frontend.externalAudience||a.namespace!==fixture.namespaces.primary||!id.test(a.taskQueue))fail();
+ const a=closed(b.auth,['mode','namespace','taskQueue','materialSecretVersionByRole']);
+ if(a.mode!=='client-certificate'||a.namespace!=='meri'||!id.test(a.taskQueue))fail();
  closed(a.materialSecretVersionByRole,TEMPORAL_ROLES);
  for(const role of TEMPORAL_ROLES)secret(a.materialSecretVersionByRole[role],b.account,b.region);
  const roleSecretBases=Object.values(a.materialSecretVersionByRole).map(secretBase);
@@ -128,8 +123,8 @@ export function validateTemporalPreviewBinding(value){
  distinct([...roleSecretBases,...dbSecretBases],7,/^arn:aws:secretsmanager:/u);
  if(pins.server.version!=='1.32.1'||pins.postgres.majorVersion!==16||pins.postgres.candidateMinorVersion!=='16.15'||pins.postgres.plugin!=='postgres12'||
     pins.postgres.schemaPrimaryVersion!=='1.19'||pins.postgres.schemaVisibilityVersion!=='1.14'||fixture.historyShards!==128||
-    // Historical fixture remains checksum-pinned; its newResources/instance
-    // placement is not deployment authority for the selected existing Aurora.
+    // Historical fixture remains checksum-pinned for topology and sizing. Its
+    // placement and JWT policy are superseded by the explicit binding above.
     fixture.roles.frontend.claimMapper!=='default'||fixture.roles.frontend.authorizer!=='default'||fixture.roles['internal-frontend'].ingress!=='internode'||
     TEMPORAL_ROLES.some(role=>fixture.roles[role]?.replicas!==2||fixture.roles[role]?.mtls?.requireClientAuth!==true||
       !Number.isSafeInteger(fixture.provisionalSizing?.perRole?.[role]?.dbConnections)||fixture.provisionalSizing.perRole[role].dbConnections<2||

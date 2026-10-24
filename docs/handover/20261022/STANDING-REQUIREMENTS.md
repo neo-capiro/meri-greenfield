@@ -1,8 +1,10 @@
-# Standing requirements for all Meri work (Neo, 2026-10-23). Read this first.
+# Standing requirements for all Meri work (Neo, updated 2026-10-24). Read this first.
 
 These override anything older in this repository: the master closeout plans, `FINAL-PLAN-20261021.md`, briefs, `AGENTS.md` and notes. Each Wave 2 brief repeats rules 1–4 at its top; the full text is here.
 
-**What is Neo's and what is Fable's.** The quoted lines below are Neo's words. The direction is Neo's decision (2026-10-23): finish Wave 1 on the current design, then make the Claude-native harness (SDK full harness, direct Bedrock, Capiro data as MCP tools) the first item in Wave 2. The numbered rules are Fable's translation of those words into engineering rules. Anything marked *proposal* is Fable's design detail: the orchestrator may change it with evidence from the spike, but may not drop the requirement behind it.
+Neo's current direct instruction is to finish Wave 2 autonomously, migrate the actual Claude SDK to AgentCore Runtime, update all plans and leave no dead code. The approved hosting choice is **standard Runtime V1**, with isolated conversation sessions and durable restore. Root Codex is the sole orchestrator; the earlier work/AWS holds are lifted. The four requirements below remain first and binding. Historical quotations explain their origin; they do not reinstate old roles or per-run Fargate. See the [approved AgentCore Runtime migration](plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) for implementation, completion state and deletion ownership.
+
+**Local environment retention (Neo, 24 October 2026):** preserve and reuse the local development environment throughout future waves for faster testing and shipping. Keep the WSL distribution, persistent local services/database data, development configuration, active working source and reusable tooling/dependency caches. Repair and upgrade in place. This supersedes the earlier broad disk-cleanup request for these resources; cleanup remains scoped to verified disposable tests and temporary release secrets. Root maintains the private host inventory in `C:/dev/LOCAL-DEVELOPMENT-ENVIRONMENT.md`.
 
 Neo's words, verbatim:
 
@@ -19,41 +21,43 @@ The quality bar is Claude's own. Answer quality comes from the whole harness, no
 
 - Run `@anthropic-ai/claude-agent-sdk` with its **full harness** and the Claude Code system-prompt preset, plus a short Capiro/Meri append. Don't replace the preset with our own prose.
 - Do not rebuild what the SDK or AWS already does: model calls, retries, streaming, the tool loop, context management and compaction, session resume/fork, per-run turn and spend limits, AWS credentials.
-- The runner calls Bedrock directly, using the task's IAM role.
+- The real Claude SDK calls Bedrock directly using its narrowly scoped AgentCore runtime IAM role. Preserve the full preset, native tools, subagents and all 14 skills.
 - Capiro data reaches Claude as **tools** (rule 4), not as a custom retrieval layer around the model.
 
 Spec and plan: `phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`. It is **Wave 2 item 0**, and it comes before every other item that touches the runner, the proxy or authority.
 
 ## 2. Simple, standard architecture
 
-```
-browser → control (auth once per turn, conversations, stream relay, batched saves)
-        → Temporal (durable run) → runner (one per run; SDK full harness) → Bedrock
-                                              └─ tools → control's tool gateway → Core
+```text
+browser -> control (current access, conversation/run ownership, durable events)
+        -> AgentCore Runtime V1 (isolated conversation session; actual Claude SDK) -> Bedrock
+                                      -> tool gateway -> Core
+control -> existing durable SDK SessionStore and artifact owners
+control -> Temporal for required durable runs, schedules and background work
 ```
 
-- **Core is the gatekeeper for Capiro data.** Tenant, member, client and wall rules are enforced server-side in Core. The harness doesn't re-enforce them.
-- One identity and client-access check per turn. One tenant cost cap. Per-run limits come from the SDK (`maxTurns`, `maxBudgetUsd`).
-- **No per-hop or per-operation re-verification, no second proxy in front of Bedrock, no credential-minting services, no reservation/settlement ledgers, no custom lease or pin machinery.**
-- Before adding any mechanism, name the standard feature it replaces, or why none exists. If you can't name either, don't add it.
-- "Extra security layers" means layers that re-check what a lower layer already guarantees. It does **not** mean removing the lower layer. Before deleting a check, confirm the lower layer enforces it, with a negative test.
+- **Core is the gatekeeper for Capiro data.** Tenant, member, client and wall rules remain server-side in Core. Check current access at admission and actual tool/data/artifact access; revocation must also prevent use of previously loaded privileged context. Do not duplicate policy in the harness.
+- Reuse one isolated environment only for the same immutable tenant/actor/conversation and approved General/client scope. Serialize turns; stop idle compute and restore exact SDK transcripts and artifacts from their durable owners. A Runtime session ID is not authorization or durable storage.
+- Keep the SDK's per-run turn/spend limits and one canonical tenant cap/usage owner. Preserve required durable runs, schedules, consent, outcomes and uncertain-write fences; neither SDK Task tools nor a warm process replaces Temporal durability.
+- **No custom warm pool, per-turn ECS task requirement, model proxy, duplicated per-hop authority, credential-minting service or spend-reservation ledger.** Use standard Runtime V1; no V2 snapshot machinery or second SDK implementation.
+- Before adding a mechanism, identify the standard feature or existing owner it uses. Before deleting a wrapper, prove the retained lower-layer behavior with meaningful positive/negative tests. Do not remove canonical authorization, idempotency or durable outcomes as “extra security.”
 
 ## 3. Leave no dead code behind
 
 A change is not done until what it replaced is gone.
 
-1. **Delete in the same PR** everything the change makes unused: code, tests, fixtures, docs, config keys, env vars, feature flags, IAM statements, ALB rules, secrets, task definitions, CloudFormation resources, kit steps, alarms and metric filters. Applied database migrations are history: never edit them. Drop tables only through a new forward migration, after a snapshot and with Neo's approval.
+1. **Delete in the same PR** everything the change makes unused: code, tests, fixtures, docs, config keys, env vars, feature flags, IAM statements, ALB rules, secrets, task definitions, CloudFormation resources, kit steps, alarms and metric filters. Applied database migrations are history: never edit them. Drop tables only through a separately reviewed forward migration after a snapshot; this hosting migration does not itself authorize schema/data removal.
 2. **Temporary diagnostics come out before merge** of the fix they were added for. A log line stays only as named product telemetry that someone reads.
 3. **No code behind a flag nothing turns on.** The "source-complete, activation-held" status is retired for code we don't intend to ship. Dark features need an owner and a date, or they are deleted.
 4. **No** commented-out code, `legacy` or `_old` copies, compatibility shims for removed things, or "superseded" stubs.
-5. **Show proof in the PR:** list the identifiers, files and resources deleted, with a `git grep` for each that returns nothing, and explain any drop in test count.
+5. **Show proof in the PR:** list the identifiers, files and resources deleted, with a search proving no executable/active caller remains; label immutable historical references, and explain any drop in test count.
 6. **Old plan tickets for removed mechanisms are closed as superseded**, not implemented and left dormant. See `source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
 7. **Reuse before write.** Use SDK, AWS and library features first. Custom code needs one line saying what the standard option couldn't do.
 
 ## 4. Capiro data must keep working
 
 - Capiro data is served to Claude as tools. Core remains the source: today's read families call Core at `/api/clio/tools/<operation>`, and the new tools call the same endpoints.
-- *Proposal:* tools are hosted by **control** (a tool gateway) so the runner never holds the Core service secret (`x-internal-service-secret`). The runner gets only a short-lived per-run token for control, scoped to tenant, user, client, conversation and run.
+- Tools are hosted by **control** (the existing tool gateway) so the runner never holds the Core service secret (`x-internal-service-secret`). The runner gets only a short-lived per-run token for control, scoped to tenant, user, client, conversation and run.
 - Reuse the existing read handlers under `apps/gateway/sources/*` and their typed schemas. Delete the authority, relay and measurement wrappers around them.
 - Parity: every read family that works today must be reachable as a tool with the same results and the same permission outcomes. A parity checklist is part of the item 0 spec.
 - Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
@@ -63,13 +67,13 @@ A change is not done until what it replaced is gone.
 
 The owner/proxy pair (`apps/proxy`); budget reservation, settlement and liability recovery (`apps/gateway/budget`); per-operation authority (`apps/runtime/native-authority`, the task verifier, origin and run-current authority, ECS task proofs, read-credential relays, revision pins); the temporal-issuer; the P1 timeout/budget table and P2 proof reuse; authority-lite (S2) and the signed lease (S4); and the custom checkpoint / dormant-original continuity.
 
-The register `source-of-truth/SUPERSEDED-BY-ITEM-0.md` lists every ticket, scenario and plan row affected, and what to keep as behaviour. If an old ticket and item 0 disagree, **item 0 wins**. If it is unclear, ask on #202. Never recreate a removed mechanism to satisfy an old ticket.
+The register `source-of-truth/SUPERSEDED-BY-ITEM-0.md` lists every ticket, scenario and plan row affected, and what to keep as behaviour. If an old ticket and item 0 disagree, **item 0 wins**. Resolve routine implementation within root's existing allocation; escalate only an actual scope or ownership conflict. Never recreate a removed mechanism to satisfy an old ticket.
 
 ## 6. Done means
 
 - The chat, tool and data behaviours in the spec's acceptance section pass on preview (T3 to T6, H1, H2).
 - **Agreed limit (FINAL-PLAN S2 gate), measured per simple turn:** Core calls ≤ 30 and Core time ≤ 3 s. Live on 2026-10-23, before the fix in flight, one simple turn made 372 Core calls, about 800 ECS describes and about 73,000 database statements. That is what these rules exist to prevent.
-- *Proposed targets for the new architecture (confirm in the spike):* Core calls ≤ 5 (control, excluding tools the model chooses to call), AWS calls ≤ 10 besides RunTask, DB statements ≤ 300, first delta visible within about 3 s of `run.running`, the full answer within about 2 s of the model stream ending.
+- *Proposed targets for the new architecture (confirm in the spike):* Core calls ≤ 5 (control, excluding tools the model chooses to call), AWS calls ≤ 10 excluding the standard Runtime invocation, DB statements ≤ 300, first delta visible within about 3 s of `run.running`, the full answer within about 2 s of the model stream ending.
 - Everything the change replaced is deleted (rule 3), with proof in the PR.
 - The `.github/pull_request_template.md` checklist is complete.
 
@@ -77,6 +81,6 @@ The register `source-of-truth/SUPERSEDED-BY-ITEM-0.md` lists every ticket, scena
 
 - **Never post customer IDs** (UUIDs, prefixes or other customer-linked identifiers) on GitHub. The repo is public. Use counts and booleans.
 - **One new-stack database**, `capiro-newstack-preview-clone`: never delete or re-clone it. Snapshot, then migrate forward in place. Never migrate the live shared database.
-- **Only Neo approves**, directly in chat. A comment quoting Neo is not an approval. Credential steps, the preview edge allowlist and other security settings are Neo's.
+- **Current authority:** Neo directly authorized root to complete Wave 2 and this migration autonomously. Root allocates protected operations and release decisions; no second permission flow is inferred from an old hold. A comment quoting Neo is not new authorization. Preserve the agreed data/privacy and deployment boundaries.
 - ARM64 images only. Preview ALB rules are host-scoped and go before the preview catch-all; never modify live rules.
 - Deploy lock and acceptance rules are in `WAVE-2-HANDOVER.md` §0.

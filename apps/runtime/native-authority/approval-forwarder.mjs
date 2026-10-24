@@ -13,8 +13,9 @@
  * Authority. Every Core call carries BOTH the approver's own native bearer and the verified service identity
  * (`x-internal-service-secret`, Core ToolServiceSecretGuard), as Core's `NativeApprovalService` requires (`record` also checks
  * approver == authenticated user == binding actor). The bearer is resolved per call from the live action session for the exact
- * run and selected client of the proposal (`nativeCredentials.nativeCredentialFor`, the read-credential relay bound to control's
- * own action-session owner): no live approver session refuses ACCESS_DENIED before any request, nothing falls back to another
+ * run and selected client of the proposal. For document.draft only, the canonical latest run may supply the live session in
+ * that same tenant/actor/conversation/client; the immutable proposal body is unchanged. The read-credential relay remains
+ * bound to control's own action-session owner: no live approver session refuses ACCESS_DENIED, nothing falls back to another
  * credential, the same session must still be live after Core answers, and the bearer is never cached past the call. The marked
  * control credential (and every native candidate credential file) is refused by digest; a service-only call does not exist.
  *
@@ -35,7 +36,8 @@
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256 as hash,validateShape,assertProposalIntegrity} from '../../../packages/contracts/validate.mjs';
+import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
 import {retainedOrigin} from '../../../packages/contracts/runtime-0.2/retained-reads.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
@@ -77,13 +79,14 @@ export function bindApprovalSessions(context,sessions){
 export function createCoreApprovalForwarder(options){
  let c,origin,nativeCredentialFor;
  try{
-  c=own(options,['origin','nativeCredentials','getServiceSecret','now'],['readProposal','selectedClientId','reservedCredentials','fetchImpl','maxRequestMs','maxResponseBytes']);origin=retainedOrigin(c.origin);
+  c=own(options,['origin','nativeCredentials','getServiceSecret','now'],['readProposal','selectedClientId','reservedCredentials','fetchImpl','maxRequestMs','maxResponseBytes','selectDocumentBinding']);origin=retainedOrigin(c.origin);
   if(!c.nativeCredentials||typeof c.nativeCredentials!=='object'||types.isProxy(c.nativeCredentials))throw Error();
   const method=Object.getOwnPropertyDescriptor(c.nativeCredentials,'nativeCredentialFor');if(!method||!Object.hasOwn(method,'value'))throw Error();nativeCredentialFor=method.value;
   for(const fn of [nativeCredentialFor,c.getServiceSecret,c.now,c.fetchImpl??globalThis.fetch,c.readProposal??(()=>{}),c.reservedCredentials??(()=>{})])if(!ordinary(fn))throw Error();
   if(c.selectedClientId!==undefined&&(typeof c.selectedClientId!=='string'||!UUID.test(c.selectedClientId)))throw Error();
   if(c.maxRequestMs!==undefined&&(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000))throw Error();
   if(c.maxResponseBytes!==undefined&&(!Number.isSafeInteger(c.maxResponseBytes)||c.maxResponseBytes<1||c.maxResponseBytes>1048576))throw Error();
+  if(c.selectDocumentBinding!==undefined&&!ordinary(c.selectDocumentBinding))throw Error();
  }catch{configuration();}
  const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs??10000,maxResponseBytes=c.maxResponseBytes??131072,reservedDigests=c.reservedCredentials??(async()=>new Set());
  const pending=new Map();
@@ -104,11 +107,12 @@ export function createCoreApprovalForwarder(options){
   let acquired,sent=false;
   try{
    const forbidden=await life.run(()=>reservedDigests());
+   await selected.verify?.();
    const first=bearer(selected,life.signal);if(forbidden.has(sha(first.credential)))refuse('ACCESS_DENIED');life.limitDeadline(first.expiresAtMs);
    let secret;try{secret=await life.run(()=>c.getServiceSecret());}catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE');}
    if(typeof secret!=='string'||!TOKEN.test(secret)||secret===first.credential||forbidden.has(sha(secret)))refuse('UNAVAILABLE');
    // The secret read is an await: the same session must still be live (not expired, revoked or replaced).
-   if(bearer(selected,life.signal).credential!==first.credential)refuse('ACCESS_DENIED');
+   await selected.verify?.();if(bearer(selected,life.signal).credential!==first.credential)refuse('ACCESS_DENIED');
    const started=now();sent=true;
    acquired=await life.run(s=>{const request=Promise.resolve(fetchImpl(origin+route,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal:s,
     headers:{authorization:'Bearer '+first.credential,'x-internal-service-secret':secret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:JSON.stringify(body)}));
@@ -117,7 +121,7 @@ export function createCoreApprovalForwarder(options){
    // Core refused before recording (4xx): no effect. Anything else after the request left may have recorded a decision.
    if(acquired.status!==200)refuse([401,403].includes(acquired.status)?'ACCESS_DENIED':[400,404,409,422].includes(acquired.status)?'REFUSED':'UNAVAILABLE',[401,403,400,404,409,422].includes(acquired.status)?'none':'unknown');
    let value;try{value=data(await readJsonResponse(acquired,{lifetime:life,maxResponseBytes}));}catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE','unknown');}
-   const last=bearer(selected,life.signal,'unknown');if(last.credential!==first.credential)refuse('ACCESS_DENIED','unknown');life.check();
+   await selected.verify?.();const last=bearer(selected,life.signal,'unknown');if(last.credential!==first.credential)refuse('ACCESS_DENIED','unknown');life.check();
    return {value,started,sessionExpiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)};
   }catch(error){
    if(faults.has(error))throw ['DEADLINE','CANCELLED'].includes(error.code)&&sent?fault(error.code,'unknown'):error;
@@ -130,7 +134,7 @@ export function createCoreApprovalForwarder(options){
   let p;try{p=await life.run(signal=>c.readProposal({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,proposalId,signal}));}
   catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE');}
   if(p===null||p===undefined)refuse('ACCESS_DENIED');
-  try{p=data(p);assertProposalIntegrity(p);}catch{refuse('UNAVAILABLE');}
+  try{p=data(p);assertNativeApprovalProposal(p);}catch{refuse('UNAVAILABLE');}
   if(p.proposalId!==proposalId||['tenantId','actorId','conversationId'].some(k=>p.command.binding[k]!==binding[k]))refuse('ACCESS_DENIED');
   return p;
  }
@@ -141,6 +145,13 @@ export function createCoreApprovalForwarder(options){
   if(c.selectedClientId!==undefined&&clients[0].resourceId!==c.selectedClientId)refuse('ACCESS_DENIED');
   return {id:clients[0].resourceId,policyRevision:scopes[0].policyRevision};
  }
+ async function selection(life,p){const selectedClientId=selectedClient(p).id,source=p.command.binding;
+  if(p.command.action!=='document.draft')return {binding:stable(source),selectedClientId};
+  if(!c.selectDocumentBinding)refuse('UNAVAILABLE');let pinned;
+  const verify=async()=>{const value=data(own(await life.run(signal=>c.selectDocumentBinding({proposal:p,signal,deadlineMs:life.deadline()})),['binding','selectedClientId']));validateShape('RunBinding',value.binding);
+   if(['tenantId','actorId','conversationId'].some(k=>value.binding[k]!==source[k])||value.binding.writerFence<source.writerFence||value.selectedClientId!==selectedClientId||pinned&&!same(value,pinned))refuse('ACCESS_DENIED');pinned??=value;};
+  await verify();return {...pinned,verify};
+ }
  function receipt(raw,{nullable,effect}){
   let v;try{v=data(own(raw,['decision','checkedAtMs','revoked']));}catch{refuse('UNAVAILABLE',effect);}
   if(typeof v.revoked!=='boolean'||!Number.isSafeInteger(v.checkedAtMs))refuse('UNAVAILABLE',effect);
@@ -150,7 +161,7 @@ export function createCoreApprovalForwarder(options){
  }
  async function record(value){
   const {signal,deadlineMs,...raw}=own(value,['proposal','decision','approver','binding'],['signal','deadlineMs']);nativeSignal(signal);
-  let v;try{v=data(raw);assertProposalIntegrity(v.proposal);own(v.approver,['tenantId','actorId']);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
+  let v;try{v=data(raw);assertNativeApprovalProposal(v.proposal);own(v.approver,['tenantId','actorId']);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
   if(v.decision!=='approved'&&v.decision!=='rejected')refuse('INVALID_ARGUMENTS');
   const p=v.proposal,b=p.command.binding;
   // Core records only for the authenticated approver who is the required approver and the conversation owner (binding actor).
@@ -161,7 +172,7 @@ export function createCoreApprovalForwarder(options){
    const life=lifetime(signal,deadlineMs);
    try{
     const retained=await custody(life,b,p.proposalId);if(!same(retained,p))refuse('ACCESS_DENIED');
-    const answer=await post(life,CORE_APPROVAL_ROUTES.record,{selected:{binding:stable(b),selectedClientId:client.id},body:{proposal:p,decision:v.decision,approver:v.approver,binding:v.binding}});
+    const answer=await post(life,CORE_APPROVAL_ROUTES.record,{selected:await selection(life,p),body:{proposal:p,decision:v.decision,approver:v.approver,binding:v.binding}});
     const r=receipt(answer.value,{nullable:false,effect:'unknown'}),d=r.decision;
     if(d.proposalId!==p.proposalId||d.commandSha256!==p.commandSha256||!same(d.approver,v.approver)||d.policyRevision!==client.policyRevision)refuse('UNAVAILABLE','unknown');
     const checkedAtMs=now();if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<answer.started)refuse('UNAVAILABLE','unknown');
@@ -189,7 +200,7 @@ export function createCoreApprovalForwarder(options){
     const p=await custody(life,v.binding,v.proposalId);
     if(p.commandSha256!==v.commandSha256||!same(v.approver,p.requiredApprover)||STABLE.some(k=>p.command.binding[k]!==v.binding[k]))refuse('ACCESS_DENIED');
     const client=selectedClient(p);
-    const answer=await post(life,CORE_APPROVAL_ROUTES.revoke,{selected:{binding:stable(p.command.binding),selectedClientId:client.id},body:{proposalId:v.proposalId,commandSha256:v.commandSha256,approver:v.approver,binding:v.binding}});
+    const answer=await post(life,CORE_APPROVAL_ROUTES.revoke,{selected:await selection(life,p),body:{proposalId:v.proposalId,commandSha256:v.commandSha256,approver:v.approver,binding:v.binding}});
     const r=receipt(answer.value,{nullable:false,effect:'unknown'}),d=r.decision;
     if(r.revoked!==true||d.proposalId!==v.proposalId||d.commandSha256!==v.commandSha256||!same(d.approver,v.approver)||d.policyRevision!==client.policyRevision)refuse('UNAVAILABLE','unknown');
     const checkedAtMs=now();if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<answer.started)refuse('UNAVAILABLE','unknown');
@@ -208,7 +219,7 @@ export function createCoreApprovalForwarder(options){
    // Callers name the original, a fresh executor attempt or the current run: the stable keys must be the proposal's.
    if(p.commandSha256!==v.commandSha256||STABLE.some(k=>p.command.binding[k]!==v.binding[k]))refuse('ACCESS_DENIED');
    const client=selectedClient(p);
-   const answer=await post(life,CORE_APPROVAL_ROUTES.decision,{selected:{binding:stable(p.command.binding),selectedClientId:client.id},body:{proposalId:v.proposalId,commandSha256:v.commandSha256,binding:v.binding}});
+   const answer=await post(life,CORE_APPROVAL_ROUTES.decision,{selected:await selection(life,p),body:{proposalId:v.proposalId,commandSha256:v.commandSha256,binding:v.binding}});
    const r=receipt(answer.value,{nullable:true,effect:'none'}),d=r.decision;
    if(d!==null&&(d.proposalId!==v.proposalId||d.commandSha256!==v.commandSha256||d.policyRevision!==client.policyRevision||!same(d.approver,p.requiredApprover)))refuse('UNAVAILABLE');
    const checkedAtMs=now();if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<answer.started)refuse('UNAVAILABLE');

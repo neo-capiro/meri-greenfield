@@ -40,7 +40,7 @@ test('selection refusals: foreign binding, other job, drifted prompt, expired wi
   {...base,nowMs:NOW+150000},
   {...base,selection:{...f.selection,executionSelection:{provider:'x',model:'y'}}},
   {...base,selection:{...f.selection,queuedType:'earmark'}},
-  {...base,selection:{...f.selection,sourceAdmission:{...f.selection.sourceAdmission,clerkUserId:id(77)}}},
+  {...base,selection:{...f.selection,sourceAdmission:{...f.selection.sourceAdmission,actorUserId:id(77)}}},
   {...base,nowMs:'now'},
  ];
  for(const value of cases)assert.throws(()=>createObjectiveRunStartRecord(value),refused);
@@ -62,4 +62,14 @@ test('columns duplicate the record exactly and decoding refuses any drift or for
  assert.throws(()=>objectiveRunStartColumns(f.record,{tenantId:id(9)}),refused);
  for(const change of [r=>{r.issuance_key='0'.repeat(64);},r=>{r.run_id=id(70);},r=>{r.effect_expires_at_ms='1.5';},r=>{r.record_sha256='0'.repeat(64);},
   r=>{r.created_at='not-a-date';},r=>{r.binding={...r.binding,writerFence:2};},r=>{r.extra=1;}]){const bad=structuredClone(row);change(bad);assert.throws(()=>decodeObjectiveRunStartRow(bad,{tenantId:f.tenantId}),refused);}
+});
+
+test('native run-start preserves a real Objective selection above 128KiB and rejects unbounded or substituted context',()=>{
+ const f=runStartFixture({prompt:'é'.repeat(65000)});
+ assert.ok(Buffer.byteLength(JSON.stringify(f.record),'utf8')>131072);
+ assert.deepEqual(assertObjectiveRunStartRecord(f.record),f.record);
+ assert.throws(()=>runStartFixture({prompt:'é'.repeat(100001)}),refused);
+ for(const change of [x=>{x.selection.executionContext.prompt='substituted';},x=>{x.selection.request.privateCredential='synthetic';},x=>{x.selection.sourceAdmission.privateCredential='synthetic';},x=>{x.selection.executionContext.extra='synthetic';}]){
+  const record=structuredClone(f.record);change(record);assert.throws(()=>assertObjectiveRunStartRecord(record),refused);
+ }
 });

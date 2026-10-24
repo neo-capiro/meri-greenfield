@@ -1,28 +1,9 @@
-/** Core artifact authority: the trusted in-process `authority` that `../product-ports/documents.mjs` composes into the late-bound
- * `artifactOptionsOwner`. Contract: docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md.
- *
- * `resolve({sessions,credential,intent,body,requestSha256,deadlineMs,signal})` -> `{artifactOptions,selectedClientId,credential,limits,
- * enabled,recheck}` or null. One current-authority OBSERVATION is, in order and fail closed:
- *  1. Meri-local session: control's own action-session owner authenticates the caller's action session and reads its current
- *     binding, scopes and selected client (each read re-verifies identity/context at Core through the session owner);
- *  2. native bearer (RC1 option A): the run's live action-session native credential for exactly that binding and client, admitted
- *     only when it is not a marked candidate credential or the service secret, and looked up again after the service-secret read;
- *  3. Core receipt: POST /api/clio/application-authority/artifact with that bearer and the verified service identity, correlated,
- *     bounded and joined to the session (tenant/actor = principal, conversation, selected client, intent operations).
- * The first observation pins every authority fact (binding, scopes, client, principal, identity/context/authority revisions,
- * operations, limits). `recheck` (called by the runtime application at admission, around every effect and before release) makes a
- * NEW observation and refuses ACCESS_DENIED unless the pin is unchanged. `authorize` (the artifact service's per-action decision) is
- * synchronous over the latest observation: the action must be one the intent needs AND one Core currently allows, for the pinned
- * binding and scopes, and its receipt expires no later than that observation.
- *
- * Meri-local and NOT Core facts (dot, PR #121 6246642210): the run allocation, producer context, operation descriptor, evidence,
- * assets, output ceiling, the run capability (`credential`) and its `authority.check` come from the injected `runOptions.read` owner;
- * pool/versions/objects/executor are substituted by the documents composer. The native bearer never enters `artifactOptions` or
- * `credential`. */
+/** Current Core artifact permission plus the canonical accepted conversation run. No execution grants or allocation registry. */
 import {createHash,randomUUID} from 'node:crypto';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {artifactValidators as v} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_OPERATIONS,ArtifactAuthorityError,isArtifactAuthorityError,refuse} from './core-authority-wire.mjs';
@@ -51,10 +32,10 @@ function documentLimits(value){
 }
 
 export function createCoreArtifactAuthority(configuration){
- let c;try{c=own(configuration,['client','credentials','runOptions','now','limits'],['newId']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
- const read=capture(c.client,'read'),serviceSecret=capture(c.credentials,'serviceSecret'),admitBearer=capture(c.credentials,'admitBearer'),readRunOptions=capture(c.runOptions,'read');
+ let c;try{c=own(configuration,['client','credentials','now','limits','maxOutputBytes'],['newId']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
+ const read=capture(c.client,'read'),serviceSecret=capture(c.credentials,'serviceSecret'),admitBearer=capture(c.credentials,'admitBearer');
  const origin=c.client.origin,now=c.now,newId=c.newId??randomUUID,limits=documentLimits(c.limits);
- if(typeof origin!=='string'||typeof now!=='function'||types.isProxy(now)||typeof newId!=='function')refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
+ if(!Number.isSafeInteger(c.maxOutputBytes)||c.maxOutputBytes<1||c.maxOutputBytes>16777216||typeof origin!=='string'||typeof now!=='function'||types.isProxy(now)||typeof newId!=='function')refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
 
  /** One full current-authority observation inside `life`. */
  async function observe(ports,{credential,intent,requestSha256},life){
@@ -67,9 +48,8 @@ export function createCoreArtifactAuthority(configuration){
    own(state,['authenticationSha256','binding','scopes','selectedClientId','checkedAtMs','expiresAtMs']);validateShape('RunBinding',state.binding);
    if(!Array.isArray(state.scopes)||state.scopes.length<1||state.scopes.length>100)throw Error();
    for(const scope of state.scopes){validateShape('Scope',scope);if(scope.tenantId!==state.binding.tenantId)throw Error();}
-   const clients=state.scopes.filter(scope=>scope.kind==='client');
-   if(typeof state.selectedClientId!=='string'||!UUID.test(state.selectedClientId)||clients.length!==1||clients[0].resourceId.toLowerCase()!==state.selectedClientId||
-    !Number.isSafeInteger(state.expiresAtMs)||state.expiresAtMs<=now())throw Error();
+   assertNativeConversationScope(state);
+   if(!Number.isSafeInteger(state.expiresAtMs)||state.expiresAtMs<=now())throw Error();
   }catch{refuse('SESSION_REFUSED');}
   life.limitDeadline(state.expiresAtMs);
   const lookup=signal=>{let issued;try{issued=data(own(ports.nativeCredentialFor({binding:state.binding,selectedClientId:state.selectedClientId,signal}),['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
@@ -80,7 +60,7 @@ export function createCoreArtifactAuthority(configuration){
   // The service-secret read awaited: the same live session must still hold the same bearer (not expired, revoked or replaced).
   const again=lookup(life.signal);if(again.credential!==bearer)refuse('UNAVAILABLE');life.limitDeadline(again.expiresAtMs);
   let observation;
-  try{observation=await life.run(signal=>read({bearer,serviceSecret:secret,request:{conversationId:state.binding.conversationId,clientId:state.selectedClientId,intent,requestSha256},deadlineMs:life.deadline(),signal}));}
+  try{observation=await life.run(signal=>read({bearer,serviceSecret:secret,request:{conversationId:state.binding.conversationId,clientId:state.selectedClientId,...(state.selectedClientId===null?{scopeKind:'general'}:{}),intent,requestSha256},deadlineMs:life.deadline(),signal}));}
   catch(error){throw closedError(error,'UNAVAILABLE');}
   const r=observation.receipt;
   if(r.principal.tenantId!==state.binding.tenantId||r.principal.actorId!==state.binding.actorId||r.conversationId!==state.binding.conversationId||r.selectedClientId!==state.selectedClientId)refuse('ACCESS_DENIED');
@@ -100,7 +80,7 @@ export function createCoreArtifactAuthority(configuration){
  }
 
  async function resolve(raw){
-  let call;try{call=own(raw,['sessions','credential','intent','body','requestSha256','deadlineMs'],['signal']);nativeSignal(call.signal);}catch{refuse('ACCESS_DENIED');}
+  let call;try{call=own(raw,['sessions','store','credential','intent','body','requestSha256','deadlineMs'],['signal']);nativeSignal(call.signal);}catch{refuse('ACCESS_DENIED');}
   if(typeof call.credential!=='string'||!TOKEN.test(call.credential))refuse('SESSION_REFUSED');
   if(!Object.hasOwn(INTENT_OPERATIONS,call.intent)||typeof call.requestSha256!=='string'||!SHA.test(call.requestSha256)||!Number.isSafeInteger(call.deadlineMs))refuse('ACCESS_DENIED');
   let body;try{body=data(call.body);if(canonicalSha256({intent:call.intent,body})!==call.requestSha256)throw Error();}catch{refuse('ACCESS_DENIED');}
@@ -109,16 +89,16 @@ export function createCoreArtifactAuthority(configuration){
   const life=lifetime(call.deadlineMs,call.signal);
   try{
    const first=await observe(ports,request,life);
-   const authority=data({operations:first.receipt.operations,limits:first.receipt.limits,expiresAtMs:first.expiresAtMs});
-   let supplied;
-   try{supplied=await life.run(signal=>readRunOptions({binding:first.binding,scopes:first.scopes,selectedClientId:first.selectedClientId,intent:call.intent,body,requestSha256:call.requestSha256,authority,signal,deadlineMs:life.deadline()}));}
-   catch(error){throw closedError(error,'UNAVAILABLE');}
-   if(supplied===null)return null;
-   let o;try{o=own(supplied,['allocationJson','producerContext','descriptor','evidence','assets','maxBytes','authority','credential'],['sourceEnabled']);}catch{refuse('UNAVAILABLE');}
-   if(typeof o.allocationJson!=='string'||o.allocationJson.length<2||Buffer.byteLength(o.allocationJson)>1048576||typeof o.credential!=='string'||!TOKEN.test(o.credential)||o.credential.length>4096||
-    sha(o.credential)===first.bearerSha256||!Number.isSafeInteger(o.maxBytes)||o.maxBytes<1||o.sourceEnabled!==undefined&&typeof o.sourceEnabled!=='boolean')refuse('UNAVAILABLE');
-   const maxBytes=Math.min(o.maxBytes,first.receipt.limits?.maxArtifactBytes??Infinity,limits.maxResponseBytes);
-   let context;try{context=v.context({binding:first.binding,scopes:first.scopes,evidence:data(o.evidence),assets:data(o.assets),deadlineMs:call.deadlineMs,maxBytes});}catch{refuse('UNAVAILABLE');}
+   const readRun=capture(call.store,'read');
+   async function canonicalRun(observation,t){
+    const saved=await t.run(()=>readRun(observation.binding,{limit:1},t.check));
+    if(!saved||canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled')refuse('ACCESS_DENIED');
+    return saved.run;
+   }
+   await canonicalRun(first,life);
+   const maxBytes=Math.min(c.maxOutputBytes,first.receipt.limits?.maxArtifactBytes??Infinity,limits.maxResponseBytes);
+   // Typed document content is self-contained. Evidence/assets are never supplied by the public request.
+   const context=v.context({binding:first.binding,scopes:first.scopes,evidence:[],assets:[],deadlineMs:life.deadline(),maxBytes});
    life.check();
    let latest=first;
    async function authorize(value){
@@ -137,16 +117,15 @@ export function createCoreArtifactAuthority(configuration){
     const t=lifetime(k.deadlineMs,k.signal);
     try{
      const next=await observe(ports,request,t);
-     if(next.pin!==first.pin||next.bearerSha256===sha(o.credential))refuse('ACCESS_DENIED');
+     await canonicalRun(next,t);
+     if(next.pin!==first.pin)refuse('ACCESS_DENIED');
      if(next.checkedAtMs>=latest.checkedAtMs)latest=next;
      return Object.freeze({phase:k.phase,checkedAtMs:next.checkedAtMs,expiresAtMs:next.expiresAtMs});
     }catch(error){throw closedError(error,'ACCESS_DENIED');}finally{t.close();}
    }
-   const artifactOptions={pool:null,allocationJson:o.allocationJson,producerContext:o.producerContext,descriptor:o.descriptor,context,validators:v,
-    authority:o.authority,authorize,versions:null,objects:null,executor:null,now,
-    ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()}),newReservationId:()=>randomUUID(),
-    limits:{maxRequestMs:limits.maxRequestMs,maxResponseBytes:limits.maxResponseBytes},...(o.sourceEnabled===undefined?{}:{sourceEnabled:o.sourceEnabled})};
-   return {artifactOptions,selectedClientId:first.selectedClientId,credential:o.credential,limits:{...limits},enabled:true,recheck};
+   const artifactOptions={pool:null,context,validators:v,authorize,versions:null,objects:null,executor:null,now,
+    ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})};
+   return {artifactOptions,selectedClientId:first.selectedClientId,limits:{...limits},enabled:true,recheck};
   }catch(error){throw closedError(error,'ACCESS_DENIED');}finally{life.close();}
  }
  return Object.freeze({origin,now,resolve});

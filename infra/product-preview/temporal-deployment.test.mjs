@@ -7,7 +7,6 @@ import {synthesizeTemporalPreview} from './temporal-deployment.mjs';
 import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_INTERFACE_ENDPOINTS,TEMPORAL_EXISTING_DATABASE,temporalEndpointSecurityGroupIds,validateTemporalFixture,validateTemporalPreviewBinding} from './temporal-binding.mjs';
 import {TEMPORAL_MIGRATION_PLAN,TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
 import {validateTemporalNetworkReadback} from './temporal-network-readback.mjs';
-import {validateTemporalIssuerRenewal} from './temporal-issuer-renewal.mjs';
 import fixture from '../../apps/control/qualification-temporal/deployment.fixture.json' with {type:'json'};
 import pins from '../../apps/control/qualification-temporal/component-pins.json' with {type:'json'};
 
@@ -21,12 +20,12 @@ function binding(){return {
  upstreamServerSourceCommit:imagePins.serverSource.commit,launchSourceCommit:'c'.repeat(40),launchContractSha256:rendererSha,logGroupName:'/meri/temporal-preview',
  executionRoleArn:`arn:aws:iam::${account}:role/meri-temporal-execution`,
  taskRoleArns:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,`arn:aws:iam::${account}:role/meri-temporal-${i}`])),
- network:{clientSecurityGroupIds:['sg-11111111','sg-22222222'],issuerSecurityGroupId:'sg-33333333',
+ network:{clientSecurityGroupIds:['sg-11111111','sg-22222222'],
   interfaceEndpoints:Object.fromEntries(Object.keys(TEMPORAL_INTERFACE_ENDPOINTS).map((name,i)=>[name,{endpointId:`vpce-${String(i+1).repeat(8)}`,securityGroupId:`sg-${String(i+4).repeat(8)}`}])) ,
   s3Gateway:{endpointId:'vpce-99999999',prefixListId:'pl-11111111'},
   taskRouteTableBySubnet:{'subnet-1234abcd':'rtb-11111111','subnet-abcd1234':'rtb-22222222'},
-  migrationSecurityGroupId:'sg-aaaaaaaa',issuerClientSecurityGroupId:'sg-bbbbbbbb',dbClientSecurityGroupId:'sg-cccccccc'},
- auth:{issuer:'https://issuer.meri.internal:8445/',jwksUrl:'https://issuer.meri.internal:8445/.well-known/jwks.json',issuerCaSha256:sha,audience:'meri-temporal',namespace:'meri',taskQueue:'meri-conversations',
+  migrationSecurityGroupId:'sg-aaaaaaaa',dbClientSecurityGroupId:'sg-cccccccc'},
+ auth:{mode:'client-certificate',namespace:'meri',taskQueue:'meri-conversations',
   materialSecretVersionByRole:Object.fromEntries(TEMPORAL_ROLES.map((r,i)=>[r,version(r,i+1)]))},
  database:{...TEMPORAL_EXISTING_DATABASE,primaryDatabase:'temporal',visibilityDatabase:'temporal_visibility',
   primarySecretVersionArn:version('primary',7),primaryUsername:'temporal_primary',
@@ -80,9 +79,9 @@ test('fully bound synthesis emits five stopped private roles using the approved 
   assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp,'DISABLED');
   assert.deepEqual(s.NetworkConfiguration.AwsvpcConfiguration.Subnets,b.subnets.map(x=>x.id));
   assert.equal(s.ServiceRegistries.length,1);
-  assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups.length,3);
+  assert.equal(s.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups.length,2);
   assert.deepEqual(s.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups.slice(1),
-   [b.network.issuerClientSecurityGroupId,b.network.dbClientSecurityGroupId]);
+   [b.network.dbClientSecurityGroupId]);
  }
  for(const role of TEMPORAL_ROLES){
   const definition=task(t,role),container=definition.ContainerDefinitions[0];
@@ -99,9 +98,9 @@ test('fully bound synthesis emits five stopped private roles using the approved 
   const env=Object.fromEntries(container.Environment.map(x=>[x.Name,x.Value]));
   assert.equal(env.NUM_HISTORY_SHARDS,'128');assert.equal(env.DB,'postgres12');assert.equal(env.SQL_HOST_VERIFICATION,'true');
   assert.equal(env.TEMPORAL_TLS_REQUIRE_CLIENT_AUTH,'true');assert.equal(env.TEMPORAL_AUTH_AUTHORIZER,'default');
-  assert.equal(env.TEMPORAL_AUTH_CLAIM_MAPPER,'default');assert.equal(env.TEMPORAL_JWT_KEY_SOURCE1,b.auth.jwksUrl);
-  assert.equal(env.TEMPORAL_AUTH_ISSUER,'https://issuer.meri.internal:8445/');
-  assert.equal(env.TEMPORAL_JWT_KEY_REFRESH,'300s');assert.equal(env.MERI_TEMPORAL_RENDER_DIR,'/run/temporal');
+  assert.equal(env.TEMPORAL_AUTH_CLAIM_MAPPER,'meri-client-certificate');
+  assert(!Object.keys(env).some(key=>key.startsWith('TEMPORAL_JWT_')||['TEMPORAL_AUTH_ISSUER','TEMPORAL_AUTH_AUDIENCE','MERI_TEMPORAL_ISSUER_CA_SHA256'].includes(key)));
+  assert.equal(env.MERI_TEMPORAL_RENDER_DIR,'/run/temporal');
   assert.equal(env.MERI_TEMPORAL_ACTIVATION,'disabled');assert.equal(env.MERI_TEMPORAL_SERVICE_NAME,role);
   assert.equal(env.MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED,b.database.primaryUsername);
   assert.equal(env.MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED,b.database.visibilityUsername);
@@ -166,9 +165,7 @@ test('network creates role-specific security groups with no unrestricted egress'
  assert.equal(groups.length,5);
  const egress=resources(t,'AWS::EC2::SecurityGroupEgress');
  assert(egress.length>0);
- const issuerEgress=egress.filter(x=>x.DestinationSecurityGroupId===b.network.issuerSecurityGroupId);
- assert.equal(issuerEgress.length,5);
- assert(issuerEgress.every(x=>x.FromPort===8445&&x.ToPort===8445&&x.IpProtocol==='tcp'));
+ assert(!egress.some(x=>x.FromPort===8445||x.ToPort===8445),'no retired issuer network path');
  const endpointIds=Object.values(b.network.interfaceEndpoints).map(x=>x.securityGroupId);
  const endpointEgress=egress.filter(x=>endpointIds.includes(x.DestinationSecurityGroupId));
  assert.equal(endpointEgress.length,25);
@@ -176,9 +173,9 @@ test('network creates role-specific security groups with no unrestricted egress'
  assert(egress.some(x=>x.DestinationPrefixListId==='pl-11111111'&&x.FromPort===443));
  assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
  const ingress=resources(t,'AWS::EC2::SecurityGroupIngress');
- // Aurora and issuer ingress are foundation-owned via the dbClient/issuerClient markers.
+ // Aurora ingress is foundation-owned via its database client security group.
  assert.equal(ingress.filter(x=>x.FromPort===5432||x.ToPort===5432).length,0);
- assert(!ingress.some(x=>[TEMPORAL_EXISTING_DATABASE.securityGroupId,b.network.issuerSecurityGroupId].includes(x.GroupId)));
+ assert(!ingress.some(x=>x.GroupId===TEMPORAL_EXISTING_DATABASE.securityGroupId));
  const dbEgress=egress.filter(x=>x.DestinationSecurityGroupId===TEMPORAL_EXISTING_DATABASE.securityGroupId);
  assert.equal(dbEgress.length,5);
  assert(dbEgress.every(x=>x.FromPort===5432&&x.ToPort===5432&&x.IpProtocol==='tcp'));
@@ -187,20 +184,14 @@ test('network creates role-specific security groups with no unrestricted egress'
  assert(!ingress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
 });
 
-test('issuer binding requires exact 8445 HTTPS issuer and same-origin fixed JWKS path',()=>{
- assert.equal(validateTemporalPreviewBinding(binding()).auth.issuer,'https://issuer.meri.internal:8445/');
- for(const suffix of ['',':443',':8443',':8446',':08445']){
-  const b=binding();b.auth.issuer=`https://issuer.meri.internal${suffix}/`;
-  b.auth.jwksUrl=`https://issuer.meri.internal${suffix}/.well-known/jwks.json`;
-  assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);
- }
+test('native certificate binding refuses JWT and unsupported namespace modes',()=>{
+ assert.equal(validateTemporalPreviewBinding(binding()).auth.mode,'client-certificate');
  for(const mutate of [
-  x=>{x.auth.issuer='https://issuer.meri.internal:8445';},
-  x=>{x.auth.issuer='https://issuer.meri.internal:8445/?extra=1';},
-  x=>{x.auth.jwksUrl='https://issuer.meri.internal/.well-known/jwks.json';},
-  x=>{x.auth.jwksUrl='https://issuer.meri.internal:8445/other';},
-  x=>{x.auth.jwksUrl='https://user@issuer.meri.internal:8445/.well-known/jwks.json';},
-  x=>{x.auth.jwksUrl='https://issuer.meri.internal:8445/.well-known/jwks.json?extra=1';}
+  x=>{delete x.auth.mode;},x=>{x.auth.mode='jwt';},x=>{x.auth.namespace='other';},
+  x=>{x.auth.issuer='https://retired.synthetic.invalid/';},
+  x=>{x.auth.jwksUrl='https://retired.synthetic.invalid/jwks';},
+  x=>{x.auth.audience='retired';},x=>{x.auth.tokenFile='/run/meri/token';},
+  x=>{x.network.issuerSecurityGroupId='sg-33333333';}
  ]){const b=binding();mutate(b);assert.throws(()=>validateTemporalPreviewBinding(b),/TEMPORAL_PREVIEW_BINDING_REFUSED/u);}
 });
 
@@ -218,8 +209,7 @@ test('offline network readback joins exact private ECR, Logs, Secrets, KMS and S
    SubnetIds:b.subnets.map(y=>y.id),Groups:[{GroupId:x.securityGroupId}]})),
   s3Gateway:{VpcEndpointId:n.s3Gateway.endpointId,VpcId:b.vpcId,ServiceName:'com.amazonaws.us-east-1.s3',
    VpcEndpointType:'Gateway',State:'available',RouteTableIds:routeIds},
-  securityGroups:[...temporalEndpointSecurityGroupIds(n),n.issuerSecurityGroupId,n.migrationSecurityGroupId,
-   n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
+  securityGroups:[...temporalEndpointSecurityGroupIds(n),n.migrationSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
  assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
  for(const mutate of [
   x=>{x.routeTables[0].Routes[1].GatewayId='vpce-deadbeef';},
@@ -231,28 +221,6 @@ test('offline network readback joins exact private ECR, Logs, Secrets, KMS and S
   x=>{x.subnets[0].MapPublicIpOnLaunch=true;},
   x=>{x.securityGroups[0].VpcId='vpc-deadbeef';}
  ]){const copy=structuredClone(evidence);mutate(copy);assert.throws(()=>validateTemporalNetworkReadback(b,copy),/TEMPORAL_NETWORK_READBACK_REFUSED/u);}
-});
-
-test('unmounted issuer renewal contract binds distinct write subjects to an external broker role',()=>{
- const b=binding(),a=b.auth,role=(name)=>({subject:`meri-temporal-${name}:v1`,namespaceRole:'write',
-  tokenFile:'/run/meri-temporal/token.json',workloadPrincipal:`meri-workload-${name}:v1`,
-  delivery:'task-local-atomic-owner-only-file'});
- const spec={schemaVersion:1,status:'unmounted',issuer:a.issuer,jwksUrl:a.jwksUrl,audience:a.audience,
-  namespace:a.namespace,taskQueue:a.taskQueue,maxTokenLifetimeMs:60000,refreshMs:10000,
-  issuerServiceTaskRoleArn:`arn:aws:iam::${account}:role/meri-temporal-issuer`,
-  roles:{control:role('control'),temporalWorker:role('worker')}};
- assert.equal(validateTemporalIssuerRenewal(b,spec).status,'unmounted');
- for(const mutate of [
-  x=>{x.status='active';},x=>{x.issuer='https://other.internal/';},
-  x=>{x.roles.temporalWorker.subject=x.roles.control.subject;},
-  x=>{x.roles.temporalWorker.workloadPrincipal=x.roles.control.workloadPrincipal;},
-  x=>{x.issuerServiceTaskRoleArn=b.taskRoleArns.frontend;},
-  x=>{x.roles.control.namespaceRole='worker';},
-  x=>{x.roles.control.tokenFile='/run/meri/static-token.json';},
-  x=>{x.roles.control.tokenFile='/run/meri/temporal-token.json';},
-  x=>{x.maxTokenLifetimeMs=60001;},
-  x=>{x.maxTokenLifetimeMs=86400000;}
- ]){const copy=structuredClone(spec);mutate(copy);assert.throws(()=>validateTemporalIssuerRenewal(b,copy),/TEMPORAL_ISSUER_RENEWAL_REFUSED/u);}
 });
 
 test('missing or contradictory authority and network inputs refuse before synthesis',()=>{
@@ -295,7 +263,7 @@ test('missing or contradictory authority and network inputs refuse before synthe
   x=>{x.network.issuerClientSecurityGroupId=x.network.issuerSecurityGroupId;},
   x=>{x.network.dbClientSecurityGroupId=x.database.securityGroupId;},
   x=>{x.network.dbClientSecurityGroupId=x.network.clientSecurityGroupIds[1];},
-  x=>{delete x.network.issuerClientSecurityGroupId;},x=>{delete x.network.dbClientSecurityGroupId;},
+  x=>{delete x.network.dbClientSecurityGroupId;},
   x=>{x.network.dbClientSecurityGroupId='';},
   x=>{x.network.s3Gateway.prefixListId='';},
   x=>{delete x.network.taskRouteTableBySubnet['subnet-abcd1234'];},
@@ -344,8 +312,7 @@ function readback(b){
    SubnetIds:b.subnets.map(y=>y.id),Groups:[{GroupId:x.securityGroupId}]})),
   s3Gateway:{VpcEndpointId:n.s3Gateway.endpointId,VpcId:b.vpcId,ServiceName:'com.amazonaws.us-east-1.s3',
    VpcEndpointType:'Gateway',State:'available',RouteTableIds:routeIds},
-  securityGroups:[...temporalEndpointSecurityGroupIds(n),n.issuerSecurityGroupId,n.migrationSecurityGroupId,
-   n.issuerClientSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
+  securityGroups:[...temporalEndpointSecurityGroupIds(n),n.migrationSecurityGroupId,n.dbClientSecurityGroupId].map(id=>({GroupId:id,VpcId:b.vpcId}))};
 }
 
 test('shared S3 gateway may serve additional route tables while retaining every Temporal task route',()=>{
@@ -393,10 +360,9 @@ test('one shared capiro-dev endpoint SG binds, dedupes egress and still needs di
  assert(endpointEgress.every(x=>x.FromPort===443&&x.ToPort===443&&x.IpProtocol==='tcp'));
  assert.equal(new Set(endpointEgress.map(x=>JSON.stringify(x.GroupId))).size,5);
  assert.equal(egress.filter(x=>x.DestinationPrefixListId==='pl-63a5400a'&&x.FromPort===443).length,5);
- assert.equal(egress.filter(x=>x.DestinationSecurityGroupId===b.network.issuerSecurityGroupId&&x.FromPort===8445&&x.ToPort===8445).length,5);
+ assert(!egress.some(x=>x.FromPort===8445||x.ToPort===8445));
  assert.equal(egress.filter(x=>x.DestinationSecurityGroupId===TEMPORAL_EXISTING_DATABASE.securityGroupId&&x.FromPort===5432).length,5);
- assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'||
-  x.DestinationSecurityGroupId===b.network.issuerSecurityGroupId&&x.FromPort!==8445));
+ assert(!egress.some(x=>x.CidrIp==='0.0.0.0/0'||x.CidrIpv6==='::/0'));
  for(const service of resources(t,'AWS::ECS::Service'))
   assert.deepEqual(service.NetworkConfiguration.AwsvpcConfiguration.Subnets,b.subnets.map(x=>x.id));
  for(const mutate of [
@@ -411,7 +377,7 @@ test('one shared capiro-dev endpoint SG binds, dedupes egress and still needs di
 
 test('shared endpoint SG readback needs one SG row, exact service names and each endpoint on the bound group',()=>{
  const b=capiroDevBinding(),evidence=readback(b);
- assert.equal(evidence.securityGroups.length,5);
+ assert.equal(evidence.securityGroups.length,3);
  assert.match(validateTemporalNetworkReadback(b,evidence).readbackSha256,/^[a-f0-9]{64}$/u);
  for(const mutate of [
   x=>{x.securityGroups.push({GroupId:SHARED_ENDPOINT_SG,VpcId:b.vpcId});},

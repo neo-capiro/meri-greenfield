@@ -30,8 +30,10 @@ test('the inventory names every retained data class the product holds, each with
 test('serving claims hold in the owners\' source: every gated class is served by an owner that consults the canonical read gate',()=>{
  for(const c of dataClasses.filter(c=>c.status==='active')){
   if(c.serving.gate==='retention-read-gate')assert.match(source(c.serving.owner),/assertServable/,`${c.id}: ${c.serving.owner} consults the read gate before serving`);
-  // Admission-gated data is only served to runs the lifecycle owner admitted through the gated history read.
-  if(c.serving.gate==='admission-gate'){assert.equal(c.serving.owner,'apps/control/conversations/lifecycle/service.mjs',c.id);assert.match(source(c.serving.owner),/:service\.history;/u,`${c.id}: every lifecycle operation reads through the gated history`);}
+  // Lifecycle now composes the history gate's actual owners directly. The
+  // suppression/race/release controls live in retention-serving.test.mjs.
+  if(c.serving.gate==='admission-gate'){assert.equal(c.serving.owner,'apps/control/conversations/lifecycle/service.mjs',c.id);const text=source(c.serving.owner);
+   for(const pattern of [/authenticatedCurrentState\(sessions\)/u,/const before=await observe\(active\);await servable\(active,before\)/u,/store\.readOptional/u,/const after=await observe\(active\)/u,/await servable\(active,after\)/u,/retention\.assertServable/u])assert.match(text,pattern,`${c.id}: observed-session, store and retention owners remain in the serving path`);}
  }
  assert.match(source('apps/control/conversations/service.mjs'),/retentionGate&&!cleanup\)\{await life\.run\(\(\)=>retentionGate\.assertServable/u,'the gated history consults the read gate on every non-cleanup read');
 });

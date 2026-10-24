@@ -86,7 +86,7 @@ with zipfile.ZipFile("temporal-context.zip") as z:
     assert hashlib.sha256(z.read("repo/" + path)).hexdigest() == script, "SCRIPT_MEMBER_MISMATCH"
     assert sorted(z.namelist()) == sorted(["context-manifest.json", *m["files"]]), "MEMBER_SET_MISMATCH"
 print(json.dumps({"zipBytes": os.path.getsize("temporal-context.zip"), "zipSha256": expected, "commit": commit,
-                  "buildScriptSha256": script, "issuerCaSha256": m["issuerCaSha256"], "bases": bases}), file=sys.stderr)
+                  "buildScriptSha256": script, "bases": bases}), file=sys.stderr)
 EOF
 
 request() { # $1 = attempt, $2 = source VersionId -> exact StartBuild JSON on stdout

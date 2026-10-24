@@ -2,7 +2,7 @@
 import schema from '../../../../../packages/contracts/retrieval-0.2/business-development.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {deny} from '../../../dispatch/operation-result.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createBusinessDevelopmentHandlers} from '../handler.mjs';
 import {captureBusinessDevelopmentResource} from '../request-context.mjs';
 export const ids=['get_business_development_context','get_business_development_recent_changes'];
@@ -47,7 +47,6 @@ export function storedCase(id=ids[0],{request=requests[id],personal=false}={}){
  const input=contract.normalizeInput(request,normalizationContext).input,page=storedPage(id,input,now());
  if(personal&&id===ids[0])page.prospect.linkedClientId=null;
  const {getCredentials,...passive}=scene.transport;
- if(id===evidenceId)state.credentialMutator=proof=>{proof.authorizationScheme='CapiroMeriRead';};
  const transport={...passive,credentialsForCall(selected,originalCall){
   state.credentialOwnerCalls??=[];state.credentialOwnerCalls.push({operation:selected,call:originalCall});
   if(state.resourceDenied)deny('ACCESS_DENIED');
@@ -57,7 +56,7 @@ export function storedCase(id=ids[0],{request=requests[id],personal=false}={}){
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);
  }};
  const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);
-  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){
   if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};

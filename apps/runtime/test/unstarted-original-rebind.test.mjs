@@ -3,7 +3,7 @@
  * run-binding journal (generations) and the run-keyed original-input journal. A render is a deployment: its runtime versions and its
  * configuration hash. The Date clock advances through the full 15-minute original window without sleeping. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createPreparedCandidateIdentity} from '../prepared-candidate.mjs';
+import {createConversationIdentity as createPreparedCandidateIdentity} from '../conversation-identity.mjs';
 import {createActionSessionOwner,issuedCurrentState} from '../../control/action-host/session/owner.mjs';
 import {createConversationService} from '../../control/conversations/service.mjs';
 import {createNextRunOwner} from '../../control/conversations/next-run.mjs';
@@ -25,7 +25,7 @@ async function database(t){
  /** One control render: its own identity, session owner, conversation service and next-run owner, over the shared durable state. */
  function render(r,{policy=policyRevision,client=clientId,actor=principal.actorId}={}){const lines=[],who={...principal,actorId:actor};
   const nextRunOwner=createNextRunOwner({store:f.store,versions:r.versions,newId:()=>id(serial++),retirement,revocation});
-  const identity=createPreparedCandidateIdentity({store:f.store,identity:{origin:'https://authority.synthetic.invalid',commandContext:{binding:profileBinding,clientResolution:{reference:client,clientId:client}},
+  const identity=createPreparedCandidateIdentity({store:f.store,identity:{origin:'https://authority.synthetic.invalid',
    async fetchImpl(url,options){const input=JSON.parse(options.body),now=Date.now(),base={principal:who,identityRevision:'native-1',checkedAtMs:now,expiresAtMs:now+30000};if(url.endsWith('/identity'))return Response.json(base);
     return Response.json({...base,identitySha256:input.identitySha256,conversationId,selectedClientId:client,contextRevision:'native-context-1'});}},
    qualification:{policyRevision:policy},limits:{maxRequestMs:2000,maxFactBytes:131072},nextRunOwner,initialBindings:journal,configurationSha256:r.configurationSha256,versions:r.versions,proposeInitialExpiry:()=>Date.now()+ORIGINAL_WINDOW_MS,factWindowMs:900000});
@@ -69,7 +69,7 @@ test('a first send that reserved input but never ran: the rebind supersedes the 
 test('a started original is never rebound; another principal or client, or a changed policy after the start, is refused',async t=>{const d=await database(t),a=d.render(RENDER_A);try{
  const first=await a.issue();await d.send(a,first.credential);d.advance(ORIGINAL_WINDOW_MS+1);
  const b=d.render(RENDER_B),later=await b.issue();assert.deepEqual(later.binding,first.binding,'the live started run is bound again, never replaced');assert.equal(d.generations().length,1);
- for(const [options,code] of [[{actor:'actor-b'},{step:'identity',code:'NATIVE_AUTHORITY_UNAVAILABLE'}],[{client:id(7)},{step:'initial-binding',code:'INITIAL_RUN_BINDING_CONFLICT'}],[{policy:'policy2'},{step:'initial-binding',code:'INITIAL_BINDING_POLICY_CHANGED'}]]){
+ for(const [options,code] of [[{actor:'actor-b'},{step:'initial-binding',code:'INITIAL_RUN_BINDING_CONFLICT'}],[{client:id(7)},{step:'initial-binding',code:'INITIAL_RUN_BINDING_CONFLICT'}],[{policy:'policy2'},{step:'initial-binding',code:'INITIAL_BINDING_POLICY_CHANGED'}]]){
   const other=d.render(RENDER_B,options);try{await assert.rejects(other.issue(),{code:'SESSION_REFUSED'});assert.deepEqual(other.lines,[code],JSON.stringify(options));}finally{other.close();}
  }
  assert.equal(d.generations().length,1,'no refusal minted a generation');b.close();

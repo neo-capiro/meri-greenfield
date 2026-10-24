@@ -1,7 +1,7 @@
 /** Actual session/journal/lifecycle/Temporal adapter over scripted SQL and RPC scopes.
  * No PostgreSQL, Temporal server, native task, provider or credential is claimed. */
 import test,{beforeEach} from 'node:test';import assert from 'node:assert/strict';
-import {lifecycleFixture,binding,scopes,id,versions,allocateOriginal,retireAllocation} from './lifecycle-fixture.mjs';
+import {lifecycleFixture,binding,scopes,id,versions,allocateOriginal,settleInvocation} from './lifecycle-fixture.mjs';
 import {createConversationLifecycleService} from '../lifecycle/service.mjs';
 import {createTemporalConversationDispatcher} from '../temporal-dispatch.mjs';
 import {createPostgresConversationStore} from '../postgres-store.mjs';
@@ -18,7 +18,7 @@ async function fixture(mode='resume'){
  const service=createConversationLifecycleService({retention:null,service:f.service,store,dispatcher,reconcileOriginal:f.reconcileOriginal,checkpoints:f.checkpoints,nativeAdmission:f.nativeAdmission,approvals:f.approvals,sessions:f.sessions,newId:()=>id(n++),maxRequestMs:3000});
  await f.running();f.state.checkCurrentBinding=b=>f.store.nextRuns.current(b,check);
  await f.control({controlId:pauseId,intent:'pause'});await f.claim(pauseId);await f.checkpoint(pauseId);
- const proof=f.proofs.get(id(220)),input={controlId,intent:mode,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256};
+ const proof=f.proofs.get(binding.runId),input={controlId,intent:mode,checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256};
  const run=(options={})=>service.control({credential:f.credential,input,...options});
  const saved=()=>f.state.controls.get(`${binding.tenantId}:${controlId}`)?.projection;
  const mapping=()=>{const p=saved();return {credential:f.credential,controlId,sourceBinding:binding,targetBinding:p.target.binding,admissionReceiptId:p.target.admissionReceiptId,retirementReceiptId:p.retirement?.retirementReceiptId??null};};
@@ -103,7 +103,7 @@ for(const changed of ['source-binding','target-envelope','target-conversation'])
  }finally{f.close();}
 });
 test('fork transition locks source and separately owned target in deterministic code-unit order and never notifies continued',async()=>{
- const f=await fixture('fork');try{const admit=f.nativeAdmission.admit;f.nativeAdmission.admit=async input=>{const p=await admit(input);return {...p,binding:{...p.binding,conversationId:id(0)}};};const out=await f.run();assert.equal(out.state,'APPLIED');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,0);assert.notEqual(out.targetBinding.conversationId,binding.conversationId);
+ const f=await fixture('fork');try{const admit=f.nativeAdmission.admit;f.nativeAdmission.admit=async input=>{const p=await admit(input);return {...p,binding:{...p.binding,conversationId:id(0)},bootstrap:{...p.bootstrap,conversationId:id(0)}};};const out=await f.run();assert.equal(out.state,'APPLIED');assert.equal(f.calls.starts.length,1);assert.equal(f.calls.continued.length,0);assert.notEqual(out.targetBinding.conversationId,binding.conversationId);
   const locks=[],pool={async connect(){const client=await f.pool.connect();return {async query(sql,p=[]){if(sql.startsWith('SELECT pg_advisory_xact_lock'))locks.push(p[0]);return client.query(sql,p);},release:error=>client.release(error)};}};
   const store=createPostgresConversationStore({pool,transitionAuthority:{async readCurrent({binding:b}){const r=await f.store.nextRuns.current(b,check);return {binding:r.binding,scopes:r.scopes,selectedClientId:id(5),policyRevision:r.policyRevision,checkedAtMs:Date.now(),expiresAtMs:Date.now()+1000};}}});
   const p=await store.lifecycle.readTransition({sourceBinding:binding,controlId,deadlineMs:Date.now()+1000},check);assert.equal(p.intent,'fork');assert.equal(p.retirementReceiptId,null);assert.equal(p.retirementExpiresAtMs,null);assert.deepEqual(locks.slice(-2),[`${binding.tenantId}:${out.targetBinding.conversationId}`,`${binding.tenantId}:${binding.conversationId}`]);
@@ -124,12 +124,13 @@ test('canonical third lifecycle run makes the prior transition target historical
   await f.service.control({credential,input:{controlId:id(972),intent:'pause'}});
   const pending=(await f.service.nextControls({credential,binding:second})).controls.find(p=>p.command.controlId===id(972));
   await f.service.claimControl({credential,binding:second,input:{controlId:id(972),commandSha256:pending.commandSha256}});
-  const source=await f.store.read(second,{},check),proof=structuredClone(f.proofs.get(id(220)));
-  proof.checkpoint.checkpointId=id(974);proof.checkpoint.binding=second;proof.checkpoint.workspace.binding=second;proof.checkpoint.workspaceSha256=hash(proof.checkpoint.workspace);proof.checkpoint.lastEventSequence=source.lastSequence;proof.checkpointSha256=hash(proof.checkpoint);proof.sourceRequestSha256=hash(source.request);proof.contextSha256=hash({window:source.request.window,skill:source.request.skill,scopes});f.proofs.set(id(974),proof);
-  await f.service.recordCheckpoint({credential,binding:second,input:{controlId:id(972),checkpointId:id(974),checkpointSha256:proof.checkpointSha256}});
-  f.nativeAdmission.retire=async({binding:b})=>{await retireAllocation(f.store,b);return {binding:b,retirementReceiptId:id(978),expiresAtMs:Date.now()+30000};};
+  await f.capture({binding:second});
+  await f.service.recordCheckpoint({credential,binding:second,input:{controlId:id(972),sessionId:id(223)}});
+  await settleInvocation(f.store,second);
+  const {proof}=await f.store.lifecycle.readSessionCapture({binding:second,scopes,selectedClientId:id(5),checkpointId:second.runId},check);
+  f.nativeAdmission.retire=async({binding:b})=>{await settleInvocation(f.store,b);return {binding:b,retirementReceiptId:id(978),expiresAtMs:Date.now()+30000};};
   f.nativeAdmission.admit=async({sourceBinding:b,scopes})=>({binding:{...b,runId:id(975),attemptId:id(976),workerId:id(977),writerFence:b.writerFence+1},scopes,selectedClientId:id(5),admissionReceiptId:id(979),targetSessionId:null,expiresAtMs:Date.now()+30000});
-  const input={controlId:id(973),intent:'resume',checkpointId:id(974),checkpointSha256:proof.checkpointSha256},third=await f.service.control({credential,input});assert.equal(third.state,'APPLIED');assert.equal(third.targetBinding.writerFence,3);assert.equal(f.state.runs.size,3);
+  const input={controlId:id(973),intent:'resume',checkpointId:second.runId,checkpointSha256:proof.checkpointSha256},third=await f.service.control({credential,input});assert.equal(third.state,'APPLIED');assert.equal(third.targetBinding.writerFence,3);assert.equal(f.state.runs.size,3);
   await assert.rejects(f.store.lifecycle.readTransition({sourceBinding:binding,controlId,deadlineMs:Date.now()+1000},check));
   const starts=f.state.starts,continued=f.state.continued;await assert.rejects(f.service.control({credential,input}),/SESSION_REFUSED/);assert.equal(f.state.starts,starts);assert.equal(f.state.continued,continued);assert.equal(f.calls.starts.length,2);assert.equal(f.calls.continued.length,2);
  }finally{f.close();}

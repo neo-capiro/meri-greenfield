@@ -11,9 +11,8 @@ const unavailable=()=>{throw new ProductError('CONVERSATION_UNAVAILABLE');};
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 
 export function createCoreConversationCurrentness(configuration){
- const c=own(configuration,['origin','fetchImpl','now','limits','selectedClientId']);
+ const c=own(configuration,['origin','fetchImpl','now','limits']);
  const limits=data(own(c.limits,['maxRequestMs','maxFactBytes']));
- if(typeof c.selectedClientId!=='string'||!uuid.test(c.selectedClientId))unavailable();
  const client=createCapiroApplicationAuthorityClient({origin:c.origin,fetchImpl:c.fetchImpl,now:c.now,enabled:true,limits:{maxRequestMs:limits.maxRequestMs,maxResponseBytes:limits.maxFactBytes}});
  const samePrincipal=(receipt,principal)=>receipt.principal.tenantId===principal.tenantId&&receipt.principal.actorId===principal.actorId;
  const fresh=(receipt,started)=>{const at=c.now();if(!Number.isSafeInteger(started)||!Number.isSafeInteger(at)||at<started||receipt.checkedAtMs<started||receipt.checkedAtMs>at||receipt.expiresAtMs<=at)unavailable();};
@@ -22,18 +21,22 @@ export function createCoreConversationCurrentness(configuration){
    const call=own(value,['credential','principal','conversationId','scopes','deadlineMs'],['signal']),principal=own(call.principal,['tenantId','actorId','clientIds'],['role','permissions','membershipRevision']);
    nativeSignal(call.signal);
    const scopes=data(call.scopes),clientIds=data(principal.clientIds);
-   if(typeof call.credential!=='string'||!call.credential||!Number.isSafeInteger(call.deadlineMs)||typeof call.conversationId!=='string'||!uuid.test(call.conversationId)||!Array.isArray(scopes)||scopes.length<1||!Array.isArray(clientIds)||!clientIds.includes(c.selectedClientId))unavailable();
+   if(!Array.isArray(scopes)||scopes.length<1||!Array.isArray(clientIds))unavailable();
+   const clients=scopes.filter(scope=>scope.kind==='client');
+   if(clients.length>1||clients.length===0&&!(scopes.length===1&&scopes[0].kind==='private-user'&&scopes[0].tenantId===principal.tenantId&&scopes[0].resourceId===principal.actorId))unavailable();
+   const selectedClientId=clients.length===1?clients[0].resourceId:null;
+   if(typeof call.credential!=='string'||!call.credential||!Number.isSafeInteger(call.deadlineMs)||typeof call.conversationId!=='string'||!uuid.test(call.conversationId)||selectedClientId!==null&&!clientIds.includes(selectedClientId))unavailable();
    for(const scope of scopes){validateShape('Scope',scope);if(scope.tenantId!==principal.tenantId||scope.kind==='client'&&!clientIds.includes(scope.resourceId))unavailable();}
-   if(!scopes.some(scope=>scope.kind==='client'&&scope.resourceId===c.selectedClientId))unavailable();
+   if(selectedClientId===null?scopes.length!==1||scopes[0].kind!=='private-user'||scopes[0].resourceId!==principal.actorId:!scopes.some(scope=>scope.kind==='client'&&scope.resourceId===selectedClientId))unavailable();
    const started=c.now();if(!Number.isSafeInteger(started)||call.deadlineMs<=started)unavailable();
    const deadlineMs=Math.min(call.deadlineMs,started+limits.maxRequestMs);
    // History is not a run: never enter the O208 receipt cache or retain a positive across rows/requests.
    // Membership admission supplies this pin; no identity/context revision is invented from stored local policy scopes.
    const expect=principal.membershipRevision===undefined?undefined:{membershipRevision:principal.membershipRevision};
    currentTurnTelemetry()?.recordAuthority?.('fresh');
-   const receipt=await client.readCurrent({credential:call.credential,conversationId:call.conversationId,clientId:c.selectedClientId,...(expect?{expect}:{}),signal:call.signal,deadlineMs:Math.min(deadlineMs,started+CURRENT_MAX_WAIT_MS)});
+   const receipt=await client.readCurrent({credential:call.credential,conversationId:call.conversationId,clientId:selectedClientId,...(expect?{expect}:{}),signal:call.signal,deadlineMs:Math.min(deadlineMs,started+CURRENT_MAX_WAIT_MS)});
    fresh(receipt,started);
-   if(!samePrincipal(receipt,principal)||receipt.conversationId!==call.conversationId||receipt.selectedClientId!==c.selectedClientId)unavailable();
+   if(!samePrincipal(receipt,principal)||receipt.conversationId!==call.conversationId||receipt.selectedClientId!==selectedClientId)unavailable();
    if(call.signal?.aborted||c.now()>=Math.min(deadlineMs,receipt.expiresAtMs))unavailable();
   }catch(cause){
    if(productFailure(cause))throw cause;

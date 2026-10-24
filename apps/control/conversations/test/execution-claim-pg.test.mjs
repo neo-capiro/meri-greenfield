@@ -1,0 +1,32 @@
+/** Actual isolated PG16 execution journal and lock controls. No Runtime/model/provider call; root executes this gate. */
+import test from 'node:test';import assert from 'node:assert/strict';import pg from 'pg';import {randomUUID} from 'node:crypto';
+import {createPostgresConversationStore} from '../postgres-store.mjs';import {createExecutionBinding} from '../execution-boundary.mjs';
+import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';import {versions} from './store-fixture.mjs';
+const check=()=>{};
+async function fixture(t){const host=process.env.MERI_INSPECTION_TEST_SOCKET,database=process.env.MERI_INSPECTION_TEST_DATABASE;
+ if(host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||database!=='meri_inspection_final')throw Error('NEW_OWNED_CLAIM_DATABASE_REQUIRED');
+ const pool=new pg.Pool({host,database,user:'postgres',max:4});t.after(()=>pool.end());const guard=(await pool.query("SELECT current_setting('listen_addresses') AS listen,current_setting('server_version_num')::int AS version,current_database() AS db")).rows[0];
+ assert.equal(guard.listen,'');assert.equal(guard.db,database);assert(guard.version>=160000&&guard.version<170000);
+ const store=createPostgresConversationStore({pool}),binding={tenantId:'claim-'+randomUUID(),actorId:'actor-'+randomUUID(),conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1},policyRevision='a'.repeat(64),scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:randomUUID(),policyRevision}],createdAt=new Date().toISOString(),request={requestId:randomUUID(),prompt:'synthetic invocation',skill:null,window:null,windowRequest:null};
+ const {versions:ignored,...execution}=createExecutionBinding({binding,versions,plan:{synthetic:'invocation'},expiresAtMs:Date.now()+30000,runtimeSessionId:'conversation-'+hash(binding)});
+ await pool.query('INSERT INTO meri_settings.tenant_settings(tenant_id,revision,document,document_sha256,updated_at,updated_by,monthly_cap_micro_usd) VALUES($1,1,$2,$3,clock_timestamp(),$4,100000000)',[binding.tenantId,{},hash({}),binding.actorId]);
+ await store.accept({conversation:{conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt,policyRevision},run:{binding,state:'queued',scopes,createdAt,policyRevision,versions},request,event:{contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},check);
+ const status=state=>store.append(binding,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}},check);
+ const complete=async()=>{for(const state of ['starting','running','completed'])await status(state);};
+ const settle=()=>store.executions.record({binding,executionId:execution.executionId,phase:'settled',native:{state:'completed'}},check);
+ return {pool,store,binding,execution,status,complete,settle};
+}
+test('concurrent claim commits one invocation and exact replay never redispatches',async t=>{const f=await fixture(t),results=await Promise.all([1,2,3].map(()=>f.store.executions.claim(f.execution,check)));assert.equal(results.filter(r=>r.dispatch).length,1);assert.equal(Number((await f.pool.query('SELECT count(*) AS n FROM meri_conversations.native_executions WHERE tenant_id=$1',[f.binding.tenantId])).rows[0].n),1);});
+for(const state of ['starting','cancelled','failed'])test(`unclaimed ${state} cannot acquire a late invocation`,async t=>{const f=await fixture(t);await f.status(state);await assert.rejects(f.store.executions.claim(f.execution,check),/EXECUTION_NOT_QUEUED/);assert.equal((await f.store.executions.read(f.binding,check)).record,null);});
+test('changed immutable session/plan/deadline cannot borrow a committed invocation',async t=>{const f=await fixture(t);await f.store.executions.claim(f.execution,check);for(const change of [{runtimeSessionId:'foreign-'+hash('foreign')},{planSha256:'0'.repeat(64)},{expiresAtMs:f.execution.expiresAtMs+1}])await assert.rejects(f.store.executions.claim({...f.execution,...change},check),/EXECUTION_REPLAY_REFUSED/);});
+test('settlement waits for the final SessionStore callback lock, then refuses any late append',async t=>{const f=await fixture(t);await f.store.executions.claim(f.execution,check);await f.complete();const entered=Promise.withResolvers(),release=Promise.withResolvers();let settled=false;
+ const flush=f.store.executions.withCurrentRun({binding:f.binding,deadlineMs:Date.now()+10000},async()=>{entered.resolve();await release.promise;return {flushed:true};});await entered.promise;const settlement=f.settle().then(()=>{settled=true;});
+ try{await new Promise(resolve=>setTimeout(resolve,30));assert.equal(settled,false);}finally{release.resolve();}await flush;await settlement;await assert.rejects(f.store.executions.withCurrentRun({binding:f.binding},async()=>assert.fail('late append')),/EXECUTION_ADMISSION_REFUSED/);
+});
+test('Stop barrier cannot be cleared by late ordinary completion and settled Stop is idempotent',async t=>{const f=await fixture(t);await f.store.executions.claim(f.execution,check);await f.status('cancelled');await f.store.executions.requestStop(f.binding,check);
+ await assert.rejects(f.store.executions.record({binding:f.binding,executionId:f.execution.executionId,phase:'settled',native:{state:'cancelled'}},check),/EXECUTION_STOPPING/);
+ const receipt={binding:f.binding,executionId:f.execution.executionId,runtimeSessionId:f.execution.runtimeSessionId,state:'cancelled'};await f.store.executions.settleStopped(receipt,check);assert.equal((await f.store.executions.settleStopped(receipt,check)).record.native.stopped,true);assert.equal((await f.store.executions.requestStop(f.binding,check)).dispatch,false);
+});
+test('lost claim COMMIT acknowledgement preserves one invocation without another dispatch',async t=>{const f=await fixture(t);let lose=true;const pool={async connect(){const c=await f.pool.connect();return {async query(...args){const value=await c.query(...args);if(args[0]==='COMMIT'&&lose){lose=false;throw Error('lost ACK after actual commit');}return value;},release:error=>c.release(error)};}};
+ const uncertain=createPostgresConversationStore({pool});await assert.rejects(uncertain.executions.claim(f.execution,check),/STORE_COMMIT_UNKNOWN/);assert.equal((await f.store.executions.claim(f.execution,check)).dispatch,false);
+});

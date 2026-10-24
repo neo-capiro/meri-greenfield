@@ -92,6 +92,11 @@ export interface Canonical_ConversationSubmitRequest_1Ec41363 {
     skillId: Canonical_CanonicalSkillId_31E12E8ECae56271;
     skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343;
   };
+  modelSelection?: {
+    provider: 'bedrock' | 'claude-api';
+    modelId: string;
+    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  };
 }
 export interface Canonical_ConversationStoredRequest_79D6Cc7B {
   requestId: string;
@@ -99,6 +104,11 @@ export interface Canonical_ConversationStoredRequest_79D6Cc7B {
   skill: Canonical_ConversationSkillAssetPin_338818F9 | null;
   window: Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 | null;
   windowRequest: Canonical_Canonical_WindowRequestF314F340_6Bb8C023 | null;
+  modelSelection?: {
+    provider: 'bedrock' | 'claude-api';
+    modelId: string;
+    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  };
 }
 export interface Canonical_ConversationSkillAssetPin_338818F9 {
   skillId: Canonical_CanonicalSkillId_31E12E8ECae56271;
@@ -152,7 +162,7 @@ export interface ConversationInputExpectedContext {
   actorId: string;
   conversationId: string;
   runId: string;
-  clientId: string;
+  clientId: string | null;
 }
 export interface Canonical_ConversationErrorResponse_68Bab4E3 {
   error: {
@@ -171,7 +181,9 @@ export interface Canonical_ConversationErrorResponse_68Bab4E3 {
       | 'DEADLINE'
       | 'CANCELLED'
       | 'REQUEST_TOO_LARGE'
-      | 'CONVERSATION_UNAVAILABLE';
+      | 'CONVERSATION_UNAVAILABLE'
+      | 'MODEL_SELECTION_UNAVAILABLE'
+      | 'MODEL_SETTINGS_UNAVAILABLE';
   };
 }
 
@@ -252,6 +264,12 @@ export declare const conversationInputMetadata: {
     ],
     "CONVERSATION_UNAVAILABLE": [
       502
+    ],
+    "MODEL_SELECTION_UNAVAILABLE": [
+      409
+    ],
+    "MODEL_SETTINGS_UNAVAILABLE": [
+      503
     ]
   }
 };

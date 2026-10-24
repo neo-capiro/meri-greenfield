@@ -1,5 +1,6 @@
 /** Immutable selected-output journal and compiler-bound recovery; no grant or artifact writer. */
-import {bounded,hash,same,fail,own,validateShape,uuid} from '../boundary.mjs';
+import {bounded,hash,same,fail,own,validateShape} from '../boundary.mjs';
+import {selectedApprovalDecision} from '../../document-application/selected-output/receipts.mjs';
 import {nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {artifactValidators as v,assertSubject} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
@@ -62,11 +63,10 @@ export function createSelectedOutputJournal({tx,rowRun}){
  const journal=Object.freeze({retain,load});journals.add(journal);return journal;
 }
 function accessRecord(raw,record,started,now,life,previous){
- const expected=pins(record),a=bounded(raw);own(a,[...Object.keys(expected),'outputBinding','outputContextSha256','outputScopes','policyRevision','outputAllocationSha256',
-  'outputGrantId','approvalReceiptId','sourceAccessReceiptId','sessionReceiptId','checkedAtMs','expiresAtMs']);
+ const expected=pins(record),a=bounded(raw);own(a,[...Object.keys(expected),'outputBinding','outputContextSha256','outputScopes','policyRevision','approvalDecision','checkedAtMs','expiresAtMs']);
  if(Object.keys(expected).some(key=>!same(a[key],expected[key])))fail('SELECTED_OUTPUT_ACCESS_REFUSED');validateShape('RunBinding',a.outputBinding);
- for(const key of ['outputContextSha256','outputAllocationSha256'])digest(a[key]);for(const key of ['outputGrantId','approvalReceiptId','sourceAccessReceiptId','sessionReceiptId'])uuid(a[key]);
- if(['tenantId','actorId','conversationId'].some(key=>a.outputBinding[key]!==expected.sourceBinding[key])||['runId','attemptId','workerId'].some(key=>a.outputBinding[key]===expected.sourceBinding[key])||
+ digest(a.outputContextSha256);selectedApprovalDecision(a.approvalDecision,{binding:expected.sourceBinding,policyRevision:a.policyRevision,now});life.limitDeadline(Date.parse(a.approvalDecision.expiresAt));
+ if(['tenantId','actorId','conversationId'].some(key=>a.outputBinding[key]!==expected.sourceBinding[key])||(a.outputBinding.runId===expected.sourceBinding.runId?!same(a.outputBinding,expected.sourceBinding):['attemptId','workerId'].some(key=>a.outputBinding[key]===expected.sourceBinding[key]))||
   !same(a.outputScopes,expected.sourceScopes)||a.outputScopes.some(scope=>scope.policyRevision!==a.policyRevision)||!Number.isSafeInteger(a.checkedAtMs)||a.checkedAtMs<started||a.checkedAtMs>now()||
   !Number.isSafeInteger(a.expiresAtMs)||a.expiresAtMs<=now())fail('SELECTED_OUTPUT_ACCESS_REFUSED');
  if(previous&&!same({...a,checkedAtMs:0,expiresAtMs:0},{...previous,checkedAtMs:0,expiresAtMs:0}))fail('SELECTED_OUTPUT_ACCESS_REFUSED');life.limitDeadline(a.expiresAtMs);return a;
@@ -85,7 +85,7 @@ export function createSelectedOutputRetention(configuration){
   try{return await life.run(()=>journal.retain(record,life.check));}finally{life.close();candidates.delete(record);}}
  async function load(value){const fields=own(value,['sourceBinding','preparationSha256'],['signal']),selector=bounded({sourceBinding:fields.sourceBinding,preparationSha256:fields.preparationSha256});
   validateShape('RunBinding',selector.sourceBinding);digest(selector.preparationSha256);const life=lifetime(fields.signal);
-  try{const record=validateRecord(await life.run(()=>journal.load(selector,life.check))),input={...selector,pins:pins(record),sourceEvidence:record.prepared.context.evidence,reads:record.reads};
+  try{const record=validateRecord(await life.run(()=>journal.load(selector,life.check))),input={...selector,pins:pins(record),sourceContext:record.prepared.context,sourceEvidence:record.prepared.context.evidence,reads:record.reads};
    const current=phase=>life.run(async signal=>{try{return await currentOutputAccess({...input,phase,deadlineMs:life.deadlineMs,signal});}catch{fail('SELECTED_OUTPUT_ACCESS_REFUSED');}});
    let started=now();const before=accessRecord(await current('before'),record,started,now,life);
    const verified=validateRecord(await life.run(()=>journal.load(selector,life.check)));if(!same(verified,record))fail('SELECTED_OUTPUT_PINS_REFUSED');

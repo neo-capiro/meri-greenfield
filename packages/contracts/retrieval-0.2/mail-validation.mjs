@@ -112,9 +112,8 @@ function filterDigest(selection) {
   return canonicalSha256({...selection,offset:0,asOf:null});
 }
 function stableSubject(subject) {
-  // A new page gets a new authorization decision; its subject and scope stay bound.
-  const {authorizationDecisionId: ignored, ...selection} = subject;
-  return selection;
+  // Paging binds the complete plain subject and scope.
+  return subject;
 }
 function assertMailCandidateSourcePage(page, input, operation, options = {}) {
   const now = trustedNow(options), kind = operationKind(operation);

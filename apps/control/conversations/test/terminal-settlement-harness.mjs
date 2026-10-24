@@ -1,20 +1,21 @@
 /** Terminal settlement over the real worker activity, lifecycle service/journal/store and run reconciler. The SDK transport,
- * native checkpoint capture and the native stop owner are scripted; the stop owner records retirement in the canonical
- * allocation journal exactly as the allocator does. The SQL engine is the caller's pool (scripted fixture by default). */
+ * native checkpoint capture and Runtime stop response are scripted. The canonical execution journal owns settlement.
+ * The SQL engine is the caller's pool (scripted fixture by default). */
 import assert from 'node:assert/strict';
 import {holdComposition,assertHoldSettled} from './lifecycle-hold-harness.mjs';
-import {id,binding as fixtureBinding,allocateOriginal,recordRetired} from './lifecycle-fixture.mjs';
+import {id,binding as fixtureBinding,allocateOriginal,settleInvocation} from './lifecycle-fixture.mjs';
 import {createRunReconciler,ATTEMPT_LOST} from '../run-reconciler.mjs';
-export {allocateOriginal,recordRetired};
+export {allocateOriginal};
 const terminalEvent=event=>event.type==='run.status'&&['failed','cancelled'].includes(event.data.state);
 /** Finite simulated recording/transport latency that honours the caller's abort signal, as in the review reproduction. */
 export function delay(ms,signal){return new Promise((resolve,reject)=>{if(signal?.aborted)return reject(signal.reason);const timer=setTimeout(resolve,ms);signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(signal.reason);},{once:true});});}
 export async function settlementComposition(options={}){
  const h=await holdComposition(options),f=h.f,binding=options.binding??fixtureBinding;h.retirements=0;h.retireMode='record';
  h.allocate=async()=>{h.allocation=await allocateOriginal(f.store,(await h.history()).run.binding);};
- // Synthetic native stop owner: 'record' retires through the canonical journal; 'silent' and 'throw' leave the stop unproven.
- const retirement={async retire({binding:b}){h.retirements++;assert.deepEqual(b,h.allocation?.key.binding??b);if(h.retireMode==='throw')throw Error('synthetic native stop uncertain');if(h.retireMode==='record')await recordRetired(f.store,h.allocation);}};
- h.reconciler=createRunReconciler({store:f.store,retirement});
+ // A definitive response permits the real reconciler to settle; silent/throw preserve its stopping barrier.
+ const stopExecution=async({binding:b,executionId,runtimeSessionId})=>{h.retirements++;assert.deepEqual(b,h.allocation?.key.binding??b);if(h.retireMode==='throw')throw Error('synthetic Runtime stop uncertain');return {binding:b,executionId,runtimeSessionId,stopped:h.retireMode==='record'};};
+ h.reconciler=createRunReconciler({store:f.store,stopExecution});
+ const execute=h.execute;h.execute=async(...args)=>{const result=await execute(...args);await settleInvocation(f.store,(await h.history()).run.binding);return result;};
  h.reconcile=(b=binding)=>h.reconciler.reconcile({binding:b});
  h.terminals=async()=>(await h.history()).events.filter(e=>e.type==='run.status'&&['failed','cancelled','completed'].includes(e.data.state));
  return h;
@@ -60,10 +61,10 @@ export const settlementScenarios={
   const h=await make({terminalAttemptMs:20});h.hooks.afterSubmit=()=>h.allocate();h.hooks.beforeAppend=async(event,signal)=>{if(event.type==='message.delta')throw Object.assign(Error('STORE_UNAVAILABLE'),{code:'STORE_UNAVAILABLE'});if(terminalEvent(event))await delay(60,signal);};
   h.script=async function*({init,text,stopped}){yield init;yield text('lost');await stopped;};await assert.rejects(h.execute(),/EXECUTION_FAILED/);await delay(80);assert.equal((await h.row()).state,'running');
   h.hooks.beforeAppend=undefined;assert.deepEqual(await h.reconcile(),{outcome:'reconciled',state:'failed',reasonCode:ATTEMPT_LOST});assert.deepEqual((await h.row()),{hold:null,state:'failed'});},
- 'an unproven physical stop is a barrier: nothing is written and the hold stays UNKNOWN':async make=>{
+ 'an unknown Runtime stop preserves the execution barrier after the immediate failed fence; the hold stays UNKNOWN':async make=>{
   for(const mode of ['silent','throw']){const h=await make({captureFails:true,terminalAttemptMs:20}),drive=captureFailureScript(h);h.hooks.afterSubmit=()=>h.allocate();h.hooks.beforeAppend=async(event,signal)=>{if(terminalEvent(event))await delay(60,signal);};
    await assert.rejects(drive(h.execute()),/EXECUTION_FAILED/);await delay(80);h.hooks.beforeAppend=undefined;h.retireMode=mode;
-   assert.deepEqual(await h.reconcile(),{outcome:'unknown',state:'running'});assert.deepEqual(await h.row(),{hold:h.controlId('pause'),state:'running'});assert.equal(await h.control_state('pause'),'UNKNOWN');assert.equal((await h.terminals()).length,0);}},
+   assert.deepEqual(await h.reconcile(),{outcome:'unknown',state:'failed'});assert.deepEqual(await h.row(),{hold:h.controlId('pause'),state:'failed'});assert.equal(await h.control_state('pause'),'UNKNOWN');assert.equal((await h.terminals()).length,1);}},
  'only the exact original binding settles: a stale attempt or fence is refused without a write':async make=>{
   const h=await make({terminalAttemptMs:20});h.hooks.afterSubmit=()=>h.allocate();h.hooks.beforeAppend=async(event,signal)=>{if(event.type==='message.delta')throw Object.assign(Error('STORE_UNAVAILABLE'),{code:'STORE_UNAVAILABLE'});if(terminalEvent(event))await delay(60,signal);};
   h.script=async function*({init,text,stopped}){yield init;yield text('lost');await stopped;};await assert.rejects(h.execute(),/EXECUTION_FAILED/);await delay(80);h.hooks.beforeAppend=undefined;
@@ -72,10 +73,10 @@ export const settlementScenarios={
  'a queued run whose attempt ended before any allocation claim is failed, and a later claim is refused':async make=>{
   const h=await make();await h.f.service.allocateInput({credential:h.f.credential,input:h.f.input});await h.f.service.submit({credential:h.f.credential,input:h.f.input});
   assert.deepEqual(await h.reconcile(),{outcome:'reconciled',state:'failed',reasonCode:ATTEMPT_LOST});assert.equal(h.retirements,0);
-  await assert.rejects(h.allocate(),/NATIVE_PREPARATION_STATE_REFUSED/);assert.deepEqual(await h.reconcile(),{outcome:'settled',state:'failed'});},
+  await assert.rejects(h.allocate(),/EXECUTION_NOT_QUEUED/);assert.deepEqual(await h.reconcile(),{outcome:'settled',state:'failed'});},
  'success still converges: 45 ms recording on every publication completes and reconciliation leaves it untouched':async make=>{
   const h=await make();h.hooks.afterSubmit=()=>h.allocate();h.hooks.beforeAppend=async(event,signal)=>{if(event.type==='run.status')await delay(45,signal);};
   h.script=async function*({init,text,result,stopped}){yield init;yield text('answer');yield result;await stopped;};
-  assert.deepEqual(await h.execute(),{state:'completed'});h.hooks.beforeAppend=undefined;assert.deepEqual(await h.reconcile(),{outcome:'settled',state:'completed'});assert.equal(h.retirements,1);
+  assert.deepEqual(await h.execute(),{state:'completed'});h.hooks.beforeAppend=undefined;assert.deepEqual(await h.reconcile(),{outcome:'settled',state:'completed'});assert.equal(h.retirements,0);
   assert.deepEqual((await h.terminals()).map(e=>e.data.state),['completed']);}
 };

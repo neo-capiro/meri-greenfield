@@ -11,6 +11,7 @@ export async function readJsonResponse(response, {lifetime, maxResponseBytes}) {
   let body, reader;
   try {
     body = responseBody(response);
+    if (response.status === 401 || response.status === 403) deny('ACCESS_DENIED');
     if (response.status !== 200 || response.redirected ||
         !/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(response.headers.get('content-type') ?? '') ||
         ![null,'identity'].includes(response.headers.get('content-encoding'))) deny('INVALID_RESULT');

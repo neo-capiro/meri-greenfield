@@ -7,6 +7,7 @@ export const createDocumentAccessMetadata=({formats,mimeTypes,previewFormats,ope
  routes:{inspect:{method:'POST',path:'/api/documents/inspect',response:'json'},download:{method:'POST',path:'/api/documents/download',response:'bytes'}},
  formats,mimeTypes,previewFormats,operationFormats,errorStatuses,
  semantics:{
+  nativeFiles:'native-file identifies a committed workspace path and immutable object with currently verified bytes; it makes no format, rendering, generation-status or preview-status claim',
   inspection:'structural facts about one exact stored version; nativeOpened, rendered and recalculated are always false, pptx visualInspection and pdf renderInspection are always pending, so no inspection describes a rendered or visually checked file',
   download:'a download is admitted only for a version this receiver admitted from an inspect answer in the same session of use; inspect first, never a link or bytes alone',
   preview:'previewFormats are the only formats the artifact preview owner will render (any other format answers ARTIFACT_PREVIEW_UNSUPPORTED); every previewFormat except pdf also needs a qualified converter or answers ARTIFACT_RENDERER_UNAVAILABLE; this contract carries no preview route and no renderer qualification',

@@ -16,12 +16,17 @@ export interface ConversationInitialInputAllocation {
    */
   scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
   versions: Canonical_RuntimeVersions_7Edb8Efc;
-  selectedClientId: string;
+  selectedClientId: string | null;
   requestId: string;
   inputSha256: string;
   requestSha256: string;
   allocatedAtMs: number;
   expiresAtMs: number;
+  modelSelection?: {
+    provider: 'bedrock' | 'claude-api';
+    modelId: string;
+    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  };
 }
 export interface Canonical_RunBinding_84F2304C {
   tenantId: string;
@@ -65,7 +70,9 @@ export interface ConversationInitialInputErrorResponse {
       | 'INITIAL_INPUT_CORRUPT'
       | 'INITIAL_INPUT_UNAVAILABLE'
       | 'REQUEST_TOO_LARGE'
-      | 'UNSUPPORTED_MEDIA_TYPE';
+      | 'UNSUPPORTED_MEDIA_TYPE'
+      | 'MODEL_SELECTION_UNAVAILABLE'
+      | 'MODEL_SETTINGS_UNAVAILABLE';
     outcome: 'NOT_DISPATCHED' | 'UNKNOWN';
   };
 }
@@ -131,7 +138,9 @@ export declare const conversationInitialInputMetadata: {
     "INITIAL_INPUT_CORRUPT": "UNKNOWN",
     "INITIAL_INPUT_UNAVAILABLE": "UNKNOWN",
     "REQUEST_TOO_LARGE": "NOT_DISPATCHED",
-    "UNSUPPORTED_MEDIA_TYPE": "NOT_DISPATCHED"
+    "UNSUPPORTED_MEDIA_TYPE": "NOT_DISPATCHED",
+    "MODEL_SELECTION_UNAVAILABLE": "NOT_DISPATCHED",
+    "MODEL_SETTINGS_UNAVAILABLE": "NOT_DISPATCHED"
   },
   "errorStatuses": {
     "NOT_FOUND": [
@@ -185,6 +194,12 @@ export declare const conversationInitialInputMetadata: {
     ],
     "UNSUPPORTED_MEDIA_TYPE": [
       415
+    ],
+    "MODEL_SELECTION_UNAVAILABLE": [
+      409
+    ],
+    "MODEL_SETTINGS_UNAVAILABLE": [
+      503
     ]
   }
 };

@@ -15,8 +15,7 @@ const freeze = value => {
   return value;
 };
 function stableSubject(subject) {
-  const { authorizationDecisionId: ignored, ...selection } = subject;
-  return selection;
+  return subject;
 }
 function continuationKey(authority, operation, selection) {
   return freeze({ binding: authority.binding, operation, policyRevision: authority.policyRevision,
@@ -34,10 +33,11 @@ function contextPorts(value) {
   return result;
 }
 
-export async function prepareMailReadContext({ ports, authority, operation, normalized, lifetime, readDeadline, now, maxBytes }) {
+export async function prepareMailReadContext({ ports, authority, identityDeadlineMs, operation, normalized, lifetime, now, maxBytes }) {
   const storage = contextPorts(ports);
   let previousPage;
-  let expiresAtMs = Math.min(readDeadline(), authority.deadlineMs);
+  let expiresAtMs = identityDeadlineMs;
+  if (!Number.isSafeInteger(expiresAtMs) || expiresAtMs <= now()) deny('ACCESS_DENIED');
   const fresh = (stamp, started) => {
     lifetime.check();
     if (!Number.isSafeInteger(stamp) || stamp < started || stamp > now()) deny('ACCESS_DENIED');
@@ -51,7 +51,7 @@ export async function prepareMailReadContext({ ports, authority, operation, norm
     if (!same(record.key, key) || record.previousSha256 !== canonicalSha256(record.previousPage) ||
         !Number.isSafeInteger(record.recordedAtMs) || record.recordedAtMs < 0 || record.recordedAtMs > receipt.checkedAtMs ||
         !Number.isSafeInteger(record.expiresAtMs) || record.expiresAtMs <= now() ||
-        record.expiresAtMs > Math.min(expiresAtMs, readDeadline()) || record.recordedAtMs >= record.expiresAtMs) deny('ACCESS_DENIED');
+        record.expiresAtMs > expiresAtMs || record.recordedAtMs >= record.expiresAtMs) deny('ACCESS_DENIED');
     try { validateShape('MailCandidateSourcePage', record.previousPage); } catch { deny('ACCESS_DENIED'); }
     const page = record.previousPage;
     if (!same(page.binding, authority.binding) || !same(page.operation, operation) ||
@@ -67,16 +67,15 @@ export async function prepareMailReadContext({ ports, authority, operation, norm
     authority, normalized,
     options() { return { nowMs: now(), actorId: authority.binding.actorId,
       ...(previousPage === undefined ? {} : { previousPage }) }; },
-    observeAuthority(current) { expiresAtMs = Math.min(expiresAtMs, current.deadlineMs, readDeadline()); },
+    observeAuthority() { lifetime.check(); },
     async retain({ current, normalized: selection, result }) {
       lifetime.check();
       if (result.nextOffset === null) return;
-      expiresAtMs = Math.min(expiresAtMs, current.deadlineMs, readDeadline());
       const recordedAtMs = now();
       if (!Number.isSafeInteger(recordedAtMs) || recordedAtMs < 0 || recordedAtMs >= expiresAtMs) deny('ACCESS_DENIED');
       const nextSelection = { ...selection.input, offset: result.nextOffset, asOf: result.queryScope.asOfInclusive };
       const key = continuationKey(current, operation, nextSelection);
-      // Retain the original validated page, including its exact decision ID and window.
+      // Retain the original validated page, including its exact subject and window.
       // Canonical output validation still rejects prior/current full-subject mismatch.
       const record = freeze({ key, previousPage: result, previousSha256: canonicalSha256(result), recordedAtMs, expiresAtMs });
       if (Buffer.byteLength(JSON.stringify(record), 'utf8') > maxBytes) deny('RESOURCE_LIMIT');

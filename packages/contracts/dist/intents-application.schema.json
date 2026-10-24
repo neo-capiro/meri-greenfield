@@ -88,7 +88,14 @@
       "additionalProperties": false
     },
     "IntentsProposal": {
-      "$ref": "#/$defs/Canonical_ApprovalProposal_d1a3e74f"
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Canonical_ApprovalProposal_d1a3e74f"
+        },
+        {
+          "$ref": "#/$defs/Canonical_DocumentDraftApprovalProposal_834c2460"
+        }
+      ]
     },
     "IntentsDecision": {
       "$ref": "#/$defs/Canonical_ApprovalDecision_5e8bdbcf"
@@ -97,20 +104,27 @@
       "$ref": "#/$defs/Canonical_TaskCreateArguments_1202c301"
     },
     "IntentsExecutionOutcome": {
-      "type": "object",
-      "properties": {
-        "receipt": {
-          "$ref": "#/$defs/Canonical_CommandReceipt_ac49ee1e"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "receipt": {
+              "$ref": "#/$defs/Canonical_CommandReceipt_ac49ee1e"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_TaskCreateResult_0501c509"
+            }
+          },
+          "required": [
+            "receipt",
+            "result"
+          ],
+          "additionalProperties": false
         },
-        "result": {
-          "$ref": "#/$defs/Canonical_TaskCreateResult_0501c509"
+        {
+          "$ref": "#/$defs/Canonical_ArtifactCreatedResult_183a755e"
         }
-      },
-      "required": [
-        "receipt",
-        "result"
-      ],
-      "additionalProperties": false
+      ]
     },
     "IntentsExecution": {
       "oneOf": [
@@ -909,6 +923,138 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_DocumentDraftArguments_deaaba57": {
+      "type": "object",
+      "properties": {
+        "preparationSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifactRequestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceContextSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "baseVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "format": {
+          "const": "docx"
+        }
+      },
+      "required": [
+        "preparationSha256",
+        "artifactRequestSha256",
+        "sourceContextSha256",
+        "baseVersionId",
+        "title",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_DocumentDraftCommand_7eb6c44c": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "const": "document.draft"
+        },
+        "arguments": {
+          "$ref": "#/$defs/Canonical_DocumentDraftArguments_deaaba57"
+        },
+        "attachments": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_DocumentDraftApprovalProposal_834c2460": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_DocumentDraftCommand_7eb6c44c"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_ApprovalDecision_5e8bdbcf": {
       "type": "object",
       "properties": {
@@ -1120,6 +1266,915 @@
         "dueDate",
         "clientId",
         "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_SourceEvidence_d9008775": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceVersionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "sourceUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "citationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "contentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "authorizationDecisionId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ArtifactVersion_d54b8ac9": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "artifactId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "parentVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "object": {
+          "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "mimeType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_SourceEvidence_d9008775"
+          }
+        },
+        "generationStatus": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "validated",
+            "published",
+            "failed"
+          ]
+        },
+        "previewStatus": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "validated",
+            "unsupported",
+            "failed"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "artifactId",
+        "versionId",
+        "parentVersionId",
+        "binding",
+        "object",
+        "filename",
+        "mimeType",
+        "scopes",
+        "evidence",
+        "generationStatus",
+        "previewStatus",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_artifactId_cc9f299e": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_versionId_e4470a54": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_parentVersionId_116435a5": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Canonical_binding_ad882dea": {
+      "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+    },
+    "Canonical_object_a3973f47": {
+      "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+    },
+    "Canonical_filename_f09421cc": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "Canonical_mimeType_0837eb6f": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_scopes_3d363e5b": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Canonical_Scope_f882edb5"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "Canonical_sourceId_fa5f0f45": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_recordId_1173860d": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_sourceVersionId_a5aa4b63": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_observedAt_fc731620": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "Canonical_sourceUpdatedAt_4a76a197": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Canonical_citationId_ae4e145b": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_scopes_78e0eb49": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Canonical_Scope_f882edb5"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "Canonical_contentSha256_6b70d9f7": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "Canonical_NativeSourceEvidence_cb9e6ba4": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/Canonical_sourceId_fa5f0f45"
+        },
+        "recordId": {
+          "$ref": "#/$defs/Canonical_recordId_1173860d"
+        },
+        "sourceVersionId": {
+          "$ref": "#/$defs/Canonical_sourceVersionId_a5aa4b63"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/Canonical_observedAt_fc731620"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "#/$defs/Canonical_sourceUpdatedAt_4a76a197"
+        },
+        "citationId": {
+          "$ref": "#/$defs/Canonical_citationId_ae4e145b"
+        },
+        "scopes": {
+          "$ref": "#/$defs/Canonical_scopes_78e0eb49"
+        },
+        "contentSha256": {
+          "$ref": "#/$defs/Canonical_contentSha256_6b70d9f7"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_generationStatus_0b8d37a9": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "published",
+        "failed"
+      ]
+    },
+    "Canonical_previewStatus_fe162158": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "validated",
+        "unsupported",
+        "failed"
+      ]
+    },
+    "Canonical_createdAt_38444d79": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "Canonical_NativeArtifactVersion_ff97d150": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "artifactId": {
+          "$ref": "#/$defs/Canonical_artifactId_cc9f299e"
+        },
+        "versionId": {
+          "$ref": "#/$defs/Canonical_versionId_e4470a54"
+        },
+        "parentVersionId": {
+          "$ref": "#/$defs/Canonical_parentVersionId_116435a5"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_binding_ad882dea"
+        },
+        "object": {
+          "$ref": "#/$defs/Canonical_object_a3973f47"
+        },
+        "filename": {
+          "$ref": "#/$defs/Canonical_filename_f09421cc"
+        },
+        "mimeType": {
+          "$ref": "#/$defs/Canonical_mimeType_0837eb6f"
+        },
+        "scopes": {
+          "$ref": "#/$defs/Canonical_scopes_3d363e5b"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_NativeSourceEvidence_cb9e6ba4"
+          }
+        },
+        "generationStatus": {
+          "$ref": "#/$defs/Canonical_generationStatus_0b8d37a9"
+        },
+        "previewStatus": {
+          "$ref": "#/$defs/Canonical_previewStatus_fe162158"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/Canonical_createdAt_38444d79"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "artifactId",
+        "versionId",
+        "parentVersionId",
+        "binding",
+        "object",
+        "filename",
+        "mimeType",
+        "scopes",
+        "evidence",
+        "generationStatus",
+        "previewStatus",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ArtifactVersion_7f9c56fa": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Canonical_ArtifactVersion_d54b8ac9"
+        },
+        {
+          "$ref": "#/$defs/Canonical_NativeArtifactVersion_ff97d150"
+        }
+      ]
+    },
+    "Canonical_ArtifactInspection_3ae45145": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "txt"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "encoding": {
+                  "const": "UTF-8"
+                },
+                "whitespace": {
+                  "const": "unchanged"
+                }
+              },
+              "required": [
+                "encoding",
+                "whitespace"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "docx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "paragraphs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "tables": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "pictures": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "paragraphs",
+                "tables",
+                "pictures"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "xlsx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "sheets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 30
+                },
+                "formulas": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "formulaCache": {
+                  "enum": [
+                    "unverified-zero-placeholder; recalculation required",
+                    "removed/unverified; recalculation required"
+                  ]
+                },
+                "revisionMethod": {
+                  "const": "openpyxl typed-cell replacement"
+                }
+              },
+              "required": [
+                "sheets",
+                "formulas",
+                "formulaCache"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "pptx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "slides": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "editable": {
+                  "const": true
+                },
+                "visualInspection": {
+                  "const": "pending"
+                }
+              },
+              "required": [
+                "slides",
+                "editable",
+                "visualInspection"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "zip"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "rows": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 200
+                },
+                "chart": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "rows",
+                "columns",
+                "chart"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "pdf"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "conversionCompleted": {
+                  "const": true
+                },
+                "renderInspection": {
+                  "const": "pending"
+                },
+                "sourceDocxSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "conversionCompleted",
+                "renderInspection",
+                "sourceDocxSha256"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_LegacyArtifactExecution_4afe1663": {
+      "type": "object",
+      "properties": {
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budgetTicketId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "requestSha256",
+        "authorizationReceiptId",
+        "budgetTicketId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeArtifactExecution_26204926": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "native-document"
+        },
+        "invocationId": {
+          "type": "string",
+          "pattern": "^sdk:[a-f0-9]{64}$"
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "kind",
+        "invocationId",
+        "requestSha256",
+        "authorizationReceiptId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ArtifactExecution_28c65a3e": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Canonical_LegacyArtifactExecution_4afe1663"
+        },
+        {
+          "$ref": "#/$defs/Canonical_NativeArtifactExecution_26204926"
+        }
+      ]
+    },
+    "Canonical_ArtifactCreatedResult_183a755e": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/Canonical_ArtifactVersion_7f9c56fa"
+        },
+        "inspection": {
+          "$ref": "#/$defs/Canonical_ArtifactInspection_3ae45145"
+        },
+        "execution": {
+          "$ref": "#/$defs/Canonical_ArtifactExecution_28c65a3e"
+        }
+      },
+      "required": [
+        "version",
+        "inspection",
+        "execution"
       ],
       "additionalProperties": false
     }

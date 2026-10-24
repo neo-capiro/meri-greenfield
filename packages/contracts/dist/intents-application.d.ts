@@ -6,7 +6,7 @@ export type IntentsApplicationEnvelope =
   | IntentsOperation
   | IntentsListRequest
   | IntentsDecideRequest
-  | Canonical_ApprovalProposalD1A3E74F
+  | IntentsProposal
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
   | IntentsExecutionOutcome
@@ -25,6 +25,150 @@ export type IntentsApplicationEnvelope =
   | IntentsErrorResponse;
 export type IntentsConversationId = string;
 export type IntentsDeliveryId = string;
+export type IntentsProposal = Canonical_ApprovalProposalD1A3E74F | Canonical_DocumentDraftApprovalProposal_834C2460;
+export type IntentsExecutionOutcome =
+  | {
+      receipt: Canonical_CommandReceiptAc49Ee1E;
+      result: Canonical_TaskCreateResult_0501C509;
+    }
+  | Canonical_ArtifactCreatedResult_183A755E;
+export type Canonical_ArtifactVersion_7F9C56Fa =
+  Canonical_ArtifactVersionD54B8Ac9 | Canonical_NativeArtifactVersionFf97D150;
+export type CanonicalArtifactIdCc9F299E = string;
+export type CanonicalVersionIdE4470A54 = string;
+export type CanonicalParentVersionId_116435A5 = string | null;
+export type CanonicalFilenameF09421Cc = string;
+export type CanonicalMimeType_0837Eb6F = string;
+/**
+ * @minItems 1
+ */
+export type CanonicalScopes_3D363E5B = [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+export type CanonicalSourceIdFa5F0F45 = string;
+export type CanonicalRecordId_1173860D = string;
+export type CanonicalSourceVersionIdA5Aa4B63 = string;
+export type CanonicalObservedAtFc731620 = string;
+export type CanonicalSourceUpdatedAt_4A76A197 = string | null;
+export type CanonicalCitationIdAe4E145B = string;
+/**
+ * @minItems 1
+ */
+export type CanonicalScopes_78E0Eb49 = [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+export type CanonicalContentSha256_6B70D9F7 = string;
+export type CanonicalGenerationStatus_0B8D37A9 = 'draft' | 'validated' | 'published' | 'failed';
+export type CanonicalPreviewStatusFe162158 = 'pending' | 'validated' | 'unsupported' | 'failed';
+export type CanonicalCreatedAt_38444D79 = string;
+export type Canonical_ArtifactInspection_3Ae45145 =
+  | {
+      sha256: string;
+      bytes: number;
+      format: 'txt';
+      nativeOpened: false;
+      rendered: false;
+      recalculated: false;
+      /**
+       * @maxItems 5000
+       */
+      members: string[];
+      details: {
+        encoding: 'UTF-8';
+        whitespace: 'unchanged';
+      };
+    }
+  | {
+      sha256: string;
+      bytes: number;
+      format: 'docx';
+      nativeOpened: false;
+      rendered: false;
+      recalculated: false;
+      /**
+       * @maxItems 5000
+       */
+      members: string[];
+      details: {
+        paragraphs: number;
+        tables: number;
+        pictures: number;
+      };
+    }
+  | {
+      sha256: string;
+      bytes: number;
+      format: 'xlsx';
+      nativeOpened: false;
+      rendered: false;
+      recalculated: false;
+      /**
+       * @maxItems 5000
+       */
+      members: string[];
+      details: {
+        /**
+         * @maxItems 30
+         */
+        sheets: string[];
+        formulas: number;
+        formulaCache:
+          'unverified-zero-placeholder; recalculation required' | 'removed/unverified; recalculation required';
+        revisionMethod?: 'openpyxl typed-cell replacement';
+      };
+    }
+  | {
+      sha256: string;
+      bytes: number;
+      format: 'pptx';
+      nativeOpened: false;
+      rendered: false;
+      recalculated: false;
+      /**
+       * @maxItems 5000
+       */
+      members: string[];
+      details: {
+        slides: number;
+        editable: true;
+        visualInspection: 'pending';
+      };
+    }
+  | {
+      sha256: string;
+      bytes: number;
+      format: 'zip';
+      nativeOpened: false;
+      rendered: false;
+      recalculated: false;
+      /**
+       * @maxItems 5000
+       */
+      members: string[];
+      details: {
+        rows: number;
+        /**
+         * @maxItems 200
+         */
+        columns: string[];
+        chart: boolean;
+      };
+    }
+  | {
+      sha256: string;
+      bytes: number;
+      format: 'pdf';
+      nativeOpened: false;
+      rendered: false;
+      recalculated: false;
+      /**
+       * @maxItems 5000
+       */
+      members: string[];
+      details: {
+        conversionCompleted: true;
+        renderInspection: 'pending';
+        sourceDocxSha256: string;
+      };
+    };
+export type Canonical_ArtifactExecution_28C65A3E =
+  Canonical_LegacyArtifactExecution_4Afe1663 | Canonical_NativeArtifactExecution_26204926;
 export type IntentsExecution =
   | {
       state: 'executing';
@@ -132,6 +276,38 @@ export interface Canonical_IdentityAba0A4E9 {
   tenantId: string;
   actorId: string;
 }
+export interface Canonical_DocumentDraftApprovalProposal_834C2460 {
+  proposalId: string;
+  command: Canonical_DocumentDraftCommand_7Eb6C44C;
+  commandSha256: string;
+  createdAt: string;
+  expiresAt: string;
+  requiredApprover: Canonical_IdentityAba0A4E9;
+}
+export interface Canonical_DocumentDraftCommand_7Eb6C44C {
+  contractVersion: '0.2.0';
+  commandId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  action: 'document.draft';
+  arguments: Canonical_DocumentDraftArgumentsDeaaba57;
+  /**
+   * @maxItems 0
+   */
+  attachments: [];
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  idempotencyKey: string;
+}
+export interface Canonical_DocumentDraftArgumentsDeaaba57 {
+  preparationSha256: string;
+  artifactRequestSha256: string;
+  sourceContextSha256: string;
+  baseVersionId: string | null;
+  title: string;
+  format: 'docx';
+}
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;
   commandSha256: string;
@@ -145,10 +321,6 @@ export interface Canonical_TaskCreateArguments_1202C301 {
   title: string;
   clientId: string | null;
   dueDate: string | null;
-}
-export interface IntentsExecutionOutcome {
-  receipt: Canonical_CommandReceiptAc49Ee1E;
-  result: Canonical_TaskCreateResult_0501C509;
 }
 export interface Canonical_CommandReceiptAc49Ee1E {
   receiptId: string;
@@ -172,6 +344,86 @@ export interface Canonical_TaskCreateResult_0501C509 {
   dueDate: string | null;
   clientId: string | null;
   createdAt: string;
+}
+export interface Canonical_ArtifactCreatedResult_183A755E {
+  version: Canonical_ArtifactVersion_7F9C56Fa;
+  inspection: Canonical_ArtifactInspection_3Ae45145;
+  execution: Canonical_ArtifactExecution_28C65A3E;
+}
+export interface Canonical_ArtifactVersionD54B8Ac9 {
+  contractVersion: '0.1.0';
+  artifactId: string;
+  versionId: string;
+  parentVersionId: string | null;
+  binding: Canonical_RunBinding_84F2304C;
+  object: Canonical_ObjectReferenceA099Bd1C;
+  filename: string;
+  mimeType: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  evidence: Canonical_SourceEvidenceD9008775[];
+  generationStatus: 'draft' | 'validated' | 'published' | 'failed';
+  previewStatus: 'pending' | 'validated' | 'unsupported' | 'failed';
+  createdAt: string;
+}
+export interface Canonical_SourceEvidenceD9008775 {
+  sourceId: string;
+  recordId: string;
+  sourceVersionId: string;
+  observedAt: string;
+  sourceUpdatedAt: string | null;
+  citationId: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  contentSha256: string;
+  authorizationDecisionId: string;
+}
+export interface Canonical_NativeArtifactVersionFf97D150 {
+  contractVersion: '0.2.0';
+  artifactId: CanonicalArtifactIdCc9F299E;
+  versionId: CanonicalVersionIdE4470A54;
+  parentVersionId: CanonicalParentVersionId_116435A5;
+  binding: Canonical_RunBinding_84F2304C;
+  object: Canonical_ObjectReferenceA099Bd1C;
+  filename: CanonicalFilenameF09421Cc;
+  mimeType: CanonicalMimeType_0837Eb6F;
+  scopes: CanonicalScopes_3D363E5B;
+  evidence: Canonical_NativeSourceEvidenceCb9E6Ba4[];
+  generationStatus: CanonicalGenerationStatus_0B8D37A9;
+  previewStatus: CanonicalPreviewStatusFe162158;
+  createdAt: CanonicalCreatedAt_38444D79;
+}
+export interface Canonical_NativeSourceEvidenceCb9E6Ba4 {
+  sourceId: CanonicalSourceIdFa5F0F45;
+  recordId: CanonicalRecordId_1173860D;
+  sourceVersionId: CanonicalSourceVersionIdA5Aa4B63;
+  observedAt: CanonicalObservedAtFc731620;
+  sourceUpdatedAt: CanonicalSourceUpdatedAt_4A76A197;
+  citationId: CanonicalCitationIdAe4E145B;
+  scopes: CanonicalScopes_78E0Eb49;
+  contentSha256: CanonicalContentSha256_6B70D9F7;
+  binding: Canonical_RunBinding_84F2304C;
+}
+export interface Canonical_LegacyArtifactExecution_4Afe1663 {
+  requestSha256: string;
+  authorizationReceiptId: string;
+  budgetTicketId: string;
+  objectCommitted: true;
+  versionCommitted: true;
+  nativeQualified: false;
+}
+export interface Canonical_NativeArtifactExecution_26204926 {
+  kind: 'native-document';
+  invocationId: string;
+  requestSha256: string;
+  authorizationReceiptId: string;
+  objectCommitted: true;
+  versionCommitted: true;
+  nativeQualified: false;
 }
 export interface IntentsPendingItem {
   deliveryId: IntentsDeliveryId;
@@ -238,7 +490,7 @@ export interface IntentsProposalItem {
   operation: IntentsOperation;
   state: 'prepared';
   kind: 'proposal';
-  proposal: Canonical_ApprovalProposalD1A3E74F;
+  proposal: IntentsProposal;
   decision: Canonical_ApprovalDecision_5E8Bdbcf | null | 'unavailable';
   execution: IntentsExecution | null | 'unavailable';
   phase:
@@ -305,7 +557,6 @@ export interface IntentsErrorResponse {
 export type IntentsRoute='list'|'decide';
 export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
 export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}
-export type IntentsProposal = IntentsProposalItem['proposal'];
 export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}
@@ -392,13 +643,14 @@ export declare const intentsMetadata:{
     "UNKNOWN"
   ],
   "approvableActions": [
-    "task.create"
+    "task.create",
+    "document.draft"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the observed receipt and task result; the receiver admits it only as the executor's own outcome for the retained task.create command (its hash, id, idempotency key, scopes and stable binding, a succeeded receipt with no source transaction, and a result equal to the immutable arguments)",
+    "executed": "status executed returns the actual owner outcome: task.create receipt/result or document.draft ArtifactCreatedResult after publication; document approval alone remains approved or indeterminate, with no task receipt inferred",
     "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",

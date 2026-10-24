@@ -9,7 +9,7 @@
  *    BEFORE SQL without publication custody (`apps/artifacts/storage/postgres-versions.mjs:11`), and the download gate stays
  *    closed (DOWNLOAD_LINK_RETENTION_UNAVAILABLE), so this composes only the read-only private-bucket proof.
  *  - `enabled:true` with declared retention: `artifactStore` with enabled publication custody bound to control's own retention
- *    journal and forwarder (`context.artifactRecovery`) for `tenantId`, evidence in the same bucket and prefix (key
+ *    journal and forwarder (`context.artifactRecovery`) for each actual record/query tenant, evidence in the same bucket and prefix (key
  *    `<prefix>/artifact-publication/<sha256(tenantId)>/index.json`, disjoint from object keys `<prefix>/<64-hex>/<uuid>/<sha>`).
  *    Without that forwarder the store is NOT composed: a store with no recovery owner would keep retention serving fenced and
  *    stop control readiness (`control.mjs` retentionGate + `ensureServing`).
@@ -31,6 +31,9 @@ import {compileRuntimeArtifactsConfiguration} from '../artifacts/configuration.m
 import {registerDocumentsSessionBinder,bindDocumentsSessions} from '../artifacts/session-binding.mjs';
 import {createRuntimeDocumentIntentPreparers} from '../artifacts/intent-preparers.mjs';
 import {registerDocumentIntentOwner} from '../artifacts/intent-binding.mjs';
+import {createSelectedDocumentExecution} from '../artifacts/selected-documents.mjs';
+import {intentsComposition} from './intents.mjs';
+import {createS3RetentionLedgerSink} from '../../control/retention/s3-ledger.mjs';
 const fault=()=>Object.assign(new Error('PRODUCT_PORTS_CONFIGURATION'),{code:'PRODUCT_PORTS_CONFIGURATION'});
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 /** Re-exported for tests; trusted assembly imports it from `../artifacts/session-binding.mjs`, which loads no storage graph. */
@@ -38,17 +41,17 @@ export {bindDocumentsSessions};
 
 function lateBoundOptionsOwner({authority,compose}){
  const resolveAuthority=storageMethod(authority,'resolve');let bound=null;
- const bind=(sessions,retention)=>{
+ const bind=(sessions,retention,store)=>{
   if(sessions===null||typeof sessions!=='object'||types.isProxy(sessions))throw fault();
-  if(bound!==null){if(bound.sessions!==sessions||bound.retention!==retention)throw fault();return;}
-  bound=Object.freeze({sessions,retention,compose:compose(sessions)});
+  if(bound!==null){if(bound.sessions!==sessions||bound.retention!==retention||bound.store!==store)throw fault();return;}
+  bound=Object.freeze({sessions,retention,store,compose:compose(sessions,store)});
  };
  // The resolved shape is closed; `recheck` must be the authority's own method and is called with the application's exact check.
  const owner=Object.freeze({async resolve(call){
   const current=bound;if(current===null)return null;
-  const raw=await resolveAuthority({...call,sessions:current.sessions});if(raw===null||raw===undefined)return null;
-  const r=own(raw,['artifactOptions','selectedClientId','credential','limits','recheck'],['enabled']),recheck=storageMethod(raw,'recheck');
-  const documentOptions=current.compose({artifactOptions:r.artifactOptions,selectedClientId:r.selectedClientId,credential:r.credential,limits:r.limits,...(r.enabled===undefined?{}:{enabled:r.enabled})});
+  const raw=await resolveAuthority({...call,sessions:current.sessions,store:current.store});if(raw===null||raw===undefined)return null;
+  const r=own(raw,['artifactOptions','selectedClientId','limits','recheck'],['enabled']),recheck=storageMethod(raw,'recheck');
+  const documentOptions=current.compose({artifactOptions:r.artifactOptions,selectedClientId:r.selectedClientId,limits:r.limits,...(r.enabled===undefined?{}:{enabled:r.enabled})});
   return {documentOptions,recheck:check=>recheck(check)};
  }});
  return {owner,bind,current:()=>bound};
@@ -59,10 +62,9 @@ function lateBoundOptionsOwner({authority,compose}){
  * body,requestSha256,deadlineMs,signal})` -> `{artifactOptions,selectedClientId,credential,limits,enabled?,recheck}` or null) and
  * `executor` (`createFixedRuntimeArtifactExecutor(...)` over approved image paths) must be supplied together. */
 export function documentsFamily(owners={}){
- const o=own(owners,[],['authority','executor','createS3Client','bindVersionReader','nativeCredentials']);
+ const o=own(owners,[],['authority','executor','createS3Client','nativeCredentials']);
  if(o.createS3Client!==undefined&&!ordinary(o.createS3Client))throw fault();
  if(o.nativeCredentials!==undefined)storageMethod(o.nativeCredentials,'nativeCredentialFor');
- if(o.bindVersionReader!==undefined&&!ordinary(o.bindVersionReader))throw fault();
  if((o.authority===undefined)!==(o.executor===undefined))throw fault();
  if(o.authority!==undefined){storageMethod(o.authority,'resolve');storageMethod(o.executor,'execute');}
  const createClient=o.createS3Client??(({region})=>new S3Client({region,maxAttempts:1}));
@@ -75,23 +77,23 @@ export function documentsFamily(owners={}){
   if(retention&&artifactRecovery===undefined)return {ports:{}};
   const client=createClient({region:declared.region});
   const s3={client,bucket:declared.bucket,prefix:declared.prefix,expectedBucketOwner:declared.expectedBucketOwner,kmsKeyId:declared.kmsKeyId};
+  const retentionPorts=retention?{retentionLedgerSink:createS3RetentionLedgerSink({...s3,now,maxRequestMs:configuration.limits.requestMs})}:{};
   const storage=createRuntimeArtifactStorage({s3,versionsPool:pool,now,maxRequestMs:configuration.limits.requestMs,
-   ...(retention?{custody:{journal:artifactRecovery.journal,retention:artifactRecovery.retention,tenantId:declared.tenantId,evidenceS3:s3,enabled:true}}:{})});
+   ...(retention?{custody:{journal:artifactRecovery.journal,retention:artifactRecovery.retention,evidenceS3:s3,enabled:true}}:{})});
   // Composed disabled: without a declared Core authority origin the supplied authority is never reached.
-  if(o.authority===undefined||declared.authority===undefined)return {ports:{artifactStore:storage}};
+  if(o.authority===undefined||declared.authority===undefined)return {ports:{artifactStore:storage,...retentionPorts}};
   if(Object.hasOwn(o.authority,'origin')&&o.authority.origin!==declared.authority.origin||Object.hasOwn(o.authority,'now')&&o.authority.now!==now)throw fault();
-  o.bindVersionReader?.({pool,versions:storage.versions});
-  // Production documents charge the admitted run's allocation in the product budget namespace (never the qualification one).
-  const late=lateBoundOptionsOwner({authority:o.authority,compose:sessions=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,budgetPool:pool,sessions,now,namespace:'product'})});
+  const late=lateBoundOptionsOwner({authority:o.authority,compose:(sessions,store)=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,pool,sessions,store,now})});
   registerDocumentsSessionBinder(context,late.bind);
   if(o.nativeCredentials)registerDocumentIntentOwner(context,value=>{
    const bound=late.current(),selectedClientId=value.clientResolution?.clientId;
-   if(!bound||retention&&!bound.retention||typeof selectedClientId!=='string')return [];
+   if(!bound||retention&&!bound.retention||!(selectedClientId===null||typeof selectedClientId==='string'))return [];
    return createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,
     limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},
     ...(bound.retention?{retention:bound.retention}:{})});
-  });
-  return {ports:{artifactStore:storage,artifactOptionsOwner:late.owner}};
+  },createSelectedDocumentExecution({bound:late.current,pool,optionsOwner:late.owner,now,maxRequestMs:configuration.limits.requestMs,maxOutputBytes:configuration.agentcore.maxOutputBytes,
+   readDecision:value=>{const reader=intentsComposition(context).readDecision;if(!reader)throw fault();return reader(value);}}));
+  return {ports:{artifactStore:storage,artifactOptionsOwner:late.owner,...retentionPorts}};
  };
 }
 

@@ -1,10 +1,165 @@
-// Generated from canonical schema by installed json-schema-to-ts and TypeScript. No authorization implied.
-export type UserPreferences = { notifications: { runCompleted: boolean; approvalRequested: boolean; memoryReviewed: boolean; }; theme: "system" | "light" | "dark"; density: "compact" | "comfortable"; timezone: string | null; defaultClientId: string | null; };
-export type UserPreferencesOwner = { tenantId: string; actorId: string; };
-export type UserPreferencesReadRequest = {};
-export type UserPreferencesSaveRequest = { expectedRevision: number; preferences: { notifications: { runCompleted: boolean; approvalRequested: boolean; memoryReviewed: boolean; }; theme: "system" | "light" | "dark"; density: "compact" | "comfortable"; timezone: string | null; defaultClientId: string | null; }; };
-export type UserPreferencesResponse = { preferences: { notifications: { runCompleted: boolean; approvalRequested: boolean; memoryReviewed: boolean; }; theme: "system" | "light" | "dark"; density: "compact" | "comfortable"; timezone: string | null; defaultClientId: string | null; }; owner: { tenantId: string; actorId: string; }; revision: number; };
-export type UserPreferencesErrorResponse = { error: { field?: string | undefined; outcome?: "UNKNOWN" | "RESULT_NOT_RELEASED" | undefined; code: "INVALID_REQUEST" | "UNAUTHENTICATED" | "ACCESS_DENIED" | "MEMBERSHIP_REVOKED" | "NOT_FOUND" | "METHOD_NOT_ALLOWED" | "DEADLINE" | "MEMBERSHIP_CHANGED" | "REQUEST_TOO_LARGE" | "UNSUPPORTED_MEDIA_TYPE" | "CANCELLED" | "PRODUCT_UNAVAILABLE" | "SETTINGS_REQUEST_INVALID" | "SETTINGS_DOCUMENT_INVALID" | "SETTINGS_FIELD_INVALID" | "SETTINGS_CLIENT_REFUSED" | "SETTINGS_REVISION_CONFLICT" | "SETTINGS_STORE_UNAVAILABLE" | "SETTINGS_STORE_STATE" | "SETTINGS_COMMIT_UNKNOWN" | "SETTINGS_UNAVAILABLE" | "USER_PREFERENCES_UNAVAILABLE"; }; };
+// Generated additive user-preferences contract from its canonical document owner. No authority implied.
+
+export type UserPreferencesApplicationEnvelope =
+  | UserPreferences
+  | UserPreferencesOwner
+  | UserPreferencesReadRequest
+  | UserPreferencesSaveRequest
+  | UserPreferencesResponse
+  | UserPreferencesErrorResponse;
+
+export interface UserPreferences {
+  defaultModel: {
+    provider: 'bedrock' | 'claude-api';
+    modelId: string;
+    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  } | null;
+  theme: 'system' | 'light' | 'dark';
+  density: 'comfortable' | 'compact';
+  timezone: string | null;
+  notifications: {
+    runCompleted: boolean;
+    approvalRequested: boolean;
+    memoryReviewed: boolean;
+  };
+  defaultClientId: string | null;
+}
+export interface UserPreferencesOwner {
+  tenantId: string;
+  actorId: string;
+}
+export interface UserPreferencesReadRequest {}
+export interface UserPreferencesSaveRequest {
+  expectedRevision: number;
+  preferences: UserPreferences;
+}
+export interface UserPreferencesResponse {
+  owner: UserPreferencesOwner;
+  revision: number;
+  preferences: UserPreferences;
+  modelCatalog: {
+    defaultSelection: {
+      provider: 'bedrock' | 'claude-api';
+      modelId: string;
+      effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+    };
+    /**
+     * @minItems 1
+     * @maxItems 128
+     */
+    models: [
+      {
+        provider: 'bedrock' | 'claude-api';
+        modelId: string;
+        label: string;
+        /**
+         * @minItems 1
+         * @maxItems 6
+         */
+        efforts:
+          | [null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')]
+          | [null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'), null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ];
+        available: boolean;
+        unavailableReason: null | 'provider_unconfigured' | 'model_unqualified';
+      },
+      ...{
+        provider: 'bedrock' | 'claude-api';
+        modelId: string;
+        label: string;
+        /**
+         * @minItems 1
+         * @maxItems 6
+         */
+        efforts:
+          | [null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')]
+          | [null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'), null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ]
+          | [
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max'),
+              null | ('low' | 'medium' | 'high' | 'xhigh' | 'max')
+            ];
+        available: boolean;
+        unavailableReason: null | 'provider_unconfigured' | 'model_unqualified';
+      }[]
+    ];
+  };
+}
+export interface UserPreferencesErrorResponse {
+  error: {
+    code:
+      | 'INVALID_REQUEST'
+      | 'UNAUTHENTICATED'
+      | 'ACCESS_DENIED'
+      | 'MEMBERSHIP_REVOKED'
+      | 'NOT_FOUND'
+      | 'METHOD_NOT_ALLOWED'
+      | 'DEADLINE'
+      | 'MEMBERSHIP_CHANGED'
+      | 'REQUEST_TOO_LARGE'
+      | 'UNSUPPORTED_MEDIA_TYPE'
+      | 'CANCELLED'
+      | 'PRODUCT_UNAVAILABLE'
+      | 'SETTINGS_REQUEST_INVALID'
+      | 'SETTINGS_DOCUMENT_INVALID'
+      | 'SETTINGS_FIELD_INVALID'
+      | 'SETTINGS_CLIENT_REFUSED'
+      | 'SETTINGS_REVISION_CONFLICT'
+      | 'SETTINGS_STORE_UNAVAILABLE'
+      | 'SETTINGS_STORE_STATE'
+      | 'SETTINGS_COMMIT_UNKNOWN'
+      | 'SETTINGS_UNAVAILABLE'
+      | 'USER_PREFERENCES_UNAVAILABLE';
+    outcome?: 'UNKNOWN' | 'RESULT_NOT_RELEASED';
+    field?: string;
+  };
+}
 
 export type UserPreferencesRoute='read'|'save';
 export interface UserPreferencesRequestMap {read:UserPreferencesReadRequest;save:UserPreferencesSaveRequest;}

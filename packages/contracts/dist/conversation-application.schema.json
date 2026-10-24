@@ -33,6 +33,44 @@
             "skillVersion"
           ],
           "additionalProperties": false
+        },
+        "modelSelection": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "enum": [
+                "bedrock",
+                "claude-api"
+              ]
+            },
+            "modelId": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"
+            },
+            "effort": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "provider",
+            "modelId",
+            "effort"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -163,6 +201,44 @@
               "type": "null"
             }
           ]
+        },
+        "modelSelection": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "enum": [
+                "bedrock",
+                "claude-api"
+              ]
+            },
+            "modelId": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"
+            },
+            "effort": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh",
+                    "max"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "provider",
+            "modelId",
+            "effort"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -282,7 +358,9 @@
                 "DEADLINE",
                 "CANCELLED",
                 "REQUEST_TOO_LARGE",
-                "CONVERSATION_UNAVAILABLE"
+                "CONVERSATION_UNAVAILABLE",
+                "MODEL_SELECTION_UNAVAILABLE",
+                "MODEL_SETTINGS_UNAVAILABLE"
               ]
             }
           },

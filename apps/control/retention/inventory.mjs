@@ -5,6 +5,8 @@
  * of a row-target class yields an exact row target, so a purge can never report EXECUTED while a retained row stays behind. */
 import {own,data,fail,uuid,digest,hash,text,subject} from './boundary.mjs';
 import {policyClasses,retainedClasses,rowTargetClasses,rowTargetSubjectKind} from './data-classes.mjs';
+import {assertNativeFileState} from '../../../packages/contracts/runtime-0.2/files.mjs';
+import {assertNativeSessionCapture} from '../../../packages/contracts/runtime-0.2/session.mjs';
 export const classes=policyClasses;
 /** Classes the product neither erases nor lets block a purge: identifier-only evidence kept under its own retention rule. */
 export const externalClasses=retainedClasses;
@@ -19,6 +21,7 @@ const object=o=>{const v=own(o,['objectId','versionId','sha256'],['bytes','scope
  if(v.scopes!==undefined&&(!Array.isArray(v.scopes)||!v.scopes.length))fail('RETENTION_INVALID_REQUEST');
  return {objectId:v.objectId,versionId:v.versionId,sha256:v.sha256};};
 const refKey=o=>`${o.objectId}@${o.versionId}`;
+const nativeObjects=files=>{if(!files)return [];const f=assertNativeFileState(files);return [...f.workspace.entries,...f.tasks].map(e=>e.object);};
 const sdkTarget=e=>{const v=own(e,['entryId','runId','sessionId','subpath','sequence']);uuid(v.runId);uuid(v.sessionId);text(v.subpath,1024);if(!Number.isSafeInteger(v.sequence)||v.sequence<1)fail('RETENTION_INVALID_REQUEST');return Object.freeze({className:'sdkSession',runId:v.runId,sessionId:v.sessionId,subpath:v.subpath,sequence:v.sequence});};
 /** Exact row identity for the classes keyed by one identifier (sdkSession and artifactVersions keep their established shapes). */
 const keyTarget=(className,key)=>Object.freeze({className,key:uuid(key)});
@@ -52,13 +55,14 @@ function conversationEvidence(s){
   if(count?.size!==run.lastSequence)refusal();for(let n=1;n<=run.lastSequence;n++)if(!count.has(n))refusal();}
  const controlTargets=[];
  for(const c of requireList(s.controls)){
-  const row=own(c,['controlId','runId','controlSequence','projectionSha256']);
+  const row=own(c,['controlId','runId','controlSequence','projectionSha256'],['nativeFiles']);
+  if(row.nativeFiles)assertNativeFileState(row.nativeFiles);
   uuid(row.controlId);uuid(row.runId);digest(row.projectionSha256);
   const sequenceKey=`${row.runId}:${row.controlSequence}`;
   if(!runIds.has(row.runId)||!Number.isSafeInteger(row.controlSequence)||row.controlSequence<1||controls.has(row.controlId)||
      controlSequences.has(sequenceKey))refusal();
   controls.set(row.controlId,row);controlSequences.add(sequenceKey);
-  controlTargets.push(Object.freeze({className:'conversation',table:'controls',...row}));
+  const {nativeFiles,...target}=row;controlTargets.push(Object.freeze({className:'conversation',table:'controls',...target}));
  }
  const hasSourcePin=s.inventorySha256!==undefined||s.artifactVersionRefs!==undefined||s.objectVersions!==undefined;
  if(hasSourcePin){
@@ -91,9 +95,10 @@ export function enumerateReferences(snapshot){
   rows.push(Object.freeze({className,key,objects:Object.freeze(validated)}));};
  const keyed=(className,key,refs)=>{rowTargets.push(keyTarget(className,key));add(className,key,refs);};
  if(conversation)keyed('conversation',s.subject.subjectId,[]);
- for(const r of list(s.runs)){const refs=r.continuation?.checkpoint?[r.continuation.checkpoint.opaqueSession,...r.continuation.checkpoint.workspace.entries.map(e=>e.object)]:[];
+ for(const r of list(s.runs)){const refs=r.continuation?.checkpoint?[r.continuation.checkpoint.opaqueSession,...r.continuation.checkpoint.workspace.entries.map(e=>e.object)]:nativeObjects(r.continuation?.files);
   if(conversation)ownerObjects.push(...refs);keyed('conversation',r.runId,refs);}
  if(conversation){for(const target of owner.controlTargets){rowTargets.push(target);add('conversation',`control:${target.controlId}`,[]);}}
+ if(conversation)for(const control of owner.controls.values())if(control.nativeFiles){const refs=nativeObjects(control.nativeFiles);ownerObjects.push(...refs);add('lifecycle',`native-control:${control.controlId}`,refs);}
  // Each local proposal continuation is a distinct conversation row, not an
  // external Core memory proposal. A purge owner must consume this exact target
  // before a conversation plan may report deletion complete.
@@ -114,14 +119,15 @@ export function enumerateReferences(snapshot){
  }
  const completionIds=new Set(),completionRuns=new Set();
  for(const c of list(s.completionCheckpoints)){
-  if(conversation){const row=own(c,['checkpointId','runId','state','checkpoint']);uuid(row.checkpointId);uuid(row.runId);
+  if(conversation){const row=own(c,['checkpointId','runId','state','checkpoint'],['nativeCapture']);uuid(row.checkpointId);uuid(row.runId);
+   if(row.nativeCapture){const p=assertNativeSessionCapture(row.nativeCapture);if(!p.files||p.checkpointId!==row.checkpointId||p.sdkSession.binding.runId!==row.runId||row.checkpoint!==null)refusal();}
    if(!owner.runIds.has(row.runId)||!['CAPTURING','UNKNOWN','PUBLISHED'].includes(row.state)||
-      (row.state==='PUBLISHED'?row.checkpoint==null:row.checkpoint!==null)||completionIds.has(row.checkpointId)||
+      (row.state==='PUBLISHED'?row.checkpoint==null&&!row.nativeCapture:row.checkpoint!==null||row.nativeCapture!==undefined)||completionIds.has(row.checkpointId)||
       completionRuns.has(row.runId))refusal();
    completionIds.add(row.checkpointId);completionRuns.add(row.runId);
    const target=Object.freeze({className:'completionCheckpoints',checkpointId:row.checkpointId,runId:row.runId,state:row.state});
    rowTargets.push(target);if(row.state!=='PUBLISHED')unpublishedCompletionCheckpoints.push(target);
-   const refs=row.checkpoint?[row.checkpoint.opaqueSession,...row.checkpoint.workspace.entries.map(e=>e.object)]:[];
+   const refs=row.checkpoint?[row.checkpoint.opaqueSession,...row.checkpoint.workspace.entries.map(e=>e.object)]:nativeObjects(row.nativeCapture?.files);
    ownerObjects.push(...refs);add('completionCheckpoints',row.checkpointId,refs);
   }else keyed('completionCheckpoints',c.checkpointId,[c.checkpoint.opaqueSession,...c.checkpoint.workspace.entries.map(e=>e.object)]);
  }

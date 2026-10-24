@@ -4,6 +4,7 @@ import {createSettingsStoreDouble} from '../../test/fixtures.mjs';
 import {createUserPreferencesService} from '../../user-service.mjs';
 import {createUserPreferencesApplication} from '../index.mjs';
 import {USER_PREFERENCE_DEFAULTS} from '../../documents.mjs';
+import {MODEL_CATALOG} from '../../../../../packages/contracts/test/model-selection-fixture.mjs';
 export const CLIENT='00000000-0000-4000-8000-000000000001';
 export const NOW=Date.parse('2026-10-17T02:00:00.000Z');
 export function fixture({maxResponseBytes=16384}={}){
@@ -17,7 +18,7 @@ export function fixture({maxResponseBytes=16384}={}){
   async read(value){state.reads++;const result=await persistence.read(value);await state.afterRead?.(value);return result;},
   async save(value){state.writes++;const result=await persistence.save(value);await state.afterSave?.(value);return result;}};
  let sequence=10;const newId=()=>`00000000-0000-4000-8000-${String(sequence++).padStart(12,'0')}`;
- const service=createUserPreferencesService({store,newId});
+ const service=createUserPreferencesService({store,newId,modelCatalog:MODEL_CATALOG});
  const application=createUserPreferencesApplication({gate,service,now:()=>state.now,limits:{maxRequestMs:1000,maxRequestBytes:8192,maxResponseBytes}});
  const call=(operation,body={},credential='A',extra={})=>application.handle(new Request('https://meri.synthetic.invalid/api/settings/user/'+operation,
   {method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body),...extra}));

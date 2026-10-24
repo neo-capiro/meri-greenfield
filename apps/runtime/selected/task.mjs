@@ -1,3 +1,4 @@
+import {nextTurnSessionId} from '../../worker/conversation/continuation/next-turn-options.mjs';
 import {buildNextTurnOptions} from '../../worker/conversation/continuation/next-turn-options.mjs';
 /** Isolated SDK task: original MCP tools and opaque trusted-control completion only. */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -26,7 +27,7 @@ export function createTaskSelectedSkills(configuration){
    if(!uuid(session.sessionId)||!same(session.binding,binding)||session.requestSha256!==hash(request)||!Number.isSafeInteger(session.checkedAtMs)||session.checkedAtMs<started||session.checkedAtMs>now()||!Number.isSafeInteger(session.expiresAtMs)||session.expiresAtMs<=now())throw fault('SELECTED_TASK_SESSION_REFUSED');
    assertSubject(session.selection.subject,binding);assertWindow(session.selection.window);if(!same(session.selection.subject.scopes,scopes)||!same(session.selection.window,request.window))throw fault('SELECTED_TASK_SESSION_REFUSED');life.limitDeadline(session.expiresAtMs);
    const selector={binding,sessionId:session.sessionId,requestSha256:hash(request),selectionSha256:hash(session.selection)};
-   server=createOriginalSkillServer({selected,binding,timeoutMs:selected.manifest.budgets.maxRuntimeSeconds*1000,expectedSessionId:args.nextTurn?args.nextTurn.checkpoint.sessionId:args.continuation?(args.continuation.mode==='resume'?args.continuation.checkpoint.sessionId:args.continuation.targetSessionId):undefined,read:async(operation,argumentsValue,signal,deliveryId)=>{
+   server=createOriginalSkillServer({selected,binding,timeoutMs:selected.manifest.budgets.maxRuntimeSeconds*1000,expectedSessionId:args.nextTurn?nextTurnSessionId(args.nextTurn):args.continuation?(args.continuation.mode==='resume'?args.continuation.checkpoint.sessionId:args.continuation.targetSessionId):undefined,read:async(operation,argumentsValue,signal,deliveryId)=>{
     if(closed)throw fault('SELECTED_TASK_CLOSED');const response=data(await life.run(owned=>call('selected/read',{...selector,operation,arguments:argumentsValue,deliveryId},{signal:signal?AbortSignal.any([owned,signal]):owned})));own(response,['result']);if(typeof response.result!=='string'||Buffer.byteLength(response.result)>selected.manifest.budgets.maxOutputBytes)throw fault('SELECTED_TASK_RESULT_REFUSED');life.check();return response.result;
    }});
    const runtime={selected,sdkOptions:{mcpServers:{meri_original_reads:server.server},allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks,outputFormat},finish(raw){

@@ -1,16 +1,18 @@
-# Wave 2 · Agent 4 · M2: General or client chat (DRAFT: send only after Wave 1 closes; Neo's rule, fresh "agent 4 v{next}" session)
+# Wave 2 · Agent 4 · M2: General or client chat
 
-**From:** Fable. **Lane:** U (Meri screens plus Core-for-Meri). **Repository:** neo-capiro/capiro-frontend plus neo-capiro/capiro-backend (Core bootstrap). Branch from the current default branch head at send time.
-**How we work:** you build; the Wave 2 orchestrator's reviewers review; the orchestrator gates, merges and ships (Fable stops after Wave 1). Draft PRs only; no merges, no AWS; list tests run and not run; mutation-check every new test. Read `WORKFLOW.md` (meri-greenfield `docs/handover/20261022/`).
+**From:** root Codex under Neo's current authorization. **Lane:** U (Meri screens plus Core-for-Meri). **Repository:** neo-capiro/capiro-frontend plus neo-capiro/capiro-backend (Core bootstrap). Branch from the current default branch head at send time.
+**How we work:** root assigns exact files/heads; the author implements and runs meaningful affected checks; a separate Astra Ultra reviewer reviews the exact result. Root owns integration, heavy gates, AWS and shipping. Preserve one-writer ownership and other work. Use `../../CODEX-SETUP.md` and `../../CODEX-VALIDATION-AND-SHIPPING.md`.
 
-## Standing requirements (Neo, 2026-10-23). Read `STANDING-REQUIREMENTS.md` in the handover folder before anything else.
-1. **Claude handles the harness** (SDK full harness, direct Bedrock, Capiro data as tools). Never build a custom replacement for something the SDK or AWS already does.
+## Standing requirements (Neo, updated2026-10-24). Read `STANDING-REQUIREMENTS.md` in the handover folder before anything else.
+1. **Claude handles the harness** (actual SDK full harness on AgentCore Runtime V1, direct Bedrock, Capiro data as tools). Never build a custom replacement for something the SDK or AWS already does.
 2. **Keep it simple and standard.** No per-hop re-verification, proxies, credential-minting services or reservation ledgers. Core is the gatekeeper for Capiro data.
 3. **Leave no dead code.** Delete what your change replaces in the same PR, remove temporary diagnostics, add no flag that nothing turns on, and show `git grep` proof in the PR description.
-4. **The old plans changed.** Tickets for the removed layers are superseded: check `source-of-truth/SUPERSEDED-BY-ITEM-0.md` before implementing any ticket. If a ticket and Wave 2 item 0 disagree, item 0 wins; ask on #202.
+4. **Keep Capiro data working.** Core owns canonical tenant/member/client/wall permissions and revocation; preserve General/client semantics, memory, all read families and their positive/negative/paging cases.
+
+Follow the [approved migration/completion plan](../../plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md): immutable conversation sessions, idle stop and durable SDK/artifact restore; Temporal retains required durable work. All accepted Item0/A2/M2/MP/14-skill/full-product scope remains. Per-run Fargate, custom warm pools and duplicate authority are superseded; no shipping completion is implied.
 
 ## Sources of truth
-The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets below, verbatim. Implement each ticket's bounded work and meet its acceptance exactly. If anything conflicts or is left open, ask on #202; don't decide.
+The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets below, verbatim. Implement each ticket's bounded work and meet its acceptance exactly. Resolve routine implementation autonomously within root's allocation; report actual scope/shared-owner conflicts to root. Older ticket mechanisms are historical where the current migration supersedes them; their product acceptance remains binding.
 
 ## Plan row (FINAL-PLAN §5)
 | **M2** · General or client chat | R + U | **Client-optional chat** (details below). New conversation, conversation list, switching and history (MF-09). Automatic client context MG-05. Selected skill and scope kept MG-02. "Ask Meri about this client" PF-02. Cross-module context MF-19 (context part). | M1, and Neo's decision on reads across clients | E06, E45 (context part), and the client-optional checks below |
@@ -21,9 +23,9 @@ The two master closeout plans (20261021), `STANDING-RULES.md`, and the tickets b
 
 **M2 matches that with one rule:** a conversation is either **General** or **bound to one client**, decided when it is created.
 
-- **Core:** the conversation bootstrap accepts "no client". The current-authority receipt supports a clientless conversation, designed properly this time; an earlier ad-hoc version was removed from PR102. This work is change-controlled.
+- **Core:** the conversation bootstrap accepts "no client". The canonical authenticated bootstrap supports a clientless conversation under the approved M2 contract; do not recreate the removed per-hop authority receipt. Root owns the shared contract change and actual Core permission gates.
 - **Meri control:** the initial binding, context and tool scopes accept a clientless conversation. A tool that needs a client asks the user to start a client chat instead of guessing.
-- **Wave 2 item 0 note:** the only authority machinery to build here is Core's receipt for the one access check control makes per turn (`/api/clio/application-authority/current`), extended to a clientless conversation. A run's tools reach Core through the control tool gateway with a per-run token whose scope is General or one client; Core enforces each client's wall per result. Don't build a separate authority DTO, receipt or relay for General chats.
+- **Item0 migration:** use the minimal current control/public contract agreed with root/A. Core checks current membership and General/client access; the existing tool gateway preserves that scope and enforces each client wall per result. No separate General authority DTO, receipt or relay.
 - **Reads in a General chat:** across the clients the user can already see, with each client's wall enforced per result (Neo's decision 2).
 - **Actions in a General chat:** whichever is simpler to build safely. Either they run under the user's own per-client permissions, or they require a client chat. **No new authorization machinery for this.**
 - **Memory:** a General chat uses personal and firm memory only, never a client's.

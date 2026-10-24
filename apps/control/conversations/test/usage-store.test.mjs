@@ -14,7 +14,7 @@ function fixture(){const f=storeFixture(),store=createPostgresConversationStore(
 }
 test('one run row owns exact accounting replay across owner reconstruction; changed payload refuses',async()=>{
  const f=fixture();await f.start();assert.deepEqual(await f.record(),{status:'recorded',reason:null,replayed:false});
- const first=structuredClone(f.saved().sdk_usage);assert.equal(first.chargeMicroUsd,891);assert.equal(first.toolsUsed.tools[0].tool,'Read');assert.equal(first.parentRunId,null);
+ const first=structuredClone(f.saved().sdk_usage);assert.equal(first.chargeMicroUsd,100000);assert.equal(first.toolsUsed.tools[0].tool,'Read');assert.equal(first.parentRunId,null);
  const fresh=createPostgresConversationStore({pool:f.pool});assert.equal((await fresh.recordUsage({binding,scopes,input:payload()},check)).replayed,true);
  await assert.rejects(f.record(payload(result(id(50),101))),/SDK_USAGE_REPLAY_REFUSED/);
  assert.deepEqual(f.saved().sdk_usage,first);assert.equal(f.state.calls.filter(s=>s.startsWith('UPDATE meri_conversations.runs SET sdk_usage=')).length,1);
@@ -52,6 +52,6 @@ test('resume/fork use only the exact persisted parent cumulative snapshot; rewin
   const r={...parent,run_id:target.runId,request_id:id(63),request:{...parent.request,requestId:id(63)},projection:{...parent.projection,binding:target},sdk_usage:null,sdk_usage_sha256:null,sdk_charge_micro_usd:null};r.request_sha256=hash(r.request);r.projection_sha256=hash(r.projection);f.state.runs.set([target.tenantId,target.conversationId,target.runId].join(':'),r);
   const lineage={mode:mode==='rewind'?'resume':mode,checkpoint:{binding,sessionId:id(50)},resumeSessionAt:mode==='rewind'?'message-synthetic':null};
   const usage=payload(result(mode==='fork'?id(51):id(50),150));
-  const receipt=await f.store.recordUsage({binding:target,scopes,input:usage,lineage},check);assert.equal(receipt.status,mode==='rewind'?'unavailable':'recorded');assert.equal(r.sdk_charge_micro_usd,mode==='rewind'?null:165);assert.equal(r.sdk_usage.parentRunId,binding.runId);
+  const receipt=await f.store.recordUsage({binding:target,scopes,input:usage,lineage},check);assert.equal(receipt.status,mode==='rewind'?'unavailable':'recorded');assert.equal(r.sdk_charge_micro_usd,mode==='rewind'?null:50000);assert.equal(r.sdk_usage.parentRunId,binding.runId);
  }
 });

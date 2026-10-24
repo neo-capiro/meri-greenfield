@@ -21,7 +21,7 @@ export function runStartFixture({tenantId=id(1),actorId=id(2),generationJobId=id
  request.context.contextSha256=hash(without(request.context,'contextSha256'));request.inputSha256=hash(without(request,'inputSha256'));
  const canonical={canonicalPlanId:id(6),tenantId,clientId,objectiveId:id(4),canonicalStrategyId:id(7),canonicalProjectId:id(8),bindingVersion:1,epoch:1,
   requestedIntentId:id(9),requestedObjectiveRevisionId:id(5),requestedObjectiveVersion:2,snapshotHash:request.source.snapshotSha256};
- const sourceAdmission={schemaVersion:1,namespace:'capiro.objective-strategy.admission:v1',canonical,actorUserId:id(14),clerkUserId:actorId,consentId:id(15),controlVersion:1,
+ const sourceAdmission={schemaVersion:1,namespace:'capiro.objective-strategy.admission:v1',canonical,actorUserId:actorId,clerkUserId:'synthetic-clerk-user',consentId:id(15),controlVersion:1,
   generationJobId,generationRequestId:requestId,admittedAtMs:NOW-1000,effectExpiresAtMs:NOW+150000,expectedStrategyVersionId:null};
  const executionContext={schemaVersion:1,prompt,promptSha256:createHash('sha256').update(prompt).digest('hex'),
   ownerRefs:[{ownerRef:request.context.ownerRefs[0],clerkUserId:actorId}],contextPacketId:request.context.packetId};

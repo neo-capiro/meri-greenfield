@@ -1,7 +1,7 @@
 /** Explicit synthetic HTTP and authority ports; no real Core source or provider is exercised. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {uuid} from '../../../test/fixtures.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {uuid} from '../../test/read-fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createResearchLegalCandidatesHandlers} from '../handler.mjs';
 import {researchCandidatesContext} from '../request-context.mjs';
 
@@ -11,9 +11,6 @@ export const clientId=uuid('a'),otherClientId=uuid('c');
 export function storedCase({request={query:'priority'},resolution,page}={}){
  const scene=billTextCase(),contract=resolveOperationContract(operation),context=researchCandidatesContext(operation,request,resolution);
  const {authority,state,now,wire,credentialCalls}=scene;
- // Explicit synthetic signed-source admission. Actual native/delegation owners
- // are exercised separately; an ordinary user bearer is never this fixture grant.
- state.credentialMutator=proof=>{proof.authorizationScheme='CapiroMeriRead';};
  authority.decision.operation=`${operation.id}@${operation.version}`;
  authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
  const visibleClientIds=context.clientResolution?[context.clientResolution.clientId]:[];
@@ -37,7 +34,7 @@ export function storedCase({request={query:'priority'},resolution,page}={}){
  };
  const call=(raw=request,current=authority,normalizationContext=researchCandidatesContext(operation,raw,context.clientResolution))=>{
   const normalized=contract.normalizeInput(raw,normalizationContext);
-  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext,authority:current};
+  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext,authority:readContext(current)};
  };
  const nativeReadContextPorts={async readCurrent({request:raw,deadlineMs,signal,...proof}){
   if(signal?.aborted)throw Error('CANCELLED');

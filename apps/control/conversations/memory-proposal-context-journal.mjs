@@ -1,12 +1,15 @@
-/** Durable, task-scoped proposal-page continuation. The gateway owns current
+/** Durable execution-scoped proposal and mail-page continuation. The physical
+ * table name is retained from immutable migration 0019; key.operation distinguishes
+ * the two exact record formats without reinterpreting existing memory rows. The gateway owns current
  * authorization and final release; this journal owns immutable previous-page
  * bytes in the existing conversation transaction and retention boundary. */
 import {assertSubject,assertMemoryProposalReadResult,validateShape as readShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {bounded,hash,same,fail,own,validateShape,uuid} from './boundary.mjs';
+import {isMailContext,mailContextKey,mailContextRecord,mailPredecessorKey} from './mail-context-record.mjs';
+import {decodeExecutionRow} from './execution-boundary.mjs';
 
 const OPERATION=Object.freeze({id:'memory.list_own_proposals',version:'0.2.0'});
-const SUBJECT_DECISION='00000000-0000-4000-8000-000000000000';
 // Ten schema-bounded proposal entries can exceed 64 KiB in UTF-8. The gateway
 // still applies its narrower task output limit to each returned receipt.
 const MAX_RECORD_BYTES=1048576;
@@ -14,16 +17,16 @@ const digest=value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value);
 const refuse=()=>fail('MEMORY_CONTEXT_REFUSED');
 const tuple=b=>[b.tenantId,b.conversationId,b.runId];
 
-function selectedKey(raw,{binding,clientId,policyRevision}){
+function selectedKey(raw,task){
+ if(task.mail===true)return mailContextKey(raw,task);
+ const {binding,clientId,policyRevision}=task;
  const key=bounded(raw,16384);
  own(key,['binding','operation','policyRevision','subject','cursor']);
  validateShape('RunBinding',key.binding);
  if(!same(key.binding,binding)||!same(key.operation,OPERATION)||key.policyRevision!==policyRevision||
     typeof key.cursor!=='string'||key.cursor.length<1||key.cursor.length>2048)refuse();
  const subject=own(key.subject,['kind','entityType','entityIds','tenantId','actorId','policyRevision','scopes','rosterVersionId']);
- // The gateway deliberately omits the replaceable authorization decision ID
- // from its continuation key. Reconstitute only for canonical shape validation.
- assertSubject({...subject,authorizationDecisionId:SUBJECT_DECISION},binding);
+ assertSubject(subject,binding);
  if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==clientId||
     subject.policyRevision!==policyRevision||subject.scopes.length!==1||
     subject.scopes[0].kind!=='client'||subject.scopes[0].resourceId!==clientId||
@@ -32,6 +35,7 @@ function selectedKey(raw,{binding,clientId,policyRevision}){
 }
 
 function retainedRecord(raw,task,at,predecessor){
+ if(task.mail===true)return mailContextRecord(raw,task,{at,predecessor});
  const record=bounded(raw,MAX_RECORD_BYTES);
  own(record,['key','previous','previousSha256','recordedAtMs','expiresAtMs']);
  const key=selectedKey(record.key,task),previous=own(record.previous,['request','page']);
@@ -46,7 +50,7 @@ function retainedRecord(raw,task,at,predecessor){
  if(previous.request.cursor===null&&predecessor!==null||
     previous.request.cursor!==null&&predecessor===null)refuse();
  try{assertMemoryProposalReadResult(previous.page,previous.request,{
-  subject:{...key.subject,authorizationDecisionId:SUBJECT_DECISION},
+  subject:key.subject,
   ...(predecessor===null?{}:{previous:predecessor.previous})});}catch{refuse();}
  return record;
 }
@@ -64,6 +68,14 @@ export async function scanMemoryProposalContextRows(c,raw,check=()=>{},onRow=()=
   if(row.tenant_id!==subject.tenantId||row.conversation_id!==subject.conversationId||
      !digest(keySha256)||row.record_sha256!==hash(record)||
      Number(row.expires_at_ms)!==record.expiresAtMs)refuse();
+  if(isMailContext(record.key)){
+   const binding=record.key.binding,clientId=record.key.subject.kind==='client'?record.key.subject.entityIds[0]:null;
+   if(binding.tenantId!==subject.tenantId||binding.conversationId!==subject.conversationId||binding.runId!==runId)refuse();
+   mailContextRecord(record,{binding,clientId,policyRevision:record.key.policyRevision},{inventory:true});
+   if(hash(record.key)!==keySha256)refuse();
+   const identity=`${runId}:${keySha256}`;if(seen.has(identity))refuse();
+   onRow(row);seen.add(identity);targets.push(Object.freeze({runId,keySha256}));return;
+  }
   own(record,['key','previous','previousSha256','recordedAtMs','expiresAtMs']);
   const binding=record.key?.binding,clientId=record.key?.subject?.entityIds?.[0],
    policyRevision=record.key?.policyRevision;
@@ -104,12 +116,12 @@ export async function scanMemoryProposalContextRows(c,raw,check=()=>{},onRow=()=
  * until a selected task actually asks for a previous page or retains one. */
 export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}){
  if(typeof tx!=='function'||typeof rowRun!=='function'||typeof pool?.connect!=='function'||typeof now!=='function')fail('STORE_CONFIGURATION');
- function forTask(raw){
+ function forTask(raw,mail=false){
   if(typeof retentionGate?.assertServable!=='function'||typeof retentionHead!=='function')fail('MEMORY_CONTEXT_CONFIGURATION');
   const fields=own(raw,['binding','clientId','policyRevision','expiresAtMs'],['signal']);
   const task=Object.freeze({...bounded({binding:fields.binding,clientId:fields.clientId,
-   policyRevision:fields.policyRevision,expiresAtMs:fields.expiresAtMs},16384),signal:fields.signal});
-  validateShape('RunBinding',task.binding);uuid(task.clientId);nativeSignal(task.signal);
+   policyRevision:fields.policyRevision,expiresAtMs:fields.expiresAtMs},16384),signal:fields.signal,mail});
+  validateShape('RunBinding',task.binding);if(!mail||task.clientId!==null)uuid(task.clientId);nativeSignal(task.signal);
   if(typeof task.policyRevision!=='string'||!task.policyRevision||task.policyRevision.length>128||
      !Number.isSafeInteger(task.expiresAtMs)||task.expiresAtMs<=now())refuse();
   const subject=Object.freeze({tenantId:task.binding.tenantId,kind:'conversation',subjectId:task.binding.conversationId});
@@ -141,34 +153,38 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
    if(!same(await head(),initialHead))refuse();check(signal);
    return result;
   };
+  const contextScopes=(scopes,current)=>mail?scopes.filter(s=>s.kind!=='mailbox').every(s=>current.some(c=>same(s,c)))&&
+   (task.clientId===null||scopes.some(s=>s.kind==='client'&&s.resourceId===task.clientId)):same(scopes,current);
   async function current(c,checked){
    const runs=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',tuple(task.binding))).rows;
    checked();if(runs.length!==1)refuse();const run=rowRun(runs[0]);
    const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',tuple(task.binding).slice(0,2))).rows;
    checked();if(conversations.length!==1)refuse();const conversation=conversations[0];
-   const allocations=(await c.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',tuple(task.binding))).rows;
-   checked();if(allocations.length!==1)refuse();const allocation=allocations[0];
-   const scope=run.projection.scopes?.[0],record=allocation.record;
+   const executions=(await c.query('SELECT * FROM meri_conversations.native_executions WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',tuple(task.binding))).rows;
+   checked();if(executions.length!==1)refuse();const record=decodeExecutionRow(executions[0],task.binding);
+   const scope=run.projection.scopes?.[0];
    if(!same(run.projection.binding,task.binding)||run.projection.state!=='running'||run.sequence_end!==null&&run.sequence_end!==undefined||
       run.hold_control_id||run.hold_completion_id||run.projection.policyRevision!==task.policyRevision||
-      run.projection.scopes.length!==1||scope.kind!=='client'||scope.resourceId!==task.clientId||
-      scope.tenantId!==task.binding.tenantId||scope.policyRevision!==task.policyRevision||
+      (!mail&&(run.projection.scopes.length!==1||scope.kind!=='client'||scope.resourceId!==task.clientId))||
+      (task.clientId!==null&&!run.projection.scopes.some(s=>s.kind==='client'&&s.resourceId===task.clientId))||
+      run.projection.scopes.some(s=>s.tenantId!==task.binding.tenantId||s.policyRevision!==task.policyRevision)||
       conversation.tenant_id!==task.binding.tenantId||conversation.conversation_id!==task.binding.conversationId||
       conversation.owner_actor_id!==task.binding.actorId||hash(conversation.projection)!==conversation.projection_sha256||
       conversation.projection.owner.actorId!==task.binding.actorId||conversation.projection.owner.tenantId!==task.binding.tenantId||
       conversation.projection.policyRevision!==task.policyRevision||!same(conversation.projection.scopes,run.projection.scopes)||
-      allocation.record_sha256!==hash(record)||allocation.tenant_id!==task.binding.tenantId||
-      allocation.conversation_id!==task.binding.conversationId||allocation.run_id!==task.binding.runId||
-      record?.state!=='ADMITTED'||!same(record.original?.binding,task.binding)||
-      record.original?.expiresAtMs!==task.expiresAtMs||record.qualification?.policyRevision!==task.policyRevision||
-      record.resource?.launchBinding?.state!=='STARTED')refuse();
-   return scope;
+      ['stopping','settled'].includes(record.phase)||record.expiresAtMs!==task.expiresAtMs)refuse();
+   return run.projection.scopes;
   }
   async function predecessor(c,record,checked){
-   const cursor=record.previous?.request?.cursor;
-   if(cursor===null)return null;
-   if(typeof cursor!=='string'||cursor.length<1||cursor.length>2048)refuse();
-   const key=selectedKey({...record.key,cursor},task),keySha256=hash(key);
+   let key;
+   if(mail){key=mailPredecessorKey(record);if(key===null)return null;key=selectedKey(key,task);}
+   else{
+    const cursor=record.previous?.request?.cursor;
+    if(cursor===null)return null;
+    if(typeof cursor!=='string'||cursor.length<1||cursor.length>2048)refuse();
+    key=selectedKey({...record.key,cursor},task);
+   }
+   const keySha256=hash(key);
    const rows=(await c.query('SELECT * FROM meri_conversations.memory_proposal_contexts WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND key_sha256=$4 FOR UPDATE',
     [...tuple(task.binding),keySha256])).rows;checked();
    if(rows.length!==1)refuse();
@@ -176,6 +192,11 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
    if(row.tenant_id!==task.binding.tenantId||row.conversation_id!==task.binding.conversationId||row.run_id!==task.binding.runId||
       row.key_sha256!==keySha256||row.record_sha256!==hash(prior)||
       Number(row.expires_at_ms)!==prior?.expiresAtMs)refuse();
+   if(mail){
+    mailContextRecord(prior,task,{inventory:true});
+    if(!same(prior.key,key)||prior.expiresAtMs<=now()||prior.expiresAtMs<record.expiresAtMs||prior.recordedAtMs>record.recordedAtMs)refuse();
+    return prior;
+   }
    own(prior,['key','previous','previousSha256','recordedAtMs','expiresAtMs']);
    if(!same(prior.key,key)||!digest(prior.previousSha256)||prior.previousSha256!==hash(prior.previous)||
       !Number.isSafeInteger(prior.recordedAtMs)||prior.recordedAtMs<1||
@@ -184,7 +205,7 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
    return prior;
   }
   const read=async key=>serve(key.signal,async(c,checked)=>{
-   const scope=await current(c,checked);if(!same(key.value.subject.scopes,[scope]))refuse();
+   const scope=await current(c,checked);if(!contextScopes(key.value.subject.scopes,scope))refuse();
    const rows=(await c.query('SELECT * FROM meri_conversations.memory_proposal_contexts WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND key_sha256=$4 FOR UPDATE',
     [...tuple(task.binding),hash(key.value)])).rows;checked();
    if(rows.length>1)refuse();if(!rows.length)return null;
@@ -202,7 +223,7 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
   async function retain(raw){const value=own(raw,['record'],['signal']);nativeSignal(value.signal);
    const rawRecord=bounded(value.record,MAX_RECORD_BYTES),key=selectedKey(rawRecord.key,task),keySha256=hash(key);
    await serve(value.signal,async(c,checked)=>{
-    const scope=await current(c,checked);if(!same(key.subject.scopes,[scope]))refuse();
+    const scope=await current(c,checked);if(!contextScopes(key.subject.scopes,scope))refuse();
     const prior=await predecessor(c,rawRecord,checked),record=retainedRecord(rawRecord,task,now(),prior);
     const rows=(await c.query('SELECT * FROM meri_conversations.memory_proposal_contexts WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND key_sha256=$4 FOR UPDATE',
      [...tuple(task.binding),keySha256])).rows;checked();
@@ -249,5 +270,5 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
    fail('MEMORY_CONTEXT_INVENTORY_UNAVAILABLE');}
   return targets;
  }
- return Object.freeze({forTask,inventoryForConversation});
+ return Object.freeze({forTask:raw=>forTask(raw),forMail:raw=>forTask(raw,true),inventoryForConversation});
 }

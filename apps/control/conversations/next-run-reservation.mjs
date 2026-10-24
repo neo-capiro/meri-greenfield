@@ -1,16 +1,24 @@
 /** Canonical complete reservation decoder shared by next-turn journals and read-only history. */
 import {bounded,own,validateShape,same,fail,uuid} from './boundary.mjs';
+import {assertNativeSessionReference} from '../../../packages/contracts/runtime-0.2/session.mjs';
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
 /** The checkpoint a successor continues (the conversation's latest published one, `next-run-journal.mjs`), or null. */
 function checkpointFact(c){if(c===null)return;own(c,['checkpointId','proofSha256']);uuid(c.checkpointId);if(!digest(c.proofSha256))fail('NEXT_RUN_FACTS_REFUSED');}
+function nativeFact(f){if(Object.hasOwn(f,'sdkSession')){if(f.checkpoint!==null)fail('NEXT_RUN_FACTS_REFUSED');assertNativeSessionReference(f.sdkSession);}}
 export function assertNextRunFacts(value){
- const f=bounded(value);if(f&&typeof f==='object'&&Object.hasOwn(f,'noAuthority')){own(f,['checkpoint','noAuthority']);own(f.noAuthority,['foreclosureSha256']);checkpointFact(f.checkpoint);if(!digest(f.noAuthority.foreclosureSha256))fail('NEXT_RUN_FACTS_REFUSED');return f;}
- own(f,['checkpoint','retirement','revocation']);own(f.retirement,['physicalStopProven']);own(f.revocation,['receiptSha256','grantIds']);checkpointFact(f.checkpoint);
+ const f=bounded(value);own(f,['checkpoint','execution'],['sdkSession']);checkpointFact(f.checkpoint);nativeFact(f);
+ if(f.execution!==null){own(f.execution,['recordSha256']);if(!digest(f.execution.recordSha256))fail('NEXT_RUN_FACTS_REFUSED');}return f;
+}
+/** Persisted history remains readable. These facts cannot authorize a new reservation or execution. */
+function historicalFacts(value){
+ const f=bounded(value);if(f&&typeof f==='object'&&Object.hasOwn(f,'noAuthority')){own(f,['checkpoint','noAuthority'],['sdkSession']);nativeFact(f);own(f.noAuthority,['foreclosureSha256']);checkpointFact(f.checkpoint);if(!digest(f.noAuthority.foreclosureSha256))fail('NEXT_RUN_FACTS_REFUSED');return f;}
+ own(f,['checkpoint','retirement','revocation'],['sdkSession']);nativeFact(f);own(f.retirement,['physicalStopProven']);own(f.revocation,['receiptSha256','grantIds']);checkpointFact(f.checkpoint);
  if(f.retirement.physicalStopProven!==true||!digest(f.revocation.receiptSha256)||!Array.isArray(f.revocation.grantIds)||!f.revocation.grantIds.length||f.revocation.grantIds.length>64||f.revocation.grantIds.some(g=>typeof g!=='string'||!g||g.length>256))fail('NEXT_RUN_FACTS_REFUSED');return f;
 }
 export function assertNextRunReservation(value){
  const v=bounded(value);own(v,['source','target','facts','scopes','versions','policyRevision','reservedAt']);
- const {source,target}=v;validateShape('RunBinding',source);validateShape('RunBinding',target);validateShape('RuntimeVersions',v.versions);assertNextRunFacts(v.facts);
+ const {source,target}=v;validateShape('RunBinding',source);validateShape('RunBinding',target);validateShape('RuntimeVersions',v.versions);
+ if(Object.hasOwn(v.facts,'execution'))assertNextRunFacts(v.facts);else historicalFacts(v.facts);
  if(!Array.isArray(v.scopes)||!v.scopes.length||typeof v.policyRevision!=='string'||!v.policyRevision||typeof v.reservedAt!=='string'||!Number.isFinite(Date.parse(v.reservedAt)))fail('STORE_CORRUPT');
  for(const s of v.scopes){validateShape('Scope',s);if(s.tenantId!==source.tenantId||s.policyRevision!==v.policyRevision)fail('STORE_CORRUPT');}
  if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1||v.scopes.some((s,i)=>v.scopes.slice(0,i).some(other=>same(other,s))))fail('STORE_CORRUPT');

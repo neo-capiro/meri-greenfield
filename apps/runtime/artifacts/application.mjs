@@ -19,29 +19,17 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const body=data(await jsonBody(info,limits.maxRequestBytes,life,life.check)),requestSha256=hash({intent:info.intent,body});
   const rawResolved=await life.run(signal=>resolve({credential:info.credential,intent:info.intent,body,requestSha256,deadlineMs,signal}));if(rawResolved===null||rawResolved===undefined)fail('UNAVAILABLE');
   const resolved=own(rawResolved,['documentOptions','recheck']),recheck=method(rawResolved,'recheck');
-  const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled','admitPdf','previewOptions']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
-  const innerLimits=documentLimits(options.limits);
-  const effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
+  const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
+  const innerLimits=documentLimits(options.limits),effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const effectiveDeadlineMs=Math.min(deadlineMs,requestStarted+effectiveLimits.maxRequestMs);life.limitDeadline(effectiveDeadlineMs);
-  const o=own(options.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
-  // The runtime's canonical retention gate is bound here, never taken from the resolved owner options.
-  if(c.retention!==undefined)o.retention=c.retention;
-  o.context=v.context(o.context);
-  const pinned=hash({intent:info.intent,body});life.limitDeadline(o.context.deadlineMs);
-  async function fresh(phase,resource=null){life.check();if(hash({intent:info.intent,body})!==pinned)fail('ACCESS_DENIED');
-   const result=await life.run(signal=>recheck({phase,intent:info.intent,requestSha256,resource:resource===null?null:data(resource),signal,deadlineMs:Math.min(o.context.deadlineMs,effectiveDeadlineMs)}));
-   // A boolean callback result cannot serve as a source/renderer qualification.
-   if(result!==undefined&&(result===null||typeof result!=='object'))fail('ACCESS_DENIED');life.check();}
-  const wrap=(port,name,resource=()=>null)=>{const invoke=method(port,name);return async(...args)=>{await fresh('effect',resource(args));const value=await life.run(()=>invoke(...args));await fresh('effect',resource(args));return value;};};
-  const authority={check:wrap(o.authority,'check',args=>args[0]?.input??null)},authorize=o.authorize;
-  if(typeof authorize!=='function'||types.isProxy(authorize))fail('ACCESS_DENIED');
-  // Preview record reads/commits are rechecked like every other artifact port; the renderer port is process-local and is
-  // passed through unchanged (its admission brand must survive).
-  const previewOptions=options.previewOptions===undefined?{}:{previewOptions:(p=>({...p,previews:{read:wrap(p.previews,'read',args=>({versionId:args[0]})),commit:wrap(p.previews,'commit',args=>({versionId:args[0]?.versionId,previewId:args[0]?.previewId})),claim:wrap(p.previews,'claim',args=>({versionId:args[0]?.versionId})),recordObject:wrap(p.previews,'recordObject',args=>({versionId:args[0]?.versionId,object:args[1]})),
-   ...(Object.hasOwn(p.previews,'assertCurrent')?{assertCurrent:wrap(p.previews,'assertCurrent',args=>({versionId:args[0]?.versionId}))}:{})}}))(own(options.previewOptions,['previews','renderer'],['maxPreviewBytes']))};
-  const app=createDocumentApplication({...options,...previewOptions,limits:effectiveLimits,artifactOptions:{...o,authority,async authorize(call){await fresh('effect',call.resource);const result=await life.run(()=>authorize(call));await fresh('effect',call.resource);return result;},
-   versions:{read:wrap(o.versions,'read',args=>typeof args[0]==='string'?{versionId:args[0]}:args[0]),commit:wrap(o.versions,'commit',args=>({versionId:args[0].version.versionId,object:args[0].version.object}))},
-   objects:{get:wrap(o.objects,'get',args=>args[0]),put:wrap(o.objects,'put')},executor:{execute:wrap(o.executor,'execute')}}});
+  const o=own(options.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention']);
+  if(c.retention!==undefined)o.retention=c.retention;o.context=v.context(o.context);life.limitDeadline(o.context.deadlineMs);
+  const pinned=hash({intent:info.intent,body});
+  async function fresh(phase){life.check();if(hash({intent:info.intent,body})!==pinned)fail('ACCESS_DENIED');
+   await life.run(signal=>recheck({phase,intent:info.intent,requestSha256,resource:null,signal,deadlineMs:Math.min(o.context.deadlineMs,effectiveDeadlineMs)}));life.check();}
+  // Current session checks remain in the document owner. Core is observed at admission and release,
+  // never multiplied around every local immutable storage operation.
+  const app=createDocumentApplication({...options,limits:effectiveLimits,artifactOptions:o});
   await fresh('admission');const serialized=JSON.stringify(body),headers=new Headers(info.headers);headers.set('content-length',String(Buffer.byteLength(serialized)));
   state.writeStarted=['create','revise','preview-publish'].includes(info.intent);state.readStarted=!state.writeStarted;
   const response=await life.run(signal=>app.handle(new Request(info.url,{method:info.method,headers,body:serialized,signal})));if(response.status!==200)return response;state.completed=true;

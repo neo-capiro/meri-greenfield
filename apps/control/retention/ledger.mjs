@@ -26,7 +26,12 @@ export function createRetentionLedger({sink,now,maxHeadMs=10000}){
  /** Current authoritative position, never cached or inferred from a restorable database. The sink read must be a current,
   * complete committed view outside that rollback boundary; an eventually consistent listing does not satisfy this contract. */
  async function head(){const life=createOperationLifetime({deadlineMs:tick()+maxHeadMs,now:tick,errorFactory:()=>Object.assign(new Error('RETENTION_LEDGER_UNVERIFIED'),{code:'RETENTION_LEDGER_UNVERIFIED'})});
-  try{const last=(await life.run(()=>replay())).at(-1);return Object.freeze({sequence:last?.sequence??0,entrySha256:last?.entrySha256??null});}finally{life.close();}}
+  try{if(typeof sink.head==='function'){
+    const h=own(data(await life.run(signal=>sink.head(signal))),['sequence','entrySha256']);
+    if(!Number.isSafeInteger(h.sequence)||h.sequence<0||(h.sequence===0?h.entrySha256!==null:typeof h.entrySha256!=='string'||!/^[a-f0-9]{64}$/u.test(h.entrySha256)))fail('RETENTION_LEDGER_CORRUPT');
+    return Object.freeze(h);
+   }
+   const last=(await life.run(()=>replay())).at(-1);return Object.freeze({sequence:last?.sequence??0,entrySha256:last?.entrySha256??null});}finally{life.close();}}
  return Object.freeze({append,replay,latest,head});
 }
 /** Test and contract sink: durable within the process, with switches for an unacknowledged append. */

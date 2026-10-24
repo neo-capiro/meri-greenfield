@@ -14,7 +14,7 @@ export const nativeContextPortsFor=(ports,invocationId)=>invocationId===undefine
 export async function prepareNativeReadContext({entry,request,authority,ports,lifetime,readDeadline,now,maxBytes}){
  if(!ports)deny('UNAVAILABLE');const {readCurrent}=ownFields(ports,['readCurrent']);if(typeof readCurrent!=='function')deny('GATEWAY_CONFIGURATION');let options;
  const keys=entry.contract.binding.contextKeys??[],lineage=keys.includes('binding')&&keys.includes('subject');
- const semantic=context=>{const {authorizationDecisionId,...subject}=context.subject;return {...context,subject};};
+ const semantic=context=>context;
  async function observeAuthority(current){
   if(!same(current.binding,authority.binding)||current.policyRevision!==authority.policyRevision)deny('ACCESS_DENIED');
   const started=now(),proof=frozenData({binding:current.binding,subject:current.subject,operation:entry.descriptor.operation,requestSha256:hash(request),policyRevision:current.policyRevision,sourceIds:current.sourceIds});

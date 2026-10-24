@@ -3,11 +3,24 @@ ARG NODE_IMAGE=public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed
 ARG RUNTIME_IMAGE=cgr.dev/chainguard/wolfi-base@sha256:4e354e15b41a49dc249d07a4e38974c4ef6db8a4cc70059c4d625f5cdaa92657
 FROM ${NODE_IMAGE} AS builder
 RUN test "$(uname -m)" = aarch64 && test "$(node --version)" = v24.22.1
-# npm's supported release fixes its bundled dependencies; retain ordinary npm/npx.
-ADD --checksum=sha256:228bd64aaef23270dbdbd2cf3d5ef5c467602ef38c4066246cef1984adab9a67 https://registry.npmjs.org/npm/-/npm-12.2.1.tgz /tmp/npm.tgz
-RUN npm install --global --ignore-scripts --no-audit --no-fund /tmp/npm.tgz && \
-    rm /tmp/npm.tgz && test "$(npm --version)" = 12.2.1
 WORKDIR /opt/meri
+# Retain upstream npm/npx; replace only its vulnerable bundled undici package.
+COPY apps/runtime/build/npm-bundle.mjs ./apps/runtime/build/
+COPY infra/product-preview/runtime-packages.lock.json ./infra/product-preview/
+ADD --checksum=sha256:228bd64aaef23270dbdbd2cf3d5ef5c467602ef38c4066246cef1984adab9a67 https://registry.npmjs.org/npm/-/npm-12.2.1.tgz /tmp/npm.tgz
+ADD --checksum=sha256:29c4b8e0b2d86cb8795571c1959012ce057a14ecfd34858335f47c31e770a04f https://registry.npmjs.org/undici/-/undici-6.29.1.tgz /tmp/undici.tgz
+RUN mkdir /tmp/npm-upstream /tmp/undici-upstream && \
+    tar -xzf /tmp/npm.tgz -C /tmp/npm-upstream --strip-components=1 && \
+    tar -xzf /tmp/undici.tgz -C /tmp/undici-upstream --strip-components=1 && \
+    rm -rf /usr/local/lib/node_modules/npm && \
+    cp -a /tmp/npm-upstream /usr/local/lib/node_modules/npm && \
+    ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    rm -rf /usr/local/lib/node_modules/npm/node_modules/undici && \
+    cp -a /tmp/undici-upstream /usr/local/lib/node_modules/npm/node_modules/undici && \
+    node apps/runtime/build/npm-bundle.mjs /tmp/npm-upstream /usr/local/lib/node_modules/npm /tmp/undici-upstream && \
+    test "$(npm --version)" = 12.2.1 && test "$(npx --version)" = 12.2.1 && \
+    rm -rf /tmp/npm.tgz /tmp/undici.tgz /tmp/npm-upstream /tmp/undici-upstream
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts --no-audit --no-fund
 COPY apps/runtime/package.json apps/runtime/package-lock.json ./apps/runtime/
@@ -30,7 +43,7 @@ COPY apps ./apps
 COPY packages ./packages
 COPY infra/product-preview/runtime-packages.lock.json ./infra/product-preview/runtime-packages.lock.json
 # Stage 1 one-shot database runner (D2). Its migrations already arrive through `COPY apps`.
-COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-chat-database.sql infra/product-preview/first-chat-database-temporal.sql infra/product-preview/first-chat-database-integration.sql infra/product-preview/first-chat-database-owner-reads.sql infra/product-preview/first-chat-seed-budget.sql ./infra/product-preview/
+COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-chat-database.sql infra/product-preview/first-chat-database-temporal.sql infra/product-preview/first-chat-database-integration.sql infra/product-preview/first-chat-database-owner-reads.sql infra/product-preview/first-chat-seed-budget.sql infra/product-preview/first-chat-native-retention-grants.sql ./infra/product-preview/
 # SWC's upstream carrier extracts a native payload. Bake it while writable so
 # the final UID1000 process needs no executable cache on its read-only root.
 RUN --network=none node apps/runtime/build/materialize-swc.mjs
@@ -81,5 +94,6 @@ ENV HOME=/home/node
 RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal /workspace && chown node:node /run/meri /run/meri-temporal /workspace && chmod 0700 /run/meri /run/meri-temporal /workspace && chmod 1777 /tmp
 USER 1000:1000
 VOLUME ["/run/meri", "/run/meri-temporal", "/tmp", "/workspace"]
-ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
-CMD ["--help"]
+EXPOSE 8080
+ENTRYPOINT ["node"]
+CMD ["apps/runtime/agentcore-entrypoint.mjs"]

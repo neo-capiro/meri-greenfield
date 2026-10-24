@@ -2,8 +2,7 @@
 
 Writes a ZIP with exactly:
   repo/<path>                    exact Git blobs of COMMIT for MEMBERS (each blob SHA-1 re-verified)
-  inputs/temporal-issuer-ca.pem  the public issuer CA PEM baked into the image (bytes as given)
-  context-manifest.json          commit, SHA-256 of every other member, base pins, issuer CA SHA-256
+  context-manifest.json          commit, SHA-256 of every other member, base pins
 
 Streaming: blobs are piped from `git cat-file blob` in 1 MiB blocks, twice (hash pass, then
 write pass, compared); neither a blob nor the ZIP is ever held whole in memory.
@@ -13,7 +12,7 @@ on the zlib build, so seal with `python3` (CPython 3.14, zlib-ng) for a reproduc
 the result records the zlib runtime used.
 No network, Docker, AWS or credential use. Refuses an existing output path; removes a partial one.
 Usage: python3 -I -B temporal-image-context.py --repository . --commit FULL_SHA \
-         --issuer-ca CA.pem --output NEW.zip
+         --output NEW.zip
 """
 import argparse, hashlib, json, re, subprocess, sys, zipfile, zlib
 from pathlib import Path
@@ -24,8 +23,8 @@ DOCKERFILE = D + "temporal-launch.Dockerfile"
 PINS_FILE = D + "temporal-image-pins.json"
 MEMBERS = sorted([DOCKERFILE, BUILD_SCRIPT, PINS_FILE, D + "temporal-launch.sh",
                   D + "temporal-launch-main.mjs", D + "temporal-launch-render.mjs", D + "temporal-migration-plan.mjs",
-                  D + "temporal-server-dependencies.patch"])
-CA_MEMBER = "inputs/temporal-issuer-ca.pem"
+                  D + "temporal-server-dependencies.patch", D + "temporal-certificate-claims.go",
+                  D + "temporal-certificate-claims.test.go", D + "temporal-certificate-claims.patch"])
 PINS = json.loads(Path(__file__).with_name("temporal-image-pins.json").read_text(encoding="utf-8"))
 BASES = PINS["bases"]
 STAMP = (1980, 1, 1, 0, 0, 0)
@@ -83,20 +82,11 @@ def stream_blob(repository, oid, size, sink=None):
     return sha.hexdigest()
 
 
-def read_ca(path):
-    data = Path(path).read_bytes() if Path(path).stat().st_size <= 32768 else b""
-    text = data.decode("ascii", "replace")
-    need(80 <= len(data) <= 32768 and data.isascii() and text.startswith("-----BEGIN CERTIFICATE-----\n")
-         and text.rstrip().endswith("-----END CERTIFICATE-----") and text.count("-----BEGIN ") == 1, "ISSUER_CA")
-    return data
-
-
-def seal(repository, commit, issuer_ca, output):
+def seal(repository, commit, output):
     need(re.fullmatch(r"[0-9a-f]{40}", commit) is not None, "COMMIT")
     out = Path(output)
     need(not out.exists(), "OUTPUT_EXISTS")
     rows = entries(repository, commit)
-    ca = read_ca(issuer_ca)
     small, files = {}, {}
     for path in MEMBERS:
         mode, oid, size = rows[path]
@@ -116,8 +106,7 @@ def seal(repository, commit, issuer_ca, output):
          and source["url"] == "https://codeload.github.com/temporalio/temporal/tar.gz/" + source["commit"], "SERVER_SOURCE")
     need(all(line.split()[1] == "--platform=" + PINS["platform"]
              for line in dockerfile.splitlines() if line.startswith("FROM ")), "PLATFORM_PIN")
-    files[CA_MEMBER] = hashlib.sha256(ca).hexdigest()
-    manifest = {"schemaVersion": 1, "commit": commit, "bases": BASES, "issuerCaSha256": files[CA_MEMBER],
+    manifest = {"schemaVersion": 1, "commit": commit, "bases": BASES,
                 "files": dict(sorted(files.items()))}
     manifest_bytes = (json.dumps(manifest, sort_keys=True, indent=1) + "\n").encode()
 
@@ -131,11 +120,9 @@ def seal(repository, commit, issuer_ca, output):
 
     try:
         with open(out, "xb") as f, zipfile.ZipFile(f, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
-            for name in sorted(["context-manifest.json", CA_MEMBER, *("repo/" + p for p in MEMBERS)]):
+            for name in sorted(["context-manifest.json", *("repo/" + p for p in MEMBERS)]):
                 if name == "context-manifest.json":
                     z.writestr(info(name, 0o644), manifest_bytes)
-                elif name == CA_MEMBER:
-                    z.writestr(info(name, 0o644), ca)
                 else:
                     mode, oid, size = rows[name[5:]]
                     member = info(name, 0o755 if mode == "100755" else 0o644)
@@ -149,17 +136,17 @@ def seal(repository, commit, issuer_ca, output):
         zip_sha = hashlib.file_digest(f, "sha256").hexdigest()
     return {"status": "TEMPORAL_CONTEXT_SEALED", "commit": commit, "zipBytes": out.stat().st_size, "zipSha256": zip_sha,
             "members": len(files) + 1, "buildScriptSha256": files["repo/" + BUILD_SCRIPT],
-            "issuerCaSha256": files[CA_MEMBER], "manifestSha256": hashlib.sha256(manifest_bytes).hexdigest(),
+            "manifestSha256": hashlib.sha256(manifest_bytes).hexdigest(),
             "bases": BASES, "zlibRuntime": zlib.ZLIB_RUNTIME_VERSION, "python": sys.version.split()[0]}
 
 
 def main():
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     a.add_argument("--repository", required=True); a.add_argument("--commit", required=True)
-    a.add_argument("--issuer-ca", required=True); a.add_argument("--output", required=True)
+    a.add_argument("--output", required=True)
     o = a.parse_args()
     try:
-        print(json.dumps(seal(o.repository, o.commit, o.issuer_ca, o.output), sort_keys=True))
+        print(json.dumps(seal(o.repository, o.commit, o.output), sort_keys=True))
     except Refused as e:
         sys.exit(str(e))
     except (OSError, ValueError, KeyError, subprocess.SubprocessError):

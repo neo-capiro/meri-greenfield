@@ -16,18 +16,28 @@ pip versions. The package lock records their ARM64 hashes and upstream URLs.
 The configured Wolfi repository resolves transitive system dependencies; this
 is not a repository snapshot or a custom APK installer. The build retains the
 installed package inventory and final image digest. System CA trust is checked
-by the actual Python interpreter. npm 12.2.1 is installed through npm from its
+by the actual Python interpreter. npm 12.2.1 is installed from its complete
 official hash-pinned tarball; both npm and npx remain available and are probed.
+That upstream npm release still bundles vulnerable undici 6.29.0. The build
+replaces only that complete package with the checksum-pinned official 6.29.1
+tarball for GHSA-xjj6-f33q-929c. It compares all other npm files against the
+original tarball and every replacement file against the official undici tarball.
+Ordinary tar extraction preserves the package exactly, without npm install's
+generated internal `.bin` entries or platform-specific npmrc. The two standard
+npm/npx launch symlinks are set explicitly outside the npm package.
+Both build and final-image probes verify node-gyp resolves that version within
+its existing dependency range. This is an explicit image packaging correction,
+not a claim that npm has published a fixed release.
 
 Python uses standard offline pip installation with `--require-hashes`,
 `--only-binary=:all:` and `pip check`. The 22 retained PyPI wheels total
-57,936,521 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
+57,939,153 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
 universal wheels are architecture independent. The wheel lock records the
 upstream URL, size and SHA256 of every archive. The set retains the former
 image's Python libraries and adds the pandas/pypdf dependencies already used
 by the canonical artifact source and worker requirements. It supports document,
 spreadsheet, presentation, chart and typed table-analysis generation. Pillow is
-13.0.0; pypdf 6.21.1 includes the upstream PDF parsing fixes. pip installs these
+13.0.0; pypdf 6.21.2 includes the upstream PDF parsing fixes. pip installs these
 application libraries in the image's standard
 `/usr/lib/python3.13/site-packages`; `--break-system-packages` explicitly permits
 that build-time installation into Wolfi's managed interpreter. The pinned set
@@ -47,7 +57,7 @@ custom runtime measurement.
 Source checks, without containers or model calls:
 
 ```sh
-node --test apps/runtime/build/runtime-base-probe.test.mjs apps/runtime/build/runtime-packages.test.mjs
+node --test apps/runtime/build/runtime-base-probe.test.mjs apps/runtime/build/runtime-packages.test.mjs apps/runtime/build/npm-bundle.test.mjs
 ```
 
 Root schedules the native build and final-image checks. Build on a native ARM64

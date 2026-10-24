@@ -28,9 +28,8 @@ async function setup(t,transformer){
  const inner=createLocalArtifactExecutor({pythonExecutable:python,nodeExecutable:process.execPath,pptxModulePath:join(root,'pptx-not-configured'),tempRoot:root,timeoutMs:15000,officeTransformer:converter});
  const options={...f.artifactOptions,executor:{execute(call){counts.generations++;return inner.execute(call);}},
   objects:{get:f.artifactOptions.objects.get,put(...args){counts.puts++;return f.artifactOptions.objects.put(...args);}}};
- const write=body=>createPostgresArtifactService(options).execute(body,f.credential);
- const forbidden=()=>{throw Error('READ_BUDGET_FORBIDDEN');};
- const reads=createArtifactService({...options,budget:{reserve:forbidden,settle:forbidden}}),context=f.artifactOptions.context;
+ const {ids,...writeOptions}=options;const write=body=>createPostgresArtifactService(writeOptions).execute(body);
+ const reads=createArtifactService(options),context=f.artifactOptions.context;
  return {f,root,converter,counts,write,inspect:id=>reads.inspect(id,context),download:async id=>Buffer.from((await reads.download(id,context)).bytes)};
 }
 const pdf=bytes=>{assert.equal(bytes.subarray(0,5).toString('latin1'),'%PDF-');assert.deepEqual(structureCheck(bytes,'pdf'),{valid:true});return bytes;};
@@ -47,11 +46,11 @@ async function durableLineage(t,transformer){
  assert.equal((await a.inspect(second.version.versionId)).inspection.currentBytesVerified,true);
  assert.deepEqual(await a.download(first.version.versionId),parent,'parent bytes untouched');
  const settled={generations:2,puts:2};assert.deepEqual(a.counts,settled);
- const stats=a.f.stats();assert.equal(stats.versionCharges,2);assert.equal(stats.settled,2);assert.equal(stats.consumedMicroUsd,'20');
+ const stats=a.f.stats();assert.equal(stats.deliveries,2);assert.equal(stats.prepared,2);assert.equal(stats.prepared,2);
  // Replay of the same revision delivery: the same committed version, no generator launch, object write or new charge.
  const replay=await a.write({deliveryId:'pdf-revision',baseVersionId:first.version.versionId,request:revised});
  assert.deepEqual(replay.version,second.version);assert.deepEqual(replay.inspection,second.inspection);assert.deepEqual(a.counts,settled);if(synthetic)assert.equal(a.converter.calls.length,2);
- for(const key of ['versionCharges','settled','consumedMicroUsd'])assert.equal(a.f.stats()[key],stats[key],key);
+ for(const key of ['deliveries','prepared'])assert.equal(a.f.stats()[key],stats[key],key);
  // The same delivery with a different request is not a replay and starts nothing.
  await assert.rejects(a.write({deliveryId:'pdf-revision',baseVersionId:first.version.versionId,request:{...revised,title:'Other'}}));assert.deepEqual(a.counts,settled);
  // CAS: a new revision from the superseded parent is refused at commit; nothing is committed and the lineage is unchanged.
@@ -70,9 +69,9 @@ test('real LibreOffice durable PDF create/revise/replay (opt-in MERI_ARTIFACT_SO
 
 test('without the admission switch the document application still refuses PDF before generation',async t=>{
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:python});t.after(()=>f.close());
- const app=createDocumentApplication({sessions:f.sessions,selectedClientId:f.selectedClientId,artifactOptions:f.artifactOptions,credential:f.credential,now:f.now,limits:f.limits,enabled:true});
+ const app=createDocumentApplication({sessions:f.sessions,selectedClientId:f.selectedClientId,artifactOptions:f.artifactOptions,now:f.now,limits:f.limits,enabled:true});
  const session=await f.sessions.issue({identityCredential:f.nativeCredential});
  const res=await app.handle(new Request('http://127.0.0.1/api/documents/create',{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${session.credential}`},body:JSON.stringify({deliveryId:'pdf',request:word})}));
  // input() maps the admission refusal (UNSUPPORTED_DOCUMENT_FORMAT) to the content-free INVALID_REQUEST.
- assert.equal(res.status,400);assert.deepEqual((await res.json()).error,{code:'INVALID_REQUEST',outcome:'NOT_DISPATCHED'});assert.equal(f.stats().generations,0);assert.equal(f.stats().versionCharges,0);
+ assert.equal(res.status,400);assert.deepEqual((await res.json()).error,{code:'INVALID_REQUEST',outcome:'NOT_DISPATCHED'});assert.equal(f.stats().generations,0);assert.equal(f.stats().deliveries,0);
 });

@@ -7,6 +7,7 @@
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 
 export const ARTIFACT_AUTHORITY_CONTRACT='capiro.meri-artifact-authority.v1';
+export const ARTIFACT_AUTHORITY_GENERAL_CONTRACT='capiro.meri-artifact-authority.v2';
 export const ARTIFACT_AUTHORITY_ROUTE='/api/clio/application-authority/artifact';
 /** Closed operation vocabulary, sorted. The first four are the artifact service's `authorize` actions; preview-publish gates the
  * preview write intent. */
@@ -40,11 +41,11 @@ const safeInteger=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 
 /** The Meri request body. Byte order is the key order above (JSON.stringify of the returned object). */
 export function assertArtifactAuthorityRequest(value){
- const v=closed(value,REQUEST_KEYS,'ACCESS_DENIED');
- if(v.contract!==ARTIFACT_AUTHORITY_CONTRACT||typeof v.observationId!=='string'||!UUID4.test(v.observationId)||
-  ['conversationId','clientId'].some(k=>typeof v[k]!=='string'||!UUID.test(v[k]))||!Object.hasOwn(INTENT_OPERATIONS,v.intent)||
+ const general=value?.contract===ARTIFACT_AUTHORITY_GENERAL_CONTRACT,keys=general?[...REQUEST_KEYS,'scopeKind']:REQUEST_KEYS,v=closed(value,keys,'ACCESS_DENIED');
+ if(v.contract!==(general?ARTIFACT_AUTHORITY_GENERAL_CONTRACT:ARTIFACT_AUTHORITY_CONTRACT)||typeof v.observationId!=='string'||!UUID4.test(v.observationId)||
+  typeof v.conversationId!=='string'||!UUID.test(v.conversationId)||(general?(v.scopeKind!=='general'||v.clientId!==null):(typeof v.clientId!=='string'||!UUID.test(v.clientId)))||!Object.hasOwn(INTENT_OPERATIONS,v.intent)||
   typeof v.requestSha256!=='string'||!SHA.test(v.requestSha256))refuse('ACCESS_DENIED');
- const out=Object.freeze(Object.fromEntries(REQUEST_KEYS.map(k=>[k,v[k]])));
+ const out=Object.freeze(Object.fromEntries(keys.map(k=>[k,v[k]])));
  if(Buffer.byteLength(JSON.stringify(out))>MAX_REQUEST_BYTES)refuse('ACCESS_DENIED');
  return out;
 }
@@ -52,9 +53,9 @@ export function assertArtifactAuthorityRequest(value){
 /** Core's HTTP 200 body for exactly `request`. Echoes must match; operations must cover the intent; times are Core-clock facts whose
  * only cross-clock use is their difference (the lifetime). Any deviation is ACCESS_DENIED (fail closed). */
 export function assertArtifactAuthorityReceipt(value,request){
- const q=assertArtifactAuthorityRequest(request),r=closed(value,RECEIPT_KEYS,'ACCESS_DENIED');
+ const q=assertArtifactAuthorityRequest(request),general=q.contract===ARTIFACT_AUTHORITY_GENERAL_CONTRACT,r=closed(value,general?[...RECEIPT_KEYS,'scopeKind']:RECEIPT_KEYS,'ACCESS_DENIED');
  let principal;try{principal=own(r.principal,['tenantId','actorId']);}catch{refuse('ACCESS_DENIED');}
- if(r.contract!==ARTIFACT_AUTHORITY_CONTRACT||r.observationId!==q.observationId||r.conversationId!==q.conversationId||r.selectedClientId!==q.clientId||
+ if(r.contract!==q.contract||general&&r.scopeKind!==q.scopeKind||r.observationId!==q.observationId||r.conversationId!==q.conversationId||r.selectedClientId!==q.clientId||
   r.intent!==q.intent||r.requestSha256!==q.requestSha256||[principal.tenantId,principal.actorId].some(id=>typeof id!=='string'||!UUID.test(id))||
   [r.identityRevision,r.contextRevision,r.authorityRevision].some(x=>typeof x!=='string'||!SHA.test(x)))refuse('ACCESS_DENIED');
  if(!Array.isArray(r.operations)||r.operations.length<1||r.operations.length>ARTIFACT_OPERATIONS.length||

@@ -5,16 +5,16 @@ import {runtimeUser as user,materialRoot as root,controlMaterialConfiguration as
 
 const plan=(role,configuration)=>compileProductMaterialPlan({role,configuration,runtimeUser:user});
 
-test('control plan derives exactly the canonical static files, including candidate credentials, without material values',()=>{
+test('control plan derives exactly the canonical static files without per-run or user credentials',()=>{
  const c=control(),p=plan('control',c),paths=p.requiredFiles.map(file=>file.path);
  assert.deepEqual(paths,[
-  'control-capability','control.json','database-url','identity-capability','runner-ca','task-capability','temporal-ca','temporal-cert','temporal-key',
+  'control-capability','control.json','database-url','temporal-ca','temporal-cert','temporal-key',
  ].map(name=>root+name).sort());
- assert.deepEqual(p.requiredFiles.find(file=>file.path===c.native.capabilityFile).purposes,['control-capability','native-capability']);
+ assert.deepEqual(p.requiredFiles.find(file=>file.path===c.native.capabilityFile).purposes,['native-capability']);
  assert.equal(p.containerName,'control');assert.equal(p.configurationPath,root+'control.json');
  assert.equal(p.directoryMode,'0700');assert.ok(p.requiredFiles.every(file=>file.mode==='0600'&&file.maxBytes===32768));
  assert.equal(p.uid,1000);assert.equal(p.gid,1000);assert.equal(p.requiresTokenRotation,false);
- assert.equal(p.dynamicMaterialDirectory,'/tmp/meri-material');
+ assert.equal(p.dynamicMaterialDirectory,null);
  assert.equal(JSON.stringify(p).includes('synthetic-existing'),false,'the plan carries paths and constraints, not values');
 });
 
@@ -27,12 +27,11 @@ test('worker plan omits control-only files and exposes an explicit Temporal rota
  assert.equal(p.requiresTokenRotation,true);assert.equal(p.containerName,'temporal-worker');
 });
 
-test('optional signing material and control dynamic directory are declared only when configured',()=>{
+test('optional signing material is declared only when configured; per-run material is absent',()=>{
  const c=control();c.downloadLinks={enabled:true,keyFile:root+'download-key',ttlMs:60000};
- c.nativeCandidate.multiRun={...c.nativeCandidate.multiRun,materialDirectory:'/tmp/meri-material'};
  const p=plan('control',c);
  assert.ok(p.requiredFiles.some(file=>file.path===root+'download-key'));
- assert.equal(p.dynamicMaterialDirectory,'/tmp/meri-material');
+ assert.equal(p.dynamicMaterialDirectory,null);
  const disabled=control();disabled.downloadLinks={enabled:false};
  assert.equal(plan('control',disabled).requiredFiles.some(file=>file.path===root+'download-key'),false);
 });
@@ -44,16 +43,15 @@ test('wrong role, runtime user, HTTP binding, foreign secret paths and accidenta
  for(const changed of [
   x=>{x.http.port=80;},x=>{x.http.hostname='127.0.0.1';},
   x=>{delete x.privateHttp;},x=>{x.privateHttp.port=8080;},x=>{x.privateHttp.frontendOrigin='https://foreign.synthetic.invalid';},
-  x=>{delete x.taskRouter;},x=>{x.taskRouter.enabled=false;},x=>{x.taskRouter.runnerCaFile='/run/foreign/runner-ca';},
+  x=>{delete x.agentcore;},x=>{x.taskRouter={enabled:true};},x=>{x.agentcore.identity.credentialFile=root+'identity';},
   x=>{x.database.connectionFile='/run/secrets/database';},
-  x=>{x.nativeCandidate.identity.credentialFile='/run/meri/nested/identity';},
+  x=>{x.native.capabilityFile='/run/meri/nested/capability';},
   x=>{x.temporal.tls.keyFile=x.temporal.tls.certFile;},
   x=>{x.temporal.tls.caFile=x.native.capabilityFile;},
-  x=>{x.taskRouter.runnerCaFile=x.temporal.tls.caFile;},
+  x=>{x.database.connectionFile=x.temporal.tls.caFile;},
   x=>{x.temporal.tls.caFile=root+'control.json';},
-  x=>{x.nativeCandidate.controlCapabilityFile=root+'different-capability';},
-  x=>{x.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:'/run/meri'};},
-  x=>{x.nativeCandidate.multiRun={runWindowMs:600000,materialDirectory:'/run/meri/issued'};},
+  x=>{x.nativeCandidate={multiRun:{runWindowMs:600000,materialDirectory:'/run/meri'}};},
+  x=>{x.agentcore.identity.commandContext={tenantId:'deployment-tenant'};},
  ]){const bad=structuredClone(c);changed(bad);assert.throws(()=>plan('control',bad),/PRODUCT_MATERIAL_REFUSED/);}
 });
 

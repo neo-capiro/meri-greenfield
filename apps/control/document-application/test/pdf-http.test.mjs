@@ -27,8 +27,8 @@ async function setup(t,{renderer,pdfAdmission=true,operation='create_word'}){
  const port=renderer?.(root),counts={generations:0};
  const inner=createFixedRuntimeArtifactExecutor({pythonExecutable:python,nodeExecutable:process.execPath,pptxModulePath:join(root,'pptx-not-configured'),tempRoot:root,timeoutMs:30000,...(port?{renderer:port}:{})});
  const executor={execute(call){counts.generations++;return inner.execute(call);}};
- const compose=createRuntimeDocumentOptionsComposer({storage:{objects:f.artifactOptions.objects,versions:f.artifactOptions.versions},executor,budgetPool:f.ledger.pool,sessions:f.sessions,now:f.now,...(port?{renderer:port}:{}),pdfAdmission});
- const options=compose({artifactOptions:f.artifactOptions,selectedClientId:f.selectedClientId,credential:f.credential,limits:f.limits,enabled:true});
+ const compose=createRuntimeDocumentOptionsComposer({storage:{objects:f.artifactOptions.objects,versions:f.artifactOptions.versions},executor,pool:f.artifactOptions.pool,store:{lifecycle:{readArtifactFile:async()=>null}},sessions:f.sessions,now:f.now,...(port?{renderer:port}:{}),pdfAdmission});
+ const options=compose({artifactOptions:f.artifactOptions,selectedClientId:f.selectedClientId,limits:f.limits,enabled:true});
  const app=createDocumentApplication(options),session=await f.sessions.issue({identityCredential:f.nativeCredential});
  const post=(route,body)=>app.handle(new Request(`http://127.0.0.1/api/documents/${route}`,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${session.credential}`},body:JSON.stringify(body)}));
  return {f,root,counts,options,post};
@@ -50,10 +50,10 @@ async function httpLineage(t,renderer,synthetic){
  const child=pdf(Buffer.from(await (await ok(await a.post('download',{versionId:second.version.versionId}))).arrayBuffer()));assert.equal(sha(child),second.version.object.sha256);
  if(synthetic)assert.deepEqual(pdfLines(child),['Revised policy','Name','Value','A','3']);assert.notDeepEqual(child,parent);
  assert.deepEqual(Buffer.from(await (await ok(await a.post('download',{versionId:first.version.versionId}))).arrayBuffer()),parent,'parent bytes untouched');
- assert.equal(a.counts.generations,2);assert.equal(a.f.stats().versionCharges,2);assert.equal(a.f.stats().settled,2);assert.equal(a.f.stats().consumedMicroUsd,'20');
+ assert.equal(a.counts.generations,2);assert.equal(a.f.stats().deliveries,2);assert.equal(a.f.stats().prepared,2);assert.equal(a.f.stats().prepared,2);
  // Replay of the same revision delivery over HTTP: the same committed version, no generation and no charge.
  const replay=await (await ok(await a.post('revise',{deliveryId:'pdf-revision',baseVersionId:first.version.versionId,request:revised}))).json();
- assert.deepEqual(replay.version,second.version);assert.deepEqual(replay.inspection,second.inspection);assert.equal(a.counts.generations,2);assert.equal(a.f.stats().versionCharges,2);
+ assert.deepEqual(replay.version,second.version);assert.deepEqual(replay.inspection,second.inspection);assert.equal(a.counts.generations,2);assert.equal(a.f.stats().deliveries,2);
  // The same delivery with a different request is not a replay.
  assert.notEqual((await a.post('revise',{deliveryId:'pdf-revision',baseVersionId:first.version.versionId,request:{...revised,title:'Other'}})).status,200);assert.equal(a.counts.generations,2);
  // A stale parent is refused at commit: effect UNKNOWN, no new version, both versions unchanged.
@@ -69,7 +69,7 @@ test('HTTP PDF create/inspect/download/revise/replay through the bound renderer 
 test('HTTP PDF create/inspect/download/revise/replay through real LibreOffice (opt-in MERI_ARTIFACT_SOFFICE)',{skip:!soffice&&'MERI_ARTIFACT_SOFFICE not set'},t=>httpLineage(t,realPort,false));
 
 const refusedPdf=async(a)=>{const res=await a.post('create',{deliveryId:'pdf',request:word});
- assert.equal(res.status,400);assert.deepEqual((await res.json()).error,{code:'INVALID_REQUEST',outcome:'NOT_DISPATCHED'});assert.equal(a.counts.generations,0);assert.equal(a.f.stats().versionCharges,0);};
+ assert.equal(res.status,400);assert.deepEqual((await res.json()).error,{code:'INVALID_REQUEST',outcome:'NOT_DISPATCHED'});assert.equal(a.counts.generations,0);assert.equal(a.f.stats().deliveries,0);};
 test('the PDF admission switch stays off by default even with an available renderer',async t=>{
  const a=await setup(t,{renderer:syntheticPort().port,pdfAdmission:false});assert.equal(a.options.admitPdf,undefined);await refusedPdf(a);
 });

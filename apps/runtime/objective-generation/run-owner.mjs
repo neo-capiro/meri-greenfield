@@ -21,13 +21,14 @@ const fail=code=>{throw fault(code);};
 const same=(a,b)=>hash(a)===hash(b);
 
 export function createObjectiveRunOwner(configuration={}){
- let enabled=false,putOnce,readStart,admit,dispatch,readOptional,now=Date.now,maxRequestMs=10000;
+ let enabled=false,putOnce,readStart,admit,acceptCore,readAcceptance,dispatch,readOptional,now=Date.now,maxRequestMs=10000;
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
-   const c=own(configuration,['enabled','runStarts','admission','dispatcher','store'],['now','maxRequestMs']);
+   const c=own(configuration,['enabled','runStarts','admission','core','dispatcher','store'],['now','maxRequestMs']);
    putOnce=storageMethod(c.runStarts,'putOnce');readStart=storageMethod(c.runStarts,'read');admit=storageMethod(c.admission,'admit');
    dispatch=storageMethod(c.dispatcher,'start');readOptional=storageMethod(c.store,'readOptional');
+   acceptCore=storageMethod(c.core,'accept');readAcceptance=storageMethod(c.core,'readAcceptance');
    now=c.now??now;maxRequestMs=c.maxRequestMs??maxRequestMs;
    if(typeof now!=='function'||types.isProxy(now)||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
    enabled=true;
@@ -54,6 +55,7 @@ export function createObjectiveRunOwner(configuration={}){
    if(saved.state!=='STARTED'||!same(saved.record,record))fail('UNKNOWN');life.check();
    const admitted=data(await life.run(signal=>admit({record,signal})));
    if(!same(admitted.binding,record.binding)||admitted.requestSha256!==record.sourceRequestSha256)fail('UNKNOWN');life.check();
+   await life.run(signal=>acceptCore({record,signal}));life.check();
    await life.run(signal=>dispatch({binding:record.binding,signal}));life.check();
    return data({kind:'started'});
   }catch{throw fault('UNKNOWN');}finally{life.close();}
@@ -70,6 +72,9 @@ export function createObjectiveRunOwner(configuration={}){
    if(saved===null)return data({run:null});
    const run=data(saved.run);validateShape('Run',run);
    if(!same(run.binding,v.binding)||hash(saved.request)!==started.record.sourceRequestSha256)fail('UNKNOWN');
+   // A lost Core acceptance or dispatch acknowledgement never launches an unclaimed job. Temporal deduplicates the existing workflow ID.
+   await life.run(signal=>readAcceptance({record:started.record,signal}));life.check();
+   if(run.state==='queued'){await life.run(signal=>dispatch({binding:run.binding,signal}));life.check();}
    return data({run});
   }catch{throw fault('UNKNOWN');}finally{life.close();}
  }

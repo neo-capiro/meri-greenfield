@@ -62,7 +62,7 @@ for(const state of ['DISPATCHING','UNKNOWN'])test(`explicit containment cancels 
  const row=[...h.conversations.state.controls.values()].find(r=>r.projection.input.intent==='resume');row.projection.state=state;row.projection_sha256=hash(row.projection);
  assert.equal((await h.inspect()).reason,'SCHEDULE_JOB_CONTROL_UNRESOLVED');const result=await h.cancel();assert.equal(result.state,'SETTLED');assert.equal(result.runState,'cancelled');assert.deepEqual(h.calls.cancel,[target]);assert.equal(h.temporal.calls.start,0);
 });
-test('resume keeps the same slot until the real target completes and every original allocation is retired',async t=>{
+test('resume keeps the same slot until the real target completes and every native invocation is settled',async t=>{
  const h=await scheduledJobFixture();t.after(h.close);await h.running();await h.pause();const target=await h.resume();
  assert.equal((await h.inspect()).state,'OCCUPIED');await h.running(target);await h.status('completed',target);assert.equal((await h.inspect()).reason,'SCHEDULE_JOB_RETIREMENT_UNPROVEN');
  await h.retire(target);const saved=await h.inspect();assert.equal(saved.state,'SETTLED');assert.deepEqual(saved.currentBinding,target);
@@ -71,16 +71,22 @@ test('explicit cancel uses actual resumed native binding; canonical run cancella
  const h=await scheduledJobFixture();t.after(h.close);await h.running();await h.pause();const target=await h.resume();await h.running(target);
  const result=await h.cancel();assert.equal(result.state,'SETTLED');assert.equal(result.runState,'cancelled');assert.deepEqual(h.calls.cancel,[target]);assert.deepEqual(h.calls.retire,[target]);assert.notEqual(target.runId,h.occurrence.workflowId);
 });
-test('queued cancellation uses canonical FORECLOSED evidence and never requests native allocation/stop',async t=>{
+test('queued cancellation uses the canonical run fence and never claims or stops a native invocation',async t=>{
  const h=await scheduledJobFixture({allocated:false});t.after(h.close);const result=await h.cancel();assert.equal(result.state,'SETTLED');assert.equal(result.runState,'cancelled');assert.equal(h.calls.retire.length,0);
- const saved=await h.store.allocations.read({binding:h.identity.binding,allocationKey:hash(h.identity.binding)},()=>{});assert.equal(saved.record.state,'FORECLOSED');
+ const saved=await h.store.executions.read(h.identity.binding,()=>{});assert.equal(saved.record,null);assert.equal(saved.run.state,'cancelled');
+ await assert.rejects(h.claim(),/EXECUTION_NOT_QUEUED/);assert.equal(h.conversations.state.executions.size,0);
 });
-test('a missing allocation for terminal work is not no-authority evidence',async t=>{
+test('a missing native invocation for completed work is not settlement evidence',async t=>{
  const h=await scheduledJobFixture({allocated:false});t.after(h.close);await h.running();await h.status('completed');assert.equal((await h.inspect()).reason,'SCHEDULE_JOB_RETIREMENT_UNPROVEN');
 });
 test('lost stop acknowledgement remains occupied; a later observation uses only durable retirement, never model restart',async t=>{
  const h=await scheduledJobFixture();t.after(h.close);await h.running();h.hooks.retire=()=>{throw Error('synthetic native stop unknown');};await assert.rejects(h.cancel());assert.equal((await h.inspect()).state,'OCCUPIED');assert.equal(h.temporal.calls.start,0);
  await h.retire();assert.equal((await h.inspect()).state,'SETTLED');assert.equal(h.calls.cancel.length,1);
+});
+for(const intent of ['pause','approval.wait'])test(`explicit cancellation after settled ${intent} releases only the same held job`,async t=>{
+ const h=await scheduledJobFixture();t.after(h.close);await h.running();await h.pause(intent);
+ const result=await h.cancel();assert.equal(result.state,'SETTLED');assert.equal(result.runState,'cancelled');
+ assert.deepEqual(h.calls.cancel,[h.identity.binding]);assert.equal(h.calls.retire.length,0);assert.equal(h.temporal.calls.start,0);
 });
 test('accessor/missing trusted ports and cancelled/expired operation fail before any cancellation',async t=>{
  const h=await scheduledJobFixture();t.after(h.close);let getters=0;assert.throws(()=>createScheduledJobLifecycle({...h.options,runControl:{get cancel(){getters++;return ()=>{};}}}));assert.equal(getters,0);

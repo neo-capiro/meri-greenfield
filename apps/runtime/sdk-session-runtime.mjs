@@ -1,6 +1,6 @@
 /** Exact observed SDK key -> native registered owner -> existing bounded SDK adapter. */
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
-import {createNativeSdkSessionClient,createNativeBoundSdkSessionStore} from './native-authority/session-client.mjs';
+import {createNativeSdkSessionClient,createNativeBoundSdkSessionStore} from './sdk-session-client.mjs';
 import {fault} from './config.mjs';
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';

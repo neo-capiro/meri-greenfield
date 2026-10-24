@@ -20,12 +20,11 @@ from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
 # Names are fixed by the deployment: Cloud Map meri.internal / temporal.meri.internal and the private
 # control origin behind the internal ALB.
 NAMES = {
-    "issuer": "issuer.meri.internal",
     "control_private": "control.meri-preview.internal",
     "temporal_frontend": "frontend.temporal.meri.internal",
     "temporal_internode": "internode.temporal.meri.internal",
 }
-TEMPORAL_CLIENTS = {"control": "meri-temporal-control", "worker": "meri-temporal-worker"}
+TEMPORAL_CLIENTS = {"control": "meri-temporal-control", "worker": "meri-temporal-worker", "schedule": "meri-temporal-schedule"}
 
 
 def key():
@@ -79,14 +78,10 @@ def main(out, days):
             pins[stem] = {"pem": hashlib.sha256(pem).hexdigest(), "der": hashlib.sha256(cert.public_bytes(serialization.Encoding.DER)).hexdigest(),
                           "subject": cert.subject.rfc4514_string(), "notAfter": cert.not_valid_after_utc.isoformat()}
 
-    # One server CA: control-private ALB and issuer server leaves (worker and runner trust it).
+    # Private control ALB trust remains independent of Temporal client authentication.
     server_k, server = ca("Meri preview server CA", days); put("server-ca", server_k, server)
-    for stem, dns in (("issuer-server", NAMES["issuer"]), ("control-private", NAMES["control_private"])):
-        put(stem, *leaf(server_k, server, dns, days, dns=[dns], server=True))
-    # Issuer client-auth CA: the issuer holds its key and mints per-task Temporal identity leaves.
-    put("issuer-client-ca", *ca("Meri preview issuer client CA", days))
-    # Runner CA: control holds its key and mints per-task runner server leaves.
-    put("runner-ca", *ca("Meri preview runner CA", days))
+    put("control-private", *leaf(server_k, server, NAMES["control_private"], days,
+                                dns=[NAMES["control_private"]], server=True))
     # Temporal: frontend, client and internode CAs.
     fk, fca = ca("Meri preview Temporal frontend CA", days); put("temporal-frontend-ca", fk, fca)
     put("temporal-frontend", *leaf(fk, fca, NAMES["temporal_frontend"], days, dns=[NAMES["temporal_frontend"]], server=True))

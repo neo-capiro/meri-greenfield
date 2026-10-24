@@ -1,5 +1,5 @@
 /** Synthetic source-shaped bytes and echo broker only; no native role/principal qualification. */
-import {fixture} from '../../../test/fixtures.mjs';
+import {fixture} from '../../test/read-fixture.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createAcquisitionPersonnelHandlers} from '../handler.mjs';
 export const personId='abcdefab-1234-0000-0000-000000000001';

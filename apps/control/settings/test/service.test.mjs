@@ -1,6 +1,7 @@
 /** SYNTHETIC: settings service over the real document validators and canonical capability-policy resolver, with an in-memory store
  * double and a synthetic platform record. Not PostgreSQL, Core membership or live platform-record qualification. */
 import test from 'node:test';import assert from 'node:assert/strict';
+import {MODEL_CATALOG,CLAUDE_SELECTION} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 import {createSettingsService,changedFields,TENANT_SETTINGS_PERMISSION} from '../service.mjs';
 import {USER_PREFERENCE_DEFAULTS} from '../documents.mjs';
@@ -9,13 +10,13 @@ const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const member=(over={})=>Object.freeze({tenantId:'tenant-one',actorId:'actor-1',role:'member',permissions:[],clientIds:[id(901)],membershipRevision:'m1',...over});
 const admin=over=>member({actorId:'admin-1',permissions:[TENANT_SETTINGS_PERMISSION],...over});
 function setup(platform=PLATFORM){let n=100;const store=createSettingsStoreDouble();const box={platform};
- return {store,box,service:createSettingsService({store,readPlatformLimits:async()=>structuredClone(box.platform),newId:()=>id(n++)})};}
+ return {store,box,service:createSettingsService({store,modelCatalog:MODEL_CATALOG,readPlatformLimits:async()=>structuredClone(box.platform),newId:()=>id(n++)})};}
 const failed=async(promise,code,field)=>assert.rejects(promise,e=>{const f=productFailure(e);return f?.code===code&&(field===undefined||f.field===field);});
 const prefs=over=>({...structuredClone(USER_PREFERENCE_DEFAULTS),notifications:{...USER_PREFERENCE_DEFAULTS.notifications},...over});
 
 test('user preferences: defaults, strict validation with field names, revisioned saves and audit',async()=>{
  const t=setup(),p=member();
- assert.deepEqual(await t.service.readUser({principal:p}),{revision:0,preferences:USER_PREFERENCE_DEFAULTS});
+ assert.deepEqual(await t.service.readUser({principal:p}),{revision:0,preferences:USER_PREFERENCE_DEFAULTS,modelCatalog:MODEL_CATALOG});
  const saved=await t.service.saveUser({principal:p,body:{expectedRevision:0,preferences:prefs({theme:'dark',timezone:'America/New_York',defaultClientId:id(901).toUpperCase()})}});
  assert.equal(saved.revision,1);assert.equal(saved.preferences.defaultClientId,id(901));
  assert.equal((await t.service.readUser({principal:p})).preferences.timezone,'America/New_York');
@@ -83,4 +84,17 @@ test('audit is admin-only, tenant-isolated and paged; an unavailable platform re
 
 test('changedFields names paths only',()=>{
  assert.deepEqual(changedFields({a:1,n:{x:1,y:2}},{a:1,n:{x:1,y:3},b:true}),['b','n.y']);
+});
+
+test('MP defaults retain existing CAS and tenant/actor isolation without a second settings store',async()=>{
+ const t=setup(),p=member(),body={expectedRevision:0,preferences:prefs({defaultModel:CLAUDE_SELECTION})};
+ const saved=await t.service.saveUser({principal:p,body});assert.deepEqual(saved.preferences.defaultModel,CLAUDE_SELECTION);assert.deepEqual(saved.modelCatalog,MODEL_CATALOG);
+ assert.deepEqual((await t.service.readUser({principal:p})).preferences.defaultModel,CLAUDE_SELECTION);
+ for(const other of [member({tenantId:'tenant-two'}),member({actorId:'actor-2'})])assert.equal((await t.service.readUser({principal:other})).preferences.defaultModel,null);
+ await failed(t.service.saveUser({principal:p,body}),'SETTINGS_REVISION_CONFLICT');assert.equal(t.store.audit.length,1);assert.deepEqual(t.store.audit[0].changedFields,['defaultModel.effort','defaultModel.modelId','defaultModel.provider']);
+});
+test('MP unavailable provider/model or unsupported effort is a field refusal with no persisted preference',async()=>{
+ const t=setup();for(const defaultModel of [{...CLAUDE_SELECTION,modelId:'unknown'},{...CLAUDE_SELECTION,effort:'xhigh'},...MODEL_CATALOG.models.filter(m=>!m.available).map(m=>({provider:m.provider,modelId:m.modelId,effort:m.efforts[0]}))]){
+  await failed(t.service.saveUser({principal:member(),body:{expectedRevision:0,preferences:prefs({defaultModel})}}),'SETTINGS_FIELD_INVALID','defaultModel');
+ }assert.equal(t.store.audit.length,0);assert.equal(t.store.docs.size,0);
 });

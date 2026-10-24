@@ -1,41 +1,62 @@
-/** Fresh control authority reads ONE original PUBLISHED typed result, independent of expired task/model leases. No capture, issue or apply port. */
+/** Core-only readback of the actual accepted job and native SDK result. Core owns current access and effect consent. */
 import {own,data,hash,assertTypedResult,assertTypedSelection,typedCheckpointObject,assertTypedResultBytes,typedFault} from '../../../packages/runtime/objective-generation-custody.mjs';
 import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {validateShape} from '../../../packages/contracts/validate.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
-import {createNativeIdentityContext} from '../native-authority/identity-context.mjs';
-import {loadObjectiveStrategyCodec} from '../../worker/conversation/objective-generation/typed-result.mjs';
-const refuse=()=>{throw typedFault();};
-export function createObjectiveGenerationResultReader(configuration){
- const c=own(configuration,['store','objects','identity','source'],['enabled','now','maxRequestMs','maxFactBytes','codec']),now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000,maxFactBytes=c.maxFactBytes??131072,codec=c.codec??loadObjectiveStrategyCodec;
- const source=data(own(c.source,['generationJobId','binding','sourceAdmissionSha256'])),identity=own(c.identity,['origin','credential','commandContext','fetchImpl']),context=data(own(identity.commandContext,['binding','clientResolution']));
- const readRun=storageMethod(c.store,'read'),readCompletion=storageMethod(c.store.completions,'read'),get=storageMethod(c.objects,'get');
- if(typeof now!=='function'||typeof enabled!=='boolean'||typeof codec!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxFactBytes)||maxFactBytes<1||maxFactBytes>131072||hash(context.binding)!==hash(source.binding))refuse();
- async function read(value){
-  const v=own(value,['generationJobId'],['signal']);nativeSignal(v.signal);if(!enabled||v.generationJobId!==source.generationJobId)refuse();
-  let deadlineMs=now()+maxRequestMs,pinned,originalStamp;const life=createOperationLifetime({now,signal:v.signal,deadlineMs,errorFactory:typedFault});
-  async function row(){const saved=await life.run(()=>readRun(source.binding,{},life.check));life.check();if(hash(saved.run.binding)!==hash(source.binding))refuse();return saved;}
-  const currentOwner={async currentRun(binding,{signal}){if(hash(binding)!==hash(source.binding))refuse();const saved=await row();signal.throwIfAborted();return JSON.stringify({binding:source.binding,policyRevision:saved.run.policyRevision,deadlineMs,checkedAtMs:now()});}};
-  let authority;try{authority=createNativeIdentityContext({origin:identity.origin,commandContext:context,fetchImpl:identity.fetchImpl,currentOwner,now,limits:{maxRequestMs,maxFactBytes},enabled});}catch(error){life.close();throw error;}
-  async function fresh(){
-   const principal=await life.run(signal=>authority.verifyIdentity({credential:identity.credential,signal,deadlineMs}));deadlineMs=Math.min(deadlineMs,principal.expiresAtMs);life.limitDeadline(deadlineMs);
-   const resolved=await life.run(signal=>authority.resolveContext({identityCredential:identity.credential,identity:principal,identitySha256:hash(principal),hints:{conversationId:source.binding.conversationId,runId:source.binding.runId,clientId:context.clientResolution.clientId},signal,deadlineMs}));
-   const p=data({principal:principal.principal,identityRevision:principal.identityRevision,binding:resolved.binding,scopes:resolved.scopes,selectedClientId:resolved.selectedClientId,contextRevision:resolved.contextRevision}),saved=await row();
-   if(hash(p.binding)!==hash(source.binding)||hash(p.scopes)!==hash(saved.run.scopes)||p.selectedClientId!==context.clientResolution.clientId||pinned&&hash(pinned)!==hash(p))refuse();pinned??=p;deadlineMs=Math.min(deadlineMs,resolved.expiresAtMs);life.limitDeadline(deadlineMs);life.check();
-  }
-  async function retained(){
-   await fresh();const saved=await row(),p=data(await life.run(()=>readCompletion({binding:source.binding,scopes:pinned.scopes,selectedClientId:pinned.selectedClientId},life.check)));life.check();
-   if(p.state!=='PUBLISHED'||!p.proof||!p.typedResult||!p.typedSelection||p.sourceRequestSha256!==hash(saved.request)||hash(p.sourceRequest)!==hash(saved.request)||hash(p.versions)!==hash(saved.run.versions)||hash(p.scopes)!==hash(pinned.scopes)||saved.run.state!=='completed')refuse();
-   const d=assertTypedResult(p.typedResult,{binding:source.binding,sourceRequestSha256:p.sourceRequestSha256}),selection=assertTypedSelection(p.typedSelection,d,{binding:source.binding,acceptedRequest:saved.request});
-   if(selection.strategy.request.jobId!==source.generationJobId||d.sourceAdmissionSha256!==source.sourceAdmissionSha256||selection.strategy.request.principal.clientId!==pinned.selectedClientId||d.resultRef!==p.completionId||d.execution.receiptRef!==p.completionId)refuse();
-   const object=typedCheckpointObject(p.proof,d),stamp=hash({completionId:p.completionId,typedResult:d,typedSelection:selection,proof:p.proof});if(originalStamp&&originalStamp!==stamp)refuse();originalStamp??=stamp;return {p,d,selection,object};
-  }
+import {assertObjectiveRunStartRecord,objectiveAcceptedRequest} from '../objective-source/run-starts.mjs';
+
+const refuse=()=>{throw typedFault();},same=(a,b)=>hash(a)===hash(b);
+export const MAX_OBJECTIVE_READBACK_BYTES=8*1024*1024;
+
+export function createObjectiveGenerationReadback(configuration){
+ const c=own(configuration,['runStarts','store','objects','retention'],['now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const readStart=storageMethod(c.runStarts,'readByJob'),readRun=storageMethod(c.store,'read'),readCompletion=storageMethod(c.store.completions,'read'),
+  readSession=storageMethod(c.store.lifecycle,'readSessionCapture'),get=storageMethod(c.objects,'get'),servable=storageMethod(c.retention,'assertServable');
+ if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
+ function input(value,completion){
+  const v=own(value,['schemaVersion','generationJobId','sourceAdmissionSha256',...(completion?['binding']:[])],['signal']);nativeSignal(v.signal);
+  if(v.schemaVersion!==1||typeof v.generationJobId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/u.test(v.generationJobId)||
+   typeof v.sourceAdmissionSha256!=='string'||!/^[a-f0-9]{64}$/u.test(v.sourceAdmissionSha256))refuse();
+  if(completion)validateShape('RunBinding',v.binding);return v;
+ }
+ async function accepted(v,life){
+  const saved=data(await life.run(signal=>readStart({generationJobId:v.generationJobId,signal})));own(saved,['state','record']);
+  if(saved.state!=='STARTED')refuse();const record=assertObjectiveRunStartRecord(saved.record),binding=record.binding;
+  if(record.generationJobId!==v.generationJobId||record.sourceAdmissionSha256!==v.sourceAdmissionSha256||v.binding!==undefined&&!same(v.binding,binding))refuse();
+  await life.run(()=>servable({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId}));life.check();
+  const current=await life.run(()=>readRun(binding,{},life.check)),run=data(current.run),request=data(current.request);validateShape('Run',run);
+  if(!same(run.binding,binding)||!same(request,objectiveAcceptedRequest(record.selection))||hash(request)!==record.sourceRequestSha256)refuse();
+  assertNativeConversationScope({binding,scopes:run.scopes,selectedClientId:record.selection.sourceAdmission.canonical.clientId});life.check();
+  return data({schemaVersion:1,record,request,run});
+ }
+ async function acceptance(value){
+  const v=input(value,false),life=createOperationLifetime({now,signal:v.signal,deadlineMs:now()+maxRequestMs,errorFactory:typedFault});
+  try{return await accepted(v,life);}finally{life.close();}
+ }
+ async function completion(value){
+  const v=input(value,true),life=createOperationLifetime({now,signal:v.signal,deadlineMs:now()+maxRequestMs,errorFactory:typedFault});
   try{
-   const original=await retained();await fresh();const raw=await life.run(signal=>get(original.object,signal));life.check();const bytes=assertTypedResultBytes(raw,original.d),contract=await life.run(()=>codec(original.selection.strategy.request)),result=contract.decode(bytes,original.d,original.selection);
-   await retained();await fresh();life.check();
-   return data({schemaVersion:1,generationJobId:source.generationJobId,binding:source.binding,sourceAdmissionSha256:original.d.sourceAdmissionSha256,sourceRequestSha256:original.d.sourceRequestSha256,typedRequestSha256:original.d.typedRequestSha256,
-    completionId:original.p.completionId,checkpointId:original.p.proof.checkpoint.checkpointId,checkpointSha256:original.p.proof.checkpointSha256,resultRef:original.d.resultRef,resultSha256:original.d.resultSha256,file:{path:original.d.path,object:original.object},rawFileSha256:original.d.fileSha256,execution:original.d.execution,result,checkedAtMs:now(),expiresAtMs:deadlineMs});
+   const a=await accepted(v,life),{record,run,request}=a,binding=record.binding,selectedClientId=record.selection.sourceAdmission.canonical.clientId;
+   const query={binding,scopes:run.scopes,selectedClientId};
+   const p=data(await life.run(()=>readCompletion(query,life.check)));life.check();
+   if(run.state!=='completed'||p.state!=='PUBLISHED'||p.kind!=='native-session'||p.proof?.kind!=='native-session'||
+    p.completionId!==binding.runId||p.checkpointId!==binding.runId||!same(p.binding,binding)||!same(p.scopes,run.scopes)||
+    !same(p.versions,run.versions)||!same(p.sourceRequest,request)||p.sourceRequestSha256!==record.sourceRequestSha256)refuse();
+   const d=assertTypedResult(p.typedResult,{binding,sourceRequestSha256:record.sourceRequestSha256}),s=assertTypedSelection(p.typedSelection,d,{binding,acceptedRequest:request});
+   if(d.sourceAdmissionSha256!==record.sourceAdmissionSha256||d.typedRequestSha256!==record.typedRequestSha256||d.resultRef!==binding.runId||
+    d.execution.receiptRef!==binding.runId||!same(s.strategy.request,record.selection.request)||!same(s.strategy.executionContext,record.selection.executionContext)||
+    s.strategy.queuedType!==record.selection.queuedType)refuse();
+   // The journal owns settled execution and committed capture. A worker-selected locator is never accepted.
+   const capture=data(await life.run(()=>readSession({...query,checkpointId:binding.runId},life.check)));life.check();
+   if(!same(capture.proof,p.proof))refuse();const object=typedCheckpointObject(p.proof,d);
+   const bytes=assertTypedResultBytes(await life.run(signal=>get(object,signal)),d);life.check();
+   const again=await accepted(v,life),latest=data(await life.run(()=>readCompletion(query,life.check)));
+   if(!same(again,a)||!same(latest,p))refuse();
+   const out=data({...a,completion:p,file:{path:d.path,object,base64:bytes.toString('base64')}});
+   if(Buffer.byteLength(JSON.stringify(out))>MAX_OBJECTIVE_READBACK_BYTES)refuse();life.check();return out;
   }finally{life.close();}
  }
- return Object.freeze({available:()=>enabled,read});
+ return Object.freeze({acceptance,completion});
 }

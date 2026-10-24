@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {renderTemporalConfig} from './temporal-launch-render.mjs';
-import {readTaskEniAddress,checkIssuerJwks,checkCa} from './temporal-launch-main.mjs';
+import {readTaskEniAddress,checkCa} from './temporal-launch-main.mjs';
 import {rootCertificates} from 'node:tls';
 import {X509Certificate} from 'node:crypto';
 import {TEMPORAL_MIGRATION_PLAN_SHA256} from './temporal-migration-plan.mjs';
@@ -20,15 +20,13 @@ function env(service='frontend'){
   MERI_TEMPORAL_RENDER_DIR:'/run/temporal',DB:'postgres12',DB_PORT:'5432',DBNAME:'temporal',VISIBILITY_DBNAME:'temporal_visibility',
   NUM_HISTORY_SHARDS:'128',SQL_TLS_ENABLED:'true',SQL_HOST_VERIFICATION:'true',TEMPORAL_TLS_REQUIRE_CLIENT_AUTH:'true',
   TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION:'false',TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION:'false',
-  TEMPORAL_AUTH_AUTHORIZER:'default',TEMPORAL_AUTH_CLAIM_MAPPER:'default',TEMPORAL_AUTH_AUDIENCE:'meri-temporal',
-  TEMPORAL_JWT_KEY_REFRESH:'300s',USE_INTERNAL_FRONTEND:'true',TEMPORAL_NAMESPACE:'meri',TEMPORAL_TASK_QUEUE:'meri-conversations',
+  TEMPORAL_AUTH_AUTHORIZER:'default',TEMPORAL_AUTH_CLAIM_MAPPER:'meri-client-certificate',USE_INTERNAL_FRONTEND:'true',TEMPORAL_NAMESPACE:'meri',TEMPORAL_TASK_QUEUE:'meri-conversations',
   POSTGRES_SEEDS:'temporal-db.meri.internal',VISIBILITY_POSTGRES_SEEDS:'temporal-db.meri.internal',SQL_HOST_NAME:'temporal-db.meri.internal',
   TEMPORAL_TLS_FRONTEND_SERVER_NAME:'frontend.temporal.meri.internal',TEMPORAL_TLS_INTERNODE_SERVER_NAME:'internode.temporal.meri.internal',
-  TEMPORAL_AUTH_ISSUER:'https://issuer.meri.internal:8445/',TEMPORAL_JWT_KEY_SOURCE1:'https://issuer.meri.internal:8445/.well-known/jwks.json',
   SQL_MAX_CONNS:conns,SQL_MAX_IDLE_CONNS:conns,SQL_VIS_MAX_CONNS:conns,SQL_VIS_MAX_IDLE_CONNS:conns,
   POSTGRES_USER:'temporal_user',POSTGRES_PWD:'synthetic-primary',VISIBILITY_POSTGRES_USER:'visibility_user',VISIBILITY_POSTGRES_PWD:'synthetic-visibility',
   MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED:'temporal_user',MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED:'visibility_user',
-  MERI_TEMPORAL_RDS_CA_SHA256:sha,MERI_TEMPORAL_ISSUER_CA_SHA256:sha,MERI_TEMPORAL_MIGRATION_PLAN_SHA256:TEMPORAL_MIGRATION_PLAN_SHA256,MERI_TEMPORAL_INTERNODE_CERT_PEM:cert,
+  MERI_TEMPORAL_RDS_CA_SHA256:sha,MERI_TEMPORAL_MIGRATION_PLAN_SHA256:TEMPORAL_MIGRATION_PLAN_SHA256,MERI_TEMPORAL_INTERNODE_CERT_PEM:cert,
   MERI_TEMPORAL_INTERNODE_KEY_PEM:key,MERI_TEMPORAL_INTERNODE_CA_PEM:cert,MERI_TEMPORAL_FRONTEND_CA_PEM:cert,
   MERI_TEMPORAL_RDS_CA_PEM:cert,
   ...(service==='frontend'?{MERI_TEMPORAL_FRONTEND_CERT_PEM:cert,MERI_TEMPORAL_FRONTEND_KEY_PEM:key,MERI_TEMPORAL_CLIENT_CA_PEM:cert}:{})};
@@ -41,7 +39,7 @@ function files(frontend=true){
 const rendered=(service='frontend')=>JSON.parse(renderTemporalConfig(env(service),[service==='internal-worker'?'worker':service],
  '10.4.8.12',files(service==='frontend')));
 
-test('complete frontend config binds two SQL stores, ENI membership, reachable frontend, mTLS and audience',()=>{
+test('complete frontend config binds two SQL stores, ENI membership, reachable frontend, mTLS and native certificate roles',()=>{
  const c=rendered();
  assert.equal(c.persistence.numHistoryShards,128);
  assert.equal(c.persistence.datastores.default.sql.databaseName,'temporal');
@@ -50,29 +48,19 @@ test('complete frontend config binds two SQL stores, ENI membership, reachable f
  assert.equal(c.persistence.datastores.default.sql.tls.enableHostVerification,true);
  assert.equal(c.global.membership.broadcastAddress,'10.4.8.12');
  assert.equal(c.clusterMetadata.clusterInformation.active.rpcAddress,'frontend.temporal.meri.internal:7233');
- assert.equal(c.global.authorization.audience,'meri-temporal');
+ assert.equal(c.global.authorization.audience,undefined);
  assert.equal(c.global.authorization.authorizer,'default');
- assert.equal(c.global.authorization.claimMapper,'default');
- assert.deepEqual(c.global.authorization.jwtKeyProvider.keySourceURIs,['https://issuer.meri.internal:8445/.well-known/jwks.json']);
+ assert.equal(c.global.authorization.claimMapper,'meri-client-certificate');
+ assert.equal(c.global.authorization.jwtKeyProvider,undefined);
  assert.deepEqual(c.global.tls.frontend.server.clientCaFiles,[files().clientCa,files().internodeCa]);
  assert.equal(c.global.tls.internode.server.requireClientAuth,true);
  assert.equal(c.archival.history.state,'disabled');assert.equal(c.archival.visibility.state,'disabled');
  assert(!JSON.stringify(c).includes('127.0.0.1'));
 });
 
-test('launcher accepts only exact issuer port 8445 and fixed issuer/JWKS paths',()=>{
- for(const suffix of ['',':443',':8443',':8446',':08445']){
-  const e=env();e.TEMPORAL_AUTH_ISSUER=`https://issuer.meri.internal${suffix}/`;
-  e.TEMPORAL_JWT_KEY_SOURCE1=`https://issuer.meri.internal${suffix}/.well-known/jwks.json`;
-  assert.throws(()=>renderTemporalConfig(e,['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/u);
- }
- for(const mutate of [
-  x=>{x.TEMPORAL_AUTH_ISSUER='https://issuer.meri.internal:8445';},
-  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://issuer.meri.internal/.well-known/jwks.json';},
-  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://issuer.meri.internal:8445/other';},
-  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://issuer.meri.internal:8445/.well-known/jwks.json?extra=1';},
-  x=>{x.TEMPORAL_JWT_KEY_SOURCE1='https://foreign.internal:8445/.well-known/jwks.json';}
- ]){const e=env();mutate(e);assert.throws(()=>renderTemporalConfig(e,['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/u);}
+test('launcher refuses removed issuer configuration and disabled server authorization',()=>{
+ for(const key of ['TEMPORAL_AUTH_ISSUER','TEMPORAL_AUTH_AUDIENCE','TEMPORAL_JWT_KEY_SOURCE1','TEMPORAL_JWT_KEY_REFRESH','MERI_TEMPORAL_ISSUER_CA_SHA256'])assert.throws(()=>renderTemporalConfig({...env(),[key]:'old'},['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/);
+ for(const [key,value] of [['TEMPORAL_AUTH_AUTHORIZER',''],['TEMPORAL_AUTH_CLAIM_MAPPER',''],['TEMPORAL_AUTH_CLAIM_MAPPER','default'],['TEMPORAL_TLS_REQUIRE_CLIENT_AUTH','false']])assert.throws(()=>renderTemporalConfig({...env(),[key]:value},['frontend'],'10.4.8.12',files()),/TEMPORAL_LAUNCH_REFUSED/);
 });
 
 test('internal worker renders only internode server key and exact worker role',()=>{
@@ -102,27 +90,14 @@ test('activation, role, issuer, SQL, cert scope and broadcast contradictions fai
  assert.throws(()=>renderTemporalConfig(other,['history'],'10.4.8.12',files(false)),/TEMPORAL_LAUNCH_REFUSED/u);
 });
 
-test('ENI and JWKS preflight accept one scoped response and reject ambiguity',async()=>{
+test('ENI preflight accept one scoped response and reject ambiguity',async()=>{
  const e=env(),metadata={Family:'meri-product-preview-temporal-frontend',Containers:[{Name:'frontend',Networks:[{
   NetworkMode:'awsvpc',IPv4Addresses:['10.4.8.12']}]}]};
  const fetcher=async()=>new Response(JSON.stringify(metadata),{status:200});
  e.ECS_CONTAINER_METADATA_URI_V4='http://169.254.170.2/v4/task-id';
  assert.equal(await readTaskEniAddress(e,fetcher),'10.4.8.12');
- const trusted=rootCertificates.map(pem=>new X509Certificate(pem)).find(c=>
-  c.ca&&c.publicKey.asymmetricKeyType==='rsa'&&c.publicKey.asymmetricKeyDetails.modulusLength>=2048&&
-  c.publicKey.asymmetricKeyDetails.publicExponent===65537n&&
-  Date.parse(c.validFrom)<Date.now()&&Date.parse(c.validTo)>Date.now());
- assert(trusted);
- const jwk={...trusted.publicKey.export({format:'jwk'}),kid:'one',use:'sig',alg:'RS256'};
- const jwks=async()=>({keys:[jwk]});
- assert.equal(await checkIssuerJwks(e,jwks,cert),true);
  const bad={...metadata,Containers:[...metadata.Containers,...metadata.Containers]};
  await assert.rejects(readTaskEniAddress(e,async()=>new Response(JSON.stringify(bad))),/TEMPORAL_LAUNCH_REFUSED/u);
- await assert.rejects(checkIssuerJwks(e,async()=>({keys:[]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
- await assert.rejects(checkIssuerJwks(e,async()=>({keys:[{...jwk,n:'synthetic'}]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
- await assert.rejects(checkIssuerJwks(e,async()=>({keys:[{...jwk,e:'Aw'}]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
- await assert.rejects(checkIssuerJwks(e,async()=>({keys:[{...jwk,kid:'bad',d:'private'}]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
- await assert.rejects(checkIssuerJwks(e,async()=>({keys:[jwk,jwk]}),cert),/TEMPORAL_LAUNCH_REFUSED/u);
  e.ECS_CONTAINER_METADATA_URI_V4='https://example.org/v4/task-id';
  await assert.rejects(readTaskEniAddress(e,fetcher),/TEMPORAL_LAUNCH_REFUSED/u);
 });

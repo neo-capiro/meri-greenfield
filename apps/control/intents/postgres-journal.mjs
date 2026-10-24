@@ -1,6 +1,7 @@
 /** Canonical createIntentJournal store adapter. Sole table meri_intents.preparations; no public fallback or DDL execution.
  * Parent released exact DDL source authoring in central allocation 0b0b7abd; SQL execution/integration qualification remain pending. */
-import {canonicalSha256 as hash,validateShape,assertProposalIntegrity} from '../../../packages/contracts/validate.mjs';
+import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
 import {validateShape as validateToolShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
@@ -155,10 +156,11 @@ export function createPostgresCommandProposalReader({pool}){
     if(storedKey.actorId!==s.actorId||storedKey.conversationId!==s.conversationId)return null;
     const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal']),proposal=result.proposal;
     if(result.status!=='approval_required'||!proposal||typeof proposal!=='object'||!Object.hasOwn(proposal,'command'))refuse('INTENT_JOURNAL_STATE');
-    assertProposalIntegrity(proposal);
+    assertNativeApprovalProposal(proposal);
     const b=proposal.command.binding,r=custody.release.binding;
     if(proposal.proposalId!==s.proposalId||b.tenantId!==storedKey.tenantId||b.actorId!==storedKey.actorId||b.conversationId!==storedKey.conversationId||
-     hash(r)!==hash(b)||!['create_task','update_task'].includes(retained.record.operation.id))refuse('INTENT_JOURNAL_STATE');
+     hash(r)!==hash(b)||retained.record.operation.id!==({'task.create':'create_task','task.update':'update_task','document.draft':'create_word'}[proposal.command.action])||
+     hash(custody.release.scopes)!==hash(proposal.command.scopes))refuse('INTENT_JOURNAL_STATE');
     return data(proposal);
    }catch{refuse('INTENT_JOURNAL_STATE');}
   },{readOnly:true});

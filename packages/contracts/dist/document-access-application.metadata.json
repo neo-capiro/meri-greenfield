@@ -69,7 +69,6 @@
     "DEADLINE": 408,
     "DOCUMENT_CLOCK": 500,
     "DOCUMENT_CONFIGURATION": 500,
-    "DOCUMENT_READ_BUDGET_REFUSED": 500,
     "DOCUMENT_REFUSED": 502,
     "DOCUMENT_RESPONSE_LIMIT": 413,
     "DOCUMENT_RESULT_REFUSED": 502,
@@ -89,6 +88,7 @@
     "UNSUPPORTED_MEDIA_TYPE": 415
   },
   "semantics": {
+    "nativeFiles": "native-file identifies a committed workspace path and immutable object with currently verified bytes; it makes no format, rendering, generation-status or preview-status claim",
     "inspection": "structural facts about one exact stored version; nativeOpened, rendered and recalculated are always false, pptx visualInspection and pdf renderInspection are always pending, so no inspection describes a rendered or visually checked file",
     "download": "a download is admitted only for a version this receiver admitted from an inspect answer in the same session of use; inspect first, never a link or bytes alone",
     "preview": "previewFormats are the only formats the artifact preview owner will render (any other format answers ARTIFACT_PREVIEW_UNSUPPORTED); every previewFormat except pdf also needs a qualified converter or answers ARTIFACT_RENDERER_UNAVAILABLE; this contract carries no preview route and no renderer qualification",
@@ -116,13 +116,13 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "0c31c70a46b5bfe2f2bcda0601c51f827103d35f2c64c436fb5f752fb0d16b34",
-      "bytes": 5986
+      "sha256": "e6ef7e2de317c6a82e5dc5b3f8f2acd27fb5bb870b090abab1bf523fd902db73",
+      "bytes": 6373
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
-      "sha256": "3903a93cb0335bf371e01727e512616c28b0950776b34d8ee48b8b33b7cf0b99",
-      "bytes": 1688
+      "sha256": "3747bd0143130bb51b5928715ecebe22bd4a932e951a8ae32f87dc86b59b758d",
+      "bytes": 1976
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
@@ -131,53 +131,53 @@
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "c788ca4a19183e3254bd7827ca7a645170bc8963fbd94876cc0155c9a7426554",
-      "bytes": 7142
+      "sha256": "ed5eb408ff280e528bef4d73b8c1d2fdd69d52fda595192b4cc0d7189b60259f",
+      "bytes": 10326
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
-      "sha256": "0ff685fcaf1bd06b5ac2f13aa55b60b77d068e0592c19a0137421ca29ae2e772",
-      "bytes": 599
+      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
+      "bytes": 2579
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",
-      "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486",
-      "bytes": 40724
+      "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276",
+      "bytes": 48251
     },
     {
       "path": "document-access-application/protocol.mjs",
-      "sha256": "ff11352d06c7b806486bdea3449bc2929d8ffc0200ff6e2b65f488b7ff31783e",
-      "bytes": 2156
+      "sha256": "d7a8bda6686e27cdbbf15efd9f5d5e16b07535e281872dc533112a025871c7b7",
+      "bytes": 2348
     },
     {
       "path": "document-access-application/README.md",
-      "sha256": "f6d572c50a94a2ae8b1f68fc1a4a0ef94480e912bfda908b1f657164187113f2",
-      "bytes": 4325
+      "sha256": "8ff2746c768ee44de7ac0f1edb79599de978994f0deb1191fae665294b697a69",
+      "bytes": 4859
     },
     {
       "path": "document-access-application/receive.mjs",
-      "sha256": "2264bfb349e0847351c0925b7205d53494f7f06615922f7ff8e4e0ed1b0af5e9",
-      "bytes": 2634
+      "sha256": "dca21bf2f95c7159ad9fa0042bced58ec77da5d27bbacd0991d73862c273b500",
+      "bytes": 2879
     },
     {
       "path": "document-access-application/schema.mjs",
-      "sha256": "873d0799066da92569cc9bf2e5a216c305a6dfc48440b1db3368c30b37a0e675",
-      "bytes": 2799
+      "sha256": "f2266ba02497e00ec182e100850e0ab8588f4ff2f9a03711d433f2022955f59e",
+      "bytes": 3054
     },
     {
       "path": "document-application/boundary.mjs",
-      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
-      "bytes": 2216
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
     },
     {
       "path": "document-application/download.mjs",
-      "sha256": "fd74698f6d0245381ca504300dabe1cfba2b7ed4ed6bc2054d805aaeadf02246",
-      "bytes": 3435
+      "sha256": "8f99484bb7b0c17a319fff2d42ed027a918fa7a5c3be00368ad0d74b43d52a9d",
+      "bytes": 3705
     },
     {
       "path": "generate-document-access.mjs",
-      "sha256": "0b82a175ccac59b30d05fc2f365c1a4c54fa67f5f683d98719a09dfd573c1902",
-      "bytes": 13356
+      "sha256": "92cc0ef8b6dbc9447cee44c81ff8238ab198230dc6b932f4c7174c273f3250ce",
+      "bytes": 13610
     },
     {
       "path": "meri.schema.json",
@@ -186,11 +186,11 @@
     },
     {
       "path": "retrieval-0.2/catalog.json",
-      "sha256": "053d2661e042c960a914fffc262bb89c486da785af7047165c88274c3b896fe4",
-      "bytes": 330501
+      "sha256": "8c670c1741ee8c0f276810a96c0ea54f31838af9afdeab720ce3649a381a4c53",
+      "bytes": 329797
     }
   ],
-  "schemaSha256": "8db4444d1d8731baf91e3d1e862d18b2a1017130b62fc6a26f68e536b75d69d6",
+  "schemaSha256": "dee465abebca2faeead7486a04ef2eebde89b733f066de123f3c73888910a308",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-access-application/document-access-application-receiver.mjs",

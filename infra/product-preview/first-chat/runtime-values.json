@@ -1,94 +1,15 @@
 {
- "schemaVersion": 1,
+ "schemaVersion": 2,
  "versions": {
   "sdk": "0.3.295",
   "cli": "2.1.295",
   "contracts": "0.1.0",
-  "skillsDigest": "9b1b763df5f24bb54664251a1aa387c07a61439681371f54d1475614abf95191",
+  "skillsDigest": "e98711c45d2a03d6602dd95348162268b8b01b060b6764411f070db26e843099",
   "checkpointFormat": "0.1.0"
  },
- "preparationIntent": {
-  "configParentDirectory": "/run/meri",
-  "secureStorageDirectory": "/run/meri/sdk-secure",
-  "runnerSha256": "7402dabf8e6cf75bdfff2344cdc266aaead75c387f3796259a13cbb01f1d3618"
- },
- "allocation": {
-  "manifest": {
-   "contractVersion": "0.2.0",
-   "skillId": "quick_skill.client_changes",
-   "skillVersion": "1.0.0",
-   "prose": {
-    "id": "urn:meri:original:client-changes:1.0.0",
-    "sha256": "e81c3692348c9bfc7f9655d703823e785c1b7eb0b77fb394cbecb4a062cd0ee8"
-   },
-   "requiredSources": [
-    {
-     "sourceId": "client_knowledge_profile",
-     "authority": "derived",
-     "purpose": "evidence"
-    }
-   ],
-   "allowedOperations": [
-    {
-     "id": "get_client_context",
-     "version": "0.3.0"
-    }
-   ],
-   "subjectKinds": [
-    "client"
-   ],
-   "windowBases": [
-    "calendar-week",
-    "calendar-month",
-    "explicit"
-   ],
-   "completion": {
-    "requireAllSources": true,
-    "allowDisclosedPartial": true,
-    "negativeClaims": "complete-covered-only",
-    "rubric": [
-     {
-      "id": "first-chat-no-tools",
-      "requirement": "First-chat preview: no tool is mounted; any evidence gap is disclosed, never asserted complete.",
-      "evidenceRequired": true
-     }
-    ]
-   },
-   "approval": {
-    "mutations": "separate-immutable-proposal",
-    "autoCreateTasks": false
-   },
-   "budgets": {
-    "maxTurns": 3,
-    "maxToolCalls": 1,
-    "maxRecoveryAttempts": 0,
-    "maxRuntimeSeconds": 900,
-    "maxCostMicroUSD": 2000000,
-    "maxOutputBytes": 262144
-   },
-   "versionPolicy": {
-    "existingRuns": "pin-immutable",
-    "resume": "exact-or-explicit-migration",
-    "fork": "preserve-unless-explicit-reselection"
-   }
-  },
-  "catalogSha256": "58673ff38658c07e608ad209f007c4c6e30b9ee06a04c0f52afa97ac222bca9c",
-  "scheduleRevision": "69b3b88a730c8e759202d67fb1ef484746d2a38edee6ff46b968f88e990c3c77",
-  "operations": [
-   {
-    "operation": {
-     "id": "get_client_context",
-     "version": "0.3.0"
-    },
-    "chargeMicrousd": 1
-   }
-  ]
- },
  "runtime": {
+  "runWindowMs": 900000,
   "maxOutputBytes": 262144
  },
- "qualification": {
-  "attempt": 1,
-  "policyRevision": "79936353b071ddfcc9e02477163f191f7dcdb1a1419f4769b860c9e709dfbf2f"
- }
+ "policyRevision": "f58d600ec485ea62a7d5183c326c3cb661adb8494fd314bfad0640161f3c958e"
 }

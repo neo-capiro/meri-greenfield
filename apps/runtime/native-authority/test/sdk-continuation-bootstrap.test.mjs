@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {InMemorySessionStore} from '../../../worker/conversation/agent-sdk.mjs';
 import {createContinuationRuntimeSdkSession} from '../../sdk-continuation-session.mjs';
 import {createRuntimeSdkSessionFactory} from '../../sdk-session-runtime.mjs';
-import {createNativeSdkSessionApplication} from '../session-http.mjs';
+import {createNativeSdkSessionApplication} from '../../sdk-session-http.mjs';
 import {continuationFixture,id} from '../../../worker/conversation/continuation/test/fixtures.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {RUNNER_SESSION_STORE_CALL_MS} from '../../../../packages/runtime/runner-load-budget.mjs';

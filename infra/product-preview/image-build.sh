@@ -103,7 +103,7 @@ import json,sys
 v=json.load(open(sys.argv[1])); assert len(v)==1
 v=v[0]; c=v['Config']
 assert v['Os']=='linux' and v['Architecture']=='arm64' and 0<v['Size']<=3*1024**3
-assert c['User']=='1000:1000' and c['Entrypoint']==['node','apps/runtime/cli.mjs']
+assert c['User']=='1000:1000' and c['Entrypoint']==['node'] and c['Cmd']==['apps/runtime/agentcore-entrypoint.mjs']
 assert c['Labels']['org.opencontainers.image.revision']==sys.argv[2]
 assert [x for x in c['Env'] if x.startswith('NODE_EXTRA_CA_CERTS=')]==['NODE_EXTRA_CA_CERTS=/opt/meri/certs/rds-global-bundle.pem']
 PY
@@ -114,10 +114,11 @@ common=(docker run --rm --name "$probe" --platform linux/arm64 --read-only --use
   --tmpfs /run/meri:rw,nosuid,nodev,noexec,size=16m,uid=1000,gid=1000,mode=0700
   --tmpfs /run/meri-temporal:rw,nosuid,nodev,noexec,size=16m,uid=1000,gid=1000,mode=0700)
 owned_probe=1
-run 30 cli-help.log "${common[@]}" "$image" --help
+run 30 agentcore-help.log "${common[@]}" "$image" apps/runtime/agentcore-entrypoint.mjs --help
+run 30 cli-help.log "${common[@]}" "$image" apps/runtime/cli.mjs --help
 run 180 runtime-probe.log "${common[@]}" --entrypoint node "$image" apps/runtime/build/runtime-base-probe.mjs --check
 run 300 artifact-generation.log "${common[@]}" --entrypoint node "$image" infra/product-preview/runtime-packages/executor-generation-smoke.mjs
-run 120 product-imports.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "await import('./apps/runtime/control.mjs');await import('./apps/runtime/temporal-worker.mjs');await import('./apps/runtime/conversation-runner.mjs');"
+run 120 product-imports.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "await import('./apps/runtime/agentcore-entrypoint.mjs');await import('./apps/runtime/control.mjs');await import('./apps/runtime/temporal-worker.mjs');await import('./apps/runtime/conversation-runner.mjs');"
 run 30 installed-packages.log "${common[@]}" --entrypoint apk "$image" info -vv
 run 30 installed-python.json "${common[@]}" --entrypoint python3.13 "$image" -I -m pip list --format=json
 run 30 public-ca.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';const lock=JSON.parse(fs.readFileSync('apps/runtime/certs/rds-global-bundle.lock.json'));const path=process.env.NODE_EXTRA_CA_CERTS;assert.equal(path,lock.imagePath);const bytes=fs.readFileSync(path),s=fs.statSync(path);assert.equal(createHash('sha256').update(bytes).digest('hex'),lock.sha256);assert.equal(bytes.length,lock.bytes);assert.equal(s.mode&4095,292);assert.equal(s.uid,0);"

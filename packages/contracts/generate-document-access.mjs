@@ -66,18 +66,19 @@ declare const admittedRequest: unique symbol;
 declare const admittedVersion: unique symbol;
 export interface DocumentAccessRequestMap { inspect:DocumentInspectRequest; download:DocumentDownloadRequest; }
 export type AdmittedDocumentRequest<R extends DocumentAccessRoute> = Readonly<DocumentAccessRequestMap[R]> & {readonly [admittedRequest]:R};
-export type AdmittedDocumentVersion = Readonly<DocumentVersion> & {readonly [admittedVersion]:true};
-export type DocumentReceipt<T> = Omit<T,'version'> & {readonly version:AdmittedDocumentVersion};
+export type NativeArtifactFileMetadata = Extract<DocumentInspectionResponse,{kind:'native-file'}>['version'];
+export type AdmittedDocumentVersion = Readonly<DocumentVersion|NativeArtifactFileMetadata> & {readonly [admittedVersion]:true};
+export type DocumentReceipt<T> = T extends {version:infer V} ? Omit<T,'version'> & {readonly version:Readonly<V> & {readonly [admittedVersion]:true}} : never;
 export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInspectionResponse>; download:never;}
 export type DocumentResponse<R extends DocumentAccessRoute> = DocumentAccessResponseMap[R] | DocumentErrorResponse;
-export interface DocumentDownload {readonly version:AdmittedDocumentVersion; readonly bytes:Uint8Array<ArrayBuffer>;}
+export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
 export declare class DocumentResponseError extends Error {readonly code:string;}
 export declare const documentAccessVersion:'0.1.0';
 export declare const documentAccessMetadata:${JSON.stringify(metadata,null,2)};
 export declare function receiveDocumentRequest<R extends DocumentAccessRoute>(route:R,utf8Bytes:Uint8Array):AdmittedDocumentRequest<R>;
 export declare function receiveDocumentResponse<R extends DocumentAccessRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentRequest<R>):Promise<DocumentResponse<R>>;
-export declare function receiveDocumentDownload(response:Response,version:AdmittedDocumentVersion,options?:DocumentDownloadOptions):Promise<DocumentDownload>;
+export declare function receiveDocumentDownload<V extends AdmittedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentDownload<V>>;
 `;
   const schemaBytes=JSON.stringify(root,null,2)+'\n',outputs=new Map([
    ['document-access-application.mjs','// Generated self-contained browser receiving boundary. No authority or deployment acceptance.\n'+bundled.outputFiles[0].text],['document-access-application.d.ts',declarations+api],['document-access-application.schema.json',schemaBytes],

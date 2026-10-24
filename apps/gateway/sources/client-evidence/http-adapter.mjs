@@ -9,9 +9,9 @@ import {frozenData,ownFields,operationIds,readContext,assertClientEvidenceResult
 
 const same=(left,right)=>canonicalSha256(left)===canonicalSha256(right);
 export function createClientEvidenceHttpAdapter(options) {
-  const {endpoints:configured,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
-    ownFields(options,['endpoints','getCredentials','now'],['fetchImpl','maxRequestMs','maxResponseBytes']);
-  if(typeof getCredentials!=='function'||typeof fetchImpl!=='function'||typeof now!=='function'||
+  const {endpoints:configured,getCredentials,readSource,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
+    ownFields(options,['endpoints','now'],['getCredentials','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
+  if((readSource===undefined?typeof getCredentials!=='function':typeof readSource!=='function'||getCredentials!==undefined)||typeof fetchImpl!=='function'||typeof now!=='function'||
       !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000||
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoints;
@@ -45,22 +45,24 @@ export function createClientEvidenceHttpAdapter(options) {
         policyRevision:context.authority.policyRevision,normalizationContext:context.options}));
       if(typeof correlationBytes!=='string'||Buffer.byteLength(correlationBytes,'utf8')>8192)deny('RESOURCE_LIMIT');
       const correlationSha256=createHash('sha256').update(correlationBytes,'utf8').digest('hex');
+      let result;
+      if(readSource){
+        result=frozenData(await lifetime.run(signal=>{active();return readSource({operation:context.operation.id,input:protocol,context:frozenData(JSON.parse(correlationBytes)),deadlineMs:cutoff,signal});}));
+        active();
+        if(Buffer.byteLength(JSON.stringify(result),'utf8')>Math.min(maxResponseBytes,context.authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+        receivedAtMs=active();
+      }else{
       const credentials=frozenData(await lifetime.run(signal=>{
         active();return getCredentials(Object.freeze({...correlation,input:context.input,deadlineMs:cutoff,target,correlationSha256,signal}));
       }));
       ownFields(credentials,[...Object.keys(correlation),'bearerToken','serviceSecret','expiresAtMs'],['authorizationScheme','target','correlationSha256']);
       if(Object.hasOwn(credentials,'target')&&!same(credentials.target,target)||
-          ![undefined,'Bearer','CapiroMeriRead'].includes(credentials.authorizationScheme)||
-          credentials.authorizationScheme!=='CapiroMeriRead'&&
-            (context.invocationId!==undefined||new URL(endpoint).pathname===target.path)||
-          credentials.authorizationScheme==='CapiroMeriRead'&&
-            (context.invocationId===undefined||!Object.hasOwn(credentials,'target'))||
-          credentials.authorizationScheme==='CapiroMeriRead'&&new URL(endpoint).pathname!==target.path||
-          credentials.authorizationScheme==='CapiroMeriRead'&&credentials.correlationSha256!==correlationSha256||
-          Object.hasOwn(credentials,'correlationSha256')&&credentials.correlationSha256!==correlationSha256||
+     credentials.authorizationScheme!=='Bearer'||new URL(endpoint).pathname!==target.path||
+     !Object.hasOwn(credentials,'target')||credentials.correlationSha256!==correlationSha256||
+     Object.hasOwn(credentials,'correlationSha256')&&credentials.correlationSha256!==correlationSha256||
           Object.keys(correlation).some(key=>!same(credentials[key],correlation[key]))||
           !Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=active()||
-          credentials.authorizationScheme==='CapiroMeriRead'&&credentials.expiresAtMs>context.deadlineMs||
+          credentials.expiresAtMs>context.deadlineMs||
           ![credentials.bearerToken,credentials.serviceSecret].every(token=>typeof token==='string'&&
             token.length>0&&token.length<=8192&&/^[\x21-\x7e]+$/.test(token)))deny('ACCESS_DENIED');
       cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);active();
@@ -70,13 +72,14 @@ export function createClientEvidenceHttpAdapter(options) {
           cache:'no-store',signal,headers:{authorization:`${credentials.authorizationScheme??'Bearer'} ${credentials.bearerToken}`,
             'x-internal-service-secret':credentials.serviceSecret,'content-type':'application/json',
             accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
-            ...(credentials.authorizationScheme==='CapiroMeriRead'?{'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')}:{})},body});
+            'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')},body});
         acquired=result;
         try {receivedAtMs=active();return result;}catch(error){try {cancelBody(responseBody(result));}catch{}throw error;}
       });
       const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
-      const result=frozenData(await readJsonResponse(response,{lifetime:bounded,
-        maxResponseBytes:Math.min(maxResponseBytes,context.authority.claims.budgets.maxOutputBytes)}));
+      result=frozenData(await readJsonResponse(response,{lifetime:bounded,
+        maxResponseBytes:Math.min(maxResponseBytes,context.authority.maxOutputBytes)}));
+      }
       assertClientEvidenceResult(result,context,{receivedAtMs,deadlineMs:cutoff});active();return result;
     }catch(error){throw safeFailure(error);}
     finally {try {if(acquired)cancelBody(responseBody(acquired));}catch{}lifetime?.close();}

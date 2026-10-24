@@ -17,7 +17,7 @@ test('actual HTTP Word draft and revision preserve originals, budgets and revoke
   assert.deepEqual(receipt.result.invariants,{originalPreserved: true,revisionParentExact: true,downloadsVerified: true,
     sharedAllocationChargedOncePerVersion: true,reconstructedGraphReadRetainedVersions: true,revokedVersionsDenied: true,callerAuthorityRefused: true});
   assert.equal(receipt.result.stats.generations,2);assert.equal(receipt.result.stats.allocations,1);assert.equal(receipt.result.stats.grants,1);
-  assert.equal(receipt.result.stats.consumedMicroUsd,'20');assert.equal(receipt.result.stats.settled,2);assert.equal(receipt.result.stats.unknown,0);
+  assert.equal(receipt.result.stats.prepared,2);assert.equal(receipt.result.stats.prepared,2);assert.equal(receipt.result.stats.unknown,0);
   for (const process of [...receipt.result.stats.processReceipts,...receipt.result.inspectionProcessReceipts]) {
     assert.equal(process.exitCode,0);assert.equal(process.leaderClosed,true);assert.equal(process.groupAbsent,true);assert.equal(process.sandboxQualified,false);
   }

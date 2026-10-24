@@ -1,10 +1,12 @@
 /** The scripted store controls against actual Unix-only PostgreSQL 16: unique tenants per test, no truncation, direct SQL only to damage rows. */
 import test from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';import pg from 'pg';
 import {createPostgresConversationStore} from '../postgres-store.mjs';import {versions} from './store-fixture.mjs';
+import {hash} from '../boundary.mjs';
 const check=()=>{};
 async function fixture(t,{wrapPool}={}){const host=process.env.MERI_INSPECTION_TEST_SOCKET,database=process.env.MERI_INSPECTION_TEST_DATABASE;if(host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||database!=='meri_inspection_final')throw Error('NEW_OWNED_OPTIONAL_DATABASE_REQUIRED');const pool=new pg.Pool({host,database,user:'postgres',max:4});t.after(()=>pool.end());assert.equal((await pool.query("SELECT current_setting('listen_addresses') AS listen")).rows[0].listen,'');
  const binding={tenantId:'store-pg-'+randomUUID(),actorId:'actor-'+randomUUID(),conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1},scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:randomUUID(),policyRevision:'approved-fixture-policy'}],at=new Date().toISOString();
  const input={conversation:{conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt:at,policyRevision:scopes[0].policyRevision},run:{binding,state:'queued',scopes,createdAt:at,policyRevision:scopes[0].policyRevision,versions},request:{requestId:randomUUID(),prompt:'synthetic store control',skill:null,window:null},event:{contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt:at,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}};
+ await pool.query('INSERT INTO meri_settings.tenant_settings(tenant_id,revision,document,document_sha256,updated_at,updated_by,monthly_cap_micro_usd) VALUES($1,1,$2,$3,clock_timestamp(),$4,100000000)',[binding.tenantId,{},hash({}),binding.actorId]);
  const store=createPostgresConversationStore({pool:wrapPool?wrapPool(pool):pool}),status=(state,eventId=randomUUID())=>({eventId,createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}});
  const count=async()=>(await pool.query('SELECT count(*)::int AS n FROM meri_conversations.events WHERE tenant_id=$1',[binding.tenantId])).rows[0].n;
  return {pool,store,binding,input,status,count};}

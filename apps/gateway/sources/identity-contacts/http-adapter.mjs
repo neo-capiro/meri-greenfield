@@ -13,9 +13,9 @@ function configuredEndpoints(value){const fields=ownFields(value,[],operationIds
  if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)deny('GATEWAY_CONFIGURATION');out[id]=url.href;
  }catch{deny('GATEWAY_CONFIGURATION');}}return Object.freeze(out);}
 export function createIdentityContactsHttpAdapter(options){
- const {endpoints:configured,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
-  ownFields(options,['endpoints','getCredentials','now'],['fetchImpl','maxRequestMs','maxResponseBytes']);
- if(typeof getCredentials!=='function'||typeof fetchImpl!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||
+ const {endpoints:configured,getCredentials,readSource,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
+  ownFields(options,['endpoints','now'],['getCredentials','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
+ if((readSource===undefined?typeof getCredentials!=='function':typeof readSource!=='function'||getCredentials!==undefined)||typeof fetchImpl!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||
     maxRequestMs<1||maxRequestMs>3600000||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
  const endpoints=configuredEndpoints(configured);
  async function read(call){let life,acquired;try{
@@ -35,17 +35,18 @@ export function createIdentityContactsHttpAdapter(options){
    normalizationContext:context.operation.id==='find_contacts'?null:context.normalizationContext}));
   if(typeof correlationBytes!=='string'||Buffer.byteLength(correlationBytes,'utf8')>8192)deny('RESOURCE_LIMIT');
   const correlationSha256=createHash('sha256').update(correlationBytes,'utf8').digest('hex');
-  const credential=frozenData(await life.run(signal=>{active();return getCredentials(Object.freeze({...pins,deadlineMs:cutoff,target,correlationSha256,signal}));}));
+  let result;
+      if(readSource){
+        result=frozenData(await life.run(signal=>{active();return readSource({operation:context.operation.id,input:JSON.parse(body),context:frozenData(JSON.parse(correlationBytes)),deadlineMs:cutoff,signal});}));
+        active();
+        if(Buffer.byteLength(JSON.stringify(result),'utf8')>Math.min(maxResponseBytes,context.authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+      }else{
+      const credential=frozenData(await life.run(signal=>{active();return getCredentials(Object.freeze({...pins,deadlineMs:cutoff,target,correlationSha256,signal}));}));
   ownFields(credential,['operation','argumentsSha256','metadata','normalizationContext','requestSha256','binding','subject','policyRevision','sourceIds',
    ...(context.invocationId===undefined?[]:['invocationId']),'bearerToken','serviceSecret','expiresAtMs'],['authorizationScheme','target','correlationSha256']);
   if(Object.hasOwn(credential,'target')&&canonicalSha256(credential.target)!==canonicalSha256(target)||
-     ![undefined,'Bearer','CapiroMeriRead'].includes(credential.authorizationScheme)||
-     credential.authorizationScheme!=='CapiroMeriRead'&&
-      (context.invocationId!==undefined||new URL(endpoint).pathname===target.path)||
-     credential.authorizationScheme==='CapiroMeriRead'&&
-      (context.invocationId===undefined||!Object.hasOwn(credential,'target'))||
-     credential.authorizationScheme==='CapiroMeriRead'&&new URL(endpoint).pathname!==target.path||
-     credential.authorizationScheme==='CapiroMeriRead'&&credential.correlationSha256!==correlationSha256||
+     credential.authorizationScheme!=='Bearer'||new URL(endpoint).pathname!==target.path||
+     !Object.hasOwn(credential,'target')||credential.correlationSha256!==correlationSha256||
      Object.hasOwn(credential,'correlationSha256')&&credential.correlationSha256!==correlationSha256||
      ['operation','metadata','normalizationContext','binding','subject','sourceIds'].some(key=>canonicalSha256(credential[key])!==canonicalSha256(pins[key]))||
      credential.argumentsSha256!==pins.argumentsSha256||credential.requestSha256!==pins.requestSha256||credential.policyRevision!==pins.policyRevision||
@@ -55,11 +56,12 @@ export function createIdentityContactsHttpAdapter(options){
   cutoff=Math.min(cutoff,credential.expiresAtMs);life.limitDeadline(cutoff);active();
   const response=await life.run(async signal=>{active();const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
     headers:{authorization:`${credential.authorizationScheme??'Bearer'} ${credential.bearerToken}`,'x-internal-service-secret':credential.serviceSecret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
-     ...(credential.authorizationScheme==='CapiroMeriRead'?{'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')}:{})},
+     'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')},
     body});acquired=result;
     try{active();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}});
   const bounded={run:fn=>life.run(signal=>{active();return fn(signal);}),check:active};
-  const result=frozenData(await readJsonResponse(response,{lifetime:bounded,maxResponseBytes}));active();
+  result=frozenData(await readJsonResponse(response,{lifetime:bounded,maxResponseBytes}));active();
+      }
   assertIdentityContactsResult(result,context);active();return result;
  }catch(error){throw safeFailure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
  return Object.freeze({read});

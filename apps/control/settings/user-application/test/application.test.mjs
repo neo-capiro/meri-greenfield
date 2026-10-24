@@ -1,5 +1,6 @@
 /** Actual native-membership HTTP adapter + settings service + public Fetch application; identity/Core/store boundaries are synthetic. */
 import test from 'node:test';import assert from 'node:assert/strict';
+import {MODEL_CATALOG} from '../../../../../packages/contracts/test/model-selection-fixture.mjs';
 import {fixture,CLIENT} from './fixture.mjs';
 import {createUserPreferencesApplication} from '../index.mjs';
 import {createUserPreferencesFeature} from '../feature.mjs';
@@ -7,11 +8,11 @@ import {userPreferencesUnavailable} from '../protocol.mjs';
 
 test('native membership user flow reads defaults, saves full canonical preferences, reloads and refuses a stale revision',async()=>{
  const f=fixture(),initial=await f.call('read');assert.equal(initial.status,200);assert.equal(initial.headers.get('cache-control'),'no-store');
- assert.deepEqual(await initial.json(),{owner:f.identity('A'),revision:0,preferences:f.preferences});
+ assert.deepEqual(await initial.json(),{owner:f.identity('A'),revision:0,preferences:f.preferences,modelCatalog:MODEL_CATALOG});
  const preferences={...f.preferences,theme:'dark',density:'compact',timezone:'UTC',defaultClientId:CLIENT};
  const saved=await f.call('save',{expectedRevision:0,preferences});assert.equal(saved.status,200);
- assert.deepEqual(await saved.json(),{owner:f.identity('A'),revision:1,preferences});
- assert.deepEqual(await (await f.call('read')).json(),{owner:f.identity('A'),revision:1,preferences});
+ assert.deepEqual(await saved.json(),{owner:f.identity('A'),revision:1,preferences,modelCatalog:MODEL_CATALOG});
+ assert.deepEqual(await (await f.call('read')).json(),{owner:f.identity('A'),revision:1,preferences,modelCatalog:MODEL_CATALOG});
  const conflict=await f.call('save',{expectedRevision:0,preferences:{...preferences,theme:'light'}});assert.equal(conflict.status,409);
  assert.deepEqual(await conflict.json(),{error:{code:'SETTINGS_REVISION_CONFLICT'}});assert.equal(f.persistence.audit.length,1);
  assert.ok(f.state.requests.every(({url,options})=>url==='https://core.synthetic.invalid/api/clio/application-authority/membership'&&options.body==='{}'&&options.redirect==='error'&&options.cache==='no-store'&&options.headers.authorization==='Bearer A'));
@@ -19,7 +20,7 @@ test('native membership user flow reads defaults, saves full canonical preferenc
 
 test('the owner comes only from current membership and another native actor reads an independent document',async()=>{
  const f=fixture();await f.call('save',{expectedRevision:0,preferences:{...f.preferences,theme:'dark'}});
- assert.deepEqual(await (await f.call('read',{},'B')).json(),{owner:f.identity('B'),revision:0,preferences:f.preferences});
+ assert.deepEqual(await (await f.call('read',{},'B')).json(),{owner:f.identity('B'),revision:0,preferences:f.preferences,modelCatalog:MODEL_CATALOG});
  for(const body of [{owner:f.identity('B'),expectedRevision:1,preferences:f.preferences},{tenantId:'other',expectedRevision:1,preferences:f.preferences}]){
   const denied=await f.call('save',body);assert.equal(denied.status,400);
  }

@@ -1,6 +1,6 @@
 /** Durable controls share the existing conversation transaction/run owner. */
 import {bounded,hash,same,fail,validateShape,own,uuid} from '../boundary.mjs';
-import {assertLifecycleCommand,assertWorkerControl,assertContinuationEnvelope,assertLifecycleReceipt} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
+import {assertLifecycleCommand,assertWorkerControl,assertContinuationEnvelope,assertLifecycleReceipt,assertForkBootstrapReceipt} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
 import {assertWorkspacePaths,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {closeSequenceRange} from '../sequence-ranges.mjs';
@@ -8,15 +8,21 @@ import {recordContinuationReservation} from '../next-run-journal.mjs';
 import {readTransitionAuthority,requireTransitionAuthority} from './authority.mjs';
 import {createLifecycleReceiptReader} from './receipt-readback.mjs';
 import {continuesSession} from '../../../../packages/contracts/session-continuity.mjs';
+import {assertNativeSessionCapture,assertNativeConversationScope} from '../../../../packages/contracts/runtime-0.2/session.mjs';
+import {nativeSessionForRun,assertNativeSessionCapturable,assertNativeSessionSettled,nativeSessionTranscripts} from '../sdk-session-lineage.mjs';
+import {assertNativeFileState} from '../../../../packages/contracts/runtime-0.2/files.mjs';
+import {readNativeCompletionCapture} from '../completion-journal.mjs';
 /** The single worker failure a control hold admits (see failUncheckpointedHold); run.status reasonCode is free-form in the frozen UIEvent contract. */
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 const selectRun=async(c,b)=>{const r=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0];return r;};
 export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthority,modelAdmission,now=Date.now,onPublished}){
- const validateProof=(proof,p)=>{own(proof,['checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','resumeSessionAt','readReceiptId']);uuid(proof.readReceiptId);if(proof.resumeSessionAt!==null)uuid(proof.resumeSessionAt);validateShape('Checkpoint',proof.checkpoint);assertWorkspacePaths(proof.checkpoint.workspace);const cp=proof.checkpoint;if(hash(cp)!==proof.checkpointSha256||!same(cp.binding,p.sourceBinding)||!same(cp.workspace.binding,p.sourceBinding)||!same(cp.scopes,p.scopes)||!same(cp.workspace.scopes,p.scopes)||!same(cp.opaqueSession.scopes,p.scopes)||!same(cp.versions,p.versions)||hash(cp.workspace)!==cp.workspaceSha256||proof.sourceRequestSha256!==p.sourceRequestSha256||proof.contextSha256!==p.contextSha256||cp.lastEventSequence>p.captureSequence||cp.workspace.entries.some(e=>e.object.scopes.some(s=>!p.scopes.some(parent=>same(parent,s)))))fail('STORE_CORRUPT');};
- const decode=row=>{if(!row||hash(row.projection)!==row.projection_sha256)fail('STORE_CORRUPT');const p=row.projection,b=p.sourceBinding,seq=Number(row.control_sequence);validateShape('RunBinding',b);uuid(p.sourceSelectedClientId);if(!p.scopes.some(s=>s.kind==='client'&&s.resourceId===p.sourceSelectedClientId))fail('STORE_CORRUPT');assertLifecycleCommand(p.input);
+ const validateProof=(proof,p)=>{if(proof.kind==='native-session'){assertNativeSessionCapture(proof);if(!same(proof.sdkSession.binding,p.sourceBinding)||!same(proof.scopes,p.scopes)||!same(proof.versions,p.versions)||proof.sourceRequestSha256!==p.sourceRequestSha256||proof.contextSha256!==p.contextSha256||proof.lastEventSequence>p.captureSequence)fail('STORE_CORRUPT');return;}
+  own(proof,['checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','resumeSessionAt','readReceiptId']);uuid(proof.readReceiptId);if(proof.resumeSessionAt!==null)uuid(proof.resumeSessionAt);validateShape('Checkpoint',proof.checkpoint);assertWorkspacePaths(proof.checkpoint.workspace);const cp=proof.checkpoint;if(hash(cp)!==proof.checkpointSha256||!same(cp.binding,p.sourceBinding)||!same(cp.workspace.binding,p.sourceBinding)||!same(cp.scopes,p.scopes)||!same(cp.workspace.scopes,p.scopes)||!same(cp.opaqueSession.scopes,p.scopes)||!same(cp.versions,p.versions)||hash(cp.workspace)!==cp.workspaceSha256||proof.sourceRequestSha256!==p.sourceRequestSha256||proof.contextSha256!==p.contextSha256||cp.lastEventSequence>p.captureSequence||cp.workspace.entries.some(e=>e.object.scopes.some(s=>!p.scopes.some(parent=>same(parent,s)))))fail('STORE_CORRUPT');};
+ const decode=row=>{if(!row||hash(row.projection)!==row.projection_sha256)fail('STORE_CORRUPT');const p=row.projection,b=p.sourceBinding,seq=Number(row.control_sequence);validateShape('RunBinding',b);assertNativeConversationScope({binding:b,scopes:p.scopes,selectedClientId:p.sourceSelectedClientId});assertLifecycleCommand(p.input);
   if(row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.control_id!==p.input.controlId||!Number.isSafeInteger(seq)||seq<1||hash(p.sourceRequest)!==p.sourceRequestSha256||hash({window:p.sourceRequest.window,skill:p.sourceRequest.skill,scopes:p.scopes})!==p.contextSha256||hash(p.input)!==p.inputSha256||!['PENDING','DISPATCHING','APPLIED','UNKNOWN'].includes(p.state))fail('STORE_CORRUPT');
   if(p.approval){assertProposalIntegrity(p.approval);if(p.input.intent!=='approval.wait'||p.approval.proposalId!==p.input.proposalId||!same(p.approval.command.binding,b)||!same(p.approval.command.scopes,p.scopes))fail('STORE_CORRUPT');}else if(p.input.intent==='approval.wait')fail('STORE_CORRUPT');
-  if(p.proof){validateProof(p.proof,p);if(p.checkpointId!==p.proof.checkpoint.checkpointId)fail('STORE_CORRUPT');}else if(p.checkpointId!==null)fail('STORE_CORRUPT');
+  if(p.proof){validateProof(p.proof,p);if(p.checkpointId!==(p.proof.kind==='native-session'?p.proof.checkpointId:p.proof.checkpoint.checkpointId))fail('STORE_CORRUPT');}else if(p.checkpointId!==null)fail('STORE_CORRUPT');
+  if(p.fileCapture!==undefined){own(p.fileCapture,['requestSha256','sessionId','files']);uuid(p.fileCapture.sessionId);if(!/^[a-f0-9]{64}$/u.test(p.fileCapture.requestSha256)||!['pause','approval.wait'].includes(p.input.intent))fail('STORE_CORRUPT');if(p.fileCapture.files!==null)assertNativeFileState(p.fileCapture.files,{binding:b,scopes:p.scopes});if(p.proof?.kind==='native-session'&&!same(p.proof.files,p.fileCapture.files))fail('STORE_CORRUPT');}
   if(p.command){assertWorkerControl(p.command);if(hash(p.command)!==p.commandSha256||p.command.controlId!==p.input.controlId||!same(p.command.binding,b)||p.command.contextSha256!==p.contextSha256||p.approval&&(p.command.proposalId!==p.approval.proposalId||p.command.proposalSha256!==hash(p.approval)))fail('STORE_CORRUPT');}else if(p.commandSha256!==null)fail('STORE_CORRUPT');assertLifecycleReceipt({controlId:p.input.controlId,intent:p.input.intent,sourceBinding:b,inputSha256:p.inputSha256,state:p.state,checkpointId:p.checkpointId,targetBinding:p.target?.binding??null,admissionReceiptId:p.target?.admissionReceiptId??null,retirementReceiptId:p.retirement?.retirementReceiptId??null,replayed:false});if(p.target&&(p.target.selectedClientId!==p.sourceSelectedClientId||!same(p.target.scopes,p.scopes)||p.target.binding.tenantId!==b.tenantId||p.target.binding.actorId!==b.actorId)||p.retirement&&!same(p.retirement.binding,b))fail('STORE_CORRUPT');return {...p,controlSequence:seq};};
  const lookup=async(c,b,id)=>{const rows=(await c.query('SELECT * FROM meri_conversations.controls WHERE tenant_id=$1 AND control_id=$2 FOR UPDATE',[b.tenantId,id])).rows;return rows.length?decode(rows[0]):null;};
  const save=async(c,b,p)=>{await c.query('UPDATE meri_conversations.controls SET projection=$3,projection_sha256=$4 WHERE tenant_id=$1 AND control_id=$2',[b.tenantId,p.input.controlId,p,hash(p)]);};
@@ -36,12 +42,85 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
  async function controls({binding:b,scopes,selectedClientId,after=0},check){if(!Number.isSafeInteger(after)||after<0)fail('INVALID_CURSOR');return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);const rows=(await c.query('SELECT * FROM meri_conversations.controls WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND control_sequence>$4 ORDER BY control_sequence LIMIT 100',[b.tenantId,b.conversationId,b.runId,after])).rows;check();return rows.map(row=>{const p=decode(row);pins(p,r,b,scopes,selectedClientId);return p;});});}
  async function get({binding:b,scopes,selectedClientId,controlId},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes),p=await lookup(c,b,controlId);check();if(!p)fail('LIFECYCLE_REFUSED');pins(p,r,b,scopes,selectedClientId);return p;});}
  async function claim({binding:b,scopes,selectedClientId,controlId,commandSha256},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);const p=await lookup(c,b,controlId);check();if(!p||p.commandSha256!==commandSha256||!p.command)fail('LIFECYCLE_ACK_REFUSED');pins(p,r,b,scopes,selectedClientId);if(r.sequence_end!=null||r.projection.state!=='running'||r.hold_control_id&&r.hold_control_id!==controlId)fail('LIFECYCLE_STATE_REFUSED');if(p.state!=='PENDING')return {claimed:false,projection:p};const next={...p,state:'DISPATCHING'};delete next.controlSequence;await save(c,b,next);return {claimed:true,projection:{...next,controlSequence:p.controlSequence}};});}
- async function checkpoint({binding:b,scopes,selectedClientId,controlId,proof,events},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes),p=await lookup(c,b,controlId);check();if(!p||!['pause','approval.wait'].includes(p.input.intent)||r.hold_control_id!==controlId)fail('LIFECYCLE_STATE_REFUSED');pins(p,r,b,scopes,selectedClientId);if(p.proof){if(!same({...p.proof,readReceiptId:proof.readReceiptId},proof))fail('CHECKPOINT_REFUSED');return p;}
-  if(r.sequence_end!=null||r.projection.state!=='running'||!['DISPATCHING','UNKNOWN'].includes(p.state)||proof.checkpoint.lastEventSequence!==p.captureSequence)fail('CHECKPOINT_REFUSED');
-  await c.query('INSERT INTO meri_conversations.checkpoints(tenant_id,checkpoint_id,conversation_id,run_id,control_id,proof,proof_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,proof.checkpoint.checkpointId,b.conversationId,b.runId,controlId,proof,hash(proof)]);
-  let sequence=Number(r.last_sequence);for(const raw of events){const e={...raw,binding:b,scopes,sequence:++sequence};if(e.type==='run.status')e.data={state:p.input.intent==='pause'?'paused':'waiting-for-approval',reasonCode:'CONTROL_CHECKPOINTED'};validateShape('UIEvent',e);await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,e.sequence,e.eventId,e,hash(e)]);}
-  const projection={...r.projection,state:p.input.intent==='pause'?'paused':'waiting-for-approval'};await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),sequence]);
-  const next={...p,state:'APPLIED',proof,checkpointId:proof.checkpoint.checkpointId};delete next.controlSequence;await save(c,b,next);return {...next,controlSequence:p.controlSequence};});}
+ /** Record the one file-upload attempt before any object write. An uncertain attempt never grants another upload. */
+ async function beginFileCapture({binding:b,scopes,selectedClientId,controlId,sessionId,requestSha256},check){uuid(sessionId);if(!/^[a-f0-9]{64}$/u.test(requestSha256))fail('CHECKPOINT_REFUSED');return tx(b,check,async c=>{
+  const r=await verifyRun(c,b,scopes),p=await lookup(c,b,controlId);check();if(!p||!['pause','approval.wait'].includes(p.input.intent)||r.hold_control_id!==controlId)fail('CHECKPOINT_REFUSED');pins(p,r,b,scopes,selectedClientId);
+  if(p.fileCapture){if(p.fileCapture.sessionId!==sessionId||p.fileCapture.requestSha256!==requestSha256)fail('CHECKPOINT_REFUSED');return {...p.fileCapture,capture:false};}
+  if(r.sequence_end!=null||r.projection.state!=='running'||p.state!=='DISPATCHING')fail('CHECKPOINT_REFUSED');const lineage=await nativeSessionForRun(c,r,check);if(!lineage||lineage.reference.key.sessionId!==sessionId)fail('CHECKPOINT_REFUSED');await assertNativeSessionCapturable(c,lineage,check,now);
+  const fileCapture={requestSha256,sessionId,files:null},next={...p,fileCapture};delete next.controlSequence;await save(c,b,next);check();return {...fileCapture,capture:true};
+ });}
+ async function recordFiles({binding:b,scopes,selectedClientId,controlId,sessionId,requestSha256,files},check){files=assertNativeFileState(files,{binding:b,scopes});return tx(b,check,async c=>{
+  const r=await verifyRun(c,b,scopes),p=await lookup(c,b,controlId);check();if(!p||!p.fileCapture||p.fileCapture.requestSha256!==requestSha256||p.fileCapture.sessionId!==sessionId||r.hold_control_id!==controlId)fail('CHECKPOINT_REFUSED');pins(p,r,b,scopes,selectedClientId);
+  if(p.fileCapture.files){if(!same(p.fileCapture.files,files))fail('CHECKPOINT_REFUSED');return p.fileCapture;}
+  if(r.sequence_end!=null||r.projection.state!=='running'||p.state!=='DISPATCHING')fail('CHECKPOINT_REFUSED');const lineage=await nativeSessionForRun(c,r,check);if(!lineage||lineage.reference.key.sessionId!==sessionId)fail('CHECKPOINT_REFUSED');await assertNativeSessionCapturable(c,lineage,check,now);
+  const next={...p,fileCapture:{...p.fileCapture,files}};delete next.controlSequence;await save(c,b,next);check();return next.fileCapture;
+ });}
+ /** Capture only the canonical SessionStore row. The worker supplies its observed
+  * SDK session ID after close/drain/flush, never a reference or transcript. */
+ async function captureSession({binding:b,scopes,selectedClientId,controlId,sessionId,events},check){uuid(sessionId);return tx(b,check,async c=>{
+  const r=await verifyRun(c,b,scopes),p=await lookup(c,b,controlId);check();
+  if(!p||!['pause','approval.wait'].includes(p.input.intent)||r.hold_control_id!==controlId)fail('LIFECYCLE_STATE_REFUSED');pins(p,r,b,scopes,selectedClientId);
+  const lineage=await nativeSessionForRun(c,r,check);if(!lineage||lineage.reference.key.sessionId!==sessionId||lineage.row.owner.selectedClientId!==selectedClientId)fail('CHECKPOINT_REFUSED');
+  if(!p.fileCapture?.files||p.fileCapture.sessionId!==sessionId)fail('CHECKPOINT_FILES_REQUIRED');
+  const files=assertNativeFileState(p.fileCapture.files,{binding:b,scopes}),proof=assertNativeSessionCapture({kind:'native-session',sdkSession:lineage.reference,files,checkpointId:b.runId,checkpointSha256:hash({sdkSession:lineage.reference,files}),versions:p.versions,scopes,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,lastEventSequence:p.captureSequence});
+  if(p.proof){if(!same(p.proof,proof)||p.state!=='APPLIED'||r.projection.state!==(p.input.intent==='pause'?'paused':'waiting-for-approval'))fail('CHECKPOINT_REFUSED');return p;}
+  if(r.sequence_end!=null||r.projection.state!=='running'||!['DISPATCHING','UNKNOWN'].includes(p.state))fail('CHECKPOINT_REFUSED');
+  await assertNativeSessionCapturable(c,lineage,check,now);
+  // Validate complete opaque-stream counts/hashes before committing the public capture.
+  await nativeSessionTranscripts(c,lineage,check);
+  if(!Array.isArray(events)||events.length!==2||events[0].type!=='checkpoint.verified'||events[1].type!=='run.status')fail('CHECKPOINT_REFUSED');
+  let sequence=Number(r.last_sequence);const state=p.input.intent==='pause'?'paused':'waiting-for-approval';
+  for(const raw of events){const e={...raw,binding:b,scopes,sequence:++sequence,data:raw.type==='checkpoint.verified'?{checkpointId:b.runId}:{state,reasonCode:'CONTROL_CHECKPOINTED'}};validateShape('UIEvent',e);
+   await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,e.sequence,e.eventId,e,hash(e)]);check();}
+  const projection={...r.projection,state};await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),sequence]);
+  const next={...p,state:'APPLIED',proof,checkpointId:b.runId};delete next.controlSequence;await save(c,b,next);check();return {...next,controlSequence:p.controlSequence};
+ });}
+ /** Read-only native inspection. Settlement, exact current transcript reference
+  * and the durable hold are all required before this can authorize a successor. */
+ async function nativeCheckpointOwner(c,b,r,scopes,selectedClientId,check){
+  if(!['paused','waiting-for-approval','completed'].includes(r.projection.state))fail('CHECKPOINT_REFUSED');
+  const lineage=await nativeSessionForRun(c,r,check);if(!lineage||lineage.row.owner.selectedClientId!==selectedClientId)fail('CHECKPOINT_REFUSED');
+  await assertNativeSessionSettled(c,lineage,check);let proof,control=null;
+  if(r.projection.state==='completed')proof=await readNativeCompletionCapture(c,lineage,check)??assertNativeSessionCapture({kind:'native-session',sdkSession:lineage.reference,checkpointId:b.runId,checkpointSha256:hash(lineage.reference),versions:r.projection.versions,scopes,sourceRequestSha256:r.request_sha256,contextSha256:hash({window:r.request.window,skill:r.request.skill,scopes}),lastEventSequence:Number(r.last_sequence)});
+  else {if(!r.hold_control_id)fail('CHECKPOINT_REFUSED');control=await lookup(c,b,r.hold_control_id);check();
+   if(!control||control.state!=='APPLIED'||control.proof?.kind!=='native-session'||control.input.intent!==(r.projection.state==='paused'?'pause':'approval.wait'))fail('CHECKPOINT_REFUSED');
+   pins(control,r,b,scopes,selectedClientId);proof=assertNativeSessionCapture(control.proof);if(!same(proof.sdkSession,lineage.reference))fail('CHECKPOINT_REFUSED');}
+  return {proof,control,lineage};
+ }
+ async function readSessionCapture({binding:b,scopes,selectedClientId,checkpointId},check){if(checkpointId!==b.runId)fail('CHECKPOINT_REFUSED');return tx(b,check,async c=>{
+  const r=await verifyRun(c,b,scopes),{proof,control}=await nativeCheckpointOwner(c,b,r,scopes,selectedClientId,check);return {proof,approval:control?.approval??null};
+ });}
+ /** A public file is an actual committed workspace entry. Task JSON is private,
+  * and a stored upload alone is never a publication or a settled SDK capture. */
+ async function readArtifactFile(value,check){const {binding:b,scopes,selectedClientId,versionId}=own(value,['binding','scopes','selectedClientId','versionId']);
+  assertNativeConversationScope({binding:b,scopes,selectedClientId});uuid(versionId);
+  const entryFrom=proof=>{if(!proof.files)return null;const files=assertNativeFileState(proof.files,{binding:proof.sdkSession.binding,scopes});
+   const matches=files.workspace.entries.filter(e=>e.object.objectId===versionId);if(matches.length>1)fail('STORE_CORRUPT');if(!matches.length)return null;
+   const w=files.workspace;return {kind:'native-file',binding:w.binding,scopes:w.scopes,manifestId:w.manifestId,createdAt:w.createdAt,entry:matches[0]};};
+  const found=await tx(b,check,async c=>{await verifyRun(c,b,scopes);check();
+   const rows=(await c.query(`SELECT run_id FROM meri_conversations.completion_checkpoints
+    WHERE tenant_id=$1 AND conversation_id=$2 AND state='PUBLISHED' AND proof->>'kind'='native-session'
+     AND proof#>'{files,workspace,entries}' @> $3::jsonb
+    UNION SELECT run_id FROM meri_conversations.controls
+    WHERE tenant_id=$1 AND conversation_id=$2 AND projection->>'state'='APPLIED' AND projection#>>'{proof,kind}'='native-session'
+     AND projection#>'{proof,files,workspace,entries}' @> $3::jsonb LIMIT 2`,[b.tenantId,b.conversationId,JSON.stringify([{object:{objectId:versionId}}])])).rows;check();
+   if(rows.length>1)fail('STORE_CORRUPT');if(!rows.length)return null;uuid(rows[0].run_id);
+   const source=rowRun(await selectRun(c,{...b,runId:rows[0].run_id})),sourceBinding=source.projection.binding;
+   if(sourceBinding.tenantId!==b.tenantId||sourceBinding.actorId!==b.actorId||sourceBinding.conversationId!==b.conversationId||sourceBinding.writerFence>b.writerFence||!same(source.projection.scopes,scopes))fail('SCOPE_REFUSED');
+   const {proof}=await nativeCheckpointOwner(c,sourceBinding,source,scopes,selectedClientId,check),result=entryFrom(proof);if(!result)fail('STORE_CORRUPT');return result;
+  });
+  if(found)return found;
+  // A fork can expose only the exact files in its committed native continuation,
+  // before the target's first capture. The canonical mapping owns both locks.
+  return withSource({binding:b,scopes,selectedClientId},check,async(c,saved,source)=>{
+   const target=await verifyRun(c,b,scopes),envelope=saved.continuation;
+   if(envelope.kind!=='native-session'||!['queued','starting','running','completed','failed'].includes(target.projection.state))fail('CHECKPOINT_REFUSED');
+   const p=await lookup(c,source,envelope.controlId);if(!p||!['DISPATCHING','APPLIED'].includes(p.state))fail('CHECKPOINT_REFUSED');
+   const r=await verifyRun(c,source,scopes),{proof}=await nativeCheckpointOwner(c,source,r,scopes,selectedClientId,check);
+   if(source.tenantId!==b.tenantId||source.actorId!==b.actorId||!same(proof.sdkSession,envelope.sdkSession)||!same(proof.files??null,envelope.files??null))fail('CHECKPOINT_REFUSED');
+   check();return entryFrom(proof);
+  });
+ }
  /** Reused inside the store's locked publication transaction; never starts a nested transaction.
   * A worker that cannot checkpoint the hold it was fenced by records an explicit failure instead of
   * leaving the run running-and-held: only an unapplied pause/approval.wait hold on this exact running
@@ -49,43 +128,76 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
  async function failUncheckpointedHold(c,b,r,check){const p=await lookup(c,b,r.hold_control_id);check();
   if(!p||!same(p.sourceBinding,b)||!['pause','approval.wait'].includes(p.input.intent)||!['PENDING','DISPATCHING','UNKNOWN'].includes(p.state)||p.proof||p.checkpointId!==null||r.projection.state!=='running')fail('RUN_HELD');
   if(p.state!=='UNKNOWN'){const next={...p,state:'UNKNOWN'};delete next.controlSequence;await save(c,b,next);}}
- // Reused inside the existing locked transaction; never starts a nested transaction.
- async function checkpointOwner(c,b,r,scopes,selectedClientId,checkpointId,check){
-  const row=(await c.query('SELECT * FROM meri_conversations.checkpoints WHERE tenant_id=$1 AND checkpoint_id=$2',[b.tenantId,checkpointId])).rows[0];check();
-  if(!row||hash(row.proof)!==row.proof_sha256||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.checkpoint_id!==checkpointId||row.proof.checkpoint.checkpointId!==checkpointId||!same(row.proof.checkpoint.binding,b))fail('CHECKPOINT_REFUSED');
-  const control=await lookup(c,b,row.control_id);check();
-  if(!control||!['pause','approval.wait'].includes(control.input.intent)||control.state!=='APPLIED'||!same(control.proof,row.proof)||control.checkpointId!==checkpointId||row.proof.checkpoint.lastEventSequence!==control.captureSequence)fail('CHECKPOINT_REFUSED');
-  pins(control,r,b,scopes,selectedClientId);return {row,control};
+ async function readExecution(c,b,scopes,selectedClientId,check){const r=await verifyRun(c,b,scopes);check();if(!r.continuation)return null;if(hash(r.continuation)!==r.continuation_sha256)fail('STORE_CORRUPT');own(r.continuation,['continuation','sourceRequest']);const envelope=assertContinuationEnvelope(r.continuation.continuation),source=envelope.kind==='native-session'?envelope.sdkSession.binding:envelope.checkpoint.binding,p=await lookup(c,source,envelope.controlId);check();if(!p||!p.target||p.sourceSelectedClientId!==selectedClientId||p.target.selectedClientId!==selectedClientId||!same(p.target.binding,b)||p.input.intent!==envelope.mode||!same(p.sourceRequest,r.continuation.sourceRequest)||!same({...p.sourceRequest,requestId:r.request.requestId},r.request)||!(envelope.kind==='native-session'?p.proof?.kind==='native-session'&&same(p.proof.sdkSession,envelope.sdkSession)&&same(p.proof.files??null,envelope.files??null)&&same(p.proof.versions,envelope.versions)&&same(p.proof.scopes,envelope.scopes):same(p.proof?.checkpoint,envelope.checkpoint))||p.sourceRequestSha256!==envelope.sourceRequestSha256||p.contextSha256!==envelope.contextSha256||envelope.kind!=='native-session'&&p.proof?.resumeSessionAt!==envelope.resumeSessionAt||p.target.targetSessionId!==envelope.targetSessionId||!same(p.target.versions??p.versions,r.projection.versions)||!continuesSession(p.versions,r.projection.versions)||!same(p.scopes,r.projection.scopes))fail('STORE_CORRUPT');return r.continuation;}
+ async function withSource(value,check,body,{transcripts=false}={}){
+  const {binding:b,scopes,selectedClientId}=value;
+  const discovered=await tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);if(!r.continuation)return null;
+   if(hash(r.continuation)!==r.continuation_sha256)fail('STORE_CORRUPT');const envelope=assertContinuationEnvelope(r.continuation.continuation);
+   return envelope.kind==='native-session'?envelope.sdkSession.binding:envelope.checkpoint.binding;});
+  if(discovered===null)return null;
+  const ordered=[b,discovered].sort((a,z)=>`${a.tenantId}:${a.conversationId}`<`${z.tenantId}:${z.conversationId}`?-1:`${a.tenantId}:${a.conversationId}`>`${z.tenantId}:${z.conversationId}`?1:0);
+  return tx(ordered[0],check,async c=>{
+   if(ordered[0].conversationId!==ordered[1].conversationId){await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${ordered[1].tenantId}:${ordered[1].conversationId}`]);check();}
+   const saved=await readExecution(c,b,scopes,selectedClientId,check),envelope=saved?.continuation;
+   if(!envelope||!same(envelope.kind==='native-session'?envelope.sdkSession.binding:envelope.checkpoint.binding,discovered))fail('STORE_CORRUPT');
+   return body(c,saved,discovered);
+  },{sessionSnapshot:transcripts});
  }
- async function readCheckpoint({binding:b,scopes,selectedClientId,checkpointId},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes),{row,control}=await checkpointOwner(c,b,r,scopes,selectedClientId,checkpointId,check);return {proof:row.proof,approval:control.approval};});}
- async function readExecution(c,b,scopes,selectedClientId,check){const r=await verifyRun(c,b,scopes);check();if(!r.continuation)return null;if(hash(r.continuation)!==r.continuation_sha256)fail('STORE_CORRUPT');own(r.continuation,['continuation','sourceRequest']);const envelope=assertContinuationEnvelope(r.continuation.continuation),source=envelope.checkpoint.binding,p=await lookup(c,source,envelope.controlId);check();if(!p||!p.target||p.sourceSelectedClientId!==selectedClientId||p.target.selectedClientId!==selectedClientId||!same(p.target.binding,b)||p.input.intent!==envelope.mode||!same(p.sourceRequest,r.continuation.sourceRequest)||!same({...p.sourceRequest,requestId:r.request.requestId},r.request)||!same(p.proof?.checkpoint,envelope.checkpoint)||p.sourceRequestSha256!==envelope.sourceRequestSha256||p.contextSha256!==envelope.contextSha256||p.proof?.resumeSessionAt!==envelope.resumeSessionAt||p.target.targetSessionId!==envelope.targetSessionId||!same(p.target.versions??p.versions,r.projection.versions)||!continuesSession(p.versions,r.projection.versions)||!same(p.scopes,r.projection.scopes))fail('STORE_CORRUPT');return r.continuation;}
- const execution=({binding:b,scopes,selectedClientId},check)=>tx(b,check,c=>readExecution(c,b,scopes,selectedClientId,check));
+ const execution=(value,check)=>withSource(value,check,(_c,saved)=>saved);
+ /** Only the stored transition may nominate a source session for a successor.
+  * Discovery and external Core calls confer no authority to create this mapping. */
+ async function continuationOrigin(value,check){
+  own(value,['binding','scopes','selectedClientId']);assertNativeConversationScope(value);
+  const {binding:b,scopes,selectedClientId}=value;
+  return withSource(value,check,async(c,saved,source)=>{
+   const envelope=saved.continuation;if(envelope.kind!=='native-session')fail('LIFECYCLE_TRANSITION_REFUSED');
+   const target=await verifyRun(c,b,scopes),r=await verifyRun(c,source,scopes),p=await lookup(c,source,envelope.controlId);check();
+   if(!p||!['DISPATCHING','APPLIED'].includes(p.state)||!['queued','starting','running','completed','failed'].includes(target.projection.state)||target.sequence_end!=null||p.target.expiresAtMs<=now())fail('LIFECYCLE_TRANSITION_REFUSED');
+   pins(p,r,source,scopes,selectedClientId);
+   if(!same(p.target.binding,b)||!same(p.proof.sdkSession,envelope.sdkSession)||b.tenantId!==source.tenantId||b.actorId!==source.actorId||b.runId===source.runId||b.attemptId===source.attemptId||b.workerId===source.workerId)fail('LIFECYCLE_TRANSITION_REFUSED');
+   const lineage=await nativeSessionForRun(c,r,check);if(!lineage||!same(lineage.reference,envelope.sdkSession))fail('LIFECYCLE_TRANSITION_REFUSED');await assertNativeSessionSettled(c,lineage,check);
+   let bootstrap=null;
+   if(envelope.mode==='resume'){
+    const end=Number(r.sequence_base)+Number(r.last_sequence);
+    if(b.conversationId!==source.conversationId||b.writerFence!==source.writerFence+1||p.target.targetSessionId!==null||p.target.bootstrap!==undefined||!p.retirement||!same(p.retirement.binding,source)||!['paused','waiting-for-approval'].includes(r.projection.state)||r.sequence_end==null||Number(r.sequence_end)!==end||Number(target.sequence_base)!==end)fail('LIFECYCLE_TRANSITION_REFUSED');
+   }else {
+    if(b.conversationId===source.conversationId||b.writerFence!==1||Number(target.sequence_base)!==0||p.retirement!==null)fail('LIFECYCLE_TRANSITION_REFUSED');
+    bootstrap=assertForkBootstrapReceipt(p.target.bootstrap,{controlId:envelope.controlId,sourceBinding:source,targetBinding:b,selectedClientId});
+   }
+   check();return {controlId:envelope.controlId,mode:envelope.mode,sourceBinding:source,bootstrap};
+  });
+ }
+ async function sessionSnapshot(value,check,{files=false}={}){const {binding:b,scopes,selectedClientId}=value;return withSource(value,check,async(c,saved,source)=>{
+  const target=await verifyRun(c,b,scopes);if(!['queued','starting','running','completed','failed'].includes(target.projection.state))fail('STALE_WRITER');
+  const envelope=saved.continuation;if(envelope.kind!=='native-session')fail('CHECKPOINT_REFUSED');
+  const r=await verifyRun(c,source,scopes);if(!continuesSession(r.projection.versions,target.projection.versions))fail('CHECKPOINT_REFUSED');
+  const {proof,lineage}=await nativeCheckpointOwner(c,source,r,scopes,selectedClientId,check);
+  if(!same(proof.sdkSession,envelope.sdkSession)||!same(proof.files??null,envelope.files??null)||proof.sourceRequestSha256!==envelope.sourceRequestSha256||proof.contextSha256!==envelope.contextSha256)fail('CHECKPOINT_REFUSED');
+  return files?{binding:b,sdkSession:lineage.reference,files:proof.files??null}:{binding:b,key:lineage.reference.key,sdkSession:lineage.reference,transcripts:await nativeSessionTranscripts(c,lineage,check)};
+ },{transcripts:true});}
  const readReceipt=createLifecycleReceiptReader({tx,verifyRun,lookup,pins,readExecution});
  async function continuation({binding:b,scopes,selectedClientId,controlId,admission,retirement,proof,conversation,run,request,continuation,event,signal,deadlineMs=now()+3000},check){
   // The native admission receipt nominates a target; it does not replace current product authority. Verify the still-current source
   // before closing its range or persisting a target. Missing/denied owners cannot leave an undispatched successor behind.
   const current=await readTransitionAuthority({owner:transitionAuthority,expected:{binding:b,scopes,selectedClientId,policyRevision:run.policyRevision},signal,deadlineMs,now,check});
   const guarded=()=>{check();if(signal?.aborted||now()>=Math.min(deadlineMs,current.expiresAtMs))fail('LIFECYCLE_TRANSITION_REFUSED');};
-  return tx(b,guarded,async c=>{const r=await verifyRun(c,b,scopes);const p=await lookup(c,b,controlId);guarded();if(!p)fail('LIFECYCLE_REFUSED');pins(p,r,b,scopes,selectedClientId);validateProof(proof,p);assertContinuationEnvelope(continuation);assertLifecycleReceipt({controlId:p.input.controlId,intent:p.input.intent,sourceBinding:b,inputSha256:p.inputSha256,state:'APPLIED',checkpointId:proof.checkpoint.checkpointId,targetBinding:admission.binding,admissionReceiptId:admission.admissionReceiptId,retirementReceiptId:retirement?.retirementReceiptId??null,replayed:false});if(!same({...p.sourceRequest,requestId:request.requestId},request)||!same(run.binding,admission.binding)||!same(run.scopes,p.scopes)||!same(run.versions,admission.versions??p.versions)||!continuesSession(p.versions,run.versions)||!same(continuation.checkpoint,proof.checkpoint)||continuation.sourceRequestSha256!==p.sourceRequestSha256||continuation.contextSha256!==p.contextSha256||continuation.controlId!==controlId||continuation.mode!==p.input.intent)fail('STORE_CORRUPT');if(p.target){if(!same(p.target,admission)||!same(p.retirement,retirement)||!same(p.proof,proof))fail('LIFECYCLE_REPLAY_REFUSED');return p;}if(p.state!=='DISPATCHING')fail('LIFECYCLE_STATE_REFUSED');
-  if(p.input.intent==='resume'){
-   // Authenticated cancellation can occur while native admission is awaiting a receipt.
-   // Recheck under the same locked source-run transaction that inserts the target.
-   if(!['paused','waiting-for-approval'].includes(r.projection.state)||!r.hold_control_id)fail('LIFECYCLE_STATE_REFUSED');
-   const retained=await checkpointOwner(c,b,r,scopes,selectedClientId,p.input.checkpointId,check);
-   if(r.hold_control_id!==retained.control.input.controlId||r.projection.state!==(retained.control.input.intent==='pause'?'paused':'waiting-for-approval')||retained.row.proof.checkpointSha256!==p.input.checkpointSha256||!same({...retained.row.proof,readReceiptId:proof.readReceiptId},proof))fail('CHECKPOINT_REFUSED');
-  }
-  const t=admission.binding;if(typeof modelAdmission!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');await modelAdmission(c,t,check);
+  const locks=[b,admission.binding].sort((a,z)=>`${a.tenantId}:${a.conversationId}`<`${z.tenantId}:${z.conversationId}`?-1:`${a.tenantId}:${a.conversationId}`>`${z.tenantId}:${z.conversationId}`?1:0);
+  return tx(locks[0],guarded,async c=>{if(locks[0].conversationId!==locks[1].conversationId){await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${locks[1].tenantId}:${locks[1].conversationId}`]);guarded();}const r=await verifyRun(c,b,scopes);const p=await lookup(c,b,controlId);guarded();if(!p)fail('LIFECYCLE_REFUSED');pins(p,r,b,scopes,selectedClientId);validateProof(proof,p);assertContinuationEnvelope(continuation);assertLifecycleReceipt({controlId:p.input.controlId,intent:p.input.intent,sourceBinding:b,inputSha256:p.inputSha256,state:'APPLIED',checkpointId:proof.checkpointId,targetBinding:admission.binding,admissionReceiptId:admission.admissionReceiptId,retirementReceiptId:retirement?.retirementReceiptId??null,replayed:false});if(!same({...p.sourceRequest,requestId:request.requestId},request)||!same(run.binding,admission.binding)||!same(run.scopes,p.scopes)||!same(run.versions,admission.versions??p.versions)||!continuesSession(p.versions,run.versions)||continuation.kind!=='native-session'||!same(continuation.sdkSession,proof.sdkSession)||!same(continuation.files??null,proof.files??null)||!same(continuation.versions,proof.versions)||!same(continuation.scopes,proof.scopes)||continuation.sourceRequestSha256!==p.sourceRequestSha256||continuation.contextSha256!==p.contextSha256||continuation.controlId!==controlId||continuation.mode!==p.input.intent)fail('STORE_CORRUPT');if(p.target){if(!same(p.target,admission)||!same(p.retirement,retirement)||!same(p.proof,proof))fail('LIFECYCLE_REPLAY_REFUSED');return p;}if(p.state!=='DISPATCHING')fail('LIFECYCLE_STATE_REFUSED');
+  const retained=await nativeCheckpointOwner(c,b,r,scopes,selectedClientId,check);
+  if(p.input.checkpointId!==b.runId||retained.proof.checkpointSha256!==p.input.checkpointSha256||!same(retained.proof,proof))fail('CHECKPOINT_REFUSED');
+  if(p.input.intent==='resume'&&(!retained.control||r.hold_control_id!==retained.control.input.controlId||!['paused','waiting-for-approval'].includes(r.projection.state)))fail('LIFECYCLE_STATE_REFUSED');
+  const t=admission.binding;if(p.input.intent==='fork')assertForkBootstrapReceipt(admission.bootstrap,{controlId,sourceBinding:b,targetBinding:t,selectedClientId});else if(admission.bootstrap!==undefined)fail('TARGET_BINDING_REFUSED');if(typeof modelAdmission!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');await modelAdmission(c,t,check);
   const old=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[t.tenantId,t.conversationId])).rows[0];check();
   if(old){if(p.input.intent==='fork'||hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==t.actorId||!same({...old.projection,createdAt:conversation.createdAt},conversation))fail('TARGET_BINDING_REFUSED');}
   else await c.query('INSERT INTO meri_conversations.conversations(tenant_id,conversation_id,owner_actor_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5)',[t.tenantId,t.conversationId,t.actorId,conversation,hash(conversation)]);
   const sequenceBase=p.input.intent==='resume'?await closeSequenceRange(c,b,rowRun,check):0;
   // The prepared-run registry serves a non-initial run only through an ACCEPTED next-run mapping: a resume successor gets it here,
-  // in this same locked transaction, over the source's proven retirement (its allocation RETIRED, physical stop proven; the receipt
-  // verified above names it). A fork successor is a writer-fence-1 run of its new conversation, served by its initial-run admission.
+  // in this same locked transaction, over the source's settled SDK invocation. A fork successor is a writer-fence-1 run of its
+  // new conversation, served by its initial-run admission. No warm host is represented as a physically retired task.
   if(p.input.intent==='resume')await recordContinuationReservation(c,{source:b,target:t,scopes:run.scopes,versions:run.versions,policyRevision:run.policyRevision,reservedAt:run.createdAt},check);
   await c.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence,continuation,continuation_sha256,sequence_base) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,$9,$10,$11)',[t.tenantId,t.conversationId,t.runId,run,hash(run),request.requestId,request,hash(request),{continuation,sourceRequest:p.sourceRequest},hash({continuation,sourceRequest:p.sourceRequest}),sequenceBase]);
   await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[t.tenantId,t.conversationId,t.runId,1,event.eventId,event,hash(event)]);
-  const next={...p,target:admission,retirement,proof,checkpointId:proof.checkpoint.checkpointId};delete next.controlSequence;await save(c,b,next);return {...next,controlSequence:p.controlSequence};});}
+  const next={...p,target:admission,retirement,proof,checkpointId:proof.checkpointId};delete next.controlSequence;await save(c,b,next);return {...next,controlSequence:p.controlSequence};});}
  /** Discovery grants nothing. Fresh target authority runs outside SQL locks so
   * another canonical owner cannot deadlock on a nested conversation transaction. */
  async function transitionFacts(value,callerCheck=()=>{},apply=false){
@@ -101,9 +213,9 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    if(!p||!['resume','fork'].includes(p.input.intent)||!['DISPATCHING','APPLIED'].includes(p.state)||!p.target||!p.proof)fail('LIFECYCLE_TRANSITION_REFUSED');
    pins(p,source,b,discovered.scopes,discovered.selectedClientId);const t=p.target.binding;
    if(!same(t,discovered.binding)||!same(current.binding,t)||!same(p.target.scopes,p.scopes)||p.target.selectedClientId!==p.sourceSelectedClientId)fail('LIFECYCLE_TRANSITION_REFUSED');
-   own(p.target,['binding','scopes','selectedClientId','admissionReceiptId','targetSessionId','expiresAtMs'],['versions']);if(p.target.versions!==undefined)validateShape('RuntimeVersions',p.target.versions);validateShape('RunBinding',t);uuid(p.target.admissionReceiptId);
+   own(p.target,['binding','scopes','selectedClientId','admissionReceiptId','targetSessionId','expiresAtMs'],['versions','bootstrap']);if(p.target.versions!==undefined)validateShape('RuntimeVersions',p.target.versions);validateShape('RunBinding',t);uuid(p.target.admissionReceiptId);
    if(t.tenantId!==b.tenantId||t.actorId!==b.actorId||t.runId===b.runId||t.attemptId===b.attemptId||t.workerId===b.workerId||p.input.intent==='resume'&&(t.conversationId!==b.conversationId||t.writerFence!==b.writerFence+1||p.target.targetSessionId!==null)||p.input.intent==='fork'&&(t.conversationId===b.conversationId||t.writerFence!==1))fail('LIFECYCLE_TRANSITION_REFUSED');
-   if(p.input.intent==='fork'){uuid(p.target.targetSessionId);if(p.target.targetSessionId===p.proof.checkpoint.sessionId)fail('LIFECYCLE_TRANSITION_REFUSED');}
+   if(p.input.intent==='fork'){assertForkBootstrapReceipt(p.target.bootstrap,{controlId:v.controlId,sourceBinding:b,targetBinding:t,selectedClientId:p.sourceSelectedClientId});uuid(p.target.targetSessionId);if(p.target.targetSessionId===p.proof.sdkSession.key.sessionId)fail('LIFECYCLE_TRANSITION_REFUSED');}
    const target=await verifyRun(c,t,p.scopes);check();
    // A successor can finish while its Temporal start acknowledgement is in flight. Its completed/failed run still has the exact
    // committed lineage checked below, and the source must receive its continuation signal. Cancellation remains a stop fence.
@@ -115,13 +227,13 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    }
    validateProof(p.proof,p);if(p.input.checkpointId!==p.checkpointId||p.input.checkpointSha256!==p.proof.checkpointSha256||!target.continuation||hash(target.continuation)!==target.continuation_sha256)fail('LIFECYCLE_TRANSITION_REFUSED');
    own(target.continuation,['continuation','sourceRequest']);const envelope=assertContinuationEnvelope(target.continuation.continuation);
-   if(envelope.controlId!==v.controlId||envelope.mode!==p.input.intent||!same(envelope.checkpoint,p.proof.checkpoint)||envelope.checkpointSha256!==p.proof.checkpointSha256||envelope.sourceRequestSha256!==p.sourceRequestSha256||envelope.contextSha256!==p.contextSha256||envelope.targetSessionId!==p.target.targetSessionId||envelope.resumeSessionAt!==p.proof.resumeSessionAt||!same(target.continuation.sourceRequest,p.sourceRequest)||!same({...p.sourceRequest,requestId:target.request.requestId},target.request))fail('LIFECYCLE_TRANSITION_REFUSED');
+   if(envelope.controlId!==v.controlId||envelope.mode!==p.input.intent||envelope.kind!=='native-session'||!same(envelope.sdkSession,p.proof.sdkSession)||!same(envelope.files??null,p.proof.files??null)||!same(envelope.versions,p.proof.versions)||!same(envelope.scopes,p.proof.scopes)||envelope.sourceRequestSha256!==p.sourceRequestSha256||envelope.contextSha256!==p.contextSha256||envelope.targetSessionId!==p.target.targetSessionId||!same(target.continuation.sourceRequest,p.sourceRequest)||!same({...p.sourceRequest,requestId:target.request.requestId},target.request))fail('LIFECYCLE_TRANSITION_REFUSED');
    let retirementReceiptId=null,retirementExpiresAtMs=null;
    if(p.input.intent==='resume'){if(!p.retirement)fail('LIFECYCLE_TRANSITION_REFUSED');own(p.retirement,['binding','retirementReceiptId','expiresAtMs']);uuid(p.retirement.retirementReceiptId);if(!same(p.retirement.binding,b)||source.sequence_end==null||!['paused','waiting-for-approval'].includes(source.projection.state))fail('LIFECYCLE_TRANSITION_REFUSED');const end=Number(source.sequence_base)+Number(source.last_sequence);if(!Number.isSafeInteger(end)||Number(source.sequence_end)!==end||Number(target.sequence_base)!==end)fail('LIFECYCLE_TRANSITION_REFUSED');retirementReceiptId=p.retirement.retirementReceiptId;retirementExpiresAtMs=p.retirement.expiresAtMs;}
    else if(p.retirement!==null||Number(target.sequence_base)!==0)fail('LIFECYCLE_TRANSITION_REFUSED');
    const deadlines=[p.target.expiresAtMs,current.expiresAtMs,v.deadlineMs,...(retirementExpiresAtMs===null?[]:[retirementExpiresAtMs])];if(deadlines.some(d=>!Number.isSafeInteger(d)||d<=now()))fail('LIFECYCLE_TRANSITION_REFUSED');check();
    if(apply){if(p.state==='APPLIED')return p;if(p.state!=='DISPATCHING')fail('LIFECYCLE_TRANSITION_REFUSED');const next={...p,state:'APPLIED'};delete next.controlSequence;await save(c,b,next);check();return {...next,controlSequence:p.controlSequence};}
-   return {controlId:v.controlId,intent:p.input.intent,state:p.state,inputSha256:p.inputSha256,sourceBinding:b,targetBinding:t,scopes:p.scopes,selectedClientId:p.sourceSelectedClientId,policyRevision:current.policyRevision,admissionReceiptId:p.target.admissionReceiptId,retirementReceiptId,checkpointId:p.checkpointId,checkpointSha256:p.proof.checkpointSha256,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,targetSessionId:p.target.targetSessionId,resumeSessionAt:p.proof.resumeSessionAt,admissionExpiresAtMs:p.target.expiresAtMs,retirementExpiresAtMs,targetExpiresAtMs:current.expiresAtMs,checkedAtMs:now(),expiresAtMs:Math.min(...deadlines)};
+   return {controlId:v.controlId,intent:p.input.intent,state:p.state,inputSha256:p.inputSha256,sourceBinding:b,targetBinding:t,scopes:p.scopes,selectedClientId:p.sourceSelectedClientId,policyRevision:current.policyRevision,admissionReceiptId:p.target.admissionReceiptId,retirementReceiptId,checkpointId:p.checkpointId,checkpointSha256:p.proof.checkpointSha256,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,targetSessionId:p.target.targetSessionId,resumeSessionAt:null,admissionExpiresAtMs:p.target.expiresAtMs,retirementExpiresAtMs,targetExpiresAtMs:current.expiresAtMs,checkedAtMs:now(),expiresAtMs:Math.min(...deadlines)};
   });
  }
  const readTransition=(value,check)=>transitionFacts(value,check),finishTransition=(value,check)=>transitionFacts(value,check,true);
@@ -137,5 +249,5 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    }
    return {state:r.projection.state,cancelCommitted:!!row};
   });try{if(committed&&onPublished)Promise.resolve(onPublished(committed)).catch(()=>{});}catch{}return result;}
- return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
+ return Object.freeze({begin,change,get,controls,claim,beginFileCapture,recordFiles,captureSession,readArtifactFile,readSessionCapture,execution,sessionSnapshot,fileSnapshot:(v,check)=>sessionSnapshot(v,check,{files:true}),continuationOrigin,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
 }

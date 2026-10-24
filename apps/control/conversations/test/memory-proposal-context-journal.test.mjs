@@ -4,9 +4,13 @@ import assert from 'node:assert/strict';
 import {createPostgresConversationStore} from '../postgres-store.mjs';
 import {storeFixture,binding as baseBinding,scopes as baseScopes,versions,id} from './store-fixture.mjs';
 import {hash} from '../boundary.mjs';
-import {assertMemoryProposalReadResult} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {assertMemoryProposalReadResult,assertMailCandidateSourcePage} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createSuppressionOwner} from '../../retention/suppression.mjs';
+import {createMailFixture} from '../../../gateway/sources/mail/test/fixtures.mjs';
 import {scanMemoryProposalContextRows} from '../memory-proposal-context-journal.mjs';
+import {decodeConversationInventoryRows} from '../retention-inventory-decode.mjs';
+import {enumerateReferences} from '../../retention/inventory.mjs';
+import {createPostgresRetentionJournal} from '../../retention/postgres-journal.mjs';
 
 const at=Date.parse('2026-10-18T12:00:00.000Z'),expiry=at+30000;
 const binding={...baseBinding,tenantId:id(9),actorId:id(10)};
@@ -62,18 +66,11 @@ function fixture(){
  base.state.conversations.set([binding.tenantId,binding.conversationId].join(':'),{
   tenant_id:binding.tenantId,conversation_id:binding.conversationId,owner_actor_id:binding.actorId,
   projection:conversation,projection_sha256:hash(conversation)});
- const original={binding,executionKey:hash(binding),executionId:hash(binding),planSha256:'a'.repeat(64),
-  expiresAtMs:expiry,versions};
- const allocation={binding,allocationKey:original.executionKey,original,allocationSha256:'b'.repeat(64),
-  qualification:{attempt:1,policyRevision:scopes[0].policyRevision},grantIntents:[{grantId:id(11),
-   capabilitySha256:'c'.repeat(64),expiresAtMs:expiry}],taskRequestSha256:'d'.repeat(64),expiresAtMs:expiry,
-  state:'ADMITTED',resource:{taskArn:'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/'+('e'.repeat(32)),
-   clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',
-   taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/MeriSynthetic:1',
-   containerName:'worker',createdAtMs:at-1000,grantFactsJsons:[],
-   launchBinding:{preparationId:id(12),descriptorSha256:'f'.repeat(64),configTreeSha256:'0'.repeat(64),state:'STARTED'}}};
- base.state.allocations.set([binding.tenantId,binding.conversationId,binding.runId].join(':'),{
-  tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,record:allocation,record_sha256:hash(allocation)});
+ const execution={binding,executionKey:hash(binding),executionId:hash(binding),planSha256:'a'.repeat(64),
+  expiresAtMs:expiry,runtimeSessionId:'synthetic-runtime-session-00000000001',phase:'started',native:null};
+ base.state.executions.set([binding.tenantId,binding.conversationId,binding.runId].join(':'),{
+  tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,
+  execution_key:execution.executionKey,execution_id:execution.executionId,record:execution,record_sha256:hash(execution)});
  const gate={async assertServable(subject){state.gateCalls++;assert.deepEqual(subject,{tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId});
   if(state.gateCalls===state.suppressOnGateCall)state.suppressed=true;
   if(state.gateCalls===state.advanceHeadOnGateCall){state.ledgerHead={sequence:2,entrySha256:'f'.repeat(64)};
@@ -98,7 +95,7 @@ function fixture(){
  return {base,rows,state,store,task,record,key,pool,transition};
 }
 
-test('task-bound journal retains exact page once and survives owner reconstruction',async()=>{
+test('execution-bound journal retains exact page once and survives owner reconstruction',async()=>{
  const f=fixture(),ports=f.store().memoryProposalContexts.forTask(f.task);
  const first=JSON.parse(await ports.retain({record:f.record})),replay=JSON.parse(await ports.retain({record:f.record}));
  assert.equal(f.rows.size,1);assert.deepEqual(first,replay);assert.equal(first.decision,'retained');
@@ -138,7 +135,7 @@ test('three-page continuation retains the second page using its durable predeces
  assert.deepEqual(loaded.record,second);
  const third={...second.previous.page,
   candidates:[{...firstRow,id:id(9),createdAt:'2026-10-15T00:00:00.000Z'}],nextCursor:null};
- const subject={...f.key.subject,authorizationDecisionId:'00000000-0000-4000-8000-000000000000'};
+ const subject=f.key.subject;
  assert.deepEqual(assertMemoryProposalReadResult(third,{clientId:f.task.clientId,cursor:second.key.cursor,limit:5},
   {subject,previous:loaded.record.previous}),
   {kind:'partial',claimsAreApprovedFacts:false,evidenceReady:false,negativeAssertion:'none'});
@@ -162,7 +159,7 @@ test('replay refuses different content, even with a recomputed previous hash',as
  assert.deepEqual(JSON.parse(await ports.loadPrevious({key:f.key})).record,f.record);
 });
 
-test('current run, actor/client/policy, allocation, gate and expiry fence both paths',async()=>{
+test('current run, actor/client/policy, execution, gate and expiry fence both paths',async()=>{
  const mutate=[
   f=>{f.task={...f.task,binding:{...f.task.binding,writerFence:2}};},
   f=>{f.base.state.runs.values().next().value.projection.state='cancelled';},
@@ -170,8 +167,12 @@ test('current run, actor/client/policy, allocation, gate and expiry fence both p
   f=>{const r=f.base.state.runs.values().next().value;r.projection={...r.projection,scopes:[{...r.projection.scopes[0],resourceId:id(8)}]};r.projection_sha256=hash(r.projection);},
   f=>{const r=f.base.state.runs.values().next().value;r.projection.policyRevision='changed';r.projection_sha256=hash(r.projection);},
   f=>{f.base.state.conversations.values().next().value.owner_actor_id='different';},
-  f=>{f.base.state.allocations.values().next().value.record.state='UNKNOWN';},
-  f=>{const a=f.base.state.allocations.values().next().value;a.record.resource.launchBinding.state='CLAIMED';a.record_sha256=hash(a.record);},
+  f=>{f.base.state.executions.values().next().value.record.phase='unknown';},
+  f=>{const e=f.base.state.executions.values().next().value;e.record.phase='stopping';e.record_sha256=hash(e.record);},
+  f=>{const e=f.base.state.executions.values().next().value;e.record.phase='settled';e.record.native={state:'completed'};e.record_sha256=hash(e.record);},
+  f=>{f.base.state.executions.clear();},
+  f=>{const e=f.base.state.executions.values().next().value;e.record.binding={...e.record.binding,writerFence:2};e.record_sha256=hash(e.record);},
+  f=>{const e=f.base.state.executions.values().next().value;e.record.expiresAtMs++;e.record_sha256=hash(e.record);},
   f=>{f.state.suppressed=true;},
   f=>{f.state.at=expiry;},
  ];
@@ -287,4 +288,94 @@ test('suppression ledger append serializes with continuation commit in both inte
   f.state.appendPause.release.resolve();await suppression;
   await assert.rejects(retained);assert.equal(f.rows.size,0);
  }
+});
+
+
+function mailRecord(f,{offset=0,total=3}={}){
+ const source=createMailFixture('mail.list_messages',{client:true});source.state.total=total;
+ const subject={...f.key.subject,scopes:[...f.key.subject.scopes,{tenantId:f.task.binding.tenantId,kind:'mailbox',resourceId:source.mailboxId,policyRevision:f.task.policyRevision}]};
+ const selection=source.input({...source.args,subject:{kind:'client',entityId:f.task.clientId},offset,...(offset?{asOf:source.anchor}:{})});
+ const page=source.page(selection,{binding:f.task.binding,subject});
+ for(const message of page.messages)message.clientId=f.task.clientId;
+ if(offset===0)assertMailCandidateSourcePage(page,Object.fromEntries(Object.entries(selection).filter(([,value])=>value!==null)),source.operation.id,{nowMs:f.state.at});
+ return {key:{binding:f.task.binding,operation:source.operation,policyRevision:f.task.policyRevision,subject,
+  selection:{...selection,offset:page.nextOffset,asOf:page.queryScope.asOfInclusive}},
+  previousPage:page,previousSha256:hash(page),recordedAtMs:f.state.at,expiresAtMs:f.task.expiresAtMs};
+}
+
+test('mail and memory formats coexist unchanged and every exact row enters retention inventory',async()=>{
+ const f=fixture(),mail=mailRecord(f),memory=f.store().memoryProposalContexts.forTask(f.task),ports=f.store().memoryProposalContexts.forMail(f.task);
+ await memory.retain({record:f.record});await ports.retain({record:mail});
+ assert.deepEqual(JSON.parse(await memory.loadPrevious({key:f.key})).record,f.record);
+ assert.deepEqual(JSON.parse(await f.store().memoryProposalContexts.forMail(f.task).loadPrevious({key:mail.key})).record,mail);
+ assert.equal(f.rows.size,2);
+ f.state.at=expiry+1;
+ const inventory=await f.store().memoryProposalContexts.inventoryForConversation({tenantId:binding.tenantId,conversationId:binding.conversationId});
+ assert.deepEqual(inventory.map(r=>r.keySha256).sort(),[hash(f.key),hash(mail.key)].sort());
+ await assert.rejects(ports.loadPrevious({key:mail.key}),/EXPIRED/);
+});
+
+test('mail continuation requires the exact durable predecessor and refuses cross-format interpretation',async()=>{
+ const f=fixture(),ports=f.store().memoryProposalContexts.forMail(f.task),first=mailRecord(f),second=mailRecord(f,{offset:1});
+ await assert.rejects(ports.retain({record:second}));
+ await ports.retain({record:first});await ports.retain({record:second});
+ assert.deepEqual(JSON.parse(await ports.loadPrevious({key:second.key})).record,second);
+ await assert.rejects(f.store().memoryProposalContexts.forTask(f.task).loadPrevious({key:first.key}));
+ await assert.rejects(ports.loadPrevious({key:f.key}));
+ const changed=structuredClone(first);changed.previousPage.messages[0].subjectText='different';changed.previousSha256=hash(changed.previousPage);
+ await assert.rejects(ports.retain({record:changed}),/REPLAY_REFUSED/);
+});
+
+test('mail retained rows preserve suppression, commit uncertainty and current execution fences',async()=>{
+ const f=fixture(),ports=f.store().memoryProposalContexts.forMail(f.task),record=mailRecord(f);
+ f.state.commitUnknown=true;await assert.rejects(ports.retain({record}),/COMMIT_UNKNOWN/);f.state.commitUnknown=false;
+ assert.equal(JSON.parse(await ports.retain({record})).decision,'retained');
+ f.state.suppressed=true;await assert.rejects(ports.loadPrevious({key:record.key}),/SUPPRESSED/);
+ await assert.rejects(ports.retain({record}),/SUPPRESSED/);f.state.suppressed=false;
+ const row=f.base.state.executions.values().next().value;row.record.phase='stopping';row.record_sha256=hash(row.record);
+ await assert.rejects(ports.loadPrevious({key:record.key}));await assert.rejects(ports.retain({record}));
+});
+
+test('mail inventory refuses substituted operation, subject, page hash and row identity',async()=>{
+ for(const mutate of [r=>{r.key.operation.id='memory.list_own_proposals';},r=>{r.key.subject.actorId=id(99);},r=>{r.previousSha256='f'.repeat(64);},r=>{r.key.selection.offset++;}]){
+  const f=fixture(),record=mailRecord(f),ports=f.store().memoryProposalContexts.forMail(f.task);await ports.retain({record});
+  const row=f.rows.values().next().value;mutate(row.record);row.record_sha256=hash(row.record);
+  await assert.rejects(f.store().memoryProposalContexts.inventoryForConversation({tenantId:binding.tenantId,conversationId:binding.conversationId}));
+ }
+});
+
+
+test('actual decoder and exact purge owner include both operation-tagged row formats',async()=>{
+ const f=fixture(),mail=mailRecord(f);
+ await f.store().memoryProposalContexts.forTask(f.task).retain({record:f.record});
+ await f.store().memoryProposalContexts.forMail(f.task).retain({record:mail});
+ const subject={tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId,ownerActorId:binding.actorId};
+ const continuations=await f.store().memoryProposalContexts.inventoryForConversation({tenantId:binding.tenantId,conversationId:binding.conversationId});
+ const event={contractVersion:'0.1.0',eventId:id(80),binding,sequence:1,createdAt:new Date(at).toISOString(),scopes,type:'run.status',data:{state:'running',reasonCode:null}};
+ const raw={subject,conversation:[...f.base.state.conversations.values()][0],runs:[{...[...f.base.state.runs.values()][0],sequence_base:0}],
+  events:[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,sequence:1,event_id:event.eventId,event,event_sha256:hash(event)}],
+  controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[],memoryContinuations:continuations,memoryContextRows:[...f.rows.values()]};
+ const decoded=decodeConversationInventoryRows(raw);
+ const inventory=enumerateReferences({...decoded,sdkSessionEntries:[],selectedOutputs:[],artifactVersions:[],nativeJournalRows:[],uploads:[],schedules:[],receipts:[],memoryProposals:[],budgetRuns:[]});
+ const targets=inventory.rowTargets.filter(row=>row.table==='memory_proposal_contexts');
+ assert.deepEqual(targets.map(r=>r.keySha256).sort(),[hash(f.key),hash(mail.key)].sort());
+ for(const mutate of [r=>{r.record.key.subject.scopes[0].resourceId=id(99);},r=>{r.record.key.operation.id='memory.list_own_proposals';},r=>{r.record.previousSha256='f'.repeat(64); }]){
+  const wrong=structuredClone(raw),row=wrong.memoryContextRows.find(r=>r.record.key.operation.id==='mail.list_messages');mutate(row);row.record_sha256=hash(row.record);row.key_sha256=hash(row.record.key);
+  wrong.memoryContinuations=wrong.memoryContextRows.map(r=>({runId:r.run_id,keySha256:r.key_sha256}));assert.throws(()=>decodeConversationInventoryRows(wrong),/STORE_CORRUPT/);
+ }
+ // Only the existing explicitly marked source-qualification SQL adapter is used.
+ // This does not qualify migrations, DELETE triggers or real production purge.
+ const key=`${binding.tenantId}:conversation:${binding.conversationId}`,planSha256='c'.repeat(64),entrySha256='d'.repeat(64);
+ const plan={planSha256,suppression:{ledgerSequence:2,entrySha256},rowSteps:targets.map(target=>({workflowId:hash(target),className:'conversation',target})),steps:[]};
+ const projection={state:'SUPPRESSED',ledgerSequence:2,entrySha256,purge:{state:'PLANNED',planSha256,ledgerSequence:3,steps:[],rowSteps:[]}},queries=[];
+ const pool={retentionSourceQualificationOnly:true,async connect(){return {async query(sql,p=[]){queries.push({sql,p});
+  if(sql.startsWith('SELECT * FROM meri_conversations.retention_subjects'))return {rows:[{state:'SUPPRESSED',ledger_sequence:2,projection,projection_sha256:hash(projection)}],rowCount:1};
+  if(sql.startsWith('DELETE FROM meri_conversations.memory_proposal_contexts'))return {rows:[],rowCount:Number(f.rows.delete(rowKey(p)))};
+  if(sql.startsWith('SELECT 1 FROM meri_conversations.memory_proposal_contexts'))return {rows:f.rows.has(rowKey(p))?[{exists:1}]:[],rowCount:Number(f.rows.has(rowKey(p)))};
+  return {rows:[],rowCount:sql.startsWith('UPDATE meri_conversations.retention_subjects')?1:0};
+ },release(){}};}};
+ const owner=createPostgresRetentionJournal({pool,memoryContinuationPurgeSourceQualified:true});
+ const result=await owner.rows.purge(key,plan);assert.equal(result.length,2);assert(result.every(row=>row.deleted===1&&row.state==='EXECUTED'));assert.equal(f.rows.size,0);
+ assert.equal(queries.filter(q=>q.sql.startsWith('INSERT INTO meri_conversations.memory_proposal_retention_targets')).length,2);
+ assert.equal(queries.at(-1).sql,'COMMIT');
 });

@@ -1,37 +1,29 @@
 # Standing rules for all agents (verbatim from the two master closeout plans)
 
-> **READ FIRST: SUPERSEDED IN PART (Neo, 2026-10-23).**
-> Neo decided Meri runs on the Claude Agent SDK's full harness, direct to Bedrock, with Capiro data as tools. The layers built around the SDK are **deleted, not completed**: the owner/proxy pair (`apps/proxy`), budget reservation and settlement, per-operation authority (native-authority, the task verifier, origin and run-current authority, ECS task proofs, read-credential relays, pins), the temporal-issuer, the P1 table, P2 proof reuse, authority-lite (S2), the signed lease (S4) and the custom checkpoint / dormant-original continuity.
-> - **Behaviour and quality gates in this plan stay binding:** the E-scenarios, the RG gates, the original release suite and every product acceptance.
-> - **Tickets, owner-map rows, stages and acceptance lines that exist to build, extend, qualify, measure or preserve a deleted layer are SUPERSEDED. Do not implement them.** They are marked inline `[SUPERSEDED]` or `[RE-SCOPED]` and listed in `SUPERSEDED-BY-ITEM-0.md`.
-> - Never recreate a deleted mechanism to satisfy an old ticket. If a ticket and Wave 2 item 0 disagree, **item 0 wins** (`../phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`); if it is unclear, ask on #202.
-> - **Leave no dead code:** every change deletes what it replaces (`../STANDING-REQUIREMENTS.md`).
+> **Current architecture and authority — 24 October 2026.** Neo approved autonomous completion on **AgentCore Runtime standard V1**, hosting the actual Claude Agent SDK with durable native SessionStore/artifacts and canonical Core permissions. Root is sole orchestrator and shipping owner; A/U/R/D work on exact disjoint allocations with independent review. Follow the [migration and completion plan](../plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md), [standing requirements](../STANDING-REQUIREMENTS.md) and [supersession register](SUPERSEDED-BY-ITEM-0.md).
+> Replace per-turn Fargate/custom warm pools, model proxy/budget machinery, duplicate authority chains, custom checkpoints and the Temporal issuer. Retain required Temporal durability, native SDK history, every product outcome, all memory/data and 14 skills. Dated source/evidence is historical; bounded work and acceptance use the current owner. No old hold creates a new permission step, and no failed or unrun gate becomes a pass.
 
-These rules apply to every task in every phase. Where your brief and a master file seem to differ, **stop and ask Fable**; don't improvise. Ownership note: where these sections name "dot" or "Fable" as owners, the current arrangement applies instead. Neo's agents implement; Fable reviews, merges and deploys.
+These rules apply to every task. Resolve routine implementation within the current allocation; root resolves shared ownership or scope conflicts. Older dot/Fable role assignments are historical, not a second approval or shipping authority.
 
 ## Meri: architecture to preserve and trace requirements
 
 ## Architecture to preserve
 
-> **[RE-SCOPED 2026-10-23]** Items 3 and 4 below are replaced: the runner runs the SDK, and data tools go through the tool gateway to Core, which enforces scope. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
+The approved target architecture is (not a shipping claim):
 
-The working architecture is:
-
-1. **Frontend:** ordinary Meri routes and typed consumers; server-only native identity, source pin and feature gates; no direct browser access to internal credentials.
-2. **Meri public/control:** application/action-session issuance; current tenant/actor/client/run binding; durable conversation/input/event/lifecycle journals and typed contracts.
-3. **Worker/runtime:** accepted run → allocation/claim/lease → prepared task/SDK/CLI execution; bounded lifetime/Stop/currentness, capability profile, checkpoint and durable outputs.
-4. **Gateway/domain owner:** discoverable operation from measured installation + current scope; delegated Core read or governed intent/command, with canonical bytes, budget/liability and receipt.
-5. **Core and providers:** canonical native identity, live membership/client permissions, retained/current read and domain mutation receivers; mail/calendar/Portfolio/Workspace remain their existing owners.
-6. **Return and recovery:** current output authority → durable receipt/event → validated public DTO → UI observation/history/reload. A successful lower-level call alone does not complete the feature.
+1. **Frontend:** ordinary Meri routes and typed consumers; server-only user identity and narrow target routing; no browser credentials for internal services.
+2. **Control:** authenticated immutable tenant/actor/conversation/scope ownership, serialized input admission, idempotent run/outcome/event/usage records and current Core checks.
+3. **Runtime:** actual pinned Claude Agent SDK on AgentCore Runtime V1; one isolated conversation session, idle stop, durable native SessionStore/artifact restore, bounded Stop and full harness. Temporal retains required durable runs, schedules and background work.
+4. **Tools:** existing typed gateway to canonical Core/domain owners; current permission checks and durable receipts for effects. No model proxy, spend-reservation or per-hop proof layer.
+5. **Core and providers:** canonical identity, live membership/client walls, read and mutation owners; mail/calendar/Portfolio/Workspace remain their existing owners.
+6. **Return and recovery:** authorized durable events and native session state → validated DTO → stream/history/reload; permission loss cannot expose previously loaded context. A lower-level success alone does not complete the feature.
 
 ### Trace requirements by user-visible flow
 
-> **[RE-SCOPED 2026-10-23]** Chat/follow-up becomes control → runner (SDK) → Bedrock → durable events. Read/search becomes tool gateway → Core with the run token; Core enforces scope. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
-
 | Flow | Complete trace that closure must prove |
 |---|---|
-| Chat / follow-up | UI client+conversation+request identity → same-origin auth proxy → current action session → input admission journal → run/claim/SDK model proxy → durable assistant/event/checkpoint → live stream + paged history + reload |
-| Read/search | Prompt/skill → measured discoverable exact operation/version → argument contract/client scope → one-use delegated Core or retained authority → authoritative source/pagination/time semantics → private observation/evidence → budget settlement/current release → citation/UI |
+| Chat / follow-up | UI conversation/request → authenticated control admission → isolated Runtime V1 session + actual SDK → durable SDK history, events and outcome → live stream, follow-up, paged history and reload |
+| Read/search | Prompt/skill → registered typed tool and arguments → current Core tenant/member/client permissions → authoritative source/pagination/time semantics → authorized evidence/citation/UI; recheck access rather than reuse an old permission claim |
 | Task create / approval | Typed intent preparation → durable proposal/command/approval tuple → owner decision/recheck → exact Core execution grant → task.create effect → durable receipt (or UNKNOWN) → intent/task/history refresh; no blind redispatch |
 | Task update / schedule | UI/tool proposal → accepted domain authority contract → revision/CAS/consent → existing Core/schedule owner → durable effect + idempotency → background firing/cancel/reconcile and user-visible status; missing owners cannot be replaced with a generic bearer |
 | Memory | Recall/proposal source scope → producer/candidate → review/correction/approval → canonical Core Memory effect or safe held response → four payload retention/tombstone linkage → current visibility/retrieval/history |
@@ -77,12 +69,10 @@ The working architecture is:
 
 #### 7. Definition of done
 
-> **[RE-SCOPED 2026-10-23]** Item 3 ("fresh authority through every hop") is superseded: Core enforces scope on every data call. Item 5 applies to writes and external effects, not to model spend. Add: nothing the change replaced is left behind. Ignore any instruction below that names the owner/proxy pair, budget reservation, per-operation authority, the task verifier, ECS task proofs, revision pins or the temporal-issuer. See `SUPERSEDED-BY-ITEM-0.md`.
-
 For each requested capability, “wired” requires all applicable links:
 1. A real mounted UI or discoverable operation, not a fixture-only screen or catalog placeholder.
 2. Typed argument/result and versioned public contract, correct bounded errors and unsupported behavior.
-3. Fresh tenant/actor/client/run authority through every hop; delegated/approval scope does not widen.
+3. Canonical current tenant/actor/client checks at admission and actual data/effect access; delegated/approval scope does not widen and revoked context is not released. No duplicate per-hop authority framework.
 4. Runtime/startup owner and real downstream service/provider/persistence available for the selected profile.
 5. Durable idempotent effect/output receipt, or explicit durable UNKNOWN with read-only reconciliation.
 6. Cancellation/Stop/retention/revocation handling at external waits and before output release.
@@ -105,7 +95,7 @@ A domain's **P1 release blocker** is mandatory before the affected action activa
 
 | Shared boundary | Canonical implementation owner / tickets | Referencing scope and duplication rule |
 |---|---|---|
-| Restricted preview versus ordinary product | X-01; ST-03 owns the concrete archived-roster query defect | PF-01 is a pointer to the same release-profile decision. Ordinary controlled deployment is the default path; do not expand preview just to close source wiring. |
+| Restricted preview versus ordinary product | X-01; ST-03 owns the concrete archived-roster query defect | PF-01 is a pointer to the same release-profile decision. Use the approved narrow client-record preview write path with canonical online checks. Keep the reserved roster guard, selected-client policy and all unrelated gates. |
 | Service mounts, flags, image and migration qualification | X-02–06 | PF-24, WS-01, ST-26 and ML-01 provide domain-specific acceptance, not four competing routing/configuration projects. |
 | Draft canonical client identity | WS-04 owns schema/DTO/storage/version/list/backfill; Portfolio owns its consuming adapter | PF-09 is the cross-reference. WS-13 staging fidelity follows the same canonical identity, not a second name-based patch. |
 | Meri artifact access/public contracts | WS-23/24 with the existing Meri owner | PF-23 consumes the typed bridge. Receive current FE115/Meri197 only after review; PR192 is donor lineage, not another merge. |

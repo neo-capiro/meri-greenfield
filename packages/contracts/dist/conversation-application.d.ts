@@ -255,6 +255,11 @@ export interface ConversationSubmitRequest {
     skillId: CanonicalSkillId_31E12E8E;
     skillVersion: CanonicalSkillVersion_7E2Af095;
   };
+  modelSelection?: {
+    provider: 'bedrock' | 'claude-api';
+    modelId: string;
+    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  };
 }
 export interface ConversationHistoryRequest {
   after?: number;
@@ -324,6 +329,11 @@ export interface ConversationStoredRequest {
   skill: ConversationSkillAssetPin | null;
   window: Canonical_NormalizedWindowE50Ec0Ed | null;
   windowRequest: Canonical_WindowRequestF314F340 | null;
+  modelSelection?: {
+    provider: 'bedrock' | 'claude-api';
+    modelId: string;
+    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  };
 }
 export interface ConversationSkillAssetPin {
   skillId: CanonicalSkillId_31E12E8E;
@@ -366,7 +376,9 @@ export interface ConversationErrorResponse {
       | 'DEADLINE'
       | 'CANCELLED'
       | 'REQUEST_TOO_LARGE'
-      | 'CONVERSATION_UNAVAILABLE';
+      | 'CONVERSATION_UNAVAILABLE'
+      | 'MODEL_SELECTION_UNAVAILABLE'
+      | 'MODEL_SETTINGS_UNAVAILABLE';
   };
 }
 
@@ -488,6 +500,12 @@ export declare const conversationApplicationMetadata: {
     ],
     "CONVERSATION_UNAVAILABLE": [
       502
+    ],
+    "MODEL_SELECTION_UNAVAILABLE": [
+      409
+    ],
+    "MODEL_SETTINGS_UNAVAILABLE": [
+      503
     ]
   }
 };

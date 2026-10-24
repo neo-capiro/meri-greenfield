@@ -2,9 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {receiveActionResponse,ActionResponseError} from '../dist/action-application.mjs';
-const wire=JSON.parse(await readFile(new URL('../../../docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json',import.meta.url)));
+import {canonicalSha256} from '../validate.mjs';
+const archivedWire=JSON.parse(await readFile(new URL('../../../docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json',import.meta.url)));
 const clone=value=>JSON.parse(JSON.stringify(value));
-for(const [i,s]of wire.steps.entries())test(`actual PR42 wire ${i} ${s.route} ${s.httpStatus}`,async()=>{const value=await receiveActionResponse(s.route,s.httpStatus,JSON.stringify(s.response));assert.deepEqual(value,s.response);assert(Object.isFrozen(value));});
+// The PR42 archive remains immutable. Derive only its query's current closed subject shape;
+// the actual observation digest must change with those bytes, while all other wire data stays fixed.
+const wire=clone(archivedWire),currentQuery=wire.steps[0].response;
+delete currentQuery.observation.subject.authorizationDecisionId;
+delete currentQuery.observation.result.subject.authorizationDecisionId;
+currentQuery.resultSha256=canonicalSha256(currentQuery.observation);
+for(const [i,s]of wire.steps.entries())test(`${i===0?'current synthetic query derived from PR42':'actual PR42 wire'} ${i} ${s.route} ${s.httpStatus}`,async()=>{const value=await receiveActionResponse(s.route,s.httpStatus,JSON.stringify(s.response));assert.deepEqual(value,s.response);assert(Object.isFrozen(value));});
+test('archived query subject is refused by the current receiver without changing historical evidence',async()=>{
+ assert('authorizationDecisionId'in archivedWire.steps[0].response.observation.subject);
+ assert('authorizationDecisionId'in archivedWire.steps[0].response.observation.result.subject);
+ await assert.rejects(receiveActionResponse('query',200,JSON.stringify(archivedWire.steps[0].response)),ActionResponseError);
+});
 for(const item of wire.separateUncertaintyExamples)test(`preserve uncertainty ${item.scenario}`,async()=>{const value=await receiveActionResponse('prepare',item.httpStatus,JSON.stringify(item.body));assert.equal(value.error.outcome,item.scenario);});
 for(const route of ['query','draft','prepare','execute'])test(`reject success/error status interchange ${route}`,async()=>{await assert.rejects(receiveActionResponse(route,200,'{"error":{"code":"REQUEST_FAILED","outcome":"UNKNOWN"}}'),ActionResponseError);await assert.rejects(receiveActionResponse(route,201,JSON.stringify(wire.steps[0].response)),ActionResponseError);});
 const query=wire.steps[0].response,draft=wire.steps[1].response,prepare=wire.steps[2].response;

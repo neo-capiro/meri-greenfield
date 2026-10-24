@@ -65,10 +65,10 @@ export function chainPermissions(deciders){
   return decision;
  };
 }
-/** @param {{allowedTools?:string[],hooks?:Record<string,HookCallbackMatcher[]>,canUseTool?:CanUseTool}} mounted @param {CapabilityFragment} fragment */
+/** @param {{allowedTools?:string[],hooks?:Record<string,HookCallbackMatcher[]>,canUseTool?:CanUseTool}} mounted @param {CapabilityFragment} fragment @returns {CapabilityFragment} */
 export function mergeCapabilityFragment(mounted,fragment){
  const {hooks,allowedTools,canUseTool,...rest}=fragment;
- /** @type {Record<string,unknown>} */
+ /** @type {CapabilityFragment} */
  const merged={...rest};
  if(allowedTools!==undefined)merged.allowedTools=[...new Set([...(mounted.allowedTools??[]),...allowedTools])];
  if(hooks!==undefined)merged.hooks=mergeHookSets([mounted.hooks??{},hooks]);

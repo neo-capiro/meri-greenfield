@@ -10,7 +10,7 @@ const regeneration=Object.freeze({kind:'objective.strategy.regeneration',path:'m
 export {initial as OBJECTIVE_DRAFT_PROTOCOL,regeneration as OBJECTIVE_REGENERATION_PROTOCOL};
 const refuse=()=>{throw Error('OBJECTIVE_TYPED_RESULT_REFUSED');},uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(v),digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v),same=(a,b)=>hash(a)===hash(b);
 export const canonicalPlanKeys=Object.freeze(['canonicalPlanId','tenantId','clientId','objectiveId','canonicalStrategyId','canonicalProjectId','bindingVersion','epoch','requestedIntentId','requestedObjectiveRevisionId','requestedObjectiveVersion','snapshotHash']);
-export const regenerationRequestKeys=Object.freeze(['requestVersion','operation','requestId','jobId','principal','source','context','applicationTarget','basis','basisSha256','delegation','requestedAtMs','originalExpiresAtMs','inputSha256','input']);
+export const regenerationRequestKeys=Object.freeze(['requestVersion','operation','requestId','jobId','principal','source','context','applicationTarget','basis','basisSha256','requestedAtMs','originalExpiresAtMs','inputSha256','input']);
 export const regenerationBasisKeys=Object.freeze(['schemaVersion','namespace','canonical','sourceAdmissionSha256','strategyId','expectedStrategyVersionId','snapshot','snapshotSha256','archiveIndex','archiveIndexSha256','sourceIndex','sourceIndexSha256','lastMachineStrategy','provenance']);
 export function objectiveDescriptorProtocol(value){for(const p of [initial,regeneration])if(value.kind===p.kind&&value.path===p.path)return p;refuse();}
 export function objectiveRequestProtocol(value,association){

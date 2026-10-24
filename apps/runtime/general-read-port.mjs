@@ -1,4 +1,4 @@
-/** Trusted gateway mount borrowed by both runner compositions. No allocation, receipts or policy are manufactured here. */
+/** Trusted gateway mount borrowed by the SDK conversation runner. No allocation, receipts or policy are manufactured here. */
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 export function captureGeneralReadPort(value,sourceEnabled){

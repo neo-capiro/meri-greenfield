@@ -23,8 +23,8 @@ export function previewConfiguration(value){
 /** Handles one preview intent; `release(version)` is the application's own version release check. */
 export async function previewRoute({config,admission,current,life,intent,versionId,state,release}){
  if(!config.preview)fail('PREVIEW_UNAVAILABLE',503);
- const context=config.options.context,forbidden=()=>fail('DOCUMENT_READ_BUDGET_REFUSED',500);
- const artifacts=createArtifactService({...config.options,authorize:current.authorize,budget:{reserve:forbidden,settle:forbidden}});
+ const context=config.options.context;
+ const artifacts=createArtifactService({...config.options,authorize:current.authorize});
  const previews=createArtifactPreviewService({validators:v,artifacts,objects:config.options.objects,previews:config.preview.previews,renderer:config.preview.renderer,ids:config.options.ids,now:config.now,
   ...(config.preview.maxPreviewBytes===undefined?{}:{maxPreviewBytes:config.preview.maxPreviewBytes})});
  if(intent==='preview-publish'){

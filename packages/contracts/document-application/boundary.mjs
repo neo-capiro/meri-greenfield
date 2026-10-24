@@ -1,3 +1,4 @@
+import {assertNativeArtifactInspectionCorrelations} from '../artifacts-0.2/artifact-formats.mjs';
 // Browser-only byte/JSON boundary. No caller object property access for byte input.
 const errors=new WeakSet();
 export class DocumentResponseError extends Error {constructor(code){super(code);this.name='DocumentResponseError';this.code=code;errors.add(this);}}
@@ -22,4 +23,10 @@ export function parseBytes(value,cap){
 }
 export async function digest(bytes){const result=await globalThis.crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(result),b=>b.toString(16).padStart(2,'0')).join('');}
 // Branding is local integrity provenance; it is never an access grant.
-export const admittedRequests=new WeakMap(),admittedVersions=new WeakSet();
+export const admittedRequests=new WeakMap(),admittedVersions=new WeakSet(),admittedNativeVersions=new WeakSet();
+
+export function admitNativeInspection(result,request){
+ try{assertNativeArtifactInspectionCorrelations(result);}catch{fail('NATIVE_FILE_MISMATCH');}
+ if(result.version.versionId!==request.versionId)fail('VERSION_MISMATCH');
+ admittedVersions.add(result.version);admittedNativeVersions.add(result.version);return result;
+}

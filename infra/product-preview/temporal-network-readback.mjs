@@ -76,8 +76,7 @@ export function validateTemporalNetworkReadback(binding,readback){
     // A shared VPC gateway may serve other route tables as well as these tasks.
     [...routes.keys()].some(id=>!gateway.RouteTableIds.includes(id)))fail();
  // One row per distinct SG: the capiro-dev interface endpoints share one group.
- const peerIds=[...temporalEndpointSecurityGroupIds(b.network),b.network.issuerSecurityGroupId,
-  b.network.migrationSecurityGroupId,b.network.issuerClientSecurityGroupId,b.network.dbClientSecurityGroupId];
+ const peerIds=[...temporalEndpointSecurityGroupIds(b.network),b.network.migrationSecurityGroupId,b.network.dbClientSecurityGroupId];
  if(!exactSet(rows(e.securityGroups,peerIds.length).map(item=>{
   const sg=record(item,['GroupId','VpcId']);if(sg.VpcId!==b.vpcId)fail();return sg.GroupId;
  }),peerIds))fail();

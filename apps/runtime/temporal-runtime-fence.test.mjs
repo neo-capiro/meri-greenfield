@@ -4,7 +4,7 @@ import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupU
 import {createPreparedKickoffApplication} from './native-authority/prepared-kickoff-http.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
-import {createTemporalIssuerDelivery} from './temporal-issuer/client.mjs';
+
 
 const origin='https://control.synthetic.invalid';
 const stopPath='/v1/execution/kickoff/stop';
@@ -16,7 +16,7 @@ test('loss synchronously and permanently rejects effect admission and wrapped HT
  const fence=createTemporalRuntimeFence(),seen=[],application={handle(request){seen.push(request);return Response.json({original:true});}};
  const mounted=fence.wrap(application),first=new Request(origin+'/api/conversations',{method:'POST'});
  assert.equal(fence.healthy(),true);fence.check();assert.equal((await mounted.handle(first)).status,200);assert.ok(seen[0] instanceof Request);assert.equal(seen[0].url,first.url);assert.equal(seen[0].method,first.method);
- const cause=Error('private issuer observation');assert.equal(fence.lose(cause),true);
+ const cause=Error('private runtime observation');assert.equal(fence.lose(cause),true);
  assert.equal(fence.healthy(),false);assert.throws(()=>fence.check(),error=>error.code==='TEMPORAL_AUTHORIZATION_UNAVAILABLE'&&error.cause===cause);
  assert.equal(fence.lose(Error('later cause')),false);assert.throws(()=>fence.check(),error=>error.cause===cause);
  const denied=mounted.handle(new Request(origin+'/v1/execution/kickoff',{method:'POST'}));
@@ -127,7 +127,7 @@ test('numeric cleanup counters never accept boolean false as evidence of zero pe
  assert.equal(assertTemporalRuntimeCleanup([fulfilled({pending:false})]),undefined,'the separately declared boolean pending flag keeps its meaning');
 });
 
-test('concrete issuer cleanup receipts cannot hide outstanding native or database work behind a fulfilled close',()=>{
+test('concrete owner cleanup receipts cannot hide outstanding native or database work behind a fulfilled close',()=>{
  for(const key of ['pendingStartup','pendingMaterial','pendingExternalOperations','pendingServiceOperations','pendingTransactions','pendingQueries','pendingBorrows','pendingConnections']){
   for(const value of [1,false])assert.throws(()=>assertTemporalRuntimeCleanup([fulfilled({[key]:value})]),{code:unknown});
  }
@@ -140,19 +140,4 @@ test('INITIALIZED worker cleanup is unknown; no run or private SDK disposal is i
   assert.throws(()=>assertTemporalRuntimeCleanup([fulfilled(undefined)],{workerState}),error=>error.code===unknown&&error.cause.workerState===workerState);
  }
  assert.equal(assertTemporalRuntimeCleanup([fulfilled(undefined)],{workerState:'STOPPED'}),undefined);
-});
-
-test('actual issuer delivery close receipt with active work cannot masquerade as successful cleanup',async()=>{
- let release,materialEntered;const held=new Promise(resolve=>{release=resolve;}),entered=new Promise(resolve=>{materialEntered=resolve;});
- const configuration={schemaVersion:1,issuerOrigin:'https://issuer.synthetic.invalid:8445',audience:'meri-temporal',namespace:'meri',
-  identity:{role:'control',subject:'meri-temporal-control:v1',workloadPrincipal:'meri-workload-control:v1'},
-  publicKey:{kid:'synthetic-public-pin',alg:'RS256',jwkSha256:'a'.repeat(64),manifestFile:'/run/meri/issuer-jwks.json'},
-  tls:{serverName:'issuer.synthetic.invalid',issuerCaFile:'/run/meri/issuer-ca.pem',clientCertFile:'/run/meri/issuer-client.crt',clientKeyFile:'/run/meri/issuer-client.key'},requestTimeoutMs:1000,maxReplyBytes:4096};
- const client=createTemporalIssuerDelivery({configuration,readMaterial:async(_file,{kind})=>{assert.equal(kind,'manifest');materialEntered();return held;},request(){assert.fail('no network');}});
- const pending=client.read({schemaVersion:1,...configuration.identity,namespace:'meri',audience:'meri-temporal',issuer:configuration.issuerOrigin+'/',signal:undefined});
- const denied=assert.rejects(pending,/TEMPORAL_ISSUER_DELIVERY_REFUSED/u);await entered;
- const receipt=client.close();assert.equal(receipt.unsettledOperations,1);assert.equal(receipt.physicalStopProven,false);
- assert.throws(()=>assertTemporalRuntimeCleanup([fulfilled(receipt)]),error=>error.code===unknown&&error.cause.unsettledOperations===1);
- await denied;release(Buffer.from('not a key or manifest'));await new Promise(resolve=>setImmediate(resolve));
- const settled=client.close();assert.equal(settled.unsettledOperations,0);assertTemporalRuntimeCleanup([fulfilled(settled)]);
 });

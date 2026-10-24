@@ -5,9 +5,9 @@ import {createActionSessionApplication,actionSessionPath} from '../../action-hos
 import {bindPreparedBriefArtifactOptions} from '../research-brief/binding.mjs';
 
 export function mountLocalDocumentApplication(fixture,{enabled = true,researchBrief} = {}) {
-  const {sessions,selectedClientId,artifactOptions,credential,now,limits} = fixture;
+  const {sessions,selectedClientId,artifactOptions,now,limits} = fixture;
   const app = createDocumentApplication({sessions: {authenticateSession: sessions.authenticateSession,readCurrentState: sessions.readCurrentState},
-    selectedClientId,artifactOptions:researchBrief===undefined?artifactOptions:bindPreparedBriefArtifactOptions(researchBrief,artifactOptions),credential,now,limits,enabled});
+    selectedClientId,artifactOptions:researchBrief===undefined?artifactOptions:bindPreparedBriefArtifactOptions(researchBrief,artifactOptions),now,limits,enabled});
   const issuance = createActionSessionApplication({owner: sessions,now,maxRequestMs: 3000});
   const url = Object.getOwnPropertyDescriptor(Request.prototype,'url').get;
   return Object.freeze({async handle(request) {

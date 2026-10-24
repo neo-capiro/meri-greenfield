@@ -8,7 +8,16 @@ if(!('error'in listed))for(const item of listed.intents){const entry:IntentsItem
 if(retained===undefined)throw new Error('no proposal admitted');
 const decided=await receiveIntentsResponse('decide',200,'{}',{request:decide,proposal:retained});
 const exactDecide:IntentsDecideResponse|IntentsErrorResponse=decided;void exactDecide;
-if(!('error'in decided)&&decided.status==='executed'){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
+if(!('error'in decided)&&decided.status==='executed'){
+ if('receipt'in decided.outcome){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
+ else {const versionId:string=decided.outcome.version.versionId;void versionId;}
+}
+if(retained.command.action==='document.draft'){
+ const kind:'0.2.0'=retained.command.contractVersion,format:'docx'=retained.command.arguments.format;
+ const preparation:string=retained.command.arguments.preparationSha256;void kind;void format;void preparation;
+ // @ts-expect-error native document approval is not a task
+ const taskId:string=retained.command.arguments.taskId;void taskId;
+}
 const path:'/api/conversations/intents/decide'=intentsPaths.decide,status:409=intentsMetadata.errorStatuses.INTENT_EXPIRED,action:'task.create'=intentsMetadata.approvableActions[0];void path;void status;void action;
 // @ts-expect-error receiving a response never issues an approval
 const approved:{approved:true}=decided;void approved;

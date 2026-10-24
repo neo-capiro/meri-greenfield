@@ -9,9 +9,9 @@ import { evidenceContext, operation } from './request-context.mjs';
 import { projectPortfolioEvidence } from './projection.mjs';
 
 export function createResearchPortfolioEvidenceHttpAdapter(options) {
-  const {origin, getCredentials, fetchImpl=globalThis.fetch, now, maxResponseBytes, maxRequestMs} =
-    ownFields(options,['origin','getCredentials','now','maxResponseBytes','maxRequestMs'],['fetchImpl']);
-  if (typeof getCredentials !== 'function' || typeof fetchImpl !== 'function' || typeof now !== 'function' ||
+  const {origin, getCredentials, readSource, fetchImpl=globalThis.fetch, now, maxResponseBytes, maxRequestMs} =
+    ownFields(options,['origin','now','maxResponseBytes','maxRequestMs'],['getCredentials','readSource','fetchImpl']);
+  if ((readSource === undefined ? typeof getCredentials !== 'function' : typeof readSource !== 'function' || getCredentials !== undefined) || typeof fetchImpl !== 'function' || typeof now !== 'function' ||
       !Number.isSafeInteger(maxResponseBytes) || maxResponseBytes < 1 || maxResponseBytes > 16*1024*1024 ||
       !Number.isSafeInteger(maxRequestMs) || maxRequestMs < 1 || maxRequestMs > 3600000) deny('GATEWAY_CONFIGURATION');
   try {
@@ -23,14 +23,21 @@ export function createResearchPortfolioEvidenceHttpAdapter(options) {
     let lifetime, acquiredResponse;
     try {
       const context = evidenceContext(call,now), {input,authority} = context;
-      lifetime = createDispatchLifetime({deadlineMs:Math.min(context.deadlineMs,now()+maxRequestMs),now,signal:context.signal});
+      const cutoff=Math.min(context.deadlineMs,now()+maxRequestMs);
+      lifetime = createDispatchLifetime({deadlineMs:cutoff,now,signal:context.signal});
       const route = `/api/research-portfolios/${encodeURIComponent(input.portfolioId)}`;
       const paths = input.origin === 'review' ? ['mine','team','deferred','resolved'].map(lane => `${route}/reviews?lane=${lane}`)
         : [input.origin === 'snapshot' ? `${route}/snapshots/${encodeURIComponent(input.recordId)}` : `${route}/annual-review`];
       const responses = [];
-      // Each fixed lane gets a freshly brokered task-bound credential. The outer
+      // Each fixed lane uses the selected control transport. The outer
       // canonical dispatcher repeats current authorization before result release.
-      for (const path of paths) {
+      for (const [index,path] of paths.entries()) {
+        if(readSource){
+          const selection={portfolioId:input.portfolioId,...(input.origin==='review'?{source:'reviews',lane:['mine','team','deferred','resolved'][index]}:input.origin==='snapshot'?{source:'snapshot',recordId:input.recordId}:{source:'annual-review'})};
+          const value=frozenData(await lifetime.run(signal=>readSource({operation:'job.readResearchEvidenceSource',input:selection,context:frozenData({binding:authority.binding,subject:authority.subject,policyRevision:authority.policyRevision,normalizationContext:null}),deadlineMs:cutoff,signal})));
+          lifetime.check();if(Buffer.byteLength(JSON.stringify(value),'utf8')>Math.min(maxResponseBytes,authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+          responses.push(value);continue;
+        }
         const credentials = frozenData(await lifetime.run(signal => getCredentials(Object.freeze({
           binding:authority.binding, subject:authority.subject, deadlineMs:context.deadlineMs, signal}))));
         ownFields(credentials,['binding','bearerToken','expiresAtMs']);

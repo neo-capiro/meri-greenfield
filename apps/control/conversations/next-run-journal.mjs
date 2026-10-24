@@ -1,19 +1,20 @@
-/** Next-turn reservations: a new prompt in the same conversation, never a recovery of the old one. One immutable mapping per
- * terminal source run. The new prompt continues the conversation's latest published completion checkpoint: a completed source's own,
- * else (a failed or cancelled source never publishes one) the last completed turn's, so a stop or an error never erases what the
- * conversation knows. Only a conversation with no completed turn yet starts a fresh SDK session (checkpoint null). */
+/** Next prompts continue the latest completed native SDK session; real historical completion checkpoints remain readable.
+ * One immutable target mapping per terminal source preserves replay and settled-execution fences.
+ * Failed/cancelled turns retain the last completed context, never a partial transcript. */
 import {assertRun,bounded,hash,same,fail,validateShape,uuid,own} from './boundary.mjs';
-import {validateCompletionProof} from './completion-journal.mjs';
+import {validateCompletionProof,readNativeCompletionCapture} from './completion-journal.mjs';
 import {closeSequenceRange} from './sequence-ranges.mjs';
-import {FORECLOSED,foreclosed} from './native-preparation-journal.mjs';
+import {readExecutionSettlement} from './execution-boundary.mjs';
 import {assertNextRunFacts as facts,assertNextRunReservation} from './next-run-reservation.mjs';
 import {continuesSession,sessionDiscontinuity} from '../../../packages/contracts/session-continuity.mjs';
-/** Terminal states that may admit a next prompt once the original is retired and its grants revoked. */
+import {nativeSessionThrough,assertNativeSessionSettled,nativeSessionTranscripts} from './sdk-session-lineage.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
+/** Terminal states that may admit a next prompt once their SDK invocation is settled. */
 export const admitsNextRun=state=>state==='completed'||state==='failed'||state==='cancelled';
 const CHECKPOINTED=['paused','waiting-for-approval'];
 /** A lifecycle resume's successor, as the lifecycle journal leaves it: the source stays in its checkpointed state (never terminal), its
  * sequence range closed by the successor, and the successor's run row carries the continuation envelope naming the source. */
-const continued=(source,target)=>target.continuation!=null&&same(target.continuation.continuation?.checkpoint?.binding,source.projection.binding)&&CHECKPOINTED.includes(source.projection.state)&&source.sequence_end!=null;
+const continued=(source,target)=>target.continuation!=null&&same(target.continuation.continuation?.kind==='native-session'?target.continuation.continuation.sdkSession.binding:target.continuation.continuation?.checkpoint?.binding,source.projection.binding)&&CHECKPOINTED.includes(source.projection.state)&&source.sequence_end!=null;
 const projected=r=>({binding:r.projection.binding,state:r.projection.state,requestId:r.request_id,sequenceBase:Number(r.sequence_base),lastSequence:Number(r.last_sequence),sequenceEnd:r.sequence_end==null?null:Number(r.sequence_end),scopes:r.projection.scopes,policyRevision:r.projection.policyRevision,versions:r.projection.versions,createdAt:r.projection.createdAt});
 /** Canonical writer ordering and sequence ranges; callers decode each persisted row first. */
 export function orderedConversationRuns(rows){const runs=rows.map(projected).sort((a,b)=>a.binding.writerFence-b.binding.writerFence);
@@ -22,25 +23,23 @@ export function orderedConversationRuns(rows){const runs=rows.map(projected).sor
 /** The next-run mapping of a lifecycle resume (lifecycle/journal.mjs `continuation`), written inside that journal's locked source
  * transaction (same conversation lock) together with the successor's run row. The successor continues the checkpointed source rather
  * than opening a new prompt, so the mapping is born ACCEPTED and the prepared-run registry serves it exactly like an accepted next
- * turn. The source holds no authority: its allocation row must be RETIRED with the physical stop proven (the native stop records
- * RETIRED only after revocation; the retirement receipt the lifecycle verified names it) and the caller has closed its range. The
+ * turn. The source SDK invocation must be settled and the caller has closed its writer range. The
  * facts carry no checkpoint: the lifecycle envelope, never a completion checkpoint, carries the resumed one, so `execution` yields no
  * next-turn lineage for it. One mapping per source and per target, as for a reserved next prompt. */
 export async function recordContinuationReservation(c,{source,target,scopes,versions,policyRevision,reservedAt},check){
  if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1)fail('NEXT_RUN_TARGET_REFUSED');
  for(const [column,runId] of [['source_run_id',source.runId],['target_run_id',target.runId]]){const rows=(await c.query(`SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND ${column}=$3 FOR UPDATE`,[source.tenantId,source.conversationId,runId])).rows;check();if(rows.length)fail('NEXT_RUN_REPLAY_REFUSED');}
- const allocation=(await c.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[source.tenantId,source.conversationId,source.runId])).rows;check();
- if(allocation.length!==1||hash(allocation[0].record)!==allocation[0].record_sha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');const a=allocation[0].record;
- if(a.state!=='RETIRED'||a.resource?.physicalStopProven!==true||!same(a.original?.binding,source)||!Array.isArray(a.grantIntents)||!a.grantIntents.length)fail('NEXT_RUN_RETIREMENT_REQUIRED');
- const reservation=assertNextRunReservation({source,target,facts:{checkpoint:null,retirement:{physicalStopProven:true},revocation:{receiptSha256:allocation[0].record_sha256,grantIds:a.grantIntents.map(g=>g.grantId)}},scopes,versions:bounded(versions),policyRevision,reservedAt});
+ const run=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows[0];check();
+ if(!run||hash(run.projection)!==run.projection_sha256||!same(run.projection.binding,source)||!CHECKPOINTED.includes(run.projection.state)||run.sequence_end==null)fail('NEXT_RUN_EXECUTION_UNSETTLED');
+ const settled=await readExecutionSettlement(c,source,run.projection.state,check);
+ const reservation=assertNextRunReservation({source,target,facts:{checkpoint:null,execution:{recordSha256:settled.recordSha256}},scopes,versions:bounded(versions),policyRevision,reservedAt});
  await c.query('INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7)',[source.tenantId,source.conversationId,source.runId,target.runId,reservation,hash(reservation),'ACCEPTED']);check();
  return reservation;
 }
 export function createNextRunJournal({tx,rowRun,modelAdmission}){
  const row=r=>{if(!r||hash(r.reservation)!==r.reservation_sha256)fail('STORE_CORRUPT');const v=assertNextRunReservation(r.reservation);if(r.source_run_id!==v.source.runId||r.target_run_id!==v.target.runId||r.tenant_id!==v.target.tenantId||r.conversation_id!==v.target.conversationId||!['RESERVED','ACCEPTED'].includes(r.state))fail('STORE_CORRUPT');return {...v,state:r.state};};
  const key=value=>{const k=bounded(value);own(k,['tenantId','conversationId']);uuid(k.conversationId);if(typeof k.tenantId!=='string'||!k.tenantId||k.tenantId.length>256)fail('INVALID_REQUEST');return k;};
- /** Either retirement plus revocation of an allocation that existed, or (failed/cancelled source only) the store's explicit
-  * no-authority evidence that the attempt never claimed one; the journal verifies whichever is named against the row itself. */
+ /** Historical completion data is read-only; active invocation settlement is checked separately below. */
  function completion(r,source){if(!r||hash(r.identity)!==r.identity_sha256||r.tenant_id!==source.tenant_id||r.conversation_id!==source.conversation_id||r.run_id!==source.run_id||!same(r.identity.binding,source.projection.binding)||r.completion_id!==r.identity.completionId||r.checkpoint_id!==r.identity.checkpointId||!same(r.identity.sourceRequest,source.request)||r.identity.sourceRequestSha256!==source.request_sha256||r.identity.contextSha256!==hash({window:source.request.window,skill:source.request.skill,scopes:source.projection.scopes})||!same(r.identity.scopes,source.projection.scopes)||!same(r.identity.versions,source.projection.versions))fail('STORE_CORRUPT');if(r.state==='PUBLISHED'){if(hash(r.proof)!==r.proof_sha256)fail('STORE_CORRUPT');validateCompletionProof(r.proof,r.identity);}return r;}
  async function conversationRows(c,k,check){const rows=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[k.tenantId,k.conversationId])).rows.map(rowRun);check();return rows;}
  const orderedRuns=orderedConversationRuns;
@@ -61,7 +60,16 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
   * when it completed), or null when no turn up to it completed. */
  async function latestCheckpoint(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=await conversationRows(c,b,check),run=rows.find(r=>r.run_id===b.runId);if(!run||!same(run.projection.binding,b))fail('STALE_WRITER');
   const latest=await publishedThrough(c,rows,b,check);return latest&&{checkpointId:latest.row.checkpoint_id,proofSha256:latest.row.proof_sha256};});}
- /** Canonical source and checkpoint eligibility, shared by reservation writes and read-only assessment. */
+ /** A settled native SDK session is the current format; historical completion receipts remain readable. */
+ async function latestSession(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=await conversationRows(c,b,check),run=rows.find(r=>r.run_id===b.runId);if(!run||!same(run.projection.binding,b))fail('STALE_WRITER');return (await nativeSessionThrough(c,rows,b,check))?.reference??null;});}
+ async function nativeLineage(c,rows,source,f,scopes,versions,policyRevision,check){
+  const lineage=await nativeSessionThrough(c,rows,source,check);
+  if(!lineage||!same(lineage.reference,f.sdkSession)||f.checkpoint!==null)fail('NEXT_RUN_CHECKPOINT_REFUSED');
+  const run=lineage.run.projection;if(!same(run.scopes,scopes)||run.policyRevision!==policyRevision)fail('NEXT_RUN_SCOPE_REFUSED');
+  const discontinuity=sessionDiscontinuity(run.versions,versions);if(discontinuity)fail(discontinuity);
+  await assertNativeSessionSettled(c,lineage,check);return lineage;
+ }
+ /** Canonical source and session eligibility, shared by reservation writes and read-only assessment. */
  async function eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check){
    const rows=await conversationRows(c,source,check),runs=orderedRuns(rows);if(!runs.length)fail('STORE_CORRUPT');const latest=runs.at(-1);
    if(!same(latest.binding,source))fail('NEXT_RUN_NOT_LATEST');if(!admitsNextRun(latest.state))fail('NEXT_RUN_SOURCE_NOT_TERMINAL');
@@ -70,6 +78,9 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
    // The named checkpoint must be the conversation's latest published one: a completed source's own; a failed or cancelled source's
    // last completed turn's, published under the same scopes and policy (its run, never the source, is the lineage), and its SDK session
    // resumable under the successor's versions (session-continuity.mjs: a deploy that changed only image or skills digests still is).
+   if(f.sdkSession){await nativeLineage(c,rows,source,f,scopes,versions,policyRevision,check);return runs;}
+   // Never silently downgrade a native completed session to older checkpoint context.
+   if(await nativeSessionThrough(c,rows,source,check))fail('NEXT_RUN_CHECKPOINT_REFUSED');
    const lineage=await publishedThrough(c,rows,source,check),run=lineage?.run.projection;
    if(latest.state==='completed'&&lineage?.run.run_id!==source.runId)fail('NEXT_RUN_CHECKPOINT_REQUIRED');
    if(lineage===null?f.checkpoint!==null:f.checkpoint===null)fail(lineage===null?'NEXT_RUN_CHECKPOINT_REFUSED':'NEXT_RUN_CHECKPOINT_REQUIRED');
@@ -78,14 +89,18 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
    const discontinuity=lineage&&sessionDiscontinuity(run.versions,versions);if(discontinuity)fail(discontinuity);
    return runs;
  }
- /** Caller facts never suffice: both paths must prove durable retirement/foreclosure and revocation before success. */
+ /** Caller facts never suffice. Re-read the actual invocation inside the same locked admission transaction. */
+ async function sourceSettlement(c,source,state,check){
+  let historicalCompleted=false;
+  if(state==='completed'){
+   const rows=await conversationRows(c,source,check),lineage=await nativeSessionThrough(c,rows,source,check);
+   if(lineage&&same(lineage.reference.binding,source)&&Object.hasOwn(lineage.row.owner,'allocationSha256'))return assertNativeSessionSettled(c,lineage,check);
+   if(!lineage){const completion=await publishedThrough(c,rows,source,check);historicalCompleted=completion!==null&&same(completion.run.projection.binding,source);}
+  }
+  const settled=await readExecutionSettlement(c,source,state,check,{historicalCompleted});return settled===null?null:{recordSha256:settled.recordSha256};
+ }
  async function eligibleSettlement(c,{source,facts:f},latest,check){
-   const allocation=(await c.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[source.tenantId,source.conversationId,source.runId])).rows;check();
-   if(allocation.length!==1||hash(allocation[0].record)!==allocation[0].record_sha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');const a=allocation[0].record;
-   // A missing row is never safe: no-authority admission needs the foreclosure row written with the source's own terminal transition.
-   if(f.noAuthority){if(a.state!==FORECLOSED||!foreclosed(a,source)||a.foreclosure.state!==latest.state||allocation[0].record_sha256!==f.noAuthority.foreclosureSha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');}
-   else{if(a.state!=='RETIRED'||a.resource?.physicalStopProven!==true)fail('NEXT_RUN_RETIREMENT_REQUIRED');
-    if(!same([...f.revocation.grantIds].sort(),a.grantIntents.map(g=>g.grantId).sort()))fail('NEXT_RUN_REVOCATION_REQUIRED');}
+   facts(f);if(!same(f.execution,await sourceSettlement(c,source,latest.state,check)))fail('NEXT_RUN_EXECUTION_UNSETTLED');
  }
  /** Read-only authority snapshot. A prior reservation is checked against current checkpoint compatibility as acceptance would be;
   * this neither creates a target nor repairs/revokes source authority. The public history owner supplies fresh identity separately. */
@@ -96,9 +111,8 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
    await eligibleSettlement(c,{source,facts:f},runs.at(-1),check);
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    if(existing.length){if(existing.length!==1)fail('STORE_CORRUPT');const r=row(existing[0]);
-    if(r.state!=='RESERVED'||!same(r.source,source)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision||!same(r.facts.checkpoint,f.checkpoint))fail('NEXT_RUN_REPLAY_REFUSED');
-    // Reuse the stored reservation's exact settlement evidence; a read receipt of RETIRED may have a different hash from the original revoke ACK.
-    if(Boolean(r.facts.noAuthority)!==Boolean(f.noAuthority)||(f.noAuthority?!same(r.facts.noAuthority,f.noAuthority):!same([...r.facts.revocation.grantIds].sort(),[...f.revocation.grantIds].sort())))fail('NEXT_RUN_REPLAY_REFUSED');
+    if(r.state!=='RESERVED'||!same(r.source,source)||!same(r.scopes,scopes)||r.policyRevision!==policyRevision||!same(r.facts.checkpoint,f.checkpoint)||!same(r.facts.sdkSession??null,f.sdkSession??null))fail('NEXT_RUN_REPLAY_REFUSED');
+    if(!same(r.facts.execution,f.execution))fail('NEXT_RUN_REPLAY_REFUSED');
    }
    return {admissible:true,reason:null};
   });
@@ -131,9 +145,9 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
   if(!latest||!same(latest.binding,b))fail('NEXT_RUN_NOT_LATEST');
   return {binding:latest.binding,reserved:false,policyRevision:latest.policyRevision,scopes:latest.scopes};
  });}
- /** The store's no-authority evidence for this run ({foreclosureSha256}), or null when its allocation row is absent or anything else. */
- async function foreclosure(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=(await c.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();
-  if(rows.length!==1||hash(rows[0].record)!==rows[0].record_sha256||!foreclosed(rows[0].record,b))return null;return {foreclosureSha256:rows[0].record_sha256};});}
+ /** Content-free settlement read. A missing claim is safe only behind a failed/cancelled canonical run fence. */
+ async function settlement(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=await conversationRows(c,b,check),source=rows.find(r=>r.run_id===b.runId);if(!source||!same(source.projection.binding,b))fail('STALE_WRITER');
+  return sourceSettlement(c,b,source.projection.state,check);});}
  /** The reservation whose target is this binding, or null. A stale binding of the conversation is a stale writer. */
  async function readTarget(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=row(rows[0]);if(!same(r.target,b))fail('STALE_WRITER');return r;});}
  /** Accepts the new prompt for a reserved target: same conversation row, continued conversation-wide sequence base, per-run wire sequence restarting at 1. */
@@ -148,6 +162,7 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
    const sourceRows=await conversationRows(c,b,check),latest=orderedRuns(sourceRows).at(-1);
    // A successor reserved before a deploy is accepted under the accepting render's versions (a run's image is its own); the checkpoint it
    // names must still resume there (session-continuity.mjs), refused here, before anything persists, rather than at its execution.
+   if(r.facts.sdkSession)await nativeLineage(c,sourceRows,r.source,r.facts,run.scopes,run.versions,run.policyRevision,check);
    if(r.facts.checkpoint!==null&&!same(r.versions,run.versions)){const named=(await c.query('SELECT * FROM meri_conversations.completion_checkpoints WHERE tenant_id=$1 AND checkpoint_id=$2 AND conversation_id=$3',[b.tenantId,r.facts.checkpoint.checkpointId,b.conversationId])).rows;check();
     if(named.length!==1||named[0].state!=='PUBLISHED'||named[0].proof_sha256!==r.facts.checkpoint.proofSha256||hash(named[0].proof)!==named[0].proof_sha256)fail('STORE_CORRUPT');
     // This extra continuity read may only refuse. Bind the named identity back to its stored source run with the existing completion validator.
@@ -157,7 +172,8 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
    const existing=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND (request_id=$3 OR run_id=$4) FOR UPDATE',[b.tenantId,b.conversationId,request.requestId,b.runId])).rows;check();
    if(existing.length){const e=rowRun(existing[0]);if(existing.length!==1||e.request_id!==request.requestId||!same({...e.request,window:request.window},request)||!same(e.projection.binding,b)||!same(e.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');return {run:e.projection,request:e.request,lastSequence:Number(e.last_sequence),replayed:true};}
    const source=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,r.source.runId])).rows[0]);check();
-   if(!admitsNextRun(source.projection.state)||source.projection.state==='completed'&&r.facts.checkpoint===null||!same(source.projection.binding,r.source))fail('NEXT_RUN_SOURCE_REFUSED');
+   if(!admitsNextRun(source.projection.state)||source.projection.state==='completed'&&r.facts.checkpoint===null&&!r.facts.sdkSession||!same(source.projection.binding,r.source))fail('NEXT_RUN_SOURCE_REFUSED');
+   await eligibleSettlement(c,{source:r.source,facts:r.facts},source.projection,check);
    if(typeof modelAdmission!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');await modelAdmission(c,b,check);
    const sequenceBase=await closeSequenceRange(c,r.source,rowRun,check);
    validateShape('UIEvent',event);if(!same(event.binding,b)||!same(event.scopes,run.scopes)||event.sequence!==1||event.type!=='run.status'||event.data.state!=='queued')fail('EVENT_BINDING_REFUSED');
@@ -170,15 +186,24 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
  /** Explicit next-prompt lineage; this never constructs a lifecycle resume envelope. The reserved checkpoint, re-verified as the
   * conversation's latest published one as of the source, against its own completed run: that run's request is the source request.
   * Null when the reservation names none (no completed turn yet, or a lifecycle resume's mapping). */
- async function execution({binding:b,scopes,selectedClientId},check){validateShape('RunBinding',b);uuid(selectedClientId);return tx(b,check,async c=>{
+ async function execution({binding:b,scopes,selectedClientId},check,{transcripts=false,files=false}={}){assertNativeConversationScope({binding:b,scopes,selectedClientId});return tx(b,check,async c=>{
   const target=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(target.projection.binding,b)||!same(target.projection.scopes,scopes))fail('STALE_WRITER');
   const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=row(rows[0]);
   if(r.state!=='ACCEPTED'||!same(r.target,b)||!same(r.scopes,scopes))fail('STORE_CORRUPT');
   const runRows=await conversationRows(c,b,check),source=runRows.find(x=>x.run_id===r.source.runId);if(!source||!same(source.projection.binding,r.source))fail('STORE_CORRUPT');
-  const resumed=continued(source,target);if(!(admitsNextRun(source.projection.state)||resumed)||source.projection.state==='completed'&&r.facts.checkpoint===null||resumed&&r.facts.checkpoint!==null)fail('STORE_CORRUPT');if(r.facts.checkpoint===null)return null;
+  const resumed=continued(source,target);if(!(admitsNextRun(source.projection.state)||resumed)||source.projection.state==='completed'&&r.facts.checkpoint===null&&!r.facts.sdkSession||resumed&&(r.facts.checkpoint!==null||r.facts.sdkSession))fail('STORE_CORRUPT');
+  if(r.facts.sdkSession){
+   const native=await nativeLineage(c,runRows,r.source,r.facts,scopes,target.projection.versions,target.projection.policyRevision,check);
+   await eligibleSettlement(c,{source:r.source,facts:r.facts},source.projection,check);
+   if(native.row.owner.selectedClientId!==selectedClientId||source.projection.state==='completed'&&native.run.run_id!==source.run_id)fail('NEXT_RUN_SCOPE_REFUSED');
+   const from=native.run,nextTurn={sdkSession:native.reference,sourceRequest:from.request,sourceRequestSha256:from.request_sha256,contextSha256:hash({window:from.request.window,skill:from.request.skill,scopes}),targetBinding:b,versions:from.projection.versions,scopes};
+   if(transcripts){if(!['queued','starting','running'].includes(target.projection.state))fail('STALE_WRITER');return files?{binding:b,sdkSession:native.reference,files:(await readNativeCompletionCapture(c,native,check))?.files??null}:{binding:b,key:native.reference.key,sdkSession:native.reference,transcripts:await nativeSessionTranscripts(c,native,check)};}
+   return {nextTurn};
+  }
+  if(transcripts)fail('NEXT_RUN_CHECKPOINT_REFUSED');if(r.facts.checkpoint===null)return null;
   const lineage=await publishedThrough(c,runRows,r.source,check),cp=lineage?.row,from=lineage?.run,p=cp?.proof;
   if(!lineage||cp.checkpoint_id!==r.facts.checkpoint.checkpointId||cp.proof_sha256!==r.facts.checkpoint.proofSha256||source.projection.state==='completed'&&from.run_id!==source.run_id||cp.identity.selectedClientId!==selectedClientId||p.sourceRequestSha256!==from.request_sha256||p.contextSha256!==hash({window:from.request.window,skill:from.request.skill,scopes})||!same(p.checkpoint.binding,from.projection.binding)||!same(p.checkpoint.scopes,scopes)||!continuesSession(p.checkpoint.versions,target.projection.versions))fail('STORE_CORRUPT');
   return {nextTurn:{checkpoint:p.checkpoint,checkpointSha256:p.checkpointSha256,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,sourceRequest:from.request,targetBinding:b,resumeSessionAt:p.resumeSessionAt}};
- });}
- return Object.freeze({listRuns,latestCheckpoint,foreclosure,assess,reserve,readTarget,current,accept,execution});
+ },{sessionSnapshot:transcripts});}
+ return Object.freeze({listRuns,latestCheckpoint,latestSession,settlement,assess,reserve,readTarget,current,accept,execution,sessionSnapshot:(input,check)=>execution(input,check,{transcripts:true}),fileSnapshot:(input,check)=>execution(input,check,{transcripts:true,files:true})});
 }

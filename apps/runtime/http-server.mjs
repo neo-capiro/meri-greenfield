@@ -8,7 +8,7 @@ export const RUNTIME_KEEP_ALIVE_MS=125000;
 export async function listenRuntime({configuration,application,readiness,signal,tls,exposeReadiness=true,testOwners={}}){
  const startServer=testOwners.serve??serve;if(Object.keys(testOwners).some(key=>key!=='serve')||typeof startServer!=='function'||typeof exposeReadiness!=='boolean')throw fault('HTTP_CONFIGURATION');
  signal?.throwIfAborted();
- let stopping=false;const active=new Set(),sockets=new Set(),serving=new Map();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+ let stopping=false,closeProgress=()=>{};const active=new Set(),sockets=new Set(),serving=new Map();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  const server=startServer({hostname:configuration.http.hostname,port:configuration.http.port,overrideGlobalObjects:false,
   ...(tls?{createServer:createHttpsServer,serverOptions:tls}:{}),fetch:async request=>{
   const path=new URL(request.url).pathname;
@@ -24,13 +24,13 @@ export async function listenRuntime({configuration,application,readiness,signal,
   const controller=new AbortController();active.add(controller);const joined=AbortSignal.any([request.signal,controller.signal]);let streamed=false;
   // Cancellation delivery does not establish that a borrowed owner or stream
   // settled. Retain ownership until the handler and actual stream pump finish.
-  const cleanup=()=>active.delete(controller);
+  const cleanup=()=>{active.delete(controller);closeProgress();};
   try{const nativeRequest=new Request(request.url,{method:request.method,headers:request.headers,signal:joined,...(request.body?{body:request.body,duplex:'half'}:{})});const response=await application.handle(nativeRequest);if(!response.body)return response;
    const transform=new TransformStream(),pump=response.body.pipeTo(transform.writable,{signal:joined});pump.then(cleanup,cleanup);streamed=true;
    return new Response(transform.readable,{status:response.status,statusText:response.statusText,headers:response.headers});
   }finally{if(!streamed)cleanup();}
  }});
- server.on('connection',socket=>{sockets.add(socket);socket.once('close',()=>sockets.delete(socket));});
+ server.on('connection',socket=>{sockets.add(socket);socket.once('close',()=>{sockets.delete(socket);closeProgress();});});
  // Once close() has begun, no connection outlives the responses it has in flight: one not yet started says `connection: close`,
  // and a connection is closed as its last response ends. Kept alive, it would hold the listener open for the whole keep-alive
  // timeout, and close() would end only on its shutdown timer.
@@ -44,9 +44,10 @@ export async function listenRuntime({configuration,application,readiness,signal,
   for(const open of serving.values())for(const response of open)if(!response.headersSent)response.setHeader('connection','close');
   let stopped=false,timer;
   const receipt=()=>({listenerStopped:stopped,pendingRequests:active.size+sockets.size});
-  timer=setTimeout(()=>{for(const socket of sockets)socket.destroy();resolve(receipt());},configuration.limits.shutdownMs);timer.unref();
-  server.close(error=>{stopped=error===undefined;clearTimeout(timer);resolve(receipt());});server.closeIdleConnections();
-  server.once('close',()=>clearTimeout(timer));
+  // server.close can precede socket close/pump callbacks. A stopped listener alone is not a cleanup receipt.
+  closeProgress=()=>{if(stopped&&active.size===0&&sockets.size===0){clearTimeout(timer);resolve(receipt());}};
+  timer=setTimeout(()=>{for(const socket of sockets)socket.destroy();resolve(receipt());},configuration.limits.shutdownMs);
+  server.close(error=>{stopped=error===undefined;closeProgress();});server.closeIdleConnections();
  });
  const abort=()=>{void close();};signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted){await close();signal.removeEventListener('abort',abort);throw fault('RUNTIME_STOPPED');}return Object.freeze({address:server.address(),async close(){signal?.removeEventListener('abort',abort);return await close();}});
 }

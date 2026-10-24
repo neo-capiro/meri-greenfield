@@ -7,6 +7,7 @@ import addFormats from 'ajv-formats';
 import {canonicalSha256 as hash,validateShape as validatePublicShape} from '../../../packages/contracts/validate.mjs';
 import {createArtifactValidators} from '../../../packages/contracts/artifacts-0.2/artifact-validation.mjs';
 import {createArtifactService} from '../service.mjs';
+import {sqlFixture,record as storedRecord,commit as storedCommit,NOW as SQL_NOW} from '../storage/test/sql-fixture.mjs';
 const pub=JSON.parse(readFileSync(new URL('../../../packages/contracts/meri.schema.json',import.meta.url))),schema=JSON.parse(readFileSync(new URL('../../../packages/contracts/artifacts-0.2/artifact.schema.json',import.meta.url)));
 const ajv=addFormats(new Ajv({strict:true,allErrors:true}));ajv.addSchema(pub);ajv.addSchema(schema);
 const validators=createArtifactValidators({canonicalSha256:hash,validatePublicShape,validateShape(n,v){const f=ajv.getSchema(`${schema.$id}#/$defs/${n}`);if(!f(v))throw Error(ajv.errorsText(f.errors));return v;}});
@@ -43,3 +44,31 @@ test('independent late settlement after commit keeps effect and budget uncertain
 test('independent canonical created output validates and detaches service result',async()=>{const f=fixture(),r=request(),c=context(),made=await f.service().create(r,c),out=validators.assertArtifactOutput('create_word',made,r,c);assert.deepEqual(out,made);assert.notEqual(out,made);made.version.filename='changed';assert.equal(out.version.filename,'Independent.txt');assert.equal(validators.normalizeArtifactInput('create_word',r,c).metadata.requestSha256,out.execution.requestSha256);});
 test('independent canonical created output refuses unrelated provenance tuples',async()=>{const f=fixture(),r=request(),c=context(),made=await f.service().create(r,c);for(const mutate of [x=>{x.version.binding.actorId='other';},x=>{x.version.object.scopes[0].resourceId='other';},x=>{x.version.filename='other.txt';},x=>{x.version.mimeType='application/pdf';},x=>{x.inspection.sha256='0'.repeat(64);},x=>{x.version.parentVersionId=id(999);},x=>{x.execution.requestSha256='0'.repeat(64);},x=>{x.inspection.rendered=true;},x=>{x.execution.nativeQualified=true;},x=>{x.version.generationStatus='complete';}]){const altered=structuredClone(made);mutate(altered);assert.throws(()=>validators.assertArtifactOutput('create_word',altered,r,c));}});
 test('independent canonical created output binds original request and operation',async()=>{const f=fixture(),r=request(),c=context(),made=await f.service().create(r,c);assert.throws(()=>validators.assertArtifactOutput('create_word',made,{...r,title:'Other'},c));assert.throws(()=>validators.assertArtifactOutput('create_excel',made,r,c));});
+
+
+for(const action of ['create','inspect','download'])test(`tenant recovery for ${action} follows genuine authority and precedes any missing-row lookup`,async()=>{
+ const f=fixture(),service=f.service(),ctx=context();let made;
+ if(action!=='create')made=await service.create(request(),ctx);
+ f.events.length=0;const saved=new Map(f.records);if(action!=='create')f.records.clear();let recovered=0;
+ f.ports.versions.recoverTenant=async(tenant,signal)=>{assert.equal(tenant,ctx.binding.tenantId);assert.ok(signal instanceof AbortSignal);assert.ok(f.events.some(e=>e.stage==='authorize'));assert.equal(f.events.some(e=>e.stage==='execute'),false);recovered++;for(const [id,row]of saved)f.records.set(id,row);};
+ const current=f.service();const result=action==='create'?await current.create(request(),ctx):await current[action](made.version.versionId,ctx);
+ assert.equal(recovered,1);assert.equal(result.version.binding.tenantId,ctx.binding.tenantId);
+});
+
+test('authority denial and tenant recovery uncertainty release no artifact and never run the generator',async()=>{
+ const f=fixture();let calls=0;f.ports.versions.recoverTenant=async()=>{calls++;throw Error('RECOVERY_UNKNOWN');};
+ f.ports.authorize=async x=>({...await f.authority(x),decision:'deny'});await assert.rejects(f.service().create(request(),context()),/AUTHORITY/);assert.equal(calls,0);
+ f.ports.authorize=f.authority;await assert.rejects(f.service().create(request(),context()),/RECOVERY_UNKNOWN/);assert.equal(calls,1);assert.equal(f.events.some(e=>['execute','reserve','put','commit'].includes(e.stage)),false);
+});
+
+test('authorized download repairs genuinely missing SQL from canonical publication before lookup and preserves suppression',async()=>{
+ const f=fixture(),sql=sqlFixture(),record=storedRecord(),versions=sql.create();await versions.commit(storedCommit(record));
+ sql.state.versions.clear();sql.state.heads.clear();const bytes=Buffer.from(record.spec.content.text),ctx={...context(),binding:record.version.binding,scopes:record.version.scopes,deadlineMs:SQL_NOW+10000};
+ f.clock(SQL_NOW);f.ports.versions=versions;f.ports.retention=sql.retention;f.ports.objects.get=async object=>{assert.deepEqual(object,record.version.object);return bytes;};
+ const before=sql.events.length;f.ports.authorize=async x=>{assert.equal(x.binding.tenantId,ctx.binding.tenantId);return f.authority(x);};
+ const got=await f.service().download(record.version.versionId,ctx);assert.deepEqual(got.bytes,bytes);assert.deepEqual(got.version,record.version);
+ const statements=sql.events.slice(before).map(e=>e.sql);assert.ok(statements.findIndex(s=>s.startsWith('INSERT INTO meri_artifacts.versions'))<statements.findIndex(s=>s.startsWith('SELECT * FROM meri_artifacts.versions')));
+ sql.suppressed.add(`${ctx.binding.tenantId}:conversation:${ctx.binding.conversationId}`);sql.state.versions.clear();sql.state.heads.clear();
+ await assert.rejects(f.service().download(record.version.versionId,ctx),/RETENTION_SUPPRESSED/);assert.equal(sql.state.versions.size,0);
+ assert.equal(f.events.some(e=>['execute','reserve','put','commit'].includes(e.stage)),false);
+});

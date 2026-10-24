@@ -1,5 +1,5 @@
 /** Correlate native SDK init with the first SessionStore key before the existing registration API. */
-import {createNativeBoundSdkSessionStore} from './native-authority/session-client.mjs';
+import {createNativeBoundSdkSessionStore} from './sdk-session-client.mjs';
 import {assertSdkSessionKey} from '../../packages/contracts/runtime-0.2/session.mjs';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';

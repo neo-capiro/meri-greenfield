@@ -1,82 +1,40 @@
 /** Closed explicit configuration. Parsing never opens a network connection. */
 import {readFile,open} from 'node:fs/promises';
 import {constants} from 'node:fs';
-import {isAbsolute,sep} from 'node:path';
+import {isAbsolute} from 'node:path';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
-import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
-import {compileNativePreparationIntent} from './native-authority/preparation-intent.mjs';
-import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
-import {parseTemporalAuthorizationConfiguration} from './temporal-authorization.mjs';
-import {parseTemporalProductTokenWriterConfiguration} from './temporal-product-token-writer.mjs';
-import {parseTemporalIssuerDeliveryConfiguration} from './temporal-issuer/client.mjs';
-import {parseTemporalProductBootstrapConfiguration} from './temporal-product-bootstrap-configuration.mjs';
-import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.2/reads.mjs';
-import {validateShape as validateRetrievalShape} from '../../packages/contracts/retrieval-0.2/validate.mjs';
+import {compileAgentCoreConfiguration} from './agentcore-configuration.mjs';
+import {assertModelCatalog} from '../../packages/contracts/model-selection.mjs';
 import {compileControlUserPreferencesConfiguration} from './user-preferences.mjs';
 import {compileScheduleServiceConfiguration} from './schedule-service-configuration.mjs';
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
 import {compileMemoryConfiguration} from './product-ports/memory.mjs';
-import {compileGatewayLimits} from './native-authority/current-authority-limits.mjs';
 import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
-import {compileRetainedReadAuthority} from './native-authority/retained-reads/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 function file(p){requireValue(typeof p==='string'&&isAbsolute(p)&&!p.includes('/../')&&p.length<=4096);return p;}
 function endpoint(value,loopback=false){let u;try{u=new URL(value);}catch{throw fault('RUNTIME_CONFIGURATION');}requireValue(!u.username&&!u.password&&!u.search&&!u.hash&&u.pathname==='/'&&(u.protocol==='https:'||loopback&&u.protocol==='http:'&&['127.0.0.1','[::1]'].includes(u.hostname)));return u.origin;}
-const id=(prefix,value)=>typeof value==='string'&&new RegExp(`^${prefix}-[a-f0-9]+$`,'u').test(value);
-const taskZone=value=>typeof value==='string'&&value.length<=220&&/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/u.test(value);
-/** Static router admission is closed before startup reads material or opens a connection. */
-export function compileControlTaskRouterConfiguration(configuration){
- const route=configuration.taskRouter;if(route===undefined)return null;
- const c=own(route,['enabled','runnerCaFile','zone','vpcId'],['poststart']),candidate=configuration.nativeCandidate,
-  network=candidate?.taskRequest?.networkConfiguration?.awsvpcConfiguration;
- requireValue(c.enabled===true&&configuration.privateHttp?.hostname==='0.0.0.0'&&configuration.privateHttp.port===8082&&
-  configuration.http?.port===8080&&configuration.privateHttp.frontendOrigin===configuration.native?.origin&&
-  candidate?.multiRun?.dynamicInitialRuns===true&&typeof candidate.multiRun.materialDirectory==='string'&&
-  candidate.taskOrigin===configuration.privateHttp.frontendOrigin&&candidate.taskHttp?.hostname==='0.0.0.0'&&candidate.taskHttp.port===8080&&
-  typeof c.runnerCaFile==='string'&&taskZone(c.zone)&&id('vpc',c.vpcId)&&
-  Array.isArray(network?.subnets)&&network.subnets.length===1&&id('subnet',network.subnets[0])&&
-  Array.isArray(network.securityGroups)&&network.securityGroups.length>=1&&network.securityGroups.length<=5&&
-  network.securityGroups.every(value=>id('sg',value))&&new Set(network.securityGroups).size===network.securityGroups.length&&
-  network.assignPublicIp==='DISABLED','TASK_ROUTER_CONFIGURATION');file(c.runnerCaFile);
- let poststart;
- if(c.poststart!==undefined){
-  const p=own(c.poststart,['enabled','runnerCaKeyFile','controlCaFile']);
-  const overrides=candidate.taskRequest.overrides?.containerOverrides;
-  requireValue(p.enabled===true&&Array.isArray(overrides)&&overrides.length===1&&
-   overrides[0].name===candidate.containerName&&
-   JSON.stringify(overrides[0].command)==='["start"]'&&
-   Array.isArray(overrides[0].environment)&&overrides[0].environment.length===0,'RUNNER_POSTSTART_CONFIGURATION');
-  file(p.runnerCaKeyFile);file(p.controlCaFile);
-  requireValue(new Set([p.runnerCaKeyFile,p.controlCaFile,c.runnerCaFile]).size===3,'RUNNER_POSTSTART_CONFIGURATION');
-  poststart=Object.freeze({runnerCaKeyFile:p.runnerCaKeyFile,controlCaFile:p.controlCaFile});
- }
- return Object.freeze({runnerCaFile:c.runnerCaFile,zone:c.zone,...(poststart?{poststart}:{}),network:Object.freeze({
-  clusterArn:candidate.taskRequest.cluster,taskDefinitionArn:candidate.taskRequest.taskDefinition,
-  vpcId:c.vpcId,subnetId:network.subnets[0],securityGroupIds:Object.freeze([...network.securityGroups])
- })});
-}
 export function validateConfiguration(raw,role){
- requireValue(['control','temporal-worker','conversation-runner','schedule-worker'].includes(role));const c=data(raw);
+ requireValue(['control','temporal-worker','schedule-worker'].includes(role));const c=data(raw);
  // The schedule worker is a separately supervised control-domain Temporal poller with a health-only listener. Its four domain
  // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
  // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:role==='schedule-worker'?['http','temporal','versions','scheduledDispatch']:['binding','versions','workspace'])],role==='conversation-runner'?['bootstrap','remoteTask','telemetry']:role==='control'?['nativeCandidate','retention','telemetry','downloadLinks','privateHttp','taskRouter','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database','native','routines']:role==='temporal-worker'?['objectiveGeneration']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration']);
+ if(role==='control')assertModelCatalog(c.models);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
  // `routines` is also the schedule worker's firing declaration (lane B2/B3); `routines.task` is control's routine task identity.
  for(const [key,code] of [['tenantSettings','TENANT_SETTINGS_CONFIGURATION'],['routines','ROUTINES_CONFIGURATION']])if(c[key]!==undefined){requireValue(role==='control'||key==='routines'&&role==='schedule-worker',code);own(c[key],['enabled'],key==='routines'?['core','task','workflow']:[]);requireValue(typeof c[key].enabled==='boolean',code);}
  // Routines Core owners (lane B2): the wire A policy client and the Core-proof run control compose only from this closed block.
  if(c.routines?.core!==undefined)compileRoutinesCoreConfiguration(c);
- // Routine task identity (lane B3): the one generic routine task of the allocation manifest, public facts of the candidate's scheduled-run
- // template (prepared-candidate.mjs routinesOccurrenceOwners); the manifest digest is derived from the allocation, never configured.
+ // Existing routine business identity. Its AgentCore admission owner is a separate required composition; JSON is not authority.
  if(c.routines?.task!==undefined){requireValue(role==='control','ROUTINES_CONFIGURATION');own(c.routines.task,['taskId','version']);requireValue(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(c.routines.task.taskId)&&integer(c.routines.task.version,1,Number.MAX_SAFE_INTEGER),'ROUTINES_CONFIGURATION');}
  // Attended routine dispatch names the separately configured schedule worker target; JSON alone never supplies its owners.
  if(c.routines?.workflow!==undefined){requireValue(role==='control'&&c.routines.enabled===true,'ROUTINES_CONFIGURATION');own(c.routines.workflow,['taskQueue','workflowIdPrefix']);requireValue(typeof c.routines.workflow.taskQueue==='string'&&/^[A-Za-z0-9._-]{1,128}$/u.test(c.routines.workflow.taskQueue)&&typeof c.routines.workflow.workflowIdPrefix==='string'&&/^[A-Za-z0-9._/-]{1,128}$/u.test(c.routines.workflow.workflowIdPrefix),'ROUTINES_CONFIGURATION');}
@@ -90,15 +48,14 @@ export function validateConfiguration(raw,role){
  // G1: source connectivity is an explicit boolean (decided: 10-15 #5, D015 #4a). The schedule worker stays source-disabled
  // (schedule-service-configuration.mjs); every source owner keeps its own enablement, authority and fail-closed checks.
  requireValue(c.version===1&&c.profile==='isolated-preview'&&typeof c.sourceEnabled==='boolean'&&(role!=='schedule-worker'||c.sourceEnabled===false));
- if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}
  own(c.limits,['startupMs','shutdownMs','requestMs','requestBytes']);requireValue(integer(c.limits.startupMs,100,30000)&&integer(c.limits.shutdownMs,100,30000)&&integer(c.limits.requestMs,10,30000)&&integer(c.limits.requestBytes,1,131072));
- if(role!=='schedule-worker'||c.native!==undefined){own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],role==='temporal-worker'?['preparedKickoff']:[]);
+ if(role!=='schedule-worker'||c.native!==undefined){own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],['serverCaFile','serverCaSha256',...(role==='temporal-worker'?['preparedKickoff']:[])]);
  // The poller admits only the prepared original kickoff (stop-owned cleanup); the legacy execution/start mode has no original stop owner (audit L5).
  if(role==='temporal-worker'||c.native.preparedKickoff!==undefined)requireValue(c.native.preparedKickoff===true,'PREPARED_KICKOFF_CONFIGURATION');
- requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152)&&c.native.origin===endpoint(c.native.origin,c.native.loopback));file(c.native.capabilityFile);}
+ requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152)&&c.native.origin===endpoint(c.native.origin,c.native.loopback));file(c.native.capabilityFile);if(c.native.serverCaFile!==undefined||c.native.serverCaSha256!==undefined){file(c.native.serverCaFile);requireValue(/^[a-f0-9]{64}$/u.test(c.native.serverCaSha256),'NATIVE_SERVER_CA_CONFIGURATION');}}
  // Log telemetry is always on and needs only an environment label. OTLP remains a separate control-only opt-in.
  if(c.telemetry!==undefined){
-  requireValue(role==='control'||role==='conversation-runner','TELEMETRY_CONFIGURATION');
+  requireValue(role==='control','TELEMETRY_CONFIGURATION');
   own(c.telemetry,[],['environment','enabled','endpoint','exportIntervalMs','serviceName']);
   requireValue(c.telemetry.environment===undefined||['Preview','Production'].includes(c.telemetry.environment),'TELEMETRY_CONFIGURATION');
   const otel=['enabled','endpoint','exportIntervalMs','serviceName'].some(key=>Object.hasOwn(c.telemetry,key));
@@ -114,57 +71,28 @@ export function validateConfiguration(raw,role){
  if(c.intents!==undefined){requireValue(role==='control','INTENTS_CONFIGURATION');compileIntentsConfiguration(c);}
  // Memory (lane M): review-only proposals over Core M2; the service secret is a server-side file.
  if(c.memory!==undefined){requireValue(role==='control','MEMORY_CONFIGURATION');compileMemoryConfiguration(c);if(c.memory.enabled)file(c.memory.serviceSecretFile);}
- // General reads (lane 2): control builds the reads composer before startControl only when declared enabled. Secrets are
- // server-side files; the user bearer is never a file (RC1 option A: the live-session relay supplies it per call).
- if(c.reads!==undefined){requireValue(role==='control','READS_CONFIGURATION');own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress','gateway','delegation','installation','discovery','retainedAuthority']);if(c.reads.delegation!==undefined){own(c.reads.delegation,['enabled']);requireValue(typeof c.reads.delegation.enabled==='boolean'&&(c.reads.enabled||!c.reads.delegation.enabled),'READS_CONFIGURATION');}if(c.reads.gateway!==undefined)compileGatewayLimits(c.reads.gateway);requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
-  if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);}else requireValue(['serviceSecretFile','readModeServiceSecretFile','installation','discovery','retainedAuthority'].every(k=>c.reads[k]===undefined),'READS_CONFIGURATION');
-  if(c.reads.retainedAuthority!==undefined){try{compileRetainedReadAuthority(c.reads.retainedAuthority);}catch{throw fault('READS_CONFIGURATION');}}
+ // Typed reads use the current Core service identity plus the live user relay. No installation proof, grant or bearer file.
+ if(c.reads!==undefined){
+  requireValue(role==='control','READS_CONFIGURATION');
+  own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress']);
+  requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
+  if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);requireValue(c.capabilityPlatform!==undefined,'READS_CONFIGURATION');}
+  else requireValue(c.reads.serviceSecretFile===undefined&&c.reads.readModeServiceSecretFile===undefined&&c.reads.defaultCongress===undefined,'READS_CONFIGURATION');
   if(c.reads.defaultCongress!==undefined)requireValue(integer(c.reads.defaultCongress,1,1000),'READS_CONFIGURATION');
-  // P2 installation (gateway/general-reads/installation-issuer.mjs): the render pins the in-image measurement's canonical sha256 and ships the
-  // measurement (brotli-compressed JSON) as a material file distinct from the secret files; revocations are exact catalog OperationRefs. Disabled names nothing.
-  if(c.reads.installation!==undefined){const i=c.reads.installation;own(i,['enabled'],['measurementSha256','measurementFile','revokedOperations']);requireValue(typeof i.enabled==='boolean','READS_CONFIGURATION');
-   if(i.enabled){requireValue(typeof i.measurementSha256==='string'&&/^[a-f0-9]{64}$/u.test(i.measurementSha256),'READS_CONFIGURATION');file(i.measurementFile);requireValue(i.measurementFile!==c.reads.serviceSecretFile&&i.measurementFile!==c.reads.readModeServiceSecretFile,'READS_CONFIGURATION');
-    if(i.revokedOperations!==undefined){const v=data(i.revokedOperations);requireValue(Array.isArray(v)&&v.length>=1&&v.length<=128,'READS_CONFIGURATION');for(const op of v)try{validateRetrievalShape('OperationRef',op);}catch{throw fault('READS_CONFIGURATION');}requireValue(new Set(v.map(op=>`${op.id}@${op.version}`)).size===v.length,'READS_CONFIGURATION');}}
-   else requireValue(i.measurementSha256===undefined&&i.measurementFile===undefined&&i.revokedOperations===undefined,'READS_CONFIGURATION');}
-  // P1 discovery (gateway/general-reads/discovery-producer.mjs) needs the trusted platform record: its run policy producer is createConfiguredRunCapabilityPolicy.
-  if(c.reads.discovery!==undefined){own(c.reads.discovery,['enabled']);requireValue(typeof c.reads.discovery.enabled==='boolean'&&(c.reads.discovery.enabled===false||c.capabilityPlatform!==undefined),'READS_CONFIGURATION');}}
- if(role!=='conversation-runner'){
+ }
+ {
   own(c.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(c.http.hostname)&&integer(c.http.port,0,65535)&&c.http.frontendOrigin===endpoint(c.http.frontendOrigin,c.native?.loopback??false));
-  own(c.temporal,['address','namespace','taskQueue','tls'],['authorization','tokenWriter','issuerDelivery','issuerBootstrap']);if(c.temporal.authorization!==undefined)requireValue(parseTemporalAuthorizationConfiguration(c.temporal.authorization).namespace===c.temporal.namespace,'TEMPORAL_AUTHORIZATION_CONFIGURATION');requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
-  if(c.temporal.tokenWriter!==undefined){
-   const w=parseTemporalProductTokenWriterConfiguration(c.temporal.tokenWriter);
-   requireValue(w.enabled===true&&w.role===role&&c.temporal.authorization!==undefined&&
-    hash(w.authorization)===hash(parseTemporalAuthorizationConfiguration(c.temporal.authorization))&&
-    w.authorization.tokenFile==='/run/meri-temporal/token.json'&&c.temporal.issuerDelivery!==undefined,'TEMPORAL_PRODUCT_CONFIGURATION');
-   const d=parseTemporalIssuerDeliveryConfiguration(c.temporal.issuerDelivery);
-   requireValue(w.authorization.issuer===d.issuer&&d.namespace===c.temporal.namespace&&
-    d.audience===w.authorization.audience&&d.identity.role===role&&d.identity.subject===w.subject&&
-    d.identity.workloadPrincipal===w.workloadPrincipal&&d.requestTimeoutMs<=w.maxRequestMs&&
-    parseTemporalProductBootstrapConfiguration(c.temporal.issuerBootstrap,c.temporal.issuerDelivery).enabled===true,'TEMPORAL_PRODUCT_CONFIGURATION');
-  }else requireValue(c.temporal.issuerDelivery===undefined&&(c.temporal.issuerBootstrap===undefined||parseTemporalProductBootstrapConfiguration(c.temporal.issuerBootstrap).enabled===false),'TEMPORAL_PRODUCT_CONFIGURATION');
+  own(c.temporal,['address','namespace','taskQueue','tls']);requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
  }
  if(role==='control'){
-  if(c.privateHttp!==undefined){own(c.privateHttp,['hostname','port','frontendOrigin']);requireValue(c.nativeCandidate!==undefined&&c.http.port===8080&&c.privateHttp.hostname==='0.0.0.0'&&c.privateHttp.port===8082&&c.privateHttp.frontendOrigin===endpoint(c.privateHttp.frontendOrigin)&&c.privateHttp.frontendOrigin===c.native.origin&&c.privateHttp.frontendOrigin!==c.http.frontendOrigin,'PRIVATE_CONTROL_CONFIGURATION');}
+  if(c.privateHttp!==undefined){own(c.privateHttp,['hostname','port','frontendOrigin']);requireValue(c.agentcore!==undefined&&c.http.port===8080&&c.privateHttp.hostname==='0.0.0.0'&&c.privateHttp.port===8082&&c.privateHttp.frontendOrigin===endpoint(c.privateHttp.frontendOrigin)&&c.privateHttp.frontendOrigin===c.native.origin&&c.privateHttp.frontendOrigin!==c.http.frontendOrigin,'PRIVATE_CONTROL_CONFIGURATION');}
   own(c.database,['connectionFile']);file(c.database.connectionFile);own(c.sessions,['mode','replicas','maxSessions','maxTtlMs']);requireValue(c.sessions.mode==='process-local'&&c.sessions.replicas===1&&integer(c.sessions.maxSessions,1,1000)&&integer(c.sessions.maxTtlMs,1,300000));validateShape('RuntimeVersions',c.versions);
  }
  if(role==='schedule-worker'){
-  // The schedule service has no token-loss owner, so product token writing stays a control/temporal-worker capability.
-  requireValue(c.temporal.tokenWriter===undefined,'SCHEDULE_WORKER_CONFIGURATION');validateShape('RuntimeVersions',c.versions);
+  validateShape('RuntimeVersions',c.versions);
   compileScheduleServiceConfiguration(c);if(c.database!==undefined){own(c.database,['connectionFile']);file(c.database.connectionFile);}
  }
- if(c.nativeCandidate!==undefined){requireValue(role==='control');compilePreparedCandidateConfiguration(c.nativeCandidate,c.versions);requireValue(c.native.capabilityFile===c.nativeCandidate.controlCapabilityFile,'PREPARED_CANDIDATE_CONFIGURATION');}
- if(c.taskRouter!==undefined){requireValue(role==='control','TASK_ROUTER_CONFIGURATION');compileControlTaskRouterConfiguration(c);}
- if(c.remoteTask!==undefined){
-  const r=own(c.remoteTask,['original','preparationIntent','taskArn','controlCapabilitySha256','processOrigin','http'],['preparedKickoff','approvedReads','tls','intents']),o=remoteOriginal(r.original),i=compileNativePreparationIntent(r.preparationIntent);
-  if(r.approvedReads!==undefined)assertNativeReadConfiguration(r.approvedReads);
-  if(r.intents!==undefined){own(r.intents,['enabled']);requireValue(typeof r.intents.enabled==='boolean','INTENTS_CONFIGURATION');}
-  requireValue(role==='conversation-runner'&&hash(o.binding)===hash(c.binding)&&hash(o.versions)===hash(c.versions)&&i.workspace===c.workspace&&o.versions.imageDigest==='sha256:'+i.imageSha256&&typeof r.controlCapabilitySha256==='string'&&/^[a-f0-9]{64}$/u.test(r.controlCapabilitySha256)&&typeof r.taskArn==='string'&&/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[a-f0-9]{32}$/u.test(r.taskArn)&&r.processOrigin===endpoint(r.processOrigin),'REMOTE_RUNNER_CONFIGURATION');
-  own(r.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(r.http.hostname)&&integer(r.http.port,0,65535)&&r.http.frontendOrigin===endpoint(r.http.frontendOrigin),'REMOTE_RUNNER_CONFIGURATION');
-  if(r.tls!==undefined){own(r.tls,['zone','caFile','certFile','keyFile','candidateFile','metadataFile']);requireValue(taskZone(r.tls.zone)&&r.http.hostname==='0.0.0.0'&&r.http.port===8080,'RUNNER_TLS_CONFIGURATION');for(const name of ['caFile','certFile','keyFile','candidateFile','metadataFile'])file(r.tls[name]);}
-  if(r.preparedKickoff!==undefined)requireValue(r.preparedKickoff===true,'REMOTE_RUNNER_CONFIGURATION');
-  if(c.bootstrap)requireValue(c.bootstrap.expiresAtMs===o.expiresAtMs,'REMOTE_RUNNER_CONFIGURATION');
- }
- if(role==='conversation-runner'){validateShape('RunBinding',c.binding);validateShape('RuntimeVersions',c.versions);file(c.workspace);requireValue(c.workspace.endsWith('/'+c.binding.conversationId)||c.workspace.endsWith(sep+c.binding.conversationId));}
+ if(c.agentcore!==undefined){requireValue(role==='control');compileAgentCoreConfiguration(c.agentcore);}
  return Object.freeze(c);
 }
 export async function loadConfiguration(path,role){file(path);const bytes=await readFile(path);requireValue(bytes.length<=32768);let raw;try{raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw fault('RUNTIME_CONFIGURATION');}return validateConfiguration(raw,role);}

@@ -9,7 +9,8 @@ test('finds the one version holding an object within its tenant conversation, de
 });
 test('another tenant or conversation, an unknown object, a duplicate holder or a corrupt row is refused',async()=>{
  const f=sqlFixture(),a=record();await f.create().commit(commit(a));
- for(const change of [q=>({...q,tenantId:'other-tenant'}),q=>({...q,conversationId:id(77)}),q=>({...q,objectId:id(78)})])await assert.rejects(f.create().findByObject(change(query(a))),{code:'ENOENT'});
+ const before=f.events.length;await assert.rejects(f.create().findByObject({...query(a),tenantId:'other-tenant'}),{code:'ARTIFACT_STORAGE_INPUT'});assert.equal(f.events.length,before,'fixed-purpose tenant mismatch refuses before SQL');
+ for(const change of [q=>({...q,conversationId:id(77)}),q=>({...q,objectId:id(78)})])await assert.rejects(f.create().findByObject(change(query(a))),{code:'ENOENT'});
  const twin=structuredClone(f.state.versions.get(a.version.versionId));twin.version_id=id(50);f.state.versions.set(id(50),twin);
  await assert.rejects(f.create().findByObject(query(a)),/CORRUPT/);f.state.versions.delete(id(50));
  const row=f.state.versions.get(a.version.versionId);row.record_sha256='f'.repeat(64);await assert.rejects(f.create().findByObject(query(a)),/CORRUPT/);

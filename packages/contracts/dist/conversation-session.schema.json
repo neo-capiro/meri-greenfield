@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:conversation-session:1.0.0",
+  "$defs": {
+    "ConversationSessionReceipt": {
+      "type": "object",
+      "properties": {
+        "credential": {
+          "type": "string",
+          "pattern": "^action_session_[A-Za-z0-9_-]{43}$"
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "tenantId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "actorId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "selectedClientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "tenantId",
+            "actorId",
+            "conversationId",
+            "runId",
+            "selectedClientId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "credential",
+        "expiresAtMs",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationSessionExpectedContext": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tenantId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "actorId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "selectedClientId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "scopeKind": {
+              "const": "client"
+            }
+          },
+          "required": [
+            "tenantId",
+            "actorId",
+            "selectedClientId",
+            "scopeKind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tenantId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "actorId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "selectedClientId": {
+              "type": "null"
+            },
+            "scopeKind": {
+              "const": "general"
+            }
+          },
+          "required": [
+            "tenantId",
+            "actorId",
+            "conversationId",
+            "selectedClientId",
+            "scopeKind"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

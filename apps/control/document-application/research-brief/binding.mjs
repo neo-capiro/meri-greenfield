@@ -1,27 +1,19 @@
-/** Specialize the existing trusted artifact authority, keeping the public HTTP owner exact. */
-import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+/** Recipe correspondence only; current artifact/session owners retain authorization. */
 import {types} from 'node:util';
+import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {admitPreparedBrief} from './compose.mjs';
 export function bindPreparedBriefArtifactOptions(prepared,artifactOptions){
-  if(!artifactOptions||typeof artifactOptions!=='object'||types.isProxy(artifactOptions))throw Error('BRIEF_CONFIGURATION');
-  // Capture inert own descriptor values before reading or spreading any outer
-  // port. The unchanged application constructor still owns its full schema.
-  const names=Reflect.ownKeys(artifactOptions);
-  const options=own(artifactOptions,['context','authority'],names.filter(x=>x!=='context'&&x!=='authority'));
-  const guard=admitPreparedBrief(prepared,options.context);
-  const contextSha256=v.hash(options.context),authority=options.authority;
-  if(!authority||typeof authority!=='object'||types.isProxy(authority))throw Error('BRIEF_CONFIGURATION');
-  const method=Object.getOwnPropertyDescriptor(authority,'check');
-  if(!method||!Object.hasOwn(method,'value')||typeof method.value!=='function')throw Error('BRIEF_CONFIGURATION');
-  const check=method.value.bind(authority);
-  return {...options,authority:{async check(call){
-    // The canonical artifact service supplies the full typed intent at its first
-    // current-authority check, before any budget reservation or byte generation.
-    // This checks recipe correspondence only; existing authority owns policy.
-    try{const intent=v.snapshot(call.input);own(intent,['request','context','baseVersionId']);
-      guard(intent);if(v.hash(intent.context)!==contextSha256)throw Error('BRIEF_REQUEST_SUBSTITUTION');
-    }catch{throw Object.assign(new Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}
-    return check(call);
-  }}};
+ if(!artifactOptions||typeof artifactOptions!=='object'||types.isProxy(artifactOptions))throw Error('BRIEF_CONFIGURATION');
+ const fields=Reflect.ownKeys(artifactOptions),options=own(artifactOptions,['context','authorize'],fields.filter(k=>!['context','authorize'].includes(k)));
+ if(typeof options.authorize!=='function'||types.isProxy(options.authorize))throw Error('BRIEF_CONFIGURATION');
+ const guard=admitPreparedBrief(prepared,options.context),intent={request:prepared.request,context:options.context,baseVersionId:prepared.baseVersionId};
+ guard(intent);const contextSha256=v.hash(intent.context),expected=v.nativeRequestSha256(intent.request,intent.context,intent.baseVersionId);
+ return {...options,async authorize(call){
+  try{own(call,['action','resource','requestSha256','binding','scopes'],['deadlineMs','signal']);v.snapshot(call.resource);guard(intent);if(v.hash(intent.context)!==contextSha256)throw Error('mutated context');}catch{throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}
+  if(['artifact.generate','artifact.revise'].includes(call.action)){
+   if(call.action!==(intent.baseVersionId===null?'artifact.generate':'artifact.revise')||call.requestSha256!==expected||call.resource.versionId!==intent.baseVersionId||v.hash(call.binding)!==v.hash(intent.context.binding)||v.hash(call.scopes)!==v.hash(intent.context.scopes))throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});
+  }
+  return options.authorize.call(artifactOptions,call);
+ }};
 }

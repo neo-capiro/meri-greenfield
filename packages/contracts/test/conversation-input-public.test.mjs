@@ -4,6 +4,7 @@ import {createRequire} from 'node:module';import {tmpdir} from 'node:os';import 
 import {receiveConversationInputRequest as request,receiveConversationInputResponse as receive,conversationInputView,conversationInputMetadata as metadata,ConversationInputResponseError} from '@capiro/meri-contracts/conversation-input';
 import {receiveConversationRequest,receiveConversationResponse,conversationApplicationMetadata} from '@capiro/meri-contracts/conversation-application';
 import {assertConversationInputReceipt,assertInputShape} from '../conversation-input/validate.mjs';
+import {MODEL_CATALOG,CLAUDE_SELECTION} from './model-selection-fixture.mjs';
 const bytes=value=>new TextEncoder().encode(JSON.stringify(value)),id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={tenantId:'synthetic-input',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:id(5),policyRevision:'p1'}];
@@ -12,6 +13,17 @@ const input={requestId:id(6),prompt:'Hello'},context={tenantId:binding.tenantId,
 const receipt=()=>({run:structuredClone(run),request:{...input,skill:null,window:null,windowRequest:null},lastSequence:1,replayed:false});
 const submitted=value=>({run:value.run,requestId:value.request.requestId,lastSequence:value.lastSequence,replayed:value.replayed});
 const history=value=>({run:value.run,request:value.request,events:[],nextSequence:value.lastSequence,lastSequence:value.lastSequence,hasMore:false});
+
+test('MP explicit choice correlates exactly with admitted/history request; omitted choice accepts the server-resolved value',async()=>{
+ const body=receipt();body.request.modelSelection=CLAUDE_SELECTION;
+ const explicit={...input,modelSelection:CLAUDE_SELECTION},admitted=await receive(200,bytes(body),request(bytes(explicit)),context);
+ assert.deepEqual(admitted.request.modelSelection,CLAUDE_SELECTION);assert.deepEqual(await assertConversationInputReceipt(body,explicit),body);
+ const inferred=await receive(200,bytes(body),request(bytes(input)),context);assert.deepEqual(inferred.request.modelSelection,CLAUDE_SELECTION);
+ for(const replacement of [MODEL_CATALOG.defaultSelection,{...CLAUDE_SELECTION,effort:'low'},undefined]){
+  const wrong=structuredClone(body);if(replacement===undefined)delete wrong.request.modelSelection;else wrong.request.modelSelection=replacement;
+  await assert.rejects(receive(200,bytes(wrong),request(bytes(explicit)),context));await assert.rejects(assertConversationInputReceipt(wrong,explicit));
+ }
+});
 
 test('input metadata preserves exact canonical statuses and byte limits',()=>{
  assert.equal(metadata.packageVersion,'0.1.7');assert.equal(metadata.inputVersion,'1.0.0');assert.equal(metadata.routes.admit.path,'/api/conversations/input/admit');assert.equal(metadata.routes.admit.method,'POST');

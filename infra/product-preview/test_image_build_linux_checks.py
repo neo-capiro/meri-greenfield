@@ -149,13 +149,16 @@ class ShellIsolation(unittest.TestCase):
             self.assertEqual(result.returncode,0,result.stderr)
             records=[part.splitlines() for part in (root/'calls').read_text().split('BEGIN ')[1:]]
             runs=[r[1:-1] for r in records if r[0].endswith('/docker') and r[1]=='run']
-            self.assertEqual(len(runs),7)
+            self.assertEqual(len(runs),8)
             for args in runs:
                 for value in ['--rm','--read-only','1000:1000','none','ALL','no-new-privileges','256','2g']:
                     self.assertIn(value,args)
                 self.assertEqual(args[args.index('--platform')+1],'linux/arm64')
                 self.assertFalse(any(x in args for x in ['-v','--volume','--env-file','--privileged']))
             joined='\n'.join('\n'.join(x) for x in runs)
+            self.assertTrue(any(args[-2:]==['apps/runtime/agentcore-entrypoint.mjs','--help'] for args in runs))
+            self.assertTrue(any(args[-2:]==['apps/runtime/cli.mjs','--help'] for args in runs))
+            self.assertIn("import('./apps/runtime/agentcore-entrypoint.mjs')",joined)
             self.assertIn('runtime-base-probe.mjs',joined); self.assertIn('executor-generation-smoke.mjs',joined)
             self.assertIn('apk\n',joined); self.assertIn('info\n-vv',joined)
             self.assertIn('python3.13\n',joined); self.assertIn('-m\npip\nlist\n--format=json',joined)

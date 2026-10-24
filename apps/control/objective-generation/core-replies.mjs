@@ -16,9 +16,10 @@ import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertRequest} from '../../../packages/contracts/strategy-operations-candidate/validate.mjs';
+import {assertRequest as assertRegenerationRequest} from '../../../packages/contracts/objective-regeneration-private/validate.mjs';
+import {objectiveRequestProtocol,OBJECTIVE_DRAFT_PROTOCOL} from '../../../packages/runtime/objective-strategy-protocol.mjs';
 import {strategyTypes} from '../../../packages/contracts/strategy-operations-candidate/shapes.mjs';
 import {coreApplicationSha256} from '../../../packages/runtime/core-application-digest.mjs';
-import {objectiveCompletionId} from '../../../packages/runtime/objective-generation-custody.mjs';
 import {strategyApplication} from '../objective-planner/core-receipts.mjs';
 import {ProductError} from '../product-access/errors.mjs';
 
@@ -26,7 +27,6 @@ export const OBJECTIVE_ADMISSION_NAMESPACE='capiro.objective-strategy.admission:
 const TIME_MAX=8_640_000_000_000_000,MAX_PROMPT=100000;
 const tokenKeys=['canonicalPlanId','tenantId','clientId','objectiveId','canonicalStrategyId','canonicalProjectId','bindingVersion','epoch','requestedIntentId','requestedObjectiveRevisionId','requestedObjectiveVersion','snapshotHash'];
 const admissionKeys=['schemaVersion','namespace','canonical','actorUserId','clerkUserId','consentId','controlVersion','generationJobId','generationRequestId','admittedAtMs','effectExpiresAtMs','expectedStrategyVersionId'];
-const issuanceKeys=['issuanceKey','binding','requestSha256','expiresAtMs','grantId','capabilitySha256','factsSha256'];
 const refuse=()=>{throw new ProductError('OBJECTIVE_GENERATION_CORE_REPLY_REFUSED');};
 const same=(a,b)=>hash(a)===hash(b);
 
@@ -56,26 +56,22 @@ function admission(raw,source){
  }
  for(const key of ['actorUserId','consentId','generationJobId','generationRequestId'])uuid(a[key]);
  opaque(a.clerkUserId);integer(a.controlVersion,1,2147483647);integer(a.admittedAtMs,0,TIME_MAX);integer(a.effectExpiresAtMs,0,TIME_MAX);
- // Initial Strategy only: a non-null expected version is a regeneration admission.
+ if(a.expectedStrategyVersionId!==null)uuid(a.expectedStrategyVersionId);
  if(a.schemaVersion!==1||a.namespace!==OBJECTIVE_ADMISSION_NAMESPACE||c.epoch!==1||a.effectExpiresAtMs<=a.admittedAtMs||
-    a.expectedStrategyVersionId!==null||a.generationJobId!==source.generationJobId||
-    a.clerkUserId!==source.binding.actorId||c.tenantId!==source.binding.tenantId)refuse();
+    a.generationJobId!==source.generationJobId||
+    a.actorUserId!==source.binding.actorId||c.tenantId!==source.binding.tenantId)refuse();
  return {...a,canonical:c};
 }
 
 function binding(raw){const b=closed(raw,['tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence']);validateShape('RunBinding',b);return b;}
 
-function acceptance(raw,{admitted,sourceAdmissionSha256,source,issuance,observed}){
- const keys=['schemaVersion','sourceAdmissionSha256','sourceBinding','sourceRequestSha256','issuance',...(observed?['acceptedAtMs']:[])];
- const r=closed(raw,keys),b=binding(r.sourceBinding),i=closed(r.issuance,issuanceKeys);binding(i.binding);
- for(const key of ['issuanceKey','requestSha256','capabilitySha256','factsSha256'])sha(i[key]);uuid(i.grantId);integer(i.expiresAtMs,1,TIME_MAX);
- if(r.schemaVersion!==1||r.sourceAdmissionSha256!==sourceAdmissionSha256||sha(r.sourceRequestSha256)!==i.requestSha256||
-    !same(b,source.binding)||!same(i.binding,b)||i.issuanceKey!==hash(b)||i.expiresAtMs>admitted.effectExpiresAtMs)refuse();
- // The genuine original Meri ISSUED receipt is the comparator; a reply cannot introduce one.
- if(issuance!==undefined&&!same({...i},issuance))refuse();
- if(observed){integer(r.acceptedAtMs,0,TIME_MAX);
-  if(r.acceptedAtMs<admitted.admittedAtMs||r.acceptedAtMs>=admitted.effectExpiresAtMs||i.expiresAtMs<=r.acceptedAtMs)refuse();}
- return {...r,sourceBinding:b,issuance:{...i,binding:b}};
+function acceptance(raw,{admitted,sourceAdmissionSha256,source,record}){
+ const r=closed(raw,['schemaVersion','sourceAdmissionSha256','sourceBinding','sourceRequestSha256','effectExpiresAtMs','acceptedAtMs']),b=binding(r.sourceBinding);
+ integer(r.effectExpiresAtMs,1,TIME_MAX);integer(r.acceptedAtMs,0,TIME_MAX);sha(r.sourceRequestSha256);
+ if(r.schemaVersion!==1||r.sourceAdmissionSha256!==sourceAdmissionSha256||!same(b,source.binding)||r.effectExpiresAtMs>admitted.effectExpiresAtMs||
+  r.acceptedAtMs<admitted.admittedAtMs||r.acceptedAtMs>=r.effectExpiresAtMs)refuse();
+ if(record!==undefined&&(!same(record.binding,b)||record.sourceAdmissionSha256!==r.sourceAdmissionSha256||record.sourceRequestSha256!==r.sourceRequestSha256||record.effectExpiresAtMs!==r.effectExpiresAtMs))refuse();
+ return {...r,sourceBinding:b};
 }
 
 /** POST generation-admissions. */
@@ -88,12 +84,12 @@ export function decodeAdmissionReply(raw,expected){
 }
 
 /** GET generation-admissions/:id. Unavailable acceptance is not absence of an acceptance write. */
-export function decodeAdmissionReadReply(raw,expected,{issuance}={}){
+export function decodeAdmissionReadReply(raw,expected){
  try{
   const source=expectedSource(expected),r=closed(raw,['schemaVersion','sourceAdmission','sourceAdmissionSha256','acceptance']);
   const a=admission(r.sourceAdmission,source),digest=sha(r.sourceAdmissionSha256),p=closed(r.acceptance,['availability','value']);
   if(r.schemaVersion!==1||digest!==coreApplicationSha256(a)||!['available','unavailable'].includes(p.availability)||(p.availability==='unavailable')!==(p.value===null))refuse();
-  const accepted=p.availability==='available'?acceptance(p.value,{admitted:a,sourceAdmissionSha256:digest,source,issuance,observed:true}):null;
+  const accepted=p.availability==='available'?acceptance(p.value,{admitted:a,sourceAdmissionSha256:digest,source}):null;
   return frozen({sourceAdmission:a,sourceAdmissionSha256:digest,acceptance:accepted});
  }catch{refuse();}
 }
@@ -103,10 +99,12 @@ export function decodePublicationReply(raw,expected,{admission:admitted}){
  try{
   const source=expectedSource(expected),a=admission(admitted,source),c=a.canonical,digest=coreApplicationSha256(a);
   const r=closed(raw,['schemaVersion','sourceAdmissionSha256','request','requestSha256','executionContext']);
-  if(r.schemaVersion!==1||r.sourceAdmissionSha256!==digest||!r.request||typeof r.request!=='object'||Object.hasOwn(r.request,'requestVersion'))refuse();
-  const q=assertRequest(r.request),e=closed(r.executionContext,['schemaVersion','prompt','promptSha256','ownerRefs','contextPacketId']);
-  if(q.operation!=='strategy.draft'||q.basis!==null||sha(r.requestSha256)!==hash(q)||q.jobId!==a.generationJobId||q.requestId!==a.generationRequestId||
-     q.principal.tenantId!==c.tenantId||q.principal.actorId!==a.clerkUserId||q.principal.clientId!==c.clientId||q.source.kind!=='objective'||
+  if(r.schemaVersion!==1||r.sourceAdmissionSha256!==digest||!r.request||typeof r.request!=='object')refuse();
+  const q=Object.hasOwn(r.request,'requestVersion')?assertRegenerationRequest(r.request):assertRequest(r.request),protocol=objectiveRequestProtocol(q,{sourceAdmission:a,sourceAdmissionSha256:digest});
+  if((protocol.kind===OBJECTIVE_DRAFT_PROTOCOL.kind)!==(a.expectedStrategyVersionId===null))refuse();
+  const e=closed(r.executionContext,['schemaVersion','prompt','promptSha256','ownerRefs','contextPacketId']);
+  if(q.operation!=='strategy.draft'||sha(r.requestSha256)!==hash(q)||q.jobId!==a.generationJobId||q.requestId!==a.generationRequestId||
+     q.principal.tenantId!==c.tenantId||q.principal.actorId!==a.actorUserId||q.principal.clientId!==c.clientId||q.source.kind!=='objective'||
      q.source.objectiveId!==c.objectiveId||q.source.objectiveRevisionId!==c.requestedObjectiveRevisionId||
      q.source.objectiveVersion!==c.requestedObjectiveVersion||q.source.snapshotSha256!==c.snapshotHash||
      q.originalExpiresAtMs>a.effectExpiresAtMs||!strategyTypes.includes(q.input.typeHint))refuse();
@@ -119,11 +117,11 @@ export function decodePublicationReply(raw,expected,{admission:admitted}){
  }catch{refuse();}
 }
 
-/** POST generation-acceptances, compared to the genuine original Meri ISSUED receipt. */
-export function decodeAcceptanceReply(raw,expected,{admission:admitted,issuance}){
+/** Core's actual saved acceptance, compared to the immutable run-start when supplied. */
+export function decodeAcceptanceReply(raw,expected,{admission:admitted,record}){
  try{
-  const source=expectedSource(expected),a=admission(admitted,source);if(issuance===undefined)refuse();
-  return frozen(acceptance(raw,{admitted:a,sourceAdmissionSha256:coreApplicationSha256(a),source,issuance,observed:false}));
+  const source=expectedSource(expected),a=admission(admitted,source);
+  return frozen(acceptance(raw,{admitted:a,sourceAdmissionSha256:coreApplicationSha256(a),source,record}));
  }catch{refuse();}
 }
 
@@ -147,9 +145,9 @@ export function decodeCompletionReply(raw,expected,{admission:admitted,publicati
  try{
   const source=expectedSource(expected),a=admission(admitted,source),digest=coreApplicationSha256(a);
   const p=decodePublicationReply({schemaVersion:1,sourceAdmissionSha256:publication.sourceAdmissionSha256,request:publication.request,requestSha256:publication.requestSha256,executionContext:publication.executionContext},source,{admission:a});
-  const c=acceptance(accepted,{admitted:a,sourceAdmissionSha256:digest,source,issuance:undefined,observed:true});
+  const c=acceptance(accepted,{admitted:a,sourceAdmissionSha256:digest,source});
   const r=closed(raw,['schemaVersion','generationJobId','sourceAdmissionSha256','sourceBinding','sourceRequestSha256','completion','objectiveReceipt','objectiveReceiptSha256','snapshotDigest']);
-  const w=closed(r.completion,witnessKeys),completionId=objectiveCompletionId(source.binding);
+  const w=closed(r.completion,witnessKeys),completionId=source.binding.runId;
   if(r.schemaVersion!==1||r.generationJobId!==a.generationJobId||r.sourceAdmissionSha256!==digest||!same(binding(r.sourceBinding),source.binding)||
      r.sourceRequestSha256!==c.sourceRequestSha256||sha(r.snapshotDigest)!==r.snapshotDigest||sha(r.objectiveReceiptSha256)!==coreApplicationSha256(r.objectiveReceipt))refuse();
   if(w.schemaVersion!==1||w.namespace!=='capiro.objective-strategy.completion:v1'||w.generationJobId!==a.generationJobId||w.generationRequestId!==a.generationRequestId||
@@ -158,7 +156,7 @@ export function decodeCompletionReply(raw,expected,{admission:admitted,publicati
   uuid(w.checkpointId);for(const key of ['checkpointSha256','resultSha256','rawFileSha256','executionSha256','payloadSha256','corePayloadSha256'])sha(w[key]);
   integer(w.completedAtMs,0,TIME_MAX);
   if(w.completedAtMs<Math.max(a.admittedAtMs,c.acceptedAtMs,p.request.requestedAtMs)||
-     w.completedAtMs>=Math.min(a.effectExpiresAtMs,c.issuance.expiresAtMs,p.request.originalExpiresAtMs))refuse();
+     w.completedAtMs>=Math.min(a.effectExpiresAtMs,c.effectExpiresAtMs,p.request.originalExpiresAtMs))refuse();
   const applied=strategyApplication({receipt:r.objectiveReceipt,status:'completed',canonical:a.canonical});
   if(applied.generationRequestId!==a.generationRequestId)refuse();
   return frozen({generationJobId:a.generationJobId,completion:w,strategyId:applied.strategyId,strategyVersionId:applied.strategyVersionId,

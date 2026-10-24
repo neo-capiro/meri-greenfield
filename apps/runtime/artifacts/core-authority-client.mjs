@@ -12,7 +12,7 @@ import {types} from 'node:util';
 import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
-import {ARTIFACT_AUTHORITY_CONTRACT,ARTIFACT_AUTHORITY_ROUTE,MAX_RECEIPT_BYTES,assertArtifactAuthorityRequest,assertArtifactAuthorityReceipt,
+import {ARTIFACT_AUTHORITY_CONTRACT,ARTIFACT_AUTHORITY_GENERAL_CONTRACT,ARTIFACT_AUTHORITY_ROUTE,MAX_RECEIPT_BYTES,assertArtifactAuthorityRequest,assertArtifactAuthorityReceipt,
  artifactAuthorityStatusCode,isArtifactAuthorityError,refuse,ArtifactAuthorityError} from './core-authority-wire.mjs';
 
 const TOKEN=/^[\x21-\x7e]{1,8192}$/u,MAX_REQUEST_MS=10000;
@@ -37,8 +37,8 @@ export function createCoreArtifactAuthorityClient(configuration){
   try{
    let call;try{call=own(value,['bearer','serviceSecret','request','deadlineMs'],['signal']);nativeSignal(call.signal);}catch{refuse('ACCESS_DENIED');}
    if(!TOKEN.test(call.bearer??'')||!TOKEN.test(call.serviceSecret??'')||call.bearer===call.serviceSecret||!Number.isSafeInteger(call.deadlineMs))refuse('ACCESS_DENIED');
-   let selected;try{selected=own(call.request,['conversationId','clientId','intent','requestSha256']);}catch{refuse('ACCESS_DENIED');}
-   const request=assertArtifactAuthorityRequest({contract:ARTIFACT_AUTHORITY_CONTRACT,observationId:newObservationId(),...selected});
+   let selected;try{selected=own(call.request,['conversationId','clientId','intent','requestSha256'],['scopeKind']);}catch{refuse('ACCESS_DENIED');}
+   const request=assertArtifactAuthorityRequest({contract:selected.scopeKind===undefined?ARTIFACT_AUTHORITY_CONTRACT:ARTIFACT_AUTHORITY_GENERAL_CONTRACT,observationId:newObservationId(),...selected});
    if(call.signal?.aborted)refuse('CANCELLED');
    const startedAtMs=now();if(!Number.isSafeInteger(startedAtMs)||startedAtMs<0)refuse('UNAVAILABLE');
    const cutoff=Math.min(call.deadlineMs,startedAtMs+maxRequestMs);if(cutoff<=startedAtMs)refuse('DEADLINE');

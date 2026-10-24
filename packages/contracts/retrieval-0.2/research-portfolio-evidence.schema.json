@@ -18,11 +18,16 @@
             "recordId": {
               "type": "string",
               "format": "uuid"
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid"
             }
           },
           "required": [
             "origin",
-            "recordId"
+            "recordId",
+            "portfolioId"
           ],
           "additionalProperties": false
         },
@@ -39,11 +44,16 @@
             "recordId": {
               "type": "string",
               "format": "uuid"
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid"
             }
           },
           "required": [
             "origin",
-            "recordId"
+            "recordId",
+            "portfolioId"
           ],
           "additionalProperties": false
         },
@@ -56,10 +66,15 @@
             "conversationId": {
               "type": "string",
               "format": "uuid"
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid"
             }
           },
           "required": [
-            "origin"
+            "origin",
+            "portfolioId"
           ],
           "additionalProperties": false
         }

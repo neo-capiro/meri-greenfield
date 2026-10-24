@@ -5,7 +5,6 @@ import {readFile,mkdtemp,open,rm,lstat} from 'node:fs/promises';
 import {constants as fsConstants} from 'node:fs';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
-import {request as httpsRequest} from 'node:https';
 import {pathToFileURL} from 'node:url';
 import {renderTemporalConfig,validateTemporalLaunch} from './temporal-launch-render.mjs';
 
@@ -40,48 +39,6 @@ export async function readTaskEniAddress(env,fetcher=fetch){
  return ip;
 }
 
-/** Reject missing/empty keys before the upstream server can start with an empty cache. */
-async function readPinnedHttpsJson(url,ca){
- return await new Promise((resolve,reject)=>{
-  const req=httpsRequest(url,{method:'GET',ca,rejectUnauthorized:true,agent:false,timeout:1500,
-   signal:AbortSignal.timeout(1500),
-   headers:{accept:'application/json'}},res=>{
-    if(res.statusCode!==200){res.resume();reject(Error('TEMPORAL_LAUNCH_REFUSED'));return;}
-    const chunks=[];let size=0;
-    res.on('data',chunk=>{size+=chunk.length;if(size>65536){req.destroy(Error('TEMPORAL_LAUNCH_REFUSED'));return;}chunks.push(chunk);});
-    res.once('end',()=>{try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));}catch{reject(Error('TEMPORAL_LAUNCH_REFUSED'));}});
-    res.once('error',reject);
-  });
-  req.once('timeout',()=>req.destroy(Error('TEMPORAL_LAUNCH_REFUSED')));
-  req.once('error',reject);req.end();
- });
-}
-export async function checkIssuerJwks(env,reader=readPinnedHttpsJson,issuerCa){
- const v=validateTemporalLaunch(env,[env.MERI_TEMPORAL_ROLE]);
- const ca=issuerCa??await readFile('/opt/meri/issuer-ca.pem','utf8');
- const document=await reader(v.jwks,ca);
- if(!Array.isArray(document?.keys)||document.keys.length<1||document.keys.length>16)fail();
- const ids=new Set();
- for(const key of document.keys){
-  try{
-   if(!key||typeof key!=='object'||typeof key.kid!=='string'||key.kid.length<1||key.kid.length>128||
-      ids.has(key.kid)||key.use!=='sig'||
-      (key.key_ops!==undefined&&(!Array.isArray(key.key_ops)||!key.key_ops.includes('verify')))||
-      ['d','p','q','dp','dq','qi','oth','k'].some(field=>field in key))fail();
-   ids.add(key.kid);
-   const publicKey=createPublicKey({key,format:'jwk'});
-   if(key.kty==='RSA'&&key.alg==='RS256'){
-    const details=publicKey.asymmetricKeyDetails;
-    if(publicKey.asymmetricKeyType!=='rsa'||details.modulusLength<2048||details.modulusLength>8192||
-       details.publicExponent!==65537n)fail();
-   }else if(key.kty==='EC'&&key.alg==='ES256'&&key.crv==='P-256'){
-    if(publicKey.asymmetricKeyType!=='ec'||publicKey.asymmetricKeyDetails.namedCurve!=='prime256v1')fail();
-   }else fail();
-  }catch{fail();}
- }
- return true;
-}
-
 function checkPemPair(certText,keyText){
  try{
   const cert=new X509Certificate(certText),key=createPrivateKey(keyText);
@@ -106,9 +63,6 @@ export async function prepareTemporalLaunch(env,argv,{fetcher=fetch}={}){
  if(contract!==env.MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256)fail();
  const caDigest=createHash('sha256').update(env.MERI_TEMPORAL_RDS_CA_PEM,'utf8').digest('hex');
  if(caDigest!==env.MERI_TEMPORAL_RDS_CA_SHA256)fail();
- const issuerCa=await readFile('/opt/meri/issuer-ca.pem','utf8');
- if(createHash('sha256').update(issuerCa,'utf8').digest('hex')!==env.MERI_TEMPORAL_ISSUER_CA_SHA256)fail();
- checkCa(issuerCa);
  checkCa(env.MERI_TEMPORAL_RDS_CA_PEM);checkCa(env.MERI_TEMPORAL_INTERNODE_CA_PEM);
  checkCa(env.MERI_TEMPORAL_FRONTEND_CA_PEM);
  checkPemPair(env.MERI_TEMPORAL_INTERNODE_CERT_PEM,env.MERI_TEMPORAL_INTERNODE_KEY_PEM);
@@ -119,7 +73,7 @@ export async function prepareTemporalLaunch(env,argv,{fetcher=fetch}={}){
  const root=await lstat(ROOT);
  if(!root.isDirectory()||root.isSymbolicLink()||root.uid!==process.getuid()||
     (root.mode&0o700)!==0o700||(root.mode&0o022)!==0)fail();
- const [ip]=await Promise.all([readTaskEniAddress(env,fetcher),checkIssuerJwks(env,undefined,issuerCa)]);
+ const ip=await readTaskEniAddress(env,fetcher);
  const dir=await mkdtemp(`${ROOT}/launch-`);let complete=false;
  try{
   const files={rdsCa:join(dir,'rds-ca.pem'),internodeCert:join(dir,'internode-cert.pem'),
@@ -154,7 +108,7 @@ async function launch(){
  catch{process.stderr.write('TEMPORAL_LAUNCH_REFUSED\n');process.exitCode=78;return;}
  let child;
  try{child=spawn('/usr/local/bin/temporal-server',['--config-file',prepared.configPath,'start','--service',prepared.role],
-   {stdio:'inherit',env:{PATH:'/usr/local/bin:/usr/bin:/bin',HOME:'/etc/temporal',SSL_CERT_FILE:'/opt/meri/issuer-ca.pem'}});}
+   {stdio:'inherit',env:{PATH:'/usr/local/bin:/usr/bin:/bin',HOME:'/etc/temporal'}});}
  catch{await rm(prepared.dir,{recursive:true,force:true});process.stderr.write('TEMPORAL_SERVER_START_REFUSED\n');process.exitCode=78;return;}
  const forwarders=new Map(['SIGTERM','SIGINT'].map(signal=>[signal,()=>child.kill(signal)]));
  for(const [signal,forward] of forwarders)process.on(signal,forward);

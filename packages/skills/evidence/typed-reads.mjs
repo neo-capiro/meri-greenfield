@@ -5,7 +5,6 @@ import {data,own} from '../../contracts/commands-0.2/execution-boundary.mjs';
 import {selectSkill} from '../index.mjs';
 import {materialSections} from './material-records.mjs';
 import {aggregateMaterial,same,fail} from './record-pages.mjs';
-const stable=subject=>{const {authorizationDecisionId,...rest}=subject;return rest;};
 function contextValue(raw,asset){const c=data(own(raw,['binding','subject','window','asOf','mondayBoardIds']));validateShape('RunBinding',c.binding);assertSubject(c.subject,c.binding);assertWindow(c.window);
  if(!asset.manifest.subjectKinds.includes(c.subject.kind)||!asset.manifest.windowBases.includes(c.window.basis)||typeof c.asOf!=='string'||!Number.isFinite(Date.parse(c.asOf))||new Date(c.asOf).toISOString()!==c.asOf||!Array.isArray(c.mondayBoardIds)||c.mondayBoardIds.length>100||new Set(c.mondayBoardIds).size!==c.mondayBoardIds.length||c.mondayBoardIds.some(x=>typeof x!=='string'||!x))fail('WORKFLOW_CONTEXT_REFUSED');return c;}
 export function bindWorkflowReads(rawContext,rawReceipts,identity){
@@ -18,7 +17,7 @@ export function bindWorkflowReads(rawContext,rawReceipts,identity){
   if(contract.descriptor.sourceRequirements.length!==1||!asset.manifest.requiredSources.some(s=>s.sourceId===sourceId))fail('WORKFLOW_SOURCE_REFUSED');
   const rawResult=r.result,wrapped=Object.hasOwn(rawResult,'result');let result=rawResult,subject=rawResult.subject;
   if(wrapped){own(rawResult,['binding','subject','operation','argumentsSha256','result']);if(!same(rawResult.operation,r.operation)||rawResult.argumentsSha256!==normalized.argumentsSha256)fail('WORKFLOW_REQUEST_BINDING');result=rawResult.result;}
-  if(!same(rawResult.binding,context.binding)||!subject||!same(stable(subject),stable(context.subject)))fail('WORKFLOW_READ_BINDING');assertSubject(subject,context.binding);
+  if(!same(rawResult.binding,context.binding)||!subject||!same(subject,context.subject))fail('WORKFLOW_READ_BINDING');assertSubject(subject,context.binding);
   contract.assertOutput(result,{request:r.request,...r.normalizationContext});
   if(result.operation&&!same(result.operation,r.operation)||result.argumentsSha256!==undefined&&result.argumentsSha256!==normalized.argumentsSha256)fail('WORKFLOW_REQUEST_BINDING');
   const sourceWindow=result.window??null,windowMatch=sourceWindow===null?'native-window-undeclared':same(sourceWindow,context.window)?'exact':sourceWindow.basis==='unbounded'?'broad-native-read':'refused';
@@ -33,7 +32,7 @@ export function bindWorkflowReads(rawContext,rawReceipts,identity){
   cell.limitations.push(...(cover.limitations??[]),'Native read coverage and metadata do not verify semantic conclusions or exhaustive history.');if(windowMatch!=='exact')cell.limitations.push('Native window differs or is undeclared; coverage is not evidence of complete selected-window enumeration.');
   coverage.set(sourceId,cell);
   const material=materialSections(result,sourceId,subject);
-  if(source.retrievedAt!==null)for(const s of material)sections.push({...s,source,authorizationDecisionId:subject.authorizationDecisionId,receiptSha256:r.resultSha256});
+  if(source.retrievedAt!==null)for(const s of material)sections.push({...s,source,binding:rawResult.binding,receiptSha256:r.resultSha256});
   if(!material.length||source.retrievedAt===null)cell.limitations.push('Projection-only or unsupported material: no complete eligible version/hash/body with an observed read time; metadata is not a decisive source excerpt.');
  }
  const {records,incomplete}=aggregateMaterial(sections,context);

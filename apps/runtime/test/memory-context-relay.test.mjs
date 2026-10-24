@@ -30,3 +30,12 @@ test('relay closure withholds an in-flight continuation receipt',async()=>{
  const pending=relay.forTask({}).loadPrevious({});relay.close();complete('stale');
  await assert.rejects(pending,{code:'MEMORY_CONTEXT_UNAVAILABLE'});
 });
+
+
+test('mail uses its distinct journal factory and captured ports are fenced on close',async()=>{
+ const relay=createMemoryContextRelay();let calls=0;
+ relay.bind({forTask(){throw Error('memory factory must not handle mail');},forMail(task){assert.equal(task.clientId,null);calls++;return {loadPrevious:async()=> 'mail',retain:async()=> 'retained'};}});
+ const ports=relay.forMail({clientId:null});assert.equal(await ports.loadPrevious({}),'mail');assert.equal(calls,1);
+ relay.close();await assert.rejects(ports.retain({}),{code:'MEMORY_CONTEXT_UNAVAILABLE'});
+ assert.throws(()=>relay.forMail({}),{code:'MEMORY_CONTEXT_UNAVAILABLE'});
+});

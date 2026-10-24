@@ -14,8 +14,9 @@ import {types} from 'node:util';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertRequest} from '../../../packages/contracts/strategy-operations-candidate/validate.mjs';
+import {assertRequest as assertRegenerationRequest} from '../../../packages/contracts/objective-regeneration-private/validate.mjs';
 import {strategyTypes} from '../../../packages/contracts/strategy-operations-candidate/shapes.mjs';
-import {assertPreparedObjectiveSelection,sourceAdmissionDigest} from '../../../packages/runtime/objective-generation-custody.mjs';
+import {assertObjectiveSourceSelection,sourceAdmissionDigest} from '../../../packages/runtime/objective-generation-custody.mjs';
 
 export const OBJECTIVE_RUN_START_SCHEMA_VERSION=1;
 const fault=()=>Object.assign(Error('OBJECTIVE_RUN_START_REFUSED'),{code:'OBJECTIVE_RUN_START_REFUSED'});
@@ -28,10 +29,6 @@ const integer=(v,min=0)=>Number.isSafeInteger(v)&&v>=min;
 const SELECTION_KEYS=Object.freeze(['sourceAdmission','request','executionContext','queuedType']);
 const RECORD_KEYS=Object.freeze(['schemaVersion','generationJobId','binding','sourceAdmissionSha256','sourceRequestSha256','typedRequestSha256','selectionSha256','effectExpiresAtMs','selection']);
 export const OBJECTIVE_RUN_START_COLUMNS=Object.freeze(['generation_job_id','tenant_id','conversation_id','run_id','issuance_key','binding','source_admission_sha256','source_request_sha256','typed_request_sha256','selection_sha256','record_sha256','effect_expires_at_ms','record','created_at']);
-// assertPreparedObjectiveSelection requires its closed executionSelection member. The genuine provider/model selection is
-// issued later with the run's model grant (protected-facts.mjs), never at run start, so this stand-in exists only for the
-// call below and is never returned, stored or hashed into a record.
-const VALIDATION_ONLY_EXECUTION=Object.freeze({provider:'meri-objective-run-start-validation',model:'meri-objective-run-start-validation'});
 
 // RFC 9562 version 8 layout over a domain-separated SHA-256 (same construction as scheduled occurrences, distinct domain).
 function derivedUuid(key,label){
@@ -68,13 +65,13 @@ export function objectiveAcceptedRequest(selection){
 export function assertObjectiveRunSelection(value,{binding,nowMs}={}){
  try{
   if(types.isProxy(value))refuse();
-  const s=data(own(value,SELECTION_KEYS)),request=assertRequest(s.request);
+  const s=data(own(value,SELECTION_KEYS)),request=Object.hasOwn(s.request,'requestVersion')?assertRegenerationRequest(s.request):assertRequest(s.request);
   if(!strategyTypes.includes(s.queuedType)||nowMs!==undefined&&!integer(nowMs))refuse();
   const acceptedRequest=objectiveAcceptedRequest(s),admission=s.sourceAdmission;
   if(!integer(admission?.effectExpiresAtMs,1)||!integer(request.originalExpiresAtMs,1))refuse();
   const effectExpiresAtMs=Math.min(admission.effectExpiresAtMs,request.originalExpiresAtMs);
-  const admitted=assertPreparedObjectiveSelection({objectiveGeneration:{sourceAdmission:admission,sourceAdmissionSha256:sourceAdmissionDigest(admission)},
-   objectiveStrategy:{schemaVersion:1,operation:'strategy.draft',request,requestSha256:hash(request),executionContext:s.executionContext,queuedType:s.queuedType,executionSelection:VALIDATION_ONLY_EXECUTION}},
+  const admitted=assertObjectiveSourceSelection({objectiveGeneration:{sourceAdmission:admission,sourceAdmissionSha256:sourceAdmissionDigest(admission)},
+   objectiveStrategy:{schemaVersion:1,operation:'strategy.draft',request,requestSha256:hash(request),executionContext:s.executionContext,queuedType:s.queuedType}},
    {binding,acceptedRequest,expiresAtMs:effectExpiresAtMs,...(nowMs===undefined?{}:{nowMs})});
   if(admission.canonical.tenantId!==binding.tenantId)refuse();
   return data({selection:s,acceptedRequest,sourceAdmissionSha256:admitted.sourceAdmissionSha256,sourceRequestSha256:admitted.sourceRequestSha256,

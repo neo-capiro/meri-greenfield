@@ -54,7 +54,7 @@ class TemporalStartTests(unittest.TestCase):
         cls.addClassCleanup(shutil.rmtree, cls.tmp, True)
         cls.repo, cls.commit = sealed_repository(cls.tmp)
         (cls.tmp / "inputs").mkdir()
-        cls.seal = context.seal(cls.repo, cls.commit, cls.tmp / "ca.pem", cls.tmp / "inputs" / "temporal-context.zip")
+        cls.seal = context.seal(cls.repo, cls.commit, cls.tmp / "inputs" / "temporal-context.zip")
         (cls.tmp / "aws").write_text(AWS_STUB, newline="\n"); (cls.tmp / "aws").chmod(0o755)
         cls.log = cls.tmp / "calls.log"
 
@@ -82,8 +82,8 @@ class TemporalStartTests(unittest.TestCase):
         self.assertEqual(self.log.read_text(), "")
         self.assertEqual(sorted(p.name for p in (self.tmp / "inputs").iterdir()), ["temporal-context.zip"])
         bound = json.loads([l for l in r.stderr.splitlines() if l.startswith("{")][0])
-        self.assertEqual((bound["zipSha256"], bound["buildScriptSha256"], bound["issuerCaSha256"], bound["bases"]),
-                         (self.seal["zipSha256"], self.seal["buildScriptSha256"], self.seal["issuerCaSha256"], context.BASES))
+        self.assertEqual((bound["zipSha256"], bound["buildScriptSha256"], bound["bases"]),
+                         (self.seal["zipSha256"], self.seal["buildScriptSha256"], context.BASES))
         req = json.loads(r.stdout)
         self.assertEqual((req["projectName"], req["timeoutInMinutesOverride"], req["queuedTimeoutInMinutesOverride"],
                           req["autoRetryLimitOverride"], req["sourceTypeOverride"], req["artifactsOverride"]),

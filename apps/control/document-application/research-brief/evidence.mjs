@@ -1,7 +1,6 @@
 /** Bind gateway-owned canonical decisive reads; never authenticate model citations. */
 import {createHash} from 'node:crypto';
 import {artifactValidators as v,assertEvidence} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {validateShape as publicShape} from '../../../../packages/contracts/validate.mjs';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {fail,text} from './input.mjs';
 import {briefReadOperation} from './skill.mjs';
@@ -23,8 +22,8 @@ export function bindRead(value,call,asOf){
   const records=e.data?.records??[];if(records.length!==r.evidence.length||records.length>40)fail('BRIEF_READ_BINDING');
   const ids=new Set();
   for(const record of records){
-    const p=r.evidence.find(x=>x.citationId===record.citationId);if(!p)fail('BRIEF_READ_BINDING');publicShape('SourceEvidence',p);
-    if(ids.has(p.citationId)||p.authorizationDecisionId!==e.subject.authorizationDecisionId||p.sourceId!==call.sourceId||p.recordId!==record.recordId||p.sourceVersionId!==record.recordVersionId||
+    const p=r.evidence.find(x=>x.citationId===record.citationId);if(!p)fail('BRIEF_READ_BINDING');v.nativeSourceEvidence(p);
+    if(ids.has(p.citationId)||v.hash(p.binding)!==v.hash(e.binding)||p.sourceId!==call.sourceId||p.recordId!==record.recordId||p.sourceVersionId!==record.recordVersionId||
       p.contentSha256!==record.contentSha256||p.contentSha256!==sha(Buffer.from(record.content.text))||
       v.hash(p.scopes)!==v.hash(record.scopes)||p.scopes.some(s=>!call.scopes.some(t=>v.hash(s)===v.hash(t)))||
       p.observedAt!==e.sources[0].retrievedAt||Date.parse(p.observedAt)>Date.parse(asOf)||

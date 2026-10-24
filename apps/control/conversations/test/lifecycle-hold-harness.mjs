@@ -2,7 +2,7 @@
  * control lifecycle service, journal and store. Only the SDK transport and native checkpoint capture are
  * scripted; the SQL engine is the caller's pool (scripted protocol fixture by default, owned PostgreSQL opt-in). */
 import assert from 'node:assert/strict';
-import {lifecycleFixture,binding as fixtureBinding,id,versions} from './lifecycle-fixture.mjs';
+import {lifecycleFixture,binding as fixtureBinding,id,versions,allocateOriginal} from './lifecycle-fixture.mjs';
 import {createLifecycleRunOwner} from '../lifecycle/worker-owner.mjs';
 import {createConversationActivity} from '../../../worker/conversation/activity.mjs';
 const SESSION_ID=id(223); // the session the fixture's native capture records
@@ -13,23 +13,24 @@ export async function holdComposition({pool,binding=fixtureBinding,scopes,captur
   async nextControls(args){const page=await owner.nextControls(args);counts.reads++;await hooks.afterRead?.(counts.reads,page);return page;},
   async claimControl(args){counts.claims++;const result=await owner.claimControl(args);await hooks.afterClaim?.(result);return result;},
   async append(args){await hooks.beforeAppend?.(args.event,args.signal);let result;try{result=await owner.append(args);}catch(error){refusals.push({type:args.event.type,data:args.event.data,code:error.code});hooks.refused?.(args.event,error);throw error;}await hooks.afterAppend?.(args.event,result);return result;}};
- async function captureCheckpoint({sessionId}){counts.captures++;if(captureFails)throw Error('synthetic native capture refusal');const proof=await f.capture(id(220)),cp=proof.checkpoint;
-  return {checkpoint:cp,checkpointSha256:proof.checkpointSha256,sourceRequestSha256:proof.sourceRequestSha256,contextSha256:proof.contextSha256,sessionId,resumeSessionAt:null,verificationId:id(227),workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs:Date.now(),expiresAtMs:Date.now()+5000};}
- const prepareRuntime=async({binding:b})=>({binding:b,versions,cwd:`/workspace/conversations/${b.conversationId}`,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+4000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:4096});
+ async function captureCheckpoint(){counts.captures++;if(captureFails)throw Error('synthetic native capture refusal');await f.capture();}
+
+ const prepareRuntime=async({binding:b})=>({binding:b,versions,cwd:`/workspace/conversations/${b.conversationId}`,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+4000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:4096});
  let n=0;const api={init:{type:'system',subtype:'init',session_id:SESSION_ID},text:text=>({type:'assistant',parent_tool_use_id:null,session_id:SESSION_ID,message:{id:`msg_${++n}`,content:[{type:'text',text}]}}),result:{type:'result',subtype:'success',is_error:false}};
  const h={f,hooks,counts,inputs,refusals,script:null};
  function query(args){counts.queries++;const stop=Promise.withResolvers();return {async *[Symbol.asyncIterator](){const iterator=args.prompt[Symbol.asyncIterator]();inputs.push((await iterator.next()).value);
    void (async()=>{for(;;){const next=await iterator.next();if(next.done)return;inputs.push(next.value);}})();yield* h.script({...api,stopped:stop.promise});},
   async interrupt(){counts.interrupts++;await hooks.interrupted?.();return {still_queued:[]};},close(){counts.closes++;stop.resolve();}};}
  const lifecycle={captureCheckpoint,pollMs:5,...(captureCompletion?{captureCompletion:input=>captureCompletion(h,input)}:{})};
- h.execute=async()=>{await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});await hooks.afterSubmit?.();return createConversationActivity({runOwner,prepareRuntime,query,lifecycle,...(terminalAttemptMs?{terminalAttemptMs}:{})})({binding});};
+ h.execute=async()=>{await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});await allocateOriginal(f.store,binding);await hooks.afterSubmit?.();return createConversationActivity({runOwner,prepareRuntime,query,lifecycle,...(terminalAttemptMs?{terminalAttemptMs}:{})})({binding});};
  h.control=intent=>f.control(intent==='pause'?{controlId:id(231),intent}:{controlId:id(232),intent,proposalId:f.proposal.proposalId});
  h.controlId=intent=>intent==='pause'?id(231):id(232);
  h.history=async()=>f.store.read(binding,{after:0,limit:100},()=>{});
  h.control_state=async intent=>(await f.store.lifecycle.get({binding,scopes:(await h.history()).run.scopes,selectedClientId:id(5),controlId:h.controlId(intent)},()=>{})).state;
  h.row=async()=>{if(pool){const r=(await pool.query('SELECT hold_control_id,projection FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[binding.tenantId,binding.conversationId,binding.runId])).rows[0];return {hold:r.hold_control_id,state:r.projection.state};}
   const r=[...f.state.runs.values()].find(row=>row.run_id===binding.runId);return {hold:r.hold_control_id??null,state:r.projection.state};};
- h.checkpointed=async()=>{if(pool)return Number((await pool.query('SELECT count(*) AS n FROM meri_conversations.checkpoints WHERE tenant_id=$1 AND run_id=$2',[binding.tenantId,binding.runId])).rows[0].n);return f.state.checkpoints.size;};
+ h.checkpointed=async()=>{if(pool)return Number((await pool.query("SELECT count(*) AS n FROM meri_conversations.controls WHERE tenant_id=$1 AND run_id=$2 AND projection->>'state'='APPLIED' AND projection->'proof'->>'kind'='native-session'",[binding.tenantId,binding.runId])).rows[0].n);return [...f.state.controls.values()].filter(row=>row.run_id===binding.runId&&row.projection.state==='APPLIED'&&row.projection.proof?.kind==='native-session').length;};
+
  return h;
 }
 /** The acceptance invariants every interleaving must satisfy. */

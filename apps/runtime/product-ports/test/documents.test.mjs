@@ -11,6 +11,7 @@ import {captureRuntimePorts} from '../../product-applications.mjs';
 import {assembleControl} from '../../control.mjs';
 import {createPostgresRetentionJournal} from '../../../control/retention/postgres-journal.mjs';
 import {versions as contractVersions} from '../../../control/conversations/test/store-fixture.mjs';
+import {createPostgresConversationStore} from '../../../control/conversations/postgres-store.mjs';
 import {artifactValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 
 const unused=()=>assert.fail('no SQL, SDK or native call during composition');
@@ -30,17 +31,17 @@ function privateBucketClient(){
 function family(owners={}){const clients=[];const s3=privateBucketClient();
  return {clients,s3,factory:documentsFamily({...owners,createS3Client(options){clients.push(options);return s3.client;}})};}
 
-test('the artifacts declaration is closed: required storage keys, same-region KMS key, tenantId exactly with retention',()=>{
+test('the artifacts declaration is closed: required storage keys, same-region KMS key, no deployment tenant',()=>{
  assert.equal(compileRuntimeArtifactsConfiguration({}),null);
  assert.deepEqual(compileRuntimeArtifactsConfiguration({artifacts:{enabled:false}}),{enabled:false});
  assert.ok(Object.isFrozen(compileRuntimeArtifactsConfiguration({artifacts:artifacts()})));
- assert.equal(compileRuntimeArtifactsConfiguration({retention:{enabled:true},artifacts:artifacts({tenantId:'tenant-a'})}).tenantId,'tenant-a');
+ assert.deepEqual(compileRuntimeArtifactsConfiguration({retention:{enabled:true},artifacts:artifacts()}),artifacts());
  for(const [label,configuration] of Object.entries({
   missingBucket:{artifacts:(({bucket:_,...rest})=>rest)(artifacts())},unknownKey:{artifacts:artifacts({endpoint:'https://s3.invalid'})},
   nonBooleanEnabled:{artifacts:artifacts({enabled:'true'})},directoryBucket:{artifacts:artifacts({bucket:'synthetic--use1-az4--x-s3'})},
   kmsAlias:{artifacts:artifacts({kmsKeyId:'alias/meri-artifacts'})},kmsOtherRegion:{artifacts:artifacts({kmsKeyId:kmsKeyId.replace('us-east-1','us-west-2')})},
   ownerShape:{artifacts:artifacts({expectedBucketOwner:'1111'})},trailingPrefix:{artifacts:artifacts({prefix:'meri/'})},
-  tenantWithoutRetention:{artifacts:artifacts({tenantId:'tenant-a'})},retentionWithoutTenant:{retention:{enabled:true},artifacts:artifacts()},
+  tenantWithoutRetention:{artifacts:artifacts({tenantId:'tenant-a'})},tenantWithRetention:{retention:{enabled:true},artifacts:artifacts({tenantId:'tenant-a'})},
   invalidWhileDisabled:{artifacts:{enabled:false,bucket:'UPPER'}},getter:{artifacts:Object.defineProperty(artifacts(),'bucket',{get:()=>'x',enumerable:true})},
   authorityHttp:{artifacts:artifacts({authority:{...coreAuthority,origin:'http://core.synthetic.invalid'}})},authorityPath:{artifacts:artifacts({authority:{...coreAuthority,origin:'https://core.synthetic.invalid/api'}})},
   authorityExtraKey:{artifacts:artifacts({authority:{...coreAuthority,bearerFile:'/run/meri/x'}})},authorityNoSecret:{artifacts:artifacts({authority:{origin:coreAuthority.origin}})},
@@ -76,29 +77,31 @@ test('the production registration constructs the pinned SDK client synchronously
 
 test('declared retention binds enabled publication custody to control\'s own recovery forwarder, and refuses to compose without it',()=>{
  const f=family(),recovery=createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({pool,now})});
- const configuration=base({retention:{enabled:true},artifacts:artifacts({tenantId:'tenant-a'})});
+ const configuration=base({retention:{enabled:true},artifacts:artifacts()});
  assert.deepEqual(f.factory(Object.freeze({configuration,pool,now})),{ports:{}},'no recovery forwarder, no store');assert.equal(f.clients.length,0);
  const {ports}=f.factory(Object.freeze({configuration,pool,now,artifactRecovery:recovery.context}));
  const record=runtimeArtifactRecovery(ports.artifactStore);assert.equal(record.journal,recovery.context.journal);assert.equal(record.retention,recovery.context.retention);assert.equal(record.state,'composed');
+ const captured=captureRuntimePorts(ports);for(const method of ['append','read','head'])assert.equal(typeof captured.retentionLedgerSink[method],'function');
  assert.deepEqual(f.s3.sent,[]);
 });
 
 test('actual control assembly: the store composes, retention recovery is composed, options stay a named gap, documents answer 503',async()=>{
  const f=family();let seen;
- const assembly=assembleControl({configuration:base({retention:{enabled:true},artifacts:artifacts({tenantId:'tenant-a'})}),pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},now,
+ const assembly=assembleControl({configuration:base({retention:{enabled:true},artifacts:artifacts()}),pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},execution:{authenticate:unused},now,
   productPortsFactory:createProductPortsFactory({families:[['documents',context=>{seen=context;return f.factory(context);}]]})});
  try{
   assert.ok(seen.artifactRecovery);assert.deepEqual(assembly.retention.artifactRecovery(),{required:true,state:'composed'});
   const readiness=assembly.productReadiness(),state=name=>readiness.owners.find(o=>o.name===name)?.state;
   assert.equal(state('artifacts.privateStore'),'composed');assert.equal(state('artifacts.options'),'unavailable');assert.equal(state('retention.artifactRecovery'),'composed');
+  assert.equal(state('retention.ledgerSink'),'composed');
   const response=await assembly.application.handle(new Request('https://control.invalid/api/documents/create',{method:'POST',headers:{authorization:'Bearer synthetic','content-type':'application/json'},body:'{}'}));
   assert.equal(response.status,503);assert.deepEqual(f.s3.sent,[]);
  }finally{assembly.close();}
 });
 
 test('a supplied Core authority composes a late-bound options owner that answers null until control binds its sessions',async()=>{
- const calls=[],mode={reply:'valid'},authority={async resolve(call){if(mode.reply==='null')return null;if(mode.reply==='extra')return {artifactOptions:{},selectedClientId:'x',credential:'y',limits:{},recheck(){},sessions:{}};calls.push(call);return {artifactOptions:{pool:{},allocationJson:{},producerContext:{},descriptor:{},context:{},validators:artifactValidators,authority:{},authorize:unused,versions:{},objects:{},executor:{},now,ids:{},newReservationId:unused,limits:{}},
-  selectedClientId:'synthetic-client',credential:'synthetic-artifact-credential',limits:{},recheck(check){calls.push(['recheck',check.phase]);return {};}};}};
+ const calls=[],mode={reply:'valid'},authority={async resolve(call){if(mode.reply==='null')return null;if(mode.reply==='extra')return {artifactOptions:{},selectedClientId:'x',credential:'y',limits:{},recheck(){},sessions:{}};calls.push(call);return {artifactOptions:{pool:{},context:{},validators:artifactValidators,authorize:unused,versions:{},objects:{},executor:{},now,ids:{}},
+  selectedClientId:'synthetic-client',limits:{},recheck(check){calls.push(['recheck',check.phase]);return {};}};}};
  const executor={execute:unused},budgetPool={connect:unused},f=family({authority,executor}),context=Object.freeze({configuration:base({artifacts:artifacts({authority:coreAuthority})}),pool:budgetPool,now});
  // Composed disabled without a declared Core authority origin: the same supplied authority is never reached.
  assert.deepEqual(Object.keys(family({authority,executor}).factory(Object.freeze({configuration:base({artifacts:artifacts()}),pool:budgetPool,now})).ports),['artifactStore']);
@@ -108,12 +111,14 @@ test('a supplied Core authority composes a late-bound options owner that answers
  const {ports}=f.factory(context);assert.deepEqual(Object.keys(ports),['artifactStore','artifactOptionsOwner']);
  const owner=captureRuntimePorts(ports).artifactOptionsOwner,call={credential:'c',intent:'create',body:{},requestSha256:'a'.repeat(64),deadlineMs:now()+1000,signal:new AbortController().signal};
  assert.equal(await owner.resolve(call),null);assert.equal(calls.length,0,'no Core call before the sessions binding');
- const sessions={};assert.equal(bindDocumentsSessions(context,sessions),true);bindDocumentsSessions(context,sessions);
+ const sessions={},store=createPostgresConversationStore({pool:budgetPool,now});
+ assert.throws(()=>bindDocumentsSessions(context,sessions),/ARTIFACT_RUNTIME_CONFIGURATION/u,'a real conversation store is required');
+ assert.equal(bindDocumentsSessions(context,sessions,undefined,store),true);bindDocumentsSessions(context,sessions,undefined,store);
  assert.throws(()=>bindDocumentsSessions(context,{}),code('PRODUCT_PORTS_CONFIGURATION'));
  assert.equal(bindDocumentsSessions(Object.freeze({}),sessions),false,'a context without an options owner is a no-op');
  assert.throws(()=>f.factory(context),code('PRODUCT_PORTS_CONFIGURATION'),'one options owner per trusted context');
  const resolved=await owner.resolve(call);
- assert.equal(calls[0].sessions,sessions);assert.equal(calls[0].credential,'c');assert.equal(resolved.documentOptions.sessions,sessions);assert.equal(resolved.documentOptions.now,now);
+ assert.equal(calls[0].sessions,sessions);assert.equal(calls[0].store,store);assert.equal(calls[0].credential,'c');assert.equal(resolved.documentOptions.sessions,sessions);assert.equal(resolved.documentOptions.now,now);
  assert.equal(resolved.documentOptions.artifactOptions.versions,ports.artifactStore.versions);assert.equal(resolved.documentOptions.artifactOptions.objects,ports.artifactStore.objects);
  assert.equal(resolved.documentOptions.artifactOptions.pool,budgetPool);assert.equal(resolved.documentOptions.artifactOptions.executor,executor);
  await resolved.recheck({phase:'admission'});assert.deepEqual(calls.at(-1),['recheck','admission']);

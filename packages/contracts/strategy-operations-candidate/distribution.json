@@ -22,11 +22,11 @@
   ],
   "sources": {
     "shapes.mjs": "9f33e47397bf56d59f9a7f2f07a88a656957b0b7da5ad46400b08fda326f4752",
-    "schema.mjs": "ec3441184e355c99bc26983cfecc8764f148c556e085df755280e967384afbd4",
+    "schema.mjs": "ec65c6c7296affbd388ac5b49f27bfbf51bab9be5e82324a03d7714bbc2c50de",
     "graph.mjs": "388144d6dc9bc3b382e5e68d6dab5bc20d716022189f5cf694905aacf3f99271",
     "draft-context.mjs": "49602c74b084ad8496a7fd452127c99e00db7d1956fed74d12fd6bde0a5b76f2",
-    "validate.mjs": "2f31e28704c1815b5a5759387488e206b14e400f9e4feffaafaac50c06a6040e",
-    "fixture-source.mjs": "35e765e7022a195e5f8db1ea5e3ee8d000904bc6c54e7e5adf192309e46f09dc",
+    "validate.mjs": "1b5518cba463d925a6b071fe9fe1f48885098588726384006f988063d8ba9869",
+    "fixture-source.mjs": "c143833829864c06c4a62c5eb4e8aff13785dc558ac49bb612936df04be3d235",
     "generate.mjs": "3d6faf2219ed9f596855e79a15179658e775adbe492fb8bffc8441125ca8a05a"
   },
   "localDependencies": {
@@ -34,8 +34,8 @@
     "../validate.mjs": "bc72b4cbc240e133742350d3dcc7dcd995a426d9dc85439f1886b49aa41c0605",
     "../commands-0.2/execution-boundary.mjs": "e1c3cfb9fd75b7e623f1bc9492ab06793b4145277336eac1039ff5eef8e6690c",
     "../retrieval-0.2/operation-contracts.mjs": "faea00e1b12401a0012dfb89dfb927aaabeb544d6c98aef29b062794bfbacdc5",
-    "../package.json": "07a14262720d14d4adab4945014d8123298370b359d798b3b7a14308841ad49c",
-    "../package-lock.json": "418a5af3b8673d9cdd2faed654b0d94586b03afdca4b23a1a7995462686e54e3"
+    "../package.json": "459d3de92ab855e76c5da6b8dac50aecb9496e84b4a66262a6c7a5a5ea63eccb",
+    "../package-lock.json": "03e8eed9466cccd99f25fd4060a584d596cb15f758e080e23b4a3eb1eff16ee1"
   },
   "externalDependencies": {
     "node_modules/ajv": {
@@ -89,22 +89,22 @@
     }
   },
   "artifacts": {
-    "candidate.schema.json": "9f62554c0af6c3a7f3d7846dc8758bdf2d0c89654fbd98d247f12cc57562a7ba",
-    "fixtures/strategy.draft.request.json": "fbd350f4769589839d9b8dde1ca384798d98175cc23bf38e6b4b0cf5fc256439",
-    "fixtures/strategy.draft.result.json": "26392f138539739e4946b713cfcf23bdf17cce99986200ef61a4bb4ed2522516",
-    "fixtures/strategy.edit.request.json": "39f5985d23ed425d399496856afc10971f84d0d417579fdbe82cb3110cf91324",
-    "fixtures/strategy.edit.result.json": "3eb692d83e4c94072bda26fa7ab7b77769944d9340baae612046e09a94d778b3",
-    "fixtures/strategy.step-document.request.json": "f3401907543756247fb44ca288e3e00d285e8c3e331bbe7a7b8cfcdeb4e4abc9",
-    "fixtures/strategy.step-document.result.json": "5435a3d1c96c7a0857fda690b3fcf9461edff0b1285f1a9aa1f4a770065a5a6d",
-    "fixtures/workload.draft.decision.json": "b4c26fd905965b530150a6826461b40127308ad22e64f3af6b7190d053aae531",
-    "fixtures/workload.planner.decision.json": "2ba3f93ed31f15ab6712ef07e2481b39af822789595a87881bbe39b5e6ccc17d",
-    "fixtures/strategy.needs-information.result.json": "6fb05616b79ccf80f5377fb3292e138d07cd293b189492397c0474df1269171f",
-    "fixtures/legacy-draft.complete.mapping.json": "f91dcf371ddd23e537c303be95f9980b34dc67fc9a0786632fe5738fc1d6dfb4",
-    "fixtures/legacy-draft.unavailable.mapping.json": "c9cb568a88a1149ed0148c16a977477d16e6133ad81cf92324d830bef1b01f21",
-    "fixtures/legacy-draft.defaults.mapping.json": "c97e0bbe4bfb3ec8a543b23871ee1f9d66b7f2850219552768423c41c1c08c2c",
-    "fixtures/core-draft.explicit-ids.mapping.json": "a3848f07bfae88a5b379003bd22fb366c5529cdc014d616b96f6b90a3abafcd0",
-    "fixtures/strategy.edit.empty.request.json": "4ffa96ad1b7ae063e0a568d901620162c68dc4a39c5e98559684a3405333ef72",
-    "fixtures/strategy.edit.empty.result.json": "bdf218a1154b1a5fc41793eb06f9f40c537c47220e41036475294ad87d2d360a",
+    "candidate.schema.json": "73d28d7c2aa1908fafd16f8cc56c3ec363e7bf0989940670633cc3fcbb2700ef",
+    "fixtures/strategy.draft.request.json": "b0dd3e91a82f0a6cf3ec930e78fde6c9985fc24c20a32e7b9123935f77ab4f21",
+    "fixtures/strategy.draft.result.json": "fa1845b4b205418224b545e472e9ace52283b33b92f7390c4908053c61b17ed7",
+    "fixtures/strategy.edit.request.json": "b8b35cc4f9548a00a3523af2be9d550cd2030f4543b061fea0589b960283563b",
+    "fixtures/strategy.edit.result.json": "ec7d06a9223364150dfa713764c456876bb072f9465711dc498ca1085a2cae32",
+    "fixtures/strategy.step-document.request.json": "0e475ee32b73a22066f7a52f849bf1d90ef856144e7874acf088ae67e3cb25cd",
+    "fixtures/strategy.step-document.result.json": "3543e26599bd0db9c9c06c45d82312c8797d42ce68feb27c0e2de3570bd0651b",
+    "fixtures/workload.draft.decision.json": "729c6e81dd37dcb0cae065a58e5859ec30a9a1497fbde9395a5a96973409f532",
+    "fixtures/workload.planner.decision.json": "b155a0446610f1330dd5a724fe589299411bbad965999cccf7dcc47a80c752d0",
+    "fixtures/strategy.needs-information.result.json": "4deb249252dbd7404f700747f6e45eecf5711c8601cb64d435ebfe59a33d5564",
+    "fixtures/legacy-draft.complete.mapping.json": "66c2c3afdf9ac31385b51c83e064f1843cf90f3d118faa06ad2f8041455c6652",
+    "fixtures/legacy-draft.unavailable.mapping.json": "1dd97be0cfd4f498933a617ef704156e9adc6456822410cb29ab95554faf41a7",
+    "fixtures/legacy-draft.defaults.mapping.json": "2875817ac5dfa0dea6a34b30e2be0078cc965b25886c9bcac99904bb975cae92",
+    "fixtures/core-draft.explicit-ids.mapping.json": "418a6f5d5060ef1e29f720fc7ceac31c97cd25170cc58709393d1ae795e1b6be",
+    "fixtures/strategy.edit.empty.request.json": "bed091a590d010324873aea0bc436af3be01789a8422da1a0a92133feedfd055",
+    "fixtures/strategy.edit.empty.result.json": "20ef6edae1d7ad85d2ee6cfc80d9e11b42b3793e8da28bcfcb83b3c916682822",
     "fixtures/runtime.execution.provenance.json": "349b1bfe37a6e61c34dc6593da0d08b0e0f19b9c7309ca060bd19b1eb1d65ef7"
   },
   "standalone": {

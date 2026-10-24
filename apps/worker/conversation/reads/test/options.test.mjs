@@ -6,16 +6,16 @@ import {buildConversationOptions} from '../../options.mjs';
 import {createConversationActivity} from '../../activity.mjs';
 import {createSdkCapabilities} from '../../capabilities/index.mjs';
 import {applicationFixture,binding,versions,id} from '../../../../control/conversations/test/application-fixture.mjs';
-import {preparedWorkspace} from '../../test/capability-fixture.mjs';
+import {BEDROCK_MODEL} from '../../provider.mjs';
 import {generalReadFixture,mountReads} from './fixture.mjs';
-const cwd=preparedWorkspace(binding.conversationId),DEFAULT_SENTENCE='No institutional source tool is enabled for this activity.';
+const cwd=`/workspace/conversations/${binding.conversationId}`,DEFAULT_SENTENCE='No institutional source tool is enabled for this activity.';
 const MAIL_REFS=catalog.operations.filter(d=>d.operation.id.startsWith('mail.')).map(d=>d.operation);
-const runtime=()=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
+const runtime=()=>({binding,versions,cwd,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
 const skillOptions=name=>({mcpServers:{meri_original_reads:{type:'sdk',name:'meri_original_reads',instance:{close(){}}}},allowedTools:[`mcp__meri_original_reads__${name}`],canUseTool:async n=>n===`mcp__meri_original_reads__${name}`?{behavior:'allow',updatedInput:{}}:{behavior:'deny',message:'Tool unavailable'},hooks:{PreToolUse:[{matcher:'mcp__meri_original_reads__.*',hooks:[async()=>({})]}]}});
 async function reads(){const f=await generalReadFixture();return {f,m:await mountReads(f)};}
 
 test('without general reads the default prompt sentence and options are unchanged',()=>{
- const o=buildConversationOptions(runtime(),new AbortController());assert.ok(o.systemPrompt.includes(DEFAULT_SENTENCE));assert.equal(o.mcpServers,undefined);
+ const o=buildConversationOptions(runtime(),new AbortController());assert.equal(o.systemPrompt.preset,'claude_code');assert.ok(o.systemPrompt.append.includes(DEFAULT_SENTENCE));assert.equal(o.mcpServers,undefined);
  assert.equal(JSON.stringify(Object.keys(buildConversationOptions(runtime(),new AbortController(),undefined,undefined,undefined,undefined))),JSON.stringify(Object.keys(o)));
 });
 
@@ -23,12 +23,12 @@ test('mounted reads add one server, exact pre-approved names, the correlation ho
  const {m}=await reads();
  try{const fragment=createSdkCapabilities({auditHooks:true,workspaceTools:true,workspaceToolNames:['Read']},{runOwner:{append:async()=>{}},binding,cwd,now:Date.now,newId:()=>id(1)}).options;
   const o=buildConversationOptions(runtime(),new AbortController(),undefined,undefined,fragment,m.runtime.sdkOptions);
-  assert.deepEqual(Object.keys(o.mcpServers),['meri_reads']);assert.equal(o.systemPrompt.includes(DEFAULT_SENTENCE),false);assert.match(o.systemPrompt,/Only the read-only institutional source tools listed for this activity are enabled/u);
+  assert.deepEqual(Object.keys(o.mcpServers),['meri_reads']);assert.equal(o.systemPrompt.append.includes(DEFAULT_SENTENCE),false);assert.match(o.systemPrompt.append,/Only the read-only institutional source tools listed for this activity are enabled/u);
   for(const name of m.runtime.sdkOptions.allowedTools){assert.ok(o.allowedTools.includes(name));assert.equal((await o.canUseTool(name,{},{})).behavior,'allow');}
-  assert.deepEqual(o.settings.permissions.allow,[`Read(/${cwd}/**)`],'workspace rules still merge');
+  assert.deepEqual(o.settings.permissions.allow,[`Read(/${cwd}/**)`,`Edit(/${cwd}/**)`],'native workspace rules still merge');
   for(const name of ['Bash','mcp__meri_reads__send_email','mcp__meri_reads__query_global_data','mcp__meri_original_reads__mail_search_messages'])assert.equal((await o.canUseTool(name,{},{})).behavior,'deny',name);
-  assert.deepEqual(o.hooks.PreToolUse.map(h=>h.matcher??null),['mcp__meri_reads__.*',null],'the correlation hook and the audit hook both run');
-  assert.equal(o.permissionMode,'default');assert.deepEqual(o.tools,['Read']);
+  assert.deepEqual(o.hooks.PreToolUse.map(h=>h.matcher??null),['mcp__meri_reads__.*'],'the read hook is retained; native post-tool audit belongs to the activity');
+  assert.equal(o.permissionMode,'default');assert.deepEqual(o.tools,{type:'preset',preset:'claude_code'});
  }finally{await m.close();}
 });
 
@@ -60,11 +60,11 @@ async function activity({capabilities,installed=true,skill}={}){
 
 test('the activity mounts only the explicit active profile and keeps per-run availability separate',async()=>{
  const on=await activity({capabilities:{generalReads:true,activeReadOperations:MAIL_REFS}});
- try{assert.deepEqual(await on.run(),{state:'completed'});const o=on.options();assert.deepEqual(Object.keys(o.mcpServers),['meri_reads']);assert.equal(o.allowedTools.filter(t=>t.startsWith('mcp__meri_reads__')).length,3);assert.equal(o.systemPrompt.includes(DEFAULT_SENTENCE),false);}finally{on.f.close();}
+ try{assert.deepEqual(await on.run(),{state:'completed'});const o=on.options();assert.deepEqual(Object.keys(o.mcpServers),['meri_reads']);assert.equal(o.allowedTools.filter(t=>t.startsWith('mcp__meri_reads__')).length,3);assert.equal(o.systemPrompt.append.includes(DEFAULT_SENTENCE),false);}finally{on.f.close();}
  const none=await activity({capabilities:{generalReads:true,activeReadOperations:MAIL_REFS},installed:false});
  try{await none.run();assert.equal(none.asked(),1);assert.deepEqual(Object.keys(none.options().mcpServers),['meri_reads']);assert.equal(none.options().allowedTools.filter(t=>t.startsWith('mcp__meri_reads__')).length,3,'the measured profile remains fixed when current installation is unavailable');}finally{none.f.close();}
  const noActive=await activity({capabilities:{generalReads:true}});
- try{await noActive.run();assert.equal(noActive.asked(),0);assert.equal(noActive.options().mcpServers,undefined);assert.ok(noActive.options().systemPrompt.includes(DEFAULT_SENTENCE),'an omitted active list never derives authority from the catalog');}finally{noActive.f.close();}
+ try{await noActive.run();assert.equal(noActive.asked(),0);assert.equal(noActive.options().mcpServers,undefined);assert.ok(noActive.options().systemPrompt.append.includes(DEFAULT_SENTENCE),'an omitted active list never derives authority from the catalog');}finally{noActive.f.close();}
  const off=await activity({capabilities:{auditHooks:true}});
  try{await off.run();assert.equal(off.asked(),0,'policy off: the port is never asked');assert.equal(off.options().mcpServers,undefined);}finally{off.f.close();}
  const absent=await activity();

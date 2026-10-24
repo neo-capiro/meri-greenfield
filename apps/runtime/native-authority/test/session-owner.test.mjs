@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
-import {createDurableSdkSessionOwner} from '../session-owner.mjs';
+import {createDurableSdkSessionOwner} from '../../sdk-session-owner.mjs';
 import {fixture,id} from './fixture.mjs';
 const append=(entries,n=10,expectedOffset=0)=>({appendId:id(n),expectedOffset,entriesSha256:hash(entries),entries});
 test('native authority absent fails before any admitted transaction or SQL',async()=>{let calls=0;const owner=createDurableSdkSessionOwner({admission:{withCurrentRun(){calls++;}}});await assert.rejects(owner.load({credential:'any',request:{}}),{code:'SDK_SESSION_UNAVAILABLE'});assert.equal(calls,0);});
@@ -14,24 +14,22 @@ test('opaque depth beyond ordinary RPC depth64 is retained through canonical cod
 
 test('parked canonical admission is bounded by the original caller lifetime',async()=>{const f=fixture({park:true,maxRequestMs:20}),at=performance.now();await assert.rejects(f.invoke('load'),{code:'SDK_SESSION_DEADLINE'});assert.ok(performance.now()-at<500);assert.equal(f.calls(),0);});
 
-test('immutable registration replay retains original expiry despite a shorter current authorization',async()=>{const f=fixture();await f.invoke('register');const original=structuredClone(f.state().owner);f.setExpiry(original.owner.expiresAtMs-1000);await f.invoke('register');assert.deepEqual(f.state().owner,original);f.setClock(original.owner.expiresAtMs+1);f.setExpiry(original.owner.expiresAtMs+5000);await assert.rejects(f.invoke('load'));assert.deepEqual(f.state().owner,original);});
+test('immutable registration replay preserves the original execution expiry',async()=>{const f=fixture();await f.invoke('register');const original=structuredClone(f.state().owner);await f.invoke('register');assert.deepEqual(f.state().owner,original);f.setClock(original.owner.expiresAtMs+1);await assert.rejects(f.invoke('load'));assert.deepEqual(f.state().owner,original);});
 test('redundant entry/stream/session owner tuples cannot substitute foreign retained rows',async()=>{for(const kind of ['entry','stream','owner']){const f=fixture();await f.invoke('register');await f.invoke('append',append([{type:'system',marker:'retained'}]));if(kind==='entry')f.state().entries[0].tenant_id='foreign';if(kind==='stream')f.state().streams.get('').session_id=id(99);if(kind==='owner')f.state().owner.run_id=id(99);await assert.rejects(f.invoke('load'),{code:'SDK_SESSION_CORRUPT'});}});
-test('task authority is verified 3 times per registration, 3 per new append and 2 per read or replayed append',async()=>{const f=fixture(),count=async(op,extra)=>{const before=f.verifies();await f.invoke(op,extra);return f.verifies()-before;},batch=append([{type:'user',uuid:id(40),text:'counted'}],41);
- assert.equal(await count('register'),3);assert.equal(await count('append',batch),3);assert.equal(await count('append',batch),2);assert.equal(await count('load'),2);assert.equal(await count('listSubkeys'),2);});
+test('execution credential authenticates once outside the canonical transaction for every operation',async()=>{const f=fixture(),count=async(op,extra)=>{const before=f.verifies();await f.invoke(op,extra);return f.verifies()-before;},batch=append([{type:'user',uuid:id(40),text:'counted'}],41);
+ assert.equal(await count('register'),1);assert.equal(await count('append',batch),1);assert.equal(await count('append',batch),1);assert.equal(await count('load'),1);assert.equal(await count('listSubkeys'),1);});
 
-test('historical registered owner bytes remain readable and immutable; old witness is not a new request field',async()=>{
- const f=fixture();await f.invoke('register');const row=f.state().owner;
- row.owner={...row.owner,observationId:'historical-observation',sessionEventSha256:'b'.repeat(64)};row.owner_sha256=hash(row.owner);
- const retained=structuredClone(row);await f.invoke('register');assert.deepEqual(f.state().owner,retained);
- await f.invoke('append',append([{type:'system',marker:'retained'}]));assert.equal((await f.invoke('load')).entries.length,1);
- await assert.rejects(f.invoke('register',{observationId:'forged'}));
+test('legacy allocation owners and forged execution owners cannot register, append or read through the current port',async()=>{
+ for(const kind of ['legacy','changed-execution','extra']){const f=fixture();await f.invoke('register');const row=f.state().owner;row.owner=structuredClone(row.owner);
+ if(kind==='legacy'){row.owner.allocationSha256=row.owner.executionSha256;delete row.owner.executionSha256;}if(kind==='changed-execution')row.owner.executionSha256='f'.repeat(64);if(kind==='extra')row.owner.observationId='forged';row.owner_sha256=hash(row.owner);
+ for(const operation of ['register','load','append'])await assert.rejects(f.invoke(operation,operation==='append'?append([{type:'system'}]):{}));
+ }
 });
-for(const mode of ['missing-pair','bad-hash','unknown-field'])test('historical owner refuses '+mode,async()=>{
- const f=fixture();await f.invoke('register');const row=f.state().owner;
- row.owner={...row.owner,observationId:'historical-observation',sessionEventSha256:'b'.repeat(64)};
- if(mode==='missing-pair')delete row.owner.sessionEventSha256;if(mode==='unknown-field')row.owner.extra=true;
- if(mode!=='bad-hash')row.owner_sha256=hash(row.owner);await assert.rejects(f.invoke('load'));
+test('settled/stopping, changed scopes/execution and expired current fences refuse before SQL',async()=>{
+ for(const change of [{executionPhase:'settled'},{executionPhase:'stopping'},{scopes:[]},{executionSha256:'bad'},{deadlineMs:0},{deadlineMs:Date.parse('2026-10-13T20:00:00Z')+6000}]){const f=fixture();f.changeCurrent(change);await assert.rejects(f.invoke('register'));assert.equal(f.calls(),0);}
+ const f=fixture();await f.invoke('register');f.changeCurrent({executionSha256:'f'.repeat(64)});await assert.rejects(f.invoke('append',append([{type:'system'}])));assert.equal(f.state().entries.length,0);
 });
+
 test('another native main key cannot register under the same current run',async()=>{
  const f=fixture();await f.invoke('register');const before=structuredClone(f.state());
  await assert.rejects(f.owner.register({credential:'opaque-native-task',request:{binding:f.binding,key:{...f.key,sessionId:id(98)}}}));

@@ -1,4 +1,5 @@
 import {conversationErrorStatuses} from './protocol.mjs';
+import {MODEL_SELECTION_SCHEMA} from '../model-selection.mjs';
 const pub = name => ({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const common = name => ({$ref:'urn:meri:retrieval:common:0.2.0#/$defs/'+name});
 const skill = property => ({$ref:'urn:meri:retrieval:skill:0.2.0#/$defs/SkillInvocation/properties/'+property});
@@ -13,12 +14,12 @@ const sha256 = {type:'string',pattern:'^[a-f0-9]{64}$'};
 export function conversationSchema(){
  const selection=object({skillId:skill('skillId'),skillVersion:skill('skillVersion')});
  return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:conversation-application:0.1.0',$defs:{
-  ConversationSubmitRequest:object({requestId,prompt,windowRequest:common('WindowRequest'),skill:selection},['requestId','prompt']),
+  ConversationSubmitRequest:object({requestId,prompt,windowRequest:common('WindowRequest'),skill:selection,modelSelection:MODEL_SELECTION_SCHEMA},['requestId','prompt']),
   ConversationHistoryRequest:object({after:sequence,limit:{type:'integer',minimum:1,maximum:100}},[]),
   ConversationCancelRequest:object({}),
   ConversationEventsRequest:object({command:object({conversationId:uuid,intent:{const:'view.subscribe'}})}),
   ConversationSkillAssetPin:object({skillId:skill('skillId'),skillVersion:skill('skillVersion'),manifestSha256:sha256,proseSha256:sha256,catalogSha256:sha256}),
-  ConversationStoredRequest:object({requestId,prompt,skill:nullable(ref('ConversationSkillAssetPin')),window:nullable(common('NormalizedWindow')),windowRequest:nullable(common('WindowRequest'))}),
+  ConversationStoredRequest:object({requestId,prompt,skill:nullable(ref('ConversationSkillAssetPin')),window:nullable(common('NormalizedWindow')),windowRequest:nullable(common('WindowRequest')),modelSelection:MODEL_SELECTION_SCHEMA},['requestId','prompt','skill','window','windowRequest']),
   ConversationSubmittedResponse:object({run:pub('Run'),requestId,lastSequence:{...sequence,minimum:1},replayed:{type:'boolean'}}),
   ConversationHistoryResponse:object({run:pub('Run'),request:ref('ConversationStoredRequest'),events:{type:'array',items:pub('UIEvent'),maxItems:100},nextSequence:sequence,hasMore:{type:'boolean'},lastSequence:{...sequence,minimum:1}}),
   ConversationCancelledResponse:object({state:{enum:['completed','failed','cancelled']}}),

@@ -41,6 +41,7 @@ export function createObjectiveGenerationActivities({clientFor,runs,context=()=>
  async function objectiveGenerationSource(value){
   const v=parse(value),{signal,deadlineMs,client}=scope(v);if(!client)return unconfirmed();
   try{
+   await client.current({signal,deadlineMs});
    const a=await client.admit({signal,deadlineMs}),p=await client.publish({admission:a.sourceAdmission,signal,deadlineMs});
    return data({kind:'ready',sourceAdmissionSha256:a.sourceAdmissionSha256,requestSha256:p.requestSha256,
     effectExpiresAtMs:Math.min(a.sourceAdmission.effectExpiresAtMs,p.request.originalExpiresAtMs)});

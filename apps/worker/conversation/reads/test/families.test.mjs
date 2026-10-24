@@ -11,7 +11,7 @@ import {advertisedArguments,canonicalInputSchema,isNarrowerOrEqual,convertCanoni
 import {createGeneralReadRuntime} from '../runtime.mjs';
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {CASES,familyCase} from '../../../../gateway/general-reads/test/family-cases.mjs';
-import {durableFamilyFixture} from '../../../../gateway/general-reads/test/durable-fixture.mjs';
+import {fixture} from '../../../../runtime/test/reads-native-fixture.mjs';
 const operations=familyReads().map(r=>r.operation),policy=assertCapabilityPolicy({generalReads:true});
 test('all forty-five constructible families remain unavailable without installation or discovery',()=>{
  assert.equal(READ_FAMILY_IDS.length,45);assert.equal(operations.length,81);
@@ -42,13 +42,13 @@ test('unconvertible/widened schemas fail configuration; union, required and arra
  assert.equal(isNarrowerOrEqual({type:'string'},{type:['string','null'],maxLength:2,unevaluatedProperties:false}),false);
 });
 test('contacts canonical bytes and receipt hashes are preserved with a separate deferred-tool notice',async()=>{
- const f=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
- const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs});
+ const f=await fixture('tenant-contacts','find_contacts',{scene:familyCase('tenant-contacts','find_contacts')});
+ const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.port,now:f.now,deadlineMs:f.deadlineMs});
  const client=new Client({name:'synthetic',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  try{
   await runtime.sdkOptions.mcpServers.meri_reads.instance.connect(a);await client.connect(b);
   const hook=runtime.sdkOptions.hooks.PreToolUse[0].hooks[0],decision=await hook({hook_event_name:'PreToolUse',session_id:'71000000-0000-4000-8000-000000000091',
-   tool_name:'mcp__meri_reads__find_contacts',tool_use_id:'contacts',tool_input:{arguments:f.arguments}},undefined,{});
+   tool_name:'mcp__meri_reads__find_contacts',tool_use_id:'contacts',tool_input:{arguments:f.scene.arguments}},undefined,{});
   const result=await client.callTool({name:'find_contacts',arguments:decision.hookSpecificOutput.updatedInput});
   assert.equal(result.isError,undefined);assert.equal(result.content.length,2);
   const source=result.content[0].text;assert.match(source,/update_client_profile people\[\]/);
@@ -59,17 +59,17 @@ test('contacts canonical bytes and receipt hashes are preserved with a separate 
  }finally{await client.close();await runtime.close();}
 });
 test('contacts guidance counts toward the complete model-visible output limit',async()=>{
- const measurement=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
- const canonical=await measurement.execute('synthetic:measure-canonical');
- // Measuring must not spend or alter the tested run's durable allocation.
- const f=await durableFamilyFixture(familyCase('tenant-contacts','find_contacts'));
- const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.mount(),now:f.now,deadlineMs:f.deadlineMs,
+ const measurement=await fixture('tenant-contacts','find_contacts',{scene:familyCase('tenant-contacts','find_contacts')});
+ const response=await measurement.execute();assert.equal(response.status,200);const canonical=(await response.json()).resultJson;
+ // Use a separate execution so measuring cannot affect the bounded MCP call.
+ const f=await fixture('tenant-contacts','find_contacts',{scene:familyCase('tenant-contacts','find_contacts')});
+ const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.port,now:f.now,deadlineMs:f.deadlineMs,
   skill:{allowedOperations:[f.operation],budgets:{maxToolCalls:24,maxOutputBytes:Buffer.byteLength(canonical)}}});
  const client=new Client({name:'synthetic-output-bound',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  try{
   await runtime.sdkOptions.mcpServers.meri_reads.instance.connect(a);await client.connect(b);
   const decision=await runtime.sdkOptions.hooks.PreToolUse[0].hooks[0]({hook_event_name:'PreToolUse',session_id:'71000000-0000-4000-8000-000000000091',
-   tool_name:'mcp__meri_reads__find_contacts',tool_use_id:'bounded-contacts',tool_input:{arguments:f.arguments}},undefined,{});
+   tool_name:'mcp__meri_reads__find_contacts',tool_use_id:'bounded-contacts',tool_input:{arguments:f.scene.arguments}},undefined,{});
   const result=await client.callTool({name:'find_contacts',arguments:decision.hookSpecificOutput.updatedInput});
   assert.equal(result.isError,true);assert.match(result.content[0].text,/^RESOURCE_LIMIT:/);
   assert.equal(result.content.length,1);assert.deepEqual(runtime.receipts(),[]);

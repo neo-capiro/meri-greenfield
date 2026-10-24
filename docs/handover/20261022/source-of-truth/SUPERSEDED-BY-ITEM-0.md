@@ -1,4 +1,6 @@
-# Superseded by Wave 2 item 0: register (Neo, 2026-10-23)
+# Superseded by Wave 2 item 0: register (Neo, updated 2026-10-24)
+
+**Current target:** [AgentCore Runtime standard V1 with the real Claude Agent SDK](../plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md). This register removes obsolete mechanisms, not native SessionStore, artifacts, current Core checks, required Temporal durability or any accepted feature.
 
 **Why this exists.** The two master closeout plans, `STANDING-RULES.md` and `FINAL-PLAN-20261021.md` were written for the architecture Neo has now decided to replace. Wave 2 agents implement "each ticket's bounded work and meet its acceptance exactly", so an old ticket followed literally rebuilds code that item 0 deletes. This register, plus the inline markers in the plans, stops that.
 
@@ -23,12 +25,14 @@ Do not build, extend, qualify, measure or preserve any of these. The paths are a
 
 | Component | Where it lives (inventory) | Replaced by |
 |---|---|---|
-| Owner/proxy pair (model credentials, per-call admission, reservations, CountTokens, retries, mTLS pair) | `apps/proxy/**`; `apps/runtime/model-grant-issuer.mjs`, `pinned-native-transport.mjs`, `native-runner-gateway.mjs`; services `meri-product-preview-owner` and `-proxy`; the private PKI (`meri/preview/private-pki`); `infra/product-preview/first-chat-private-edge.mjs` and `OWNER-INTERFACE-CLOSURE-*` | SDK → Bedrock directly, using the runner task's IAM role |
+| Owner/proxy pair (model credentials, per-call admission, reservations, CountTokens, retries, mTLS pair) | `apps/proxy/**`; `apps/runtime/model-grant-issuer.mjs`, `pinned-native-transport.mjs`, `native-runner-gateway.mjs`; services `meri-product-preview-owner` and `-proxy`; the private PKI (`meri/preview/private-pki`); `infra/product-preview/first-chat-private-edge.mjs` and `OWNER-INTERFACE-CLOSURE-*` | SDK → Bedrock directly, using least-privilege Runtime IAM |
 | Budget reservation, settlement and liability recovery | `apps/gateway/budget/**`, `apps/gateway/model-proxy/**`, `infra/product-preview/first-chat-seed-budget.sql` and its consumers | SDK `maxTurns` / `maxBudgetUsd` per run; one tenant ledger row per run, debited from the SDK result; the tenant monthly cap checked at admission |
 | Per-operation authority | `apps/runtime/native-authority/**`; `read-credential-relay.mjs`; `prepared-run-*`, `prepared-candidate*`, `prepared-next-run`, `original-run-preparation`, `original-stop`, `task-bootstrap` in `apps/runtime/` | One Core access check per turn in control; SDK `allowedTools` / `canUseTool` / hooks; Core enforcement on every tool call. **Review, don't delete wholesale:** `apps/control/admitted-runs/**` and `apps/control/action-host/**` serve the browser's action-session and submit routes (`/api/action-followthrough/*`) and idempotent submit (E03). Keep what the browser still needs and delete the pin, producer-grant and capability-hash machinery inside them once the import graph shows it unreachable. Also review `memory-context-relay.mjs` and `occurrence-relay.mjs`: routines still need consent-bound reads |
 | Temporal issuer | `apps/runtime/temporal-issuer/**`, `temporal-issuer-cli.mjs`, `temporal-product-*`, `temporal-authorization.mjs`; `infra/product-preview/first-chat-issuer-service.mjs`; service `meri-product-preview-temporal-issuer` | Temporal's standard auth: an mTLS client certificate or a namespace API key from Secrets Manager |
-| P1 timeout/budget table, P2 proof reuse and exchange collapse, authority-lite (S2), signed lease (S4) | P1 #200 and C9 #203 (open; **do not merge**). Already merged, to be deleted with the layers: P2 PR-A #196 and S2 #213 (P2 PR-B #199 was closed unmerged) | Nothing. They only existed to make the removed layers fast enough |
-| Custom checkpoint / dormant-original continuity | `apps/runtime/sdk-first-session.mjs`, `sdk-continuation-session.mjs`, `sdk-session-runtime.mjs`, `checkpoint-session-factory.mjs`; `apps/worker/conversation/continuation/**` | SDK `resume` / `forkSession`, with the SDK session id stored on the conversation. Conversation storage stays |
+| P1 timeout/budget table, P2 proof reuse and exchange collapse, authority-lite (S2), signed lease (S4) | P1 #200 and C9 #203 (closed unmerged; historical). Already merged, to be deleted with the layers: P2 PR-A #196 and S2 #213 (P2 PR-B #199 was closed unmerged) | Nothing. They only existed to make the removed layers fast enough |
+| Custom checkpoint / dormant-original continuity | Legacy completion/checkpoint and dormant-original branches, and callers that require them; identify exact current imports before deletion | Existing native SDK SessionStore opaque transcripts/substreams, durable artifacts, `resume` / `forkSession` and canonical successor ownership stay. Do not delete working native persistence merely because its filename contains session or continuation. |
+
+| Per-turn Fargate and custom warm pool S3 | Fresh-task allocation/readiness, task router/bootstrap, runner family/IAM/SG/flags/alarms and old shipping callers after cutover acceptance | Runtime V1 isolated conversation session, idle stop and durable native restore; current control admission/Stop/outcomes remain |
 
 **Keep and simplify:** `apps/worker/conversation/` (the SDK activity), control's conversation, event and stream code, `apps/gateway/sources/*` (the read handlers become tools), the artifact and document generation code, Temporal itself, and the migrator.
 
@@ -51,12 +55,12 @@ Do not build, extend, qualify, measure or preserve any of these. The paths are a
 | MT-03 to MT-09, MT-16 read families | **RE-SCOPED** | Same behaviour and acceptance, implemented as tools on the tool gateway | Extending native-authority or the relays |
 | MT-10, MT-11, MT-12 task and schedule actions | **RE-SCOPED** | Approval, durable receipt, no blind redispatch | Approvals go through the SDK permission callback plus Core intents; no per-operation grant minting |
 | MM-01, MM-13 "current-authority reads" | **RE-SCOPED** | Memory and attachment reads are scoped to the current actor, client and permissions | Core decides on each tool call; no authority receipt layer |
-| MO-10 complete-job cost, context integrity, fair capacity | **RE-SCOPED** | Cost ceilings, context integrity, fair capacity | SDK limits plus one tenant cap, SDK compaction, runner pool limits |
+| MO-10 complete-job cost, context integrity, fair capacity | **RE-SCOPED** | Cost ceilings, context integrity, fair capacity | SDK limits plus one tenant cap, SDK compaction and standard Runtime session/compute limits |
 | MO-11 retire obsolete runtime code | **KEEP, now** | Item 0 step 5 is its largest instance. Do it with item 0, not at L4 | — |
 | MF-02 identity, exact-run renewal, access-loss isolation | **RE-SCOPED** | A revoked user loses access within 30 s | Ordinary Clerk session refresh plus one Core access check per turn; drop "exact-run renewal" |
 | MF-10 public lifecycle consumer | **RE-SCOPED** | Pause, resume and fork controls | Consume item 0's lifecycle DTOs |
 | MX-05 exact image and capability measurement | **RE-SCOPED** | Exact-digest image scan and source-to-image proof | "Capability measurement" of the removed registry |
-| MX-06 topology, readiness, control scale | **RE-SCOPED** | Readiness and control scale. The warm runner pool (S3) stays | Pair and issuer topology |
+| MX-06 topology, readiness, control scale | **RE-SCOPED** | Readiness/control scale and measured Runtime V1 session reuse, idle stop and restore; no custom warm pool | Pair and issuer topology |
 | MX-07 material expiry, renewal, PKI rotation | **RE-SCOPED** | Expiry and rotation for the secrets that remain (Core service secret, Temporal credential, Clerk) | Pair mTLS PKI and issuer tokens |
 | MX-09 latency, cost, resource measurement | **RE-SCOPED** | Measure on the new path against the targets in `../STANDING-REQUIREMENTS.md` §6 | "Without duplicating P1/P2" (they are gone) |
 | MX-02 receive existing source once | **DONE** | — | — |
@@ -72,7 +76,7 @@ Unlisted Meri tickets (MG, MB, MO except MO-10/11, MF except MF-02/10, MT-13 to 
 | **E11** SDK, CLI or format incompatibility | **RE-SCOPED** | A clear message and a recap or new-chat choice (O103); no silent session loss |
 | **E18** read active-set and revoked operation | **RE-SCOPED** | The tools a user can call are those Core allows for that user and client; a revoked tool refuses |
 | **E39** owner/proxy partner replacement | **SUPERSEDED** | There is no pair |
-| **E40** budget / terminal usage missing or contradictory | **SUPERSEDED** | Replaced by: a missing SDK usage charges the per-run cap, and the user's turn is never failed by accounting |
+| **E40** budget / terminal usage missing or contradictory | **SUPERSEDED** | Replaced by: record available canonical SDK usage once, preserve unknown accounting explicitly without fabricated usage or failing a completed answer, and enforce the tenant cap through its existing owner |
 | **E42** forward rollback and schema compatibility | **RE-SCOPED** | Drop "retained liabilities"; keep forward rollback and receipts |
 | All others | KEEP | |
 
@@ -80,8 +84,8 @@ Unlisted Meri tickets (MG, MB, MO except MO-10/11, MF except MF-02/10, MT-13 to 
 
 | Where | Disposition | Replacement |
 |---|---|---|
-| "Architecture to preserve" items 3 and 4 (worker → "allocation/claim/lease"; gateway/domain owner → "budget/liability and receipt") | **SUPERSEDED** | Runner runs the SDK; tools go through the tool gateway to Core |
-| Trace table rows "Chat / follow-up" (`run/claim/SDK model proxy`) and "Read/search" (`one-use delegated Core or retained authority … budget settlement/current release`) | **RE-SCOPED** | Chat: control → runner (SDK) → Bedrock → durable events. Read: tool gateway → Core with the run token; Core enforces scope |
+| "Architecture to preserve" items 3 and 4 (worker → "allocation/claim/lease"; gateway/domain owner → "budget/liability and receipt") | **SUPERSEDED** | Runtime V1 hosts the actual SDK; tools go through the existing gateway to Core |
+| Trace table rows "Chat / follow-up" (`run/claim/SDK model proxy`) and "Read/search" (`one-use delegated Core or retained authority … budget settlement/current release`) | **RE-SCOPED** | Chat: control → Runtime V1 conversation session (SDK) → Bedrock → durable native session/events. Read: tool gateway → Core with the run token; Core enforces scope |
 | Stage B "Close authority, durable receipt and recovery foundations" (its runtime bullets) | **SUPERSEDED** | The frontend, commands, memory and QA bullets stay |
 | Operator gate O3 "PKI material" | **RE-SCOPED** | Only for the secrets that remain |
 | Definition of done #3 "Fresh tenant/actor/client/run authority through every hop" | **SUPERSEDED** | Core enforces tenant, actor and client scope on every data call; the harness doesn't re-verify at each hop |
@@ -97,9 +101,9 @@ Unlisted Meri tickets (MG, MB, MO except MO-10/11, MF except MF-02/10, MT-13 to 
 
 | Item | Disposition | Note |
 |---|---|---|
-| **S1** (P1 table, P2 PR-A) | **SUPERSEDED** | P2 PR-A (#196) is merged and shipped. P1 #200 and C9 #203 are open and must not be merged. MX-08 dashboards stay |
+| **S1** (P1 table, P2 PR-A) | **SUPERSEDED** | P2 PR-A (#196) is merged and shipped. P1 #200 and C9 #203 were closed unmerged. MX-08 dashboards stay |
 | **S2** (P2 PR-B, authority-lite) | **SUPERSEDED** | P2 PR-B #199 was closed unmerged; S2 #213 is merged and shipped. Replaced by one Core access check per turn |
-| **S3** warm runner pool | KEEP | Fargate cold start is about 60 s of every first turn. Re-measure after item 0 |
+| **S3** warm runner pool | **RE-SCOPED 2026-10-24** | Delete the custom pool mechanism. Retain latency/cost/cleanup acceptance on standard V1 conversation sessions and durable idle restore. |
 | **S4** | **SUPERSEDED** | |
 | **M1** | **RE-SCOPED** | MR-01, MR-02, MR-09 are superseded; MR-06, MR-08 are re-scoped. E01–E12 and E40 follow B2 |
 | **MP** | **RE-SCOPED** | The Claude API path is an SDK provider setting, not a proxy feature (see the MP brief) |
@@ -108,7 +112,7 @@ Unlisted Meri tickets (MG, MB, MO except MO-10/11, MF except MF-02/10, MT-13 to 
 | **L1** | **RE-SCOPED** | MX-05/06/07/09 follow B1; the release packet no longer includes pair or issuer material |
 | Lanes R and D | **RE-SCOPED** | Lane D's `apps/proxy` ownership ends when item 0 deletes it |
 | §7 rows ADR P3 / P4 | **SUPERSEDED** | |
-| §8 | Decisions 13–15 added (2026-10-23) | |
+| §8 | Decisions 13–17 (23–24 October 2026) | Current V1 migration/full autonomous completion supersede obsolete hosting and approval steps. |
 
 ## D. `source-of-truth/STANDING-RULES.md`
 

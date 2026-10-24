@@ -6,7 +6,6 @@ import time
 from .ingress import IngressAdmission, COUNT_TOKENS_PATH
 from .lifetime import LifetimeLimits, PendingWork, RequestLifetime, _request_lifetime
 from ..state.pricing import StateDenied
-from ...product import telemetry_context as telemetry
 
 
 @dataclass(frozen=True)
@@ -46,15 +45,13 @@ class InferenceApp:
                 task.exception()
 
     async def __call__(self, scope, receive, send):
-        with telemetry.request():
-            await self._serve(scope, receive, send)
+        await self._serve(scope, receive, send)
 
     async def _serve(self, scope, receive, send):
         if type(scope) is not dict or scope.get("type") != "http":
             raise StateDenied("HTTP_INFERENCE_ONLY")
         life = None
         started = False
-        response_status = None
         try:
             if not self.ready:
                 raise StateDenied("SERVER_PENDING_WORK")
@@ -108,7 +105,7 @@ class InferenceApp:
                 return event
 
             async def upstream_send(event):
-                nonlocal started, response_done, output_bytes, output_events, response_status
+                nonlocal started, response_done, output_bytes, output_events
                 life.check()
                 output_events += 1
                 if output_events > self.limits.max_events:
@@ -126,7 +123,6 @@ class InferenceApp:
                         or sum(len(x[0])+len(x[1]) for x in headers) > 16384):
                         raise StateDenied("INVALID_RESPONSE_HEADERS")
                     started = True
-                    response_status = event["status"]
                 elif event.get("type") == "http.response.body":
                     if (not started or type(event.get("body", b"")) is not bytes
                             or type(event.get("more_body", False)) is not bool
@@ -162,30 +158,18 @@ class InferenceApp:
                 life.deny("ORIGINAL_DEADLINE_EXPIRED")
                 raise StateDenied(life.reason)
             app_task.result()
-            telemetry.http_outcome(response_status)
         except asyncio.CancelledError:
-            telemetry.outcome("cancelled")
             if life is not None:
                 life.deny("REQUEST_CANCELLED")
             raise
-        except Exception as error:
-            telemetry.failed(refused=isinstance(error, StateDenied) and not started)
+        except Exception:
             if life is not None:
                 life.deny("UPSTREAM_OR_ADMISSION_DENIED")
             if not started:
                 await self._refuse(send)
         finally:
-            try:
-                if life is not None:
-                    await life.close()
-            except asyncio.CancelledError:
-                telemetry.outcome("cancelled")
-                raise
-            except BaseException:
-                telemetry.failed()
-                raise
-            finally:
-                telemetry.finish()
+            if life is not None:
+                await life.close()
 
 
 def create_app(upstream_app, trusted_resolver, limits=LifetimeLimits(), *, count_tokens_app=None):

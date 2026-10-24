@@ -20,10 +20,11 @@ function configuredEndpoints(value) {
   return Object.freeze(endpoints);
 }
 
+const sameTarget=(a,b)=>a!==undefined&&canonicalSha256(a)===canonicalSha256(b);
 export function createMailHttpAdapter(options) {
-  const {endpoints: configured, getCredentials, fetchImpl = globalThis.fetch, now, maxRequestMs = 15000, maxResponseBytes = 1048576} =
-    ownFields(options, ['endpoints', 'getCredentials', 'now'], ['fetchImpl', 'maxRequestMs', 'maxResponseBytes']);
-  if (typeof getCredentials !== 'function' || typeof fetchImpl !== 'function' || typeof now !== 'function' ||
+  const {endpoints: configured, getCredentials,readSource, fetchImpl = globalThis.fetch, now, maxRequestMs = 15000, maxResponseBytes = 1048576} =
+    ownFields(options, ['endpoints',  'now'], ['getCredentials','readSource','fetchImpl', 'maxRequestMs', 'maxResponseBytes']);
+  if ((readSource === undefined ? typeof getCredentials !== 'function' : typeof readSource !== 'function' || getCredentials !== undefined) || typeof fetchImpl !== 'function' || typeof now !== 'function' ||
       !Number.isSafeInteger(maxRequestMs) || maxRequestMs < 1 || maxRequestMs > 3600000 ||
       !Number.isSafeInteger(maxResponseBytes) || maxResponseBytes < 1 || maxResponseBytes > 16777216) deny('GATEWAY_CONFIGURATION');
   const endpoints = configuredEndpoints(configured);
@@ -50,6 +51,12 @@ export function createMailHttpAdapter(options) {
         binding: context.authority.binding, subject: context.authority.subject,
         policyRevision: context.authority.policyRevision, sourceIds: context.authority.sourceIds,
         ...(context.invocationId === undefined ? {} : {invocationId: context.invocationId})});
+      let page;
+      if(readSource){
+        page=frozenData(await lifetime.run(signal=>{active();return readSource({operation:context.operation.id,input:JSON.parse(body),context:frozenData(JSON.parse(correlationJson)),deadlineMs:cutoff,signal});}));
+        active();
+        if(Buffer.byteLength(JSON.stringify(page),'utf8')>Math.min(maxResponseBytes,context.authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+      }else{
       const credentials = frozenData(await lifetime.run(signal => {
         active(); return getCredentials(Object.freeze({...pins, deadlineMs: cutoff, target, correlationSha256, signal}));
       }));
@@ -64,19 +71,13 @@ export function createMailHttpAdapter(options) {
           (Object.hasOwn(credentials, 'target') && canonicalSha256(credentials.target) !== canonicalSha256(target)) ||
           (Object.hasOwn(credentials, 'correlationSha256') && credentials.correlationSha256 !== correlationSha256) ||
           (Object.hasOwn(credentials, 'authorizationScheme') &&
-            !['Bearer', 'CapiroMeriRead'].includes(credentials.authorizationScheme)) ||
+            credentials.authorizationScheme !== 'Bearer') ||
           !Number.isSafeInteger(credentials.expiresAtMs) || credentials.expiresAtMs <= active() ||
           ![credentials.bearerToken, credentials.serviceSecret].every(token => typeof token === 'string' &&
             token.length >= 1 && token.length <= 8192 && /^[\x21-\x7e]+$/.test(token))) deny('ACCESS_DENIED');
-      if (credentials.authorizationScheme === 'CapiroMeriRead' &&
-          (context.invocationId === undefined || !Object.hasOwn(credentials, 'target') ||
-            new URL(endpoints[context.operation.id]).pathname !== path ||
-            credentials.correlationSha256 !== correlationSha256 ||
-            credentials.expiresAtMs > context.deadlineMs))
-        deny('ACCESS_DENIED');
-      if (credentials.authorizationScheme !== 'CapiroMeriRead' &&
-          (context.invocationId !== undefined || new URL(endpoints[context.operation.id]).pathname === path))
-        deny('ACCESS_DENIED');
+      if(credentials.authorizationScheme!=='Bearer'||!sameTarget(credentials.target,target)||
+          new URL(endpoints[context.operation.id]).pathname!==path||credentials.correlationSha256!==correlationSha256||
+          credentials.expiresAtMs>context.deadlineMs)deny('ACCESS_DENIED');
       cutoff = Math.min(cutoff, credentials.expiresAtMs); lifetime.limitDeadline(cutoff); active();
       const response = await lifetime.run(async signal => {
         active();
@@ -84,14 +85,14 @@ export function createMailHttpAdapter(options) {
           credentials: 'omit', cache: 'no-store', signal,
           headers: {authorization: `${credentials.authorizationScheme ?? 'Bearer'} ${credentials.bearerToken}`,
             'x-internal-service-secret': credentials.serviceSecret, 'x-meri-deadline-at': String(cutoff),
-            ...(credentials.authorizationScheme === 'CapiroMeriRead' ?
-              {'x-meri-read-correlation': correlationBytes.toString('base64url')} : {}),
+            'x-meri-read-correlation': correlationBytes.toString('base64url'),
             'content-type': 'application/json', accept: 'application/json', 'accept-encoding': 'identity'}, body});
         acquired = result;
         try { active(); return result; } catch (error) { try { cancelBody(responseBody(result)); } catch {} throw error; }
       });
       const bounded = {run: fn => lifetime.run(signal => { active(); return fn(signal); }), check: active};
-      const page = frozenData(await readJsonResponse(response, {lifetime: bounded, maxResponseBytes}));
+      page = frozenData(await readJsonResponse(response, {lifetime: bounded, maxResponseBytes}));
+      }
       active(); assertMailPage(page, context); active(); return page;
     } catch (error) { throw safeFailure(error); }
     finally { try { if (acquired) cancelBody(responseBody(acquired)); } catch {} lifetime?.close(); }

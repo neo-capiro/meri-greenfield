@@ -38,7 +38,7 @@ function blocksFor(input,facts,reads,provenance){
   }
   for(const f of facts){blocks.push(p(`${f.id}: ${f.status}${f.conflict?'; unresolved potentially conflicting cited passages':''}`));
     for(const l of f.links)if(l.evidence){const e=l.evidence;
-      blocks.push(p(`Source ${e.sourceId}; record ${e.recordId}; version ${e.sourceVersionId}; citation ${e.citationId}; authorization decision ${e.authorizationDecisionId}.`));
+      blocks.push(p(`Source ${e.sourceId}; record ${e.recordId}; version ${e.sourceVersionId}; citation ${e.citationId}; run ${e.binding.runId}.`));
       blocks.push(p(`Cited passage (UTF-16 characters ${l.citation.start}-${l.citation.end}): ${l.passage}`));
       blocks.push(p(`Full text SHA256: ${e.contentSha256}\nPassage SHA256: ${l.passageSha256}\nScope: ${JSON.stringify(e.scopes)}\nObserved ${e.observedAt}; updated ${e.sourceUpdatedAt??'unknown'}.`));}
   }

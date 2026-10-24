@@ -31,7 +31,7 @@ async function fixture(skillId='quick_skill.commitments_audit'){
  const outputBinding={...sourceBinding,runId:id(800),attemptId:id(801),workerId:id(802),writerFence:2};
  const currentOutputAccess=async call=>{state.accessCalls.push(call.phase);if(state.revoked||state.sourceRevoked)throw Object.assign(Error('ACCESS_REVOKED'),{code:'ACCESS_REVOKED'});
   const record={...call.pins,outputBinding,outputContextSha256:hash({...prepared.context,binding:outputBinding,deadlineMs:state.now+5000}),outputScopes:scopes,policyRevision:scopes[0].policyRevision,
-   outputAllocationSha256:'a'.repeat(64),outputGrantId:id(810),approvalReceiptId:id(811),sourceAccessReceiptId:id(812),sessionReceiptId:id(813),checkedAtMs:state.now,expiresAtMs:state.now+5000};
+   approvalDecision:{proposalId:id(811),commandSha256:'a'.repeat(64),decision:'approved',approver:{tenantId:sourceBinding.tenantId,actorId:sourceBinding.actorId},policyRevision:scopes[0].policyRevision,decidedAt:new Date(state.now-100).toISOString(),expiresAt:new Date(state.now+5000).toISOString()},checkedAtMs:state.now,expiresAtMs:state.now+5000};
   if(call.phase==='after'&&state.afterMutate)state.afterMutate(record);return record;};
  const owner=()=>createSelectedOutputRetention({journal:createPostgresConversationStore({pool}).selectedOutputs,currentOutputAccess,now:()=>state.now,maxRequestMs:1000});
  const retain=(o=owner(),change={})=>o.retain({pending,request,reads,...change});const load=(o=owner(),change={})=>o.load({sourceBinding,preparationSha256:pending.preparationSha256,...change});
@@ -70,9 +70,9 @@ test('stored preparation/request/scopes/content digest tampering and changed sou
   const f=await fixture();await f.retain();await f.status('completed');change(f.outputs.values().next().value);await assert.rejects(f.load());}
  const f=await fixture();await f.retain();await f.status('completed');await assert.rejects(f.load(f.owner(),{sourceBinding:{...f.sourceBinding,actorId:'foreign'}}));
 });
-test('fresh resource revocation and distinct output grant/session/scope are required before/after recovery',async()=>{
+test('fresh resource revocation and distinct output context/session/scope are required before/after recovery',async()=>{
  for(const change of [r=>r.sourceContextSha256='f'.repeat(64),r=>r.outputBinding={...r.sourceBinding},r=>r.outputBinding.actorId='other',r=>r.outputScopes=[],
-  r=>r.sessionReceiptId=id(999),r=>r.outputGrantId=id(999),r=>r.approvalReceiptId=id(999),r=>r.outputAllocationSha256='f'.repeat(64),r=>r.sourceAccessReceiptId=id(999),r=>r.expiresAtMs=0]){
+  r=>r.outputContextSha256='e'.repeat(64),r=>r.approvalDecision.proposalId=id(999),r=>r.sourceEvidenceSha256='e'.repeat(64),r=>r.expiresAtMs=0]){
   const f=await fixture();await f.retain();await f.status('completed');f.state.afterMutate=change;await assert.rejects(f.load(),/ACCESS_REFUSED/);}
  for(const key of ['revoked','sourceRevoked']){const f=await fixture();await f.retain();await f.status('completed');f.state[key]=true;await assert.rejects(f.load(),/ACCESS_REFUSED/);}
 });
@@ -93,7 +93,7 @@ test('cancelled/parked access never brands or releases retained JSON',async()=>{
 });
 test('old context deadline does not authorize recovery; changed current session alone blocks it',async()=>{
  const f=await fixture();await f.retain();await f.status('completed');f.state.now=f.context.deadlineMs+1000;
- f.state.afterMutate=r=>r.sessionReceiptId=id(999);await assert.rejects(f.load(),/ACCESS_REFUSED/);assert.equal(f.outputs.size,1);
+ f.state.afterMutate=r=>r.outputContextSha256='e'.repeat(64);await assert.rejects(f.load(),/ACCESS_REFUSED/);assert.equal(f.outputs.size,1);
 });
 test('direct journal cannot bypass the original compiler admission owner',async()=>{
  const f=await fixture(),before=f.base.state.calls.length,{prepared,...pending}=f.pending;
@@ -126,4 +126,9 @@ test('foreign journal and private native owner diagnostics are rejected without 
  const f=await fixture();assert.throws(()=>createSelectedOutputRetention({journal:{retain:async()=>{},load:async()=>f.prepared},currentOutputAccess:f.currentOutputAccess,now:()=>f.state.now}),/CONFIGURATION/);
  await f.retain();await f.status('completed');const owner=createSelectedOutputRetention({journal:f.store.selectedOutputs,currentOutputAccess:async()=>{throw Error('SYNTHETIC_PRIVATE_OWNER_DIAGNOSTIC');},now:()=>f.state.now});
  await assert.rejects(f.load(owner),e=>e.message==='SELECTED_OUTPUT_ACCESS_REFUSED'&&!e.message.includes('PRIVATE'));
+});
+
+for(const key of ['outputGrantId','outputAllocationSha256','sourceAccessReceiptId','sessionReceiptId','approvalReceiptId'])test(`retired ${key} is not current output authority`,async()=>{
+ const f=await fixture();await f.retain();await f.status('completed');f.state.afterMutate=r=>{r[key]=key==='outputGrantId'?id(999):'f'.repeat(64);};
+ await assert.rejects(f.load(),{message:'INVALID_COMMAND'});assert.equal(f.outputs.size,1);
 });

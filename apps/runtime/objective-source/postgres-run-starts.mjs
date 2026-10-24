@@ -1,4 +1,4 @@
-/** Default-off, tenant-bound PostgreSQL store for meri_objective_source.run_starts (D7-4, migration 0002). Borrowed pool only.
+/** Default-off PostgreSQL store for meri_objective_source.run_starts (D7-4, migration 0002). Borrowed pool only. Tenant comes from each validated immutable record/query; an optional fixed tenant only narrows it.
  *
  * putOnce is one insert-or-read transaction under the conversation store's own advisory key (`${tenantId}:${conversationId}`)
  * and then the job key, so it serializes with every original-binding, initial-input and run write of that conversation. A new
@@ -32,21 +32,21 @@ export function createPostgresObjectiveRunStartStore(configuration={}){
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
-   const c=own(configuration,['enabled','pool','tenantId'],['now','maxRequestMs']);tenantId=c.tenantId;
-   if(typeof tenantId!=='string'||!tenantId||tenantId.trim()!==tenantId||tenantId.length>128)refuse();
+   const c=own(configuration,['enabled','pool'],['tenantId','now','maxRequestMs']);tenantId=c.tenantId;
+   if(tenantId!==undefined&&(typeof tenantId!=='string'||!tenantId||tenantId.trim()!==tenantId||tenantId.length>128))refuse();
    tx=createObjectivePostgresTransactions({connect:storageMethod(c.pool,'connect'),now:c.now??Date.now,maxRequestMs:c.maxRequestMs??3000,unavailable,unknown,semantic:['OBJECTIVE_RUN_START_CONFLICT']});
    enabled=true;
   }
  }catch{enabled=false;}
  const uncertainJobs=new Set(),uncertainRuns=new Set();
- const conversationKey=binding=>`${tenantId}:${binding.conversationId}`;
+ const conversationKey=binding=>`${binding.tenantId}:${binding.conversationId}`;
  const jobKey=job=>`meri_objective_source:run-start:${job}`;
- function bound(binding){validateShape('RunBinding',binding);if(binding.tenantId!==tenantId)refuse();return binding;}
+ function bound(binding){validateShape('RunBinding',binding);if(tenantId!==undefined&&binding.tenantId!==tenantId)refuse();return binding;}
  async function putOnce(value){
   if(!enabled)refuse();
   let v,record,columns,b;
-  try{v=own(value,['record'],['signal']);record=assertObjectiveRunStartRecord(v.record);columns=objectiveRunStartColumns(record,{tenantId});b=bound(record.binding);}catch{refuse();}
-  const unresolved=uncertainJobs.has(record.generationJobId)||uncertainRuns.has(columns.issuance_key);
+  try{v=own(value,['record'],['signal']);record=assertObjectiveRunStartRecord(v.record);columns=objectiveRunStartColumns(record,{tenantId:record.binding.tenantId});b=bound(record.binding);}catch{refuse();}
+  const tenantId=b.tenantId;const unresolved=uncertainJobs.has(record.generationJobId)||uncertainRuns.has(columns.issuance_key);
   try{
    const answer=await tx.operation(v.signal,life=>tx.transaction(life,true,async q=>{
     await advisory(q,conversationKey(b));await advisory(q,jobKey(record.generationJobId));
@@ -72,7 +72,7 @@ export function createPostgresObjectiveRunStartStore(configuration={}){
  }
  /** The run-start for one exact binding: ABSENT (ordinary chat), STARTED with the record, or UNKNOWN after an ambiguous write. */
  async function read(value){
-  if(!enabled)refuse();let v,b;try{v=own(value,['binding'],['signal']);b=bound(data(v.binding));}catch{refuse();}const key=hash(b);
+  if(!enabled)refuse();let v,b;try{v=own(value,['binding'],['signal']);b=bound(data(v.binding));}catch{refuse();}const key=hash(b),tenantId=b.tenantId;
   return tx.operation(v.signal,life=>tx.transaction(life,false,async q=>{
    await advisory(q,conversationKey(b));
    const row=maybe((await q(BY_RUN,[tenantId,b.conversationId,b.runId])).rows);
@@ -81,5 +81,20 @@ export function createPostgresObjectiveRunStartStore(configuration={}){
    uncertainRuns.delete(key);uncertainJobs.delete(saved.generationJobId);return data({state:'STARTED',record:saved});
   }));
  }
- return Object.freeze({available:()=>enabled,putOnce,read});
+ /** Private Core readback selects the one immutable job, never a caller-supplied tenant or object locator. */
+ async function readByJob(value){
+  if(!enabled)refuse();let v;
+  try{v=own(value,['generationJobId'],['signal']);if(typeof v.generationJobId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/u.test(v.generationJobId))refuse();}catch{refuse();}
+  return tx.operation(v.signal,life=>tx.transaction(life,false,async q=>{
+   await advisory(q,jobKey(v.generationJobId));
+   const row=maybe((await q(BY_JOB,[v.generationJobId])).rows);
+   if(!row)return data(uncertainJobs.has(v.generationJobId)?{state:'UNKNOWN'}:{state:'ABSENT'});
+   if(tenantId!==undefined&&row.tenant_id!==tenantId)refuse();
+   const saved=decodeObjectiveRunStartRow(row,{tenantId:row.tenant_id});bound(saved.binding);
+   if(saved.generationJobId!==v.generationJobId)refuse();
+   uncertainJobs.delete(v.generationJobId);uncertainRuns.delete(hash(saved.binding));
+   return data({state:'STARTED',record:saved});
+  }));
+ }
+ return Object.freeze({available:()=>enabled,putOnce,read,readByJob});
 }

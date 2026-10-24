@@ -11,20 +11,13 @@ const ROUTES=Object.freeze({
 });
 
 export function createBusinessDevelopmentHandlers(configuration,operations){
- const config=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','fetchImpl','maxRequestMs','maxResponseBytes']);
+ const config=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
  if(config.credentialsForCall!==undefined&&(typeof config.credentialsForCall!=='function'||types.isProxy(config.credentialsForCall)))deny('GATEWAY_CONFIGURATION');
- // The new dossier path is selected-client Option B only. The delegated current
- // receipt binds the owned prospect conversation and linked client; an ordinary
- // native bearer must not widen this path to the older tenant-only scope gate.
+ // Core re-resolves the owned prospect conversation and current client access.
  const transport=config.credentialsForCall?{...config,credentialsForCall(operation,call){
   const get=config.credentialsForCall(operation,call);
-  if(operation.id!=='get_business_development_evidence')return get;
   if(typeof get!=='function'||types.isProxy(get))deny('GATEWAY_CONFIGURATION');
-  return async request=>{
-   const credentials=frozenData(await get(request));
-   if(credentials.authorizationScheme!=='CapiroMeriRead')deny('UNAVAILABLE');
-   return credentials;
-  };
+  return get;
  }}:config;
  const handlers=createStoredNativeReadHandlers(transport,operations,{family:'business-development',routes:ROUTES,
   resultBody(current,result){
@@ -39,7 +32,7 @@ export function createBusinessDevelopmentHandlers(configuration,operations){
   const data=frozenData(fields);
   captureBusinessDevelopmentResource(handler.operation,data.request,data.authority.subject);
   // CONTROL current authority is mandatory; client tasks also pin/recheck the native conversation receipt.
-  if(!config.credentialsForCall)deny('UNAVAILABLE');
+  if(!config.credentialsForCall&&!config.readSource)deny('UNAVAILABLE');
   return await handler.execute(call);
  }catch(error){throw safeFailure(error);}}}));
 }

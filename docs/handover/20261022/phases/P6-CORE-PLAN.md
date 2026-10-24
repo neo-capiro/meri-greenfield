@@ -1,5 +1,8 @@
 # P6-Core: Core-side authority changes for the Meri hot path (implementation plan)
 
+> **Historical phase plan.** This dated source/evidence is retained for lineage. Current work follows the [approved Runtime V1 migration](../plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) and [standing requirements](../STANDING-REQUIREMENTS.md). Keep applicable canonical Core and telemetry behavior; do not execute obsolete per-turn Fargate, model-proxy, proof-reuse or warm-pool instructions. Root assigns current files and qualification.
+
+
 **Repository:** `capiro-backend`. You need GitHub access and a Linux box with Docker. **You never need AWS, and must not use it.**
 
 **What you deliver:** one pull request into `backend-import`. The Meri shipper reviews it, sends it to an **independent security review** (required: this is change-controlled auth code), merges it, deploys it to preview and validates it live (§6, §9).

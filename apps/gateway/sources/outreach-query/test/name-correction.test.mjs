@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 import {nativeReadFailureCode} from '../../../../../packages/contracts/runtime-0.2/reads.mjs';
 import {GatewayDenied} from '../../../dispatch/operation-result.mjs';
-import {createClientReferenceReader} from '../../../../runtime/native-authority/native-read-credentials/client-reference.mjs';
+import {createClientReferenceReader} from '../../../../runtime/read-context/client-reference.mjs';
 import {captureOutreachListClientReference,captureOutreachListClientSelection} from '../request-context.mjs';
 import {storedCase,id,clientId} from './fixture.mjs';
 const foreign='d1234567-b123-4c12-8d12-e123456789ab';
@@ -79,11 +79,11 @@ test('foreign selection, personal/multiple-client subjects and missing client re
   }
   if(mode==='foreign-subject')a.subject.entityIds=[foreign];
   if(mode==='personal')Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId]});
-  if(mode==='resource')for(const scopes of [a.subject.scopes,a.claims.scopes,a.decision.scopes])scopes[0].resourceId=foreign;
+  if(mode==='resource')for(const scopes of [a.subject.scopes,a.scopes])scopes[0].resourceId=foreign;
   if(mode==='multiple')a.subject.entityIds.push(foreign);
   if(mode==='missing-source')a.sourceIds=[];
-  // The existing canonical subject schema rejects a multi-ID client subject before this adapter.
-  await assert.rejects(perCall(f)(call),{message:mode==='multiple'?'INTERNAL_ERROR':'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  // The current correlation boundary rejects a multi-ID client subject before credentials.
+  await assert.rejects(perCall(f)(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
 

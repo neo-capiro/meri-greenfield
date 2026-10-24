@@ -11,14 +11,14 @@ export function expectedContext(value){
   if(!value||typeof value!=='object'||Array.isArray(value)||![Object.prototype,null].includes(Object.getPrototypeOf(value)))fail('INPUT_CONTEXT_INVALID');
   const descriptors=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(descriptors);
   if(keys.length!==contextKeys.length||keys.some(key=>typeof key!=='string'||!contextKeys.includes(key)))fail('INPUT_CONTEXT_INVALID');
-  const context={};for(const key of contextKeys){const d=descriptors[key];if(!d||!Object.hasOwn(d,'value')||!d.enumerable||typeof d.value!=='string')fail('INPUT_CONTEXT_INVALID');context[key]=d.value;}
-  if(['tenantId','actorId'].some(key=>!context[key]||context[key].length>128)||['conversationId','runId','clientId'].some(key=>!uuid.test(context[key])))fail('INPUT_CONTEXT_INVALID');
+  const context={};for(const key of contextKeys){const d=descriptors[key];if(!d||!Object.hasOwn(d,'value')||!d.enumerable||typeof d.value!=='string'&&!(key==='clientId'&&d.value===null))fail('INPUT_CONTEXT_INVALID');context[key]=d.value;}
+  if(['tenantId','actorId'].some(key=>!context[key]||context[key].length>128)||['conversationId','runId'].some(key=>!uuid.test(context[key]))||context.clientId!==null&&!uuid.test(context.clientId))fail('INPUT_CONTEXT_INVALID');
   return Object.freeze(context);
  }catch(error){if(error instanceof ConversationResponseError)throw error;fail('INPUT_CONTEXT_INVALID');}
 }
 export function assertInputContext(receipt,context){
  const b=receipt.run.binding;
- if(['tenantId','actorId','conversationId','runId'].some(key=>b[key]!==context[key])||!receipt.run.scopes.some(scope=>scope.kind==='client'&&scope.tenantId===context.tenantId&&scope.resourceId===context.clientId))fail('INPUT_CONTEXT_MISMATCH');
+ if(['tenantId','actorId','conversationId','runId'].some(key=>b[key]!==context[key])||(context.clientId===null?receipt.run.scopes.length!==1||receipt.run.scopes[0].kind!=='private-user'||receipt.run.scopes[0].tenantId!==context.tenantId||receipt.run.scopes[0].resourceId!==context.actorId:!receipt.run.scopes.some(scope=>scope.kind==='client'&&scope.tenantId===context.tenantId&&scope.resourceId===context.clientId)))fail('INPUT_CONTEXT_MISMATCH');
 }
 /** Returns a genuine old public history view; the tail is synthetic only for semantic validation, never persistence or absence evidence. */
 export async function correlateInputReceipt(receipt,request,currentView){

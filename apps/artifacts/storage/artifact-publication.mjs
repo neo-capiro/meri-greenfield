@@ -7,16 +7,19 @@ const publicationVersion='meri.artifact-publication-index.proposal-1',namespace=
 const corrupt=()=>fail('ARTIFACT_PUBLICATION_CORRUPT');
 const parentMatches=(parent,r)=>parent&&['tenantId','actorId','conversationId'].every(k=>parent.version.binding[k]===r.version.binding[k])&&parent.version.artifactId===r.version.artifactId&&same(parent.version.scopes,r.version.scopes)&&parent.spec.operation===r.spec.operation&&parent.spec.format===r.spec.format;
 export const emptyArtifactPublications=tenantId=>({publicationVersion,namespace,tenantId,decisions:[],heads:[],tombstones:[]});
-export function verifyArtifactPublicationInput(value){
- const p=data(own(value,['record','expectedParentVersionId','authorization','invocation'])),r=recordValue(p.record),b=r.version.binding,a=own(p.authorization,['receiptId','decision','action','binding','scopesSha256','resourceSha256','requestSha256','expiresAtMs']),i=own(p.invocation,['versionId','budgetTicketId','binding','requestSha256','ownedInvocationId']);
+export function verifyArtifactPublicationInput(value,{historical=false}={}){
+ const p=data(own(value,['record','expectedParentVersionId','authorization','invocation'])),r=recordValue(p.record),b=r.version.binding,a=own(p.authorization,['receiptId','decision','action','binding','scopesSha256','resourceSha256','requestSha256','expiresAtMs']);
+ const native=p.invocation?.kind==='native-document',i=own(p.invocation,native?['kind','versionId','invocationId','binding','requestSha256']:['versionId','budgetTicketId','binding','requestSha256','ownedInvocationId']);
  if(p.expectedParentVersionId!==null)uuid(p.expectedParentVersionId);
  if(p.expectedParentVersionId!==r.version.parentVersionId||typeof a.receiptId!=='string'||!a.receiptId||a.receiptId.length>1024||a.decision!=='allow'||a.action!==(p.expectedParentVersionId===null?'artifact.generate':'artifact.revise')||!same(a.binding,b)||a.scopesSha256!==v.hash(r.version.scopes)||a.requestSha256!==r.requestSha256||!Number.isSafeInteger(a.expiresAtMs)||a.expiresAtMs<1)corrupt();digest(a.resourceSha256);
- if(i.versionId!==r.version.versionId||typeof i.budgetTicketId!=='string'||!i.budgetTicketId||i.budgetTicketId.length>1024||!same(i.binding,b)||i.requestSha256!==r.requestSha256||!(i.ownedInvocationId===null||typeof i.ownedInvocationId==='string'&&i.ownedInvocationId==='owned_'+r.version.versionId))corrupt();return p;
+ if(i.versionId!==r.version.versionId||!same(i.binding,b)||i.requestSha256!==r.requestSha256)corrupt();
+ if(native){if(typeof i.invocationId!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(i.invocationId))corrupt();}
+ else if(!historical||typeof i.budgetTicketId!=='string'||!i.budgetTicketId||i.budgetTicketId.length>1024||!(i.ownedInvocationId===null||typeof i.ownedInvocationId==='string'&&i.ownedInvocationId==='owned_'+r.version.versionId))corrupt();return p;
 }
 export function verifyArtifactPublications(value,tenantId,maxDecisions=1024){
  const p=data(own(value,['publicationVersion','namespace','tenantId','decisions','heads','tombstones']));
  if(p.publicationVersion!==publicationVersion||p.namespace!==namespace||p.tenantId!==tenantId||!Array.isArray(p.decisions)||!Array.isArray(p.heads)||!Array.isArray(p.tombstones)||p.decisions.length>maxDecisions||p.heads.length>maxDecisions||p.tombstones.length>maxDecisions||Buffer.byteLength(JSON.stringify(p))>8388608)corrupt();
- const versions=new Map(),heads=new Map();for(const raw of p.decisions){const d=own(raw,['record','recordSha256','expectedParentVersionId','authorization','invocation','decisionSha256']),{recordSha256,decisionSha256,...input}=d,r=verifyArtifactPublicationInput(input).record,id=r.version.versionId,artifactId=r.version.artifactId;
+ const versions=new Map(),heads=new Map();for(const raw of p.decisions){const d=own(raw,['record','recordSha256','expectedParentVersionId','authorization','invocation','decisionSha256']),{recordSha256,decisionSha256,...input}=d,r=verifyArtifactPublicationInput(input,{historical:true}).record,id=r.version.versionId,artifactId=r.version.artifactId;
   if(r.version.binding.tenantId!==tenantId||recordSha256!==v.hash(r)||decisionSha256!==v.hash({...input,recordSha256})||versions.has(id)||(heads.get(artifactId)?.versionId??null)!==d.expectedParentVersionId)corrupt();
   if(d.expectedParentVersionId!==null&&!parentMatches(versions.get(d.expectedParentVersionId)?.record,r))corrupt();
   versions.set(id,d);heads.set(artifactId,{artifactId,versionId:id,decisionSha256});

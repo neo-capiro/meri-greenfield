@@ -19,14 +19,16 @@
  *  outcomes           {read({proposal,signal}) → null|{state,outcome}}  command journal reader, optional
  *
  * Construction is inert. `enabled` defaults to false. */
-import {assertProposalIntegrity,canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
+import {artifactValidators as artifacts,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createCommandToolInterface} from '../commands/tool-interface.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,DIGEST=/^[a-f0-9]{64}$/u;
 /** Commands an approved intent may execute: those with a proposal (approval-metadata) owner today. */
-export const APPROVABLE_ACTIONS=Object.freeze(['task.create']);
+export const APPROVABLE_ACTIONS=Object.freeze(['task.create','document.draft']);
 /** Domain failures and their HTTP statuses (transport/membership codes belong to `product-access/http.mjs`). */
 export const INTENT_APPROVAL_ERRORS=Object.freeze({
  INTENT_APPROVALS_DISABLED:503,INTENT_NOT_FOUND:404,INTENT_NOT_PREPARED:409,INTENT_NOT_APPROVABLE:409,INTENT_MISMATCH:409,INTENT_EXPIRED:409,
@@ -63,12 +65,14 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','commandOptionsFor','now','limits'],['decisions','issueExecution','outcomes','enabled']);
+ const c=own(configuration,['journal','commandOptionsFor','now','limits'],['decisions','issueExecution','outcomes','documents','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.commandOptionsFor!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
  const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent','revoke']);
  const outcomes=c.outcomes===undefined?undefined:own(c.outcomes,['read']);
+ const documents=c.documents===undefined?undefined:own(c.documents,['execute','read']);
+ if(documents&&Object.values(documents).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(decisions&&Object.values(decisions).some(f=>typeof f!=='function')||outcomes&&typeof outcomes.read!=='function'||c.issueExecution!==undefined&&typeof c.issueExecution!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const lifetime=(deadlineMs,signal)=>{nativeSignal(signal);const at=c.now();
   return createOperationLifetime({deadlineMs:Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:at+limits.maxRequestMs,at+limits.maxRequestMs),now:c.now,signal,errorFactory:code=>new ProductError(code)});};
@@ -83,7 +87,7 @@ export function createIntentApprovalOwner(configuration){
   if(entry===null)fail('INTENT_NOT_FOUND','NOT_DISPATCHED');
   if(entry.state!=='PREPARED')fail('INTENT_NOT_PREPARED','NOT_DISPATCHED');
   const proposal=commandProposal(entry);if(!proposal)fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');
-  try{assertProposalIntegrity(proposal);}catch{fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');}
+  try{assertNativeApprovalProposal(proposal);}catch{fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');}
   if(proposal.proposalId!==r.proposalId||proposal.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!same(conversationOf(proposal.command.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId:r.conversationId}))fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!APPROVABLE_ACTIONS.includes(proposal.command.action))fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');
@@ -124,6 +128,15 @@ export function createIntentApprovalOwner(configuration){
   }catch(error){throw owned(error,'INTENT_EXECUTION_UNKNOWN','UNKNOWN');}finally{life.close();}
  }
  async function execute(life,principal,proposal,decision,deliveryId){
+  if(proposal.command.action==='document.draft'){
+   if(!documents)fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+   // The existing document delivery journal owns dispatch/recovery. This route
+   // never retries an uncertain renderer or manufactures a command receipt.
+   const result=data(await life.run(signal=>documents.execute.call(c.documents,{proposal,decision,principal,deliveryId,signal,deadlineMs:life.deadline()})));
+   if(result?.status==='observed'){own(result,['status','outcome']);return data({status:'executed',deliveryId,proposalId:proposal.proposalId,decision,outcome:documentOutcome(result.outcome,proposal)});}
+   own(result,['status']);if(result.status!=='indeterminate')fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');
+   return data({status:'indeterminate',deliveryId,proposalId:proposal.proposalId,decision});
+  }
   if(typeof c.issueExecution!=='function')fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
   let options;
   try{options=await life.run(signal=>c.commandOptionsFor({proposal,signal}));}catch(error){throw owned(error,'EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');}
@@ -177,9 +190,10 @@ export function createIntentApprovalOwner(configuration){
     if(d===null)decision=null;else{validateShape('ApprovalDecision',d);if(d.proposalId===proposal.proposalId&&d.commandSha256===proposal.commandSha256)decision=d;}}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;}
   }
-  if(outcomes){
-   try{const row=data(await life.run(signal=>outcomes.read.call(c.outcomes,{proposal,signal})));
-    execution=row===null?null:row.state==='OUTCOME'?{state:'completed',outcome:row.outcome}:row.state==='UNKNOWN'?{state:'unknown'}:row.state==='CLAIMED'?{state:'executing'}:'unavailable';}
+  const reader=proposal.command.action==='document.draft'?documents:outcomes,receiver=proposal.command.action==='document.draft'?c.documents:c.outcomes;
+  if(reader){
+   try{const row=data(await life.run(signal=>reader.read.call(receiver,{proposal,principal,deliveryId:entry.deliveryId,signal,deadlineMs:life.deadline()})));
+    execution=row===null?null:row.state==='OUTCOME'?{state:'completed',outcome:proposal.command.action==='document.draft'?documentOutcome(row.outcome,proposal):row.outcome}:row.state==='UNKNOWN'?{state:'unknown'}:row.state==='CLAIMED'?{state:'executing'}:'unavailable';}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;}
   }
   const expired=!(instant(proposal.expiresAt)>c.now());
@@ -199,4 +213,17 @@ export function createIntentApprovalOwner(configuration){
   }finally{life.close();}
  }
  return Object.freeze({decide,list});
+}
+
+/** Publication correlation only. Current access, original preparation and exact
+ * projected request are checked by the existing document owner before release. */
+function documentOutcome(raw,proposal){
+ try{
+  const r=data(raw);artifactShape('ArtifactCreatedResult',r);artifacts.version(r.version);artifacts.inspection(r.inspection);
+  const p=proposal.command,b=r.version.binding;
+  if(r.execution.kind!=='native-document'||!same(conversationOf(b),conversationOf(p.binding))||!same(r.version.scopes,p.scopes)||!same(r.version.object.scopes,p.scopes)||
+   r.version.parentVersionId!==p.arguments.baseVersionId||r.inspection.format!=='docx'||r.version.mimeType!=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'||
+   r.version.object.sha256!==r.inspection.sha256||r.version.object.bytes!==r.inspection.bytes)throw Error();
+  return r;
+ }catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
 }

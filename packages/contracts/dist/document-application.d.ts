@@ -30,7 +30,7 @@ export type DocumentContentRequest =
       content: Canonical_Workbook_470B7491;
     };
 export type Canonical_ScalarFf4415F1 = string | number | boolean | null;
-export type DocumentVersion = Canonical_ArtifactVersionD54B8Ac9 & {
+export type DocumentVersion = Canonical_ArtifactVersion_7F9C56Fa & {
   generationStatus?: 'draft';
   previewStatus?: 'pending';
   filename?: string;
@@ -39,6 +39,110 @@ export type DocumentVersion = Canonical_ArtifactVersionD54B8Ac9 & {
     | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     | 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 };
+export type Canonical_ArtifactVersion_7F9C56Fa =
+  Canonical_ArtifactVersionD54B8Ac9 | Canonical_NativeArtifactVersionFf97D150;
+export type CanonicalArtifactIdCc9F299E = string;
+export type CanonicalVersionIdE4470A54 = string;
+export type CanonicalParentVersionId_116435A5 = string | null;
+export type CanonicalFilenameF09421Cc = string;
+export type CanonicalMimeType_0837Eb6F = string;
+/**
+ * @minItems 1
+ */
+export type CanonicalScopes_3D363E5B = [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+export type CanonicalSourceIdFa5F0F45 = string;
+export type CanonicalRecordId_1173860D = string;
+export type CanonicalSourceVersionIdA5Aa4B63 = string;
+export type CanonicalObservedAtFc731620 = string;
+export type CanonicalSourceUpdatedAt_4A76A197 = string | null;
+export type CanonicalCitationIdAe4E145B = string;
+/**
+ * @minItems 1
+ */
+export type CanonicalScopes_78E0Eb49 = [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+export type CanonicalContentSha256_6B70D9F7 = string;
+export type CanonicalGenerationStatus_0B8D37A9 = 'draft' | 'validated' | 'published' | 'failed';
+export type CanonicalPreviewStatusFe162158 = 'pending' | 'validated' | 'unsupported' | 'failed';
+export type CanonicalCreatedAt_38444D79 = string;
+export type Canonical_ArtifactExecution_28C65A3E =
+  Canonical_LegacyArtifactExecution_4Afe1663 | Canonical_NativeArtifactExecution_26204926;
+export type DocumentInspectionResponse =
+  | {
+      version: DocumentVersion;
+      inspection:
+        | {
+            sha256: string;
+            bytes: number;
+            format: 'txt';
+            nativeOpened: false;
+            rendered: false;
+            recalculated: false;
+            /**
+             * @maxItems 5000
+             */
+            members: string[];
+            details: {
+              encoding: 'UTF-8';
+              whitespace: 'unchanged';
+            };
+            currentBytesVerified: true;
+          }
+        | {
+            sha256: string;
+            bytes: number;
+            format: 'docx';
+            nativeOpened: false;
+            rendered: false;
+            recalculated: false;
+            /**
+             * @maxItems 5000
+             */
+            members: string[];
+            details: {
+              paragraphs: number;
+              tables: number;
+              pictures: number;
+            };
+            currentBytesVerified: true;
+          }
+        | {
+            sha256: string;
+            bytes: number;
+            format: 'xlsx';
+            nativeOpened: false;
+            rendered: false;
+            recalculated: false;
+            /**
+             * @maxItems 5000
+             */
+            members: string[];
+            details: {
+              /**
+               * @maxItems 30
+               */
+              sheets: string[];
+              formulas: number;
+              formulaCache:
+                'unverified-zero-placeholder; recalculation required' | 'removed/unverified; recalculation required';
+              revisionMethod?: 'openpyxl typed-cell replacement';
+            };
+            currentBytesVerified: true;
+          };
+    }
+  | {
+      kind: 'native-file';
+      version: Canonical_NativeArtifactFileMetadataF90C3Fee;
+      integrity: CanonicalIntegrity_52Ed1E31;
+    };
+export type CanonicalObjectId_9E74Be34 = string;
+export type CanonicalManifestIdD0D1Dc64 = string;
+export type CanonicalPath_79796D02 = string;
+/**
+ * @minItems 1
+ */
+export type CanonicalScopes_4A25Bf0D = [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+export type CanonicalCreatedAtEde7C864 = string;
+export type CanonicalSha256A23D638D = string;
 
 export interface DocumentCreateRequest {
   deliveryId: string;
@@ -854,7 +958,33 @@ export interface Canonical_SourceEvidenceD9008775 {
   contentSha256: string;
   authorizationDecisionId: string;
 }
-export interface Canonical_ArtifactExecution_28C65A3E {
+export interface Canonical_NativeArtifactVersionFf97D150 {
+  contractVersion: '0.2.0';
+  artifactId: CanonicalArtifactIdCc9F299E;
+  versionId: CanonicalVersionIdE4470A54;
+  parentVersionId: CanonicalParentVersionId_116435A5;
+  binding: Canonical_RunBinding_84F2304C;
+  object: Canonical_ObjectReferenceA099Bd1C;
+  filename: CanonicalFilenameF09421Cc;
+  mimeType: CanonicalMimeType_0837Eb6F;
+  scopes: CanonicalScopes_3D363E5B;
+  evidence: Canonical_NativeSourceEvidenceCb9E6Ba4[];
+  generationStatus: CanonicalGenerationStatus_0B8D37A9;
+  previewStatus: CanonicalPreviewStatusFe162158;
+  createdAt: CanonicalCreatedAt_38444D79;
+}
+export interface Canonical_NativeSourceEvidenceCb9E6Ba4 {
+  sourceId: CanonicalSourceIdFa5F0F45;
+  recordId: CanonicalRecordId_1173860D;
+  sourceVersionId: CanonicalSourceVersionIdA5Aa4B63;
+  observedAt: CanonicalObservedAtFc731620;
+  sourceUpdatedAt: CanonicalSourceUpdatedAt_4A76A197;
+  citationId: CanonicalCitationIdAe4E145B;
+  scopes: CanonicalScopes_78E0Eb49;
+  contentSha256: CanonicalContentSha256_6B70D9F7;
+  binding: Canonical_RunBinding_84F2304C;
+}
+export interface Canonical_LegacyArtifactExecution_4Afe1663 {
   requestSha256: string;
   authorizationReceiptId: string;
   budgetTicketId: string;
@@ -862,67 +992,30 @@ export interface Canonical_ArtifactExecution_28C65A3E {
   versionCommitted: true;
   nativeQualified: false;
 }
-export interface DocumentInspectionResponse {
-  version: DocumentVersion;
-  inspection:
-    | {
-        sha256: string;
-        bytes: number;
-        format: 'txt';
-        nativeOpened: false;
-        rendered: false;
-        recalculated: false;
-        /**
-         * @maxItems 5000
-         */
-        members: string[];
-        details: {
-          encoding: 'UTF-8';
-          whitespace: 'unchanged';
-        };
-        currentBytesVerified: true;
-      }
-    | {
-        sha256: string;
-        bytes: number;
-        format: 'docx';
-        nativeOpened: false;
-        rendered: false;
-        recalculated: false;
-        /**
-         * @maxItems 5000
-         */
-        members: string[];
-        details: {
-          paragraphs: number;
-          tables: number;
-          pictures: number;
-        };
-        currentBytesVerified: true;
-      }
-    | {
-        sha256: string;
-        bytes: number;
-        format: 'xlsx';
-        nativeOpened: false;
-        rendered: false;
-        recalculated: false;
-        /**
-         * @maxItems 5000
-         */
-        members: string[];
-        details: {
-          /**
-           * @maxItems 30
-           */
-          sheets: string[];
-          formulas: number;
-          formulaCache:
-            'unverified-zero-placeholder; recalculation required' | 'removed/unverified; recalculation required';
-          revisionMethod?: 'openpyxl typed-cell replacement';
-        };
-        currentBytesVerified: true;
-      };
+export interface Canonical_NativeArtifactExecution_26204926 {
+  kind: 'native-document';
+  invocationId: string;
+  requestSha256: string;
+  authorizationReceiptId: string;
+  objectCommitted: true;
+  versionCommitted: true;
+  nativeQualified: false;
+}
+export interface Canonical_NativeArtifactFileMetadataF90C3Fee {
+  versionId: CanonicalObjectId_9E74Be34;
+  binding: Canonical_RunBinding_84F2304C;
+  manifestId: CanonicalManifestIdD0D1Dc64;
+  path: CanonicalPath_79796D02;
+  object: Canonical_ObjectReferenceA099Bd1C & {
+    bytes?: number;
+  };
+  scopes: CanonicalScopes_4A25Bf0D;
+  createdAt: CanonicalCreatedAtEde7C864;
+}
+export interface CanonicalIntegrity_52Ed1E31 {
+  sha256: CanonicalSha256A23D638D;
+  bytes: number;
+  currentBytesVerified: true;
 }
 export interface DocumentErrorResponse {
   error: {
@@ -940,7 +1033,6 @@ export interface DocumentErrorResponse {
       | 'DEADLINE'
       | 'DOCUMENT_CLOCK'
       | 'DOCUMENT_CONFIGURATION'
-      | 'DOCUMENT_READ_BUDGET_REFUSED'
       | 'DOCUMENT_REFUSED'
       | 'DOCUMENT_RESPONSE_LIMIT'
       | 'DOCUMENT_RESULT_REFUSED'
@@ -967,13 +1059,14 @@ declare const admittedRequest: unique symbol;
 declare const admittedVersion: unique symbol;
 export interface DocumentRequestMap { create:DocumentCreateRequest; revise:DocumentReviseRequest; inspect:DocumentInspectRequest; download:DocumentDownloadRequest; }
 export type AdmittedDocumentRequest<R extends DocumentRoute> = Readonly<DocumentRequestMap[R]> & {readonly [admittedRequest]:R};
-export type AdmittedDocumentVersion = Readonly<DocumentVersion> & {readonly [admittedVersion]:true};
-export type DocumentReceipt<T> = Omit<T,'version'> & {readonly version:AdmittedDocumentVersion};
+export type NativeArtifactFileMetadata = Extract<DocumentInspectionResponse,{kind:'native-file'}>['version'];
+export type AdmittedDocumentVersion = Readonly<DocumentVersion|NativeArtifactFileMetadata> & {readonly [admittedVersion]:true};
+export type DocumentReceipt<T> = T extends {version:infer V} ? Omit<T,'version'> & {readonly version:Readonly<V> & {readonly [admittedVersion]:true}} : never;
 export interface DocumentResponseMap {create:DocumentReceipt<DocumentCreatedResponse>; revise:DocumentReceipt<DocumentCreatedResponse>; inspect:DocumentReceipt<DocumentInspectionResponse>; download:never;}
 export type DocumentResponse<R extends DocumentRoute> = DocumentResponseMap[R] | DocumentErrorResponse;
-export interface DocumentDownload {readonly version:AdmittedDocumentVersion; readonly bytes:Uint8Array<ArrayBuffer>;}
+export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
 export declare class DocumentResponseError extends Error {readonly code:string;}
 export declare function receiveDocumentRequest<R extends DocumentRoute>(route:R,utf8Bytes:Uint8Array):AdmittedDocumentRequest<R>;
 export declare function receiveDocumentResponse<R extends DocumentRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentRequest<R>):Promise<DocumentResponse<R>>;
-export declare function receiveDocumentDownload(response:Response,version:AdmittedDocumentVersion,options?:DocumentDownloadOptions):Promise<DocumentDownload>;
+export declare function receiveDocumentDownload<V extends AdmittedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentDownload<V>>;

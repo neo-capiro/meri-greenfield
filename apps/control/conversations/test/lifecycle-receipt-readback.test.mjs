@@ -23,7 +23,7 @@ const row=(f,id=controlId)=>f.state.controls.get(`${binding.tenantId}:${id}`);
 const put=row=>{row.projection_sha256=hash(row.projection);};
 async function resumed(t,mode='resume',{unknown=false}={}){
  const f=await lifecycleFixture();t.after(f.close);await f.running();await f.control({controlId:pauseId,intent:'pause'});await f.claim(pauseId);await f.checkpoint(pauseId);
- const proof=f.proofs.get(id(220)),input={controlId,intent:mode,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256};
+ const proof=f.proofs.get(binding.runId),input={controlId,intent:mode,checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256};
  if(unknown){f.state.startUnknown=true;await assert.rejects(f.control(input),{code:'LIFECYCLE_EFFECT_UNKNOWN'});}
  else assert.equal((await f.control(input)).state,'APPLIED');
  return {...f,input};
@@ -104,7 +104,7 @@ for(const elapsed of [2999,3000])test(`receipt setup claim at ${elapsed}ms prese
 });
 for(const mode of ['resume','fork'])for(const elapsed of [2999,3000])test(`receipt setup ${mode} at ${elapsed}ms preserves the 3000ms bound`,async t=>{
  const f=await lifecycleFixture();t.after(f.close);await f.running();await f.control({controlId:pauseId,intent:'pause'});await f.claim(pauseId);await f.checkpoint(pauseId);
- const proof=f.proofs.get(id(220)),input={controlId,intent:mode,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256};let advanced=false;
+ const proof=f.proofs.get(binding.runId),input={controlId,intent:mode,checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256};let advanced=false;
  f.state.onTransitionContext=async()=>{if(!advanced){advanced=true;t.mock.timers.tick(elapsed);}};
  const before=counts(f);
  if(elapsed===2999){assert.equal((await f.control(input)).state,'APPLIED');assert.equal((await reader(f).journal.readReceipt(pins(),check)).state,'APPLIED');assert.equal(f.state.starts,before.starts+1);assert.equal(f.state.continued,before.continued+(mode==='resume'?1:0));}
