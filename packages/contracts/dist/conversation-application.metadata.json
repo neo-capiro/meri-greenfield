@@ -14,8 +14,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "c2fd901e3a013a0e3e49123939fbbbaaa79e41de48208fe7ebbe4630b6a156dc",
-      "bytes": 27603
+      "sha256": "078e1a20fb0d3c468f83c551fcbca81e85ccf3132d2613081a8103aba3d873d5",
+      "bytes": 27630
     },
     {
       "path": "../skills/./originals/bill_watch/1.0.1/manifest.json",
@@ -215,15 +215,15 @@
   ],
   "schemaSha256": "4c94af8ff703722ded98962183090c1c73bc1d9ec801ebb714994fba76f61712",
   "browserInputs": [
-    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/ajv-formats/dist/formats.js",
-    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/ajv/dist/runtime/equal.js",
-    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/ajv/dist/runtime/ucs2length.js",
-    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/canonicalize/lib/canonicalize.js",
-    "../../../wave2-r-meri-integration-20261024/packages/contracts/node_modules/fast-deep-equal/index.js",
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",
     "conversation-application/protocol.mjs",
     "conversation-generated:./generated-validator.mjs",
-    "document-application/boundary.mjs"
+    "document-application/boundary.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
+    "node_modules/ajv/dist/runtime/equal.js",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "node_modules/fast-deep-equal/index.js"
   ]
 }
