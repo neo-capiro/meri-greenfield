@@ -65,8 +65,15 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  }
  async function admitPrepared(request,context,life,fresh){if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,deadlineMs:life.deadline(),signal})),{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}
  function initialPorts(){const ports=own(store.initialInputs,['claim','read','accept']);if(Object.values(ports).some(p=>typeof p!=='function'))fail('CONTROL_CONFIGURATION');return ports;}
- function pinOriginal(saved,context,i,life){own(saved,['facts','state']);if(!['RESERVED','ACCEPTED'].includes(saved.state))fail('INITIAL_INPUT_CORRUPT');const f=assertOriginalInputFacts(saved.facts);
-  if(!same(f.binding,context.binding)||!same(f.scopes,context.scopes)||!same(f.versions,versions)||f.selectedClientId!==context.selectedClientId||f.requestId!==i.requestId||f.inputSha256!==hash(i))fail('INITIAL_INPUT_CONFLICT');assertOriginalInputActive(f,now());life.limitDeadline(f.expiresAtMs);return f;
+ function pinOriginal(saved,context,i,life,retained){own(saved,['facts','state']);if(!['RESERVED','ACCEPTED'].includes(saved.state))fail('INITIAL_INPUT_CORRUPT');const f=assertOriginalInputFacts(saved.facts);
+  let sameInput=f.inputSha256===hash(i);
+  // History includes the resolved default. Only a positively accepted, unchanged
+  // request may replay that value when the original input omitted modelSelection.
+  if(!sameInput&&saved.state==='ACCEPTED'&&retained&&i.modelSelection!==undefined&&same(i.modelSelection,f.modelSelection)){
+   assertOriginalInputAcceptance(f,{...retained,selectedClientId:context.selectedClientId});
+   const {modelSelection,...originalInput}=i;sameInput=f.inputSha256===hash(originalInput);
+  }
+  if(!same(f.binding,context.binding)||!same(f.scopes,context.scopes)||!same(f.versions,versions)||f.selectedClientId!==context.selectedClientId||f.requestId!==i.requestId||!sameInput)fail('INITIAL_INPUT_CONFLICT');assertOriginalInputActive(f,now());life.limitDeadline(f.expiresAtMs);return f;
  }
  /** Only the existing store's conditional acknowledgement proves a new original allocation. No run/event/dispatcher is created. */
  async function allocateInput({credential,input,signal}){const i=inputIntent(input);let acknowledged=false;try{return await operation(credential,signal,async(context,life,fresh,authorityExpiry)=>{
@@ -87,7 +94,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    const admit=request=>admitPrepared(request,context,life,fresh);
    async function release(saved){if(!same(saved.run.binding,b))fail('STALE_WRITER');if(!same(saved.run.scopes,context.scopes))fail('SCOPE_REFUSED');await fresh();await admit(saved.request);if(dispatch&&saved.run.state==='queued')await life.run(signal=>dispatcher.start({binding:b,signal}));await fresh();await admit(saved.request);return dispatch?{run:saved.run,requestId:i.requestId,lastSequence:saved.lastSequence,replayed:saved.replayed}:assertConversationInputReceipt({run:saved.run,request:saved.request,lastSequence:saved.lastSequence,replayed:saved.replayed},i);}
    if(typeof store.findRequest!=='function')fail('CONTROL_CONFIGURATION');const retained=await life.run(()=>store.findRequest(b,i.requestId,life.check));
-   const originalPorts=b.writerFence===1?initialPorts():null,allocation=originalPorts?await life.run(()=>originalPorts.read(b,life.check)):null,original=allocation?pinOriginal(allocation,context,i,life):null;
+   const originalPorts=b.writerFence===1?initialPorts():null,allocation=originalPorts?await life.run(()=>originalPorts.read(b,life.check)):null,original=allocation?pinOriginal(allocation,context,i,life,retained):null;
    if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null)||i.modelSelection!==undefined&&!same(i.modelSelection,storedModelSelection(retained.request)))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
    let inherited;
    if(!originalPorts){
