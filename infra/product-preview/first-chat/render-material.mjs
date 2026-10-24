@@ -17,6 +17,7 @@ import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-pl
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
 import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
+import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {compileIntentsConfiguration} from '../../../apps/runtime/product-ports/intents.mjs';
 import {compileRoutinesCoreConfiguration} from '../../../apps/runtime/native-authority/routines-configuration.mjs';
@@ -100,7 +101,7 @@ export function parseRuntimeValues(raw){
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
-export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory']);
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
 export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
@@ -137,16 +138,16 @@ export function parseFeatures(raw,{secrets={}}={}){
    out.routines={enabled:true,core:structuredClone(c),...(task?{task}:{}),...(workflow?{workflow}:{})};}else out.routines={enabled,...(task?{task}:{}),...(workflow?{workflow}:{})};}
  if(f.retention!==undefined){if(toggle('retention').enabled!==true)fail('RENDER_INPUT_REFUSED','features.retention.enabled must be true (omit retention to leave it undeclared)');out.retention={enabled:true};}
  if(f.artifacts!==undefined){
-  const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority']);
-  if(!bool(a.enabled,'features.artifacts.enabled')){if([...storage,'authority'].some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}
+  const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority','executor']);
+  if(!bool(a.enabled,'features.artifacts.enabled')){if([...storage,'authority','executor'].some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}
   else{
-   record(a,'features.artifacts',['enabled',...storage],['authority']);
+   record(a,'features.artifacts',['enabled',...storage],['authority','executor']);
    // Core artifact current authority (docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md); reuses the reads Core service secret.
-   const authority=a.authority===undefined?false:record(a.authority,'features.artifacts.authority',['enabled']).enabled===true;
+   const authority=a.authority===undefined?false:bool(record(a.authority,'features.artifacts.authority',['enabled']).enabled,'features.artifacts.authority.enabled');
    if(a.region!==REGION||a.expectedBucketOwner!==ACCOUNT)fail('RENDER_INPUT_REFUSED',`features.artifacts region/expectedBucketOwner must be ${REGION}/${ACCOUNT}`);
    if(typeof a.kmsKeyId!=='string'||!KMS_KEY_ARN.test(a.kmsKeyId))fail('RENDER_INPUT_REFUSED','features.artifacts.kmsKeyId must be a full KMS key ARN in this account and region');
    try{const {authority:_authority,...store}=a;compileRuntimeArtifactsConfiguration({artifacts:store});}catch{fail('RENDER_INPUT_REFUSED','features.artifacts bucket/prefix (artifacts/configuration.mjs)');}
-   out.artifacts={enabled:true,region:a.region,bucket:a.bucket,prefix:a.prefix,expectedBucketOwner:a.expectedBucketOwner,kmsKeyId:a.kmsKeyId,...(authority?{authority:true}:{})};
+   out.artifacts={enabled:true,region:a.region,bucket:a.bucket,prefix:a.prefix,expectedBucketOwner:a.expectedBucketOwner,kmsKeyId:a.kmsKeyId,...(authority?{authority:true}:{}),...(a.executor===undefined?{}:{executor:structuredClone(a.executor)})};
   }
  }
  if(f.downloadLinks!==undefined){
@@ -181,6 +182,11 @@ export function parseFeatures(raw,{secrets={}}={}){
   }
  }
  if(f.memory!==undefined){const m=record(f.memory,'features.memory',['enabled']);out.memory={enabled:bool(m.enabled,'features.memory.enabled')};}
+ if(f.objectiveGeneration!==undefined){
+  let declared;try{declared=compileObjectiveGenerationConfiguration({objectiveGeneration:f.objectiveGeneration},'control');}catch{fail('RENDER_INPUT_REFUSED','features.objectiveGeneration (objective-generation/configuration.mjs)');}
+  if(declared.runs&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.objectiveGeneration reuses the reads Core service secret: it needs features.reads enabled');
+  out.objectiveGeneration=structuredClone(f.objectiveGeneration);
+ }
  if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
  if(out.memory?.enabled===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.memory reuses the reads Core service secret: it needs features.reads enabled');
  if(out.intents?.execution!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.intents.execution reuses the reads Core service secret: it needs features.reads enabled');
@@ -345,6 +351,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
  // Memory (lane M): review-only proposals over Core M2 at the Core origin, with the same Core service secret file as reads.
  if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};
+ if(features.objectiveGeneration!==undefined)featureKeys.objectiveGeneration=structuredClone(features.objectiveGeneration);
  if(features.reads!==undefined)featureKeys.reads=features.reads.enabled?{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,
   ...(features.reads.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretFile:PATHS.readsReadModeServiceSecret}),
   ...(features.reads.defaultCongress===undefined?{}:{defaultCongress:features.reads.defaultCongress})}:{enabled:false};
@@ -363,7 +370,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // G1 applies to control and the Temporal worker; user credentials remain request-scoped.
  const worker={version:1,profile:'isolated-preview',sourceEnabled,limits,
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,serverCaFile:PATHS.serverCa,serverCaSha256:pins.der['server-ca'],loopback:false,maxResponseBytes:2097152,preparedKickoff:true},
-  http:{hostname:'0.0.0.0',port:8081,frontendOrigin:k.frontendOrigin},temporal:temporal()};
+  http:{hostname:'0.0.0.0',port:8081,frontendOrigin:k.frontendOrigin},temporal:temporal(),
+  ...(features.objectiveGeneration===undefined?{}:{objectiveGeneration:{runs:{enabled:features.objectiveGeneration.runs?.enabled===true}}})};
 
  const db=d.database,logins=pki.logins;
  const controlDsn=Buffer.from(dsn(db.roles.control,password(logins,'control',db.roles.control),db.host,db.port,db.database));

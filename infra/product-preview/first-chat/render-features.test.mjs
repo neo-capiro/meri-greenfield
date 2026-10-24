@@ -34,6 +34,32 @@ const READS={enabled:true,serviceSecretArn:ARN.service,readModeServiceSecretArn:
 const featureSecrets=()=>({'reads.serviceSecret':{secretArn:ARN.service,versionId:VERSION,bytes:Buffer.from(SECRET.service)},
  'reads.readModeServiceSecret':{secretArn:ARN.readMode,versionId:VERSION,bytes:Buffer.from(SECRET.readMode)}});
 
+test('Objective activation renders the control start owner and matching Temporal activities',async()=>{
+ await baseline();
+ const objectiveGeneration={runs:{enabled:true},start:{enabled:true,windowMs:900000}};
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,objectiveGeneration}),{featureSecrets:featureSecrets()});
+ const control=assertOnly(rendered,['sourceEnabled','reads','objectiveGeneration'],{worker:{sourceEnabled:true,objectiveGeneration:{runs:{enabled:true}}},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
+ assert.deepEqual(control.objectiveGeneration,objectiveGeneration);
+ withPosixPaths(()=>validateConfiguration(config(rendered,'temporal-worker'),'temporal-worker'));
+ assert.throws(()=>parseFeatures({objectiveGeneration}),/needs features.reads enabled/u);
+ assert.throws(()=>parseFeatures({objectiveGeneration:{start:{enabled:true,windowMs:900000}}}),/RENDER_INPUT_REFUSED/u);
+});
+
+test('artifact activation preserves the configured image executor through material rendering',async()=>{
+ await baseline();
+ const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,artifacts:{...ARTIFACTS,authority:{enabled:true},executor}}),{featureSecrets:featureSecrets()});
+ const control=assertOnly(rendered,['sourceEnabled','reads','artifacts'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
+ assert.deepEqual(control.artifacts.executor,executor);
+ assert.deepEqual(control.artifacts.authority,{origin:control.agentcore.identity.origin,serviceSecretFile:PATHS.readsServiceSecret});
+ assert.throws(()=>parseFeatures({artifacts:{...ARTIFACTS,executor:{...executor,pythonExecutable:'relative/python'}}}),/RENDER_INPUT_REFUSED/u);
+ assert.throws(()=>parseFeatures({artifacts:{enabled:false,executor}}),/RENDER_INPUT_REFUSED/u);
+});
+
+test('artifact authority rejects a mistyped enabled flag instead of silently disabling it',()=>{
+ assert.throws(()=>parseFeatures({artifacts:{...ARTIFACTS,authority:{enabled:'true'}}}),/must be a boolean/u);
+});
+
 /** Deterministic randomBytes/randomUUID for the duration of one synchronous render (the render's only entropy). */
 function seeded(fn){
  const saved={randomBytes:crypto.randomBytes,randomUUID:crypto.randomUUID};let n=0;
@@ -43,7 +69,7 @@ function seeded(fn){
  try{return fn();}finally{Object.assign(crypto,saved);syncBuiltinESMExports();}
 }
 let pki;
-async function inputs(change=x=>x){const i=structuredClone(await fixture.setup());pki??=await readPrivateDirectory(fixture.pkiDir);change(i);return i;}
+async function inputs(change=x=>x){const i=structuredClone(await fixture.setup());delete i.deployment.features;pki??=await readPrivateDirectory(fixture.pkiDir);change(i);return i;}
 async function render(change,options={},module=R){
  const i=await inputs(change);
  return seeded(()=>module.renderMaterial({...i,private:pki,nowMs:NOW,sourceRoot:SOURCE_ROOT,...options}));
