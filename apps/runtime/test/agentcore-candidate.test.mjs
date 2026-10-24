@@ -1,3 +1,4 @@
+import {automaticContextFixture} from '../../worker/conversation/test/automatic-context-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {assembleAgentCoreCandidate} from '../agentcore-candidate.mjs';
@@ -37,12 +38,13 @@ function fixture(options={}){
   },release(){}};}};
  const nativeCredentials={nativeCredentialFor(){relayCalls++;if(options.revokeAfterCore&&coreCalls)throw Error('SESSION_UNAVAILABLE');return {credential:'actual-user-bearer',expiresAtMs:at+120000};}};
  const fetchImpl=async(_url,request)=>{coreCalls++;coreInput={headers:request.headers,body:JSON.parse(request.body)};
+  if(new URL(_url).pathname==='/api/clio/client-context/automatic'){assert.equal(request.headers['x-internal-service-secret'],'synthetic-service');assert.deepEqual(JSON.parse(request.body),{schemaVersion:1,clientId});return Response.json(automaticContextFixture(b,clientId,at));}
   if(options.status)return Response.json({error:'refused'},{status:options.status});
   return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:at,expiresAtMs:at+120000,...options.receipt});};
  const provider={async invoke(input){invocations++;invocation=input;return pending.promise;},async stop(input){stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,signal:undefined,stopped:true};}};
  // Keep the exact transport receipt closed (AbortSignal is request-only).
  provider.stop=async({signal,...input})=>{signal?.throwIfAborted();stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,stopped:true};};
- const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
+ const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
  return {candidate,configuration,run,store,pending,counts:()=>({invocations,coreCalls,stops,claimCalls,relayCalls}),schema:()=>({queries:schemaQueries,relations:schemaRelations}),coreInput:()=>coreInput,invocation:()=>invocation,record:()=>record,
   async kickoff(){return candidate.native.call('execution/kickoff',{binding:b,executionKey:hash(b)});},
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
@@ -137,12 +139,12 @@ test('declared native file routes without product composition are unavailable, n
  }
 });
 test('candidate mounts real runtime preparation and refuses unclaimed credentials before any worker fallback',async()=>{
- const f=fixture();let forwarded=0;f.candidate.bindApplication({async handle(){forwarded++;return Response.json({unexpected:true});}});
+ const f=fixture({automaticContext:true});let forwarded=0;f.candidate.bindApplication({async handle(){forwarded++;return Response.json({unexpected:true});}});
  const request=credential=>new Request('https://control.synthetic.invalid/v1/runner/runtime',{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify({binding,versions})});
  try{
   assert.equal((await f.candidate.application.handle(request('unclaimed'))).status,503);assert.equal(forwarded,0);
   await f.kickoff();const response=await f.candidate.application.handle(request(f.invocation().credential));assert.equal(response.status,200);
-  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+900000,maxOutputBytes:262144,sdkSessionKey:null,objective:null});assert.equal(forwarded,0);
+  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+900000,maxOutputBytes:262144,sdkSessionKey:null,objective:null,automaticClientContext:automaticContextFixture(binding,clientId,at)});assert.equal(forwarded,0);assert.equal(f.counts().coreCalls,2);
   await f.finish();
  }finally{await f.candidate.close();}
 });
