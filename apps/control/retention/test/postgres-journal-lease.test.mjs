@@ -131,3 +131,50 @@ test('held transition retires unknown COMMIT, timed-out query and unlock; clean 
  assert.equal(pool.connects(),1);assert.ok(reused(pool.made[0]));assert.ok(pool.made[0].queries.includes('ROLLBACK'));
 });
 
+test('recovery reuses its existing exclusion lease for projection and watermark transactions',{timeout:2000},async()=>{
+ const pool=syntheticPool({max:1}),journal=createPostgresRetentionJournal({pool,maxRequestMs:200}),watermark=createPostgresWatermarkStore({journal});
+ let escaped;
+ await journal.exclusive(async lease=>{
+  escaped=lease;
+  await journal.get(key(),{exclusive:true});
+  await watermark.read({exclusive:true});
+  assert.equal(pool.made[0].inTransaction,false,'ledger/head IO has no open SQL transaction');
+ });
+ assert.equal(pool.connects(),1);assert.equal(pool.made.length,1);assert.ok(reused(pool.made[0]));
+ await assert.rejects(escaped.query('SELECT 1'),/RETENTION_INVALID_REQUEST/);
+});
+
+test('retention snapshot uses its held lease, establishes recovery exclusion first, and expires the reader',{timeout:2000},async()=>{
+ const pool=syntheticPool({max:1}),journal=createPostgresRetentionJournal({pool,maxRequestMs:200});let escaped;
+ await assert.rejects(journal.withSnapshot(async()=>null),/RETENTION_INVALID_REQUEST/);
+ await journal.withTransition(key(),async()=>{
+  await journal.withSnapshot(async reader=>{escaped=reader;assert.equal(pool.made[0].inTransaction,true);await reader.query('SELECT snapshot');});
+  assert.equal(pool.made[0].inTransaction,false,'external Core/storage IO holds no SQL transaction');
+  await journal.get(key());
+ });
+ assert.equal(pool.connects(),1);assert.ok(reused(pool.made[0]));
+ const sql=pool.made[0].statements.map(s=>s.sql),lock=sql.findIndex(s=>s.startsWith('SELECT pg_advisory_lock_shared'));
+ const begin=sql.indexOf('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'),commit=sql.indexOf('COMMIT');
+ const unlock=sql.findIndex(s=>s.startsWith('SELECT pg_advisory_unlock_shared'));
+ assert.ok(lock>=0&&lock<begin&&begin<commit&&commit<unlock);
+ const count=sql.length;await assert.rejects(escaped.query('SELECT escaped'),/RETENTION_INVALID_REQUEST/);
+ assert.equal(pool.made[0].statements.length,count);
+});
+
+test('snapshot refusal rolls back before unlock, while an interrupted query retires the single held lease',{timeout:2000},async()=>{
+ const pool=syntheticPool({max:1}),journal=createPostgresRetentionJournal({pool,maxRequestMs:200});
+ await journal.withTransition(key(),async()=>{
+  await assert.rejects(journal.withSnapshot(async()=>{throw Object.assign(Error('invalid inventory'),{code:'RETENTION_INVALID_REQUEST'});}),/RETENTION_INVALID_REQUEST/);
+  await journal.get(key());
+ });
+ assert.equal(pool.connects(),1);assert.ok(reused(pool.made[0]));
+ const sql=pool.made[0].statements.map(s=>s.sql);
+ assert.ok(sql.indexOf('ROLLBACK')<sql.findIndex(s=>s.startsWith('SELECT pg_advisory_unlock_shared')));
+ for(const cancelled of [false,true]){
+  const bad=syntheticPool({max:1,faults:{'SELECT stall':'hang'}}),j=createPostgresRetentionJournal({pool:bad,maxRequestMs:50}),abort=new AbortController();
+  await assert.rejects(j.withTransition(key(),()=>j.withSnapshot(async reader=>{
+   const pending=reader.query('SELECT stall');if(cancelled)abort.abort();await pending;
+  },{deadlineMs:Date.now()+100,signal:abort.signal})),/RETENTION_STORE_UNAVAILABLE/);
+  assert.equal(bad.connects(),1);assert.ok(retired(bad.made[0]));assert.equal(bad.made[0].queries.includes('ROLLBACK'),false);
+ }
+});

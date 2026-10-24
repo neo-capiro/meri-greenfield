@@ -7,6 +7,7 @@ import {own,data,fail,uuid,digest,hash,text,subject} from './boundary.mjs';
 import {policyClasses,retainedClasses,rowTargetClasses,rowTargetSubjectKind} from './data-classes.mjs';
 import {assertNativeFileState} from '../../../packages/contracts/runtime-0.2/files.mjs';
 import {assertNativeSessionCapture} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {assertConversationContentTarget} from '../conversations/retention-content-rows.mjs';
 export const classes=policyClasses;
 /** Classes the product neither erases nor lets block a purge: identifier-only evidence kept under its own retention rule. */
 export const externalClasses=retainedClasses;
@@ -15,11 +16,12 @@ export const rowClasses=rowTargetClasses;
 /** The one subject kind whose database rows each row class may delete: conversation-scoped rows belong to a conversation, artifact
  * version rows to an artifact. A row target of any other kind is a different subject's obligation and must be purged under that subject. */
 export const rowClassSubjectKind=rowTargetSubjectKind;
-const object=o=>{const v=own(o,['objectId','versionId','sha256'],['bytes','scopes']);
+const object=o=>{const v=own(o,['objectId','versionId','sha256'],['bytes','scopes','scopesSha256']);
  uuid(v.objectId);text(v.versionId,1024);digest(v.sha256);
  if(v.bytes!==undefined&&(!Number.isSafeInteger(v.bytes)||v.bytes<0))fail('RETENTION_INVALID_REQUEST');
  if(v.scopes!==undefined&&(!Array.isArray(v.scopes)||!v.scopes.length))fail('RETENTION_INVALID_REQUEST');
- return {objectId:v.objectId,versionId:v.versionId,sha256:v.sha256};};
+ const scopesSha256=v.scopes?hash(v.scopes):v.scopesSha256;if(scopesSha256!==undefined)digest(scopesSha256);
+ return {objectId:v.objectId,versionId:v.versionId,sha256:v.sha256,...(scopesSha256?{scopesSha256}:{})};};
 const refKey=o=>`${o.objectId}@${o.versionId}`;
 const nativeObjects=files=>{if(!files)return [];const f=assertNativeFileState(files);return [...f.workspace.entries,...f.tasks].map(e=>e.object);};
 const sdkTarget=e=>{const v=own(e,['entryId','runId','sessionId','subpath','sequence']);uuid(v.runId);uuid(v.sessionId);text(v.subpath,1024);if(!Number.isSafeInteger(v.sequence)||v.sequence<1)fail('RETENTION_INVALID_REQUEST');return Object.freeze({className:'sdkSession',runId:v.runId,sessionId:v.sessionId,subpath:v.subpath,sequence:v.sequence});};
@@ -27,10 +29,11 @@ const sdkTarget=e=>{const v=own(e,['entryId','runId','sessionId','subpath','sequ
 const keyTarget=(className,key)=>Object.freeze({className,key:uuid(key)});
 const refusal=()=>fail('RETENTION_INVALID_REQUEST');
 const sourceFields=['subject','conversation','runs','eventRows','artifactVersionRefs','controls',
- 'checkpoints','completionCheckpoints','nextRuns','memoryContinuations','objectVersions'];
+ 'checkpoints','completionCheckpoints','nextRuns','memoryContinuations','objectVersions','contentRows','memoryCandidates'];
 const requireList=value=>{if(!Array.isArray(value)||value.length>65536)refusal();return value;};
 /** The conversation source owns all these arrays in one repeatable-read snapshot.
- * Its digest never covers independently owned artifact, SDK or budget facts. */
+ * Its digest covers its exact native/SDK/approval rows too. Independently owned
+ * artifact versions and financial facts are not inferred from conversation rows. */
 function conversationEvidence(s){
  subject(s.subject);text(s.subject.ownerActorId);
  const c=own(s.conversation,['conversationId','projectionSha256']);
@@ -41,7 +44,7 @@ function conversationEvidence(s){
   uuid(row.runId);if(runIds.has(row.runId)||!Number.isSafeInteger(row.lastSequence)||row.lastSequence<1||row.lastSequence>65536)refusal();
   runIds.set(row.runId,row);
  }
- if(!runIds.size)refusal();
+ if(!runIds.size&&s.contentRows===undefined)refusal();
  const events=[];
  for(const e of requireList(s.eventRows)){
   const row=own(e,['runId','sequence','eventId','eventSha256']);uuid(row.runId);uuid(row.eventId);digest(row.eventSha256);
@@ -66,7 +69,7 @@ function conversationEvidence(s){
  }
  const hasSourcePin=s.inventorySha256!==undefined||s.artifactVersionRefs!==undefined||s.objectVersions!==undefined;
  if(hasSourcePin){
-  digest(s.inventorySha256);requireList(s.artifactVersionRefs);requireList(s.objectVersions);
+  digest(s.inventorySha256);requireList(s.artifactVersionRefs);requireList(s.objectVersions);requireList(s.contentRows);
   const owner=Object.fromEntries(sourceFields.map(field=>[field,s[field]]));
   if(hash(owner)!==s.inventorySha256)refusal();
   const eventKeys=new Set(events.map(e=>`${e.runId}:${e.sequence}:${e.eventId}`)),references=new Set();
@@ -82,21 +85,35 @@ function conversationEvidence(s){
  * are required for conversation subjects and refused for artifact subjects. A planned class (editor drafts) has no owner yet and
  * is refused rather than silently ignored. */
 export function enumerateReferences(snapshot){
- const s=own(data(snapshot),['subject','runs','checkpoints','completionCheckpoints','nextRuns','sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','memoryContinuations','uploads'],['schedules','receipts','memoryProposals','budgetRuns','editorDrafts','conversation','eventRows','controls','artifactVersionRefs','objectVersions','inventorySha256']);
+ const s=own(data(snapshot),['subject','runs','checkpoints','completionCheckpoints','nextRuns','memoryContinuations'],['sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','uploads','schedules','receipts','memoryProposals','budgetRuns','editorDrafts','conversation','eventRows','controls','artifactVersionRefs','objectVersions','inventorySha256','contentRows','memoryCandidates']);
  subject(s.subject);
  const list=v=>{if(v===undefined)return [];if(!Array.isArray(v)||v.length>65536)fail('RETENTION_INVALID_REQUEST');return v;};
  if(list(s.editorDrafts).length)fail('RETENTION_CLASS_PLANNED');
  const rows=[],objects=new Map(),rowTargets=[],conversation=s.subject?.kind==='conversation',
   owner=conversation?conversationEvidence(s):null,ownerObjects=[],unpublishedCompletionCheckpoints=[];
+ if(s.contentRows===undefined){for(const name of ['sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','uploads'])requireList(s[name]);}
+ else{
+  if(!conversation||!owner.sourceSha256)refusal();
+  // These rows are already in the canonical snapshot, never a second scan or a
+  // caller-supplied empty replacement. Other subjects retain their own owners.
+  for(const name of ['sdkSessionEntries','selectedOutputs','nativeJournalRows','receipts'])if(list(s[name]).length)refusal();
+ }
  if(!conversation&&(s.conversation!=null||list(s.eventRows).length||list(s.controls).length||
    s.inventorySha256!==undefined||s.artifactVersionRefs!==undefined||s.objectVersions!==undefined))refusal();
  const add=(className,key,refs,{artifactVersionId}={})=>{const validated=refs.map(object);
-  for(const o of validated){const k=refKey(o),held=objects.get(k);const entry=held??{objectId:o.objectId,versionId:o.versionId,sha256:o.sha256,classes:new Set(),artifactVersionIds:new Set()};if(held&&held.sha256!==o.sha256)fail('RETENTION_INVALID_REQUEST');entry.classes.add(className);if(artifactVersionId)entry.artifactVersionIds.add(artifactVersionId);objects.set(k,entry);}
+  for(const o of validated){const k=refKey(o),held=objects.get(k);const entry=held??{objectId:o.objectId,versionId:o.versionId,sha256:o.sha256,...(o.scopesSha256?{scopesSha256:o.scopesSha256}:{}),classes:new Set(),artifactVersionIds:new Set()};if(held&&(held.sha256!==o.sha256||held.scopesSha256!==o.scopesSha256))fail('RETENTION_INVALID_REQUEST');entry.classes.add(className);if(artifactVersionId)entry.artifactVersionIds.add(artifactVersionId);objects.set(k,entry);}
   rows.push(Object.freeze({className,key,objects:Object.freeze(validated)}));};
  const keyed=(className,key,refs)=>{rowTargets.push(keyTarget(className,key));add(className,key,refs);};
- if(conversation)keyed('conversation',s.subject.subjectId,[]);
+ if(conversation){if(s.contentRows!==undefined){rowTargets.push(Object.freeze({className:'conversation',table:'conversations',conversationId:s.subject.subjectId,projectionSha256:s.conversation.projectionSha256}));add('conversation',s.subject.subjectId,[]);}else keyed('conversation',s.subject.subjectId,[]);}
+ const contentKeys=new Set();
+ for(const raw of list(s.contentRows)){
+  let target;try{target=assertConversationContentTarget(raw);}catch{refusal();}
+  const key=JSON.stringify([target.table,target.key]);if(contentKeys.has(key))refusal();contentKeys.add(key);
+  if(!owner.runIds.size&&!['meri_conversations.initial_run_bindings','meri_conversations.initial_inputs'].includes(target.table))refusal();
+  rowTargets.push(Object.freeze(target));add(target.className,key,[]);
+ }
  for(const r of list(s.runs)){const refs=r.continuation?.checkpoint?[r.continuation.checkpoint.opaqueSession,...r.continuation.checkpoint.workspace.entries.map(e=>e.object)]:nativeObjects(r.continuation?.files);
-  if(conversation)ownerObjects.push(...refs);keyed('conversation',r.runId,refs);}
+  if(conversation)ownerObjects.push(...refs);if(s.contentRows!==undefined){rowTargets.push(Object.freeze({className:'conversation',table:'runs',runId:r.runId,projectionSha256:r.projectionSha256,requestSha256:r.requestSha256}));add('conversation',r.runId,refs);}else keyed('conversation',r.runId,refs);}
  if(conversation){for(const target of owner.controlTargets){rowTargets.push(target);add('conversation',`control:${target.controlId}`,[]);}}
  if(conversation)for(const control of owner.controls.values())if(control.nativeFiles){const refs=nativeObjects(control.nativeFiles);ownerObjects.push(...refs);add('lifecycle',`native-control:${control.controlId}`,refs);}
  // Each local proposal continuation is a distinct conversation row, not an
@@ -140,6 +157,7 @@ export function enumerateReferences(snapshot){
  for(const r of list(s.schedules))keyed('schedules',r.scheduleId,[]);
  for(const r of list(s.receipts))keyed('receipts',r.receiptId,[]);
  for(const m of list(s.memoryProposals))add('memoryProposals',uuid(m.candidateId),[]);
+ for(const m of list(s.memoryCandidates)){own(m,['candidateId']);if(!conversation)refusal();keyed('meriMemoryCandidates',m.candidateId,[]);}
  for(const b of list(s.budgetRuns))add('budgets',uuid(b.runId),[]);
  add('logs',s.subject.subjectId,[]);add('telemetry',s.subject.subjectId,[]);
  if(owner?.sourceSha256){const expected=new Map();for(const raw of ownerObjects){const ref=object(raw),key=refKey(ref);
@@ -148,13 +166,13 @@ export function enumerateReferences(snapshot){
    if(claimed.has(key))refusal();claimed.set(key,ref);}
   const ordered=values=>[...values].sort((a,b)=>refKey(a).localeCompare(refKey(b)));
   if(hash(ordered(expected.values()))!==hash(ordered(claimed.values())))refusal();}
- const distinct=[...objects.values()].map(o=>Object.freeze({objectId:o.objectId,versionId:o.versionId,sha256:o.sha256,classes:Object.freeze(classes.filter(c=>o.classes.has(c))),artifactVersionIds:Object.freeze([...o.artifactVersionIds].sort())})).sort((a,b)=>refKey(a).localeCompare(refKey(b)));
+ const distinct=[...objects.values()].map(o=>Object.freeze({objectId:o.objectId,versionId:o.versionId,sha256:o.sha256,...(o.scopesSha256?{scopesSha256:o.scopesSha256}:{}),classes:Object.freeze(classes.filter(c=>o.classes.has(c))),artifactVersionIds:Object.freeze([...o.artifactVersionIds].sort())})).sort((a,b)=>refKey(a).localeCompare(refKey(b)));
  const targets=Object.freeze(rowTargets.slice().sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))));
  const unresolved=Object.freeze(unpublishedCompletionCheckpoints.sort((a,b)=>a.checkpointId.localeCompare(b.checkpointId)));
  return Object.freeze({subject:s.subject,rows:Object.freeze(rows),objects:Object.freeze(distinct),rowTargets:targets,
   unpublishedCompletionCheckpoints:unresolved,conversationSourceSha256:owner?.sourceSha256??null,
   inventorySha256:hash({subject:s.subject,conversationSourceSha256:owner?.sourceSha256??null,
-   objects:distinct.map(o=>({ref:refKey(o),classes:o.classes,artifactVersionIds:o.artifactVersionIds})),rowTargets:targets,
+   objects:distinct.map(o=>({ref:refKey(o),...(o.scopesSha256?{scopesSha256:o.scopesSha256}:{}),classes:o.classes,artifactVersionIds:o.artifactVersionIds})),rowTargets:targets,
    unpublishedCompletionCheckpoints:unresolved})});
 }
 /** Cross-subject index: which other subjects still reference each exact version (a fork copies checkpoint references into its own conversation). */

@@ -1,3 +1,4 @@
+import {contentRows} from './retention-content-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {nativeFixture,binding,scopes,id,check,rowKey} from './native-next-run-fixture.mjs';
 import {hash} from '../boundary.mjs';
@@ -62,7 +63,7 @@ test('native snapshot preserves deep opaque SDK fields and more than the ordinar
  }finally{x.f.close();}
 });
 test('retention inventory accepts actual native successor rows and rejects forged predecessor lineage',async()=>{
- const x=await nativeFixture();try{await x.second();const s=x.f.state,raw={subject:{tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId,ownerActorId:binding.actorId},conversation:[...s.conversations.values()][0],runs:[...s.runs.values()],events:[...s.events.values()].flat().map(e=>({...e,tenant_id:e.event.binding.tenantId,conversation_id:e.event.binding.conversationId,run_id:e.event.binding.runId})),controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[...s.nextRuns.values()],memoryContinuations:[],memoryContextRows:[]};
+ const x=await nativeFixture();try{await x.second();const s=x.f.state,raw={subject:{tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId,ownerActorId:binding.actorId},conversation:[...s.conversations.values()][0],runs:[...s.runs.values()],events:[...s.events.values()].flat().map(e=>({...e,tenant_id:e.event.binding.tenantId,conversation_id:e.event.binding.conversationId,run_id:e.event.binding.runId})),controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[...s.nextRuns.values()],memoryContinuations:[],memoryContextRows:[],contentRows:contentRows(s,binding)};
   const inventory=decodeConversationInventoryRows(raw);assert.equal(inventory.nextRuns.length,1);assert.equal(inventory.completionCheckpoints.length,0);
   for(const field of ['actorId','tenantId','runId','writerFence']){const changed=structuredClone(raw),r=changed.nextRuns[0];r.reservation.facts.sdkSession.binding[field]=field==='writerFence'?2:field==='runId'?id(999):'foreign';r.reservation_sha256=hash(r.reservation);assert.throws(()=>decodeConversationInventoryRows(changed),/STORE_CORRUPT/);}
  }finally{x.f.close();}

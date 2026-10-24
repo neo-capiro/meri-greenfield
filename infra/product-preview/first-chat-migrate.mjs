@@ -95,7 +95,11 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/memory/migrations/0002_candidate_retention_delete.sql','ac0ec0b166832706d5fd5899cd0c3d2265de9ec806aae214df7494056608c5f4','integration'],
  ['migration','infra/product-preview/first-chat-native-retention-grants.sql','c85ce9ec7c9acd3e3ad7b66ce864cf62c35631475b90a30fd26321e0be6848f8','integration'],
  // General originals use JSON null; preserve the applied 48-entry prefix and 0017 bytes.
- ['migration',conversation('0024_general_initial_binding_scope.sql'),'0e5c5449a0cf78ead63c8d4f90a76c0ef789e6a6b86ab128f57d45e9fa3938d3','integration']
+ ['migration',conversation('0024_general_initial_binding_scope.sql'),'0e5c5449a0cf78ead63c8d4f90a76c0ef789e6a6b86ab128f57d45e9fa3938d3','integration'],
+ // Expired conversation Trash follows the accepted General repair; applied entries remain unchanged.
+ ['migration','apps/control/intents/migrations/0002_memory_preparation_tombstone.sql','8827a9ced5a5b8f3e2495ed1298d0c57f643d0fe22125b0668aade7d15610550','integration'],
+ ['migration','apps/control/conversations/migrations/0023_expired_conversation_purge.sql','54b9f6b6c11614465446b73c51281c2b8603de0cb379c541420bc28ef2b3d55b','integration'],
+ ['migration','infra/product-preview/first-chat-expired-conversation-purge-grants.sql','19463e0bbdd8e5b0b66f5c1f4ebe87ae639e2a113564fad0824f883f0b7101cc','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

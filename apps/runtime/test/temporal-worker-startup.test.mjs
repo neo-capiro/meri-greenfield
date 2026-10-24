@@ -8,7 +8,7 @@ function boundaries(){
  const run=new Promise(resolve=>{resolveRun=resolve;});
  const worker={getState:()=>state,run(){calls.push('run');state='RUNNING';return run;},shutdown(){calls.push('shutdown');state='STOPPED';resolveRun();}};
  const connection={async close(){calls.push('connection-close');if(state==='INITIALIZED')throw Error('native connection holder still allocated');}};
- const owners={async tls(){calls.push('tls');return {};},async readMaterial(){calls.push('material');return Buffer.from('synthetic-existing-capability');},nativeClient(){return {async readiness(){calls.push('native-readiness');}};},async connect(options){calls.push('connect');assert.equal(Object.hasOwn(options,'apiKey'),false);return connection;},async createWorker(){calls.push('create');return worker;},async listen(){calls.push('listen');return {address:'synthetic',async close(){calls.push('listener-close');}};}};
+ const owners={async tls(){calls.push('tls');return {};},async readMaterial(){calls.push('material');return Buffer.from('synthetic-existing-capability');},nativeClient(){return {async readiness(){calls.push('native-readiness');},async call(){assert.fail('startup does not execute activities');}};},async connect(options){calls.push('connect');assert.equal(Object.hasOwn(options,'apiKey'),false);return connection;},async createWorker(){calls.push('create');return worker;},async listen(){calls.push('listen');return {address:'synthetic',async close(){calls.push('listener-close');}};}};
  return {calls,owners,worker,signal:controller.signal,lose:()=>controller.abort(Error('synthetic shutdown')),state:()=>state};
 }
 

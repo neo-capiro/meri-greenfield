@@ -11,7 +11,7 @@ import {subjectKey} from '../boundary.mjs';
 import {composeStartup,subjectOf,snapshot,object,planFrom} from './fixture.mjs';
 const day=86400000;
 /** A conversation with rows in every conversation-scoped class, uploads, and retained budget evidence (schedules are their own subject). */
-const everyClass=(s,extra={})=>({...snapshot(s,{checkpoints:2,outputs:2}),nextRuns:[{targetRunId:randomUUID()}],uploads:[{uploadId:randomUUID(),object:object()}],receipts:[{receiptId:randomUUID()},{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],...extra});
+const everyClass=(s,extra={})=>({...snapshot(s,{checkpoints:2,outputs:2}),nextRuns:[{targetRunId:randomUUID()}],uploads:[{uploadId:randomUUID(),object:object()}],receipts:[{receiptId:randomUUID()},{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],memoryCandidates:[{candidateId:randomUUID()}],...extra});
 async function prepared(f,s,raw){const inv=enumerateReferences(raw),key=subjectKey(s);f.current.inventories.set(key,inv);f.rows.seed(key,inv);for(const o of inv.objects)f.store.put(f.keyFor(o),o.versionId);
  await f.startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});f.clock.advance(30*day);return {inv,key,plan:planFrom(f,s,await f.startup.journal.get(key))};}
 

@@ -36,6 +36,7 @@ export function createApprovalMetadataReaderApplication(options={}){
 
 const routes=new Map([
  ['/v1/readiness',{method:'readiness',control:true,fields:[]}],
+ ['/v1/retention/sweep',{method:'retentionSweep',control:true,fields:['after'],optional:true,maxRequestMs:23000}],
  ['/v1/execution/kickoff',{method:'kickoff',control:true,fields:['binding','executionKey']}],
  ['/v1/execution/kickoff/status',{method:'status',control:true,fields:['binding','executionId']}],
  ['/v1/execution/kickoff/stop',{method:'stop',control:true,fields:['binding','executionId']}],
@@ -46,7 +47,7 @@ const fault=code=>Object.assign(Error(code),{code});
 const matches=(actual,expected)=>{const a=Buffer.from(actual),b=Buffer.from(expected);return a.length===b.length&&timingSafeEqual(a,b);};
 
 export function createAgentCoreControlApplication({owner,controlCredential,now=Date.now,maxRequestMs=10000,maxRequestBytes=131072}){
- if(typeof controlCredential!=='string'||controlCredential.length<32||[...routes.values()].some(r=>typeof owner?.[r.method]!=='function'))throw fault('EXECUTION_CONFIGURATION');
+ if(typeof controlCredential!=='string'||controlCredential.length<32||[...routes.values()].some(r=>!r.optional&&typeof owner?.[r.method]!=='function'))throw fault('EXECUTION_CONFIGURATION');
  return Object.freeze({async handle(request){
   const url=new URL(request.url),route=routes.get(url.pathname);if(!route)return null;
   let life;
@@ -57,7 +58,8 @@ export function createAgentCoreControlApplication({owner,controlCredential,now=D
    if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(auth??''))throw fault('EXECUTION_AUTHORITY_REFUSED');
    const credential=auth.slice(7);if(route.control&&!matches(credential,controlCredential))throw fault('EXECUTION_AUTHORITY_REFUSED');
    const length=request.headers.get('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))))throw fault('EXECUTION_REQUEST_REFUSED');
-   life=createOperationLifetime({now,signal:request.signal,deadlineMs:now()+maxRequestMs,errorFactory:fault});
+   if(typeof owner[route.method]!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');
+   life=createOperationLifetime({now,signal:request.signal,deadlineMs:now()+(route.maxRequestMs??maxRequestMs),errorFactory:fault});
    const input=own(await jsonBody({body:request.body,length:length===null?null:Number(length)},maxRequestBytes,life,life.check),route.fields);
    const result=await life.run(signal=>owner[route.method]({...input,...(route.control?{}:{credential}),signal}));life.check();
    return Response.json(result,{headers:{'cache-control':'no-store'}});

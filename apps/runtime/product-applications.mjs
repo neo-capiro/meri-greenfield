@@ -24,7 +24,7 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','intentApplication','settingsApplication','memoryApplication']);
+ const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
@@ -61,6 +61,7 @@ export function captureRuntimePorts(value={}){
   ...(artifactStore===undefined?{}:{artifactStore}),
   // The authoritative retention ledger sink (the shipping owner's write-once store); without it declared retention serving stays fenced.
   ...(c.retentionLedgerSink===undefined?{}:{retentionLedgerSink:Object.freeze({...methods(c.retentionLedgerSink,['append','read']),...(optionalMethod(c.retentionLedgerSink,'head')?{head:storageMethod(c.retentionLedgerSink,'head')}:{})})}),
+  ...(c.retentionStorage===undefined?{}:{retentionStorage:Object.freeze(methods(c.retentionStorage,['headVersion','deleteVersion','holdsFor','keyFor']))}),
   // Conversation write-intent approvals (lane 3) and tenant settings (lane 5): one public application each, composed by the family.
   ...(c.intentApplication===undefined?{}:{intentApplication:methods(c.intentApplication,['handle'])}),
   ...(c.settingsApplication===undefined?{}:{settingsApplication:methods(c.settingsApplication,['handle'])}),

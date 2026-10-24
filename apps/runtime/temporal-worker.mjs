@@ -10,6 +10,7 @@ import {readSecret,fault} from './config.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 import {createObjectiveWorkerActivities,objectiveWorkerPorts} from './objective-generation/worker-activities.mjs';
+import {createRetentionSweepActivity} from './retention-sweep.mjs';
 import {stopOriginal,createOriginalReconciler as createReconcileActivity} from './original-stop.mjs';
 export {createReconcileActivity};
 /** Bounded control calls fit inside the activity heartbeat; model execution outlives any one exchange. */
@@ -31,7 +32,7 @@ export function createBrokerActivity({native,context=()=>Context.current(),now=D
   }catch(error){try{await cleanup();}catch(cleanupError){throw Object.assign(fault('BROKER_KICKOFF_CLEANUP_UNKNOWN'),{cause:cleanupError});}throw error;}
  };
 }
-export function workerOptions({configuration,connection,native}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native}),reconcileConversation:createReconcileActivity({native}),...createObjectiveWorkerActivities(objectiveWorkerPorts({configuration,native}))},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
+export function workerOptions({configuration,connection,native}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native}),reconcileConversation:createReconcileActivity({native}),sweepConversationRetention:createRetentionSweepActivity({native}),...createObjectiveWorkerActivities(objectiveWorkerPorts({configuration,native}))},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
 /** Native SDK poller state determines readiness; the server checks its mTLS identity on each RPC. */
 export function createWorkerReadiness({worker}){
  if(typeof worker?.getState!=='function')throw fault('WORKER_CONFIGURATION');

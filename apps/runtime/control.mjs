@@ -32,6 +32,9 @@ import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../control/retention/postgres-watermark.mjs';
 import {createRetentionStartup} from '../control/retention/startup.mjs';
+import {createCoreRetentionClient} from '../control/retention/core-client.mjs';
+import {createConversationPurgeFacts} from '../control/retention/inventory-source.mjs';
+import {createConversationRetentionSweep} from '../control/retention/sweep.mjs';
 import {createArtifactRecoveryBinding} from './artifacts/recovery-binding.mjs';
 import {types} from 'node:util';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -63,13 +66,22 @@ export {temporalTls};
 /** Retention serving over the control database (migrations conversations 0010 and artifacts 0002, plus the proposed recovered-watermark
  * table), composed only when the configuration declares it: the retention startup owner with its serving fence closed until a
  * reconciliation over the authoritative ledger (the trusted `retentionLedgerSink` port) records a watermark that reads back. Purge
- * is composed explicitly disabled; no deletion owner exists in control. */
+ * is composed only with the explicit purge switch and actual storage/Core owners. */
 export function retentionGate(configuration,pool,ports={},binding=null,now=Date.now){
  if(configuration.retention===undefined)return null;const journal=binding?.context.journal??createPostgresRetentionJournal({pool,now}),recovery=binding??createArtifactRecoveryBinding({journal}),captured=captureRuntimePorts(ports),required=captured.configuredOwners.some(name=>['artifactOptionsOwner','artifactStore'].includes(name));
  const recoverPrerequisitesExclusive=recovery.configure(readRuntimeArtifactRecovery(captured),required);
- const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:captured.retentionLedgerSink??null,ownership:{ownerOf:input=>journal.ownerOf(input)},purge:{enabled:false},now,recoverPrerequisitesExclusive});
+ let purge={enabled:false};
+ if(configuration.retention.purge?.enabled){
+  if(!captured.retentionStorage||typeof configuration.reads?.serviceSecretFile!=='string')throw fault('RETENTION_CONFIGURATION');
+  const core=createCoreRetentionClient({origin:configuration.agentcore.identity.origin,getServiceSecret:async()=>Buffer.from(await readSecret(configuration.reads.serviceSecretFile)).toString('utf8').trim(),now});
+  const storage=captured.retentionStorage,keyFor=storage.keyFor;
+  purge={enabled:true,storage,rows:journal.rows,keyFor,finalize:core.finalize,
+   facts:createConversationPurgeFacts({pool,journal,core,storage,keyFor,now})};
+ }
+ const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:captured.retentionLedgerSink??null,ownership:{ownerOf:input=>journal.ownerOf(input)},purge,now,recoverPrerequisitesExclusive});
  recovery.bindRetention(startup.gate);
- return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
+ return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,
+  ...(purge.enabled?{sweep:createConversationRetentionSweep({startup,now})}:{}),artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
 export function assembleControl(options){
  const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,createReadsRuntime,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','productPorts','productPortsFactory','createReadsRuntime']);
@@ -159,7 +171,7 @@ export async function startControl(configuration,options={}){
   pool=countingPool((owners.createPool??(options=>new Pool(options)))({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs}),turnTelemetry);
   connection=await (owners.connect??(options=>Connection.connect(options)))({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs});checkAuthorization();signal?.throwIfAborted();const client=(owners.createClient??(options=>new Client(options)))({connection,namespace:configuration.temporal.namespace});
   candidate=await (owners.startCandidate??startAgentCoreCandidate)({configuration,pool,signal,turnTelemetry,controlCredential:capabilityBytes.toString('utf8').trim(),nativeCredentials:readCredentialRelay.port,...(getCoreServiceSecret?{getCoreServiceSecret}:{}),...(createReadsRuntime===undefined?{}:{createReadsRuntime})});
-  let native=candidate.native;routinesCandidateBinder?.(candidate);const unfencedNative=native;native=Object.freeze({...native,async call(operation,input,{signal:requestSignal}={}){if(operation==='execution/kickoff/stop')return unfencedNative.call(operation,input,{signal:requestSignal});fence.check();const joined=requestSignal?AbortSignal.any([requestSignal,fence.signal]):fence.signal;return unfencedNative.call(operation,input,{signal:joined});}});checkAuthorization();assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,createReadsRuntime,turnTelemetry,...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication(fence.wrap(assembly.application));
+  let native=candidate.native;routinesCandidateBinder?.(candidate);const unfencedNative=native;native=Object.freeze({...native,async call(operation,input,{signal:requestSignal}={}){if(operation==='execution/kickoff/stop')return unfencedNative.call(operation,input,{signal:requestSignal});fence.check();const joined=requestSignal?AbortSignal.any([requestSignal,fence.signal]):fence.signal;return unfencedNative.call(operation,input,{signal:joined});}});checkAuthorization();assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,createReadsRuntime,turnTelemetry,...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
   // RC1 option A: the reads composer's late-bound live-session relay reaches this control's own action-session owner only.
   readCredentialRelay?.bind(assembly.sessions);
   // Proposal continuation binds to this control's durable conversation store.

@@ -34,6 +34,7 @@ import {registerDocumentIntentOwner} from '../artifacts/intent-binding.mjs';
 import {createSelectedDocumentExecution} from '../artifacts/selected-documents.mjs';
 import {intentsComposition} from './intents.mjs';
 import {createS3RetentionLedgerSink} from '../../control/retention/s3-ledger.mjs';
+import {createRuntimeRetentionStorage} from '../artifacts/retention-storage.mjs';
 const fault=()=>Object.assign(new Error('PRODUCT_PORTS_CONFIGURATION'),{code:'PRODUCT_PORTS_CONFIGURATION'});
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 /** Re-exported for tests; trusted assembly imports it from `../artifacts/session-binding.mjs`, which loads no storage graph. */
@@ -77,7 +78,8 @@ export function documentsFamily(owners={}){
   if(retention&&artifactRecovery===undefined)return {ports:{}};
   const client=createClient({region:declared.region});
   const s3={client,bucket:declared.bucket,prefix:declared.prefix,expectedBucketOwner:declared.expectedBucketOwner,kmsKeyId:declared.kmsKeyId};
-  const retentionPorts=retention?{retentionLedgerSink:createS3RetentionLedgerSink({...s3,now,maxRequestMs:configuration.limits.requestMs})}:{};
+  const retentionPorts=retention?{retentionLedgerSink:createS3RetentionLedgerSink({...s3,now,maxRequestMs:configuration.limits.requestMs}),
+   ...(configuration.retention.purge?.enabled?{retentionStorage:createRuntimeRetentionStorage({...s3,now,maxRequestMs:Math.min(configuration.limits.requestMs,3000)})}:{})}:{};
   const storage=createRuntimeArtifactStorage({s3,versionsPool:pool,now,maxRequestMs:configuration.limits.requestMs,
    ...(retention?{custody:{journal:artifactRecovery.journal,retention:artifactRecovery.retention,evidenceS3:s3,enabled:true}}:{})});
   // Composed disabled: without a declared Core authority origin the supplied authority is never reached.

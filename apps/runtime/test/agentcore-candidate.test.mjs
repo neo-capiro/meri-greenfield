@@ -50,6 +50,17 @@ function fixture(options={}){
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
 }
 
+test('the private expiry sweep reaches only the bound control retention owner',async()=>{
+ const f=fixture();let calls=0;
+ const post=credential=>f.candidate.application.handle(new Request('https://control.invalid/v1/retention/sweep',{
+  method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify({after:null})}));
+ assert.equal((await post(controlCredential)).status,503);
+ f.candidate.bindApplication({handle:async()=>{throw Error('not a runner route');},async sweepRetention(input){calls++;assert.equal(input.after,null);assert.equal(input.signal.aborted,false);return {after:null,more:false,outcome:'empty'};}});
+ assert.equal((await post('synthetic-run-credential')).status,403);assert.equal(calls,0);
+ assert.deepEqual(await (await post(controlCredential)).json(),{after:null,more:false,outcome:'empty'});assert.equal(calls,1);
+ assert.equal(f.counts().invocations,0);await f.candidate.close();
+});
+
 test('one real Core current admission and durable execution; private callbacks do not multiply Core observations',async()=>{
  const f=fixture();await f.kickoff();assert.equal(f.counts().coreCalls,1);assert.equal(f.coreInput().headers.authorization,'Bearer actual-user-bearer');
  assert.deepEqual(f.coreInput().body,{conversationId:binding.conversationId,clientId});

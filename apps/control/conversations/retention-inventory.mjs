@@ -4,6 +4,7 @@ import {bounded,fail,own,uuid} from './boundary.mjs';
 import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {scanMemoryProposalContextRows} from './memory-proposal-context-journal.mjs';
 import {decodeConversationInventoryRows} from './retention-inventory-decode.mjs';
+import {scanConversationContentRows} from './retention-content-rows.mjs';
 
 const PAGE_SIZE=32;
 const MAX_ROWS=4096;
@@ -40,8 +41,8 @@ function subjectOf(raw){
 }
 
 /** Caller owns the pool. No connection is made until inventoryForConversation. */
-export function createConversationRetentionInventory({pool,now=Date.now}){
- if(typeof pool?.connect!=='function'||typeof now!=='function')fail('STORE_CONFIGURATION');
+export function createConversationRetentionInventory({pool,withSnapshot,now=Date.now}){
+ if(typeof pool?.connect!=='function'||typeof now!=='function'||withSnapshot!==undefined&&typeof withSnapshot!=='function')fail('STORE_CONFIGURATION');
  async function inventoryForConversation(raw,{signal,deadlineMs}={}){
   const subject=subjectOf(raw);
   nativeSignal(signal);
@@ -69,19 +70,10 @@ export function createConversationRetentionInventory({pool,now=Date.now}){
    }
    return rows;
   };
-  let c,begun=false,committing=false,reusable=false,abandoned=false,failure,result;
-  const query=(client,sql,args)=>withinDeadline(()=>client.query(sql,args),
-   {deadline,now,signal,onTimeout:()=>{abandoned=true;}});
-  try{
-   check();c=await withinDeadline(()=>pool.connect(),{deadline,now,signal,
-    onLate:late=>late?.release?.(expired())});check();
-   await query(c,'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');begun=true;
-   await query(c,"SET LOCAL statement_timeout = '5s'");
-   await query(c,"SET LOCAL lock_timeout = '1s'");check();
-   const conversation=(await query(c,'SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',
+  async function scan(reader){
+   const conversation=(await reader.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',
     [subject.tenantId,subject.conversationId])).rows;
    check();if(!Array.isArray(conversation)||conversation.length!==1)fail('RETENTION_INVENTORY_REFUSED');account(conversation[0]);
-   const reader={query:(sql,args)=>query(c,sql,args)};
    const runs=await page(reader,
     'SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND ($3::uuid IS NULL OR run_id>$3::uuid) ORDER BY run_id LIMIT 33',
     row=>[row.run_id],[null]);
@@ -103,10 +95,29 @@ export function createConversationRetentionInventory({pool,now=Date.now}){
    const memoryContextRows=[];
    const memoryContinuations=await scanMemoryProposalContextRows(reader,{tenantId:subject.tenantId,conversationId:subject.conversationId},check,
     row=>{account(row);memoryContextRows.push(row);});
-   result=decodeConversationInventoryRows({subject:{tenantId:subject.tenantId,kind:'conversation',
+   const contentRows=await scanConversationContentRows(reader,page);
+   const memoryCandidates=await page(reader,
+    "SELECT * FROM meri_memory.candidates WHERE tenant_id=$1 AND origin_kind='conversation' AND origin_conversation_id=$2 AND candidate IS NOT NULL AND candidate_purged_at IS NULL AND ($3::uuid IS NULL OR candidate_id>$3::uuid) ORDER BY candidate_id LIMIT 33",
+    row=>[row.candidate_id],[null]);
+   const result=decodeConversationInventoryRows({subject:{tenantId:subject.tenantId,kind:'conversation',
     subjectId:subject.conversationId,ownerActorId:subject.ownerActorId},conversation:conversation[0],
-    runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows});
+    runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows,contentRows,memoryCandidates});
    if(Buffer.byteLength(JSON.stringify(result))>MAX_BYTES)fail('RETENTION_INVENTORY_LIMIT');
+   check();return result;
+  }
+  // The retention owner can lend its existing held lease. Its snapshot remains
+  // read-only and deadline-bound; the ordinary standalone inventory is unchanged.
+  if(withSnapshot)return withSnapshot(scan,{deadlineMs:deadline,signal});
+  let c,begun=false,committing=false,reusable=false,abandoned=false,failure,result;
+  const query=(client,sql,args)=>withinDeadline(()=>client.query(sql,args),
+   {deadline,now,signal,onTimeout:()=>{abandoned=true;}});
+  try{
+   check();c=await withinDeadline(()=>pool.connect(),{deadline,now,signal,
+    onLate:late=>late?.release?.(expired())});check();
+   await query(c,'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');begun=true;
+   await query(c,"SET LOCAL statement_timeout = '5s'");
+   await query(c,"SET LOCAL lock_timeout = '1s'");check();
+   result=await scan({query:(sql,args)=>query(c,sql,args)});
    check();committing=true;await query(c,'COMMIT');reusable=true;check();
   }catch(error){
    failure=error;

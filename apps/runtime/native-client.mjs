@@ -13,6 +13,7 @@ const fileOperations=new Set(['runner/checkpoint/capture','runner/checkpoint/com
 // Each caller must also pass its absolute lease-derived deadline; other operations
 // retain the ordinary 3s default (or the factory's configured cap).
 const startupOperations=new Set([
+ 'retention/sweep',
  'runner/execution','runner/execution/settle',
  'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
  'runner/native/verify','runner/native/start','runner/native/started',

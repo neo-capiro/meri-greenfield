@@ -192,7 +192,10 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   if(result.rows.length!==tables.length||result.rows.some(row=>row.relation===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');
   return {service:'meri-native-capability-provider/1',ready:true};
  }
- const owner=Object.freeze({...execution,stop,readiness});
+ const owner=Object.freeze({...execution,stop,readiness,retentionSweep:input=>{
+  if(typeof outerApplication?.sweepRetention!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');
+  return outerApplication.sweepRetention(input);
+ }});
  const control=createAgentCoreControlApplication({owner,controlCredential,now,maxRequestMs:requestMs,maxRequestBytes:configuration.limits.requestBytes});
  const sdkSessionOwner=createDurableSdkSessionOwner({admission:store.executions,authority:execution,enabled:true,now,maxRequestMs:requestMs});
  const objectiveSelection=createObjectiveSelectionOwner({runStarts,store,now,maxRequestMs:requestMs});

@@ -1,3 +1,4 @@
+import {contentRows} from './retention-content-fixture.mjs';
 /** Scripted PostgreSQL protocol only. No live database, Core call or credential. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -354,7 +355,7 @@ test('actual decoder and exact purge owner include both operation-tagged row for
  const event={contractVersion:'0.1.0',eventId:id(80),binding,sequence:1,createdAt:new Date(at).toISOString(),scopes,type:'run.status',data:{state:'running',reasonCode:null}};
  const raw={subject,conversation:[...f.base.state.conversations.values()][0],runs:[{...[...f.base.state.runs.values()][0],sequence_base:0}],
   events:[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,sequence:1,event_id:event.eventId,event,event_sha256:hash(event)}],
-  controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[],memoryContinuations:continuations,memoryContextRows:[...f.rows.values()]};
+  controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[],memoryContinuations:continuations,memoryContextRows:[...f.rows.values()],contentRows:contentRows(f.base.state,binding)};
  const decoded=decodeConversationInventoryRows(raw);
  const inventory=enumerateReferences({...decoded,sdkSessionEntries:[],selectedOutputs:[],artifactVersions:[],nativeJournalRows:[],uploads:[],schedules:[],receipts:[],memoryProposals:[],budgetRuns:[]});
  const targets=inventory.rowTargets.filter(row=>row.table==='memory_proposal_contexts');
@@ -363,19 +364,19 @@ test('actual decoder and exact purge owner include both operation-tagged row for
   const wrong=structuredClone(raw),row=wrong.memoryContextRows.find(r=>r.record.key.operation.id==='mail.list_messages');mutate(row);row.record_sha256=hash(row.record);row.key_sha256=hash(row.record.key);
   wrong.memoryContinuations=wrong.memoryContextRows.map(r=>({runId:r.run_id,keySha256:r.key_sha256}));assert.throws(()=>decodeConversationInventoryRows(wrong),/STORE_CORRUPT/);
  }
- // Only the existing explicitly marked source-qualification SQL adapter is used.
+ // The canonical row adapter is exercised with a synthetic SQL transcript.
  // This does not qualify migrations, DELETE triggers or real production purge.
  const key=`${binding.tenantId}:conversation:${binding.conversationId}`,planSha256='c'.repeat(64),entrySha256='d'.repeat(64);
  const plan={planSha256,suppression:{ledgerSequence:2,entrySha256},rowSteps:targets.map(target=>({workflowId:hash(target),className:'conversation',target})),steps:[]};
  const projection={state:'SUPPRESSED',ledgerSequence:2,entrySha256,purge:{state:'PLANNED',planSha256,ledgerSequence:3,steps:[],rowSteps:[]}},queries=[];
- const pool={retentionSourceQualificationOnly:true,async connect(){return {async query(sql,p=[]){queries.push({sql,p});
+ const pool={async connect(){return {async query(sql,p=[]){queries.push({sql,p});
   if(sql.startsWith('SELECT * FROM meri_conversations.retention_subjects'))return {rows:[{state:'SUPPRESSED',ledger_sequence:2,projection,projection_sha256:hash(projection)}],rowCount:1};
   if(sql.startsWith('DELETE FROM meri_conversations.memory_proposal_contexts'))return {rows:[],rowCount:Number(f.rows.delete(rowKey(p)))};
-  if(sql.startsWith('SELECT 1 FROM meri_conversations.memory_proposal_contexts'))return {rows:f.rows.has(rowKey(p))?[{exists:1}]:[],rowCount:Number(f.rows.has(rowKey(p)))};
+  if(sql.startsWith('SELECT r.* FROM meri_conversations.memory_proposal_contexts'))return {rows:f.rows.has(rowKey(p))?[f.rows.get(rowKey(p))]:[],rowCount:Number(f.rows.has(rowKey(p)))};
   return {rows:[],rowCount:sql.startsWith('UPDATE meri_conversations.retention_subjects')?1:0};
  },release(){}};}};
- const owner=createPostgresRetentionJournal({pool,memoryContinuationPurgeSourceQualified:true});
+ const owner=createPostgresRetentionJournal({pool});
  const result=await owner.rows.purge(key,plan);assert.equal(result.length,2);assert(result.every(row=>row.deleted===1&&row.state==='EXECUTED'));assert.equal(f.rows.size,0);
- assert.equal(queries.filter(q=>q.sql.startsWith('INSERT INTO meri_conversations.memory_proposal_retention_targets')).length,2);
+ assert.equal(queries.filter(q=>q.sql.startsWith('INSERT INTO meri_conversations.retention_purge_targets')).length,2);
  assert.equal(queries.at(-1).sql,'COMMIT');
 });

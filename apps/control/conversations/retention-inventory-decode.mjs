@@ -11,6 +11,8 @@ import {continuesSession} from '../../../packages/contracts/session-continuity.m
 import {assertNativeConversationScope,assertNativeSessionCapture} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {assertNativeFileState} from '../../../packages/contracts/runtime-0.2/files.mjs';
 import {isMailContext,mailContextRecord} from './mail-context-record.mjs';
+import {decodeConversationContentRows} from './retention-content-rows.mjs';
+import {assertCandidate} from '../memory/candidate.mjs';
 
 const corrupt=()=>fail('STORE_CORRUPT');
 const requireFact=value=>{if(!value)corrupt();};
@@ -192,12 +194,11 @@ function decodeNextRun(row,owner,byRun,byCompletion){
 
 /** All arrays contain raw owner rows, not caller-selected payloads. Validated
  * memory continuation identities came from the same transaction's journal scan. */
-export function decodeConversationInventoryRows({subject,conversation,runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows}){
+export function decodeConversationInventoryRows({subject,conversation,runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows,contentRows,memoryCandidates}){
  try{
   const owner=decodeSubject(subject,conversation),byRun=new Map(),runRows=[];
   for(const row of rows(runs)){const item=decodeRun(row,owner);if(byRun.has(row.run_id))corrupt();byRun.set(row.run_id,item);runRows.push(item);}
   runRows.sort((a,b)=>a.projection.binding.writerFence-b.projection.binding.writerFence);
-  requireFact(runRows.length>0);
   for(let i=0;i<runRows.length;i++){
    const run=runRows[i],prior=runRows[i-1];
    requireFact(run.projection.binding.writerFence===i+1&&
@@ -348,12 +349,29 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
    checkedContexts.add(identity);
   }
   requireFact(checkedContexts.size===continuationKeys.size);
+  const nativeReferences=[...runRows.map(r=>r.continuation?.kind==='native-session'?r.continuation.sdkSession:null),
+   ...controlRows.map(r=>r.projection.proof?.kind==='native-session'?r.projection.proof.sdkSession:null),
+   ...completionRows.map(r=>r.row.proof?.kind==='native-session'?r.row.proof.sdkSession:null),
+   ...nextRunRows.map(r=>r.reservation.facts.sdkSession)].filter(Boolean);
+  const retainedRows=decodeConversationContentRows(contentRows,owner,byRun,nativeReferences);
+  const candidateIds=new Set();
+  for(const row of rows(memoryCandidates)){
+   const {candidate:c,candidateSha256}=assertCandidate(row.candidate);
+   requireFact(row.tenant_id===subject.tenantId&&row.proposer_actor_id===subject.ownerActorId&&
+    row.origin_kind==='conversation'&&row.origin_conversation_id===subject.subjectId&&row.candidate_purged_at===null&&
+    row.candidate_id===c.candidateId&&row.candidate_sha256===candidateSha256&&digest(row.request_sha256)&&
+    c.tenantId===subject.tenantId&&c.proposerActorId===subject.ownerActorId&&c.origin.kind==='conversation'&&
+    c.origin.conversationId===subject.subjectId&&byRun.has(c.origin.runId)&&
+    row.scope===c.scope&&row.client_id===c.clientId&&row.idempotency_key===c.idempotencyKey&&
+    !candidateIds.has(c.candidateId));
+   candidateIds.add(c.candidateId);
+  }
   const objects=new Map();
   const collectObjects=refs=>{for(const object of refs){
    validateShape('ObjectReference',object);
    const key=refKey(object),held=objects.get(key);
-   if(held&&held.sha256!==object.sha256)corrupt();
-   objects.set(key,{objectId:object.objectId,versionId:object.versionId,sha256:object.sha256});
+   if(held&&(held.sha256!==object.sha256||held.scopesSha256!==hash(object.scopes)))corrupt();
+   objects.set(key,{objectId:object.objectId,versionId:object.versionId,sha256:object.sha256,scopesSha256:hash(object.scopes)});
   }};
   const collect=cp=>{if(cp)collectObjects([cp.opaqueSession,...cp.workspace.entries.map(e=>e.object)]);};
   const collectFiles=f=>{if(f)collectObjects([...f.workspace.entries,...f.tasks].map(e=>e.object));};
@@ -365,7 +383,8 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
   const snapshot={subject:owner.subject,conversation:owner.conversation,runs:runRows.map(r=>r.public),
    eventRows,artifactVersionRefs,controls:controlRows.map(r=>r.public),checkpoints:checkpointRows,
    completionCheckpoints:completionRows.map(r=>r.public),nextRuns:nextRunRows.map(r=>r.public),
-   memoryContinuations:continuationRows,objectVersions};
+   memoryContinuations:continuationRows,objectVersions,contentRows:retainedRows,
+   memoryCandidates:[...candidateIds].sort().map(candidateId=>({candidateId}))};
   return data({...snapshot,inventorySha256:hash(snapshot)});
  }catch(error){if(error?.code==='STORE_CORRUPT')throw error;corrupt();}
 }
