@@ -99,7 +99,9 @@ export const PLAN=Object.freeze([
  // Expired conversation Trash follows the accepted General repair; applied entries remain unchanged.
  ['migration','apps/control/intents/migrations/0002_memory_preparation_tombstone.sql','8827a9ced5a5b8f3e2495ed1298d0c57f643d0fe22125b0668aade7d15610550','integration'],
  ['migration','apps/control/conversations/migrations/0023_expired_conversation_purge.sql','54b9f6b6c11614465446b73c51281c2b8603de0cb379c541420bc28ef2b3d55b','integration'],
- ['migration','infra/product-preview/first-chat-expired-conversation-purge-grants.sql','19463e0bbdd8e5b0b66f5c1f4ebe87ae639e2a113564fad0824f883f0b7101cc','integration']
+ ['migration','infra/product-preview/first-chat-expired-conversation-purge-grants.sql','19463e0bbdd8e5b0b66f5c1f4ebe87ae639e2a113564fad0824f883f0b7101cc','integration'],
+ // Native routines use current schedule/consent/execution facts; Core gets no base-table access.
+ ['migration','apps/runtime/native-authority/read-delegation/migrations/0003_native_routine_facts.sql','81551e02494ff11f57ebf12900791c23f882fab69890c9e64276949e9f62cc07','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
