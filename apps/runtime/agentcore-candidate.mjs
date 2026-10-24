@@ -16,6 +16,7 @@ import {createAgentCoreExecutionOwner} from './agentcore-execution.mjs';
 import {createAgentCoreControlApplication} from './agentcore-control-http.mjs';
 import {createConversationIdentity} from './conversation-identity.mjs';
 import {createCoreConversationCurrentness} from './native-authority/conversation-currentness.mjs';
+import {createCoreConversationManagement} from './native-authority/conversation-management.mjs';
 import {createDurableSdkSessionOwner} from './sdk-session-owner.mjs';
 import {createNativeSessionContinuation} from './sdk-continuation-owner.mjs';
 import {createObjectiveSelectionOwner} from './objective-generation/selection-owner.mjs';
@@ -36,7 +37,7 @@ const absent=code=>Response.json({error:{code}},{status:503,headers:{'cache-cont
 
 /** Dependencies are borrowed. Only startAgentCoreCandidate creates and closes the provider client. */
 export function assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,
- store=createPostgresConversationStore({pool,modelCatalog:configuration.models}),initialBindings=createInitialRunBindingJournal({pool}),
+ store,initialBindings=createInitialRunBindingJournal({pool}),
  fetchImpl=globalThis.fetch,now=Date.now,createReadsRuntime,turnTelemetry,getCoreServiceSecret}){
  const config=compileAgentCoreConfiguration(configuration.agentcore),versions=configuration.versions;
  if(typeof controlCredential!=='string'||!/^\S{32,8192}$/u.test(controlCredential)||typeof nativeCredentials?.nativeCredentialFor!=='function'||
@@ -46,6 +47,8 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool,now});
  const objectiveCore=getCoreServiceSecret?createObjectiveCorePorts({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,runStarts,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):null;
  const core=createCapiroApplicationAuthorityClient({origin:config.identity.origin,fetchImpl:coreFetch,now,enabled:true,limits:{maxRequestMs:requestMs,maxResponseBytes:131072}});
+ const conversationManagement=getCoreServiceSecret?createCoreConversationManagement({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,policyRevision:config.policyRevision,nativeCredentials,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
+ store??=createPostgresConversationStore({pool,modelCatalog:configuration.models,assertConversationActive:conversationManagement?.assertActiveBinding});
  const nextRunOwner=createNextRunOwner({store,versions,now});
  const identityContext=createConversationIdentity({store,identity:{...config.identity,fetchImpl:coreFetch},
   qualification:{policyRevision:config.policyRevision},now,limits,nextRunOwner,initialBindings,
@@ -241,7 +244,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   },readiness});
  return Object.freeze({execution,native,application,admitFork,
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
-  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
+  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},
   async close(){closed=true;await execution.close();}});
 }

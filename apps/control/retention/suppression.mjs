@@ -47,29 +47,43 @@ export function createSuppressionOwner({ledger,journal,ownership,authorization=r
  async function project(key,row,expected){try{await journal.set(key,row,{expected});}catch(error){
   if(error?.code==='RETENTION_STALE_WRITE'){let current=null;try{current=await journal.get(key);}catch{current=null;}if(current&&current.state===row.state&&current.ledgerSequence===row.ledgerSequence&&current.entrySha256===row.entrySha256)return;}
   serving.disable();throw Object.assign(new Error('RETENTION_PROJECTION_FAILED'),{code:'RETENTION_PROJECTION_FAILED',cause:error});}}
- async function suppress({principal,subject:rawSubject,reason,outstandingAccess,signal}){
-  barrier();const p=principalOf(principal),s=await trustedSubject(rawSubject),key=subjectKey(s);text(reason,1024);const access=outstanding(outstandingAccess);
-  return journal.withTransition(key,async()=>{
-   const currentOwner=await trustedSubject(rawSubject);if(currentOwner.ownerActorId!==s.ownerActorId)fail('RETENTION_OWNERSHIP_REFUSED');
-   const auth=await authorize(p,s,'retention.suppress');barrier();
+ /** One subject exclusion can span the metadata transaction and its recovery.
+  * Scoped methods retain the ordinary ownership/auth/projection checks without
+  * reacquiring the same lock on another lease. Lock order: retention, conversation. */
+ async function withTransition({principal,subject:rawSubject},work){
+  if(typeof work!=='function')fail('RETENTION_CONFIGURATION');barrier();
+  const p=principalOf(principal),s=await trustedSubject(rawSubject),key=subjectKey(s);
+  return journal.withTransition(key,async databaseLease=>{
+   let accepting=true,active=true;const pending=new Set();
+   const check=()=>{if(!active)fail('RETENTION_INVALID_REQUEST');barrier();};
+   async function access(operation){check();const currentOwner=await trustedSubject(rawSubject);check();if(currentOwner.ownerActorId!==s.ownerActorId)fail('RETENTION_OWNERSHIP_REFUSED');const auth=await authorize(p,s,operation);check();return auth;}
+   // Drain any operation a trusted callback started before returning so the
+   // subject exclusion never ends while a ledger acknowledgement is in flight.
+   const scoped=fn=>input=>{if(!accepting) return Promise.reject(Object.assign(new Error('RETENTION_INVALID_REQUEST'),{code:'RETENTION_INVALID_REQUEST'}));
+    const promise=Promise.resolve().then(()=>fn(input));pending.add(promise);promise.catch(()=>{});return promise;};
+   async function suppress({reason,outstandingAccess,signal}){
+   text(reason,1024);const accessState=outstanding(outstandingAccess),auth=await access('retention.suppress');
    const current=await journal.get(key),expected=projectionToken(current);if(current&&current.state!=='RELEASED')return Object.freeze({...current,replayed:true});
-   let cancelled=[];if(cancellation&&access.inFlightRuns.length){cancelled=data(await cancellation.cancelInFlight({principal:p,subject:s,runs:access.inFlightRuns,signal}));if(!Array.isArray(cancelled))fail('RETENTION_CANCELLATION_REFUSED');}
-   barrier();const entry=await ledger.append({subject:s,state:'SUPPRESSED',reason,facts:{principal:p,authorization:auth,outstandingAccess:access,cancelled,revokes:['read','replay','restore','continuation','reservation','allocationClaim'],cannotRecall:['issuedSignedUrlsUntilExpiry','runningWorkerUntilOwnCleanup']}});
-   const row={state:'SUPPRESSED',ownerActorId:s.ownerActorId,suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,outstandingAccess:access,cancelled,purge:null};
+   let cancelled=[];if(cancellation&&accessState.inFlightRuns.length){cancelled=data(await cancellation.cancelInFlight({principal:p,subject:s,runs:accessState.inFlightRuns,signal}));if(!Array.isArray(cancelled))fail('RETENTION_CANCELLATION_REFUSED');}
+   check();const entry=await ledger.append({subject:s,state:'SUPPRESSED',reason,facts:{principal:p,authorization:auth,outstandingAccess:accessState,cancelled,revokes:['read','replay','restore','continuation','reservation','allocationClaim'],cannotRecall:['issuedSignedUrlsUntilExpiry','runningWorkerUntilOwnCleanup']}});
+   const row={state:'SUPPRESSED',ownerActorId:s.ownerActorId,suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,reason,authorization:auth,outstandingAccess:accessState,cancelled,purge:null};
    await project(key,row,expected);return Object.freeze({...row,replayed:false});
-  });
- }
- async function release({principal,subject:rawSubject,reason}){
-  barrier();const p=principalOf(principal),s=await trustedSubject(rawSubject),key=subjectKey(s);text(reason,1024);
-  return journal.withTransition(key,async()=>{
-   const currentOwner=await trustedSubject(rawSubject);if(currentOwner.ownerActorId!==s.ownerActorId)fail('RETENTION_OWNERSHIP_REFUSED');
-   const auth=await authorize(p,s,'retention.release');barrier();
+   }
+   async function release({reason}){
+   text(reason,1024);const auth=await access('retention.release');
    const current=await journal.get(key),expected=projectionToken(current);if(!current||current.state!=='SUPPRESSED')fail('RETENTION_NOT_SUPPRESSED');if(current.purge)fail('RETENTION_PURGE_IN_PROGRESS');
    const entry=await ledger.append({subject:s,state:'RELEASED',reason,facts:{principal:p,authorization:auth}});
-   const row={state:'RELEASED',ownerActorId:s.ownerActorId,releasedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,purge:null};
+   const row={state:'RELEASED',ownerActorId:s.ownerActorId,releasedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,reason,authorization:auth,purge:null};
    await project(key,row,expected);return Object.freeze({...row,replayed:false});
+   }
+   const scope=Object.freeze({databaseLease,suppress:scoped(suppress),release:scoped(release),current:scoped(async()=>{await access('retention.read');const value=await journal.get(key);check();return value;})});
+   let result,failure;
+   try{result=await work(scope);}catch(error){failure=error;}finally{accepting=false;const results=await Promise.allSettled(pending);active=false;failure??=results.find(r=>r.status==='rejected')?.reason;}
+   if(failure)throw failure;return result;
   });
  }
+ const suppress=({principal,subject,...input})=>withTransition({principal,subject},scope=>scope.suppress(input));
+ const release=({principal,subject,...input})=>withTransition({principal,subject},scope=>scope.release(input));
  const gate=createRetentionReadGate({journal,serving});
- return Object.freeze({suppress,release,isSuppressed:gate.isSuppressed,assertServable:gate.assertServable,withRelease:gate.withRelease,now:tick});
+ return Object.freeze({suppress,release,withTransition,isSuppressed:gate.isSuppressed,assertServable:gate.assertServable,withRelease:gate.withRelease,now:tick});
 }

@@ -7,7 +7,7 @@ import {assertNextRunReservation} from '../next-run-reservation.mjs';
 // Brand pure canonical decoding failures only. Driver/transport failures retain their unavailable semantics.
 const decode=fn=>{try{return fn();}catch{refuse('CONVERSATION_STORE_CORRUPT');}};
 const shape=(name,value)=>decode(()=>validateShape(name,value));
-function conversation(row,principal){
+export function decodeOwnedConversation(row,principal){
  if(!row||row.tenant_id!==principal.tenantId||row.owner_actor_id!==principal.actorId)refuse('CONVERSATION_NOT_FOUND');
  const c=row.projection;shape('Conversation',c);
  if(hash(c)!==row.projection_sha256||row.conversation_id!==c.conversationId||!same(c.owner,{tenantId:principal.tenantId,actorId:principal.actorId})||
@@ -15,6 +15,7 @@ function conversation(row,principal){
  if(c.scopes.some(s=>s.kind==='client'&&!principal.clientIds.includes(s.resourceId)))refuse('CONVERSATION_NOT_FOUND');
  return c;
 }
+const conversation=decodeOwnedConversation;
 export function createConversationHistoryStore({tx,rowRun}){
  async function list({principal,before,limit},check){return tx({tenantId:principal.tenantId,conversationId:`discovery:${principal.actorId}`},check,async c=>{
   const rows=(await c.query(`SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND owner_actor_id=$2
@@ -27,7 +28,9 @@ export function createConversationHistoryStore({tx,rowRun}){
  async function transcript({principal,conversationId,after,limit},check){const key={tenantId:principal.tenantId,conversationId};return tx(key,check,async c=>{
   const row=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,conversationId])).rows[0];check();
   const subject=conversation(row,principal),runs=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,conversationId])).rows.map(row=>decode(()=>rowRun(row))).sort((a,b)=>a.projection.binding.writerFence-b.projection.binding.writerFence);check();
-  if(!runs.length)refuse('CONVERSATION_STORE_CORRUPT');let end=0;
+  // A verified bootstrap may now be registered for metadata before its first
+  // prompt. The owned, valid zero-run record has no transcript yet.
+  if(!runs.length)refuse('NOT_FOUND');let end=0;
   for(let n=0;n<runs.length;n++){const r=runs[n],b=r.projection.binding,base=Number(r.sequence_base),last=Number(r.last_sequence),closed=r.sequence_end==null?null:Number(r.sequence_end);
    if(b.tenantId!==principal.tenantId||b.actorId!==principal.actorId||b.conversationId!==conversationId||!same(r.projection.scopes,subject.scopes)||
     !Number.isSafeInteger(base)||base!==end||!Number.isSafeInteger(last)||last<1||!Number.isSafeInteger(base+last)||n&&b.writerFence<=runs[n-1].projection.binding.writerFence||

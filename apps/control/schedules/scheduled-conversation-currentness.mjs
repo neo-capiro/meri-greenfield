@@ -31,7 +31,7 @@ export function createScheduledConversationCurrentness(configuration){
   c.maxRequestMs??=10000;
   if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)fail();
  }catch{throw new ProductError('PRODUCT_CONFIGURATION');}
- return registerScheduledCurrentness(Object.freeze({async assertCurrent(value,readScheduleOriginRows){
+ return registerScheduledCurrentness(Object.freeze({async assertCurrent(value,readScheduleOriginRows,readOrdinaryMetadata){
   let life;
   try{
    const call=own(value,['credential','principal','conversationId','scopes','deadlineMs'],['signal']);nativeSignal(call.signal);
@@ -43,13 +43,17 @@ export function createScheduledConversationCurrentness(configuration){
    life=createOperationLifetime({now:c.now,deadlineMs,signal:call.signal,errorFactory:code=>new ProductError(code)});
    const member=async()=>{const result=await life.run(signal=>recheck({...native,signal}));if(!same(result,principal))fail();};
    const origin=()=>life.run(()=>read({tenantId:principal.tenantId,conversationId:call.conversationId},life.check,readScheduleOriginRows));
-   await member();const first=await origin();
-   if(first===null)await life.run(signal=>core({...call,principal,scopes,signal,deadlineMs}));
+   if(readOrdinaryMetadata!==undefined&&typeof readOrdinaryMetadata!=='function')fail();
+   await member();const first=await origin();let metadata=null;
+   if(first===null){
+    if(readOrdinaryMetadata)metadata=await life.run(()=>readOrdinaryMetadata());
+    else await life.run(signal=>core({...call,principal,scopes,signal,deadlineMs}));
+   }
    else snapshotScheduledConversationOrigin(first,{principal,conversationId:call.conversationId,scopes});
    await member();const last=await origin();
    if(!same(first,last))fail();
    if(last!==null)snapshotScheduledConversationOrigin(last,{principal,conversationId:call.conversationId,scopes});
-   life.check();
+   life.check();return metadata;
   }catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}finally{life?.close();}
  }}));
 }

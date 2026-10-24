@@ -36,7 +36,7 @@ export async function recordContinuationReservation(c,{source,target,scopes,vers
  await c.query('INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7)',[source.tenantId,source.conversationId,source.runId,target.runId,reservation,hash(reservation),'ACCEPTED']);check();
  return reservation;
 }
-export function createNextRunJournal({tx,rowRun,modelAdmission}){
+export function createNextRunJournal({tx,rowRun,modelAdmission,assertConversationActive}){
  const row=r=>{if(!r||hash(r.reservation)!==r.reservation_sha256)fail('STORE_CORRUPT');const v=assertNextRunReservation(r.reservation);if(r.source_run_id!==v.source.runId||r.target_run_id!==v.target.runId||r.tenant_id!==v.target.tenantId||r.conversation_id!==v.target.conversationId||!['RESERVED','ACCEPTED'].includes(r.state))fail('STORE_CORRUPT');return {...v,state:r.state};};
  const key=value=>{const k=bounded(value);own(k,['tenantId','conversationId']);uuid(k.conversationId);if(typeof k.tenantId!=='string'||!k.tenantId||k.tenantId.length>256)fail('INVALID_REQUEST');return k;};
  /** Historical completion data is read-only; active invocation settlement is checked separately below. */
@@ -118,12 +118,13 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
   });
  }
  /** Reserve under the same locked eligibility check. One immutable target per source recovers a lost acknowledgement. */
- async function reserve({source,target,facts:rawFacts,scopes,versions,policyRevision,reservedAt},check){
+ async function reserve({source,target,facts:rawFacts,scopes,versions,policyRevision,reservedAt,assertActive},check){
   source=bounded(source);target=bounded(target);validateShape('RunBinding',source);validateShape('RunBinding',target);validateShape('RuntimeVersions',versions);scopes=bounded(scopes);
   if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1)fail('NEXT_RUN_TARGET_REFUSED');
   const f=facts(rawFacts);if(typeof policyRevision!=='string'||!policyRevision||typeof reservedAt!=='string'||Number.isNaN(Date.parse(reservedAt)))fail('NEXT_RUN_FACTS_REFUSED');
   return tx(source,check,async c=>{
    const runs=await eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check);
+   if(assertActive)await assertActive();else if(assertConversationActive)await assertConversationActive({binding:source,scopes},check);check();
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    const r=existing.length?row(existing[0]):null;
    // Changed facts cannot reinterpret an immutable reservation, even when their grant set is ineligible.
@@ -155,6 +156,7 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
   validateShape('Conversation',conversation);assertRun(run);const b=run.binding;request=bounded(request);
   if(conversation.owner.tenantId!==b.tenantId||conversation.owner.actorId!==b.actorId||conversation.conversationId!==b.conversationId||!same(conversation.scopes,run.scopes)||conversation.policyRevision!==run.policyRevision||run.state!=='queued')fail('CONVERSATION_BINDING_REFUSED');
   return tx(b,check,async c=>{
+   if(assertConversationActive){await assertConversationActive({binding:b,scopes:run.scopes},check);check();}
    const old=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows[0];check();
    if(!old||hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==b.actorId||!same({...old.projection,createdAt:conversation.createdAt},conversation))fail('CONVERSATION_SCOPE_REFUSED');
    const reserved=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();
@@ -205,5 +207,5 @@ export function createNextRunJournal({tx,rowRun,modelAdmission}){
   if(!lineage||cp.checkpoint_id!==r.facts.checkpoint.checkpointId||cp.proof_sha256!==r.facts.checkpoint.proofSha256||source.projection.state==='completed'&&from.run_id!==source.run_id||cp.identity.selectedClientId!==selectedClientId||p.sourceRequestSha256!==from.request_sha256||p.contextSha256!==hash({window:from.request.window,skill:from.request.skill,scopes})||!same(p.checkpoint.binding,from.projection.binding)||!same(p.checkpoint.scopes,scopes)||!continuesSession(p.checkpoint.versions,target.projection.versions))fail('STORE_CORRUPT');
   return {nextTurn:{checkpoint:p.checkpoint,checkpointSha256:p.checkpointSha256,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,sourceRequest:from.request,targetBinding:b,resumeSessionAt:p.resumeSessionAt}};
  },{sessionSnapshot:transcripts});}
- return Object.freeze({listRuns,latestCheckpoint,latestSession,settlement,assess,reserve,readTarget,current,accept,execution,sessionSnapshot:(input,check)=>execution(input,check,{transcripts:true}),fileSnapshot:(input,check)=>execution(input,check,{transcripts:true,files:true})});
+ return Object.freeze({listRuns,latestCheckpoint,latestSession,settlement,settlementInTransaction:sourceSettlement,assess,reserve,readTarget,current,accept,execution,sessionSnapshot:(input,check)=>execution(input,check,{transcripts:true}),fileSnapshot:(input,check)=>execution(input,check,{transcripts:true,files:true})});
 }

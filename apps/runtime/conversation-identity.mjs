@@ -25,11 +25,11 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
   if(!record||rebind){const claimed=await initialBindings[rebind?'rebind':'claim']({...query,policyRevision:qualification.policyRevision,versions,configurationSha256,proposedExpiresAtMs:proposeInitialExpiry({signal})},check(signal));record=claimed.record;check(signal)();}
   return valid(record,principal,conversationId,selectedClientId);
  }
- async function select(record,principal,conversationId,signal,exact={}){
+ async function select(record,principal,conversationId,signal,exact={},assertActive){
   const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();
   if(!saved){if(exact.runId!==undefined&&exact.runId!==record.binding.runId)refuseWith('INITIAL_BINDING_SUPERSEDED');pinned(record);if(record.expiresAtMs<=now())refuseWith('INITIAL_BINDING_EXPIRED');return {binding:record.binding,policyRevision:record.policyRevision,expiresAtMs:record.expiresAtMs};}
   savedOriginal(saved,record);
-  const chosen=await nextRunOwner.selectRun({principal,conversationId,signal,...exact}),current=await nextRunOwner.currentRun(chosen.binding,{signal});check(signal)();
+  const chosen=await nextRunOwner.selectRun({principal,conversationId,signal,...exact,assertActive}),current=await nextRunOwner.currentRun(chosen.binding,{signal});check(signal)();
   if(!same(current.binding,chosen.binding)||current.binding.tenantId!==principal.tenantId||current.binding.actorId!==principal.actorId||current.binding.conversationId!==conversationId||current.policyRevision!==record.policyRevision||!same(current.scopes,saved.run.scopes))refuse();return current;
  }
  const currentOwner={async currentRun(request,{signal,selectedClientId}){
@@ -40,5 +40,5 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
   savedOriginal(saved,record);const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();
   if(!same(selected.binding,request)||selected.policyRevision!==record.policyRevision||!same(selected.scopes,saved.run.scopes))refuse();return fact(selected);
  }};
- return createNativeIdentityContext({...identity,currentOwner,admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId})=>fact(await select(await original(principal,conversationId,selectedClientId,signal,runId),principal,conversationId,signal,runId===undefined?{}:{runId})),now,limits,enabled:true});
+ return createNativeIdentityContext({...identity,currentOwner,admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId,recheckActive})=>fact(await select(await original(principal,conversationId,selectedClientId,signal,runId),principal,conversationId,signal,runId===undefined?{}:{runId},recheckActive)),now,limits,enabled:true});
 }

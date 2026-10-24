@@ -22,7 +22,7 @@ export function createNextRunOwner({store,versions,now=Date.now,newId=randomUUID
   * reserved successor only after the SDK invocation has settled (a nonterminal crashed run is first settled by the run reconciler).
   * A session that names its exact `runId` never reserves: it binds that terminal latest run read-only (its next turn is reserved only by an
   * explicit turn, which retains the request identity), and any other terminal run is not current. Hints constrain; they never create. */
- async function select({principal,conversationId,signal,expectedSourceRunId,runId},{explicit=false}={}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);if(expectedSourceRunId!==undefined)uuid(expectedSourceRunId);if(runId!==undefined)uuid(runId);const check=checking(signal);
+ async function select({principal,conversationId,signal,expectedSourceRunId,runId,assertActive},{explicit=false}={}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);if(expectedSourceRunId!==undefined)uuid(expectedSourceRunId);if(runId!==undefined)uuid(runId);const check=checking(signal);
   const {runs,reservations}=await journal.listRuns({tenantId:p.tenantId,conversationId},check);if(!runs.length)fail('NEXT_RUN_NO_CONVERSATION');
   const latest=runs.at(-1);if(latest.binding.actorId!==p.actorId)fail('NEXT_RUN_OWNER_REFUSED');
   if(expectedSourceRunId!==undefined&&latest.binding.runId!==expectedSourceRunId)fail('NEXT_RUN_NOT_LATEST');
@@ -31,7 +31,7 @@ export function createNextRunOwner({store,versions,now=Date.now,newId=randomUUID
   if(runId!==undefined){if(latest.binding.runId!==runId)fail('NEXT_RUN_NOT_LATEST');return {binding:latest.binding,reserved:false};}
   const facts=await (explicit?explicitSettlement:settlement)(latest,signal,check);
   const target={tenantId:p.tenantId,actorId:p.actorId,conversationId,runId:newId(),attemptId:newId(),workerId:newId(),writerFence:latest.binding.writerFence+1};
-  const r=await journal.reserve({source:latest.binding,target,facts,scopes:latest.scopes,versions,policyRevision:latest.policyRevision,reservedAt:new Date(now()).toISOString()},check);
+  const r=await journal.reserve({source:latest.binding,target,facts,scopes:latest.scopes,versions,policyRevision:latest.policyRevision,reservedAt:new Date(now()).toISOString(),assertActive},check);
   return {binding:r.target,source:latest.binding,reserved:true,replayed:r.replayed};
  }
  const selectRun=args=>select(args);
@@ -41,7 +41,7 @@ export function createNextRunOwner({store,versions,now=Date.now,newId=randomUUID
  }
  /** Explicit turn command identity is its source run. Recover its original journal mapping even after acceptance; never select a later
   * successor on replay. Returning an old target is a read receipt only and cannot make it eligible for execution. */
- async function admitTurn({principal,conversationId,sourceRunId,signal}){
+ async function admitTurn({principal,conversationId,sourceRunId,signal,assertActive}){
   const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);uuid(sourceRunId);const check=checking(signal);
   const {runs,reservations}=await journal.listRuns({tenantId:p.tenantId,conversationId},check),source=runs.find(r=>r.binding.runId===sourceRunId);
   if(!source||runs.some(r=>r.binding.actorId!==p.actorId))fail('NEXT_RUN_OWNER_REFUSED');
@@ -50,7 +50,7 @@ export function createNextRunOwner({store,versions,now=Date.now,newId=randomUUID
    prior.target.writerFence!==source.binding.writerFence+1||prior.target.runId===sourceRunId||prior.state==='ACCEPTED'&&!runs.some(r=>same(r.binding,prior.target)))fail('NEXT_RUN_OWNER_REFUSED');
    return {sourceBinding:prior.source,targetBinding:prior.target,state:prior.state,replayed:true};}
   if(!terminal(source.state))fail('NEXT_RUN_SOURCE_NOT_TERMINAL');
-  const selected=await select({principal:p,conversationId,signal,expectedSourceRunId:sourceRunId},{explicit:true});check();
+  const selected=await select({principal:p,conversationId,signal,expectedSourceRunId:sourceRunId,assertActive},{explicit:true});check();
   if(!selected.reserved||!same(selected.source,source.binding))fail('NEXT_RUN_NOT_LATEST');
   return {sourceBinding:selected.source,targetBinding:selected.binding,state:'RESERVED',replayed:selected.replayed===true};
  }
