@@ -30,8 +30,8 @@ export async function createControlReadsComposer(configuration){
  }
  const families=prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy:c.capabilityPolicy,getNativeCredential,getServiceSecret,
   ...(getReadModeServiceSecret?{getReadModeServiceSecret}:{}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress}),...(c.memoryContexts?{memoryContexts:c.memoryContexts}:{})});
- function createReadsRuntime({execution,binding,approvedReads,objectiveCore}){
-  const createGateway=value=>families.createGateway({...value,...(objectiveCore?{objectiveCore}:{})});
+ function createReadsRuntime({execution,binding,approvedReads,objectiveCore,routineCore}){
+  const createGateway=value=>families.createGateway({...value,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{})});
   return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now}),approvedReads,now});
  }
  return Object.freeze({createReadsRuntime,familyIds,missing:families.missing.map(id=>`source-composition:${id}`)});

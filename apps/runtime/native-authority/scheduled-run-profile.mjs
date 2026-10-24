@@ -23,10 +23,10 @@ function facet(object,name){
 export function createScheduledRunProfile(configuration){
  let c,a,read,lineage,task;
  try{
-  c=own(configuration,['scheduleOwner','store','task','selectedClientId','allocationJson','maxCostMicroUSD','now'],['maxRequestMs']);
-  a=allocation(c.allocationJson);task=data(own(c.task,['taskId','manifestSha256','version']));
-  if(typeof task.taskId!=='string'||!uuid.test(task.taskId)||!integer(task.version)||task.manifestSha256!==a.manifestSha256||
-   typeof c.selectedClientId!=='string'||!uuid.test(c.selectedClientId)||
+  c=own(configuration,['scheduleOwner','store','task','selectedClientId','maxCostMicroUSD','now'],['allocationJson','maxRequestMs']);
+  a=c.allocationJson===undefined?null:allocation(c.allocationJson);task=data(own(c.task,['taskId','manifestSha256','version']));
+  if(typeof task.taskId!=='string'||!uuid.test(task.taskId)||!integer(task.version)||!/^[a-f0-9]{64}$/u.test(task.manifestSha256)||a!==null&&task.manifestSha256!==a.manifestSha256||
+   (c.selectedClientId!==null||a!==null)&&(typeof c.selectedClientId!=='string'||!uuid.test(c.selectedClientId))||
    !integer(c.maxCostMicroUSD)||typeof c.now!=='function')fail('CONFIGURATION');
   c.maxRequestMs??=10000;if(!integer(c.maxRequestMs)||c.maxRequestMs>30000)fail('CONFIGURATION');
   read=sdkMethod(c.scheduleOwner,'readOccurrenceForConversation');
@@ -46,9 +46,9 @@ export function createScheduledRunProfile(configuration){
   const r=data(own(raw,['occurrenceKey','scheduleId','occurrence','effect','effectSha256','state']));
   const s=snapshotScheduledJobSelection({occurrence:r.occurrence,effect:r.effect}),p=s.occurrence.projection,b=q.binding;
   if(r.state!=='OPEN'||r.occurrenceKey!==s.identity.occurrenceKey||r.scheduleId!==p.scheduleId||r.effectSha256!==hash(s.effect)||
-   !same(p.owner,{tenantId:b.tenantId,actorId:b.actorId})||b.tenantId!==a.run.tenantId||b.actorId!==a.run.actorId||
+   !same(p.owner,{tenantId:b.tenantId,actorId:b.actorId})||a!==null&&(b.tenantId!==a.run.tenantId||b.actorId!==a.run.actorId)||
    s.effect.binding.conversationId!==b.conversationId||!same(s.occurrence.task,task)||!same(p.scopes,q.scopes)||
-   !q.scopes.some(v=>v.kind==='client'&&v.resourceId===c.selectedClientId))fail('ORIGIN');
+   !q.scopes.some(v=>v.kind===(c.selectedClientId===null?'private-user':'client')&&v.resourceId===(c.selectedClientId??b.actorId)))fail('ORIGIN');
   return {r,s};
  }
  function restrict(selection,l,q){
@@ -59,8 +59,11 @@ export function createScheduledRunProfile(configuration){
    !integer(l.expiresAtMs)||l.expiresAtMs<=l.allocatedAtMs)fail('LINEAGE');
   const runtimeEnd=l.allocatedAtMs+p.maxRuntimeSeconds*1000;
   if(!Number.isSafeInteger(runtimeEnd))fail('EXPIRY');
-  const expiresAtMs=Math.min(q.expiresAtMs,l.expiresAtMs,runtimeEnd,Date.parse(a.schedule.expiresAt));
+  const expiresAtMs=Math.min(q.expiresAtMs,l.expiresAtMs,runtimeEnd,a===null?Infinity:Date.parse(a.schedule.expiresAt));
   if(c.now()<l.allocatedAtMs||c.now()>=expiresAtMs)fail('EXPIRY');
+  if(a===null)return data({binding:q.binding,scopes:q.scopes,selectedClientId:c.selectedClientId,policyRevision:l.run.policyRevision,
+   scheduleId:selection.r.scheduleId,occurrenceKey:selection.r.occurrenceKey,generation:selection.s.occurrence.generation,
+   maxCostMicroUSD:Math.min(c.maxCostMicroUSD,p.maxCostMicrousd),expiresAtMs});
   // The group cap is immutable approved occurrence data, independent of a narrower per-run configured profile.
   const run=Object.fromEntries(Object.keys(a.run).map(k=>[k,q.binding[k]]));
   const occurrenceCostScope=assertOccurrenceCostScope({version:1,kind:'schedule-occurrence',occurrenceKey:selection.r.occurrenceKey,
@@ -77,7 +80,7 @@ export function createScheduledRunProfile(configuration){
    const lookup=()=>life.run(()=>read({tenantId:q.binding.tenantId,conversationId:q.binding.conversationId},life.check));
    const first=await lookup();
    if(first===null){
-    if(Object.hasOwn(a,'occurrenceCostScope')||await lookup()!==null)fail('ORIGIN');life.check();return null;
+    if(a!==null&&Object.hasOwn(a,'occurrenceCostScope')||await lookup()!==null)fail('ORIGIN');life.check();return null;
    }
    const selected=origin(first,q),selection={occurrence:selected.s.occurrence,effect:selected.s.effect};
    const before=await life.run(()=>lineage.read(selection,life.check));

@@ -12,8 +12,8 @@ import {createToolDispatch} from '../gateway/dispatch/tool-dispatch.mjs';
 import {GatewayDenied} from '../gateway/dispatch/operation-result.mjs';
 import {createReadContextOwner} from './read-context/owner.mjs';
 import {createNativeToolAuthorityClient} from './read-context/core-client.mjs';
-import {createObjectiveReadSource} from './objective-generation/read-source.mjs';
-import {createObjectiveReadContext} from './objective-generation/read-context.mjs';
+import {createObjectiveReadSource,createRoutineReadSource} from './objective-generation/read-source.mjs';
+import {createObjectiveReadContext,createRoutineReadContext} from './objective-generation/read-context.mjs';
 
 export {GENERAL_READ_ADAPTER_FAMILIES};
 const key=op=>`${op.id}@${op.version}`,deny=code=>{throw nativeReadFault(code);};
@@ -22,13 +22,13 @@ const uuid=digest=>`${digest.slice(0,8)}-${digest.slice(8,12)}-5${digest.slice(1
 
 export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,getReadModeServiceSecret,memoryContexts}){
  const prepared=prepareGeneralReadFamilyHandlers({familyIds});
- async function createGateway({binding,current,approvedReads,signal,deadlineMs,objectiveCore}){
-  const initial=await current(),job=objectiveCore?await objectiveCore.forBinding({binding,signal}):null;
-  if(job&&(job.current.clientId!==initial.selectedClientId||hash(job.record.binding)!==hash(binding)))deny('ACCESS_DENIED');
-  const readSource=job?createObjectiveReadSource({record:job.record,policyRevision:initial.policyRevision,origin:coreOrigin,getServiceSecret,fetchImpl,now,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes}):undefined;
+ async function createGateway({binding,current,approvedReads,signal,deadlineMs,objectiveCore,routineCore}){
+  const initial=await current(),objective=objectiveCore?await objectiveCore.forBinding({binding,signal}):null,routine=routineCore?await routineCore.forBinding({binding,signal,deadlineMs}):null,job=objective??routine;
+  if(objective&&routine||job&&((objective?job.current.clientId:job.record.selectedClientId)!==initial.selectedClientId||hash(job.record.binding)!==hash(binding)))deny('ACCESS_DENIED');
+  const readSource=job?(routine?createRoutineReadSource:createObjectiveReadSource)({record:job.record,policyRevision:initial.policyRevision,origin:routine?routineCore.origin:coreOrigin,getServiceSecret:routine?routineCore.getServiceSecret:getServiceSecret,fetchImpl,now,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes}):undefined;
   const coreAuthority=job?null:createNativeToolAuthorityClient({origin:coreOrigin,fetchImpl,now,enabled:true,binding,selectedClientId:initial.selectedClientId});
   const nativeCredential=request=>getNativeCredential({...request,binding,selectedClientId:initial.selectedClientId});
-  const credentials=job?createObjectiveReadContext({record:job.record,current:job.current,readSource,policyRevision:initial.policyRevision,approvedReads,defaultCongress,now}):createReadContextOwner({binding,expiresAtMs:initial.execution.expiresAtMs,executionSha256:initial.executionSha256,current,
+  const credentials=job?(routine?createRoutineReadContext:createObjectiveReadContext)({record:job.record,current:job.current,readSource,policyRevision:initial.policyRevision,approvedReads,defaultCongress,now}):createReadContextOwner({binding,expiresAtMs:initial.execution.expiresAtMs,executionSha256:initial.executionSha256,current,
    approvedReads,coreAuthority,getNativeCredential:nativeCredential,getServiceSecret,...(getReadModeServiceSecret?{getReadModeServiceSecret}:{}),
    ...(defaultCongress===undefined?{}:{defaultCongress}),now,enabled:true});
   async function ordinaryCredentials(request){

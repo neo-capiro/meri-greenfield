@@ -14,7 +14,7 @@ import {createScheduledNativeAdmission} from '../scheduled-admission.mjs';
 import {MODEL_CATALOG} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
 export {versions,instruction};
 
-export async function scheduledAdmissionFixture({nativeCandidate,clockMs,agentcore=false,general=false}={}){
+export async function scheduledAdmissionFixture({nativeCandidate,clockMs,agentcore=false,general=false,task:configuredTask}={}){
  const conversations=initialInputFixture(),bindings=new Map(),queries=[],releases=[],faults={onQuery:null,onCommit:null,onRelease:null,loseBindingCommit:false,loseAcceptanceCommit:false};
  if(clockMs!==undefined)conversations.advance(clockMs-conversations.now());
  const key=p=>p.slice(0,2).join(':'),copy=v=>structuredClone(v);
@@ -45,7 +45,7 @@ export async function scheduledAdmissionFixture({nativeCandidate,clockMs,agentco
  const principal=nativeAllocation?{tenantId:nativeAllocation.run.tenantId,actorId:nativeAllocation.run.actorId}:{tenantId:'tenant-a',actorId:'actor-a'},selectedClientId=general?null:nativeCandidate?.identity.commandContext.clientResolution.clientId??id(5),policyRevision=nativeCandidate?.qualification.policyRevision??'policy1',scopes=[{...principal,kind:general?'private-user':'client',resourceId:selectedClientId??principal.actorId,policyRevision}].map(({actorId,...s})=>s);
  const allocation=nativeAllocation??{run:{...principal,conversationId:id(80),runId:id(81)},manifest,manifestSha256:hash(manifest),catalogSha256:'a'.repeat(64),budgets:manifest.budgets,
   schedule:{revision:'b'.repeat(64),expiresAt:new Date(now()+120000).toISOString(),operations:[{operation:manifest.allowedOperations[0],chargeMicrousd:10}]}};
- const task={taskId:id(9),manifestSha256:allocation.manifestSha256,version:1};
+ const task=configuredTask??{taskId:id(9),manifestSha256:allocation.manifestSha256,version:1};
  const selectedVersions=nativeCandidate?.runtime.versions??versions;
  const template={principal,selectedClientId,policyRevision,versions:selectedVersions,task,configurationSha256:'c'.repeat(64),allocationJson:JSON.stringify(allocation),runWindowMs:60000,destinationId:'meri-inbox'};
  if(agentcore)delete template.allocationJson;

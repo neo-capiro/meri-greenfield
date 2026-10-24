@@ -13,7 +13,7 @@ import {assertAutomaticClientContext} from '../worker/conversation/automatic-cli
 const same=(a,b)=>hash(a)===hash(b),hints=['continuation','nextTurn','sourceRequest','request','scopes'];
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createNativeSessionContinuation(configuration){
- const c=own(configuration,['store','execution','versions','maxOutputBytes'],['objectiveSelection','automaticContext','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,['store','execution','versions','maxOutputBytes'],['objectiveSelection','automaticContext','routineCore','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
  const versions=data(c.versions);validateShape('RuntimeVersions',versions);
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(c.maxOutputBytes)||c.maxOutputBytes<1||c.maxOutputBytes>1048576)fail('CONTINUATION_CONFIGURATION');
  const authenticate=storageMethod(c.execution,'authenticate'),read=storageMethod(c.store,'read'),next=storageMethod(c.store.nextRuns,'execution'),lifecycle=storageMethod(c.store.lifecycle,'execution');
@@ -64,8 +64,10 @@ export function createNativeSessionContinuation(configuration){
    if(provided.length!==required.length||!required.every(k=>provided.includes(k))||!same(input[saved.kind],saved.saved[saved.kind])||!same(input.sourceRequest,sourceRequest)||!same(input.request,saved.target.request)||!same(input.scopes,saved.admitted.scopes))fail('CONTINUATION_REFUSED');}
   const objective=c.objectiveSelection===undefined?undefined:await life.run(signal=>storageMethod(c.objectiveSelection,'read')({binding:input.binding,signal}));
   if(objective&&saved.saved!==null)fail('CONTINUATION_REFUSED');
-  // Background Objective runs retain their saved-job context; never borrow an interactive bearer for them.
-  const automaticClientContext=c.automaticContext===undefined?undefined:objective||saved.admitted.selectedClientId===null?null:
+  const routine=c.routineCore===undefined?null:await life.run(signal=>storageMethod(c.routineCore,'forBinding')({binding:input.binding,signal,deadlineMs:life.deadline()}));
+  if(routine&&objective)fail('CONTINUATION_REFUSED');if(routine)life.limitDeadline(routine.record.expiresAtMs);
+  // Background jobs retain their saved context and current Core authorization.
+  const automaticClientContext=c.automaticContext===undefined?undefined:objective||routine||saved.admitted.selectedClientId===null?null:
    assertAutomaticClientContext(await life.run(signal=>storageMethod(c.automaticContext,'read')({binding:input.binding,run:saved.target.run,selectedClientId:saved.admitted.selectedClientId,signal,deadlineMs:life.deadline()})),
     {binding:input.binding,selectedClientId:saved.admitted.selectedClientId});
   await finalAuthority(raw,input.binding,saved.admitted,life);

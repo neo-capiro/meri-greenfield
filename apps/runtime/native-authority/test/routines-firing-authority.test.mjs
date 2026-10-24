@@ -80,6 +80,12 @@ test('the authority answers the dispatch receipt exactly, under the service iden
  assert.deepEqual(h.state.requests.slice(1).map(q=>q.body.phase),['before_admission','before_start']);assert.equal(h.occurrenceState(),'DISPATCHED');
 });
 
+test('pending schedule mutation refuses before a fresh firing grant',async t=>{
+ const h=await harness({admit:false});t.after(h.close);
+ const row=[...h.scheduleSql.state.projections.values()][0];row.active_intent=id(990);
+ assert.deepEqual(await h.authorize('before_start'),h.denial);assert.equal(h.state.requests.length,0);
+});
+
 test('pause, delete, a changed projection, revoked or narrower consent and 403 are DENY; a mismatched grant, 404 and 5xx are UNAVAILABLE',async t=>{
  const h=await harness({admit:false});t.after(h.close);
  const denied=async label=>assert.deepEqual(await h.authorize(),h.denial,label);

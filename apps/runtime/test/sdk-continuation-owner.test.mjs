@@ -30,6 +30,13 @@ function fixture(mode='nextTurn',{general=false}={}){
  const input={credential:'synthetic-execution',request:{binding,versions,...(saved?{...saved,...(saved.nextTurn?{sourceRequest}:{}),request,scopes:activeScopes}:{})}};
  return {config,input,sourceRequest,request,admission,run,execution,binding,sdkSession,transcripts,counts:()=>({reads,auths,snapshots}),setSaved:v=>saved=v,saved:()=>saved,onSnapshot:f=>onSnapshot=f,onAuth:f=>onAuth=f,setClock:v=>clock=v};
 }
+test('routine runtime checks current saved occurrence and never uses interactive automatic context',async()=>{
+ const f=fixture('fresh');let checks=0;
+ f.config.routineCore={async forBinding({binding,signal}){assert.deepEqual(binding,f.binding);signal.throwIfAborted();checks++;return {record:{expiresAtMs:f.execution.expiresAtMs}};}};
+ f.config.automaticContext={async read(){assert.fail('No interactive read in a routine');}};
+ const owner=createNativeSessionContinuation(f.config),result=await owner.prepareRuntime(f.input);assert.equal(checks,1);assert.equal(result.automaticClientContext,null);
+ f.config.routineCore.forBinding=async()=>{throw Error('CONSENT_REVOKED');};await assert.rejects(owner.prepareRuntime(f.input));
+});
 for(const mode of ['fresh','nextTurn','resume','fork'])test(`${mode}: actual native preparation preserves original execution lifetime and configured output limit`,async()=>{
  const f=fixture(mode),owner=createNativeSessionContinuation(f.config),result=await owner.prepareRuntime({...f.input,deadlineMs:NOW+50});
  assert.equal(result.deadlineMs,f.execution.expiresAtMs);assert.equal(result.maxOutputBytes,262144);assert.deepEqual(result.binding,f.binding);

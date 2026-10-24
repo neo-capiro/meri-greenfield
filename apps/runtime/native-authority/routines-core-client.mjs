@@ -24,7 +24,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {SCHEDULED_MERI_INBOX_DESTINATION} from '../../control/schedules/scheduled-conversation-currentness.mjs';
 
-export const ROUTINES_CORE_ROUTES=Object.freeze({policy:'/api/clio/routines/policy/check',cancellationProof:'/api/clio/routines/cancellation-proof',unattendedGrant:'/api/clio/routines/unattended-grant'});
+export const ROUTINES_CORE_ROUTES=Object.freeze({policy:'/api/clio/routines/policy/check',cancellationProof:'/api/clio/routines/cancellation-proof',unattendedGrant:'/api/clio/routines/unattended-grant',current:'/api/internal/routines/current',reads:'/api/internal/routines/reads'});
 const FIRE_PHASES=['before_admission','before_start','before_stop'],HEX64=/^[a-f0-9]{64}$/u;
 /** Core's receipt ceiling: Meri's own request bound (`maxRequestMs` ≤ 30000 across the routines owners). */
 export const ROUTINE_RECEIPT_MAX_MS=30000;
@@ -69,7 +69,7 @@ export function createRoutinesCoreClient(configuration){
  const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs??10000;
  function session(raw){
   let s;try{s=data(own(raw,['binding','selectedClientId']));validateShape('RunBinding',s.binding);}catch{refuse('REQUEST');}
-  if(typeof s.selectedClientId!=='string'||!UUID.test(s.selectedClientId))refuse('REQUEST');return s;
+  if(s.selectedClientId!==null&&(typeof s.selectedClientId!=='string'||!UUID.test(s.selectedClientId)))refuse('REQUEST');return s;
  }
  /** One live-session lookup: the exact run binding and selected client, a well-formed token, unexpired. */
  function bearer(selected,signal){
@@ -156,5 +156,22 @@ export function createRoutinesCoreClient(configuration){
   if(typeof r.grant!=='string'||r.grant.length>8192||!JWS.test(r.grant)||typeof r.jti!=='string'||!UUID_V4.test(r.jti)||!Number.isSafeInteger(r.expiresAtMs))refuse('INVALID_RESULT');
   return data({grant:r.grant,jti:r.jti,requestedAtMs:answer.started});
  }
- return Object.freeze({origin,attended:nativeCredentialFor!==undefined,policyCheck,cancellationProof,unattendedGrant});
+ /** Current native execution authority is selector-only and service-authenticated. Core owns
+  * the canonical occurrence/execution/consent joins and current membership/client wall. */
+ async function current(value){
+  let v;try{const {signal,...rest}=own(value,['binding','scheduleId','occurrenceKey','deadlineMs'],['signal']);nativeSignal(signal);v={...data(rest),signal};validateShape('RunBinding',v.binding);}catch{refuse('REQUEST');}
+  if(!UUID.test(v.scheduleId)||!HEX64.test(v.occurrenceKey)||!Number.isSafeInteger(v.deadlineMs))refuse('REQUEST');
+  const answer=await post(ROUTINES_CORE_ROUTES.current,{selected:null,body:{schemaVersion:1,tenantId:v.binding.tenantId,scheduleId:v.scheduleId,occurrenceKey:v.occurrenceKey,binding:v.binding},signal:v.signal,deadlineMs:v.deadlineMs,maxResponseBytes:1048576});
+  let r;try{r=data(own(answer.value,['schemaVersion','tenantId','actorId','clerkUserId','tenantSlug','role','scheduleId','occurrenceKey','generation','consentId','binding','scopes','clientIds','policyRevision','limits','checkedAtMs','effectExpiresAtMs']));
+   r.scopes.forEach(s=>validateShape('Scope',s));own(r.limits,LIMIT_KEYS);
+  }catch{refuse('INVALID_RESULT');}
+  if(r.schemaVersion!==1||!same(r.binding,v.binding)||r.tenantId!==v.binding.tenantId||r.actorId!==v.binding.actorId||r.scheduleId!==v.scheduleId||r.occurrenceKey!==v.occurrenceKey||
+   !Number.isSafeInteger(r.generation)||r.generation<1||!UUID.test(r.consentId)||['clerkUserId','tenantSlug','role','policyRevision'].some(k=>typeof r[k]!=='string'||!r[k])||
+   !Array.isArray(r.scopes)||!r.scopes.length||r.scopes.some(s=>s.tenantId!==r.tenantId||s.policyRevision!==r.policyRevision)||
+   !Array.isArray(r.clientIds)||r.clientIds.length>4096||r.clientIds.some(id=>!UUID.test(id))||new Set(r.clientIds).size!==r.clientIds.length||
+   LIMIT_KEYS.some(k=>!Number.isSafeInteger(r.limits[k])||r.limits[k]<(k==='retryLimit'?0:1))||
+   !Number.isSafeInteger(r.checkedAtMs)||!Number.isSafeInteger(r.effectExpiresAtMs)||r.effectExpiresAtMs<=r.checkedAtMs||r.effectExpiresAtMs<=now())refuse('INVALID_RESULT');
+  return data({...r,checkedAtMs:now()});
+ }
+ return Object.freeze({origin,attended:nativeCredentialFor!==undefined,policyCheck,cancellationProof,unattendedGrant,current});
 }

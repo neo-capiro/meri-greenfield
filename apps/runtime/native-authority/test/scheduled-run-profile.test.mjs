@@ -6,6 +6,15 @@ import {createNextRunOwner} from '../../../control/conversations/next-run.mjs';
 import {scheduledRunProfileFixture,id,hash} from './scheduled-run-profile-fixture.mjs';
 const copy=v=>structuredClone(v),code=c=>e=>e.code==='SCHEDULE_RUN_PROFILE_'+c;
 
+for(const general of [false,true])test(`native ${general?'General':'client'} profile uses canonical occurrence limits without allocation and does not renew expiry`,async t=>{
+ const h=await scheduledRunProfileFixture({agentcore:true,general,allocated:false,occurrenceCap:750});t.after(h.close);
+ const first=await h.profile.read(h.call());assert.equal(first.maxCostMicroUSD,750);assert.equal(first.selectedClientId,general?null:h.template.selectedClientId);
+ assert.equal(first.expiresAtMs,h.now()+20000);assert.equal(Object.hasOwn(first,'allocationJson'),false);assert.deepEqual(first.binding,h.identity.binding);
+ h.advance(1000);assert.equal((await h.profile.read(h.call())).expiresAtMs,first.expiresAtMs);
+ const narrower=await createScheduledRunProfile({...h.configuration,maxCostMicroUSD:50}).read(h.call());assert.equal(narrower.maxCostMicroUSD,50);
+ await assert.rejects(createScheduledRunProfile({...h.configuration,task:{...h.template.task,manifestSha256:'f'.repeat(64)}}).read(h.call()),code('ORIGIN'));
+});
+
 test('canonical OPEN origin seals private allocation bytes without changing the approved manifest or budgets',async t=>{
  const h=await scheduledRunProfileFixture();t.after(h.close);const before={runs:h.conversations.state.runs.size,inputs:h.conversations.allocations.size,events:h.conversations.state.events.size};
  const result=await h.profile.read(h.call()),sealed=allocation(result.allocationJson),at=h.now();
