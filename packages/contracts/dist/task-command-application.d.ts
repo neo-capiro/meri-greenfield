@@ -17,10 +17,23 @@ export type TaskCommandApplicationEnvelope =
 export type TaskCommandExecuteResponse =
   | {
       status: 'observed';
-      outcome: {
-        receipt: Canonical_CommandReceiptAc49Ee1E;
-        result: Canonical_TaskUpdateResult_029549A8;
-      };
+      outcome:
+        | {
+            receipt: Canonical_CommandReceiptAc49Ee1E;
+            result: Canonical_TaskUpdateResult_029549A8;
+          }
+        | {
+            execution: {
+              kind: 'native-task';
+              proposalId: string;
+              commandSha256: string;
+              idempotencyKey: string;
+              binding: Canonical_RunBinding_84F2304C;
+              completedAt: string;
+              approvalDecisionSha256: string;
+            };
+            result: Canonical_TaskUpdateResult_029549A8;
+          };
     }
   | {
       status: 'indeterminate';
@@ -94,6 +107,7 @@ export interface Canonical_TaskUpdateResult_029549A8 {
   updatedAt: string;
 }
 export interface TaskCommandPrepareRequest {
+  requestId: string;
   arguments: Canonical_TaskUpdateRaw_549267Ce;
 }
 export interface TaskCommandExecuteRequest {

@@ -1,9 +1,11 @@
-import {receiveActionResponse,ActionResponseError,type ActionQueryResponse,type ActionDraftResponse,type ActionPrepareResponse,type ActionExecuteResponse} from '@capiro/meri-contracts/action-application';
+import {receiveActionResponse,receiveActionPrepareRequest,ActionResponseError,type ActionQueryResponse,type ActionDraftResponse,type ActionPrepareResponse,type ActionExecuteResponse,type ActionPrepareRequest} from '@capiro/meri-contracts/action-application';
 async function consume(text:unknown){
  const q=await receiveActionResponse('query',200,text);
  if(!('error'in q)){const exact:ActionQueryResponse=q;const recommendations:false=exact.acceptedTasks;console.log(recommendations,exact.observation.result.actions);}
  const d=await receiveActionResponse('draft',200,text);if(!('error'in d)){const exact:ActionDraftResponse=d;console.log(exact.task.title);}
  const p=await receiveActionResponse('prepare',200,text);if(!('error'in p)){const exact:ActionPrepareResponse=p;const pending:'approval_required'=exact.status;console.log(pending);}
+ const request:ActionPrepareRequest=await receiveActionPrepareRequest(text);await receiveActionResponse('prepare',200,text,{request});
+ if(!('error'in p))await receiveActionResponse('execute',200,text,{proposal:p.proposal});
  const e=await receiveActionResponse('execute',200,text);if(!('error'in e)){const exact:ActionExecuteResponse=e;if(exact.status==='observed')console.log(exact.outcome.result.id);}
  // @ts-expect-error No approval endpoint.
  await receiveActionResponse('approve',200,text);

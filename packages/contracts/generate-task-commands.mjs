@@ -37,7 +37,7 @@ export async function generateTaskCommandContracts({check=false,toolchainRoot,bu
   const runtime=await record('../../apps/runtime/product-applications.mjs');
   const mount=/code:'TASK_COMMAND_UNAVAILABLE',outcome:'NOT_DISPATCHED'\}\},\{status:(\d+)/u.exec(runtime.toString());if(!mount)throw Error('Missing canonical task-command runtime availability vocabulary');statuses.TASK_COMMAND_UNAVAILABLE=Number(mount[1]);
   const errorStatuses=Object.fromEntries(Object.entries(statuses).sort(([a],[b])=>a.localeCompare(b))),errorOutcomes=[...outcomeList[1].matchAll(/'([^']+)'/gu)].map(m=>m[1]);
-  for(const path of ['generate-task-commands.mjs',...['README.md','protocol.mjs','schema.mjs','boundary.mjs','normalizer-snapshot.mjs','semantics.mjs','receive.mjs','declarations.mjs'].map(name=>'task-command-application/'+name),'commands-0.2/task-update-validation.mjs','document-application/boundary.mjs'])await record(path);
+  for(const path of ['generate-task-commands.mjs','commands-0.2/native-task-outcome-schema.mjs',...['README.md','protocol.mjs','schema.mjs','boundary.mjs','normalizer-snapshot.mjs','semantics.mjs','receive.mjs','declarations.mjs'].map(name=>'task-command-application/'+name),'commands-0.2/task-update-validation.mjs','document-application/boundary.mjs'])await record(path);
   const root=taskCommandSchema(errorStatuses,errorOutcomes),defs={},seen=new Map();
   function transform(value,owner){if(Array.isArray(value))return value.map(v=>transform(v,owner));if(!value||typeof value!=='object')return value;const out={};
    for(const[key,v]of Object.entries(value)){if(key!=='$ref'){out[key]=transform(v,owner);continue;}const[urn,fragment]=v.split('#'),id=urn||owner,full=id+'#'+fragment;if(id===root.$id){out[key]='#'+fragment;continue;}

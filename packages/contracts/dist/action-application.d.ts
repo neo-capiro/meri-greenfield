@@ -1,7 +1,14 @@
 // Generated from canonical action receiving schema. No authorization implied.
 
 export type ActionApplicationEnvelope =
-  ActionQueryResponse | ActionDraftResponse | ActionPrepareResponse | ActionExecuteResponse | ActionErrorResponse;
+  | ActionQueryResponse
+  | ActionDraftResponse
+  | ActionPrepareResponse
+  | ActionExecuteResponse
+  | ActionErrorResponse
+  | ActionPrepareRequest
+  | Canonical_ApprovalProposalD1A3E74F
+  | Canonical_TaskCreateArguments_1202C301;
 export type Canonical_UIEvent_1691B714 =
   | {
       contractVersion: '0.1.0';
@@ -218,10 +225,23 @@ export type Canonical_ConfidenceBand_1337A6D6 = 'high' | 'medium' | 'low';
 export type ActionExecuteResponse =
   | {
       status: 'observed';
-      outcome: {
-        receipt: Canonical_CommandReceiptAc49Ee1E;
-        result: Canonical_TaskCreateResult_0501C509;
-      };
+      outcome:
+        | {
+            receipt: Canonical_CommandReceiptAc49Ee1E;
+            result: Canonical_TaskCreateResult_0501C509;
+          }
+        | {
+            execution: {
+              kind: 'native-task';
+              proposalId: string;
+              commandSha256: string;
+              idempotencyKey: string;
+              binding: Canonical_RunBinding_84F2304C;
+              completedAt: string;
+              approvalDecisionSha256: string;
+            };
+            result: Canonical_TaskCreateResult_0501C509;
+          };
     }
   | {
       status: 'indeterminate';
@@ -639,9 +659,14 @@ export interface ActionErrorResponse {
       'NOT_DISPATCHED' | 'UNKNOWN' | 'RESULT_NOT_RELEASED' | 'STORED_NOT_RELEASED' | 'NOT_STORED' | 'READ_UNAVAILABLE';
   };
 }
+export interface ActionPrepareRequest {
+  requestId: string;
+  draft: ActionDraftResponse;
+}
 
 export type ActionRoute = 'query' | 'draft' | 'prepare' | 'execute';
 export interface ActionResponseMap { query: ActionQueryResponse; draft: ActionDraftResponse; prepare: ActionPrepareResponse; execute: ActionExecuteResponse; }
 export type ActionResponse<R extends ActionRoute> = ActionResponseMap[R] | ActionErrorResponse;
+export declare function receiveActionPrepareRequest(jsonText:unknown):Promise<ActionPrepareRequest>;
 export declare class ActionResponseError extends Error { readonly code: string; }
-export declare function receiveActionResponse<R extends ActionRoute>(route:R,httpStatus:number,jsonText:unknown):Promise<ActionResponse<R>>;
+export declare function receiveActionResponse<R extends ActionRoute>(route:R,httpStatus:number,jsonText:unknown,expected?:{proposal:ActionTaskProposal}|{request:ActionPrepareRequest}):Promise<ActionResponse<R>>;

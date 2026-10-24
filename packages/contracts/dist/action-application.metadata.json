@@ -18,9 +18,34 @@
       "bytes": 3189
     },
     {
+      "path": "action-application/receive.mjs",
+      "sha256": "fcf047c1b4e0a3fc89ea7f7d3e15e2110bc1057a69a0e309f750462d644ea2e5",
+      "bytes": 6569
+    },
+    {
+      "path": "action-application/schema.mjs",
+      "sha256": "174a36470783a7cae5c3aa7b2f6784c3226315f9c625cd618dad753e851314b4",
+      "bytes": 2456
+    },
+    {
+      "path": "commands-0.2/native-task-outcome-schema.mjs",
+      "sha256": "a808d7d522e8014e1255d4162f095dc14d1c7e1e910eff29b13d447ddb9f3436",
+      "bytes": 670
+    },
+    {
       "path": "commands-0.2/task-create.schema.json",
       "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
       "bytes": 3827
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-actions.mjs",
+      "sha256": "1b0d2b87d66f3095f9f0d51c01f1752eaa8ec357d41911bfef32f6f2931ba22d",
+      "bytes": 7451
     },
     {
       "path": "meri.schema.json",
@@ -41,17 +66,25 @@
       "path": "retrieval-0.2/retrieval.schema.json",
       "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
       "bytes": 21023
+    },
+    {
+      "path": "task-command-application/boundary.mjs",
+      "sha256": "fdad45dff42e6fc1f838bfe86c623c52798ae240cf85bc2fbbee4e8988573c28",
+      "bytes": 1751
     }
   ],
-  "schemaSha256": "966a04ef8c590eb7bff20d7a837431948c115afe23c47def3099648e7a9c30e0",
+  "schemaSha256": "d09a9fe6447d81dc19c00bac7e8479c0cfc49e6bcaa89563badb89c2024ef8d0",
   "browserInputs": [
-    "action-application-receiver.mjs",
+    "action-application/action-application/receive.mjs",
     "action-generated:./generated-status.mjs",
     "action-generated:./generated-validator.mjs",
+    "artifacts-0.2/artifact-formats.mjs",
+    "document-application/boundary.mjs",
     "node_modules/ajv-formats/dist/formats.js",
     "node_modules/ajv/dist/runtime/equal.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
-    "node_modules/fast-deep-equal/index.js"
+    "node_modules/fast-deep-equal/index.js",
+    "task-command-application/boundary.mjs"
   ]
 }

@@ -1,6 +1,8 @@
 import {receiveTaskCommandRequest,receiveTaskCommandResponse,taskCommandMetadata,taskCommandPaths,type TaskUpdateRaw,type TaskUpdateApprovalProposal,type TaskCommandExpectedBinding,type TaskCommandPrepareRequest,type TaskCommandPrepareResponse,type TaskCommandExecuteResponse,type TaskCommandErrorResponse} from '@capiro/meri-contracts/task-command-application';
 const raw:TaskUpdateRaw={taskId:'id',title:'Updated',status:'open',dueDate:null};
-const prepare:TaskCommandPrepareRequest=await receiveTaskCommandRequest('prepare',JSON.stringify({arguments:raw}));
+const prepare:TaskCommandPrepareRequest=await receiveTaskCommandRequest('prepare',JSON.stringify({requestId:'id',arguments:raw}));
+// @ts-expect-error standalone preparation must retain one request identity
+const missingIdentity:TaskCommandPrepareRequest={arguments:raw};void missingIdentity;
 const binding:TaskCommandExpectedBinding={tenantId:'tenant',actorId:'actor',conversationId:'id',runId:'id'};
 const p=await receiveTaskCommandResponse('prepare',200,'{}',{binding,request:prepare});
 const exact:TaskCommandPrepareResponse|TaskCommandErrorResponse=p;void exact;
