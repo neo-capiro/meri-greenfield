@@ -1,6 +1,7 @@
 /** Exclusive quiesced workspace byte restoration; the caller retains its directory. */
 import * as fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';
 import {assertWorkspacePaths} from '../../../packages/contracts/validate.mjs';
+import {captureWorkspaceBytes} from './workspace-capture.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex'),fail=()=>{throw Error('WORKSPACE_RESTORE_REFUSED');},identity=s=>`${s.dev}:${s.ino}:${s.mode}:${s.nlink}`;
 function directory(p){const s=fs.lstatSync(p);if(!s.isDirectory()||s.isSymbolicLink()||fs.realpathSync(p)!==p)fail();return s;}
 export function restoreWorkspaceBytes({workspace,manifest,files,check}){
@@ -15,8 +16,7 @@ export function restoreWorkspaceBytes({workspace,manifest,files,check}){
   throw Object.assign(Error('WORKSPACE_RESTORE_UNKNOWN'),{code:'WORKSPACE_RESTORE_UNKNOWN',cleanupComplete});}
 }
 export function verifyWorkspaceBytes({workspace,manifest,check}){
- assertWorkspacePaths(manifest);directory(workspace);const wanted=new Set(manifest.entries.map(e=>e.path)),directories=new Set(),found=[];
- for(const e of manifest.entries){const parts=e.path.split('/');for(let n=1;n<parts.length;n++)directories.add(parts.slice(0,n).join('/'));}
- const visit=(dir,relative='')=>{for(const name of fs.readdirSync(dir)){check();const rel=relative?`${relative}/${name}`:name,p=path.join(dir,name),s=fs.lstatSync(p);if(s.isDirectory()&&!s.isSymbolicLink()){if(!directories.has(rel))fail();directory(p);visit(p,rel);}else {if(!s.isFile()||s.isSymbolicLink()||s.nlink!==1||fs.realpathSync(p)!==p||!wanted.has(rel))fail();found.push(rel);}}};visit(workspace);
- if(found.length!==wanted.size)fail();for(const e of manifest.entries){check();const p=path.join(workspace,e.path),before=fs.lstatSync(p);if(before.size!==e.object.bytes||before.size>8*1024*1024)fail();const fd=fs.openSync(p,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);try{if(identity(fs.fstatSync(fd))!==identity(before))fail();const bytes=fs.readFileSync(fd);if(bytes.length!==e.object.bytes||sha(bytes)!==e.object.sha256||!!(before.mode&0o111)!==e.executable||identity(fs.fstatSync(fd))!==identity(before))fail();}finally{fs.closeSync(fd);}}
+ assertWorkspacePaths(manifest);const rows=captureWorkspaceBytes({workspace,check}),found=new Map(rows.map(row=>[row.path,row]));
+ if(rows.length!==manifest.entries.length)fail();for(const entry of manifest.entries){check();const row=found.get(entry.path);
+  if(!row||row.bytes!==entry.object.bytes||row.sha256!==entry.object.sha256||row.executable!==entry.executable)fail();}
 }

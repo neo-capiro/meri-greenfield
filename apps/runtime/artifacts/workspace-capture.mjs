@@ -10,9 +10,16 @@ export function createWorkspaceCapture(configuration){
  if(typeof c.workspace!=='string'||!path.isAbsolute(c.workspace)||path.resolve(c.workspace)!==c.workspace||c.workspace==='/'||typeof now!=='function'||!Number.isSafeInteger(c.expiresAtMs))fail();
  return Object.freeze({capture(value={}){
   const {signal}=own(value,[],['signal']);nativeSignal(signal);const check=()=>{if(signal?.aborted||now()>=c.expiresAtMs)fail();};check();
-  const ancestors=[];for(let p=c.workspace;;p=path.dirname(p)){check();ancestors.push([p,anchor(directory(p))]);if(path.dirname(p)===p)break;}
+   return captureWorkspaceBytes({workspace:c.workspace,check});
+  }});
+}
+/** The file manifest omits directories; still validate and observe every directory, including empty ones. */
+export function captureWorkspaceBytes(configuration){
+ const {workspace,check}=own(configuration,['workspace','check']);
+ if(typeof workspace!=='string'||!path.isAbsolute(workspace)||path.resolve(workspace)!==workspace||workspace==='/'||typeof check!=='function')fail();check();
+   const ancestors=[];for(let p=workspace;;p=path.dirname(p)){check();ancestors.push([p,anchor(directory(p))]);if(path.dirname(p)===p)break;}
   let total=0,members=0;const rows=[],observed=[],names=new Set();
-  function visit(dir,relative='',depth=0){check();const before=directory(dir),membersBefore=fs.readdirSync(dir).sort();check();if(relative&&!membersBefore.length)fail();
+   function visit(dir,relative='',depth=0){check();const before=directory(dir),membersBefore=fs.readdirSync(dir).sort();check();
    if(depth>12)fail();for(const name of membersBefore){check();if(++members>512||name.length>128||name.normalize('NFC')!==name||/[\\\x00-\x1f\x7f:]/u.test(name)||name==='.'||name==='..')fail();
     const rel=relative?relative+'/'+name:name;if(rel.length>4096||names.has(rel.toLowerCase()))fail();names.add(rel.toLowerCase());const p=path.join(dir,name),s=fs.lstatSync(p);check();
     if(s.isDirectory()&&!s.isSymbolicLink()){visit(p,rel,depth+1);continue;}
@@ -25,7 +32,6 @@ export function createWorkspaceCapture(configuration){
    }
    check();if(identity(directory(dir))!==identity(before)||JSON.stringify(fs.readdirSync(dir).sort())!==JSON.stringify(membersBefore))fail();check();observed.push([dir,identity(before)]);
   }
-  visit(c.workspace);for(const [p,wanted]of observed){check();if(identity(fs.lstatSync(p))!==wanted)fail();check();}for(const [p,wanted]of ancestors){check();if(anchor(directory(p))!==wanted)fail();check();}
+   visit(workspace);for(const [p,wanted]of observed){check();if(identity(fs.lstatSync(p))!==wanted)fail();check();}for(const [p,wanted]of ancestors){check();if(anchor(directory(p))!==wanted)fail();check();}
   return rows;
- }});
 }
