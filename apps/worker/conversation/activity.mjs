@@ -68,8 +68,8 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     diagnostic('usage',receipt.status);
    }catch{diagnostic('usage','unavailable');}finally{attempt?.close();}
   }
-  // Startup allowances are separate and preserve every later stage before
-  // the original execution lease's shutdown and settlement reserve.
+  // Each operation keeps its own cap inside the original expiry. The model
+  // leaves one completion allowance; local cleanup has independent bounds.
   try{diagnostic('stage','activity-load');preparation=createOperationLifetime({deadlineMs:Math.min(now()+loadMaxMs,loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));preparation.close();preparation=undefined;validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
    diagnostic('stage','activity-policy');const policy=readCapabilityPolicy(saved); // Default-off SDK capabilities, validated before any claim; absent policy keeps first-chat behaviour.
    const runBudgets=readRunBudgets(saved); // The run's admitted allocation budgets bound the early read ledger; absent keeps its defaults.

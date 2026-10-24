@@ -114,7 +114,7 @@ export function createPreparedRunRegistry(configuration){
    // route → cancelled, registry close → fenced, retirement → run_terminal). The hook never throws and is never awaited here: the
    // delegation refuses locally at once and its Core revoke is best-effort, so a stop failure never blocks retirement.
    const stopDelegation=reason=>{if(c.readDelegationRunOptions===undefined)return;try{Promise.resolve(c.readDelegationRunOptions.stopRun({binding,reason})).catch(()=>{});}catch{}};
-   const lazy={get prepared(){return controller?.prepared;},allocate({signal}={}){nativeSignal(signal);check(signal);if(entryClosed||stopOnly)fail();if(!pending)pending=Promise.resolve().then(async()=>{
+   const lazy={get prepared(){return controller?.prepared;},observe(value){if(closed||entryClosed||!controller)fail();return controller.observe(value);},allocate({signal}={}){nativeSignal(signal);check(signal);if(entryClosed||stopOnly)fail();if(!pending)pending=Promise.resolve().then(async()=>{
     const checkLife=lifetime(signal,original.expiresAtMs);try{await accepted(binding,checkLife,row.request,false,admission);const replay=data(await checkLife.run(prepareAgain));if(!same(replay,issued))fail();checkLife.check();}finally{checkLife.close();}
     check(signal);if(entryClosed)fail();const {issuance:receipt,factsSha256:_,...issuedFacts}=issued;
     const retirementFacts=historicalCustody?compileHistoricalStopFacts({schemaVersion:2,original,allocationJson:facts.allocationJson,taskRequest:facts.taskRequest,containerName:facts.containerName,qualification:facts.qualification,grantIntents:facts.grantIntents,issuance:receipt,issuedFacts}):undefined;

@@ -31,7 +31,7 @@ registerHooks({resolve(specifier,context,nextResolve){
 const imported=async path=>import(pathToFileURL(resolve(repo,path)).href);
 const [{createNativeIdentityContext},{createCoreMembershipGate},{createActionSessionOwner},
   {createConversationService,loadWithLifecycle},{createConversationLifecycleService},{createWorkerRunApplication},
-  {createNativeCapabilityClient},{createConversationActivity},{assembleConversationRunner},{runnerLoadBudget},{binding,scopes,versions,id,storeFixture},{canonicalSha256:hash},{createPostgresConversationStore}]=await Promise.all([
+  {createNativeCapabilityClient},{createConversationActivity},{assembleConversationRunner},{runnerStartupBudget},{binding,scopes,versions,id,storeFixture},{canonicalSha256:hash},{createPostgresConversationStore}]=await Promise.all([
   'apps/runtime/native-authority/identity-context.mjs',
   'apps/control/product-access/core-membership.mjs',
   'apps/control/action-host/session/owner.mjs',
@@ -201,11 +201,11 @@ test('native client retains its independent three-second cap',async()=>{
   assert.ok(result.durationMs>=2900&&result.durationMs<4000,JSON.stringify(result));
 });
 
-test('load budget retains the later startup stages and original-lease reserve',()=>{
-  const budget=runnerLoadBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs:1000000});
-  assert.deepEqual(budget,{maxMs:46500,attemptMs:23000,expiresAtMs:527000});
-  assert.throws(()=>runnerLoadBudget({requestMs:12000,shutdownMs:1000,originalExpiresAtMs:1000000}),/RUNNER_LOAD_BUDGET_REFUSED/u);
-  assert.throws(()=>runnerLoadBudget({requestMs:NaN,shutdownMs:1000,originalExpiresAtMs:100000}),/RUNNER_LOAD_BUDGET_REFUSED/u);
+test('load keeps its independent cap and the original expiry publication allowance',()=>{
+  const budget=runnerStartupBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs:1000000}).stages.load;
+  assert.deepEqual(budget,{maxMs:46500,attemptMs:23000,expiresAtMs:977000});
+  assert.throws(()=>runnerStartupBudget({requestMs:12000,shutdownMs:1000,originalExpiresAtMs:1000000}),/RUNNER_STARTUP_BUDGET_REFUSED/u);
+  assert.throws(()=>runnerStartupBudget({requestMs:NaN,shutdownMs:1000,originalExpiresAtMs:100000}),/RUNNER_STARTUP_BUDGET_REFUSED/u);
 });
 
 test('activity separates long load from three-second runtime preparation',async()=>{

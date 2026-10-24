@@ -30,6 +30,14 @@ async function kickoff(entry){await entry.kickoff.kickoff({binding:entry.binding
 test('accepted run prepares one cached entry concurrently without allocating until canonical kickoff',async()=>{
  const f=fixture(),registry=f.create();try{const [a,b]=await Promise.all([registry.ensure({binding:f.binding}),registry.ensure({binding:f.binding})]);assert.equal(a,b);assert.equal(registry.get(f.binding),a);assert.equal(registry.entries().length,1);assert.equal(f.stats.prepare,1);assert.equal(f.stats.allocate,0);assert.equal((await kickoff(a)).state,'executing');assert.equal(f.stats.allocate,1);await kickoff(a);assert.equal(f.stats.allocate,1);assert.equal(f.stats.prepare,2);}finally{await registry.close();}assert.equal(f.stats.close,1);
 });
+
+test('queued registry entry forwards its allocated task observation and closes a stopped original without readiness traffic',async()=>{
+ const f=fixture(),allocate=f.options.allocate;let observations=0;
+ f.options.allocate=async options=>{const controller=await allocate(options);f.state.run='queued';return {...controller,async observe({signal}){assert.equal(signal.aborted,false);observations++;return {taskArn:controller.resource.taskArn,stopped:true};}};};
+ const registry=f.create();try{const entry=await registry.ensure({binding:f.binding});await entry.kickoff.kickoff({binding:f.binding,executionKey:entry.original.executionKey});
+  for(let i=0;i<30&&f.stats.close===0;i++)await settle();assert.equal(observations,1);assert.equal(f.stats.allocate,1);assert.equal(f.stats.close,1);await assert.rejects(entry.kickoff.status({binding:f.binding,executionId:entry.original.executionId}));
+ }finally{await registry.close();}assert.equal(f.stats.close,1);
+});
 test('pending reservation refuses issuance; later accepted prompt can prepare',async()=>{
  const f=fixture(),registry=f.create();try{f.state.reservation='RESERVED';await assert.rejects(registry.ensure({binding:f.binding}));assert.equal(f.stats.prepare,0);f.state.reservation='ACCEPTED';await registry.ensure({binding:f.binding});assert.equal(f.stats.prepare,1);}finally{await registry.close();}
 });

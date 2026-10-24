@@ -11,7 +11,7 @@ test('canonical run state survives controller reconstruction without another nat
  const application=createPreparedRunnerGateApplication({gate,controlCapabilitySha256:sha(control),enabled:true});
  const client=createPreparedRunnerReleaseClient({original,taskArn:resource.taskArn,origin:'https://synthetic-task.invalid',credential:control,fetchImpl:(url,options)=>application.handle(new Request(url,options))});
  const runner={readiness:v=>client.readiness(v),release:v=>{releases++;return client.release(v);}};
- const makeOwner=()=>createPreparedTaskKickoff({original,controller,store:f.store,runner,enabled:true,maxWaitMs:5000,pollMs:10});
+ const makeOwner=()=>createPreparedTaskKickoff({original,controller:{...controller,observe:async()=>({taskArn:resource.taskArn,stopped:false})},store:f.store,runner,enabled:true,maxWaitMs:5000,pollMs:10});
  let owner=makeOwner();const worker=(async()=>{await gate.wait();await f.status('starting');await f.status('running');await f.status('completed');})();
  await owner.kickoff({binding,executionKey:original.executionKey});await worker;
  assert.equal((await owner.status({binding,executionId:original.executionId})).state,'completed');assert.equal(releases,1);

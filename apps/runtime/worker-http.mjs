@@ -3,7 +3,7 @@ import {productFailure} from '../control/product-access/errors.mjs';
 import {jsonBody} from '../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
-import {canonicalSha256} from '../../packages/contracts/validate.mjs';
+import {canonicalSha256,validateShape} from '../../packages/contracts/validate.mjs';
 import {assertRunOwnerRequest,same,runOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.mjs';
 import {fault} from './config.mjs';
 import {createNativeTaskAuthority} from './native-authority/task-authority.mjs';
@@ -35,7 +35,14 @@ export function createWorkerRunApplication({service,sessions,native,configuratio
   else{session=await life.run(signal=>sessions.issue({...issue,signal}));const authentication=await life.run(signal=>sessions.authenticateSession({credential:session.credential,signal}));current=await life.run(signal=>sessions.readCurrentState({authentication,signal}));}
   if(!same(current.binding,pinned.binding)||!same(current.scopes,pinned.scopes)||current.selectedClientId!==pinned.selectedClientId)throw fault('WORKER_AUTHORITY_CHANGED');
   await fresh();result=await life.run(signal=>service[runOwnerOperations[route[1]]]({credential:session.credential,...input,signal}));}
-  await fresh();life.check();
+  // Terminal publication consumes current-run authority. Acknowledge only the
+  // canonical event the service committed and rechecked; no further work is admitted.
+  if(route[1]==='publish'&&input.event.type==='run.status'&&['completed','failed','cancelled'].includes(input.event.data?.state)){
+   validateShape('UIEvent',result);
+   if(!same(result.binding,pinned.binding)||!same(result.scopes,pinned.scopes)||
+      !same({eventId:result.eventId,createdAt:result.createdAt,type:result.type,data:result.data},input.event))throw fault('WORKER_TERMINAL_RECEIPT_REFUSED');
+  }else await fresh();
+  life.check();
   if((route[1]==='load'||route[1]==='next-controls')&&withRelease){
    const subject={tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId};
    // The final task check is awaited: suppression must be rechecked under the
