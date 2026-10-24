@@ -23,7 +23,8 @@ export function createRuntimeRoutinesFeature(configuration){
  // The kill switch does not inspect authority ports or allocate resources.
  if(c.enabled===false)return Object.freeze({state:()=> 'disabled',inboxState:()=> 'disabled',create:()=>createRoutinesApplication({enabled:false})});
  const now=c.now??Date.now,newId=c.newId??randomUUID;
- const context=own(c.context,['commandContext','allocationJson','template','workflow','policy','limits']);
+ const context=own(c.context,['template','workflow','policy','limits'],['commandContext','allocationJson']);
+ if(c.contextOwnerFactory===undefined&&(context.commandContext===undefined||context.allocationJson===undefined))throw Error('ROUTINES_CONFIGURATION');
  const limits=own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']);
  if(typeof now!=='function'||typeof newId!=='function')throw Error('ROUTINES_CONFIGURATION');
  if(c.contextOwnerFactory!==undefined&&(typeof c.contextOwnerFactory!=='function'||types.isProxy(c.contextOwnerFactory)))throw Error('ROUTINES_CONFIGURATION');

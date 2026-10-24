@@ -42,7 +42,7 @@ export function createOccurrenceConsentAuthority(options){
   // The whole scheduled-run template (scheduled-admission.mjs validates it); the receipt needs these three facts of it.
   const {selectedClientId,policyRevision,configurationSha256}=own(o.template,['principal','selectedClientId','policyRevision','versions','task','configurationSha256','runWindowMs','destinationId'],['allocationJson']);
   t=data({selectedClientId,policyRevision,configurationSha256});
-  if(o.occurrenceKey!==id.occurrenceKey||typeof t.selectedClientId!=='string'||typeof t.policyRevision!=='string'||!HEX64.test(t.configurationSha256)||typeof now!=='function'||types.isProxy(now))throw Error();
+  if(o.occurrenceKey!==id.occurrenceKey||t.selectedClientId!==null&&typeof t.selectedClientId!=='string'||typeof t.policyRevision!=='string'||!HEX64.test(t.configurationSha256)||typeof now!=='function'||types.isProxy(now))throw Error();
  }catch{throw fault('CONFIGURATION');}
  const owner={tenantId:id.binding.tenantId,actorId:id.binding.actorId};
  async function authorizePhase(value){
@@ -59,7 +59,7 @@ export function createOccurrenceConsentAuthority(options){
   if(r?.authorized===false&&r.occurrenceKey===id.occurrenceKey&&Object.keys(r).length===3&&typeof r.code==='string'){const at=now();return receipt(false,s.scopes,at,at);}
   let k;try{k=own(r,['authorized','occurrenceKey','owner','scopes','checkedAtMs','expiresAtMs']);}catch{refuse('AUTHORITY');}
   if(k.authorized!==true||k.occurrenceKey!==id.occurrenceKey||!same(k.owner,owner)||!Array.isArray(k.scopes)||!k.scopes.length||k.scopes.length>100||
-   !same(sortedScopes(k.scopes),sortedScopes(s.scopes))||!k.scopes.some(scope=>scope?.kind==='client'&&scope.resourceId===t.selectedClientId)||k.scopes.some(scope=>scope?.policyRevision!==t.policyRevision)||
+   !same(sortedScopes(k.scopes),sortedScopes(s.scopes))||!k.scopes.some(scope=>scope?.kind===(t.selectedClientId===null?'private-user':'client')&&scope.resourceId===(t.selectedClientId??owner.actorId))||k.scopes.some(scope=>scope?.policyRevision!==t.policyRevision)||
    !Number.isSafeInteger(k.checkedAtMs)||!Number.isSafeInteger(k.expiresAtMs)||k.expiresAtMs<=k.checkedAtMs)refuse('AUTHORITY');
   return receipt(true,k.scopes,k.checkedAtMs,k.expiresAtMs);
  }
@@ -72,10 +72,10 @@ const refused=code=>data({refused:{code:'ROUTINES_OCCURRENCE_'+code}});
 export function createRoutinesOccurrenceOwner(options){
  let admissionFor,retire,readOccurrence,principal,now,maxRequestMs;
  try{
-  const o=own(options,['admissionFor','retirement','scheduleOwner','principal'],['now','maxRequestMs']);
+  const o=own(options,['admissionFor','retirement','scheduleOwner'],['principal','now','maxRequestMs']);
   admissionFor=o.admissionFor;if(typeof admissionFor!=='function'||types.isProxy(admissionFor))throw Error();
   retire=storageMethod(o.retirement,'retire');readOccurrence=sdkMethod(o.scheduleOwner,'readOccurrenceForConversation');
-  principal=data(own(o.principal,['tenantId','actorId']));validateShape('Identity',principal);
+  principal=o.principal===undefined?null:data(own(o.principal,['tenantId','actorId']));if(principal!==null)validateShape('Identity',principal);
   now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
   if(typeof now!=='function'||types.isProxy(now)||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw Error();
  }catch{throw fault('CONFIGURATION');}
@@ -86,7 +86,7 @@ export function createRoutinesOccurrenceOwner(options){
   try{v=own(value,['occurrence','occurrenceKey','effect','input'],['signal']);nativeSignal(v.signal);occ=snapshotOccurrence(v.occurrence);id=occurrenceIdentity(occ);}catch{return refused('REQUEST');}
   if(v.occurrenceKey!==id.occurrenceKey)return refused('REQUEST');
   // Only this control's candidate principal is admitted here; a foreign owner's occurrence is refused before Core is asked.
-  if(!same(occ.projection.owner,principal))return refused('FOREIGN');
+  if(principal!==null&&!same(occ.projection.owner,principal))return refused('FOREIGN');
   let admission;try{admission=storageMethod(admissionFor(occ,id.occurrenceKey),'admit');}catch{throw fault('UNAVAILABLE');}
   try{
    const r=data(await admission({occurrence:occ,occurrenceKey:id.occurrenceKey,effect:data(v.effect),input:data(v.input),...(v.signal===undefined?{}:{signal:v.signal}),deadlineMs:now()+maxRequestMs}));
@@ -98,13 +98,13 @@ export function createRoutinesOccurrenceOwner(options){
  async function retireRun(value){
   let v,binding;
   try{v=own(value,['binding'],['signal']);nativeSignal(v.signal);binding=data(v.binding);validateShape('RunBinding',binding);}catch{return refused('REQUEST');}
-  if(binding.tenantId!==principal.tenantId||binding.actorId!==principal.actorId)return refused('FOREIGN');
+  if(principal!==null&&(binding.tenantId!==principal.tenantId||binding.actorId!==principal.actorId))return refused('FOREIGN');
   const at=now(),deadlineMs=at+maxRequestMs,life=createOperationLifetime({now,signal:v.signal,deadlineMs,errorFactory:code=>fault(code)});
   try{
    // Meri's own custody first: a run that is not a scheduled occurrence of this owner is never retired through this operation.
    const record=data(await life.run(()=>readOccurrence({tenantId:binding.tenantId,conversationId:binding.conversationId},life.check)));
    const origin=record?.effect?.binding,p=record?.occurrence?.projection;
-   if(record===null||!origin||!p||!same(p.owner,principal)||origin.tenantId!==binding.tenantId||origin.actorId!==binding.actorId||origin.conversationId!==binding.conversationId)return refused('NOT_SCHEDULED');
+   if(record===null||!origin||!p||!same(p.owner,principal??{tenantId:binding.tenantId,actorId:binding.actorId})||origin.tenantId!==binding.tenantId||origin.actorId!==binding.actorId||origin.conversationId!==binding.conversationId)return refused('NOT_SCHEDULED');
    const r=data(await life.run(signal=>retire({binding,signal,deadlineMs})));life.check();
    if(r?.physicalStopProven!==true)throw fault('UNAVAILABLE');
    return data({retired:{physicalStopProven:true}});

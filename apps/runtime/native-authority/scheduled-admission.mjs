@@ -33,10 +33,10 @@ export function createScheduledNativeAdmission(options){
   readFiring=sdkMethod(o.scheduleOwner,'readFiring');openOccurrence=sdkMethod(o.scheduleOwner,'openOccurrence');authorize=sdkMethod(o.authority,'authorize');
   t=data(own(o.template,['principal','selectedClientId','policyRevision','versions','task','configurationSha256','runWindowMs','destinationId'],['allocationJson']));
   closed(t.principal,['tenantId','actorId'],'CONFIGURATION');validateShape('Identity',t.principal);validateShape('RuntimeVersions',t.versions);
-  a=t.allocationJson===undefined?null:allocation(t.allocationJson);scopes=data([{tenantId:t.principal.tenantId,kind:'client',resourceId:t.selectedClientId,policyRevision:t.policyRevision}]);
+  a=t.allocationJson===undefined?null:allocation(t.allocationJson);scopes=data([{tenantId:t.principal.tenantId,kind:t.selectedClientId===null?'private-user':'client',resourceId:t.selectedClientId??t.principal.actorId,policyRevision:t.policyRevision}]);
   if(a===null){readInput=sdkMethod(initial.value,'read');readDefaultModel=sdkMethod(o.store,'readDefaultModelSelection');}
   validateShape('Scope',scopes[0]);closed(t.task,['taskId','manifestSha256','version'],'CONFIGURATION');
-  if(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.selectedClientId)||
+  if((t.selectedClientId!==null||a!==null)&&!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.selectedClientId)||
    !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.task.taskId)||
    !integer(t.task.version)||t.task.version<1||!digest(t.task.manifestSha256)||a!==null&&t.task.manifestSha256!==a.manifestSha256||!digest(t.configurationSha256)||
    a!==null&&(a.run.tenantId!==t.principal.tenantId||a.run.actorId!==t.principal.actorId)||!integer(t.runWindowMs)||t.runWindowMs<1||

@@ -12,6 +12,9 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
 import {createScheduleRuntimeContext} from '../../control/schedules/runtime-context.mjs';
 import {createRoutinesFamily,routinesFamily} from '../product-ports/routines.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {compileAgentCoreConfiguration} from '../agentcore-configuration.mjs';
+import {snapshotOccurrence,occurrenceIdentity} from '../../control/schedules/scheduled-occurrence.mjs';
 
 const fault=()=>Object.assign(Error('ROUTINES_OWNER_CONFIGURATION'),{code:'ROUTINES_OWNER_CONFIGURATION'});
 const refuse=()=>Object.assign(Error('ROUTINES_RETIREMENT_UNPROVEN'),{code:'ROUTINES_RETIREMENT_UNPROVEN'});
@@ -115,9 +118,8 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
     const b=current.binding;validateShape('RunBinding',b);
     const principal=data(own(call.authentication.principal,['sessionId','tenantId','actorId','conversationId','runId']));
     if(current.authenticationSha256!==hash(call.authentication)||['tenantId','actorId','conversationId','runId'].some(key=>principal[key]!==b[key])||
-     !uuid.test(current.selectedClientId)||!Array.isArray(current.scopes)||current.scopes.length!==1||
-     current.scopes[0].tenantId!==b.tenantId||current.scopes[0].kind!=='client'||current.scopes[0].resourceId!==current.selectedClientId||
      current.expiresAtMs<=now()||call.authentication.expiresAtMs<=now())throw contextRefuse();
+    assertNativeConversationScope(current);
     const choice={binding:b,scopes:current.scopes,selectedClientId:current.selectedClientId};
     if(selected!==null&&!same(choice,selected))throw contextRefuse();
     const {run}=await readRun(b,{after:0,limit:1},check),head=await readHead(b,check),policy=await readModelPolicy(b,check);check();
@@ -131,7 +133,7 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
    }
    const first=await life.run(signal=>currentFor({authentication:auth,signal,deadlineMs}));life.check();
    return createScheduleRuntimeContext({sessions:{authenticateSession:authenticate,readCurrentState:currentFor},
-    commandContext:{binding:first.binding,clientResolution:{reference:first.selectedClientId,clientId:first.selectedClientId}},
+    commandContext:{binding:first.binding,clientResolution:first.selectedClientId===null?null:{reference:first.selectedClientId,clientId:first.selectedClientId}},
     executionLimits:{expiresAtMs:first.expiresAtMs,maxCostMicrousd:budget,maxRuntimeSeconds:c.maxRuntimeSeconds,retryLimit:0},
     template:c.template,workflow:c.workflow,policy:c.policy,limits:c.limits,scheduleOwner,now,newId,
     ...(runCancellation===undefined?{}:{runCancellation})});
@@ -172,6 +174,14 @@ export function createAttendedRoutinesRetirement({native,allocations,principal,n
 /** Derive only from the compiled candidate's exact scheduled template and control's own configuration. No allocation or I/O. */
 export function deriveAttendedRoutinesOwners({configuration,candidate,workflow,allocations,now=Date.now,readConsents}){
  try{
+  if(configuration.agentcore!==undefined){
+   const task=compileNativeRoutinesTask(configuration),scheduled=own(facet(candidate,'routinesOccurrenceOwners'),['templateFor','retirement']);
+   if(!same(candidate.routinesTask,task)||!ordinary(scheduled.templateFor)||!ordinary(scheduled.retirement?.retire)||readConsents!==undefined)throw Error();
+   const context=Object.freeze({template:task,workflow:workflowTarget(workflow),limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072,retryLimit:0}});
+   return Object.freeze({context,retirement:scheduled.retirement,contextOwnerFactory:({sessions,scheduleOwner,now:requestNow,newId,policy,runCancellation})=>createNativeRoutinesContextOwner({
+    base:{...context,policy,versions:configuration.versions,maxRuntimeSeconds:Math.floor(configuration.agentcore.runWindowMs/1000)},sessions,scheduleOwner,
+    store:allocations,now:requestNow,newId,runCancellation})});
+  }
   const routines=facet(configuration,'routines'),configured=facet(configuration,'nativeCandidate');
   if(routines?.enabled!==true||routines?.core?.cancellationProof===undefined||routines?.task===undefined)throw Error();
   if(configured.multiRun?.dynamicInitialRuns!==true||!ordinary(now))throw Error();
@@ -213,10 +223,46 @@ export function createAttendedRoutinesOwnerComposition({configuration,workflow,r
    if(!enabled||candidate===null||workflow===undefined||configuration?.routines?.task===undefined||configuration?.routines?.core?.cancellationProof===undefined||
     configuration?.reads?.delegation?.enabled===true&&readConsents===undefined)return createRoutinesFamily(context);
    const {pool,now=Date.now}=context??{};
-   const allocations=createPostgresConversationStore({pool,now}).allocations;
+   const store=createPostgresConversationStore({pool,now}),allocations=configuration.agentcore===undefined?store.allocations:store;
    return routinesFamily(deriveAttendedRoutinesOwners({configuration,candidate,workflow,allocations,now,readConsents}))(context);
   },
   state(){return !enabled?'disabled':candidate===null||workflow===undefined||configuration?.routines?.task===undefined||
    configuration?.routines?.core?.cancellationProof===undefined||configuration?.reads?.delegation?.enabled===true&&readConsents===undefined?'owners-unavailable':'bound';}
  });
+}
+
+/** The persisted task identity stays operator-configured. Its manifest pin is the actual
+ * compiled native SDK profile; a changed deployment/tool/model profile requires approval again. */
+export function compileNativeRoutinesTask(configuration){
+ try{
+  const configured=data(own(configuration.routines.task,['taskId','version'])),agentcore=compileAgentCoreConfiguration(configuration.agentcore);
+  validateShape('RuntimeVersions',configuration.versions);
+  if(!uuid.test(configured.taskId)||!Number.isSafeInteger(configured.version)||configured.version<1||typeof configuration.sourceEnabled!=='boolean')throw Error();
+  const profile=data({versions:configuration.versions,agentcore,sourceEnabled:configuration.sourceEnabled,models:configuration.models??null,
+   capabilities:configuration.capabilityPlatform??null,intents:configuration.intents?.enabled===true});
+  return data({...configured,manifestSha256:hash(profile)});
+ }catch{throw fault();}
+}
+
+/** One template per canonical occurrence, with no startup actor/client binding or allocation. */
+export function createNativeRoutinesOccurrenceOwners({configuration,native,store,now=Date.now}){
+ const task=compileNativeRoutinesTask(configuration),config=compileAgentCoreConfiguration(configuration.agentcore);
+ const call=storageMethod(native,'call'),settlement=storageMethod(facet(store,'executions'),'settlement');
+ return Object.freeze({templateFor(raw){
+  const occurrence=snapshotOccurrence(raw),p=occurrence.projection,scope=p.scopes[0];
+  if(p.scopes.length!==1||!same(occurrence.task,task)||scope.policyRevision!==config.policyRevision)throw fault();
+  const selectedClientId=scope.kind==='client'?scope.resourceId:null;
+  assertNativeConversationScope({binding:occurrenceIdentity(occurrence).binding,scopes:p.scopes,selectedClientId});
+  return data({principal:p.owner,selectedClientId,policyRevision:config.policyRevision,versions:configuration.versions,task,
+   configurationSha256:hash(config),runWindowMs:config.runWindowMs,destinationId:'meri-inbox'});
+ },retirement:Object.freeze({async retire(raw){
+  const q=own(raw,['binding'],['signal','deadlineMs']);validateShape('RunBinding',q.binding);nativeSignal(q.signal);
+  const life=createOperationLifetime({now,signal:q.signal,deadlineMs:Math.min(q.deadlineMs??now()+configuration.limits.requestMs,now()+configuration.limits.requestMs),errorFactory:refuse});
+  try{
+   const executionId=hash(q.binding),result=await life.run(signal=>call('execution/kickoff/stop',{binding:q.binding,executionId},{signal}));
+   if(!same(result.binding,q.binding)||result.executionId!==executionId)throw refuse();
+   const saved=await life.run(()=>settlement(q.binding,life.check));life.check();
+   if(saved.settled!==true||!same(saved.run.binding,q.binding))throw refuse();return Object.freeze({physicalStopProven:true});
+  }finally{life.close();}
+ }})});
 }

@@ -62,7 +62,8 @@ function captureOwners(owners){
  if(owners===undefined)return null;
  try{
   const o=own(owners,['context','retirement'],['runControl','newId','readConsents','log','contextOwnerFactory']);
-  const context=own(o.context,['commandContext','allocationJson','template','workflow','limits'],['policy']);
+  const context=own(o.context,['template','workflow','limits'],['policy','commandContext','allocationJson']);
+  if(o.contextOwnerFactory===undefined&&(context.commandContext===undefined||context.allocationJson===undefined))throw Error();
   if((context.policy===undefined)!==(o.runControl===undefined)||o.runControl!==undefined&&typeof o.runControl?.cancel!=='function'||typeof o.retirement?.retire!=='function'||o.newId!==undefined&&typeof o.newId!=='function'||o.contextOwnerFactory!==undefined&&(typeof o.contextOwnerFactory!=='function'||types.isProxy(o.contextOwnerFactory)))throw Error();
   // Option B (lane RD): the reads composer's `readDelegation.consents` ({approve,narrow,resume}); absent, routines carry no read consent.
   if(o.readConsents!==undefined&&(types.isProxy(o.readConsents)||['approve','narrow','resume'].some(k=>typeof o.readConsents?.[k]!=='function'))||o.log!==undefined&&(typeof o.log!=='function'||types.isProxy(o.log)))throw Error();

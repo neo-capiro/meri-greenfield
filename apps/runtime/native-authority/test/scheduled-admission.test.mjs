@@ -29,6 +29,12 @@ test('AgentCore first admission rejects a caller model, expired consent and chan
  }
 });
 
+test('AgentCore General routine admits only the canonical owner private-user scope',async()=>{
+ const f=await scheduledAdmissionFixture({agentcore:true,general:true}),receipt=await f.adapter.admit(f.request);
+ const saved=await f.store.initialInputs.read(receipt.binding,none);assert.equal(saved.facts.selectedClientId,null);assert.deepEqual(saved.facts.scopes,f.scopes);
+ const foreign=copy(f.request);foreign.input.run.scopes[0].resourceId='foreign-owner';await assert.rejects(f.adapter.admit(foreign));
+});
+
 test('AgentCore normalized model admission crosses actual scheduled dispatch and remains immutable after lost acceptance ACK',async()=>{
  const f=await scheduledAdmissionFixture({agentcore:true});f.faults.loseAcceptanceCommit=true;
  const owner=dispatch(f);assert.equal((await owner.dispatch({occurrence:f.occurrence})).outcome,'UNKNOWN');assert.equal(f.temporal.calls.start,0);

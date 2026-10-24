@@ -28,6 +28,7 @@ import {NATIVE_FILE_PATHS} from './artifacts/native-files-http.mjs';
 import {createNativeLifecycleAdmission} from './product-ports/lifecycle.mjs';
 import {countingFetch} from './telemetry/counting.mjs';
 import {fault} from './config.mjs';
+import {compileNativeRoutinesTask,createNativeRoutinesOccurrenceOwners} from './native-authority/routines-owner-composition.mjs';
 
 const same=(a,b)=>hash(a)===hash(b);
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(value);
@@ -246,7 +247,9 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    const method={'execution/kickoff':'kickoff','execution/kickoff/status':'status','execution/kickoff/stop':'stop'}[operation];
    if(!method)throw fault('NATIVE_OPERATION_UNAVAILABLE');return owner[method]({...input,signal});
   },readiness});
- return Object.freeze({execution,native,application,admitFork,
+ const routinesTask=configuration.routines?.enabled===true&&configuration.routines.task?compileNativeRoutinesTask(configuration):null;
+ const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
+ return Object.freeze({execution,native,application,admitFork,...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
   productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},

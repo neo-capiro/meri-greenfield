@@ -16,6 +16,7 @@ import {ROUTINES_CORE_ROUTES} from '../routines-core-client.mjs';
 import {composeRoutinesOccurrences,ROUTINES_OCCURRENCE_OWNERS} from '../routines-occurrence-composition.mjs';
 import {createRoutinesOccurrenceApplication,ROUTINES_OCCURRENCE_PREFIX,ROUTINES_OCCURRENCE_OPERATIONS} from '../routines-occurrence-http.mjs';
 import {createOccurrenceConsentAuthority,ADMISSION_PHASES} from '../routines-occurrence-owner.mjs';
+import {MODEL_CATALOG} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
 import {createRoutinesOccurrencePorts} from '../routines-occurrence-ports.mjs';
 import {composeRoutinesWorkerOwners,composeRoutinesWorkerRuntimePorts} from '../../schedule-service-owners.mjs';
 import {coreSigner,CORE_ORIGIN} from './routines-core-fixture.mjs';
@@ -48,18 +49,18 @@ function multiplexed(h){
   return client.query(text,values);
  },release(error){client?.release(error);}};}};
 }
-async function harness(){
- const h=await scheduledJobFixture({admit:false,allocated:false}),signer=coreSigner({kid:'routine-fire-1'}),nowS=()=>Math.floor(h.now()/1000);
+async function harness({agentcore=false}={}){
+ const h=await scheduledJobFixture({admit:false,allocated:false,agentcore}),signer=coreSigner({kid:'routine-fire-1'}),nowS=()=>Math.floor(h.now()/1000);
  const state={requests:[],signer,now:h.now,status:null,consent:{id:id(700),scopes:h.scopes,issuedAtS:nowS()-60,expiresAtS:nowS()+7*86400,revoked:false,limits:{maxCostMicrousd:2000000,maxRuntimeSeconds:900,retryLimit:0}}};
  // The schedule SQL fixture lacks the by-conversation occurrence SELECT; answer it from the fixture's own rows.
  const connect=h.scheduleSql.pool.connect;h.scheduleSql.pool.connect=async()=>{const sql=await connect();return {...sql,async query(text,args=[]){
   if(text.includes("effect->'binding'->>'conversationId'"))return {rows:copy([...h.scheduleSql.state.occurrences.values()].filter(r=>r.tenant_id===args[0]&&r.effect.binding.conversationId===args[1]).slice(0,2))};
   return sql.query(text,args);}};};
  const pool=multiplexed(h),transport={fetchImpl:coreFiring(state),readSecret:async()=>Buffer.from(SECRET)};
- const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions:h.template.versions,limits:{startupMs:1000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
+ const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions:h.template.versions,models:MODEL_CATALOG,limits:{startupMs:1000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
   temporal:{taskQueue:'meri-schedules'},scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1},
   routines:{enabled:true,core:{origin:CORE_ORIGIN,serviceSecretFile:'/run/meri/routines-service-secret',unattendedGrant:signer.pin}}};
- const owners={template:h.template,retirement:h.options.retirement};
+ const owners={...(agentcore?{templateFor:()=>h.template}:{template:h.template}),retirement:h.options.retirement};
  const control=composeRoutinesOccurrences({configuration,controlCapabilitySha256:capabilityDigest(CONTROL),pool,owners,transport,now:h.now});
  const urls=[];
  const native=createNativeCapabilityClient({configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:h.now,
@@ -69,6 +70,17 @@ async function harness(){
  const phases=()=>state.requests.map(q=>q.body.phase);
  return {...h,state,signer,pool,transport,configuration,owners,control,native,urls,ports,replay,phases,occurrenceState:()=>h.scheduleSql.state.occurrences.get(h.template.principal.tenantId+':'+h.identity.occurrenceKey)?.state??null};
 }
+
+test('dynamic native occurrence owner mounts the private admission and pins the configured model through worker dispatch',async t=>{
+ const h=await harness({agentcore:true});t.after(h.close);
+ const owners=composeRoutinesWorkerOwners({configuration:h.configuration,pool:h.pool,client:h.temporal.client,now:h.now,transport:h.transport,...h.ports});
+ const jobOwner=createScheduledJobLifecycle({store:h.store,runControl:owners.runControl,retirement:owners.retirement,now:h.now,maxRequestMs:1000});
+ const dispatch=createScheduledDispatch({scheduleOwner:h.scheduleOwner,store:h.store,dispatcher:h.dispatcher,runs:h.runs,authority:owners.authority,taskInstructions:{async read(){return {instruction:h.input.request.prompt};}},
+  versions:h.template.versions,runAdmission:owners.runAdmission,jobOwner,now:h.now,maxRequestMs:1000});
+ const result=await dispatch.dispatch({occurrence:h.occurrence});assert.equal(result.outcome,'ACTIVE');assert.equal(h.temporal.workflows.size,1);
+ const saved=await h.store.readOptional(result.binding,{after:0,limit:1},()=>{});assert.deepEqual(saved.request.modelSelection,MODEL_CATALOG.defaultSelection);
+ assert.equal((await dispatch.dispatch({occurrence:h.occurrence})).outcome,'ACTIVE');assert.equal(h.temporal.calls.start,1);
+});
 
 test('the worker port admits one occurrence through control under a fresh Core consent per phase, and replays it unchanged',async t=>{
  const h=await harness();t.after(h.close);assert.equal(h.control.state,'composed');const at=h.now();
@@ -170,7 +182,7 @@ test('the native operations require the exact control capability, POST JSON and 
  // A malformed candidate template refuses composition itself, not every later admission.
  assert.throws(()=>composeRoutinesOccurrences({configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool,owners:{...h.owners,template:{...h.template,destinationId:'ui-guessed-inbox'}}}),code('SCHEDULE_ADMISSION_CONFIGURATION'));
  assert.throws(()=>composeRoutinesOccurrences({configuration:h.configuration,controlCapabilitySha256:digest,pool:h.pool,owners:{template:h.template}}),code('ROUTINES_OCCURRENCE_CONFIGURATION'));
- assert.deepEqual(h.control.tables,['meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_conversations.initial_run_bindings','meri_conversations.initial_inputs']);
+ assert.deepEqual(h.control.tables,['meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_conversations.initial_run_bindings','meri_conversations.initial_inputs','meri_conversations.native_executions']);
 });
 
 test('the consent authority answers the admission\'s closed receipt from the grant, never from the selection',async t=>{
