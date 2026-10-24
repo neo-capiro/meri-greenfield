@@ -100,6 +100,9 @@
         },
         "windowRequest": {
           "$ref": "#/$defs/Canonical_windowRequest_19242ce9"
+        },
+        "modelSelection": {
+          "$ref": "#/$defs/Canonical_modelSelection_c59b527f"
         }
       },
       "required": [
@@ -867,6 +870,44 @@
           "type": "null"
         }
       ]
+    },
+    "Canonical_modelSelection_c59b527f": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "enum": [
+            "bedrock",
+            "claude-api"
+          ]
+        },
+        "modelId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"
+        },
+        "effort": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "provider",
+        "modelId",
+        "effort"
+      ],
+      "additionalProperties": false
     },
     "Canonical_RunBinding_84f2304c": {
       "type": "object",

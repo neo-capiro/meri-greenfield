@@ -11,7 +11,7 @@ export function historySchema(){return {$schema:'https://json-schema.org/draft/2
  ConversationHistoryListRequest:object({before:nullable(ref('ConversationHistoryBefore')),limit},[]),
  ConversationHistoryTranscriptRequest:object({conversationId:uuid,after:integer(),limit},['conversationId']),
  ConversationHistoryNextTurnRequest:object({conversationId:uuid,sourceRunId:uuid}),
- ConversationHistoryStoredRequest:object({requestId:stored('requestId'),prompt:stored('prompt'),skill:stored('skill'),window:stored('window'),windowRequest:stored('windowRequest')},['requestId','prompt','skill','window']),
+ ConversationHistoryStoredRequest:object({requestId:stored('requestId'),prompt:stored('prompt'),skill:stored('skill'),window:stored('window'),windowRequest:stored('windowRequest'),modelSelection:stored('modelSelection')},['requestId','prompt','skill','window']),
  ConversationPromptLineage:{oneOf:[object({kind:{const:'submission'},logicalRequestId:uuid,sourceBinding:{type:'null'},sourceRequestId:{type:'null'}}),object({kind:{enum:['resume','fork']},logicalRequestId:uuid,sourceBinding:pub('RunBinding'),sourceRequestId:uuid})]},
  ConversationHistoryTurn:object({run:pub('Run'),request:ref('ConversationHistoryStoredRequest'),promptLineage:ref('ConversationPromptLineage'),sequenceBase:integer(),sequenceEnd:nullable(integer()),lastSequence:integer(1)}),
  ConversationHistoryEvent:object({sequence:integer(1),event:pub('UIEvent')}),

@@ -368,6 +368,7 @@ export interface ConversationHistoryStoredRequest {
   skill: CanonicalSkillBa3B01C2;
   window: CanonicalWindow_97Bd6970;
   windowRequest?: CanonicalWindowRequest_19242Ce9;
+  modelSelection?: CanonicalModelSelectionC59B527F;
 }
 export interface Canonical_ConversationSkillAssetPin_338818F9 {
   skillId: Canonical_CanonicalSkillId_31E12E8ECae56271;
@@ -375,6 +376,11 @@ export interface Canonical_ConversationSkillAssetPin_338818F9 {
   manifestSha256: string;
   proseSha256: string;
   catalogSha256: string;
+}
+export interface CanonicalModelSelectionC59B527F {
+  provider: 'bedrock' | 'claude-api';
+  modelId: string;
+  effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
 }
 export interface ConversationHistoryEvent {
   sequence: number;

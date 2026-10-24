@@ -30,6 +30,24 @@ test('transcript gives direct typed envelope, frozen canonical rows and distinct
  const tail=transcript();tail.turns=[];tail.events=[];assert.deepEqual(await receive('transcript',200,bytes(tail),request('transcript',bytes({...input,after:1}))),tail);
  const received=await receive('transcript',200,bytes(transcript()),request('transcript',bytes(input)));assert.ok(Object.isFrozen(received.turns[0].run.scopes));
 });
+test('stored history accepts absent legacy and optional canonical model selection',async()=>{
+ for(const modelSelection of [undefined,{provider:'bedrock',modelId:'synthetic-bedrock-model',effort:'high'},{provider:'claude-api',modelId:'synthetic-claude-model',effort:null}]){
+  const body=transcript();if(modelSelection!==undefined)body.turns[0].request.modelSelection=modelSelection;
+  const received=await receive('transcript',200,bytes(body),request('transcript',bytes(input)));
+  assert.deepEqual(received,body);assert.deepEqual(assertConversationHistoryResponse('transcript',body,input),body);
+  assert.equal(Object.hasOwn(received.turns[0].request,'modelSelection'),modelSelection!==undefined);
+ }
+});
+for(const[name,modelSelection]of [['null',null],['unknown provider',{provider:'other',modelId:'synthetic',effort:null}],['missing effort',{provider:'bedrock',modelId:'synthetic'}],['invalid effort',{provider:'bedrock',modelId:'synthetic',effort:'unbounded'}],['invalid model',{provider:'bedrock',modelId:'',effort:null}],['unknown field',{provider:'bedrock',modelId:'synthetic',effort:null,authorization:'forged'}]])test(`stored history refuses model selection ${name}`,async()=>{
+ const body=transcript();body.turns[0].request.modelSelection=modelSelection;
+ await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))),{code:'INVALID_RESPONSE'});
+ assert.throws(()=>assertConversationHistoryResponse('transcript',body,input));
+});
+test('optional model selection does not admit other stored-request fields',async()=>{
+ const body=transcript();body.turns[0].request.modelSelection={provider:'bedrock',modelId:'synthetic',effort:null};body.turns[0].request.authorization='forged';
+ await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))),{code:'INVALID_RESPONSE'});
+ assert.throws(()=>assertConversationHistoryResponse('transcript',body,input));
+});
 for(const[name,mutate]of [['foreign actor',v=>v.latestRun.binding.actorId='foreign'],['foreign scope',v=>v.events[0].event.scopes=[]],['global sequence',v=>v.events[0].sequence=2],['local sequence',v=>v.events[0].event.sequence=2],['tail cursor',v=>v.nextSequence=0],['unrepresented turn',v=>v.events=[]],['request identity',v=>v.turns[0].promptLineage.logicalRequestId=id(99)]])test(`transcript refuses ${name} substitution`,async()=>{const body=transcript();mutate(body);await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))));});
 test('resume lineage cannot substitute source request/root while genuine same-text submission stays distinct',async()=>{
  for(const change of [v=>v.turns[1].promptLineage.sourceRequestId=id(99),v=>v.turns[1].promptLineage.logicalRequestId=id(99),v=>v.turns[1].request.prompt='Substituted prompt',v=>delete v.turns[1].request.windowRequest]){const body=resumed();change(body);await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(input))));}

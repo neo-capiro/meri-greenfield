@@ -45,8 +45,8 @@
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "0efe3a996c1d4d550812d03100472ec6071ee490d10481aeb9e5022d9a043d19",
-      "bytes": 3314
+      "sha256": "4f334cb230c68f90f3ff981f24d49173479b3a189b26ae8b72b4f3f239828a41",
+      "bytes": 3354
     },
     {
       "path": "conversation-history/semantics.mjs",
@@ -84,7 +84,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "64507f94d5b71e5730996ea85054d9310cb6ac92cc3dc5d3c137e8c259fec927",
+  "schemaSha256": "ba1306bc6522c52484a81f225f003c2e3ad51c134f02977a65e434bb84e0596e",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",
