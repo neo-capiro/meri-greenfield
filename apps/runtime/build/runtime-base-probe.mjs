@@ -6,13 +6,16 @@ import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {inspectNativeFile,swcBinding} from './materialize-swc.mjs';
+import {verifyNpmResolution} from './npm-bundle.mjs';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 
 export async function probeRuntimeImage() {
   assert.equal(process.platform,'linux'); assert.equal(process.arch,'arm64');
   assert.equal(process.version,'v24.22.1'); assert.equal(process.getuid(),1000); assert.equal(process.getgid(),1000);
+  assert.equal(process.versions.undici,'7.30.1');
   assert.equal(execFileSync('npm',['--version'],{encoding:'utf8',timeout:15000,maxBuffer:65536}).trim(),'12.2.1');
   assert.equal(execFileSync('npx',['--version'],{encoding:'utf8',timeout:15000,maxBuffer:65536}).trim(),'12.2.1');
+  verifyNpmResolution('/usr/local/lib/node_modules/npm');
   const rootMount=fs.readFileSync('/proc/self/mountinfo','utf8').split('\n').map(line=>line.split(' ')).find(fields=>fields[4]==='/');
   assert(rootMount?.[5].split(',').includes('ro'),'Qualification requires a read-only root mount');
   for(const parent of ['/tmp','/workspace','/run/meri','/run/meri-temporal']){

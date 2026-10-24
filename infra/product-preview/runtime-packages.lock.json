@@ -77,6 +77,14 @@
   "npm": {
     "version": "12.2.1",
     "source": "https://registry.npmjs.org/npm/-/npm-12.2.1.tgz",
-    "sha256": "228bd64aaef23270dbdbd2cf3d5ef5c467602ef38c4066246cef1984adab9a67"
+    "sha256": "228bd64aaef23270dbdbd2cf3d5ef5c467602ef38c4066246cef1984adab9a67",
+    "bundledUndici": {
+      "replaces": "6.29.0",
+      "version": "6.29.1",
+      "source": "https://registry.npmjs.org/undici/-/undici-6.29.1.tgz",
+      "sha256": "29c4b8e0b2d86cb8795571c1959012ce057a14ecfd34858335f47c31e770a04f",
+      "advisory": "https://github.com/nodejs/undici/security/advisories/GHSA-xjj6-f33q-929c",
+      "qualification": "Complete official package replacement only; npm 12.2.1 upstream is unchanged otherwise and has not released this fix. Build compares every other npm file against its original tarball and verifies the replacement bytes, node-gyp resolution and declared semver range."
+    }
   }
 }
