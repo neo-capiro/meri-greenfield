@@ -9,6 +9,8 @@ export type IntentsApplicationEnvelope =
   | IntentsProposal
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
+  | Canonical_TaskUpdateArguments_48509A7A
+  | IntentsNativeTaskOutcome
   | IntentsExecutionOutcome
   | IntentsExecution
   | IntentsPendingItem
@@ -25,12 +27,16 @@ export type IntentsApplicationEnvelope =
   | IntentsErrorResponse;
 export type IntentsConversationId = string;
 export type IntentsDeliveryId = string;
-export type IntentsProposal = Canonical_ApprovalProposalD1A3E74F | Canonical_DocumentDraftApprovalProposal_834C2460;
+export type IntentsProposal =
+  | Canonical_ApprovalProposalD1A3E74F
+  | Canonical_TaskUpdateApprovalProposal_1F70E582
+  | Canonical_DocumentDraftApprovalProposal_834C2460;
 export type IntentsExecutionOutcome =
   | {
       receipt: Canonical_CommandReceiptAc49Ee1E;
       result: Canonical_TaskCreateResult_0501C509;
     }
+  | IntentsNativeTaskOutcome
   | Canonical_ArtifactCreatedResult_183A755E;
 export type Canonical_ArtifactVersion_7F9C56Fa =
   Canonical_ArtifactVersionD54B8Ac9 | Canonical_NativeArtifactVersionFf97D150;
@@ -276,6 +282,39 @@ export interface Canonical_IdentityAba0A4E9 {
   tenantId: string;
   actorId: string;
 }
+export interface Canonical_TaskUpdateApprovalProposal_1F70E582 {
+  proposalId: string;
+  command: Canonical_TaskUpdateCommandB73E3Ce0;
+  commandSha256: string;
+  createdAt: string;
+  expiresAt: string;
+  requiredApprover: Canonical_IdentityAba0A4E9;
+}
+export interface Canonical_TaskUpdateCommandB73E3Ce0 {
+  contractVersion: '0.2.0';
+  commandId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  action: 'task.update';
+  arguments: Canonical_TaskUpdateArguments_48509A7A;
+  /**
+   * @maxItems 0
+   */
+  attachments: [];
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  idempotencyKey: string;
+}
+export interface Canonical_TaskUpdateArguments_48509A7A {
+  taskId: string;
+  mode: 'unconditional_patch';
+  patch: {
+    title?: string;
+    status?: 'todo' | 'in_progress' | 'done' | 'blocked' | 'canceled';
+    dueDate?: string;
+  };
+}
 export interface Canonical_DocumentDraftApprovalProposal_834C2460 {
   proposalId: string;
   command: Canonical_DocumentDraftCommand_7Eb6C44C;
@@ -322,6 +361,34 @@ export interface Canonical_TaskCreateArguments_1202C301 {
   clientId: string | null;
   dueDate: string | null;
 }
+export interface IntentsNativeTaskOutcome {
+  execution: {
+    kind: 'native-task';
+    proposalId: string;
+    commandSha256: string;
+    idempotencyKey: string;
+    binding: Canonical_RunBinding_84F2304C;
+    completedAt: string;
+    approvalDecisionSha256: string;
+  };
+  result: Canonical_TaskCreateResult_0501C509 | Canonical_TaskUpdateResult_029549A8;
+}
+export interface Canonical_TaskCreateResult_0501C509 {
+  id: string;
+  title: string;
+  status: 'todo';
+  dueDate: string | null;
+  clientId: string | null;
+  createdAt: string;
+}
+export interface Canonical_TaskUpdateResult_029549A8 {
+  id: string;
+  title: string;
+  status: 'todo' | 'in_progress' | 'done' | 'blocked' | 'canceled';
+  dueDate: string | null;
+  clientId: string | null;
+  updatedAt: string;
+}
 export interface Canonical_CommandReceiptAc49Ee1E {
   receiptId: string;
   commandId: string;
@@ -336,14 +403,6 @@ export interface Canonical_CommandReceiptAc49Ee1E {
    */
   scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
   authorizationDecisionId: string;
-}
-export interface Canonical_TaskCreateResult_0501C509 {
-  id: string;
-  title: string;
-  status: 'todo';
-  dueDate: string | null;
-  clientId: string | null;
-  createdAt: string;
 }
 export interface Canonical_ArtifactCreatedResult_183A755E {
   version: Canonical_ArtifactVersion_7F9C56Fa;
@@ -644,13 +703,14 @@ export declare const intentsMetadata:{
   ],
   "approvableActions": [
     "task.create",
+    "task.update",
     "document.draft"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the actual owner outcome: task.create receipt/result or document.draft ArtifactCreatedResult after publication; document approval alone remains approved or indeterminate, with no task receipt inferred",
+    "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, or document.draft ArtifactCreatedResult after publication; approval alone remains approved or indeterminate",
     "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",

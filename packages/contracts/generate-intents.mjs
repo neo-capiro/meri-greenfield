@@ -12,7 +12,7 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
  try{
   const sources=new Map(),record=async path=>{const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});return raw;};
   const originals=new Map();
-  for(const path of ['meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/document-draft.schema.json','artifacts-0.2/artifact.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
+  for(const path of ['meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/task-update.schema.json','commands-0.2/document-draft.schema.json','artifacts-0.2/artifact.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
   const errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
   for(const name of ['INTENTS_PATHS','INTENTS_LIMITS','INTENTS_ERROR_OUTCOMES','INTENTS_ERROR_STATUSES','INTENTS_APPROVABLE_ACTIONS','INTENTS_FAILURE_CODES'])if(application[name]===undefined)throw Error('Missing canonical intents declaration '+name);
   const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,fieldPattern};

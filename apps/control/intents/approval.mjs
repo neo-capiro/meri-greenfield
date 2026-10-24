@@ -5,18 +5,15 @@
  *   actor and conversation, and only when it is a PREPARED command proposal whose ids the caller named exactly.
  * - The decision is recorded by the canonical approval-decision owner (Core) through `decisions.record`. Meri never writes
  *   an ApprovalDecision; without that owner the route answers APPROVAL_OWNER_UNAVAILABLE and nothing happens.
- * - An approval reaches an effect only through the existing approved-execution path: `commands/tool-interface.mjs`
- *   `executeApproved`, whose executor rechecks the CURRENT decision (approval guard) and fresh `command.execute` authority
- *   before claim, before effect, at effect, release, settlement and completion. A recorded approval alone executes nothing.
- * - The durable result is the command journal row (`meri_commands.command_journal`) the executor writes; history reads it back.
+ * - Tasks reach Core's native receiver, which owns current authorization, the immutable decision and durable execution.
+ *   Documents use the retained document delivery owner. A recorded approval alone executes nothing.
+ * - History reads those same durable owners. An uncertain response never implies permission to repeat an effect.
  *
  * Ports (all supplied by the trusted composition; see docs/shipping/20261017/lanes/lane-3-write-intents.md):
  *  journal            {read({key,signal}), list({conversation,after,limit,signal})}  the intent journal store
  *  decisions          {record({proposal,decision,approver,binding,signal,deadlineMs}) → {decision,checkedAtMs,revoked},
  *                      readDecision({proposalId,commandSha256,binding,signal}) → ApprovalDecision|null}   Core, optional
- *  issueExecution     ({proposal,principal,signal,deadlineMs}) → {execution,credential,checkedAtMs,expiresAtMs}  broker, optional
- *  commandOptionsFor  ({proposal,signal}) → exact createCommandToolInterface options for the proposal's original binding
- *  outcomes           {read({proposal,signal}) → null|{state,outcome}}  command journal reader, optional
+ *  tasks/documents    {execute({proposal,...}), read({proposal,...})} canonical native effect/result owners, optional
  *
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -24,11 +21,11 @@ import {assertNativeApprovalProposal} from '../../../packages/contracts/commands
 import {artifactValidators as artifacts,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {createCommandToolInterface} from '../commands/tool-interface.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
+import {nativeTaskOutcome} from './task-outcome.mjs';
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,DIGEST=/^[a-f0-9]{64}$/u;
 /** Commands an approved intent may execute: those with a proposal (approval-metadata) owner today. */
-export const APPROVABLE_ACTIONS=Object.freeze(['task.create','document.draft']);
+export const APPROVABLE_ACTIONS=Object.freeze(['task.create','task.update','document.draft']);
 /** Domain failures and their HTTP statuses (transport/membership codes belong to `product-access/http.mjs`). */
 export const INTENT_APPROVAL_ERRORS=Object.freeze({
  INTENT_APPROVALS_DISABLED:503,INTENT_NOT_FOUND:404,INTENT_NOT_PREPARED:409,INTENT_NOT_APPROVABLE:409,INTENT_MISMATCH:409,INTENT_EXPIRED:409,
@@ -65,15 +62,16 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','commandOptionsFor','now','limits'],['decisions','issueExecution','outcomes','documents','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
- if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.commandOptionsFor!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
+ if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
  const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent','revoke']);
- const outcomes=c.outcomes===undefined?undefined:own(c.outcomes,['read']);
  const documents=c.documents===undefined?undefined:own(c.documents,['execute','read']);
+ const tasks=c.tasks===undefined?undefined:own(c.tasks,['execute','read']);
+ if(tasks&&Object.values(tasks).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(documents&&Object.values(documents).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
- if(decisions&&Object.values(decisions).some(f=>typeof f!=='function')||outcomes&&typeof outcomes.read!=='function'||c.issueExecution!==undefined&&typeof c.issueExecution!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
+ if(decisions&&Object.values(decisions).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  const lifetime=(deadlineMs,signal)=>{nativeSignal(signal);const at=c.now();
   return createOperationLifetime({deadlineMs:Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:at+limits.maxRequestMs,at+limits.maxRequestMs),now:c.now,signal,errorFactory:code=>new ProductError(code)});};
  const enabled=()=>{if(c.enabled!==true)fail('INTENT_APPROVALS_DISABLED','NOT_DISPATCHED');};
@@ -128,6 +126,13 @@ export function createIntentApprovalOwner(configuration){
   }catch(error){throw owned(error,'INTENT_EXECUTION_UNKNOWN','UNKNOWN');}finally{life.close();}
  }
  async function execute(life,principal,proposal,decision,deliveryId){
+  if(['task.create','task.update'].includes(proposal.command.action)){
+   if(!tasks)fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+   const result=data(await life.run(signal=>tasks.execute.call(c.tasks,{proposal,decision,principal,deliveryId,signal,deadlineMs:life.deadline()})));
+   if(result?.status==='observed'){own(result,['status','outcome']);return data({status:'executed',deliveryId,proposalId:proposal.proposalId,decision,outcome:nativeTaskOutcome(result.outcome,proposal,decision)});}
+   own(result,['status']);if(result.status!=='indeterminate')fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');
+   return data({status:'indeterminate',deliveryId,proposalId:proposal.proposalId,decision});
+  }
   if(proposal.command.action==='document.draft'){
    if(!documents)fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
    // The existing document delivery journal owns dispatch/recovery. This route
@@ -137,38 +142,7 @@ export function createIntentApprovalOwner(configuration){
    own(result,['status']);if(result.status!=='indeterminate')fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');
    return data({status:'indeterminate',deliveryId,proposalId:proposal.proposalId,decision});
   }
-  if(typeof c.issueExecution!=='function')fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
-  let options;
-  try{options=await life.run(signal=>c.commandOptionsFor({proposal,signal}));}catch(error){throw owned(error,'EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');}
-  const context=options?.commandContext;
-  if(options?.action!==proposal.command.action||!same(context?.binding,proposal.command.binding))fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
-  const started=c.now();let issued;
-  try{issued=data(own(await life.run(signal=>c.issueExecution({proposal,principal,signal,deadlineMs:Math.min(started+limits.maxRequestMs,instant(proposal.expiresAt))})),['execution','credential','checkedAtMs','expiresAtMs']));}
-  catch(error){throw owned(error,'EXECUTION_AUTHORITY_REFUSED','NOT_DISPATCHED');}
-  const e=issued.execution,at=c.now();
-  try{validateShape('CommandExecutionRequest',e);}catch{fail('EXECUTION_AUTHORITY_REFUSED','NOT_DISPATCHED');}
-  if(typeof issued.credential!=='string'||!issued.credential||!Number.isSafeInteger(issued.checkedAtMs)||issued.checkedAtMs<started||issued.checkedAtMs>at||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=at||
-   e.proposalId!==proposal.proposalId||e.commandSha256!==proposal.commandSha256||e.idempotencyKey!==proposal.command.idempotencyKey)fail('EXECUTION_AUTHORITY_REFUSED','NOT_DISPATCHED');
-  // The command journal binds a command to its original run: an approval cannot execute it from another run (lane gap).
-  if(['tenantId','actorId','conversationId','runId'].some(k=>e.executorBinding[k]!==proposal.command.binding[k]))fail('INTENT_CROSS_RUN','NOT_DISPATCHED');
-  life.limitDeadline(issued.expiresAtMs);
-  // Track whether the executor itself was reached and returned: before it nothing can be claimed; after it returned, an
-  // effect may exist and only the release failed; while it runs, only its own codes say whether it claimed.
-  const phase={executor:false,returned:false};
-  const tracked={...options,executor:{async execute(...call){phase.executor=true;const out=await options.executor.execute(...call);phase.returned=true;return out;}}};
-  let result;
-  try{result=data(await life.run(signal=>createCommandToolInterface(tracked).executeApproved(proposal,e,issued.credential,signal)));}
-  catch(error){
-   const f=productFailure(error),code=String(error?.message??'');
-   if(phase.returned)fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');
-   if(f)throw new ProductError(f.code,phase.executor?'UNKNOWN':'NOT_DISPATCHED');
-   if(code==='COMMAND_OUTCOME_UNKNOWN'||code==='COMMAND_COMMIT_UNCERTAIN')fail('COMMAND_OUTCOME_UNKNOWN','UNKNOWN');
-   // The executor reports every refusal before its journal claim as a closed code other than the two above; no claim, no effect.
-   fail(['COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED'].includes(code)?code:'COMMAND_REFUSED','NOT_DISPATCHED');
-  }
-  if(result?.status==='observed')return data({status:'executed',deliveryId,proposalId:proposal.proposalId,decision,outcome:result.outcome});
-  // Indeterminate: the existing journal holds the claim; nothing here retries it.
-  return data({status:'indeterminate',deliveryId,proposalId:proposal.proposalId,decision});
+  fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');
  }
  /** History item for one journal entry. Content is withheld when the caller no longer sees its client scopes. */
  async function item(life,principal,entry){
@@ -190,10 +164,11 @@ export function createIntentApprovalOwner(configuration){
     if(d===null)decision=null;else{validateShape('ApprovalDecision',d);if(d.proposalId===proposal.proposalId&&d.commandSha256===proposal.commandSha256)decision=d;}}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;}
   }
-  const reader=proposal.command.action==='document.draft'?documents:outcomes,receiver=proposal.command.action==='document.draft'?c.documents:c.outcomes;
+  const nativeTask=['task.create','task.update'].includes(proposal.command.action);
+  const reader=proposal.command.action==='document.draft'?documents:nativeTask?tasks:undefined,receiver=proposal.command.action==='document.draft'?c.documents:c.tasks;
   if(reader){
    try{const row=data(await life.run(signal=>reader.read.call(receiver,{proposal,principal,deliveryId:entry.deliveryId,signal,deadlineMs:life.deadline()})));
-    execution=row===null?null:row.state==='OUTCOME'?{state:'completed',outcome:proposal.command.action==='document.draft'?documentOutcome(row.outcome,proposal):row.outcome}:row.state==='UNKNOWN'?{state:'unknown'}:row.state==='CLAIMED'?{state:'executing'}:'unavailable';}
+    execution=row===null?null:row.state==='OUTCOME'?{state:'completed',outcome:proposal.command.action==='document.draft'?documentOutcome(row.outcome,proposal):nativeTask?nativeTaskOutcome(row.outcome,proposal,decision&&typeof decision==='object'?decision:undefined):row.outcome}:row.state==='UNKNOWN'?{state:'unknown'}:row.state==='CLAIMED'?{state:'executing'}:'unavailable';}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;}
   }
   const expired=!(instant(proposal.expiresAt)>c.now());

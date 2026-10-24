@@ -59,7 +59,7 @@ function mountIntents(f){
   else assert(url.endsWith('/decision'));
   return Response.json({decision:recorded,checkedAtMs:f.now(),revoked:f.state.approvalRevoked});
  }}});
- assert.equal(composition.state,'composed');assert.equal(bindApprovalSessions(context,f.bound().sessions),true);f.state.decisionReader=composition.readDecision;
+ assert.equal(composition.state,'composed');assert.equal(bindApprovalSessions(context,f.bound().sessions,f.bound().retention,f.bound().store),true);f.state.decisionReader=composition.readDecision;
  const post=(path,body)=>composition.application.handle(new Request('https://control.invalid'+path,{method:'POST',headers:{authorization:'Bearer synthetic-user','content-type':'application/json'},body:JSON.stringify(body)}));
  const request={conversationId:f.proposal.command.binding.conversationId,deliveryId:f.call.deliveryId,proposalId:f.proposal.proposalId,commandSha256:f.proposal.commandSha256,decision:'approved'};
  return {calls,list:()=>post(INTENT_PATHS.list,{conversationId:request.conversationId}),decide:()=>post(INTENT_PATHS.decide,request),deny(){denied=true;}};

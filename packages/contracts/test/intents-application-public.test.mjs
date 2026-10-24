@@ -5,9 +5,9 @@ import test from 'node:test';import assert from 'node:assert/strict';import {rea
 import {receiveIntentsRequest as request,receiveIntentsResponse as receive,IntentsResponseError,intentsMetadata,intentsPaths} from '../dist/intents-application.mjs';
 import {createIntentApprovalOwner} from '../../../apps/control/intents/approval.mjs';
 import {createIntentApplication,INTENT_PATHS} from '../../../apps/control/intents/http.mjs';
-import {createNativeIntentApprovals,createCommandJournalOutcomes} from '../../../apps/control/intents/native-approvals.mjs';
+import {createNativeIntentApprovals} from '../../../apps/control/intents/native-approvals.mjs';
 import {ProductError} from '../../../apps/control/product-access/errors.mjs';
-import {CommandError} from '../commands-0.2/execution-boundary.mjs';
+import {nativeTaskPortFixture} from '../../../apps/control/intents/test/native-task-port-fixture.mjs';
 import {commandComposition,mount,delivery,id,NOW,canonicalSha256} from '../../../apps/control/intents/test/fixture.mjs';
 import {fileURLToPath} from 'node:url';
 import * as protocol from '../../../apps/control/intents/application-protocol.mjs';
@@ -27,13 +27,12 @@ function syntheticCore(clock){
  }
  return {decisions,state,call};
 }
-function setup({enabled=true,optionsFor}={}){
+function setup({enabled=true,afterExecute}={}){
  let c;const clock=()=>c.f.state.now,core=syntheticCore(clock),native=createNativeIntentApprovals({call:core.call,now:clock,maxFactBytes:65536});
  c=commandComposition({approverActorId:'actor',approvalStore:{getCurrent:v=>native.getCurrent(v)}});
  const {store,mount:m}=mount({binding:c.binding,preparers:[c.preparer()],now:clock});
- const owner=createIntentApprovalOwner({journal:store.port,decisions:native,commandOptionsFor:optionsFor?async()=>optionsFor(c):async()=>c.commandOptions,
-  issueExecution:async({proposal})=>({execution:{...c.f.execution,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey},credential:'synthetic',checkedAtMs:clock(),expiresAtMs:NOW+30000}),
-  outcomes:createCommandJournalOutcomes({journal:c.f.journal,contextFor:()=>c.f.context}),now:clock,limits:{maxRequestMs:5000},enabled});
+ const tasks=nativeTaskPortFixture({now:clock,afterExecute});
+ const owner=createIntentApprovalOwner({journal:store.port,decisions:native,tasks:tasks.port,now:clock,limits:{maxRequestMs:5000},enabled});
  const principal={tenantId:c.binding.tenantId,actorId:c.binding.actorId,role:'member',permissions:[],clientIds:[],membershipRevision:'m1'};
  const gate={async admit({credential}){if(credential!=='token')throw new ProductError('ACCESS_DENIED');return {principal,expiresAtMs:NOW+60000};},async recheck({principal}){return principal;}};
  const app=createIntentApplication({owner,gate,now:clock,limits:{maxRequestMs:5000,maxRequestBytes:4096,maxResponseBytes:262144}});
@@ -45,7 +44,7 @@ function setup({enabled=true,optionsFor}={}){
   const text=await response.text(),status=response.status;const retained=proposal??proposalById.get(body.proposalId)??[...proposalById.values()][0];return {status,text,json:JSON.parse(text),admitted:await receive(route,status,text,route==='decide'?{request:body,proposal:retained}:{request:body})};
  }
  const listBody=(extra={})=>({conversationId,...extra});
- return {c,core,store,owner,principal,app,prepare,decideBody,exchange,listBody,conversationId};
+ return {c,core,store,tasks,owner,principal,app,prepare,decideBody,exchange,listBody,conversationId};
 }
 const refused=(code)=>e=>e instanceof IntentsResponseError&&e.code===code;
 const clone=value=>structuredClone(value);
@@ -53,10 +52,10 @@ const clone=value=>structuredClone(value);
 test('actual list and decide answers are admitted: awaiting, approve, executed, completed history, identical repeat',async()=>{
  const s=setup(),{proposal}=await s.prepare();
  const before=await s.exchange('list',s.listBody());assert.equal(before.status,200);assert.equal(before.admitted.intents[0].phase,'awaiting_approval');assert.equal(before.admitted.intents[0].decision,null);assert.equal(before.admitted.intents[0].execution,null);
- const body=s.decideBody(proposal),done=await s.exchange('decide',body);assert.equal(done.status,200);assert.equal(done.admitted.status,'executed');assert.equal(done.admitted.outcome.receipt.commandSha256,proposal.commandSha256);
+ const body=s.decideBody(proposal),done=await s.exchange('decide',body);assert.equal(done.status,200);assert.equal(done.admitted.status,'executed');assert.equal(done.admitted.outcome.execution.commandSha256,proposal.commandSha256);
  const after=await s.exchange('list',s.listBody());assert.equal(after.admitted.intents[0].phase,'completed');assert.deepEqual(after.admitted.intents[0].execution.outcome,done.admitted.outcome);
- const again=await s.exchange('decide',body);assert.deepEqual(again.admitted.outcome,done.admitted.outcome);assert.equal(s.c.f.state.fetches,1,'identical repeat replays; no second effect');
- assert(Object.isFrozen(done.admitted)&&Object.isFrozen(done.admitted.outcome.receipt)&&Object.isFrozen(after.admitted.intents));
+ const again=await s.exchange('decide',body);assert.deepEqual(again.admitted.outcome,done.admitted.outcome);assert.equal(s.tasks.state.effects,1,'identical repeat replays; no second effect');
+ assert(Object.isFrozen(done.admitted)&&Object.isFrozen(done.admitted.outcome.execution)&&Object.isFrozen(after.admitted.intents));
 });
 test('rejected answer is admitted only for a rejection and history reads rejected',async()=>{
  const s=setup(),{proposal}=await s.prepare(),body=s.decideBody(proposal,1,'rejected'),done=await s.exchange('decide',body);
@@ -100,8 +99,8 @@ test('actual error bodies and statuses are admitted: transport, membership, doma
  const lost=(s.core.state.loseRecordAck=true,await s.exchange('decide',body));assert.equal(lost.status,502);assert.deepEqual(lost.admitted,{error:{code:'APPROVAL_DECISION_UNKNOWN',outcome:'UNKNOWN'}});
  const repeat=await s.exchange('decide',body);assert.equal(repeat.admitted.status,'executed','identical repeat reconciles the uncertain acknowledgement');
  const off=setup({enabled:false});assert.equal((await off.exchange('list',off.listBody())).admitted.error.code,'INTENT_APPROVALS_DISABLED');
- let lose=true;const u=setup({optionsFor:c=>({...c.commandOptions,executor:{async execute(...call){const out=await c.commandOptions.executor.execute(...call);if(lose){lose=false;throw new CommandError('COMMAND_OUTCOME_UNKNOWN');}return out;}}})});
- const {proposal:p2}=await u.prepare(),b2=u.decideBody(p2),unknown=await u.exchange('decide',b2);assert.equal(unknown.status,502);assert.deepEqual(unknown.admitted,{error:{code:'COMMAND_OUTCOME_UNKNOWN',outcome:'UNKNOWN'}});
+ let lose=true;const u=setup({afterExecute(){if(lose){lose=false;throw Error('lost Core response');}}});
+ const {proposal:p2}=await u.prepare(),b2=u.decideBody(p2),unknown=await u.exchange('decide',b2);assert.equal(unknown.status,502);assert.deepEqual(unknown.admitted,{error:{code:'INTENT_EXECUTION_UNKNOWN',outcome:'UNKNOWN'}});
  assert.equal((await u.exchange('decide',b2)).admitted.status,'executed');
 });
 
@@ -116,7 +115,7 @@ const listMutations={
  'approver in another tenant':v=>{v.intents[0].proposal.requiredApprover.tenantId='other';},'lifetime not positive':v=>{v.intents[0].proposal.expiresAt=v.intents[0].proposal.createdAt;},
  'decision for another proposal':v=>{v.intents[0].decision={proposalId:id(993),commandSha256:v.intents[0].proposal.commandSha256,decision:'approved',decidedAt:'2026-10-13T07:00:00.000Z',expiresAt:'2026-10-13T07:01:00.000Z',approver:{tenantId:'tenant',actorId:'actor'},policyRevision:'p1'};v.intents[0].phase='approved';},
  'awaiting phase on a completed intent':v=>{v.intents[0].phase='awaiting_approval';},'completed phase without execution':v=>{v.intents[0].execution=null;v.intents[0].decision=null;v.intents[0].phase='completed';},
- 'receipt for another command':v=>{v.intents[0].execution.outcome.receipt.commandId=id(992);},'receipt for another hash':v=>{v.intents[0].execution.outcome.receipt.commandSha256='c'.repeat(64);},
+ 'receipt for another command':v=>{v.intents[0].execution.outcome.execution.proposalId=id(992);},'receipt for another hash':v=>{v.intents[0].execution.outcome.execution.commandSha256='c'.repeat(64);},
  'unknown phase':v=>{v.intents[0].phase='approved_by_model';},'unknown state':v=>{v.intents[0].state='running';},'non-canonical createdAt':v=>{v.intents[0].createdAt='2026-10-13T07:00:00Z';},
  'withheld with content':v=>{v.intents[0].withheld=true;},
 };
@@ -130,7 +129,7 @@ test('list response refuses more items than the requested limit',async()=>{
 const decideMutations={
  'extra property':v=>{v.approved=true;},'another delivery':v=>{v.deliveryId=delivery(9);},'another proposal':v=>{v.proposalId=id(991);},
  'decision for another hash':v=>{v.decision.commandSha256='d'.repeat(64);},'decision for another proposal':v=>{v.decision.proposalId=id(990);},'rejection decision for an approval':v=>{v.decision.decision='rejected';},
- 'rejected status for an approval':v=>{v.status='rejected';delete v.outcome;},'receipt for another hash':v=>{v.outcome.receipt.commandSha256='e'.repeat(64);},
+ 'rejected status for an approval':v=>{v.status='rejected';delete v.outcome;},'receipt for another hash':v=>{v.outcome.execution.commandSha256='e'.repeat(64);},
  'executed without an outcome':v=>{delete v.outcome;},'indeterminate with an outcome':v=>{v.status='indeterminate';},
 };
 for(const [name,mutate] of Object.entries(decideMutations))test('decide response refuses '+name,async()=>{
@@ -182,11 +181,11 @@ test('requests are closed objects with literal ids; identity never travels in th
 /** Review corrections (dot, PR191): decide answers bind to the request conversation and retained proposal; receipts and task results follow the canonical
  * executor outcome check; timestamps follow the producers' accepted spellings; the generated bundle does not depend on the checkout layout. */
 const outcomeMutations={
- 'receipt conversation':o=>{o.receipt.binding.conversationId=id(993);},'receipt tenant':o=>{o.receipt.binding.tenantId='other';},'receipt actor':o=>{o.receipt.binding.actorId='other';},
- 'receipt run':o=>{o.receipt.binding.runId=id(992);},'receipt idempotency key':o=>{o.receipt.idempotencyKey='other-key';},'receipt scopes':o=>{o.receipt.scopes[0].policyRevision='other';},
- 'receipt command id':o=>{o.receipt.commandId=id(991);},'receipt command hash':o=>{o.receipt.commandSha256='c'.repeat(64);},
- 'failed receipt':o=>{o.receipt.outcome='failed';},'indeterminate receipt':o=>{o.receipt.outcome='indeterminate';},'source transaction':o=>{o.receipt.sourceTransactionId='tx-1';},
- 'receipt completedAt spelling':o=>{o.receipt.completedAt=o.receipt.completedAt.replace(/\.\d{3}Z$/u,'Z');},
+ 'receipt conversation':o=>{o.execution.binding.conversationId=id(993);},'receipt tenant':o=>{o.execution.binding.tenantId='other';},'receipt actor':o=>{o.execution.binding.actorId='other';},
+ 'receipt run':o=>{o.execution.binding.runId=id(992);},'receipt idempotency key':o=>{o.execution.idempotencyKey='other-key';},'decision digest':o=>{o.execution.approvalDecisionSha256='f'.repeat(64);},
+ 'receipt command id':o=>{o.execution.proposalId=id(991);},'receipt command hash':o=>{o.execution.commandSha256='c'.repeat(64);},
+ 'failed receipt':o=>{o.execution.outcome='failed';},'indeterminate receipt':o=>{o.execution.outcome='indeterminate';},'source transaction':o=>{o.execution.sourceTransactionId='tx-1';},
+ 'receipt completedAt spelling':o=>{o.execution.completedAt=o.execution.completedAt.replace(/\.\d{3}Z$/u,'Z');},
  'result title':o=>{o.result.title='Other title';},'result client':o=>{o.result.clientId=id(990);},'result due date':o=>{o.result.dueDate='2026-10-14T00:00:00.000Z';},
 };
 const bounded=e=>e instanceof IntentsResponseError&&['INTENTS_SHAPE','INTENTS_CORRELATION'].includes(e.code);
@@ -194,12 +193,13 @@ for(const [name,mutate] of Object.entries(outcomeMutations)){
  test('executed decide answer refuses '+name,async()=>{const f=await executedFixture(),value=clone(f.done);mutate(value.outcome);await assert.rejects(receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal}),bounded);});
  test('completed history refuses '+name,async()=>{const f=await executedFixture(),value=clone(f.list);mutate(value.intents[0].execution.outcome);await assert.rejects(receive('list',200,JSON.stringify(value),{request:f.listBody}),bounded);});
 }
-test('attempt, worker and fence may differ from the original binding; the stable binding may not',async()=>{
- const f=await executedFixture(),value=clone(f.done),binding=value.outcome.receipt.binding;binding.attemptId=id(989);binding.workerId=id(988);binding.writerFence=7;
- assert.equal((await receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal})).status,'executed');
- const history=clone(f.list),b=history.intents[0].execution.outcome.receipt.binding;b.attemptId=id(989);b.workerId=id(988);b.writerFence=7;
- assert.equal((await receive('list',200,JSON.stringify(history),{request:f.listBody})).intents[0].phase,'completed');
+test('native result retains the exact original attempt, worker and fence',async()=>{
+ const f=await executedFixture(),value=clone(f.done),binding=value.outcome.execution.binding;binding.attemptId=id(989);binding.workerId=id(988);binding.writerFence=7;
+ await assert.rejects(receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal}),bounded);
+ const history=clone(f.list),b=history.intents[0].execution.outcome.execution.binding;b.attemptId=id(989);b.workerId=id(988);b.writerFence=7;
+ await assert.rejects(receive('list',200,JSON.stringify(history),{request:f.listBody}),bounded);
 });
+
 test('decide answers are bound to the request conversation and the retained proposal',async()=>{
  const f=await executedFixture(),text=JSON.stringify(f.done),ok={request:f.body,proposal:f.proposal};
  assert.equal((await receive('decide',200,text,ok)).status,'executed');
@@ -226,23 +226,23 @@ test('rejected and indeterminate replies are bound by the retained proposal: app
 });
 for(const action of ['memory.propose','artifact.file'])test('a task result is never interpreted for a '+action+' proposal',async()=>{
  const f=await executedFixture(),value=clone(f.list),item=value.intents[0];item.proposal.command.action=action;
- const hash=canonicalSha256(item.proposal.command);item.proposal.commandSha256=hash;item.execution.outcome.receipt.commandSha256=hash;
+ const hash=canonicalSha256(item.proposal.command);item.proposal.commandSha256=hash;item.execution.outcome.execution.commandSha256=hash;
  await assert.rejects(receive('list',200,JSON.stringify(value),{request:f.listBody}),refused('INTENTS_CORRELATION'));
- const retained=clone(f.proposal);retained.command.action=action;retained.commandSha256=hash;const done=clone(f.done);done.outcome.receipt.commandSha256=hash;
+ const retained=clone(f.proposal);retained.command.action=action;retained.commandSha256=hash;const done=clone(f.done);done.outcome.execution.commandSha256=hash;
  await assert.rejects(receive('decide',200,JSON.stringify(done),{request:{...f.body,commandSha256:hash},proposal:retained}),refused('INTENTS_CORRELATION'));
 });
 test('a task.create proposal must carry canonical, normalized arguments and no attachments',async()=>{
  const f=await executedFixture();
  for(const mutate of [item=>{item.proposal.command.arguments.title=' padded ';},item=>{item.proposal.command.arguments.extra=true;},item=>{item.proposal.command.attachments=[{objectId:id(982),versionId:'v1',sha256:'a'.repeat(64),bytes:1,scopes:item.proposal.command.scopes}];}]){
-  const value=clone(f.list),item=value.intents[0];mutate(item);item.proposal.commandSha256=canonicalSha256(item.proposal.command);item.execution.outcome.receipt.commandSha256=item.proposal.commandSha256;
+  const value=clone(f.list),item=value.intents[0];mutate(item);item.proposal.commandSha256=canonicalSha256(item.proposal.command);item.execution.outcome.execution.commandSha256=item.proposal.commandSha256;
   await assert.rejects(receive('list',200,JSON.stringify(value),{request:f.listBody}),bounded);
  }
 });
 test('owner-valid timestamps without milliseconds are admitted; impossible or offset dates are refused',async()=>{
  const f=await executedFixture(),plain=iso=>iso.replace(/\.\d{3}Z$/u,'Z'),later=iso=>plain(new Date(Date.parse(iso)+1500).toISOString());
- const done=clone(f.done);done.decision.decidedAt=later(done.decision.decidedAt);done.decision.expiresAt=later(done.decision.expiresAt);
+ const done=clone(f.done);done.decision.decidedAt=later(done.decision.decidedAt);done.decision.expiresAt=later(done.decision.expiresAt);done.outcome.execution.approvalDecisionSha256=canonicalSha256(done.decision);done.outcome.execution.completedAt=new Date(Date.parse(done.decision.decidedAt)).toISOString();
  assert.equal((await receive('decide',200,JSON.stringify(done),{request:f.body,proposal:f.proposal})).status,'executed');
- const history=clone(f.list),item=history.intents[0];item.proposal.createdAt=plain(item.proposal.createdAt);item.proposal.expiresAt=plain(item.proposal.expiresAt);item.decision.decidedAt=plain(item.decision.decidedAt);item.decision.expiresAt=plain(item.decision.expiresAt);
+ const history=clone(f.list),item=history.intents[0];item.proposal.createdAt=plain(item.proposal.createdAt);item.proposal.expiresAt=plain(item.proposal.expiresAt);item.decision.decidedAt=plain(item.decision.decidedAt);item.decision.expiresAt=plain(item.decision.expiresAt);item.execution.outcome.execution.approvalDecisionSha256=canonicalSha256(item.decision);
  assert.equal((await receive('list',200,JSON.stringify(history),{request:f.listBody})).intents[0].phase,'completed');
  for(const bad of ['2026-13-45T07:00:00Z','2026-10-13T25:00:00Z','not-a-date','2026-10-13T07:00:00+00:00','2026-10-13']){
   const value=clone(f.done);value.decision.decidedAt=bad;await assert.rejects(receive('decide',200,JSON.stringify(value),{request:f.body,proposal:f.proposal}),e=>e instanceof IntentsResponseError);
@@ -268,7 +268,7 @@ test('generated bundle is independent of the checkout layout',async()=>{
 });
 test('metadata, paths and vocabularies are the handlers\' own, and approval authority is not widened',async()=>{
  assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
- assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','document.draft']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
+ assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','task.update','document.draft']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
  assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,2,'no approve/execute route exists in this contract');
  assert(Object.isFrozen(intentsMetadata)&&Object.isFrozen(intentsMetadata.errorStatuses));
  const schema=JSON.parse(await readFile(new URL('../dist/intents-application.schema.json',import.meta.url),'utf8')),text=JSON.stringify(schema);
@@ -284,7 +284,7 @@ test('actual memory.propose and artifact.file proposals are admitted as held: li
  const memory=memoryComposition({scope:'client'}),filing=await attachmentFilingFixture();
  const cases=[['memory.propose',memory.f.binding,memory.f.state,memory.intentStore,async()=>(await memory.prepare()).proposal],['artifact.file',filing.f.binding,filing.f.state,filing.mounted.store,async()=>(await filing.prepare()).proposal]];
  for(const [action,binding,clock,store,prepare] of cases){
-  const proposal=await prepare(),owner=createIntentApprovalOwner({journal:store.port,commandOptionsFor:async()=>{throw Error('never called');},now:()=>clock.now,limits:{maxRequestMs:5000},enabled:true});
+  const proposal=await prepare(),owner=createIntentApprovalOwner({journal:store.port,now:()=>clock.now,limits:{maxRequestMs:5000},enabled:true});
   const principal={tenantId:binding.tenantId,actorId:binding.actorId,role:'member',permissions:[],clientIds:[id(9)],membershipRevision:'m1'},at='http://127.0.0.1';
   const gate={async admit(){return {principal,expiresAtMs:NOW+60000};},async recheck({principal}){return principal;}};
   const app=createIntentApplication({owner,gate,now:()=>clock.now,limits:{maxRequestMs:5000,maxRequestBytes:4096,maxResponseBytes:262144}});

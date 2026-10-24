@@ -4,6 +4,7 @@ import {createApprovalMetadataReadback} from '../readback.mjs';
 import {createPostgresApprovalMetadataReader} from '../postgres-store.mjs';
 import {makePayload,canonicalSha256 as hash} from '../binding.mjs';
 import {allocatedApplicationFixture,binding,scopes,id} from '../../../conversations/test/application-fixture.mjs';
+import {normalizeTaskCreateInput,normalizeTaskUpdateInput} from '../../../../../packages/contracts/commands-0.2/validate.mjs';
 
 async function fixture(t,{general=false}={}){
  const admittedScopes=general?[{...scopes[0],kind:'private-user',resourceId:binding.actorId}]:scopes;
@@ -33,6 +34,14 @@ for(const general of [false,true])test(`readback returns actual ${general?'Gener
  assert.equal(f.state.queries[0],'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');assert.ok(f.state.queries.includes("SET LOCAL statement_timeout = '5s'"));
  const select=f.state.queries.find(q=>typeof q==='object');assert.equal(select.query_timeout,5000);assert.deepEqual(select.values,[binding.tenantId,binding.actorId,f.input.proposalId]);
  assert.equal(f.state.queries.at(-1),'COMMIT');assert.deepEqual(f.state.releases,[undefined]);assert.equal(f.state.ends,0);
+});
+for(const action of ['task.create','task.update'])for(const general of [false,true])test(`native ${action} metadata readback preserves raw normalization and ${general?'General':'client'} scope`,async t=>{
+ const f=await fixture(t,{general}),raw=action==='task.create'?{title:'  Native task  '}:{taskId:id(812).toUpperCase(),title:'  Changed task  ',status:'open'};
+ const context=action==='task.create'?{binding,clientResolution:null}:{binding};
+ const args=(action==='task.create'?normalizeTaskCreateInput:normalizeTaskUpdateInput)(raw,context);
+ f.state.payload=makePayload({...f.state.payload.record,action,operation:{id:action==='task.create'?'create_task':'update_task',version:'0.2.0'},request:raw,inputSha256:hash({arguments:args,attachments:[]})},context);
+ const result=await f.reader.read(f.input);
+ assert.deepEqual(result.metadata.record.request,raw);assert.equal(result.metadata.commandSha256,f.state.payload.commandSha256);assert.deepEqual(result.run.scopes,f.scopes);
 });
 for(const failure of ['absent','corrupt','foreign-binding','scope','cancelled','failed','suppressed-before','suppressed-after','select','COMMIT','ROLLBACK','release'])test(`metadata readback refuses ${failure} without an authorization or partial result`,async t=>{
  const f=await fixture(t);

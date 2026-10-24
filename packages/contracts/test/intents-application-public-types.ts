@@ -10,8 +10,10 @@ const decided=await receiveIntentsResponse('decide',200,'{}',{request:decide,pro
 const exactDecide:IntentsDecideResponse|IntentsErrorResponse=decided;void exactDecide;
 if(!('error'in decided)&&decided.status==='executed'){
  if('receipt'in decided.outcome){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
- else {const versionId:string=decided.outcome.version.versionId;void versionId;}
+ else if('version'in decided.outcome){const versionId:string=decided.outcome.version.versionId;void versionId;}
+ else {const kind:'native-task'=decided.outcome.execution.kind;const taskId:string=decided.outcome.result.id;void kind;void taskId;}
 }
+if(retained.command.action==='task.update'){const taskId:string=retained.command.arguments.taskId;void taskId;}
 if(retained.command.action==='document.draft'){
  const kind:'0.2.0'=retained.command.contractVersion,format:'docx'=retained.command.arguments.format;
  const preparation:string=retained.command.arguments.preparationSha256;void kind;void format;void preparation;

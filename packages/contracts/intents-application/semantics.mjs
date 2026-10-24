@@ -21,6 +21,12 @@ async function proposal(value,conversationId){
  if(await sha(command)!==value.commandSha256||value.requiredApprover.tenantId!==command.binding.tenantId||command.binding.conversationId!==conversationId||
   command.scopes.some(scope=>scope.tenantId!==command.binding.tenantId)||parsed(value.expiresAt)<=parsed(value.createdAt))conflict();
  if(command.action==='task.create'&&(!validators.IntentsTaskCreateArguments(command.arguments)||command.attachments.length!==0||command.arguments.title.trim()!==command.arguments.title))conflict();
+ if(command.action==='task.update'){
+  if(!validators.IntentsTaskUpdateArguments(command.arguments)||command.attachments.length!==0||command.arguments.taskId.toLowerCase()!==command.arguments.taskId)conflict();
+  const patch=command.arguments.patch;
+  if(patch.title!==undefined&&patch.title.trim()!==patch.title)conflict();
+  if(patch.dueDate!==undefined&&exact(patch.dueDate)%86400000!==0)conflict();
+ }
  if(command.action==='document.draft') {
   exact(value.createdAt);exact(value.expiresAt);
   if(command.arguments.title.trim()!==command.arguments.title||command.arguments.title.length>200||
@@ -45,9 +51,24 @@ function documentOutcome(value,command) {
  exact(version.createdAt);
 }
 /** A completed outcome must belong to the retained command's actual task or document owner. */
-function outcome(value,retained){
+async function outcome(value,retained,decisionValue){
  const command=retained.command,receipt=value.receipt,result=value.result;
  if(command.action==='document.draft')return documentOutcome(value,command);
+ if(value.execution?.kind==='native-task'){
+  const e=value.execution;
+  if(e.proposalId!==retained.proposalId||e.commandSha256!==retained.commandSha256||e.idempotencyKey!==command.idempotencyKey||!same(e.binding,command.binding)||
+   decisionValue&&e.approvalDecisionSha256!==await sha(decisionValue))conflict();
+  const completed=exact(e.completedAt);
+  if(completed<parsed(retained.createdAt)||decisionValue&&completed<parsed(decisionValue.decidedAt))conflict();
+  if(command.action==='task.create'){
+   exact(result.createdAt);
+   if(result.status!=='todo'||['title','clientId','dueDate'].some(key=>result[key]!==command.arguments[key]))conflict();
+  }else if(command.action==='task.update'){
+   exact(result.updatedAt);if(result.dueDate!==null&&exact(result.dueDate)%86400000!==0)conflict();
+   if(result.id.toLowerCase()!==command.arguments.taskId||Object.entries(command.arguments.patch).some(([key,value])=>result[key]!==value))conflict();
+  }else conflict();
+  return;
+ }
  if(command.action!=='task.create'||!receipt||!result)conflict();
  exact(receipt.completedAt);exact(result.createdAt);
  if(receipt.commandId!==command.commandId||receipt.commandSha256!==retained.commandSha256||receipt.idempotencyKey!==command.idempotencyKey||!same(receipt.scopes,command.scopes))conflict();
@@ -70,7 +91,7 @@ async function item(value,conversationId){
  if(!Object.hasOwn(value,'proposal'))return;
  await proposal(value.proposal,conversationId);
  if(value.decision!==null&&typeof value.decision==='object')decision(value.decision,value.proposal);
- if(value.execution!==null&&typeof value.execution==='object'&&value.execution.state==='completed')outcome(value.execution.outcome,value.proposal);
+ if(value.execution!==null&&typeof value.execution==='object'&&value.execution.state==='completed')await outcome(value.execution.outcome,value.proposal,value.decision&&typeof value.decision==='object'?value.decision:undefined);
  phase(value);
 }
 export async function list(value,request){
@@ -94,6 +115,6 @@ export async function decide(value,request,retained){
  // admitDecision: the owner's decision is for this choice, by the proposal's required approver, not before the proposal existed.
  if(d.decision!==request.decision||!same(d.approver,retained.requiredApprover)||parsed(d.decidedAt)<parsed(retained.createdAt))conflict();
  if((value.status==='rejected')!==(request.decision==='rejected'))conflict();
- if(value.status==='executed')outcome(value.outcome,retained);
+ if(value.status==='executed')await outcome(value.outcome,retained,d);
  return value;
 }

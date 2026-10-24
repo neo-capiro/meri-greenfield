@@ -4,6 +4,7 @@ const UUID='^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$',DELI
 export const INTENT_PHASES=Object.freeze(['awaiting_approval','approved','rejected','expired','executing','completed','unknown','unknown_decision']);
 const pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const task=name=>({$ref:'urn:meri:commands:task-create:0.2.0#/$defs/'+name});
+const update=name=>({$ref:'urn:meri:commands:task-update:0.2.0#/$defs/'+name});
 const document=name=>({$ref:'urn:meri:commands:document-draft:0.2.0#/$defs/'+name});
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
@@ -15,10 +16,14 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{const:'0.2.0'}}),
  IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
  IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
- IntentsProposal:{oneOf:[pub('ApprovalProposal'),document('DocumentDraftApprovalProposal')]},
+ IntentsProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),document('DocumentDraftApprovalProposal')]},
  IntentsDecision:pub('ApprovalDecision'),
  IntentsTaskCreateArguments:task('TaskCreateArguments'),
- IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),artifact('ArtifactCreatedResult')]},
+ IntentsTaskUpdateArguments:update('TaskUpdateArguments'),
+ IntentsNativeTaskOutcome:object({execution:object({kind:{const:'native-task'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
+  idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),completedAt:{type:'string',pattern:MILLIS},approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),
+  result:{oneOf:[task('TaskCreateResult'),update('TaskUpdateResult')]}}),
+ IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),ref('IntentsNativeTaskOutcome'),artifact('ArtifactCreatedResult')]},
  IntentsExecution:{oneOf:[object({state:{const:'executing'}}),object({state:{const:'unknown'}}),object({state:{const:'completed'},outcome:ref('IntentsExecutionOutcome')})]},
  IntentsPendingItem:item({state:{const:'pending'}}),
  IntentsUnknownItem:item({state:{const:'unknown'}}),

@@ -93,6 +93,9 @@
           "$ref": "#/$defs/Canonical_ApprovalProposal_d1a3e74f"
         },
         {
+          "$ref": "#/$defs/Canonical_TaskUpdateApprovalProposal_1f70e582"
+        },
+        {
           "$ref": "#/$defs/Canonical_DocumentDraftApprovalProposal_834c2460"
         }
       ]
@@ -102,6 +105,70 @@
     },
     "IntentsTaskCreateArguments": {
       "$ref": "#/$defs/Canonical_TaskCreateArguments_1202c301"
+    },
+    "IntentsTaskUpdateArguments": {
+      "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+    },
+    "IntentsNativeTaskOutcome": {
+      "type": "object",
+      "properties": {
+        "execution": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "native-task"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "commandSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "completedAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            "approvalDecisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "kind",
+            "proposalId",
+            "commandSha256",
+            "idempotencyKey",
+            "binding",
+            "completedAt",
+            "approvalDecisionSha256"
+          ],
+          "additionalProperties": false
+        },
+        "result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Canonical_TaskCreateResult_0501c509"
+            },
+            {
+              "$ref": "#/$defs/Canonical_TaskUpdateResult_029549a8"
+            }
+          ]
+        }
+      },
+      "required": [
+        "execution",
+        "result"
+      ],
+      "additionalProperties": false
     },
     "IntentsExecutionOutcome": {
       "oneOf": [
@@ -120,6 +187,9 @@
             "result"
           ],
           "additionalProperties": false
+        },
+        {
+          "$ref": "#/$defs/IntentsNativeTaskOutcome"
         },
         {
           "$ref": "#/$defs/Canonical_ArtifactCreatedResult_183a755e"
@@ -923,6 +993,138 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_TaskUpdateArguments_48509a7a": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mode": {
+          "const": "unconditional_patch"
+        },
+        "patch": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            },
+            "status": {
+              "enum": [
+                "todo",
+                "in_progress",
+                "done",
+                "blocked",
+                "canceled"
+              ]
+            },
+            "dueDate": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "required": [
+        "taskId",
+        "mode",
+        "patch"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateCommand_b73e3ce0": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "const": "task.update"
+        },
+        "arguments": {
+          "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+        },
+        "attachments": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateApprovalProposal_1f70e582": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_TaskUpdateCommand_b73e3ce0"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_DocumentDraftArguments_deaaba57": {
       "type": "object",
       "properties": {
@@ -1141,6 +1343,118 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_TaskCreateResult_0501c509": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "status": {
+          "const": "todo"
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "dueDate",
+        "clientId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateResult_029549a8": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "todo",
+            "in_progress",
+            "done",
+            "blocked",
+            "canceled"
+          ]
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "dueDate",
+        "clientId",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_CommandReceipt_ac49ee1e": {
       "type": "object",
       "properties": {
@@ -1212,60 +1526,6 @@
         "completedAt",
         "scopes",
         "authorizationDecisionId"
-      ],
-      "additionalProperties": false
-    },
-    "Canonical_TaskCreateResult_0501c509": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 240
-        },
-        "status": {
-          "const": "todo"
-        },
-        "dueDate": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "clientId": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "createdAt": {
-          "type": "string",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "status",
-        "dueDate",
-        "clientId",
-        "createdAt"
       ],
       "additionalProperties": false
     },

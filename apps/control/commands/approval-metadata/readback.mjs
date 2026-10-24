@@ -1,4 +1,4 @@
-/** Core-only document approval facts. Core decides access; this owner returns
+/** Core-only native command approval facts. Core decides access; this owner returns
  * existing immutable metadata and the actual run, never a new approval. */
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../../packages/contracts/validate.mjs';
@@ -21,7 +21,7 @@ export function createApprovalMetadataReadback(configuration){
   try{
    await life.run(()=>servable(subject));life.check();
    const metadata=immutablePayload(await life.run(()=>readMetadata(key,life.check))),record=metadata.record;
-   if(record.action!=='document.draft'||record.proposalId!==v.proposalId||!same(record.binding,binding))throw fault();
+   if(!['document.draft','task.create','task.update'].includes(record.action)||record.proposalId!==v.proposalId||!same(record.binding,binding))throw fault();
    const saved=await life.run(()=>readRun(binding,{after:0,limit:1},life.check)),run=data(saved.run);validateShape('Run',run);
    if(!same(run.binding,binding)||!same(run.scopes,record.scopes)||!['queued','starting','running','paused','waiting-for-approval','completed'].includes(run.state))throw fault();
    await life.run(()=>servable(subject));life.check();
