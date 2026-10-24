@@ -11,13 +11,12 @@ const configuration={sourceEnabled:false,http:{hostname:'127.0.0.1',port:0,front
 test('actual control binds memory to its canonical retention gate without opening the unrecovered fence',async()=>{
  let context;
  const factory=createProductPortsFactory({families:[['memory',createMemoryFamilyWith({readSecret:unused,fetchImpl:unused})]]});
- const assembly=assembleControl({configuration,pool:{query:unused,connect:unused},client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},
+ const assembly=assembleControl({configuration,pool:{query:unused,connect:unused},client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},execution:{authenticate:unused},
   canonicalProductPorts:{conversationMembership:{admit:unused,recheck:unused}},
   productPortsFactory(c){context=c;const ports=factory(c);assert.equal(memoryComposition(c).retentionBound(),false);return ports;}});
  try{
   assert.equal(memoryComposition(context).retentionBound(),true);
-  assert.equal(memoryComposition(context).commandRetentionBound(),false,'production assembly has no complete memory command retention owner');
-  assert.equal(memoryComposition(context).commandOptionsFor,null,'production assembly has no live command relay');
+  assert.equal(memoryComposition(context).intentPreparersFor,null,'production assembly has no live session relay');
   assert.equal(bindMemoryRetention(context,assembly.retention.gate),true,'exact gate identity is shared');
   assert.equal(assembly.productReadiness().owners.find(o=>o.name==='memory.producer').state,'composed');
   assert.ok(assembly.productReadiness().missingOwners.includes('retention.ledgerSink'));
