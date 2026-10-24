@@ -3,20 +3,18 @@
  * MERI_REVIEW_SOURCE_ROOT=<worktree root> (the shared fixture harness requires it) and Python 3 with `cryptography`. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';
+import {createHash,X509Certificate} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {mkdtemp,readFile,writeFile,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
-import {writeRendered,main,withPosixPaths,SOURCE_ROOT,ROLES,RUNTIME_USERS,PATHS} from './render-material.mjs';
+import {writeRendered,main,withPosixPaths,parseDeploymentInputs,SOURCE_ROOT,ROLES,RUNTIME_USERS,PATHS} from './render-material.mjs';
 import {createRenderFixture,TD,FAKE_PASSWORDS,IDENTITY,python} from './render-material.fixture.mjs';
 import {validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 import {CONTROL_NODE_CA_FILE,productControlTrustsCompositeCa} from '../../../apps/runtime/control-ca-bundle.mjs';
-import {compilePreparedCandidateConfiguration} from '../../../apps/runtime/prepared-candidate-config.mjs';
-import {parseTemporalIssuerRuntimeConfiguration,startTemporalIssuerRuntime} from '../../../apps/runtime/temporal-issuer-cli.mjs';
+import {compileAgentCoreConfiguration} from '../../../apps/runtime/agentcore-configuration.mjs';
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
-import {assertFirstRunGrantBindings} from '../../../apps/runtime/prepared-candidate.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const fixture=createRenderFixture();
@@ -25,7 +23,33 @@ async function setup(){inputs=await fixture.setup();work=fixture.work;pkiDir=fix
 async function render(change,options){await setup();return fixture.render(change,options);}
 test.after(()=>fixture.cleanup());
 
-test('all three remaining roles render from throwaway PKI and pass every repository validator and material plan',async t=>{
+test('the current input example remains pending and PKI produces only retained control and Temporal material',async()=>{
+ const example=JSON.parse(await readFile(new URL('./deployment-inputs.json',import.meta.url),'utf8'));
+ assert.throws(()=>parseDeploymentInputs(example),{code:'RENDER_PENDING_VALUE'});
+ assert.deepEqual(example.agentcore,{runtimeArn:'PENDING_QUALIFIED_AGENTCORE_RUNTIME_ARN',runtimeVersion:'PENDING_QUALIFIED_AGENTCORE_RUNTIME_VERSION',qualifier:'preview'});
+ assert.deepEqual(Object.keys(example.origins).sort(),['controlPublicOrigin','temporalAddress']);
+ for(const key of ['core','checkpoint'])assert.equal(Object.hasOwn(example,key),false);
+ assert.ok(Object.keys(example.foundation).every(key=>!/^(Runner|Owner|Proxy|Issuer)/u.test(key)));
+ await setup();
+ const names=await readdir(pkiDir),pins=JSON.parse(await readFile(join(pkiDir,'pins.json'),'utf8')).certificates;
+ assert.ok(names.every(name=>!name.startsWith('runner-')));
+ assert.equal(Object.hasOwn(pins,'runner-ca'),false);
+ for(const stem of ['server-ca','control-private','temporal-frontend-ca','temporal-frontend','temporal-client-ca','temporal-client-control','temporal-client-worker','temporal-client-schedule','temporal-internode-ca','temporal-internode']){
+  assert.ok(names.includes(`${stem}.pem`),stem);assert.ok(names.includes(`${stem}.key.pem`),stem);assert.ok(pins[stem],stem);
+ }
+ const clientCa=new X509Certificate(await readFile(join(pkiDir,'temporal-client-ca.pem')));
+ for(const role of ['control','worker','schedule']){
+  const cert=new X509Certificate(await readFile(join(pkiDir,`temporal-client-${role}.pem`)));
+  assert.equal(cert.subject,`CN=meri-temporal-${role}`);assert.equal(cert.ca,false);
+  assert.equal(cert.checkIssued(clientCa),true);assert.equal(cert.verify(clientCa.publicKey),true);
+  assert.deepEqual(cert.keyUsage,['1.3.6.1.5.5.7.3.2']);
+ }
+ assert.equal(names.some(name=>name.startsWith('issuer-')),false);
+ const again=spawnSync(python,['-I',join(SOURCE_ROOT,'infra/product-preview/first-chat/pki.py'),pkiDir],{encoding:'utf8',timeout:120000});
+ assert.notEqual(again.status,0,'existing private directory must never be overwritten');
+});
+
+test('both application roles render from throwaway PKI and pass every repository validator and material plan',async t=>{
  const {roles,summary}=await render();
  t.diagnostic('fileCount/bundleBytes/expectedBytes '+JSON.stringify(Object.fromEntries(ROLES.map(r=>[r,[summary.roles[r].fileCount,summary.roles[r].bundleBytes,summary.roles[r].expectedBytes]]))));
  const parsed=role=>JSON.parse(roles[role].configBytes.toString('utf8'));
@@ -33,12 +57,11 @@ test('all three remaining roles render from throwaway PKI and pass every reposit
  const control=parsed('control');
  withPosixPaths(()=>{
  for(const role of ['control','temporal-worker'])assert.ok(validateConfiguration(parsed(role),role));
- compilePreparedCandidateConfiguration(control.nativeCandidate,control.versions);
- assert.equal(productWorkerTrustsPinnedServerCa(parsed('temporal-worker'),{NODE_EXTRA_CA_CERTS:PATHS.issuerCa}),true);
+ compileAgentCoreConfiguration(control.agentcore);
+ assert.equal(productWorkerTrustsPinnedServerCa(parsed('temporal-worker'),{NODE_EXTRA_CA_CERTS:PATHS.serverCa}),true);
  assert.equal(productControlTrustsCompositeCa(summary.control),true);
  assert.deepEqual(summary.wiring.control.environment.find(e=>e.name==='NODE_EXTRA_CA_CERTS'),{name:'NODE_EXTRA_CA_CERTS',value:CONTROL_NODE_CA_FILE});
  assert.deepEqual(summary.wiring.control.init.command,['write','--control-node-ca']);
- parseTemporalIssuerRuntimeConfiguration(parsed('temporal-issuer'));
  for(const role of ROLES){
   const plan=compileProductMaterialPlan({role,configuration:parsed(role),runtimeUser:RUNTIME_USERS[role]});
   assert.deepEqual(plan.requiredFiles.map(f=>f.path).sort(),Object.keys(roles[role].expected.sha256ByPath).sort(),role);
@@ -50,44 +73,27 @@ test('all three remaining roles render from throwaway PKI and pass every reposit
   assert.throws(()=>validateStaticProductDelivery({expected:roles[role].expected,bundle:tampered}),/STATIC_INIT_/u);
  }
  });
- // Runtime grant rule (prepared-candidate.mjs) on the delivered capability files.
+ // Delivered control capability stays private; user authority is not rendered.
  const file=path=>Buffer.from(roles.control.bundle.files.find(f=>f.path===path).base64,'base64').toString('utf8');
- assertFirstRunGrantBindings(control.nativeCandidate.grantIntents,control.nativeCandidate.grantId,{control:file(PATHS.controlCapability),task:file(PATHS.taskCapability)});
+ assert.ok(file(PATHS.controlCapability).length>=32);
  assert.match(file(PATHS.database),/^postgresql:\/\/meri_control_runtime:synthetic-control%3Ap%40ss%2Fword%3F%23@/u);
- assert.equal(control.nativeCandidate.grantIntents.length,1);
- assert.equal(Object.hasOwn(control.nativeCandidate,'proxyCredentialFile'),false);
- assert.deepEqual(Object.keys(roles),['control','temporal-worker','temporal-issuer']);
- // Topology pins.
- assert.equal(control.temporal.issuerBootstrap.configuration.serverCaSha256,summary.pinsDer['server-ca']);
- assert.equal(control.temporal.issuerBootstrap.configuration.clientCaSha256,summary.pinsDer['issuer-client-ca']);
- assert.equal(roles.control.expected.sha256ByPath[PATHS.controlCa],summary.runnerPoststart.MERI_POSTSTART_CA_SHA256);
- assert.equal(roles['temporal-worker'].expected.sha256ByPath[PATHS.issuerCa],summary.runnerPoststart.MERI_POSTSTART_CA_SHA256);
- assert.equal(Object.hasOwn(control.nativeCandidate.preparationIntent,'launchTemplate'),false);
+ assert.deepEqual(control.agentcore.identity,{origin:inputs.core.coreOrigin});
+ for(const key of ['nativeCandidate','taskRouter','commandContext'])assert.equal(Object.hasOwn(control,key),false);
+ for(const key of ['identity','taskCapability','runnerCa','runnerCaKey','controlCa','readsInstallationMeasurement'])assert.equal(Object.hasOwn(PATHS,key),false);
+ assert.deepEqual(Object.keys(roles),['control','temporal-worker']);
+ // Native TLS only; the same server CA anchors the private control channel.
+ assert.deepEqual(Object.keys(control.temporal).sort(),['address','namespace','taskQueue','tls']);
+ assert.equal(control.native.serverCaSha256,summary.pinsDer['server-ca']);
+ assert.equal(control.native.serverCaFile,PATHS.serverCa);
+ assert.equal(roles.control.expected.sha256ByPath[PATHS.serverCa],roles['temporal-worker'].expected.sha256ByPath[PATHS.serverCa]);
+ assert.equal(Object.hasOwn(summary,'runnerPoststart'),false);
  assert.equal(Object.hasOwn(summary.taskDefinitionConfigPins,'MERI_PRODUCT_OWNER_CONFIG_SHA256'),false);
- assert.equal(summary.roles['temporal-issuer'].taskDefinitionArn,TD('issuer'));
- const authority=parsed('temporal-issuer').issuer.taskAuthority;
- assert.equal(Object.hasOwn(authority,'securityGroupIds'),false);assert.deepEqual(authority.privateSubnetIds,inputs.deployment.privateSubnetIds);
- assert.deepEqual(authority.roles.control.securityGroupIds,['sg-05a350c100574b21f','sg-0c3da023e9e8fb292','sg-0d5b5286baf28242e']);
- assert.deepEqual(authority.roles['temporal-worker'].securityGroupIds,['sg-00111cd0e475badfa','sg-0c3da023e9e8fb292']);
- assert.equal(authority.roles['temporal-worker'].taskRoleArn,null);assert.equal(authority.roles['temporal-worker'].containerName,'temporal-worker');
- // Both roles bootstrap during their own service rollout; the issuer must not demand rolloutState COMPLETED.
- assert.equal(authority.roles.control.allowPrimaryInProgress,true);assert.equal(authority.roles['temporal-worker'].allowPrimaryInProgress,true);
- assert.deepEqual(control.nativeCandidate.taskRequest.networkConfiguration.awsvpcConfiguration,{subnets:[inputs.deployment.privateSubnetIds[0]],securityGroups:['sg-098fc4f2ac89aa943'],assignPublicIp:'DISABLED'});
+ assert.equal(Object.hasOwn(summary.roles,'temporal-issuer'),false);
+ assert.deepEqual(summary.agentcore,{...inputs.deployment.agentcore,policyRevision:control.agentcore.policyRevision,runWindowMs:control.agentcore.runWindowMs});
  // The summary carries no secret: no password, capability token, identity credential or private key.
  const text=JSON.stringify(summary);
- for(const secret of [...Object.values(FAKE_PASSWORDS),IDENTITY,file(PATHS.taskCapability),file(PATHS.controlCapability),'PRIVATE KEY'])assert.equal(text.includes(secret),false);
+ for(const secret of [...Object.values(FAKE_PASSWORDS),IDENTITY,file(PATHS.controlCapability),'PRIVATE KEY'])assert.equal(text.includes(secret),false);
  for(const role of ROLES)assert.equal(JSON.stringify(roles[role].expected).includes('PRIVATE KEY'),false);
-});
-
-test('temporal-issuer runtime admits the delivered database file and exact config bytes without any connection',async()=>{
- const {roles}=await render(),issuer=roles['temporal-issuer'],files=new Map(issuer.bundle.files.map(f=>[f.path,Buffer.from(f.base64,'base64')]));
- const pools=[];
- const runtime=await startTemporalIssuerRuntime({configurationBytes:issuer.configBytes,configurationSha256:issuer.configSha256,environment:{MERI_TEMPORAL_ISSUER_REQUIRED:'1'},testOwners:{
-  readMaterial:async path=>Buffer.from(files.get(path)),
-  createPool:options=>{pools.push(options);return {async connect(){throw Error('no connection in tests');},async end(){}};},
-  createEntrypoint:()=>{let up=false;return {async start(){up=true;},available:()=>up,async close(){up=false;return {unsettledOperations:0};}};}}});
- assert.equal(runtime.available(),true);await runtime.close();
- assert.equal(pools.length,1);assert.match(pools[0].connectionString,/^postgresql:\/\/meri_temporal_issuer_service:[^@]+@capiro-newstack-preview-clone\.cluster-csryw28ai752\.us-east-1\.rds\.amazonaws\.com:5432\/capiro\?sslmode=verify-full$/u);
 });
 
 test('the actual cli.mjs product gates admit control and worker (startup then fails off-Linux, exit 3, not configuration exit 2)',async()=>{
@@ -98,7 +104,7 @@ test('the actual cli.mjs product gates admit control and worker (startup then fa
   env:{PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,MERI_PRODUCT_PREVIEW_REQUIRED:'1',...env}});
  for(const [role,name] of [['control','control.json'],['temporal-worker','worker.json']]){
   const file=join(dir,name);await writeFile(file,roles[role].configBytes);
-  const r=run(role,file,role==='temporal-worker'?{NODE_EXTRA_CA_CERTS:PATHS.issuerCa}:{});
+  const r=run(role,file,role==='temporal-worker'?{NODE_EXTRA_CA_CERTS:PATHS.serverCa}:{});
   if(role==='control'){assert.equal(r.status,2,'control refuses without the init-created composite');assert.match(r.stderr,/RUNTIME_CONFIGURATION/u);}
   else {assert.equal(r.stderr.includes('RUNTIME_CONFIGURATION'),false,`${role} gate: ${r.stderr}`);assert.equal(r.status,3,`${role}: ${r.stderr}`);}
  }
@@ -108,15 +114,21 @@ test('the actual cli.mjs product gates admit control and worker (startup then fa
 
 test('fail closed: PENDING values, foreign subnet, mismatched pins, validity beyond certificates',async()=>{
  await assert.rejects(render(i=>{i.deployment.images.nodeRuntime='PENDING_N4 (image)';}),{code:'RENDER_PENDING_VALUE'});
- await assert.rejects(render(i=>{i.core.tenantId='PENDING_CORE';}),{code:'RENDER_PENDING_VALUE'});
- await assert.rejects(render(i=>{i.runtime.preparationIntent.executableSha256='PENDING_IMAGE';}),{code:'RENDER_PENDING_VALUE'});
- await assert.rejects(render(i=>{i.stage3.network.runner.subnet='subnet-0123456789abcdef0';}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(i=>{i.core.coreOrigin='PENDING_CORE';}),{code:'RENDER_PENDING_VALUE'});
+ await assert.rejects(render(i=>{i.runtime.versions.skillsDigest='PENDING_IMAGE';}),{code:'RENDER_PENDING_VALUE'});
+ await assert.rejects(render(i=>{i.stage3.network.control.subnets=['subnet-0123456789abcdef0'];}),{code:'RENDER_INPUT_REFUSED'});
  await assert.rejects(render(i=>{i.deployment.pinsDer['server-ca']='0'.repeat(64);}),{code:'RENDER_PRIVATE_REFUSED'});
  await assert.rejects(render(i=>{i.stage3.taskDefinitions.control=i.stage3.taskDefinitions.control.replace(/:1$/u,'');}),{code:'RENDER_INPUT_REFUSED'});
  await assert.rejects(render(x=>x,{validityDays:31}),{code:'RENDER_VALIDITY_REFUSED'});
- await assert.rejects(render(i=>{i.runtime.preparationIntent.runnerSha256='0'.repeat(64);}),{code:'RENDER_INPUT_REFUSED'});
- // A source commit missing from the local clone cannot be measured: refuse rather than trust the supplied runnerSha256.
- await assert.rejects(render(i=>{i.deployment.images.nodeRuntimeSourceCommit='f'.repeat(40);}),{code:'RENDER_INPUT_REFUSED',message:/fetch it before rendering/u});
+ await assert.rejects(render(i=>{i.runtime.allocation={};}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(i=>{i.core.tenantId='retired-deployment-principal';}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(i=>{i.deployment.core={tenantId:'retired-deployment-principal'};}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(i=>{i.deployment.origins.coreOrigin='https://ignored.invalid';}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(i=>{i.deployment.issuer={};}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(i=>{i.deployment.temporal.audience='retired';}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(i=>{i.deployment.origins.issuerOrigin='https://retired.invalid';}),{code:'RENDER_INPUT_REFUSED'});
+ // The renderer preserves source provenance; source checkout verification belongs to runtime-values and shipping.
+ await assert.rejects(render(i=>{i.deployment.images.nodeRuntimeSourceCommit='invalid';}),{code:'RENDER_INPUT_REFUSED'});
 });
 
 test('CLI writes a new 0700 directory outside the repository and refuses one inside it',async()=>{
@@ -134,4 +146,19 @@ test('CLI writes a new 0700 directory outside the repository and refuses one ins
  }
  await assert.rejects(writeRendered(join(SOURCE_ROOT,'infra','rendered-should-not-exist'),await render()),{code:'RENDER_OUTPUT_REFUSED'});
  await assert.rejects(writeRendered(out,await render()),{code:'RENDER_OUTPUT_REFUSED'});
+});
+
+// Schedule deployment is separate; this verifies the retained runtime/material owner can receive its native TLS role.
+test('schedule-worker canonical configuration and material retain pinned native TLS without an issuer',async()=>{
+ const {roles}=await render(),control=JSON.parse(roles.control.configBytes),worker=JSON.parse(roles['temporal-worker'].configBytes);
+ const schedule={...worker,sourceEnabled:false,versions:control.versions,database:control.database,
+  http:{...worker.http,port:8083},temporal:{...worker.temporal,taskQueue:'meri-schedules'},
+  scheduledDispatch:{enabled:true,conversationTaskQueue:worker.temporal.taskQueue,maxConcurrentActivities:1}};
+ delete schedule.native.preparedKickoff;
+ withPosixPaths(()=>{
+  assert.ok(validateConfiguration(schedule,'schedule-worker'));
+  const plan=compileProductMaterialPlan({role:'schedule-worker',configuration:schedule,runtimeUser:'1000:1000'});
+  assert.deepEqual(plan.requiredFiles.map(f=>f.path).sort(),['/run/meri/schedule-worker.json',PATHS.database,PATHS.controlCapability,PATHS.temporalCa,PATHS.temporalCert,PATHS.temporalKey,PATHS.serverCa].sort());
+  assert.equal(plan.requiresTokenRotation,false);assert.equal(plan.dynamicMaterialDirectory,null);
+ });
 });

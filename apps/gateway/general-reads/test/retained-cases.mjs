@@ -1,5 +1,5 @@
 /** Synthetic Core-shaped producer and proposed trusted ports. No credential issuer or service is called. */
-import {fixture,uuid} from '../../test/fixtures.mjs';
+import {fixture,uuid} from '../../sources/test/read-fixture.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 export const portfolioId=uuid('a'),clientId=uuid('9');
 export function retainedCase(id){

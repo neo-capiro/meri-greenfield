@@ -7,13 +7,13 @@ import {createActionSessionOwner,borrowedRunSession} from '../../../control/acti
 import {createCapiroApplicationAuthorityClient} from '../../../control/action-host/application-adapters/authority-http.mjs';
 import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
-function fixture(t){
+function fixture(t,{enabled=true}={}){
  const at=1800000000000,binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1},state={calls:[],local:0,status:200};
  const now=()=>at,limits={maxRequestMs:3000,maxFactBytes:65536},fetchImpl=async(url,init)=>{state.calls.push({url,init});assert.ok(url.endsWith('/current'));assert.equal(init.headers.authorization,'Bearer native');if(state.status!==200)return Response.json({}, {status:state.status});return Response.json({principal:{tenantId:'tenant',actorId:'actor'},role:'standard_user',permissions:['memory.propose.firm'],clientIds:[id(5)],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:state.contextRevision??'c'.repeat(64),conversationId:id(1),selectedClientId:id(5),checkedAtMs:at,expiresAtMs:at+120000});};
- const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits,enabled:true,commandContext:{binding,clientResolution:{reference:id(5),clientId:id(5)}},currentOwner:{async currentRun(){state.local++;return JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000});}}});
+ const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits,enabled,admitInitialConversation:async()=>JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000}),currentOwner:{async currentRun(){state.local++;if(state.runRefused)throw Error('RUN_REFUSED');return JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000});}}});
  const membership=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext:identity,fetchImpl,now,limits});
  const sessions=createActionSessionOwner({mode:'process-local',now,verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,withAuthority:identity.withAuthority,membership:{admit:membership.admit,recheck:membership.recheck},limits:{...limits,maxSessions:10,maxTtlMs:100000},refusals:()=>{}});t.after(()=>sessions.close());
- return {state,sessions,binding,now,fetchImpl,identity,async issue(){return sessions.issue({identityCredential:'native'});}};
+ return {state,sessions,binding,now,fetchImpl,identity,async issue(){return sessions.issue({identityCredential:'native',hints:{conversationId:id(1),clientId:id(5)}});}};
 }
 test('S2 one combined observation serves issuance; read rechecks still read the local run',async t=>{
  const f=fixture(t),s=await f.issue();assert.equal(f.state.calls.length,1);assert.equal(f.state.local,2);
@@ -59,4 +59,26 @@ test('S2 one caller cancelling does not discard a concurrent fresh positive',asy
  const ac=new AbortController(),args=extra=>({credential:'native',binding:f.binding,sessionFence:'session:revision',fresh:true,hints:{conversationId:id(1),clientId:id(5)},deadlineMs:f.now()+3000,...extra});
  const cancelled=f.identity.withAuthority(args({signal:ac.signal}),()=>true),kept=f.identity.withAuthority(args({}),()=>true);ac.abort();
  await assert.rejects(cancelled);assert.equal(await kept,true);
+});
+
+test('disabled current-context composition performs no Core or journal reads, including transitions',async t=>{
+ const f=fixture(t,{enabled:false});await assert.rejects(f.issue());
+ await assert.rejects(f.identity.resolveTransitionContext({}));assert.equal(f.state.calls.length,0);assert.equal(f.state.local,0);
+});
+
+test('canonical current-run refusal cannot release an otherwise valid Core session',async t=>{
+ const f=fixture(t);f.state.runRefused=true;await assert.rejects(f.issue());assert.equal(f.sessions.status().sessions,0);
+});
+
+test('transient Core transport responses withhold context without destroying a live session',async t=>{
+ const f=fixture(t),session=await f.issue();
+ for(const status of [429,502,503]){f.state.status=status;await assert.rejects(f.sessions.authenticateSession({credential:session.credential}),{code:'SESSION_AUTHORITY_UNAVAILABLE'});assert.equal(f.sessions.status().sessions,1);}
+ f.state.status=200;await f.sessions.authenticateSession({credential:session.credential});
+ f.state.status=403;await assert.rejects(f.sessions.authenticateSession({credential:session.credential}),{code:'SESSION_REFUSED'});assert.equal(f.sessions.status().sessions,0);
+});
+
+test('active configuration and missing canonical admission port refuse without invoking accessors',()=>{
+ let touched=0;const configuration={origin:'https://core.synthetic.invalid',currentOwner:{currentRun(){}},fetchImpl:()=>{},now:Date.now,admitInitialConversation:()=>{},limits:{get maxRequestMs(){touched++;return 1000;},maxFactBytes:65536}};
+ assert.throws(()=>createNativeIdentityContext(configuration));assert.equal(touched,0);
+ assert.throws(()=>createNativeIdentityContext({...configuration,limits:{maxRequestMs:1000,maxFactBytes:65536},admitInitialConversation:{}}));
 });

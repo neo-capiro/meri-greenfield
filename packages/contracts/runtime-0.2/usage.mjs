@@ -9,11 +9,11 @@ export function assertSdkUsageSnapshot(value){
  const s=own(value,['sessionId','sdkEstimateUsd','models','basis']);
  if(typeof s.sessionId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(s.sessionId)||!money(s.sdkEstimateUsd))fail();
  const b=own(s.basis,['sdk','cli','provider','cacheWriteTtl','priceRevision']);
- if(![b.sdk,b.cli].every(v=>typeof v==='string'&&/^\d+\.\d+\.\d+$/u.test(v))||b.provider!=='bedrock'||!['5m','1h'].includes(b.cacheWriteTtl)||!identifier(b.priceRevision))fail();
+ if(![b.sdk,b.cli].every(v=>typeof v==='string'&&/^\d+\.\d+\.\d+$/u.test(v))||!['bedrock','claude-api'].includes(b.provider)||!['5m','1h'].includes(b.cacheWriteTtl)||!identifier(b.priceRevision))fail();
  if(!s.models||typeof s.models!=='object'||Array.isArray(s.models)||Object.keys(s.models).length<1||Object.keys(s.models).length>32)fail();
  for(const [key,model] of Object.entries(s.models)){
   if(!identifier(key))fail();const m=own(model,['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens','webSearchRequests','sdkEstimateUsd','provider','costBasis']);
-  if(!['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens','webSearchRequests'].every(k=>count(m[k]))||!money(m.sdkEstimateUsd)||!['bedrock','unknown'].includes(m.provider)||!['list','unknown'].includes(m.costBasis))fail();
+  if(!['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens','webSearchRequests'].every(k=>count(m[k]))||!money(m.sdkEstimateUsd)||!['bedrock','firstParty','unknown'].includes(m.provider)||!['list','unknown'].includes(m.costBasis))fail();
  }
  return s;
 }
@@ -35,9 +35,10 @@ export function projectSdkUsage(result,basis){
  const models={};
  for(const [name,value] of entries.sort(([a],[b])=>a.localeCompare(b))){
   if(!/^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$/u.test(name)||!object(value)||COUNTERS.some(key=>!count(value[key]))||!dollars(value.costUSD)||!count(value.webSearchRequests))invalid();
-  // Unknown provider/cost basis is retained as unknown, not assumed to be a priced Bedrock call.
+  // The pinned SDK permits an absent costBasis after resume and defines it as list.
+  // Explicit unknown/managed pricing and unknown providers remain unavailable.
   models[name]={...Object.fromEntries(COUNTERS.map(key=>[key,value[key]])),webSearchRequests:value.webSearchRequests,
-   sdkEstimateUsd:value.costUSD,provider:value.provider==='bedrock'?'bedrock':'unknown',costBasis:value.costBasis==='list'?'list':'unknown'};
+   sdkEstimateUsd:value.costUSD,provider:['bedrock','firstParty'].includes(value.provider)?value.provider:'unknown',costBasis:value.costBasis===undefined||value.costBasis==='list'?'list':'unknown'};
  }
  return assertSdkUsageSnapshot({sessionId:result.session_id,sdkEstimateUsd:result.total_cost_usd,models,basis:{...basis}});
 }

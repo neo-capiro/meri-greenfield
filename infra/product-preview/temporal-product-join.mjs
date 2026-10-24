@@ -1,7 +1,6 @@
 /** Source-only join of the two stopped templates and reviewed nonsecret config projections. */
 import {synthesizeProductPreview} from './manifest.mjs';
 import {validateTemporalPreviewBinding} from './temporal-binding.mjs';
-import {validateTemporalIssuerRenewal} from './temporal-issuer-renewal.mjs';
 
 const fail=()=>{throw Error('TEMPORAL_PRODUCT_JOIN_REFUSED');};
 const record=(value,keys)=>{
@@ -15,15 +14,12 @@ const record=(value,keys)=>{
  * A matching SHA supplied beside a projection does not itself prove its contents.
  * `productSubnetReadbacks` holds one DescribeSubnets projection per product `privateSubnetIds` entry.
  * Each product role's security-group list must carry exactly one Temporal client SG, a different one per role;
- * the remaining entries (issuer-client/db-client markers) are not Temporal client groups.
+ * the remaining entries are database and application security groups.
  */
-export function inspectTemporalProductJoin({productBinding,temporalBinding,runtimeProjection,productSubnetReadbacks,issuerRenewal}){
+export function inspectTemporalProductJoin({productBinding,temporalBinding,runtimeProjection,productSubnetReadbacks}){
  let t,p;
- try{t=validateTemporalPreviewBinding(temporalBinding);synthesizeProductPreview(productBinding);p=productBinding;
-  validateTemporalIssuerRenewal(t,issuerRenewal);}catch{fail();}
+ try{t=validateTemporalPreviewBinding(temporalBinding);synthesizeProductPreview(productBinding);p=productBinding;}catch{fail();}
  if(p.account!==t.account||p.region!==t.region||p.clusterArn!==t.clusterArn||
-    issuerRenewal.issuerServiceTaskRoleArn===p.controlTaskRoleArn||
-    [p.executionRoleArn,...Object.values(p.executionRoleArns??{})].includes(issuerRenewal.issuerServiceTaskRoleArn)||
     !Array.isArray(t.network.clientSecurityGroupIds))fail();
  const clientGroups=[p.network.controlSecurityGroupIds,p.network.workerSecurityGroupIds]
   .map(groups=>groups.filter(x=>t.network.clientSecurityGroupIds.includes(x)));
@@ -41,21 +37,20 @@ export function inspectTemporalProductJoin({productBinding,temporalBinding,runti
  const address=`frontend.${t.privateDnsName}:7233`,serverName=`frontend.${t.privateDnsName}`;
  for(const [role,config] of Object.entries(projections)){
   record(config,['configSha256','address','namespace','taskQueue','tlsServerName','tlsCaFile','tlsCaSha256',
-   'issuer','audience','tokenFile','refreshMs','maxLifetimeMs']);
+   'tlsCertFile','tlsCertSha256','tlsKeyFile','tlsKeySha256']);
   const expected=p.materialDelivery[role].expected.sha256ByPath;
   const configPath=role==='control'?'/run/meri/control.json':'/run/meri/worker.json';
   if(config.configSha256!==expected[configPath]||config.address!==address||
      config.namespace!==t.auth.namespace||config.taskQueue!==t.auth.taskQueue||
      config.tlsServerName!==serverName||typeof config.tlsCaFile!=='string'||
      !/^\/run\/meri\/[a-zA-Z0-9._-]{1,128}$/u.test(config.tlsCaFile)||
-     config.tlsCaSha256!==expected[config.tlsCaFile]||
-     config.issuer!==t.auth.issuer||config.audience!==t.auth.audience||
-     config.tokenFile!==issuerRenewal.roles[role].tokenFile||
-     config.refreshMs!==issuerRenewal.refreshMs||
-     config.maxLifetimeMs!==issuerRenewal.maxTokenLifetimeMs)fail();
+     config.tlsCaSha256!==expected[config.tlsCaFile])fail();
+  const paths=['tlsCaFile','tlsCertFile','tlsKeyFile'].map(key=>config[key]);
+  if(new Set(paths).size!==3||paths.some(path=>typeof path!=='string'||!/^\/run\/meri\/[a-zA-Z0-9._-]{1,128}$/u.test(path))||
+     ['tlsCa','tlsCert','tlsKey'].some(key=>!/^[a-f0-9]{64}$/u.test(config[`${key}Sha256`])||config[`${key}Sha256`]!==expected[config[`${key}File`]]))fail();
  }
  return Object.freeze({schemaVersion:1,status:'HOLD',frontendAddress:address,
   productVpcId:subnet.VpcId,temporalVpcId:t.vpcId,
   pending:Object.freeze(['independent-config-decoding','same-vpc-route-and-sg-readback',
-   'issuer-writer-and-required-auth-composition','Linux-mTLS-and-token-expiry-qualification'])});
+   'native-mTLS-material-and-server-qualification'])});
 }

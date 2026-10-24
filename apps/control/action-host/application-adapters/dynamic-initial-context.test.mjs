@@ -12,7 +12,7 @@ const runFact=()=>JSON.stringify({binding:next,policyRevision,checkedAtMs:at,dea
 
 function fixture({denyContext=false,rotateContext=false}={}){
  const order=[],admitted=[];let contextReads=0;
- const adapters=createApplicationContextAdapters({commandContext:{binding,clientResolution:{reference:clientId,clientId}},now:()=>at,limits:{maxRequestMs:500,maxFactBytes:65536},
+ const adapters=createApplicationContextAdapters({now:()=>at,limits:{maxRequestMs:500,maxFactBytes:65536},
   client:{async readIdentity(){order.push('identity');return identity;},async readContext({conversationId,clientId:requested,identitySha256}){order.push('context');contextReads++;if(denyContext)throw Error('Core denied');return {...identity,identitySha256,conversationId,selectedClientId:requested,contextRevision:rotateContext&&contextReads===2?'changed':'stable'};}},
   async currentRun(request){order.push('current');assert.deepEqual(request,next);return runFact();},
   async admitInitialConversation(request){order.push('admit');admitted.push(request);assert.deepEqual(request.principal,principal);assert.equal(request.conversationId,candidate);assert.equal(request.selectedClientId,clientId);return runFact();}});

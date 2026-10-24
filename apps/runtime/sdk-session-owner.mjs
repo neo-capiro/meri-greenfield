@@ -3,7 +3,7 @@ import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/va
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {same} from '../../packages/contracts/runtime-0.2/validate.mjs';
 import {assertExecutionIdentity} from '../control/conversations/execution-boundary.mjs';
-import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders} from '../../packages/contracts/runtime-0.2/session.mjs';
+import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders,assertNativeConversationScope} from '../../packages/contracts/runtime-0.2/session.mjs';
 import {copySessionEntries,copySessionTranscript,scopedSessionKey} from '../worker/qualification/checkpoint/bound-session-store.mjs';
 import {copySessionJson,captureSessionMethods} from '../worker/qualification/checkpoint/session-store-data.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
@@ -36,7 +36,7 @@ export function createDurableSdkSessionOwner(configuration){
    own(receipt,['execution','versions','state','scopes','selectedClientId','policyRevision']);const execution=assertExecutionIdentity(receipt.execution);validateShape('RuntimeVersions',receipt.versions);
    if(!same(execution.binding,request.binding)||!Array.isArray(receipt.scopes)||receipt.scopes.length<1||receipt.scopes.length>100||typeof receipt.policyRevision!=='string'||!receipt.policyRevision||new Set(receipt.scopes.map(hash)).size!==receipt.scopes.length)fail('SDK_SESSION_REFUSED');
    for(const scope of receipt.scopes){validateShape('Scope',scope);if(scope.tenantId!==request.binding.tenantId||scope.policyRevision!==receipt.policyRevision)fail('SDK_SESSION_REFUSED');}
-   if(receipt.selectedClientId!==null&&(typeof receipt.selectedClientId!=='string'||!receipt.scopes.some(s=>s.kind==='client'&&s.resourceId===receipt.selectedClientId)))fail('SDK_SESSION_REFUSED');
+   assertNativeConversationScope({binding:request.binding,scopes:receipt.scopes,selectedClientId:receipt.selectedClientId});
    pinned=data({binding:execution.binding,scopes:receipt.scopes,selectedClientId:receipt.selectedClientId,policyRevision:receipt.policyRevision});executionExpiresAtMs=execution.expiresAtMs;limit(executionExpiresAtMs);return hash(execution);
   }
   try{

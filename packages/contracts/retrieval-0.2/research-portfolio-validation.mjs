@@ -46,10 +46,7 @@ export function createResearchPortfolioValidators({validateShape, assertSubject,
     data(options);
     validateShape('ResearchPortfolioContext', options);
     assertSubject(options.subject, options.binding);
-    if (options.subject.kind !== 'entity' || options.subject.entityType !== 'research-portfolio' ||
-        options.subject.entityIds.length !== 1 || options.subject.rosterVersionId !== null)
-      fail('Current research-portfolio entity subject required');
-    return {conversationId: options.binding.conversationId, portfolioId: options.subject.entityIds[0]};
+    return {conversationId: options.binding.conversationId};
   }
 
   function normalizeResearchPortfolioInput(operation, input, options = {}) {
@@ -57,6 +54,7 @@ export function createResearchPortfolioValidators({validateShape, assertSubject,
     data(input);
     const selected = context(options);
     validateShape(`ResearchPortfolio${type}Input`, input);
+    selected.portfolioId = input.portfolioId.toLowerCase();
     if (input.conversationId !== undefined && input.conversationId !== selected.conversationId)
       fail('Portfolio conversation selector differs from current binding');
     if (type === 'Changes') {
@@ -77,7 +75,7 @@ export function createResearchPortfolioValidators({validateShape, assertSubject,
       fail('Portfolio result differs from current binding/subject');
     const result = page.data;
     if (type === 'Detail') {
-      if (result.id !== selected.portfolioId) fail('Portfolio result identity differs from subject');
+      if (result.id !== selected.portfolioId) fail('Portfolio result identity differs from selector');
       if (result.memberCount !== result.members.length || result.clientLinkCount !== result.clientLinks.length)
         fail('Portfolio projected counts differ from returned members/visible links');
       unique(result.grants, 'id', 'grant'); unique(result.grants, 'principalUserId', 'grant principal');

@@ -17,7 +17,7 @@ export async function runLocalCommitmentsAuditFlow({fixture,readSource,sourceSta
  const json=async response=>{const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;};
  const session=await json(await issuance.handle(req('/api/action-followthrough/session',{},fixture.nativeCredential)));
  let app;const send=(route,body,credential=session.credential)=>app.handle(req('/api/documents/'+route,body,credential));
- const reconfigure=p=>{app=createDocumentApplication({sessions:fixture.sessions,selectedClientId:fixture.selectedClientId,artifactOptions:bindPreparedCommitmentsAuditArtifactOptions(p,{...fixture.artifactOptions,context:p.context}),credential:fixture.credential,now:fixture.now,limits:fixture.limits,enabled:true});};
+ const reconfigure=p=>{app=createDocumentApplication({sessions:fixture.sessions,selectedClientId:fixture.selectedClientId,artifactOptions:bindPreparedCommitmentsAuditArtifactOptions(p,{...fixture.artifactOptions,context:p.context}),now:fixture.now,limits:fixture.limits,enabled:true});};
  const sourceReads=[],selected=selection(fixture.artifactOptions.context);
  const compiler=createCommitmentsAuditCompiler({now:fixture.now,async readSource(call){
   const authentication=await fixture.sessions.authenticateSession({credential:session.credential,deadlineMs:call.deadlineMs,signal:call.signal});await fixture.sessions.readCurrentState({authentication,deadlineMs:call.deadlineMs,signal:call.signal});
@@ -40,7 +40,7 @@ export async function runLocalCommitmentsAuditFlow({fixture,readSource,sourceSta
  fixture.revoke();if(sourceState)sourceState.revoked=true;
  for(const version of [original.version,revision.version])for(const route of ['inspect','download'])assert.notEqual((await send(route,{versionId:version.versionId})).status,200);
  assert.notEqual((await send('revise',{deliveryId:'revoked',baseVersionId:original.version.versionId,request:second.request})).status,200);await assert.rejects(compiler.prepare(revisedInput,fixture.artifactOptions.context,{selection:selected}));
- const stats=fixture.stats();assert.equal(stats.generations,2);assert.equal(stats.settled,2);assert.equal(stats.unknown,0);assert.equal(stats.consumedMicroUsd,'20');
+ const stats=fixture.stats();assert.equal(stats.generations,2);assert.equal(stats.prepared,2);assert.equal(stats.unknown,0);assert.equal(stats.prepared,2);
  await mkdir(outputDirectory,{recursive:true});await writeFile(join(outputDirectory,'provenance.json'),JSON.stringify({versions:[original.version,revision.version],preparations:[first,second],sourceReads},null,2)+'\n');
  // Persist both exact authorized downloads before any optional renderer can fail.
  for(const [index,label]of ['original','revision'].entries())await writeFile(join(outputDirectory,label+'.docx'),copies[index],{flag:'wx',mode:0o600});

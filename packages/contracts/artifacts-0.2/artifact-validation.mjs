@@ -1,5 +1,5 @@
 import {snapshotOperationData} from '../retrieval-0.2/operation-contracts.mjs';
-import {ARTIFACT_MIME_TYPES,artifactFilename} from './artifact-formats.mjs';
+import {ARTIFACT_MIME_TYPES,artifactFilename,assertNativeArtifactInspectionCorrelations,assertNativeArtifactEvidenceBinding} from './artifact-formats.mjs';
 const fail = message => { throw new Error(message); };
 const functions = new Set(['SUM','AVERAGE','MIN','MAX','COUNT','IF','ABS','ROUND']);
 export const ARTIFACT_OPERATION_IDS = Object.freeze(['create_word','create_excel','create_powerpoint','run_analysis']);
@@ -37,15 +37,17 @@ export function createArtifactValidators({validateShape,validatePublicShape,cano
     return data;
   }
   function context(value){
-    const data=snapshot(value);validateShape('ArtifactContext',data);
+    const data=snapshot(value);validateShape('ArtifactContext',data);assertNativeArtifactEvidenceBinding(data.binding,data.evidence);
     for(const scope of data.scopes)if(scope.tenantId!==data.binding.tenantId)fail('Cross-tenant artifact scope');
     const scopeHashes=new Set(data.scopes.map(canonicalSha256));if(scopeHashes.size!==data.scopes.length)fail('Duplicate scope');
     for(const evidence of data.evidence)if(evidence.scopes.some(scope=>!scopeHashes.has(canonicalSha256(scope))))fail('Evidence scope not admitted');
     const ids=new Set();for(const asset of data.assets){if(ids.has(asset.id))fail('Duplicate asset ID');ids.add(asset.id);if(asset.object.scopes.some(scope=>!scopeHashes.has(canonicalSha256(scope))))fail('Asset scope not admitted');}
     return data;
   }
-  function version(value){const data=snapshot(value);validatePublicShape('ArtifactVersion',data);return data;}
+  function nativeSourceEvidence(value){const data=snapshot(value);validateShape('NativeSourceEvidence',data);return data;}
+  function version(value){const data=snapshot(value);validateShape('ArtifactVersion',data);if(data.contractVersion==='0.2.0'){assertNativeArtifactEvidenceBinding(data.binding,data.evidence);const scopes=new Set(data.scopes.map(canonicalSha256));if(data.scopes.some(scope=>scope.tenantId!==data.binding.tenantId)||data.evidence.some(item=>item.scopes.some(scope=>!scopes.has(canonicalSha256(scope)))))fail('Native artifact evidence scope');}return data;}
   function object(value){const data=snapshot(value);validatePublicShape('ObjectReference',data);return data;}
+  function nativeFileInspection(value){const data=snapshot(value);validateShape('NativeArtifactFileInspection',data);return assertNativeArtifactInspectionCorrelations(data);}
   function inspection(value){const data=snapshot(value);validateShape('ArtifactInspection',data);return data;}
   /** Closed pending output DTO; provenance against its immutable input remains assertArtifactOutput's responsibility. */
   function analysisResult(value){const data=snapshot(value);validateShape('GeneralAnalysisResult',data);return data;}
@@ -58,6 +60,12 @@ export function createArtifactValidators({validateShape,validatePublicShape,cano
     }else if(ctx.analysisAdmission)fail('Irrelevant analysis admission');
     return {input,metadata:{requestSha256:canonicalSha256({request:input,context:ctx,baseVersionId:null}),sourceConnected:false,nativeQualified:false}};
   }
+  /** Stable current document intent; renewed access time is not content identity. */
+  function nativeRequestSha256(requestValue,contextValue,baseVersionId=null){
+    const input=request(requestValue),ctx=context(contextValue);validateShape('ArtifactBaseVersionId',baseVersionId);
+    const {deadlineMs,...stableContext}=ctx;
+    return canonicalSha256({request:input,context:stableContext,baseVersionId});
+  }
   function assertArtifactOutput(id,value,requestValue,options){
     const normalized=normalizeArtifactInput(id,requestValue,options),ctx=context(options),data=snapshot(value);validateShape('ArtifactOperationResult',data);
     if(normalized.input.format==='sandbox'){
@@ -67,11 +75,12 @@ export function createArtifactValidators({validateShape,validatePublicShape,cano
       const names=normalized.input.content.outputs;if(data.outputs.length!==names.length||new Set(data.outputs.map(x=>x.name)).size!==names.length||data.outputs.some(x=>!names.includes(x.name)||canonicalSha256(x.object.scopes)!==canonicalSha256(ctx.scopes))||data.outputs.reduce((sum,x)=>sum+x.object.bytes,0)>ctx.maxBytes)fail('General analysis output objects');
     }else{
       validateShape('ArtifactCreatedResult',data);
-      if(data.execution.requestSha256!==normalized.metadata.requestSha256||canonicalSha256(data.version.binding)!==canonicalSha256(ctx.binding)||canonicalSha256(data.version.scopes)!==canonicalSha256(ctx.scopes)||canonicalSha256(data.version.object.scopes)!==canonicalSha256(ctx.scopes)||canonicalSha256(data.version.evidence)!==canonicalSha256(ctx.evidence)||data.version.parentVersionId!==null||data.version.generationStatus!=='draft'||data.version.previewStatus!=='pending'||data.version.mimeType!==ARTIFACT_MIME_TYPES[normalized.input.format]||data.version.filename!==artifactFilename(normalized.input)||data.inspection.format!==normalized.input.format||data.version.object.sha256!==data.inspection.sha256||data.version.object.bytes!==data.inspection.bytes||data.inspection.bytes>ctx.maxBytes)fail('Artifact output provenance');
+      const expectedHash=data.execution.kind==='native-document'?nativeRequestSha256(normalized.input,ctx):normalized.metadata.requestSha256;
+      if(data.execution.requestSha256!==expectedHash||canonicalSha256(data.version.binding)!==canonicalSha256(ctx.binding)||canonicalSha256(data.version.scopes)!==canonicalSha256(ctx.scopes)||canonicalSha256(data.version.object.scopes)!==canonicalSha256(ctx.scopes)||canonicalSha256(data.version.evidence)!==canonicalSha256(ctx.evidence)||data.version.parentVersionId!==null||data.version.generationStatus!=='draft'||data.version.previewStatus!=='pending'||data.version.mimeType!==ARTIFACT_MIME_TYPES[normalized.input.format]||data.version.filename!==artifactFilename(normalized.input)||data.inspection.format!==normalized.input.format||data.version.object.sha256!==data.inspection.sha256||data.version.object.bytes!==data.inspection.bytes||data.inspection.bytes>ctx.maxBytes)fail('Artifact output provenance');
     }
     return data;
   }
-  return Object.freeze({request,context,version,object,inspection,analysisResult,normalizeArtifactInput,assertArtifactOutput,snapshot,hash:canonicalSha256});
+  return Object.freeze({request,context,nativeSourceEvidence,version,object,inspection,nativeFileInspection,analysisResult,normalizeArtifactInput,nativeRequestSha256,assertArtifactOutput,snapshot,hash:canonicalSha256});
 }
 export function artifactInputDefinition(id){if(typeof id!=='string'||!ARTIFACT_OPERATION_IDS.includes(id))fail('Unknown artifact operation');return {create_word:'WordRequest',create_excel:'ExcelRequest',create_powerpoint:'PowerpointRequest',run_analysis:'AnalysisRequest'}[id];}
 export function artifactOutputDefinition(id){if(typeof id!=='string'||!ARTIFACT_OPERATION_IDS.includes(id))fail('Unknown artifact operation');return id==='run_analysis'?'ArtifactOperationResult':'ArtifactCreatedResult';}

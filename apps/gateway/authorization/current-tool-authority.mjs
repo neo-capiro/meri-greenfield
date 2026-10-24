@@ -63,7 +63,7 @@ export function createCurrentToolAuthority({ ports, now, maxFactBytes, capabilit
       if (decision.decision !== 'allowed' || decision.operation !== `${descriptor.operation.id}@${descriptor.operation.version}` ||
           !same(decision.actor, { tenantId: claims.binding.tenantId, actorId: claims.binding.actorId }) ||
           decision.policyRevision !== claims.policyRevision || policy.subject.policyRevision !== claims.policyRevision ||
-          policy.subject.authorizationDecisionId !== decision.decisionId || !same(decision.scopes, policy.subject.scopes) ||
+          !same(decision.scopes, policy.subject.scopes) ||
           !Array.isArray(policy.grants) || policy.grants.some(grant => typeof grant !== 'string') ||
           descriptor.requiredGrants.some(grant => !policy.grants.includes(grant)) ||
           policy.subject.scopes.some(scope => !claims.scopes.some(candidate => same(candidate, scope)))) deny('ACCESS_DENIED');

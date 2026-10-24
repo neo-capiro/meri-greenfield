@@ -14,9 +14,9 @@ const sha=value=>createHash('sha256').update(value,'utf8').digest('hex');
 const invocation=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value);
 
 export function createMondaySignedHttpAdapter(options) {
-  const {endpoints:configured,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
-    ownFields(options,['endpoints','getCredentials','now'],['fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility']);
-  if(typeof getCredentials!=='function'||typeof fetchImpl!=='function'||typeof now!=='function'||
+  const {endpoints:configured,getCredentials,readSource,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
+    ownFields(options,['endpoints','now'],['getCredentials','readSource','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility']);
+  if((readSource===undefined?typeof getCredentials!=='function':typeof readSource!=='function'||getCredentials!==undefined)||typeof fetchImpl!=='function'||typeof now!=='function'||
       !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000||
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoint;
@@ -47,6 +47,12 @@ export function createMondaySignedHttpAdapter(options) {
       let cutoff=Math.min(context.deadlineMs,context.active()+maxRequestMs);
       lifetime=createDispatchLifetime({deadlineMs:cutoff,now,signal:context.signal});
       const active=()=>{lifetime.check();return context.active(cutoff);};
+      let result;
+      if(readSource){
+        result=frozenData(await lifetime.run(signal=>{active();return readSource({operation:context.operation.id,input:protocol,context:frozenData(JSON.parse(correlationBytes)),deadlineMs:cutoff,signal});}));
+        active();
+        if(Buffer.byteLength(JSON.stringify(result),'utf8')>Math.min(maxResponseBytes,context.authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+      }else{
       const credentials=frozenData(await lifetime.run(signal=>{active();return getCredentials(Object.freeze({
         ...pins,input:context.input,requestSha256,invocationId:fields.invocationId,deadlineMs:cutoff,
         target,correlationSha256,signal}));}));
@@ -54,7 +60,7 @@ export function createMondaySignedHttpAdapter(options) {
         'policyRevision','sourceIds','invocationId','authorizationScheme','target','correlationSha256',
         'bearerToken','serviceSecret','expiresAtMs']);
       assertPins(credentials,pins);
-      if(credentials.invocationId!==fields.invocationId||credentials.authorizationScheme!=='CapiroMeriRead'||
+      if(credentials.invocationId!==fields.invocationId||credentials.authorizationScheme!=='Bearer'||
           !same(credentials.target,target)||credentials.correlationSha256!==correlationSha256||
           credentials.requestSha256!==requestSha256||!Number.isSafeInteger(credentials.expiresAtMs)||
           credentials.expiresAtMs<=active()||credentials.expiresAtMs>context.deadlineMs||
@@ -63,7 +69,7 @@ export function createMondaySignedHttpAdapter(options) {
       cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);active();
       const response=await lifetime.run(async signal=>{
         active();const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
-          headers:{authorization:`CapiroMeriRead ${credentials.bearerToken}`,
+          headers:{authorization:`Bearer ${credentials.bearerToken}`,
             'x-internal-service-secret':credentials.serviceSecret,'content-type':'application/json',accept:'application/json',
             'accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
             'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')},body});
@@ -77,8 +83,9 @@ export function createMondaySignedHttpAdapter(options) {
       if([409,410,503].includes(response.status))deny('UNAVAILABLE');
       if(response.status===429)deny('RESOURCE_LIMIT');
       const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
-      const result=frozenData(await readJsonResponse(response,{lifetime:bounded,
-        maxResponseBytes:Math.min(maxResponseBytes,context.authority.claims.budgets.maxOutputBytes)}));
+      result=frozenData(await readJsonResponse(response,{lifetime:bounded,
+        maxResponseBytes:Math.min(maxResponseBytes,context.authority.maxOutputBytes)}));
+      }
       active();assertResult(result,context);
       for(const row of result.records)if(row.payload.clientId!==context.input.clientId||
         row.payload.sourceActorUserId!==context.authority.binding.actorId)deny('INVALID_RESULT');

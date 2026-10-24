@@ -13,7 +13,7 @@ case "$(realpath -m "$2")/" in "$(realpath "$REPO")"/*) echo "refusing: --out mu
 # contracts before ui-stream (file:../contracts), the root before the packages that resolve its tools, then the
 # image recipe's order (apps/runtime/Dockerfile), then the qualification packages.
 LOCKS=(packages/contracts . apps/runtime apps/worker/conversation packages/ui-stream packages/window-resolution
- apps/control/conversations apps/artifacts/storage apps/control/qualification-temporal
+ apps/control/conversations apps/artifacts/storage apps/artifacts/generation apps/control/qualification-temporal
  apps/control/qualification-sdk-fixture/service apps/control/qualification-sdk-fixture/state apps/proxy/qualification
  apps/worker/qualification)
 # Every package lock is installed; test evidence locks have no package.json and are not packages.

@@ -1,10 +1,10 @@
-/** PostgreSQL-backed proof that the model budget owner's dynamic-conversation reads need phase_owner_conversation_reads.
+/** Historical applied migration ACL regression for the retired model-owner role.
  *
  * Needs a disposable PostgreSQL 16 whose database is named capiro and an admin login that can create roles and databases:
  *   MERI_D2_TEST_ADMIN_URL=postgres://<admin>:<password>@127.0.0.1:<port>/capiro node --test <this file>
  * Skipped without it. It applies the real meri stage (ordered migrations, seed, phase_meri_grants) through runStage, then
- * runs the owner's real journal code as meri_model_budget_owner before and after phase_owner_conversation_reads. Live
- * 20 Oct 12:16:07Z: "permission denied for table initial_run_bindings" refused the first proxied send. */
+ * runs the retained journals as meri_model_budget_owner before and after phase_owner_conversation_reads.
+ * This preserves applied-schema history and negative grants; it does not qualify an active AgentCore owner. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomBytes,randomUUID} from 'node:crypto';
@@ -14,7 +14,6 @@ import {resolve} from 'node:path';
 import {ROOT,OWNER_READS_SCRIPT,PASSWORD_VARIABLES,loadPlan,passwordVariables,runPsqlScript,runStage} from './first-chat-migrate.mjs';
 import {createInitialRunBindingJournal} from '../../apps/control/conversations/initial-run-binding-journal.mjs';
 import {createPostgresConversationStore} from '../../apps/control/conversations/postgres-store.mjs';
-import {createOwnerDiagnostics,createDiagnosticPool} from '../../apps/proxy/product/owner-diagnostics.mjs';
 
 const adminUrl=process.env.MERI_D2_TEST_ADMIN_URL;
 const pg=createRequire(resolve(ROOT,'apps/runtime/package.json'))('pg');
@@ -33,7 +32,7 @@ function recordingPool(options){
  }};
 }
 
-test('the model owner reads a dynamic conversation\'s initial binding and next-run state only after the owner reads phase',
+test('historical owner-read grants remain narrow and idempotent in the applied migration',
  {skip:!adminUrl&&'set MERI_D2_TEST_ADMIN_URL to a disposable PostgreSQL 16 database named capiro'},async()=>{
  const admin=new URL(adminUrl);assert.equal(admin.pathname,'/capiro');
  const base={host:admin.hostname,port:Number(admin.port||5432)};
@@ -45,8 +44,7 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
  const schema=await connect('capiro');try{await schema.query(readFileSync(resolve(ROOT,'apps/control/conversations/migrations/0020_initial_generations.sql'),'utf8'));}finally{await schema.end();}
 
  const owner=recordingPool({...base,user:'meri_model_budget_owner',password:env.MERI_D2_MODEL_OWNER_PASSWORD,database:'capiro'});
- // The owner process wraps its pool exactly like this (owner-entrypoint.mjs): the line that would have named the live cause.
- const lines=[],pool=createDiagnosticPool(owner,createOwnerDiagnostics({write:line=>lines.push(line)}));
+ const pool=owner;
  const check=()=>{};
  const binding={tenantId:randomUUID(),actorId:randomUUID(),conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),
   workerId:randomUUID(),writerFence:1};
@@ -61,8 +59,6 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
   r=await attempt(()=>store.nextRuns.current(binding,check));
   assert.ok(r.error);
   assert.deepEqual(r.denied,['SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3']);
-  assert.deepEqual(lines,['PRODUCT_OWNER_DB_REFUSED sqlstate=42501 relation=meri_conversations.initial_run_bindings\n',
-   'PRODUCT_OWNER_DB_REFUSED sqlstate=42501 relation=meri_conversations.next_runs\n']);
   // The rest of the owner's conversation reads were already granted (live passed them before the refusal).
   for(const call of [()=>store.readOptional(binding,{limit:1},check),()=>store.allocations.read({binding,allocationKey:'a'.repeat(64)},check)])
    assert.deepEqual((await attempt(call)).denied,[]);
@@ -70,12 +66,11 @@ test('the model owner reads a dynamic conversation\'s initial binding and next-r
   const phase=()=>runPsqlScript({text:readFileSync(resolve(ROOT,OWNER_READS_SCRIPT),'utf8'),variables:{phase_owner_conversation_reads:'1'},connect});
   await phase();await phase(); // GRANT is idempotent; a repeated run changes nothing.
 
-  lines.length=0;
   r=await attempt(()=>journal.readConversation({principal,conversationId:binding.conversationId,selectedClientId},check));
   assert.equal(r.error,undefined);assert.deepEqual(r.denied,[]);
   // No reservation exists: the journal's own refusal, never a privilege refusal.
   r=await attempt(()=>store.nextRuns.current(binding,check));
-  assert.match(String(r.error?.code??r.error?.message),/NEXT_RUN_NOT_LATEST/u);assert.deepEqual(r.denied,[]);assert.deepEqual(lines,[]);
+  assert.match(String(r.error?.code??r.error?.message),/NEXT_RUN_NOT_LATEST/u);assert.deepEqual(r.denied,[]);
   // The owner may lock a binding row but holds no write on either table (the trigger rejects any binding UPDATE).
   const client=await owner.connect();
   try{

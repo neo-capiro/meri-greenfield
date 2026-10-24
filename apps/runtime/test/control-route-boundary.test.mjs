@@ -42,3 +42,10 @@ test('single-listener qualification starts only the public listener',async()=>{
  const result=await listenControlApplications({configuration,publicApplication:application,privateApplication:null,readiness(){},listen:async({configuration:c})=>{calls.push(c.http.port);return {address:{port:c.http.port}};}});
  assert.deepEqual(calls,[8080]);assert.equal(result.publicListener.address.port,8080);assert.equal(result.privateListener,undefined);
 });
+test('approval metadata readback is private-only and disabled does not fall through to the candidate',async()=>{
+ let calls=0,candidateCalls=0;const configuration={assembly:{handle(){throw Error('not public');}},candidate:{handle(){candidateCalls++;return new Response('candidate');}}},path='https://control.invalid/v1/internal/approval-metadata/read';
+ const routed=createControlRouteApplications({...configuration,approvalMetadataReader:{handle(){calls++;return new Response('retained metadata');}}});
+ assert.equal((await routed.public.handle(new Request(path))).status,404);assert.equal(calls,0);
+ assert.equal((await routed.private.handle(new Request(path))).status,200);assert.equal(calls,1);assert.equal(candidateCalls,0);
+ const disabled=createControlRouteApplications(configuration);assert.equal((await disabled.private.handle(new Request(path))).status,404);assert.equal(candidateCalls,0);
+});

@@ -6,7 +6,7 @@ import {createRetainedHttpTransport} from '../retained-reads/http-transport.mjs'
 import {retainedCall} from '../retained-reads/call-context.mjs';
 
 export function createPublicReportsHandlers(configuration,operations){
- const {credentialsForCall,...options}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','fetchImpl','maxRequestMs','maxResponseBytes']);
+ const {credentialsForCall,...options}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
  if(credentialsForCall!==undefined&&(typeof credentialsForCall!=='function'||options.getCredentials!==undefined))deny('GATEWAY_CONFIGURATION');
  const transport=createRetainedHttpTransport(options),now=options.now;
  return operations.map(operation=>{

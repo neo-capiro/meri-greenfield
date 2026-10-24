@@ -51,7 +51,7 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
   if(selected&&selected.requestId!==result.request.requestId)fail('REQUEST_MISMATCH');
   if(selected?.retained&&!same(result.request,selected.retained))fail('REQUEST_MISMATCH');
   if(selected?.input){const input=selected.input,saved=result.request;
-   if(saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null))fail('REQUEST_MISMATCH');
+   if(saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null)||input.modelSelection!==undefined&&!same(saved.modelSelection,input.modelSelection))fail('REQUEST_MISMATCH');
   }
   assertWindowPair(result.request.windowRequest,result.request.window);
  }

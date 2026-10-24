@@ -56,7 +56,13 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  if(objectiveGeneration!==undefined&&typeof objectiveGeneration.prepare!=='function')throw fault('OBJECTIVE_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
   const nativeAudit=createNativeHookBatch();
-  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(()=>stream.close?.());closing.catch(()=>{});}return closing;};
+  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,skillRuntime,readRuntime,intentRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
+   // The pinned SDK's close() starts cleanup but returns void. Query.return()
+   // awaits that same cleanup (including its transcript batch flush), then ends
+   // the iterator. The fallback is for ordinary AsyncIterable test adapters.
+   const owner=typeof stream.return==='function'?stream:iterator;
+   if(typeof owner?.return==='function'){const end=await owner.return();if(end?.done!==true)throw fault('SDK_CLEANUP_UNKNOWN');}
+  });closing.catch(()=>{});}return closing;};
   async function recordUsage(result){
    // One bounded delivery by this claimant, including an unavailable result after SDK failure.
    // Set the guard before effects: an unknown acknowledgement must never cause another payload or query.
@@ -109,7 +115,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,deadlineMs:runtime.deadlineMs,signal}));
    if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');life.limitDeadline(objectiveRuntime.deadlineMs);}
    const options=buildConversationOptions(runtime,controller,lineage?{...lineage,request:saved.request,
-    sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat);if(lineage&&!saved.nextTurn?.sdkSession)life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
+    sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat);if(lineage&&!saved.nextTurn?.sdkSession&&saved.continuation?.kind!=='native-session')life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
    if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}else assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;}
    // Add application context to the full native preset, never replace the SDK system prompt.
    options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
@@ -119,7 +125,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.
     diagnostic('stage','activity-query');modelLife=modelDeadlineMs===undefined?null:createOperationLifetime({deadlineMs:Math.min(modelDeadlineMs,runtime.deadlineMs-terminalAttemptMs),now,signal:life.signal,errorFactory:fault});if(lifecycle!==undefined)input=createConversationInput({requestId:saved.request.requestId,prompt:saved.request.prompt});
-   stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');const iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId),progressParts=createProgressProjector({policy,newId});
+   stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId),progressParts=createProgressProjector({policy,newId});
    // Every display publication is a full authorization round at control (seconds), so the deltas the SDK produced meanwhile join the
    // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order; nothing is
    // read past a result, and a message read early is used only while a read could still be made (deadline, lifecycle failure).

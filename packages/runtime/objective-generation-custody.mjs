@@ -4,6 +4,7 @@ import {types} from 'node:util';
 import {own,data} from '../contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape,assertWorkspacePaths} from '../contracts/validate.mjs';
 import {coreApplicationSha256} from './core-application-digest.mjs';
+import {assertNativeSessionCapture} from '../contracts/runtime-0.2/session.mjs';
 import {objectiveDescriptorProtocol,objectiveRequestProtocol,OBJECTIVE_DRAFT_PROTOCOL} from './objective-strategy-protocol.mjs';
 export {own,data,hash};
 export const OBJECTIVE_DRAFT_PATH=OBJECTIVE_DRAFT_PROTOCOL.path;
@@ -33,16 +34,27 @@ export function issuedObjectiveSelection(value,{binding,acceptedRequest}){
  return assertPreparedObjectiveSelection({objectiveGeneration:facts.objectiveGeneration,objectiveStrategy:facts.objectiveStrategy},{binding,acceptedRequest,expiresAtMs:issuance.expiresAtMs});
 }
 /** Pre-bind data checks over the real accepted request. No receipt is fabricated. The canonical candidate still owns full schema/graph validation. */
-export function assertPreparedObjectiveSelection(value,{binding,acceptedRequest,expiresAtMs,nowMs}){
+export function assertObjectiveSourceSelection(value,{binding,acceptedRequest,expiresAtMs,nowMs}){
  validateShape('RunBinding',binding);const pair=data(own(value,['objectiveGeneration','objectiveStrategy']));
- const g=own(pair.objectiveGeneration,['sourceAdmission','sourceAdmissionSha256']),a=own(g.sourceAdmission,['schemaVersion','namespace','canonical','actorUserId','clerkUserId','consentId','controlVersion','generationJobId','generationRequestId','admittedAtMs','effectExpiresAtMs','expectedStrategyVersionId']),s=data(own(pair.objectiveStrategy,['schemaVersion','operation','request','requestSha256','executionContext','queuedType','executionSelection']));
+ const g=own(pair.objectiveGeneration,['sourceAdmission','sourceAdmissionSha256']),a=own(g.sourceAdmission,['schemaVersion','namespace','canonical','actorUserId','clerkUserId','consentId','controlVersion','generationJobId','generationRequestId','admittedAtMs','effectExpiresAtMs','expectedStrategyVersionId']),s=data(own(pair.objectiveStrategy,['schemaVersion','operation','request','requestSha256','executionContext','queuedType']));
  const c=own(a.canonical,['canonicalPlanId','tenantId','clientId','objectiveId','canonicalStrategyId','canonicalProjectId','bindingVersion','epoch','requestedIntentId','requestedObjectiveRevisionId','requestedObjectiveVersion','snapshotHash']);
  for(const key of ['canonicalPlanId','tenantId','clientId','objectiveId','canonicalStrategyId','canonicalProjectId','requestedIntentId','requestedObjectiveRevisionId'])uuid(c[key]);digest(c.snapshotHash);
  for(const n of [c.bindingVersion,c.requestedObjectiveVersion,a.controlVersion])if(!Number.isInteger(n)||n<1||n>2147483647)refuse();
  for(const key of ['actorUserId','consentId','generationJobId','generationRequestId'])uuid(a[key]);
- const r=s.request;if(a.schemaVersion!==1||a.namespace!=='capiro.objective-strategy.admission:v1'||c.epoch!==1||a.expectedStrategyVersionId!==null||g.sourceAdmissionSha256!==sourceAdmissionDigest(a)||a.clerkUserId!==binding.actorId||c.tenantId!==binding.tenantId||a.generationRequestId!==acceptedRequest.requestId||!Number.isSafeInteger(a.admittedAtMs)||!Number.isSafeInteger(a.effectExpiresAtMs)||a.admittedAtMs<0||a.effectExpiresAtMs<=a.admittedAtMs||s.schemaVersion!==1||s.operation!=='strategy.draft'||hash(r)!==s.requestSha256||r.operation!=='strategy.draft'||r.basis!==null||r.jobId!==a.generationJobId||r.requestId!==a.generationRequestId||r.principal.tenantId!==c.tenantId||r.principal.actorId!==a.clerkUserId||r.principal.clientId!==c.clientId||r.source.kind!=='objective'||r.source.objectiveId!==c.objectiveId||r.source.objectiveRevisionId!==c.requestedObjectiveRevisionId||r.source.objectiveVersion!==c.requestedObjectiveVersion||r.source.snapshotSha256!==c.snapshotHash||r.input.typeHint!==s.queuedType)refuse();
+ const r=s.request,protocol=objectiveRequestProtocol(r,{sourceAdmission:a,sourceAdmissionSha256:g.sourceAdmissionSha256});
+ if(protocol.kind===OBJECTIVE_DRAFT_PROTOCOL.kind?a.expectedStrategyVersionId!==null:typeof a.expectedStrategyVersionId!=='string')refuse();
+ if(a.schemaVersion!==1||a.namespace!=='capiro.objective-strategy.admission:v1'||c.epoch!==1||g.sourceAdmissionSha256!==sourceAdmissionDigest(a)||a.actorUserId!==binding.actorId||c.tenantId!==binding.tenantId||a.generationRequestId!==acceptedRequest.requestId||!Number.isSafeInteger(a.admittedAtMs)||!Number.isSafeInteger(a.effectExpiresAtMs)||a.admittedAtMs<0||a.effectExpiresAtMs<=a.admittedAtMs||s.schemaVersion!==1||s.operation!=='strategy.draft'||hash(r)!==s.requestSha256||r.operation!=='strategy.draft'||r.jobId!==a.generationJobId||r.requestId!==a.generationRequestId||r.principal.tenantId!==c.tenantId||r.principal.actorId!==a.actorUserId||r.principal.clientId!==c.clientId||r.source.kind!=='objective'||r.source.objectiveId!==c.objectiveId||r.source.objectiveRevisionId!==c.requestedObjectiveRevisionId||r.source.objectiveVersion!==c.requestedObjectiveVersion||r.source.snapshotSha256!==c.snapshotHash||r.input.typeHint!==s.queuedType)refuse();
  if(!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=a.admittedAtMs||expiresAtMs>Math.min(a.effectExpiresAtMs,r.originalExpiresAtMs)||nowMs!==undefined&&(!Number.isSafeInteger(nowMs)||nowMs<0||expiresAtMs<=nowMs))refuse();
- own(s.executionSelection,['provider','model']);assertObjectiveExecutionContext(s.executionContext,{request:r,acceptedRequest});return boundedSelection(data({binding,acceptedRequest,sourceAdmissionSha256:g.sourceAdmissionSha256,strategy:s,sourceRequestSha256:hash(acceptedRequest)}));
+ assertObjectiveExecutionContext(s.executionContext,{request:r,acceptedRequest});return boundedSelection(data({binding,acceptedRequest,sourceAdmissionSha256:g.sourceAdmissionSha256,strategy:s,sourceRequestSha256:hash(acceptedRequest)}));
+}
+/** The SDK settings owner adds its actual provider/model only at execution; source admission needs no stand-in model. */
+export function assertPreparedObjectiveSelection(value,options){
+ const pair=data(own(value,['objectiveGeneration','objectiveStrategy']));
+ const {executionSelection,...strategy}=own(pair.objectiveStrategy,['schemaVersion','operation','request','requestSha256','executionContext','queuedType','executionSelection']);
+ const model=data(own(executionSelection,['provider','model']));
+ if(Object.values(model).some(v=>typeof v!=='string'||!v.trim()||v.length>128))refuse();
+ const selected=assertObjectiveSourceSelection({objectiveGeneration:pair.objectiveGeneration,objectiveStrategy:strategy},options);
+ return boundedSelection(data({...selected,strategy:{...selected.strategy,executionSelection:model}}));
 }
 export function typedExecutionWitness(value){
  const v=value,e=v.execution,o=v.observation;
@@ -67,9 +79,15 @@ export function assertTypedSelection(value,descriptor,{binding,acceptedRequest})
 }
 /** The locator is selected by the immutable journal witness, never by a read caller. */
 export function typedCheckpointObject(proof,descriptor){
- const d=assertTypedResult(descriptor),cp=proof.checkpoint;validateShape('Checkpoint',cp);assertWorkspacePaths(cp.workspace);
- if(hash(cp)!==proof.checkpointSha256||hash(cp.workspace)!==cp.workspaceSha256||proof.sourceRequestSha256!==d.sourceRequestSha256||cp.sessionId!==d.observation.sessionId||hash(cp.binding)!==d.execution.bindingSha256)refuse();
- const rows=cp.workspace.entries.filter(e=>e.path===d.path);if(rows.length!==1)refuse();const e=rows[0];
+ const d=assertTypedResult(descriptor);let workspace;
+ if(proof.kind==='native-session'){
+  const p=assertNativeSessionCapture(proof);
+  if(!p.files||p.sourceRequestSha256!==d.sourceRequestSha256||p.sdkSession.key.sessionId!==d.observation.sessionId||hash(p.sdkSession.binding)!==d.execution.bindingSha256||p.checkpointId!==d.resultRef||p.checkpointId!==d.execution.receiptRef)refuse();workspace=p.files.workspace;
+ }else{
+  const cp=proof.checkpoint;validateShape('Checkpoint',cp);assertWorkspacePaths(cp.workspace);
+  if(hash(cp)!==proof.checkpointSha256||hash(cp.workspace)!==cp.workspaceSha256||proof.sourceRequestSha256!==d.sourceRequestSha256||cp.sessionId!==d.observation.sessionId||hash(cp.binding)!==d.execution.bindingSha256)refuse();workspace=cp.workspace;
+ }
+ const rows=workspace.entries.filter(e=>e.path===d.path);if(rows.length!==1)refuse();const e=rows[0];
  if(e.kind!=='file'||e.executable!==false||e.object.sha256!==d.fileSha256||e.object.bytes!==d.bytes||e.object.versionId==='null')refuse();return data(e.object);
 }
 export function assertTypedResultBytes(bytes,descriptor){

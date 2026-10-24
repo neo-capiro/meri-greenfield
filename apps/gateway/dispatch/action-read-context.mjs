@@ -9,7 +9,7 @@ export function normalizeActionReadRequest({ entry, request, identity }) {
   const reference = request.clientId.trim();
   // A UUID needs no name lookup. This only normalizes syntax; current business
   // policy must still authorize the normalized request and select the same client.
-  try { return entry.contract.normalizeInput(request, { binding: identity.claims.binding,
+  try { return entry.contract.normalizeInput(request, { binding: identity.execution.binding,
     clientResolution: { reference, clientId: reference.toLowerCase() } }); }
   catch { deny('INVALID_ARGUMENTS'); }
 }

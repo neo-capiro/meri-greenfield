@@ -15,7 +15,7 @@ export function blocks(input,selection,ledger,unresolved,provenance){
   for(const evidence of[row.promise,...row.tracking.map(r=>r.passage),...row.deliveryClaims.map(r=>r.passage)]){
    out.push(p('Bound-source-excerpt: '+evidence.quote),p(`Source ${evidence.sourceId}; record ${evidence.recordId}; immutable version ${evidence.recordVersionId}; citation ${evidence.citationId}.`),
     p(`UTF-16 ${evidence.start}-${evidence.end}; Full body SHA256 ${evidence.contentSha256}; passage SHA256 ${evidence.passageSha256}.`),
-    p('Scope '+JSON.stringify(evidence.scopes)+'; authorization decision '+evidence.authorizationDecisionId+'; observed '+evidence.observedAt+'; authority '+evidence.authority+'; freshness '+evidence.freshness));
+    p('Scope '+JSON.stringify(evidence.scopes)+'; run '+evidence.binding.runId+'; observed '+evidence.observedAt+'; authority '+evidence.authority+'; freshness '+evidence.freshness));
   }
  }
  if(!ledger.commitments.length)out.push(p('No bound promise observation was compiled in the checked portion. This does not establish that no commitments exist.'));

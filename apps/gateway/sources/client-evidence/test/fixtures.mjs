@@ -79,7 +79,7 @@ export function clientEvidenceFixture(operation=operations.profile,request={clie
  const binding={tenantId,actorId:'synthetic-reader',conversationId:id('2'),runId:id('3'),attemptId:id('4'),workerId:id('5'),writerFence:1};
  const scope={tenantId,kind:'client',resourceId:clientId,policyRevision:'policy-1'};
  const subject={kind:'client',entityType:'client',entityIds:[clientId],tenantId,actorId:binding.actorId,
-  authorizationDecisionId:id('6'),policyRevision:'policy-1',scopes:[scope],rosterVersionId:null};
+  policyRevision:'policy-1',scopes:[scope],rosterVersionId:null};
  const claims={capabilityId:id('7'),issuer:'synthetic',audience:'meri-gateway',binding,actions:['tool.read'],scopes:[scope],
   issuedAt:new Date(NOW-1000).toISOString(),expiresAt:new Date(NOW+10000).toISOString(),policyRevision:'policy-1',
   budgets:{maxTurns:5,maxRuntimeSeconds:10,maxCostMicrousd:100,maxOutputBytes:65536}};

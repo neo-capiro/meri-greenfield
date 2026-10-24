@@ -5,6 +5,51 @@
     "UserPreferences": {
       "type": "object",
       "properties": {
+        "defaultModel": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "enum": [
+                    "bedrock",
+                    "claude-api"
+                  ]
+                },
+                "modelId": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"
+                },
+                "effort": {
+                  "anyOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "low",
+                        "medium",
+                        "high",
+                        "xhigh",
+                        "max"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "provider",
+                "modelId",
+                "effort"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "theme": {
           "type": "string",
           "enum": [
@@ -60,6 +105,7 @@
         }
       },
       "required": [
+        "defaultModel",
         "theme",
         "density",
         "timezone",
@@ -125,12 +171,128 @@
         },
         "preferences": {
           "$ref": "#/$defs/UserPreferences"
+        },
+        "modelCatalog": {
+          "type": "object",
+          "properties": {
+            "defaultSelection": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "enum": [
+                    "bedrock",
+                    "claude-api"
+                  ]
+                },
+                "modelId": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"
+                },
+                "effort": {
+                  "anyOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "low",
+                        "medium",
+                        "high",
+                        "xhigh",
+                        "max"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "provider",
+                "modelId",
+                "effort"
+              ],
+              "additionalProperties": false
+            },
+            "models": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 128,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "enum": [
+                      "bedrock",
+                      "claude-api"
+                    ]
+                  },
+                  "modelId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "efforts": {
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "low",
+                            "medium",
+                            "high",
+                            "xhigh",
+                            "max"
+                          ]
+                        }
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 6,
+                    "uniqueItems": true
+                  },
+                  "available": {
+                    "type": "boolean"
+                  },
+                  "unavailableReason": {
+                    "enum": [
+                      null,
+                      "provider_unconfigured",
+                      "model_unqualified"
+                    ]
+                  }
+                },
+                "required": [
+                  "provider",
+                  "modelId",
+                  "label",
+                  "efforts",
+                  "available",
+                  "unavailableReason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "defaultSelection",
+            "models"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
         "owner",
         "revision",
-        "preferences"
+        "preferences",
+        "modelCatalog"
       ],
       "additionalProperties": false
     },

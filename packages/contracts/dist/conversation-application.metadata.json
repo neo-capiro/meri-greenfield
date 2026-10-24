@@ -14,28 +14,28 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "121954d1a2b74bfd13eec8db5bd5df8ad34ca30542b420366a63e212a683486f",
-      "bytes": 24057
+      "sha256": "edf220b461a4c199732a804052f0d325e58edb2e446acae045de05e35d692231",
+      "bytes": 27078
     },
     {
       "path": "conversation-application/protocol.mjs",
-      "sha256": "7c515d2eedaa17b5e76977c8c8650cc53920f5d5653acae4741e262baffe80e2",
-      "bytes": 2047
+      "sha256": "d70e2779bcc573ca4c9151930510e99ca5925aa8fe7e3abe975e625c0e020e68",
+      "bytes": 2117
     },
     {
       "path": "conversation-application/receive.mjs",
-      "sha256": "11d9b0a7f5636ebdffce3d0744be0b539a23c28bba56c26740db095ee11be2eb",
-      "bytes": 7555
+      "sha256": "0468a2c6a7009e3fb43aafe10a50e4549e3fc693367977d94c02a91dcdde4ff5",
+      "bytes": 7639
     },
     {
       "path": "conversation-application/schema.mjs",
-      "sha256": "c60771d1febe7cafdcacc0240345f019bbfa6e2097c0ba253279e922c58c7512",
-      "bytes": 2515
+      "sha256": "b2d48dc225d7965efbd88ce40a41d4ea08f871b95eb928d0287c35440965aede",
+      "bytes": 2710
     },
     {
       "path": "document-application/boundary.mjs",
-      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
-      "bytes": 2216
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
     },
     {
       "path": "meri.schema.json",
@@ -43,9 +43,14 @@
       "bytes": 50043
     },
     {
+      "path": "model-selection.mjs",
+      "sha256": "403fb77243ee1f7649d958e9536f08bb3f9d590707c9045f74c197bb5b16a18b",
+      "bytes": 4086
+    },
+    {
       "path": "retrieval-0.2/common.schema.json",
-      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
-      "bytes": 15134
+      "sha256": "943f59f53f33e09405d8f3350798d33d624c97d37e00c029ea4c14c8ba6e185b",
+      "bytes": 14996
     },
     {
       "path": "retrieval-0.2/skill.schema.json",
@@ -53,8 +58,9 @@
       "bytes": 9072
     }
   ],
-  "schemaSha256": "76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b",
+  "schemaSha256": "4c94af8ff703722ded98962183090c1c73bc1d9ec801ebb714994fba76f61712",
   "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",
     "conversation-application/protocol.mjs",
     "conversation-generated:./generated-validator.mjs",

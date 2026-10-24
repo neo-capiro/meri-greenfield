@@ -18,3 +18,6 @@ export function admitDocumentDescriptor(value,{pdf=false}={}){
 }
 export const admitsDocumentFormat=(admission,format)=>admission.formats.includes(format);
 export const admitsDocumentMime=(admission,mime)=>admission.formats.some(format=>ARTIFACT_MIME_TYPES[format]===mime);
+
+/** Public requests select only a canonical typed format; Core owns operation permission. */
+export function admitDocumentFormats({pdf=false}={}){if(typeof pdf!=='boolean')fail('DOCUMENT_CONFIGURATION',500);return data({formats:['docx','txt','xlsx','pptx','zip',...(pdf?['pdf']:[])]});}

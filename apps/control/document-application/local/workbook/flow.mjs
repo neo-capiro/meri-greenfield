@@ -17,7 +17,7 @@ export const workbookDraft = () => ({operation: 'create_excel',format: 'xlsx',ti
 export async function runLocalWorkbookFlow({fixture,send,pythonExecutable,sofficeExecutable,outputDirectory,reconstruct,checkIsolation,copyInspectionDeadlineMs}) {
   const json = async response => {const body = await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;};
   const session = await json(await send('/api/action-followthrough/session',{},fixture.nativeCredential));
-  assert.notEqual(session.credential,fixture.nativeCredential);assert.notEqual(session.credential,fixture.credential);
+  assert.notEqual(session.credential,fixture.nativeCredential);assert.notEqual(session.credential,'untrusted-tool-token');
   const call = (route,body) => send('/api/documents/'+route,body,session.credential);
   const forbidden = await call('create',{deliveryId: 'forged-context',request: workbookDraft(),context: fixture.artifactOptions.context});
   assert.notEqual(forbidden.status,200);assert.equal(fixture.stats().generations,0);
@@ -54,7 +54,7 @@ export async function runLocalWorkbookFlow({fixture,send,pythonExecutable,soffic
   await checkIsolation({versionId: first.version.versionId,credential: session.credential});
   const replay = await call('create',{deliveryId: 'workbook-original',request: workbookDraft()});
   const recovered=await json(replay);assert.deepEqual(recovered.version,first.version);assert.equal(recovered.execution.budgetTicketId,first.execution.budgetTicketId);
-  assert.equal(fixture.stats().generations,2);assert.equal(fixture.stats().settled,2);assert.equal(fixture.stats().consumedMicroUsd,'20');
+  assert.equal(fixture.stats().generations,2);assert.equal(fixture.stats().prepared,2);assert.equal(fixture.stats().prepared,2);
   fixture.revoke();
   for (const version of [first.version,second.version]) assert.notEqual((await call('download',{versionId: version.versionId})).status,200);
   assert.notEqual((await call('create',{deliveryId: 'revoked-write',request: workbookDraft()})).status,200);

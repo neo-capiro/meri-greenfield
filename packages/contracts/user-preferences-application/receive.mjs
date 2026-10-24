@@ -1,6 +1,7 @@
 import canonicalize from 'canonicalize';
 import {validators} from './generated-validator.mjs';
 import {userPreferencesDocument} from './document.mjs';
+import {assertModelCatalog} from '../model-selection.mjs';
 import {userPreferencesMetadata,userPreferencesPaths} from './generated-protocol.mjs';
 import {parseText,expectedData,fail} from './boundary.mjs';
 export {UserPreferencesResponseError} from './boundary.mjs';
@@ -24,6 +25,6 @@ export async function receiveUserPreferencesResponse(route,httpStatus,jsonText,e
  if(route==='save'){check(name,expectation.request);document(expectation.request.preferences);}
  const value=parseText(jsonText,userPreferencesMetadata.limits.responseBytes);
  if(httpStatus!==200){check('UserPreferencesErrorResponse',value);if(userPreferencesMetadata.errorStatuses[value.error.code]!==httpStatus||httpStatus===502&&Object.hasOwn(value.error,'field'))fail('USER_PREFERENCES_STATUS');return value;}
- check('UserPreferencesResponse',value);document(value.preferences);
+ check('UserPreferencesResponse',value);document(value.preferences);try{assertModelCatalog(value.modelCatalog);}catch{fail('USER_PREFERENCES_DOCUMENT');}
  if(!same(value.owner,expectation.owner)||route==='save'&&(value.revision!==expectation.request.expectedRevision+1||!same(value.preferences,expectation.request.preferences)))fail('USER_PREFERENCES_CORRELATION');return value;
 }

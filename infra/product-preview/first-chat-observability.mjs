@@ -2,7 +2,7 @@
 import {App,Stack,BootstraplessSynthesizer,CfnParameter,CfnCondition,Fn,aws_logs as logs,aws_cloudwatch as cloudwatch,aws_sns as sns} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 
-export const OBSERVABILITY_SERVICES=Object.freeze(['control','worker','runner','owner','proxy']);
+export const OBSERVABILITY_SERVICES=Object.freeze(['control','worker']);
 const fail=()=>{throw Error('OBSERVABILITY_CONFIGURATION');};
 export function telemetryEnvironment(raw){
  if(raw===undefined)return 'Preview';
@@ -32,7 +32,9 @@ export function observabilityBindingFromDeployment(deployment,{environment,alarm
 export function synthesizeFirstChatObservability(raw){
  const b=bindingOf(raw),prefix=`meri-${b.environment.toLowerCase()}`,namespace=`Meri/${b.environment}`;
  const app=new App({context:{'aws:cdk:version-reporting':false}});
- const stack=new Stack(app,'MeriFirstChatObservability',{synthesizer:new BootstraplessSynthesizer()});
+ const stack=new Stack(app,'MeriFirstChatObservability',{synthesizer:new BootstraplessSynthesizer(),
+  description:'Meri control and Temporal worker observability using existing logs and emitted turn metrics; no application or log-group mutations.'});
+ stack.templateOptions.metadata={AWSToolsMetrics:{AWSAgentToolkit:'aws-cloudformation@3'}};
  const topic=new sns.CfnTopic(stack,'AlarmsTopic',{topicName:`${prefix}-alarms`});
  const email=new CfnParameter(stack,'AlarmEmail',{type:'String',default:b.alarmEmail,maxLength:254,
   allowedPattern:'^$|^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',description:'Optional alarm recipient; confirm the SNS email after deployment.'});
@@ -40,14 +42,6 @@ export function synthesizeFirstChatObservability(raw){
  const subscription=new sns.CfnSubscription(stack,'AlarmEmailSubscription',{protocol:'email',endpoint:email.valueAsString,topicArn:topic.ref});
  subscription.cfnOptions.condition=subscribe;
  const filters=[
-  ['RunnerFirstFailure','runner','RUNNER_FIRST_FAILURE','RunnerFirstFailureLines'],
-  ['OwnerUnavailable','owner','PRODUCT_OWNER_UNAVAILABLE','OwnerUnavailableLines'],
-  ['OwnerRefused','owner','PRODUCT_OWNER_REFUSED','OwnerRefusedLines'],
-  ['ProxyPairRefused','proxy','PRODUCT_PROXY_REFUSED gate=pair','ProxyPairRefusals'],
-  ['ProxyExchangeRefused','proxy','PRODUCT_PROXY_REFUSED gate=exchange','ProxyExchangeRefusals'],
-  ['ProxyRefused','proxy','PRODUCT_PROXY_REFUSED','ProxyRefusedLines'],
-  ['OwnerDiagnosticsSuppressed','owner','PRODUCT_OWNER_DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
-  ['ProxyDiagnosticsSuppressed','proxy','PRODUCT_PROXY_DIAGNOSTICS_SUPPRESSED','DiagnosticsSuppressed'],
   ['ControlUnavailable','control','RUNTIME_UNAVAILABLE','RuntimeUnavailable'],
   ['WorkerUnavailable','worker','RUNTIME_UNAVAILABLE','RuntimeUnavailable'],
   // Each refused action-session issuance or recheck (session/owner.mjs): step and owned code only, rate-limited at the source.
@@ -57,7 +51,7 @@ export function synthesizeFirstChatObservability(raw){
  for(const [id,service,pattern,metricName] of filters)new logs.CfnMetricFilter(stack,id,{filterName:`${prefix}-${id.replace(/[A-Z]/gu,x=>`-${x.toLowerCase()}`).slice(1)}`,
   logGroupName:b.logGroups[service],filterPattern:JSON.stringify(pattern),metricTransformations:[{metricName,metricNamespace:namespace,metricValue:'1',defaultValue:0}]});
  // Plain-text filters cannot extract static Service dimensions, and DefaultValue cannot coexist with dimensions.
- // The two suppression filters retain service provenance through their names/log groups and aggregate into one metric.
+ // The session suppression filter retains control provenance through its name/log group.
  const dimensions=values=>Object.entries(values).map(([name,value])=>({name,value}));
  const metric=(id,name,dims={},period=300,stat='Sum')=>({id,returnData:false,metricStat:{metric:{namespace,metricName:name,dimensions:dimensions(dims)},period,stat}});
  const expression=(id,value,returnData=false)=>({id,expression:value,returnData});
@@ -72,25 +66,20 @@ export function synthesizeFirstChatObservability(raw){
  alarms('TimeoutFailure','timeout-failure',1,'GreaterThanOrEqualToThreshold',[
   metric('control','TimeoutFailures',{Service:'control'}),metric('runner','TimeoutFailures',{Service:'runner'}),expression('timeouts','SUM([control,runner])',true)]);
  alarms('FirstTextP95','first-text-p95',20000,'GreaterThanThreshold',[{...metric('firsttext','FirstTextMs',{Service:'control'},3600,'p95'),returnData:true}],{evaluateLowSampleCountPercentile:'evaluate'});
- alarms('ProxyOwnerUnavailable','proxy-owner-unavailable',1,'GreaterThanOrEqualToThreshold',[
-  metric('owner','HealthEvents',{Service:'owner'}),metric('proxy','HealthEvents',{Service:'proxy'}),metric('legacy','OwnerUnavailableLines'),expression('unavailable','SUM([owner,proxy,legacy])',true)]);
- alarms('BudgetQuarantine','budget-quarantine',1,'GreaterThanOrEqualToThreshold',[{...metric('quarantines','BudgetQuarantines',{Service:'owner'}),returnData:true}]);
  const errors=['5xx','503','timeout','unanswered'],core=[];
- for(const [index,service] of ['control','owner'].entries()){
+ for(const [index,service] of ['control'].entries()){
   core.push(metric(`total${index}`,'CoreCalls',{Service:service},600));
   errors.forEach((status,i)=>core.push(metric(`e${index}${i}`,'CoreCalls',{Service:service,StatusClass:status},600)));
  }
  alarms('CoreErrorRate','core-error-rate',5,'GreaterThanThreshold',[...core,
-  expression('total','SUM([total0,total1])'),expression('errors','SUM([e00,e01,e02,e03,e10,e11,e12,e13])'),
+  expression('total','total0'),expression('errors','SUM([e00,e01,e02,e03])'),
   expression('rate','IF(total>=20,100*errors/total,0)',true)],{evaluationPeriods:2,datapointsToAlarm:2});
- alarms('PairRefusalsSustained','pair-refusals-sustained',1,'GreaterThanOrEqualToThreshold',[
-  metric('pair','ProxyPairRefusals',{},60),metric('exchange','ProxyExchangeRefusals',{},60),expression('refusals','SUM([pair,exchange])',true)],{evaluationPeriods:3,datapointsToAlarm:3});
  // Three breaching minute samples tolerate an isolated startup refusal while detecting sustained session refusal.
  // Match the plain-text control filter exactly: it emits ControlSessionRefusals without dimensions.
  alarms('SessionRefusalsSustained','session-refusals-sustained',1,'GreaterThanOrEqualToThreshold',[
   {...metric('session','ControlSessionRefusals',{},60),returnData:true}],{evaluationPeriods:3,datapointsToAlarm:3});
  alarms('TelemetryDropped','telemetry-dropped',1,'GreaterThanOrEqualToThreshold',[
-  ...['control','owner','proxy','runner'].map(service=>metric(service,'TelemetryDropped',{Service:service},900)),expression('drops','SUM([control,owner,proxy,runner])',true)]);
+  ...['control','runner'].map(service=>metric(service,'TelemetryDropped',{Service:service},900)),expression('drops','SUM([control,runner])',true)]);
 
  const chartMetric=(name,dims={},options={})=>[namespace,name,...Object.entries(dims).flat(),options];
  const widgets=[];
@@ -105,29 +94,24 @@ export function synthesizeFirstChatObservability(raw){
   chartMetric('TimeoutFailures',{Service:'control'},{label:'Control timeout signals'}),chartMetric('TimeoutFailures',{Service:'runner'},{label:'Runner timeout signals'})]);
  const callsPerTurn=['completed','failed','cancelled'].map((Outcome,i)=>chartMetric('Turns',{Service:'control',Outcome},{id:`turn${i}`,visible:false}));
  callsPerTurn.push([{expression:'SUM([turn0,turn1,turn2])',id:'turns',visible:false}]);
- for(const [s,Service] of ['control','owner'].entries())for(const [m,name] of ['CoreCalls','ClerkReadsEstimate','AwsCalls','DbStatements'].entries()){
+ for(const [s,Service] of ['control'].entries())for(const [m,name] of ['CoreCalls','ClerkReadsEstimate','AwsCalls','DbStatements'].entries()){
   const id=`s${s}m${m}`,bg=`b${s}m${m}`;
   callsPerTurn.push(chartMetric(name,{Service},{id,visible:false}));
   callsPerTurn.push(chartMetric(name,{Service,Attribution:'background'},{id:bg,visible:false}));
   callsPerTurn.push([{expression:`IF(turns>0,(${id}-FILL(${bg},0))/turns,0)`,label:`${Service} ${name} / turn`}]);
  }
  widget('Calls per turn (background excluded; Clerk reads estimated)',callsPerTurn);
- widget('Model timings', ['ModelTtftMs','ModelBootstrapMs'].flatMap(name=>['p50','p95'].map(stat=>chartMetric(name,{Service:'proxy'},{stat}))));
- widget('Owner exchanges per model request',[chartMetric('OwnerExchanges',{Service:'proxy'},{stat:'Average'})]);
- widget('Model requests and proxy AWS calls',[
-  ...['completed','refused','failed','cancelled'].map(Outcome=>chartMetric('ModelRequests',{Service:'proxy',Outcome})),chartMetric('ProxyAwsCalls',{Service:'proxy'})]);
  widget('Runner run-owner calls and elapsed time',[chartMetric('RunOwnerCalls',{Service:'runner'},{stat:'Average'}),chartMetric('RunOwnerMs',{Service:'runner'},{stat:'Average',yAxis:'right'})]);
- widget('Health transitions and budget quarantine',[
-  ...['owner','proxy'].flatMap(Service=>['bootstrap','pending-work','owner-gate','pair','service-gate','facts','credential-delivery','currentness'].map(Component=>chartMetric('HealthEvents',{Service,Component}))),
-  chartMetric('BudgetQuarantines',{Service:'owner'})]);
- widget('Pair refusals',[chartMetric('ProxyPairRefusals'),chartMetric('ProxyExchangeRefusals')]);
  const source=OBSERVABILITY_SERVICES.map(service=>`SOURCE '${b.logGroups[service]}'`).join(' | ');
  let logY=Math.ceil(widgets.length/2)*6;
  for(const [title,query] of [
-  ['Turn detail',`fields @timestamp, @log, event, service, stage, atMs, firstTextMs, resultMs, state, reasonCode, timeoutClass, core, aws, db, ownerExchanges, firstChunkMs\n| filter schema = "meri.telemetry/1" and runId = "<paste runId>"\n| sort atMs asc`],
+  ['Turn detail',`fields @timestamp, @log, event, service, stage, atMs, firstTextMs, resultMs, state, reasonCode, timeoutClass, core, aws, db\n| filter schema = "meri.telemetry/1" and runId = "<paste runId>"\n| sort atMs asc`],
   ['Last 20 turns','filter schema = "meri.telemetry/1" and event = "meri.turn.summary"\n| sort @timestamp desc\n| limit 20']
  ]){widgets.push({type:'log',x:0,y:logY,width:24,height:6,
   properties:{title,region:stack.region,view:'table',query:`${source}\n| ${query}`}});logY+=6;}
  new cloudwatch.CfnDashboard(stack,'HotPathDashboard',{dashboardName:`${prefix}-hot-path`,dashboardBody:stack.toJsonString({widgets})});
- return Template.fromStack(stack).toJSON();
+ const template=Template.fromStack(stack).toJSON();
+ for(const resource of Object.values(template.Resources))if(resource.Type==='AWS::CloudWatch::Alarm'||resource.Type==='AWS::CloudWatch::Dashboard')
+  resource.Metadata={'com.aws.cloudformation.Context':{why:'Observe current turn and session behavior without a model proxy.',must:['Use exact emitted metric dimensions.','Do not mutate application or log-group resources.']}};
+ return template;
 }

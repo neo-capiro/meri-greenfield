@@ -40,10 +40,17 @@ test('no mapped Monday board means not-mapped coverage and no unrelated board so
  const f=setup();f.selected.mondayBoardIds=[];const p=await f.compiler.prepare(makeInput(),f.context,{selection:f.selected});
  assert.equal(f.calls.some(c=>c.operation.id==='read_monday_client_boards'),false);assert.ok(p.ledger.coverage.some(c=>c.sourceId==='client_knowledge_monday'&&c.status==='not-mapped'));
 });
-test('fresh authorization decision IDs retain exact stable subject and every actual source decision',async()=>{
- const f=setup({source:call=>{const page=sourcePage(call);if(page.subject)page.subject={...page.subject,authorizationDecisionId:uid(90)};return page;}});
- const p=await f.compiler.prepare(makeInput(),f.context,{selection:f.selected});assert.equal(p.ledger.commitments[0].promise.authorizationDecisionId,uid(90));
- assert.ok(p.context.evidence.every(e=>e.authorizationDecisionId===uid(90)));
+test('native source evidence retains exact run, scopes and source receipt hashes without a decision ID',async()=>{
+ const f=setup(),p=await f.compiler.prepare(makeInput(),f.context,{selection:f.selected});
+ assert.deepEqual(p.ledger.commitments[0].promise.binding,f.context.binding);
+ assert.ok(p.context.evidence.length>0);
+ for(const e of p.context.evidence){assert.deepEqual(e.binding,f.context.binding);assert.equal(Object.hasOwn(e,'authorizationDecisionId'),false);}
+ for(const m of p.provenance.materials){assert.deepEqual(m.binding,f.context.binding);assert.ok(m.receiptSha256s.length>0);assert.ok(m.receiptSha256s.every(h=>p.reads.some(r=>r.resultSha256===h)));}
+});
+
+test('obsolete decision fields cannot substitute for actual typed read identity',async()=>{
+ const f=setup({source:call=>{const p=sourcePage(call);if(p.subject)p.subject.authorizationDecisionId=uid(90);return p;}});
+ await assert.rejects(f.compiler.prepare(makeInput(),f.context,{selection:f.selected}));
 });
 test('cancelled collection never reaches later source work',async()=>{const f=setup(),controller=new AbortController();controller.abort();await assert.rejects(f.compiler.prepare(makeInput(),f.context,{selection:f.selected,signal:controller.signal}));assert.equal(f.calls.length,0);});
 

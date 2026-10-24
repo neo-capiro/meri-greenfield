@@ -59,8 +59,8 @@
     "membership": "server owns current membership and default-client eligibility",
     "integration": "isolated source contract; runtime mounting and persistence qualification remain handoff work"
   },
-  "bundler": "rolldown",
-  "declarations": "json-schema-to-ts/typescript",
+  "bundler": "esbuild",
+  "declarations": "json-schema-to-typescript",
   "sources": [
     {
       "path": "../../apps/control/product-access/errors.mjs",
@@ -74,8 +74,8 @@
     },
     {
       "path": "../../apps/control/settings/documents.mjs",
-      "sha256": "36dd580e23856f7c547d03f6bfd540586bf5615040f4c8696fc51b1fba1b9183",
-      "bytes": 2994
+      "sha256": "32071cc9b9196f909bd7f8bf629401f0f7eb051ed53097d8b3d9719d79377e0a",
+      "bytes": 4339
     },
     {
       "path": "../../apps/control/settings/routes.mjs",
@@ -89,18 +89,23 @@
     },
     {
       "path": "document-application/boundary.mjs",
-      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
-      "bytes": 2216
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
     },
     {
       "path": "generate-user-preferences.mjs",
-      "sha256": "165ce6a0ddcea02cea77d557f03c8c6f4322c7f45740acf6f9651554ae5182ec",
-      "bytes": 11146
+      "sha256": "24a08064bc765149843f8c44a3332890aedc49018568966ff4311406f0eb1f50",
+      "bytes": 11182
     },
     {
       "path": "meri.schema.json",
       "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
       "bytes": 50043
+    },
+    {
+      "path": "model-selection.mjs",
+      "sha256": "403fb77243ee1f7649d958e9536f08bb3f9d590707c9045f74c197bb5b16a18b",
+      "bytes": 4086
     },
     {
       "path": "user-preferences-application/boundary.mjs",
@@ -114,8 +119,8 @@
     },
     {
       "path": "user-preferences-application/document.mjs",
-      "sha256": "03576e356064fb89d2b81c9dbcf07581d23710a075e017be7019ef76e9591e9a",
-      "bytes": 4200
+      "sha256": "1f0366ab85e99d89d103a091677e4ae2d27a77a3dd6339762938b4ff36d3121a",
+      "bytes": 4934
     },
     {
       "path": "user-preferences-application/protocol.mjs",
@@ -129,28 +134,31 @@
     },
     {
       "path": "user-preferences-application/receive.mjs",
-      "sha256": "a16b0d1903174248339e20bf2f38fae86521e9f43a0e682dcb7ba01c8fbc2c86",
-      "bytes": 2838
+      "sha256": "9e398298f00e161e05307948ed2f8fcb452dbba67897adb6a1813d4b734d417d",
+      "bytes": 2982
     },
     {
       "path": "user-preferences-application/schema.mjs",
-      "sha256": "d8f6f48a67c9a2f6390782fdd6efd79084b3fb3caa1430d9c87b61c0845f2c00",
-      "bytes": 1204
+      "sha256": "1b879191b4a4c2db97ee15eeb7526e27f4c2d62b230febfa903ff96f356418a9",
+      "bytes": 1299
     }
   ],
-  "schemaSha256": "505d936a2eecfbcebbebe740048eea1eab02f3cfbdd9f89b2d00698c64da7ac9",
+  "schemaSha256": "814dd882a4ab1930534fa388d4fe1a86184eede52cd5e8463bb6cc733b80dc86",
   "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",
+    "model-selection.mjs",
+    "node_modules/ajv/dist/runtime/equal.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
+    "node_modules/fast-deep-equal/index.js",
     "user-preferences-application/boundary.mjs",
     "user-preferences-application/document.mjs",
     "user-preferences-application/protocol.mjs",
-    "user-preferences-application/receive.mjs",
     "user-preferences-application/schema.mjs",
-    "virtual:rolldown/runtime.js",
-    "virtual:user-preferences-generated-protocol",
-    "virtual:user-preferences-generated-validator"
+    "user-preferences-application/user-preferences-receiver.mjs",
+    "user-preferences-generated:./generated-protocol.mjs",
+    "user-preferences-generated:./generated-validator.mjs"
   ],
   "browserImports": []
 }

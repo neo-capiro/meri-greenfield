@@ -7,7 +7,7 @@ import {resolveOperationContract} from '../../../../../packages/contracts/retrie
 import {asset} from '../source.mjs';
 export {corpus,lateQuote,mailboxId,uid,sourceVersionId,unitContext,NOW};
 export const selection=context=>({subject:{kind:'client',entityType:'client',entityIds:[context.scopes.find(s=>s.kind==='client').resourceId],
- tenantId:context.binding.tenantId,actorId:context.binding.actorId,authorizationDecisionId:uid(72),policyRevision:context.scopes[0].policyRevision,
+ tenantId:context.binding.tenantId,actorId:context.binding.actorId,policyRevision:context.scopes[0].policyRevision,
  scopes:context.scopes,rosterVersionId:null},window:{basis:'unbounded'},mondayBoardIds:['101']});
 export function makeInput(asOf=new Date(NOW).toISOString()){
  const passage={sourceId:'mail',recordId:uid(74),recordVersionId:sourceVersionId,start:corpus.indexOf(lateQuote),end:corpus.indexOf(lateQuote)+lateQuote.length,quote:lateQuote};

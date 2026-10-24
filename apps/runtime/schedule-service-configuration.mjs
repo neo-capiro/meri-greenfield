@@ -12,7 +12,7 @@
  *
  * Native client (lane B3). The worker's two lane-1 owners, scheduled admission and native retirement, are control native
  * operations (`/v1/routines/occurrences/{admit,retire}`, native-authority/routines-occurrence-http.mjs), so the role may declare
- * `native` ({origin, capabilityFile, loopback, maxResponseBytes}: the same closed block config.mjs validates for control and the
+ * `native` ({origin, capabilityFile, loopback, maxResponseBytes}, with optional pinned server CA: the same closed block config.mjs validates for control and the
  * poller, without `preparedKickoff`). The service reads the capability file and owns the client (native-client.mjs) after its pool
  * and Temporal client, then hands all three to the trusted `runtimePortsFactory`. Absent `native`, the factory gets no client and the
  * production composer refuses: configuration alone never produces an owner. */
@@ -41,9 +41,13 @@ export function compileScheduleServiceConfiguration(configuration){
   }
   let native;
   if(c.native!==undefined){
-   const n=own(c.native,['origin','capabilityFile','loopback','maxResponseBytes']);
+   const n=own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],['serverCaFile','serverCaSha256']);
    if(typeof n.loopback!=='boolean'||!Number.isSafeInteger(n.maxResponseBytes)||n.maxResponseBytes<1024||n.maxResponseBytes>2097152)refuse();
    native={origin:nativeOrigin(n.origin,n.loopback),capabilityFile:filePath(n.capabilityFile),loopback:n.loopback,maxResponseBytes:n.maxResponseBytes};
+   if(n.serverCaFile!==undefined||n.serverCaSha256!==undefined){
+    if(typeof n.serverCaSha256!=='string'||!/^[a-f0-9]{64}$/u.test(n.serverCaSha256))refuse();
+    native.serverCaFile=filePath(n.serverCaFile);native.serverCaSha256=n.serverCaSha256;
+   }
    if(connectionFile!==undefined&&native.capabilityFile===connectionFile)refuse();
   }
   return data({scheduledDispatch:s,...(connectionFile===undefined?{}:{connectionFile}),...(native===undefined?{}:{native})});

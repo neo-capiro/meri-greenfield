@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:commands:document-draft:0.2.0",
+  "$defs": {
+    "DocumentDraftArguments": {
+      "type": "object",
+      "properties": {
+        "preparationSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifactRequestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceContextSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "baseVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "format": {
+          "const": "docx"
+        }
+      },
+      "required": [
+        "preparationSha256",
+        "artifactRequestSha256",
+        "sourceContextSha256",
+        "baseVersionId",
+        "title",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentDraftContext": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "binding",
+        "scopes"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentDraftCommand": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "action": {
+          "const": "document.draft"
+        },
+        "arguments": {
+          "$ref": "#/$defs/DocumentDraftArguments"
+        },
+        "attachments": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentDraftApprovalProposal": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/DocumentDraftCommand"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

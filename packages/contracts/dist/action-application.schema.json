@@ -1141,10 +1141,6 @@
           "minLength": 1,
           "maxLength": 128
         },
-        "authorizationDecisionId": {
-          "type": "string",
-          "format": "uuid"
-        },
         "policyRevision": {
           "type": "string",
           "minLength": 1,
@@ -1178,7 +1174,6 @@
         "entityIds",
         "tenantId",
         "actorId",
-        "authorizationDecisionId",
         "policyRevision",
         "scopes",
         "rosterVersionId"

@@ -41,16 +41,17 @@ declare const admittedRequest: unique symbol;
 declare const admittedVersion: unique symbol;
 export interface DocumentRequestMap { create:DocumentCreateRequest; revise:DocumentReviseRequest; inspect:DocumentInspectRequest; download:DocumentDownloadRequest; }
 export type AdmittedDocumentRequest<R extends DocumentRoute> = Readonly<DocumentRequestMap[R]> & {readonly [admittedRequest]:R};
-export type AdmittedDocumentVersion = Readonly<DocumentVersion> & {readonly [admittedVersion]:true};
-export type DocumentReceipt<T> = Omit<T,'version'> & {readonly version:AdmittedDocumentVersion};
+export type NativeArtifactFileMetadata = Extract<DocumentInspectionResponse,{kind:'native-file'}>['version'];
+export type AdmittedDocumentVersion = Readonly<DocumentVersion|NativeArtifactFileMetadata> & {readonly [admittedVersion]:true};
+export type DocumentReceipt<T> = T extends {version:infer V} ? Omit<T,'version'> & {readonly version:Readonly<V> & {readonly [admittedVersion]:true}} : never;
 export interface DocumentResponseMap {create:DocumentReceipt<DocumentCreatedResponse>; revise:DocumentReceipt<DocumentCreatedResponse>; inspect:DocumentReceipt<DocumentInspectionResponse>; download:never;}
 export type DocumentResponse<R extends DocumentRoute> = DocumentResponseMap[R] | DocumentErrorResponse;
-export interface DocumentDownload {readonly version:AdmittedDocumentVersion; readonly bytes:Uint8Array<ArrayBuffer>;}
+export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
 export declare class DocumentResponseError extends Error {readonly code:string;}
 export declare function receiveDocumentRequest<R extends DocumentRoute>(route:R,utf8Bytes:Uint8Array):AdmittedDocumentRequest<R>;
 export declare function receiveDocumentResponse<R extends DocumentRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentRequest<R>):Promise<DocumentResponse<R>>;
-export declare function receiveDocumentDownload(response:Response,version:AdmittedDocumentVersion,options?:DocumentDownloadOptions):Promise<DocumentDownload>;
+export declare function receiveDocumentDownload<V extends AdmittedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentDownload<V>>;
 `;
  const outputs=new Map([['document-application.mjs','// Generated browser receiving boundary; no authority.\n'+bundled.outputFiles[0].text],['document-application.d.ts',declarations+api],['document-application.schema.json',JSON.stringify(root,null,2)+'\n'],['document-application.metadata.json',JSON.stringify({packageVersion:'0.1.2',schemaId:root.$id,sources:[...sources.values()].sort((a,b)=>a.path.localeCompare(b.path)),schemaSha256:hash(JSON.stringify(root,null,2)+'\n'),browserInputs:Object.keys(bundled.metafile.inputs).sort()},null,2)+'\n']]);
  if(check){for(const [name,content]of outputs)if(await readFile(new URL('dist/'+name,HERE),'utf8')!==content)throw Error('Generated drift: '+name);}else{await mkdir(new URL('dist/',HERE),{recursive:true});for(const[name,content]of outputs)await writeFile(new URL('dist/'+name,HERE),content);}

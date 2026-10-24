@@ -3,9 +3,11 @@ import {artifactValidators as v} from '../../../../packages/contracts/retrieval-
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {same,hash,fail} from './preparation.mjs';
 export const lineageMarker='Meri separately approved output lineage: ';
-export function projectOutput(source,receipt,access){
- const lineage=data({recipe:'original-selected-docx/1',...source.sourcePins,outputBinding:receipt.outputBinding,outputAllocationSha256:receipt.allocationSha256,outputGrantId:receipt.grantId,approvalReceiptId:receipt.approvalReceiptId,
- sourceEvidenceSha256:hash(source.context.evidence),sourceDeadlineMs:source.context.deadlineMs,outputDeadlineMs:receipt.deadlineMs,
+export const selectedInvocationId=(source,decision)=>'sdk:'+hash({kind:'selected-document',sourcePins:source.sourcePins,proposalId:decision.proposalId,approvalDecisionSha256:hash(decision)});
+export const selectedDeliveryId=(source,receipt,projection)=>'selected-output:'+hash({sourcePins:source.sourcePins,outputBinding:receipt.outputBinding,proposalId:receipt.approvalDecision.proposalId,approvalDecisionSha256:hash(receipt.approvalDecision),lineageSha256:projection.lineageSha256});
+export function projectOutput(source,receipt){
+ const lineage=data({recipe:'original-selected-docx/1',...source.sourcePins,outputBinding:receipt.outputBinding,proposalId:receipt.approvalDecision.proposalId,approvalDecisionSha256:hash(receipt.approvalDecision),
+ sourceEvidenceSha256:hash(source.context.evidence),sourceDeadlineMs:source.context.deadlineMs,
  sourceProvenance:source.prepared.provenance,sourceEvidence:source.context.evidence});
  const {sourceProvenance:retainedProvenance,sourceEvidence:retainedEvidence,...visible}=lineage;
  const lineageSha256=hash(lineage),request=v.request({...source.request,content:{...source.request.content,blocks:[...source.request.content.blocks,

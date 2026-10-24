@@ -2,7 +2,7 @@
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,assertWorkspacePaths,validateShape} from '../../../packages/contracts/validate.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
-import {restoreWorkspaceBytes,verifyWorkspaceBytes} from './workspace-restore.mjs';
+import {restoreWorkspaceBytes,verifyWorkspaceBytes} from '../artifacts/workspace-restore.mjs';
 import {createHash} from 'node:crypto';
 const sha=b=>createHash('sha256').update(b).digest('hex'),fault=()=>{throw Error('SUPERVISOR_WORKSPACE_REFUSED');};
 export function createSupervisorWorkspace(configuration){

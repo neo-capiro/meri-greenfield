@@ -5,15 +5,15 @@
 import {nativeReadGroup} from './native-read-context.mjs';
 import {retainedReadGroup} from './retained-read-context.mjs';
 
-const NATIVE='apps/runtime/native-authority/native-read-credentials/source-read-context.mjs (createSourceReadContext)';
+const NATIVE='apps/runtime/read-context/source-read-context.mjs (createSourceReadContext)';
 /** Trusted sources per dispatch path and key. Every entry names the owner that produces the value and where it comes from. */
 export const CONTEXT_KEY_SOURCES=Object.freeze({
  native:Object.freeze({
-  asOf:`control clock at the task scope's first native observation, pinned for the scope and sent to Core as the trusted read observation (native-read-observation-0.2) — ${NATIVE}`,
+  asOf:`control clock at the execution's first bounded native observation, pinned for the scope and sent to Core as the trusted read observation (native-read-observation-0.2) — ${NATIVE}`,
   defaultAsOf:`control clock at the first observation when the request carries no asOfDate, pinned for the scope — ${NATIVE}`,
   defaultCongress:'control configuration `defaultCongress` (render key) — source-read-context.mjs',
-  actorRole:'Core membership receipt (`application-authority/membership`, current native authority) — native-read-credentials/core-client.mjs',
-  evidenceAccuracyMode:'Core `read-mode-observation` receipt for the exact operation and request hash — native-read-credentials/read-mode-observation.mjs',
+  actorRole:'Core current receipt (`application-authority/current`) — read-context/core-client.mjs',
+  evidenceAccuracyMode:'Core `read-mode-observation` receipt for the exact operation and request hash — read-context/read-mode-observation.mjs',
   clientResolution:'request selector, resolved through the Core `clients/check-ref` observation for names or taken as a UUID, then checked against the current native visible clients and the subject — source-read-context.mjs',
   citationResolution:'request citation selector (legalSliceContext), checked with the same client resolution — gateway/sources/research-legal-legislation/request-context.mjs',
   effectiveScope:'request folder/client scope (newsSliceContext) checked against the current native visible clients — gateway/sources/research-legal-news/request-context.mjs',
@@ -21,14 +21,12 @@ export const CONTEXT_KEY_SOURCES=Object.freeze({
   defaultYear:'explicit request personnel year only (D015 #6: never implicit) — gateway/sources/research-legal-news/request-context.mjs',
   owner:'current native principal (actor) from the Core identity receipt — gateway/sources/research-legal-news/request-context.mjs',
   tenantId:'run binding tenant (current gateway authority) — source-read-context.mjs',
-  binding:'current gateway authority binding (createCurrentToolAuthority) — native-read-context.mjs',
-  subject:'current gateway authority subject (createCurrentToolAuthority) — native-read-context.mjs',
+  binding:'current execution binding — native-read-context.mjs',
+  subject:'plain current actor/client selection — native-read-context.mjs',
   clientReference:'request clientId (UUID or name), name resolved through the Core `clients/check-ref` observation and equal to the selected client — source-read-context.mjs',
  }),
  retained:Object.freeze({
-  asOf:'control clock at observation, bound into the Core retained principal envelope (CapiroRetained) — dispatch/retained-read-context.mjs',
-  effectiveScope:'request scope checked by the Core retained principal issuance — dispatch/retained-read-context.mjs',
-  clientResolution:'request client checked by the Core retained principal issuance — dispatch/retained-read-context.mjs',
+  asOf:'control clock at observation, bound into the ordinary Core read correlation — dispatch/retained-read-context.mjs',
   binding:'current gateway authority binding — dispatch/retained-read-context.mjs',
   subject:'current gateway authority subject — dispatch/retained-read-context.mjs',
  }),

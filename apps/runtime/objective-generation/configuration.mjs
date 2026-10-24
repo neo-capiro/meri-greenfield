@@ -17,6 +17,7 @@ export function compileObjectiveGenerationConfiguration(configuration,role){
   const runs=c.runs===undefined?false:flag(c.runs).enabled;
   let start=null;
   if(c.start!==undefined){const s=flag(c.start,['windowMs']);if(!Number.isSafeInteger(s.windowMs)||s.windowMs<60000||s.windowMs>86400000)throw fault();start=s.enabled?Object.freeze({windowMs:s.windowMs}):null;}
+  if(start!==null&&!runs)throw fault();
   return Object.freeze({runs,start});
  }catch{throw fault();}
 }

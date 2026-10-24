@@ -8,14 +8,14 @@ import {createObjectiveGenerationStartApplication,OBJECTIVE_GENERATION_START_PAT
 
 const NOW=1792065600000,id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`,url='https://meri.example'+OBJECTIVE_GENERATION_START_PATH;
 const credential='action_session_'+'a'.repeat(43);
-function harness({sessionFails=false,startFails=false}={}){
+function harness({sessionFails=false,startFails=false,foreignJob=false}={}){
  const calls={auth:[],start:[]};
  const sessions={async authenticateSession(q){calls.auth.push(q);if(sessionFails)throw Error('SESSION_REFUSED');
   return {principal:{sessionId:id(90),tenantId:id(1),actorId:id(2),conversationId:id(91),runId:id(92)},sessionRevision:'r1',checkedAtMs:NOW,expiresAtMs:NOW+300000};}};
  const starts=[],client={connection:{withDeadline:(_d,fn)=>fn(),withAbortSignal:(_s,fn)=>fn()},workflow:{async start(type,options){starts.push({type,options});if(startFails)throw Error('lost ack');},getHandle(){return {signal:async()=>{}};}}};
  const dispatcher=createObjectiveGenerationDispatcher({client,taskQueue:'meri-conversations',now:()=>NOW});
  const spy={start(value){calls.start.push(value);return dispatcher.start(value);}};
- const app=createObjectiveGenerationStartApplication({enabled:true,sessions,dispatcher:spy,windowMs:1800000,now:()=>NOW});
+ const app=createObjectiveGenerationStartApplication({enabled:true,sessions,dispatcher:spy,windowMs:1800000,now:()=>NOW,authorizeJob:async({source})=>({generationJobId:source.generationJobId,tenantId:source.binding.tenantId,actorId:foreignJob?id(99):source.binding.actorId,effectExpiresAtMs:NOW+1800000})});
  const post=(body={generationJobId:id(21)},init={})=>app.handle(new Request(url,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body),...init}));
  return {calls,starts,app,post};
 }
@@ -51,3 +51,5 @@ test('malformed requests are 400 before authentication; a refused session is 401
  const s=harness({sessionFails:true}),refused=await s.post();assert.equal(refused.status,401);assert.deepEqual(await refused.json(),{error:{code:'SESSION_REFUSED'}});assert.equal(s.calls.start.length,0);
  const lost=harness({startFails:true}),unknown=await lost.post();assert.equal(unknown.status,503);assert.deepEqual(await unknown.json(),{error:{code:'OBJECTIVE_GENERATION_UNKNOWN'}});
 });
+
+test('a foreign saved job is refused before Temporal start',async()=>{const h=harness({foreignJob:true});assert.equal((await h.post()).status,403);assert.equal(h.calls.start.length,0);});

@@ -1,8 +1,8 @@
 /** Objective-origin original admission (D7-4 runs port, control side). Identity comes from the immutable run-start record
  * (run-starts.mjs): the derived binding, Core's request ID and published prompt. Authority comes only from the required
- * trusted Core port `authority.authorize` (the job's current claim, consent and tenant/actor/client membership; a Core
+ * trusted Core port `authority.currentRecord` (the job's current claim, consent and tenant/actor/client membership; a Core
  * prerequisite with no Meri substitute). It reuses the canonical original-binding journal and the conversation store's
- * initial-input claim/accept, exactly like schedule-origin admission (scheduled-admission.mjs), so an accepted Objective run
+ * initial-input claim/accept, using the existing original-input owner, so an accepted Objective run
  * satisfies native initial-run eligibility and is prepared by the same dynamic-initial-run path. No issuer, session
  * substitute, schema, worker or retry loop lives here; a failed acknowledgement is recovered by repeating the same admit. */
 import {types} from 'node:util';
@@ -20,7 +20,7 @@ function fault(code){const e=Object.assign(Error(`OBJECTIVE_ADMISSION_${code}`),
 const fail=code=>{throw fault(code);};
 function closed(value,keys,code){try{return own(value,keys);}catch{fail(code);}}
 
-/** template: the control's own prepared-candidate facts every dynamic initial run must carry (versions, qualification
+/** template: the control's own AgentCore deployment facts every initial run must carry (versions, qualification
  * policy revision, bindings configuration digest, run window). Never request data. */
 export function createObjectiveNativeAdmission(options){
  let pool,claimInput,acceptInput,readOptional,authorize,t,now,maxRequestMs;
@@ -30,7 +30,7 @@ export function createObjectiveNativeAdmission(options){
   if(!o.store||types.isProxy(o.store))fail('CONFIGURATION');
   const initial=Object.getOwnPropertyDescriptor(o.store,'initialInputs');
   if(!initial||!Object.hasOwn(initial,'value'))fail('CONFIGURATION');
-  claimInput=sdkMethod(initial.value,'claim');acceptInput=sdkMethod(initial.value,'accept');readOptional=sdkMethod(o.store,'readOptional');authorize=sdkMethod(o.authority,'authorize');
+  claimInput=sdkMethod(initial.value,'claim');acceptInput=sdkMethod(initial.value,'accept');readOptional=sdkMethod(o.store,'readOptional');authorize=sdkMethod(o.authority,'currentRecord');
   t=data(own(o.template,['versions','policyRevision','configurationSha256','runWindowMs']));validateShape('RuntimeVersions',t.versions);
   if(typeof t.policyRevision!=='string'||!t.policyRevision||t.policyRevision.length>256||!digest(t.configurationSha256)||!integer(t.runWindowMs)||t.runWindowMs<1)fail('CONFIGURATION');
   now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
@@ -48,18 +48,6 @@ export function createObjectiveNativeAdmission(options){
   if(v.deadlineMs!==undefined&&!integer(v.deadlineMs))fail('REQUEST');
   return {record,identity,accepted,clientId,scopes,signal:v.signal,deadlineMs:v.deadlineMs};
  }
- async function proof(c,phase,expiresAtMs){
-  const b=c.record.binding,selection=data({phase,generationJobId:c.record.generationJobId,binding:b,sourceAdmissionSha256:c.record.sourceAdmissionSha256,
-   sourceRequestSha256:c.record.sourceRequestSha256,typedRequestSha256:c.record.typedRequestSha256,runStartSha256:hash(c.record),scopes:c.scopes,
-   selectedClientId:c.clientId,policyRevision:t.policyRevision,versions:t.versions,configurationSha256:t.configurationSha256,expiresAtMs});
-  const selectionSha256=hash(selection),before=now();
-  const r=data(await c.life.run(signal=>authorize({phase,selection,selectionSha256,signal,deadlineMs:c.deadlineMs})));
-  closed(r,['authorized','selectionSha256','binding','scopes','selectedClientId','policyRevision','configurationSha256','checkedAtMs','expiresAtMs'],'AUTHORITY');
-  if(r.authorized!==true||r.selectionSha256!==selectionSha256||!same(r.binding,b)||!same(r.scopes,c.scopes)||r.selectedClientId!==c.clientId||
-   r.policyRevision!==t.policyRevision||r.configurationSha256!==t.configurationSha256||!integer(r.checkedAtMs)||r.checkedAtMs<before||r.checkedAtMs>now()||
-   !integer(r.expiresAtMs)||r.expiresAtMs<=now())fail('AUTHORITY');
-  c.limit(r.expiresAtMs);return r.expiresAtMs;
- }
  function bindingRecord(c,r){
   closed(r,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs'],'BINDING');
   if(r.schemaVersion!==1||r.state!=='ADMITTED'||!same(r.binding,c.record.binding)||r.selectedClientId!==c.clientId||r.policyRevision!==t.policyRevision||
@@ -73,7 +61,10 @@ export function createObjectiveNativeAdmission(options){
    const c=request(raw),at=now();c.deadlineMs=Math.min(c.deadlineMs??at+maxRequestMs,at+maxRequestMs);
    life=c.life=createOperationLifetime({now,deadlineMs:c.deadlineMs,signal:c.signal,errorFactory:code=>fault(code)});
    c.limit=ms=>{life.limitDeadline(ms);c.deadlineMs=Math.min(c.deadlineMs,ms);};
-   const b=c.record.binding;
+   const b=c.record.binding;if(c.record.effectExpiresAtMs<=at)fail('EXPIRED');
+   const current=await life.run(signal=>authorize({record:c.record,signal})),source=c.record.selection.sourceAdmission;life.check();
+   if(current.generationJobId!==c.record.generationJobId||current.tenantId!==b.tenantId||current.actorId!==b.actorId||current.clientId!==c.clientId||
+    current.consentId!==source.consentId||current.controlVersion!==source.controlVersion||!integer(current.effectExpiresAtMs)||current.effectExpiresAtMs<c.record.effectExpiresAtMs)fail('AUTHORITY');
    // The derived run/attempt/worker IDs are the only identities the canonical journal may mint for this conversation.
    const ids=[b.runId,b.attemptId,b.workerId];let cursor=0;
    const journal=createInitialRunBindingJournal({pool,now,newId:()=>{if(cursor>=ids.length)fail('IDENTITY');return ids[cursor++];}});
@@ -81,8 +72,6 @@ export function createObjectiveNativeAdmission(options){
    if(old!==null)bindingRecord(c,old);
    let expiresAtMs=old?.expiresAtMs??Math.min(now()+t.runWindowMs,c.record.effectExpiresAtMs);
    if(expiresAtMs<=now())fail('EXPIRED');
-   const authorizedUntil=await proof(c,'before_claim',expiresAtMs);
-   if(old&&authorizedUntil<expiresAtMs)fail('AUTHORITY');expiresAtMs=Math.min(expiresAtMs,authorizedUntil);
    const claimed=data(await life.run(()=>journal.claim({principal:{tenantId:b.tenantId,actorId:b.actorId},conversationId:b.conversationId,
     selectedClientId:c.clientId,policyRevision:t.policyRevision,versions:t.versions,configurationSha256:t.configurationSha256,proposedExpiresAtMs:expiresAtMs},life.check)));
    closed(claimed,['record','created'],'BINDING');if(typeof claimed.created!=='boolean')fail('BINDING');
@@ -96,14 +85,13 @@ export function createObjectiveNativeAdmission(options){
    if(facts.requestSha256!==c.record.sourceRequestSha256)fail('INPUT');
    const reserved=data(await life.run(()=>claimInput(facts,life.check)));closed(reserved,['allocation','state','created'],'INPUT');
    if(!same(reserved.allocation,facts)||!['RESERVED','ACCEPTED'].includes(reserved.state)||typeof reserved.created!=='boolean'||reserved.created&&reserved.state!=='RESERVED')fail('INPUT');
-   if(await proof(c,'before_accept',saved.expiresAtMs)<saved.expiresAtMs)fail('AUTHORITY');
    const accepted=data(await life.run(()=>acceptInput({conversation,run,request:c.accepted,event,selectedClientId:c.clientId},life.check)));
    closed(accepted,['run','request','lastSequence','replayed'],'INPUT');
    if(!same(accepted.run.binding,b)||!same(accepted.request,c.accepted)||!same(accepted.run.versions,t.versions)||!same(accepted.run.scopes,c.scopes)||
     accepted.run.createdAt!==createdAt||typeof accepted.replayed!=='boolean'||!integer(accepted.lastSequence)||accepted.lastSequence<1)fail('INPUT');
    const back=await life.run(()=>readOptional(b,{after:0,limit:1},life.check));
    if(!back||!same(back.run,accepted.run)||!same(back.request,c.accepted))fail('INPUT');
-   if(await proof(c,'before_release',saved.expiresAtMs)<saved.expiresAtMs)fail('AUTHORITY');life.check();
+   life.check();
    return data({binding:b,requestSha256:facts.requestSha256,expiresAtMs:saved.expiresAtMs,replayed:accepted.replayed});
   }catch(e){throw errors.has(e)?e:fault('UNKNOWN');}
   finally{life?.close();}

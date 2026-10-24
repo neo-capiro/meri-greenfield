@@ -46,30 +46,6 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(_request_lifetime.get())
         self.assertTrue(app.ready)
 
-    async def test_complete_original_bytes_and_direct_peer_are_available_only_inside_lifetime(self):
-        from apps.proxy.product.direct_ingress import create_direct_ingress_observer
-        binding = {"tenantId": "tenant", "actorId": "actor", "conversationId": BINDING.run_id,
-                   "runId": BINDING.run_id, "attemptId": BINDING.run_id,
-                   "workerId": BINDING.run_id, "writerFence": BINDING.fence}
-        observe = create_direct_ingress_observer(binding)
-        with self.assertRaises(Exception):
-            await observe()
-        observations = []
-        async def upstream(scope, receive, send):
-            self.assertEqual((await receive())["body"], b"{}")
-            observations.append(await observe())
-            await send({"type": "http.response.start", "status": 200})
-            await send({"type": "http.response.body", "body": b"ok", "more_body": False})
-        store, scope, app, queue, sends, send = self.make(upstream)
-        await app(scope, queue.get, send)
-        self.assertEqual(len(observations), 1)
-        self.assertEqual(observations[0]["rawRequestBody"], b"{}")
-        self.assertEqual(observations[0]["peer"]["taskArn"], BINDING.worker_arn)
-        self.assertEqual(observations[0]["proxyCredential"],
-                         scope["headers"][0][1][7:].decode("ascii"))
-        self.assertEqual(store.calls, 1)  # Admitted once, at the start of the request.
-        with self.assertRaises(Exception):
-            await observe()
 
     async def test_routes_headers_keys_denied_before_upstream_or_body(self):
         calls = []
@@ -85,29 +61,6 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(sends[0]["status"], 403)
         self.assertEqual(calls, [])
 
-    async def test_count_tokens_preflight_dispatches_only_after_shared_admission(self):
-        from apps.proxy.product.cli_count_tokens import create_cli_count_tokens_app
-        inference, counted = [], []
-        async def upstream(*args):
-            inference.append(1)
-        async def count(request):
-            counted.append(request)
-            return 7
-        count_app = create_cli_count_tokens_app(count, model="meri-sonnet-qualification")
-        store, scope, app, queue, sends, send = self.make(upstream, count_tokens_app=count_app)
-        scope.update(path="/v1/messages/count_tokens", raw_path=b"/v1/messages/count_tokens")
-        scope["headers"].extend([(b"anthropic-version", b"2023-06-01"),
-                                 (b"anthropic-beta", b"claude-code-20250219,token-counting-2024-11-01")])
-        queue.get_nowait()
-        queue.put_nowait({"type": "http.request", "body": json.dumps({
-            "model": "meri-sonnet-qualification", "messages": [{"role": "user", "content": "synthetic"}],
-            "tools": []}).encode(), "more_body": False})
-        await app(scope, queue.get, send)
-        self.assertEqual(inference, [])
-        self.assertEqual(len(counted), 1)
-        self.assertEqual(sends[0]["status"], 200)
-        self.assertEqual(json.loads(sends[1]["body"]), {"input_tokens": 7})
-        self.assertGreater(store.calls, 0)
 
     async def test_unmounted_count_tokens_route_never_falls_into_inference(self):
         inference = []

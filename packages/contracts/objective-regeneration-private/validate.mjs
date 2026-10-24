@@ -13,7 +13,7 @@ const refuse=()=>{throw Error('OBJECTIVE_REGENERATION_REFUSED');},without=(v,k)=
 function shape(name,value){const v=data(value);if(!validators[name](v))refuse();return v;}
 export function assertRequest(value){
  const r=assertRegenerationCommitments(shape('RegenerationRequest',value)),d=r.context.draft;
- if(d===null||d.clientId!==r.principal.clientId||d.selectedOwnerActorId!==r.principal.ownerActorId||!same(d.input,r.input)||r.context.contextSha256!==hash(without(r.context,'contextSha256'))||r.originalExpiresAtMs<=r.requestedAtMs||r.delegation.issuedAtMs>r.requestedAtMs||r.delegation.absoluteExpiresAtMs<r.originalExpiresAtMs||r.context.asOfMs>r.requestedAtMs||r.input.typeHint===null)refuse();
+ if(d===null||d.clientId!==r.principal.clientId||d.selectedOwnerActorId!==r.principal.ownerActorId||!same(d.input,r.input)||r.context.contextSha256!==hash(without(r.context,'contextSha256'))||r.originalExpiresAtMs<=r.requestedAtMs||r.originalExpiresAtMs-r.requestedAtMs>900000||r.context.asOfMs>r.requestedAtMs||r.input.typeHint===null)refuse();
  const seen=new Set();for(const e of r.context.evidence){if(seen.has(e.ref)||e.asOfMs>r.context.asOfMs||e.scope==='client'&&e.clientId!==r.principal.clientId||e.scope==='tenant-shared'&&e.clientId!==null)refuse();seen.add(e.ref);}return r;
 }
 function outcome(value,r){

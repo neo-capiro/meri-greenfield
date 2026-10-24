@@ -54,7 +54,7 @@ test('only one coherent current client subject and its closed resource scope can
  for(const change of ['client-scoped-personal','no-client-resource','multiple-clients','alternate-resource','broad-extra-resource','wrong-lineage','nonuuid']){
   const f=storedCase(),call=structuredClone(f.call()),a=call.authority;
   if(change==='client-scoped-personal')Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId]});
-  if(change==='no-client-resource')for(const scopes of [a.subject.scopes,a.claims.scopes,a.decision.scopes])Object.assign(scopes[0],{kind:'tenant',resourceId:a.binding.tenantId});
+  if(change==='no-client-resource')for(const scopes of [a.subject.scopes,a.scopes])Object.assign(scopes[0],{kind:'tenant',resourceId:a.binding.tenantId});
   if(change==='multiple-clients')a.subject.entityIds.push(otherClient);
   if(change==='alternate-resource')a.subject.scopes[0].resourceId=otherClient;
   if(change==='broad-extra-resource')a.subject.scopes.push({...a.subject.scopes[0],kind:'tenant',resourceId:a.binding.tenantId});
@@ -107,18 +107,18 @@ test('complete DTO admission rejects unknown private nested fields and broken co
 });
 
 test('foreign/failed native replies, mismatched credential proof and output limits withhold the whole result',async()=>{
- for(const response of [()=>Response.json({error:'PRIVATE'}),()=>Response.json({},{status:403}),()=>Response.json({},{status:404}),()=>Response.json({tool:'get_business_development_evidence'})]){
-  const f=storedCase();f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+ for(const [response,code] of [[()=>Response.json({error:'PRIVATE'}),'INVALID_RESULT'],[()=>Response.json({},{status:403}),'ACCESS_DENIED'],[()=>Response.json({},{status:404}),'INVALID_RESULT'],[()=>Response.json({tool:'get_business_development_evidence'}),'INVALID_RESULT']]){
+  const f=storedCase();f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:code});
  }
  const g=storedCase();g.state.credentialMutator=p=>p.requestSha256='a'.repeat(64);await assert.rejects(g.handler()(g.call()),{message:'ACCESS_DENIED'});assert.equal(g.wire.length,0);
  const h=storedCase();await assert.rejects(h.handler({maxResponseBytes:16})(h.call()),{message:'RESOURCE_LIMIT'});
 });
 
-test('canonical hash/context substitution, revoked decisions, cancellation and expiry never return stored bytes',async()=>{
+test('canonical hash/context substitution, foreign execution correlation, cancellation and expiry never return stored bytes',async()=>{
  const f=storedCase(),call=f.call();
  await assert.rejects(f.handler()({...call,argumentsSha256:'a'.repeat(64)}),{message:'INVALID_ARGUMENTS'});
  await assert.rejects(f.handler()({...call,normalizationContext:{conversationId}}),{message:'INVALID_ARGUMENTS'});
- const bad=structuredClone(call);bad.authority.decision.operation=`${ids[1]}@0.2.0`;await assert.rejects(f.handler()(bad),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);
+ const bad=structuredClone(call);bad.authority.binding.actorId=otherClient;await assert.rejects(f.handler()(bad),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);
  const g=storedCase(),controller=new AbortController();controller.abort();await assert.rejects(g.handler()({...g.call(),signal:controller.signal}),{message:'CANCELLED'});assert.equal(g.credentialCalls.length,0);
  const h=storedCase(),aborted=new AbortController();h.state.afterSource=()=>aborted.abort();await assert.rejects(h.handler()({...h.call(),signal:aborted.signal}),{message:'CANCELLED'});
  const j=storedCase();j.state.afterSource=()=>j.state.now=j.authority.deadlineMs;await assert.rejects(j.handler()(j.call()),{message:'DEADLINE'});

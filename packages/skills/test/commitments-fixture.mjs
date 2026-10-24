@@ -8,7 +8,7 @@ export const texts={mail:'We will send the draft memo. Perhaps also prepare a sl
 export function fixture(){
  const binding={tenantId:'synthetic-skills',actorId:'skills-reviewer',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
  const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:id(9),policyRevision:'skills-policy-1'}];
- const subject={kind:'client',entityType:'client',entityIds:[id(9)],tenantId:binding.tenantId,actorId:binding.actorId,authorizationDecisionId:id(10),policyRevision:'skills-policy-1',scopes,rosterVersionId:null};
+ const subject={kind:'client',entityType:'client',entityIds:[id(9)],tenantId:binding.tenantId,actorId:binding.actorId,policyRevision:'skills-policy-1',scopes,rosterVersionId:null};
  const context={binding,subject,window:{basis:'unbounded'},asOf,mondayBoardIds:['mapped-client-board']},manifest=selectSkill('quick_skill.commitments_audit','1.0.0').manifest;
  const sources=manifest.requiredSources.map(row=>row.sourceId);
  const reads=sources.map((sourceId,i)=>{

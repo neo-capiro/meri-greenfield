@@ -1,4 +1,4 @@
-/** Task-bound selected-client memory page and its distinct one-use eligibility helper. */
+/** Canonical memory page plus current Core eligibility, using the same ordinary user/service identity. */
 import {createHash} from 'node:crypto';
 import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -15,10 +15,10 @@ const sha=bytes=>createHash('sha256').update(bytes,'utf8').digest('hex');
 const token=value=>typeof value==='string'&&value.length>0&&value.length<=8192&&/^[\x21-\x7e]+$/.test(value);
 
 export function createSignedMemoryHttpAdapter(options) {
-  const {endpoints:configured,getCredentials,getEligibilityCredentials,fetchImpl=globalThis.fetch,
+  const {endpoints:configured,getCredentials,readSource,fetchImpl=globalThis.fetch,
     now,maxRequestMs=15000,maxResponseBytes=1048576}=ownFields(options,
-    ['endpoints','getCredentials','getEligibilityCredentials','now'],['fetchImpl','maxRequestMs','maxResponseBytes']);
-  if([getCredentials,getEligibilityCredentials,fetchImpl,now].some(value=>typeof value!=='function')||
+    ['endpoints','now'],['getCredentials','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
+  if((readSource===undefined?typeof getCredentials!=='function':typeof readSource!=='function'||getCredentials!==undefined)||[fetchImpl,now].some(value=>typeof value!=='function')||
       !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000||
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoint,eligibilityEndpoint;
@@ -52,6 +52,12 @@ export function createSignedMemoryHttpAdapter(options) {
       const active=()=>{lifetime.check();return context.active(cutoff);};
       const limit=expiry=>{if(!Number.isSafeInteger(expiry)||expiry<=active())deny('ACCESS_DENIED');
         cutoff=Math.min(cutoff,expiry);lifetime.limitDeadline(cutoff);active();};
+      const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
+      let result;
+      if(readSource){
+        result=frozenData(await lifetime.run(signal=>{active();return readSource({operation:operationId,input:protocol,context:frozenData(JSON.parse(correlationBytes)),deadlineMs:cutoff,signal});}));
+        active();if(Buffer.byteLength(JSON.stringify(result),'utf8')>Math.min(maxResponseBytes,context.authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+      }else{
       const credentials=frozenData(await lifetime.run(signal=>{
         active();return getCredentials(Object.freeze({...pins,input:context.input,requestSha256:pageRequestSha256,
           invocationId:context.invocationId,deadlineMs:cutoff,target:pageTarget,correlationSha256,signal}));
@@ -60,7 +66,7 @@ export function createSignedMemoryHttpAdapter(options) {
         'binding','subject','policyRevision','sourceIds','invocationId','authorizationScheme','target',
         'correlationSha256','bearerToken','serviceSecret','expiresAtMs']);
       assertPins(credentials,pins);
-      if(credentials.invocationId!==context.invocationId||credentials.authorizationScheme!=='CapiroMeriRead'||
+      if(credentials.invocationId!==context.invocationId||credentials.authorizationScheme!=='Bearer'||
           !same(credentials.target,pageTarget)||credentials.correlationSha256!==correlationSha256||
           credentials.requestSha256!==pageRequestSha256||!token(credentials.bearerToken)||
           !token(credentials.serviceSecret)||credentials.bearerToken===credentials.serviceSecret||
@@ -69,18 +75,16 @@ export function createSignedMemoryHttpAdapter(options) {
       limit(credentials.expiresAtMs);
       const pageResponse=await lifetime.run(async signal=>{
         active();const response=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
-          headers:{authorization:`CapiroMeriRead ${credentials.bearerToken}`,
+          headers:{authorization:`Bearer ${credentials.bearerToken}`,
             'x-internal-service-secret':credentials.serviceSecret,'content-type':'application/json',
             accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
             'x-meri-read-correlation':correlationHeader},body:pageBody});
         acquired=response;try{active();return response;}catch(error){try{cancelBody(responseBody(response));}catch{}throw error;}
       });
-      const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
-      const result=frozenData(await readJsonResponse(pageResponse,{lifetime:bounded,
-        maxResponseBytes:Math.min(maxResponseBytes,context.authority.claims.budgets.maxOutputBytes)}));
+      result=frozenData(await readJsonResponse(pageResponse,{lifetime:bounded,
+        maxResponseBytes:Math.min(maxResponseBytes,context.authority.maxOutputBytes)}));
+      }
       active();assertResult(result,context);
-      const pageProof=pageResponse.headers?.get('x-meri-memory-page-proof');
-      if(!token(pageProof))deny('ACCESS_DENIED');
       const expiry=await assertMemoryEligibility({result,context,pins,lifetime,active,limit,deadline:()=>cutoff,clockSkewMs:5000,
         readMemoryEligibility:async proof=>{
           const bodyFields=frozenData({operation:proof.operation,input:proof.input,metadata:proof.metadata,
@@ -90,31 +94,30 @@ export function createSignedMemoryHttpAdapter(options) {
             resultSha256:proof.resultSha256,records:proof.records,deadlineMs:proof.deadlineMs});
           const helperBody=JSON.stringify(bodyFields);
           if(Buffer.byteLength(helperBody,'utf8')>16384)deny('RESOURCE_LIMIT');
+          if(readSource){
+            const eligibility=frozenData(await lifetime.run(signal=>{active();return readSource({operation:'search_memory_eligibility',input:bodyFields,context:frozenData(JSON.parse(correlationBytes)),deadlineMs:Math.min(cutoff,proof.deadlineMs),signal});}));
+            active();if(Buffer.byteLength(JSON.stringify(eligibility),'utf8')>Math.min(maxResponseBytes,32768))deny('RESOURCE_LIMIT');
+            return eligibility;
+          }
           const helperTarget=Object.freeze({method:'POST',path:eligibilityPath,bodySha256:sha(helperBody)});
-          const recordsSha256=canonicalSha256(proof.records);
-          const helperPins=Object.freeze({...pins,invocationId:context.invocationId,pageProof,bodyJson:helperBody,
-            pageBodySha256,pageRequestSha256,resultSha256:proof.resultSha256,recordsSha256,
-            deadlineMs:proof.deadlineMs,target:helperTarget,correlationSha256,signal:proof.signal});
           const helper=frozenData(await lifetime.run(signal=>{
-            active();return getEligibilityCredentials(Object.freeze({...helperPins,signal}));
+            active();return getCredentials(Object.freeze({...pins,input:context.input,invocationId:context.invocationId,
+              requestSha256:pageRequestSha256,deadlineMs:proof.deadlineMs,target:helperTarget,correlationSha256,signal}));
           }));
           ownFields(helper,['operation','argumentsSha256','metadata','normalizationContext','requestSha256',
-            'binding','subject','policyRevision','sourceIds','invocationId','pageProof','pageBodySha256',
-            'pageRequestSha256','resultSha256','recordsSha256','authorizationScheme','target',
+            'binding','subject','policyRevision','sourceIds','invocationId','authorizationScheme','target',
             'correlationSha256','bearerToken','serviceSecret','expiresAtMs']);
           assertPins(helper,pins);
-          if(helper.invocationId!==context.invocationId||helper.pageProof!==pageProof||
-              helper.pageBodySha256!==pageBodySha256||helper.pageRequestSha256!==pageRequestSha256||
-              helper.resultSha256!==proof.resultSha256||helper.recordsSha256!==recordsSha256||
-              helper.authorizationScheme!=='CapiroMeriRead'||!same(helper.target,helperTarget)||
+          if(helper.invocationId!==context.invocationId||helper.requestSha256!==pageRequestSha256||
+              helper.authorizationScheme!=='Bearer'||!same(helper.target,helperTarget)||
               helper.correlationSha256!==correlationSha256||!token(helper.bearerToken)||
               !token(helper.serviceSecret)||helper.bearerToken===helper.serviceSecret||
-              helper.bearerToken===credentials.bearerToken||!Number.isSafeInteger(helper.expiresAtMs)||
-              helper.expiresAtMs<=active()||helper.expiresAtMs>context.deadlineMs)deny('ACCESS_DENIED');
+              !Number.isSafeInteger(helper.expiresAtMs)||helper.expiresAtMs<=active()||
+              helper.expiresAtMs>context.deadlineMs)deny('ACCESS_DENIED');
           limit(helper.expiresAtMs);
           const helperResponse=await lifetime.run(async signal=>{
             active();const response=await fetchImpl(eligibilityEndpoint,{method:'POST',redirect:'error',
-              credentials:'omit',cache:'no-store',signal,headers:{authorization:`CapiroMeriRead ${helper.bearerToken}`,
+              credentials:'omit',cache:'no-store',signal,headers:{authorization:`Bearer ${helper.bearerToken}`,
                 'x-internal-service-secret':helper.serviceSecret,'content-type':'application/json',
                 accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
                 'x-meri-read-correlation':correlationHeader},body:helperBody});
@@ -122,7 +125,7 @@ export function createSignedMemoryHttpAdapter(options) {
           });
           return frozenData(await readJsonResponse(helperResponse,{lifetime:bounded,maxResponseBytes:Math.min(maxResponseBytes,32768)}));
         }});
-      // Only the dispatcher owns final release after retention and settlement.
+      // The dispatcher owns final release after current execution and result checks.
       context.limitReleaseDeadline(expiry);
       active();return result;
     }catch(error){throw safeFailure(error);}

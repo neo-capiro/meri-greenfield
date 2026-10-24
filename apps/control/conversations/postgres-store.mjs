@@ -18,7 +18,9 @@ import {storedModelSettings} from '../settings/documents.mjs';
 import {assertNativeSessionReference} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {assertNextRunReservation} from './next-run-reservation.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
-export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now,onPublished}){
+import {assertModelCatalog,availableModelSelection,storedModelSelection} from '../../../packages/contracts/model-selection.mjs';
+import {storedUserPreferencesDocument} from '../../../packages/contracts/user-preferences-application/document.mjs';
+export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now,onPublished,modelCatalog}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
  async function tx(binding,check,body,{beforeConversation,sessionSnapshot=false}={}){let c,begun=false,committing=false,reusable=false,failure,result;
   try{check();c=await pool.connect();check();await c.query('BEGIN');begun=true;check();await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");check();
@@ -41,6 +43,16 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
   return policy;
  }
  const modelAdmission=(c,b,check)=>modelPolicy(c,b,check,true);
+ /** Initial choice only. Existing settings row integrity is checked before decoding its historical view. */
+ async function readDefaultModelSelection(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{
+  const catalog=assertModelCatalog(modelCatalog),rows=(await c.query('SELECT document,document_sha256 FROM meri_settings.user_preferences WHERE tenant_id=$1 AND actor_id=$2',[b.tenantId,b.actorId])).rows;check();
+  if(rows.length>1||rows.length&&hash(rows[0].document)!==rows[0].document_sha256)fail('MODEL_SETTINGS_UNAVAILABLE');
+  const selected=rows.length?storedUserPreferencesDocument(rows[0].document).defaultModel:null;return availableModelSelection(catalog,selected??catalog.defaultSelection);
+ });}
+ /** Accepted configuration is immutable; it never rereads an actor's current default. */
+ async function readModelSelection(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{
+  const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(r.projection.binding,b))fail('STALE_WRITER');return availableModelSelection(modelCatalog,storedModelSelection(r.request));
+ });}
  async function readModelPolicy(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{
   const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(r.projection.binding,b))fail('STALE_WRITER');return modelPolicy(c,b,check);});}
  /** Same run row is the idempotency key. The service supplies lineage from the existing canonical run journals. */
@@ -108,8 +120,8 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(r.hold_completion_id&&!(i.type==='run.status'&&['failed','cancelled'].includes(i.data?.state)))fail('RUN_HELD');
    const projection={...r.projection,state:nextState(r.projection.state,event)};if(!Number.isSafeInteger(event.sequence))fail('EVENT_LIMIT');
    if(holdFailure)await lifecycle.failUncheckpointedHold(c,b,r,check);
-   // A queued run that turns terminal before any allocation claim records its no-authority evidence in this same transaction.
-   if(r.projection.state==='queued'&&['failed','cancelled'].includes(projection.state))await preparation.allocations.foreclose(c,b,event,check);
+   // Execution claim uses this same conversation lock and only accepts queued runs.
+   // The terminal projection itself prevents a late invocation; no ECS foreclosure is written.
    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,event.sequence,event.eventId,event,hash(event)]);check();
    await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),event.sequence]);check();return event;});
   // Diagnostics observe the accepted durable result, including the cancellation and reconciliation paths.
@@ -126,6 +138,6 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
  const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,now,onPublished,modelAdmission,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
  const preparation=createNativePreparationJournals({tx,rowRun});
- const initialInputs=createOriginalInputJournal({tx,rowRun,now}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
- return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,recordUsage,readModelPolicy,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun,modelAdmission}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
+ const initialInputs=createOriginalInputJournal({tx,rowRun,now}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
+ return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,recordUsage,readModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun}),nextRuns:createNextRunJournal({tx,rowRun,modelAdmission}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
 }

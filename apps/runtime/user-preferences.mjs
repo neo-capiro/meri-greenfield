@@ -18,7 +18,7 @@ export function createRuntimeUserPreferences({configuration,pool,ports,now=Date.
  const state=()=>retired?'retired':!enabled?'disabled':!gate?'unavailable':ready?'composed':'pending';
  // Disabled/missing-owner construction does not inspect or invoke borrowed database methods.
  const query=enabled&&gate?storageMethod(pool,'query'):undefined;
- const feature=query?createUserPreferencesFeature({enabled:true,pool,gate,now,limits:{
+ const feature=query?createUserPreferencesFeature({enabled:true,pool,gate,now,modelCatalog:configuration.models,limits:{
   maxRequestMs:Math.min(configuration.limits.requestMs,USER_PREFERENCES_LIMITS.maxRequestMs),
   maxRequestBytes:Math.min(configuration.limits.requestBytes,USER_PREFERENCES_LIMITS.maxRequestBytes),
   maxResponseBytes:Math.min(configuration.native.maxResponseBytes,USER_PREFERENCES_LIMITS.maxResponseBytes),

@@ -1,33 +1,27 @@
-/** Optional owner for ONE existing query. Reads protected issued facts; never accepts request/model configuration as authority. */
-import {own,data,hash,issuedObjectiveSelection,objectiveCompletionId,typedFault} from '../../../../packages/runtime/objective-generation-custody.mjs';
+/** Typed output for the same SDK query, selected by the existing accepted run owner. */
+import {own,data,hash,assertPreparedObjectiveSelection,typedFault} from '../../../../packages/runtime/objective-generation-custody.mjs';
 import {storageMethod} from '../../../artifacts/storage/boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {loadObjectiveStrategyCodec} from './typed-result.mjs';
 import {writeObjectiveResultFile} from './fixed-file.mjs';
 const refuse=()=>{throw typedFault();},same=(a,b)=>hash(a)===hash(b);
-export function createObjectiveGenerationRuntime({preparedFacts,querySelection,now=Date.now,codec=loadObjectiveStrategyCodec,writeFile=writeObjectiveResultFile,maxRequestMs=3000}){
- const read=storageMethod(preparedFacts,'read');if(typeof now!=='function'||typeof codec!=='function'||typeof writeFile!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
- const readQuery=querySelection===undefined?null:storageMethod(querySelection,'read');
+export function createObjectiveGenerationRuntime({selection,now=Date.now,codec=loadObjectiveStrategyCodec,writeFile=writeObjectiveResultFile,maxRequestMs=3000}){
+ const read=storageMethod(selection,'read');if(typeof now!=='function'||typeof codec!=='function'||typeof writeFile!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  async function prepare(value){
   const v=own(value,['binding','request','versions','scopes','cwd','model','deadlineMs'],['signal']),life=createOperationLifetime({now,signal:v.signal,deadlineMs:Math.min(v.deadlineMs,now()+maxRequestMs),errorFactory:typedFault});
   try{
-   const entry=data(await life.run(signal=>read({binding:v.binding,signal})));life.check();
-   if(entry.objectiveGeneration===undefined&&entry.objectiveStrategy===undefined)return null;
-   const selected=issuedObjectiveSelection(entry,{binding:v.binding,acceptedRequest:v.request}),issuance=entry.issuance,admission=entry.objectiveGeneration.sourceAdmission,s=selected.strategy,r=s.request;
-   if(issuance.expiresAtMs<=now()||s.executionSelection.model!==v.model)refuse();
-   if(!readQuery)throw Error('OBJECTIVE_QUERY_SELECTION_UNAVAILABLE');
-   const query=data({binding:v.binding,sourceRequestSha256:hash(v.request)});
-   let deadlineMs=Math.min(v.deadlineMs,issuance.expiresAtMs,admission.effectExpiresAtMs,r.originalExpiresAtMs);
-   async function actualSelection(operation){const started=now(),observed=data(own(await operation.run(signal=>readQuery({...query,signal})),['binding','sourceRequestSha256','provider','model','checkedAtMs','expiresAtMs']));
-    if(!same(observed.binding,query.binding)||observed.sourceRequestSha256!==query.sourceRequestSha256||!same({provider:observed.provider,model:observed.model},s.executionSelection)||observed.model!==v.model||!Number.isSafeInteger(observed.checkedAtMs)||observed.checkedAtMs<started||observed.checkedAtMs>now()||!Number.isSafeInteger(observed.expiresAtMs)||observed.expiresAtMs<=now())refuse();deadlineMs=Math.min(deadlineMs,observed.expiresAtMs);operation.limitDeadline(deadlineMs);operation.check();return data({provider:observed.provider,model:observed.model});}
-   let actualExecution=await actualSelection(life);
-   const selectedCodec=await life.run(()=>codec(r)),selection=selectedCodec.selection(selected);
-   if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())refuse();let captured=false;
+   const raw=await life.run(signal=>read({binding:v.binding,signal}));if(raw===null)return null;
+   const entry=data(own(raw,['objectiveGeneration','objectiveStrategy','expiresAtMs']));
+   const selected=assertPreparedObjectiveSelection({objectiveGeneration:entry.objectiveGeneration,objectiveStrategy:entry.objectiveStrategy},{binding:v.binding,acceptedRequest:v.request,expiresAtMs:entry.expiresAtMs,nowMs:now()});
+   if(selected.strategy.executionSelection.model!==v.model)refuse();
+   const deadlineMs=Math.min(v.deadlineMs,entry.expiresAtMs);life.limitDeadline(deadlineMs);
+   const selectedCodec=await life.run(()=>codec(selected.strategy.request)),bound=selectedCodec.selection(selected);let captured=false;
    return Object.freeze({outputFormat:selectedCodec.outputFormat(),deadlineMs,async capture({sdkResult,signal}){
     if(captured||signal?.aborted||now()>=deadlineMs)refuse();captured=true;
     const captureLife=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+maxRequestMs),errorFactory:typedFault});
-    try{const current=data(await captureLife.run(signal=>read({binding:v.binding,signal})));if(!same(current,entry))refuse();actualExecution=await actualSelection(captureLife);
-     const ref=objectiveCompletionId(v.binding),output=selectedCodec.encode({selection,executionSelection:actualExecution,sdkResult,sessionId:sdkResult.session_id,receiptRef:ref,resultRef:ref,completedAtMs:now()});
+    try{const current=await captureLife.run(signal=>read({binding:v.binding,signal}));if(current===null||!same(current,entry))refuse();
+     // The existing native completion identity is the run ID, not an old workspace-checkpoint identity.
+     const ref=v.binding.runId,output=selectedCodec.encode({selection:bound,executionSelection:selected.strategy.executionSelection,sdkResult,sessionId:sdkResult.session_id,receiptRef:ref,resultRef:ref,completedAtMs:now()});
      await captureLife.run(signal=>writeFile({cwd:v.cwd,bytes:output.bytes,descriptor:output.descriptor,signal}));captureLife.check();return output.descriptor;
     }finally{captureLife.close();}
    }});

@@ -1,7 +1,8 @@
 /** Offline checks for the D2 Stage 1 database script, its grants and the one-shot runner. No database. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,readdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {
  ROOT,DATABASE_SCRIPT,INTEGRATION_SCRIPT,OWNER_READS_SCRIPT,PLAN,PASSWORD_VARIABLES,lex,loadPlan,migrationBody,splitStatements,psqlLiteral,
@@ -11,6 +12,7 @@ import {
 const read=path=>readFileSync(resolve(ROOT,path),'utf8');
 const script=read(DATABASE_SCRIPT);
 const SDK_GRANTS='apps/control/conversations/migrations/0022_sdk_run_usage_grants.sql';
+const RETENTION_GRANTS='infra/product-preview/first-chat-native-retention-grants.sql';
 const PHASES=['bootstrap','meri_grants','temporal_grants','release'];
 const passwords=Object.fromEntries(Object.keys(PASSWORD_VARIABLES).map((name,i)=>[name,`SCRAM-SHA-256$4096:c2FsdA==$${i}:${i}`]));
 const META_SCHEMAS=new Set(['meri_conversations','meri_product_budget','meri_service_identity','meri_migration_ledger']);
@@ -253,8 +255,10 @@ const CONTROL_FILES=['apps/control/conversations/postgres-store.mjs','apps/contr
  'apps/control/conversations/initial-run-binding-journal.mjs','apps/control/conversations/lifecycle/journal.mjs',
  'apps/control/conversations/native-preparation-journal.mjs','apps/control/conversations/next-run-journal.mjs',
  'apps/control/conversations/sequence-ranges.mjs','apps/control/conversations/history/store.mjs',
- 'apps/control/conversations/skills/retention.mjs','apps/runtime/native-authority/session-owner.mjs',
- 'apps/runtime/selected/ledger.mjs','apps/runtime/prepared-run-issuance-postgres.mjs',
+ 'apps/control/conversations/skills/retention.mjs','apps/runtime/sdk-session-owner.mjs',
+ // Selected publication now uses the canonical skills/retention owner above;
+ // the retired selected-read spend ledger has no executable replacement.
+ 'apps/runtime/prepared-run-issuance-postgres.mjs',
  'apps/gateway/budget/native-allocation-admission.mjs','apps/gateway/budget/admitted-run-current.mjs',
  'apps/gateway/budget/postgres-budget-store.mjs','apps/gateway/budget/tenant/postgres-store.mjs',
  'apps/gateway/budget/tenant/native-admission.mjs','apps/gateway/budget/execution-grant-admission.mjs',
@@ -267,6 +271,7 @@ test('every table and column the control sources read, lock or write is granted 
  assert.ok(statements.length>80,String(statements.length));
  for(const path of CONTROL_FILES)assert.ok(statements.some(s=>s.path===path),`${path} yields no statement`);
  for(const write of ['INSERT INTO meri_conversations.sdk_session_entries','UPDATE meri_conversations.runs SET sequence_end',
+  'INSERT INTO meri_conversations.selected_outputs',
   'INSERT INTO meri_product_budget.tenant_run_reservations','UPDATE meri_product_budget.grants SET state=\'ACTIVE\'',
   'UPDATE meri_conversations.model_run_issuances SET facts_sha256'])
   assert.ok(statements.some(s=>s.sql.startsWith(write)),write);
@@ -296,12 +301,9 @@ test('SDK grants are column-only; the source audit refuses missing predicate/rea
   assert.notDeepEqual(uncovered(role,[{...policy,sql}],granted),[],'additional columns/unknown forms must refuse');
 });
 
-/** The control and runtime stores the model owner borrows, by factory. */
-const BORROWED_FACTORIES={createPostgresConversationStore:'apps/control/conversations/postgres-store.mjs',
- createInitialRunBindingJournal:'apps/control/conversations/initial-run-binding-journal.mjs',
- createPostgresModelGrantStore:'apps/runtime/prepared-run-issuance-postgres.mjs',
- createPostgresAdmittedRunOwner:'apps/gateway/budget/admitted-run-owner.mjs'};
-/** The statements each borrowed method runs ([] only for a module without SQL of its own). */
+/** Applied historical owner-read grants remain immutable after the proxy is retired.
+ * Keep checking the real canonical SQL readers and their least-privilege grants; this is
+ * historical ACL coverage, not evidence of a current model-proxy process or factory graph. */
 const OWNER_BORROWED={
  'apps/control/conversations/initial-run-binding-journal.mjs#readConversation':[['apps/control/conversations/initial-run-binding-journal.mjs',
   'SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 ORDER BY generation DESC LIMIT 1 FOR UPDATE']],
@@ -317,31 +319,12 @@ const OWNER_BORROWED={
  'apps/gateway/budget/admitted-run-owner.mjs#currentTaskRun':[],
  'apps/runtime/prepared-run-issuance-postgres.mjs#read':[['apps/runtime/prepared-run-issuance-postgres.mjs',
   'SELECT * FROM meri_conversations.model_run_issuances WHERE issuance_key=$1']]};
-/** Every method an owner source calls on a borrowed store: on a receiver the same file binds from a factory
- * (`store=createPostgresConversationStore(` … `store.nextRuns.current(`), or through an option the entrypoint builds from one
- * (`initialBindings=createInitialRunBindingJournal(` … `storageMethod(c.initialBindings,'readConversation')`). */
-function ownerBorrowedCalls(){
- const dir='apps/proxy/product',bound=/\b([A-Za-z_][\w]*)=(create[A-Za-z]+)\(/gu,calls=new Set(),options=new Map();
- for(const [,name,factory] of read(`${dir}/owner-entrypoint.mjs`).matchAll(bound))if(BORROWED_FACTORIES[factory])options.set(name,BORROWED_FACTORIES[factory]);
- for(const file of readdirSync(resolve(ROOT,dir)).filter(f=>f.endsWith('.mjs')&&!f.endsWith('.test.mjs'))){
-  const text=read(`${dir}/${file}`);
-  for(const [,name,factory] of text.matchAll(bound))if(BORROWED_FACTORIES[factory])
-   for(const [,method] of text.matchAll(new RegExp(`\\b${name}\\.([A-Za-z_]\\w*(?:\\.[A-Za-z_]\\w*)*)\\(`,'gu')))
-    calls.add(`${BORROWED_FACTORIES[factory]}#${method}`);
-  for(const [,option,method] of text.matchAll(/storageMethod\(c\.([A-Za-z_]\w*),'([A-Za-z_]\w*)'\)/gu))
-   if(options.has(option))calls.add(`${options.get(option)}#${method}`);
- }
- return [...calls].sort();
-}
-
-test('every table and column the model budget owner reads, locks or writes is granted to meri_model_budget_owner',async()=>{
+test('applied historical model-owner grants cover retained SQL readers and budget writers without granting new privileges',async()=>{
  const meriGrants=(await trace('meri_grants')).statements.map(s=>s.text),granted=grants([...meriGrants,...await ownerReadsStatements()]);
  const files=['apps/gateway/budget/product-model-budget.mjs','apps/gateway/budget/product-model-settlement.mjs',
-  'apps/gateway/budget/admitted-run-current.mjs','apps/gateway/budget/postgres-budget-store.mjs','apps/gateway/budget/occurrence-cost-scope.mjs',
-  'apps/proxy/product/product-owner-facts.mjs'];
+  'apps/gateway/budget/admitted-run-current.mjs','apps/gateway/budget/postgres-budget-store.mjs','apps/gateway/budget/occurrence-cost-scope.mjs'];
  const statements=files.flatMap(path=>literals(path).flatMap(sql=>resolveTemplates(sql,path).map(s=>({sql:s,path}))));
- // Borrowed reads come from the owner's own call sites: a new borrowed call fails here until OWNER_BORROWED lists its statements.
- assert.deepEqual(ownerBorrowedCalls(),Object.keys(OWNER_BORROWED).sort());
+ // Each retained historical read must still be present in its actual canonical SQL owner.
  for(const [call,borrowed] of Object.entries(OWNER_BORROWED)){
   if(!borrowed.length)assert.deepEqual(literals(call.split('#')[0]),[],`${call} lists no statements, so its module has none`);
   for(const [path,sql] of borrowed){
@@ -362,21 +345,15 @@ test('every table and column the model budget owner reads, locks or writes is gr
   assert.doesNotMatch(g,/(INSERT|UPDATE\(state\)) TABLE meri_product_budget\.grants|TABLE meri_conversations\.(model_run_issuances|run_issuances) .*(INSERT|UPDATE)|tenant_/u);
 });
 
-test('the issuer\'s writes and its startup probe are satisfied exactly',async()=>{
- const path='apps/runtime/temporal-issuer/service-task-registration-pg.mjs';
+test('historical applied issuer grants remain immutable after runtime retirement',async()=>{
  const granted=grants((await trace('meri_grants')).statements.map(s=>s.text));
- const statements=literals(path).flatMap(sql=>resolveTemplates(sql,path).map(s=>({sql:s,path})));
- assert.ok(statements.some(s=>/ON CONFLICT \(task_arn\) DO UPDATE SET revoked_at/u.test(s.sql)));
- assertCovered('meri_temporal_issuer_service',statements,granted);
- const probe=read(path);
- const columns=/a\.attname NOT IN\s*\(([^)]*)\)/u.exec(probe)[1].match(/[a-z0-9_]+/gu);
  const updates=[...granted].filter(g=>g.startsWith('meri_temporal_issuer_service UPDATE(')).map(g=>/UPDATE\(([a-z0-9_]+)\)/u.exec(g)[1]);
- assert.deepEqual(updates.sort(),[...columns].sort());
+ assert.deepEqual(updates.sort(),['certificate_sha256','expires_at_ms','proof_observed_at_ms','generation','updated_at','revoked_at'].sort());
  assert.deepEqual([...granted].filter(g=>g.startsWith('meri_temporal_issuer_service ')&&!g.includes('UPDATE(')).sort(),
   ['meri_temporal_issuer_service INSERT TABLE meri_service_identity.service_task_registrations',
    'meri_temporal_issuer_service SELECT TABLE meri_service_identity.service_task_registrations',
    'meri_temporal_issuer_service USAGE SCHEMA meri_service_identity']);
- assert.match(script,/CREATE ROLE %I NOLOGIN NOINHERIT/u,'the probe refuses an inheriting issuer role');
+ assert.match(script,/CREATE ROLE %I NOLOGIN NOINHERIT/u);
 });
 
 // ---------------------------------------------------------------- runner
@@ -390,7 +367,8 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_service_task_registrations.sql','first-chat-seed-budget.sql','first-chat-database.sql#meri_grants','first-chat-database-temporal.sql#temporal_grants',
   'first-chat-database-owner-reads.sql#owner_conversation_reads',
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
-  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql']);
+  '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
+  '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -398,7 +376,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
  assert.match(seed,/INSERT INTO meri_product_budget\.budget \(id, cap_micro_usd, consumed_micro_usd, quarantined\)\nVALUES \(1, 25000000, 0, false\)/u);
  const budget=read('apps/gateway/budget/migrations/0001_product_budget.sql');
  for(const column of ['id integer PRIMARY KEY CHECK (id=1)','cap_micro_usd bigint','consumed_micro_usd bigint','quarantined boolean'])assert.ok(budget.includes(column));
- assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql \.\/infra\/product-preview\/$/mu);
+ assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql infra\/product-preview\/first-chat-native-retention-grants\.sql \.\/infra\/product-preview\/$/mu);
  assert.match(read('apps/runtime/package-lock.json'),/"node_modules\/pg": \{\n\s+"version": "8\.23\.1"/u);
 });
 
@@ -577,11 +555,11 @@ function databaseWithLedger(plan,count,options){
 test('each stage replay closes bootstrap LOGIN from the verified committed Temporal ledger',async()=>{
  const plan=loadPlan();
  for(const stage of ['meri','temporal','integration']){
-  const db=databaseWithLedger(plan,44);db.state.temporalLogin=true;
+  const db=databaseWithLedger(plan,plan.length);db.state.temporalLogin=true;
   await runStage({stage,plan,variables,connect:db.connect});
   assert.equal(db.state.temporalLogin,false,stage);assert.equal(db.state.disabled,1,stage);
   assert.equal(db.state.memberships.size,0,stage);assert.equal(db.state.released,1,stage);
-  assert.equal(db.state.executed.length,0);assert.equal(db.state.ledger.length,44);
+  assert.equal(db.state.executed.length,0);assert.equal(db.state.ledger.length,plan.length);
   assert.equal(db.state.queries.filter(sql=>/^SELECT ordinal,name,sha256 FROM/u.test(sql)).length,2);
  }
 });
@@ -711,8 +689,8 @@ test('owner reads grant the model owner only SELECT on the two tables and the lo
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
  const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
- assert.equal(plan.length,44);assert.equal(integration.length,22);assert.equal(integration.at(-4).kind,'phase:integration_grants');
- assert.equal(integration.at(-1).path,SDK_GRANTS);
+ assert.equal(plan.length,48);assert.equal(integration.length,26);assert.equal(plan[40].kind,'phase:integration_grants');
+ assert.equal(integration.at(-1).path,RETENTION_GRANTS);
  const early=fakeDatabase();
  await assert.rejects(runStage({stage:'integration',plan,variables,connect:early.connect}),/MERI_D2_PRIOR_STAGE_INCOMPLETE/u);
  assert.equal(early.state.executed.length,0);
@@ -721,15 +699,15 @@ test('integration stage runs only after meri and temporal are ledgered; earlier 
  assert.equal(ready.state.executed.length,0);
  await runStage({stage:'integration',plan,variables,connect:ready.connect});
  assert.deepEqual(ready.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
- assert.equal(ready.state.executed.length,21);assert.ok(ready.state.phases.includes('integration_grants'));
- // An exact 43-entry ledger applies only the new forward grant migration.
+ assert.equal(ready.state.executed.length,25);assert.ok(ready.state.phases.includes('integration_grants'));
+ // An exact 47-entry ledger applies only the new forward grant migration.
  const live=fakeDatabase();live.state.ledger=plan.slice(0,-1).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));live.state.ledgerTable=live.state.owner=true;
  await runStage({stage:'integration',plan,variables,connect:live.connect});
  assert.equal(live.state.executed.length,1);assert.deepEqual(live.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
  assert.deepEqual(live.state.executed,[migrationBody(plan.at(-1).text).replace(/\s+/gu,' ').trim()]);
- const beforeSdk=fakeDatabase();beforeSdk.state.ledger=plan.slice(0,-2).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));beforeSdk.state.ledgerTable=beforeSdk.state.owner=true;
+ const beforeSdk=fakeDatabase();beforeSdk.state.ledger=plan.slice(0,42).map(e=>({ordinal:e.ordinal,name:e.name,sha256:e.sha256}));beforeSdk.state.ledgerTable=beforeSdk.state.owner=true;
  await runStage({stage:'integration',plan,variables,connect:beforeSdk.connect});
- assert.equal(beforeSdk.state.executed.length,2);assert.deepEqual(beforeSdk.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
+ assert.equal(beforeSdk.state.executed.length,6);assert.deepEqual(beforeSdk.state.ledger.map(r=>r.ordinal),plan.map(e=>e.ordinal));
 });
 test('runner refuses a changed applied file, a ledger gap and an early temporal stage before any bootstrap',async()=>{
  const plan=loadPlan();
@@ -759,6 +737,44 @@ test('PLAN is frozen and every entry is pinned to a 64-hex digest',()=>{
  assert.ok(Object.isFrozen(PLAN)&&PLAN.every(Object.isFrozen));
  assert.ok(PLAN.every(e=>/^[a-f0-9]{64}$/u.test(e.pinned)));
  assert.equal(new Set(PLAN.filter(e=>e.path===DATABASE_SCRIPT).map(e=>e.pinned)).size,1);
+});
+
+test('native retention appends exactly four integration entries to the unchanged 44-entry prefix',async()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,44))).digest('hex'),
+  '0161989b7e2acb72729982fae3d24b2c58c203c60aa2a0502cce0a2dbab51011');
+ const plan=loadPlan(),added=plan.slice(44);
+ assert.deepEqual(added.map(e=>[e.ordinal,e.kind,e.stage]),[45,46,47,48].map(n=>[n,'migration','integration']));
+ const db=databaseWithLedger(plan,44),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,44),prefix);
+ assert.deepEqual(db.state.executed,added.map(e=>migrationBody(e.text).replace(/\s+/gu,' ').trim()));
+ assert.equal(db.state.ledger.length,48);assert.equal(db.state.temporalLogin,false);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,4,'replay executes no migration twice');
+ for(const entry of added)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+ const failed=databaseWithLedger(plan,47,{failOn:'GRANT SELECT, INSERT ON meri_conversations.memory_proposal_contexts'});
+ await assert.rejects(runStage({stage:'integration',plan,variables,connect:failed.connect}),/boom/u);
+ assert.equal(failed.state.ledger.length,47);assert.equal(failed.state.temporalLogin,false);
+ assert.equal(failed.state.memberships.size,0,'failed forward grant still releases temporary ownership');
+});
+
+test('native retention grants only context locks and serving/recovery projection rights',()=>{
+ const body=migrationBody(loadPlan().find(e=>e.path===RETENTION_GRANTS).text),statements=splitStatements(body).map(s=>s.text);
+ const actual=grants(statements),expected=new Set();
+ const add=(table,privileges)=>{for(const privilege of privileges)expected.add(`meri_control_runtime ${privilege} TABLE ${table}`);};
+ add('meri_conversations.memory_proposal_contexts',['SELECT','INSERT','UPDATE(record_sha256)']);
+ for(const schema of ['meri_conversations','meri_artifacts']){
+  add(`${schema}.retention_subjects`,['SELECT','INSERT',...['owner_actor_id','state','suppressed_at','released_at','ledger_sequence','entry_sha256','projection','projection_sha256'].map(c=>`UPDATE(${c})`)]);
+  add(`${schema}.retention_purges`,['INSERT','DELETE','SELECT(tenant_id)',`SELECT(${schema==='meri_conversations'?'conversation_id':'artifact_id'})`]);
+ }
+ add('meri_conversations.retention_purge_targets',['INSERT','DELETE','SELECT(tenant_id)','SELECT(conversation_id)']);
+ add('meri_conversations.retention_recovery_watermark',['SELECT(singleton)','SELECT(sequence)','SELECT(entry_sha256)','INSERT(singleton)','INSERT(sequence)','INSERT(entry_sha256)','UPDATE(sequence)','UPDATE(entry_sha256)']);
+ assert.deepEqual(actual,expected);
+ assert.ok(statements.every(s=>/^GRANT /u.test(s)), 'no schema, content mutation, ownership, role or execution statements');
+ assert.doesNotMatch(code(body),/\b(?:PUBLIC|TRUNCATE|REFERENCES|TRIGGER|EXECUTE|ALL|WITH GRANT OPTION)\b/u);
+ assert.match(read('apps/control/conversations/migrations/0019_memory_proposal_contexts.sql'),/BEFORE UPDATE OR DELETE ON meri_conversations\.memory_proposal_contexts/u);
 });
 
 test('every infra file the runtime Dockerfile copies is re-included by .dockerignore',()=>{

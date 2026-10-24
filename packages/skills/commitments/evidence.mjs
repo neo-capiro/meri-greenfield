@@ -46,7 +46,7 @@ export function bindReads(rawContext,rawReads){
       if(record.content.kind!=='full-read'||record.contentSha256!==digest(record.content.text))fail('COMMITMENTS_READ_HASH');
       const key=hash([record.sourceId,record.recordId,record.recordVersionId]);
       if(records.has(key))fail('COMMITMENTS_DUPLICATE_RECORD');
-      records.set(key,{record,source,authorizationDecisionId:envelope.subject.authorizationDecisionId});
+      records.set(key,{record,source,binding:envelope.binding,receiptSha256s:[hash(envelope)]});
     }
   }
   const cells=sourceIds.map(sourceId=>coverage.get(sourceId)??{sourceId,authority:null,status:sourceId==='client_knowledge_monday'&&!context.mondayBoardIds.length?'not-mapped':'not-read',
@@ -63,7 +63,7 @@ export function passage(raw,bound){
   if(!found||!Number.isSafeInteger(p.start)||!Number.isSafeInteger(p.end)||p.start<0||p.end<=p.start||p.end>found.record.content.text.length||
     found.record.content.text.slice(p.start,p.end)!==p.quote)fail('COMMITMENTS_PASSAGE');
   return {...p,citationId:found.record.citationId,contentSha256:found.record.contentSha256,passageSha256:digest(p.quote),
-    scopes:found.record.scopes,authorizationDecisionId:found.authorizationDecisionId,observedAt:found.source.retrievedAt,
+    scopes:found.record.scopes,binding:found.binding,observedAt:found.source.retrievedAt,
     authority:found.source.authority,freshness:found.source.freshness,verification:found.verification??'bound-source-excerpt',
-    ...(found.authorizationDecisionIds?{authorizationDecisionIds:found.authorizationDecisionIds,receiptSha256s:found.receiptSha256s,materialMetadata:found.record.metadata}:{})};
+    receiptSha256s:found.receiptSha256s,...(found.record.metadata?{materialMetadata:found.record.metadata}:{})};
 }

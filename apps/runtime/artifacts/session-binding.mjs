@@ -11,7 +11,7 @@ export function registerDocumentsSessionBinder(context,bind){
 }
 /** Assembly side: call once, right after the action-session owner exists. A context without a composed options owner is a
  * no-op (false); rebinding different sessions is refused by the binder. */
-export function bindDocumentsSessions(context,sessions,retention){
+export function bindDocumentsSessions(context,sessions,retention,store){
  if(context===null||typeof context!=='object')throw fault();
- const bind=binders.get(context);if(bind===undefined)return false;bind(sessions,retention);return true;
+ const bind=binders.get(context);if(bind===undefined)return false;bind(sessions,retention,store);return true;
 }

@@ -49,28 +49,14 @@ export function createFloridaBudgetValidators({ validateShape, schema }) {
       clientId: raw.clientId?.trim().slice(0, 80) || null,
     };
     validateShape('FloridaBudgetInput', input);
-    const reference = input.clientId, resolution = options.clientResolution;
-    if (reference === null) {
-      if (resolution !== null) fail('Florida budget absent client selector cannot carry a resolution');
-    } else {
-      if (resolution === null || resolution.selector !== reference ||
-          (UUID.test(reference.trim()) && reference.trim().toLowerCase() !== resolution.clientId.toLowerCase()))
-        fail('Florida budget client reference differs from trusted resolution');
-      input.clientId = resolution.clientId;
-    }
-    const scope = options.effectiveScope;
-    if (scope.sessionKey !== input.sessionKey || scope.folderId !== input.folderId ||
-        (input.clientId !== null && scope.clientId !== input.clientId) ||
-        (input.folderId === null && scope.clientId !== input.clientId))
-      fail('Florida budget effective scope differs from selected session/folder/client');
+    if (input.clientId !== null && UUID.test(input.clientId.trim())) input.clientId = input.clientId.trim().toLowerCase();
     return { input, options };
   }
 
   function normalizeInput(id, request, context) {
     const { input, options } = selection(id, request, context);
     return Object.freeze({ input: Object.freeze(input), metadata: Object.freeze({
-      effectiveScope: Object.freeze(options.effectiveScope), asOf: options.asOf,
-      clientResolution: options.clientResolution === null ? null : Object.freeze(options.clientResolution),
+      asOf: options.asOf,
       sourceConnected: false, authorizationEstablished: false, absenceEvidence: false,
       projection: 'selected-publisher-evidence',
     }) });
@@ -83,8 +69,15 @@ export function createFloridaBudgetValidators({ validateShape, schema }) {
     instant(page.generatedAt);
     if (page.generatedAt !== options.asOf) fail('Florida budget observation clock substitution');
     const result = page.result;
-    if (['jurisdiction', 'sessionKey', 'folderId', 'clientId'].some(key =>
-      result.scope[key] !== options.effectiveScope[key])) fail('Florida budget output scope substitution');
+    // Core resolves client names and owns folder/client access in the same read.
+    // These are returned selectors, never a separate authorization receipt.
+    const scope = result.scope;
+    if (scope.sessionKey !== input.sessionKey || scope.folderId !== input.folderId ||
+        (scope.clientId !== null && !UUID.test(scope.clientId)) ||
+        (input.clientId !== null && (scope.clientId === null ||
+          UUID.test(input.clientId) && scope.clientId !== input.clientId)) ||
+        (input.clientId === null && input.folderId === null && scope.clientId !== null))
+      fail('Florida budget output scope substitution');
     if (result.fiscalYear !== input.fiscalYear) fail('Florida budget fiscal year substitution');
     if (result.nextOffset !== null &&
         (result.projects.length !== 100 || result.nextOffset !== input.offset + 100))

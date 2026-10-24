@@ -20,7 +20,9 @@ async function fixture(t){
  const pool=new pg.Pool({host:socket,user:'postgres',database:'postgres',max:6});t.after(()=>pool.end());
  const listen=(await pool.query("SELECT current_setting('listen_addresses') AS l")).rows[0].l;assert.equal(listen,'','task-owned socket-only cluster');
  await pool.query('TRUNCATE meri_conversations.retention_purge_targets,meri_conversations.retention_purges,meri_conversations.retention_subjects,meri_artifacts.retention_purges,meri_artifacts.retention_subjects CASCADE');
- await pool.query('TRUNCATE meri_conversations.conversations CASCADE');await pool.query('TRUNCATE meri_artifacts.versions,meri_artifacts.heads CASCADE');
+ // Each case creates fresh conversation/artifact UUIDs. Keep their immutable
+ // source rows: truncating conversations cascades into unrelated current owners
+ // whose production immutability triggers correctly reject fixture-wide resets.
  const c=clock(),sink=createMemoryLedgerSink(),ledger=createRetentionLedger({sink,now:c.now}),journal=createPostgresRetentionJournal({pool}),serving=createServingGate(),store=bucket();
  const suppression=createSuppressionOwner({ledger,journal,ownership:journal,serving,now:c.now});const {current,facts}=currentFacts(c);
  const storage=createVersionStorage({send:store.send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:{getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},now:c.now,maxRequestMs:200});

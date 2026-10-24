@@ -9,13 +9,12 @@ import {storedCase,evidenceId,clientId,conversationId} from './fixture.mjs';
 
 test('evidence: existing native read route preserves complete stored facts, identity basis and provenance',async()=>{
  const f=storedCase(evidenceId),call=f.call();
- f.state.credentialMutator=proof=>{proof.authorizationScheme='CapiroMeriRead';};
  const result=JSON.parse(await f.handler()(call)),wire=f.wire[0],proof=f.credentialCalls[0];
  assert.deepEqual(result,{binding:f.authority.binding,subject:f.authority.subject,operation:f.operation,
   argumentsSha256:call.argumentsSha256,result:f.page});
  assert.equal(wire.url,`https://native-core.example.invalid/api/clio/tools/${evidenceId}`);
  assert.deepEqual(wire.body,{conversationId});assert.equal(wire.options.method,'POST');
- assert.equal(wire.options.headers.authorization,'CapiroMeriRead SYNTHETIC_NATIVE_USER');
+ assert.equal(wire.options.headers.authorization,'Bearer SYNTHETIC_NATIVE_USER');
  assert.equal(wire.options.headers['x-internal-service-secret'],'SYNTHETIC_INTERNAL_SERVICE');
  assert.deepEqual(proof.target,{method:'POST',path:`/api/clio/tools/${evidenceId}`,
   bodySha256:createHash('sha256').update(wire.options.body,'utf8').digest('hex')});
@@ -68,15 +67,15 @@ test('evidence: missing/revoked resource authority and incorrect scope refuse be
  }
 });
 
-test('evidence: personal scope and ordinary attended credentials cannot bypass the delegated prospect/client receipt',async()=>{
+test('evidence: personal scope and retired signed credentials cannot bypass current prospect/client selection',async()=>{
  const f=storedCase(evidenceId,{personal:true});
  await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});
  assert.equal(f.wire.length,0);assert.equal(f.credentialCalls.length,0);
- const g=storedCase(evidenceId);g.state.credentialMutator=proof=>{proof.authorizationScheme='Bearer';};
- await assert.rejects(g.handler()(g.call()),{message:'UNAVAILABLE'});assert.equal(g.wire.length,0);
+ const g=storedCase(evidenceId);g.state.credentialMutator=proof=>{proof.authorizationScheme='CapiroMeriRead';};
+ await assert.rejects(g.handler()(g.call()),{message:'ACCESS_DENIED'});assert.equal(g.wire.length,0);
 });
 
-test('evidence: wrapped credential factories retain closed callback validation',async()=>{
+test('evidence: per-call credential factories retain closed callback validation',async()=>{
  const f=storedCase(evidenceId);let effects=0;
  const proxy=new Proxy(async()=>({}),{apply(){effects++;throw Error('NO_PROXY_CALL');}});
  assert.throws(()=>createBusinessDevelopmentHandlers({...f.transport,now:f.now,credentialsForCall:proxy},[f.operation]),{message:'GATEWAY_CONFIGURATION'});
@@ -99,7 +98,7 @@ test('evidence: source errors, malformed coverage, substituted citation aliases 
 });
 
 test('evidence: expired source credentials and cancellation refuse before HTTP, late expiration withholds bytes',async()=>{
- const f=storedCase(evidenceId);f.state.credentialMutator=p=>{p.authorizationScheme='CapiroMeriRead';p.expiresAtMs=f.now();};
+ const f=storedCase(evidenceId);f.state.credentialMutator=p=>{p.expiresAtMs=f.now();};
  await assert.rejects(f.handler()(f.call()),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);
  const g=storedCase(evidenceId),controller=new AbortController();controller.abort();
  await assert.rejects(g.handler()({...g.call(),signal:controller.signal}),{message:'CANCELLED'});assert.equal(g.wire.length,0);

@@ -103,15 +103,9 @@
       }
     },
     "basis": null,
-    "delegation": {
-      "ref": "00000000-0000-4000-8000-000000000008",
-      "revision": "synthetic-revision",
-      "issuedAtMs": 1792065599000,
-      "absoluteExpiresAtMs": 1792151999000
-    },
     "requestedAtMs": 1792065600000,
     "originalExpiresAtMs": 1792066500000,
-    "inputSha256": "7f53f775178a045bcef971d7d4639ae197039ef58d220b58b8951a3a1fba7e47",
+    "inputSha256": "5df65f399b9c63cb1cb3a5b946d443d164f4cd26d0ef97fc7268af8621e41093",
     "input": {
       "typeHint": "authorization",
       "goal": "  Preserve the supplied goal  ",

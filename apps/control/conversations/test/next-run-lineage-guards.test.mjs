@@ -7,7 +7,7 @@ import {binding,scopes,id,versions} from './lifecycle-fixture.mjs';
 import {fixture,check} from './next-run-recovery-fixture.mjs';
 import {hash} from '../boundary.mjs';
 import {sessionDiscontinuity,continuesSession} from '../../../../packages/contracts/session-continuity.mjs';
-const completed=async x=>{await x.first();const done=await x.complete(binding);await x.retire(binding);return done;};
+const completed=async x=>{await x.first();const done=await x.complete(binding);await x.settle(binding);return done;};
 
 // Q1: ownership of the lineage.
 test('I1 the lineage is bound to the session\'s client, scopes and actor',async()=>{const x=await fixture();try{
@@ -28,11 +28,11 @@ test('I2 a published checkpoint of another conversation or tenant is never the l
 test('U1 a failed turn with an unpublished capture never supplies the lineage',async()=>{const x=await fixture();try{
  const done=await completed(x);const second=(await x.select()).binding;await x.accept(second);await x.allocate(second);await x.running(second);
  await x.f.store.completions.begin({binding:second,scopes,selectedClientId:id(5),completionId:id(950),checkpointId:id(951)},check);
- await x.f.store.append(second,x.status('failed','EXECUTION_FAILED'),check);await x.retire(second);
+ await x.f.store.append(second,x.status('failed','EXECUTION_FAILED'),check);await x.settle(second);
  const third=(await x.select()).binding;await x.accept(third);assert.equal((await x.lineage(third)).nextTurn.checkpoint.checkpointId,done.checkpointId);
 }finally{x.f.close();}});
 test('S1 an older but valid checkpoint is refused once a later one is published',async()=>{const x=await fixture();try{
- const d1=await completed(x);const second=(await x.select()).binding;await x.accept(second);await x.allocate(second);await x.complete(second);await x.retire(second);
+ const d1=await completed(x);const second=(await x.select()).binding;await x.accept(second);await x.allocate(second);await x.complete(second);await x.settle(second);
  const sha1=x.f.state.completions.get([binding.tenantId,binding.conversationId,binding.runId].join(':')).proof_sha256;
  await assert.rejects(x.reserveWith(second,{checkpointId:d1.checkpointId,proofSha256:sha1}),/NEXT_RUN_CHECKPOINT_REFUSED/);
  await assert.rejects(x.reserveWith(binding,{checkpointId:d1.checkpointId,proofSha256:sha1}),/NEXT_RUN_NOT_LATEST/,'a stale writer source');

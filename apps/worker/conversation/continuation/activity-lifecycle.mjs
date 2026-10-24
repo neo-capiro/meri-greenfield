@@ -7,7 +7,7 @@ import {assertWorkerControl,assertLifecycleReceipt} from '../../../../packages/c
 import {createSdkCommandAdapter} from './commands.mjs';
 import {continuationContextSha256} from './options.mjs';
 import {nextTurnSessionId} from './next-turn-options.mjs';
-import {assertCaptureReceipt} from './native-receipts.mjs';
+import {assertNativeSessionCapture} from '../../../../packages/contracts/runtime-0.2/session.mjs';
 import {assertTypedResult} from '../../../../packages/runtime/objective-generation-custody.mjs';
 const fault=(code,cause)=>Object.assign(new Error(code,cause===undefined?undefined:{cause}),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
@@ -37,15 +37,14 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   if(!Number.isSafeInteger(e.controlSequence)||e.controlSequence<=after||e.commandSha256!==canonicalSha256(c)||
    !same(c.binding,binding)||c.contextSha256!==contextSha256)throw fault('CONTROL_ENVELOPE_REFUSED');return e;}
  async function pause(entry){held=true;await adapter.apply(entry.command);life.check();
-  if(!sessionId)throw fault('SDK_SESSION_MISSING');const started=now();
-  const captured=await poll.run(signal=>captureCheckpoint({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,
+  if(!sessionId)throw fault('SDK_SESSION_MISSING');
+  // Interrupt only requests cancellation. Capture waits for actual query cleanup
+  // and mirror flush before asking the existing owner to read its own SDK rows.
+  await poll.run(()=>query.close());
+  await poll.run(signal=>captureCheckpoint({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,
    controlId:entry.command.controlId,sessionId,contextSha256,signal}));
-  const verified=assertCaptureReceipt(captured,{binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,
-   contextSha256,sessionId,started,now});life.limitDeadline(verified.expiresAtMs);poll.limitDeadline(verified.expiresAtMs);
-  const cp=verified.receipt.checkpoint;
-  const recorded=assertLifecycleReceipt(await poll.run(signal=>runOwner.recordCheckpoint({binding,input:{controlId:entry.command.controlId,
-   checkpointId:cp.checkpointId,checkpointSha256:verified.receipt.checkpointSha256},signal})));
-  if(recorded.controlId!==entry.command.controlId||recorded.checkpointId!==cp.checkpointId||!same(recorded.sourceBinding,binding)||
+  const recorded=assertLifecycleReceipt(await poll.run(signal=>runOwner.recordCheckpoint({binding,input:{controlId:entry.command.controlId,sessionId},signal})));
+  if(recorded.controlId!==entry.command.controlId||recorded.checkpointId!==binding.runId||!same(recorded.sourceBinding,binding)||
    recorded.state!=='APPLIED'||recorded.intent!==(entry.command.action==='pause'?'pause':'approval.wait'))throw fault('CHECKPOINT_RECORD_REFUSED');
   pending.delete(entry.command.controlId);heldResult.resolve({state:entry.command.action==='pause'?'paused':'waiting-for-approval'});
  }
@@ -77,7 +76,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  async function observe(message){if(stopped)return;
   if(message?.type==='system'&&message.subtype==='init'){
    if(typeof message.session_id!=='string'||!uuid.test(message.session_id)||sessionId&&sessionId!==message.session_id)throw fault('SDK_SESSION_REFUSED');
-   const expected=saved.nextTurn?nextTurnSessionId(saved.nextTurn):saved.continuation?(saved.continuation.mode==='resume'?saved.continuation.checkpoint.sessionId:saved.continuation.targetSessionId):null;
+   const expected=saved.nextTurn?nextTurnSessionId(saved.nextTurn):saved.continuation?(saved.continuation.mode==='resume'?(saved.continuation.kind==='native-session'?saved.continuation.sdkSession.key.sessionId:saved.continuation.checkpoint.sessionId):saved.continuation.targetSessionId):null;
    if(expected!==null&&expected!==message.session_id)throw fault('SDK_SESSION_REFUSED');sessionId=message.session_id;initialized.resolve();
   }
   if(held)return;
@@ -111,9 +110,13 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  }
  async function complete(typedResult){if(!captureCompletion||held||fenced||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');
   if(typedResult!==undefined)typedResult=assertTypedResult(typedResult,{binding,sourceRequestSha256:canonicalSha256(saved.request),sessionId});
-  await finish({keepInputOpen:true});if(error||held||fenced)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
+  await finish({keepInputOpen:true});if(error||held||fenced)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');
+  await life.run(()=>query.close());
   const captured=await life.run(signal=>captureCompletion({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,sessionId,contextSha256,...(typedResult===undefined?{}:{typedResult}),signal}));
-  const verified=assertCaptureReceipt(captured,{binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,contextSha256,sessionId,started,now});life.limitDeadline(verified.expiresAtMs);return verified.receipt;
+  const receipt=data(own(captured,['binding','state','proof'])),proof=assertNativeSessionCapture(receipt.proof);
+  if(receipt.state!=='completed'||!same(receipt.binding,binding)||!same(proof.sdkSession.binding,binding)||proof.sdkSession.key.sessionId!==sessionId||
+   !proof.files||!same(proof.versions,saved.run.versions)||!same(proof.scopes,saved.run.scopes)||proof.sourceRequestSha256!==canonicalSha256(saved.request)||proof.contextSha256!==contextSha256)throw fault('COMPLETION_CAPTURE_REFUSED');
+  life.check();return receipt;
  }
  return Object.freeze({observe,fence,finish,captureCompletion:complete,canCaptureCompletion:()=>captureCompletion!==undefined,isHeld:()=>held||fenced,heldResult:()=>heldResult.promise,
   failure:failed.promise,check(){if(error)throw error;},close(){stopped=true;abort.abort();poll.close();input.close();}});

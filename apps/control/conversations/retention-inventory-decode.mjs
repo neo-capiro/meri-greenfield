@@ -8,6 +8,9 @@ import {assertTypedResult,assertTypedSelection,MAX_OBJECTIVE_SELECTION_BYTES} fr
 import {validateCompletionProof} from './completion-journal.mjs';
 import {assertNextRunReservation} from './next-run-reservation.mjs';
 import {continuesSession} from '../../../packages/contracts/session-continuity.mjs';
+import {assertNativeConversationScope,assertNativeSessionCapture} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {assertNativeFileState} from '../../../packages/contracts/runtime-0.2/files.mjs';
+import {isMailContext,mailContextRecord} from './mail-context-record.mjs';
 
 const corrupt=()=>fail('STORE_CORRUPT');
 const requireFact=value=>{if(!value)corrupt();};
@@ -18,6 +21,7 @@ const inSubject=(row,subject)=>requireFact(row?.tenant_id===subject.tenantId&&ro
 const sourceContext=run=>hash({window:run.row.request.window,skill:run.row.request.skill,scopes:run.projection.scopes});
 const sameRow=(row,value,sha)=>requireFact(value!==null&&value!==undefined&&digest(row[sha])&&hash(value)===row[sha]);
 const refKey=object=>`${object.objectId}@${object.versionId}`;
+const sourceBinding=c=>c.kind==='native-session'?c.sdkSession.binding:c.checkpoint.binding;
 
 function decodeSubject(subject,conversation){
  const s=own(subject,['tenantId','kind','subjectId','ownerActorId']);
@@ -49,13 +53,13 @@ function decodeRun(row,owner){
   sameRow(row,row.continuation,'continuation_sha256');
   const saved=own(row.continuation,['continuation','sourceRequest']);
   continuation=assertContinuationEnvelope(saved.continuation);
-  const source=continuation.checkpoint.binding;
+  const source=sourceBinding(continuation),pins=continuation.kind==='native-session'?continuation:continuation.checkpoint;
   requireFact(source.tenantId===b.tenantId&&source.actorId===b.actorId&&source.runId!==b.runId&&
-   same(continuation.checkpoint.scopes,p.scopes)&&same(continuation.checkpoint.versions,p.versions)&&
+   same(pins.scopes,p.scopes)&&same(pins.versions,p.versions)&&
    hash(saved.sourceRequest)===continuation.sourceRequestSha256&&
    hash({window:saved.sourceRequest.window,skill:saved.sourceRequest.skill,scopes:p.scopes})===continuation.contextSha256&&
    same({...saved.sourceRequest,requestId:row.request.requestId},row.request));
-  checkpointShape(continuation.checkpoint,{binding:source,scopes:p.scopes,versions:p.versions});
+  if(continuation.kind!=='native-session')checkpointShape(continuation.checkpoint,{binding:source,scopes:p.scopes,versions:p.versions});
   if(continuation.mode==='resume')requireFact(source.conversationId===b.conversationId&&source.writerFence+1===b.writerFence);
   else requireFact(source.conversationId!==b.conversationId&&b.writerFence===1);
  }
@@ -74,6 +78,7 @@ function checkpointShape(cp,{binding,scopes,versions}){
 }
 
 function checkpoint(proof,{binding,scopes,versions,sourceRequestSha256,contextSha256,maxSequence,exactSequence=false}){
+ if(proof.kind==='native-session'){const p=assertNativeSessionCapture(proof);requireFact(same(p.sdkSession.binding,binding)&&same(p.scopes,scopes)&&same(p.versions,versions)&&p.sourceRequestSha256===sourceRequestSha256&&p.contextSha256===contextSha256&&(exactSequence?p.lastEventSequence===maxSequence:p.lastEventSequence<=maxSequence));return p;}
  own(proof,['checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','resumeSessionAt','readReceiptId']);
  uuid(proof.readReceiptId);if(proof.resumeSessionAt!==null)uuid(proof.resumeSessionAt);
  const cp=checkpointShape(proof.checkpoint,{binding,scopes,versions});
@@ -89,12 +94,14 @@ function decodeControl(row,owner,byRun){
  inSubject(row,owner.subject);sameRow(row,row.projection,'projection_sha256');
  const p=row.projection,b=p.sourceBinding,r=byRun.get(row.run_id),seq=number(row.control_sequence);
  requireFact(r&&seq>=1&&same(b,r.projection.binding)&&row.control_id===p.input?.controlId&&
-  p.sourceSelectedClientId&&p.scopes?.some(s=>s.kind==='client'&&s.resourceId===p.sourceSelectedClientId)&&
   same(p.scopes,r.projection.scopes)&&same(p.versions,r.projection.versions)&&
   same(p.sourceRequest,r.row.request)&&p.sourceRequestSha256===r.row.request_sha256&&
   p.contextSha256===sourceContext(r)&&hash(p.input)===p.inputSha256&&
   Number.isSafeInteger(p.captureSequence)&&p.captureSequence>=1&&p.captureSequence<=r.public.lastSequence);
- uuid(p.sourceSelectedClientId);assertLifecycleCommand(p.input);
+ assertNativeConversationScope({binding:b,scopes:p.scopes,selectedClientId:p.sourceSelectedClientId});assertLifecycleCommand(p.input);
+ if(p.fileCapture!==undefined){const f=own(p.fileCapture,['requestSha256','sessionId','files']);requireFact(digest(f.requestSha256)&&['pause','approval.wait'].includes(p.input.intent));uuid(f.sessionId);
+  // An unknown partial object write cannot certify a complete inventory.
+  requireFact(f.files!==null);assertNativeFileState(f.files,{binding:b,scopes:p.scopes});if(p.proof)requireFact(p.proof.kind==='native-session'&&p.proof.sdkSession.key.sessionId===f.sessionId&&same(p.proof.files,f.files));}
  requireFact(['PENDING','DISPATCHING','APPLIED','UNKNOWN'].includes(p.state));
  if(p.approval){assertProposalIntegrity(p.approval);requireFact(p.input.intent==='approval.wait'&&
   p.approval.proposalId===p.input.proposalId&&same(p.approval.command.binding,b)&&same(p.approval.command.scopes,p.scopes));}
@@ -116,20 +123,21 @@ function decodeControl(row,owner,byRun){
   same(p.target.scopes,p.scopes)&&p.target.binding.tenantId===b.tenantId&&p.target.binding.actorId===b.actorId);
  if(p.retirement)requireFact(same(p.retirement.binding,b));
  return {row,projection:p,public:{controlId:row.control_id,runId:row.run_id,
-  controlSequence:seq,projectionSha256:row.projection_sha256}};
+  controlSequence:seq,projectionSha256:row.projection_sha256,...(p.fileCapture?.files?{nativeFiles:p.fileCapture.files}:{})}};
 }
 
 function decodeCompletion(row,owner,byRun){
  inSubject(row,owner.subject);sameRow(row,row.identity,'identity_sha256');
  const p=row.identity,r=byRun.get(row.run_id);
  requireFact(r&&same(p.binding,r.projection.binding)&&row.completion_id===p.completionId&&
-  row.checkpoint_id===p.checkpointId&&p.selectedClientId&&
-  p.scopes?.some(s=>s.kind==='client'&&s.resourceId===p.selectedClientId)&&
+  row.checkpoint_id===p.checkpointId&&
   same(p.scopes,r.projection.scopes)&&same(p.versions,r.projection.versions)&&
   same(p.sourceRequest,r.row.request)&&p.sourceRequestSha256===r.row.request_sha256&&
   p.contextSha256===sourceContext(r)&&Number.isSafeInteger(p.captureSequence)&&
   p.captureSequence>=1&&p.captureSequence<=r.public.lastSequence);
- for(const id of ['completionId','checkpointId','verifiedEventId','completedEventId','selectedClientId'])uuid(p[id]);
+ assertNativeConversationScope({binding:p.binding,scopes:p.scopes,selectedClientId:p.selectedClientId});
+ for(const id of ['completionId','checkpointId','verifiedEventId','completedEventId'])uuid(p[id]);
+ if(p.kind!==undefined){requireFact(p.kind==='native-session'&&p.completionId===p.binding.runId&&p.checkpointId===p.binding.runId&&digest(p.filesRequestSha256));uuid(p.sessionId);}
  requireFact(Object.hasOwn(p,'typedResult')===Object.hasOwn(p,'typedSelection'));
  if(Object.hasOwn(p,'typedResult')){
   const result=assertTypedResult(bounded(p.typedResult),{binding:p.binding,sourceRequestSha256:r.row.request_sha256});
@@ -139,9 +147,9 @@ function decodeCompletion(row,owner,byRun){
  let cp=null;
  if(row.state==='PUBLISHED'){
   sameRow(row,row.proof,'proof_sha256');validateCompletionProof(row.proof,p);
-  cp=row.proof.checkpoint;
+  cp=row.proof.kind==='native-session'?null:row.proof.checkpoint;
  }else requireFact(row.proof==null&&row.proof_sha256==null);
- return {row,identity:p,public:{checkpointId:row.checkpoint_id,runId:row.run_id,state:row.state,checkpoint:cp}};
+ return {row,identity:p,public:{checkpointId:row.checkpoint_id,runId:row.run_id,state:row.state,checkpoint:cp,...(row.proof?.kind==='native-session'?{nativeCapture:row.proof}:{})}};
 }
 
 function decodeNextRun(row,owner,byRun,byCompletion){
@@ -157,7 +165,7 @@ function decodeNextRun(row,owner,byRun,byCompletion){
   source.public.sequenceEnd===target.public.sequenceBase);
  else requireFact(!target&&source.public.sequenceEnd===null);
  const continued=row.state==='ACCEPTED'&&target.continuation?.mode==='resume'&&
-  same(target.continuation.checkpoint.binding,source.projection.binding)&&
+  same(sourceBinding(target.continuation),source.projection.binding)&&
   ['paused','waiting-for-approval'].includes(source.projection.state);
  requireFact(['completed','failed','cancelled'].includes(source.projection.state)||continued);
  if(source.projection.state==='completed')requireFact(p.facts.checkpoint!==null||p.facts.sdkSession);
@@ -177,7 +185,7 @@ function decodeNextRun(row,owner,byRun,byCompletion){
    (source.projection.state==='completed'?cp.row.run_id===row.source_run_id:fence(cp.row.run_id)<p.source.writerFence)&&
    ![...byCompletion.values()].some(o=>o.row.state==='PUBLISHED'&&fence(o.row.run_id)>fence(cp.row.run_id)&&fence(o.row.run_id)<=p.source.writerFence));
   // An accepted successor runs under its own release's versions; the checkpoint's session must continue there (session-continuity.mjs).
-  if(row.state==='ACCEPTED')requireFact(continuesSession(cp.public.checkpoint.versions,target.projection.versions));}
+  if(row.state==='ACCEPTED')requireFact(continuesSession((cp.public.nativeCapture??cp.public.checkpoint).versions,target.projection.versions));}
  return {row,reservation:p,public:{sourceRunId:row.source_run_id,targetRunId:row.target_run_id,
   state:row.state,reservationSha256:row.reservation_sha256}};
 }
@@ -196,8 +204,8 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
     (i===0?run.public.sequenceBase===0:
      prior.public.sequenceEnd===run.public.sequenceBase));
    if(run.continuation?.mode==='resume'){
-    const source=byRun.get(run.continuation.checkpoint.binding.runId);
-    requireFact(source&&same(source.projection.binding,run.continuation.checkpoint.binding)&&
+    const source=byRun.get(sourceBinding(run.continuation).runId);
+    requireFact(source&&same(source.projection.binding,sourceBinding(run.continuation))&&
      source.projection.binding.writerFence<run.projection.binding.writerFence);
    }
   }
@@ -242,7 +250,7 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
    checkpointRows.push({checkpointId:row.checkpoint_id,runId:row.run_id,
     controlId:row.control_id,checkpoint:proof.checkpoint});
   }
-  for(const control of controlRows)if(['pause','approval.wait'].includes(control.projection.input.intent)&&control.projection.proof){
+  for(const control of controlRows)if(['pause','approval.wait'].includes(control.projection.input.intent)&&control.projection.proof&&control.projection.proof.kind!=='native-session'){
    requireFact(byCheckpoint.get(control.projection.checkpointId)?.control_id===control.row.control_id);
   }
   for(const control of controlRows){
@@ -251,7 +259,7 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
     const target=byRun.get(p.target.binding.runId);
     requireFact(target&&same(target.projection.binding,p.target.binding));
    }
-   if(['resume','fork'].includes(p.input.intent)&&p.proof){
+   if(['resume','fork'].includes(p.input.intent)&&p.proof&&p.proof.kind!=='native-session'){
     const source=byCheckpoint.get(p.checkpointId);
     requireFact(source&&source.run_id===control.row.run_id&&
      p.input.checkpointId===p.checkpointId&&
@@ -259,7 +267,7 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
      same({...source.proof,readReceiptId:p.proof.readReceiptId},p.proof));
    }
   }
-  for(const run of runRows)if(run.continuation?.mode==='resume'){
+  for(const run of runRows)if(run.continuation?.mode==='resume'&&run.continuation.kind!=='native-session'){
    const envelope=run.continuation,source=byRun.get(envelope.checkpoint.binding.runId),
     stored=byCheckpoint.get(envelope.checkpoint.checkpointId),control=byControl.get(envelope.controlId);
    requireFact(source&&stored&&control&&stored.run_id===source.row.run_id&&
@@ -287,6 +295,21 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
      same(completed.data,{state:'completed',reasonCode:null}));
    }
   }
+  const nativeCaptures=new Map();
+  for(const control of controlRows)if(['pause','approval.wait'].includes(control.projection.input.intent)&&control.projection.proof?.kind==='native-session'){
+   const proof=control.projection.proof;requireFact(control.projection.state==='APPLIED'&&proof.files&&same(proof.files,control.projection.fileCapture?.files));
+   if(nativeCaptures.has(control.row.run_id)&&!same(nativeCaptures.get(control.row.run_id),proof))corrupt();nativeCaptures.set(control.row.run_id,proof);
+  }
+  for(const item of completionRows)if(item.public.nativeCapture){if(nativeCaptures.has(item.row.run_id))corrupt();nativeCaptures.set(item.row.run_id,item.public.nativeCapture);}
+  for(const control of controlRows){const p=control.projection;if(!['resume','fork'].includes(p.input.intent)||p.proof?.kind!=='native-session')continue;
+   const retained=nativeCaptures.get(control.row.run_id);requireFact(p.input.checkpointId===p.checkpointId&&p.input.checkpointSha256===p.proof.checkpointSha256&&
+    (retained?same(retained,p.proof):p.proof.files===undefined&&byRun.get(control.row.run_id)?.projection.state==='completed'));
+  }
+  for(const run of runRows)if(run.continuation?.kind==='native-session'&&run.continuation.mode==='resume'){
+   const e=run.continuation,source=byRun.get(e.sdkSession.binding.runId),control=byControl.get(e.controlId),p=control?.projection;
+   requireFact(source&&p&&p.input.intent==='resume'&&same(p.sourceBinding,e.sdkSession.binding)&&same(p.target?.binding,run.projection.binding)&&
+    same(p.proof?.sdkSession,e.sdkSession)&&same(p.proof?.files??null,e.files??null)&&same(run.row.continuation.sourceRequest,source.row.request));
+  }
   const nextRunRows=[];
   const sourceTargets=new Set(),targetSources=new Set();
   for(const row of rows(nextRuns)){
@@ -312,24 +335,32 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
     key.policyRevision===run.projection.policyRevision&&
     key.subject?.tenantId===owner.subject.tenantId&&
     key.subject?.actorId===owner.subject.ownerActorId&&
-    key.subject?.policyRevision===run.projection.policyRevision&&
-    same(key.subject?.scopes,run.projection.scopes)&&run.projection.scopes.length===1&&
-    run.projection.scopes[0].kind==='client'&&
-    key.subject?.entityIds?.length===1&&
+    key.subject?.policyRevision===run.projection.policyRevision);
+   if(isMailContext(key)){
+    requireFact(same(key.subject.scopes.filter(scope=>scope.kind!=='mailbox'),run.projection.scopes));
+    mailContextRecord(row.record,{binding:run.projection.binding,policyRevision:run.projection.policyRevision,
+     clientId:key.subject.kind==='personal'?null:key.subject.entityIds[0]},{inventory:true});
+    requireFact(key.subject.kind==='personal'?run.projection.scopes.some(scope=>scope.kind==='private-user'&&scope.resourceId===owner.subject.ownerActorId):
+     run.projection.scopes.some(scope=>scope.kind==='client'&&scope.resourceId===key.subject.entityIds[0]));
+   }else requireFact(same(key.subject?.scopes,run.projection.scopes)&&run.projection.scopes.length===1&&
+    run.projection.scopes[0].kind==='client'&&key.subject?.entityIds?.length===1&&
     key.subject.entityIds[0]===run.projection.scopes[0].resourceId);
    checkedContexts.add(identity);
   }
   requireFact(checkedContexts.size===continuationKeys.size);
   const objects=new Map();
-  const collect=cp=>{if(!cp)return;for(const object of [cp.opaqueSession,...cp.workspace.entries.map(e=>e.object)]){
+  const collectObjects=refs=>{for(const object of refs){
    validateShape('ObjectReference',object);
    const key=refKey(object),held=objects.get(key);
    if(held&&held.sha256!==object.sha256)corrupt();
    objects.set(key,{objectId:object.objectId,versionId:object.versionId,sha256:object.sha256});
   }};
-  for(const run of runRows)collect(run.continuation?.checkpoint);
+  const collect=cp=>{if(cp)collectObjects([cp.opaqueSession,...cp.workspace.entries.map(e=>e.object)]);};
+  const collectFiles=f=>{if(f)collectObjects([...f.workspace.entries,...f.tasks].map(e=>e.object));};
+  for(const run of runRows){collect(run.continuation?.checkpoint);collectFiles(run.continuation?.files);}
+  for(const row of controlRows)collectFiles(row.public.nativeFiles);
   for(const row of checkpointRows)collect(row.checkpoint);
-  for(const row of completionRows)collect(row.public.checkpoint);
+  for(const row of completionRows){collect(row.public.checkpoint);collectFiles(row.public.nativeCapture?.files);}
   const objectVersions=[...objects.values()].sort((a,b)=>refKey(a).localeCompare(refKey(b)));
   const snapshot={subject:owner.subject,conversation:owner.conversation,runs:runRows.map(r=>r.public),
    eventRows,artifactVersionRefs,controls:controlRows.map(r=>r.public),checkpoints:checkpointRows,

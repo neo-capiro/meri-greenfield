@@ -31,8 +31,8 @@ async function setup(t,{operation='create_word',previews=true}={}){
  t.after(async()=>{await f.close();await store?.dispose();await rm(root,{recursive:true,force:true});});
  const office=syntheticOfficeConverter(),renderer=createRendererPort({admission:syntheticAdmission(),transformer:office});
  const executor=createFixedRuntimeArtifactExecutor({pythonExecutable:python,nodeExecutable:process.execPath,pptxModulePath:join(root,'pptx'),tempRoot:root,timeoutMs:30000,renderer});
- const compose=createRuntimeDocumentOptionsComposer({storage:{objects:f.artifactOptions.objects,versions:f.artifactOptions.versions},executor,budgetPool:f.ledger.pool,sessions:f.sessions,now:f.now,renderer,pdfAdmission:true,...(store?{previews:store}:{})});
- const trusted={artifactOptions:f.artifactOptions,selectedClientId:f.selectedClientId,credential:f.credential,limits:f.limits,enabled:true};
+ const compose=createRuntimeDocumentOptionsComposer({storage:{objects:f.artifactOptions.objects,versions:f.artifactOptions.versions},executor,pool:f.artifactOptions.pool,store:{lifecycle:{readArtifactFile:async()=>null}},sessions:f.sessions,now:f.now,renderer,pdfAdmission:true,...(store?{previews:store}:{})});
+ const trusted={artifactOptions:f.artifactOptions,selectedClientId:f.selectedClientId,limits:f.limits,enabled:true};
  const app=createDocumentApplication(compose(trusted)),session=await f.sessions.issue({identityCredential:f.nativeCredential});
  const request=(route,body)=>new Request(`http://127.0.0.1/api/documents/${route}`,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${session.credential}`},body:JSON.stringify(body)});
  const post=(route,body)=>app.handle(request(route,body));
@@ -46,14 +46,14 @@ const previewBytes=async response=>{assert.equal(response.status,200,await respo
  const bytes=Buffer.from(await response.arrayBuffer());assert.deepEqual(structureCheck(bytes,'pdf'),{valid:true});return bytes;};
 
 test('HTTP preview: pending, publish, serve, idempotent republish; a revision has its own preview and the parent preview stays',async t=>{
- const a=await setup(t),version=await a.create('docx'),generations=a.f.stats().generations,charges=a.f.stats().versionCharges;
+ const a=await setup(t),version=await a.create('docx'),generations=a.f.stats().generations,charges=a.f.stats().deliveries;
  await error(await a.post('preview',{versionId:version.versionId}),409,'ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE');
  const published=await (await a.post('preview-publish',{versionId:version.versionId})).json();
  assert.equal(published.status,'published');assert.equal(published.preview.versionId,version.versionId);assert.equal(published.preview.source.sha256,version.object.sha256);assert.equal(published.preview.nativeQualified,false);
  const bytes=await previewBytes(await a.post('preview',{versionId:version.versionId}));assert.equal(sha(bytes),published.preview.preview.object.sha256);
  assert.equal((await (await a.post('preview-publish',{versionId:version.versionId})).json()).status,'existing');assert.equal(a.office.calls.filter(c=>c.format==='docx').length,1);
  // Previews never reserve or settle budget and never regenerate the artifact.
- assert.equal(a.f.stats().generations,generations);assert.equal(a.f.stats().versionCharges,charges);
+ assert.equal(a.f.stats().generations,generations);assert.equal(a.f.stats().deliveries,charges);
  const revision=await a.post('revise',{deliveryId:'d-rev',baseVersionId:version.versionId,request:{...specs.docx,content:{blocks:[{kind:'paragraph',runs:[{text:'Revised'}]}]}}});
  const child=(await revision.json()).version;await error(await a.post('preview',{versionId:child.versionId}),409,'ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE');
  assert.deepEqual(await previewBytes(await a.post('preview',{versionId:version.versionId})),bytes);

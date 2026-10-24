@@ -1,13 +1,19 @@
-/** Recipe correspondence only; the existing artifact/current-session owners retain authority. */
+/** Recipe correspondence only; current artifact/session owners retain authorization. */
+import {types} from 'node:util';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {types} from 'node:util';
 import {admitPreparedCommitmentsAudit} from './compose.mjs';
 export function bindPreparedCommitmentsAuditArtifactOptions(prepared,artifactOptions){
  if(!artifactOptions||typeof artifactOptions!=='object'||types.isProxy(artifactOptions))throw Error('COMMITMENTS_CONFIGURATION');
- const fields=Reflect.ownKeys(artifactOptions),options=own(artifactOptions,['context','authority'],fields.filter(k=>!['context','authority'].includes(k)));
- const guard=admitPreparedCommitmentsAudit(prepared,options.context),contextSha256=v.hash(options.context),authority=options.authority;
- if(!authority||typeof authority!=='object'||types.isProxy(authority))throw Error('COMMITMENTS_CONFIGURATION');
- const method=Object.getOwnPropertyDescriptor(authority,'check');if(!method||!Object.hasOwn(method,'value')||typeof method.value!=='function')throw Error('COMMITMENTS_CONFIGURATION');
- return {...options,authority:{async check(call){try{const intent=v.snapshot(call.input);own(intent,['request','context','baseVersionId']);guard(intent);if(v.hash(intent.context)!==contextSha256)throw Error('COMMITMENTS_REQUEST_SUBSTITUTION');}catch{throw Object.assign(new Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}return method.value.call(authority,call);}}};
+ const fields=Reflect.ownKeys(artifactOptions),options=own(artifactOptions,['context','authorize'],fields.filter(k=>!['context','authorize'].includes(k)));
+ if(typeof options.authorize!=='function'||types.isProxy(options.authorize))throw Error('COMMITMENTS_CONFIGURATION');
+ const guard=admitPreparedCommitmentsAudit(prepared,options.context),intent={request:prepared.request,context:options.context,baseVersionId:prepared.baseVersionId};
+ guard(intent);const contextSha256=v.hash(intent.context),expected=v.nativeRequestSha256(intent.request,intent.context,intent.baseVersionId);
+ return {...options,async authorize(call){
+  try{own(call,['action','resource','requestSha256','binding','scopes'],['deadlineMs','signal']);v.snapshot(call.resource);guard(intent);if(v.hash(intent.context)!==contextSha256)throw Error('mutated context');}catch{throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}
+  if(['artifact.generate','artifact.revise'].includes(call.action)){
+   if(call.action!==(intent.baseVersionId===null?'artifact.generate':'artifact.revise')||call.requestSha256!==expected||call.resource.versionId!==intent.baseVersionId||v.hash(call.binding)!==v.hash(intent.context.binding)||v.hash(call.scopes)!==v.hash(intent.context.scopes))throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});
+  }
+  return options.authorize.call(artifactOptions,call);
+ }};
 }

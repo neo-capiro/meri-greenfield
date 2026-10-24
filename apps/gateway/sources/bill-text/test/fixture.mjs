@@ -2,14 +2,17 @@
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {decodeBillTextCursor} from '../../../../../packages/contracts/retrieval-0.2/bill-text-cursor.mjs';
-import {fixture,uuid} from '../../../test/fixtures.mjs';
+import {fixture,uuid} from '../../test/read-fixture.mjs';
 export const origin='https://native-core.example.invalid';
 export const cursor=(billId,offset)=>Buffer.from(JSON.stringify([billId,'ih',uuid('a'),'a'.repeat(64),offset])).toString('base64url');
+/** Synthetic correlation input for the current read owner, not an authority receipt. */
+export function readContext(authority){return {binding:authority.binding,subject:authority.subject,executionSha256:authority.executionSha256??'e'.repeat(64),policyRevision:authority.policyRevision,scopes:authority.scopes??authority.subject.scopes,sourceIds:authority.sourceIds,deadlineMs:authority.deadlineMs,maxOutputBytes:authority.maxOutputBytes??1048576};}
 export function billTextCase(id='read_bill_text',{defaultCongress=119,request}={}){
  const f=fixture(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),policyRevision='b'.repeat(64),scope={...f.claims.scopes[0],policyRevision};
- const claims={...f.claims,policyRevision,scopes:[scope],budgets:{...f.claims.budgets,maxOutputBytes:1048576}},subject={...f.subject,policyRevision,scopes:[scope]};
+ const {authorizationDecisionId:decisionId,...plainSubject}=f.subject;
+ const claims={...f.claims,policyRevision,scopes:[scope],budgets:{...f.claims.budgets,maxOutputBytes:1048576}},subject={...plainSubject,policyRevision,scopes:[scope]};
  const state={now:f.state.now,revoked:false,installRevoked:false,total:12},now=()=>state.now,normalizationContext={defaultCongress};
- const authority={binding:f.binding,claims,subject,policyRevision,decision:{decisionId:subject.authorizationDecisionId,actor:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},
+ const authority={binding:f.binding,claims,subject,policyRevision,decision:{decisionId,actor:{tenantId:f.binding.tenantId,actorId:f.binding.actorId},
   operation:`${id}@0.2.0`,scopes:[scope],policyRevision,evaluatedAt:new Date(now()).toISOString(),decision:'allowed',reasonCode:'SYNTHETIC_ONLY'},
   sourceIds:[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))],deadlineMs:now()+10000};
  const args=request??(id==='read_bill_text'?{billId:'H.R. 1'}:{query:'H.R. 1'}),wire=[],credentialCalls=[];
@@ -29,6 +32,6 @@ export function billTextCase(id='read_bill_text',{defaultCongress=119,request}={
  const transport={origin,maxRequestMs:1000,maxResponseBytes:1048576,async getCredentials(pins){credentialCalls.push(pins);const {input,deadlineMs,signal,...proof}=pins;
   const receipt={...structuredClone(proof),bearerToken:'SYNTHETIC_NATIVE_USER',serviceSecret:'SYNTHETIC_INTERNAL_SERVICE',expiresAtMs:deadlineMs};state.credentialMutator?.(receipt);return receipt;},
   async fetchImpl(url,options){const body=JSON.parse(options.body);wire.push({url,options,body});const value=native(body);state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):new Response(JSON.stringify(value),{headers:{'content-type':'application/json'}});}};
- const call=(request=args,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(request,context);return {input:normalized.input,request,authority:current,argumentsSha256:normalized.argumentsSha256,normalizationContext:context};};
+ const call=(request=args,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(request,context);return {input:normalized.input,request,authority:readContext(current),argumentsSha256:normalized.argumentsSha256,normalizationContext:context};};
  return {family:'bill-text',operation,contract,authority,binding:f.binding,claims,subject,state,now,normalizationContext,arguments:args,transport,wire,credentialCalls,call,native};
 }

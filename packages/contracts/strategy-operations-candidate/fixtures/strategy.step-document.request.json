@@ -74,15 +74,9 @@
       }
     ]
   },
-  "delegation": {
-    "ref": "00000000-0000-4000-8000-000000000008",
-    "revision": "synthetic-revision",
-    "issuedAtMs": 1792065599000,
-    "absoluteExpiresAtMs": 1792151999000
-  },
   "requestedAtMs": 1792065600000,
   "originalExpiresAtMs": 1792066500000,
-  "inputSha256": "b0855e231b3c8363626b7686db44dd8cc9c49a6018657ea343108ac78a5d9d73",
+  "inputSha256": "f0ef2320e39e61f18edcf005233382b3c0ea3eb3ab17a7adcb9f45aad8219010",
   "input": {
     "kind": "workspace_draft",
     "strategyType": "authorization",

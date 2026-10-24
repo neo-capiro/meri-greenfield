@@ -80,6 +80,155 @@ var require_equal = __commonJS({
   }
 });
 
+// node_modules/canonicalize/lib/canonicalize.js
+function serializeString(value) {
+  if (!value.isWellFormed()) {
+    throw new Error("Lone surrogate is not allowed");
+  }
+  return JSON.stringify(value);
+}
+function serializePrimitive(value) {
+  switch (typeof value) {
+    case "number":
+      if (isNaN(value)) {
+        throw new Error("NaN is not allowed");
+      }
+      if (!isFinite(value)) {
+        throw new Error("Infinity is not allowed");
+      }
+      return JSON.stringify(value);
+    case "string":
+      return serializeString(value);
+    case "boolean":
+      return value ? "true" : "false";
+    default:
+      return JSON.stringify(value);
+  }
+}
+function enterValue(value, seen) {
+  let wrappers = null;
+  while (value !== null && typeof value === "object" && typeof value.toJSON === "function") {
+    if (seen.has(value)) {
+      throw new Error("Circular reference detected");
+    }
+    seen.add(value);
+    (wrappers ??= []).push(value);
+    value = value.toJSON();
+  }
+  if (value instanceof Number || value instanceof String || value instanceof Boolean) {
+    value = value.valueOf();
+  }
+  if (value === null || typeof value !== "object") {
+    if (wrappers !== null) {
+      for (const wrapper of wrappers) seen.delete(wrapper);
+    }
+    return serializePrimitive(value);
+  }
+  if (seen.has(value)) {
+    throw new Error("Circular reference detected");
+  }
+  seen.add(value);
+  return {
+    container: value,
+    // null marks an array frame; object frames carry their sorted keys.
+    // `sort()`'s default comparator orders by UTF-16 code unit, which is the
+    // order JCS requires.
+    keys: Array.isArray(value) ? null : Object.keys(value).sort(),
+    // Next child to serialize; the frame resumes here after a nested
+    // container's subtree completes.
+    index: 0,
+    // Whether no member has been emitted yet (controls comma placement).
+    first: true,
+    // toJSON wrappers to release from `seen` when this frame completes.
+    wrappers
+  };
+}
+function canonicalize(object) {
+  if (object === null || typeof object !== "object") {
+    return serializePrimitive(object);
+  }
+  const seen = /* @__PURE__ */ new Set();
+  const root = enterValue(object, seen);
+  if (typeof root !== "object") {
+    return root;
+  }
+  let result = root.keys === null ? "[" : "{";
+  const stack = [root];
+  outer:
+    while (stack.length > 0) {
+      const frame = stack[stack.length - 1];
+      const container = frame.container;
+      if (frame.keys === null) {
+        while (frame.index < container.length) {
+          const i = frame.index++;
+          if (i > 0) {
+            result += ",";
+          }
+          const element = container[i];
+          const value = element === void 0 || typeof element === "symbol" || typeof element === "function" ? null : element;
+          if (value === null || typeof value !== "object") {
+            result += serializePrimitive(value);
+            continue;
+          }
+          const child = enterValue(value, seen);
+          if (typeof child !== "object") {
+            result += child === void 0 ? "null" : child;
+            continue;
+          }
+          result += child.keys === null ? "[" : "{";
+          stack.push(child);
+          continue outer;
+        }
+        result += "]";
+      } else {
+        const keys = frame.keys;
+        while (frame.index < keys.length) {
+          const key = keys[frame.index++];
+          const value = container[key];
+          if (value === void 0 || typeof value === "symbol" || typeof value === "function") {
+            continue;
+          }
+          if (value === null || typeof value !== "object") {
+            if (frame.first) {
+              frame.first = false;
+            } else {
+              result += ",";
+            }
+            result += serializeString(key) + ":" + serializePrimitive(value);
+            continue;
+          }
+          const child = enterValue(value, seen);
+          if (child === void 0) {
+            continue;
+          }
+          if (frame.first) {
+            frame.first = false;
+          } else {
+            result += ",";
+          }
+          result += serializeString(key) + ":";
+          if (typeof child !== "object") {
+            result += child;
+            continue;
+          }
+          result += child.keys === null ? "[" : "{";
+          stack.push(child);
+          continue outer;
+        }
+        result += "}";
+      }
+      seen.delete(container);
+      if (frame.wrappers !== null) {
+        for (const wrapper of frame.wrappers) seen.delete(wrapper);
+      }
+      stack.pop();
+    }
+  return result;
+}
+
+// artifacts-0.2/artifact-formats.mjs
+var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
+
 // document-application/boundary.mjs
 var errors = /* @__PURE__ */ new WeakSet();
 var DocumentResponseError = class extends Error {
@@ -150,7 +299,7 @@ async function digest(bytes2) {
 // initial-input-generated:./generated-validator.mjs
 var validateAllocatedResponse = validate27;
 var schema33 = { "type": "object", "properties": { "allocation": { "$ref": "#/$defs/ConversationInitialInputAllocation" }, "state": { "enum": ["RESERVED", "ACCEPTED"] }, "created": { "type": "boolean" } }, "required": ["allocation", "state", "created"], "additionalProperties": false };
-var schema34 = { "type": "object", "properties": { "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "maxItems": 100, "uniqueItems": true }, "versions": { "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc" }, "selectedClientId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "allocatedAtMs": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "expiresAtMs": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 } }, "required": ["binding", "scopes", "versions", "selectedClientId", "requestId", "inputSha256", "requestSha256", "allocatedAtMs", "expiresAtMs"], "additionalProperties": false };
+var schema34 = { "type": "object", "properties": { "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "maxItems": 100, "uniqueItems": true }, "versions": { "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc" }, "selectedClientId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "allocatedAtMs": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "expiresAtMs": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "modelSelection": { "type": "object", "properties": { "provider": { "enum": ["bedrock", "claude-api"] }, "modelId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, "effort": { "anyOf": [{ "type": "null" }, { "type": "string", "enum": ["low", "medium", "high", "xhigh", "max"] }] } }, "required": ["provider", "modelId", "effort"], "additionalProperties": false } }, "required": ["binding", "scopes", "versions", "selectedClientId", "requestId", "inputSha256", "requestSha256", "allocatedAtMs", "expiresAtMs"], "additionalProperties": false };
 var schema36 = { "type": "object", "properties": { "tenantId": { "type": "string", "minLength": 1, "maxLength": 128 }, "kind": { "type": "string", "enum": ["tenant", "client", "mailbox", "memory", "document", "private-user", "public"] }, "resourceId": { "type": "string", "minLength": 1, "maxLength": 256 }, "policyRevision": { "type": "string", "minLength": 1, "maxLength": 128 } }, "required": ["tenantId", "kind", "resourceId", "policyRevision"], "additionalProperties": false };
 var func1 = Object.prototype.hasOwnProperty;
 var func2 = require_ucs2length().default;
@@ -160,6 +309,7 @@ var pattern4 = new RegExp("^sha256:[a-f0-9]{64}$", "u");
 var pattern5 = new RegExp("^[0-9]+\\.[0-9]+\\.[0-9]+$", "u");
 var pattern7 = new RegExp("^[a-f0-9]{64}$", "u");
 var pattern8 = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "u");
+var pattern12 = new RegExp("^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$", "u");
 function validate23(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -686,15 +836,62 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                 if (data.selectedClientId !== void 0) {
                   let data21 = data.selectedClientId;
                   const _errs48 = errors2;
-                  if (errors2 === _errs48) {
+                  const _errs49 = errors2;
+                  let valid9 = false;
+                  const _errs50 = errors2;
+                  if (errors2 === _errs50) {
                     if (typeof data21 === "string") {
                       if (!pattern8.test(data21)) {
-                        validate23.errors = [{ instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
-                        return false;
+                        const err0 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf/0/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                        if (vErrors === null) {
+                          vErrors = [err0];
+                        } else {
+                          vErrors.push(err0);
+                        }
+                        errors2++;
                       }
                     } else {
-                      validate23.errors = [{ instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                      return false;
+                      const err1 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf/0/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                      if (vErrors === null) {
+                        vErrors = [err1];
+                      } else {
+                        vErrors.push(err1);
+                      }
+                      errors2++;
+                    }
+                  }
+                  var _valid0 = _errs50 === errors2;
+                  valid9 = valid9 || _valid0;
+                  const _errs52 = errors2;
+                  if (data21 !== null) {
+                    const err2 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf/1/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                    if (vErrors === null) {
+                      vErrors = [err2];
+                    } else {
+                      vErrors.push(err2);
+                    }
+                    errors2++;
+                  }
+                  var _valid0 = _errs52 === errors2;
+                  valid9 = valid9 || _valid0;
+                  if (!valid9) {
+                    const err3 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/properties/selectedClientId/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
+                    if (vErrors === null) {
+                      vErrors = [err3];
+                    } else {
+                      vErrors.push(err3);
+                    }
+                    errors2++;
+                    validate23.errors = vErrors;
+                    return false;
+                  } else {
+                    errors2 = _errs49;
+                    if (vErrors !== null) {
+                      if (_errs49) {
+                        vErrors.length = _errs49;
+                      } else {
+                        vErrors = null;
+                      }
                     }
                   }
                   var valid0 = _errs48 === errors2;
@@ -704,8 +901,8 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                 if (valid0) {
                   if (data.requestId !== void 0) {
                     let data22 = data.requestId;
-                    const _errs50 = errors2;
-                    if (errors2 === _errs50) {
+                    const _errs54 = errors2;
+                    if (errors2 === _errs54) {
                       if (typeof data22 === "string") {
                         if (!pattern8.test(data22)) {
                           validate23.errors = [{ instancePath: instancePath + "/requestId", schemaPath: "#/properties/requestId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
@@ -716,15 +913,15 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                         return false;
                       }
                     }
-                    var valid0 = _errs50 === errors2;
+                    var valid0 = _errs54 === errors2;
                   } else {
                     var valid0 = true;
                   }
                   if (valid0) {
                     if (data.inputSha256 !== void 0) {
                       let data23 = data.inputSha256;
-                      const _errs52 = errors2;
-                      if (errors2 === _errs52) {
+                      const _errs56 = errors2;
+                      if (errors2 === _errs56) {
                         if (typeof data23 === "string") {
                           if (!pattern7.test(data23)) {
                             validate23.errors = [{ instancePath: instancePath + "/inputSha256", schemaPath: "#/properties/inputSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
@@ -735,15 +932,15 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                           return false;
                         }
                       }
-                      var valid0 = _errs52 === errors2;
+                      var valid0 = _errs56 === errors2;
                     } else {
                       var valid0 = true;
                     }
                     if (valid0) {
                       if (data.requestSha256 !== void 0) {
                         let data24 = data.requestSha256;
-                        const _errs54 = errors2;
-                        if (errors2 === _errs54) {
+                        const _errs58 = errors2;
+                        if (errors2 === _errs58) {
                           if (typeof data24 === "string") {
                             if (!pattern7.test(data24)) {
                               validate23.errors = [{ instancePath: instancePath + "/requestSha256", schemaPath: "#/properties/requestSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
@@ -754,19 +951,19 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                             return false;
                           }
                         }
-                        var valid0 = _errs54 === errors2;
+                        var valid0 = _errs58 === errors2;
                       } else {
                         var valid0 = true;
                       }
                       if (valid0) {
                         if (data.allocatedAtMs !== void 0) {
                           let data25 = data.allocatedAtMs;
-                          const _errs56 = errors2;
+                          const _errs60 = errors2;
                           if (!(typeof data25 == "number" && (!(data25 % 1) && !isNaN(data25)) && isFinite(data25))) {
                             validate23.errors = [{ instancePath: instancePath + "/allocatedAtMs", schemaPath: "#/properties/allocatedAtMs/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
                             return false;
                           }
-                          if (errors2 === _errs56) {
+                          if (errors2 === _errs60) {
                             if (typeof data25 == "number" && isFinite(data25)) {
                               if (data25 > 9007199254740991 || isNaN(data25)) {
                                 validate23.errors = [{ instancePath: instancePath + "/allocatedAtMs", schemaPath: "#/properties/allocatedAtMs/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" }];
@@ -779,19 +976,19 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                               }
                             }
                           }
-                          var valid0 = _errs56 === errors2;
+                          var valid0 = _errs60 === errors2;
                         } else {
                           var valid0 = true;
                         }
                         if (valid0) {
                           if (data.expiresAtMs !== void 0) {
                             let data26 = data.expiresAtMs;
-                            const _errs58 = errors2;
+                            const _errs62 = errors2;
                             if (!(typeof data26 == "number" && (!(data26 % 1) && !isNaN(data26)) && isFinite(data26))) {
                               validate23.errors = [{ instancePath: instancePath + "/expiresAtMs", schemaPath: "#/properties/expiresAtMs/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
                               return false;
                             }
-                            if (errors2 === _errs58) {
+                            if (errors2 === _errs62) {
                               if (typeof data26 == "number" && isFinite(data26)) {
                                 if (data26 > 9007199254740991 || isNaN(data26)) {
                                   validate23.errors = [{ instancePath: instancePath + "/expiresAtMs", schemaPath: "#/properties/expiresAtMs/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" }];
@@ -804,9 +1001,136 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                                 }
                               }
                             }
-                            var valid0 = _errs58 === errors2;
+                            var valid0 = _errs62 === errors2;
                           } else {
                             var valid0 = true;
+                          }
+                          if (valid0) {
+                            if (data.modelSelection !== void 0) {
+                              let data27 = data.modelSelection;
+                              const _errs64 = errors2;
+                              if (errors2 === _errs64) {
+                                if (data27 && typeof data27 == "object" && !Array.isArray(data27)) {
+                                  let missing4;
+                                  if (data27.provider === void 0 && (missing4 = "provider") || data27.modelId === void 0 && (missing4 = "modelId") || data27.effort === void 0 && (missing4 = "effort")) {
+                                    validate23.errors = [{ instancePath: instancePath + "/modelSelection", schemaPath: "#/properties/modelSelection/required", keyword: "required", params: { missingProperty: missing4 }, message: "must have required property '" + missing4 + "'" }];
+                                    return false;
+                                  } else {
+                                    const _errs66 = errors2;
+                                    for (const key4 in data27) {
+                                      if (!(key4 === "provider" || key4 === "modelId" || key4 === "effort")) {
+                                        validate23.errors = [{ instancePath: instancePath + "/modelSelection", schemaPath: "#/properties/modelSelection/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key4 }, message: "must NOT have additional properties" }];
+                                        return false;
+                                        break;
+                                      }
+                                    }
+                                    if (_errs66 === errors2) {
+                                      if (data27.provider !== void 0) {
+                                        let data28 = data27.provider;
+                                        const _errs67 = errors2;
+                                        if (!(data28 === "bedrock" || data28 === "claude-api")) {
+                                          validate23.errors = [{ instancePath: instancePath + "/modelSelection/provider", schemaPath: "#/properties/modelSelection/properties/provider/enum", keyword: "enum", params: { allowedValues: schema34.properties.modelSelection.properties.provider.enum }, message: "must be equal to one of the allowed values" }];
+                                          return false;
+                                        }
+                                        var valid10 = _errs67 === errors2;
+                                      } else {
+                                        var valid10 = true;
+                                      }
+                                      if (valid10) {
+                                        if (data27.modelId !== void 0) {
+                                          let data29 = data27.modelId;
+                                          const _errs68 = errors2;
+                                          if (errors2 === _errs68) {
+                                            if (typeof data29 === "string") {
+                                              if (!pattern12.test(data29)) {
+                                                validate23.errors = [{ instancePath: instancePath + "/modelSelection/modelId", schemaPath: "#/properties/modelSelection/properties/modelId/pattern", keyword: "pattern", params: { pattern: "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, message: 'must match pattern "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$"' }];
+                                                return false;
+                                              }
+                                            } else {
+                                              validate23.errors = [{ instancePath: instancePath + "/modelSelection/modelId", schemaPath: "#/properties/modelSelection/properties/modelId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                              return false;
+                                            }
+                                          }
+                                          var valid10 = _errs68 === errors2;
+                                        } else {
+                                          var valid10 = true;
+                                        }
+                                        if (valid10) {
+                                          if (data27.effort !== void 0) {
+                                            let data30 = data27.effort;
+                                            const _errs70 = errors2;
+                                            const _errs71 = errors2;
+                                            let valid11 = false;
+                                            const _errs72 = errors2;
+                                            if (data30 !== null) {
+                                              const err4 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/properties/modelSelection/properties/effort/anyOf/0/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                                              if (vErrors === null) {
+                                                vErrors = [err4];
+                                              } else {
+                                                vErrors.push(err4);
+                                              }
+                                              errors2++;
+                                            }
+                                            var _valid1 = _errs72 === errors2;
+                                            valid11 = valid11 || _valid1;
+                                            const _errs74 = errors2;
+                                            if (typeof data30 !== "string") {
+                                              const err5 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/properties/modelSelection/properties/effort/anyOf/1/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                              if (vErrors === null) {
+                                                vErrors = [err5];
+                                              } else {
+                                                vErrors.push(err5);
+                                              }
+                                              errors2++;
+                                            }
+                                            if (!(data30 === "low" || data30 === "medium" || data30 === "high" || data30 === "xhigh" || data30 === "max")) {
+                                              const err6 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/properties/modelSelection/properties/effort/anyOf/1/enum", keyword: "enum", params: { allowedValues: schema34.properties.modelSelection.properties.effort.anyOf[1].enum }, message: "must be equal to one of the allowed values" };
+                                              if (vErrors === null) {
+                                                vErrors = [err6];
+                                              } else {
+                                                vErrors.push(err6);
+                                              }
+                                              errors2++;
+                                            }
+                                            var _valid1 = _errs74 === errors2;
+                                            valid11 = valid11 || _valid1;
+                                            if (!valid11) {
+                                              const err7 = { instancePath: instancePath + "/modelSelection/effort", schemaPath: "#/properties/modelSelection/properties/effort/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
+                                              if (vErrors === null) {
+                                                vErrors = [err7];
+                                              } else {
+                                                vErrors.push(err7);
+                                              }
+                                              errors2++;
+                                              validate23.errors = vErrors;
+                                              return false;
+                                            } else {
+                                              errors2 = _errs71;
+                                              if (vErrors !== null) {
+                                                if (_errs71) {
+                                                  vErrors.length = _errs71;
+                                                } else {
+                                                  vErrors = null;
+                                                }
+                                              }
+                                            }
+                                            var valid10 = _errs70 === errors2;
+                                          } else {
+                                            var valid10 = true;
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                } else {
+                                  validate23.errors = [{ instancePath: instancePath + "/modelSelection", schemaPath: "#/properties/modelSelection/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                                  return false;
+                                }
+                              }
+                              var valid0 = _errs64 === errors2;
+                            } else {
+                              var valid0 = true;
+                            }
                           }
                         }
                       }
@@ -900,7 +1224,7 @@ function validate27(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate27.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateError = validate29;
-var schema39 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "INVALID_REQUEST", "SESSION_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "INITIAL_INPUT_CONFLICT", "INITIAL_INPUT_ALREADY_EXISTS", "INITIAL_INPUT_EXPIRED", "DEADLINE", "CANCELLED", "INITIAL_INPUT_REQUIRED", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_UNAVAILABLE", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN"] } }, "required": ["code", "outcome"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
+var schema39 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "INVALID_REQUEST", "SESSION_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "INITIAL_INPUT_CONFLICT", "INITIAL_INPUT_ALREADY_EXISTS", "INITIAL_INPUT_EXPIRED", "DEADLINE", "CANCELLED", "INITIAL_INPUT_REQUIRED", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_UNAVAILABLE", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN"] } }, "required": ["code", "outcome"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
 function validate29(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -949,7 +1273,7 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
                     if (data0.code !== void 0) {
                       let data1 = data0.code;
                       const _errs5 = errors2;
-                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "INVALID_REQUEST" || data1 === "SESSION_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "INITIAL_INPUT_CONFLICT" || data1 === "INITIAL_INPUT_ALREADY_EXISTS" || data1 === "INITIAL_INPUT_EXPIRED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "INITIAL_INPUT_REQUIRED" || data1 === "INITIAL_INPUT_CORRUPT" || data1 === "INITIAL_INPUT_UNAVAILABLE" || data1 === "REQUEST_TOO_LARGE" || data1 === "UNSUPPORTED_MEDIA_TYPE")) {
+                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "INVALID_REQUEST" || data1 === "SESSION_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "INITIAL_INPUT_CONFLICT" || data1 === "INITIAL_INPUT_ALREADY_EXISTS" || data1 === "INITIAL_INPUT_EXPIRED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "INITIAL_INPUT_REQUIRED" || data1 === "INITIAL_INPUT_CORRUPT" || data1 === "INITIAL_INPUT_UNAVAILABLE" || data1 === "REQUEST_TOO_LARGE" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "MODEL_SELECTION_UNAVAILABLE" || data1 === "MODEL_SETTINGS_UNAVAILABLE")) {
                         validate29.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/enum", keyword: "enum", params: { allowedValues: schema39.properties.error.properties.code.enum }, message: "must be equal to one of the allowed values" }];
                         return false;
                       }
@@ -990,152 +1314,6 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate29.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 
-// node_modules/canonicalize/lib/canonicalize.js
-function serializeString(value) {
-  if (!value.isWellFormed()) {
-    throw new Error("Lone surrogate is not allowed");
-  }
-  return JSON.stringify(value);
-}
-function serializePrimitive(value) {
-  switch (typeof value) {
-    case "number":
-      if (isNaN(value)) {
-        throw new Error("NaN is not allowed");
-      }
-      if (!isFinite(value)) {
-        throw new Error("Infinity is not allowed");
-      }
-      return JSON.stringify(value);
-    case "string":
-      return serializeString(value);
-    case "boolean":
-      return value ? "true" : "false";
-    default:
-      return JSON.stringify(value);
-  }
-}
-function enterValue(value, seen) {
-  let wrappers = null;
-  while (value !== null && typeof value === "object" && typeof value.toJSON === "function") {
-    if (seen.has(value)) {
-      throw new Error("Circular reference detected");
-    }
-    seen.add(value);
-    (wrappers ??= []).push(value);
-    value = value.toJSON();
-  }
-  if (value instanceof Number || value instanceof String || value instanceof Boolean) {
-    value = value.valueOf();
-  }
-  if (value === null || typeof value !== "object") {
-    if (wrappers !== null) {
-      for (const wrapper of wrappers) seen.delete(wrapper);
-    }
-    return serializePrimitive(value);
-  }
-  if (seen.has(value)) {
-    throw new Error("Circular reference detected");
-  }
-  seen.add(value);
-  return {
-    container: value,
-    // null marks an array frame; object frames carry their sorted keys.
-    // `sort()`'s default comparator orders by UTF-16 code unit, which is the
-    // order JCS requires.
-    keys: Array.isArray(value) ? null : Object.keys(value).sort(),
-    // Next child to serialize; the frame resumes here after a nested
-    // container's subtree completes.
-    index: 0,
-    // Whether no member has been emitted yet (controls comma placement).
-    first: true,
-    // toJSON wrappers to release from `seen` when this frame completes.
-    wrappers
-  };
-}
-function canonicalize(object) {
-  if (object === null || typeof object !== "object") {
-    return serializePrimitive(object);
-  }
-  const seen = /* @__PURE__ */ new Set();
-  const root = enterValue(object, seen);
-  if (typeof root !== "object") {
-    return root;
-  }
-  let result = root.keys === null ? "[" : "{";
-  const stack = [root];
-  outer:
-    while (stack.length > 0) {
-      const frame = stack[stack.length - 1];
-      const container = frame.container;
-      if (frame.keys === null) {
-        while (frame.index < container.length) {
-          const i = frame.index++;
-          if (i > 0) {
-            result += ",";
-          }
-          const element = container[i];
-          const value = element === void 0 || typeof element === "symbol" || typeof element === "function" ? null : element;
-          if (value === null || typeof value !== "object") {
-            result += serializePrimitive(value);
-            continue;
-          }
-          const child = enterValue(value, seen);
-          if (typeof child !== "object") {
-            result += child === void 0 ? "null" : child;
-            continue;
-          }
-          result += child.keys === null ? "[" : "{";
-          stack.push(child);
-          continue outer;
-        }
-        result += "]";
-      } else {
-        const keys = frame.keys;
-        while (frame.index < keys.length) {
-          const key = keys[frame.index++];
-          const value = container[key];
-          if (value === void 0 || typeof value === "symbol" || typeof value === "function") {
-            continue;
-          }
-          if (value === null || typeof value !== "object") {
-            if (frame.first) {
-              frame.first = false;
-            } else {
-              result += ",";
-            }
-            result += serializeString(key) + ":" + serializePrimitive(value);
-            continue;
-          }
-          const child = enterValue(value, seen);
-          if (child === void 0) {
-            continue;
-          }
-          if (frame.first) {
-            frame.first = false;
-          } else {
-            result += ",";
-          }
-          result += serializeString(key) + ":";
-          if (typeof child !== "object") {
-            result += child;
-            continue;
-          }
-          result += child.keys === null ? "[" : "{";
-          stack.push(child);
-          continue outer;
-        }
-        result += "}";
-      }
-      seen.delete(container);
-      if (frame.wrappers !== null) {
-        for (const wrapper of frame.wrappers) seen.delete(wrapper);
-      }
-      stack.pop();
-    }
-  return result;
-}
-
 // conversation-initial-input/semantics.mjs
 import { receiveConversationInputRequest, receiveConversationInputResponse } from "./conversation-input.mjs";
 
@@ -1167,7 +1345,9 @@ var initialInputErrorStatuses = freeze({
   INITIAL_INPUT_CORRUPT: [503],
   INITIAL_INPUT_UNAVAILABLE: [503],
   REQUEST_TOO_LARGE: [413],
-  UNSUPPORTED_MEDIA_TYPE: [415]
+  UNSUPPORTED_MEDIA_TYPE: [415],
+  MODEL_SELECTION_UNAVAILABLE: [409],
+  MODEL_SETTINGS_UNAVAILABLE: [503]
 });
 var initialInputUnknownCodes = Object.freeze(["DEADLINE", "CANCELLED", "INITIAL_INPUT_UNAVAILABLE", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_REQUIRED"]);
 var initialInputErrorOutcomes = freeze(Object.fromEntries(Object.keys(initialInputErrorStatuses).map((code) => [code, initialInputUnknownCodes.includes(code) ? "UNKNOWN" : "NOT_DISPATCHED"])));
@@ -1214,10 +1394,10 @@ function initialInputContext(value) {
     if (keys.length !== contextKeys.length || keys.some((key) => typeof key !== "string" || !contextKeys.includes(key))) fail2("INITIAL_INPUT_CONTEXT_INVALID");
     for (const key of contextKeys) {
       const d = descriptors[key];
-      if (!d || !d.enumerable || !Object.hasOwn(d, "value") || typeof d.value !== "string") fail2("INITIAL_INPUT_CONTEXT_INVALID");
+      if (!d || !d.enumerable || !Object.hasOwn(d, "value") || typeof d.value !== "string" && !(key === "clientId" && d.value === null)) fail2("INITIAL_INPUT_CONTEXT_INVALID");
       context[key] = d.value;
     }
-    if (["tenantId", "actorId"].some((key) => !context[key] || context[key].length > 128) || ["conversationId", "runId", "clientId"].some((key) => !uuid.test(context[key]))) fail2("INITIAL_INPUT_CONTEXT_INVALID");
+    if (["tenantId", "actorId"].some((key) => !context[key] || context[key].length > 128) || ["conversationId", "runId"].some((key) => !uuid.test(context[key])) || context.clientId !== null && !uuid.test(context.clientId)) fail2("INITIAL_INPUT_CONTEXT_INVALID");
     return Object.freeze(context);
   } catch (error) {
     if (error instanceof ConversationInitialInputResponseError) throw error;
@@ -1230,7 +1410,7 @@ function active(allocation, now) {
 }
 function facts(allocation) {
   const { binding, scopes, selectedClientId, allocatedAtMs, expiresAtMs } = allocation;
-  if (binding.writerFence !== 1 || !Number.isSafeInteger(allocatedAtMs) || allocatedAtMs < 0 || !Number.isSafeInteger(expiresAtMs) || expiresAtMs <= allocatedAtMs || scopes.some((scope) => scope.tenantId !== binding.tenantId || scope.policyRevision !== scopes[0].policyRevision) || new Set(scopes.map((scope) => canonicalize(scope))).size !== scopes.length || !scopes.some((scope) => scope.kind === "client" && scope.resourceId === selectedClientId)) fail2("INITIAL_INPUT_FACTS_MISMATCH");
+  if (binding.writerFence !== 1 || !Number.isSafeInteger(allocatedAtMs) || allocatedAtMs < 0 || !Number.isSafeInteger(expiresAtMs) || expiresAtMs <= allocatedAtMs || scopes.some((scope) => scope.tenantId !== binding.tenantId || scope.policyRevision !== scopes[0].policyRevision) || new Set(scopes.map((scope) => canonicalize(scope))).size !== scopes.length || (selectedClientId === null ? scopes.length !== 1 || scopes[0].kind !== "private-user" || scopes[0].resourceId !== binding.actorId : !scopes.some((scope) => scope.kind === "client" && scope.resourceId === selectedClientId))) fail2("INITIAL_INPUT_FACTS_MISMATCH");
 }
 function contextMatches(allocation, context) {
   const binding = allocation.binding;
@@ -1240,7 +1420,7 @@ async function correlateInitialInputReceipt(receipt, request, { now = Date.now }
   const allocation = receipt.allocation;
   facts(allocation);
   if (receipt.created && receipt.state !== "RESERVED") fail2("INITIAL_INPUT_STATE_MISMATCH");
-  if (allocation.requestId !== request.requestId || allocation.inputSha256 !== await hash(request)) fail2("INITIAL_INPUT_REQUEST_MISMATCH");
+  if (allocation.requestId !== request.requestId || allocation.inputSha256 !== await hash(request) || request.modelSelection !== void 0 && !same(allocation.modelSelection, request.modelSelection)) fail2("INITIAL_INPUT_REQUEST_MISMATCH");
   active(allocation, now);
   return receipt;
 }
@@ -1278,7 +1458,7 @@ async function receiveAllocatedConversationInputResponse(status, utf8Bytes, requ
   const receipt = await receiveConversationInputResponse(status, utf8Bytes, request, expectedContext);
   if (Object.hasOwn(receipt, "error")) return receipt;
   const allocation = proof.allocation;
-  if (!same(receipt.run.binding, allocation.binding) || !same(receipt.run.scopes, allocation.scopes) || !same(receipt.run.versions, allocation.versions) || receipt.request.requestId !== allocation.requestId || await hash(receipt.request) !== allocation.requestSha256) fail2("INITIAL_INPUT_ADMISSION_MISMATCH");
+  if (!same(receipt.run.binding, allocation.binding) || !same(receipt.run.scopes, allocation.scopes) || !same(receipt.run.versions, allocation.versions) || receipt.request.requestId !== allocation.requestId || await hash(receipt.request) !== allocation.requestSha256 || !same(receipt.request.modelSelection ?? null, allocation.modelSelection ?? null)) fail2("INITIAL_INPUT_ADMISSION_MISMATCH");
   active(allocation, Date.now);
   return receipt;
 }

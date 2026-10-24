@@ -2,19 +2,20 @@
 import {readFileSync} from 'node:fs';
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
-import {validateShape as validatePublicShape, canonicalSha256} from '../validate.mjs';
+import {validateShape as validatePublicShape, canonicalSha256, assertProposalIntegrity} from '../validate.mjs';
 import {snapshotOperationData} from '../retrieval-0.2/operation-contracts.mjs';
 import {createTaskUpdateValidators} from './task-update-validation.mjs';
 import {createTaskCreateValidators} from './task-create-validation.mjs';
 import {createArtifactFileValidators} from './artifact-file-validation.mjs';
 import {createMemoryProposeValidators} from './memory-propose-validation.mjs';
+import {createDocumentDraftValidators} from './document-draft-validation.mjs';
 
 export const contractVersion = '0.2.0';
 const ajv = new Ajv({strict: true, allErrors: true});
 addFormats(ajv);
 const readSchema = relative => JSON.parse(readFileSync(new URL(relative, import.meta.url)));
 ajv.addSchema(readSchema('../meri.schema.json'));
-const schemas = ['task-create', 'task-update', 'artifact-file', 'memory-propose'].map(group => readSchema(`./${group}.schema.json`));
+const schemas = ['task-create', 'task-update', 'artifact-file', 'memory-propose', 'document-draft'].map(group => readSchema(`./${group}.schema.json`));
 for (const schema of schemas) ajv.addSchema(schema);
 const validators = new Map();
 for (const schema of schemas) {
@@ -44,3 +45,13 @@ export const {normalizeMemoryProposeInput, assertMemoryProposeCommand, assertMem
 export const taskUpdateValidators = createTaskUpdateValidators(dependencies);
 export const {normalizeTaskUpdateInput, assertTaskUpdateCommand, assertTaskUpdateProposal,
   assertTaskUpdateExecution, assertTaskUpdateResult} = taskUpdateValidators;
+
+export const {normalizeDocumentDraftInput,assertDocumentDraftCommand,assertDocumentDraftProposal} =
+  createDocumentDraftValidators(dependencies);
+/** Existing stored proposals plus the explicit native document command; no new authority is inferred. */
+export function assertNativeApprovalProposal(value) {
+  const proposal=snapshotOperationData(value);
+  if(proposal?.command?.action==='document.draft')return assertDocumentDraftProposal(proposal,
+    {binding:proposal.command.binding,scopes:proposal.command.scopes});
+  assertProposalIntegrity(proposal);return proposal;
+}

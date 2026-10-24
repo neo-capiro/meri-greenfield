@@ -4,9 +4,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {registerHooks} from 'node:module';
 import {setImmediate as nextTurn} from 'node:timers/promises';
-import {createActionSessionOwner} from '../../control/action-host/session/owner.mjs';
+import {createExecutionSessions} from '../execution-sessions.mjs';
+import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {createConversationService} from '../../control/conversations/service.mjs';
-import {createConversationLifecycleService,taskControlPage} from '../../control/conversations/lifecycle/service.mjs';
+import {createConversationLifecycleService} from '../../control/conversations/lifecycle/service.mjs';
 import {composeStartup,subjectOf} from '../../control/retention/test/fixture.mjs';
 import {subjectKey} from '../../control/retention/boundary.mjs';
 import {binding as originalBinding,scopes as originalScopes,versions,id} from '../../control/conversations/test/store-fixture.mjs';
@@ -21,7 +22,7 @@ if(process.env.MERI_DIAGNOSTIC_IMPORT_STUBS==='1')registerHooks({resolve(specifi
 const {createWorkerRunApplication}=await import('../worker-http.mjs');
 const deferred=()=>Promise.withResolvers();
 
-async function fixture(t,{requestMs=2000}={}){
+async function fixture(t,{requestMs=2000,executionMs=60000}={}){
  const f=composeStartup(),subject=subjectOf();await f.startup.start();
  const binding={...originalBinding,tenantId:subject.tenantId,actorId:subject.ownerActorId,conversationId:subject.subjectId};
  const scopes=originalScopes.map(scope=>({...scope,tenantId:binding.tenantId}));
@@ -36,52 +37,48 @@ async function fixture(t,{requestMs=2000}={}){
    }),options);
   },
  };
- const principal={tenantId:binding.tenantId,actorId:binding.actorId,role:'standard_user',permissions:[],clientIds:[id(5)],membershipRevision:'member'};
- const sessions=createActionSessionOwner({mode:'process-local',now:Date.now,limits:{maxSessions:4,maxRequestMs:requestMs,maxTtlMs:60000,maxFactBytes:65536},
-  verifyIdentity(){const at=Date.now();return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'identity',checkedAtMs:at,expiresAtMs:at+60000};},
-  resolveContext({identity}){const at=Date.now();return {identitySha256:hash(identity),binding,scopes,selectedClientId:id(5),contextRevision:'context',checkedAtMs:at,expiresAtMs:at+60000};},
-  membership:{admit:()=>({principal,expiresAtMs:Date.now()+60000}),recheck:()=>principal},
- });
- t.after(()=>sessions.close());
+ const adapters=[];
  const saved={run:{binding,scopes,state:'queued',versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request:{requestId:id(6),prompt:'Synthetic retained prompt',skill:null,window:null,windowRequest:null},lastSequence:1};
  const unused=()=>assert.fail('unexpected effect');
- const store={accept:unused,append(){counts.writes++;return unused();},async read(){counts.reads++;return structuredClone(saved);},
+ const store={readModelPolicy:async()=>({maxTurns:20,maxBudgetMicroUsd:2000000}),accept:unused,append(){counts.writes++;return unused();},async read(){counts.reads++;return structuredClone(saved);},
   lifecycle:{begin:unused,change:unused,get:unused,async controls(){counts.controls++;return [{controlSequence:1,commandSha256:'a'.repeat(64),command:{prompt:'Synthetic steer text'},state:'PENDING'}];},claim:unused,checkpoint:unused,readCheckpoint:unused,async execution(){counts.journal++;return {fixtureMarker:'journal-read'};},continuation:unused,cancel:unused,readStopFence:unused}};
  const dispatcher={start:unused,cancel:unused,signal:unused};
- const basic=createConversationService({sessions,store,dispatcher,versions,retention,maxRequestMs:requestMs});
- const lifecycle=createConversationLifecycleService({service:basic,store,dispatcher,sessions,retention,maxRequestMs:requestMs,reconcileOriginal:unused,checkpoints:{read:unused}});
- const service={async loadForExecution(input){const result=await lifecycle.loadForExecution(input);
-  // A trusted fixture hook observes the actual Response.json materialization point.
-  return {...result,toJSON(){counts.serialized++;state.serializeHook?.();return result;}};
- },[taskControlPage]:lifecycle[taskControlPage]};
- const native={async call(operation,input){assert.equal(operation,'worker/authorize');counts.task++;await state.taskHook?.(counts.task);
-  const at=Date.now();return {binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-native',scopes,selectedClientId:id(5),policyRevision:scopes[0].policyRevision,authorizationDecisionId:'synthetic-decision',checkedAtMs:at,expiresAtMs:state.taskExpiresAtMs??at+60000};
+ const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:'retention'},expiresAtMs:Date.now()+executionMs,runtimeSessionId:'conversation-'+hash(binding)});
+ const execution={async authenticate(input){assert.equal(input.credential,'synthetic-task');assert.deepEqual(input.binding,binding);counts.task++;await state.taskHook?.(counts.task);
+  return {execution:identity,versions,state:'queued',scopes,selectedClientId:id(5),policyRevision:scopes[0].policyRevision};
  }};
+ const createService=({credential,binding})=>{const sessions=createExecutionSessions({execution,credential,binding});adapters.push(sessions);
+  const basic=createConversationService({sessions,store,dispatcher,versions,retention,maxRequestMs:requestMs});
+  const lifecycle=createConversationLifecycleService({service:basic,store,dispatcher,sessions,retention,maxRequestMs:requestMs,reconcileOriginal:unused,checkpoints:{read:unused}});
+  return {async loadForExecution(input){const result=await lifecycle.loadForExecution(input);state.returned=true;
+   return {...result,toJSON(){counts.serialized++;state.serializeHook?.();return result;}};
+  },async nextControls(input){const result=await lifecycle.nextControls(input);state.returned=true;return result;}};
+ };
  const configuration={retention:{enabled:true},limits:{requestMs,requestBytes:131072}};
- const options={service,sessions,native,configuration,retention};
+ const options={execution,createService,configuration,retention};
  const app=createWorkerRunApplication(options);
  const request=(signal,route='load')=>new Request('https://control.synthetic.invalid/internal/conversations/'+route,{method:'POST',headers:{authorization:'Bearer synthetic-task','content-type':'application/json'},body:JSON.stringify({binding}),signal});
  const suppress=()=>f.startup.suppression.suppress({principal:f.principal,subject,reason:'Synthetic retention test'});
- return {...f,subject,binding,counts,state,sessions,options,app,request,suppress,attempted:attempted.promise,scoped:scoped.promise};
+ return {...f,subject,binding,counts,state,adapters,expiresAtMs:identity.expiresAtMs,options,app,request,suppress,attempted:attempted.promise,scoped:scoped.promise};
 }
 
-test('suppression committed during final task verification withholds the saved load response',{timeout:5000},async t=>{
- const f=await fixture(t);f.state.taskHook=async count=>{if(count===3)await f.suppress();};
+test('suppression committed during final execution verification withholds the saved load response',{timeout:5000},async t=>{
+ const f=await fixture(t);f.state.taskHook=async count=>{if(f.state.returned)await f.suppress();};
  const response=await f.app.handle(f.request()),body=await response.text();
  const projection=(await f.journal.get(subjectKey(f.subject))).state;
  t.diagnostic(JSON.stringify({status:response.status,promptPresent:body.includes('Synthetic retained prompt'),projection,counts:f.counts}));
  assert.equal(projection,'SUPPRESSED');
  assert.equal(response.status,403);
  assert.doesNotMatch(body,/Synthetic retained prompt/);
- assert.equal(f.counts.serialized,0);assert.equal(f.counts.task,3);
+ assert.equal(f.counts.serialized,0);assert.equal(f.counts.task,6);
  assert.equal(f.counts.retention,4);assert.equal(f.counts.scoped,1);assert.equal(f.counts.writes,0);
- assert.equal(f.sessions.status().sessions,0);
+ assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
 });
 
 test('earlier canonical suppression still refuses before loading saved data',{timeout:5000},async t=>{
  const f=await fixture(t);await f.suppress();const response=await f.app.handle(f.request());
  assert.equal(response.status,403);assert.equal(f.counts.reads,0);assert.equal(f.counts.serialized,0);assert.equal(f.counts.release,0);
- assert.equal(f.sessions.status().sessions,0);
+ assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
 });
 
 test('successful load serializes under its authenticated subject release fence',{timeout:5000},async t=>{
@@ -93,12 +90,12 @@ test('successful load serializes under its authenticated subject release fence',
  f.state.serializeHook=()=>assert.equal(acknowledged,false,'serialization precedes the waiting suppression acknowledgement');
  const response=await f.app.handle(f.request());assert.equal(response.status,200);
  assert.equal((await response.json()).request.prompt,'Synthetic retained prompt');await suppression;
- assert.equal(acknowledged,true);assert.equal(f.counts.task,3);assert.equal(f.counts.retention,4);
+ assert.equal(acknowledged,true);assert.equal(f.counts.task,6);assert.equal(f.counts.retention,4);
  assert.equal(f.counts.release,1);assert.equal(f.counts.scoped,1);assert.equal(f.counts.serialized,1);
  assert.equal(f.counts.reads,2);assert.equal(f.counts.journal,1);assert.equal(f.counts.writes,0);
  assert.deepEqual(f.state.releaseSubjects,[{tenantId:f.binding.tenantId,kind:'conversation',subjectId:f.binding.conversationId}]);
  assert.ok(f.state.releaseOptions.signal instanceof AbortSignal);assert.ok(Number.isSafeInteger(f.state.releaseOptions.deadlineMs));
- assert.equal(f.sessions.status().sessions,0);
+ assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
 });
 
 for(const phase of ['acquisition','scoped read'])for(const reason of ['cancel','deadline'])test(`${reason} during release ${phase} frees locks and prevents late serialization`,{timeout:5000},async t=>{
@@ -110,7 +107,7 @@ for(const phase of ['acquisition','scoped read'])for(const reason of ['cancel','
  const pending=f.app.handle(f.request(abort.signal));await (phase==='acquisition'?f.attempted:entered.promise);
  if(reason==='cancel')abort.abort();
  const response=await pending;assert.equal(response.status,408);assert.equal(f.counts.serialized,0);
- assert.doesNotMatch(await response.text(),/Synthetic retained prompt/);assert.equal(f.sessions.status().sessions,0);
+ assert.doesNotMatch(await response.text(),/Synthetic retained prompt/);assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
  if(phase==='acquisition'){held.resolve();await holder;}
  await f.suppress(); // Must acquire the same canonical subject lock after failed release.
  held.resolve();await nextTurn();assert.equal(f.counts.serialized,0);
@@ -118,20 +115,20 @@ for(const phase of ['acquisition','scoped read'])for(const reason of ['cancel','
  assert.equal((await f.journal.get(subjectKey(f.subject))).state,'SUPPRESSED');
 });
 
-test('serialization failure frees the canonical subject lock and revokes the temporary session',{timeout:5000},async t=>{
+test('serialization failure frees the canonical subject lock and has no temporary user session',{timeout:5000},async t=>{
  const f=await fixture(t);f.state.serializeHook=()=>{throw Error('synthetic serialization failure');};
  const response=await f.app.handle(f.request());assert.equal(response.status,403);
- assert.doesNotMatch(await response.text(),/Synthetic retained prompt/);assert.equal(f.sessions.status().sessions,0);
+ assert.doesNotMatch(await response.text(),/Synthetic retained prompt/);assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
  await f.suppress();assert.equal((await f.journal.get(subjectKey(f.subject))).state,'SUPPRESSED');
 });
 
 test('the final verified authority expiry bounds release acquisition',{timeout:5000},async t=>{
- const f=await fixture(t),held=deferred(),entered=deferred();t.after(()=>held.resolve());
+ const f=await fixture(t,{requestMs:2000,executionMs:150}),held=deferred(),entered=deferred();t.after(()=>held.resolve());
  const holder=f.journal.withTransition(subjectKey(f.subject),async()=>{entered.resolve();await held.promise;});await entered.promise;
- f.state.taskHook=count=>{if(count===3)f.state.taskExpiresAtMs=Date.now()+75;};
+ f.state.taskHook=()=>{};
  const response=await f.app.handle(f.request());assert.equal(response.status,408);
- assert.equal(f.state.releaseOptions.deadlineMs,f.state.taskExpiresAtMs);
- assert.equal(f.counts.scoped,0);assert.equal(f.counts.serialized,0);assert.equal(f.sessions.status().sessions,0);
+ assert.equal(f.state.releaseOptions.deadlineMs,f.expiresAtMs);
+ assert.equal(f.counts.scoped,0);assert.equal(f.counts.serialized,0);assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
  held.resolve();await holder;await f.suppress();assert.equal((await f.journal.get(subjectKey(f.subject))).state,'SUPPRESSED');
 });
 
@@ -146,15 +143,15 @@ test('declared retention requires a release gate and supplied malformed ports fa
 test('a gate without its scoped assertion cannot serialize load data',async t=>{
  const f=await fixture(t),retention={withRelease:(_subjects,release,{signal})=>release(signal)};
  const app=createWorkerRunApplication({...f.options,retention}),response=await app.handle(f.request());
- assert.equal(response.status,403);assert.equal(f.counts.serialized,0);assert.equal(f.sessions.status().sessions,0);
+ assert.equal(response.status,403);assert.equal(f.counts.serialized,0);assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
 });
 
 test('a runner control page is released under the same subject fence and withheld when suppression commits during its final verify',{timeout:5000},async t=>{
  const f=await fixture(t),page=await f.app.handle(f.request(undefined,'next-controls'));
  assert.equal(page.status,200);assert.deepEqual((await page.json()).controls.map(c=>c.command.prompt),['Synthetic steer text']);
- assert.deepEqual({task:f.counts.task,controls:f.counts.controls,release:f.counts.release,scoped:f.counts.scoped,reads:f.counts.reads},{task:2,controls:1,release:1,scoped:1,reads:0});
- assert.equal(f.sessions.status().sessions,0,'no opaque session is issued for the read');
- const g=await fixture(t);g.state.taskHook=async count=>{if(count===2)await g.suppress();};
+ assert.deepEqual({task:f.counts.task,controls:f.counts.controls,release:f.counts.release,scoped:f.counts.scoped,reads:f.counts.reads},{task:6,controls:1,release:1,scoped:1,reads:2});
+ assert.ok(f.adapters.every(s=>!('issue' in s)&&!('revoke' in s)));
+ const g=await fixture(t);g.state.taskHook=async count=>{if(g.state.returned)await g.suppress();};
  const withheld=await g.app.handle(g.request(undefined,'next-controls')),body=await withheld.text();
  assert.equal(withheld.status,403);assert.doesNotMatch(body,/Synthetic steer text/);assert.equal(g.counts.controls,1);
 });

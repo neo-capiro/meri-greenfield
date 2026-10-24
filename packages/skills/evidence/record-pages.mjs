@@ -15,7 +15,7 @@ function citationReference(identity,locator){
 export function aggregateMaterial(sections,context){
  const groups=new Map();
  for(const section of sections){
-  const s=section;
+  const s=section;validateShape('RunBinding',s.binding);if(!same(s.binding,context.binding))fail('WORKFLOW_MATERIAL_BINDING');
   if(typeof s.text!=='string'||!s.text.isWellFormed()||!Number.isSafeInteger(s.start)||!Number.isSafeInteger(s.end)||!Number.isSafeInteger(s.total)||s.start<0||s.end<s.start||s.end>s.total||s.total>2000000||s.end-s.start!==s.text.length||!/^[a-f0-9]{64}$/u.test(s.contentSha256??'')||typeof s.recordId!=='string'||!s.recordId||typeof s.recordVersionId!=='string'||!s.recordVersionId)fail('WORKFLOW_MATERIAL_REFUSED');
   if(!Array.isArray(s.scopes)||!s.scopes.length||s.scopes.some(scope=>{validateShape('Scope',scope);return !context.subject.scopes.some(authorized=>same(scope,authorized));}))fail('WORKFLOW_MATERIAL_SCOPE');
   const key=hash([s.sourceId,s.recordId,s.recordVersionId]);let group=groups.get(key);
@@ -24,9 +24,8 @@ export function aggregateMaterial(sections,context){
   if(!group){group={identity,sections:[]};groups.set(key,group);}group.sections.push(s);
  }
  const records=new Map(),incomplete=[];
- for(const [key,g] of groups){let end=0,text='',bad=false;const decisions=new Set();
+ for(const [key,g] of groups){let end=0,text='',bad=false;
   for(const s of g.sections.sort((a,b)=>a.start-b.start||a.end-b.end)){
-   decisions.add(s.authorizationDecisionId);
    if(s.start<end){if(text.slice(s.start,s.end)!==s.text){bad=true;break;}if(s.end<=end)continue;}
    if(s.start!==end){bad=true;break;}text+=s.text;end=s.end;
   }
@@ -35,7 +34,7 @@ export function aggregateMaterial(sections,context){
   if(nativeSha256!==g.identity.contentSha256)fail('WORKFLOW_MATERIAL_HASH');
   const last=g.sections.at(-1),reference=citationReference({...g.identity,contentSha256},g.sections[0].citationId),record={sourceId:g.identity.sourceId,recordId:g.identity.recordId,recordVersionId:g.identity.recordVersionId,content:{kind:'full-read',text},contentSha256,citationId:reference.citationId,scopes:g.identity.scopes,metadata:{...g.identity.metadata,
    sourceLocators:[...new Set(g.sections.map(s=>s.citationId))],...(reference.citationIdentitySha256?{citationKind:'derived-Meri-reference',citationIdentitySha256:reference.citationIdentitySha256}:{})}};
-  records.set(key,{record,source:last.source,authorizationDecisionId:last.authorizationDecisionId,authorizationDecisionIds:[...decisions],receiptSha256s:[...new Set(g.sections.map(s=>s.receiptSha256))],verification:g.identity.metadata.materialKind==='stored-extracted-section'?'bound-extracted-section':g.identity.metadata.materialKind==='approved-derived-memory'?'bound-derived-memory':'bound-source-excerpt'});
+  records.set(key,{record,source:last.source,binding:last.binding,receiptSha256s:[...new Set(g.sections.map(s=>s.receiptSha256))],verification:g.identity.metadata.materialKind==='stored-extracted-section'?'bound-extracted-section':g.identity.metadata.materialKind==='approved-derived-memory'?'bound-derived-memory':'bound-source-excerpt'});
  }
  return {records,incomplete};
 }

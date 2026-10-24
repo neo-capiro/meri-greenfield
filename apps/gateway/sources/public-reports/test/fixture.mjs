@@ -1,7 +1,7 @@
 /** Synthetic offline source responses and receipts; no native identity qualification. */
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {fixture,NOW} from '../../../test/fixtures.mjs';
+import {fixture,NOW} from '../../test/read-fixture.mjs';
 import {createHandlers} from '../../../general-reads/families/public-reports.mjs';
 
 export {NOW};

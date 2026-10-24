@@ -28,7 +28,7 @@ export async function runLocalResearchBriefFlow({fixture,send,reconfigure,checkI
   const input=syntheticInput(new Date(fixture.now()).toISOString()),first=await compiler.prepare(input,fixture.artifactOptions.context);await reconfigure(first);
   const forged=await call('create',{deliveryId:'brief-forged-context',request:first.request,context:first.context});assert.equal(forged.status,400);
   const changed=structuredClone(first.request);changed.content.blocks[0].runs[0].text='Substituted draft';
-  assert.equal((await call('create',{deliveryId:'brief-substitution',request:changed})).status,403);assert.equal(fixture.stats().generations,0);assert.equal(fixture.stats().versionCharges,0);
+  assert.equal((await call('create',{deliveryId:'brief-substitution',request:changed})).status,403);assert.equal(fixture.stats().generations,0);assert.equal(fixture.stats().deliveries,0);
   const original=await json(await call('create',{deliveryId:'brief-original',request:first.request}));
   assert.equal(original.execution.nativeQualified,false);assert.equal(original.version.parentVersionId,null);assert.deepEqual(original.version.evidence,first.context.evidence);
   const originalReplay=await json(await call('create',{deliveryId:'brief-original',request:first.request}));
@@ -60,7 +60,7 @@ export async function runLocalResearchBriefFlow({fixture,send,reconfigure,checkI
   for(const version of [original.version,revision.version])for(const route of ['inspect','download'])assert.notEqual((await call(route,{versionId:version.versionId})).status,200);
   assert.notEqual((await call('revise',{deliveryId:'revoked',baseVersionId:original.version.versionId,request:second.request})).status,200);
   await assert.rejects(compiler.prepare(next,second.context));assert.equal(fixture.stats().generations,2);
-  assert.equal(fixture.stats().settled,2);assert.equal(fixture.stats().unknown,0);assert.equal(fixture.stats().consumedMicroUsd,'20');
+  assert.equal(fixture.stats().prepared,2);assert.equal(fixture.stats().unknown,0);assert.equal(fixture.stats().prepared,2);
   const prepared=[first,second];
   await writeFile(join(outputDirectory,'provenance.json'),JSON.stringify({versions:[original.version,revision.version],
     preparations:prepared.map(p=>({request:p.request,provenance:p.provenance,facts:p.facts,reads:p.reads})),sourceReads},null,2)+'\n',{flag:'wx',mode:0o600});

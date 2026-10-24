@@ -4,6 +4,8 @@ These override anything older in this repository: the master closeout plans, `FI
 
 Neo's current direct instruction is to finish Wave 2 autonomously, migrate the actual Claude SDK to AgentCore Runtime, update all plans and leave no dead code. The approved hosting choice is **standard Runtime V1**, with isolated conversation sessions and durable restore. Root Codex is the sole orchestrator; the earlier work/AWS holds are lifted. The four requirements below remain first and binding. Historical quotations explain their origin; they do not reinstate old roles or per-run Fargate. See the [approved AgentCore Runtime migration](plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) for implementation, completion state and deletion ownership.
 
+**Local environment retention (Neo, 24 October 2026):** preserve and reuse the local development environment throughout future waves for faster testing and shipping. Keep the WSL distribution, persistent local services/database data, development configuration, active working source and reusable tooling/dependency caches. Repair and upgrade in place. This supersedes the earlier broad disk-cleanup request for these resources; cleanup remains scoped to verified disposable tests and temporary release secrets. Root maintains the private host inventory in `C:/dev/LOCAL-DEVELOPMENT-ENVIRONMENT.md`.
+
 Neo's words, verbatim:
 
 - "follow best practices and have simple chat work. dont over engineer and dont leave deadcodd befind. just make it work"

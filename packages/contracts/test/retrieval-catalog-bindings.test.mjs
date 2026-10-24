@@ -142,7 +142,7 @@ test('real calendar DTO validates only with its original request and explicit tr
   const id='11111111-1111-4111-8111-111111111111';
   const page={kind:'meeting-upcoming-page',contractVersion:'0.2.0',operation:{id:'meeting.list_upcoming_meetings',version:'0.2.0'},
     requestId:id,traceId:id,binding:{tenantId:'fixture',actorId:'reader',conversationId:id,runId:id,attemptId:id,workerId:id,writerFence:1},
-    subject:{kind:'personal',entityType:'user',entityIds:['reader'],tenantId:'fixture',actorId:'reader',authorizationDecisionId:id,policyRevision:'policy-v1',scopes:[{tenantId:'fixture',kind:'private-user',resourceId:'reader',policyRevision:'policy-v1'}],rosterVersionId:null},
+    subject:{kind:'personal',entityType:'user',entityIds:['reader'],tenantId:'fixture',actorId:'reader',policyRevision:'policy-v1',scopes:[{tenantId:'fixture',kind:'private-user',resourceId:'reader',policyRevision:'policy-v1'}],rosterVersionId:null},
     window:{basis:'unbounded'},argumentsSha256:canonicalSha256({clientId:null,limit:10,withinDays:30}),appliedFilters:[],
     sources:[{sourceId:'calendar',authority:'authoritative',snapshotVersionId:null,adapterVersion:'0.2.0',status:'partial',synchronizedAt:null,asOf:null,retrievedAt:'2026-01-01T00:00:00.000Z',freshness:'unknown'}],
     coverage:{sourcesRequested:['calendar'],sourcesChecked:['calendar'],sourcesUnavailable:[],enumeration:'unknown',enumerableTotal:null,returnedCount:0,truncated:false,historySupport:'bounded',limitations:['Synthetic pending calendar; no live authority.']},

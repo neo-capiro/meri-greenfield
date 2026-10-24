@@ -12,6 +12,7 @@ import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {describeSkillPlugin,materializeSkillPlugin,PLUGIN_NAME} from '../../../../packages/skills/plugin.mjs';
 export const SKILL_TOOL='Skill';
+/** @param {string} configParentDirectory */
 export const sdkSkillPluginDirectory=configParentDirectory=>join(configParentDirectory,'meri-skill-plugin');
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};

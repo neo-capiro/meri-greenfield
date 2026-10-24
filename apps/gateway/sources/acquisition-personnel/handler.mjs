@@ -6,7 +6,7 @@ import {acquisitionOperation,acquisitionCall} from './request-context.mjs';
 const ROUTES=Object.freeze({search_acquisition_personnel:'/api/clio/tools/search_acquisition_personnel',
  get_acquisition_person:'/api/clio/tools/get_acquisition_person'});
 export function createAcquisitionPersonnelHandlers(configuration,operations){
- const {credentialsForCall,...config}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','fetchImpl','maxRequestMs','maxResponseBytes']);
+ const {credentialsForCall,...config}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
  if(credentialsForCall!==undefined&&(typeof credentialsForCall!=='function'||config.getCredentials!==undefined))deny('GATEWAY_CONFIGURATION');
  const transport=createRetainedHttpTransport(config);
  return operations.map(reference=>{

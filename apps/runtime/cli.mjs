@@ -1,52 +1,36 @@
 /** Executable ownership only. Importing this file does not allocate resources. */
 import {pathToFileURL} from 'node:url';
 import {loadConfiguration} from './config.mjs';
-import {assertProductRunnerMeasurement} from './native-authority/ecs-prepared-task-proof.mjs';
-import {withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {countingFetch} from './telemetry/counting.mjs';
 import {verifyControlCaBundle} from './control-ca-bundle.mjs';
-const processStartedAtMs=Date.now();
-/** The product worker reaches control's private origin with global fetch, so Node's default store must also trust the one Meri
- * preview server CA. That anchor is exactly its pinned issuer server CA file (same CA; serverCaSha256 pinned, written by
- * material-init before this process starts), never another path. NODE_EXTRA_CA_CERTS is read once at process start. */
-export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.temporal?.issuerBootstrap?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
-export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}={}){
- if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('Usage: node apps/runtime/cli.mjs <control|temporal-worker|conversation-runner|schedule-worker> --config /absolute/config.json\nExit: 0 graceful completion; 2 configuration/startup timeout; 3 runtime/startup failure/shutdown timeout.\n');return 0;}
+/** Private control trust is delivered before Node starts, separately from Temporal's native mTLS. */
+export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.native?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
+export async function main(argv=process.argv.slice(2)){
+ if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('Usage: node apps/runtime/cli.mjs <control|temporal-worker|schedule-worker> --config /absolute/config.json\nExit: 0 graceful completion; 2 configuration/startup timeout; 3 runtime/startup failure/shutdown timeout.\n');return 0;}
  if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
-  if((poststartTls===undefined)!==(nativeFetch===undefined)||poststartTls!==undefined&&
-     (role!=='conversation-runner'||process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_POSTSTART_REFUSED');
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
-     (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.nativeCandidate===undefined||c.taskRouter?.enabled!==true||c.taskRouter.poststart?.enabled!==true||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true))throw Error('PRODUCT_LISTENER_REFUSED');
+     (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.agentcore===undefined))throw Error('PRODUCT_LISTENER_REFUSED');
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1')await verifyControlCaBundle(c);
   if(role==='temporal-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.native.preparedKickoff!==true||c.native.loopback!==false||
-      !c.native.origin.startsWith('https://')||c.http.port!==8081||c.temporal.authorization===undefined||c.temporal.tokenWriter?.enabled!==true||c.temporal.issuerDelivery===undefined||c.temporal.issuerBootstrap?.enabled!==true||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_WORKER_REFUSED');
+      !c.native.origin.startsWith('https://')||c.http.port!==8081||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_WORKER_REFUSED');
   // Routines (D016-A #5, lane B3): the product preview starts the schedule worker only under Core's unattended-firing pin, with its
   // native client to control's private occurrence operations (HTTPS) and its own database file; its owners compose at startup below.
   if(role==='schedule-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.routines?.enabled!==true||c.routines.core?.unattendedGrant===undefined||c.native===undefined||c.native.loopback!==false||
       !c.native.origin.startsWith('https://')||c.database===undefined))throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
-  if(role==='conversation-runner'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
-     (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.bootstrap?.remote!==true||c.remoteTask!==undefined||poststartTls===undefined||typeof nativeFetch!=='function'))throw Error('PRODUCT_RUNNER_TLS_REFUSED');
-  if(role==='conversation-runner'&&(c.remoteTask!==undefined||c.bootstrap?.remote===true)){
-   const measured=await assertProductRunnerMeasurement({expectedSha256:process.env.MERI_RUNNER_SHA256});
-   if(c.remoteTask!==undefined&&measured.runnerSha256!==c.remoteTask.preparationIntent.runnerSha256)throw Error('RUNNER_PIN_REFUSED');
-  }
  }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
  const controller=new AbortController();let runtime,shutdownTimer,controlTurnTelemetry,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();
- try{if(role==='conversation-runner'){await withRunnerDiagnostics(async()=>{const {runConversation}=await import('./conversation-runner.mjs');clearTimeout(startupTimer);await runConversation(c,{signal:controller.signal,...(poststartTls===undefined?{}:{poststartTls,nativeFetch})});},{binding:c.binding,environment:c.telemetry?.environment,processStartedAtMs});return 0;}
+ try{
   // The schedule service refuses before secret reads unless trusted owners are supplied; without `routines.enabled` the bare CLI supplies none.
   const [file,start]={control:['./control.mjs','startControl'],'temporal-worker':['./temporal-worker.mjs','startTemporalWorker'],'schedule-worker':['./schedule-service.mjs','startScheduleWorker']}[role];
   const module=await import(file);
   // Control receives the production product-port composition (G4); the other roles take no product ports.
-  let productPorts={},routinesOwners=null,readDelegationConsents,memoryContextRelay;
+  let productPorts={},routinesOwners=null,readDelegationConsents;
   // The live-session relay (RC1 option A) serves reads and the memory run path; startControl binds it to its own session owner.
   const relay=role==='control'?(await import('./read-credential-relay.mjs')).createReadCredentialRelay():null;
-  let authority=null;
-  // Option B (D016-A #4): unattended occurrence facts reach the reads composer through a relay that control binds to its schedule owner.
-  const occurrences=role==='control'?(await import('./occurrence-relay.mjs')).createOccurrenceRelay():null;
   // The schedule worker's owners (lane B3): the service calls this factory once it owns its pool, Temporal client and native client;
   // the factory composes Core's firing authority and unattended stop (B2) plus the admission/retirement ports over control's operations.
   if(role==='schedule-worker'&&c.routines?.enabled===true){const {composeRoutinesWorkerRuntimePorts}=await import('./schedule-service-owners.mjs');productPorts={runtimePortsFactory:composeRoutinesWorkerRuntimePorts};}
@@ -59,62 +43,26 @@ export async function main(argv=process.argv.slice(2),{poststartTls,nativeFetch}
    const [{createProductPortsFactory,PRODUCT_FAMILIES},{composeDocumentsFamily}]=await Promise.all([import('./product-ports/index.mjs'),import('./artifacts/authority-composition.mjs')]);
    // Write-intent execution (lane E): the intents family and the per-run intent mount share one composition; both stay inert
    // unless control declares intents.execution and its Core owners exist.
-   const [{createControlIntentExecution},{readSecret},{createControlCurrentAuthority}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs'),import('./native-authority/current-authority-adapters.mjs')]);
-   // Current tool authority (lane T): one observation per port call over Core identity/membership/context through the relay; it
-   // supplies the execution owners and the reads gateway authority/limits. Without a prepared candidate there is nothing to observe.
-   const coreFetch=countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin});
-   authority=c.nativeCandidate===undefined?null:createControlCurrentAuthority({configuration:c,readSecret,nativeCredentials:relay.port,fetchImpl:coreFetch});
-   const documents=await composeDocumentsFamily({configuration:c,fetchImpl:coreFetch,nativeCredentials:relay.port,...(authority?{authorityPorts:authority.artifactAuthorityPorts}:{})});
+   const [{createControlIntentExecution},{readSecret}]=await Promise.all([import('./native-authority/execution-composition.mjs'),import('./config.mjs')]);
+   // Existing business families retain their own readiness. Replaced task-grant authority is not a fallback.
+   const coreFetch=countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.agentcore.identity.origin});
+   const documents=await composeDocumentsFamily({configuration:c,fetchImpl:coreFetch,nativeCredentials:relay.port});
    if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
-   const execution=createControlIntentExecution({readSecret,...(authority?{owners:authority.owners}:{})});
-   const intents=authority?context=>{authority.bind(context);return execution.family(context);}:execution.family;
-   productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),intentMountFor:execution.intentMountFor,...(relay?{readCredentialRelay:relay}:{}),...(occurrences?{occurrenceRelay:occurrences}:{}),...(documents.runOptions?{documentsRunOptions:documents.runOptions}:{})};
+   const execution=createControlIntentExecution({readSecret});
+   const intents=execution.family;
+   productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='intents'?intents:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),...(relay?{readCredentialRelay:relay}:{})};
   }
-  // General reads (lane 2), only when declared: the composer is built before control (it prepares and measures handlers) and
-  // gets the live-session relay, which startControl binds to this control's own action-session owner (RC1 option A).
+  // Read transport is constructed with the actual execution owner by the candidate, after control startup.
   if(role==='control'&&c.reads?.enabled===true){
-   const [{createControlReadsComposer},{readSecret},{canonicalSha256}]=await Promise.all([import('./native-authority/reads-composer.mjs'),import('./config.mjs'),import('../../packages/contracts/validate.mjs')]);
-   // P2: the pinned installation measurement comes from its byte-pinned material file (brotli JSON; material-init verified the digest, the
-   // decompression is bounded) and must still hash to the configured pin here; the composer's issuer then refuses it unless it matches this
-   // image's catalog and contracts (fail closed).
-   // P1: discovery runs only with the trusted platform record (G2 producer, capability-policy.mjs); without `capabilityPlatform` it stays disabled.
-   let installation,discovery;
-   if(c.reads.installation!==undefined){const i=c.reads.installation;
-    if(!i.enabled)installation={enabled:false};
-    else{let measurement;try{const {brotliDecompressSync}=await import('node:zlib');measurement=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(brotliDecompressSync(await readSecret(i.measurementFile),{maxOutputLength:262144})));}catch{throw Error('READS_INSTALLATION_MATERIAL_REFUSED');}
-     if(canonicalSha256(measurement)!==i.measurementSha256)throw Error('READS_INSTALLATION_PIN_REFUSED');
-     installation={enabled:true,measurement,measurementSha256:i.measurementSha256,...(i.revokedOperations===undefined?{}:{revokedOperations:structuredClone(i.revokedOperations)})};}}
-   if(c.reads.discovery!==undefined)discovery=c.reads.discovery.enabled===true&&c.capabilityPlatform!==undefined?{enabled:true,capabilityPolicy:(await import('./product-ports/capability-policy.mjs')).createConfiguredRunCapabilityPolicy(c)}:{enabled:false};
-   // Only the families in the pinned P2 receipt are candidates for this
-    // process. The task slice covers selected-client signed reads, both
-    // selected-client actions, Research/Florida and local dataset metadata.
-    // Signed tool routes use Option B; retained authority/evidence use attended credentials.
-   let familyIds,retainedTaskPorts;
-   if(installation?.enabled===true){
-    const [{NATIVE_READ_FAMILIES},{COMPOSABLE_RETAINED_FAMILIES,DELEGATED_RETAINED_FAMILIES,createSelectedRetainedTaskPorts}]=await Promise.all([
-     import('../gateway/sources/retained-reads/native-families.mjs'),import('./native-authority/retained-reads/selected-task-ports.mjs')]);
-    familyIds=[...new Set(installation.measurement.operations.map(row=>row.family))];
-    const retained=familyIds.filter(id=>!NATIVE_READ_FAMILIES.includes(id));
-    if(retained.length&&retained.every(id=>COMPOSABLE_RETAINED_FAMILIES.includes(id))&&
-      (!retained.some(id=>DELEGATED_RETAINED_FAMILIES.includes(id))||c.reads.delegation?.enabled===true)&&
-      (!retained.some(id=>id==='research-portfolio'||id==='florida-budget')||c.reads.retainedAuthority!==undefined)&&c.nativeCandidate?.identity?.origin){
-     // Control binds this inert relay to its own conversation store at startup.
-     if(retained.includes('memory-proposals')){
-      const {createMemoryContextRelay}=await import('./memory-context-relay.mjs');
-      memoryContextRelay=createMemoryContextRelay();
-     }
-     retainedTaskPorts=createSelectedRetainedTaskPorts({coreOrigin:c.nativeCandidate.identity.origin,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),
-      now:Date.now,familyIds:retained,operationRefs:installation.measurement.operations.map(row=>row.operation),
-      ...(c.reads.retainedAuthority===undefined?{}:{retainedAuthority:c.reads.retainedAuthority}),
-      ...(memoryContextRelay?{memoryContextPortsForTask:memoryContextRelay.forTask}:{})});
-    }
-   }
-   const reads=await createControlReadsComposer({configuration:c,fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.nativeCandidate?.identity?.origin}),secretFiles:{serviceSecret:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecret:c.reads.readModeServiceSecretFile})},nativeCredentials:relay.port,...(authority?{gateway:{authority:authority.gateway.authority,limits:authority.gateway.limits}}:{}),...(c.reads.delegation===undefined?{}:{delegation:{enabled:c.reads.delegation.enabled===true,readOccurrence:occurrences.port.readOccurrence}}),...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),...(installation===undefined?{}:{installation}),...(discovery===undefined?{}:{discovery}),...(familyIds===undefined?{}:{familyIds}),...(retainedTaskPorts===undefined?{}:{retainedTaskPorts})});
+   const [{createControlReadsComposer},{readSecret},{createConfiguredRunCapabilityPolicy},{createMemoryContextRelay}]=await Promise.all([
+    import('./reads-composer.mjs'),import('./config.mjs'),import('./product-ports/capability-policy.mjs'),import('./memory-context-relay.mjs')]);
+   const memoryContextRelay=createMemoryContextRelay();
+   const reads=await createControlReadsComposer({coreOrigin:c.agentcore.identity.origin,nativeCredentials:relay.port,readSecret,
+    serviceSecretFile:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecretFile:c.reads.readModeServiceSecretFile}),
+    capabilityPolicy:createConfiguredRunCapabilityPolicy(c),memoryContexts:memoryContextRelay,...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),
+    fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.agentcore.identity.origin})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
-   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,
-    ...(memoryContextRelay?{memoryContextRelay}:{}),
-    ...(reads.readDelegation?.runOptions?{readDelegationRunOptions:reads.readDelegation.runOptions}:{})});
-   readDelegationConsents=reads.readDelegation?.consents;
+   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,memoryContextRelay});
   }
   if(role==='control'&&c.routines?.enabled===true){
    const {createAttendedRoutinesOwnerComposition}=await import('./native-authority/routines-owner-composition.mjs');

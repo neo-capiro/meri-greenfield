@@ -5,6 +5,7 @@ export const conversationErrorStatuses = freeze({
   UNSUPPORTED_MEDIA_TYPE:[415], INVALID_REQUEST:[400], INVALID_CURSOR:[400], REQUEST_REPLAY_REFUSED:[400],
   SCOPE_REFUSED:[403], SESSION_CHANGED:[403], STALE_WRITER:[403], CONVERSATION_SELECTOR_REFUSED:[403],
   DEADLINE:[408], CANCELLED:[408], REQUEST_TOO_LARGE:[413], CONVERSATION_UNAVAILABLE:[502],
+  MODEL_SELECTION_UNAVAILABLE:[409],MODEL_SETTINGS_UNAVAILABLE:[503],
 });
 export const conversationApplicationMetadata = freeze({
   packageVersion:'0.1.3', schemaId:'urn:meri:conversation-application:0.1.0', wireContractVersion:'0.1.0',

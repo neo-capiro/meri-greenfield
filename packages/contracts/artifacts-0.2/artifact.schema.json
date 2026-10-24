@@ -895,7 +895,7 @@
         "evidence": {
           "type": "array",
           "items": {
-            "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence"
+            "$ref": "#/$defs/ArtifactEvidence"
           },
           "minItems": 0,
           "maxItems": 1000
@@ -1425,45 +1425,20 @@
       ]
     },
     "ArtifactExecution": {
-      "type": "object",
-      "properties": {
-        "requestSha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+      "oneOf": [
+        {
+          "$ref": "#/$defs/LegacyArtifactExecution"
         },
-        "authorizationReceiptId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "budgetTicketId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "objectCommitted": {
-          "const": true
-        },
-        "versionCommitted": {
-          "const": true
-        },
-        "nativeQualified": {
-          "const": false
+        {
+          "$ref": "#/$defs/NativeArtifactExecution"
         }
-      },
-      "required": [
-        "requestSha256",
-        "authorizationReceiptId",
-        "budgetTicketId",
-        "objectCommitted",
-        "versionCommitted",
-        "nativeQualified"
-      ],
-      "additionalProperties": false
+      ]
     },
     "ArtifactCreatedResult": {
       "type": "object",
       "properties": {
         "version": {
-          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion"
+          "$ref": "#/$defs/ArtifactVersion"
         },
         "inspection": {
           "$ref": "#/$defs/ArtifactInspection"
@@ -1721,6 +1696,298 @@
             "content"
           ],
           "additionalProperties": false
+        }
+      ]
+    },
+    "LegacyArtifactExecution": {
+      "type": "object",
+      "properties": {
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budgetTicketId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "requestSha256",
+        "authorizationReceiptId",
+        "budgetTicketId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "NativeArtifactExecution": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "native-document"
+        },
+        "invocationId": {
+          "type": "string",
+          "pattern": "^sdk:[a-f0-9]{64}$"
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "kind",
+        "invocationId",
+        "requestSha256",
+        "authorizationReceiptId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactBaseVersionId": {
+      "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/parentVersionId"
+    },
+    "NativeArtifactFileMetadata": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference/properties/objectId"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "manifestId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/WorkspaceManifest/properties/manifestId"
+        },
+        "path": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/WorkspaceEntry/properties/path"
+        },
+        "object": {
+          "allOf": [
+            {
+              "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "bytes": {
+                  "type": "integer",
+                  "maximum": 8388608
+                }
+              }
+            }
+          ]
+        },
+        "scopes": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/WorkspaceManifest/properties/scopes"
+        },
+        "createdAt": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/WorkspaceManifest/properties/createdAt"
+        }
+      },
+      "required": [
+        "versionId",
+        "binding",
+        "manifestId",
+        "path",
+        "object",
+        "scopes",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "NativeArtifactFileInspection": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "native-file"
+        },
+        "version": {
+          "$ref": "#/$defs/NativeArtifactFileMetadata"
+        },
+        "integrity": {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference/properties/sha256"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8388608
+            },
+            "currentBytesVerified": {
+              "const": true
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "currentBytesVerified"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "version",
+        "integrity"
+      ],
+      "additionalProperties": false
+    },
+    "NativeSourceEvidence": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/sourceId"
+        },
+        "recordId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/recordId"
+        },
+        "sourceVersionId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/sourceVersionId"
+        },
+        "observedAt": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/observedAt"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/sourceUpdatedAt"
+        },
+        "citationId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/citationId"
+        },
+        "scopes": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/scopes"
+        },
+        "contentSha256": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence/properties/contentSha256"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactEvidence": {
+      "oneOf": [
+        {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/SourceEvidence"
+        },
+        {
+          "$ref": "#/$defs/NativeSourceEvidence"
+        }
+      ]
+    },
+    "NativeArtifactVersion": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "artifactId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/artifactId"
+        },
+        "versionId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/versionId"
+        },
+        "parentVersionId": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/parentVersionId"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/binding"
+        },
+        "object": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/object"
+        },
+        "filename": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/filename"
+        },
+        "mimeType": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/mimeType"
+        },
+        "scopes": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/scopes"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NativeSourceEvidence"
+          }
+        },
+        "generationStatus": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/generationStatus"
+        },
+        "previewStatus": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/previewStatus"
+        },
+        "createdAt": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion/properties/createdAt"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "artifactId",
+        "versionId",
+        "parentVersionId",
+        "binding",
+        "object",
+        "filename",
+        "mimeType",
+        "scopes",
+        "evidence",
+        "generationStatus",
+        "previewStatus",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactVersion": {
+      "oneOf": [
+        {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ArtifactVersion"
+        },
+        {
+          "$ref": "#/$defs/NativeArtifactVersion"
         }
       ]
     }

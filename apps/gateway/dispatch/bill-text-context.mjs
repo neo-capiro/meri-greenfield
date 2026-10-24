@@ -6,7 +6,7 @@ export function prepareBillTextReadContext({entry,authority,identity,defaultCong
  if(entry.contract.binding?.group!=='bill-text')deny('GATEWAY_CONFIGURATION');
  if(defaultCongress===undefined)deny('UNAVAILABLE');
  if(!Number.isSafeInteger(defaultCongress)||defaultCongress<1||defaultCongress>2147483647)deny('GATEWAY_CONFIGURATION');
- function observeAuthority(current){if(!same(current.binding,identity.claims.binding)||!same(current.binding,authority.binding)||current.policyRevision!==identity.claims.policyRevision||current.policyRevision!==authority.policyRevision)deny('ACCESS_DENIED');}
+ function observeAuthority(current){if(!same(current.binding,identity.execution.binding)||!same(current.binding,authority.binding)||current.policyRevision!==identity.policyRevision||current.policyRevision!==authority.policyRevision)deny('ACCESS_DENIED');}
  observeAuthority(authority);
  const options=Object.freeze({defaultCongress});
  return Object.freeze({authority,handlerNormalization:true,options(current=authority){observeAuthority(current);return options;},observeAuthority,async retain(){}});

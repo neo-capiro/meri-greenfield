@@ -9,4 +9,4 @@ await receiveDocumentDownload(new Response(),{});
 const pdf:DocumentContentRequest={operation:'create_word',format:'pdf',title:'PDF',content:{blocks:[]}};
 // @ts-expect-error caller context is not a public request field
 const bad:DocumentCreateRequest={...dto,context:{}};
-const inspect=null as unknown as DocumentInspectionResponse;void inspect.inspection.currentBytesVerified;void pdf;void bad;
+const inspect=null as unknown as DocumentInspectionResponse;if('kind' in inspect){const path:string=inspect.version.path;void path;void inspect.integrity.currentBytesVerified;}else void inspect.inspection.currentBytesVerified;void pdf;void bad;

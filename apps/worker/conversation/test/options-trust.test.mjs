@@ -26,3 +26,9 @@ test('quality adjustment is one short native append, without a validation loop',
  for(const sentence of ['Preserve the supplied as-of date','Distinguish source deadlines from proposed dates','Uncorroborated completion is not a contradiction','an unknown owner is not unassigned','only after actually invoking one'])assert.ok(append.includes(sentence));
  assert.ok(append.length<1200);assert.equal(o.hooks,undefined);
 });
+test('native task list is pinned only inside the owned private SDK configuration',()=>{
+ const r=runtime({sdkConfigDirectory:'/run/meri/config/run',sdkSecureStorageDirectory:'/run/meri/secure',providerEnvironment:{CLAUDE_CODE_TASK_LIST_ID:'foreign-list'}});
+ const o=buildConversationOptions(r,new AbortController());
+ assert.equal(o.env.CLAUDE_CONFIG_DIR,r.sdkConfigDirectory);assert.equal(o.env.CLAUDE_CODE_TASK_LIST_ID,'meri');
+ assert.equal(buildConversationOptions(runtime({providerEnvironment:{CLAUDE_CODE_TASK_LIST_ID:'foreign-list'}}),new AbortController()).env.CLAUDE_CODE_TASK_LIST_ID,undefined);
+});

@@ -21,7 +21,7 @@ export function createPreparedSchedulePoolFixture(){
      assert.ok(local,'statement must run in a transaction');assert.ok(sql.includes('meri_intents.preparations'));assert.equal(sql.includes('public.'),false);
      if(sql.startsWith('INSERT INTO meri_intents.preparations')){
       assert.equal(readOnly,false);const key=rowKey(params);if(local.has(key))return result([]);
-      const row={tenant_id:params[0],actor_id:params[1],conversation_id:params[2],delivery_id:params[3],record:JSON.parse(params[4]),record_sha256:params[5],state:'PENDING',outcome:null};
+      const row={tenant_id:params[0],actor_id:params[1],conversation_id:params[2],delivery_id:params[3],created_at:new Date(Date.UTC(2026,9,24,0,0,local.size)).toISOString(),record:JSON.parse(params[4]),record_sha256:params[5],state:'PENDING',outcome:null};
       local.set(key,row);return result([structuredClone(row)]);
      }
      if(sql.startsWith('UPDATE meri_intents.preparations')){
@@ -32,6 +32,11 @@ export function createPreparedSchedulePoolFixture(){
       assert.equal(readOnly,true);assert.equal(params.length,2);
       if(state.selectRows!==null)return result(typeof state.selectRows==='function'?state.selectRows(sql,params):state.selectRows);
       return result(structuredClone([...local.values()].filter(row=>row.tenant_id===params[0]&&row.outcome?.result?.proposal?.proposalId===params[1]).slice(0,2)));
+     }
+     if(sql.startsWith('SELECT delivery_id,created_at')){
+      assert.match(sql,/ORDER BY created_at,delivery_id LIMIT \d+$/u);
+      const limit=Number(/LIMIT (\d+)$/u.exec(sql)[1]),mine=[...local.values()].filter(row=>row.tenant_id===params[0]&&row.actor_id===params[1]&&row.conversation_id===params[2]).sort((a,b)=>a.created_at.localeCompare(b.created_at)||a.delivery_id.localeCompare(b.delivery_id));
+      const start=params.length===4?mine.findIndex(row=>row.delivery_id===params[3])+1:0;return result(structuredClone(mine.slice(start,start+limit)));
      }
      if(sql.startsWith('SELECT'))return result(structuredClone(local.has(rowKey(params))?[local.get(rowKey(params))]:[]));
      assert.fail('Unexpected intent journal SQL statement');

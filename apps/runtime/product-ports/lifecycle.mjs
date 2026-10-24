@@ -1,44 +1,19 @@
-/** Conversation lifecycle owners family (resume / fork / approval wait) for the production product-port composer.
- *
- * All three lifecycle ports compose together, only when the shared intents composition (`intents.mjs`) is `composed`
- * (`configuration.intents.enabled === true`, the membership gate exists, the `meri_intents` migration is applied); otherwise the
- * family supplies nothing, product readiness reports `lifecycle.currentAuthority`, `lifecycle.admissionRetirement` and
- * `lifecycle.approvals` unavailable, and resume/fork refuse `LIFECYCLE_OWNER_UNAVAILABLE`, approval.wait `APPROVAL_OWNER_UNAVAILABLE`,
- * before any effect.
- * - `approvals {read, readDecision}`: `read` is Meri's own custody of the PREPARED command proposal (dot PR #121 6246551969 item 4:
- *   `createPostgresCommandProposalReader` over the control pool, returned only to the run's own tenant, actor and conversation;
- *   `createLifecycleFamilyWith({readProposal})` substitutes another trusted reader); `readDecision` is the shared decision adapter,
- *   which with `intents.core` declared is the Core P-INT-10 forwarder (`native-authority/approval-forwarder.mjs`: the approver's
- *   live-session bearer plus the verified service identity, bound to the proposal) and otherwise the provider seam.
- * - `transitionAuthority {readCurrent}` and `continuationAdmission {admit, retire}` (dot 6247464370 item 6): the continuation
- *   authority (`native-authority/continuation-authority.mjs`) over the existing durable owners of THIS control: the conversation
- *   store (run records, allocation journal, current-run join, lifecycle controls) on the control pool, the native stop of the
- *   prepared candidate / run registry (`execution/kickoff/stop` through the trusted native client), the candidate's one selected
- *   client and qualification policy revision, and the control's runtime versions. Composed only when a native candidate is
- *   configured. Fork additionally needs the initial-run-binding owners (dynamic initial runs): the journal over the same pool, the
- *   prepared-run configuration digest and the reviewed run window; `createLifecycleFamilyWith({continuation:{fork}})` substitutes
- *   trusted owners for tests. `assembleControl` then wires `sessions.verifyTransition` over the candidate identity context's
- *   `resolveTransitionContext` and the journal's `readTransition` by itself.
- * - Execution guard: no port takes a credential. A <=120 s approved-execution capability can never bootstrap a pre-approval wait,
- *   a resume or any other continuation; a decision is always the CURRENT one read through the decision adapter.
- * Construction is inert: no native call, SQL or secret read. */
+/** Approval custody and native lifecycle admission over the existing run owners.
+ * SDK settlement is not VM termination. Core currentness remains the candidate's
+ * transitionAuthority; no allocation, proxy, grant or second admission store. */
 import {types} from 'node:util';
+import {randomUUID} from 'node:crypto';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {validateShape,canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {assertNativeSessionReference,assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {assertForkBootstrapReceipt} from '../../../packages/contracts/conversation-lifecycle/validate.mjs';
+import {continuesSession} from '../../../packages/contracts/session-continuity.mjs';
 import {createPostgresCommandProposalReader} from '../../control/intents/postgres-journal.mjs';
-import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
-import {createInitialRunBindingJournal} from '../../control/conversations/initial-run-binding-journal.mjs';
-import {allocation} from '../../gateway/budget/tool-budget-binding.mjs';
-import {compilePreparedCandidateConfiguration} from '../prepared-candidate-config.mjs';
-import {compilePreparedRunConfigurationSha256} from '../prepared-run-configuration.mjs';
-import {createContinuationAuthority} from '../native-authority/continuation-authority.mjs';
 import {intentsComposition} from './intents.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 const refused=()=>fault('APPROVAL_REFUSED');
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn);
-/** The native stop operation of the prepared candidate / run registry (control capability): the retirement's physical stop. */
-export const NATIVE_STOP_OPERATION='execution/kickoff/stop';
-/** The lifecycle `approvals.read` port over the intent journal's proposal custody. Closed input: no credential is accepted. */
+const same=(a,b)=>hash(a)===hash(b),deny=()=>{throw fault('CONTINUATION_REFUSED');};
 export function createJournalProposalReader({pool}){
  const reader=createPostgresCommandProposalReader({pool});
  return async function readProposal(value){
@@ -49,41 +24,60 @@ export function createJournalProposalReader({pool}){
   return proposal;
  };
 }
-function captureContinuation(continuation){
- if(continuation===undefined)return null;
- let c;try{c=own(continuation,[],['fork','stop','store']);}catch{throw fault('LIFECYCLE_CONFIGURATION');}
- if(c.fork!==undefined){try{own(c.fork,['initialBindings','configurationSha256','proposeInitialExpiry']);}catch{throw fault('LIFECYCLE_CONFIGURATION');}}
- if(c.stop!==undefined&&!ordinary(c.stop)||c.store!==undefined&&(c.store===null||typeof c.store!=='object'||types.isProxy(c.store)))throw fault('LIFECYCLE_CONFIGURATION');
- return Object.freeze(c);
-}
-/** The continuation authority of this control over its own durable owners; null without a native candidate. */
-function continuationAuthority(context,owners){
- const configuration=context.configuration;
- if(configuration?.nativeCandidate===undefined)return null;
- const candidate=compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions),now=context.now;
- const store=owners?.store??createPostgresConversationStore({pool:context.pool,now});
- const native=context.native;
- const stop=owners?.stop??(({binding,signal})=>native.call(NATIVE_STOP_OPERATION,{binding,executionId:hash(binding)},{signal}));
- let fork=owners?.fork;
- if(fork===undefined&&candidate.multiRun?.dynamicInitialRuns===true){
-  const scheduleExpiresAtMs=Date.parse(allocation(candidate.allocationJson).schedule.expiresAt),runWindowMs=candidate.multiRun.runWindowMs;
-  fork={initialBindings:createInitialRunBindingJournal({pool:context.pool,now}),configurationSha256:compilePreparedRunConfigurationSha256(configuration),
-   proposeInitialExpiry(){const expiresAtMs=Math.min(now()+runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())throw fault('CONTINUATION_WINDOW_EXPIRED');return expiresAtMs;}};
+/** New work is nominated once by the existing DISPATCHING control. An unknown
+ * result remains that control's barrier; this owner neither retries nor dispatches. */
+export function createNativeLifecycleAdmission({store,versions,runWindowMs,admitFork,now=Date.now,newId=randomUUID}){
+ validateShape('RuntimeVersions',versions);versions=data(versions);
+ if(!Number.isSafeInteger(runWindowMs)||runWindowMs<1||runWindowMs>28800000||!ordinary(now)||!ordinary(newId)||admitFork!==undefined&&!ordinary(admitFork)||typeof store?.read!=='function'||typeof store?.nextRuns?.current!=='function'||typeof store?.lifecycle?.get!=='function'||typeof store?.lifecycle?.readSessionCapture!=='function')throw fault('LIFECYCLE_CONFIGURATION');
+ async function source(v,b,check){
+  validateShape('RunBinding',b);assertNativeSessionReference(v.sdkSession);assertNativeConversationScope({binding:b,scopes:v.scopes,selectedClientId:v.selectedClientId});
+  if(!same(v.sdkSession.binding,b))deny();check();
+  const saved=await store.read(b,{},check),latest=await store.nextRuns.current(b,check);check();
+  if(!same(saved.run.binding,b)||!same(saved.run.scopes,v.scopes)||!continuesSession(saved.run.versions,versions)||!['paused','waiting-for-approval','completed'].includes(saved.run.state)||latest.reserved!==false||!same(latest.binding,b)||!same(latest.scopes,v.scopes)||latest.policyRevision!==saved.run.policyRevision)deny();
+  const capture=await store.lifecycle.readSessionCapture({binding:b,scopes:v.scopes,selectedClientId:v.selectedClientId,checkpointId:b.runId},check);check();
+  if(!same(capture.proof.sdkSession,v.sdkSession))deny();
+  const control=await store.lifecycle.get({binding:b,scopes:v.scopes,selectedClientId:v.selectedClientId,controlId:v.controlId},check);check();
+  if(control.state!=='DISPATCHING'||!['resume','fork'].includes(control.input.intent)||control.input.checkpointId!==b.runId||control.input.checkpointSha256!==capture.proof.checkpointSha256)deny();
+  return {saved,capture,control};
  }
- return createContinuationAuthority({store,stop,selectedClientId:candidate.identity.commandContext.clientResolution.clientId,policyRevision:candidate.qualification.policyRevision,
-  versions:configuration.versions,now,limits:{maxRequestMs:Math.min(configuration.limits.requestMs,30000)},...(fork===undefined?{}:{fork})});
+ const checking=signal=>()=>{if(signal?.aborted)throw fault('CONTINUATION_CANCELLED');};
+ async function retire(value){
+  const v=own(value,['controlId','binding','sdkSession','scopes','selectedClientId'],['signal']),check=checking(v.signal);
+  const {saved,control}=await source(v,v.binding,check);
+  if(control.input.intent!=='resume'||!['paused','waiting-for-approval'].includes(saved.run.state))deny();
+  // This is eligibility for the journal's atomic writer-range closure, never a stop receipt.
+  return {binding:v.binding,retirementReceiptId:newId(),expiresAtMs:now()+runWindowMs};
+ }
+ async function admit(value){
+  const v=own(value,['controlId','mode','sourceBinding','sdkSession','checkpointSha256','request','scopes','selectedClientId','versions'],['signal']),check=checking(v.signal);
+  const {saved,capture,control}=await source(v,v.sourceBinding,check);
+  if(control.input.intent!==v.mode||v.checkpointSha256!==capture.proof.checkpointSha256||!same(v.request,saved.request)||!same(v.versions,saved.run.versions))deny();
+  if(control.target)return data(control.target);
+  const b=v.sourceBinding;let binding,bootstrap,targetSessionId=null,expiresAtMs=now()+runWindowMs;
+  if(v.mode==='resume'){
+   if(!['paused','waiting-for-approval'].includes(saved.run.state))deny();
+   binding={...b,runId:newId(),attemptId:newId(),workerId:newId(),writerFence:b.writerFence+1};
+  }else if(v.mode==='fork'){
+   if(!admitFork)throw fault('CONTINUATION_FORK_UNAVAILABLE');
+   const target=own(await admitFork({controlId:v.controlId,sourceBinding:b,scopes:v.scopes,selectedClientId:v.selectedClientId,versions,signal:v.signal}),['binding','bootstrap','expiresAtMs']);check();
+   binding=data(target.binding);bootstrap=assertForkBootstrapReceipt(target.bootstrap,{controlId:v.controlId,sourceBinding:b,targetBinding:binding,selectedClientId:v.selectedClientId});
+   if(binding.writerFence!==1)deny();expiresAtMs=Math.min(expiresAtMs,target.expiresAtMs);targetSessionId=newId();if(targetSessionId===v.sdkSession.key.sessionId)deny();
+  }else deny();
+  validateShape('RunBinding',binding);
+  if(binding.tenantId!==b.tenantId||binding.actorId!==b.actorId||['runId','attemptId','workerId'].some(k=>binding[k]===b[k])||!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=now())deny();check();
+  return {binding,scopes:data(v.scopes),selectedClientId:v.selectedClientId,admissionReceiptId:newId(),targetSessionId,expiresAtMs,versions,...(bootstrap?{bootstrap}:{})};
+ }
+ return Object.freeze({retire,admit});
 }
-export function createLifecycleFamilyWith({readProposal,continuation}={}){
+/** Intent availability affects approvals only. Native resume/fork ports are
+ * supplied by the candidate over its actual run store and Core admission. */
+export function createLifecycleFamilyWith({readProposal}={}){
  if(readProposal!==undefined&&!ordinary(readProposal))throw fault('LIFECYCLE_CONFIGURATION');
- const owners=captureContinuation(continuation);
  return function createLifecycleFamily(context){
   const shared=intentsComposition(context);
   if(shared.state!=='composed'||typeof shared.readDecision!=='function')return {ports:{}};
   const read=readProposal??createJournalProposalReader({pool:context.pool});
-  const authority=continuationAuthority(context,owners);
-  return {ports:{approvals:Object.freeze({read:value=>read(value),readDecision:value=>shared.readDecision(value)}),
-   ...(authority===null?{}:{transitionAuthority:authority.transitionAuthority,continuationAdmission:authority.continuationAdmission})}};
+  return {ports:{approvals:Object.freeze({read:value=>read(value),readDecision:value=>shared.readDecision(value)})}};
  };
 }
-/** Production family for `PRODUCT_FAMILIES`: `['lifecycle', createLifecycleFamily]`; every port only when intents are composed. */
 export const createLifecycleFamily=createLifecycleFamilyWith();

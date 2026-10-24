@@ -47,10 +47,12 @@ def build_fixture(scenario='ok', overrides=None):
         manifest = json.dumps(dict(contract='meri.source-members.v1', sourceCommit=COMMIT, files=sorted(rows, key=lambda x:x['path']))).encode()
         (root/'manifest.json').write_bytes(manifest)
         inspect = [dict(Os='linux', Architecture='arm64', Size=1024, RepoDigests=[REPO+'@'+DIGEST],
-                        Config=dict(User='1000:1000', Entrypoint=['node','apps/runtime/cli.mjs'],
+                        Config=dict(User='1000:1000', Entrypoint=['node'], Cmd=['apps/runtime/agentcore-entrypoint.mjs'],
                                     Labels={'org.opencontainers.image.revision':COMMIT},
                                     Env=['NODE_EXTRA_CA_CERTS=/opt/meri/certs/rds-global-bundle.pem']))]
         if scenario == 'wrong-image': inspect[0]['Architecture']='amd64'
+        if scenario == 'old-entrypoint': inspect[0]['Config']['Entrypoint']=['node','apps/runtime/cli.mjs']
+        if scenario == 'wrong-command': inspect[0]['Config']['Cmd']=['apps/runtime/cli.mjs']
         if scenario == 'wrong-digest': inspect[0]['RepoDigests']=[REPO+'@sha256:'+'c'*64]
         (root/'inspect.json').write_text(json.dumps(inspect))
         scan = dict(repositoryName='meri-greenfield/qualification-worker', imageId=dict(imageDigest=DIGEST),
@@ -168,7 +170,7 @@ class BuildFailures(unittest.TestCase):
                 if scenario=='oversized': self.assertNotIn('get-object',calls)
 
     def test_wrong_image_and_mutable_repository_precede_auth(self):
-        for scenario in ['wrong-image','mutable']:
+        for scenario in ['wrong-image','old-entrypoint','wrong-command','mutable']:
             with self.subTest(scenario=scenario), build_fixture(scenario) as (root,result):
                 self.assertNotEqual(result.returncode,0)
                 self.assertNotIn('get-login-password',(root/'calls').read_text())

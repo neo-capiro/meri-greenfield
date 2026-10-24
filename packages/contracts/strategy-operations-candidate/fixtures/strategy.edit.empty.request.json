@@ -48,15 +48,9 @@
     "strategySha256": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
     "nodes": []
   },
-  "delegation": {
-    "ref": "00000000-0000-4000-8000-000000000008",
-    "revision": "synthetic-revision",
-    "issuedAtMs": 1792065599000,
-    "absoluteExpiresAtMs": 1792151999000
-  },
   "requestedAtMs": 1792065600000,
   "originalExpiresAtMs": 1792066500000,
-  "inputSha256": "8a265990d89c4749e2f5f93abc1bb582c9c7d0903671892a3964b5b324bb3b12",
+  "inputSha256": "17ec4f5d4ee49d1d232da222f8d2a42d4d9eab1a4c5751fa6ca0db67bcb68219",
   "input": {
     "scope": "strategy",
     "nodeId": null,

@@ -1,8 +1,8 @@
-/** MR-08 / E05–E06: fresh process-local sessions over the same canonical conversation journal. Core HTTP answers and SQL
+/** MR-08 / E05ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“E06: fresh process-local sessions over the same canonical conversation journal. Core HTTP answers and SQL
  * persistence are synthetic; this proves owner composition, not native PostgreSQL, a browser, or a deployed identity service. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createPreparedCandidateIdentity} from '../prepared-candidate.mjs';
+import {createConversationIdentity as createPreparedCandidateIdentity} from '../conversation-identity.mjs';
 import {createActionSessionOwner,issuedCurrentState} from '../../control/action-host/session/owner.mjs';
 import {createNextRunOwner} from '../../control/conversations/next-run.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
@@ -22,8 +22,10 @@ async function fixture(){
  function processOwner(){
   const stored=createPostgresConversationStore({pool:f.pool,now}),store={...stored,nextRuns:{...stored.nextRuns,async reserve(...args){effects.reservations++;return stored.nextRuns.reserve(...args);}}};
   const nextRunOwner=createNextRunOwner({store,versions,now,retirement:{async verifyRetired(){effects.retirements++;assert.fail('session renewal cannot retire a run');}},revocation:{async verifyRevoked(){effects.revocations++;assert.fail('session renewal cannot revoke grants');}}});
-  const identity=createPreparedCandidateIdentity({store,nextRunOwner,now,factWindowMs:60000,qualification:{policyRevision:scopes[0].policyRevision},limits:{maxRequestMs:3000,maxFactBytes:131072},
-   identity:{origin:'https://authority.synthetic.invalid',commandContext:{binding,clientResolution:{reference:clientId,clientId}},async fetchImpl(url,options){
+  const original={schemaVersion:1,state:'ADMITTED',binding,selectedClientId:clientId,policyRevision:scopes[0].policyRevision,versions,configurationSha256:'a'.repeat(64),createdAtMs:now()-1000,expiresAtMs:now()+900000};
+  const initialBindings={async readConversation(){return original;},async claim(){assert.fail('renewal cannot claim');},async rebind(){assert.fail('started original cannot rebind');}};
+  const identity=createPreparedCandidateIdentity({store,nextRunOwner,initialBindings,configurationSha256:original.configurationSha256,versions,proposeInitialExpiry:()=>now()+900000,now,factWindowMs:60000,qualification:{policyRevision:scopes[0].policyRevision},limits:{maxRequestMs:3000,maxFactBytes:131072},
+   identity:{origin:'https://authority.synthetic.invalid',async fetchImpl(url,options){
     if(options.headers.authorization!==`Bearer ${state.bearer}`||state.status!==200)return Response.json({error:{code:'SYNTHETIC_REFUSAL'}},{status:state.status===200?401:state.status});
     const input=JSON.parse(options.body),base={principal:state.principal,identityRevision:'identity-1',checkedAtMs:now(),expiresAtMs:now()+10000};
     return Response.json(url.endsWith('/identity')?base:{...base,identitySha256:input.identitySha256,conversationId:binding.conversationId,selectedClientId:state.clientId,contextRevision:'context-1'});

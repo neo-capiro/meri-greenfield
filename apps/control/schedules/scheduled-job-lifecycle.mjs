@@ -3,7 +3,6 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {frozenScheduleData,denySchedule} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {foreclosed} from '../conversations/native-preparation-journal.mjs';
 import {terminal} from '../conversations/boundary.mjs';
 import {createScheduledJobLineage,snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
 import {sdkMethod} from './temporal-schedule-mutations.mjs';
@@ -11,8 +10,8 @@ import {sdkMethod} from './temporal-schedule-mutations.mjs';
 const same=(a,b)=>hash(a)===hash(b),fail=()=>denySchedule('SCHEDULE_JOB_UNKNOWN');
 export function createScheduledJobLifecycle(configuration){
  const {store,runControl,retirement,now=Date.now,maxRequestMs=10000}=own(configuration,['store','runControl','retirement'],['now','maxRequestMs']);
- const lineage=createScheduledJobLineage({store}),facet=Object.getOwnPropertyDescriptor(store,'allocations');if(!facet||!Object.hasOwn(facet,'value'))fail();
- const allocation=sdkMethod(facet.value,'read'),cancelRun=sdkMethod(runControl,'cancel'),retire=sdkMethod(retirement,'retire');
+ const lineage=createScheduledJobLineage({store}),facet=Object.getOwnPropertyDescriptor(store,'executions');if(!facet||!Object.hasOwn(facet,'value'))fail();
+ const settlement=sdkMethod(facet.value,'settlement'),cancelRun=sdkMethod(runControl,'cancel'),retire=sdkMethod(retirement,'retire');
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail();
  async function operate(value,cancelling){
   const {occurrence,effect,signal,deadlineMs,expectedLineage}=own(value,['occurrence','effect','deadlineMs'],cancelling?['signal','expectedLineage']:['signal']);nativeSignal(signal);
@@ -27,10 +26,8 @@ export function createScheduledJobLifecycle(configuration){
   const life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,began+maxRequestMs),errorFactory:()=>Object.assign(Error('SCHEDULE_JOB_UNKNOWN'),{code:'SCHEDULE_JOB_UNKNOWN'})});
   const read=()=>life.run(()=>lineage.read(selectedSelection(),life.check)),selectedSelection=()=>({occurrence:selected.occurrence,effect:selected.effect});
   async function retired(binding){
-   const saved=await life.run(()=>allocation({binding,allocationKey:hash(binding)},life.check));
-   if(!same(saved.run.binding,binding))fail();const r=saved.record;
-   // A missing allocation row is never evidence that authority was never acquired.
-   return !!r&&(foreclosed(r,binding)&&r.foreclosure.state===saved.run.state||r.state==='RETIRED'&&r.resource?.physicalStopProven===true&&same(r.original.binding,binding));
+   const saved=await life.run(()=>settlement(binding,life.check));
+   if(!same(saved.run.binding,binding)||typeof saved.settled!=='boolean')fail();return saved.settled;
   }
   function result(s,settled,reason){life.check();return frozenScheduleData({state:settled?'SETTLED':'OCCUPIED',binding:selected.effect.binding,currentBinding:s.currentBinding,
    runState:s.run?.state??null,reason,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,began+maxRequestMs)});}

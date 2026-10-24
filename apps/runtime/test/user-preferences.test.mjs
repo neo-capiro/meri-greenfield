@@ -1,7 +1,5 @@
-/** Actual runtime adapter, native membership/API/service/store. Core identity/Fetch and SQL boundaries are scripted.
- * Unrelated prepared-run compiler and artifact-recovery composition are borrowed; no native allocation or S3 behavior is qualified. */
+/** Actual runtime adapter, native membership/API/service/store. Core identity/Fetch and SQL boundaries are scripted. */
 import test,{mock} from 'node:test';import assert from 'node:assert/strict';
-mock.module('../prepared-candidate-config.mjs',{namedExports:{compilePreparedCandidateConfiguration(){throw Error('No prepared-run compilation in this settings test');}}});
 mock.module('../artifacts/composition.mjs',{namedExports:{runtimeArtifactRecovery(){return null;}}});
 const {createRuntimeUserPreferences}=await import('../user-preferences.mjs');
 const {captureRuntimePorts,createRuntimeProductApplications}=await import('../product-applications.mjs');
@@ -11,8 +9,9 @@ import {createSettingsPoolFixture} from '../../control/settings/test/postgres-st
 import {fixture} from '../../control/settings/user-application/test/fixture.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {productFailure} from '../../control/product-access/errors.mjs';
+import {MODEL_CATALOG} from '../../../packages/contracts/test/model-selection-fixture.mjs';
 const unavailable=error=>productFailure(error)?.code==='USER_PREFERENCES_UNAVAILABLE';
-const configuration={sourceEnabled:false,limits:{requestMs:1000,requestBytes:131072},native:{maxResponseBytes:131072}};
+const configuration={sourceEnabled:false,models:MODEL_CATALOG,limits:{requestMs:1000,requestBytes:131072},native:{maxResponseBytes:131072}};
 const request=(operation,body={},credential='A')=>new Request('https://meri.synthetic.invalid/api/settings/user/'+operation,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)});
 const tables=['meri_settings.user_preferences','meri_settings.settings_audit'];
 const schema=()=>({rows:tables.map(name=>({name,relation:name}))});
@@ -52,12 +51,12 @@ test('exact public mounts remain closed until schema readiness; protected and ne
 });
 test('actual composed API reads, saves and reads back with the native owner, complete document and one audit',async()=>{
  const native=fixture(),preferences={...native.preferences,theme:'dark',density:'compact'},row={revision:'1',document:preferences,document_sha256:canonicalSha256(preferences)};
- const x=assembled({scripts:[{steps:[{match:/^SELECT revision,document/u,rows:[]}]},
+ const x=assembled({scripts:[{steps:[{match:/^SELECT \* FROM meri_settings\.user_preferences\b/u,rows:[]}]},
   {steps:[{match:/^INSERT INTO meri_settings.user_preferences/u,rows:[row],inspect(params){assert.deepEqual(params.slice(0,2),['tenant-A','actor-A']);assert.deepEqual(JSON.parse(params[3]),preferences);}},{match:/^INSERT INTO meri_settings.settings_audit/u}]},
-  {steps:[{match:/^SELECT revision,document/u,rows:[row]}]}]});
+  {steps:[{match:/^SELECT \* FROM meri_settings\.user_preferences\b/u,rows:[row]}]}]});
  await x.runtime.readiness();assert.equal((await x.call('read')).status,200);
- const saved=await x.call('save',{expectedRevision:0,preferences});assert.equal(saved.status,200);assert.deepEqual(await saved.json(),{owner:{tenantId:'tenant-A',actorId:'actor-A'},revision:1,preferences});
- assert.deepEqual(await (await x.call('read')).json(),{owner:{tenantId:'tenant-A',actorId:'actor-A'},revision:1,preferences});
+ const saved=await x.call('save',{expectedRevision:0,preferences});assert.equal(saved.status,200);assert.deepEqual(await saved.json(),{owner:{tenantId:'tenant-A',actorId:'actor-A'},revision:1,preferences,modelCatalog:MODEL_CATALOG});
+ assert.deepEqual(await (await x.call('read')).json(),{owner:{tenantId:'tenant-A',actorId:'actor-A'},revision:1,preferences,modelCatalog:MODEL_CATALOG});
  assert.ok(x.native.state.identities.length>=3);assert.ok(x.native.state.identities.every(c=>c.credential==='A'));
  assert.equal(x.sql.committed.filter(row=>row.kind==='audit').length,1);assert.equal(x.sql.released.length,3);x.runtime.close();
 });
@@ -78,7 +77,7 @@ test('cancellation and retirement fence late readiness without closing borrowed 
  }
 });
 test('a healthy pending readiness probe preserves serving; a failed latest probe closes it',async()=>{
- const x=assembled({scripts:[{steps:[{match:/^SELECT revision,document/u,rows:[]}]}]});await x.runtime.readiness();
+ const x=assembled({scripts:[{steps:[{match:/^SELECT \* FROM meri_settings\.user_preferences\b/u,rows:[]}]}]});await x.runtime.readiness();
  const wait=Promise.withResolvers();x.state.wait=wait.promise;const checking=x.runtime.readiness();await new Promise(resolve=>setImmediate(resolve));
  assert.equal(x.runtime.state(),'composed');assert.equal((await x.call('read')).status,200);wait.resolve();await checking;
  assert.equal(x.runtime.state(),'composed');const controller=new AbortController();controller.abort();

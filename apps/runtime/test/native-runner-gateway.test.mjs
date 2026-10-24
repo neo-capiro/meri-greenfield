@@ -3,8 +3,11 @@ import {createNativeRunnerGateway} from '../native-runner-gateway.mjs';
 import {createWorkerRunApplication} from '../worker-http.mjs';
 import {createNativeSdkSessionApplication} from '../sdk-session-http.mjs';
 import {createNativeSdkSessionClient} from '../sdk-session-client.mjs';
-import {applicationFixture,binding,scopes,id} from '../../control/conversations/test/application-fixture.mjs';
+import {applicationFixture,binding,scopes,id,versions} from '../../control/conversations/test/application-fixture.mjs';
 import {fixture,NOW,id as sessionId} from '../native-authority/test/fixture.mjs';
+import {createExecutionSessions} from '../execution-sessions.mjs';
+import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
+import {createConversationService} from '../../control/conversations/service.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {runOwnerOperations} from '../../../packages/contracts/runtime-0.2/validate.mjs';
 import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/session.mjs';
@@ -32,17 +35,19 @@ test('all canonical relay destinations preserve presented bearer and exact bytes
  for(const op of Object.keys(runOwnerOperations)){const r=await gateway.handle(request('/v1/runner/'+op,body,'actual-presented-'+op));assert.equal(r.status,200);assert.equal(await r.text(),' { "ok" : true }\n');const c=calls.at(-1);assert.equal(c.url,'https://control.synthetic.invalid/internal/conversations/'+op);assert.equal(c.init.headers.authorization,'Bearer actual-presented-'+op);assert.equal(Buffer.from(c.init.body).toString(),body);assert.equal(c.init.redirect,'error');assert.equal(c.init.credentials,'omit');}
  for(const op of sdkSessionOperations){assert.equal((await gateway.handle(request('/v1/runner/session/'+op))).status,200);assert.equal(calls.at(-1).url,'https://control.synthetic.invalid/v1/runner/session/'+op);}
  for(const path of ['/v1/worker/authorize','/v1/readiness','/v1/execution/start','/v1/runner/runtime','/v1/runner/load/extra'])assert.equal(await gateway.handle(request(path)),null);
- assert.equal(calls.length,10);
+ assert.equal(calls.length,11);
 });
-test('relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects',async()=>{
- const f=await applicationFixture(),decisions=[];await f.service.submit({credential:f.credential,input:f.input});
- const native={async call(operation,input){assert.equal(operation,'worker/authorize');decisions.push(input);if(f.state.revoked||input.capability!=='presented-task'||hash(input.binding)!==hash(binding))throw Error('scripted task refusal');const at=Date.now();return {binding,operation:input.operation,inputSha256:input.inputSha256,identityCredential:'synthetic-existing-native',scopes,selectedClientId:scopes[0].resourceId,policyRevision:'policy1',authorizationDecisionId:'scripted-task-decision',checkedAtMs:at,expiresAtMs:at+1000};}};
- const control=createWorkerRunApplication({service:f.service,sessions:f.sessions,native,configuration:{limits:{requestMs:1000,requestBytes:131072}}}),gateway=make((url,init)=>control.handle(new Request(url,init)));
+test('relay executes canonical execution-authorized load/publish and denies foreign/revoked executions before further durable effects',async()=>{
+ const f=await applicationFixture({initialInput:true}),decisions=[];await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
+ const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:'relay'},expiresAtMs:Date.now()+60000,runtimeSessionId:'relay-'+hash(binding)});
+ const execution={async authenticate(input){decisions.push(input);if(f.state.revoked||input.credential!=='presented-task'||hash(input.binding)!==hash(binding))throw Error('scripted execution refusal');return {execution:identity,scopes,selectedClientId:scopes[0].resourceId,policyRevision:'policy1'};}};
+ const createService=({credential,binding})=>createConversationService({sessions:createExecutionSessions({execution,credential,binding}),store:f.store,dispatcher:f.dispatcher,versions});
+ const control=createWorkerRunApplication({execution,createService,configuration:{limits:{requestMs:1000,requestBytes:131072}}}),gateway=make((url,init)=>control.handle(new Request(url,init)));
  try{const loaded=await gateway.handle(request('/v1/runner/load',JSON.stringify({binding})));assert.equal(loaded.status,200);assert.equal((await loaded.json()).request.prompt,'Hello');const event={eventId:id(800),createdAt:new Date().toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}};
   assert.equal((await gateway.handle(request('/v1/runner/publish',JSON.stringify({binding,event})))).status,200);assert.equal((await f.service.history({credential:f.credential})).run.state,'starting');
   const before=f.state.events.get([binding.tenantId,binding.conversationId,binding.runId].join(':')).length;
   assert.equal((await gateway.handle(request('/v1/runner/publish',JSON.stringify({binding:{...binding,writerFence:99},event})))).status,403);
-  f.state.revoked=true;assert.equal((await gateway.handle(request('/v1/runner/publish',JSON.stringify({binding,event})))).status,403);assert.equal(f.state.events.get([binding.tenantId,binding.conversationId,binding.runId].join(':')).length,before);assert.ok(decisions.every(v=>v.capability==='presented-task'));
+  f.state.revoked=true;assert.equal((await gateway.handle(request('/v1/runner/publish',JSON.stringify({binding,event})))).status,403);assert.equal(f.state.events.get([binding.tenantId,binding.conversationId,binding.runId].join(':')).length,before);assert.ok(decisions.every(v=>v.credential==='presented-task'));
  }finally{f.close();}
 });
 test('canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay',async()=>{

@@ -23,26 +23,10 @@
   "ControlTargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8080/03297203fa59801c",
   "ControlTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-control-task",
   "DbClientSecurityGroupId": "sg-0d5b5286baf28242e",
-  "IssuerClientSecurityGroupId": "sg-0c3da023e9e8fb292",
-  "IssuerDiscoveryServiceArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-v7ppowfuwb7ub6me",
-  "IssuerExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-issuer-execution",
-  "IssuerLogGroupName": "/meri/product-preview/issuer",
-  "IssuerSecurityGroupId": "sg-06fdc7ce3a117a478",
-  "IssuerSigningKeyArn": "arn:aws:kms:us-east-1:967807252336:key/7faa3b91-82bb-4913-b039-3bffe46cbd5c",
-  "IssuerTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-issuer-task",
   "MeriNamespaceId": "ns-7nkuqqgldorh23i4",
   "MigratorExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-migrator-execution",
   "MigratorLogGroupName": "/meri/product-preview/migrator",
   "MigratorSecurityGroupId": "sg-0c9f0505c552ce469",
-  "OwnerDiscoveryServiceArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-fqjjiu4dmuqsg5mo",
-  "OwnerLogGroupName": "/meri/product-preview/owner",
-  "OwnerSecurityGroupId": "sg-05f76fcb9a014a73e",
-  "ProxyDiscoveryServiceArn": "arn:aws:servicediscovery:us-east-1:967807252336:service/srv-dv43rzktx7mvrh6m",
-  "ProxyLogGroupName": "/meri/product-preview/proxy",
-  "ProxySecurityGroupId": "sg-02c3cc26b435e2516",
-  "RunnerExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-runner-execution",
-  "RunnerLogGroupName": "/meri/product-preview/runner",
-  "RunnerSecurityGroupId": "sg-098fc4f2ac89aa943",
   "TemporalExecutionRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-execution",
   "TemporalLogGroupName": "/meri/product-preview/temporal",
   "TemporalfrontendTaskRoleArn": "arn:aws:iam::967807252336:role/MeriPreview-temporal-frontend-task",
@@ -61,68 +45,34 @@
  },
  "names": {
   "control_private": "control.meri-preview.internal",
-  "issuer": "issuer.meri.internal",
   "temporal_frontend": "frontend.temporal.meri.internal",
   "temporal_internode": "internode.temporal.meri.internal"
  },
  "temporalClients": {
   "control": "meri-temporal-control",
-  "worker": "meri-temporal-worker"
+  "worker": "meri-temporal-worker",
+  "schedule": "meri-temporal-schedule"
  },
  "origins": {
-  "issuerOrigin": "https://issuer.meri.internal:8445",
   "temporalAddress": "frontend.temporal.meri.internal:7233",
-  "controlPublicOrigin": "https://meri-preview.capiro.ai",
-  "coreOrigin": "PENDING_CORE (handoff value https://first-chat-preview.app-dev.capiro.ai)",
-  "frontendOrigin": "PENDING_CORE (browser origin of the frontend preview)"
+  "controlPublicOrigin": "https://meri-preview.capiro.ai"
  },
  "temporal": {
   "namespace": "meri",
-  "taskQueue": "meri-conversations",
-  "audience": "meri-temporal"
- },
- "issuer": {
-  "signingKeyArn": "arn:aws:kms:us-east-1:967807252336:key/7faa3b91-82bb-4913-b039-3bffe46cbd5c",
-  "kid": "meri-preview-issuer-1",
-  "publicJwk": {
-   "kty": "RSA",
-   "kid": "meri-preview-issuer-1",
-   "alg": "RS256",
-   "use": "sig",
-   "n": "pACvSrwHnkjbejj3y0hHH-iByRpeQMEDwrxXT9hBGguZZMua9gZuAzGi4e5SbiDuMR2NhWNqORDmnPN0wMc689a-nhtGnlB1R-ypGg72SYrgQ4lTpmKmqjTngZXY_tEMnDK1sX8vFA9flw4PVabmm-BbxUXeyweIw-pW_GM6LppV2boROlc0wfXFn9lu4whG5-CMaclh3g2HQuHyj8c_ySbVDb-T0MXf3FpUBEy_xPP7xjwlMUHoNiqp-rEYdIPp_SD2MIw6yeo1BCGDdERRCdPfh2V7Q-6BPOeeRKFwxn2QFpRcYzPY_CKWiKQNHDMkEqoee6TJWMymWlVBGBorYQ",
-   "e": "AQAB"
-  },
-  "publicJwkSha256": "d415a9ac5c5af50ca0d5ebcee62d50ca82b582309ad80e21f50f390731950497",
-  "keySpec": "RSA_2048",
-  "algs": [
-   "RSASSA_PKCS1_V1_5_SHA_256",
-   "RSASSA_PKCS1_V1_5_SHA_384",
-   "RSASSA_PKCS1_V1_5_SHA_512",
-   "RSASSA_PSS_SHA_256",
-   "RSASSA_PSS_SHA_384",
-   "RSASSA_PSS_SHA_512"
-  ],
-  "registrationRole": "meri_temporal_issuer_service"
+  "taskQueue": "meri-conversations"
  },
  "database": {
   "host": "capiro-newstack-preview-clone.cluster-csryw28ai752.us-east-1.rds.amazonaws.com",
   "port": 5432,
   "database": "capiro",
   "roles": {
-   "control": "meri_control_runtime",
-   "issuer": "meri_temporal_issuer_service"
+   "control": "meri_control_runtime"
   },
   "rdsCaPemSha256": "839eef936a95e8a5687f37f8ef4dc08bb72bb12adfafc9fde7b365fa36b40043"
- },
- "checkpoint": {
-  "bucket": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
-  "prefix": "product-preview/checkpoints",
-  "kmsKeyArn": "arn:aws:kms:us-east-1:967807252336:key/3a04f062-40de-4ed8-9a24-dad87c488e0c"
  },
  "secrets": {
   "control/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV",
   "worker/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/worker/material-1tudsv",
-  "issuer/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb",
   "temporal/frontend/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/frontend/material-QkE7eP",
   "temporal/history/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/history/material-fl67yL",
   "temporal/matching/material": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/temporal/matching/material-igTBBS",
@@ -134,9 +84,6 @@
  },
  "pinsDer": {
   "control-private": "eceb9ce678670dc6a102378a06d6c480d29a68047091ffdccb9d91d70a233880",
-  "issuer-client-ca": "3dcf859b1f076462a9031065858dc75b8450c9f6a7f0a5fe3161e8408e2bc6bd",
-  "issuer-server": "cae5ae2318519c111fe3f9d2e79c0c1193ea26b903f644a22ddafb74a87007a7",
-  "runner-ca": "05e9753ebe288ccf0825baf6823325ae0c6fe19eedee25467ca3b2aeaa40c7d4",
   "server-ca": "e177a1bc059a0fd7c54740f6db6619c992af01d1fda804d6c2058f0bd53995d4",
   "temporal-client-ca": "2ab60e49dd3540077f2a5dd2ac36890a682f45a465e36f96afabb11fcf3dfab6",
   "temporal-client-control": "efe24104da52220f45bc6e8a99eb00faa76fd6ab032700d3cc601b02ccb6bd77",
@@ -148,9 +95,6 @@
  },
  "pinsPem": {
   "control-private": "973df3e6002a611b5b286ec6a937ccad793c42436eadaca477670c29eea4e349",
-  "issuer-client-ca": "f8984fff0b8068d88d71e7de104c96be5666c9304d3da51f40acf8dccf163193",
-  "issuer-server": "38de042ccb596df6df707b85b23c6b2f928ebf5a318f5a016e9f52869288a825",
-  "runner-ca": "29f3e9cc07b5c39862eeab81a7927a400fd1f58c402d6142b8f2c9ad47467e0d",
   "server-ca": "2853f61aa0e84b0efb937b0f290376bd7c2fcca86152392ec199cca0e8b37c88",
   "temporal-client-ca": "1e35bb089ec6b1e0da105d9f8fb72783a53081c93eeae7840dd29d856e434592",
   "temporal-client-control": "2169cee3d0cb1fceaec78f9e5350084d1f12bcaa3b9f119fe6487bf7f8abf093",
@@ -160,10 +104,9 @@
   "temporal-internode": "72a27130818f4fef8db738faa73852a615a434655a5af423c96e69885fce5b79",
   "temporal-internode-ca": "23fa1cf8fecabf1f9c4587b2152916ee0c45fe0df37b70bef12fe51213038042"
  },
- "core": {
-  "tenantId": "PENDING_CORE",
-  "actorId": "PENDING_CORE",
-  "clientId": "PENDING_CORE",
-  "identityCredentialFile": "PENDING_CORE (Clerk capiro-template bearer; private)"
+ "agentcore": {
+  "runtimeArn": "PENDING_QUALIFIED_AGENTCORE_RUNTIME_ARN",
+  "runtimeVersion": "PENDING_QUALIFIED_AGENTCORE_RUNTIME_VERSION",
+  "qualifier": "preview"
  }
 }

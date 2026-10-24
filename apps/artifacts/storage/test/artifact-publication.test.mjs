@@ -72,8 +72,17 @@ test('publication: missing owner or unavailable evidence fails closed before pub
 
 test('publication: conflicting replay bytes, invocation binding, expired authority and parent ownership never add a decision',async()=>{
  const f=sqlFixture(),a=record();await f.create().commit(commit(a));const changed=structuredClone(a);changed.requestSha256='f'.repeat(64);await assert.rejects(f.create().commit(commit(changed)),/IMMUTABLE_CONFLICT/);
- const other=publicationAuthority(a,NOW);other.invocation.budgetTicketId='different-ticket';await assert.rejects(f.create().commit(commit(a),undefined,other),/IMMUTABLE_CONFLICT/);
+ const other=publicationAuthority(a,NOW);other.invocation.invocationId='sdk:'+'f'.repeat(64);await assert.rejects(f.create().commit(commit(a),undefined,other),/IMMUTABLE_CONFLICT/);
  const b=record(11,a.version.versionId),expired=publicationAuthority(b,NOW);expired.authorization.expiresAtMs=NOW;await assert.rejects(f.create().commit(commit(b),undefined,expired),/AUTHORITY/);b.version.binding.actorId='foreign';await assert.rejects(f.create().commit(commit(b)));assert.equal(f.durable.state.writes,1);assert.equal(f.state.versions.size,1);
+});
+
+test('historical publication is readable without allowing a new budget-backed decision',async()=>{
+ const f=sqlFixture(),a=record();await f.create().commit(commit(a));
+ const d=f.durable.state.index.decisions[0];d.invocation={versionId:a.version.versionId,budgetTicketId:'historical-only',binding:a.version.binding,requestSha256:a.requestSha256,ownedInvocationId:null};
+ const {decisionSha256,...unsigned}=d;d.decisionSha256=v.hash(unsigned);f.durable.state.index.heads[0].decisionSha256=d.decisionSha256;
+ assert.deepEqual(await f.create().read(a.version.versionId),a);
+ await assert.rejects(f.create().commit(commit(a),undefined,{authorization:d.authorization,invocation:d.invocation}),/PUBLICATION_CORRUPT/);
+ assert.equal(f.durable.state.writes,1);
 });
 
 test('publication: suppression after durable decision prevents SQL publication and recovery never restores it',async()=>{

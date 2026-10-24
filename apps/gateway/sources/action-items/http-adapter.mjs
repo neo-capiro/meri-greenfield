@@ -13,9 +13,9 @@ const token=value=>typeof value==='string'&&value.length>0&&value.length<=8192&&
 const targetPath='/api/clio/tools/actions.query';
 
 export function createActionItemsHttpAdapter(options) {
-  const {origin,getCredentials,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
-    ownFields(options,['origin','getCredentials','now'],['fetchImpl','maxRequestMs','maxResponseBytes']);
-  if(typeof origin!=='string'||typeof getCredentials!=='function'||typeof fetchImpl!=='function'||typeof now!=='function'||
+  const {origin,getCredentials,readSource,fetchImpl=globalThis.fetch,now,maxRequestMs=15000,maxResponseBytes=1048576}=
+    ownFields(options,['origin','now'],['getCredentials','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
+  if(typeof origin!=='string'||(readSource===undefined?typeof getCredentials!=='function':typeof readSource!=='function'||getCredentials!==undefined)||typeof fetchImpl!=='function'||typeof now!=='function'||
       !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000||
       !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
   let endpoint;
@@ -41,12 +41,18 @@ export function createActionItemsHttpAdapter(options) {
         policyRevision:context.authority.policyRevision,sourceIds:context.authority.sourceIds,
         invocationId:context.invocationId});
       const {input:ignoredInput,...echo}=pins;
+      let result;
+      if(readSource){
+        result=frozenData(await lifetime.run(signal=>{active();return readSource({operation:operation.id,input:protocol,context:frozenData(JSON.parse(correlationBytes)),deadlineMs:cutoff,signal});}));
+        active();
+        if(Buffer.byteLength(JSON.stringify(result),'utf8')>Math.min(maxResponseBytes,context.authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+      }else{
       const credentials=frozenData(await lifetime.run(signal=>{
         active();return getCredentials(Object.freeze({...pins,deadlineMs:cutoff,target,correlationSha256,signal}));
       }));
       ownFields(credentials,[...Object.keys(echo),'authorizationScheme','target','correlationSha256',
         'bearerToken','serviceSecret','expiresAtMs']);
-      if(credentials.authorizationScheme!=='CapiroMeriRead'||!same(credentials.target,target)||
+      if(credentials.authorizationScheme!=='Bearer'||!same(credentials.target,target)||
           credentials.correlationSha256!==correlationSha256||
           Object.keys(echo).some(key=>!same(credentials[key],echo[key]))||
           !Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=active()||
@@ -56,7 +62,7 @@ export function createActionItemsHttpAdapter(options) {
       const response=await lifetime.run(async signal=>{
         active();
         const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
-          headers:{authorization:`CapiroMeriRead ${credentials.bearerToken}`,
+          headers:{authorization:`Bearer ${credentials.bearerToken}`,
             'x-internal-service-secret':credentials.serviceSecret,'content-type':'application/json',
             accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
             'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')},body});
@@ -64,8 +70,9 @@ export function createActionItemsHttpAdapter(options) {
         try{active();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
       });
       const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
-      const result=frozenData(await readJsonResponse(response,{lifetime:bounded,
-        maxResponseBytes:Math.min(maxResponseBytes,context.authority.claims.budgets.maxOutputBytes)}));
+      result=frozenData(await readJsonResponse(response,{lifetime:bounded,
+        maxResponseBytes:Math.min(maxResponseBytes,context.authority.maxOutputBytes)}));
+      }
       ownFields(result,['tool','generatedAt','clientId','total','returned','actions','scope','coverage']);
       if(result.tool!=='query_action_items'||result.clientId!==context.input.selection.clientId)deny('INVALID_RESULT');
       active();return result;

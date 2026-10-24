@@ -2,6 +2,8 @@
 import {canonicalSha256,validateShape} from '../validate.mjs';
 import {assertLifecycleShape} from './shape.mjs';
 import {data,own} from '../commands-0.2/execution-boundary.mjs';
+import {assertNativeFileState} from '../runtime-0.2/files.mjs';
+import {assertNativeSessionReference} from '../runtime-0.2/session.mjs';
 const fail=()=>{throw Object.assign(new Error('LIFECYCLE_INPUT_REFUSED'),{code:'LIFECYCLE_INPUT_REFUSED'});};
 const uuid=value=>{if(typeof value!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(value))fail();};
 const digest=value=>{if(typeof value!=='string'||!/^[a-f0-9]{64}$/u.test(value))fail();};
@@ -14,6 +16,17 @@ export function assertLifecycleCommand(raw){
  else if(v.intent==='approval.wait'){own(v,['controlId','intent','proposalId']);uuid(v.proposalId);}
  else if(['resume','fork'].includes(v.intent)){own(v,['controlId','intent','checkpointId','checkpointSha256']);uuid(v.checkpointId);digest(v.checkpointSha256);}
  else fail();return v;
+}
+/** The existing Core bootstrap receipt, persisted only for a native fork. It is
+ * binding evidence, not authority; admission still reads current Core access. */
+export function assertForkBootstrapReceipt(raw,{controlId,sourceBinding,targetBinding,selectedClientId}){
+ const v=snapshot(raw);own(v,['schemaVersion','requestId','conversationId','tenantId','actorId','clientId'],v.schemaVersion===2?['scopeKind']:[]);
+ uuid(v.requestId);uuid(v.conversationId);
+ if(v.schemaVersion===1){uuid(v.clientId);if(selectedClientId===null)fail();}
+ else if(v.schemaVersion===2){if(v.scopeKind!==(selectedClientId===null?'general':'client'))fail();if(v.clientId!==null)uuid(v.clientId);}
+ else fail();
+ if(v.requestId!==controlId||v.conversationId!==targetBinding.conversationId||v.conversationId===sourceBinding.conversationId||v.tenantId!==sourceBinding.tenantId||v.actorId!==sourceBinding.actorId||v.clientId!==selectedClientId||targetBinding.tenantId!==sourceBinding.tenantId||targetBinding.actorId!==sourceBinding.actorId)fail();
+ return v;
 }
 export function assertLifecycleReceipt(raw){
  const v=assertLifecycleShape('ConversationLifecycleControlReceipt',snapshot(raw));own(v,['controlId','intent','sourceBinding','inputSha256','state','checkpointId','targetBinding','admissionReceiptId','retirementReceiptId','replayed']);uuid(v.controlId);validateShape('RunBinding',v.sourceBinding);digest(v.inputSha256);
@@ -32,7 +45,18 @@ export function assertWorkerControl(raw){
  if(v.commandSha256!==undefined)digest(v.commandSha256);if(v.controlSequence!==undefined&&(!Number.isSafeInteger(v.controlSequence)||v.controlSequence<1))fail();return v;
 }
 export function assertContinuationEnvelope(raw){
- const v=snapshot(raw);own(v,['mode','controlId','checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','resumeSessionAt','targetSessionId']);if(!['resume','fork'].includes(v.mode))fail();uuid(v.controlId);validateShape('Checkpoint',v.checkpoint);digest(v.checkpointSha256);digest(v.sourceRequestSha256);digest(v.contextSha256);
+ const v=snapshot(raw);
+ if(v.kind==='native-session'){
+  own(v,['kind','mode','controlId','sdkSession','versions','scopes','sourceRequestSha256','contextSha256','targetSessionId'],['files']);
+  if(v.files!==undefined)assertNativeFileState(v.files,{binding:v.sdkSession.binding,scopes:v.scopes});
+  if(!['resume','fork'].includes(v.mode))fail();uuid(v.controlId);assertNativeSessionReference(v.sdkSession);validateShape('RuntimeVersions',v.versions);
+  if(!Array.isArray(v.scopes)||!v.scopes.length||v.scopes.length>100||new Set(v.scopes.map(canonicalSha256)).size!==v.scopes.length)fail();
+  for(const scope of v.scopes){validateShape('Scope',scope);if(scope.tenantId!==v.sdkSession.binding.tenantId)fail();}
+  digest(v.sourceRequestSha256);digest(v.contextSha256);
+  if(v.mode==='resume'){if(v.targetSessionId!==null)fail();}else {uuid(v.targetSessionId);if(v.targetSessionId===v.sdkSession.key.sessionId)fail();}
+  return v;
+ }
+ own(v,['mode','controlId','checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','resumeSessionAt','targetSessionId']);if(!['resume','fork'].includes(v.mode))fail();uuid(v.controlId);validateShape('Checkpoint',v.checkpoint);digest(v.checkpointSha256);digest(v.sourceRequestSha256);digest(v.contextSha256);
  if(canonicalSha256(v.checkpoint)!==v.checkpointSha256)fail();for(const k of ['resumeSessionAt','targetSessionId'])if(v[k]!==null)uuid(v[k]);if(v.mode==='resume'&&v.targetSessionId!==null)fail();return v;
 }
 

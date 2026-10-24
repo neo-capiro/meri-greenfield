@@ -3,8 +3,8 @@
   "operation": "strategy.edit",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
-  "requestSha256": "abd4f86afca3d4a81a07da951e55b3e1ab774b8037ed8c959a5a7262e54dca23",
-  "inputSha256": "1cc7e03db2803d29f41bf390b0d2594eabbffbea1babecadf01bb9be4e7ca9cc",
+  "requestSha256": "279cfbe80dd07257246ccac37eeb5381136b90fbcbd213ccd705e1ce07a84b9f",
+  "inputSha256": "668c1974d0162dc8797b7a8e06d6e0d6963fbcb9a48f1706133be970a3107ff1",
   "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
   "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
   "basisSha256": "caa96463378b92f52caa4ce7c9ae9b82508a58decc6d3599b627d1bfc894ba24",
@@ -57,5 +57,5 @@
   },
   "payloadSha256": "b93cccf2690d9efca0bbbd0cff7af78d5d32bce1cbd69acbec2055d7cc40cbc2",
   "issues": [],
-  "resultSha256": "4f23505043d2677c0ef7a2fdbd9b808ce64539b0d14da2e3cb0842569424dae2"
+  "resultSha256": "8df14ea10c57e7dcec9871e2a6211d5d37820dba3bad1d1b8bb5c419207ec39a"
 }

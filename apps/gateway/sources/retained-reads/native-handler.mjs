@@ -10,16 +10,6 @@ import {NATIVE_READ_FAMILIES,nativeReadOperationAllowed} from './native-families
 import {MODE_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 const same=(a,b)=>hash(a)===hash(b);
 
-function admitDecision(current,now){
- const a=current.authority;
- try{validateShape('AuthorizationDecision',a.decision);}catch{deny('ACCESS_DENIED');}
- if(a.claims.audience!=='meri-gateway'||!a.claims.actions.includes('tool.read')||a.decision.decision!=='allowed'||
-  a.decision.operation!==`${current.operation.id}@${current.operation.version}`||a.decision.decisionId!==a.subject.authorizationDecisionId||
-  a.decision.policyRevision!==a.policyRevision||!same(a.decision.actor,{tenantId:a.binding.tenantId,actorId:a.binding.actorId})||
-  !same(a.decision.scopes,a.subject.scopes)||a.subject.scopes.some(scope=>!a.claims.scopes.some(parent=>same(scope,parent)))||
-  a.claims.scopes.some(scope=>scope.tenantId!==a.binding.tenantId||scope.policyRevision!==a.policyRevision)||Date.parse(a.claims.issuedAt)>now())deny('ACCESS_DENIED');
-}
-
 export function createStoredNativeReadHandlers(configuration,operations,specification){
  const {family,routes,requestBody,resultBody,observation,requirePerCall}=ownFields(specification,['family','routes'],['requestBody','resultBody','observation','requirePerCall']);
  if(!NATIVE_READ_FAMILIES.includes(family)||[requestBody,resultBody,requirePerCall].some(value=>value!==undefined&&(typeof value!=='function'||types.isProxy(value))))deny('GATEWAY_CONFIGURATION');
@@ -37,7 +27,7 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
   let contract;try{contract=resolveOperationContract({id,version:'0.2.0'});}catch{deny('GATEWAY_CONFIGURATION');}
   if(contract.binding.group!==family||!nativeReadOperationAllowed(family,id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')deny('GATEWAY_CONFIGURATION');
  }
- const {credentialsForCall,...c}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','fetchImpl','maxRequestMs','maxResponseBytes']);
+ const {credentialsForCall,...c}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
  if(credentialsForCall!==undefined&&(typeof credentialsForCall!=='function'||types.isProxy(credentialsForCall)||c.getCredentials!==undefined))deny('GATEWAY_CONFIGURATION');
  const selectedOperations=frozenData(operations);
  if(!Array.isArray(selectedOperations)||!selectedOperations.length)deny('GATEWAY_CONFIGURATION');
@@ -49,9 +39,9 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
   return {operation,async execute(call){try{
    const {signal,...fields}=ownFields(call,['input','request','authority','argumentsSha256','normalizationContext'],['signal']),data=frozenData(fields);
    try{contract.normalizeInput(data.request,data.normalizationContext);}catch{deny('INVALID_ARGUMENTS');}
-   const current=retainedCall(operation,{...data,...(signal===undefined?{}:{signal})},c.now);admitDecision(current,c.now);
+   const current=retainedCall(operation,{...data,...(signal===undefined?{}:{signal})},c.now);
    // Observation support cannot be inferred from a static credential or a matching response clock.
-   if((observation||requirePerCall?.(current))&&!credentialsForCall)deny('UNAVAILABLE');
+   if((observation||requirePerCall?.(current))&&!credentialsForCall&&!c.readSource)deny('UNAVAILABLE');
    const selected=credentialsForCall?createRetainedHttpTransport({...c,getCredentials:credentialsForCall(operation,call)}):transport;
    const body=requestBody?frozenData(requestBody(current)):current.request;
    const result=await selected.read(current,{path:fixed[operation.id],method:'POST',body,serviceSecret:true,...(observation?{observation}:{})});

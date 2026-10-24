@@ -15,8 +15,8 @@ export function initialInputContext(value){
   if(!value||typeof value!=='object'||Array.isArray(value)||![Object.prototype,null].includes(Object.getPrototypeOf(value)))fail('INITIAL_INPUT_CONTEXT_INVALID');
   const descriptors=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(descriptors),context={};
   if(keys.length!==contextKeys.length||keys.some(key=>typeof key!=='string'||!contextKeys.includes(key)))fail('INITIAL_INPUT_CONTEXT_INVALID');
-  for(const key of contextKeys){const d=descriptors[key];if(!d||!d.enumerable||!Object.hasOwn(d,'value')||typeof d.value!=='string')fail('INITIAL_INPUT_CONTEXT_INVALID');context[key]=d.value;}
-  if(['tenantId','actorId'].some(key=>!context[key]||context[key].length>128)||['conversationId','runId','clientId'].some(key=>!uuid.test(context[key])))fail('INITIAL_INPUT_CONTEXT_INVALID');
+  for(const key of contextKeys){const d=descriptors[key];if(!d||!d.enumerable||!Object.hasOwn(d,'value')||typeof d.value!=='string'&&!(key==='clientId'&&d.value===null))fail('INITIAL_INPUT_CONTEXT_INVALID');context[key]=d.value;}
+  if(['tenantId','actorId'].some(key=>!context[key]||context[key].length>128)||['conversationId','runId'].some(key=>!uuid.test(context[key]))||context.clientId!==null&&!uuid.test(context.clientId))fail('INITIAL_INPUT_CONTEXT_INVALID');
   return Object.freeze(context);
  }catch(error){if(error instanceof ConversationInitialInputResponseError)throw error;fail('INITIAL_INPUT_CONTEXT_INVALID');}
 }
@@ -24,13 +24,13 @@ function active(allocation,now){const at=now();if(!Number.isSafeInteger(at)||at<
 function facts(allocation){
  const {binding,scopes,selectedClientId,allocatedAtMs,expiresAtMs}=allocation;
  if(binding.writerFence!==1||!Number.isSafeInteger(allocatedAtMs)||allocatedAtMs<0||!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=allocatedAtMs||
-  scopes.some(scope=>scope.tenantId!==binding.tenantId||scope.policyRevision!==scopes[0].policyRevision)||new Set(scopes.map(scope=>canonicalize(scope))).size!==scopes.length||!scopes.some(scope=>scope.kind==='client'&&scope.resourceId===selectedClientId))fail('INITIAL_INPUT_FACTS_MISMATCH');
+  scopes.some(scope=>scope.tenantId!==binding.tenantId||scope.policyRevision!==scopes[0].policyRevision)||new Set(scopes.map(scope=>canonicalize(scope))).size!==scopes.length||(selectedClientId===null?scopes.length!==1||scopes[0].kind!=='private-user'||scopes[0].resourceId!==binding.actorId:!scopes.some(scope=>scope.kind==='client'&&scope.resourceId===selectedClientId)))fail('INITIAL_INPUT_FACTS_MISMATCH');
 }
 function contextMatches(allocation,context){const binding=allocation.binding;if(['tenantId','actorId','conversationId','runId'].some(key=>binding[key]!==context[key])||allocation.selectedClientId!==context.clientId)fail('INITIAL_INPUT_CONTEXT_MISMATCH');}
 /** Shape validation precedes this kernel. It checks immutable input/facts but does not mint public proof or authority. */
 export async function correlateInitialInputReceipt(receipt,request,{now=Date.now}={}){
  const allocation=receipt.allocation;facts(allocation);if(receipt.created&&receipt.state!=='RESERVED')fail('INITIAL_INPUT_STATE_MISMATCH');
- if(allocation.requestId!==request.requestId||allocation.inputSha256!==await hash(request))fail('INITIAL_INPUT_REQUEST_MISMATCH');active(allocation,now);return receipt;
+ if(allocation.requestId!==request.requestId||allocation.inputSha256!==await hash(request)||request.modelSelection!==undefined&&!same(allocation.modelSelection,request.modelSelection))fail('INITIAL_INPUT_REQUEST_MISMATCH');active(allocation,now);return receipt;
 }
 export function receiveConversationInitialInputRequest(utf8Bytes){const request=receiveConversationInputRequest(utf8Bytes);requests.set(request,{allocation:null,state:null,context:null});return request;}
 /** Parsed immutable response + validated shape only. Shared by the byte receiver and focused Node source controls. */
@@ -54,6 +54,6 @@ export async function receiveAllocatedConversationInputResponse(status,utf8Bytes
  const receipt=await receiveConversationInputResponse(status,utf8Bytes,request,expectedContext);
  if(Object.hasOwn(receipt,'error'))return receipt;
  const allocation=proof.allocation;
- if(!same(receipt.run.binding,allocation.binding)||!same(receipt.run.scopes,allocation.scopes)||!same(receipt.run.versions,allocation.versions)||receipt.request.requestId!==allocation.requestId||await hash(receipt.request)!==allocation.requestSha256)fail('INITIAL_INPUT_ADMISSION_MISMATCH');
+ if(!same(receipt.run.binding,allocation.binding)||!same(receipt.run.scopes,allocation.scopes)||!same(receipt.run.versions,allocation.versions)||receipt.request.requestId!==allocation.requestId||await hash(receipt.request)!==allocation.requestSha256||!same(receipt.request.modelSelection??null,allocation.modelSelection??null))fail('INITIAL_INPUT_ADMISSION_MISMATCH');
  active(allocation,Date.now);return receipt;
 }

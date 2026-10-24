@@ -13,7 +13,7 @@ export async function runLocalDocumentFlow({fixture,send,pythonExecutable,recons
   const checkJson = async response => {const body = await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;};
   const bootstrap = await checkJson(await send('/api/action-followthrough/session',{},fixture.nativeCredential));
   assert.notEqual(bootstrap.credential,fixture.nativeCredential);
-  assert.notEqual(bootstrap.credential,fixture.credential);
+  assert.notEqual(bootstrap.credential,'untrusted-tool-token');
   const call = (route,body) => send('/api/documents/'+route,body,bootstrap.credential);
   // Caller-supplied authority never becomes an artifact request.
   const forbidden = await call('create',{deliveryId: 'forged-context',request: draft(),context: fixture.artifactOptions.context});
@@ -48,8 +48,8 @@ export async function runLocalDocumentFlow({fixture,send,pythonExecutable,recons
   assert.deepEqual(inspections[1].tables[0],[['Topic','Status'],['Research milestone','Approved for discussion']]);
   const replay = await call('create',{deliveryId: 'document-original',request: draft()});
   const recovered=await checkJson(replay);assert.deepEqual(recovered.version,first.version);assert.equal(recovered.execution.budgetTicketId,first.execution.budgetTicketId);
-  assert.equal(fixture.stats().generations,2);assert.equal(fixture.stats().versionCharges,2);assert.equal(fixture.stats().settled,2);
-  assert.equal(fixture.stats().consumedMicroUsd,'20');assert.equal(fixture.stats().unknown,0);
+  assert.equal(fixture.stats().generations,2);assert.equal(fixture.stats().deliveries,2);assert.equal(fixture.stats().prepared,2);
+  assert.equal(fixture.stats().prepared,2);assert.equal(fixture.stats().unknown,0);
   fixture.revoke();
   for (const version of [first.version,second.version]) assert.notEqual((await call('download',{versionId: version.versionId})).status,200);
   assert.notEqual((await call('create',{deliveryId: 'after-revocation',request: draft()})).status,200);

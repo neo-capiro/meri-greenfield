@@ -1,16 +1,14 @@
-/** Canonical static material inventory and Linux preflight for control and Temporal worker/issuer.
- * Runner material belongs to runner-bootstrap-files.mjs. No IO occurs on import. */
+/** Canonical static material inventory and Linux preflight for control and Temporal workers.
+ * No per-run credentials or certificates are materialized. No IO occurs on import. */
 import {open,lstat,realpath,readdir} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {posix} from 'node:path';
 import {validateConfiguration} from './config.mjs';
-import {parseTemporalIssuerRuntimeConfiguration} from './temporal-issuer-cli.mjs';
 
 const root='/run/meri', mode=0o600, maxBytes=32768;
-const names=Object.freeze({control:'control.json','temporal-worker':'worker.json','temporal-issuer':'issuer.json'});
-const fixedUsers=Object.freeze({'temporal-issuer':'1000:1000'});
-export const productMaterialPolicy=Object.freeze({directory:root,maxBytes,configurationNames:names,fixedRuntimeUsers:fixedUsers});
+const names=Object.freeze({control:'control.json','temporal-worker':'worker.json','schedule-worker':'schedule-worker.json'});
+export const productMaterialPolicy=Object.freeze({directory:root,maxBytes,configurationNames:names});
 const plans=new WeakSet();
 const hex64=/^[a-f0-9]{64}$/u;
 const refuse=()=>{throw Object.assign(Error('PRODUCT_MATERIAL_REFUSED'),{code:'PRODUCT_MATERIAL_REFUSED'});};
@@ -27,7 +25,6 @@ export function parseProductRuntimeUser(value){
 export function productMaterialIdentity(role,runtimeUser){
  if(typeof role!=='string'||!Object.hasOwn(names,role))refuse();
  const {uid,gid}=parseProductRuntimeUser(runtimeUser);
- if(Object.hasOwn(fixedUsers,role)&&runtimeUser!==fixedUsers[role])refuse();
  return Object.freeze({uid,gid});
 }
 function direct(path){
@@ -39,27 +36,11 @@ function direct(path){
 export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  if(!Object.hasOwn(names,role)||!own(configuration))refuse();
  const identity=productMaterialIdentity(role,runtimeUser),{uid,gid}=identity,configurationPath=`${root}/${names[role]}`;
- /** One purpose per direct, distinct file. */
- function fixed(paths){
-  if(new Set(paths.map(([path])=>direct(path))).size!==paths.length)refuse();
-  const requiredFiles=Object.freeze(paths.sort(([a],[b])=>a.localeCompare(b)).map(([path,purpose])=>Object.freeze({path,purposes:Object.freeze([purpose]),mode:'0600',maxBytes})));
-  const plan=Object.freeze({schemaVersion:1,role,containerName:role,configurationPath,materialDirectory:root,runtimeUser,uid,gid,
-   directoryMode:'0700',requiredFiles,requiresTokenRotation:false,dynamicMaterialDirectory:null});
-  plans.add(plan);return plan;
- }
- if(role==='temporal-issuer'){
-  let c;try{c=parseTemporalIssuerRuntimeConfiguration(configuration);}catch{refuse();}
-  return fixed([
-   [configurationPath,'configuration'],[c.database.connectionFile,'database-connection'],
-   [c.issuer.tls.keyFile,'issuer-tls-key'],[c.issuer.tls.certFile,'issuer-tls-cert'],
-   [c.issuer.tls.caFile,'issuer-tls-ca'],[c.issuer.bootstrap.caKeyFile,'issuer-bootstrap-ca-key']
-  ]);
- }
  let c;try{c=validateConfiguration(configuration,role);}catch{refuse();}
- if(c.http.hostname!=='0.0.0.0'||c.http.port!==(role==='control'?8080:8081))refuse();
+ if(c.http.hostname!=='0.0.0.0'||c.http.port!==(role==='control'?8080:role==='temporal-worker'?8081:8083))refuse();
  // Static product control must never fall back to the legacy shared listener:
  // the public ALB target reaches 8080 while native capabilities reach 8082.
- if(role==='control'&&(c.privateHttp===undefined||c.taskRouter?.enabled!==true))refuse();
+ if(role==='control'&&(c.privateHttp===undefined||c.agentcore===undefined))refuse();
  const files=new Map([[configurationPath,new Set(['configuration'])]]);
  function add(path,purpose){
   direct(path);if(path===configurationPath)refuse();
@@ -67,35 +48,20 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  }
  add(c.native.capabilityFile,'native-capability');
  add(c.temporal.tls.caFile,'temporal-ca');add(c.temporal.tls.certFile,'temporal-cert');add(c.temporal.tls.keyFile,'temporal-key');
- if(c.temporal.tokenWriter?.enabled===true){
-  const d=c.temporal.issuerDelivery;
-  add(d.publicKey.manifestFile,'temporal-issuer-jwk');add(d.tls.issuerCaFile,'temporal-issuer-ca');
-  add(c.temporal.issuerBootstrap.clientCaFile,'temporal-issuer-client-ca');
- }else if(c.temporal.authorization)add(c.temporal.authorization.tokenFile,'temporal-authorization-token');
- if(role==='control'){
+ if(c.native?.serverCaFile!==undefined)add(c.native.serverCaFile,'control-server-ca');
+ if(role==='control'||role==='schedule-worker'){
   add(c.database.connectionFile,'database-connection');
   if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');
   if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');
-   // P2: the pinned general-read installation measurement, brotli-compressed JSON (not a secret; byte-exact, digest-pinned like every other material file).
-   if(c.reads.installation?.enabled===true)add(c.reads.installation.measurementFile,'reads-installation-measurement');}
-  if(c.nativeCandidate){
-   add(c.nativeCandidate.identity.credentialFile,'identity-capability');
-   add(c.nativeCandidate.taskCapabilityFile,'task-capability');
-   add(c.nativeCandidate.controlCapabilityFile,'control-capability');
   }
-  if(c.taskRouter?.enabled)add(c.taskRouter.runnerCaFile,'runner-ca');
-  if(c.taskRouter?.poststart?.enabled){add(c.taskRouter.poststart.runnerCaKeyFile,'runner-ca-key');add(c.taskRouter.poststart.controlCaFile,'poststart-control-ca');}
  }
- const dynamicMaterialDirectory=c.nativeCandidate?.multiRun?.materialDirectory??null;
- if(dynamicMaterialDirectory!==null){const path=posix.normalize(dynamicMaterialDirectory);if(!posix.isAbsolute(path)||path===root||path.startsWith(root+'/'))refuse();}
- for(const [path,purposes] of files){
-  if(purposes.size>1&&!(purposes.size===2&&purposes.has('native-capability')&&purposes.has('control-capability')))refuse();
-  if(path!==configurationPath)direct(path);
- }
+ for(const [path,purposes] of files){if(purposes.size>1)refuse();if(path!==configurationPath)direct(path);}
+ const dynamicMaterialDirectory=null;
+
  const requiredFiles=Object.freeze([...files].sort(([a],[b])=>a.localeCompare(b)).map(([path,purposes])=>Object.freeze({path,purposes:Object.freeze([...purposes].sort()),mode:'0600',maxBytes})));
  const plan=Object.freeze({schemaVersion:1,role,containerName:role,configurationPath,materialDirectory:root,runtimeUser,uid,gid,
-  directoryMode:'0700',requiredFiles,requiresTokenRotation:!!c.temporal.authorization,
-  dynamicMaterialDirectory,...(c.temporal.tokenWriter?.enabled===true?{temporalTokenWriter:Object.freeze({directory:'/run/meri-temporal',tokenFile:'/run/meri-temporal/token.json',identityDirectory:'/run/meri-temporal/identity',role})}:{})});
+  directoryMode:'0700',requiredFiles,requiresTokenRotation:false,
+  dynamicMaterialDirectory});
  plans.add(plan);return plan;
 }
 

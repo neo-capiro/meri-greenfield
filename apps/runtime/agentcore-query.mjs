@@ -9,7 +9,7 @@ import {createNativeReadsClient} from './reads-client.mjs';
 import {createRunnerIntentsClient} from './native-authority/intents-client.mjs';
 import {invocationInput,settlementResult,agentcoreFault} from './agentcore-contract.mjs';
 
-export function createAgentCoreQuery({origin,fetchImpl,workspace,query,assemble=assembleConversationRunner,sessionFactory=createRuntimeSdkSessionFactory,environment=process.env,now=Date.now}){
+export function createAgentCoreQuery({origin,fetchImpl,workspace,query,providerCredentials,assemble=assembleConversationRunner,sessionFactory=createRuntimeSdkSessionFactory,environment=process.env,now=Date.now}){
  return async function execute(raw,{signal}){
   const input=invocationInput(raw),{execution,versions,credential}=input,binding=execution.binding;
   assertRunnerEnvironment(environment);if(execution.expiresAtMs-now()<=23000)throw agentcoreFault('RUNNER_DEADLINE');
@@ -22,7 +22,7 @@ export function createAgentCoreQuery({origin,fetchImpl,workspace,query,assemble=
   const sessions=sessionFactory({origin,credential,binding,fetchImpl,now,startupMaxRequestMs:23000,startupExpiresAtMs:execution.expiresAtMs-23000});
   const reads=input.sourceEnabled===true&&input.approvedReads?.enabled===true?createNativeReadsClient({origin,credential,binding,approvedReads:input.approvedReads,fetchImpl,now}):undefined;
   const intents=input.sourceEnabled===true&&input.intents?.enabled===true?createRunnerIntentsClient({origin,credential,binding,fetchImpl,enabled:true}):undefined;
-  const run=assemble({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,now,...(query?{query}:{}),...(reads?{generalReads:reads}:{}),...(intents?{governedIntents:intents}:{})});
+  const run=assemble({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,now,...(providerCredentials?{providerCredentials}:{}),...(query?{query}:{}),...(reads?{generalReads:reads}:{}),...(intents?{governedIntents:intents}:{})});
   let result,failure;try{result=await run({binding,signal});}catch(error){failure=error;}
   const cleanup=run.cleanupStatus();if(cleanup.pendingInitializations!==0||cleanup.closed!==true||cleanup.failures.length||failure?.code==='SDK_CLEANUP_UNKNOWN')throw agentcoreFault('RUNNER_CLEANUP_UNKNOWN');
   // An activity error does not prove its final event committed. Read the same canonical owner before acknowledging a failed turn.

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {createBillTextHandlers} from '../handler.mjs';
 import {prepareBillTextReadContext} from '../../../dispatch/bill-text-context.mjs';
-import {durableFamilyFixture} from '../../../general-reads/test/durable-fixture.mjs';
+import {fixture as composedFixture} from '../../../../runtime/test/reads-native-fixture.mjs';
 import {billTextCase,origin,cursor} from './fixture.mjs';
 const code=expected=>error=>error.message===expected&&!error.message.includes('SYNTHETIC');
 const configuration=f=>({...f.transport,now:f.now});
@@ -19,22 +19,11 @@ for(const id of ['search_congress_bills','read_bill_text']){
   const stamp=id==='read_bill_text'?'publishedAt':'generatedAt';assert.ok(f.state.nativeValue[stamp] instanceof Date);assert.equal(result.result[stamp],new Date(f.now()).toISOString());
   for(const key of ['authoritative','sourceConnected','producerQualified','absenceEvidence','currentPointerQualified'])assert.equal(f.contract.normalizeInput(f.arguments,f.normalizationContext).metadata[key],false);
  });
- test(`${id}: actual canonical durable dispatch settles once and preserves duplicate uncertainty`,async()=>{
-  const f=await durableFamilyFixture(billTextCase(id)),raw=await f.execute(),result=JSON.parse(raw),[reservation]=f.state.reservations.values();
-  assert.equal(reservation.state,'SETTLED');assert.equal(reservation.output_bytes,Buffer.byteLength(raw));assert.equal(f.state.budget.consumed_micro_usd,1);
-  assert.equal(result.result.tool,id);assert.equal(f.state.produced.size,1);const [invocation]=f.state.produced.values();assert.equal(invocation.completion.resultSha256,canonicalSha256(result));
-  const count=f.wire.length;await assert.rejects(f.execute(),code('BUDGET_UNCERTAIN'));assert.equal(f.wire.length,count);assert.equal(f.state.budget.consumed_micro_usd,1);
+ test(`${id}: model authority is rejected before the ordinary source`,async()=>{
+  const f=await composedFixture('bill-text',id,{scene:billTextCase(id)}),r=await f.execute({...f.scene.arguments,defaultCongress:118,tenantId:'foreign'});assert.equal(r.status,400);assert(!f.calls.some(p=>p===`/api/clio/tools/${id}`));
  });
- test(`${id}: disabled, uninstalled and missing captured Congress cannot fetch`,async()=>{
-  const f=await durableFamilyFixture(billTextCase(id));await assert.rejects(f.mount({sourceEnabled:false}).execute({operation:f.operation,arguments:f.arguments,deliveryId:'off'}),code('UNAVAILABLE'));
-  f.state.installRevoked=true;await assert.rejects(f.execute('no-install'),code('UNAVAILABLE'));f.state.installRevoked=false;
-  await assert.rejects(f.mount({defaultCongress:undefined}).execute({operation:f.operation,arguments:f.arguments,deliveryId:'no-context'}),code('UNAVAILABLE'));assert.equal(f.wire.length,0);assert.equal(f.state.reservations.size,0);
- });
- test(`${id}: model authority is rejected before source and budget`,async()=>{
-  const f=await durableFamilyFixture(billTextCase(id));await assert.rejects(f.execute('forged',{...f.arguments,defaultCongress:118,tenantId:'foreign'}),code('INVALID_ARGUMENTS'));assert.equal(f.wire.length,0);assert.equal(f.state.reservations.size,0);
- });
- test(`${id}: release revocation withholds the fetched result`,async()=>{
-  const f=await durableFamilyFixture(billTextCase(id));f.state.afterSource=()=>{f.state.revoked=true;};await assert.rejects(f.execute('revoked'),code('ACCESS_DENIED'));assert.equal(f.wire.length,1);
+ test(`${id}: current execution revocation withholds the fetched result`,async()=>{
+  const f=await composedFixture('bill-text',id,{scene:billTextCase(id)});f.scene.state.afterSource=f.revoke;const r=await f.execute();assert.equal(r.status,403);assert.equal(f.scene.wire.length,1);
  });
 }
 test('SEARCH resolves a designation under captured118 before a Core119 clock could retarget it',async()=>{
@@ -67,8 +56,8 @@ for(const mutation of ['secret','binding','expiry'])test(`native ${mutation} pro
  const f=billTextCase();f.state.credentialMutator=value=>{if(mutation==='secret')delete value.serviceSecret;else if(mutation==='binding')value.binding.writerFence++;else value.expiresAtMs=f.now();};
  await assert.rejects(execute(f)(f.call()),code(mutation==='secret'?'INVALID_ARGUMENTS':'ACCESS_DENIED'));assert.equal(f.wire.length,0);
 });
-for(const mutation of ['audience','decision'])test(`current ${mutation} mismatch refuses before native credentials`,async()=>{
- const f=billTextCase();if(mutation==='audience')f.authority.claims.audience='other';else f.authority.decision.operation='other@0.2.0';
+for(const mutation of ['execution','policy'])test(`current ${mutation} mismatch refuses before native credentials`,async()=>{
+ const f=billTextCase();if(mutation==='execution')f.authority.executionSha256='other';else f.authority.policyRevision='other';
  await assert.rejects(execute(f)(f.call()),code('ACCESS_DENIED'));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
 });
 test('response cap, media and redirects fail closed without changing native DTO validation',async()=>{

@@ -14,14 +14,14 @@ const v=createFloridaBudgetValidators({schema,validateShape(name,value){const ch
 const id='get_florida_budget_project', at='2026-10-12T12:00:00.000Z';
 const cid='aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', other='11111111-2222-3333-4444-555555555555';
 const clone=structuredClone;
-const context=(scope={})=>({asOf:at,effectiveScope:{jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null,...scope},clientResolution:null});
-const resolved=(selector=cid,clientId=cid,scope={})=>({...context({clientId,...scope}),clientResolution:{selector,clientId}});
+const context=()=>({asOf:at});
+const scope=(overrides={})=>({jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null,...overrides});
 const amount=(n='a')=>({id:`amount-${n}`,observation:{minorUnits:'-900719925474099312',measure:'positions',qualified:false}});
 const recent=(projectId,n='a')=>({project_id:projectId,...amount(n)});
 const project=(n='p')=>({id:`project-${n}`,fiscal_year:'2026-27',title:'Synthetic publisher item',agency:null,identities:[],relations:{unresolved:true},evidence:null,saved:false,tracking_version:null,recentAmounts:[]});
 const document=(n='d')=>({id:`document-${n}`,publisher:'Synthetic publisher',source_url:'stored arbitrary locator',content_hash:'stored-text-hash',title:'Source',fiscal_year:'2026-27',session_key:'',chamber:'source-defined chamber',stage:'source-defined stage',role:'source-defined role',offer:null,publication_date:'unknown source date',observed_at:at,complete:false,metadata:[null,{basis:'source wording'}]});
 const event=(n='e')=>({id:`event-${n}`,project_id:null,document_id:'not-in-returned-document-window',kind:'veto_outcome',payload:false,observed_at:at,title:'Source',source_url:'not-a-URL',stage:'source stage',fiscal_year:'2026-27'});
-const output=(ctx=context())=>({tool:id,generatedAt:at,result:{scope:clone(ctx.effectiveScope),fiscalYear:'2026-27',projects:[],nextOffset:null,documents:[],amounts:[],events:[],notice:schema.$defs.FloridaBudgetNotice.const},authority:schema.$defs.FloridaBudgetAuthority.const});
+const output=(selected={})=>({tool:id,generatedAt:at,result:{scope:scope(selected),fiscalYear:'2026-27',projects:[],nextOffset:null,documents:[],amounts:[],events:[],notice:schema.$defs.FloridaBudgetNotice.const},authority:schema.$defs.FloridaBudgetAuthority.const});
 const check=(value,request={},ctx=context())=>v.assertResult(id,value,request,ctx);
 
 test('single private operation and schema definitions are exact',()=>{
@@ -54,30 +54,23 @@ test('context is mandatory, closed and never model supplied',()=>{
  assert.throws(()=>v.normalizeInput(id,{asOf:at},context()));
  for(const key of ['actorId','tenantId','nowMs','role'])assert.throws(()=>v.normalizeInput(id,{}, {...context(),[key]:'forged'}));
 });
-test('canonical UUID selectors resolve case-insensitively and names use explicit receipt',()=>{
- const c=resolved(cid.toUpperCase());assert.equal(v.normalizeInput(id,{clientId:cid.toUpperCase()},c).input.clientId,cid);check(output(c),{clientId:cid.toUpperCase()},c);
- const name='  Synthetic client  ',n=resolved(name.trim());assert.equal(v.normalizeInput(id,{clientId:name},n).input.clientId,cid);check(output(n),{clientId:name},n);
- assert.throws(()=>v.normalizeInput(id,{clientId:cid},resolved(cid,other)));
- assert.throws(()=>v.normalizeInput(id,{clientId:'Different client'},n));
+test('canonical UUID selectors stay exact and names reach the actual Core resolver',()=>{
+ const c=context();assert.equal(v.normalizeInput(id,{clientId:cid.toUpperCase()},c).input.clientId,cid);check(output({clientId:cid}),{clientId:cid.toUpperCase()},c);
+ assert.equal(v.normalizeInput(id,{clientId:'  Synthetic client  '},c).input.clientId,'Synthetic client');check(output({clientId:cid}),{clientId:'Synthetic client'},c);
+ assert.throws(()=>check(output({clientId:other}),{clientId:cid},c));assert.throws(()=>check(output(),{clientId:'Synthetic client'},c));
 });
-test('client selector truncates80 after trim and empty selectors require null resolution',()=>{
- const label='x'.repeat(85),c=resolved(label.slice(0,80));assert.equal(v.normalizeInput(id,{clientId:label},c).input.clientId,cid);
- for(const clientId of [undefined,null,'','  ']){
-  const req=clientId===undefined?{}:{clientId};assert.equal(v.normalizeInput(id,req,context()).input.clientId,null);
-  assert.throws(()=>v.normalizeInput(id,req,resolved('')));
- }
+test('client selector truncates80 after trim and empty selectors cannot imply a client',()=>{
+ const label='x'.repeat(85);assert.equal(v.normalizeInput(id,{clientId:label},context()).input.clientId,label.slice(0,80));
+ for(const clientId of [undefined,null,'','  ']){const req=clientId===undefined?{}:{clientId};assert.equal(v.normalizeInput(id,req,context()).input.clientId,null);assert.throws(()=>check(output({clientId:cid}),req));}
 });
-test('folder-derived client is distinct from explicit resolved client',()=>{
- const c=context({folderId:'folder',clientId:cid});assert.equal(v.normalizeInput(id,{folderId:'folder'},c).input.clientId,null);check(output(c),{folderId:'folder'},c);
- for(const clientId of [null,'','  '])check(output(c),{folderId:'folder',clientId},c);
- const explicit=resolved('Client',cid,{folderId:'folder'});check(output(explicit),{folderId:'folder',clientId:'Client'},explicit);
- assert.throws(()=>v.normalizeInput(id,{folderId:'folder',clientId:'Client'},{...explicit,effectiveScope:{...explicit.effectiveScope,clientId:other}}));
- assert.throws(()=>v.normalizeInput(id,{},context({clientId:cid})));
+test('folder-derived client is distinct from an explicit UUID selector',()=>{
+ const c=context(),page=output({folderId:'folder',clientId:cid});assert.equal(v.normalizeInput(id,{folderId:'folder'},c).input.clientId,null);check(page,{folderId:'folder'},c);
+ for(const clientId of [null,'','  '])check(page,{folderId:'folder',clientId},c);
+ check(page,{folderId:'folder',clientId:'Client'},c);assert.throws(()=>check(page,{folderId:'folder',clientId:other},c));assert.throws(()=>check(output({clientId:cid}),{},c));
 });
-test('scope substitutions reject session, folder, client and jurisdiction changes',()=>{
- const c=context({folderId:'folder',clientId:cid,sessionKey:'2026'}),req={folderId:'folder',sessionKey:'2026'};
- for(const [key,bad] of [['folderId','else'],['clientId',other],['sessionKey','2027'],['jurisdiction','GA']]){const p=output(c);p.result.scope[key]=bad;assert.throws(()=>check(p,req,c));}
- assert.throws(()=>v.normalizeInput(id,req,context({folderId:'else',sessionKey:'2026'})));
+test('scope substitutions reject session, folder, explicit client and jurisdiction changes',()=>{
+ const selected={folderId:'folder',clientId:cid,sessionKey:'2026'},req={...selected};
+ for(const [key,bad] of [['folderId','else'],['clientId',other],['sessionKey','2027'],['jurisdiction','GA']]){const p=output(selected);p.result.scope[key]=bad;assert.throws(()=>check(p,req));}
 });
 test('empty response is selected data with no completeness or absence inference',()=>{
  const p=output();assert.deepEqual(check(p),p);assert.notStrictEqual(check(p),p);assert.equal(v.classifyResult(id,p).absenceEvidence,false);
@@ -123,13 +116,13 @@ test('full and recent amount windows may share identity without forced observati
 test('saved/version joins preserve absence, removed rows and signed versions',()=>{
  const p=output(),row=project();p.result.projects=[row];check(p);
  row.tracking_version=0;assert.throws(()=>check(p));
- const c=context({folderId:'folder'});p.result.scope=clone(c.effectiveScope);check(p,{folderId:'folder'},c);row.tracking_version=-1;check(p,{folderId:'folder'},c);row.saved=true;check(p,{folderId:'folder'},c);
+ const c=context();p.result.scope=scope({folderId:'folder'});check(p,{folderId:'folder'},c);row.tracking_version=-1;check(p,{folderId:'folder'},c);row.saved=true;check(p,{folderId:'folder'},c);
  row.tracking_version=null;assert.throws(()=>check(p,{folderId:'folder'},c));
 });
 test('fiscal/session result correlations do not invent consecutive fiscal years',()=>{
  const p=output();p.result.fiscalYear='2026-00';const row=project();row.fiscal_year='2026-00';p.result.projects=[row];check(p,{fiscalYear:'2026-00'});
  assert.throws(()=>check(p));p.result.documents=[document()];assert.throws(()=>check(p,{fiscalYear:'2026-00'}));
- const c=context({sessionKey:'Session X'}),q=output(c);q.result.documents=[document()];assert.throws(()=>check(q,{sessionKey:'Session X'},c));q.result.documents[0].session_key='Session X';check(q,{sessionKey:'Session X'},c);
+ const c=context(),q=output({sessionKey:'Session X'});q.result.documents=[document()];assert.throws(()=>check(q,{sessionKey:'Session X'},c));q.result.documents[0].session_key='Session X';check(q,{sessionKey:'Session X'},c);
 });
 test('observed timestamps are finite canonical and descend without collation claims',()=>{
  const p=output();p.result.documents=[document('z'),document('a')];p.result.events=[event('z'),event('a')];check(p);
@@ -152,22 +145,21 @@ test('inert admission rejects getters, proxies, sparse arrays and cycles without
  let calls=0;const request={};Object.defineProperty(request,'q',{enumerable:true,get(){calls++;return'x';}});assert.throws(()=>v.normalizeInput(id,request,context()));assert.equal(calls,0);
  const proxy=new Proxy({}, {get(){calls++;return null;}});assert.throws(()=>v.normalizeInput(id,proxy,context()));assert.equal(calls,0);
  for(const bad of [()=>{const a=[];a.length=2;return a;},()=>{const a={};a.self=a;return a;}]){const p=output();p.result.projects=[{...project(),evidence:bad()}];assert.throws(()=>check(p));}
- const c=context();Object.defineProperty(c.effectiveScope,'clientId',{enumerable:true,get(){calls++;return cid;}});assert.throws(()=>v.normalizeInput(id,{},c));assert.equal(calls,0);
+ const c=context();Object.defineProperty(c,'asOf',{enumerable:true,get(){calls++;return cid;}});assert.throws(()=>v.normalizeInput(id,{},c));assert.equal(calls,0);
 });
-test('no ambient clock and direct normalization snapshots immutable context metadata',()=>{
- const original=Date.now;Date.now=()=>{throw Error('ambient clock forbidden');};try{const c=context(),request={q:'x'},n=v.normalizeInput(id,request,c);request.q='changed';c.effectiveScope.sessionKey='changed';assert.equal(n.input.q,'x');assert.equal(n.metadata.effectiveScope.sessionKey,'');assert(Object.isFrozen(n.input));assert(Object.isFrozen(n.metadata.effectiveScope));check(output());}finally{Date.now=original;}
+test('no ambient clock and direct normalization snapshots the observation timestamp',()=>{
+ const original=Date.now;Date.now=()=>{throw Error('ambient clock forbidden');};try{const c=context(),request={q:'x'},n=v.normalizeInput(id,request,c);request.q='changed';c.asOf='changed';assert.equal(n.input.q,'x');assert.equal(n.metadata.asOf,at);assert(Object.isFrozen(n.input));assert(Object.isFrozen(n.metadata));check(output());}finally{Date.now=original;}
 });
 test('actual canonical resolver preserves request, hashes effective selection and filters context',()=>{
- const binding={id,version:'0.2.0',contextKeys:['asOf','effectiveScope','clientResolution'],normalize:(validators,request,ctx)=>validators.normalizeInput(id,request,ctx),outputAssert:(validators,page,request,ctx,binding)=>validators.assertResult(id,page,request,Object.fromEntries(binding.contextKeys.map(key=>[key,ctx[key]])))};
+ const binding={id,version:'0.2.0',contextKeys:['asOf'],normalize:(validators,request,ctx)=>validators.normalizeInput(id,request,ctx),outputAssert:(validators,page,request,ctx,binding)=>validators.assertResult(id,page,request,Object.fromEntries(binding.contextKeys.map(key=>[key,ctx[key]])))};
  const resolver=createOperationContracts({catalog:{operations:[{operation:{id,version:'0.2.0'}}]},bindings:[binding],validators:v,assertCatalog(){},canonicalSha256:value=>createHash('sha256').update(JSON.stringify(value)).digest('hex')});
- const operation=resolver.resolveOperationContract({id,version:'0.2.0'}),request={clientId:'Synthetic'},c=resolved('Synthetic'),n=operation.normalizeInput(request,c);request.clientId='mutated';assert.equal(n.request.clientId,'Synthetic');assert.equal(n.input.clientId,cid);assert.match(n.argumentsSha256,/^[a-f0-9]{64}$/);assert(Object.isFrozen(n.request));
- assert.doesNotThrow(()=>operation.assertOutput(output(c),{...c,request:n.request}));assert.throws(()=>operation.assertOutput(output(c),c));assert.throws(()=>operation.normalizeInput({}, {...context(),role:'admin'}));
+ const operation=resolver.resolveOperationContract({id,version:'0.2.0'}),request={clientId:'Synthetic'},c=context(),n=operation.normalizeInput(request,c);request.clientId='mutated';assert.equal(n.request.clientId,'Synthetic');assert.equal(n.input.clientId,'Synthetic');assert.match(n.argumentsSha256,/^[a-f0-9]{64}$/);assert(Object.isFrozen(n.request));
+ assert.doesNotThrow(()=>operation.assertOutput(output({clientId:cid}),{...c,request:n.request}));assert.throws(()=>operation.assertOutput(output({clientId:cid}),c));assert.throws(()=>operation.normalizeInput({}, {...context(),role:'admin'}));
 });
 
-test('client UUID identity survives trailing whitespace introduced by the80unit cap',()=>{
- const raw=`${cid}${' '.repeat(44)}x`,selector=raw.slice(0,80);
- const valid=resolved(selector,cid);assert.equal(v.normalizeInput(id,{clientId:raw},valid).input.clientId,cid);
- assert.throws(()=>v.normalizeInput(id,{clientId:raw},resolved(selector,other)));
+test('truncated client reference remains a Core selector and never an authority receipt',()=>{
+ const raw=`${cid}${' '.repeat(44)}x`,selector=raw.trim().slice(0,80);assert.equal(v.normalizeInput(id,{clientId:raw},context()).input.clientId,cid);assert.throws(()=>check(output({clientId:other}),{clientId:raw}));
+ assert.throws(()=>v.normalizeInput(id,{clientId:raw},{...context(),clientResolution:{selector,clientId:other}}));
 });
 
 test('validated Florida output is detached from subsequent caller mutation',()=>{

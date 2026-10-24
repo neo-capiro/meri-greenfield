@@ -15,8 +15,8 @@ const certificate=/^-----BEGIN CERTIFICATE-----\r?\n(?:[A-Za-z0-9+/=]+\r?\n)+---
 const maxPrivateBytes=16384,maxBundleBytes=rdsLock.bytes+maxPrivateBytes+1;
 
 function privateAnchor(c){
- const file=c.taskRouter?.poststart?.controlCaFile,sha256=c.temporal?.issuerBootstrap?.configuration?.serverCaSha256;
- if(c.taskRouter?.poststart?.enabled!==true||typeof file!=='string'||!/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)||!hex.test(sha256??''))fail();
+ const file=c.native?.serverCaFile,sha256=c.native?.serverCaSha256;
+ if(typeof file!=='string'||!/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)||!hex.test(sha256??''))fail();
  return {file,sha256};
 }
 export function productControlTrustsCompositeCa(environment=process.env){return environment.NODE_EXTRA_CA_CERTS===CONTROL_NODE_CA_FILE;}

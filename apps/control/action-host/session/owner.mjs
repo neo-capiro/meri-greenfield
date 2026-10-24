@@ -1,8 +1,10 @@
+import {validSessionReceipt} from '../../../../packages/contracts/session-receipt/validate.mjs';
 /** Bounded process-local opaque sessions. Identity and current authorization belong to injected owners. */
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {assertNativeConversationScope} from '../../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex'),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -39,7 +41,7 @@ export function createSessionRefusalDiagnostics({write=line=>process.stderr.writ
 // One minimal issuance wire owner, reused at construction and HTTP release.
 export function assertActionSessionReceipt(value,at){
  const v=data(value);own(v,['credential','expiresAtMs','context']);own(v.context,['tenantId','actorId','conversationId','runId','selectedClientId']);
- if(!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at||typeof v.credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(v.credential)||['tenantId','actorId'].some(k=>typeof v.context[k]!=='string'||!v.context[k]||v.context[k].length>256)||['conversationId','runId','selectedClientId'].some(k=>typeof v.context[k]!=='string'||!uuid.test(v.context[k]))||Buffer.byteLength(JSON.stringify(v))>4096)deny();
+ if(!validSessionReceipt(v,at,{general:true})||Buffer.byteLength(JSON.stringify(v))>4096)deny();
  return v;
 }
 export function createActionSessionOwner(configuration){
@@ -78,7 +80,7 @@ export function createActionSessionOwner(configuration){
   remove(record);deny();
  }
  function fact(value,keys,started,t){const v=data(value);own(v,keys);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
- function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.values(v).some(x=>typeof x!=='string'||!uuid.test(x)))deny();return v;}
+ function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.entries(v).some(([k,x])=>!(k==='clientId'&&x===null)&&(typeof x!=='string'||!uuid.test(x))))deny();return v;}
  // The membership owner is independent of Core's native /identity and /context
  // receipt join. Keep the original identity bytes for that join and pin only the
  // admitted membership principal beside the opaque session.
@@ -90,7 +92,7 @@ export function createActionSessionOwner(configuration){
    p.permissions.length>64||p.permissions.some(value=>typeof value!=='string')||
    !Array.isArray(p.clientIds)||p.clientIds.length>4096||
    p.clientIds.some(value=>typeof value!=='string'||!uuid.test(value))||new Set(p.clientIds).size!==p.clientIds.length||
-   selectedClientId!==undefined&&!p.clientIds.includes(selectedClientId))deny();
+   selectedClientId!==undefined&&selectedClientId!==null&&!p.clientIds.includes(selectedClientId))deny();
   return p;
  }
  async function admitMember(credential,identity,t){
@@ -118,9 +120,9 @@ export function createActionSessionOwner(configuration){
   const membershipPrincipal=member?(record?record.membershipPrincipal:membershipAdmission.principal):undefined;
   progress.step='membership-recheck';if(member&&record)await recheckMember(membershipPrincipal,nativeCredential,identity,t,record.context.selectedClientId,record);
   progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>resolveContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t);
-  if(record)valid(record,t.signal);validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||current.binding.tenantId!==identity.principal.tenantId||current.binding.actorId!==identity.principal.actorId||typeof current.selectedClientId!=='string'||!uuid.test(current.selectedClientId)||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)deny();
+  if(record)valid(record,t.signal);validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||current.binding.tenantId!==identity.principal.tenantId||current.binding.actorId!==identity.principal.actorId||current.selectedClientId!==null&&(typeof current.selectedClientId!=='string'||!uuid.test(current.selectedClientId))||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)deny();
   for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==identity.principal.tenantId)deny();}
-  if(new Set(current.scopes.map(canonicalSha256)).size!==current.scopes.length||!current.scopes.some(s=>s.kind==='client'&&s.resourceId.toLowerCase()===current.selectedClientId))deny();
+  try{assertNativeConversationScope(current);}catch{deny();}
   for(const key of ['conversationId','runId'])if(selected[key]!==undefined&&selected[key]!==current.binding[key])deny();if(selected.clientId!==undefined&&selected.clientId!==current.selectedClientId)deny();
   progress.step='membership-recheck';if(member)await recheckMember(membershipPrincipal,nativeCredential,identity,t,current.selectedClientId,record);
   progress.step='context';const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();progress.step='release';
@@ -194,7 +196,7 @@ export function createActionSessionOwner(configuration){
  function nativeCredentialFor(input){
   const v=own(input,['binding','selectedClientId'],['signal']);nativeSignal(v.signal);const at=active(v.signal);
   const b=data(v.binding);if(b===null||typeof b!=='object'||Array.isArray(b))deny();
-  const keys=['tenantId','actorId','conversationId','runId'];if(keys.some(k=>typeof b[k]!=='string'||!b[k])||!uuid.test(b.conversationId)||!uuid.test(b.runId)||typeof v.selectedClientId!=='string'||!uuid.test(v.selectedClientId))deny();
+  const keys=['tenantId','actorId','conversationId','runId'];if(keys.some(k=>typeof b[k]!=='string'||!b[k])||!uuid.test(b.conversationId)||!uuid.test(b.runId)||v.selectedClientId!==null&&(typeof v.selectedClientId!=='string'||!uuid.test(v.selectedClientId)))deny();
   let best=null;
   for(const r of sessions.values()){const c=r.context.binding;if(r.relayEligible!==true||r.expiresAtMs<=at||!r.nativeCredential||keys.some(k=>c?.[k]!==b[k])||r.context.selectedClientId!==v.selectedClientId)continue;if(best===null||r.expiresAtMs>best.expiresAtMs)best=r;}
   if(best===null)deny('SESSION_UNAVAILABLE');valid(best,v.signal);

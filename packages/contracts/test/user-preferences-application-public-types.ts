@@ -1,9 +1,16 @@
 import {receiveUserPreferencesRequest,receiveUserPreferencesResponse,USER_PREFERENCE_DEFAULTS,USER_PREFERENCE_THEMES,userPreferencesPaths,userPreferencesMetadata,type UserPreferences,type UserPreferencesOwner,type UserPreferencesSaveRequest,type UserPreferencesResponse,type UserPreferencesErrorResponse} from '@capiro/meri-contracts/user-preferences-application';
 const owner:UserPreferencesOwner={tenantId:'tenant',actorId:'actor'},preferences:UserPreferences=structuredClone(USER_PREFERENCE_DEFAULTS);
 preferences.theme='dark';const request:UserPreferencesSaveRequest=await receiveUserPreferencesRequest('save',JSON.stringify({expectedRevision:0,preferences}));
+preferences.defaultModel={provider:'claude-api',modelId:'synthetic-model',effort:'xhigh'};
+preferences.defaultModel=null;
+// @ts-expect-error provider environment and credentials are not user preference fields
+preferences.defaultModel={provider:'claude-api',modelId:'synthetic-model',effort:null,apiKey:'not-a-key'};
+// @ts-expect-error effort is the finite pinned SDK union
+preferences.defaultModel={provider:'bedrock',modelId:'synthetic-model',effort:'unlimited'};
 const result=await receiveUserPreferencesResponse('save',200,'{}',{owner,request}),exact:UserPreferencesResponse|UserPreferencesErrorResponse=result;void exact;
 const read=await receiveUserPreferencesRequest('read','{}');await receiveUserPreferencesResponse('read',200,'{}',{owner});void read;
 if(!('error'in result)){const revision:number=result.revision,theme:'system'|'light'|'dark'=result.preferences.theme;void revision;void theme;}
+if(!('error'in result)){const catalogModel:string=result.modelCatalog.models[0].modelId,available:boolean=result.modelCatalog.models[0].available;void catalogModel;void available;}
 const path:'/api/settings/user/read'=userPreferencesPaths.read,limit:8192=userPreferencesMetadata.limits.requestBytes,themes:readonly ['system','light','dark']=USER_PREFERENCE_THEMES;void path;void limit;void themes;
 // @ts-expect-error independent current Core owner is mandatory
 await receiveUserPreferencesResponse('read',200,'{}');

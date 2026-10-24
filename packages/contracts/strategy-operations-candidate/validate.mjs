@@ -17,7 +17,7 @@ export const without=(v,key)=>Object.fromEntries(Object.entries(v).filter(([k])=
 export const requestInputHash=v=>hash(without(v,'inputSha256'));
 function shape(name,value,limit=policy.resultBytes){const v=data(value);if(Buffer.byteLength(JSON.stringify(v))>limit||!validators[name](v))fail();return v;}
 export function assertRequest(value){
- const v=shape('Request',value,policy.requestBytes),d=v.delegation;
+ const v=shape('Request',value,policy.requestBytes);
  if(v.context.contextSha256!==hash(without(v.context,'contextSha256')))fail();
  if(v.operation==='strategy.draft'){
   const p=v.context.draft;if(p===null||p.clientId!==v.principal.clientId||p.selectedOwnerActorId!==v.principal.ownerActorId||!same(p.input,v.input))fail();
@@ -31,7 +31,7 @@ export function assertRequest(value){
    if(seen.size!==requested.size)fail();
   }
  }else if(v.context.draft!==null)fail();
- if(v.inputSha256!==requestInputHash(v)||v.originalExpiresAtMs<=v.requestedAtMs||v.originalExpiresAtMs-v.requestedAtMs>policy.attemptMs||d.issuedAtMs>v.requestedAtMs||d.absoluteExpiresAtMs<v.originalExpiresAtMs||d.absoluteExpiresAtMs-d.issuedAtMs>policy.delegationMs||v.context.asOfMs>v.requestedAtMs)fail();
+ if(v.inputSha256!==requestInputHash(v)||v.originalExpiresAtMs<=v.requestedAtMs||v.originalExpiresAtMs-v.requestedAtMs>policy.attemptMs||v.context.asOfMs>v.requestedAtMs)fail();
  const seen=new Set();for(const e of v.context.evidence){if(seen.has(e.ref)||e.asOfMs>v.context.asOfMs||e.scope==='client'&&e.clientId!==v.principal.clientId||e.scope==='tenant-shared'&&e.clientId!==null)fail();seen.add(e.ref);}
  if(v.basis){graph(v.basis.nodes,n=>n.nodeId,n=>n.dependsOn);const ids=v.basis.nodes.map(n=>n.nodeId);if(v.operation==='strategy.edit'&&(v.input.scope==='node'?(v.input.nodeId===null||!ids.includes(v.input.nodeId)):v.input.nodeId!==null))fail();if(v.operation==='strategy.step-document'){const n=v.basis.nodes.find(n=>n.nodeId===v.input.node.id);if(!n||n.nodeSha256!==hash(v.input.node)||n.startsOn!==v.input.node.startsOn||n.endsOn!==v.input.node.endsOn)fail();}}
  return v;

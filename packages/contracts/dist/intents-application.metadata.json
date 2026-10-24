@@ -79,13 +79,14 @@
     "UNKNOWN"
   ],
   "approvableActions": [
-    "task.create"
+    "task.create",
+    "document.draft"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the observed receipt and task result; the receiver admits it only as the executor's own outcome for the retained task.create command (its hash, id, idempotency key, scopes and stable binding, a succeeded receipt with no source transaction, and a result equal to the immutable arguments)",
+    "executed": "status executed returns the actual owner outcome: task.create receipt/result or document.draft ArtifactCreatedResult after publication; document approval alone remains approved or indeterminate, with no task receipt inferred",
     "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",
@@ -113,8 +114,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "76a30a282d48776e45e723fffde42c59303a50c9b6dfd1f130a4c989a7969df8",
-      "bytes": 18722
+      "sha256": "5bfcf0779133d363eeb3caf96ea049a4e245e1eab74f7507f7b4cd52f8b40686",
+      "bytes": 21254
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -137,19 +138,39 @@
       "bytes": 8246
     },
     {
+      "path": "artifacts-0.2/artifact-formats.mjs",
+      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
+      "bytes": 2579
+    },
+    {
+      "path": "artifacts-0.2/artifact.schema.json",
+      "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276",
+      "bytes": 48251
+    },
+    {
+      "path": "commands-0.2/document-draft-validation.mjs",
+      "sha256": "81c0b39c07bcf11b06736bdaee1e7b319017cf2db47c0bbb41ebefb0168db19f",
+      "bytes": 1909
+    },
+    {
+      "path": "commands-0.2/document-draft.schema.json",
+      "sha256": "3bc4bbb7860d13db7b6b7a4d2d98a4a984ade7f4a87b6c821c6e91d5eaa8e6ee",
+      "bytes": 3718
+    },
+    {
       "path": "commands-0.2/task-create.schema.json",
       "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
       "bytes": 3827
     },
     {
       "path": "document-application/boundary.mjs",
-      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
-      "bytes": 2216
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "b5dfd102c937f22c8fa6ee4485be2da388d3d31ec5167c150f75c0c923e4a2f3",
-      "bytes": 9990
+      "sha256": "1cf985901131025da0f61cbd6ee6daa2c43adf99d716ff9469b8d0047f7b3915",
+      "bytes": 10092
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -158,13 +179,13 @@
     },
     {
       "path": "intents-application/protocol.mjs",
-      "sha256": "7600b9622aa52ff5e76d3809e874096d858caef7358521d7dc0c46cd89f2f7f7",
-      "bytes": 2965
+      "sha256": "e0c024c5321487f0a9a2c7eb04f43c2e8e79f4aa588294683fbcbf448d9366b7",
+      "bytes": 2878
     },
     {
       "path": "intents-application/README.md",
-      "sha256": "010140234c19034a34b8ae93e8517ad524dcf26035cdf014edea0cc2d8da7d27",
-      "bytes": 6385
+      "sha256": "9e90a6fad4cedb5b3f0eb0c71c888831c6e1b69433bd10852cb5c86f306f9c0d",
+      "bytes": 7031
     },
     {
       "path": "intents-application/receive.mjs",
@@ -173,13 +194,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "45ef30ec12c826bc75d47838c6117ee4298a89ccb2cc57901772266c9bf65a51",
-      "bytes": 4358
+      "sha256": "8dc058bddef00eb8b3d116e459a1f36b7cff1081fbc00eff66e5d4a193361df7",
+      "bytes": 4610
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "101d93c3294c443799ab3749057e5138f41d624f2c236c0d53f0e66987564f21",
-      "bytes": 6368
+      "sha256": "fb6c512e71dcdc181675f7d5d83fc20085f48b8d04b5b8efd7c3bbc86ca78e32",
+      "bytes": 7938
     },
     {
       "path": "meri.schema.json",
@@ -187,8 +208,9 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "c33a0fe0fe29419f14cb3c2fc766437e4859ec2551cb3c4074b8fab5b624576a",
+  "schemaSha256": "cf1f1221965135dbba54e5baa3583af7b317bd01c53b468db4dd7a11b588a9af",
   "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",
     "intents-application/boundary.mjs",
     "intents-application/intents-application-receiver.mjs",

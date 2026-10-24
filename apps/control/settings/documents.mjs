@@ -4,7 +4,7 @@
 import {assertTenantCapabilitySettings} from '../../worker/conversation/capabilities/policy-resolution.mjs';
 import {ProductError,refuse} from '../product-access/errors.mjs';
 import {closed} from '../product-access/shape.mjs';
-import {USER_PREFERENCE_FIELDS,USER_PREFERENCE_DEFAULTS,userPreferencesDocument,userPreferencesTimezone,userPreferencesDocumentFailure} from '../../../packages/contracts/user-preferences-application/document.mjs';
+import {USER_PREFERENCE_FIELDS,USER_PREFERENCE_DEFAULTS,userPreferencesDocument,storedUserPreferencesDocument,userPreferencesTimezone,userPreferencesDocumentFailure} from '../../../packages/contracts/user-preferences-application/document.mjs';
 export {USER_PREFERENCE_DEFAULTS};
 const documentCall=operation=>{try{return operation();}catch(error){const failure=userPreferencesDocumentFailure(error);if(failure)refuse(failure.code,null,failure.field);throw error;}};
 export const timezone=(value,name)=>documentCall(()=>userPreferencesTimezone(value,name===undefined?null:name));
@@ -15,6 +15,7 @@ export function userPreferences(value,principal){
 }
 /** Stored preferences as released now: a default client the member no longer holds is withheld rather than disclosed. */
 export function releasedUserPreferences(stored,principal){
+ stored=documentCall(()=>storedUserPreferencesDocument(stored));
  return stored.defaultClientId!==null&&!principal.clientIds.includes(stored.defaultClientId)?Object.freeze({...stored,defaultClientId:null}):stored;
 }
 export const TENANT_SETTINGS_DEFAULTS=Object.freeze({defaultTimezone:'UTC',capabilityPolicy:Object.freeze({})});

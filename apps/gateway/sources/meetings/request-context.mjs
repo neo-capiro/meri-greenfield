@@ -1,9 +1,9 @@
 /** Inert internal call correlation; the existing gateway owns current authorization. */
 import {types} from 'node:util';
-import {canonicalSha256,validateShape as publicShape} from '../../../../packages/contracts/validate.mjs';
-import {assertSubject,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {deny} from '../../dispatch/operation-result.mjs';
-import {frozenData,ownFields} from '../source-admission.mjs';
+import {frozenData,ownFields,assertReadContext} from '../source-admission.mjs';
 export {frozenData,ownFields} from '../source-admission.mjs';
 
 export const operationIds=Object.freeze(['meeting.list_upcoming_meetings','meeting.query_debriefs','meeting.read_client_meetings']);
@@ -22,24 +22,9 @@ export function readContext(call,now) {
   let input,request,authority;
   try {input=frozenData(fields.input);request=frozenData(fields.request);authority=frozenData(fields.authority);}
   catch {deny('INVALID_ARGUMENTS');}
-  ownFields(authority,['binding','subject','claims','policyRevision','decision','sourceIds','deadlineMs']);
-  try {
-    publicShape('RunBinding',authority.binding);publicShape('CapabilityClaims',authority.claims);
-    publicShape('AuthorizationDecision',authority.decision);assertSubject(authority.subject,authority.binding);
-  } catch {deny('ACCESS_DENIED');}
-  const {claims,subject,decision}=authority;
-  if(!same(authority.binding,claims.binding)||authority.policyRevision!==claims.policyRevision||
-      authority.policyRevision!==subject.policyRevision||authority.policyRevision!==decision.policyRevision||
-      claims.audience!=='meri-gateway'||!claims.actions.includes('tool.read')||decision.decision!=='allowed'||
-      decision.operation!==`${operation.id}@${operation.version}`||decision.decisionId!==subject.authorizationDecisionId||
-      !same(decision.actor,{tenantId:authority.binding.tenantId,actorId:authority.binding.actorId})||
-      !same(decision.scopes,subject.scopes)||subject.scopes.some(scope=>!claims.scopes.some(candidate=>same(candidate,scope)))||
-      !Array.isArray(authority.sourceIds)||!same([...authority.sourceIds].sort(),
-        [...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))].sort()))deny('ACCESS_DENIED');
-  const issued=Date.parse(claims.issuedAt),expiry=Date.parse(claims.expiresAt);
-  if(!Number.isSafeInteger(issued)||!Number.isSafeInteger(expiry)||issued>=expiry||
-      !Number.isSafeInteger(authority.deadlineMs)||authority.deadlineMs<0)deny('DEADLINE');
-  const deadlineMs=Math.min(authority.deadlineMs,expiry),signal=fields.signal;
+  assertReadContext(authority,operation,now);
+  const {subject}=authority;
+ const deadlineMs=authority.deadlineMs,signal=fields.signal;
   if(signal!==undefined) {
     if(types.isProxy(signal))deny('INVALID_ARGUMENTS');
     try {aborted.call(signal);}catch {deny('INVALID_ARGUMENTS');}
@@ -47,7 +32,7 @@ export function readContext(call,now) {
   const active=(cutoff=deadlineMs)=>{
     const stamp=now();
     if(signal!==undefined&&aborted.call(signal))deny('CANCELLED');
-    if(!Number.isSafeInteger(stamp)||stamp<0||stamp<issued||stamp>=Math.min(deadlineMs,cutoff))deny('DEADLINE');
+    if(!Number.isSafeInteger(stamp)||stamp<0||stamp>=Math.min(deadlineMs,cutoff))deny('DEADLINE');
     return stamp;
   };
   const options=frozenData({nowMs:active()});

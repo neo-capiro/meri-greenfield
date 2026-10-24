@@ -8,12 +8,14 @@ import {initialInputFixture} from './initial-input-fixture.mjs';
 import {binding,scopes,versions,id} from './store-fixture.mjs';
 import {hash} from '../boundary.mjs';
 import {resolveWindow} from '../../../../packages/window-resolution/index.mjs';
+import {MODEL_CATALOG,CLAUDE_SELECTION} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
+import {USER_PREFERENCE_DEFAULTS} from '../../../../packages/contracts/user-preferences-application/document.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 const intent={requestId:id(60),prompt:'Original prompt'},queued=f=>[...f.state.events.values()].flat().filter(e=>e.event.type==='run.status'&&e.event.data.state==='queued');
 function fixture({wrapStore=s=>s,dispatcher}={}){
  const f=initialInputFixture(),state=Object.assign(f.state,{context:structuredClone({binding,scopes,selectedClientId:id(5)}),ttl:30000,revoked:false,authReads:0,starts:[]});let serial=200;
  const sessions={async authenticateSession(){state.authReads++;await state.onAuthenticate?.();if(state.revoked)throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});return {principal:{tenantId:state.context.binding.tenantId,actorId:state.context.binding.actorId,conversationId:state.context.binding.conversationId,runId:state.context.binding.runId},checkedAtMs:f.now(),expiresAtMs:f.now()+state.ttl};},async readCurrentState({authentication}){await state.onCurrent?.();return {authenticationSha256:hash(authentication),...structuredClone(state.context),checkedAtMs:f.now(),expiresAtMs:f.now()+state.ttl};}};
- const store=wrapStore(f.store(),state,f),service=createConversationService({sessions,store,versions,now:f.now,newId:()=>id(serial++),dispatcher:dispatcher??{async start({binding}){state.starts.push(binding);},async cancel(){}}}),args=input=>({credential:'synthetic',input,signal:undefined});
+ const store=wrapStore(f.store(),state,f),service=createConversationService({sessions,store,versions,modelCatalog:MODEL_CATALOG,now:f.now,newId:()=>id(serial++),dispatcher:dispatcher??{async start({binding}){state.starts.push(binding);},async cancel(){}}}),args=input=>({credential:'synthetic',input,signal:undefined});
  return {...f,state,store,service,allocate:(i=intent)=>service.allocateInput(args(i)),admit:(i=intent)=>service.admitInput(args(i)),submit:(i=intent)=>service.submit(args(i)),history:()=>service.history({credential:'synthetic'})};
 }
 const request=(body=intent,{path='/api/conversations/input/allocate',method='POST',headers={},signal}={})=>new Request('https://synthetic.invalid'+path,{method,headers:{authorization:'Bearer synthetic','content-type':'application/json',...headers},...(method==='GET'?{}:{body:typeof body==='string'||body instanceof Uint8Array?body:JSON.stringify(body)}),signal});
@@ -33,7 +35,7 @@ test('lost allocation COMMIT acknowledgement recovers exactly and never relabels
 });
 test('lost original acceptance acknowledgement leaves positive history and one event for exact recovery',async()=>{
  let failOnce=true;const f=fixture({wrapStore:(s,state)=>({...s,initialInputs:{...s.initialInputs,async accept(...args){if(!failOnce)return s.initialInputs.accept(...args);failOnce=false;state.commitUnknown=true;try{return await s.initialInputs.accept(...args);}finally{state.commitUnknown=false;}}}})});
- await f.allocate();await assert.rejects(f.admit(),/STORE_COMMIT_UNKNOWN/);assert.equal(f.allocations.get(f.key()).state,'ACCEPTED');assert.deepEqual((await f.history()).request,{...intent,skill:null,window:null,windowRequest:null});assert.equal((await f.admit()).replayed,true);await f.submit();assert.equal(queued(f).length,1);assert.equal(f.state.starts.length,1);
+ await f.allocate();await assert.rejects(f.admit(),/STORE_COMMIT_UNKNOWN/);assert.equal(f.allocations.get(f.key()).state,'ACCEPTED');assert.deepEqual((await f.history()).request,{...intent,skill:null,window:null,windowRequest:null,modelSelection:MODEL_CATALOG.defaultSelection});assert.equal((await f.admit()).replayed,true);await f.submit();assert.equal(queued(f).length,1);assert.equal(f.state.starts.length,1);
 });
 test('allocation replay and delayed admission preserve original relative normalization across a calendar boundary',async()=>{
  const f=fixture();f.state.ttl=14*86400000;const i={...intent,windowRequest:{basis:'calendar-week',offset:-1,timezone:'America/New_York',weekStartsOn:'monday'}},first=await f.allocate(i),at=new Date(first.allocation.allocatedAtMs).toISOString(),expected=resolveWindow(i.windowRequest,{referenceAt:at,fiscalCalendars:[]});
@@ -52,7 +54,7 @@ test('revocation after successful claim prevents positive release; later exact r
 test('changed current context is refused before claim',async()=>{const f=fixture();f.state.onCurrent=()=>{if(f.state.authReads===2)f.state.context.scopes[0].policyRevision='changed';};await assert.rejects(f.allocate(),/SESSION_CHANGED/);assert.equal(f.allocations.size,0);});
 test('changed current scope or client cannot recover the original allocation',async()=>{const f=fixture();await f.allocate();f.state.context.scopes[0].policyRevision='changed';await assert.rejects(f.allocate(),/INITIAL_INPUT_CONFLICT/);assert.equal(f.allocations.size,1);assert.equal(f.state.runs.size,0);});
 for(const state of ['RESERVED','ACCEPTED'])test('next-turn '+state+' admission never reads, claims or accepts an original-input allocation',async()=>{
- const f=fixture({wrapStore:s=>({...s,findRequest:async()=>null,initialInputs:{claim(){throw Error('ORIGINAL_USED');},read(){throw Error('ORIGINAL_USED');},accept(){throw Error('ORIGINAL_USED');}},nextRuns:{readTarget:async target=>({target,state}),async accept({run,request}){return {run,request,lastSequence:7,replayed:state==='ACCEPTED'};}}})});f.state.context.binding={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2};
+ const f=fixture({wrapStore:s=>({...s,findRequest:async()=>null,initialInputs:{claim(){throw Error('ORIGINAL_USED');},read(){throw Error('ORIGINAL_USED');},accept(){throw Error('ORIGINAL_USED');}},read:async()=>({run:{binding,scopes},request:{}}),nextRuns:{readTarget:async target=>({target,source:binding,state}),async accept({run,request}){return {run,request,lastSequence:7,replayed:state==='ACCEPTED'};}}})});f.state.context.binding={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2};
  const out=await f.admit();assert.equal(out.lastSequence,7);assert.equal(out.run.binding.writerFence,2);assert.equal(f.allocations.size,0);await assert.rejects(f.allocate(),/INITIAL_INPUT_CONFLICT/);
 });
 for(const writerFence of [2,9])test('higher fence '+writerFence+' without a reservation refuses both new admission and submit with zero writes or starts',async()=>{
@@ -83,3 +85,32 @@ test('HTTP bounded response failure gives no positive receipt; exact reconstruct
 test('HTTP final authorization denial after CAS releases UNKNOWN rather than a false absence outcome',async()=>{const f=fixture({wrapStore:(s,state)=>({...s,initialInputs:{...s.initialInputs,async claim(...args){const out=await s.initialInputs.claim(...args);state.revoked=true;return out;}}})}),out=await createConversationInitialInputApplication({service:f.service,now:f.now}).handle(request());assert.equal(out.status,503);assert.deepEqual(await out.json(),{error:{code:'INITIAL_INPUT_UNAVAILABLE',outcome:'UNKNOWN'}});assert.equal(f.allocations.size,1);assert.equal(f.state.runs.size,0);});
 test('new allocation errors never alter the existing admission error envelope',async()=>{const f=fixture(),old=createConversationInputApplication({service:f.service,now:f.now}),out=await old.handle(request(intent,{path:'/api/conversations/input/admit'}));assert.equal(out.status,502);assert.deepEqual(await out.json(),{error:{code:'CONVERSATION_UNAVAILABLE'}});});
 test('HTTP rejects limits beyond the accepted canonical allocation bounds',()=>{const service={allocateInput(){}};assert.doesNotThrow(()=>createConversationInitialInputApplication({service,maxRequestMs:30000}));for(const options of [{maxRequestMs:30001},{maxRequestBytes:131073},{maxResponseBytes:131073}])assert.throws(()=>createConversationInitialInputApplication({service,...options}),/HTTP_CONFIGURATION/);});
+
+const setDefault=(f,b,selection)=>{const document={...USER_PREFERENCE_DEFAULTS,defaultModel:selection};f.state.userPreferences.set([b.tenantId,b.actorId].join(':'),{document,document_sha256:hash(document)});};
+test('MP first allocation pins the actor default through settings changes, lost acceptance ACK and replay',async()=>{
+ let lose=true;const f=fixture({wrapStore:(s,state)=>({...s,initialInputs:{...s.initialInputs,async accept(...args){state.commitUnknown=lose;try{return await s.initialInputs.accept(...args);}finally{lose=false;state.commitUnknown=false;}}}})});
+ setDefault(f,binding,CLAUDE_SELECTION);const allocated=await f.allocate();assert.deepEqual(allocated.allocation.modelSelection,CLAUDE_SELECTION);
+ setDefault(f,binding,MODEL_CATALOG.defaultSelection);assert.deepEqual((await f.allocate()).allocation,allocated.allocation);
+ await assert.rejects(f.admit(),/STORE_COMMIT_UNKNOWN/);assert.deepEqual((await f.history()).request.modelSelection,CLAUDE_SELECTION);
+ const replay=await f.admit();assert.equal(replay.replayed,true);assert.deepEqual(replay.request.modelSelection,CLAUDE_SELECTION);assert.equal(queued(f).length,1);
+});
+test('MP explicit override is pinned; changing it cannot replace the initial slot',async()=>{
+ const f=fixture(),input={...intent,modelSelection:CLAUDE_SELECTION};await f.allocate(input);await assert.rejects(f.admit({...input,modelSelection:MODEL_CATALOG.defaultSelection}),/INITIAL_INPUT_CONFLICT/);
+ const saved=await f.admit(input);assert.deepEqual(saved.request.modelSelection,CLAUDE_SELECTION);assert.equal(f.state.starts.length,0);
+});
+test('MP user preference lookup is tenant and actor scoped; corrupt historical data never falls back',async()=>{
+ const f=fixture();setDefault(f,{...binding,tenantId:id(800)},CLAUDE_SELECTION);setDefault(f,{...binding,actorId:id(801)},CLAUDE_SELECTION);
+ assert.deepEqual((await f.allocate()).allocation.modelSelection,MODEL_CATALOG.defaultSelection);
+ const g=fixture(),document={...USER_PREFERENCE_DEFAULTS};delete document.defaultModel;
+ g.state.userPreferences.set([binding.tenantId,binding.actorId].join(':'),{document,document_sha256:hash(document)});
+ assert.deepEqual((await g.store.readDefaultModelSelection(binding,()=>{})),MODEL_CATALOG.defaultSelection);
+ g.state.userPreferences.get([binding.tenantId,binding.actorId].join(':')).document.theme='dark';await assert.rejects(g.allocate(),/MODEL_SETTINGS_UNAVAILABLE/);assert.equal(g.allocations.size,0);
+});
+for(const modelSelection of [{...CLAUDE_SELECTION,modelId:'unknown'},{...CLAUDE_SELECTION,effort:'xhigh'},{provider:'claude-api',modelId:'claude-held-synthetic',effort:null}])test('MP unavailable model/effort refuses before allocation or dispatch: '+JSON.stringify(modelSelection),async()=>{
+ const f=fixture();await assert.rejects(f.allocate({...intent,modelSelection}),/MODEL_SELECTION_UNAVAILABLE/);assert.equal(f.allocations.size,0);assert.equal(f.state.runs.size,0);assert.equal(f.state.starts.length,0);
+});
+test('MP historical accepted request replays without rewriting its request hash or adopting a new default',async()=>{
+ const f=fixture(),p=await f.proposal({input:intent});await f.store.accept(p.acceptance,()=>{});const before=hash(p.acceptance.request);setDefault(f,binding,CLAUDE_SELECTION);
+ const saved=await f.admit();assert.equal(hash(saved.request),before);assert.equal(Object.hasOwn(saved.request,'modelSelection'),false);assert.deepEqual(await f.store.readModelSelection(binding,()=>{}),MODEL_CATALOG.defaultSelection);
+ await assert.rejects(f.admit({...intent,modelSelection:CLAUDE_SELECTION}),/REQUEST_REPLAY_REFUSED/);
+});

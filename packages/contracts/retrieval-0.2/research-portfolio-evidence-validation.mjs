@@ -17,7 +17,7 @@ export function createResearchPortfolioEvidenceValidators(dependencies) {
     const request = snapshotOperationData(raw);
     validateShape('ResearchPortfolioEvidenceInput', request);
     const selected = normalizeResearchPortfolioInput('get_research_portfolio',
-      request.conversationId === undefined ? {} : {conversationId:request.conversationId}, context);
+      {portfolioId:request.portfolioId, ...(request.conversationId === undefined ? {} : {conversationId:request.conversationId})}, context);
     const input = {...selected, portfolioId:selected.portfolioId.toLowerCase(), origin:request.origin,
       ...(request.recordId === undefined ? {} : {recordId:request.recordId.toLowerCase()})};
     validateShape('ResearchPortfolioEvidenceSelection', input);

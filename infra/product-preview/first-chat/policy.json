@@ -1,14 +1,13 @@
 {
- "schema": "meri.first-chat-policy.v2",
- "changeSet": "ITEM0_STEP2",
+ "schema": "meri.first-chat-policy.v3",
+ "changeSet": "AGENTCORE_RUNTIME_V1",
  "purpose": "meri-first-chat-preview",
+ "models": {
+  "defaultSelection": {"provider":"bedrock","modelId":"us.anthropic.claude-sonnet-4-6","effort":null},
+  "models": [{"provider":"bedrock","modelId":"us.anthropic.claude-sonnet-4-6","label":"Claude Sonnet 4.6","efforts":[null],"available":true,"unavailableReason":null}]
+ },
  "runtime": {
+  "runWindowMs": 900000,
   "maxOutputBytes": 262144
- },
- "runnerLayout": {
-  "workspaceRoot": "/workspace",
-  "configParentDirectory": "/run/meri",
-  "secureStorageDirectory": "/run/meri/sdk-secure"
- },
- "allocationSha256": "ac6ac7e4ea3815767a6545b64e3550d0c0e2943327b99ca79eef8829aba5ccb4"
+ }
 }

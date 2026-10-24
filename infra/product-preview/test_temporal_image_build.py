@@ -96,7 +96,7 @@ class TemporalImageReceiptTests(unittest.TestCase):
             'set -Eeuo pipefail; source "$1"; '
             f'COMMIT={COMMIT}; ATTEMPT={ATTEMPT}; REPOSITORY_URI=111.dkr.ecr.us-east-1.amazonaws.com/r; REPOSITORY_NAME=r; '
             'RESULT_BUCKET=b; KMS_KEY_ARN=k; RESULTS=results/temporal-image/x/y; WORK="$2"; IMAGE_TAG=tt; '
-            'DIGEST=sha256:' + "1" * 64 + '; ISSUER_CA_SHA256=' + "e" * 64 + '; MANIFEST_SHA256=' + "f" * 64 + '; '
+            'DIGEST=sha256:' + "1" * 64 + '; MANIFEST_SHA256=' + "f" * 64 + '; '
             'trap fail ERR; ')
         return subprocess.run([BASH, "-c", prelude + snippet, "bash", SCRIPT.as_posix(), (self.tmp / "work").as_posix()],
                               env=env, capture_output=True, text=True, timeout=120)
@@ -119,7 +119,7 @@ class TemporalImageReceiptTests(unittest.TestCase):
         self.assertEqual((receipt["status"], receipt["commit"], receipt["image"]["scan"], receipt["image"]["role"]),
                          ("SUCCEEDED", COMMIT, {}, "deployable"))
         self.assertEqual(receipt["bases"], context.BASES)
-        self.assertEqual((receipt["issuerCaSha256"], receipt["probe"]["node"]), ("e" * 64, "v24.22.1"))
+        self.assertEqual((receipt["authorizationMode"], receipt["probe"]["node"]), ("meri-client-certificate", "v24.22.1"))
         self.assertIn("ecr-basic-os-packages-only", receipt["scanCoverage"])
         self.assertIn("libstdc++=16.2.0-r1", receipt["glibcRuntimePackages"])
         log = self.log.read_text()
@@ -183,7 +183,6 @@ class TemporalImageReceiptTests(unittest.TestCase):
 
     def test_smoke_requires_exact_launcher_exits_and_probe(self):
         good = {"node": "v24.22.1", "arch": "arm64", "uid": 1000, "gid": 1000,
-                "issuerCaSha256": "e" * 64, "issuerCaMode": "444", "issuerCaUid": 0,
                 "temporalServer": True, "serverMachine": 183, "temporalServerSha256": "b" * 64, "buildBinarySha256": "b" * 64, "serverStatic": True,
                 "goVersion": "go1.26.10", "goModules": context.PINS["securityModules"],
                 "goSettings": {"CGO_ENABLED": "0", "GOOS": "linux", "GOARCH": "arm64"},
@@ -192,7 +191,7 @@ class TemporalImageReceiptTests(unittest.TestCase):
                 "apkPackages": context.PINS["packages"]}
         probe = self.tmp / "probe-in.json"
         for change, frontend, ok in (({}, "78", True), ({}, "0", False), ({"uid": 0}, "78", False),
-                                     ({"issuerCaSha256": "0" * 64}, "78", False), ({"node": "v24.19.0"}, "78", False),
+                                     ({"node": "v24.19.0"}, "78", False),
                                      *[(change, "78", False) for change in [
                                          {"gid": 0}, {"arch": "x64"}, {"serverMachine": 62}, {"temporalServer": False},
                                          {"temporalServerSha256": "a"*64}, {"buildBinarySha256": None}, {"serverStatic": False},
@@ -201,7 +200,7 @@ class TemporalImageReceiptTests(unittest.TestCase):
                                          {"goSettings": {"CGO_ENABLED": "1", "GOOS": "linux", "GOARCH": "arm64"}}, {"serverHelpExit": 1}, {"serverVersionExit": None},
                                          {"serverVersion": "temporal-server version 1.31.0"}, {"runTemporalMode": "777"},
                                          {"runTemporalUid": 0}, {"runTemporalGid": 0}, {"tmpMode": "755"},
-                                         {"issuerCaMode": "666"}, {"issuerCaUid": 1000}, {"apkPackages": []}]]):
+                                         {"apkPackages": []}]]):
             with self.subTest(change=change, frontend=frontend):
                 probe.write_text(json.dumps(good | change)); self.log.write_text("")
                 r = self.run_snippet(f'trap - ERR; if smoke_image img:t {"e" * 64}; then echo SMOKE_OK; else echo SMOKE_REFUSED; fi',
@@ -222,7 +221,7 @@ class TemporalContextSealTests(unittest.TestCase):
         cls.tmp = Path(tempfile.mkdtemp(prefix="temporal-seal-"))
         cls.addClassCleanup(shutil.rmtree, cls.tmp, True)
         cls.repo, cls.commit = sealed_repository(cls.tmp)
-        cls.result = context.seal(cls.repo, cls.commit, cls.tmp / "ca.pem", cls.tmp / "one.zip")
+        cls.result = context.seal(cls.repo, cls.commit, cls.tmp / "one.zip")
 
     @classmethod
     def tearDownClass(cls):
@@ -240,29 +239,26 @@ class TemporalContextSealTests(unittest.TestCase):
         return root
 
     def test_seal_is_deterministic_and_bound_to_git(self):
-        again = context.seal(self.repo, self.commit, self.tmp / "ca.pem", self.tmp / "two.zip")
+        again = context.seal(self.repo, self.commit, self.tmp / "two.zip")
         self.assertEqual(again["zipSha256"], self.result["zipSha256"])
         self.assertEqual((self.tmp / "one.zip").read_bytes(), (self.tmp / "two.zip").read_bytes())
-        self.assertEqual(self.result["issuerCaSha256"], hashlib.sha256(CA).hexdigest())
+        self.assertNotIn("issuerCaSha256", self.result)
         with zipfile.ZipFile(self.tmp / "one.zip") as z:
             rows = z.infolist()
             self.assertEqual([r.filename for r in rows], sorted(r.filename for r in rows))
             self.assertTrue(all(r.date_time == (1980, 1, 1, 0, 0, 0) and r.create_system == 3 and not r.flag_bits & 8 for r in rows))
             m = json.loads(z.read("context-manifest.json"))
-            self.assertEqual((m["commit"], m["bases"], len(m["files"])), (self.commit, context.BASES, len(context.MEMBERS) + 1))
+            self.assertEqual((m["commit"], m["bases"], len(m["files"])), (self.commit, context.BASES, len(context.MEMBERS)))
             self.assertEqual(z.getinfo("repo/infra/product-preview/temporal-image-build.sh").external_attr >> 16, 0o100755)
             self.assertEqual(z.getinfo("repo/infra/product-preview/temporal-launch.sh").external_attr >> 16, 0o100644)
             self.assertEqual(hashlib.sha256(z.read("repo/infra/product-preview/temporal-image-build.sh")).hexdigest(),
                              self.result["buildScriptSha256"])
 
-    def test_seal_refuses_existing_output_bad_ca_and_unknown_commit(self):
+    def test_seal_refuses_existing_output_and_unknown_commit(self):
         with self.assertRaisesRegex(context.Refused, "OUTPUT_EXISTS"):
-            context.seal(self.repo, self.commit, self.tmp / "ca.pem", self.tmp / "one.zip")
-        (self.tmp / "bad.pem").write_bytes(b"-----BEGIN PRIVATE KEY-----\n" + b"A" * 80 + b"\n-----END PRIVATE KEY-----\n")
-        with self.assertRaisesRegex(context.Refused, "ISSUER_CA"):
-            context.seal(self.repo, self.commit, self.tmp / "bad.pem", self.tmp / "bad.zip")
+            context.seal(self.repo, self.commit, self.tmp / "one.zip")
         with self.assertRaisesRegex(context.Refused, "GIT|COMMIT"):
-            context.seal(self.repo, "0" * 40, self.tmp / "ca.pem", self.tmp / "bad.zip")
+            context.seal(self.repo, "0" * 40, self.tmp / "bad.zip")
         self.assertFalse((self.tmp / "bad.zip").exists())
 
     def test_build_verifies_the_extracted_context_and_refuses_drift(self):
@@ -300,7 +296,7 @@ class TemporalContextSealTests(unittest.TestCase):
                 subprocess.run(g + ["commit", "-q", "-m", "negative fixture"], check=True)
                 commit = subprocess.run(g + ["rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
                 with self.assertRaisesRegex(context.Refused, code):
-                    context.seal(repo, commit, tmp / "ca.pem", tmp / "bad.zip")
+                    context.seal(repo, commit, tmp / "bad.zip")
                 self.assertFalse((tmp / "bad.zip").exists())
 
 
@@ -360,7 +356,7 @@ class TemporalBasePinTests(unittest.TestCase):
         self.assertIn("sha256sum temporal-server > temporal-server.sha256", text)
         self.assertNotIn("go get -u", text)
         self.assertNotIn("disable_grpc_modules", text)
-        self.assertIn("git -c core.autocrlf=false apply /tmp/temporal-server-dependencies.patch && go mod download && go mod verify", text)
+        self.assertIn("git -c core.autocrlf=false apply /tmp/temporal-server-dependencies.patch && git apply /tmp/temporal-certificate-claims.patch && go mod download && go mod verify", text)
         patch = HERE / "temporal-server-dependencies.patch"
         result = subprocess.run(["git", "apply", "--numstat", str(patch)], capture_output=True, text=True, check=True)
         self.assertEqual([line.split("\t")[2] for line in result.stdout.splitlines()], ["go.mod", "go.sum"])
@@ -371,9 +367,11 @@ class TemporalBasePinTests(unittest.TestCase):
         render = (HERE / "temporal-launch-render.mjs").read_text()
         self.assertIn("import imagePins from './temporal-image-pins.json'", render)
         self.assertIn("SERVER_SOURCE_COMMIT=imagePins.serverSource.commit", render)
-        self.assertIn("--mount=type=secret,id=temporal_issuer_ca,required=true", text)
-        self.assertIn("new X509Certificate(t).ca!==true", text)
-        self.assertIn('--secret "id=temporal_issuer_ca,src=$ROOT/inputs/temporal-issuer-ca.pem"', SCRIPT.read_text())
+        self.assertNotIn("temporal_issuer_ca", text)
+        self.assertNotIn("--secret", SCRIPT.read_text())
+        self.assertIn("COPY infra/product-preview/temporal-certificate-claims.go common/authorization/meri_certificate_claims.go", text)
+        self.assertIn("go test -mod=readonly ./common/authorization -run '^TestMeriCertificate' -count=1", text)
+        self.assertIn("temporal-certificate-claims.patch", text)
 
 
 if __name__ == "__main__":

@@ -32,3 +32,28 @@ test('independent context is detached and grants no request-selected authority',
 test('independent context rejects foreign scope and asset scope',()=>{const c=context();c.scopes[0].tenantId='foreign';assert.throws(()=>v.context(c));const d=context();d.assets=[{id:'logo',object:{objectId:id(20),versionId:'v1',sha256:'a'.repeat(64),bytes:1,scopes:[{...scope,tenantId:'foreign'}]}}];assert.throws(()=>v.context(d));});
 test('independent context refuses unknown authority flags and oversized output budget',()=>{const c=context();c.authorized=true;assert.throws(()=>v.context(c));const d=context();d.maxBytes=8388609;assert.throws(()=>v.context(d));});
 test('independent scope and evidence boundaries preserve source identity',()=>{const c=context();c.evidence=[{sourceId:'test-source',recordId:'record-1',sourceVersionId:'r1',observedAt:'2026-10-12T00:00:00.000Z',sourceUpdatedAt:null,citationId:id(21),scopes:[structuredClone(scope)],contentSha256:'b'.repeat(64),authorizationDecisionId:id(22)}];const out=v.context(c);assert.deepEqual(out.evidence,c.evidence);assert.notEqual(out.evidence,c.evidence);});
+
+
+test('native request identity survives only a renewed access deadline',()=>{
+ const input=word(),c=context(),first=v.nativeRequestSha256(input,c);
+ assert.equal(v.nativeRequestSha256(input,{...c,deadlineMs:c.deadlineMs+5000}),first);
+ for(const changed of [{...c,maxBytes:c.maxBytes-1},{...c,binding:{...c.binding,writerFence:2}},{...c,assets:[{id:'logo',object:{objectId:id(40),versionId:'v1',sha256:'c'.repeat(64),bytes:1,scopes:c.scopes}}]}])
+  assert.notEqual(v.nativeRequestSha256(input,changed),first);
+ assert.notEqual(v.nativeRequestSha256({...input,title:'Different'},c),first);
+ assert.notEqual(v.nativeRequestSha256(input,c,id(41)),first);
+ assert.throws(()=>v.nativeRequestSha256(input,c,'not-a-version'));
+ assert.throws(()=>v.nativeRequestSha256(input,{...c,extra:true}));
+});
+
+test('native output retains actual file provenance without a budget ticket',()=>{
+ const input={operation:'create_word',format:'txt',title:'Native',content:{text:'text'}},c=context();
+ const sha='e'.repeat(64),object={objectId:id(50),versionId:'immutable',sha256:sha,bytes:4,scopes:c.scopes};
+ const value={version:{contractVersion:'0.1.0',artifactId:id(51),versionId:id(52),parentVersionId:null,binding:c.binding,object,filename:'Native.txt',mimeType:'text/plain; charset=utf-8',scopes:c.scopes,evidence:[],generationStatus:'draft',previewStatus:'pending',createdAt:'2026-10-12T00:00:00.000Z'},
+  inspection:{sha256:sha,bytes:4,format:'txt',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{encoding:'UTF-8',whitespace:'unchanged'}},
+  execution:{kind:'native-document',invocationId:'sdk:'+'a'.repeat(64),requestSha256:v.nativeRequestSha256(input,c),authorizationReceiptId:id(53),objectCommitted:true,versionCommitted:true,nativeQualified:false}};
+ assert.equal(v.assertArtifactOutput('create_word',value,input,c).execution.kind,'native-document');
+ assert.equal(v.assertArtifactOutput('create_word',value,input,{...c,deadlineMs:c.deadlineMs+1}).execution.requestSha256,value.execution.requestSha256);
+ for(const change of [{budgetTicketId:'fake'},{invocationId:'invalid'},{authorizationReceiptId:'fake'},{nativeQualified:true},{requestSha256:'0'.repeat(64)}])
+  assert.throws(()=>v.assertArtifactOutput('create_word',{...value,execution:{...value.execution,...change}},input,c));
+ assert.throws(()=>v.assertArtifactOutput('create_word',value,input,{...c,maxBytes:5}));
+});

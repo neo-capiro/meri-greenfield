@@ -1,10 +1,9 @@
-/** Stage 3 bindings on THROWAWAY material: render-material.fixture.mjs renders three service roles from a fresh pki.py PKI (synthetic
+/** Stage 3 bindings on THROWAWAY material: render-material.fixture.mjs renders two application roles from a fresh pki.py PKI (synthetic
  * passwords and Core credential), stage3-bindings builds every binding from the real foundation/private-edge outputs plus fake
- * secret VersionIds and scan hashes in their real formats, and both templates synthesize through their own validators.
+ * secret VersionIds and scan hashes in their real formats, and the app template synthesizes through their own validators.
  * Needs MERI_REVIEW_SOURCE_ROOT=<worktree root> and Python 3 with `cryptography`. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import vm from 'node:vm';
 import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -12,7 +11,7 @@ import {fileURLToPath} from 'node:url';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {PATHS,ROLES,writeRendered} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup} from './stage3-bindings.mjs';
-import {parseLatestTsv,coreValuesFromMembership,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,secretLabelReadback,verifyOutputs,probeTaskDefinition,PROBE_PROGRAM,main} from './stage3-deploy.mjs';
+import {parseLatestTsv,coreValues,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,secretLabelReadback,verifyOutputs,main} from './stage3-deploy.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
@@ -22,7 +21,7 @@ test.after(()=>fixture.cleanup());
 const fakeVersion=n=>`${String(n).repeat(8)}-aaaa-4bbb-8ccc-${String(n).repeat(12)}`;
 const SECRET_VERSIONS=Object.fromEntries(ROLES.map((role,i)=>[role,fakeVersion(i+1)]));
 /** A before-upload label readback per material secret: AWSCURRENT, AWSPREVIOUS and one earlier release label, plus extras. */
-const labelReadback=(deployment,extra={})=>Object.fromEntries(['control/material','worker/material','issuer/material'].map(key=>deployment.secrets[key]).map(arn=>[arn,
+const labelReadback=(deployment,extra={})=>Object.fromEntries(['control/material','worker/material'].map(key=>deployment.secrets[key]).map(arn=>[arn,
  [{VersionId:'v-current',VersionStages:['AWSCURRENT']},{VersionId:'v-previous',VersionStages:['AWSPREVIOUS']},{VersionId:'v-e',VersionStages:['FIRST_CHAT_20261020E']},...(extra[arn]??[])]]));
 const SCANS={nodeRuntime:'d'.repeat(64)};
 /** The live app stack's control service as `get-template --stage Original` returns it: public 8080 and private 8082 groups. */
@@ -30,7 +29,7 @@ const PUBLIC_TG='arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup
 const LIVE_APP={Resources:{controlService:{Type:'AWS::ECS::Service',Properties:{LoadBalancers:[{ContainerName:'control',ContainerPort:8080,TargetGroupArn:PUBLIC_TG},
  {ContainerName:'control',ContainerPort:8082,TargetGroupArn:'arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-control-8082/1732509ee5fbf759'}]}}}};
 const LATEST=[...Object.values(STAGE3_FAMILIES).flatMap(f=>[`${f}\tNone`,`${f}\tNone`])].join('\n').replace(
- 'meri-product-preview-temporal-issuer\tNone','meri-product-preview-temporal-issuer\tarn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:3')+'\n';
+ 'meri-product-preview-temporal-worker\tNone','meri-product-preview-temporal-worker\tarn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:3')+'\n';
 
 let state;
 async function setup(){
@@ -53,14 +52,14 @@ const sameSet=(a,b)=>assert.deepEqual([...a].sort(),[...b].sort());
 
 test('revisions: new families start at 1, an existing family continues after its highest ACTIVE/INACTIVE revision',async()=>{
  const {revisions,stage3}=await setup();
- assert.deepEqual(revisions,{control:1,'temporal-worker':1,'temporal-issuer':4,runner:1});
- assert.equal(stage3.taskDefinitions['temporal-issuer'],'arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-issuer:4');
- assert.deepEqual(Object.keys(stage3.services),['control','temporal-worker','temporal-issuer']);
+ assert.deepEqual(revisions,{control:1,'temporal-worker':4});
+ assert.equal(stage3.taskDefinitions['temporal-worker'],'arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-temporal-worker:4');
+ assert.deepEqual(Object.keys(stage3.services),['control','temporal-worker']);
  assert.throws(()=>nextRevisions({control:['arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-control-x:9']}),/STAGE3_BINDING_REFUSED/u);
  assert.throws(()=>parseLatestTsv('meri-product-preview-control\tNone\n'),/STAGE3_BINDING_REFUSED/u);
 });
 
-test('both bindings pass their renderers: app (control, worker, runner) and issuer',async ctx=>{
+test('the application binding passes its renderer with control and worker',async ctx=>{
  const {synth,bindings,foundationOutputs:f,inputs}=await setup(),t=synth.templates;
  ctx.diagnostic('template bytes '+JSON.stringify(synth.sizes));
  for(const [key,size] of Object.entries(synth.sizes))assert.ok(size.bytes>0,key);
@@ -68,126 +67,102 @@ test('both bindings pass their renderers: app (control, worker, runner) and issu
  const tasks=resources(t.app,'AWS::ECS::TaskDefinition'),services=resources(t.app,'AWS::ECS::Service');
  const task=family=>tasks.find(x=>x.Family===family);
  for(const [family,role,group] of [['meri-product-preview-control','ControlExecutionRoleArn','ControlLogGroupName'],
-  ['meri-product-preview-temporal-worker','WorkerExecutionRoleArn','WorkerLogGroupName'],['meri-product-preview-runner','RunnerExecutionRoleArn','RunnerLogGroupName']]){
+  ['meri-product-preview-temporal-worker','WorkerExecutionRoleArn','WorkerLogGroupName']]){
   assert.equal(task(family).ExecutionRoleArn,f[role]);
   for(const c of task(family).ContainerDefinitions)assert.equal(c.LogConfiguration.Options['awslogs-group'],f[group]);
  }
- assert.equal(task('meri-product-preview-runner').ExecutionRoleArn,'arn:aws:iam::967807252336:role/MeriPreview-runner-execution');
+ assert.equal(tasks.length,2);assert.equal(task('meri-product-preview-runner'),undefined);
  assert.equal(task('meri-product-preview-control').TaskRoleArn,f.ControlTaskRoleArn);
- assert.equal(task('meri-product-preview-runner').TaskRoleArn,f.RunnerTaskRoleArn);
  for(const task of tasks)assert.equal(task.RuntimePlatform.CpuArchitecture,'ARM64');
  const control=services.find(s=>s.ServiceName==='meri-product-preview-control');
  assert.deepEqual(control.LoadBalancers,[{ContainerName:'control',ContainerPort:8080,TargetGroupArn:f.ControlTargetGroupArn},
   {ContainerName:'control',ContainerPort:8082,TargetGroupArn:inputs.deployment.privateEdge.controlPrivateTargetGroupArn}],'the live public group and the private one');
- sameSet(control.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.ControlSecurityGroupId,f.IssuerClientSecurityGroupId,f.DbClientSecurityGroupId]);
- sameSet(services.find(s=>s.ServiceName==='meri-product-preview-temporal-worker').NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.WorkerSecurityGroupId,f.IssuerClientSecurityGroupId]);
- assert.equal(t.app.Outputs.RunnerSecurityGroupIds.Value,f.RunnerSecurityGroupId);
- // (b) issuer: still desired 1, now on the Node runtime image with the new material version.
- const issuer=t.issuer.Resources.TemporalIssuerService.Properties,issuerTask=t.issuer.Resources.TemporalIssuerTask.Properties;
- assert.equal(issuer.DesiredCount,1);assert.equal(issuerTask.ContainerDefinitions[1].Image,inputs.deployment.images.nodeRuntime);
- assert.equal(issuerTask.ContainerDefinitions[0].Secrets[0].ValueFrom,`${inputs.deployment.secrets['issuer/material']}:::${SECRET_VERSIONS['temporal-issuer']}`);
- assert.equal(bindings.stacks.app,'meri-first-chat-app');assert.equal(Object.hasOwn(bindings.stacks,'model'),false);assert.equal(bindings.stacks.issuer,'meri-first-chat-issuer');
+ sameSet(control.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.ControlSecurityGroupId,f.DbClientSecurityGroupId]);
+ sameSet(services.find(s=>s.ServiceName==='meri-product-preview-temporal-worker').NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.WorkerSecurityGroupId]);
+ assert.equal(Object.keys(t.app.Outputs).some(key=>key.startsWith('Runner')),false);
+ assert.deepEqual(bindings.stacks,{app:'meri-first-chat-app'});
+ assert.deepEqual(Object.keys(t),['app']);
 });
 
-test('rendered configs and the synthesized task definitions agree: issuer pins, worker CA trust, runner poststart',async()=>{
+test('rendered configs and the synthesized task definitions agree: native TLS and shared worker/control CA trust',async()=>{
  const {synth:{templates:t},rendered,stage3,revisions}=await setup();
  const config=role=>JSON.parse(rendered.roles[role].configBytes.toString('utf8'));
- const tasks=[...resources(t.app,'AWS::ECS::TaskDefinition'),t.issuer.Resources.TemporalIssuerTask.Properties];
+ const tasks=resources(t.app,'AWS::ECS::TaskDefinition');
  const services=[...resources(t.app,'AWS::ECS::Service')];
  const byFamily=family=>tasks.find(x=>x.Family===family),main=task=>task.ContainerDefinitions.at(-1);
  const serviceOf=arn=>services.find(s=>arn.endsWith('/'+s.ServiceName));
  // Every rendered task-definition ARN names a family these templates register, at the predicted revision.
  for(const [role,arn] of Object.entries(stage3.taskDefinitions)){const [family,revision]=arn.split('/')[1].split(':');assert.ok(byFamily(family),family);assert.equal(Number(revision),revisions[role]);}
- // Issuer taskAuthority pins (temporal-issuer peer check) equal the control and worker task definitions and services.
- const authority=config('temporal-issuer').issuer.taskAuthority;
- for(const role of ['control','temporal-worker']){
-  const pin=authority.roles[role],task=byFamily(pin.taskDefinitionArn.split('/')[1].split(':')[0]),c=main(task);
-  assert.equal(task.ExecutionRoleArn,pin.executionRoleArn,role);assert.equal(task.TaskRoleArn??null,pin.taskRoleArn,role);
-  assert.equal(c.Name,pin.containerName);assert.equal(c.Image,pin.imageUri);
-  sameSet(serviceOf(pin.serviceArn).NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,pin.securityGroupIds);
+ for(const role of ROLES){
+  const c=config(role);assert.deepEqual(Object.keys(c.temporal).sort(),['address','namespace','taskQueue','tls']);
+  assert.equal(c.native.serverCaFile,PATHS.serverCa);
+  assert.equal(c.native.serverCaSha256,rendered.summary.pinsDer['server-ca']);
  }
- sameSet(authority.privateSubnetIds,serviceOf(authority.roles.control.serviceArn).NetworkConfiguration.AwsvpcConfiguration.Subnets);
- // Control's runner RunTask request names the runner family, container and the one runner SG.
- const request=config('control').nativeCandidate.taskRequest,runner=byFamily('meri-product-preview-runner');
- assert.equal(request.taskDefinition,stage3.taskDefinitions.runner);assert.equal(main(runner).Name,request.overrides.containerOverrides[0].name);
- assert.equal(t.app.Outputs.RunnerPrivateSubnetId.Value,request.networkConfiguration.awsvpcConfiguration.subnets[0]);
- assert.equal(t.app.Outputs.RunnerSecurityGroupIds.Value,request.networkConfiguration.awsvpcConfiguration.securityGroups.join(','));
- // Worker NODE_EXTRA_CA_CERTS is rendered by the manifest (token writers configured) and satisfies the cli.mjs product gate.
+ assert.equal(Object.hasOwn(config('control'),'nativeCandidate'),false);assert.equal(Object.hasOwn(stage3.taskDefinitions,'runner'),false);
+ // Worker NODE_EXTRA_CA_CERTS is rendered by the manifest (native TLS material) and satisfies the cli.mjs product gate.
  const worker=main(byFamily('meri-product-preview-temporal-worker'));
- assert.equal(env(worker,'NODE_EXTRA_CA_CERTS'),PATHS.issuerCa);assert.equal(env(worker,'NODE_EXTRA_CA_CERTS'),rendered.summary.worker.NODE_EXTRA_CA_CERTS);
+ assert.equal(env(worker,'NODE_EXTRA_CA_CERTS'),PATHS.serverCa);assert.equal(env(worker,'NODE_EXTRA_CA_CERTS'),rendered.summary.worker.NODE_EXTRA_CA_CERTS);
  assert.equal(productWorkerTrustsPinnedServerCa(config('temporal-worker'),{NODE_EXTRA_CA_CERTS:env(worker,'NODE_EXTRA_CA_CERTS')}),true);
  const control=byFamily('meri-product-preview-control'),controlMain=main(control),controlInit=control.ContainerDefinitions[0];
  assert.equal(env(controlMain,'NODE_EXTRA_CA_CERTS'),rendered.summary.control.NODE_EXTRA_CA_CERTS);
  assert.deepEqual(controlInit.Command,['write','--control-node-ca']);
  assert.deepEqual(controlInit.MountPoints.find(m=>m.SourceVolume==='tmp'),{SourceVolume:'tmp',ContainerPath:'/tmp',ReadOnly:false});
- // Runner environment equals the render wiring exactly; material-init envelopes and config pins equal the render.
- assert.deepEqual(main(runner).Environment.map(e=>({name:e.Name,value:e.Value})),rendered.summary.wiring.runner.environment);
- for(const [family,role] of [['meri-product-preview-control','control'],['meri-product-preview-temporal-worker','temporal-worker'],['meri-product-preview-temporal-issuer','temporal-issuer']]){
+ // Material envelopes and config pins equal the render; no compute-specific task material remains.
+ assert.equal(Object.hasOwn(rendered.summary.wiring,'runner'),false);
+ for(const [family,role] of [['meri-product-preview-control','control'],['meri-product-preview-temporal-worker','temporal-worker']]){
   const init=byFamily(family).ContainerDefinitions[0];
   assert.equal(init.Name,'material-init');assert.deepEqual(JSON.parse(env(init,'MERI_STATIC_MATERIAL_EXPECTED')),rendered.roles[role].expected,role);
   assert.match(init.Secrets[0].ValueFrom,new RegExp(`:::${SECRET_VERSIONS[role]}$`,'u'));
  }
- assert.deepEqual(main(byFamily('meri-product-preview-temporal-issuer')).Command,['--config','/run/meri/issuer.json','--config-sha256',rendered.roles['temporal-issuer'].configSha256]);
 });
 
-test('existing infrastructure facts the bindings rely on hold in the reviewed foundation sources',async()=>{
- const template=await load('foundation.template.json'),binding=await load('foundation-binding.json'),temporal=await load('temporal-binding.json');
+test('retained private endpoint facts are independent of retired runner infrastructure',async()=>{
+ const binding=await load('foundation-binding.json'),temporal=await load('temporal-binding.json');
  assert.equal(STAGE3_EXISTING.endpointSecurityGroupId,binding.endpointSecurityGroupId);
  assert.equal(STAGE3_EXISTING.endpointSecurityGroupId,temporal.network.interfaceEndpoints.secretsManager.securityGroupId);
- const policy=Object.values(template.Resources).find(r=>r.Type==='AWS::IAM::Policy'&&JSON.stringify(r.Properties).includes('iam:PassRole'));
- const pass=policy.Properties.PolicyDocument.Statement.find(s=>s.Action==='iam:PassRole');
- const passed=pass.Resource.map(resource=>template.Resources[resource['Fn::GetAtt'][0]].Properties.RoleName);
- assert.deepEqual(passed,[STAGE3_EXISTING.runnerExecutionRoleName,STAGE3_EXISTING.runnerTaskRoleName],'control may pass only the two runner roles');
- const runTask=policy.Properties.PolicyDocument.Statement.find(s=>s.Action==='ecs:RunTask');
- assert.equal(runTask.Resource,`arn:aws:ecs:us-east-1:967807252336:task-definition/${STAGE3_FAMILIES.runner}:*`);
+ const {bindings}=await setup();
+ for(const key of ['runnerPoststart','runnerTaskRoleArn','runnerSha256'])assert.equal(Object.hasOwn(bindings.app,key),false);
+ for(const key of ['sizing','executionRoleArns','logGroupNames'])assert.equal(Object.hasOwn(bindings.app[key],'runner'),false);
 });
 
-test('fail closed: foundation, private edge, render mismatch, secret version, scans and runner role',async()=>{
+test('fail closed: foundation, private edge, render mismatch, secret version, scans and retained roles',async()=>{
  const {args}=await setup();
  const refused=change=>{const x=structuredClone(args);change(x);assert.throws(()=>buildStage3Bindings(x),/STAGE3_BINDING_REFUSED/u);};
  refused(x=>{x.foundationOutputs.ControlSecurityGroupId='sg-0123456789abcdef0';});
- refused(x=>{x.foundationOutputs.RunnerExecutionRoleArn='arn:aws:iam::967807252336:role/other';x.deployment.foundation.RunnerExecutionRoleArn=x.foundationOutputs.RunnerExecutionRoleArn;});
+ refused(x=>{x.renderSummary.agentcore.runtimeVersion='999';});
  refused(x=>{x.privateEdgeOutputs.ControlPrivateTargetGroupArn=x.foundationOutputs.ControlTargetGroupArn;});
  refused(x=>{x.privateEdgeOutputs.Extra='x';});
  refused(x=>{x.renderedExpected.control=x.renderedExpected['temporal-worker'];});
- refused(x=>{x.renderedExpected['temporal-issuer'].materialContractSha256='0'.repeat(64);});
+ refused(x=>{x.renderedExpected['temporal-worker'].materialContractSha256='0'.repeat(64);});
  refused(x=>{x.secretVersions['temporal-worker']='AWSCURRENT';});
  refused(x=>{delete x.secretVersions.control;});
  refused(x=>{x.imageScans.nodeRuntime='PENDING';});
- refused(x=>{x.renderSummary.roles['temporal-issuer'].taskDefinitionArn='arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-issuer:1';});
- refused(x=>{x.renderSummary.runnerPoststart.MERI_POSTSTART_CONTROL_ORIGIN='https://other.meri-preview.internal';});
+ refused(x=>{x.renderSummary.roles['temporal-worker'].taskDefinitionArn='arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-worker-wrong:1';});
+ refused(x=>{x.renderSummary.agentcore.runtimeArn='arn:aws:bedrock-agentcore:us-east-1:967807252336:runtime/meri_preview-other';});
  refused(x=>{x.deployment.images.nodeRuntime=x.deployment.images.nodeRuntime.replace(/@sha256:[a-f0-9]{64}$/u,'@sha256:'+'e'.repeat(64));});
  // The renderer still refuses what the builder cannot see: a swapped execution role fails the manifest.
- const {bindings}=await setup(),x=structuredClone(bindings);x.app.executionRoleArns.runner=x.app.controlTaskRoleArn;
+ const {bindings}=await setup(),x=structuredClone(bindings);x.app.executionRoleArns.temporalWorker=x.app.controlTaskRoleArn;
  assert.throws(()=>synthesizeStage3(x),/PRODUCT_PREVIEW_BINDING_REFUSED/u);
 });
 
-test('deploy plumbing: core values from a membership receipt, versions, outputs and verification',async()=>{
+test('deploy plumbing: origin-only Core values, versions, outputs and verification',async()=>{
  const {bindings,synth}=await setup(),now=Date.now();
- const membership={tenantId:'org_synthetic',actorId:'user_synthetic',status:'active',role:'standard_user',permissions:[],clientIds:['11111111-1111-4111-8111-000000000005'],membershipRevision:'m1',checkedAtMs:now,expiresAtMs:now+60000};
- const core=coreValuesFromMembership(membership,{identityCredentialPath:join(tmpdir(),'identity'),frontendOrigin:'https://frontend.synthetic.invalid',nowMs:now});
- assert.deepEqual({tenantId:core.tenantId,actorId:core.actorId,clientId:core.clientId,coreOrigin:core.coreOrigin},
-  {tenantId:'org_synthetic',actorId:'user_synthetic',clientId:'11111111-1111-4111-8111-000000000005',coreOrigin:'https://first-chat-preview.app-dev.capiro.ai'});
- assert.throws(()=>coreValuesFromMembership({...membership,status:'suspended'},{identityCredentialPath:join(tmpdir(),'identity'),frontendOrigin:'https://f.invalid'}),/STAGE3_BINDING_REFUSED/u);
- assert.throws(()=>coreValuesFromMembership({...membership,clientIds:[...membership.clientIds,'22222222-2222-4222-8222-000000000005']},{identityCredentialPath:join(tmpdir(),'identity'),frontendOrigin:'https://f.invalid'}),/--client-id/u);
+ const core=coreValues({frontendOrigin:'https://frontend.synthetic.invalid'});
+ assert.deepEqual(core,{coreOrigin:'https://first-chat-preview.app-dev.capiro.ai',frontendOrigin:'https://frontend.synthetic.invalid'});
+ for(const key of ['tenantId','actorId','clientId','identityCredentialPath','membership'])assert.throws(()=>coreValues({frontendOrigin:'https://f.invalid',[key]:'retired'}),/STAGE3_BINDING_REFUSED/);
+ assert.throws(()=>coreValues({frontendOrigin:'http://f.invalid'}),/RENDER_INPUT_REFUSED/);
  assert.deepEqual(parseVersionsTsv(ROLES.map(r=>`${r}\t${SECRET_VERSIONS[r]}`).join('\n')),SECRET_VERSIONS);
  assert.throws(()=>parseVersionsTsv('control\ta\ncontrol\tb'),/STAGE3_BINDING_REFUSED/u);
  const plan=deployPlan(synth.sizes,'/w/b');
- assert.deepEqual(Object.keys(plan),['issuer','app'],'issuer gate, then application');
+ assert.deepEqual(Object.keys(plan),['app'],'one app update after independent Temporal and AgentCore qualification');
  for(const key of STAGE3_DEPLOY_ORDER)assert.deepEqual(plan[key].wait.slice(0,4),['aws','cloudformation','wait','stack-update-complete']);
  assert.equal(plan.app.command.includes('--no-execute-changeset'),true);
- for(const key of ['app','issuer'])assert.equal(plan[key].command.includes('--s3-bucket'),synth.sizes[key].viaS3);
- // The private readiness probe: runner execution role and log group, the Node runtime image, no secret, no task role.
- const {inputs,foundationOutputs,rendered}=await setup(),probe=probeTaskDefinition({deployment:inputs.deployment,foundationOutputs,renderSummary:rendered.summary});
- new vm.Script(PROBE_PROGRAM);assert.equal(probe.runtimePlatform.cpuArchitecture,'ARM64');assert.equal(probe.executionRoleArn,foundationOutputs.RunnerExecutionRoleArn);assert.equal(probe.taskRoleArn,undefined);
- assert.equal(probe.containerDefinitions.length,1);assert.equal(probe.containerDefinitions[0].secrets,undefined);assert.equal(probe.containerDefinitions[0].image,inputs.deployment.images.nodeRuntime);
- assert.equal(probe.containerDefinitions[0].logConfiguration.options['awslogs-group'],foundationOutputs.RunnerLogGroupName);
- assert.deepEqual(probe.containerDefinitions[0].environment,[{name:'MERI_PROBE_CA_BASE64',value:rendered.summary.runnerPoststart.MERI_POSTSTART_CA_BASE64}]);
+ for(const key of ['app'])assert.equal(plan[key].command.includes('--s3-bucket'),synth.sizes[key].viaS3);
+ // AgentCore connectivity is qualified by an actual invocation, not a separate Fargate probe.
  const e=bindings.expectedTaskDefinitions;
- const outputs={app:outputsObject([{OutputKey:'ControlTaskDefinitionArn',OutputValue:e.control},{OutputKey:'TemporalWorkerTaskDefinitionArn',OutputValue:e['temporal-worker']},{OutputKey:'RunnerTaskDefinitionArn',OutputValue:e.runner}]),
-  issuer:{TemporalIssuerTaskDefinitionArn:e['temporal-issuer']}};
- assert.equal(verifyOutputs({expectedTaskDefinitions:e,...outputs}).length,4);
- assert.throws(()=>verifyOutputs({expectedTaskDefinitions:e,...outputs,issuer:{TemporalIssuerTaskDefinitionArn:e['temporal-issuer'].replace(/:4$/u,':5')}}),/re-render/u);
+ const outputs={app:outputsObject([{OutputKey:'ControlTaskDefinitionArn',OutputValue:e.control},{OutputKey:'TemporalWorkerTaskDefinitionArn',OutputValue:e['temporal-worker']}])};
+ assert.equal(verifyOutputs({expectedTaskDefinitions:e,...outputs}).length,2);
+ assert.throws(()=>verifyOutputs({expectedTaskDefinitions:e,...outputs,app:{...outputs.app,TemporalWorkerTaskDefinitionArn:e['temporal-worker'].replace(/:4$/u,':5')}}),/re-render/u);
 });
 
 test('CLI writes stage3.json, bindings, templates and the deploy plan outside the repository',async()=>{
@@ -205,7 +180,7 @@ test('CLI writes stage3.json, bindings, templates and the deploy plan outside th
   r=await quiet(['bindings','--deployment-inputs',join(work,'deployment.json'),'--foundation-outputs',foundation,'--private-edge-outputs',join(work,'edge.json'),
    '--rendered',out,'--secret-versions',join(work,'versions.tsv'),'--image-scans',join(work,'scans.json'),'--live-app-template',join(work,'app.live.json'),'--out',join(work,'bindings')]);
   assert.equal(r.code,0,r.text);assert.match(r.text,/STAGE3_BINDINGS_WRITTEN/u);
-  for(const key of ['app','issuer'])assert.deepEqual(JSON.parse(await readFile(join(work,'bindings',`${key}.binding.json`),'utf8')),(await setup()).bindings[key]);
+  for(const key of ['app'])assert.deepEqual(JSON.parse(await readFile(join(work,'bindings',`${key}.binding.json`),'utf8')),(await setup()).bindings[key]);
   // The output carries no secret: no bundle bytes, password or identity credential.
   const text=r.text+await readFile(join(work,'bindings','app.template.json'),'utf8');
   for(const secret of ['synthetic-control','synthetic-core-identity-bearer-not-real','PRIVATE KEY'])assert.equal(text.includes(secret),false,secret);
@@ -223,15 +198,15 @@ test('CLI writes stage3.json, bindings, templates and the deploy plan outside th
  }finally{await rm(work,{recursive:true,force:true});}
 });
 
-test('live stacks: every update keeps issuer, control and worker serving, control one task at a time after the runner',async()=>{
+test('live stacks: every update keeps control and worker serving, control one task at a time',async()=>{
  const {synth:{templates:t},bindings,args}=await setup();
  const svc=(template,id)=>template.Resources[id];
- for(const [template,id] of [[t.app,'controlService'],[t.app,'temporalWorkerService'],[t.issuer,'TemporalIssuerService']])
+ for(const [template,id] of [[t.app,'controlService'],[t.app,'temporalWorkerService']])
   assert.equal(svc(template,id).Properties.DesiredCount,1,id);
  const control=svc(t.app,'controlService');
  assert.deepEqual(control.Properties.DeploymentConfiguration,{MaximumPercent:100,MinimumHealthyPercent:0});
  assert.equal(control.Properties.AvailabilityZoneRebalancing,'DISABLED','ECS refuses max 100 while AZ rebalancing is ENABLED');
- assert.deepEqual(control.DependsOn,['runnerTask']);
+ assert.equal(control.DependsOn?.includes('runnerTask')??false,false);
  assert.equal(svc(t.app,'temporalWorkerService').Properties.AvailabilityZoneRebalancing,undefined,'only control changes deployment shape');
  // Control keeps the live public 8080 group and the private 8082 group.
  assert.equal(bindings.app.controlTargetGroupArn,PUBLIC_TG);

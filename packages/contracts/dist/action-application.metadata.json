@@ -29,8 +29,8 @@
     },
     {
       "path": "retrieval-0.2/common.schema.json",
-      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
-      "bytes": 15134
+      "sha256": "943f59f53f33e09405d8f3350798d33d624c97d37e00c029ea4c14c8ba6e185b",
+      "bytes": 14996
     },
     {
       "path": "retrieval-0.2/operational-reads.schema.json",
@@ -43,7 +43,7 @@
       "bytes": 21023
     }
   ],
-  "schemaSha256": "a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c",
+  "schemaSha256": "966a04ef8c590eb7bff20d7a837431948c115afe23c47def3099648e7a9c30e0",
   "browserInputs": [
     "action-application-receiver.mjs",
     "action-generated:./generated-status.mjs",

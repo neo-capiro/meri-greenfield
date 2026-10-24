@@ -27,10 +27,10 @@ mock.module('@temporalio/client',{namedExports:{WorkflowNotFoundError,WorkflowId
 mock.module('@temporalio/activity',{namedExports:{Context:{current:()=>({cancellationSignal:state.activityAbort.signal})}}});
 mock.module('@temporalio/worker',{namedExports:{
  NativeConnection:{async connect(){state.events.push('poller-connect');return {async close(){state.events.push('poller-close');}};}},
- Worker:{async create(options){state.events.push('worker-create');if(state.failWorker)throw Error('Synthetic worker construction failure');state.registered=options;return {getState:()=>state.workerState,run(){state.events.push('worker-run');state.workerState='RUNNING';return state.done.promise;},shutdown(){state.events.push('worker-stop');state.workerState='STOPPED';state.done.resolve();}};}},
+ Worker:{async create(options){state.events.push('worker-create');if(state.failWorker)throw Error('Synthetic worker construction failure');state.registered=options;state.workerHook?.();return {getState:()=>state.workerState,run(){state.events.push('worker-run');state.workerState='RUNNING';return state.done.promise;},shutdown(){state.events.push('worker-stop');state.workerState='STOPPED';state.done.resolve();}};}},
 }});
 mock.module('../config.mjs',{namedExports:{fault:code=>Object.assign(Error(code),{code}),async readSecret(path){state.events.push('secret-read');state.secretHook?.();return Buffer.from(state.secrets[path]??state.secret);}}});
-mock.module('../control.mjs',{namedExports:{async temporalTls(){state.events.push('tls');return {};},async temporalAuthorization(){state.events.push('temporal-authorization');return null;}}});
+mock.module('../temporal-tls.mjs',{namedExports:{async readRuntimeTemporalTls(){state.events.push('tls');return {};}}});
 mock.module('../http-server.mjs',{namedExports:{async listenRuntime(options){state.events.push('listener-open');if(state.failListener)throw Error('Synthetic listener failure');state.listener=options;return {address:{port:0},async close(){state.events.push('listener-close');}};}}});
 
 const {startScheduleWorker,composeScheduleService}=await import('../schedule-service.mjs');
@@ -109,6 +109,11 @@ test('canonical role settings stay closed, source-disabled, queue-separated and 
   {native:{...native,maxResponseBytes:1}},{native:{...native,loopback:'yes'}},{native:{...native,preparedKickoff:true}},{database:{connectionFile:capabilityFile},native}];
  for(const changed of variants){reset();await assert.rejects(startScheduleWorker({...configuration,...changed},{runtimePorts:unavailableOwners()}),{code:'SCHEDULE_SERVICE_CONFIGURATION'});assert.deepEqual(state.events,[]);}
  assert.deepEqual(compileScheduleServiceConfiguration(nativeConfiguration),{scheduledDispatch:configuration.scheduledDispatch,connectionFile:resolve('synthetic-database'),native});
+ const privateNative={...native,serverCaFile:resolve('synthetic-control-ca.pem'),serverCaSha256:'a'.repeat(64)};
+ assert.deepEqual(compileScheduleServiceConfiguration({...nativeConfiguration,native:privateNative}).native,privateNative);
+ for(const changed of [{serverCaFile:privateNative.serverCaFile},{serverCaSha256:privateNative.serverCaSha256},{...privateNative,serverCaFile:'relative-ca.pem'},{...privateNative,serverCaSha256:'not-a-hash'}]){
+  assert.throws(()=>compileScheduleServiceConfiguration({...nativeConfiguration,native:{...native,...changed}}),{code:'SCHEDULE_SERVICE_CONFIGURATION'});
+ }
  assert.deepEqual(compileScheduleServiceConfiguration({...configuration,native:{...native,origin:'http://127.0.0.1:8082',loopback:true}}).native.origin,'http://127.0.0.1:8082');
 });
 
@@ -126,7 +131,7 @@ test('a trusted owner factory runs once, after the owned pool, Temporal client a
  try{
   assert.equal(received.length,1);
   const at=name=>state.events.indexOf(name);
-  assert.deepEqual(state.events.slice(0,at('factory')),['secret-read','pool-create','tls','temporal-authorization','client-connect','client-create','secret-read'],'database secret, pool, Temporal client, then the capability secret precede the factory');
+  assert.deepEqual(state.events.slice(0,at('factory')),['secret-read','pool-create','tls','client-connect','client-create','secret-read'],'database secret, pool, Temporal client, then the capability secret precede the factory');
   assert.ok(at('factory')<at('poller-connect')&&at('factory')<at('listener-open'));
   assert.equal((await state.registered.activities.dispatchScheduledOccurrence({occurrence:x.h.occurrence})).outcome,'ACTIVE','the factory\'s owners dispatch');
   assert.equal(x.h.conversations.state.runs.size,1);
@@ -312,4 +317,14 @@ test('failed JS client construction closes its allocated connection and pool bef
  const {pool,client,...owners}=x.runtimePorts;
  await assert.rejects(startScheduleWorker({...configuration,database:{connectionFile:resolve('synthetic-database')}},{runtimePorts:owners}),{code:'SCHEDULE_SERVICE_STARTUP_FAILED'});
  assert.equal(x.sql.ends,1);assert.deepEqual(state.events.slice(-2),['client-close','pool-end']);assert.equal(state.events.includes('poller-connect'),false);
+});
+
+test('cancelled initialized schedule poller preserves cleanup unknown through its service owner',async t=>{
+ const x=await actualComposition(t);reset();const abort=new AbortController();
+ state.workerHook=()=>abort.abort(Error('synthetic cancellation after native worker allocation'));
+ await assert.rejects(startScheduleWorker(configuration,{runtimePorts:x.runtimePorts,signal:abort.signal}),{code:'TEMPORAL_PRODUCT_CLEANUP_UNKNOWN'});
+ assert.equal(state.workerState,'INITIALIZED');
+ assert.equal(state.events.includes('worker-run'),false);
+ assert.equal(state.events.includes('listener-open'),false);
+ assert.equal(state.events.includes('poller-close'),true);
 });

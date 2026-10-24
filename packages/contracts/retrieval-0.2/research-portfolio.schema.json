@@ -47,9 +47,15 @@
         "conversationId": {
           "type": "string",
           "format": "uuid"
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
         }
       },
-      "required": [],
+      "required": [
+        "portfolioId"
+      ],
       "additionalProperties": false
     },
     "ResearchPortfolioChangesInput": {
@@ -74,9 +80,15 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 100
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
         }
       },
-      "required": [],
+      "required": [
+        "portfolioId"
+      ],
       "additionalProperties": false
     },
     "ResearchPortfolioDetailSelection": {
@@ -88,8 +100,7 @@
         },
         "portfolioId": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 256
+          "format": "uuid"
         }
       },
       "required": [
@@ -107,8 +118,7 @@
         },
         "portfolioId": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 256
+          "format": "uuid"
         },
         "cursor": {
           "anyOf": [

@@ -23,14 +23,12 @@ registerHooks({resolve(specifier,context,nextResolve){
   throw error;
  }
 }});
-const [{createNativeCapabilityClient},{createPreparedRunnerReleaseClient},{createExecutionBinding},{binding,versions},{isAuthorityUnavailable}]=await Promise.all([
- '../native-client.mjs','../native-authority/prepared-kickoff-http.mjs','../../control/conversations/execution-boundary.mjs','../../control/conversations/test/store-fixture.mjs',
+const [{createNativeCapabilityClient},{binding},{isAuthorityUnavailable}]=await Promise.all([
+ '../native-client.mjs','../../control/conversations/test/store-fixture.mjs',
  '../../../packages/runtime/authority-availability.mjs',
 ].map(path=>import(new URL(path,import.meta.url))));
 
 const credential='synthetic-control-capability';
-const taskArn='arn:aws:ecs:us-east-1:967807252336:task/meri/'+'a'.repeat(32);
-const original=expiresAtMs=>createExecutionBinding({binding,versions,plan:{synthetic:'release-timeout'},expiresAtMs});
 
 test('native client keeps its 3s default and refuses invalid factory timeout bounds',async()=>{
  let at=Date.now();const configuration={origin:'https://native.synthetic.invalid',maxResponseBytes:131072};
@@ -75,18 +73,6 @@ test('startup request cancellation aborts transport and refuses a late response'
  pending.resolve(Response.json({ok:true}));
 });
 
-test('only the release client tolerates a task-bound 3.5s exchange; original expiry still wins',async()=>{
- let at=Date.now();const start=at,o=original(at+30000),paths=[];
- const fetchImpl=async(url,input)=>{paths.push(new URL(url).pathname);assert.equal(input.headers.authorization,'Bearer '+credential);assert.deepEqual(JSON.parse(input.body),{original:o,taskArn});at=start+3500;return Response.json({original:o,taskArn,checkedAtMs:at,expiresAtMs:o.expiresAtMs,released:true});};
- const client=createPreparedRunnerReleaseClient({original:o,taskArn,origin:'https://native.synthetic.invalid',credential,fetchImpl,now:()=>at});
- assert.equal((await client.release({original:o,taskArn})).released,true);
- assert.deepEqual(paths,['/v1/native-task/release']);
-
- at=Date.now();const short=original(at+2000),shortStart=at;
- const shortClient=createPreparedRunnerReleaseClient({original:short,taskArn,origin:'https://native.synthetic.invalid',credential,
-  fetchImpl:async()=>{at=shortStart+3500;return Response.json({original:short,taskArn,checkedAtMs:at,expiresAtMs:short.expiresAtMs,released:true});},now:()=>at});
- await assert.rejects(shortClient.release({original:short,taskArn}),/DEADLINE/);
-});
 
 const unanswered=()=>Response.json({error:{code:'WORKER_AUTHORITY_UNAVAILABLE'}},{status:503});
 const replayOptions=operation=>({deadlineMs:Date.now()+10000,...(operation==='runner/load'?{}:{maxRequestMs:5000})});
@@ -114,7 +100,8 @@ test('a refusal, a control deadline or a configured 503 is never sent again and 
 test('only a deadline-bound load or publish is replayed, at most twice and only with time for another attempt',async()=>{
  const configuration={origin:'https://native.synthetic.invalid',maxResponseBytes:131072};
  const attempts=async(operation,options)=>{let calls=0;const client=createNativeCapabilityClient({configuration,credential,fetch:async()=>{calls++;return unanswered();}});
-  await assert.rejects(client.call(operation,{binding},options),e=>e.code==='NATIVE_UNAVAILABLE'&&isAuthorityUnavailable(e));return calls;};
+  const input=operation==='runner/checkpoint/capture'?{binding,sessionId:'71000000-0000-4000-8000-000000000091',controlId:'71000000-0000-4000-8000-000000000092',files:[],taskFiles:[]}:{binding};
+  await assert.rejects(client.call(operation,input,options),e=>e.code==='NATIVE_UNAVAILABLE'&&isAuthorityUnavailable(e));return calls;};
  const started=Date.now();assert.equal(await attempts('runner/load',replayOptions('runner/load')),3);assert.ok(Date.now()-started>=2000,'0.5 s then 1.5 s between attempts');
  assert.equal(await attempts('runner/publish',replayOptions('runner/publish')),3);
  for(const operation of ['runner/runtime','runner/next-controls','runner/claim-control','runner/checkpoint/capture'])assert.equal(await attempts(operation,replayOptions(operation)),1,operation);

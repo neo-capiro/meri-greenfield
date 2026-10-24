@@ -99,7 +99,7 @@
     "DocumentVersion": {
       "allOf": [
         {
-          "$ref": "#/$defs/Canonical_ArtifactVersion_d54b8ac9"
+          "$ref": "#/$defs/Canonical_ArtifactVersion_7f9c56fa"
         },
         {
           "type": "object",
@@ -420,243 +420,270 @@
       ],
       "additionalProperties": false
     },
+    "NativeArtifactFileMetadata": {
+      "$ref": "#/$defs/Canonical_NativeArtifactFileMetadata_f90c3fee"
+    },
     "DocumentInspectionResponse": {
-      "type": "object",
-      "properties": {
-        "version": {
-          "$ref": "#/$defs/DocumentVersion"
-        },
-        "inspection": {
-          "oneOf": [
-            {
-              "type": "object",
-              "properties": {
-                "sha256": {
-                  "type": "string",
-                  "pattern": "^[a-f0-9]{64}$"
-                },
-                "bytes": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 9007199254740991
-                },
-                "format": {
-                  "const": "txt"
-                },
-                "nativeOpened": {
-                  "const": false
-                },
-                "rendered": {
-                  "const": false
-                },
-                "recalculated": {
-                  "const": false
-                },
-                "members": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "maxLength": 500
-                  },
-                  "maxItems": 5000
-                },
-                "details": {
-                  "type": "object",
-                  "properties": {
-                    "encoding": {
-                      "const": "UTF-8"
-                    },
-                    "whitespace": {
-                      "const": "unchanged"
-                    }
-                  },
-                  "required": [
-                    "encoding",
-                    "whitespace"
-                  ],
-                  "additionalProperties": false
-                },
-                "currentBytesVerified": {
-                  "const": true
-                }
-              },
-              "required": [
-                "sha256",
-                "bytes",
-                "format",
-                "nativeOpened",
-                "rendered",
-                "recalculated",
-                "members",
-                "details",
-                "currentBytesVerified"
-              ],
-              "additionalProperties": false
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "$ref": "#/$defs/DocumentVersion"
             },
-            {
-              "type": "object",
-              "properties": {
-                "sha256": {
-                  "type": "string",
-                  "pattern": "^[a-f0-9]{64}$"
-                },
-                "bytes": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 9007199254740991
-                },
-                "format": {
-                  "const": "docx"
-                },
-                "nativeOpened": {
-                  "const": false
-                },
-                "rendered": {
-                  "const": false
-                },
-                "recalculated": {
-                  "const": false
-                },
-                "members": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "maxLength": 500
-                  },
-                  "maxItems": 5000
-                },
-                "details": {
+            "inspection": {
+              "oneOf": [
+                {
                   "type": "object",
                   "properties": {
-                    "paragraphs": {
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "bytes": {
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 9007199254740991
                     },
-                    "tables": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
+                    "format": {
+                      "const": "txt"
                     },
-                    "pictures": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "maximum": 9007199254740991
-                    }
-                  },
-                  "required": [
-                    "paragraphs",
-                    "tables",
-                    "pictures"
-                  ],
-                  "additionalProperties": false
-                },
-                "currentBytesVerified": {
-                  "const": true
-                }
-              },
-              "required": [
-                "sha256",
-                "bytes",
-                "format",
-                "nativeOpened",
-                "rendered",
-                "recalculated",
-                "members",
-                "details",
-                "currentBytesVerified"
-              ],
-              "additionalProperties": false
-            },
-            {
-              "type": "object",
-              "properties": {
-                "sha256": {
-                  "type": "string",
-                  "pattern": "^[a-f0-9]{64}$"
-                },
-                "bytes": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 9007199254740991
-                },
-                "format": {
-                  "const": "xlsx"
-                },
-                "nativeOpened": {
-                  "const": false
-                },
-                "rendered": {
-                  "const": false
-                },
-                "recalculated": {
-                  "const": false
-                },
-                "members": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "maxLength": 500
-                  },
-                  "maxItems": 5000
-                },
-                "details": {
-                  "type": "object",
-                  "properties": {
-                    "sheets": {
+                    "nativeOpened": {
+                      "const": false
+                    },
+                    "rendered": {
+                      "const": false
+                    },
+                    "recalculated": {
+                      "const": false
+                    },
+                    "members": {
                       "type": "array",
                       "items": {
-                        "type": "string"
+                        "type": "string",
+                        "maxLength": 500
                       },
-                      "maxItems": 30
+                      "maxItems": 5000
                     },
-                    "formulas": {
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "encoding": {
+                          "const": "UTF-8"
+                        },
+                        "whitespace": {
+                          "const": "unchanged"
+                        }
+                      },
+                      "required": [
+                        "encoding",
+                        "whitespace"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "currentBytesVerified": {
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "sha256",
+                    "bytes",
+                    "format",
+                    "nativeOpened",
+                    "rendered",
+                    "recalculated",
+                    "members",
+                    "details",
+                    "currentBytesVerified"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "bytes": {
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 9007199254740991
                     },
-                    "formulaCache": {
-                      "enum": [
-                        "unverified-zero-placeholder; recalculation required",
-                        "removed/unverified; recalculation required"
-                      ]
+                    "format": {
+                      "const": "docx"
                     },
-                    "revisionMethod": {
-                      "const": "openpyxl typed-cell replacement"
+                    "nativeOpened": {
+                      "const": false
+                    },
+                    "rendered": {
+                      "const": false
+                    },
+                    "recalculated": {
+                      "const": false
+                    },
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "maxLength": 500
+                      },
+                      "maxItems": 5000
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "paragraphs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "tables": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "pictures": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "paragraphs",
+                        "tables",
+                        "pictures"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "currentBytesVerified": {
+                      "const": true
                     }
                   },
                   "required": [
-                    "sheets",
-                    "formulas",
-                    "formulaCache"
+                    "sha256",
+                    "bytes",
+                    "format",
+                    "nativeOpened",
+                    "rendered",
+                    "recalculated",
+                    "members",
+                    "details",
+                    "currentBytesVerified"
                   ],
                   "additionalProperties": false
                 },
-                "currentBytesVerified": {
-                  "const": true
+                {
+                  "type": "object",
+                  "properties": {
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "format": {
+                      "const": "xlsx"
+                    },
+                    "nativeOpened": {
+                      "const": false
+                    },
+                    "rendered": {
+                      "const": false
+                    },
+                    "recalculated": {
+                      "const": false
+                    },
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "maxLength": 500
+                      },
+                      "maxItems": 5000
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "sheets": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "maxItems": 30
+                        },
+                        "formulas": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "formulaCache": {
+                          "enum": [
+                            "unverified-zero-placeholder; recalculation required",
+                            "removed/unverified; recalculation required"
+                          ]
+                        },
+                        "revisionMethod": {
+                          "const": "openpyxl typed-cell replacement"
+                        }
+                      },
+                      "required": [
+                        "sheets",
+                        "formulas",
+                        "formulaCache"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "currentBytesVerified": {
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "sha256",
+                    "bytes",
+                    "format",
+                    "nativeOpened",
+                    "rendered",
+                    "recalculated",
+                    "members",
+                    "details",
+                    "currentBytesVerified"
+                  ],
+                  "additionalProperties": false
                 }
-              },
-              "required": [
-                "sha256",
-                "bytes",
-                "format",
-                "nativeOpened",
-                "rendered",
-                "recalculated",
-                "members",
-                "details",
-                "currentBytesVerified"
-              ],
-              "additionalProperties": false
+              ]
             }
-          ]
+          },
+          "required": [
+            "version",
+            "inspection"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "native-file"
+            },
+            "version": {
+              "$ref": "#/$defs/NativeArtifactFileMetadata"
+            },
+            "integrity": {
+              "$ref": "#/$defs/Canonical_integrity_52ed1e31"
+            }
+          },
+          "required": [
+            "kind",
+            "version",
+            "integrity"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "version",
-        "inspection"
-      ],
-      "additionalProperties": false
+      ]
     },
     "DocumentErrorResponse": {
       "type": "object",
@@ -679,7 +706,6 @@
                 "DEADLINE",
                 "DOCUMENT_CLOCK",
                 "DOCUMENT_CONFIGURATION",
-                "DOCUMENT_READ_BUDGET_REFUSED",
                 "DOCUMENT_REFUSED",
                 "DOCUMENT_RESPONSE_LIMIT",
                 "DOCUMENT_RESULT_REFUSED",
@@ -1308,7 +1334,234 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ArtifactExecution_28c65a3e": {
+    "Canonical_artifactId_cc9f299e": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_versionId_e4470a54": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_parentVersionId_116435a5": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Canonical_binding_ad882dea": {
+      "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+    },
+    "Canonical_object_a3973f47": {
+      "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+    },
+    "Canonical_filename_f09421cc": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "Canonical_mimeType_0837eb6f": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_scopes_3d363e5b": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Canonical_Scope_f882edb5"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "Canonical_sourceId_fa5f0f45": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_recordId_1173860d": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_sourceVersionId_a5aa4b63": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Canonical_observedAt_fc731620": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "Canonical_sourceUpdatedAt_4a76a197": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Canonical_citationId_ae4e145b": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_scopes_78e0eb49": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Canonical_Scope_f882edb5"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "Canonical_contentSha256_6b70d9f7": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "Canonical_NativeSourceEvidence_cb9e6ba4": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/Canonical_sourceId_fa5f0f45"
+        },
+        "recordId": {
+          "$ref": "#/$defs/Canonical_recordId_1173860d"
+        },
+        "sourceVersionId": {
+          "$ref": "#/$defs/Canonical_sourceVersionId_a5aa4b63"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/Canonical_observedAt_fc731620"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "#/$defs/Canonical_sourceUpdatedAt_4a76a197"
+        },
+        "citationId": {
+          "$ref": "#/$defs/Canonical_citationId_ae4e145b"
+        },
+        "scopes": {
+          "$ref": "#/$defs/Canonical_scopes_78e0eb49"
+        },
+        "contentSha256": {
+          "$ref": "#/$defs/Canonical_contentSha256_6b70d9f7"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_generationStatus_0b8d37a9": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "published",
+        "failed"
+      ]
+    },
+    "Canonical_previewStatus_fe162158": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "validated",
+        "unsupported",
+        "failed"
+      ]
+    },
+    "Canonical_createdAt_38444d79": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "Canonical_NativeArtifactVersion_ff97d150": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "artifactId": {
+          "$ref": "#/$defs/Canonical_artifactId_cc9f299e"
+        },
+        "versionId": {
+          "$ref": "#/$defs/Canonical_versionId_e4470a54"
+        },
+        "parentVersionId": {
+          "$ref": "#/$defs/Canonical_parentVersionId_116435a5"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_binding_ad882dea"
+        },
+        "object": {
+          "$ref": "#/$defs/Canonical_object_a3973f47"
+        },
+        "filename": {
+          "$ref": "#/$defs/Canonical_filename_f09421cc"
+        },
+        "mimeType": {
+          "$ref": "#/$defs/Canonical_mimeType_0837eb6f"
+        },
+        "scopes": {
+          "$ref": "#/$defs/Canonical_scopes_3d363e5b"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_NativeSourceEvidence_cb9e6ba4"
+          }
+        },
+        "generationStatus": {
+          "$ref": "#/$defs/Canonical_generationStatus_0b8d37a9"
+        },
+        "previewStatus": {
+          "$ref": "#/$defs/Canonical_previewStatus_fe162158"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/Canonical_createdAt_38444d79"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "artifactId",
+        "versionId",
+        "parentVersionId",
+        "binding",
+        "object",
+        "filename",
+        "mimeType",
+        "scopes",
+        "evidence",
+        "generationStatus",
+        "previewStatus",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ArtifactVersion_7f9c56fa": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Canonical_ArtifactVersion_d54b8ac9"
+        },
+        {
+          "$ref": "#/$defs/Canonical_NativeArtifactVersion_ff97d150"
+        }
+      ]
+    },
+    "Canonical_LegacyArtifactExecution_4afe1663": {
       "type": "object",
       "properties": {
         "requestSha256": {
@@ -1340,6 +1593,156 @@
         "objectCommitted",
         "versionCommitted",
         "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeArtifactExecution_26204926": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "native-document"
+        },
+        "invocationId": {
+          "type": "string",
+          "pattern": "^sdk:[a-f0-9]{64}$"
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "kind",
+        "invocationId",
+        "requestSha256",
+        "authorizationReceiptId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ArtifactExecution_28c65a3e": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Canonical_LegacyArtifactExecution_4afe1663"
+        },
+        {
+          "$ref": "#/$defs/Canonical_NativeArtifactExecution_26204926"
+        }
+      ]
+    },
+    "Canonical_objectId_9e74be34": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_manifestId_d0d1dc64": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Canonical_path_79796d02": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "Canonical_scopes_4a25bf0d": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Canonical_Scope_f882edb5"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "Canonical_createdAt_ede7c864": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "Canonical_NativeArtifactFileMetadata_f90c3fee": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "$ref": "#/$defs/Canonical_objectId_9e74be34"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "manifestId": {
+          "$ref": "#/$defs/Canonical_manifestId_d0d1dc64"
+        },
+        "path": {
+          "$ref": "#/$defs/Canonical_path_79796d02"
+        },
+        "object": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "bytes": {
+                  "type": "integer",
+                  "maximum": 8388608
+                }
+              }
+            }
+          ]
+        },
+        "scopes": {
+          "$ref": "#/$defs/Canonical_scopes_4a25bf0d"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/Canonical_createdAt_ede7c864"
+        }
+      },
+      "required": [
+        "versionId",
+        "binding",
+        "manifestId",
+        "path",
+        "object",
+        "scopes",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_sha256_a23d638d": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "Canonical_integrity_52ed1e31": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "$ref": "#/$defs/Canonical_sha256_a23d638d"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8388608
+        },
+        "currentBytesVerified": {
+          "const": true
+        }
+      },
+      "required": [
+        "sha256",
+        "bytes",
+        "currentBytesVerified"
       ],
       "additionalProperties": false
     }

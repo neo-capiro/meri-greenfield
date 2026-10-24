@@ -2,7 +2,6 @@
  * modelUsage includes subagents/compaction and is cumulative across resume/fork. `usage` does not.
  * A missing/reset baseline is unavailable, never a zero-cost run. Thinking is already in outputTokens.
  */
-import prices from './model-prices.json' with {type:'json'};
 import {assertSdkUsageSnapshot,projectSdkUsage} from '../../../packages/contracts/runtime-0.2/usage.mjs';
 
 const COUNTERS=Object.freeze(['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens']);
@@ -11,12 +10,23 @@ const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)
 const count=value=>Number.isSafeInteger(value)&&value>=0;
 const dollars=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=Number.MAX_SAFE_INTEGER/1e6;
 const invalid=()=>{throw Error('SDK_USAGE_INVALID');};
-export const SDK_USAGE_BASIS=Object.freeze({sdk:'0.3.295',cli:'2.1.295',provider:'bedrock',cacheWriteTtl:'5m',priceRevision:prices.revision});
-const sameBasis=value=>object(value)&&Object.keys(value).length===Object.keys(SDK_USAGE_BASIS).length&&Object.entries(SDK_USAGE_BASIS).every(([key,v])=>value[key]===v);
+// Both SDK estimates cover the full query pipeline. Allow floating-point summation
+// error across at most 32 model entries, not a missing or contradictory model charge.
+const consistentEstimate=value=>{
+ const sum=Object.values(value.models).reduce((total,model)=>total+model.sdkEstimateUsd,0);
+ return Math.abs(sum-value.sdkEstimateUsd)<=64*Number.EPSILON*Math.max(1,sum,value.sdkEstimateUsd);
+};
+export const SDK_USAGE_BASIS=Object.freeze({sdk:'0.3.295',cli:'2.1.295',provider:'bedrock',cacheWriteTtl:'5m',priceRevision:'sdk-list-estimate-0.3.295'});
+const sameBasis=(value,historical=false)=>object(value)&&Object.keys(value).length===5&&value.sdk===SDK_USAGE_BASIS.sdk&&value.cli===SDK_USAGE_BASIS.cli&&['bedrock','claude-api'].includes(value.provider)&&value.cacheWriteTtl==='5m'&&(value.priceRevision===SDK_USAGE_BASIS.priceRevision||historical&&value.provider==='bedrock'&&value.priceRevision==='bedrock-us-sonnet-4-6-2026-10-23');
 
 /** Native projection is shared; application-owned pricing/configuration stays here. */
 export const sdkUsageSnapshot=(result,basis=SDK_USAGE_BASIS)=>projectSdkUsage(result,basis);
 export const SDK_MODEL_CONFIGURATION=Object.freeze({model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,usageBasis:SDK_USAGE_BASIS});
+/** Selection was validated against the deployment catalog at admission and load. No key/ARN crosses this port. */
+export function resolveSdkModelConfiguration(selection,modelPolicy){
+ if(!object(selection)||!['bedrock','claude-api'].includes(selection.provider)||typeof selection.modelId!=='string'||selection.effort!==null&&!['low','medium','high','xhigh','max'].includes(selection.effort)||!object(modelPolicy)||!Number.isSafeInteger(modelPolicy.maxTurns)||modelPolicy.maxTurns<1||modelPolicy.maxTurns>100||!Number.isSafeInteger(modelPolicy.maxBudgetMicroUsd)||modelPolicy.maxBudgetMicroUsd<1)throw Error('SDK_MODEL_CONFIGURATION_REFUSED');
+ return {provider:selection.provider,model:selection.modelId,effort:selection.effort,region:'us-east-1',maxOutputTokens:4096,usageBasis:{...SDK_USAGE_BASIS,provider:selection.provider},maxTurns:modelPolicy.maxTurns,maxCostMicroUSD:modelPolicy.maxBudgetMicroUsd};
+}
 
 function snapshot(value){
  assertSdkUsageSnapshot(value);
@@ -37,7 +47,7 @@ export function accountSdkSnapshot(value,context){
 /** mode/parentSessionId come from the canonical run lineage, not the result. A fork charges its delta only. */
 export function accountSdkUsage({result,mode,parentSessionId=null,baseline=null,basis=SDK_USAGE_BASIS}){
  let cumulative=null,delta=null,sdkEstimateUsd=null;
- const unavailable=reason=>({status:'unavailable',reason,cumulative,delta,sdkEstimateUsd,chargeMicroUsd:null,priceRevision:prices.revision});
+ const unavailable=reason=>({status:'unavailable',reason,cumulative,delta,sdkEstimateUsd,chargeMicroUsd:null,priceRevision:SDK_USAGE_BASIS.priceRevision});
  if(!sameBasis(basis))return unavailable('configuration_mismatch');
  try{cumulative=sdkUsageSnapshot(result,basis);}catch{return unavailable('result_unavailable');}
  let previous;
@@ -45,7 +55,7 @@ export function accountSdkUsage({result,mode,parentSessionId=null,baseline=null,
   if(parentSessionId!==null||baseline!==null)return unavailable('baseline_mismatch');
  }else if(mode==='resume'||mode==='fork'){
   if(!uuid(parentSessionId)||baseline===null)return unavailable('baseline_unavailable');
-  if(!sameBasis(baseline.basis))return unavailable('baseline_configuration_mismatch');
+  if(!sameBasis(baseline.basis,true))return unavailable('baseline_configuration_mismatch');
   try{previous=snapshot(baseline);}catch{return unavailable('baseline_unavailable');}
   if(previous.sessionId!==parentSessionId||(mode==='resume'?cumulative.sessionId!==parentSessionId:cumulative.sessionId===parentSessionId))return unavailable('baseline_mismatch');
  }else return unavailable('lineage_unavailable');
@@ -54,24 +64,20 @@ export function accountSdkUsage({result,mode,parentSessionId=null,baseline=null,
  for(const [name,current] of Object.entries(cumulative.models)){
   const old=previous?.models[name];
   if(old&&(old.provider!==current.provider||old.costBasis!==current.costBasis))return unavailable('baseline_mismatch');
+  if(current.sdkEstimateUsd<(old?.sdkEstimateUsd??0))return unavailable('counters_reset');
   const difference=Object.fromEntries([...COUNTERS,'webSearchRequests'].map(key=>[key,current[key]-(old?.[key]??0)]));
   if(Object.values(difference).some(n=>!count(n)))return unavailable('counters_reset');
   models[name]=difference;
  }
  const estimate=cumulative.sdkEstimateUsd-(previous?.sdkEstimateUsd??0);
  if(estimate<0)return unavailable('counters_reset');
+ if(!consistentEstimate(cumulative)||previous&&!consistentEstimate(previous))return unavailable('estimate_mismatch');
  // SDK decimal USD is an estimate; preserve it separately from integer application accounting.
  sdkEstimateUsd=Number(estimate.toFixed(12));delta=models;
- let thousandths=0n;
- for(const [name,usage] of Object.entries(models)){
-  const rate=prices.models[name],evidence=cumulative.models[name];
-  if(!rate||evidence.provider!==rate.provider||evidence.costBasis!=='list'||usage.webSearchRequests!==0)return unavailable('rates_unavailable');
-  // The trusted SDK options bind both native TTL settings to 5m. The saved parent carries
-  // the identical basis; this is not inferred from main-loop usage or SDK dollar estimates.
-  thousandths+=BigInt(usage.cacheCreationInputTokens)*BigInt(rate.cacheCreation5mTokens);
-  for(const key of ['inputTokens','outputTokens','cacheReadInputTokens'])thousandths+=BigInt(usage[key])*BigInt(rate[key]);
- }
- const charge=(thousandths+999n)/1000n;
- if(charge>BigInt(Number.MAX_SAFE_INTEGER))return unavailable('amount_out_of_range');
- return {status:'recorded',reason:null,cumulative,delta,sdkEstimateUsd,chargeMicroUsd:Number(charge),priceRevision:prices.revision};
+ for(const evidence of Object.values(cumulative.models))if(!['bedrock','firstParty'].includes(evidence.provider)||evidence.costBasis!=='list')return unavailable('rates_unavailable');
+ // Native cost includes model-specific cache/tool pricing and subagents. It is an
+ // estimate for the existing cap, never an invoice or a second token-price catalog.
+ const charge=Math.ceil(Number((sdkEstimateUsd*1e6).toFixed(6)));
+ if(!Number.isSafeInteger(charge))return unavailable('amount_out_of_range');
+ return {status:'recorded',reason:null,cumulative,delta,sdkEstimateUsd,chargeMicroUsd:charge,priceRevision:SDK_USAGE_BASIS.priceRevision};
 }

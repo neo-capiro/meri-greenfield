@@ -7,14 +7,14 @@ export const syntheticText=Object.freeze({bill_text:'SYNTHETIC BILL TEXT. Sectio
   federal_legislation:'SYNTHETIC STATUS NOTE. A separate summary describes the demonstration as funded. This conflicts with the authorization-only bill passage.'});
 const operations={bill_text:'read_bill_text',federal_legislation:'get_bill_status',program_elements:'get_pe_budget_timeline'};
 export function syntheticRead(call){
-  const sourceId=call.sourceId,available=sourceId!=='program_elements',stamp=call.selector.asOf,decision=randomUUID();
+  const sourceId=call.sourceId,available=sourceId!=='program_elements',stamp=call.selector.asOf;
   const content=syntheticText[sourceId],recordId=sourceId==='bill_text'?'119-hr-4242':'synthetic-status-4242',version=sourceId==='bill_text'?'synthetic-ih-v1':'synthetic-status-v1';
   const evidence=available?{sourceId,recordId,sourceVersionId:version,observedAt:stamp,sourceUpdatedAt:stamp,
-    citationId:randomUUID(),scopes:structuredClone(call.scopes),contentSha256:sha(Buffer.from(content)),authorizationDecisionId:decision}:null;
+    citationId:randomUUID(),scopes:structuredClone(call.scopes),contentSha256:sha(Buffer.from(content)),binding:structuredClone(call.binding)}:null;
   return {envelope:{contractVersion:'0.2.0',requestId:randomUUID(),traceId:randomUUID(),
     operation:{id:operations[sourceId],version:'0.2.0'},binding:call.binding,
     subject:{kind:'client',entityType:'client',entityIds:[call.scopes.find(x=>x.kind==='client').resourceId],
-      tenantId:call.binding.tenantId,actorId:call.binding.actorId,authorizationDecisionId:decision,
+      tenantId:call.binding.tenantId,actorId:call.binding.actorId,
       policyRevision:call.scopes[0].policyRevision,scopes:call.scopes,rosterVersionId:null},
     window:{basis:'unbounded'},argumentsSha256:v.hash(call.selector),appliedFilters:Object.entries(call.selector.subject).map(([name,value])=>({name:filterName(name),valueSha256:v.hash(value)})),
     method:'source-read',status:available?'complete':'unavailable',reasonCode:available?'OK':'SOURCE_UNAVAILABLE',retryable:false,

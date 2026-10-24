@@ -26,12 +26,12 @@ function input(at=stamp){return {skill:briefSkillPin(),title:'Independent eviden
  {id:'missing',kind:'excerpt',text:'No budget evidence was read.',citations:[citation('program_elements','No budget evidence was read.')]}],
  proposedLanguage:['Draft proposal: establish both the authorization and appropriations basis before committing resources.']};}
 function read(call){
- const available=call.sourceId!=='program_elements',content=texts[call.sourceId],sourceId=call.sourceId,observed=call.selector.asOf,decision=uid(20),citationId=uid(sourceId==='bill_text'?21:22);
+ const available=call.sourceId!=='program_elements',content=texts[call.sourceId],sourceId=call.sourceId,observed=call.selector.asOf,citationId=uid(sourceId==='bill_text'?21:22);
  const scopes=structuredClone(call.scopes),evidence=available?[{sourceId,recordId:'independent-'+sourceId,sourceVersionId:'independent-version-1',citationId,
-  authorizationDecisionId:decision,contentSha256:digest(Buffer.from(content)),scopes,observedAt:observed,sourceUpdatedAt:observed}]:[];
+  binding:structuredClone(call.binding),contentSha256:digest(Buffer.from(content)),scopes,observedAt:observed,sourceUpdatedAt:observed}]:[];
  const envelope={contractVersion:'0.2.0',requestId:randomUUID(),traceId:randomUUID(),operation:briefReadOperation(sourceId),binding:structuredClone(call.binding),
   subject:{kind:'client',entityType:'client',entityIds:[scopes[0].resourceId],tenantId:call.binding.tenantId,actorId:call.binding.actorId,
-   authorizationDecisionId:decision,policyRevision:scopes[0].policyRevision,scopes,rosterVersionId:null},
+   policyRevision:scopes[0].policyRevision,scopes,rosterVersionId:null},
   window:{basis:'unbounded'},argumentsSha256:v.hash(call.selector),appliedFilters:Object.entries(call.selector.subject).map(([k,value])=>({name:k.replace(/[A-Z]/g,x=>'_'+x.toLowerCase()),valueSha256:v.hash(value)})),
   method:'source-read',status:available?'complete':'unavailable',reasonCode:available?'OK':'SOURCE_UNAVAILABLE',retryable:false,
   sources:[{sourceId,authority:'derived',snapshotVersionId:available?'independent-snapshot-1':null,adapterVersion:'1.0.0',status:available?'checked':'unavailable',
@@ -55,7 +55,7 @@ test('independent source IDs, exact Unicode passage bytes and honest claim/cover
  assert.equal(result.facts[0].links[0].passageSha256,digest(Buffer.from(texts.bill_text)));
  assert.deepEqual(result.provenance.subject,subject);assert.deepEqual(result.provenance.skill,briefSkillPin());assert.equal(result.baseVersionId,null);
  const document=bodyText(result);for(const label of ['locator URL (not verification)','potentially conflicting cited passages','program_elements: unavailable','returned 0','remaining sources program_elements',
-  'Congress 119 | Session 2 | 119-s-88 | Bill version is | FY 2028 | Budget stage authorized','Cited passage (UTF-16 characters','authorization decision','Original skill and immutable revision provenance'])assert(document.includes(label),label);
+  'Congress 119 | Session 2 | 119-s-88 | Bill version is | FY 2028 | Budget stage authorized','Cited passage (UTF-16 characters','run '+context().binding.runId,'Original skill and immutable revision provenance'])assert(document.includes(label),label);
  assert(document.includes(texts.bill_text));assert(document.includes(texts.federal_legislation));
 });
 
@@ -63,7 +63,7 @@ for(const [label,edit]of [
  ['foreign actor',r=>r.envelope.binding.actorId='foreign'],['foreign tenant',r=>r.envelope.binding.tenantId='foreign'],
  ['other run',r=>r.envelope.binding.runId=uid(90)],['other attempt',r=>r.envelope.binding.attemptId=uid(91)],['other fence',r=>r.envelope.binding.writerFence=2],
  ['changed selector',r=>r.envelope.argumentsSha256='e'.repeat(64)],['source operation',r=>r.envelope.operation=briefReadOperation('federal_legislation')],
- ['source identity',r=>{r.envelope.sources[0].sourceId='federal_legislation';}],['authorization decision',r=>r.evidence[0].authorizationDecisionId=uid(99)],
+ ['source identity',r=>{r.envelope.sources[0].sourceId='federal_legislation';}],['other evidence run',r=>r.evidence[0].binding.runId=uid(99)],['obsolete decision field',r=>r.evidence[0].authorizationDecisionId=uid(99)],
  ['source version',r=>r.evidence[0].sourceVersionId='independent-version-2'],['record identity',r=>r.evidence[0].recordId='other-record'],
  ['raw text with retained hash',r=>r.envelope.data.records[0].content.text+=' altered'],['proof hash',r=>r.evidence[0].contentSha256='a'.repeat(64)],
  ['record hash',r=>r.envelope.data.records[0].contentSha256='b'.repeat(64)],
@@ -124,50 +124,40 @@ test('preabort and parked source cancellation release no prepared result or subs
  const control=new AbortController();let entered;const ready=new Promise(r=>entered=r);
  const pending=compiler(()=>{count++;entered();return new Promise(()=>{});}).prepare(input(),context(),{signal:control.signal});await ready;control.abort();await assert.rejects(pending,/CANCELLED/);assert.equal(count,1);
 });
-test('private binder preserves the original borrowed authority receiver and call resource',async()=>{
- const p=await compiler().prepare(input(),context()),call={input:{request:p.request,context:p.context,baseVersionId:null},credential:'synthetic-only',signal:new AbortController().signal};
- let checked=0;const result={acceptedByOriginalOwner:true},authority={check(value){assert.equal(this,authority);assert.equal(value,call);checked++;return result;},identify(){throw Error('Not a policy lookup during binding');}};
- const options={context:p.context,authority},bound=bindPreparedBriefArtifactOptions(p,options);assert.equal(checked,0);assert.equal(bound.context,options.context);
- assert.equal(await bound.authority.check(call),result);assert.equal(checked,1);
+const writeCall=p=>({action:'artifact.generate',resource:{versionId:null},binding:p.context.binding,scopes:p.context.scopes,requestSha256:v.nativeRequestSha256(p.request,p.context,null)});
+test('private binder preserves original current authorization receiver and call resource',async()=>{
+ const p=await compiler().prepare(input(),context()),call={...writeCall(p),signal:new AbortController().signal};let checked=0;
+ const result={acceptedByOriginalOwner:true},owner={context:p.context,authorize(value){assert.equal(this,owner);assert.equal(value,call);checked++;return result;}};
+ const bound=bindPreparedBriefArtifactOptions(p,owner);assert.equal(checked,0);assert.equal(bound.context,owner.context);assert.equal(await bound.authorize(call),result);assert.equal(checked,1);
 });
-test('private binder must pin context digest even if returned prepared context mutates after binding',async()=>{
- const p=await compiler().prepare(input(),context());let checked=0;
- const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authority:{check(){checked++;return {accepted:true};}}});
- p.context.evidence[0].contentSha256='e'.repeat(64);
- await assert.rejects(bound.authority.check({input:{request:p.request,context:bound.context,baseVersionId:null}}),e=>e.code==='ACCESS_DENIED');assert.equal(checked,0);
+test('private binder pins context digest if returned prepared context mutates after binding',async()=>{
+ const p=await compiler().prepare(input(),context()),call=writeCall(p);let checked=0;
+ const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authorize(){checked++;return true;}});p.context.evidence[0].contentSha256='e'.repeat(64);
+ await assert.rejects(bound.authorize(call),{code:'ACCESS_DENIED'});assert.equal(checked,0);
 });
-test('private binder refuses authority accessor or Proxy without invoking getter/traps',async()=>{
+test('private binder refuses current authorizer accessor or Proxy without invoking traps',async()=>{
  const p=await compiler().prepare(input(),context());let invoked=0;
- const accessor={get check(){invoked++;throw Error('hostile getter');}};
- assert.throws(()=>bindPreparedBriefArtifactOptions(p,{context:p.context,authority:accessor}),/BRIEF_CONFIGURATION/);
- const proxy=new Proxy({check(){}},{getOwnPropertyDescriptor(){invoked++;throw Error('hostile descriptor');},get(){invoked++;throw Error('hostile get');}});
- assert.throws(()=>bindPreparedBriefArtifactOptions(p,{context:p.context,authority:proxy}),/BRIEF_CONFIGURATION/);assert.equal(invoked,0);
+ assert.throws(()=>bindPreparedBriefArtifactOptions(p,{context:p.context,get authorize(){invoked++;throw Error('hostile getter');}}));
+ const proxy=new Proxy(()=>{}, {apply(){invoked++;throw Error('hostile call');},get(){invoked++;throw Error('hostile get');}});
+ assert.throws(()=>bindPreparedBriefArtifactOptions(p,{context:p.context,authorize:proxy}),/BRIEF_CONFIGURATION/);assert.equal(invoked,0);
 });
-test('private binder captures borrowed check while retaining owner fields and original revocation',async()=>{
- const p=await compiler().prepare(input(),context()),signal=new AbortController().signal;let changedCheck=0,extraGetter=0;
- const owner={allowed:true,checks:0,get unusedMetadata(){extraGetter++;throw Error('must stay unused');},check(call){assert.equal(this,owner);assert.equal(call.signal,signal);this.checks++;if(!this.allowed)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return 'canonical-policy-result';}};
- const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authority:owner});owner.check=()=>{changedCheck++;return 'replacement';};
- const call={input:{request:p.request,context:p.context,baseVersionId:null},signal};assert.equal(await bound.authority.check(call),'canonical-policy-result');
- owner.allowed=false;await assert.rejects(bound.authority.check(call),e=>e.code==='ACCESS_DENIED');assert.equal(owner.checks,2);assert.equal(changedCheck,0);assert.equal(extraGetter,0);
+test('private binder captures authorizer while retaining owner fields and live revocation',async()=>{
+ const p=await compiler().prepare(input(),context()),signal=new AbortController().signal;let replacements=0;
+ const owner={context:p.context,allowed:true,checks:0,authorize(call){assert.equal(this,owner);assert.equal(call.signal,signal);this.checks++;if(!this.allowed)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return 'canonical-policy-result';}};
+ const bound=bindPreparedBriefArtifactOptions(p,owner);owner.authorize=()=>{replacements++;return 'replacement';};const call={...writeCall(p),signal};
+ assert.equal(await bound.authorize(call),'canonical-policy-result');owner.allowed=false;await assert.rejects(bound.authorize(call),{code:'ACCESS_DENIED'});assert.equal(owner.checks,2);assert.equal(replacements,0);
 });
-test('private binder denies changed request context base and hostile intent before any policy effect',async()=>{
- const p=await compiler().prepare(input(),context());let calls=0;
- const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authority:{check(){calls++;return true;}}});
- const good={request:p.request,context:p.context,baseVersionId:null},changedRequest=structuredClone(good),changedContext=structuredClone(good),changedBase=structuredClone(good);
- changedRequest.request.title='Different approved body';changedContext.context.binding.writerFence=2;changedBase.baseVersionId=uid(83);
- let traps=0;const hostile=new Proxy(good,{ownKeys(){traps++;throw Error('hostile intent');}});
- for(const intent of [changedRequest,changedContext,changedBase,hostile])await assert.rejects(bound.authority.check({input:intent}),e=>e.code==='ACCESS_DENIED');
- assert.equal(calls,0);assert.equal(traps,0);
+test('private binder denies changed request context base and hostile call before policy effect',async()=>{
+ const p=await compiler().prepare(input(),context());let calls=0,traps=0;const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authorize(){calls++;return true;}});
+ const good=writeCall(p),request=structuredClone(p.request);request.title='Substituted';
+ const changedRequest={...good,requestSha256:v.nativeRequestSha256(request,p.context,null)},changedContext={...good,binding:{...good.binding,writerFence:2}},changedBase={...good,resource:{versionId:uid(83)}};
+ const hostile=new Proxy(good,{ownKeys(){traps++;throw Error('hostile call');},get(){traps++;throw Error('hostile get');}});
+ for(const call of [changedRequest,changedContext,changedBase,hostile])await assert.rejects(bound.authorize(call),{code:'ACCESS_DENIED'});assert.equal(calls,0);assert.equal(traps,0);
 });
-test('private binder preserves inert configuration admission before reading or spreading outer ports',async()=>{
+test('private binder preserves inert configuration admission before reading outer ports',async()=>{
  const p=await compiler().prepare(input(),context());let invoked=0;
- for(const field of ['context','authority','executor']){
-  const options={context:p.context,authority:{check(){return true;}},executor:{}};
-  Object.defineProperty(options,field,{enumerable:true,get(){invoked++;throw Error('outer configuration getter invoked');}});
-  assert.throws(()=>bindPreparedBriefArtifactOptions(p,options));
- }
- const proxy=new Proxy({context:p.context,authority:{check(){return true;}}},{get(){invoked++;throw Error('outer configuration Proxy invoked');},ownKeys(){invoked++;throw Error('outer configuration reflection invoked');}});
- assert.throws(()=>bindPreparedBriefArtifactOptions(p,proxy));assert.equal(invoked,0);
+ for(const field of ['context','authorize','executor']){const options={context:p.context,authorize(){return true;},executor:{}};Object.defineProperty(options,field,{enumerable:true,get(){invoked++;throw Error('outer getter');}});assert.throws(()=>bindPreparedBriefArtifactOptions(p,options));}
+ const proxy=new Proxy({context:p.context,authorize(){return true;}},{get(){invoked++;throw Error('outer get');},ownKeys(){invoked++;throw Error('outer reflection');}});assert.throws(()=>bindPreparedBriefArtifactOptions(p,proxy));assert.equal(invoked,0);
 });
 
 test('independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup',async t=>{
@@ -183,7 +173,7 @@ test('independent authorized exact-base create/revise/inspect/download isolation
  },readBase:async({versionId,signal})=>{const inspected=await response(post('inspect',{versionId}));baseInspects++;const retained=await f.artifactOptions.versions.read(versionId,signal);assert.deepEqual(retained.version,inspected.version);return retained;}});
  const i=input(new Date(f.now()).toISOString()),first=await compile.prepare(i,f.artifactOptions.context);
  const configure=p=>{app=mountLocalDocumentApplication({...f,artifactOptions:{...f.artifactOptions,context:p.context}},{researchBrief:p});};configure(first);
- const changed=structuredClone(first.request);changed.content.blocks[0].runs[0].text='Hostile title';const denied=await post('create',{deliveryId:'altered',request:changed});assert.equal(denied.status,403);const deniedBody=await denied.json();assert.equal(deniedBody.error.code,'ACCESS_DENIED');assert.equal(deniedBody.error.outcome,'UNKNOWN');assert.equal(f.stats().generations,0);assert.equal(f.stats().versionCharges,0);assert.equal(f.stats().settled,0);assert.equal(f.stats().unknown,0);
+ const changed=structuredClone(first.request);changed.content.blocks[0].runs[0].text='Hostile title';const denied=await post('create',{deliveryId:'altered',request:changed});assert.equal(denied.status,403);const deniedBody=await denied.json();assert.equal(deniedBody.error.code,'ACCESS_DENIED');assert.equal(deniedBody.error.outcome,'UNKNOWN');assert.equal(f.stats().generations,0);assert.equal(f.stats().deliveries,1);assert.equal(f.stats().prepared,0);assert.equal(f.stats().unknown,1);
  const original=await response(post('create',{deliveryId:'independent-create',request:first.request})),record=await f.artifactOptions.versions.read(original.version.versionId);
  const before=Buffer.from(await (await post('download',{versionId:original.version.versionId})).arrayBuffer());assert.equal(digest(before),original.version.object.sha256);
  const next=input(new Date(f.now()).toISOString());next.proposedLanguage=['Revised independent proposal: preserve the original and request a budget-stage source review.'];
@@ -194,7 +184,7 @@ test('independent authorized exact-base create/revise/inspect/download isolation
  }
  const rollback=structuredClone(next);rollback.asOf='2026-10-12T00:00:00.000Z';await assert.rejects(compile.prepare(rollback,first.context,{base:selection}));
  const second=await compile.prepare(next,first.context,{base:selection});assert.equal(second.provenance.parent.objectSha256,original.version.object.sha256);assert.equal(second.provenance.parent.specSha256,record.specSha256);assert(baseInspects>=7);configure(second);
- const beforeWrongParent=f.stats();assert.equal((await post('revise',{deliveryId:'wrong-parent',baseVersionId:uid(98),request:second.request})).status,403);assert.equal(f.stats().generations,beforeWrongParent.generations);assert.equal(f.stats().versionCharges,beforeWrongParent.versionCharges);
+ const beforeWrongParent=f.stats();assert.equal((await post('revise',{deliveryId:'wrong-parent',baseVersionId:uid(98),request:second.request})).status,403);assert.equal(f.stats().generations,beforeWrongParent.generations);assert.equal(f.stats().deliveries,beforeWrongParent.deliveries+1);assert.equal(f.stats().unknown,beforeWrongParent.unknown+1);
  const revised=await response(post('revise',{deliveryId:'independent-revise',baseVersionId:selection.versionId,request:second.request}));
  assert.equal(revised.version.parentVersionId,selection.versionId);assert.equal(revised.version.artifactId,original.version.artifactId);assert.notEqual(revised.version.object.sha256,original.version.object.sha256);
  configure(second);for(const version of [original.version,revised.version]){const inspected=await response(post('inspect',{versionId:version.versionId}));assert.deepEqual(inspected.version,version);assert.equal(inspected.inspection.currentBytesVerified,true);
@@ -202,13 +192,13 @@ test('independent authorized exact-base create/revise/inspect/download isolation
  const beforeReplay=f.stats(),readsBeforeReplay=sourceCalls,replay=await response(post('revise',{deliveryId:'independent-revise',baseVersionId:selection.versionId,request:second.request}));
  assert.deepEqual(replay.version,revised.version);assert.deepEqual(replay.inspection,revised.inspection);
  assert.deepEqual({...replay.execution,authorizationReceiptId:revised.execution.authorizationReceiptId},revised.execution);assert.notEqual(replay.execution.authorizationReceiptId,revised.execution.authorizationReceiptId);
- assert.equal(sourceCalls,readsBeforeReplay);for(const key of ['generations','versionCharges','settled','unknown','consumedMicroUsd'])assert.equal(f.stats()[key],beforeReplay[key]);assert.equal(f.stats().generations,2);
+ assert.equal(sourceCalls,readsBeforeReplay);for(const key of ['generations','deliveries','prepared','unknown'])assert.equal(f.stats()[key],beforeReplay[key]);assert.equal(f.stats().generations,2);
  g=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3'});
  const foreign=await g.sessions.issue({identityCredential:g.nativeCredential});assert.notEqual((await post('download',{versionId:selection.versionId},foreign.credential)).status,200);
  const otherApp=mountLocalDocumentApplication(g),otherRequest=cred=>new Request('https://independent.invalid/api/documents/download',{method:'POST',headers:{authorization:'Bearer '+cred,'content-type':'application/json'},body:JSON.stringify({versionId:selection.versionId})});
  assert.notEqual((await otherApp.handle(otherRequest(session.credential))).status,200);assert.notEqual((await otherApp.handle(otherRequest(foreign.credential))).status,200);
  f.revoke();for(const route of ['inspect','download'])for(const version of [original.version,revised.version])assert.notEqual((await post(route,{versionId:version.versionId})).status,200);
  await assert.rejects(compile.prepare(next,second.context));assert.notEqual((await post('revise',{deliveryId:'after-revocation',baseVersionId:selection.versionId,request:second.request})).status,200);
- assert.equal(f.stats().generations,2);assert.equal(f.stats().settled,2);assert.equal(f.stats().unknown,0);assert.equal(f.stats().consumedMicroUsd,'20');
+ assert.equal(f.stats().generations,2);assert.equal(f.stats().prepared,2);assert.equal(f.stats().unknown,2);
  for(const receipt of f.stats().processReceipts){assert.equal(receipt.groupAbsent,true);assert.equal(receipt.leaderClosed,true);}
 });

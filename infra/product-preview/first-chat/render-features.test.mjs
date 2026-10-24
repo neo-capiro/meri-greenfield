@@ -17,7 +17,6 @@ const RV=await import('./runtime-values.mjs');
 const {validateConfiguration}=await import('../../../apps/runtime/config.mjs');
 const {compileProductMaterialPlan}=await import('../../../apps/runtime/material-init-plan.mjs');
 const {validateStaticProductDelivery}=await import('../../../apps/runtime/material-init.mjs');
-const {generalReadInstallation}=await import('../../../apps/runtime/build/read-assets.mjs');
 const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
 const {canonicalSha256}=await import('../../../packages/contracts/validate.mjs');
 
@@ -47,28 +46,36 @@ let pki;
 async function inputs(change=x=>x){const i=structuredClone(await fixture.setup());pki??=await readPrivateDirectory(fixture.pkiDir);change(i);return i;}
 async function render(change,options={},module=R){
  const i=await inputs(change);
- return seeded(()=>module.renderMaterial({...i,private:pki,identityCredential:Buffer.from(IDENTITY),nowMs:NOW,sourceRoot:SOURCE_ROOT,...options}));
+ return seeded(()=>module.renderMaterial({...i,private:pki,nowMs:NOW,sourceRoot:SOURCE_ROOT,...options}));
 }
-const withFeatures=(features,runtime)=>i=>{i.deployment.features=structuredClone(features);if(runtime)runtime(i.runtime);};
+const withFeatures=(features,runtime)=>i=>{
+ i.deployment.features=structuredClone(features);
+ if(features.reads?.enabled===true&&features.capabilityPlatform===undefined){
+  const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),operations=features.reads.approvedReads?.operations??[];
+  for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)]){policy.generalReads=operations.length>0;policy.activeReadOperations=structuredClone(operations);}
+  i.deployment.features.capabilityPlatform=platform;
+ }
+ if(runtime)runtime(i.runtime);
+};
 const config=(rendered,role)=>JSON.parse(rendered.roles[role].configBytes.toString('utf8'));
 const bytesOf=rendered=>Object.fromEntries(ROLES.map(role=>[role,{config:rendered.roles[role].configBytes.toString('base64'),
  bundle:JSON.stringify(rendered.roles[role].bundle),expected:JSON.stringify(rendered.roles[role].expected)}]));
 let defaults;
 async function baseline(){return defaults??=await render();}
 
-test('absent and empty features render the same three native SDK service roles',async()=>{
+test('absent and empty features render the same two application service roles',async()=>{
  const current=await baseline(),empty=await render(withFeatures({}));
  assert.deepEqual(bytesOf(empty),bytesOf(current));
  assert.deepEqual(empty.summary,current.summary);
- assert.deepEqual(ROLES,['control','temporal-worker','temporal-issuer']);
+ assert.deepEqual(ROLES,['control','temporal-worker']);
  // The comparison is meaningful: the seeded render is stable and the fixture really renders the full material.
  assert.equal(JSON.stringify(bytesOf(await render())),JSON.stringify(bytesOf(current)));
  assert.equal(Object.hasOwn(current.summary,'features'),false);
  assert.deepEqual(config(current,'control').telemetry,{environment:'Preview'});
- const candidate=config(current,'control').nativeCandidate;
+ const candidate=config(current,'control').agentcore;
  assert.equal(Object.hasOwn(candidate,'model'),false);
- assert.equal(candidate.grantIntents.length,1);
- assert.equal(candidate.grantIntents[0].grantId,candidate.grantId);
+ assert.deepEqual(candidate.identity,{origin:'https://core.synthetic.invalid'});
+ for(const key of ['grantIntents','grantId','taskRequest','commandContext'])assert.equal(Object.hasOwn(candidate,key),false);
  assert.equal(Object.hasOwn(candidate,'modelCapabilityFile'),false);
  for(const key of ['userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads'])assert.equal(Object.hasOwn(config(current,'control'),key),false);
 });
@@ -76,17 +83,17 @@ test('absent and empty features render the same three native SDK service roles',
 /** Control differs from the default by exactly `keys`; unrelated service material stays identical. */
 function assertOnly(rendered,keys,{worker={},extraControlFiles=[]}={}){
  const d=defaults,control=config(rendered,'control'),base=config(d,'control');
+ if(control.capabilityPlatform!==undefined&&!keys.includes('capabilityPlatform'))keys=[...keys,'capabilityPlatform'];
  const strip=(c,names)=>Object.fromEntries(Object.entries(c).filter(([k])=>!names.includes(k)));
  // New keys are appended after every first-chat key, in the fixed order; sourceEnabled is the existing key flipped.
- assert.deepEqual(Object.keys(control),[...Object.keys(base),...keys.filter(k=>k!=='sourceEnabled')]);
+ assert.deepEqual(Object.keys(control).sort(),[...Object.keys(base),...keys.filter(k=>k!=='sourceEnabled')].sort());
  assert.equal(control.sourceEnabled,keys.includes('sourceEnabled'));
- assert.deepEqual(strip(control,[...keys,'nativeCandidate','sourceEnabled']),strip(base,['nativeCandidate','sourceEnabled']));
- assert.deepEqual(strip(control.nativeCandidate,['approvedReads']),base.nativeCandidate);
+ assert.deepEqual(strip(control,[...keys,'agentcore','sourceEnabled']),strip(base,['agentcore','sourceEnabled']));
+ assert.deepEqual(strip(control.agentcore,['approvedReads']),base.agentcore);
  assert.deepEqual(config(rendered,'temporal-worker'),{...config(d,'temporal-worker'),...worker});
- assert.ok(rendered.roles['temporal-issuer'].configBytes.equals(d.roles['temporal-issuer'].configBytes));
  const paths=r=>Object.keys(r.roles.control.expected.sha256ByPath);
  assert.deepEqual(paths(rendered),[...paths(d),...extraControlFiles]);
- for(const role of ['temporal-issuer',...(Object.keys(worker).length?[]:['temporal-worker'])])assert.deepEqual(rendered.roles[role].expected,d.roles[role].expected);
+ for(const role of (Object.keys(worker).length?[]:['temporal-worker']))assert.deepEqual(rendered.roles[role].expected,d.roles[role].expected);
  assert.deepEqual(Object.keys(rendered.roles['temporal-worker'].expected.sha256ByPath),Object.keys(d.roles['temporal-worker'].expected.sha256ByPath));
  // Every repository validator and plan ran inside the render; re-check the two the features touch, on the exact bytes.
  withPosixPaths(()=>{validateConfiguration(control,'control');
@@ -120,7 +127,7 @@ test('artifacts, retention custody and download links render their keys; the lin
  assert.deepEqual(plain.artifacts,ARTIFACTS);
  assert.deepEqual(assertOnly(await render(withFeatures({artifacts:{enabled:false}})),['artifacts']).artifacts,{enabled:false});
  const custody=assertOnly(await render(withFeatures({retention:{enabled:true},artifacts:ARTIFACTS})),['retention','artifacts']);
- assert.equal(custody.artifacts.tenantId,'synthetic-tenant');
+ assert.equal(Object.hasOwn(custody.artifacts,'tenantId'),false);
  const links=await render(withFeatures({retention:{enabled:true},artifacts:ARTIFACTS,downloadLinks:{enabled:true,ttlMs:60000}}));
  const control=assertOnly(links,['retention','artifacts','downloadLinks'],{extraControlFiles:[PATHS.downloadLinkKey]});
  assert.deepEqual(control.downloadLinks,{enabled:true,keyFile:PATHS.downloadLinkKey,ttlMs:60000});
@@ -145,103 +152,29 @@ test('reads: the Core service secrets come from the exact ARNs, travel only in c
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS}),{featureSecrets:featureSecrets()});
  const control=assertOnly(rendered,['sourceEnabled','reads'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
  assert.deepEqual(control.reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,readModeServiceSecretFile:PATHS.readsReadModeServiceSecret,defaultCongress:119});
- assert.deepEqual(control.nativeCandidate.approvedReads,APPROVED_READS);
- assert.deepEqual({...control.nativeCandidate,approvedReads:undefined},{...config(defaults,'control').nativeCandidate,approvedReads:undefined});
+ assert.deepEqual(control.agentcore.approvedReads,APPROVED_READS);
+ assert.deepEqual({...control.agentcore,approvedReads:undefined},{...config(defaults,'control').agentcore,approvedReads:undefined});
  const files=new Map(rendered.roles.control.bundle.files.map(f=>[f.path,Buffer.from(f.base64,'base64')]));
  assert.equal(files.get(PATHS.readsServiceSecret).toString(),SECRET.service);assert.equal(files.get(PATHS.readsReadModeServiceSecret).toString(),SECRET.readMode);
  assert.equal(rendered.roles.control.expected.sha256ByPath[PATHS.readsServiceSecret],sha(SECRET.service));
  for(const secret of Object.values(SECRET)){assertNotInJson(rendered,secret);
   for(const role of ROLES.filter(r=>r!=='control'))assert.equal(JSON.stringify(rendered.roles[role].bundle).includes(Buffer.from(secret).toString('base64')),false,role);}
  assert.deepEqual(rendered.summary.features.secretFiles[PATHS.readsServiceSecret],{feature:'reads.serviceSecret',secretArn:ARN.service,versionId:VERSION,sha256:sha(SECRET.service)});
- assert.deepEqual(rendered.summary.features.controlKeys,['reads']);
+ assert.deepEqual(rendered.summary.features.controlKeys,['capabilityPlatform','reads']);
  // A tampered secret byte is refused by the real receiver.
  const tampered=structuredClone(rendered.roles.control.bundle);tampered.files.find(f=>f.path===PATHS.readsServiceSecret).base64=Buffer.from('other-secret').toString('base64');
  assert.throws(()=>withPosixPaths(()=>validateStaticProductDelivery({expected:rendered.roles.control.expected,bundle:tampered})),/STATIC_INIT_/u);
  // Without the optional read-mode secret only the service secret is delivered.
  const one=await render(withFeatures({sourceEnabled:true,reads:{enabled:true,serviceSecretArn:ARN.service}}),{featureSecrets:{'reads.serviceSecret':featureSecrets()['reads.serviceSecret']}});
  assert.deepEqual(config(one,'control').reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret});
- assert.equal(Object.hasOwn(config(one,'control').nativeCandidate,'approvedReads'),false);
+ assert.equal(Object.hasOwn(config(one,'control').agentcore,'approvedReads'),false);
  assert.deepEqual(assertOnly(await render(withFeatures({reads:{enabled:false}})),['reads']).reads,{enabled:false});
 });
 
-test('reads.installation pins the in-image P2 measurement and ships its exact bytes to control only; reads.discovery needs capabilityPlatform; drift, absence and bad revocations refuse',async()=>{
+test('retired read installation, discovery, delegation and runtime measurement inputs refuse',async()=>{
  await baseline();
- const g=await generalReadInstallation({root:SOURCE_ROOT}),pin=runtime=>{runtime.generalReadInstallation={measurement:structuredClone(g.measurement),measurementSha256:g.measurementSha256};};
- const activeOperations=g.measurement.operations.map(row=>structuredClone(row.operation));
- const enabledInstallation=(rest={})=>({enabled:true,activeOperations,...rest});
- const revoked=[structuredClone(activeOperations[0])],reads={...READS,installation:enabledInstallation({revokedOperations:revoked})};
- const rendered=await render(withFeatures({sourceEnabled:true,reads},pin),{featureSecrets:featureSecrets()});
- const control=assertOnly(rendered,['sourceEnabled','reads'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.readsInstallationMeasurement]});
- assert.deepEqual(control.reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,readModeServiceSecretFile:PATHS.readsReadModeServiceSecret,defaultCongress:119,
-  installation:{enabled:true,measurementSha256:g.measurementSha256,measurementFile:PATHS.readsInstallationMeasurement,revokedOperations:revoked}});
- // The material file is the measurement as brotli JSON (the control cli decompresses and re-hashes it against the pin), digest-pinned and planned by purpose.
- const {brotliDecompressSync,brotliCompressSync}=await import('node:zlib');
- const bytes=Buffer.from(rendered.roles.control.bundle.files.find(f=>f.path===PATHS.readsInstallationMeasurement).base64,'base64'),json=brotliDecompressSync(bytes).toString('utf8');
- assert.deepEqual(JSON.parse(json),g.measurement);assert.equal(canonicalSha256(JSON.parse(json)),g.measurementSha256);assert.equal(json,JSON.stringify(g.measurement));
- assert.equal(rendered.roles.control.expected.sha256ByPath[PATHS.readsInstallationMeasurement],sha(bytes));
- assert.deepEqual(rendered.summary.features.installation,{file:PATHS.readsInstallationMeasurement,encoding:'brotli',bytes:bytes.length,sha256:sha(bytes),measurementSha256:g.measurementSha256,operations:g.measurement.operations.length,revokedOperations:1});
- const plan=withPosixPaths(()=>compileProductMaterialPlan({role:'control',configuration:control,runtimeUser:RUNTIME_USERS.control}));
- assert.deepEqual(plan.requiredFiles.find(f=>f.path===PATHS.readsInstallationMeasurement).purposes,['reads-installation-measurement']);
- const tampered=structuredClone(rendered.roles.control.bundle);tampered.files.find(f=>f.path===PATHS.readsInstallationMeasurement).base64=brotliCompressSync(Buffer.from(JSON.stringify({...g.measurement,operations:[]}))).toString('base64');
- assert.throws(()=>withPosixPaths(()=>validateStaticProductDelivery({expected:rendered.roles.control.expected,bundle:tampered})),/STATIC_INIT_/u);
- for(const role of ROLES.filter(r=>r!=='control'))assert.equal(rendered.roles[role].bundle.files.some(f=>f.path===PATHS.readsInstallationMeasurement),false,role);
- assert.ok(rendered.summary.roles.control.bundleBytes<=65536,'control bundle (Secrets Manager SecretString) with the measurement');
- // Disabled installation renders only its toggle and no file; discovery renders its toggle only with the platform record (G2 producer).
- const off=await render(withFeatures({sourceEnabled:true,reads:{...READS,installation:{enabled:false},discovery:{enabled:false}}},pin),{featureSecrets:featureSecrets()});
- assert.deepEqual(config(off,'control').reads.installation,{enabled:false});assert.deepEqual(config(off,'control').reads.discovery,{enabled:false});
- assert.equal(off.roles.control.bundle.files.some(f=>f.path===PATHS.readsInstallationMeasurement),false);assert.equal(Object.hasOwn(off.summary.features,'installation'),false);
- const profileActive=activeOperations.slice(0,7),profileMeasurement=await generalReadInstallation({root:SOURCE_ROOT,activeReadOperations:profileActive});
- const pinProfile=runtime=>{runtime.generalReadInstallation={measurement:structuredClone(profileMeasurement.measurement),measurementSha256:profileMeasurement.measurementSha256};};
- const activePlatform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
- for(const policy of [activePlatform.maximum,activePlatform.defaults,...Object.values(activePlatform.roleCeilings)])policy.activeReadOperations=structuredClone(profileActive);
- const profile=capabilityProfileOf(activePlatform);
- const on=await render(withFeatures({sourceEnabled:true,capabilityPlatform:activePlatform,reads:{...READS,installation:enabledInstallation({activeOperations:profileActive}),discovery:{enabled:true}}},
-  pinProfile),{featureSecrets:featureSecrets()});
- assert.deepEqual(config(on,'control').reads.discovery,{enabled:true});
- assert.deepEqual(config(on,'control').reads.installation,{enabled:true,measurementSha256:profileMeasurement.measurementSha256,measurementFile:PATHS.readsInstallationMeasurement});
- assert.equal(on.summary.features.installation.revokedOperations,0);
- assert.equal(on.summary.features.installation.operations,profileActive.length);
- // The P2 receipt sorts its rows, while the reviewed input order is preserved in the static G3 profile pin.
- const reversed=[...profileActive].reverse();
- const reordered=await render(withFeatures({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:reversed})}},pinProfile),{featureSecrets:featureSecrets()});
- assert.equal(reordered.summary.features.installation.measurementSha256,profileMeasurement.measurementSha256);
- await assert.rejects(render(withFeatures({sourceEnabled:true,capabilityPlatform:activePlatform,reads:{...READS,installation:enabledInstallation({activeOperations:reversed})}},
-  pinProfile),{featureSecrets:featureSecrets()}),
-  {code:'RENDER_INPUT_REFUSED',message:/must equal the G3 capability profile/u});
- // The capability platform record and the measurement together stay inside the 65,536-byte control bundle (one SecretString).
- assert.ok(on.summary.roles.control.bundleBytes<=65536,`control bundle ${on.summary.roles.control.bundleBytes}`);
- // Without the feature, runtime values that carry the measurement change nothing: no pin, no file, no key.
- const unused=await render(withFeatures({sourceEnabled:true,reads:READS},pin),{featureSecrets:featureSecrets()});
- assert.equal(Object.hasOwn(config(unused,'control').reads,'installation'),false);assert.equal(unused.roles.control.bundle.files.some(f=>f.path===PATHS.readsInstallationMeasurement),false);
- assert.equal(Object.hasOwn(unused.summary.features,'installation'),false);
- // Fail closed.
- const refuse=(features,runtime,pattern,options={featureSecrets:featureSecrets()})=>assert.rejects(render(withFeatures(features,runtime),options),{code:'RENDER_INPUT_REFUSED',message:pattern});
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},undefined,/needs runtime\.generalReadInstallation/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:true}}},pin,/activeOperations must be 1\.\.128/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false,activeOperations}}},pin,/disabled installation names no active/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[]})}},pin,/activeOperations must be 1\.\.128/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[activeOperations[0],activeOperations[0]]})}},pin,/activeOperations must be unique/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[{id:'not_in_catalog',version:'0.2.0'}]})}},pin,/not in the retrieval catalog/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:[{...activeOperations[0],extra:true}]})}},pin,/exact OperationRefs/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({activeOperations:activeOperations.slice(1)})}},pin,/differs from runtime\.generalReadInstallation\.measurement/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()} ,capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},pin,/must equal the G3 capability profile/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false}},capabilityPlatform:activePlatform},pinProfile,/must equal the G3 capability profile/u);
- await refuse({sourceEnabled:true,reads:{...READS,discovery:{enabled:true}}},pin,/needs features\.capabilityPlatform/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:false,revokedOperations:revoked}}},pin,/revokes nothing/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[]})}},pin,/1\.\.128/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[{id:'x'}]})}},pin,/OperationRefs/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[revoked[0],revoked[0]]})}},pin,/unique/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({revokedOperations:[{id:'not_installed',version:'0.2.0'}]})}},pin,/does not install/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:{enabled:'yes'}}},pin,/must be a boolean/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation({measurementSha256:g.measurementSha256})}},pin,/not an accepted field/u);
- await refuse({reads:{enabled:false,installation:{enabled:true}}},pin,/disabled reads name no/u,{});
- await refuse({reads:{enabled:false,discovery:{enabled:false}}},pin,/disabled reads name no/u,{});
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);},/canonical sha256/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);delete runtime.generalReadInstallation.measurement;},/measurement is required/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.operations[0].descriptorSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/control installation issuer/u);
- await refuse({sourceEnabled:true,reads:{...READS,installation:enabledInstallation()}},runtime=>{pin(runtime);const m=runtime.generalReadInstallation.measurement;m.baseCatalogSha256='0'.repeat(64);runtime.generalReadInstallation.measurementSha256=canonicalSha256(m);},/allocation catalog/u);
- // A drifted measurement also refuses without any feature: runtime values are validated as a whole.
- await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS},runtime=>{pin(runtime);runtime.generalReadInstallation.measurementSha256='0'.repeat(64);}),{featureSecrets:featureSecrets()}),{code:'RENDER_INPUT_REFUSED'});
+ for(const key of ['installation','discovery','delegation'])for(const enabled of [true,false])await assert.rejects(render(withFeatures({sourceEnabled:true,reads:{...READS,[key]:{enabled}}}),{featureSecrets:featureSecrets()}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS},runtime=>{runtime.generalReadInstallation={measurement:{},measurementSha256:'0'.repeat(64)};}),{featureSecrets:featureSecrets()}),{code:'RENDER_INPUT_REFUSED'});
 });
 
 test('capability platform keeps product capabilities without an SDK launch pin',async()=>{
@@ -252,7 +185,7 @@ test('capability platform keeps product capabilities without an SDK launch pin',
  assert.deepEqual(control.capabilityPlatform,structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM));
  assert.equal(createConfiguredRunCapabilityPolicy(control).profileSha256,profile.profileSha256);
  assert.equal(rendered.summary.features.capabilityProfileSha256,profile.profileSha256);
- assert.equal(Object.hasOwn(control.nativeCandidate.runtime,'capabilityProfileSha256'),false);
+ assert.equal(Object.hasOwn(control.agentcore,'capabilityProfileSha256'),false);
  // Retired deployment fields fail at the boundary; they cannot restore measured SDK options.
  await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},r=>{r.capabilityProfileSha256=profile.profileSha256;})),{code:'RENDER_INPUT_REFUSED'});
  assert.deepEqual(assertOnly(await render(withFeatures({capabilityPlatform:NO_CAPABILITY_PLATFORM})),['capabilityPlatform']).capabilityPlatform,structuredClone(NO_CAPABILITY_PLATFORM));
@@ -267,7 +200,6 @@ test('fail closed: unknown, malformed or inconsistent feature inputs and secret 
  await refused({artifacts:{...ARTIFACTS,kmsKeyId:'alias/meri-artifacts'}});await refused({artifacts:{...ARTIFACTS,bucket:'Bad_Bucket'}});
  await refused({artifacts:{...ARTIFACTS,prefix:'trailing/'}});await refused({artifacts:{...ARTIFACTS,tenantId:'synthetic-tenant'}});
  await refused({artifacts:{enabled:false,bucket:ARTIFACTS.bucket}});await refused({artifacts:{enabled:true,bucket:ARTIFACTS.bucket}});
- await refused(({artifacts:{...ARTIFACTS,bucket:'meri-greenfield-qual-checkpoint-967807252336-us-east-1',prefix:'product-preview'}}));
  await refused({downloadLinks:{enabled:true}});await refused({artifacts:ARTIFACTS,downloadLinks:{enabled:true}});
  await refused({retention:{enabled:true},artifacts:ARTIFACTS,downloadLinks:{enabled:true,ttlMs:999}});await refused({downloadLinks:{enabled:false,ttlMs:60000}});
  await refused({capabilityPlatform:{maximum:{},defaults:{generalReads:true},roleCeilings:{}}});
@@ -280,7 +212,7 @@ test('fail closed: unknown, malformed or inconsistent feature inputs and secret 
  await refused({sourceEnabled:true,reads:{...READS,readModeServiceSecretArn:ARN.service}});
  await refused({reads:{enabled:false,serviceSecretArn:ARN.service}});await refused({sourceEnabled:true,reads:{...READS,defaultCongress:0}},'RENDER_INPUT_REFUSED',{featureSecrets:featureSecrets()});
  await refused({sourceEnabled:true,reads:{...READS,approvedReads:{...APPROVED_READS,enabled:'yes'}}},'RENDER_INPUT_REFUSED',{featureSecrets:featureSecrets()});
- // Secret files: exactly the needed keys, the same ARN, a VersionId, exact token bytes, never the identity bearer.
+ // Secret files: exactly the needed keys, the same ARN, a VersionId and exact token bytes.
  const on={sourceEnabled:true,reads:READS},secrets=change=>{const s=featureSecrets();change(s);return {featureSecrets:s};};
  await refused(on);await refused(on,'RENDER_INPUT_REFUSED',secrets(s=>{delete s['reads.readModeServiceSecret'];}));
  await refused({intents:{enabled:true}},'RENDER_INPUT_REFUSED',{featureSecrets:featureSecrets()});
@@ -288,7 +220,6 @@ test('fail closed: unknown, malformed or inconsistent feature inputs and secret 
  await refused(on,'RENDER_INPUT_REFUSED',secrets(s=>{s['reads.serviceSecret'].versionId='AWSCURRENT';}));
  await refused(on,'RENDER_PRIVATE_REFUSED',secrets(s=>{s['reads.serviceSecret'].bytes=Buffer.from(SECRET.service+'\n');}));
  await refused(on,'RENDER_PRIVATE_REFUSED',secrets(s=>{s['reads.serviceSecret'].bytes=Buffer.alloc(0);}));
- await refused(on,'RENDER_PRIVATE_REFUSED',secrets(s=>{s['reads.serviceSecret'].bytes=Buffer.from(IDENTITY);}));
  await refused(on,'RENDER_PENDING_VALUE',secrets(s=>{s['reads.serviceSecret'].bytes=Buffer.from('PENDING_CORE');}));
 });
 
@@ -324,23 +255,17 @@ test('CLI: --feature-secrets reads each secret file by path and the render write
  assert.equal(Buffer.from(bundle.files.find(f=>f.path===PATHS.readsServiceSecret).base64,'base64').toString(),SECRET.service);
 });
 
-test('runtime values select the reviewed read operations without coupling SDK options to deployment',async()=>{
- const deployment=(await inputs()).deployment;
- assert.equal(RV.activeReadOperationsOf(deployment),null);
- assert.equal(RV.activeReadOperationsOf({...deployment,features:{capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}}),null);
- const activeOperations=(await generalReadInstallation({root:SOURCE_ROOT})).measurement.operations.slice(0,2).map(row=>structuredClone(row.operation));
- assert.equal(activeOperations.length,2);
- const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
- for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])policy.activeReadOperations=structuredClone(activeOperations);
- const features={sourceEnabled:true,capabilityPlatform:platform,
-  reads:{...READS,installation:{enabled:true,activeOperations}}};
- assert.deepEqual(RV.activeReadOperationsOf({...deployment,features}),activeOperations);
- const inconsistent=structuredClone(features);inconsistent.reads.installation.activeOperations=[...activeOperations].reverse();
- assert.throws(()=>RV.activeReadOperationsOf({...deployment,features:inconsistent}),{code:'RUNTIME_VALUES_REFUSED'});
+test('approved read operations equal the declared capability profile without installation measurements',async()=>{
+ const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),operations=structuredClone(APPROVED_READS.operations);
+ for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)]){policy.generalReads=true;policy.activeReadOperations=structuredClone(operations);}
+ const features={sourceEnabled:true,capabilityPlatform:platform,reads:READS};
+ const rendered=await render(withFeatures(features),{featureSecrets:featureSecrets()});
+ assert.deepEqual(config(rendered,'control').agentcore.approvedReads,APPROVED_READS);
+ const bad=structuredClone(features);bad.reads.approvedReads.operations=[{id:'find_contacts',version:'0.2.0'}];
+ await assert.rejects(render(withFeatures(bad),{featureSecrets:featureSecrets()}),/capability profile operations differ/);
  const policy=JSON.parse(await readFile(join(here,'policy.json'),'utf8'));
  assert.deepEqual(RV.parsePolicy(policy),policy);
- assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,maxTurns:20}}),{code:'RUNTIME_VALUES_REFUSED'});
- assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,model:'deployment-model'}}),{code:'RUNTIME_VALUES_REFUSED'});
+ for(const extra of [{maxTurns:20},{model:'deployment-model'}])assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,...extra}}),{code:'RUNTIME_VALUES_REFUSED'});
 });
 
 test('Stage 3: feature material rides the existing control/material secret; templates carry digests, never the secret',async()=>{
@@ -366,7 +291,7 @@ test('artifacts.authority renders the Core artifact authority origin and reuses 
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,artifacts:{...ARTIFACTS,authority:{enabled:true}}}),{featureSecrets:featureSecrets()});
  const control=config(rendered,'control');
- assert.deepEqual(control.artifacts,{...ARTIFACTS,authority:{origin:control.nativeCandidate.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
+ assert.deepEqual(control.artifacts,{...ARTIFACTS,authority:{origin:control.agentcore.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
  await assert.rejects(render(withFeatures({artifacts:{...ARTIFACTS,authority:{enabled:true}}})),/needs features.reads enabled/u);
  await assert.rejects(render(withFeatures({artifacts:{enabled:false,authority:{enabled:true}}})),/RENDER_INPUT_REFUSED/u);
  assert.deepEqual(config(await render(withFeatures({artifacts:ARTIFACTS})),'control').artifacts,ARTIFACTS);
@@ -376,7 +301,7 @@ test('memory renders the control memory block at the Core origin with the reads 
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,memory:{enabled:true}}),{featureSecrets:featureSecrets()});
  const control=config(rendered,'control');
- assert.deepEqual(control.memory,{enabled:true,origin:control.nativeCandidate.identity.origin,serviceSecretFile:PATHS.readsServiceSecret});
+ assert.deepEqual(control.memory,{enabled:true,origin:control.agentcore.identity.origin,serviceSecretFile:PATHS.readsServiceSecret});
  assert.deepEqual(assertOnly(await render(withFeatures({memory:{enabled:false}})),['memory']).memory,{enabled:false});
  await assert.rejects(render(withFeatures({memory:{enabled:true}})),/needs features.reads enabled/u);
  await assert.rejects(render(withFeatures({memory:{enabled:'yes'}})),/RENDER_INPUT_REFUSED/u);
@@ -387,7 +312,7 @@ test('intents.execution and routines.core render the Core origin, the reads serv
  const {generateKeyPairSync}=await import('node:crypto');const jwk=i=>({...generateKeyPairSync('ed25519').publicKey.export({format:'jwk'}),kid:'k'+i});
  const execution={issuer:'capiro-core:execution',keys:[jwk(1)]},core={cancellationProof:{issuer:'capiro-core:routines',kid:'cancel-1',publicKey:(({kty,crv,x})=>({kty,crv,x}))(jwk(2))},unattendedGrant:{issuer:'capiro-core:routines',kid:'grant-1',publicKey:(({kty,crv,x})=>({kty,crv,x}))(jwk(3))}};
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution},routines:{enabled:true,core}}),{featureSecrets:featureSecrets()});
- const control=config(rendered,'control'),origin=control.nativeCandidate.identity.origin;
+ const control=config(rendered,'control'),origin=control.agentcore.identity.origin;
  assert.deepEqual(control.intents,{enabled:true,execution:{coreOrigin:origin,issuer:execution.issuer,keys:execution.keys,serviceSecretFile:PATHS.readsServiceSecret}});
  assert.deepEqual(control.routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core}});
  const task={taskId:'11111111-1111-4111-8111-000000000009',version:1},workflow={taskQueue:'meri-schedule-worker',workflowIdPrefix:'meri/routine/'};
@@ -402,19 +327,11 @@ test('intents.execution and routines.core render the Core origin, the reads serv
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core:{cancellationProof:{...core.cancellationProof,kid:core.unattendedGrant.kid},unattendedGrant:core.unattendedGrant}}}),{featureSecrets:featureSecrets()}),/routines-configuration/u);
 });
 
-test('reads.delegation renders the control toggle under reads and refuses when reads are disabled',async()=>{
- await baseline();
- const rendered=await render(withFeatures({sourceEnabled:true,reads:{...READS,delegation:{enabled:true}}}),{featureSecrets:featureSecrets()});
- assert.deepEqual(config(rendered,'control').reads.delegation,{enabled:true});
- await assert.rejects(render(withFeatures({reads:{enabled:false,delegation:{enabled:true}}})),/RENDER_INPUT_REFUSED/u);
- await assert.rejects(render(withFeatures({sourceEnabled:true,reads:{...READS,delegation:{enabled:'yes'}}}),{featureSecrets:featureSecrets()}),/RENDER_INPUT_REFUSED/u);
-});
-
 test('intents.core renders the Core approval forwarder block (origin and reads secret file) next to execution',async()=>{
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,core:{enabled:true}}}),{featureSecrets:featureSecrets()});
  const control=config(rendered,'control');
- assert.deepEqual(control.intents,{enabled:true,core:{origin:control.nativeCandidate.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
+ assert.deepEqual(control.intents,{enabled:true,core:{origin:control.agentcore.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
  await assert.rejects(render(withFeatures({intents:{enabled:true,core:{enabled:true}}})),/needs features.reads enabled/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:false,core:{enabled:true}}}),{featureSecrets:featureSecrets()}),/needs features.intents.enabled true/u);
 });

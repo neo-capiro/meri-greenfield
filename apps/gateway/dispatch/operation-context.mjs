@@ -20,20 +20,20 @@ export function assertOperationArguments(entry, request) {
   try { validateShape(entry.contract.binding.input, request); } catch { deny('INVALID_ARGUMENTS'); }
 }
 
-export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, retainedPorts, nativePorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
+export async function prepareOperationContext({ entry, request, identity, contextFor, ports, mailPorts, retainedPorts, nativePorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
   const profile = entry.contract.binding?.dispatchProfile;
   if(nativeReadGroup(entry)&&(nativePorts!==undefined||entry.contract.binding.group!=='bill-text')){
-    const authority=await authorize(request);
-    if(canonicalSha256(authority.binding)!==canonicalSha256(identity.claims.binding)||authority.policyRevision!==identity.claims.policyRevision)deny('ACCESS_DENIED');
+    const authority=await contextFor(request);
+    if(canonicalSha256(authority.binding)!==canonicalSha256(identity.execution.binding)||authority.policyRevision!==identity.policyRevision)deny('ACCESS_DENIED');
     return prepareNativeReadContext({entry,request,authority,ports:nativePorts,lifetime,readDeadline,now,maxBytes});
   }
-  if(entry.contract.binding?.group==='bill-text')return prepareBillTextReadContext({entry,authority:await authorize(request),identity,defaultCongress});
+  if(entry.contract.binding?.group==='bill-text')return prepareBillTextReadContext({entry,authority:await contextFor(request),identity,defaultCongress});
   if(retainedReadGroup(entry)){
-    const authority=await authorize(request);
-    if(canonicalSha256(authority.binding)!==canonicalSha256(identity.claims.binding)||authority.policyRevision!==identity.claims.policyRevision)deny('ACCESS_DENIED');
+    const authority=await contextFor(request);
+    if(canonicalSha256(authority.binding)!==canonicalSha256(identity.execution.binding)||authority.policyRevision!==identity.policyRevision)deny('ACCESS_DENIED');
     return prepareRetainedReadContext({entry,request,authority,ports:retainedPorts,lifetime,readDeadline,now,maxBytes});
   }
-  if (profile === undefined) {const normalizationContext=Object.freeze({nowMs:now(),actorId:identity.claims.binding.actorId});return Object.freeze({ authority: null,
+  if (profile === undefined) {const normalizationContext=Object.freeze({nowMs:now(),actorId:identity.execution.binding.actorId});return Object.freeze({ authority: null,
     options: () => normalizationContext,
     handlerNormalization: entry.contract.binding?.group === 'operational-reads',
     observeAuthority() {}, async retain() {},
@@ -44,14 +44,14 @@ export async function prepareOperationContext({ entry, request, identity, author
   });
   let normalized;
   if (profile === 'mail-candidates/1') {
-    try { normalized = entry.contract.normalizeInput(request, { nowMs: now(), actorId: identity.claims.binding.actorId }); }
+    try { normalized = entry.contract.normalizeInput(request, { nowMs: now(), actorId: identity.execution.binding.actorId }); }
     catch { deny('INVALID_ARGUMENTS'); }
     if (!normalized || canonicalSha256(normalized.input) !== normalized.argumentsSha256) deny('INVALID_ARGUMENTS');
   }
   if (profile === 'actions-complete/1') normalized = normalizeActionReadRequest({ entry, request, identity });
-  const authority = await authorize(normalized?.input ?? request);
-  if (canonicalSha256(authority.binding) !== canonicalSha256(identity.claims.binding) ||
-      authority.policyRevision !== identity.claims.policyRevision) deny('ACCESS_DENIED');
+  const authority = await contextFor(normalized?.input ?? request);
+  if (canonicalSha256(authority.binding) !== canonicalSha256(identity.execution.binding) ||
+      authority.policyRevision !== identity.policyRevision) deny('ACCESS_DENIED');
   if (['bound-projection/1','client-documents/1'].includes(profile)) return prepareProjectionReadContext({
     entry, request, authority, defaultCongress, observedAtMs:now()});
   if (profile === 'actions-complete/1') return Object.freeze({
@@ -60,9 +60,9 @@ export async function prepareOperationContext({ entry, request, identity, author
     options: (current = authority) => ({binding:current.binding, subject:current.subject}),
     observeAuthority() {}, async retain() {},
   });
-  if (profile === 'mail-candidates/1') return prepareMailReadContext({ ports: mailPorts, authority,
+  if (profile === 'mail-candidates/1') return prepareMailReadContext({ ports: mailPorts, authority, identityDeadlineMs: identity.execution.expiresAtMs,
     operation: entry.descriptor.operation, normalized, lifetime, readDeadline, now, maxBytes });
   return prepareMemoryReadContext({ ports, authority, operation: entry.descriptor.operation,
-    identityDeadlineMs: Math.min(identity.run.deadlineMs, Date.parse(identity.claims.expiresAt)),
+    identityDeadlineMs: identity.execution.expiresAtMs,
     request, lifetime, now, maxBytes });
 }

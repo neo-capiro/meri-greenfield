@@ -72,48 +72,6 @@
     "ToPort": 8080
    }
   },
-  "ControlSgfromMeriFirstChatFoundationRunnerSgE3A10B91808240472DC4": {
-   "Type": "AWS::EC2::SecurityGroupIngress",
-   "Properties": {
-    "Description": "runner poststart to private control",
-    "FromPort": 8082,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "ControlSgBD859011",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "SourceSecurityGroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "ToPort": 8082
-   }
-  },
-  "ControlSgtoMeriFirstChatFoundationRunnerSgE3A10B918080493E6D0B": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "Meri preview control to original runner readiness",
-    "DestinationSecurityGroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "FromPort": 8080,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "ControlSgBD859011",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 8080
-   }
-  },
   "WorkerSgD9B79631": {
    "Type": "AWS::EC2::SecurityGroup",
    "Properties": {
@@ -168,167 +126,6 @@
     },
     "IpProtocol": "tcp",
     "ToPort": 443
-   }
-  },
-  "RunnerSg0C977597": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "Meri preview runner",
-    "GroupName": "meri-preview-runner",
-    "SecurityGroupEgress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "NAT 443: AWS APIs without endpoints, Core, Clerk, Bedrock",
-      "FromPort": 443,
-      "IpProtocol": "tcp",
-      "ToPort": 443
-     }
-    ],
-    "VpcId": "vpc-0ac26cfac7ed972be"
-   }
-  },
-  "RunnerSgtoMeriFirstChatFoundationEndpointSg203A7C68443506F9CF6": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "interface endpoints: ECR, logs, secrets, KMS, STS",
-    "DestinationSecurityGroupId": "sg-01def4e5c0fe44d4a",
-    "FromPort": 443,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 443
-   }
-  },
-  "RunnerSgtopl63a5400a443DA6B8783": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "S3 gateway: ECR layers, checkpoints",
-    "DestinationPrefixListId": "pl-63a5400a",
-    "FromPort": 443,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 443
-   }
-  },
-  "RunnerSgtoMeriFirstChatFoundationControlSgA067F8D18082CA03BC23": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "runner poststart to private control",
-    "DestinationSecurityGroupId": {
-     "Fn::GetAtt": [
-      "ControlSgBD859011",
-      "GroupId"
-     ]
-    },
-    "FromPort": 8082,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 8082
-   }
-  },
-  "RunnerSgfromMeriFirstChatFoundationControlSgA067F8D180802FAB141E": {
-   "Type": "AWS::EC2::SecurityGroupIngress",
-   "Properties": {
-    "Description": "Meri preview control to original runner readiness",
-    "FromPort": 8080,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "RunnerSg0C977597",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "SourceSecurityGroupId": {
-     "Fn::GetAtt": [
-      "ControlSgBD859011",
-      "GroupId"
-     ]
-    },
-    "ToPort": 8080
-   }
-  },
-  "IssuerSg1873C0CB": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "Meri preview Temporal issuer",
-    "GroupName": "meri-preview-issuer",
-    "SecurityGroupEgress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "NAT 443: AWS APIs without endpoints, Core, Clerk, Bedrock",
-      "FromPort": 443,
-      "IpProtocol": "tcp",
-      "ToPort": 443
-     }
-    ],
-    "VpcId": "vpc-0ac26cfac7ed972be"
-   }
-  },
-  "IssuerSgtoMeriFirstChatFoundationEndpointSg203A7C68443FB299159": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "interface endpoints: ECR, logs, secrets, KMS, STS",
-    "DestinationSecurityGroupId": "sg-01def4e5c0fe44d4a",
-    "FromPort": 443,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "IssuerSg1873C0CB",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 443
-   }
-  },
-  "IssuerSgtopl63a5400a443B9141F2F": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "S3 gateway: ECR layers, checkpoints",
-    "DestinationPrefixListId": "pl-63a5400a",
-    "FromPort": 443,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "IssuerSg1873C0CB",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 443
-   }
-  },
-  "IssuerSgfromMeriFirstChatFoundationIssuerClientSgF56007A7844577C9D97C": {
-   "Type": "AWS::EC2::SecurityGroupIngress",
-   "Properties": {
-    "Description": "issuer clients carrying the marker SG",
-    "FromPort": 8445,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "IssuerSg1873C0CB",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "SourceSecurityGroupId": {
-     "Fn::GetAtt": [
-      "IssuerClientSg147BF725",
-      "GroupId"
-     ]
-    },
-    "ToPort": 8445
    }
   },
   "MigratorSgCBEB7C67": {
@@ -404,35 +201,6 @@
     "ToPort": 5432
    }
   },
-  "IssuerClientSg147BF725": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "Meri preview issuer client marker",
-    "GroupName": "meri-preview-issuerclient",
-    "VpcId": "vpc-0ac26cfac7ed972be"
-   }
-  },
-  "IssuerClientSgtoMeriFirstChatFoundationIssuerSgF75AA320844567EB5237": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "issuer bootstrap, token and JWKS",
-    "DestinationSecurityGroupId": {
-     "Fn::GetAtt": [
-      "IssuerSg1873C0CB",
-      "GroupId"
-     ]
-    },
-    "FromPort": 8445,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "IssuerClientSg147BF725",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 8445
-   }
-  },
   "AuroraFromMeriDbClients": {
    "Type": "AWS::EC2::SecurityGroupIngress",
    "Properties": {
@@ -462,24 +230,6 @@
    "Type": "AWS::Logs::LogGroup",
    "Properties": {
     "LogGroupName": "/meri/product-preview/worker",
-    "RetentionInDays": 30
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain"
-  },
-  "runnerLogsF78F92FB": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/meri/product-preview/runner",
-    "RetentionInDays": 30
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain"
-  },
-  "issuerLogsF044614C": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/meri/product-preview/issuer",
     "RetentionInDays": 30
    },
    "UpdateReplacePolicy": "Retain",
@@ -663,165 +413,6 @@
     "Roles": [
      {
       "Ref": "workerExecutionRole198248A4"
-     }
-    ]
-   }
-  },
-  "runnerExecutionRole8FFDAD09": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Condition": {
-        "StringEquals": {
-         "aws:SourceAccount": "967807252336"
-        },
-        "ArnLike": {
-         "aws:SourceArn": "arn:aws:ecs:us-east-1:967807252336:*"
-        }
-       },
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "RoleName": "MeriPreview-runner-execution"
-   }
-  },
-  "runnerExecutionRoleDefaultPolicy099A0371": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": "ecr:GetAuthorizationToken",
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage"
-       ],
-       "Effect": "Allow",
-       "Resource": "arn:aws:ecr:us-east-1:967807252336:repository/meri-greenfield/qualification-worker"
-      },
-      {
-       "Action": [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-       ],
-       "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          {
-           "Fn::GetAtt": [
-            "runnerLogsF78F92FB",
-            "Arn"
-           ]
-          },
-          ":*"
-         ]
-        ]
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "runnerExecutionRoleDefaultPolicy099A0371",
-    "Roles": [
-     {
-      "Ref": "runnerExecutionRole8FFDAD09"
-     }
-    ]
-   }
-  },
-  "issuerExecutionRole34FFBEDF": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Condition": {
-        "StringEquals": {
-         "aws:SourceAccount": "967807252336"
-        },
-        "ArnLike": {
-         "aws:SourceArn": "arn:aws:ecs:us-east-1:967807252336:*"
-        }
-       },
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "RoleName": "MeriPreview-issuer-execution"
-   }
-  },
-  "issuerExecutionRoleDefaultPolicyB21EFC96": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": "ecr:GetAuthorizationToken",
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage"
-       ],
-       "Effect": "Allow",
-       "Resource": "arn:aws:ecr:us-east-1:967807252336:repository/meri-greenfield/qualification-worker"
-      },
-      {
-       "Action": [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-       ],
-       "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          {
-           "Fn::GetAtt": [
-            "issuerLogsF044614C",
-            "Arn"
-           ]
-          },
-          ":*"
-         ]
-        ]
-       }
-      },
-      {
-       "Action": "secretsmanager:GetSecretValue",
-       "Effect": "Allow",
-       "Resource": "arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/issuer/material-MYhacb"
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "issuerExecutionRoleDefaultPolicyB21EFC96",
-    "Roles": [
-     {
-      "Ref": "issuerExecutionRole34FFBEDF"
      }
     ]
    }
@@ -1043,83 +634,6 @@
     "PolicyDocument": {
      "Statement": [
       {
-       "Action": "ecs:RunTask",
-       "Condition": {
-        "ArnEquals": {
-         "ecs:cluster": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev"
-        },
-        "ForAllValues:StringEquals": {
-         "aws:TagKeys": [
-          "meri:execution-id",
-          "meri:binding-sha256",
-          "meri:plan-sha256",
-          "meri:expires-at-ms"
-         ]
-        }
-       },
-       "Effect": "Allow",
-       "Resource": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-product-preview-runner:*"
-      },
-      {
-       "Action": "ecs:TagResource",
-       "Condition": {
-        "StringEquals": {
-         "ecs:CreateAction": "RunTask"
-        }
-       },
-       "Effect": "Allow",
-       "Resource": "arn:aws:ecs:us-east-1:967807252336:task/capiro-dev/*"
-      },
-      {
-       "Action": [
-        "ecs:DescribeTasks",
-        "ecs:StopTask"
-       ],
-       "Effect": "Allow",
-       "Resource": "arn:aws:ecs:us-east-1:967807252336:task/capiro-dev/*"
-      },
-      {
-       "Action": "ecs:ListTasks",
-       "Condition": {
-        "ArnEquals": {
-         "ecs:cluster": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev"
-        }
-       },
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "ecs:DescribeTaskDefinition",
-        "ec2:DescribeNetworkInterfaces"
-       ],
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": "iam:PassRole",
-       "Condition": {
-        "StringEquals": {
-         "iam:PassedToService": "ecs-tasks.amazonaws.com"
-        }
-       },
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "runnerExecutionRole8FFDAD09",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "runnerTaskRole9DAACEE0",
-          "Arn"
-         ]
-        }
-       ]
-      },
-      {
        "Action": "s3:GetBucketVersioning",
        "Effect": "Allow",
        "Resource": "arn:aws:s3:::meri-greenfield-qual-checkpoint-967807252336-us-east-1"
@@ -1153,151 +667,6 @@
     "Roles": [
      {
       "Ref": "controlTaskRole2BC18B9E"
-     }
-    ]
-   }
-  },
-  "runnerTaskRole9DAACEE0": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Condition": {
-        "StringEquals": {
-         "aws:SourceAccount": "967807252336"
-        },
-        "ArnLike": {
-         "aws:SourceArn": "arn:aws:ecs:us-east-1:967807252336:*"
-        }
-       },
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "RoleName": "MeriPreview-runner-task"
-   }
-  },
-  "runnerTaskRoleDefaultPolicy6A782877": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "bedrock:InvokeModel",
-        "bedrock:InvokeModelWithResponseStream"
-       ],
-       "Effect": "Allow",
-       "Resource": "arn:aws:bedrock:us-east-1:967807252336:inference-profile/us.anthropic.claude-sonnet-4-6"
-      },
-      {
-       "Action": [
-        "bedrock:InvokeModel",
-        "bedrock:InvokeModelWithResponseStream"
-       ],
-       "Condition": {
-        "StringEquals": {
-         "bedrock:InferenceProfileArn": "arn:aws:bedrock:us-east-1:967807252336:inference-profile/us.anthropic.claude-sonnet-4-6"
-        }
-       },
-       "Effect": "Allow",
-       "Resource": [
-        "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-4-6",
-        "arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-4-6",
-        "arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-4-6"
-       ]
-      },
-      {
-       "Action": "bedrock:CountTokens",
-       "Effect": "Allow",
-       "Resource": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-4-6"
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "runnerTaskRoleDefaultPolicy6A782877",
-    "Roles": [
-     {
-      "Ref": "runnerTaskRole9DAACEE0"
-     }
-    ]
-   }
-  },
-  "issuerTaskRoleD04688B3": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Condition": {
-        "StringEquals": {
-         "aws:SourceAccount": "967807252336"
-        },
-        "ArnLike": {
-         "aws:SourceArn": "arn:aws:ecs:us-east-1:967807252336:*"
-        }
-       },
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "RoleName": "MeriPreview-issuer-task"
-   }
-  },
-  "issuerTaskRoleDefaultPolicy3B2E36F7": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": "ecs:DescribeServices",
-       "Effect": "Allow",
-       "Resource": [
-        "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-control",
-        "arn:aws:ecs:us-east-1:967807252336:service/capiro-dev/meri-product-preview-temporal-worker"
-       ]
-      },
-      {
-       "Action": "ecs:DescribeTasks",
-       "Effect": "Allow",
-       "Resource": "arn:aws:ecs:us-east-1:967807252336:task/capiro-dev/*"
-      },
-      {
-       "Action": "ecs:ListTasks",
-       "Condition": {
-        "ArnEquals": {
-         "ecs:cluster": "arn:aws:ecs:us-east-1:967807252336:cluster/capiro-dev"
-        }
-       },
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "ecs:DescribeTaskDefinition",
-        "ec2:DescribeNetworkInterfaces"
-       ],
-       "Effect": "Allow",
-       "Resource": "*"
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "issuerTaskRoleDefaultPolicy3B2E36F7",
-    "Roles": [
-     {
-      "Ref": "issuerTaskRoleD04688B3"
      }
     ]
    }
@@ -1432,111 +801,12 @@
     "RoleName": "MeriPreview-temporal-internal-frontend-task"
    }
   },
-  "IssuerSigningKey": {
-   "Type": "AWS::KMS::Key",
-   "Properties": {
-    "Description": "Meri preview Temporal issuer JWT signing (RSA-2048)",
-    "EnableKeyRotation": false,
-    "KeyPolicy": {
-     "Version": "2012-10-17",
-     "Statement": [
-      {
-       "Sid": "AccountAdministration",
-       "Effect": "Allow",
-       "Principal": {
-        "AWS": "arn:aws:iam::967807252336:root"
-       },
-       "Action": "kms:*",
-       "Resource": "*"
-      },
-      {
-       "Sid": "IssuerPublicKey",
-       "Effect": "Allow",
-       "Principal": {
-        "AWS": {
-         "Fn::GetAtt": [
-          "issuerTaskRoleD04688B3",
-          "Arn"
-         ]
-        }
-       },
-       "Action": "kms:GetPublicKey",
-       "Resource": "*"
-      },
-      {
-       "Sid": "IssuerSign",
-       "Effect": "Allow",
-       "Principal": {
-        "AWS": {
-         "Fn::GetAtt": [
-          "issuerTaskRoleD04688B3",
-          "Arn"
-         ]
-        }
-       },
-       "Action": "kms:Sign",
-       "Resource": "*",
-       "Condition": {
-        "StringEquals": {
-         "kms:SigningAlgorithm": "RSASSA_PKCS1_V1_5_SHA_256",
-         "kms:MessageType": "DIGEST"
-        }
-       }
-      }
-     ]
-    },
-    "KeySpec": "RSA_2048",
-    "KeyUsage": "SIGN_VERIFY",
-    "PendingWindowInDays": 30
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain"
-  },
-  "IssuerSigningAlias": {
-   "Type": "AWS::KMS::Alias",
-   "Properties": {
-    "AliasName": "alias/meri/temporal-issuer-preview",
-    "TargetKeyId": {
-     "Ref": "IssuerSigningKey"
-    }
-   }
-  },
   "MeriNamespaceC936BD52": {
    "Type": "AWS::ServiceDiscovery::PrivateDnsNamespace",
    "Properties": {
     "Description": "Meri preview private services",
     "Name": "meri.internal",
     "Vpc": "vpc-0ac26cfac7ed972be"
-   }
-  },
-  "MeriNamespaceissuerDiscovery998F8CE6": {
-   "Type": "AWS::ServiceDiscovery::Service",
-   "Properties": {
-    "DnsConfig": {
-     "DnsRecords": [
-      {
-       "TTL": 10,
-       "Type": "A"
-      }
-     ],
-     "NamespaceId": {
-      "Fn::GetAtt": [
-       "MeriNamespaceC936BD52",
-       "Id"
-      ]
-     },
-     "RoutingPolicy": "MULTIVALUE"
-    },
-    "HealthCheckCustomConfig": {
-     "FailureThreshold": 1
-    },
-    "Name": "issuer",
-    "NamespaceId": {
-     "Fn::GetAtt": [
-      "MeriNamespaceC936BD52",
-      "Id"
-     ]
-    }
    }
   },
   "MeriNamespacecontrolprivateDiscovery388E4425": {
@@ -1612,22 +882,6 @@
     ]
    }
   },
-  "RunnerSecurityGroupId": {
-   "Value": {
-    "Fn::GetAtt": [
-     "RunnerSg0C977597",
-     "GroupId"
-    ]
-   }
-  },
-  "IssuerSecurityGroupId": {
-   "Value": {
-    "Fn::GetAtt": [
-     "IssuerSg1873C0CB",
-     "GroupId"
-    ]
-   }
-  },
   "MigratorSecurityGroupId": {
    "Value": {
     "Fn::GetAtt": [
@@ -1644,14 +898,6 @@
     ]
    }
   },
-  "IssuerClientSecurityGroupId": {
-   "Value": {
-    "Fn::GetAtt": [
-     "IssuerClientSg147BF725",
-     "GroupId"
-    ]
-   }
-  },
   "ControlExecutionRoleArn": {
    "Value": {
     "Fn::GetAtt": [
@@ -1664,22 +910,6 @@
    "Value": {
     "Fn::GetAtt": [
      "workerExecutionRole198248A4",
-     "Arn"
-    ]
-   }
-  },
-  "RunnerExecutionRoleArn": {
-   "Value": {
-    "Fn::GetAtt": [
-     "runnerExecutionRole8FFDAD09",
-     "Arn"
-    ]
-   }
-  },
-  "IssuerExecutionRoleArn": {
-   "Value": {
-    "Fn::GetAtt": [
-     "issuerExecutionRole34FFBEDF",
      "Arn"
     ]
    }
@@ -1704,22 +934,6 @@
    "Value": {
     "Fn::GetAtt": [
      "controlTaskRole2BC18B9E",
-     "Arn"
-    ]
-   }
-  },
-  "IssuerTaskRoleArn": {
-   "Value": {
-    "Fn::GetAtt": [
-     "issuerTaskRoleD04688B3",
-     "Arn"
-    ]
-   }
-  },
-  "RunnerTaskRoleArn": {
-   "Value": {
-    "Fn::GetAtt": [
-     "runnerTaskRole9DAACEE0",
      "Arn"
     ]
    }
@@ -1774,16 +988,6 @@
     "Ref": "workerLogs41619A4B"
    }
   },
-  "RunnerLogGroupName": {
-   "Value": {
-    "Ref": "runnerLogsF78F92FB"
-   }
-  },
-  "IssuerLogGroupName": {
-   "Value": {
-    "Ref": "issuerLogsF044614C"
-   }
-  },
   "TemporalLogGroupName": {
    "Value": {
     "Ref": "temporalLogs6924FDEC"
@@ -1792,14 +996,6 @@
   "MigratorLogGroupName": {
    "Value": {
     "Ref": "migratorLogsFA4B356D"
-   }
-  },
-  "IssuerDiscoveryServiceArn": {
-   "Value": {
-    "Fn::GetAtt": [
-     "MeriNamespaceissuerDiscovery998F8CE6",
-     "Arn"
-    ]
    }
   },
   "ControlDiscoveryServiceArn": {
@@ -1818,18 +1014,16 @@
     ]
    }
   },
-  "IssuerSigningKeyArn": {
-   "Value": {
-    "Fn::GetAtt": [
-     "IssuerSigningKey",
-     "Arn"
-    ]
-   }
-  },
   "ControlTargetGroupArn": {
    "Value": {
     "Ref": "ControlTargetGroup"
    }
+  }
+ },
+ "Description": "Shared Meri control and native TLS Temporal foundation; no runtime token issuer or per-turn ECS compute.",
+ "Metadata": {
+  "AWSToolsMetrics": {
+   "AWSAgentToolkit": "aws-cloudformation@3"
   }
  }
 }

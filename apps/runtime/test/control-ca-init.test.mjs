@@ -115,8 +115,7 @@ function filesystem(t){
   const before=Object.getOwnPropertyDescriptor(process,key);Object.defineProperty(process,key,{value,configurable:true});
   t.after(()=>{if(before)Object.defineProperty(process,key,before);else delete process[key];});
  }
- const configuration={taskRouter:{poststart:{enabled:true,controlCaFile:'/run/meri/control-ca.pem'}},
-  temporal:{issuerBootstrap:{configuration:{serverCaSha256:hash(new X509Certificate(privateCa).raw)}}}};
+ const configuration={native:{serverCaFile:'/run/meri/control-ca.pem',serverCaSha256:hash(new X509Certificate(privateCa).raw)}};
  const configBytes=Buffer.from(JSON.stringify(configuration)),files=new Map();let sequence=0;
  const put=(path,bytes,uid=1000,gid=1000,mode=0o600)=>files.set(path,{kind:'file',uid,gid,mode,ino:++sequence,bytes:Buffer.from(bytes)});
  put('/run/meri/control.json',configBytes);put('/run/meri/control-ca.pem',privateCa);put(rdsLock.imagePath,rdsBundle,0,0,0o444);

@@ -8,7 +8,7 @@ import {RUNNER_CAPTURE_MS} from '../../../packages/runtime/runner-load-budget.mj
 import {remoteOriginal} from './remote-task-boundary.mjs';
 import {assertNativeExecution} from '../../control/conversations/execution-boundary.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
-import {createWorkspaceCapture} from './workspace-capture.mjs';
+import {createWorkspaceCapture} from '../artifacts/workspace-capture.mjs';
 const fault=()=>Error('TASK_CHECKPOINT_SOURCE_UNKNOWN'),refuse=()=>{throw fault();};
 export function createTaskCheckpointSource(configuration){
  const c=own(configuration,['original','workspace','session','native','closeQuery'],['now','maxRequestMs']),original=remoteOriginal(c.original),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??RUNNER_CAPTURE_MS;

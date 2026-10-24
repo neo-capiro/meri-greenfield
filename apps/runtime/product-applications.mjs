@@ -4,7 +4,9 @@ import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {createRuntimeArtifactApplication} from './artifacts/application.mjs';
 import {createDownloadLinkGate} from './artifacts/download-gate.mjs';
 import {createSelectedTaskApplication} from './selected/http.mjs';
-import {createNativeSdkSessionApplication} from './native-authority/session-http.mjs';
+import {createNativeSdkSessionApplication} from './sdk-session-http.mjs';
+import {createNativeFileOwner} from './artifacts/native-files-owner.mjs';
+import {createNativeFileApplication,NATIVE_FILE_PATHS} from './artifacts/native-files-http.mjs';
 import {fault} from './config.mjs';
 import {types} from 'node:util';
 import {createConversationHistoryService} from '../control/conversations/history/service.mjs';
@@ -22,19 +24,20 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','intentApplication','settingsApplication','memoryApplication']);
+ const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','intentApplication','settingsApplication','memoryApplication']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
  const transitionResolver=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'resolveTransitionContext'),transitionContext=transitionResolver===undefined?{}:{resolveTransitionContext:transitionResolver};
  const authorityScope=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'withAuthority');
- const artifactStore=c.artifactStore===undefined?undefined:methods(c.artifactStore,['verifyPrivate']);
+ const artifactStore=c.artifactStore===undefined?undefined:Object.freeze({...methods(c.artifactStore,['verifyPrivate']),...(c.artifactStore.objects===undefined?{}:{objects:methods(c.artifactStore.objects,['put','get'])})});
  const routineFactory=c.routinesApplicationFactory===undefined?undefined:methods(c.routinesApplicationFactory,['create','state']);
  const routineHistory=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'historyCurrentness'),routineInboxState=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'inboxState');
  if(artifactStore){const recovery=runtimeArtifactRecovery(c.artifactStore)??capturedArtifactRecovery.get(c.artifactStore);if(recovery)capturedArtifactRecovery.set(artifactStore,recovery);}
  const captured=Object.freeze({
   configuredOwners:Object.freeze(Object.keys(c).filter(k=>c[k]!==undefined)),
+  ...(c.executionOwner===undefined?{}:{executionOwner:methods(c.executionOwner,['authenticate'])}),
   identityContext:Object.freeze({...identity,...transitionContext,...(authorityScope?{withAuthority:authorityScope}:{})}),
   ...(c.transitionAuthority===undefined?{}:{transitionAuthority:methods(c.transitionAuthority,['readCurrent'])}),
   ...(c.continuationAdmission===undefined?{}:{continuationAdmission:methods(c.continuationAdmission,['admit','retire'])}),
@@ -49,13 +52,14 @@ export function captureRuntimePorts(value={}){
   ...(c.artifactOptionsOwner===undefined?{}:{artifactOptionsOwner:methods(c.artifactOptionsOwner,['resolve'])}),
   ...(c.selectedController===undefined?{}:{selectedController:methods(c.selectedController,['handle'])}),
   ...(c.sdkSessionOwner===undefined?{}:{sdkSessionOwner:methods(c.sdkSessionOwner,['register','load','append','listSubkeys'])}),
-  ...(c.sdkSessionSnapshot===undefined?{}:{sdkSessionSnapshot:methods(c.sdkSessionSnapshot,['readSnapshot'])}),
+  ...(c.objectiveSelection===undefined?{}:{objectiveSelection:methods(c.objectiveSelection,['read'])}),
+  ...(c.sdkSessionSnapshot===undefined?{}:{sdkSessionSnapshot:Object.freeze({...methods(c.sdkSessionSnapshot,['readSnapshot']),...(optionalMethod(c.sdkSessionSnapshot,'readFiles')?{readFiles:storageMethod(c.sdkSessionSnapshot,'readFiles')}:{})})}),
   ...(c.selectedSkillAdmission===undefined?{}:{selectedSkillAdmission:methods(c.selectedSkillAdmission,['admitSelection'])}),
   ...(c.selectedOutputPublication===undefined?{}:{selectedOutputPublication:methods(c.selectedOutputPublication,['prepareEvent'])}),
   // The private artifact store's read-only privacy proof (createRuntimeArtifactStorage().verifyPrivate); required to open download links.
   ...(artifactStore===undefined?{}:{artifactStore}),
   // The authoritative retention ledger sink (the shipping owner's write-once store); without it declared retention serving stays fenced.
-  ...(c.retentionLedgerSink===undefined?{}:{retentionLedgerSink:methods(c.retentionLedgerSink,['append','read'])}),
+  ...(c.retentionLedgerSink===undefined?{}:{retentionLedgerSink:Object.freeze({...methods(c.retentionLedgerSink,['append','read']),...(optionalMethod(c.retentionLedgerSink,'head')?{head:storageMethod(c.retentionLedgerSink,'head')}:{})})}),
   // Conversation write-intent approvals (lane 3) and tenant settings (lane 5): one public application each, composed by the family.
   ...(c.intentApplication===undefined?{}:{intentApplication:methods(c.intentApplication,['handle'])}),
   ...(c.settingsApplication===undefined?{}:{settingsApplication:methods(c.settingsApplication,['handle'])}),
@@ -85,6 +89,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const selected=createSelectedTaskApplication({controller:ports.selectedController??{async handle(){throw fault('UNAVAILABLE');}},now,limits:{requestMs:configuration.limits.requestMs,requestBytes:configuration.limits.requestBytes},sourceEnabled:configuration.sourceEnabled});
  const unavailableSession=Object.fromEntries(['register','load','append','listSubkeys'].map(name=>[name,async()=>{throw fault('SDK_SESSION_UNAVAILABLE');}]));
  const sdkSessions=createNativeSdkSessionApplication({owner:ports.sdkSessionOwner??unavailableSession,...(ports.sdkSessionSnapshot===undefined?{}:{snapshot:ports.sdkSessionSnapshot}),now,maxRequestMs:configuration.limits.requestMs});
+ const nativeFiles=ports.executionOwner&&ports.artifactStore?.objects&&ports.sdkSessionSnapshot?.readFiles&&conversationStore?createNativeFileApplication({owner:createNativeFileOwner({store:conversationStore,execution:ports.executionOwner,objects:ports.artifactStore.objects,snapshot:ports.sdkSessionSnapshot,...(ports.objectiveSelection?{objectiveSelection:ports.objectiveSelection}:{}),now,maxRequestMs:configuration.limits.requestMs,...(retention?{retention}:{})}),now,maxRequestMs:configuration.limits.requestMs}):null;
  return Object.freeze({downloads:Object.freeze({open:input=>downloads.open(input),state:()=>downloads.state()}),handle(request){const path=new URL(request.url).pathname;
   if(Object.values(USER_PREFERENCES_PATHS).includes(path))return userPreferences?userPreferences.handle(request):userPreferencesUnavailable();
   if(Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
@@ -97,6 +102,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   if(path.startsWith('/api/documents/'))return downloads.handle(request);
   if(path.startsWith('/internal/conversations/selected/'))return selected.handle(request);
   if(path.startsWith('/v1/runner/session/'))return sdkSessions.handle(request);
+  if(Object.hasOwn(NATIVE_FILE_PATHS,path))return nativeFiles?nativeFiles.handle(request):Response.json({error:{code:'NATIVE_FILES_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   return null;
  }});
 }

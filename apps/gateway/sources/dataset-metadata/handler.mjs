@@ -4,6 +4,7 @@ import {canonicalSha256,validateShape as validatePublicShape} from '../../../../
 import {assertSubject,resolveOperationContract,validateShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertPublicDomainDatasetRegistry} from '../../../../packages/contracts/retrieval-0.2/public-domain-registry.mjs';
 import {snapshotOperationData} from '../../../../packages/contracts/retrieval-0.2/operation-contracts.mjs';
+import {assertReadContext} from '../source-admission.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
 const operation=Object.freeze({id:'list_global_datasets',version:'0.2.0'});
 const contract=resolveOperationContract(operation);
@@ -30,18 +31,14 @@ export function createDatasetMetadataHandler(options) {
       validateShape('DatasetMetadataListInput',input);
       validateShape('DatasetMetadataListInput',request);
       if(typeof argumentsSha256!=='string'||argumentsSha256!==canonicalSha256(input))deny('INVALID_ARGUMENTS');
-      validatePublicShape('RunBinding',authority.binding);validatePublicShape('CapabilityClaims',authority.claims);
-      assertSubject(authority.subject,authority.binding);
-      if(canonicalSha256(authority.binding)!==canonicalSha256(authority.claims.binding)||authority.policyRevision!==authority.claims.policyRevision||authority.subject.policyRevision!==authority.policyRevision)deny('ACCESS_DENIED');
-      const expiry=Date.parse(authority.claims.expiresAt),issued=Date.parse(authority.claims.issuedAt);
-      if(!Number.isSafeInteger(expiry)||!Number.isSafeInteger(issued)||!Number.isSafeInteger(authority.deadlineMs))deny('ACCESS_DENIED');
+      assertReadContext(authority,operation,now);
       if(supplied.signal!==undefined&&(types.isProxy(supplied.signal)||!(supplied.signal instanceof AbortSignal)))deny('INVALID_ARGUMENTS');
       const active=()=>{
         if(supplied.signal!==undefined&&aborted.call(supplied.signal))deny('CANCELLED');
         const stamp=now();
         if(supplied.signal!==undefined&&aborted.call(supplied.signal))deny('CANCELLED');
-        if(!Number.isSafeInteger(stamp)||stamp<0||issued>stamp)deny('ACCESS_DENIED');
-        if(stamp>=Math.min(expiry,authority.deadlineMs))deny('DEADLINE');
+        if(!Number.isSafeInteger(stamp)||stamp<0)deny('ACCESS_DENIED');
+        if(stamp>=authority.deadlineMs)deny('DEADLINE');
         return stamp;
       };
       const stamp=active();

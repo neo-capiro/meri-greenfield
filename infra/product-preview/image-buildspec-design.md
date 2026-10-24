@@ -74,20 +74,23 @@ native materialization; this pipeline does not duplicate that implementation.
 ## Native image checks and scan
 
 After ordinary `docker build`, inspection requires Linux ARM64, UID:GID1000:1000,
-the expected CLI entrypoint/source label/RDS CA environment, and size at most
-3 GiB. The following seven commands run in that exact image:
+`ENTRYPOINT ["node"]`, `CMD ["apps/runtime/agentcore-entrypoint.mjs"]`, the exact
+source label/RDS CA environment, and size at most 3 GiB. The following eight
+commands run in that exact image:
 
-1. Product CLI help.
-2. Canonical `runtime-base-probe.mjs --check`: actual SWC transform, Temporal
+1. Explicit AgentCore help (`apps/runtime/agentcore-entrypoint.mjs --help`).
+2. Explicit product CLI help (`apps/runtime/cli.mjs --help`). Passing only
+   `--help` to this Node entrypoint would test Node itself, not either runtime.
+3. Canonical `runtime-base-probe.mjs --check`: actual SWC transform, Temporal
    bridge ELF/import, SDK-owner-relative ARM CLI resolution and direct `--version`
    execution, Python/native wheel imports/computation and OS CA trust.
-3. Existing artifact executor generation smoke for txt/docx/xlsx/pptx/zip.
-4. Direct imports of control, Temporal worker and conversation runner.
-5. Public RDS bundle's image path, raw SHA, byte count, root ownership and 0444 mode.
+4. Existing artifact executor generation smoke for txt/docx/xlsx/pptx/zip.
+5. Direct imports of AgentCore entrypoint, control, Temporal worker and conversation runner.
 6. Installed OS package inventory (`apk info -vv`).
 7. Installed Python package inventory (`python3.13 -I -m pip list --format=json`).
+8. Public RDS bundle's image path, raw SHA, byte count, root ownership and 0444 mode.
 
-All seven use UID1000, a read-only root, no network, all capabilities dropped,
+All eight use UID1000, a read-only root, no network, all capabilities dropped,
 no-new-privileges, PID/CPU/memory limits and bounded noexec task tmpfs mounts.
 No host fallback path or mounted host dependencies are available. This is a
 native image smoke gate; it does not qualify model turns or full production
@@ -140,7 +143,7 @@ node --test infra/product-preview/image-build.test.mjs \
 The Python source tests use synthetic Git/ZIP/tree inputs. Shell tests run the
 actual script with closed `aws`/`docker` executables; unknown commands fail and no
 real service/client can be reached. They cover source/size/version rejection,
-preexisting-resource preservation, all seven sandbox invocations, probe/build/
+preexisting-resource preservation, all eight sandbox invocations, probe/build/
 push/cleanup failure, timeout propagation, repository policy, digest mismatch,
 scan failure/exhausted-not-found/incomplete/severity/count controls and success cleanup.
 The installed AWS CLI also runs against an unsigned, closed loopback HTTP fixture:

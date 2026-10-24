@@ -2,12 +2,12 @@
  * next-run owner of each render, over one durable conversation store and one initial-binding journal. A render is a deployment:
  * its runtime versions (image digest) and its configuration hash (runner task definition) both change on every release. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createPreparedCandidateIdentity} from '../prepared-candidate.mjs';
+import {createConversationIdentity as createPreparedCandidateIdentity} from '../conversation-identity.mjs';
 import {createActionSessionOwner,issuedCurrentState} from '../../control/action-host/session/owner.mjs';
 import {createNextRunOwner} from '../../control/conversations/next-run.mjs';
 import {hash} from '../../control/conversations/boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {lifecycleFixture,binding as profileBinding,scopes,id,versions} from '../../control/conversations/test/lifecycle-fixture.mjs';
+import {applicationFixture,binding as profileBinding,scopes,id,versions} from '../../control/conversations/test/application-fixture.mjs';
 
 const check=()=>{},at='2026-10-21T12:00:00.000Z',clientId=scopes[0].resourceId,policyRevision=scopes[0].policyRevision;
 const conversation={...profileBinding,conversationId:id(730),runId:id(731),attemptId:id(732),workerId:id(733)};
@@ -20,7 +20,10 @@ const RENDER_SDK={versions:{...RENDER_B.versions,sdk:'0.3.296',cli:'2.1.296'},co
 const status=(n,state)=>({eventId:id(n),createdAt:at,type:'run.status',data:{state,reasonCode:null}});
 
 async function deployment(){
- const f=await lifecycleFixture({binding:conversation});let serial=800;const revoked=new Map(),journal={record:null,claims:0};
+ const f=await applicationFixture({binding:conversation,initialInput:true});let serial=800;const revoked=new Map(),journal={record:null,claims:0};
+ // Historical persisted completion, independent of the current native capture fixture.
+ async function historicalCapture(checkpointId){const saved=await f.service.history({credential:f.credential}),captureScopes=saved.run.scopes,object={objectId:id(221),versionId:'immutable-native-v1',sha256:'a'.repeat(64),bytes:10,scopes:captureScopes},workspace={contractVersion:'0.1.0',manifestId:id(222),binding:conversation,logicalCwd:'/workspace/conversation',entries:[],scopes:captureScopes,createdAt:new Date().toISOString()},checkpoint={contractVersion:'0.1.0',checkpointId,parentCheckpointId:null,binding:conversation,sessionId:id(223),opaqueSession:object,workspace,workspaceSha256:hash(workspace),versions,lastEventSequence:saved.lastSequence,scopes:captureScopes,createdAt:new Date().toISOString(),durableReceiptId:id(224)};
+  return {checkpoint,checkpointSha256:hash(checkpoint),sourceRequestSha256:hash(saved.request),contextSha256:hash({window:saved.request.window,skill:saved.request.skill,scopes:captureScopes}),resumeSessionAt:id(225),readReceiptId:id(226)};}
  const initialBindings={async readConversation(){return structuredClone(journal.record);},
   async claim(input){journal.claims++;journal.record={schemaVersion:1,state:'ADMITTED',binding:conversation,selectedClientId:input.selectedClientId,policyRevision:input.policyRevision,versions:input.versions,configurationSha256:input.configurationSha256,createdAtMs:Date.now(),expiresAtMs:input.proposedExpiresAtMs};return {record:structuredClone(journal.record),created:true};},
   async rebind(input){const old=journal.record;
@@ -34,7 +37,7 @@ async function deployment(){
  /** One control render: its own identity, next-run owner and session owner, over the shared durable state. */
  function render(r,{policy=policyRevision}={}){const lines=[];
   const nextRunOwner=createNextRunOwner({store:f.store,versions:r.versions,newId:()=>id(serial++),retirement,revocation});
-  const identity=createPreparedCandidateIdentity({store:f.store,identity:{origin:'https://authority.synthetic.invalid',commandContext:{binding:profileBinding,clientResolution:{reference:clientId,clientId}},
+  const identity=createPreparedCandidateIdentity({store:f.store,identity:{origin:'https://authority.synthetic.invalid',
    async fetchImpl(url,options){const input=JSON.parse(options.body),now=Date.now(),base={principal,identityRevision:'native-1',checkedAtMs:now,expiresAtMs:now+30000};if(url.endsWith('/identity'))return Response.json(base);
     return Response.json({...base,identitySha256:input.identitySha256,conversationId:conversation.conversationId,selectedClientId:clientId,contextRevision:'native-context-1'});}},
    qualification:{policyRevision:policy},limits:{maxRequestMs:2000,maxFactBytes:131072},nextRunOwner,initialBindings,configurationSha256:r.configurationSha256,versions:r.versions,proposeInitialExpiry:()=>Date.now()+60000,factWindowMs:900000});
@@ -42,7 +45,7 @@ async function deployment(){
   const issue=async()=>{try{return (await issuedCurrentState(sessions)({identityCredential:'native-bearer',hints:{conversationId:conversation.conversationId,clientId}})).current.binding;}finally{sessions.close();}};
   return {issue,lines,versions:r.versions};}
  async function allocate(b){const allocationKey=hash(b),expiresAtMs=Date.now()+60000,grantId=id(serial++),key={binding:b,allocationKey},intent={...key,original:{binding:b,executionKey:allocationKey,executionId:allocationKey,planSha256:'a'.repeat(64),expiresAtMs,versions},qualification:{attempt:1,policyRevision:'b'.repeat(64)},grantIntents:[{grantId,capabilitySha256:'c'.repeat(64),expiresAtMs}],allocationSha256:'d'.repeat(64),taskRequestSha256:'e'.repeat(64),expiresAtMs},resource={taskArn:`arn:aws:ecs:us-east-1:967807252336:task/Synthetic/${'a'.repeat(32)}`,clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker',createdAtMs:Date.now()};await f.store.allocations.claim(intent,check);await f.store.allocations.record({...key,state:'ALLOCATED',resource},check);return {key,resource,grantId};}
- async function complete(b){for(const state of ['starting','running'])await f.store.append(b,status(serial++,state),check);const k={binding:b,scopes,selectedClientId:clientId},p=await f.store.completions.begin({...k,completionId:id(serial++),checkpointId:id(serial++)},check),template=await f.capture(p.checkpointId),proof=structuredClone(template);proof.checkpoint.binding=b;proof.checkpoint.workspace.binding=b;proof.checkpoint.workspaceSha256=hash(proof.checkpoint.workspace);proof.checkpoint.lastEventSequence=p.captureSequence;proof.checkpointSha256=hash(proof.checkpoint);proof.sourceRequestSha256=p.sourceRequestSha256;proof.contextSha256=p.contextSha256;await f.store.completions.publish({...k,completionId:p.completionId,proof,events:[{contractVersion:'0.1.0',eventId:p.verifiedEventId,createdAt:at,type:'checkpoint.verified',data:{checkpointId:p.checkpointId}},{contractVersion:'0.1.0',eventId:p.completedEventId,createdAt:at,type:'run.status',data:{state:'completed',reasonCode:null}}]},check);}
+ async function complete(b){for(const state of ['starting','running'])await f.store.append(b,status(serial++,state),check);const k={binding:b,scopes,selectedClientId:clientId},p=await f.store.completions.begin({...k,completionId:id(serial++),checkpointId:id(serial++)},check),template=await historicalCapture(p.checkpointId),proof=structuredClone(template);proof.checkpoint.binding=b;proof.checkpoint.workspace.binding=b;proof.checkpoint.workspaceSha256=hash(proof.checkpoint.workspace);proof.checkpoint.lastEventSequence=p.captureSequence;proof.checkpointSha256=hash(proof.checkpoint);proof.sourceRequestSha256=p.sourceRequestSha256;proof.contextSha256=p.contextSha256;await f.store.completions.publish({...k,completionId:p.completionId,proof,events:[{contractVersion:'0.1.0',eventId:p.verifiedEventId,createdAt:at,type:'checkpoint.verified',data:{checkpointId:p.checkpointId}},{contractVersion:'0.1.0',eventId:p.completedEventId,createdAt:at,type:'run.status',data:{state:'completed',reasonCode:null}}]},check);}
  // Stop: the conversation service's own cancel, through the original run's session.
  const stop=()=>f.service.cancel({credential:f.credential});
  async function retire(a){await f.store.allocations.record({...a.key,state:'RETIRED',resource:{...a.resource,physicalStopProven:true}},check);revoked.set(a.key.binding.runId,{grantIds:[a.grantId],receiptSha256:hash({retired:a.key,grantIds:[a.grantId]})});}

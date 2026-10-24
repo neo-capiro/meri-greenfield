@@ -8,7 +8,7 @@ import {hash} from '../boundary.mjs';
 
 test('C11 postdeploy accept refuses a rehashed checkpoint identity belonging to another run without accepting the target',async()=>{
  const x=await fixture();try{
-  await x.first();await x.complete(binding);await x.retire(binding);const selected=await x.select();
+  await x.first();await x.complete(binding);await x.settle(binding);const selected=await x.select();
   x.deploy({...versions,imageDigest:'sha256:'+'5'.repeat(64)});
   const key=[binding.tenantId,binding.conversationId,binding.runId].join(':'),saved=structuredClone(x.f.state.completions.get(key));
   for(const change of [b=>b.runId=id(990),b=>b.actorId='foreign-actor',b=>b.writerFence++]){

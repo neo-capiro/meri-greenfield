@@ -2445,22 +2445,20 @@
         "version": "0.2.0"
       },
       "displayName": "Read the selected research portfolio",
-      "whenToUse": "Prepare a read of the portfolio selected by the trusted current conversation and resolved entity subject.",
+      "whenToUse": "Read the explicitly selected research portfolio through the canonical Core resource owner.",
       "limitations": [
         "Pending contract only; null handler, no enabled source or executable skill.",
         "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
         "The result binding/subject wrapper is a new private Meri contract, not a legacy producer field or proof of current ownership, grants or client walls.",
-        "The generic gateway does not yet compose the required trusted binding/subject context for this family. A source adapter and current conversation-scope owner remain unqualified.",
-        "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
-        "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
         "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
-        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it."
+        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it.",
+        "portfolioId is a resource selector, never authority. Core checks current Portfolio grants and visible client links on the actual GET."
       ],
       "positiveExamples": [
         "Inspect a currently selected authorized research portfolio and its reported visible changes."
       ],
       "negativeExamples": [
-        "Select a foreign portfolio through model arguments, infer client access from a visible portfolio, or treat a page as complete history."
+        "Infer client access from a visible portfolio, bypass Core resource authorization, or treat a page as complete history."
       ],
       "sourceRequirements": [
         {
@@ -2471,11 +2469,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioDetailInput",
-        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+        "sha256": "04d607495298b6168c72ebe7f020e7004595c79a3f2b9a6db16254460244f4b3"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioDetailResult",
-        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+        "sha256": "04d607495298b6168c72ebe7f020e7004595c79a3f2b9a6db16254460244f4b3"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2515,22 +2513,20 @@
         "version": "0.2.0"
       },
       "displayName": "Read selected research portfolio changes",
-      "whenToUse": "Prepare a read of the portfolio selected by the trusted current conversation and resolved entity subject.",
+      "whenToUse": "Read the explicitly selected research portfolio through the canonical Core resource owner.",
       "limitations": [
         "Pending contract only; null handler, no enabled source or executable skill.",
         "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
         "The result binding/subject wrapper is a new private Meri contract, not a legacy producer field or proof of current ownership, grants or client walls.",
-        "The generic gateway does not yet compose the required trusted binding/subject context for this family. A source adapter and current conversation-scope owner remain unqualified.",
-        "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
-        "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
         "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
-        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it."
+        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it.",
+        "portfolioId is a resource selector, never authority. Core checks current Portfolio grants and visible client links on the actual GET."
       ],
       "positiveExamples": [
         "Inspect a currently selected authorized research portfolio and its reported visible changes."
       ],
       "negativeExamples": [
-        "Select a foreign portfolio through model arguments, infer client access from a visible portfolio, or treat a page as complete history."
+        "Infer client access from a visible portfolio, bypass Core resource authorization, or treat a page as complete history."
       ],
       "sourceRequirements": [
         {
@@ -2541,11 +2537,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioChangesInput",
-        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+        "sha256": "04d607495298b6168c72ebe7f020e7004595c79a3f2b9a6db16254460244f4b3"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioChangesResult",
-        "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+        "sha256": "04d607495298b6168c72ebe7f020e7004595c79a3f2b9a6db16254460244f4b3"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -5897,7 +5893,7 @@
         "Pending private contract only; null handler, no enabled source or executable skill.",
         "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
         "Local source validation does not qualify current identity, source access, result release or runtime.",
-        "Trusted effective scope and client resolution are projection assertions only; names and case-insensitive UUID references retain declared resolution semantics. Current tenant, client, folder, membership, wall, feature and internal-guard enforcement remain execution prerequisites.",
+        "Client names and UUIDs are selectors resolved by the canonical Core read owner. Returned folder/session/client scope is checked against those selectors; no separate scope grant is inferred. Current tenant, client, folder, membership, wall, feature and internal-guard enforcement remain execution prerequisites.",
         "Projects, recent amounts, documents, amount observations and events preserve their distinct caps and nullable projections. Raw JSON is inert opaque stored data; it is not guaranteed to conform to a BudgetAmount DTO.",
         "Requests, chamber alternatives, offers, allocations and vetoes do not establish awarded amounts. Exact monetary meanings and fiscal stages remain distinct; no aggregation, currentness or completeness claim is implemented."
       ],
@@ -5916,11 +5912,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetRequest",
-        "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+        "sha256": "a8eaa03c28b882940aeaa7d34a75c00730db974818f5f79c582e4ee264464fa8"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetOutput",
-        "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+        "sha256": "a8eaa03c28b882940aeaa7d34a75c00730db974818f5f79c582e4ee264464fa8"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -7092,7 +7088,7 @@
         "version": "0.2.0"
       },
       "displayName": "Read projected research Portfolio evidence",
-      "whenToUse": "Read an exact authorized review or retained snapshot, or the current annual continuity projection, for the Portfolio selected by trusted conversation context.",
+      "whenToUse": "Read an exact authorized review or retained snapshot, or the current annual continuity projection, for an explicit portfolioId checked by Core.",
       "limitations": [
         "Source-only contract and executable adapter candidate; null production handler, source disabled, runtime qualification pending.",
         "Only already exposed projected evidence is included. Raw member evidence and unrestricted older decision/history access remain unavailable.",
@@ -7118,11 +7114,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-evidence:0.2.0#/$defs/ResearchPortfolioEvidenceInput",
-        "sha256": "87549b042b5dc84160020ae08c93db834a5d9f28aa13ffc45d652c186ae3767b"
+        "sha256": "3c472a8e04f66183ee186a1fc2ce3e86102ae921499e3eefce1da11268fda627"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-evidence:0.2.0#/$defs/ResearchPortfolioEvidenceResult",
-        "sha256": "87549b042b5dc84160020ae08c93db834a5d9f28aa13ffc45d652c186ae3767b"
+        "sha256": "3c472a8e04f66183ee186a1fc2ce3e86102ae921499e3eefce1da11268fda627"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -7186,11 +7182,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/WordRequest",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "aliases": [],
       "sideEffect": "local-artifact",
@@ -7254,11 +7250,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ExcelRequest",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "aliases": [],
       "sideEffect": "local-artifact",
@@ -7322,11 +7318,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/PowerpointRequest",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "aliases": [],
       "sideEffect": "local-artifact",
@@ -7392,11 +7388,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/AnalysisRequest",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactOperationResult",
-        "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
+        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
       },
       "aliases": [],
       "sideEffect": "local-artifact",

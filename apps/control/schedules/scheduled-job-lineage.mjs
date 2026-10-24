@@ -61,7 +61,7 @@ export function createScheduledJobLineage(configuration){
    const target=await read(b,{after:0,limit:1},check);check();if(!target||!same(target.run.binding,b))fail();
    const lineage=await execution({binding:b,scopes,selectedClientId},check);check();
    if(!lineage)fail();const envelope=assertContinuationEnvelope(lineage.continuation);
-   if(envelope.mode!=='resume'||envelope.controlId!==p.input.controlId||!same(envelope.checkpoint.binding,prior)||
+   if(envelope.mode!=='resume'||envelope.controlId!==p.input.controlId||!same(envelope.kind==='native-session'?envelope.sdkSession.binding:envelope.checkpoint.binding,prior)||
     !same(lineage.sourceRequest,current.request)||!same({...current.request,requestId:target.request.requestId},target.request))fail();
    bindings.push(b);current=target;
   }

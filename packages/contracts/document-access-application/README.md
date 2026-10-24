@@ -23,3 +23,5 @@ Inspection is structural. Every variant has `nativeOpened`, `rendered` and `reca
 ## Known producer limits (documented, not papered over)
 
 See `docs/integration/MERI-DOCUMENT-ACCESS-CONTRACT-B2-20261019.md`: one operation descriptor per document-application instance, no preview route contract, no status other than draft/pending, PDF composition gated by a renderer switch, and the unverified end-to-end composition for mixed-format conversations.
+
+Native workspace files use the explicit `kind: native-file` inspect branch. Metadata identifies the committed manifest, exact path and immutable object; `integrity.currentBytesVerified` records the current byte/hash check, without generation, format or rendering claims. Download remains inspect-first and uses `application/octet-stream`, with the exact basename conveyed by the shared ASCII/RFC5987 disposition convention. The native file byte cap is 8 MiB; generated versions retain their existing format and inspection contracts.

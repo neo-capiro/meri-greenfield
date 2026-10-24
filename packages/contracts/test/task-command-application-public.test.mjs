@@ -22,6 +22,37 @@ async function observed(c){
  c.approve(c.proposal);const body=await request('execute',json({proposal:c.proposal})),response=await c.call('execute',body),text=await response.text();assert.equal(response.status,200,text);
  const value=await receive('execute',200,text,{binding:c.binding,proposal:c.proposal});assert.equal(value.status,'observed');return {...c,executeText:text,observed:value};
 }
+test('actual command authority accepts the current closed subject and retains its independent decision',async()=>{
+ const c=setup(),original=c.f.ports.authorizeBusiness;
+ c.f.ports.authorizeBusiness=async value=>{const policy=JSON.parse(await original(value));delete policy.subject.authorizationDecisionId;return json(policy);};
+ const authority=await c.f.authority.check({credential:'synthetic',descriptor:c.f.descriptor,input:c.f.command,limitDeadline(){}});
+ assert.deepEqual(authority.binding,c.f.binding);assert.deepEqual(authority.subject.scopes,c.f.scopes);
+ assert.equal(authority.decision.decisionId,id(10));assert.equal(authority.decision.decision,'allowed');
+ assert.equal(Object.hasOwn(authority.subject,'authorizationDecisionId'),false);assert.equal(c.f.state.fetches,0);
+});
+test('actual command authority rejects the archived subject field before any source effect',async()=>{
+ const c=setup(),original=c.f.ports.authorizeBusiness;
+ c.f.ports.authorizeBusiness=async value=>{const policy=JSON.parse(await original(value));policy.subject.authorizationDecisionId=policy.decision.decisionId;return json(policy);};
+ await assert.rejects(c.f.authority.check({credential:'synthetic',descriptor:c.f.descriptor,input:c.f.command,limitDeadline(){}}),{message:'ACCESS_DENIED'});
+ assert.equal(c.f.state.fetches,0);assert.equal(c.f.pg.rows.size,0);
+});
+for(const [name,mutate]of Object.entries({
+ 'invalid decision shape':p=>{p.decision.decisionId='not-a-uuid';},
+ 'denied decision':p=>{p.decision.decision='denied';},
+ 'foreign actor':p=>{p.decision.actor.actorId='foreign';},
+ 'foreign tenant':p=>{p.decision.actor.tenantId='foreign';},
+ 'different operation':p=>{p.decision.operation='create_task@0.2.0';},
+ 'decision policy drift':p=>{p.decision.policyRevision='different';},
+ 'subject policy drift':p=>{p.subject.policyRevision='different';},
+ 'different decision scopes':p=>{p.decision.scopes=[{...p.decision.scopes[0],resourceId:'different'}];},
+ 'missing required grant':p=>{p.grants=[];},
+ 'stale decision':(p,c)=>{p.decision.evaluatedAt=new Date(c.f.state.now-1).toISOString();}
+}))test(`current subject still refuses ${name} before any source effect`,async()=>{
+ const c=setup(),original=c.f.ports.authorizeBusiness;
+ c.f.ports.authorizeBusiness=async value=>{const policy=JSON.parse(await original(value));mutate(policy,c);return json(policy);};
+ await assert.rejects(c.f.authority.check({credential:'synthetic',descriptor:c.f.descriptor,input:c.f.command,limitDeadline(){}}),{message:'ACCESS_DENIED'});
+ assert.equal(c.f.state.fetches,0);assert.equal(c.f.pg.rows.size,0);
+});
 test('actual prepare/approve/execute API wire admits canonical normalization and immutable correlated result',async()=>{
  const c=await prepared();assert.equal(c.f.state.fetches,0);assert.deepEqual(c.proposal.command.arguments,{taskId:id(21),mode:'unconditional_patch',patch:{title:'Updated',status:'todo'}});
  const refused=await c.call('execute',{proposal:c.proposal}),refusal=await receive('execute',refused.status,await refused.text(),{binding:c.binding,proposal:c.proposal});assert('error'in refusal);assert.equal(c.f.state.fetches,0);

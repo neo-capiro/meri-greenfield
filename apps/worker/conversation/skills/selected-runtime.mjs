@@ -27,7 +27,7 @@ export async function createSelectedSkillExecutionRuntime(configuration) {
  const read=async(operation,args,signal,deliveryId)=>{if(closed)throw fault('SKILL_RUNTIME_CLOSED');const ref=data(operation),requestArgs=data(args);
   if(!selected.manifest.allowedOperations.some(op=>same(ref,op)))throw fault('SKILL_OPERATION_REFUSED');
   if(calls>=selected.manifest.budgets.maxToolCalls)throw fault('SKILL_TOOL_BUDGET');calls++;
-  const work=(async()=>{await current();if(!installation.operations.some(row=>same(row.operation,ref)))throw fault('UNAVAILABLE');const result=await life.run(owned=>c.gateway.execute({operation:ref,arguments:requestArgs,deliveryId,signal:signal?AbortSignal.any([signal,owned]):owned}));
+  const work=(async()=>{await current();if(!installation.operations.some(operation=>same(operation,ref)))throw fault('UNAVAILABLE');const result=await life.run(owned=>c.gateway.execute({operation:ref,arguments:requestArgs,deliveryId,signal:signal?AbortSignal.any([signal,owned]):owned}));
    if(typeof result!=='string'||Buffer.byteLength(result)>selected.manifest.budgets.maxOutputBytes)throw fault('SKILL_RESULT_LIMIT');
    const raw=data(JSON.parse(result));await current();readBytes+=Buffer.byteLength(result);if(readBytes>2*selected.manifest.budgets.maxOutputBytes)throw fault('SKILL_READ_BYTES');
    receipts.push({deliveryId,operation:ref,request:requestArgs,resultSha256:canonicalSha256(raw),result:raw});return result;})();pending.add(work);try{return await work;}finally{pending.delete(work);}};

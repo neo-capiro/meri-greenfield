@@ -4,6 +4,7 @@
 import {taskKind} from './task-kind.mjs';
 import {memoryKind} from './memory-kind.mjs';
 import {artifactFileKind} from './artifact-file-kind.mjs';
+import {documentDraftKind} from './document-draft-kind.mjs';
 import {deny} from '../protocol.mjs';
 
 const kinds=Object.freeze({
@@ -11,6 +12,7 @@ const kinds=Object.freeze({
  'task.update':taskKind('task.update'),
  'memory.propose':memoryKind,
  'artifact.file':artifactFileKind('artifact.file'),
+ 'document.draft':documentDraftKind,
 });
 
 export function commandKind(action){

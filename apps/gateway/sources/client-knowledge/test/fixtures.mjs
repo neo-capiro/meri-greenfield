@@ -20,8 +20,8 @@ export function createClientKnowledgeFixture(id='search_memory',{client=id==='re
     issuedAt:new Date(NOW-1000).toISOString(),expiresAt:new Date(NOW+10000).toISOString(),policyRevision:scope.policyRevision,
     budgets:{maxTurns:5,maxRuntimeSeconds:10,maxCostMicrousd:1,maxOutputBytes:1048576}};
   const subject={kind:client?'client':'personal',entityType:client?'client':'user',entityIds:[client?clientId:binding.actorId],tenantId:binding.tenantId,
-    actorId:binding.actorId,authorizationDecisionId:uuid('8'),policyRevision:scope.policyRevision,scopes:[clone(scope)],rosterVersionId:null};
-  const decision={decisionId:subject.authorizationDecisionId,actor:{tenantId:binding.tenantId,actorId:binding.actorId},operation:`${id}@0.2.0`,
+    actorId:binding.actorId,policyRevision:scope.policyRevision,scopes:[clone(scope)],rosterVersionId:null};
+  const decision={decisionId:uuid('8'),actor:{tenantId:binding.tenantId,actorId:binding.actorId},operation:`${id}@0.2.0`,
     scopes:clone(subject.scopes),policyRevision:scope.policyRevision,evaluatedAt:new Date(NOW).toISOString(),decision:'allowed',reasonCode:'SYNTHETIC_ONLY'};
   const authority={binding,claims,subject,decision,policyRevision:scope.policyRevision,sourceIds:contract.descriptor.sourceRequirements.map(row=>row.sourceId),deadlineMs:NOW+10000};
   const normalizationContext=id==='search_memory'?{tenantId:binding.tenantId,userId:binding.actorId}:{};

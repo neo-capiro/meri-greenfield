@@ -16,7 +16,7 @@ before(async()=>{
  for(const format of ['txt','docx','xlsx']){
   const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3',operation:specs[format].operation});
   try{
-   const app=createDocumentApplication({sessions:f.sessions,selectedClientId:f.selectedClientId,artifactOptions:f.artifactOptions,credential:f.credential,now:f.now,limits:f.limits,enabled:true});
+   const app=createDocumentApplication({sessions:f.sessions,selectedClientId:f.selectedClientId,artifactOptions:f.artifactOptions,now:f.now,limits:f.limits,enabled:true});
    const session=await f.sessions.issue({identityCredential:f.nativeCredential});
    const post=(route,body)=>app.handle(new Request('http://127.0.0.1/api/documents/'+route,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+session.credential},body:JSON.stringify(body)}));
    const body={deliveryId:'independent-'+format,request:specs[format]},response=await post('create',body);assert.equal(response.status,200);raws[format]=new Uint8Array(await response.arrayBuffer());

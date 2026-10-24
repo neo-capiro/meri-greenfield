@@ -13,8 +13,9 @@ import {createScheduledDispatchActivities} from '../control/schedules/scheduled-
 import {createPostgresPreparedScheduleReader} from '../control/intents/postgres-journal.mjs';
 import {createApprovedScheduleInstructions} from '../control/schedules/approved-instructions.mjs';
 import {createScheduledJobLifecycle} from '../control/schedules/scheduled-job-lifecycle.mjs';
-import {temporalTls,temporalAuthorization} from './control.mjs';
-import {createWorkerReadiness,stopWorkerOnAuthorizationFailure} from './temporal-worker.mjs';
+import {readRuntimeTemporalTls as temporalTls} from './temporal-tls.mjs';
+import {createWorkerReadiness} from './temporal-worker.mjs';
+import {assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {fault} from './config.mjs';
 /** Real canonical domain composition over borrowed resources. Trusted authority/instruction owners are never configuration selectors. */
@@ -43,12 +44,24 @@ export async function startScheduleWorker(configuration,options={}){
  const {signal,dispatch}=own(options,[],['signal','dispatch']);nativeSignal(signal);
  // Missing or malformed real dispatch fails before TLS secrets, connection or poller allocation. No fallback fake owner.
  const compiled=scheduleWorkerOptions({configuration,dispatch});
- let connection,worker,listener,run,closing,authorization,unwatch;
- const close=()=>closing??=(async()=>{const errors=[];for(const step of [()=>listener?.close(),()=>{unwatch?.();if(worker?.getState()==='RUNNING')worker.shutdown();},()=>run?.catch(()=>{}),()=>connection?.close(),()=>authorization?.close()])try{await step();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'SCHEDULE_WORKER_CLEANUP_UNKNOWN');})();
- try{signal?.throwIfAborted();const tls=await temporalTls(configuration.temporal.tls);authorization=await temporalAuthorization(configuration,{signal});signal?.throwIfAborted();
-  connection=await NativeConnection.connect({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);signal?.throwIfAborted();
-  worker=await Worker.create({...compiled,connection});if(authorization)unwatch=stopWorkerOnAuthorizationFailure({worker,authorization});run=worker.run();run.catch(()=>{});
-  listener=await listenRuntime({configuration,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:createWorkerReadiness({worker,authorization}),signal});
+ let connection,worker,listener,run,closing;
+ const close=()=>closing??=(async()=>{
+  const results=[];
+  for(const step of [()=>listener?.close(),()=>{if(worker?.getState()==='RUNNING')worker.shutdown();},()=>run,()=>connection?.close()]){
+   try{results.push({status:'fulfilled',value:await step()});}catch(reason){results.push({status:'rejected',reason});}
+  }
+  // SDK 1.24 has no public disposal for an INITIALIZED worker. Do not run a
+  // cancelled poller or claim cleanup when its native connection is retained.
+  assertTemporalRuntimeCleanup(results,{...(worker?{workerState:worker.getState()}:{})});
+ })();
+ try{signal?.throwIfAborted();const tls=await temporalTls(configuration.temporal.tls);signal?.throwIfAborted();
+  connection=await NativeConnection.connect({address:configuration.temporal.address,tls});signal?.throwIfAborted();
+  worker=await Worker.create({...compiled,connection});signal?.throwIfAborted();run=worker.run();run.catch(()=>{});
+  listener=await listenRuntime({configuration,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:createWorkerReadiness({worker}),signal});
   return Object.freeze({address:listener.address,completion:run,close});
- }catch(error){await close().catch(()=>{});throw Object.assign(fault('SCHEDULE_WORKER_STARTUP_FAILED'),{cause:error});}
+ }catch(error){
+  try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'SCHEDULE_WORKER_STARTUP_AND_CLEANUP_FAILED'));}
+  if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;
+  throw Object.assign(fault('SCHEDULE_WORKER_STARTUP_FAILED'),{cause:error});
+ }
 }

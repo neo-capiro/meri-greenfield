@@ -74,9 +74,20 @@ test('document composition uses the SAME canonical versions and preview owners a
 });
 test('actual control factory receives its canonical raw journal/forwarder before port capture, without constructor IO',()=>{
  const configuration={versions:contractVersions,sourceEnabled:false,retention:{},sessions:{maxSessions:10,maxTtlMs:30000},limits:{requestMs:1000,requestBytes:131072},native:{maxResponseBytes:2097152},temporal:{taskQueue:'synthetic'}};
- let storage,context;const assembly=assembleControl({configuration,pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},now,productPortsFactory(c){context=c.artifactRecovery;
+ let storage,context;const assembly=assembleControl({configuration,pool,client:{workflow:{start:unused,getHandle:unused}},native:{call:unused},execution:{authenticate:unused},now,productPortsFactory(c){context=c.artifactRecovery;
   const s3={client:{send:unused},bucket:'synthetic-mount-bucket',prefix:'runtime-artifacts',expectedBucketOwner:'111122223333',kmsKeyId:'arn:aws:kms:us-east-1:111122223333:key/00000000-0000-4000-8000-000000000001'};
   storage=createRuntimeArtifactStorage({s3,versionsPool:c.pool,now:c.now,custody:{...context,tenantId:'tenant-a',evidenceS3:s3,artifactId,enabled:true}});return {artifactStore:storage};
  }});
  try{assert.equal(runtimeArtifactRecovery(storage).journal,context.journal);assert.deepEqual(assembly.retention.artifactRecovery(),{required:true,state:'composed'});assert.equal(assembly.retention.serving.isEnabled(),false);assert.equal(assembly.productReadiness().ready,false);}finally{assembly.close();}
+});
+
+
+test('dynamic startup opens only the retention watermark without tenant enumeration; no purge or artifact completeness is asserted',async()=>{
+ const f=composeStartup(),journal={...f.journal,tx:unused,readProjection:unused},binding=createArtifactRecoveryBinding({journal});
+ const s3={client:{send:unused},bucket:'synthetic-mount-bucket',prefix:'runtime-artifacts',expectedBucketOwner:'111122223333',kmsKeyId:'arn:aws:kms:us-east-1:111122223333:key/00000000-0000-4000-8000-000000000001'};
+ const storage=createRuntimeArtifactStorage({s3,versionsPool:pool,now:f.clock.now,custody:{...binding.context,evidenceS3:s3,enabled:true}});
+ const callback=binding.configure(runtimeArtifactRecovery(storage),true),startup=createRetentionStartup({journal,watermark:f.watermark,ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now,recoverPrerequisitesExclusive:callback});binding.bindRetention(startup.gate);
+ await startup.start();assert.equal(startup.serving.isEnabled(),true);assert.equal(startup.state().purgeEnabled,false);
+ assert.equal(typeof storage.versions.recoverTenant,'function');await assert.rejects(storage.versions.recoverExclusive(),/TENANT_REQUIRED/);
+ await assert.rejects(startup.purge.execute(),/PURGE_DISABLED/);
 });

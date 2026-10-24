@@ -8,11 +8,11 @@ import {createObjectiveGenerationActivities} from './lifecycle-activities.mjs';
 
 function harness({replies={},runs:runOptions={},withRuns=true,withClient=true}={}){
  const x=coreRepliesFixture(),calls=[],runState={run:runOptions.existing??null,starts:[]};
- const queue={admit:[x.replies.admit()],publish:[x.replies.publication()],accept:[],readAdmission:[x.replies.admissionRead()],readRequest:[x.replies.publication()],
+ const queue={current:[{schemaVersion:1,generationJobId:x.source.generationJobId,tenantId:x.source.binding.tenantId,actorId:x.source.binding.actorId,clerkUserId:x.admission.clerkUserId,clientId:x.admission.canonical.clientId,role:'admin',consentId:x.admission.consentId,controlVersion:x.admission.controlVersion,checkedAtMs:NOW,effectExpiresAtMs:x.admission.effectExpiresAtMs}],admit:[x.replies.admit()],publish:[x.replies.publication()],accept:[],readAdmission:[x.replies.admissionRead()],readRequest:[x.replies.publication()],
   complete:[x.replies.completion()],readCompletion:['unavailable'],...replies};
  const transport={available:()=>true,...Object.fromEntries(Object.keys(queue).map(m=>[m,async value=>{calls.push(m);
   const next=queue[m].length>1?queue[m].shift():queue[m][0];if(next===undefined||next==='unavailable')return {kind:'unavailable'};return {kind:'unqualified-response',status:200,value:structuredClone(next)};}]))};
- const clientFor=source=>{assert.deepEqual(source,x.source);return createCoreObjectiveGenerationClient({transport,source,executionSelection:x.executionSelection,now:()=>NOW});};
+ const clientFor=source=>{assert.deepEqual(source,x.source);return createCoreObjectiveGenerationClient({transport,source,now:()=>NOW});};
  const runs={async start(value){runState.starts.push(value);if(runOptions.startFails)throw Error('lost');runState.run={state:'queued'};return runOptions.startAnswer??{kind:'started'};},
   async read(){if(runOptions.readFails)throw Error('down');return runState.run;}};
  const activities=createObjectiveGenerationActivities({...(withClient?{clientFor}:{}),...(withRuns?{runs}:{}),context:()=>({cancellationSignal:new AbortController().signal}),now:()=>NOW});
@@ -23,7 +23,7 @@ function harness({replies={},runs:runOptions={},withRuns=true,withClient=true}={
 test('source admits then publishes and returns digests and the effect bound only',async()=>{
  const h=harness(),out=await h.activities.objectiveGenerationSource(h.input);
  assert.deepEqual(out,{kind:'ready',sourceAdmissionSha256:h.x.sourceAdmissionSha256,requestSha256:h.x.replies.publication().requestSha256,effectExpiresAtMs:h.x.admission.effectExpiresAtMs});
- assert.deepEqual(h.calls,['admit','publish']);assert.equal(JSON.stringify(out).includes(h.x.executionContext.prompt),false);
+ assert.deepEqual(h.calls,['current','admit','publish']);assert.equal(JSON.stringify(out).includes(h.x.executionContext.prompt),false);
  assert.deepEqual(await harness({withClient:false}).activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
  assert.deepEqual(await harness({replies:{publish:['unavailable']}}).activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
 });

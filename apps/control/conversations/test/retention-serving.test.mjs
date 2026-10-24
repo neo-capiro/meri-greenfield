@@ -62,7 +62,7 @@ test('lifecycle entry points read through the gated history: controls, execution
   await f.running();const controls=await f.service.nextControls({credential:f.credential,binding});assert.deepEqual(controls.controls,[]);
   await r.suppress();
   await assert.rejects(f.service.nextControls({credential:f.credential,binding}),/RETENTION_SUPPRESSED/);await assert.rejects(f.service.loadForExecution({credential:f.credential,binding}),/RETENTION_SUPPRESSED/);
-  await assert.rejects(f.service.inspectCheckpoint({credential:f.credential,input:{checkpointId:id(600)}}),/RETENTION_SUPPRESSED/);await assert.rejects(f.service.recordCheckpoint({credential:f.credential,binding,input:{controlId:id(601),checkpointId:id(600),checkpointSha256:'a'.repeat(64)}}),/RETENTION_SUPPRESSED/);
+  await assert.rejects(f.service.inspectCheckpoint({credential:f.credential,input:{checkpointId:id(600)}}),/RETENTION_SUPPRESSED/);await assert.rejects(f.service.recordCheckpoint({credential:f.credential,binding,input:{controlId:id(601),sessionId:id(600)}}),/RETENTION_SUPPRESSED/);
   await assert.rejects(f.service.history({credential:f.credential}),/RETENTION_SUPPRESSED/);
   const cancelled=await f.service.cancel({credential:f.credential});assert.equal(cancelled.state,'cancelled');assert.equal(f.state.cancels,1,'lifecycle cancellation runs on the cleanup-only read');
   assert.ok(!JSON.stringify(cancelled).includes('Hello'),'the cleanup response carries no suppressed content');

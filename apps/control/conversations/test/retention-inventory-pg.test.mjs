@@ -22,6 +22,7 @@ const status=state=>({eventId:randomUUID(),createdAt:at(),type:'run.status',data
 const completeSnapshot=owner=>({...owner,sdkSessionEntries:[],selectedOutputs:[],artifactVersions:[],
  nativeJournalRows:[],uploads:[],schedules:[],receipts:[],memoryProposals:[],budgetRuns:[]});
 const sorted=value=>[...value].sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)));
+const seedModelPolicy=(pool,tenantId,actorId)=>pool.query('INSERT INTO meri_settings.tenant_settings(tenant_id,revision,document,document_sha256,updated_at,updated_by,monthly_cap_micro_usd) VALUES($1,1,$2,$3,clock_timestamp(),$4,100000000)',[tenantId,{},hash({}),actorId]);
 
 function checkpoint({binding,scopes,checkpointId,captureSequence,sourceRequestSha256,contextSha256}){
  const object={objectId:randomUUID(),versionId:'synthetic-immutable-v1',sha256:'a'.repeat(64),bytes:10,scopes};
@@ -63,6 +64,7 @@ async function fixture(pool){
   request={requestId:randomUUID(),prompt:'synthetic inventory',skill:null,window:null},
   event={contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,
    type:'run.status',data:{state:'queued',reasonCode:null}};
+ await seedModelPolicy(pool,tenantId,actorId);
  await store.accept({conversation,run,request,event},check);
  await store.append(binding,status('starting'),check);
  await store.append(binding,status('running'),check);
@@ -111,12 +113,18 @@ async function fixture(pool){
  const heldProof=checkpoint({binding:target,scopes,checkpointId:randomUUID(),
   captureSequence:control.captureSequence,sourceRequestSha256:control.sourceRequestSha256,
   contextSha256:control.contextSha256});
- await store.lifecycle.checkpoint({binding:target,scopes,selectedClientId:clientId,controlId,
-  proof:heldProof,events:[
+ // Seed immutable historical rows for the read-only inventory test. The removed
+ // checkpoint writer is deliberately not recreated as an executable owner.
+ const savedControl={...control,state:'APPLIED',checkpointId:heldProof.checkpoint.checkpointId,proof:heldProof};delete savedControl.controlSequence;
+ const heldEvents=[
    {contractVersion:'0.1.0',eventId:randomUUID(),createdAt:at(),type:'checkpoint.verified',
     data:{checkpointId:heldProof.checkpoint.checkpointId}},
    {contractVersion:'0.1.0',eventId:randomUUID(),createdAt:at(),type:'run.status',
-    data:{state:'paused',reasonCode:'CONTROL_CHECKPOINTED'}}]},check);
+    data:{state:'paused',reasonCode:'CONTROL_CHECKPOINTED'}}];
+ await pool.query('UPDATE meri_conversations.controls SET projection=$3,projection_sha256=$4 WHERE tenant_id=$1 AND control_id=$2',[tenantId,controlId,savedControl,hash(savedControl)]);
+ await pool.query('INSERT INTO meri_conversations.checkpoints(tenant_id,checkpoint_id,conversation_id,run_id,control_id,proof,proof_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[tenantId,heldProof.checkpoint.checkpointId,conversationId,target.runId,controlId,heldProof,hash(heldProof)]);
+ for(const [i,value] of heldEvents.entries()){const event={...value,binding:target,scopes,sequence:control.captureSequence+i+1};await pool.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[tenantId,conversationId,target.runId,event.sequence,event.eventId,event,hash(event)]);}
+ const paused={...targetRun,state:'paused'};await pool.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[tenantId,conversationId,target.runId,paused,hash(paused),control.captureSequence+2]);
  const memory={binding:target,scopes,clientId,policyRevision};
  for(let i=0;i<34;i++)await insertMemoryRow(pool,memory,`page-${String(i).padStart(2,'0')}`);
  return {subject:{tenantId,conversationId,ownerActorId:actorId},binding,target,firstProof,heldProof,
@@ -197,6 +205,7 @@ async function afterFailure(pool,{forge=null,thirdVersions=versions}={}){
  const binding=turn(1),conversation={conversationId,owner:{tenantId,actorId},scopes,createdAt,policyRevision},
   run={binding,state:'queued',scopes,createdAt,policyRevision,versions},request={requestId:randomUUID(),prompt:'synthetic first turn',skill:null,window:null},
   event={contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}};
+ await seedModelPolicy(pool,tenantId,actorId);
  await store.accept({conversation,run,request,event},check);
  for(const state of ['starting','running'])await store.append(binding,status(state),check);
  const first=await store.completions.begin({binding,scopes,selectedClientId:clientId,completionId:randomUUID(),checkpointId:randomUUID()},check);

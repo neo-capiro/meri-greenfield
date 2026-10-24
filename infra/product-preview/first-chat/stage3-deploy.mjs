@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /** Meri first-chat Stage 3: the data-plumbing steps of docs/shipping/20261017/STAGE3-DEPLOY-RUNBOOK.md. Every AWS mutation stays an
  * explicit command the operator runs; this tool only reads local files, validates and writes local files. It never prints a
- * secret: the identity bearer is referenced by path only, and nothing here reads a material bundle.
+ * secret: nothing here reads a user credential or material bundle.
  *
  *   stage3-input      latest task-definition ARNs (TSV) -> stage3.json for render-material.mjs --stage3
- *   core-values       Core membership response + bearer path -> core.json for render-material.mjs --core
+ *   core-values       Core and frontend origins -> core.json for render-material.mjs --core
  *   upload-plan       rendered directory + a new version label + the secrets' label readback -> the exact PutSecretValue
  *                     commands (fixed idempotency tokens); refuses a label in use or a secret at its version/label capacity
- *   bindings          rendered directory + secret VersionIds + live app template -> the application/issuer bindings, templates and deploy plan
+ *   bindings          rendered directory + secret VersionIds + live app template -> the application binding, templates and deploy plan
  *   verify-outputs    deployed stack outputs -> refuses unless every task definition ARN equals the rendered one
  *
  * Exit 0 done; 2 refused (one STAGE3_* line on stderr). Importing this module performs no IO. */
@@ -18,8 +18,6 @@ import {pathToFileURL} from 'node:url';
 import {ROLES,parseCoreValues,SOURCE_ROOT} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS,TEMPLATE_BUCKET,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,fail} from './stage3-bindings.mjs';
 
-const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
-const ADMITTED_ROLES=new Set(['standard_user','user_admin','capiro_admin']);
 export const CORE_ORIGIN='https://first-chat-preview.app-dev.capiro.ai';
 /** `family<TAB>arn|None` lines (one per family and status) -> {role: [arn...]}. */
 export function parseLatestTsv(text){
@@ -33,39 +31,9 @@ export function parseLatestTsv(text){
  return latest;
 }
 
-/** Core's membership receipt (apps/control/product-access/membership.mjs shape) -> render core values. Never sees the bearer bytes. */
-export function coreValuesFromMembership(membership,{identityCredentialPath,frontendOrigin,clientId,coreOrigin=CORE_ORIGIN,nowMs=Date.now()}){
- const keys=['tenantId','actorId','status','role','permissions','clientIds','membershipRevision','checkedAtMs','expiresAtMs'];
- if(membership===null||typeof membership!=='object'||Array.isArray(membership)||Object.keys(membership).sort().join()!==[...keys].sort().join())fail('membership response shape');
- const m=membership;
- if(m.status!=='active'||!ADMITTED_ROLES.has(m.role))fail('membership is not an active admitted member');
- if(!Array.isArray(m.clientIds)||m.clientIds.some(id=>!UUID.test(id)))fail('membership clientIds');
- if(!Number.isSafeInteger(m.expiresAtMs)||m.expiresAtMs<=Number(m.checkedAtMs)||Number(m.checkedAtMs)>nowMs+300000)fail('membership times');
- const selected=clientId??(m.clientIds.length===1?m.clientIds[0]:null);
- if(!selected)fail(`membership lists ${m.clientIds.length} clients: pass --client-id`);
- if(!m.clientIds.includes(selected))fail('--client-id is not one of the membership clientIds');
- return parseCoreValues({coreOrigin,frontendOrigin,tenantId:m.tenantId,actorId:m.actorId,clientId:selected,identityCredentialPath});
-}
-
-/** Private control readiness from the runner network, with only the public server CA.
- * Direct Bedrock and its task IAM role are verified by the native SDK release gate. */
-export const PROBE_FAMILY='meri-product-preview-stage3-probe';
-export const PROBE_PROGRAM=`const https=require('node:https');
-const ca=Buffer.from(process.env.MERI_PROBE_CA_BASE64||'','base64').toString('utf8');
-const log=x=>process.stdout.write(JSON.stringify(x)+'\\n');
-const get=(host,port,path)=>new Promise(done=>{const r=https.request({host,port,path,method:'GET',servername:host,ca,timeout:8000,headers:{accept:'application/json'}},s=>{let b='';s.setEncoding('utf8');s.on('data',d=>{if(b.length<4096)b+=d;});s.on('end',()=>done({status:s.statusCode,body:b.slice(0,4096)}));});r.on('timeout',()=>r.destroy(Error('TIMEOUT')));r.on('error',e=>done({error:e.code||e.message}));r.end();});
-(async()=>{
- const ready=await get('control.meri-preview.internal',443,'/health/ready');log({check:'control-private-ready',...ready});
- process.exitCode=ready.status===200?0:1;
-})();`;
-export function probeTaskDefinition({deployment,foundationOutputs,renderSummary}){
- const ca=renderSummary?.runnerPoststart?.MERI_POSTSTART_CA_BASE64;
- if(typeof ca!=='string'||!ca)fail('render summary runner poststart CA');
- return {family:PROBE_FAMILY,requiresCompatibilities:['FARGATE'],networkMode:'awsvpc',cpu:'256',memory:'512',
-  runtimePlatform:{cpuArchitecture:'ARM64',operatingSystemFamily:'LINUX'},executionRoleArn:foundationOutputs.RunnerExecutionRoleArn,
-  containerDefinitions:[{name:'probe',image:deployment.images.nodeRuntime,essential:true,user:'1000:1000',readonlyRootFilesystem:true,privileged:false,
-   linuxParameters:{capabilities:{drop:['ALL']}},entryPoint:['node','-e'],command:[PROBE_PROGRAM],environment:[{name:'MERI_PROBE_CA_BASE64',value:ca}],
-   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':foundationOutputs.RunnerLogGroupName,'awslogs-region':'us-east-1','awslogs-stream-prefix':'stage3-probe','mode':'blocking'}}}]};
+/** Deployment origins only. User identity and client/General scope are admitted on each request by Core. */
+export function coreValues({frontendOrigin,coreOrigin=CORE_ORIGIN,...extra}){
+ if(Object.keys(extra).length)fail('core values accept origins only');return parseCoreValues({coreOrigin,frontendOrigin});
 }
 
 const RESERVED_STAGES=new Set(['AWSCURRENT','AWSPREVIOUS','AWSPENDING']);
@@ -154,9 +122,8 @@ export function deployPlan(sizes,directory){
 }
 
 /** Refuses unless each stack's task definitions are exactly the revisions the material was rendered for. */
-export function verifyOutputs({expectedTaskDefinitions,app,issuer}){
- const pairs=[['control',app.ControlTaskDefinitionArn],['temporal-worker',app.TemporalWorkerTaskDefinitionArn],['runner',app.RunnerTaskDefinitionArn],
-  ['temporal-issuer',issuer.TemporalIssuerTaskDefinitionArn]];
+export function verifyOutputs({expectedTaskDefinitions,app}){
+ const pairs=[['control',app.ControlTaskDefinitionArn],['temporal-worker',app.TemporalWorkerTaskDefinitionArn]];
  const mismatched=pairs.filter(([role,actual])=>actual!==expectedTaskDefinitions[role]).map(([role,actual])=>`${role}: rendered ${expectedTaskDefinitions[role]} deployed ${actual}`);
  if(mismatched.length)fail(`task definitions differ from the render (re-render with the deployed revisions): ${mismatched.join('; ')}`);
  return pairs.map(([role,arn])=>({role,arn}));
@@ -172,13 +139,12 @@ const json=async path=>JSON.parse(await readFile(path,'utf8'));
 
 const USAGE=`Usage: node infra/product-preview/first-chat/stage3-deploy.mjs <command> [--flag value]...
   stage3-input   --deployment-inputs F --foundation-outputs F --latest latest.tsv --out stage3.json
-  core-values    --membership membership.json --identity <bearer file> --frontend-origin URL [--client-id UUID] --out core.json
+  core-values    --frontend-origin URL [--core-origin URL] --out core.json
   upload-plan    --deployment-inputs F --rendered DIR --label NEW_LABEL --secret-labels DIR --out upload-plan.json
                  (DIR: one list-secret-version-ids --include-deprecated JSON output per material secret, read just before)
   bindings       --deployment-inputs F --foundation-outputs F --private-edge-outputs F --rendered DIR --secret-versions versions.tsv
                  --image-scans scans.json --live-app-template app.live.template.json --out NEW_DIR
-  verify-outputs --bindings DIR --app F --issuer F
-  probe-task     --deployment-inputs F --foundation-outputs F --rendered DIR --out probe-task-definition.json`;
+  verify-outputs --bindings DIR --app F`;
 
 export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.write(t),err=t=>process.stderr.write(t)}={}){
  const [command,...rest]=argv;
@@ -195,11 +161,11 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
    out(JSON.stringify({status:'STAGE3_INPUT_WRITTEN',out:resolve(a.out),taskDefinitions:stage3.taskDefinitions})+'\n');return 0;
   }
   if(command==='core-values'){
-   need('membership','identity','frontend-origin','out');
-   const identity=resolve(a.identity);await lstat(identity);
-   const core=coreValuesFromMembership(await json(a.membership),{identityCredentialPath:identity,frontendOrigin:a['frontend-origin'],clientId:a['client-id']});
+   need('frontend-origin','out');
+   for(const key of Object.keys(a))if(!['frontend-origin','core-origin','out'].includes(key))fail('core-values accepts origins only');
+   const core=coreValues({frontendOrigin:a['frontend-origin'],...(a['core-origin']?{coreOrigin:a['core-origin']}:{})});
    await writeNew(await outsideRepository(a.out),JSON.stringify(core,null,1)+'\n');
-   out(JSON.stringify({status:'STAGE3_CORE_VALUES_WRITTEN',out:resolve(a.out),scope:'client'})+'\n');return 0;
+   out(JSON.stringify({status:'STAGE3_CORE_VALUES_WRITTEN',out:resolve(a.out)})+'\n');return 0;
   }
   if(command==='upload-plan'){
    need('deployment-inputs','rendered','label','secret-labels','out');
@@ -219,27 +185,22 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
     secretVersions:parseVersionsTsv(await readFile(a['secret-versions'],'utf8')),imageScans:await json(a['image-scans']),liveAppTemplate:await json(a['live-app-template'])});
    const {bodies,sizes}=synthesizeStage3(bindings),dir=await outsideRepository(a.out);
    await mkdir(dir,{recursive:false,mode:0o700});
-   for(const key of ['app','issuer']){await writeNew(join(dir,`${key}.binding.json`),JSON.stringify(bindings[key],null,1)+'\n');await writeNew(join(dir,`${key}.template.json`),bodies[key]);}
+   for(const key of STAGE3_DEPLOY_ORDER){await writeNew(join(dir,`${key}.binding.json`),JSON.stringify(bindings[key],null,1)+'\n');await writeNew(join(dir,`${key}.template.json`),bodies[key]);}
    const plan={order:[...STAGE3_DEPLOY_ORDER],stacks:deployPlan(sizes,dir),expectedTaskDefinitions:bindings.expectedTaskDefinitions,services:bindings.services};
    await writeNew(join(dir,'deploy-plan.json'),JSON.stringify(plan,null,1)+'\n');
    out(JSON.stringify({status:'STAGE3_BINDINGS_WRITTEN',out:dir,...plan})+'\n');return 0;
   }
-  if(command==='probe-task'){
-   need('deployment-inputs','foundation-outputs','rendered','out');
-   const definition=probeTaskDefinition({deployment:await json(a['deployment-inputs']),foundationOutputs:outputsObject(await json(a['foundation-outputs'])),renderSummary:await json(join(resolve(a.rendered),'summary.json'))});
-   await writeNew(await outsideRepository(a.out),JSON.stringify(definition)+'\n');
-   out(JSON.stringify({status:'STAGE3_PROBE_TASK_DEFINITION_WRITTEN',out:resolve(a.out),family:PROBE_FAMILY})+'\n');return 0;
-  }
   if(command==='verify-outputs'){
-   need('bindings','app','issuer');
+   need('bindings','app');
+   for(const key of Object.keys(a))if(!['bindings','app'].includes(key))fail('verify-outputs accepts the application stack only');
    const plan=await json(join(resolve(a.bindings),'deploy-plan.json'));
-   const verified=verifyOutputs({expectedTaskDefinitions:plan.expectedTaskDefinitions,app:outputsObject(await json(a.app)),issuer:outputsObject(await json(a.issuer))});
+   const verified=verifyOutputs({expectedTaskDefinitions:plan.expectedTaskDefinitions,app:outputsObject(await json(a.app))});
    out(JSON.stringify({status:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER',verified})+'\n');return 0;
   }
   fail(`unknown command ${String(command).slice(0,40)}`);
  }catch(error){
   const message=typeof error?.code==='string'&&/^(STAGE3_|RENDER_)/u.test(error.code)?error.message:
-   /^(PRODUCT_PREVIEW|FIRST_CHAT_ISSUER)_BINDING_REFUSED$/u.test(error?.message??'')?`STAGE3_TEMPLATE_REFUSED: ${error.message}`:
+   /^PRODUCT_PREVIEW_BINDING_REFUSED$/u.test(error?.message??'')?`STAGE3_TEMPLATE_REFUSED: ${error.message}`:
    typeof error?.code==='string'&&/^E[A-Z]+$/u.test(error.code)?`STAGE3_INPUT_UNREADABLE ${error.code} ${error.path??''}`:
    error instanceof SyntaxError?'STAGE3_INPUT_REFUSED: an input file is not JSON':'STAGE3_REFUSED';
   err(message+'\n');return 2;

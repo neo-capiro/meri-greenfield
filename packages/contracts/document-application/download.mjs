@@ -1,4 +1,5 @@
-import {fail,isFailure,copyBytes,digest,admittedVersions} from './boundary.mjs';
+import {nativeArtifactDisposition} from '../artifacts-0.2/artifact-formats.mjs';
+import {fail,isFailure,copyBytes,digest,admittedVersions,admittedNativeVersions} from './boundary.mjs';
 const getter=(prototype,name)=>Object.getOwnPropertyDescriptor(prototype,name).get;
 // Options are trusted consumer configuration. Body/status/headers remain untrusted.
 export async function receiveDocumentDownload(response,version,{maxBytes=16*1024*1024,timeoutMs=30000,signal}={}){
@@ -9,7 +10,8 @@ export async function receiveDocumentDownload(response,version,{maxBytes=16*1024
  let body,headers,status,redirected;
  try{body=getter(Response.prototype,'body').call(response);headers=getter(Response.prototype,'headers').call(response);status=getter(Response.prototype,'status').call(response);redirected=getter(Response.prototype,'redirected').call(response);}catch{fail('INVALID_RESPONSE_OBJECT');}
  const header=name=>Headers.prototype.get.call(headers,name);
- if(redirected||status!==200||header('content-type')!==version.mimeType||header('content-disposition')!==`attachment; filename="${version.filename}"`||header('content-length')!==String(version.object.bytes)||header('cache-control')!=='no-store'||header('x-content-type-options')!=='nosniff'||header('content-encoding')!==null)fail('DOWNLOAD_HEADERS');
+ const native=admittedNativeVersions.has(version),mime=native?'application/octet-stream':version.mimeType,disposition=native?nativeArtifactDisposition(version.path):`attachment; filename="${version.filename}"`;
+ if(redirected||status!==200||header('content-type')!==mime||header('content-disposition')!==disposition||header('content-length')!==String(version.object.bytes)||header('cache-control')!=='no-store'||header('x-content-type-options')!=='nosniff'||header('content-encoding')!==null)fail('DOWNLOAD_HEADERS');
  let reader;try{reader=ReadableStream.prototype.getReader.call(body);}catch{fail('INVALID_DOWNLOAD_BODY');}
  let timer,abort,done=false,closed=false;const started=Date.now(),end=started+timeoutMs;
  let rejectStop;const stop=new Promise((_,reject)=>{rejectStop=reject;});stop.catch(()=>{});

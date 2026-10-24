@@ -6,6 +6,7 @@ import {ProductError} from '../../product-access/errors.mjs';
 import {userPreferences} from '../documents.mjs';
 import {createSettingsRoutes} from '../routes.mjs';
 import {USER_PREFERENCES_PATHS,USER_PREFERENCES_LIMITS,USER_PREFERENCES_DOMAIN_ERRORS} from './protocol.mjs';
+import {assertModelCatalog} from '../../../../packages/contracts/model-selection.mjs';
 export function createUserPreferencesApplication(configuration){
  const c=own(configuration,['gate','service','now','limits']),limits=data(own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']));
  if(typeof c.now!=='function'||Object.entries(limits).some(([key,value])=>!Number.isSafeInteger(value)||value<1||value>USER_PREFERENCES_LIMITS[key]))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -17,10 +18,10 @@ export function createUserPreferencesApplication(configuration){
   routes[path]={errors:USER_PREFERENCES_DOMAIN_ERRORS,effect:route.effect,async handle(call){
    const result=await route.handle(call);
    try{
-    const record=data(own(result,['revision','preferences']));
+    const record=data(own(result,['revision','preferences','modelCatalog']));
     if(!Number.isSafeInteger(record.revision)||record.revision<0)throw Error('invalid record');
     const preferences=userPreferences(record.preferences,call.principal);
-    return data({owner:{tenantId:call.principal.tenantId,actorId:call.principal.actorId},revision:record.revision,preferences});
+    return data({owner:{tenantId:call.principal.tenantId,actorId:call.principal.actorId},revision:record.revision,preferences,modelCatalog:assertModelCatalog(record.modelCatalog)});
    }catch{throw new ProductError('SETTINGS_STORE_STATE',route.effect?'RESULT_NOT_RELEASED':null);}
   }};
  }

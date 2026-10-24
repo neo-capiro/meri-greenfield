@@ -1,0 +1,310 @@
+{
+  "sourceAdmission": {
+    "schemaVersion": 1,
+    "namespace": "capiro.objective-strategy.admission:v1",
+    "canonical": {
+      "canonicalPlanId": "00000000-0000-4000-8000-000000000001",
+      "tenantId": "00000000-0000-4000-8000-000000000002",
+      "clientId": "00000000-0000-4000-8000-000000000003",
+      "objectiveId": "00000000-0000-4000-8000-000000000004",
+      "canonicalStrategyId": "00000000-0000-4000-8000-000000000005",
+      "canonicalProjectId": "00000000-0000-4000-8000-000000000006",
+      "bindingVersion": 2,
+      "epoch": 1,
+      "requestedIntentId": "00000000-0000-4000-8000-000000000007",
+      "requestedObjectiveRevisionId": "00000000-0000-4000-8000-000000000008",
+      "requestedObjectiveVersion": 2,
+      "snapshotHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "actorUserId": "00000000-0000-4000-8000-000000000009",
+    "clerkUserId": "user_fixture",
+    "consentId": "00000000-0000-4000-8000-00000000000c",
+    "controlVersion": 3,
+    "generationJobId": "00000000-0000-4000-8000-00000000000a",
+    "generationRequestId": "00000000-0000-4000-8000-00000000000b",
+    "admittedAtMs": 1792130340000,
+    "effectExpiresAtMs": 1792132200000,
+    "expectedStrategyVersionId": "00000000-0000-4000-8000-000000000032"
+  },
+  "schemaVersion": 1,
+  "sourceAdmissionSha256": "a3ed065e9e7a20b86b2e782934d04904ae3573f28f67a319e6802781bfb85033",
+  "request": {
+    "requestVersion": "capiro.objective-strategy.regeneration-request/20261016.1",
+    "operation": "strategy.draft",
+    "requestId": "00000000-0000-4000-8000-00000000000b",
+    "jobId": "00000000-0000-4000-8000-00000000000a",
+    "principal": {
+      "tenantId": "00000000-0000-4000-8000-000000000002",
+      "actorId": "00000000-0000-4000-8000-000000000009",
+      "clientId": "00000000-0000-4000-8000-000000000003",
+      "ownerActorId": "user_fixture"
+    },
+    "source": {
+      "kind": "objective",
+      "objectiveId": "00000000-0000-4000-8000-000000000004",
+      "objectiveRevisionId": "00000000-0000-4000-8000-000000000008",
+      "objectiveVersion": 2,
+      "snapshotSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "intent": {
+        "outcome": "Preserve reviewed human work",
+        "governmentProblem": "Read the actual evidence",
+        "askType": "meri_propose",
+        "minimumWin": "A preserving proposal",
+        "limits": ""
+      }
+    },
+    "context": {
+      "packetId": "00000000-0000-4000-8000-000000000014",
+      "coverageSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "asOfMs": 1792130400000,
+      "evidence": [
+        {
+          "ref": "profile-fill:00000000-0000-4000-8000-00000000001e:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "sourceId": "00000000-0000-4000-8000-00000000001e",
+          "asOfMs": 1792130395000,
+          "scope": "client",
+          "clientId": "00000000-0000-4000-8000-000000000003",
+          "reviewState": "accepted"
+        },
+        {
+          "ref": "profile-fill:00000000-0000-4000-8000-00000000001f:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "sourceId": "00000000-0000-4000-8000-00000000001f",
+          "asOfMs": 1792130399000,
+          "scope": "client",
+          "clientId": "00000000-0000-4000-8000-000000000003",
+          "reviewState": "pending"
+        }
+      ],
+      "ownerRefs": [
+        "owner:fixture"
+      ],
+      "draft": {
+        "mappingVersion": "legacy-draft-observation/1",
+        "clientId": "00000000-0000-4000-8000-000000000003",
+        "input": {
+          "attachmentIds": [],
+          "goal": "  Original queued goal\n",
+          "meriContext": null,
+          "ownerUserId": null,
+          "targetDate": "2028-02-29",
+          "typeHint": "authorization"
+        },
+        "selectedOwnerActorId": "user_fixture",
+        "attachments": {
+          "correlation": "unattributed-legacy-bundle",
+          "coverage": "not-proven-by-legacy-resolver",
+          "state": "not-requested",
+          "documentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "documents": []
+        }
+      },
+      "contextSha256": "60cf893626e3cf9e4dd63cad33189bb83ab29d0bf40cf7a1676c0576bf44dd09"
+    },
+    "applicationTarget": {
+      "mode": "regenerate",
+      "canonical": {
+        "canonicalPlanId": "00000000-0000-4000-8000-000000000001",
+        "tenantId": "00000000-0000-4000-8000-000000000002",
+        "clientId": "00000000-0000-4000-8000-000000000003",
+        "objectiveId": "00000000-0000-4000-8000-000000000004",
+        "canonicalStrategyId": "00000000-0000-4000-8000-000000000005",
+        "canonicalProjectId": "00000000-0000-4000-8000-000000000006",
+        "bindingVersion": 2,
+        "epoch": 1,
+        "requestedIntentId": "00000000-0000-4000-8000-000000000007",
+        "requestedObjectiveRevisionId": "00000000-0000-4000-8000-000000000008",
+        "requestedObjectiveVersion": 2,
+        "snapshotHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "expectedStrategyVersionId": "00000000-0000-4000-8000-000000000032"
+    },
+    "basis": {
+      "archiveIndex": [
+        {
+          "archivedAt": "2026-10-16T05:00:00.000Z",
+          "nodeId": "00000000-0000-4000-8000-00000000003e"
+        }
+      ],
+      "archiveIndexSha256": "da2146963c366f7529836d1becedeef5c08a7d8502f18f8c221eb658579a0bf3",
+      "canonical": {
+        "bindingVersion": 2,
+        "canonicalPlanId": "00000000-0000-4000-8000-000000000001",
+        "canonicalProjectId": "00000000-0000-4000-8000-000000000006",
+        "canonicalStrategyId": "00000000-0000-4000-8000-000000000005",
+        "clientId": "00000000-0000-4000-8000-000000000003",
+        "epoch": 1,
+        "objectiveId": "00000000-0000-4000-8000-000000000004",
+        "requestedIntentId": "00000000-0000-4000-8000-000000000007",
+        "requestedObjectiveRevisionId": "00000000-0000-4000-8000-000000000008",
+        "requestedObjectiveVersion": 2,
+        "snapshotHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "tenantId": "00000000-0000-4000-8000-000000000002"
+      },
+      "expectedStrategyVersionId": "00000000-0000-4000-8000-000000000032",
+      "lastMachineStrategy": {
+        "meta": {
+          "clientId": "00000000-0000-4000-8000-000000000003",
+          "createdAt": "2026-10-15T12:00:00.000Z",
+          "createdByUserId": "user_fixture",
+          "goal": "Prior machine goal",
+          "id": "00000000-0000-4000-8000-000000000005",
+          "meriContext": null,
+          "meriSummary": "Prior machine summary",
+          "ownerUserId": "user_fixture",
+          "targetDate": null,
+          "title": "Prior machine title",
+          "type": "authorization"
+        },
+        "normalizationId": "f8976581-0488-857a-8c02-88d7e34c9ef1"
+      },
+      "namespace": "capiro.objective-strategy.basis:v1",
+      "provenance": [
+        {
+          "acceptanceId": "e7cf8422-1524-8dcd-8d40-df62dcac30da",
+          "acceptanceSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "admissionId": "b8a2937b-ef88-85a0-8725-08f428c8a7f9",
+          "admissionSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "canonicalBindingVersion": 1,
+          "generationJobId": "00000000-0000-4000-8000-000000000033",
+          "generationRequestId": "00000000-0000-4000-8000-000000000034",
+          "normalizationId": "f8976581-0488-857a-8c02-88d7e34c9ef1",
+          "normalizationSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "ownerUserId": "user_fixture",
+          "producerId": "c06b3bc9-bc74-8e02-8f71-bceaa36ac8f3",
+          "producerSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "snapshotSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "strategyVersionId": "00000000-0000-4000-8000-000000000035"
+        }
+      ],
+      "schemaVersion": 1,
+      "snapshot": {
+        "meta": {
+          "clientId": "00000000-0000-4000-8000-000000000003",
+          "createdAt": "2026-10-15T12:00:00.000Z",
+          "createdByUserId": "user_fixture",
+          "goal": "Human current goal",
+          "id": "00000000-0000-4000-8000-000000000005",
+          "meriContext": null,
+          "meriSummary": "Prior machine summary",
+          "ownerUserId": "user_fixture",
+          "targetDate": null,
+          "title": "Human current title",
+          "type": "authorization"
+        },
+        "nodes": [
+          {
+            "createdAt": "2026-10-15T12:00:00.000Z",
+            "createdByUserId": "user_fixture",
+            "dependsOnIds": [],
+            "endsOn": null,
+            "id": "00000000-0000-4000-8000-00000000003c",
+            "kind": "action",
+            "meriAuthored": true,
+            "note": null,
+            "openEnded": true,
+            "ownerUserId": "user_fixture",
+            "startsOn": "2026-10-16",
+            "status": "planned",
+            "subject": "Exact subject",
+            "title": "Human edited machine title"
+          },
+          {
+            "createdAt": "2026-10-15T12:00:00.000Z",
+            "createdByUserId": "user_human",
+            "dependsOnIds": [],
+            "endsOn": null,
+            "id": "00000000-0000-4000-8000-00000000003d",
+            "kind": "action",
+            "meriAuthored": false,
+            "note": null,
+            "openEnded": true,
+            "ownerUserId": "user_fixture",
+            "startsOn": "2026-10-16",
+            "status": "planned",
+            "subject": "Exact subject",
+            "title": "Human-only node"
+          }
+        ]
+      },
+      "snapshotSha256": "7c2c2a35e8f9cc0ccf8992656d8eb47d9e72f2b1dbe14dfb596e80607822a593",
+      "sourceAdmissionSha256": "a3ed065e9e7a20b86b2e782934d04904ae3573f28f67a319e6802781bfb85033",
+      "sourceIndex": [
+        {
+          "archived": true,
+          "lastMachine": {
+            "node": {
+              "createdAt": "2026-10-15T12:00:00.000Z",
+              "createdByUserId": "user_fixture",
+              "dependsOnIds": [],
+              "endsOn": null,
+              "id": "00000000-0000-4000-8000-00000000003e",
+              "kind": "action",
+              "meriAuthored": true,
+              "note": null,
+              "openEnded": true,
+              "ownerUserId": "user_fixture",
+              "startsOn": "2026-10-16",
+              "status": "planned",
+              "subject": "Exact subject",
+              "title": "Archived prior machine node"
+            },
+            "normalizationId": "f8976581-0488-857a-8c02-88d7e34c9ef1"
+          },
+          "nodeId": "00000000-0000-4000-8000-00000000003e",
+          "sourceNodeKey": "archived_step"
+        },
+        {
+          "archived": false,
+          "lastMachine": {
+            "node": {
+              "createdAt": "2026-10-15T12:00:00.000Z",
+              "createdByUserId": "user_fixture",
+              "dependsOnIds": [],
+              "endsOn": null,
+              "id": "00000000-0000-4000-8000-00000000003c",
+              "kind": "action",
+              "meriAuthored": true,
+              "note": null,
+              "openEnded": true,
+              "ownerUserId": "user_fixture",
+              "startsOn": "2026-10-16",
+              "status": "planned",
+              "subject": "Exact subject",
+              "title": "Original machine title"
+            },
+            "normalizationId": "f8976581-0488-857a-8c02-88d7e34c9ef1"
+          },
+          "nodeId": "00000000-0000-4000-8000-00000000003c",
+          "sourceNodeKey": "machine_step"
+        }
+      ],
+      "sourceIndexSha256": "146353db2c06e4ed5c77ba3da3cb744cd9580d49d26b05810222516e9f9f3ad5",
+      "strategyId": "00000000-0000-4000-8000-000000000005"
+    },
+    "basisSha256": "c0010fc72b29fb2f6a9a37cca010a8714fc8177af40e2d8cd6f615714123d23f",
+    "requestedAtMs": 1792130401000,
+    "originalExpiresAtMs": 1792131301000,
+    "input": {
+      "typeHint": "authorization",
+      "goal": "  Original queued goal\n",
+      "meriContext": null,
+      "ownerUserId": null,
+      "targetDate": "2028-02-29",
+      "attachmentIds": []
+    },
+    "inputSha256": "8d7d314b78218c40027b660920d056e598bf0e58f08a1912d004c4e7fa9bc44e"
+  },
+  "requestSha256": "e8a1d42f5eff01fa4ab78b1f21565b9d0de87f094cfd3b9e729e3b728cae1730",
+  "executionContext": {
+    "schemaVersion": 1,
+    "prompt": "Actual governed prompt\nHistorical accepted recommendation remains a recommendation.\n",
+    "promptSha256": "466a18c9fc620db7d7c7d95244b94ec6fb961fac1895a9aa5485324ed1927061",
+    "ownerRefs": [
+      {
+        "ownerRef": "owner:fixture",
+        "clerkUserId": "user_fixture"
+      }
+    ],
+    "contextPacketId": "00000000-0000-4000-8000-000000000014"
+  }
+}

@@ -5,6 +5,22 @@ import {GetBucketVersioningCommand,GetObjectCommand,PutObjectCommand} from './s3
 import {v,own,data,same,sha,storageMethod,storageLifetime,configuration,fail} from './boundary.mjs';
 import {createS3ArtifactObjects} from './s3-objects.mjs';
 const retire=body=>{try{if(body instanceof Readable)body.destroy();else if(body instanceof ReadableStream)Promise.resolve(body.cancel()).catch(()=>{});}catch{}};
+/** The same bounded native decoder serves a known tenant and canonical startup inventory. */
+export async function readS3ConditionalDocument({send,target,tenantSha256,namespace,kmsKeyId,maxIndexBytes,parse,errorPrefix,empty},life,versionId){
+ const corrupt=()=>fail(errorPrefix+'_CORRUPT');
+ const native=value=>{if(typeof value!=='string'||!value||value==='null'||!value.isWellFormed()||Buffer.byteLength(value)>1024)fail('ARTIFACT_S3_VERSION');return value;};
+ let body;
+ try{
+  let response;try{response=await life.run(async signal=>{const r=await send(new GetObjectCommand({...target,...(versionId===undefined?{}:{VersionId:versionId}),ChecksumMode:'ENABLED'}),{abortSignal:signal});body=r.Body;try{life.check();return r;}catch(error){retire(body);throw error;}});}
+  catch(error){if(empty&&versionId===undefined&&error?.name==='NoSuchKey'&&error?.$metadata?.httpStatusCode===404&&error.DeleteMarker!==true&&error.$response?.headers?.['x-amz-delete-marker']!=='true')return {value:parse(empty()),etag:null,versionId:null};throw error;}
+  const id=native(response.VersionId),length=response.ContentLength,meta=response.Metadata,etag=response.ETag;
+  if(typeof etag!=='string'||!etag||etag.length>2048||/[\r\n]/u.test(etag)||versionId!==undefined&&id!==versionId||response.DeleteMarker===true||!Number.isSafeInteger(length)||length<1||length>maxIndexBytes||response.ServerSideEncryption!=='aws:kms'||response.SSEKMSKeyId!==kmsKeyId||response.ChecksumType!=='FULL_OBJECT'||meta?.namespace!==namespace||meta?.tenantsha256!==tenantSha256||typeof meta?.contentsha256!=='string'||!/^[a-f0-9]{64}$/u.test(meta.contentsha256)||response.ChecksumSHA256!==Buffer.from(meta.contentsha256,'hex').toString('base64'))corrupt();
+  if(!(body instanceof Readable)&&!(body instanceof ReadableStream))fail('ARTIFACT_S3_BODY');const chunks=[];let count=0;const iterator=body[Symbol.asyncIterator]();
+  try{while(true){const part=await life.run(()=>iterator.next());if(part.done)break;if(!(part.value instanceof Uint8Array)||(count+=part.value.byteLength)>length)fail('ARTIFACT_S3_BODY_LIMIT');chunks.push(Buffer.from(part.value));}}
+  finally{try{Promise.resolve(iterator.return?.()).catch(()=>{});}catch{}}
+  const bytes=Buffer.concat(chunks);if(count!==length||sha(bytes)!==meta.contentsha256)corrupt();return {value:parse(JSON.parse(bytes.toString('utf8'))),etag,versionId:id};
+ }finally{retire(body);}
+}
 export function createS3ConditionalDocument(options){
  const {client,bucket,prefix,expectedBucketOwner,kmsKeyId,tenantId,namespace,purpose,empty,parse,now,enabled=false,maxRequestMs=15000,maxIndexBytes=8388608,errorPrefix}=own(options,
   ['client','bucket','prefix','expectedBucketOwner','kmsKeyId','tenantId','namespace','purpose','empty','parse','now','errorPrefix'],['enabled','maxRequestMs','maxIndexBytes']);
@@ -13,18 +29,7 @@ export function createS3ConditionalDocument(options){
  const send=storageMethod(client,'send'),tenantSha256=v.hash(tenantId),target={Bucket:bucket,Key:`${prefix}/${purpose}/${tenantSha256}/index.json`,ExpectedBucketOwner:expectedBucketOwner};
  const corrupt=()=>fail(errorPrefix+'_CORRUPT');
  const native=value=>{if(typeof value!=='string'||!value||value==='null'||!value.isWellFormed()||Buffer.byteLength(value)>1024)fail('ARTIFACT_S3_VERSION');return value;};
- async function read(life,versionId){let response,body;
-  try{
-   try{response=await life.run(async signal=>{const r=await send(new GetObjectCommand({...target,...(versionId===undefined?{}:{VersionId:versionId}),ChecksumMode:'ENABLED'}),{abortSignal:signal});body=r.Body;try{life.check();return r;}catch(error){retire(body);throw error;}});}
-   catch(error){if(versionId===undefined&&error?.name==='NoSuchKey'&&error?.$metadata?.httpStatusCode===404&&error.DeleteMarker!==true&&error.$response?.headers?.['x-amz-delete-marker']!=='true')return {value:parse(empty()),etag:null,versionId:null};throw error;}
-   const id=native(response.VersionId),length=response.ContentLength,meta=response.Metadata,etag=response.ETag;
-   if(typeof etag!=='string'||!etag||etag.length>2048||/[\r\n]/u.test(etag)||versionId!==undefined&&id!==versionId||response.DeleteMarker===true||!Number.isSafeInteger(length)||length<1||length>maxIndexBytes||response.ServerSideEncryption!=='aws:kms'||response.SSEKMSKeyId!==kmsKeyId||response.ChecksumType!=='FULL_OBJECT'||meta?.namespace!==namespace||meta?.tenantsha256!==tenantSha256||typeof meta?.contentsha256!=='string'||!/^[a-f0-9]{64}$/u.test(meta.contentsha256)||response.ChecksumSHA256!==Buffer.from(meta.contentsha256,'hex').toString('base64'))corrupt();
-   if(!(body instanceof Readable)&&!(body instanceof ReadableStream))fail('ARTIFACT_S3_BODY');const chunks=[];let count=0;const iterator=body[Symbol.asyncIterator]();
-   try{while(true){const part=await life.run(()=>iterator.next());if(part.done)break;if(!(part.value instanceof Uint8Array)||(count+=part.value.byteLength)>length)fail('ARTIFACT_S3_BODY_LIMIT');chunks.push(Buffer.from(part.value));}}
-   finally{try{Promise.resolve(iterator.return?.()).catch(()=>{});}catch{}}
-   const bytes=Buffer.concat(chunks);if(count!==length||sha(bytes)!==meta.contentsha256)corrupt();return {value:parse(JSON.parse(bytes.toString('utf8'))),etag,versionId:id};
-  }finally{retire(body);}
- }
+ const read=(life,versionId)=>readS3ConditionalDocument({send,target,tenantSha256,namespace,kmsKeyId,maxIndexBytes,parse,errorPrefix,empty},life,versionId);
  async function operation(signal,fn){if(!enabled)fail(errorPrefix+'_DISABLED');const life=storageLifetime({now,maxRequestMs},signal);
   try{const versioning=await life.run(signal=>send(new GetBucketVersioningCommand({Bucket:bucket,ExpectedBucketOwner:expectedBucketOwner}),{abortSignal:signal}));if(versioning.Status!=='Enabled')fail('ARTIFACT_S3_VERSIONING_REQUIRED');const result=await fn(life);life.check();return data(result);}finally{life.close();}}
  async function write(life,current,value){const next=parse(value),bytes=Buffer.from(JSON.stringify(next));if(bytes.length>maxIndexBytes)fail(errorPrefix+'_LIMIT');const digest=sha(bytes),checksum=Buffer.from(digest,'hex').toString('base64');let response;

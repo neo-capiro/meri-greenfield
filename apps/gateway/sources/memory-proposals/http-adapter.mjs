@@ -15,9 +15,9 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(value);
 
 export function createMemoryProposalHttpAdapter(options){
- const {origin,getCredentials,fetchImpl=globalThis.fetch,now,maxResponseBytes,maxRequestMs}=ownFields(options,
-  ['origin','getCredentials','now','maxResponseBytes','maxRequestMs'],['fetchImpl']);
- if(typeof origin!=='string'||typeof getCredentials!=='function'||typeof fetchImpl!=='function'||typeof now!=='function'||
+ const {origin,getCredentials,readSource,fetchImpl=globalThis.fetch,now,maxResponseBytes,maxRequestMs}=ownFields(options,
+  ['origin','now','maxResponseBytes','maxRequestMs'],['getCredentials','readSource','fetchImpl']);
+ if(typeof origin!=='string'||(readSource===undefined?typeof getCredentials!=='function':typeof readSource!=='function'||getCredentials!==undefined)||typeof fetchImpl!=='function'||typeof now!=='function'||
     !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16*1024*1024||
     !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3600000)deny('GATEWAY_CONFIGURATION');
  let endpoint;
@@ -42,12 +42,18 @@ export function createMemoryProposalHttpAdapter(options){
     policyRevision:context.authority.policyRevision,sourceIds:context.authority.sourceIds,
     invocationId:context.invocationId});
    const {input:ignoredInput,...echo}=pins;
-   const credentials=frozenData(await lifetime.run(signal=>{
+   let page;
+      if(readSource){
+        page=frozenData(await lifetime.run(signal=>{active();return readSource({operation:operation.id,input:protocol,context:frozenData(JSON.parse(correlationBytes)),deadlineMs:cutoff,signal});}));
+        active();
+        if(Buffer.byteLength(JSON.stringify(page),'utf8')>Math.min(maxResponseBytes,context.authority.maxOutputBytes))deny('RESOURCE_LIMIT');
+      }else{
+      const credentials=frozenData(await lifetime.run(signal=>{
     active();return getCredentials(Object.freeze({...pins,deadlineMs:cutoff,target,correlationSha256,signal}));
    }));
    ownFields(credentials,[...Object.keys(echo),'authorizationScheme','target','correlationSha256',
     'bearerToken','serviceSecret','expiresAtMs']);
-   if(credentials.authorizationScheme!=='CapiroMeriRead'||!same(credentials.target,target)||
+   if(credentials.authorizationScheme!=='Bearer'||!same(credentials.target,target)||
       credentials.correlationSha256!==correlationSha256||
       Object.keys(echo).some(key=>!same(credentials[key],echo[key]))||
       !Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=active()||
@@ -57,7 +63,7 @@ export function createMemoryProposalHttpAdapter(options){
    const response=await lifetime.run(async signal=>{
     active();
     const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
-     headers:{authorization:`CapiroMeriRead ${credentials.bearerToken}`,
+     headers:{authorization:`Bearer ${credentials.bearerToken}`,
       'x-internal-service-secret':credentials.serviceSecret,'content-type':'application/json',
       accept:'application/json','accept-encoding':'identity','x-meri-deadline-at':String(cutoff),
       'x-meri-read-correlation':Buffer.from(correlationBytes,'utf8').toString('base64url')},body});
@@ -65,8 +71,9 @@ export function createMemoryProposalHttpAdapter(options){
     try{active();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
    });
    const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
-   const page=frozenData(await readJsonResponse(response,{lifetime:bounded,
-    maxResponseBytes:Math.min(maxResponseBytes,context.authority.claims.budgets.maxOutputBytes)}));
+   page=frozenData(await readJsonResponse(response,{lifetime:bounded,
+    maxResponseBytes:Math.min(maxResponseBytes,context.authority.maxOutputBytes)}));
+      }
    validateShape('MemoryProposalReadResult',page);
    active();return page;
   }catch(error){throw safeFailure(error);}

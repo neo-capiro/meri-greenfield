@@ -14,10 +14,10 @@ import {createHash} from 'node:crypto';
 import {resolve,join,relative,isAbsolute} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {ROLES,SOURCE_ROOT,runnerSha256AtCommit} from './render-material.mjs';
+import {ROLES,SOURCE_ROOT,parseDeploymentInputs,parseRuntimeValues} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_SERVICES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS} from './stage3-bindings.mjs';
 
-export const SCHEMA='meri.first-chat-ship-packet/2';
+export const SCHEMA='meri.first-chat-ship-packet/3';
 const STAGE3='infra/product-preview/first-chat/stage3-deploy.mjs';
 const MIGRATE='infra/product-preview/first-chat-migrate.mjs';
 const commit=/^[a-f0-9]{40}$/u;
@@ -27,34 +27,28 @@ const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const digestOf=uri=>/@sha256:([a-f0-9]{64})$/u.exec(String(uri))?.[1]??refuse(`image ${String(uri).slice(0,120)} is not pinned by digest`);
 const cluster=deployment=>/cluster\/([A-Za-z0-9_-]+)$/u.exec(deployment.clusterArn)?.[1]??refuse('deployment.clusterArn');
 
-// One reviewed topology transition, not a general configuration-drift exception.
-const NATIVE_RETIRED_PATHS=Object.freeze([
- 'database.roles.owner','foundation.OwnerExecutionRoleArn','foundation.OwnerTaskRoleArn','foundation.ProxyExecutionRoleArn','foundation.ProxyTaskRoleArn',
- 'model','names.owner','names.proxy','origins.ownerOrigin','origins.proxyUrl',
- 'pinsDer.owner-bridge-ca','pinsDer.owner-server','pinsDer.proxy-owner-client','pinsDer.proxy-server',
- 'pinsPem.owner-bridge-ca','pinsPem.owner-server','pinsPem.proxy-owner-client','pinsPem.proxy-server',
- 'proxyClientSubject','secrets.owner/material','secrets.proxy/material'
-]);
+// Record the complete configuration delta for review. This offline packet is not
+// deployment authorization; actual infrastructure changes still require review.
 function configurationChange(deployment,previousDeployment){
+ if(!previousDeployment||typeof previousDeployment!=='object'||Array.isArray(previousDeployment)||
+  previousDeployment.schemaVersion!==1||!previousDeployment.images||!commit.test(previousDeployment.images.nodeRuntimeSourceCommit??''))
+  refuse('previous deployment inputs must identify the prior release');
+ digestOf(previousDeployment.images.nodeRuntime);
  const {images:now,...current}=deployment,{images:before,...previous}=previousDeployment??{};
- if(!before)refuse('previous deployment inputs must differ from these only in images or the exact first native SDK transition');
- let change={kind:'image-only',removed:[],added:[]};
- if(canonicalSha256(current)!==canonicalSha256(previous)){
-  const a=structuredClone(current),b=structuredClone(previous);
-  const denied=()=>refuse('previous deployment inputs must differ from these only in images or the exact first native SDK transition');
-  for(const path of NATIVE_RETIRED_PATHS){
-   const keys=path.split('.'),key=keys.pop(),parent=o=>keys.reduce((v,k)=>v?.[k],o);
-   const old=parent(b),next=parent(a);
-   if(!old||!Object.hasOwn(old,key)||next&&Object.hasOwn(next,key))denied();
-   delete old[key];
+ const removed=[],added=[],changed=[],object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+ const walk=(a,b,path='')=>{
+  for(const key of [...new Set([...Object.keys(a),...Object.keys(b)])].sort()){
+   const next=path?`${path}.${key}`:key;
+   if(!Object.hasOwn(a,key))removed.push(next);
+   else if(!Object.hasOwn(b,key))added.push(next);
+   else if(object(a[key])&&object(b[key]))walk(a[key],b[key],next);
+   else if(canonicalSha256(a[key])!==canonicalSha256(b[key]))changed.push(next);
   }
-  if(Object.hasOwn(b.foundation??{},'RunnerTaskRoleArn')||a.foundation?.RunnerTaskRoleArn!=='arn:aws:iam::967807252336:role/MeriPreview-runner-task')denied();
-  delete a.foundation.RunnerTaskRoleArn;
-  if(canonicalSha256(a)!==canonicalSha256(b))denied();
-  change={kind:'first-native-sdk',removed:[...NATIVE_RETIRED_PATHS],added:['foundation.RunnerTaskRoleArn']};
- }
- if(canonicalSha256(now)===canonicalSha256(before))refuse('the images equal the previous release: nothing to ship');
- return change;
+ };
+ walk(current,previous);
+ const differs=removed.length+added.length+changed.length>0;
+ if(!differs&&canonicalSha256(now)===canonicalSha256(before))refuse('the inputs equal the previous release: nothing to ship');
+ return {kind:differs?'configuration-and-images':'image-only',previousSha256:canonicalSha256(previous),currentSha256:canonicalSha256(current),removed,added,changed};
 }
 
 /** The CLI records its own clean operator checkout, independently of the image source. */
@@ -86,9 +80,14 @@ export function migrationDelta(previous,current){
 }
 
 /** Cross-checks the reviewed inputs; any disagreement refuses before a packet exists. */
-export function checkInputs({deployment,previousDeployment,runtime,receipt,receiptSha256,imageScans,stage3,upload,measuredRunnerSha256}){
+export function checkInputs({deployment,previousDeployment,runtime,receipt,receiptSha256,imageScans,stage3,upload}){
  const images=deployment?.images;
  if(deployment?.schemaVersion!==1||!images)refuse('deployment inputs');
+ try{parseDeploymentInputs(deployment);parseRuntimeValues(runtime);}catch{refuse('current deployment or runtime inputs do not match the renderer');}
+ const ac=deployment.agentcore;
+ if(!ac||Object.keys(ac).sort().join(',')!=='qualifier,runtimeArn,runtimeVersion'||
+  !/^arn:aws:bedrock-agentcore:us-east-1:967807252336:runtime\/[A-Za-z][A-Za-z0-9_]*-[A-Za-z0-9]{10}$/u.test(ac.runtimeArn??'')||
+  !/^[1-9][0-9]{0,4}$/u.test(ac.runtimeVersion??'')||ac.qualifier!=='preview')refuse('deployment.agentcore selection');
  // Root authenticates S3/CodeBuild provenance and fresh digest-bound scans before release.
  // This offline packet binds the reviewed result bytes; local JSON is not an AWS attestation.
  if(!receipt||typeof receipt!=='object'||Array.isArray(receipt)||typeof receipt.sourceCommit!=='string'||!commit.test(receipt.sourceCommit)||
@@ -102,9 +101,6 @@ export function checkInputs({deployment,previousDeployment,runtime,receipt,recei
  if(!counts||typeof counts!=='object'||Array.isArray(counts)||!Object.values(counts).every(n=>Number.isSafeInteger(n)&&n>=0))refuse('image scan findingSeverityCounts');
  for(const severity of ['CRITICAL','HIGH'])if((counts[severity]??0)!==0)refuse(`image scan has ${severity} findings`);
  if(typeof receiptSha256!=='string'||!hex64.test(receiptSha256)||imageScans?.nodeRuntime!==receiptSha256)refuse('image-scans.nodeRuntime must be the sha256 of the image build result file');
- const runner=runtime?.preparationIntent?.runnerSha256;
- if(typeof measuredRunnerSha256!=='string'||!hex64.test(measuredRunnerSha256))refuse('the node runtime source commit is not available locally: fetch it');
- if(runner!==measuredRunnerSha256)refuse('runnerSha256 differs between runtime values and conversation-runner.mjs at the image source commit');
  if(stage3?.schemaVersion!==1)refuse('stage3.json');
  for(const [role,family] of Object.entries(STAGE3_FAMILIES))if(!new RegExp(`task-definition/${family}:[1-9][0-9]*$`,'u').test(stage3.taskDefinitions?.[role]??''))refuse(`stage3 task definition for ${role}`);
  if(JSON.stringify(upload?.roles?.map(r=>r.role))!==JSON.stringify(ROLES))refuse('upload plan roles');
@@ -122,7 +118,12 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  const wait=(...roles)=>command(['aws','ecs','wait','services-stable','--region','us-east-1','--cluster',c,'--services',...roles.map(r=>S[r])]);
  const steps=[{id:'readback',title:'Revisions unchanged since stage3.json (any registration in between forces a new render)',
   commands:fam.flatMap(family=>['ACTIVE','INACTIVE'].map(status=>command(['aws','ecs','list-task-definitions','--region','us-east-1','--family-prefix',family,'--status',status,'--sort','DESC','--max-items','1','--query','taskDefinitionArns[0]','--output','text']))),
-  gate:'the highest ACTIVE/INACTIVE revision of every family is one below stage3.json taskDefinitions (an unchanged runner keeps its revision)'}];
+  gate:'the highest ACTIVE/INACTIVE revision of every family is one below stage3.json taskDefinitions'}];
+ const ac=deployment.agentcore,id=ac.runtimeArn.split('/').at(-1);
+ steps.push({id:'agentcore',title:'Verify the qualified AgentCore version and preview endpoint before control cutover',
+  commands:[command(['aws','bedrock-agentcore-control','get-agent-runtime','--region','us-east-1','--agent-runtime-id',id,'--agent-runtime-version',ac.runtimeVersion],{stdout:W('agentcore-runtime.json')}),
+   command(['aws','bedrock-agentcore-control','get-agent-runtime-endpoint','--region','us-east-1','--agent-runtime-id',id,'--endpoint-name',ac.qualifier],{stdout:W('agentcore-endpoint.json')})],
+  gate:`both readbacks READY for ${ac.runtimeArn}; runtime version and endpoint liveVersion/targetVersion equal ${ac.runtimeVersion}; exact reviewed image digest, V1 platform, MMDSv2, IAM, network and lifecycle settings; native SDK/private-control invocation and restoration gates passed`});
  steps.push({id:'migrate',title:'Verify the full migration ledger and apply any pending stages before uploads or stack updates',
   commands:[command(['node',MIGRATE,'plan'],{note:'offline: confirms all planned files and hashes; the source delta does not establish applied database state'}),
    ...migrations.stages.map(stage=>command(['node',MIGRATE,stage],{note:'run through the existing d2-migrate owner only after snapshot, isolated rehearsal and actual ledger verification; if earlier stages are pending, complete those first in plan order'}))],
@@ -137,9 +138,7 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
    command(['node',STAGE3,'bindings','--deployment-inputs','<deployment-inputs.json>','--foundation-outputs',W('foundation-live.json'),'--private-edge-outputs',W('private-edge-outputs.json'),
     '--rendered',W('rendered'),'--secret-versions',W('secret-versions.tsv'),'--image-scans','<image-scans.json>','--live-app-template',W('app.live.template.json'),'--out',W('bindings')])],
   gate:'STAGE3_BINDINGS_WRITTEN; rerun this packet with --bindings to pin the template hashes'});
- const gates={issuer:{wait:wait('temporal-issuer'),checks:[logs(f.IssuerLogGroupName,'"runtime.listening"')],
-   gate:'issuer runtime.listening on the new revision; from here the running control and worker are refused until the app update lands: continue immediately'},
-  app:{wait:wait('control','temporal-worker'),checks:[logs(f.ControlLogGroupName,'"runtime.listening"'),logs(f.WorkerLogGroupName,'"runtime.listening"'),
+ const gates={app:{wait:wait('control','temporal-worker'),checks:[logs(f.ControlLogGroupName,'"runtime.listening"'),logs(f.WorkerLogGroupName,'"runtime.listening"'),
    command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',deployment.privateEdge.controlPrivateTargetGroupArn]),
    command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',f.ControlTargetGroupArn])],
    gate:'exactly one control task, worker 1/1/0, both runtime.listening, both target groups healthy; no RUNTIME_UNAVAILABLE, RUNTIME_CONFIGURATION, STATIC_INIT_* or *_REFUSED; tasks alive after 200 s'}};
@@ -154,8 +153,8 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  }
  steps.push({id:'verify',title:'Every deployed task definition is the rendered revision',
   commands:[...STAGE3_DEPLOY_ORDER.map(key=>command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name',STAGE3_STACKS[key],'--query','Stacks[0].Outputs'],{stdout:W(`${key}.outputs.json`)})),
-   command(['node',STAGE3,'verify-outputs','--bindings',W('bindings'),'--app',W('app.outputs.json'),'--issuer',W('issuer.outputs.json')])],
-  gate:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER for all four task definitions; a mismatch means re-render, never patch'});
+   command(['node',STAGE3,'verify-outputs','--bindings',W('bindings'),'--app',W('app.outputs.json')])],
+  gate:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER for both task definitions; a mismatch means re-render, never patch'});
  return steps;
 }
 
@@ -173,7 +172,7 @@ export function buildShipPacket(i){
  const packet={schema:SCHEMA,phase:bindings?'pre-deploy':'pre-upload',
   pins:{sourceCommit:deployment.images.nodeRuntimeSourceCommit,previousSourceCommit:previousDeployment.images.nodeRuntimeSourceCommit,
    operatorSource:{commit:i.operatorSource.commit,tree:i.operatorSource.tree},images:structuredClone(deployment.images),
-   runnerSha256:runtime.preparationIntent.runnerSha256,versions:structuredClone(runtime.versions),
+   agentcore:structuredClone(deployment.agentcore),versions:structuredClone(runtime.versions),
    label:upload.label,taskDefinitions:structuredClone(stage3.taskDefinitions),inputs:structuredClone(hashes),
    ...(bindings?{templates:bindings.templates}:{})},
   evidence:{sourceCommit:receipt.sourceCommit,sourceVersion:receipt.sourceVersion,imageDigest:receipt.imageDigest,platform:receipt.platform,
@@ -184,8 +183,9 @@ export function buildShipPacket(i){
   configuration,
   prerequisites:[
    'root authenticates the frozen previous inputs against actual release evidence; if the original archive is unavailable, label them reconstructed previous state and retain reviewed live readbacks, hashes and field lineage separately; never rewrite historical inputs to pass this comparison',
-   ...(configuration.kind==='first-native-sdk'?['before render, apply the reviewed additive foundation change: the canonical runner task role and Bedrock permissions, control PassRole and runner egress; retain old model resources and all six owner/proxy discovery, log and security-group outputs until replacement acceptance, then take fresh foundation readbacks']:[]),
-   'Temporal is a separate prerequisite: qualify its native ARM image and source-based binding, preserve the selected issuer CA and existing TLS/JWKS controls, and review its actual live service counts; the stopped DesiredCount0 template is not a live update',
+   'review every recorded configuration change against the actual live templates; qualify the pinned AgentCore runtime and preview endpoint before control cutover; retain the exact previous topology only for the bounded rollback window',
+   'Temporal is a separate prerequisite: qualify its native ARM image and source-based binding, preserve pinned native mTLS CAs and the default authorizer with the verified certificate role mapper, and review its actual live service counts; the stopped DesiredCount0 template is not a live update',
+   'schedule-worker remains a separate required deployment: its native TLS config/material supports meri-temporal-schedule, but these two app services do not deploy or qualify scheduled/background outcomes',
    'complete required review and gates, verify the clone snapshot and full ledger, then hold the preview deploy lock through the coordinated update; root performs live browser acceptance before retiring old resources'
   ],
   migrations,
@@ -196,20 +196,18 @@ export function buildShipPacket(i){
    {note:'after deployment health, root runs the required preview acceptance within the authorized Wave2 scope and records exact source/image pins'}],
   rollback:{rule:'forward redeploy: the rendered material pins exact task-definition revisions and a failed or rolled-back update burns them, so UpdateService to an old revision cannot roll back',
    images:structuredClone(previousDeployment.images),
-   steps:configuration.kind==='first-native-sdk'?
+   steps:configuration.kind!=='image-only'?
     ['old images alone cannot roll back this topology transition; preserve reviewed previous configuration, compatible historical renderer and model resources until acceptance',
-     'review a separate rollback against actual live topology and applied migrations, using fresh revisions and material; never feed old model-dependent images into the native renderer',
-     'after old model resources retire, use only a separately proven native-compatible forward recovery']:
-    ['readback revisions','verify rollback source compatibility with applied migrations and the current service topology','render current roles with compatible rollback images and runtime values','upload under a NEW label','bindings','issuer, app with the gates above','verify-outputs']},
-  cleanup:['deregister any probe task definition used for diagnosis','retain scrubbed command/upload receipts; remove scratch private PKI, secret-value files and rendered bundles on success or failure','prune obsolete version labels under the existing secret retention policy',
+     'review a separate rollback against actual live topology and applied migrations, using fresh revisions and material; previous images require their compatible renderer and runtime configuration',
+     'after previous hosting resources retire, use only a separately proven AgentCore-compatible forward recovery']:
+    ['readback revisions','verify rollback source compatibility with applied migrations and the current service topology','render current roles with compatible rollback images and runtime values','upload under a NEW label','bindings','app with the gates above','verify-outputs']},
+  cleanup:['after replacement acceptance, retire the old hosting and Temporal issuer resources and verify no active caller remains; account explicitly for retained KMS signing keys, log groups and historical secret versions','retain scrubbed command/upload receipts; remove scratch private PKI, secret-value files and rendered bundles on success or failure','prune obsolete version labels under the existing secret retention policy',
    'CloudFormation deregisters the replaced task-definition revisions'],
-  risks:['the static candidate grant and deadline expire 15 minutes after render (real chats use dynamic runs)',
-   'static material expiry and certificate validity must cover startup; render immediately before deployment',
+  risks:['static material expiry and certificate validity must cover startup; render immediately before deployment',
    'compatible image replacement: admitted conversations can continue from the latest published checkpoint when SDK, CLI, contracts and checkpoint format are unchanged; fresh authentication and owner, client and policy checks still apply',
    'incompatible SDK or format: changed SDK/CLI refuses checkpoint continuation with NEXT_TURN_SDK_CHANGED; changed contracts/checkpoint format refuses with NEXT_TURN_FORMAT_CHANGED; this packet neither migrates nor seeds an incompatible session',
-   'unfinished or in-flight work: fresh issuance can re-prepare an unstarted original, but a started run is never rebound; a successor waits for terminal state and proven retirement/revocation (or proved no-authority), using the latest published checkpoint or a fresh SDK session if none exists, never partial work',
+   'unfinished or in-flight work: a started run is never rebound; a successor waits for a durable terminal outcome and uses the latest published native session and workspace files, never partial capture',
    'continuity statements describe source behavior, not live qualification: restart, reconnect and continuation evidence for these exact source/image/environment pins remains required',
-   'between the issuer and app updates control and the worker are refused (RUNTIME_UNAVAILABLE): run the app update immediately',
    'worker AZ rebalancing stays ENABLED (only control changes); a first worker task can be refused while the old one overlaps',
    'service health alone does not establish chat or Core data access; complete the live acceptance before announcing readiness']};
  return {...packet,packetSha256:canonicalSha256(packet)};
@@ -235,21 +233,21 @@ const USAGE=`Usage: node infra/product-preview/first-chat/ship-packet.mjs --depl
 Run from a clean operator checkout; its commit/tree are recorded separately from the image source.
 Root must authenticate the source/S3/CodeBuild result and obtain fresh digest-bound scans before release; this offline packet checks local pins only.`;
 const json=async path=>JSON.parse(await readFile(path,'utf8'));
-const gitShow=(rev,path)=>execFileSync('git',['-C',SOURCE_ROOT,'show',`${rev}:${path}`],{encoding:'utf8',maxBuffer:4*1024*1024,stdio:['ignore','pipe','ignore']});
+const gitShow=(sourceRoot,rev,path)=>execFileSync('git',['-C',sourceRoot,'show',`${rev}:${path}`],{encoding:'utf8',maxBuffer:4*1024*1024,stdio:['ignore','pipe','ignore']});
 
-export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.write(t),err=t=>process.stderr.write(t)}={}){
+export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.write(t),err=t=>process.stderr.write(t),sourceRoot=SOURCE_ROOT}={}){
  if(!argv.length||argv[0]==='--help'){out(USAGE+'\n');return argv.length?0:2;}
  const a={};
  for(let i=0;i<argv.length;i+=2){if(!argv[i].startsWith('--')||argv[i+1]===undefined){err(USAGE+'\n');return 2;}a[argv[i].slice(2)]=argv[i+1];}
  try{
   for(const key of ['deployment-inputs','previous-deployment-inputs','runtime','node-receipt','image-scans','stage3','upload-plan','work','ceiling-usd','out'])if(!a[key])refuse(`--${key} is required`);
-  const operatorSource=readOperatorSource();
+  const operatorSource=readOperatorSource(sourceRoot);
   const files=Object.fromEntries(await Promise.all(['deployment-inputs','previous-deployment-inputs','runtime','node-receipt','image-scans','stage3','upload-plan'].map(async key=>[key,await readFile(a[key])])));
   const parse=key=>JSON.parse(files[key].toString('utf8'));
   const deployment=parse('deployment-inputs'),previousDeployment=parse('previous-deployment-inputs');
   for(const c of [deployment.images?.nodeRuntimeSourceCommit,previousDeployment.images?.nodeRuntimeSourceCommit])if(!commit.test(c??''))refuse('images.nodeRuntimeSourceCommit');
   let previousPlan,currentPlan;
-  try{previousPlan=planEntries(gitShow(previousDeployment.images.nodeRuntimeSourceCommit,MIGRATE));currentPlan=planEntries(gitShow(deployment.images.nodeRuntimeSourceCommit,MIGRATE));}
+  try{previousPlan=planEntries(gitShow(sourceRoot,previousDeployment.images.nodeRuntimeSourceCommit,MIGRATE));currentPlan=planEntries(gitShow(sourceRoot,deployment.images.nodeRuntimeSourceCommit,MIGRATE));}
   catch(error){if(error?.code==='SHIP_PACKET_REFUSED')throw error;refuse('both release commits must be available locally: fetch them');}
   let bindings;
   if(a.bindings){
@@ -259,9 +257,9 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
   }
   const packet=buildShipPacket({deployment,previousDeployment,operatorSource,runtime:parse('runtime'),receipt:parse('node-receipt'),receiptSha256:sha(files['node-receipt']),
    imageScans:parse('image-scans'),stage3:parse('stage3'),upload:parse('upload-plan'),bindings,
-   measuredRunnerSha256:runnerSha256AtCommit(deployment.images.nodeRuntimeSourceCommit),migrations:migrationDelta(previousPlan,currentPlan),
+   migrations:migrationDelta(previousPlan,currentPlan),
    ceilingUsd:Number(a['ceiling-usd']),work:a.work,hashes:Object.fromEntries(Object.entries(files).map(([key,bytes])=>[key,sha(bytes)]))});
-  const dir=resolve(a.out),rel=relative(SOURCE_ROOT,dir);
+  const dir=resolve(a.out),rel=relative(sourceRoot,dir);
   if(!rel||!rel.startsWith('..')&&!isAbsolute(rel))refuse('--out must be outside the repository');
   await mkdir(dir,{recursive:false,mode:0o700});
   await writeFile(join(dir,'ship-packet.json'),JSON.stringify(packet,null,1)+'\n',{flag:'wx'});

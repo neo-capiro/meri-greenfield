@@ -4,11 +4,12 @@ const response=await receiveDocumentResponse('inspect',200,new Uint8Array(),requ
 const exact:DocumentErrorResponse|DocumentInspectionResponse=response;void exact;
 if(!('error'in response)){
   const version:AdmittedDocumentVersion=response.version;
+  if('kind' in response){const path:string=response.version.path;const verified:true=response.integrity.currentBytesVerified;void [path,verified];}else{
   const format:'txt'|'docx'|'xlsx'|'pptx'|'pdf'|'zip'=response.inspection.format;void format;
   if(response.inspection.format==='pptx'){const visual:'pending'=response.inspection.details.visualInspection;void visual;}
   if(response.inspection.format==='pdf'){const render:'pending'=response.inspection.details.renderInspection;void render;}
   if(response.inspection.format==='zip'){const columns:string[]=response.inspection.details.columns;void columns;}
-  const flags:{nativeOpened:false;rendered:false;recalculated:false}={nativeOpened:response.inspection.nativeOpened,rendered:response.inspection.rendered,recalculated:response.inspection.recalculated};void flags;
+  const flags:{nativeOpened:false;rendered:false;recalculated:false}={nativeOpened:response.inspection.nativeOpened,rendered:response.inspection.rendered,recalculated:response.inspection.recalculated};void flags;}
   const file=await receiveDocumentDownload(new Response(),version,{maxBytes:1024});const bytes:Uint8Array<ArrayBuffer>=file.bytes;void bytes;
 }
 const route:'/api/documents/inspect'=documentAccessMetadata.routes.inspect.path;void route;

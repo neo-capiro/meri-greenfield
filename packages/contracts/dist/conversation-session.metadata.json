@@ -1,0 +1,40 @@
+{
+  "packageVersion": "0.1.12",
+  "schemaId": "urn:meri:conversation-session:1.0.0",
+  "sources": [
+    {
+      "path": "session-receipt/schema.mjs",
+      "sha256": "d500dfd7900b4ea3b83a0df3b588a54ba0d3369a460ced291879cbf89a86c1c7",
+      "bytes": 1679
+    },
+    {
+      "path": "session-receipt/validate.mjs",
+      "sha256": "bfa4760cc77c629dddc587a4559b99648483563bdcf685d768718f63b86030b4",
+      "bytes": 522
+    },
+    {
+      "path": "conversation-session/receive.mjs",
+      "sha256": "8322f6e63696f7893df150dcad279455ba83f8f241b6e1e83936e0611228c9d8",
+      "bytes": 1495
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-session.mjs",
+      "sha256": "4a8e95bf8e3ad3ea1f00dc2f1ae692f13f819e1c64c2895849593989b15a74ad",
+      "bytes": 4482
+    }
+  ],
+  "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
+    "conversation-session/receive.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "session-receipt/validate.mjs",
+    "session:validator"
+  ],
+  "browserImports": []
+}

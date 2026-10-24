@@ -29,12 +29,13 @@ const fault=code=>Object.assign(Error(code),{code});
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 
 export function createObjectiveGenerationStartApplication(configuration={}){
- let enabled=false,authenticate,start,windowMs,now=Date.now,maxRequestMs=3000;
+ let enabled=false,authenticate,authorizeJob,start,windowMs,now=Date.now,maxRequestMs=3000;
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
-   const c=own(configuration,['enabled','sessions','dispatcher','windowMs'],['now','maxRequestMs']);
+   const c=own(configuration,['enabled','sessions','dispatcher','windowMs','authorizeJob'],['now','maxRequestMs']);
    authenticate=storageMethod(c.sessions,'authenticateSession');start=storageMethod(c.dispatcher,'start');
+   authorizeJob=c.authorizeJob;if(typeof authorizeJob!=='function')throw fault('CONFIGURATION');
    windowMs=c.windowMs;now=c.now??now;maxRequestMs=c.maxRequestMs??maxRequestMs;
    if(!Number.isSafeInteger(windowMs)||windowMs<60000||windowMs>86400000||typeof now!=='function'||types.isProxy(now)||
       !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw fault('CONFIGURATION');
@@ -59,8 +60,11 @@ export function createObjectiveGenerationStartApplication(configuration={}){
     if(!Number.isSafeInteger(session.checkedAtMs)||session.checkedAtMs<started||session.checkedAtMs>now()||!Number.isSafeInteger(session.expiresAtMs)||session.expiresAtMs<=now())throw fault('SESSION');
     identity=objectiveRunIdentity({tenantId:p?.tenantId,actorId:p?.actorId,generationJobId:body.generationJobId});
    }catch{life.check();return answer('SESSION_REFUSED',401);}
+   // Refuse a foreign job before any source admission, publication or workflow start.
+   const current=await life.run(signal=>authorizeJob({source:{generationJobId:body.generationJobId,binding:identity.binding},signal}));
+   if(current.tenantId!==identity.binding.tenantId||current.actorId!==identity.binding.actorId||current.generationJobId!==body.generationJobId||!Number.isSafeInteger(current.effectExpiresAtMs)||current.effectExpiresAtMs<=now())return answer('OBJECTIVE_GENERATION_REFUSED',403);
    life.check();dispatched=true;
-   await life.run(signal=>start({source:{generationJobId:body.generationJobId,binding:identity.binding,notAfterMs:now()+windowMs},signal,deadlineMs:Math.min(session.expiresAtMs,now()+maxRequestMs)}));
+   await life.run(signal=>start({source:{generationJobId:body.generationJobId,binding:identity.binding,notAfterMs:Math.min(now()+windowMs,current.effectExpiresAtMs)},signal,deadlineMs:Math.min(session.expiresAtMs,now()+maxRequestMs)}));
    life.check();
    return Response.json({state:'requested',generationJobId:body.generationJobId},{status:202,headers});
   }catch{return answer(dispatched?'OBJECTIVE_GENERATION_UNKNOWN':'OBJECTIVE_GENERATION_UNAVAILABLE');}finally{life?.close();}

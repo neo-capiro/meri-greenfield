@@ -18,7 +18,7 @@ export async function generateUserPreferencesContracts({check=false,offline=fals
  const [esbuild,compiler]=offline?[]:builder;
  try{
   const sources=new Map(),record=async path=>{const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});return raw;};
-  const publicSchema=JSON.parse(await record('meri.schema.json')),errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
+  await record('model-selection.mjs');const publicSchema=JSON.parse(await record('meri.schema.json')),errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
   if(!Array.isArray(application.USER_PREFERENCES_ERROR_OUTCOMES))throw Error('Missing canonical user-preferences error outcomes');
   const config={paths:application.USER_PREFERENCES_PATHS,limits:application.USER_PREFERENCES_LIMITS,errorStatuses:application.USER_PREFERENCES_ERROR_STATUSES,errorOutcomes:application.USER_PREFERENCES_ERROR_OUTCOMES,fieldPattern},metadata=createUserPreferencesMetadata(config);
   for(const path of ['generate-user-preferences.mjs',...['README.md','document.mjs','schema.mjs','protocol.mjs','boundary.mjs','receive.mjs','declarations.mjs'].map(name=>'user-preferences-application/'+name),'document-application/boundary.mjs','../../apps/control/product-access/http.mjs','../../apps/control/settings/routes.mjs','../../apps/control/settings/documents.mjs','../../apps/control/settings/user-application/protocol.mjs'])await record(path);

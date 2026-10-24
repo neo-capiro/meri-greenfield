@@ -6,8 +6,8 @@ import {meetingFixture,clientId as meetingClient,endpoints as meetingEndpoints} 
 import {clientEvidenceFixture,clientId as evidenceClient,endpoints as evidenceEndpoints,credentialReceipt} from '../../sources/client-evidence/test/fixtures.mjs';
 import {createIdentityContactsFixture} from '../../sources/identity-contacts/test/fixtures.mjs';
 import {createClientKnowledgeFixture} from '../../sources/client-knowledge/test/fixtures.mjs';
-import {fixture,uuid} from '../../test/fixtures.mjs';
-import {setup as researchFixture} from '../../test/research-evidence-fixtures.mjs';
+import {fixture,uuid} from '../../sources/test/read-fixture.mjs';
+import {setup as researchFixture} from '../../sources/research-portfolio-evidence/test/fixtures.mjs';
 import {nativeScopedPage,id as actionId} from '../../../../docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs';
 import {retainedCase} from './retained-cases.mjs';
 import {billTextCase} from '../../sources/bill-text/test/fixture.mjs';

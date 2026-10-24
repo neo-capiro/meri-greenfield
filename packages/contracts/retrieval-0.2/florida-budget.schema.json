@@ -148,39 +148,10 @@
         "asOf": {
           "type": "string",
           "format": "date-time"
-        },
-        "effectiveScope": {
-          "$ref": "#/$defs/FloridaBudgetScope"
-        },
-        "clientResolution": {
-          "anyOf": [
-            {
-              "type": "null"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "selector": {
-                  "type": "string"
-                },
-                "clientId": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              },
-              "required": [
-                "selector",
-                "clientId"
-              ],
-              "additionalProperties": false
-            }
-          ]
         }
       },
       "required": [
-        "asOf",
-        "effectiveScope",
-        "clientResolution"
+        "asOf"
       ],
       "additionalProperties": false
     },

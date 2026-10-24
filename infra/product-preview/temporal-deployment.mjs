@@ -2,7 +2,7 @@
 import {App,Stack,CfnOutput,BootstraplessSynthesizer,aws_ec2 as ec2,aws_ecs as ecs,aws_servicediscovery as discovery} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 import fixture from '../../apps/control/qualification-temporal/deployment.fixture.json' with {type:'json'};
-import {TEMPORAL_ROLES,TEMPORAL_PORTS,TEMPORAL_ISSUER_PORT,temporalEndpointSecurityGroupIds,validateTemporalPreviewBinding,versionedSecretKey} from './temporal-binding.mjs';
+import {TEMPORAL_ROLES,TEMPORAL_PORTS,temporalEndpointSecurityGroupIds,validateTemporalPreviewBinding,versionedSecretKey} from './temporal-binding.mjs';
 
 const env=(name,value)=>({name,value:String(value)});
 const secret=(name,arn,key)=>({name,valueFrom:versionedSecretKey(arn,key)});
@@ -13,17 +13,14 @@ function security(stack,b,vpc){
  const clients=b.network.clientSecurityGroupIds.map((id,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalClient${i}`,id,{mutable:false}));
  // Deduped: the capiro-dev interface endpoints share one SG, so one rule per distinct group.
  const endpoints=temporalEndpointSecurityGroupIds(b.network).map((id,i)=>ec2.SecurityGroup.fromSecurityGroupId(stack,`temporalEndpoint${i}`,id,{mutable:false}));
- const issuer=ec2.SecurityGroup.fromSecurityGroupId(stack,'temporalIssuer',b.network.issuerSecurityGroupId,{mutable:false});
- // Aurora 5432 and issuer 8445 ingress belong to the foundation stack, keyed on the
- // dbClient and issuerClient marker SGs that every role service also carries.
- // This stack never modifies the shared Aurora SG or the issuer SG.
+ // Aurora ingress belongs to the foundation stack via the database client SG.
+ // This stack never modifies the shared Aurora security group.
  for(const role of TEMPORAL_ROLES){
   const group=groups[role];
   for(const [peer,other] of Object.entries(groups))for(const port of TEMPORAL_PORTS[peer])group.addEgressRule(other,ec2.Port.tcp(port),`Temporal ${peer} RPC or membership`);
   group.addEgressRule(db,ec2.Port.tcp(b.database.port),'dedicated Temporal stores on approved Aurora');
   for(const endpoint of endpoints)group.addEgressRule(endpoint,ec2.Port.tcp(443),'reviewed AWS image/secret/log endpoint');
   group.addEgressRule(ec2.Peer.prefixList(b.network.s3Gateway.prefixListId),ec2.Port.tcp(443),'S3 gateway for private ECR image layers');
-  group.addEgressRule(issuer,ec2.Port.tcp(TEMPORAL_ISSUER_PORT),'dedicated JWKS issuer');
   for(const port of TEMPORAL_PORTS[role])for(const other of Object.values(groups))group.addIngressRule(other,ec2.Port.tcp(port),'Temporal internode only');
  }
  for(const client of clients)groups.frontend.addIngressRule(client,ec2.Port.tcp(7233),'authenticated application client only');
@@ -51,7 +48,7 @@ function roleEnvironment(b,role){
  return [env('MERI_TEMPORAL_PREVIEW_REQUIRED','1'),env('MERI_TEMPORAL_ACTIVATION',b.activation),
   env('MERI_TEMPORAL_SERVICE_NAME',role),env('MERI_TEMPORAL_RENDER_DIR','/run/temporal'),env('MERI_TEMPORAL_LAUNCH_CONTRACT_SHA256',b.launchContractSha256),
   env('MERI_TEMPORAL_LAUNCH_SOURCE_COMMIT',b.launchSourceCommit),env('MERI_TEMPORAL_UPSTREAM_SOURCE_COMMIT',b.upstreamServerSourceCommit),
-  env('MERI_TEMPORAL_RDS_CA_SHA256',d.rdsCaSha256),env('MERI_TEMPORAL_ISSUER_CA_SHA256',auth.issuerCaSha256),
+  env('MERI_TEMPORAL_RDS_CA_SHA256',d.rdsCaSha256),
   env('MERI_TEMPORAL_MIGRATION_PLAN_SHA256',d.migrationPlanSha256),
   env('MERI_TEMPORAL_DB_GRANTS_SHA256',d.grantsSha256),
   env('MERI_TEMPORAL_PRIMARY_USERNAME_EXPECTED',d.primaryUsername),env('MERI_TEMPORAL_VISIBILITY_USERNAME_EXPECTED',d.visibilityUsername),
@@ -62,8 +59,7 @@ function roleEnvironment(b,role){
   env('NUM_HISTORY_SHARDS',fixture.historyShards),env('SQL_TLS_ENABLED','true'),env('SQL_HOST_VERIFICATION','true'),
   env('SQL_HOST_NAME',host),env('TEMPORAL_TLS_REQUIRE_CLIENT_AUTH','true'),
   env('TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION','false'),env('TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION','false'),
-  env('TEMPORAL_AUTH_AUTHORIZER','default'),env('TEMPORAL_AUTH_CLAIM_MAPPER','default'),env('TEMPORAL_JWT_KEY_SOURCE1',auth.jwksUrl),
-  env('TEMPORAL_JWT_KEY_REFRESH',`${fixture.roles.frontend.keyRefreshSeconds}s`),env('TEMPORAL_AUTH_AUDIENCE',auth.audience),env('TEMPORAL_AUTH_ISSUER',auth.issuer),
+  env('TEMPORAL_AUTH_AUTHORIZER','default'),env('TEMPORAL_AUTH_CLAIM_MAPPER','meri-client-certificate'),
   env('USE_INTERNAL_FRONTEND','true'),env('BIND_ON_IP','0.0.0.0'),env('TEMPORAL_NAMESPACE',auth.namespace),env('TEMPORAL_TASK_QUEUE',auth.taskQueue),
   env('TEMPORAL_TLS_INTERNODE_SERVER_NAME',`internode.${b.privateDnsName}`),
   env('TEMPORAL_TLS_FRONTEND_SERVER_NAME',`frontend.${b.privateDnsName}`)];
@@ -89,7 +85,7 @@ function roleResources(stack,b,groups,namespace,role){
  new ecs.CfnService(stack,`${roleName(role)}Service`,{serviceName:`meri-product-preview-temporal-${role}`,cluster:b.clusterArn,
   taskDefinition:task.ref,desiredCount:0,launchType:'FARGATE',platformVersion:'1.4.0',enableExecuteCommand:false,
   networkConfiguration:{awsvpcConfiguration:{subnets:b.subnets.map(s=>s.id),
-   securityGroups:[groups[role].securityGroupId,b.network.issuerClientSecurityGroupId,b.network.dbClientSecurityGroupId],assignPublicIp:'DISABLED'}},
+   securityGroups:[groups[role].securityGroupId,b.network.dbClientSecurityGroupId],assignPublicIp:'DISABLED'}},
   serviceRegistries:[{registryArn:registry.attrArn}]
  });
 }

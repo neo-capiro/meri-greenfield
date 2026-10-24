@@ -4,7 +4,7 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
-import {restoreWorkspaceBytes,verifyWorkspaceBytes} from './workspace-restore.mjs';
+import {restoreWorkspaceBytes,verifyWorkspaceBytes} from '../artifacts/workspace-restore.mjs';
 import {buildNextTurnOptions} from '../../worker/conversation/continuation/next-turn-options.mjs';
 import {buildContinuationOptions} from '../../worker/conversation/continuation/options.mjs';
 import {executionFault} from './remote-task-boundary.mjs';
