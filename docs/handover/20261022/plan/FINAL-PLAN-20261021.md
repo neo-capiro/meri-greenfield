@@ -76,7 +76,7 @@ Mail has 30/31 unique selected browser cases across runs, not one all-green run;
 
 1. Finish current Core/frontend rollout and remaining real chat/data acceptance; retain General 49, Core 678 and passed recovery/General evidence.
 2. Integrate MG05 and MF09 through existing paired Core/public/runtime/FE owners. Reconcile reserved Meri purge 50–52 against the actual ledger; never renumber applied history.
-3. Allocate MG02, PF02/MF19, residual PF13, PF18 and PF14 scope reconciliation. Continue independent schedule/memory/skill/provider acceptance in parallel where ownership allows. Activate qualified targets explicitly; do not globally disable preview containment.
+3. Allocate MG02, PF02/MF19, residual PF13, PF18 and PF14 scope reconciliation. Continue independent schedule/memory/skill/provider acceptance in parallel where ownership allows. Activate qualified targets through coherent existing authenticated routing and configuration. Obsolete preview holds may be removed after target/credential compatibility is verified; preserve canonical authorization, tenant isolation and unrelated service boundaries.
 4. After replacement acceptance and rollback closure, refresh and execute the existing legacy-hosting retirement inventory. Its earlier resource counts are historical; preserve active V1/Temporal, durable local services and applied history.
 
 Wave 3 A3/Workspace breadth, new M3 citation/index products beyond retained read parity, broader M4 actions/full mail send, full M6 memory Settings/procedure/Cowork governance, browser takeover/device bridge and customer rollout remain separately sequenced unless explicitly pulled forward. The agreed simple-turn budget remains ≤30 Core calls/≤3 seconds; proposed tighter targets are not newly imposed gates.
