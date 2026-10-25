@@ -164,24 +164,6 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
   for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
  });
- await t.test('100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
-  const fixtureStarted=performance.now(),f=await seed();await content(f,{entryCount:100000,nearTranscriptLimit:true});
-  t.diagnostic(`fixture construction ${Math.round(performance.now()-fixtureStarted)} ms; transcript ${f.sdk.transcriptBytes} bytes; ${f.sdk.batches} append pages`);
-  assert.ok(f.sdk.transcriptBytes>31*1024*1024);measureSubject=f.subject.subjectId;inventoryTimings=[];inventorySqlTimings=[];
-  try{
-   const planStarted=performance.now(),p=await plan(f);t.diagnostic(`source/plan ${Math.round(performance.now()-planStarted)} ms`);
-   const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(p.state,'PLANNED');assert.equal(sdk.length,1);
-   assert.deepEqual(sdk[0].target.sdk.counts,{sessions:1,streams:1,entries:100000,batches:100});assert.equal(sdk[0].target.sdk.entryBytes,f.sdk.bytes);
-   assert.ok(Buffer.byteLength(JSON.stringify(p))<8*1024*1024,'compact plan fits the existing ledger record bound');
-   const purgeStarted=performance.now(),result=await startup.purge.sweepSubject(f.subject),purgeMs=performance.now()-purgeStarted;
-   t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
-   assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
-   for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
-   const ledgerRows=await sink.read();assert.ok(ledgerRows.every(row=>Buffer.byteLength(JSON.stringify(row))<8*1024*1024));assert.ok(Buffer.byteLength(JSON.stringify(ledgerRows))<64*1024*1024);
-   const effects=rowEffects;assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(rowEffects,effects);
-  }finally{t.diagnostic(`actual inventory scan timings, including any refused scan: ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms`);
-   t.diagnostic('inventory SQL timings '+JSON.stringify(inventorySqlTimings));measureSubject=null;inventoryTimings=[];inventorySqlTimings=[];inventorySqlTiming=null;}
- });
  await t.test('missing or false tombstone markers cannot rewrite protected bodies outside erasure',async()=>{
   const f=await seed();await content(f);
   for(const body of [{},{retentionTombstone:false}]){
@@ -303,5 +285,25 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   for(const sql of ['CREATE TABLE meri_conversations.unapproved_purge_test(x int)','TRUNCATE meri_conversations.events',`DELETE FROM meri_conversations.conversations WHERE tenant_id='${f.b.tenantId}'`,`DELETE FROM meri_conversations.runs WHERE tenant_id='${f.b.tenantId}'`])await assert.rejects(pool.query(sql));
   await assert.rejects(pool.query('DELETE FROM meri_conversations.events WHERE tenant_id=$1',[f.b.tenantId]));
   assert.equal(await count('meri_conversations.events',f),1);
+ });
+ // A deadline in this largest case can close the shared recovery fence. Keep
+ // it last so independent cases still run and the original failure is reported.
+ await t.test('100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
+  const fixtureStarted=performance.now(),f=await seed();await content(f,{entryCount:100000,nearTranscriptLimit:true});
+  t.diagnostic(`fixture construction ${Math.round(performance.now()-fixtureStarted)} ms; transcript ${f.sdk.transcriptBytes} bytes; ${f.sdk.batches} append pages`);
+  assert.ok(f.sdk.transcriptBytes>31*1024*1024);measureSubject=f.subject.subjectId;inventoryTimings=[];inventorySqlTimings=[];
+  try{
+   const planStarted=performance.now(),p=await plan(f);t.diagnostic(`source/plan ${Math.round(performance.now()-planStarted)} ms`);
+   const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(p.state,'PLANNED');assert.equal(sdk.length,1);
+   assert.deepEqual(sdk[0].target.sdk.counts,{sessions:1,streams:1,entries:100000,batches:100});assert.equal(sdk[0].target.sdk.entryBytes,f.sdk.bytes);
+   assert.ok(Buffer.byteLength(JSON.stringify(p))<8*1024*1024,'compact plan fits the existing ledger record bound');
+   const purgeStarted=performance.now(),result=await startup.purge.sweepSubject(f.subject),purgeMs=performance.now()-purgeStarted;
+   t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
+   assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
+   for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
+   const ledgerRows=await sink.read();assert.ok(ledgerRows.every(row=>Buffer.byteLength(JSON.stringify(row))<8*1024*1024));assert.ok(Buffer.byteLength(JSON.stringify(ledgerRows))<64*1024*1024);
+   const effects=rowEffects;assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(rowEffects,effects);
+  }finally{t.diagnostic(`actual inventory scan timings, including any refused scan: ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms`);
+   t.diagnostic('inventory SQL timings '+JSON.stringify(inventorySqlTimings));measureSubject=null;inventoryTimings=[];inventorySqlTimings=[];inventorySqlTiming=null;}
  });
 });
