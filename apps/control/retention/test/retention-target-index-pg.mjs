@@ -9,7 +9,7 @@ const keys=['run_id','session_id','subpath','sequence'];
 const modes=['auto','force_custom_plan','force_generic_plan'];
 
 /** EXPLAIN does not execute the guard or mutate content. Extract its actual
- * stored SELECT, preserving the legacy OR, every authority filter and locks.
+ * canonical SELECT, preserving every authority filter and both row locks.
  * Only the five PL/pgSQL local references become prepared-statement parameters.
  * A savepoint permits setting/statement cleanup after a diagnostic SQL failure. */
 export async function inspectRetentionTargetLookup(client,{tenantId,conversationId,page}){
@@ -23,9 +23,10 @@ export async function inspectRetentionTargetLookup(client,{tenantId,conversation
   previous=(await client.query("SELECT current_setting('plan_cache_mode') AS mode")).rows[0]?.mode;assert.ok(modes.includes(previous));
   const source=(await client.query("SELECT pg_get_functiondef('meri_conversations.expired_conversation_purge_target(text,jsonb,text)'::regprocedure) AS definition")).rows[0]?.definition;
   assert.equal(typeof source,'string');assert.ok(Buffer.byteLength(source)<=16384);
-  const matches=[...source.matchAll(/\bRETURN EXISTS\s*\(([\s\S]*?)\n\s*\);/gu)];assert.equal(matches.length,1);
+  const matches=[...source.matchAll(/\bIF EXISTS\s*\(([\s\S]*?)\n\s*\) THEN RETURN true; END IF;/gu)];assert.equal(matches.length,1);
   const query=matches[0][1].trim();assert.ok(query.startsWith('SELECT 1 FROM meri_conversations.retention_purge_targets t'));
   assert.ok(query.endsWith('FOR UPDATE OF t,s'));assert.ok(!query.includes(';')&&!query.includes('--')&&!query.includes('/*'));
+  assert.ok(query.includes("t.target->'key'=actual_key"));assert.ok(!query.includes('t.target IS NULL'));
   const locals={p_table:'($1::text)',p_row:'($2::jsonb)',p_mode:'($3::text)',actual_key:'($4::jsonb)',conversation:'($5::text)'};
   // SQL string constants are copied verbatim, including doubled quote escapes.
   const sql=query.replace(/'(?:''|[^'])*'|\b(?:p_table|p_row|p_mode|actual_key|conversation)\b/gu,token=>locals[token]??token);
