@@ -112,6 +112,7 @@ export function enumerateReferences(snapshot){
   // The pinned canonical decoder binds initial task receipts to their original
   // generation. Enumeration receives only their content-free row identities.
   if(!owner.runIds.size&&!['meri_conversations.initial_run_bindings','meri_conversations.initial_inputs'].includes(target.table)&&
+   !(owner.sourceSha256&&target.table==='meri_objective_source.run_starts')&&
    !(owner.sourceSha256&&hasInitialBinding&&['meri_commands.approval_metadata','meri_commands.command_journal','meri_intents.preparations'].includes(target.table)))refusal();
   rowTargets.push(Object.freeze(target));add(target.className,key,[]);
  }

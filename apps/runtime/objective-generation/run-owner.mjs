@@ -2,11 +2,11 @@
  * The Temporal worker holds no database pool, so it reaches this owner only through the control native operations in
  * ../native-authority/objective-runs-http.mjs. Order for one generation job (every step idempotent for that identity):
  *   1. validate Core's decoded selection against the binding derived from (tenant, actor, job)  -> nothing written on refusal
- *   2. run start (D7-4): the immutable selection row, BEFORE any run exists                   -> postgres-run-starts.mjs
+ *   2. current-authorized zero-run conversation registration, then immutable selection      -> objective-admission.mjs / postgres-run-starts.mjs
  *   3. Objective-origin original admission with Core's current authority                       -> objective-admission.mjs
  *   4. dispatch the existing conversation workflow (Temporal workflow-ID deduplication)
- * `start` answers `not-started` only when this call wrote nothing (owner disabled, selection refused, or the run-start store
- * committed nothing); every other failure throws, which the activity reports as unconfirmed, so the workflow only reads back.
+ * `start` answers `not-started` only before a run-start was committed (owner disabled, selection refused, or the run-start store
+ * committed nothing). Identity-only conversation registration may already exist. Every other failure is unconfirmed.
  * Every step is idempotent, so a later repeated effect after `not-started` completes the same single run.
  * `read` returns the accepted run projection only for a binding that has a STARTED run-start row with the same request. */
 import {types} from 'node:util';
@@ -21,12 +21,12 @@ const fail=code=>{throw fault(code);};
 const same=(a,b)=>hash(a)===hash(b);
 
 export function createObjectiveRunOwner(configuration={}){
- let enabled=false,putOnce,readStart,admit,acceptCore,readAcceptance,dispatch,readOptional,now=Date.now,maxRequestMs=10000;
+ let enabled=false,putOnce,readStart,prepare,admit,acceptCore,readAcceptance,dispatch,readOptional,withRelease,now=Date.now,maxRequestMs=10000;
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
-   const c=own(configuration,['enabled','runStarts','admission','core','dispatcher','store'],['now','maxRequestMs']);
-   putOnce=storageMethod(c.runStarts,'putOnce');readStart=storageMethod(c.runStarts,'read');admit=storageMethod(c.admission,'admit');
+   const c=own(configuration,['enabled','runStarts','admission','core','dispatcher','store','retention'],['now','maxRequestMs']);
+   putOnce=storageMethod(c.runStarts,'putOnce');readStart=storageMethod(c.runStarts,'read');prepare=storageMethod(c.admission,'prepare');admit=storageMethod(c.admission,'admit');withRelease=storageMethod(c.retention,'withRelease');
    dispatch=storageMethod(c.dispatcher,'start');readOptional=storageMethod(c.store,'readOptional');
    acceptCore=storageMethod(c.core,'accept');readAcceptance=storageMethod(c.core,'readAcceptance');
    now=c.now??now;maxRequestMs=c.maxRequestMs??maxRequestMs;
@@ -35,6 +35,15 @@ export function createObjectiveRunOwner(configuration={}){
   }
  }catch{enabled=false;}
  function lifetime(signal){nativeSignal(signal);return createOperationLifetime({now,signal,deadlineMs:now()+maxRequestMs,errorFactory:()=>fault('UNKNOWN')});}
+ const subject=b=>({tenantId:b.tenantId,kind:'conversation',subjectId:b.conversationId});
+ async function retained(binding,signal,work){
+  return withRelease([subject(binding)],async(gateSignal,assertLocked)=>{
+   const life=lifetime(gateSignal);
+   try{await assertLocked(subject(binding));life.check();const result=await work(life);
+    await assertLocked(subject(binding));life.check();return result;
+   }finally{life.close();}
+  },{signal,deadlineMs:now()+maxRequestMs});
+ }
  async function start(value){
   const v=own(value,['binding','generationJobId','acceptedRequest','selection'],['signal']);nativeSignal(v.signal);
   if(!enabled)return data({kind:'not-started'});
@@ -45,8 +54,9 @@ export function createObjectiveRunOwner(configuration={}){
    const accepted=objectiveAcceptedRequest(record.selection),claimed=own(v.acceptedRequest,['requestId','prompt']);
    if(claimed.requestId!==accepted.requestId||claimed.prompt!==accepted.prompt)fail('REFUSED');
   }catch{return data({kind:'not-started'});}
-  const life=lifetime(v.signal);
-  try{
+  try{return await retained(record.binding,v.signal,async life=>{
+   const registered=data(await life.run(signal=>prepare({record,signal})));
+   if(!same(registered.binding,record.binding))fail('UNKNOWN');life.check();
    let saved;
    // The store reports UNAVAILABLE only when this call committed nothing (no COMMIT sent, or it settled as a rollback):
    // that is still a definite no-op, so the workflow may repeat the (idempotent) effect. ACK_UNKNOWN and conflicts throw.
@@ -57,14 +67,14 @@ export function createObjectiveRunOwner(configuration={}){
    if(!same(admitted.binding,record.binding)||admitted.requestSha256!==record.sourceRequestSha256)fail('UNKNOWN');life.check();
    await life.run(signal=>acceptCore({record,signal}));life.check();
    await life.run(signal=>dispatch({binding:record.binding,signal}));life.check();
-   return data({kind:'started'});
-  }catch{throw fault('UNKNOWN');}finally{life.close();}
+   life.check();return data({kind:'started'});
+  });
+  }catch{throw fault('UNKNOWN');}
  }
  async function read(value){
   const v=own(value,['binding'],['signal']);nativeSignal(v.signal);validateShape('RunBinding',v.binding);
   if(!enabled)fail('UNAVAILABLE');
-  const life=lifetime(v.signal);
-  try{
+  try{return await retained(v.binding,v.signal,async life=>{
    const started=data(await life.run(signal=>readStart({binding:v.binding,signal})));life.check();
    if(started.state==='ABSENT')return data({run:null});
    if(started.state!=='STARTED'||!same(started.record.binding,v.binding))fail('UNKNOWN');
@@ -75,8 +85,9 @@ export function createObjectiveRunOwner(configuration={}){
    // A lost Core acceptance or dispatch acknowledgement never launches an unclaimed job. Temporal deduplicates the existing workflow ID.
    await life.run(signal=>readAcceptance({record:started.record,signal}));life.check();
    if(run.state==='queued'){await life.run(signal=>dispatch({binding:run.binding,signal}));life.check();}
-   return data({run});
-  }catch{throw fault('UNKNOWN');}finally{life.close();}
+   life.check();return data({run});
+  });
+  }catch{throw fault('UNKNOWN');}
  }
  return Object.freeze({available:()=>enabled,start,read});
 }

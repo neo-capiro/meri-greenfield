@@ -10,6 +10,7 @@ import {storedBinding,retained,storedEvent} from '../task-lookup/binding.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {assertSdkRetentionTarget,sdkRetentionTables,summarizeSdkRetentionRows,validateSdkRetentionInventory} from './retention-sdk-rows.mjs';
 import {preparedSchedule} from '../intents/postgres-journal.mjs';
+import {decodeObjectiveRunStartRow} from '../../runtime/objective-source/run-starts.mjs';
 
 const scope='r.tenant_id=$1 AND r.conversation_id=$2';
 const table=(name,className,keys,where=scope)=>Object.freeze({name,className,keys:Object.freeze(keys),where});
@@ -18,6 +19,7 @@ const table=(name,className,keys,where=scope)=>Object.freeze({name,className,key
 export const conversationContentTables=Object.freeze([
  table('meri_conversations.initial_run_bindings','conversation',[['generation','integer']]),
  table('meri_conversations.initial_inputs','conversation',[['run_id','uuid']]),
+ table('meri_objective_source.run_starts','conversation',[['generation_job_id','uuid']]),
  table('meri_conversations.sdk_sessions','sdkSession',[['run_id','uuid'],['session_id','uuid']]),
  table('meri_conversations.sdk_session_streams','sdkSession',[['run_id','uuid'],['session_id','uuid'],['subpath','text']]),
  table('meri_conversations.sdk_session_entries','sdkSession',[['run_id','uuid'],['session_id','uuid'],['subpath','text'],['sequence','bigint']]),
@@ -105,6 +107,13 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
      assertNativeConversationScope({binding:a.binding,scopes:projection.scopes,selectedClientId:a.selectedClientId});
      if(row.state==='ACCEPTED')fact(run&&row.accepted_request_sha256===a.requestSha256&&run.row.request_sha256===a.requestSha256);
      else fact(row.accepted_request_sha256===null&&!run);break;}
+    case 'meri_objective_source.run_starts':{let r;try{r=decodeObjectiveRunStartRow(row,{tenantId:subject.tenantId});}catch{corrupt();}
+     const run=binding(r.binding,{requireRun:false});
+     assertNativeConversationScope({binding:r.binding,scopes:projection.scopes,selectedClientId:r.selection.sourceAdmission.canonical.clientId});
+     if(run)fact(same(run.projection.binding,r.binding)&&run.row.request_sha256===r.sourceRequestSha256);
+     // The run-start is committed before admission. Its actual registered
+     // conversation owns the private selection even if no run was accepted.
+     break;}
     case 'meri_conversations.native_executions':decodeExecutionRow(row,runFor(row).projection.binding);break;
     case 'meri_conversations.native_allocations':
     case 'meri_conversations.native_restorations':{pin(row,'record');const r=runFor(row),b=row.record.original?.binding??row.record.binding;binding(b);fact(same(b,r.projection.binding)&&digest(row.intent_key));break;}

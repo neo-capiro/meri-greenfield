@@ -11,6 +11,7 @@ const sdkTables=new Set(['sdk_sessions','sdk_session_streams','sdk_session_entri
 const json=value=>JSON.parse(JSON.stringify(value));
 const retained=new Set(['meri_conversations.initial_inputs','meri_conversations.initial_run_bindings','meri_conversations.native_executions']);
 const modes={
+ 'meri_objective_source.run_starts':'objective',
  'meri_intents.preparations':'intent',
  'meri_commands.approval_metadata':'approval',
  'meri_commands.command_journal':'command',
@@ -78,6 +79,7 @@ function fixedRow(k,step){
  const where=`(${scope}) AND ${Object.keys(keys).map((key,i)=>`r.${key}=$${i+3}`).join(' AND ')}`;
  const marker=JSON.stringify(tombstone(k.subjectId));
  const updates={
+  objective:'record=$LAST::jsonb',
   run:'request=$LAST::jsonb,continuation=NULL,continuation_sha256=NULL',
   approval:'payload=$LAST::jsonb',
   command:'payload=$LAST::jsonb,outcome=CASE WHEN outcome IS NULL THEN NULL ELSE $LAST::jsonb END',
@@ -92,7 +94,7 @@ function fixedRow(k,step){
    return row.state==='REDACTED'&&row.outcome===null&&row.outcome_purged_at!==null;
   }
   if(mode==='delete')return false;
-  const body=mode==='run'?row.request:row.payload;
+  const body=mode==='run'?row.request:mode==='objective'?row.record:row.payload;
   return hash(body)===hash(tombstone(k.subjectId))&&
    (mode!=='run'||row.continuation===null&&row.continuation_sha256===null)&&
    (mode!=='command'||row.outcome===null||hash(row.outcome)===hash(tombstone(k.subjectId)))&&
