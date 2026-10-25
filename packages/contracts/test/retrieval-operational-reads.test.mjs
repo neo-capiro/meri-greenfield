@@ -23,8 +23,8 @@ const candidateSchema = JSON.parse(readFileSync(new URL('../retrieval-0.2/operat
 
 const binding = () => ({ tenantId, actorId, conversationId: uuid, runId: uuid, attemptId: uuid, workerId: uuid, writerFence: 1 });
 const clientScope = { tenantId, kind: 'client', resourceId: clientId, policyRevision: 'policy-v1' };
-const clientSubject = () => ({ kind: 'client', entityType: 'client', entityIds: [clientId], tenantId, actorId, authorizationDecisionId: uuid, policyRevision: 'policy-v1', scopes: [clientScope], rosterVersionId: null });
-const portfolioSubject = () => ({ kind: 'portfolio', entityType: 'client', entityIds: [clientId], tenantId, actorId, authorizationDecisionId: uuid, policyRevision: 'policy-v1', scopes: [clientScope], rosterVersionId: 'synthetic-roster-v1' });
+const clientSubject = () => ({ kind: 'client', entityType: 'client', entityIds: [clientId], tenantId, actorId, policyRevision: 'policy-v1', scopes: [clientScope], rosterVersionId: null });
+const portfolioSubject = () => ({ kind: 'portfolio', entityType: 'client', entityIds: [clientId], tenantId, actorId, policyRevision: 'policy-v1', scopes: [clientScope], rosterVersionId: 'synthetic-roster-v1' });
 const sourceState = () => ({ sourceId: 'engagement_tasks', authority: 'authoritative', snapshotVersionId: null, adapterVersion: '0.2.0', status: 'partial', synchronizedAt: null, asOf: null, retrievedAt: '2026-01-02T00:00:05Z', freshness: 'unknown' });
 const sourceStateFor = sourceId => ({ ...sourceState(), sourceId });
 const coverageOf = (sourceId, returnedCount, truncated) => ({ sourcesRequested: [sourceId], sourcesChecked: [sourceId], sourcesUnavailable: [], enumeration: 'unknown', enumerableTotal: null, returnedCount, truncated, historySupport: 'bounded', limitations: ['Synthetic pending operational-read transport; snapshot and record immutability unknown.'] });
@@ -88,6 +88,17 @@ function taskPage(input = {}, over = {}) {
   void cursor;
   return page;
 }
+
+test('General task pages retain the exact personal actor without inventing a client roster', () => {
+  const page = taskPage();
+  page.subject = { ...portfolioSubject(), kind: 'personal', entityType: 'user', entityIds: [actorId],
+    scopes: [{ tenantId, kind: 'private-user', resourceId: actorId, policyRevision: 'policy-v1' }], rosterVersionId: null };
+  assert.equal(assertTaskReadPage(page, {}, { nowMs, actorId }), page);
+  const foreign = structuredClone(page); foreign.subject.entityIds = ['other'];
+  assert.throws(() => assertTaskReadPage(foreign, {}, { nowMs, actorId }));
+  const selected = structuredClone(page); selected.subject = clientSubject();
+  assert.throws(() => assertTaskReadPage(selected, {}, { nowMs, actorId }));
+});
 
 test('task read materializes verified defaults without mutating strict input', () => {
   const value = {}, copy = structuredClone(value);
@@ -395,7 +406,7 @@ test('operational-read schema objects stay closed and package public exports sta
   const walk = node => { if (!node || typeof node !== 'object') return; if (node.type === 'object') assert.equal(node.additionalProperties, false); for (const child of Object.values(node)) if (child && typeof child === 'object') walk(child); };
   walk(candidateSchema);
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
-  assert.equal(pkg.version, '0.1.10');
+  assert.equal(pkg.version, '0.1.14');
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });

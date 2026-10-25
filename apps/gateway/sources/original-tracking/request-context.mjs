@@ -40,7 +40,9 @@ export function readContext(call,now) {
   const normalizationContext=operation.id==='query_tasks'?suppliedContext:frozenData({actorId:suppliedContext.actorId});
   let normalized;try{normalized=contract.normalizeInput(request,normalizationContext);}catch{deny('INVALID_ARGUMENTS');}
   if(!same(input,normalized.input))deny('INVALID_ARGUMENTS');
-  if(input.clientId===null){if(operation.id!=='query_tasks'||subject.kind!=='portfolio')deny('ACCESS_DENIED');}
+  // Core's authorized_tasks read applies current actor/client walls per result.
+  // General retains its canonical personal subject; it needs no synthetic roster.
+  if(input.clientId===null){if(operation.id!=='query_tasks'||!['portfolio','personal'].includes(subject.kind))deny('ACCESS_DENIED');}
   else if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds.length!==1||subject.entityIds[0]!==input.clientId)deny('ACCESS_DENIED');
   active();return {operation,contract,input,request,authority,normalizationContext,argumentsSha256:normalized.argumentsSha256,
     invocationId:fields.invocationId,deadlineMs,signal,active};

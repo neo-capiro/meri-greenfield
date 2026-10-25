@@ -13,7 +13,7 @@
 export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optional'}),
  'meeting-source':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['meeting.read_client_meetings'])}),
  'action-items-complete':Object.freeze({clientScope:'required'}),
- 'operational-reads':Object.freeze({clientScope:'required'}),
+ 'operational-reads':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['query_action_items'])}),
  'tenant-contacts':Object.freeze({clientScope:'optional'}),
  'entity-candidates':Object.freeze({clientScope:'optional'}),
  'client-knowledge-profile':Object.freeze({clientScope:'required'}),

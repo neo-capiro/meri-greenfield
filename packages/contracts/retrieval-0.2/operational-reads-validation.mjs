@@ -131,7 +131,7 @@ function assertEnvelope(page, selection, kind, operation, scopeExpectation, opti
   if (canonicalSha256(page.selection) !== canonicalSha256(selection) || page.argumentsSha256 !== canonicalSha256(selection)) fail('Operational-read argument/selection binding mismatch');
   if (scopeExpectation === 'client') {
     if (page.subject.kind !== 'client' || page.subject.entityIds[0] !== selection.clientId) fail('Operational-read requested/resolved subject mismatch');
-  } else if (page.subject.kind !== 'portfolio') fail('Authorized-scope operational read requires a portfolio subject');
+  } else if (!['portfolio', 'personal'].includes(page.subject.kind)) fail('Authorized-scope operational read requires the current actor or portfolio subject');
   if (page.evidenceReady !== false || page.negativeAssertion.kind !== 'none') fail('Pending operational-read transport cannot assert evidence or absence');
   if (page.coverage.enumeration === 'complete' || page.coverage.enumerableTotal !== null) fail('Operational-read transport cannot claim complete enumeration or an enumerable total');
   if (page.coverage.historySupport === 'supported') fail('Operational-read transport cannot claim supported history');
