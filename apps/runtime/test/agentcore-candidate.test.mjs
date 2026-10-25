@@ -13,6 +13,8 @@ import {binding,versions,id} from '../../control/conversations/test/application-
 import {createControlReadsComposer} from '../reads-composer.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../product-ports/capability-policy.mjs';
 import {billTextCase} from '../../gateway/sources/bill-text/test/fixture.mjs';
+import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
+import {countingFetch} from '../telemetry/counting.mjs';
 
 const at=1800000000000,clientId=id(5),policyRevision='policy-v1',controlCredential='synthetic-control-secret-not-a-user-bearer';
 const readOperation={id:'read_bill_text',version:'0.2.0'},searchOperation={id:'search_congress_bills',version:'0.2.0'};
@@ -54,13 +56,14 @@ function fixture(options={}){
   },release(){}};}};
  const nativeCredentials={nativeCredentialFor(){relayCalls++;if(options.revokeAfterCore&&coreCalls)throw Error('SESSION_UNAVAILABLE');return {credential:'actual-user-bearer',expiresAtMs:at+120000};}};
  const fetchImpl=async(_url,request)=>{coreCalls++;coreInput={headers:request.headers,body:JSON.parse(request.body)};
+  await options.onCoreFetch?.();
   if(new URL(_url).pathname==='/api/clio/client-context/automatic'){assert.equal(request.headers['x-internal-service-secret'],'synthetic-service');assert.deepEqual(JSON.parse(request.body),{schemaVersion:1,clientId});return Response.json(automaticContextFixture(b,clientId,at));}
   if(options.status)return Response.json({error:'refused'},{status:options.status});
   return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:at,expiresAtMs:at+120000,...options.receipt});};
  const provider={async invoke(input){invocations++;invocation=input;return pending.promise;},async stop(input){stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,signal:undefined,stopped:true};}};
  // Keep the exact transport receipt closed (AbortSignal is request-only).
  provider.stop=async({signal,...input})=>{signal?.throwIfAborted();stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,stopped:true};};
- const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
+ const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,turnTelemetry:options.turnTelemetry,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
  return {candidate,configuration,run,store,pending,counts:()=>({invocations,coreCalls,stops,claimCalls,relayCalls}),schema:()=>({queries:schemaQueries,relations:schemaRelations}),coreInput:()=>coreInput,invocation:()=>invocation,record:()=>record,
   async kickoff(){return candidate.native.call('execution/kickoff',{binding:b,executionKey:hash(b)});},
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
@@ -220,18 +223,19 @@ test('closed AgentCore configuration refuses task material, foreign endpoint and
 
 /** Actual candidate -> composer -> canonical settings store/resolver -> discovery/dispatch. Synthetic Core/source and SQL only. */
 async function policyFixture(options={}){
- const b={...binding,tenantId:id(70),actorId:id(71)},source=billTextCase();let sourceCalls=0,afterSource;
- const composer=await createControlReadsComposer({coreOrigin:'https://core.synthetic.invalid',familyIds:['bill-text'],defaultCongress:119,
-  nativeCredentials:{nativeCredentialFor:()=>({credential:'SYNTHETIC_USER',expiresAtMs:at+120000})},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>at,newId:()=>id(90),
-  async fetchImpl(url,request){
+ const b={...binding,tenantId:id(70),actorId:id(71),...options.binding},source=billTextCase();let sourceCalls=0,readCoreCalls=0,afterSource;
+ const fetchImpl=async(url,request)=>{readCoreCalls++;await options.onCoreFetch?.();
    if(url.endsWith('/application-authority/current'))return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:at,expiresAtMs:at+120000});
    assert.equal(new URL(url).pathname,'/api/clio/tools/read_bill_text');sourceCalls++;const result=source.native(JSON.parse(request.body));afterSource?.();return Response.json(result);
-  }});
+  };
+ const composer=await createControlReadsComposer({coreOrigin:'https://core.synthetic.invalid',familyIds:['bill-text'],defaultCongress:119,
+  nativeCredentials:{nativeCredentialFor:()=>({credential:'SYNTHETIC_USER',expiresAtMs:at+120000})},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>at,newId:()=>id(90),
+  fetchImpl:countingFetch(fetchImpl,options.turnTelemetry,{origin:'https://core.synthetic.invalid'})});
  const f=fixture(Object.assign(options,{binding:b,reads:true,createReadsRuntime:composer.createReadsRuntime}));await f.kickoff();f.run.state='running';
  const schemaVersion='meri-native-general-reads/1',operation={id:'read_bill_text',version:'0.2.0'};
  const request=(kind,extra={})=>f.candidate.application.handle(new Request('https://control.synthetic.invalid/v1/runner/reads/'+kind,{method:'POST',
   headers:{authorization:'Bearer '+f.invocation().credential,'content-type':'application/json'},body:JSON.stringify({schemaVersion,binding:b,...extra})}));
- return {...f,options,sourceCalls:()=>sourceCalls,after:fn=>{afterSource=fn;},availability:()=>request('availability'),
+ return {...f,options,sourceCalls:()=>sourceCalls,readCoreCalls:()=>readCoreCalls,after:fn=>{afterSource=fn;},availability:()=>request('availability'),
   execute:available=>request('execute',{operation,arguments:{billId:'H.R. 1'},deliveryId:'synthetic',installationId:available.installation.installationId,executionCatalogSha256:available.installation.executionCatalogSha256})};
 }
 test('production composition honors persisted generalReads narrowing for discovery and dispatch with one role observation per snapshot',async t=>{
@@ -293,4 +297,49 @@ test('private role reads use the current canonical observation, preserve origina
  const role=await f.candidate.readCapabilityRole({binding});assert.deepEqual(role,{actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+120000});assert.equal(f.counts().coreCalls,2);
  options.receipt={role:'user_admin'};assert.equal((await f.candidate.readCapabilityRole({binding})).actorRole,'user_admin');assert.equal(f.counts().coreCalls,3);
  options.status=403;await assert.rejects(f.candidate.readCapabilityRole({binding}));
+});
+
+
+test('native telemetry covers admission, runtime preparation, repeated discovery and the real tool transport once',async t=>{
+ const lines=[];let clock=1000;
+ const telemetry=createTurnTelemetry({service:'control',now:()=>clock,write:line=>lines.push(JSON.parse(line))});
+ const f=await policyFixture({turnTelemetry:telemetry,automaticContext:true,onCoreFetch:()=>{clock+=5;}});t.after(async()=>{await f.finish();telemetry.close();});
+ const runtime=await f.candidate.application.handle(new Request('https://control.synthetic.invalid/v1/runner/runtime',{method:'POST',headers:{authorization:'Bearer '+f.invocation().credential,'content-type':'application/json'},body:JSON.stringify({binding:f.run.binding,versions})}));
+ assert.equal(runtime.status,200);
+ for(let i=0;i<2;i++){const response=await f.availability();assert.equal(response.status,200);}
+ const available=await (await f.availability()).json(),result=await f.execute(available);
+ assert.equal(result.status,200);assert.equal(f.sourceCalls(),1);
+ const expected=f.counts().coreCalls+f.readCoreCalls();assert.ok(f.readCoreCalls()>0);
+ const counts=telemetry.counters(f.run.binding);
+ assert.equal(Object.values(counts.core).reduce((n,row)=>n+Object.values(row).reduce((a,b)=>a+b,0),0),expected,'every actual Core port invocation, including pre-binding admission and tool transport, is counted once');
+ assert.equal(counts.coreMs,expected*5);
+ telemetry.rollup();assert.equal(lines.find(x=>x.event==='meri.process.rollup').CoreCalls,0,'no attributed request leaks into background');
+ assert.equal(lines.find(x=>x.event==='meri.turn.counters').runId,f.run.binding.runId);
+});
+
+test('native telemetry keeps interleaved authenticated owners separate',async t=>{
+ const lines=[],telemetry=createTurnTelemetry({service:'control',write:line=>lines.push(JSON.parse(line))});
+ const a=await policyFixture({turnTelemetry:telemetry}),b=await policyFixture({turnTelemetry:telemetry,binding:{conversationId:id(700),runId:id(701),attemptId:id(702),workerId:id(703)}});
+ t.after(async()=>{await a.finish();await b.finish();telemetry.close();});
+ const enteredA=Promise.withResolvers(),enteredB=Promise.withResolvers(),releaseA=Promise.withResolvers(),releaseB=Promise.withResolvers();
+ a.options.onCoreFetch=async()=>{enteredA.resolve();await releaseA.promise;};b.options.onCoreFetch=async()=>{enteredB.resolve();await releaseB.promise;};
+ const first=a.availability(),second=b.availability();await Promise.all([enteredA.promise,enteredB.promise]);
+ releaseB.resolve();assert.equal((await second).status,200);releaseA.resolve();assert.equal((await first).status,200);
+ for(const f of [a,b]){const counts=telemetry.counters(f.run.binding);assert.equal(Object.values(counts.core).flatMap(Object.values).reduce((n,v)=>n+v,0),f.counts().coreCalls+f.readCoreCalls());}
+ telemetry.rollup();assert.equal(lines.find(x=>x.event==='meri.process.rollup').CoreCalls,0);
+ assert.deepEqual(new Set(lines.filter(x=>x.event==='meri.turn.counters').map(x=>x.runId)),new Set([a.run.binding.runId,b.run.binding.runId]));
+});
+
+test('native telemetry refuses a foreign credential or binding without assigning another owner, and retains current-access refusal',async t=>{
+ const lines=[],telemetry=createTurnTelemetry({service:'control',write:line=>lines.push(JSON.parse(line))});
+ const f=await policyFixture({turnTelemetry:telemetry});t.after(async()=>{await f.finish();telemetry.close();});
+ const post=(credential,b)=>f.candidate.application.handle(new Request('https://control.synthetic.invalid/v1/runner/reads/availability',{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify({schemaVersion:'meri-native-general-reads/1',binding:b})}));
+ const before=f.counts().coreCalls;
+ assert.equal((await post('foreign-credential',f.run.binding)).status,403);
+ assert.equal((await post(f.invocation().credential,{...f.run.binding,runId:id(799)})).status,403);
+ assert.equal(f.counts().coreCalls,before,'refused ownership never reaches Core');
+ f.options.status=403;assert.equal((await f.availability()).status,503);
+ const counts=telemetry.counters(f.run.binding);assert.equal(counts.core.current['403'],1);assert.equal(counts.core.current['2xx'],1);
+ telemetry.rollup();assert.equal(lines.find(x=>x.event==='meri.process.rollup').CoreCalls,0);
+ assert.equal(lines.some(x=>x.runId===id(799)),false);assert.equal(lines.some(x=>x.event==='meri.turn.summary'),false,'refusal never invents completion');
 });

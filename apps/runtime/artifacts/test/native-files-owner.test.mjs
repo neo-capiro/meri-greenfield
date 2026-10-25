@@ -12,11 +12,17 @@ import {versions} from '../../../control/conversations/test/lifecycle-fixture.mj
 import {executionIdentity} from '../../../control/conversations/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {nativeFileSha256,nativeFileBindingHeader,NATIVE_FILE_LIMITS} from '../../../../packages/contracts/runtime-0.2/files.mjs';
+import {createPostgresConversationStore} from '../../../control/conversations/postgres-store.mjs';
+import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
+import {countingFetch} from '../../telemetry/counting.mjs';
+import {assembleAgentCoreCandidate} from '../../agentcore-candidate.mjs';
+import {agentcoreControlFixture} from '../../test/agentcore-fixture.mjs';
 const raw=(path,value)=>{const b=Buffer.from(value);return {path,executable:false,bytes:b.length,sha256:nativeFileSha256(b),base64:b.toString('base64')};};
-async function fixture(t){t.mock.timers.enable({apis:['Date'],now:Date.parse('2026-10-15T12:00:00.000Z')});const x=await nativeFixture();t.after(x.f.close);await x.running(binding);x.seed(binding);const objects=new Map(),state={puts:0,gets:0,deny:false,unknown:false,suppressed:false};
+async function fixture(t,options={}){t.mock.timers.enable({apis:['Date'],now:Date.parse('2026-10-15T12:00:00.000Z')});const x=await nativeFixture();t.after(x.f.close);await x.running(binding);x.seed(binding);const objects=new Map(),state={puts:0,gets:0,deny:false,unknown:false,suppressed:false};
+ const store=options.onPublished?createPostgresConversationStore({pool:x.f.pool,onPublished:options.onPublished}):x.f.store;
  const execution={async authenticate({credential,binding:b}){if(credential!=='synthetic-execution'||state.deny)throw Error('denied');const v=await x.f.store.executions.read(b,check);if(!v.record||['stopping','settled'].includes(v.record.phase)||v.run.state==='cancelled')throw Error('denied');return {execution:executionIdentity(v.record),versions:v.run.versions,state:v.run.state,scopes:v.run.scopes,selectedClientId:id(5),policyRevision:v.run.policyRevision};}};
  const snapshot=createNativeSessionContinuation({store:x.f.store,execution,versions,maxOutputBytes:1024}),storage={async put({objectId,bytes,scopes}){state.puts++;const object={objectId,versionId:'synthetic-version',sha256:nativeFileSha256(bytes),bytes:bytes.length,scopes};objects.set(objectId,{object,bytes:Buffer.from(bytes)});if(state.unknown)throw Error('synthetic lost object acknowledgment');return object;},async get(object){state.gets++;const saved=objects.get(object.objectId);assert.deepEqual(saved.object,object);return Buffer.from(saved.bytes);}};
- const owner=createNativeFileOwner({store:x.f.store,execution,objects:storage,snapshot,maxRequestMs:3000,retention:{async assertServable(){if(state.suppressed)throw Error('suppressed');}}}),application=createNativeFileApplication({owner,maxRequestMs:3000}),request={binding,sessionId:x.sessionKey.sessionId,files:[raw('answer.txt','synthetic result')],taskFiles:[raw('3.json','{"id":"3","status":"completed"}\n'),raw('.highwatermark','3')]};
+ const owner=createNativeFileOwner({store,execution,objects:storage,snapshot,maxRequestMs:3000,retention:{async assertServable(){if(state.suppressed)throw Error('suppressed');}}}),application=createNativeFileApplication({owner,maxRequestMs:3000}),request={binding,sessionId:x.sessionKey.sessionId,files:[raw('answer.txt','synthetic result')],taskFiles:[raw('3.json','{"id":"3","status":"completed"}\n'),raw('.highwatermark','3')]};
  const call=(method,request)=>owner[method]({credential:'synthetic-execution',request});
  async function hold(){const controlId=id(8100);await x.f.control({controlId,intent:'pause'});await x.f.claim(controlId);return {...request,controlId};}
  return {...x,owner,application,state,objects,execution,request,call,hold};
@@ -77,4 +83,80 @@ test('actual private HTTP and native client preserve a file payload above the or
   let transports=0;const refusing=createNativeCapabilityClient({configuration:{origin,maxResponseBytes:262144},credential:'synthetic-execution',fetch:async(...args)=>{transports++;return fetch(...args);}});
   await assert.rejects(refusing.call('runner/publish',request));assert.equal(transports,0,'large file exception cannot widen ordinary run/tool JSON');
  }finally{assert.deepEqual(await server.close(),{listenerStopped:true,pendingRequests:0});}
+});
+
+
+test('native completion telemetry observes committed journal events once and waits for the final attributed call',async t=>{
+ const lines=[],seen=[];let clock=100;
+ const telemetry=createTurnTelemetry({service:'control',now:()=>clock,write:line=>lines.push(JSON.parse(line))});t.after(()=>telemetry.close());
+ const x=await fixture(t,{onPublished:event=>{seen.push(event);telemetry.bind(event.binding);telemetry.summary(event);}});
+ const core=countingFetch(async()=>{clock+=3;return Response.json({ok:true});},telemetry,{origin:'https://core.synthetic.invalid'});
+ await telemetry.provisional(async()=>{
+  await core('https://core.synthetic.invalid/application-authority/current');
+  assert.equal((await x.call('complete',x.request)).state,'completed');
+  assert.equal(lines.filter(l=>l.event==='meri.turn.counters').length,0);
+  await core('https://core.synthetic.invalid/application-authority/current');
+ });
+ const summaries=lines.filter(l=>l.event==='meri.turn.summary'),counters=lines.filter(l=>l.event==='meri.turn.counters');
+ assert.equal(summaries.length,1);assert.equal(summaries[0].state,'completed');assert.equal(summaries[0].conversationId,binding.conversationId);
+ assert.equal(counters.length,1);assert.equal(counters[0].CoreCalls,2);assert.equal(counters[0].coreMs,6);
+ assert.deepEqual(seen.map(e=>e.type),['checkpoint.verified','run.status']);
+ const committed=(await x.f.store.read(binding,{},check)).events.at(-1);assert.deepEqual(seen.at(-1),committed);
+ await telemetry.provisional(()=>x.call('complete',x.request));
+ assert.equal(seen.length,3,'validated PUBLISHED begin replay observes the same canonical terminal');
+ assert.equal(seen.at(-1).eventId,committed.eventId);assert.equal(seen.at(-1).sequence,committed.sequence);
+ assert.equal(lines.filter(l=>l.event==='meri.turn.summary').length,1);assert.equal(lines.filter(l=>l.event==='meri.turn.counters').length,1);
+ telemetry.rollup();assert.equal(lines.find(l=>l.event==='meri.process.rollup').CoreCalls,0);
+ assert.equal(x.state.puts,3,'telemetry does not add or repeat object I/O');
+});
+
+test('native completion telemetry preserves failed capture and lost commit acknowledgment, then observes validated replay',async t=>{
+ const lines=[],telemetry=createTurnTelemetry({service:'control',write:line=>lines.push(JSON.parse(line))});t.after(()=>telemetry.close());
+ const options={onPublished:event=>{telemetry.bind(event.binding);telemetry.summary(event);}},x=await fixture(t,options);
+ const connect=x.f.pool.connect;
+ x.f.pool.connect=async(...args)=>{const client=await connect.apply(x.f.pool,args),query=client.query;
+  client.query=async function(sql,...values){const result=await query.call(this,sql,...values);
+   if(typeof sql==='string'&&sql.startsWith("UPDATE meri_conversations.completion_checkpoints SET state='PUBLISHED'"))x.f.state.commitUnknown=true;
+   return result;
+  };return client;
+ };
+ await assert.rejects(telemetry.provisional(()=>x.call('complete',x.request)));
+ assert.equal(lines.filter(l=>l.event==='meri.turn.summary').length,0,'an uncertain commit acknowledgment cannot be published as observed success');
+ x.f.pool.connect=connect;x.f.state.commitUnknown=false;
+ assert.equal((await telemetry.provisional(()=>x.call('complete',x.request))).state,'completed');
+ assert.equal(lines.filter(l=>l.event==='meri.turn.summary').length,1);assert.equal(lines.filter(l=>l.event==='meri.turn.counters').length,1);
+ assert.equal(x.state.puts,3);
+});
+
+test('failed native capture and throwing publication observers preserve domain results',async t=>{
+ const seen=[],x=await fixture(t,{onPublished:event=>{seen.push(event);throw Error('telemetry writer failed');}});
+ x.state.unknown=true;await assert.rejects(x.call('complete',x.request));assert.equal(seen.length,0);
+ assert.equal((await x.f.store.read(binding,{},check)).run.state,'running');
+});
+
+test('throwing native completion observer cannot turn committed completion into failure',async t=>{
+ const x=await fixture(t,{onPublished(){throw Error('telemetry writer failed');}});
+ assert.equal((await x.call('complete',x.request)).state,'completed');
+ assert.equal((await x.f.store.read(binding,{},check)).run.state,'completed');
+});
+
+test('native telemetry default candidate store observes a failed terminal and waits for stop transport',async t=>{
+ const lines=[];let clock=100,stops=0;
+ const telemetry=createTurnTelemetry({service:'control',now:()=>clock,write:line=>lines.push(JSON.parse(line))});t.after(()=>telemetry.close());
+ const x=await fixture(t),core=countingFetch(async()=>{clock+=4;return Response.json({ok:true});},telemetry,{origin:'https://core.synthetic.invalid'});
+ const candidate=assembleAgentCoreCandidate({configuration:agentcoreControlFixture().configuration,pool:x.f.pool,
+  controlCredential:'synthetic-control-secret-not-a-user-bearer',turnTelemetry:telemetry,
+  nativeCredentials:{nativeCredentialFor(){assert.fail('stop must not mint or read a user credential');}},
+  fetchImpl(){assert.fail('telemetry must not add a Core request');},
+  provider:{async invoke(){assert.fail('stop never dispatches a model');},async stop({signal,...input}){
+   signal?.throwIfAborted();stops++;assert.equal(lines.filter(l=>l.event==='meri.turn.counters').length,0);
+   await core('https://core.synthetic.invalid/application-authority/current');return {...input,stopped:true};
+  }}});t.after(()=>candidate.close());
+ const stop=()=>candidate.native.call('execution/kickoff/stop',{binding,executionId:hash(binding)});
+ await stop();await stop();
+ assert.equal((await x.f.store.read(binding,{},check)).run.state,'failed');assert.equal(stops,1);
+ const summaries=lines.filter(l=>l.event==='meri.turn.summary'),counters=lines.filter(l=>l.event==='meri.turn.counters');
+ assert.equal(summaries.length,1);assert.equal(summaries[0].state,'failed');assert.equal(summaries[0].reasonCode,'ATTEMPT_LOST');
+ assert.equal(counters.length,1);assert.equal(counters[0].runId,binding.runId);assert.equal(counters[0].CoreCalls,1);assert.equal(counters[0].coreMs,4);
+ telemetry.rollup();assert.equal(lines.find(l=>l.event==='meri.process.rollup').CoreCalls,0);
 });
