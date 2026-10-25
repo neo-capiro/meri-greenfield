@@ -14,6 +14,10 @@ Neo's current direct instruction is to finish Wave 2 autonomously, migrate the a
 
 **Current roles:** root only orchestrates at Ultra. Implementation, tests/gates and exact-head independent review are delegated at xhigh; existing Release is the sole AWS/migration/deploy/rollback operator. Fresh sessions receive only briefs, tickets, rules and plans. Use [PROCESS6.1–6.3](PROCESS.md#6-current-templates). Only direct Neo chat approves scope; GitHub comments never approve it. In-scope decisions proceed and are logged; scope/security changes go to Neo. No issue #202 post without Neo. These roles supersede dated helper-Ultra and root-executes-AWS wording without reviving historical holds.
 
+**Instruction and engineering provenance (25 October 2026):** the [23 October version](https://github.com/neo-capiro/meri-greenfield/commit/1ddb48d6a2f66374aa842b2d9dc0ead2f0cc256d) explicitly described the numbered rules as Fable's engineering translation of Neo's quoted words. The [24 October AgentCore change](https://github.com/neo-capiro/meri-greenfield/commit/671e3684e29d0f9557531f395a08d53289d3ecdc) replaced that attribution paragraph while revising the architecture guidance. Git history verifies those texts and edits; the quotations below retain their recorded attribution, but their original chat source was not independently reverified for this correction.
+
+Neo's direct instructions establish authority. Engineering interpretations and an “approved” document label do not independently establish Neo's approval of each engineering sentence or a new scope decision. Required guarantees do not mandate every existing wrapper; redundant mechanisms may be simplified through the existing owners while preserving those guarantees. This attribution note changes neither the current rules 1–4 nor retained contracts, and grants no new scope or architecture approval.
+
 Neo's words, verbatim:
 
 - "follow best practices and have simple chat work. dont over engineer and dont leave deadcodd befind. just make it work"
