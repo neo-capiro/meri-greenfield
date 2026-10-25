@@ -39,7 +39,7 @@
     {
       "id": "budget-proxy",
       "title": "Budget, usage and model proxy",
-      "sourceModules": ["apps/gateway/budget/native-allocation-admission.mjs", "apps/gateway/budget/postgres-tool-budget.mjs", "apps/proxy/qualification/state/admission.py", "apps/proxy/qualification/state/ledger.py"],
+      "sourceModules": ["apps/gateway/budget/native-allocation-admission.mjs", "apps/gateway/budget/postgres-tool-budget.mjs"],
       "persistence": ["apps/gateway/budget/migrations/0001_product_budget.sql"],
       "composedByStartup": "no: product namespace meri_product_budget and retained proxy namespace meri_qualification are split; prepared readiness reads the product budget while the proxy hard-codes qualification state",
       "ownedToday": "unowned",

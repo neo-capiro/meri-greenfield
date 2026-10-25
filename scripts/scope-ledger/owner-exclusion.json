@@ -60,7 +60,6 @@
     {"path": "apps/control/document-application/selected-output/test/artifacts-root-inert-rerun/relationship_brief/provenance.json", "class": "recorded-evidence"},
     {"path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/provenance.json", "class": "recorded-evidence"},
     {"path": "apps/gateway/sources/identity-contacts/test/fixtures.mjs", "class": "note-fixture"},
-    {"path": "apps/proxy/qualification/test/test_aws_counter.py", "class": "unrelated-identifier"},
     {"path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs", "class": "guard-test", "presentOn": "fable/p2a-capability-policy-sandbox-20261015 (875b3055) and fable/a1-pause-checkpoint-20261015; absent at this base"},
     {"path": "packages/contracts/retrieval-0.2/catalog.json", "class": "exclusion-record", "alsoCarries": "canonical-guidance: the lookup_client_registry descriptor guidance names create_client (P6)"},
     {"path": "packages/contracts/retrieval-0.2/catalog.schema.json", "class": "exclusion-record"},
