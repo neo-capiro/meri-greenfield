@@ -48,6 +48,8 @@ COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-ch
 # the final UID1000 process needs no executable cache on its read-only root.
 RUN --network=none node apps/runtime/build/materialize-swc.mjs
 RUN mkdir -p node_modules/@capiro node_modules/@anthropic-ai node_modules/@aws-sdk && ln -s ../../packages/contracts node_modules/@capiro/meri-contracts && ln -s ../../apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk node_modules/@anthropic-ai/claude-agent-sdk && ln -s ../../apps/artifacts/storage/node_modules/@aws-sdk/client-s3 node_modules/@aws-sdk/client-s3
+# Retention workflows share the conversation workflow's pinned Temporal package.
+RUN ln -s ../conversations/node_modules apps/control/retention/node_modules
 
 FROM ${RUNTIME_IMAGE} AS runtime
 USER root
