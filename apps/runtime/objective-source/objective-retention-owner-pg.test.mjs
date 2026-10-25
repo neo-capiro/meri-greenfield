@@ -71,7 +71,9 @@ test('Objective actual owner retention composition',{skip:!enabled&&'requires ex
   await assert.rejects(runStarts.putOnce({record:f.record}));await assert.rejects(runStarts.readByJob({generationJobId:f.generationJobId}));assert.equal(await count('meri_conversations.runs',f),0);
  });
  await t.test('accepted run readback holds the actual serving lock; suppression then blocks reads and settled purge retains identities',async()=>{
-  const f=fresh(),h=owner(f);assert.deepEqual(await h.start(),{kind:'started'});assert.equal(h.state.dispatches,1);assert.equal(await count('meri_conversations.runs',f),1);assert.ok((await inventory(f)).rowTargets.some(r=>r.table==='meri_objective_source.run_starts'));
+  const f=fresh(),h=owner(f),document={defaultTimezone:'UTC',capabilityPolicy:{}};
+  await insert(pool,'meri_settings.tenant_settings',{tenant_id:f.tenantId,revision:1,document,document_sha256:hash(document),updated_at:new Date(),updated_by:f.actorId,monthly_cap_micro_usd:100000000});
+  assert.deepEqual(await h.start(),{kind:'started'});assert.equal(h.state.dispatches,1);assert.equal(await count('meri_conversations.runs',f),1);assert.ok((await inventory(f)).rowTargets.some(r=>r.table==='meri_objective_source.run_starts'));
   const entered=Promise.withResolvers(),release=Promise.withResolvers();let suppressionDone=false;
   const reader=createObjectiveGenerationReadback({runStarts,store:{...store,async read(...args){const r=await store.read(...args);entered.resolve();await release.promise;return r;}},objects:{async get(){assert.fail('acceptance does not read objects');}},retention:startup.gate});
   const input={schemaVersion:1,generationJobId:f.generationJobId,sourceAdmissionSha256:f.record.sourceAdmissionSha256},reading=reader.acceptance(input);await entered.promise;
