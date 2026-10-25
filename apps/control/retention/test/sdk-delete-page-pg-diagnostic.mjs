@@ -14,8 +14,9 @@ export async function inspectSdkPermitPage(client,{sql,args}){
 }
 
 export async function inspectSdkDeletePage(client,{sql,args,permit}){
- assert.equal(sql,'DELETE FROM meri_conversations.sdk_session_entries r WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND r.run_id=$3::uuid AND r.session_id=$4::uuid AND r.subpath=$5::text AND r.sequence=ANY($6::bigint[])');
- assert.equal(args.length,6);assert.ok(Array.isArray(args[5]));assert.equal(args[5].length,1000);
+ assert.equal(sql,'DELETE FROM meri_conversations.sdk_session_entries r WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND r.run_id=$3::uuid AND r.session_id=$4::uuid AND r.subpath=$5::text AND r.sequence>=$7::bigint AND r.sequence<=$8::bigint AND r.sequence=ANY($6::bigint[])');
+ assert.equal(args.length,8);assert.ok(Array.isArray(args[5]));assert.equal(args[5].length,1000);
+ assert.equal(args[6],Math.min(...args[5]));assert.equal(args[7],Math.max(...args[5]));
  assert.equal(permit?.pageRows,1000);assert.deepEqual(permit.args.slice(0,2),args.slice(0,2));
  assert.deepEqual(JSON.parse(permit.args[4]).map(row=>row.target.key),args[5].map(sequence=>({run_id:args[2],session_id:args[3],subpath:args[4],sequence})),
   'the explained INSERT and DELETE must describe the same exact page');
