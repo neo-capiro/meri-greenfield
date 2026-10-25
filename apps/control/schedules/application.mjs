@@ -18,8 +18,8 @@ const same=(a,b)=>hash(a)===hash(b),digest=/^[a-f0-9]{64}$/u,uuid=/^[a-f0-9]{8}-
 const deny=(code='ACCESS_DENIED',outcome='NOT_DISPATCHED')=>{throw Object.assign(Error('ROUTINES_'+code),{code:'ROUTINES_'+code,outcome});};
 const mutation=operation=>{if(!SCHEDULE_INTENT_OPERATIONS.includes(operation))deny('INVALID_REQUEST');return operation;};
 export function createRoutinesService(configuration){
- const c=own(configuration,['contextOwner','journalStore','proposalReader','scheduleOwner','scheduleClient','workflowClient','scheduleNotFoundError','now','maxRequestMs'],['runCancellation','readConsents','log']);
- const resolve=storageMethod(c.contextOwner,'resolve'),authorizeRequest=storageMethod(c.contextOwner,'authorizeRequest'),readProposal=storageMethod(c.proposalReader,'readProposal'),readIntent=storageMethod(c.scheduleOwner,'readIntent');
+ const c=own(configuration,['contextOwner','journalStore','proposalReader','scheduleOwner','scheduleClient','workflowClient','scheduleNotFoundError','now','maxRequestMs'],['runCancellation','readConsents','log','retention']);
+ const resolve=storageMethod(c.contextOwner,'resolve'),authorizeRequest=storageMethod(c.contextOwner,'authorizeRequest'),readProposal=storageMethod(c.proposalReader,'readProposal'),readPreparation=storageMethod(c.journalStore,'read'),readIntent=storageMethod(c.scheduleOwner,'readIntent');
  if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)deny('INVALID_REQUEST');
  // Option B (lane RD): with the read-consent port the owner's approval also creates, resumes, pauses or revokes the routine's read
  // consent (read-consent-lifecycle.mjs); without it (option B off) nothing below changes.
@@ -28,16 +28,19 @@ export function createRoutinesService(configuration){
  function input(value,parse){try{const v=call(value);return {v,b:parse(v.request)};}catch{deny('INVALID_REQUEST');}}
  function life(v){return createOperationLifetime({deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),now:c.now,signal:v.signal,errorFactory:code=>Object.assign(Error(code),{code,outcome:'UNKNOWN'})});}
  function contextCall(v,body,l,extra={}){return {credential:v.credential,operation:body.operation,request:body.request,deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),signal:l.signal,...extra};}
+ const retention=c.retention===undefined?null:storageMethod(c.retention,'assertServable');
+ async function serve(binding,signal){if(retention)await retention({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId});}
  const cancelRuns=c.runCancellation===undefined?undefined:storageMethod(c.runCancellation,'cancel');
  function tools(resolved){
   // Run cancellation is attended: it carries this request's own resolved session selection (never request data), from which a
   // Core-proof run control obtains the owner's live native session. Unattended callers have no such selection.
   const attended=data({binding:resolved.current.binding,selectedClientId:resolved.current.selectedClientId});
   const runCancellation=cancelRuns===undefined?undefined:Object.freeze({cancel:call=>cancelRuns({...call,attended})});
-  const lifecycle=createScheduleLifecycle({scheduleOwner:c.scheduleOwner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,authorize:resolved.authorize,clock:c.now,...(runCancellation===undefined?{}:{runCancellation})});
-  return createScheduleToolInterface({lifecycle,validators,authorize:resolved.authorize,clock:c.now});
+  const authorize=async value=>{await serve(resolved.current.binding,value.signal);const receipt=await resolved.authorize(value);await serve(resolved.current.binding,value.signal);return receipt;};
+  const lifecycle=createScheduleLifecycle({scheduleOwner:c.scheduleOwner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,authorize,clock:c.now,...(runCancellation===undefined?{}:{runCancellation})});
+  return createScheduleToolInterface({lifecycle,validators,authorize,clock:c.now});
  }
- async function current(v,body,l){const r=await l.run(()=>authorizeRequest(contextCall(v,body,l)));l.limitDeadline(r.expiresAtMs);l.check();return r;}
+ async function current(v,body,l){const r=await l.run(()=>authorizeRequest(contextCall(v,body,l)));l.limitDeadline(r.expiresAtMs);await l.run(signal=>serve(r.binding,signal));l.check();return r;}
  async function retained(v,body,l,auth){
   const row=await l.run(signal=>readProposal({tenantId:auth.binding.tenantId,proposalId:body.proposalId,intentSha256:body.intentSha256,signal}));
   if(row===null)deny('STALE');
@@ -45,7 +48,7 @@ export function createRoutinesService(configuration){
   if(row.key.actorId!==auth.binding.actorId||release.binding.actorId!==auth.binding.actorId||proposal.projection.owner.actorId!==auth.binding.actorId||
    row.record.operation.id!==body.operation||row.record.argumentsSha256!==hash(body.request)||proposal.proposalId!==body.proposalId||proposal.intentSha256!==body.intentSha256)deny();
   const granted=new Set(auth.scopes.map(hash));if(proposal.projection.scopes.some(s=>!granted.has(hash(s))))deny();
-  return {row,proposal,release};
+  await l.run(signal=>serve(release.binding,signal));l.check();return {row,proposal,release};
  }
  function decisionBody(raw,approval){
   const b=data(own(raw,['operation','request','proposalId','intentSha256',...(approval?['decision']:[])]));mutation(b.operation);validators.normalizeRequest(b.operation,b.request);
@@ -58,12 +61,38 @@ export function createRoutinesService(configuration){
  }
  function acknowledged(i){return validateShape('ScheduleMutationOutput',{operation:i.operation,status:'acknowledged',receipt:{operation:i.operation,intentId:i.intentId,generation:i.generation,projection:i.projection,outcome:'ACKNOWLEDGED',physicalStopProven:false}});}
  return Object.freeze({
+  /** Internal prepare-only facet for the SDK's existing intent journal. The caller owns delivery custody;
+   * this facet uses the same current context and tool owner as the public prepare operation and never applies a schedule. */
+  async prepareIntent({binding,...value}){
+   const {v,b}=input(value,raw=>{const body=data(own(raw,['operation','request']));mutation(body.operation);validators.normalizeRequest(body.operation,body.request);
+    if(body.operation==='cancel_scheduled_task'&&body.request.runs.length)deny('INVALID_REQUEST');return body;});
+   const l=life(v);try{
+    const auth=await current(v,b,l);if(!same(auth.binding,binding))deny();
+    const resolved=await l.run(()=>resolve(contextCall(v,b,l)));if(!same(resolved.current.binding,binding))deny();
+    const result=await createScheduleIntentPreparer({operation:b.operation,binding,tool:tools(resolved),resolveContext:async()=>resolved.context})
+     .prepare({arguments:resolved.prepared.input,signal:l.signal});
+    const fresh=await current(v,b,l);if(!same(fresh.binding,binding))deny();l.check();
+    // Retain the exact request, including requested (not merely clamped) limits, for the user's later review/approval.
+    return data({...result,request:b.request});
+   }finally{l.close();}
+  },
   async prepare(value){
    const {v,b}=input(value,raw=>{const body=data(own(raw,['requestId','operation','request']));mutation(body.operation);validators.normalizeRequest(body.operation,body.request);
     if(body.operation==='cancel_scheduled_task'&&body.request.runs.length)deny('INVALID_REQUEST');
     if(typeof body.requestId!=='string'||!/^[A-Za-z0-9._-]{1,128}$/u.test(body.requestId))deny('INVALID_REQUEST');return body;});
    const l=life(v);try{
     const auth=await current(v,b,l),deliveryId='sdk:'+hash({protocol:'meri.routines.delivery/1',requestId:b.requestId,operation:b.operation});
+    // Retained text is not an expired credential. Exact recovery is authorized by this request's fresh current context.
+    const prior=await l.run(signal=>readPreparation({key:{tenantId:auth.binding.tenantId,actorId:auth.binding.actorId,conversationId:auth.binding.conversationId,deliveryId},signal}));
+    if(prior!==null){
+     if(!same(prior.record.operation,{id:b.operation,version:'0.2.0'})||prior.record.argumentsSha256!==hash(b.request))deny('STALE');
+     if(prior.state==='PENDING'||prior.state==='UNKNOWN')deny('UNKNOWN','UNKNOWN');
+     if(prior.state==='FAILED')throw intentFault(prior.outcome.code,'none');
+     const p=prior.outcome.result.proposal;
+     const saved=await retained(v,{...b,proposalId:p?.proposalId,intentSha256:p?.intentSha256},l,auth);
+     if(!same(saved.row.outcome,prior.outcome)||saved.release.binding.conversationId!==auth.binding.conversationId)deny();
+     await current(v,b,l);l.check();return data(saved.row.outcome.result);
+    }
     // Resolve only after the durable claim. Exact replay allocates no replacement identity.
     const preparer={operation:{id:b.operation,version:'0.2.0'},owner:'schedule',binding:auth.binding,async prepare(input){
      let resolved;try{resolved=await l.run(()=>resolve(contextCall(v,b,l)));if(!same(resolved.current.binding,auth.binding))deny();}
@@ -87,10 +116,11 @@ export function createRoutinesService(configuration){
      if(row.state!=='ACKNOWLEDGED')deny('UNKNOWN','UNKNOWN');known=true;
      const result=acknowledged(prior);await current(v,b,l);l.check();return result;
     }
-    if(saved.release.expiresAtMs<=c.now())deny('STALE');l.limitDeadline(saved.release.expiresAtMs);
+    // The saved release deadline bounded the old HTTP read, not the lifetime of the exact proposal text.
+    // Fresh policy/model/session checks below authorize this explicit approval; no old credential is renewed.
     const resolved=await l.run(()=>resolve(contextCall(v,b,l,{proposal:saved.proposal})));
     if(!same(resolved.current.binding,auth.binding)||resolved.prepared.intentSha256!==b.intentSha256)deny();
-    const at=c.now(),expires=Math.min(v.deadlineMs,at+c.maxRequestMs,saved.release.expiresAtMs,resolved.current.expiresAtMs);
+    const at=c.now(),expires=Math.min(v.deadlineMs,at+c.maxRequestMs,resolved.current.expiresAtMs);
     const approval={proposalId:b.proposalId,commandSha256:b.intentSha256,decision:'approved',approver:{tenantId:auth.binding.tenantId,actorId:auth.binding.actorId},policyRevision:auth.scopes[0].policyRevision,decidedAt:new Date(at).toISOString(),expiresAt:new Date(expires).toISOString()};
     // The read consent moves first, under this request's own session selection (never request data): a widening that fails refuses
     // the approval before anything is dispatched; a narrowing that fails is reported and the mutation proceeds.

@@ -100,10 +100,11 @@ function preparedSchedule(raw,s,instructionsOnly){
   const row=data(raw),storedKey=data({tenantId:row.tenant_id,actorId:row.actor_id,conversationId:row.conversation_id,deliveryId:row.delivery_id});key(storedKey);
   const retained=entry(row);
   if(storedKey.tenantId!==s.tenantId||retained.state!=='PREPARED')refuse('INTENT_JOURNAL_STATE');
-  const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal']);
+  const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal'],['request']);
   const proposal=validateToolShape('ScheduleMutationOutput',result.proposal);
   const operations=instructionsOnly?['schedule_task','update_scheduled_task']:['schedule_task','update_scheduled_task','cancel_scheduled_task'];
   if(result.status!=='approval_required'||proposal.status!=='approval_required'||!operations.includes(proposal.operation)||retained.record.operation.id!==proposal.operation||proposal.proposalId!==s.proposalId||proposal.intentSha256!==s.intentSha256||proposal.projection.owner.tenantId!==s.tenantId)refuse('INTENT_JOURNAL_STATE');
+  if(result.request!==undefined&&hash(result.request)!==retained.record.argumentsSha256)refuse('INTENT_JOURNAL_STATE');
   if(custody.release.binding.tenantId!==storedKey.tenantId||custody.release.binding.actorId!==storedKey.actorId||custody.release.binding.conversationId!==storedKey.conversationId)refuse('INTENT_JOURNAL_STATE');
   const originalScopes=new Set(custody.release.scopes.map(hash)),proposalScopes=proposal.projection.scopes.map(hash);
   if(custody.release.scopes.length>100||originalScopes.size!==custody.release.scopes.length||!proposalScopes.length||proposalScopes.length>100||new Set(proposalScopes).size!==proposalScopes.length||proposal.projection.scopes.some(scope=>scope.tenantId!==s.tenantId)||proposalScopes.some(scope=>!originalScopes.has(scope)))refuse('INTENT_JOURNAL_STATE');

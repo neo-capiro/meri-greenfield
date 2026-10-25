@@ -18,7 +18,7 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -169,7 +169,16 @@ export function createIntentApprovalOwner(configuration){
    return {...base,state:'prepared',kind:'draft',versionId:result.version.versionId};
   }
   const proposal=commandProposal(entry);
-  if(!proposal)return {...base,state:'prepared',kind:'schedule_proposal',proposalId:result?.proposal?.proposalId??null};
+  if(!proposal){
+   if(result?.request===undefined)return {...base,state:'prepared',kind:'schedule_proposal',proposalId:result?.proposal?.proposalId??null};
+   const p=artifactShape('ScheduleMutationOutput',result.proposal),binding=entry.outcome.release?.binding;
+   scheduleToolValidators.normalizeRequest(base.operation.id,result.request);validateShape('RunBinding',binding);
+   if(p.status!=='approval_required'||p.operation!==base.operation.id||hash(result.request)!==entry.record.argumentsSha256||
+    !same(conversationOf(binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId})||
+    p.projection.owner.tenantId!==binding.tenantId||p.projection.owner.actorId!==binding.actorId||p.projection.scopes.some(scope=>!entry.outcome.release.scopes.some(original=>same(scope,original))))fail('INTENT_JOURNAL_UNAVAILABLE');
+   if(!visible(p.projection.scopes,principal))return {...base,state:'prepared',kind:'schedule_proposal',withheld:true};
+   return {...base,state:'prepared',kind:'schedule_proposal',binding,request:result.request,proposal:p};
+  }
   if(!visible(proposal.command.scopes,principal))return {...base,state:'prepared',kind:'proposal',withheld:true};
   let decision='unavailable',execution='unavailable';
   if(typeof decisions?.readDecision==='function'){

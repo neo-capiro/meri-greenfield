@@ -8,6 +8,8 @@ import {createProductPortsFactory} from '../index.mjs';
 import {createIntentsFamily,intentsComposition,compileIntentsConfiguration,executionOwnerUnavailable} from '../intents.mjs';
 import {captureRuntimePorts,composeRuntimePorts} from '../../product-applications.mjs';
 import {productReadiness} from '../../product-readiness.mjs';
+import {bindApprovalSessions} from '../../native-authority/approval-forwarder.mjs';
+import {createRetentionReadGate} from '../../../control/retention/suppression.mjs';
 import {INTENT_PATHS} from '../../../control/intents/http.mjs';
 import {productFailure} from '../../../control/product-access/errors.mjs';
 import {commandComposition,mount,delivery,NOW} from '../../../control/intents/test/fixture.mjs';
@@ -91,15 +93,23 @@ test('enabled: list and decide reach the owners; Core records the decision and e
  const joined=composeRuntimePorts(ctx.canonicalProductPorts,captureRuntimePorts(ports));
  assert.equal(productReadiness({ports:joined,sourceEnabled:false}).owners.find(o=>o.name==='intents.application').state,'composed');
  const post=(path,body)=>joined.intentApplication.handle(new Request('http://127.0.0.1'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer token'},body:JSON.stringify(body)}));
- const listed=await post(INTENT_PATHS.list,{conversationId:c.binding.conversationId});assert.equal(listed.status,200);
+ const listBody={conversationId:c.binding.conversationId};
+ assert.equal((await post(INTENT_PATHS.list,listBody)).status,502,'real composition fails closed until retention is bound');
+ const retentionState={enabled:true,row:null};
+ const journal={async get(){return retentionState.row;},async withServing(_keys,release,{signal}){return release(signal);}};
+ const retention=createRetentionReadGate({journal,serving:{isEnabled:()=>retentionState.enabled}});
+ bindApprovalSessions(ctx,{},retention,{});
+ const listed=await post(INTENT_PATHS.list,listBody);assert.equal(listed.status,200);
+ for(const row of [{state:'SUPPRESSED',reason:'expired-trash'},{state:'PURGED'}]){retentionState.row=row;const denied=await post(INTENT_PATHS.list,listBody);assert.equal(denied.status,502);assert.equal(Object.hasOwn(await denied.json(),'intents'),false);}
+ retentionState.row=null;retentionState.enabled=false;assert.equal((await post(INTENT_PATHS.list,listBody)).status,502);retentionState.enabled=true;
  const before=(await listed.json()).intents;assert.equal(before.length,1);assert.equal(before[0].phase,'awaiting_approval');assert.equal(before[0].execution,'unavailable');
- assert.ok(statements.some(s=>s.startsWith('SELECT delivery_id,created_at')),'list read the intent journal');assert.deepEqual(core.state.calls,['approval/decision']);
+ assert.ok(statements.some(s=>s.startsWith('SELECT delivery_id,created_at')),'list read the intent journal');assert.deepEqual(core.state.calls,Array(5).fill('approval/decision'));
  const decided=await post(INTENT_PATHS.decide,{conversationId:c.binding.conversationId,deliveryId:delivery(1),proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved'});
  assert.equal(decided.status,503);assert.deepEqual(await decided.json(),{error:{code:'EXECUTION_OWNER_UNAVAILABLE',outcome:'NOT_DISPATCHED'}});
  assert.equal(core.state.calls.filter(op=>op==='approval/record').length,1,'Core recorded the decision');assert.equal(c.f.state.fetches,0,'nothing executed');
  const after=(await (await post(INTENT_PATHS.list,{conversationId:c.binding.conversationId})).json()).intents;assert.equal(after[0].phase,'approved');assert.equal(after[0].decision.decision,'approved');
  assert.ok(statements.every(s=>!s.includes('meri_commands.')),'the command journal is never read without the execution owner');
- assert.deepEqual(admitted,['token','token','token']);
+ assert.deepEqual(admitted,Array(7).fill('token'));
  // The shared approval store reads the SAME Core decision the route recorded (the executor's approval guard input).
  const current=JSON.parse(await intentsComposition(ctx).approvalStore.getCurrent({proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,binding:proposal.command.binding}));
  assert.equal(current.decision.decision,'approved');assert.equal((await intentsComposition(ctx).readDecision({proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,binding:proposal.command.binding})).decision,'approved');

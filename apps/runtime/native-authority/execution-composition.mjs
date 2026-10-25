@@ -1,6 +1,7 @@
 /** Native intent preparation uses the active SDK execution and current Core authority. */
 import {types} from 'node:util';
 import {memoryIntentPreparersFor} from '../product-ports/memory.mjs';
+import {routineIntentPreparersFor} from '../routines-intents.mjs';
 import {createNativeTaskClientResolver} from './task-client-reference.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -46,7 +47,7 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
   const first=await fresh(signal);
   // Availability is a description of composed preparers, but it still belongs to the same current authorized run.
   await currentRights({signal,policyRevision:first.policyRevision});
-  const preparers=[...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
+  const preparers=[...routineIntentPreparersFor(context,{binding,selectedClientId:first.selectedClientId}),...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
    async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};},
    clientResolution:{clientId:first.selectedClientId},signal}),
    ...(configuration.intents.core?[...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,

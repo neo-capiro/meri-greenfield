@@ -95,8 +95,7 @@ function approvalForwarder(context,c,intents,now,transport){
   },
   ...(candidate===null?{}:{selectedClientId:candidate.identity.commandContext.clientResolution.clientId}),
   now,maxRequestMs:Math.min(c.configuration.limits?.requestMs??10000,30000),...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
- registerApprovalSessionBinder(context,(sessions,retention,store)=>{relay.bind(sessions);attended={sessions,retention,store};});
- return Object.freeze({forwarder,relay});
+ return Object.freeze({forwarder,relay,bind(sessions,retention,store){relay.bind(sessions);attended={sessions,retention,store};}});
 }
 function compose(context,transport){
  let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
@@ -106,6 +105,9 @@ function compose(context,transport){
  if(typeof now!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  // With `intents.core` the approval operations go to Core P-INT-10 through the forwarder (the provider seam serves none of them).
  const core=intents.enabled?approvalForwarder(context,c,intents,now,transport):null;
+ let serving=null;
+ if(intents.enabled)registerApprovalSessionBinder(context,(sessions,retention,store)=>{core?.bind(sessions,retention,store);serving=retention;});
+ const retention=Object.freeze({withRelease(...args){if(typeof serving?.withRelease!=='function')throw new ProductError('PRODUCT_UNAVAILABLE');return serving.withRelease(...args);}});
  const call=core?(operation,input,options)=>core.forwarder.call(operation,input,options):typeof nativeCall==='function'?(operation,input,options)=>nativeCall.call(c.native,operation,input,options):undefined;
  // The one decision adapter for this control process. Inert: it holds the call and makes it only when a port is used.
  const decisions=typeof call==='function'?createNativeIntentApprovals({call,now,maxFactBytes:INTENT_FACT_BYTES}):null;
@@ -128,7 +130,7 @@ function compose(context,transport){
   documents:{execute:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
   filing:{execute:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
   ...(core?{tasks:{execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)}}:{}),
-  gate,now,limits,enabled:true});
+  gate,now,limits,retention,enabled:true});
  return Object.freeze({...shared,state:'composed',reason:null,application:composed.app,owner:composed.owner});
 }
 /** `transport` ({fetchImpl, readSecret}) is a trusted test seam for the approval forwarder only; production uses global fetch

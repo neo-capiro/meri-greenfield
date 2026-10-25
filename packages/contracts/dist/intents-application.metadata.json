@@ -116,8 +116,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "ed3fa750ac602f0a9da3a04404ec920c1fe932f4e2a2413add6e1cb1ba4c98f7",
-      "bytes": 20014
+      "sha256": "32352b94f958b2eae8c09a072221328f33dd0c023de710b77aba7e0071e6467f",
+      "bytes": 20990
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -126,8 +126,8 @@
     },
     {
       "path": "../../apps/control/intents/http.mjs",
-      "sha256": "0b225047e30cb3568fd31005cb07d4123e67603e37d0ae8350e0582eb1bd78ec",
-      "bytes": 1703
+      "sha256": "9aa528f02d216533d77715eb96c14173111939d5ae8a5ac2516484d9234b9111",
+      "bytes": 2343
     },
     {
       "path": "../../apps/control/product-access/errors.mjs",
@@ -138,6 +138,16 @@
       "path": "../../apps/control/product-access/http.mjs",
       "sha256": "d202540f9d9892350adf5a1bbfd8686a8322bdc1e9b3734f72f232e1ced41074",
       "bytes": 9194
+    },
+    {
+      "path": "../../apps/control/schedules/application-http.mjs",
+      "sha256": "9290a23126d872c67bdd93955a6ffaddcea198b4c5da426f55bbd0178dde5622",
+      "bytes": 6657
+    },
+    {
+      "path": "../../apps/control/schedules/application.mjs",
+      "sha256": "054ebb700a632de91247b0d7b204908e941e5388b2b4411876d82d52e9be1bd7",
+      "bytes": 16577
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
@@ -191,8 +201,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "4fc0ac341fce67b72a4a56cea5bdb66444be1b2c60228d7dd9b4bff8428645cc",
-      "bytes": 10254
+      "sha256": "b07af88ea003af67d237118188293cad94c5c1f2fce65f18e1970b47c34464f1",
+      "bytes": 12748
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -206,37 +216,63 @@
     },
     {
       "path": "intents-application/README.md",
-      "sha256": "9e90a6fad4cedb5b3f0eb0c71c888831c6e1b69433bd10852cb5c86f306f9c0d",
-      "bytes": 7031
+      "sha256": "1d60385e20ee688295be4a847f762ba937b66e90c06ecdbee60e147c751beca0",
+      "bytes": 7799
     },
     {
       "path": "intents-application/receive.mjs",
-      "sha256": "93151b65c6fe9f4eacea718cde34e8c70462d9fcabc0e09f40c51738cc78b3d6",
-      "bytes": 2686
+      "sha256": "3753603d990b43680ae382731f5d715d2f944734407306125a12e9d7d181d715",
+      "bytes": 2796
+    },
+    {
+      "path": "intents-application/routines.mjs",
+      "sha256": "741e94c8e9a02008420172b932db6ce95aa5dbce4a4b4fb843f4a71f29ce0c3a",
+      "bytes": 4570
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "adb47d3caa40bd91f7ca5e22c9f205dfe3f82052102ca5d227b49fa8c1fe7630",
-      "bytes": 6395
+      "sha256": "372a24875b3f0f07b45f1714404c1c0d138a444eec6772136b650997b24a4332",
+      "bytes": 8939
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "87ff534088a731a84977ac99236f0ff92ebab2b9837250ac7b6fe0830cffd731",
-      "bytes": 11360
+      "sha256": "ff2a88467967c43644c3e79b761d4acc384a5527947462239ce5ec26de91bb37",
+      "bytes": 11869
     },
     {
       "path": "meri.schema.json",
       "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
       "bytes": 50043
+    },
+    {
+      "path": "schedules-0.2/application-protocol.mjs",
+      "sha256": "aca5ec8b8fa966991a6faf4f55b61e82694a76badebc5f6746f0fa3835478e9f",
+      "bytes": 864
+    },
+    {
+      "path": "schedules-0.2/inspection.schema.json",
+      "sha256": "2e6a140a555984f6de88c4d1bded03bb2aebec9bd2e9bc34709130d0ee22fa85",
+      "bytes": 6806
+    },
+    {
+      "path": "schedules-0.2/lifecycle.schema.json",
+      "sha256": "0b391e3e94fc3278de6d061694772a853c54c083630f874c5dc54c82a01f5001",
+      "bytes": 18610
+    },
+    {
+      "path": "schedules-0.2/tool-interface.schema.json",
+      "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf",
+      "bytes": 24305
     }
   ],
-  "schemaSha256": "86ef381f2c332d469e7bbee80f6a3ffbc9e2bfe8cdd92c316e86e1583e988d37",
+  "schemaSha256": "0120aa451e8517bb202b8b0ef32504102e73f37561f82c131e36db65ab00b21c",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",
     "intents-application/boundary.mjs",
     "intents-application/intents-application-receiver.mjs",
     "intents-application/protocol.mjs",
+    "intents-application/routines.mjs",
     "intents-application/schema.mjs",
     "intents-application/semantics.mjs",
     "intents-generated:./generated-protocol.mjs",
@@ -245,7 +281,8 @@
     "node_modules/ajv/dist/runtime/equal.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
-    "node_modules/fast-deep-equal/index.js"
+    "node_modules/fast-deep-equal/index.js",
+    "schedules-0.2/application-protocol.mjs"
   ],
   "browserImports": []
 }

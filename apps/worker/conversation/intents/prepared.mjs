@@ -9,7 +9,7 @@
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
-import {artifactValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators,scheduleToolValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const ACTIONS=Object.freeze({create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
@@ -42,9 +42,11 @@ export function assertPreparedResult(owner,operation,value,binding,current){
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
   if(owner==='schedule'){
-   own(v,['status','proposal']);const p=v.proposal;
+   own(v,['status','proposal'],['request']);const p=v.proposal;
+   toolShape('ScheduleMutationOutput',p);
+   if(v.request!==undefined)scheduleToolValidators.normalizeRequest(operation.id,v.request);
    if(v.status!=='approval_required'||p?.status!=='approval_required'||p.operation!==operation.id||typeof p.proposalId!=='string'||typeof p.intentSha256!=='string'||
-    p.projection?.owner?.tenantId!==binding.tenantId||!currentScopes(p.projection.scopes,binding,current.scopes))refuse();
+    p.projection?.owner?.tenantId!==binding.tenantId||p.projection.owner.actorId!==binding.actorId||!currentScopes(p.projection.scopes,binding,current.scopes))refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
   if(owner==='artifact'&&v.status==='analysis_pending'){

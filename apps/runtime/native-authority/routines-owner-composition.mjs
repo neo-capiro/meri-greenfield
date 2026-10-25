@@ -122,10 +122,21 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
     assertNativeConversationScope(current);
     const choice={binding:b,scopes:current.scopes,selectedClientId:current.selectedClientId};
     if(selected!==null&&!same(choice,selected))throw contextRefuse();
-    const {run}=await readRun(b,{after:0,limit:1},check),head=await readHead(b,check),policy=await readModelPolicy(b,check);check();
-    if(!same(run.binding,b)||!same(run.scopes,current.scopes)||!same(run.versions,c.versions)||run.policyRevision!==current.scopes[0].policyRevision||
-     !['starting','running','paused','waiting-for-approval','completed'].includes(run.state)||head.reserved!==false||!same(head.binding,b)||
-     !same(head.scopes,current.scopes)||head.policyRevision!==run.policyRevision||!Number.isSafeInteger(policy.maxBudgetMicroUsd)||policy.maxBudgetMicroUsd<1)throw contextRefuse();
+    const saved=typeof store.readOptional==='function'?await store.readOptional(b,{after:0,limit:1},check):await readRun(b,{after:0,limit:1},check);check();let policy;
+    if(saved===null){
+     if(typeof store.initialBindings?.readPreparation!=='function'||typeof store.readCurrentModelPolicy!=='function')throw contextRefuse();
+     const initial=await store.initialBindings.readPreparation({binding:b},check);check();const record=initial?.record;
+     if(!record||initial.recordSha256!==hash(record)||!same(record.binding,b)||!same(record.versions,c.versions)||record.selectedClientId!==current.selectedClientId||
+      record.policyRevision!==current.scopes[0].policyRevision||record.expiresAtMs<=now())throw contextRefuse();
+     policy=await store.readCurrentModelPolicy(b,check);check();
+     const after=await store.initialBindings.readPreparation({binding:b},check);check();if(!same(initial,after))throw contextRefuse();
+    }else{
+     const {run}=saved,head=await readHead(b,check);policy=await readModelPolicy(b,check);check();
+     if(!same(run.binding,b)||!same(run.scopes,current.scopes)||!same(run.versions,c.versions)||run.policyRevision!==current.scopes[0].policyRevision||
+      !['starting','running','paused','waiting-for-approval','completed'].includes(run.state)||head.reserved!==false||!same(head.binding,b)||
+      !same(head.scopes,current.scopes)||head.policyRevision!==run.policyRevision)throw contextRefuse();
+    }
+    if(!Number.isSafeInteger(policy.maxBudgetMicroUsd)||policy.maxBudgetMicroUsd<1)throw contextRefuse();
     // A changed tenant budget never reuses the old proposal/authorization silently.
     if(budget!==null&&budget!==policy.maxBudgetMicroUsd)throw contextRefuse();
     selected??=data(choice);budget??=policy.maxBudgetMicroUsd;

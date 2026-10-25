@@ -40,6 +40,7 @@ import {createRoutinesCoreClient,createRoutinesServiceSecret} from '../native-au
 import {routineCancellationTrust} from '../native-authority/routines-cancellation-proof.mjs';
 import {createRoutinesRunControl} from '../native-authority/routines-run-control.mjs';
 import {readSecret as readRuntimeSecret} from '../config.mjs';
+import {registerRoutineIntentOwner} from '../routines-intents.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** Who must produce each owner before routines can be enabled in production. */
 export const PRODUCTION_ROUTINE_OWNERS=Object.freeze({
@@ -98,13 +99,15 @@ export function routinesFamily(owners,transport){
   if(captured===null||core===null&&captured.runControl===undefined)return {ports:{routinesApplicationFactory:unavailable}};
   if(core!==null&&captured.runControl!==undefined)throw fault('ROUTINES_CONFIGURATION');
   const produced=core===null?null:coreOwners({core,configuration,pool,client,now,newId:captured.newId,transport:seam});
-  return {ports:{routinesApplicationFactory:createRuntimeRoutinesFeature({enabled:true,pool,client,now,...(captured.newId?{newId:captured.newId}:{}),
+  const feature=createRuntimeRoutinesFeature({enabled:true,pool,client,now,...(captured.newId?{newId:captured.newId}:{}),
    context:{...captured.context,policy:produced?.policy??captured.context.policy},
    runControl:produced?.runControl??captured.runControl,retirement:captured.retirement,
    ...(produced===null?{}:{cancellationProofs:produced.cancellationProofs,sessionRelay:produced.sessionRelay}),
    ...(captured.readConsents===undefined?{}:{readConsents:captured.readConsents}),...(captured.log===undefined?{}:{log:captured.log}),
    ...(captured.contextOwnerFactory===undefined?{}:{contextOwnerFactory:captured.contextOwnerFactory}),
-   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}})}};
+   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});
+  registerRoutineIntentOwner(context,value=>feature.intentPreparersFor(value));
+  return {ports:{routinesApplicationFactory:feature}};
  };
 }
 export const createRoutinesFamily=routinesFamily();

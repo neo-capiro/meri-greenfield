@@ -4,10 +4,8 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ApplicationError,jsonBody,response,errorResponse} from '../action-application/http.mjs';
 
-export const ROUTINE_PATHS=Object.freeze({
- prepare:'/api/routines/prepare',approve:'/api/routines/approve',
- list:'/api/routines/list',reconcile:'/api/routines/reconcile',
-});
+import {ROUTINE_PATHS,routineErrorStatus} from '../../../packages/contracts/schedules-0.2/application-protocol.mjs';
+export {ROUTINE_PATHS};
 export const routinesUnavailable=()=>response({error:{code:'ROUTINES_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},503);
 const routes=new Map(Object.entries(ROUTINE_PATHS).map(([method,path])=>[path,method]));
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(name=>[name,Object.getOwnPropertyDescriptor(Request.prototype,name).get]));
@@ -56,10 +54,7 @@ function returnedState(value,operation){
 }
 function failure(error,state){
  const admitted=serviceError(error),code=admitted.code??'REQUEST_FAILED';
- const status=admitted.status??(
-  /(?:^|_)UNAUTHENTICATED$/u.test(code)?401:/(?:^|_)ACCESS_DENIED$/u.test(code)?403:
-  /(?:^|_)(?:STALE|APPROVAL_REFUSED)$/u.test(code)?409:code==='DEADLINE'?408:code==='CANCELLED'?499:
-  /(?:^|_)INVALID_REQUEST$/u.test(code)?400:/(?:^|_)UNAVAILABLE$/u.test(code)?503:502);
+ const status=admitted.status??routineErrorStatus(code);
  const outcome=state.knownAcknowledged?'ACKNOWLEDGED_NOT_RELEASED':state.unresolved?'UNRESOLVED':
   admitted.outcome??(state.started?'UNKNOWN':'NOT_DISPATCHED');
  return response({error:{code,outcome}},status);
@@ -104,7 +99,8 @@ export function createRoutinesApplication(configuration){
   if(c.now!==undefined&&typeof c.now!=='function')throw Error();
   if(c.enabled!==false){
    if(typeof c.now!=='function'||limits===undefined)throw Error();
-   methods=own(c.service,Object.keys(ROUTINE_PATHS));
+   // The internal SDK preparation facet is never a route; dispatch still selects only ROUTINE_PATHS.
+   methods=own(c.service,Object.keys(ROUTINE_PATHS),['prepareIntent']);
    if(Object.values(methods).some(method=>typeof method!=='function'))throw Error();
   }
  }catch{throw TypeError('ROUTINES_APPLICATION_CONFIGURATION');}

@@ -7,6 +7,7 @@ import {ARTIFACT_MIME_TYPES,assertNativeArtifactEvidenceBinding} from '../artifa
 import {validators} from './generated-validator.mjs';
 import {intentsMetadata} from './generated-protocol.mjs';
 import {fail} from './boundary.mjs';
+import {assertRoutineProposal} from './routines.mjs';
 const same=(a,b)=>canonicalize(a)===canonicalize(b);
 const sha=async value=>Array.from(new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonicalize(value)))),byte=>byte.toString(16).padStart(2,'0')).join('');
 const conflict=()=>fail('INTENTS_CORRELATION');
@@ -106,6 +107,12 @@ async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
+ if(value.kind==='schedule_proposal'){
+  if(!Object.hasOwn(value,'proposal'))return;
+  if(value.binding.conversationId!==conversationId||value.proposal.projection.owner.tenantId!==value.binding.tenantId||value.proposal.projection.owner.actorId!==value.binding.actorId||
+   value.proposal.projection.scopes.some(scope=>scope.tenantId!==value.binding.tenantId))conflict();
+  assertRoutineProposal(value.proposal,value.operation.id,value.request);return;
+ }
  if(value.kind==='memory_review'){
   if(value.operation.id!=='save_memory')conflict();
   if(!Object.hasOwn(value,'review'))return;

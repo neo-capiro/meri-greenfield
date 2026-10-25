@@ -85,7 +85,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const actionApplication=configuration.sourceEnabled===true?(ports.actionApplication??ports.actionApplicationFactory?.create({sessions,conversationStore,retention})):null;
  if(types.isPromise(actionApplication)){Promise.prototype.then.call(actionApplication,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const handleAction=actionApplication==null?null:storageMethod(actionApplication,'handle');
- const routines=ports.routinesApplicationFactory?ports.routinesApplicationFactory.create({sessions}):null;
+ const routines=ports.routinesApplicationFactory?ports.routinesApplicationFactory.create({sessions,retention}):null;
  const historyCurrentness=ports.routinesApplicationFactory?.historyCurrentness&&ports.conversationMembership&&ports.conversationCurrentness?ports.routinesApplicationFactory.historyCurrentness({gate:ports.conversationMembership,core:ports.conversationCurrentness}):ports.conversationCurrentness;
  const history=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryApplication({
   service:createConversationHistoryService({store:conversationStore,gate:ports.conversationMembership,nextRunOwner:ports.conversationTurns,retention,suppression:managementSuppression}),gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,now,
