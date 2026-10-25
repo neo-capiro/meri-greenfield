@@ -381,7 +381,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -878,7 +878,7 @@ test('tenant settings grants append ordinal 58 once without changing the applied
 });
 
 test('projection expansion appends only ordinal 59 and preserves the applied 58-entry prefix',async()=>{
- const plan=loadPlan(),entry=plan.at(-1);
+ const plan=loadPlan().slice(0,59),entry=plan.at(-1);
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,58))).digest('hex'),'d37683ea46f64006c1b8deb510f5c206192e2b1f480bff9326f47aba62881b7f');
  assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[59,59,'migration','integration']);
  assert.equal(entry.path,'apps/control/conversations/migrations/0027_retention_target_projection.sql');
@@ -906,6 +906,51 @@ test('projection expansion preserves the complete canonical guard and byte-ident
   ['trash_doc."restoreUntilMs"',"s.projection#>>'{purge,trash,restoreUntilMs}'"],['trash_doc."trashedAtMs"',"s.projection#>>'{purge,trash,trashedAtMs}'"]];
  for(const [from,to] of fields.sort((a,b)=>b[0].length-a[0].length))canonical=canonical.replaceAll(from,to);
  assert.equal(canonical,before.slice(before.indexOf('CREATE OR REPLACE FUNCTION'),before.indexOf(legacy)));
+});
+
+test('SDK identity construction appends only ordinal 60 and preserves the applied 59-entry prefix',async()=>{
+ const plan=loadPlan(),entry=plan.at(-1);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,59))).digest('hex'),'2268948fce1943a29078bc2a2be23922c7c049b6fcdeb7d9af25b6053d80d7bf');
+ assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[60,60,'migration','integration']);
+ assert.equal(entry.path,'apps/control/conversations/migrations/0028_retention_sdk_identity.sql');
+ const db=databaseWithLedger(plan,59),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,59),prefix);assert.equal(db.state.ledger.length,60);
+ assert.deepEqual(db.state.executed,[migrationBody(entry.text).replace(/\s+/gu,' ').trim()]);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});assert.equal(db.state.executed.length,1);
+ assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('SDK identity construction preserves every guard predicate, lock and legacy mutation rule',()=>{
+ const plan=loadPlan(),before=plan.find(e=>e.ordinal===59).text,after=plan.find(e=>e.ordinal===60).text;
+ const functionBody=(text,name)=>{const start=text.indexOf(`CREATE OR REPLACE FUNCTION meri_conversations.${name}(`);
+  assert.ok(start>=0);return text.slice(start,text.indexOf('END $$;',start)+7);};
+ const guard='expired_conversation_purge_target',trigger='reject_sdk_mirror_mutation';
+ const aggregate=' SELECT jsonb_object_agg(k,p_row->k) INTO actual_key FROM unnest(columns) AS k;';
+ const direct=` IF p_table='meri_conversations.sdk_session_entries' THEN
+  actual_key:=jsonb_build_object('run_id',p_row->'run_id','session_id',p_row->'session_id',
+   'subpath',p_row->'subpath','sequence',p_row->'sequence');
+ ELSE
+${aggregate}
+ END IF;`;
+ const canonical=functionBody(after,guard);assert.ok(canonical.includes(direct));
+ assert.equal(canonical.replace(direct,aggregate),functionBody(before,guard),
+  'only exact JSONB key construction changes; all canonical/legacy predicates and FOR UPDATE locks remain');
+ const identity=` IF TG_OP='DELETE' AND TG_TABLE_SCHEMA='meri_conversations' AND TG_TABLE_NAME='sdk_session_entries' THEN
+  IF meri_conversations.expired_conversation_purge_target(TG_TABLE_SCHEMA||'.'||TG_TABLE_NAME,
+   jsonb_build_object('tenant_id',OLD.tenant_id,'conversation_id',OLD.conversation_id,
+    'run_id',OLD.run_id,'session_id',OLD.session_id,'subpath',OLD.subpath,'sequence',OLD.sequence),
+   'delete') THEN RETURN OLD; END IF;
+ ELSIF TG_OP='DELETE' AND meri_conversations.expired_conversation_purge_target(TG_TABLE_SCHEMA||'.'||TG_TABLE_NAME,to_jsonb(OLD),'delete') THEN RETURN OLD; END IF;`;
+ const mutation=functionBody(after,trigger);assert.ok(mutation.includes(identity));
+ const oldCall=" IF TG_OP='DELETE' AND meri_conversations.expired_conversation_purge_target(TG_TABLE_SCHEMA||'.'||TG_TABLE_NAME,to_jsonb(OLD),'delete') THEN RETURN OLD; END IF;";
+ assert.equal(mutation.replace(identity,oldCall),functionBody(read('apps/control/conversations/migrations/0023_expired_conversation_purge.sql'),trigger),
+  'all six fields are built only inside the entry branch; other tables, the exact legacy fallback and UPDATE refusal remain');
+ assert.deepEqual(splitStatements(migrationBody(after)).map(s=>s.text.match(/^CREATE OR REPLACE FUNCTION ([^(]+)/u)?.[1]),
+  [`meri_conversations.${guard}`,`meri_conversations.${trigger}`],
+  'no trigger timing, grants, storage or other schema changes');
 });
 
 test('retention and routine additions append entries 50 through 55 and preserve the applied ledger',async()=>{
