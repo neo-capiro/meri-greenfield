@@ -32,17 +32,31 @@ const now=()=>clock??Date.now();
 const pool=new pg.Pool({host:SOCKET,database:DATABASE,user:'meri_control_runtime',max:1,connectionTimeoutMillis:2000,query_timeout:6000,options:'-c statement_timeout=5000 -c lock_timeout=2000'});
 const connect=pool.connect.bind(pool);let failLastMutation=false,observedDeletes=0;
 let lookupInspected=false,inventorySqlTiming=null;const lookupDiagnostics=[];
+let sweepTiming=null;
+const sweepQueryKind=sql=>sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')?'entry-delete':
+ sql.startsWith('INSERT INTO meri_conversations.retention_purge_targets')?'permit-register':sql.startsWith('DELETE FROM meri_conversations.retention_purge_targets')?'permit-cleanup':
+ /^(BEGIN|COMMIT|ROLLBACK)\b/u.test(sql)?sql.split(' ')[0].toLowerCase():sql.includes('pg_advisory_')?'advisory-lock':
+ sql.includes('AS orphan')?'orphan':sql.includes('retention_row_bytes')?'metadata':sql.startsWith('SELECT r.* FROM meri_conversations.sdk_')?'body':'other';
+async function measuredSweepPhase(name,options,operation){const trace=sweepTiming;if(!trace)return operation();
+ const previous=trace.phase,startMs=performance.now()-trace.started;trace.phase=name;trace.deadlineMs??=options?.deadlineMs;
+ try{return await operation();}finally{trace.phases.push({name,startMs,endMs:performance.now()-trace.started});trace.phase=previous;}
+}
 const journalPool={async connect(){const c=await connect();return {release:error=>c.release(error),query:async(sql,args)=>{
  if(!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
   const page=JSON.parse(args[2]);if(page.length>=1000){lookupDiagnostics.push(await inspectRetentionTargetLookup(c,{tenantId:args[0],conversationId:args[1],page}));lookupInspected=true;}
  }
  if(failLastMutation&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries'))observedDeletes++;
  if(failLastMutation&&sql.startsWith('UPDATE meri_commands.approval_metadata')){failLastMutation=false;throw Error('synthetic final-statement outage');}
- if(!inventorySqlTiming)return c.query(sql,args);
- const timing=inventorySqlTiming,kind=sql.includes('AS orphan')?'orphan':sql.includes('retention_row_bytes')?'metadata':sql.startsWith('SELECT r.* FROM meri_conversations.sdk_')?'body':'other';
- const started=performance.now();let result;
- try{return result=await c.query(sql,args);}finally{const ms=performance.now()-started,part=timing[kind]??={queries:0,rows:0,ms:0,maxMs:0};
-  part.queries++;part.rows+=result?.rows?.length??0;part.ms+=ms;part.maxMs=Math.max(part.maxMs,ms);}
+ const timing=inventorySqlTiming,trace=sweepTiming;if(!timing&&!trace)return c.query(sql,args);
+ const kind=sql.includes('AS orphan')?'orphan':sql.includes('retention_row_bytes')?'metadata':sql.startsWith('SELECT r.* FROM meri_conversations.sdk_')?'body':'other';
+ const started=performance.now(),query=trace?{phase:trace.phase,kind:sweepQueryKind(sql),table:sql.match(/\b(?:FROM|INTO|UPDATE) (meri_[a-z_]+\.[a-z_]+)/u)?.[1]??null,locked:sql.includes('FOR UPDATE'),startMs:started-trace.started}:null;
+ if(trace){trace.pending=query;const part=trace.sql[query.phase+':'+query.kind]??={attempted:0,completed:0,failed:0,rows:0,ms:0,maxMs:0};part.attempted++;}
+ let result,failed=false;
+ try{return result=await c.query(sql,args);}catch(error){failed=true;throw error;}finally{const ms=performance.now()-started;
+  if(timing){const part=timing[kind]??={queries:0,rows:0,ms:0,maxMs:0};part.queries++;part.rows+=result?.rows?.length??0;part.ms+=ms;part.maxMs=Math.max(part.maxMs,ms);}
+  if(trace){const part=trace.sql[query.phase+':'+query.kind];part.completed++;part.failed+=Number(failed);part.rows+=result?.rowCount??0;part.ms+=ms;part.maxMs=Math.max(part.maxMs,ms);
+   trace.lastCompleted={...query,endMs:performance.now()-trace.started,rows:result?.rowCount??0,failed};if(trace.pending===query)trace.pending=null;}
+ }
 }};}};
 const insert=async(table,row)=>{const keys=Object.keys(row);return pool.query(`INSERT INTO ${table}(${keys.join(',')}) VALUES(${keys.map((_,i)=>'$'+(i+1)).join(',')})`,Object.values(row));};
 const count=async(table,f)=>Number((await pool.query(`SELECT count(*) FROM ${table} WHERE tenant_id=$1 AND conversation_id=$2`,[f.b.tenantId,f.b.conversationId])).rows[0].count);
@@ -59,10 +73,11 @@ const sourceFacts=createConversationPurgeFacts({pool,journal,core,storage,keyFor
 let measureSubject=null,inventoryTimings=[],inventorySqlTimings=[];
 const facts={...sourceFacts,async inventoryFor(subject,options){const started=performance.now();
  const measured=subject.subjectId===measureSubject;if(measured)inventorySqlTiming={};
- try{return await sourceFacts.inventoryFor(subject,options);}finally{if(measured){inventoryTimings.push(performance.now()-started);inventorySqlTimings.push(inventorySqlTiming);inventorySqlTiming=null;}}
+ try{return await measuredSweepPhase('inventory',options,()=>sourceFacts.inventoryFor(subject,options));}finally{if(measured){inventoryTimings.push(performance.now()-started);inventorySqlTimings.push(inventorySqlTiming);inventorySqlTiming=null;}}
 }};
 let loseRowAck=false,rowEffects=0;
-const rows={...journal.rows,async purge(...args){rowEffects++;const result=await journal.rows.purge(...args);if(loseRowAck){loseRowAck=false;throw Error('synthetic lost committed row acknowledgement');}return result;}};
+const rows={...journal.rows,async preflight(...args){return measuredSweepPhase('row-preflight',args[2],()=>journal.rows.preflight(...args));},
+ async purge(...args){rowEffects++;const result=await measuredSweepPhase('row-purge',args[2],()=>journal.rows.purge(...args));if(loseRowAck){loseRowAck=false;throw Error('synthetic lost committed row acknowledgement');}return result;}};
 const makeStartup=()=>createRetentionStartup({journal,watermark,ledgerSink:sink,ownership:journal,now,purge:{enabled:true,storage,rows,facts,keyFor,
  async finalize(s,trash){finalizeAttempts++;assert.equal(coreRecords.get(s.subjectId).trashRequestId,trash.requestId);if(loseFinalize){loseFinalize=false;throw Error('synthetic lost Core finalize acknowledgement');}}}});
 let startup=makeStartup();
@@ -256,7 +271,7 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
  });
  await t.test('late statement failure rolls back prior real deletes in the one row transaction',async()=>{
   const f=await seed();await content(f,{entryCount:4097});failLastMutation=true;observedDeletes=0;
-  await assert.rejects(startup.purge.sweepSubject(f.subject),e=>e.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause?.message==='synthetic final-statement outage');assert.ok(observedDeletes>=5,'all five earlier SDK entry pages executed inside the rolled-back transaction');
+  await assert.rejects(startup.purge.sweepSubject(f.subject),e=>e.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause?.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause.cause?.message==='synthetic final-statement outage');assert.ok(observedDeletes>=5,'all five earlier SDK entry pages executed inside the rolled-back transaction');
   assert.equal(await count('meri_conversations.sdk_session_entries',f),4097);assert.equal(await count('meri_conversations.sdk_sessions',f),1);assert.equal(await count('meri_conversations.sdk_session_streams',f),1);assert.equal(await count('meri_conversations.sdk_session_batches',f),5);assert.equal(await count('meri_conversations.events',f),1);
   assert.equal((await pool.query('SELECT payload FROM meri_commands.approval_metadata WHERE tenant_id=$1',[f.b.tenantId])).rows[0].payload.record.request.title,'Private draft title');
   assert.equal((await startup.purge.sweepSubject(f.subject)).state,'EXECUTED');
@@ -297,7 +312,10 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
    const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(p.state,'PLANNED');assert.equal(sdk.length,1);
    assert.deepEqual(sdk[0].target.sdk.counts,{sessions:1,streams:1,entries:100000,batches:100});assert.equal(sdk[0].target.sdk.entryBytes,f.sdk.bytes);
    assert.ok(Buffer.byteLength(JSON.stringify(p))<8*1024*1024,'compact plan fits the existing ledger record bound');
-   const purgeStarted=performance.now(),result=await startup.purge.sweepSubject(f.subject),purgeMs=performance.now()-purgeStarted;
+   const purgeStarted=performance.now();sweepTiming={started:purgeStarted,startedAtMs:Date.now(),phase:'sweep',deadlineMs:null,phases:[],sql:{},pending:null,lastCompleted:null};
+   let result,purgeMs;try{result=await startup.purge.sweepSubject(f.subject);}finally{purgeMs=performance.now()-purgeStarted;const trace=sweepTiming;
+    t.diagnostic('production sweep phases '+JSON.stringify({...trace,finishedAtMs:Date.now(),elapsedMs:purgeMs,
+     pending:trace.pending?{...trace.pending,elapsedMs:purgeMs-trace.pending.startMs}:null}));sweepTiming=null;}
    t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
    assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
    for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
