@@ -114,10 +114,16 @@ function fixedRow(k,step){
 /** One bounded page of exact SDK keys. The caller registers these individual
  * targets under its existing suppression transaction before this bulk delete. */
 export function sdkPurgePage(subject,targets){
- if(!Array.isArray(targets)||!targets.length||targets.length>1000)refuse();
- const rows=targets.map(target=>conversationPurgeRow(subject,{className:'sdkSession',target})),table=rows[0]?.table;
- if(!sdkTables.has(table)||rows.some(row=>!row||row.table!==table||row.sdk||row.mode!=='delete')||new Set(rows.map(row=>hash(row.target.key))).size!==rows.length)refuse();
- const columns=definitions.get(table).keys,types=columns.map(([name,type])=>`${name} ${type}`),match=columns.map(([name])=>`r.${name}=page.${name}`).join(' AND ');
- return {targets:rows.map(row=>row.target),sql:`DELETE FROM ${table} r USING jsonb_to_recordset($3::jsonb) AS page(${types.join(',')}) WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND ${match}`,
-  args:[subject.tenantId,subject.subjectId,JSON.stringify(rows.map(row=>row.target.key))]};
+ if(subject?.kind!=='conversation'||!Array.isArray(targets)||!targets.length||targets.length>1000)refuse();
+ const page=[],keys=[],seen=new Set();let table,columns;
+ for(const raw of targets){let target;try{target=assertConversationContentTarget(raw);}catch{refuse();}
+  if(target.className!=='sdkSession'||Object.hasOwn(target,'sdk')||!sdkTables.has(target.table)||(table!==undefined&&target.table!==table))refuse();
+  if(table===undefined){table=target.table;columns=definitions.get(table).keys;}
+  // Validated scalar keys have an exact tuple identity independent of property order.
+  const identity=JSON.stringify(columns.map(([name])=>target.key[name]));if(seen.has(identity))refuse();seen.add(identity);
+  page.push({table,key:target.key,rowSha256:target.rowSha256,mode:'delete'});keys.push(target.key);
+ }
+ const types=columns.map(([name,type])=>`${name} ${type}`),match=columns.map(([name])=>`r.${name}=page.${name}`).join(' AND ');
+ return {targets:page,sql:`DELETE FROM ${table} r USING jsonb_to_recordset($3::jsonb) AS page(${types.join(',')}) WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND ${match}`,
+   args:[subject.tenantId,subject.subjectId,JSON.stringify(keys)]};
 }

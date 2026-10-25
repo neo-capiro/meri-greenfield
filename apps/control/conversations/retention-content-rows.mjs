@@ -66,7 +66,8 @@ export async function scanConversationContentRows(reader,page,{streamSdk=false}=
 export function assertConversationContentTarget(raw){
  if(Object.hasOwn(raw??{},'sdk'))return assertSdkRetentionTarget(raw);
  const v=own(raw,['className','table','key','rowSha256']),t=tables.get(v.table);fact(t&&v.className===t.className&&digest(v.rowSha256));
- own(v.key,t.keys.map(([key])=>key));fact(same(v.key,keyFor(v.key,t)));return v;
+ own(v.key,t.keys.map(([key])=>key));const key=keyFor(v.key,t);
+ fact(t.keys.every(([name])=>v.key[name]===key[name]));return v;
 }
 
 export function decodeConversationContentRows(raw,{subject,projection},byRun,nativeReferences=[],sdkInventory){

@@ -187,7 +187,28 @@ test('progressing deadline between SDK pages stops dispatch and retires the in-f
 test('bulk SDK routing rejects duplicate, mixed, oversized and compact page targets',async t=>{
  const f=await sdkJournalFixture({count:1});t.after(f.close);const rows=f.raw.contentRows,entry=rows['meri_conversations.sdk_session_entries'][0];
  const target=content('meri_conversations.sdk_session_entries','sdkSession',{...f.step.target.key,subpath:entry.subpath,sequence:entry.sequence},entry).target;
- for(const page of [[],[target,target],Array(1001).fill(target),[f.step.target],[target,{...target,table:'public.users'}]])assert.throws(()=>sdkPurgePage(f.subject,page),/RETENTION_INVALID_REQUEST/);
+ const reordered={...target,key:Object.fromEntries(Object.entries(target.key).reverse()),rowSha256:'f'.repeat(64)},stream={...target,table:'meri_conversations.sdk_session_streams',key:{run_id:target.key.run_id,session_id:target.key.session_id,subpath:entry.subpath}};
+ for(const page of [[],[target,target],[target,reordered],Array(1001).fill(target),[f.step.target],[target,stream],[target,{...target,table:'public.users'}],
+  [{...target,className:'conversation'}],[{...target,key:{...target.key,sequence:String(target.key.sequence)}}],[{...target,key:{...target.key,extra:1}}],[{...target,rowSha256:'invalid'}]])
+  assert.throws(()=>sdkPurgePage(f.subject,page),error=>error.code==='RETENTION_INVALID_REQUEST');
+ assert.throws(()=>sdkPurgePage({...f.subject,kind:'artifact'},[target]),error=>error.code==='RETENTION_INVALID_REQUEST');
+});
+
+test('bulk SDK pages preserve exact target hashes and keys for every allowed table',()=>{
+ for(const [name,key] of [
+  ['sdk_sessions',{run_id:id(2),session_id:id(3)}],
+  ['sdk_session_streams',{run_id:id(2),session_id:id(3),subpath:'opaque,\"\u03bb\u0000'}],
+  ['sdk_session_entries',{run_id:id(2),session_id:id(3),subpath:'opaque,\"\u03bb\u0000',sequence:1}],
+  ['sdk_session_batches',{run_id:id(2),session_id:id(3),append_id:id(4)}],
+ ]){
+  const table='meri_conversations.'+name,rowSha256='b'.repeat(64),target={className:'sdkSession',table,key:Object.fromEntries(Object.entries(key).reverse()),rowSha256},page=sdkPurgePage(k,[target]);
+  assert.deepEqual(page.targets,[{table,key,rowSha256,mode:'delete'}]);
+  assert.deepEqual(page.args.slice(0,2),[k.tenantId,k.subjectId]);assert.deepEqual(JSON.parse(page.args[2]),[key]);
+  assert.ok(page.sql.startsWith(`DELETE FROM ${table} r USING jsonb_to_recordset($3::jsonb)`));
+  assert.match(page.sql,/WHERE r.tenant_id=\$1 AND r.conversation_id=\$2 AND /);
+ }
+ const target={className:'sdkSession',table:'meri_conversations.sdk_session_entries',key:{run_id:id(2),session_id:id(3),subpath:'a,1',sequence:2},rowSha256:'c'.repeat(64)};
+ assert.equal(sdkPurgePage(k,[target,{...target,key:{...target.key,subpath:'a',sequence:12}}]).targets.length,2);
 });
 
 test('100,000 SDK entries use bounded bulk SQL and ephemeral targets under a progressing deadline',{timeout:60000},async t=>{

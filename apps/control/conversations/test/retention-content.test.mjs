@@ -5,7 +5,7 @@ import {contentRows} from './retention-content-fixture.mjs';
 import {hash} from '../boundary.mjs';
 import {decodeConversationInventoryRows} from '../retention-inventory-decode.mjs';
 import {createConversationRetentionInventory} from '../retention-inventory.mjs';
-import {conversationContentTables} from '../retention-content-rows.mjs';
+import {assertConversationContentTarget,conversationContentTables} from '../retention-content-rows.mjs';
 import {enumerateReferences} from '../../retention/inventory.mjs';
 import {makePayload,input as commandInput} from '../../commands/approval-metadata/binding.mjs';
 import {taskKind} from '../../commands/approval-metadata/task-kind.mjs';
@@ -17,6 +17,17 @@ import {buildCandidate} from '../../memory/candidate.mjs';
 import {standaloneFixture} from '../../../runtime/native-authority/test/standalone-tasks-fixture.mjs';
 import {initialInputFixture} from './initial-input-fixture.mjs';
 const prefix='meri_conversations.',now='2026-10-24T00:00:00.000Z';
+test('content target keys ignore property order and require typed integer values',()=>{
+ for(const [table,className,key,numeric] of [
+  ['sdk_session_entries','sdkSession',{run_id:id(2),session_id:id(3),subpath:'opaque,\"\u03bb',sequence:1},'sequence'],
+  ['initial_run_bindings','conversation',{generation:1},'generation'],
+ ]){
+  const target={className,table:prefix+table,key,rowSha256:'a'.repeat(64)},reordered={...target,key:Object.fromEntries(Object.entries(key).reverse())};
+  assert.deepEqual(assertConversationContentTarget(reordered),target);
+  for(const value of ['1','01',true])assert.throws(()=>assertConversationContentTarget({...target,key:{...key,[numeric]:value}}),/STORE_CORRUPT/);
+  assert.throws(()=>assertConversationContentTarget({...target,key:{...key,extra:1}}),/INVALID_COMMAND/);
+ }
+});
 function fixture({empty=false}={}){
  const conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,policyRevision:'policy1',createdAt:now};
  const run={binding,state:'running',scopes,policyRevision:'policy1',versions,createdAt:now},request={requestId:id(90),prompt:'Synthetic private prompt',skill:null,window:null};
