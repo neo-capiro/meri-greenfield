@@ -50,6 +50,18 @@ FROM: Root | TO: mechanical Hermes launcher / independent reviewer | TYPE: dispa
 
 # Wave 3 continuation dispatch manifest
 
+**Approved parallel phases, 25 October 2026 (sealed source brief receipts 17:20–17:26 UTC):** preserve the full Claude SDK harness on Runtime V1, direct Bedrock/control gateway/Core, tenant isolation and durable user/firm memory. Root approved the following bounded existing-plan allocations; no broader hosting/orchestration/SDK or interactive Temporal replacement is allocated. Full standalone briefs follow; launcher/Root records actual fresh checkout/base UTC before editing. Existing current-read correction continues independently.
+
+| Full brief | Author / exact starting source / boundary |
+|---|---|
+| [WS12 stable export signing](W3-NEXT-A3-DOMAIN-EXPORT-SIGNING.md) | Same Hermes Domain author, fresh isolated stack on accepted Core134 `b79a168cdb75aa021c48fe328f599c2788cdae07`; existing export-key owner and named tests only. |
+| [WS07 formatting, preview and existing exports](W3-NEXT-A3-WORKSPACE-UI-EXPORT.md) | Same Hermes Workspace UI author, fresh isolated stack on accepted FE153 `33283081866c25de9b71327cb8d7a457e1cf290d`; ordinary draft host/new export modules, no save/CAS/restore adoption. |
+| [WS06 library consumer](W3-NEXT-A3-LIBRARY-CONSUMER.md) | New visible xhigh Codex author, separate FE153 stack at `33283081866c25de9b71327cb8d7a457e1cf290d`, accepted Core134 producer; DocumentsLibrary/request schema only, no WorkspaceDraft/shared CSS overlap. |
+| [Event polling](W2-EVENT-POLLING-BRIEF.md) | New visible xhigh Codex author; inspected Meri base `7eee7f7c358be9ae903169816ef68eb6e64ae1f3`, Root refreshes exact dispatch base; existing events/observe owner only, preserve current access/cursors/cancellation. |
+| [Obsolete owner/proxy/issuer retirement](W2-OWNER-PROXY-ISSUER-RETIREMENT-BRIEF.md) | New visible xhigh Codex author; inspected Meri base `7eee7f7c358be9ae903169816ef68eb6e64ae1f3`, Root refreshes exact dispatch base; inlined candidate list is a search allocation, delete only proved unused owned leaves and prepare Release's concrete plan. Live deletion remains Release-owned and dependency-gated. |
+
+The existing launcher is authorized to continue the same Domain/UI Hermes authors in parallel on these full briefs after publication, without another Root approval. Root creates the three visible Codex author sessions and assigns separate review; private IDs remain private. Requested xhigh is not proof of effective Hermes provider enforcement. Final Wave3 integration/deployment still waits for explicit Wave2 completion and final pins. These allocations do not rewrite the historical dispatch receipts below.
+
 **Separate Wave2 current-read correction, 25 October2026, 17:06 UTC:** [W2-CURRENT-READ-FINAL-RELEASE](W2-CURRENT-READ-FINAL-RELEASE.md) authorizes one fresh Hermes author on an isolated exact7eee branch to refresh current Core visibility through the existing Control owner before final result release. The existing launcher dispatches on publication without another Root signoff; the existing independent reviewer reviews the exact candidate. PR254 ACCEPT and PR255 CHANGES remain unchanged history. No Core change or proven deployed disclosure; no AWS/live probe, broad151 rerun or Wave3 integration is allocated. Private session bindings stay with the launcher.
 
 **Separate Wave2 diagnostic, 25 October 2026:** the [worker startup brief](W2-HERMES-WORKER-STARTUP-DIAGNOSIS.md) allocates exactly one fresh read-only Hermes look using Runtime’s completed handoff. Worker66 recovered unchanged and all three Meri roles were healthy/complete at 16:18:49; cause remains unproven. This is nonblocking and does not reopen release qualification or use a Wave3 author checkout.
