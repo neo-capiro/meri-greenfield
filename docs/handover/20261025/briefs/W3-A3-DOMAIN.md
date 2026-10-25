@@ -50,11 +50,13 @@ FROM: Root Codex | TO: A3 domain author (fresh xhigh session) | TYPE: brief | RE
 
 # Wave 3 · A3 Core/Workspace domain and ML-24
 
-**Status:** DISPATCHED for independently scoped A3 Domain/Onboard work; final integration/contracts/deployment await the Wave 2 completion notice. **Dispatch metadata refreshed:** 2026-10-25 **11:31 UTC**; ownership checkpoint **11:52:41**. Original brief preparation was 11:20. This documentation refresh launches no new agent.
+**Earlier dispatch/preparation status (history; current source/review checkpoint below):** DISPATCHED for independently scoped A3 Domain/Onboard work; final integration/contracts/deployment await the Wave 2 completion notice. **Dispatch metadata refreshed:** 2026-10-25 **11:31 UTC**; ownership checkpoint **11:52:41**. Original brief preparation was 11:20. This documentation refresh launches no new agent.
 
 **Repository:** `neo-capiro/capiro-backend`. **Branch / preserved worktree:** `codex/wave3-a3-domain-20261025` / `wave3-a3-domain-20261025`. **Actual dispatch base:** `025ae90fc7bf85c91a5f60eaf949cc7effa1d330`. Current remote default/integration tip remains a separate observation; root rechecks exact target/dependency heads, review and overlap before integration. No new deployment or scope approval follows.
 
 **Dispatch history and current recovery:** at **11:31**, root selected Core025 while the observed `backend-import` tip was `2edec026c912c2f6155a6ac8d04ae08bc70030b3`; exact025 publication was then pending. That publication hold is now superseded by [Core #127](https://github.com/neo-capiro/capiro-backend/pull/127), OPEN DRAFT, branch `codex/wave2-core-025ae90-20261025`, exact025 head. Root dispatched this lane on its preserved isolated base. Wave 2 deployment/acceptance remains the priority; final integration and release-dependent work await its explicit completion notice.
+
+**Current source/review checkpoint, 13:11:48 UTC:** [Core #129](https://github.com/neo-capiro/capiro-backend/pull/129) `45eaba1b720849e914052fcf3d7003ac73ac27cd` is OPEN DRAFT and independently **ACCEPTED 12:20** for its bounded WS05/WS15/ML24 slice. Reviewer 17 selected cases passed; author 196 tests including 7 PG cases and13 mutants are reported, with 4 mutant logs independently inspected and9 remaining author-reported. The reserved Onboard migration is implemented in source, not applied to preview here. Source ACCEPT does not establish exact-lock images, full dependency build, UI adoption, actual provider delivery or whole-ticket closure. Existing sole shared/schema ownership and unused quick-draft/intake exceptions remain.
 
 ## How we work
 

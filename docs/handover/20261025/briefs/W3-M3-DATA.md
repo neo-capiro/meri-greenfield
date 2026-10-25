@@ -50,9 +50,11 @@ FROM: Root Codex | TO: M3 data/tools author (fresh xhigh session) | TYPE: brief 
 
 # Wave 3 · M3 data, tool semantics and freshness
 
-**Status:** DISPATCHED for independently scoped M3 work; final integration/contracts/deployment await the Wave 2 completion notice. **Dispatch metadata refreshed:** 2026-10-25 **11:34:40 UTC**. Original preparation was 11:20; this refresh records root's actual allocation and launches no new agent.
+**Earlier dispatch/preparation status (history; current source/review checkpoint below):** DISPATCHED for independently scoped M3 work; final integration/contracts/deployment await the Wave 2 completion notice. **Dispatch metadata refreshed:** 2026-10-25 **11:34:40 UTC**. Original preparation was 11:20; this refresh records root's actual allocation and launches no new agent.
 
 **Repositories / branches:** Meri `neo-capiro/meri-greenfield` / `codex/wave3-m3-data-20261025`; Core `neo-capiro/capiro-backend` / `codex/wave3-m3-core-data-20261025`, preserved isolated worktrees `wave3-m3-data-20261025` and `wave3-m3-core-data-20261025`. **Actual dispatch bases:** Meri `51b059063629cf7b7a1370ae54ae9a82624a3bff`; Core `025ae90fc7bf85c91a5f60eaf949cc7effa1d330`. Root refreshed these dependencies at **11:34:40**. The prior prepared 755 pin is superseded for this dispatch. Exact remote recovery is now available through [Meri #246](https://github.com/neo-capiro/meri-greenfield/pull/246) and [Core #127](https://github.com/neo-capiro/capiro-backend/pull/127), both OPEN DRAFT. This is not a refreshed-main, merge or deployed-acceptance claim. Root rechecks exact heads, review and overlap before later integration.
+
+**Current source/review checkpoint, 13:11:48 UTC:** [Core #128](https://github.com/neo-capiro/capiro-backend/pull/128) `68a7dae3043353ef03e98487bf4451c6080116bb` and [Meri #247](https://github.com/neo-capiro/meri-greenfield/pull/247) `d772a6baff05f98e6f3cc3bbd3c47b5306e00c1b` are OPEN DRAFT and independently **ACCEPTED 12:38**. The prior compiler/recovery findings are closed; bounded non-snapshot pagination limits, inherited tracked-bills failure and missing-ai import failures remain disclosed. This supersedes the earlier NOT ACCEPTED pagination status below only for these exact reviewed heads. No full M3/live qualification or MG-06 implementation follows. Separate Wave 2 research backport83ae/PR 130 is ACCEPTED 12:58:20 and must be reconciled during later integration; do not import Wave 3 pagination into it.
 
 ## How we work
 

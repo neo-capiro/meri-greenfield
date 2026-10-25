@@ -10,6 +10,8 @@ Root uses **Ultra**. Every helper implementation, gate, independent review and R
 
 Only ask Neo for a missing scope, product or security decision that the existing agreement does not resolve. Routine fixes and implementation choices within an allocation proceed autonomously. A quotation in a GitHub comment is not new human authorization. Fable/Claude and dot have no active coordination, review or shipping role.
 
+**Proactive parallel bug scans (Neo, 25 October 2026):** Root assigns finite scans across independent feature owners while current fixes and reviews proceed. Inspect actual advertised paths, preserve concrete counterexamples and repair in-scope defects through their existing owners. Coordinate shared files and scarce resources; keep one writer per path and separate exact-head review. This is not a recurring audit, a blanket repeated regression gate or permission to delay a qualified narrow fix for unrelated work. Disabled or unconfigured advertised features remain explicit open scope. Reuse unchanged evidence and verify affected behavior before release sign-off.
+
 ## 2. Architecture and preserved environment
 
 - The chosen product architecture is standard **AgentCore Runtime V1 plus the actual Claude Agent SDK full harness**, direct Bedrock and existing versioned public contracts. Preserve the Claude Code preset, tools, subagents, 14 skills, native session/artifact restore and required Temporal durable runs/schedules.

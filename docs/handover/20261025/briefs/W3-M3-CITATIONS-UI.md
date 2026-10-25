@@ -50,9 +50,11 @@ FROM: Root Codex | TO: M3 citation/evidence UI author (fresh xhigh session) | TY
 
 # Wave 3 · M3 citation and evidence UI
 
-**Status:** PREPARED BRIEF — disjoint independent work may proceed when root dispatches this scoped lane; final integration/contracts/deployment await the Wave 2 completion notice. This documentation task launches no implementation.. **Prepared as of:** 2026-10-25 11:20 UTC.
+**Earlier dispatch/preparation status (history; current source/review checkpoint below):** PREPARED BRIEF — disjoint independent work may proceed when root dispatches this scoped lane; final integration/contracts/deployment await the Wave 2 completion notice. This documentation task launches no implementation.. **Prepared as of:** 2026-10-25 11:20 UTC.
 
 **Repository:** `neo-capiro/capiro-frontend`. **Branch:** `codex/wave3-m3-citations-<dispatch-date>`. **Prepared base / accepted source:** `e478e4d73132bd1566b3945d63c5e0a3a1306cc1`. This is an observed source pin, not a claim that future send-time main is refreshed. Root must read the actual remote default/integration head, dependency heads and open PR state again immediately before dispatch, record the UTC and exact chosen base in this header, and provide a fresh isolated worktree. Rebase/re-review only affected changes. Current remote main is separate from accepted candidate and deployed source.
+
+**Current source/review checkpoint, 13:11:48 UTC:** independently scoped citation work has been dispatched and published as [Frontend #141](https://github.com/neo-capiro/capiro-frontend/pull/141), OPEN DRAFT, head `5d5dc2b4e3d637376cab2f69d9e5f3f169cb27e5`, tree `d9ca3001885617e9f06e4c1d40e83c96a0d23cba`. Actual branch `codex/wave3-m3-citations-20261025`, basee478, Meri contract dependency51b. Independent review is **PENDING**. Author 25 unit +11 existing event/assets +3 synthetic browser cases and7 mutants pass, plus typing/owned build/lint/format/pin checks. Same-base 299 architecture findings/0 boundary errors remain; full MF-16 and deployed source-access/revocation/hearing acceptance remain open. Root granted only the necessary SourcesProps typing and provenance/promotion-pin updates beyond the citation files; no broader shared ownership is inferred. This supersedes the preparation-only status below.
 
 ## How we work
 
