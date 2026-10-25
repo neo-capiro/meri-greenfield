@@ -26,6 +26,8 @@ test('existing multipart upload201 verifies bytes receipt without treating extra
  const {url,init}=f.state.calls[0];assert.equal(url,'https://core.invalid/api/clio/attachments');assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');assert.equal(init.cache,'no-store');
  assert.equal(init.headers.authorization,'Bearer synthetic-user');assert.equal(init.headers['x-internal-service-secret'],'synthetic-service');assert.equal(init.headers['content-type'],undefined);
  const file=init.body.get('file');assert.equal(file.name,'memo.txt');assert.equal(file.type,'application/octet-stream');assert.deepEqual(Buffer.from(await file.arrayBuffer()),f.bytes);
+ assert.deepEqual([...init.body.keys()],['file','filing']);
+ assert.deepEqual(JSON.parse(init.body.get('filing')),{proposal:f.proposal,binding:f.proposal.command.binding,object:f.object});
 });
 test('canonical typed TXT MIME retains its charset parameter in the actual multipart file',async()=>{
  const f=fixture();await f.client.register({...f.registration,mimeType:'text/plain; charset=utf-8'});
@@ -37,20 +39,23 @@ test('native filing execute/read preserves exact proposal and immutable object m
  assert.deepEqual(await f.client.read(f.common),{state:'OUTCOME',outcome:f.outcome});assert.equal(f.state.credentials,2);
  assert.deepEqual(JSON.parse(f.state.calls[1].init.body),{proposal:f.proposal,binding:f.binding});
 });
-test('later current run selects credentials while execute/read retain exact original proposal binding on wire',async()=>{
+test('later current run selects credentials while registration/execute/read retain exact original proposal binding on wire',async()=>{
  const f=fixture(),binding={...f.binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2};f.state.expectedBinding=binding;
- await f.client.execute({...f.execution,binding});await f.client.read({...f.common,binding});
- assert(f.state.calls.every(c=>hash(JSON.parse(c.init.body).binding)===hash(f.proposal.command.binding)));
+ await f.client.register({...f.registration,binding});await f.client.execute({...f.execution,binding});await f.client.read({...f.common,binding});
+ assert.deepEqual(JSON.parse(f.state.calls[0].init.body.get('filing')),{proposal:f.proposal,binding:f.proposal.command.binding,object:f.object});
+ assert(f.state.calls.slice(1).every(c=>hash(JSON.parse(c.init.body).binding)===hash(f.proposal.command.binding)));
 });
 test('closed Core UNKNOWN and absent read remain distinct and do not dispatch',async()=>{
  const f=fixture();f.state.hook=async()=>Response.json({status:'indeterminate'});assert.deepEqual(await f.client.execute(f.execution),{status:'indeterminate'});
  for(const answer of [null,{state:'UNKNOWN'}]){f.state.hook=async()=>Response.json(answer);assert.deepEqual(await f.client.read(f.common),answer);}
  assert(f.state.calls.slice(1).every(c=>c.url.endsWith('/execution/read')));
 });
-test('snapshot bytes and selection survive mutation while credentials are resolving',async()=>{
- const f=fixture(),expected=Buffer.from(f.bytes);f.state.credentialHook=()=>{f.registration.bytes.fill(0);f.registration.object.sha256='0'.repeat(64);};
+test('snapshot bytes and approved registration context survive mutation while credentials are resolving',async()=>{
+ const f=fixture(),expected=Buffer.from(f.bytes),context=structuredClone({proposal:f.proposal,binding:f.proposal.command.binding,object:f.object});
+ f.state.credentialHook=()=>{f.registration.bytes.fill(0);f.registration.object.sha256='0'.repeat(64);f.proposal.command.binding.runId=id(99);};
  f.upload.sha256=createHash('sha256').update(expected).digest('hex');const out=await f.client.register(f.registration);assert.equal(out.sha256,f.upload.sha256);
  assert.deepEqual(Buffer.from(await f.state.calls[0].init.body.get('file').arrayBuffer()),expected);
+ assert.deepEqual(JSON.parse(f.state.calls[0].init.body.get('filing')),context);
 });
 for(const variation of ['duplicate','substitution','arbitrary-client','wrong-bytes','expired','cancelled'])test(`${variation} refuses before credentials or request dispatch`,async()=>{
  const f=fixture();let call=f.execution,method='execute';

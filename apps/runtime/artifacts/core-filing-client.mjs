@@ -1,7 +1,7 @@
 /** Fixed Core upload and approved-filing transport. No retry, ambient identity or new custody store.
  * Core must enable its existing native approval execute/read owners for artifact.file before this is mounted.
- * Upload preserves the ordinary attachment response, adding server-computed sha256/bytes. Execution maps those
- * transient upload IDs bijectively to approved objects; Core verifies actual stored bytes and owns idempotency.
+ * Upload carries the original approved filing context and preserves the ordinary response plus sha256/bytes.
+ * Core must derive/reuse stable staged attachment identity from that context, verify bytes and own idempotency.
  * These receiver extensions are deliberately not simulated as available by production composition. */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
@@ -50,6 +50,8 @@ export function createCoreFilingClient(configuration){
      createHash('sha256').update(v.bytes).digest('hex')!==object.sha256||typeof v.filename!=='string'||!/^[^\x00-\x1f\x7f/\\]{1,255}$/u.test(v.filename)||
      !MIME.has(v.mimeType))fail('ACCESS_DENIED');
     body=new FormData();body.set('file',new Blob([Buffer.from(v.bytes)],{type:v.mimeType}),v.filename);
+    // Snapshot approval correlation before credentials resolve; current binding selects credentials only.
+    body.set('filing',JSON.stringify({proposal:p,binding:p.command.binding,object}));
    }else if(route==='execute'){
     const attachments=data(v.attachments);
     if(!Array.isArray(attachments)||attachments.length!==p.command.attachments.length)fail('ACCESS_DENIED');

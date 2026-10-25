@@ -1,7 +1,8 @@
 /** Selected immutable attachments -> existing native approval -> Core filing.
  * The Core registration/execute/read extension is proposed and remains unmounted until its receiver is available.
- * No local claim, retry or outcome ledger. Production mounting must bind registration to an existing durable execution
- * owner: a bare Core-null after a lost upload acknowledgement cannot prove that registration had no effect. */
+ * No local claim, retry or outcome ledger. Production mounting requires Core's existing attachment owner to recover
+ * the same staged identity from the original approved context after a lost registration acknowledgement. A bare
+ * Core-null cannot prove no upload effect; any later approved attempt must reuse that registration. */
 import {createHash} from 'node:crypto';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
