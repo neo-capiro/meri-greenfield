@@ -26,8 +26,8 @@ const supplied=process.env.MERI_EXPIRED_TRASH_PG_SOCKET!==undefined||process.env
 if(supplied&&(process.platform!=='linux'||process.env.MERI_EXPIRED_TRASH_PG_SOCKET!==SOCKET||process.env.MERI_EXPIRED_TRASH_PG_DATABASE!==DATABASE))throw Error('MERI_EXPIRED_TRASH_PG_TARGET_REFUSED');
 const enabled=supplied&&process.platform==='linux';
 const day=86400000,real=Date.now(),old=real-31*day;
-let clock=old;
-const now=()=>clock;
+let clock=null;
+const now=()=>clock??Date.now();
 const pool=new pg.Pool({host:SOCKET,database:DATABASE,user:'meri_control_runtime',max:1,connectionTimeoutMillis:2000,query_timeout:6000,options:'-c statement_timeout=5000 -c lock_timeout=2000'});
 const connect=pool.connect.bind(pool);let failLastMutation=false,observedDeletes=0;
 const journalPool={async connect(){const c=await connect();return {release:error=>c.release(error),query:async(sql,args)=>{
@@ -46,7 +46,11 @@ const storage={permissions:{deleteObjectVersion:true},async holdsFor(){return {l
  async headVersion({key,versionId}){return {outcome:objects.has(key+'@'+versionId)?'PRESENT':'ABSENT'};},
  async deleteVersion({key,versionId}){deleted.push(key+'@'+versionId);objects.delete(key+'@'+versionId);return {outcome:'DELETED'};}};
 const keyFor=o=>o.objectId;
-const facts=createConversationPurgeFacts({pool,journal,core,storage,keyFor,now});
+const sourceFacts=createConversationPurgeFacts({pool,journal,core,storage,keyFor,now});
+let measureSubject=null,inventoryTimings=[];
+const facts={...sourceFacts,async inventoryFor(subject,options){const started=performance.now();
+ try{return await sourceFacts.inventoryFor(subject,options);}finally{if(subject.subjectId===measureSubject)inventoryTimings.push(performance.now()-started);}
+}};
 let loseRowAck=false,rowEffects=0;
 const rows={...journal.rows,async purge(...args){rowEffects++;const result=await journal.rows.purge(...args);if(loseRowAck){loseRowAck=false;throw Error('synthetic lost committed row acknowledgement');}return result;}};
 const makeStartup=()=>createRetentionStartup({journal,watermark,ledgerSink:sink,ownership:journal,now,purge:{enabled:true,storage,rows,facts,keyFor,
@@ -69,18 +73,29 @@ async function seed({empty=false,general=false}={}){
   Object.assign(f,{run,request,record});
  }
  const trashRequestId=id();coreRecords.set(b.conversationId,{status:'trashed',trashRequestId,revision:'2',trashedAt:new Date(old).toISOString(),restoreUntil:new Date(old+30*day).toISOString()});
- clock=old;await startup.suppression.suppress({principal,subject,reason:'conversation-trash:'+trashRequestId});clock=real;
+ clock=old;try{await startup.suppression.suppress({principal,subject,reason:'conversation-trash:'+trashRequestId});}finally{clock=null;}
  return f;
 }
-async function content(f){
+async function content(f,{entryCount=2,nearTranscriptLimit=false}={}){
  const {b,tuple,scopes,client,policyRevision}=f,key={projectKey:'-workspace-conversation',sessionId:id()};
  const owner={binding:b,scopes,selectedClientId:client,policyRevision,key,executionSha256:hash(f.record),expiresAtMs:old+10000};
- const entries=[{type:'user',uuid:id(),message:{content:'Private SDK text'}},{type:'assistant',uuid:id(),message:{content:'Private response'}}];
- await insert('meri_conversations.sdk_sessions',{...tuple,session_id:key.sessionId,project_key:key.projectKey,owner,owner_sha256:hash(owner),entries_count:2,bytes:entries.reduce((n,e)=>n+Buffer.byteLength(JSON.stringify(e)),0)});
- await insert('meri_conversations.sdk_session_streams',{...tuple,session_id:key.sessionId,subpath:'',last_sequence:2});
- for(const [i,entry] of entries.entries())await insert('meri_conversations.sdk_session_entries',{...tuple,session_id:key.sessionId,subpath:'',sequence:i+1,entry_uuid:entry.uuid,entry,entry_sha256:hash(entry)});
- const receipt={binding:b,key,requestSha256:'c'.repeat(64),committed:true,appendId:id(),entriesSha256:hash(entries),offset:2,added:2};
- await insert('meri_conversations.sdk_session_batches',{...tuple,session_id:key.sessionId,append_id:receipt.appendId,request_sha256:receipt.requestSha256,receipt,receipt_sha256:hash(receipt)});
+ assert.ok(Number.isSafeInteger(entryCount)&&entryCount>0&&entryCount<=100000);
+ // Keep at most one append page in memory. Fixed entry bytes include UUID and
+ // role differences; array separators stay inside the supported 32 MiB load.
+ const entryBytes=nearTranscriptLimit?Math.floor((32*1024*1024-entryCount-2)/entryCount):160;
+ const entryAt=i=>{const entry={type:i%2?'assistant':'user',uuid:id(),message:{content:'Private SDK text '}};
+  entry.message.content+='x'.repeat(entryBytes-Buffer.byteLength(JSON.stringify(entry)));assert.equal(Buffer.byteLength(JSON.stringify(entry)),entryBytes);return entry;};
+ const bytes=entryCount*entryBytes,transcriptBytes=bytes+entryCount+1;assert.ok(transcriptBytes<=32*1024*1024);
+ await insert('meri_conversations.sdk_sessions',{...tuple,session_id:key.sessionId,project_key:key.projectKey,owner,owner_sha256:hash(owner),entries_count:entryCount,bytes});
+ await insert('meri_conversations.sdk_session_streams',{...tuple,session_id:key.sessionId,subpath:'',last_sequence:entryCount});
+ let batches=0;
+ for(let offset=0;offset<entryCount;offset+=1000){
+  const entries=Array.from({length:Math.min(1000,entryCount-offset)},(_,i)=>entryAt(offset+i)),rows=entries.map((entry,i)=>({sequence:offset+i+1,entry_uuid:entry.uuid,entry,entry_sha256:hash(entry)}));
+  await pool.query('INSERT INTO meri_conversations.sdk_session_entries(tenant_id,conversation_id,run_id,session_id,subpath,sequence,entry_uuid,entry,entry_sha256) SELECT $1,$2::uuid,$3::uuid,$4::uuid,\'\',page.sequence,page.entry_uuid,page.entry,page.entry_sha256 FROM jsonb_to_recordset($5::jsonb) AS page(sequence bigint,entry_uuid text,entry jsonb,entry_sha256 text)',[b.tenantId,b.conversationId,b.runId,key.sessionId,JSON.stringify(rows)]);
+  const appendId=id(),requestSha256=hash({binding:b,key,appendId,entries}),receipt={binding:b,key,requestSha256,committed:true,appendId,entriesSha256:hash(entries),offset:offset+entries.length,added:entries.length};
+  await insert('meri_conversations.sdk_session_batches',{...tuple,session_id:key.sessionId,append_id:receipt.appendId,request_sha256:receipt.requestSha256,receipt,receipt_sha256:hash(receipt)});batches++;
+ }
+ f.sdk={key,entryCount,bytes,transcriptBytes,batches};
  const output={recipe:'original-selected-output-retention/1',request:f.request,pending:{sourceBinding:b,preparationSha256:'a'.repeat(64)},prepared:{context:{binding:b,scopes,assets:[]}},reads:[]};
  await insert('meri_conversations.selected_outputs',{...tuple,preparation_sha256:'a'.repeat(64),projection:output,projection_sha256:hash(output)});
  const request={preparationSha256:'a'.repeat(64),artifactRequestSha256:'b'.repeat(64),sourceContextSha256:'c'.repeat(64),baseVersionId:null,title:'Private draft title',format:'docx'};
@@ -112,7 +127,9 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   assert.equal(await count('meri_conversations.conversations',f),1);assert.equal(await count('meri_conversations.runs',f),0);
  });
  await t.test('SDK, selected output, event and immutable approval bodies erase atomically; replay identities remain',async()=>{
-  const f=await seed();await content(f);const p=await plan(f);assert.equal(p.state,'PLANNED');assert.ok(p.rowSteps.length>=10);
+  const f=await seed();await content(f);const p=await plan(f);assert.equal(p.state,'PLANNED');
+  const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(sdk.length,1);assert.deepEqual(sdk[0].target.sdk.counts,{sessions:1,streams:1,entries:2,batches:1});
+  for(const table of ['meri_conversations.events','meri_conversations.selected_outputs','meri_commands.approval_metadata'])assert.ok(p.rowSteps.some(s=>s.target.table===table),table);
   await assert.rejects(pool.query('DELETE FROM meri_conversations.sdk_session_entries WHERE tenant_id=$1',[f.b.tenantId]),/SDK_MIRROR|PURGE_TARGET/);
   const result=await startup.purge.sweepSubject(f.subject);assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);
   for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches','selected_outputs','events'])assert.equal(await count('meri_conversations.'+table,f),0,table);
@@ -122,6 +139,23 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   await assert.rejects(pool.query('UPDATE meri_commands.approval_metadata SET payload=$2 WHERE tenant_id=$1',[f.b.tenantId,f.approval.payload]),/TOMBSTONE|IMMUTABLE/);
   await assert.rejects(pool.query('UPDATE meri_conversations.runs SET request=$2 WHERE tenant_id=$1',[f.b.tenantId,f.request]),/TOMBSTONE|IMMUTABLE/);
   const effects=rowEffects;assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(rowEffects,effects);
+ });
+ await t.test('100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
+  const fixtureStarted=performance.now(),f=await seed();await content(f,{entryCount:100000,nearTranscriptLimit:true});
+  t.diagnostic(`fixture construction ${Math.round(performance.now()-fixtureStarted)} ms; transcript ${f.sdk.transcriptBytes} bytes; ${f.sdk.batches} append pages`);
+  assert.ok(f.sdk.transcriptBytes>31*1024*1024);measureSubject=f.subject.subjectId;inventoryTimings=[];
+  try{
+   const planStarted=performance.now(),p=await plan(f);t.diagnostic(`source/plan ${Math.round(performance.now()-planStarted)} ms`);
+   const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(p.state,'PLANNED');assert.equal(sdk.length,1);
+   assert.deepEqual(sdk[0].target.sdk.counts,{sessions:1,streams:1,entries:100000,batches:100});assert.equal(sdk[0].target.sdk.entryBytes,f.sdk.bytes);
+   assert.ok(Buffer.byteLength(JSON.stringify(p))<8*1024*1024,'compact plan fits the existing ledger record bound');
+   const purgeStarted=performance.now(),result=await startup.purge.sweepSubject(f.subject),purgeMs=performance.now()-purgeStarted;
+   t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
+   assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
+   for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
+   const ledgerRows=await sink.read();assert.ok(ledgerRows.every(row=>Buffer.byteLength(JSON.stringify(row))<8*1024*1024));assert.ok(Buffer.byteLength(JSON.stringify(ledgerRows))<64*1024*1024);
+   const effects=rowEffects;assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(rowEffects,effects);
+  }finally{t.diagnostic(`actual inventory scan timings, including any refused scan: ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms`);measureSubject=null;inventoryTimings=[];}
  });
  await t.test('missing or false tombstone markers cannot rewrite protected bodies outside erasure',async()=>{
   const f=await seed();await content(f);
@@ -147,8 +181,9 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
  });
  await t.test('lost committed row acknowledgement recovers by actual erased-body readback without repeating effects',async()=>{
-  const f=await seed();await content(f);loseRowAck=true;const before=rowEffects;
+  const f=await seed();await content(f,{entryCount:4097});const p=await plan(f);assert.equal(p.rowSteps.filter(s=>s.className==='sdkSession').length,1);loseRowAck=true;const before=rowEffects;
   await assert.rejects(startup.purge.sweepSubject(f.subject));assert.equal(rowEffects,before+1);assert.equal(await count('meri_conversations.sdk_session_entries',f),0);
+  for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
   const recovered=await startup.purge.sweepSubject(f.subject);assert.equal(recovered.state,'EXECUTED');assert.equal(recovered.coreFinalized,true);assert.equal(rowEffects,before+1);
  });
  await t.test('lost Core finalize acknowledgement retries finalization but never content erasure',async()=>{
@@ -213,9 +248,9 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   assert.equal((await startup.purge.sweepSubject(f.subject)).state,'EXECUTED');
  });
  await t.test('late statement failure rolls back prior real deletes in the one row transaction',async()=>{
-  const f=await seed();await content(f);failLastMutation=true;observedDeletes=0;
-  await assert.rejects(startup.purge.sweepSubject(f.subject));assert.ok(observedDeletes>0,'real earlier DELETE statements executed inside rolled-back transaction');
-  assert.equal(await count('meri_conversations.sdk_session_entries',f),2);assert.equal(await count('meri_conversations.sdk_sessions',f),1);assert.equal(await count('meri_conversations.events',f),1);
+  const f=await seed();await content(f,{entryCount:4097});failLastMutation=true;observedDeletes=0;
+  await assert.rejects(startup.purge.sweepSubject(f.subject));assert.ok(observedDeletes>=5,'all five earlier SDK entry pages executed inside the rolled-back transaction');
+  assert.equal(await count('meri_conversations.sdk_session_entries',f),4097);assert.equal(await count('meri_conversations.sdk_sessions',f),1);assert.equal(await count('meri_conversations.sdk_session_streams',f),1);assert.equal(await count('meri_conversations.sdk_session_batches',f),5);assert.equal(await count('meri_conversations.events',f),1);
   assert.equal((await pool.query('SELECT payload FROM meri_commands.approval_metadata WHERE tenant_id=$1',[f.b.tenantId])).rows[0].payload.record.request.title,'Private draft title');
   assert.equal((await startup.purge.sweepSubject(f.subject)).state,'EXECUTED');
  });
