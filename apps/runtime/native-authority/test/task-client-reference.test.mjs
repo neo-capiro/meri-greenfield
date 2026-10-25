@@ -7,9 +7,9 @@ import {createMetadataPoolFixture} from '../../../control/commands/approval-meta
 const binding={...seed,tenantId:id(80),actorId:id(81)};
 const at=1800000000000,clientId=id(5),other=id(6),principal={tenantId:binding.tenantId,actorId:binding.actorId};
 function fixture(general=true){
- const state={now:at,credential:'synthetic-native',requests:[],visible:[clientId,other],resolved:clientId,onResponse:null};
+ const state={now:at,credential:'synthetic-native',expiresAtMs:at+30000,requests:[],visible:[clientId,other],resolved:clientId,onResponse:null};
  const selectedClientId=general?null:clientId,now=()=>state.now;
- const nativeCredentials={nativeCredentialFor(){if(!state.credential)throw Error('no session');return {credential:state.credential,expiresAtMs:at+30000};}};
+ const nativeCredentials={nativeCredentialFor(){if(!state.credential)throw Error('no session');return {credential:state.credential,expiresAtMs:state.expiresAtMs};}};
  const resolve=createNativeTaskClientResolver({origin:'https://core.invalid',nativeCredentials,now,maxRequestMs:3000,async fetchImpl(url,init){
   const path=new URL(url).pathname,body=JSON.parse(init.body);state.requests.push({path,body,authorization:init.headers.authorization});await state.onResponse?.(path);
   const identity={principal,identityRevision:'a'.repeat(64),checkedAtMs:now(),expiresAtMs:at+30000};
@@ -38,6 +38,13 @@ for(const failure of ['hidden','wall changes','session replaced','session revoke
   if(failure==='deadline')f.state.now=at+3001;
  }};
  await assert.rejects(f.resolve(f.call),e=>e.effect==='none');
+});
+test('task client resolution limits the receipt to the final live session expiry',async()=>{
+ const f=fixture();
+ f.state.onResponse=path=>{if(path.endsWith('/check-ref'))f.state.expiresAtMs=at+1000;};
+ const result=await f.resolve(f.call);
+ assert.equal(result.expiresAtMs,at+1000);
+ assert.equal(result.clientId,clientId);
 });
 async function preparerFixture(){
  const core=fixture(),sql=createMetadataPoolFixture(),state={resolves:0,change:false};

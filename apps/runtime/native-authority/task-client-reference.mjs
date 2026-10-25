@@ -21,12 +21,12 @@ export function createNativeTaskClientResolver({origin,nativeCredentials,fetchIm
    const before=await life.run(signal=>core.readCurrent({...call,signal}));
    const resolved=await life.run(signal=>core.readClientReference({...call,reference:v.reference,signal}));
    const after=await life.run(signal=>core.readCurrent({...call,signal}));
-   const principal={tenantId:v.binding.tenantId,actorId:v.binding.actorId};
+   const principal={tenantId:v.binding.tenantId,actorId:v.binding.actorId},final=borrow();
    if(!same(before.principal,principal)||!same(resolved.principal,principal)||!same(after.principal,principal)||
     before.identityRevision!==resolved.identityRevision||after.identityRevision!==resolved.identityRevision||
     !before.clientIds?.includes(resolved.clientId)||!after.clientIds?.includes(resolved.clientId)||
-    v.selectedClientId!==null&&resolved.clientId!==v.selectedClientId||borrow().credential!==first.credential)deny();
-   const expiresAtMs=Math.min(deadlineMs,before.expiresAtMs,resolved.expiresAtMs,after.expiresAtMs);life.limitDeadline(expiresAtMs);life.check();
+    v.selectedClientId!==null&&resolved.clientId!==v.selectedClientId||final.credential!==first.credential)deny();
+   const expiresAtMs=Math.min(deadlineMs,before.expiresAtMs,resolved.expiresAtMs,after.expiresAtMs,final.expiresAtMs);life.limitDeadline(expiresAtMs);life.check();
    return data({reference:v.reference,clientId:resolved.clientId,checkedAtMs:now(),expiresAtMs});
   }catch(error){
    const code=nativeReadFailureCode(error)??error?.code;
