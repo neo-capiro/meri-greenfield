@@ -1,186 +1,40 @@
-/** SYNTHETIC control startup through the actual cli.mjs: the routines warning follows late candidate binding; the reads composer
- * receives exactly the configured P2 installation (the measurement
- * parsed from its pinned material file and re-hashed against the configured pin) and P1 discovery (the G2 run capability policy producer, only
- * with `capabilityPlatform`). No listener, SQL, network or real secret: control.mjs, the composer and the live-session relay are mocked at
- * their module boundaries and the measurement bytes are synthetic (the real issuer's catalog/descriptor checks live in the composer tests). */
+/** Actual CLI startup wiring with synthetic configuration and borrowed module boundaries; no listener, secret or SQL effects. */
 import test,{mock} from 'node:test';import assert from 'node:assert/strict';
-import {generateKeyPairSync} from 'node:crypto';
-import {mkdtemp,writeFile,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join,normalize} from 'node:path';import {brotliCompressSync} from 'node:zlib';
 import * as configurationModule from '../config.mjs';
-import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {NATIVE_READS_SCHEMA_VERSION} from '../../../packages/contracts/runtime-0.2/reads.mjs';
-import {candidateFixture} from './prepared-candidate-fixture.mjs';
-import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy} from '../product-ports/capability-policy.mjs';
-
-const OP={id:'read_bill_text',version:'0.2.0'},FILE='/run/meri/general-read-installation.json',SERVICE='/run/meri/core-service-secret';
-const MEASUREMENT={schema:'meri.general-read-installation-measurement.v1',baseCatalogSha256:'b'.repeat(64),operations:[{operation:OP,family:'bill-text',descriptorSha256:'c'.repeat(64),handlerSourceSha256:'d'.repeat(64)}]};
-const PIN=canonicalSha256(MEASUREMENT);
-const material=value=>brotliCompressSync(Buffer.from(typeof value==='string'?value:JSON.stringify(value)));
-const state={composer:[],returned:[],control:[],secrets:[],bytes:material(MEASUREMENT),startupCandidate:undefined};
-mock.module('../config.mjs',{namedExports:{...configurationModule,async readSecret(path){state.secrets.push(path);return Buffer.from(state.bytes);}}});
-mock.module('../read-credential-relay.mjs',{namedExports:{createReadCredentialRelay(){return {port:{nativeCredentialFor(){throw Error('not reached');}}};}}});
-mock.module('../native-authority/reads-composer.mjs',{namedExports:{async createControlReadsComposer(options){state.composer.push(options);const composed={createReadsRuntime(){},familyIds:Object.freeze([]),missing:Object.freeze([]),
- ...(options.delegation?.enabled?{readDelegation:{runOptions:{async stopRun(){return {stopped:false,revoked:false};}}}}:{})};state.returned.push(composed);return composed;}}});
-mock.module('../control.mjs',{namedExports:{async startControl(configuration,ports){state.control.push(ports);if(state.startupCandidate!==undefined)ports.routinesCandidateBinder?.(state.startupCandidate);return {address:{port:0},completion:Promise.resolve(),async close(){}};}}});
+import {agentcoreControlFixture} from './agentcore-fixture.mjs';
+import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../product-ports/capability-policy.mjs';
+const state={};
+mock.module('../config.mjs',{namedExports:{...configurationModule,async loadConfiguration(){return state.configuration;},async readSecret(){assert.fail('CLI must not read policy/settings material');}}});
+mock.module('../read-credential-relay.mjs',{namedExports:{createReadCredentialRelay(){return {port:{nativeCredentialFor(){assert.fail('no credential at composition');}}};}}});
+mock.module('../reads-composer.mjs',{namedExports:{async createControlReadsComposer(options){state.composer.push(options);if(state.failure)throw Error('synthetic composition failure');const value={createReadsRuntime(){},familyIds:[],missing:state.missing??[]};state.returned.push(value);return value;}}});
+mock.module('../native-authority/routines-owner-composition.mjs',{namedExports:{createAttendedRoutinesOwnerComposition(){let bound=false,missing=false;return {bindCandidate(value){bound=true;missing=value==='missing';},state(){assert.equal(bound,true,'warning requires candidate binding first');return missing?'owners-unavailable':'composed';}};}}});
+mock.module('../control.mjs',{namedExports:{async startControl(configuration,ports){state.control.push(ports);ports.routinesCandidateBinder?.(state.candidate);return {address:{port:0},completion:Promise.resolve(),async close(){}};}}});
 const {main}=await import('../cli.mjs');
-
-/** A control configuration with the reads block, on this host's path semantics (the runtime only ever runs on Linux). */
-function configuration(reads,extra={}){
- const c=structuredClone(candidateFixture().configuration),intent=c.nativeCandidate.preparationIntent;
- for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])intent[k]=normalize(intent[k]);
- intent.launchTemplate.command=normalize(intent.launchTemplate.command);intent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=intent.secureStorageDirectory;
- return {...c,...extra,reads};
+async function start(extra={},options={}){
+ Object.assign(state,{configuration:{...agentcoreControlFixture().configuration,...extra},composer:[],returned:[],control:[],failure:false,missing:[],candidate:{},...options});
+ const out=[],err=[],writeOut=process.stdout.write,writeErr=process.stderr.write;
+ process.stdout.write=value=>{out.push(String(value));return true;};process.stderr.write=value=>{err.push(String(value));return true;};
+ try{return {code:await main(['control','--config','synthetic-config']),out:out.join(''),err:err.join('')};}
+ finally{process.stdout.write=writeOut;process.stderr.write=writeErr;}
 }
-async function start(reads,extra,{candidate}={}){
- const dir=await mkdtemp(join(tmpdir(),'meri-cli-reads-')),file=join(dir,'control.json'),out=[],err=[],o=process.stdout.write.bind(process.stdout),e=process.stderr.write.bind(process.stderr);
- const before=state.composer.length;state.secrets=[];state.startupCandidate=candidate;
- process.stdout.write=t=>{out.push(String(t));return true;};process.stderr.write=t=>{err.push(String(t));return true;};
- try{await writeFile(file,JSON.stringify(configuration(reads,extra)));return {code:await main(['control','--config',file]),out:out.join(''),err:err.join(''),composer:state.composer.slice(before),secrets:[...state.secrets]};}
- finally{state.startupCandidate=undefined;process.stdout.write=o;process.stderr.write=e;await rm(dir,{recursive:true,force:true});}
-}
-
-test('routines warning is decided after candidate binding and only for missing attended owners',async()=>{
- const {publicKey}=generateKeyPairSync('ed25519'),jwk=publicKey.export({format:'jwk'});
- const routines={enabled:true,core:{origin:'https://core.synthetic.invalid',serviceSecretFile:join(tmpdir(),'routine-core-secret'),
-  cancellationProof:{issuer:'core.synthetic.invalid/meri-routines',kid:'routine-cancel-1',publicKey:{kty:'OKP',crv:'Ed25519',x:jwk.x}}},
- task:{taskId:candidateFixture().binding.runId,version:1},workflow:{taskQueue:'meri-routines',workflowIdPrefix:'meri/routines'}};
- const bound=await start(undefined,{routines},{candidate:{}});
- assert.equal(bound.code,0,bound.err);assert.equal(typeof state.control.at(-1).routinesCandidateBinder,'function');
- assert.doesNotMatch(bound.err,/runtime\.routines\.attended\.unavailable/u);
- const missing=await start(undefined,{routines:{...routines,workflow:undefined}},{candidate:{}});
- assert.equal(missing.code,0,missing.err);
- assert.deepEqual(missing.err.trim().split('\n').map(line=>JSON.parse(line)),[{event:'runtime.routines.attended.unavailable'}]);
+test('CLI leaves canonical policy construction to the runtime pool/current-role owner and forwards the actual reads factory',async()=>{
+ const result=await start({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM,reads:{enabled:true,serviceSecretFile:'/synthetic/core',defaultCongress:119}});
+ assert.equal(result.code,0,result.err);assert.equal(state.composer.length,1);const options=state.composer[0];
+ assert.equal(Object.hasOwn(options,'capabilityPolicy'),false,'no static configuration-only policy may enter discovery');
+ assert.equal(options.coreOrigin,state.configuration.agentcore.identity.origin);assert.equal(options.serviceSecretFile,'/synthetic/core');assert.equal(options.defaultCongress,119);
+ assert.equal(state.control[0].createReadsRuntime,state.returned[0].createReadsRuntime);
 });
-
-test('cli passes exactly installation {enabled, measurement, measurementSha256, revokedOperations} and discovery {enabled, capabilityPolicy} to the reads composer',async()=>{
- const r=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:PIN,measurementFile:FILE,revokedOperations:[OP]},discovery:{enabled:true}},{capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM});
- assert.equal(r.code,0,r.err);assert.match(r.out,/runtime\.listening/u);assert.equal(r.composer.length,1);
- const o=r.composer[0];
- assert.deepEqual(Object.keys(o),['configuration','secretFiles','nativeCredentials','gateway','installation','discovery','familyIds']);
- assert.deepEqual(o.secretFiles,{serviceSecret:SERVICE});assert.equal(typeof o.nativeCredentials.nativeCredentialFor,'function');
- assert.equal(typeof o.gateway.authority.identify,'function');assert.equal(typeof o.gateway.authority.check,'function');assert.equal(typeof o.gateway.limits.maxRequestMs,'number');
- assert.deepEqual(o.installation,{enabled:true,measurement:MEASUREMENT,measurementSha256:PIN,revokedOperations:[OP]});
- assert.deepEqual(o.familyIds,['bill-text']);
- assert.deepEqual(Object.keys(o.discovery),['enabled','capabilityPolicy']);assert.equal(o.discovery.enabled,true);
- assert.equal(typeof o.discovery.capabilityPolicy.forRun,'function');
- assert.equal(o.discovery.capabilityPolicy.profileSha256,createConfiguredRunCapabilityPolicy({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}).profileSha256);
- // The measurement bytes come from the configured material file only, and the composer's runtime factory reaches control.
- assert.deepEqual(r.secrets,[FILE]);assert.equal(state.control.at(-1).createReadsRuntime,state.returned.at(-1).createReadsRuntime);
+test('disabled reads create no composer; missing family diagnostics retain their declared reason',async()=>{
+ assert.equal((await start({reads:{enabled:false}})).code,0);assert.equal(state.composer.length,0);assert.equal(state.control[0].createReadsRuntime,undefined);
+ const r=await start({reads:{enabled:true,serviceSecretFile:'/synthetic/core'}},{missing:['source-composition:synthetic']});
+ assert.equal(r.code,0);assert.match(r.err,/runtime.reads.unavailable/);assert.match(r.err,/source-composition:synthetic/);
 });
-
-test('a signed selected-client receipt composes only its genuine task port when Option B is enabled',async()=>{
- const saved=state.bytes,operation={id:'get_client_context',version:'0.3.0'};
- const measurement={...MEASUREMENT,operations:[{...MEASUREMENT.operations[0],operation,family:'client-knowledge-profile'}]};
- state.bytes=material(measurement);
- try{
-  const r=await start({enabled:true,serviceSecretFile:SERVICE,delegation:{enabled:true},
-   installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}});
-  assert.equal(r.code,0,r.err);assert.equal(r.composer.length,1);
-  assert.deepEqual(r.composer[0].familyIds,['client-knowledge-profile']);
-  assert.equal(typeof r.composer[0].retainedTaskPorts,'function');
-  const selected=r.composer[0].retainedTaskPorts({task:{approvedReads:{schemaVersion:NATIVE_READS_SCHEMA_VERSION,enabled:true,operations:[operation],maxExecuteMs:1000,maxRequestBytes:65536,maxResponseBytes:65536}},
-   getSignedSourceCredentials:async()=>{throw Error('NO_LIVE_CALL');}});
-  assert.deepEqual(Object.keys(selected.families),['client-knowledge-profile']);
- }finally{state.bytes=saved;}
+test('reads composition failure cannot start control with an unbound policy',async()=>{
+ const r=await start({reads:{enabled:true,serviceSecretFile:'/synthetic/core'}},{failure:true});assert.equal(r.code,3);assert.equal(state.control.length,0);assert.match(r.err,/RUNTIME_UNAVAILABLE/);
 });
-
-test('startup composes Monday and query_tasks under Option B and evidence GETs under attended credentials',async()=>{
- const saved=state.bytes;
- try{
-  for(const [id,family,delegated] of [['read_monday_client_boards','client-knowledge-monday',true],
-   ['query_tasks','operational-reads',true],['get_research_evidence','research-portfolio-evidence',false]]){
-   const measurement={...MEASUREMENT,operations:[{...MEASUREMENT.operations[0],operation:{id,version:'0.2.0'},family}]};
-   state.bytes=material(measurement);
-   const reads={enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE},
-    ...(delegated?{delegation:{enabled:true}}:{})};
-   const result=await start(reads);assert.equal(result.code,0,result.err);
-   assert.deepEqual(result.composer[0].familyIds,[family]);assert.equal(typeof result.composer[0].retainedTaskPorts,'function');
-   if(delegated){const held=await start({...reads,delegation:undefined});assert.equal(held.code,0,held.err);assert.equal(held.composer[0].retainedTaskPorts,undefined);}
-  }
- }finally{state.bytes=saved;}
-});
-
-test('startup connects retained Research and Florida only with explicit public verifier pins',async()=>{
- const saved=state.bytes,{publicKey}=generateKeyPairSync('ed25519');
- const retainedAuthority={issuerId:'synthetic-core/retained',keyId:'synthetic-key',publicKeyJwk:publicKey.export({format:'jwk'}),
-  recipients:{get_research_portfolio:'https://core.synthetic.invalid',get_research_portfolio_changes:'https://core.synthetic.invalid',get_florida_budget_project:'https://intel.synthetic.invalid'}};
- try{
-  const operations=[['get_research_portfolio','research-portfolio'],['get_research_portfolio_changes','research-portfolio'],['get_florida_budget_project','florida-budget']]
-   .map(([id,family])=>({...MEASUREMENT.operations[0],operation:{id,version:'0.2.0'},family}));
-  const measurement={...MEASUREMENT,operations};state.bytes=material(measurement);
-  const reads={enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}};
-  const held=await start(reads);assert.equal(held.code,0,held.err);assert.equal(held.composer[0].retainedTaskPorts,undefined);
-  const composed=await start({...reads,retainedAuthority});assert.equal(composed.code,0,composed.err);
-  assert.deepEqual(composed.composer[0].familyIds,['research-portfolio','florida-budget']);
-  assert.equal(typeof composed.composer[0].retainedTaskPorts,'function');
- }finally{state.bytes=saved;}
-});
-
-test('reviewed local dataset and selected action families reach the task port without enabling unrelated retained families',async()=>{
- const saved=state.bytes;
- const dataset={...MEASUREMENT.operations[0],operation:{id:'list_global_datasets',version:'0.2.0'},family:'dataset-metadata'};
- const action={...MEASUREMENT.operations[0],operation:{id:'actions.query',version:'0.2.0'},family:'action-items-complete'};
- try{
-  const measurement={...MEASUREMENT,operations:[dataset,action]};state.bytes=material(measurement);
-  const r=await start({enabled:true,serviceSecretFile:SERVICE,delegation:{enabled:true},
-   installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}});
-  assert.equal(r.code,0,r.err);assert.deepEqual(r.composer[0].familyIds,['dataset-metadata','action-items-complete']);
-  assert.equal(typeof r.composer[0].retainedTaskPorts,'function');
-  const noActionDelegation=await start({enabled:true,serviceSecretFile:SERVICE,
-   installation:{enabled:true,measurementSha256:canonicalSha256(measurement),measurementFile:FILE}});
-  assert.equal(noActionDelegation.code,0,noActionDelegation.err);
-  assert.equal(noActionDelegation.composer[0].retainedTaskPorts,undefined);
-  const local={...MEASUREMENT,operations:[dataset]};state.bytes=material(local);
-  const onlyLocal=await start({enabled:true,serviceSecretFile:SERVICE,
-   installation:{enabled:true,measurementSha256:canonicalSha256(local),measurementFile:FILE}});
-  assert.equal(onlyLocal.code,0,onlyLocal.err);
-  const supplied=onlyLocal.composer[0].retainedTaskPorts({task:{}});
-  assert.deepEqual(Object.keys(supplied.families),['dataset-metadata']);
-  assert.ok(supplied.families['dataset-metadata'].registry.listDatasetMetadata().length>0);
-  const signed={...MEASUREMENT.operations[0],operation:{id:'get_client_context',version:'0.3.0'},family:'client-knowledge-profile'};
-  const mixed={...MEASUREMENT,operations:[dataset,signed]};state.bytes=material(mixed);
-  const withoutDelegation=await start({enabled:true,serviceSecretFile:SERVICE,
-   installation:{enabled:true,measurementSha256:canonicalSha256(mixed),measurementFile:FILE}});
-  assert.equal(withoutDelegation.code,0,withoutDelegation.err);
-  assert.equal(withoutDelegation.composer[0].retainedTaskPorts,undefined);
-  const unknown={...MEASUREMENT,operations:[{...MEASUREMENT.operations[0],operation:{id:'mail.list_messages',version:'0.2.0'},family:'mail'}]};
-  state.bytes=material(unknown);
-  const held=await start({enabled:true,serviceSecretFile:SERVICE,
-   installation:{enabled:true,measurementSha256:canonicalSha256(unknown),measurementFile:FILE}});
-  assert.equal(held.code,0,held.err);assert.equal(held.composer[0].retainedTaskPorts,undefined);
- }finally{state.bytes=saved;}
-});
-
-test('disabled installation and discovery pass their toggles only; absent blocks pass no key; discovery without capabilityPlatform is refused by configuration',async()=>{
- const off=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:false},discovery:{enabled:false}});
- assert.equal(off.code,0,off.err);assert.deepEqual(off.composer[0].installation,{enabled:false});assert.deepEqual(off.composer[0].discovery,{enabled:false});assert.deepEqual(off.secrets,[]);
- const plain=await start({enabled:true,serviceSecretFile:SERVICE,defaultCongress:119});
- assert.equal(plain.code,0,plain.err);assert.deepEqual(Object.keys(plain.composer[0]),['configuration','secretFiles','nativeCredentials','gateway','defaultCongress']);assert.deepEqual(plain.secrets,[]);
- const refused=await start({enabled:true,serviceSecretFile:SERVICE,discovery:{enabled:true}});
- assert.equal(refused.code,2);assert.equal(refused.err,'RUNTIME_CONFIGURATION\n');assert.equal(refused.composer.length,0);
-});
-
-test('enabled read delegation passes its run stop hook to control without invoking it during startup',async()=>{
- const r=await start({enabled:true,serviceSecretFile:SERVICE,delegation:{enabled:true}});
- assert.equal(r.code,0,r.err);
- assert.equal(r.composer.length,1);
- assert.equal(typeof state.control.at(-1).readDelegationRunOptions.stopRun,'function');
- assert.equal(state.control.at(-1).readDelegationRunOptions,state.returned.at(-1).readDelegation.runOptions);
-});
-
-test('fail closed: material bytes that do not hash to the pin, are not brotli JSON, or do not match the pin stop startup before the composer',async()=>{
- const saved=state.bytes;
- try{
-  state.bytes=material({...MEASUREMENT,baseCatalogSha256:'0'.repeat(64)});
-  const drifted=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:PIN,measurementFile:FILE}});
-  assert.equal(drifted.code,3);assert.match(drifted.err,/RUNTIME_UNAVAILABLE/u);assert.equal(drifted.composer.length,0);assert.deepEqual(drifted.secrets,[FILE]);
-  for(const bytes of [Buffer.from('not brotli'),material('not json'),Buffer.from(JSON.stringify(MEASUREMENT))]){
-   state.bytes=bytes;
-   const broken=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:PIN,measurementFile:FILE}});
-   assert.equal(broken.code,3);assert.match(broken.err,/RUNTIME_UNAVAILABLE/u);assert.equal(broken.composer.length,0);
-  }
-  state.bytes=saved;
-  const other=await start({enabled:true,serviceSecretFile:SERVICE,installation:{enabled:true,measurementSha256:'e'.repeat(64),measurementFile:FILE}});
-  assert.equal(other.code,3);assert.equal(other.composer.length,0);
- }finally{state.bytes=saved;}
+test('routines warning is evaluated after candidate binding and only for missing attended owners',async()=>{
+ for(const candidate of [{},'missing']){
+  const r=await start({routines:{enabled:true,workflow:{}}},{candidate});assert.equal(r.code,0,r.err);
+  assert.equal(typeof state.control[0].routinesCandidateBinder,'function');assert.equal(r.err.includes('runtime.routines.attended.unavailable'),candidate==='missing');
+ }
 });

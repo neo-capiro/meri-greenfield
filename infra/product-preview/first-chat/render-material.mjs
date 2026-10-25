@@ -15,7 +15,7 @@ import {CONTROL_NODE_CA_FILE,productControlTrustsCompositeCa} from '../../../app
 import {compileAgentCoreConfiguration} from '../../../apps/runtime/agentcore-configuration.mjs';
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
-import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {compileCapabilityPlatform} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -197,13 +197,6 @@ export function parseFeatures(raw,{secrets={}}={}){
  if(out.routines?.core!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.routines.core reuses the reads Core service secret: it needs features.reads enabled');
  return out;
 }
-/** The single capability profile every run resolves to under `capabilityPlatform` (G3), or null when the platform is absent or
- * enables nothing. runtime-values.mjs measures the SDK options with exactly this profile; the render pins its digest. */
-export function capabilityProfileOf(capabilityPlatform){
- if(capabilityPlatform===undefined)return null;
- const producer=createConfiguredRunCapabilityPolicy({capabilityPlatform});
- return producer.profile===null?null:{profile:producer.profile,profileSha256:producer.profileSha256};
-}
 /** Operator-supplied secret bytes for the rendered features: exactly the keys the features need, each naming the same ARN as the
  * deployment inputs and the Secrets Manager VersionId it was read at. Values are never echoed in a refusal. */
 function featureSecretFiles(features,supplied={}){
@@ -334,8 +327,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  if(!Number.isSafeInteger(nowMs)||nowMs<1)fail('RENDER_INPUT_REFUSED','nowMs');
  if(!Number.isFinite(validityDays)||validityDays<=0)fail('RENDER_INPUT_REFUSED','validityDays must be positive');
  if(!/^[A-Za-z0-9_-]{1,128}$/u.test(deploymentRevision))fail('RENDER_INPUT_REFUSED','deploymentRevision');
- const features=d.features??{},secretFiles=featureSecretFiles(features,featureSecrets),capability=capabilityProfileOf(features.capabilityPlatform);
- if(capability?.profile.generalReads===true&&canonicalSha256(capability.profile.activeReadOperations)!==canonicalSha256(features.reads?.approvedReads?.operations??[]))fail('RENDER_INPUT_REFUSED','capability profile operations differ from approved reads');
+ const features=d.features??{},secretFiles=featureSecretFiles(features,featureSecrets);
  const {pins,notAfterMs}=verifyPki(d,pki);
  // Certificate validity is independent of each admitted conversation execution.
  const validityMs=Math.round(validityDays*DAY_MS),expiresAtMs=nowMs+validityMs;
@@ -426,7 +418,6 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
  // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
-  capabilityProfileSha256:capability?.profileSha256??null,
   secretFiles:Object.fromEntries(Object.entries(secretFiles).map(([key,v])=>[key==='reads.serviceSecret'?PATHS.readsServiceSecret:PATHS.readsReadModeServiceSecret,
    {feature:key,secretArn:v.secretArn,versionId:v.versionId,sha256:sha(v.bytes)}])),
   generatedFiles:downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{}};

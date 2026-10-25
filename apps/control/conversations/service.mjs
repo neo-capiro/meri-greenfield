@@ -22,13 +22,13 @@ export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
 const OBSERVE_PAGE_EVENTS=100;
 /** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
 const WINDOW_END_SLACK_MS=50;
-export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,runBudgets,modelCatalog}){
+export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,readCapabilityRole,runBudgets,modelCatalog}){
  const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
  if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function')fail('CONTROL_CONFIGURATION');
- // G2: the trusted run capability-policy producer (apps/runtime/product-ports/capability-policy.mjs). Absent, or answering null, a loaded run
+ // The trusted current run capability-policy producer (apps/runtime/product-ports/capability-policy.mjs). Absent, or answering null, a loaded run
  // carries no `capabilities` and keeps first-chat behaviour; the worker validates the record (capabilities/policy.mjs readCapabilityPolicy).
- const capabilityPort=capabilityPolicy===undefined?undefined:own(capabilityPolicy,['forRun'],['profile','profileSha256']);if(capabilityPort!==undefined&&typeof capabilityPort.forRun!=='function')fail('CONTROL_CONFIGURATION');
+ const capabilityPort=capabilityPolicy===undefined?undefined:own(capabilityPolicy,['forRun']);if(capabilityPort!==undefined&&typeof capabilityPort.forRun!=='function'||readCapabilityRole!==undefined&&typeof readCapabilityRole!=='function')fail('CONTROL_CONFIGURATION');
  // The run's admitted allocation budgets (read-only, apps/gateway/budget/run-allocation-budgets.mjs) for the worker's early read ledger.
  // Absent, or answering null (no installed allocation yet), a loaded run carries no `runBudgets` and the ledger keeps its default.
  const runBudgetPort=runBudgets===undefined?undefined:own(runBudgets,['read']);if(runBudgetPort!==undefined&&typeof runBudgetPort.read!=='function')fail('CONTROL_CONFIGURATION');
@@ -41,7 +41,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  validateShape('RuntimeVersions',versions);versions=bounded(versions);fiscalCalendars=bounded(fiscalCalendars);if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['accept','append','read'].some(k=>typeof store?.[k]!=='function')||['start','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONTROL_CONFIGURATION');
  // untilMs: an observation window whose body releases nothing without its own post-read fresh(); it ends at untilMs instead of
  // maxRequestMs and skips the trailing recheck, which would only repeat the last release's.
- async function operation(credential,signal,body,{cleanup=false,untilMs}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
+ async function operation(credential,signal,body,{cleanup=false,untilMs,release}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
   // One pass is one complete session observation: the registered owner's fused reader resolves the session once and yields both
   // receipts. A plain session port keeps the authenticate + current-state pair.
   async function fresh(){const started=now();let authentication,current;
@@ -54,7 +54,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    if(retentionGate&&!cleanup){await life.run(()=>retentionGate.assertServable({tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId}));life.check();}
    return pinned;
   }
-  try{const context=await fresh();const result=await body(context,life,fresh,()=>authorityExpiresAtMs);if(untilMs===undefined)await fresh();life.check();return result;}finally{life.close();}
+  try{const context=await fresh();let result=await body(context,life,fresh,()=>authorityExpiresAtMs);if(untilMs===undefined)await fresh();if(release)result=await release(result,life);life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
  function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest','modelSelection']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);if(Object.hasOwn(i,'modelSelection')){try{assertModelSelection(i.modelSelection);}catch{fail('INVALID_REQUEST');}}return i;}
@@ -153,7 +153,6 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   const modelPolicy=await life.run(()=>store.readModelPolicy(binding,life.check));
   const model=resolveSdkModelConfiguration(available(storedModelSelection(result.request)),modelPolicy);
   const lineage=typeof store.nextRuns?.execution==='function'?await life.run(()=>store.nextRuns.execution({binding,scopes:c.scopes,selectedClientId:c.selectedClientId},life.check)):null;
-  const capabilities=capabilityPort===undefined?null:await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,signal}));
   const budgets=runBudgetPort===undefined?null:runBudgetsOf(await life.run(signal=>runBudgetPort.read.call(runBudgets,{binding,signal})));
   let extra=null;
   if(readLifecycle!==undefined){
@@ -164,8 +163,16 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    if(!same(latest.run.binding,result.run.binding)||!same(latest.run.scopes,result.run.scopes)||!same(latest.run.versions,result.run.versions)||!same(latest.request,result.request))fail('SESSION_CHANGED');
   }
   if(extra&&lineage?.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');
-  return {run:result.run,request:result.request,model,...(lineage??{}),...(capabilities===null?{}:{capabilities}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
- });}
+  return {run:result.run,request:result.request,model,...(lineage??{}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
+ },{release:async(result,life)=>{
+  if(capabilityPort===undefined)return result;
+  // Resolve only after all model/lineage/journal and final local-authority awaits. No earlier capability set is released.
+  if(typeof readCapabilityRole!=='function')fail('CAPABILITY_ROLE_UNKNOWN');
+  const role=await life.run(signal=>readCapabilityRole({binding,signal,deadlineMs:life.deadline()}));
+  life.limitDeadline(role.expiresAtMs);
+  const capabilities=await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:role.actorRole,signal}));
+  return {...result,...(capabilities===null?{}:{capabilities})};
+ }});}
  async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
  async function recordUsage({credential,binding,input,signal}){
   validateShape('RunBinding',binding);const value=assertUsageInput(input);

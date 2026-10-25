@@ -49,12 +49,12 @@ export async function main(argv=process.argv.slice(2)){
   }
   // Read transport is constructed with the actual execution owner by the candidate, after control startup.
   if(role==='control'&&c.reads?.enabled===true){
-   const [{createControlReadsComposer},{readSecret},{createConfiguredRunCapabilityPolicy},{createMemoryContextRelay}]=await Promise.all([
-    import('./reads-composer.mjs'),import('./config.mjs'),import('./product-ports/capability-policy.mjs'),import('./memory-context-relay.mjs')]);
+   const [{createControlReadsComposer},{readSecret},{createMemoryContextRelay}]=await Promise.all([
+    import('./reads-composer.mjs'),import('./config.mjs'),import('./memory-context-relay.mjs')]);
    const memoryContextRelay=createMemoryContextRelay();
    const reads=await createControlReadsComposer({coreOrigin:c.agentcore.identity.origin,nativeCredentials:relay.port,readSecret,
     serviceSecretFile:c.reads.serviceSecretFile,...(c.reads.readModeServiceSecretFile===undefined?{}:{readModeServiceSecretFile:c.reads.readModeServiceSecretFile}),
-    capabilityPolicy:createConfiguredRunCapabilityPolicy(c),memoryContexts:memoryContextRelay,...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),
+    memoryContexts:memoryContextRelay,...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),
     fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.agentcore.identity.origin})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
    Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,memoryContextRelay});

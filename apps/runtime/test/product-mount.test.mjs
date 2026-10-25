@@ -52,3 +52,30 @@ async function runnerFixture({key,failClose=false}={}){
 test('runner refuses missing observed registration before the single SDK query',async()=>{const x=await runnerFixture();try{await assert.rejects(x.execute({binding}),/EXECUTION_FAILED/u);assert.deepEqual(x.counts(),{calls:0,closes:0,factory:0});const saved=await x.f.service.history({credential:x.f.credential});assert.equal(saved.run.state,'failed');assert.deepEqual(saved.events.filter(e=>e.type==='run.status').map(e=>e.data.state),['queued','starting','failed']);}finally{x.f.close();}});
 test('runner preserves exact observed key, strips private selector and closes owned mirror',async()=>{const key={projectKey:'observed / punctuation remains opaque',sessionId:'11111111-1111-4111-8111-111111111111'},x=await runnerFixture({key});try{assert.deepEqual(await x.execute({binding}),{state:'completed'});assert.deepEqual(x.counts(),{calls:1,closes:1,factory:1});}finally{x.f.close();}});
 test('uncertain observed SDK mirror prevents durable completed status and releases no success',async()=>{const x=await runnerFixture({key:{projectKey:'observed',sessionId:'11111111-1111-4111-8111-111111111111'},failClose:true});try{await assert.rejects(x.execute({binding}),/EXECUTION_FAILED/u);assert.deepEqual(x.counts(),{calls:1,closes:1,factory:1});assert.equal((await x.f.service.history({credential:x.f.credential})).run.state,'failed');}finally{x.f.close();}});
+
+// Current capability policy is resolved after the real service's model/lineage and final session checks.
+import {createRunCapabilityPolicy,PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../product-ports/capability-policy.mjs';
+test('load resolves current tenant/role at final release and preserves the canonical SDK budget limits',async t=>{
+ let tenant={},role='user_admin',roleCalls=0,settingsCalls=0;
+ const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);platform.roleCeilings.standard_user.bash=false;
+ const capabilityPolicy=createRunCapabilityPolicy({platform,readTenantSettings:async()=>{settingsCalls++;return tenant;}});
+ const f=await applicationFixture({initialInput:true,serviceOptions:{capabilityPolicy,readCapabilityRole:async({binding:b})=>{
+  assert.deepEqual(b,binding);roleCalls++;return {actorRole:role,checkedAtMs:Date.now(),expiresAtMs:Date.now()+2000};}}});t.after(f.close);
+ await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
+ const first=await f.service.loadForExecution({credential:f.credential,binding});assert.equal(first.capabilities.bash,true);
+ assert.equal(first.model.maxTurns,20);assert.equal(first.model.maxCostMicroUSD,2000000);assert.equal(roleCalls,1);assert.equal(settingsCalls,1);
+ tenant={capabilities:{generalReads:false}};role='standard_user';
+ const next=await f.service.loadForExecution({credential:f.credential,binding});assert.equal(next.capabilities.generalReads,false);assert.equal(next.capabilities.bash,false);
+ assert.equal(roleCalls,2);assert.equal(settingsCalls,2);
+ // A change during the service's final local recheck must precede the capability decision.
+ let checks=0;f.state.checkCurrentBinding=async()=>{if(++checks===2)tenant={capabilities:{generalReads:true}};};
+ const latest=await f.service.loadForExecution({credential:f.credential,binding});assert.equal(latest.capabilities.generalReads,true);assert.equal(roleCalls,3);
+});
+test('load fails closed without a role owner and when role authority expires during the tenant read',async t=>{
+ for(const missing of [true,false]){
+  const capabilityPolicy=createRunCapabilityPolicy({platform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM,readTenantSettings:async()=>{await new Promise(resolve=>setTimeout(resolve,30));return {};}});
+  const f=await applicationFixture({initialInput:true,serviceOptions:{capabilityPolicy,...(missing?{}:{readCapabilityRole:async()=>({actorRole:'standard_user',checkedAtMs:Date.now(),expiresAtMs:Date.now()+10})})}});t.after(f.close);
+  await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
+  await assert.rejects(f.service.loadForExecution({credential:f.credential,binding}),missing?/CAPABILITY_ROLE_UNKNOWN/:/DEADLINE/);
+ }
+});
