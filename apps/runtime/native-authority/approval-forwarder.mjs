@@ -30,8 +30,6 @@
  * ACCESS_DENIED, REFUSED (Core 400/409), INVALID_ARGUMENTS, DEADLINE, CANCELLED, with `effect: 'none'` before the request left
  * and `'unknown'` after (a decision may have been recorded).
  *
- * `getCredentials({tenantId,actorId,purpose:'approval.execution',binding})` is the `core` owner port of
- * `native-authority/execution-composition.mjs` (`{origin,getCredentials}`) over the same relay and secret.
  * Construction is inert: no secret read, request or RPC. */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
@@ -241,22 +239,6 @@ export function createCoreApprovalForwarder(options){
    return p;
   }finally{life.close();}
  }
- /** The `core` credentials port of the execution issuance (`createCoreExecutionIssuance.getCredentials`): the attended approver's
-  * live bearer for the proposal's run and the configured selected client, plus the service secret, never the control token. */
- async function getCredentials(value){
-  const {signal,deadlineMs,...raw}=own(value,['tenantId','actorId','purpose','binding'],['signal','deadlineMs']);nativeSignal(signal);
-  let v;try{v=data(raw);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
-  if(v.purpose!=='approval.execution'||v.binding.tenantId!==v.tenantId||v.binding.actorId!==v.actorId||c.selectedClientId===undefined)refuse('ACCESS_DENIED');
-  const life=lifetime(signal,deadlineMs),selected={binding:stable(v.binding),selectedClientId:c.selectedClientId};
-  try{
-   const forbidden=await life.run(()=>reservedDigests());
-   const first=bearer(selected,life.signal);if(forbidden.has(sha(first.credential)))refuse('ACCESS_DENIED');
-   let secret;try{secret=await life.run(()=>c.getServiceSecret());}catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE');}
-   if(typeof secret!=='string'||!TOKEN.test(secret)||secret===first.credential||forbidden.has(sha(secret)))refuse('UNAVAILABLE');
-   const last=bearer(selected,life.signal);if(last.credential!==first.credential)refuse('ACCESS_DENIED');life.check();
-   return data({tenantId:v.tenantId,actorId:v.actorId,bearerToken:first.credential,serviceSecret:secret,expiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)});
-  }finally{life.close();}
- }
  /** Core owns the one atomic task effect and its retained outcome. An absent read never dispatches. */
  async function taskEffect(value,observe){
   const v=own(value,['proposal','principal','deliveryId'],['decision','signal','deadlineMs']);nativeSignal(v.signal);
@@ -290,7 +272,7 @@ export function createCoreApprovalForwarder(options){
   if(operation==='approval/revoke')return revoke({...own(input,['proposalId','commandSha256','approver','binding']),...extra});
   refuse('UNAVAILABLE');
  }
- return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,getCredentials,
+ return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,
   async executeTask(value){return taskEffect(value,false);},
   async readTaskExecution(value){return taskEffect(value,true);},
   /** The intents decision ports over Core (the shapes `approval.mjs` and the lifecycle read). */

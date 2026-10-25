@@ -115,8 +115,6 @@ function compose(context,transport){
   revokeDecision:decisions?value=>decisions.revoke(value):null,
   /** Original proposal plus current attended session; Core owns task mutation and durable replay. */
   tasks:core?Object.freeze({execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)}):null,
-  /** The forwarder's attended Core credentials (`{origin,getCredentials}`, the execution owner's `core` port) and its relay state. */
-  core:core?Object.freeze({origin:core.forwarder.origin,getCredentials:value=>core.forwarder.getCredentials(value)}):null,
   approvalSessions:()=>core?core.relay.state():'absent'};
  if(!intents.enabled)return Object.freeze({...shared,state:'disabled',reason:'INTENTS_DISABLED',application:null,owner:null});
  const limits=intentLimits(c.configuration),gate=ownedValue(c.canonicalProductPorts,'conversationMembership');
