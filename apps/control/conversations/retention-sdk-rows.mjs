@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import canonicalize from 'canonicalize';
 import {data,hash,same,own,uuid,validateShape,fail} from './boundary.mjs';
 import {assertNativeConversationScope,assertNativeSessionReference,assertSdkSessionKey,assertSdkSessionResponseHeaders} from '../../../packages/contracts/runtime-0.2/session.mjs';
-import {copySessionEntries,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
+import {measureSessionEntry,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
 
 const prefix='meri_conversations.',MAX_ENTRIES=100000,MAX_BYTES=33554432,MAX_SESSIONS=4096;
 export const SDK_RETENTION_PAGE_ROWS=1000,SDK_RETENTION_PAGE_BYTES=16*1024*1024;
@@ -61,7 +61,7 @@ function accumulator(header,subject,sqlRows=false){
   }else if(t===ENTRY){pin(row,'entry');const stream=streams.get(row.subpath);fact(stream&&integer(row.sequence)===stream.count+1&&row.entry_uuid===(row.entry.uuid??null));
    if(lastEntryPath!==row.subpath){uuids=new Set();lastEntryPath=row.subpath;}
    if(row.entry_uuid!==null){fact(typeof row.entry_uuid==='string'&&row.entry_uuid.length>0&&row.entry_uuid.length<=256&&!uuids.has(row.entry_uuid));uuids.add(row.entry_uuid);}
-   copySessionEntries([row.entry]);const size=Buffer.byteLength(JSON.stringify(row.entry));stream.bytes+=size+(stream.count?1:0);stream.count++;bytes+=size;counts.entries++;
+    const size=measureSessionEntry(row.entry);stream.bytes+=size+(stream.count?1:0);stream.count++;bytes+=size;counts.entries++;
    fact(counts.entries<=MAX_ENTRIES&&bytes<=MAX_BYTES&&stream.bytes<=MAX_BYTES);
   }else if(t===BATCH){pin(row,'receipt');fact(digest(row.request_sha256));const r=assertSdkSessionResponseHeaders('append',row.receipt,row.request_sha256,owner.binding,row.receipt.key);
    scopedSessionKey(r.key,key);const stream=streams.get(r.key.subpath??'');fact(stream&&r.committed===true&&r.appendId===row.append_id&&digest(r.entriesSha256)&&integer(r.added)<=1000&&integer(r.offset)<=stream.total&&r.added<=r.offset);

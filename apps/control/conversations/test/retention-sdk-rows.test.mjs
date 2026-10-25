@@ -9,6 +9,16 @@ import {sdkRetentionFixture,binding,id} from './retention-sdk-fixture.mjs';
 const prefix='meri_conversations.',subject={tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId,ownerActorId:binding.actorId};
 const source=f=>createConversationRetentionInventory({pool:{connect(){throw Error('unexpected lease');}},withSnapshot:fn=>fn(f.reader)}).inventoryForConversation({tenantId:subject.tenantId,conversationId:subject.subjectId,ownerActorId:subject.ownerActorId});
 
+test('entry measurement refuses JSON-normalized invalid values before a destructive page callback',async()=>{
+ const f=await sdkRetentionFixture({count:1});try{
+  const [target]=(await scanSdkRetentionInventory(f.reader,{subject})).targets;
+  const row=f.raw.contentRows[prefix+'sdk_session_entries'][0];row.entry.opaque=-0;row.entry_sha256=hash(row.entry);
+  let callbacks=0;
+  await assert.rejects(forEachSdkRetentionTargetPage(f.reader,{subject,target,lock:true},()=>callbacks++),/SESSION_NOT_JSON_SAFE/);
+  assert.equal(callbacks,0);
+ }finally{f.close();}
+});
+
 test('SQL SDK row hashes equal normalized pure commitments for every SDK table',async()=>{
  const f=await sdkRetentionFixture({count:3,text:'opaque \u03bb \ud83e\udd8b'});try{
   const raw=f.raw.contentRows,h=raw[prefix+'sdk_sessions'][0],entries=raw[prefix+'sdk_session_entries'];

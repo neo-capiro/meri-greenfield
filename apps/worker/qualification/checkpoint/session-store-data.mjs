@@ -29,14 +29,14 @@ export function sessionDataRecord(value, { allowed, required = [], code }) {
 
 // Iterative JSON encoding retains supported opaque JSON without a recursion
 // limit or invoking caller serialization hooks. Bounds apply to exact bytes.
-export function copySessionJson(value, maxBytes) {
+function walkSessionJson(value, maxBytes, parts) {
   if (!Number.isSafeInteger(maxBytes) || maxBytes < 1) fail('SESSION_PAYLOAD_BOUND');
-  const parts = [], active = new WeakSet(), stack = [{ kind: 'value', value }];
+  const active = new WeakSet(), stack = [{ kind: 'value', value }];
   let bytes = 0;
   function emit(fragment) {
     bytes += Buffer.byteLength(fragment);
     if (bytes > maxBytes) fail('SESSION_PAYLOAD_BOUND');
-    parts.push(fragment);
+    if (parts) parts.push(fragment);
   }
   while (stack.length) {
     const frame = stack.pop();
@@ -65,8 +65,17 @@ export function copySessionJson(value, maxBytes) {
     active.add(item); emit(array ? '[' : '{');
     stack.push({ kind: 'container', value: item, array, fields, keys, index: 0 });
   }
+  return bytes;
+}
+
+export function copySessionJson(value, maxBytes) {
+  const parts = [];
+  walkSessionJson(value, maxBytes, parts);
   return JSON.parse(parts.join(''));
 }
+
+// The identical inert walk and byte bound, without allocating a discarded copy.
+export const measureSessionJson = (value, maxBytes) => walkSessionJson(value, maxBytes);
 
 // Executable dependencies may be class instances (including the SDK reference
 // store). Inspect only required method descriptors and retain their receiver.

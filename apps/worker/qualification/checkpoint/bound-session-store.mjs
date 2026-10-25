@@ -2,23 +2,29 @@
 // owns authentication, durable commits and atomic writerFence enforcement.
 // Importing this module does not connect, spawn or read ambient credentials.
 import { validateShape } from '@capiro/meri-contracts/node';
-import { copySessionJson, sessionDataRecord, captureSessionMethods,
+import { copySessionJson, measureSessionJson, sessionDataRecord, captureSessionMethods,
   confirmedSessionWriteRejection } from './session-store-data.mjs';
 
 const BATCH = Object.freeze({ bytes: 8 * 1024 * 1024, entries: 1000 });
 const TRANSCRIPT = Object.freeze({ bytes: 32 * 1024 * 1024, entries: 100000 });
 const MAX_PENDING = 128;
 const fail = code => { throw Object.assign(new Error(code), { code }); };
+const isEntry = e => e && typeof e === 'object' && !Array.isArray(e) && typeof e.type === 'string';
 
 function copyEntries(entries, limits) {
   const copy = copySessionJson(entries, limits.bytes);
   if (!Array.isArray(copy) || copy.length > limits.entries) fail('SESSION_ENTRY_BOUND');
-  if (copy.some(e => !e || typeof e !== 'object' || Array.isArray(e) || typeof e.type !== 'string'))
-    fail('SESSION_ENTRY_SHAPE');
+  if (copy.some(e => !isEntry(e))) fail('SESSION_ENTRY_SHAPE');
   return copy;
 }
 export const copySessionEntries = entries => copyEntries(entries, BATCH);
 export const copySessionTranscript = entries => copyEntries(entries, TRANSCRIPT);
+
+export function measureSessionEntry(entry) {
+  const bytes = measureSessionJson([entry], BATCH.bytes);
+  if (!isEntry(entry)) fail('SESSION_ENTRY_SHAPE');
+  return bytes - 2; // Keep the singleton array's admission bound; report entry bytes.
+}
 
 export function scopedSessionKey(key, scope, mainOnly = false) {
   const record = value => sessionDataRecord(value, { allowed: ['projectKey', 'sessionId', 'subpath'],
