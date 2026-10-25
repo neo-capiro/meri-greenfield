@@ -368,7 +368,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -376,7 +376,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
  assert.match(seed,/INSERT INTO meri_product_budget\.budget \(id, cap_micro_usd, consumed_micro_usd, quarantined\)\nVALUES \(1, 25000000, 0, false\)/u);
  const budget=read('apps/gateway/budget/migrations/0001_product_budget.sql');
  for(const column of ['id integer PRIMARY KEY CHECK (id=1)','cap_micro_usd bigint','consumed_micro_usd bigint','quarantined boolean'])assert.ok(budget.includes(column));
- assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql infra\/product-preview\/first-chat-native-retention-grants\.sql infra\/product-preview\/first-chat-expired-conversation-purge-grants\.sql \.\/infra\/product-preview\/$/mu);
+ assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql infra\/product-preview\/first-chat-native-retention-grants\.sql infra\/product-preview\/first-chat-expired-conversation-purge-grants\.sql infra\/product-preview\/first-chat-schedule-worker-grants\.sql \.\/infra\/product-preview\/$/mu);
  assert.match(read('apps/runtime/package-lock.json'),/"node_modules\/pg": \{\n\s+"version": "8\.23\.1"/u);
 });
 
@@ -497,7 +497,7 @@ function fakeDatabase({failOn,beforeQuery,commitAckOrdinal}={}){
    if(text==='ROLLBACK'){pending=null;return {rows:[]};}
    if(/^INSERT INTO meri_migration_ledger/u.test(text)){assert.ok(pending,'ledger write outside a transaction');pending.push({ordinal:params[0],name:params[1],sha256:params[2]});return {rows:[]};}
    if(/^SELECT CASE WHEN \(TRUE\)::int\s*\+/u.test(text)){state.phases.push('bootstrap');}
-   if(/^SELECT CASE WHEN \(TRUE\)::int = 1 THEN 'ok'/u.test(text))state.phases.push(/INTEGRATION_GRANTS/u.test(text)?'integration_grants':/OWNER_CONVERSATION_READS/u.test(text)?'owner_conversation_reads':'temporal_grants');
+   if(/^SELECT CASE WHEN \(TRUE\)::int = 1 THEN 'ok'/u.test(text))state.phases.push(/SCHEDULE_GRANTS/u.test(text)?'schedule_worker_grants':/INTEGRATION_GRANTS/u.test(text)?'integration_grants':/OWNER_CONVERSATION_READS/u.test(text)?'owner_conversation_reads':'temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(TRUE\)::int \+ \(FALSE\)::int/u.test(text))state.phases.push('meri_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('temporal_grants');
    if(/^SELECT CASE WHEN \(FALSE\)::int \+ \(FALSE\)::int \+ \(FALSE\)::int \+ \(TRUE\)::int/u.test(text))state.phases.push('release');
@@ -688,7 +688,7 @@ test('owner reads grant the model owner only SELECT on the two tables and the lo
 });
 
 test('integration stage runs only after meri and temporal are ledgered; earlier stages never reach its entries',async()=>{
- const plan=loadPlan(),integration=plan.filter(e=>e.stage==='integration');
+ const plan=loadPlan().slice(0,55),integration=plan.filter(e=>e.stage==='integration');
  assert.equal(plan.length,55);assert.equal(integration.length,33);assert.equal(plan[40].kind,'phase:integration_grants');
  assert.equal(integration.at(-1).path,'apps/control/conversations/migrations/0025_retention_target_lookup.sql');
  const early=fakeDatabase();
@@ -813,10 +813,29 @@ test('the superseding Temporal grants file pins the live 1.32.1 catalog, includi
 });
 
 
+test('schedule grants append ordinal 56 through the existing installer phase and preserve all 55 entries',async()=>{
+ const plan=loadPlan(),entry=plan.at(-1);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,55))).digest('hex'),'27299fdc73619f4a925995f2b864f67ea1b1a260fb12f5a5de8b209aae03e72f');
+ assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[56,56,'phase:schedule_worker_grants','integration']);
+ assert.equal(entry.path,'infra/product-preview/first-chat-schedule-worker-grants.sql');
+ const db=databaseWithLedger(plan,55),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,55),prefix);assert.equal(db.state.ledger.length,56);
+ assert.equal(db.state.phases.filter(p=>p==='schedule_worker_grants').length,1);
+ assert.ok(db.state.queries.some(q=>q.includes('CREATE ROLE meri_schedule_runtime NOLOGIN')));
+ assert.ok(db.state.queries.includes('SET LOCAL ROLE meri_product_migrator;'));
+ const executed=structuredClone(db.state.executed);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.executed,executed);assert.equal(db.state.phases.filter(p=>p==='schedule_worker_grants').length,1);
+ assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
 test('retention and routine additions append entries 50 through 55 and preserve the applied ledger',async()=>{
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,48))).digest('hex'),
   'eb0e42eb0cdc61d0c747698b464e85f439813fc39116da0e472bae8b5fc621f9');
- const plan=loadPlan(),added=plan.slice(49);
+ const plan=loadPlan().slice(0,55),added=plan.slice(49);
  assert.equal(plan[48].path,'apps/control/conversations/migrations/0024_general_initial_binding_scope.sql');
  assert.equal(plan[48].sha256,'0e5c5449a0cf78ead63c8d4f90a76c0ef789e6a6b86ab128f57d45e9fa3938d3');
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,53))).digest('hex'),'252870c1f2fe3f07b431423254365b0ffc84c479eba98b876a5ac20ada622fda');
