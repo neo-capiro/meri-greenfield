@@ -1,5 +1,7 @@
 # Product owner interfaces: source closure, 16 October 2026
 
+> Historical source-closure record. Item 0 retired the owner/proxy and custom Temporal issuer mechanisms described below. Do not activate or rebuild them from this record. Current authentication belongs to `apps/runtime/temporal-tls.mjs` and the native client-certificate binding; current retirement gates are in [the Runtime V1 migration plan](../../docs/handover/20261022/plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md).
+
 Status: **disabled / unmounted; activation HOLD**. These successor interfaces create no listener, issuer, credential, database, task or deployment. The sealed archive at `e4fc10347c7bf557eff93423e42816834b009a4e` **excludes these successor sources**; its digest cannot qualify an image containing them. A reviewed successor commit, fresh archive and exact image qualification are required.
 
 ## Proxy to canonical owner
