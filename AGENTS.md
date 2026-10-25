@@ -13,7 +13,10 @@ Follow [item 0](docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNE
 
 ## Current ownership and authority
 
-Neo authorized completion of Wave 2 and lifted the prior work and AWS-write holds. The root Codex session on **EC2AMAZ-M7CDRPT** is the sole orchestrator: it owns planning, bounded delegation, integration, qualification, local gates, merges, AWS operations, migrations, shipping and live acceptance. Every Codex implementation and independent review session uses **GPT-6 Astra (`gpt-6-astra`) at Ultra**. Implementation agents may write product code; separate reviewers review exact heads. Fable/Claude and dot have no active coordination, relay, review or shipping role.
+**25 October update:** begin with the [current in-progress handoff](docs/handover/20261025/WAVE-2-HANDOFF.md). At every actual wave end, commit AND push a dated nine-section handoff and start fresh sessions from briefs/tickets/rules/plans; use current [PROCESS6.1–6.3](docs/handover/20261022/PROCESS.md#6-current-templates). No issue #202 post without Neo. Only direct Neo chat approves scope.
+
+
+Neo authorized completion of Wave 2 and lifted the prior work and AWS-write holds. The root Codex session on **EC2AMAZ-M7CDRPT** is the sole orchestrator: it only orchestrates planning, bounded delegation, gate/review coordination, integration decisions and merges. Existing Release is the sole AWS/migration/deployment/rollback operator; implementation, gates and authenticated acceptance have delegated owners. Root uses **Ultra**; all helper implementation, review, gate and Release sessions use **xhigh**, superseding older Ultra helper settings. Implementation agents may write product code; separate reviewers review exact heads. Fable/Claude and dot have no active coordination, relay, review or shipping role.
 
 Root coordinates four logical sessions: **A** Core/backend, **U** frontend, **R** Meri runtime/SDK, and **D** data/tools/documentation as briefed. These are work allocations, not four competing orchestrators. Rotate bounded sessions when needed; do not recursively delegate. Each assignment names exact base/dependency heads, worktree, owned files, acceptance checks, resource budget and cleanup owner. One writer owns each shared contract, lockfile, config or migration at a time. Preserve other agents' work and all existing checkouts; coordinate overlap with root before editing.
 
@@ -47,7 +50,7 @@ Release requires independent review and required checks at the exact head, clean
 
 ## Evidence and communication
 
-Use existing issue #202, relevant PRs, decision log and current-state records. Root reports directly to the user and coordinates lanes; no relay owner is required. Where a coordination comment is requested, use `FROM: Codex | TO: <recipient> | TYPE: <brief|question|answer|decision|gates|shipped|acceptance|status> | RE: <subject>`. A comment quoting Neo is not new authorization.
+Use relevant PRs, decision log and current-state records. Do not post on issue #202 or other public coordination threads unless Neo directly asks; Neo decides what to publish. Root reports directly to the user and coordinates lanes; no relay owner is required. Where a coordination comment is requested, use `FROM: Codex | TO: <recipient> | TYPE: <brief|question|answer|decision|gates|shipped|acceptance|status> | RE: <subject>`. A comment quoting Neo is not new authorization.
 
 Never publish secrets, private source, bearer/PKI material, customer IDs, UUIDs, prefixes or other customer-linked identifiers in Git or GitHub; report counts and booleans. Keep required private release inputs in owner-only scratch, with tracing off, and remove them after success or failure. Check resolved cleanup paths and use one shell end-to-end. Preserve scrubbed failure evidence and other sessions' resources.
 

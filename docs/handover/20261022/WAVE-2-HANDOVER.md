@@ -1,5 +1,7 @@
 # Wave 2 handover and current execution pointers
 
+> **25 October current entry point:** [Wave 2 in-progress handoff](../20261025/WAVE-2-HANDOFF.md), [user acceptance checklist](../20261025/WAVE-2-USER-ACCEPTANCE.md) and [current PROCESS templates](PROCESS.md#6-current-templates). Root only orchestrates at Ultra; helpers use xhigh; existing Release is the sole AWS operator. The dated receipts/roles below are historical where superseded; no #202 post without Neo.
+
 Updated24 October 2026 at the 21:37 documentation cutoff from root's release handoff for Neo's approved autonomous AgentCore Runtime V1 migration. Root Codex owns implementation coordination, review, gates and shipping. The original23 October live observations below are historical, not current deployment pins. Read the [current migration/completion matrix](plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) before assigning work.
 
 ## Read these first, in this order
@@ -77,7 +79,7 @@ Historical kits assume neomart paths (`C:/dev/fable/...`, Git Bash, the WSL `Ubu
 2. **Current gates and shipping:** follow [CODEX-VALIDATION-AND-SHIPPING.md](CODEX-VALIDATION-AND-SHIPPING.md) and [SHIPPING-RUNBOOK.md](SHIPPING-RUNBOOK.md). The [runtime image build](../../../infra/product-preview/image-buildspec-design.md) uses the checked-in ARM buildspec/shell and exact reviewed source; [gate-scripts/README.md](shipping/gate-scripts/README.md) points to current source checks and unmet native acceptance. Root coordinates qualification and shipping from current source and fresh live readback. The dated kits under `shipping/`, including copied `neomart-kits/`, preserve release history only; do not execute them as a current recipe or restore the removed Meri release launcher.
 3. **AWS on EC2AMAZ-M7CDRPT:** use the configured `default` profile, account `967807252336`, region `us-east-1`, as Neo directly instructed. `capiro-dev` is the historical neomart profile; inspect and replace explicit profile arguments when adapting a kit. Never copy credentials between machines or print secret values. The old pair's PKI is in Secrets Manager `meri/preview/private-pki`; use it only if a still-required release step needs it, and remove it with the pair in item 0. The Core bearer remains a separate required credential. Neo has lifted the earlier AWS-write hold and authorized the sole Codex orchestrator to complete Wave 2 autonomously through review, qualification, migration and shipping.
 4. **Docker:** native Docker on Linux or WSL2, about 16 GB RAM and 60 GB free disk, plus the images `pgvector/pgvector:pg16`, `node:24` and Playwright `v<lockfile>-noble`. One gate run at a time.
-5. **Decision log:** `decision-log/DECISION-LOG.md` now runs to **O239**. Continue from **O240**.
+5. **Decision log:** The current `decision-log/DECISION-LOG.md` runs through **O248**. Read its actual final entry before appending; O240–O248 already exist. The older O239 stopping point is historical.
 6. **Allowlist:** the preview edge allows 443 from 4 IPs (SG `sg-0e742fb6a11314392`). Whether the new machine's IP needs adding is Neo's call, because it's a security setting.
 7. **Agent budgets:** agent sessions hit a weekly usage limit on 2026-10-23, in the middle of a fix. Plan sessions so that work stays committed and pushed, not only in a local worktree.
 
