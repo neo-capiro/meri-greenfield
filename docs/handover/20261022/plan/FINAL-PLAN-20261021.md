@@ -1,5 +1,7 @@
 # Capiro and Meri Final Plan
 
+> **25 October checkpoint:** [WAVE-2-HANDOFF](../../20261025/WAVE-2-HANDOFF.md) owns newer source/live/acceptance facts. Its current roles and [PROCESS templates](../PROCESS.md#6-current-templates) supersede dated roles below. Wave 2 remains IN PROGRESS; source/image qualification is not final authenticated acceptance.
+
 > **Current decision — 24 October 2026.** Neo approved the real Claude Agent SDK on **AgentCore Runtime standard V1**, conversation-scoped isolation, durable native SDK/artifact restore and canonical Core permissions. This replaces per-turn Fargate and the S3 custom warm-pool mechanism. The [migration plan and completion matrix](AGENTCORE-RUNTIME-MIGRATION-20261024.md) are current; this dated plan retains the complete ticket index and acceptance outcomes.
 > Item 0 removes the model owner/proxy, budget reservation, duplicate native-authority, custom checkpoint and Temporal-issuer mechanisms. It preserves the actual SDK SessionStore, all memory/data, 14 skills, durable outcomes and Temporal for required runs, schedules and background work. [Standing requirements](../STANDING-REQUIREMENTS.md) and the [supersession register](../source-of-truth/SUPERSEDED-BY-ITEM-0.md) define the boundary. All Item 0/A2/M2/MP/frontend features remain required; source review is not shipping acceptance.
 > Root has Neo's autonomous implementation and release authority. Dated source/status/decision tables below are historical evidence where identified, not an instruction to repeat completed migrations or revive removed services.

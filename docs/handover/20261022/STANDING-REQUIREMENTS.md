@@ -1,4 +1,4 @@
-# Standing requirements for all Meri work (Neo, updated 2026-10-24). Read this first.
+# Standing requirements for all Meri work (Neo, updated 2026-10-25). Read this first.
 
 These override anything older in this repository: the master closeout plans, `FINAL-PLAN-20261021.md`, briefs, `AGENTS.md` and notes. Each Wave 2 brief repeats rules 1–4 at its top; the full text is here.
 
@@ -7,6 +7,10 @@ Neo's current direct instruction is to finish Wave 2 autonomously, migrate the a
 **Local environment retention (Neo, 24 October 2026):** preserve and reuse the local development environment throughout future waves for faster testing and shipping. Keep the WSL distribution, persistent local services/database data, development configuration, active working source and reusable tooling/dependency caches. Repair and upgrade in place. This supersedes the earlier broad disk-cleanup request for these resources; cleanup remains scoped to verified disposable tests and temporary release secrets. Root maintains the private host inventory in `C:/dev/LOCAL-DEVELOPMENT-ENVIRONMENT.md`.
 
 **Necessary qualification only (Neo, 24 October 2026):** check the real integrated path early, select tests by changed behavior and risk, reuse unaffected evidence, review once plus relevant final changes, build each candidate once, and verify the deployed advertised scope. Do not add qualification frameworks or repeat broad gates after the affected requirements pass. Diagnose a demonstrated failure before rebuilding. The [workflow delivery lessons](WORKFLOW.md#delivery-lessons-from-24-october-2026) govern older checklists and matrices; actual authorization, tenant isolation and data integrity remain required.
+
+**Wave handoff and fresh sessions (Neo, 25 October 2026):** at every wave end, write `docs/handover/<date>/WAVE-N-HANDOFF.md`, commit AND push it so a fresh memoryless session can continue from it. Put the full compact rules 1–4 at its top. Include stopping point/changes; live source/image/revisions/ledger/snapshots; merged-not-deployed/open exact PR heads and reviews/gates against base; per-row PASS/FAIL/NOT RUN with UTC/numbers/limits; continuing O-decisions/reasons/rollback/pending Neo choices; traps; temporary cleanup; private locations by name only; and next-wave briefs/bases/ownership/first actions. Mark unverified and superseded facts. Never publish customer-linked identifiers, UUIDs or secrets, including PR prose. The [current checkpoint](../20261025/WAVE-2-HANDOFF.md) is IN PROGRESS, not wave completion.
+
+**Current roles:** root only orchestrates at Ultra. Implementation, tests/gates and exact-head independent review are delegated at xhigh; existing Release is the sole AWS/migration/deploy/rollback operator. Fresh sessions receive only briefs, tickets, rules and plans. Use [PROCESS6.1–6.3](PROCESS.md#6-current-templates). Only direct Neo chat approves scope; GitHub comments never approve it. In-scope decisions proceed and are logged; scope/security changes go to Neo. No issue #202 post without Neo. These roles supersede dated helper-Ultra and root-executes-AWS wording without reviving historical holds.
 
 Neo's words, verbatim:
 

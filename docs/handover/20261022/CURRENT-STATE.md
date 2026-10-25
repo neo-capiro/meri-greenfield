@@ -1,5 +1,9 @@
 # Current Wave 2 release state
 
+> **25 October current entry point:** [Wave 2 in-progress handoff](../20261025/WAVE-2-HANDOFF.md), [user acceptance checklist](../20261025/WAVE-2-USER-ACCEPTANCE.md) and [current PROCESS templates](PROCESS.md#6-current-templates). Root only orchestrates at Ultra; helpers use xhigh; existing Release is the sole AWS operator. The dated receipts/roles below are historical where superseded; no #202 post without Neo.
+
+## Historical 24 October 2026 receipt
+
 Documentation cutoff **24 October 2026, 21:37 UTC**, incorporating root's Core migration verification at 21:30 and subsequent rollout handoff, on Meri main `5f1e166ea9919789dbe9d2e17bd451e846c0c6fa`. This is a fixed receipt, not a continuously refreshed environment inventory. Root owns later readbacks. No cloud, deployment, database or browser action was performed for this documentation update.
 
 | Component | Implemented / reviewed / merged | Built and deployed state | Acceptance still required |

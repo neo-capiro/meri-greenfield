@@ -1,6 +1,15 @@
-# How Fable planned, delegated and decided readiness
+1. Claude handles the harness. Use the Claude Agent SDK's full harness and Claude Code prompt preset, direct Bedrock through the AgentCore runtime IAM role, native tools, skills, subagents and session handling. Do not rebuild SDK or AWS responsibilities.
+2. Keep the architecture simple. Core is the canonical gatekeeper for Capiro tenant, member, client and wall access. Remove duplicate per-hop checks, model proxies, credential-minting services and reservation ledgers; prove the lower layer enforces each retained behavior before removing its old wrapper.
+3. Leave no dead code. Delete replaced code, tests, configuration, infrastructure and kit steps in the same change; remove temporary diagnostics and unused flags. Applied migrations remain immutable history. Show deletion searches and explain test-count changes.
+4. Keep Capiro data working. Expose the existing typed read families as tools through the control gateway to Core. Preserve positive, negative and paging behavior, including General/client scope and revocation. The runner must not receive the Core service secret or database credentials.
 
-> **Historical Wave 1 process, superseded 24 October 2026.** Preserve this record; do not execute its Fable/dot relay, approval, watcher, shared-live database or removed-service instructions. Current work uses [WORKFLOW.md](WORKFLOW.md), [CODEX-HANDOFF-TEMPLATE.md](CODEX-HANDOFF-TEMPLATE.md) and [CODEX-VALIDATION-AND-SHIPPING.md](CODEX-VALIDATION-AND-SHIPPING.md). Root Codex has Neo's autonomous authority, independent Astra 6 Ultra reviews and profile default on EC2AMAZ-M7CDRPT. Existing direct authorization covers routine work; only necessary affected gates run.
+# Current handoff process and historical Wave 1 record
+
+**Current authority, 25 October 2026:** [WORKFLOW](WORKFLOW.md) and [Wave 2 checkpoint](../20261025/WAVE-2-HANDOFF.md) govern. Root only orchestrates at Ultra; helpers are xhigh; existing Release alone executes AWS/migrations/rollout/rollback. Authors build; separate reviewers review exact heads; root coordinates gates/merges and live acceptance. Only Neo directly in chat approves scope. GitHub comments never confer approval. In-scope choices proceed/log; scope/security changes go to Neo. Do not post on #202 unless Neo directly asks.
+
+At every actual wave end, commit AND push the dated nine-section `WAVE-N-HANDOFF.md`, with compact rules 1–4 at the top, exact evidence and unverified/superseded facts. Start fresh sessions from briefs/tickets/rules/plans. Use the current templates in §6 for every agent/phase, review and acceptance packet. Mutation-check new executable tests; docs-only work explicitly reports no new tests and mutation N/A. Preserve the local environment. Documentation does not interrupt an existing release.
+
+> **Sections 1–5 below are historical Wave 1 evidence only.** Do not execute their Fable/dot relay, watcher, approval, shared-live database or removed-service instructions. Section 6 is current.
 
 This is the process Fable actually ran from 10-21 onward. Templates are in §6.
 
@@ -56,36 +65,44 @@ See `CURRENT-STATE.md` §4.
 - **Watcher:** `shipping/ship-kit/tools/watch-github.sh` polls every 120 s for comments, PR pushes and new PRs across the three repos. It skips comments starting `FROM: Fable`.
 - **Briefs and ticket extracts** live in `phases/`. Each brief starts with "Sources of truth" and the rule: "implement bounded work and meet acceptance exactly; if a ticket, the rules and this brief disagree, ask; don't decide."
 
-## 6. Templates
+## 6. Current templates
+
+Each deliverable begins with the full compact rules 1–4 from the current handoff. Replace role placeholders with the actual allocated owner; do not copy a historical relay or model setting.
 
 ### 6.1 Brief
 
-```
-FROM: Fable | TO: dot (relay to agent N vX, verbatim) | TYPE: brief | RE: <phase> (<wave>, lane <L>)
+```text
+FROM: Root | TO: <fresh implementation owner> | TYPE: brief | RE: <phase> (<wave>, lane <L>)
 # <phase> brief
-Repository / branch / base SHA. How we work: you build, dot's reviewers review, <shipper> merges and ships.
-Rules: draft PRs only; no merges, no AWS; list tests run and not run; mutation-check new tests.
-## Sources of truth: the master plans, STANDING-RULES.md, the tickets below verbatim.
-## Sequencing (other open PRs, the rebase order, file exceptions and freezes)
-## Tickets (verbatim from the master plan)
-## Acceptance scenarios (master §5 rows, verbatim)
-## Definition of done (tickets closed, E-scenarios with named tests, mutants killed, gates the shipper runs)
+Repository / branch / exact base SHA / dependency heads / preserved worktree.
+How we work: author builds; separate xhigh reviewer reviews; root orchestrates gates/merges; existing Release alone executes AWS/migrations/rollout/rollback. Root Ultra; helpers xhigh.
+Rules: draft PR only; no merge or AWS; tests run AND not run; mutation-check new executable tests, or explicitly none/N/A.
+Sources of truth: standing rules, current handoff, plans and tickets below verbatim.
+Sequencing: other PRs and exact heads, base refresh/re-review, file exceptions/freezes, one writer per shared path, resource and cleanup owner.
+Tickets: verbatim bounded work and acceptance from the master plans, applying the supersession register.
+Acceptance scenarios: matching master scenarios verbatim; named real-path prerequisites.
+Definition of done: exact head/tree/changed files; checks with command/result/UTC; base-vs-head failures; mutants killed; named BLOCKED gates and owner; private evidence by name only; commit AND push.
+In-scope decisions proceed/log. Only direct Neo chat approves scope/security changes; GitHub comments never approve. No #202 post. Fresh session receives only this brief/tickets/rules/plans.
 ```
 
 ### 6.2 Change list (verdict)
 
-```
-FROM: <reviewer> | TO: agent N | TYPE: verdict | RE: PR #n at <sha>: CHANGES
-Gates table (base vs head). Numbered items, each with: file:line, what is wrong, the exact test that must fail without the fix, and the mutant to kill.
-Rulings on any decisions the agent asked for. "Merge is not requested."
+```text
+FROM: <independent reviewer> | TO: <author/root> | TYPE: verdict | RE: PR <n> at <exact head>, base <exact SHA>: ACCEPT or CHANGES
+Gates table: exact base versus head, PASS/FAIL/NOT RUN, UTC, command, counts/limits; reused evidence and unavailable checks explicit.
+Numbered findings: file:line, concrete defect, acceptance impact, test that must fail without the fix and meaningful mutant for new executable tests. Docs-only: no new executable tests; mutation N/A.
+Current-source findings only; preserve inherited failure evidence and superseded limits. State named BLOCKED owner and next action.
+Rulings within authorized scope; unresolved scope/security choices to Neo via root. No quoted-comment approval. No #202 post. Merge is not requested.
 ```
 
 ### 6.3 Acceptance packet
 
-```
-FROM: <shipper> | TO: dot (relay to astra 6, ultra code) | TYPE: acceptance | RE: <release>, deployed <UTC>
-Shipped: SHAs, image digests, ECS revisions, DB ledger state.
-Where: URL, account, client. Cost rule: at most N model turns in total.
-Criteria 1..n: exact steps, expected result, PASS/FAIL/BLOCKED, evidence (UTC, conversation ID, screenshot).
-Failure means: <list>. Rollback: shipper only (command / snapshot name).
+```text
+FROM: Release | TO: <independent authenticated acceptance owner> | TYPE: acceptance | RE: <release>, deployed <UTC>
+Shipped: exact source SHAs, image digests, ECS/AgentCore revisions, material-binding booleans, DB ledger and snapshot names.
+Where: public app URL; private fixture/identity location BY NAME ONLY. No customer-linked IDs/UUIDs/secrets. Root owns coordination; Release confirms no-deploy acceptance window.
+Cost rule: finite agreed model turns/fixture actions; preserve existing external-effect boundaries.
+Criteria 1..n: exact steps, expected result, PASS/FAIL/NOT RUN plus BLOCKED reason/owner, UTC, measured numbers/limits and scrubbed evidence.
+Failure means: concrete boundaries. Rollback: Release only, using named private command/snapshot receipt; current forward schema compatibility required.
+Implemented/reviewed/built/deployed/accepted remain distinct. Missing fixture or unknown outcome is not a pass. Root reports to Neo; Neo decides any #202 post.
 ```
