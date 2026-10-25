@@ -38,3 +38,38 @@ test('the worker uses the bounded current control exchange timeout',async()=>{
  const runtime=await startTemporalWorker(configuration,{signal:b.signal,testOwners:b.owners});
  try{assert.equal(options.maxRequestMs,BROKER_NATIVE_MS);assert.equal(BROKER_NATIVE_MS,10000);}finally{await runtime.close();}
 });
+
+test('visibility: startup failure stages preserve the cause without retries or private error content',async t=>{
+ const lines=[];t.mock.method(process.stderr,'write',line=>{lines.push(String(line));return true;});
+ for(const [stage,owner,code] of [['worker-material','readMaterial','RUNTIME_SECRET_FILE'],['worker-readiness','nativeClient','NATIVE_UNAVAILABLE'],['worker-connect','connect','ECONNRESET'],['worker-create','createWorker','WORKER_CONFIGURATION'],['worker-listen','listen','EADDRINUSE']]){
+  const b=boundaries(),error=Object.assign(Error('PRIVATE_STARTUP_CANARY'),{code});let attempts=0;
+  const fail=async()=>{attempts++;throw error;};
+  if(owner==='nativeClient')b.owners.nativeClient=()=>({readiness:fail});else b.owners[owner]=fail;
+  if(owner==='createWorker')b.owners.connect=async()=>({async close(){b.calls.push('connection-close');}});
+  await assert.rejects(startTemporalWorker(configuration,{signal:b.signal,testOwners:b.owners}),e=>e.code==='WORKER_STARTUP_FAILED'&&e.cause===error);
+  assert.equal(attempts,1);assert.match(lines.at(-1)??'',new RegExp(`^RUNTIME_STARTUP_FAILURE role=temporal-worker stage=${stage} code=${code} class=ERROR `));
+ }
+ assert.equal(lines.length,5);assert.equal(lines.join('').includes('PRIVATE_STARTUP_CANARY'),false);
+});
+test('visibility: startup cleanup uncertainty is a separate diagnostic and a failed writer cannot replace it',async t=>{
+ const lines=[];t.mock.method(process.stderr,'write',line=>{lines.push(String(line));return true;});
+ const b=boundaries();b.owners.createWorker=async()=>{b.lose();return b.worker;};
+ await assert.rejects(startTemporalWorker(configuration,{signal:b.signal,testOwners:b.owners}),{code:'TEMPORAL_PRODUCT_CLEANUP_UNKNOWN'});
+ assert.equal(lines.length,2);assert.match(lines[0],/stage=worker-create code=TEMPORAL_AUTHORIZATION_UNAVAILABLE /);
+ assert.match(lines[1],/stage=worker-cleanup code=TEMPORAL_PRODUCT_CLEANUP_UNKNOWN /);assert.equal(b.calls.includes('run'),false);
+ t.mock.method(process.stderr,'write',()=>{throw Error('writer unavailable');});
+ const c=boundaries();c.owners.nativeClient=()=>({async readiness(){throw Error('private');}});
+ await assert.rejects(startTemporalWorker(configuration,{signal:c.signal,testOwners:c.owners}),{code:'WORKER_STARTUP_FAILED'});
+});
+
+test('visibility: a rejected poller reports worker-run without replacing completion or cleanup uncertainty',async t=>{
+ const lines=[];t.mock.method(process.stderr,'write',line=>{lines.push(String(line));return true;});
+ const b=boundaries(),start=b.worker.run,error=Object.assign(Error('PRIVATE_POLLER_CANARY'),{code:'ECONNRESET'});
+ b.worker.run=()=>{start();return Promise.reject(error);};
+ const runtime=await startTemporalWorker(configuration,{signal:b.signal,testOwners:b.owners});
+ try{
+  await assert.rejects(runtime.completion,e=>e===error);
+  assert.equal(lines.length,1);assert.match(lines[0],/^RUNTIME_STARTUP_FAILURE role=temporal-worker stage=worker-run code=ECONNRESET /);
+  assert.equal(lines[0].includes('PRIVATE_POLLER_CANARY'),false);
+ }finally{await assert.rejects(runtime.close(),{code:'TEMPORAL_PRODUCT_CLEANUP_UNKNOWN'});assert.equal(b.state(),'STOPPED');}
+});

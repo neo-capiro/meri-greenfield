@@ -3,7 +3,7 @@ import {AsyncLocalStorage} from 'node:async_hooks';
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
-import {timeoutClass} from './telemetry/turn-lines.mjs';
+import {DIAGNOSTIC_STAGES,timeoutClass} from './telemetry/turn-lines.mjs';
 
 /** The pinned native transport's fixed failure classes (pinned-native-transport.mjs documents each), owned here with the
  * rest of the allowlist so the transport, the clients that read its answers and RUNNER_FIRST_FAILURE share one vocabulary. */
@@ -27,11 +27,7 @@ export function classifyPinnedStatus(statusCode){
 export const pinnedStatusRefusal=statusCode=>pinnedNativeRefusal(classifyPinnedStatus(statusCode));
 const context=new AsyncLocalStorage();
 const origins=new Set(['runtime','sdk-prepare','native-prepare','native-start']);
-const stages=new Set(['module-import','runner-preflight','capability-load','binding-bootstrap','remote-module-import','admission-wait','activity',
- 'runtime-prepare','runtime-admission','sdk-session','sdk-directories','skill-plugin','runner-cleanup',
- 'activity-input','activity-load','activity-policy','activity-setup','activity-starting','activity-running','activity-query',
- 'activity-stream','activity-output','activity-result','activity-finalize','activity-complete','activity-terminal','activity-cleanup',
- 'remote-config','remote-tls','remote-clients','remote-worker','remote-listen','kickoff-wait','remote-cleanup']);
+const stages=new Set(DIAGNOSTIC_STAGES);
 const codes=new Set(['ENOENT','EACCES','EPERM','ENOTDIR','EEXIST','EADDRINUSE','ERR_MODULE_NOT_FOUND','MODULE_NOT_FOUND','ERR_DLOPEN_FAILED',
  'DEADLINE','CANCELLED','NATIVE_CONFIGURATION','NATIVE_UNAVAILABLE','RUNTIME_SECRET_FILE','RUNNER_AMBIENT_CREDENTIAL_REFUSED',
  'RUNNER_WORKSPACE_REFUSED','RUNNER_POSTSTART_REFUSED','TASK_BOOTSTRAP_REFUSED','TASK_BOOTSTRAP_BINDING_REFUSED',
@@ -53,6 +49,9 @@ const codes=new Set(['ENOENT','EACCES','EPERM','ENOTDIR','EEXIST','EADDRINUSE','
  'LIFECYCLE_EXECUTION_UNKNOWN','LIFECYCLE_CONFIGURATION','CONTROL_ENVELOPE_REFUSED','CONTROL_PAGE_REFUSED','CONTROL_PENDING_LIMIT',
  'CONTROL_CLAIM_REFUSED','HOLD_CONTROL_MISSING','HOLD_UNSETTLED','HOLD_CHECKPOINT_FAILED','SDK_SESSION_MISSING','SDK_SESSION_REFUSED',
  'SDK_INPUT_ECHO_REFUSED','CHECKPOINT_RECORD_REFUSED','COMPLETION_CAPTURE_UNAVAILABLE',
+ // Existing AgentCore boundary and worker startup failures; no response or SDK text is added.
+ 'AGENTCORE_CONFIGURATION','AGENTCORE_REQUEST_REFUSED','AGENTCORE_RESULT_REFUSED','RUNNER_DEADLINE','RUNNER_SETTLEMENT_UNKNOWN',
+ 'WORKER_CONFIGURATION','WORKER_STARTUP_FAILED','TEMPORAL_AUTHORIZATION_UNAVAILABLE','TEMPORAL_PRODUCT_CLEANUP_UNKNOWN','TEMPORAL_TLS_MATERIAL_REFUSED',
  ...PINNED_NATIVE_FAILURE_CODES]);
 /** The pinned SDK (0.3.295) tags its own failures with one of these own `errorClass` values; reported as SDK_<CLASS>. */
 const sdkErrorClasses=new Set(['aborted','control_request_failed','error_result','executable_launch_failed','executable_not_found',
@@ -128,6 +127,15 @@ export function bindRunnerDiagnostics(binding){
 }
 export function markRunnerTelemetryStage(stage){const active=context.getStore();if(active?.binding)try{active.telemetry.stage(active.binding,stage);}catch{}}
 function emit(active,line){try{Promise.resolve(active.write(line)).catch(()=>{});}catch{}}
+/** Startup has no run binding. Reuse the fixed classifier without creating runner counters for a worker process. */
+export function reportRuntimeStartupFailure(role,stage,error,{write=line=>process.stderr.write(line)}={}){
+ const failure=describe(error),safeRole=['agentcore','temporal-worker'].includes(role)?role:'other',safeStage=stages.has(stage)?stage:'runner-preflight';
+ emit({write},`RUNTIME_STARTUP_FAILURE role=${safeRole} stage=${safeStage} code=${failure.code} class=${failure.kind} exit=${failure.exit} signal=${failure.signal} cause=${failure.cause} msg=${failure.msg} site=${failure.site}\n`);
+}
+/** Called only after SDK cleanup and the canonical settlement receipt validate. This is not physical runtime retirement. */
+export function reportRunnerSettlement(state){
+ const active=context.getStore();if(active?.binding)try{active.telemetry.emit('meri.turn.settlement',{...active.binding,state,sdkCleanup:'closed'});}catch{}
+}
 /** First observed terminal error, not proof of an unexpected cause or provider contact. Its stage is printed here because
  * a cleanup that outlives the shutdown timer never reaches the final RUNNER_RUNTIME_FAILED line. */
 export function captureRunnerFailure(error,origin='runtime'){
