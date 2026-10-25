@@ -84,6 +84,20 @@ test('every gateway code renders its own closed text; unknown failures are INTER
  assert.equal(failureCode(Object.assign(Error('x'),{code:'DEADLINE'})),'DEADLINE');assert.equal(failureCode(Error('ACCESS_DENIED')),'ACCESS_DENIED');assert.equal(failureCode(Error('PRIVATE detail')),'INTERNAL_ERROR');assert.equal(failureCode(null),'INTERNAL_ERROR');
 });
 
+test('only meeting argument refusal adds fixed conditional list restart guidance',()=>{
+ const tool='mcp__meri_reads__meeting_read_client_meetings';
+ const text=failureResult('INVALID_ARGUMENTS',tool).content[0].text;
+ assert.match(text,/supply literal arguments matching its input schema/);
+ assert.match(text,/For a continued meeting list, restart without the cursor/);
+ assert.match(text,/narrow the from\/to time range and restart/);
+ assert.match(text,/No evidence, absence or completeness is established/);
+ for(const code of READ_FAILURE_CODES.filter(code=>code!=='INVALID_ARGUMENTS'))
+  assert.doesNotMatch(failureResult(code,tool).content[0].text,/restart|cursor/);
+ for(const name of ['mcp__meri_reads__meeting_query_debriefs','mcp__meri_reads__read_client_documents'])
+  assert.equal(failureResult('INVALID_ARGUMENTS',name).content[0].text,
+   `INVALID_ARGUMENTS: ${name} refused these arguments; supply literal arguments matching its input schema. No evidence, absence or completeness is established.`);
+});
+
 test('P8 fields resolve platform Ã¢Ë†Â§ tenant Ã¢Ë†Â§ role: flags AND, families intersect, widening refused',()=>{
  const platform={maximum:{generalReads:true,readFamilies:['mail']},defaults:{readFamilies:['mail']},roleCeilings:{admin:{generalReads:true,readFamilies:['mail']},viewer:{generalReads:true,readFamilies:['mail']}}};
  assert.equal(resolveCapabilityPolicy({platform,role:'admin'}).generalReads,false,'default off');
