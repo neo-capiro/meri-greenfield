@@ -128,7 +128,27 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
  async function failUncheckpointedHold(c,b,r,check){const p=await lookup(c,b,r.hold_control_id);check();
   if(!p||!same(p.sourceBinding,b)||!['pause','approval.wait'].includes(p.input.intent)||!['PENDING','DISPATCHING','UNKNOWN'].includes(p.state)||p.proof||p.checkpointId!==null||r.projection.state!=='running')fail('RUN_HELD');
   if(p.state!=='UNKNOWN'){const next={...p,state:'UNKNOWN'};delete next.controlSequence;await save(c,b,next);}}
- async function readExecution(c,b,scopes,selectedClientId,check){const r=await verifyRun(c,b,scopes);check();if(!r.continuation)return null;if(hash(r.continuation)!==r.continuation_sha256)fail('STORE_CORRUPT');own(r.continuation,['continuation','sourceRequest']);const envelope=assertContinuationEnvelope(r.continuation.continuation),source=envelope.kind==='native-session'?envelope.sdkSession.binding:envelope.checkpoint.binding,p=await lookup(c,source,envelope.controlId);check();if(!p||!p.target||p.sourceSelectedClientId!==selectedClientId||p.target.selectedClientId!==selectedClientId||!same(p.target.binding,b)||p.input.intent!==envelope.mode||!same(p.sourceRequest,r.continuation.sourceRequest)||!same({...p.sourceRequest,requestId:r.request.requestId},r.request)||!(envelope.kind==='native-session'?p.proof?.kind==='native-session'&&same(p.proof.sdkSession,envelope.sdkSession)&&same(p.proof.files??null,envelope.files??null)&&same(p.proof.versions,envelope.versions)&&same(p.proof.scopes,envelope.scopes):same(p.proof?.checkpoint,envelope.checkpoint))||p.sourceRequestSha256!==envelope.sourceRequestSha256||p.contextSha256!==envelope.contextSha256||envelope.kind!=='native-session'&&p.proof?.resumeSessionAt!==envelope.resumeSessionAt||p.target.targetSessionId!==envelope.targetSessionId||!same(p.target.versions??p.versions,r.projection.versions)||!continuesSession(p.versions,r.projection.versions)||!same(p.scopes,r.projection.scopes))fail('STORE_CORRUPT');return r.continuation;}
+ const continuationSource=envelope=>envelope.kind==='native-session'?envelope.sdkSession.binding:envelope.checkpoint.binding;
+ const savedContinuation=r=>{if(hash(r.continuation)!==r.continuation_sha256)fail('STORE_CORRUPT');const saved=own(r.continuation,['continuation','sourceRequest']);return {saved,envelope:assertContinuationEnvelope(saved.continuation)};};
+ /** The single canonical source-custody and source->target predicate: the decoded source proof must equal the stored envelope
+  * exactly (sdkSession/files/versions/scopes, or the historical checkpoint), the source request/context identities must be exact,
+  * the target binding/targetSessionId/versions must be the admitted ones, and only the source->target relationship uses
+  * continuesSession. Shared by the locked execution read and history's read-only join so neither re-implements it. */
+ const verifyContinuation=(p,b,r,envelope,saved)=>{
+  if(!p||!p.target||!same(p.target.binding,b)||p.input.intent!==envelope.mode||!same(p.sourceRequest,saved.sourceRequest)||!same({...p.sourceRequest,requestId:r.request.requestId},r.request)||
+   !(envelope.kind==='native-session'?p.proof?.kind==='native-session'&&same(p.proof.sdkSession,envelope.sdkSession)&&same(p.proof.files??null,envelope.files??null)&&same(p.proof.versions,envelope.versions)&&same(p.proof.scopes,envelope.scopes):same(p.proof?.checkpoint,envelope.checkpoint))||
+   p.sourceRequestSha256!==envelope.sourceRequestSha256||p.contextSha256!==envelope.contextSha256||envelope.kind!=='native-session'&&p.proof?.resumeSessionAt!==envelope.resumeSessionAt||
+   p.target.targetSessionId!==envelope.targetSessionId||!same(p.target.versions??p.versions,r.projection.versions)||!continuesSession(p.versions,r.projection.versions)||!same(p.scopes,r.projection.scopes))fail('STORE_CORRUPT');
+  return p;};
+ async function readExecution(c,b,scopes,selectedClientId,check){const r=await verifyRun(c,b,scopes);check();if(!r.continuation)return null;const {saved,envelope}=savedContinuation(r),p=await lookup(c,continuationSource(envelope),envelope.controlId);check();
+  if(!p||p.sourceSelectedClientId!==selectedClientId||p.target?.selectedClientId!==selectedClientId)fail('STORE_CORRUPT');verifyContinuation(p,b,r,envelope,saved);return r.continuation;}
+ /** Read-only canonical continuation custody for a run row the caller's own transaction already holds: the same decoder and
+  * predicate as readExecution, but the source control is read without FOR UPDATE and neither a transaction nor a source-run read
+  * is started, so a reader holding only the target conversation's lock can never invert cross-conversation lock order. Returns the
+  * verified envelope, or null for a row with no stored continuation. */
+ async function readContinuation(c,r,check){if(r.continuation===null||r.continuation===undefined)return null;const {saved,envelope}=savedContinuation(r),b=r.projection.binding;
+  const rows=(await c.query('SELECT * FROM meri_conversations.controls WHERE tenant_id=$1 AND control_id=$2',[continuationSource(envelope).tenantId,envelope.controlId])).rows;check();
+  if(rows.length>1)fail('STORE_CORRUPT');verifyContinuation(rows.length?decode(rows[0]):null,b,r,envelope,saved);return envelope;}
  async function withSource(value,check,body,{transcripts=false}={}){
   const {binding:b,scopes,selectedClientId}=value;
   const discovered=await tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);if(!r.continuation)return null;
@@ -250,5 +270,5 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    }
    return {state:r.projection.state,cancelCommitted:!!row};
   });try{if(committed&&onPublished)Promise.resolve(onPublished(committed)).catch(()=>{});}catch{}return result;}
- return Object.freeze({begin,change,get,controls,claim,beginFileCapture,recordFiles,captureSession,readArtifactFile,readSessionCapture,execution,sessionSnapshot,fileSnapshot:(v,check)=>sessionSnapshot(v,check,{files:true}),continuationOrigin,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
+ return Object.freeze({begin,change,get,controls,claim,beginFileCapture,recordFiles,captureSession,readArtifactFile,readSessionCapture,readContinuation,execution,sessionSnapshot,fileSnapshot:(v,check)=>sessionSnapshot(v,check,{files:true}),continuationOrigin,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
 }
