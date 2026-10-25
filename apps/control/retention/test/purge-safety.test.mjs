@@ -34,15 +34,15 @@ test('DA-1 counterexample: a conversation snapshot carrying an artifact version 
  assert.equal(after.state,'PLANNED');assert.equal((await exec.execute(after)).state,'EXECUTED');assert.ok(after.steps.every(st=>!f.store.has(f.keyFor(st),st.versionId)));
 });
 
-test('DA-1 preflight: a row target the row owner refuses, an unresolvable object key or a missing delete permission refuses the whole plan before anything is recorded or deleted',async()=>{
+test('DA-1 target validation: a refused row, unresolvable object key or missing delete permission refuses before anything is recorded or deleted',async()=>{
  const f=compose(),s=subjectOf(),inv=enumerateReferences(snapshot(s)),js=await suppressed(f,s,inv),plan=planFrom(f,s,js);seed(f,plan);assert.equal(plan.state,'PLANNED');assert.ok(plan.steps.length>=3);
- const refusing={...f.rows,async preflight(){throw refusal('RETENTION_INVALID_REQUEST');},async purge(){throw refusal('RETENTION_INVALID_REQUEST');}};
+ const refusing={...f.rows,async validatePlanTargets(){throw refusal('RETENTION_INVALID_REQUEST');},async purge(){throw refusal('RETENTION_INVALID_REQUEST');}};
  await assert.rejects(executorWith(f,{rows:refusing}).execute(plan),/RETENTION_INVALID_REQUEST/,'the row owner refuses a target');
  const lastKey=plan.steps.at(-1).workflowId;await assert.rejects(executorWith(f,{keyFor:st=>{if(st.workflowId===lastKey)throw new Error('no key');return f.keyFor(st);}}).execute(plan),/RETENTION_INVALID_REQUEST/,'the last object key cannot be resolved');
- await assert.rejects(executorWith(f,{rows:{...f.rows,async preflight(){throw new Error('row owner down');}}}).execute(plan),/RETENTION_ROW_PURGE_UNAVAILABLE/,'an unavailable row owner refuses');
+ await assert.rejects(executorWith(f,{rows:{...f.rows,async validatePlanTargets(){throw new Error('row owner down');}}}).execute(plan),/RETENTION_ROW_PURGE_UNAVAILABLE/,'an unavailable row owner refuses');
  const readOnly=compose({permissions:{getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:false}});await assert.rejects(executorWith(f,{storage:readOnly.storage}).execute(plan),/RETENTION_STORAGE_PERMISSION/);
  assert.ok(allPresent(f,plan),'zero storage deletes through every refusal');assert.deepEqual(await states(f),['SUPPRESSED'],'no PURGE_PLANNED or later entry');assert.equal((await f.journal.get(subjectKey(s))).purge,null,'no purge projection');
- assert.throws(()=>executorWith(f,{rows:{purge:f.rows.purge,present:f.rows.present}}),/RETENTION_CONFIGURATION/,'a row port without preflight is refused at composition');
+ assert.throws(()=>executorWith(f,{rows:{purge:f.rows.purge,present:f.rows.present,preflight:f.rows.preflight}}),/RETENTION_CONFIGURATION/,'a legacy preflight port cannot replace mandatory target validation');
  assert.equal((await f.executor().execute(plan)).state,'EXECUTED','the same plan executes once every target passes');
 });
 

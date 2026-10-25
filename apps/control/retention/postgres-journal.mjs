@@ -234,12 +234,22 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  const sdkRead=async operation=>{try{return await operation();}catch(error){if(error?.code==='STORE_CORRUPT')fail('RETENTION_ROW_CHANGED');throw error;}};
  async function verifySdk(c,k,st,plan,check){const subject=sdkSubject(k,plan);check();
   if(await sdkRead(()=>sdkRetentionTargetPresent(c,{subject,target:st.target,check})))await sdkRead(()=>verifySdkRetentionTarget(c,{subject,target:st.target,check,lock:true}));check();}
- /** Validates target routing and current row bytes before any storage effect. */
- async function preflightRows(key,plan,options={}){options=rowOptions(options);const k=parseKey(key),check=rowCheck(options);check();if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');const targets=plan.rowSteps.map(st=>rowTarget(k,st));
+ const planTargets=(k,plan)=>{if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');
+  return plan.rowSteps.map(st=>{const w=rowTarget(k,st);if(w.sdk)sdkSubject(k,plan);return w;});};
+ async function verifyNonSdkTarget(c,st,w,plan){
+  if(w.memory){await memoryCandidates.presentInTransaction({client:c,subject:plan.subject,candidateId:st.target.key});return;}
+  if(w.target){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}
+ }
+ /** Executor routing/shape and non-SDK ownership checks. Canonical inventory
+  * validates complete SDK content before planning and again before every effect. */
+ async function validatePlanTargets(key,plan,options={}){options=rowOptions(options);const k=parseKey(key),check=rowCheck(options);check();const targets=planTargets(k,plan);
+  if(targets.some(w=>!w.sdk&&(w.target||w.memory)))await tx(async c=>{for(const [index,w] of targets.entries()){
+   check();if(!w.sdk)await verifyNonSdkTarget(c,plan.rowSteps[index],w,plan);}check();},options);check();return true;}
+ /** Standalone preflight retains full current-byte SDK validation and locks. */
+ async function preflightRows(key,plan,options={}){options=rowOptions(options);const k=parseKey(key),check=rowCheck(options);check();const targets=planTargets(k,plan);
   if(targets.some(w=>w.target||w.memory))await tx(async c=>{for(const [index,w] of targets.entries()){
    check();if(w.sdk){await verifySdk(c,k,plan.rowSteps[index],plan,check);continue;}
-   if(w.memory){await memoryCandidates.presentInTransaction({client:c,subject:plan.subject,candidateId:plan.rowSteps[index].target.key});continue;}
-   if(!w.target)continue;const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}check();},options);check();return true;}
+   await verifyNonSdkTarget(c,plan.rowSteps[index],w,plan);}check();},options);check();return true;}
  /** The compact plan is expanded only inside this held transaction. Every key
   * still gets the existing exact trigger target; no range or session-wide grant. */
  async function purgeSdk(c,k,st,plan,current,check){const subject=sdkSubject(k,plan),durable=new Set(plan.rowSteps.map(step=>step.workflowId));let deleted=0;
@@ -266,7 +276,7 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   return tx(async c=>{check();const current=await planRows(c,key,plan);const out=[];
    if(k.kind==='artifact'){const versions=(plan.rowSteps??[]).filter(st=>st.className==='artifactVersions').map(st=>st.target.artifactVersionId);if(versions.length)await c.query('DELETE FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2 AND version_id=ANY($3::uuid[])',[k.tenantId,k.subjectId,versions]);}
    const ordered=[...(plan.rowSteps??[])].sort((a,b)=>(rowTarget(k,a).rank??20)-(rowTarget(k,b).rank??20));
-   // Public preflight already precedes external effects. Recheck current non-SDK
+   // Target validation and canonical inventory precede external effects. Recheck current non-SDK
    // rows/owners here; SDK traversal locks its header and all streams before its
    // first callback, then verifies the full commitment before this tx can commit.
    for(const st of ordered){check();const w=rowTarget(k,st);
@@ -289,7 +299,7 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   if(w.sdk){const present=await sdkRead(()=>sdkRetentionTargetPresent(c,{subject:k,target:st.target,check}));check();return present;}
   if(w.memory){const row=await readRow(c,k);if(!row)fail('RETENTION_NOT_SUPPRESSED');return memoryCandidates.presentInTransaction({client:c,subject:{...k,ownerActorId:row.owner_actor_id},candidateId:st.target.key});}
   if(w.target){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where}`,w.args())).rows[0];return !w.erased(row);}return (await c.query(`SELECT 1 FROM ${w.table} WHERE ${w.where}`,w.args(k,st.target))).rowCount>0;},{...options,shared:false});}
- const rows=Object.freeze({preflight:preflightRows,purge:purgeRows,present:rowPresent});
+ const rows=Object.freeze({validatePlanTargets,preflight:preflightRows,purge:purgeRows,present:rowPresent});
  /** Trusted ownership reader for the suppression owner: the application's own record of the subject's owner. */
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
   return tx(async c=>{const rows=kind==='conversation'?(await c.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await c.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;

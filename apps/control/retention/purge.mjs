@@ -86,12 +86,13 @@ export async function recomputePlan(facts,subjectValue,journalState,nowMs,option
  const holds=o=>{try{return facts.holds(o);}catch{fail('RETENTION_AUTHORITY_UNAVAILABLE');}};
  return planPurge({subject:subjectValue,journalState,policy,inventory,shared,holds,liabilities,lastActivityAtMs,nowMs,trash});
 }
-/** `rows` is the database-row purge port: `preflight(subjectKey, plan)` validates every row target against the row owner's routing
- * without any effect, `purge(subjectKey, plan)` deletes every row target inside one transaction that first records the exact targets
+/** `rows.validatePlanTargets(subjectKey, plan)` validates routing, shape and non-SDK ownership without effects. Complete SDK content
+ * belongs to canonical facts.inventoryFor, called during planning and freshly by begin() before effects. Standalone rows.preflight
+ * remains the row owner's full current-byte check. `purge(subjectKey, plan)` deletes targets inside one transaction with exact permits
  * under the subject lock, returning one record per row step, and `present(subjectKey, rowStepFacts)` answers whether a target row
  * exists. It is required before any effect when the plan carries row targets. */
 export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving,rows=null,finalize=null,enabled=false,now}){
- if(typeof storage?.deleteVersion!=='function'||typeof storage?.headVersion!=='function'||typeof ledger?.append!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.withTransition!=='function'||typeof keyFor!=='function'||typeof serving?.isEnabled!=='function'||typeof enabled!=='boolean'||typeof facts!=='object'||facts===null||rows!==null&&(typeof rows?.purge!=='function'||typeof rows?.preflight!=='function'))fail('RETENTION_CONFIGURATION');const tick=clock(now);
+ if(typeof storage?.deleteVersion!=='function'||typeof storage?.headVersion!=='function'||typeof ledger?.append!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.withTransition!=='function'||typeof keyFor!=='function'||typeof serving?.isEnabled!=='function'||typeof enabled!=='boolean'||typeof facts!=='object'||facts===null||rows!==null&&(typeof rows?.purge!=='function'||typeof rows?.validatePlanTargets!=='function'))fail('RETENTION_CONFIGURATION');const tick=clock(now);
  if(finalize!==null&&typeof finalize!=='function')fail('RETENTION_CONFIGURATION');
  const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
  const cas=async(key,row,expected)=>{try{await journal.set(key,row,{expected});}catch(error){if(error?.code==='RETENTION_STALE_WRITE')fail('RETENTION_STALE_WRITE');serving.disable?.();throw Object.assign(new Error('RETENTION_PROJECTION_FAILED'),{code:'RETENTION_PROJECTION_FAILED',cause:error});}};
@@ -105,10 +106,10 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
   const recomputed=await recomputePlan(facts,p.subject,current,tick(),options);options.check?.();if(recomputed.state!=='PLANNED')fail('RETENTION_PURGE_BLOCKED');if(recomputed.planSha256!==p.planSha256)fail('RETENTION_PLAN_DIGEST_REFUSED');return current;}
  /** Every target is resolved and validated before anything is recorded or deleted: the storage delete permission, every object key, and
   * every database row target through the row owner's own routing. One invalid target refuses the whole plan with zero effects. */
- async function preflight(p,options={}){
+ async function validateTargets(p,options={}){
   if(storage.permissions!==undefined&&storage.permissions?.deleteObjectVersion!==true)fail('RETENTION_STORAGE_PERMISSION');
   const keys=new Map();for(const st of p.steps){let key;try{key=keyFor(st);}catch{fail('RETENTION_INVALID_REQUEST');}if(typeof key!=='string'||!key||key.length>1024)fail('RETENTION_INVALID_REQUEST');keys.set(st.workflowId,key);}
-  if(p.rowSteps.length){try{options.check?.();await rows.preflight(p.subjectKey,p,options);options.check?.();}catch(error){fail(String(error?.code??'').startsWith('RETENTION_')?error.code:'RETENTION_ROW_PURGE_UNAVAILABLE');}}
+  if(p.rowSteps.length){try{options.check?.();await rows.validatePlanTargets(p.subjectKey,p,options);options.check?.();}catch(error){fail(String(error?.code??'').startsWith('RETENTION_')?error.code:'RETENTION_ROW_PURGE_UNAVAILABLE');}}
   return keys;}
  /** Fails closed before touching any state when execution is not enabled; production stays disabled until policy, bindings and authorization exist.
   * Once effects may have begun, every step is durably UNKNOWN before its effect and carries its outcome after it: a ledger PURGE_UNKNOWN
@@ -154,10 +155,10 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
   }
   // Only sweepSubject can arrive with a plan just recomputed under this same
   // transition exclusion. Public execution and durable retries still authorize.
-  // begin() always rereads authority after preflight, immediately before effects.
+  // begin() always rereads complete authority after target validation, immediately before effects.
   if(!freshlyPlanned)current=await authorize(p,options);
   if(existing&&existing.planSha256!==p.planSha256)fail('RETENTION_PURGE_PLAN_MISMATCH');
-  const keys=await preflight(p,options);
+  const keys=await validateTargets(p,options);
   const stepState=new Map((existing?.steps??[]).map(st=>[st.workflowId,st])),rowState=new Map((existing?.rowSteps??[]).map(st=>[st.workflowId,st]));
   let sequence=existing?.ledgerSequence??null,started=existing?.state==='UNKNOWN';
   if(!existing){const e=await ledger.append({subject:p.subject,state:'PURGE_PLANNED',facts:{...planMetadata(p),planSha256:p.planSha256,suppression:p.suppression,policySha256:p.policySha256,inventorySha256:p.inventorySha256,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:p.steps.map(stepFacts),rowSteps:p.rowSteps.map(rowStepFacts)}});const row={...current,purge:{state:'PLANNED',planSha256:p.planSha256,ledgerSequence:e.sequence,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:[],rowSteps:[]}};await cas(p.subjectKey,row,projectionToken(current));sequence=e.sequence;}

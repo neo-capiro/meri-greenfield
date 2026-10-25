@@ -45,9 +45,9 @@ test('memory proposals owned outside Meri block the plan with zero deletes until
  await assert.rejects(f.startup.purge.execute(plan),/RETENTION_PURGE_BLOCKED/);assert.equal(f.deletes.length,0);assert.equal(f.rowPurges.length,0);
 });
 
-test('a row owner that does not admit a registered class (the PostgreSQL schema before the amendment migration) refuses the whole plan at preflight: zero deletes and nothing recorded',async()=>{
+test('a row owner that does not admit a registered class refuses plan targets: zero deletes and nothing recorded',async()=>{
  const pg=createPostgresRetentionJournal({pool:{connect(){throw Error('no connection expected');},query(){throw Error('no query expected');}}});
- const f=composeStartup({purge:true,rowPreflight:pg.rows.preflight}),s=subjectOf();await f.startup.start();const {plan}=await prepared(f,s,everyClass(s));
+ const f=composeStartup({purge:true,rowValidation:pg.rows.validatePlanTargets}),s=subjectOf();await f.startup.start();const {plan}=await prepared(f,s,everyClass(s));
  const before=(await f.sink.read()).length;
  await assert.rejects(f.startup.purge.execute(plan),e=>e.code==='RETENTION_ROW_CLASS_UNSUPPORTED');
  assert.equal(f.deletes.length,0);assert.equal(f.rowPurges.length,0);assert.equal((await f.sink.read()).length,before,'no PURGE_PLANNED or EFFECTS_STARTED entry');

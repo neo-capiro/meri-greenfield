@@ -90,7 +90,7 @@ const facts={...sourceFacts,async inventoryFor(subject,options){const started=pe
  try{return await measuredSweepPhase('inventory',options,()=>sourceFacts.inventoryFor(subject,options));}finally{if(measured){inventoryTimings.push(performance.now()-started);inventorySqlTimings.push(inventorySqlTiming);inventorySqlTiming=null;}}
 }};
 let loseRowAck=false,rowEffects=0;
-const rows={...journal.rows,async preflight(...args){return measuredSweepPhase('row-preflight',args[2],()=>journal.rows.preflight(...args));},
+const rows={...journal.rows,async validatePlanTargets(...args){return measuredSweepPhase('row-target-validation',args[2],()=>journal.rows.validatePlanTargets(...args));},
  async purge(...args){rowEffects++;const result=await measuredSweepPhase('row-purge',args[2],()=>journal.rows.purge(...args));if(loseRowAck){loseRowAck=false;throw Error('synthetic lost committed row acknowledgement');}return result;}};
 const makeStartup=()=>createRetentionStartup({journal,watermark,ledgerSink:sink,ownership:journal,now,purge:{enabled:true,storage,rows,facts,keyFor,
  async finalize(s,trash){finalizeAttempts++;assert.equal(coreRecords.get(s.subjectId).trashRequestId,trash.requestId);if(loseFinalize){loseFinalize=false;throw Error('synthetic lost Core finalize acknowledgement');}}}});

@@ -32,6 +32,10 @@ export function createConversationPurgeFacts({pool,journal,core,storage,keyFor,n
   const r=await core.read(s,options);options.check?.();if(r.status!=='trashed')unavailable();
   return {requestId:r.trashRequestId,revision:r.revision,trashedAtMs:Date.parse(r.trashedAt),restoreUntilMs:Date.parse(r.restoreUntil),checkedAtMs:r.checkedAtMs};
  }
+ // The production executor's planning and begin() authorization both use this
+ // complete canonical snapshot: SDK pages, hashes, commitments and orphan checks.
+ // rows.validatePlanTargets owns routing and non-SDK checks; it is not a second
+ // SDK content scan or permission to use a caller-supplied compact summary.
  async function inventoryFor(raw,options={}){options.check?.();const s=subject(raw);
   const snapshot=await source.inventoryForConversation({tenantId:s.tenantId,conversationId:s.subjectId,ownerActorId:s.ownerActorId},options);
   const inventory=enumerateReferences(snapshot);

@@ -51,27 +51,27 @@ test('Core authority is reread before effects; failure or changed Trash identity
  assert.equal(deletes,0);assert.equal(f.sink.size(),1);
 });
 
-test('fresh sweep and public execution each authorize once before preflight and freshly before every effect',async()=>{
+test('fresh sweep and public execution authorize before target validation and freshly before every effect',async()=>{
  for(const sweep of [true,false]){const f=await fixture();f.clock.advance(31*day);const plan=await f.plan();
   for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
-  let inventories=0,preflights=0,effects=0;
+  let inventories=0,validations=0,effects=0;
   const facts={...f.facts,async inventoryFor(...args){inventories++;return f.facts.inventoryFor(...args);}};
-  const beforeEffect=()=>{effects++;assert.equal(inventories,effects+1,'each effect has a new authoritative inventory after preflight');};
+  const beforeEffect=()=>{effects++;assert.equal(inventories,effects+1,'each effect has a new authoritative inventory after target validation');};
   const executor=createPurgeExecutor({...f,facts,enabled:true,now:f.clock.now,finalize:async()=>{},
-   rows:{...f.rows,async preflight(...args){preflights++;assert.equal(inventories,1);return f.rows.preflight(...args);},async purge(...args){beforeEffect();return f.rows.purge(...args);}},
+   rows:{...f.rows,async validatePlanTargets(...args){validations++;assert.equal(inventories,1);return f.rows.validatePlanTargets(...args);},async preflight(){assert.fail('executor must use target validation');},async purge(...args){beforeEffect();return f.rows.purge(...args);}},
    storage:{...f.storage,async deleteVersion(...args){beforeEffect();return f.storage.deleteVersion(...args);}}});
   const result=sweep?await executor.sweepSubject(f.subject):await executor.execute(plan);
-  assert.equal(result.state,'EXECUTED');assert.equal(preflights,1);assert.equal(effects,plan.steps.length+1);assert.equal(inventories,effects+1);
+  assert.equal(result.state,'EXECUTED');assert.equal(validations,1);assert.equal(effects,plan.steps.length+1);assert.equal(inventories,effects+1);
  }
 });
 
-test('fresh sweep rechecks Core generation, holds and local generation after preflight with zero effects',async()=>{
- for(const changed of ['Core','hold','generation']){const f=await fixture();f.clock.advance(31*day);const plan=await f.plan();let afterPreflight=false,effects=0;
+test('fresh sweep rechecks Core generation, holds and local generation after target validation with zero effects',async()=>{
+ for(const changed of ['Core','hold','generation']){const f=await fixture();f.clock.advance(31*day);const plan=await f.plan();let afterValidation=false,effects=0;
   for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
-  const facts={...f.facts,async trashFor(){return changed==='Core'&&afterPreflight?{...f.trash(),requestId:randomUUID()}:f.trash();}};
+  const facts={...f.facts,async trashFor(){return changed==='Core'&&afterValidation?{...f.trash(),requestId:randomUUID()}:f.trash();}};
   const executor=createPurgeExecutor({...f,facts,enabled:true,now:f.clock.now,finalize:async()=>{effects++;},
-   storage:{...f.storage,async deleteVersion(){effects++;}},rows:{...f.rows,async purge(){effects++;},async preflight(...args){
-    await f.rows.preflight(...args);afterPreflight=true;
+   storage:{...f.storage,async deleteVersion(){effects++;}},rows:{...f.rows,async purge(){effects++;},async validatePlanTargets(...args){
+    await f.rows.validatePlanTargets(...args);afterValidation=true;
     if(changed==='hold'){const st=plan.steps[0];f.registry.holds.set(st.objectId+'@'+st.versionId,{legalHold:true,objectLockRetainUntilMs:null});}
     if(changed==='generation'){const current=await f.current();await f.journal.set(subjectKey(f.subject),{...current,ledgerSequence:current.ledgerSequence+1});}
    }}});
@@ -169,24 +169,24 @@ test('bounded sweep records an uncertain effect and starts no later delete after
  assert.equal(effects,1);assert.equal(finalized,0);assert.equal((await f.current()).purge.state,'UNKNOWN');
 });
 
-test('sweep carries its abort and deadline through row preflight, mutation and absence recovery',async()=>{
+test('sweep carries its abort and deadline through target validation, mutation and absence recovery',async()=>{
  const f=await fixture();f.clock.advance(31*day);const plan=await f.plan(),controller=new AbortController(),deadlineMs=f.clock.now()+1000,seen=[];
  for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
- const rows=Object.fromEntries(['preflight','purge','present'].map(method=>[method,async(...args)=>{
+ const rows=Object.fromEntries(['validatePlanTargets','purge','present'].map(method=>[method,async(...args)=>{
   const options=args[2];assert.equal(options.signal,controller.signal);assert.equal(options.deadlineMs,deadlineMs);assert.equal(typeof options.check,'function');options.check();seen.push(method);
   return f.rows[method]?.(...args);
  }]));
  const executor=createPurgeExecutor({...f,rows,enabled:true,now:f.clock.now,finalize:async()=>{}});
  const options={signal:controller.signal,deadlineMs};assert.equal((await executor.sweepSubject(f.subject,options)).coreFinalized,true);
- assert.ok(seen.includes('preflight'));assert.ok(seen.includes('purge'));
+ assert.ok(seen.includes('validatePlanTargets'));assert.ok(seen.includes('purge'));
  assert.equal((await executor.sweepSubject(f.subject,options)).replayed,true);assert.ok(seen.includes('present'));
 });
 
-test('interrupted SDK-style row preflight performs no storage or row effect',async()=>{
+test('interrupted target validation performs no storage or row effect',async()=>{
  const f=await fixture();f.clock.advance(31*day);const plan=await f.plan(),controller=new AbortController();let effects=0;
  for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
  const executor=createPurgeExecutor({...f,enabled:true,now:f.clock.now,finalize:async()=>{effects++;},storage:{...f.storage,async deleteVersion(){effects++;}},
-  rows:{...f.rows,async preflight(_key,_plan,options){controller.abort(Error('interrupted transcript scan'));options.check();},async purge(){effects++;}}});
+  rows:{...f.rows,async validatePlanTargets(_key,_plan,options){controller.abort(Error('interrupted target validation'));options.check();},async purge(){effects++;}}});
  await assert.rejects(executor.sweepSubject(f.subject,{signal:controller.signal,deadlineMs:f.clock.now()+1000}),/RETENTION_ROW_PURGE_UNAVAILABLE/);
  assert.equal(effects,0);assert.equal((await f.current()).purge,null);
 });
