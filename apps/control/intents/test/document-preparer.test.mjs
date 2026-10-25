@@ -3,6 +3,7 @@
  * ports for refusal paths. Not native Office, storage, KMS or database evidence. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import {artifactValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createLocalDocumentFixture} from '../../document-application/local/fixture.mjs';
 import {createPostgresArtifactService} from '../../../artifacts/postgres-service.mjs';
 import {createDocumentIntentPreparer} from '../document-preparer.mjs';
@@ -36,6 +37,49 @@ test('only admitted document operations construct; general analysis keeps its se
  assert.throws(()=>createDocumentIntentPreparer({descriptor:descriptor('run_analysis'),writes:{execute(){}},binding}),code('INTENT_CONFIGURATION'));
  assert.equal(createDocumentIntentPreparer({descriptor:descriptor('create_powerpoint'),writes:{execute(){}},binding}).operation.id,'create_powerpoint');
  assert.equal(createDocumentIntentPreparer({descriptor:descriptor('create_excel'),writes:{execute(){}},binding}).operation.id,'create_excel');
+});
+// The advertised `request_document` tool carries the selected capability in its own `operation` field beside
+// `arguments` ("the canonical request object for the selected operation") and tells the model that identity and
+// authority come from the trusted run, never from arguments. The canonical artifact request repeats `operation`,
+// so the owner must not require the model to repeat a trusted selection it cannot discover from what is advertised.
+// The observed live class at this boundary is a delivery settled FAILED/INVALID_ARGUMENTS with no owner call and no
+// run binding; these cases pin the accepted and refused shapes without a generator, database or provider.
+const BODY={format:'txt',title:'Draft',content:{text:'Hello\n'}};
+function stub(operation='create_word'){
+ const calls=[],writes={async execute(call){calls.push(call);throw Object.assign(Error('OWNER_STOP'),{code:'OWNER_STOP'});}};
+ const prepared=createDocumentIntentPreparer({descriptor:descriptor(operation),writes,binding});
+ const journaled=mount({binding,preparers:[prepared],now:()=>NOW});
+ const row=()=>[...journaled.store.rows.values()].at(-1);
+ return {calls,preparer:prepared,mount:journaled.mount,row};
+}
+test('the trusted operation is bound for the selected capability: a canonical body without the duplicate operation reaches the owner',async()=>{
+ const s=stub(),out=s.mount.prepare({operation:WORD,arguments:BODY,deliveryId:delivery(20)});
+ await assert.rejects(out,code('UNKNOWN'));
+ assert.equal(s.calls.length,1,'the canonical owner is reached with the bound request');
+ assert.deepEqual(s.calls[0].request,artifactValidators.request({...BODY,operation:'create_word'}));
+ assert.equal(s.calls[0].request.operation,'create_word');
+ assert.equal(s.calls[0].deliveryId,delivery(20));
+ assert.deepEqual(s.row().outcome,null,'a started owner is never settled as a no-effect refusal');
+ assert.equal(s.row().state,'UNKNOWN');
+});
+test('a model-supplied operation that conflicts with the selected capability is still refused with no owner call',async()=>{
+ const s=stub();
+ await assert.rejects(s.mount.prepare({operation:WORD,arguments:{...BODY,operation:'create_excel'},deliveryId:delivery(21)}),code('INVALID_ARGUMENTS'));
+ assert.equal(s.calls.length,0);
+ assert.deepEqual(s.row().outcome,{code:'INVALID_ARGUMENTS'});
+ assert.equal(s.row().state,'FAILED');
+});
+test('the canonical request that repeats the selected operation is unchanged, and unadmitted or foreign shapes still refuse before the owner',async()=>{
+ const repeated=stub();await assert.rejects(repeated.mount.prepare({operation:WORD,arguments:{...BODY,operation:'create_word'},deliveryId:delivery(22)}),code('UNKNOWN'));
+ assert.equal(repeated.calls.length,1);assert.deepEqual(repeated.calls[0].request,artifactValidators.request({...BODY,operation:'create_word'}));
+ const blocks={blocks:[{kind:'paragraph',runs:[{text:'Hello'}]}]},docx={format:'docx',title:'Draft',content:blocks};
+ const admitted=stub();await assert.rejects(admitted.mount.prepare({operation:WORD,arguments:docx,deliveryId:delivery(23)}),code('UNKNOWN'));
+ assert.equal(admitted.calls.length,1);assert.equal(admitted.calls[0].request.format,'docx');
+ const refused=stub();
+ // `pdf` is a valid canonical WordRequest but is not an admitted document format: the retained refusal must survive.
+ for(const [n,args] of [{...docx,format:'pdf'},{...BODY,context:{binding}},{...BODY,title:''},{}].entries())
+  await assert.rejects(refused.mount.prepare({operation:WORD,arguments:args,deliveryId:delivery(30+n)}),code('INVALID_ARGUMENTS'));
+ assert.equal(refused.calls.length,0);
 });
 test('a write-owner failure after the call is UNKNOWN and never re-prepared; a non-draft result is withheld as UNKNOWN',async()=>{
  let calls=0;const failing=createDocumentIntentPreparer({descriptor:descriptor('create_word'),binding,writes:{async execute(){calls++;throw Error('ARTIFACT_EFFECT_UNKNOWN');}}});

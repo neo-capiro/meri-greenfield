@@ -1,6 +1,7 @@
 /** Prepares a document intent as an immutable draft version through the existing artifact write owner — the same
  * `createPostgresArtifactService(...).execute` the document application uses, bound by the trusted composition to its
- * current authority and artifact capability. Only the formats the document application admits are accepted
+ * current authority and artifact capability. The operation is the trusted one this preparer was composed for, bound
+ * into the request it validates; only the formats the document application admits are accepted
  * (`format-admission.mjs`); filing or sharing the draft is a separate governed request.
  *
  * The artifact owner never regenerates the same delivery: the intent delivery ID is its delivery ID, so a repeat is
@@ -24,7 +25,11 @@ export function createDocumentIntentPreparer(configuration){
   async prepare(value){
    let request,call;
    try{call=own(value,['arguments','deliveryId'],['signal']);nativeSignal(call.signal);
-    request=artifactValidators.request(data(call.arguments));if(request.operation!==operation.id||!admitsDocumentFormat(admission,request.format))throw 0;}
+    // The tool's own `operation` already selects this capability, so the trusted selection is bound into the
+    // canonical request instead of being demanded from the model, which cannot discover the repeated field from
+    // the advertised `arguments`. A model-supplied operation that conflicts with it is still refused.
+    const body=data(call.arguments);if(body.operation!==undefined&&body.operation!==operation.id)throw 0;
+    request=artifactValidators.request({...body,operation:operation.id});if(!admitsDocumentFormat(admission,request.format))throw 0;}
    catch{throw intentFault('INVALID_ARGUMENTS','none');}
    const {deliveryId,signal}=call;if(signal?.aborted)throw intentFault('CANCELLED','none');
    let result;
