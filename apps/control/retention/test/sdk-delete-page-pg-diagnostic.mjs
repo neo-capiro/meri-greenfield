@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 
 export async function inspectSdkDeletePage(client,{sql,args}){
  assert.ok(sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries r USING jsonb_to_recordset($3::jsonb)'));
- assert.equal(args.length,3);const page=JSON.parse(args[2]);assert.equal(page.length,1000);
+ assert.equal(args.length,8);const page=JSON.parse(args[2]);assert.equal(page.length,1000);
  const projection=(await client.query(`SELECT pg_column_size(s.projection) AS stored_bytes,
   octet_length(s.projection::text) AS text_bytes,pg_column_compression(s.projection) AS compression,
   current_user AS role,current_setting('statement_timeout') AS statement_timeout,
