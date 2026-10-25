@@ -6,6 +6,9 @@ import {promptLineages} from './lineage.mjs';
 import {assertNextRunReservation} from '../next-run-reservation.mjs';
 // Brand pure canonical decoding failures only. Driver/transport failures retain their unavailable semantics.
 const decode=fn=>{try{return fn();}catch{refuse('CONVERSATION_STORE_CORRUPT');}};
+/** The canonical continuation owner refuses with its plain STORE_CORRUPT code; the frozen history wire maps only
+ * CONVERSATION_STORE_CORRUPT to 500, so re-brand that one canonical refusal and let driver/transport failures through. */
+const canonical=async fn=>{try{return await fn();}catch(error){if(error?.code!=='STORE_CORRUPT')throw error;refuse('CONVERSATION_STORE_CORRUPT');}};
 const shape=(name,value)=>decode(()=>validateShape(name,value));
 export function decodeOwnedConversation(row,principal){
  if(!row||row.tenant_id!==principal.tenantId||row.owner_actor_id!==principal.actorId)refuse('CONVERSATION_NOT_FOUND');
@@ -16,7 +19,7 @@ export function decodeOwnedConversation(row,principal){
  return c;
 }
 const conversation=decodeOwnedConversation;
-export function createConversationHistoryStore({tx,rowRun}){
+export function createConversationHistoryStore({tx,rowRun,continuationCustody}){
  async function list({principal,before,limit},check){return tx({tenantId:principal.tenantId,conversationId:`discovery:${principal.actorId}`},check,async c=>{
   const rows=(await c.query(`SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND owner_actor_id=$2
    AND NOT EXISTS (SELECT 1 FROM jsonb_array_elements(projection->'scopes') AS s WHERE s->>'kind'='client' AND NOT (s->>'resourceId'=ANY($3::text[])))
@@ -36,7 +39,11 @@ export function createConversationHistoryStore({tx,rowRun}){
     !Number.isSafeInteger(base)||base!==end||!Number.isSafeInteger(last)||last<1||!Number.isSafeInteger(base+last)||n&&b.writerFence<=runs[n-1].projection.binding.writerFence||
     (n<runs.length-1?closed!==base+last:closed!==null&&closed!==base+last))refuse('CONVERSATION_STORE_CORRUPT');end=base+last;
   }
-  const lineages=promptLineages(runs);if(after>end)refuse('CONVERSATION_CURSOR_INVALID');
+  // Continued rows are projected only from the canonical continuation owner's verification of this exact envelope; the
+  // source control is observed read-only inside this already-locked target transaction (no source lock, no nested transaction).
+  const custody=new Map();
+  for(const run of runs){const envelope=await canonical(()=>continuationCustody(c,run,check));if(envelope!==null)custody.set(run.run_id,envelope);}
+  const lineages=promptLineages(runs,custody);if(after>end)refuse('CONVERSATION_CURSOR_INVALID');
   const records=(await c.query(`SELECT e.* FROM meri_conversations.events e JOIN meri_conversations.runs r USING(tenant_id,conversation_id,run_id)
    WHERE e.tenant_id=$1 AND e.conversation_id=$2 AND r.sequence_base+e.sequence>$3
    ORDER BY r.sequence_base+e.sequence LIMIT $4`,[key.tenantId,conversationId,after,limit+1])).rows;check();

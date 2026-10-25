@@ -14,10 +14,14 @@ import {createServingGate} from '../../retention/reconciliation.mjs';
 import {createRetentionLedger,createMemoryLedgerSink} from '../../retention/ledger.mjs';
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
 import {allocateOriginal} from './terminal-settlement-harness.mjs';
+import {createNativeLifecycleAdmission} from '../../../runtime/product-ports/lifecycle.mjs';
+import {continuesSession} from '../../../../packages/contracts/session-continuity.mjs';
 import {assertConversationHistoryResponse} from '../../../../packages/contracts/conversation-history/validate.mjs';
 import {assertContinuationEnvelope} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
-async function fixture({lifecycle=false,extraClient=false}={}){
- const f=await (lifecycle?lifecycleFixture({extraClient}):applicationFixture({initialInput:true})),state=f.state;let serial=1000;
+/** The actor's private scope, the only General conversation scope (assertNativeConversationScope). */
+const privateScopes=[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:scopes[0].policyRevision}];
+async function fixture({lifecycle=false,extraClient=false,general=false}={}){
+ const f=await (lifecycle?lifecycleFixture({extraClient,scopes:general?privateScopes:undefined,selectedClientId:general?null:undefined}):applicationFixture({initialInput:true})),state=f.state;let serial=1000;
  if(!lifecycle){const original=f.service;let initialAllocation;
   // The original submit requires the canonical durable input allocation; successors already have next-run reservations.
   f.service={...original,async submit(call){if(state.runs.size===0){initialAllocation??=original.allocateInput({credential:call.credential,input:call.input});await initialAllocation;}return original.submit(call);}};
@@ -47,7 +51,8 @@ async function fixture({lifecycle=false,extraClient=false}={}){
  const currentness={async assertCurrent({credential,principal,conversationId,scopes,signal,deadlineMs}){
   state.coreReads.push({credential,principal,conversationId,scopes,signal,deadlineMs});await state.onCoreRead?.();
   if(state.coreError)throw state.coreError;
-  if(credential!=='native'||principal.tenantId!==binding.tenantId||principal.actorId!==binding.actorId||conversationId!==binding.conversationId&&![...state.conversations.values()].some(row=>row.conversation_id===conversationId)||!scopes.some(scope=>scope.kind==='client'&&scope.tenantId===principal.tenantId&&scope.resourceId===state.coreClientId)||state.coreState!=='active')throw Error('Core context unavailable');
+  if(credential!=='native'||principal.tenantId!==binding.tenantId||principal.actorId!==binding.actorId||conversationId!==binding.conversationId&&![...state.conversations.values()].some(row=>row.conversation_id===conversationId)||
+   !scopes.some(scope=>scope.tenantId===principal.tenantId&&(general?scope.kind==='private-user'&&scope.resourceId===principal.actorId:scope.kind==='client'&&scope.resourceId===state.coreClientId))||state.coreState!=='active')throw Error('Core context unavailable');
  }};
  const turnOwner={async admitTurn(input){const result=await owner.admitTurn(input);await state.onTurnAdmitted?.();return result;}};
  const service=createConversationHistoryService({store,nextRunOwner:turnOwner,gate,retention}),app=createConversationHistoryApplication({service,gate,currentness,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
@@ -362,4 +367,97 @@ test('one list release fence holds every subject through final authorization and
   assert.equal(response.status,200);assert.equal(acknowledgedDuringB,false,'suppression of A remains queued while row B awaits');assert.equal(serialized,true);assert.equal((await response.json()).conversations.length,2);await suppression;assert.equal(acknowledged,true);
   f.state.onRetentionRead=null;const after=await f.post('list',{});assert.equal(after.status,200);assert.deepEqual((await after.json()).conversations.map(c=>c.conversationId),[other.conversationId]);
  }finally{await suppression?.catch(()=>{});f.close();}
+});
+
+/** The runtime's own admission owner over the fixture's synthetic fork bootstrap: target compatibility is the real owner's. */
+function withAdmission(f,changed){const original=f.nativeAdmission.admit;let n=4000;
+ Object.assign(f.nativeAdmission,createNativeLifecycleAdmission({store:f.store,versions:{...versions,...changed},runWindowMs:60000,newId:()=>id(n++),
+  admitFork:async input=>{const value=await original({...input,mode:'fork'});return {binding:value.binding,bootstrap:value.bootstrap,expiresAtMs:value.expiresAtMs};}}));}
+/** Pause/capture, then resume or fork through the actual admission owner; `changed` overrides the runtime's current versions. */
+async function admitted(f,mode,changed=null){await f.running();const pause=id(2300),controlId=id(2301);
+ await f.control({controlId:pause,intent:'pause'});await f.claim(pause);await f.checkpoint(pause);if(changed)withAdmission(f,changed);
+ const proof=f.proofs.get(binding.runId),receipt=await f.control({controlId,intent:mode,checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256});
+ return {proof,receipt,controlKey:`${binding.tenantId}:${controlId}`};}
+const targetRow=(f,receipt)=>[...f.state.runs.values()].find(r=>r.run_id===receipt.targetBinding.runId);
+const readTranscript=async(f,conversationId)=>{const response=await f.post('transcript',{conversationId});return {response,page:await response.json()};};
+const refusesLineage=async(f,conversationId)=>{const {response,page}=await readTranscript(f,conversationId);assert.equal(response.status,500);assert.deepEqual(page,{error:{code:'CONVERSATION_STORE_CORRUPT'}});};
+
+for(const [scope,general] of [['client',false],['General',true]])for(const mode of ['resume','fork'])for(const changed of [{imageDigest:`sha256:${'f'.repeat(64)}`},{skillsDigest:'c'.repeat(64)}])
+test(`native ${scope} ${mode} keeps an independently admitted ${Object.keys(changed)[0]}-only successor readable`,async()=>{
+ const f=await fixture({lifecycle:true,general});try{const {receipt}=await admitted(f,mode,changed);assert.equal(receipt.state,'APPLIED');
+  const field=Object.keys(changed)[0],row=targetRow(f,receipt),versions=row.continuation.continuation.versions;
+  assert.notEqual(versions[field],row.projection.versions[field],'the allowed target change is stored, not normalized away');
+  assert.equal(continuesSession(versions,row.projection.versions),true);
+  const {response,page}=await readTranscript(f,receipt.targetBinding.conversationId);
+  assert.equal(response.status,200,`${scope} ${mode} ${field}: status=${response.status} code=${page.error?.code??'none'}`);
+  assert.equal(page.turns.length,mode==='resume'?2:1);
+  const turn=page.turns.find(t=>t.run.binding.runId===receipt.targetBinding.runId);
+  assert.deepEqual(turn.promptLineage,mode==='resume'?{kind:'resume',logicalRequestId:f.input.requestId,sourceBinding:binding,sourceRequestId:f.input.requestId}
+   :{kind:'fork',logicalRequestId:turn.request.requestId,sourceBinding:binding,sourceRequestId:f.input.requestId});
+ }finally{f.close();}
+});
+
+for(const [scope,general] of [['client',false],['General',true]])for(const changed of [{sdk:'99.0.0'},{cli:'99.0.0'}])
+test(`native ${scope} refuses a ${Object.keys(changed)[0]} change before any successor is persisted`,async()=>{
+ const f=await fixture({lifecycle:true,general});try{await assert.rejects(admitted(f,'resume',changed),/LIFECYCLE_EFFECT_UNKNOWN/);
+  assert.equal(f.state.runs.size,1,'no successor run row is written');assert.equal(f.state.nextRuns.size,0,'no successor reservation is written');
+  // A contracts/checkpointFormat change is refused even earlier: RuntimeVersions pins both to the contract constant,
+  // strictly stronger than continuesSession's format check, so no such target can be constructed at all.
+  assert.throws(()=>withAdmission(f,{contracts:'99.0.0'}),/RuntimeVersions/);
+  assert.throws(()=>withAdmission(f,{checkpointFormat:'99.0.0'}),/RuntimeVersions/);
+  const {response,page}=await readTranscript(f,binding.conversationId);assert.equal(response.status,200);assert.equal(page.turns.length,1);
+ }finally{f.close();}
+});
+
+for(const [scope,general] of [['client',false],['General',true]])for(const mode of ['resume','fork'])
+test(`native ${scope} ${mode}: substituted canonical source custody refuses prompt lineage`,async()=>{
+ const f=await fixture({lifecycle:true,general});try{const {receipt,controlKey}=await admitted(f,mode,{imageDigest:`sha256:${'f'.repeat(64)}`});assert.equal(receipt.state,'APPLIED');
+  // A custody attack rewrites the retained capture and the stored envelope, never the canonical control proof.
+  const control=f.state.controls.get(controlKey),versions=control.projection.proof.versions;
+  versions.imageDigest=`sha256:${'e'.repeat(64)}`;control.projection.versions.imageDigest=`sha256:${'e'.repeat(64)}`;control.projection_sha256=hash(control.projection);
+  await refusesLineage(f,receipt.targetBinding.conversationId);
+ }finally{f.close();}
+});
+
+for(const [scope,general] of [['client',false],['General',true]])for(const mode of ['resume','fork'])
+test(`native ${scope} ${mode}: substituted admitted target versions refuse prompt lineage`,async()=>{
+ const f=await fixture({lifecycle:true,general});try{const {receipt}=await admitted(f,mode,{imageDigest:`sha256:${'f'.repeat(64)}`});
+  const row=targetRow(f,receipt);row.projection.versions.imageDigest=`sha256:${'d'.repeat(64)}`;row.projection_sha256=hash(row.projection);
+  await refusesLineage(f,receipt.targetBinding.conversationId);
+ }finally{f.close();}
+});
+
+for(const [scope,general] of [['client',false],['General',true]])for(const mode of ['resume','fork'])
+test(`native ${scope} ${mode}: a missing canonical control refuses prompt lineage instead of inventing history`,async()=>{
+ const f=await fixture({lifecycle:true,general});try{const {receipt,controlKey}=await admitted(f,mode,{imageDigest:`sha256:${'f'.repeat(64)}`});
+  f.state.controls.delete(controlKey);await refusesLineage(f,receipt.targetBinding.conversationId);
+ }finally{f.close();}
+});
+
+for(const [scope,general] of [['client',false],['General',true]])for(const field of ['sdk','cli'])
+test(`native ${scope}: a target that cannot continue the captured session refuses prompt lineage (${field})`,async()=>{
+ const f=await fixture({lifecycle:true,general});try{const {receipt,controlKey}=await admitted(f,'resume',{imageDigest:`sha256:${'f'.repeat(64)}`});
+  // Admitted target and run agree, so only the source->target compatibility predicate can refuse this continuation.
+  const control=f.state.controls.get(controlKey),row=targetRow(f,receipt);
+  control.projection.target.versions[field]='99.0.0';control.projection_sha256=hash(control.projection);
+  row.projection.versions[field]='99.0.0';row.projection_sha256=hash(row.projection);
+  await refusesLineage(f,receipt.targetBinding.conversationId);
+ }finally{f.close();}
+});
+
+test('history observes the canonical control read-only under the target-only transcript lock',async()=>{
+ const f=await fixture({lifecycle:true});try{const {receipt}=await admitted(f,'fork',{imageDigest:`sha256:${'f'.repeat(64)}`});
+  const before=f.state.calls.length,{response}=await readTranscript(f,receipt.targetBinding.conversationId);assert.equal(response.status,200);
+  const calls=f.state.calls.slice(before).filter(sql=>sql.includes('meri_conversations.controls'));
+  assert.ok(calls.some(sql=>sql.startsWith('SELECT * FROM meri_conversations.controls WHERE tenant_id=$1 AND control_id=$2')),'the canonical control is observed');
+  assert.deepEqual(calls.filter(sql=>sql.includes('FOR UPDATE')),[],'no source-control row lock is taken');
+ }finally{f.close();}
+});
+
+test('concurrent transcript reads of one continued conversation project the same canonical lineage',async()=>{
+ const f=await fixture({lifecycle:true});try{const {receipt}=await admitted(f,'resume',{imageDigest:`sha256:${'f'.repeat(64)}`});
+  const pages=await Promise.all(Array.from({length:3},async()=>{const {response,page}=await readTranscript(f,receipt.targetBinding.conversationId);assert.equal(response.status,200);return page;}));
+  const ids=pages.map(page=>page.turns.find(t=>t.run.binding.runId===receipt.targetBinding.runId).promptLineage.logicalRequestId);
+  assert.deepEqual(new Set(ids),new Set([f.input.requestId]));
+ }finally{f.close();}
 });
