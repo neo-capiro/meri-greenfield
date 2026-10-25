@@ -11,6 +11,7 @@ import {createConversationManagementStore} from './history/management-store.mjs'
 import {productFailure,ProductError} from '../product-access/errors.mjs';
 import {transact} from '../product-persistence/transaction.mjs';
 import {createOriginalInputJournal} from './initial-input-journal.mjs';
+import {createInitialRunBindingJournal} from './initial-run-binding-journal.mjs';
 import {assertOriginalInputActive} from './initial-input-facts.mjs';
 import {createMemoryProposalContextJournal} from './memory-proposal-context-journal.mjs';
 import {assertUsageInput} from '../../../packages/contracts/runtime-0.2/usage.mjs';
@@ -153,5 +154,5 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  const preparation=createNativePreparationJournals({tx,rowRun});
  const initialInputs=createOriginalInputJournal({tx,rowRun,now,assertConversationActive}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
  const nextRuns=createNextRunJournal({tx,rowRun,modelAdmission,assertConversationActive});
- return Object.freeze({accept:(input,check)=>accept(input,check),initialInputs:originalInputPorts,append,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
+ return Object.freeze({accept:(input,check)=>accept(input,check),initialBindings:createInitialRunBindingJournal({pool,now}),initialInputs:originalInputPorts,append,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
 }

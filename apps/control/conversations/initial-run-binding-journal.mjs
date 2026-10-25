@@ -128,6 +128,31 @@ export function createInitialRunBindingJournal({pool,now=Date.now,newId=randomUU
   const {binding}=own(bounded(raw),['binding']);validateShape('RunBinding',binding);
   return transaction(binding,check,async client=>{const saved=(await row(client,binding,check))?.record??null;if(saved&&!same(saved.binding,binding))refuse('INITIAL_RUN_BINDING_CONFLICT');return saved;});
  }
+ /** Attended preparation before a first turn: existing original custody only, with no prompt, run or execution created. */
+ async function readPreparation(raw,check){
+  const {binding}=own(bounded(raw),['binding']);validateShape('RunBinding',binding);
+  return transaction(binding,check,async client=>{
+   const latest=await row(client,binding,check);if(latest===null)return null;
+   const record=latest.record;if(!same(record.binding,binding))refuse('INITIAL_RUN_BINDING_CONFLICT');
+   if(clock()<record.createdAtMs||clock()>=record.expiresAtMs)refuse('INITIAL_RUN_BINDING_EXPIRED');
+   if(await started(client,record,check))refuse('INITIAL_RUN_BINDING_ALREADY_STARTED');
+   check();return {record,recordSha256:hash(record),generation:latest.generation};
+  });
+ }
+ /** Immutable preparation provenance, including a superseded original. This is metadata, never live authority.
+  * `started` describes the current conversation generation; historical generations cannot be revived by this read. */
+ async function readRetained(raw,check){
+  const {binding}=own(bounded(raw),['binding']);validateShape('RunBinding',binding);
+  return transaction(binding,check,async client=>{
+   const latest=await row(client,binding,check);if(latest===null)return null;
+   const rows=(await client.query('SELECT * FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[binding.tenantId,binding.conversationId,binding.runId])).rows;check();
+   if(!Array.isArray(rows)||rows.length>1)refuse('INITIAL_RUN_BINDING_CORRUPT');if(rows.length===0)return null;
+   const record=decode(rows[0]),generation=Number(rows[0].generation);
+   if(!Number.isSafeInteger(generation)||generation<1||generation>latest.generation||generation===latest.generation&&!same(record,latest.record))refuse('INITIAL_RUN_BINDING_CORRUPT');
+   if(!same(record.binding,binding)||record.binding.actorId!==latest.record.binding.actorId||record.selectedClientId!==latest.record.selectedClientId||record.policyRevision!==latest.record.policyRevision)refuse('INITIAL_RUN_BINDING_CONFLICT');
+   return {record,recordSha256:hash(record),generation,latestGeneration:latest.generation,started:await started(client,latest.record,check)};
+  });
+ }
  async function readConversation(raw,check){
   const {principal,conversationId,selectedClientId}=own(bounded(raw),['principal','conversationId','selectedClientId']),p=own(principal,['tenantId','actorId']);
   uuid(conversationId);if(selectedClientId!==null)uuid(selectedClientId);if(!text(p.tenantId)||!text(p.actorId))refuse('INITIAL_RUN_BINDING_INPUT_REFUSED');
@@ -145,5 +170,5 @@ export function createInitialRunBindingJournal({pool,now=Date.now,newId=randomUU
    return saved===null?null:{selectedClientId:saved.selectedClientId,policyRevision:saved.policyRevision};
   });
  }
- return Object.freeze({claim,rebind,read,readConversation,readContext});
+ return Object.freeze({claim,rebind,read,readPreparation,readRetained,readConversation,readContext});
 }
