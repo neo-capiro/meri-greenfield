@@ -50,7 +50,8 @@ const journalPool={async connect(){const c=await connect();return {release:error
   assert.equal(pageDiagnosticResult,null,'one real page only');pageDiagnosticResult=await inspectSdkDeletePage(c,{sql,args});throw pageDiagnosticStop;
  }
  if(!pageDiagnostic&&!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
-  const page=JSON.parse(args[2]);if(page.length>=1000){lookupDiagnostics.push(await inspectRetentionTargetLookup(c,{tenantId:args[0],conversationId:args[1],page}));lookupInspected=true;}
+  const page=sql.endsWith('r.sequence=ANY($6::bigint[])')?args[5].map(sequence=>({run_id:args[2],session_id:args[3],subpath:args[4],sequence})):JSON.parse(args[2]);
+  if(page.length>=1000){lookupDiagnostics.push(await inspectRetentionTargetLookup(c,{tenantId:args[0],conversationId:args[1],page}));lookupInspected=true;}
  }
  if(failLastMutation&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries'))observedDeletes++;
  if(failLastMutation&&sql.startsWith('UPDATE meri_commands.approval_metadata')){failLastMutation=false;throw Error('synthetic final-statement outage');}

@@ -123,13 +123,14 @@ export function sdkPurgePage(subject,targets){
   const identity=JSON.stringify(columns.map(([name])=>target.key[name]));if(seen.has(identity))refuse();seen.add(identity);
   page.push({table,key:target.key,rowSha256:target.rowSha256,mode:'delete'});keys.push(target.key);
  }
- const types=columns.map(([name,type])=>`${name} ${type}`),match=columns.map(([name])=>`r.${name}=page.${name}`).join(' AND ');
- const args=[subject.tenantId,subject.subjectId,JSON.stringify(keys)],first=keys[0];let access='';
+ const first=keys[0];
  if(table==='meri_conversations.sdk_session_entries'&&keys.every(key=>key.run_id===first.run_id&&key.session_id===first.session_id&&key.subpath===first.subpath)){
-  const sequences=keys.map(key=>key.sequence);
-  // The PK envelope narrows the scan; the exact JSON key join still selects every deletion.
-  args.push(first.run_id,first.session_id,first.subpath,Math.min(...sequences),Math.max(...sequences));
-  access=' AND r.run_id=$4::uuid AND r.session_id=$5::uuid AND r.subpath=$6::text AND r.sequence BETWEEN $7::bigint AND $8::bigint';
+  // The validated common prefix plus exact sequence membership is the full key.
+  // Avoid a JSON recordset join that can compare every row with every page key.
+  return {targets:page,sql:`DELETE FROM ${table} r WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND r.run_id=$3::uuid AND r.session_id=$4::uuid AND r.subpath=$5::text AND r.sequence=ANY($6::bigint[])`,
+   args:[subject.tenantId,subject.subjectId,first.run_id,first.session_id,first.subpath,keys.map(key=>key.sequence)]};
  }
- return {targets:page,sql:`DELETE FROM ${table} r USING jsonb_to_recordset($3::jsonb) AS page(${types.join(',')}) WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND ${match}${access}`,args};
+ const types=columns.map(([name,type])=>`${name} ${type}`),match=columns.map(([name])=>`r.${name}=page.${name}`).join(' AND ');
+ return {targets:page,sql:`DELETE FROM ${table} r USING jsonb_to_recordset($3::jsonb) AS page(${types.join(',')}) WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND ${match}`,
+  args:[subject.tenantId,subject.subjectId,JSON.stringify(keys)]};
 }
