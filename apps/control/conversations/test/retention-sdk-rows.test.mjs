@@ -4,10 +4,34 @@ import {hash} from '../boundary.mjs';
 import {createConversationRetentionInventory} from '../retention-inventory.mjs';
 import {decodeConversationInventoryRows} from '../retention-inventory-decode.mjs';
 import {enumerateReferences} from '../../retention/inventory.mjs';
-import {assertSdkRetentionTarget,scanSdkRetentionInventory,verifySdkRetentionTarget,forEachSdkRetentionTargetPage,sdkRetentionTargetPresent,SDK_RETENTION_PAGE_ROWS,SDK_RETENTION_PAGE_BYTES} from '../retention-sdk-rows.mjs';
+import {assertSdkRetentionTarget,summarizeSdkRetentionRows,scanSdkRetentionInventory,verifySdkRetentionTarget,forEachSdkRetentionTargetPage,sdkRetentionTargetPresent,SDK_RETENTION_PAGE_ROWS,SDK_RETENTION_PAGE_BYTES} from '../retention-sdk-rows.mjs';
 import {sdkRetentionFixture,binding,id} from './retention-sdk-fixture.mjs';
 const prefix='meri_conversations.',subject={tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId,ownerActorId:binding.actorId};
 const source=f=>createConversationRetentionInventory({pool:{connect(){throw Error('unexpected lease');}},withSnapshot:fn=>fn(f.reader)}).inventoryForConversation({tenantId:subject.tenantId,conversationId:subject.subjectId,ownerActorId:subject.ownerActorId});
+
+test('SQL SDK row hashes equal normalized pure commitments for every SDK table',async()=>{
+ const f=await sdkRetentionFixture({count:3,text:'opaque \u03bb \ud83e\udd8b'});try{
+  const raw=f.raw.contentRows,h=raw[prefix+'sdk_sessions'][0],entries=raw[prefix+'sdk_session_entries'];
+  h.entries_count=String(h.entries_count);
+  for(const row of raw[prefix+'sdk_session_streams']){delete row.project_key;row.last_sequence=String(row.last_sequence);}
+  for(const row of entries){delete row.project_key;row.sequence=String(row.sequence);row.entry.opaque={empty:null,flag:true,finite:1.25,array:[0,false,'\u00e9'],nested:{z:2,a:1}};row.entry_sha256=hash(row.entry);}
+  h.bytes=String(entries.reduce((n,row)=>n+Buffer.byteLength(JSON.stringify(row.entry)),0));
+  const key=h.owner.key,appendId=id(200000),values=entries.map(row=>row.entry),requestSha256=hash({binding,key,appendId,entries:values});
+  const receipt={binding,key,requestSha256,committed:true,appendId,entriesSha256:hash(values),offset:3,added:3};
+  raw[prefix+'sdk_session_batches'].push({tenant_id:h.tenant_id,conversation_id:h.conversation_id,run_id:h.run_id,session_id:h.session_id,append_id:appendId,request_sha256:requestSha256,receipt,receipt_sha256:hash(receipt)});
+  const scan=await scanSdkRetentionInventory(f.reader,{subject}),pure=summarizeSdkRetentionRows(raw,subject);
+  assert.deepEqual(scan,pure);assert.equal(scan.targets[0].rowSha256,hash(JSON.parse(JSON.stringify(h))));
+  assert.deepEqual(scan.targets[0].sdk.counts,{sessions:1,streams:1,entries:3,batches:1});
+ }finally{f.close();}
+});
+
+test('pure SDK decoder and SQL scanner both refuse malformed opaque entry data',async()=>{
+ const f=await sdkRetentionFixture({count:1});try{
+  const raw=f.raw.contentRows,row=raw[prefix+'sdk_session_entries'][0];row.entry.opaque=undefined;row.entry_sha256=hash(row.entry);
+  assert.throws(()=>summarizeSdkRetentionRows(raw,subject),/SESSION_NOT_JSON_SAFE/);
+  await assert.rejects(scanSdkRetentionInventory(f.reader,{subject}),/SESSION_NOT_JSON_SAFE/);
+ }finally{f.close();}
+});
 
 for(const count of [4097,65537,100000])test(`complete ${count}-entry SDK inventory remains a compact exact target`,async t=>{
  const f=await sdkRetentionFixture({count,...(count===100000?{text:'x'.repeat(245)}:{})});try{const started=performance.now(),decoded=await source(f),scanMs=performance.now()-started,inventory=enumerateReferences(decoded),targets=inventory.rowTargets.filter(t=>t.className==='sdkSession');

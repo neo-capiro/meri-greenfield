@@ -29,7 +29,9 @@ const tuple=(row,s)=>fact(row?.tenant_id===s.tenantId&&row.conversation_id===sub
 const json=row=>JSON.parse(JSON.stringify(row));
 const keyFor=(row,t)=>Object.fromEntries(t.keys.map(([key,type])=>{let value=row[key];
  if(type==='uuid')uuid(value);else if(type==='text')fact(typeof value==='string'&&value.length<=1024);else{value=integer(value);fact(value>0);}return [key,value];}));
-const rowTarget=(row,t)=>({className:'sdkSession',table:t.name,key:keyFor(row,t),rowSha256:hash(json(row))});
+// The SDK SQL tables contain only text/uuid/bigint/jsonb, already JSON values
+// after pg decoding. Keep normalization for the public pure decoder's inputs.
+const rowTarget=(row,t,sqlRows=false)=>({className:'sdkSession',table:t.name,key:keyFor(row,t),rowSha256:hash(sqlRows?row:json(row))});
 const compare=(a,b,t)=>{for(const [key,type] of t.keys){const x=a[key],y=b[key];if(x===y)continue;const n=type==='bigint'?integer(x)-integer(y):type==='uuid'?(x<y?-1:1):Buffer.compare(Buffer.from(x),Buffer.from(y));if(n)return n;}return 0;};
 
 /** Existing header row hash is preserved; sdk commits every exact child row. */
@@ -43,17 +45,17 @@ export function assertSdkRetentionTarget(raw){
  return t;
 }
 
-function accumulator(header,subject){
+function accumulator(header,subject,sqlRows=false){
  tuple(header,subject);pin(header,'owner');const owner=own(header.owner,['binding','scopes','selectedClientId','policyRevision','key','expiresAtMs'],['executionSha256','allocationSha256','observationId','sessionEventSha256']);
  validateShape('RunBinding',owner.binding);assertNativeConversationScope(owner);const key=assertSdkSessionKey(owner.key,{main:true});
  fact(owner.binding.tenantId===subject.tenantId&&owner.binding.conversationId===subjectId(subject)&&
   (subject.ownerActorId===undefined||owner.binding.actorId===subject.ownerActorId)&&owner.binding.runId===header.run_id&&key.sessionId===header.session_id&&key.projectKey===header.project_key&&
   typeof owner.policyRevision==='string'&&owner.policyRevision.length>0&&integer(owner.expiresAtMs)>0&&
   Object.hasOwn(owner,'executionSha256')!==Object.hasOwn(owner,'allocationSha256')&&digest(owner.executionSha256??owner.allocationSha256)&&integer(header.entries_count)<=MAX_ENTRIES&&integer(header.bytes)<=MAX_BYTES);
- const root=rowTarget(header,HEAD),commit=createHash('sha256').update('meri-sdk-retention-rows/1\n'),streams=new Map();
+ const root=rowTarget(header,HEAD,sqlRows),commit=createHash('sha256').update('meri-sdk-retention-rows/1\n'),streams=new Map();
  const counts={sessions:1,streams:0,entries:0,batches:0};let bytes=0,lastEntryPath=null,uuids=new Set();
  const add=t=>commit.update(canonicalize([t.table,t.key,t.rowSha256])+'\n');add(root);
- function accept(row,t){tuple(row,subject);fact(row.run_id===header.run_id&&row.session_id===header.session_id);const target=rowTarget(row,t);add(target);
+ function accept(row,t){tuple(row,subject);fact(row.run_id===header.run_id&&row.session_id===header.session_id);const target=rowTarget(row,t,sqlRows);add(target);
   if(t===STREAM){fact(!streams.has(row.subpath)&&++counts.streams<=256);if(row.subpath)scopedSessionKey({...key,subpath:row.subpath},key);
    const total=integer(row.last_sequence);fact(total<=MAX_ENTRIES);streams.set(row.subpath,{total,count:0,bytes:2,target});
   }else if(t===ENTRY){pin(row,'entry');const stream=streams.get(row.subpath);fact(stream&&integer(row.sequence)===stream.count+1&&row.entry_uuid===(row.entry.uuid??null));
@@ -124,7 +126,7 @@ async function pages(reader,t,subject,{session,subpath,check=()=>{},lock=false}=
 }
 
 async function sessionScan(reader,{subject,header,check=()=>{},lock=false,visit,checkEntryOrphans=false}){
- const a=accumulator(header,subject),session={run_id:header.run_id,session_id:header.session_id},streamTargets=[];
+ const a=accumulator(header,subject,true),session={run_id:header.run_id,session_id:header.session_id},streamTargets=[];
  await pages(reader,STREAM,subject,{session,check,lock},rows=>{for(const row of rows)streamTargets.push(a.accept(row,STREAM));});
  if(checkEntryOrphans)await noOrphans(reader,ENTRY,subject,{session,check});
  const consume=t=>async rows=>{const targets=[];for(const row of rows){check();targets.push(a.accept(row,t));}if(visit)await visit(targets);};
