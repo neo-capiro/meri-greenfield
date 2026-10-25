@@ -125,8 +125,23 @@ test('task read rejects coercion, extra authority, bounds, unknown status and mi
   assert.throws(() => assertTaskReadInput({}, { actorId }), /nowMs/);
   assert.throws(() => assertTaskReadInput({}, { nowMs }), /actorId/);
   assert.throws(() => assertTaskReadInput({}, { nowMs, actorId, previousPage: null }), /context/);
-  assert.throws(() => assertTaskReadInput({ status: 'overdue', cursor: 'opaque' }, { nowMs, actorId }), /original explicit dueBefore/);
+  assert.equal(assertTaskReadInput({ status: 'overdue', cursor: 'opaque' }, { nowMs, actorId }).selection.dueBefore, null);
   assert.equal(assertTaskReadInput({ status: 'overdue', dueBefore: '2026-01-02T00:00:00.000Z', cursor: 'opaque' }, { nowMs, actorId }).selection.cursorApplied, true);
+});
+
+test('overdue continuation preserves Core-resolved clock without accepting filter substitution', () => {
+  const input = { status: 'overdue', cursor: 'opaque', limit: 1 };
+  const page = taskPage(input, { offset: 1, total: 2 });
+  page.scope.dueBefore = '2026-01-02T00:00:00.000Z';
+  assert.equal(assertTaskReadPage(page, input, { nowMs, actorId }), page);
+  for (const invalid of [null, 'not-a-date', '2026-01-02']) {
+    const changed = structuredClone(page); changed.scope.dueBefore = invalid;
+    assert.throws(() => assertTaskReadPage(changed, input, { nowMs, actorId }));
+  }
+  const explicit = { ...input, dueBefore: '2026-01-01T00:00:00.000Z' };
+  const changed = taskPage(explicit, { offset: 1, total: 2 });
+  changed.scope.dueBefore = page.scope.dueBefore;
+  assert.throws(() => assertTaskReadPage(changed, explicit, { nowMs, actorId }), /scope substitution/);
 });
 
 test('client-scoped task page pins scope, identity, provenance and honest coverage', () => {
