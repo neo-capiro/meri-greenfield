@@ -50,12 +50,29 @@ export function createStandaloneTaskSessions({context,sessions,store,retention,s
   }
   async function currentRights({signal,policyRevision:revision}){if(revision!==policyRevision)deny();const current=await fresh(signal);return {tenantId:binding.tenantId,actorId:binding.actorId,scopes,checkedAtMs:current.checkedAtMs,expiresAtMs:current.expiresAtMs};}
   async function prepare({requestId,arguments:args,signal}){
+   const operation={id:'update_task',version:'0.2.0'},deliveryId=publicTaskDelivery(operation,requestId);
+   const key={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId};
+   const prior=await journalStore.read({key,signal});await fresh(signal);
+   if(prior!==null){
+    if(!same(prior.record.operation,operation))throw intentFault('CONFLICT');
+    // A claimed delivery cannot be prepared again, including after its initial binding expires or is superseded.
+    if(prior.state==='PENDING'||prior.state==='UNKNOWN')throw intentFault('UNKNOWN');
+    if(prior.state==='FAILED'){
+     if(prior.record.argumentsSha256!==hash({binding,arguments:args}))throw intentFault('CONFLICT');
+     throw intentFault(prior.outcome.code);
+    }
+    const proposal=prior.outcome.result.proposal;
+    const retained=await custody.readPreparedCommand({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,proposalId:proposal?.proposalId,signal});
+    if(retained===null||!same(retained.key,key)||!same(retained.record,prior.record)||!same(retained.outcome,prior.outcome)||proposal.command.action!=='task.update'||!same(proposal.command.scopes,scopes))deny();
+    if(prior.record.argumentsSha256!==hash({binding:proposal.command.binding,arguments:args}))throw intentFault('CONFLICT');
+    await fresh(signal);return retained.outcome.result;
+   }
    await preparation(signal);
-   const operation={id:'update_task',version:'0.2.0'},native=createNativeTaskPreparers({pool,binding,scopes,selectedClientId,policyRevision,expiresAtMs:preparationDeadline,currentRights,now,maxRequestMs:configuration.limits.requestMs});
+   const native=createNativeTaskPreparers({pool,binding,scopes,selectedClientId,policyRevision,expiresAtMs:preparationDeadline,currentRights,now,maxRequestMs:configuration.limits.requestMs});
    // The existing journal key is conversation-scoped. Include the full original binding in its immutable input hash.
    const preparers=native.map(p=>({...p,prepare:({arguments:value,...options})=>{if(!same(value.binding,binding))deny();return p.prepare({...options,arguments:value.arguments});}}));
    const mount=createIntentMount({binding,preparers,journalStore,now,enabled:true,limits:{maxRequestMs:configuration.limits.requestMs},resultRelease:createIntentResultReleaseAuthority({binding,now,currentRights,currentRun:async(_b,{signal})=>JSON.stringify(await preparation(signal))})});
-   return mount.prepare({operation,arguments:{binding,arguments:args},deliveryId:publicTaskDelivery(operation,requestId),signal});
+   return mount.prepare({operation,arguments:{binding,arguments:args},deliveryId,signal});
   }
   async function execute({proposal,signal,deadlineMs}){
    assertNativeApprovalProposal(proposal);if(proposal.command.action!=='task.update'||['tenantId','actorId','conversationId'].some(k=>proposal.command.binding[k]!==binding[k]))deny();

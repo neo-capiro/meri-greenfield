@@ -19,9 +19,9 @@ test('prepare public requestId is mandatory and no browser authority fields are 
  for(const raw of [{arguments:f.raw.arguments},{...f.raw,requestId:'invalid'},{...f.raw,binding:f.binding}])assert.notEqual((await f.call('prepare',raw)).status,200);
  assert.equal(f.sql.state.rows.size,0);assert.equal(f.metadata.rows.size,0);
 });
-test('changed original run, started binding, revoked session and changed proposal cannot prepare or execute',async()=>{
+test('retained preparation survives a current run change; fresh started binding, revoked session and changed proposal refuse',async()=>{
  const f=standaloneFixture(),proposal=await prepared(f);f.state.binding={...f.binding,runId:id(91)};
- assert.notEqual((await f.call('prepare',f.raw)).status,200);assert.equal(f.metadata.rows.size,1);
+ assert.deepEqual(await prepared(f),proposal);assert.equal(f.metadata.rows.size,1);
  f.state.binding=null;f.state.started=true;assert.notEqual((await f.call('prepare',{...f.raw,requestId:id(71)})).status,200);
  f.state.started=false;const changed=structuredClone(proposal);changed.command.arguments.patch.title='Tampered';assert.notEqual((await f.call('execute',{proposal:changed})).status,200);
  f.state.revoked=true;assert.notEqual((await f.call('execute',{proposal})).status,200);assert.equal(f.state.effects,0);
