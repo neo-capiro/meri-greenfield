@@ -36,7 +36,7 @@ async function fixture(){
 test('ordinary Core bearer/service transport retains actual bill normalization and exact typed result',async()=>{
  const f=await fixture(),r=await f.execute();assert.equal(r.status,200,await r.clone().text());const wire=await r.json(),page=JSON.parse(wire.resultJson);
  assert.equal(page.operation.id,'read_bill_text');assert.equal(page.result.billId,'119-hr-1');assert.equal(page.result.text,'x'.repeat(12));
- assert.equal(f.calls.filter(path=>path==='/api/clio/tools/read_bill_text').length,1);assert.equal(f.calls.filter(path=>path==='/api/clio/application-authority/current').length,1,'one canonical selection per bounded operation');
+ assert.equal(f.calls.filter(path=>path==='/api/clio/tools/read_bill_text').length,1);assert.equal(f.calls.filter(path=>path==='/api/clio/application-authority/current').length,2,'one bounded selection at admission plus the deliberate final-release observation');
 });
 test('foreign Core identity/client and revoked membership never dispatch a source read',async()=>{
  for(const mutate of [r=>({...r,principal:{...r.principal,tenantId:id(99)}}),r=>({...r,principal:{...r.principal,actorId:id(99)}}),r=>({...r,selectedClientId:id(99)}),r=>({...r,clientIds:[]})]){
