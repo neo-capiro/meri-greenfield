@@ -1,5 +1,10 @@
 /** Fixed telemetry vocabulary drawn from reviewed runtime/owner refusal constants. Unknown values never become log content. */
 export const TELEMETRY_CODES = Object.freeze([
+  'AGENTCORE_CONFIGURATION',
+  'AGENTCORE_REQUEST_REFUSED',
+  'AGENTCORE_RESULT_REFUSED',
+  'RUNNER_DEADLINE',
+  'RUNNER_SETTLEMENT_UNKNOWN',
   'ATTEMPT_LOST',
   'ABORT_ERR',
   'ACCESS_DENIED',
