@@ -12,7 +12,8 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences,
   {name:'actions.application',state:sourceEnabled!==true?'disabled':available.has('actionApplication')?'composed':available.has('actionApplicationFactory')?ports.actionApplicationFactory.state():'unavailable'},
   {name:'schedules.application',state:available.has('routinesApplicationFactory')?ports.routinesApplicationFactory.state():'unavailable'},
   {name:'schedules.inbox',state:available.has('routinesApplicationFactory')&&ports.routinesApplicationFactory.inboxState?ports.routinesApplicationFactory.inboxState():'unavailable'},
-  {name:'sources.currentInstallation',state:sourceEnabled?'unavailable':'disabled'},
+  // Installation/eligibility is checked by reads-owner for each authenticated run, not once at process startup.
+  {name:'sources.currentInstallation',state:sourceEnabled?'per-run-check-required':'disabled'},
   {name:'schedules.dispatchWorker',state:'separate-service-required'});
  const recovery=retention?.artifactRecovery?.();if(recovery?.required)owners.push({name:'retention.artifactRecovery',state:recovery.state});
  if(userPreferences!==undefined)owners.push({name:'settings.userPreferences',state:userPreferences});
