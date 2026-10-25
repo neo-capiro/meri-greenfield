@@ -33,11 +33,10 @@ for(const id of ids){
   const out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(f.wire[0].body,request);
   assert.deepEqual(out.result.result.scope,{jurisdiction:'FL',sessionKey:request.sessionKey??'',folderId:null,clientId:null});
  });
- test(`${id}: current tenant, actor, exact operation and source grants are required before credentials`,async()=>{
-  for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.binding.tenantId='other',
-   a=>a.decision.actor.actorId='other',a=>a.decision.operation='other@0.2.0',a=>a.decision.decision='denied',
-   a=>a.decision.scopes=[],a=>a.sourceIds=[]]){
-   const f=storedCase(id),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call));
+ test(`${id}: current tenant, actor, policy revision, scope and source grants are required before credentials`,async()=>{
+  for(const mutate of [a=>a.binding.tenantId='other',a=>a.binding.actorId='other',a=>a.subject.tenantId='other',
+   a=>a.subject.policyRevision='other',a=>a.policyRevision='other',a=>a.scopes=[],a=>a.sourceIds=[]]){
+   const f=storedCase(id),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});
    assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   }
  });
