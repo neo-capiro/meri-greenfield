@@ -29,7 +29,15 @@ for(const general of [false,true])test(`native ${general?'General':'client'} occ
   return c.query(text,values);
  },release(){s.release();c.release();}};}};
  const fetchImpl=async(url,options)=>{
-  const path=new URL(url).pathname,body=JSON.parse(options.body);calls.push(path);assert.equal(options.headers.authorization,undefined);assert.equal(options.headers['x-internal-service-secret'],'synthetic-routine-service-secret');
+  const path=new URL(url).pathname,body=JSON.parse(options.body);calls.push(path);
+  if(path.startsWith('/api/clio/application-authority/')){
+   assert.equal(options.headers.authorization,'Bearer synthetic-owner');assert.equal(options.headers['x-internal-service-secret'],undefined);
+   const times={checkedAtMs:h.now(),expiresAtMs:h.now()+60000},principal={tenantId:binding.tenantId,actorId:binding.actorId};
+   if(path.endsWith('/identity'))return Response.json({principal,identityRevision:'a'.repeat(64),...times});
+   if(path.endsWith('/membership'))return Response.json({...principal,status:'active',role:'standard_user',permissions:[],clientIds:general?[]:[h.template.selectedClientId],membershipRevision:'b'.repeat(64),...times});
+   return Response.json({error:'No ordinary Core bootstrap exists'},{status:403});
+  }
+  assert.equal(options.headers.authorization,undefined);assert.equal(options.headers['x-internal-service-secret'],'synthetic-routine-service-secret');
   if(revoked)return Response.json({error:'revoked'},{status:403});
   const p=h.occurrence.projection,limits={maxCostMicrousd:p.maxCostMicrousd,maxRuntimeSeconds:p.maxRuntimeSeconds,retryLimit:p.retryLimit};
   if(path==='/api/clio/routines/unattended-grant'){
@@ -48,6 +56,9 @@ for(const general of [false,true])test(`native ${general?'General':'client'} occ
  const load=await post('load',{binding});assert.equal(load.status,200,await load.clone().text());const loaded=await load.json();assert.equal(loaded.model.maxCostMicroUSD,750);assert.deepEqual(loaded.run.binding,binding);
  const runtime=await post('runtime',{binding,versions:configuration.versions});assert.equal(runtime.status,200,await runtime.clone().text());const prepared=await runtime.json();assert.equal(prepared.deadlineMs,at+20000);assert.equal(prepared.automaticClientContext,null);
  assert.deepEqual(calls,['/api/clio/routines/unattended-grant','/api/internal/routines/current']);assert.equal(h.conversations.state.allocations.size,0);
+ const opened=await assembly.application.handle(new Request('https://control.synthetic.invalid/api/action-followthrough/session',{method:'POST',headers:{authorization:'Bearer synthetic-owner','content-type':'application/json'},body:JSON.stringify({conversationId:binding.conversationId,clientId:h.template.selectedClientId})}));
+ assert.equal(opened.status,200,await opened.clone().text());assert.equal((await opened.json()).context.runId,binding.runId);assert.equal(h.conversations.state.nextRuns.size,0);
+ assert.equal(calls.includes('/api/clio/application-authority/current'),false);
  revoked=true;const denied=await post('runtime',{binding,versions:configuration.versions});assert.notEqual(denied.status,200);assert.doesNotMatch(await denied.text(),/synthetic-routine-service-secret/);
  await h.store.append(binding,{eventId:id(701),createdAt:new Date(h.now()).toISOString(),type:'run.status',data:{state:'failed',reasonCode:'SYNTHETIC_TEST'}},()=>{});
  pending.resolve(await candidate.execution.settle({credential:invocation.credential,execution:invocation.execution,state:'failed'}));

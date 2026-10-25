@@ -22,11 +22,12 @@ export function createNextRunOwner({store,versions,now=Date.now,newId=randomUUID
   * reserved successor only after the SDK invocation has settled (a nonterminal crashed run is first settled by the run reconciler).
   * A session that names its exact `runId` never reserves: it binds that terminal latest run read-only (its next turn is reserved only by an
   * explicit turn, which retains the request identity), and any other terminal run is not current. Hints constrain; they never create. */
- async function select({principal,conversationId,signal,expectedSourceRunId,runId,assertActive},{explicit=false}={}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);if(expectedSourceRunId!==undefined)uuid(expectedSourceRunId);if(runId!==undefined)uuid(runId);const check=checking(signal);
+ async function select({principal,conversationId,signal,expectedSourceRunId,runId,assertActive},{explicit=false,existingOnly=false}={}){const p=own(bounded(principal),['tenantId','actorId']);uuid(conversationId);if(expectedSourceRunId!==undefined)uuid(expectedSourceRunId);if(runId!==undefined)uuid(runId);const check=checking(signal);
   const {runs,reservations}=await journal.listRuns({tenantId:p.tenantId,conversationId},check);if(!runs.length)fail('NEXT_RUN_NO_CONVERSATION');
   const latest=runs.at(-1);if(latest.binding.actorId!==p.actorId)fail('NEXT_RUN_OWNER_REFUSED');
   if(expectedSourceRunId!==undefined&&latest.binding.runId!==expectedSourceRunId)fail('NEXT_RUN_NOT_LATEST');
-  const pending=reservations.find(r=>r.state==='RESERVED'&&r.source.runId===latest.binding.runId);if(pending)return {binding:pending.target,source:latest.binding,reserved:true,replayed:true};
+  const pending=reservations.find(r=>r.state==='RESERVED'&&r.source.runId===latest.binding.runId);if(pending){if(existingOnly)fail('NEXT_RUN_NOT_LATEST');return {binding:pending.target,source:latest.binding,reserved:true,replayed:true};}
+  if(existingOnly){if(runId!==undefined&&latest.binding.runId!==runId)fail('NEXT_RUN_NOT_LATEST');return {binding:latest.binding,reserved:false};}
   if(!terminal(latest.state))return {binding:latest.binding,reserved:false};
   if(runId!==undefined){if(latest.binding.runId!==runId)fail('NEXT_RUN_NOT_LATEST');return {binding:latest.binding,reserved:false};}
   const facts=await (explicit?explicitSettlement:settlement)(latest,signal,check);
@@ -72,5 +73,5 @@ export function createNextRunOwner({store,versions,now=Date.now,newId=randomUUID
    throw error;
   }
  }
- return Object.freeze({selectRun,currentRun,admitTurn,assessNextTurn});
+ return Object.freeze({selectRun,selectExistingRun:args=>select(args,{existingOnly:true}),currentRun,admitTurn,assessNextTurn});
 }

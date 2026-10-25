@@ -59,17 +59,18 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  store??=createPostgresConversationStore({pool,modelCatalog:configuration.models,assertConversationActive:conversationManagement?.assertActiveBinding});
  const routinesTask=configuration.routines?.enabled===true&&configuration.routines.task?compileNativeRoutinesTask(configuration):null;
  const routinesConfig=routinesTask?compileRoutinesCoreConfiguration(configuration):null;
+ const scheduleOwner=routinesTask?createPostgresScheduleOwner({pool}):undefined;
  let routineCore=null;
  if(routinesConfig?.unattendedGrant){
   const getServiceSecret=createRoutinesServiceSecret({file:routinesConfig.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret});
-  const wires=createRoutinesCoreClient({origin:routinesConfig.origin,getServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs}),scheduleOwner=createPostgresScheduleOwner({pool});
+  const wires=createRoutinesCoreClient({origin:routinesConfig.origin,getServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs});
   const firing=createRoutinesFiringAuthority({wires,trust:routineFiringTrust(routinesConfig.unattendedGrant),scheduleOwner,now,maxRequestMs:requestMs});
   routineCore=Object.freeze({...createNativeRoutineCurrent({configuration,task:routinesTask,store,scheduleOwner,firing,wires,now}),origin:routinesConfig.origin,getServiceSecret});
  }
  const nextRunOwner=createNextRunOwner({store,versions,now});
  const identityContext=createConversationIdentity({store,identity:{...config.identity,fetchImpl:coreFetch},
   qualification:{policyRevision:config.policyRevision},now,limits,nextRunOwner,initialBindings,
-  configurationSha256:hash(config),versions,proposeInitialExpiry:()=>now()+config.runWindowMs,factWindowMs:config.runWindowMs});
+  configurationSha256:hash(config),versions,proposeInitialExpiry:()=>now()+config.runWindowMs,factWindowMs:config.runWindowMs,...(scheduleOwner?{scheduleOwner}:{})});
  const conversationMembership=createCoreMembershipGate({origin:config.identity.origin,identityContext,fetchImpl:coreFetch,now,limits:{...limits,maxFactBytes:262144}});
  const conversationCurrentness=createCoreConversationCurrentness({origin:config.identity.origin,fetchImpl:coreFetch,now,limits});
  async function contextFor({binding,run,signal}){

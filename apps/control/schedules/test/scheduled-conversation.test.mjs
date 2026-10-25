@@ -7,6 +7,16 @@ import {id} from '../../conversations/test/store-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {receiveConversationHistoryRequest,receiveConversationHistoryResponse} from '../../../../packages/contracts/dist/conversation-history.mjs';
 
+test('General occurrence is discoverable and readable only in the exact owner private scope',async()=>{
+ const f=await scheduledConversationFixture({general:true});
+ const page=await f.post('list',{});assert.equal(page.status,200);assert.equal((await page.json()).conversations[0].conversationId,f.call.conversationId);
+ assert.equal((await f.post('transcript',{conversationId:f.call.conversationId})).status,200);
+ assert.deepEqual((await f.receipts.read(f.call)).run.scopes,f.p.scopes);assert.equal(f.state.coreReads,0);
+ for(const scopes of [[{...f.p.scopes[0],resourceId:'foreign'}],[...f.p.scopes,...f.p.scopes]])await assert.rejects(f.currentness.assertCurrent({...f.call,scopes}));
+ await assert.rejects(f.currentness.assertCurrent({...f.call,principal:{...f.principal,actorId:'foreign'}}));
+ f.state.denied=true;await assert.rejects(f.receipts.read(f.call));assert.equal(f.runCount(),1);assert.equal(f.workflowCount(),1);
+});
+
 test('actual scheduled conversation is listed and transcript renders canonical completion/output without a Core conversation',async()=>{
  const f=await scheduledConversationFixture();
  await f.publish('run.status',{state:'starting',reasonCode:null});await f.publish('run.status',{state:'running',reasonCode:null});

@@ -16,10 +16,11 @@ const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 export function snapshotScheduledConversationOrigin(raw,{principal,conversationId,scopes}){
  const r=data(own(raw,['occurrenceKey','scheduleId','occurrence','effect','effectSha256','state']));
  const {occurrence,effect,identity}=snapshotScheduledJobSelection({occurrence:r.occurrence,effect:r.effect}),p=occurrence.projection;
+ const general=scopes.length===1&&scopes[0].kind==='private-user'&&scopes[0].tenantId===principal.tenantId&&scopes[0].resourceId===principal.actorId;
  if(!['OPEN','DISPATCHED','REFUSED'].includes(r.state)||r.effectSha256!==hash(effect)||r.occurrenceKey!==identity.occurrenceKey||r.scheduleId!==p.scheduleId||
   p.destinationId!==SCHEDULED_MERI_INBOX_DESTINATION||!same(p.owner,{tenantId:principal.tenantId,actorId:principal.actorId})||
   effect.binding.conversationId!==conversationId||!same(p.scopes,scopes)||!Array.isArray(principal.clientIds)||
-  !scopes.some(s=>s.kind==='client')||scopes.some(s=>s.tenantId!==principal.tenantId||s.kind==='client'&&!principal.clientIds.includes(s.resourceId)))fail();
+  !general&&!scopes.some(s=>s.kind==='client')||scopes.some(s=>s.tenantId!==principal.tenantId||s.kind==='private-user'&&s.resourceId!==principal.actorId||s.kind==='client'&&!principal.clientIds.includes(s.resourceId)))fail();
  return r;
 }
 
