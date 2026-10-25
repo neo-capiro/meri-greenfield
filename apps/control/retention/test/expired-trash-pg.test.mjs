@@ -31,14 +31,18 @@ let clock=null;
 const now=()=>clock??Date.now();
 const pool=new pg.Pool({host:SOCKET,database:DATABASE,user:'meri_control_runtime',max:1,connectionTimeoutMillis:2000,query_timeout:6000,options:'-c statement_timeout=5000 -c lock_timeout=2000'});
 const connect=pool.connect.bind(pool);let failLastMutation=false,observedDeletes=0;
-let lookupInspected=false;const lookupDiagnostics=[];
+let lookupInspected=false,inventorySqlTiming=null;const lookupDiagnostics=[];
 const journalPool={async connect(){const c=await connect();return {release:error=>c.release(error),query:async(sql,args)=>{
  if(!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
   const page=JSON.parse(args[2]);if(page.length>=1000){lookupDiagnostics.push(await inspectRetentionTargetLookup(c,{tenantId:args[0],conversationId:args[1],page}));lookupInspected=true;}
  }
  if(failLastMutation&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries'))observedDeletes++;
  if(failLastMutation&&sql.startsWith('UPDATE meri_commands.approval_metadata')){failLastMutation=false;throw Error('synthetic final-statement outage');}
- return c.query(sql,args);
+ if(!inventorySqlTiming)return c.query(sql,args);
+ const timing=inventorySqlTiming,kind=sql.includes('AS orphan')?'orphan':sql.includes('retention_row_bytes')?'metadata':sql.startsWith('SELECT r.* FROM meri_conversations.sdk_')?'body':'other';
+ const started=performance.now();let result;
+ try{return result=await c.query(sql,args);}finally{const ms=performance.now()-started,part=timing[kind]??={queries:0,rows:0,ms:0,maxMs:0};
+  part.queries++;part.rows+=result?.rows?.length??0;part.ms+=ms;part.maxMs=Math.max(part.maxMs,ms);}
 }};}};
 const insert=async(table,row)=>{const keys=Object.keys(row);return pool.query(`INSERT INTO ${table}(${keys.join(',')}) VALUES(${keys.map((_,i)=>'$'+(i+1)).join(',')})`,Object.values(row));};
 const count=async(table,f)=>Number((await pool.query(`SELECT count(*) FROM ${table} WHERE tenant_id=$1 AND conversation_id=$2`,[f.b.tenantId,f.b.conversationId])).rows[0].count);
@@ -52,9 +56,10 @@ const storage={permissions:{deleteObjectVersion:true},async holdsFor(){return {l
  async deleteVersion({key,versionId}){deleted.push(key+'@'+versionId);objects.delete(key+'@'+versionId);return {outcome:'DELETED'};}};
 const keyFor=o=>o.objectId;
 const sourceFacts=createConversationPurgeFacts({pool,journal,core,storage,keyFor,now});
-let measureSubject=null,inventoryTimings=[];
+let measureSubject=null,inventoryTimings=[],inventorySqlTimings=[];
 const facts={...sourceFacts,async inventoryFor(subject,options){const started=performance.now();
- try{return await sourceFacts.inventoryFor(subject,options);}finally{if(subject.subjectId===measureSubject)inventoryTimings.push(performance.now()-started);}
+ const measured=subject.subjectId===measureSubject;if(measured)inventorySqlTiming={};
+ try{return await sourceFacts.inventoryFor(subject,options);}finally{if(measured){inventoryTimings.push(performance.now()-started);inventorySqlTimings.push(inventorySqlTiming);inventorySqlTiming=null;}}
 }};
 let loseRowAck=false,rowEffects=0;
 const rows={...journal.rows,async purge(...args){rowEffects++;const result=await journal.rows.purge(...args);if(loseRowAck){loseRowAck=false;throw Error('synthetic lost committed row acknowledgement');}return result;}};
@@ -162,7 +167,7 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
  await t.test('100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
   const fixtureStarted=performance.now(),f=await seed();await content(f,{entryCount:100000,nearTranscriptLimit:true});
   t.diagnostic(`fixture construction ${Math.round(performance.now()-fixtureStarted)} ms; transcript ${f.sdk.transcriptBytes} bytes; ${f.sdk.batches} append pages`);
-  assert.ok(f.sdk.transcriptBytes>31*1024*1024);measureSubject=f.subject.subjectId;inventoryTimings=[];
+  assert.ok(f.sdk.transcriptBytes>31*1024*1024);measureSubject=f.subject.subjectId;inventoryTimings=[];inventorySqlTimings=[];
   try{
    const planStarted=performance.now(),p=await plan(f);t.diagnostic(`source/plan ${Math.round(performance.now()-planStarted)} ms`);
    const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(p.state,'PLANNED');assert.equal(sdk.length,1);
@@ -174,7 +179,8 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
    for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
    const ledgerRows=await sink.read();assert.ok(ledgerRows.every(row=>Buffer.byteLength(JSON.stringify(row))<8*1024*1024));assert.ok(Buffer.byteLength(JSON.stringify(ledgerRows))<64*1024*1024);
    const effects=rowEffects;assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(rowEffects,effects);
-  }finally{t.diagnostic(`actual inventory scan timings, including any refused scan: ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms`);measureSubject=null;inventoryTimings=[];}
+  }finally{t.diagnostic(`actual inventory scan timings, including any refused scan: ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms`);
+   t.diagnostic('inventory SQL timings '+JSON.stringify(inventorySqlTimings));measureSubject=null;inventoryTimings=[];inventorySqlTimings=[];inventorySqlTiming=null;}
  });
  await t.test('missing or false tombstone markers cannot rewrite protected bodies outside erasure',async()=>{
   const f=await seed();await content(f);
