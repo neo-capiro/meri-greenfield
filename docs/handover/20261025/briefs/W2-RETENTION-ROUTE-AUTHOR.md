@@ -125,7 +125,7 @@ Tests: Pending versus approved candidates, held records, orphan receipt payload,
 | ID | Scenario | Expected result |
 |---|---|---|
 | E36 | Retention suppression→purge→restart/restore | Suppressed data stays inaccessible, class-specific deletion receipts, no restore resurrection |
-| E42 | **[RE-SCOPED]** Forward rollback and schema compatibility | Previous image redeployed through new valid material/revisions; <del>retained receipts and liabilities</del> remain valid |
+| E42 | **[RE-SCOPED]** Forward rollback and schema compatibility | Previous image redeployed through new valid material/revisions; retained receipts<del> and liabilities</del> remain valid |
 
 Register §B2 checked for every row: E18 is RE-SCOPED to tools the current user/client may call through Core; E10/E11/E42 are RE-SCOPED if included; E39/E40 are not allocated. Other quoted rows are KEEP. E08 means last valid native SDK state, not custom checkpoint machinery. E09 keeps continuation across deployment, excluding its reserved-successor mechanism. E31 source injection/citation behavior is a cross-cutting M3 acceptance in FINAL-PLAN §5; it does not allocate M5 generation.
 
