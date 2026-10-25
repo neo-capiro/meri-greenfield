@@ -50,6 +50,8 @@ FROM: Root | TO: mechanical Hermes launcher / independent reviewer | TYPE: dispa
 
 # Wave 3 continuation dispatch manifest
 
+**Separate Wave2 current-read correction, 25 October2026, 17:06 UTC:** [W2-CURRENT-READ-FINAL-RELEASE](W2-CURRENT-READ-FINAL-RELEASE.md) authorizes one fresh Hermes author on an isolated exact7eee branch to refresh current Core visibility through the existing Control owner before final result release. The existing launcher dispatches on publication without another Root signoff; the existing independent reviewer reviews the exact candidate. PR254 ACCEPT and PR255 CHANGES remain unchanged history. No Core change or proven deployed disclosure; no AWS/live probe, broad151 rerun or Wave3 integration is allocated. Private session bindings stay with the launcher.
+
 **Separate Wave2 diagnostic, 25 October 2026:** the [worker startup brief](W2-HERMES-WORKER-STARTUP-DIAGNOSIS.md) allocates exactly one fresh read-only Hermes look using Runtime’s completed handoff. Worker66 recovered unchanged and all three Meri roles were healthy/complete at 16:18:49; cause remains unproven. This is nonblocking and does not reopen release qualification or use a Wave3 author checkout.
 
 **Data author follow-up, 25 October 2026, 16:18 UTC:** resume the original Hermes Data author with [the standalone MT-09 gateway brief](W3-CONTINUE-M3-DATA-GATEWAY.md). New isolated stacked base is PR254 `4c2171fcca374cfca67b99e755f66793992a1624` (independent verdict PENDING); preserve that PR for review. The sole exception is the existing canonical dispatcher plus one adjacent focused test, after inspecting/reusing accepted frozen Wave2 clock/current-access proof. No duplicate session or broader gateway migration. Earlier dispatch facts below remain historical.
