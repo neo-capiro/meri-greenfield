@@ -11,6 +11,8 @@ import {createNextRunOwner} from '../../control/conversations/next-run.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
 import {createConversationService} from '../../control/conversations/service.mjs';
 import {createConversationLifecycleService} from '../../control/conversations/lifecycle/service.mjs';
+import {createExecutionBinding,executionIdentity} from '../../control/conversations/execution-boundary.mjs';
+import {createDurableSdkSessionOwner} from '../sdk-session-owner.mjs';
 import {createConversationHistoryService} from '../../control/conversations/history/service.mjs';
 import {createConversationHistoryApplication} from '../../control/conversations/history/http.mjs';
 import {createScheduledConversationCurrentness} from '../../control/schedules/scheduled-conversation-currentness.mjs';
@@ -20,7 +22,7 @@ import {id} from '../../control/conversations/test/store-fixture.mjs';
 
 async function fixture(t,{general=false}={}){
  const h=await scheduledAdmissionFixture({agentcore:true,general});await h.adapter.admit(h.request);
- const state={revoked:false,actor:h.template.principal.actorId,clients:general?[]:[h.template.selectedClientId],calls:[],cancelled:[],reconciled:[],originHook:null},limits={maxRequestMs:3000,maxFactBytes:131072};
+ const state={revoked:false,actor:h.template.principal.actorId,clients:general?[]:[h.template.selectedClientId],calls:[],cancelled:[],reconciled:[],originHook:null,turnAdmissions:0},limits={maxRequestMs:3000,maxFactBytes:131072};
  const originalScheduleConnect=h.scheduleSql.pool.connect;
  h.scheduleSql.pool.connect=async()=>{const c=await originalScheduleConnect();return {...c,async query(sql,args=[]){
   if(sql.includes("effect->'binding'->>'conversationId'")){await state.originHook?.();return {rows:structuredClone([...h.scheduleSql.state.occurrences.values()].filter(r=>r.tenant_id===args[0]&&r.effect.binding.conversationId===args[1]))};}
@@ -40,21 +42,36 @@ async function fixture(t,{general=false}={}){
   if(path.endsWith('/membership'))return Response.json({...principal,status:'active',role:'standard_user',permissions:[],clientIds:state.clients,membershipRevision:'b'.repeat(64),...times});
   return Response.json({error:'No ordinary Core conversation exists'},{status:403});
  };
+ const nextRunOwner=createNextRunOwner({store,versions:h.template.versions,now:h.now});
  const native=createConversationIdentity({store,identity:{origin:'https://core.synthetic.invalid',fetchImpl},qualification:{policyRevision:h.template.policyRevision},now:h.now,limits,
-  nextRunOwner:createNextRunOwner({store,versions:h.template.versions,now:h.now}),initialBindings:createInitialRunBindingJournal({pool}),configurationSha256:h.template.configurationSha256,versions:h.template.versions,
+  nextRunOwner,initialBindings:createInitialRunBindingJournal({pool}),configurationSha256:h.template.configurationSha256,versions:h.template.versions,
   proposeInitialExpiry:()=>h.now()+60000,factWindowMs:60000,scheduleOwner:h.scheduleOwner});
  const gate=createCoreMembershipGate({origin:'https://core.synthetic.invalid',fetchImpl,identityContext:native,now:h.now,limits});
  const sessions=createActionSessionOwner({mode:'process-local',now:h.now,verifyIdentity:native.verifyIdentity,resolveContext:native.resolveContext,withAuthority:native.withAuthority,membership:{admit:gate.admit,recheck:gate.recheck},limits:{...limits,maxSessions:20,maxTtlMs:60000},refusals:()=>{}});t.after(()=>sessions.close());
  const dispatcher={async start(){assert.fail('No new dispatch on reopening');},async signal(){},async cancel({binding}){state.cancelled.push(binding);}},basic=createConversationService({sessions,store,dispatcher,versions:h.template.versions,modelCatalog:MODEL_CATALOG,now:h.now});
  const service=createConversationLifecycleService({service:basic,sessions,store,dispatcher,retention:null,now:h.now,async reconcileOriginal({binding}){state.reconciled.push(binding);}});
  const currentness=createScheduledConversationCurrentness({scheduleOwner:h.scheduleOwner,gate,core:{assertCurrent(){assert.fail('Positive custody must not call ordinary Core current');}},now:h.now});
- const history=createConversationHistoryApplication({service:createConversationHistoryService({store,gate,nextRunOwner:{admitTurn(){assert.fail('Ordinary authority must refuse before checking settlement or reserving a new turn');}}}),gate,currentness,
+ const history=createConversationHistoryApplication({service:createConversationHistoryService({store,gate,nextRunOwner:{admitTurn(call){state.turnAdmissions++;return nextRunOwner.admitTurn(call);}}}),gate,currentness,
   turnCurrentness:createCoreConversationCurrentness({origin:'https://core.synthetic.invalid',fetchImpl,now:h.now,limits}),now:h.now,limits:{maxRequestMs:3000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const list=()=>history.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:'{}'}));
  const issue=(hints={})=>sessions.issue({identityCredential:'native',hints:{conversationId:h.identity.binding.conversationId,clientId:h.template.selectedClientId,...hints}});
  let sequence=900;const status=state=>store.append(h.identity.binding,{eventId:id(sequence++),createdAt:new Date(h.now()).toISOString(),type:'run.status',data:{state,reasonCode:null}},()=>{});
+ async function completeWithSdk(){
+  const binding=h.identity.binding;
+  const {versions:_,...execution}=createExecutionBinding({binding,versions:h.template.versions,plan:{runtime:'synthetic'},expiresAtMs:h.now()+60000,runtimeSessionId:'conversation-'+hash({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId})});
+  await store.executions.claim(execution,()=>{});
+  await status('starting');await status('running');
+  const mirror=createDurableSdkSessionOwner({admission:store.executions,enabled:true,now:h.now,authority:{async authenticate(){const saved=await store.executions.read(binding,()=>{});return {execution:executionIdentity(saved.record),versions:h.template.versions,state:saved.run.state,scopes:h.scopes,selectedClientId:h.template.selectedClientId,policyRevision:h.template.policyRevision};}}});
+  const key={projectKey:'-workspace-conversation',sessionId:id(800)},request={binding,key},credential='synthetic-execution';
+  await mirror.register({credential,request});
+  const entries=[{type:'user',uuid:id(801),message:{role:'user',content:'Retained scheduled result context'}}];
+  await mirror.append({credential,request:{...request,appendId:id(802),expectedOffset:0,entriesSha256:hash(entries),entries}});
+  await status('completed');await store.executions.record({binding,executionId:hash(binding),phase:'settled',native:{state:'completed'}},()=>{});
+  assert.equal((await store.nextRuns.latestSession(binding,()=>{})).entriesCount,1);
+  assert.deepEqual(await nextRunOwner.assessNextTurn({principal:h.template.principal,conversationId:binding.conversationId,sourceRunId:binding.runId}),{admissible:true,reason:null});
+ }
  const nextTurn=()=>history.handle(new Request('https://meri.invalid/api/conversations/next-turn',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:JSON.stringify({conversationId:h.identity.binding.conversationId,sourceRunId:h.identity.binding.runId})}));
- return {...h,originalStore:h.store,store,native,gate,sessions,service,basic,state,list,issue,status,nextTurn};
+ return {...h,originalStore:h.store,store,native,gate,sessions,service,basic,state,list,issue,status,nextTurn,completeWithSdk};
 }
 
 for(const general of [false,true]){
@@ -68,11 +85,12 @@ for(const general of [false,true]){
   assert.ok(h.state.calls.every(p=>p.endsWith('/identity')||p.endsWith('/membership')));
  });
  test(`${general?'General':'client'} fresh completed opening without runId retains the admitted run and creates no next turn`,async t=>{
-  const h=await fixture(t,{general});await h.status('starting');await h.status('running');await h.status('completed');
+  const h=await fixture(t,{general});await h.completeWithSdk();
   const session=await h.issue();assert.equal(session.context.runId,h.identity.binding.runId);
   await h.sessions.authenticateSession({credential:session.credential});assert.equal(h.conversations.state.runs.size,1);assert.equal(h.conversations.state.nextRuns.size,0);
   await assert.rejects(h.basic.submit({credential:session.credential,input:{requestId:id(998),prompt:'An unapproved new ordinary prompt'}}));
   const turn=await h.nextTurn();assert.notEqual(turn.status,200);assert.equal((await turn.json()).error.outcome,'NOT_DISPATCHED');assert.ok(h.state.calls.some(p=>p.endsWith('/current')));
+  assert.equal(h.state.turnAdmissions,0,'Core refusal occurs before the real eligible next-run owner');
   assert.equal(h.conversations.state.runs.size,1);assert.equal(h.conversations.state.nextRuns.size,0);
   await assert.rejects(h.issue({runId:id(999)}));assert.equal(h.conversations.state.nextRuns.size,0);
  });
