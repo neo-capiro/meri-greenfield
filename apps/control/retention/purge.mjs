@@ -114,7 +114,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
   * Once effects may have begun, every step is durably UNKNOWN before its effect and carries its outcome after it: a ledger PURGE_UNKNOWN
   * entry precedes the first effect, the projection marks each step started, and an exception records what is known before it is rethrown,
   * so neither a thrown step nor a lost process is ever read back as done (recovery re-verifies every step of a PURGE_UNKNOWN entry). */
- async function executeLocked(plan,options={}){
+ async function executeLocked(plan,options={},freshlyPlanned=false){
   if(!enabled)fail('RETENTION_PURGE_DISABLED');const p=verifyPlanDigest(plan);if(p.state!=='PLANNED')fail('RETENTION_PURGE_BLOCKED');if(p.rowSteps.length&&!rows)fail('RETENTION_ROW_PURGE_UNAVAILABLE');
   let current=await currentGeneration(p);
   // BLOCKED records never consumed an effect. Fresh authorization below may
@@ -152,7 +152,10 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
     serving.disable?.();fail('RETENTION_RECOVERY_BARRIER');
    }
   }
-  current=await authorize(p,options);
+  // Only sweepSubject can arrive with a plan just recomputed under this same
+  // transition exclusion. Public execution and durable retries still authorize.
+  // begin() always rereads authority after preflight, immediately before effects.
+  if(!freshlyPlanned)current=await authorize(p,options);
   if(existing&&existing.planSha256!==p.planSha256)fail('RETENTION_PURGE_PLAN_MISMATCH');
   const keys=await preflight(p,options);
   const stepState=new Map((existing?.steps??[]).map(st=>[st.workflowId,st])),rowState=new Map((existing?.rowSteps??[]).map(st=>[st.workflowId,st]));
@@ -235,7 +238,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
    if(['UNKNOWN','EXECUTED'].includes(current.purge?.state)&&!durable)fail('RETENTION_PLAN_DIGEST_REFUSED');
    const plan=durable??await recomputePlan(facts,s,current,tick(),options);check();
    if(plan.state==='BLOCKED')return recordBlockedLocked(plan);
-   const result=await executeLocked(plan,options);check();
+   const result=await executeLocked(plan,options,!durable);check();
    if(result.state!=='EXECUTED'||result.coreFinalized)return result;
    await finalize(s,plan.trash,options);check();
    const row=await journal.get(key);

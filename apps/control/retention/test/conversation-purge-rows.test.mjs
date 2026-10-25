@@ -70,7 +70,11 @@ async function sdkJournalFixture(options={}){
  }
  const target=summarizeSdkRetentionRows(f.raw.contentRows,subject).targets[0],key=subjectKey(subject),policyVersion=1;
  const step={workflowId:rowWorkflowIdentity({tenantId:subject.tenantId,subjectId:subject.subjectId,target,policyVersion}),className:'sdkSession',target};
- const suppression={ledgerSequence:1,entrySha256:'a'.repeat(64)},plan={subject,policyVersion,planSha256:'b'.repeat(64),suppression,rowSteps:[step],steps:[]};
+ const event=options.earlierEvent?{tenant_id:subject.tenantId,run_id:binding.runId,sequence:1,lookup_id:id(901),kind:'terminal',event:{private:'earlier row'}}:null;
+ const eventTarget=event?content('meri_task_lookup.events','receipts',{run_id:binding.runId,sequence:1},event):null;
+ if(event)f.raw.contentRows['meri_task_lookup.events']=[event];
+ const eventStep=eventTarget?{...eventTarget,workflowId:rowWorkflowIdentity({tenantId:subject.tenantId,subjectId:subject.subjectId,target:eventTarget.target,policyVersion})}:null;
+ const suppression={ledgerSequence:1,entrySha256:'a'.repeat(64)},plan={subject,policyVersion,planSha256:'b'.repeat(64),suppression,rowSteps:[...(eventStep?[eventStep]:[]),step],steps:[]};
  const projection={state:'SUPPRESSED',ownerActorId:binding.actorId,...suppression,purge:{state:'PLANNED',planSha256:plan.planSha256,ledgerSequence:2}};
  const registrations=new Map(),calls=[],releases=[],reader=createSdkRetentionReader(f.raw);let before,transaction=0,deletedPages=0,maxTargets=0;
  const x={...f,subject,key,step,plan,registrations,calls,releases,hook:null,lostCommit:false,clock:Date.now,deletedPages:()=>deletedPages,maxTargets:()=>maxTargets};
@@ -85,6 +89,11 @@ async function sdkJournalFixture(options={}){
    const page=sql.includes('jsonb_to_recordset')?JSON.parse(args[4]):[{workflow_id:args[0],target:JSON.parse(args[4])}];
    assert.ok(page.length<=1000);for(const r of page){assert.deepEqual(Object.keys(r.target).sort(),['key','mode','rowSha256','table']);assert.equal(r.target.mode,'delete');
     registrations.set(r.workflow_id,{...r,transaction,state:'PLANNED'});}maxTargets=Math.max(maxTargets,registrations.size);return {rows:[],rowCount:page.length};
+  }
+  if(sql.startsWith('DELETE FROM meri_task_lookup.events')){
+   assert.equal(registrations.get(eventStep.workflowId)?.transaction,transaction);
+   assert.equal(registrations.get(eventStep.workflowId)?.target.rowSha256,hash(event));
+   const rowCount=f.raw.contentRows['meri_task_lookup.events'].length;f.raw.contentRows['meri_task_lookup.events']=[];return {rows:[],rowCount};
   }
   if(sql.startsWith('DELETE FROM meri_conversations.sdk_')){
    const table=sql.match(/^DELETE FROM ([a-z_.]+)/u)[1],keys=JSON.parse(args[2]);assert.ok(keys.length>0&&keys.length<=1000);assert.deepEqual(args.slice(0,2),[subject.tenantId,subject.subjectId]);
@@ -117,6 +126,11 @@ test('compact SDK purge uses bounded exact-key bulk pages and one atomic commit 
  assert.ok([...f.registrations.values()].every(r=>r.state==='EXECUTED'));
  const first=f.calls.findIndex(c=>c.sql.startsWith('DELETE FROM')),tx=f.calls[first].transaction;
  for(const table of ['sdk_sessions','sdk_session_streams'])assert.ok(f.calls.slice(0,first).some(c=>c.transaction===tx&&c.sql.includes(`FROM meri_conversations.${table} `)&&c.sql.includes('FOR UPDATE')),'both owner and stream locks precede effects');
+ const streamLocks=f.calls.slice(0,first).filter(c=>c.sql.includes('FROM meri_conversations.sdk_session_streams r')&&c.sql.includes('FOR UPDATE'));
+ assert.equal(streamLocks.length,1);assert.deepEqual(streamLocks[0].args,[f.subject.tenantId,f.subject.subjectId,f.step.target.key.run_id,f.step.target.key.session_id]);
+ assert.doesNotMatch(streamLocks[0].sql,/r\.subpath\s*=/,'the lock covers every stream, including the child-append FK parent');
+ assert.ok(f.calls.slice(0,first).some(c=>c.transaction===tx&&c.sql.includes('AS orphan FROM meri_conversations.sdk_session_entries')),'scoped entry orphan check precedes page mutations');
+ assert.equal(f.calls.filter(c=>c.sql.startsWith('SELECT r.* FROM meri_conversations.sdk_session_entries')).length,6,'two streams are each traversed once, without repeated full preflight scans');
  assert.ok(f.releases.every(e=>e===undefined));
 });
 
@@ -136,11 +150,12 @@ test('a later page failure rolls back earlier SDK deletions and exact registrati
  assert.ok(f.calls.some(c=>c.sql==='ROLLBACK'));assert.ok(f.releases.every(e=>e===undefined));
 });
 
-test('a late commitment mismatch rolls back even after the callback deleted all SDK rows',async t=>{
- const f=await sdkJournalFixture({count:4097});t.after(f.close);const original=hash(f.raw.contentRows);let changed=false;
+test('a late commitment mismatch rolls back all SDK rows and an earlier non-SDK deletion',async t=>{
+ const f=await sdkJournalFixture({count:4097,earlierEvent:true});t.after(f.close);const original=hash(f.raw.contentRows);let changed=false;
  f.hook=({sql})=>{if(!changed&&f.deletedPages()===1&&sql.startsWith('SELECT')){changed=true;const row=f.raw.contentRows['meri_conversations.sdk_session_entries'].at(-1);row.entry.message.content='X'+row.entry.message.content.slice(1);row.entry_sha256=hash(row.entry);}};
  await assert.rejects(f.journal.rows.purge(f.key,f.plan),/RETENTION_ROW_CHANGED/);
  assert.ok(changed);assert.ok(f.deletedPages()>4,'validation fails after bounded mutation callbacks');assert.equal(hash(f.raw.contentRows),original);assert.equal(f.registrations.size,0);
+ assert.ok(f.calls.findIndex(c=>c.sql.startsWith('DELETE FROM meri_task_lookup.events'))<f.calls.findIndex(c=>c.sql.startsWith('DELETE FROM meri_conversations.sdk_')));
 });
 
 test('compact recovery checks every SDK table, including children whose owner is absent',async t=>{

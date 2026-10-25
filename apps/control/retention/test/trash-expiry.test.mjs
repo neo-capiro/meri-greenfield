@@ -51,6 +51,35 @@ test('Core authority is reread before effects; failure or changed Trash identity
  assert.equal(deletes,0);assert.equal(f.sink.size(),1);
 });
 
+test('fresh sweep and public execution each authorize once before preflight and freshly before every effect',async()=>{
+ for(const sweep of [true,false]){const f=await fixture();f.clock.advance(31*day);const plan=await f.plan();
+  for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
+  let inventories=0,preflights=0,effects=0;
+  const facts={...f.facts,async inventoryFor(...args){inventories++;return f.facts.inventoryFor(...args);}};
+  const beforeEffect=()=>{effects++;assert.equal(inventories,effects+1,'each effect has a new authoritative inventory after preflight');};
+  const executor=createPurgeExecutor({...f,facts,enabled:true,now:f.clock.now,finalize:async()=>{},
+   rows:{...f.rows,async preflight(...args){preflights++;assert.equal(inventories,1);return f.rows.preflight(...args);},async purge(...args){beforeEffect();return f.rows.purge(...args);}},
+   storage:{...f.storage,async deleteVersion(...args){beforeEffect();return f.storage.deleteVersion(...args);}}});
+  const result=sweep?await executor.sweepSubject(f.subject):await executor.execute(plan);
+  assert.equal(result.state,'EXECUTED');assert.equal(preflights,1);assert.equal(effects,plan.steps.length+1);assert.equal(inventories,effects+1);
+ }
+});
+
+test('fresh sweep rechecks Core generation, holds and local generation after preflight with zero effects',async()=>{
+ for(const changed of ['Core','hold','generation']){const f=await fixture();f.clock.advance(31*day);const plan=await f.plan();let afterPreflight=false,effects=0;
+  for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
+  const facts={...f.facts,async trashFor(){return changed==='Core'&&afterPreflight?{...f.trash(),requestId:randomUUID()}:f.trash();}};
+  const executor=createPurgeExecutor({...f,facts,enabled:true,now:f.clock.now,finalize:async()=>{effects++;},
+   storage:{...f.storage,async deleteVersion(){effects++;}},rows:{...f.rows,async purge(){effects++;},async preflight(...args){
+    await f.rows.preflight(...args);afterPreflight=true;
+    if(changed==='hold'){const st=plan.steps[0];f.registry.holds.set(st.objectId+'@'+st.versionId,{legalHold:true,objectLockRetainUntilMs:null});}
+    if(changed==='generation'){const current=await f.current();await f.journal.set(subjectKey(f.subject),{...current,ledgerSequence:current.ledgerSequence+1});}
+   }}});
+  await assert.rejects(executor.sweepSubject(f.subject),new RegExp(changed==='Core'?'RETENTION_TRASH_GENERATION_REFUSED':changed==='hold'?'RETENTION_PURGE_BLOCKED':'RETENTION_(SUPPRESSION_GENERATION_REFUSED|STALE_WRITE)'));
+  assert.equal(effects,0);assert.ok(plan.steps.every(st=>f.store.has(f.keyFor(st),st.versionId)));
+ }
+});
+
 test('expired Trash erases its private rows while preserving a surviving fork or artifact object',async()=>{
  const f=await fixture();f.clock.advance(31*day);
  const original=await f.plan(),shared=original.steps[0],holder=`${f.subject.tenantId}:artifact:${randomUUID()}`;

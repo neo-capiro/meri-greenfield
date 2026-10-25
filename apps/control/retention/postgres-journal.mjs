@@ -244,7 +244,7 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   * still gets the existing exact trigger target; no range or session-wide grant. */
  async function purgeSdk(c,k,st,plan,current,check){const subject=sdkSubject(k,plan),durable=new Set(plan.rowSteps.map(step=>step.workflowId));let deleted=0;
   if(!await sdkRead(()=>sdkRetentionTargetPresent(c,{subject,target:st.target,check})))return deleted;
-  await sdkRead(()=>forEachSdkRetentionTargetPage(c,{subject,target:st.target,check},async targets=>{
+  await sdkRead(()=>forEachSdkRetentionTargetPage(c,{subject,target:st.target,check,lock:true},async targets=>{
    check();if(targets.some(t=>t.key.run_id!==st.target.key.run_id||t.key.session_id!==st.target.key.session_id))fail('RETENTION_ROW_CHANGED');
    const page=sdkPurgePage(k,targets),registrations=page.targets.map((target,i)=>({target,workflow_id:target.table==='meri_conversations.sdk_sessions'?st.workflowId:rowWorkflowIdentity({tenantId:k.tenantId,subjectId:k.subjectId,target:targets[i],policyVersion:plan.policyVersion})}));
    await c.query("INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,target,plan_sha256,state,ledger_sequence) SELECT page.workflow_id,$1,$2,'sdkSession',page.target,$3,'PLANNED',$4 FROM jsonb_to_recordset($5::jsonb) AS page(workflow_id text,target jsonb) ON CONFLICT (workflow_id) DO UPDATE SET state='PLANNED',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence,target=EXCLUDED.target",[k.tenantId,k.subjectId,plan.planSha256,current.purge.ledgerSequence,JSON.stringify(registrations)]);check();
@@ -260,12 +260,18 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   * under the subject lock (planRows), so the trigger amendments admit exactly these rows and nothing else; a head still bound to an
   * artifact version under purge is retired in the same transaction. A row still present afterwards is reported UNKNOWN. Any failure
   * rolls the whole transaction back: targets, head retirement and deletions together. */
- async function purgeRows(key,plan,options={}){options=rowOptions(options);const k=parseKey(key),check=rowCheck(options);await preflightRows(key,plan,options);
+ async function purgeRows(key,plan,options={}){options=rowOptions(options);const k=parseKey(key),check=rowCheck(options);check();
+  if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');
+  for(const st of plan.rowSteps)rowTarget(k,st); // Refuse every malformed route before opening the transaction.
   return tx(async c=>{check();const current=await planRows(c,key,plan);const out=[];
    if(k.kind==='artifact'){const versions=(plan.rowSteps??[]).filter(st=>st.className==='artifactVersions').map(st=>st.target.artifactVersionId);if(versions.length)await c.query('DELETE FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2 AND version_id=ANY($3::uuid[])',[k.tenantId,k.subjectId,versions]);}
    const ordered=[...(plan.rowSteps??[])].sort((a,b)=>(rowTarget(k,a).rank??20)-(rowTarget(k,b).rank??20));
-   // Verify every current row/digest and unresolved-effect fence before changing any row.
-   for(const st of ordered){check();const w=rowTarget(k,st);if(w.sdk)await verifySdk(c,k,st,plan,check);else if(w.target){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}}
+   // Public preflight already precedes external effects. Recheck current non-SDK
+   // rows/owners here; SDK traversal locks its header and all streams before its
+   // first callback, then verifies the full commitment before this tx can commit.
+   for(const st of ordered){check();const w=rowTarget(k,st);
+    if(w.memory)await memoryCandidates.presentInTransaction({client:c,subject:plan.subject,candidateId:st.target.key});
+    else if(w.target&&!w.sdk){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}}
    for(const st of ordered){const w=rowTarget(k,st),args=w.args(k,st.target);
     check();let deleted,present;
     if(w.sdk){deleted=await purgeSdk(c,k,st,plan,current,check);present=false;}

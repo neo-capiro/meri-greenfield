@@ -160,8 +160,8 @@ async function targetScan(reader,{subject,target,check=()=>{},lock=false},visit)
  const actual=await sessionScan(reader,{subject,header:headers[0],check,lock,visit,checkEntryOrphans:true});fact(same(actual,expected));return actual;
 }
 export const verifySdkRetentionTarget=(reader,options)=>targetScan(reader,options);
-/** Caller must already have verified/locked this target and hold the same atomic
- * transaction. A callback or final commitment failure requires its rollback. */
+/** Mutating callers use lock:true inside one atomic transaction; the header and
+ * all streams lock before callbacks. Any callback/final commitment failure must roll it back. */
 export const forEachSdkRetentionTargetPage=(reader,options,visit)=>{fact(typeof visit==='function');return targetScan(reader,options,visit);};
 export async function sdkRetentionTargetPresent(reader,{subject,target,check=()=>{}}){
  const t=assertSdkRetentionTarget(target),args=[subject.tenantId,subjectId(subject),t.key.run_id,t.key.session_id];
