@@ -14,7 +14,7 @@ async function fixture({personal=false}={}){
  const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[operation],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:1048576};
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>source.state.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family]};}},memoryContexts:{forTask(task){assert.equal(task.expiresAtMs,identity.expiresAtMs);return {
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[operation]};}},memoryContexts:{forTask(task){assert.equal(task.expiresAtMs,identity.expiresAtMs);return {
    async retain({record}){records.set(hash(record.key),structuredClone(record));return JSON.stringify({decision:'retained',keySha256:hash(record.key),previousSha256:record.previousSha256,checkedAtMs:source.state.now});},
    async loadPrevious({key}){return JSON.stringify({record:records.get(hash(key)),checkedAtMs:source.state.now});},
   };}},async fetchImpl(url,options){assert.equal(new URL(url).pathname,'/api/clio/tools/memory.list_own_proposals');assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');const body=JSON.parse(options.body);calls.push(body);assert.equal(body.input.clientId,clientId);

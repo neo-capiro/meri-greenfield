@@ -17,6 +17,7 @@ async function fixture(operationId=fundingIds[0],{routine=false,general=false}={
  const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[operation],maxExecuteMs:5000,maxRequestBytes:65536,maxResponseBytes:1048576};
  const state={calls:[],currentReads:0,revoked:false,sourceDenied:false,role:'user_admin',tenantPolicy:{},roleExpiry:f.record.effectExpiresAtMs};
  const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);platform.roleCeilings.standard_user.generalReads=false;
+ for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])policy.activeReadOperations=[operation];
  const composer=await createControlReadsComposer({coreOrigin:'https://core.synthetic.invalid',familyIds:[scene.family],defaultCongress:119,
   nativeCredentials:{nativeCredentialFor(){throw Error('BACKGROUND_MUST_NOT_BORROW_INTERACTIVE_CREDENTIAL');}},
   readSecret:async()=>Buffer.from('synthetic-control-service-secret'),serviceSecretFile:'synthetic',now:()=>scene.state.now,newId:()=>id(99),

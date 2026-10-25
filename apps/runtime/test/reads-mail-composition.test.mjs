@@ -18,7 +18,7 @@ async function fixture({client=false,id='mail.list_messages',routine=false}={}){
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:['mail'],
   nativeCredentials:{async nativeCredentialFor(){if(routine)assert.fail('Routine must never borrow an interactive credential');return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
   readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>source.state.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['mail']};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['mail'],activeReadOperations:[source.operation]};}},
   memoryContexts:{forTask(){throw Error('Memory is not selected');},forMail(task){assert.equal(task.clientId,current.selectedClientId);return {
    async retain({record}){records.set(hash(record.key),structuredClone(record));return JSON.stringify({decision:'retained',keySha256:hash(record.key),previousSha256:record.previousSha256,checkedAtMs:source.state.now});},
    async loadPrevious({key}){return JSON.stringify({record:records.get(hash(key)),checkedAtMs:source.state.now});},
@@ -45,7 +45,7 @@ async function fixture({client=false,id='mail.list_messages',routine=false}={}){
  const execution={async authenticate(){if(revoked)throw Error('EXECUTION_AUTHORITY_REFUSED');return structuredClone(current);}};
  const routineCore=routine?{origin:'https://core.example.invalid',getServiceSecret:async()=> 'SYNTHETIC_ROUTINES_SERVICE',async forBinding(){if(revoked)throw Error('ROUTINE_REVOKED');return {
   record:{binding,scopes,selectedClientId:current.selectedClientId,policyRevision:current.policyRevision,scheduleId:uuid('8'),occurrenceKey:'a'.repeat(64),generation:1,maxCostMicroUSD:1000,expiresAtMs:identity.expiresAtMs},
-  current:{role:'standard_user',clientIds:client?[source.clientId]:[]},
+  current:{role:'standard_user',clientIds:client?[source.clientId]:[],checkedAtMs:source.state.now,effectExpiresAtMs:identity.expiresAtMs},
  };}}:undefined;
  async function execute(args=source.args){
   // A new HTTP owner per request proves continuation does not depend on its cache.

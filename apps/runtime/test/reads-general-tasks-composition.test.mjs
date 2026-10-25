@@ -26,7 +26,7 @@ async function fixture(){
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:['operational-reads'],now:()=>clock,newId:()=>id(80),
   nativeCredentials:{async nativeCredentialFor(request){assert.equal(request.selectedClientId,null);return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
   readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['operational-reads']};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['operational-reads'],activeReadOperations:[operation,other]};}},
   async fetchImpl(url,options){
    assert.equal(new URL(url).pathname,'/api/clio/tools/query_tasks');
    assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');

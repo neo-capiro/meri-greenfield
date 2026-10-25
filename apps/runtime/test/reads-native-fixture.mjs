@@ -26,7 +26,7 @@ export async function fixture(family,id,options={}){
  const clientIds=[...new Set([...(scene.visibleClientIds??[]),...(selectedClientId?[selectedClientId]:[])])],principal={tenantId:binding.tenantId,actorId:binding.actorId};
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],defaultCongress:119,
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_NATIVE',expiresAtMs:identity.expiresAtMs};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',readModeServiceSecretFile:'synthetic-mode',now:scene.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family]};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[operation]};}},
   async fetchImpl(url,options){const path=new URL(url).pathname,body=typeof options.body==='string'?JSON.parse(options.body):null;calls.push(path);
    assert.equal(options.headers.authorization,'Bearer SYNTHETIC_NATIVE');
    if(path.endsWith('/application-authority/current'))return Response.json({principal,role:'standard_user',permissions:[],clientIds,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId,checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
