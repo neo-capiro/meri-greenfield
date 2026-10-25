@@ -7,7 +7,17 @@ import {assertNativeConversationScope,assertNativeSessionCapture} from '../../..
 import {assertNativeFileState} from '../../../packages/contracts/runtime-0.2/files.mjs';
 import {nativeSessionForRun,assertNativeSessionCapturable,nativeSessionTranscripts} from './sdk-session-lineage.mjs';
 const eventId=(id,n)=>{const h=hash({completionId:id,event:n});return `${h.slice(0,8)}-${h.slice(8,12)}-4${h.slice(13,16)}-8${h.slice(17,20)}-${h.slice(20,32)}`;};
-export function createCompletionJournal({tx,rowRun,now=Date.now}){
+export function createCompletionJournal({tx,rowRun,now=Date.now,onPublished}){
+ // Observe only after the transaction commits. A decoded PUBLISHED replay proves
+ // the same atomic final event pair; it does not authorize another publication.
+ function observed(published){
+  if(published?.state==='PUBLISHED'&&onPublished){
+   const events=published.events??[{binding:published.binding,eventId:published.completedEventId,
+    sequence:published.captureSequence+2,type:'run.status',data:{state:'completed',reasonCode:null}}];
+   for(const event of events)try{Promise.resolve(onPublished(event)).catch(()=>{});}catch{}
+  }
+  return published;
+ }
  const context=r=>hash({window:r.request.window,skill:r.request.skill,scopes:r.projection.scopes});
  function typedPair(result,selection,r,stored=false){
   if((result===undefined)!==(selection===undefined))fail(stored?'STORE_CORRUPT':'COMPLETION_TYPED_REFUSED');
@@ -31,17 +41,17 @@ export function createCompletionJournal({tx,rowRun,now=Date.now}){
 
  async function begin({binding:b,scopes,selectedClientId,completionId,checkpointId,typedResult,typedSelection,kind,sessionId,filesRequestSha256},check){b=bounded(b);scopes=bounded(scopes);uuid(completionId);uuid(checkpointId);
   const native=kind===undefined?{}:{kind,sessionId,filesRequestSha256};if(kind!==undefined){if(kind!=='native-session'||completionId!==b.runId||checkpointId!==b.runId||!/^[a-f0-9]{64}$/u.test(filesRequestSha256))fail('COMPLETION_REFUSED');uuid(sessionId);}else if(sessionId!==undefined||filesRequestSha256!==undefined)fail('COMPLETION_REFUSED');
-  return tx(b,check,async c=>{const r=await run(c,b,scopes,selectedClientId),old=decode(await lookup(c,b),r,selectedClientId),pair=typedPair(typedResult,typedSelection,r);check();
+  const result=await tx(b,check,async c=>{const r=await run(c,b,scopes,selectedClientId),old=decode(await lookup(c,b),r,selectedClientId),pair=typedPair(typedResult,typedSelection,r);check();
   if(old){if(old.completionId!==completionId||old.checkpointId!==checkpointId||old.kind!==kind||old.sessionId!==sessionId||old.filesRequestSha256!==filesRequestSha256||Object.hasOwn(old,'typedResult')!==Object.hasOwn(pair,'typedResult')||Object.hasOwn(pair,'typedResult')&&(!same(old.typedResult,pair.typedResult)||!same(old.typedSelection,pair.typedSelection)))fail('COMPLETION_REPLAY_REFUSED');return {...old,capture:false};}
   if(kind==='native-session'&&pair.typedResult&&(pair.typedResult.resultRef!==completionId||pair.typedResult.execution.receiptRef!==completionId))fail('COMPLETION_TYPED_REFUSED');
   if(r.projection.state!=='running'||r.hold_control_id||r.sequence_end!=null)fail('COMPLETION_STATE_REFUSED');
   if(kind==='native-session'){const lineage=await nativeSessionForRun(c,r,check);if(!lineage||lineage.reference.key.sessionId!==sessionId||lineage.row.owner.selectedClientId!==selectedClientId)fail('COMPLETION_REFUSED');await assertNativeSessionCapturable(c,lineage,check,now);}
   const identity={binding:b,scopes,selectedClientId,completionId,checkpointId,captureSequence:Number(r.last_sequence),sourceRequest:r.request,sourceRequestSha256:r.request_sha256,contextSha256:context(r),versions:r.projection.versions,verifiedEventId:eventId(completionId,'1'),completedEventId:eventId(completionId,'2'),...pair,...native};
   await c.query('INSERT INTO meri_conversations.completion_checkpoints(tenant_id,conversation_id,run_id,completion_id,checkpoint_id,identity,identity_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[b.tenantId,b.conversationId,b.runId,completionId,checkpointId,identity,hash(identity),'CAPTURING']);check();await c.query('UPDATE meri_conversations.runs SET hold_completion_id=$4 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,completionId]);check();return {...identity,state:'CAPTURING',proof:null,capture:true};
- });}
+ });return observed(result);}
  async function read({binding:b,scopes,selectedClientId},check){return tx(b,check,async c=>{const r=await run(c,b,scopes,selectedClientId),p=decode(await lookup(c,b),r,selectedClientId);check();return p;});}
  async function unknown({binding:b,scopes,selectedClientId,completionId},check){return tx(b,check,async c=>{const r=await run(c,b,scopes,selectedClientId),p=decode(await lookup(c,b),r,selectedClientId);check();if(!p||p.completionId!==completionId)fail('COMPLETION_REFUSED');if(p.state==='CAPTURING'){await c.query("UPDATE meri_conversations.completion_checkpoints SET state='UNKNOWN' WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3",[b.tenantId,b.conversationId,b.runId]);return {...p,state:'UNKNOWN'};}return p;});}
- async function publish({binding:b,scopes,selectedClientId,completionId,proof:rawProof,files,events},check){return tx(b,check,async c=>{const r=await run(c,b,scopes,selectedClientId),p=decode(await lookup(c,b),r,selectedClientId);check();if(!p||p.completionId!==completionId)fail('COMPLETION_REFUSED');
+ async function publish({binding:b,scopes,selectedClientId,completionId,proof:rawProof,files,events},check){const result=await tx(b,check,async c=>{const r=await run(c,b,scopes,selectedClientId),p=decode(await lookup(c,b),r,selectedClientId);check();if(!p||p.completionId!==completionId)fail('COMPLETION_REFUSED');
   if(p.kind==='native-session'){
    if(rawProof!==undefined)fail('COMPLETION_REFUSED');files=assertNativeFileState(files,{binding:b,scopes});
    const lineage=await nativeSessionForRun(c,r,check);if(!lineage||lineage.reference.key.sessionId!==p.sessionId||lineage.row.owner.selectedClientId!==selectedClientId)fail('COMPLETION_REFUSED');
@@ -57,7 +67,7 @@ export function createCompletionJournal({tx,rowRun,now=Date.now}){
    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,sequence,event.eventId,event,hash(event)]);check();}
   const projection={...r.projection,state};await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),sequence]);
   await c.query("UPDATE meri_conversations.completion_checkpoints SET state='PUBLISHED',proof=$4,proof_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3",[b.tenantId,b.conversationId,b.runId,proof,hash(proof)]);check();return {...p,state:'PUBLISHED',proof,events:saved,replayed:false};
- });}
+ });return observed(result);}
  return Object.freeze({begin,read,publish,unknown});
 }
 
