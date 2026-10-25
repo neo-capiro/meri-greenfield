@@ -10,10 +10,11 @@ const prefix='meri_conversations.',subject={tenantId:binding.tenantId,kind:'conv
 const source=f=>createConversationRetentionInventory({pool:{connect(){throw Error('unexpected lease');}},withSnapshot:fn=>fn(f.reader)}).inventoryForConversation({tenantId:subject.tenantId,conversationId:subject.subjectId,ownerActorId:subject.ownerActorId});
 
 for(const count of [4097,65537,100000])test(`complete ${count}-entry SDK inventory remains a compact exact target`,async t=>{
- const f=await sdkRetentionFixture({count});try{const started=performance.now(),decoded=await source(f),scanMs=performance.now()-started,inventory=enumerateReferences(decoded),targets=inventory.rowTargets.filter(t=>t.className==='sdkSession');
-  t.diagnostic(`actual inventory scan ${scanMs.toFixed(1)} ms; fixture construction and direct decoder comparison excluded; no PostgreSQL timing claim`);
+ const f=await sdkRetentionFixture({count,...(count===100000?{text:'x'.repeat(245)}:{})});try{const started=performance.now(),decoded=await source(f),scanMs=performance.now()-started,inventory=enumerateReferences(decoded),targets=inventory.rowTargets.filter(t=>t.className==='sdkSession');
+  t.diagnostic(`actual inventory scan ${scanMs.toFixed(1)} ms, ${targets[0].sdk.entryBytes} entry bytes; fixture construction and direct decoder comparison excluded; no PostgreSQL timing claim`);
   assert.equal(targets.length,1);assert.equal(targets[0].sdk.entriesCount,count);assert.equal(targets[0].sdk.counts.entries,count);assert.equal(targets[0].rowSha256,hash(f.raw.contentRows[prefix+'sdk_sessions'][0]));
   assert.ok(Buffer.byteLength(JSON.stringify(inventory))<16384);assert.equal(JSON.stringify(inventory).includes('synthetic retained SDK entry'),false);
+  if(count===100000){assert.ok(targets[0].sdk.entryBytes>31*1024*1024);assert.equal(JSON.stringify(inventory).includes('x'.repeat(50)),false);}
   assert.equal(decoded.inventorySha256,decodeConversationInventoryRows(f.raw).inventorySha256);
   assert.ok(f.reader.calls.filter(c=>c.sql.includes('sdk_session_entries r')).length<210,'bounded batches, not one query per row');
  }finally{f.close();}
@@ -74,5 +75,37 @@ test('SDK traversal checks cancellation after an awaited page before emitting an
  }};
  await assert.rejects(scanSdkRetentionInventory(reader,{subject,check:()=>{if(cancelled)throw Error('synthetic cancellation');}}),/synthetic cancellation/);
  assert.equal(f.reader.calls.filter(c=>c.sql.startsWith('SELECT r.* FROM '+prefix+'sdk_session_entries')).length,1);
+ }finally{f.close();}
+});
+
+test('fixed-stream entry pages preserve the byte-ordered commitment across mixed-case and non-ASCII paths',async()=>{
+ const paths=['é','a','','Ä','Z','a/Z','😀'],f=await sdkRetentionFixture({count:paths.length*1001,streamPaths:paths});
+ try{
+  const decoded=await source(f),target=decoded.contentRows.find(t=>t.sdk);
+  assert.equal(decoded.inventorySha256,decodeConversationInventoryRows(f.raw).inventorySha256,'unchanged full-row commitment order');
+  const expected=['','Z','a','a/Z','Ä','é','😀'],seen=new Map();
+  await verifySdkRetentionTarget(f.reader,{subject,target,lock:true});
+  await forEachSdkRetentionTargetPage(f.reader,{subject,target},page=>{
+   for(const t of page)if(t.table===prefix+'sdk_session_entries'){
+    if(!seen.has(t.key.subpath))seen.set(t.key.subpath,[]);seen.get(t.key.subpath).push(t.key.sequence);
+   }
+  });
+  assert.deepEqual([...seen.keys()],expected);
+  for(const sequences of seen.values())assert.deepEqual(sequences,Array.from({length:1001},(_,i)=>i+1));
+  const selects=f.reader.calls.filter(c=>c.sql.includes('FROM '+prefix+'sdk_session_entries r')&&c.sql.includes('ORDER BY'));
+  assert.ok(selects.length>paths.length*2);
+  for(const {sql,args} of selects){
+   assert.match(sql,/AND r\.subpath=\$5::text/u);assert.match(sql,/ORDER BY r\.sequence LIMIT 1001$/u);
+   assert.equal(sql.includes('COLLATE'),false);assert.ok(paths.includes(args[4]));
+  }
+ }finally{f.close();}
+});
+
+test('target verification and destructive traversal refuse an entry outside all retained stream headers',async()=>{
+ const f=await sdkRetentionFixture({count:1001});try{
+  const [target]=(await scanSdkRetentionInventory(f.reader,{subject})).targets;
+  const orphan=structuredClone(f.raw.contentRows[prefix+'sdk_session_entries'][0]);orphan.subpath='unregistered';f.raw.contentRows[prefix+'sdk_session_entries'].push(orphan);
+  await assert.rejects(verifySdkRetentionTarget(f.reader,{subject,target,lock:true}),/STORE_CORRUPT/);
+  let callbacks=0;await assert.rejects(forEachSdkRetentionTargetPage(f.reader,{subject,target},()=>callbacks++),/STORE_CORRUPT/);assert.equal(callbacks,0);
  }finally{f.close();}
 });

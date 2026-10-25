@@ -99,18 +99,22 @@ export function validateSdkRetentionInventory(scan,{owner,byRun,nativeReferences
 
 // Keys and row sizes are fetched first. A corrupt oversized row is never loaded;
 // raw SDK payload working memory is capped independently of the transcript size.
-async function pages(reader,t,subject,{session,check=()=>{},lock=false}={},visit){
- const base='r.tenant_id=$1 AND r.conversation_id=$2'+(session?' AND r.run_id=$3::uuid AND r.session_id=$4::uuid':''),args=[subject.tenantId,subjectId(subject),...(session?[session.run_id,session.session_id]:[])];
- const columns=t.keys.map(([k,type])=>`r.${k}`+(type==='text'?' COLLATE "C"':''));
- const params=offset=>t.keys.map(([,type],i)=>`$${offset+i+1}::${type}`+(type==='text'?' COLLATE "C"':''));
+async function pages(reader,t,subject,{session,subpath,check=()=>{},lock=false}={},visit){
+ const stream=subpath!==undefined;fact(!stream||t===ENTRY&&session&&typeof subpath==='string');
+ const keys=stream?[['sequence','bigint']]:t.keys,order={keys};
+ const base='r.tenant_id=$1 AND r.conversation_id=$2'+(session?' AND r.run_id=$3::uuid AND r.session_id=$4::uuid':'')+(stream?' AND r.subpath=$5::text':''),
+  args=[subject.tenantId,subjectId(subject),...(session?[session.run_id,session.session_id]:[]),...(stream?[subpath]:[])];
+ const columns=keys.map(([k,type])=>`r.${k}`+(type==='text'?' COLLATE "C"':''));
+ const params=offset=>keys.map(([,type],i)=>`$${offset+i+1}::${type}`+(type==='text'?' COLLATE "C"':''));
  const expression=(a,op,b)=>`(${a.join(',')})${op}(${b.join(',')})`;let cursor=null;
  for(;;){check();const lower=cursor?` AND ${expression(columns,'>',params(args.length))}`:'',lowerArgs=[...args,...(cursor??[])];
   const metadata=(await reader.query(`SELECT ${t.keys.map(([k])=>'r.'+k).join(',')},octet_length(row_to_json(r)::text)::bigint AS retention_row_bytes FROM ${t.name} r WHERE ${base}${lower} ORDER BY ${columns.join(',')} LIMIT ${SDK_RETENTION_PAGE_ROWS+1}${lock?' FOR UPDATE OF r':''}`,lowerArgs)).rows;check();
   fact(Array.isArray(metadata)&&metadata.length<=SDK_RETENTION_PAGE_ROWS+1);if(!metadata.length)break;
-  const selected=[];let size=0,previous=cursor?Object.fromEntries(t.keys.map(([k],i)=>[k,cursor[i]])):null;
-  for(const row of metadata){keyFor(row,t);if(previous)fact(compare(previous,row,t)<0);previous=row;const n=integer(row.retention_row_bytes);fact(n>0&&n<=SDK_RETENTION_PAGE_BYTES);
+  const selected=[];let size=0,previous=cursor?Object.fromEntries(keys.map(([k],i)=>[k,cursor[i]])):null;
+  for(const row of metadata){keyFor(row,t);if(stream)fact(row.run_id===session.run_id&&row.session_id===session.session_id&&row.subpath===subpath);
+   if(previous)fact(compare(previous,row,order)<0);previous=row;const n=integer(row.retention_row_bytes);fact(n>0&&n<=SDK_RETENTION_PAGE_BYTES);
    if(selected.length===SDK_RETENTION_PAGE_ROWS||size+n>SDK_RETENTION_PAGE_BYTES)break;selected.push(row);size+=n;}
-  fact(selected.length>0);const upper=selected.at(-1),upperArgs=t.keys.map(([k])=>upper[k]);
+  fact(selected.length>0);const upper=selected.at(-1),upperArgs=keys.map(([k])=>upper[k]);
   const result=(await reader.query(`SELECT r.* FROM ${t.name} r WHERE ${base}${lower} AND ${expression(columns,'<=',params(lowerArgs.length))} ORDER BY ${columns.join(',')} LIMIT ${SDK_RETENTION_PAGE_ROWS+1}`, [...lowerArgs,...upperArgs])).rows;check();
   fact(Array.isArray(result)&&result.length===selected.length);let actualBytes=0;
   for(let i=0;i<result.length;i++){fact(compare(result[i],selected[i],t)===0);actualBytes+=Buffer.byteLength(JSON.stringify(result[i]));}
@@ -119,11 +123,24 @@ async function pages(reader,t,subject,{session,check=()=>{},lock=false}={},visit
  }
 }
 
-async function sessionScan(reader,{subject,header,check=()=>{},lock=false,visit}){
+async function sessionScan(reader,{subject,header,check=()=>{},lock=false,visit,checkEntryOrphans=false}){
  const a=accumulator(header,subject),session={run_id:header.run_id,session_id:header.session_id},streamTargets=[];
  await pages(reader,STREAM,subject,{session,check,lock},rows=>{for(const row of rows)streamTargets.push(a.accept(row,STREAM));});
- for(const t of [ENTRY,BATCH])await pages(reader,t,subject,{session,check},async rows=>{const targets=[];for(const row of rows){check();targets.push(a.accept(row,t));}if(visit)await visit(targets);});
+ if(checkEntryOrphans)await noOrphans(reader,ENTRY,subject,{session,check});
+ const consume=t=>async rows=>{const targets=[];for(const row of rows){check();targets.push(a.accept(row,t));}if(visit)await visit(targets);};
+ // Stream headers already establish the <=256 byte-sorted paths. Fix that PK
+ // prefix so entry pages order only by sequence; a global COLLATE C would force
+ // PostgreSQL to sort the remaining transcript when the PK uses another locale.
+ for(const subpath of a.streams.keys())await pages(reader,ENTRY,subject,{session,subpath,check},consume(ENTRY));
+ await pages(reader,BATCH,subject,{session,check},consume(BATCH));
  const result=a.finish();if(visit){if(streamTargets.length)await visit(streamTargets);await visit([a.root]);}check();return result;
+}
+
+async function noOrphans(reader,t,subject,{session,check=()=>{}}={}){
+ check();const parent=t===ENTRY?STREAM:HEAD,match=parent.keys.map(([k])=>`p.${k}=r.${k}`).join(' AND ');
+ const scoped=session?' AND r.run_id=$3::uuid AND r.session_id=$4::uuid':'',args=[subject.tenantId,subjectId(subject),...(session?[session.run_id,session.session_id]:[])];
+ const rows=(await reader.query(`SELECT 1 AS orphan FROM ${t.name} r WHERE r.tenant_id=$1 AND r.conversation_id=$2${scoped} AND NOT EXISTS (SELECT 1 FROM ${parent.name} p WHERE p.tenant_id=r.tenant_id AND p.conversation_id=r.conversation_id AND ${match}) LIMIT 1`,args)).rows;
+ check();fact(Array.isArray(rows)&&rows.length===0);
 }
 
 /** Complete discovery includes children whose owner is absent; absence is never
@@ -131,16 +148,14 @@ async function sessionScan(reader,{subject,header,check=()=>{},lock=false,visit}
 export async function scanSdkRetentionInventory(reader,{subject,check=()=>{}}){
  const headers=[],targets=[];let headerBytes=0;
  await pages(reader,HEAD,subject,{check},rows=>{for(const row of rows){headers.push(row);headerBytes+=Buffer.byteLength(JSON.stringify(row));fact(headers.length<=MAX_SESSIONS&&headerBytes<=SDK_RETENTION_PAGE_BYTES);}});
- for(const t of [STREAM,ENTRY,BATCH]){check();const parent=t===ENTRY?STREAM:HEAD;
-  const match=parent.keys.map(([k])=>`p.${k}=r.${k}`).join(' AND ');
-  const rows=(await reader.query(`SELECT 1 AS orphan FROM ${t.name} r WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND NOT EXISTS (SELECT 1 FROM ${parent.name} p WHERE p.tenant_id=r.tenant_id AND p.conversation_id=r.conversation_id AND ${match}) LIMIT 1`,[subject.tenantId,subjectId(subject)])).rows;check();fact(Array.isArray(rows)&&rows.length===0);}
+ for(const t of [STREAM,ENTRY,BATCH])await noOrphans(reader,t,subject,{check});
  for(const header of headers)targets.push(await sessionScan(reader,{subject,header,check}));return completed(headers,targets);
 }
 
 async function targetScan(reader,{subject,target,check=()=>{},lock=false},visit){
  const expected=assertSdkRetentionTarget(target),headers=[];
  await pages(reader,HEAD,subject,{session:expected.key,check,lock},rows=>headers.push(...rows));fact(headers.length===1);
- const actual=await sessionScan(reader,{subject,header:headers[0],check,lock,visit});fact(same(actual,expected));return actual;
+ const actual=await sessionScan(reader,{subject,header:headers[0],check,lock,visit,checkEntryOrphans:true});fact(same(actual,expected));return actual;
 }
 export const verifySdkRetentionTarget=(reader,options)=>targetScan(reader,options);
 /** Caller must already have verified/locked this target and hold the same atomic
