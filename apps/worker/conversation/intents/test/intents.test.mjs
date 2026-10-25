@@ -17,6 +17,8 @@ test('lists only owner-backed intents, never read-only, with descriptor-derived 
   assert.deepEqual(tools.map(t=>t.name),['propose_task']);assert.deepEqual([...m.runtime.sdkOptions.allowedTools],['mcp__meri_intents__propose_task']);
   const [t]=tools;assert.equal(t.annotations.readOnlyHint,false);assert.equal(t.annotations.destructiveHint,false);
   assert.ok(t.description.startsWith('Prepare a write request for the user to review. This never applies a change'));assert.deepEqual(t.inputSchema.properties.operation.enum,['create_task']);
+  // The advertised arguments are the canonical request the owner validates, not an untyped object.
+  assert.deepEqual(Object.keys(t.inputSchema.properties.arguments.properties),['title','clientId','dueDate']);
   assert.equal((await m.runtime.sdkOptions.canUseTool('mcp__meri_intents__propose_memory',{},{})).behavior,'deny');assert.equal((await m.runtime.sdkOptions.canUseTool('mcp__meri_intents__propose_task',{},{})).behavior,'allow');
  }finally{await m.close();}
 });

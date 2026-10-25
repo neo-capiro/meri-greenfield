@@ -19,3 +19,21 @@ test('uncertain memory submission never renders nothing changed or suggests task
  const f=nativeMemoryFixture();f.state.loseProducerAck=true;const m=await mountIntents(f);assert(m);
  try{const out=await m.call('propose_memory',{operation:'save_memory',arguments:f.raw});assert.equal(out.isError,true);assert.match(out.content[0].text,/do not repeat/u);assert.match(out.content[0].text,/pending memory reviews/u);assert.doesNotMatch(out.content[0].text,/Nothing has been|pending approvals/u);}finally{await m.close();}
 });
+test('a memory request outside the owner contract is refused by the tool contract, never as a governed FAILED delivery',async()=>{
+ const f=nativeMemoryFixture({general:true}),m=await mountIntents(f);assert(m);
+ try{
+  const tool=(await m.client.listTools()).tools.find(t=>t.name==='propose_memory');
+  assert.deepEqual(tool.inputSchema.properties.arguments.required,['content']);
+  assert.equal(Object.hasOwn(tool.inputSchema.properties.arguments.properties,'clientId'),false);
+  // Each of these was accepted by the open record the tool advertised before, and the memory owner then refused it
+  // as INVALID_ARGUMENTS with no effect: a retained FAILED delivery for a request that never reached the owner.
+  for(const [toolUseId,arguments_] of [['toolu_client_id',{content:'Preference',clientId:null}],['toolu_unknown_field',{text:'Preference'}],['toolu_other_scope',{content:'Preference',scope:'private-user'}],['toolu_over_length',{content:'x'.repeat(4001)}]]){
+   const out=await m.call('propose_memory',{operation:'save_memory',arguments:arguments_},{toolUseId});
+   assert.equal(out.isError,true,toolUseId);assert.match(out.content[0].text,/Invalid arguments for tool propose_memory/u);
+   assert.equal(f.intentStore.rows.size,0,`${toolUseId}: a contract-refused request is not a governed delivery`);
+   assert.equal(f.state.prepares,0,`${toolUseId}: the owner is never reached`);
+  }
+  const ok=await m.call('propose_memory',{operation:'save_memory',arguments:{content:'Preference',key:'brief-length',scope:'personal',ttlDays:14}},{toolUseId:'toolu_in_contract'});
+  assert.equal(ok.isError,undefined);assert.equal(JSON.parse(ok.content[0].text).status,'review_pending');assert.equal(f.intentStore.rows.size,1);
+ }finally{await m.close();}
+});
