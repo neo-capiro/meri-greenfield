@@ -80,6 +80,7 @@ export function createGeneralReadServer(c){
  const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row))));
  for(const t of tools)assertConvertible(t.shape);
  const instructions=['Read-only Meri institutional sources for this conversation. Preserve exact source IDs, versions, hashes and scopes; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. No write, external action or artifact is exposed here.',
+  'In General, client profile, documents, meeting sources, knowledge search and tracked bills require one explicit client UUID. Resolve a named client with lookup_client_registry first and use its returned UUID; ask the user to disambiguate multiple matches. A registry result does not grant access and these reads do not search across all clients. In a selected-client conversation, keep that selected client.',
   ...(profile?[c.available.length?`Available now: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`:'No institutional source tool is available in this conversation right now.',
    'Every other tool of this server answers UNAVAILABLE in this conversation.']
    :[`Available: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`,...(c.unavailable.length?[`Not available in this conversation: ${c.unavailable.join('; ')}.`]:[])]),

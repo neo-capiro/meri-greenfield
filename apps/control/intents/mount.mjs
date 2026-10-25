@@ -19,8 +19,9 @@ import {COMMAND_INTENT_OPERATIONS} from './command-preparer.mjs';
 import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
 import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
 import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
+import {MEMORY_COMMAND_OPERATION} from '../memory/command-options.mjs';
 const DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
-const OWNERS=Object.freeze({command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS});
+const OWNERS=Object.freeze({command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
 const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
 /** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */

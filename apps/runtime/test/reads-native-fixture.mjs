@@ -17,6 +17,8 @@ export const CASES=[...ORIGINAL_CASES,['business-development','get_business_deve
 function retarget(value,old,seen=new Set()){if(!value||typeof value!=='object'||seen.has(value))return;seen.add(value);for(const [k,v] of Object.entries(value)){if(v===old.tenantId)value[k]=uuid('b');else if(v===old.actorId)value[k]=uuid('c');else retarget(v,old,seen);}}
 export async function fixture(family,id,options={}){
  const scene=options.scene??(family==='bill-text'?billTextCase(id):family==='funding-opportunities'?fundingCase(id):family==='program-elements'?programCase(id):nativeFamilyCase(family,id,options));scene.binding??=scene.authority.binding;scene.contract??=resolveOperationContract(scene.operation);delete scene.authority.subject.authorizationDecisionId;retarget(scene,{...scene.binding});
+ const clock=options.advancingClock?{time:scene.now()}:null;
+ if(clock)scene.now=()=>clock.time++;
  if(options.privateUser){const subject=scene.authority.subject;subject.scopes=[{tenantId:scene.binding.tenantId,kind:'private-user',resourceId:scene.binding.actorId,policyRevision:subject.policyRevision}];}
  const binding=scene.binding,operation=scene.operation,subject=scene.authority.subject,scopes=subject.scopes,selectedClientId=subject.kind==='client'?subject.entityIds[0]:null,policyRevision=subject.policyRevision;
  const contextClientId=options.contextClientId,evidenceAccuracyMode=options.evidenceAccuracyMode??'off',knowledgePageOptions=options.knowledgePageOptions;
@@ -26,7 +28,7 @@ export async function fixture(family,id,options={}){
  const clientIds=[...new Set([...(scene.visibleClientIds??[]),...(selectedClientId?[selectedClientId]:[])])],principal={tenantId:binding.tenantId,actorId:binding.actorId};
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],defaultCongress:119,
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_NATIVE',expiresAtMs:identity.expiresAtMs};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',readModeServiceSecretFile:'synthetic-mode',now:scene.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family]};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[operation]};}},
   async fetchImpl(url,options){const path=new URL(url).pathname,body=typeof options.body==='string'?JSON.parse(options.body):null;calls.push(path);
    assert.equal(options.headers.authorization,'Bearer SYNTHETIC_NATIVE');
    if(path.endsWith('/application-authority/current'))return Response.json({principal,role:'standard_user',permissions:[],clientIds,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId,checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
@@ -44,5 +46,5 @@ export async function fixture(family,id,options={}){
  const port=createNativeReadsClient({origin:'https://control.example.invalid',credential:'SYNTHETIC_EXECUTION',binding,approvedReads,now:scene.now,fetchImpl:(url,init)=>app.handle(new Request(url,init))});
  async function execute(args=scene.arguments){const request=(kind,body)=>new Request(`https://control.example.invalid/v1/runner/reads/${kind}`,{method:'POST',headers:{authorization:'Bearer SYNTHETIC_EXECUTION','content-type':'application/json'},body:JSON.stringify(body)});
   const a=await app.handle(request('availability',{schemaVersion:approvedReads.schemaVersion,binding}));assert.equal(a.status,200,await a.clone().text());const available=await a.json();return app.handle(request('execute',{schemaVersion:approvedReads.schemaVersion,binding,operation,arguments:args,deliveryId:'synthetic',installationId:available.installation.installationId,executionCatalogSha256:available.installation.executionCatalogSha256}));}
- return {execute,calls,scene,port,binding,scopes,operation,now:scene.now,deadlineMs:identity.expiresAtMs,setClients:ids=>clientIds.splice(0,clientIds.length,...ids),referenceStatus:value=>{referenceStatus=value;},deny:()=>{denySource=true;},revoke:()=>{revoked=true;}};
+ return {execute,calls,scene,port,binding,scopes,operation,now:scene.now,deadlineMs:identity.expiresAtMs,advanceClock:ms=>{assert(clock);clock.time+=ms;},setClients:ids=>clientIds.splice(0,clientIds.length,...ids),referenceStatus:value=>{referenceStatus=value;},deny:()=>{denySource=true;},revoke:()=>{revoked=true;}};
 }

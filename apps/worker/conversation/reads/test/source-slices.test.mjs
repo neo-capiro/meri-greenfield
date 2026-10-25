@@ -19,15 +19,15 @@ const familyOperations=family=>catalog.operations.filter(row=>resolveOperationCo
 
 for (const [family, ids] of complete) {
     if (family === 'client-knowledge-search')
-        test('client-knowledge-search: complete family preserves graph and requires client scope only for semantic search', () => {
+        test('client-knowledge-search: complete family permits explicit General selectors', () => {
             const operations = familyOperations(family), expected = ['search_client_knowledge', 'query_knowledge_graph'];
             assert.deepEqual(operations.map(row => row.id), expected);
             assert.equal(READ_FAMILIES[family].operationIds, undefined);
-            assert.deepEqual(READ_FAMILIES[family].requiredClientOperations, ['search_client_knowledge']);
+            assert.equal(READ_FAMILIES[family].requiredClientOperations, undefined);
             assert.deepEqual(familyReads().filter(row => row.family === family).map(row => row.operation.id), expected);
             const select = scopes => resolveAvailableReads({ policy: { generalReads: true, readFamilies: [family] }, installation: { operations }, discovery: { operations }, scopes });
             assert.deepEqual(select([{ kind: 'client' }]).available.map(row => row.operation.id), expected);
-            assert.deepEqual(select([{ kind: 'private-user' }]).available.map(row => row.operation.id), ['query_knowledge_graph']);
+            assert.deepEqual(select([{ kind: 'private-user' }]).available.map(row => row.operation.id), expected);
         });
     else if (family === 'public-data')
         test('public-data: the complete PR132 family admits economic and both mode reads with no operation filter', () => {

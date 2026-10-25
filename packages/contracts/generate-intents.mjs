@@ -12,13 +12,13 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
  try{
   const sources=new Map(),record=async path=>{const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});return raw;};
   const originals=new Map();
-  for(const path of ['meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/document-draft.schema.json','artifacts-0.2/artifact.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
+  for(const path of ['meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/task-update.schema.json','commands-0.2/document-draft.schema.json','commands-0.2/memory-propose.schema.json','commands-0.2/artifact-file.schema.json','artifacts-0.2/artifact.schema.json','schedules-0.2/tool-interface.schema.json','schedules-0.2/lifecycle.schema.json','schedules-0.2/inspection.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
   const errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
   for(const name of ['INTENTS_PATHS','INTENTS_LIMITS','INTENTS_ERROR_OUTCOMES','INTENTS_ERROR_STATUSES','INTENTS_APPROVABLE_ACTIONS','INTENTS_FAILURE_CODES'])if(application[name]===undefined)throw Error('Missing canonical intents declaration '+name);
   const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,fieldPattern};
   const metadata=createIntentsMetadata(config);
-  for(const path of ['generate-intents.mjs',...['README.md','schema.mjs','protocol.mjs','boundary.mjs','semantics.mjs','receive.mjs'].map(name=>'intents-application/'+name),'document-application/boundary.mjs',
-   'artifacts-0.2/artifact-formats.mjs','commands-0.2/document-draft-validation.mjs',
+  for(const path of ['generate-intents.mjs',...['README.md','schema.mjs','protocol.mjs','boundary.mjs','semantics.mjs','routines.mjs','receive.mjs'].map(name=>'intents-application/'+name),'document-application/boundary.mjs',
+   'schedules-0.2/application-protocol.mjs','../../apps/control/schedules/application.mjs','../../apps/control/schedules/application-http.mjs','artifacts-0.2/artifact-formats.mjs','commands-0.2/document-draft-validation.mjs','commands-0.2/memory-review-result.mjs',
    '../../apps/control/intents/application-protocol.mjs','../../apps/control/intents/http.mjs','../../apps/control/intents/approval.mjs','../../apps/control/intents/faults.mjs','../../apps/control/product-access/http.mjs'])await record(path);
   // Canonical shapes are copied into this schema as local definitions so the distribution has no external schema reference.
   const root=intentsSchema(config),defs={},seen=new Map();
@@ -39,7 +39,27 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
   // Output must not depend on where the checkout sits: no parent-relative, drive-letter or home-directory path in any comment or module label.
   const leak=/^(?:\/\/ |\s+")[^\n]*(?:\.\.\/|(?<![A-Za-z0-9])[A-Za-z]:[\\/](?!\/)|\/(?:home|Users)\/)/mu.exec(bundled.outputFiles[0].text);if(leak)throw Error('Intents bundle embeds checkout layout: '+leak[0].slice(0,120));
   const declarations=await compiler.compile({title:'IntentsApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'IntentsApplicationEnvelope',{bannerComment:'// Generated additive intents contract from its canonical HTTP/approval owners. No authority implied.',additionalProperties:false,style:{singleQuote:true}});
+  // The canonical compiler emits the referenced declaration and elides alias-only definitions.
+  // Restore the public aliases using those emitted names without copying their schema or pinning generated hashes.
+  const exported=[...declarations.matchAll(/export (?:interface|type) ([A-Za-z0-9_]+)/gu)].map(match=>match[1]);
+  const typeKey=name=>name.replaceAll('_','').toLowerCase();
+  const aliases=['RoutinesProposal','RoutinesApproveResponse','RoutinesListRequest','RoutinesListResponse'].map(name=>{
+   if(exported.includes(name))return '';
+   const canonical=root.$defs[name].$ref.split('/').at(-1),matches=exported.filter(value=>typeKey(value)===typeKey(canonical));
+   if(matches.length!==1)throw Error('Missing canonical declaration for '+name);
+   return 'export type '+name+'='+matches[0]+';';
+  }).join('\n');
   const api=`
+${aliases}
+export type RoutinesRoute='prepare'|'approve'|'list'|'reconcile';
+export interface RoutinesRequestMap {prepare:RoutinesPrepareRequest;approve:RoutinesApproveRequest;list:RoutinesListRequest;reconcile:RoutinesReconcileRequest;}
+export interface RoutinesResponseMap {prepare:RoutinesPrepareResponse;approve:RoutinesApproveResponse;list:RoutinesListResponse;reconcile:RoutinesReconcileResponse;}
+export interface RoutinesExpectationMap {prepare:{request:RoutinesPrepareRequest};approve:{request:RoutinesApproveRequest;proposal:RoutinesProposal};list:{request:RoutinesListRequest};reconcile:{request:RoutinesReconcileRequest;proposal:RoutinesProposal};}
+export type RoutinesResponse<R extends RoutinesRoute>=RoutinesResponseMap[R]|RoutinesErrorResponse;
+export declare const routinesPaths:Readonly<{prepare:'/api/routines/prepare';approve:'/api/routines/approve';list:'/api/routines/list';reconcile:'/api/routines/reconcile'}>;
+export declare const routinesMetadata:Readonly<{version:'0.1.0';routes:typeof routinesPaths;limits:{requestBytes:131072;responseBytes:2097152}}>;
+export declare function receiveRoutinesRequest<R extends RoutinesRoute>(route:R,jsonText:unknown):Promise<RoutinesRequestMap[R]>;
+export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R,httpStatus:number,jsonText:unknown,expectation:RoutinesExpectationMap[R]):Promise<RoutinesResponse<R>>;
 export type IntentsRoute='list'|'decide';
 export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
 export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}

@@ -9,9 +9,11 @@ export function createTaskLookupPoolFixture(){
   return {async query(sql,p=[]){
    calls.push({sql,values:structuredClone(p)});
    if(sql==='BEGIN'||sql.startsWith('SET LOCAL'))return result();
+   if(sql.startsWith('SELECT pg_advisory_xact_lock'))return result();
    if(sql==='COMMIT'){lookups.clear();events.clear();for(const [k,v]of rows)lookups.set(k,v);for(const [k,v]of slots)events.set(k,v);return result();}
    if(sql==='ROLLBACK')return result();
    const key=`${p[0]}:${String(p[1]).toLowerCase()}`;
+   if(sql.startsWith('SELECT COALESCE(MAX(sequence),0)'))return result([{last_sequence:Math.max(0,...[...slots.keys()].filter(k=>k.startsWith(key+':')).map(k=>Number(k.slice(key.length+1))))}]);
    if(sql.startsWith('INSERT INTO meri_task_lookup.lookups')){if(rows.has(key)||[...rows.values()].some(r=>r.tenant===p[0]&&r.reference.toLowerCase()===p[2].toLowerCase()))return result();rows.set(key,{tenant:p[0],reference:p[2],payload:JSON.parse(p[3]),state:'CLAIMED',record:null});return result([{lookup_id:p[1]}]);}
    if(sql.startsWith('INSERT INTO meri_task_lookup.events')){const k=`${p[0]}:${p[1].toLowerCase()}:${p[2]}`;if(slots.has(k)||[...slots.values()].some(e=>e.tenant===p[0]&&e.id.toLowerCase()===p[3].toLowerCase()))throw Error('Fixture event reservation collision');slots.set(k,{tenant:p[0],id:p[3],lookup:p[4],kind:p[5],event:p[6]===null?null:JSON.parse(p[6])});return result([],1);}
    if(sql.startsWith('SELECT payload')){const r=rows.get(key);return result(r?[{payload:r.payload,state:r.state,record:r.record}]:[]);}

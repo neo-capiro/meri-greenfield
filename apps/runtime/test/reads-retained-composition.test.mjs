@@ -18,7 +18,7 @@ async function fixture({client=true,monday=false}={}){
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],
   nativeCredentials:{async nativeCredentialFor(request){assert.deepEqual(request.binding,binding);assert.equal(request.selectedClientId,current.selectedClientId);return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
   readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>source.state.now,newId:()=>source.binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family]};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[source.operation]};}},
   async fetchImpl(url,options){
    const path=new URL(url).pathname,body=JSON.parse(options.body);calls.push({path,body});
    assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');

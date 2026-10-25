@@ -15,7 +15,7 @@ function fixture(){
    else if(sql==='ROLLBACK'){Object.assign(state,snapshot);}
    else if(sql==='COMMIT'){if(state.ackLost){state.ackLost=false;throw Error('synthetic lost commit acknowledgment');}}
    else if(sql.startsWith('SET LOCAL')||sql.startsWith('SELECT pg_advisory')){}
-   else if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings')){const found=state.bindings.get(key(p))?.at(-1);if(found)rows=[found];}
+   else if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings')){const all=state.bindings.get(key(p)),found=p.length===3?all?.find(r=>r.run_id===p[2]):all?.at(-1);if(found)rows=[found];}
    else if(sql.startsWith('INSERT INTO meri_conversations.initial_run_bindings')){const all=state.bindings.get(key(p))??[];if(!all.some(r=>r.generation===p[5]||r.run_id===p[2])){const row={tenant_id:p[0],conversation_id:p[1],run_id:p[2],record:copy(p[3]),record_sha256:p[4],generation:p[5]};state.bindings.set(key(p),[...all,row]);state.inserts++;rows=[row];}}
    else if(sql.startsWith('SELECT 1 FROM meri_conversations.runs')){if(state.runs.has(key(p)))rows=[{present:1}];}
    else if(sql.startsWith('SELECT 1 FROM meri_conversations.initial_inputs')){if(state.inputs.has(key(p)))rows=[{present:1}];}
@@ -32,6 +32,36 @@ function fixture(){
  return {state,pool,input,now:()=>clock,advance:ms=>clock+=ms,key:()=>key([input.principal.tenantId,input.conversationId]),journal:()=>createInitialRunBindingJournal({pool,now:()=>clock})};
 }
 const check=()=>{};
+
+for(const general of [false,true])test(`unstarted ${general?'General':'client'} binding permits read-only attended preparation without accepting a run`,async()=>{
+ const f=fixture(),j=f.journal(),first=await j.claim({...f.input,...(general?{selectedClientId:null}:{})},check),binding=first.record.binding;
+ const before=f.state.inserts;f.state.calls.length=0;
+ assert.deepEqual(await j.readPreparation({binding},check),{record:first.record,recordSha256:hash(first.record),generation:1});
+ assert.deepEqual(await j.readRetained({binding},check),{record:first.record,recordSha256:hash(first.record),generation:1,latestGeneration:1,started:false});
+ assert.equal(f.state.inserts,before);assert.equal(f.state.runs.size,0);assert.equal(f.state.inputs.size,0);assert.equal(f.state.allocations.size,0);
+ assert.ok(f.state.calls.every(sql=>!/^INSERT|^UPDATE|^DELETE/u.test(sql)));
+ await assert.rejects(j.readPreparation({binding:{...binding,actorId:'foreign'}},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
+ f.advance(60000);await assert.rejects(j.readPreparation({binding},check),{code:'INITIAL_RUN_BINDING_EXPIRED'});
+ await j.rebind({...f.input,...(general?{selectedClientId:null}:{}),proposedExpiresAtMs:f.now()+60000},check);
+ await assert.rejects(j.readPreparation({binding},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
+ assert.deepEqual(await j.readRetained({binding},check),{record:first.record,recordSha256:hash(first.record),generation:1,latestGeneration:2,started:false});
+ await assert.rejects(j.readRetained({binding:{...binding,actorId:'foreign'}},check),{code:'INITIAL_RUN_BINDING_CONFLICT'});
+ assert.equal(await j.readRetained({binding:{...binding,runId:id(99)}},check),null);
+ const latest=f.state.bindings.get(f.key()).at(-1).record.binding;
+ f.state.allocations.add([latest.tenantId,latest.conversationId,latest.runId].join(':'));
+ assert.equal((await j.readRetained({binding},check)).started,true,'historical custody reports the current generation start without reviving the old one');
+ f.state.bindings.get(f.key())[0].record_sha256='0'.repeat(64);
+ await assert.rejects(j.readRetained({binding},check),{code:'INITIAL_RUN_BINDING_CORRUPT'});
+});
+test('attended preparation refuses started native allocation or corrupt custody',async()=>{
+ const f=fixture(),j=f.journal(),first=await j.claim(f.input,check),binding=first.record.binding;
+ f.state.allocations.add([binding.tenantId,binding.conversationId,binding.runId].join(':'));
+ await assert.rejects(j.readPreparation({binding},check),{code:'INITIAL_RUN_BINDING_ALREADY_STARTED'});
+ assert.equal((await j.readRetained({binding},check)).started,true);
+ f.state.allocations.clear();f.state.bindings.get(f.key()).at(-1).record_sha256='0'.repeat(64);
+ await assert.rejects(j.readPreparation({binding},check),{code:'INITIAL_RUN_BINDING_CORRUPT'});
+ await assert.rejects(j.readRetained({binding},check),{code:'INITIAL_RUN_BINDING_CORRUPT'});
+});
 
 test('General original binding retains null scope on claim, retry and read; client scope cannot replay it',async()=>{
  const f=fixture(),j=f.journal(),input={...f.input,selectedClientId:null};
@@ -59,6 +89,8 @@ test('first verified Core conversation gets one durable full original binding; r
 test('unclaimed conversation reads return null and do not allocate',async()=>{
  const f=fixture(),j=f.journal(),candidate={...f.input.principal,conversationId:f.input.conversationId,runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
  assert.equal(await j.read({binding:candidate},check),null);
+ assert.equal(await j.readPreparation({binding:candidate},check),null);
+ assert.equal(await j.readRetained({binding:candidate},check),null);
  assert.equal(await j.readConversation({principal:f.input.principal,conversationId:f.input.conversationId,selectedClientId:f.input.selectedClientId},check),null);
  assert.equal(f.state.inserts,0);
 });
@@ -103,6 +135,8 @@ test('replay checks an accepted first run and input allocation without replacing
  const allocation={binding:b,scopes,versions,selectedClientId:id(5),requestId:id(50),inputSha256:'a'.repeat(64),requestSha256:'b'.repeat(64),allocatedAtMs:first.record.createdAtMs,expiresAtMs:first.record.expiresAtMs};f.state.inputs.set(k,{tenant_id:b.tenantId,conversation_id:b.conversationId,run_id:b.runId,request_id:allocation.requestId,allocation,allocation_sha256:hash(allocation),state:'ACCEPTED',accepted_request_sha256:allocation.requestSha256});
  const reservation={source:b,target:{...b,runId:id(40),attemptId:id(41),workerId:id(42),writerFence:2}};f.state.next.set(k,{reservation,reservation_sha256:hash(reservation)});
  assert.deepEqual(await j.claim(f.input,check),{record:first.record,created:false});
+ await assert.rejects(j.readPreparation({binding:b},check),{code:'INITIAL_RUN_BINDING_ALREADY_STARTED'});
+ assert.equal((await j.readRetained({binding:b},check)).started,true);
  assert.deepEqual(await j.readConversation({principal:f.input.principal,conversationId:f.input.conversationId,selectedClientId:f.input.selectedClientId},check),first.record);
  f.state.inputs.get(k).allocation={...allocation,selectedClientId:id(6)};
  await assert.rejects(j.claim(f.input,check),{code:'INITIAL_RUN_BINDING_CONFLICT'});

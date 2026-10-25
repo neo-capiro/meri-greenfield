@@ -41,7 +41,7 @@ test('schedule settings are not admitted by any other role; the routine task ide
 });
 
 test('bare CLI schedule-worker refuses as unavailable without trusted owners; the product preview refuses the role without the firing pin, native client and database',async()=>{
- const directory=await mkdtemp(join(tmpdir(),'meri-schedule-role-')),file=join(directory,'schedule.json'),previous=process.env.MERI_PRODUCT_PREVIEW_REQUIRED,write=process.stderr.write,out=process.stdout.write;
+ const directory=await mkdtemp(join(tmpdir(),'meri-schedule-role-')),file=join(directory,'schedule.json'),previous=process.env.MERI_PRODUCT_PREVIEW_REQUIRED,previousCa=process.env.NODE_EXTRA_CA_CERTS,write=process.stderr.write,out=process.stdout.write;
  let diagnostic='',stdout='';
  try{
   await writeFile(file,JSON.stringify(configuration()));
@@ -54,13 +54,19 @@ test('bare CLI schedule-worker refuses as unavailable without trusted owners; th
    const {database:_,...c}=configuration();await writeFile(file,JSON.stringify({...c,...partial,...(partial.native?.loopback?{database:configuration().database}:{})}));
    diagnostic='';assert.equal(await main(['schedule-worker','--config',file]),2,JSON.stringify(partial));assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');
   }
-  // With the pin, the native client and the database file the preview starts the service, whose owner factory needs the secret files:
+  // The product role refuses missing process-level private-control trust before reading credentials.
+  const full={...configuration(),http:{...configuration().http,hostname:'0.0.0.0',port:8083},routines:routines(),native:{...native(),serverCaFile:'/run/meri/control-ca.pem',serverCaSha256:'a'.repeat(64)}};
+  await writeFile(file,JSON.stringify(full));delete process.env.NODE_EXTRA_CA_CERTS;
+  diagnostic='';assert.equal(await main(['schedule-worker','--config',file]),2);assert.equal(diagnostic,'RUNTIME_CONFIGURATION\n');
+  process.env.NODE_EXTRA_CA_CERTS='/run/meri/control-ca.pem';
+  // With the pin, native client, private-control trust and database file the preview starts the service, whose owner factory needs the secret files:
   // the refusal is the service's own (no poller, listener or connection), proving the composition is reached without any resource.
-  await writeFile(file,JSON.stringify({...configuration(),routines:routines(),native:native()}));
+  await writeFile(file,JSON.stringify(full));
   diagnostic='';assert.equal(await main(['schedule-worker','--config',file]),3);assert.equal(diagnostic,'RUNTIME_UNAVAILABLE\n');assert.equal(stdout,'');
  }finally{
   process.stderr.write=write;process.stdout.write=out;
   if(previous===undefined)delete process.env.MERI_PRODUCT_PREVIEW_REQUIRED;else process.env.MERI_PRODUCT_PREVIEW_REQUIRED=previous;
+  if(previousCa===undefined)delete process.env.NODE_EXTRA_CA_CERTS;else process.env.NODE_EXTRA_CA_CERTS=previousCa;
   await rm(directory,{recursive:true,force:true});
  }
 });

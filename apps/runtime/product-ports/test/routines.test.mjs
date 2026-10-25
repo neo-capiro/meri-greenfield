@@ -42,7 +42,7 @@ test('with every trusted owner supplied the enabled feature composes over the ac
    runControl:{async cancel(call){cancelled.push(call);}},retirement:{async retire(call){retired.push(call);}}});
   const {ports}=family({configuration:{...base,routines:{enabled:true}},pool:f.pool,client,now:f.now});
   assert.equal(ports.routinesApplicationFactory.state(),'pending');
-  const app=ports.routinesApplicationFactory.create({sessions:f.sessions});assert.deepEqual(census(ports),['composed','pending']);
+  const app=ports.routinesApplicationFactory.create({sessions:f.sessions,retention:{async assertServable(){}}});assert.deepEqual(census(ports),['composed','pending']);
   const prepared=await app.handle(post(ROUTINE_PATHS.prepare,{requestId:'public-request',operation:'schedule_task',request:routineRequest()},f.session.credential));
   assert.equal(prepared.status,200);assert.equal((await prepared.json()).status,'approval_required');
   assert.equal(f.temporal.calls.create,0);assert.deepEqual([cancelled.length,retired.length],[0,0]);
@@ -66,7 +66,7 @@ test('configuration.routines.core produces context.policy and runControl from th
   const family=routinesFamily({context:{commandContext,allocationJson,template,workflow,limits},newId:f.newId,retirement:{async retire(call){retired.push(call);return {physicalStopProven:true};}}},transport);
   const {ports}=family({configuration,pool:f.pool,client,now:f.now});
   assert.equal(core.requests.length,0,'composition is inert');assert.equal(ports.routinesApplicationFactory.state(),'pending');
-  const app=ports.routinesApplicationFactory.create({sessions:f.sessions});assert.deepEqual(census(ports),['composed','pending']);
+  const app=ports.routinesApplicationFactory.create({sessions:f.sessions,retention:{async assertServable(){}}});assert.deepEqual(census(ports),['composed','pending']);
   const prepared=await app.handle(post(ROUTINE_PATHS.prepare,{requestId:'public-request',operation:'schedule_task',request:{...routineRequest(),destinationReference:'meri-inbox'}},f.session.credential));
   assert.equal(prepared.status,200);const body=await prepared.json();assert.equal(body.status,'approval_required');assert.equal(body.proposal.projection.destinationId,'meri-inbox');
   // Every policy phase went to Core wire A with the owner's live native bearer plus the service identity; limits are Core's ceiling.
@@ -102,7 +102,7 @@ test('with `readConsents` the owner approval also creates the routine read conse
   const owners={context:{commandContext,allocationJson,template,workflow,policy,limits},newId:f.newId,runControl:{async cancel(){}},retirement:{async retire(){}}};
   const family=routinesFamily({...owners,readConsents:consents,log:e=>events.push(e)});
   const {ports}=family({configuration:{...base,routines:{enabled:true}},pool:f.pool,client,now:f.now});
-  const app=ports.routinesApplicationFactory.create({sessions:f.sessions});assert.deepEqual(census(ports),['composed','pending']);
+  const app=ports.routinesApplicationFactory.create({sessions:f.sessions,retention:{async assertServable(){}}});assert.deepEqual(census(ports),['composed','pending']);
   const prepared=await (await app.handle(post(ROUTINE_PATHS.prepare,{requestId:'public-request',operation:'schedule_task',request:routineRequest()},f.session.credential))).json();
   assert.equal(prepared.status,'approval_required');assert.deepEqual(calls,[],'preparation consents nothing');
   const approved=await app.handle(post(ROUTINE_PATHS.approve,{operation:'schedule_task',request:routineRequest(),proposalId:prepared.proposal.proposalId,intentSha256:prepared.proposal.intentSha256,decision:'approved'},f.session.credential));

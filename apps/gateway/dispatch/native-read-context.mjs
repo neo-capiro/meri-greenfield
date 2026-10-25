@@ -10,15 +10,17 @@ const invocationAware=new WeakSet();
 export const acceptsInvocationId=ports=>{invocationAware.add(ports);return ports;};
 /** The port for one durable call: an invocation-aware port receives `invocationId` on every read; any other port is unchanged. */
 export const nativeContextPortsFor=(ports,invocationId)=>invocationId===undefined||ports===undefined||!invocationAware.has(ports)?ports:
- Object.freeze({readCurrent:raw=>ports.readCurrent.call(ports,{...raw,invocationId})});
+ Object.freeze({readCurrent:(raw,...rest)=>ports.readCurrent.call(ports,{...raw,invocationId},...rest)});
 export async function prepareNativeReadContext({entry,request,authority,ports,lifetime,readDeadline,now,maxBytes}){
  if(!ports)deny('UNAVAILABLE');const {readCurrent}=ownFields(ports,['readCurrent']);if(typeof readCurrent!=='function')deny('GATEWAY_CONFIGURATION');let options;
  const keys=entry.contract.binding.contextKeys??[],lineage=keys.includes('binding')&&keys.includes('subject');
  const semantic=context=>context;
- async function observeAuthority(current){
+ /** A port may accept the explicit final-release request as its second argument; ports that only
+  * observe the bounded invocation keep their existing behavior. */
+ async function observeAuthority(current,{finalRelease=false}={}){
   if(!same(current.binding,authority.binding)||current.policyRevision!==authority.policyRevision)deny('ACCESS_DENIED');
   const started=now(),proof=frozenData({binding:current.binding,subject:current.subject,operation:entry.descriptor.operation,requestSha256:hash(request),policyRevision:current.policyRevision,sourceIds:current.sourceIds});
-  const raw=await lifetime.run(signal=>readCurrent.call(ports,Object.freeze({...proof,request,deadlineMs:readDeadline(),signal}))),receipt=frozenData(parseRawJson(raw,maxBytes,'ACCESS_DENIED'));
+  const raw=await lifetime.run(signal=>readCurrent.call(ports,Object.freeze({...proof,request,deadlineMs:readDeadline(),signal}),{finalRelease})),receipt=frozenData(parseRawJson(raw,maxBytes,'ACCESS_DENIED'));
   ownFields(receipt,[...Object.keys(proof),'context','checkedAtMs','expiresAtMs']);if(Object.keys(proof).some(key=>!same(receipt[key],proof[key]))||!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>now()||!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=now())deny('ACCESS_DENIED');
   const next=receipt.context;try{entry.contract.normalizeInput(request,next);}catch{deny('ACCESS_DENIED');}
   if(lineage){ownFields(next,keys);if(!same(next.binding,current.binding)||!same(next.subject,current.subject)||options&&!same(semantic(next),semantic(options)))deny('ACCESS_DENIED');}

@@ -4,10 +4,22 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 import {conversationSchema} from './conversation-application/schema.mjs';
 import {conversationApplicationMetadata} from './conversation-application/protocol.mjs';
+import {describeSkillPlugin} from '../skills/plugin.mjs';
+import {selectSkill} from '../skills/index.mjs';
 const HERE=new URL('./',import.meta.url),dir=fileURLToPath(HERE),hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 export async function generateConversationContracts({check=false}={}){
  const [{default:Ajv},{default:formats},{default:standalone},{build},{compile}]=await Promise.all([import('ajv/dist/2020.js'),import('ajv-formats'),import('ajv/dist/standalone/index.js'),import('esbuild'),import('json-schema-to-typescript')]);
  const originals=new Map(),sources=new Map();
+ const skillAssets=JSON.parse(await readFile(new URL('../skills/assets.json',HERE),'utf8'));
+ const skillPaths=new Set(['../skills/index.mjs','../skills/plugin.mjs','../skills/assets.json']);
+ const skills=describeSkillPlugin().skills.map(({skillId,skillVersion})=>{
+  const {manifest,prose,pin}=selectSkill(skillId,skillVersion),displayName=/^# (.+)$/mu.exec(prose)?.[1];
+  if(!displayName)throw Error('Missing canonical skill display name');
+  const asset=skillAssets.assets.find(a=>a.skillId===skillId&&a.skillVersion===skillVersion);
+  for(const path of [asset.manifestPath,asset.prosePath])skillPaths.add('../skills/'+path);
+  return {skillId,version:skillVersion,displayName,subjectKinds:manifest.subjectKinds,windowBases:manifest.windowBases,manifestSha256:pin.manifestSha256,proseSha256:pin.proseSha256};
+ });
+ for(const path of skillPaths){const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});}
  for(const folder of ['', 'retrieval-0.2/'])for(const name of await readdir(new URL(folder,HERE))){if(!name.endsWith('.schema.json'))continue;const path=folder+name,raw=await readFile(new URL(path,HERE)),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path,sha256:hash(raw),bytes:raw.length});}
  for(const path of ['../../apps/control/conversations/http.mjs','../../apps/control/conversations/service.mjs','../../apps/control/conversations/events.mjs','model-selection.mjs','conversation-application/protocol.mjs','conversation-application/schema.mjs','conversation-application/receive.mjs','document-application/boundary.mjs']){const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});}
  const root=conversationSchema(),defs={},seen=new Map();
@@ -24,11 +36,14 @@ export async function generateConversationContracts({check=false}={}){
  const exportNames=['validateSubmitRequest','validateHistoryRequest','validateCancelRequest','validateEventsRequest','validateSubmitted','validateHistory','validateCancelled','validateEvent','validateError'],exports={};
  names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});exports[exportNames[i]]=ref;});
  const generated=standalone(ajv,exports);
- const bundled=await build({absWorkingDir:dir,stdin:{contents:await readFile(new URL('conversation-application/receive.mjs',HERE),'utf8'),sourcefile:'conversation-application-receiver.mjs',resolveDir:resolve(dir,'conversation-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'conversation-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'conversation-generated'}));b.onLoad({filter:/.*/,namespace:'conversation-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
+ const bundled=await build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-application/receive.mjs',HERE),'utf8'),sourcefile:'conversation-application-receiver.mjs',resolveDir:resolve(dir,'conversation-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'conversation-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'conversation-generated'}));b.onLoad({filter:/.*/,namespace:'conversation-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
  if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('Conversation browser external import');
  const declarations=await compile({title:'ConversationApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'ConversationApplicationEnvelope',{bannerComment:'// Generated from canonical conversation receiving schema. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
  const api=`
 export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events';
+/** Canonical immutable choices; runtime authorization and availability are decided by the server. */
+export interface ConversationSkillDescriptor {readonly skillId:NonNullable<ConversationSubmitRequest['skill']>['skillId'];readonly version:string;readonly displayName:string;readonly subjectKinds:readonly ('client'|'entity'|'personal'|'portfolio')[];readonly windowBases:readonly NonNullable<ConversationSubmitRequest['windowRequest']>['basis'][];readonly manifestSha256:string;readonly proseSha256:string;}
+export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;
@@ -46,7 +61,8 @@ export declare function createConversationCursor(view:AdmittedConversationView,a
 export declare function receiveConversationEvent(utf8Bytes:Uint8Array,cursor:ConversationCursor):Readonly<{event:ConversationEvent;cursor:ConversationCursor}>;
 export declare function conversationReconnect(cursor:ConversationCursor):Readonly<{method:'GET';path:string;headers:Readonly<{'x-meri-resume-sequence':string}>}>;
 `;
- const outputs=new Map([['conversation-application.mjs','// Generated browser receiving boundary; no authority.\n'+bundled.outputFiles[0].text],['conversation-application.d.ts',declarations+api],['conversation-application.schema.json',JSON.stringify(root,null,2)+'\n'],['conversation-application.metadata.json',JSON.stringify({packageVersion:'0.1.3',schemaId:root.$id,sources:[...sources.values()].sort((a,b)=>a.path.localeCompare(b.path)),schemaSha256:hash(JSON.stringify(root,null,2)+'\n'),browserInputs:Object.keys(bundled.metafile.inputs).sort()},null,2)+'\n']]);
+ const skillExport='\n// Immutable asset descriptions do not grant runtime availability.\nexport const CONVERSATION_SKILLS=Object.freeze('+JSON.stringify(skills)+'.map(s=>Object.freeze({...s,subjectKinds:Object.freeze(s.subjectKinds),windowBases:Object.freeze(s.windowBases)})));\n';
+ const outputs=new Map([['conversation-application.mjs','// Generated browser receiving boundary; no authority.\n'+bundled.outputFiles[0].text+skillExport],['conversation-application.d.ts',declarations+api],['conversation-application.schema.json',JSON.stringify(root,null,2)+'\n'],['conversation-application.metadata.json',JSON.stringify({packageVersion:'0.1.3',schemaId:root.$id,sources:[...sources.values()].sort((a,b)=>a.path.localeCompare(b.path)),schemaSha256:hash(JSON.stringify(root,null,2)+'\n'),browserInputs:Object.keys(bundled.metafile.inputs).sort()},null,2)+'\n']]);
  if(check){for(const [name,content]of outputs)if(await readFile(new URL('dist/'+name,HERE),'utf8')!==content)throw Error('Generated drift: '+name);}else{await mkdir(new URL('dist/',HERE),{recursive:true});for(const[name,content]of outputs)await writeFile(new URL('dist/'+name,HERE),content);}
  return [...outputs].map(([path,content])=>({path,bytes:Buffer.byteLength(content),sha256:hash(content)}));
 }

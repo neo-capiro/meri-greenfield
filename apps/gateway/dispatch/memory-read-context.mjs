@@ -43,7 +43,7 @@ export async function prepareMemoryReadContext({ ports, authority, identityDeadl
       lifetime.check();
       if (result.nextCursor === null) return;
       const key = continuationKey(current, operation, result.nextCursor);
-      const prior = { request: normalized.request, page: result };
+      const prior = { request: normalized.input, page: result };
       const record = freeze({ key, previous: prior, previousSha256: canonicalSha256(prior), recordedAtMs: now(), expiresAtMs });
       // Bound outbound retained context just as strictly as inbound source facts.
       if (Buffer.byteLength(JSON.stringify(record), 'utf8') > maxBytes) deny('RESOURCE_LIMIT');

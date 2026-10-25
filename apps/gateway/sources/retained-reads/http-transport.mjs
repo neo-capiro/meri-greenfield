@@ -23,9 +23,10 @@ export function createRetainedHttpTransport(configuration){
   const fundingObservation=observation==='funding-asof'&&c.contract.binding.group==='funding-opportunities'&&FUNDING_OPPORTUNITY_OPERATION_IDS.includes(c.operation.id);
   const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
   const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
-  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation)||c.operation.version!=='0.2.0'||
+  const producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(c.contract.binding.group);
+  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation)||c.operation.version!=='0.2.0'||
    method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
-  if(MODE_READ_OPERATIONS.includes(c.operation.id)&&!modeObservation)deny('GATEWAY_CONFIGURATION');
+  if(MODE_READ_OPERATIONS.includes(c.operation.id)&&!modeObservation&&!(producerObservation&&c.operation.id==='search_sam_opportunities'))deny('GATEWAY_CONFIGURATION');
   if(readSource){
    const context={binding:c.authority.binding,subject:c.authority.subject,policyRevision:c.authority.policyRevision,normalizationContext:c.normalizationContext};
    return frozenData(await readSource({operation:c.operation.id,input:body??c.input,context,deadlineMs:Math.min(c.deadlineMs,now()+maxRequestMs),signal:c.signal}));

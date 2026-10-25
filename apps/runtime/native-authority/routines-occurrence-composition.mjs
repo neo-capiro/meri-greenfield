@@ -33,7 +33,7 @@ export const ROUTINES_OCCURRENCE_OWNERS=Object.freeze({
  consent:'this composer from routines.core.unattendedGrant: Core wire C before_admission grant per occurrence under the service identity',
 });
 /** Readiness must see these once the owner can write (schedules migrations 0001/0002, conversations 0012 initial_run_bindings). */
-const TABLES=Object.freeze(['meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_conversations.initial_run_bindings','meri_conversations.initial_inputs']);
+ const TABLES=Object.freeze(['meri_schedules.projections','meri_schedules.intents','meri_schedules.occurrences','meri_conversations.initial_run_bindings','meri_conversations.initial_inputs','meri_conversations.native_executions']);
 const refusing=Object.freeze({async admit(){throw unavailable();},async retire(){throw unavailable();}});
 
 export function composeRoutinesOccurrences(options){
@@ -48,19 +48,19 @@ export function composeRoutinesOccurrences(options){
  if(core===null||core.unattendedGrant===undefined)return Object.freeze({application:createRoutinesOccurrenceApplication({controlCapabilitySha256}),state:'disabled',tables:Object.freeze([])});
  const maxRequestMs=configuration.limits.requestMs;
  let owners=null;
- if(o.owners!==undefined){try{owners=own(o.owners,['template','retirement']);}catch{throw fault();}}
+ if(o.owners!==undefined){try{owners=own(o.owners,['retirement'],['template','templateFor']);if((owners.template===undefined)===(owners.templateFor===undefined)||owners.templateFor!==undefined&&(typeof owners.templateFor!=='function'||types.isProxy(owners.templateFor)))throw Error();}catch{throw fault();}}
  const ready=owners!==null&&o.pool!==undefined;
  if(!ready)return Object.freeze({application:createRoutinesOccurrenceApplication({controlCapabilitySha256,owner:refusing,enabled:true,now,maxRequestMs}),state:'owners-unavailable',tables:Object.freeze([])});
  const getServiceSecret=createRoutinesServiceSecret({file:core.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:transport.readSecret??readRuntimeSecret});
  const wires=createRoutinesCoreClient({origin:core.origin,getServiceSecret,now,maxRequestMs,...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
- const trust=routineFiringTrust(core.unattendedGrant),scheduleOwner=createPostgresScheduleOwner({pool:o.pool}),store=createPostgresConversationStore({pool:o.pool,now});
+ const trust=routineFiringTrust(core.unattendedGrant),scheduleOwner=createPostgresScheduleOwner({pool:o.pool}),store=createPostgresConversationStore({pool:o.pool,now,modelCatalog:configuration.models});
  const firing=createRoutinesFiringAuthority({wires,trust,scheduleOwner,now,maxRequestMs});
  const template=owners.template;
  // The template is validated now, inertly, against the same admission constructor the per-occurrence owner uses: a malformed
  // candidate template refuses control startup instead of every later admission.
- createScheduledNativeAdmission({pool:o.pool,store,scheduleOwner,authority:{async authorize(){throw unavailable();}},template,now,maxRequestMs});
- const admissionFor=(occurrence,occurrenceKey)=>createScheduledNativeAdmission({pool:o.pool,store,scheduleOwner,template,now,maxRequestMs,
-  authority:createOccurrenceConsentAuthority({firing,template,occurrence,occurrenceKey,now})});
- const owner=createRoutinesOccurrenceOwner({admissionFor,retirement:owners.retirement,scheduleOwner,principal:template.principal,now,maxRequestMs});
+ if(template!==undefined)createScheduledNativeAdmission({pool:o.pool,store,scheduleOwner,authority:{async authorize(){throw unavailable();}},template,now,maxRequestMs});
+ const admissionFor=(occurrence,occurrenceKey)=>{const selected=template??owners.templateFor(occurrence);return createScheduledNativeAdmission({pool:o.pool,store,scheduleOwner,template:selected,now,maxRequestMs,
+  authority:createOccurrenceConsentAuthority({firing,template:selected,occurrence,occurrenceKey,now})});};
+ const owner=createRoutinesOccurrenceOwner({admissionFor,retirement:owners.retirement,scheduleOwner,...(template===undefined?{}:{principal:template.principal}),now,maxRequestMs});
  return Object.freeze({application:createRoutinesOccurrenceApplication({controlCapabilitySha256,owner,enabled:true,now,maxRequestMs}),state:'composed',tables:TABLES});
 }

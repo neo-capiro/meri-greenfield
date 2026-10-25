@@ -166,12 +166,17 @@ export function createScheduledDispatch(options) {
   const raw=await c.life.run(signal=>admit({occurrence:c.occ,occurrenceKey:c.id.occurrenceKey,effect:c.effect,input,signal,deadlineMs:c.deadline()}));
   const r=frozenScheduleData(raw);
   if(!r||Object.keys(r).length!==4||!['binding','requestSha256','expiresAtMs','replayed'].every(k=>Object.hasOwn(r,k))||
-   canonicalSha256(r.binding)!==canonicalSha256(c.id.binding)||r.requestSha256!==canonicalSha256(input.request)||
+   canonicalSha256(r.binding)!==canonicalSha256(c.id.binding)||typeof r.requestSha256!=='string'||!/^[a-f0-9]{64}$/u.test(r.requestSha256)||
    !Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now()||typeof r.replayed!=='boolean')denySchedule('SCHEDULE_ADMISSION_RECEIPT');
   c.limit(r.expiresAtMs);
   const saved=await existing(c);
   if(saved===null||canonicalSha256(saved.request)!==r.requestSha256||canonicalSha256(saved.run.versions)!==canonicalSha256(input.run.versions)||
    canonicalSha256(saved.run.scopes)!==canonicalSha256(input.run.scopes)||saved.run.policyRevision!==input.run.policyRevision)denySchedule('SCHEDULE_ADMISSION_RECEIPT');
+  // Native original admission pins the configured default model. Verify every caller field
+  // against the canonical saved request; only that model normalization may be additive.
+  const normalized={...saved.request};
+  if(!Object.hasOwn(input.request,'modelSelection'))delete normalized.modelSelection;
+  if(canonicalSha256(normalized)!==canonicalSha256(input.request))denySchedule('SCHEDULE_ADMISSION_RECEIPT');
  }
 
  async function dispatch(request) {

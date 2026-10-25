@@ -9,6 +9,7 @@ import {performance} from 'node:perf_hooks';
 import {createRunCurrentAuthority,CURRENT_REUSE_MS,CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
 import {currentReceipt} from '../../control/action-host/application-adapters/current-receipt.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
+const receiptSkewMs=5000;
 export function createNativeIdentityContext(configuration){
  const {origin,currentOwner,fetchImpl,now,limits,enabled=false,admitInitialConversation}=own(configuration,['origin','currentOwner','fetchImpl','now','limits','admitInitialConversation'],['enabled']);
  const l=data(own(limits,['maxRequestMs','maxFactBytes'])),currentRun=storageMethod(currentOwner,'currentRun');
@@ -25,7 +26,9 @@ export function createNativeIdentityContext(configuration){
   if(call.credential!==scope.credential||call.conversationId!==r.conversationId||call.clientId!==r.selectedClientId)refused();
   return data({...r,checkedAtMs:now()});
  }};
- const mapped=createApplicationContextAdapters({client:projected,currentRun,now,limits:l,admitInitialConversation});
+ const mapped=createApplicationContextAdapters({client:projected,currentRun,now,limits:l,admitInitialConversation:typeof admitInitialConversation==='function'?input=>{
+  const scope=observations.getStore();return admitInitialConversation({...input,...(scope?{recheckActive:scope.readFresh}: {})});
+ }:admitInitialConversation});
  // One public code for every failure; a dependency that did not answer keeps its transient mark. The context adapter's refusal
  // step and owned reason code (fixed vocabularies) ride along for the session owner's refusal line only.
  const unavailable=cause=>{const error=Object.assign(Error('NATIVE_AUTHORITY_UNAVAILABLE'),{code:'NATIVE_AUTHORITY_UNAVAILABLE',status:503},refusalDiagnostic(cause));throw carryAuthorityUnavailable(cause,error);};
@@ -42,16 +45,17 @@ export function createNativeIdentityContext(configuration){
    else receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,fresh,signal,deadlineMs});
    const principal=binding??receipt.principal;
    const sameContext=r=>r.principal.tenantId===principal.tenantId&&r.principal.actorId===principal.actorId&&r.conversationId===conversationId&&r.selectedClientId===clientId&&r.expiresAtMs>now();
-   if(!sameContext(receipt)||!reusable&&(receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now()))unavailable();
+   if(!sameContext(receipt)||!reusable&&(receipt.checkedAtMs<wallSend-receiptSkewMs||receipt.checkedAtMs>now()+receiptSkewMs))unavailable();
    // Each canonical port recheck re-enters the age check; a slow local await cannot carry a 19.9 s receipt past 20 s.
    const read=async()=>{
     if(reusable){receipt=await receipts.read({credential,binding,selectedClientId:clientId,sessionFence,signal,deadlineMs});if(!sameContext(receipt))unavailable();return receipt;}
     if(signal?.aborted||now()>=deadlineMs||receipt.expiresAtMs<=now())unavailable();
-    if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();receipt=await readFresh();if(!sameContext(receipt)||receipt.checkedAtMs<wallSend||receipt.checkedAtMs>now())unavailable();}
+    if(performance.now()-sendStart>=CURRENT_REUSE_MS){sendStart=performance.now();wallSend=now();receipt=await readFresh();if(!sameContext(receipt)||receipt.checkedAtMs<wallSend-receiptSkewMs||receipt.checkedAtMs>now()+receiptSkewMs)unavailable();}
     else currentTurnTelemetry()?.recordAuthority?.('reuse');
     return receipt;
    };
-   return observations.run({read,credential},operation);
+   const verifyFresh=async()=>{const started=now(),latest=await readFresh();if(!sameContext(latest)||latest.checkedAtMs<started-receiptSkewMs||latest.checkedAtMs>now()+receiptSkewMs)unavailable();return latest;};
+   return observations.run({read,readFresh:verifyFresh,credential},operation);
   },
   async readMembership(){const scope=observations.getStore();if(!scope)return undefined;const r=await scope.read();return data({tenantId:r.principal.tenantId,actorId:r.principal.actorId,status:'active',role:r.role,permissions:r.permissions,clientIds:r.clientIds,membershipRevision:r.membershipRevision,checkedAtMs:now(),expiresAtMs:r.expiresAtMs});},
   async verifyIdentity(call){if(!enabled)unavailable();try{return await mapped.verifyIdentity(call);}catch(error){unavailable(error);}},

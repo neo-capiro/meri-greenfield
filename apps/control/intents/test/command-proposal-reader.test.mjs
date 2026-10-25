@@ -8,10 +8,10 @@ import {createIntentJournal} from '../journal.mjs';
 import {createPreparedSchedulePoolFixture} from './prepared-schedule-fixture.mjs';
 import {fixture as commandFixture,NOW} from '../../test/commands-fixture.mjs';
 import {createJournalProposalReader} from '../../../runtime/product-ports/lifecycle.mjs';
-async function setup({state='PREPARED',mutate}={}){
- const f=commandFixture('task.create'),sql=createPreparedSchedulePoolFixture(),journal=createIntentJournal(createPostgresIntentJournalStore({pool:sql.pool}));
+async function setup({state='PREPARED',mutate,action='task.create'}={}){
+ const f=commandFixture(action),sql=createPreparedSchedulePoolFixture(),journal=createIntentJournal(createPostgresIntentJournalStore({pool:sql.pool}));
  const proposal=structuredClone(f.proposal),binding=proposal.command.binding,deliveryId='sdk:'+'c'.repeat(64);
- const record={operation:{id:'create_task',version:'0.2.0'},argumentsSha256:'d'.repeat(64)};
+ const record={operation:{id:action==='artifact.file'?'save_chat_attachments':'create_task',version:'0.2.0'},argumentsSha256:'d'.repeat(64)};
  const outcome={result:{status:'approval_required',proposal},release:{binding,scopes:proposal.command.scopes,expiresAtMs:NOW+60000}};
  await journal.begin({binding,deliveryId,record});
  if(state!=='PENDING')await journal.settle({binding,deliveryId,record,state:'PREPARED',outcome});
@@ -20,9 +20,17 @@ async function setup({state='PREPARED',mutate}={}){
  return {f,sql,proposal,binding,selection,reader:createPostgresCommandProposalReader({pool:sql.pool})};
 }
 const unknown=p=>assert.rejects(p,e=>e?.code==='UNKNOWN');
+
+test('native filing reads only the exact retained original command and filing operation',async()=>{
+ const s=await setup({action:'artifact.file'}),retained=await s.reader.readPreparedCommand(s.selection);
+ assert.deepEqual(retained.outcome.result.proposal,s.proposal);assert.equal(retained.record.operation.id,'save_chat_attachments');
+ assert.deepEqual(await s.reader.readProposal(s.selection),s.proposal);
+ [...s.sql.state.rows.values()][0].record.operation.id='create_task';await unknown(s.reader.readPreparedCommand(s.selection));
+});
 test('reads the PREPARED command proposal only for its own tenant, actor and conversation, frozen and read-only',async()=>{
  const s=await setup(),p=await s.reader.readProposal(s.selection);
  assert.deepEqual(p,s.proposal);assert.ok(Object.isFrozen(p)&&Object.isFrozen(p.command.binding));
+ const prepared=await s.reader.readPreparedCommand(s.selection);assert.deepEqual(prepared.outcome.result.proposal,p);assert.equal(prepared.key.deliveryId,'sdk:'+'c'.repeat(64));assert.equal(prepared.key.actorId,s.binding.actorId);assert.equal(prepared.state,'PREPARED');
  assert.equal(await s.reader.readProposal({...s.selection,actorId:'other-actor'}),null);
  assert.equal(await s.reader.readProposal({...s.selection,conversationId:'00000000-0000-4000-8000-000000000099'}),null);
  assert.equal(await s.reader.readProposal({...s.selection,tenantId:'other-tenant'}),null);

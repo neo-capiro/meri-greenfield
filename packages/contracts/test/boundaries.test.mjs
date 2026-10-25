@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
+import canonicalize from 'canonicalize';
 import { validateShape, canonicalSha256, assertWorkspacePaths, assertProposalIntegrity, assertCommandExecution } from '../validate.mjs';
 
 const binding = () => ({tenantId:'synthetic-a',actorId:'actor-a',conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1});
@@ -42,6 +43,25 @@ test('rejects unknown protocol versions, loose identity fields and unsafe intege
 test('canonical hashes are key-order independent and bind every command input', () => {
   assert.equal(canonicalSha256({b:2,a:1}),canonicalSha256({a:1,b:2}));
   assert.notEqual(canonicalSha256({a:1}),canonicalSha256({a:2}));
+});
+
+test('canonical SHA preserves the streaming digest and canonical input refusals', () => {
+  const previous = value => {
+    const bytes = canonicalize(value);
+    if (typeof bytes !== 'string') throw new Error('Value is not canonical JSON');
+    return createHash('sha256').update(bytes, 'utf8').digest('hex');
+  };
+  for (const value of [null, true, false, 0, -0, 1e-7, 1e21, Number.MAX_SAFE_INTEGER,
+    '', 'opaque λ 🦋\n\u0000"\\', [], { b: 2, a: 1 },
+    { z: [{ type: 'system', unknown: { '😀': 'retained', é: [null, false, 1.25] } }], a: 'first' }])
+    assert.equal(canonicalSha256(value), previous(value));
+  const cycle = {}; cycle.self = cycle;
+  for (const value of [undefined, () => {}, Symbol('unsupported'), NaN, Infinity, 1n, '\ud800', { '\udfff': 1 }, cycle]) {
+    let expected;
+    try { previous(value); } catch (error) { expected = { name: error.name, message: error.message }; }
+    assert.ok(expected, 'reference must refuse this value');
+    assert.throws(() => canonicalSha256(value), expected);
+  }
 });
 test('event envelope requires typed payload, scopes and positive durable sequence', () => {
   const event={contractVersion:'0.1.0',eventId:randomUUID(),binding:binding(),sequence:1,createdAt:'2026-10-09T18:00:00Z',scopes:[scope()],type:'run.status',data:{state:'running',reasonCode:null}};

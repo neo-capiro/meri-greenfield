@@ -11,13 +11,13 @@
 /** @typedef {{clientScope:'required'|'optional',requiredClientOperations?:readonly string[],operationIds?:readonly string[]}} ReadFamily */
 /** @type {Readonly<Record<string,Readonly<ReadFamily>>>} */
 export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optional'}),
- 'meeting-source':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['meeting.read_client_meetings'])}),
+ 'meeting-source':Object.freeze({clientScope:'optional'}),
  'action-items-complete':Object.freeze({clientScope:'required'}),
- 'operational-reads':Object.freeze({clientScope:'required'}),
+ 'operational-reads':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['query_action_items'])}),
  'tenant-contacts':Object.freeze({clientScope:'optional'}),
  'entity-candidates':Object.freeze({clientScope:'optional'}),
- 'client-knowledge-profile':Object.freeze({clientScope:'required'}),
- 'client-documents':Object.freeze({clientScope:'required'}),
+ 'client-knowledge-profile':Object.freeze({clientScope:'optional'}),
+ 'client-documents':Object.freeze({clientScope:'optional'}),
  'client-knowledge-memory':Object.freeze({clientScope:'optional'}),
  'client-knowledge-monday':Object.freeze({clientScope:'required'}),
  'dataset-metadata':Object.freeze({clientScope:'optional'}),
@@ -46,15 +46,18 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'funding-opportunities':Object.freeze({clientScope:'required'}),
  'public-data':Object.freeze({clientScope:'optional'}),
  'program-elements':Object.freeze({clientScope:'optional'}),
- 'client-knowledge-search':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['search_client_knowledge'])}),
+ 'client-knowledge-search':Object.freeze({clientScope:'optional'}),
  'business-development':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_business_development_context','get_business_development_recent_changes','get_business_development_evidence']),requiredClientOperations:Object.freeze(['get_business_development_evidence'])}),
  'state-status-votes':Object.freeze({clientScope:'optional'}),
- 'tracked-bills':Object.freeze({clientScope:'required'}),
+ 'tracked-bills':Object.freeze({clientScope:'optional'}),
  'public-domain-hearings':Object.freeze({clientScope:'optional'}),
  'research-legal-legislation':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['search_legislative_research','get_legal_reference'])}),
  'research-legal-news':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['search_legiwatch_news'])}),
  'outreach-query':Object.freeze({clientScope:'required',operationIds:Object.freeze(['query_outreach'])}),
  'research-legal-candidates':Object.freeze({clientScope:'optional'}),
+ 'certification-status':Object.freeze({clientScope:'optional'}),
+ 'rule-status':Object.freeze({clientScope:'optional'}),
+ 'sam-opportunities':Object.freeze({clientScope:'optional'}),
 });
 /** The `readFamilies` policy universe (PROPOSAL P8). */
 export const READ_FAMILY_IDS=Object.freeze(Object.keys(READ_FAMILIES));

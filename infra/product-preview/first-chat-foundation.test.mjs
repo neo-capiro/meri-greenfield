@@ -12,6 +12,24 @@ export const foundationBinding=()=>({account:'967807252336',region:'us-east-1',v
  secretKmsKeyArns:Object.fromEntries(FOUNDATION_SECRET_ROLES.map(k=>[k,k==='migrator'?['arn:aws:kms:us-east-1:967807252336:key/efe8a18d-192e-4f30-8eea-b3f65ae7755e']:[]]))});
 const ofType=(t,type)=>Object.entries(t.Resources).filter(([,r])=>r.Type===type);
 
+test('optional schedule execution binding adds only its isolated material/log owner and preserves existing resources',()=>{
+ const b=foundationBinding(),base=synthesizeFirstChatFoundation(b);
+ b.secretArns.schedule=secret('schedule/material');b.secretKmsKeyArns.schedule=[];
+ const t=synthesizeFirstChatFoundation(b);
+ for(const [id,resource] of Object.entries(base.Resources))assert.deepEqual(t.Resources[id],resource,'no existing resource changes');
+ assert.equal(ofType(t,'AWS::EC2::SecurityGroup').length,ofType(base,'AWS::EC2::SecurityGroup').length);
+ assert.equal(ofType(t,'AWS::IAM::Role').length,ofType(base,'AWS::IAM::Role').length+1);
+ const policy=ofType(t,'AWS::IAM::Policy').find(([,r])=>JSON.stringify(r.Properties.Roles).includes('scheduleExecutionRole'))[1].Properties.PolicyDocument.Statement;
+ assert.deepEqual(policy.filter(s=>[].concat(s.Action).includes('secretsmanager:GetSecretValue')).flatMap(s=>[].concat(s.Resource)),b.secretArns.schedule);
+ assert.ok(policy.every(s=>![].concat(s.Action).some(a=>a.startsWith('ecs:')||a.startsWith('bedrock:')||a==='iam:PassRole')));
+ assert.ok(t.Outputs.ScheduleExecutionRoleArn);assert.ok(t.Outputs.ScheduleLogGroupName);
+ const logs=ofType(t,'AWS::Logs::LogGroup').find(([,r])=>r.Properties.LogGroupName==='/meri/product-preview/schedule')[1];
+ assert.equal(logs.DeletionPolicy,'Retain');assert.equal(logs.UpdateReplacePolicy,'Retain');
+ for(const change of [x=>{delete x.secretKmsKeyArns.schedule;},x=>{x.secretArns.schedule=['*'];}]){
+  const x=structuredClone(b);change(x);assert.throws(()=>synthesizeFirstChatFoundation(x),/FIRST_CHAT_FOUNDATION_BINDING_REFUSED/);
+ }
+});
+
 test('closed binding refuses foreign accounts, clusters, extra keys, wildcard secrets and shared SG reuse',()=>{
  assert.ok(validateFoundationBinding(foundationBinding()));
  for(const change of [b=>{b.account='111111111111';},b=>{b.clusterArn=b.clusterArn.replace('capiro-dev','other');},b=>{b.extra=1;},
@@ -50,6 +68,10 @@ test('IAM retains storage and Temporal service identity without ECS runner or mo
  assert.ok(controlActions.includes('s3:GetObjectVersion'));
  assert.ok(controlActions.includes('s3:ListBucket'));
  assert.deepEqual(control.filter(s=>[].concat(s.Action).includes('s3:ListBucket')).map(s=>s.Resource),[`arn:aws:s3:::${foundationBinding().checkpoint.bucket}`]);
+ for(const action of ['s3:GetBucketPublicAccessBlock','s3:GetBucketPolicyStatus','s3:GetBucketOwnershipControls']){
+  assert.deepEqual(control.filter(s=>[].concat(s.Action).includes(action)).map(s=>s.Resource),[`arn:aws:s3:::${foundationBinding().checkpoint.bucket}`]);
+  assert.ok(policies.filter(p=>!JSON.stringify(p.Roles).includes('controlTaskRole')).every(p=>p.PolicyDocument.Statement.every(s=>![].concat(s.Action).includes(action))),`${action} is control-only`);
+ }
  assert.ok(controlActions.includes('kms:Decrypt'));
  assert.ok(controlActions.every(action=>!action.startsWith('ecs:')&&!action.startsWith('bedrock:')&&action!=='iam:PassRole'));
  assert.ok(policies.every(p=>p.PolicyDocument.Statement.every(s=>![].concat(s.Action).some(a=>['ecs:RunTask','ecs:StopTask','iam:PassRole'].includes(a)))));
@@ -57,6 +79,32 @@ test('IAM retains storage and Temporal service identity without ECS runner or mo
   if(s.Resource==='*')assert.ok([].concat(s.Action).every(a=>['ecr:GetAuthorizationToken','ecs:ListTasks','ecs:DescribeTaskDefinition','ec2:DescribeNetworkInterfaces'].includes(a)),`wildcard only for read actions without resource scope: ${s.Action}`);
   assert.ok(![].concat(s.Action).some(a=>a.endsWith(':*')||a==='*'),'no action wildcards');
  }
+});
+
+test('purge IAM admits exact content versions without ledger, custody, unversioned deletion or hold bypass',()=>{
+ const b=foundationBinding(),t=synthesizeFirstChatFoundation(b);
+ const policies=ofType(t,'AWS::IAM::Policy').map(([,r])=>r.Properties);
+ const statements=policies.find(p=>JSON.stringify(p.Roles).includes('controlTaskRole')).PolicyDocument.Statement;
+ const actions=s=>[].concat(s.Action),resources=s=>[].concat(s.Resource);
+ const content=`${b.checkpoint.prefix}/${'a'.repeat(64)}/11111111-1111-4111-8111-111111111111/${'b'.repeat(64)}`;
+ const bucket=`arn:aws:s3:::${b.checkpoint.bucket}`;
+ const globMatches=(pattern,value)=>new RegExp('^'+pattern.replace(/[.+^${}()|[\]\\]/gu,'\\$&').replaceAll('*','.*').replaceAll('?','.')+'$','u').test(value);
+ for(const action of ['s3:GetObjectRetention','s3:GetObjectLegalHold','s3:DeleteObjectVersion']){
+  const grants=statements.filter(s=>actions(s).includes(action));
+  assert.equal(grants.length,1);
+  assert.ok(resources(grants[0]).some(r=>globMatches(r,`${bucket}/${content}`)));
+  for(const key of [`${b.checkpoint.prefix}/retention/ledger.json`,
+   `${b.checkpoint.prefix}/artifact-publication/${'a'.repeat(64)}/index.json`,
+   `unrelated/${content}`,`${content}/extra`])
+   assert.ok(!resources(grants[0]).some(r=>globMatches(r,`${bucket}/${key}`)),`${action} must not admit ${key}`);
+ }
+ const [list]=statements.filter(s=>actions(s).includes('s3:ListBucketVersions'));
+ assert.deepEqual(resources(list),[bucket]);
+ const prefix=list.Condition.StringLike['s3:prefix'];
+ assert.ok(globMatches(prefix,content));
+ assert.ok(!globMatches(prefix,b.checkpoint.prefix));
+ assert.ok(!globMatches(prefix,`${b.checkpoint.prefix}/retention/ledger.json`));
+ assert.ok(statements.flatMap(actions).every(a=>!['s3:DeleteObject','s3:BypassGovernanceRetention','s3:PutObjectRetention','s3:PutObjectLegalHold'].includes(a)));
 });
 
 test('native TLS removes issuer signing, service discovery and network resources while retaining control',()=>{

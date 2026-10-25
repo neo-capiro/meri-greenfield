@@ -4,7 +4,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {binding,versions} from '../../control/conversations/test/store-fixture.mjs';
 import {createAgentCoreExecutionOwner} from '../agentcore-execution.mjs';
 
-function fixture({predecessor,invokeError,targetBinding=binding}={}){
+function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation}={}){
  const run={binding:targetBinding,versions,scopes:[],policyRevision:'policy-v1',state:'queued'};
  let record=null,invocations=0,admissions=0,call,unknown=0;
  const response=Promise.withResolvers(),entered=Promise.withResolvers();
@@ -14,7 +14,7 @@ function fixture({predecessor,invokeError,targetBinding=binding}={}){
   async record(value){record={...record,phase:value.phase,native:value.native};return {run,record};}},
   nextRuns:{async readTarget(){return predecessor?{source:predecessor.run.binding,facts:{execution:{recordSha256:hash(predecessor.record)}}}:null;}}};
  const owner=createAgentCoreExecutionOwner({store,versions,plan:{runtimeVersion:'qualified-v1'},credentialSecret:'synthetic-control-secret-'.repeat(3),
-  now:()=>1000,newId:()=> 'c'.repeat(64),contextFor:async()=>({selectedClientId:null}),
+  now:()=>1000,newId:()=> 'c'.repeat(64),contextFor:async()=>({selectedClientId:null}),...(beforeInvocation?{beforeInvocation}:{}),
   admit:async()=>{admissions++;return {run,expiresAtMs:61000};},onUnknown:()=>unknown++,
   provider:{async invoke(input){invocations++;call=input;entered.resolve();if(invokeError)throw invokeError;return response.promise;},stop:async()=>{throw Error('Stop should not run in these controls');}}});
  return {owner,run,store,response,entered:entered.promise,call:()=>call,counts:()=>({invocations,admissions,unknown}),record:()=>record,
@@ -30,6 +30,13 @@ test('kickoff replay invokes once and terminal publication alone is not settled 
  const result=await f.owner.settle({execution,state:'completed',credential});f.response.resolve(result);
  assert.equal((await f.owner.status({binding,executionId:execution.executionId})).state,'completed');
  await f.owner.close();
+});
+test('a successor cancelled while its continuation is preparing cannot invoke after the wait resolves',async()=>{
+ const waiting=Promise.withResolvers(),targetBinding={...binding,writerFence:2},f=fixture({targetBinding,beforeInvocation:()=>waiting.promise});
+ await f.owner.kickoff({binding:targetBinding,executionKey:hash(targetBinding)});assert.equal(f.counts().invocations,0);
+ assert.equal((await f.owner.status({binding:targetBinding,executionId:hash(targetBinding)})).state,'preparing');
+ f.run.state='cancelled';waiting.resolve();await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.counts().invocations,0);assert.equal(f.record().phase,'unknown');await f.owner.close();
 });
 test('credentials survive database JSON key ordering but reject a foreign bearer or changed execution',async()=>{
  const f=fixture();await f.owner.kickoff({binding,executionKey:hash(binding)});await f.entered;

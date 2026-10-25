@@ -13,7 +13,7 @@ export const MAX_OBJECTIVE_READBACK_BYTES=8*1024*1024;
 export function createObjectiveGenerationReadback(configuration){
  const c=own(configuration,['runStarts','store','objects','retention'],['now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
  const readStart=storageMethod(c.runStarts,'readByJob'),readRun=storageMethod(c.store,'read'),readCompletion=storageMethod(c.store.completions,'read'),
-  readSession=storageMethod(c.store.lifecycle,'readSessionCapture'),get=storageMethod(c.objects,'get'),servable=storageMethod(c.retention,'assertServable');
+  readSession=storageMethod(c.store.lifecycle,'readSessionCapture'),get=storageMethod(c.objects,'get'),servable=storageMethod(c.retention,'assertServable'),withRelease=storageMethod(c.retention,'withRelease');
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  function input(value,completion){
   const v=own(value,['schemaVersion','generationJobId','sourceAdmissionSha256',...(completion?['binding']:[])],['signal']);nativeSignal(v.signal);
@@ -21,8 +21,8 @@ export function createObjectiveGenerationReadback(configuration){
    typeof v.sourceAdmissionSha256!=='string'||!/^[a-f0-9]{64}$/u.test(v.sourceAdmissionSha256))refuse();
   if(completion)validateShape('RunBinding',v.binding);return v;
  }
- async function accepted(v,life){
-  const saved=data(await life.run(signal=>readStart({generationJobId:v.generationJobId,signal})));own(saved,['state','record']);
+ async function accepted(v,life,initial){
+  const saved=initial??data(await life.run(signal=>readStart({generationJobId:v.generationJobId,signal})));own(saved,['state','record']);
   if(saved.state!=='STARTED')refuse();const record=assertObjectiveRunStartRecord(saved.record),binding=record.binding;
   if(record.generationJobId!==v.generationJobId||record.sourceAdmissionSha256!==v.sourceAdmissionSha256||v.binding!==undefined&&!same(v.binding,binding))refuse();
   await life.run(()=>servable({tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId}));life.check();
@@ -31,14 +31,27 @@ export function createObjectiveGenerationReadback(configuration){
   assertNativeConversationScope({binding,scopes:run.scopes,selectedClientId:record.selection.sourceAdmission.canonical.clientId});life.check();
   return data({schemaVersion:1,record,request,run});
  }
+ async function guarded(v,life,work){
+  // The private lookup identifies the subject; its bytes cannot leave this
+  // owner until the canonical serving exclusion covers the complete response.
+  const saved=data(await life.run(signal=>readStart({generationJobId:v.generationJobId,signal})));own(saved,['state','record']);
+  if(saved.state!=='STARTED')refuse();const b=assertObjectiveRunStartRecord(saved.record).binding;
+  const subject={tenantId:b.tenantId,kind:'conversation',subjectId:b.conversationId};
+  return withRelease([subject],async(gateSignal,assertLocked)=>{
+   const lockedLife=createOperationLifetime({now,signal:AbortSignal.any([life.signal,gateSignal]),deadlineMs:life.deadline(),errorFactory:typedFault});
+   try{await assertLocked(subject);lockedLife.check();const result=await work(await accepted(v,lockedLife,saved),lockedLife);
+    await assertLocked(subject);lockedLife.check();return result;
+   }finally{lockedLife.close();}
+  },{signal:life.signal,deadlineMs:life.deadline()});
+ }
  async function acceptance(value){
   const v=input(value,false),life=createOperationLifetime({now,signal:v.signal,deadlineMs:now()+maxRequestMs,errorFactory:typedFault});
-  try{return await accepted(v,life);}finally{life.close();}
+  try{return await guarded(v,life,a=>a);}finally{life.close();}
  }
  async function completion(value){
   const v=input(value,true),life=createOperationLifetime({now,signal:v.signal,deadlineMs:now()+maxRequestMs,errorFactory:typedFault});
-  try{
-   const a=await accepted(v,life),{record,run,request}=a,binding=record.binding,selectedClientId=record.selection.sourceAdmission.canonical.clientId;
+  try{return await guarded(v,life,async(a,life)=>{
+   const {record,run,request}=a,binding=record.binding,selectedClientId=record.selection.sourceAdmission.canonical.clientId;
    const query={binding,scopes:run.scopes,selectedClientId};
    const p=data(await life.run(()=>readCompletion(query,life.check)));life.check();
    if(run.state!=='completed'||p.state!=='PUBLISHED'||p.kind!=='native-session'||p.proof?.kind!=='native-session'||
@@ -56,6 +69,7 @@ export function createObjectiveGenerationReadback(configuration){
    if(!same(again,a)||!same(latest,p))refuse();
    const out=data({...a,completion:p,file:{path:d.path,object,base64:bytes.toString('base64')}});
    if(Buffer.byteLength(JSON.stringify(out))>MAX_OBJECTIVE_READBACK_BYTES)refuse();life.check();return out;
+  });
   }finally{life.close();}
  }
  return Object.freeze({acceptance,completion});

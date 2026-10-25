@@ -9,14 +9,14 @@ import {createObjectiveGenerationActivities} from '../objective-generation/lifec
 
 const fault=()=>Error('OBJECTIVE_RUNS_CONFIGURATION');
 export function composeObjectiveRuns(options){
- const o=own(options,['configuration','controlCapabilitySha256'],['pool','store','client','runStarts','template','core','now']);
+ const o=own(options,['configuration','controlCapabilitySha256'],['pool','store','client','runStarts','template','core','retention','now']);
  const declared=compileObjectiveGenerationConfiguration(o.configuration,'control').runs;
  if(!declared)return Object.freeze({application:createObjectiveActivitiesApplication({controlCapabilitySha256:o.controlCapabilitySha256}),state:'disabled',tables:Object.freeze([])});
  if(!o.core||!o.runStarts||!o.template)throw fault();
  const now=o.now??Date.now,requestMs=Math.min(30000,Math.max(15000,o.configuration.limits.requestMs));
  const admission=createObjectiveNativeAdmission({pool:o.pool,store:o.store,authority:o.core,template:o.template,now,maxRequestMs:requestMs});
  const dispatcher=createTemporalConversationDispatcher({client:o.client,taskQueue:o.configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:requestMs});
- const owner=createObjectiveRunOwner({enabled:true,runStarts:o.runStarts,admission,core:o.core,dispatcher,store:o.store,now,maxRequestMs:requestMs});
+ const owner=createObjectiveRunOwner({enabled:true,runStarts:o.runStarts,admission,core:o.core,dispatcher,store:o.store,retention:o.retention,now,maxRequestMs:requestMs});
  if(!owner.available())throw fault();
  const runs={start:owner.start,async read(value){return (await owner.read(value)).run;}};
  const activitiesFor=({signal})=>createObjectiveGenerationActivities({clientFor:o.core.clientFor,runs,context:()=>({cancellationSignal:signal}),now,maxRequestMs:requestMs});

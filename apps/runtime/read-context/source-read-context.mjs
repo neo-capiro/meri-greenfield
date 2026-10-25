@@ -77,6 +77,15 @@ export function assertSourceReadRequest(contract,request,subject){
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
  const group=contract.binding.group;
+ if(group==='certification-status')return priorContext??{comparisonLocale:Intl.getCanonicalLocales(new Intl.Collator().resolvedOptions().locale)[0]};
+ if(group==='rule-status'||group==='sam-opportunities'){
+  if(priorContext)return priorContext;
+  const at=now();if(!Number.isSafeInteger(at)||at<0||at>8640000000000000)refuse('ACCESS_DENIED');
+  const instant=new Date(at).toISOString();
+  if(group==='rule-status')return {stageAsOf:instant,commentAsOf:instant};
+  if(!modeObservation||!['off','shadow','enforce'].includes(modeObservation.evidenceAccuracyMode))refuse('UNAVAILABLE');
+  return {asOf:instant,sourceStatusAsOf:instant,sourceHealthAsOf:instant,evidenceAccuracyMode:modeObservation.evidenceAccuracyMode};
+ }
  if(MODE_READ_OPERATIONS.includes(contract.descriptor.operation.id)){
   if(!modeObservation||!['off','shadow','enforce'].includes(modeObservation.evidenceAccuracyMode))refuse('UNAVAILABLE');
   const context={evidenceAccuracyMode:modeObservation.evidenceAccuracyMode};
@@ -130,7 +139,10 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   return {};
  }
  if(group==='tracked-bills'){
-  const selected=clientSubject(proof,native),clientReference=proof.request.clientId.trim().slice(0,80);
+  const clientReference=proof.request.clientId.trim().slice(0,80),s=proof.subject;
+  const personal=s.kind==='personal'&&s.entityType==='user'&&s.entityIds.length===1&&s.entityIds[0]===proof.binding.actorId;
+  const selected=personal?clientReference.toLowerCase():clientSubject(proof,native);
+  if(personal)assertNativeVisibleClients(native,[selected]);
   if(UUID.test(clientReference.trim().toLowerCase())){if(clientReference.trim().toLowerCase()!==selected)refuse('ACCESS_DENIED');}
   else if(!clientReferenceObservation||clientReferenceObservation.reference!==clientReference||clientReferenceObservation.clientId!==selected)refuse('ACCESS_DENIED');
   const context={binding:proof.binding,subject:proof.subject,clientReference};

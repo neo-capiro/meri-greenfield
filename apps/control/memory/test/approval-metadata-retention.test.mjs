@@ -1,29 +1,28 @@
-/** Synthetic exact-row inventory and guarded purge seam. The central retention owner, allocation and trigger are not bound. */
+/** Synthetic exact-row inventory and guarded purge of retained historical approval payloads. No new approval payload is written. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {commandToolValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {hash,subjectKey} from '../../retention/boundary.mjs';
 import {planDigest} from '../../retention/purge.mjs';
-import {createMemoryApprovalMetadataOwner,MEMORY_COMMAND_OPERATION} from '../approval-metadata.mjs';
+import {memoryMetadataPayload,MEMORY_COMMAND_OPERATION} from '../approval-metadata.mjs';
 import {createMemoryApprovalMetadataRetentionPayloadOwner,MEMORY_APPROVAL_METADATA_ROW_CLASS} from '../approval-metadata-retention-owner.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`,NOW=1900000000000;
 const binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const subject={tenantId:'tenant',kind:'conversation',subjectId:id(1),ownerActorId:'actor'};
 async function payload(){
- let retained;
- const owner=createMemoryApprovalMetadataOwner({store:{async insert(value){retained=structuredClone(value);return value;},async read(){return retained;}},
-  commandContext:{binding,conversationClientId:id(5)},preparePolicy:async call=>({authorized:true,selectionSha256:call.selectionSha256,binding,
-   scopes:[{tenantId:'tenant',kind:'client',resourceId:id(5),policyRevision:'current'}],requiredApprover:{tenantId:'tenant',actorId:'actor'},
-   proposalExpiresAt:new Date(NOW+60000).toISOString(),checkedAtMs:NOW,expiresAtMs:NOW+1000}),
-  retention:{async assertServable(){}},now:()=>NOW,newId:(()=>{let n=100;return()=>id(n++);})(),maxRequestMs:1000});
- const request={content:'Private remembered detail',scope:'personal'},input=commandToolValidators.normalizeCommandToolInput('memory.propose',request,
-  {commandContext:{binding,conversationClientId:id(5)}}).input;
- await owner.prepare({operation:MEMORY_COMMAND_OPERATION,action:'memory.propose',binding,request,input,inputSha256:canonicalSha256(input),
-  deadlineMs:NOW+1000,signal:undefined});
- return retained;
+ const context={binding,conversationClientId:id(5)},request={content:'Private remembered detail',scope:'personal'};
+ const input=commandToolValidators.normalizeCommandToolInput('memory.propose',request,{commandContext:context}).input;
+ const record={operation:MEMORY_COMMAND_OPERATION,action:'memory.propose',binding,request,inputSha256:canonicalSha256(input),
+  commandId:id(100),idempotencyKey:id(101),proposalId:id(102),
+  scopes:[{tenantId:'tenant',kind:'client',resourceId:id(5),policyRevision:'current'}],
+  requiredApprover:{tenantId:'tenant',actorId:'actor'},createdAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+60000).toISOString()};
+ const command={contractVersion:'0.1.0',commandId:record.commandId,binding,action:record.action,arguments:input.arguments,
+  attachments:[],scopes:record.scopes,idempotencyKey:record.idempotencyKey};
+ return memoryMetadataPayload({record,commandContext:context,commandSha256:canonicalSha256(command)});
 }
+
 test('memory metadata inventory is exact by tenant, owner, conversation, action and proposal ID; corrupt content fails closed',async()=>{
  const retained=await payload(),pId=retained.record.proposalId,queries=[];
  let corrupt=false,tombstone=false;

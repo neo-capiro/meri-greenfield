@@ -111,8 +111,8 @@
     },
     {
       "path": "../../apps/control/action-application/http.mjs",
-      "sha256": "5cc1a6be3e5db1bd862f0c94d70bfbd0f7579dcd0ae2ed7241f15dc4aa488740",
-      "bytes": 4925
+      "sha256": "ee1e56894c97ca2148adf4a990e8a9ca5d5b71699e69441633e36b563b85c4a6",
+      "bytes": 5006
     },
     {
       "path": "../../apps/control/document-application/current.mjs",

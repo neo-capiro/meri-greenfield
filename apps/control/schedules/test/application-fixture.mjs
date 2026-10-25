@@ -63,11 +63,12 @@ export async function applicationFixture({runCancellation,readConsents,log}={}){
   else{assert.ok(url.endsWith('/context'));const input=JSON.parse(init.body);value={principal,identityRevision:'i1',identitySha256:input.identitySha256,conversationId:binding.conversationId,selectedClientId:clientId,contextRevision:'c1',...stamp};}
   return Response.json(value);
  };
- const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,commandContext,now,limits:{maxRequestMs:5000,maxFactBytes:65536},enabled:true,
+ const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits:{maxRequestMs:5000,maxFactBytes:65536},enabled:true,
+  admitInitialConversation:async()=>JSON.stringify({binding,policyRevision:state.policyRevision,checkedAtMs:now(),deadlineMs:NOW+60000}),
   currentOwner:{async currentRun(selected){assert.deepEqual(selected,binding);return JSON.stringify({binding,policyRevision:state.policyRevision,checkedAtMs:now(),deadlineMs:NOW+60000});}}});
  const gate=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext:identity,fetchImpl,now,limits:{maxRequestMs:5000,maxFactBytes:65536}});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,membership:{admit:gate.admit,recheck:gate.recheck},now,limits:{maxSessions:4,maxRequestMs:5000,maxTtlMs:60000,maxFactBytes:65536}});
- const session=await sessions.issue({identityCredential:'synthetic-native',deadlineMs:NOW+5000});
+ const session=await sessions.issue({identityCredential:'synthetic-native',hints:{conversationId:binding.conversationId,clientId},deadlineMs:NOW+5000});
  const sql=scheduleOwnerFixture(),preparations=createPreparedSchedulePoolFixture(),scheduleQueries=schedulePool(sql,state),pool=routedPool(scheduleQueries,preparations.pool),owner=createPostgresScheduleOwner({pool});
  const selected=selectSkill('quick_skill.relationship_brief','1.0.0'),manifest=selected.manifest;
  const allocationJson=JSON.stringify({run:Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(key=>[key,binding[key]])),manifest,manifestSha256:hash(manifest),catalogSha256:selected.pin.catalogSha256,budgets:manifest.budgets,

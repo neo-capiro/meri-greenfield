@@ -30,8 +30,6 @@
  * ACCESS_DENIED, REFUSED (Core 400/409), INVALID_ARGUMENTS, DEADLINE, CANCELLED, with `effect: 'none'` before the request left
  * and `'unknown'` after (a decision may have been recorded).
  *
- * `getCredentials({tenantId,actorId,purpose:'approval.execution',binding})` is the `core` owner port of
- * `native-authority/execution-composition.mjs` (`{origin,getCredentials}`) over the same relay and secret.
  * Construction is inert: no secret read, request or RPC. */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
@@ -42,7 +40,9 @@ import {retainedOrigin} from '../../../packages/contracts/runtime-0.2/retained-r
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {intentFault,INTENT_FAILURE_CODES} from '../../control/intents/faults.mjs';
-export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision',revoke:'/api/clio/approvals/native/revoke'});
+import {nativeApprovalScope} from './approval-session.mjs';
+import {nativeTaskOutcome,nativeTaskNotExecuted} from '../../control/intents/task-outcome.mjs';
+export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision',revoke:'/api/clio/approvals/native/revoke',execute:'/api/clio/approvals/native/execute',executionRead:'/api/clio/approvals/native/execution/read'});
 export const APPROVAL_FORWARDER_OPERATIONS=Object.freeze(['approval/record','approval/decision','approval/read','approval/revoke']);
 const STABLE=['tenantId','actorId','conversationId','runId'];
 const TOKEN=/^[\x21-\x7e]{1,8192}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,HEX64=/^[a-f0-9]{64}$/u;
@@ -72,21 +72,22 @@ export function registerApprovalSessionBinder(context,bind){
  if(context===null||typeof context!=='object'||!ordinary(bind)||binders.has(context))configuration();
  binders.set(context,bind);
 }
-export function bindApprovalSessions(context,sessions){
+export function bindApprovalSessions(context,sessions,retention,store){
  if(context===null||typeof context!=='object')configuration();
- const bind=binders.get(context);if(bind===undefined)return false;bind(sessions);return true;
+ const bind=binders.get(context);if(bind===undefined)return false;bind(sessions,retention,store);return true;
 }
 export function createCoreApprovalForwarder(options){
  let c,origin,nativeCredentialFor;
  try{
-  c=own(options,['origin','nativeCredentials','getServiceSecret','now'],['readProposal','selectedClientId','reservedCredentials','fetchImpl','maxRequestMs','maxResponseBytes','selectDocumentBinding']);origin=retainedOrigin(c.origin);
+  c=own(options,['origin','nativeCredentials','getServiceSecret','now'],['readProposal','selectedClientId','reservedCredentials','fetchImpl','maxRequestMs','maxResponseBytes','selectDocumentBinding','selectApprovalBinding']);origin=retainedOrigin(c.origin);
   if(!c.nativeCredentials||typeof c.nativeCredentials!=='object'||types.isProxy(c.nativeCredentials))throw Error();
   const method=Object.getOwnPropertyDescriptor(c.nativeCredentials,'nativeCredentialFor');if(!method||!Object.hasOwn(method,'value'))throw Error();nativeCredentialFor=method.value;
   for(const fn of [nativeCredentialFor,c.getServiceSecret,c.now,c.fetchImpl??globalThis.fetch,c.readProposal??(()=>{}),c.reservedCredentials??(()=>{})])if(!ordinary(fn))throw Error();
-  if(c.selectedClientId!==undefined&&(typeof c.selectedClientId!=='string'||!UUID.test(c.selectedClientId)))throw Error();
+  if(c.selectedClientId!==undefined&&c.selectedClientId!==null&&(typeof c.selectedClientId!=='string'||!UUID.test(c.selectedClientId)))throw Error();
   if(c.maxRequestMs!==undefined&&(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000))throw Error();
   if(c.maxResponseBytes!==undefined&&(!Number.isSafeInteger(c.maxResponseBytes)||c.maxResponseBytes<1||c.maxResponseBytes>1048576))throw Error();
   if(c.selectDocumentBinding!==undefined&&!ordinary(c.selectDocumentBinding))throw Error();
+  if(c.selectApprovalBinding!==undefined&&!ordinary(c.selectApprovalBinding))throw Error();
  }catch{configuration();}
  const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs??10000,maxResponseBytes=c.maxResponseBytes??131072,reservedDigests=c.reservedCredentials??(async()=>new Set());
  const pending=new Map();
@@ -118,13 +119,14 @@ export function createCoreApprovalForwarder(options){
     headers:{authorization:'Bearer '+first.credential,'x-internal-service-secret':secret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:JSON.stringify(body)}));
     request.then(r=>{if(life.signal.aborted)try{cancelBody(responseBody(r));}catch{}},()=>{});return request;});
    if(!(acquired instanceof Response)||types.isProxy(acquired))refuse('UNAVAILABLE','unknown');
-   // Core refused before recording (4xx): no effect. Anything else after the request left may have recorded a decision.
+   // Native task errors can follow a committed effect or an unresolved claim. Their
+   // post-send outcome stays unknown even when Core withholds the result with 4xx.
    if(acquired.status!==200)refuse([401,403].includes(acquired.status)?'ACCESS_DENIED':[400,404,409,422].includes(acquired.status)?'REFUSED':'UNAVAILABLE',[401,403,400,404,409,422].includes(acquired.status)?'none':'unknown');
    let value;try{value=data(await readJsonResponse(acquired,{lifetime:life,maxResponseBytes}));}catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE','unknown');}
    await selected.verify?.();const last=bearer(selected,life.signal,'unknown');if(last.credential!==first.credential)refuse('ACCESS_DENIED','unknown');life.check();
    return {value,started,sessionExpiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)};
   }catch(error){
-   if(faults.has(error))throw ['DEADLINE','CANCELLED'].includes(error.code)&&sent?fault(error.code,'unknown'):error;
+   if(faults.has(error))throw sent&&(route===CORE_APPROVAL_ROUTES.execute||['DEADLINE','CANCELLED'].includes(error.code))?fault(error.code,'unknown'):error;
    throw fault('UNAVAILABLE',sent?'unknown':'none');
   }finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}}
  }
@@ -140,15 +142,15 @@ export function createCoreApprovalForwarder(options){
  }
  /** The proposal's one client scope (the live session is bound to it) and its single policy revision. */
  function selectedClient(p){
-  const scopes=p.command.scopes,clients=scopes.filter(s=>s?.kind==='client');
-  if(!Array.isArray(scopes)||!scopes.length||clients.length!==1||typeof clients[0].resourceId!=='string'||!UUID.test(clients[0].resourceId)||new Set(scopes.map(s=>s.policyRevision)).size!==1||scopes.some(s=>s.tenantId!==p.command.binding.tenantId))refuse('ACCESS_DENIED');
-  if(c.selectedClientId!==undefined&&clients[0].resourceId!==c.selectedClientId)refuse('ACCESS_DENIED');
-  return {id:clients[0].resourceId,policyRevision:scopes[0].policyRevision};
+  let selected;try{selected=nativeApprovalScope(p);}catch{refuse('ACCESS_DENIED');}
+  if(c.selectedClientId!==undefined&&selected.selectedClientId!==c.selectedClientId)refuse('ACCESS_DENIED');
+  return {id:selected.selectedClientId,policyRevision:selected.policyRevision};
  }
  async function selection(life,p){const selectedClientId=selectedClient(p).id,source=p.command.binding;
-  if(p.command.action!=='document.draft')return {binding:stable(source),selectedClientId};
-  if(!c.selectDocumentBinding)refuse('UNAVAILABLE');let pinned;
-  const verify=async()=>{const value=data(own(await life.run(signal=>c.selectDocumentBinding({proposal:p,signal,deadlineMs:life.deadline()})),['binding','selectedClientId']));validateShape('RunBinding',value.binding);
+  const selectBinding=c.selectApprovalBinding??(p.command.action==='document.draft'?c.selectDocumentBinding:undefined);
+  if(!selectBinding){if(p.command.action==='document.draft')refuse('UNAVAILABLE');return {binding:stable(source),selectedClientId};}
+  let pinned;
+  const verify=async()=>{const value=data(own(await life.run(signal=>selectBinding({proposal:p,signal,deadlineMs:life.deadline()})),['binding','selectedClientId']));validateShape('RunBinding',value.binding);
    if(['tenantId','actorId','conversationId'].some(k=>value.binding[k]!==source[k])||value.binding.writerFence<source.writerFence||value.selectedClientId!==selectedClientId||pinned&&!same(value,pinned))refuse('ACCESS_DENIED');pinned??=value;};
   await verify();return {...pinned,verify};
  }
@@ -237,20 +239,44 @@ export function createCoreApprovalForwarder(options){
    return p;
   }finally{life.close();}
  }
- /** The `core` credentials port of the execution issuance (`createCoreExecutionIssuance.getCredentials`): the attended approver's
-  * live bearer for the proposal's run and the configured selected client, plus the service secret, never the control token. */
- async function getCredentials(value){
-  const {signal,deadlineMs,...raw}=own(value,['tenantId','actorId','purpose','binding'],['signal','deadlineMs']);nativeSignal(signal);
-  let v;try{v=data(raw);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
-  if(v.purpose!=='approval.execution'||v.binding.tenantId!==v.tenantId||v.binding.actorId!==v.actorId||c.selectedClientId===undefined)refuse('ACCESS_DENIED');
-  const life=lifetime(signal,deadlineMs),selected={binding:stable(v.binding),selectedClientId:c.selectedClientId};
+ /** Core owns the one atomic task effect and its retained outcome. An absent read never dispatches. */
+ async function taskEffect(value,observe){
+  const v=own(value,['proposal','principal','deliveryId'],['decision','signal','deadlineMs']);nativeSignal(v.signal);
+  let p;try{p=data(v.proposal);assertNativeApprovalProposal(p);}catch{refuse('INVALID_ARGUMENTS');}
+  const b=p.command.binding;
+  if(!['task.create','task.update'].includes(p.command.action)||v.principal.tenantId!==b.tenantId||v.principal.actorId!==b.actorId)refuse('ACCESS_DENIED');
+  const life=lifetime(v.signal,v.deadlineMs);
   try{
-   const forbidden=await life.run(()=>reservedDigests());
-   const first=bearer(selected,life.signal);if(forbidden.has(sha(first.credential)))refuse('ACCESS_DENIED');
-   let secret;try{secret=await life.run(()=>c.getServiceSecret());}catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE');}
-   if(typeof secret!=='string'||!TOKEN.test(secret)||secret===first.credential||forbidden.has(sha(secret)))refuse('UNAVAILABLE');
-   const last=bearer(selected,life.signal);if(last.credential!==first.credential)refuse('ACCESS_DENIED');life.check();
-   return data({tenantId:v.tenantId,actorId:v.actorId,bearerToken:first.credential,serviceSecret:secret,expiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)});
+   if(!observe)life.limitDeadline(Date.parse(p.expiresAt));
+   const retained=await custody(life,b,p.proposalId);if(!same(retained,p))refuse('ACCESS_DENIED');
+   const answer=await post(life,observe?CORE_APPROVAL_ROUTES.executionRead:CORE_APPROVAL_ROUTES.execute,{selected:await selection(life,p),body:{proposal:p,binding:b}});
+   const r=answer.value;if(observe&&r===null)return null;
+   if(observe){
+    if(r?.state==='UNKNOWN'){own(r,['state']);return r;}
+    if(r?.state==='NOT_EXECUTED')return nativeTaskNotExecuted(r,p);
+    own(r,['state','outcome']);if(r.state!=='OUTCOME')refuse('UNAVAILABLE','unknown');
+   }else{
+    if(r?.status==='indeterminate'){own(r,['status']);return r;}
+    own(r,['status','outcome']);if(r.status!=='observed')refuse('UNAVAILABLE','unknown');
+   }
+   return data({...r,outcome:nativeTaskOutcome(r.outcome,p,v.decision)});
+  }finally{life.close();}
+ }
+ /** The multipart filing client borrows credentials only for a retained artifact.file proposal and the exact current selector. */
+ async function filingCredentials(value){
+  const {signal,deadlineMs,...raw}=own(value,['tenantId','actorId','purpose','proposal','binding'],['signal','deadlineMs']);nativeSignal(signal);
+  const v=data(raw),p=v.proposal;try{assertNativeApprovalProposal(p);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
+  if(v.purpose!=='approval.execution'||p.command.action!=='artifact.file'||v.tenantId!==p.command.binding.tenantId||v.actorId!==p.command.binding.actorId)refuse('ACCESS_DENIED');
+  const life=lifetime(signal,deadlineMs);
+  try{
+   const retained=await custody(life,p.command.binding,p.proposalId);if(!same(retained,p))refuse('ACCESS_DENIED');
+   const selected=await selection(life,p);if(!same(selected.binding,v.binding))refuse('ACCESS_DENIED');
+   const forbidden=await life.run(()=>reservedDigests());await selected.verify?.();
+   const first=bearer(selected,life.signal);if(forbidden.has(sha(first.credential)))refuse('ACCESS_DENIED');life.limitDeadline(first.expiresAtMs);
+   const serviceSecret=await life.run(()=>c.getServiceSecret());
+   if(typeof serviceSecret!=='string'||!TOKEN.test(serviceSecret)||serviceSecret===first.credential||forbidden.has(sha(serviceSecret)))refuse('UNAVAILABLE');
+   await selected.verify?.();const last=bearer(selected,life.signal);if(last.credential!==first.credential)refuse('ACCESS_DENIED');life.check();
+   return data({tenantId:v.tenantId,actorId:v.actorId,bearerToken:first.credential,serviceSecret,expiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)});
   }finally{life.close();}
  }
  /** The provider RPC seam `call(operation,input,{signal})` for `createNativeIntentApprovals`; other operations are UNAVAILABLE. */
@@ -263,7 +289,9 @@ export function createCoreApprovalForwarder(options){
   if(operation==='approval/revoke')return revoke({...own(input,['proposalId','commandSha256','approver','binding']),...extra});
   refuse('UNAVAILABLE');
  }
- return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,getCredentials,
+ return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,
+  async executeTask(value){return taskEffect(value,false);},
+  async readTaskExecution(value){return taskEffect(value,true);},
   /** The intents decision ports over Core (the shapes `approval.mjs` and the lifecycle read). */
   async readDecision(value){const v=await decision(value);return v.revoked?null:v.decision;},
   async getCurrent(value){const v=await decision(value);if(v.decision===null)throw Object.assign(Error('COMMAND_APPROVAL_REFUSED'),{code:'COMMAND_APPROVAL_REFUSED'});return JSON.stringify(v);}});

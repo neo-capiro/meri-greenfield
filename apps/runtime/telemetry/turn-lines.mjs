@@ -22,11 +22,14 @@ export const RUN_OWNER_OPERATIONS = Object.freeze(['runner/load','runner/publish
   'runner/session/register','runner/complete','runner/reserve-next','other']);
 const SERVICES=['control','runner','owner','proxy'],OUTCOMES=['completed','refused','failed','cancelled','success','error','timeout','unanswered','other'];
 const COMPONENTS=['bootstrap','pending-work','owner-gate','pair','service-gate','facts','credential-delivery','currentness','owner','proxy','other'];
-const DIAGNOSTIC_STAGES=['module-import','runner-preflight','capability-load','binding-bootstrap','remote-module-import','admission-wait','activity',
+export const DIAGNOSTIC_STAGES=Object.freeze(['module-import','runner-preflight','capability-load','binding-bootstrap','remote-module-import','admission-wait','activity',
  'runtime-prepare','runtime-admission','sdk-session','sdk-directories','skill-plugin','runner-cleanup','activity-input','activity-load',
  'activity-policy','activity-setup','activity-starting','activity-running','activity-query','activity-stream','activity-output','activity-result',
  'activity-finalize','activity-complete','activity-terminal','activity-cleanup','remote-config','remote-tls','remote-clients','remote-worker',
- 'remote-listen','kickoff-wait','remote-cleanup'];
+ 'remote-listen','kickoff-wait','remote-cleanup',
+ 'agentcore-input','agentcore-admission','agentcore-workspace','agentcore-clients','agentcore-assemble','agentcore-cleanup','agentcore-reconcile','agentcore-settle',
+ 'agentcore-config','agentcore-transport','agentcore-listen','agentcore-shutdown',
+ 'worker-material','worker-readiness','worker-connect','worker-create','worker-run','worker-listen','worker-cleanup']);
 const SIGNALS=['none','SIGABRT','SIGALRM','SIGBUS','SIGFPE','SIGHUP','SIGILL','SIGINT','SIGKILL','SIGPIPE','SIGQUIT','SIGSEGV','SIGSYS','SIGTERM',
  'SIGTRAP','SIGUSR1','SIGUSR2','SIGXCPU','SIGXFSZ'];
 const TIMEOUTS=['none','deadline','transport-timeout','upstream-unavailable'];
@@ -46,6 +49,7 @@ const COMMON={service:choice(SERVICES),runId:safeId,attemptId:safeId,atMs:number
 const COUNTERS={core,coreMs:number,clerkReadsEstimate:number,authorityFresh:number,authorityReuses:number,aws,awsMs:number,db,runOwner:dictionary(RUN_OWNER_OPERATIONS,statusCounts),runOwnerMs:number};
 export const LINE_SCHEMAS=Object.freeze({
  'meri.turn.stage':{...COMMON,stage:choice(STAGES)},
+ 'meri.turn.settlement':{...COMMON,state:choice(['completed','failed','cancelled','paused','waiting-for-approval']),sdkCleanup:choice(['closed'],'unknown')},
  'meri.turn.summary':{...COMMON,conversationId:safeId,state:choice(['completed','failed','cancelled']),reasonCode:safeCode,
    t0Ms:nullable,stages:dictionary(STAGES,number),firstTextMs:nullable,resultMs:nullable,deltaPublications:number,timeoutClass:choice(TIMEOUTS,'none')},
  'meri.turn.counters':{...COMMON,requestId:safeId,...COUNTERS},

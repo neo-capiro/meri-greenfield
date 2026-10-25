@@ -36,8 +36,9 @@ export function createCoreDecisions({transport}){
      raw={outcome:a.outcome};
     }
    }catch(error){
-    // An uncertain decision is an effect that may have applied: the mount reports it as UNKNOWN, never as not dispatched.
-    if(productFailure(error)?.code===UNCERTAIN)refuse(UNCERTAIN,'UNKNOWN');throw error;
+    // A deadline or cancellation while awaiting the transport does not prove Core stopped before recording the decision.
+    // Keep these effects uncertain, just like a lost acknowledgement; only canonical status can establish the resulting review.
+    if([UNCERTAIN,'CANCELLED','DEADLINE'].includes(productFailure(error)?.code))refuse(UNCERTAIN,'UNKNOWN');throw error;
    }
    return Object.freeze(raw);
   },

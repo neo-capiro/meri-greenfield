@@ -33,3 +33,18 @@ test('0002 binds the run start to writer fence 1, one job and one run; 0003 keys
  assert.match(runStarts,/\(record->'selection'\) - ARRAY\[/u);assert.doesNotMatch(runStarts,/[^(]record->'selection' - /u);
  assert.match(replays,/PRIMARY KEY \(issuer, subject, token_id\)/u);assert.match(replays,/OBJECTIVE_READER_REPLAY_TRANSITION/u);
 });
+
+test('forward retention uses the existing exact expired-Trash target and keeps identity columns immutable',()=>{
+ const text=read('0004_objective_run_start_retention.sql').toString('utf8'),statements=splitStatements(migrationBody(text));
+ assert.equal(statements.length,8);
+ assert.match(text,/sourceAdmission,actorUserId\}' = binding->>'actorId'/);
+ assert.doesNotMatch(text,/sourceAdmission,clerkUserId\}' = binding->>'actorId'/);
+ assert.match(text,/WHEN 'meri_objective_source\.run_starts' THEN columns:=ARRAY\['generation_job_id'\]; expected_mode:='objective'/);
+ assert.match(text,/t\.xmin=pg_current_xact_id\(\)::xid/);
+ assert.match(text,/restoreUntilMs[\s\S]*?2592000000/);
+ assert.match(text,/\(to_jsonb\(NEW\)-'record'\) IS NOT DISTINCT FROM \(to_jsonb\(OLD\)-'record'\)/);
+ assert.match(text,/GRANT UPDATE \(record\) ON meri_objective_source\.run_starts TO meri_control_runtime/);
+ assert.match(text,/IF TG_OP='INSERT' THEN\s+IF NEW.record->'retentionTombstone'='true'::jsonb THEN RAISE EXCEPTION 'OBJECTIVE_RUN_START_IMMUTABLE'/);
+ assert.match(text,/CREATE TRIGGER immutable_run_start_insert BEFORE INSERT ON meri_objective_source\.run_starts/);
+ assert.doesNotMatch(text,/GRANT (?:DELETE|TRUNCATE|ALL)|DELETE FROM|UPDATE meri_objective_source\.run_starts SET/);
+});

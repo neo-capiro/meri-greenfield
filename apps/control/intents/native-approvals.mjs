@@ -11,11 +11,8 @@
  * b7c6e9cf), behind the approver's native bearer plus the verified service identity, which the candidate's provider RPC seam
  * does not carry: the production composition supplies `call` from `apps/runtime/native-authority/approval-forwarder.mjs`
  * (`intents.core` declared), never the raw provider client. A failure that carries `effect:'none'` recorded nothing.
- *
- * `createCommandJournalOutcomes({journal,contextFor})` reads the executor's durable result (`meri_commands.command_journal`) for a
- * proposal: `journal` is the executor's own `createPostgresCommandJournal` and `contextFor(proposal)` the exact executor
- * context the composition gave `createCommandExecutor` for that run. Read-only. */
-import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+ * */
+import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const refused=code=>{throw Object.assign(Error(code),{code});};
 export function createNativeIntentApprovals(configuration){
@@ -42,14 +39,4 @@ export function createNativeIntentApprovals(configuration){
    const v=receipt(await c.call('approval/revoke',data({proposalId,commandSha256,approver,binding}),{signal}),{nullable:false});
    if(v.revoked!==true||v.decision.proposalId!==proposalId||v.decision.commandSha256!==commandSha256)refused('APPROVAL_RECEIPT_REFUSED');return v;},
  });
-}
-export function createCommandJournalOutcomes(configuration){
- const c=own(configuration,['journal','contextFor']);
- if(typeof c.journal?.read!=='function'||typeof c.contextFor!=='function')refused('INTENT_APPROVAL_CONFIGURATION');
- return Object.freeze({async read({proposal,signal}){
-  nativeSignal(signal);const p=data(proposal),context=data(await c.contextFor(p));
-  if(hash(context?.binding)!==hash(p.command.binding))refused('INTENT_OUTCOME_CONTEXT');
-  const row=await c.journal.read({proposal:p,context},()=>{if(signal?.aborted)refused('CANCELLED');});
-  return row===null?null:data({state:row.state,outcome:row.outcome});
- }});
 }

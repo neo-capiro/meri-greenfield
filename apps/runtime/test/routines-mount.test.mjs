@@ -54,7 +54,7 @@ test('actual compiled feature joins actual canonical sessions and native context
  const f=await applicationFixture();try{
   const {commandContext,allocationJson,template,workflow,policy,limits}=f.contextConfiguration;
   const feature=createRuntimeRoutinesFeature({enabled:true,pool:f.pool,client:f.client,context:{commandContext,allocationJson,template,workflow,policy,limits},now:f.now,newId:f.newId,limits:{maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:131072}});
-  assert.equal(feature.state(),'pending');const app=createRuntimeProductApplications({configuration,sessions:f.sessions,ports:captureRuntimePorts({routinesApplicationFactory:feature}),now:f.now});assert.equal(feature.state(),'composed');
+  assert.equal(feature.state(),'pending');const app=createRuntimeProductApplications({configuration,sessions:f.sessions,ports:captureRuntimePorts({routinesApplicationFactory:feature}),retention:{async assertServable(){}},now:f.now});assert.equal(feature.state(),'composed');
   const routes=createControlRouteApplications({assembly:app,candidate:{handle(){throw Error('private');}}}),send=(path,body)=>routes.public.handle(new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+f.session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
   const preparedResponse=await send(ROUTINE_PATHS.prepare,{requestId:'public-request',operation:'schedule_task',request:routineRequest()});assert.equal(preparedResponse.status,200);const prepared=await preparedResponse.json();assert.equal(prepared.status,'approval_required');assert.equal(f.temporal.calls.create,0);
   const approved=await send(ROUTINE_PATHS.approve,{...f.body(prepared),decision:'approved'});assert.equal(approved.status,200);assert.equal((await approved.json()).status,'acknowledged');assert.equal(f.temporal.calls.create,1);
@@ -87,4 +87,13 @@ test('captured optional history/inbox methods retain the borrowed receiver and c
  const feature={marker:'owner',create(){return {handle(){return null;}};},state(){return 'composed';},historyCurrentness(value){assert.equal(this.marker,'owner');assert.deepEqual(value,{gate:'gate',core:'core'});currentCalls++;return expected;},inboxState(){assert.equal(this.marker,'owner');return 'composed';}};
  const ports=captureRuntimePorts({routinesApplicationFactory:feature});feature.historyCurrentness=()=>{throw Error('replaced');};feature.inboxState=()=>{throw Error('replaced');};
  assert.equal(ports.routinesApplicationFactory.historyCurrentness({gate:'gate',core:'core'}),expected);assert.equal(ports.routinesApplicationFactory.inboxState(),'composed');assert.equal(currentCalls,1);
+});
+
+test('enabled routines without the canonical retention serving gate remain unavailable',async()=>{
+ const f=await applicationFixture();try{
+  const {commandContext,allocationJson,template,workflow,policy,limits}=f.contextConfiguration;
+  const feature=createRuntimeRoutinesFeature({enabled:true,pool:f.pool,client:f.client,context:{commandContext,allocationJson,template,workflow,policy,limits},now:f.now,newId:f.newId,limits:{maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:131072}});
+  const app=createRuntimeProductApplications({configuration,sessions:f.sessions,ports:captureRuntimePorts({routinesApplicationFactory:feature}),now:f.now});
+  assert.equal((await app.handle(request(ROUTINE_PATHS.list))).status,503);assert.equal(feature.state(),'unavailable');assert.deepEqual(feature.intentPreparersFor({}),[]);assert.equal(f.preparations.state.rows.size,0);
+ }finally{f.close();}
 });

@@ -5,6 +5,7 @@ import * as semantics from './semantics.mjs';
 export {IntentsResponseError} from './boundary.mjs';
 export {intentsVersion} from './protocol.mjs';
 export {intentsMetadata,intentsPaths};
+export {routinesPaths,routinesMetadata,receiveRoutinesRequest,receiveRoutinesResponse} from './routines.mjs';
 const requests=Object.freeze({list:'IntentsListRequest',decide:'IntentsDecideRequest'}),responses=Object.freeze({list:'IntentsListResponse',decide:'IntentsDecideResponse'});
 /** The context each route is answered against: the captured request, and for decide also the proposal admitted from an earlier list answer. */
 const expectationKeys=Object.freeze({list:['request'],decide:['proposal','request']});

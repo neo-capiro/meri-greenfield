@@ -1,3 +1,4 @@
+import {contentRows} from '../../../control/conversations/test/retention-content-fixture.mjs';
 /** Real conversation journals, mocked object transport; no provider, database or model calls. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {listenRuntime} from '../../http-server.mjs';
@@ -47,7 +48,7 @@ for(const change of ['header-overflow','header-shape','body-binding','body-limit
 });
 
 function inventory(x,b=binding){const state=x.f.state,subject={tenantId:b.tenantId,kind:'conversation',subjectId:b.conversationId,ownerActorId:b.actorId},filter=rows=>rows.filter(r=>r.tenant_id===b.tenantId&&r.conversation_id===b.conversationId),events=[...state.events.values()].flat().map(r=>({...r,tenant_id:r.event.binding.tenantId,conversation_id:r.event.binding.conversationId,run_id:r.event.binding.runId}));
- const raw={subject,conversation:state.conversations.get(`${b.tenantId}:${b.conversationId}`),runs:filter([...state.runs.values()]),events:filter(events),controls:filter([...state.controls.values()]),checkpoints:filter([...state.checkpoints.values()]),completionCheckpoints:filter([...state.completions.values()]),nextRuns:filter([...state.nextRuns.values()]),memoryContinuations:[],memoryContextRows:[]};
+ const raw={subject,conversation:state.conversations.get(`${b.tenantId}:${b.conversationId}`),runs:filter([...state.runs.values()]),events:filter(events),controls:filter([...state.controls.values()]),checkpoints:filter([...state.checkpoints.values()]),completionCheckpoints:filter([...state.completions.values()]),nextRuns:filter([...state.nextRuns.values()]),memoryContinuations:[],memoryContextRows:[],contentRows:contentRows(state,b)};
  const decoded=decodeConversationInventoryRows(raw),enumerated=enumerateReferences({...decoded,sdkSessionEntries:[],selectedOutputs:[],artifactVersions:[],nativeJournalRows:[],uploads:[]});return {raw,decoded,enumerated};
 }
 for(const mode of ['capture','complete'])test(`retention inventories actual ${mode} workspace and task versions without a legacy checkpoint row`,async t=>{const x=await fixture(t),request=mode==='capture'?await x.hold():x.request;await x.call(mode,request);if(mode==='capture')await x.f.service.recordCheckpoint({credential:x.f.credential,binding,input:{controlId:request.controlId,sessionId:request.sessionId}});
@@ -55,6 +56,11 @@ for(const mode of ['capture','complete'])test(`retention inventories actual ${mo
 });
 test('unknown hold capture refuses complete inventory; unknown completion retains its existing purge blocker',async t=>{const x=await fixture(t),request=await x.hold();x.state.unknown=true;await assert.rejects(x.call('capture',request));assert.throws(()=>inventory(x),/STORE_CORRUPT/);});
 test('unknown native completion is enumerated as unresolved, never a fabricated file inventory',async t=>{const x=await fixture(t);x.state.unknown=true;await assert.rejects(x.call('complete',x.request));const i=inventory(x);assert.equal(i.enumerated.unpublishedCompletionCheckpoints.length,1);assert.equal(i.enumerated.objects.length,0);});
+
+test('published native capture cannot certify an inventory after its SDK rows disappear',async t=>{const x=await fixture(t);await x.call('complete',x.request);const {raw}=inventory(x);
+ for(const table of Object.keys(raw.contentRows))if(table.startsWith('meri_conversations.sdk_session'))raw.contentRows[table]=[];
+ assert.throws(()=>decodeConversationInventoryRows(raw),/STORE_CORRUPT/);
+});
 test('fork copies immutable file custody, preserves source and blocks deletion while another holder remains',async t=>{const x=await fixture(t),request=await x.hold();await x.call('capture',request);await x.f.service.recordCheckpoint({credential:x.f.credential,binding,input:{controlId:request.controlId,sessionId:request.sessionId}});await x.settle(binding);
  const proof=(await x.f.store.lifecycle.readSessionCapture({binding,scopes,selectedClientId:id(5),checkpointId:binding.runId},check)).proof;
  const result=await x.f.control({controlId:id(8201),intent:'fork',checkpointId:binding.runId,checkpointSha256:proof.checkpointSha256});const source=inventory(x),target=inventory(x,result.targetBinding);assert.deepEqual(source.decoded.objectVersions,target.decoded.objectVersions);assert.equal(target.decoded.runs[0].continuation.files.tasks.length,2);

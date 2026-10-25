@@ -4,13 +4,79 @@ import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {allocation} from '../../../gateway/budget/tool-budget-binding.mjs';
 import {applicationFixture} from '../../../control/schedules/test/application-fixture.mjs';
-import {createAttendedRoutinesContextOwner,createAttendedRoutinesOwnerComposition,createAttendedRoutinesRetirement,deriveAttendedRoutinesOwners,retargetRoutinesAllocation} from '../routines-owner-composition.mjs';
+import {createAttendedRoutinesContextOwner,createNativeRoutinesContextOwner,createAttendedRoutinesOwnerComposition,createAttendedRoutinesRetirement,deriveAttendedRoutinesOwners,retargetRoutinesAllocation,compileNativeRoutinesTask,createNativeRoutinesOccurrenceOwners} from '../routines-owner-composition.mjs';
+import {agentcoreConfig} from '../../test/agentcore-fixture.mjs';
+import {scheduledAdmissionFixture} from './scheduled-admission-fixture.mjs';
+import {MODEL_CATALOG} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
 
 const code=value=>error=>error?.code===value;
 const binding={tenantId:'10000000-0000-4000-8000-000000000001',actorId:'10000000-0000-4000-8000-000000000002',conversationId:'10000000-0000-4000-8000-000000000003',runId:'10000000-0000-4000-8000-000000000004',attemptId:'10000000-0000-4000-8000-000000000005',workerId:'10000000-0000-4000-8000-000000000006',writerFence:1};
 const principal={tenantId:binding.tenantId,actorId:binding.actorId};
 const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
 const at=1000000;
+
+async function nativeFixture({general=false}={}){
+ const f=await applicationFixture(),b=f.contextConfiguration.commandContext.binding,selectedClientId=general?null:f.contextConfiguration.commandContext.clientResolution.clientId;
+ const scopes=[{tenantId:b.tenantId,kind:general?'private-user':'client',resourceId:selectedClientId??b.actorId,policyRevision:'p1'}];
+ const state={binding:b,selectedClientId,scopes,runState:'running',budget:2000000,reserved:false,reads:0,policyHook:null};
+ const authentication={principal:{sessionId:'synthetic-session',tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:'one',checkedAtMs:f.now(),expiresAtMs:f.now()+60000};
+ const sessions={async authenticateSession(){return authentication;},async readCurrentState(){return {authenticationSha256:hash(authentication),binding:state.binding,scopes:state.scopes,selectedClientId:state.selectedClientId,checkedAtMs:f.now(),expiresAtMs:f.now()+60000};}};
+ const store={async read(){state.reads++;return {run:{binding:state.binding,scopes:state.scopes,versions,policyRevision:'p1',state:state.runState}};},
+  async readModelPolicy(){return {maxBudgetMicroUsd:state.budget};},nextRuns:{async current(){return {reserved:state.reserved,binding:state.binding,scopes:state.scopes,policyRevision:'p1'};}}};
+ const policy={async check({selectionSha256}){await state.policyHook?.();return {authorized:true,selectionSha256,binding:b,scopes,selectedClientId,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+10000};}};
+ const {template,workflow,limits}=f.contextConfiguration;
+ const owner=createNativeRoutinesContextOwner({base:{template,workflow,limits,policy,versions,maxRuntimeSeconds:900},sessions,scheduleOwner:f.owner,store,now:f.now,newId:f.newId});
+ return {...f,state,owner,request:{credential:'opaque-synthetic',operation:'list_scheduled_tasks',request:{},deadlineMs:f.now()+5000}};
+}
+
+test('native routines use current session/run/model policy and work after a completed invocation',async()=>{
+ const f=await nativeFixture();try{
+  for(const runState of ['running','completed','waiting-for-approval']){
+   f.state.runState=runState;const result=await f.owner.authorizeRequest(f.request);assert.deepEqual(result.binding,f.state.binding);
+  }
+  assert.ok(f.state.reads>=9,'each preparation and release rechecks the canonical run');
+ }finally{await f.close();}
+});
+
+test('native General routines preserve the exact private-user owner scope through current session and Core policy',async()=>{
+ const f=await nativeFixture({general:true});try{
+  const result=await f.owner.authorizeRequest(f.request);assert.equal(result.selectedClientId,null);assert.deepEqual(result.scopes,f.state.scopes);
+  f.state.scopes=[{...f.state.scopes[0],resourceId:'foreign-owner'}];await assert.rejects(f.owner.authorizeRequest(f.request));
+ }finally{await f.close();}
+});
+
+test('native routine task keeps configured identity and pins the effective SDK profile, independent of key order',()=>{
+ const configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:true,models:MODEL_CATALOG,routines:{enabled:true,task:{taskId:binding.runId,version:3}}};
+ const task=compileNativeRoutinesTask(configuration);assert.equal(task.taskId,binding.runId);assert.equal(task.version,3);
+ assert.deepEqual(compileNativeRoutinesTask({...configuration,agentcore:Object.fromEntries(Object.entries(configuration.agentcore).reverse())}),task);
+ for(const change of [c=>c.agentcore.runtimeVersion='3',c=>c.agentcore.runWindowMs=60000,c=>c.agentcore.maxOutputBytes--,
+  c=>c.versions.skillsDigest='c'.repeat(64),c=>c.sourceEnabled=false,c=>c.models.models[0].available=false,c=>c.intents={enabled:true}]){
+  const altered=structuredClone(configuration);change(altered);assert.notEqual(compileNativeRoutinesTask(altered).manifestSha256,task.manifestSha256);
+ }
+});
+
+test('native occurrence templates use each approved owner and scope, and retirement requires canonical settlement',async()=>{
+ const f=await scheduledAdmissionFixture({agentcore:true}),configuration={agentcore:{...agentcoreConfig(),policyRevision:f.template.policyRevision},versions:f.template.versions,sourceEnabled:true,models:MODEL_CATALOG,routines:{enabled:true,task:{taskId:f.template.task.taskId,version:1}},limits:{requestMs:1000}};
+ const task=compileNativeRoutinesTask(configuration),occurrence={...f.occurrence,task};let settled=false;
+ const owners=createNativeRoutinesOccurrenceOwners({configuration,now:f.now,native:{async call(_operation,input){return {...input,expiresAtMs:f.now()+1000};}},store:{executions:{async settlement(binding){return {run:{binding},settled};}}}});
+ const template=owners.templateFor(occurrence);assert.deepEqual(template.principal,occurrence.projection.owner);assert.deepEqual(template.task,task);assert.equal(Object.hasOwn(template,'allocationJson'),false);
+ const general={...occurrence,projection:{...occurrence.projection,scopes:[{tenantId:template.principal.tenantId,kind:'private-user',resourceId:template.principal.actorId,policyRevision:template.policyRevision}]}};
+ assert.equal(owners.templateFor(general).selectedClientId,null);
+ assert.throws(()=>owners.templateFor({...occurrence,task:{...task,manifestSha256:'d'.repeat(64)}}));
+ await assert.rejects(owners.retirement.retire({binding:f.identity.binding}));settled=true;assert.deepEqual(await owners.retirement.retire({binding:f.identity.binding}),{physicalStopProven:true});
+ const derived=deriveAttendedRoutinesOwners({configuration:{...configuration,routines:{...configuration.routines,core:{cancellationProof:{}}}},candidate:{routinesTask:task,routinesOccurrenceOwners:owners},workflow:{taskQueue:'synthetic-routines',workflowIdPrefix:'synthetic-routine'},allocations:f.store,now:f.now});
+ assert.deepEqual(derived.context.template,task);assert.equal(Object.hasOwn(derived.context,'allocationJson'),false);assert.equal(typeof derived.contextOwnerFactory,'function');
+});
+
+test('native routines refuse changed selection, terminal refusal, successor reservation and model policy drift',async()=>{
+ for(const change of [s=>{s.binding={...s.binding,actorId:'another'};},s=>{s.selectedClientId='10000000-0000-4000-8000-000000000099';},
+  s=>{s.runState='cancelled';},s=>{s.runState='failed';},s=>{s.reserved=true;},s=>{s.budget=0;}]){
+  const f=await nativeFixture();try{change(f.state);await assert.rejects(f.owner.authorizeRequest(f.request));}finally{await f.close();}
+ }
+ for(const change of [s=>{s.budget=1000000;},s=>{s.reserved=true;},s=>{s.runState='cancelled';}]){
+  const f=await nativeFixture();try{f.state.policyHook=()=>change(f.state);await assert.rejects(f.owner.authorizeRequest(f.request));}finally{await f.close();}
+ }
+});
 
 test('native stop requires the exact owner binding and durable physical-stop proof',async()=>{
  const calls=[];let record={state:'ADMITTED',original:{binding},resource:{physicalStopProven:false}};

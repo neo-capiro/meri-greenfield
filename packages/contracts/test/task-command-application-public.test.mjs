@@ -1,85 +1,34 @@
-/** Actual task API/command composition over SYNTHETIC SQL, authority, approval and Core boundaries. No live-service evidence. */
+/** Actual native standalone HTTP and public receiver with scripted SQL/current authority/Core boundaries. */
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
 import {receiveTaskCommandRequest as request,receiveTaskCommandResponse as receive,TaskCommandResponseError,taskCommandMetadata,taskCommandPaths} from '../dist/task-command-application.mjs';
-import {createTaskCommandApplication} from '../../../apps/control/task-command-application/index.mjs';
-import {commandComposition,id,canonicalSha256} from '../../../apps/control/intents/test/fixture.mjs';
+import {standaloneFixture,id} from '../../../apps/runtime/native-authority/test/standalone-tasks-fixture.mjs';
+import {canonicalSha256} from '../validate.mjs';
 const json=JSON.stringify,clone=structuredClone;
 const stable=b=>Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(key=>[key,b[key]]));
-function setup(){
- const c=commandComposition({action:'task.update'}),state={};
- const fact=()=>({binding:c.binding,commandOptions:c.commandOptions,checkedAtMs:c.f.state.now,expiresAtMs:c.f.state.now+1000,async authorizeExecution({proposal}){return {credential:'synthetic',execution:{...c.f.execution,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey}};}});
- const app=createTaskCommandApplication({now:()=>c.f.state.now,limits:{maxRequestMs:1000,maxRequestBytes:65536,maxResponseBytes:65536},async resolveSession(){return state.fact??fact();}});
- const call=(route,body)=>app.handle(new Request('https://meri.invalid'+taskCommandPaths[route],{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer synthetic-session'},body:json(body)}));
- const raw={arguments:{taskId:'  '+id(21).toUpperCase()+' ',title:' Updated ',status:' OPEN '}};
- return {...c,state,fact,call,raw,binding:stable(c.binding)};
-}
+function setup(){const f=standaloneFixture();return {...f,binding:stable(f.binding)};}
 async function prepared(c=setup()){
  const admitted=await request('prepare',json(c.raw)),response=await c.call('prepare',admitted),text=await response.text();assert.equal(response.status,200,text);
  const value=await receive('prepare',200,text,{binding:c.binding,request:admitted});return {...c,admitted,prepared:value,proposal:value.proposal,prepareText:text};
 }
 async function observed(c){
- c??=await prepared();
- c.approve(c.proposal);const body=await request('execute',json({proposal:c.proposal})),response=await c.call('execute',body),text=await response.text();assert.equal(response.status,200,text);
+ c??=await prepared();const body=await request('execute',json({proposal:c.proposal})),response=await c.call('execute',body),text=await response.text();assert.equal(response.status,200,text);
  const value=await receive('execute',200,text,{binding:c.binding,proposal:c.proposal});assert.equal(value.status,'observed');return {...c,executeText:text,observed:value};
 }
-test('actual command authority accepts the current closed subject and retains its independent decision',async()=>{
- const c=setup(),original=c.f.ports.authorizeBusiness;
- c.f.ports.authorizeBusiness=async value=>{const policy=JSON.parse(await original(value));delete policy.subject.authorizationDecisionId;return json(policy);};
- const authority=await c.f.authority.check({credential:'synthetic',descriptor:c.f.descriptor,input:c.f.command,limitDeadline(){}});
- assert.deepEqual(authority.binding,c.f.binding);assert.deepEqual(authority.subject.scopes,c.f.scopes);
- assert.equal(authority.decision.decisionId,id(10));assert.equal(authority.decision.decision,'allowed');
- assert.equal(Object.hasOwn(authority.subject,'authorizationDecisionId'),false);assert.equal(c.f.state.fetches,0);
-});
-test('actual command authority rejects the archived subject field before any source effect',async()=>{
- const c=setup(),original=c.f.ports.authorizeBusiness;
- c.f.ports.authorizeBusiness=async value=>{const policy=JSON.parse(await original(value));policy.subject.authorizationDecisionId=policy.decision.decisionId;return json(policy);};
- await assert.rejects(c.f.authority.check({credential:'synthetic',descriptor:c.f.descriptor,input:c.f.command,limitDeadline(){}}),{message:'ACCESS_DENIED'});
- assert.equal(c.f.state.fetches,0);assert.equal(c.f.pg.rows.size,0);
-});
-for(const [name,mutate]of Object.entries({
- 'invalid decision shape':p=>{p.decision.decisionId='not-a-uuid';},
- 'denied decision':p=>{p.decision.decision='denied';},
- 'foreign actor':p=>{p.decision.actor.actorId='foreign';},
- 'foreign tenant':p=>{p.decision.actor.tenantId='foreign';},
- 'different operation':p=>{p.decision.operation='create_task@0.2.0';},
- 'decision policy drift':p=>{p.decision.policyRevision='different';},
- 'subject policy drift':p=>{p.subject.policyRevision='different';},
- 'different decision scopes':p=>{p.decision.scopes=[{...p.decision.scopes[0],resourceId:'different'}];},
- 'missing required grant':p=>{p.grants=[];},
- 'stale decision':(p,c)=>{p.decision.evaluatedAt=new Date(c.f.state.now-1).toISOString();}
-}))test(`current subject still refuses ${name} before any source effect`,async()=>{
- const c=setup(),original=c.f.ports.authorizeBusiness;
- c.f.ports.authorizeBusiness=async value=>{const policy=JSON.parse(await original(value));mutate(policy,c);return json(policy);};
- await assert.rejects(c.f.authority.check({credential:'synthetic',descriptor:c.f.descriptor,input:c.f.command,limitDeadline(){}}),{message:'ACCESS_DENIED'});
- assert.equal(c.f.state.fetches,0);assert.equal(c.f.pg.rows.size,0);
-});
-test('actual prepare/approve/execute API wire admits canonical normalization and immutable correlated result',async()=>{
- const c=await prepared();assert.equal(c.f.state.fetches,0);assert.deepEqual(c.proposal.command.arguments,{taskId:id(21),mode:'unconditional_patch',patch:{title:'Updated',status:'todo'}});
- const refused=await c.call('execute',{proposal:c.proposal}),refusal=await receive('execute',refused.status,await refused.text(),{binding:c.binding,proposal:c.proposal});assert('error'in refusal);assert.equal(c.f.state.fetches,0);
- const d=await observed(c);assert.equal(d.observed.outcome.result.id,id(21));assert.equal(d.f.state.fetches,1);assert.equal(d.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');
+test('native standalone prepare and explicit approval execute correlate the immutable proposal and result',async()=>{
+ const c=await prepared();assert.equal(c.state.effects,0);assert.equal(c.state.decisions,0);assert.deepEqual(c.proposal.command.arguments,{taskId:id(21),mode:'unconditional_patch',patch:{title:'Updated',status:'todo'}});
+ const d=await observed(c);assert.equal(d.observed.outcome.result.id,id(21));assert.equal(d.state.effects,1);assert.equal(d.observed.outcome.execution.kind,'native-task');
  assert(Object.isFrozen(d.observed.outcome.result));assert(Object.isFrozen(c.proposal.command.arguments.patch));assert.throws(()=>{d.observed.outcome.result.title='changed';},TypeError);
 });
-test('current resumed attempt is allowed while selected original proposal stays fixed',async()=>{
- const c=await prepared(),current={...c.f.binding,attemptId:id(90),workerId:id(91),writerFence:2};c.f.state.fence=2;c.f.claims.binding=current;c.f.execution.executorBinding=current;c.state.fact={...c.fact(),binding:current};
- c.f.ports.currentRun=async()=>json({binding:current,policyRevision:c.f.claims.policyRevision,deadlineMs:Date.parse(c.f.claims.expiresAt),checkedAtMs:c.f.state.now});
- const d=await observed(c);assert.equal(d.observed.outcome.receipt.binding.writerFence,2);assert.equal(d.proposal.command.binding.writerFence,1);
-});
-test('due-day and nullable/blank raw input use the canonical normalizer',async()=>{
+test('due-day and nullable raw input retain canonical normalization',async()=>{
  const c=setup();c.raw.arguments={taskId:id(21),title:null,status:' ',dueDate:'2026-10-20'};
  const p=await prepared(c);assert.deepEqual(p.proposal.command.arguments.patch,{dueDate:'2026-10-20T00:00:00.000Z'});
- p.f.state.fetchHook=(_url,_options,native)=>Response.json({...native,task:{...native.task,dueDate:'2026-10-20T00:00:00.000Z'}});
  const d=await observed(p);assert.equal(d.observed.outcome.result.dueDate,'2026-10-20T00:00:00.000Z');
 });
-test('unknown native effect preserves error outcome and repeated execution reports indeterminate without a second dispatch',async()=>{
- const c=await prepared();c.approve(c.proposal);c.f.state.fetchHook=()=>{throw Error('synthetic upstream transport failure');};const response=await c.call('execute',{proposal:c.proposal});
- const value=await receive('execute',response.status,await response.text(),{binding:c.binding,proposal:c.proposal});assert.deepEqual(value,{error:{code:'COMMAND_OUTCOME_UNKNOWN',outcome:'UNKNOWN'}});
- const repeated=await c.call('execute',{proposal:c.proposal}),pending=await receive('execute',repeated.status,await repeated.text(),{binding:c.binding,proposal:c.proposal});assert.deepEqual(pending,{status:'indeterminate',outcome:null});assert.equal(c.f.state.fetches,1);
-});
-test('HTTP vocabulary/status and default-off availability are precise',async()=>{
- const c=await prepared(),expectation={binding:c.binding,request:c.admitted};assert.equal(taskCommandMetadata.schemaId,'urn:meri:task-command-application:0.1.0');assert.equal(taskCommandMetadata.routes.execute.path,'/api/task-commands/execute');
- for(const [code,status]of Object.entries(taskCommandMetadata.errorStatuses))assert.equal((await receive('prepare',status,json({error:{code,outcome:'NOT_DISPATCHED'}}),expectation)).error.code,code);
+test('HTTP vocabulary/status and unavailable response are precise',async()=>{
+ const c=await prepared(),expectation={binding:c.binding,request:c.admitted};assert.equal(taskCommandMetadata.schemaId,'urn:meri:task-command-application:0.1.0');assert.equal(taskCommandPaths.execute,'/api/task-commands/execute');
+ for(const [code,status]of Object.entries(taskCommandMetadata.errorStatuses))assert.equal((await receive('prepare',taskCommandMetadata.errorOutcomeStatuses[code]?.NOT_DISPATCHED??status,json({error:{code,outcome:'NOT_DISPATCHED'}}),expectation)).error.code,code);
+ for(const outcome of ['UNKNOWN','STORED_NOT_RELEASED']){const value={error:{code:'COMMAND_PREPARATION_REFUSED',outcome}};assert.deepEqual(await receive('prepare',502,json(value),expectation),value);await assert.rejects(receive('prepare',409,json(value),expectation),TaskCommandResponseError);}
  for(const outcome of taskCommandMetadata.errorOutcomes)assert.equal((await receive('prepare',502,json({error:{code:'REQUEST_FAILED',outcome}}),expectation)).error.outcome,outcome);
- assert.equal(taskCommandMetadata.errorStatuses.TASK_COMMAND_UNAVAILABLE,503);
  for(const [status,value]of [[200,{error:{code:'REQUEST_FAILED',outcome:'UNKNOWN'}}],[503,{error:{code:'REQUEST_FAILED',outcome:'UNKNOWN'}}],[502,{error:{code:'UNKNOWN_CODE',outcome:'UNKNOWN'}}],[502,{error:{code:'REQUEST_FAILED',outcome:'SUCCESS'}}],[201,c.prepared]])await assert.rejects(receive('prepare',status,json(value),expectation),TaskCommandResponseError);
 });
 const prepareMutations={
@@ -90,10 +39,10 @@ const prepareMutations={
 };
 for(const [name,mutate]of Object.entries(prepareMutations))test('prepare rejects '+name,async()=>{const c=await prepared(),value=clone(c.prepared);mutate(value);if(name!=='hash mismatch')value.proposal.commandSha256=canonicalSha256(value.proposal.command);await assert.rejects(receive('prepare',200,json(value),{binding:c.binding,request:c.admitted}),TaskCommandResponseError);});
 const executeMutations={
- 'wrong command id':v=>{v.outcome.receipt.commandId=id(99);},'wrong command hash':v=>{v.outcome.receipt.commandSha256='0'.repeat(64);},'wrong idempotency key':v=>{v.outcome.receipt.idempotencyKey='other';},
- 'wrong tenant':v=>{v.outcome.receipt.binding.tenantId='foreign';},'wrong run':v=>{v.outcome.receipt.binding.runId=id(99);},'foreign scope':v=>{v.outcome.receipt.scopes[0].tenantId='foreign';},
- 'changed scope':v=>{v.outcome.receipt.scopes[0].policyRevision='other';},'failed receipt':v=>{v.outcome.receipt.outcome='failed';},'wrong task':v=>{v.outcome.result.id=id(99);},
- 'wrong patch title':v=>{v.outcome.result.title='Other';},'wrong patch status':v=>{v.outcome.result.status='done';},'bad completed time':v=>{v.outcome.receipt.completedAt='2026-10-12T20:00:00Z';},
+ 'wrong command id':v=>{v.outcome.execution.proposalId=id(99);},'wrong command hash':v=>{v.outcome.execution.commandSha256='0'.repeat(64);},'wrong idempotency key':v=>{v.outcome.execution.idempotencyKey='other';},
+ 'wrong tenant':v=>{v.outcome.execution.binding.tenantId='foreign';},'wrong run':v=>{v.outcome.execution.binding.runId=id(99);},'bad decision hash':v=>{v.outcome.execution.approvalDecisionSha256='foreign';},
+ 'changed kind':v=>{v.outcome.execution.kind='legacy';},'extra execution field':v=>{v.outcome.execution.outcome='failed';},'wrong task':v=>{v.outcome.result.id=id(99);},
+ 'wrong patch title':v=>{v.outcome.result.title='Other';},'wrong patch status':v=>{v.outcome.result.status='done';},'bad completed time':v=>{v.outcome.execution.completedAt='2026-10-12T20:00:00Z';},
  'bad result time':v=>{v.outcome.result.updatedAt='2026-10-12T20:00:00Z';},'non-day result due date':v=>{v.outcome.result.dueDate='2026-10-12T20:00:00.000Z';},'unknown output key':v=>{v.success=true;},
 };
 for(const [name,mutate]of Object.entries(executeMutations))test('execute rejects '+name,async()=>{const c=await observed(),value=clone(c.observed);mutate(value);await assert.rejects(receive('execute',200,json(value),{binding:c.binding,proposal:c.proposal}),TaskCommandResponseError);});

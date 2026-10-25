@@ -3,6 +3,7 @@
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {intentFault} from './faults.mjs';
+import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const deny=()=>{throw intentFault('ACCESS_DENIED');};
 const conversation=(a,b)=>['tenantId','actorId','conversationId'].every(k=>a?.[k]===b?.[k]);
 function scopes(raw,binding){
@@ -11,6 +12,10 @@ function scopes(raw,binding){
  if(new Set(raw.map(hash)).size!==raw.length)deny();return raw;
 }
 function resultScopes(owner,result,original){
+ if(owner==='memory'){
+  const review=assertMemoryReviewResult(result);
+  if(hash(review.binding)!==hash(original.binding))deny();return review.scopes;
+ }
  if(owner==='command'){
   if(result.status!=='approval_required'||hash(result.proposal?.command?.binding)!==hash(original.binding))deny();
   return result.proposal.command.scopes;

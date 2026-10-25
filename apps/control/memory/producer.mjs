@@ -2,6 +2,8 @@
  * exact candidate to Core's canonical review. It never publishes, approves, confirms, corrects or forgets memory: every candidate is
  * pending until Core decides, and an uncertain submission stays visible as `submission_unknown` instead of being assumed absent. */
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {assertMemoryProposeCommand} from '../../../packages/contracts/commands-0.2/validate.mjs';
+import {data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {asProductError,productFailure,refuse} from '../product-access/errors.mjs';
 import {buildCandidate} from './candidate.mjs';
 import {assertCorrectionTarget,assertProposalScope,visibleToProposer} from './eligibility.mjs';
@@ -14,6 +16,10 @@ export function createMemoryProducer(options){
   ['readTarget','findByKey'].some(k=>typeof memory?.[k]!=='function')||decisions!==null&&typeof decisions?.decide!=='function'||retention!==null&&typeof retention?.assertServable!=='function'||
   typeof requireSurfaceRetentionSubject!=='boolean'||requireSurfaceRetentionSubject&&retention===null||typeof newId!=='function'||typeof now!=='function')refuse('PRODUCT_CONFIGURATION');
  const id=()=>{const v=newId();if(typeof v!=='string'||!UUID4.test(v))refuse('PRODUCT_CONFIGURATION');return v;};
+ const checkRequest=({signal,deadlineMs})=>{
+  if(signal?.aborted)refuse('CANCELLED');
+  if(deadlineMs!==undefined&&(!Number.isSafeInteger(deadlineMs)||now()>=deadlineMs))refuse('DEADLINE');
+ };
  /** Only a conversation-origin candidate has a canonical retention subject today. The producer never infers one from source
   * citations or a surface request; those candidates need the separately owned actor/client subject policy. */
  async function originServable(tenantId,origin){
@@ -30,8 +36,10 @@ export function createMemoryProducer(options){
  /** Journal then submit. A replayed idempotency key resubmits the identical journaled candidate only when its earlier submission was
   * not acknowledged; Core deduplicates it by (candidateId, hash), so the replay cannot create a second review item. */
  async function produce(fields,requestSha256,{signal,deadlineMs}){
+  checkRequest({signal,deadlineMs});
   const built=buildCandidate({...fields,candidateId:id(),createdAt:new Date(now()).toISOString()});
   await requireServable(built.candidate);
+  checkRequest({signal,deadlineMs});
   const {record}=await journal.insert({...built,requestSha256,signal});
   return submitRecord(fields.principal,record,{signal,deadlineMs});
  }
@@ -119,8 +127,15 @@ export function createMemoryProducer(options){
    }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
   },
   /** Conversational memory.propose: a keyed proposal that matches an existing eligible memory becomes a correction of it. */
-  async proposeFromCommand({principal,command,commandSha256,signal,deadlineMs}){
+  async proposeFromCommand({principal,command,commandContext,commandSha256,signal,deadlineMs}){
    try{
+    // The native source supplies the trusted conversation selection. Validate immutable intent here too: the producer is no longer
+    // exclusively behind the old command executor, and model arguments must never select their own provenance or client.
+    try{
+     command=data(assertMemoryProposeCommand(command,commandContext));principal=data(principal);
+     if(canonicalSha256(command)!==commandSha256)refuse('MEMORY_CANDIDATE_INVALID','NOT_DISPATCHED');
+    }catch{refuse('MEMORY_CANDIDATE_INVALID','NOT_DISPATCHED');}
+    if(principal.tenantId!==command.binding.tenantId||principal.actorId!==command.binding.actorId)refuse('MEMORY_SCOPE_REFUSED','NOT_DISPATCHED');
     const a=command.arguments,origin={kind:'conversation',conversationId:command.binding.conversationId,runId:command.binding.runId,commandId:command.commandId,commandSha256};
     assertProposalScope(principal,a);
     // The trusted command binding identifies the conversation before any keyed target lookup can reach Core.

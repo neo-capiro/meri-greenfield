@@ -31,12 +31,13 @@ async function fixture(){
   else{assert.ok(url.endsWith('/context'));const input=JSON.parse(init.body);value={principal,identityRevision:state.identityRevision,identitySha256:input.identitySha256,conversationId:binding.conversationId,selectedClientId:clientId,contextRevision:state.contextRevision,...stamp};}
   return Response.json(value);
  };
- const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,commandContext,now,limits:{maxRequestMs:1000,maxFactBytes:65536},enabled:true,
+ const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits:{maxRequestMs:1000,maxFactBytes:65536},enabled:true,
+  admitInitialConversation:async()=>JSON.stringify({binding,policyRevision:state.policyRevision,checkedAtMs:now(),deadlineMs:NOW+60000}),
   currentOwner:{async currentRun(selected){assert.deepEqual(selected,binding);return JSON.stringify({binding,policyRevision:state.policyRevision,checkedAtMs:now(),deadlineMs:NOW+60000});}}});
  const membership=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext:identity,fetchImpl,now,limits:{maxRequestMs:1000,maxFactBytes:65536}});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,membership:{admit:membership.admit,recheck:membership.recheck},now,
   limits:{maxSessions:3,maxRequestMs:1000,maxTtlMs:60000,maxFactBytes:65536}});
- const session=await sessions.issue({identityCredential:'synthetic-native',deadlineMs:NOW+1000});
+ const session=await sessions.issue({identityCredential:'synthetic-native',hints:{conversationId:binding.conversationId,clientId},deadlineMs:NOW+1000});
  const sql=scheduleOwnerFixture(),owner=createPostgresScheduleOwner({pool:sql.pool}),scheduleOwner={async readFiring(...args){state.reads++;return owner.readFiring(...args);}};
  const selected=selectSkill('quick_skill.relationship_brief','1.0.0'),manifest=selected.manifest;
  const allocationJson=JSON.stringify({run:Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(key=>[key,binding[key]])),manifest,manifestSha256:hash(manifest),catalogSha256:selected.pin.catalogSha256,
@@ -62,6 +63,19 @@ test('construction is inert and requires an actual matching allocation plus expl
   assert.throws(()=>createScheduleRuntimeContext({...f.config,policy:{}}),{code:'SCHEDULE_CONTEXT_CONFIGURATION'});
   assert.throws(()=>createScheduleRuntimeContext({...f.config,template:{...f.config.template,manifestSha256:'0'.repeat(64)}}),{code:'SCHEDULE_CONTEXT_CONFIGURATION'});
   const allocated=JSON.parse(f.config.allocationJson);allocated.run.actorId='another';assert.throws(()=>createScheduleRuntimeContext({...f.config,allocationJson:JSON.stringify(allocated)}));
+ }finally{f.close();}
+});
+
+test('native model-policy bounds replace the allocation without widening requested or Core limits',async()=>{
+ const f=await fixture();try{
+  const {allocationJson,...base}=f.config,executionLimits={expiresAtMs:NOW+10000,maxCostMicrousd:1500,maxRuntimeSeconds:75,retryLimit:0};
+  const native=createScheduleRuntimeContext({...base,executionLimits}),out=await native.resolve(f.call());
+  assert.equal(out.prepared.intent.projection.maxCostMicrousd,1500);assert.equal(out.prepared.intent.projection.maxRuntimeSeconds,75);assert.equal(out.prepared.intent.projection.retryLimit,0);
+  assert.deepEqual(out.prepared.intent.configuration.task,base.template);
+  assert.throws(()=>createScheduleRuntimeContext({...f.config,executionLimits}),{code:'SCHEDULE_CONTEXT_CONFIGURATION'});
+  assert.throws(()=>createScheduleRuntimeContext(base),{code:'SCHEDULE_CONTEXT_CONFIGURATION'});
+  assert.throws(()=>createScheduleRuntimeContext({...base,executionLimits:{...executionLimits,allocationSha256:'a'.repeat(64)}}),{code:'SCHEDULE_CONTEXT_CONFIGURATION'});
+  f.state.now=executionLimits.expiresAtMs;await assert.rejects(native.authorizeRequest(f.call()));
  }finally{f.close();}
 });
 

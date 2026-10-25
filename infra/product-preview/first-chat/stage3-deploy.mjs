@@ -15,19 +15,19 @@ import {readFile,writeFile,mkdir,lstat,readdir} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {resolve,join,isAbsolute,relative} from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {ROLES,parseCoreValues,SOURCE_ROOT} from './render-material.mjs';
-import {STAGE3_FAMILIES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS,TEMPLATE_BUCKET,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,fail} from './stage3-bindings.mjs';
+import {ROLES,ALL_ROLES,deploymentRoles,parseCoreValues,SOURCE_ROOT} from './render-material.mjs';
+import {ALL_STAGE3_FAMILIES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS,TEMPLATE_BUCKET,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,fail} from './stage3-bindings.mjs';
 
 export const CORE_ORIGIN='https://first-chat-preview.app-dev.capiro.ai';
 /** `family<TAB>arn|None` lines (one per family and status) -> {role: [arn...]}. */
-export function parseLatestTsv(text){
- const byFamily=Object.fromEntries(Object.entries(STAGE3_FAMILIES).map(([role,family])=>[family,role])),latest={};
+export function parseLatestTsv(text,{roles=ROLES}={}){
+ const byFamily=Object.fromEntries(roles.map(role=>[ALL_STAGE3_FAMILIES[role],role])),latest={};
  for(const line of text.split(/\r?\n/u).map(l=>l.trim()).filter(Boolean)){
   const [family,arn,...rest]=line.split(/\s+/u);
   if(rest.length||!arn||!Object.hasOwn(byFamily,family))fail(`latest line "${line.slice(0,200)}"`);
   (latest[byFamily[family]]??=[]).push(arn);
  }
- for(const role of Object.keys(STAGE3_FAMILIES))if(!latest[role]||latest[role].length<2)fail(`latest needs the ACTIVE and INACTIVE listing of ${STAGE3_FAMILIES[role]}`);
+ for(const role of roles)if(!latest[role]||latest[role].length<2)fail(`latest needs the ACTIVE and INACTIVE listing of ${ALL_STAGE3_FAMILIES[role]}`);
  return latest;
 }
 
@@ -75,7 +75,7 @@ export function secretLabelReadback(outputs){
  * and room for one more version and one more label. */
 export function uploadPlan({deployment,renderedDirectory,label,secretLabels,newToken=randomUUID}){
  if(typeof label!=='string'||!/^[A-Za-z0-9_]{1,64}$/u.test(label)||RESERVED_STAGES.has(label))fail('--label must be a new custom staging label');
- return ROLES.map(role=>{
+ return deploymentRoles(deployment).map(role=>{
   const secretArn=deployment?.secrets?.[MATERIAL_SECRET_KEYS[role]];
   if(typeof secretArn!=='string'||!/^arn:aws:secretsmanager:us-east-1:967807252336:secret:meri\/preview\/[a-z]+\/material-[A-Za-z0-9]{6}$/u.test(secretArn))fail(`deployment.secrets.${MATERIAL_SECRET_KEYS[role]}`);
   const versions=secretLabels?.[secretArn];
@@ -97,7 +97,7 @@ export function parseVersionsTsv(text){
  const out={};
  for(const line of text.split(/\r?\n/u).map(l=>l.trim()).filter(Boolean)){
   const [role,version,...rest]=line.split(/\s+/u);
-  if(rest.length||!ROLES.includes(role)||Object.hasOwn(out,role))fail(`secret version line for ${String(role).slice(0,40)}`);
+  if(rest.length||!ALL_ROLES.includes(role)||Object.hasOwn(out,role))fail(`secret version line for ${String(role).slice(0,40)}`);
   out[role]=version;
  }
  return out;
@@ -123,7 +123,9 @@ export function deployPlan(sizes,directory){
 
 /** Refuses unless each stack's task definitions are exactly the revisions the material was rendered for. */
 export function verifyOutputs({expectedTaskDefinitions,app}){
- const pairs=[['control',app.ControlTaskDefinitionArn],['temporal-worker',app.TemporalWorkerTaskDefinitionArn]];
+ const keys={control:'ControlTaskDefinitionArn','temporal-worker':'TemporalWorkerTaskDefinitionArn','schedule-worker':'ScheduleWorkerTaskDefinitionArn'};
+ if(Object.keys(expectedTaskDefinitions).some(role=>!ALL_ROLES.includes(role))||ROLES.some(role=>!expectedTaskDefinitions[role]))fail('expected task definition roles');
+ const pairs=Object.keys(expectedTaskDefinitions).map(role=>[role,app[keys[role]]]);
  const mismatched=pairs.filter(([role,actual])=>actual!==expectedTaskDefinitions[role]).map(([role,actual])=>`${role}: rendered ${expectedTaskDefinitions[role]} deployed ${actual}`);
  if(mismatched.length)fail(`task definitions differ from the render (re-render with the deployed revisions): ${mismatched.join('; ')}`);
  return pairs.map(([role,arn])=>({role,arn}));
@@ -155,8 +157,8 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
  try{
   if(command==='stage3-input'){
    need('deployment-inputs','foundation-outputs','latest','out');
-   const revisions=nextRevisions(parseLatestTsv(await readFile(a.latest,'utf8')));
-   const stage3=stage3RenderInput({deployment:await json(a['deployment-inputs']),foundationOutputs:outputsObject(await json(a['foundation-outputs'])),revisions});
+   const deployment=await json(a['deployment-inputs']),roles=deploymentRoles(deployment),revisions=nextRevisions(parseLatestTsv(await readFile(a.latest,'utf8'),{roles}),{roles});
+   const stage3=stage3RenderInput({deployment,foundationOutputs:outputsObject(await json(a['foundation-outputs'])),revisions});
    await writeNew(await outsideRepository(a.out),JSON.stringify(stage3,null,1)+'\n');
    out(JSON.stringify({status:'STAGE3_INPUT_WRITTEN',out:resolve(a.out),taskDefinitions:stage3.taskDefinitions})+'\n');return 0;
   }
@@ -170,17 +172,18 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
   if(command==='upload-plan'){
    need('deployment-inputs','rendered','label','secret-labels','out');
    const rendered=resolve(a.rendered),labels=resolve(a['secret-labels']);
-   for(const role of ROLES)await lstat(join(rendered,role,'bundle.json'));
+   const deployment=await json(a['deployment-inputs']);
+   for(const role of deploymentRoles(deployment))await lstat(join(rendered,role,'bundle.json'));
    const readbacks=await Promise.all((await readdir(labels)).filter(name=>name.endsWith('.json')).sort().map(name=>json(join(labels,name))));
-   const plan=uploadPlan({deployment:await json(a['deployment-inputs']),renderedDirectory:rendered,label:a.label,secretLabels:secretLabelReadback(readbacks)});
+   const plan=uploadPlan({deployment,renderedDirectory:rendered,label:a.label,secretLabels:secretLabelReadback(readbacks)});
    await writeNew(await outsideRepository(a.out),JSON.stringify({schemaVersion:1,label:a.label,roles:plan},null,1)+'\n');
    out(JSON.stringify({status:'STAGE3_UPLOAD_PLAN_WRITTEN',out:resolve(a.out),label:a.label,roles:plan.map(p=>p.role)})+'\n');return 0;
   }
   if(command==='bindings'){
    need('deployment-inputs','foundation-outputs','private-edge-outputs','rendered','secret-versions','image-scans','live-app-template','out');
-   const rendered=resolve(a.rendered),renderedExpected={};
-   for(const role of ROLES)renderedExpected[role]=await json(join(rendered,role,'expected.json'));
-   const bindings=buildStage3Bindings({deployment:await json(a['deployment-inputs']),foundationOutputs:outputsObject(await json(a['foundation-outputs'])),
+   const rendered=resolve(a.rendered),renderedExpected={},deployment=await json(a['deployment-inputs']);
+   for(const role of deploymentRoles(deployment))renderedExpected[role]=await json(join(rendered,role,'expected.json'));
+   const bindings=buildStage3Bindings({deployment,foundationOutputs:outputsObject(await json(a['foundation-outputs'])),
     privateEdgeOutputs:outputsObject(await json(a['private-edge-outputs'])),renderSummary:await json(join(rendered,'summary.json')),renderedExpected,
     secretVersions:parseVersionsTsv(await readFile(a['secret-versions'],'utf8')),imageScans:await json(a['image-scans']),liveAppTemplate:await json(a['live-app-template'])});
    const {bodies,sizes}=synthesizeStage3(bindings),dir=await outsideRepository(a.out);

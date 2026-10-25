@@ -1,5 +1,5 @@
 /** Offline, disabled ECS preview source. Binding values come from a separately reviewed inventory. */
-import {App, Stack, CfnOutput, BootstraplessSynthesizer, aws_ecs as ecs} from 'aws-cdk-lib';
+import {App, Stack, CfnOutput, CfnDeletionPolicy, BootstraplessSynthesizer, aws_ecs as ecs} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-init.mjs';
 import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
@@ -25,8 +25,10 @@ function sized(value){
  if(!memoryAllowed||!Number.isInteger(v.ephemeralStorageGiB)||v.ephemeralStorageGiB<21||v.ephemeralStorageGiB>200)fail();
  return v;
 }
+const roleNames=Object.freeze({control:'control',temporalWorker:'temporal-worker',scheduleWorker:'schedule-worker'});
+const taskRoles=b=>['control','temporalWorker',...(b.materialDelivery?.scheduleWorker===undefined?[]:['scheduleWorker'])];
 function material(value,b){
- const m=record(value,['control','temporalWorker']);
+ const m=record(value,taskRoles(b));
  if(typeof b.sourceCommit!=='string'||!/^[a-f0-9]{40}$/u.test(b.sourceCommit))fail();
  const secretVersion=/^arn:aws:secretsmanager:us-east-1:967807252336:secret:[A-Za-z0-9/_+=.@-]{1,512}:::[A-Za-z0-9-]{32,64}$/u;
  for(const [role,spec] of Object.entries(m)){
@@ -34,26 +36,24 @@ function material(value,b){
   if(!secretVersion.test(spec.valueFrom))fail();
   let expected;try{expected=parseStaticProductMaterialExpected(spec.expected);}catch{fail();}
   if(Buffer.byteLength(JSON.stringify(expected),'utf8')>8192)fail();
-  if(expected.role!==(role==='temporalWorker'?'temporal-worker':role)||expected.runtimeUser!==b.runtimeUser||
+  if(expected.role!==roleNames[role]||expected.runtimeUser!==b.runtimeUser||
      expected.sourceCommit!==b.sourceCommit||expected.imageDigest!==`sha256:${b.imageUri.split('@sha256:')[1]}`)fail();
  }
- if(m.control.valueFrom===m.temporalWorker.valueFrom)fail();
+ if(new Set(Object.values(m).map(x=>x.valueFrom)).size!==Object.keys(m).length)fail();
  return m;
 }
 // Both services reach the same private control endpoint through this pinned material file.
 const PRIVATE_CONTROL_CA_FILE='/run/meri/control-ca.pem';
 function privateControlTrust(b){
- const control=b.materialDelivery.control.expected.sha256ByPath[PRIVATE_CONTROL_CA_FILE],
-  worker=b.materialDelivery.temporalWorker.expected.sha256ByPath[PRIVATE_CONTROL_CA_FILE];
- if(!hex64.test(control??'')||worker!==control)fail();
+ const control=b.materialDelivery.control.expected.sha256ByPath[PRIVATE_CONTROL_CA_FILE];
+ if(!hex64.test(control??'')||taskRoles(b).some(role=>b.materialDelivery[role].expected.sha256ByPath[PRIVATE_CONTROL_CA_FILE]!==control))fail();
 }
 const ROLE_ARN=/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u,LOG_GROUP=/^\/[A-Za-z0-9_./-]{1,511}$/u;
-const TASK_ROLES=Object.freeze(['control','temporalWorker']);
 /** Shared or distinct per-service execution roles and log groups. AgentCore
  * owns the SDK runtime independently of these control and Temporal services. */
 function perRole(b,single,map,pattern,forbidden){
  if((b[single]===undefined)===(b[map]===undefined))fail();
- const values=b[single]!==undefined?[b[single]]:TASK_ROLES.map(role=>record(b[map],TASK_ROLES)[role]);
+ const roles=taskRoles(b),values=b[single]!==undefined?[b[single]]:roles.map(role=>record(b[map],roles)[role]);
  if(values.some(v=>typeof v!=='string'||!pattern.test(v)||v===forbidden)||new Set(values).size!==values.length)fail();
 }
 const roleValue=(b,single,map,role)=>b[single]??b[map][role];
@@ -73,28 +73,28 @@ function validate(value){
     b.controlTargetGroupArn!==undefined&&b.controlTargetGroupArn===b.controlPrivateTargetGroupArn)fail();
  // Each service's awsvpcConfiguration uses these lists verbatim. Control and worker ENIs legitimately differ
  // (e.g. control also carries the db-client marker), so each role has its own set; identical sets refuse.
- const n=record(b.network,['privateSubnetIds','controlSecurityGroupIds','workerSecurityGroupIds']);
+ const schedule=taskRoles(b).includes('scheduleWorker');
+ const n=record(b.network,['privateSubnetIds','controlSecurityGroupIds','workerSecurityGroupIds',...(schedule?['scheduleSecurityGroupIds']:[])]);
  ids(n.privateSubnetIds,SUBNET,3);
- for(const key of ['controlSecurityGroupIds','workerSecurityGroupIds'])ids(n[key],SECURITY_GROUP,5);
+ for(const key of ['controlSecurityGroupIds','workerSecurityGroupIds',...(schedule?['scheduleSecurityGroupIds']:[])])ids(n[key],SECURITY_GROUP,5);
  if(sameSet(n.controlSecurityGroupIds,n.workerSecurityGroupIds))fail();
- const s=record(b.sizing,['control','temporalWorker']);
+ const s=record(b.sizing,taskRoles(b));
  for(const value of Object.values(s))sized(value);
  material(b.materialDelivery,b);
  privateControlTrust(b);
  return b;
 }
 
-const command=Object.freeze({control:['control','--config','/run/meri/control.json'],temporalWorker:['temporal-worker','--config','/run/meri/worker.json']});
+const command=Object.freeze({control:['control','--config','/run/meri/control.json'],temporalWorker:['temporal-worker','--config','/run/meri/worker.json'],scheduleWorker:['schedule-worker','--config','/run/meri/schedule-worker.json']});
 function health(port){return {command:['CMD','node','-e',`fetch('http://127.0.0.1:${port}/health/live').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))`],interval:30,timeout:5,retries:3,startPeriod:60};}
 function task(stack,b,role,port){
- const name=role==='temporalWorker'?'temporal-worker':role;
+ const name=roleNames[role],databaseTrust=role==='control'||role==='scheduleWorker';
  const delivery=material(b.materialDelivery,b)[role];
  const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'}]:[{containerPort:port,protocol:'tcp'}];
  const c={name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
   entryPoint:['node','apps/runtime/cli.mjs'],command:command[role],
   environment:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
-   ...(role==='control'?[{name:'NODE_EXTRA_CA_CERTS',value:CONTROL_NODE_CA_FILE}]:[]),
-   ...(role==='temporalWorker'?[{name:'NODE_EXTRA_CA_CERTS',value:PRIVATE_CONTROL_CA_FILE}]:[])],
+   {name:'NODE_EXTRA_CA_CERTS',value:databaseTrust?CONTROL_NODE_CA_FILE:PRIVATE_CONTROL_CA_FILE}],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
    {sourceVolume:'material',containerPath:'/run/meri',readOnly:true}],
@@ -102,20 +102,22 @@ function task(stack,b,role,port){
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
   healthCheck:health(port)};
  const init={name:'material-init',image:b.imageUri,essential:false,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,
-  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='control'?['write','--control-node-ca']:['write'],linuxParameters:{capabilities:{drop:['ALL']}},
+  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:databaseTrust?['write','--control-node-ca']:['write'],linuxParameters:{capabilities:{drop:['ALL']}},
   environment:[{name:'MERI_STATIC_MATERIAL_EXPECTED',value:JSON.stringify(delivery.expected)}],
   secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:delivery.valueFrom}],
-  mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false},...(role==='control'?[{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}]:[])],
+  mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false},...(databaseTrust?[{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}]:[])],
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}-init`,'mode':'blocking'}}};
  const size=b.sizing[role];
- return new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
+ const definition=new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
   runtimePlatform:{cpuArchitecture:'ARM64',operatingSystemFamily:'LINUX'},executionRoleArn:roleValue(b,'executionRoleArn','executionRoleArns',role),
   ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
   volumes:[{name:'workspace'},{name:'tmp'},{name:'material'}],containerDefinitions:[init,c]});
+ definition.cfnOptions.updateReplacePolicy=CfnDeletionPolicy.RETAIN;
+ return definition;
 }
 function service(stack,b,role,definition,securityGroupIds){
- const name=role==='temporalWorker'?'temporal-worker':role;
+ const name=roleNames[role];
  // The internal ALB's 8082 target group (controlPrivateTargetGroupArn) is how AgentCore and the worker
  // reach control-private, so control needs no Cloud Map registration. The public 8080 target group is optional
  // and is supplied only at Stage 6 (public exposure); either may be absent independently.
@@ -135,10 +137,15 @@ export function synthesizeProductPreview(binding){
  service(stack,b,'temporalWorker',worker,b.network.workerSecurityGroupIds);
  new CfnOutput(stack,'ControlTaskDefinitionArn',{value:control.ref});
  new CfnOutput(stack,'TemporalWorkerTaskDefinitionArn',{value:worker.ref});
+ if(taskRoles(b).includes('scheduleWorker')){
+  const schedule=task(stack,b,'scheduleWorker',8083);
+  service(stack,b,'scheduleWorker',schedule,b.network.scheduleSecurityGroupIds);
+  new CfnOutput(stack,'ScheduleWorkerTaskDefinitionArn',{value:schedule.ref});
+ }
  const template=Template.fromStack(stack).toJSON();
- template.Description='Meri shared control and Temporal worker with pinned native TLS material; AgentCore hosts SDK sessions.';
+ template.Description=`Meri shared control and Temporal worker${taskRoles(b).includes('scheduleWorker')?' plus schedule dispatch':''} with pinned native TLS material; AgentCore hosts SDK sessions.`;
  template.Metadata={AWSToolsMetrics:{AWSAgentToolkit:'aws-cloudformation@3'}};
- for(const id of ['controlTask','temporalWorkerTask'])template.Resources[id].Metadata={
+ for(const id of taskRoles(b).map(role=>`${role}Task`))template.Resources[id].Metadata={
   'com.aws.cloudformation.Context':{why:'Deliver immutable native TLS and private control trust to the service.',must:'Keep nonroot, read-only app material, exact secret versions and no mutable token-writer volume.'}};
  return template;
 }

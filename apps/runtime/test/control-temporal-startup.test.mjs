@@ -55,7 +55,7 @@ function fixture({tlsError,initialLoss=false,onListen,cleanup={},memoryContext=f
   createPool(options){events.push('pool');assert.equal(options.max,10);assert.ok(options.connectionString.endsWith('?sslmode=verify-full'));return pool;},
   async connect(options){events.push('connect');assert.equal(options.address,configuration.temporal.address);assert.equal(Object.hasOwn(options,'apiKey'),false);assert.deepEqual(options.tls,{synthetic:true});return connection;},
   createClient(options){events.push('client');assert.equal(options.connection,connection);assert.equal(options.namespace,configuration.temporal.namespace);return {synthetic:true};},
-  async startCandidate(options){events.push('candidate');assert.equal(options.configuration,configuration);assert.equal(options.pool,pool);assert.equal(options.controlCredential,credential);assert.equal(options.signal.aborted,false);return candidate;},
+  async startCandidate(options){events.push('candidate');state.candidateOptions=options;assert.equal(options.configuration,configuration);assert.equal(options.pool,pool);assert.equal(options.controlCredential,credential);assert.equal(options.signal.aborted,false);return candidate;},
   assemble(options){events.push('assembly');assert.equal(options.pool,pool);state.assemblyOptions=options;return assembly;},
   async listen(options){
    const role=options.configuration.http.port===configuration.privateHttp.port?'private':'public';events.push('listen:'+role);
@@ -67,6 +67,22 @@ function fixture({tlsError,initialLoss=false,onListen,cleanup={},memoryContext=f
  return {configuration,binding,executionId,events,closed,state,lose,owners,memoryContextRelay,memoryCalls,
   start:()=>startControl(configuration,{signal:controller.signal,testOwners:owners,...(memoryContextRelay?{memoryContextRelay}:{})})};
 }
+
+test('control supplies its Core read credential to automatic context and management without Objective generation',async()=>{
+ const f=fixture(),readMaterial=f.owners.readMaterial,secretPath='/run/meri/core-reads.secret';let reads=0;
+ f.configuration.reads={enabled:true,serviceSecretFile:secretPath};
+ f.owners.readMaterial=async path=>path===secretPath?(reads++,Buffer.from('synthetic-core-read-secret\n')):readMaterial(path);
+ assert.equal(f.configuration.objectiveGeneration,undefined);
+ const runtime=await f.start();
+ try{
+  assert.equal(reads,0,'startup does not eagerly expose the secret');
+  assert.equal(await f.state.candidateOptions.getCoreServiceSecret(),'synthetic-core-read-secret');
+  assert.equal(reads,1);
+  assert.equal(Object.hasOwn(f.state.assemblyOptions,'getCoreServiceSecret'),false,'the secret getter belongs to the control candidate');
+ }finally{await runtime.close();}
+ const absent=fixture(),without=await absent.start();
+ try{assert.equal(absent.state.candidateOptions.getCoreServiceSecret,undefined);}finally{await without.close();}
+});
 
 test('control binds the selected proposal continuation relay only to its own ready store',async()=>{
  const f=fixture({memoryContext:true}),runtime=await f.start();

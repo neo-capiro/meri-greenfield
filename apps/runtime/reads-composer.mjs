@@ -10,10 +10,10 @@ import {prepareReadFamilies,GENERAL_READ_ADAPTER_FAMILIES} from './read-families
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(value);
 const deny=code=>{throw nativeReadFault(code);};
 export async function createControlReadsComposer(configuration){
- const c=own(configuration,['coreOrigin','nativeCredentials','readSecret','serviceSecretFile','capabilityPolicy'],
-  ['readModeServiceSecretFile','familyIds','defaultCongress','fetchImpl','now','newId','memoryContexts']);
+ const c=own(configuration,['coreOrigin','nativeCredentials','readSecret','serviceSecretFile'],
+  ['capabilityPolicy','readModeServiceSecretFile','familyIds','defaultCongress','fetchImpl','now','newId','memoryContexts']);
  const coreOrigin=retainedOrigin(c.coreOrigin),now=c.now??Date.now,newId=c.newId??randomUUID,fetchImpl=c.fetchImpl??globalThis.fetch;
- if(typeof c.nativeCredentials?.nativeCredentialFor!=='function'||typeof c.readSecret!=='function'||typeof c.capabilityPolicy?.forRun!=='function'||
+ if(typeof c.nativeCredentials?.nativeCredentialFor!=='function'||typeof c.readSecret!=='function'||c.capabilityPolicy!==undefined&&typeof c.capabilityPolicy?.forRun!=='function'||
   typeof now!=='function'||typeof newId!=='function'||typeof fetchImpl!=='function'||typeof c.serviceSecretFile!=='string'||c.memoryContexts!==undefined&&typeof c.memoryContexts.forTask!=='function')deny('CONFIGURATION');
  const familyIds=data(c.familyIds??GENERAL_READ_ADAPTER_FAMILIES);
  async function secret(file){let bytes;try{bytes=await c.readSecret(file);}catch{deny('UNAVAILABLE');}
@@ -30,8 +30,9 @@ export async function createControlReadsComposer(configuration){
  }
  const families=prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy:c.capabilityPolicy,getNativeCredential,getServiceSecret,
   ...(getReadModeServiceSecret?{getReadModeServiceSecret}:{}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress}),...(c.memoryContexts?{memoryContexts:c.memoryContexts}:{})});
- function createReadsRuntime({execution,binding,approvedReads,objectiveCore}){
-  const createGateway=value=>families.createGateway({...value,...(objectiveCore?{objectiveCore}:{})});
+ function createReadsRuntime({execution,binding,approvedReads,objectiveCore,routineCore,capabilityPolicy=c.capabilityPolicy,readCapabilityRole}){
+  if(typeof capabilityPolicy?.forRun!=='function')deny('CONFIGURATION');
+  const createGateway=value=>families.createGateway({...value,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{})});
   return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now}),approvedReads,now});
  }
  return Object.freeze({createReadsRuntime,familyIds,missing:families.missing.map(id=>`source-composition:${id}`)});

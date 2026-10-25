@@ -10,7 +10,7 @@ import {advertisedArguments} from '../schema.mjs';
 import {connect} from './native-mcp-fixture.mjs';
 const evidence={id:'get_business_development_evidence',version:'0.2.0'},operations=[...ids.map(id=>({id,version:'0.2.0'})),evidence];
 test('BD SDK retains personal context/change reads and requires client scope for evidence',()=>{
- assert.equal(familyReads().length,81);assert.equal(READ_FAMILY_IDS.length,45);
+ assert.equal(familyReads().length,84);assert.equal(READ_FAMILY_IDS.length,48);
  const expected=[ids[0],evidence.id,ids[1]];
  assert.deepEqual(READ_FAMILIES['business-development'],{clientScope:'optional',requiredClientOperations:[evidence.id],operationIds:[...ids,evidence.id]});
  assert.deepEqual(familyReads().filter(row=>row.family==='business-development').map(row=>row.operation.id),expected);

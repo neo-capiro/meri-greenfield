@@ -103,3 +103,36 @@ contract. The zero-timeout alarm sums control and runner signals; that sum is a
 by `runId` to inspect the original runner cause.
 
 Checks: `node --test apps/runtime/telemetry/test/{turn-lines,turn-context,counting}.test.mjs`.
+
+## AgentCore setup, settlement and process startup
+
+`createAgentCoreQuery` opens the existing runner diagnostic context before input
+validation and binds correlation IDs only after that validation succeeds. Fixed
+stages distinguish input, admission, workspace, client setup, assembly, cleanup,
+canonical readback and settlement. The assembled runner borrows this context;
+the existing stage deduplication keeps one `runner.process.start` record. The
+first activity failure survives later cleanup uncertainty.
+
+`meri.turn.settlement` is a log-only record emitted after the unchanged SDK
+cleanup check and canonical settlement receipt validation. It contains validated
+run/attempt IDs, the receipt state, and `sdkCleanup=closed`. Failed validation or
+unknown cleanup emits no receipt. This record adds no `Turns` metric and proves
+neither physical runtime retirement nor a durable restore on the next turn.
+
+Before a run exists, `RUNTIME_STARTUP_FAILURE` uses the same reviewed classifier
+with a fixed `agentcore` or `temporal-worker` role and fixed boundary stage. Worker
+material, readiness, Temporal connection, construction, run and listener failures
+remain distinct; a rejected poller completion also emits `worker-run`. A startup
+cleanup failure produces a separate `worker-cleanup` line.
+AgentCore configuration, transport, client, listener and shutdown stages use the
+same emitter. No raw error message, SDK stderr, body, token or configuration value
+is included. Diagnostic write failures are swallowed. Existing generic process
+errors and exit/cleanup behavior remain unchanged.
+
+These observations add no retry policy. The earlier worker startup failures'
+cause remains unknown; ordinary ECS recovery still owns process replacement.
+The focused local checks are `agentcore-query.test.mjs`,
+`temporal-worker-startup.test.mjs`, `agentcore-entrypoint-diagnostics.test.mjs`
+under `apps/runtime/test`, plus the existing diagnostic and line-schema tests.
+Use Node 24 with `--experimental-test-module-mocks --test --test-concurrency=1`.
+These synthetic checks do not establish deployed acceptance.

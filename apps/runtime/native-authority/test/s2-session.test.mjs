@@ -7,10 +7,10 @@ import {createActionSessionOwner,borrowedRunSession} from '../../../control/acti
 import {createCapiroApplicationAuthorityClient} from '../../../control/action-host/application-adapters/authority-http.mjs';
 import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
-function fixture(t,{enabled=true}={}){
+function fixture(t,{enabled=true,recheckAdmission=false}={}){
  const at=1800000000000,binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1},state={calls:[],local:0,status:200};
- const now=()=>at,limits={maxRequestMs:3000,maxFactBytes:65536},fetchImpl=async(url,init)=>{state.calls.push({url,init});assert.ok(url.endsWith('/current'));assert.equal(init.headers.authorization,'Bearer native');if(state.status!==200)return Response.json({}, {status:state.status});return Response.json({principal:{tenantId:'tenant',actorId:'actor'},role:'standard_user',permissions:['memory.propose.firm'],clientIds:[id(5)],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:state.contextRevision??'c'.repeat(64),conversationId:id(1),selectedClientId:id(5),checkedAtMs:at,expiresAtMs:at+120000});};
- const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits,enabled,admitInitialConversation:async()=>JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000}),currentOwner:{async currentRun(){state.local++;if(state.runRefused)throw Error('RUN_REFUSED');return JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000});}}});
+ const now=()=>at,limits={maxRequestMs:3000,maxFactBytes:65536},fetchImpl=async(url,init)=>{state.calls.push({url,init});assert.ok(url.endsWith('/current'));assert.equal(init.headers.authorization,'Bearer native');if(state.status!==200)return Response.json({}, {status:state.status});return Response.json({principal:{tenantId:'tenant',actorId:'actor'},role:'standard_user',permissions:['memory.propose.firm'],clientIds:[id(5)],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:state.contextRevision??'c'.repeat(64),conversationId:id(1),selectedClientId:id(5),checkedAtMs:at+(state.offset??0),expiresAtMs:state.expiresAtMs??at+120000});};
+ const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits,enabled,admitInitialConversation:async input=>{state.recheckActive=input.recheckActive;if(recheckAdmission){await state.beforeRecheck?.();await input.recheckActive();}return JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000});},currentOwner:{async currentRun(){state.local++;if(state.runRefused)throw Error('RUN_REFUSED');return JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000});}}});
  const membership=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext:identity,fetchImpl,now,limits});
  const sessions=createActionSessionOwner({mode:'process-local',now,verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,withAuthority:identity.withAuthority,membership:{admit:membership.admit,recheck:membership.recheck},limits:{...limits,maxSessions:10,maxTtlMs:100000},refusals:()=>{}});t.after(()=>sessions.close());
  return {state,sessions,binding,now,fetchImpl,identity,async issue(){return sessions.issue({identityCredential:'native',hints:{conversationId:id(1),clientId:id(5)}});}};
@@ -20,6 +20,14 @@ test('S2 one combined observation serves issuance; read rechecks still read the 
  const a=await f.sessions.authenticateSession({credential:s.credential});assert.equal(f.state.calls.length,2,'admission authentication is always fresh');const local=f.state.local;
  await f.sessions.readCurrentState({authentication:a});await f.sessions.readCurrentState({authentication:a});assert.equal(f.state.calls.length,2,'read rechecks reuse');assert.equal(f.state.local,local+4,'no local current-run check was cached');
  await f.sessions.authenticateSession({credential:s.credential});assert.equal(f.state.calls.length,3,'the next effect admission must call fresh');
+});
+for(const offset of [-5000,-1000,1000,5000])test(`issuance and its post-lock fresh callback accept ${offset}ms Core offset`,async t=>{
+ const f=fixture(t,{recheckAdmission:true});f.state.offset=offset;const session=await f.issue();assert.ok(session.credential);assert.equal(f.state.calls.length,2,'actual callback makes a second fresh Core call');
+});
+test('post-lock fresh receipt still refuses out-of-window replay, expiry and revocation',async t=>{
+ for(const mutate of [s=>s.offset=-5001,s=>s.offset=5001,s=>{s.offset=-1;s.expiresAtMs=1800000000000;},s=>s.status=403]){
+  const f=fixture(t,{recheckAdmission:true});f.state.beforeRecheck=()=>mutate(f.state);await assert.rejects(f.issue());assert.equal(f.state.calls.length,2);assert.equal(f.sessions.status().sessions,0);
+ }
 });
 test('S2 borrows the originating session for the same run, never another run, and revocation removes it',async t=>{
  const f=fixture(t),s=await f.issue(),borrow=borrowedRunSession(f.sessions),input={binding:f.binding,selectedClientId:id(5)};

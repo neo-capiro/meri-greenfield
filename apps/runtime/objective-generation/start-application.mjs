@@ -2,13 +2,12 @@
  * composed only when the control configuration declares `objectiveGeneration.start` (configuration.mjs); otherwise `handle`
  * answers null for every request and the route boundary keeps answering 404.
  *
- *   POST /api/objective-generation/start   Authorization: Bearer <action session>   {"generationJobId":"<uuid>"}
+ *   POST /api/objective-generation/start   Authorization: Bearer <native Clerk session>   {"generationJobId":"<uuid>"}
  *   202 {"state":"requested","generationJobId":...}     503 {"error":{"code":"OBJECTIVE_GENERATION_UNAVAILABLE"|..._UNKNOWN}}
  *
  * The browser has already obtained the job from Core with the user's consent (D7-1: Core owns the Objective command and the
  * planner loop). This route only asks Meri to drive that job server-side. Authority:
- *   - the existing action-session owner authenticates the caller freshly (tenant and actor only; the session's own
- *     conversation is irrelevant: an Objective job gets its own derived conversation),
+ *   - the existing Core identity owner authenticates the caller freshly (tenant and actor only); no unrelated chat is created,
  *   - the binding is DERIVED from (tenant, actor, job) (objective-source/run-starts.mjs), never taken from JSON,
  *   - notAfterMs is server-set (now + declared window),
  *   - the job itself is admitted only by Core inside the workflow (source step), which checks the job belongs to this actor
@@ -20,21 +19,21 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {jsonBody} from '../../control/action-application/http.mjs';
 import {objectiveRunIdentity} from '../objective-source/run-starts.mjs';
+import {objectiveGenerationStartMetadata,requireObjectiveGenerationStartRequest} from '../../../packages/contracts/objective-generation.mjs';
 
-export const OBJECTIVE_GENERATION_START_PATH='/api/objective-generation/start';
+export const OBJECTIVE_GENERATION_START_PATH=objectiveGenerationStartMetadata.path;
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const headers=Object.freeze({'cache-control':'no-store','x-content-type-options':'nosniff'});
 const answer=(code,status=503)=>Response.json({error:{code}},{status,headers});
 const fault=code=>Object.assign(Error(code),{code});
-const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 
 export function createObjectiveGenerationStartApplication(configuration={}){
  let enabled=false,authenticate,authorizeJob,start,windowMs,now=Date.now,maxRequestMs=3000;
  try{
   const flag=configuration&&typeof configuration==='object'&&!types.isProxy(configuration)?Object.getOwnPropertyDescriptor(configuration,'enabled'):null;
   if(flag&&'value'in flag&&flag.value===true){
-   const c=own(configuration,['enabled','sessions','dispatcher','windowMs','authorizeJob'],['now','maxRequestMs']);
-   authenticate=storageMethod(c.sessions,'authenticateSession');start=storageMethod(c.dispatcher,'start');
+   const c=own(configuration,['enabled','identity','dispatcher','windowMs','authorizeJob'],['now','maxRequestMs']);
+   authenticate=storageMethod(c.identity,'verifyIdentity');start=storageMethod(c.dispatcher,'start');
    authorizeJob=c.authorizeJob;if(typeof authorizeJob!=='function')throw fault('CONFIGURATION');
    windowMs=c.windowMs;now=c.now??now;maxRequestMs=c.maxRequestMs??maxRequestMs;
    if(!Number.isSafeInteger(windowMs)||windowMs<60000||windowMs>86400000||typeof now!=='function'||types.isProxy(now)||
@@ -52,8 +51,7 @@ export function createObjectiveGenerationStartApplication(configuration={}){
    if(r.method!=='POST'||url.search||url.hash||!auth?.startsWith('Bearer ')||auth.length>8199||header('content-encoding')||
       !/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||length!==null&&!/^[1-9][0-9]{0,3}$/u.test(length))return answer('OBJECTIVE_GENERATION_REFUSED',400);
    life=createOperationLifetime({now,signal:r.signal,deadlineMs:now()+maxRequestMs,errorFactory:()=>fault('OBJECTIVE_GENERATION_UNAVAILABLE')});
-   let body;try{body=own(await jsonBody({body:r.body,length:length===null?null:Number(length)},1024,life,life.check),['generationJobId']);}catch{return answer('OBJECTIVE_GENERATION_REFUSED',400);}
-   if(!uuid(body.generationJobId))return answer('OBJECTIVE_GENERATION_REFUSED',400);
+   let body;try{body=requireObjectiveGenerationStartRequest(await jsonBody({body:r.body,length:length===null?null:Number(length)},objectiveGenerationStartMetadata.requestBytes,life,life.check));}catch{return answer('OBJECTIVE_GENERATION_REFUSED',400);}
    const started=now();let session,identity;
    try{
     session=data(await life.run(signal=>authenticate({credential:auth.slice(7),signal,deadlineMs:started+maxRequestMs})));const p=session.principal;

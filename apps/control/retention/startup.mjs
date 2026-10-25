@@ -29,7 +29,7 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  const gate=createRetentionReadGate({journal:tracked,serving:fence});
  const reconciler=ledger&&watermark?createRecoveryReconciler({ledger,journal:tracked,serving:fence,watermark,storage:owners.storage,keyFor:owners.keyFor,facts:owners.facts,rows:owners.rows,now,recoverPrerequisitesExclusive}):null;
  const suppression=ledger&&ownership?createSuppressionOwner({ledger,journal:tracked,ownership,authorization,cancellation,serving:fence,now}):null;
- const executor=purge.enabled&&ledger?createPurgeExecutor({storage:owners.storage,ledger,journal:tracked,keyFor:owners.keyFor,facts:owners.facts,serving:fence,rows:owners.rows,enabled:true,now}):disabledPurge;
+ const executor=purge.enabled&&ledger?createPurgeExecutor({storage:owners.storage,ledger,journal:tracked,keyFor:owners.keyFor,facts:owners.facts,serving:fence,rows:owners.rows,finalize:owners.finalize??null,enabled:true,now}):disabledPurge;
  let recovering=null;
  /** One reconciliation at a time; the fence stays closed throughout and opens only with the read-back watermark. */
  function recover(){if(unavailable){fence.disable(unavailable);return Promise.reject(Object.assign(new Error(unavailable),{code:unavailable}));}

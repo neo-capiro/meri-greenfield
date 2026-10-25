@@ -2,6 +2,7 @@
  * and a Core double at the transport boundary. Not Core, PostgreSQL or live-policy qualification. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {normalizeMemoryProposeInput} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 import {createMemoryProducer} from '../producer.mjs';
 import {createCoreReview} from '../core-review.mjs';
@@ -22,6 +23,60 @@ function setup({retention=null,requireSurfaceRetentionSubject=false}={}){
 }
 const code=async(promise,expected)=>{await assert.rejects(promise,e=>productFailure(e)?.code===expected);};
 const web={kind:'web_page',reference:'https://example.gov/report'};
+function commandCall({binding:over={},arguments:args={},...fields}={}){
+ const binding={tenantId:principal().tenantId,actorId:principal().actorId,conversationId:id(700),runId:id(701),attemptId:id(704),workerId:id(705),writerFence:1,...over};
+ const commandContext={binding,conversationClientId:CLIENT_A},arguments_=normalizeMemoryProposeInput({content:'A conversation fact',...args},commandContext);
+ const command={contractVersion:'0.1.0',commandId:id(702),binding,action:'memory.propose',arguments:arguments_,attachments:[],
+  scopes:[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:'p1'}],idempotencyKey:id(703),...fields};
+ return {principal:principal(),command,commandContext,commandSha256:canonicalSha256(command)};
+}
+
+for(const scope of ['personal','client','firm'])test(`validated conversational ${scope} intent produces only a pending candidate`,async()=>{
+ const t=setup(),call=commandCall({arguments:{scope,ttlDays:1.5}});call.principal=principal({permissions:[FIRM_PROPOSAL_PERMISSION]});
+ const result=await t.producer.proposeFromCommand(call),row=[...t.journal.rows.values()][0];
+ assert.equal(result.review.status,'pending');assert.equal(result.review.publishedMemoryId,null);assert.equal(result.scope,scope);assert.equal(result.ttlDays,2);
+ assert.equal(row.candidate.tenantId,call.command.binding.tenantId);assert.equal(row.candidate.proposerActorId,call.command.binding.actorId);
+ assert.equal(result.origin.commandSha256,canonicalSha256(call.command));assert.equal(t.core.calls.filter(c=>c.route==='submit').length,1);
+});
+
+for(const [label,change]of [
+ ['missing trusted context',c=>delete c.commandContext],
+ ['unchecked digest',c=>c.commandSha256='f'.repeat(64)],
+ ['wrong action',c=>c.command.action='task.create'],
+ ['partial binding',c=>delete c.command.binding.attemptId],
+ ['extra argument',c=>c.command.arguments.publish=true],
+ ['unnormalized content',c=>c.command.arguments.content=' fact '],
+ ['foreign command scope',c=>c.command.scopes[0].tenantId=T2],
+ ['substituted conversation',c=>c.commandContext={...c.commandContext,binding:{...c.command.binding,conversationId:id(999)}}],
+ ['substituted selected client',c=>{c.command.arguments.scope='client';c.command.arguments.clientId=CLIENT_B;c.principal=principal({clientIds:[CLIENT_A,CLIENT_B]});}],
+])test(`command ${label} refuses before retention, custody or Core`,async()=>{
+ let checked=0;const t=setup({retention:{async assertServable(){checked++;}}}),call=commandCall();change(call);
+ if(label!=='unchecked digest')call.commandSha256=canonicalSha256(call.command);
+ await assert.rejects(t.producer.proposeFromCommand(call),e=>productFailure(e)?.code==='MEMORY_CANDIDATE_INVALID'&&productFailure(e)?.outcome==='NOT_DISPATCHED');
+ assert.equal(checked,0);assert.deepEqual(t.journal.calls,[]);assert.deepEqual(t.core.calls,[]);
+});
+
+for(const field of ['tenantId','actorId'])test(`command principal ${field} must match its original provenance before all ports`,async()=>{
+ let checked=0;const t=setup({retention:{async assertServable(){checked++;}}}),call=commandCall();call.principal=principal({[field]:'foreign'});
+ await assert.rejects(t.producer.proposeFromCommand(call),e=>productFailure(e)?.code==='MEMORY_SCOPE_REFUSED'&&productFailure(e)?.outcome==='NOT_DISPATCHED');
+ assert.equal(checked,0);assert.deepEqual(t.journal.calls,[]);assert.deepEqual(t.core.calls,[]);
+});
+
+test('command provenance and content are snapshotted before an asynchronous retention read',async()=>{
+ const call=commandCall();call.principal={...call.principal,clientIds:[CLIENT_A]};let changed=false;
+ const t=setup({retention:{async assertServable(){if(!changed){changed=true;call.command.arguments.content='Changed after admission';call.command.binding.actorId='foreign';call.principal.actorId='foreign';}}}});
+ const result=await t.producer.proposeFromCommand(call),row=[...t.journal.rows.values()][0];
+ assert.equal(result.content,'A conversation fact');assert.equal(result.origin.commandSha256,call.commandSha256);
+ assert.equal(row.candidate.proposerActorId,principal().actorId);assert.equal(t.core.calls.find(c=>c.route==='submit').actorId,principal().actorId);
+});
+
+test('lost conversational submission acknowledgement reconciles the same immutable candidate without another submit',async()=>{
+ const t=setup(),call=commandCall();t.core.failSubmit='lostAck';
+ const first=await t.producer.proposeFromCommand(call);assert.equal(first.review.status,'submission_unknown');
+ const before=t.core.calls.length,again=await t.producer.proposeFromCommand(call);
+ assert.equal(again.candidateId,first.candidateId);assert.equal(again.candidateSha256,first.candidateSha256);assert.equal(again.review.status,'pending');
+ assert.deepEqual(t.core.calls.slice(before).map(c=>c.route),['status']);assert.equal(t.journal.rows.size,1);assert.equal(t.core.reviews.size,1);
+});
 
 for(const targetState of ['superseded','forgotten','expired','missing'])test(`correction lost ACK then ${targetState}: same key retains original candidate and current review without rereading target`,async()=>{
  const t=setup(),memoryId='memory-replay';t.core.addMemory({memoryId,scope:'client',clientId:CLIENT_A,ownerActorId:null,key:'fiscal'});
@@ -165,11 +220,10 @@ test('review inbox reports a partially unresolved page without treating an unack
 });
 
 test('conversation-origin candidate uses the canonical retention subject before submission and every retained read',async()=>{
- const conversationId=id(700),command={binding:{conversationId,runId:id(701)},commandId:id(702),idempotencyKey:id(703),
-  arguments:{scope:'personal',clientId:null,content:'A conversation fact',key:null,ttlDays:null}};
+ const call=commandCall(),conversationId=call.command.binding.conversationId;
  const checked=[],gate={state:'allowed',async assertServable(subject){checked.push(subject);if(this.state==='suppressed')throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});
   if(this.state==='unavailable')throw Object.assign(Error('unavailable'),{code:'RETENTION_READ_UNAVAILABLE'});}};
- const t=setup({retention:gate}),sha='a'.repeat(64),run=()=>t.producer.proposeFromCommand({principal:principal(),command,commandSha256:sha});
+ const t=setup({retention:gate}),run=()=>t.producer.proposeFromCommand(call);
  gate.state='suppressed';await code(run(),'MEMORY_PROPOSAL_NOT_FOUND');assert.equal(t.journal.rows.size,0);assert.equal(t.core.calls.length,0);
  gate.state='allowed';const view=await run();assert.equal(view.review.status,'pending');
  assert.deepEqual(checked[0],{tenantId:principal().tenantId,kind:'conversation',subjectId:conversationId});
@@ -187,10 +241,10 @@ test('conversation-origin candidate uses the canonical retention subject before 
 
 test('a suppressed keyed conversational command cannot read a Core correction target before retention admission',async()=>{
  const conversationId=id(720),checked=[],gate={async assertServable(subject){checked.push(subject);throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});}};
- const t=setup({retention:gate}),command={binding:{conversationId,runId:id(721)},commandId:id(722),idempotencyKey:id(723),
-  arguments:{scope:'personal',clientId:null,content:'Changed fact',key:'known-key',ttlDays:null}};
+ const t=setup({retention:gate}),call=commandCall({binding:{conversationId,runId:id(721)},commandId:id(722),idempotencyKey:id(723),
+  arguments:{content:'Changed fact',key:'known-key'}});
  t.core.addMemory({memoryId:'existing-target',key:'known-key'});
- await code(t.producer.proposeFromCommand({principal:principal(),command,commandSha256:'c'.repeat(64)}),'MEMORY_PROPOSAL_NOT_FOUND');
+ await code(t.producer.proposeFromCommand(call),'MEMORY_PROPOSAL_NOT_FOUND');
  assert.deepEqual(checked,[{tenantId:principal().tenantId,kind:'conversation',subjectId:conversationId}]);
  assert.deepEqual(t.core.calls,[],'Core findByKey and submit are both beyond the retention gate');
  assert.equal(t.journal.rows.size,0);
@@ -198,8 +252,8 @@ test('a suppressed keyed conversational command cannot read a Core correction ta
 
 test('an unavailable conversation retention gate fails closed; surface candidates do not inherit a guessed conversation subject',async()=>{
  const gate={async assertServable(){throw Object.assign(Error('retention unavailable'),{code:'RETENTION_READ_UNAVAILABLE'});}},t=setup({retention:gate});
- const command={binding:{conversationId:id(710),runId:id(711)},commandId:id(712),idempotencyKey:id(713),arguments:{scope:'personal',clientId:null,content:'fact',key:null,ttlDays:null}};
- await code(t.producer.proposeFromCommand({principal:principal(),command,commandSha256:'b'.repeat(64)}),'MEMORY_UNAVAILABLE');
+ const call=commandCall({binding:{conversationId:id(710),runId:id(711)},commandId:id(712),idempotencyKey:id(713),arguments:{content:'fact'}});
+ await code(t.producer.proposeFromCommand(call),'MEMORY_UNAVAILABLE');
  assert.equal(t.journal.rows.size,0);assert.equal(t.core.calls.length,0);
  const surfaceView=await t.propose(principal(),{idempotencyKey:id(714),scope:'personal',content:'surface fact'});
  assert.equal(surfaceView.review.status,'pending','the separate surface subject policy is not guessed from a citation or proposer');

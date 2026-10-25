@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {registerHooks} from 'node:module';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
+import {RETENTION_SWEEP_BUDGET} from '../../../packages/runtime/retention-sweep-budget.mjs';
 
 // Match the load fixture's opt-in import stubs when this local checkout has
 // no AWS/Temporal/SDK dependencies. They cannot execute runtime operations.
@@ -29,6 +30,18 @@ const [{createNativeCapabilityClient},{binding},{isAuthorityUnavailable}]=await 
 ].map(path=>import(new URL(path,import.meta.url))));
 
 const credential='synthetic-control-capability';
+
+test('retention alone admits the background request ceiling and never replays a timed-out call',async()=>{
+ let at=1000,calls=0,elapsed=50000;
+ const client=createNativeCapabilityClient({configuration:{origin:'https://native.synthetic.invalid',maxResponseBytes:131072},credential,now:()=>at,
+  fetch:async()=>{calls++;at+=elapsed;return Response.json({after:null,more:false,outcome:'executed'});}});
+ const options=()=>({maxRequestMs:RETENTION_SWEEP_BUDGET.nativeMs,deadlineMs:at+RETENTION_SWEEP_BUDGET.nativeMs});
+ assert.equal((await client.call('retention/sweep',{after:null},options())).outcome,'executed');
+ await assert.rejects(client.call('runner/publish',{},options()),/NATIVE_CONFIGURATION/);assert.equal(calls,1);
+ await assert.rejects(client.call('retention/sweep',{}, {...options(),maxRequestMs:RETENTION_SWEEP_BUDGET.nativeMs+1}),/NATIVE_CONFIGURATION/);
+ await assert.rejects(client.call('retention/sweep',{}, {maxRequestMs:RETENTION_SWEEP_BUDGET.nativeMs}),/NATIVE_CONFIGURATION/);assert.equal(calls,1);
+ elapsed=RETENTION_SWEEP_BUDGET.nativeMs+1;await assert.rejects(client.call('retention/sweep',{after:null},options()),/DEADLINE/);assert.equal(calls,2,'a dispatched retention timeout is not replayed');
+});
 
 test('native client keeps its 3s default and refuses invalid factory timeout bounds',async()=>{
  let at=Date.now();const configuration={origin:'https://native.synthetic.invalid',maxResponseBytes:131072};

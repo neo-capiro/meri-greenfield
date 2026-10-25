@@ -12,7 +12,7 @@ const source=path=>readFileSync(root+path,'utf8');
 
 test('the inventory names every retained data class the product holds, each with an owner, a deletion path, a retention rule and a serving rule',()=>{
  // The required inventory (lane brief and audit matrix row "Retention, deletion and restore"), mapped to registry classes.
- const required={conversations:['conversation'],'runs and events':['conversation','events','nextRuns','nativeJournals'],'artifacts and versions':['artifactVersions'],'stored objects':['uploads','lifecycle','completionCheckpoints','selectedOutputs'],'memory proposals':['memoryProposals'],receipts:['receipts'],schedules:['schedules'],budgets:['budgets'],'logs and telemetry':['logs','telemetry'],'editor drafts (planned)':['editorDrafts']};
+ const required={conversations:['conversation'],'runs and events':['conversation','events','nextRuns','nativeJournals'],'artifacts and versions':['artifactVersions'],'stored objects':['uploads','lifecycle','completionCheckpoints','selectedOutputs'],'memory proposals':['memoryProposals','meriMemoryCandidates'],receipts:['receipts'],schedules:['schedules'],budgets:['budgets'],'logs and telemetry':['logs','telemetry'],'editor drafts (planned)':['editorDrafts']};
  for(const [name,ids] of Object.entries(required))for(const id of ids)assert.ok(dataClass(id),`${name}: ${id} is registered`);
  assert.deepEqual(plannedClasses,['editorDrafts'],'only the editor drafts are planned');
  const ids=dataClasses.map(c=>c.id);assert.equal(new Set(ids).size,ids.length,'one entry per class');
@@ -53,7 +53,7 @@ test('policy, enumeration and row owners derive their vocabularies from the regi
 test('enumeration: the planned class is refused, every row of a row-target class becomes an exact target, and conversation rows are enumerated only for a conversation',()=>{
  const s=subjectOf();assert.throws(()=>enumerateReferences({...snapshot(s),editorDrafts:[{draftId:randomUUID()}]}),/RETENTION_CLASS_PLANNED/);
  assert.doesNotThrow(()=>enumerateReferences({...snapshot(s),editorDrafts:[]}),'an empty planned list carries no data');
- const full={...snapshot(s),nextRuns:[{targetRunId:randomUUID()}],schedules:[{scheduleId:randomUUID()}],receipts:[{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],memoryProposals:[{candidateId:randomUUID()}]};
+ const full={...snapshot(s),nextRuns:[{targetRunId:randomUUID()}],schedules:[{scheduleId:randomUUID()}],receipts:[{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],memoryProposals:[{candidateId:randomUUID()}],memoryCandidates:[{candidateId:randomUUID()}]};
  const inv=enumerateReferences(full),targeted=new Set(inv.rowTargets.map(t=>t.className)),rowed=new Set(inv.rows.map(r=>r.className));
  for(const id of rowTargetClasses.filter(x=>x!=='artifactVersions'))assert.ok(targeted.has(id),`${id} has row targets`);
  for(const id of [...retainedClasses,...externalRequestClasses])assert.ok(rowed.has(id)&&!targeted.has(id),`${id} is enumerated without a row target`);
@@ -62,13 +62,15 @@ test('enumeration: the planned class is refused, every row of a row-target class
  assert.deepEqual([...new Set(invA.rowTargets.map(t=>t.className))],['artifactVersions'],'an artifact subject carries no conversation or event rows of its own');
 });
 
-test('the PostgreSQL row owner admits only the row classes its schema amendments allow; every other registered row class is refused at preflight without a connection',async()=>{
+test('the PostgreSQL row owner exposes exact conversation targets, keeps schedules separate and refuses malformed or foreign targets before a connection',async()=>{
  let connects=0;const journal=createPostgresRetentionJournal({pool:{connect(){connects++;throw Error('no connection expected');},query(){connects++;throw Error('no query expected');}}});
- assert.deepEqual([...journal.rowClasses].sort(),['artifactVersions','sdkSession']);for(const id of journal.rowClasses)assert.ok(rowTargetClasses.includes(id),id);
+ assert.deepEqual([...journal.rowClasses].sort(),['artifactVersions','completionCheckpoints','conversation','events','lifecycle','meriMemoryCandidates','nativeJournals','nextRuns','receipts','sdkSession','selectedOutputs']);
+ for(const id of journal.rowClasses)assert.ok(rowTargetClasses.includes(id),id);
  const key=`tenant-a:conversation:${randomUUID()}`;
- for(const className of rowTargetClasses.filter(id=>!journal.rowClasses.includes(id)&&rowTargetSubjectKind[id]==='conversation'))
-  await assert.rejects(journal.rows.preflight(key,{rowSteps:[{className,target:{className,key:randomUUID()}}]}),e=>e.code==='RETENTION_ROW_CLASS_UNSUPPORTED',className);
+ await assert.rejects(journal.rows.preflight(key,{rowSteps:[{className:'schedules',target:{className:'schedules',key:randomUUID()}}]}),e=>e.code==='RETENTION_INVALID_REQUEST','schedule erasure is not a conversation target');
  await assert.rejects(journal.rows.purge(key,{rowSteps:[{className:'events',target:{className:'events',key:randomUUID()}}]}),e=>e.code==='RETENTION_ROW_CLASS_UNSUPPORTED','purge refuses before opening a transaction');
  await assert.rejects(journal.rows.preflight(key,{rowSteps:[{className:'artifactVersions',target:{artifactVersionId:randomUUID()}}]}),e=>e.code==='RETENTION_INVALID_REQUEST','a row class of another subject kind keeps the DA-1 refusal');
+ for(const [target,code] of [[{className:'meriMemoryCandidates',key:'invalid'},'RETENTION_INVALID_REQUEST'],[{className:'events',key:randomUUID()},'RETENTION_INVALID_REQUEST'],[{className:'meriMemoryCandidates',key:randomUUID(),actorId:'caller'},'INVALID_COMMAND']])
+  await assert.rejects(journal.rows.preflight(key,{rowSteps:[{className:'meriMemoryCandidates',target}]}),{message:code});
  assert.equal(connects,0);
 });

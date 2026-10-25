@@ -19,7 +19,7 @@ mock.module('../material-init.mjs',{namedExports:{
   const bundle=await delivery.fetch({signal:new AbortController().signal});
   assert.deepEqual(bundle,{files:[{base64:canary}]});
   await cliState.beforeMaterialized?.();cliState.order.push('materialized');
-  return {configurationPath:'/run/meri/control.json',receipt:cliState.receipt};
+  return {configurationPath:cliState.configurationPath,receipt:cliState.receipt};
  },
  async releaseStaticProductMaterial(receipt){
   assert.equal(receipt,cliState.receipt);cliState.order.push('release');await cliState.release?.();
@@ -27,14 +27,14 @@ mock.module('../material-init.mjs',{namedExports:{
 }});
 mock.module('../control-ca-bundle.mjs',{namedExports:{
  async materializeControlCaBundle(input){
-  assert.deepEqual(input,{configurationPath:'/run/meri/control.json',expected:cliState.expected});
+  assert.deepEqual(input,{configurationPath:cliState.configurationPath,expected:cliState.expected});
   cliState.order.push('composite');await cliState.composite?.();
  }
 }});
 const {runMaterialInitCli}=await import('../material-init-cli.mjs');
 
 function cli(role='control'){
- const state={expected:{role},receipt:Object.freeze({role,fileCount:2}),order:[],out:'',error:''};
+ const state={expected:{role},configurationPath:role==='schedule-worker'?'/run/meri/schedule-worker.json':'/run/meri/control.json',receipt:Object.freeze({role,fileCount:2}),order:[],out:'',error:''};
  state.environment={MERI_STATIC_MATERIAL_EXPECTED:JSON.stringify(state.expected),MERI_STATIC_MATERIAL_BUNDLE:JSON.stringify({files:[{base64:canary}]})};
  state.ports={environment:state.environment,writeOut:line=>{state.order.push('ready');state.out+=line;},writeError:line=>{state.error+=line;}};
  cliState=state;return state;
@@ -48,13 +48,13 @@ test('control CA flag rejects another role before canonical materialization and 
  assert.doesNotMatch(state.out+state.error,new RegExp(canary));
 });
 
-test('ready is emitted after canonical materialization and composite initialization both complete',async()=>{
- const state=cli();
+for(const role of ['control','schedule-worker'])test(`${role} ready is emitted after canonical materialization and composite initialization both complete`,async()=>{
+ const state=cli(role);
  state.beforeMaterialized=async()=>{assert.equal(state.out,'');};
  state.composite=async()=>{assert.equal(state.out,'');assert.deepEqual(state.order,['materialize','materialized','composite']);};
  assert.equal(await runMaterialInitCli(['write','--control-node-ca'],state.ports),0);
  assert.deepEqual(state.order,['materialize','materialized','composite','ready']);
- assert.deepEqual(JSON.parse(state.out),{ready:true,role:'control',fileCount:2});assert.equal(state.error,'');
+ assert.deepEqual(JSON.parse(state.out),{ready:true,role,fileCount:2});assert.equal(state.error,'');
  assert.doesNotMatch(state.out,new RegExp(canary));
 });
 
@@ -110,7 +110,7 @@ mock.module('node:fs/promises',{namedExports:{
 const realComposer=await import('../control-ca-bundle.mjs?control-ca-init-io');
 const {CONTROL_NODE_CA_DIRECTORY:directory,CONTROL_NODE_CA_FILE:output}=realComposer;
 
-function filesystem(t){
+function filesystem(t,role='control'){
  for(const [key,value] of Object.entries({platform:'linux',getuid:()=>1000,getgid:()=>1000})){
   const before=Object.getOwnPropertyDescriptor(process,key);Object.defineProperty(process,key,{value,configurable:true});
   t.after(()=>{if(before)Object.defineProperty(process,key,before);else delete process[key];});
@@ -118,20 +118,35 @@ function filesystem(t){
  const configuration={native:{serverCaFile:'/run/meri/control-ca.pem',serverCaSha256:hash(new X509Certificate(privateCa).raw)}};
  const configBytes=Buffer.from(JSON.stringify(configuration)),files=new Map();let sequence=0;
  const put=(path,bytes,uid=1000,gid=1000,mode=0o600)=>files.set(path,{kind:'file',uid,gid,mode,ino:++sequence,bytes:Buffer.from(bytes)});
- put('/run/meri/control.json',configBytes);put('/run/meri/control-ca.pem',privateCa);put(rdsLock.imagePath,rdsBundle,0,0,0o444);
- const state={files,sequence,calls:[],configuration,expected:{role:'control',sha256ByPath:{'/run/meri/control.json':hash(configBytes),'/run/meri/control-ca.pem':hash(privateCa)}}};
+ const configurationPath=role==='schedule-worker'?'/run/meri/schedule-worker.json':'/run/meri/control.json';
+ put(configurationPath,configBytes);put('/run/meri/control-ca.pem',privateCa);put(rdsLock.imagePath,rdsBundle,0,0,0o444);
+ const state={files,sequence,calls:[],configuration,configurationPath,expected:{role,sha256ByPath:{[configurationPath]:hash(configBytes),'/run/meri/control-ca.pem':hash(privateCa)}}};
  ioState=state;return state;
 }
 const removed=state=>state.calls.filter(([operation])=>operation==='unlink'||operation==='rmdir');
 
-test('production composer creates exact shared bytes with exclusive private permissions and verifies startup readback',async t=>{
- const state=filesystem(t),receipt=await realComposer.materializeControlCaBundle({configurationPath:'/run/meri/control.json',expected:state.expected});
+for(const role of ['control','schedule-worker'])test(`${role} composer creates exact shared bytes with exclusive private permissions and verifies startup readback`,async t=>{
+ const state=filesystem(t,role),receipt=await realComposer.materializeControlCaBundle({configurationPath:state.configurationPath,expected:state.expected});
  assert.equal(receipt.path,output);assert.equal(state.files.get(directory).mode,0o700);assert.equal(state.files.get(output).mode,0o600);
  assert.deepEqual(state.files.get(output).bytes,Buffer.concat([rdsBundle,Buffer.from('\n'),privateCa]));
  const create=state.calls.find(([operation,path,,mode])=>operation==='open'&&path===output&&mode===0o600);
  assert.ok(create[2]&ioConstants.O_EXCL);assert.ok(create[2]&ioConstants.O_NOFOLLOW);
  assert.equal(await realComposer.verifyControlCaBundle(state.configuration,{environment:{NODE_EXTRA_CA_CERTS:output}}),true);
  assert.deepEqual(removed(state),[]);
+});
+
+test('schedule composite refuses a foreign role/configuration pair or changed pinned inputs before creation',async t=>{
+ const state=filesystem(t,'schedule-worker');
+ for(const [role,configurationPath] of [['control',state.configurationPath],['schedule-worker','/run/meri/control.json'],['temporal-worker',state.configurationPath]]){
+  await assert.rejects(realComposer.materializeControlCaBundle({configurationPath,expected:{...state.expected,role}}),{code:'STATIC_INIT_CONTROL_CA_REFUSED'});
+  assert.deepEqual(state.calls,[]);
+ }
+ for(const path of [state.configurationPath,'/run/meri/control-ca.pem',rdsLock.imagePath]){
+  const saved=state.files.get(path),changed=Buffer.from(saved.bytes);changed[0]^=1;state.files.set(path,{...saved,bytes:changed});
+  await assert.rejects(realComposer.materializeControlCaBundle({configurationPath:state.configurationPath,expected:state.expected}),{code:'STATIC_INIT_CONTROL_CA_REFUSED'});
+  assert.equal(state.files.has(output),false);assert.equal(state.files.has(directory),false);
+  state.files.set(path,saved);
+ }
 });
 
 test('production startup rejects missing and changed composite output without removing material',async t=>{

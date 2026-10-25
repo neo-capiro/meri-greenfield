@@ -32,6 +32,9 @@ import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../control/retention/postgres-watermark.mjs';
 import {createRetentionStartup} from '../control/retention/startup.mjs';
+import {createCoreRetentionClient} from '../control/retention/core-client.mjs';
+import {createConversationPurgeFacts} from '../control/retention/inventory-source.mjs';
+import {createConversationRetentionSweep} from '../control/retention/sweep.mjs';
 import {createArtifactRecoveryBinding} from './artifacts/recovery-binding.mjs';
 import {types} from 'node:util';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -39,6 +42,8 @@ import {createRuntimeUserPreferences} from './user-preferences.mjs';
 import {createPostgresScheduleOwner} from '../control/schedules/postgres-schedule-owner.mjs';
 import {createConfiguredRunCapabilityPolicy} from './product-ports/capability-policy.mjs';
 import {bindDocumentsSessions} from './artifacts/session-binding.mjs';
+import {createAgentCoreIntentResolver} from './native-authority/execution-composition.mjs';
+import {createRunnerIntentsApplication,RUNNER_INTENT_PATHS} from './native-authority/intents-http.mjs';
 import {bindApprovalSessions} from './native-authority/approval-forwarder.mjs';
 import {createObjectiveReaderApplication} from './product-ports/objective.mjs';
 import {createObjectiveGenerationReadback} from './objective-generation/retained-result.mjs';
@@ -63,16 +68,26 @@ export {temporalTls};
 /** Retention serving over the control database (migrations conversations 0010 and artifacts 0002, plus the proposed recovered-watermark
  * table), composed only when the configuration declares it: the retention startup owner with its serving fence closed until a
  * reconciliation over the authoritative ledger (the trusted `retentionLedgerSink` port) records a watermark that reads back. Purge
- * is composed explicitly disabled; no deletion owner exists in control. */
+ * is composed only with the explicit purge switch and actual storage/Core owners. */
 export function retentionGate(configuration,pool,ports={},binding=null,now=Date.now){
  if(configuration.retention===undefined)return null;const journal=binding?.context.journal??createPostgresRetentionJournal({pool,now}),recovery=binding??createArtifactRecoveryBinding({journal}),captured=captureRuntimePorts(ports),required=captured.configuredOwners.some(name=>['artifactOptionsOwner','artifactStore'].includes(name));
  const recoverPrerequisitesExclusive=recovery.configure(readRuntimeArtifactRecovery(captured),required);
- const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:captured.retentionLedgerSink??null,purge:{enabled:false},now,recoverPrerequisitesExclusive});
+ let purge={enabled:false};
+ if(configuration.retention.purge?.enabled){
+  if(!captured.retentionStorage||typeof configuration.reads?.serviceSecretFile!=='string')throw fault('RETENTION_CONFIGURATION');
+  const core=createCoreRetentionClient({origin:configuration.agentcore.identity.origin,getServiceSecret:async()=>Buffer.from(await readSecret(configuration.reads.serviceSecretFile)).toString('utf8').trim(),now});
+  const storage=captured.retentionStorage,keyFor=storage.keyFor;
+  purge={enabled:true,storage,rows:journal.rows,keyFor,finalize:core.finalize,
+   facts:createConversationPurgeFacts({pool,journal,core,storage,keyFor,now})};
+ }
+ const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:captured.retentionLedgerSink??null,ownership:{ownerOf:input=>journal.ownerOf(input)},purge,now,recoverPrerequisitesExclusive});
  recovery.bindRetention(startup.gate);
- return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
+ return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,
+  ...(purge.enabled?{sweep:createConversationRetentionSweep({startup,now})}:{}),artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
 export function assembleControl(options){
- const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,createReadsRuntime,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','productPorts','productPortsFactory','createReadsRuntime']);
+ const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,createReadsRuntime,workerModelPolicy,readCapabilityRole,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','productPorts','productPortsFactory','createReadsRuntime','workerModelPolicy','readCapabilityRole']);
+ if(workerModelPolicy!==undefined&&typeof workerModelPolicy!=='function')throw fault('CONTROL_CONFIGURATION');
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment,now}),pool=countingPool(injectedPool,turnTelemetry);
  if(telemetry!==undefined&&typeof telemetry?.observeRunOwner!=='function')throw fault('TELEMETRY_CONFIGURATION');
  const captured=productBinding(binding),canonical=captureRuntimePorts(canonicalProductPorts);
@@ -93,7 +108,7 @@ export function assembleControl(options){
  // Memory shares the conversation retention fence; a captured route alone is not a bound producer.
  const memoryRetentionBound=Boolean(productContext&&retention&&bindMemoryRetention(productContext,retention.gate));
  const store=createPostgresConversationStore({pool,now,modelCatalog:configuration.models,onPublished:event=>{turnTelemetry.bind(event.binding);turnTelemetry.summary(event);},...(retention?{retentionGate:retention.gate,retentionHead:retention.startup.ledger?.head}:{}),
-  ...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{})});
+  ...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{}),...(ports.conversationManagement?{assertConversationActive:ports.conversationManagement.assertActiveBinding}:{})});
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,...(ports.identityContext.withAuthority?{withAuthority:ports.identityContext.withAuthority}:{}),now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),
   resolveTransitionContext:ports.identityContext.resolveTransitionContext,
@@ -101,12 +116,16 @@ export function assembleControl(options){
  // A documents options owner (composed only with a trusted Core artifact authority) is late-bound to these exact sessions.
  if(productContext)bindDocumentsSessions(productContext,sessions,retention?.gate,store);
  // Approval forwarder (lane L): the per-context approver session binder reaches these exact sessions.
- if(productContext)bindApprovalSessions(productContext,sessions);
+ if(productContext)bindApprovalSessions(productContext,sessions,retention?.gate,store);
+ const nativeIntentsEnabled=Boolean(productContext&&configuration.sourceEnabled&&configuration.intents?.enabled&&ports.transitionAuthority);
+ const nativeIntents=createRunnerIntentsApplication({now,enabled:nativeIntentsEnabled,
+  resolveRun:productContext&&ports.transitionAuthority?createAgentCoreIntentResolver({context:productContext,execution,transitionAuthority:ports.transitionAuthority,nativeCredentials:sessions}):async()=>{throw fault('UNAVAILABLE');},
+  ...(retention?{retention:retention.gate}:{})});
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
- const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration);
- const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime,serviceFor:value=>createWorkerService(value),now}):null;
+ const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration,{pool});
+ const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),serviceFor:value=>createWorkerService(value),now}):null;
  if(selected)ports=composeRuntimePorts(ports,selected.ports);
- const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
+ const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy,readCapabilityRole}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
  const rawService=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
  const observedInput=Object.fromEntries(['allocateInput','admitInput','submit'].map(name=>[name,async input=>turnTelemetry.provisional(async()=>{const value=await rawService[name](input);try{const binding=value.run?.binding??value.allocation?.binding;if(binding){turnTelemetry.bind(binding);if(name==='submit')turnTelemetry.stage(binding,'send.submit.accepted');}}catch{}return value;})]));
  const service=Object.freeze({...rawService,...observedInput});
@@ -114,19 +133,19 @@ export function assembleControl(options){
  // observation. User sessions and Core remain on public admission and business-data paths.
  const createWorkerService=({credential,binding})=>{
   const localSessions=createExecutionSessions({execution,credential,binding,now});
-  const localBasic=createConversationService({sessions:localSessions,store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
+  const localBasic=createConversationService({sessions:localSessions,store:workerModelPolicy?{...store,readModelPolicy:workerModelPolicy}:store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy,readCapabilityRole}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
   const localService=createConversationLifecycleService({service:localBasic,store,dispatcher,sessions:localSessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
   return telemetry?telemetry.observeRunOwner(localService):localService;
  };
  const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,turnTelemetry,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({execution,createService:createWorkerService,configuration,now,turnTelemetry,...(retention?{retention:retention.gate}:{})});
  const objectiveReadback=compileObjectiveGenerationConfiguration(configuration,'control').runs?createObjectiveGenerationReadback({runStarts:createPostgresObjectiveRunStartStore({enabled:true,pool,now}),store,objects:ports.artifactStore?.objects,retention:retention?.gate,now,maxRequestMs:configuration.limits.requestMs}):null;
  const approvalMetadataReadback=ports.intentApplication&&configuration.intents?.core?createApprovalMetadataReadback({metadata:createPostgresApprovalMetadataReader({pool}),store,retention:retention?.gate,now,maxRequestMs:configuration.limits.requestMs}):null;
- const products=createRuntimeProductApplications({configuration,sessions,ports,now,conversationStore:store,userPreferences,...(retention?{retention:retention.gate,suppression:{journal:retention.journal,serving:retention.serving}}:{})});
+ const products=createRuntimeProductApplications({configuration,sessions,ports,now,conversationStore:store,userPreferences,...(retention?{retention:retention.gate,managementSuppression:retention.startup.suppression,suppression:{journal:retention.journal,serving:retention.serving}}:{})});
  // Composed intents need their journal table; a disabled family adds no table, so first-chat readiness is unchanged.
- const intentTables=Object.freeze(ports.intentApplication?['meri_intents.preparations','meri_commands.command_journal','meri_commands.approval_metadata']:selected?['meri_intents.preparations','meri_commands.approval_metadata']:[]);
+ const intentTables=Object.freeze([...(ports.intentApplication?['meri_intents.preparations','meri_commands.approval_metadata']:selected?['meri_intents.preparations','meri_commands.approval_metadata']:nativeIntentsEnabled?['meri_intents.preparations',...(configuration.intents.core?['meri_commands.approval_metadata']:[])]:[]),...(ports.actionApplicationFactory?.state()==='composed'?['meri_task_lookup.lookups','meri_task_lookup.events']:[])]);
  const memoryTables=Object.freeze(ports.memoryApplication?['meri_memory.candidates']:[]);
  if(!injectedTurnTelemetry)turnTelemetry.start();
- return Object.freeze({service,store,sessions,retention,objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
+ return Object.freeze({service,store,sessions,retention,objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return Object.values(RUNNER_INTENT_PATHS).includes(path)?nativeIntents.handle(request):path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
 }
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.
@@ -134,7 +153,9 @@ export async function startControl(configuration,options={}){
  compileAgentCoreConfiguration(configuration.agentcore);
  const objectiveDeclared=compileObjectiveGenerationConfiguration(configuration,'control');
  if(objectiveDeclared.runs&&typeof configuration.reads?.serviceSecretFile!=='string')throw fault('OBJECTIVE_CORE_CONFIGURATION');
- const getCoreServiceSecret=objectiveDeclared.runs?async()=>{const bytes=await (owners.readMaterial??readSecret)(configuration.reads.serviceSecretFile);return bytes.toString('utf8').trim();}:undefined;
+ // Automatic client context and conversation management use the same Core read
+ // credential independently of Objective generation. Keep the secret control-only.
+ const getCoreServiceSecret=typeof configuration.reads?.serviceSecretFile==='string'?async()=>{const bytes=await (owners.readMaterial??readSecret)(configuration.reads.serviceSecretFile);return bytes.toString('utf8').trim();}:undefined;
  if(createReadsRuntime!==undefined&&typeof createReadsRuntime!=='function')throw fault('READS_CONFIGURATION');
  compileControlUserPreferencesConfiguration(configuration);
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment});turnTelemetry.start();
@@ -157,7 +178,7 @@ export async function startControl(configuration,options={}){
   pool=countingPool((owners.createPool??(options=>new Pool(options)))({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs}),turnTelemetry);
   connection=await (owners.connect??(options=>Connection.connect(options)))({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs});checkAuthorization();signal?.throwIfAborted();const client=(owners.createClient??(options=>new Client(options)))({connection,namespace:configuration.temporal.namespace});
   candidate=await (owners.startCandidate??startAgentCoreCandidate)({configuration,pool,signal,turnTelemetry,controlCredential:capabilityBytes.toString('utf8').trim(),nativeCredentials:readCredentialRelay.port,...(getCoreServiceSecret?{getCoreServiceSecret}:{}),...(createReadsRuntime===undefined?{}:{createReadsRuntime})});
-  let native=candidate.native;routinesCandidateBinder?.(candidate);const unfencedNative=native;native=Object.freeze({...native,async call(operation,input,{signal:requestSignal}={}){if(operation==='execution/kickoff/stop')return unfencedNative.call(operation,input,{signal:requestSignal});fence.check();const joined=requestSignal?AbortSignal.any([requestSignal,fence.signal]):fence.signal;return unfencedNative.call(operation,input,{signal:joined});}});checkAuthorization();assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,createReadsRuntime,turnTelemetry,...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication(fence.wrap(assembly.application));
+  let native=candidate.native;routinesCandidateBinder?.(candidate);const unfencedNative=native;native=Object.freeze({...native,async call(operation,input,{signal:requestSignal}={}){if(operation==='execution/kickoff/stop')return unfencedNative.call(operation,input,{signal:requestSignal});fence.check();const joined=requestSignal?AbortSignal.any([requestSignal,fence.signal]):fence.signal;return unfencedNative.call(operation,input,{signal:joined});}});checkAuthorization();assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,createReadsRuntime,readCapabilityRole:candidate.readCapabilityRole,turnTelemetry,...(candidate.workerModelPolicy?{workerModelPolicy:candidate.workerModelPolicy}:{}),...(telemetry?{telemetry}:{}),...mounted,...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
   // RC1 option A: the reads composer's late-bound live-session relay reaches this control's own action-session owner only.
   readCredentialRelay?.bind(assembly.sessions);
   // Proposal continuation binds to this control's durable conversation store.
@@ -171,9 +192,9 @@ export async function startControl(configuration,options={}){
   // The download-link gate opens only after its owners verify; a closed gate leaves every other route as composed.
   checkAuthorization();const downloads=await assembly.downloads.open({signal});checkAuthorization();
   const mountedApplication=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
-  const objectiveRuns=composeObjectiveRuns({configuration,controlCapabilitySha256:capabilityDigest(capabilityBytes.toString('utf8').trim()),pool,store:assembly.store,client,
+  const objectiveRuns=composeObjectiveRuns({configuration,controlCapabilitySha256:capabilityDigest(capabilityBytes.toString('utf8').trim()),pool,store:assembly.store,client,retention:assembly.retention?.gate,
    ...(objectiveDeclared.runs?candidate.objective:{})});
-  const objectiveStart=objectiveDeclared.start===null?null:createObjectiveGenerationStartApplication({enabled:true,sessions:assembly.sessions,windowMs:objectiveDeclared.start.windowMs,maxRequestMs:configuration.limits.requestMs,
+  const objectiveStart=objectiveDeclared.start===null?null:createObjectiveGenerationStartApplication({enabled:true,identity:native,windowMs:objectiveDeclared.start.windowMs,maxRequestMs:configuration.limits.requestMs,
    authorizeJob:({source,signal})=>candidate.objective.core.clientFor(source).current({signal}),
    dispatcher:createObjectiveGenerationDispatcher({client,taskQueue:configuration.temporal.taskQueue,maxRequestMs:configuration.limits.requestMs})});
   const objectiveReader=createObjectiveReaderApplication(assembly.objectiveReadback?{reader:assembly.objectiveReadback,getServiceSecret:getCoreServiceSecret,maxRequestMs:configuration.limits.requestMs}:{});

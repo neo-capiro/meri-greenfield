@@ -83,7 +83,8 @@ test('lost preparation settlement ACK retains custody and replays without anothe
 
 test('lost preparation claim acknowledgement keeps PENDING fenced without any context identity or retry',async()=>{
  const f=await applicationFixture();try{
-  f.preparations.state.commitError=Error('synthetic lost claim COMMIT ACK');await assert.rejects(f.prepare());
+  f.preparations.state.onQuery=text=>{if(text.startsWith('INSERT INTO meri_intents.preparations'))f.preparations.state.commitError=Error('synthetic lost claim COMMIT ACK');};await assert.rejects(f.prepare());
+  f.preparations.state.onQuery=null;
   const ids=f.state.ids;assert.equal(ids,100);assert.equal([...f.preparations.state.rows.values()][0].state,'PENDING');
   await assert.rejects(f.prepare());assert.equal(f.state.ids,ids);assert.equal(f.sql.state.intents.size,0);assert.equal(f.temporal.calls.create,0);
  }finally{f.close();}
@@ -95,7 +96,7 @@ for(const kind of ['policy','native'])test(`known ${kind} context refusal after 
   await assert.rejects(f.prepare());const row=[...f.preparations.state.rows.values()][0];assert.equal(row.state,'FAILED');assert.equal(row.outcome.code,'REFUSED');
   const ids=f.state.ids;assert.equal(f.sql.state.intents.size,0);assert.equal(f.temporal.calls.create,0);
   f.state.refusePhase=null;f.state.policyHook=null;f.state.revoked=false;
-  const session=await f.sessions.issue({identityCredential:'synthetic-native',deadlineMs:f.now()+4000});
+  const session=await f.sessions.issue({identityCredential:'synthetic-native',hints:{conversationId:binding.conversationId,clientId:f.contextConfiguration.commandContext.clientResolution.clientId},deadlineMs:f.now()+4000});
   await assert.rejects(f.call('prepare',{requestId:'request-one',operation:'schedule_task',request:routineRequest()},session.credential));assert.equal(f.state.ids,ids);assert.equal(row.state,'FAILED');
  }finally{f.close();}
 });

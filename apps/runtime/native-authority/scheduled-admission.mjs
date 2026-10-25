@@ -22,7 +22,7 @@ const fail=code=>{throw fault(code);};
 function closed(value,keys,code){try{return own(value,keys);}catch{fail(code);}}
 
 export function createScheduledNativeAdmission(options){
- let pool,claimInput,acceptInput,readOptional,readFiring,openOccurrence,authorize,t,a,scopes,now,maxRequestMs;
+ let pool,claimInput,readInput,readDefaultModel,acceptInput,readOptional,readFiring,openOccurrence,authorize,t,a,scopes,now,maxRequestMs;
  try{
   const o=own(options,['pool','store','scheduleOwner','authority','template'],['now','maxRequestMs']);
   pool=Object.freeze({connect:sdkMethod(o.pool,'connect')});
@@ -31,14 +31,15 @@ export function createScheduledNativeAdmission(options){
   if(!initial||!Object.hasOwn(initial,'value'))fail('CONFIGURATION');
   claimInput=sdkMethod(initial.value,'claim');acceptInput=sdkMethod(initial.value,'accept');readOptional=sdkMethod(o.store,'readOptional');
   readFiring=sdkMethod(o.scheduleOwner,'readFiring');openOccurrence=sdkMethod(o.scheduleOwner,'openOccurrence');authorize=sdkMethod(o.authority,'authorize');
-  t=data(own(o.template,['principal','selectedClientId','policyRevision','versions','task','configurationSha256','allocationJson','runWindowMs','destinationId']));
+  t=data(own(o.template,['principal','selectedClientId','policyRevision','versions','task','configurationSha256','runWindowMs','destinationId'],['allocationJson']));
   closed(t.principal,['tenantId','actorId'],'CONFIGURATION');validateShape('Identity',t.principal);validateShape('RuntimeVersions',t.versions);
-  a=allocation(t.allocationJson);scopes=data([{tenantId:t.principal.tenantId,kind:'client',resourceId:t.selectedClientId,policyRevision:t.policyRevision}]);
+  a=t.allocationJson===undefined?null:allocation(t.allocationJson);scopes=data([{tenantId:t.principal.tenantId,kind:t.selectedClientId===null?'private-user':'client',resourceId:t.selectedClientId??t.principal.actorId,policyRevision:t.policyRevision}]);
+  if(a===null){readInput=sdkMethod(initial.value,'read');readDefaultModel=sdkMethod(o.store,'readDefaultModelSelection');}
   validateShape('Scope',scopes[0]);closed(t.task,['taskId','manifestSha256','version'],'CONFIGURATION');
-  if(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.selectedClientId)||
+  if((t.selectedClientId!==null||a!==null)&&!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.selectedClientId)||
    !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(t.task.taskId)||
-   !integer(t.task.version)||t.task.version<1||t.task.manifestSha256!==a.manifestSha256||!digest(t.configurationSha256)||
-   a.run.tenantId!==t.principal.tenantId||a.run.actorId!==t.principal.actorId||!integer(t.runWindowMs)||t.runWindowMs<1||
+   !integer(t.task.version)||t.task.version<1||!digest(t.task.manifestSha256)||a!==null&&t.task.manifestSha256!==a.manifestSha256||!digest(t.configurationSha256)||
+   a!==null&&(a.run.tenantId!==t.principal.tenantId||a.run.actorId!==t.principal.actorId)||!integer(t.runWindowMs)||t.runWindowMs<1||
    t.destinationId!==SCHEDULED_MERI_INBOX_DESTINATION)fail('CONFIGURATION');
   now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
   if(typeof now!=='function'||!integer(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
@@ -51,10 +52,10 @@ export function createScheduledNativeAdmission(options){
   const expected={binding:id.binding,requestId:id.requestId,eventId:id.eventId,workflowId:workflowId(id.binding)};
   if(v.occurrenceKey!==id.occurrenceKey||!same(effect,expected))fail('REQUEST');
   validateShape('Conversation',input.conversation);validateShape('Run',input.run);validateShape('UIEvent',input.event);
-  closed(input.request,['requestId','prompt','skill','window','windowRequest'],'REQUEST');
+  try{own(input.request,['requestId','prompt','skill','window','windowRequest'],a===null?['modelSelection']:[]);}catch{fail('REQUEST');}
   const {conversation:c,run:r,event:e,request:q}=input,b=id.binding;
   if(!same(b,r.binding)||!same(b,e.binding)||c.conversationId!==b.conversationId||!same(c.owner,t.principal)||
-   same(a.run,Object.fromEntries(Object.keys(a.run).map(k=>[k,b[k]])))||
+   a!==null&&same(a.run,Object.fromEntries(Object.keys(a.run).map(k=>[k,b[k]])))||
    !same(r.versions,t.versions)||!same(c.scopes,scopes)||!same(r.scopes,scopes)||!same(e.scopes,scopes)||
    c.policyRevision!==t.policyRevision||r.policyRevision!==t.policyRevision||r.state!=='queued'||
    q.requestId!==id.requestId||e.eventId!==id.eventId||e.sequence!==1||e.type!=='run.status'||e.data.state!=='queued'||e.data.reasonCode!==null||
@@ -69,17 +70,17 @@ export function createScheduledNativeAdmission(options){
   const i=assertScheduleIntent(r.intent,c.id.binding.tenantId),p=i.projection;
   if(i.operation==='cancel_scheduled_task'||i.generation!==c.occ.generation||!same(i.projection,r.projection)||p.state!=='active'||i.configuration.paused||
    !same(p.owner,t.principal)||!same(i.configuration.task,t.task)||!same(c.occ.task,t.task)||
-   !same(p.scopes,scopes)||p.destinationId!==t.destinationId||p.maxCostMicrousd<a.budgets.maxCostMicroUSD||p.retryLimit!==0)fail('PROFILE_MISMATCH');
+   !same(p.scopes,scopes)||p.destinationId!==t.destinationId||a!==null&&p.maxCostMicrousd<a.budgets.maxCostMicroUSD||p.retryLimit!==0)fail('PROFILE_MISMATCH');
   if(hash(c.input.request.prompt)!==i.taskInstructionSha256)fail('INSTRUCTION');
   const age=now()-Date.parse(c.occ.scheduledAt);
   if(age<0||age>i.configuration.catchupWindowMs+i.configuration.spec.jitterMs)fail('MISSED');
   return hash(i);
  }
- function upperBound(c,createdAtMs){return Math.min(createdAtMs+c.occ.projection.maxRuntimeSeconds*1000,createdAtMs+t.runWindowMs,Date.parse(a.schedule.expiresAt));}
+ function upperBound(c,createdAtMs){return Math.min(createdAtMs+c.occ.projection.maxRuntimeSeconds*1000,createdAtMs+t.runWindowMs,a===null?Infinity:Date.parse(a.schedule.expiresAt));}
  async function proof(c,phase,expiresAtMs){
   const intentSha256=await current(c),selection=data({phase,occurrenceKey:c.id.occurrenceKey,binding:c.id.binding,
    intentSha256,effectSha256:hash(c.effect),requestSha256:hash(c.input.request),configurationSha256:t.configurationSha256,
-   allocationSha256:hash(a),scopes,selectedClientId:t.selectedClientId,policyRevision:t.policyRevision,versions:t.versions,
+   ...(a===null?{}:{allocationSha256:hash(a)}),scopes,selectedClientId:t.selectedClientId,policyRevision:t.policyRevision,versions:t.versions,
    task:t.task,destinationId:t.destinationId,expiresAtMs});
   const selectionSha256=hash(selection),before=now();
   const r=data(await c.life.run(signal=>authorize({phase,selection,selectionSha256,signal,deadlineMs:c.deadlineMs})));
@@ -110,7 +111,9 @@ export function createScheduledNativeAdmission(options){
    if(old!==null)record(c,old);
    let expiresAtMs=old?.expiresAtMs??upperBound(c,now());
    const authorizedUntil=await proof(c,'before_claim',expiresAtMs);
-   if(old&&authorizedUntil<expiresAtMs)fail('AUTHORITY');expiresAtMs=Math.min(expiresAtMs,authorizedUntil);
+   // A native execution has an independent bounded lifetime. This short fresh consent lease limits
+   // admission only; every later current/read request rechecks Core and the active schedule.
+   if(a!==null){if(old&&authorizedUntil<expiresAtMs)fail('AUTHORITY');expiresAtMs=Math.min(expiresAtMs,authorizedUntil);}
    // Same canonical owner/lock/effect as the dispatcher. Re-opening proves this exact occurrence owns the durable barrier.
    const barrier=data(await life.run(()=>openOccurrence({tenantId:c.id.binding.tenantId,scheduleId:c.occ.projection.scheduleId,
     generation:c.occ.generation,occurrenceKey:c.id.occurrenceKey,occurrence:c.occ,effect:c.effect},life.check)));
@@ -119,20 +122,30 @@ export function createScheduledNativeAdmission(options){
     selectedClientId:t.selectedClientId,policyRevision:t.policyRevision,versions:t.versions,configurationSha256:t.configurationSha256,proposedExpiresAtMs:expiresAtMs},life.check)));
    closed(claimed,['record','created'],'BINDING');if(typeof claimed.created!=='boolean')fail('BINDING');
    const saved=record(c,claimed.record);if(saved.expiresAtMs>expiresAtMs||old&&!same(old,saved))fail('BINDING');c.limit(saved.expiresAtMs);
+   let modelSelection;
+   if(a===null){
+    const retained=await life.run(()=>readInput(c.id.binding,life.check));
+    if(retained&&!Object.hasOwn(retained.facts,'modelSelection'))fail('INPUT');
+    // Only the canonical accepted/reserved input may supply an explicit model on reconciliation.
+    // A new occurrence always resolves its owner's current configured default once.
+    if(Object.hasOwn(c.input.request,'modelSelection')&&(!retained||!same(c.input.request.modelSelection,retained.facts.modelSelection)))fail('INPUT');
+    modelSelection=retained?.facts.modelSelection??await life.run(()=>readDefaultModel(c.id.binding,life.check));
+   }
    const createdAt=new Date(saved.createdAtMs).toISOString(),input=data({...c.input,
+    request:{...c.input.request,...(modelSelection===undefined?{}:{modelSelection})},
     conversation:{...c.input.conversation,createdAt},run:{...c.input.run,createdAt},event:{...c.input.event,createdAt}});
    const facts=await life.run(()=>prepareOriginalInputFacts({binding:c.id.binding,scopes,versions:t.versions,selectedClientId:t.selectedClientId,
     input:{requestId:input.request.requestId,prompt:input.request.prompt},request:input.request,allocatedAtMs:saved.createdAtMs,expiresAtMs:saved.expiresAtMs}));
    const reserved=data(await life.run(()=>claimInput(facts,life.check)));closed(reserved,['allocation','state','created'],'INPUT');
    if(!same(reserved.allocation,facts)||!['RESERVED','ACCEPTED'].includes(reserved.state)||typeof reserved.created!=='boolean'||reserved.created&&reserved.state!=='RESERVED')fail('INPUT');
-   if(await proof(c,'before_accept',saved.expiresAtMs)<saved.expiresAtMs)fail('AUTHORITY');
+   if(await proof(c,'before_accept',saved.expiresAtMs)<saved.expiresAtMs&&a!==null)fail('AUTHORITY');
    const accepted=data(await life.run(()=>acceptInput({...input,selectedClientId:t.selectedClientId},life.check)));
    closed(accepted,['run','request','lastSequence','replayed'],'INPUT');
    if(!same(accepted.run.binding,c.id.binding)||!same(accepted.request,input.request)||!same(accepted.run.versions,t.versions)||!same(accepted.run.scopes,scopes)||
     accepted.run.createdAt!==createdAt||typeof accepted.replayed!=='boolean'||!integer(accepted.lastSequence)||accepted.lastSequence<1)fail('INPUT');
    const back=await life.run(()=>readOptional(c.id.binding,{after:0,limit:1},life.check));
    if(!back||!same(back.run,accepted.run)||!same(back.request,input.request))fail('INPUT');
-   if(await proof(c,'before_release',saved.expiresAtMs)<saved.expiresAtMs)fail('AUTHORITY');life.check();
+   if(await proof(c,'before_release',saved.expiresAtMs)<saved.expiresAtMs&&a!==null)fail('AUTHORITY');life.check();
    return data({binding:c.id.binding,requestSha256:facts.requestSha256,expiresAtMs:saved.expiresAtMs,replayed:accepted.replayed});
   }catch(e){throw errors.has(e)?e:fault('UNKNOWN');}
   finally{life?.close();}

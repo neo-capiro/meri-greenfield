@@ -20,7 +20,7 @@ export async function generateInitialInputContracts({check=false}={}){
   const exportNames=['validateAllocatedResponse','validateError'];
   const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);const refs={};names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});refs[exportNames[i]]=ref;});const generated=standalone(ajv,refs);
   const canonicalImport='./conversation-input.mjs';
-  const bundled=await esbuild.build({absWorkingDir:dir,stdin:{contents:await readFile(new URL('conversation-initial-input/receive.mjs',HERE),'utf8'),sourcefile:'conversation-initial-input-receiver.mjs',resolveDir:resolve(dir,'conversation-initial-input')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[
+  const bundled=await esbuild.build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-initial-input/receive.mjs',HERE),'utf8'),sourcefile:'conversation-initial-input-receiver.mjs',resolveDir:resolve(dir,'conversation-initial-input')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[
    {name:'initial-input-canonical-provenance',setup(b){b.onResolve({filter:/^\.\.\/dist\/conversation-input\.mjs$/},()=>({path:canonicalImport,external:true}));}},
    {name:'initial-input-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'initial-input-generated'}));b.onLoad({filter:/.*/,namespace:'initial-input-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}},
   ]});

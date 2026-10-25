@@ -1,4 +1,4 @@
-/** Exact selected-client proposal source correlation. The dispatcher owns current
+/** Exact own-personal or selected-client proposal source correlation. The dispatcher owns current
  * authorization, continuation admission, reservation, settlement and release. */
 import {types} from 'node:util';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -20,7 +20,8 @@ export function readContext(call,now){
  validateShape('MemoryProposalSelection',input);
  assertReadContext(authority,operation,now);
  const {binding,subject}=authority;
- if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds.length!==1||input.clientId!==subject.entityIds[0]||subject.scopes.length!==1||subject.scopes[0].kind!=='client'||subject.scopes[0].resourceId!==input.clientId)deny('ACCESS_DENIED');
+ const personal=input.clientId===null,kind=personal?'personal':'client',entityType=personal?'user':'client',resourceId=personal?binding.actorId:input.clientId,scopeKind=personal?'private-user':'client';
+ if(subject.kind!==kind||subject.entityType!==entityType||subject.entityIds.length!==1||subject.entityIds[0]!==resourceId||subject.scopes.length!==1||subject.scopes[0].kind!==scopeKind||subject.scopes[0].resourceId!==resourceId)deny('ACCESS_DENIED');
  const deadlineMs=authority.deadlineMs,signal=fields.signal;
  if(signal!==undefined){
   if(types.isProxy(signal))deny('INVALID_ARGUMENTS');

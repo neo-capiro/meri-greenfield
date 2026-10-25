@@ -11,13 +11,13 @@ import {fileURLToPath} from 'node:url';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 const R=await import('./render-material.mjs');
-const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,capabilityProfileOf,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
-const {createRenderFixture,IDENTITY,FAKE_PASSWORDS}=await import('./render-material.fixture.mjs');
+const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
+const {createRenderFixture,addScheduleBindings,IDENTITY,FAKE_PASSWORDS}=await import('./render-material.fixture.mjs');
 const RV=await import('./runtime-values.mjs');
 const {validateConfiguration}=await import('../../../apps/runtime/config.mjs');
 const {compileProductMaterialPlan}=await import('../../../apps/runtime/material-init-plan.mjs');
 const {validateStaticProductDelivery}=await import('../../../apps/runtime/material-init.mjs');
-const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
+const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
 const {canonicalSha256}=await import('../../../packages/contracts/validate.mjs');
 
 const NOW=Date.now();
@@ -34,6 +34,43 @@ const READS={enabled:true,serviceSecretArn:ARN.service,readModeServiceSecretArn:
 const featureSecrets=()=>({'reads.serviceSecret':{secretArn:ARN.service,versionId:VERSION,bytes:Buffer.from(SECRET.service)},
  'reads.readModeServiceSecret':{secretArn:ARN.readMode,versionId:VERSION,bytes:Buffer.from(SECRET.readMode)}});
 
+test('Objective activation renders the control start owner and matching Temporal activities',async()=>{
+ await baseline();
+ const objectiveGeneration={runs:{enabled:true},start:{enabled:true,windowMs:900000}};
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,objectiveGeneration}),{featureSecrets:featureSecrets()});
+ const control=assertOnly(rendered,['sourceEnabled','reads','objectiveGeneration'],{worker:{sourceEnabled:true,objectiveGeneration:{runs:{enabled:true}}},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
+ assert.deepEqual(control.objectiveGeneration,objectiveGeneration);
+ withPosixPaths(()=>validateConfiguration(config(rendered,'temporal-worker'),'temporal-worker'));
+ assert.throws(()=>parseFeatures({objectiveGeneration}),/needs features.reads enabled/u);
+ assert.throws(()=>parseFeatures({objectiveGeneration:{start:{enabled:true,windowMs:900000}}}),/RENDER_INPUT_REFUSED/u);
+});
+
+test('artifact activation preserves the configured image executor through material rendering',async()=>{
+ await baseline();
+ const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,artifacts:{...ARTIFACTS,authority:{enabled:true},executor}}),{featureSecrets:featureSecrets()});
+ const control=assertOnly(rendered,['sourceEnabled','reads','artifacts'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
+ assert.deepEqual(control.artifacts.executor,executor);
+ assert.deepEqual(control.artifacts.authority,{origin:control.agentcore.identity.origin,serviceSecretFile:PATHS.readsServiceSecret});
+ assert.throws(()=>parseFeatures({artifacts:{...ARTIFACTS,executor:{...executor,pythonExecutable:'relative/python'}}}),/RENDER_INPUT_REFUSED/u);
+ assert.throws(()=>parseFeatures({artifacts:{enabled:false,executor}}),/RENDER_INPUT_REFUSED/u);
+});
+
+test('artifact authority rejects a mistyped enabled flag instead of silently disabling it',()=>{
+ assert.throws(()=>parseFeatures({artifacts:{...ARTIFACTS,authority:{enabled:'true'}}}),/must be a boolean/u);
+});
+
+test('retention rendering carries the existing explicit Trash purge switch to control only',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,retention:{enabled:true,purge:{enabled:true}}}));
+ const control=assertOnly(rendered,['sourceEnabled','retention'],{worker:{sourceEnabled:true}});
+ assert.deepEqual(control.retention,{enabled:true,purge:{enabled:true}});
+ withPosixPaths(()=>validateConfiguration(control,'control'));
+ assert.deepEqual(parseFeatures({retention:{enabled:true,purge:{enabled:false}}}).retention,{enabled:true,purge:{enabled:false}});
+ for(const purge of [{enabled:'true'},{enabled:true,bypassRetention:true},{}])
+  assert.throws(()=>parseFeatures({retention:{enabled:true,purge}}),/RENDER_INPUT_REFUSED/u);
+});
+
 /** Deterministic randomBytes/randomUUID for the duration of one synchronous render (the render's only entropy). */
 function seeded(fn){
  const saved={randomBytes:crypto.randomBytes,randomUUID:crypto.randomUUID};let n=0;
@@ -43,7 +80,7 @@ function seeded(fn){
  try{return fn();}finally{Object.assign(crypto,saved);syncBuiltinESMExports();}
 }
 let pki;
-async function inputs(change=x=>x){const i=structuredClone(await fixture.setup());pki??=await readPrivateDirectory(fixture.pkiDir);change(i);return i;}
+async function inputs(change=x=>x){const i=structuredClone(await fixture.setup());delete i.deployment.features;pki??=await readPrivateDirectory(fixture.pkiDir,{scheduleWorker:true});change(i);return i;}
 async function render(change,options={},module=R){
  const i=await inputs(change);
  return seeded(()=>module.renderMaterial({...i,private:pki,nowMs:NOW,sourceRoot:SOURCE_ROOT,...options}));
@@ -179,15 +216,13 @@ test('retired read installation, discovery, delegation and runtime measurement i
 
 test('capability platform keeps product capabilities without an SDK launch pin',async()=>{
  await baseline();
- const profile=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
  const rendered=await render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}));
  const control=assertOnly(rendered,['capabilityPlatform']);
  assert.deepEqual(control.capabilityPlatform,structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM));
- assert.equal(createConfiguredRunCapabilityPolicy(control).profileSha256,profile.profileSha256);
- assert.equal(rendered.summary.features.capabilityProfileSha256,profile.profileSha256);
+ assert.equal(Object.hasOwn(rendered.summary.features,'capabilityProfileSha256'),false);
  assert.equal(Object.hasOwn(control.agentcore,'capabilityProfileSha256'),false);
  // Retired deployment fields fail at the boundary; they cannot restore measured SDK options.
- await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},r=>{r.capabilityProfileSha256=profile.profileSha256;})),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},r=>{r.capabilityProfileSha256='a'.repeat(64);})),{code:'RENDER_INPUT_REFUSED'});
  assert.deepEqual(assertOnly(await render(withFeatures({capabilityPlatform:NO_CAPABILITY_PLATFORM})),['capabilityPlatform']).capabilityPlatform,structuredClone(NO_CAPABILITY_PLATFORM));
 });
 
@@ -255,14 +290,17 @@ test('CLI: --feature-secrets reads each secret file by path and the render write
  assert.equal(Buffer.from(bundle.files.find(f=>f.path===PATHS.readsServiceSecret).base64,'base64').toString(),SECRET.service);
 });
 
-test('approved read operations equal the declared capability profile without installation measurements',async()=>{
- const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),operations=structuredClone(APPROVED_READS.operations);
+test('approved reads allow valid narrowed role capabilities and reject invalid approved reads',async()=>{
+ const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),operations=[...structuredClone(APPROVED_READS.operations),{id:'search_congress_bills',version:'0.2.0'}];
  for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)]){policy.generalReads=true;policy.activeReadOperations=structuredClone(operations);}
- const features={sourceEnabled:true,capabilityPlatform:platform,reads:READS};
+ platform.roleCeilings.standard_user.activeReadOperations=structuredClone(APPROVED_READS.operations);
+ const approvedReads={...structuredClone(APPROVED_READS),operations};
+ const features={sourceEnabled:true,capabilityPlatform:platform,reads:{...structuredClone(READS),approvedReads}};
  const rendered=await render(withFeatures(features),{featureSecrets:featureSecrets()});
- assert.deepEqual(config(rendered,'control').agentcore.approvedReads,APPROVED_READS);
- const bad=structuredClone(features);bad.reads.approvedReads.operations=[{id:'find_contacts',version:'0.2.0'}];
- await assert.rejects(render(withFeatures(bad),{featureSecrets:featureSecrets()}),/capability profile operations differ/);
+ assert.deepEqual(config(rendered,'control').agentcore.approvedReads,approvedReads);
+ assert.deepEqual(config(rendered,'control').capabilityPlatform.roleCeilings.standard_user.activeReadOperations,APPROVED_READS.operations);
+ const bad=structuredClone(features);bad.reads.approvedReads.operations=[{id:'unknown_read',version:'0.2.0'}];
+ await assert.rejects(render(withFeatures(bad),{featureSecrets:featureSecrets()}),/features\.reads\.approvedReads/);
  const policy=JSON.parse(await readFile(join(here,'policy.json'),'utf8'));
  assert.deepEqual(RV.parsePolicy(policy),policy);
  for(const extra of [{maxTurns:20},{model:'deployment-model'}])assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,...extra}}),{code:'RUNTIME_VALUES_REFUSED'});
@@ -307,27 +345,27 @@ test('memory renders the control memory block at the Core origin with the reads 
  await assert.rejects(render(withFeatures({memory:{enabled:'yes'}})),/RENDER_INPUT_REFUSED/u);
 });
 
-test('intents.execution and routines.core render the Core origin, the reads service secret file and the Ed25519 pins; invalid pins and missing reads refuse',async()=>{
+test('routines.core retains its Core origin and grant pins; retired task execution trust is refused',async()=>{
  await baseline();
  const {generateKeyPairSync}=await import('node:crypto');const jwk=i=>({...generateKeyPairSync('ed25519').publicKey.export({format:'jwk'}),kid:'k'+i});
  const execution={issuer:'capiro-core:execution',keys:[jwk(1)]},core={cancellationProof:{issuer:'capiro-core:routines',kid:'cancel-1',publicKey:(({kty,crv,x})=>({kty,crv,x}))(jwk(2))},unattendedGrant:{issuer:'capiro-core:routines',kid:'grant-1',publicKey:(({kty,crv,x})=>({kty,crv,x}))(jwk(3))}};
- const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution},routines:{enabled:true,core}}),{featureSecrets:featureSecrets()});
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true},routines:{enabled:true,core}}),{featureSecrets:featureSecrets()});
  const control=config(rendered,'control'),origin=control.agentcore.identity.origin;
- assert.deepEqual(control.intents,{enabled:true,execution:{coreOrigin:origin,issuer:execution.issuer,keys:execution.keys,serviceSecretFile:PATHS.readsServiceSecret}});
+ assert.deepEqual(control.intents,{enabled:true});
  assert.deepEqual(control.routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core}});
  const task={taskId:'11111111-1111-4111-8111-000000000009',version:1},workflow={taskQueue:'meri-schedule-worker',workflowIdPrefix:'meri/routine/'};
- const targeted=await render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core,task,workflow}}),{featureSecrets:featureSecrets()});
+ const targeted=await render(i=>{withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core,task,workflow}})(i);addScheduleBindings(i);},{featureSecrets:featureSecrets()});
  assert.deepEqual(config(targeted,'control').routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core},task,workflow});
  await assert.rejects(render(withFeatures({routines:{enabled:false,task}})),/needs features.routines.enabled true/u);
  await assert.rejects(render(withFeatures({routines:{enabled:true,workflow:{...workflow,taskQueue:'bad queue'}}})),/features.routines.workflow target/u);
  assert.deepEqual(config(await render(withFeatures({intents:{enabled:true},routines:{enabled:false}})),'control').intents,{enabled:true});
- await assert.rejects(render(withFeatures({intents:{enabled:true,execution}})),/needs features.reads enabled/u);
+ await assert.rejects(render(withFeatures({intents:{enabled:true,execution}})),/features.intents/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:false,core}}),{featureSecrets:featureSecrets()}),/needs features.routines.enabled true/u);
- await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution:{issuer:'x',keys:[{kty:'RSA',kid:'k'}]}}}),{featureSecrets:featureSecrets()}),/compileExecutionTrust/u);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution:{issuer:'x',keys:[{kty:'RSA',kid:'k'}]}}}),{featureSecrets:featureSecrets()}),/features.intents/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core:{cancellationProof:{...core.cancellationProof,kid:core.unattendedGrant.kid},unattendedGrant:core.unattendedGrant}}}),{featureSecrets:featureSecrets()}),/routines-configuration/u);
 });
 
-test('intents.core renders the Core approval forwarder block (origin and reads secret file) next to execution',async()=>{
+test('intents.core renders the Core approval forwarder block (origin and reads secret file) for native decisions and execution',async()=>{
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,core:{enabled:true}}}),{featureSecrets:featureSecrets()});
  const control=config(rendered,'control');

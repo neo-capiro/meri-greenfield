@@ -125,15 +125,6 @@ test('a proposal naming another client scope than the configured selected client
  const h=await harness({selectedClientId:id(9)});t.after(h.close);
  await assert.rejects(h.decide(),code('ACCESS_DENIED'));assert.equal(h.core.requests.length,0);
 });
-test('getCredentials hands the live approver bearer and service secret for the exact run, never for another purpose',async t=>{
- const h=await harness({selectedClientId:id(5)});t.after(h.close);
- const issued=await h.forwarder.getCredentials({tenantId:binding.tenantId,actorId:binding.actorId,purpose:'approval.execution',binding});
- assert.equal(issued.bearerToken,NATIVE);assert.equal(issued.serviceSecret,SECRET);assert.ok(issued.expiresAtMs>Date.now());assert.deepEqual({tenantId:issued.tenantId,actorId:issued.actorId},principal);
- await assert.rejects(h.forwarder.getCredentials({tenantId:binding.tenantId,actorId:binding.actorId,purpose:'read',binding}),code('ACCESS_DENIED'));
- await assert.rejects(h.forwarder.getCredentials({tenantId:binding.tenantId,actorId:'other',purpose:'approval.execution',binding}),code('ACCESS_DENIED'));
- const unselected=await harness();t.after(unselected.close);
- await assert.rejects(unselected.forwarder.getCredentials({tenantId:binding.tenantId,actorId:binding.actorId,purpose:'approval.execution',binding}),code('ACCESS_DENIED'));
-});
 test('the session binder binds once per context and is a no-op for a context without a forwarder',()=>{
  const context=Object.freeze({}),bound=[];registerApprovalSessionBinder(context,sessions=>bound.push(sessions));
  assert.throws(()=>registerApprovalSessionBinder(context,()=>{}),code('APPROVAL_FORWARDER_CONFIGURATION'));

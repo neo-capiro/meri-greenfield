@@ -11,7 +11,7 @@ import {subjectKey} from '../boundary.mjs';
 import {composeStartup,subjectOf,snapshot,object,planFrom} from './fixture.mjs';
 const day=86400000;
 /** A conversation with rows in every conversation-scoped class, uploads, and retained budget evidence (schedules are their own subject). */
-const everyClass=(s,extra={})=>({...snapshot(s,{checkpoints:2,outputs:2}),nextRuns:[{targetRunId:randomUUID()}],uploads:[{uploadId:randomUUID(),object:object()}],receipts:[{receiptId:randomUUID()},{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],...extra});
+const everyClass=(s,extra={})=>({...snapshot(s,{checkpoints:2,outputs:2}),nextRuns:[{targetRunId:randomUUID()}],uploads:[{uploadId:randomUUID(),object:object()}],receipts:[{receiptId:randomUUID()},{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],memoryCandidates:[{candidateId:randomUUID()}],...extra});
 async function prepared(f,s,raw){const inv=enumerateReferences(raw),key=subjectKey(s);f.current.inventories.set(key,inv);f.rows.seed(key,inv);for(const o of inv.objects)f.store.put(f.keyFor(o),o.versionId);
  await f.startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});f.clock.advance(30*day);return {inv,key,plan:planFrom(f,s,await f.startup.journal.get(key))};}
 
@@ -45,9 +45,9 @@ test('memory proposals owned outside Meri block the plan with zero deletes until
  await assert.rejects(f.startup.purge.execute(plan),/RETENTION_PURGE_BLOCKED/);assert.equal(f.deletes.length,0);assert.equal(f.rowPurges.length,0);
 });
 
-test('a row owner that does not admit a registered class (the PostgreSQL schema before the amendment migration) refuses the whole plan at preflight: zero deletes and nothing recorded',async()=>{
+test('a row owner that does not admit a registered class refuses plan targets: zero deletes and nothing recorded',async()=>{
  const pg=createPostgresRetentionJournal({pool:{connect(){throw Error('no connection expected');},query(){throw Error('no query expected');}}});
- const f=composeStartup({purge:true,rowPreflight:pg.rows.preflight}),s=subjectOf();await f.startup.start();const {plan}=await prepared(f,s,everyClass(s));
+ const f=composeStartup({purge:true,rowValidation:pg.rows.validatePlanTargets}),s=subjectOf();await f.startup.start();const {plan}=await prepared(f,s,everyClass(s));
  const before=(await f.sink.read()).length;
  await assert.rejects(f.startup.purge.execute(plan),e=>e.code==='RETENTION_ROW_CLASS_UNSUPPORTED');
  assert.equal(f.deletes.length,0);assert.equal(f.rowPurges.length,0);assert.equal((await f.sink.read()).length,before,'no PURGE_PLANNED or EFFECTS_STARTED entry');

@@ -20,7 +20,7 @@ function membership(current){
   async recheck({principal:p,credential}){calls.push(['recheck',credential]);return p;}})};
 }
 const post=(path,body={})=>new Request('https://control.example'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer native-session'},body:JSON.stringify(body)});
-const tenantRead=/^SELECT revision,document,document_sha256 FROM meri_settings\.tenant_settings WHERE tenant_id=\$1$/u;
+const tenantRead=/^SELECT \* FROM meri_settings\.tenant_settings WHERE tenant_id=\$1$/u;
 function compose({configuration,pool,gate}){
  return createProductPortsFactory({families:[['settings',createSettingsFamily]]})(Object.freeze({configuration,pool,client:{},native:{},now:Date.now,
   canonicalProductPorts:gate?{conversationMembership:gate}:{}}));
@@ -51,13 +51,14 @@ test('enabled family serves the tenant routes over the membership gate with the 
  assert.deepEqual(Object.keys(ports),['settingsApplication']);
  const captured=captureRuntimePorts(ports);
  assert.equal(productReadiness({ports:captured,retention:null,sourceEnabled:false}).owners.find(o=>o.name==='settings.tenant').state,'composed');
- // A member sees only the default timezone and their effective capabilities: the same single profile the run producer pins (G3).
+ // A member sees only the default timezone and their effective capabilities: the same current-role policy the run producer resolves.
  const member=await (await captured.settingsApplication.handle(post('/api/settings/tenant/read'))).json();
- const producer=createRunCapabilityPolicy({platform:compileCapabilityPlatform(configuration)});
- assert.deepEqual(member,{revision:0,defaultTimezone:'UTC',capabilityStatus:'resolved',effectiveCapabilities:JSON.parse(JSON.stringify(producer.profile))});
+ const producer=createRunCapabilityPolicy({platform:compileCapabilityPlatform(configuration),readTenantSettings:async()=>({})});
+ assert.deepEqual(member,{revision:0,defaultTimezone:'UTC',capabilityStatus:'resolved',effectiveCapabilities:JSON.parse(JSON.stringify(await producer.forRun({tenantId:who.tenantId,actorId:who.actorId,conversationId:id(903),actorRole:who.role})))});
  who=principal({actorId:'admin-1',role:'user_admin',permissions:[TENANT_SETTINGS_PERMISSION]});
  const admin=await (await captured.settingsApplication.handle(post('/api/settings/tenant/read'))).json();
  assert.deepEqual(admin.capabilityPolicy,{});assert.deepEqual(admin.platform,JSON.parse(JSON.stringify(compileCapabilityPlatform(configuration))));
+ assert.deepEqual(admin.model,{monthlyCapMicroUsd:null,maxTurns:20,maxBudgetMicroUsd:2000000});
  assert.deepEqual(m.calls.map(c=>c[0]),['admit','recheck','admit','recheck']);assert.ok(m.calls.every(c=>c[1]==='native-session'));
  // User-preference paths stay with user-preferences.mjs; this mount answers only the three tenant paths.
  assert.equal((await captured.settingsApplication.handle(post('/api/settings/user/read'))).status,404);
@@ -67,13 +68,14 @@ test('admin saves narrow inside the platform maximum through the real store stat
  const configuration={...base,tenantSettings:{enabled:true},capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM};
  const settings={defaultTimezone:'UTC',capabilityPolicy:{capabilities:{bash:false}}},sha=canonicalSha256(settings),platformSha=canonicalSha256(compileCapabilityPlatform(configuration));
  const f=createSettingsPoolFixture([{steps:[
-  {match:/^INSERT INTO meri_settings\.tenant_settings\(/u,rows:[{revision:1,document:settings,document_sha256:sha}],inspect:params=>assert.deepEqual(params,['tenant-one',1,JSON.stringify(settings),sha,'admin-1'])},
-  {match:/^INSERT INTO meri_settings\.settings_audit\(/u,inspect:params=>{assert.equal(params[1],'tenant-one');assert.equal(params[2],'tenant');assert.equal(params[9],platformSha);assert.deepEqual(params[10],['capabilityPolicy.capabilities']);}}]}]);
+  {match:/^INSERT INTO meri_settings\.tenant_settings\(/u,rows:[{revision:1,document:settings,document_sha256:sha,monthly_cap_micro_usd:null,sdk_max_turns:20,sdk_max_budget_micro_usd:2000000}],inspect:params=>assert.deepEqual(params,['tenant-one',1,JSON.stringify(settings),sha,'admin-1',null,20,2000000])},
+  {match:/^INSERT INTO meri_settings\.settings_audit\(/u,inspect:params=>{assert.equal(params[1],'tenant-one');assert.equal(params[2],'tenant');assert.equal(params[9],platformSha);assert.deepEqual(params[10],['capabilityPolicy.capabilities','model.maxBudgetMicroUsd','model.maxTurns']);}}]}]);
  let n=500;const admin=principal({actorId:'admin-1',role:'user_admin',permissions:[TENANT_SETTINGS_PERMISSION]});
  const {settingsApplication}=createSettingsFamily({configuration,pool:f.pool,now:Date.now,canonicalProductPorts:{conversationMembership:membership(()=>admin).gate}},{newId:()=>id(n++)}).ports;
  const saved=await settingsApplication.handle(post('/api/settings/tenant/save',{expectedRevision:0,settings}));
  assert.equal(saved.status,200);const body=await saved.json();
  assert.equal(body.revision,1);assert.equal(body.effectiveCapabilities.bash,false);assert.equal(body.effectiveCapabilities.generalReads,true);
+ assert.deepEqual(body.model,{monthlyCapMicroUsd:null,maxTurns:20,maxBudgetMicroUsd:2000000});
  assert.equal(f.committed.length,2);
  // Under the default platform record (no capabilities) any enablement widens the maximum and is refused with the canonical code.
  const none=createSettingsFamily({configuration:{...base,tenantSettings:{enabled:true}},pool:createSettingsPoolFixture([]).pool,canonicalProductPorts:{conversationMembership:membership(()=>admin).gate}}).ports;
@@ -82,6 +84,21 @@ test('admin saves narrow inside the platform maximum through the real store stat
  // A member without the tenant permission cannot write.
  const denied=await createSettingsFamily({configuration,pool:createSettingsPoolFixture([]).pool,canonicalProductPorts:{conversationMembership:membership(principal).gate}}).ports.settingsApplication.handle(post('/api/settings/tenant/save',{expectedRevision:0,settings}));
  assert.equal(denied.status,403);assert.equal((await denied.json()).error.code,'SETTINGS_ADMIN_REQUIRED');
+});
+
+test('mounted tenant save returns 400 for invalid model settings without opening the store',async()=>{
+ const configuration={...base,tenantSettings:{enabled:true},capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM};
+ const f=createSettingsPoolFixture([]),admin=principal({actorId:'admin-1',role:'user_admin',permissions:[TENANT_SETTINGS_PERMISSION]});
+ const {settingsApplication}=compose({configuration,pool:f.pool,gate:membership(()=>admin).gate});
+ const model={monthlyCapMicroUsd:10000000,maxTurns:20,maxBudgetMicroUsd:2000000};
+ for(const invalid of [null,{}, {...model,monthlyCapMicroUsd:0},{...model,monthlyCapMicroUsd:'100'},
+  {...model,maxTurns:101},{...model,maxBudgetMicroUsd:0},{...model,override:true}]){
+  const response=await settingsApplication.handle(post('/api/settings/tenant/save',{
+   expectedRevision:0,settings:{defaultTimezone:'UTC',capabilityPolicy:{},model:invalid}}));
+  assert.equal(response.status,400);
+  assert.equal((await response.json()).error.code,'SETTINGS_MODEL_INVALID');
+ }
+ assert.equal(f.connections(),0);assert.deepEqual(f.calls,[]);assert.deepEqual(f.committed,[]);
 });
 
 test('lane B families compose together beside the canonical candidate ports and readiness names each state',async()=>{

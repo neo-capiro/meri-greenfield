@@ -16,9 +16,10 @@ export function createTrackedBillsValidators({validateShape,assertSubject,canoni
     const raw=snapshotOperationData(request), context=snapshotOperationData(options);
     validateShape('TrackedBillsRequest',raw);validateShape('TrackedBillsContext',context);
     assertSubject(context.subject,context.binding);
-    if (context.subject.kind!=='client' || context.subject.entityType!=='client' ||
-        context.subject.entityIds.length!==1) fail('One resolved client subject required');
-    const reference=raw.clientId.trim().slice(0,80), clientId=context.subject.entityIds[0];
+    if (!['client','personal'].includes(context.subject.kind)) fail('One current client or personal subject required');
+    const reference=raw.clientId.trim().slice(0,80);
+    if(context.subject.kind==='personal'&&!UUID.test(reference))fail('General tracking requires an explicit client UUID');
+    const clientId=context.subject.kind==='personal'?reference.toLowerCase():context.subject.entityIds[0];
     if (!reference || reference!==context.clientReference)
       fail('Tracked bill client reference differs from trusted resolution');
     // Name equality/collation is a source resolver obligation. UUID references

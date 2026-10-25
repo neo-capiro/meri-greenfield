@@ -1,11 +1,12 @@
 /** Core identity and durable conversation selection, independent of compute hosting. */
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {createNativeIdentityContext} from './native-authority/identity-context.mjs';
+import {createScheduledConversationIdentity} from './native-authority/scheduled-conversation-identity.mjs';
 const same=(a,b)=>hash(a)===hash(b);
 const scopesFor=(binding,selectedClientId,policyRevision)=>[{kind:selectedClientId===null?'private-user':'client',tenantId:binding.tenantId,resourceId:selectedClientId===null?binding.actorId:selectedClientId,policyRevision}];
 const refuse=()=>{throw Error('CONVERSATION_IDENTITY_REFUSED');};
 /** Every original comes from the durable conversation journal after fresh Core admission. */
-export function createConversationIdentity({store,identity,qualification,now=Date.now,limits,nextRunOwner,initialBindings,configurationSha256,versions,proposeInitialExpiry,factWindowMs}){
+export function createConversationIdentity({store,identity,qualification,now=Date.now,limits,nextRunOwner,initialBindings,configurationSha256,versions,proposeInitialExpiry,factWindowMs,scheduleOwner}){
  if(!Number.isSafeInteger(factWindowMs)||factWindowMs<1||!nextRunOwner||typeof initialBindings?.claim!=='function'||typeof initialBindings.rebind!=='function'||typeof initialBindings.readConversation!=='function'||typeof proposeInitialExpiry!=='function'||typeof configurationSha256!=='string'||!/^[a-f0-9]{64}$/u.test(configurationSha256)||!versions)refuse();
  const check=signal=>()=>{if(signal?.aborted)refuse();};
  const refuseWith=code=>{throw Object.assign(Error(code),{code});};
@@ -25,11 +26,11 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
   if(!record||rebind){const claimed=await initialBindings[rebind?'rebind':'claim']({...query,policyRevision:qualification.policyRevision,versions,configurationSha256,proposedExpiresAtMs:proposeInitialExpiry({signal})},check(signal));record=claimed.record;check(signal)();}
   return valid(record,principal,conversationId,selectedClientId);
  }
- async function select(record,principal,conversationId,signal,exact={}){
+ async function select(record,principal,conversationId,signal,exact={},assertActive){
   const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();
   if(!saved){if(exact.runId!==undefined&&exact.runId!==record.binding.runId)refuseWith('INITIAL_BINDING_SUPERSEDED');pinned(record);if(record.expiresAtMs<=now())refuseWith('INITIAL_BINDING_EXPIRED');return {binding:record.binding,policyRevision:record.policyRevision,expiresAtMs:record.expiresAtMs};}
   savedOriginal(saved,record);
-  const chosen=await nextRunOwner.selectRun({principal,conversationId,signal,...exact}),current=await nextRunOwner.currentRun(chosen.binding,{signal});check(signal)();
+  const chosen=await nextRunOwner.selectRun({principal,conversationId,signal,...exact,assertActive}),current=await nextRunOwner.currentRun(chosen.binding,{signal});check(signal)();
   if(!same(current.binding,chosen.binding)||current.binding.tenantId!==principal.tenantId||current.binding.actorId!==principal.actorId||current.binding.conversationId!==conversationId||current.policyRevision!==record.policyRevision||!same(current.scopes,saved.run.scopes))refuse();return current;
  }
  const currentOwner={async currentRun(request,{signal,selectedClientId}){
@@ -40,5 +41,18 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
   savedOriginal(saved,record);const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();
   if(!same(selected.binding,request)||selected.policyRevision!==record.policyRevision||!same(selected.scopes,saved.run.scopes))refuse();return fact(selected);
  }};
- return createNativeIdentityContext({...identity,currentOwner,admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId})=>fact(await select(await original(principal,conversationId,selectedClientId,signal,runId),principal,conversationId,signal,runId===undefined?{}:{runId})),now,limits,enabled:true});
+ const native=createNativeIdentityContext({...identity,currentOwner,admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId,recheckActive})=>fact(await select(await original(principal,conversationId,selectedClientId,signal,runId),principal,conversationId,signal,runId===undefined?{}:{runId},recheckActive)),now,limits,enabled:true});
+ if(scheduleOwner===undefined)return native;
+ return createScheduledConversationIdentity({native,scheduleOwner,identity,now,limits,factWindowMs,
+  async selectExisting({principal,conversationId,selectedClientId,signal,runId,origin}){
+   const record=valid(await initialBindings.readConversation({principal,conversationId,selectedClientId},check(signal)),principal,conversationId,selectedClientId);check(signal)();
+   if(!same(record.binding,origin.effect.binding))refuse();
+   const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();if(!saved)refuse();savedOriginal(saved,record);
+   const chosen=await nextRunOwner.selectExistingRun({principal,conversationId,signal,...(runId===undefined?{}:{runId})});
+   if(chosen.reserved)refuse();
+   const current=await nextRunOwner.currentRun(chosen.binding,{signal});check(signal)();
+   if(current.reserved||!same(current.binding,chosen.binding)||!same(current.scopes,saved.run.scopes)||current.policyRevision!==record.policyRevision)refuse();
+   // Reuse the canonical current owner, including the exact original journal/scopes join. No claim or successor reservation.
+   await currentOwner.currentRun(current.binding,{signal,selectedClientId});return current;
+  }});
 }

@@ -27,7 +27,7 @@ const failure=async(p,code)=>assert.rejects(p,error=>{if(code)assert.equal(error
 const identityFact=f=>({principal:f.principal,identityRevision:'a'.repeat(64),checkedAtMs:f.now(),expiresAtMs:f.now()+10000});
 
 test('finite mode operation registry and exported observation cap remain exact',()=>{
- assert.deepEqual(MODE_READ_OPERATIONS,['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline']);assert.equal(READ_MODE_MAX_REQUEST_MS,3000);
+ assert.deepEqual(MODE_READ_OPERATIONS,['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline','search_sam_opportunities']);assert.equal(READ_MODE_MAX_REQUEST_MS,3000);
 });
 
 for(const id of MODE_READ_OPERATIONS)for(const mode of modes)test(`${id} observes native ${mode} with exact fixed identity/mode/identity wire`,async()=>{

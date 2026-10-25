@@ -5,7 +5,7 @@ import {assertDocumentDraftProposal} from '../../../packages/contracts/commands-
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {artifactValidators as artifacts} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {borrowedRunSession,assertActionSessionReceipt} from '../../control/action-host/session/owner.mjs';
+import {currentNativeApprovalSession} from '../native-authority/approval-session.mjs';
 import {createSelectedOutputRetention} from '../../control/conversations/skills/retention.mjs';
 import {createSelectedOutputBridge} from '../../control/document-application/selected-output/bridge.mjs';
 import {sourcePreparation} from '../../control/document-application/selected-output/preparation.mjs';
@@ -17,16 +17,10 @@ const same=(a,b)=>hash(a)===hash(b),fail=code=>{throw Object.assign(Error(code),
 
 /** History supplies a canonical selector, not authority. The exact live original
  * action session and Core still authorize every operation; no relay is relaxed. */
-export async function currentDocumentSession({store,sessions,now,proposal,signal,check=()=>{}}){
- assertDocumentDraftProposal(proposal,{binding:proposal.command.binding,scopes:proposal.command.scopes});const source=proposal.command.binding,scopes=proposal.command.scopes,clients=scopes.filter(s=>s.kind==='client');
- if(clients.length!==1)fail('ACCESS_DENIED');const selectedClientId=clients[0].resourceId;
- const history=await store.history.transcript({principal:{tenantId:source.tenantId,actorId:source.actorId,clientIds:[selectedClientId]},conversationId:source.conversationId,after:0,limit:1},check);check();
- const run=history.latestRun,binding=run.binding;
- if(['tenantId','actorId','conversationId'].some(k=>binding[k]!==source[k])||binding.writerFence<source.writerFence||!same(run.scopes,scopes)||run.state==='cancelled'||history.pendingTurn!==null)fail('ACCESS_DENIED');
- const borrow=borrowedRunSession(sessions);if(!borrow)fail('UNAVAILABLE');
- const session=assertActionSessionReceipt(await borrow({binding,selectedClientId,signal}),now());check();
- if(['tenantId','actorId','conversationId','runId'].some(k=>session.context[k]!==binding[k])||session.context.selectedClientId!==selectedClientId)fail('ACCESS_DENIED');
- return {run,binding,selectedClientId,session};
+export async function currentDocumentSession(value){
+ const proposal=value.proposal;
+ assertDocumentDraftProposal(proposal,{binding:proposal.command.binding,scopes:proposal.command.scopes});
+ return currentNativeApprovalSession(value);
 }
 
 export function createSelectedDocumentExecution({bound,pool,optionsOwner,readDecision,now,maxRequestMs,maxOutputBytes}){

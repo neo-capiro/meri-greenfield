@@ -1,31 +1,26 @@
-/** Read-only custody checks for attachment filing proposal metadata. The
- * metadata owner stores the proposal; the existing command executor alone may
- * register attachments/file them after current approval, claim and budget. */
+/** Read-only canonical custody checks for attachment filing approval metadata.
+ * The supplied inspector owns generated artifacts and native SDK files; this policy creates no synthetic artifact version. */
 import {types} from 'node:util';
-import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {normalizeArtifactFileInput,validateCommandShape} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifactsContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {CommandError,data,deny,instant,nativeSignal,own} from '../commands/protocol.mjs';
 import {policyReceipt} from '../commands/approval-metadata/binding.mjs';
 
 const operation=Object.freeze({id:'save_chat_attachments',version:'0.2.0'});
-const phases=new Set(['prepare','before_release','before_read','read_release']);
+const phases=new Set(['prepare','before_release']);
 const same=(left,right)=>canonicalSha256(left)===canonicalSha256(right);
 const callable=value=>typeof value==='function'&&!types.isProxy(value);
 
-/** `artifacts.inspect` and `versions.findByObject` must be the canonical
- * immutable artifact owners. `readContext` and `preparePolicy` are trusted
- * current-authority ports, never constructed from the model request. */
+/** inspectSelections verifies every exact reference through its canonical custody owner and resolves only on success.
+ * It receives immutable selections and the same bounded lifetime as current policy; it must perform no registration or filing. */
 export function createAttachmentFilingPreparationPolicy(configuration){
- const c=own(configuration,['commandContext','preparePolicy','readContext','artifacts','versions','now'],['maxRequestMs']);
+ const c=own(configuration,['commandContext','preparePolicy','inspectSelections','now'],['maxRequestMs']);
  const context=data(c.commandContext);validateCommandShape('ArtifactFileContext',context);
  const maxRequestMs=c.maxRequestMs??60000;
- if(!callable(c.preparePolicy)||!callable(c.readContext)||!callable(c.now)||
+ if(!callable(c.preparePolicy)||!callable(c.inspectSelections)||!callable(c.now)||
   !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000||
   context.destination.conversationId.toLowerCase()!==context.binding.conversationId.toLowerCase())deny('COMMAND_CONFIGURATION');
- const inspect=storageMethod(c.artifacts,'inspect'),findByObject=storageMethod(c.versions,'findByObject');
  return async function prepareAttachmentPolicy(raw){
   const call=own(raw,['phase','selection','selectionSha256','signal','limitDeadline']);nativeSignal(call.signal);
   const selection=data(own(call.selection,['phase','operation','action','binding','request','inputSha256','proposalId','commandSha256','recordSha256']));
@@ -45,37 +40,14 @@ export function createAttachmentFilingPreparationPolicy(configuration){
   }
   try{
    const before=await current();
-   // The metadata reader has not loaded a row yet in this phase. Its existing
-   // owner will validate immutable metadata and call read_release with request.
-   if(call.phase==='before_read'&&selection.request===null)return before;
    const normalized=normalizeArtifactFileInput(selection.request,context);
    if(selection.inputSha256!==canonicalSha256(normalized))deny('COMMAND_PREPARATION_REFUSED');
-   const trusted=artifactsContract.context(await life.run(signal=>c.readContext({binding:context.binding,
-    destination:context.destination,deadlineMs:cutoff,signal})));
-   if(!same(trusted.binding,context.binding)||
-    !Number.isSafeInteger(trusted.deadlineMs)||trusted.deadlineMs<=c.now())deny('COMMAND_PREPARATION_REFUSED');
-   limitDeadline(trusted.deadlineMs);
-   const readContext=artifactsContract.context({...trusted,deadlineMs:cutoff});
-   // Destination authority comes from current policy above. Source custody
-   // retains its own exact scopes; filing cannot rewrite them to the destination.
-   const policyScopes=new Set(before.scopes.map(canonicalSha256)),readScopes=new Set(trusted.scopes.map(canonicalSha256));
+   // Native filing admits only the exact selected client scope; source references cannot narrow or expand it.
    for(const object of normalized.attachments){
-    validateShape('ObjectReference',object);
-    if(object.scopes.some(scope=>!policyScopes.has(canonicalSha256(scope))||!readScopes.has(canonicalSha256(scope))))deny('COMMAND_PREPARATION_REFUSED');
-    const versionId=await life.run(signal=>findByObject({objectId:object.objectId,tenantId:context.binding.tenantId,
-     conversationId:context.binding.conversationId},signal));
-    const result=own(await life.run(signal=>inspect(versionId,readContext,{signal})),['version','inspection']);
-    const version=artifactsContract.version(result.version),inspection=data(result.inspection),
-     {currentBytesVerified,...observed}=own(inspection,['sha256','bytes','format','nativeOpened','rendered','recalculated','members','details','currentBytesVerified']);
-    artifactsContract.inspection(observed);
-    if(version.versionId!==versionId||version.binding.tenantId!==context.binding.tenantId||
-     version.binding.conversationId!==context.binding.conversationId||!same(version.object,object)||
-     !same(version.scopes,object.scopes)||!same(version.scopes,trusted.scopes)||currentBytesVerified!==true||
-     observed.sha256!==object.sha256||observed.bytes!==object.bytes)deny('COMMAND_PREPARATION_REFUSED');
-    // Filename, MIME and source provenance come only from this immutable version
-    // and are re-read by the existing filing resolver at approved execution.
-    life.check();
+    if(!same(object.scopes,before.scopes))deny('COMMAND_PREPARATION_REFUSED');
    }
+   const inspection=data({objects:normalized.attachments,binding:context.binding,scopes:before.scopes,destination:context.destination,deadlineMs:cutoff});
+   await life.run(signal=>c.inspectSelections({...inspection,signal}));life.check();
    const after=await current();
    if(!same(before.scopes,after.scopes)||!same(before.requiredApprover,after.requiredApprover)||
     before.proposalExpiresAt!==after.proposalExpiresAt)deny('COMMAND_PREPARATION_REFUSED');

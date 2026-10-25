@@ -14,9 +14,10 @@ import {types} from 'node:util';
 const same=(a,b)=>hash(a)===hash(b),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const fail=code=>{throw Object.assign(Error('SCHEDULE_JOB_'+code),{code:'SCHEDULE_JOB_'+code,outcome:'UNKNOWN'});};
 /** The approving request's own session selection (never request data): the owner's exact run binding and selected client. */
-function attendedSelection(raw,callerIdentity){
+function attendedSelection(raw,callerIdentity,scopes){
  let a;try{a=data(own(raw,['binding','selectedClientId']));validateShape('RunBinding',a.binding);}catch{fail('AUTHORITY');}
- if(typeof a.selectedClientId!=='string'||!uuid.test(a.selectedClientId)||a.binding.tenantId!==callerIdentity?.tenantId||a.binding.actorId!==callerIdentity?.actorId)fail('AUTHORITY');
+ if(a.selectedClientId!==null&&(typeof a.selectedClientId!=='string'||!uuid.test(a.selectedClientId))||a.binding.tenantId!==callerIdentity?.tenantId||a.binding.actorId!==callerIdentity?.actorId)fail('AUTHORITY');
+ if(a.selectedClientId===null&&!(scopes.length===1&&scopes[0].kind==='private-user'&&scopes[0].tenantId===callerIdentity.tenantId&&scopes[0].resourceId===callerIdentity.actorId))fail('AUTHORITY');
  return a;
 }
 export function createScheduledRunCancellation(configuration){
@@ -50,7 +51,7 @@ export function createScheduledRunCancellation(configuration){
   }finally{life.close();}},
   async cancel(value){const v=own(value,['binding','deadlineMs'],['signal','attended']),b=data(v.binding),life=lifetime(v.deadlineMs,v.signal);try{
    const i=b.intent;if(i?.operation!=='cancel_scheduled_task'||i.cancel?.running!=='request_cancel'||!same(b.callerIdentity,i.projection.owner))fail('SELECTION');
-   const attended=issueProof===null?null:attendedSelection(v.attended,b.callerIdentity);
+   const attended=issueProof===null?null:attendedSelection(v.attended,b.callerIdentity,i.projection.scopes);
    const s=await selection({callerIdentity:b.callerIdentity,scopes:i.projection.scopes,scheduleId:i.projection.scheduleId},life);
    if(!same(i.cancel.runs,s.runs))fail('SELECTION');if(s.row===null)return;
    // Core proof of the owner's approval of exactly this intent, decision, runs and lineage targets, issued inside this request.

@@ -1,5 +1,7 @@
 /** Concrete pg8.23.1-compatible borrowed pool; never connects or migrates on import. */
 import {data,keys,options,same,deny,code,method,retained,storedBinding,storedEvent} from './binding.mjs';
+import {prepare,event} from './binding.mjs';
+import {randomUUID} from 'node:crypto';
 export function createPostgresTaskLookupStore(configuration){
  const {pool}=options(configuration,['pool']);
  const connect=method(pool,'connect');
@@ -27,6 +29,22 @@ export function createPostgresTaskLookupStore(configuration){
    return response(b,'CLAIMED');
   },check);
  }
+ /** Allocate the existing per-run event slots and claim their lookup in the same transaction. No separate reservation ledger. */
+ async function claimPrepared({request,context,at},check){
+  const input=data(context);keys(input,['lookupId','resultReference','requestId','binding','scopes','selectedClientId','deliveryJson','deadlineMs']);
+  const eventIds={started:randomUUID(),terminal:randomUUID()};
+  prepare(request,{...input,slots:{started:{eventId:eventIds.started,sequence:1},terminal:{eventId:eventIds.terminal,sequence:2}}},at);
+  return transaction(async q=>{
+   await q('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`task-lookup:${input.binding.tenantId}:${input.binding.runId}`]);
+   const rows=(await q('SELECT COALESCE(MAX(sequence),0) AS last_sequence FROM meri_task_lookup.events WHERE tenant_id=$1 AND run_id=$2',[input.binding.tenantId,input.binding.runId])).rows;
+   const last=rows.length===1?Number(rows[0].last_sequence):NaN;if(!Number.isSafeInteger(last)||last<0||!Number.isSafeInteger(last+2))deny('LOOKUP_STORE_UNKNOWN');
+   const b=prepare(request,{...input,slots:{started:{eventId:eventIds.started,sequence:last+1},terminal:{eventId:eventIds.terminal,sequence:last+2}}},at),c=b.context,started=event(b,'tool.started',at);
+   const inserted=await q("INSERT INTO meri_task_lookup.lookups(tenant_id,lookup_id,result_reference,payload,state) VALUES($1,$2,$3,$4::jsonb,'CLAIMED') ON CONFLICT DO NOTHING RETURNING lookup_id",[c.binding.tenantId,c.lookupId,c.resultReference,JSON.stringify(b)]);
+   if(inserted.rows.length!==1)deny('LOOKUP_REPLAY');
+   for(const [kind,slot]of Object.entries(c.slots))await q('INSERT INTO meri_task_lookup.events(tenant_id,run_id,sequence,event_id,lookup_id,kind,event) VALUES($1,$2,$3,$4,$5,$6,$7::jsonb)',[c.binding.tenantId,c.binding.runId,slot.sequence,slot.eventId,c.lookupId,kind,kind==='started'?JSON.stringify(started):null]);
+   return {binding:b,started,receipt:response(b,'CLAIMED')};
+  },check);
+ }
  async function markDispatching(binding,check){const b=storedBinding(binding);return transaction(async q=>{const row=await locked(q,b);if(row.state!=='CLAIMED')deny('LOOKUP_REPLAY');await q("UPDATE meri_task_lookup.lookups SET state='DISPATCHING' WHERE tenant_id=$1 AND lookup_id=$2",[b.context.binding.tenantId,b.context.lookupId]);return response(b,'DISPATCHING');},check);}
  async function complete(binding,value,check){const b=storedBinding(binding),record=retained(value);if(!same(record.binding,b))deny('LOOKUP_CONFLICT');return transaction(async q=>{
   const row=await locked(q,b);if(row.state!=='DISPATCHING')deny('LOOKUP_STORE_UNKNOWN');
@@ -39,5 +57,5 @@ export function createPostgresTaskLookupStore(configuration){
   const changed=await q("UPDATE meri_task_lookup.events SET event=$3::jsonb WHERE tenant_id=$1 AND lookup_id=$2 AND kind='terminal' AND event IS NULL",[b.context.binding.tenantId,b.context.lookupId,JSON.stringify(e)]);if(changed.rowCount!==1)deny('LOOKUP_STORE_UNKNOWN');return response(b,'ERROR');
  },check);}
  async function read(key,check){const k=data(key);keys(k,['tenantId','resultReference']);return transaction(async q=>{const rows=(await q('SELECT record FROM meri_task_lookup.lookups WHERE tenant_id=$1 AND result_reference=$2 AND state=\'RESULT\'',[k.tenantId,k.resultReference])).rows;if(rows.length>1)deny('LOOKUP_STORE_UNKNOWN');return rows.length?retained(rows[0].record):null;},check);}
- return Object.freeze({claim,markDispatching,complete,recordError,read});
+ return Object.freeze({claim,claimPrepared,markDispatching,complete,recordError,read});
 }

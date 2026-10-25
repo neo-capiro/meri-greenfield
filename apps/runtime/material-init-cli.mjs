@@ -19,7 +19,7 @@ export async function runMaterialInitCli(argv,{environment=process.env,writeOut=
   delete environment[materialInitEnvironment.bundle];
   if(typeof expectedText!=='string'||Buffer.byteLength(expectedText,'utf8')>8192||typeof bundleText!=='string'||Buffer.byteLength(bundleText,'utf8')>65536)throw Error();
   const expected=parseStaticProductMaterialExpected(JSON.parse(expectedText));
-  if(controlCa&&expected.role!=='control')throw Error();
+  if(controlCa&&!['control','schedule-worker'].includes(expected.role))throw Error();
   let consumed=false;
   const delivery={async fetch({signal}){
    signal.throwIfAborted();if(consumed)throw Error();consumed=true;

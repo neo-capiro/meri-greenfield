@@ -4,23 +4,48 @@
   "sources": [
     {
       "path": "../../apps/control/action-application/http.mjs",
-      "sha256": "5cc1a6be3e5db1bd862f0c94d70bfbd0f7579dcd0ae2ed7241f15dc4aa488740",
-      "bytes": 4925
+      "sha256": "ee1e56894c97ca2148adf4a990e8a9ca5d5b71699e69441633e36b563b85c4a6",
+      "bytes": 5006
     },
     {
       "path": "../../apps/control/action-application/index.mjs",
-      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5",
-      "bytes": 5188
+      "sha256": "a2bbc2f1b7b057dbbd182b49b23123a07f07986c1f7e44e794030660172573c5",
+      "bytes": 3578
     },
     {
       "path": "../../apps/control/action-application/session.mjs",
-      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816",
-      "bytes": 3189
+      "sha256": "01683370bed851f43e9e320af08e1e6b4dc0fd8445be49283c63f2bc8288c67e",
+      "bytes": 986
+    },
+    {
+      "path": "action-application/receive.mjs",
+      "sha256": "642d37ddcbff94cec0c32974d06e6cc4d3009d60a5ee9081f94e51b701ebac2c",
+      "bytes": 7441
+    },
+    {
+      "path": "action-application/schema.mjs",
+      "sha256": "ad91e375c0d05c25e67ecb5f7a2274cc070f3fb7133f3068ddb5b50ebf035b4d",
+      "bytes": 2514
+    },
+    {
+      "path": "commands-0.2/native-task-outcome-schema.mjs",
+      "sha256": "e35e1dd8cb0193f144df76fe4c470d4e4e499a9b30900b739983c14f33081dd3",
+      "bytes": 1284
     },
     {
       "path": "commands-0.2/task-create.schema.json",
       "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
       "bytes": 3827
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-actions.mjs",
+      "sha256": "3fed933993b53d555b41c0ea39514a19dda361e22824b137ed5bdb118297c340",
+      "bytes": 7732
     },
     {
       "path": "meri.schema.json",
@@ -41,17 +66,25 @@
       "path": "retrieval-0.2/retrieval.schema.json",
       "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
       "bytes": 21023
+    },
+    {
+      "path": "task-command-application/boundary.mjs",
+      "sha256": "fdad45dff42e6fc1f838bfe86c623c52798ae240cf85bc2fbbee4e8988573c28",
+      "bytes": 1751
     }
   ],
-  "schemaSha256": "966a04ef8c590eb7bff20d7a837431948c115afe23c47def3099648e7a9c30e0",
+  "schemaSha256": "ddbb3bb99a3550034137f1c9bed937bba3f4afb5ff93e559be3f386324a7c127",
   "browserInputs": [
-    "action-application-receiver.mjs",
+    "action-application/action-application/receive.mjs",
     "action-generated:./generated-status.mjs",
     "action-generated:./generated-validator.mjs",
+    "artifacts-0.2/artifact-formats.mjs",
+    "document-application/boundary.mjs",
     "node_modules/ajv-formats/dist/formats.js",
     "node_modules/ajv/dist/runtime/equal.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
-    "node_modules/fast-deep-equal/index.js"
+    "node_modules/fast-deep-equal/index.js",
+    "task-command-application/boundary.mjs"
   ]
 }

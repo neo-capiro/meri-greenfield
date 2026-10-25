@@ -20,8 +20,7 @@ export function createClientDocumentsValidators({validateShape, assertSubject, c
   function context(raw) {
     const value=snapshotOperationData(raw);
     validateShape('ClientDocumentsContext',value);assertSubject(value.subject,value.binding);
-    if (value.subject.kind !== 'client' || value.subject.entityType !== 'client' || value.subject.entityIds.length !== 1)
-      fail('One current client subject required');
+    if (!['client','personal'].includes(value.subject.kind)) fail('One current client or personal subject required');
     return value;
   }
   function cursor(value, clientId, documentId, query) {
@@ -38,7 +37,9 @@ export function createClientDocumentsValidators({validateShape, assertSubject, c
     const input=snapshotOperationData(raw), ctx=context(options);
     validateShape('ClientDocumentsInput',input);
     const clientId=optionalText(input,'clientId',80);
-    if (clientId !== ctx.subject.entityIds[0]) fail('Document client selector differs from current subject');
+    if (clientId === null) fail('Explicit document client selector required');
+    if (ctx.subject.kind === 'personal' ? !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(clientId ?? '') :
+        clientId !== ctx.subject.entityIds[0]) fail('Document client selector differs from current subject');
     const documentId=optionalText(input,'documentId',80), query=optionalText(input,'query',240) ?? '';
     const token=optionalText(input,'cursor',4096), mode=documentId===null?'list':'read';
     const limit=input.limit ?? (documentId===null?25:5000);

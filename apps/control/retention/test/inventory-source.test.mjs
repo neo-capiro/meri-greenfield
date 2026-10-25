@@ -1,78 +1,60 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createRetentionInventoryFor} from '../inventory-source.mjs';
-import {recomputePlan} from '../purge.mjs';
-import {policy,snapshot,subjectOf} from './fixture.mjs';
-
-const row=(runId,keySha256)=>({runId,keySha256});
-function fixture(kind='conversation'){
- const subject=subjectOf(kind),base=snapshot(subject),{memoryContinuations:discard,...nonContinuation}=base,
-  complete={...nonContinuation,schedules:[],receipts:[],memoryProposals:[],budgetRuns:[]};
- let generation=4,reads=0,rowReads=0;
- const journal={async get(){reads++;return {state:'SUPPRESSED',ledgerSequence:generation,
-  entrySha256:String(generation).repeat(64)};}};
- const rows=kind==='conversation'?[row(base.runs[0].runId,'a'.repeat(64)),row(base.runs[0].runId,'b'.repeat(64))]:[];
- const memoryProposalContexts={async inventoryForConversation(request){rowReads++;
-  assert.deepEqual(request,{tenantId:subject.tenantId,conversationId:subject.subjectId});return rows;}};
- return {subject,complete,journal,memoryProposalContexts,rows,counts:()=>({reads,rowReads}),
-  changeGeneration:()=>{generation++;}};
+import {createConversationPurgeFacts} from '../inventory-source.mjs';
+import {hash} from '../boundary.mjs';
+import {binding,scopes,id} from '../../conversations/test/store-fixture.mjs';
+import {conversationContentTables} from '../../conversations/retention-content-rows.mjs';
+const now=1800000000000,day=86400000;
+const subject={tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId,ownerActorId:binding.actorId};
+function fixture(){
+ const conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,policyRevision:'policy1',createdAt:new Date(now-40*day).toISOString()};
+ const row={tenant_id:binding.tenantId,conversation_id:binding.conversationId,owner_actor_id:binding.actorId,projection:conversation,projection_sha256:hash(conversation)};
+ const tables=new Set(['meri_memory.candidates',...conversationContentTables.map(t=>t.name),...['runs','events','controls','checkpoints','completion_checkpoints','next_runs','memory_proposal_contexts'].map(t=>'meri_conversations.'+t)]);
+ const state={status:'trashed',identity:{ownerActorId:binding.actorId},trashRequestId:id(901),revision:'3',trashedAt:new Date(now-31*day).toISOString(),restoreUntil:new Date(now-day).toISOString(),checkedAtMs:now};
+ const calls=[],shared=new Map(),overrides=new Map();
+ const journal={async withSnapshot(callback){return callback({async query(sql,args){
+  calls.push({sql,args});assert.equal(args[0],subject.tenantId);assert.equal(args[1],subject.subjectId);
+  if(sql.includes('jsonb_path_exists'))return {rows:shared.get(sql.match(/FROM ([a-z_.]+)/u)[1])??[]};
+  const table=sql.match(/FROM ([a-z_.]+)/u)?.[1];
+  if(overrides.has(table))return {rows:overrides.get(table)};
+  if(table==='meri_conversations.conversations')return {rows:[row]};
+  assert.ok(tables.has(table),`unexpected SQL owner ${table}`);return {rows:[]};
+ }});}};
+ const core={async read(s){assert.deepEqual(s,subject);return structuredClone(state);}};
+ const facts=createConversationPurgeFacts({pool:{connect(){throw Error('second lease');}},journal,core,storage:{async holdsFor(){throw Error('zero-run has no objects');}},keyFor:()=>{throw Error('no locator');},now:()=>now});
+ return {facts,calls,shared,overrides,state,row};
 }
-
-test('complete trusted snapshot receives exact store-owned continuation rows under one suppression generation',async()=>{
- const f=fixture(),inventoryFor=createRetentionInventoryFor({snapshotFor:async()=>f.complete,
-  memoryProposalContexts:f.memoryProposalContexts,journal:f.journal});
- const result=await inventoryFor(f.subject);
- assert.deepEqual(result.rowTargets.filter(target=>target.table==='memory_proposal_contexts'),
-  f.rows.map(value=>({className:'conversation',table:'memory_proposal_contexts',...value}))
-   .sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))));
- assert.deepEqual(f.counts(),{reads:2,rowReads:1});
+test('real zero-run snapshot produces its identity target with no invented content or second lease',async()=>{
+ const f=fixture();assert.equal((await f.facts.trashFor(subject)).restoreUntilMs,now-day);
+ const inventory=await f.facts.inventoryFor(subject);assert.equal(inventory.objects.length,0);assert.equal(inventory.rowTargets.length,1);
+ assert.equal(inventory.rowTargets[0].table,'conversations');assert.deepEqual(await f.facts.sharedFor(subject,inventory),[]);
+ assert.deepEqual(await f.facts.liabilities(subject),[]);assert.equal(await f.facts.lastActivityFor(subject),now-31*day);
+ assert.throws(()=>f.facts.holds({objectId:id(8),versionId:'unobserved'}),/RETENTION_AUTHORITY_UNAVAILABLE/);
+ f.state.status='active';await assert.rejects(f.facts.trashFor(subject));await assert.rejects(f.facts.lastActivityFor(subject));
 });
-
-test('missing active class, spoofed continuation source and wrong subject refuse without producing a plan',async()=>{
- const f=fixture();
- for(const base of [
-  (({uploads:discard,...rest})=>rest)(f.complete),
-  (({receipts:discard,...rest})=>rest)(f.complete),
-  (({memoryProposals:discard,...rest})=>rest)(f.complete),
-  (({budgetRuns:discard,...rest})=>rest)(f.complete),
-  (({schedules:discard,...rest})=>rest)(f.complete),
-  (({eventRows:discard,...rest})=>rest)(f.complete),
-  (({controls:discard,...rest})=>rest)(f.complete),
-  {...f.complete,inventorySha256:'a'.repeat(64)},
-  {...f.complete,memoryContinuations:[]},
-  {...f.complete,subject:subjectOf()},
- ]){
-  const inventoryFor=createRetentionInventoryFor({snapshotFor:async()=>base,
-   memoryProposalContexts:f.memoryProposalContexts,journal:f.journal});
-  await assert.rejects(inventoryFor(f.subject),/RETENTION_AUTHORITY_UNAVAILABLE/);
+test('snapshot corruption, a missing parent and unavailable table refuse complete inventory',async()=>{
+ for(const mutate of [f=>f.overrides.set('meri_conversations.conversations',[]),f=>f.row.projection_sha256='f'.repeat(64),f=>f.overrides.set('meri_conversations.sdk_session_entries',null)]){
+  const f=fixture();mutate(f);await assert.rejects(f.facts.inventoryFor(subject));
  }
 });
-
-test('release and new suppression during snapshot collection refuse the old generation',async()=>{
- const f=fixture(),inventoryFor=createRetentionInventoryFor({snapshotFor:async()=>{
-  f.changeGeneration();return f.complete;},memoryProposalContexts:f.memoryProposalContexts,journal:f.journal});
- await assert.rejects(inventoryFor(f.subject),/RETENTION_AUTHORITY_UNAVAILABLE/);
+test('surviving forks and independently owned artifacts are discovered from actual canonical fields',async()=>{
+ const f=fixture(),object={objectId:id(8),versionId:'version-exact',sha256:'b'.repeat(64)},body={files:{entries:[{object}]}};
+ f.shared.set('meri_conversations.runs',[{owner_id:id(10),body,digest:hash(body)}]);
+ f.shared.set('meri_artifacts.versions',[{owner_id:id(11),body,digest:hash(body)}]);
+ const shared=await f.facts.sharedFor(subject,{objects:[object]});
+ assert.deepEqual(shared,[{object,heldBy:[`${subject.tenantId}:artifact:${id(11)}`,`${subject.tenantId}:conversation:${id(10)}`],blocking:[]}]);
+ assert.equal(f.calls.length,6);assert.ok(f.calls.every(c=>c.sql.includes('LIMIT 1')));
+ assert.ok(f.calls.filter(c=>c.sql.includes('meri_conversations.completion_checkpoints')).every(c=>c.sql.includes('proof AS body,proof_sha256 AS digest')));
+ assert.ok(f.calls.filter(c=>!c.sql.includes('meri_artifacts.versions')).every(c=>c.sql.includes('conversation_id<>$2')));
+ assert.ok(f.calls.every(c=>JSON.parse(c.args[2]).version===object.versionId));
+ f.shared.get('meri_artifacts.versions')[0].digest='f'.repeat(64);
+ await assert.rejects(f.facts.sharedFor(subject,{objects:[object]}),/RETENTION_AUTHORITY_UNAVAILABLE/);
 });
-
-test('artifact inventory truthfully has no conversation continuation rows',async()=>{
- const f=fixture('artifact'),inventoryFor=createRetentionInventoryFor({snapshotFor:async()=>f.complete,
-  memoryProposalContexts:f.memoryProposalContexts,journal:f.journal});
- const result=await inventoryFor(f.subject);
- assert.equal(result.rowTargets.some(target=>target.table==='memory_proposal_contexts'),false);
- assert.deepEqual(f.counts(),{reads:2,rowReads:0});
-});
-
-test('canonical plan recomputation receives every continuation target through facts.inventoryFor',async()=>{
- const f=fixture(),inventoryFor=createRetentionInventoryFor({snapshotFor:async()=>f.complete,
-  memoryProposalContexts:f.memoryProposalContexts,journal:f.journal});
- const nowMs=1_800_000_000_000,days=86400000,
-  state={state:'SUPPRESSED',suppressedAtMs:nowMs-8*days,ledgerSequence:4,entrySha256:'4'.repeat(64)},
-  facts={inventoryFor,policy:async()=>policy(),sharedFor:async()=>[],
-   holds:()=>({objectLockRetainUntilMs:null,legalHold:false}),liabilities:async()=>[],
-   lastActivityFor:async()=>nowMs-30*days};
- const plan=await recomputePlan(facts,f.subject,state,nowMs);
- assert.deepEqual(plan.rowSteps.filter(step=>step.target.table==='memory_proposal_contexts')
-  .map(step=>step.target).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))),
-  f.rows.map(value=>({className:'conversation',table:'memory_proposal_contexts',...value}))
-   .sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b))));
+test('an unsettled actual run remains a liability, and corrupt native custody is never treated settled',async()=>{
+ const f=fixture(),run={binding,state:'running'};
+ f.overrides.set('meri_conversations.runs',[{run_id:binding.runId,projection:run,projection_sha256:hash(run)}]);
+ f.overrides.set('meri_conversations.native_executions',[]);
+ assert.deepEqual(await f.facts.liabilities(subject),[{runId:binding.runId,kind:'UNSETTLED_EXECUTION'}]);
+ f.overrides.set('meri_conversations.native_executions',[{record:{},record_sha256:'b'.repeat(64)}]);
+ await assert.rejects(f.facts.liabilities(subject));
 });

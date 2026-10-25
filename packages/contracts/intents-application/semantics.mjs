@@ -7,6 +7,7 @@ import {ARTIFACT_MIME_TYPES,assertNativeArtifactEvidenceBinding} from '../artifa
 import {validators} from './generated-validator.mjs';
 import {intentsMetadata} from './generated-protocol.mjs';
 import {fail} from './boundary.mjs';
+import {assertRoutineProposal} from './routines.mjs';
 const same=(a,b)=>canonicalize(a)===canonicalize(b);
 const sha=async value=>Array.from(new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonicalize(value)))),byte=>byte.toString(16).padStart(2,'0')).join('');
 const conflict=()=>fail('INTENTS_CORRELATION');
@@ -21,10 +22,22 @@ async function proposal(value,conversationId){
  if(await sha(command)!==value.commandSha256||value.requiredApprover.tenantId!==command.binding.tenantId||command.binding.conversationId!==conversationId||
   command.scopes.some(scope=>scope.tenantId!==command.binding.tenantId)||parsed(value.expiresAt)<=parsed(value.createdAt))conflict();
  if(command.action==='task.create'&&(!validators.IntentsTaskCreateArguments(command.arguments)||command.attachments.length!==0||command.arguments.title.trim()!==command.arguments.title))conflict();
+ if(command.action==='task.update'){
+  if(!validators.IntentsTaskUpdateArguments(command.arguments)||command.attachments.length!==0||command.arguments.taskId.toLowerCase()!==command.arguments.taskId)conflict();
+  const patch=command.arguments.patch;
+  if(patch.title!==undefined&&patch.title.trim()!==patch.title)conflict();
+  if(patch.dueDate!==undefined&&exact(patch.dueDate)%86400000!==0)conflict();
+ }
  if(command.action==='document.draft') {
   exact(value.createdAt);exact(value.expiresAt);
   if(command.arguments.title.trim()!==command.arguments.title||command.arguments.title.length>200||
    command.arguments.baseVersionId!==null&&command.arguments.baseVersionId.toLowerCase()!==command.arguments.baseVersionId)conflict();
+ }
+ if(command.action==='artifact.file'){
+  const scopes=command.scopes,objects=command.attachments,args=command.arguments;
+  if(!validators.IntentsArtifactFileArguments(args)||args.conversationId!==command.binding.conversationId||
+   scopes.length!==1||scopes[0].kind!=='client'||scopes[0].resourceId!==args.clientId||args.clientId.toLowerCase()!==args.clientId||
+   objects.length<1||objects.length>10||new Set(objects.map(o=>o.objectId.toLowerCase())).size!==objects.length||objects.some(o=>!same(o.scopes,scopes)))conflict();
  }
 }
 function decision(value,retained){
@@ -45,9 +58,36 @@ function documentOutcome(value,command) {
  exact(version.createdAt);
 }
 /** A completed outcome must belong to the retained command's actual task or document owner. */
-function outcome(value,retained){
+async function outcome(value,retained,decisionValue){
  const command=retained.command,receipt=value.receipt,result=value.result;
  if(command.action==='document.draft')return documentOutcome(value,command);
+ if(value.execution?.kind==='native-task'||value.execution?.kind==='native-artifact-file'){
+  const e=value.execution;
+  if(e.proposalId!==retained.proposalId||e.commandSha256!==retained.commandSha256||e.idempotencyKey!==command.idempotencyKey||!same(e.binding,command.binding)||
+   decisionValue&&e.approvalDecisionSha256!==await sha(decisionValue))conflict();
+  const completed=exact(e.completedAt);
+  if(completed<parsed(retained.createdAt)||decisionValue&&completed<parsed(decisionValue.decidedAt))conflict();
+  if(e.kind==='native-artifact-file'){
+   if(command.action!=='artifact.file'||result.commandSha256!==retained.commandSha256||result.files.length!==command.attachments.length)conflict();
+   const seen=new Set(),persisted=['documentId','location','indexingStatus','reused'];
+   for(const file of result.files){
+    const key=canonicalize(file.object),count=persisted.filter(key=>Object.hasOwn(file,key)).length;
+    if(seen.has(key)||!command.attachments.some(o=>same(o,file.object))||count!==0&&count!==persisted.length)conflict();seen.add(key);
+    if(file.fileName===null&&(file.status!=='failed'||count!==0)||file.status!=='failed'&&count!==persisted.length)conflict();
+    if(file.status==='saved'){if(file.indexingStatus==='not_indexed')conflict();}
+    else if(!Object.hasOwn(file,'reason')||count&&file.indexingStatus!=='not_indexed')conflict();
+   }
+   return;
+  }
+  if(command.action==='task.create'){
+   exact(result.createdAt);
+   if(result.status!=='todo'||['title','clientId','dueDate'].some(key=>result[key]!==command.arguments[key]))conflict();
+  }else if(command.action==='task.update'){
+   exact(result.updatedAt);if(result.dueDate!==null&&exact(result.dueDate)%86400000!==0)conflict();
+   if(result.id.toLowerCase()!==command.arguments.taskId||Object.entries(command.arguments.patch).some(([key,value])=>result[key]!==value))conflict();
+  }else conflict();
+  return;
+ }
  if(command.action!=='task.create'||!receipt||!result)conflict();
  exact(receipt.completedAt);exact(result.createdAt);
  if(receipt.commandId!==command.commandId||receipt.commandSha256!==retained.commandSha256||receipt.idempotencyKey!==command.idempotencyKey||!same(receipt.scopes,command.scopes))conflict();
@@ -67,10 +107,24 @@ async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
+ if(value.kind==='schedule_proposal'){
+  if(!Object.hasOwn(value,'proposal'))return;
+  if(value.binding.conversationId!==conversationId||value.proposal.projection.owner.tenantId!==value.binding.tenantId||value.proposal.projection.owner.actorId!==value.binding.actorId||
+   value.proposal.projection.scopes.some(scope=>scope.tenantId!==value.binding.tenantId))conflict();
+  assertRoutineProposal(value.proposal,value.operation.id,value.request);return;
+ }
+ if(value.kind==='memory_review'){
+  if(value.operation.id!=='save_memory')conflict();
+  if(!Object.hasOwn(value,'review'))return;
+  const {binding,scopes}=value.review,scope=scopes[0];
+  if(binding.conversationId!==conversationId||scope.tenantId!==binding.tenantId||
+   !(scope.kind==='client'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(scope.resourceId)||scope.kind==='private-user'&&scope.resourceId===binding.actorId))conflict();
+  return;
+ }
  if(!Object.hasOwn(value,'proposal'))return;
  await proposal(value.proposal,conversationId);
  if(value.decision!==null&&typeof value.decision==='object')decision(value.decision,value.proposal);
- if(value.execution!==null&&typeof value.execution==='object'&&value.execution.state==='completed')outcome(value.execution.outcome,value.proposal);
+ if(value.execution!==null&&typeof value.execution==='object'&&value.execution.state==='completed')await outcome(value.execution.outcome,value.proposal,value.decision&&typeof value.decision==='object'?value.decision:undefined);
  phase(value);
 }
 export async function list(value,request){
@@ -94,6 +148,6 @@ export async function decide(value,request,retained){
  // admitDecision: the owner's decision is for this choice, by the proposal's required approver, not before the proposal existed.
  if(d.decision!==request.decision||!same(d.approver,retained.requiredApprover)||parsed(d.decidedAt)<parsed(retained.createdAt))conflict();
  if((value.status==='rejected')!==(request.decision==='rejected'))conflict();
- if(value.status==='executed')outcome(value.outcome,retained);
+ if(value.status==='executed')await outcome(value.outcome,retained,d);
  return value;
 }

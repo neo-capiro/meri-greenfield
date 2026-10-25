@@ -14,8 +14,10 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
  const {family,routes,requestBody,resultBody,observation,requirePerCall}=ownFields(specification,['family','routes'],['requestBody','resultBody','observation','requirePerCall']);
  if(!NATIVE_READ_FAMILIES.includes(family)||[requestBody,resultBody,requirePerCall].some(value=>value!==undefined&&(typeof value!=='function'||types.isProxy(value))))deny('GATEWAY_CONFIGURATION');
  const fundingObservation=observation==='funding-asof'&&family==='funding-opportunities',knowledgeObservation=observation==='client-knowledge-asof'&&family==='client-knowledge-search',
-  modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(family);
- if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation)||requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
+  modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(family),
+  producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(family);
+ if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation)||requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
+ if(['certification-status','rule-status','sam-opportunities'].includes(family)&&!producerObservation)deny('GATEWAY_CONFIGURATION');
  if(family==='funding-opportunities'&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
  if(!fixed||Array.isArray(fixed)||typeof fixed!=='object'||!Object.keys(fixed).length)deny('GATEWAY_CONFIGURATION');
@@ -23,7 +25,7 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
   family==='client-knowledge-search'&&Object.hasOwn(fixed,'search_client_knowledge')&&!knowledgeObservation)deny('GATEWAY_CONFIGURATION');
  for(const [id,path] of Object.entries(fixed)){
   if(path!==`/api/clio/tools/${id}`)deny('GATEWAY_CONFIGURATION');
-  if(modeObservation!==MODE_READ_OPERATIONS.includes(id))deny('GATEWAY_CONFIGURATION');
+  if((modeObservation||producerObservation&&id==='search_sam_opportunities')!==MODE_READ_OPERATIONS.includes(id))deny('GATEWAY_CONFIGURATION');
   let contract;try{contract=resolveOperationContract({id,version:'0.2.0'});}catch{deny('GATEWAY_CONFIGURATION');}
   if(contract.binding.group!==family||!nativeReadOperationAllowed(family,id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')deny('GATEWAY_CONFIGURATION');
  }
