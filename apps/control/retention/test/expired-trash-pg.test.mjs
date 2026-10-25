@@ -20,6 +20,7 @@ import {buildCandidate} from '../../memory/candidate.mjs';
 import {createPostgresMemoryJournal} from '../../memory/postgres-journal.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 import {scanConversationContentRows,decodeConversationContentRows} from '../../conversations/retention-content-rows.mjs';
+import {inspectRetentionTargetLookup} from './retention-target-index-pg.mjs';
 
 const SOCKET='/tmp/meri-expired-trash-pg-20261024/socket',DATABASE='meri_expired_trash_fixture';
 const supplied=process.env.MERI_EXPIRED_TRASH_PG_SOCKET!==undefined||process.env.MERI_EXPIRED_TRASH_PG_DATABASE!==undefined;
@@ -30,7 +31,11 @@ let clock=null;
 const now=()=>clock??Date.now();
 const pool=new pg.Pool({host:SOCKET,database:DATABASE,user:'meri_control_runtime',max:1,connectionTimeoutMillis:2000,query_timeout:6000,options:'-c statement_timeout=5000 -c lock_timeout=2000'});
 const connect=pool.connect.bind(pool);let failLastMutation=false,observedDeletes=0;
+let lookupInspected=false;const lookupDiagnostics=[];
 const journalPool={async connect(){const c=await connect();return {release:error=>c.release(error),query:async(sql,args)=>{
+ if(!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
+  const page=JSON.parse(args[2]);if(page.length>=1000){lookupDiagnostics.push(await inspectRetentionTargetLookup(c,{tenantId:args[0],conversationId:args[1],page}));lookupInspected=true;}
+ }
  if(failLastMutation&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries'))observedDeletes++;
  if(failLastMutation&&sql.startsWith('UPDATE meri_commands.approval_metadata')){failLastMutation=false;throw Error('synthetic final-statement outage');}
  return c.query(sql,args);
@@ -76,10 +81,11 @@ async function seed({empty=false,general=false}={}){
  clock=old;try{await startup.suppression.suppress({principal,subject,reason:'conversation-trash:'+trashRequestId});}finally{clock=null;}
  return f;
 }
-async function content(f,{entryCount=2,nearTranscriptLimit=false}={}){
+async function content(f,{entryCount=2,nearTranscriptLimit=false,streamPaths=['']}={}){
  const {b,tuple,scopes,client,policyRevision}=f,key={projectKey:'-workspace-conversation',sessionId:id()};
  const owner={binding:b,scopes,selectedClientId:client,policyRevision,key,executionSha256:hash(f.record),expiresAtMs:old+10000};
  assert.ok(Number.isSafeInteger(entryCount)&&entryCount>0&&entryCount<=100000);
+ assert.ok(streamPaths.length>0&&streamPaths.length<=entryCount&&new Set(streamPaths).size===streamPaths.length);
  // Keep at most one append page in memory. Fixed entry bytes include UUID and
  // role differences; array separators stay inside the supported 32 MiB load.
  const entryBytes=nearTranscriptLimit?Math.floor((32*1024*1024-entryCount-2)/entryCount):160;
@@ -87,13 +93,16 @@ async function content(f,{entryCount=2,nearTranscriptLimit=false}={}){
   entry.message.content+='x'.repeat(entryBytes-Buffer.byteLength(JSON.stringify(entry)));assert.equal(Buffer.byteLength(JSON.stringify(entry)),entryBytes);return entry;};
  const bytes=entryCount*entryBytes,transcriptBytes=bytes+entryCount+1;assert.ok(transcriptBytes<=32*1024*1024);
  await insert('meri_conversations.sdk_sessions',{...tuple,session_id:key.sessionId,project_key:key.projectKey,owner,owner_sha256:hash(owner),entries_count:entryCount,bytes});
- await insert('meri_conversations.sdk_session_streams',{...tuple,session_id:key.sessionId,subpath:'',last_sequence:entryCount});
  let batches=0;
- for(let offset=0;offset<entryCount;offset+=1000){
-  const entries=Array.from({length:Math.min(1000,entryCount-offset)},(_,i)=>entryAt(offset+i)),rows=entries.map((entry,i)=>({sequence:offset+i+1,entry_uuid:entry.uuid,entry,entry_sha256:hash(entry)}));
-  await pool.query('INSERT INTO meri_conversations.sdk_session_entries(tenant_id,conversation_id,run_id,session_id,subpath,sequence,entry_uuid,entry,entry_sha256) SELECT $1,$2::uuid,$3::uuid,$4::uuid,\'\',page.sequence,page.entry_uuid,page.entry,page.entry_sha256 FROM jsonb_to_recordset($5::jsonb) AS page(sequence bigint,entry_uuid text,entry jsonb,entry_sha256 text)',[b.tenantId,b.conversationId,b.runId,key.sessionId,JSON.stringify(rows)]);
-  const appendId=id(),requestSha256=hash({binding:b,key,appendId,entries}),receipt={binding:b,key,requestSha256,committed:true,appendId,entriesSha256:hash(entries),offset:offset+entries.length,added:entries.length};
-  await insert('meri_conversations.sdk_session_batches',{...tuple,session_id:key.sessionId,append_id:receipt.appendId,request_sha256:receipt.requestSha256,receipt,receipt_sha256:hash(receipt)});batches++;
+ for(const [streamIndex,subpath] of streamPaths.entries()){
+  const start=Math.floor(streamIndex*entryCount/streamPaths.length),streamCount=Math.floor((streamIndex+1)*entryCount/streamPaths.length)-start,streamKey={...key,...(subpath?{subpath}:{})};
+  await insert('meri_conversations.sdk_session_streams',{...tuple,session_id:key.sessionId,subpath,last_sequence:streamCount});
+  for(let offset=0;offset<streamCount;offset+=1000){
+   const entries=Array.from({length:Math.min(1000,streamCount-offset)},(_,i)=>entryAt(start+offset+i)),rows=entries.map((entry,i)=>({sequence:offset+i+1,entry_uuid:entry.uuid,entry,entry_sha256:hash(entry)}));
+   await pool.query('INSERT INTO meri_conversations.sdk_session_entries(tenant_id,conversation_id,run_id,session_id,subpath,sequence,entry_uuid,entry,entry_sha256) SELECT $1,$2::uuid,$3::uuid,$4::uuid,$5::text,page.sequence,page.entry_uuid,page.entry,page.entry_sha256 FROM jsonb_to_recordset($6::jsonb) AS page(sequence bigint,entry_uuid text,entry jsonb,entry_sha256 text)',[b.tenantId,b.conversationId,b.runId,key.sessionId,subpath,JSON.stringify(rows)]);
+   const appendId=id(),requestSha256=hash({binding:b,key:streamKey,appendId,entries}),receipt={binding:b,key:streamKey,requestSha256,committed:true,appendId,entriesSha256:hash(entries),offset:offset+entries.length,added:entries.length};
+   await insert('meri_conversations.sdk_session_batches',{...tuple,session_id:key.sessionId,append_id:receipt.appendId,request_sha256:receipt.requestSha256,receipt,receipt_sha256:hash(receipt)});batches++;
+  }
  }
  f.sdk={key,entryCount,bytes,transcriptBytes,batches};
  const output={recipe:'original-selected-output-retention/1',request:f.request,pending:{sourceBinding:b,preparationSha256:'a'.repeat(64)},prepared:{context:{binding:b,scopes,assets:[]}},reads:[]};
@@ -115,6 +124,7 @@ const plan=async f=>journal.withTransition(subjectKey(f.subject),async()=>{const
 
 test('ordinary-role expired Trash row transaction and durable recovery',{timeout:120000,skip:!enabled&&'requires exact disposable Unix PG16 expiry fixture'},async t=>{
  t.after(()=>pool.end());
+ t.after(()=>{for(const diagnostic of lookupDiagnostics)t.diagnostic('exact target lookup plans '+JSON.stringify(diagnostic));});
  t.afterEach(()=>{loseRowAck=false;loseFinalize=false;failLastMutation=false;readHook=null;clock=null;});
  await t.test('target and role are isolated, nonowner and nonprivileged',async()=>{
   const r=(await pool.query("SELECT current_user,current_database() database,current_setting('listen_addresses') listen,current_setting('server_version_num')::int version,inet_server_addr() address")).rows[0];
@@ -140,6 +150,14 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   await assert.rejects(pool.query('UPDATE meri_commands.approval_metadata SET payload=$2 WHERE tenant_id=$1',[f.b.tenantId,f.approval.payload]),/TOMBSTONE|IMMUTABLE/);
   await assert.rejects(pool.query('UPDATE meri_conversations.runs SET request=$2 WHERE tenant_id=$1',[f.b.tenantId,f.request]),/TOMBSTONE|IMMUTABLE/);
   const effects=rowEffects;assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(rowEffects,effects);
+ });
+ await t.test('maximum-character multibyte stream path retains exact hash-index lookup and erases normally',async()=>{
+  const subpath=Array.from({length:1024},(_,i)=>String.fromCodePoint(0x100+(i*509)%1024)).join('');
+  assert.equal(subpath.length,1024);assert.equal(Buffer.byteLength(subpath),2048);
+  const f=await seed();await content(f,{entryCount:4,streamPaths:['',subpath]});const p=await plan(f);
+  assert.deepEqual(p.rowSteps.find(s=>s.className==='sdkSession').target.sdk.counts,{sessions:1,streams:2,entries:4,batches:2});
+  assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
+  for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
  });
  await t.test('100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
   const fixtureStarted=performance.now(),f=await seed();await content(f,{entryCount:100000,nearTranscriptLimit:true});
