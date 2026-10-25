@@ -23,7 +23,8 @@ export function createApprovalMetadataReadback(configuration){
    const metadata=immutablePayload(await life.run(()=>readMetadata(key,life.check))),record=metadata.record;
    if(!['document.draft','task.create','task.update'].includes(record.action)||record.proposalId!==v.proposalId||!same(record.binding,binding))throw fault();
    const saved=await life.run(()=>readRun(binding,{after:0,limit:1},life.check)),run=data(saved.run);validateShape('Run',run);
-   if(!same(run.binding,binding)||!same(run.scopes,record.scopes)||!['queued','starting','running','paused','waiting-for-approval','completed'].includes(run.state))throw fault();
+   const states=['queued','starting','running','paused','waiting-for-approval','completed',...(['task.create','task.update'].includes(record.action)?['failed']:[])];
+   if(!same(run.binding,binding)||!same(run.scopes,record.scopes)||!states.includes(run.state))throw fault();
    await life.run(()=>servable(subject));life.check();
    const result=data({schemaVersion:1,commandSha256:metadata.commandSha256,metadata,run});
    if(Buffer.byteLength(JSON.stringify(result))>MAX_APPROVAL_METADATA_READBACK_BYTES)throw fault();return result;

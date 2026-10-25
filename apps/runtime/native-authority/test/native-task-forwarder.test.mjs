@@ -23,7 +23,7 @@ async function fixture(t,general){
  },release:reason=>connection.release(reason)};}};
  const app=await allocatedApplicationFixture({pool,scopes:p.command.scopes,selectedClientId:general?null:p.command.scopes.find(s=>s.kind==='client').resourceId});t.after(app.close);
  assert.equal((await app.post('submit')).status,200);
- const state={requests:[],stored:null,loseAck:false,revoked:false,releaseRevoke:false,retentionChecks:0};
+ const state={requests:[],stored:null,loseAck:false,revoked:false,releaseRevoke:false,responseStatus:200,retentionChecks:0};
  const retention={async assertServable(){state.retentionChecks++;if(state.revoked)throw Error('suppressed');}};
  const forwarder=createCoreApprovalForwarder({origin:'https://core.invalid',nativeCredentials:app.sessions,now,getServiceSecret:async()=> 'synthetic-core-service',readProposal:async()=>p,
   async selectApprovalBinding({proposal,signal}){const selected=await currentNativeApprovalSession({store:app.store,sessions:app.sessions,retention,proposal,signal,now});return {binding:selected.binding,selectedClientId:selected.selectedClientId};},
@@ -33,7 +33,7 @@ async function fixture(t,general){
     state.stored??=structuredClone(outcome);
     if(state.loseAck){state.loseAck=false;throw Error('lost synthetic response');}
     if(state.releaseRevoke)state.revoked=true;
-    return Response.json({status:'observed',outcome:state.stored});
+    return Response.json({status:'observed',outcome:state.stored},{status:state.responseStatus});
    }
    assert(url.endsWith(CORE_APPROVAL_ROUTES.executionRead));return Response.json(state.stored===null?null:{state:'OUTCOME',outcome:state.stored});
   }});
@@ -56,11 +56,18 @@ test('native task lost execute ACK is read back without repeat mutation',async t
  assert.deepEqual(await f.forwarder.readTaskExecution(f.call),{state:'OUTCOME',outcome:f.outcome});
  assert.equal(f.state.requests.filter(r=>r.url.endsWith(CORE_APPROVAL_ROUTES.execute)).length,1);
 });
+
+for(const status of [400,401,403,404,409,422,500])test(`native task post-send ${status} is unknown and recovers without a second execution`,async t=>{
+ const f=await fixture(t,true);f.state.responseStatus=status;
+ await assert.rejects(f.forwarder.executeTask(f.call),e=>e.effect==='unknown');
+ assert.deepEqual(await f.forwarder.readTaskExecution(f.call),{state:'OUTCOME',outcome:f.outcome});
+ assert.equal(f.state.requests.filter(r=>r.url.endsWith(CORE_APPROVAL_ROUTES.execute)).length,1);
+});
 test('current session or retained scope loss refuses before dispatch and revocation at release withholds result',async t=>{
  const f=await fixture(t,true);f.app.sessions.close();
  await assert.rejects(f.forwarder.executeTask(f.call));assert.equal(f.state.requests.length,0);
  const g=await fixture(t,true);g.state.releaseRevoke=true;
- await assert.rejects(g.forwarder.executeTask(g.call));assert.equal(g.state.requests.length,1);assert(g.state.stored);
+ await assert.rejects(g.forwarder.executeTask(g.call),e=>e.effect==='unknown');assert.equal(g.state.requests.length,1);assert(g.state.stored);
 });
 test('General cannot borrow another private actor scope or silently become a client conversation',async t=>{
  const f=await fixture(t,true),p=structuredClone(f.call.proposal);

@@ -121,13 +121,14 @@ export function createCoreApprovalForwarder(options){
     headers:{authorization:'Bearer '+first.credential,'x-internal-service-secret':secret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:JSON.stringify(body)}));
     request.then(r=>{if(life.signal.aborted)try{cancelBody(responseBody(r));}catch{}},()=>{});return request;});
    if(!(acquired instanceof Response)||types.isProxy(acquired))refuse('UNAVAILABLE','unknown');
-   // Core refused before recording (4xx): no effect. Anything else after the request left may have recorded a decision.
+   // Native task errors can follow a committed effect or an unresolved claim. Their
+   // post-send outcome stays unknown even when Core withholds the result with 4xx.
    if(acquired.status!==200)refuse([401,403].includes(acquired.status)?'ACCESS_DENIED':[400,404,409,422].includes(acquired.status)?'REFUSED':'UNAVAILABLE',[401,403,400,404,409,422].includes(acquired.status)?'none':'unknown');
    let value;try{value=data(await readJsonResponse(acquired,{lifetime:life,maxResponseBytes}));}catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE','unknown');}
    await selected.verify?.();const last=bearer(selected,life.signal,'unknown');if(last.credential!==first.credential)refuse('ACCESS_DENIED','unknown');life.check();
    return {value,started,sessionExpiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)};
   }catch(error){
-   if(faults.has(error))throw ['DEADLINE','CANCELLED'].includes(error.code)&&sent?fault(error.code,'unknown'):error;
+   if(faults.has(error))throw sent&&(route===CORE_APPROVAL_ROUTES.execute||['DEADLINE','CANCELLED'].includes(error.code))?fault(error.code,'unknown'):error;
    throw fault('UNAVAILABLE',sent?'unknown':'none');
   }finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}}
  }

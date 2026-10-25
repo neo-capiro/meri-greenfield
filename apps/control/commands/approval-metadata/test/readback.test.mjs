@@ -26,9 +26,15 @@ async function fixture(t,{general=false}={}){
  let n=700;const stateTo=async state=>f.store.append(binding,{eventId:id(n++),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}},()=>{},admittedScopes);
  return {f,state,pool,metadata,reader,input,stateTo,scopes:admittedScopes};
 }
-for(const general of [false,true])test(`readback returns actual ${general?'General':'client'} metadata and completed run without execution credentials`,async t=>{
- const f=await fixture(t,{general});for(const state of ['starting','running','completed'])await f.stateTo(state);
- const result=await f.reader.read(f.input);assert.equal(result.run.state,'completed');assert.deepEqual(result.run.binding,binding);assert.deepEqual(result.run.scopes,f.scopes);
+for(const general of [false,true])for(const terminal of ['completed','failed'])test(`readback returns actual ${general?'General':'client'} metadata and ${terminal} run without execution credentials`,async t=>{
+ const f=await fixture(t,{general});
+ if(terminal==='failed'){
+  const raw={title:'Task committed before model failure'},context={binding,clientResolution:null};
+  const args=normalizeTaskCreateInput(raw,context);
+  f.state.payload=makePayload({...f.state.payload.record,action:'task.create',operation:{id:'create_task',version:'0.2.0'},request:raw,inputSha256:hash({arguments:args,attachments:[]})},context);
+ }
+ for(const state of ['starting','running',terminal])await f.stateTo(state);
+ const result=await f.reader.read(f.input);assert.equal(result.run.state,terminal);assert.deepEqual(result.run.binding,binding);assert.deepEqual(result.run.scopes,f.scopes);
  assert.deepEqual(result.metadata,f.state.payload);assert.equal(result.commandSha256,f.state.payload.commandSha256);assert.equal(result.schemaVersion,1);
  assert.deepEqual(Object.keys(result).sort(),['commandSha256','metadata','run','schemaVersion']);assert.equal(f.state.checks,2);assert.equal(f.f.state.executions.size,0);
  assert.equal(f.state.queries[0],'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');assert.ok(f.state.queries.includes("SET LOCAL statement_timeout = '5s'"));
@@ -43,13 +49,13 @@ for(const action of ['task.create','task.update'])for(const general of [false,tr
  const result=await f.reader.read(f.input);
  assert.deepEqual(result.metadata.record.request,raw);assert.equal(result.metadata.commandSha256,f.state.payload.commandSha256);assert.deepEqual(result.run.scopes,f.scopes);
 });
-for(const failure of ['absent','corrupt','foreign-binding','scope','cancelled','failed','suppressed-before','suppressed-after','select','COMMIT','ROLLBACK','release'])test(`metadata readback refuses ${failure} without an authorization or partial result`,async t=>{
+for(const failure of ['absent','corrupt','foreign-binding','scope','cancelled','suppressed-before','suppressed-after','select','COMMIT','ROLLBACK','release'])test(`metadata readback refuses ${failure} without an authorization or partial result`,async t=>{
  const f=await fixture(t);
  if(failure==='absent')f.state.empty=true;
  if(failure==='corrupt')f.state.corrupt=true;
  if(failure==='foreign-binding')f.input.binding={...binding,workerId:id(999)};
  if(failure==='scope')f.state.payload=makePayload({...f.state.payload.record,scopes:[{...scopes[0],resourceId:id(999)}]},{binding,scopes:[{...scopes[0],resourceId:id(999)}]});
- if(['cancelled','failed'].includes(failure))await f.stateTo(failure);
+ if(failure==='cancelled')await f.stateTo(failure);
  if(failure==='suppressed-before')f.state.suppressed=true;
  if(failure==='suppressed-after')f.state.onSelect=()=>{f.state.suppressed=true;};
  if(['select','COMMIT','release'].includes(failure))f.state.fail=failure;
