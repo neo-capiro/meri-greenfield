@@ -36,6 +36,7 @@ import {routineFiringTrust} from './native-authority/routines-firing-grant.mjs';
 import {createRoutinesFiringAuthority} from './native-authority/routines-firing-authority.mjs';
 import {createNativeRoutineCurrent} from './native-authority/routines-run-current.mjs';
 import {readSecret as readRuntimeSecret} from './config.mjs';
+import {createConfiguredRunCapabilityPolicy,projectCapabilityRole} from './product-ports/capability-policy.mjs';
 
 const same=(a,b)=>hash(a)===hash(b);
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(value);
@@ -51,6 +52,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  if(typeof controlCredential!=='string'||!/^\S{32,8192}$/u.test(controlCredential)||typeof nativeCredentials?.nativeCredentialFor!=='function'||
   createReadsRuntime!==undefined&&typeof createReadsRuntime!=='function')throw fault('AGENTCORE_CONFIGURATION');
  const requestMs=configuration.limits.requestMs,limits={maxRequestMs:requestMs,maxFactBytes:131072};
+ const capabilityPolicy=createReadsRuntime?createConfiguredRunCapabilityPolicy(configuration,{pool}):undefined;
  const coreFetch=countingFetch(fetchImpl,turnTelemetry,{origin:config.identity.origin});
  const runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool,now});
  const objectiveCore=getCoreServiceSecret?createObjectiveCorePorts({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,runStarts,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):null;
@@ -129,7 +131,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    const routine=await routineCore[beforeExecution?'admitExecution':transition?'forTransition':'forBinding']({binding,signal,deadlineMs});
    if(routine!==null){const record=beforeExecution?routine:routine.record;
     if(record.selectedClientId!==context.selectedClientId||!same(record.scopes,run.scopes))refuse();
-    return {expiresAtMs:record.expiresAtMs,routine:true};
+    return {...(beforeExecution?{}:routine.current),expiresAtMs:record.expiresAtMs,routine:true};
    }
   }
   const access=await nativeAccess({binding,run,context,signal}),started=now();
@@ -137,6 +139,17 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   await access.verify();
   if(current.checkedAtMs<started||current.checkedAtMs>now()||current.expiresAtMs<=now()||current.principal.tenantId!==binding.tenantId||current.principal.actorId!==binding.actorId||current.conversationId!==binding.conversationId||current.selectedClientId!==context.selectedClientId)refuse();
   return current;
+ }
+
+ // A policy decision needs current Core/job authority; local execution authentication deliberately stays local.
+ async function readCapabilityRole({binding,signal,deadlineMs=now()+requestMs}){
+  const life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+requestMs),errorFactory:code=>fault(code)});
+  try{
+   const run=(await life.run(()=>store.read(binding,{after:0,limit:1},life.check))).run;
+   const context=await life.run(signal=>contextFor({binding,run,signal})),started=now();
+   const current=await life.run(signal=>readCurrent({binding,run,context,signal,deadlineMs:life.deadline()}));
+   life.check();return projectCapabilityRole(current,{started,now:now()});
+  }finally{life.close();}
  }
 
  async function admit({binding,signal}){
@@ -244,7 +257,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('INVALID_ARGUMENTS');
    const input=await jsonBody({body:request.body,length:length===null?null:Number(length)},config.approvedReads?.maxRequestBytes??configuration.limits.requestBytes,life,life.check);
    validateShape('RunBinding',input.binding);
-   const app=createReadsRuntime({execution,binding:input.binding,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{}),...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
+   const app=createReadsRuntime({execution,binding:input.binding,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{}),...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
    if(typeof app?.handle!=='function')throw fault('READS_CONFIGURATION');
    const headers=new Headers(request.headers);headers.delete('content-length');
    return await life.run(signal=>app.handle(new Request(request.url,{method:'POST',headers,body:JSON.stringify(input),signal})));
@@ -273,7 +286,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    if(!method)throw fault('NATIVE_OPERATION_UNAVAILABLE');return owner[method]({...input,signal});
   },readiness});
  const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
- return Object.freeze({execution,native,application,admitFork,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
+ return Object.freeze({execution,native,application,admitFork,readCapabilityRole,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
   productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},

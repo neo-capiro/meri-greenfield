@@ -51,10 +51,10 @@ test('enabled family serves the tenant routes over the membership gate with the 
  assert.deepEqual(Object.keys(ports),['settingsApplication']);
  const captured=captureRuntimePorts(ports);
  assert.equal(productReadiness({ports:captured,retention:null,sourceEnabled:false}).owners.find(o=>o.name==='settings.tenant').state,'composed');
- // A member sees only the default timezone and their effective capabilities: the same single profile the run producer pins (G3).
+ // A member sees only the default timezone and their effective capabilities: the same current-role policy the run producer resolves.
  const member=await (await captured.settingsApplication.handle(post('/api/settings/tenant/read'))).json();
- const producer=createRunCapabilityPolicy({platform:compileCapabilityPlatform(configuration)});
- assert.deepEqual(member,{revision:0,defaultTimezone:'UTC',capabilityStatus:'resolved',effectiveCapabilities:JSON.parse(JSON.stringify(producer.profile))});
+ const producer=createRunCapabilityPolicy({platform:compileCapabilityPlatform(configuration),readTenantSettings:async()=>({})});
+ assert.deepEqual(member,{revision:0,defaultTimezone:'UTC',capabilityStatus:'resolved',effectiveCapabilities:JSON.parse(JSON.stringify(await producer.forRun({tenantId:who.tenantId,actorId:who.actorId,conversationId:id(903),actorRole:who.role})))});
  who=principal({actorId:'admin-1',role:'user_admin',permissions:[TENANT_SETTINGS_PERMISSION]});
  const admin=await (await captured.settingsApplication.handle(post('/api/settings/tenant/read'))).json();
  assert.deepEqual(admin.capabilityPolicy,{});assert.deepEqual(admin.platform,JSON.parse(JSON.stringify(compileCapabilityPlatform(configuration))));

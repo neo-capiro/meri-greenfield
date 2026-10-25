@@ -6,7 +6,7 @@ import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy} from '../../../runtime/product-ports/capability-policy.mjs';
+import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,compileCapabilityPlatform,createRunCapabilityPolicy} from '../../../runtime/product-ports/capability-policy.mjs';
 import {createProfileMounts,UNAVAILABLE_READ_PORT,UNAVAILABLE_INTENT_PORT} from '../capabilities/mounts.mjs';
 import {assertCapabilityPolicy} from '../capabilities/policy.mjs';
 import {resolveCapabilityPolicy} from '../capabilities/policy-resolution.mjs';
@@ -16,7 +16,7 @@ import {createIntentRuntime} from '../intents/runtime.mjs';
 import {defineReadTool} from '../reads/tools.mjs';
 import {z} from 'zod';
 import {binding,scopes,id} from '../../../control/conversations/test/store-fixture.mjs';
-const PROFILE=createConfiguredRunCapabilityPolicy({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}).profile;
+const PROFILE=resolveCapabilityPolicy({platform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM,tenant:{},role:'standard_user'});
 const ACTIVE_ROWS=familyReads().filter(row=>z.object(defineReadTool(row,async()=>({}),false).shape).safeParse({arguments:{}}).success).slice(0,3);
 const ACTIVE=ACTIVE_ROWS.map(row=>row.operation);
 const PORTABLE={...PROFILE,skillPlugin:false,skillNames:null,workspaceTools:false,activeReadOperations:ACTIVE};
@@ -42,7 +42,7 @@ test('profile mounts only exact active reads, with a stable list across changing
    const listing=new Client({name:'g3-list',version:'1'}),[left,right]=InMemoryTransport.createLinkedPair();
    await a.reads.sdkOptions.mcpServers.meri_reads.instance.connect(left);await listing.connect(right);
    try{assert.deepEqual((await listing.listTools()).tools.map(t=>t.name).sort(),ACTIVE.map(op=>op.id.replaceAll('.','_')).sort());}finally{await listing.close();}
-   assert.deepEqual(a.intents.sdkOptions.allowedTools,['mcp__meri_intents__request_document','mcp__meri_intents__request_analysis','mcp__meri_intents__propose_schedule','mcp__meri_intents__propose_schedule_change','mcp__meri_intents__propose_task','mcp__meri_intents__propose_task_update']);
+   assert.deepEqual(a.intents.sdkOptions.allowedTools,['mcp__meri_intents__request_document','mcp__meri_intents__request_analysis','mcp__meri_intents__propose_schedule','mcp__meri_intents__propose_schedule_change','mcp__meri_intents__propose_task','mcp__meri_intents__propose_task_update','mcp__meri_intents__propose_memory','mcp__meri_intents__propose_attachment_filing']);
    // A mounted tool this run does not expose answers a typed UNAVAILABLE through the server's own hook and handler (real MCP client);
    // the port is never asked to execute or prepare (both synthetic ports throw if they are).
    const session='71000000-0000-4000-8000-000000000091',signal=new AbortController().signal;
@@ -80,10 +80,10 @@ test('G2 carries an exact, immutable active operation set and rejects unqualifie
  const [first,second]=ACTIVE,all=[...ACTIVE];
  const platform={maximum:{generalReads:true,activeReadOperations:all},defaults:{generalReads:true,activeReadOperations:[first,second]},
   roleCeilings:{standard_user:{generalReads:true,activeReadOperations:all},user_admin:{generalReads:true,activeReadOperations:[first]}}};
- const producer=createConfiguredRunCapabilityPolicy({capabilityPlatform:platform});
- assert.deepEqual(producer.profile.activeReadOperations,[first]);
- assert.deepEqual((await producer.forRun({tenantId:'tenant',actorId:'actor',conversationId:id(91)})).activeReadOperations,[first]);
- assert.ok(Object.isFrozen(producer.profile.activeReadOperations)&&Object.isFrozen(producer.profile.activeReadOperations[0]));
+ const producer=createRunCapabilityPolicy({platform,readTenantSettings:async()=>({})}),run={tenantId:'tenant',actorId:'actor',conversationId:id(91)};
+ const admin=await producer.forRun({...run,actorRole:'user_admin'}),standard=await producer.forRun({...run,actorRole:'standard_user'});
+ assert.deepEqual(admin.activeReadOperations,[first]);assert.deepEqual(standard.activeReadOperations,[first,second]);
+ assert.ok(Object.isFrozen(admin.activeReadOperations)&&Object.isFrozen(admin.activeReadOperations[0]));
  for(const activeReadOperations of [null,[first,first],[{...first,extra:true}],[{...first,version:'9.9.9'}],[{id:'create_word',version:'0.2.0'}]])
   assert.throws(()=>assertCapabilityPolicy({generalReads:true,activeReadOperations}),/CAPABILITY_POLICY_REFUSED/u);
  const other=familyReads().find(row=>row.family!==ACTIVE_ROWS[0].family),family=ACTIVE_ROWS[0].family;
@@ -96,5 +96,5 @@ test('G2 carries an exact, immutable active operation set and rejects unqualifie
  assert.deepEqual(narrowed.activeReadOperations,[first],'a tenant family narrowing also narrows inherited active operations');
  const beyond=familyReads().find(row=>!all.some(op=>canonicalSha256(op)===canonicalSha256(row.operation))).operation;
  const widened={...platform,defaults:{generalReads:true,activeReadOperations:[...all,beyond]}};
- assert.throws(()=>createConfiguredRunCapabilityPolicy({capabilityPlatform:widened}),/CAPABILITY_PLATFORM_CONFIGURATION/u);
+ assert.throws(()=>compileCapabilityPlatform({capabilityPlatform:widened}),/CAPABILITY_PLATFORM_CONFIGURATION/u);
 });

@@ -11,13 +11,13 @@ import {fileURLToPath} from 'node:url';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 const R=await import('./render-material.mjs');
-const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,capabilityProfileOf,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
+const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
 const {createRenderFixture,addScheduleBindings,IDENTITY,FAKE_PASSWORDS}=await import('./render-material.fixture.mjs');
 const RV=await import('./runtime-values.mjs');
 const {validateConfiguration}=await import('../../../apps/runtime/config.mjs');
 const {compileProductMaterialPlan}=await import('../../../apps/runtime/material-init-plan.mjs');
 const {validateStaticProductDelivery}=await import('../../../apps/runtime/material-init.mjs');
-const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM,createConfiguredRunCapabilityPolicy}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
+const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
 const {canonicalSha256}=await import('../../../packages/contracts/validate.mjs');
 
 const NOW=Date.now();
@@ -216,15 +216,13 @@ test('retired read installation, discovery, delegation and runtime measurement i
 
 test('capability platform keeps product capabilities without an SDK launch pin',async()=>{
  await baseline();
- const profile=capabilityProfileOf(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
  const rendered=await render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM}));
  const control=assertOnly(rendered,['capabilityPlatform']);
  assert.deepEqual(control.capabilityPlatform,structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM));
- assert.equal(createConfiguredRunCapabilityPolicy(control).profileSha256,profile.profileSha256);
- assert.equal(rendered.summary.features.capabilityProfileSha256,profile.profileSha256);
+ assert.equal(Object.hasOwn(rendered.summary.features,'capabilityProfileSha256'),false);
  assert.equal(Object.hasOwn(control.agentcore,'capabilityProfileSha256'),false);
  // Retired deployment fields fail at the boundary; they cannot restore measured SDK options.
- await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},r=>{r.capabilityProfileSha256=profile.profileSha256;})),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(render(withFeatures({capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM},r=>{r.capabilityProfileSha256='a'.repeat(64);})),{code:'RENDER_INPUT_REFUSED'});
  assert.deepEqual(assertOnly(await render(withFeatures({capabilityPlatform:NO_CAPABILITY_PLATFORM})),['capabilityPlatform']).capabilityPlatform,structuredClone(NO_CAPABILITY_PLATFORM));
 });
 
@@ -292,14 +290,17 @@ test('CLI: --feature-secrets reads each secret file by path and the render write
  assert.equal(Buffer.from(bundle.files.find(f=>f.path===PATHS.readsServiceSecret).base64,'base64').toString(),SECRET.service);
 });
 
-test('approved read operations equal the declared capability profile without installation measurements',async()=>{
- const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),operations=structuredClone(APPROVED_READS.operations);
+test('approved reads allow valid narrowed role capabilities and reject invalid approved reads',async()=>{
+ const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM),operations=[...structuredClone(APPROVED_READS.operations),{id:'search_congress_bills',version:'0.2.0'}];
  for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)]){policy.generalReads=true;policy.activeReadOperations=structuredClone(operations);}
- const features={sourceEnabled:true,capabilityPlatform:platform,reads:READS};
+ platform.roleCeilings.standard_user.activeReadOperations=structuredClone(APPROVED_READS.operations);
+ const approvedReads={...structuredClone(APPROVED_READS),operations};
+ const features={sourceEnabled:true,capabilityPlatform:platform,reads:{...structuredClone(READS),approvedReads}};
  const rendered=await render(withFeatures(features),{featureSecrets:featureSecrets()});
- assert.deepEqual(config(rendered,'control').agentcore.approvedReads,APPROVED_READS);
- const bad=structuredClone(features);bad.reads.approvedReads.operations=[{id:'find_contacts',version:'0.2.0'}];
- await assert.rejects(render(withFeatures(bad),{featureSecrets:featureSecrets()}),/capability profile operations differ/);
+ assert.deepEqual(config(rendered,'control').agentcore.approvedReads,approvedReads);
+ assert.deepEqual(config(rendered,'control').capabilityPlatform.roleCeilings.standard_user.activeReadOperations,APPROVED_READS.operations);
+ const bad=structuredClone(features);bad.reads.approvedReads.operations=[{id:'unknown_read',version:'0.2.0'}];
+ await assert.rejects(render(withFeatures(bad),{featureSecrets:featureSecrets()}),/features\.reads\.approvedReads/);
  const policy=JSON.parse(await readFile(join(here,'policy.json'),'utf8'));
  assert.deepEqual(RV.parsePolicy(policy),policy);
  for(const extra of [{maxTurns:20},{model:'deployment-model'}])assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,...extra}}),{code:'RUNTIME_VALUES_REFUSED'});
