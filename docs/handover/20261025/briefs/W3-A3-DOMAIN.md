@@ -50,9 +50,11 @@ FROM: Root Codex | TO: A3 domain author (fresh xhigh session) | TYPE: brief | RE
 
 # Wave 3 · A3 Core/Workspace domain and ML-24
 
-**Status:** PREPARED BRIEF — disjoint independent work may proceed when root dispatches this scoped lane; final integration/contracts/deployment await the Wave 2 completion notice. This documentation task launches no implementation.. **Prepared as of:** 2026-10-25 11:20 UTC.
+**Status:** PREPARED BRIEF — disjoint independent work may proceed when root dispatches this scoped lane; final integration/contracts/deployment await the Wave 2 completion notice. This documentation task launches no implementation. **Prepared as of:** 2026-10-25 11:20 UTC.
 
-**Repository:** `neo-capiro/capiro-backend`. **Branch:** `codex/wave3-a3-domain-<dispatch-date>`. **Prepared base / accepted source:** `025ae90fc7bf85c91a5f60eaf949cc7effa1d330`. This is an observed source pin, not a claim that future send-time main is refreshed. Root must read the actual remote default/integration head, dependency heads and open PR state again immediately before dispatch, record the UTC and exact chosen base in this header, and provide a fresh isolated worktree. Rebase/re-review only affected changes. Current remote main is separate from accepted candidate and deployed source.
+**Repository:** `neo-capiro/capiro-backend`. **Branch:** `codex/wave3-a3-domain-20261025` (new isolated worktree, allocated by root). **Prepared base / accepted source:** `025ae90fc7bf85c91a5f60eaf949cc7effa1d330`. This is an observed source pin, not a claim that future send-time main is refreshed. Root must read the actual remote default/integration head, dependency heads and open PR state again immediately before dispatch, record the UTC and exact chosen base in this header, and provide a fresh isolated worktree. Rebase/re-review only affected changes. Current remote main is separate from accepted candidate and deployed source.
+
+**Dispatch metadata refreshed 2026-10-25 11:31 UTC:** root freshly read and selected base `025ae90fc7bf85c91a5f60eaf949cc7effa1d330`; the observed remote default `backend-import` remains `2edec026c912c2f6155a6ac8d04ae08bc70030b3`. Exact025 source publication and its draft PR are **pending** with the existing publication owner; this header does not claim remote retrievability. Root may dispatch the independently scoped A-domain lane after exact brief review, using the preserved local base and new isolated worktree, and must give it the later verified remote ref/PR receipt. No scope, path ownership or shared-resource permission changes. Wave2 deployment/acceptance remains priority; final integration and release-dependent work await root's explicit completion notice.
 
 ## How we work
 
