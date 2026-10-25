@@ -1,7 +1,7 @@
 /** Synthetic retained source/personnel JSON; no publisher intake, actor database, source parser or live year observation. */
 import schema from '../../../../../packages/contracts/retrieval-0.2/research-legal-news.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createResearchLegalNewsHandlers} from '../handler.mjs';
 import {newsSliceContext} from '../request-context.mjs';
 
@@ -53,7 +53,7 @@ export function storedCase(id=ids[0],options={}){
  }};
  const call=(args=request,current=authority,context=newsSliceContext(operation,args,normalizationContext.clientResolution))=>{
   const selected=contract.normalizeInput(args,context);
-  return {request:args,input:selected.input,argumentsSha256:selected.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:args,input:selected.input,argumentsSha256:selected.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'research-legal-news',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,visibleClientIds,
   handler:(changes={})=>createResearchLegalNewsHandlers({...transport,now,...changes},[operation])[0].execute};

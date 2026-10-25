@@ -1,7 +1,7 @@
 /** Source-shaped synthetic legal JSON; no ResearchService, provider, SQL or actual citation parser execution. */
 import schema from '../../../../../packages/contracts/retrieval-0.2/research-legal-legislation.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createResearchLegalLegislationHandlers} from '../handler.mjs';
 import {legalSliceContext} from '../request-context.mjs';
 
@@ -58,7 +58,7 @@ export function storedCase(id=ids[0],options={}){
  }};
  const call=(args=request,current=authority,context=legalSliceContext(operation,args,normalizationContext.clientResolution))=>{
   const selected=contract.normalizeInput(args,context);
-  return {request:args,input:selected.input,argumentsSha256:selected.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:args,input:selected.input,argumentsSha256:selected.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'research-legal-legislation',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,visibleClientIds,
   handler:(changes={})=>createResearchLegalLegislationHandlers({...transport,now,...changes},[operation])[0].execute};

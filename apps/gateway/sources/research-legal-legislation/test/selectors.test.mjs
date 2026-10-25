@@ -33,7 +33,7 @@ for(const id of ids){
   for(const mode of ['foreign-client','wrong-resource','personal','unscoped-client']){
    const f=storedCase(id,{request:{...storedCase(id).arguments,clientId}}),call=structuredClone(f.call()),a=call.authority;
    if(mode==='foreign-client')a.subject.entityIds=[foreign];
-   if(mode==='wrong-resource'){const scope={...a.subject.scopes[0],resourceId:foreign};a.subject.scopes=[scope];a.claims.scopes=[scope];a.decision.scopes=[scope];}
+   if(mode==='wrong-resource'){const scope={...a.subject.scopes[0],resourceId:foreign};a.subject.scopes=[scope];a.scopes=[scope];}
    if(mode==='personal')Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId]});
    if(mode==='unscoped-client'){delete call.request.clientId;const n=f.contract.normalizeInput(call.request,{clientResolution:null,citationResolution:null});Object.assign(call,{input:n.input,argumentsSha256:n.argumentsSha256,normalizationContext:{clientResolution:null,citationResolution:null}});}
    await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);

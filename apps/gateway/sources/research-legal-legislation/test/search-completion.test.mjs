@@ -59,6 +59,22 @@ test('matching current client UUID and folder retain other raw selectors while s
  assert.equal(f.credentialCalls[0].requestSha256,hash(request));assert.notEqual(f.credentialCalls[0].requestSha256,hash(f.wire[0].body));
 });
 
+test('search admits every declared enum value verbatim and refuses an undeclared one before any source',async()=>{
+ const policies=['any_retained','current_extractions','newest_dated_text'],stages=['all','enrolled','chaptered'],kinds=['all','text','amendment','supplement'];
+ const admitted=[...policies.map(versionPolicy=>({versionPolicy})),...stages.map(versionStage=>({versionStage,kind:'text'})),...kinds.map(kind=>({kind}))];
+ for(const selection of admitted){
+  const request={sessionKey:'2026',...selection},f=storedCase(id,{request}),out=JSON.parse(await f.handler()(f.call()));
+  assert.deepEqual(f.wire[0].body,request);assert.equal(out.result.result.versionPolicy,request.versionPolicy??'any_retained');
+  assert.equal(out.result.result.searchedKinds,request.kind??'all');assert.equal(f.credentialCalls.length,1);assert.equal(f.wire.length,1);
+ }
+ const refused=storedCase(id);
+ for(const selection of [{versionPolicy:'other'},{versionStage:'other'},{kind:'other'}]){
+  const request={sessionKey:'2026',...selection};assert.throws(()=>assertLegalSearchRequest(operation,request),{message:'INVALID_ARGUMENTS'});
+  await assert.rejects(refused.handler()({...refused.call(),request}),{message:'INVALID_ARGUMENTS'});
+ }
+ assert.equal(refused.credentialCalls.length,0);assert.equal(refused.wire.length,0);
+});
+
 test('named search needs per-call credentials and replaces only clientId while retaining original proof and complete carrier',async()=>{
  const request={sessionKey:'2026',clientId:' Client Name ',folderId:'native-folder',query:'energy',title:'Synthetic',cursor:'opaque-native-cursor'},f=namedCase(request),call=f.call();
  await assert.rejects(f.handler()(call),{message:'UNAVAILABLE'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
@@ -80,7 +96,7 @@ test('hidden/foreign selected client or current resource mismatch cannot reach n
  for(const mode of ['foreign-client','wrong-resource','personal','missing-grant']){
   const f=namedCase(),call=structuredClone(f.call()),a=call.authority;
   if(mode==='foreign-client')a.subject.entityIds=[foreign];
-  if(mode==='wrong-resource'){a.subject.scopes[0].resourceId=foreign;a.claims.scopes[0].resourceId=foreign;a.decision.scopes[0].resourceId=foreign;}
+  if(mode==='wrong-resource'){a.subject.scopes[0].resourceId=foreign;a.scopes[0].resourceId=foreign;}
   if(mode==='personal')Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId]});
   if(mode==='missing-grant')a.sourceIds=[];
   await assert.rejects(perCall(f)(call),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);assert.equal(f.credentialCalls.length,0);
