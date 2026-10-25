@@ -10,7 +10,7 @@ export function storedCase(selected=id,{request={clientId,status:'draft',limit:2
  const normalizationContext={clientResolution:captureOutreachListClientSelection(request,resolution)},selectedClient=normalizationContext.clientResolution.clientId;
  const scope={tenantId:authority.binding.tenantId,kind:'client',resourceId:selectedClient,policyRevision:authority.policyRevision};
  Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[selectedClient],scopes:[scope]});
- authority.claims.scopes=[scope];authority.decision.scopes=[scope];authority.decision.operation=`${id}@0.2.0`;
+ // call() hands the handler only the canonical read context; the retired claims/decision carrier is not a source of authority.
  authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
  const input=contract.normalizeInput(request,normalizationContext).input,stamp=new Date(now()).toISOString();
  const page={tool:id,generatedAt:stamp,total:1,campaigns:[{id:'00000000-0000-4000-8000-000000000001',clientId:selectedClient,name:'Synthetic campaign',type:'custom',status:input.status??'draft',subject:null,sentAt:null,createdAt:stamp,clientName:'Synthetic client',recipientCount:3,createdBy:'synthetic@example.invalid'}]};

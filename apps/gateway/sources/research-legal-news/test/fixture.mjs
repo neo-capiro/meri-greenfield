@@ -42,8 +42,9 @@ export function storedCase(id=ids[0],options={}){
  const normalizationContext=options.context??newsSliceContext(operation,request),normalized=contract.normalizeInput(request,normalizationContext),{authority,state,now,wire}=scene;
  const visibleClientIds=normalizationContext.clientResolution?[normalizationContext.clientResolution.clientId]:[];
  if(visibleClientIds.length){const scope={tenantId:authority.binding.tenantId,kind:'client',resourceId:visibleClientIds[0],policyRevision:authority.policyRevision};
-  Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[visibleClientIds[0]],scopes:[scope]});authority.claims.scopes=[scope];authority.decision.scopes=[scope];}
- authority.decision.operation=`${id}@0.2.0`;authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
+  Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[visibleClientIds[0]],scopes:[scope]});}
+ // call() hands the handler only the canonical read context; the retired claims/decision carrier is not a source of authority.
+ authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
  const page=options.page??storedPage(id,normalized.input,now()),transport={...scene.transport,async fetchImpl(url,configuration){
   wire.push({url,options:configuration,body:JSON.parse(configuration.body)});const value=structuredClone(state.page??page);
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);
