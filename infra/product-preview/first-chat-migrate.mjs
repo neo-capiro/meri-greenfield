@@ -103,7 +103,9 @@ export const PLAN=Object.freeze([
  // Native routines use current schedule/consent/execution facts; Core gets no base-table access.
  ['migration','apps/runtime/native-authority/read-delegation/migrations/0003_native_routine_facts.sql','110884c135c1ce928d34496a24787bb2c415268c88a597996eca2b8141c30477','integration'],
  // Objective selections retain replay identity while their private prompt follows expired Trash.
- ['migration','apps/runtime/objective-source/migrations/0004_objective_run_start_retention.sql','a60ad6021dc567806ed7e27c68f857ac3da83b8d545f43e7f02cece78c1b5ed9','integration']
+ ['migration','apps/runtime/objective-source/migrations/0004_objective_run_start_retention.sql','a60ad6021dc567806ed7e27c68f857ac3da83b8d545f43e7f02cece78c1b5ed9','integration'],
+ // Exact-key lookup supports bounded SDK erasure without changing the existing guard.
+ ['migration',conversation('0025_retention_target_lookup.sql'),'f96c1d5345f7dbf9635a5b80426c40a353c67a317911428260368f9be4579110','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
