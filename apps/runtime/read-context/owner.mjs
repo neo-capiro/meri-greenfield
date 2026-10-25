@@ -49,7 +49,7 @@ export function createReadContextOwner(configuration){
   if(contract.binding.group==='business-development'&&!readConversation&&captureBusinessDevelopmentResource(v.operation,v.request,v.subject).clientId!==null)refuse('UNAVAILABLE');
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
- async function observe(proof,scopeSignal,signal,invocationId){
+ async function observe(proof,scopeSignal,signal,invocationId,finalRelease){
   if(!available)refuse('UNAVAILABLE');nativeSignal(scopeSignal);nativeSignal(signal);if(!scopeSignal)refuse('ACCESS_DENIED');if(scopeSignal.aborted||signal?.aborted)refuse('CANCELLED');
   const selected={...proof};delete selected.deadlineMs;const prior=pins.get(scopeSignal);if(prior&&!same(prior.selected,selected))refuse('ACCESS_DENIED');
   // Correlation stays fixed for this one bounded invocation; it is not an access grant.
@@ -63,11 +63,24 @@ export function createReadContextOwner(configuration){
     !same(current.execution.binding,binding)||proof.subject.scopes.some(scope=>!current.scopes.some(parent=>same(scope,parent))))refuse('ACCESS_DENIED');
    limit(current.execution.expiresAtMs);return current;
   }
+  /** Final result release re-observes the canonical current Core context: a client selection lost
+   * after the source value was produced withholds that value. The original expiry still bounds the call. */
+  async function observeRelease(proof,prior){
+   const started=now(),fresh=assertNativeToolAuthority(await life.run(signal=>currentCore({credential:prior.credential,signal,deadlineMs:cutoff})),{started,now});
+   const {modeObservation,clientReference}=prior.vector;
+   const context=createSourceReadContext({contract:resolveOperationContract(proof.operation),proof,native:fresh,defaultCongress:c.defaultCongress,now,priorContext:prior.context,
+    ...(modeObservation?{modeObservation}:{}),
+    ...(clientReference?{clientReferenceObservation:{reference:clientReference.reference,clientId:clientReference.clientId}}:{})});
+   if(!same(context,prior.context))refuse('ACCESS_DENIED');
+   limit(fresh.expiresAtMs);
+  }
   try{
    const before=await admission();
-   // Retain only this operation's input interpretation. Resource access still belongs
-   // to the actual Core handler; repeated local checks do not repeat Core /current.
-   if(prior){if(!same(prior.vector.execution,executionSelection(before)))refuse('ACCESS_DENIED');life.check();return {...prior,expiresAtMs:cutoff};}
+   // Retain only this operation's input interpretation between observations. Resource access still
+   // belongs to the actual Core handler; only the final result release re-observes Core /current.
+   if(prior){if(!same(prior.vector.execution,executionSelection(before)))refuse('ACCESS_DENIED');
+    if(finalRelease)await observeRelease(proof,prior);
+    life.check();return {...prior,expiresAtMs:cutoff};}
    const bearer=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,...(callKey===undefined?{}:{callKey}),signal,deadlineMs:cutoff}))),credential=bearer.credential;
    if(bearer.expiresAtMs!==undefined)limit(bearer.expiresAtMs);
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
@@ -117,7 +130,7 @@ export function createReadContextOwner(configuration){
  }
  // This stamps the local admission observation, not a renewed Core authority.
  // observe() validates admission on every call and preserves the original expiry.
- async function readCurrent(raw){try{if(!available)refuse('UNAVAILABLE');const {signal,invocationId,...fields}=own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'],['signal','invocationId']),proof=observation(fields),result=await observe(proof,signal,undefined,invocationId);const {request,deadlineMs,...echo}=proof;return JSON.stringify({...echo,context:result.context,checkedAtMs:now(),expiresAtMs:result.expiresAtMs});}catch(error){throw failure(error);}}
+ async function readCurrent(raw,{finalRelease}={}){try{if(!available)refuse('UNAVAILABLE');const {signal,invocationId,...fields}=own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'],['signal','invocationId']),proof=observation(fields),result=await observe(proof,signal,undefined,invocationId,finalRelease);const {request,deadlineMs,...echo}=proof;return JSON.stringify({...echo,context:result.context,checkedAtMs:now(),expiresAtMs:result.expiresAtMs});}catch(error){throw failure(error);}}
  async function getCredentials(raw){let life;try{
   if(!available)refuse('UNAVAILABLE');const {signal,scopeSignal,target,...fields}=own(raw,['binding','subject','operation','policyRevision','sourceIds','argumentsSha256','requestSha256','normalizationContext','origin','request','input','scopeSignal','deadlineMs'],['signal','target']);nativeSignal(signal);nativeSignal(scopeSignal);const v=data(fields),pinned=pins.get(scopeSignal);
   if(!pinned||v.origin!==origin)refuse('ACCESS_DENIED');const proof=observation(Object.fromEntries(['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs'].map(key=>[key,v[key]]))),normalized=resolveOperationContract(v.operation).normalizeInput(v.request,v.normalizationContext);

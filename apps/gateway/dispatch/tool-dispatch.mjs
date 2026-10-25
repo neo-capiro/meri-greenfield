@@ -56,7 +56,7 @@ export function createToolDispatch({catalog,current,contextFor,limits,now,newId,
    const output=parseRawJson(outputJson,Math.min(limits.maxResponseBytes,effect.maxOutputBytes),'INVALID_RESULT');
    const result=assertDispatchResult({entry,output,authority:effect,normalized,context});
    const release=await readContext(normalized.input);if(!sameContext(effect,release))deny('ACCESS_DENIED');
-   await context.observeAuthority(release);await context.retain({current:release,normalized,result});
+   await context.observeAuthority(release,{finalRelease:true});await context.retain({current:release,normalized,result});
    await life.run(()=>current());life.check();return outputJson;
   }catch(error){life.check();throw safeFailure(error);}finally{life.close();}
  }
