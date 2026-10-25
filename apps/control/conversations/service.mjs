@@ -20,6 +20,8 @@ import {own,bounded,same,hash,fail,uuid,validateShape,terminal} from './boundary
 export const loadWithLifecycle=Symbol('conversation.loadWithLifecycle');
 /** Events released per observation page: the history route's own page maximum. */
 const OBSERVE_PAGE_EVENTS=100;
+/** Cap empty-read waits to keep new events and Stop responsive. Explicit slower polls remain supported. */
+const OBSERVE_IDLE_POLL_MAX_MS=250;
 /** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
 const WINDOW_END_SLACK_MS=50;
 export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,readCapabilityRole,runBudgets,modelCatalog}){
@@ -122,13 +124,13 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  /** Event-stream window until untilMs. Polls read only the store. A page of new events is passed to deliver only after a complete
   * fresh recheck that started after the page was read, as history releases; an idle window also rechecks once idleRecheckMs has
   * passed since the last one, so revocation or suppression ends it. Latency bound: no event is released after a refusal; an idle
-  * window notices a refusal within idleRecheckMs plus one poll and one recheck. Returns once the run is terminal and fully
+  * wait is bounded by the next idle recheck, in addition to the subscription deadline. Returns once the run is terminal and fully
   * delivered, or at untilMs. opened(run), when given, is called once with the first authorized page's run before anything is
   * delivered, so a caller can validate its selector and cursor without a separate history read. */
  async function observe({credential,after=0,untilMs,pollMs,idleRecheckMs,signal,deliver,opened}){
   if(typeof deliver!=='function'||opened!==undefined&&typeof opened!=='function'||![after,untilMs,pollMs,idleRecheckMs].every(Number.isSafeInteger)||after<0||pollMs<1||idleRecheckMs<1)fail('SUBSCRIPTION_CONFIGURATION');
   const begun=now();
-  return operation(credential,signal,async(c,life,fresh)=>{let cursor=after,checkedAt=now(),longest=checkedAt-begun,first=true;
+  return operation(credential,signal,async(c,life,fresh)=>{let cursor=after,checkedAt=now(),longest=checkedAt-begun,first=true,pollDelay=pollMs;
    // A recheck still running at untilMs ends the window with an error instead of a clean close. One is started only when the
    // longest recheck seen in this window (the opening one included) still fits; otherwise the window closes now, releasing nothing
    // that was not rechecked after its read, and the reconnect resumes from the same cursor.
@@ -137,12 +139,14 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
     if(first){first=false;opened?.(page.run);}
     if(page.events.length){if(!await recheck())return;deliver(page.events);cursor=page.events.at(-1).sequence;}
     if(terminal(page.run.state)&&(!page.events.length||cursor===page.lastSequence))return;
-    if(page.events.length)continue;
+    if(page.events.length){pollDelay=pollMs;continue;}
     if(now()-checkedAt>=idleRecheckMs&&!await recheck())return;
     // Never sleep into the window deadline: the lifetime timer enforces the hard cap and, firing first, would turn a clean idle
     // end into an error. The idle window ends WINDOW_END_SLACK_MS early so a late poll timer cannot reach the cap.
     const left=untilMs-now()-WINDOW_END_SLACK_MS;if(left<=0)return;
-    await life.run(signal=>delay(Math.min(pollMs,left),undefined,{signal}));
+    // Keep the initial/active poll prompt, then back off empty reads. Access rechecks and cancellation retain their own deadlines.
+    await life.run(signal=>delay(Math.min(pollDelay,left,Math.max(1,checkedAt+idleRecheckMs-now())),undefined,{signal}));
+    pollDelay=Math.min(pollDelay*2,Math.max(pollMs,OBSERVE_IDLE_POLL_MAX_MS));
    }},{untilMs});}
  async function cancel({credential,signal}){return operation(credential,signal,async(c,life,fresh)=>{const old=await life.run(()=>store.read(c.binding,{after:0,limit:1},life.check));if(!same(old.run.scopes,c.scopes))fail('SCOPE_REFUSED');if(!terminal(old.run.state)){await fresh();const e=event(c.binding,c.scopes,'run.status',{state:'cancelled',reasonCode:'USER_CANCELLED'});await life.run(()=>store.append(c.binding,e,life.check,c.scopes));}await fresh();await life.run(signal=>dispatcher.cancel({binding:c.binding,signal}));return {state:terminal(old.run.state)?old.run.state:'cancelled'};},{cleanup:true});}
  async function loadForExecution({credential,binding,signal},readLifecycle){validateShape('RunBinding',binding);return operation(credential,signal,async(c,life,fresh)=>{
