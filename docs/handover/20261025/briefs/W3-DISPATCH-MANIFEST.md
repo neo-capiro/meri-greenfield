@@ -50,6 +50,10 @@ FROM: Root | TO: mechanical Hermes launcher / independent reviewer | TYPE: dispa
 
 # Wave 3 continuation dispatch manifest
 
+**Separate Wave2 diagnostic, 25 October 2026:** the [worker startup brief](W2-HERMES-WORKER-STARTUP-DIAGNOSIS.md) allocates exactly one fresh read-only Hermes look using Runtime’s completed handoff. Worker66 recovered unchanged and all three Meri roles were healthy/complete at 16:18:49; cause remains unproven. This is nonblocking and does not reopen release qualification or use a Wave3 author checkout.
+
+**Data author follow-up, 25 October 2026, 16:18 UTC:** resume the original Hermes Data author with [the standalone MT-09 gateway brief](W3-CONTINUE-M3-DATA-GATEWAY.md). New isolated stacked base is PR254 `4c2171fcca374cfca67b99e755f66793992a1624` (independent verdict PENDING); preserve that PR for review. The sole exception is the existing canonical dispatcher plus one adjacent focused test, after inspecting/reusing accepted frozen Wave2 clock/current-access proof. No duplicate session or broader gateway migration. Earlier dispatch facts below remain historical.
+
 **Prepared and remote PR heads refreshed 2026-10-25 15:41:14 UTC.** Three author lanes are READY for fresh isolated-session dispatch under Root's existing allocation. A fourth citation author is deliberately held. This manifest does not claim an author process/worktree/PR has been created. Root's visible independent review chat **Wave3—HermesIndependentReview** has been created at xhigh and received its complete initial brief. The existing **ScheduleWorker launcher** performs mechanical Hermes launches only. Actual reviewer/launcher chat IDs and reviewer local directory are kept in the private local `wave3-dispatch-private.json` companion, never this public repository.
 
 ## Dispatch list and one-writer boundaries
