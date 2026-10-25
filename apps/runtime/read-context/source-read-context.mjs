@@ -139,7 +139,10 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   return {};
  }
  if(group==='tracked-bills'){
-  const selected=clientSubject(proof,native),clientReference=proof.request.clientId.trim().slice(0,80);
+  const clientReference=proof.request.clientId.trim().slice(0,80),s=proof.subject;
+  const personal=s.kind==='personal'&&s.entityType==='user'&&s.entityIds.length===1&&s.entityIds[0]===proof.binding.actorId;
+  const selected=personal?clientReference.toLowerCase():clientSubject(proof,native);
+  if(personal)assertNativeVisibleClients(native,[selected]);
   if(UUID.test(clientReference.trim().toLowerCase())){if(clientReference.trim().toLowerCase()!==selected)refuse('ACCESS_DENIED');}
   else if(!clientReferenceObservation||clientReferenceObservation.reference!==clientReference||clientReferenceObservation.clientId!==selected)refuse('ACCESS_DENIED');
   const context={binding:proof.binding,subject:proof.subject,clientReference};

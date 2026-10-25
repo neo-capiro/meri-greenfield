@@ -40,7 +40,10 @@ export function readContext(call,now) {
   try {normalized=contract.normalizeInput(request,options);}catch {deny('INVALID_ARGUMENTS');}
   if(!same(normalized.input,input))deny('INVALID_ARGUMENTS');
   const clientId=input.clientId;
-  if(clientId!==null ? subject.kind!=='client'||subject.entityIds[0]!==clientId :
+  const generalClient=operation.id==='meeting.read_client_meetings'&&subject.kind==='personal'&&
+    subject.entityType==='user'&&subject.entityIds[0]===authority.binding.actorId&&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(clientId??'');
+  if(clientId!==null ? !generalClient&&(subject.kind!=='client'||subject.entityIds[0]!==clientId) :
       subject.kind!=='personal'||subject.entityIds[0]!==authority.binding.actorId)deny('ACCESS_DENIED');
   return {operation,contract,input,request,authority,options,metadata:normalized.metadata,invocationId:fields.invocationId,
     argumentsSha256:normalized.argumentsSha256,signal,deadlineMs,active};

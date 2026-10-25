@@ -14,17 +14,17 @@ import {storedCase as hearingCase,id as hearingId} from '../../../../gateway/sou
 const ids=[...stateIds,trackedId,hearingId],families={'state-status-votes':stateIds,'tracked-bills':[trackedId],'public-domain-hearings':[hearingId]},absent=['read_chat_attachments'];
 function sceneFor(id,options={}){return (stateIds.includes(id)?stateCase:id===trackedId?trackedCase:hearingCase)(id,options);}
 
-test('completion SDK84/48: the first four completed reads retain their tracked client requirement', () => {
+test('completion SDK84/48: completed reads permit explicit General tracked client selectors', () => {
     assert.equal(familyReads().length, 84);
     assert.equal(READ_FAMILY_IDS.length, 48);
     for (const [family, operations] of Object.entries(families)) {
         const rows = familyReads().filter(row => row.family === family);
         assert.deepEqual(rows.map(row => row.operation.id), operations);
         assert.equal(READ_FAMILIES[family].operationIds, undefined);
-        assert.equal(READ_FAMILIES[family].clientScope, family === 'tracked-bills' ? 'required' : 'optional');
+        assert.equal(READ_FAMILIES[family].clientScope, 'optional');
         const refs = rows.map(row => row.operation), select = scopes => resolveAvailableReads({ policy: { generalReads: true, readFamilies: [family] }, installation: { operations: refs }, discovery: { operations: refs }, scopes });
         assert.deepEqual(select([{ kind: 'client' }]).available.map(row => row.operation), refs);
-        assert.deepEqual(select([{ kind: 'private-user' }]).available.map(row => row.operation), family === 'tracked-bills' ? [] : refs);
+        assert.deepEqual(select([{ kind: 'private-user' }]).available.map(row => row.operation), refs);
     }
     const operations = absent.map(id => ({ id, version: '0.2.0' }));
     assert.equal(absent.length, 1);

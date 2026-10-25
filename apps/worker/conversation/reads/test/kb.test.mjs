@@ -12,18 +12,18 @@ import {storedCase,searchId,id as graphId} from '../../../../gateway/sources/cli
 import {NATIVE_READ_OBSERVATION_HEADER as HEADER} from '../../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 const family='client-knowledge-search',operations=[searchId,graphId].map(id=>({id,version:'0.2.0'}));
 
-test('KB SDK: complete family keeps optional graph and requires a current task client scope only for semantic search', () => {
+test('KB SDK: graph and semantic search are discoverable in General with explicit source selectors', () => {
     assert.equal(familyReads().length, 84);
     assert.equal(READ_FAMILY_IDS.length, 48);
     assert.equal(READ_FAMILIES[family].clientScope, 'optional');
     assert.equal(READ_FAMILIES[family].operationIds, undefined);
-    assert.deepEqual(READ_FAMILIES[family].requiredClientOperations, [searchId]);
+    assert.equal(READ_FAMILIES[family].requiredClientOperations, undefined);
     assert.deepEqual(familyReads().filter(row => row.family === family).map(row => row.operation), operations);
     const overclaimed = [...operations, { id: 'get_business_development_evidence', version: '0.2.0' }];
     const select = scopes => resolveAvailableReads({ policy: { generalReads: true, readFamilies: [family] }, installation: { operations: overclaimed }, discovery: { operations: overclaimed }, scopes });
     assert.deepEqual(select([{ kind: 'client' }]).available.map(row => row.operation), operations);
     for (const scopes of [[], [{ kind: 'tenant' }], [{ kind: 'private-user' }]])
-        assert.deepEqual(select(scopes).available.map(row => row.operation), [operations[1]]);
+        assert.deepEqual(select(scopes).available.map(row => row.operation), operations);
 });
 test('KB SDK: semantic literal schema refuses model context, authority and carrier fields', () => {
     const f = storedCase(searchId), schema = advertisedArguments(f.contract.descriptor.inputSchema);
