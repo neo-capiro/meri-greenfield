@@ -1,6 +1,7 @@
-/** The model-facing `arguments` contract of the intent tools: the canonical owner schema, the memory owner's
- * declared narrowing, and the rows that still advertise none (SYNTHETIC source evidence; no model, SDK query,
- * provider, database or network call). */
+/** The model-facing `arguments` contract of the intent tools: the canonical owner schema, the declared
+ * narrowings (memory and the document rows), and the rows that still advertise none (SYNTHETIC source evidence;
+ * no model, SDK query, provider, database or network call). The registered document tool's contract over the real
+ * MCP transport is asserted in `native-document.test.mjs`. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {z} from 'zod';
 import {INTENT_ROWS,intentDescriptor} from '../catalog.mjs';
@@ -13,13 +14,14 @@ const parses=(schema,value)=>schema.safeParse(value).success;
 
 test('every intent row advertises its canonical schema, a declared narrowing, or none at all',()=>{
  assert.deepEqual(Object.fromEntries(INTENT_ROWS.map(r=>[r.operation.id,intentRowArguments(r).mode])),{
-  create_word:'record',create_excel:'canonical',create_powerpoint:'canonical',run_analysis:'record',
+  create_word:'declared',create_excel:'declared',create_powerpoint:'declared',run_analysis:'record',
   schedule_task:'record',update_scheduled_task:'record',cancel_scheduled_task:'canonical',
   create_task:'canonical',update_task:'canonical',save_memory:'declared',save_chat_attachments:'canonical'});
  // A tool is only as precise as its least precise row: one record row keeps the tool's open record.
- assert.equal(intentToolArguments([row('create_excel')]).mode,'canonical');
+ assert.equal(intentToolArguments([row('create_excel')]).mode,'declared');
  assert.equal(intentToolArguments([row('save_memory')]).mode,'declared');
  assert.equal(intentToolArguments([row('run_analysis')]).mode,'record');
+ assert.equal(intentToolArguments([row('create_word'),row('create_excel'),row('create_powerpoint')]).mode,'declared');
  assert.equal(intentToolArguments([row('update_scheduled_task'),row('cancel_scheduled_task')]).mode,'record');
  for(const rows of [[],undefined])assert.throws(()=>intentToolArguments(rows));
 });
@@ -30,9 +32,18 @@ test('the open record is what a row advertises only while its canonical schema c
  assert.deepEqual(Object.keys(schema.properties),['title','clientId','dueDate']);
  assert.equal(parses(converted,{title:'Task'}),true);
  assert.equal(parses(converted,{title:'Task',unexpected:true}),false);
- // An unproved row keeps the record: it advertises no field contract, which is exactly the reported gap.
- assert.equal(advertised('create_word').properties,undefined);
- assert.equal(parses(z.fromJSONSchema(advertised('create_word')),{anything:'at all'}),true);
+ // The document rows are declared, not left opaque: one branch per admitted format, each carrying the canonical
+ // fields and not demanding the trusted operation selection from the model.
+ const word=advertised('create_word'),branches=(word.anyOf??[word]).flatMap(branch=>branch.anyOf??[branch]);
+ assert.deepEqual(branches.map(branch=>branch.properties.format.const),['docx','txt']);
+ for(const branch of branches){
+  assert.deepEqual([...branch.required].sort(),['content','format','title']);
+  assert.equal(branch.properties.operation.const,'create_word');
+ }
+ // A row with no proved canonical contract keeps the record, and it advertises no field contract.
+ assert.equal(advertised('run_analysis').properties,undefined);
+ assert.equal(parses(z.fromJSONSchema(advertised('run_analysis')),{anything:'at all'}),true);
+ assert.equal(advertised('schedule_task').properties,undefined);
 });
 
 test('the memory tool advertises exactly the fields its owner admits',()=>{
