@@ -11,7 +11,9 @@ const exactDecide:IntentsDecideResponse|IntentsErrorResponse=decided;void exactD
 if(!('error'in decided)&&decided.status==='executed'){
  if('receipt'in decided.outcome){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
  else if('version'in decided.outcome){const versionId:string=decided.outcome.version.versionId;void versionId;}
- else {const kind:'native-task'=decided.outcome.execution.kind;const taskId:string=decided.outcome.result.id;void kind;void taskId;}
+ else {const kind:'native-task'|'native-artifact-file'=decided.outcome.execution.kind;void kind;
+  if('id'in decided.outcome.result){const taskId:string=decided.outcome.result.id;void taskId;}
+  else {const files=decided.outcome.result.files;const commandSha256:string=decided.outcome.result.commandSha256;void files;void commandSha256;}}
 }
 if(retained.command.action==='task.update'){const taskId:string=retained.command.arguments.taskId;void taskId;}
 if(retained.command.action==='document.draft'){
@@ -37,3 +39,7 @@ const wrong:IntentsErrorResponse={error:{code:'NOT_AN_INTENT_ERROR'}};void wrong
 if(!('error'in listed))for(const entry of listed.intents){if(entry.state==='prepared'&&entry.kind==='memory_review'&&!('withheld'in entry)){const pending:'pending'=entry.review.result.status;const candidate:string=entry.review.result.candidateId;void pending;void candidate;
  // @ts-expect-error governed memory review is not a task approval
  const decision=entry.decision;void decision;}}
+
+if(!('error'in decided)&&decided.status==='executed'&&!('receipt'in decided.outcome)&&!('version'in decided.outcome)&&decided.outcome.execution.kind==='native-artifact-file'){
+ const kind:'native-artifact-file'=decided.outcome.execution.kind;void kind;
+}

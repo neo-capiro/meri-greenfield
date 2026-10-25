@@ -23,10 +23,11 @@ import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
 import {nativeTaskOutcome} from './task-outcome.mjs';
+import {nativeArtifactFileOutcome} from './filing-outcome.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,DIGEST=/^[a-f0-9]{64}$/u;
 /** Commands an approved intent may execute: those with a proposal (approval-metadata) owner today. */
-export const APPROVABLE_ACTIONS=Object.freeze(['task.create','task.update','document.draft']);
+export const APPROVABLE_ACTIONS=Object.freeze(['task.create','task.update','document.draft','artifact.file']);
 /** Domain failures and their HTTP statuses (transport/membership codes belong to `product-access/http.mjs`). */
 export const INTENT_APPROVAL_ERRORS=Object.freeze({
  INTENT_APPROVALS_DISABLED:503,INTENT_NOT_FOUND:404,INTENT_NOT_PREPARED:409,INTENT_NOT_APPROVABLE:409,INTENT_MISMATCH:409,INTENT_EXPIRED:409,
@@ -63,13 +64,15 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
  const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent','revoke']);
  const documents=c.documents===undefined?undefined:own(c.documents,['execute','read']);
  const tasks=c.tasks===undefined?undefined:own(c.tasks,['execute','read']);
+ const filing=c.filing===undefined?undefined:own(c.filing,['execute','read']);
+ if(filing&&Object.values(filing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(tasks&&Object.values(tasks).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(documents&&Object.values(documents).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(decisions&&Object.values(decisions).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -127,10 +130,11 @@ export function createIntentApprovalOwner(configuration){
   }catch(error){throw owned(error,'INTENT_EXECUTION_UNKNOWN','UNKNOWN');}finally{life.close();}
  }
  async function execute(life,principal,proposal,decision,deliveryId){
-  if(['task.create','task.update'].includes(proposal.command.action)){
-   if(!tasks)fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
-   const result=data(await life.run(signal=>tasks.execute.call(c.tasks,{proposal,decision,principal,deliveryId,signal,deadlineMs:life.deadline()})));
-   if(result?.status==='observed'){own(result,['status','outcome']);return data({status:'executed',deliveryId,proposalId:proposal.proposalId,decision,outcome:nativeTaskOutcome(result.outcome,proposal,decision)});}
+  if(['task.create','task.update','artifact.file'].includes(proposal.command.action)){
+   const isFiling=proposal.command.action==='artifact.file',port=isFiling?filing:tasks,receiver=isFiling?c.filing:c.tasks;
+   if(!port)fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+   const result=data(await life.run(signal=>port.execute.call(receiver,{proposal,decision,principal,deliveryId,signal,deadlineMs:life.deadline()})));
+   if(result?.status==='observed'){own(result,['status','outcome']);return data({status:'executed',deliveryId,proposalId:proposal.proposalId,decision,outcome:(isFiling?nativeArtifactFileOutcome:nativeTaskOutcome)(result.outcome,proposal,decision)});}
    own(result,['status']);if(result.status!=='indeterminate')fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');
    return data({status:'indeterminate',deliveryId,proposalId:proposal.proposalId,decision});
   }
@@ -173,11 +177,11 @@ export function createIntentApprovalOwner(configuration){
     if(d===null)decision=null;else{validateShape('ApprovalDecision',d);if(d.proposalId===proposal.proposalId&&d.commandSha256===proposal.commandSha256)decision=d;}}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;}
   }
-  const nativeTask=['task.create','task.update'].includes(proposal.command.action);
-  const reader=proposal.command.action==='document.draft'?documents:nativeTask?tasks:undefined,receiver=proposal.command.action==='document.draft'?c.documents:c.tasks;
+  const nativeTask=['task.create','task.update'].includes(proposal.command.action),nativeFiling=proposal.command.action==='artifact.file';
+  const reader=proposal.command.action==='document.draft'?documents:nativeTask?tasks:nativeFiling?filing:undefined,receiver=proposal.command.action==='document.draft'?c.documents:nativeFiling?c.filing:c.tasks;
   if(reader){
    try{const row=data(await life.run(signal=>reader.read.call(receiver,{proposal,principal,deliveryId:entry.deliveryId,signal,deadlineMs:life.deadline()})));
-    execution=row===null?null:row.state==='OUTCOME'?{state:'completed',outcome:proposal.command.action==='document.draft'?documentOutcome(row.outcome,proposal):nativeTask?nativeTaskOutcome(row.outcome,proposal,decision&&typeof decision==='object'?decision:undefined):row.outcome}:row.state==='UNKNOWN'?{state:'unknown'}:row.state==='CLAIMED'?{state:'executing'}:'unavailable';}
+    execution=row===null?null:row.state==='OUTCOME'?{state:'completed',outcome:proposal.command.action==='document.draft'?documentOutcome(row.outcome,proposal):(nativeFiling?nativeArtifactFileOutcome:nativeTaskOutcome)(row.outcome,proposal,decision&&typeof decision==='object'?decision:undefined)}:row.state==='UNKNOWN'?{state:'unknown'}:row.state==='CLAIMED'?{state:'executing'}:'unavailable';}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;}
   }
   const expired=!(instant(proposal.expiresAt)>c.now());

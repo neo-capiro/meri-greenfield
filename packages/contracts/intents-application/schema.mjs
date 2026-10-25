@@ -7,6 +7,7 @@ const task=name=>({$ref:'urn:meri:commands:task-create:0.2.0#/$defs/'+name});
 const update=name=>({$ref:'urn:meri:commands:task-update:0.2.0#/$defs/'+name});
 const document=name=>({$ref:'urn:meri:commands:document-draft:0.2.0#/$defs/'+name});
 const memory=name=>({$ref:'urn:meri:commands:memory-propose:0.2.0#/$defs/'+name});
+const filing=name=>({$ref:'urn:meri:commands:artifact-file:0.2.0#/$defs/'+name});
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
@@ -21,10 +22,13 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsDecision:pub('ApprovalDecision'),
  IntentsTaskCreateArguments:task('TaskCreateArguments'),
  IntentsTaskUpdateArguments:update('TaskUpdateArguments'),
+ IntentsArtifactFileArguments:filing('ArtifactFileArguments'),
  IntentsNativeTaskOutcome:object({execution:object({kind:{const:'native-task'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
   idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),completedAt:{type:'string',pattern:MILLIS},approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),
   result:{oneOf:[task('TaskCreateResult'),update('TaskUpdateResult')]}}),
- IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),ref('IntentsNativeTaskOutcome'),artifact('ArtifactCreatedResult')]},
+ IntentsNativeArtifactFileOutcome:object({execution:object({kind:{const:'native-artifact-file'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
+  idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),completedAt:{type:'string',pattern:MILLIS},approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),result:filing('ArtifactFileResult')}),
+ IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),ref('IntentsNativeTaskOutcome'),ref('IntentsNativeArtifactFileOutcome'),artifact('ArtifactCreatedResult')]},
  IntentsExecution:{oneOf:[object({state:{const:'executing'}}),object({state:{const:'unknown'}}),object({state:{const:'completed'},outcome:ref('IntentsExecutionOutcome')})]},
  IntentsPendingItem:item({state:{const:'pending'}}),
  IntentsUnknownItem:item({state:{const:'unknown'}}),

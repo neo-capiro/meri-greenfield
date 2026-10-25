@@ -10,7 +10,9 @@ export type IntentsApplicationEnvelope =
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
   | Canonical_TaskUpdateArguments_48509A7A
+  | Canonical_ArtifactFileArguments_6F2B3978
   | IntentsNativeTaskOutcome
+  | IntentsNativeArtifactFileOutcome
   | IntentsExecutionOutcome
   | IntentsExecution
   | IntentsPendingItem
@@ -40,6 +42,7 @@ export type IntentsExecutionOutcome =
       result: Canonical_TaskCreateResult_0501C509;
     }
   | IntentsNativeTaskOutcome
+  | IntentsNativeArtifactFileOutcome
   | Canonical_ArtifactCreatedResult_183A755E;
 export type Canonical_ArtifactVersion_7F9C56Fa =
   Canonical_ArtifactVersionD54B8Ac9 | Canonical_NativeArtifactVersionFf97D150;
@@ -366,6 +369,10 @@ export interface Canonical_TaskCreateArguments_1202C301 {
   clientId: string | null;
   dueDate: string | null;
 }
+export interface Canonical_ArtifactFileArguments_6F2B3978 {
+  clientId: string;
+  conversationId: string;
+}
 export interface IntentsNativeTaskOutcome {
   execution: {
     kind: 'native-task';
@@ -393,6 +400,106 @@ export interface Canonical_TaskUpdateResult_029549A8 {
   dueDate: string | null;
   clientId: string | null;
   updatedAt: string;
+}
+export interface IntentsNativeArtifactFileOutcome {
+  execution: {
+    kind: 'native-artifact-file';
+    proposalId: string;
+    commandSha256: string;
+    idempotencyKey: string;
+    binding: Canonical_RunBinding_84F2304C;
+    completedAt: string;
+    approvalDecisionSha256: string;
+  };
+  result: Canonical_ArtifactFileResult_88Dad64B;
+}
+export interface Canonical_ArtifactFileResult_88Dad64B {
+  commandSha256: string;
+  /**
+   * @minItems 1
+   * @maxItems 10
+   */
+  files:
+    | [Canonical_ArtifactFileObservation_2028832D]
+    | [Canonical_ArtifactFileObservation_2028832D, Canonical_ArtifactFileObservation_2028832D]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ]
+    | [
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D,
+        Canonical_ArtifactFileObservation_2028832D
+      ];
+}
+export interface Canonical_ArtifactFileObservation_2028832D {
+  object: Canonical_ObjectReferenceA099Bd1C;
+  status: 'saved' | 'pending' | 'failed';
+  fileName: string | null;
+  documentId?: string;
+  location?: string;
+  reason?: string;
+  indexingStatus?: 'pending' | 'indexed' | 'not_indexed';
+  reused?: boolean;
 }
 export interface Canonical_CommandReceiptAc49Ee1E {
   receiptId: string;
@@ -740,7 +847,8 @@ export declare const intentsMetadata:{
   "approvableActions": [
     "task.create",
     "task.update",
-    "document.draft"
+    "document.draft",
+    "artifact.file"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",

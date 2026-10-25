@@ -4,7 +4,7 @@ import {createApprovalMetadataReadback} from '../readback.mjs';
 import {createPostgresApprovalMetadataReader} from '../postgres-store.mjs';
 import {makePayload,canonicalSha256 as hash} from '../binding.mjs';
 import {allocatedApplicationFixture,binding,scopes,id} from '../../../conversations/test/application-fixture.mjs';
-import {normalizeTaskCreateInput,normalizeTaskUpdateInput} from '../../../../../packages/contracts/commands-0.2/validate.mjs';
+import {normalizeTaskCreateInput,normalizeTaskUpdateInput,normalizeArtifactFileInput} from '../../../../../packages/contracts/commands-0.2/validate.mjs';
 
 async function fixture(t,{general=false}={}){
  const admittedScopes=general?[{...scopes[0],kind:'private-user',resourceId:binding.actorId}]:scopes;
@@ -48,6 +48,17 @@ for(const action of ['task.create','task.update'])for(const general of [false,tr
  f.state.payload=makePayload({...f.state.payload.record,action,operation:{id:action==='task.create'?'create_task':'update_task',version:'0.2.0'},request:raw,inputSha256:hash({arguments:args,attachments:[]})},context);
  const result=await f.reader.read(f.input);
  assert.deepEqual(result.metadata.record.request,raw);assert.equal(result.metadata.commandSha256,f.state.payload.commandSha256);assert.deepEqual(result.run.scopes,f.scopes);
+});
+for(const terminal of ['completed','failed'])test(`native filing metadata preserves exact object custody from an actual ${terminal} run`,async t=>{
+ const f=await fixture(t),context={binding,destination:{clientId:id(5),conversationId:binding.conversationId}};
+ const raw={...context.destination,objects:[{objectId:id(820),versionId:'opaque-storage-version',sha256:'a'.repeat(64),bytes:2,scopes:f.scopes}]};
+ f.state.payload=makePayload({...f.state.payload.record,action:'artifact.file',operation:{id:'save_chat_attachments',version:'0.2.0'},request:raw,inputSha256:hash(normalizeArtifactFileInput(raw,context))},context);
+ for(const state of ['starting','running',terminal])await f.stateTo(state);
+ const result=await f.reader.read(f.input);
+ assert.equal(result.run.state,terminal);assert.deepEqual(result.metadata.record.request,raw);assert.deepEqual(result.run.scopes,f.scopes);
+ let initialReads=0;
+ const absent=createApprovalMetadataReadback({metadata:f.metadata,store:{async readOptional(){return null;},initialBindings:{async readRetained(){initialReads++;throw Error('not a supported filing source');}}},retention:{async assertServable(){}}});
+ await assert.rejects(absent.read(f.input));assert.equal(initialReads,0);
 });
 for(const failure of ['absent','corrupt','foreign-binding','scope','cancelled','suppressed-before','suppressed-after','select','COMMIT','ROLLBACK','release'])test(`metadata readback refuses ${failure} without an authorization or partial result`,async t=>{
  const f=await fixture(t);

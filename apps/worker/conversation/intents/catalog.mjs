@@ -31,7 +31,7 @@ export const INTENT_ROWS=Object.freeze([
  row('create_task','propose_task','command'),
  row('update_task','propose_task_update','command'),
  row('save_memory','propose_memory','memory'),
- row('save_chat_attachments','propose_attachment_filing','command','OWNER_MISSING: Core native approval/execution and exact-version attachment registration custody are required before client filing can be offered.'),
+ row('save_chat_attachments','propose_attachment_filing','command'),
 ]);
 /** Selected capabilities the ledger also routes to `meri_intents` but which are reads, so never a prepare-only intent. */
 export const NOT_INTENTS=Object.freeze({list_scheduled_tasks:'READ: listing schedules has no effect to approve; it belongs on a read route (proposal P-INT-5).'});

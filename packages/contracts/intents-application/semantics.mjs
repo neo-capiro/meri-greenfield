@@ -32,6 +32,12 @@ async function proposal(value,conversationId){
   if(command.arguments.title.trim()!==command.arguments.title||command.arguments.title.length>200||
    command.arguments.baseVersionId!==null&&command.arguments.baseVersionId.toLowerCase()!==command.arguments.baseVersionId)conflict();
  }
+ if(command.action==='artifact.file'){
+  const scopes=command.scopes,objects=command.attachments,args=command.arguments;
+  if(!validators.IntentsArtifactFileArguments(args)||args.conversationId!==command.binding.conversationId||
+   scopes.length!==1||scopes[0].kind!=='client'||scopes[0].resourceId!==args.clientId||args.clientId.toLowerCase()!==args.clientId||
+   objects.length<1||objects.length>10||new Set(objects.map(o=>o.objectId.toLowerCase())).size!==objects.length||objects.some(o=>!same(o.scopes,scopes)))conflict();
+ }
 }
 function decision(value,retained){
  parsed(value.decidedAt);parsed(value.expiresAt);
@@ -54,12 +60,24 @@ function documentOutcome(value,command) {
 async function outcome(value,retained,decisionValue){
  const command=retained.command,receipt=value.receipt,result=value.result;
  if(command.action==='document.draft')return documentOutcome(value,command);
- if(value.execution?.kind==='native-task'){
+ if(value.execution?.kind==='native-task'||value.execution?.kind==='native-artifact-file'){
   const e=value.execution;
   if(e.proposalId!==retained.proposalId||e.commandSha256!==retained.commandSha256||e.idempotencyKey!==command.idempotencyKey||!same(e.binding,command.binding)||
    decisionValue&&e.approvalDecisionSha256!==await sha(decisionValue))conflict();
   const completed=exact(e.completedAt);
   if(completed<parsed(retained.createdAt)||decisionValue&&completed<parsed(decisionValue.decidedAt))conflict();
+  if(e.kind==='native-artifact-file'){
+   if(command.action!=='artifact.file'||result.commandSha256!==retained.commandSha256||result.files.length!==command.attachments.length)conflict();
+   const seen=new Set(),persisted=['documentId','location','indexingStatus','reused'];
+   for(const file of result.files){
+    const key=canonicalize(file.object),count=persisted.filter(key=>Object.hasOwn(file,key)).length;
+    if(seen.has(key)||!command.attachments.some(o=>same(o,file.object))||count!==0&&count!==persisted.length)conflict();seen.add(key);
+    if(file.fileName===null&&(file.status!=='failed'||count!==0)||file.status!=='failed'&&count!==persisted.length)conflict();
+    if(file.status==='saved'){if(file.indexingStatus==='not_indexed')conflict();}
+    else if(!Object.hasOwn(file,'reason')||count&&file.indexingStatus!=='not_indexed')conflict();
+   }
+   return;
+  }
   if(command.action==='task.create'){
    exact(result.createdAt);
    if(result.status!=='todo'||['title','clientId','dueDate'].some(key=>result[key]!==command.arguments[key]))conflict();

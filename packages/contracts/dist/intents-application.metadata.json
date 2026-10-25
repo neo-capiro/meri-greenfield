@@ -81,7 +81,8 @@
   "approvableActions": [
     "task.create",
     "task.update",
-    "document.draft"
+    "document.draft",
+    "artifact.file"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
@@ -115,8 +116,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "c3ec892959f525ad49fed7f0154772501492dd39f56c4ca83fffb79717f81d50",
-      "bytes": 19442
+      "sha256": "ed3fa750ac602f0a9da3a04404ec920c1fe932f4e2a2413add6e1cb1ba4c98f7",
+      "bytes": 20014
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -147,6 +148,11 @@
       "path": "artifacts-0.2/artifact.schema.json",
       "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276",
       "bytes": 48251
+    },
+    {
+      "path": "commands-0.2/artifact-file.schema.json",
+      "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537",
+      "bytes": 3494
     },
     {
       "path": "commands-0.2/document-draft-validation.mjs",
@@ -185,8 +191,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "5b07719654d6faf788bccf05a0af8ca22045a0f5948ce6fac2c47e5c2dbda88b",
-      "bytes": 10213
+      "sha256": "4fc0ac341fce67b72a4a56cea5bdb66444be1b2c60228d7dd9b4bff8428645cc",
+      "bytes": 10254
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -210,13 +216,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "e73d37473360c6af66c1ad60e338678ff0081cb13ef48840102bac456fd79714",
-      "bytes": 5799
+      "sha256": "adb47d3caa40bd91f7ca5e22c9f205dfe3f82052102ca5d227b49fa8c1fe7630",
+      "bytes": 6395
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "5bb28ea859e9d25c9845b051948592e697061f490dd385d3efc0f3c832470332",
-      "bytes": 9909
+      "sha256": "87ff534088a731a84977ac99236f0ff92ebab2b9837250ac7b6fe0830cffd731",
+      "bytes": 11360
     },
     {
       "path": "meri.schema.json",
@@ -224,7 +230,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "eae6b0b957d6ec13e6802bf5391bfc4877b89c506bd1e6eb9e10ddd7cb03cb3b",
+  "schemaSha256": "86ef381f2c332d469e7bbee80f6a3ffbc9e2bfe8cdd92c316e86e1583e988d37",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",

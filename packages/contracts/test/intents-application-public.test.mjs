@@ -9,7 +9,7 @@ import {createNativeIntentApprovals} from '../../../apps/control/intents/native-
 import {ProductError} from '../../../apps/control/product-access/errors.mjs';
 import {nativeTaskPortFixture} from '../../../apps/control/intents/test/native-task-port-fixture.mjs';
 import {commandComposition,mount,delivery,id,NOW,canonicalSha256} from '../../../apps/control/intents/test/fixture.mjs';
-import {fileURLToPath} from 'node:url';
+import {nativeFilingFixture} from '../../../apps/control/intents/test/native-filing-fixture.mjs';
 import * as protocol from '../../../apps/control/intents/application-protocol.mjs';
 const CREATE={id:'create_task',version:'0.2.0'};
 /** Synthetic Core decision owner: one immutable decision per proposal; repeats answer the stored decision. */
@@ -266,35 +266,24 @@ test('generated bundle is independent of the checkout layout',async()=>{
  assert(labels.length>=5&&labels.every(label=>/^(?:node_modules\/|intents-generated:\.\/generated-|(?:intents-application|document-application)\/|artifacts-0\.2\/artifact-formats\.mjs$)/u.test(label)),labels.join(', '));
  assert(metadata.browserInputs.every(entry=>!layout.test(entry)));
 });
-test('metadata, paths and vocabularies are the handlers\' own, and approval authority is not widened',async()=>{
+test('metadata, paths and vocabularies describe the canonical mounted approval actions',async()=>{
  assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
- assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','task.update','document.draft']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
+ assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','task.update','document.draft','artifact.file']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
  assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,2,'no approve/execute route exists in this contract');
  assert(Object.isFrozen(intentsMetadata)&&Object.isFrozen(intentsMetadata.errorStatuses));
  const schema=JSON.parse(await readFile(new URL('../dist/intents-application.schema.json',import.meta.url),'utf8')),text=JSON.stringify(schema);
  assert.equal(schema.$id,'urn:meri:intents-application:0.1.0');assert(!/"\$ref":"(?!#)/u.test(text),'every reference is local to the distribution');
  const commandActions=schema.$defs[Object.keys(schema.$defs).find(name=>name.startsWith('Canonical_Command_'))].properties.action.enum;assert.deepEqual(commandActions,['memory.propose','task.create','artifact.file']);
 });
-/** The retained artifact.file proposal from its actual preparer, listed and decided through the actual owner and HTTP application
- * with no decision or outcome owner (as before those Core extensions exist): they are admitted as prepared and answer INTENT_NOT_APPROVABLE. */
-test('actual artifact.file proposal remains held: listed, never approvable',async()=>{
- // These two fixtures load the independent budget harness, which needs an explicit source root (an explicit caller setting wins).
- process.env.MERI_REVIEW_SOURCE_ROOT??=fileURLToPath(new URL('../../../',import.meta.url)).replaceAll(String.fromCharCode(92),'/').replace(/\/$/u,'');
- const {attachmentFilingFixture}=await import('../../../apps/control/intents/test/attachment-filing-execution-fixture.mjs');
- const filing=await attachmentFilingFixture();
- const cases=[['artifact.file',filing.f.binding,filing.f.state,filing.mounted.store,async()=>(await filing.prepare()).proposal]];
- for(const [action,binding,clock,store,prepare] of cases){
-  const proposal=await prepare(),owner=createIntentApprovalOwner({journal:store.port,now:()=>clock.now,limits:{maxRequestMs:5000},enabled:true});
-  const principal={tenantId:binding.tenantId,actorId:binding.actorId,role:'member',permissions:[],clientIds:[id(9)],membershipRevision:'m1'},at='http://127.0.0.1';
-  const gate={async admit(){return {principal,expiresAtMs:NOW+60000};},async recheck({principal}){return principal;}};
-  const app=createIntentApplication({owner,gate,now:()=>clock.now,limits:{maxRequestMs:5000,maxRequestBytes:4096,maxResponseBytes:262144}});
-  const post=async(route,body)=>{const r=await app.handle(new Request(at+INTENT_PATHS[route],{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer t'},body:JSON.stringify(body)}));const text=await r.text();return {status:r.status,admitted:await receive(route,r.status,text,route==='decide'?{request:body,proposal}:{request:body})};};
-  const listed=await post('list',{conversationId:binding.conversationId}),item=listed.admitted.intents.find(entry=>entry.proposal?.proposalId===proposal.proposalId);
-  assert.equal(item.proposal.command.action,action);assert.equal(item.decision,'unavailable');assert.equal(item.execution,'unavailable');assert.ok(['unknown_decision','expired'].includes(item.phase));
-  assert.equal(item.proposal.commandSha256,proposal.commandSha256);
-  const refusal=await post('decide',{conversationId:binding.conversationId,deliveryId:item.deliveryId,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved'});
-  assert.equal(refusal.status,409);assert.deepEqual(refusal.admitted,{error:{code:'INTENT_NOT_APPROVABLE',outcome:'NOT_DISPATCHED'}});
- }
+test('actual native filing proposal remains visible but cannot execute without its effect owner',async()=>{
+ const s=await nativeFilingFixture({missing:true}),gate={async admit(){return {principal:s.principal,expiresAtMs:NOW+60000};},async recheck({principal}){return principal;}};
+ const app=createIntentApplication({owner:s.owner,gate,now:()=>s.state.now,limits:{maxRequestMs:5000,maxRequestBytes:4096,maxResponseBytes:262144}});
+ const body={conversationId:s.binding.conversationId},listed=await s.list();
+ assert.equal((await receive('list',200,JSON.stringify(listed),{request:body})).intents[0].proposal.command.action,'artifact.file');
+ const response=await app.handle(new Request('http://127.0.0.1'+INTENT_PATHS.decide,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer t'},body:JSON.stringify(s.request)}));
+ assert.equal(response.status,503);
+ assert.deepEqual(await receive('decide',response.status,await response.text(),{request:s.request,proposal:s.proposal}),{error:{code:'EXECUTION_OWNER_UNAVAILABLE',outcome:'NOT_DISPATCHED'}});
+ assert.equal(s.state.effects,0);
 });
 test('distribution is self-contained and its recorded sources bind the handler owners',async()=>{
  const source=await readFile(new URL('../dist/intents-application.mjs',import.meta.url),'utf8'),metadata=JSON.parse(await readFile(new URL('../dist/intents-application.metadata.json',import.meta.url),'utf8'));
