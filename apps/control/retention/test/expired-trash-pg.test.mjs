@@ -38,8 +38,8 @@ const sweepQueryKind=sql=>sql.startsWith('DELETE FROM meri_conversations.sdk_ses
  /^(BEGIN|COMMIT|ROLLBACK)\b/u.test(sql)?sql.split(' ')[0].toLowerCase():sql.includes('pg_advisory_')?'advisory-lock':
  sql.includes('AS orphan')?'orphan':sql.includes('retention_row_bytes')?'metadata':sql.startsWith('SELECT r.* FROM meri_conversations.sdk_')?'body':'other';
 async function measuredSweepPhase(name,options,operation){const trace=sweepTiming;if(!trace)return operation();
- const previous=trace.phase,startMs=performance.now()-trace.started;trace.phase=name;trace.deadlineMs??=options?.deadlineMs;
- try{return await operation();}finally{trace.phases.push({name,startMs,endMs:performance.now()-trace.started});trace.phase=previous;}
+ const previous=trace.phase,startMs=performance.now()-trace.started,cpu=process.cpuUsage();trace.phase=name;trace.deadlineMs??=options?.deadlineMs;
+ try{return await operation();}finally{trace.phases.push({name,startMs,endMs:performance.now()-trace.started,cpuMicros:process.cpuUsage(cpu)});trace.phase=previous;}
 }
 const journalPool={async connect(){const c=await connect();return {release:error=>c.release(error),query:async(sql,args)=>{
  if(!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
@@ -50,12 +50,18 @@ const journalPool={async connect(){const c=await connect();return {release:error
  const timing=inventorySqlTiming,trace=sweepTiming;if(!timing&&!trace)return c.query(sql,args);
  const kind=sql.includes('AS orphan')?'orphan':sql.includes('retention_row_bytes')?'metadata':sql.startsWith('SELECT r.* FROM meri_conversations.sdk_')?'body':'other';
  const started=performance.now(),query=trace?{phase:trace.phase,kind:sweepQueryKind(sql),table:sql.match(/\b(?:FROM|INTO|UPDATE) (meri_[a-z_]+\.[a-z_]+)/u)?.[1]??null,locked:sql.includes('FOR UPDATE'),startMs:started-trace.started}:null;
+ // Observed page preparation spans returned entry/batch rows to permit INSERT:
+ // scanner validation plus exact-target/hash/serialization work before SQL.
+ if(trace?.phase==='row-purge'&&query.kind==='permit-register'&&trace.pageBody){const page=trace.pagePreparation,ms=started-trace.pageBody.at,cpu=process.cpuUsage(trace.pageBody.cpu);
+  page.pages++;page.rows+=trace.pageBody.rows;page.ms+=ms;page.maxMs=Math.max(page.maxMs,ms);page.cpuMicros.user+=cpu.user;page.cpuMicros.system+=cpu.system;trace.pageBody=null;}
  if(trace){trace.pending=query;const part=trace.sql[query.phase+':'+query.kind]??={attempted:0,completed:0,failed:0,rows:0,ms:0,maxMs:0};part.attempted++;}
  let result,failed=false;
  try{return result=await c.query(sql,args);}catch(error){failed=true;throw error;}finally{const ms=performance.now()-started;
   if(timing){const part=timing[kind]??={queries:0,rows:0,ms:0,maxMs:0};part.queries++;part.rows+=result?.rows?.length??0;part.ms+=ms;part.maxMs=Math.max(part.maxMs,ms);}
   if(trace){const part=trace.sql[query.phase+':'+query.kind];part.completed++;part.failed+=Number(failed);part.rows+=result?.rowCount??0;part.ms+=ms;part.maxMs=Math.max(part.maxMs,ms);
-   trace.lastCompleted={...query,endMs:performance.now()-trace.started,rows:result?.rowCount??0,failed};if(trace.pending===query)trace.pending=null;}
+   trace.lastCompleted={...query,endMs:performance.now()-trace.started,rows:result?.rowCount??0,failed};if(trace.pending===query)trace.pending=null;
+   if(query.phase==='row-purge'&&query.kind==='body'&&['meri_conversations.sdk_session_entries','meri_conversations.sdk_session_batches'].includes(query.table)&&!failed)
+    trace.pageBody={at:performance.now(),cpu:process.cpuUsage(),rows:result.rowCount};}
  }
 }};}};
 const insert=async(table,row)=>{const keys=Object.keys(row);return pool.query(`INSERT INTO ${table}(${keys.join(',')}) VALUES(${keys.map((_,i)=>'$'+(i+1)).join(',')})`,Object.values(row));};
@@ -312,10 +318,11 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
    const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(p.state,'PLANNED');assert.equal(sdk.length,1);
    assert.deepEqual(sdk[0].target.sdk.counts,{sessions:1,streams:1,entries:100000,batches:100});assert.equal(sdk[0].target.sdk.entryBytes,f.sdk.bytes);
    assert.ok(Buffer.byteLength(JSON.stringify(p))<8*1024*1024,'compact plan fits the existing ledger record bound');
-   const purgeStarted=performance.now();sweepTiming={started:purgeStarted,startedAtMs:Date.now(),phase:'sweep',deadlineMs:null,phases:[],sql:{},pending:null,lastCompleted:null};
+   const purgeStarted=performance.now(),purgeCpu=process.cpuUsage();sweepTiming={started:purgeStarted,startedAtMs:Date.now(),phase:'sweep',deadlineMs:null,phases:[],sql:{},pending:null,lastCompleted:null,
+    pageBody:null,pagePreparation:{pages:0,rows:0,ms:0,maxMs:0,cpuMicros:{user:0,system:0}}};
    let result,purgeMs;try{result=await startup.purge.sweepSubject(f.subject);}finally{purgeMs=performance.now()-purgeStarted;const trace=sweepTiming;
-    t.diagnostic('production sweep phases '+JSON.stringify({...trace,finishedAtMs:Date.now(),elapsedMs:purgeMs,
-     pending:trace.pending?{...trace.pending,elapsedMs:purgeMs-trace.pending.startMs}:null}));sweepTiming=null;}
+    t.diagnostic('production sweep phases '+JSON.stringify({...trace,pageBody:undefined,finishedAtMs:Date.now(),elapsedMs:purgeMs,cpuMicros:process.cpuUsage(purgeCpu),
+     pending:trace.pending?{...trace.pending,elapsedMs:purgeMs-trace.pending.startMs,deadlineRemainingAtStartMs:trace.deadlineMs-trace.startedAtMs-trace.pending.startMs}:null}));sweepTiming=null;}
    t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
    assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
    for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
