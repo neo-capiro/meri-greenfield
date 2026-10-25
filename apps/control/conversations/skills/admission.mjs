@@ -3,6 +3,8 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {assertSubject,assertWindow} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {describeSkillPlugin} from '../../../../packages/skills/plugin.mjs';
+import {assertNativeConversationScope} from '../../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=()=>Object.assign(Error('SKILL_ADMISSION_REFUSED'),{code:'SKILL_ADMISSION_REFUSED'}),fail=()=>{throw fault();};
@@ -14,10 +16,21 @@ export function createOriginalSkillAdmissionOwner(configuration){
  async function selectionReceipt({request,scopes,selectedClientId,life}){
   request=data(request);scopes=data(scopes);scopes.forEach(s=>validateShape('Scope',s));
   const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);
-  if(!same(request.skill,selected.pin)||!['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(selected.pin.skillId)||!scopes.length||scopes.some(s=>s.tenantId!==binding.tenantId)||new Set(scopes.map(s=>s.policyRevision)).size!==1||typeof selectedClientId!=='string'||!selectedClientId)fail();
-  const selection=data(own(await life.run(signal=>c.readSelection({binding,request,scopes,selectedClientId,signal})),['subject','window','mondayBoardIds']));
-  assertSubject(selection.subject,binding);assertWindow(selection.window);
-  if(selection.subject.kind!=='client'||selection.subject.entityType!=='client'||selection.subject.entityIds.length!==1||selection.subject.entityIds[0]!==selectedClientId||!same(selection.subject.scopes,scopes)||!same(selection.window,request.window)||!Array.isArray(selection.mondayBoardIds)||selection.mondayBoardIds.some(id=>typeof id!=='string'||!id)||new Set(selection.mondayBoardIds).size!==selection.mondayBoardIds.length)fail();
+  if(!same(request.skill,selected.pin)||!describeSkillPlugin().skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))fail();
+  assertNativeConversationScope({binding,scopes,selectedClientId});assertWindow(request.window);
+  if(!selected.manifest.windowBases.includes(request.window.basis))fail();
+  let selection;
+  if(selectedClientId===null){
+   if(!selected.manifest.subjectKinds.some(kind=>kind==='portfolio'||kind==='personal'))fail();
+   // General is the actor's admitted private conversation. This pins its context,
+   // not a resolved portfolio roster; each native read still authorizes actual clients.
+   selection={scopes,selectedClientId:null,window:request.window};
+  }else{
+   if(!selected.manifest.subjectKinds.includes('client'))fail();
+   selection=data(own(await life.run(signal=>c.readSelection({binding,request,scopes,selectedClientId,signal})),['subject','window','mondayBoardIds']));
+   assertSubject(selection.subject,binding);assertWindow(selection.window);
+   if(selection.subject.kind!=='client'||selection.subject.entityType!=='client'||selection.subject.entityIds.length!==1||selection.subject.entityIds[0]!==selectedClientId||!same(selection.subject.scopes,scopes)||!same(selection.window,request.window)||!Array.isArray(selection.mondayBoardIds)||selection.mondayBoardIds.some(id=>typeof id!=='string'||!id)||new Set(selection.mondayBoardIds).size!==selection.mondayBoardIds.length)fail();
+  }
   life.check();return {binding,skill:selected.pin,requestSha256:canonicalSha256(request),selectionSha256:canonicalSha256(selection),manifestSha256:selected.pin.manifestSha256,catalogSha256:selected.pin.catalogSha256,budgets:selected.manifest.budgets,policyRevision:scopes[0].policyRevision,checkedAtMs:c.now(),expiresAtMs:life.deadline()};
  }
  /** The conversation service supplies its already-authenticated scope/deadline and

@@ -12,7 +12,7 @@ export const createIntentsMetadata=({paths,limits,errorStatuses,errorOutcomes,fa
   list:'read-only durable history of this conversation\'s prepared intents; next is the last returned deliveryId when more remain, otherwise null',
   decision:'approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves',
   execution:'only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared',
-  executed:'status executed returns the actual owner outcome: task.create receipt/result or document.draft ArtifactCreatedResult after publication; document approval alone remains approved or indeterminate, with no task receipt inferred',
+  executed:'status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, or document.draft ArtifactCreatedResult after publication; approval alone remains approved or indeterminate',
   correlation:'a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request\'s conversation and approver',
   uncertainty:'UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal',
   withheld:'withheld items carry no content because the caller no longer sees a client scope of the retained command',

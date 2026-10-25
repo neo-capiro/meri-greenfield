@@ -1,7 +1,381 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-history:1.0.0",
+  "$id": "urn:meri:conversation-history:1.1.0",
   "$defs": {
+    "ConversationMetadata": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "status": {
+          "enum": [
+            "active",
+            "archived",
+            "trashed"
+          ]
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,17})$"
+        },
+        "scopeKind": {
+          "enum": [
+            "client",
+            "general"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "archivedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trashedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "restoreUntil": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversationId",
+        "title",
+        "status",
+        "revision",
+        "scopeKind",
+        "clientId",
+        "updatedAt",
+        "archivedAt",
+        "trashedAt",
+        "restoreUntil"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationSummary": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "status": {
+          "enum": [
+            "active",
+            "archived",
+            "trashed"
+          ]
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,17})$"
+        },
+        "scopeKind": {
+          "enum": [
+            "client",
+            "general"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "archivedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trashedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "restoreUntil": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hasTranscript": {
+          "type": "boolean"
+        },
+        "canManage": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "conversationId",
+        "title",
+        "status",
+        "revision",
+        "scopeKind",
+        "clientId",
+        "updatedAt",
+        "archivedAt",
+        "trashedAt",
+        "restoreUntil",
+        "hasTranscript",
+        "canManage"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationSummaryBefore": {
+      "type": "object",
+      "properties": {
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "updatedAt",
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistorySummariesRequest": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "archived",
+            "trashed"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "before": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConversationSummaryBefore"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "status",
+        "title",
+        "before"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistorySummariesResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "conversations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConversationSummary"
+          },
+          "maxItems": 20
+        },
+        "nextBefore": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConversationSummaryBefore"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "conversations",
+        "nextBefore"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryManageRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "meri.conversation-management.v1"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "expectedRevision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,17})$"
+            },
+            "operation": {
+              "const": "rename"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "version",
+            "requestId",
+            "conversationId",
+            "expectedRevision",
+            "operation",
+            "title"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "meri.conversation-management.v1"
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "expectedRevision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,17})$"
+            },
+            "operation": {
+              "enum": [
+                "archive",
+                "restore",
+                "trash"
+              ]
+            }
+          },
+          "required": [
+            "version",
+            "requestId",
+            "conversationId",
+            "expectedRevision",
+            "operation"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ConversationHistoryManageResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "conversation": {
+          "$ref": "#/$defs/ConversationMetadata"
+        }
+      },
+      "required": [
+        "version",
+        "requestId",
+        "conversation"
+      ],
+      "additionalProperties": false
+    },
     "ConversationHistoryBefore": {
       "type": "object",
       "properties": {
@@ -409,6 +783,8 @@
                 "CONVERSATION_CURSOR_INVALID",
                 "CONVERSATION_NOT_FOUND",
                 "CONVERSATION_TURN_CONFLICT",
+                "CONVERSATION_MANAGEMENT_CONFLICT",
+                "CONVERSATION_RESTORE_EXPIRED",
                 "CONVERSATION_STORE_CORRUPT",
                 "CONVERSATION_TURN_UNAVAILABLE",
                 "CONVERSATION_UNAVAILABLE"

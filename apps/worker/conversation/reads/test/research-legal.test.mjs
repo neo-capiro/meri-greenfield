@@ -14,9 +14,9 @@ const operation={id,version:'0.2.0'},sibling={id:referenceId,version:'0.2.0'},na
 const requests={global:{sessionKey:'2026',query:'water'},client:{sessionKey:'2026',query:'water',clientId,folderId:'synthetic-folder'},named:{sessionKey:'2026',query:'water',clientId:`  ${name}  `,folderId:'synthetic-folder'}};
 function sceneFor(branch='global'){return storedCase(id,{request:requests[branch],...(branch==='named'?{context:{clientResolution:{reference:name,clientId},citationResolution:null}}:{})});}
 
-test('legal SDK81/45: optional family exposes search and the bounded reference read only under current gates', () => {
-    assert.equal(familyReads().length, 81);
-    assert.equal(READ_FAMILY_IDS.length, 45);
+test('legal SDK84/48: optional family exposes search and the bounded reference read only under current gates', () => {
+    assert.equal(familyReads().length, 84);
+    assert.equal(READ_FAMILY_IDS.length, 48);
     assert.equal(READ_FAMILIES[family].clientScope, 'optional');
     assert.deepEqual(READ_FAMILIES[family].operationIds, [id, referenceId]);
     assert.deepEqual(familyReads().filter(row => row.family === family).map(row => row.operation), [operation, sibling]);

@@ -5,8 +5,8 @@ import {scheduledJobFixture,id,hash} from './scheduled-job-fixture.mjs';
 import {workflowId} from '../../conversations/temporal-dispatch.mjs';
 import {snapshotScheduleCall} from '../../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {scheduleSdkOptions} from '../temporal-schedule-mutations.mjs';
-async function fixture(){
- const h=await scheduledJobFixture();await h.scheduled.dispatch({occurrence:h.occurrence});await h.running();
+async function fixture(options={}){
+ const h=await scheduledJobFixture(options);await h.scheduled.dispatch({occurrence:h.occurrence});await h.running();
  const connect=h.scheduleSql.pool.connect;h.scheduleSql.pool.connect=async()=>{const sql=await connect();return {...sql,async query(text,args=[]){
   if(text.startsWith('SELECT tenant_id,generation,occurrence_key,schedule_id,occurrence,effect,effect_sha256,state FROM meri_schedules.occurrences')&&text.includes('LIMIT 2'))return {rows:structuredClone([...h.scheduleSql.state.occurrences.values()].filter(r=>r.tenant_id===args[0]&&r.schedule_id===args[1]&&r.state==='OPEN').slice(0,2))};
   return sql.query(text,args);
@@ -74,14 +74,14 @@ import {routineCancellationTrust} from '../../../runtime/native-authority/routin
 import {createPostgresRunCancelProofLedger} from '../postgres-run-cancel-proofs.mjs';
 import {createScheduledJobLifecycle} from '../scheduled-job-lifecycle.mjs';
 import {coreSigner,proofLedgerPool} from '../../../runtime/native-authority/test/routines-core-fixture.mjs';
-async function proofFixture(){
- const h=await fixture(),signer=coreSigner(),ledger=proofLedgerPool(),issued=[],issuer={script:null};
+async function proofFixture(options={}){
+ const h=await fixture(options),signer=coreSigner(),ledger=proofLedgerPool(),issued=[],issuer={script:null};
  const runControl=createRoutinesRunControl({trust:routineCancellationTrust(signer.pin),ledger:createPostgresRunCancelProofLedger({pool:ledger.pool}),store:h.store,dispatcher:h.dispatcher,now:h.now,maxRequestMs:1000});
  const proofs={async issue(call){issued.push(structuredClone({attended:call.attended,intent:call.intent,intentSha256:call.intentSha256,decision:call.decision,targets:call.targets}));
   const p=call.intent.projection,claims={tenantId:p.owner.tenantId,ownerActorId:p.owner.actorId,scheduleId:p.scheduleId,intentId:call.intent.intentId,intentSha256:call.intentSha256,decisionSha256:hash(call.decision),runs:call.intent.cancel.runs,targets:call.targets};
   const out=signer.sign(issuer.script?issuer.script(claims):claims,{nowMs:h.now()});return {proof:out.proof,jti:out.jti};}};
  const owner=createScheduledRunCancellation({scheduleOwner:h.scheduleOwner,store:h.store,runControl,retirement:h.options.retirement,client:h.client,now:h.now,maxRequestMs:1000,proofs});
- const attended={binding:h.identity.binding,selectedClientId:h.scopes[0].resourceId};
+ const attended={binding:h.identity.binding,selectedClientId:h.template.selectedClientId};
  return {...h,owner,runControl,ledger,issued,issuer,attended,occurrence:()=>h.scheduleSql.state.occurrences.get(h.template.principal.tenantId+':'+h.identity.occurrenceKey).state};
 }
 test('attended approval obtains Core proof for the exact intent/decision/targets and the proof control runs the lifecycle Stop order',async t=>{
@@ -93,6 +93,20 @@ test('attended approval obtains Core proof for the exact intent/decision/targets
  assert.equal(h.row(h.identity.binding).projection.state,'cancelled');assert.deepEqual(h.calls.retire,[h.identity.binding]);assert.equal(h.occurrence(),'DISPATCHED');
  const rows=[...h.ledger.state.rows.values()];assert.equal(rows.length,1);assert.deepEqual(rows[0].binding,h.identity.binding);assert.equal(rows[0].intent_sha256,call.intentSha256);
  assert.equal(h.calls.cancel.length,0,'the session-based fixture control is never used');
+});
+
+test('General attended cancellation keeps the nullable exact private scope through proof and retirement',async t=>{
+ const h=await proofFixture({agentcore:true,general:true});t.after(h.close);const runs=await h.prepare();
+ assert.equal(h.attended.selectedClientId,null);
+ await h.owner.cancel({binding:h.approved(runs),deadlineMs:h.now()+1000,attended:h.attended});
+ assert.equal(h.issued.length,1);assert.equal(h.issued[0].attended.selectedClientId,null);assert.deepEqual(h.issued[0].targets,[h.identity.binding]);
+ assert.equal(h.row(h.identity.binding).projection.state,'cancelled');assert.deepEqual(h.calls.retire,[h.identity.binding]);assert.equal(h.occurrence(),'DISPATCHED');
+});
+
+test('a nullable attended selector cannot approve cancellation of a client-scoped occurrence',async t=>{
+ const h=await proofFixture();t.after(h.close);const runs=await h.prepare();
+ await assert.rejects(h.owner.cancel({binding:h.approved(runs),deadlineMs:h.now()+1000,attended:{...h.attended,selectedClientId:null}}),e=>e.code==='SCHEDULE_JOB_AUTHORITY');
+ assert.equal(h.issued.length,0);assert.equal(h.row(h.identity.binding).projection.state,'running');assert.equal(h.calls.retire.length,0);
 });
 test('a proof for other targets, a missing attended selection or an unattended job owner stops nothing and consumes nothing',async t=>{
  const h=await proofFixture();t.after(h.close);const runs=await h.prepare();

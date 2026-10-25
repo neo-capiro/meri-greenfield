@@ -17,6 +17,10 @@ export function prepareProjectionReadContext({entry, request, authority, default
   const keys = keySet(entry.contract.binding.contextKeys);
   const client = current => {
     const subject = current.subject;
+    if (['get_client_context','read_client_documents'].includes(entry.contract.descriptor.operation.id) &&
+        subject.kind === 'personal' && subject.entityType === 'user' && subject.entityIds.length === 1 &&
+        subject.entityIds[0] === current.binding.actorId && typeof request.clientId === 'string' && UUID.test(request.clientId.trim()))
+      return request.clientId.trim();
     if (subject.kind !== 'client' || subject.entityType !== 'client' ||
         subject.entityIds.length !== 1 || !UUID.test(subject.entityIds[0])) deny('ACCESS_DENIED');
     return subject.entityIds[0];

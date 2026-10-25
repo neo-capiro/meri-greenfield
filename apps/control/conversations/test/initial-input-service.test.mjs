@@ -98,6 +98,27 @@ test('MP explicit override is pinned; changing it cannot replace the initial slo
  const f=fixture(),input={...intent,modelSelection:CLAUDE_SELECTION};await f.allocate(input);await assert.rejects(f.admit({...input,modelSelection:MODEL_CATALOG.defaultSelection}),/INITIAL_INPUT_CONFLICT/);
  const saved=await f.admit(input);assert.deepEqual(saved.request.modelSelection,CLAUDE_SELECTION);assert.equal(f.state.starts.length,0);
 });
+
+test('history-only replay accepts the already stored resolved default without changing omitted-model identity',async()=>{
+ const f=fixture();setDefault(f,binding,CLAUDE_SELECTION);const allocated=await f.allocate();await f.admit();
+ const stored=(await f.history()).request,recovered={...intent,modelSelection:stored.modelSelection};
+ setDefault(f,binding,MODEL_CATALOG.defaultSelection);
+ const admitted=await f.admit(recovered),submitted=await f.submit(recovered);
+ assert.equal(admitted.replayed,true);assert.equal(submitted.replayed,true);
+ assert.deepEqual(admitted.request,stored);assert.deepEqual(f.allocations.get(f.key()).allocation,allocated.allocation);
+ assert.equal(queued(f).length,1);assert.equal(f.state.starts.length,1);
+ for(const changed of [{...recovered,prompt:'Changed prompt'},{...recovered,windowRequest:{basis:'unbounded'}},{...recovered,modelSelection:MODEL_CATALOG.defaultSelection}])await assert.rejects(f.admit(changed),/INITIAL_INPUT_CONFLICT/);
+});
+
+test('resolved-model replay cannot create acceptance from a reservation or erase an explicit model choice',async()=>{
+ const reserved=fixture();await reserved.allocate();
+ await assert.rejects(reserved.admit({...intent,modelSelection:MODEL_CATALOG.defaultSelection}),/INITIAL_INPUT_CONFLICT/);
+ assert.equal(reserved.state.runs.size,0);assert.equal(reserved.state.starts.length,0);
+ const explicit=fixture(),input={...intent,modelSelection:CLAUDE_SELECTION};await explicit.allocate(input);await explicit.admit(input);
+ await assert.rejects(explicit.admit(intent),/INITIAL_INPUT_CONFLICT/);
+ await assert.rejects(explicit.allocate({...intent,modelSelection:MODEL_CATALOG.defaultSelection}),/INITIAL_INPUT_CONFLICT/);
+ assert.equal(queued(explicit).length,1);
+});
 test('MP user preference lookup is tenant and actor scoped; corrupt historical data never falls back',async()=>{
  const f=fixture();setDefault(f,{...binding,tenantId:id(800)},CLAUDE_SELECTION);setDefault(f,{...binding,actorId:id(801)},CLAUDE_SELECTION);
  assert.deepEqual((await f.allocate()).allocation.modelSelection,MODEL_CATALOG.defaultSelection);

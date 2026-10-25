@@ -95,15 +95,16 @@ export function createPostgresIntentJournalStore({pool}){
  });
 }
 
-function preparedSchedule(raw,s,instructionsOnly){
+export function preparedSchedule(raw,s,instructionsOnly){
  try{
   const row=data(raw),storedKey=data({tenantId:row.tenant_id,actorId:row.actor_id,conversationId:row.conversation_id,deliveryId:row.delivery_id});key(storedKey);
   const retained=entry(row);
   if(storedKey.tenantId!==s.tenantId||retained.state!=='PREPARED')refuse('INTENT_JOURNAL_STATE');
-  const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal']);
+  const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal'],['request']);
   const proposal=validateToolShape('ScheduleMutationOutput',result.proposal);
   const operations=instructionsOnly?['schedule_task','update_scheduled_task']:['schedule_task','update_scheduled_task','cancel_scheduled_task'];
   if(result.status!=='approval_required'||proposal.status!=='approval_required'||!operations.includes(proposal.operation)||retained.record.operation.id!==proposal.operation||proposal.proposalId!==s.proposalId||proposal.intentSha256!==s.intentSha256||proposal.projection.owner.tenantId!==s.tenantId)refuse('INTENT_JOURNAL_STATE');
+  if(result.request!==undefined&&hash(result.request)!==retained.record.argumentsSha256)refuse('INTENT_JOURNAL_STATE');
   if(custody.release.binding.tenantId!==storedKey.tenantId||custody.release.binding.actorId!==storedKey.actorId||custody.release.binding.conversationId!==storedKey.conversationId)refuse('INTENT_JOURNAL_STATE');
   const originalScopes=new Set(custody.release.scopes.map(hash)),proposalScopes=proposal.projection.scopes.map(hash);
   if(custody.release.scopes.length>100||originalScopes.size!==custody.release.scopes.length||!proposalScopes.length||proposalScopes.length>100||new Set(proposalScopes).size!==proposalScopes.length||proposal.projection.scopes.some(scope=>scope.tenantId!==s.tenantId)||proposalScopes.some(scope=>!originalScopes.has(scope)))refuse('INTENT_JOURNAL_STATE');
@@ -140,7 +141,7 @@ export function createPostgresScheduleProposalReader({pool}){
  * or execution authority, and it takes no credential (an execution capability can never reach it). */
 export function createPostgresCommandProposalReader({pool}){
  const tx=journalTransaction(pool),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
- return Object.freeze({async readProposal(selection){
+ async function readPreparedCommand(selection){
   const {signal,...raw}=own(selection,['tenantId','actorId','conversationId','proposalId'],['signal']),s=data(raw);nativeSignal(signal);
   try{validateShape('Identity',{tenantId:s.tenantId,actorId:s.actorId});}catch{throw intentFault('INVALID_ARGUMENTS');}
   if(typeof s.conversationId!=='string'||!uuid.test(s.conversationId)||typeof s.proposalId!=='string'||!uuid.test(s.proposalId))throw intentFault('INVALID_ARGUMENTS');
@@ -159,10 +160,11 @@ export function createPostgresCommandProposalReader({pool}){
     assertNativeApprovalProposal(proposal);
     const b=proposal.command.binding,r=custody.release.binding;
     if(proposal.proposalId!==s.proposalId||b.tenantId!==storedKey.tenantId||b.actorId!==storedKey.actorId||b.conversationId!==storedKey.conversationId||
-     hash(r)!==hash(b)||retained.record.operation.id!==({'task.create':'create_task','task.update':'update_task','document.draft':'create_word'}[proposal.command.action])||
+     hash(r)!==hash(b)||retained.record.operation.id!==({'task.create':'create_task','task.update':'update_task','document.draft':'create_word','artifact.file':'save_chat_attachments'}[proposal.command.action])||
      hash(custody.release.scopes)!==hash(proposal.command.scopes))refuse('INTENT_JOURNAL_STATE');
-    return data(proposal);
+    return data({key:storedKey,...retained});
    }catch{refuse('INTENT_JOURNAL_STATE');}
   },{readOnly:true});
- }});
+ }
+ return Object.freeze({readPreparedCommand,async readProposal(selection){const row=await readPreparedCommand(selection);return row===null?null:row.outcome.result.proposal;}});
 }

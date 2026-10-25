@@ -69,8 +69,8 @@
     },
     {
       "path": "../../apps/control/product-access/http.mjs",
-      "sha256": "2dbfd279212a16334ac30c2a411361fac31749e0ee0b4c1fb5139bcc21469ada",
-      "bytes": 8246
+      "sha256": "d202540f9d9892350adf5a1bbfd8686a8322bdc1e9b3734f72f232e1ced41074",
+      "bytes": 9194
     },
     {
       "path": "../../apps/control/settings/documents.mjs",
@@ -94,8 +94,8 @@
     },
     {
       "path": "generate-user-preferences.mjs",
-      "sha256": "24a08064bc765149843f8c44a3332890aedc49018568966ff4311406f0eb1f50",
-      "bytes": 11182
+      "sha256": "c8ef91569d5a7591025980d78770b02dc40fc7c71590e164aa8ea186ee83454e",
+      "bytes": 11204
     },
     {
       "path": "meri.schema.json",

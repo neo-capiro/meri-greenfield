@@ -17,14 +17,36 @@ export type TaskCommandApplicationEnvelope =
 export type TaskCommandExecuteResponse =
   | {
       status: 'observed';
-      outcome: {
-        receipt: Canonical_CommandReceiptAc49Ee1E;
-        result: Canonical_TaskUpdateResult_029549A8;
-      };
+      outcome:
+        | {
+            receipt: Canonical_CommandReceiptAc49Ee1E;
+            result: Canonical_TaskUpdateResult_029549A8;
+          }
+        | {
+            execution: {
+              kind: 'native-task';
+              proposalId: string;
+              commandSha256: string;
+              idempotencyKey: string;
+              binding: Canonical_RunBinding_84F2304C;
+              completedAt: string;
+              approvalDecisionSha256: string;
+            };
+            result: Canonical_TaskUpdateResult_029549A8;
+          };
     }
   | {
       status: 'indeterminate';
       outcome: null;
+    }
+  | {
+      status: 'not_executed';
+      proposalId: string;
+      commandSha256: string;
+      idempotencyKey: string;
+      binding: Canonical_RunBinding_84F2304C;
+      reason: 'expired';
+      checkedAt: string;
     };
 
 export interface Canonical_TaskUpdateRaw_549267Ce {
@@ -94,6 +116,7 @@ export interface Canonical_TaskUpdateResult_029549A8 {
   updatedAt: string;
 }
 export interface TaskCommandPrepareRequest {
+  requestId: string;
   arguments: Canonical_TaskUpdateRaw_549267Ce;
 }
 export interface TaskCommandExecuteRequest {
@@ -132,7 +155,6 @@ export interface TaskCommandErrorResponse {
       | 'COMMAND_PREPARATION_REFUSED'
       | 'COMMAND_REFUSED'
       | 'DEADLINE'
-      | 'EXECUTION_AUTHORITY_REFUSED'
       | 'INVALID_BODY'
       | 'INVALID_CONTENT_LENGTH'
       | 'INVALID_JSON'
@@ -165,6 +187,8 @@ export interface Canonical_TaskUpdateContext_90C41Ed0 {
   binding: Canonical_RunBinding_84F2304C;
 }
 
+export type TaskUpdateRaw=TaskCommandPrepareRequest['arguments'];
+export type TaskUpdateApprovalProposal=TaskCommandPrepareResponse['proposal'];
 export type TaskCommandRoute='prepare'|'execute';
 export interface TaskCommandRequestMap {prepare:TaskCommandPrepareRequest;execute:TaskCommandExecuteRequest;}
 export interface TaskCommandResponseMap {prepare:TaskCommandPrepareResponse;execute:TaskCommandExecuteResponse;}
@@ -211,7 +235,6 @@ export declare const taskCommandMetadata:{
     "COMMAND_PREPARATION_REFUSED": 502,
     "COMMAND_REFUSED": 502,
     "DEADLINE": 408,
-    "EXECUTION_AUTHORITY_REFUSED": 403,
     "INVALID_BODY": 400,
     "INVALID_CONTENT_LENGTH": 400,
     "INVALID_JSON": 400,
@@ -239,6 +262,11 @@ export declare const taskCommandMetadata:{
     "NOT_STORED",
     "READ_UNAVAILABLE"
   ],
+  "errorOutcomeStatuses": {
+    "COMMAND_PREPARATION_REFUSED": {
+      "NOT_DISPATCHED": 409
+    }
+  },
   "semantics": {
     "preparation": "approval_required is an immutable proposal, never approval",
     "execution": "observed requires a succeeded receipt and matching task result; indeterminate is not success",

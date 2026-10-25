@@ -16,22 +16,23 @@ export async function generateHistoryContracts({check=false}={}){
   }return out;
  }
  root.$defs={...transform(root.$defs,root.$id),...defs};
- const names=['ConversationHistoryListRequest','ConversationHistoryTranscriptRequest','ConversationHistoryNextTurnRequest','ConversationHistoryListResponse','ConversationHistoryTranscriptResponse','ConversationHistoryNextTurnResponse','ConversationHistoryErrorResponse'];
- const exportNames=['validateListRequest','validateTranscriptRequest','validateNextTurnRequest','validateListResponse','validateTranscriptResponse','validateNextTurnResponse','validateError'];
+ const names=['ConversationHistoryListRequest','ConversationHistoryTranscriptRequest','ConversationHistoryNextTurnRequest','ConversationHistoryListResponse','ConversationHistoryTranscriptResponse','ConversationHistoryNextTurnResponse','ConversationHistoryErrorResponse','ConversationHistorySummariesRequest','ConversationHistoryManageRequest','ConversationHistorySummariesResponse','ConversationHistoryManageResponse'];
+ const exportNames=['validateListRequest','validateTranscriptRequest','validateNextTurnRequest','validateListResponse','validateTranscriptResponse','validateNextTurnResponse','validateError','validateSummariesRequest','validateManageRequest','validateSummariesResponse','validateManageResponse'];
  const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);const refs={};names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});refs[exportNames[i]]=ref;});const generated=standalone(ajv,refs);
- const bundled=await esbuild.build({absWorkingDir:dir,stdin:{contents:await readFile(new URL('conversation-history/receive.mjs',HERE),'utf8'),sourcefile:'conversation-history-receiver.mjs',resolveDir:resolve(dir,'conversation-history')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'history-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'history-generated'}));b.onLoad({filter:/.*/,namespace:'history-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
+ const bundled=await esbuild.build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-history/receive.mjs',HERE),'utf8'),sourcefile:'conversation-history-receiver.mjs',resolveDir:resolve(dir,'conversation-history')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'history-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'history-generated'}));b.onLoad({filter:/.*/,namespace:'history-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
  if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('History browser external import');
  const declarations=await compile({title:'ConversationHistoryEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'ConversationHistoryEnvelope',{bannerComment:'// Generated from accepted history schema; frozen canonical shapes unchanged. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
  const api=`
-export type ConversationHistoryRoute='list'|'transcript'|'nextTurn';
+export type ConversationHistoryRoute='list'|'transcript'|'nextTurn'|'summaries'|'manage';
 declare const admittedHistoryRequest:unique symbol;
-export interface ConversationHistoryRequestMap {list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;}
+export interface ConversationHistoryRequestMap {list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;summaries:ConversationHistorySummariesRequest;manage:ConversationHistoryManageRequest;}
 export type AdmittedConversationHistoryRequest<R extends ConversationHistoryRoute>=Readonly<ConversationHistoryRequestMap[R]>&{readonly [admittedHistoryRequest]:R};
-export interface ConversationHistoryResponseMap {list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;}
+export interface ConversationHistoryResponseMap {list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;}
 export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=ConversationHistoryResponseMap[R]|ConversationHistoryErrorResponse;
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: ${JSON.stringify(conversationHistoryMetadata,null,2)};
-export declare const conversationHistoryVersion:'1.0.0';
+export declare const conversationHistoryVersion:'1.1.0';
+export declare const MANAGEMENT_VERSION:'meri.conversation-management.v1';
 export declare const HISTORY_PATHS: ${JSON.stringify(Object.fromEntries(Object.entries(conversationHistoryMetadata.routes).map(([name,v])=>[name,v.path])),null,2)};
 export declare const DISCOVERY_SCHEMA:'meri.conversation-list/1',HISTORY_SCHEMA:'meri.conversation-transcript/1',TURN_SCHEMA:'meri.conversation-turn/1';
 export declare function receiveConversationHistoryRequest<R extends ConversationHistoryRoute>(route:R,utf8Bytes:Uint8Array):AdmittedConversationHistoryRequest<R>;

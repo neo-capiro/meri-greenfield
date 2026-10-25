@@ -16,10 +16,11 @@ const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 export function snapshotScheduledConversationOrigin(raw,{principal,conversationId,scopes}){
  const r=data(own(raw,['occurrenceKey','scheduleId','occurrence','effect','effectSha256','state']));
  const {occurrence,effect,identity}=snapshotScheduledJobSelection({occurrence:r.occurrence,effect:r.effect}),p=occurrence.projection;
+ const general=scopes.length===1&&scopes[0].kind==='private-user'&&scopes[0].tenantId===principal.tenantId&&scopes[0].resourceId===principal.actorId;
  if(!['OPEN','DISPATCHED','REFUSED'].includes(r.state)||r.effectSha256!==hash(effect)||r.occurrenceKey!==identity.occurrenceKey||r.scheduleId!==p.scheduleId||
   p.destinationId!==SCHEDULED_MERI_INBOX_DESTINATION||!same(p.owner,{tenantId:principal.tenantId,actorId:principal.actorId})||
   effect.binding.conversationId!==conversationId||!same(p.scopes,scopes)||!Array.isArray(principal.clientIds)||
-  !scopes.some(s=>s.kind==='client')||scopes.some(s=>s.tenantId!==principal.tenantId||s.kind==='client'&&!principal.clientIds.includes(s.resourceId)))fail();
+  !general&&!scopes.some(s=>s.kind==='client')||scopes.some(s=>s.tenantId!==principal.tenantId||s.kind==='private-user'&&s.resourceId!==principal.actorId||s.kind==='client'&&!principal.clientIds.includes(s.resourceId)))fail();
  return r;
 }
 
@@ -31,7 +32,7 @@ export function createScheduledConversationCurrentness(configuration){
   c.maxRequestMs??=10000;
   if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)fail();
  }catch{throw new ProductError('PRODUCT_CONFIGURATION');}
- return registerScheduledCurrentness(Object.freeze({async assertCurrent(value,readScheduleOriginRows){
+ return registerScheduledCurrentness(Object.freeze({async assertCurrent(value,readScheduleOriginRows,readOrdinaryMetadata){
   let life;
   try{
    const call=own(value,['credential','principal','conversationId','scopes','deadlineMs'],['signal']);nativeSignal(call.signal);
@@ -43,13 +44,17 @@ export function createScheduledConversationCurrentness(configuration){
    life=createOperationLifetime({now:c.now,deadlineMs,signal:call.signal,errorFactory:code=>new ProductError(code)});
    const member=async()=>{const result=await life.run(signal=>recheck({...native,signal}));if(!same(result,principal))fail();};
    const origin=()=>life.run(()=>read({tenantId:principal.tenantId,conversationId:call.conversationId},life.check,readScheduleOriginRows));
-   await member();const first=await origin();
-   if(first===null)await life.run(signal=>core({...call,principal,scopes,signal,deadlineMs}));
+   if(readOrdinaryMetadata!==undefined&&typeof readOrdinaryMetadata!=='function')fail();
+   await member();const first=await origin();let metadata=null;
+   if(first===null){
+    if(readOrdinaryMetadata)metadata=await life.run(()=>readOrdinaryMetadata());
+    else await life.run(signal=>core({...call,principal,scopes,signal,deadlineMs}));
+   }
    else snapshotScheduledConversationOrigin(first,{principal,conversationId:call.conversationId,scopes});
    await member();const last=await origin();
    if(!same(first,last))fail();
    if(last!==null)snapshotScheduledConversationOrigin(last,{principal,conversationId:call.conversationId,scopes});
-   life.check();
+   life.check();return metadata;
   }catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}finally{life?.close();}
  }}));
 }

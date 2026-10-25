@@ -1,6 +1,6 @@
 import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {data,keys,options,method,deny,code,uuid,prepare,readContext,event,observation,authBinding,authReceipt,receipt,retained,delivery,canonicalSha256} from './binding.mjs';
+import {data,keys,options,method,deny,code,uuid,prepare,readContext,event,storedEvent,observation,authBinding,authReceipt,receipt,retained,delivery,canonicalSha256} from './binding.mjs';
 export function createTaskLookupDelivery(configuration){
  const {gateway,store,authorize,clock=Date.now}=options(configuration,['gateway','store','authorize'],['clock']);
  if(typeof authorize!=='function'||typeof clock!=='function')deny('LOOKUP_CONFIGURATION');
@@ -10,11 +10,17 @@ export function createTaskLookupDelivery(configuration){
  async function lookup(value){
   let l,b,started,claimed=false,journalAttempted=false,dispatching=false,stored=false;
   try{
-   const {request,context,credential,signal}=options(value,['request','context','credential'],['signal']);
-   b=prepare(request,context,clock());if(typeof credential!=='string')deny('LOOKUP_DATA');l=lifetime(b.context.deadlineMs,signal);
+   const {request,context:rawContext,credential,signal}=options(value,['request','context','credential'],['signal']),context=data(rawContext);
+   if(typeof credential!=='string')deny('LOOKUP_DATA');
+   if(context.slots===undefined){
+    const current=readContext({currentBinding:context.binding,scopes:context.scopes,deadlineMs:context.deadlineMs},clock());l=lifetime(current.deadlineMs,signal);
+    await authority(l,'before_claim',authBinding(null,current.currentBinding,current.scopes,uuid(context.resultReference),null));
+    journalAttempted=true;const prepared=await l.run(()=>method(store,'claimPrepared')({request,context,at:clock()},l.check));
+    b=prepare(request,prepared.binding.context,clock());started=storedEvent(prepared.started,b,'tool.started');receipt(prepared.receipt,b,'CLAIMED');claimed=true;
+   }else{b=prepare(request,context,clock());l=lifetime(b.context.deadlineMs,signal);}
    const auth=hash=>authBinding(b,b.context.binding,b.context.scopes,b.context.resultReference,hash);
-   await authority(l,'before_claim',auth(null));started=event(b,'tool.started',clock());
-   journalAttempted=true;receipt(await l.run(()=>claim(b,started,l.check)),b,'CLAIMED');claimed=true;
+   if(!claimed){await authority(l,'before_claim',auth(null));started=event(b,'tool.started',clock());
+    journalAttempted=true;receipt(await l.run(()=>claim(b,started,l.check)),b,'CLAIMED');claimed=true;}
    await authority(l,'before_dispatch',auth(null));receipt(await l.run(()=>markDispatching(b,l.check)),b,'DISPATCHING');dispatching=true;
    const raw=await l.run(signal=>execute(JSON.stringify(b.request),credential,b.context.deliveryJson,signal));
    const result=observation(raw,b),hash=canonicalSha256(result);await authority(l,'before_store',auth(hash));

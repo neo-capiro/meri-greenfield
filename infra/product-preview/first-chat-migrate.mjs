@@ -95,7 +95,27 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/memory/migrations/0002_candidate_retention_delete.sql','ac0ec0b166832706d5fd5899cd0c3d2265de9ec806aae214df7494056608c5f4','integration'],
  ['migration','infra/product-preview/first-chat-native-retention-grants.sql','c85ce9ec7c9acd3e3ad7b66ce864cf62c35631475b90a30fd26321e0be6848f8','integration'],
  // General originals use JSON null; preserve the applied 48-entry prefix and 0017 bytes.
- ['migration',conversation('0024_general_initial_binding_scope.sql'),'0e5c5449a0cf78ead63c8d4f90a76c0ef789e6a6b86ab128f57d45e9fa3938d3','integration']
+ ['migration',conversation('0024_general_initial_binding_scope.sql'),'0e5c5449a0cf78ead63c8d4f90a76c0ef789e6a6b86ab128f57d45e9fa3938d3','integration'],
+ // Expired conversation Trash follows the accepted General repair; applied entries remain unchanged.
+ ['migration','apps/control/intents/migrations/0002_memory_preparation_tombstone.sql','8827a9ced5a5b8f3e2495ed1298d0c57f643d0fe22125b0668aade7d15610550','integration'],
+ ['migration','apps/control/conversations/migrations/0023_expired_conversation_purge.sql','54b9f6b6c11614465446b73c51281c2b8603de0cb379c541420bc28ef2b3d55b','integration'],
+ ['migration','infra/product-preview/first-chat-expired-conversation-purge-grants.sql','19463e0bbdd8e5b0b66f5c1f4ebe87ae639e2a113564fad0824f883f0b7101cc','integration'],
+ // Native routines use current schedule/consent/execution facts; Core gets no base-table access.
+ ['migration','apps/runtime/native-authority/read-delegation/migrations/0003_native_routine_facts.sql','110884c135c1ce928d34496a24787bb2c415268c88a597996eca2b8141c30477','integration'],
+ // Objective selections retain replay identity while their private prompt follows expired Trash.
+ ['migration','apps/runtime/objective-source/migrations/0004_objective_run_start_retention.sql','a60ad6021dc567806ed7e27c68f857ac3da83b8d545f43e7f02cece78c1b5ed9','integration'],
+ // Exact-key lookup supports bounded SDK erasure without changing the existing guard.
+ ['migration',conversation('0025_retention_target_lookup.sql'),'f96c1d5345f7dbf9635a5b80426c40a353c67a317911428260368f9be4579110','integration'],
+ // Separate installer phase: create the dedicated NOLOGIN schedule role, then grant only its existing owner accesses.
+ ['phase:schedule_worker_grants','infra/product-preview/first-chat-schedule-worker-grants.sql','579adc6932878b0ed9985588f4cef1cedd669802efcf483080d56c7d093181b6','integration'],
+ // Plan exact canonical targets independently of the legacy Memory alternative.
+ ['migration',conversation('0026_retention_target_dispatch.sql'),'611c78fd45af1e26e86d0b8ddfa73a9958f05697e725c858eeebfc71b12cda17','integration'],
+ // Canonical tenant settings read/save/audit through the existing control role.
+ ['migration','apps/control/settings/migrations/0002_tenant_settings_control_grants.sql','34f5c0aeece205def07d82ffcc2170436e1f435825ba5ec81d2d03e6ae1f7556','integration'],
+ // Forward projection expansion preserves every authority predicate and prior pin.
+ ['migration',conversation('0027_retention_target_projection.sql'),'75c1bfbda5491d7a3ac1c2ff943f5ba0f47b55f46cfb2c807de3fab90fbcba2c','integration'],
+ // Build only the SDK entry identity; retain the complete current row guard.
+ ['migration',conversation('0028_retention_sdk_identity.sql'),'3e2a8fc7b6a79e49887eb7a08f6d29bbd6ad013d5ae99c1967c01272eb42acad','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

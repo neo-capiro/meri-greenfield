@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createPostgresTaskLookupStore} from '../postgres-results.mjs';
 import {createTaskLookupDelivery} from '../delivery.mjs';
 import {prepare,event} from '../binding.mjs';
-import {NOW,context,envelope,readContext,hash,deferred,id} from '../../../../docs/qualification/candidates/task-slice-20261012/control-review/fixture.mjs';
+import {NOW,context,envelope,readContext,hash,deferred,id} from './fixture.mjs';
 import {scriptedPool} from '../../../../docs/qualification/candidates/task-slice-20261012/control-review/scripted-pool.mjs';
 const check=()=>{};
 function system(opts={}){const p=scriptedPool(opts);const store=createPostgresTaskLookupStore({pool:p.pool}),c=context(),b=prepare({},c,NOW);let calls=0;const delivery=createTaskLookupDelivery({store,gateway:{async executeOwned(){calls++;return JSON.stringify(envelope());}},authorize:async q=>({authorized:true,bindingSha256:q.binding.bindingSha256,expiresAtMs:NOW+9000}),clock:()=>NOW});return {...p,store,c,b,delivery,get calls(){return calls;},lookup:(extra={})=>delivery.lookup({request:{},context:c,credential:'synthetic',...extra}),read:()=>delivery.read({resultReference:c.resultReference,context:readContext()})};}

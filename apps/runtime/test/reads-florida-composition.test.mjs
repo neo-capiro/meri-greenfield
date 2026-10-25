@@ -15,7 +15,7 @@ async function fixture({client=false}={}){
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
   readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>source.state.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family]};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[operation]};}},
   async fetchImpl(url,options){assert.equal(new URL(url).pathname,'/api/clio/tools/get_florida_budget_project');assert.equal(options.method,'POST');assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');assert.equal(options.redirect,'error');assert.equal(options.credentials,'omit');
    const input=JSON.parse(options.body);calls.push(input);
    const result={tool:operation.id,generatedAt:new Date(source.state.now).toISOString(),result:{scope:{jurisdiction:'FL',sessionKey:input.sessionKey,folderId:input.folderId,clientId:input.clientId||input.folderId?source.clientId:null},fiscalYear:input.fiscalYear,projects:[],nextOffset:null,documents:[],amounts:[],events:[],notice:'Canonical source wording'},authority:'Canonical source wording'};

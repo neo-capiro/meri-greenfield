@@ -1,5 +1,5 @@
-/** Proposal eligibility over facts supplied by canonical owners (Core membership for surfaces, the current command decision for
- * conversations). It only narrows: it never grants a scope, client or memory that the supplied principal does not already hold. */
+/** Proposal eligibility over canonical Core membership for surfaces and native conversations. It only narrows: it never grants a
+ * scope, client or memory that the supplied principal does not already hold. */
 import {refuse} from '../product-access/errors.mjs';
 /** Core membership permission that admits firm-wide proposals; review authority stays in Core either way. */
 export const FIRM_PROPOSAL_PERMISSION='memory.propose.firm';

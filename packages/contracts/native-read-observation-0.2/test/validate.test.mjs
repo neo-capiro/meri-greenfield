@@ -19,7 +19,7 @@ test('the private schema is finite, closed and preserves the existing five fundi
  assert.equal(schema.$id,'urn:meri:native-read-observation:0.2.0');assert.equal(NATIVE_READ_OBSERVATION_SCHEMA_VERSION,'meri-native-read-observation/1');
  assert.equal(NATIVE_READ_OBSERVATION_HEADER,'x-meri-read-observation');assert.equal(NATIVE_READ_OBSERVATION_MAX_BYTES,2048);
  assert.deepEqual(FUNDING_READ_OPERATIONS,FUNDING_OPPORTUNITY_OPERATION_IDS);assert.ok(Object.isFrozen(FUNDING_READ_OPERATIONS));
- assert.deepEqual(NATIVE_READ_OBSERVATION_OPERATIONS,[...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS]);assert.ok(Object.isFrozen(NATIVE_READ_OBSERVATION_OPERATIONS));
+ assert.deepEqual(NATIVE_READ_OBSERVATION_OPERATIONS,[...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS,'get_certification_status','get_state_rule_status']);assert.ok(Object.isFrozen(NATIVE_READ_OBSERVATION_OPERATIONS));
  assert.deepEqual(schema.$defs.NativeReadOperationRef.properties.id.enum,NATIVE_READ_OBSERVATION_OPERATIONS);
  assert.equal(schema.$defs.NativeReadObservation.additionalProperties,false);assert.equal(schema.$defs.NativeReadContext.additionalProperties,false);
  assert.equal(golden.vectors.length,5);assert.deepEqual(golden.vectors.map(v=>v.operation.id),FUNDING_READ_OPERATIONS);

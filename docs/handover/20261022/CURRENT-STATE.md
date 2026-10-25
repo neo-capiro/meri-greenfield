@@ -1,5 +1,24 @@
 # Current Wave 2 release state
 
+## Successor audit — 25 October 2026
+
+Neo resumed all sessions after their usage-limit interruption and asked that feature work continue in parallel with one dedicated local-environment owner. Root remains the sole integrator and AWS release owner. There has been **no successor AWS deployment, preview migration or DNS change**. Source/test results below do not qualify a testable preview. The last verified deployed baseline remains runtime `5430b131` / control 67, Core `4ce7cf63` / revision 11 and frontend `6118da80` / revision 29; obtain fresh readbacks before shipping.
+
+| Area | Accepted source and evidence | Remaining closure |
+|---|---|---|
+| Core integration | Clean `30618725b1065e1d1404ac2cad0f27dd2ad41bb0` includes reviewed native filing commit verification, current Mail client-wall checks and contact transfer. Filing passed two paired HTTP cases and five actual PostgreSQL cases; contact transfer passed fourteen actual PostgreSQL cases with the active Contacts forward migration. | Paired contact UI/edge, complete local build and actual combined acceptance. New migrations are source-only for AWS. |
+| Meri runtime | SDK/native tools, fourteen selected skills, management, Objective, task/document/file/memory owners and public contracts have accumulated accepted changes. Routines `2419a727b` and General task read `b4f19d1b` are reviewed; initial task retention `713a1a8d` is reviewed. | Missing certification/state-rule/SAM read adapters, General memory read/context correctness and broader General read parity; first-use routine and Objective prompt retention; large SDK-session purge. Public distributions must be regenerated from the final composition. |
+| Frontend | Accepted management/lifecycle, selected-skill/client handoff, Objective, native action recovery, meeting/artifact and file-access consumers are composed through `166e48de`. Local layout authentication repair is verified with the existing signed-in browser. | Routines surface and contact carry-over consumer are in progress. Saved brief/file carry-over and remaining domain consumers must be paired with their actual owners. Final package install/build and integrated browser acceptance remain. |
+| Portfolio | Contact source/migration is reviewed; saved Core brief to private client draft is sealed at `fc979524bc` with 56 focused passing tests, pending independent review and its ten prepared PG cases. | File deletion/copy and calendar sync recovery; paired brief UI/edge; actual feature acceptance. PF14's accepted Directory allocation remains note-only. |
+| Data integrity | Filing false acknowledgements after COMMIT rollback are repaired and independently qualified. First-use task retention is repaired. | Memory-purge late legal-hold race has source candidate `86619dc8` with 15 unit checks and affected types passing; independent review and concurrent PG proof remain. Do not enable purge from source-only evidence. |
+| Local environment | Existing environment/data/authentication are preserved. Meri migrations 1–53 are applied locally. Backups are saved; exact-lock Core dependency installation has completed and Core compilation is underway. | Same-volume PostgreSQL capacity repair, matching Core/control/runtime/Temporal startup and authenticated end-to-end flows. The local browser is not yet proof of complete chat readiness. |
+
+Settings, Mail, Portfolio, frontend, runtime and environment work are active in parallel. Final release still requires coherent reviewed source, real local user paths, ARM64 images built once per candidate, exact-image smoke and zero HIGH/CRITICAL scan results, snapshot-before-forward-migration, preview deployment and actual client/General chat/data/follow-up/Stop acceptance. Preserve existing valid checks and all applied history. Do not reimplement already accepted owners merely because their deployment acceptance remains open.
+
+Evidence stays in the existing local `C:/dev/wave2-evidence-20261024` owner folders and visible-lane handoffs. This checkpoint names source states, not new authorization, a new release framework or a promise that every advertised feature has passed.
+
+## Earlier release receipt — 24 October 2026
+
 Documentation cutoff **24 October 2026, 21:37 UTC**, incorporating root's Core migration verification at 21:30 and subsequent rollout handoff, on Meri main `5f1e166ea9919789dbe9d2e17bd451e846c0c6fa`. This is a fixed receipt, not a continuously refreshed environment inventory. Root owns later readbacks. No cloud, deployment, database or browser action was performed for this documentation update.
 
 | Component | Implemented / reviewed / merged | Built and deployed state | Acceptance still required |

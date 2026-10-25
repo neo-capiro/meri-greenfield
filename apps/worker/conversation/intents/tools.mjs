@@ -9,7 +9,7 @@ const MAX_DESCRIPTION=4096;
 export const INTENT_ANNOTATIONS=Object.freeze({readOnlyHint:false,destructiveHint:false,idempotentHint:true,openWorldHint:false});
 /** @param {readonly import('./catalog.mjs').IntentRow[]} rows */
 function description(rows){
- const lines=['Prepare a write request for the user to review. This never applies a change: it returns an immutable proposal that the user must approve in Meri, or an immutable draft version.'];
+ const lines=[rows.every(row=>row.owner==='memory')?'Submit a memory candidate for governed Core review. The result is pending review, never saved or published memory, and requires no task approval.':'Prepare a write request for the user to review. This never applies a change: it returns an immutable proposal that the user must approve in Meri, or an immutable draft version.'];
  for(const r of rows){const d=intentDescriptor(r.operation);
   lines.push(`operation "${r.operation.id}": ${d.displayName}. ${d.whenToUse}`);
   for(const example of d.negativeExamples??[])lines.push(`  Do not: ${example}`);

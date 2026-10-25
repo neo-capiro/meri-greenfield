@@ -28,7 +28,9 @@ export function assertClientKnowledgeSearchSubject(subject,selection){
     current.scopes.some(scope=>scope.kind==='client'&&scope.resourceId.toLowerCase()!==current.entityIds[0].toLowerCase()))deny('ACCESS_DENIED');
    return;
   }
-  if(typeof clientId!=='string'||!UUID.test(clientId)||clientId!==clientId.toLowerCase()||current.kind!=='client'||current.entityType!=='client'||current.entityIds.length!==1||
+  if(typeof clientId!=='string'||!UUID.test(clientId)||clientId!==clientId.toLowerCase())deny('ACCESS_DENIED');
+  if(current.kind==='personal')return;
+  if(current.kind!=='client'||current.entityType!=='client'||current.entityIds.length!==1||
    current.entityIds[0].toLowerCase()!==clientId||!current.scopes.some(scope=>scope.kind==='client'&&scope.resourceId.toLowerCase()===clientId)||
    current.scopes.some(scope=>scope.kind==='client'&&scope.resourceId.toLowerCase()!==clientId))deny('ACCESS_DENIED');
  }catch{deny('ACCESS_DENIED');}

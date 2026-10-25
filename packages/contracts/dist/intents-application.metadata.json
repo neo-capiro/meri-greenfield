@@ -80,13 +80,15 @@
   ],
   "approvableActions": [
     "task.create",
-    "document.draft"
+    "task.update",
+    "document.draft",
+    "artifact.file"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the actual owner outcome: task.create receipt/result or document.draft ArtifactCreatedResult after publication; document approval alone remains approved or indeterminate, with no task receipt inferred",
+    "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, or document.draft ArtifactCreatedResult after publication; approval alone remains approved or indeterminate",
     "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",
@@ -114,8 +116,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "5bfcf0779133d363eeb3caf96ea049a4e245e1eab74f7507f7b4cd52f8b40686",
-      "bytes": 21254
+      "sha256": "32352b94f958b2eae8c09a072221328f33dd0c023de710b77aba7e0071e6467f",
+      "bytes": 20990
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -124,8 +126,8 @@
     },
     {
       "path": "../../apps/control/intents/http.mjs",
-      "sha256": "0b225047e30cb3568fd31005cb07d4123e67603e37d0ae8350e0582eb1bd78ec",
-      "bytes": 1703
+      "sha256": "9aa528f02d216533d77715eb96c14173111939d5ae8a5ac2516484d9234b9111",
+      "bytes": 2343
     },
     {
       "path": "../../apps/control/product-access/errors.mjs",
@@ -134,8 +136,18 @@
     },
     {
       "path": "../../apps/control/product-access/http.mjs",
-      "sha256": "2dbfd279212a16334ac30c2a411361fac31749e0ee0b4c1fb5139bcc21469ada",
-      "bytes": 8246
+      "sha256": "d202540f9d9892350adf5a1bbfd8686a8322bdc1e9b3734f72f232e1ced41074",
+      "bytes": 9194
+    },
+    {
+      "path": "../../apps/control/schedules/application-http.mjs",
+      "sha256": "9290a23126d872c67bdd93955a6ffaddcea198b4c5da426f55bbd0178dde5622",
+      "bytes": 6657
+    },
+    {
+      "path": "../../apps/control/schedules/application.mjs",
+      "sha256": "054ebb700a632de91247b0d7b204908e941e5388b2b4411876d82d52e9be1bd7",
+      "bytes": 16577
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
@@ -148,6 +160,11 @@
       "bytes": 48251
     },
     {
+      "path": "commands-0.2/artifact-file.schema.json",
+      "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537",
+      "bytes": 3494
+    },
+    {
       "path": "commands-0.2/document-draft-validation.mjs",
       "sha256": "81c0b39c07bcf11b06736bdaee1e7b319017cf2db47c0bbb41ebefb0168db19f",
       "bytes": 1909
@@ -158,9 +175,24 @@
       "bytes": 3718
     },
     {
+      "path": "commands-0.2/memory-propose.schema.json",
+      "sha256": "64bbf814a3ab3ffca858c752a9e73eee84bdc437dae01d39b624012b72d79dac",
+      "bytes": 3500
+    },
+    {
+      "path": "commands-0.2/memory-review-result.mjs",
+      "sha256": "f8c7f02b183b6b33cad8133cb4228afcc21b346e9c5ccd8c16f56d73fb03d56c",
+      "bytes": 941
+    },
+    {
       "path": "commands-0.2/task-create.schema.json",
       "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
       "bytes": 3827
+    },
+    {
+      "path": "commands-0.2/task-update.schema.json",
+      "sha256": "2def0842b4f72ce862df09f0064b0ea32ab7428d25cb2f10bdc2b6055d26c857",
+      "bytes": 5176
     },
     {
       "path": "document-application/boundary.mjs",
@@ -169,8 +201,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "1cf985901131025da0f61cbd6ee6daa2c43adf99d716ff9469b8d0047f7b3915",
-      "bytes": 10092
+      "sha256": "b07af88ea003af67d237118188293cad94c5c1f2fce65f18e1970b47c34464f1",
+      "bytes": 12748
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -179,42 +211,68 @@
     },
     {
       "path": "intents-application/protocol.mjs",
-      "sha256": "e0c024c5321487f0a9a2c7eb04f43c2e8e79f4aa588294683fbcbf448d9366b7",
-      "bytes": 2878
+      "sha256": "814c5d145fef7850162e65820330f35c0609df4cc1c55e83e485a6642a43b17f",
+      "bytes": 2910
     },
     {
       "path": "intents-application/README.md",
-      "sha256": "9e90a6fad4cedb5b3f0eb0c71c888831c6e1b69433bd10852cb5c86f306f9c0d",
-      "bytes": 7031
+      "sha256": "1d60385e20ee688295be4a847f762ba937b66e90c06ecdbee60e147c751beca0",
+      "bytes": 7799
     },
     {
       "path": "intents-application/receive.mjs",
-      "sha256": "93151b65c6fe9f4eacea718cde34e8c70462d9fcabc0e09f40c51738cc78b3d6",
-      "bytes": 2686
+      "sha256": "3753603d990b43680ae382731f5d715d2f944734407306125a12e9d7d181d715",
+      "bytes": 2796
+    },
+    {
+      "path": "intents-application/routines.mjs",
+      "sha256": "741e94c8e9a02008420172b932db6ce95aa5dbce4a4b4fb843f4a71f29ce0c3a",
+      "bytes": 4570
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "8dc058bddef00eb8b3d116e459a1f36b7cff1081fbc00eff66e5d4a193361df7",
-      "bytes": 4610
+      "sha256": "372a24875b3f0f07b45f1714404c1c0d138a444eec6772136b650997b24a4332",
+      "bytes": 8939
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "fb6c512e71dcdc181675f7d5d83fc20085f48b8d04b5b8efd7c3bbc86ca78e32",
-      "bytes": 7938
+      "sha256": "ff2a88467967c43644c3e79b761d4acc384a5527947462239ce5ec26de91bb37",
+      "bytes": 11869
     },
     {
       "path": "meri.schema.json",
       "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
       "bytes": 50043
+    },
+    {
+      "path": "schedules-0.2/application-protocol.mjs",
+      "sha256": "aca5ec8b8fa966991a6faf4f55b61e82694a76badebc5f6746f0fa3835478e9f",
+      "bytes": 864
+    },
+    {
+      "path": "schedules-0.2/inspection.schema.json",
+      "sha256": "2e6a140a555984f6de88c4d1bded03bb2aebec9bd2e9bc34709130d0ee22fa85",
+      "bytes": 6806
+    },
+    {
+      "path": "schedules-0.2/lifecycle.schema.json",
+      "sha256": "0b391e3e94fc3278de6d061694772a853c54c083630f874c5dc54c82a01f5001",
+      "bytes": 18610
+    },
+    {
+      "path": "schedules-0.2/tool-interface.schema.json",
+      "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf",
+      "bytes": 24305
     }
   ],
-  "schemaSha256": "cf1f1221965135dbba54e5baa3583af7b317bd01c53b468db4dd7a11b588a9af",
+  "schemaSha256": "0120aa451e8517bb202b8b0ef32504102e73f37561f82c131e36db65ab00b21c",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",
     "intents-application/boundary.mjs",
     "intents-application/intents-application-receiver.mjs",
     "intents-application/protocol.mjs",
+    "intents-application/routines.mjs",
     "intents-application/schema.mjs",
     "intents-application/semantics.mjs",
     "intents-generated:./generated-protocol.mjs",
@@ -223,7 +281,8 @@
     "node_modules/ajv/dist/runtime/equal.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
-    "node_modules/fast-deep-equal/index.js"
+    "node_modules/fast-deep-equal/index.js",
+    "schedules-0.2/application-protocol.mjs"
   ],
   "browserImports": []
 }

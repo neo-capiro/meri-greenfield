@@ -51,6 +51,7 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  if(c.native?.serverCaFile!==undefined)add(c.native.serverCaFile,'control-server-ca');
  if(role==='control'||role==='schedule-worker'){
   add(c.database.connectionFile,'database-connection');
+  if(role==='schedule-worker'&&c.routines?.enabled===true&&c.routines.core!==undefined)add(c.routines.core.serviceSecretFile,'routines-core-service-secret');
   if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');
   if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');
   }

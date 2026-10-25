@@ -18,12 +18,14 @@ const TOKEN='golden-native-bearer',OTHER_TOKEN='golden-other-bearer',SECRET='gol
 const surface={kind:'surface'};
 const principal=(over={})=>Object.freeze({tenantId:TENANT,actorId:ACTOR,role:'standard_user',permissions:Object.freeze([]),clientIds:Object.freeze([CLIENT]),membershipRevision:'m1',...over});
 const code=async(promise,expected,outcome=null)=>{await assert.rejects(promise,e=>productFailure(e)?.code===expected&&productFailure(e)?.outcome===outcome);};
-function setup({lifecycle=true,credentials}={}){
+function setup({lifecycle=true,credentials,afterFetch}={}){
  let now=NOW;const clock=()=>now;
  const core=createGoldenCore({now:clock,lifecycle,serviceSecret:SECRET});
  core.member({token:TOKEN,tenantId:TENANT,userId:ACTOR});core.member({token:OTHER_TOKEN,tenantId:TENANT,userId:OTHER});core.state.walledClients.add(WALLED);
  const journal=createJournalDouble();
- const transport=createCoreMemoryTransport({origin:'https://core.example',now:clock,fetchImpl:(url,init)=>core.fetch(url,init),
+ const transport=createCoreMemoryTransport({origin:'https://core.example',now:clock,fetchImpl:async(url,init)=>{
+  const response=await core.fetch(url,init);return afterFetch?afterFetch({url,init,response,core}):response;
+ },
   getCredentials:credentials??(async({tenantId,actorId})=>({tenantId,actorId,bearerToken:actorId===ACTOR?TOKEN:OTHER_TOKEN,serviceSecret:SECRET,expiresAtMs:clock()+60000}))});
  const producer=createMemoryProducer({journal,review:createCoreReview({transport}),memory:createCoreMemoryReads({transport}),decisions:createCoreDecisions({transport}),newId:ids(100),now:clock});
  return {core,journal,producer,transport,tick:ms=>{now+=ms;},
@@ -32,9 +34,39 @@ function setup({lifecycle=true,credentials}={}){
   status:(p,candidateId)=>producer.status({principal:p,request:statusRequest({candidateId})}),
   list:(p,body={})=>producer.list({principal:p,request:listRequest(body)}),
   pending:(p,body={})=>producer.listPending({principal:p,request:listRequest(body)}),
-  decide:(p,decision,body)=>producer.decide({principal:p,request:reviewDecisionRequest(body,decision),decision})};
+  decide:(p,decision,body,options={})=>producer.decide({principal:p,request:reviewDecisionRequest(body,decision),decision,...options})};
 }
 const rowOf=t=>[...t.journal.rows.values()][0];
+
+for(const kind of ['addition','correction'])for(const failure of ['lost acknowledgement','cancellation','deadline'])test(`${kind} decision accepted before ${failure} stays UNKNOWN and status reconciles without another decision`,async()=>{
+ const abort=new AbortController();let accepted=false;
+ const t=setup({afterFetch({url,response}){
+  if(url.endsWith('/owner-decision')||url.endsWith('/approve')){
+   accepted=true;
+   if(failure==='lost acknowledgement')throw new TypeError('synthetic decision acknowledgement loss');
+   if(failure==='cancellation')abort.abort();else t.tick(10001);
+  }
+  return response;
+ }});
+ const memory=kind==='correction'?t.core.addMemory({tenantId:TENANT,scope:'personal',ownerUserId:ACTOR,key:'correction-key',value:'old'}):null;
+ const view=memory?await t.correct(principal(),{idempotencyKey:id(1),targetMemoryId:`clio:${memory.id}`,content:'new',reason:'changed',sources:[{kind:'document',reference:'synthetic-document'}]}):
+  await t.propose(principal(),{idempotencyKey:id(1),scope:'personal',content:'A fact'});
+ await code(t.decide(principal(),'approved',{candidateId:view.candidateId},{signal:abort.signal}),'MEMORY_DECISION_UNCERTAIN','UNKNOWN');
+ assert.equal(accepted,true);assert.equal(t.core.candidates.get(view.candidateId).status,'approved');
+ const recovered=await t.status(principal(),view.candidateId);assert.equal(recovered.review.status,'approved');assert.match(recovered.review.publishedMemoryId,MEMORY_ID);
+ assert.ok(recovered.review.publishedMemoryId.startsWith(kind==='addition'?'clio:':'item:'));
+ await code(t.decide(principal(),'approved',{candidateId:view.candidateId}),'MEMORY_DECISION_NOT_PENDING');
+ assert.equal(t.core.calls.filter(c=>c.path.endsWith('/owner-decision')||c.path.endsWith('/approve')).length,1);
+});
+
+test('an acknowledged decision does not publish its bare response id when canonical status readback fails',async()=>{
+ const t=setup({afterFetch({url,response,core}){if(url.endsWith('/owner-decision'))core.state.offline=true;return response;}});
+ const view=await t.propose(principal(),{idempotencyKey:id(1),scope:'personal',content:'A fact'});
+ const answer=await t.decide(principal(),'approved',{candidateId:view.candidateId});
+ assert.equal(answer.decision.outcome,'activated');assert.equal(answer.proposal.review.status,'unavailable');assert.equal(answer.proposal.review.publishedMemoryId,null);
+ t.core.state.offline=false;assert.match((await t.status(principal(),view.candidateId)).review.publishedMemoryId,MEMORY_ID);
+ assert.equal(t.core.calls.filter(c=>c.path.endsWith('/owner-decision')).length,1);
+});
 
 test('receiving routes carry the member bearer and the verified service identity; decision routes the bearer only; 200 bodies are closed',async()=>{
  const t=setup();
@@ -131,8 +163,10 @@ test('a bare UUID is never a memory; a stale pin is a DEFINITE 409: nothing reco
 test('ttl: a keyed conversational proposal that becomes a correction carries no ttl; a correction candidate with a ttl is refused locally, never submitted',async()=>{
  const t=setup();
  const memory=t.core.addMemory({tenantId:TENANT,scope:'personal',ownerUserId:ACTOR,key:'brief-length',value:'short'});
- const command={commandId:id(5),binding:{tenantId:TENANT,actorId:ACTOR,conversationId:id(1),runId:id(2)},arguments:{scope:'personal',clientId:null,content:'Long briefs please',key:'brief-length',ttlDays:3},idempotencyKey:id(6)};
- const view=await t.producer.proposeFromCommand({principal:principal(),command,commandSha256:canonicalSha256(command)});
+ const binding={tenantId:TENANT,actorId:ACTOR,conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
+ const command={contractVersion:'0.1.0',commandId:id(5),binding,action:'memory.propose',attachments:[],
+  scopes:[{tenantId:TENANT,kind:'private-user',resourceId:ACTOR,policyRevision:'p1'}],arguments:{scope:'personal',clientId:null,content:'Long briefs please',key:'brief-length',ttlDays:3},idempotencyKey:id(6)};
+ const view=await t.producer.proposeFromCommand({principal:principal(),command,commandContext:{binding,conversationClientId:null},commandSha256:canonicalSha256(command)});
  assert.equal(view.kind,'correction');assert.equal(view.ttlDays,null);assert.equal(view.corrects.memoryId,`clio:${memory.id}`);assert.equal(view.review.status,'pending');
  const fields={candidateId:id(9),principal:principal(),scope:'personal',clientId:null,content:'x',key:'k',ttlDays:5,corrects:{memoryId:`clio:${memory.id}`,memorySha256:'a'.repeat(64)},reason:'r',sources:[],origin:{kind:'conversation',conversationId:id(1),runId:id(2),commandId:id(3),commandSha256:'b'.repeat(64)},idempotencyKey:id(8),createdAt:new Date(NOW).toISOString()};
  assert.throws(()=>buildCandidate(fields),e=>productFailure(e)?.code==='MEMORY_CANDIDATE_INVALID');

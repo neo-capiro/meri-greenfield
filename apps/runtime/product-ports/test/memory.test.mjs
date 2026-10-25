@@ -3,7 +3,7 @@
  * Nothing here is PostgreSQL, Core, a secret file or a live session. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createProductPortsFactory} from '../index.mjs';
-import {createMemoryFamily,createMemoryFamilyWith,memoryComposition,compileMemoryConfiguration,bindMemoryRetention,bindMemoryCommandRetention,MEMORY_TABLES,MEMORY_COMMAND_RETENTION_CLASSES} from '../memory.mjs';
+import {createMemoryFamily,createMemoryFamilyWith,memoryComposition,compileMemoryConfiguration,bindMemoryRetention,memoryIntentPreparersFor,MEMORY_TABLES} from '../memory.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
 import {productReadiness} from '../../product-readiness.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../../../control/memory/protocol.mjs';
@@ -19,17 +19,15 @@ const memory={enabled:true,origin:'https://core.example',serviceSecretFile:'/run
 const retention={enabled:true};
 const principal=()=>Object.freeze({tenantId:TENANT,actorId:ACTOR,role:'standard_user',permissions:Object.freeze([]),clientIds:Object.freeze([CLIENT]),membershipRevision:'m1'});
 const gate=Object.freeze({async admit(){return {principal:principal(),expiresAtMs:NOW+60000};},async recheck({principal:p}){return p;}});
-const commandRetentionProof=()=>({classNames:MEMORY_COMMAND_RETENTION_CLASSES,registryReady:true,targetSchemaReady:true,grantsReady:true,
- recoveryReady:true,policyReady:true,metadata:{className:'meriMemoryApprovalMetadata',inventoryPage(){},present(){},purgeInTransaction(){}}});
 function untouchable(name){return new Proxy({},Object.fromEntries(['get','has','ownKeys','getOwnPropertyDescriptor','set','apply'].map(t=>[t,()=>{throw Error('touched '+name);}])));}
-function context({configuration=base,pool,gate:g}={}){
- return Object.freeze({configuration,pool:pool??untouchable('pool'),client:{},native:{},now:()=>NOW,canonicalProductPorts:captureRuntimePorts(g?{conversationMembership:g}:{})});
+function context({configuration=base,pool,gate:g,now=()=>NOW}={}){
+ return Object.freeze({configuration,pool:pool??untouchable('pool'),client:{},native:{},now,canonicalProductPorts:captureRuntimePorts(g?{conversationMembership:g}:{})});
 }
-function harness({relay,readSecret,bind=true,retentionGate={async assertServable(){}}}={}){
- const core=createGoldenCore({now:()=>NOW,serviceSecret:SECRET});core.member({token:BEARER,tenantId:TENANT,userId:ACTOR});
+function harness({relay,readSecret,bind=true,retentionGate={async assertServable(){}},membershipGate=gate,fetchImpl,now=()=>NOW}={}){
+ const core=createGoldenCore({now,serviceSecret:SECRET});core.member({token:BEARER,tenantId:TENANT,userId:ACTOR});
  const pg=createMemoryPoolFixture(),reads=[];
- const owners={readSecret:readSecret??(async path=>{reads.push(path);if(path!==memory.serviceSecretFile)throw Error('no such file');return Buffer.from(SECRET+'\n');}),fetchImpl:(u,i)=>core.fetch(u,i),newId:ids(300),...(relay?{nativeCredentials:relay}:{})};
- const family=createMemoryFamilyWith(owners),ctx=context({configuration:{...base,memory,retention},pool:pg.pool,gate});
+ const owners={readSecret:readSecret??(async path=>{reads.push(path);if(path!==memory.serviceSecretFile)throw Error('no such file');return Buffer.from(SECRET+'\n');}),fetchImpl:fetchImpl?((u,i)=>fetchImpl(u,i,core)):((u,i)=>core.fetch(u,i)),newId:ids(300),...(relay?{nativeCredentials:relay}:{})};
+ const family=createMemoryFamilyWith(owners),ctx=context({configuration:{...base,memory,retention},pool:pg.pool,gate:membershipGate,now});
  const ports=createProductPortsFactory({families:[['memory',family]]})(ctx);
  if(bind)assert.equal(bindMemoryRetention(ctx,retentionGate),true);
  const post=async(path,body)=>{const r=await ports.memoryApplication.handle(new Request('https://control.example'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+BEARER},body:JSON.stringify(body)}));return {status:r.status,body:await r.json()};};
@@ -88,9 +86,8 @@ test('memory family is unavailable until its exact canonical retention gate is b
 test('the enabled family refuses unowned surface writes while retaining review and status reads of existing own rows; construction reads nothing',async()=>{
  const t=harness();
  assert.deepEqual(Object.keys(t.ports),['memoryApplication']);assert.equal(t.reads.length,0);assert.equal(t.pg.statements.length,0);
- assert.deepEqual(memoryComposition(t.ctx).tables,MEMORY_TABLES);assert.equal(memoryComposition(t.ctx).commandSourceFor,null,'no relay: the run path is absent, the surface composes');
- assert.equal(bindMemoryCommandRetention(t.ctx,commandRetentionProof()),true);
- assert.equal(memoryComposition(t.ctx).commandOptionsFor,null,'no relay: even fully bound retention cannot prepare a command');
+ assert.deepEqual(memoryComposition(t.ctx).tables,MEMORY_TABLES);assert.equal(memoryComposition(t.ctx).intentPreparersFor,null,'no relay: the run path is absent, the surface composes');
+ assert.deepEqual(memoryIntentPreparersFor(t.ctx,{}),[]);
  const proposed=await t.post(MEMORY_PATHS.propose,{idempotencyKey:id(1),scope:'personal',content:'Prefers morning briefings',key:'briefing-time'});
  assert.equal(proposed.status,503);assert.equal(proposed.body.error.code,'MEMORY_RETENTION_SUBJECT_UNAVAILABLE');
  assert.equal(proposed.body.error.outcome,'NOT_DISPATCHED');
@@ -118,51 +115,122 @@ test('the composition is memoized per trusted context and refuses a second famil
  assert.throws(()=>memoryComposition(null),code('PRODUCT_PORTS_CONFIGURATION'));
 });
 
-test('with the live-session relay the run path composes the governed memory.propose source bound to the run and its selected client',()=>{
- const binding={tenantId:TENANT,actorId:ACTOR,conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
- const relay={nativeCredentialFor({binding:b,selectedClientId}){assert.equal(b.runId,binding.runId);assert.equal(selectedClientId,CLIENT);return {credential:BEARER,expiresAtMs:NOW+30000};}};
- const t=harness({relay,bind:false});
- const composition=memoryComposition(t.ctx);assert.equal(typeof composition.commandSourceFor,'function');
- assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}),null,'an unbound producer cannot enter the durable command owner');
- assert.equal(bindMemoryRetention(t.ctx,{async assertServable(){}}),true);
- assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}),null,'an unowned memory metadata payload cannot enter the durable command owner');
- assert.equal(composition.commandOptionsFor({binding,selectedClientId:CLIENT,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}}),null);
- const proof=commandRetentionProof();
- assert.throws(()=>bindMemoryCommandRetention(t.ctx,{className:'meriMemoryApprovalMetadata'}),code('PRODUCT_PORTS_CONFIGURATION'));
- assert.throws(()=>bindMemoryCommandRetention(t.ctx,{...proof,classNames:['meriMemoryApprovalMetadata']}),code('PRODUCT_PORTS_CONFIGURATION'));
- assert.throws(()=>bindMemoryCommandRetention(t.ctx,{...proof,recoveryReady:false}),code('PRODUCT_PORTS_CONFIGURATION'));
- assert.equal(bindMemoryCommandRetention(t.ctx,proof),true);
- assert.equal(composition.commandRetentionBound(),true);
- const source=composition.commandSourceFor({binding,scopes:[{tenantId:TENANT,kind:'client',resourceId:CLIENT.toUpperCase(),policyRevision:'p'}]});
- assert.equal(source.personalPending,true);assert.equal(typeof source.prepare,'function');assert.equal(typeof source.execute,'function');
- const options=composition.commandOptionsFor({binding,selectedClientId:CLIENT,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}});
- assert.equal(options.operation.id,'save_memory');assert.equal(options.commandContext.conversationClientId,CLIENT);
- assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT}).personalPending,true);
- assert.equal(composition.commandSourceFor({binding,selectedClientId:CLIENT.toUpperCase()}).personalPending,true);
- // A personal proposal still needs the selected-client UUID of a live action session; its command arguments use clientId:null.
- assert.throws(()=>composition.commandSourceFor({binding,selectedClientId:null}),code('MEMORY_CONFIGURATION'));
- assert.throws(()=>composition.commandSourceFor({binding,selectedClientId:null,scopes:[{tenantId:TENANT,kind:'client',resourceId:CLIENT,policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
- assert.throws(()=>composition.commandOptionsFor({binding,selectedClientId:null,preparePolicy:async()=>{},executor:{async execute(){}},limits:{maxRequestMs:1000,maxFactBytes:65536}}),code('MEMORY_CONFIGURATION'));
- assert.throws(()=>composition.commandSourceFor({binding,scopes:[{tenantId:TENANT,kind:'tenant',resourceId:TENANT,policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
- assert.throws(()=>composition.commandSourceFor({binding}),code('MEMORY_CONFIGURATION'));
- assert.throws(()=>composition.commandSourceFor({binding,selectedClientId:CLIENT,scopes:[{tenantId:TENANT,kind:'client',resourceId:id(902),policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
- assert.throws(()=>composition.commandSourceFor({binding,scopes:[{tenantId:'foreign-tenant',kind:'client',resourceId:CLIENT,policyRevision:'p'}]}),code('MEMORY_CONFIGURATION'));
-});
 
-test('bound conversational source uses the live member bearer and guarded journal; foreign commands touch neither',async()=>{
- const binding={tenantId:TENANT,actorId:ACTOR,conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1},lookups=[];
- const relay={nativeCredentialFor(v){lookups.push(v);return {credential:BEARER,expiresAtMs:NOW+30000};}};
- const t=harness({relay});assert.equal(bindMemoryCommandRetention(t.ctx,commandRetentionProof()),true);
- const source=memoryComposition(t.ctx).commandSourceFor({binding,selectedClientId:CLIENT});
- const command={contractVersion:'0.1.0',commandId:id(5),idempotencyKey:id(6),binding,action:'memory.propose',attachments:[],scopes:[],
-  arguments:{scope:'personal',content:'Prefers concise updates',key:null,ttlDays:null,clientId:null}};
- const authority={binding,policyRevision:'p',claims:{capabilityId:id(7)},decision:{scopes:[]},deadlineMs:NOW+1000};
- await assert.rejects(source.prepare({command:{...command,binding:{...binding,conversationId:id(99)}},authority,deadlineMs:NOW+1000}),/COMMAND_SOURCE_IDENTITY_REFUSED/);
- assert.equal(lookups.length,0);assert.equal(t.pg.statements.length,0);assert.equal(t.core.calls.length,0);
- const prepared=await source.prepare({command,authority,deadlineMs:NOW+1000});
- const result=await source.execute(prepared,{authority});
- assert.equal(result.status,'pending');assert.equal(t.pg.rows.length,1);assert.equal(t.pg.rows[0].candidate.scope,'personal');
- assert.ok(t.pg.statements.some(sql=>sql.startsWith('SELECT state FROM meri_conversations.retention_subjects')));
- assert.ok(lookups.length>=2);assert.ok(lookups.every(v=>v.selectedClientId===CLIENT&&v.binding.runId===binding.runId));
- assert.ok(t.core.calls.length>0);assert.ok(t.core.calls.every(v=>v.bearer===BEARER));
+const binding={tenantId:TENANT,actorId:ACTOR,conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
+const deliveryId='sdk:'+'a'.repeat(64);
+function nativeHarness({general=false,bind=true,...options}={}){
+ const selectedClientId=general?null:CLIENT,scopes=[{tenantId:TENANT,kind:general?'private-user':'client',resourceId:general?ACTOR:CLIENT,policyRevision:'p'}];
+ const state={live:true,current:true,credential:BEARER,membership:principal(),lookups:[],currents:0,admissions:0,now:NOW},membershipGate={
+  async admit({credential}){state.admissions++;assert.equal(credential,BEARER);await state.onAdmit?.();
+   if(state.membership===null)throw Object.assign(Error('revoked'),{code:'MEMBERSHIP_REVOKED'});
+   return {principal:state.membership,expiresAtMs:state.memberExpiresAtMs??state.now+30000};},
+  async recheck({principal:p}){assert.deepEqual(p,state.membership);return p;},
+ };
+ const relay={nativeCredentialFor(v){state.lookups.push(v);assert.deepEqual(v.binding,binding);assert.equal(v.selectedClientId,selectedClientId);if(!state.live)throw Error('no session');return {credential:state.credential,expiresAtMs:state.sessionExpiresAtMs??state.now+30000};}};
+ const t=harness({relay,membershipGate,bind,now:()=>state.now,...options});
+ const input={binding,scopes,selectedClientId,policyRevision:'p',deadlineMs:NOW+5000,readCurrent:async()=>{
+  state.currents++;await state.onCurrent?.();if(!state.current)throw Object.assign(Error('revoked'),{code:'ACCESS_DENIED'});
+  return {binding,scopes,selectedClientId,policyRevision:'p',checkedAtMs:state.now,expiresAtMs:state.now+30000};
+ }};
+ const prepare=(arguments_={content:'Prefers concise updates'},over={})=>memoryIntentPreparersFor(t.ctx,input)[0].prepare({arguments:arguments_,deliveryId,...over});
+ return {...t,state,input,prepare};
+}
+test('native preparation is absent without canonical retention; exact General and malformed selections stay distinct',()=>{
+ const t=nativeHarness({bind:false});
+ assert.deepEqual(memoryIntentPreparersFor(t.ctx,t.input),[]);assert.equal(t.state.lookups.length,0);assert.equal(t.pg.rows.length,0);
+ bindMemoryRetention(t.ctx,{async assertServable(){}});
+ for(const change of [{selectedClientId:null},{selectedClientId:undefined},{scopes:[{tenantId:TENANT,kind:'private-user',resourceId:'other',policyRevision:'p'}],selectedClientId:null},
+  {scopes:[{tenantId:TENANT,kind:'tenant',resourceId:TENANT,policyRevision:'p'}],selectedClientId:null}]){
+  assert.throws(()=>memoryIntentPreparersFor(t.ctx,{...t.input,...change}));
+ }
+});
+for(const general of [false,true])test(`native ${general?'General':'client'} personal submission stays pending until existing signed-in Core review publishes it`,async()=>{
+ const t=nativeHarness({general}),result=await t.prepare();
+ assert.equal(result.status,'review_pending');assert.deepEqual(result.binding,binding);assert.deepEqual(result.scopes,t.input.scopes);
+ assert.deepEqual(Object.keys(result.result).sort(),['candidateId','commandSha256','status']);
+ assert.equal(result.result.status,'pending');assert.equal(t.pg.rows.length,1);assert.equal(t.core.memories.length,0);
+ assert.equal(t.pg.rows[0].candidate.scope,'personal');assert.equal(t.pg.rows[0].candidate.origin.commandSha256,result.result.commandSha256);
+ assert.equal(JSON.stringify(result).includes('Prefers concise updates'),false);
+ assert.ok(t.pg.statements.some(s=>s.startsWith('SELECT state FROM meri_conversations.retention_subjects')));
+ assert.ok(t.pg.statements.every(s=>!s.includes('approval_metadata')&&!s.includes('allocation')));
+ assert.ok(t.core.calls.every(c=>c.bearer===BEARER&&c.path==='/api/clio/memory/review/submit'&&c.service));
+ const review=await t.post(MEMORY_PATHS.reviewApprove,{candidateId:result.result.candidateId});
+ assert.equal(review.status,200);assert.equal(review.body.proposal.review.status,'approved');
+ assert.match(review.body.proposal.review.publishedMemoryId,/^clio:/u);assert.equal(t.core.memories.length,1);
+ assert.equal(t.core.calls.find(c=>c.path.endsWith('/owner-decision')).service,false);
+});
+test('client proposals use only the selected client; firm requires actual Core membership permission',async()=>{
+ const t=nativeHarness(),r=await t.prepare({content:'Client fact',scope:'client'});
+ assert.equal(r.status,'review_pending');assert.equal(t.pg.rows[0].candidate.clientId,CLIENT);
+ const general=nativeHarness({general:true});
+ await assert.rejects(general.prepare({content:'No chosen client',scope:'client'}),code('INVALID_ARGUMENTS'));
+ await assert.rejects(general.prepare({content:'Firm fact',scope:'firm'}),code('REFUSED'));
+ assert.equal(general.pg.rows.length,0);
+ general.state.membership={...principal(),permissions:['memory.propose.firm']};
+ assert.equal((await general.prepare({content:'Firm fact',scope:'firm'})).status,'review_pending');
+ assert.equal(general.core.memories.length,0);
+});
+for(const loss of ['live','current','membership'])test(`native ${loss} loss before prepare dispatches no candidate`,async()=>{
+ const t=nativeHarness();t.state[loss]=loss==='membership'?null:false;
+ await assert.rejects(t.prepare());assert.equal(t.pg.rows.length,0);assert.equal(t.core.calls.length,0);
+});
+for(const stage of ['membership','current','retention'])for(const loss of ['revocation','replacement'])test(`session ${loss} during pre-submit ${stage} check withholds Core dispatch`,async()=>{
+ let t,changed=false;
+ const change=()=>{if(t.state.admissions!==2||changed)return;changed=true;
+  if(loss==='revocation')t.state.live=false;else t.state.credential='replacement-native-token';
+ };
+ t=nativeHarness(stage==='retention'?{retentionGate:{async assertServable(){change();}}}:{});
+ if(stage==='membership')t.state.onAdmit=change;
+ if(stage==='current')t.state.onCurrent=change;
+ await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(changed,true);
+ assert.equal(t.pg.rows.length,1,'candidate custody preceded the session change');
+ assert.equal(t.pg.rows[0].submission_state,'SUBMISSION_UNKNOWN');
+ assert.equal(t.core.calls.length,0,'a live bearer borrowed before the await cannot survive session loss');
+ assert.equal(t.core.submissions.size,0);assert.equal(t.core.memories.length,0);
+});
+for(const authority of ['member','session'])test(`initial ${authority} expiry bounds candidate custody while retention is awaiting`,async()=>{
+ let t,checks=0,finishRetention;
+ const retentionFinished=new Promise(resolve=>{finishRetention=resolve;});
+ t=nativeHarness({retentionGate:{async assertServable(){
+  if(++checks===2){await new Promise(resolve=>setTimeout(resolve,120));t.state.now=NOW+101;finishRetention();}
+ }}});
+ t.state[authority==='member'?'memberExpiresAtMs':'sessionExpiresAtMs']=NOW+100;
+ await assert.rejects(t.prepare(),code('UNKNOWN'));
+ await retentionFinished;await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(t.pg.rows.length,0,'expired initial authority cannot create candidate custody after the blocked owner resumes');
+ assert.equal(t.pg.statements.some(sql=>sql.includes('INSERT INTO meri_memory.candidates')),false);
+ assert.equal(t.core.calls.length,0);assert.equal(t.core.submissions.size,0);
+});
+test('member change during journal custody withholds Core submission and retains an uncertain candidate',async()=>{
+ const t=nativeHarness();const connect=t.pg.pool.connect;
+ t.pg.pool.connect=async()=>{const client=await connect();return {...client,query:async(sql,args)=>{
+  const r=await client.query(sql,args);if(sql.includes('INSERT INTO meri_memory.candidates'))t.state.membership={...principal(),membershipRevision:'m2'};return r;
+ }};};
+ await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.pg.rows.length,1);assert.equal(t.core.calls.length,0);
+ assert.equal(t.pg.rows[0].submission_state,'SUBMISSION_UNKNOWN');
+});
+for(const loss of ['current','membership'])test(`native ${loss} loss after Core acceptance withholds pending receipt without erasing custody`,async()=>{
+ let t;t=nativeHarness({fetchImpl:async(u,i,core)=>{const response=await core.fetch(u,i);if(u.endsWith('/submit'))t.state[loss]=loss==='membership'?null:false;return response;}});
+ await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.pg.rows.length,1);assert.equal(t.core.submissions.size,1);assert.equal(t.core.memories.length,0);
+});
+test('lost submit acknowledgement reconciles only by status through existing review surface',async()=>{
+ const t=nativeHarness({fetchImpl:async(u,i,core)=>{const response=await core.fetch(u,i);if(u.endsWith('/submit'))throw Error('lost ack');return response;}});
+ await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.pg.rows.length,1);assert.equal(t.pg.rows[0].submission_state,'SUBMISSION_UNKNOWN');
+ const candidateId=t.pg.rows[0].candidate_id;
+ const status=await t.post(MEMORY_PATHS.status,{candidateId});assert.equal(status.status,200);assert.equal(status.body.review.status,'pending');
+ assert.equal(t.pg.rows[0].submission_state,'SUBMITTED');
+ assert.equal(t.core.calls.filter(c=>c.path.endsWith('/submit')).length,1);assert.equal(t.core.memories.length,0);
+});
+test('suppression after candidate custody prevents submission and hides the candidate',async()=>{
+ let suppressed=false;const t=nativeHarness({retentionGate:{async assertServable(){if(suppressed)throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});}}});
+ const connect=t.pg.pool.connect;t.pg.pool.connect=async()=>{const client=await connect();return {...client,query:async(sql,args)=>{
+  const r=await client.query(sql,args);if(sql.includes('INSERT INTO meri_memory.candidates'))suppressed=true;return r;
+ }};};
+ await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.core.calls.length,0);assert.equal(t.pg.rows.length,1);
+ const status=await t.post(MEMORY_PATHS.status,{candidateId:t.pg.rows[0].candidate_id});assert.equal(status.status,404);
+});
+test('Core wall refusal never becomes a pending receipt or a published memory',async()=>{
+ const t=nativeHarness();t.core.state.walledClients.add(CLIENT);
+ await assert.rejects(t.prepare({content:'Client fact',scope:'client'}),code('UNKNOWN'));
+ assert.equal(t.pg.rows.length,1);assert.equal(t.core.submissions.size,0);assert.equal(t.core.memories.length,0);
 });

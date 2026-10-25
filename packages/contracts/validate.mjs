@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
+import { hash } from 'node:crypto';
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import canonicalize from 'canonicalize';
@@ -26,7 +26,7 @@ export function validateShape(name, value) {
 export function canonicalSha256(value) {
   const bytes = canonicalize(value);
   if (typeof bytes !== 'string') throw new Error('Value is not canonical JSON');
-  return createHash('sha256').update(bytes, 'utf8').digest('hex');
+  return hash('sha256', bytes, 'hex');
 }
 
 export function assertWorkspacePaths(manifest) {

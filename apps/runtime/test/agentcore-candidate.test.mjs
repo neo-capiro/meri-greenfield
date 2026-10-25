@@ -1,3 +1,4 @@
+import {automaticContextFixture} from '../../worker/conversation/test/automatic-context-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {assembleAgentCoreCandidate} from '../agentcore-candidate.mjs';
@@ -9,12 +10,22 @@ import {nativeFileBindingHeader} from '../../../packages/contracts/runtime-0.2/f
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {agentcoreConfig} from './agentcore-fixture.mjs';
 import {binding,versions,id} from '../../control/conversations/test/application-fixture.mjs';
+import {createControlReadsComposer} from '../reads-composer.mjs';
+import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../product-ports/capability-policy.mjs';
+import {billTextCase} from '../../gateway/sources/bill-text/test/fixture.mjs';
 
 const at=1800000000000,clientId=id(5),policyRevision='policy-v1',controlCredential='synthetic-control-secret-not-a-user-bearer';
+const readOperation={id:'read_bill_text',version:'0.2.0'},searchOperation={id:'search_congress_bills',version:'0.2.0'};
+function readPlatform(operations=[readOperation]){
+ const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
+ for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])policy.activeReadOperations=structuredClone(operations);
+ return platform;
+}
 function fixture(options={}){
  const b=options.binding??binding,configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:false,limits:{requestMs:3000,requestBytes:131072,shutdownMs:30000}};
- if(options.readBudget){configuration.limits.requestMs=10;configuration.agentcore.approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,
-  operations:[{id:'read_bill_text',version:'0.2.0'}],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:8192};}
+ if(options.reads)configuration.capabilityPlatform=options.platform??readPlatform();
+ if(options.readBudget||options.reads){if(options.readBudget)configuration.limits.requestMs=10;configuration.agentcore.approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,
+  operations:options.approvedOperations??[readOperation],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:8192};}
  const run={binding:b,versions,scopes:[{kind:'client',tenantId:b.tenantId,resourceId:clientId,policyRevision}],policyRevision,state:'queued'};
  let record=null,invocations=0,coreCalls=0,stops=0,claimCalls=0,relayCalls=0,coreInput,invocation,schemaQueries=0,schemaRelations=[];
  const pending=Promise.withResolvers();
@@ -30,23 +41,41 @@ function fixture(options={}){
    async requestStop(){return {run,record,dispatch:Boolean(record&&record.phase!=='settled')};},async settleStopped(value){record={...record,phase:'settled',native:{state:value.state,stopped:true}};}}};
  const initialBindings={async readContext(){return options.context===undefined?{selectedClientId:clientId,policyRevision}:options.context;},async claim(){},async rebind(){},async readConversation(){}};
  const pool={async query(_sql,args){schemaQueries++;schemaRelations=[...args[0]];assert.ok(args[0].every(name=>!name.includes('allocation')&&!name.includes('grant')&&!name.includes('issuance')));return {rows:args[0].map(name=>({name,relation:name===options.missingRelation?null:name}))};},
-  async connect(){return {async query({text,values}){
+  async connect(){return {async query(query,params=[]){const {text,values}=typeof query==='string'?{text:query,values:params}:query;
+   if(text==='SELECT * FROM meri_settings.tenant_settings WHERE tenant_id=$1'){
+    assert.deepEqual(values,[b.tenantId]);if(options.settingsUnavailable)throw Error('settings unavailable');
+    const document={defaultTimezone:'UTC',capabilityPolicy:options.tenantPolicy??{}};
+    return {rows:[{revision:1,document,document_sha256:options.badSettingsHash?'f'.repeat(64):hash(document)}]};
+   }
+   if(['BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY',"SET LOCAL statement_timeout = '5s'","SET LOCAL lock_timeout = '2s'",'ROLLBACK'].includes(text))return {rows:[]};
    if(text.includes('FROM meri_objective_source.run_starts')){assert.match(text,/WHERE tenant_id=\$1 AND conversation_id=\$2 AND run_id=\$3$/);assert.deepEqual(values,[b.tenantId,b.conversationId,b.runId]);return {rows:[]};}
    assert.ok(['BEGIN ISOLATION LEVEL READ COMMITTED',"SELECT set_config('statement_timeout',$1,true),set_config('lock_timeout',$2,true)",'SELECT pg_advisory_xact_lock(hashtextextended($1,0))','COMMIT'].includes(text),text);
    return {rows:[],command:text==='COMMIT'?'COMMIT':undefined};
   },release(){}};}};
  const nativeCredentials={nativeCredentialFor(){relayCalls++;if(options.revokeAfterCore&&coreCalls)throw Error('SESSION_UNAVAILABLE');return {credential:'actual-user-bearer',expiresAtMs:at+120000};}};
  const fetchImpl=async(_url,request)=>{coreCalls++;coreInput={headers:request.headers,body:JSON.parse(request.body)};
+  if(new URL(_url).pathname==='/api/clio/client-context/automatic'){assert.equal(request.headers['x-internal-service-secret'],'synthetic-service');assert.deepEqual(JSON.parse(request.body),{schemaVersion:1,clientId});return Response.json(automaticContextFixture(b,clientId,at));}
   if(options.status)return Response.json({error:'refused'},{status:options.status});
   return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:at,expiresAtMs:at+120000,...options.receipt});};
  const provider={async invoke(input){invocations++;invocation=input;return pending.promise;},async stop(input){stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,signal:undefined,stopped:true};}};
  // Keep the exact transport receipt closed (AbortSignal is request-only).
  provider.stop=async({signal,...input})=>{signal?.throwIfAborted();stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,stopped:true};};
- const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
+ const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
  return {candidate,configuration,run,store,pending,counts:()=>({invocations,coreCalls,stops,claimCalls,relayCalls}),schema:()=>({queries:schemaQueries,relations:schemaRelations}),coreInput:()=>coreInput,invocation:()=>invocation,record:()=>record,
   async kickoff(){return candidate.native.call('execution/kickoff',{binding:b,executionKey:hash(b)});},
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
 }
+
+test('the private expiry sweep reaches only the bound control retention owner',async()=>{
+ const f=fixture();let calls=0;
+ const post=credential=>f.candidate.application.handle(new Request('https://control.invalid/v1/retention/sweep',{
+  method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify({after:null})}));
+ assert.equal((await post(controlCredential)).status,503);
+ f.candidate.bindApplication({handle:async()=>{throw Error('not a runner route');},async sweepRetention(input){calls++;assert.equal(input.after,null);assert.equal(input.signal.aborted,false);return {after:null,more:false,outcome:'empty'};}});
+ assert.equal((await post('synthetic-run-credential')).status,403);assert.equal(calls,0);
+ assert.deepEqual(await (await post(controlCredential)).json(),{after:null,more:false,outcome:'empty'});assert.equal(calls,1);
+ assert.equal(f.counts().invocations,0);await f.candidate.close();
+});
 
 test('one real Core current admission and durable execution; private callbacks do not multiply Core observations',async()=>{
  const f=fixture();await f.kickoff();assert.equal(f.counts().coreCalls,1);assert.equal(f.coreInput().headers.authorization,'Bearer actual-user-bearer');
@@ -92,10 +121,11 @@ test('candidate routes admitted/settle and existing worker body without task/boo
  await assert.rejects(f.candidate.native.call('checkpoint/read',{}),/NATIVE_OPERATION_UNAVAILABLE/u);
  await f.candidate.native.readiness();await f.candidate.close();
 });
-test('read factory receives only execution, binding and declared reads; unopened business owners stay absent',async()=>{
+test('read factory receives canonical policy and private current-role owner; unopened business owners stay absent',async()=>{
  let passed;const f=fixture({createReadsRuntime(input){passed=input;return {async handle(request){assert.equal(request.headers.get('authorization'),'Bearer synthetic-execution');return Response.json({ok:true});}};}});
  const request=new Request('https://control.synthetic.invalid/v1/runner/reads/availability',{method:'POST',headers:{authorization:'Bearer synthetic-execution','content-type':'application/json'},body:JSON.stringify({binding})});
- assert.equal((await f.candidate.application.handle(request)).status,200);assert.equal(passed.execution,f.candidate.execution);assert.deepEqual(Object.keys(passed).sort(),['binding','execution']);
+ assert.equal((await f.candidate.application.handle(request)).status,200);assert.equal(passed.execution,f.candidate.execution);assert.deepEqual(Object.keys(passed).sort(),['binding','capabilityPolicy','execution','readCapabilityRole']);
+ assert.equal(passed.readCapabilityRole,f.candidate.readCapabilityRole);assert.equal(typeof passed.capabilityPolicy.forRun,'function');
  assert.equal(typeof f.candidate.productPorts.sdkSessionSnapshot.readSnapshot,'function');assert.equal(f.candidate.productPorts.selectedController,undefined);await f.candidate.close();
 });
 
@@ -137,12 +167,12 @@ test('declared native file routes without product composition are unavailable, n
  }
 });
 test('candidate mounts real runtime preparation and refuses unclaimed credentials before any worker fallback',async()=>{
- const f=fixture();let forwarded=0;f.candidate.bindApplication({async handle(){forwarded++;return Response.json({unexpected:true});}});
+ const f=fixture({automaticContext:true});let forwarded=0;f.candidate.bindApplication({async handle(){forwarded++;return Response.json({unexpected:true});}});
  const request=credential=>new Request('https://control.synthetic.invalid/v1/runner/runtime',{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify({binding,versions})});
  try{
   assert.equal((await f.candidate.application.handle(request('unclaimed'))).status,503);assert.equal(forwarded,0);
   await f.kickoff();const response=await f.candidate.application.handle(request(f.invocation().credential));assert.equal(response.status,200);
-  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+900000,maxOutputBytes:262144,sdkSessionKey:null,objective:null});assert.equal(forwarded,0);
+  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+900000,maxOutputBytes:262144,sdkSessionKey:null,objective:null,automaticClientContext:automaticContextFixture(binding,clientId,at)});assert.equal(forwarded,0);assert.equal(f.counts().coreCalls,2);
   await f.finish();
  }finally{await f.candidate.close();}
 });
@@ -186,4 +216,81 @@ test('closed AgentCore configuration refuses task material, foreign endpoint and
   const c=agentcoreConfig();change(c);assert.throws(()=>compileAgentCoreConfiguration(c));
  }
  assert.deepEqual(compileAgentCoreConfiguration(agentcoreConfig()),agentcoreConfig());
+});
+
+/** Actual candidate -> composer -> canonical settings store/resolver -> discovery/dispatch. Synthetic Core/source and SQL only. */
+async function policyFixture(options={}){
+ const b={...binding,tenantId:id(70),actorId:id(71)},source=billTextCase();let sourceCalls=0,afterSource;
+ const composer=await createControlReadsComposer({coreOrigin:'https://core.synthetic.invalid',familyIds:['bill-text'],defaultCongress:119,
+  nativeCredentials:{nativeCredentialFor:()=>({credential:'SYNTHETIC_USER',expiresAtMs:at+120000})},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>at,newId:()=>id(90),
+  async fetchImpl(url,request){
+   if(url.endsWith('/application-authority/current'))return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:at,expiresAtMs:at+120000});
+   assert.equal(new URL(url).pathname,'/api/clio/tools/read_bill_text');sourceCalls++;const result=source.native(JSON.parse(request.body));afterSource?.();return Response.json(result);
+  }});
+ const f=fixture(Object.assign(options,{binding:b,reads:true,createReadsRuntime:composer.createReadsRuntime}));await f.kickoff();f.run.state='running';
+ const schemaVersion='meri-native-general-reads/1',operation={id:'read_bill_text',version:'0.2.0'};
+ const request=(kind,extra={})=>f.candidate.application.handle(new Request('https://control.synthetic.invalid/v1/runner/reads/'+kind,{method:'POST',
+  headers:{authorization:'Bearer '+f.invocation().credential,'content-type':'application/json'},body:JSON.stringify({schemaVersion,binding:b,...extra})}));
+ return {...f,options,sourceCalls:()=>sourceCalls,after:fn=>{afterSource=fn;},availability:()=>request('availability'),
+  execute:available=>request('execute',{operation,arguments:{billId:'H.R. 1'},deliveryId:'synthetic',installationId:available.installation.installationId,executionCatalogSha256:available.installation.executionCatalogSha256})};
+}
+test('production composition honors persisted generalReads narrowing for discovery and dispatch with one role observation per snapshot',async t=>{
+ const f=await policyFixture();t.after(()=>f.finish());
+ const first=await f.availability();assert.equal(first.status,200,await first.clone().text());const available=await first.json();
+ assert.equal(available.discovery.operations.length,1);assert.equal(available.expiresAtMs,at+120000);
+ assert.equal(f.counts().coreCalls,3,'one kickoff plus two availability decisions, regardless of local polls');
+ const result=await f.execute(available);assert.equal(result.status,200,await result.clone().text());assert.equal(f.sourceCalls(),1);
+ assert.equal(f.counts().coreCalls,5,'execute adds only its before/after decisions');
+ f.options.tenantPolicy={capabilities:{generalReads:false}};
+ const narrowed=await f.availability();assert.equal(narrowed.status,200);assert.deepEqual((await narrowed.json()).discovery.operations,[]);
+ const denied=await f.execute(available);assert.equal(denied.status,503);assert.equal(f.sourceCalls(),1,'old discovery cannot dispatch after tenant narrowing');
+});
+test('role ceiling uses actual admin vs standard role and later downgrade withholds the source result',async t=>{
+ const platform=readPlatform();platform.roleCeilings.standard_user.generalReads=false;
+ const options={platform,receipt:{role:'user_admin'}},f=await policyFixture(options);t.after(()=>f.finish());
+ const r=await f.availability();assert.equal(r.status,200);const available=await r.json();assert.equal(available.discovery.operations.length,1,'all-role intersection would incorrectly hide admin reads');
+ f.after(()=>{options.receipt={role:'standard_user'};});const response=await f.execute(available);
+ assert.equal(response.status,503);assert.equal(f.sourceCalls(),1);assert.doesNotMatch(await response.text(),/resultJson/);
+ const downgraded=await f.availability();assert.equal(downgraded.status,200);assert.deepEqual((await downgraded.json()).discovery.operations,[]);
+});
+test('canonical empty default active operations exposes no reads and never falls back to approved operations',async t=>{
+ const platform=readPlatform();platform.defaults.activeReadOperations=[];
+ const f=await policyFixture({platform});t.after(()=>f.finish());
+ const response=await f.availability();assert.equal(response.status,200);const available=await response.json();assert.deepEqual(available.discovery.operations,[]);
+ const denied=await f.execute(available);assert.equal(denied.status,503);assert.equal(f.sourceCalls(),0);assert.doesNotMatch(await denied.text(),/resultJson/);
+});
+for(const source of ['tenant','role'])for(const remaining of [[],[searchOperation]])for(const boundary of ['discovery','stale dispatch','after source']){
+ test(`${source} operation narrowing to ${remaining.length} reads fences ${boundary}`,async t=>{
+  const operations=[readOperation,searchOperation],platform=readPlatform(operations);
+  if(source==='role')platform.roleCeilings.standard_user.activeReadOperations=remaining;
+  const options={platform,approvedOperations:operations,receipt:{role:'user_admin'}},f=await policyFixture(options);t.after(()=>f.finish());
+  const narrow=()=>{if(source==='tenant')options.tenantPolicy={capabilities:{activeReadOperations:remaining}};else options.receipt={role:'standard_user'};};
+  const initial=await f.availability();assert.equal(initial.status,200);const available=await initial.json();assert.deepEqual(available.discovery.operations,operations);
+  if(boundary==='after source')f.after(narrow);else narrow();
+  if(boundary==='discovery'){
+   const response=await f.availability();assert.equal(response.status,200);assert.deepEqual((await response.json()).discovery.operations,remaining);assert.equal(f.sourceCalls(),0);
+  }else{
+   const response=await f.execute(available);assert.equal(response.status,503);assert.equal(f.sourceCalls(),boundary==='after source'?1:0);assert.doesNotMatch(await response.text(),/resultJson/);
+  }
+  assert.equal(f.counts().coreCalls,boundary==='stale dispatch'?4:5,'existing snapshots keep one role observation each');
+ });
+}
+for(const [name,change] of [
+ ['saved tenant narrowing',o=>{o.tenantPolicy={capabilities:{generalReads:false}};}],
+ ['revoked membership',o=>{o.status=403;}],['unavailable settings',o=>{o.settingsUnavailable=true;}],
+ ['corrupt settings',o=>{o.badSettingsHash=true;}],['missing role',o=>{o.receipt={role:undefined};}],
+ ['expired role',o=>{o.receipt={expiresAtMs:at};}],['foreign tenant',o=>{o.receipt={principal:{tenantId:id(99),actorId:id(71)}};}],
+ ['foreign selected client',o=>{o.receipt={selectedClientId:id(99)};}],
+])test(name+' after a source call releases no earlier privileged bytes',async t=>{
+ const options={},f=await policyFixture(options);t.after(()=>f.finish());
+ const r=await f.availability();assert.equal(r.status,200);const available=await r.json();
+ f.after(()=>change(options));const response=await f.execute(available);assert.notEqual(response.status,200);assert.equal(f.sourceCalls(),1);assert.doesNotMatch(await response.text(),/resultJson/);
+});
+test('private role reads use the current canonical observation, preserve original expiry and do not alter local polling',async t=>{
+ const options={},f=fixture(options);await f.kickoff();t.after(()=>f.finish());
+ for(let n=0;n<4;n++)await f.candidate.execution.authenticate({credential:f.invocation().credential,binding});
+ assert.equal(f.counts().coreCalls,1);
+ const role=await f.candidate.readCapabilityRole({binding});assert.deepEqual(role,{actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+120000});assert.equal(f.counts().coreCalls,2);
+ options.receipt={role:'user_admin'};assert.equal((await f.candidate.readCapabilityRole({binding})).actorRole,'user_admin');assert.equal(f.counts().coreCalls,3);
+ options.status=403;await assert.rejects(f.candidate.readCapabilityRole({binding}));
 });

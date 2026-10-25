@@ -9,12 +9,13 @@
  * - `command`: `apps/control/commands/tool-interface.mjs` `prepare` with its approval-metadata owner.
  * - `schedule`: `apps/control/schedules/tool-interface.mjs` with a trusted context whose `approval` is null.
  * - `document`: the artifact write owner behind `apps/control/document-application` (immutable draft version).
- * - `artifact`: the artifact analysis owner (no governed route yet). */
+ * - `artifact`: the artifact analysis owner (no governed route yet).
+ * - `memory`: the governed memory candidate producer, submitted for Core review. */
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {'command'|'schedule'|'document'|'artifact'} OwnerKind */
+/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
 const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
@@ -29,8 +30,8 @@ export const INTENT_ROWS=Object.freeze([
  row('cancel_scheduled_task','propose_schedule_change','schedule'),
  row('create_task','propose_task','command'),
  row('update_task','propose_task_update','command'),
- row('save_memory','propose_memory','command','OWNER_MISSING: Core native approval and execution issuance admit only task.create; governed memory candidate execution needs its own exact approved-payload binding.'),
- row('save_chat_attachments','propose_attachment_filing','command','OWNER_MISSING: Core native approval/execution and exact-version attachment registration custody are required before client filing can be offered.'),
+ row('save_memory','propose_memory','memory'),
+ row('save_chat_attachments','propose_attachment_filing','command'),
 ]);
 /** Selected capabilities the ledger also routes to `meri_intents` but which are reads, so never a prepare-only intent. */
 export const NOT_INTENTS=Object.freeze({list_scheduled_tasks:'READ: listing schedules has no effect to approve; it belongs on a read route (proposal P-INT-5).'});

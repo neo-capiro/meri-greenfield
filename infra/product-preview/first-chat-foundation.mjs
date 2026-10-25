@@ -15,6 +15,7 @@ function closed(value,keys){
  return value;
 }
 export const FOUNDATION_SECRET_ROLES=Object.freeze(['control','worker','temporal','migrator']);
+const secretRoles=b=>[...FOUNDATION_SECRET_ROLES,...(Object.hasOwn(b.secretArns??{},'schedule')?['schedule']:[])];
 export function validateFoundationBinding(value){
  const b=closed(value,['account','region','vpcId','vpcCidr','privateSubnetIds','clusterArn','ecrRepositoryArn','albSecurityGroupId',
   'auroraSecurityGroupId','endpointSecurityGroupId','s3PrefixListId','checkpoint','secretArns','secretKmsKeyArns']);
@@ -28,11 +29,11 @@ export function validateFoundationBinding(value){
  const c=closed(b.checkpoint,['bucket','prefix','kmsKeyArn']);
  if(!/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u.test(c.bucket)||!/^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/u.test(c.prefix)||
     !new RegExp(`^arn:aws:kms:${REGION}:${ACCOUNT}:key/[a-f0-9-]{36}$`,'u').test(c.kmsKeyArn))fail();
- const s=closed(b.secretArns,FOUNDATION_SECRET_ROLES);
- for(const role of FOUNDATION_SECRET_ROLES)if(!Array.isArray(s[role])||s[role].length<1||s[role].length>8||!s[role].every(a=>secretArn.test(a))||
+ const roles=secretRoles(b),s=closed(b.secretArns,roles);
+ for(const role of roles)if(!Array.isArray(s[role])||s[role].length<1||s[role].length>8||!s[role].every(a=>secretArn.test(a))||
     new Set(s[role]).size!==s[role].length)fail();
- const k=closed(b.secretKmsKeyArns,FOUNDATION_SECRET_ROLES);
- for(const role of FOUNDATION_SECRET_ROLES)if(!Array.isArray(k[role])||k[role].length>2||
+ const k=closed(b.secretKmsKeyArns,roles);
+ for(const role of roles)if(!Array.isArray(k[role])||k[role].length>2||
     !k[role].every(a=>new RegExp(`^arn:aws:kms:${REGION}:${ACCOUNT}:key/[a-f0-9-]{36}$`,'u').test(a)))fail();
  return b;
 }
@@ -67,7 +68,7 @@ export function synthesizeFirstChatFoundation(binding){
   sourceSecurityGroupId:g.dbClient.securityGroupId,description:'Meri preview tasks carrying the DB client marker'});
 
  const logGroups={};
- for(const key of ['control','worker','temporal','migrator'])
+ for(const key of secretRoles(b))
   logGroups[key]=new logs.LogGroup(stack,`${key}Logs`,{logGroupName:`/meri/product-preview/${key}`,retention:logs.RetentionDays.ONE_MONTH,removalPolicy:'retain'});
 
  const execution=(key,secretArns)=>{
@@ -83,11 +84,22 @@ export function synthesizeFirstChatFoundation(binding){
  };
  const exec={control:execution('control',b.secretArns.control),worker:execution('worker',b.secretArns.worker),
   temporal:execution('temporal',b.secretArns.temporal),migrator:execution('migrator',b.secretArns.migrator)};
+ // Schedule dispatch reuses the worker network plus the existing DB marker, but its
+ // material (Core/DB credentials) is isolated from the ordinary worker's execution role.
+ if(b.secretArns.schedule)exec.schedule=execution('schedule',b.secretArns.schedule);
  const task=key=>new iam.Role(stack,`${key}TaskRole`,{roleName:`MeriPreview-${key}-task`,assumedBy:ecsTrust()});
  const control=task('control');
  // S3 reports a missing first ledger object as 404 only when this bucket can be listed.
- control.addToPolicy(statement(['s3:GetBucketVersioning','s3:ListBucket'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
+ // The existing signed-link gate verifies the private bucket with read-only metadata calls.
+ control.addToPolicy(statement(['s3:GetBucketVersioning','s3:ListBucket','s3:GetBucketPublicAccessBlock','s3:GetBucketPolicyStatus','s3:GetBucketOwnershipControls'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
  control.addToPolicy(statement(['s3:PutObject','s3:GetObject','s3:GetObjectVersion'],[`arn:aws:s3:::${b.checkpoint.bucket}/${b.checkpoint.prefix}/*`]));
+ // Retention reads and deletes only immutable content versions. The fixed key
+ // shape excludes the retention ledger and artifact-publication custody index.
+ const contentPrefix=`${b.checkpoint.prefix}/${'?'.repeat(64)}/${'?'.repeat(36)}/${'?'.repeat(64)}`;
+ control.addToPolicy(statement(['s3:ListBucketVersions'],[`arn:aws:s3:::${b.checkpoint.bucket}`],
+  {StringLike:{'s3:prefix':contentPrefix}}));
+ control.addToPolicy(statement(['s3:GetObjectRetention','s3:GetObjectLegalHold','s3:DeleteObjectVersion'],
+  [`arn:aws:s3:::${b.checkpoint.bucket}/${contentPrefix}`]));
  control.addToPolicy(statement(['kms:GenerateDataKey','kms:Decrypt'],[b.checkpoint.kmsKeyArn],{StringEquals:{'kms:ViaService':`s3.${REGION}.amazonaws.com`}}));
  const temporalTasks=Object.fromEntries(['frontend','history','matching','worker','internal-frontend'].map(r=>[r,task(`temporal-${r}`)]));
 
@@ -111,5 +123,9 @@ export function synthesizeFirstChatFoundation(binding){
  const template=Template.fromStack(stack).toJSON();
  template.Description='Shared Meri control and native TLS Temporal foundation; no runtime token issuer or per-turn ECS compute.';
  template.Metadata={AWSToolsMetrics:{AWSAgentToolkit:'aws-cloudformation@3'}};
+ if(b.secretArns.schedule)for(const resource of Object.values(template.Resources)){
+  if(resource.Properties?.RoleName==='MeriPreview-schedule-execution'||resource.Properties?.LogGroupName==='/meri/product-preview/schedule')
+   resource.Metadata={'com.aws.cloudformation.Context':{why:'Isolate schedule-worker material and logs from the ordinary Temporal worker.',must:'Only reviewed schedule material/KMS references; retain logs; no SDK compute or task permissions.'}};
+ }
  return template;
 }

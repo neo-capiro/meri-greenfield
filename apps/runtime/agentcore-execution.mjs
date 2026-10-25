@@ -9,10 +9,10 @@ const same=(a,b)=>hash(a)===hash(b);
 const refuse=code=>{throw Object.assign(Error(code),{code});};
 const checkSignal=signal=>()=>signal?.throwIfAborted();
 
-export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,
+export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,
  now=Date.now,newId=randomUUID,onUnknown=()=>{}}){
  validateShape('RuntimeVersions',versions);
- if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function')refuse('EXECUTION_CONFIGURATION');
+ if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function')refuse('EXECUTION_CONFIGURATION');
  const journal=store.executions,pending=new Map(),observation=new AbortController();let closed=false;
  const credentialFor=execution=>'meri_execution_'+createHmac('sha256',credentialSecret)
   .update('meri-agentcore-execution-v1\0').update(hash(assertExecutionIdentity(execution))).digest('base64url');
@@ -36,6 +36,12 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
  }
  async function observeInvocation(execution,settings){
   try{
+   if(beforeInvocation&&execution.binding.writerFence>1){
+    await beforeInvocation({binding:execution.binding,signal:observation.signal,deadlineMs:execution.expiresAtMs});
+    observation.signal.throwIfAborted();
+    const admitted=await existing(execution.binding,observation.signal);
+    if(admitted.record?.phase!=='launching'||!['queued','starting','running'].includes(admitted.run.state)||execution.expiresAtMs<=now())refuse('EXECUTION_ADMISSION_REFUSED');
+   }
    const result=await provider.invoke({execution,versions,credential:credentialFor(execution),...settings,signal:observation.signal});
    own(result,['execution','state','settled']);
    if(!same(result.execution,execution)||!isExecutionOutcome(result.state)||result.settled!==true)refuse('EXECUTION_RESPONSE_REFUSED');

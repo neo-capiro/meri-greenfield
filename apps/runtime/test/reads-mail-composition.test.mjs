@@ -7,7 +7,7 @@ import {versions} from '../../control/conversations/test/store-fixture.mjs';
 import {createMailFixture,uuid} from '../../gateway/sources/mail/test/fixtures.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 
-async function fixture({client=false,id='mail.list_messages'}={}){
+async function fixture({client=false,id='mail.list_messages',routine=false}={}){
  const source=createMailFixture(id,{client}),binding=source.binding,calls=[],records=new Map();
  let rows=[{id:source.mailboxId,tenantId:binding.tenantId,createdByUserId:binding.actorId,provider:'microsoft_365',status:'disabled'},
   {id:uuid('7'),tenantId:binding.tenantId,createdByUserId:binding.actorId,provider:'zoom',status:'connected'}],revoked=false,afterPage,status=200;
@@ -16,16 +16,24 @@ async function fixture({client=false,id='mail.list_messages'}={}){
  const current={execution:identity,state:'running',scopes,selectedClientId:client?source.clientId:null,policyRevision:source.subject.policyRevision};
  const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[source.operation],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:1048576};
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:['mail'],
-  nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
+  nativeCredentials:{async nativeCredentialFor(){if(routine)assert.fail('Routine must never borrow an interactive credential');return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
   readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>source.state.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['mail']};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['mail'],activeReadOperations:[source.operation]};}},
   memoryContexts:{forTask(){throw Error('Memory is not selected');},forMail(task){assert.equal(task.clientId,current.selectedClientId);return {
    async retain({record}){records.set(hash(record.key),structuredClone(record));return JSON.stringify({decision:'retained',keySha256:hash(record.key),previousSha256:record.previousSha256,checkedAtMs:source.state.now});},
    async loadPrevious({key}){return JSON.stringify({record:records.get(hash(key)),checkedAtMs:source.state.now});},
   };}},
   async fetchImpl(url,options){
-   const path=new URL(url).pathname;calls.push(path);assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');
+   const path=new URL(url).pathname;calls.push(path);
    assert.equal(options.redirect,'error');assert.equal(options.credentials,'omit');
+   if(routine){
+    assert.equal(path,'/api/internal/routines/reads');assert.equal(options.headers.authorization,undefined);assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_ROUTINES_SERVICE');
+    const body=JSON.parse(options.body);assert.deepEqual(body.binding,binding);assert.equal(body.scheduleId,uuid('8'));assert.equal(body.occurrenceKey,'a'.repeat(64));
+    if(body.operation==='job.readMailboxes')return Response.json(rows,{status});
+    assert.equal(body.operation,id);assert.deepEqual(body.context.subject.scopes,[...scopes,{tenantId:binding.tenantId,kind:'mailbox',resourceId:source.mailboxId,policyRevision:current.policyRevision}]);
+    const page=source.page(body.input.input,body.context);afterPage?.();return Response.json(page);
+   }
+   assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');
    if(path==='/api/engagement/integrations'){assert.equal(options.method,'GET');assert.equal(options.headers['x-internal-service-secret'],undefined);return Response.json(rows,{status});}
    assert.equal(path,`/api/clio/tools/${id}`);assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');
    const correlation=JSON.parse(Buffer.from(options.headers['x-meri-read-correlation'],'base64url').toString());
@@ -35,15 +43,31 @@ async function fixture({client=false,id='mail.list_messages'}={}){
   }});
  assert.deepEqual(composer.missing,[]);
  const execution={async authenticate(){if(revoked)throw Error('EXECUTION_AUTHORITY_REFUSED');return structuredClone(current);}};
+ const routineCore=routine?{origin:'https://core.example.invalid',getServiceSecret:async()=> 'SYNTHETIC_ROUTINES_SERVICE',async forBinding(){if(revoked)throw Error('ROUTINE_REVOKED');return {
+  record:{binding,scopes,selectedClientId:current.selectedClientId,policyRevision:current.policyRevision,scheduleId:uuid('8'),occurrenceKey:'a'.repeat(64),generation:1,maxCostMicroUSD:1000,expiresAtMs:identity.expiresAtMs},
+  current:{role:'standard_user',clientIds:client?[source.clientId]:[],checkedAtMs:source.state.now,effectExpiresAtMs:identity.expiresAtMs},
+ };}}:undefined;
  async function execute(args=source.args){
   // A new HTTP owner per request proves continuation does not depend on its cache.
-  const app=composer.createReadsRuntime({execution,binding,approvedReads});
+  const app=composer.createReadsRuntime({execution,binding,approvedReads,...(routineCore?{routineCore}:{})});
   const request=(kind,body)=>new Request(`https://control.example.invalid/v1/runner/reads/${kind}`,{method:'POST',headers:{authorization:'Bearer SYNTHETIC_EXECUTION','content-type':'application/json'},body:JSON.stringify(body)});
   const availability=await app.handle(request('availability',{schemaVersion:approvedReads.schemaVersion,binding}));if(availability.status!==200)return availability;
   const a=await availability.json();return app.handle(request('execute',{schemaVersion:approvedReads.schemaVersion,binding,operation:source.operation,arguments:args,deliveryId:'synthetic',installationId:a.installation.installationId,executionCatalogSha256:a.installation.executionCatalogSha256}));
  }
  return {source,calls,records,execute,rows:fn=>{rows=fn(rows);},revoke:()=>{revoked=true;},after:fn=>{afterPage=fn;},status:n=>{status=n;}};
 }
+
+for(const client of [false,true])for(const id of ['mail.list_messages','mail.search_messages','mail.read_thread'])test(`routine ${id} uses current owner mailbox selectors for ${client?'client':'General'} without a bearer`,async()=>{
+ const f=await fixture({routine:true,client,id}),r=await f.execute();assert.equal(r.status,200,await r.clone().text());
+ assert(f.calls.length>=2);assert(f.calls.every(path=>path==='/api/internal/routines/reads'));
+ const page=JSON.parse((await r.json()).resultJson);assert.equal(page.subject.kind,client?'client':'personal');
+});
+for(const field of ['tenantId','createdByUserId'])test(`routine foreign mailbox ${field} refuses before source release`,async()=>{
+ const f=await fixture({routine:true});f.rows(rows=>rows.map(row=>({...row,[field]:'foreign'})));const r=await f.execute();assert.equal(r.status,403,await r.clone().text());assert.equal(f.records.size,0);
+});
+test('routine revocation after source read withholds content and continuation',async()=>{
+ const f=await fixture({routine:true});f.after(f.revoke);const r=await f.execute();assert.notEqual(r.status,200);assert.equal(f.records.size,0);assert.doesNotMatch(await r.text(),/Synthetic mail candidate/);
+});
 
 for(const client of [false,true])for(const id of ['mail.list_messages','mail.search_messages','mail.read_thread'])test(`actual ${id} reads disconnected stored ${client?'client':'General'} mail`,async()=>{
  const f=await fixture({client,id}),r=await f.execute();assert.equal(r.status,200,await r.clone().text());

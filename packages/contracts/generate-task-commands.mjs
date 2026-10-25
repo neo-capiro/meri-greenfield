@@ -34,10 +34,11 @@ export async function generateTaskCommandContracts({check=false,toolchainRoot,bu
   for(const match of codeList[1].matchAll(/'([^']+)'/gu))statuses[match[1]]=502;
   for(const match of http.matchAll(/fail\('([A-Z0-9_]+)'(?:,(\d+))?\)/gu))statuses[match[1]]=Number(match[2]??400);
   for(const match of http.matchAll(/code==='([A-Z0-9_]+)'\)status=(\d+)/gu))statuses[match[1]]=Number(match[2]);
+  const errorOutcomeStatuses={};for(const match of http.matchAll(/code==='([A-Z_]+)'&&outcome==='([A-Z_]+)'\)status=(\d+)/gu))(errorOutcomeStatuses[match[1]]??={})[match[2]]=Number(match[3]);
   const runtime=await record('../../apps/runtime/product-applications.mjs');
   const mount=/code:'TASK_COMMAND_UNAVAILABLE',outcome:'NOT_DISPATCHED'\}\},\{status:(\d+)/u.exec(runtime.toString());if(!mount)throw Error('Missing canonical task-command runtime availability vocabulary');statuses.TASK_COMMAND_UNAVAILABLE=Number(mount[1]);
   const errorStatuses=Object.fromEntries(Object.entries(statuses).sort(([a],[b])=>a.localeCompare(b))),errorOutcomes=[...outcomeList[1].matchAll(/'([^']+)'/gu)].map(m=>m[1]);
-  for(const path of ['generate-task-commands.mjs',...['README.md','protocol.mjs','schema.mjs','boundary.mjs','normalizer-snapshot.mjs','semantics.mjs','receive.mjs','declarations.mjs'].map(name=>'task-command-application/'+name),'commands-0.2/task-update-validation.mjs','document-application/boundary.mjs'])await record(path);
+  for(const path of ['generate-task-commands.mjs','commands-0.2/native-task-outcome-schema.mjs',...['README.md','protocol.mjs','schema.mjs','boundary.mjs','normalizer-snapshot.mjs','semantics.mjs','receive.mjs','declarations.mjs'].map(name=>'task-command-application/'+name),'commands-0.2/task-update-validation.mjs','document-application/boundary.mjs'])await record(path);
   const root=taskCommandSchema(errorStatuses,errorOutcomes),defs={},seen=new Map();
   function transform(value,owner){if(Array.isArray(value))return value.map(v=>transform(v,owner));if(!value||typeof value!=='object')return value;const out={};
    for(const[key,v]of Object.entries(value)){if(key!=='$ref'){out[key]=transform(v,owner);continue;}const[urn,fragment]=v.split('#'),id=urn||owner,full=id+'#'+fragment;if(id===root.$id){out[key]='#'+fragment;continue;}
@@ -50,17 +51,19 @@ export async function generateTaskCommandContracts({check=false,toolchainRoot,bu
   const generated=standalone(ajv,refs)+'\nexport const validators={'+names.map(name=>name+':validate'+name).join(',')+'};\n';
   let bundled;
   if(offlineBundle){
-   const virtual='\0task-command-generated-',source=JSON.stringify(errorStatuses)+';export const errorOutcomes='+JSON.stringify(errorOutcomes)+';';
+   const virtual='\0task-command-generated-',source=JSON.stringify(errorStatuses)+';export const errorOutcomes='+JSON.stringify(errorOutcomes)+';export const errorOutcomeStatuses='+JSON.stringify(errorOutcomeStatuses)+';';
    const bundle=await builder.rolldown({cwd:dir,input:fileURLToPath(new URL('task-command-application/receive.mjs',HERE)),platform:'browser',plugins:[{name:'task-command-canonical-offline',resolveId(id){if(/^\.\/generated-(validator|status)\.mjs$/u.test(id))return virtual+(id.includes('validator')?'validator':'status');if(id==='../retrieval-0.2/operation-contracts.mjs')return fileURLToPath(new URL('task-command-application/normalizer-snapshot.mjs',HERE));},load(id){if(id===virtual+'validator')return generated;if(id===virtual+'status')return 'export const errorStatuses='+source;}}]});
    try{const result=await bundle.generate({format:'es',codeSplitting:false}),chunks=result.output.filter(o=>o.type==='chunk');if(chunks.length!==1||chunks[0].imports.length||chunks[0].dynamicImports.length)throw Error('Task command browser external import');bundled={outputFiles:[{text:chunks[0].code.replace(/^\/\/#(?:end)?region[^\r\n]*\r?\n/gmu,'')}],metafile:{inputs:Object.fromEntries(Object.keys(chunks[0].modules).map(path=>[path,{}])),outputs:{browser:{imports:[]}}}};}finally{await bundle.close();}
-  }else bundled=await esbuild.build({absWorkingDir:dir,stdin:{contents:await readFile(new URL('task-command-application/receive.mjs',HERE),'utf8'),sourcefile:'task-command-application-receiver.mjs',resolveDir:resolve(dir,'task-command-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[
-   {name:'task-command-generated',setup(b){b.onResolve({filter:/^\.\/generated-(validator|status)\.mjs$/},a=>({path:a.path,namespace:'task-command-generated'}));b.onLoad({filter:/.*/,namespace:'task-command-generated'},a=>({contents:a.path.includes('validator')?generated:'export const errorStatuses='+JSON.stringify(errorStatuses)+';export const errorOutcomes='+JSON.stringify(errorOutcomes)+';',resolveDir:dir,loader:'js'}));}},
+  }else bundled=await esbuild.build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('task-command-application/receive.mjs',HERE),'utf8'),sourcefile:'task-command-application-receiver.mjs',resolveDir:resolve(dir,'task-command-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[
+   {name:'task-command-generated',setup(b){b.onResolve({filter:/^\.\/generated-(validator|status)\.mjs$/},a=>({path:a.path,namespace:'task-command-generated'}));b.onLoad({filter:/.*/,namespace:'task-command-generated'},a=>({contents:a.path.includes('validator')?generated:'export const errorStatuses='+JSON.stringify(errorStatuses)+';export const errorOutcomes='+JSON.stringify(errorOutcomes)+';export const errorOutcomeStatuses='+JSON.stringify(errorOutcomeStatuses)+';',resolveDir:dir,loader:'js'}));}},
    {name:'task-command-normalizer-boundary',setup(b){b.onResolve({filter:/^\.\.\/retrieval-0\.2\/operation-contracts\.mjs$/},()=>({path:fileURLToPath(new URL('task-command-application/normalizer-snapshot.mjs',HERE))}));}},
   ]});
   if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('Task command browser external import');
   const declarations=javascriptOnly?null:offline?await compileTaskCommandDeclarations(root,names,{typescriptRoot:bundleRoot,typeModulesRoot}):await compiler.compile({title:'TaskCommandApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'TaskCommandApplicationEnvelope',{bannerComment:'// Generated additive task-command contract from canonical schemas. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
-  const metadata=createTaskCommandMetadata(errorStatuses,errorOutcomes),api=`
-export type TaskCommandRoute='prepare'|'execute';
+  const metadata=createTaskCommandMetadata(errorStatuses,errorOutcomes,errorOutcomeStatuses),api=`
+${offline?'':`export type TaskUpdateRaw=TaskCommandPrepareRequest['arguments'];
+export type TaskUpdateApprovalProposal=TaskCommandPrepareResponse['proposal'];
+`}export type TaskCommandRoute='prepare'|'execute';
 export interface TaskCommandRequestMap {prepare:TaskCommandPrepareRequest;execute:TaskCommandExecuteRequest;}
 export interface TaskCommandResponseMap {prepare:TaskCommandPrepareResponse;execute:TaskCommandExecuteResponse;}
 export interface TaskCommandExpectationMap {prepare:{binding:Readonly<TaskCommandExpectedBinding>;request:TaskCommandPrepareRequest};execute:{binding:Readonly<TaskCommandExpectedBinding>;proposal:TaskUpdateApprovalProposal};}

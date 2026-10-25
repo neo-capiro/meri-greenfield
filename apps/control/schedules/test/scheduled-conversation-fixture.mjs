@@ -10,8 +10,8 @@ import {createConversationHistoryApplication} from '../../conversations/history/
 import {createScheduledConversationCurrentness,SCHEDULED_MERI_INBOX_DESTINATION} from '../scheduled-conversation-currentness.mjs';
 import {createScheduledConversationReceipts} from '../scheduled-conversation-receipt.mjs';
 
-export async function scheduledConversationFixture({dispatch=true,destinationId=SCHEDULED_MERI_INBOX_DESTINATION}={}){
- const h=harness(),p=projection({destinationId,scopes:[{tenantId:'tenant-a',kind:'client',resourceId:id(91),policyRevision:'policy-a'}]}),o=occurrence({projection:p});
+export async function scheduledConversationFixture({dispatch=true,destinationId=SCHEDULED_MERI_INBOX_DESTINATION,general=false}={}){
+ const h=harness(),owner=projection().owner,p=projection({destinationId,scopes:[{tenantId:owner.tenantId,kind:general?'private-user':'client',resourceId:general?owner.actorId:id(91),policyRevision:'policy-a'}]}),o=occurrence({projection:p});
  const originalConnect=h.schedules.pool.connect,state={memberReads:0,nativeReads:0,coreReads:0,originReads:0,denied:false,retained:true,coreDenied:false,originHook:null,membershipHook:null,readHook:null};
  h.schedules.pool.connect=async()=>{const c=await originalConnect();return {...c,async query(sql,args){
   if(sql.startsWith('SELECT tenant_id,generation,occurrence_key')){

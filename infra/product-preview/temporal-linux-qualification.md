@@ -1,5 +1,7 @@
 # Temporal derivative Linux qualification packet — unrun
 
+> Historical qualification checklist. Its custom issuer, token writer, JWT and issuer-network instructions are superseded by native client-certificate authentication in `apps/runtime/temporal-tls.mjs` and `temporal-binding.mjs`. Preserve required native server, namespace, workflow, rotation and restore behavior through those existing owners. Use the [current Runtime V1 migration plan](../../docs/handover/20261022/plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md) and current Release readbacks; this checklist does not authorize rebuilding the retired issuer or operating archived identities.
+
 Root owns the isolated native ARM build and private Fargate qualification. This checklist records the remaining gates; the implementation lane performs no cloud, SQL or model operations. The source at this pin keeps all five service counts zero and `MERI_TEMPORAL_ACTIVATION=disabled`.
 
 ## Freeze source and image bytes before the build

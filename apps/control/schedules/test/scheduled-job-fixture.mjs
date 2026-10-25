@@ -7,9 +7,9 @@ import {createScheduledJobLifecycle} from '../scheduled-job-lifecycle.mjs';
 import {createScheduledDispatch} from '../scheduled-dispatch.mjs';
 export {id,hash};
 const check=()=>{};
-export async function scheduledJobFixture({admit=true,allocated=true}={}){
- const h=await scheduledAdmissionFixture();if(admit)await h.adapter.admit(h.request);
- const f=await lifecycleFixture({pool:h.pool,binding:h.identity.binding,scopes:h.scopes}),calls={cancel:[],retire:[]},hooks={};let sequence=2000;
+export async function scheduledJobFixture({admit=true,allocated=true,agentcore=false,general=false}={}){
+ const h=await scheduledAdmissionFixture({agentcore,general});if(admit)await h.adapter.admit(h.request);
+ const f=await lifecycleFixture({pool:h.pool,binding:h.identity.binding,scopes:h.scopes,selectedClientId:h.template.selectedClientId}),calls={cancel:[],retire:[]},hooks={};let sequence=2000;
  const selection={occurrence:h.occurrence,effect:h.effect},row=b=>[...h.conversations.state.runs.values()].find(r=>r.run_id===b.runId);
  async function claim(binding=h.identity.binding){await allocateOriginal(f.store,binding);}
  async function retire(binding=h.identity.binding){

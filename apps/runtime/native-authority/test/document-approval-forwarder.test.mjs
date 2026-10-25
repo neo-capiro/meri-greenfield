@@ -29,7 +29,7 @@ test('expired original session and later canonical current session approve/read/
  const f=await fixture();try{
   assert.throws(()=>f.sessions.nativeCredentialFor({binding:f.source,selectedClientId:id(7)}));
   assert.equal((await f.record()).decision.proposalId,f.proposal.proposalId);await f.forwarder.decision(f.selection);await f.forwarder.revoke({...f.selection,approver:f.principal});
-  assert.equal(f.state.requests.length,3);assert.deepEqual(f.state.requests.map(r=>new URL(r.url).pathname),Object.values(CORE_APPROVAL_ROUTES));
+  assert.equal(f.state.requests.length,3);assert.deepEqual(f.state.requests.map(r=>new URL(r.url).pathname),[CORE_APPROVAL_ROUTES.record,CORE_APPROVAL_ROUTES.decision,CORE_APPROVAL_ROUTES.revoke]);
   for(const r of f.state.requests){assert.equal(r.headers.authorization,'Bearer synthetic-current');assert.deepEqual(r.body.binding,f.source);assert.equal(r.headers['x-internal-service-secret'],'synthetic-service-secret');}
  }finally{f.close();}
 });

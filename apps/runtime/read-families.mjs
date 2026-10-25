@@ -12,8 +12,9 @@ import {createToolDispatch} from '../gateway/dispatch/tool-dispatch.mjs';
 import {GatewayDenied} from '../gateway/dispatch/operation-result.mjs';
 import {createReadContextOwner} from './read-context/owner.mjs';
 import {createNativeToolAuthorityClient} from './read-context/core-client.mjs';
-import {createObjectiveReadSource} from './objective-generation/read-source.mjs';
-import {createObjectiveReadContext} from './objective-generation/read-context.mjs';
+import {createObjectiveReadSource,createRoutineReadSource} from './objective-generation/read-source.mjs';
+import {createObjectiveReadContext,createRoutineReadContext} from './objective-generation/read-context.mjs';
+import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 
 export {GENERAL_READ_ADAPTER_FAMILIES};
 const key=op=>`${op.id}@${op.version}`,deny=code=>{throw nativeReadFault(code);};
@@ -22,13 +23,17 @@ const uuid=digest=>`${digest.slice(0,8)}-${digest.slice(8,12)}-5${digest.slice(1
 
 export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,getReadModeServiceSecret,memoryContexts}){
  const prepared=prepareGeneralReadFamilyHandlers({familyIds});
- async function createGateway({binding,current,approvedReads,signal,deadlineMs,objectiveCore}){
-  const initial=await current(),job=objectiveCore?await objectiveCore.forBinding({binding,signal}):null;
-  if(job&&(job.current.clientId!==initial.selectedClientId||hash(job.record.binding)!==hash(binding)))deny('ACCESS_DENIED');
-  const readSource=job?createObjectiveReadSource({record:job.record,policyRevision:initial.policyRevision,origin:coreOrigin,getServiceSecret,fetchImpl,now,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes}):undefined;
+ async function createGateway({binding,current,approvedReads,signal,deadlineMs,objectiveCore,routineCore,capabilityPolicy:runCapabilityPolicy=capabilityPolicy,readCapabilityRole}){
+  const started=now();
+  const initial=await current(),objective=objectiveCore?await objectiveCore.forBinding({binding,signal}):null,routine=routineCore?await routineCore.forBinding({binding,signal,deadlineMs}):null,job=objective??routine;
+  if(objective&&routine||job&&((objective?job.current.clientId:job.record.selectedClientId)!==initial.selectedClientId||hash(job.record.binding)!==hash(binding)))deny('ACCESS_DENIED');
+  // forBinding already obtained this request's first job observation. Consume it once; the post-source snapshot reobserves.
+  let initialJobRole=job?projectCapabilityRole({role:job.current.role,checkedAtMs:job.current.checkedAtMs,
+   expiresAtMs:Math.min(job.current.effectExpiresAtMs,objective?job.record.effectExpiresAtMs:job.record.expiresAtMs)},{started,now:now()}):undefined;
+  const readSource=job?(routine?createRoutineReadSource:createObjectiveReadSource)({record:job.record,policyRevision:initial.policyRevision,origin:routine?routineCore.origin:coreOrigin,getServiceSecret:routine?routineCore.getServiceSecret:getServiceSecret,fetchImpl,now,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes}):undefined;
   const coreAuthority=job?null:createNativeToolAuthorityClient({origin:coreOrigin,fetchImpl,now,enabled:true,binding,selectedClientId:initial.selectedClientId});
   const nativeCredential=request=>getNativeCredential({...request,binding,selectedClientId:initial.selectedClientId});
-  const credentials=job?createObjectiveReadContext({record:job.record,current:job.current,readSource,policyRevision:initial.policyRevision,approvedReads,defaultCongress,now}):createReadContextOwner({binding,expiresAtMs:initial.execution.expiresAtMs,executionSha256:initial.executionSha256,current,
+  const credentials=job?(routine?createRoutineReadContext:createObjectiveReadContext)({record:job.record,current:job.current,readSource,policyRevision:initial.policyRevision,approvedReads,defaultCongress,now}):createReadContextOwner({binding,expiresAtMs:initial.execution.expiresAtMs,executionSha256:initial.executionSha256,current,
    approvedReads,coreAuthority,getNativeCredential:nativeCredential,getServiceSecret,...(getReadModeServiceSecret?{getReadModeServiceSecret}:{}),
    ...(defaultCongress===undefined?{}:{defaultCongress}),now,enabled:true});
   async function ordinaryCredentials(request){
@@ -97,14 +102,17 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
   }
   async function readAvailability({signal:requestSignal}={}){
    const observed=await current();
-   const policy=await capabilityPolicy.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,signal:requestSignal??signal});
-   const visible=policy?.generalReads===true&&Array.isArray(policy.readFamilies)?operations.filter(op=>policy.readFamilies.includes(resolveOperationContract(op).binding.group)):[];
-   const at=now(),expiresAtMs=observed.execution.expiresAtMs;
+   const role=initialJobRole??await readCapabilityRole?.({binding,signal:requestSignal??signal,deadlineMs});initialJobRole=undefined;
+   const policy=await runCapabilityPolicy.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,
+    ...(role?{actorRole:role.actorRole}:{}),signal:requestSignal??signal});
+   const active=new Set(policy?.activeReadOperations?.map(key)??[]);
+   const visible=policy?.generalReads===true&&Array.isArray(policy.readFamilies)?operations.filter(op=>active.has(key(op))&&policy.readFamilies.includes(resolveOperationContract(op).binding.group)):[];
+   const at=now(),expiresAtMs=Math.min(observed.execution.expiresAtMs,role?.expiresAtMs??observed.execution.expiresAtMs);
    return {installation:{installationId,baseCatalogSha256,executionCatalogSha256,operations,checkedAtMs:at,expiresAtMs},
     discovery:{binding,policyRevision:observed.policyRevision,operations:visible,checkedAtMs:at,expiresAtMs}};
   }
   const dispatchCurrent=async()=>{try{return await current();}catch(error){throw new GatewayDenied(nativeReadFailureCode(error)??'UNAVAILABLE');}};
-  const memoryContextPorts=initial.selectedClientId!==null&&familyIds.includes('memory-proposals')?memoryContexts?.forTask({binding,clientId:initial.selectedClientId,policyRevision:initial.policyRevision,expiresAtMs:initial.execution.expiresAtMs,signal}):undefined;
+  const memoryContextPorts=familyIds.includes('memory-proposals')?memoryContexts?.forTask({binding,clientId:initial.selectedClientId,policyRevision:initial.policyRevision,expiresAtMs:initial.execution.expiresAtMs,signal}):undefined;
   const mailContextPorts=familyIds.includes('mail')?memoryContexts?.forMail({binding,clientId:initial.selectedClientId,policyRevision:initial.policyRevision,expiresAtMs:initial.execution.expiresAtMs,signal}):undefined;
   const dispatch=createToolDispatch({catalog:{entry:op=>entries.get(key(op))??null},current:dispatchCurrent,contextFor,
    limits:{maxRequestMs:Math.min(approvedReads.maxExecuteMs,Math.max(1,deadlineMs-now())),maxRequestBytes:approvedReads.maxRequestBytes,maxResponseBytes:approvedReads.maxResponseBytes},

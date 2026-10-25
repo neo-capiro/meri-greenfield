@@ -7,6 +7,7 @@ import {createExecutionBinding} from '../../control/conversations/execution-boun
 import {binding as source,versions,scopes,id} from '../../control/conversations/test/store-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {buildContinuationOptions} from '../../worker/conversation/continuation/options.mjs';
+import {automaticContextFixture} from '../../worker/conversation/test/automatic-context-fixture.mjs';
 const NOW=Date.parse('2026-10-24T00:00:00Z');
 function fixture(mode='nextTurn',{general=false}={}){
  const activeScopes=general?[{tenantId:source.tenantId,kind:'private-user',resourceId:source.actorId,policyRevision:'policy1'}]:scopes;
@@ -29,6 +30,13 @@ function fixture(mode='nextTurn',{general=false}={}){
  const input={credential:'synthetic-execution',request:{binding,versions,...(saved?{...saved,...(saved.nextTurn?{sourceRequest}:{}),request,scopes:activeScopes}:{})}};
  return {config,input,sourceRequest,request,admission,run,execution,binding,sdkSession,transcripts,counts:()=>({reads,auths,snapshots}),setSaved:v=>saved=v,saved:()=>saved,onSnapshot:f=>onSnapshot=f,onAuth:f=>onAuth=f,setClock:v=>clock=v};
 }
+test('routine runtime checks current saved occurrence and never uses interactive automatic context',async()=>{
+ const f=fixture('fresh');let checks=0;
+ f.config.routineCore={async forBinding({binding,signal}){assert.deepEqual(binding,f.binding);signal.throwIfAborted();checks++;return {record:{expiresAtMs:f.execution.expiresAtMs}};}};
+ f.config.automaticContext={async read(){assert.fail('No interactive read in a routine');}};
+ const owner=createNativeSessionContinuation(f.config),result=await owner.prepareRuntime(f.input);assert.equal(checks,1);assert.equal(result.automaticClientContext,null);
+ f.config.routineCore.forBinding=async()=>{throw Error('CONSENT_REVOKED');};await assert.rejects(owner.prepareRuntime(f.input));
+});
 for(const mode of ['fresh','nextTurn','resume','fork'])test(`${mode}: actual native preparation preserves original execution lifetime and configured output limit`,async()=>{
  const f=fixture(mode),owner=createNativeSessionContinuation(f.config),result=await owner.prepareRuntime({...f.input,deadlineMs:NOW+50});
  assert.equal(result.deadlineMs,f.execution.expiresAtMs);assert.equal(result.maxOutputBytes,262144);assert.deepEqual(result.binding,f.binding);
@@ -110,3 +118,11 @@ test('Objective selection cannot be grafted onto a native continuation or releas
  const f=fixture('resume');f.config.objectiveSelection={async read(){return {synthetic:true};}};await assert.rejects(createNativeSessionContinuation(f.config).prepareRuntime(f.input));
  const g=fixture('fresh');g.config.objectiveSelection={async read(){g.admission.state='cancelled';return {synthetic:true};}};await assert.rejects(createNativeSessionContinuation(g.config).prepareRuntime(g.input));
 });
+
+for(const mode of ['fresh','nextTurn','resume','fork'])test(`${mode}: automatic selected-client context is collected afresh before release`,async()=>{
+ const f=fixture(mode);let reads=0;f.config.automaticContext={read:async args=>{reads++;assert.deepEqual(args.binding,f.binding);assert.equal(args.selectedClientId,scopes[0].resourceId);assert.ok(args.deadlineMs<=NOW+3000);return automaticContextFixture(f.binding,args.selectedClientId,NOW);}};
+ const owner=createNativeSessionContinuation(f.config);for(let n=0;n<2;n++){const result=await owner.prepareRuntime(f.input);assert.equal(result.automaticClientContext.subject.clientId,scopes[0].resourceId);if(mode!=='fresh'){const restored=await owner.readSnapshot({credential:f.input.credential,request:{binding:f.binding}});assert.deepEqual(restored.transcripts,f.transcripts);assert.equal(JSON.stringify(restored.transcripts).includes('SYNTHETICUEI'),false);}}assert.equal(reads,2);
+});
+test('General preparation never calls the selected-client reader',async()=>{const f=fixture('fresh',{general:true});f.config.automaticContext={read:async()=>assert.fail('General inherited a client')};assert.equal((await createNativeSessionContinuation(f.config).prepareRuntime(f.input)).automaticClientContext,null);});
+test('changed execution after automatic context prevents release',async()=>{const f=fixture('fresh');f.config.automaticContext={read:async()=>{f.admission.state='cancelled';return automaticContextFixture(f.binding,scopes[0].resourceId,NOW);}};await assert.rejects(createNativeSessionContinuation(f.config).prepareRuntime(f.input));});
+test('unavailable automatic context never silently falls back to stale client data',async()=>{const f=fixture('fresh');f.config.automaticContext={read:async()=>{throw Error('source unavailable');}};await assert.rejects(createNativeSessionContinuation(f.config).prepareRuntime(f.input));});

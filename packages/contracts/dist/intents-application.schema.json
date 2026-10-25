@@ -93,6 +93,9 @@
           "$ref": "#/$defs/Canonical_ApprovalProposal_d1a3e74f"
         },
         {
+          "$ref": "#/$defs/Canonical_TaskUpdateApprovalProposal_1f70e582"
+        },
+        {
           "$ref": "#/$defs/Canonical_DocumentDraftApprovalProposal_834c2460"
         }
       ]
@@ -102,6 +105,127 @@
     },
     "IntentsTaskCreateArguments": {
       "$ref": "#/$defs/Canonical_TaskCreateArguments_1202c301"
+    },
+    "IntentsTaskUpdateArguments": {
+      "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+    },
+    "IntentsArtifactFileArguments": {
+      "$ref": "#/$defs/Canonical_ArtifactFileArguments_6f2b3978"
+    },
+    "IntentsNativeTaskOutcome": {
+      "type": "object",
+      "properties": {
+        "execution": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "native-task"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "commandSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "completedAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            "approvalDecisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "kind",
+            "proposalId",
+            "commandSha256",
+            "idempotencyKey",
+            "binding",
+            "completedAt",
+            "approvalDecisionSha256"
+          ],
+          "additionalProperties": false
+        },
+        "result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Canonical_TaskCreateResult_0501c509"
+            },
+            {
+              "$ref": "#/$defs/Canonical_TaskUpdateResult_029549a8"
+            }
+          ]
+        }
+      },
+      "required": [
+        "execution",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsNativeArtifactFileOutcome": {
+      "type": "object",
+      "properties": {
+        "execution": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "native-artifact-file"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "commandSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "completedAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            "approvalDecisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "kind",
+            "proposalId",
+            "commandSha256",
+            "idempotencyKey",
+            "binding",
+            "completedAt",
+            "approvalDecisionSha256"
+          ],
+          "additionalProperties": false
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_ArtifactFileResult_88dad64b"
+        }
+      },
+      "required": [
+        "execution",
+        "result"
+      ],
+      "additionalProperties": false
     },
     "IntentsExecutionOutcome": {
       "oneOf": [
@@ -120,6 +244,12 @@
             "result"
           ],
           "additionalProperties": false
+        },
+        {
+          "$ref": "#/$defs/IntentsNativeTaskOutcome"
+        },
+        {
+          "$ref": "#/$defs/IntentsNativeArtifactFileOutcome"
         },
         {
           "$ref": "#/$defs/Canonical_ArtifactCreatedResult_183a755e"
@@ -325,6 +455,101 @@
       ],
       "additionalProperties": false
     },
+    "IntentsMemoryReview": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "review_pending"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_MemoryProposeResult_d7a216e1"
+        }
+      },
+      "required": [
+        "status",
+        "binding",
+        "scopes",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsMemoryReviewItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "memory_review"
+        },
+        "review": {
+          "$ref": "#/$defs/IntentsMemoryReview"
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "review"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldMemoryReviewItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "memory_review"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsScheduleProposalItem": {
       "type": "object",
       "properties": {
@@ -364,6 +589,80 @@
         "state",
         "kind",
         "proposalId"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsScheduleReviewItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "schedule_proposal"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "request": {
+          "$ref": "#/$defs/RoutinesMutationRequest"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_PendingProposal_8e88d951"
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "binding",
+        "request",
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldScheduleItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "schedule_proposal"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
       ],
       "additionalProperties": false
     },
@@ -492,7 +791,19 @@
           "$ref": "#/$defs/IntentsWithheldDraftItem"
         },
         {
+          "$ref": "#/$defs/IntentsMemoryReviewItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldMemoryReviewItem"
+        },
+        {
           "$ref": "#/$defs/IntentsScheduleProposalItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsScheduleReviewItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldScheduleItem"
         },
         {
           "$ref": "#/$defs/IntentsWithheldProposalItem"
@@ -673,6 +984,372 @@
             "field": {
               "type": "string",
               "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+            }
+          },
+          "required": [
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesMutationRequest": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+        },
+        {
+          "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+        },
+        {
+          "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+        }
+      ]
+    },
+    "RoutinesProposal": {
+      "$ref": "#/$defs/Canonical_PendingProposal_8e88d951"
+    },
+    "RoutinesPrepareRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._-]{1,128}$"
+            },
+            "operation": {
+              "const": "schedule_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+            }
+          },
+          "required": [
+            "requestId",
+            "operation",
+            "request"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._-]{1,128}$"
+            },
+            "operation": {
+              "const": "update_scheduled_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+            }
+          },
+          "required": [
+            "requestId",
+            "operation",
+            "request"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "requestId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._-]{1,128}$"
+            },
+            "operation": {
+              "const": "cancel_scheduled_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+            }
+          },
+          "required": [
+            "requestId",
+            "operation",
+            "request"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "RoutinesPrepareResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_PendingProposal_8e88d951"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesApproveRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "schedule_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "intentSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "decision": {
+              "const": "approved"
+            }
+          },
+          "required": [
+            "operation",
+            "request",
+            "proposalId",
+            "intentSha256",
+            "decision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "update_scheduled_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "intentSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "decision": {
+              "const": "approved"
+            }
+          },
+          "required": [
+            "operation",
+            "request",
+            "proposalId",
+            "intentSha256",
+            "decision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "cancel_scheduled_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "intentSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "decision": {
+              "const": "approved"
+            }
+          },
+          "required": [
+            "operation",
+            "request",
+            "proposalId",
+            "intentSha256",
+            "decision"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "RoutinesApproveResponse": {
+      "$ref": "#/$defs/Canonical_Acknowledged_1fa14cd2"
+    },
+    "RoutinesReconcileRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "schedule_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "intentSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "operation",
+            "request",
+            "proposalId",
+            "intentSha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "update_scheduled_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "intentSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "operation",
+            "request",
+            "proposalId",
+            "intentSha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "cancel_scheduled_task"
+            },
+            "request": {
+              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "intentSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "operation",
+            "request",
+            "proposalId",
+            "intentSha256"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "RoutinesReconcileResponse": {
+      "type": "object",
+      "properties": {
+        "intentId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "operation": {
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "outcome": {
+          "enum": [
+            "ACKNOWLEDGED",
+            "UNRESOLVED"
+          ]
+        },
+        "code": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "SCHEDULE_INTENT_NEVER_DISPATCHED",
+                "SCHEDULE_INTENT_EFFECT_NOT_COMPARABLE",
+                "SCHEDULE_INTENT_EFFECT_NOT_OBSERVED"
+              ]
+            }
+          ]
+        },
+        "reconciled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "intentId",
+        "operation",
+        "generation",
+        "outcome",
+        "code",
+        "reconciled"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesListRequest": {
+      "$ref": "#/$defs/Canonical_ListScheduledTasksRequest_294adc6c"
+    },
+    "RoutinesListResponse": {
+      "$ref": "#/$defs/Canonical_ListScheduledTasksOutput_d1de26c2"
+    },
+    "RoutinesErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]{0,63}$"
+            },
+            "outcome": {
+              "enum": [
+                "NOT_DISPATCHED",
+                "UNKNOWN",
+                "ACKNOWLEDGED_NOT_RELEASED",
+                "UNRESOLVED"
+              ]
             }
           },
           "required": [
@@ -923,6 +1600,138 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_TaskUpdateArguments_48509a7a": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mode": {
+          "const": "unconditional_patch"
+        },
+        "patch": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            },
+            "status": {
+              "enum": [
+                "todo",
+                "in_progress",
+                "done",
+                "blocked",
+                "canceled"
+              ]
+            },
+            "dueDate": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "minProperties": 1
+        }
+      },
+      "required": [
+        "taskId",
+        "mode",
+        "patch"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateCommand_b73e3ce0": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "const": "task.update"
+        },
+        "arguments": {
+          "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+        },
+        "attachments": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateApprovalProposal_1f70e582": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_TaskUpdateCommand_b73e3ce0"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_DocumentDraftArguments_deaaba57": {
       "type": "object",
       "properties": {
@@ -1141,6 +1950,210 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_ArtifactFileArguments_6f2b3978": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "clientId",
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskCreateResult_0501c509": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "status": {
+          "const": "todo"
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "dueDate",
+        "clientId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskUpdateResult_029549a8": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "todo",
+            "in_progress",
+            "done",
+            "blocked",
+            "canceled"
+          ]
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "dueDate",
+        "clientId",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ArtifactFileObservation_2028832d": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+        },
+        "status": {
+          "enum": [
+            "saved",
+            "pending",
+            "failed"
+          ]
+        },
+        "fileName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        },
+        "indexingStatus": {
+          "enum": [
+            "pending",
+            "indexed",
+            "not_indexed"
+          ]
+        },
+        "reused": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "status",
+        "fileName"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ArtifactFileResult_88dad64b": {
+      "type": "object",
+      "properties": {
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/Canonical_ArtifactFileObservation_2028832d"
+          }
+        }
+      },
+      "required": [
+        "commandSha256",
+        "files"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_CommandReceipt_ac49ee1e": {
       "type": "object",
       "properties": {
@@ -1212,60 +2225,6 @@
         "completedAt",
         "scopes",
         "authorizationDecisionId"
-      ],
-      "additionalProperties": false
-    },
-    "Canonical_TaskCreateResult_0501c509": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 240
-        },
-        "status": {
-          "const": "todo"
-        },
-        "dueDate": {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
-              "format": "date-time"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "clientId": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "createdAt": {
-          "type": "string",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "status",
-        "dueDate",
-        "clientId",
-        "createdAt"
       ],
       "additionalProperties": false
     },
@@ -2175,6 +3134,1605 @@
         "version",
         "inspection",
         "execution"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MemoryProposeResult_d7a216e1": {
+      "type": "object",
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "const": "pending"
+        }
+      },
+      "required": [
+        "candidateId",
+        "commandSha256",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleProjection_607c4a02": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "owner": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        },
+        "temporalScheduleId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "paused",
+            "cancelled"
+          ]
+        },
+        "maxCostMicrousd": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "maxRuntimeSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "retryLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "destinationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "owner",
+        "temporalScheduleId",
+        "timezone",
+        "scopes",
+        "state",
+        "maxCostMicrousd",
+        "maxRuntimeSeconds",
+        "retryLimit",
+        "destinationId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Calendar_9a4acbe7": {
+      "type": "object",
+      "properties": {
+        "second": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "minute": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "hour": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 23
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 23
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "dayOfMonth": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "month": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "enum": [
+                      "JANUARY",
+                      "FEBRUARY",
+                      "MARCH",
+                      "APRIL",
+                      "MAY",
+                      "JUNE",
+                      "JULY",
+                      "AUGUST",
+                      "SEPTEMBER",
+                      "OCTOBER",
+                      "NOVEMBER",
+                      "DECEMBER"
+                    ]
+                  },
+                  "end": {
+                    "enum": [
+                      "JANUARY",
+                      "FEBRUARY",
+                      "MARCH",
+                      "APRIL",
+                      "MAY",
+                      "JUNE",
+                      "JULY",
+                      "AUGUST",
+                      "SEPTEMBER",
+                      "OCTOBER",
+                      "NOVEMBER",
+                      "DECEMBER"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "year": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "dayOfWeek": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "enum": [
+                      "SUNDAY",
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY"
+                    ]
+                  },
+                  "end": {
+                    "enum": [
+                      "SUNDAY",
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "comment": {
+          "type": "string",
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "second",
+        "minute",
+        "hour",
+        "dayOfMonth",
+        "month",
+        "year",
+        "dayOfWeek",
+        "comment"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Spec_e2455537": {
+      "type": "object",
+      "properties": {
+        "calendars": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Calendar_9a4acbe7"
+          },
+          "maxItems": 100
+        },
+        "intervals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "every": {
+                "type": "integer",
+                "minimum": 1000,
+                "maximum": 9007199254740991
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "every",
+              "offset"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        },
+        "cronExpressions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "maxItems": 100
+        },
+        "skip": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Calendar_9a4acbe7"
+          },
+          "maxItems": 100
+        },
+        "startAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "jitterMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "calendars",
+        "intervals",
+        "cronExpressions",
+        "skip",
+        "startAt",
+        "endAt",
+        "jitterMs",
+        "timezone"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_spec_73c93485": {
+      "$ref": "#/$defs/Canonical_Spec_e2455537"
+    },
+    "Canonical_overlap_d8587b68": {
+      "enum": [
+        "SKIP",
+        "BUFFER_ONE",
+        "BUFFER_ALL",
+        "CANCEL_OTHER",
+        "TERMINATE_OTHER",
+        "ALLOW_ALL"
+      ]
+    },
+    "Canonical_catchupWindowMs_cac01906": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 9007199254740991
+    },
+    "Canonical_pauseOnFailure_5504ab8f": {
+      "type": "boolean"
+    },
+    "Canonical_remainingActions_8581f2b6": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Canonical_paused_d039baf5": {
+      "type": "boolean"
+    },
+    "Canonical_note_dd1ff52e": {
+      "type": "string",
+      "maxLength": 512
+    },
+    "Canonical_runNow_f623a22b": {
+      "type": "boolean"
+    },
+    "Canonical_runNowOverlap_d809d83b": {
+      "const": "ALLOW_ALL"
+    },
+    "Canonical_Policy_be301b7b": {
+      "type": "object",
+      "properties": {
+        "spec": {
+          "$ref": "#/$defs/Canonical_spec_73c93485"
+        },
+        "overlap": {
+          "$ref": "#/$defs/Canonical_overlap_d8587b68"
+        },
+        "catchupWindowMs": {
+          "$ref": "#/$defs/Canonical_catchupWindowMs_cac01906"
+        },
+        "pauseOnFailure": {
+          "$ref": "#/$defs/Canonical_pauseOnFailure_5504ab8f"
+        },
+        "remainingActions": {
+          "$ref": "#/$defs/Canonical_remainingActions_8581f2b6"
+        },
+        "paused": {
+          "$ref": "#/$defs/Canonical_paused_d039baf5"
+        },
+        "note": {
+          "$ref": "#/$defs/Canonical_note_dd1ff52e"
+        },
+        "runNow": {
+          "$ref": "#/$defs/Canonical_runNow_f623a22b"
+        },
+        "runNowOverlap": {
+          "$ref": "#/$defs/Canonical_runNowOverlap_d809d83b"
+        }
+      },
+      "required": [
+        "spec",
+        "overlap",
+        "catchupWindowMs",
+        "pauseOnFailure",
+        "remainingActions",
+        "paused",
+        "note",
+        "runNow",
+        "runNowOverlap"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Run_8d674b59": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "workflowId",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Cancel_18a6890b": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "pause",
+            "delete"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "running": {
+          "enum": [
+            "leave",
+            "request_cancel"
+          ]
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Run_8d674b59"
+          },
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "mode",
+        "note",
+        "running",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_PendingProposal_8e88d951": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
+        },
+        "status": {
+          "const": "approval_required"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "intentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "taskInstruction": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projection": {
+          "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Policy_be301b7b"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Cancel_18a6890b"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "proposalId",
+        "intentSha256",
+        "taskInstruction",
+        "projection",
+        "policy",
+        "cancel"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_maxCostMicrousd_c937e3cc": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "Canonical_maxRuntimeSeconds_bdcb8952": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "Canonical_retryLimit_d4c050b5": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "Canonical_Limits_b978e650": {
+      "type": "object",
+      "properties": {
+        "maxCostMicrousd": {
+          "$ref": "#/$defs/Canonical_maxCostMicrousd_c937e3cc"
+        },
+        "maxRuntimeSeconds": {
+          "$ref": "#/$defs/Canonical_maxRuntimeSeconds_bdcb8952"
+        },
+        "retryLimit": {
+          "$ref": "#/$defs/Canonical_retryLimit_d4c050b5"
+        }
+      },
+      "required": [
+        "maxCostMicrousd",
+        "maxRuntimeSeconds",
+        "retryLimit"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleTaskRequest_84a62196": {
+      "type": "object",
+      "properties": {
+        "taskInstruction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "policy": {
+          "$ref": "#/$defs/Canonical_Policy_be301b7b"
+        },
+        "destinationReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "requestedLimits": {
+          "$ref": "#/$defs/Canonical_Limits_b978e650"
+        }
+      },
+      "required": [
+        "taskInstruction",
+        "policy",
+        "destinationReference",
+        "requestedLimits"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_UpdateScheduledTaskRequest_e7c2f9fc": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "taskInstruction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "policy": {
+          "$ref": "#/$defs/Canonical_Policy_be301b7b"
+        },
+        "destinationReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "requestedLimits": {
+          "$ref": "#/$defs/Canonical_Limits_b978e650"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "taskInstruction",
+        "policy",
+        "destinationReference",
+        "requestedLimits"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_mode_b1919e3a": {
+      "enum": [
+        "pause",
+        "delete"
+      ]
+    },
+    "Canonical_note_ea218e7c": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "Canonical_running_59ac543b": {
+      "enum": [
+        "leave",
+        "request_cancel"
+      ]
+    },
+    "Canonical_runs_0ce2594a": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Canonical_Run_8d674b59"
+      },
+      "maxItems": 10
+    },
+    "Canonical_CancelScheduledTaskRequest_fe53799c": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mode": {
+          "$ref": "#/$defs/Canonical_mode_b1919e3a"
+        },
+        "note": {
+          "$ref": "#/$defs/Canonical_note_ea218e7c"
+        },
+        "running": {
+          "$ref": "#/$defs/Canonical_running_59ac543b"
+        },
+        "runs": {
+          "$ref": "#/$defs/Canonical_runs_0ce2594a"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "mode",
+        "note",
+        "running",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Acknowledged_1fa14cd2": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
+        },
+        "status": {
+          "const": "acknowledged"
+        },
+        "receipt": {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "enum": [
+                "schedule_task",
+                "update_scheduled_task",
+                "cancel_scheduled_task"
+              ]
+            },
+            "intentId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "projection": {
+              "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
+            },
+            "outcome": {
+              "const": "ACKNOWLEDGED"
+            },
+            "physicalStopProven": {
+              "const": false
+            }
+          },
+          "required": [
+            "operation",
+            "intentId",
+            "generation",
+            "projection",
+            "outcome",
+            "physicalStopProven"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ListScheduledTasksRequest_294adc6c": {
+      "type": "object",
+      "properties": {
+        "afterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "historyLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleOriginalRun_83689f88": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "firstExecutionRunId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "workflowId",
+        "firstExecutionRunId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleRecentAction_e3bcac7f": {
+      "type": "object",
+      "properties": {
+        "scheduledAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "takenAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "workflow": {
+          "$ref": "#/$defs/Canonical_ScheduleOriginalRun_83689f88"
+        }
+      },
+      "required": [
+        "scheduledAt",
+        "takenAt",
+        "workflow"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleInspectionWindow_d6c325bc": {
+      "type": "object",
+      "properties": {
+        "observed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "returned": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "omitted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "observed",
+        "returned",
+        "omitted"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleInspectionOutput_10f44301": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
+        },
+        "projectionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "temporal": {
+          "type": "object",
+          "properties": {
+            "scheduleId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "paused": {
+              "type": "boolean"
+            },
+            "remainingActions": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "numActionsTaken": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "numActionsMissedCatchupWindow": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "numActionsSkippedOverlap": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "nextActionTimes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "maxItems": 100
+            },
+            "recentActions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_ScheduleRecentAction_e3bcac7f"
+              },
+              "maxItems": 100
+            },
+            "runningActions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_ScheduleOriginalRun_83689f88"
+              },
+              "maxItems": 100
+            }
+          },
+          "required": [
+            "scheduleId",
+            "paused",
+            "remainingActions",
+            "createdAt",
+            "lastUpdatedAt",
+            "numActionsTaken",
+            "numActionsMissedCatchupWindow",
+            "numActionsSkippedOverlap",
+            "nextActionTimes",
+            "recentActions",
+            "runningActions"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "historyComplete": {
+              "const": false
+            },
+            "currentRunIdentityVerified": {
+              "const": false
+            },
+            "nextActions": {
+              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_d6c325bc"
+            },
+            "recentActions": {
+              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_d6c325bc"
+            },
+            "runningActions": {
+              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_d6c325bc"
+            }
+          },
+          "required": [
+            "historyComplete",
+            "currentRunIdentityVerified",
+            "nextActions",
+            "recentActions",
+            "runningActions"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "projection",
+        "projectionSha256",
+        "observedAt",
+        "temporal",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ListRow_3d1b7bed": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unresolved": {
+          "type": "boolean"
+        },
+        "inspection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ScheduleInspectionOutput_10f44301"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inspectionState": {
+          "enum": [
+            "unavailable",
+            "observed"
+          ]
+        }
+      },
+      "required": [
+        "projection",
+        "generation",
+        "unresolved",
+        "inspection",
+        "inspectionState"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Execution_2b847724": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "code": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "name",
+            "code"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 0
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "UNSPECIFIED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 1
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "RUNNING"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 2
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "COMPLETED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 3
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "FAILED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 4
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "CANCELLED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 5
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "TERMINATED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 6
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "CONTINUED_AS_NEW"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 7
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "TIMED_OUT"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 8
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "PAUSED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "not": {
+                      "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "UNKNOWN"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "historyLength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "closeTime": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "workflowId",
+        "runId",
+        "status",
+        "historyLength",
+        "startTime",
+        "closeTime"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_OriginalRuns_073c32e6": {
+      "type": "object",
+      "properties": {
+        "executions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Execution_2b847724"
+          },
+          "maxItems": 10
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "observedReferences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "returned": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "omitted": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "historyComplete": {
+              "const": false
+            },
+            "currentRetryVerified": {
+              "const": false
+            }
+          },
+          "required": [
+            "observedReferences",
+            "returned",
+            "omitted",
+            "historyComplete",
+            "currentRetryVerified"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "executions",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ListPage_bb45ad34": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "list_scheduled_tasks"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_ListRow_3d1b7bed"
+          },
+          "maxItems": 20
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextAfterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "originalRuns": {
+          "$ref": "#/$defs/Canonical_OriginalRuns_073c32e6"
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "const": false
+            },
+            "currentRetryVerified": {
+              "const": false
+            }
+          },
+          "required": [
+            "complete",
+            "currentRetryVerified"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "operation",
+        "rows",
+        "hasMore",
+        "nextAfterScheduleId",
+        "originalRuns",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ListScheduledTasksOutput_d1de26c2": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "list_scheduled_tasks"
+        },
+        "status": {
+          "const": "listed"
+        },
+        "page": {
+          "$ref": "#/$defs/Canonical_ListPage_bb45ad34"
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "page"
       ],
       "additionalProperties": false
     }

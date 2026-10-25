@@ -23,7 +23,7 @@ function closed(value,keys,code){try{return own(value,keys);}catch{fail(code);}}
 /** template: the control's own AgentCore deployment facts every initial run must carry (versions, qualification
  * policy revision, bindings configuration digest, run window). Never request data. */
 export function createObjectiveNativeAdmission(options){
- let pool,claimInput,acceptInput,readOptional,authorize,t,now,maxRequestMs;
+ let pool,claimInput,acceptInput,readOptional,register,authorize,t,now,maxRequestMs;
  try{
   const o=own(options,['pool','store','authority','template'],['now','maxRequestMs']);
   pool=Object.freeze({connect:sdkMethod(o.pool,'connect')});
@@ -31,6 +31,7 @@ export function createObjectiveNativeAdmission(options){
   const initial=Object.getOwnPropertyDescriptor(o.store,'initialInputs');
   if(!initial||!Object.hasOwn(initial,'value'))fail('CONFIGURATION');
   claimInput=sdkMethod(initial.value,'claim');acceptInput=sdkMethod(initial.value,'accept');readOptional=sdkMethod(o.store,'readOptional');authorize=sdkMethod(o.authority,'currentRecord');
+  register=sdkMethod(o.store.management,'register');
   t=data(own(o.template,['versions','policyRevision','configurationSha256','runWindowMs']));validateShape('RuntimeVersions',t.versions);
   if(typeof t.policyRevision!=='string'||!t.policyRevision||t.policyRevision.length>256||!digest(t.configurationSha256)||!integer(t.runWindowMs)||t.runWindowMs<1)fail('CONFIGURATION');
   now=o.now??Date.now;maxRequestMs=o.maxRequestMs??10000;
@@ -55,16 +56,33 @@ export function createObjectiveNativeAdmission(options){
    r.expiresAtMs<=now()||r.expiresAtMs<=r.createdAtMs||r.expiresAtMs>Math.min(r.createdAtMs+t.runWindowMs,c.record.effectExpiresAtMs))fail('BINDING');
   return r;
  }
- return Object.freeze({async admit(raw){
+ async function authorizeCurrent(c,life){
+  if(c.record.effectExpiresAtMs<=now())fail('EXPIRED');
+  const current=await life.run(signal=>authorize({record:c.record,signal})),source=c.record.selection.sourceAdmission,b=c.record.binding;life.check();
+  if(current.generationJobId!==c.record.generationJobId||current.tenantId!==b.tenantId||current.actorId!==b.actorId||current.clientId!==c.clientId||
+   current.consentId!==source.consentId||current.controlVersion!==source.controlVersion||!integer(current.effectExpiresAtMs)||current.effectExpiresAtMs<c.record.effectExpiresAtMs)fail('AUTHORITY');
+ }
+ return Object.freeze({
+  /** Register the real zero-run subject before private selection persistence.
+   * Current Core job authority is refreshed by the existing registration owner;
+   * this creates no original binding, input, accepted run or model dispatch. */
+  async prepare(raw){
+   let life;
+   try{
+    const c=request(raw),at=now();life=createOperationLifetime({now,deadlineMs:Math.min(c.deadlineMs??at+maxRequestMs,at+maxRequestMs),signal:c.signal,errorFactory:code=>fault(code)});
+    const b=c.record.binding,conversation={conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes:c.scopes,policyRevision:t.policyRevision,createdAt:new Date(at).toISOString()};
+    const saved=await life.run(()=>register({principal:{...conversation.owner,clientIds:[c.clientId]},conversation,recheckActive:()=>authorizeCurrent(c,life)},life.check));life.check();
+    if(!same({...saved,createdAt:conversation.createdAt},conversation))fail('BINDING');
+    return data({binding:b});
+   }catch(e){throw errors.has(e)?e:fault('UNKNOWN');}finally{life?.close();}
+  },async admit(raw){
   let life;
   try{
    const c=request(raw),at=now();c.deadlineMs=Math.min(c.deadlineMs??at+maxRequestMs,at+maxRequestMs);
    life=c.life=createOperationLifetime({now,deadlineMs:c.deadlineMs,signal:c.signal,errorFactory:code=>fault(code)});
    c.limit=ms=>{life.limitDeadline(ms);c.deadlineMs=Math.min(c.deadlineMs,ms);};
    const b=c.record.binding;if(c.record.effectExpiresAtMs<=at)fail('EXPIRED');
-   const current=await life.run(signal=>authorize({record:c.record,signal})),source=c.record.selection.sourceAdmission;life.check();
-   if(current.generationJobId!==c.record.generationJobId||current.tenantId!==b.tenantId||current.actorId!==b.actorId||current.clientId!==c.clientId||
-    current.consentId!==source.consentId||current.controlVersion!==source.controlVersion||!integer(current.effectExpiresAtMs)||current.effectExpiresAtMs<c.record.effectExpiresAtMs)fail('AUTHORITY');
+   await authorizeCurrent(c,life);
    // The derived run/attempt/worker IDs are the only identities the canonical journal may mint for this conversation.
    const ids=[b.runId,b.attemptId,b.workerId];let cursor=0;
    const journal=createInitialRunBindingJournal({pool,now,newId:()=>{if(cursor>=ids.length)fail('IDENTITY');return ids[cursor++];}});

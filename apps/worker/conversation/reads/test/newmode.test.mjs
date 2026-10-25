@@ -9,16 +9,17 @@ import {advertisedArguments} from '../schema.mjs';
 import {fixture,uuid} from '../../../../runtime/test/reads-native-fixture.mjs';
 import {connect} from './native-mcp-fixture.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {MODE_READ_OPERATIONS,decodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER as HEADER} from '../../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
+import {MODE_READ_OPERATIONS as ALL_MODE_READ_OPERATIONS,decodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER as HEADER} from '../../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {storedCase as publicCase} from '../../../../gateway/sources/public-data/test/fixture.mjs';
 import {storedCase as programCase} from '../../../../gateway/sources/program-elements/test/fixture.mjs';
 const families={'public-data':['query_economic_data','search_federal_grants','search_federal_awards'],'program-elements':['search_program_elements','get_program_element','get_pe_budget_timeline']};
+const MODE_READ_OPERATIONS=ALL_MODE_READ_OPERATIONS.filter(id=>id!=='search_sam_opportunities'); // SAM's richer context has its own actual composition tests.
 const familyOf=id=>resolveOperationContract({id,version:'0.2.0'}).binding.group;
 const sceneFor=(id,mode='off')=>(familyOf(id)==='public-data'?publicCase:programCase)(id,{evidenceAccuracyMode:mode});
 
-test('mode SDK source policy derives81/45 and keeps public/program families optional with exact canonical operations', () => {
-    assert.equal(familyReads().length, 81);
-    assert.equal(READ_FAMILY_IDS.length, 45);
+test('mode SDK source policy derives84/48 and keeps public/program families optional with exact canonical operations', () => {
+    assert.equal(familyReads().length, 84);
+    assert.equal(READ_FAMILY_IDS.length, 48);
     for (const [family, ids] of Object.entries(families)) {
         assert.equal(READ_FAMILIES[family].clientScope, 'optional');
         assert.deepEqual(familyReads().filter(row => row.family === family).map(row => row.operation.id).sort(), [...ids].sort());

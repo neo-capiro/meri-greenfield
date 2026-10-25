@@ -1,53 +1,56 @@
-/** Command-executor source for conversational `memory.propose` backed by the governed producer instead of the legacy auto-committing
- * route. The canonical executor still owns current authority, approval, journal claim and budget; this source only maps the approved
- * immutable command to one pending candidate. Eligibility comes from the executor's current authorization decision: its client scopes
- * are the proposer's clients and a tenant scope admits firm-wide proposals. */
-import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
-import {CommandError,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {productFailure} from '../product-access/errors.mjs';
-import {UUID} from '../product-access/shape.mjs';
-import {FIRM_PROPOSAL_PERMISSION} from './eligibility.mjs';
-const fail=code=>{throw new CommandError(code);};
+/** Submit a native conversation command to the existing governed-memory producer. Core review is the only approval;
+ * the intent delivery journal owns replay and the candidate journal owns content and submission uncertainty. */
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {assertMemoryProposeCommand,validateCommandShape} from '../../../packages/contracts/commands-0.2/validate.mjs';
+import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {intentFault} from '../intents/faults.mjs';
+import {assertProposalScope} from './eligibility.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
-export function principalFromCommandAuthority(authority){
- const scopes=authority?.decision?.scopes;
- if(!Array.isArray(scopes)||scopes.some(s=>!s||s.tenantId!==authority.binding.tenantId||s.kind==='client'&&(typeof s.resourceId!=='string'||!UUID.test(s.resourceId.toLowerCase()))))fail('COMMAND_AUTHORITY_REFUSED');
- const clientIds=[...new Set(scopes.filter(s=>s.kind==='client').map(s=>s.resourceId.toLowerCase()))].sort();
- return Object.freeze({tenantId:authority.binding.tenantId,actorId:authority.binding.actorId,clientIds:Object.freeze(clientIds),
-  permissions:Object.freeze(scopes.some(s=>s.kind==='tenant')?[FIRM_PROPOSAL_PERMISSION]:[])});
-}
-export function createMemoryCommandSource({producer,binding,selectedClientId}){
- if(typeof producer?.proposeFromCommand!=='function'||typeof selectedClientId!=='string'||!UUID.test(selectedClientId))fail('COMMAND_CONFIGURATION');
- let pinned;try{pinned=data(binding);validateShape('RunBinding',pinned);}catch{fail('COMMAND_CONFIGURATION');}
- // Original proposal provenance survives a resumed attempt. The live authority must match this source's exact executor binding;
- // the original command must belong to the same stable run, and its client may only be the trusted selected client.
- function bound(command,authority){
-  if(!same(authority.binding,pinned)||['tenantId','actorId','conversationId','runId'].some(k=>command.binding?.[k]!==pinned[k])||
-   command.arguments?.scope==='client'&&command.arguments.clientId!==selectedClientId)fail('COMMAND_SOURCE_IDENTITY_REFUSED');
-  return principalFromCommandAuthority(authority);
- }
- const retained=new WeakMap();
- return Object.freeze({
-  /** This source creates pending candidates for every scope, so the durable owner may admit personal proposals to it. */
-  personalPending:true,
-  async prepare({command,authority,deadlineMs}){
-   if(command.action!=='memory.propose'||!Number.isSafeInteger(deadlineMs))fail('INVALID_COMMAND');
-   bound(command,authority);
-   const token=Object.freeze({deadlineMs});retained.set(token,data({command,authority}));return token;
-  },
-  async execute(token,{authority,signal}){
-   const prepared=retained.get(token);retained.delete(token);
-   if(!prepared)fail('COMMAND_SOURCE_PREPARATION_REFUSED');
-   if(!same(authority.binding,prepared.authority.binding)||authority.policyRevision!==prepared.authority.policyRevision||authority.claims.capabilityId!==prepared.authority.claims.capabilityId)fail('COMMAND_SOURCE_IDENTITY_REFUSED');
-   const command=prepared.command,commandSha256=canonicalSha256(command),principal=bound(command,authority);
-   let candidate;
-   try{candidate=await producer.proposeFromCommand({principal,command,commandSha256,signal,deadlineMs:Math.min(token.deadlineMs,authority.deadlineMs)});}
-   // A definite Core refusal of the candidate (`MEMORY_SUBMISSION_REFUSED`: wall, key or pin conflict) is a refusal of this command,
-   // not an unknown outcome: nothing was recorded at Core and a replay would be refused again.
-   catch(error){const code=productFailure(error)?.code;fail(['MEMORY_SCOPE_REFUSED','MEMORY_CLIENT_REFUSED','MEMORY_TARGET_INELIGIBLE','MEMORY_TARGET_NOT_FOUND','MEMORY_SUBMISSION_REFUSED'].includes(code)?'COMMAND_AUTHORITY_REFUSED':'INVALID_SOURCE_RESULT');}
-   // Only an acknowledged pending submission is a result; anything else stays an unknown command outcome for reconciliation.
-   if(candidate.review.status!=='pending')fail('INVALID_SOURCE_RESULT');
-   return Object.freeze({candidateId:candidate.candidateId,commandSha256,status:'pending'});
-  },
- });
+
+export function createMemoryCommandSource({binding,scopes,selectedClientId,policyRevision,readCurrent,producerFor,now,maxRequestMs,deadlineMs}){
+ const pinned=data({binding,scopes,selectedClientId,policyRevision}),commandContext=data({binding,conversationClientId:selectedClientId});
+ assertNativeConversationScope(pinned);
+ if(scopes.some(s=>s.policyRevision!==policyRevision)||typeof readCurrent!=='function'||typeof producerFor!=='function'||typeof now!=='function'||
+  !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(deadlineMs))throw intentFault('INTENT_CONFIGURATION');
+ return Object.freeze({async propose({command:raw,signal}){
+  let command;
+  try{command=assertMemoryProposeCommand(raw,commandContext);if(!same(command.scopes,pinned.scopes))throw Error();}
+  catch{throw intentFault('INVALID_ARGUMENTS','none');}
+  let cutoff=Math.min(deadlineMs,now()+maxRequestMs);
+  let life;
+  try{life=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>intentFault(code,'none')});}
+  catch(error){throw intentFault(error?.code==='CANCELLED'?'CANCELLED':'DEADLINE','none');}
+  let attempted=false;
+  async function checkCurrent({signal:currentSignal}={}){
+   const started=now();
+   const r=data(own(await life.run(s=>readCurrent({signal:currentSignal??s,deadlineMs:cutoff})),
+    ['binding','scopes','selectedClientId','policyRevision','checkedAtMs','expiresAtMs']));
+   if(!same({binding:r.binding,scopes:r.scopes,selectedClientId:r.selectedClientId,policyRevision:r.policyRevision},pinned)||
+    !Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');
+   cutoff=Math.min(cutoff,r.expiresAtMs);life.limitDeadline(cutoff);life.check();return r;
+  }
+  try{
+   await checkCurrent();
+   const owner=await life.run(s=>producerFor({signal:s,deadlineMs:cutoff,checkCurrent}));
+   if(!Number.isSafeInteger(owner.expiresAtMs)||owner.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');
+   cutoff=Math.min(cutoff,owner.expiresAtMs);life.limitDeadline(cutoff);life.check();
+   const principal=data(owner.principal);
+   if(principal.tenantId!==pinned.binding.tenantId||principal.actorId!==pinned.binding.actorId||pinned.selectedClientId!==null&&!principal.clientIds?.includes(pinned.selectedClientId))throw intentFault('ACCESS_DENIED');
+   assertProposalScope(principal,command.arguments);
+   const commandSha256=canonicalSha256(command);
+   // Once the producer is entered, a journal row or Core receipt may exist even when submission or final authority fails.
+   attempted=true;
+   const candidate=await life.run(s=>owner.producer.proposeFromCommand({principal,command,commandContext,commandSha256,signal:s,deadlineMs:cutoff}));
+   await life.run(s=>owner.recheck({signal:s,deadlineMs:cutoff}));
+   life.check();
+   if(candidate.review.status!=='pending')throw intentFault('UNKNOWN');
+   const result=data({candidateId:candidate.candidateId,commandSha256,status:'pending'});validateCommandShape('MemoryProposeResult',result);
+   return result;
+  }catch(error){
+   const code=['ACCESS_DENIED','INVALID_ARGUMENTS','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'REFUSED';
+   throw intentFault(attempted?'UNKNOWN':code,attempted?'unknown':'none');
+  }finally{life.close();}
+ }});
 }

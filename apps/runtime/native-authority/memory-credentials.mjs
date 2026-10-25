@@ -16,8 +16,9 @@ import {createHash} from 'node:crypto';
 import {isAbsolute} from 'node:path';
 import {types} from 'node:util';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {readSecret as readRuntimeSecret} from '../config.mjs';
-const TOKEN=/^[\x21-\x7e]{1,8192}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+const TOKEN=/^[\x21-\x7e]{1,8192}$/u;
 const fault=code=>Object.assign(new Error(code),{code});
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const filePath=value=>{if(typeof value!=='string'||!isAbsolute(value)||value.includes('/../')||value.length>4096)throw fault('MEMORY_CREDENTIAL_CONFIGURATION');return value;};
@@ -63,12 +64,13 @@ export function createMemoryCredentialBroker(options){
     return Object.freeze({tenantId,actorId,bearerToken,serviceSecret:secret,expiresAtMs});
    };
   },
-  /** `getCredentials` for one run: the live session's native credential for exactly `binding` and `selectedClientId`, looked up
+  /** `getCredentials` for one run: explicit native scopes bind the client or exact private-user General selection. The live
+   * session's native credential for exactly `binding` and `selectedClientId` is looked up
    * before and after the service-secret read so the same session is still live (reads-composer `bearerFor`, unchanged). */
-  run({binding,selectedClientId}){
+  run(value){
    if(relay===null)throw fault('MEMORY_CREDENTIAL_UNAVAILABLE');
-   const pinned=data(binding);
-   if(['tenantId','actorId','conversationId','runId'].some(k=>typeof pinned?.[k]!=='string'||!pinned[k])||typeof selectedClientId!=='string'||!UUID.test(selectedClientId))throw fault('MEMORY_CREDENTIAL_CONFIGURATION');
+   let selected;try{selected=data(own(value,['binding','scopes','selectedClientId']));assertNativeConversationScope(selected);}catch{throw fault('MEMORY_CREDENTIAL_CONFIGURATION');}
+   const {binding:pinned,selectedClientId}=selected;
    const lookup=signal=>{
     let issued;try{issued=data(own(relay.nativeCredentialFor({binding:pinned,selectedClientId,...(signal===undefined?{}:{signal})}),['credential','expiresAtMs']));}catch{throw fault('MEMORY_CREDENTIAL_UNAVAILABLE');}
     if(typeof issued.credential!=='string'||!TOKEN.test(issued.credential)||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now())throw fault('MEMORY_CREDENTIAL_UNAVAILABLE');
@@ -81,11 +83,6 @@ export function createMemoryCredentialBroker(options){
     const bearerToken=await admitBearer(first.credential,secret);
     return Object.freeze({tenantId:pinned.tenantId,actorId:pinned.actorId,bearerToken,serviceSecret:secret,expiresAtMs:Math.min(first.expiresAtMs,second.expiresAtMs)});
    };
-  },
-  /** The run's selected client from its admitted scopes: exactly one client scope (prepared-run `exactInitialScopes`). */
-  selectedClientOf(scopes){
-   const list=Array.isArray(scopes)?scopes:[],clients=list.filter(s=>s?.kind==='client');
-   return clients.length===1&&list.length===1&&typeof clients[0].resourceId==='string'&&UUID.test(clients[0].resourceId.toLowerCase())?clients[0].resourceId.toLowerCase():null;
   },
  });
 }

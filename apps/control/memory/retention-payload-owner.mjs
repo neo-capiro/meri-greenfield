@@ -1,6 +1,5 @@
-/** The Meri-owned candidate payload in a conversation retention inventory. Core owns its received copy separately. This port is
- * deliberately not mounted by the producer or the retention row dispatcher: the latter must first allocate and apply a guarded
- * target amendment, bind this class to its policy/inventory, and supply its own transaction after recording the exact row target. */
+/** Meri-owned candidate content. Core owns its received copy separately. The
+ * retention dispatcher lends its current transaction after recording the target. */
 import {hash,subject as parseSubject,subjectKey,uuid,digest,fail} from '../retention/boundary.mjs';
 import {verifyPlanDigest} from '../retention/purge.mjs';
 import {assertPool} from '../product-persistence/transaction.mjs';
@@ -12,8 +11,8 @@ const rowWhere="tenant_id=$1 AND candidate_id=$3 AND origin_kind='conversation' 
 
 /** Exact local inventory and readback, plus content redaction inside the central row owner's transaction.
  * `purgeInTransaction` requires that transaction to have recorded its matching target in the current transaction. Its SQL cannot
- * pass before the separately allocated retention-target amendment adds candidate_id and admits this class. The future database
- * trigger must independently enforce the same target/suppression check on the one-way content tombstone UPDATE. */
+ * pass without the matching candidate target. The expiry migration independently checks that target, suppression generation and
+ * authoritative Trash deadline before allowing the one-way content tombstone UPDATE. */
 export function createMemoryCandidateRetentionPayloadOwner({pool}){
  assertPool(pool);
  const journal=createPostgresMemoryJournal({pool});
@@ -28,6 +27,15 @@ export function createMemoryCandidateRetentionPayloadOwner({pool}){
   present({subject,candidateId,signal}){
    const s=conversation(subject);uuid(candidateId);
    return journal.hasConversationCandidate({tenantId:s.tenantId,conversationId:s.subjectId,proposerActorId:s.ownerActorId,candidateId,signal});
+  },
+  /** The central row owner already holds the only pool lease. Reuse it for
+   * recovery/preflight as well as mutation; never nest another acquisition. */
+  async presentInTransaction({client,subject,candidateId}){
+   const s=conversation(subject);uuid(candidateId);
+   const rows=(await client.query(`SELECT candidate,candidate_purged_at FROM ${TABLE} WHERE ${rowWhere}`,
+    [s.tenantId,s.subjectId,candidateId,s.ownerActorId])).rows;
+   if(rows.length!==1||(rows[0].candidate===null)!==(rows[0].candidate_purged_at!==null))fail('RETENTION_ROW_PURGE_UNAVAILABLE');
+   return rows[0].candidate!==null;
   },
   /** Called by the central row owner only after its planRows in the SAME READ COMMITTED transaction. Never opens or commits one. */
   async purgeInTransaction({client,plan,workflowId}){

@@ -383,6 +383,9 @@ export interface ConversationErrorResponse {
 }
 
 export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events';
+/** Canonical immutable choices; runtime authorization and availability are decided by the server. */
+export interface ConversationSkillDescriptor {readonly skillId:NonNullable<ConversationSubmitRequest['skill']>['skillId'];readonly version:string;readonly displayName:string;readonly subjectKinds:readonly ('client'|'entity'|'personal'|'portfolio')[];readonly windowBases:readonly NonNullable<ConversationSubmitRequest['windowRequest']>['basis'][];readonly manifestSha256:string;readonly proseSha256:string;}
+export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;

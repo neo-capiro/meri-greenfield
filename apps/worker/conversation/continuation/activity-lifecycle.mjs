@@ -20,7 +20,7 @@ export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 export const LIFECYCLE_READ_BACKOFF_MS=Object.freeze({first:500,max:5000});
 export const lifecycleReadBackoffMs=missed=>Math.min(LIFECYCLE_READ_BACKOFF_MS.max,LIFECYCLE_READ_BACKOFF_MS.first*2**Math.min(missed-1,4));
 export function assertLifecycleConfiguration(config,runOwner) {
- const {captureCheckpoint,captureCompletion,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
+ const {captureCheckpoint,captureCompletion,pollMs=1000,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
  if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||captureCompletion!==undefined&&typeof captureCompletion!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
  ['nextControls','claimControl','ackControl','recordCheckpoint'].some(k=>typeof runOwner[k]!=='function'))throw fault('LIFECYCLE_CONFIGURATION');
  return {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose};
@@ -29,7 +29,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  const {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose}=assertLifecycleConfiguration(config,runOwner);
  const contextSha256=continuationContextSha256(saved.request,saved.run.scopes),abort=new AbortController();
  const poll=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal:AbortSignal.any([life.signal,abort.signal]),errorFactory:fault});
- const adapter=createSdkCommandAdapter({binding,contextSha256,input,query,lifetime:poll,captureOwnsClose}),pending=new Map();
+ const adapter=createSdkCommandAdapter({binding,contextSha256,input,query,lifetime:poll,captureOwnsClose:captureOwnsClose||typeof query.drain==='function'}),pending=new Map();
  let stopped=false,held=false,fenced=false,after=0,sessionId=null,error,wakeIdle;const failed=Promise.withResolvers(),heldResult=Promise.withResolvers(),initialized=Promise.withResolvers();
  const ack=(entry,outcome,sdkUserMessageId)=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,
  commandSha256:entry.commandSha256,outcome,...(sdkUserMessageId===undefined?{}:{sdkUserMessageId})},signal:poll.signal});
@@ -38,6 +38,9 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    !same(c.binding,binding)||c.contextSha256!==contextSha256)throw fault('CONTROL_ENVELOPE_REFUSED');return e;}
  async function pause(entry){held=true;await adapter.apply(entry.command);life.check();
   if(!sessionId)throw fault('SDK_SESSION_MISSING');
+  // The native result owns cumulative usage. Interrupt and stop input, then drain that result before closing the query;
+  // the existing run lifetime bounds a missing result and leaves an explicit failed hold rather than a zero-cost resume.
+  if(typeof query.drain==='function')await poll.run(()=>query.drain());
   // Interrupt only requests cancellation. Capture waits for actual query cleanup
   // and mirror flush before asking the existing owner to read its own SDK rows.
   await poll.run(()=>query.close());

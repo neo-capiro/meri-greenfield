@@ -27,15 +27,33 @@ export function createVersionStorage({send,bucket,expectedBucketOwner,permission
  if(typeof send!=='function'||typeof bucket!=='string'||!bucket||!/^[0-9]{12}$/u.test(String(expectedBucketOwner))||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1)fail('RETENTION_CONFIGURATION');
  const p=parsePermissions(permissions),tick=clock(now);
  /** Bounded call: the deadline wins even when the handler ignores its abort signal; a late result is discarded, never classified. */
- async function call(operation,input){const controller=new AbortController();let timer;const timeout=Object.assign(new Error('TIMEOUT'),{name:'TimeoutError'});
-  const deadline=new Promise(resolve=>{timer=setTimeout(()=>{controller.abort();resolve({error:timeout});},maxRequestMs);});
+ async function call(operation,input,{signal,deadlineMs}={}){const controller=new AbortController();let timer,abort;const timeout=Object.assign(new Error('TIMEOUT'),{name:'TimeoutError'});
+  const remaining=deadlineMs===undefined?maxRequestMs:Math.min(maxRequestMs,deadlineMs-tick());
+  if(signal?.aborted||remaining<=0)return {error:timeout};
+  const deadline=new Promise(resolve=>{abort=()=>{controller.abort();resolve({error:timeout});};timer=setTimeout(abort,remaining);signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();});
   const attempt=Promise.resolve().then(()=>send({operation,input:{Bucket:bucket,ExpectedBucketOwner:expectedBucketOwner,...input}},{signal:controller.signal})).then(response=>({response}),error=>({error:controller.signal.aborted?timeout:error}));
-  try{return await Promise.race([attempt,deadline]);}finally{clearTimeout(timer);}}
- async function headVersion({key,versionId}){text(key,1024);text(versionId,1024);const r=await call('HeadObject',{Key:key,VersionId:versionId});return Object.freeze({...classifyHeadOutcome({...r,versionId,permissions:p,versioned:true}),key,versionId,checkedAtMs:tick(),permissions:p});}
+  try{return await Promise.race([attempt,deadline]);}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}}
+ async function headVersion({key,versionId},options){text(key,1024);text(versionId,1024);const r=await call('HeadObject',{Key:key,VersionId:versionId},options);return Object.freeze({...classifyHeadOutcome({...r,versionId,permissions:p,versioned:true}),key,versionId,checkedAtMs:tick(),permissions:p});}
+ /** Explicit hold APIs distinguish absent policy from missing permission. A
+  * missing/denied response never becomes an invented no-hold observation. */
+ async function holdsFor({key,versionId},options){
+  const head=await headVersion({key,versionId},options);
+  if(head.outcome==='ABSENT')return {objectLockRetainUntilMs:null,legalHold:false};
+  if(head.outcome!=='PRESENT')fail('RETENTION_STORAGE_UNAVAILABLE');
+  const retention=await call('GetObjectRetention',{Key:key,VersionId:versionId},options);
+  const legal=await call('GetObjectLegalHold',{Key:key,VersionId:versionId},options);
+  if(retention.error||legal.error||status(retention.response)!==200||status(legal.response)!==200||
+     !['ON','OFF'].includes(legal.response?.LegalHold?.Status))fail('RETENTION_STORAGE_UNAVAILABLE');
+  const r=retention.response.Retention;
+  if(r!==undefined&&(r===null||typeof r!=='object'||Array.isArray(r)))fail('RETENTION_STORAGE_UNAVAILABLE');
+  const until=r?.RetainUntilDate===undefined?null:new Date(r.RetainUntilDate).getTime();
+  if(until!==null&&(!Number.isSafeInteger(until)||!['GOVERNANCE','COMPLIANCE'].includes(r.Mode))||until===null&&r?.Mode!==undefined)fail('RETENTION_STORAGE_UNAVAILABLE');
+  return {objectLockRetainUntilMs:until,legalHold:legal.response.LegalHold.Status==='ON'};
+ }
  /** Exact-version delete; the receipt is a request record, never proof. A delete marker in the response fails the step. */
- async function deleteVersion({key,versionId}){text(key,1024);text(versionId,1024);if(!p.deleteObjectVersion)fail('RETENTION_STORAGE_PERMISSION');
-  const r=await call('DeleteObject',{Key:key,VersionId:versionId});if(r.error)return Object.freeze({key,versionId,outcome:'UNKNOWN',status:status(r.error),name:String(r.error?.name??'Error'),requestId:r.error?.$metadata?.requestId??null,requestedAtMs:tick()});
+ async function deleteVersion({key,versionId},options){text(key,1024);text(versionId,1024);if(!p.deleteObjectVersion)fail('RETENTION_STORAGE_PERMISSION');
+  const r=await call('DeleteObject',{Key:key,VersionId:versionId},options);if(r.error)return Object.freeze({key,versionId,outcome:'UNKNOWN',status:status(r.error),name:String(r.error?.name??'Error'),requestId:r.error?.$metadata?.requestId??null,requestedAtMs:tick()});
   if(r.response?.DeleteMarker===true)fail('RETENTION_DELETE_MARKER');
   return Object.freeze({key,versionId,outcome:'REQUESTED',status:status(r.response)??204,returnedVersionId:r.response?.VersionId??null,requestId:r.response?.$metadata?.requestId??null,requestedAtMs:tick()});}
- return Object.freeze({headVersion,deleteVersion,permissions:p});
+ return Object.freeze({headVersion,deleteVersion,holdsFor,permissions:p});
 }

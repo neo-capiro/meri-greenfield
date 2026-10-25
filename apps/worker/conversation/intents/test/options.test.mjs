@@ -10,20 +10,20 @@ import {generalReadFixture,mountReads} from '../../reads/test/fixture.mjs';
 import {intentFixture,mountIntents,SESSION} from './fixture.mjs';
 import {INTENT_ROWS,intentToolName} from '../catalog.mjs';
 import {DEFERRED_ORIGINALS} from '../../reads/availability.mjs';
-const cwd=preparedWorkspace(binding.conversationId),SENTENCE=/Write requests may only be prepared with the listed write-request tools/u;
-const runtime=()=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
+const cwd=preparedWorkspace(binding.conversationId).replaceAll(String.fromCharCode(92),'/'),SENTENCE=/Write requests may only be prepared with the listed write-request tools/u;
+const runtime=()=>({binding,versions,cwd,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
 const PROFILE_TOOLS=[...new Set(INTENT_ROWS.filter(row=>row.unavailable===null).map(row=>intentToolName(row.tool)))];
 
 test('without intents the options and prompt are unchanged',()=>{
- const o=buildConversationOptions(runtime(),new AbortController());assert.doesNotMatch(o.systemPrompt,SENTENCE);
+ const o=buildConversationOptions(runtime(),new AbortController());assert.doesNotMatch(o.systemPrompt.append,SENTENCE);
  const same=buildConversationOptions(runtime(),new AbortController(),undefined,undefined,undefined,undefined,undefined);
- assert.deepEqual(Object.keys(same),Object.keys(o));assert.equal(same.systemPrompt,o.systemPrompt);assert.equal(same.mcpServers,undefined);assert.deepEqual(same.allowedTools,[]);
+ assert.deepEqual(Object.keys(same),Object.keys(o));assert.deepEqual(same.systemPrompt,o.systemPrompt);assert.equal(same.mcpServers,undefined);assert.equal(same.allowedTools.some(tool=>tool.startsWith('mcp__meri_intents__')),false);
 });
 
 test('mounted intents merge beside general reads: one server each, exact names, both hooks, chained permissions',async()=>{
  const rf=await generalReadFixture(),reads=await mountReads(rf),f=intentFixture(),intents=await mountIntents(f);
  try{const o=buildConversationOptions(runtime(),new AbortController(),undefined,undefined,undefined,reads.runtime.sdkOptions,intents.runtime.sdkOptions);
-  assert.deepEqual(Object.keys(o.mcpServers),['meri_reads','meri_intents']);assert.match(o.systemPrompt,SENTENCE);
+  assert.deepEqual(Object.keys(o.mcpServers),['meri_reads','meri_intents']);assert.match(o.systemPrompt.append,SENTENCE);
   assert.deepEqual(o.hooks.PreToolUse.map(h=>h.matcher),['mcp__meri_reads__.*','mcp__meri_intents__.*']);
   for(const name of [...reads.runtime.sdkOptions.allowedTools,'mcp__meri_intents__propose_task'])assert.equal((await o.canUseTool(name,{},{})).behavior,'allow',name);
   for(const name of ['mcp__meri_intents__propose_memory',...DEFERRED_ORIGINALS.map(n=>`mcp__meri_intents__${n}`),'mcp__meri_reads__propose_task','Bash'])assert.equal((await o.canUseTool(name,{},{})).behavior,'deny',name);
@@ -56,9 +56,9 @@ async function unavailable(options,tool,operation,args){
 }
 test('the activity mounts the fixed governed-intent profile while unavailable offers never reach preparation',async()=>{
  const on=await activity({capabilities:{governedIntents:true},during:o=>unavailable(o,'propose_task_update','update_task',{taskId:id(90),title:'Changed'})});
- try{assert.deepEqual(await on.run(),{state:'completed'});const o=on.options();assert.deepEqual(Object.keys(o.mcpServers),['meri_intents']);assert.deepEqual(o.allowedTools,PROFILE_TOOLS);assert.match(o.systemPrompt,SENTENCE);assert.equal(on.prepared(),0);}finally{on.f.close();}
+ try{assert.deepEqual(await on.run(),{state:'completed'});const o=on.options();assert.deepEqual(Object.keys(o.mcpServers),['meri_intents']);assert.deepEqual(o.allowedTools.filter(tool=>tool.startsWith('mcp__meri_intents__')),PROFILE_TOOLS);assert.match(o.systemPrompt.append,SENTENCE);assert.equal(on.prepared(),0);}finally{on.f.close();}
  const none=await activity({capabilities:{governedIntents:true},offered:false,during:o=>unavailable(o,'propose_task','create_task',{title:'Task'})});
- try{assert.deepEqual(await none.run(),{state:'completed'});assert.equal(none.asked(),1);assert.deepEqual(Object.keys(none.options().mcpServers),['meri_intents']);assert.deepEqual(none.options().allowedTools,PROFILE_TOOLS);assert.match(none.options().systemPrompt,SENTENCE);assert.equal(none.prepared(),0);}finally{none.f.close();}
+ try{assert.deepEqual(await none.run(),{state:'completed'});assert.equal(none.asked(),1);assert.deepEqual(Object.keys(none.options().mcpServers),['meri_intents']);assert.deepEqual(none.options().allowedTools.filter(tool=>tool.startsWith('mcp__meri_intents__')),PROFILE_TOOLS);assert.match(none.options().systemPrompt.append,SENTENCE);assert.equal(none.prepared(),0);}finally{none.f.close();}
  const off=await activity({capabilities:{generalReads:false}});
  try{await off.run();assert.equal(off.asked(),0,'policy off: the port is never asked');assert.equal(off.options().mcpServers,undefined);}finally{off.f.close();}
  assert.throws(()=>createConversationActivity({runOwner:{load(){},append(){}},prepareRuntime(){},governedIntents:{readAvailability(){}}}),/INTENT_ACTIVITY_CONFIGURATION/);

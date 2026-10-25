@@ -12,7 +12,7 @@ const principal={tenantId:'tenant',actorId:'actor',role:'standard_user',permissi
 const conversationIdOf=n=>`11111111-1111-4111-8111-${String(n).padStart(12,'0')}`;
 function fixture({refuse,status=403,drift=false}={}){
  const now=Date.now,core={current:0,identity:0,context:0,inFlight:0,peak:0,calls:[]};let admitted=principal;
- const currentness=createCoreConversationCurrentness({origin:'https://core.synthetic.invalid',selectedClientId:clientId,now,limits:{maxRequestMs:1000,maxFactBytes:131072},async fetchImpl(url,init){
+ const currentness=createCoreConversationCurrentness({origin:'https://core.synthetic.invalid',now,limits:{maxRequestMs:1000,maxFactBytes:131072},async fetchImpl(url,init){
   const path=new URL(url).pathname,body=JSON.parse(init.body);assert.equal(path,'/api/clio/application-authority/current');core.current++;core.calls.push({body,credential:init.headers.authorization});core.inFlight++;core.peak=Math.max(core.peak,core.inFlight);
   try{await new Promise(resolve=>setTimeout(resolve,5));
    const identity={principal:{tenantId:admitted.tenantId,actorId:admitted.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:(drift?'d':'b').repeat(64),contextRevision:'c'.repeat(64),checkedAtMs:now(),expiresAtMs:now()+5000};
@@ -37,7 +37,7 @@ test('a 20-conversation history list makes one currentness read per row, at most
  assert.ok(f.core.peak<=4&&f.core.peak>1,`bounded concurrent Core reads (peak ${f.core.peak})`);
 });
 
-test('one archived row still withholds the whole page, and no started Core read outlives the response',async()=>{
+test('an unclassified Core refusal withholds the whole page, and no started read outlives the response',async()=>{
  const f=fixture({refuse:conversationIdOf(5)}),response=await f.list();
  assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_UNAVAILABLE'}});
  assert.equal(f.core.inFlight,0,'every started read settled before the refusal');

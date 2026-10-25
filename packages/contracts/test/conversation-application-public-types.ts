@@ -1,4 +1,4 @@
-import {receiveConversationRequest,receiveConversationResponse,createConversationCursor,receiveConversationEvent,conversationReconnect,type ConversationSubmitRequest,type ConversationEventsRequest,type ConversationCursor} from '@capiro/meri-contracts/conversation-application';
+import {receiveConversationRequest,receiveConversationResponse,createConversationCursor,receiveConversationEvent,conversationReconnect,CONVERSATION_SKILLS,type ConversationSkillDescriptor,type ConversationSubmitRequest,type ConversationEventsRequest,type ConversationCursor} from '@capiro/meri-contracts/conversation-application';
 const dto:ConversationSubmitRequest={requestId:'00000000-0000-4000-8000-000000000001',prompt:'Hello',windowRequest:{basis:'unbounded'}};
 const request=receiveConversationRequest('submit',new TextEncoder().encode(JSON.stringify(dto)));
 const response=await receiveConversationResponse('submit',200,new Uint8Array(),request);
@@ -12,3 +12,10 @@ const bad:ConversationSubmitRequest={...dto,tenantId:'other'};
 // @ts-expect-error cursor fields do not coexist with the public subscribe command
 const conflicting:ConversationEventsRequest={command:{conversationId:'x',intent:'view.subscribe'},after:1};
 void bad;void conflicting;
+const descriptor:ConversationSkillDescriptor=CONVERSATION_SKILLS[0]!;
+const selected:ConversationSubmitRequest={...dto,skill:{skillId:descriptor.skillId,skillVersion:descriptor.version}};
+// @ts-expect-error canonical choices never imply runtime availability
+descriptor.available;
+// @ts-expect-error immutable asset selection cannot mutate in place
+descriptor.windowBases.push('unbounded');
+void selected;

@@ -10,8 +10,12 @@ const decided=await receiveIntentsResponse('decide',200,'{}',{request:decide,pro
 const exactDecide:IntentsDecideResponse|IntentsErrorResponse=decided;void exactDecide;
 if(!('error'in decided)&&decided.status==='executed'){
  if('receipt'in decided.outcome){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
- else {const versionId:string=decided.outcome.version.versionId;void versionId;}
+ else if('version'in decided.outcome){const versionId:string=decided.outcome.version.versionId;void versionId;}
+ else {const kind:'native-task'|'native-artifact-file'=decided.outcome.execution.kind;void kind;
+  if('id'in decided.outcome.result){const taskId:string=decided.outcome.result.id;void taskId;}
+  else {const files=decided.outcome.result.files;const commandSha256:string=decided.outcome.result.commandSha256;void files;void commandSha256;}}
 }
+if(retained.command.action==='task.update'){const taskId:string=retained.command.arguments.taskId;void taskId;}
 if(retained.command.action==='document.draft'){
  const kind:'0.2.0'=retained.command.contractVersion,format:'docx'=retained.command.arguments.format;
  const preparation:string=retained.command.arguments.preparationSha256;void kind;void format;void preparation;
@@ -31,3 +35,11 @@ await receiveIntentsRequest('approve','{}');
 const bad:IntentsDecideRequest={conversationId:'id',deliveryId:'sdk:x',proposalId:'id',commandSha256:'x',decision:'maybe'};void bad;
 // @ts-expect-error the exact HTTP vocabulary is closed
 const wrong:IntentsErrorResponse={error:{code:'NOT_AN_INTENT_ERROR'}};void wrong;
+
+if(!('error'in listed))for(const entry of listed.intents){if(entry.state==='prepared'&&entry.kind==='memory_review'&&!('withheld'in entry)){const pending:'pending'=entry.review.result.status;const candidate:string=entry.review.result.candidateId;void pending;void candidate;
+ // @ts-expect-error governed memory review is not a task approval
+ const decision=entry.decision;void decision;}}
+
+if(!('error'in decided)&&decided.status==='executed'&&!('receipt'in decided.outcome)&&!('version'in decided.outcome)&&decided.outcome.execution.kind==='native-artifact-file'){
+ const kind:'native-artifact-file'=decided.outcome.execution.kind;void kind;
+}

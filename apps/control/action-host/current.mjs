@@ -2,6 +2,7 @@
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {CommandError,data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 export {data,own};
 export const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 export const refuse=()=>{throw new CommandError('ACCESS_DENIED');};
@@ -21,8 +22,8 @@ export function createRequestCurrent({credential,deadlineMs,signal,ports,now,com
   if(current.authenticationSha256!==canonicalSha256(authentication))refuse();validateShape('RunBinding',current.binding);
   if(stableKeys.some(k=>current.binding[k]!==who.principal[k])||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)refuse();
   for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==who.principal.tenantId)refuse();}
-  if(new Set(current.scopes.map(canonicalSha256)).size!==current.scopes.length||typeof current.selectedClientId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(current.selectedClientId))refuse();
-  if(!current.scopes.some(s=>s.kind==='client'&&s.resourceId.toLowerCase()===current.selectedClientId)||commandContext.clientResolution?.clientId!==current.selectedClientId||commandContext.clientResolution?.reference!==current.selectedClientId)refuse();
+  try{assertNativeConversationScope(current);}catch{refuse();}
+  if(current.selectedClientId===null?commandContext.clientResolution!==null:commandContext.clientResolution?.clientId!==current.selectedClientId||commandContext.clientResolution?.reference!==current.selectedClientId)refuse();
   const selection=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId});if(selected&&!same(selected,selection))refuse();selected??=selection;
   check(lifetime);return {authentication,current};
  }

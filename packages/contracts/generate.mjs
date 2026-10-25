@@ -22,7 +22,7 @@ export async function generateContracts({ check = false } = {}) {
   const eventRef = schema.$id + '#/$defs/UIEvent';
   ajv.compile({ $ref: eventRef });
   const source = standalone(ajv, { validateUIEvent: eventRef });
-  const bundled = await build({ absWorkingDir: fileURLToPath(HERE), stdin: { contents: source, sourcefile: 'generated-validator.mjs', resolveDir: fileURLToPath(HERE) },
+  const bundled = await build({ absWorkingDir: fileURLToPath(HERE), preserveSymlinks: true, stdin: { contents: source, sourcefile: 'generated-validator.mjs', resolveDir: fileURLToPath(HERE) },
     bundle: true, write: false, platform: 'browser', format: 'esm', target: 'es2022', legalComments: 'inline', metafile: true });
   if (Object.values(bundled.metafile.outputs).some(output => output.imports.length)) throw Error('Browser validator external import');
   const declarations = await compile({ title: 'UIEvent', $ref: '#/$defs/UIEvent', $defs: schema.$defs }, 'UIEvent', {

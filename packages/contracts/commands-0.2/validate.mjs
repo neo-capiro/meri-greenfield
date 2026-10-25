@@ -51,6 +51,8 @@ export const {normalizeDocumentDraftInput,assertDocumentDraftCommand,assertDocum
 /** Existing stored proposals plus the explicit native document command; no new authority is inferred. */
 export function assertNativeApprovalProposal(value) {
   const proposal=snapshotOperationData(value);
+  if(proposal?.command?.action==='task.update')return assertTaskUpdateProposal(proposal,
+    {binding:proposal.command.binding});
   if(proposal?.command?.action==='document.draft')return assertDocumentDraftProposal(proposal,
     {binding:proposal.command.binding,scopes:proposal.command.scopes});
   assertProposalIntegrity(proposal);return proposal;

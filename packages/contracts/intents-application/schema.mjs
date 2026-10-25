@@ -4,8 +4,12 @@ const UUID='^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$',DELI
 export const INTENT_PHASES=Object.freeze(['awaiting_approval','approved','rejected','expired','executing','completed','unknown','unknown_decision']);
 const pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const task=name=>({$ref:'urn:meri:commands:task-create:0.2.0#/$defs/'+name});
+const update=name=>({$ref:'urn:meri:commands:task-update:0.2.0#/$defs/'+name});
 const document=name=>({$ref:'urn:meri:commands:document-draft:0.2.0#/$defs/'+name});
+const memory=name=>({$ref:'urn:meri:commands:memory-propose:0.2.0#/$defs/'+name});
+const filing=name=>({$ref:'urn:meri:commands:artifact-file:0.2.0#/$defs/'+name});
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
+const schedule=name=>({$ref:'urn:meri:schedules:tool-interface:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
 const item=(extra,required)=>object({deliveryId:ref('IntentsDeliveryId'),createdAt:{type:'string',pattern:MILLIS},operation:ref('IntentsOperation'),...extra},['deliveryId','createdAt','operation',...required??Object.keys(extra)]);
@@ -15,21 +19,33 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{const:'0.2.0'}}),
  IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
  IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
- IntentsProposal:{oneOf:[pub('ApprovalProposal'),document('DocumentDraftApprovalProposal')]},
+ IntentsProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),document('DocumentDraftApprovalProposal')]},
  IntentsDecision:pub('ApprovalDecision'),
  IntentsTaskCreateArguments:task('TaskCreateArguments'),
- IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),artifact('ArtifactCreatedResult')]},
+ IntentsTaskUpdateArguments:update('TaskUpdateArguments'),
+ IntentsArtifactFileArguments:filing('ArtifactFileArguments'),
+ IntentsNativeTaskOutcome:object({execution:object({kind:{const:'native-task'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
+  idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),completedAt:{type:'string',pattern:MILLIS},approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),
+  result:{oneOf:[task('TaskCreateResult'),update('TaskUpdateResult')]}}),
+ IntentsNativeArtifactFileOutcome:object({execution:object({kind:{const:'native-artifact-file'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
+  idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),completedAt:{type:'string',pattern:MILLIS},approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),result:filing('ArtifactFileResult')}),
+ IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),ref('IntentsNativeTaskOutcome'),ref('IntentsNativeArtifactFileOutcome'),artifact('ArtifactCreatedResult')]},
  IntentsExecution:{oneOf:[object({state:{const:'executing'}}),object({state:{const:'unknown'}}),object({state:{const:'completed'},outcome:ref('IntentsExecutionOutcome')})]},
  IntentsPendingItem:item({state:{const:'pending'}}),
  IntentsUnknownItem:item({state:{const:'unknown'}}),
  IntentsFailedItem:item({state:{const:'failed'},code:{enum:[...failureCodes]}}),
  IntentsDraftItem:item({state:{const:'prepared'},kind:{const:'draft'},versionId:{type:'string',format:'uuid'}}),
  IntentsWithheldDraftItem:item({state:{const:'prepared'},kind:{const:'draft'},withheld:{const:true}}),
+ IntentsMemoryReview:object({status:{const:'review_pending'},binding:pub('RunBinding'),scopes:{type:'array',items:pub('Scope'),minItems:1,maxItems:1},result:memory('MemoryProposeResult')}),
+ IntentsMemoryReviewItem:item({state:{const:'prepared'},kind:{const:'memory_review'},review:ref('IntentsMemoryReview')}),
+ IntentsWithheldMemoryReviewItem:item({state:{const:'prepared'},kind:{const:'memory_review'},withheld:{const:true}}),
  IntentsScheduleProposalItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},proposalId:{anyOf:[{type:'string',minLength:1,maxLength:128},{type:'null'}]}}),
+ IntentsScheduleReviewItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},binding:pub('RunBinding'),request:ref('RoutinesMutationRequest'),proposal:schedule('PendingProposal')}),
+ IntentsWithheldScheduleItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},withheld:{const:true}}),
  IntentsWithheldProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},withheld:{const:true}}),
  IntentsProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},proposal:ref('IntentsProposal'),decision:{anyOf:[ref('IntentsDecision'),{type:'null'},{const:'unavailable'}]},
   execution:{anyOf:[ref('IntentsExecution'),{type:'null'},{const:'unavailable'}]},phase:{enum:[...INTENT_PHASES]}}),
- IntentsItem:{oneOf:['Pending','Unknown','Failed','Draft','WithheldDraft','ScheduleProposal','WithheldProposal','Proposal'].map(name=>ref('Intents'+name+'Item'))},
+ IntentsItem:{oneOf:['Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal'].map(name=>ref('Intents'+name+'Item'))},
  IntentsListResponse:object({conversationId:ref('IntentsConversationId'),intents:{type:'array',items:ref('IntentsItem'),maxItems:50},next:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]}}),
  IntentsDecideResponse:{oneOf:[
   object({status:{const:'rejected'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsDecision')}),
@@ -37,4 +53,14 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
   object({status:{const:'indeterminate'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsDecision')}),
  ]},
  IntentsErrorResponse:object({error:object({code:{type:'string',enum:Object.keys(errorStatuses)},outcome:{type:'string',enum:[...errorOutcomes]},field:{type:'string',pattern:fieldPattern}},['code'])}),
+ RoutinesMutationRequest:{oneOf:[schedule('ScheduleTaskRequest'),schedule('UpdateScheduledTaskRequest'),schedule('CancelScheduledTaskRequest')]},
+ RoutinesProposal:schedule('PendingProposal'),
+ RoutinesPrepareRequest:{oneOf:['ScheduleTask','UpdateScheduledTask','CancelScheduledTask'].map((name,index)=>object({requestId:{type:'string',pattern:'^[A-Za-z0-9._-]{1,128}$'},operation:{const:['schedule_task','update_scheduled_task','cancel_scheduled_task'][index]},request:schedule(name+'Request')}))},
+ RoutinesPrepareResponse:object({status:{const:'approval_required'},proposal:schedule('PendingProposal')}),
+ RoutinesApproveRequest:{oneOf:['ScheduleTask','UpdateScheduledTask','CancelScheduledTask'].map((name,index)=>object({operation:{const:['schedule_task','update_scheduled_task','cancel_scheduled_task'][index]},request:schedule(name+'Request'),proposalId:{type:'string',pattern:UUID},intentSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{const:'approved'}}))},
+ RoutinesApproveResponse:schedule('Acknowledged'),
+ RoutinesReconcileRequest:{oneOf:['ScheduleTask','UpdateScheduledTask','CancelScheduledTask'].map((name,index)=>object({operation:{const:['schedule_task','update_scheduled_task','cancel_scheduled_task'][index]},request:schedule(name+'Request'),proposalId:{type:'string',pattern:UUID},intentSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}))},
+ RoutinesReconcileResponse:object({intentId:{type:'string',pattern:UUID},operation:{enum:['schedule_task','update_scheduled_task','cancel_scheduled_task']},generation:{type:'integer',minimum:1},outcome:{enum:['ACKNOWLEDGED','UNRESOLVED']},code:{anyOf:[{type:'null'},{enum:['SCHEDULE_INTENT_NEVER_DISPATCHED','SCHEDULE_INTENT_EFFECT_NOT_COMPARABLE','SCHEDULE_INTENT_EFFECT_NOT_OBSERVED']}]},reconciled:{type:'boolean'}}),
+ RoutinesListRequest:schedule('ListScheduledTasksRequest'),RoutinesListResponse:schedule('ListScheduledTasksOutput'),
+ RoutinesErrorResponse:object({error:object({code:{type:'string',pattern:'^[A-Z][A-Z0-9_]{0,63}$'},outcome:{enum:['NOT_DISPATCHED','UNKNOWN','ACKNOWLEDGED_NOT_RELEASED','UNRESOLVED']}},['code'])}),
  }};}

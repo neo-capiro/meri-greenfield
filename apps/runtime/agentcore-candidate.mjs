@@ -16,16 +16,27 @@ import {createAgentCoreExecutionOwner} from './agentcore-execution.mjs';
 import {createAgentCoreControlApplication} from './agentcore-control-http.mjs';
 import {createConversationIdentity} from './conversation-identity.mjs';
 import {createCoreConversationCurrentness} from './native-authority/conversation-currentness.mjs';
+import {createCoreConversationManagement} from './native-authority/conversation-management.mjs';
 import {createDurableSdkSessionOwner} from './sdk-session-owner.mjs';
 import {createNativeSessionContinuation} from './sdk-continuation-owner.mjs';
 import {createObjectiveSelectionOwner} from './objective-generation/selection-owner.mjs';
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
+import {createAutomaticClientContextReader} from './automatic-client-context.mjs';
 import {createObjectiveCorePorts} from './objective-generation/core-ports.mjs';
 import {createNativeSessionContinuationApplication} from './sdk-continuation-http.mjs';
 import {NATIVE_FILE_PATHS} from './artifacts/native-files-http.mjs';
 import {createNativeLifecycleAdmission} from './product-ports/lifecycle.mjs';
 import {countingFetch} from './telemetry/counting.mjs';
 import {fault} from './config.mjs';
+import {compileNativeRoutinesTask,createNativeRoutinesOccurrenceOwners} from './native-authority/routines-owner-composition.mjs';
+import {createPostgresScheduleOwner} from '../control/schedules/postgres-schedule-owner.mjs';
+import {compileRoutinesCoreConfiguration,routinesReservedSecretFiles} from './native-authority/routines-configuration.mjs';
+import {createRoutinesCoreClient,createRoutinesServiceSecret} from './native-authority/routines-core-client.mjs';
+import {routineFiringTrust} from './native-authority/routines-firing-grant.mjs';
+import {createRoutinesFiringAuthority} from './native-authority/routines-firing-authority.mjs';
+import {createNativeRoutineCurrent} from './native-authority/routines-run-current.mjs';
+import {readSecret as readRuntimeSecret} from './config.mjs';
+import {createConfiguredRunCapabilityPolicy,projectCapabilityRole} from './product-ports/capability-policy.mjs';
 
 const same=(a,b)=>hash(a)===hash(b);
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(value);
@@ -35,20 +46,33 @@ const absent=code=>Response.json({error:{code}},{status:503,headers:{'cache-cont
 
 /** Dependencies are borrowed. Only startAgentCoreCandidate creates and closes the provider client. */
 export function assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,
- store=createPostgresConversationStore({pool,modelCatalog:configuration.models}),initialBindings=createInitialRunBindingJournal({pool}),
- fetchImpl=globalThis.fetch,now=Date.now,createReadsRuntime,turnTelemetry,getCoreServiceSecret}){
+ store,initialBindings=createInitialRunBindingJournal({pool}),
+ fetchImpl=globalThis.fetch,now=Date.now,createReadsRuntime,turnTelemetry,getCoreServiceSecret,readSecret=readRuntimeSecret}){
  const config=compileAgentCoreConfiguration(configuration.agentcore),versions=configuration.versions;
  if(typeof controlCredential!=='string'||!/^\S{32,8192}$/u.test(controlCredential)||typeof nativeCredentials?.nativeCredentialFor!=='function'||
   createReadsRuntime!==undefined&&typeof createReadsRuntime!=='function')throw fault('AGENTCORE_CONFIGURATION');
  const requestMs=configuration.limits.requestMs,limits={maxRequestMs:requestMs,maxFactBytes:131072};
+ const capabilityPolicy=createReadsRuntime?createConfiguredRunCapabilityPolicy(configuration,{pool}):undefined;
  const coreFetch=countingFetch(fetchImpl,turnTelemetry,{origin:config.identity.origin});
  const runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool,now});
  const objectiveCore=getCoreServiceSecret?createObjectiveCorePorts({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,runStarts,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):null;
  const core=createCapiroApplicationAuthorityClient({origin:config.identity.origin,fetchImpl:coreFetch,now,enabled:true,limits:{maxRequestMs:requestMs,maxResponseBytes:131072}});
+ const conversationManagement=getCoreServiceSecret?createCoreConversationManagement({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,policyRevision:config.policyRevision,nativeCredentials,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
+ store??=createPostgresConversationStore({pool,modelCatalog:configuration.models,assertConversationActive:conversationManagement?.assertActiveBinding});
+ const routinesTask=configuration.routines?.enabled===true&&configuration.routines.task?compileNativeRoutinesTask(configuration):null;
+ const routinesConfig=routinesTask?compileRoutinesCoreConfiguration(configuration):null;
+ const scheduleOwner=routinesTask?createPostgresScheduleOwner({pool}):undefined;
+ let routineCore=null;
+ if(routinesConfig?.unattendedGrant){
+  const getServiceSecret=createRoutinesServiceSecret({file:routinesConfig.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret});
+  const wires=createRoutinesCoreClient({origin:routinesConfig.origin,getServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs});
+  const firing=createRoutinesFiringAuthority({wires,trust:routineFiringTrust(routinesConfig.unattendedGrant),scheduleOwner,now,maxRequestMs:requestMs});
+  routineCore=Object.freeze({...createNativeRoutineCurrent({configuration,task:routinesTask,store,scheduleOwner,firing,wires,now}),origin:routinesConfig.origin,getServiceSecret});
+ }
  const nextRunOwner=createNextRunOwner({store,versions,now});
  const identityContext=createConversationIdentity({store,identity:{...config.identity,fetchImpl:coreFetch},
   qualification:{policyRevision:config.policyRevision},now,limits,nextRunOwner,initialBindings,
-  configurationSha256:hash(config),versions,proposeInitialExpiry:()=>now()+config.runWindowMs,factWindowMs:config.runWindowMs});
+  configurationSha256:hash(config),versions,proposeInitialExpiry:()=>now()+config.runWindowMs,factWindowMs:config.runWindowMs,...(scheduleOwner?{scheduleOwner}:{})});
  const conversationMembership=createCoreMembershipGate({origin:config.identity.origin,identityContext,fetchImpl:coreFetch,now,limits:{...limits,maxFactBytes:262144}});
  const conversationCurrentness=createCoreConversationCurrentness({origin:config.identity.origin,fetchImpl:coreFetch,now,limits});
  async function contextFor({binding,run,signal}){
@@ -77,14 +101,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   }else refuse();
   return origin;
  }
- async function readCurrent({binding,run,context,signal,deadlineMs=now()+requestMs}){
-  const start=await runStarts.read({binding,signal});
-  if(start.state!=='ABSENT'){
-   if(start.state!=='STARTED'||!objectiveCore)refuse();
-   const current=await objectiveCore.currentRecord({record:start.record,signal});
-   if(current.clientId!==context.selectedClientId||current.tenantId!==binding.tenantId||current.actorId!==binding.actorId)refuse();
-   return {...current,expiresAtMs:Math.min(current.effectExpiresAtMs,start.record.effectExpiresAtMs)};
-  }
+ async function nativeAccess({binding,run,context,signal}){
   let origin,credentialBinding=binding,borrowed;
   try{borrowed=nativeCredentials.nativeCredentialFor({binding,selectedClientId:context.selectedClientId,signal});}
   catch(error){
@@ -95,21 +112,51 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    if(!same(source.scopes,run.scopes)||!same(sourceContext,context))refuse();
    borrowed=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
   }
-  const started=now();
-  if(typeof borrowed?.credential!=='string'||!Number.isSafeInteger(borrowed.expiresAtMs)||borrowed.expiresAtMs<=started)refuse();
-  const current=await core.readCurrent({credential:borrowed.credential,conversationId:binding.conversationId,clientId:context.selectedClientId,signal,deadlineMs:Math.min(deadlineMs,started+requestMs)});
-  check(signal)();
-  const after=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
-  if(after.credential!==borrowed.credential||after.expiresAtMs<=now()||current.checkedAtMs<started||current.checkedAtMs>now()||current.expiresAtMs<=now()||
-   current.principal.tenantId!==binding.tenantId||current.principal.actorId!==binding.actorId||current.conversationId!==binding.conversationId||current.selectedClientId!==context.selectedClientId)refuse();
-  if(origin&&!same(await continuationOrigin(binding,run,context,signal),origin))refuse();
+  if(typeof borrowed?.credential!=='string'||!Number.isSafeInteger(borrowed.expiresAtMs)||borrowed.expiresAtMs<=now())refuse();
+  return {credential:borrowed.credential,async verify(){
+   check(signal)();const after=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
+   if(after.credential!==borrowed.credential||after.expiresAtMs<=now())refuse();
+   if(origin&&!same(await continuationOrigin(binding,run,context,signal),origin))refuse();
+  }};
+ }
+ async function readCurrent({binding,run,context,signal,deadlineMs=now()+requestMs,beforeExecution=false,transition=false}){
+  const start=await runStarts.read({binding,signal});
+  if(start.state!=='ABSENT'){
+   if(start.state!=='STARTED'||!objectiveCore)refuse();
+   const current=await objectiveCore.currentRecord({record:start.record,signal});
+   if(current.clientId!==context.selectedClientId||current.tenantId!==binding.tenantId||current.actorId!==binding.actorId)refuse();
+   return {...current,expiresAtMs:Math.min(current.effectExpiresAtMs,start.record.effectExpiresAtMs)};
+  }
+  if(routineCore){
+   const routine=await routineCore[beforeExecution?'admitExecution':transition?'forTransition':'forBinding']({binding,signal,deadlineMs});
+   if(routine!==null){const record=beforeExecution?routine:routine.record;
+    if(record.selectedClientId!==context.selectedClientId||!same(record.scopes,run.scopes))refuse();
+    return {...(beforeExecution?{}:routine.current),expiresAtMs:record.expiresAtMs,routine:true};
+   }
+  }
+  const access=await nativeAccess({binding,run,context,signal}),started=now();
+  const current=await core.readCurrent({credential:access.credential,conversationId:binding.conversationId,clientId:context.selectedClientId,signal,deadlineMs:Math.min(deadlineMs,started+requestMs)});
+  await access.verify();
+  if(current.checkedAtMs<started||current.checkedAtMs>now()||current.expiresAtMs<=now()||current.principal.tenantId!==binding.tenantId||current.principal.actorId!==binding.actorId||current.conversationId!==binding.conversationId||current.selectedClientId!==context.selectedClientId)refuse();
   return current;
  }
+
+ // A policy decision needs current Core/job authority; local execution authentication deliberately stays local.
+ async function readCapabilityRole({binding,signal,deadlineMs=now()+requestMs}){
+  const life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+requestMs),errorFactory:code=>fault(code)});
+  try{
+   const run=(await life.run(()=>store.read(binding,{after:0,limit:1},life.check))).run;
+   const context=await life.run(signal=>contextFor({binding,run,signal})),started=now();
+   const current=await life.run(signal=>readCurrent({binding,run,context,signal,deadlineMs:life.deadline()}));
+   life.check();return projectCapabilityRole(current,{started,now:now()});
+  }finally{life.close();}
+ }
+
  async function admit({binding,signal}){
   const run=(await store.read(binding,{after:0,limit:1},check(signal))).run,context=await contextFor({binding,run,signal});
-  await readCurrent({binding,run,context,signal});
+  const current=await readCurrent({binding,run,context,signal,beforeExecution:true});
   // This is the execution lifetime, not a cached permission receipt. Business-data access rechecks Core through its own gateway.
-  return {run,expiresAtMs:now()+config.runWindowMs,settings:{sourceEnabled:configuration.sourceEnabled,
+  return {run,expiresAtMs:current.routine?current.expiresAtMs:now()+config.runWindowMs,settings:{sourceEnabled:configuration.sourceEnabled,
    ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),
    ...(configuration.intents===undefined?{}:{intents:{enabled:configuration.intents.enabled}})}};
  }
@@ -156,12 +203,13 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    }else if(run.state==='failed')refuse();
    const latest=await store.nextRuns.current(v.binding,life.check);life.check();
    if(latest.reserved!==false||!same(latest.binding,v.binding)||!same(latest.scopes,v.scopes)||latest.policyRevision!==v.policyRevision)refuse();
-   const current=await readCurrent({binding:v.binding,run,context,signal:life.signal,deadlineMs:life.deadline()});life.check();
+   const current=await readCurrent({binding:v.binding,run,context,signal:life.signal,deadlineMs:life.deadline(),transition:true});life.check();
    return {binding:v.binding,scopes:v.scopes,selectedClientId:v.selectedClientId,policyRevision:v.policyRevision,checkedAtMs:now(),expiresAtMs:current.expiresAtMs};
   }finally{life.close();}
  }});
  const execution=createAgentCoreExecutionOwner({store,provider,versions,
-  plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now});
+  plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,
+  ...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{})});
  const reconciler=createRunReconciler({store,stopExecution:execution.stopExecution,now,maxReconcileMs:Math.min(120000,configuration.limits.shutdownMs)});
  async function stop({binding,executionId,signal}){
   if(executionId!==hash(binding))refuse();
@@ -183,11 +231,21 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   if(result.rows.length!==tables.length||result.rows.some(row=>row.relation===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');
   return {service:'meri-native-capability-provider/1',ready:true};
  }
- const owner=Object.freeze({...execution,stop,readiness});
+ const owner=Object.freeze({...execution,stop,readiness,retentionSweep:input=>{
+  if(typeof outerApplication?.sweepRetention!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');
+  return outerApplication.sweepRetention(input);
+ }});
  const control=createAgentCoreControlApplication({owner,controlCredential,now,maxRequestMs:requestMs,maxRequestBytes:configuration.limits.requestBytes});
  const sdkSessionOwner=createDurableSdkSessionOwner({admission:store.executions,authority:execution,enabled:true,now,maxRequestMs:requestMs});
  const objectiveSelection=createObjectiveSelectionOwner({runStarts,store,now,maxRequestMs:requestMs});
- const sdkSessionSnapshot=createNativeSessionContinuation({store,execution,versions,maxOutputBytes:config.maxOutputBytes,objectiveSelection,now,maxRequestMs:requestMs});
+ const automaticReader=createAutomaticClientContextReader({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs});
+ const automaticContext=Object.freeze({async read({binding,run,selectedClientId,signal,deadlineMs}){
+  const context=await contextFor({binding,run,signal});if(context.selectedClientId!==selectedClientId)refuse();
+  const access=await nativeAccess({binding,run,context,signal});
+  const packet=await automaticReader.read({binding,selectedClientId,credential:access.credential,signal,deadlineMs});
+  await access.verify();return packet;
+ }});
+ const sdkSessionSnapshot=createNativeSessionContinuation({store,execution,versions,maxOutputBytes:config.maxOutputBytes,objectiveSelection,automaticContext,...(routineCore?{routineCore}:{}),now,maxRequestMs:requestMs});
  const runtime=createNativeSessionContinuationApplication({owner:sdkSessionSnapshot,now,maxRequestMs:requestMs});
  let outerApplication,closed=false;
  async function reads(request){
@@ -199,7 +257,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('INVALID_ARGUMENTS');
    const input=await jsonBody({body:request.body,length:length===null?null:Number(length)},config.approvedReads?.maxRequestBytes??configuration.limits.requestBytes,life,life.check);
    validateShape('RunBinding',input.binding);
-   const app=createReadsRuntime({execution,binding:input.binding,...(objectiveCore?{objectiveCore}:{}),...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
+   const app=createReadsRuntime({execution,binding:input.binding,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{}),...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
    if(typeof app?.handle!=='function')throw fault('READS_CONFIGURATION');
    const headers=new Headers(request.headers);headers.delete('content-length');
    return await life.run(signal=>app.handle(new Request(request.url,{method:'POST',headers,body:JSON.stringify(input),signal})));
@@ -212,6 +270,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   if(path==='/v1/runner/runtime')return runtime.handle(request);
   if(path.startsWith('/v1/runner/reads/'))return reads(request);
   if(path.startsWith('/v1/runner/session/'))return outerApplication?outerApplication.handle(request):absent('SDK_SESSION_UNAVAILABLE');
+  if(/^\/v1\/runner\/intents\/(availability|prepare)$/u.test(path))return outerApplication?outerApplication.handle(request):absent('UNAVAILABLE');
   if(Object.hasOwn(NATIVE_FILE_PATHS,path))return outerApplication?outerApplication.handle(request):absent('NATIVE_FILES_UNAVAILABLE');
   if(/^\/v1\/runner\/[a-z-]+$/u.test(path)||/^\/v1\/runner\/selected\/(prepare|read|finish|publish)$/u.test(path)){
    if(!outerApplication)return absent('EXECUTION_UNAVAILABLE');
@@ -226,9 +285,10 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    const method={'execution/kickoff':'kickoff','execution/kickoff/status':'status','execution/kickoff/stop':'stop'}[operation];
    if(!method)throw fault('NATIVE_OPERATION_UNAVAILABLE');return owner[method]({...input,signal});
   },readiness});
- return Object.freeze({execution,native,application,admitFork,
+ const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
+ return Object.freeze({execution,native,application,admitFork,readCapabilityRole,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
-  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
+  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},
   async close(){closed=true;await execution.close();}});
 }

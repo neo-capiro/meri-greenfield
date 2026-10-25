@@ -66,7 +66,9 @@ function assertEnvelope(page, input, selection, kind, operation) {
   if (page.contractVersion !== '0.2.0' || page.operation.id !== operation || page.operation.version !== '0.2.0') fail('Meeting operation substitution');
   if (canonicalSha256(page.selection) !== canonicalSha256(selection) || page.argumentsSha256 !== canonicalSha256(selection)) fail('Meeting argument/selection binding mismatch');
   // Client-scoped reads bind the resolved client subject; the personal calendar inventory does not.
-  if (selection.clientId !== null && (page.subject.kind !== 'client' || page.subject.entityIds[0] !== selection.clientId)) fail('Meeting requested/resolved subject mismatch');
+  const generalClient=operation==='meeting.read_client_meetings'&&page.subject.kind==='personal'&&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(selection.clientId??'');
+  if (selection.clientId !== null && !generalClient && (page.subject.kind !== 'client' || page.subject.entityIds[0] !== selection.clientId)) fail('Meeting requested/resolved subject mismatch');
   if (page.evidenceReady !== false || page.negativeAssertion.kind !== 'none') fail('Pending meeting transport cannot assert evidence or absence');
   if (page.coverage.enumeration === 'complete' || page.coverage.enumerableTotal !== null) fail('Meeting transport cannot claim complete enumeration or an enumerable total');
   if (page.coverage.historySupport === 'supported') fail('Meeting transport cannot claim supported history');

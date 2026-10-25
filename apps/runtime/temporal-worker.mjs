@@ -10,7 +10,9 @@ import {readSecret,fault} from './config.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 import {createObjectiveWorkerActivities,objectiveWorkerPorts} from './objective-generation/worker-activities.mjs';
+import {createRetentionSweepActivity} from './retention-sweep.mjs';
 import {stopOriginal,createOriginalReconciler as createReconcileActivity} from './original-stop.mjs';
+import {reportRuntimeStartupFailure} from './runner-runtime-diagnostics.mjs';
 export {createReconcileActivity};
 /** Bounded control calls fit inside the activity heartbeat; model execution outlives any one exchange. */
 export const BROKER_NATIVE_MS=10000;
@@ -31,7 +33,7 @@ export function createBrokerActivity({native,context=()=>Context.current(),now=D
   }catch(error){try{await cleanup();}catch(cleanupError){throw Object.assign(fault('BROKER_KICKOFF_CLEANUP_UNKNOWN'),{cause:cleanupError});}throw error;}
  };
 }
-export function workerOptions({configuration,connection,native}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native}),reconcileConversation:createReconcileActivity({native}),...createObjectiveWorkerActivities(objectiveWorkerPorts({configuration,native}))},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
+export function workerOptions({configuration,connection,native}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native}),reconcileConversation:createReconcileActivity({native}),sweepConversationRetention:createRetentionSweepActivity({native}),...createObjectiveWorkerActivities(objectiveWorkerPorts({configuration,native}))},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
 /** Native SDK poller state determines readiness; the server checks its mTLS identity on each RPC. */
 export function createWorkerReadiness({worker}){
  if(typeof worker?.getState!=='function')throw fault('WORKER_CONFIGURATION');
@@ -43,7 +45,7 @@ export async function startTemporalWorker(configuration,{signal,testOwners={}}={
  for(const value of Object.values(owners))if(typeof value!=='function')throw fault('WORKER_CONFIGURATION');
  const fence=createTemporalRuntimeFence(),startupSignal=signal?AbortSignal.any([signal,fence.signal]):fence.signal;
  const onExternalAbort=()=>{fence.lose(signal.reason);try{if(worker?.getState()==='RUNNING')worker.shutdown();}catch{}};
- let connection,worker,listener,run,closing;
+ let connection,worker,listener,run,closing,stage='worker-material';
  signal?.addEventListener('abort',onExternalAbort,{once:true});if(signal?.aborted)onExternalAbort();
  const checkAuthorization=()=>{fence.check();startupSignal.throwIfAborted();};
  const close=()=>closing??=(async()=>{
@@ -59,15 +61,16 @@ export async function startTemporalWorker(configuration,{signal,testOwners={}}={
  try{
   checkAuthorization();
   const [tls,bytes]=await Promise.all([(owners.tls??temporalTls)(configuration.temporal.tls),(owners.readMaterial??readSecret)(configuration.native.capabilityFile)]);checkAuthorization();
-  const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential:bytes.toString('utf8').trim(),maxRequestMs:BROKER_NATIVE_MS});
+  stage='worker-readiness';const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential:bytes.toString('utf8').trim(),maxRequestMs:BROKER_NATIVE_MS});
   await native.readiness({signal:startupSignal});checkAuthorization();
-  connection=await (owners.connect??(options=>NativeConnection.connect(options)))({address:configuration.temporal.address,tls});checkAuthorization();
-  worker=await (owners.createWorker??(options=>Worker.create(options)))(workerOptions({configuration,connection,native}));checkAuthorization();
-  run=worker.run();run.catch(()=>{});
-  listener=await (owners.listen??listenRuntime)({configuration,application:fence.wrap({handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})}),readiness:createWorkerReadiness({worker}),signal});
+  stage='worker-connect';connection=await (owners.connect??(options=>NativeConnection.connect(options)))({address:configuration.temporal.address,tls});checkAuthorization();
+  stage='worker-create';worker=await (owners.createWorker??(options=>Worker.create(options)))(workerOptions({configuration,connection,native}));checkAuthorization();
+  stage='worker-run';run=worker.run();run.catch(error=>reportRuntimeStartupFailure('temporal-worker','worker-run',error));
+  stage='worker-listen';listener=await (owners.listen??listenRuntime)({configuration,application:fence.wrap({handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})}),readiness:createWorkerReadiness({worker}),signal});
   checkAuthorization();return Object.freeze({address:listener.address,close,completion:run});
  }catch(error){
-  try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'WORKER_STARTUP_AND_CLEANUP_FAILED'));}
+  reportRuntimeStartupFailure('temporal-worker',stage,error);
+  try{await close();}catch(cleanup){reportRuntimeStartupFailure('temporal-worker','worker-cleanup',cleanup);throw temporalCleanupUnknown(new AggregateError([error,cleanup],'WORKER_STARTUP_AND_CLEANUP_FAILED'));}
   if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;
   throw Object.assign(fault('WORKER_STARTUP_FAILED'),{cause:error});
  }

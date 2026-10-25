@@ -131,7 +131,7 @@ function assertEnvelope(page, selection, kind, operation, scopeExpectation, opti
   if (canonicalSha256(page.selection) !== canonicalSha256(selection) || page.argumentsSha256 !== canonicalSha256(selection)) fail('Operational-read argument/selection binding mismatch');
   if (scopeExpectation === 'client') {
     if (page.subject.kind !== 'client' || page.subject.entityIds[0] !== selection.clientId) fail('Operational-read requested/resolved subject mismatch');
-  } else if (page.subject.kind !== 'portfolio') fail('Authorized-scope operational read requires a portfolio subject');
+  } else if (!['portfolio', 'personal'].includes(page.subject.kind)) fail('Authorized-scope operational read requires the current actor or portfolio subject');
   if (page.evidenceReady !== false || page.negativeAssertion.kind !== 'none') fail('Pending operational-read transport cannot assert evidence or absence');
   if (page.coverage.enumeration === 'complete' || page.coverage.enumerableTotal !== null) fail('Operational-read transport cannot claim complete enumeration or an enumerable total');
   if (page.coverage.historySupport === 'supported') fail('Operational-read transport cannot claim supported history');
@@ -178,11 +178,9 @@ function assertTaskReadInput(input, options = {}) {
   const openOnly = status === 'open' || status === 'overdue';
   let dueBefore = optionalInstant(input, 'dueBefore');
   const cursor = optionalText(input, 'cursor', 4096);
-  // The frozen owner can recover the original overdue clock from its decoded
-  // cursor. This pending transport does not authenticate or decode that cursor.
-  if (status === 'overdue' && cursor !== null && dueBefore === null)
-    fail('Overdue cursor requires the original explicit dueBefore until cursor authority is implemented');
-  if (status === 'overdue' && dueBefore === null) dueBefore = new Date(options.nowMs).toISOString();
+  // Core validates the opaque cursor against current identity and filters and
+  // recovers its original overdue clock. Do not replace it with this page's time.
+  if (status === 'overdue' && cursor === null && dueBefore === null) dueBefore = new Date(options.nowMs).toISOString();
   return {
     selection: {
       clientId, taskId, ownerUserId, status, openOnly, dueBefore,
@@ -201,7 +199,11 @@ function assertTaskReadPage(page, input, options = {}) {
   if (scope.kind !== (selection.clientId === null ? 'authorized_tasks' : 'client')) fail('Task scope kind substitution');
   if (scope.tenantId !== page.binding.tenantId || scope.actorUserId !== page.binding.actorId) fail('Task scope actor substitution');
   if (scope.ownerUserId !== selection.ownerUserId || scope.taskId !== selection.taskId || scope.status !== selection.status
-    || scope.dueBefore !== selection.dueBefore || scope.limit !== selection.limit) fail('Task scope substitution');
+    || scope.limit !== selection.limit) fail('Task scope substitution');
+  if (cursor !== null && selection.status === 'overdue' && selection.dueBefore === null) {
+    if (typeof scope.dueBefore !== 'string' || !Number.isFinite(Date.parse(scope.dueBefore))
+      || new Date(scope.dueBefore).toISOString() !== scope.dueBefore) fail('Task cursor must resolve the original overdue clock');
+  } else if (scope.dueBefore !== selection.dueBefore) fail('Task scope substitution');
   assertCursorDisclosure(cursor, scope.cursorApplied);
   if (scope.cursorApplied !== selection.cursorApplied) fail('Task cursor disclosure mismatch');
   if (!scope.cursorApplied && scope.offset !== 0) fail('Task scope offset substitution');

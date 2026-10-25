@@ -25,16 +25,24 @@ function native(value,binding){
 /** policy.check({selection,selectionSha256,signal,limitDeadline}) returns exactly
  * {authorized:true,selectionSha256,binding,scopes,selectedClientId,destinationResolution,limits,checkedAtMs,expiresAtMs}.
  * Destination and limits are null for list/cancel. Every receipt is fresh and binds the complete request and native selection.
- * template is one explicit generic task identity matching the actual allocation manifest, never a named-skill coercion. */
+ * template is one explicit generic task identity. Native limits come from the current model-policy owner;
+ * retained allocation callers still have to match their original manifest and run. */
 export function createScheduleRuntimeContext(configuration){
- let c,a,template,workflow,bounds,ports,checkPolicy,readFiring,commandContext,prepareCancellation;
+ let c,executionLimits,template,workflow,bounds,ports,checkPolicy,readFiring,commandContext,prepareCancellation;
  try{
-  c=own(configuration,['sessions','commandContext','allocationJson','template','workflow','scheduleOwner','policy','now','newId','limits'],['runCancellation']);
+  c=own(configuration,['sessions','commandContext','template','workflow','scheduleOwner','policy','now','newId','limits'],['allocationJson','executionLimits','runCancellation']);
   commandContext=data(own(c.commandContext,['binding','clientResolution']));validateShape('RunBinding',commandContext.binding);
   template=data(own(c.template,['taskId','version','manifestSha256']));workflow=data(own(c.workflow,['taskQueue','workflowIdPrefix']));
-  bounds=data(own(c.limits,['maxRequestMs','maxFactBytes','retryLimit']));a=allocation(c.allocationJson);
-  if(typeof c.now!=='function'||typeof c.newId!=='function'||!uuid.test(template.taskId)||!Number.isSafeInteger(template.version)||template.version<1||template.manifestSha256!==a.manifestSha256||
-   Object.keys(a.run).some(key=>a.run[key]!==commandContext.binding[key])||!Number.isSafeInteger(bounds.maxRequestMs)||bounds.maxRequestMs<1||bounds.maxRequestMs>30000||
+  bounds=data(own(c.limits,['maxRequestMs','maxFactBytes','retryLimit']));
+  if((c.allocationJson===undefined)===(c.executionLimits===undefined))fail('CONFIGURATION');
+  if(c.allocationJson!==undefined){
+   const a=allocation(c.allocationJson);
+   if(template.manifestSha256!==a.manifestSha256||Object.keys(a.run).some(key=>a.run[key]!==commandContext.binding[key]))fail('CONFIGURATION');
+   executionLimits={expiresAtMs:Date.parse(a.schedule.expiresAt),maxCostMicrousd:a.budgets.maxCostMicroUSD,maxRuntimeSeconds:a.budgets.maxRuntimeSeconds,retryLimit:a.budgets.maxRecoveryAttempts};
+  }else executionLimits=data(own(c.executionLimits,['expiresAtMs',...limitKeys]));
+  limits(Object.fromEntries(limitKeys.map(key=>[key,executionLimits[key]])));
+  if(!Number.isSafeInteger(executionLimits.expiresAtMs)||executionLimits.expiresAtMs<1||typeof c.now!=='function'||typeof c.newId!=='function'||!uuid.test(template.taskId)||!Number.isSafeInteger(template.version)||template.version<1||!/^[a-f0-9]{64}$/u.test(template.manifestSha256)||
+   !Number.isSafeInteger(bounds.maxRequestMs)||bounds.maxRequestMs<1||bounds.maxRequestMs>30000||
    !Number.isSafeInteger(bounds.maxFactBytes)||bounds.maxFactBytes<1||bounds.maxFactBytes>131072||!Number.isSafeInteger(bounds.retryLimit)||bounds.retryLimit<0||
    typeof workflow.taskQueue!=='string'||!/^[a-zA-Z0-9._-]{1,128}$/u.test(workflow.taskQueue)||typeof workflow.workflowIdPrefix!=='string'||!/^[a-zA-Z0-9._/-]{1,128}$/u.test(workflow.workflowIdPrefix))fail('CONFIGURATION');
   ports=Object.freeze({authenticateSession:storageMethod(c.sessions,'authenticateSession'),readCurrentState:storageMethod(c.sessions,'readCurrentState')});
@@ -88,7 +96,7 @@ export function createScheduleRuntimeContext(configuration){
  }
 
  function requestCurrent(call){
-  return createRequestCurrent({...call,deadlineMs:Math.min(call.deadlineMs,c.now()+bounds.maxRequestMs,Date.parse(a.schedule.expiresAt)),ports,now:c.now,commandContext,maxBytes:bounds.maxFactBytes});
+  return createRequestCurrent({...call,deadlineMs:Math.min(call.deadlineMs,c.now()+bounds.maxRequestMs,executionLimits.expiresAtMs),ports,now:c.now,commandContext,maxBytes:bounds.maxFactBytes});
  }
  /** Fresh release permission without allocating a proposal/schedule identity. Exact journal replay uses this same owner. */
  async function authorizeRequest(value){
@@ -130,7 +138,7 @@ export function createScheduleRuntimeContext(configuration){
    if(list)scheduleContext={...scheduleContext,owner:identity};
    else{
     const cancel=call.operation==='cancel_scheduled_task';
-    const effective=cancel?null:Object.fromEntries(limitKeys.map(key=>[key,Math.min(request.requestedLimits[key],receipt.limits[key],key==='maxCostMicrousd'?a.budgets.maxCostMicroUSD:key==='maxRuntimeSeconds'?a.budgets.maxRuntimeSeconds:Math.min(bounds.retryLimit,a.budgets.maxRecoveryAttempts))]));
+    const effective=cancel?null:Object.fromEntries(limitKeys.map(key=>[key,Math.min(request.requestedLimits[key],receipt.limits[key],executionLimits[key],key==='retryLimit'?bounds.retryLimit:Infinity)]));
     const projection=cancel?{...before.projection,state:request.mode==='delete'?'cancelled':'paused'}:{scheduleId,owner:identity,temporalScheduleId:before?.projection.temporalScheduleId??workflow.workflowIdPrefix+'/'+scheduleId,
      timezone:request.policy.spec.timezone,scopes:first.scopes,state:request.policy.paused?'paused':'active',...effective,destinationId:receipt.destinationResolution.destinationId,createdAt:before?.projection.createdAt??proposal?.projection.createdAt??new Date(c.now()).toISOString()};
     scheduleContext={...scheduleContext,intentId,current:before,projection,approval:null,

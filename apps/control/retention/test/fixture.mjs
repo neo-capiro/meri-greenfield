@@ -64,6 +64,7 @@ export function memoryRows(){
  const present=new Map();const id=t=>JSON.stringify(t);
  const route=(key,plan)=>{const kind=key.split(':').at(-2);for(const st of plan.rowSteps)if(rowClassSubjectKind[st.className]!==kind)throw Object.assign(new Error('RETENTION_INVALID_REQUEST'),{code:'RETENTION_INVALID_REQUEST'});};
  return {remaining:key=>[...(present.get(key)??[])],seed(key,inventory){present.set(key,new Set(inventory.rowTargets.map(id)));},
+  async validatePlanTargets(key,plan){route(key,plan);return true;},
   async preflight(key,plan){route(key,plan);return true;},
   async purge(key,plan){route(key,plan);const rows=present.get(key)??new Set();return plan.rowSteps.map(st=>{const had=rows.delete(id(st.target));return {workflowId:st.workflowId,state:'EXECUTED',deleted:had?1:0};});},
   async present(key,fact){return (present.get(key)??new Set()).has(id(fact.target));},
@@ -88,11 +89,11 @@ export function planFrom(f,s,journalState,{inventory,policy:p=f.current.policy}=
 /** The retention startup owner over the in-process journal, watermark store and ledger sink, with the fixture's bucket, row port and
  * facts as the purge owners. `purge` is the explicit switch; `backup()`/`restore()` model one database backup of the journal and
  * the watermark together (the ledger sink stays outside the restored boundary). Every storage request and row purge is counted. */
-export function composeStartup({purge=false,ledger=true,watermark:withWatermark=true,rowPreflight=null}={}){
+export function composeStartup({purge=false,ledger=true,watermark:withWatermark=true,rowValidation=null}={}){
  const base=compose(),journal=createMemoryRetentionJournal(),watermark=createMemoryWatermarkStore({journal}),deletes=[],rowPurges=[];
  const send=async request=>{if(request.operation==='DeleteObject')deletes.push(request.input);return base.store.send(request);};
  const storage=createVersionStorage({send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:{getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},now:base.clock.now,maxRequestMs:200});
- const rows={...base.rows,...(rowPreflight?{preflight:rowPreflight}:{}),async purge(key,plan){rowPurges.push(key);return base.rows.purge(key,plan);}};
+ const rows={...base.rows,...(rowValidation?{validatePlanTargets:rowValidation}:{}),async purge(key,plan){rowPurges.push(key);return base.rows.purge(key,plan);}};
  const owners=purge?{enabled:true,storage,rows,facts:base.facts,keyFor:base.keyFor}:{enabled:false};
  // Fault switches: `lostAck` makes the sink record an entry but lose its acknowledgement; `failSets` fails that many projection writes.
  const faults={lostAck:false,failSets:0};

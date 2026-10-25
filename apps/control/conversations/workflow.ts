@@ -11,3 +11,6 @@ export {meriConversationLifecycleWorkflow} from './lifecycle/workflow.ts';
 
 // Separate opt-in server-owned Objective generation lifecycle (lane 7); activities are composed only with genuine ports.
 export {meriObjectiveGenerationWorkflow} from './objective-generation-workflow.ts';
+
+// Fixed expired-Trash sweep uses this same worker queue; it never runs a model.
+export {meriConversationRetentionWorkflow} from '../retention/workflow.ts';

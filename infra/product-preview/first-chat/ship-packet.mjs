@@ -14,8 +14,8 @@ import {createHash} from 'node:crypto';
 import {resolve,join,relative,isAbsolute} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {ROLES,SOURCE_ROOT,parseDeploymentInputs,parseRuntimeValues} from './render-material.mjs';
-import {STAGE3_FAMILIES,STAGE3_SERVICES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS} from './stage3-bindings.mjs';
+import {deploymentRoles,SOURCE_ROOT,parseDeploymentInputs,parseRuntimeValues} from './render-material.mjs';
+import {ALL_STAGE3_FAMILIES,STAGE3_STACKS,STAGE3_DEPLOY_ORDER,MATERIAL_SECRET_KEYS} from './stage3-bindings.mjs';
 
 export const SCHEMA='meri.first-chat-ship-packet/3';
 const STAGE3='infra/product-preview/first-chat/stage3-deploy.mjs';
@@ -102,8 +102,10 @@ export function checkInputs({deployment,previousDeployment,runtime,receipt,recei
  for(const severity of ['CRITICAL','HIGH'])if((counts[severity]??0)!==0)refuse(`image scan has ${severity} findings`);
  if(typeof receiptSha256!=='string'||!hex64.test(receiptSha256)||imageScans?.nodeRuntime!==receiptSha256)refuse('image-scans.nodeRuntime must be the sha256 of the image build result file');
  if(stage3?.schemaVersion!==1)refuse('stage3.json');
- for(const [role,family] of Object.entries(STAGE3_FAMILIES))if(!new RegExp(`task-definition/${family}:[1-9][0-9]*$`,'u').test(stage3.taskDefinitions?.[role]??''))refuse(`stage3 task definition for ${role}`);
- if(JSON.stringify(upload?.roles?.map(r=>r.role))!==JSON.stringify(ROLES))refuse('upload plan roles');
+ const roles=deploymentRoles(deployment);
+ if(JSON.stringify(Object.keys(stage3.taskDefinitions??{}).sort())!==JSON.stringify([...roles].sort()))refuse('stage3 task definition roles');
+ for(const role of roles)if(!new RegExp(`task-definition/${ALL_STAGE3_FAMILIES[role]}:[1-9][0-9]*$`,'u').test(stage3.taskDefinitions?.[role]??''))refuse(`stage3 task definition for ${role}`);
+ if(JSON.stringify(upload?.roles?.map(r=>r.role))!==JSON.stringify(roles))refuse('upload plan roles');
  for(const r of upload.roles)if(r.secretArn!==deployment.secrets[MATERIAL_SECRET_KEYS[r.role]])refuse(`upload plan secret for ${r.role}`);
  for(const r of upload.roles)if(!Array.isArray(r.labelsBefore)||r.labelsBefore.includes(upload.label))refuse(`upload plan for ${r.role} lacks a before-upload label readback without ${upload.label}`);
  return configurationChange(deployment,previousDeployment);
@@ -114,7 +116,7 @@ const logs=(group,pattern)=>command(['aws','logs','filter-log-events','--region'
 
 /** The ordered release steps for the inputs above. `work` is the operator's private working directory (a path, never content). */
 export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsPlan}){
- const c=cluster(deployment),f=deployment.foundation,fam=Object.values(STAGE3_FAMILIES),W=name=>join(work,name),S=STAGE3_SERVICES;
+ const roles=deploymentRoles(deployment),schedule=roles.includes('schedule-worker'),c=cluster(deployment),f=deployment.foundation,fam=roles.map(role=>ALL_STAGE3_FAMILIES[role]),W=name=>join(work,name),S=ALL_STAGE3_FAMILIES;
  const wait=(...roles)=>command(['aws','ecs','wait','services-stable','--region','us-east-1','--cluster',c,'--services',...roles.map(r=>S[r])]);
  const steps=[{id:'readback',title:'Revisions unchanged since stage3.json (any registration in between forces a new render)',
   commands:fam.flatMap(family=>['ACTIVE','INACTIVE'].map(status=>command(['aws','ecs','list-task-definitions','--region','us-east-1','--family-prefix',family,'--status',status,'--sort','DESC','--max-items','1','--query','taskDefinitionArns[0]','--output','text']))),
@@ -128,9 +130,9 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
   commands:[command(['node',MIGRATE,'plan'],{note:'offline: confirms all planned files and hashes; the source delta does not establish applied database state'}),
    ...migrations.stages.map(stage=>command(['node',MIGRATE,stage],{note:'run through the existing d2-migrate owner only after snapshot, isolated rehearsal and actual ledger verification; if earlier stages are pending, complete those first in plan order'}))],
   gate:`inspect the one persistent preview clone ledger; before any forward SQL, verify a fresh snapshot and isolated rehearsal of its pending prefix and grants. The existing d2-migrate owner must report all ${migrations.currentEntries} entries applied with exact ordinals, names and hashes, including integration. Never infer completion from an unchanged source plan or re-clone the database`});
- steps.push({id:'upload',title:`Stage the ${ROLES.length} rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
+ steps.push({id:'upload',title:`Stage the ${roles.length} rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
   commands:upload.roles.flatMap(r=>[command(r.command,{note:`append "${r.role}<TAB>VersionId" to ${W('secret-versions.tsv')}; on an uncertain outcome resend this exact command`}),command(r.readback)]),
-  gate:`${ROLES.length} new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
+  gate:`${roles.length} new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
  steps.push({id:'bindings',title:'Live readbacks, then bindings and the update templates',
   commands:[command(['aws','cloudformation','get-template','--region','us-east-1','--stack-name',STAGE3_STACKS.app,'--template-stage','Original','--query','TemplateBody','--output','json'],{stdout:W('app.live.template.json')}),
    command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name','<foundation stack>','--query','Stacks[0].Outputs'],{stdout:W('foundation-live.json')}),
@@ -138,10 +140,10 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
    command(['node',STAGE3,'bindings','--deployment-inputs','<deployment-inputs.json>','--foundation-outputs',W('foundation-live.json'),'--private-edge-outputs',W('private-edge-outputs.json'),
     '--rendered',W('rendered'),'--secret-versions',W('secret-versions.tsv'),'--image-scans','<image-scans.json>','--live-app-template',W('app.live.template.json'),'--out',W('bindings')])],
   gate:'STAGE3_BINDINGS_WRITTEN; rerun this packet with --bindings to pin the template hashes'});
- const gates={app:{wait:wait('control','temporal-worker'),checks:[logs(f.ControlLogGroupName,'"runtime.listening"'),logs(f.WorkerLogGroupName,'"runtime.listening"'),
+ const gates={app:{wait:wait(...roles),checks:[logs(f.ControlLogGroupName,'"runtime.listening"'),logs(f.WorkerLogGroupName,'"runtime.listening"'),...(schedule?[logs(f.ScheduleLogGroupName,'"runtime.listening"')]:[]),
    command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',deployment.privateEdge.controlPrivateTargetGroupArn]),
    command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',f.ControlTargetGroupArn])],
-   gate:'exactly one control task, worker 1/1/0, both runtime.listening, both target groups healthy; no RUNTIME_UNAVAILABLE, RUNTIME_CONFIGURATION, STATIC_INIT_* or *_REFUSED; tasks alive after 200 s'}};
+   gate:`exactly one control task, worker 1/1/0${schedule?', schedule-worker 1/1/0':''}, all runtime.listening, both target groups healthy; no RUNTIME_UNAVAILABLE, RUNTIME_CONFIGURATION, STATIC_INIT_* or *_REFUSED; tasks alive after 200 s${schedule?'; verify an actual authorized scheduled occurrence and revocation/retirement through the canonical owners before accepting routines':''}`}};
  for(const key of STAGE3_DEPLOY_ORDER){
   const planned=bindingsPlan?.stacks?.[key],stack=STAGE3_STACKS[key];
   steps.push({id:`deploy-${key}`,title:`${stack}: change set, review, execute, wait`,
@@ -154,7 +156,7 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  steps.push({id:'verify',title:'Every deployed task definition is the rendered revision',
   commands:[...STAGE3_DEPLOY_ORDER.map(key=>command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name',STAGE3_STACKS[key],'--query','Stacks[0].Outputs'],{stdout:W(`${key}.outputs.json`)})),
    command(['node',STAGE3,'verify-outputs','--bindings',W('bindings'),'--app',W('app.outputs.json')])],
-  gate:'STAGE3_TASK_DEFINITIONS_MATCH_RENDER for both task definitions; a mismatch means re-render, never patch'});
+  gate:`STAGE3_TASK_DEFINITIONS_MATCH_RENDER for all ${roles.length} task definitions; a mismatch means re-render, never patch`});
  return steps;
 }
 
@@ -185,7 +187,9 @@ export function buildShipPacket(i){
    'root authenticates the frozen previous inputs against actual release evidence; if the original archive is unavailable, label them reconstructed previous state and retain reviewed live readbacks, hashes and field lineage separately; never rewrite historical inputs to pass this comparison',
    'review every recorded configuration change against the actual live templates; qualify the pinned AgentCore runtime and preview endpoint before control cutover; retain the exact previous topology only for the bounded rollback window',
    'Temporal is a separate prerequisite: qualify its native ARM image and source-based binding, preserve pinned native mTLS CAs and the default authorizer with the verified certificate role mapper, and review its actual live service counts; the stopped DesiredCount0 template is not a live update',
-   'schedule-worker remains a separate required deployment: its native TLS config/material supports meri-temporal-schedule, but these two app services do not deploy or qualify scheduled/background outcomes',
+   deploymentRoles(deployment).includes('schedule-worker')?
+    'schedule-worker activation requires the canonical routine task manifest, reviewed distinct database-role grants, current Core unattended authority and AgentCore occurrence/retirement owners; native TLS/service health does not qualify scheduled outcomes':
+    'schedule-worker is not enabled in these two app services; configure an approved routines workflow and its complete schedule bindings before claiming scheduled/background outcomes',
    'complete required review and gates, verify the clone snapshot and full ledger, then hold the preview deploy lock through the coordinated update; root performs live browser acceptance before retiring old resources'
   ],
   migrations,

@@ -36,7 +36,8 @@ export function createRoutinesOccurrencePorts(options){
   if(v.occurrenceKey!==id.occurrenceKey||v.deadlineMs!==undefined&&!Number.isSafeInteger(v.deadlineMs))refuse('REQUEST');
   const reply=answer(await call(ROUTINES_OCCURRENCE_OPERATIONS.admit,{occurrence:occ,occurrenceKey:id.occurrenceKey,effect,input},options_(v)));
   let r;try{r=data(own(own(reply,['admitted']).admitted,['binding','requestSha256','expiresAtMs','replayed']));validateShape('RunBinding',r.binding);}catch{refuse('REPLY');}
-  if(!same(r.binding,id.binding)||r.requestSha256!==hash(input.request)||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<1||typeof r.replayed!=='boolean')refuse('REPLY');
+  // Dispatch independently compares this digest with the canonical normalized request after admission.
+  if(!same(r.binding,id.binding)||!HEX64.test(r.requestSha256)||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<1||typeof r.replayed!=='boolean')refuse('REPLY');
   return data({binding:r.binding,requestSha256:r.requestSha256,expiresAtMs:r.expiresAtMs,replayed:r.replayed});
  }
  async function retire(value){

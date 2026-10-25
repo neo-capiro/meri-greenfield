@@ -1,5 +1,5 @@
 /** Versioned retention policy: explicit required configuration, no defaults. A missing policy blocks physical purge and never blocks authorized suppression. */
-import {own,data,fail,text,hash} from './boundary.mjs';
+import {own,data,fail,text,hash,uuid} from './boundary.mjs';
 import {classes,externalClasses} from './inventory.mjs';
 const positiveInteger=v=>Number.isSafeInteger(v)&&v>0;
 export function parseRetentionPolicy(value){
@@ -19,4 +19,24 @@ export function purgeEligibility({policy,className,suppressedAtMs,lastActivityAt
  if(!Number.isSafeInteger(suppressedAtMs))reasons.push('NOT_SUPPRESSED');else if(nowMs-suppressedAtMs<p.coolingPeriodMs)reasons.push('COOLING_PERIOD');
  if(!c.purgeable)reasons.push('CLASS_NOT_PURGEABLE');if(!Number.isSafeInteger(lastActivityAtMs)||nowMs-lastActivityAtMs<c.retentionMs)reasons.push('RETENTION_PERIOD');
  return Object.freeze({eligible:reasons.length===0,reasons:Object.freeze(reasons),policyId:p.policyId,policyVersion:p.version});
+}
+
+/** Core owns the 720-hour Trash deadline. Suppression can precede its commit, so
+ * suppression age must never substitute for this exact committed generation.
+ * checkedAtMs is an observation, excluded from the stable plan identity. */
+export function conversationTrashEligibility({subject,journalState,trash,nowMs}){
+ if(subject.kind!=='conversation')return null;
+ const reason=journalState?.reason;
+ if(trash===undefined&&!String(reason??'').startsWith('conversation-trash:'))return null;
+ if(!trash)fail('RETENTION_TRASH_AUTHORITY_REQUIRED');
+ const t=own(data(trash),['requestId','revision','trashedAtMs','restoreUntilMs','checkedAtMs']);
+ uuid(t.requestId);
+ if(
+    typeof t.revision!=='string'||!/^([1-9][0-9]*)$/u.test(t.revision)||
+    ![t.trashedAtMs,t.restoreUntilMs,t.checkedAtMs,nowMs].every(Number.isSafeInteger)||
+    t.trashedAtMs<0||t.restoreUntilMs-t.trashedAtMs!==30*24*60*60*1000||
+    Math.abs(nowMs-t.checkedAtMs)>5000)fail('RETENTION_TRASH_AUTHORITY_REQUIRED');
+ if(reason!==`conversation-trash:${t.requestId}`)fail('RETENTION_TRASH_GENERATION_REFUSED');
+ const {checkedAtMs,...identity}=t;
+ return Object.freeze({identity:Object.freeze(identity),expired:checkedAtMs>=t.restoreUntilMs&&nowMs>=t.restoreUntilMs});
 }

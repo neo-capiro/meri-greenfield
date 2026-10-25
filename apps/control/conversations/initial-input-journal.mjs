@@ -2,7 +2,7 @@
  * One input per original RUN (0020): the reserved input of a superseded original generation is dead history, never read. */
 import {bounded,hash,same,fail,validateShape} from './boundary.mjs';
 import {assertOriginalInputFacts,sameOriginalInputIdentity,assertOriginalInputAcceptance,assertOriginalInputActive,originalInputReceipt} from './initial-input-facts.mjs';
-export function createOriginalInputJournal({tx,rowRun,now}){
+export function createOriginalInputJournal({tx,rowRun,now,assertConversationActive}){
  if(typeof tx!=='function'||typeof rowRun!=='function'||typeof now!=='function')fail('STORE_CONFIGURATION');
  const decode=row=>{
   if(!row||hash(row.allocation)!==row.allocation_sha256)fail('INITIAL_INPUT_CORRUPT');let facts;try{facts=assertOriginalInputFacts(row.allocation);}catch{fail('INITIAL_INPUT_CORRUPT');}const b=facts.binding;
@@ -28,11 +28,15 @@ export function createOriginalInputJournal({tx,rowRun,now}){
   if(rows.length!==1)fail('INITIAL_INPUT_CORRUPT');const r=rowRun(rows[0]);assertOriginalInputAcceptance(saved.facts,{run:r.projection,request:r.request,selectedClientId:saved.facts.selectedClientId});
  }
  async function claim(raw,check){const proposed=assertOriginalInputFacts(raw),b=proposed.binding;let pinned=proposed;const callerCheck=check;check=()=>{callerCheck();active(proposed);active(pinned);};check();return tx(b,check,async c=>{
-  await current(c,b,check);await requestOwner(c,proposed,check);const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
+  await current(c,b,check);if(assertConversationActive){await assertConversationActive(proposed,check);check();}await requestOwner(c,proposed,check);const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
   if(old){pinned=old.facts;check();if(!sameOriginalInputIdentity(old.facts,proposed))fail('INITIAL_INPUT_CONFLICT');consistent(old,existing);return originalInputReceipt(old.facts,old.state,false);}
   if(existing.length)fail('INITIAL_INPUT_ALREADY_EXISTS');
   const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();
-  const successors=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();if(conversations.length||successors.length)fail('INITIAL_INPUT_ALREADY_EXISTS');
+  const successors=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();if(successors.length||conversations.length>1)fail('INITIAL_INPUT_ALREADY_EXISTS');
+  // Management can register a verified Core bootstrap before its first prompt.
+  // That real, empty Conversation must retain exactly the first input's owner/scope.
+  if(conversations.length){const row=conversations[0],p=row.projection;try{validateShape('Conversation',p);}catch{fail('CONVERSATION_SCOPE_REFUSED');}
+   if(hash(p)!==row.projection_sha256||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.owner_actor_id!==b.actorId||p.conversationId!==b.conversationId||!same(p.owner,{tenantId:b.tenantId,actorId:b.actorId})||!same(p.scopes,proposed.scopes)||p.policyRevision!==proposed.scopes[0].policyRevision)fail('CONVERSATION_SCOPE_REFUSED');}
   const inserted=(await c.query("INSERT INTO meri_conversations.initial_inputs(tenant_id,conversation_id,run_id,request_id,allocation,allocation_sha256,state,accepted_request_sha256) VALUES($1,$2,$3,$4,$5,$6,'RESERVED',NULL) ON CONFLICT DO NOTHING RETURNING *",[b.tenantId,b.conversationId,b.runId,proposed.requestId,proposed,hash(proposed)])).rows;check();
   if(inserted.length!==1)fail('INITIAL_INPUT_CONFLICT');const ack=decode(inserted[0]),back=await readRow(c,b,check);active(proposed);
   if(!back||ack.state!=='RESERVED'||back.state!=='RESERVED'||!same(ack.facts,proposed)||!same(back.facts,proposed))fail('INITIAL_INPUT_CORRUPT');return originalInputReceipt(back.facts,'RESERVED',true);

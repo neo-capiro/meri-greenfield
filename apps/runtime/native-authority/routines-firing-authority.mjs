@@ -83,7 +83,7 @@ export function createRoutinesFiringAuthority(configuration){
   try{
    // Meri's own fence first: pause, delete, a newer generation or a changed projection deny before Core is asked.
    const row=await firingRow(readFiring,identity.tenantId,identity.scheduleId,life);
-   if(row===null||row.projection.state!=='active'||row.generation!==identity.generation||!same(row.projection,projection)||row.intent===null)return denial(v.occurrenceKey);
+   if(row===null||row.projection.state!=='active'||row.activeIntent!==null||row.generation!==identity.generation||!same(row.projection,projection)||row.intent===null)return denial(v.occurrenceKey);
    const request={tenantId:identity.tenantId,ownerActorId:identity.actorId,scheduleId:identity.scheduleId,generation:row.generation,intentSha256:hash(row.intent),projectionSha256:hash(projection),occurrenceKey:v.occurrenceKey,phase:v.phase};
    let bound;try{bound=await boundGrant({grant,trust:c.trust,now},request,life);}catch(error){if(error instanceof Denied)return denial(v.occurrenceKey);throw error;}
    const k=bound.verified.claims;
