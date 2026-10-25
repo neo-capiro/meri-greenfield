@@ -1,5 +1,5 @@
 /** Offline, disabled ECS preview source. Binding values come from a separately reviewed inventory. */
-import {App, Stack, CfnOutput, BootstraplessSynthesizer, aws_ecs as ecs} from 'aws-cdk-lib';
+import {App, Stack, CfnOutput, CfnDeletionPolicy, BootstraplessSynthesizer, aws_ecs as ecs} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
 import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-init.mjs';
 import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
@@ -108,11 +108,13 @@ function task(stack,b,role,port){
   mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false},...(databaseTrust?[{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}]:[])],
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}-init`,'mode':'blocking'}}};
  const size=b.sizing[role];
- return new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
+ const definition=new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
   runtimePlatform:{cpuArchitecture:'ARM64',operatingSystemFamily:'LINUX'},executionRoleArn:roleValue(b,'executionRoleArn','executionRoleArns',role),
   ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
   volumes:[{name:'workspace'},{name:'tmp'},{name:'material'}],containerDefinitions:[init,c]});
+ definition.cfnOptions.updateReplacePolicy=CfnDeletionPolicy.RETAIN;
+ return definition;
 }
 function service(stack,b,role,definition,securityGroupIds){
  const name=roleNames[role];
