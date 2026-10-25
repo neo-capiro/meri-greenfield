@@ -30,7 +30,7 @@ const without=(v,key)=>Object.fromEntries(Object.entries(v).filter(([k])=>k!==ke
 function fresh(){
  const f=runStartFixture({tenantId:id(),actorId:id(),generationJobId:id(),requestId:id(),clientId:id()}),at=Date.now();
  f.selection.sourceAdmission.admittedAtMs=at-1000;f.selection.sourceAdmission.effectExpiresAtMs=at+150000;
- f.selection.request.originalExpiresAtMs=at+150000;f.selection.request.inputSha256=hash(without(f.selection.request,'inputSha256'));
+ f.selection.request.requestedAtMs=at;f.selection.request.originalExpiresAtMs=at+150000;f.selection.request.inputSha256=hash(without(f.selection.request,'inputSha256'));
  f.record=createObjectiveRunStartRecord({binding:f.binding,generationJobId:f.generationJobId,selection:f.selection,nowMs:at});
  f.subject={tenantId:f.tenantId,kind:'conversation',subjectId:f.binding.conversationId,ownerActorId:f.actorId};f.principal={tenantId:f.tenantId,actorId:f.actorId};return f;
 }
