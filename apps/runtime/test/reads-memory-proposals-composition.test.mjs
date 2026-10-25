@@ -5,9 +5,9 @@ import {createExecutionBinding} from '../../control/conversations/execution-boun
 import {versions} from '../../control/conversations/test/store-fixture.mjs';
 import {createMailFixture,uuid} from '../../gateway/sources/mail/test/fixtures.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
-async function fixture(){
- const source=createMailFixture(undefined,{client:true}),binding={...source.binding,tenantId:uuid('9'),actorId:uuid('1')},clientId=source.clientId,records=new Map(),calls=[];
- const operation={id:'memory.list_own_proposals',version:'0.2.0'},family='memory-proposals',scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:source.subject.policyRevision}];
+async function fixture({personal=false}={}){
+ const source=createMailFixture(undefined,{client:true}),binding={...source.binding,tenantId:uuid('9'),actorId:uuid('1')},clientId=personal?null:source.clientId,records=new Map(),calls=[];
+ const operation={id:'memory.list_own_proposals',version:'0.2.0'},family='memory-proposals',scopes=[{tenantId:binding.tenantId,kind:personal?'private-user':'client',resourceId:clientId??binding.actorId,policyRevision:source.subject.policyRevision}];
  let revoked=false,status=200,after,mutate;
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:source.state.now+10000,runtimeSessionId:'synthetic-runtime-session-00000000001'});
  const current={execution:identity,state:'running',scopes,selectedClientId:clientId,policyRevision:source.subject.policyRevision};
@@ -19,7 +19,7 @@ async function fixture(){
    async loadPrevious({key}){return JSON.stringify({record:records.get(hash(key)),checkedAtMs:source.state.now});},
   };}},async fetchImpl(url,options){assert.equal(new URL(url).pathname,'/api/clio/tools/memory.list_own_proposals');assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');const body=JSON.parse(options.body);calls.push(body);assert.equal(body.input.clientId,clientId);
    const next=body.input.cursor!==null,page={tool:'list_memory_proposals',enabled:true,authority:'own_pending_proposals',claimsAreApprovedFacts:false,scope:{tenantId:binding.tenantId,userId:binding.actorId,clientId},
-    candidates:[{id:uuid(next?'7':'8'),status:'pending',approvedFact:false,scope:'client',clientId,sourceKind:'explicit_user',createdAt:next?'2026-01-01T00:00:00.000Z':'2026-01-02T00:00:00.000Z',restricted:false,title:'Synthetic',proposedText:'Unapproved',contentTruncated:false}],nextCursor:next?null:'opaque-next',coverage:{firstPage:!next,complete:false,reason:'unread_pages_restricted_or_truncated_content'}};
+    candidates:[{id:uuid(next?'7':'8'),status:'pending',approvedFact:false,scope:personal?'personal':'client',clientId,sourceKind:'explicit_user',createdAt:next?'2026-01-01T00:00:00.000Z':'2026-01-02T00:00:00.000Z',restricted:false,title:'Synthetic',proposedText:'Unapproved',contentTruncated:false}],nextCursor:next?null:'opaque-next',coverage:{firstPage:!next,complete:false,reason:'unread_pages_restricted_or_truncated_content'}};
    mutate?.(page);after?.();return Response.json(page,{status});}});
  const execution={async authenticate(){if(revoked)throw Error('EXECUTION_AUTHORITY_REFUSED');return structuredClone(current);}};
  async function execute(args={limit:1}){const app=composer.createReadsRuntime({execution,binding,approvedReads}),request=(kind,body)=>new Request(`https://control.example.invalid/v1/runner/reads/${kind}`,{method:'POST',headers:{authorization:'Bearer SYNTHETIC_EXECUTION','content-type':'application/json'},body:JSON.stringify(body)});
@@ -36,4 +36,16 @@ test('proposal current owner refusal, foreign client and scope substitution rema
  const denied=await fixture();denied.status(403);assert.equal((await denied.execute()).status,403);assert.equal(denied.records.size,0);
  const selected=await fixture();assert.notEqual((await selected.execute({clientId:uuid('6')})).status,200);assert.equal(selected.calls.length,0);
  const altered=await fixture();altered.mutate(page=>{page.scope.userId=uuid('6');});assert.notEqual((await altered.execute()).status,200);assert.equal(altered.records.size,0);
+});
+
+test('General own proposals use the canonical personal selector and retain a bounded continuation',async()=>{
+ const f=await fixture({personal:true}),first=await f.execute();assert.equal(first.status,200,await first.clone().text());
+ const stored=[...f.records.values()][0];assert.equal(stored.key.subject.kind,'personal');assert.equal(stored.key.subject.entityIds[0],stored.key.binding.actorId);assert.equal(stored.previous.request.clientId,null);
+ f.source.state.now+=1500;const next=await f.execute({limit:1,cursor:'opaque-next'});assert.equal(next.status,200,await next.clone().text());assert.equal(f.calls.length,2);
+});
+
+test('General proposal continuation rejects client selectors, foreign actor results, revocation and expiry',async()=>{
+ const selector=await fixture({personal:true});assert.notEqual((await selector.execute({clientId:uuid('6')})).status,200);assert.equal(selector.calls.length,0);
+ const actor=await fixture({personal:true});actor.mutate(page=>{page.scope.userId=uuid('6');});assert.notEqual((await actor.execute()).status,200);assert.equal(actor.records.size,0);
+ for(const action of ['expiry','revocation']){const f=await fixture({personal:true});assert.equal((await f.execute()).status,200);if(action==='expiry')f.source.state.now=f.expiry;else f.revoke();assert.notEqual((await f.execute({limit:1,cursor:'opaque-next'})).status,200);assert.equal(f.calls.length,1);}
 });

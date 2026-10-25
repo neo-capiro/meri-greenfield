@@ -12,6 +12,8 @@ import {scanMemoryProposalContextRows} from '../memory-proposal-context-journal.
 import {decodeConversationInventoryRows} from '../retention-inventory-decode.mjs';
 import {enumerateReferences} from '../../retention/inventory.mjs';
 import {createPostgresRetentionJournal} from '../../retention/postgres-journal.mjs';
+import {createControlReadsComposer} from '../../../runtime/reads-composer.mjs';
+import {createExecutionBinding} from '../execution-boundary.mjs';
 
 const at=Date.parse('2026-10-18T12:00:00.000Z'),expiry=at+30000;
 const binding={...baseBinding,tenantId:id(9),actorId:id(10)};
@@ -26,7 +28,8 @@ function transitionLock(){let readers=0,writer=false;const pending=[];
  return {shared:()=>acquire(false),async withTransition(_key,fn){const release=await acquire(true);try{return await fn();}finally{release();}}};
 }
 
-function fixture(){
+function fixture({personal=false}={}){
+ const scopes=personal?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:baseScopes[0].policyRevision}]:[{...baseScopes[0],tenantId:binding.tenantId}];
  const base=storeFixture(),rows=new Map(),transition=transitionLock(),state={at,suppressed:false,suppressOnGateCall:null,gateCalls:0,commitUnknown:false,
   ledgerHead:{sequence:0,entrySha256:null},projectedSequence:0,sharedPause:null,advanceHeadOnGateCall:null,events:[]};
  const pool={async connect(){const c=await base.pool.connect();let snapshot;
@@ -80,12 +83,12 @@ function fixture(){
   if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
  const store=()=>createPostgresConversationStore({pool,now:()=>state.at,retentionGate:gate,
   retentionHead:async()=>({...state.ledgerHead})});
- const task={binding,clientId:id(5),policyRevision:scopes[0].policyRevision,expiresAtMs:expiry};
- const subject={kind:'client',entityType:'client',entityIds:[task.clientId],tenantId:binding.tenantId,
+ const task={binding,clientId:personal?null:id(5),policyRevision:scopes[0].policyRevision,expiresAtMs:expiry};
+ const subject={kind:personal?'personal':'client',entityType:personal?'user':'client',entityIds:[task.clientId??binding.actorId],tenantId:binding.tenantId,
   actorId:binding.actorId,policyRevision:task.policyRevision,scopes,rosterVersionId:null};
  const page={tool:'list_memory_proposals',enabled:true,authority:'own_pending_proposals',claimsAreApprovedFacts:false,
   scope:{tenantId:binding.tenantId,userId:binding.actorId,clientId:task.clientId},
-  candidates:[{id:id(7),status:'pending',approvedFact:false,scope:'client',clientId:task.clientId,
+  candidates:[{id:id(7),status:'pending',approvedFact:false,scope:personal?'personal':'client',clientId:task.clientId,
    sourceKind:'explicit_user',createdAt:'2026-10-17T00:00:00.000Z',restricted:false,title:'Draft',
    proposedText:'A pending memory',contentTruncated:false}],nextCursor:'synthetic-next',
   coverage:{firstPage:true,complete:false,reason:'unread_pages_restricted_or_truncated_content'}};
@@ -102,6 +105,48 @@ test('execution-bound journal retains exact page once and survives owner reconst
  assert.equal(f.rows.size,1);assert.deepEqual(first,replay);assert.equal(first.decision,'retained');
  const loaded=JSON.parse(await f.store().memoryProposalContexts.forTask(f.task).loadPrevious({key:f.key}));
  assert.deepEqual(loaded.record,f.record);assert.equal(loaded.checkedAtMs,f.state.at);assert.equal(f.state.gateCalls,6);
+});
+
+test('General own proposal continuation uses the existing execution journal and retention inventory',async()=>{
+ const f=fixture({personal:true}),ports=f.store().memoryProposalContexts.forTask(f.task);
+ await ports.retain({record:f.record});assert.equal(f.rows.size,1);
+ const loaded=JSON.parse(await f.store().memoryProposalContexts.forTask(f.task).loadPrevious({key:f.key}));assert.deepEqual(loaded.record,f.record);
+ const targets=await f.store().memoryProposalContexts.inventoryForConversation({tenantId:binding.tenantId,conversationId:binding.conversationId});
+ assert.deepEqual(targets,[{runId:binding.runId,keySha256:hash(f.key)}]);
+});
+
+test('General proposal journal refuses another actor, client substitution and non-own run scope',async()=>{
+ for(const mutate of [r=>{r.key.subject.entityIds=[id(99)];},r=>{r.key.subject.scopes[0].resourceId=id(99);},r=>{r.previous.request.clientId=id(5);},r=>{r.previous.page.scope.userId=id(99);}]){
+  const f=fixture({personal:true}),record=structuredClone(f.record);mutate(record);record.previousSha256=hash(record.previous);
+  await assert.rejects(f.store().memoryProposalContexts.forTask(f.task).retain({record}));assert.equal(f.rows.size,0);
+ }
+ const f=fixture({personal:true}),run=[...f.base.state.runs.values()][0];run.projection.scopes[0].resourceId=id(99);run.projection_sha256=hash(run.projection);
+ await assert.rejects(f.store().memoryProposalContexts.forTask(f.task).retain({record:f.record}));assert.equal(f.rows.size,0);
+});
+
+test('General retained proposal serving remains gated by suppression and execution expiry',async()=>{
+ for(const change of [f=>{f.state.suppressed=true;},f=>{f.state.at=expiry;}]){
+  const f=fixture({personal:true}),ports=f.store().memoryProposalContexts.forTask(f.task);await ports.retain({record:f.record});change(f);
+  await assert.rejects(ports.loadPrevious({key:f.key}));assert.equal(f.rows.size,1);
+ }
+});
+
+for(const personal of [false,true])test(`actual ${personal?'General':'client'} read composition stores normalized defaults in the canonical journal`,async()=>{
+ const f=fixture({personal}),operation=f.key.operation,family='memory-proposals',store=f.store();
+ const {versions:ignored,...execution}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:expiry,runtimeSessionId:'synthetic-runtime-session-00000000001'});
+ const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[operation],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:1048576};
+ const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],
+  nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_USER',expiresAtMs:expiry};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>f.state.at,newId:()=>binding.attemptId,
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family]};}},memoryContexts:store.memoryProposalContexts,
+  async fetchImpl(url,options){assert.equal(new URL(url).pathname,'/api/clio/tools/memory.list_own_proposals');const input=JSON.parse(options.body).input;assert.equal(input.clientId,f.task.clientId);
+   const page=structuredClone(f.record.previous.page);if(input.cursor!==null){page.candidates[0].createdAt='2026-10-16T00:00:00.000Z';page.nextCursor=null;page.coverage.firstPage=false;}return Response.json(page);}});
+ const app=composer.createReadsRuntime({execution:{async authenticate(){return {execution,state:'running',scopes:f.key.subject.scopes,selectedClientId:f.task.clientId,policyRevision:f.task.policyRevision};}},binding,approvedReads});
+ const request=(route,body)=>new Request(`https://control.example.invalid/v1/runner/reads/${route}`,{method:'POST',headers:{authorization:'Bearer SYNTHETIC_EXECUTION','content-type':'application/json'},body:JSON.stringify(body)});
+ const available=await app.handle(request('availability',{schemaVersion:approvedReads.schemaVersion,binding}));assert.equal(available.status,200);const {installation}=await available.json();
+ const run=args=>app.handle(request('execute',{schemaVersion:approvedReads.schemaVersion,binding,operation,arguments:args,deliveryId:'synthetic',installationId:installation.installationId,executionCatalogSha256:installation.executionCatalogSha256}));
+ const first=await run({});assert.equal(first.status,200,await first.clone().text());assert.equal(f.rows.size,1);assert.deepEqual([...f.rows.values()][0].record.previous.request,{clientId:f.task.clientId,cursor:null,limit:5});
+ f.state.at+=1500;const second=await run({cursor:f.key.cursor});assert.equal(second.status,200,await second.clone().text());
+ f.state.suppressed=true;assert.notEqual((await run({cursor:f.key.cursor})).status,200);
 });
 
 test('identical retained page accepts a fresh recording time without replacing the original row',async()=>{
@@ -355,7 +400,7 @@ test('actual decoder and exact purge owner include both operation-tagged row for
  const event={contractVersion:'0.1.0',eventId:id(80),binding,sequence:1,createdAt:new Date(at).toISOString(),scopes,type:'run.status',data:{state:'running',reasonCode:null}};
  const raw={subject,conversation:[...f.base.state.conversations.values()][0],runs:[{...[...f.base.state.runs.values()][0],sequence_base:0}],
   events:[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,sequence:1,event_id:event.eventId,event,event_sha256:hash(event)}],
-  controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[],memoryContinuations:continuations,memoryContextRows:[...f.rows.values()],contentRows:contentRows(f.base.state,binding)};
+  controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[],memoryContinuations:continuations,memoryContextRows:[...f.rows.values()],memoryCandidates:[],contentRows:contentRows(f.base.state,binding)};
  const decoded=decodeConversationInventoryRows(raw);
  const inventory=enumerateReferences({...decoded,sdkSessionEntries:[],selectedOutputs:[],artifactVersions:[],nativeJournalRows:[],uploads:[],schedules:[],receipts:[],memoryProposals:[],budgetRuns:[]});
  const targets=inventory.rowTargets.filter(row=>row.table==='memory_proposal_contexts');

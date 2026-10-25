@@ -27,9 +27,10 @@ function selectedKey(raw,task){
     typeof key.cursor!=='string'||key.cursor.length<1||key.cursor.length>2048)refuse();
  const subject=own(key.subject,['kind','entityType','entityIds','tenantId','actorId','policyRevision','scopes','rosterVersionId']);
  assertSubject(subject,binding);
- if(subject.kind!=='client'||subject.entityType!=='client'||subject.entityIds[0]!==clientId||
+ const personal=clientId===null,resourceId=personal?binding.actorId:clientId;
+ if(subject.kind!==(personal?'personal':'client')||subject.entityType!==(personal?'user':'client')||subject.entityIds.length!==1||subject.entityIds[0]!==resourceId||
     subject.policyRevision!==policyRevision||subject.scopes.length!==1||
-    subject.scopes[0].kind!=='client'||subject.scopes[0].resourceId!==clientId||
+    subject.scopes[0].kind!==(personal?'private-user':'client')||subject.scopes[0].resourceId!==resourceId||
     subject.scopes[0].tenantId!==binding.tenantId)refuse();
  return key;
 }
@@ -77,7 +78,7 @@ export async function scanMemoryProposalContextRows(c,raw,check=()=>{},onRow=()=
    onRow(row);seen.add(identity);targets.push(Object.freeze({runId,keySha256}));return;
   }
   own(record,['key','previous','previousSha256','recordedAtMs','expiresAtMs']);
-  const binding=record.key?.binding,clientId=record.key?.subject?.entityIds?.[0],
+  const binding=record.key?.binding,clientId=record.key?.subject?.kind==='personal'?null:record.key?.subject?.entityIds?.[0],
    policyRevision=record.key?.policyRevision;
   if(binding?.tenantId!==subject.tenantId||binding?.conversationId!==subject.conversationId||
      binding?.runId!==runId)refuse();
@@ -121,7 +122,7 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
   const fields=own(raw,['binding','clientId','policyRevision','expiresAtMs'],['signal']);
   const task=Object.freeze({...bounded({binding:fields.binding,clientId:fields.clientId,
    policyRevision:fields.policyRevision,expiresAtMs:fields.expiresAtMs},16384),signal:fields.signal,mail});
-  validateShape('RunBinding',task.binding);if(!mail||task.clientId!==null)uuid(task.clientId);nativeSignal(task.signal);
+  validateShape('RunBinding',task.binding);if(task.clientId!==null)uuid(task.clientId);nativeSignal(task.signal);
   if(typeof task.policyRevision!=='string'||!task.policyRevision||task.policyRevision.length>128||
      !Number.isSafeInteger(task.expiresAtMs)||task.expiresAtMs<=now())refuse();
   const subject=Object.freeze({tenantId:task.binding.tenantId,kind:'conversation',subjectId:task.binding.conversationId});
@@ -165,7 +166,7 @@ export function createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate
    const scope=run.projection.scopes?.[0];
    if(!same(run.projection.binding,task.binding)||run.projection.state!=='running'||run.sequence_end!==null&&run.sequence_end!==undefined||
       run.hold_control_id||run.hold_completion_id||run.projection.policyRevision!==task.policyRevision||
-      (!mail&&(run.projection.scopes.length!==1||scope.kind!=='client'||scope.resourceId!==task.clientId))||
+      (!mail&&(run.projection.scopes.length!==1||scope.kind!==(task.clientId===null?'private-user':'client')||scope.resourceId!==(task.clientId??task.binding.actorId)))||
       (task.clientId!==null&&!run.projection.scopes.some(s=>s.kind==='client'&&s.resourceId===task.clientId))||
       run.projection.scopes.some(s=>s.tenantId!==task.binding.tenantId||s.policyRevision!==task.policyRevision)||
       conversation.tenant_id!==task.binding.tenantId||conversation.conversation_id!==task.binding.conversationId||

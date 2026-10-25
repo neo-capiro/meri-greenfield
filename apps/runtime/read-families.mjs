@@ -104,7 +104,7 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
     discovery:{binding,policyRevision:observed.policyRevision,operations:visible,checkedAtMs:at,expiresAtMs}};
   }
   const dispatchCurrent=async()=>{try{return await current();}catch(error){throw new GatewayDenied(nativeReadFailureCode(error)??'UNAVAILABLE');}};
-  const memoryContextPorts=initial.selectedClientId!==null&&familyIds.includes('memory-proposals')?memoryContexts?.forTask({binding,clientId:initial.selectedClientId,policyRevision:initial.policyRevision,expiresAtMs:initial.execution.expiresAtMs,signal}):undefined;
+  const memoryContextPorts=familyIds.includes('memory-proposals')?memoryContexts?.forTask({binding,clientId:initial.selectedClientId,policyRevision:initial.policyRevision,expiresAtMs:initial.execution.expiresAtMs,signal}):undefined;
   const mailContextPorts=familyIds.includes('mail')?memoryContexts?.forMail({binding,clientId:initial.selectedClientId,policyRevision:initial.policyRevision,expiresAtMs:initial.execution.expiresAtMs,signal}):undefined;
   const dispatch=createToolDispatch({catalog:{entry:op=>entries.get(key(op))??null},current:dispatchCurrent,contextFor,
    limits:{maxRequestMs:Math.min(approvedReads.maxExecuteMs,Math.max(1,deadlineMs-now())),maxRequestBytes:approvedReads.maxRequestBytes,maxResponseBytes:approvedReads.maxResponseBytes},
