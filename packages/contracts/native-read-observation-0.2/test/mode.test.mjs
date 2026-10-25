@@ -12,10 +12,10 @@ const binding=v=>({operation:v.operation,request:v.request});
 const encoded=v=>Buffer.from(canonicalize(v),'utf8').toString('base64url');
 const refused=run=>assert.throws(run,{message:'NATIVE_READ_OBSERVATION_REFUSED'});
 const gitBlob=b=>createHash('sha1').update(Buffer.concat([Buffer.from(`blob ${b.length}\0`),b])).digest('hex');
-test('mode literal contains only the exact five native operations and preserves previous golden blobs',()=>{
+test('the original five mode literals stay unchanged alongside the richer SAM context',()=>{
  const raw=readFileSync(new URL('../../../../docs/coordination/proposals/native-read-mode-20261017/golden.json',import.meta.url));
  assert.equal(raw.length,8295);assert.equal(gitBlob(raw),'b056a4aa0efd0384c1cd90cc810d9def181d6818');
- assert.deepEqual(proposal.vectors.map(v=>v.operation.id),MODE_READ_OPERATIONS);assert.ok(Object.isFrozen(MODE_READ_OPERATIONS));
+ assert.deepEqual(proposal.vectors.map(v=>v.operation.id),MODE_READ_OPERATIONS.filter(id=>id!=='search_sam_opportunities'));assert.ok(Object.isFrozen(MODE_READ_OPERATIONS));
  assert.equal(gitBlob(readFileSync(new URL('./golden.json',import.meta.url))),'9536c662f4abd3487b6bdb4000ff06a0250f44ae');
  assert.equal(gitBlob(readFileSync(new URL('../../../../docs/coordination/proposals/native-kb-observation-20261017/golden.json',import.meta.url))),'a807a90718c2260f2c980bd04e04cec2d8c9414f');
 });

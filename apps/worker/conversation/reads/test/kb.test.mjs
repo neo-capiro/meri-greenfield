@@ -13,8 +13,8 @@ import {NATIVE_READ_OBSERVATION_HEADER as HEADER} from '../../../../../packages/
 const family='client-knowledge-search',operations=[searchId,graphId].map(id=>({id,version:'0.2.0'}));
 
 test('KB SDK: complete family keeps optional graph and requires a current task client scope only for semantic search', () => {
-    assert.equal(familyReads().length, 81);
-    assert.equal(READ_FAMILY_IDS.length, 45);
+    assert.equal(familyReads().length, 84);
+    assert.equal(READ_FAMILY_IDS.length, 48);
     assert.equal(READ_FAMILIES[family].clientScope, 'optional');
     assert.equal(READ_FAMILIES[family].operationIds, undefined);
     assert.deepEqual(READ_FAMILIES[family].requiredClientOperations, [searchId]);

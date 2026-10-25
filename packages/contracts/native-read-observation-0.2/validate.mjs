@@ -11,8 +11,8 @@ export const NATIVE_READ_OBSERVATION_SCHEMA_VERSION='meri-native-read-observatio
 export const NATIVE_READ_OBSERVATION_HEADER='x-meri-read-observation';
 export const NATIVE_READ_OBSERVATION_MAX_BYTES=2048;
 export {FUNDING_READ_OPERATIONS};
-export const MODE_READ_OPERATIONS=Object.freeze(['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline']);
-export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS]);
+export const MODE_READ_OPERATIONS=Object.freeze(['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline','search_sam_opportunities']);
+export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS,'get_certification_status','get_state_rule_status']);
 const ajv=new Ajv({strict:true,allErrors:false}),valid=ajv.compile(schema);
 const refuse=()=>{throw Error('NATIVE_READ_OBSERVATION_REFUSED');};
 const bytes=value=>Buffer.from(canonicalize(value),'utf8');
@@ -29,7 +29,14 @@ export function assertNativeReadObservation(raw,correlation){
  try{
   const value=data(raw),binding=expected(correlation);
   if(!valid(value)||canonicalSha256(value.operation)!==canonicalSha256(binding.operation)||value.requestSha256!==binding.requestSha256)refuse();
-  if(!MODE_READ_OPERATIONS.includes(value.operation.id))fundingInstant(value.context.asOf);
+  if(value.operation.id==='get_certification_status'){
+   const locale=value.context.comparisonLocale,canonical=Intl.getCanonicalLocales(locale);
+   if(canonical.length!==1||canonical[0]!==locale||Intl.Collator.supportedLocalesOf(canonical,{localeMatcher:'lookup'}).length!==1)refuse();
+  }else if(value.operation.id==='get_state_rule_status'){
+   fundingInstant(value.context.stageAsOf);fundingInstant(value.context.commentAsOf);
+  }else if(value.operation.id==='search_sam_opportunities'){
+   for(const key of ['asOf','sourceStatusAsOf','sourceHealthAsOf'])fundingInstant(value.context[key]);
+  }else if(!MODE_READ_OPERATIONS.includes(value.operation.id))fundingInstant(value.context.asOf);
   if(bytes(value).byteLength>NATIVE_READ_OBSERVATION_MAX_BYTES)refuse();
   return value;
  }catch{refuse();}

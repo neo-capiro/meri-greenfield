@@ -115,6 +115,21 @@ test('General own proposal continuation uses the existing execution journal and 
  assert.deepEqual(targets,[{runId:binding.runId,keySha256:hash(f.key)}]);
 });
 
+test('full retention decoder admits General own proposal custody and refuses actor substitution',async()=>{
+ const f=fixture({personal:true});await f.store().memoryProposalContexts.forTask(f.task).retain({record:f.record});
+ const subject={tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId,ownerActorId:binding.actorId};
+ const event={contractVersion:'0.1.0',eventId:id(80),binding,sequence:1,createdAt:new Date(at).toISOString(),scopes:f.key.subject.scopes,type:'run.status',data:{state:'running',reasonCode:null}};
+ const raw={subject,conversation:[...f.base.state.conversations.values()][0],runs:[{...[...f.base.state.runs.values()][0],sequence_base:0}],
+  events:[{tenant_id:binding.tenantId,conversation_id:binding.conversationId,run_id:binding.runId,sequence:1,event_id:event.eventId,event,event_sha256:hash(event)}],
+  controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[],memoryCandidates:[],contentRows:contentRows(f.base.state,binding),
+  memoryContinuations:await f.store().memoryProposalContexts.inventoryForConversation({tenantId:binding.tenantId,conversationId:binding.conversationId}),memoryContextRows:[...f.rows.values()]};
+ assert.deepEqual(decodeConversationInventoryRows(raw).memoryContinuations,[{runId:binding.runId,keySha256:hash(f.key)}]);
+ for(const mutate of [r=>{r.record.key.subject.entityIds=[id(99)];},r=>{r.record.key.subject.scopes[0].resourceId=id(99);},r=>{r.record.key.subject.actorId=id(99);}]){
+  const wrong=structuredClone(raw),row=wrong.memoryContextRows[0];mutate(row);row.record.previousSha256=hash(row.record.previous);row.record_sha256=hash(row.record);row.key_sha256=hash(row.record.key);
+  wrong.memoryContinuations=[{runId:binding.runId,keySha256:row.key_sha256}];assert.throws(()=>decodeConversationInventoryRows(wrong),/STORE_CORRUPT/);
+ }
+});
+
 test('General proposal journal refuses another actor, client substitution and non-own run scope',async()=>{
  for(const mutate of [r=>{r.key.subject.entityIds=[id(99)];},r=>{r.key.subject.scopes[0].resourceId=id(99);},r=>{r.previous.request.clientId=id(5);},r=>{r.previous.page.scope.userId=id(99);}]){
   const f=fixture({personal:true}),record=structuredClone(f.record);mutate(record);record.previousSha256=hash(record.previous);

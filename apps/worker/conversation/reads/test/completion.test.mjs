@@ -11,12 +11,12 @@ import {connect} from './native-mcp-fixture.mjs';
 import {storedCase as stateCase,ids as stateIds} from '../../../../gateway/sources/state-status-votes/test/fixture.mjs';
 import {storedCase as trackedCase,id as trackedId} from '../../../../gateway/sources/tracked-bills/test/fixture.mjs';
 import {storedCase as hearingCase,id as hearingId} from '../../../../gateway/sources/public-domain-hearings/test/fixture.mjs';
-const ids=[...stateIds,trackedId,hearingId],families={'state-status-votes':stateIds,'tracked-bills':[trackedId],'public-domain-hearings':[hearingId]},absent=['read_chat_attachments','get_certification_status','get_state_rule_status','search_sam_opportunities'];
+const ids=[...stateIds,trackedId,hearingId],families={'state-status-votes':stateIds,'tracked-bills':[trackedId],'public-domain-hearings':[hearingId]},absent=['read_chat_attachments'];
 function sceneFor(id,options={}){return (stateIds.includes(id)?stateCase:id===trackedId?trackedCase:hearingCase)(id,options);}
 
-test('completion SDK81/45: the first four completed reads retain the frozen tracked client requirement', () => {
-    assert.equal(familyReads().length, 81);
-    assert.equal(READ_FAMILY_IDS.length, 45);
+test('completion SDK84/48: the first four completed reads retain their tracked client requirement', () => {
+    assert.equal(familyReads().length, 84);
+    assert.equal(READ_FAMILY_IDS.length, 48);
     for (const [family, operations] of Object.entries(families)) {
         const rows = familyReads().filter(row => row.family === family);
         assert.deepEqual(rows.map(row => row.operation.id), operations);
@@ -27,7 +27,7 @@ test('completion SDK81/45: the first four completed reads retain the frozen trac
         assert.deepEqual(select([{ kind: 'private-user' }]).available.map(row => row.operation), family === 'tracked-bills' ? [] : refs);
     }
     const operations = absent.map(id => ({ id, version: '0.2.0' }));
-    assert.equal(absent.length, 4);
+    assert.equal(absent.length, 1);
     assert.deepEqual(resolveAvailableReads({ policy: { generalReads: true, readFamilies: READ_FAMILY_IDS }, installation: { operations }, discovery: { operations }, scopes: [{ kind: 'client' }] }).available, []);
     for (const id of absent)
         assert.equal(familyReads().some(row => row.operation.id === id), false, id);

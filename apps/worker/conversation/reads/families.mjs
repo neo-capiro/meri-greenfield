@@ -55,6 +55,9 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'research-legal-news':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['search_legiwatch_news'])}),
  'outreach-query':Object.freeze({clientScope:'required',operationIds:Object.freeze(['query_outreach'])}),
  'research-legal-candidates':Object.freeze({clientScope:'optional'}),
+ 'certification-status':Object.freeze({clientScope:'optional'}),
+ 'rule-status':Object.freeze({clientScope:'optional'}),
+ 'sam-opportunities':Object.freeze({clientScope:'optional'}),
 });
 /** The `readFamilies` policy universe (PROPOSAL P8). */
 export const READ_FAMILY_IDS=Object.freeze(Object.keys(READ_FAMILIES));
