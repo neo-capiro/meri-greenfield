@@ -101,7 +101,9 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/conversations/migrations/0023_expired_conversation_purge.sql','54b9f6b6c11614465446b73c51281c2b8603de0cb379c541420bc28ef2b3d55b','integration'],
  ['migration','infra/product-preview/first-chat-expired-conversation-purge-grants.sql','19463e0bbdd8e5b0b66f5c1f4ebe87ae639e2a113564fad0824f883f0b7101cc','integration'],
  // Native routines use current schedule/consent/execution facts; Core gets no base-table access.
- ['migration','apps/runtime/native-authority/read-delegation/migrations/0003_native_routine_facts.sql','110884c135c1ce928d34496a24787bb2c415268c88a597996eca2b8141c30477','integration']
+ ['migration','apps/runtime/native-authority/read-delegation/migrations/0003_native_routine_facts.sql','110884c135c1ce928d34496a24787bb2c415268c88a597996eca2b8141c30477','integration'],
+ // Objective selections retain replay identity while their private prompt follows expired Trash.
+ ['migration','apps/runtime/objective-source/migrations/0004_objective_run_start_retention.sql','a60ad6021dc567806ed7e27c68f857ac3da83b8d545f43e7f02cece78c1b5ed9','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
