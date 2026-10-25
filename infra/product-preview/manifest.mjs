@@ -88,14 +88,13 @@ function validate(value){
 const command=Object.freeze({control:['control','--config','/run/meri/control.json'],temporalWorker:['temporal-worker','--config','/run/meri/worker.json'],scheduleWorker:['schedule-worker','--config','/run/meri/schedule-worker.json']});
 function health(port){return {command:['CMD','node','-e',`fetch('http://127.0.0.1:${port}/health/live').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))`],interval:30,timeout:5,retries:3,startPeriod:60};}
 function task(stack,b,role,port){
- const name=roleNames[role];
+ const name=roleNames[role],databaseTrust=role==='control'||role==='scheduleWorker';
  const delivery=material(b.materialDelivery,b)[role];
  const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'}]:[{containerPort:port,protocol:'tcp'}];
  const c={name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
   entryPoint:['node','apps/runtime/cli.mjs'],command:command[role],
   environment:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
-   ...(role==='control'?[{name:'NODE_EXTRA_CA_CERTS',value:CONTROL_NODE_CA_FILE}]:[]),
-   ...(role!=='control'?[{name:'NODE_EXTRA_CA_CERTS',value:PRIVATE_CONTROL_CA_FILE}]:[])],
+   {name:'NODE_EXTRA_CA_CERTS',value:databaseTrust?CONTROL_NODE_CA_FILE:PRIVATE_CONTROL_CA_FILE}],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
    {sourceVolume:'material',containerPath:'/run/meri',readOnly:true}],
@@ -103,10 +102,10 @@ function task(stack,b,role,port){
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
   healthCheck:health(port)};
  const init={name:'material-init',image:b.imageUri,essential:false,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,
-  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='control'?['write','--control-node-ca']:['write'],linuxParameters:{capabilities:{drop:['ALL']}},
+  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:databaseTrust?['write','--control-node-ca']:['write'],linuxParameters:{capabilities:{drop:['ALL']}},
   environment:[{name:'MERI_STATIC_MATERIAL_EXPECTED',value:JSON.stringify(delivery.expected)}],
   secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:delivery.valueFrom}],
-  mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false},...(role==='control'?[{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}]:[])],
+  mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false},...(databaseTrust?[{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}]:[])],
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}-init`,'mode':'blocking'}}};
  const size=b.sizing[role];
  return new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],

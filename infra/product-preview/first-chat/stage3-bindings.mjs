@@ -116,6 +116,7 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
  for(const key of ['runtimeArn','runtimeVersion','qualifier'])if(s.agentcore[key]!==d.agentcore?.[key])fail('rendered AgentCore '+key+' differs from deployment');
  if(s.worker.NODE_EXTRA_CA_CERTS!==PATHS.serverCa)fail('rendered worker NODE_EXTRA_CA_CERTS is not the private control CA file');
  if(s.control?.NODE_EXTRA_CA_CERTS!==CONTROL_NODE_CA_FILE)fail('rendered control NODE_EXTRA_CA_CERTS is not the composite CA file');
+ if(schedule&&s.schedule?.NODE_EXTRA_CA_CERTS!==CONTROL_NODE_CA_FILE)fail('rendered schedule NODE_EXTRA_CA_CERTS is not the composite CA file');
  if(roles.some(role=>renderedExpected.control.sha256ByPath[PATHS.serverCa]!==renderedExpected[role].sha256ByPath[PATHS.serverCa]))fail('control and worker private CA pins differ');
  const app={account:ACCOUNT,region:REGION,enabled:false,sourceCommit:images.nodeRuntimeSourceCommit,
   materialDelivery:{control:material('control'),temporalWorker:material('temporal-worker'),...(schedule?{scheduleWorker:material('schedule-worker')}:{})},

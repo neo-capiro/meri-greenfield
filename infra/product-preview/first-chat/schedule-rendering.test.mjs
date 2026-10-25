@@ -8,6 +8,7 @@ import {ALL_STAGE3_FAMILIES,buildStage3Bindings,synthesizeStage3,nextRevisions} 
 import {parseLatestTsv,uploadPlan,parseVersionsTsv,verifyOutputs} from './stage3-deploy.mjs';
 import {releaseSteps,buildShipPacket} from './ship-packet.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {CONTROL_NODE_CA_FILE} from '../../../apps/runtime/control-ca-bundle.mjs';
 
 const fixture=createRenderFixture();test.after(()=>fixture.cleanup());
 const serviceSecretArn='arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/core/internal_service_secret-Syn123';
@@ -42,8 +43,13 @@ test('schedule material uses the pinned schedule certificate, separate database 
  assert.notDeepEqual(file(r,'schedule-worker',PATHS.database),file(r,'control',PATHS.database));
  assert.deepEqual(file(r,'schedule-worker',PATHS.readsServiceSecret),serviceSecret);
  assert.equal(r.roles['temporal-worker'].expected.sha256ByPath[PATHS.readsServiceSecret],undefined);
- assert.doesNotThrow(()=>assertProductCliGates('schedule-worker',c,{NODE_EXTRA_CA_CERTS:PATHS.serverCa}));
+ assert.doesNotThrow(()=>assertProductCliGates('schedule-worker',c,{NODE_EXTRA_CA_CERTS:CONTROL_NODE_CA_FILE}));
+ assert.throws(()=>assertProductCliGates('schedule-worker',c,{NODE_EXTRA_CA_CERTS:PATHS.serverCa}),/PRODUCT_SCHEDULE_WORKER_REFUSED/);
  assert.throws(()=>assertProductCliGates('schedule-worker',c,{}),/PRODUCT_SCHEDULE_WORKER_REFUSED/);
+ assert.deepEqual(r.summary.schedule,{NODE_EXTRA_CA_CERTS:CONTROL_NODE_CA_FILE});
+ assert.deepEqual(r.summary.wiring['schedule-worker'].init.command,['write','--control-node-ca']);
+ assert.equal(r.summary.wiring['schedule-worker'].environment.find(e=>e.name==='NODE_EXTRA_CA_CERTS').value,CONTROL_NODE_CA_FILE);
+ assert.equal(r.summary.worker.NODE_EXTRA_CA_CERTS,PATHS.serverCa);
 });
 
 test('schedule opt-in refuses missing canonical task/authority/role/material, shared queues and incorrect certificate ownership',async()=>{
@@ -71,6 +77,14 @@ test('three role bundles bind upload versions, schedule network and service acti
  assert.equal(service.DesiredCount,1);assert.equal(task.ExecutionRoleArn,d.foundation.ScheduleExecutionRoleArn);assert.equal(task.TaskRoleArn,undefined);
  assert.deepEqual(service.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[d.foundation.WorkerSecurityGroupId,d.foundation.DbClientSecurityGroupId]);
  assert.equal(task.ContainerDefinitions[0].Secrets[0].ValueFrom,`${d.secrets['schedule/material']}:::${version(3)}`);
+ const [init,appContainer]=task.ContainerDefinitions;
+ assert.deepEqual(init.Command,['write','--control-node-ca']);
+ assert.deepEqual(init.MountPoints,[{SourceVolume:'material',ContainerPath:'/run/meri',ReadOnly:false},{SourceVolume:'tmp',ContainerPath:'/tmp',ReadOnly:false}]);
+ assert.deepEqual(appContainer.MountPoints.find(m=>m.SourceVolume==='tmp'),{SourceVolume:'tmp',ContainerPath:'/tmp',ReadOnly:false});
+ assert.equal(appContainer.Environment.find(e=>e.Name==='NODE_EXTRA_CA_CERTS').Value,CONTROL_NODE_CA_FILE);
+ assert.deepEqual(task.Volumes.map(v=>v.Name),['workspace','tmp','material']);
+ const oldTrust=structuredClone(args);oldTrust.renderSummary.schedule.NODE_EXTRA_CA_CERTS=PATHS.serverCa;
+ assert.throws(()=>buildStage3Bindings(oldTrust),/schedule NODE_EXTRA_CA_CERTS/);
  const app={ControlTaskDefinitionArn:i.stage3.taskDefinitions.control,TemporalWorkerTaskDefinitionArn:i.stage3.taskDefinitions['temporal-worker'],ScheduleWorkerTaskDefinitionArn:i.stage3.taskDefinitions['schedule-worker']};
  assert.equal(verifyOutputs({expectedTaskDefinitions:bindings.expectedTaskDefinitions,app}).length,3);
  delete app.ScheduleWorkerTaskDefinitionArn;assert.throws(()=>verifyOutputs({expectedTaskDefinitions:bindings.expectedTaskDefinitions,app}),/schedule-worker/);

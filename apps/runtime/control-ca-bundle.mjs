@@ -1,4 +1,4 @@
-/** Control-only Node trust material. Init owns the derived file; ECS owns its task-local tmp volume.
+/** Node trust for control and schedule-worker, which both connect to RDS and private control. Init owns the derived file; ECS owns its task-local tmp volume.
  * Keep the image's locked RDS bytes intact and append only the configuration-pinned private server CA.
  * NODE_EXTRA_CA_CERTS is read before the application starts. No IO occurs on import. */
 import {createHash,X509Certificate} from 'node:crypto';
@@ -54,7 +54,8 @@ async function directory(identity){
 
 /** Called only after canonical static material delivery succeeded; independent expected pins bind both reread files. */
 export async function materializeControlCaBundle({configurationPath,expected}){
- const identity=owner();if(expected.role!=='control'||configurationPath!=='/run/meri/control.json')fail();
+ const identity=owner(),path={control:'/run/meri/control.json','schedule-worker':'/run/meri/schedule-worker.json'}[expected.role];
+ if(path===undefined||configurationPath!==path)fail();
  const configurationBytes=await read(configurationPath,32768,{...identity,mode:0o600});
  if(hash(configurationBytes)!==expected.sha256ByPath[configurationPath])fail();
  const {anchor,privateCa,bundle}=await inputs(JSON.parse(configurationBytes.toString('utf8')),identity);
@@ -80,7 +81,7 @@ export async function materializeControlCaBundle({configurationPath,expected}){
  }finally{await handle?.close();}
 }
 
-/** Before control allocates resources, prove the shared output is present and still contains exactly both trust inputs. */
+/** Before either database-owning process allocates resources, prove the shared output still contains exactly both trust inputs. */
 export async function verifyControlCaBundle(configuration,{environment=process.env}={}){
  if(!productControlTrustsCompositeCa(environment))fail();const identity=owner();await directory(identity);
  const [{bundle},actual]=await Promise.all([inputs(configuration,identity),read(CONTROL_NODE_CA_FILE,maxBundleBytes,{...identity,mode:0o600})]);

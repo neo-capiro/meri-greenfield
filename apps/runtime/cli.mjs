@@ -3,7 +3,7 @@ import {pathToFileURL} from 'node:url';
 import {loadConfiguration} from './config.mjs';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {countingFetch} from './telemetry/counting.mjs';
-import {verifyControlCaBundle} from './control-ca-bundle.mjs';
+import {verifyControlCaBundle,productControlTrustsCompositeCa} from './control-ca-bundle.mjs';
 /** Private control trust is delivered before Node starts, separately from Temporal's native mTLS. */
 export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.native?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
 export async function main(argv=process.argv.slice(2)){
@@ -11,7 +11,7 @@ export async function main(argv=process.argv.slice(2)){
  if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.agentcore===undefined))throw Error('PRODUCT_LISTENER_REFUSED');
-  if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1')await verifyControlCaBundle(c);
+  if((role==='control'||role==='schedule-worker')&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1')await verifyControlCaBundle(c);
   if(role==='temporal-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.native.preparedKickoff!==true||c.native.loopback!==false||
       !c.native.origin.startsWith('https://')||c.http.port!==8081||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_WORKER_REFUSED');
@@ -19,7 +19,7 @@ export async function main(argv=process.argv.slice(2)){
   // native client to control's private occurrence operations (HTTPS) and its own database file; its owners compose at startup below.
   if(role==='schedule-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.routines?.enabled!==true||c.routines.core?.unattendedGrant===undefined||c.native===undefined||c.native.loopback!==false||
-      !c.native.origin.startsWith('https://')||c.database===undefined||c.http.port!==8083||!productWorkerTrustsPinnedServerCa(c)))throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
+      !c.native.origin.startsWith('https://')||c.database===undefined||c.http.port!==8083||!productControlTrustsCompositeCa()))throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
  }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
  const controller=new AbortController();let runtime,shutdownTimer,controlTurnTelemetry,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();

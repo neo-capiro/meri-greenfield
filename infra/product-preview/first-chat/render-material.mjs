@@ -324,7 +324,7 @@ const bundleOf=files=>({files:[...files].map(([path,bytes])=>({path,base64:Buffe
 export function assertProductCliGates(role,c,environment){
  if(role==='control'&&!(c.privateHttp!==undefined&&c.agentcore!==undefined&&productControlTrustsCompositeCa(environment)))fail('RENDER_GATE_REFUSED','PRODUCT_LISTENER_REFUSED');
  if(role==='temporal-worker'&&!(c.native.preparedKickoff===true&&c.native.loopback===false&&c.native.origin.startsWith('https://')&&c.http.port===8081&&productWorkerTrustsPinnedServerCa(c,environment)))fail('RENDER_GATE_REFUSED','PRODUCT_WORKER_REFUSED');
- if(role==='schedule-worker'&&!(c.routines?.enabled===true&&c.routines.core?.unattendedGrant!==undefined&&c.native?.loopback===false&&c.native.origin.startsWith('https://')&&c.database!==undefined&&c.http.port===8083&&productWorkerTrustsPinnedServerCa(c,environment)))fail('RENDER_GATE_REFUSED','PRODUCT_SCHEDULE_WORKER_REFUSED');
+ if(role==='schedule-worker'&&!(c.routines?.enabled===true&&c.routines.core?.unattendedGrant!==undefined&&c.native?.loopback===false&&c.native.origin.startsWith('https://')&&c.database!==undefined&&c.http.port===8083&&productControlTrustsCompositeCa(environment)))fail('RENDER_GATE_REFUSED','PRODUCT_SCHEDULE_WORKER_REFUSED');
 }
 
 /** Pure render (reads only the private material passed in). Returns every role's exact bytes plus the non-secret summary. */
@@ -450,7 +450,7 @@ function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
  for(const role of Object.keys(roles)){
   const c=parse(role);
   try{validateConfiguration(c,role);}catch(error){fail('RENDER_VALIDATION_REFUSED',`${role} validateConfiguration ${error.code??error.message}`);}
-  assertProductCliGates(role,c,role==='control'?controlEnvironment:workerEnvironment);
+  assertProductCliGates(role,c,role==='temporal-worker'?workerEnvironment:controlEnvironment);
   if(role==='control'){
    try{compileAgentCoreConfiguration(c.agentcore);}catch(error){fail('RENDER_VALIDATION_REFUSED',`control AgentCore configuration ${error.message}`);}
   }
@@ -470,7 +470,7 @@ function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
 function summarize(x){
  const {d,s,roles,pins}=x,env=(name,value)=>({name,value});
  const init=role=>({containerName:'material-init',image:roles[role].image,user:RUNTIME_USERS[role],
-  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='control'?['write','--control-node-ca']:['write'],
+  entryPoint:['node','apps/runtime/material-init-cli.mjs'],command:role==='temporal-worker'?['write']:['write','--control-node-ca'],
   environment:[env('MERI_STATIC_MATERIAL_EXPECTED',JSON.stringify(roles[role].expected))],
   secrets:[{name:'MERI_STATIC_MATERIAL_BUNDLE',valueFrom:`${d.secrets[{control:'control/material','temporal-worker':'worker/material','schedule-worker':'schedule/material'}[role]]}:::<VersionId of the PutSecretValue with ${role}/bundle.json>`}]});
  const wiring={
@@ -480,7 +480,7 @@ function summarize(x){
    environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.workerEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8081],volumes:{'/run/meri':'material (read-only)'},init:init('temporal-worker')},
  };
  if(roles['schedule-worker'])wiring['schedule-worker']={family:s.taskDefinitions['schedule-worker'],containerName:'schedule-worker',image:roles['schedule-worker'].image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['schedule-worker','--config',PATHS.schedule],
-  environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.workerEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8083],volumes:{'/run/meri':'material (read-only)'},init:init('schedule-worker')};
+  environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.controlEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8083],volumes:{'/run/meri':'material (read-only)','/tmp':'tmp (writable; init writes control CA bundle)'},init:init('schedule-worker')};
  return {schemaVersion:1,generatedAtMs:x.nowMs,
   validity:{validityDays:x.validityDays,notAfterMs:x.expiresAtMs,notAfter:new Date(x.expiresAtMs).toISOString(),earliestCertificateNotAfter:new Date(x.notAfterMs).toISOString(),runWindowMs:x.runWindowMs},
   roles:Object.fromEntries(Object.keys(roles).map(role=>[role,{configPath:roles[role].configPath,configSha256:roles[role].configSha256,materialContractSha256:roles[role].expected.materialContractSha256,
@@ -489,6 +489,7 @@ function summarize(x){
    sha256ByPath:roles[role].expected.sha256ByPath}])),
   taskDefinitionConfigPins:{controlConfigSha256:roles.control.configSha256,workerConfigSha256:roles['temporal-worker'].configSha256,...(roles['schedule-worker']?{scheduleConfigSha256:roles['schedule-worker'].configSha256}:{})},
   control:{NODE_EXTRA_CA_CERTS:x.controlEnvironment.NODE_EXTRA_CA_CERTS},worker:{NODE_EXTRA_CA_CERTS:x.workerEnvironment.NODE_EXTRA_CA_CERTS},
+  ...(roles['schedule-worker']?{schedule:{NODE_EXTRA_CA_CERTS:x.controlEnvironment.NODE_EXTRA_CA_CERTS}}:{}),
   deploymentRevision:x.deploymentRevision,agentcore:{runtimeArn:x.agentcore.runtimeArn,runtimeVersion:x.agentcore.runtimeVersion,qualifier:x.agentcore.qualifier,policyRevision:x.policyRevision,runWindowMs:x.runWindowMs},
   pinsDer:pins.der,pinsPem:pins.pem,wiring};
 }
