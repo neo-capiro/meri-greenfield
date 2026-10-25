@@ -95,7 +95,7 @@ export function createPostgresIntentJournalStore({pool}){
  });
 }
 
-function preparedSchedule(raw,s,instructionsOnly){
+export function preparedSchedule(raw,s,instructionsOnly){
  try{
   const row=data(raw),storedKey=data({tenantId:row.tenant_id,actorId:row.actor_id,conversationId:row.conversation_id,deliveryId:row.delivery_id});key(storedKey);
   const retained=entry(row);

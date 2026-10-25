@@ -2,10 +2,12 @@
  * No caller can supply a table, column, SQL predicate or redaction expression. */
 import {own,uuid,digest,hash,fail} from './boundary.mjs';
 import {assertConversationContentTarget,conversationContentTables} from '../conversations/retention-content-rows.mjs';
+import {assertSdkRetentionTarget} from '../conversations/retention-sdk-rows.mjs';
 
 const refuse=()=>fail('RETENTION_INVALID_REQUEST');
 export const tombstone=conversationId=>({retentionTombstone:true,conversationId});
 const definitions=new Map(conversationContentTables.map(t=>[t.name,t]));
+const sdkTables=new Set(['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'].map(t=>'meri_conversations.'+t));
 const json=value=>JSON.parse(JSON.stringify(value));
 const retained=new Set(['meri_conversations.initial_inputs','meri_conversations.initial_run_bindings','meri_conversations.native_executions']);
 const modes={
@@ -35,7 +37,8 @@ export function conversationPurgeRow(k,step){
 function fixedRow(k,step){
  if(k.kind!=='conversation')return null;
  const g=step.target;if(!g||g.className!==step.className)refuse();
- let table,keys,mode='delete',verify;
+ let table,keys,mode='delete',verify;const sdk=Object.hasOwn(g,'sdk');
+ if(sdk)assertSdkRetentionTarget(g);
  if(definitions.has(g.table)){
   try{assertConversationContentTarget(g);}catch{refuse();}
   const d=definitions.get(g.table);table=d.name;keys=g.key;mode=retained.has(table)?'identity':modes[table]??'delete';
@@ -100,8 +103,19 @@ function fixedRow(k,step){
   if(mode==='intent'&&!['PREPARED','FAILED','REDACTED'].includes(row.state)||mode==='command'&&row.state!=='OUTCOME'||mode==='lookup'&&!['RESULT','ERROR'].includes(row.state))fail('RETENTION_PURGE_BLOCKED');
  };
  const update=updates[mode]?.replaceAll('$LAST',`$${args.length+1}`);
- return Object.freeze({table,where,args:()=>args,mode,rank:rank[table]??20,verify:check,erased,
+ return Object.freeze({table,where,args:()=>args,mode,rank:sdk?2:rank[table]??20,verify:check,erased,...(sdk?{sdk:g}:{}),
   sql:mode==='delete'?`DELETE FROM ${table} r WHERE ${where}`:mode==='identity'?null:`UPDATE ${table} r SET ${update} WHERE ${where}`,
   mutationArgs:mode==='delete'||mode==='identity'||mode==='intent'?args:[...args,marker],
   target:{table,key:keys,rowSha256:g.rowSha256??null,mode}});
+}
+
+/** One bounded page of exact SDK keys. The caller registers these individual
+ * targets under its existing suppression transaction before this bulk delete. */
+export function sdkPurgePage(subject,targets){
+ if(!Array.isArray(targets)||!targets.length||targets.length>1000)refuse();
+ const rows=targets.map(target=>conversationPurgeRow(subject,{className:'sdkSession',target})),table=rows[0]?.table;
+ if(!sdkTables.has(table)||rows.some(row=>!row||row.table!==table||row.sdk||row.mode!=='delete')||new Set(rows.map(row=>hash(row.target.key))).size!==rows.length)refuse();
+ const columns=definitions.get(table).keys,types=columns.map(([name,type])=>`${name} ${type}`),match=columns.map(([name])=>`r.${name}=page.${name}`).join(' AND ');
+ return {targets:rows.map(row=>row.target),sql:`DELETE FROM ${table} r USING jsonb_to_recordset($3::jsonb) AS page(${types.join(',')}) WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND ${match}`,
+  args:[subject.tenantId,subject.subjectId,JSON.stringify(rows.map(row=>row.target.key))]};
 }

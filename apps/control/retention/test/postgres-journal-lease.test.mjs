@@ -7,6 +7,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import {ran
 import {createPostgresRetentionJournal} from '../postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../postgres-watermark.mjs';
 import {createConversationManagementStore} from '../../conversations/history/management-store.mjs';
+import {spawnSync} from 'node:child_process';
 const key=()=>`tenant-a:conversation:${randomUUID()}`,never=()=>new Promise(()=>{}),refused=sql=>Object.assign(new Error('synthetic '+sql),{code:'08006'});
 /** `faults` maps a statement prefix to 'throw', 'hang' or a value to return; `connectDelayMs` delays every acquisition. */
 function syntheticPool({faults={},connectDelayMs=0,max=Infinity}={}){
@@ -18,6 +19,29 @@ function syntheticPool({faults={},connectDelayMs=0,max=Infinity}={}){
 }
 const retired=c=>c.releases.length===1&&c.releases[0] instanceof Error;
 const reused=c=>c.releases.length>=1&&c.releases.every(e=>e===undefined);
+
+test('transaction drains unawaited work and refuses a caught query failure before COMMIT',async()=>{
+ let finish;const pending=new Promise(resolve=>{finish=resolve;}),pool=syntheticPool({faults:{'SELECT pending':pending}}),journal=createPostgresRetentionJournal({pool});
+ const operation=journal.tx(async reader=>{void reader.query('SELECT pending');});
+ await new Promise(resolve=>setImmediate(resolve));assert.ok(!pool.made[0].queries.includes('COMMIT'));
+ finish({rows:[]});await operation;assert.ok(pool.made[0].queries.includes('COMMIT'));
+ const failing=syntheticPool({faults:{'SELECT failed':'throw'}}),j=createPostgresRetentionJournal({pool:failing});
+ await assert.rejects(j.tx(async reader=>{await reader.query('SELECT failed').catch(()=>{});}),/RETENTION_STORE_UNAVAILABLE/);
+ assert.ok(!failing.made[0].queries.includes('COMMIT'));assert.ok(failing.made[0].queries.includes('ROLLBACK'));
+});
+
+test('completed result pages are collectible before the transaction and held transition finish',()=>{
+ const moduleUrl=new URL('../postgres-journal.mjs',import.meta.url).href;
+ const program=`import assert from 'node:assert/strict';
+ import {createPostgresRetentionJournal} from ${JSON.stringify(moduleUrl)};
+ const refs=[];const client={release(){},async query(sql){if(sql==='SELECT page'){const page={rows:Array.from({length:1000},(_,i)=>({i,text:'retained transcript'}))};refs.push(new WeakRef(page));return page;}return {rows:[{unlocked:true}]};}};
+ const journal=createPostgresRetentionJournal({pool:{connect:async()=>client}});
+ const collect=async()=>{for(let i=0;i<3;i++){await new Promise(setImmediate);global.gc();}assert.ok(refs.filter(r=>r.deref()===undefined).length>=39,'fulfilled query pages must not remain live until lease release');refs.length=0;};
+ await journal.tx(async reader=>{for(let i=0;i<40;i++)await reader.query('SELECT page');await collect();});
+ await journal.withTransition('tenant-a:conversation:00000000-0000-4000-8000-000000000001',async lease=>{for(let i=0;i<40;i++)await lease.query('SELECT page');await collect();});`;
+ const result=spawnSync(process.execPath,['--expose-gc','--input-type=module','--eval',program],{encoding:'utf8',timeout:15000});
+ assert.equal(result.status,0,result.stderr||String(result.error));
+});
 /** Guards the pre-fix behaviour, where a stalled ROLLBACK or statement never returned at all. */
 async function within(promise,ms){let timer;try{return await Promise.race([promise.then(v=>({v}),e=>({e})),new Promise(r=>{timer=setTimeout(()=>r({timedOut:true}),ms);})]);}finally{clearTimeout(timer);}}
 /** The lease the next transaction runs on (its own outcome is irrelevant here). */

@@ -7,8 +7,9 @@ import {immutablePayload,context as commandContext} from '../commands/approval-m
 import {taskKind} from '../commands/approval-metadata/task-kind.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
 import {storedBinding,retained,storedEvent} from '../task-lookup/binding.mjs';
-import {assertNativeConversationScope,assertNativeSessionReference,assertSdkSessionKey,assertSdkSessionResponseHeaders} from '../../../packages/contracts/runtime-0.2/session.mjs';
-import {copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
+import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {assertSdkRetentionTarget,sdkRetentionTables,summarizeSdkRetentionRows,validateSdkRetentionInventory} from './retention-sdk-rows.mjs';
+import {preparedSchedule} from '../intents/postgres-journal.mjs';
 
 const scope='r.tenant_id=$1 AND r.conversation_id=$2';
 const table=(name,className,keys,where=scope)=>Object.freeze({name,className,keys:Object.freeze(keys),where});
@@ -47,9 +48,10 @@ function keyFor(row,t){return Object.fromEntries(t.keys.map(([key,type])=>{const
  else fact(integer(v)>0);return [key,type==='integer'||type==='bigint'?integer(v):v];}));}
 
 /** `page` is the original inventory's accounted, deadline-bound keyset reader. */
-export async function scanConversationContentRows(reader,page){
+export async function scanConversationContentRows(reader,page,{streamSdk=false}={}){
  const result={};
  for(const t of conversationContentTables){
+  if(streamSdk&&t.className==='sdkSession'){result[t.name]=[];continue;}
   const columns=t.keys.map(([name])=>'r.'+name),params=t.keys.map(([,type],i)=>`$${i+3}::${type}`);
   const compare=columns.length===1?`${columns[0]}>${params[0]}`:`(${columns.join(',')})>(${params.join(',')})`;
   result[t.name]=await page(reader,`SELECT r.* FROM ${t.name} r WHERE ${t.where} AND (${params[0]} IS NULL OR ${compare}) ORDER BY ${columns.join(',')} LIMIT 33`,
@@ -60,13 +62,15 @@ export async function scanConversationContentRows(reader,page){
 
 /** Closed content-free row target, also checked by the existing enumerator. */
 export function assertConversationContentTarget(raw){
+ if(Object.hasOwn(raw??{},'sdk'))return assertSdkRetentionTarget(raw);
  const v=own(raw,['className','table','key','rowSha256']),t=tables.get(v.table);fact(t&&v.className===t.className&&digest(v.rowSha256));
  own(v.key,t.keys.map(([key])=>key));fact(same(v.key,keyFor(v.key,t)));return v;
 }
 
-export function decodeConversationContentRows(raw,{subject,projection},byRun,nativeReferences=[]){
+export function decodeConversationContentRows(raw,{subject,projection},byRun,nativeReferences=[],sdkInventory){
  own(raw,conversationContentTables.map(t=>t.name));
- const targets=[],seen=new Set(),sessions=new Map(),streams=new Map(),lookups=new Map(),initials=new Map();
+ if(sdkInventory)for(const t of sdkRetentionTables)fact(Array.isArray(raw[t.name])&&raw[t.name].length===0);
+ const targets=[...validateSdkRetentionInventory(sdkInventory??summarizeSdkRetentionRows(raw,subject),{owner:{subject,projection},byRun,nativeReferences})],seen=new Set(),lookups=new Map(),initials=new Map();
  const binding=(value,{requireRun=true}={})=>{validateShape('RunBinding',value);
   fact(value.tenantId===subject.tenantId&&value.conversationId===subject.subjectId&&value.actorId===subject.ownerActorId);
   const run=byRun.get(value.runId);if(requireRun)fact(run&&same(run.projection.binding,value));return run;};
@@ -76,13 +80,14 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
  // initial custody supplies historical scopes only, never a fabricated run or
  // fresh authority. A present run must still match the entire original binding.
  const taskActions={'task.create':'create_task','task.update':'update_task'};
+ const scheduleOperations=['schedule_task','update_scheduled_task','cancel_scheduled_task'];
  const commandScopes=(value,action,createdAt)=>{
   const run=binding(value,{requireRun:false});if(run){fact(same(run.projection.binding,value));return run.projection.scopes;}
   const original=initials.get(value.runId);
   fact(Object.hasOwn(taskActions,action)&&original&&same(original.binding,value)&&original.createdAtMs<=Date.parse(createdAt));
   return [{tenantId:value.tenantId,kind:original.selectedClientId===null?'private-user':'client',resourceId:original.selectedClientId??value.actorId,policyRevision:original.policyRevision}];
  };
- for(const t of conversationContentTables){const list=raw[t.name];fact(Array.isArray(list)&&list.length<=4096);
+ for(const t of conversationContentTables){if(t.className==='sdkSession')continue;const list=raw[t.name];fact(Array.isArray(list)&&list.length<=4096);
   for(const row of list){fact(row?.tenant_id===subject.tenantId);
    if(Object.hasOwn(row,'conversation_id'))fact(row.conversation_id===subject.subjectId);
    if(Object.hasOwn(row,'actor_id'))fact(row.actor_id===subject.ownerActorId);
@@ -100,22 +105,6 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
      assertNativeConversationScope({binding:a.binding,scopes:projection.scopes,selectedClientId:a.selectedClientId});
      if(row.state==='ACCEPTED')fact(run&&row.accepted_request_sha256===a.requestSha256&&run.row.request_sha256===a.requestSha256);
      else fact(row.accepted_request_sha256===null&&!run);break;}
-    case 'meri_conversations.sdk_sessions':{pin(row,'owner');const o=own(row.owner,['binding','scopes','selectedClientId','policyRevision','key','expiresAtMs'],['executionSha256','allocationSha256','observationId','sessionEventSha256']);
-     const r=binding(o.binding),k=assertSdkSessionKey(o.key,{main:true});assertNativeConversationScope(o);exactScopes(o.scopes,r);
-     fact(o.binding.runId===row.run_id&&k.sessionId===row.session_id&&k.projectKey===row.project_key&&o.policyRevision===r.projection.policyRevision&&integer(o.expiresAtMs)>0&&
-      Object.hasOwn(o,'executionSha256')!==Object.hasOwn(o,'allocationSha256')&&digest(o.executionSha256??o.allocationSha256));
-     fact(!sessions.has(row.run_id)&&integer(row.entries_count)<=100000&&integer(row.bytes)<=33554432);
-     sessions.set(row.run_id,{row,count:0,bytes:0,streamCount:0});break;}
-    case 'meri_conversations.sdk_session_streams':{const s=sessions.get(row.run_id);fact(s&&s.row.session_id===row.session_id);if(row.subpath)scopedSessionKey({...s.row.owner.key,subpath:row.subpath},s.row.owner.key);
-     fact(++s.streamCount<=256&&integer(row.last_sequence)<=100000);streams.set(tuple(row.run_id,row.session_id,row.subpath),{row,entries:[],uuids:new Set()});break;}
-    case 'meri_conversations.sdk_session_entries':{const s=sessions.get(row.run_id),stream=streams.get(tuple(row.run_id,row.session_id,row.subpath));pin(row,'entry');
-     fact(s&&stream&&integer(row.sequence)===stream.entries.length+1&&row.entry_uuid===(row.entry.uuid??null));
-     if(row.entry_uuid!==null){fact(typeof row.entry_uuid==='string'&&row.entry_uuid.length>0&&row.entry_uuid.length<=256&&!stream.uuids.has(row.entry_uuid));stream.uuids.add(row.entry_uuid);}
-     stream.entries.push(row.entry);s.count++;s.bytes+=Buffer.byteLength(JSON.stringify(row.entry));break;}
-    case 'meri_conversations.sdk_session_batches':{pin(row,'receipt');const s=sessions.get(row.run_id),r=row.receipt;fact(s&&s.row.session_id===row.session_id&&digest(row.request_sha256));
-     const receipt=assertSdkSessionResponseHeaders('append',r,row.request_sha256,s.row.owner.binding,r.key);scopedSessionKey(receipt.key,s.row.owner.key);
-     const stream=streams.get(tuple(row.run_id,row.session_id,r.key.subpath??''));
-     fact(stream&&receipt.committed===true&&receipt.appendId===row.append_id&&digest(receipt.entriesSha256)&&integer(receipt.added)<=1000&&integer(receipt.offset)<=integer(stream.row.last_sequence)&&receipt.added<=receipt.offset);break;}
     case 'meri_conversations.native_executions':decodeExecutionRow(row,runFor(row).projection.binding);break;
     case 'meri_conversations.native_allocations':
     case 'meri_conversations.native_restorations':{pin(row,'record');const r=runFor(row),b=row.record.original?.binding??row.record.binding;binding(b);fact(same(b,r.projection.binding)&&digest(row.intent_key));break;}
@@ -130,13 +119,22 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
     case 'meri_intents.preparations':{pin(row,'record');fact(/^sdk:[a-f0-9]{64}$/u.test(row.delivery_id)&&digest(row.record.argumentsSha256)&&['PENDING','PREPARED','FAILED','UNKNOWN','REDACTED'].includes(row.state));
      own(row.record,['operation','argumentsSha256']);own(row.record.operation,['id','version']);
      fact(/^[a-z][a-z_]{0,62}$/u.test(row.record.operation.id)&&row.record.operation.version==='0.2.0');
-     fact(byRun.size>0||initials.size>0&&Object.values(taskActions).includes(row.record.operation.id));
+     fact(byRun.size>0||initials.size>0&&[...Object.values(taskActions),...scheduleOperations].includes(row.record.operation.id));
      if(row.state==='REDACTED'){fact(row.outcome===null&&row.outcome_purged_at!==null&&row.outcome_purged_at!==undefined&&Number.isFinite(new Date(row.outcome_purged_at).getTime())&&row.settled_at!==null&&row.settled_at!==undefined&&Number.isFinite(new Date(row.settled_at).getTime()));break;}
      fact(row.outcome_purged_at===null);
      if(row.state==='PREPARED'){
       const r=binding(row.outcome?.release?.binding,{requireRun:false});
       if(r){fact(same(r.projection.binding,row.outcome.release.binding));exactScopes(row.outcome.release.scopes,r);fact(row.outcome.result&&typeof row.outcome.result==='object');}
-      else{const outcome=own(row.outcome,['result','release']),result=own(outcome.result,['status','proposal']),release=own(outcome.release,['binding','scopes','expiresAtMs']),p=result.proposal;
+      else if(scheduleOperations.includes(row.record.operation.id)){
+       const proposed=row.outcome?.result?.proposal,stored=Object.fromEntries(['tenant_id','actor_id','conversation_id','delivery_id','record','record_sha256','state','outcome'].map(k=>[k,row[k]]));
+       const custody=preparedSchedule(stored,{tenantId:subject.tenantId,proposalId:proposed?.proposalId,intentSha256:proposed?.intentSha256},false).outcome;
+       // Dedicated first-use routines retain only the canonical pending proposal;
+       // SDK result.request belongs to an accepted run and cannot borrow this path.
+       own(custody.result,['status','proposal']);const release=custody.release,p=custody.result.proposal,original=initials.get(release.binding.runId);
+       fact(original&&same(original.binding,release.binding)&&p.projection.owner.actorId===subject.ownerActorId&&
+        release.expiresAtMs>original.createdAtMs&&release.expiresAtMs<=original.expiresAtMs&&
+        same(release.scopes,[{tenantId:subject.tenantId,kind:original.selectedClientId===null?'private-user':'client',resourceId:original.selectedClientId??subject.ownerActorId,policyRevision:original.policyRevision}]));
+      }else{const outcome=own(row.outcome,['result','release']),result=own(outcome.result,['status','proposal']),release=own(outcome.release,['binding','scopes','expiresAtMs']),p=result.proposal;
        assertNativeApprovalProposal(p);fact(result.status==='approval_required'&&Object.hasOwn(taskActions,p.command.action)&&taskActions[p.command.action]===row.record.operation.id&&same(release.binding,p.command.binding)&&Number.isSafeInteger(release.expiresAtMs)&&release.expiresAtMs>0);
        fact(same(release.scopes,p.command.scopes)&&same(p.command.scopes,commandScopes(p.command.binding,p.command.action,p.createdAt)));}
      }
@@ -161,16 +159,8 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
    }
   }
  }
- for(const s of sessions.values())fact(s.count===integer(s.row.entries_count)&&s.bytes===integer(s.row.bytes));
- for(const s of streams.values()){fact(s.entries.length===integer(s.row.last_sequence));copySessionTranscript(s.entries);}
- // Local captures must name an actual retained SDK owner. A fork's source in a
- // different conversation remains that subject's obligation, not this scan's.
- for(const value of nativeReferences){const ref=assertNativeSessionReference(value);
-  if(ref.binding.conversationId!==subject.subjectId)continue;
-  const s=sessions.get(ref.binding.runId);fact(s&&same(s.row.owner.binding,ref.binding)&&same(s.row.owner.key,ref.key)&&s.row.owner_sha256===ref.ownerSha256&&s.count>=ref.entriesCount);
- }
  for(const p of lookups.values())fact(p.events.size===2);
  // Each content owner above requires its actual run, except original generation
- // facts and task receipts whose retained initial custody was checked explicitly.
+ // facts and typed task/schedule receipts whose initial custody was checked explicitly.
  return data(targets.sort((a,b)=>tuple(a.table,a.key).localeCompare(tuple(b.table,b.key))));
 }

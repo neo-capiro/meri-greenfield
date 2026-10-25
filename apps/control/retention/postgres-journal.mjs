@@ -12,7 +12,9 @@ import {rowClassSubjectKind} from './inventory.mjs';
 import {assertExactProjection} from './projection-proof.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {SCHEDULED_ORIGIN_SQL} from '../schedules/scheduled-origin-query.mjs';
-import {conversationPurgeRow} from './conversation-purge-rows.mjs';
+import {conversationPurgeRow,sdkPurgePage} from './conversation-purge-rows.mjs';
+import {rowWorkflowIdentity} from './purge.mjs';
+import {verifySdkRetentionTarget,forEachSdkRetentionTargetPage,sdkRetentionTargetPresent} from '../conversations/retention-sdk-rows.mjs';
 import {createMemoryCandidateRetentionPayloadOwner} from '../memory/retention-payload-owner.mjs';
 import {AsyncLocalStorage} from 'node:async_hooks';
 const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
@@ -49,10 +51,10 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
    return bounded(operation,deadlineMs===undefined?maxRequestMs:Math.min(maxRequestMs,deadlineMs-now()),signal).then(value=>{if(deadlineMs!==undefined&&now()>=deadlineMs)throw Object.assign(storeError('RETENTION_STORE_UNAVAILABLE'),{deadline:true});return value;}).catch(error=>{if(error?.deadline)uncertain=true;throw error;});};
   try{c=await call(()=>acquiring);await call(()=>c.query(readOnlySnapshot?'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY':readCommitted?'BEGIN ISOLATION LEVEL READ COMMITTED':'BEGIN'));begun=true;await call(()=>c.query("SET LOCAL statement_timeout = '5s'"));await call(()=>c.query("SET LOCAL lock_timeout = '2s'"));
    if(shared)await call(()=>c.query(`SELECT pg_advisory_xact_lock_shared(${RECOVERY_LOCK})`));
-   let accepting=true;const pending=[];
+   let accepting=true,pendingFailure;const pending=new Set();
    try{result=await body(Object.freeze({query:(sql,values)=>{if(!accepting)return Promise.reject(storeError('RETENTION_INVALID_REQUEST'));
-    const work=call(()=>c.query(sql,values));pending.push(work);work.catch(()=>{});return work;}}));}
-   finally{accepting=false;const settled=await Promise.allSettled(pending);const failed=settled.find(r=>r.status==='rejected');if(failed)throw failed.reason;}
+    const work=call(()=>c.query(sql,values));pending.add(work);work.then(()=>pending.delete(work),error=>{pending.delete(work);pendingFailure??={error};});return work;}}));}
+   finally{accepting=false;await Promise.allSettled(pending);if(pendingFailure)throw pendingFailure.error;}
    committing=true;await call(()=>c.query('COMMIT'));reusable=true;}
   catch(error){failure=committing?storeError('RETENTION_COMMIT_UNKNOWN',error):wrap(error);
    if(c&&begun&&!committing&&!uncertain)try{await bounded(()=>c.query('ROLLBACK'),Math.min(maxRequestMs,1000));reusable=true;}catch{}}
@@ -82,11 +84,11 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  /** Reuse the session already holding a subject/recovery exclusion. SQL work is
   * serialized and drained before unlock; remote callbacks hold no transaction. */
  async function onHeldLease(c,fn){
-  let accepting=true,tail=Promise.resolve(),result,outcome;const pending=[];
+  let accepting=true,tail=Promise.resolve(),result,outcome;const pending=new Set();
   const held={client:c,failure:null,run(operation){
    if(!accepting)return Promise.reject(storeError('RETENTION_INVALID_REQUEST'));
    const work=tail.then(()=>{if(held.failure)throw held.failure;return operation();});
-   pending.push(work);tail=work.catch(()=>{});return work;
+   pending.add(work);work.then(()=>pending.delete(work),()=>pending.delete(work));tail=work.then(()=>{},()=>{});return work;
   }};
   const scoped=Object.freeze({
    query:(sql,args)=>held.run(()=>bounded(()=>c.query(sql,args)).catch(error=>{held.failure??=error;throw error;})),
@@ -216,6 +218,7 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
     else if(st.className==='sdkSession')await c.query('INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,run_id,session_id,subpath,sequence,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,\'PLANNED\',$10) ON CONFLICT (workflow_id) DO UPDATE SET state=\'PLANNED\',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence',[st.workflowId,k.tenantId,k.subjectId,'sdkSession',g.runId,g.sessionId,g.subpath,g.sequence,plan.planSha256,current.purge.ledgerSequence]);}}
   else{for(const st of plan.rowSteps??[]){if(st.className!=='artifactVersions')continue;const versionId=st.target.artifactVersionId;const step=(plan.steps??[]).find(x=>x.artifactVersionIds?.includes(versionId));
     await c.query('INSERT INTO meri_artifacts.retention_purges(workflow_id,tenant_id,artifact_id,version_id,object_id,object_version_id,sha256,plan_sha256,state,receipt,receipt_sha256,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,\'PLANNED\',NULL,NULL,$9) ON CONFLICT (workflow_id) DO UPDATE SET state=\'PLANNED\',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence',[st.workflowId,k.tenantId,k.subjectId,versionId,step?.objectId??'00000000-0000-4000-8000-000000000000',step?.versionId??'none',step?.sha256??'0'.repeat(64),plan.planSha256,current.purge.ledgerSequence]);}}
+  return current;
  }
 
  const rowWhere={sdkSession:{table:'meri_conversations.sdk_session_entries',where:'tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 AND sequence=$6',args:(k,g)=>[k.tenantId,k.subjectId,uuid(g.runId),uuid(g.sessionId),text(g.subpath,1024),Number.isSafeInteger(g.sequence)&&g.sequence>0?g.sequence:fail('RETENTION_INVALID_REQUEST')]},
@@ -225,24 +228,48 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  const rowTarget=(k,st)=>{if(rowClassSubjectKind[st?.className]!==k.kind||!st.target||typeof st.target!=='object')fail('RETENTION_INVALID_REQUEST');
   if(st.className==='meriMemoryCandidates'){own(st.target,['className','key']);uuid(st.target.key);if(st.target.className!==st.className)fail('RETENTION_INVALID_REQUEST');return {memory:true,args:()=>[]};}
   const w=conversationPurgeRow(k,st)??rowWhere[st.className];if(!w)fail('RETENTION_ROW_CLASS_UNSUPPORTED');w.args(k,st.target);return w;};
+ const rowOptions=options=>({...options,deadlineMs:options.deadlineMs??now()+maxRequestMs});
+ const rowCheck=options=>()=>{options.check?.();options.signal?.throwIfAborted();if(now()>=options.deadlineMs)fail('RETENTION_DEADLINE');};
+ const sdkSubject=(k,plan)=>{const s=parseSubject(plan?.subject??k);if(subjectKey(s)!==subjectKey(k))fail('RETENTION_INVALID_REQUEST');return s;};
+ const sdkRead=async operation=>{try{return await operation();}catch(error){if(error?.code==='STORE_CORRUPT')fail('RETENTION_ROW_CHANGED');throw error;}};
+ async function verifySdk(c,k,st,plan,check){const subject=sdkSubject(k,plan);check();
+  if(await sdkRead(()=>sdkRetentionTargetPresent(c,{subject,target:st.target,check})))await sdkRead(()=>verifySdkRetentionTarget(c,{subject,target:st.target,check,lock:true}));check();}
  /** Validates target routing and current row bytes before any storage effect. */
- async function preflightRows(key,plan){const k=parseKey(key);if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');const targets=plan.rowSteps.map(st=>rowTarget(k,st));
+ async function preflightRows(key,plan,options={}){options=rowOptions(options);const k=parseKey(key),check=rowCheck(options);check();if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');const targets=plan.rowSteps.map(st=>rowTarget(k,st));
   if(targets.some(w=>w.target||w.memory))await tx(async c=>{for(const [index,w] of targets.entries()){
+   check();if(w.sdk){await verifySdk(c,k,plan.rowSteps[index],plan,check);continue;}
    if(w.memory){await memoryCandidates.presentInTransaction({client:c,subject:plan.subject,candidateId:plan.rowSteps[index].target.key});continue;}
-   if(!w.target)continue;const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}});return true;}
+   if(!w.target)continue;const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}check();},options);check();return true;}
+ /** The compact plan is expanded only inside this held transaction. Every key
+  * still gets the existing exact trigger target; no range or session-wide grant. */
+ async function purgeSdk(c,k,st,plan,current,check){const subject=sdkSubject(k,plan),durable=new Set(plan.rowSteps.map(step=>step.workflowId));let deleted=0;
+  if(!await sdkRead(()=>sdkRetentionTargetPresent(c,{subject,target:st.target,check})))return deleted;
+  await sdkRead(()=>forEachSdkRetentionTargetPage(c,{subject,target:st.target,check},async targets=>{
+   check();if(targets.some(t=>t.key.run_id!==st.target.key.run_id||t.key.session_id!==st.target.key.session_id))fail('RETENTION_ROW_CHANGED');
+   const page=sdkPurgePage(k,targets),registrations=page.targets.map((target,i)=>({target,workflow_id:target.table==='meri_conversations.sdk_sessions'?st.workflowId:rowWorkflowIdentity({tenantId:k.tenantId,subjectId:k.subjectId,target:targets[i],policyVersion:plan.policyVersion})}));
+   await c.query("INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,target,plan_sha256,state,ledger_sequence) SELECT page.workflow_id,$1,$2,'sdkSession',page.target,$3,'PLANNED',$4 FROM jsonb_to_recordset($5::jsonb) AS page(workflow_id text,target jsonb) ON CONFLICT (workflow_id) DO UPDATE SET state='PLANNED',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence,target=EXCLUDED.target",[k.tenantId,k.subjectId,plan.planSha256,current.purge.ledgerSequence,JSON.stringify(registrations)]);check();
+   const result=await c.query(page.sql,page.args);check();if(result.rowCount!==targets.length)fail('RETENTION_ROW_CHANGED');deleted+=result.rowCount;
+   // Child permits exist only for this page's exact effect. The durable compact
+   // target remains the recovery receipt; legacy plan targets are preserved.
+   const ephemeral=registrations.map(r=>r.workflow_id).filter(id=>!durable.has(id));
+   if(ephemeral.length)await c.query('DELETE FROM meri_conversations.retention_purge_targets WHERE tenant_id=$1 AND conversation_id=$2 AND plan_sha256=$3 AND ledger_sequence=$4 AND workflow_id=ANY($5::text[])',[k.tenantId,k.subjectId,plan.planSha256,current.purge.ledgerSequence,ephemeral]);check();
+  }));
+  if(await sdkRead(()=>sdkRetentionTargetPresent(c,{subject,target:st.target,check})))fail('RETENTION_ROW_CHANGED');check();return deleted;
+ }
  /** The database-row purge port. `purge` deletes every row target of the plan in one transaction that first records the exact targets
   * under the subject lock (planRows), so the trigger amendments admit exactly these rows and nothing else; a head still bound to an
   * artifact version under purge is retired in the same transaction. A row still present afterwards is reported UNKNOWN. Any failure
   * rolls the whole transaction back: targets, head retirement and deletions together. */
- async function purgeRows(key,plan){const k=parseKey(key);await preflightRows(key,plan);
-  return tx(async c=>{await planRows(c,key,plan);const out=[];
+ async function purgeRows(key,plan,options={}){options=rowOptions(options);const k=parseKey(key),check=rowCheck(options);await preflightRows(key,plan,options);
+  return tx(async c=>{check();const current=await planRows(c,key,plan);const out=[];
    if(k.kind==='artifact'){const versions=(plan.rowSteps??[]).filter(st=>st.className==='artifactVersions').map(st=>st.target.artifactVersionId);if(versions.length)await c.query('DELETE FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2 AND version_id=ANY($3::uuid[])',[k.tenantId,k.subjectId,versions]);}
    const ordered=[...(plan.rowSteps??[])].sort((a,b)=>(rowTarget(k,a).rank??20)-(rowTarget(k,b).rank??20));
    // Verify every current row/digest and unresolved-effect fence before changing any row.
-   for(const st of ordered){const w=rowTarget(k,st);if(w.target){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}}
+   for(const st of ordered){check();const w=rowTarget(k,st);if(w.sdk)await verifySdk(c,k,st,plan,check);else if(w.target){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where} FOR UPDATE`,w.args())).rows[0];if(!w.erased(row))w.verify(row);}}
    for(const st of ordered){const w=rowTarget(k,st),args=w.args(k,st.target);
-    let deleted,present;
-    if(w.memory){const result=await memoryCandidates.purgeInTransaction({client:c,plan,workflowId:st.workflowId});deleted=result.redacted;
+    check();let deleted,present;
+    if(w.sdk){deleted=await purgeSdk(c,k,st,plan,current,check);present=false;}
+    else if(w.memory){const result=await memoryCandidates.purgeInTransaction({client:c,plan,workflowId:st.workflowId});deleted=result.redacted;
      present=await memoryCandidates.presentInTransaction({client:c,subject:plan.subject,candidateId:st.target.key});
     }else if(w.target){const before=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where}`,args)).rows[0];
      deleted=!w.erased(before)&&w.sql?(await c.query(w.sql,w.mutationArgs)).rowCount:0;
@@ -250,11 +277,12 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
     }else{deleted=(await c.query(`DELETE FROM ${w.table} WHERE ${w.where}`,args)).rowCount;present=(await c.query(`SELECT 1 FROM ${w.table} WHERE ${w.where}`,args)).rowCount>0;}const state=present?'UNKNOWN':'EXECUTED';
     if(k.kind==='conversation')await c.query('UPDATE meri_conversations.retention_purge_targets SET state=$2 WHERE workflow_id=$1',[st.workflowId,state]);else await c.query('UPDATE meri_artifacts.retention_purges SET state=$2 WHERE workflow_id=$1',[st.workflowId,state]);
     out.push({workflowId:st.workflowId,className:st.className,target:st.target,deleted,state});}
-   return out;});}
+   check();return out;},options);}
  /** Whether an exact row target still exists (recovery re-verification). */
- async function rowPresent(key,st){const k=parseKey(key),w=rowTarget(k,st);return tx(async c=>{
+ async function rowPresent(key,st,options={}){options=rowOptions(options);const k=parseKey(key),w=rowTarget(k,st),check=rowCheck(options);check();return tx(async c=>{
+  if(w.sdk){const present=await sdkRead(()=>sdkRetentionTargetPresent(c,{subject:k,target:st.target,check}));check();return present;}
   if(w.memory){const row=await readRow(c,k);if(!row)fail('RETENTION_NOT_SUPPRESSED');return memoryCandidates.presentInTransaction({client:c,subject:{...k,ownerActorId:row.owner_actor_id},candidateId:st.target.key});}
-  if(w.target){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where}`,w.args())).rows[0];return !w.erased(row);}return (await c.query(`SELECT 1 FROM ${w.table} WHERE ${w.where}`,w.args(k,st.target))).rowCount>0;},{shared:false});}
+  if(w.target){const row=(await c.query(`SELECT r.* FROM ${w.table} r WHERE ${w.where}`,w.args())).rows[0];return !w.erased(row);}return (await c.query(`SELECT 1 FROM ${w.table} WHERE ${w.where}`,w.args(k,st.target))).rowCount>0;},{...options,shared:false});}
  const rows=Object.freeze({preflight:preflightRows,purge:purgeRows,present:rowPresent});
  /** Trusted ownership reader for the suppression owner: the application's own record of the subject's owner. */
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');

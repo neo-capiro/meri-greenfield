@@ -5,6 +5,7 @@ import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-b
 import {scanMemoryProposalContextRows} from './memory-proposal-context-journal.mjs';
 import {decodeConversationInventoryRows} from './retention-inventory-decode.mjs';
 import {scanConversationContentRows} from './retention-content-rows.mjs';
+import {scanSdkRetentionInventory} from './retention-sdk-rows.mjs';
 
 const PAGE_SIZE=32;
 const MAX_ROWS=4096;
@@ -95,13 +96,15 @@ export function createConversationRetentionInventory({pool,withSnapshot,now=Date
    const memoryContextRows=[];
    const memoryContinuations=await scanMemoryProposalContextRows(reader,{tenantId:subject.tenantId,conversationId:subject.conversationId},check,
     row=>{account(row);memoryContextRows.push(row);});
-   const contentRows=await scanConversationContentRows(reader,page);
+   const contentRows=await scanConversationContentRows(reader,page,{streamSdk:true});
+   const sdkInventory=await scanSdkRetentionInventory(reader,{subject,check});
+   for(const header of sdkInventory.headers)account(header);
    const memoryCandidates=await page(reader,
     "SELECT * FROM meri_memory.candidates WHERE tenant_id=$1 AND origin_kind='conversation' AND origin_conversation_id=$2 AND candidate IS NOT NULL AND candidate_purged_at IS NULL AND ($3::uuid IS NULL OR candidate_id>$3::uuid) ORDER BY candidate_id LIMIT 33",
     row=>[row.candidate_id],[null]);
    const result=decodeConversationInventoryRows({subject:{tenantId:subject.tenantId,kind:'conversation',
     subjectId:subject.conversationId,ownerActorId:subject.ownerActorId},conversation:conversation[0],
-    runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows,contentRows,memoryCandidates});
+    runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows,contentRows,memoryCandidates,sdkInventory});
    if(Buffer.byteLength(JSON.stringify(result))>MAX_BYTES)fail('RETENTION_INVENTORY_LIMIT');
    check();return result;
   }

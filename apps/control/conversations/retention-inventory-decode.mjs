@@ -194,7 +194,7 @@ function decodeNextRun(row,owner,byRun,byCompletion){
 
 /** All arrays contain raw owner rows, not caller-selected payloads. Validated
  * memory continuation identities came from the same transaction's journal scan. */
-export function decodeConversationInventoryRows({subject,conversation,runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows,contentRows,memoryCandidates}){
+export function decodeConversationInventoryRows({subject,conversation,runs,events,controls,checkpoints,completionCheckpoints,nextRuns,memoryContinuations,memoryContextRows,contentRows,memoryCandidates,sdkInventory}){
  try{
   const owner=decodeSubject(subject,conversation),byRun=new Map(),runRows=[];
   for(const row of rows(runs)){const item=decodeRun(row,owner);if(byRun.has(row.run_id))corrupt();byRun.set(row.run_id,item);runRows.push(item);}
@@ -343,9 +343,13 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
      clientId:key.subject.kind==='personal'?null:key.subject.entityIds[0]},{inventory:true});
     requireFact(key.subject.kind==='personal'?run.projection.scopes.some(scope=>scope.kind==='private-user'&&scope.resourceId===owner.subject.ownerActorId):
      run.projection.scopes.some(scope=>scope.kind==='client'&&scope.resourceId===key.subject.entityIds[0]));
-   }else requireFact(same(key.subject?.scopes,run.projection.scopes)&&run.projection.scopes.length===1&&
-    run.projection.scopes[0].kind==='client'&&key.subject?.entityIds?.length===1&&
-    key.subject.entityIds[0]===run.projection.scopes[0].resourceId);
+   }else {
+    const personal=key.subject?.kind==='personal',scope=run.projection.scopes[0];
+    requireFact(same(key.subject?.scopes,run.projection.scopes)&&run.projection.scopes.length===1&&
+     key.subject?.kind===(personal?'personal':'client')&&key.subject?.entityType===(personal?'user':'client')&&
+     scope.kind===(personal?'private-user':'client')&&key.subject?.entityIds?.length===1&&
+     key.subject.entityIds[0]===scope.resourceId&&(!personal||scope.resourceId===owner.subject.ownerActorId));
+   }
    checkedContexts.add(identity);
   }
   requireFact(checkedContexts.size===continuationKeys.size);
@@ -353,7 +357,7 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
    ...controlRows.map(r=>r.projection.proof?.kind==='native-session'?r.projection.proof.sdkSession:null),
    ...completionRows.map(r=>r.row.proof?.kind==='native-session'?r.row.proof.sdkSession:null),
    ...nextRunRows.map(r=>r.reservation.facts.sdkSession)].filter(Boolean);
-  const retainedRows=decodeConversationContentRows(contentRows,owner,byRun,nativeReferences);
+  const retainedRows=decodeConversationContentRows(contentRows,owner,byRun,nativeReferences,sdkInventory);
   const candidateIds=new Set();
   for(const row of rows(memoryCandidates)){
    const {candidate:c,candidateSha256}=assertCandidate(row.candidate);

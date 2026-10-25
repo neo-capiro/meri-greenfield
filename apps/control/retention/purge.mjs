@@ -105,10 +105,10 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
   const recomputed=await recomputePlan(facts,p.subject,current,tick(),options);options.check?.();if(recomputed.state!=='PLANNED')fail('RETENTION_PURGE_BLOCKED');if(recomputed.planSha256!==p.planSha256)fail('RETENTION_PLAN_DIGEST_REFUSED');return current;}
  /** Every target is resolved and validated before anything is recorded or deleted: the storage delete permission, every object key, and
   * every database row target through the row owner's own routing. One invalid target refuses the whole plan with zero effects. */
- async function preflight(p){
+ async function preflight(p,options={}){
   if(storage.permissions!==undefined&&storage.permissions?.deleteObjectVersion!==true)fail('RETENTION_STORAGE_PERMISSION');
   const keys=new Map();for(const st of p.steps){let key;try{key=keyFor(st);}catch{fail('RETENTION_INVALID_REQUEST');}if(typeof key!=='string'||!key||key.length>1024)fail('RETENTION_INVALID_REQUEST');keys.set(st.workflowId,key);}
-  if(p.rowSteps.length){try{await rows.preflight(p.subjectKey,p);}catch(error){fail(String(error?.code??'').startsWith('RETENTION_')?error.code:'RETENTION_ROW_PURGE_UNAVAILABLE');}}
+  if(p.rowSteps.length){try{options.check?.();await rows.preflight(p.subjectKey,p,options);options.check?.();}catch(error){fail(String(error?.code??'').startsWith('RETENTION_')?error.code:'RETENTION_ROW_PURGE_UNAVAILABLE');}}
   return keys;}
  /** Fails closed before touching any state when execution is not enabled; production stays disabled until policy, bindings and authorization exist.
   * Once effects may have begun, every step is durably UNKNOWN before its effect and carries its outcome after it: a ledger PURGE_UNKNOWN
@@ -148,13 +148,13 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
     if(readback.outcome!=='ABSENT'){serving.disable?.();fail('RETENTION_RECOVERY_BARRIER');}
    }
    for(const st of existing.rowSteps??[])if(st.state==='EXECUTED'&&
-      (typeof rows?.present!=='function'||await rows.present(p.subjectKey,st)!==false)){
+      (typeof rows?.present!=='function'||await rows.present(p.subjectKey,st,options)!==false)){
     serving.disable?.();fail('RETENTION_RECOVERY_BARRIER');
    }
   }
   current=await authorize(p,options);
   if(existing&&existing.planSha256!==p.planSha256)fail('RETENTION_PURGE_PLAN_MISMATCH');
-  const keys=await preflight(p);
+  const keys=await preflight(p,options);
   const stepState=new Map((existing?.steps??[]).map(st=>[st.workflowId,st])),rowState=new Map((existing?.rowSteps??[]).map(st=>[st.workflowId,st]));
   let sequence=existing?.ledgerSequence??null,started=existing?.state==='UNKNOWN';
   if(!existing){const e=await ledger.append({subject:p.subject,state:'PURGE_PLANNED',facts:{...planMetadata(p),planSha256:p.planSha256,suppression:p.suppression,policySha256:p.policySha256,inventorySha256:p.inventorySha256,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:p.steps.map(stepFacts),rowSteps:p.rowSteps.map(rowStepFacts)}});const row={...current,purge:{state:'PLANNED',planSha256:p.planSha256,ledgerSequence:e.sequence,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:[],rowSteps:[]}};await cas(p.subjectKey,row,projectionToken(current));sequence=e.sequence;}
@@ -176,7 +176,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
    // amendments admit nothing else), after the same re-authorization; a row that is still present afterwards leaves the purge UNKNOWN.
    const pendingRows=p.rowSteps.filter(st=>rowState.get(st.workflowId)?.state!=='EXECUTED');
    if(!unknown&&pendingRows.length){await begin(()=>{for(const st of pendingRows)rowState.set(st.workflowId,{...rowStepFacts(st),state:'UNKNOWN',deleted:null,startedAtMs:tick()});});
-    const records=data(await rows.purge(p.subjectKey,p));if(!Array.isArray(records))fail('RETENTION_ROW_PURGE_UNAVAILABLE');const returned=new Set();
+    const records=data(await rows.purge(p.subjectKey,p,options));options.check?.();if(!Array.isArray(records))fail('RETENTION_ROW_PURGE_UNAVAILABLE');const returned=new Set();
     for(const r of records){const st=p.rowSteps.find(x=>x.workflowId===r.workflowId);if(!st||!['EXECUTED','UNKNOWN'].includes(r.state))fail('RETENTION_ROW_PURGE_UNAVAILABLE');returned.add(st.workflowId);rowState.set(st.workflowId,{...rowStepFacts(st),state:r.state,deleted:r.deleted??null,atMs:tick()});}
     for(const st of pendingRows)if(!returned.has(st.workflowId))fail('RETENTION_ROW_PURGE_UNAVAILABLE');
     unknown=[...rowState.values()].find(r=>r.state!=='EXECUTED')??null;}
@@ -197,7 +197,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
  async function effectsAbsent(p,options={}){
   for(const st of p.steps){options.check?.();const readback=await storage.headVersion({key:keyFor(st),versionId:st.versionId},options);if(readback.outcome!=='ABSENT')return false;}
   if(p.rowSteps.length&&typeof rows?.present!=='function')return false;
-  for(const st of p.rowSteps){options.check?.();if(await rows.present(p.subjectKey,rowStepFacts(st))!==false)return false;}
+  for(const st of p.rowSteps){options.check?.();if(await rows.present(p.subjectKey,rowStepFacts(st),options)!==false)return false;options.check?.();}
   return true;
  }
  /** A BLOCKED plan is recorded (ledger first, with its complete targets and reasons) so a restore can re-evaluate it; recording a block is not execution. */

@@ -1,8 +1,8 @@
 /** Data classes and exact reference enumeration over the canonical record snapshot. Pure: no store access. Every retention obligation
  * attached to an exact storage object version is preserved (all classes, every database row that binds it, every database artifact
  * version that shares it), in a deterministic order, so eligibility never depends on which reference was enumerated last and
- * database targets are never conflated with storage objects. The class vocabularies derive from the data-class registry; every row
- * of a row-target class yields an exact row target, so a purge can never report EXECUTED while a retained row stays behind. */
+ * database targets are never conflated with storage objects. The class vocabularies derive from the data-class registry. SDK session
+ * targets commit every exact child row and require whole-session absence; other row classes retain their individual targets. */
 import {own,data,fail,uuid,digest,hash,text,subject} from './boundary.mjs';
 import {policyClasses,retainedClasses,rowTargetClasses,rowTargetSubjectKind} from './data-classes.mjs';
 import {assertNativeFileState} from '../../../packages/contracts/runtime-0.2/files.mjs';

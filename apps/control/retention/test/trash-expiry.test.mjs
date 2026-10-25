@@ -140,6 +140,28 @@ test('bounded sweep records an uncertain effect and starts no later delete after
  assert.equal(effects,1);assert.equal(finalized,0);assert.equal((await f.current()).purge.state,'UNKNOWN');
 });
 
+test('sweep carries its abort and deadline through row preflight, mutation and absence recovery',async()=>{
+ const f=await fixture();f.clock.advance(31*day);const plan=await f.plan(),controller=new AbortController(),deadlineMs=f.clock.now()+1000,seen=[];
+ for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
+ const rows=Object.fromEntries(['preflight','purge','present'].map(method=>[method,async(...args)=>{
+  const options=args[2];assert.equal(options.signal,controller.signal);assert.equal(options.deadlineMs,deadlineMs);assert.equal(typeof options.check,'function');options.check();seen.push(method);
+  return f.rows[method]?.(...args);
+ }]));
+ const executor=createPurgeExecutor({...f,rows,enabled:true,now:f.clock.now,finalize:async()=>{}});
+ const options={signal:controller.signal,deadlineMs};assert.equal((await executor.sweepSubject(f.subject,options)).coreFinalized,true);
+ assert.ok(seen.includes('preflight'));assert.ok(seen.includes('purge'));
+ assert.equal((await executor.sweepSubject(f.subject,options)).replayed,true);assert.ok(seen.includes('present'));
+});
+
+test('interrupted SDK-style row preflight performs no storage or row effect',async()=>{
+ const f=await fixture();f.clock.advance(31*day);const plan=await f.plan(),controller=new AbortController();let effects=0;
+ for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
+ const executor=createPurgeExecutor({...f,enabled:true,now:f.clock.now,finalize:async()=>{effects++;},storage:{...f.storage,async deleteVersion(){effects++;}},
+  rows:{...f.rows,async preflight(_key,_plan,options){controller.abort(Error('interrupted transcript scan'));options.check();},async purge(){effects++;}}});
+ await assert.rejects(executor.sweepSubject(f.subject,{signal:controller.signal,deadlineMs:f.clock.now()+1000}),/RETENTION_ROW_PURGE_UNAVAILABLE/);
+ assert.equal(effects,0);assert.equal((await f.current()).purge,null);
+});
+
 test('ordinary hourly sweep before expiry leaves Restore available with no purge record',async()=>{
  const f=await fixture();let effects=0;
  const purge=createPurgeExecutor({...f,enabled:true,now:f.clock.now,finalize:async()=>{effects++;}});
