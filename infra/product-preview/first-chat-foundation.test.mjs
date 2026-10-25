@@ -68,6 +68,10 @@ test('IAM retains storage and Temporal service identity without ECS runner or mo
  assert.ok(controlActions.includes('s3:GetObjectVersion'));
  assert.ok(controlActions.includes('s3:ListBucket'));
  assert.deepEqual(control.filter(s=>[].concat(s.Action).includes('s3:ListBucket')).map(s=>s.Resource),[`arn:aws:s3:::${foundationBinding().checkpoint.bucket}`]);
+ for(const action of ['s3:GetBucketPublicAccessBlock','s3:GetBucketPolicyStatus','s3:GetBucketOwnershipControls']){
+  assert.deepEqual(control.filter(s=>[].concat(s.Action).includes(action)).map(s=>s.Resource),[`arn:aws:s3:::${foundationBinding().checkpoint.bucket}`]);
+  assert.ok(policies.filter(p=>!JSON.stringify(p.Roles).includes('controlTaskRole')).every(p=>p.PolicyDocument.Statement.every(s=>![].concat(s.Action).includes(action))),`${action} is control-only`);
+ }
  assert.ok(controlActions.includes('kms:Decrypt'));
  assert.ok(controlActions.every(action=>!action.startsWith('ecs:')&&!action.startsWith('bedrock:')&&action!=='iam:PassRole'));
  assert.ok(policies.every(p=>p.PolicyDocument.Statement.every(s=>![].concat(s.Action).some(a=>['ecs:RunTask','ecs:StopTask','iam:PassRole'].includes(a)))));

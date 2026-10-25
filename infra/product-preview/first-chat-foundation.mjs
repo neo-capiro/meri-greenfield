@@ -90,7 +90,8 @@ export function synthesizeFirstChatFoundation(binding){
  const task=key=>new iam.Role(stack,`${key}TaskRole`,{roleName:`MeriPreview-${key}-task`,assumedBy:ecsTrust()});
  const control=task('control');
  // S3 reports a missing first ledger object as 404 only when this bucket can be listed.
- control.addToPolicy(statement(['s3:GetBucketVersioning','s3:ListBucket'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
+ // The existing signed-link gate verifies the private bucket with read-only metadata calls.
+ control.addToPolicy(statement(['s3:GetBucketVersioning','s3:ListBucket','s3:GetBucketPublicAccessBlock','s3:GetBucketPolicyStatus','s3:GetBucketOwnershipControls'],[`arn:aws:s3:::${b.checkpoint.bucket}`]));
  control.addToPolicy(statement(['s3:PutObject','s3:GetObject','s3:GetObjectVersion'],[`arn:aws:s3:::${b.checkpoint.bucket}/${b.checkpoint.prefix}/*`]));
  // Retention reads and deletes only immutable content versions. The fixed key
  // shape excludes the retention ledger and artifact-publication custody index.
