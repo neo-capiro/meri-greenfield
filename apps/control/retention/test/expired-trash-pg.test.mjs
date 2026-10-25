@@ -21,11 +21,15 @@ import {createPostgresMemoryJournal} from '../../memory/postgres-journal.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 import {scanConversationContentRows,decodeConversationContentRows} from '../../conversations/retention-content-rows.mjs';
 import {inspectRetentionTargetLookup} from './retention-target-index-pg.mjs';
+import {inspectSdkDeletePage} from './sdk-delete-page-pg-diagnostic.mjs';
 
 const SOCKET='/tmp/meri-expired-trash-pg-20261024/socket',DATABASE='meri_expired_trash_fixture';
 const supplied=process.env.MERI_EXPIRED_TRASH_PG_SOCKET!==undefined||process.env.MERI_EXPIRED_TRASH_PG_DATABASE!==undefined;
 if(supplied&&(process.platform!=='linux'||process.env.MERI_EXPIRED_TRASH_PG_SOCKET!==SOCKET||process.env.MERI_EXPIRED_TRASH_PG_DATABASE!==DATABASE))throw Error('MERI_EXPIRED_TRASH_PG_TARGET_REFUSED');
 const enabled=supplied&&process.platform==='linux';
+const pageDiagnostic=process.env.MERI_SDK_PAGE_DIAGNOSTIC==='1';
+if(process.env.MERI_SDK_PAGE_DIAGNOSTIC!==undefined&&(!pageDiagnostic||!enabled))throw Error('MERI_EXPIRED_TRASH_PG_TARGET_REFUSED');
+const pageDiagnosticStop=new Error('synthetic one-page diagnostic rollback');let pageDiagnosticResult=null;
 const day=86400000,real=Date.now(),old=real-31*day;
 let clock=null;
 const now=()=>clock??Date.now();
@@ -42,7 +46,10 @@ async function measuredSweepPhase(name,options,operation){const trace=sweepTimin
  try{return await operation();}finally{trace.phases.push({name,startMs,endMs:performance.now()-trace.started,cpuMicros:process.cpuUsage(cpu)});trace.phase=previous;}
 }
 const journalPool={async connect(){const c=await connect();return {release:error=>c.release(error),query:async(sql,args)=>{
- if(!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
+ if(pageDiagnostic&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
+  assert.equal(pageDiagnosticResult,null,'one real page only');pageDiagnosticResult=await inspectSdkDeletePage(c,{sql,args});throw pageDiagnosticStop;
+ }
+ if(!pageDiagnostic&&!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
   const page=JSON.parse(args[2]);if(page.length>=1000){lookupDiagnostics.push(await inspectRetentionTargetLookup(c,{tenantId:args[0],conversationId:args[1],page}));lookupInspected=true;}
  }
  if(failLastMutation&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries'))observedDeletes++;
@@ -148,7 +155,7 @@ async function capture(f,object){
 }
 const plan=async f=>journal.withTransition(subjectKey(f.subject),async()=>{const inventory=await facts.inventoryFor(f.subject);await facts.sharedFor(f.subject,inventory);return recomputePlan(facts,f.subject,await journal.get(subjectKey(f.subject)),now());});
 
-test('ordinary-role expired Trash row transaction and durable recovery',{timeout:120000,skip:!enabled&&'requires exact disposable Unix PG16 expiry fixture'},async t=>{
+test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'ordinary-role expired Trash row transaction and durable recovery',{timeout:120000,skip:!enabled&&'requires exact disposable Unix PG16 expiry fixture'},async t=>{
  t.after(()=>pool.end());
  t.after(()=>{for(const diagnostic of lookupDiagnostics)t.diagnostic('exact target lookup plans '+JSON.stringify(diagnostic));});
  t.afterEach(()=>{loseRowAck=false;loseFinalize=false;failLastMutation=false;readHook=null;clock=null;});
@@ -158,6 +165,7 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   const role=(await pool.query('SELECT rolsuper,rolcreatedb,rolcreaterole,rolreplication,rolbypassrls,rolinherit FROM pg_roles WHERE rolname=current_user')).rows[0];assert.ok(Object.values(role).every(v=>v===false));
   await startup.start();
  });
+ if(!pageDiagnostic){
  await t.test('zero-run General registration purges without a fabricated run and preserves its identity',async()=>{
   const f=await seed({empty:true,general:true});const p=await plan(f);assert.equal(p.state,'PLANNED');assert.equal(p.rowSteps.length,1);
   const r=await startup.purge.sweepSubject(f.subject);assert.equal(r.state,'EXECUTED');assert.equal(r.coreFinalized,true);
@@ -307,9 +315,10 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
   await assert.rejects(pool.query('DELETE FROM meri_conversations.events WHERE tenant_id=$1',[f.b.tenantId]));
   assert.equal(await count('meri_conversations.events',f),1);
  });
+ }
  // A deadline in this largest case can close the shared recovery fence. Keep
  // it last so independent cases still run and the original failure is reported.
- await t.test('100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
+ await t.test(pageDiagnostic?'100000-entry fixture: analyze one real 1000-row DELETE and verify rollback':'100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
   const fixtureStarted=performance.now(),f=await seed();await content(f,{entryCount:100000,nearTranscriptLimit:true});
   t.diagnostic(`fixture construction ${Math.round(performance.now()-fixtureStarted)} ms; transcript ${f.sdk.transcriptBytes} bytes; ${f.sdk.batches} append pages`);
   assert.ok(f.sdk.transcriptBytes>31*1024*1024);measureSubject=f.subject.subjectId;inventoryTimings=[];inventorySqlTimings=[];
@@ -320,9 +329,16 @@ test('ordinary-role expired Trash row transaction and durable recovery',{timeout
    assert.ok(Buffer.byteLength(JSON.stringify(p))<8*1024*1024,'compact plan fits the existing ledger record bound');
    const purgeStarted=performance.now(),purgeCpu=process.cpuUsage();sweepTiming={started:purgeStarted,startedAtMs:Date.now(),phase:'sweep',deadlineMs:null,phases:[],sql:{},pending:null,lastCompleted:null,
     pageBody:null,pagePreparation:{pages:0,rows:0,ms:0,maxMs:0,cpuMicros:{user:0,system:0}}};
-   let result,purgeMs;try{result=await startup.purge.sweepSubject(f.subject);}finally{purgeMs=performance.now()-purgeStarted;const trace=sweepTiming;
+   let result,purgeMs;try{if(pageDiagnostic)await assert.rejects(startup.purge.sweepSubject(f.subject),e=>e.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause?.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause.cause===pageDiagnosticStop);
+    else result=await startup.purge.sweepSubject(f.subject);
+   }finally{purgeMs=performance.now()-purgeStarted;const trace=sweepTiming;
     t.diagnostic('production sweep phases '+JSON.stringify({...trace,pageBody:undefined,finishedAtMs:Date.now(),elapsedMs:purgeMs,cpuMicros:process.cpuUsage(purgeCpu),
      pending:trace.pending?{...trace.pending,elapsedMs:purgeMs-trace.pending.startMs,deadlineRemainingAtStartMs:trace.deadlineMs-trace.startedAtMs-trace.pending.startMs}:null}));sweepTiming=null;}
+   if(pageDiagnostic){assert.ok(pageDiagnosticResult);assert.equal(rowEffects,1);assert.equal(finalizeAttempts,0);
+    for(const [table,n] of [['sdk_sessions',1],['sdk_session_streams',1],['sdk_session_entries',100000],['sdk_session_batches',100]])assert.equal(await count('meri_conversations.'+table,f),n,table);
+    const permits=await pool.query("SELECT count(*)::int AS count FROM meri_conversations.retention_purge_targets WHERE tenant_id=$1 AND conversation_id=$2 AND target->>'table'='meri_conversations.sdk_session_entries'",[f.b.tenantId,f.b.conversationId]);assert.equal(permits.rows[0].count,0);
+    t.diagnostic('one real SDK DELETE page, rolled back; not full-purge qualification '+JSON.stringify(pageDiagnosticResult));return;
+   }
    t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
    assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
    for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
