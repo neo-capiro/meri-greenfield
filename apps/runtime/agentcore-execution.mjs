@@ -1,5 +1,6 @@
 /** Control's invocation owner. Durable runs remain in the existing conversation journal. */
 import {createHmac,randomUUID,timingSafeEqual} from 'node:crypto';
+import {currentTurnTelemetry} from './telemetry/turn-context.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertExecutionIdentity,executionIdentity,createExecutionBinding,isExecutionOutcome} from '../control/conversations/execution-boundary.mjs';
@@ -91,6 +92,8 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
   const execution=executionIdentity(record),expected=Buffer.from(credentialFor(execution)),actual=Buffer.from(typeof credential==='string'?credential:'');
   if(actual.length!==expected.length||!timingSafeEqual(actual,expected))refuse('EXECUTION_AUTHORITY_REFUSED');
   const context=await contextFor({binding,run:saved.run,signal});checkSignal(signal)();
+  // Bind the validated execution, never an unverified request's owner fields.
+  try{currentTurnTelemetry()?.bind(execution.binding);}catch{}
   return {execution,versions:saved.run.versions,state:saved.run.state,scopes:saved.run.scopes,
    selectedClientId:context.selectedClientId,policyRevision:saved.run.policyRevision};
  }

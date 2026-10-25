@@ -58,7 +58,8 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const objectiveCore=getCoreServiceSecret?createObjectiveCorePorts({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,runStarts,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):null;
  const core=createCapiroApplicationAuthorityClient({origin:config.identity.origin,fetchImpl:coreFetch,now,enabled:true,limits:{maxRequestMs:requestMs,maxResponseBytes:131072}});
  const conversationManagement=getCoreServiceSecret?createCoreConversationManagement({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,policyRevision:config.policyRevision,nativeCredentials,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
- store??=createPostgresConversationStore({pool,modelCatalog:configuration.models,assertConversationActive:conversationManagement?.assertActiveBinding});
+ store??=createPostgresConversationStore({pool,modelCatalog:configuration.models,assertConversationActive:conversationManagement?.assertActiveBinding,
+  onPublished:event=>{turnTelemetry?.bind(event.binding);turnTelemetry?.summary(event);}});
  const routinesTask=configuration.routines?.enabled===true&&configuration.routines.task?compileNativeRoutinesTask(configuration):null;
  const routinesConfig=routinesTask?compileRoutinesCoreConfiguration(configuration):null;
  const scheduleOwner=routinesTask?createPostgresScheduleOwner({pool}):undefined;
@@ -154,6 +155,8 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
 
  async function admit({binding,signal}){
   const run=(await store.read(binding,{after:0,limit:1},check(signal))).run,context=await contextFor({binding,run,signal});
+  // Attribute current access only after the durable run and scope agree.
+  try{turnTelemetry?.bind(run.binding);}catch{}
   const current=await readCurrent({binding,run,context,signal,beforeExecution:true});
   // This is the execution lifetime, not a cached permission receipt. Business-data access rechecks Core through its own gateway.
   return {run,expiresAtMs:current.routine?current.expiresAtMs:now()+config.runWindowMs,settings:{sourceEnabled:configuration.sourceEnabled,
@@ -263,7 +266,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    return await life.run(signal=>app.handle(new Request(request.url,{method:'POST',headers,body:JSON.stringify(input),signal})));
   }catch{return absent('UNAVAILABLE');}finally{life.close();}
  }
- const application=Object.freeze({async handle(request){
+ const application=Object.freeze({handle(request){const operation=async()=>{
   if(closed)return absent('EXECUTION_UNAVAILABLE');
   const path=new URL(request.url).pathname;
   const answer=await control.handle(request);if(answer!==null)return answer;
@@ -278,13 +281,13 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    return outerApplication.handle(new Request(url,request));
   }
   return null;
- }});
+ };return turnTelemetry?turnTelemetry.provisional(operation):operation();}});
  const native=Object.freeze({verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,
-  async call(operation,input,{signal}={}){
+  call(operation,input,{signal}={}){const invoke=async()=>{
    if(closed)throw fault('EXECUTION_UNAVAILABLE');
    const method={'execution/kickoff':'kickoff','execution/kickoff/status':'status','execution/kickoff/stop':'stop'}[operation];
    if(!method)throw fault('NATIVE_OPERATION_UNAVAILABLE');return owner[method]({...input,signal});
-  },readiness});
+  };return turnTelemetry?turnTelemetry.provisional(invoke):invoke();},readiness});
  const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
  return Object.freeze({execution,native,application,admitFork,readCapabilityRole,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
