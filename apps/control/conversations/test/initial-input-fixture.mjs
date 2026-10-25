@@ -16,7 +16,7 @@ export function initialInputFixture(){
   if(sql.startsWith("SELECT set_config('statement_timeout'"))return [];
   if(sql.includes('FROM meri_objective_source.run_starts WHERE tenant_id=$1'))return [...objectiveRunStarts.values()].filter(r=>r.tenant_id===p[0]&&r.conversation_id===p[1]&&r.run_id===p[2]);
   if(sql.includes('FROM meri_objective_source.run_starts WHERE generation_job_id=$1'))return [...objectiveRunStarts.values()].filter(r=>r.generation_job_id===p[0]);
-  if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings'))return latest(p[0],p[1]);
+  if(sql.startsWith('SELECT * FROM meri_conversations.initial_run_bindings'))return p.length===3?bindings.filter(r=>r.tenant_id===p[0]&&r.conversation_id===p[1]&&r.run_id===p[2]):latest(p[0],p[1]);
   if(sql.startsWith('INSERT INTO meri_conversations.initial_run_bindings')){
    if(bindings.some(r=>r.tenant_id===p[0]&&(r.run_id===p[2]||r.conversation_id===p[1]&&r.generation===p[5])))return [];
    const r={tenant_id:p[0],conversation_id:p[1],run_id:p[2],record:copy(p[3]),record_sha256:p[4],generation:p[5]};bindings.push(r);return [r];
