@@ -88,6 +88,14 @@ async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
+ if(value.kind==='memory_review'){
+  if(value.operation.id!=='save_memory')conflict();
+  if(!Object.hasOwn(value,'review'))return;
+  const {binding,scopes}=value.review,scope=scopes[0];
+  if(binding.conversationId!==conversationId||scope.tenantId!==binding.tenantId||
+   !(scope.kind==='client'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(scope.resourceId)||scope.kind==='private-user'&&scope.resourceId===binding.actorId))conflict();
+  return;
+ }
  if(!Object.hasOwn(value,'proposal'))return;
  await proposal(value.proposal,conversationId);
  if(value.decision!==null&&typeof value.decision==='object')decision(value.decision,value.proposal);

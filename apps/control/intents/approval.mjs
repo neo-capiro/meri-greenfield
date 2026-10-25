@@ -23,6 +23,7 @@ import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
 import {nativeTaskOutcome} from './task-outcome.mjs';
+import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,DIGEST=/^[a-f0-9]{64}$/u;
 /** Commands an approved intent may execute: those with a proposal (approval-metadata) owner today. */
 export const APPROVABLE_ACTIONS=Object.freeze(['task.create','task.update','document.draft']);
@@ -145,12 +146,20 @@ export function createIntentApprovalOwner(configuration){
   fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');
  }
  /** History item for one journal entry. Content is withheld when the caller no longer sees its client scopes. */
- async function item(life,principal,entry){
+ async function item(life,principal,entry,conversationId){
   const base={deliveryId:entry.deliveryId,createdAt:entry.createdAt,operation:entry.record.operation};
   if(entry.state==='PENDING')return {...base,state:'pending'};
   if(entry.state==='UNKNOWN')return {...base,state:'unknown'};
   if(entry.state==='FAILED')return {...base,state:'failed',code:entry.outcome.code};
   const result=entry.outcome.result;
+  if(result?.status==='review_pending'||base.operation.id==='save_memory'&&!commandProposal(entry)){
+   let review;try{review=assertMemoryReviewResult(result);}catch{fail('INTENT_JOURNAL_UNAVAILABLE');}
+   if(base.operation.id!=='save_memory'||base.operation.version!=='0.2.0'||!same(review.binding,entry.outcome.release?.binding)||
+    !Array.isArray(entry.outcome.release.scopes)||review.scopes.some(scope=>!entry.outcome.release.scopes.some(original=>same(scope,original)))||
+    !same(conversationOf(review.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))fail('INTENT_JOURNAL_UNAVAILABLE');
+   if(!visible(review.scopes,principal))return {...base,state:'prepared',kind:'memory_review',withheld:true};
+   return {...base,state:'prepared',kind:'memory_review',review};
+  }
   if(result?.status==='draft'){
    if(!visible(result.version?.scopes,principal))return {...base,state:'prepared',kind:'draft',withheld:true};
    return {...base,state:'prepared',kind:'draft',versionId:result.version.versionId};
@@ -183,7 +192,7 @@ export function createIntentApprovalOwner(configuration){
    try{page=data(await life.run(s=>journal.list.call(c.journal,{conversation:{tenantId:principal.tenantId,actorId:principal.actorId,conversationId:r.conversationId},after:r.after,limit:r.limit,signal:s})));}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;fail('INTENT_JOURNAL_UNAVAILABLE');}
    own(page,['entries','next']);if(!Array.isArray(page.entries)||page.entries.length>r.limit)fail('INTENT_JOURNAL_UNAVAILABLE');
-   const intents=[];for(const entry of page.entries)intents.push(await item(life,principal,entry));
+   const intents=[];for(const entry of page.entries)intents.push(await item(life,principal,entry,r.conversationId));
    return data({conversationId:r.conversationId,intents,next:page.next});
   }finally{life.close();}
  }

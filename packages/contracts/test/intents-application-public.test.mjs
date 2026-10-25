@@ -275,14 +275,14 @@ test('metadata, paths and vocabularies are the handlers\' own, and approval auth
  assert.equal(schema.$id,'urn:meri:intents-application:0.1.0');assert(!/"\$ref":"(?!#)/u.test(text),'every reference is local to the distribution');
  const commandActions=schema.$defs[Object.keys(schema.$defs).find(name=>name.startsWith('Canonical_Command_'))].properties.action.enum;assert.deepEqual(commandActions,['memory.propose','task.create','artifact.file']);
 });
-/** Real memory.propose and artifact.file proposals from their actual preparers, listed and decided through the actual owner and HTTP application
+/** The retained artifact.file proposal from its actual preparer, listed and decided through the actual owner and HTTP application
  * with no decision or outcome owner (as before those Core extensions exist): they are admitted as prepared and answer INTENT_NOT_APPROVABLE. */
-test('actual memory.propose and artifact.file proposals are admitted as held: listed, never approvable',async()=>{
+test('actual artifact.file proposal remains held: listed, never approvable',async()=>{
  // These two fixtures load the independent budget harness, which needs an explicit source root (an explicit caller setting wins).
  process.env.MERI_REVIEW_SOURCE_ROOT??=fileURLToPath(new URL('../../../',import.meta.url)).replaceAll(String.fromCharCode(92),'/').replace(/\/$/u,'');
- const {memoryComposition}=await import('../../../apps/control/intents/test/memory-fixture.mjs'),{attachmentFilingFixture}=await import('../../../apps/control/intents/test/attachment-filing-execution-fixture.mjs');
- const memory=memoryComposition({scope:'client'}),filing=await attachmentFilingFixture();
- const cases=[['memory.propose',memory.f.binding,memory.f.state,memory.intentStore,async()=>(await memory.prepare()).proposal],['artifact.file',filing.f.binding,filing.f.state,filing.mounted.store,async()=>(await filing.prepare()).proposal]];
+ const {attachmentFilingFixture}=await import('../../../apps/control/intents/test/attachment-filing-execution-fixture.mjs');
+ const filing=await attachmentFilingFixture();
+ const cases=[['artifact.file',filing.f.binding,filing.f.state,filing.mounted.store,async()=>(await filing.prepare()).proposal]];
  for(const [action,binding,clock,store,prepare] of cases){
   const proposal=await prepare(),owner=createIntentApprovalOwner({journal:store.port,now:()=>clock.now,limits:{maxRequestMs:5000},enabled:true});
   const principal={tenantId:binding.tenantId,actorId:binding.actorId,role:'member',permissions:[],clientIds:[id(9)],membershipRevision:'m1'},at='http://127.0.0.1';

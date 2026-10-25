@@ -395,6 +395,101 @@
       ],
       "additionalProperties": false
     },
+    "IntentsMemoryReview": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "review_pending"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_MemoryProposeResult_d7a216e1"
+        }
+      },
+      "required": [
+        "status",
+        "binding",
+        "scopes",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsMemoryReviewItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "memory_review"
+        },
+        "review": {
+          "$ref": "#/$defs/IntentsMemoryReview"
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "review"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldMemoryReviewItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "memory_review"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsScheduleProposalItem": {
       "type": "object",
       "properties": {
@@ -560,6 +655,12 @@
         },
         {
           "$ref": "#/$defs/IntentsWithheldDraftItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsMemoryReviewItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldMemoryReviewItem"
         },
         {
           "$ref": "#/$defs/IntentsScheduleProposalItem"
@@ -2435,6 +2536,28 @@
         "version",
         "inspection",
         "execution"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MemoryProposeResult_d7a216e1": {
+      "type": "object",
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "const": "pending"
+        }
+      },
+      "required": [
+        "candidateId",
+        "commandSha256",
+        "status"
       ],
       "additionalProperties": false
     }

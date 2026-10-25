@@ -33,3 +33,7 @@ await receiveIntentsRequest('approve','{}');
 const bad:IntentsDecideRequest={conversationId:'id',deliveryId:'sdk:x',proposalId:'id',commandSha256:'x',decision:'maybe'};void bad;
 // @ts-expect-error the exact HTTP vocabulary is closed
 const wrong:IntentsErrorResponse={error:{code:'NOT_AN_INTENT_ERROR'}};void wrong;
+
+if(!('error'in listed))for(const entry of listed.intents){if(entry.state==='prepared'&&entry.kind==='memory_review'&&!('withheld'in entry)){const pending:'pending'=entry.review.result.status;const candidate:string=entry.review.result.candidateId;void pending;void candidate;
+ // @ts-expect-error governed memory review is not a task approval
+ const decision=entry.decision;void decision;}}

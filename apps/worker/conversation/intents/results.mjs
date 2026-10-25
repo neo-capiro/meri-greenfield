@@ -1,5 +1,5 @@
 // @ts-check
-/** Closed result texts for `meri_intents` tools. A prepared result always says that nothing has changed yet; every
+/** Closed result texts for `meri_intents` tools. Memory submission is pending review, never publication; every
  * failure is `isError:true` with one fixed text per closed code and no owner detail. UNKNOWN is never rendered as a
  * failure that may be retried: the preparation may exist, and repeating the request is refused by the replay journal. */
 const UNCHANGED='Nothing has been changed.';
@@ -26,12 +26,15 @@ export function intentFailureCode(error){
 }
 /** @param {string} code @param {string} tool */
 export function intentFailureResult(code,tool){
+ if(tool.endsWith('propose_memory'))return {isError:true,content:[{type:/** @type {const} */('text'),text:`${Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR'}: the memory review result was not released. A candidate may already exist; do not repeat the request. Check pending memory reviews. This is not confirmation that memory was saved or published.`}]};
  return {isError:true,content:[{type:/** @type {const} */('text'),text:(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool)}]};
 }
 /** The prepared result exactly as the owner returned it, then one fixed instruction block.
- * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'} status */
+ * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'} status */
 export function preparedResult(json,status){
- const notice=status==='analysis_pending'
+ const notice=status==='review_pending'
+  ?'SUBMITTED FOR REVIEW: a memory candidate is pending governed Core review. It has not been saved or published as memory. Do not ask for a task approval or say the memory was saved.'
+  :status==='analysis_pending'
   ?'ANALYSIS OUTPUTS PENDING: the admitted analysis owner returned durable output references. Inspection and publication remain pending; do not say these outputs are published or filed.'
   :status==='draft'
   ?'PREPARED DRAFT: an immutable draft version was created for the user to review. Nothing else has been changed; filing or sharing it is a separate request.'

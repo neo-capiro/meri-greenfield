@@ -115,8 +115,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "36644ef6fceb21e3b1c46f3a08323bc5e191d25164798b560a03fc7b4e1fed15",
-      "bytes": 18494
+      "sha256": "c3ec892959f525ad49fed7f0154772501492dd39f56c4ca83fffb79717f81d50",
+      "bytes": 19442
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -159,6 +159,16 @@
       "bytes": 3718
     },
     {
+      "path": "commands-0.2/memory-propose.schema.json",
+      "sha256": "64bbf814a3ab3ffca858c752a9e73eee84bdc437dae01d39b624012b72d79dac",
+      "bytes": 3500
+    },
+    {
+      "path": "commands-0.2/memory-review-result.mjs",
+      "sha256": "f8c7f02b183b6b33cad8133cb4228afcc21b346e9c5ccd8c16f56d73fb03d56c",
+      "bytes": 941
+    },
+    {
       "path": "commands-0.2/task-create.schema.json",
       "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
       "bytes": 3827
@@ -175,8 +185,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "37f1a537929a0f6ad5aa0fb94702a47f9826c8082e898e6dc92cd6a7eaf1b058",
-      "bytes": 10131
+      "sha256": "5b07719654d6faf788bccf05a0af8ca22045a0f5948ce6fac2c47e5c2dbda88b",
+      "bytes": 10213
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -200,13 +210,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "bd6b4d4a9dbf9090a8df6961912565b364483c0e6ebe9acbc1b2b8d88fad1651",
-      "bytes": 5248
+      "sha256": "e73d37473360c6af66c1ad60e338678ff0081cb13ef48840102bac456fd79714",
+      "bytes": 5799
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "a3660f0a675dfff02999016e87e2e2d704707863f7b9ec31a22a84a559b17e86",
-      "bytes": 9433
+      "sha256": "5bb28ea859e9d25c9845b051948592e697061f490dd385d3efc0f3c832470332",
+      "bytes": 9909
     },
     {
       "path": "meri.schema.json",
@@ -214,7 +224,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "d1ada62f49f460d6a7e3aced315845f4c370f4599cf3d2d0101906a713d2701a",
+  "schemaSha256": "eae6b0b957d6ec13e6802bf5391bfc4877b89c506bd1e6eb9e10ddd7cb03cb3b",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",

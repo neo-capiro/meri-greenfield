@@ -6,6 +6,7 @@ const pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const task=name=>({$ref:'urn:meri:commands:task-create:0.2.0#/$defs/'+name});
 const update=name=>({$ref:'urn:meri:commands:task-update:0.2.0#/$defs/'+name});
 const document=name=>({$ref:'urn:meri:commands:document-draft:0.2.0#/$defs/'+name});
+const memory=name=>({$ref:'urn:meri:commands:memory-propose:0.2.0#/$defs/'+name});
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
@@ -30,11 +31,14 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsFailedItem:item({state:{const:'failed'},code:{enum:[...failureCodes]}}),
  IntentsDraftItem:item({state:{const:'prepared'},kind:{const:'draft'},versionId:{type:'string',format:'uuid'}}),
  IntentsWithheldDraftItem:item({state:{const:'prepared'},kind:{const:'draft'},withheld:{const:true}}),
+ IntentsMemoryReview:object({status:{const:'review_pending'},binding:pub('RunBinding'),scopes:{type:'array',items:pub('Scope'),minItems:1,maxItems:1},result:memory('MemoryProposeResult')}),
+ IntentsMemoryReviewItem:item({state:{const:'prepared'},kind:{const:'memory_review'},review:ref('IntentsMemoryReview')}),
+ IntentsWithheldMemoryReviewItem:item({state:{const:'prepared'},kind:{const:'memory_review'},withheld:{const:true}}),
  IntentsScheduleProposalItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},proposalId:{anyOf:[{type:'string',minLength:1,maxLength:128},{type:'null'}]}}),
  IntentsWithheldProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},withheld:{const:true}}),
  IntentsProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},proposal:ref('IntentsProposal'),decision:{anyOf:[ref('IntentsDecision'),{type:'null'},{const:'unavailable'}]},
   execution:{anyOf:[ref('IntentsExecution'),{type:'null'},{const:'unavailable'}]},phase:{enum:[...INTENT_PHASES]}}),
- IntentsItem:{oneOf:['Pending','Unknown','Failed','Draft','WithheldDraft','ScheduleProposal','WithheldProposal','Proposal'].map(name=>ref('Intents'+name+'Item'))},
+ IntentsItem:{oneOf:['Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','WithheldProposal','Proposal'].map(name=>ref('Intents'+name+'Item'))},
  IntentsListResponse:object({conversationId:ref('IntentsConversationId'),intents:{type:'array',items:ref('IntentsItem'),maxItems:50},next:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]}}),
  IntentsDecideResponse:{oneOf:[
   object({status:{const:'rejected'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsDecision')}),

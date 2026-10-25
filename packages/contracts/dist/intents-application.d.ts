@@ -18,6 +18,9 @@ export type IntentsApplicationEnvelope =
   | IntentsFailedItem
   | IntentsDraftItem
   | IntentsWithheldDraftItem
+  | IntentsMemoryReview
+  | IntentsMemoryReviewItem
+  | IntentsWithheldMemoryReviewItem
   | IntentsScheduleProposalItem
   | IntentsWithheldProposalItem
   | IntentsProposalItem
@@ -192,6 +195,8 @@ export type IntentsItem =
   | IntentsFailedItem
   | IntentsDraftItem
   | IntentsWithheldDraftItem
+  | IntentsMemoryReviewItem
+  | IntentsWithheldMemoryReviewItem
   | IntentsScheduleProposalItem
   | IntentsWithheldProposalItem
   | IntentsProposalItem;
@@ -525,6 +530,37 @@ export interface IntentsWithheldDraftItem {
   operation: IntentsOperation;
   state: 'prepared';
   kind: 'draft';
+  withheld: true;
+}
+export interface IntentsMemoryReview {
+  status: 'review_pending';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  result: Canonical_MemoryProposeResultD7A216E1;
+}
+export interface Canonical_MemoryProposeResultD7A216E1 {
+  candidateId: string;
+  commandSha256: string;
+  status: 'pending';
+}
+export interface IntentsMemoryReviewItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'memory_review';
+  review: IntentsMemoryReview;
+}
+export interface IntentsWithheldMemoryReviewItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'memory_review';
   withheld: true;
 }
 export interface IntentsScheduleProposalItem {

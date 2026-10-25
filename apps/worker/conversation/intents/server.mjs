@@ -34,7 +34,7 @@ export const INTENT_TIMEOUT_MS=Object.freeze({min:1000,max:60000});
 export const MAX_INTENT_CALLS=8;
 const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/** @type {const} */('PreToolUse'),permissionDecision:/** @type {const} */('deny'),permissionDecisionReason:reason}});
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,outcome:'prepared'|'unknown',status:'approval_required'|'draft'|'analysis_pending'|null,reference:string|null,resultSha256:string|null}} IntentReceipt */
+/** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,outcome:'prepared'|'unknown',status:'approval_required'|'draft'|'analysis_pending'|'review_pending'|null,reference:string|null,resultSha256:string|null}} IntentReceipt */
 /**
  * `mounted` (G3 profile mount): the rows to register, a superset of `available` (which may then be empty); a mounted row outside
  * `available` answers UNAVAILABLE through `stillAvailable`. Without it exactly the available rows are registered, as before.
@@ -87,7 +87,7 @@ export function createIntentServer(c){
   }finally{life?.close();}
  };
  const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name)));
- const instructions=['Governed write requests for this conversation. Each tool only prepares: an immutable proposal the user must approve in Meri, or an immutable draft version. Never say a change was made; say what was prepared and that it awaits the user\'s approval.',
+ const instructions=['Governed write requests for this conversation. Tools return an immutable proposal awaiting approval, an immutable draft, or a memory candidate submitted for governed Core review. A review_pending memory result is not saved or published memory and needs no task approval.',
   ...(profile?[c.available.length?`Available now: ${c.available.map(r=>r.operation.id).join(', ')}.`:'No write request can be prepared in this conversation right now.','Every other operation of these tools answers UNAVAILABLE in this conversation.']:[`Available: ${c.available.map(r=>r.operation.id).join(', ')}.`]),'Any other write, external action or memory change is not available in this conversation.'].join('\n');
  const server=createSdkMcpServer({name:INTENT_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad:true,timeout:c.timeoutMs});
  const allowedTools=Object.freeze(tools.map(t=>t.name)),allowed=new Set(allowedTools);
