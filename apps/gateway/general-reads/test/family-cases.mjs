@@ -69,11 +69,6 @@ export function familyCase(family,id){
   transport={endpoints:{search_memory:'https://synthetic-core.example.invalid/api/clio/tools/search_memory'},
    getCredentials:async p=>({...f.credentials(p),invocationId:p.invocationId,
     authorizationScheme:'CapiroMeriRead',target:p.target,correlationSha256:p.correlationSha256}),
-   getEligibilityCredentials:async p=>({...f.receiptPins(p),invocationId:p.invocationId,
-    pageProof:p.pageProof,pageBodySha256:p.pageBodySha256,pageRequestSha256:p.pageRequestSha256,
-    resultSha256:p.resultSha256,recordsSha256:p.recordsSha256,authorizationScheme:'CapiroMeriRead',
-    target:p.target,correlationSha256:p.correlationSha256,bearerToken:'SYNTHETIC_HELPER_TOKEN',
-    serviceSecret:'SYNTHETIC_HELPER_SECRET',expiresAtMs:p.deadlineMs}),
    fetchImpl:async(url,options)=>{
     const body=JSON.parse(options.body);
     if(new URL(url).pathname==='/api/clio/tools/search_memory')return new Response(JSON.stringify(f.page(body.input)),
