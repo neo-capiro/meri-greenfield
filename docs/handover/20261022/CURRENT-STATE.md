@@ -21,7 +21,7 @@ Settings, Mail, Portfolio, frontend, runtime and environment work are active in 
 
 Evidence stays in the existing local `C:/dev/wave2-evidence-20261024` owner folders and visible-lane handoffs. This checkpoint names source states, not new authorization, a new release framework or a promise that every advertised feature has passed.
 
-## Earlier release receipt — 24 October 2026
+## Historical 24 October 2026 receipt
 
 Documentation cutoff **24 October 2026, 21:37 UTC**, incorporating root's Core migration verification at 21:30 and subsequent rollout handoff, on Meri main `5f1e166ea9919789dbe9d2e17bd451e846c0c6fa`. This is a fixed receipt, not a continuously refreshed environment inventory. Root owns later readbacks. No cloud, deployment, database or browser action was performed for this documentation update.
 
