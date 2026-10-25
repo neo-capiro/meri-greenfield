@@ -46,6 +46,8 @@ A change is not done until what it replaced is gone.
 - Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
 - The original read-only first cut is historical. Neo subsequently authorized preview client-record writes and autonomous Wave 2 completion. Activate accepted writes through their existing authenticated domain/intent owners and receipts, with the actual route/configuration and effect semantics verified. This does not authorize the assistant to send external mail without the user's specific send instruction.
 
+**Continuation allocation, 25 October 2026:** this brief is preserved as history. The bounded next assignment is [W3-CONTINUE-A3-WORKSPACE-UI.md](W3-CONTINUE-A3-WORKSPACE-UI.md); accepted prior evidence and full-ticket obligations remain unchanged. Do not redispatch this historical broad allocation.
+
 FROM: Root Codex | TO: A3 Workspace UI author (fresh xhigh session) | TYPE: brief | RE: Wave 3 · A3 Workspace UI
 
 # Wave 3 · A3 Workspace UI

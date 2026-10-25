@@ -46,6 +46,8 @@ A change is not done until what it replaced is gone.
 - Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
 - The original read-only first cut is historical. Neo subsequently authorized preview client-record writes and autonomous Wave 2 completion. Activate accepted writes through their existing authenticated domain/intent owners and receipts, with the actual route/configuration and effect semantics verified. This does not authorize the assistant to send external mail without the user's specific send instruction.
 
+**Continuation allocation, 25 October 2026:** preserved historical brief; see the [current citation hold](W3-CONTINUE-M3-CITATIONS-HOLD.md). Corrected PR141 is accepted in its bounded source scope; no fourth author dispatch is allocated while actual source-viewer/outcome/usage/hearing contracts remain dependencies. Earlier cutoffs below are unchanged.
+
 FROM: Root Codex | TO: M3 citation/evidence UI author (fresh xhigh session) | TYPE: brief | RE: Wave 3 · M3 citation and evidence UI
 
 # Wave 3 · M3 citation and evidence UI
