@@ -186,7 +186,6 @@
                 "COMMAND_PREPARATION_REFUSED",
                 "COMMAND_REFUSED",
                 "DEADLINE",
-                "EXECUTION_AUTHORITY_REFUSED",
                 "INVALID_BODY",
                 "INVALID_CONTENT_LENGTH",
                 "INVALID_JSON",

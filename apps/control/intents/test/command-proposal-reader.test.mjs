@@ -23,6 +23,7 @@ const unknown=p=>assert.rejects(p,e=>e?.code==='UNKNOWN');
 test('reads the PREPARED command proposal only for its own tenant, actor and conversation, frozen and read-only',async()=>{
  const s=await setup(),p=await s.reader.readProposal(s.selection);
  assert.deepEqual(p,s.proposal);assert.ok(Object.isFrozen(p)&&Object.isFrozen(p.command.binding));
+ const prepared=await s.reader.readPreparedCommand(s.selection);assert.deepEqual(prepared.outcome.result.proposal,p);assert.equal(prepared.key.deliveryId,'sdk:'+'c'.repeat(64));assert.equal(prepared.key.actorId,s.binding.actorId);assert.equal(prepared.state,'PREPARED');
  assert.equal(await s.reader.readProposal({...s.selection,actorId:'other-actor'}),null);
  assert.equal(await s.reader.readProposal({...s.selection,conversationId:'00000000-0000-4000-8000-000000000099'}),null);
  assert.equal(await s.reader.readProposal({...s.selection,tenantId:'other-tenant'}),null);

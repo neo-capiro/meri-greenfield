@@ -12,12 +12,12 @@ const WRITE_FAMILIES=[['intents',createIntentsFamily],['tasks',createTasksFamily
 const base={sourceEnabled:false,versions,http:{hostname:'127.0.0.1',port:1001,frontendOrigin:'https://ui.synthetic.invalid'},
  limits:{requestMs:1000,requestBytes:131072,startupMs:1000,shutdownMs:1000},native:{maxResponseBytes:131072,capabilityFile:'cap'},database:{connectionFile:'db'},
  temporal:{taskQueue:'synthetic',namespace:'synthetic',address:'synthetic',tls:{caFile:'ca',certFile:'cert',keyFile:'key'}},sessions:{mode:'process-local',replicas:1,maxSessions:10,maxTtlMs:3000}};
-function assemble(intents,{gate}={}){
+function assemble(intents,{gate,sourceEnabled=false}={}){
  const touched=[];
- const pool={connect(){touched.push('pool');throw Error('no SQL in this test');},query(){touched.push('pool');throw Error('no SQL');}};
+ const pool={options:{connectionTimeoutMillis:30000,query_timeout:30000},connect(){touched.push('pool');throw Error('no SQL in this test');},query(){touched.push('pool');throw Error('no SQL');}};
  const native={async call(operation){touched.push(operation);throw Error('no Core');},async readiness(){}};
  const client={workflow:{async start(){touched.push('temporal');},getHandle(){touched.push('temporal');}}};
- const assembly=assembleControl({configuration:{...base,...(intents?{intents}:{})},pool,client,native,now:Date.now,
+ const assembly=assembleControl({configuration:{...base,sourceEnabled,...(intents?{intents}:{}),...(intents?.core?{retention:{}}:{})},pool,client,native,execution:{authenticate(){throw Error('No worker execution');}},now:Date.now,
   ...(gate?{canonicalProductPorts:{conversationMembership:gate}}:{}),productPortsFactory:createProductPortsFactory({families:WRITE_FAMILIES})});
  const owner=name=>assembly.productReadiness().owners.find(o=>o.name===name).state;
  return {assembly,touched,owner};
@@ -46,4 +46,14 @@ test('intents enabled with the canonical membership gate: the intent application
 });
 test('malformed intents configuration stops assembly before any owner is used',()=>{
  assert.throws(()=>assemble({enabled:'yes'}),e=>e?.code==='INTENTS_CONFIGURATION');
+});
+test('source-enabled Core native tasks are mounted without an allocation or model invocation',async()=>{
+ const gate={async admit(){throw Error('no authority');},async recheck(){throw Error('no authority');}};
+ const {assembly,touched,owner}=assemble({enabled:true,core:{origin:'https://core.invalid',serviceSecretFile:'C:/synthetic/service-secret'}},{gate,sourceEnabled:true});
+ try{
+  assert.equal(owner('tasks.commands'),'composed');
+  const r=await post(assembly,'/api/task-commands/prepare',{requestId:'00000000-0000-4000-8000-000000000070',arguments:{taskId:'00000000-0000-4000-8000-000000000021',title:'Update'}});
+  assert.equal(r.status,401);assert.equal((await r.json()).error.code,'UNAUTHENTICATED');assert.deepEqual(touched,[]);
+  assert.ok(!assembly.intentTables.includes('meri_commands.command_journal'));
+ }finally{await assembly.close();}
 });

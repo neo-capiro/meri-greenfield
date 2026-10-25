@@ -36,7 +36,6 @@
     "COMMAND_PREPARATION_REFUSED": 502,
     "COMMAND_REFUSED": 502,
     "DEADLINE": 408,
-    "EXECUTION_AUTHORITY_REFUSED": 403,
     "INVALID_BODY": 400,
     "INVALID_CONTENT_LENGTH": 400,
     "INVALID_JSON": 400,
@@ -85,18 +84,18 @@
     },
     {
       "path": "../../apps/control/task-command-application/index.mjs",
-      "sha256": "20ef41575827947a5acce9736a968b05248d5aacbc912cbafc08842d24598e1a",
-      "bytes": 3629
+      "sha256": "0cdef66c61b27c1d36dfd2e5681926663b60d1c56a51afd417a32ae0ee643bca",
+      "bytes": 3170
     },
     {
       "path": "../../apps/control/task-command-application/session.mjs",
-      "sha256": "ead3d438ad44b5b74313724aa2e4a2b78fd9e67c2525d78939c7061399ea98b8",
-      "bytes": 2028
+      "sha256": "3398fde5bca6526bc312bab009971822100bb6ff5b4b53fb434dc0780303bd4e",
+      "bytes": 955
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "51792dc6e474e612c8a85af7a8e1c8aed567b30389ed52e5c70267440e9db292",
-      "bytes": 15125
+      "sha256": "5c21f3568d229b391f718943cd8d14a5a3ee5f43976dc4ef8622ca77304d9279",
+      "bytes": 15153
     },
     {
       "path": "commands-0.2/native-task-outcome-schema.mjs",
@@ -169,7 +168,7 @@
       "bytes": 3757
     }
   ],
-  "schemaSha256": "362906b176b3ebf6da475acc68a20c2ed916e06d7362f4dd9a8c713f9dad0edb",
+  "schemaSha256": "38f46fb3dbabf167c9d7bc4a3a245b63807a179b9c92e56789f2850b0458ae39",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/task-update-validation.mjs",

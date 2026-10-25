@@ -140,7 +140,7 @@ export function createPostgresScheduleProposalReader({pool}){
  * or execution authority, and it takes no credential (an execution capability can never reach it). */
 export function createPostgresCommandProposalReader({pool}){
  const tx=journalTransaction(pool),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
- return Object.freeze({async readProposal(selection){
+ async function readPreparedCommand(selection){
   const {signal,...raw}=own(selection,['tenantId','actorId','conversationId','proposalId'],['signal']),s=data(raw);nativeSignal(signal);
   try{validateShape('Identity',{tenantId:s.tenantId,actorId:s.actorId});}catch{throw intentFault('INVALID_ARGUMENTS');}
   if(typeof s.conversationId!=='string'||!uuid.test(s.conversationId)||typeof s.proposalId!=='string'||!uuid.test(s.proposalId))throw intentFault('INVALID_ARGUMENTS');
@@ -161,8 +161,9 @@ export function createPostgresCommandProposalReader({pool}){
     if(proposal.proposalId!==s.proposalId||b.tenantId!==storedKey.tenantId||b.actorId!==storedKey.actorId||b.conversationId!==storedKey.conversationId||
      hash(r)!==hash(b)||retained.record.operation.id!==({'task.create':'create_task','task.update':'update_task','document.draft':'create_word'}[proposal.command.action])||
      hash(custody.release.scopes)!==hash(proposal.command.scopes))refuse('INTENT_JOURNAL_STATE');
-    return data(proposal);
+    return data({key:storedKey,...retained});
    }catch{refuse('INTENT_JOURNAL_STATE');}
   },{readOnly:true});
- }});
+ }
+ return Object.freeze({readPreparedCommand,async readProposal(selection){const row=await readPreparedCommand(selection);return row===null?null:row.outcome.result.proposal;}});
 }

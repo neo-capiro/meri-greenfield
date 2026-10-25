@@ -77,7 +77,7 @@ export function composeRuntimePorts(canonical,supplemental){
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
 export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,managementSuppression,conversationStore,userPreferences}){
- const taskApplication=configuration.sourceEnabled===true?(ports.taskCommandApplication??ports.taskCommandApplicationFactory?.create({sessions})):null;
+ const taskApplication=configuration.sourceEnabled===true?(ports.taskCommandApplication??ports.taskCommandApplicationFactory?.create({sessions,conversationStore,retention})):null;
  if(types.isPromise(taskApplication)){Promise.prototype.then.call(taskApplication,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const handleTask=taskApplication==null?null:storageMethod(taskApplication,'handle');
  const routines=ports.routinesApplicationFactory?ports.routinesApplicationFactory.create({sessions}):null;

@@ -146,7 +146,6 @@ export interface TaskCommandErrorResponse {
       | 'COMMAND_PREPARATION_REFUSED'
       | 'COMMAND_REFUSED'
       | 'DEADLINE'
-      | 'EXECUTION_AUTHORITY_REFUSED'
       | 'INVALID_BODY'
       | 'INVALID_CONTENT_LENGTH'
       | 'INVALID_JSON'
@@ -227,7 +226,6 @@ export declare const taskCommandMetadata:{
     "COMMAND_PREPARATION_REFUSED": 502,
     "COMMAND_REFUSED": 502,
     "DEADLINE": 408,
-    "EXECUTION_AUTHORITY_REFUSED": 403,
     "INVALID_BODY": 400,
     "INVALID_CONTENT_LENGTH": 400,
     "INVALID_JSON": 400,
