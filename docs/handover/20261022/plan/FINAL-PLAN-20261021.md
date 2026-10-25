@@ -17,6 +17,8 @@ The two closeout plans stay the detailed specs: each ticket there already has it
 
 ## 0. Current Wave 2 execution — 24 October 2026
 
+**25 October successor checkpoint:** [CURRENT-STATE](../CURRENT-STATE.md#successor-audit--25-october-2026) supersedes the implementation/deployment status in the dated tables below. All sessions have resumed. One agent completes the preserved local environment while independent product work continues. Accepted successor code now covers skills/client handoff, conversation management, Objective, task/document/file/memory actions, meeting/artifact/file-access recovery, current Mail reads and contact transfer. Routines and General task reads are source-reviewed. Remaining implementation includes the paired routines/contact/brief consumers, file delete/copy and calendar recovery, missing data adapters/General parity, and the identified retention/late-hold defects. Combined local acceptance and the successor AWS release have not occurred. Preserve the full ticket scope below, but do not restart already accepted implementation or repeat unchanged checks.
+
 This reconciles the accepted source inventory at 21:25 with root's subsequent release handoff at the 21:37 documentation cutoff. [CURRENT-STATE](../CURRENT-STATE.md) owns exact release/migration stages; [WORKFLOW](../WORKFLOW.md) owns the execution loop. The original phase/ticket/decision tables below retain scope and lineage. **Implemented, reviewed, built/qualified, deployed and accepted are distinct states.** A missing live receipt is not proof that implementation is missing.
 
 ### Immediate release and remaining source work
