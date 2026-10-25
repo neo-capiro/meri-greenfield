@@ -146,9 +146,11 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   * predicate as readExecution, but the source control is read without FOR UPDATE and neither a transaction nor a source-run read
   * is started, so a reader holding only the target conversation's lock can never invert cross-conversation lock order. Returns the
   * verified envelope, or null for a row with no stored continuation. */
- async function readContinuation(c,r,check){if(r.continuation===null||r.continuation===undefined)return null;const {saved,envelope}=savedContinuation(r),b=r.projection.binding;
+ async function readContinuation(c,r,check){if(r.continuation===null||r.continuation===undefined)return null;let saved,envelope;const b=r.projection.binding;
+  try{({saved,envelope}=savedContinuation(r));}catch{fail('STORE_CORRUPT');}
+  // Only synchronous stored-data validation is corruption; query failures and caller cancellation retain their own semantics.
   const rows=(await c.query('SELECT * FROM meri_conversations.controls WHERE tenant_id=$1 AND control_id=$2',[continuationSource(envelope).tenantId,envelope.controlId])).rows;check();
-  if(rows.length>1)fail('STORE_CORRUPT');verifyContinuation(rows.length?decode(rows[0]):null,b,r,envelope,saved);return envelope;}
+  try{if(rows.length>1)fail('STORE_CORRUPT');verifyContinuation(rows.length?decode(rows[0]):null,b,r,envelope,saved);return envelope;}catch{fail('STORE_CORRUPT');}}
  async function withSource(value,check,body,{transcripts=false}={}){
   const {binding:b,scopes,selectedClientId}=value;
   const discovered=await tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);if(!r.continuation)return null;

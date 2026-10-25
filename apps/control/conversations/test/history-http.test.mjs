@@ -28,6 +28,7 @@ async function fixture({lifecycle=false,extraClient=false,general=false}={}){
  }
  // Script only the two newly added read queries; canonical write/next-run SQL keeps its existing independent fixture.
  const pool={async connect(){const c=await f.pool.connect();return {...c,async query(sql,p){
+  if(sql.startsWith('SELECT * FROM meri_conversations.controls')&&!sql.includes('FOR UPDATE'))await state.onHistoryCustodyRead?.();
   if(sql.includes('owner_actor_id=$2'))return {rows:[...state.conversations.values()].filter(r=>r.tenant_id===p[0]&&r.owner_actor_id===p[1]&&r.projection.scopes.every(s=>s.kind!=='client'||p[2].includes(s.resourceId)))
    .sort((a,b)=>b.projection.createdAt.localeCompare(a.projection.createdAt)||b.conversation_id.localeCompare(a.conversation_id))
    .filter(r=>p[3]===null||r.projection.createdAt<p[3]||r.projection.createdAt===p[3]&&r.conversation_id<p[4]).slice(0,p[5])};
@@ -461,3 +462,45 @@ test('concurrent transcript reads of one continued conversation project the same
   assert.deepEqual(new Set(ids),new Set([f.input.requestId]));
  }finally{f.close();}
 });
+
+// Model an unavailable parent read projection, not a bare SQL DELETE: the real source-run foreign key and purge guards remain.
+function removeParentReadModel(f){
+ for(const [key,row] of f.state.conversations)if(row.conversation_id===binding.conversationId)f.state.conversations.delete(key);
+ for(const [key,row] of f.state.runs)if(row.conversation_id===binding.conversationId){f.state.runs.delete(key);f.state.events.delete(key);}
+}
+for(const corrupt of ['envelope-mode','proof-session'])test(`canonical corruption classification: malformed ${corrupt} remains stored corruption`,async()=>{
+ const f=await fixture({lifecycle:true});try{const {receipt,controlKey}=await admitted(f,'resume',{imageDigest:`sha256:${'f'.repeat(64)}`});
+  if(corrupt==='envelope-mode'){const row=targetRow(f,receipt);row.continuation.continuation.mode='unsupported';row.continuation_sha256=hash(row.continuation);}
+  else{const control=f.state.controls.get(controlKey);control.projection.proof.sdkSession.key.sessionId='malformed';control.projection_sha256=hash(control.projection);}
+  await refusesLineage(f,receipt.targetBinding.conversationId);
+ }finally{f.close();}
+});
+test('canonical corruption classification: custody query transport failure remains unavailable',async()=>{
+ const f=await fixture({lifecycle:true});try{const {receipt}=await admitted(f,'fork',{imageDigest:`sha256:${'f'.repeat(64)}`});let reads=0;
+  f.state.onHistoryCustodyRead=async()=>{reads++;throw Object.assign(new Error('synthetic connection lost'),{code:'ECONNRESET'});};
+  const {response,page}=await readTranscript(f,receipt.targetBinding.conversationId);assert.equal(reads,1);assert.equal(response.status,503);assert.deepEqual(page,{error:{code:'CONVERSATION_UNAVAILABLE'}});
+ }finally{f.close();}
+});
+for(const [scope,general] of [['client',false],['General',true]]){
+ test(`parent retention: native ${scope} fork remains readable with retained custody while its own suppression still fences release`,async()=>{
+  const f=await fixture({lifecycle:true,general});try{const {receipt,controlKey}=await admitted(f,'fork',{imageDigest:`sha256:${'f'.repeat(64)}`});
+   const principal={tenantId:binding.tenantId,actorId:binding.actorId},subject=subjectId=>({tenantId:binding.tenantId,kind:'conversation',subjectId});
+   const custody=structuredClone(f.state.controls.get(controlKey));
+   await f.retentionOwner.suppress({principal,subject:subject(binding.conversationId),reason:'parent removed'});
+   removeParentReadModel(f);f.state.coreReads.length=0;
+   const {response,page}=await readTranscript(f,receipt.targetBinding.conversationId);assert.equal(response.status,200);
+   assert.equal(page.turns.length,1);assert.deepEqual(page.turns[0].promptLineage,{kind:'fork',logicalRequestId:page.turns[0].request.requestId,sourceBinding:binding,sourceRequestId:f.input.requestId});
+   assert.ok(f.state.coreReads.length>0);assert.ok(f.state.coreReads.every(read=>read.conversationId===receipt.targetBinding.conversationId));
+   assert.deepEqual(f.state.controls.get(controlKey),custody,'reading a child never recreates or changes parent custody');
+   await f.retentionOwner.suppress({principal,subject:subject(receipt.targetBinding.conversationId),reason:'child removed'});
+   const denied=await readTranscript(f,receipt.targetBinding.conversationId);assert.equal(denied.response.status,503);assert.deepEqual(denied.page,{error:{code:'CONVERSATION_UNAVAILABLE'}});
+  }finally{f.close();}
+ });
+ test(`parent retention: native ${scope} fork refuses removed canonical custody after parent removal`,async()=>{
+  const f=await fixture({lifecycle:true,general});try{const {receipt,controlKey}=await admitted(f,'fork',{imageDigest:`sha256:${'f'.repeat(64)}`});
+   removeParentReadModel(f);assert.equal((await readTranscript(f,receipt.targetBinding.conversationId)).response.status,200,'retained custody is sufficient without parent read rows');
+   f.state.controls.delete(controlKey);await refusesLineage(f,receipt.targetBinding.conversationId);
+   assert.equal(f.state.controls.has(controlKey),false,'missing custody is neither repaired nor inferred from the self-hashed envelope');
+  }finally{f.close();}
+ });
+}
