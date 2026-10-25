@@ -9,8 +9,8 @@
     },
     {
       "path": "../../apps/control/action-application/index.mjs",
-      "sha256": "2feb42ac60e3f5dd5b25eccdd5fe28d909fb2179266e2a526d0413f2164c696b",
-      "bytes": 3549
+      "sha256": "a2bbc2f1b7b057dbbd182b49b23123a07f07986c1f7e44e794030660172573c5",
+      "bytes": 3578
     },
     {
       "path": "../../apps/control/action-application/session.mjs",
@@ -19,18 +19,18 @@
     },
     {
       "path": "action-application/receive.mjs",
-      "sha256": "85de58dcf24c643d31a90cc46c879ae7d679d1c7445ccf69f875484650fdea61",
-      "bytes": 6655
+      "sha256": "642d37ddcbff94cec0c32974d06e6cc4d3009d60a5ee9081f94e51b701ebac2c",
+      "bytes": 7441
     },
     {
       "path": "action-application/schema.mjs",
-      "sha256": "174a36470783a7cae5c3aa7b2f6784c3226315f9c625cd618dad753e851314b4",
-      "bytes": 2456
+      "sha256": "ad91e375c0d05c25e67ecb5f7a2274cc070f3fb7133f3068ddb5b50ebf035b4d",
+      "bytes": 2514
     },
     {
       "path": "commands-0.2/native-task-outcome-schema.mjs",
-      "sha256": "a808d7d522e8014e1255d4162f095dc14d1c7e1e910eff29b13d447ddb9f3436",
-      "bytes": 670
+      "sha256": "e35e1dd8cb0193f144df76fe4c470d4e4e499a9b30900b739983c14f33081dd3",
+      "bytes": 1284
     },
     {
       "path": "commands-0.2/task-create.schema.json",
@@ -73,7 +73,7 @@
       "bytes": 1751
     }
   ],
-  "schemaSha256": "d2994e4a51eb5bd287bd62142a4affeb690ae904a289934ab484ccb29d185365",
+  "schemaSha256": "ddbb3bb99a3550034137f1c9bed937bba3f4afb5ff93e559be3f386324a7c127",
   "browserInputs": [
     "action-application/action-application/receive.mjs",
     "action-generated:./generated-status.mjs",

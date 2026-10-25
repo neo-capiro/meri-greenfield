@@ -17,6 +17,7 @@ import {createActionFollowthrough} from '../../control/action-followthrough/inde
 import {draft as admittedDraft} from '../../control/action-followthrough/selection.mjs';
 import {createActionApplication} from '../../control/action-application/index.mjs';
 import {createNativeTaskClientResolver} from './task-client-reference.mjs';
+import {nativeTaskNotExecuted} from '../../control/intents/task-outcome.mjs';
 const same=(a,b)=>hash(a)===hash(b),deny=()=>{throw intentFault('ACCESS_DENIED','none');};
 export const publicTaskDelivery=(operation,requestId)=>'sdk:'+hash({kind:'public-task-preparation',operation,requestId});
 
@@ -96,7 +97,12 @@ export function createStandaloneTaskSessions({context,sessions,store,retention,s
    if(retained===null||!same(retained.outcome.result.proposal,proposal))deny();
    const deliveryId=retained.key.deliveryId,value={proposal,principal,deliveryId,signal,deadlineMs};
    const stored=await shared.tasks.read(value);await fresh(signal);
-   if(stored!==null){if(stored.state==='OUTCOME')return {status:'observed',outcome:stored.outcome};if(stored.state==='UNKNOWN')return {status:'indeterminate',outcome:null};deny();}
+   if(stored!==null){
+    if(stored.state==='OUTCOME')return {status:'observed',outcome:stored.outcome};
+    if(stored.state==='UNKNOWN')return {status:'indeterminate',outcome:null};
+    if(stored.state==='NOT_EXECUTED'){const {state,...proof}=nativeTaskNotExecuted(stored,proposal);return {status:'not_executed',...proof};}
+    deny();
+   }
    if(Date.parse(proposal.expiresAt)<=now())fail('COMMAND_APPROVAL_REFUSED',409);
    const result=await shared.owner.decide({principal,request:{conversationId:binding.conversationId,deliveryId,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved'},signal,deadlineMs});
    await fresh(signal);

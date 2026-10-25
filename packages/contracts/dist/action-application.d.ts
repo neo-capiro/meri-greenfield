@@ -246,6 +246,15 @@ export type ActionExecuteResponse =
   | {
       status: 'indeterminate';
       outcome: null;
+    }
+  | {
+      status: 'not_executed';
+      proposalId: string;
+      commandSha256: string;
+      idempotencyKey: string;
+      binding: Canonical_RunBinding_84F2304C;
+      reason: 'expired';
+      checkedAt: string;
     };
 
 export interface ActionQueryResponse {

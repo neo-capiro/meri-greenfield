@@ -29,7 +29,7 @@ export function createActionApplication(configuration){
     assertNativeApprovalProposal(body.proposal);
     if(body.proposal.command.action!=='task.create'||['tenantId','actorId','conversationId'].some(k=>body.proposal.command.binding[k]!==current.binding[k]))fail('SESSION_SCOPE_REFUSED',403);
     check();state.executionStarted=true;
-    result=await lifetime.run(async signal=>{const out=await current.execute({proposal:body.proposal,signal,deadlineMs:cutoff});if(out.status==='observed')state.knownResult=true;return out;});
+    result=await lifetime.run(async signal=>{const out=await current.execute({proposal:body.proposal,signal,deadlineMs:cutoff});if(out.status==='observed'||out.status==='not_executed')state.knownResult=true;return out;});
    }
    check();const admitted=data(result);if(Buffer.byteLength(JSON.stringify(admitted))>bounds.maxResponseBytes)fail('RESPONSE_TOO_LARGE',413);check();
    return await lifetime.run(signal=>current.release(()=>response(admitted),{signal,deadlineMs:cutoff}));

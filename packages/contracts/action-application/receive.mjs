@@ -37,6 +37,14 @@ async function correlate(route,v,expected){
   }
   await draft(v.draft);const p=v.proposal,c=p.command;
   if(c.action!=='task.create'||c.attachments.length!==0||!same(c.arguments,v.draft.task)||['tenantId','actorId','conversationId','runId'].some(k=>c.binding[k]!==v.draft.source.originalBinding[k])||await sha(c)!==p.commandSha256||p.requiredApprover.tenantId!==c.binding.tenantId||Date.parse(p.expiresAt)<=Date.parse(p.createdAt))fail('ACTION_RESPONSE_CORRELATION');scope(c.binding,c.scopes);
+ }else if(v.status==='not_executed'){
+  let expectation;try{expectation=snapshotExpected(expected);}catch{fail('ACTION_RESPONSE_EXPECTATION');}
+  if(!expectation||Object.keys(expectation).length!==1||!validateTaskProposal(expectation.proposal))fail('ACTION_RESPONSE_EXPECTATION');
+  const p=expectation.proposal,c=p.command;
+  if(c.action!=='task.create'||c.attachments.length||!validateTaskArguments(c.arguments)||await sha(c)!==p.commandSha256||
+   p.requiredApprover.tenantId!==c.binding.tenantId||instant(p.expiresAt)<=instant(p.createdAt)||
+   v.proposalId!==p.proposalId||v.commandSha256!==p.commandSha256||v.idempotencyKey!==c.idempotencyKey||!same(v.binding,c.binding)||instant(v.checkedAt)<instant(p.expiresAt))fail('ACTION_RESPONSE_CORRELATION');
+  scope(c.binding,c.scopes);
  }else if(v.status==='observed'){
   if(v.outcome.execution?.kind==='native-task'){
    let expectation;try{expectation=snapshotExpected(expected);}catch{fail('ACTION_RESPONSE_EXPECTATION');}

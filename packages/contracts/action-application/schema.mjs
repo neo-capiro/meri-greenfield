@@ -1,5 +1,5 @@
 // Build-time receiving envelopes. Nested owners remain canonical references.
-import {nativeTaskOutcomeSchema} from '../commands-0.2/native-task-outcome-schema.mjs';
+import {nativeTaskOutcomeSchema,nativeTaskNotExecutedSchema} from '../commands-0.2/native-task-outcome-schema.mjs';
 const pub = name => ({$ref:`urn:meri:contracts:0.1.0#/$defs/${name}`});
 const ops = name => ({$ref:`urn:meri:retrieval:operational-reads:0.2.0#/$defs/${name}`});
 const task = name => ({$ref:`urn:meri:commands:task-create:0.2.0#/$defs/${name}`});
@@ -16,7 +16,7 @@ export function actionSchema(errorCodes) {
  ActionTaskProposal:pub('ApprovalProposal'),
  ActionTaskArguments:task('TaskCreateArguments'),
  ActionPrepareResponse:object({status:{const:'approval_required'},draft:ref('ActionDraftResponse'),proposal:pub('ApprovalProposal')}),
- ActionExecuteResponse:{oneOf:[object({status:{const:'observed'},outcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),nativeTaskOutcomeSchema(task('TaskCreateResult'))]}}),object({status:{const:'indeterminate'},outcome:{type:'null'}})]},
+ ActionExecuteResponse:{oneOf:[object({status:{const:'observed'},outcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),nativeTaskOutcomeSchema(task('TaskCreateResult'))]}}),object({status:{const:'indeterminate'},outcome:{type:'null'}}),nativeTaskNotExecutedSchema()]},
  ActionErrorResponse:object({error:object({code:{type:'string',enum:errorCodes},outcome:{type:'string',enum:['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED','STORED_NOT_RELEASED','NOT_STORED','READ_UNAVAILABLE']}})})
  }};
 }

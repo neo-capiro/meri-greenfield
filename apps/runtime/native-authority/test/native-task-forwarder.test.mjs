@@ -35,7 +35,7 @@ async function fixture(t,general){
     if(state.releaseRevoke)state.revoked=true;
     return Response.json({status:'observed',outcome:state.stored},{status:state.responseStatus});
    }
-   assert(url.endsWith(CORE_APPROVAL_ROUTES.executionRead));return Response.json(state.stored===null?null:{state:'OUTCOME',outcome:state.stored});
+   assert(url.endsWith(CORE_APPROVAL_ROUTES.executionRead));if(Object.hasOwn(state,'readResult'))return Response.json(state.readResult);return Response.json(state.stored===null?null:{state:'OUTCOME',outcome:state.stored});
   }});
  const call={proposal:p,principal:task.principal,deliveryId:task.decideRequest.deliveryId,decision,deadlineMs:now()+10000};
  return {app,forwarder,call,state,outcome};
@@ -74,4 +74,15 @@ test('General cannot borrow another private actor scope or silently become a cli
  p.command.scopes[0].resourceId=id(999);p.commandSha256=hash(p.command);
  await assert.rejects(currentNativeApprovalSession({store:f.app.store,sessions:f.app.sessions,proposal:p,now:Date.now}));
  assert.equal(f.state.requests.length,0);
+});
+
+const absence=p=>({state:'NOT_EXECUTED',proposalId:p.proposalId,commandSha256:p.commandSha256,idempotencyKey:p.command.idempotencyKey,binding:p.command.binding,reason:'expired',checkedAt:p.expiresAt});
+test('native terminal expiry read validates exact original custody without recording approval or dispatching',async t=>{
+ const f=await fixture(t,true);f.call.proposal.expiresAt=new Date(Date.now()-1).toISOString();f.state.readResult=absence(f.call.proposal);
+ assert.deepEqual(await f.forwarder.readTaskExecution(f.call),f.state.readResult);
+ assert.equal(f.state.requests.length,1);assert(f.state.requests[0].url.endsWith(CORE_APPROVAL_ROUTES.executionRead));assert.equal(f.state.stored,null);
+});
+for(const [name,change]of Object.entries({proposal:r=>r.proposalId=id(999),digest:r=>r.commandSha256='f'.repeat(64),key:r=>r.idempotencyKey='other',binding:r=>r.binding.writerFence++,reason:r=>r.reason='cancelled',early:r=>r.checkedAt='2000-01-01T00:00:00.000Z',noncanonical:r=>r.checkedAt=r.checkedAt.replace('.000Z','Z'),extra:r=>r.outcome=null}))test('native terminal proof refuses '+name,async t=>{
+ const f=await fixture(t,true);f.call.proposal.createdAt='2025-12-31T23:59:00.000Z';f.call.proposal.expiresAt='2026-01-01T00:00:00.000Z';f.state.readResult=structuredClone(absence(f.call.proposal));change(f.state.readResult);
+ await assert.rejects(f.forwarder.readTaskExecution(f.call));assert.equal(f.state.requests.length,1);assert.equal(f.state.stored,null);
 });

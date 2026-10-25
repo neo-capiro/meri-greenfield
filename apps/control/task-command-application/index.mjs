@@ -29,7 +29,7 @@ export function createTaskCommandApplication(configuration){
     assertTaskUpdateProposal(body.proposal,{binding:body.proposal?.command?.binding});
     if(['tenantId','actorId','conversationId'].some(k=>body.proposal.command.binding[k]!==session.binding[k]))fail('SESSION_SCOPE_REFUSED',403);
     life.check();state.executionStarted=true;
-    result=await life.run(async signal=>{const out=await session.execute({proposal:body.proposal,signal,deadlineMs:cutoff});if(out.status==='observed')state.knownResult=true;return out;});
+    result=await life.run(async signal=>{const out=await session.execute({proposal:body.proposal,signal,deadlineMs:cutoff});if(out.status==='observed'||out.status==='not_executed')state.knownResult=true;return out;});
    }
    life.check();const admitted=data(result);if(Buffer.byteLength(JSON.stringify(admitted))>bounds.maxResponseBytes)fail('RESPONSE_TOO_LARGE',413);life.check();
    return await life.run(signal=>session.release(()=>response(admitted),{signal,deadlineMs:cutoff}));

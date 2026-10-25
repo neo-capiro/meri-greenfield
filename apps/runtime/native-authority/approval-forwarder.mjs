@@ -43,7 +43,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {intentFault,INTENT_FAILURE_CODES} from '../../control/intents/faults.mjs';
 import {nativeApprovalScope} from './approval-session.mjs';
-import {nativeTaskOutcome} from '../../control/intents/task-outcome.mjs';
+import {nativeTaskOutcome,nativeTaskNotExecuted} from '../../control/intents/task-outcome.mjs';
 export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision',revoke:'/api/clio/approvals/native/revoke',execute:'/api/clio/approvals/native/execute',executionRead:'/api/clio/approvals/native/execution/read'});
 export const APPROVAL_FORWARDER_OPERATIONS=Object.freeze(['approval/record','approval/decision','approval/read','approval/revoke']);
 const STABLE=['tenantId','actorId','conversationId','runId'];
@@ -271,6 +271,7 @@ export function createCoreApprovalForwarder(options){
    const r=answer.value;if(observe&&r===null)return null;
    if(observe){
     if(r?.state==='UNKNOWN'){own(r,['state']);return r;}
+    if(r?.state==='NOT_EXECUTED')return nativeTaskNotExecuted(r,p);
     own(r,['state','outcome']);if(r.state!=='OUTCOME')refuse('UNAVAILABLE','unknown');
    }else{
     if(r?.status==='indeterminate'){own(r,['status']);return r;}

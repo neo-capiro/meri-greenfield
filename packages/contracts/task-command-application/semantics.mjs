@@ -26,6 +26,11 @@ export async function correlatePrepare(value,expectation){
 export async function correlateExecute(value,expectation){
  const selected=await proposal(expectation.proposal);stable(selected.command.binding,expectation.binding);
  if(value.status==='indeterminate')return;
+ if(value.status==='not_executed'){
+  const c=selected.command;
+  if(value.proposalId!==selected.proposalId||value.commandSha256!==selected.commandSha256||value.idempotencyKey!==c.idempotencyKey||!same(value.binding,c.binding)||instant(value.checkedAt)<instant(selected.expiresAt))fail('TASK_COMMAND_CORRELATION');
+  return;
+ }
  if(value.outcome.execution?.kind==='native-task'){
   const {execution:e,result}=value.outcome,c=selected.command;
   if(e.proposalId!==selected.proposalId||e.commandSha256!==selected.commandSha256||e.idempotencyKey!==c.idempotencyKey||!same(e.binding,c.binding)||

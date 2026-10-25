@@ -23,3 +23,5 @@ const wrong:TaskCommandErrorResponse={error:{code:'NOT_A_COMMAND_ERROR',outcome:
 const invalidRaw:TaskUpdateRaw={taskId:42};void invalidRaw;
 // @ts-expect-error immutable command/hash/expiry/approver fields remain required
 const invalidProposal:TaskUpdateApprovalProposal={proposalId:'id'};void invalidProposal;
+
+async function terminal(text:string,proposal:TaskUpdateApprovalProposal,binding:TaskCommandExpectedBinding){const value=await receiveTaskCommandResponse('execute',200,text,{binding,proposal});if(!('error'in value)&&value.status==='not_executed'){const expired:'expired'=value.reason;const runId:string=value.binding.runId;void expired;void runId;}}void terminal;

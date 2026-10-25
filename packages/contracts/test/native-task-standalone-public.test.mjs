@@ -31,3 +31,11 @@ test('action task preparation requires identity and the original canonical saved
  assert.deepEqual(await receiveActionPrepareRequest(json(request)),request);
  for(const bad of [{draft},{...request,requestId:'new'},{...request,draft:{...draft,draftSha256:'f'.repeat(64)}}])await assert.rejects(receiveActionPrepareRequest(json(bad)));
 });
+
+for(const action of ['task.create','task.update'])test(`${action} terminal proof requires exact original proposal and canonical expired DB time`,async()=>{
+ const f=nativeTaskFixture({action,general:true}),p=f.proposal,value={status:'not_executed',proposalId:p.proposalId,commandSha256:p.commandSha256,idempotencyKey:p.command.idempotencyKey,binding:p.command.binding,reason:'expired',checkedAt:p.expiresAt};
+ const read=out=>action==='task.create'?receiveActionResponse('execute',200,json(out),{proposal:p}):receiveTaskCommandResponse('execute',200,json(out),{binding:stable(p.command.binding),proposal:p});
+ assert.deepEqual(await read(value),value);
+ for(const change of [v=>v.proposalId=id(996),v=>v.commandSha256='a'.repeat(64),v=>v.idempotencyKey='other',v=>v.binding.writerFence++,v=>v.reason='cancelled',v=>v.checkedAt=p.createdAt,v=>v.checkedAt='2026-01-01',v=>v.outcome=null]){const bad=structuredClone(value);change(bad);await assert.rejects(read(bad));}
+ if(action==='task.create')await assert.rejects(receiveActionResponse('execute',200,json(value)));
+});

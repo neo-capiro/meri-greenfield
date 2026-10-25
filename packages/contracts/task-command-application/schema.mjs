@@ -1,5 +1,5 @@
 import {taskCommandSchemaId} from './protocol.mjs';
-import {nativeTaskOutcomeSchema} from '../commands-0.2/native-task-outcome-schema.mjs';
+import {nativeTaskOutcomeSchema,nativeTaskNotExecutedSchema} from '../commands-0.2/native-task-outcome-schema.mjs';
 const pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const task=name=>({$ref:'urn:meri:commands:task-update:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
@@ -8,7 +8,7 @@ export function taskCommandSchema(errorStatuses,errorOutcomes){return {$schema:'
  TaskUpdateRaw:task('TaskUpdateRaw'),TaskUpdateArguments:task('TaskUpdateArguments'),TaskUpdateApprovalProposal:task('TaskUpdateApprovalProposal'),TaskUpdateResult:task('TaskUpdateResult'),
  TaskCommandPrepareRequest:object({requestId:{type:'string',format:'uuid'},arguments:ref('TaskUpdateRaw')}),TaskCommandExecuteRequest:object({proposal:ref('TaskUpdateApprovalProposal')}),
  TaskCommandPrepareResponse:object({status:{const:'approval_required'},proposal:ref('TaskUpdateApprovalProposal')}),
- TaskCommandExecuteResponse:{oneOf:[object({status:{const:'observed'},outcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:ref('TaskUpdateResult')}),nativeTaskOutcomeSchema(ref('TaskUpdateResult'))]}}),object({status:{const:'indeterminate'},outcome:{type:'null'}})]},
+ TaskCommandExecuteResponse:{oneOf:[object({status:{const:'observed'},outcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:ref('TaskUpdateResult')}),nativeTaskOutcomeSchema(ref('TaskUpdateResult'))]}}),object({status:{const:'indeterminate'},outcome:{type:'null'}}),nativeTaskNotExecutedSchema()]},
  TaskCommandErrorResponse:object({error:object({code:{type:'string',enum:Object.keys(errorStatuses)},outcome:{type:'string',enum:errorOutcomes}})}),
  TaskCommandExpectedBinding:{type:'object',properties:Object.fromEntries(['tenantId','actorId'].map(name=>[name,{type:'string',minLength:1,maxLength:128}]).concat(['conversationId','runId'].map(name=>[name,{type:'string',format:'uuid'}]))),required:['tenantId','actorId','conversationId','runId'],additionalProperties:false},
  TaskUpdateContext:task('TaskUpdateContext'),TaskUpdateCommand:task('TaskUpdateCommand'),RunBinding:pub('RunBinding'),

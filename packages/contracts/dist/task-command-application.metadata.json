@@ -89,8 +89,8 @@
     },
     {
       "path": "../../apps/control/task-command-application/index.mjs",
-      "sha256": "0cdef66c61b27c1d36dfd2e5681926663b60d1c56a51afd417a32ae0ee643bca",
-      "bytes": 3170
+      "sha256": "8be25939e290f1e621c4b0da10c21751e98b32782887509cd4d918b75560a5b8",
+      "bytes": 3199
     },
     {
       "path": "../../apps/control/task-command-application/session.mjs",
@@ -104,8 +104,8 @@
     },
     {
       "path": "commands-0.2/native-task-outcome-schema.mjs",
-      "sha256": "a808d7d522e8014e1255d4162f095dc14d1c7e1e910eff29b13d447ddb9f3436",
-      "bytes": 670
+      "sha256": "e35e1dd8cb0193f144df76fe4c470d4e4e499a9b30900b739983c14f33081dd3",
+      "bytes": 1284
     },
     {
       "path": "commands-0.2/task-update-validation.mjs",
@@ -164,16 +164,16 @@
     },
     {
       "path": "task-command-application/schema.mjs",
-      "sha256": "daad10614410985206989c9559388696eff5e1c240d16ec6a2e8977a7563379f",
-      "bytes": 1970
+      "sha256": "75e83704241dc2616db67b18ab8f683e8fb07ab3f324feecc61184895ecdd932",
+      "bytes": 2028
     },
     {
       "path": "task-command-application/semantics.mjs",
-      "sha256": "97320473acbf92f49fdfe9cef048ef57165b1f0ebba0ae9909c1fe4faf9ae4d7",
-      "bytes": 3757
+      "sha256": "6008e1fc6d8ac6f16abbef93c7bebf3215c4525f682f3e949bc6b165a702f234",
+      "bytes": 4085
     }
   ],
-  "schemaSha256": "38f46fb3dbabf167c9d7bc4a3a245b63807a179b9c92e56789f2850b0458ae39",
+  "schemaSha256": "3e13798eb1f9635105322acebdeecb491b887b46139e221a82f1cacaae7fb607",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/task-update-validation.mjs",

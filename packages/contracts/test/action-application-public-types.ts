@@ -14,3 +14,5 @@ async function consume(text:unknown){
  console.log(approval,new ActionResponseError('invalid'));
 }
 void consume;
+
+async function terminal(text:string,proposal:ActionPrepareResponse['proposal']){const value=await receiveActionResponse('execute',200,text,{proposal});if(!('error'in value)&&value.status==='not_executed'){const expired:'expired'=value.reason;const runId:string=value.binding.runId;void expired;void runId;}}void terminal;
