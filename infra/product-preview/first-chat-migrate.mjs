@@ -111,7 +111,9 @@ export const PLAN=Object.freeze([
  // Plan exact canonical targets independently of the legacy Memory alternative.
  ['migration',conversation('0026_retention_target_dispatch.sql'),'611c78fd45af1e26e86d0b8ddfa73a9958f05697e725c858eeebfc71b12cda17','integration'],
  // Canonical tenant settings read/save/audit through the existing control role.
- ['migration','apps/control/settings/migrations/0002_tenant_settings_control_grants.sql','34f5c0aeece205def07d82ffcc2170436e1f435825ba5ec81d2d03e6ae1f7556','integration']
+ ['migration','apps/control/settings/migrations/0002_tenant_settings_control_grants.sql','34f5c0aeece205def07d82ffcc2170436e1f435825ba5ec81d2d03e6ae1f7556','integration'],
+ // Forward projection expansion preserves every authority predicate and prior pin.
+ ['migration',conversation('0027_retention_target_projection.sql'),'75c1bfbda5491d7a3ac1c2ff943f5ba0f47b55f46cfb2c807de3fab90fbcba2c','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

@@ -381,7 +381,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -862,7 +862,7 @@ test('exact target dispatch appends only ordinal 57 and preserves the first 56 e
 });
 
 test('tenant settings grants append ordinal 58 once without changing the applied 57-entry prefix',async()=>{
- const plan=loadPlan(),entry=plan.at(-1);
+ const plan=loadPlan().slice(0,58),entry=plan.at(-1);
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,57))).digest('hex'),'ce29398a63daba230fcc7aea4a799bd72460dd9dbfb470369dcdce4e7b0bcda8');
  assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[58,58,'migration','integration']);
  assert.equal(entry.path,'apps/control/settings/migrations/0002_tenant_settings_control_grants.sql');
@@ -875,6 +875,37 @@ test('tenant settings grants append ordinal 58 once without changing the applied
  await runStage({stage:'integration',plan,variables,connect:db.connect});
  assert.equal(db.state.executed.length,1,'the grants are ledger-skipped on replay');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('projection expansion appends only ordinal 59 and preserves the applied 58-entry prefix',async()=>{
+ const plan=loadPlan(),entry=plan.at(-1);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,58))).digest('hex'),'d37683ea46f64006c1b8deb510f5c206192e2b1f480bff9326f47aba62881b7f');
+ assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[59,59,'migration','integration']);
+ assert.equal(entry.path,'apps/control/conversations/migrations/0027_retention_target_projection.sql');
+ const db=databaseWithLedger(plan,58),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,58),prefix);assert.equal(db.state.ledger.length,59);
+ assert.deepEqual(db.state.executed,[migrationBody(entry.text).replace(/\s+/gu,' ').trim()]);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});assert.equal(db.state.executed.length,1);
+ assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('projection expansion preserves the complete canonical guard and byte-identical legacy branch',()=>{
+ const plan=loadPlan(),before=plan.find(e=>e.ordinal===57).text,after=plan.find(e=>e.ordinal===59).text;
+ const legacy=" IF p_table='meri_memory.candidates' AND p_mode='candidate' THEN";
+ assert.equal(after.slice(after.indexOf(legacy)),before.slice(before.indexOf(legacy)));
+ let canonical=after.slice(after.indexOf('CREATE OR REPLACE FUNCTION'),after.indexOf(legacy));
+ assert.equal((canonical.match(/CROSS JOIN LATERAL jsonb_to_record\(/gu)??[]).length,3);
+ canonical=canonical.replace(/  CROSS JOIN LATERAL jsonb_to_record\(s\.projection\)[\s\S]*?(?=  WHERE t\.tenant_id)/u,'');
+ const fields=[['doc.state',"s.projection->>'state'"],['doc."ownerActorId"',"s.projection->>'ownerActorId'"],
+  ['doc."ledgerSequence"',"s.projection->>'ledgerSequence'"],['doc."entrySha256"',"s.projection->>'entrySha256'"],['doc.reason',"s.projection->>'reason'"],
+  ['purge_doc.state',"s.projection#>>'{purge,state}'"],['purge_doc."planSha256"',"s.projection#>>'{purge,planSha256}'"],['purge_doc."ledgerSequence"',"s.projection#>>'{purge,ledgerSequence}'"],
+  ['trash_doc.revision',"s.projection#>>'{purge,trash,revision}'"],['trash_doc."requestId"',"s.projection#>>'{purge,trash,requestId}'"],
+  ['trash_doc."restoreUntilMs"',"s.projection#>>'{purge,trash,restoreUntilMs}'"],['trash_doc."trashedAtMs"',"s.projection#>>'{purge,trash,trashedAtMs}'"]];
+ for(const [from,to] of fields.sort((a,b)=>b[0].length-a[0].length))canonical=canonical.replaceAll(from,to);
+ assert.equal(canonical,before.slice(before.indexOf('CREATE OR REPLACE FUNCTION'),before.indexOf(legacy)));
 });
 
 test('retention and routine additions append entries 50 through 55 and preserve the applied ledger',async()=>{
