@@ -669,4 +669,4 @@ export interface ActionResponseMap { query: ActionQueryResponse; draft: ActionDr
 export type ActionResponse<R extends ActionRoute> = ActionResponseMap[R] | ActionErrorResponse;
 export declare function receiveActionPrepareRequest(jsonText:unknown):Promise<ActionPrepareRequest>;
 export declare class ActionResponseError extends Error { readonly code: string; }
-export declare function receiveActionResponse<R extends ActionRoute>(route:R,httpStatus:number,jsonText:unknown,expected?:{proposal:ActionTaskProposal}|{request:ActionPrepareRequest}):Promise<ActionResponse<R>>;
+export declare function receiveActionResponse<R extends ActionRoute>(route:R,httpStatus:number,jsonText:unknown,expected?:{proposal:ActionPrepareResponse['proposal']}|{request:ActionPrepareRequest}):Promise<ActionResponse<R>>;

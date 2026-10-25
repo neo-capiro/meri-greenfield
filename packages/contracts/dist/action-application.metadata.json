@@ -44,8 +44,8 @@
     },
     {
       "path": "generate-actions.mjs",
-      "sha256": "1b0d2b87d66f3095f9f0d51c01f1752eaa8ec357d41911bfef32f6f2931ba22d",
-      "bytes": 7451
+      "sha256": "cbec3d743987d21829db0d43ebf5d91d9704bda509a93e926b81765d03ffbc0c",
+      "bytes": 7466
     },
     {
       "path": "meri.schema.json",
