@@ -105,11 +105,14 @@ export function enumerateReferences(snapshot){
   rows.push(Object.freeze({className,key,objects:Object.freeze(validated)}));};
  const keyed=(className,key,refs)=>{rowTargets.push(keyTarget(className,key));add(className,key,refs);};
  if(conversation){if(s.contentRows!==undefined){rowTargets.push(Object.freeze({className:'conversation',table:'conversations',conversationId:s.subject.subjectId,projectionSha256:s.conversation.projectionSha256}));add('conversation',s.subject.subjectId,[]);}else keyed('conversation',s.subject.subjectId,[]);}
- const contentKeys=new Set();
+ const contentKeys=new Set(),hasInitialBinding=list(s.contentRows).some(t=>t?.table==='meri_conversations.initial_run_bindings');
  for(const raw of list(s.contentRows)){
   let target;try{target=assertConversationContentTarget(raw);}catch{refusal();}
   const key=JSON.stringify([target.table,target.key]);if(contentKeys.has(key))refusal();contentKeys.add(key);
-  if(!owner.runIds.size&&!['meri_conversations.initial_run_bindings','meri_conversations.initial_inputs'].includes(target.table))refusal();
+  // The pinned canonical decoder binds initial task receipts to their original
+  // generation. Enumeration receives only their content-free row identities.
+  if(!owner.runIds.size&&!['meri_conversations.initial_run_bindings','meri_conversations.initial_inputs'].includes(target.table)&&
+   !(owner.sourceSha256&&hasInitialBinding&&['meri_commands.approval_metadata','meri_commands.command_journal','meri_intents.preparations'].includes(target.table)))refusal();
   rowTargets.push(Object.freeze(target));add(target.className,key,[]);
  }
  for(const r of list(s.runs)){const refs=r.continuation?.checkpoint?[r.continuation.checkpoint.opaqueSession,...r.continuation.checkpoint.workspace.entries.map(e=>e.object)]:nativeObjects(r.continuation?.files);

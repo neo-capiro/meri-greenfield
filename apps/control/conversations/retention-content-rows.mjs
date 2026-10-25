@@ -3,7 +3,9 @@
 import {data,hash,same,own,uuid,validateShape,fail} from './boundary.mjs';
 import {assertOriginalInputFacts} from './initial-input-facts.mjs';
 import {decodeExecutionRow} from './execution-boundary.mjs';
-import {immutablePayload} from '../commands/approval-metadata/binding.mjs';
+import {immutablePayload,context as commandContext} from '../commands/approval-metadata/binding.mjs';
+import {taskKind} from '../commands/approval-metadata/task-kind.mjs';
+import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
 import {storedBinding,retained,storedEvent} from '../task-lookup/binding.mjs';
 import {assertNativeConversationScope,assertNativeSessionReference,assertSdkSessionKey,assertSdkSessionResponseHeaders} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
@@ -64,12 +66,22 @@ export function assertConversationContentTarget(raw){
 
 export function decodeConversationContentRows(raw,{subject,projection},byRun,nativeReferences=[]){
  own(raw,conversationContentTables.map(t=>t.name));
- const targets=[],seen=new Set(),sessions=new Map(),streams=new Map(),lookups=new Map();
+ const targets=[],seen=new Set(),sessions=new Map(),streams=new Map(),lookups=new Map(),initials=new Map();
  const binding=(value,{requireRun=true}={})=>{validateShape('RunBinding',value);
   fact(value.tenantId===subject.tenantId&&value.conversationId===subject.subjectId&&value.actorId===subject.ownerActorId);
   const run=byRun.get(value.runId);if(requireRun)fact(run&&same(run.projection.binding,value));return run;};
  const runFor=row=>{const run=byRun.get(row.run_id);fact(run);return run;};
  const exactScopes=(value,run)=>fact(same(value,run.projection.scopes));
+ // An attended task can be prepared before its original run exists. Retained
+ // initial custody supplies historical scopes only, never a fabricated run or
+ // fresh authority. A present run must still match the entire original binding.
+ const taskActions={'task.create':'create_task','task.update':'update_task'};
+ const commandScopes=(value,action,createdAt)=>{
+  const run=binding(value,{requireRun:false});if(run){fact(same(run.projection.binding,value));return run.projection.scopes;}
+  const original=initials.get(value.runId);
+  fact(Object.hasOwn(taskActions,action)&&original&&same(original.binding,value)&&original.createdAtMs<=Date.parse(createdAt));
+  return [{tenantId:value.tenantId,kind:original.selectedClientId===null?'private-user':'client',resourceId:original.selectedClientId??value.actorId,policyRevision:original.policyRevision}];
+ };
  for(const t of conversationContentTables){const list=raw[t.name];fact(Array.isArray(list)&&list.length<=4096);
   for(const row of list){fact(row?.tenant_id===subject.tenantId);
    if(Object.hasOwn(row,'conversation_id'))fact(row.conversation_id===subject.subjectId);
@@ -78,10 +90,11 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
    // Date-valued pg columns are canonicalized once; no raw body escapes.
    targets.push({className:t.className,table:t.name,key,rowSha256:hash(JSON.parse(JSON.stringify(row)))});
    switch(t.name){
-    case 'meri_conversations.initial_run_bindings':{pin(row,'record');const r=row.record;binding(r.binding,{requireRun:false});
+    case 'meri_conversations.initial_run_bindings':{pin(row,'record');const r=own(row.record,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']);binding(r.binding,{requireRun:false});
      fact(r.binding.runId===row.run_id&&r.binding.writerFence===1&&r.schemaVersion===1&&r.state==='ADMITTED');
-     validateShape('RuntimeVersions',r.versions);fact(typeof r.policyRevision==='string'&&r.policyRevision&&digest(r.configurationSha256)&&integer(r.expiresAtMs)>integer(r.createdAtMs));
-     assertNativeConversationScope({binding:r.binding,scopes:projection.scopes,selectedClientId:r.selectedClientId});break;}
+     validateShape('RuntimeVersions',r.versions);fact(typeof r.policyRevision==='string'&&r.policyRevision.length>0&&r.policyRevision.length<=256&&digest(r.configurationSha256)&&Number.isSafeInteger(r.createdAtMs)&&r.createdAtMs>=0&&Number.isSafeInteger(r.expiresAtMs)&&r.expiresAtMs>r.createdAtMs);
+     assertNativeConversationScope({binding:r.binding,scopes:projection.scopes,selectedClientId:r.selectedClientId});
+     fact(!initials.has(row.run_id));initials.set(row.run_id,r);break;}
     case 'meri_conversations.initial_inputs':{pin(row,'allocation');const a=assertOriginalInputFacts(row.allocation),run=binding(a.binding,{requireRun:false});
      fact(a.binding.runId===row.run_id&&a.requestId===row.request_id&&['RESERVED','ACCEPTED'].includes(row.state));
      assertNativeConversationScope({binding:a.binding,scopes:projection.scopes,selectedClientId:a.selectedClientId});
@@ -114,16 +127,24 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
      exactScopes(p.prepared.context.scopes,run);fact(Array.isArray(p.prepared.context.assets)&&p.prepared.context.assets.length===0);break;}
     case 'meri_conversations.selected_reads':{runFor(row);fact(digest(row.delivery_sha256)&&digest(row.allocation_sha256)&&row.selector&&['PENDING','RETAINED','UNKNOWN'].includes(row.stage));
      fact(row.stage==='RETAINED'?typeof row.result_text==='string'&&row.completion!==null:row.result_text===null&&row.completion===null);break;}
-    case 'meri_intents.preparations':{pin(row,'record');fact(byRun.size>0&&/^sdk:[a-f0-9]{64}$/u.test(row.delivery_id)&&digest(row.record.argumentsSha256)&&['PENDING','PREPARED','FAILED','UNKNOWN','REDACTED'].includes(row.state));
+    case 'meri_intents.preparations':{pin(row,'record');fact(/^sdk:[a-f0-9]{64}$/u.test(row.delivery_id)&&digest(row.record.argumentsSha256)&&['PENDING','PREPARED','FAILED','UNKNOWN','REDACTED'].includes(row.state));
      own(row.record,['operation','argumentsSha256']);own(row.record.operation,['id','version']);
      fact(/^[a-z][a-z_]{0,62}$/u.test(row.record.operation.id)&&row.record.operation.version==='0.2.0');
+     fact(byRun.size>0||initials.size>0&&Object.values(taskActions).includes(row.record.operation.id));
      if(row.state==='REDACTED'){fact(row.outcome===null&&row.outcome_purged_at!==null&&row.outcome_purged_at!==undefined&&Number.isFinite(new Date(row.outcome_purged_at).getTime())&&row.settled_at!==null&&row.settled_at!==undefined&&Number.isFinite(new Date(row.settled_at).getTime()));break;}
      fact(row.outcome_purged_at===null);
-     if(row.state==='PREPARED'){const r=binding(row.outcome?.release?.binding);exactScopes(row.outcome.release.scopes,r);fact(row.outcome.result&&typeof row.outcome.result==='object');}
+     if(row.state==='PREPARED'){
+      const r=binding(row.outcome?.release?.binding,{requireRun:false});
+      if(r){fact(same(r.projection.binding,row.outcome.release.binding));exactScopes(row.outcome.release.scopes,r);fact(row.outcome.result&&typeof row.outcome.result==='object');}
+      else{const outcome=own(row.outcome,['result','release']),result=own(outcome.result,['status','proposal']),release=own(outcome.release,['binding','scopes','expiresAtMs']),p=result.proposal;
+       assertNativeApprovalProposal(p);fact(result.status==='approval_required'&&Object.hasOwn(taskActions,p.command.action)&&taskActions[p.command.action]===row.record.operation.id&&same(release.binding,p.command.binding)&&Number.isSafeInteger(release.expiresAtMs)&&release.expiresAtMs>0);
+       fact(same(release.scopes,p.command.scopes)&&same(p.command.scopes,commandScopes(p.command.binding,p.command.action,p.createdAt)));}
+     }
      else fact(row.state==='FAILED'?typeof row.outcome?.code==='string':row.outcome===null);break;}
-    case 'meri_commands.approval_metadata':{pin(row,'payload');const p=immutablePayload(row.payload),r=p.record,run=binding(r.binding);exactScopes(r.scopes,run);
+    case 'meri_commands.approval_metadata':{pin(row,'payload');const p=immutablePayload(row.payload),r=p.record;fact(same(r.scopes,commandScopes(r.binding,r.action,r.createdAt)));
      fact(row.proposal_id===r.proposalId&&row.command_id===r.commandId&&row.idempotency_key===r.idempotencyKey&&row.command_sha256===p.commandSha256);break;}
-    case 'meri_commands.command_journal':{pin(row,'payload');const p=own(row.payload,['proposal','context']),c=p.proposal?.command,run=binding(c?.binding);exactScopes(c.scopes,run);
+    case 'meri_commands.command_journal':{pin(row,'payload');const p=own(row.payload,['proposal','context']),c=p.proposal?.command;fact(same(c.scopes,commandScopes(c?.binding,c?.action,p.proposal?.createdAt)));
+     if(!byRun.has(c.binding.runId)){const kind=taskKind(c.action),context=commandContext(p.context,c.action);kind.assertCommand(c,context);kind.assertProposal(p.proposal,context);}
      fact(row.command_id===c.commandId&&row.idempotency_key===c.idempotencyKey&&row.command_sha256===hash(c)&&row.proposal_sha256===hash(p.proposal)&&['CLAIMED','UNKNOWN','OUTCOME'].includes(row.state)&&
       (row.state==='OUTCOME')===(row.outcome!==null));validateShape('CommandExecutionRequest',row.executor);binding(row.executor.executorBinding,{requireRun:false});
      fact(row.executor.commandSha256===row.command_sha256&&row.executor.proposalId===p.proposal.proposalId&&row.executor.idempotencyKey===c.idempotencyKey&&
@@ -149,8 +170,7 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
   const s=sessions.get(ref.binding.runId);fact(s&&same(s.row.owner.binding,ref.binding)&&same(s.row.owner.key,ref.key)&&s.row.owner_sha256===ref.ownerSha256&&s.count>=ref.entriesCount);
  }
  for(const p of lookups.values())fact(p.events.size===2);
- // A registered empty conversation has no run-owned content. Reserved original
- // generations remain real facts and do not manufacture a run.
- if(!byRun.size)fact(targets.every(t=>t.table==='meri_conversations.initial_run_bindings'||t.table==='meri_conversations.initial_inputs'));
+ // Each content owner above requires its actual run, except original generation
+ // facts and task receipts whose retained initial custody was checked explicitly.
  return data(targets.sort((a,b)=>tuple(a.table,a.key).localeCompare(tuple(b.table,b.key))));
 }

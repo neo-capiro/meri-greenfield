@@ -7,11 +7,15 @@ import {decodeConversationInventoryRows} from '../retention-inventory-decode.mjs
 import {createConversationRetentionInventory} from '../retention-inventory.mjs';
 import {conversationContentTables} from '../retention-content-rows.mjs';
 import {enumerateReferences} from '../../retention/inventory.mjs';
-import {makePayload} from '../../commands/approval-metadata/binding.mjs';
+import {makePayload,input as commandInput} from '../../commands/approval-metadata/binding.mjs';
+import {taskKind} from '../../commands/approval-metadata/task-kind.mjs';
+import {conversationPurgeRow,tombstone} from '../../retention/conversation-purge-rows.mjs';
 import {createExecutionBinding,executionIdentity} from '../execution-boundary.mjs';
 import {prepare as prepareLookup,event as lookupEvent} from '../../task-lookup/binding.mjs';
 import {createPostgresRetentionJournal} from '../../retention/postgres-journal.mjs';
 import {buildCandidate} from '../../memory/candidate.mjs';
+import {standaloneFixture} from '../../../runtime/native-authority/test/standalone-tasks-fixture.mjs';
+import {initialInputFixture} from './initial-input-fixture.mjs';
 const prefix='meri_conversations.',now='2026-10-24T00:00:00.000Z';
 function fixture({empty=false}={}){
  const conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,policyRevision:'policy1',createdAt:now};
@@ -23,6 +27,25 @@ function fixture({empty=false}={}){
   runs:empty?[]:[{...tuple,projection:run,projection_sha256:hash(run),request_id:request.requestId,request,request_sha256:hash(request),last_sequence:1,sequence_base:0,sequence_end:null}],
   events:empty?[]:[{...tuple,sequence:1,event_id:event.eventId,event,event_sha256:hash(event)}],controls:[],checkpoints:[],completionCheckpoints:[],nextRuns:[],memoryContinuations:[],memoryContextRows:[],memoryCandidates:[],contentRows:contentRows()};
  return {raw,tuple,run,request,decode:()=>decodeConversationInventoryRows(raw)};
+}
+function initialTask({action='task.create',general=false,explicitClient=false}={}){
+ const f=fixture({empty:true}),selectedClientId=general?null:id(5),taskScopes=[{...scopes[0],kind:general?'private-user':'client',resourceId:selectedClientId??binding.actorId}],kind=taskKind(action);
+ f.raw.conversation.projection.scopes=taskScopes;f.raw.conversation.projection_sha256=hash(f.raw.conversation.projection);
+ const initial={schemaVersion:1,state:'ADMITTED',binding,selectedClientId,policyRevision:'policy1',versions,configurationSha256:'f'.repeat(64),createdAtMs:Date.parse(now)-1000,expiresAtMs:Date.parse(now)+1000};
+ const original={...f.tuple,generation:1,record:initial,record_sha256:hash(initial)};
+ const request=action==='task.create'?{title:'  Private initial task  ',dueDate:'2026-10-24',...(explicitClient?{clientId:'Client reference'}:{})}:{taskId:id(812),title:'  Private initial task  ',status:'open'};
+ const context=action==='task.create'?{binding,clientResolution:explicitClient?{reference:request.clientId,clientId:id(5)}:null}:{binding},input=commandInput(request,context,action);
+ const record={operation:kind.operation,action,binding,request,inputSha256:hash(input),commandId:id(202),idempotencyKey:'initial-task-command',proposalId:id(203),scopes:taskScopes,createdAt:now,expiresAt:'2026-10-24T00:10:00.000Z',requiredApprover:{tenantId:binding.tenantId,actorId:binding.actorId}};
+ const payload=makePayload(record,context),metadata={tenant_id:binding.tenantId,actor_id:binding.actorId,proposal_id:record.proposalId,command_id:record.commandId,idempotency_key:record.idempotencyKey,command_sha256:payload.commandSha256,payload_sha256:hash(payload),payload};
+ const command={contractVersion:kind.contractVersion,commandId:record.commandId,binding,action,...input,scopes:taskScopes,idempotencyKey:record.idempotencyKey};
+ const proposal={proposalId:record.proposalId,command,commandSha256:hash(command),createdAt:record.createdAt,expiresAt:record.expiresAt,requiredApprover:record.requiredApprover};
+ kind.assertCommand(command,context);kind.assertProposal(proposal,context);
+ const intentRecord={operation:kind.operation,argumentsSha256:hash({binding,arguments:request})};
+ const intent={tenant_id:binding.tenantId,actor_id:binding.actorId,conversation_id:binding.conversationId,delivery_id:'sdk:'+hash({kind:'public-task-preparation',operation:kind.operation,requestId:id(204)}),record:intentRecord,record_sha256:hash(intentRecord),state:'PREPARED',outcome:{result:{status:'approval_required',proposal},release:{binding,scopes:taskScopes,expiresAtMs:initial.expiresAtMs}},outcome_purged_at:null,settled_at:new Date(now)};
+ const journalPayload={proposal,context},journal={tenant_id:binding.tenantId,actor_id:binding.actorId,idempotency_key:command.idempotencyKey,command_id:command.commandId,command_sha256:hash(command),proposal_sha256:hash(proposal),payload_sha256:hash(journalPayload),payload:journalPayload,
+  executor:{contractVersion:'0.1.0',requestId:id(210),capabilityId:id(211),proposalId:proposal.proposalId,commandSha256:hash(command),idempotencyKey:command.idempotencyKey,executorBinding:binding},state:'OUTCOME',outcome:{status:'observed',result:{title:'Private initial task'}}};
+ const rows=f.raw.contentRows;rows[prefix+'initial_run_bindings']=[original];rows['meri_commands.approval_metadata']=[metadata];rows['meri_intents.preparations']=[intent];rows['meri_commands.command_journal']=[journal];
+ return {...f,original,metadata,intent,journal,proposal};
 }
 function sdk(f,{empty=false}={}){
  const key={projectKey:'-workspace-conversation',sessionId:id(800)},owner=structuredClone({binding,scopes,selectedClientId:id(5),policyRevision:'policy1',key,executionSha256:'a'.repeat(64),expiresAtMs:1});
@@ -50,6 +73,122 @@ test('reserved original generation is inventory, not a fabricated accepted run',
  f.raw.contentRows[prefix+'initial_inputs']=[{...f.tuple,request_id:allocation.requestId,allocation,allocation_sha256:hash(allocation),state:'RESERVED',accepted_request_sha256:null}];
  assert.equal(enumerateReferences(f.decode()).rowTargets.length,3);
  const row=f.raw.contentRows[prefix+'initial_inputs'][0];row.state='ACCEPTED';row.accepted_request_sha256=allocation.requestSha256;assert.throws(f.decode,/STORE_CORRUPT/);
+});
+
+for(const action of ['task.create','task.update'])for(const general of [false,true])test(`initial ${general?'General':'client'} ${action} metadata, prepared intent and settled command reach existing purge owners without a run`,()=>{
+ const f=initialTask({action,general}),decoded=f.decode(),inventory=enumerateReferences(decoded);
+ assert.deepEqual(decoded.runs,[]);assert.equal(inventory.rowTargets.length,5);assert.equal(JSON.stringify(inventory).includes('Private initial task'),false);
+ assert.equal(f.proposal.command.contractVersion,action==='task.create'?'0.1.0':'0.2.0');
+ if(action==='task.create')assert.equal(f.proposal.command.arguments.clientId,null,'selected client does not alter an omitted task client');
+ const expected=new Map([[prefix+'initial_run_bindings','identity'],['meri_commands.approval_metadata','approval'],['meri_intents.preparations','intent'],['meri_commands.command_journal','command']]);
+ for(const target of decoded.contentRows){const row=f.raw.contentRows[target.table][0],owner=conversationPurgeRow(f.raw.subject,{className:target.className,target});
+  assert.equal(owner.mode,expected.get(target.table));owner.verify(row);
+  assert.deepEqual(owner.args().slice(0,2),[binding.tenantId,binding.conversationId]);
+  if(owner.mode==='identity'){assert.equal(owner.sql,null);assert.equal(owner.erased(row),true);}
+  else{assert.equal(owner.erased(row),false);const erased=owner.mode==='intent'?{...row,state:'REDACTED',outcome:null,outcome_purged_at:new Date(now)}:{...row,payload:tombstone(binding.conversationId),...(owner.mode==='command'?{outcome:tombstone(binding.conversationId)}:{})};assert.equal(owner.erased(erased),true);}
+ }
+});
+
+test('initial task normalization preserves explicit client resolution even in General custody',()=>{
+ const f=initialTask({general:true,explicitClient:true});assert.equal(f.decode().contentRows.length,4);
+ assert.equal(f.proposal.command.arguments.clientId,id(5));assert.equal(f.proposal.command.scopes[0].kind,'private-user');
+ const wrong=JSON.parse(JSON.stringify(f.raw)),row=wrong.contentRows['meri_commands.approval_metadata'][0];row.payload.commandContext.clientResolution.clientId=id(999);row.payload_sha256=hash(row.payload);
+ assert.throws(()=>decodeConversationInventoryRows(wrong),/STORE_CORRUPT/);
+});
+
+test('expired and superseded initial task provenance remains inventory after a later generation starts',()=>{
+ const f=initialTask(),later=fixture(),newBinding={...binding,runId:id(30),attemptId:id(31),workerId:id(32)},original=structuredClone(f.original);
+ original.generation=2;original.run_id=newBinding.runId;original.record.binding=newBinding;original.record.createdAtMs=Date.parse(now)+60000;original.record.expiresAtMs=Date.parse(now)+61000;original.record_sha256=hash(original.record);
+ f.raw.contentRows[prefix+'initial_run_bindings'].push(original);
+ assert.equal(f.decode().contentRows.length,5,'historical task uses its own initial generation, not the latest');
+ later.raw.runs[0].run_id=newBinding.runId;later.raw.runs[0].projection.binding=newBinding;later.raw.runs[0].projection_sha256=hash(later.raw.runs[0].projection);
+ later.raw.events[0].run_id=newBinding.runId;later.raw.events[0].event.binding=newBinding;later.raw.events[0].event_sha256=hash(later.raw.events[0].event);
+ f.raw.runs=later.raw.runs;f.raw.events=later.raw.events;assert.equal(f.decode().contentRows.length,5);
+ assert.deepEqual(f.decode().runs.map(r=>r.runId),[newBinding.runId]);
+});
+
+test('initial task custody can coexist with its accepted run, but cannot hide a different original binding on that run',()=>{
+ const f=initialTask(),accepted=fixture();f.raw.runs=accepted.raw.runs;f.raw.events=accepted.raw.events;assert.equal(f.decode().contentRows.length,4);
+ const changed={...binding,workerId:id(999)};f.raw.runs[0].projection.binding=changed;f.raw.runs[0].projection_sha256=hash(f.raw.runs[0].projection);
+ f.raw.events[0].event.binding=changed;f.raw.events[0].event_sha256=hash(f.raw.events[0].event);assert.throws(f.decode,/STORE_CORRUPT/);
+});
+
+for(const [name,mutate] of Object.entries({
+ 'missing original':rows=>{rows[prefix+'initial_run_bindings']=[];},
+ 'unrelated original run':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.run_id=id(999);r.record.binding.runId=r.run_id;r.record_sha256=hash(r.record);},
+ 'original hash':rows=>{rows[prefix+'initial_run_bindings'][0].record_sha256='0'.repeat(64);},
+ 'original actor':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.binding.actorId='foreign';r.record_sha256=hash(r.record);},
+ 'original attempt':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.binding.attemptId=id(999);r.record_sha256=hash(r.record);},
+ 'original worker':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.binding.workerId=id(999);r.record_sha256=hash(r.record);},
+ 'original fence':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.binding.writerFence=2;r.record_sha256=hash(r.record);},
+ 'original client':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.selectedClientId=id(999);r.record_sha256=hash(r.record);},
+ 'original policy':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.policyRevision='changed-policy';r.record_sha256=hash(r.record);},
+ 'original versions':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.versions={};r.record_sha256=hash(r.record);},
+ 'original configuration digest':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.configurationSha256='invalid';r.record_sha256=hash(r.record);},
+ 'original admitted after proposal':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.createdAtMs=Date.parse(now)+1;r.record_sha256=hash(r.record);},
+ 'original timestamp string':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.createdAtMs=String(r.record.createdAtMs);r.record_sha256=hash(r.record);},
+ 'original extra field':rows=>{const r=rows[prefix+'initial_run_bindings'][0];r.record.extra=true;r.record_sha256=hash(r.record);},
+ 'duplicate original run':rows=>{const r=structuredClone(rows[prefix+'initial_run_bindings'][0]);r.generation=2;rows[prefix+'initial_run_bindings'].push(r);},
+ 'raw request normalization':rows=>{const r=rows['meri_commands.approval_metadata'][0];r.payload.record.request.title='Substituted';r.payload_sha256=hash(r.payload);},
+ 'intent release attempt':rows=>{rows['meri_intents.preparations'][0].outcome.release.binding.attemptId=id(999);},
+ 'intent release scopes':rows=>{rows['meri_intents.preparations'][0].outcome.release.scopes[0].policyRevision='changed-policy';},
+ 'intent command hash':rows=>{rows['meri_intents.preparations'][0].outcome.result.proposal.commandSha256='0'.repeat(64);},
+ 'intent operation':rows=>{const r=rows['meri_intents.preparations'][0];r.record.operation.id='update_task';r.record_sha256=hash(r.record);},
+ 'intent result status':rows=>{rows['meri_intents.preparations'][0].outcome.result.status='prepared';},
+ 'intent extra release field':rows=>{rows['meri_intents.preparations'][0].outcome.release.extra=true;},
+ 'intent expiry structure':rows=>{rows['meri_intents.preparations'][0].outcome.release.expiresAtMs='expired';},
+ 'journal command context':rows=>{const r=rows['meri_commands.command_journal'][0];r.payload.context.binding.workerId=id(999);r.payload_sha256=hash(r.payload);},
+ 'journal context extra field':rows=>{const r=rows['meri_commands.command_journal'][0];r.payload.context.extra=true;r.payload_sha256=hash(r.payload);},
+ 'journal executor proposal':rows=>{rows['meri_commands.command_journal'][0].executor.proposalId=id(999);},
+ 'journal executor run':rows=>{rows['meri_commands.command_journal'][0].executor.executorBinding.runId=id(999);},
+}))test(`initial task inventory refuses ${name}`,()=>{
+ const raw=JSON.parse(JSON.stringify(initialTask().raw));mutate(raw.contentRows);assert.throws(()=>decodeConversationInventoryRows(raw),/STORE_CORRUPT/);
+});
+
+for(const [table,states] of [['meri_intents.preparations',['PENDING','UNKNOWN']],['meri_commands.command_journal',['CLAIMED','UNKNOWN']]])for(const state of states)test(`initial task ${state} ${table} remains a purge blocker`,()=>{
+ const f=initialTask(),row=f.raw.contentRows[table][0];row.state=state;row.outcome=null;
+ const target=f.decode().contentRows.find(t=>t.table===table),owner=conversationPurgeRow(f.raw.subject,{className:target.className,target});
+ assert.throws(()=>owner.verify(row),/RETENTION_PURGE_BLOCKED/);assert.equal(owner.erased(row),false);
+});
+
+test('initial custody does not substitute for an unrelated document run or intent operation',()=>{
+ const f=initialTask(),request={preparationSha256:'a'.repeat(64),artifactRequestSha256:'b'.repeat(64),sourceContextSha256:'c'.repeat(64),baseVersionId:null,title:'Private document',format:'docx'},record={...f.metadata.payload.record,action:'document.draft',operation:{id:'create_word',version:'0.2.0'},request,inputSha256:hash({arguments:request,attachments:[]})};
+ const payload=makePayload(record,{binding,scopes});Object.assign(f.metadata,{payload,payload_sha256:hash(payload),command_sha256:payload.commandSha256});assert.throws(f.decode,/STORE_CORRUPT/);
+ const g=initialTask();g.intent.record.operation={id:'create_word',version:'0.2.0'};g.intent.record_sha256=hash(g.intent.record);g.intent.state='FAILED';g.intent.outcome={code:'UNAVAILABLE'};assert.throws(g.decode,/STORE_CORRUPT/);
+});
+
+for(const state of ['FAILED','REDACTED'])test(`content-free initial task ${state} intent remains retained without inventing a run`,()=>{
+ const f=initialTask();f.intent.state=state;f.intent.outcome=state==='FAILED'?{code:'UNAVAILABLE'}:null;if(state==='REDACTED')f.intent.outcome_purged_at=new Date(now);
+ const target=f.decode().contentRows.find(t=>t.table==='meri_intents.preparations'),owner=conversationPurgeRow(f.raw.subject,{className:target.className,target});
+ owner.verify(f.intent);assert.equal(owner.erased(f.intent),true);assert.deepEqual(f.decode().runs,[]);
+});
+
+for(const general of [false,true])test(`actual standalone ${general?'General':'client'} task preparation rows flow through initial retention inventory`,async()=>{
+ const db=initialInputFixture(),store=db.store(),producer=standaloneFixture({general}),f=fixture({empty:true});
+ const {record}=await store.initialBindings.claim({principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId,selectedClientId:general?null:id(5),policyRevision:'policy1',versions,configurationSha256:'a'.repeat(64),proposedExpiresAtMs:db.now()+60000},()=>{});
+ producer.state.binding=record.binding;producer.store.initialBindings=store.initialBindings;
+ const response=await producer.call('prepare',producer.raw);assert.equal(response.status,200,await response.clone().text());const {proposal}=await response.json();
+ assert.equal(producer.state.effects,0);assert.equal(producer.state.decisions,0);assert.equal(db.state.runs.size,0);
+ f.raw.conversation.projection.scopes=producer.scopes;f.raw.conversation.projection_sha256=hash(f.raw.conversation.projection);
+ f.raw.contentRows[prefix+'initial_run_bindings']=structuredClone(db.bindings);
+ f.raw.contentRows['meri_commands.approval_metadata']=[...producer.metadata.rows.values()].map(row=>{
+  const r=row.payload.record;return {...row,tenant_id:r.binding.tenantId,actor_id:r.binding.actorId,proposal_id:r.proposalId,command_id:r.commandId,idempotency_key:r.idempotencyKey,command_sha256:row.payload.commandSha256};
+ });
+ f.raw.contentRows['meri_intents.preparations']=[...producer.sql.state.rows.values()].map(row=>({...row,outcome_purged_at:null}));
+ assert.deepEqual(f.raw.contentRows['meri_intents.preparations'][0].outcome.result.proposal,proposal);
+ const decoded=f.decode();assert.deepEqual(decoded.runs,[]);assert.equal(enumerateReferences(decoded).rowTargets.length,4);
+ for(const target of decoded.contentRows)conversationPurgeRow(f.raw.subject,{className:target.className,target}).verify(f.raw.contentRows[target.table][0]);
+ const wrong=structuredClone(f.raw);wrong.contentRows[prefix+'initial_run_bindings']=[];assert.throws(()=>decodeConversationInventoryRows(wrong),/STORE_CORRUPT/);
+});
+
+test('zero-run receipt enumeration still requires a pinned snapshot, initial provenance target and allowed content owners',()=>{
+ const decoded=initialTask().decode();
+ for(const change of [s=>delete s.inventorySha256,s=>s.inventorySha256='0'.repeat(64),s=>s.contentRows[0].rowSha256='0'.repeat(64)]){
+  const wrong=structuredClone(decoded);change(wrong);assert.throws(()=>enumerateReferences(wrong),/RETENTION_INVALID_REQUEST/);
+ }
+ for(const change of [s=>{s.contentRows=s.contentRows.filter(t=>t.table!==prefix+'initial_run_bindings');},s=>{s.contentRows.push({className:'selectedOutputs',table:prefix+'selected_reads',key:{run_id:binding.runId,delivery_sha256:'a'.repeat(64)},rowSha256:'b'.repeat(64)});}]){
+  const {inventorySha256:ignored,...wrong}=structuredClone(decoded);change(wrong);assert.throws(()=>enumerateReferences({...wrong,inventorySha256:hash(wrong)}),/RETENTION_INVALID_REQUEST/);
+ }
 });
 test('SDK exact 22 entries, substream, parent headers and replay batch all have distinct content-free targets',()=>{
  const f=fixture();sdk(f);const decoded=f.decode(),inventory=enumerateReferences(decoded),targets=inventory.rowTargets.filter(r=>r.className==='sdkSession');
