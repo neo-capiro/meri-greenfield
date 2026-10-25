@@ -21,7 +21,7 @@ import {createPostgresMemoryJournal} from '../../memory/postgres-journal.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 import {scanConversationContentRows,decodeConversationContentRows} from '../../conversations/retention-content-rows.mjs';
 import {inspectRetentionTargetLookup} from './retention-target-index-pg.mjs';
-import {inspectSdkDeletePage} from './sdk-delete-page-pg-diagnostic.mjs';
+import {inspectSdkDeletePage,inspectSdkPermitPage} from './sdk-delete-page-pg-diagnostic.mjs';
 
 const SOCKET='/tmp/meri-expired-trash-pg-20261024/socket',DATABASE='meri_expired_trash_fixture';
 const supplied=process.env.MERI_EXPIRED_TRASH_PG_SOCKET!==undefined||process.env.MERI_EXPIRED_TRASH_PG_DATABASE!==undefined;
@@ -29,7 +29,7 @@ if(supplied&&(process.platform!=='linux'||process.env.MERI_EXPIRED_TRASH_PG_SOCK
 const enabled=supplied&&process.platform==='linux';
 const pageDiagnostic=process.env.MERI_SDK_PAGE_DIAGNOSTIC==='1';
 if(process.env.MERI_SDK_PAGE_DIAGNOSTIC!==undefined&&(!pageDiagnostic||!enabled))throw Error('MERI_EXPIRED_TRASH_PG_TARGET_REFUSED');
-const pageDiagnosticStop=new Error('synthetic one-page diagnostic rollback');let pageDiagnosticResult=null;
+const pageDiagnosticStop=new Error('synthetic one-page diagnostic rollback');let pageDiagnosticPermit=null,pageDiagnosticResult=null;
 const day=86400000,real=Date.now(),old=real-31*day;
 let clock=null;
 const now=()=>clock??Date.now();
@@ -46,8 +46,12 @@ async function measuredSweepPhase(name,options,operation){const trace=sweepTimin
  try{return await operation();}finally{trace.phases.push({name,startMs,endMs:performance.now()-trace.started,cpuMicros:process.cpuUsage(cpu)});trace.phase=previous;}
 }
 const journalPool={async connect(){const c=await connect();return {release:error=>c.release(error),query:async(sql,args)=>{
+ if(pageDiagnostic&&sql.startsWith('INSERT INTO meri_conversations.retention_purge_targets')&&sql.includes('FROM jsonb_to_recordset($5::jsonb)')){
+  assert.equal(pageDiagnosticPermit,null,'one real permit page only');pageDiagnosticPermit=await inspectSdkPermitPage(c,{sql,args});
+  return {rows:[],rowCount:pageDiagnosticPermit.pageRows};
+ }
  if(pageDiagnostic&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
-  assert.equal(pageDiagnosticResult,null,'one real page only');pageDiagnosticResult=await inspectSdkDeletePage(c,{sql,args});throw pageDiagnosticStop;
+  assert.equal(pageDiagnosticResult,null,'one real page only');pageDiagnosticResult=await inspectSdkDeletePage(c,{sql,args,permit:pageDiagnosticPermit});throw pageDiagnosticStop;
  }
  if(!pageDiagnostic&&!lookupInspected&&sql.startsWith('DELETE FROM meri_conversations.sdk_session_entries')){
   const page=sql.endsWith('r.sequence=ANY($6::bigint[])')?args[5].map(sequence=>({run_id:args[2],session_id:args[3],subpath:args[4],sequence})):JSON.parse(args[2]);
@@ -319,7 +323,7 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
  }
  // A deadline in this largest case can close the shared recovery fence. Keep
  // it last so independent cases still run and the original failure is reported.
- await t.test(pageDiagnostic?'100000-entry fixture: analyze one real 1000-row DELETE and verify rollback':'100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
+  await t.test(pageDiagnostic?'100000-entry fixture: analyze one real 1000-row permit INSERT and DELETE, then verify rollback':'100000-entry near-32-MiB SDK expires through ordinary-role source, compact plan, exact purge and full absence',async t=>{
   const fixtureStarted=performance.now(),f=await seed();await content(f,{entryCount:100000,nearTranscriptLimit:true});
   t.diagnostic(`fixture construction ${Math.round(performance.now()-fixtureStarted)} ms; transcript ${f.sdk.transcriptBytes} bytes; ${f.sdk.batches} append pages`);
   assert.ok(f.sdk.transcriptBytes>31*1024*1024);measureSubject=f.subject.subjectId;inventoryTimings=[];inventorySqlTimings=[];
@@ -338,7 +342,7 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
    if(pageDiagnostic){assert.ok(pageDiagnosticResult);assert.equal(rowEffects,1);assert.equal(finalizeAttempts,0);
     for(const [table,n] of [['sdk_sessions',1],['sdk_session_streams',1],['sdk_session_entries',100000],['sdk_session_batches',100]])assert.equal(await count('meri_conversations.'+table,f),n,table);
     const permits=await pool.query("SELECT count(*)::int AS count FROM meri_conversations.retention_purge_targets WHERE tenant_id=$1 AND conversation_id=$2 AND target->>'table'='meri_conversations.sdk_session_entries'",[f.b.tenantId,f.b.conversationId]);assert.equal(permits.rows[0].count,0);
-    t.diagnostic('one real SDK DELETE page, rolled back; not full-purge qualification '+JSON.stringify(pageDiagnosticResult));return;
+     t.diagnostic('one real SDK permit INSERT and DELETE page, rolled back; not full-purge qualification '+JSON.stringify(pageDiagnosticResult));return;
    }
    t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
    assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
