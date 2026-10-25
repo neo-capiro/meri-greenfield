@@ -211,6 +211,20 @@ test('bulk SDK pages preserve exact target hashes and keys for every allowed tab
  assert.equal(sdkPurgePage(k,[target,{...target,key:{...target.key,subpath:'a',sequence:12}}]).targets.length,2);
 });
 
+test('SDK entry page access bounds retain exact gaps and permit mixed legitimate keys',()=>{
+ const target={className:'sdkSession',table:'meri_conversations.sdk_session_entries',key:{run_id:id(2),session_id:id(3),subpath:'opaque,\"\u03bb',sequence:1003},rowSha256:'d'.repeat(64)},earlier={...target,key:{...target.key,sequence:1001}};
+ const page=sdkPurgePage(k,[target,earlier]);
+ assert.deepEqual(page.args.slice(3),[id(2),id(3),target.key.subpath,1001,1003]);
+ assert.match(page.sql,/r.run_id=\$4::uuid AND r.session_id=\$5::uuid AND r.subpath=\$6::text AND r.sequence BETWEEN \$7::bigint AND \$8::bigint$/);
+ assert.match(page.sql,/r.run_id=page.run_id AND r.session_id=page.session_id AND r.subpath=page.subpath AND r.sequence=page.sequence/);
+ assert.deepEqual(JSON.parse(page.args[2]),[target.key,earlier.key],'the gap remains absent from the exact key set');
+ for(const change of [{run_id:id(4)},{session_id:id(4)},{subpath:'another stream'}]){
+  const other={...target,key:{...target.key,...change}},mixed=sdkPurgePage(k,[target,other]);
+  assert.equal(mixed.args.length,3);assert.doesNotMatch(mixed.sql,/BETWEEN|\$4/);
+  assert.deepEqual(JSON.parse(mixed.args[2]),[target.key,other.key]);
+ }
+});
+
 test('100,000 SDK entries use bounded bulk SQL and ephemeral targets under a progressing deadline',{timeout:60000},async t=>{
  const f=await sdkJournalFixture({count:100000,text:'bounded synthetic transcript'});t.after(f.close);
  const started=performance.now(),deadlineMs=Date.now()+20000,result=await f.journal.rows.purge(f.key,f.plan,{deadlineMs});
