@@ -21,40 +21,47 @@ for (const id of ['mail.list_messages', 'mail.search_messages', 'mail.read_threa
   });
 }
 
-const corruptions = {
-  brokerAudience: a => a.claims.audience = 'meri-broker',
-  commandOnly: a => a.claims.actions = ['command.execute'],
-  deniedDecision: a => a.decision.decision = 'denied',
-  decisionId: a => a.decision.decisionId = uuid('f'),
-  decisionOperation: a => a.decision.operation = 'mail.search_messages@0.2.0',
-  decisionVersion: a => a.decision.operation = 'mail.list_messages@0.3.0',
-  decisionTenant: a => a.decision.actor.tenantId = 'foreign-tenant',
-  decisionActor: a => a.decision.actor.actorId = 'foreign-actor',
-  decisionPolicy: a => a.decision.policyRevision = 'foreign-policy',
-  decisionScopesMissing: a => delete a.decision.scopes,
-  decisionScopesSubstituted: a => a.decision.scopes = [{...a.subject.scopes[0], resourceId: uuid('f')}],
-  decisionAbsent: a => delete a.decision,
-  decisionExtraField: a => a.decision.sourceEnabled = true,
-  authorityExtraField: a => a.enabled = true,
-  claimsForeignScope: a => a.claims.scopes = [...a.claims.scopes, {...a.subject.scopes[0], tenantId: 'foreign-tenant', resourceId: uuid('f')}],
-  claimsForeignScopePolicy: a => a.claims.scopes = [...a.claims.scopes, {...a.subject.scopes[0], policyRevision: 'foreign-policy', resourceId: uuid('f')}],
-};
-for (const [name, mutate] of Object.entries(corruptions)) for (const seam of ['adapter', 'handler']) {
+// Retired claims/decisions are now closed-field failures. Current correlation
+// still binds actor, tenant, policy and scopes without recreating those grants.
+const corruptions = [
+  ['retiredClaims', a => a.claims = {audience: 'meri-broker', actions: ['command.execute']}, 'INVALID_ARGUMENTS'],
+  ['retiredDecision', a => a.decision = {decision: 'allowed'}, 'INVALID_ARGUMENTS'],
+  ['retiredSubjectDecision', a => a.subject.authorizationDecisionId = uuid('f'), 'ACCESS_DENIED'],
+  ['bindingTenant', a => a.binding.tenantId = 'foreign-tenant', 'ACCESS_DENIED'],
+  ['bindingActor', a => a.binding.actorId = 'foreign-actor', 'ACCESS_DENIED'],
+  ['subjectActor', a => a.subject.entityIds[0] = 'foreign-actor', 'ACCESS_DENIED'],
+  ['policy', a => a.policyRevision = 'foreign-policy', 'ACCESS_DENIED'],
+  ['subjectScopesMissing', a => delete a.subject.scopes, 'ACCESS_DENIED'],
+  ['subjectScopesSubstituted', a => a.subject.scopes[0] = {...a.subject.scopes[0], resourceId: uuid('f')}, 'ACCESS_DENIED'],
+  ['executionMissing', a => delete a.executionSha256, 'INVALID_ARGUMENTS'],
+  ['executionDigest', a => a.executionSha256 = 'not-a-digest', 'ACCESS_DENIED'],
+  ['scopesMissing', a => delete a.scopes, 'INVALID_ARGUMENTS'],
+  ['scopesEmpty', a => a.scopes = [], 'ACCESS_DENIED'],
+  ['scopesDuplicate', a => a.scopes.push(structuredClone(a.scopes[0])), 'ACCESS_DENIED'],
+  ['scopeTenant', a => a.scopes = [{...a.scopes[0], tenantId: 'foreign-tenant'}], 'ACCESS_DENIED'],
+  ['scopePolicy', a => a.scopes = [{...a.scopes[0], policyRevision: 'foreign-policy'}], 'ACCESS_DENIED'],
+  ['source', a => a.sourceIds = ['foreign'], 'ACCESS_DENIED'],
+  ['expired', a => a.deadlineMs = 0, 'DEADLINE'],
+  ['outputBudgetEmpty', a => a.maxOutputBytes = 0, 'ACCESS_DENIED'],
+  ['outputBudgetOversized', a => a.maxOutputBytes = 16777217, 'ACCESS_DENIED'],
+  ['authorityExtraField', a => a.enabled = true, 'INVALID_ARGUMENTS'],
+];
+for (const [name, mutate, code] of corruptions) for (const seam of ['adapter', 'handler']) {
   test(`mail ${seam}: inconsistent authority ${name} refuses before source effects`, async () => {
     const f = createMailFixture(), authority = structuredClone(f.authority); mutate(authority);
     const adapter = createMailHttpAdapter(f.config);
     const promise = seam === 'adapter'
       ? adapter.read({operation: f.operation, input: f.input(), request: f.args, authority})
       : createMailReadHandler({operation: f.operation, adapter, now: () => f.state.now})(f.call(f.args, authority));
-    await assert.rejects(promise, /ACCESS_DENIED/);
+    await assert.rejects(promise, error => error.message === code);
     assert.deepEqual(f.calls, []); assert.deepEqual(f.wire, []); assert.deepEqual(f.credentialCalls, []);
   });
 }
 
-test('mail canonical authority can retain broader valid capabilities while releasing only exact read scope', async () => {
+test('mail current context can retain broader execution scopes without widening the released subject', async () => {
   const f = createMailFixture(), authority = structuredClone(f.authority);
-  authority.claims.actions.push('command.propose');
-  authority.claims.scopes = [...authority.claims.scopes, {...authority.subject.scopes[0], resourceId: uuid('f')}];
+  authority.scopes.push({tenantId: f.binding.tenantId, kind: 'client', resourceId: uuid('f'),
+    policyRevision: authority.policyRevision});
   const adapter = createMailHttpAdapter(f.config);
   const page = await adapter.read({operation: f.operation, input: f.input(), request: f.args, authority});
   assert.deepEqual(page.subject.scopes, f.subject.scopes); assert.equal(f.calls.includes('fetch'), true);

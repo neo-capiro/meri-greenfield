@@ -9,9 +9,9 @@ export const bodyText = `Preview excludes the decisive decision. ${'x'.repeat(22
 const clone = value => structuredClone(value);
 const anchor = new Date(NOW - 1000).toISOString();
 export const endpoints = Object.freeze({
-  'mail.list_messages': 'https://canonical-mail.example.invalid/list',
-  'mail.search_messages': 'https://canonical-mail.example.invalid/search',
-  'mail.read_thread': 'https://canonical-mail.example.invalid/thread',
+  'mail.list_messages': 'https://canonical-mail.example.invalid/api/clio/tools/mail.list_messages',
+  'mail.search_messages': 'https://canonical-mail.example.invalid/api/clio/tools/mail.search_messages',
+  'mail.read_thread': 'https://canonical-mail.example.invalid/api/clio/tools/mail.read_thread',
 });
 export function createMailFixture(id = 'mail.list_messages', {client = false} = {}) {
   const operation = {id, version: '0.2.0'}, contract = resolveOperationContract(operation);
@@ -20,18 +20,13 @@ export function createMailFixture(id = 'mail.list_messages', {client = false} = 
     runId: uuid('2'), attemptId: uuid('3'), workerId: uuid('4'), writerFence: 1};
   const mailboxId = uuid('a'), clientId = uuid('b');
   const mailboxScope = {tenantId: binding.tenantId, kind: 'mailbox', resourceId: mailboxId, policyRevision: 'synthetic-policy-1'};
-  const scopes = client ? [mailboxScope, {tenantId: binding.tenantId, kind: 'client', resourceId: clientId,
-    policyRevision: mailboxScope.policyRevision}] : [mailboxScope];
-  const claims = {capabilityId: uuid('5'), issuer: 'synthetic-issuer', audience: 'meri-gateway', binding,
-    actions: ['tool.read'], scopes, issuedAt: new Date(NOW-1000).toISOString(), expiresAt: new Date(NOW+10000).toISOString(),
-    policyRevision: mailboxScope.policyRevision, budgets: {maxTurns: 5, maxRuntimeSeconds: 10, maxCostMicrousd: 1, maxOutputBytes: 1048576}};
+  const scopes = [{tenantId: binding.tenantId, kind: client ? 'client' : 'private-user',
+    resourceId: client ? clientId : binding.actorId, policyRevision: mailboxScope.policyRevision}];
   const subject = {kind: client ? 'client' : 'personal', entityType: client ? 'client' : 'user',
     entityIds: [client ? clientId : binding.actorId], tenantId: binding.tenantId, actorId: binding.actorId,
-    authorizationDecisionId: uuid('6'), policyRevision: mailboxScope.policyRevision, scopes, rosterVersionId: null};
-  const decision = {decisionId: subject.authorizationDecisionId, actor: {tenantId: binding.tenantId, actorId: binding.actorId},
-    operation: `${operation.id}@${operation.version}`, scopes, policyRevision: mailboxScope.policyRevision,
-    evaluatedAt: new Date(NOW).toISOString(), decision: 'allowed', reasonCode: 'SYNTHETIC_ONLY'};
-  const authority = {binding, claims, subject, decision, policyRevision: mailboxScope.policyRevision, sourceIds: ['mail'], deadlineMs: NOW+10000};
+    policyRevision: mailboxScope.policyRevision, scopes: [...scopes, mailboxScope], rosterVersionId: null};
+  const authority = {binding, subject, executionSha256: 'a'.repeat(64), scopes,
+    policyRevision: mailboxScope.policyRevision, sourceIds: ['mail'], deadlineMs: NOW+10000, maxOutputBytes: 1048576};
   const requestedSubject = client ? {kind: 'client', entityId: clientId} : {kind: 'personal'};
   const args = id === 'mail.read_thread' ? {subject: requestedSubject, threadId: uuid('c'), limit: 1}
     : {subject: requestedSubject, limit: 1, ...(id === 'mail.search_messages' ? {query: '  revised allocation  '} : {})};
@@ -84,13 +79,15 @@ export function createMailFixture(id = 'mail.list_messages', {client = false} = 
   const credentials = pins => ({operation: clone(pins.operation), argumentsSha256: pins.argumentsSha256,
     metadata: clone(pins.metadata), requestSha256: pins.requestSha256,
     binding: clone(pins.binding), subject: clone(pins.subject), policyRevision: pins.policyRevision, sourceIds: clone(pins.sourceIds),
-    bearerToken: 'SYNTHETIC_MAIL_TOKEN', serviceSecret: 'SYNTHETIC_SERVICE_SECRET', expiresAtMs: NOW+10000});
+    ...(pins.invocationId === undefined ? {} : {invocationId: pins.invocationId}),
+    authorizationScheme: 'Bearer', target: clone(pins.target), correlationSha256: pins.correlationSha256,
+    bearerToken: 'SYNTHETIC_MAIL_TOKEN', serviceSecret: 'SYNTHETIC_SERVICE_SECRET', expiresAtMs: Math.min(pins.deadlineMs, NOW+10000)});
   const config = {endpoints, now: () => state.now, maxRequestMs: 1000, maxResponseBytes: 1048576,
     async getCredentials(pins) {calls.push('credentials'); credentialCalls.push(pins); return credentials(pins);},
     async fetchImpl(url, options) {calls.push('fetch'); wire.push({url, options});
       return new Response(JSON.stringify(page(JSON.parse(options.body).input)), {headers: {'content-type': 'application/json'}});}};
   const call = (request = args, current = authority) => ({input: input(request), request, authority: current,
     argumentsSha256: canonicalSha256(input(request))});
-  return {operation, contract, state, calls, wire, credentialCalls, binding, subject, claims, authority, args, input, page,
+  return {operation, contract, state, calls, wire, credentialCalls, binding, subject, authority, args, input, page,
     credentials, config, call, mailboxId, clientId, anchor};
 }
