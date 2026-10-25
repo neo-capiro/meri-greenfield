@@ -27,8 +27,8 @@ if(supplied&&(process.platform!=='linux'||process.env.MERI_EXPIRED_TRASH_PG_SOCK
 const enabled=supplied&&process.platform==='linux',day=86400000,check=()=>{};
 const insert=(c,table,row)=>{const keys=Object.keys(row);return c.query(`INSERT INTO ${table}(${keys.join(',')}) VALUES(${keys.map((_,i)=>'$'+(i+1)).join(',')})`,Object.values(row));};
 const without=(v,key)=>Object.fromEntries(Object.entries(v).filter(([k])=>k!==key));
-function fresh(){
- const f=runStartFixture({tenantId:id(),actorId:id(),generationJobId:id(),requestId:id(),clientId:id()}),at=Date.now();
+function fresh({tenantId=id()}={}){
+ const f=runStartFixture({tenantId,actorId:id(),generationJobId:id(),requestId:id(),clientId:id()}),at=Date.now();
  f.selection.sourceAdmission.admittedAtMs=at-1000;f.selection.sourceAdmission.effectExpiresAtMs=at+150000;
  f.selection.request.requestedAtMs=at;f.selection.request.originalExpiresAtMs=at+150000;f.selection.request.inputSha256=hash(without(f.selection.request,'inputSha256'));
  f.record=createObjectiveRunStartRecord({binding:f.binding,generationJobId:f.generationJobId,selection:f.selection,nowMs:at});
@@ -71,8 +71,9 @@ test('Objective actual owner retention composition',{skip:!enabled&&'requires ex
   await assert.rejects(runStarts.putOnce({record:f.record}));await assert.rejects(runStarts.readByJob({generationJobId:f.generationJobId}));assert.equal(await count('meri_conversations.runs',f),0);
  });
  await t.test('accepted run readback holds the actual serving lock; suppression then blocks reads and settled purge retains identities',async()=>{
-  const f=fresh(),h=owner(f),document={defaultTimezone:'UTC',capabilityPolicy:{}};
-  await insert(pool,'meri_settings.tenant_settings',{tenant_id:f.tenantId,revision:1,document,document_sha256:hash(document),updated_at:new Date(),updated_by:f.actorId,monthly_cap_micro_usd:100000000});
+  // The disposable provisioner seeds this synthetic tenant through the settings
+  // owner. The ordinary control role keeps only its existing model-policy read.
+  const f=fresh({tenantId:'00000000-0000-4000-8000-000000000099'}),h=owner(f);
   assert.deepEqual(await h.start(),{kind:'started'});assert.equal(h.state.dispatches,1);assert.equal(await count('meri_conversations.runs',f),1);assert.ok((await inventory(f)).rowTargets.some(r=>r.table==='meri_objective_source.run_starts'));
   const entered=Promise.withResolvers(),release=Promise.withResolvers();let suppressionDone=false;
   const reader=createObjectiveGenerationReadback({runStarts,store:{...store,async read(...args){const r=await store.read(...args);entered.resolve();await release.promise;return r;}},objects:{async get(){assert.fail('acceptance does not read objects');}},retention:startup.gate});
