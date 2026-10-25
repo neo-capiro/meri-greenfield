@@ -99,7 +99,10 @@ async function sdkJournalFixture(options={}){
    const table=sql.match(/^DELETE FROM ([a-z_.]+)/u)[1],membership=sql.endsWith('r.sequence=ANY($6::bigint[])');
    const keys=membership?args[5].map(sequence=>({run_id:args[2],session_id:args[3],subpath:args[4],sequence})):JSON.parse(args[2]);
    assert.ok(keys.length>0&&keys.length<=1000);assert.deepEqual(args.slice(0,2),[subject.tenantId,subject.subjectId]);
-   if(membership)assert.equal(table,'meri_conversations.sdk_session_entries');else assert.match(sql,/USING jsonb_to_recordset\(\$3::jsonb\)/);
+   if(membership){assert.equal(table,'meri_conversations.sdk_session_entries');assert.equal(args.length,8);
+    assert.equal(args[6],Math.min(...args[5]));assert.equal(args[7],Math.max(...args[5]));
+    assert.match(sql,/r\.sequence>=\$7::bigint AND r\.sequence<=\$8::bigint AND r\.sequence=ANY\(\$6::bigint\[\]\)$/);
+   }else assert.match(sql,/USING jsonb_to_recordset\(\$3::jsonb\)/);
    const sought=new Set(keys.map(key=>JSON.stringify(key))),definition=sdkRetentionTables.find(t=>t.name===table);
    const permits=new Map([...registrations.values()].filter(r=>r.transaction===transaction&&r.state==='PLANNED'&&r.target.table===table).map(r=>[JSON.stringify(r.target.key),r]));
    const rowKey=row=>Object.fromEntries(definition.keys.map(([k])=>[k,row[k]])),matches=row=>row.tenant_id===subject.tenantId&&row.conversation_id===subject.subjectId&&sought.has(JSON.stringify(rowKey(row)));
@@ -207,7 +210,7 @@ test('bulk SDK pages preserve exact target hashes and keys for every allowed tab
   const table='meri_conversations.'+name,rowSha256='b'.repeat(64),target={className:'sdkSession',table,key:Object.fromEntries(Object.entries(key).reverse()),rowSha256},page=sdkPurgePage(k,[target]);
   assert.deepEqual(page.targets,[{table,key,rowSha256,mode:'delete'}]);
   assert.deepEqual(page.args.slice(0,2),[k.tenantId,k.subjectId]);
-  if(name==='sdk_session_entries')assert.deepEqual(page.args.slice(2),[key.run_id,key.session_id,key.subpath,[key.sequence]]);
+  if(name==='sdk_session_entries')assert.deepEqual(page.args.slice(2),[key.run_id,key.session_id,key.subpath,[key.sequence],key.sequence,key.sequence]);
   else{assert.deepEqual(JSON.parse(page.args[2]),[key]);assert.ok(page.sql.startsWith(`DELETE FROM ${table} r USING jsonb_to_recordset($3::jsonb)`));}
   assert.match(page.sql,/WHERE r.tenant_id=\$1 AND r.conversation_id=\$2 AND /);
  }
@@ -215,13 +218,17 @@ test('bulk SDK pages preserve exact target hashes and keys for every allowed tab
  assert.equal(sdkPurgePage(k,[target,{...target,key:{...target.key,subpath:'a',sequence:12}}]).targets.length,2);
 });
 
-test('SDK entry page sequence membership retains exact gaps and mixed legitimate keys',()=>{
+test('SDK entry page bounds retain exact gapped and reordered membership and mixed-key fallback',()=>{
  const target={className:'sdkSession',table:'meri_conversations.sdk_session_entries',key:{run_id:id(2),session_id:id(3),subpath:'opaque,\"\u03bb',sequence:1003},rowSha256:'d'.repeat(64)},earlier={...target,key:{...target.key,sequence:1001}};
  const page=sdkPurgePage(k,[target,earlier]);
- assert.deepEqual(page.args,[k.tenantId,k.subjectId,id(2),id(3),target.key.subpath,[1003,1001]]);
- assert.equal(page.sql,'DELETE FROM meri_conversations.sdk_session_entries r WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND r.run_id=$3::uuid AND r.session_id=$4::uuid AND r.subpath=$5::text AND r.sequence=ANY($6::bigint[])');
+ assert.deepEqual(page.args,[k.tenantId,k.subjectId,id(2),id(3),target.key.subpath,[1003,1001],1001,1003]);
+ assert.equal(page.sql,'DELETE FROM meri_conversations.sdk_session_entries r WHERE r.tenant_id=$1 AND r.conversation_id=$2 AND r.run_id=$3::uuid AND r.session_id=$4::uuid AND r.subpath=$5::text AND r.sequence>=$7::bigint AND r.sequence<=$8::bigint AND r.sequence=ANY($6::bigint[])');
  assert.equal(page.args[5].includes(1002),false,'the gap remains absent from exact sequence membership');
  assert.deepEqual(page.targets.map(t=>t.key),[target.key,earlier.key]);
+ const maximum=Number.MAX_SAFE_INTEGER,far={...target,key:{...target.key,sequence:maximum}},wide=sdkPurgePage(k,[far,earlier,target]);
+ assert.deepEqual(wide.args.slice(5),[[maximum,1001,1003],1001,maximum],'bounds compare safe integers without rounding or changing input order');
+ for(const sequence of [maximum+1,1001.5,NaN,Infinity,1001n,'1001'])assert.throws(()=>sdkPurgePage(k,[{...target,key:{...target.key,sequence}}]),/RETENTION_INVALID_REQUEST/);
+ const forward=sdkPurgePage(k,[earlier,target]);assert.deepEqual(forward.args.slice(5),[[1001,1003],1001,1003]);
  for(const change of [{run_id:id(4)},{session_id:id(4)},{subpath:'another stream'}]){
   const other={...target,key:{...target.key,...change}},mixed=sdkPurgePage(k,[target,other]);
   assert.equal(mixed.args.length,3);assert.doesNotMatch(mixed.sql,/BETWEEN|ANY|\$4/);
