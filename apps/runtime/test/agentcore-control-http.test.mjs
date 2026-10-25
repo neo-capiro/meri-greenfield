@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createAgentCoreControlApplication,createApprovalMetadataReaderApplication,APPROVAL_METADATA_READ_PATH} from '../agentcore-control-http.mjs';
 import {binding,versions} from '../../control/conversations/test/store-fixture.mjs';
+import {RETENTION_SWEEP_BUDGET} from '../../../packages/runtime/retention-sweep-budget.mjs';
 const control='synthetic-control-secret-'.repeat(3),run='synthetic-run-credential';
 
 test('control and runtime routes use separate credentials and closed request shapes',async()=>{
@@ -44,4 +45,14 @@ test('approval metadata deadline, unavailable SQL and oversized result never ret
   const response=await app.handle(new Request('https://control.example.test'+APPROVAL_METADATA_READ_PATH,{method:'POST',headers:{'content-type':'application/json','x-internal-service-secret':secret},body:JSON.stringify(input)}));
   assert.equal(response.status,503);assert.equal((await response.text()).includes('private-secret-canary'),false);assert.equal(signal.aborted,true);
  }
+});
+test('only the authenticated retention route admits bounded background work beyond ordinary request time',async()=>{
+ const control='c'.repeat(64);let at=1000,elapsed=50000,calls=0;
+ const owner=Object.fromEntries(['readiness','kickoff','status','stop','admitted','settle','retentionSweep'].map(name=>[name,async()=>{calls++;at+=elapsed;return {after:null,more:false,outcome:'executed'};}]));
+ const app=createAgentCoreControlApplication({owner,controlCredential:control,now:()=>at,maxRequestMs:25000});
+ const post=path=>app.handle(new Request('https://control.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+control,'content-type':'application/json'},body:JSON.stringify(path.endsWith('sweep')?{after:null}:{})}));
+ assert.equal((await post('/v1/retention/sweep')).status,200);
+ assert.equal((await post('/v1/readiness')).status,408,'ordinary route keeps its configured allowance');
+ elapsed=RETENTION_SWEEP_BUDGET.httpMs+1;assert.equal((await post('/v1/retention/sweep')).status,408,'retention still has a finite response ceiling');
+ assert.equal(calls,3);
 });

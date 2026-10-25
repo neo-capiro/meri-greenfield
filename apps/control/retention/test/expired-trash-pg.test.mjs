@@ -7,6 +7,8 @@ import pg from '../../../runtime/node_modules/pg/lib/index.js';
 import {createPostgresRetentionJournal} from '../postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../postgres-watermark.mjs';
 import {createRetentionStartup} from '../startup.mjs';
+import {createConversationRetentionSweep} from '../sweep.mjs';
+import {RETENTION_SWEEP_BUDGET} from '../../../../packages/runtime/retention-sweep-budget.mjs';
 import {createMemoryLedgerSink} from '../ledger.mjs';
 import {createConversationPurgeFacts} from '../inventory-source.mjs';
 import {recomputePlan} from '../purge.mjs';
@@ -332,10 +334,14 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
    const sdk=p.rowSteps.filter(s=>s.className==='sdkSession');assert.equal(p.state,'PLANNED');assert.equal(sdk.length,1);
    assert.deepEqual(sdk[0].target.sdk.counts,{sessions:1,streams:1,entries:100000,batches:100});assert.equal(sdk[0].target.sdk.entryBytes,f.sdk.bytes);
    assert.ok(Buffer.byteLength(JSON.stringify(p))<8*1024*1024,'compact plan fits the existing ledger record bound');
+   // Use the real background selector. Its cursor is the preceding canonical
+   // ledger key, so the request still carries no caller-nominated subject.
+   const expectedKey=subjectKey(f.subject),after=[...(await startup.ledger.latest()).keys()].filter(key=>key<expectedKey).sort().at(-1)??null;
+   const background=createConversationRetentionSweep({startup,now});
    const purgeStarted=performance.now(),purgeCpu=process.cpuUsage();sweepTiming={started:purgeStarted,startedAtMs:Date.now(),phase:'sweep',deadlineMs:null,phases:[],sql:{},pending:null,lastCompleted:null,
     pageBody:null,pagePreparation:{pages:0,rows:0,ms:0,maxMs:0,cpuMicros:{user:0,system:0}}};
    let result,purgeMs;try{if(pageDiagnostic)await assert.rejects(startup.purge.sweepSubject(f.subject),e=>e.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause?.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause.cause===pageDiagnosticStop);
-    else result=await startup.purge.sweepSubject(f.subject);
+    else result=await background({after});
    }finally{purgeMs=performance.now()-purgeStarted;const trace=sweepTiming;
     t.diagnostic('production sweep phases '+JSON.stringify({...trace,pageBody:undefined,finishedAtMs:Date.now(),elapsedMs:purgeMs,cpuMicros:process.cpuUsage(purgeCpu),
      pending:trace.pending?{...trace.pending,elapsedMs:purgeMs-trace.pending.startMs,deadlineRemainingAtStartMs:trace.deadlineMs-trace.startedAtMs-trace.pending.startMs}:null}));sweepTiming=null;}
@@ -344,8 +350,9 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
     const permits=await pool.query("SELECT count(*)::int AS count FROM meri_conversations.retention_purge_targets WHERE tenant_id=$1 AND conversation_id=$2 AND target->>'table'='meri_conversations.sdk_session_entries'",[f.b.tenantId,f.b.conversationId]);assert.equal(permits.rows[0].count,0);
      t.diagnostic('one real SDK permit INSERT and DELETE page, rolled back; not full-purge qualification '+JSON.stringify(pageDiagnosticResult));return;
    }
-   t.diagnostic(`production sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, normal 20s sweep/5s snapshot/5s statements`);
-   assert.equal(result.state,'EXECUTED');assert.equal(result.coreFinalized,true);assert.ok(purgeMs<20000);
+   t.diagnostic(`production background sweep ${Math.round(purgeMs)} ms; actual inventory scans ${inventoryTimings.map(ms=>ms.toFixed(1)).join(', ')} ms; progressing wall clock, ${RETENTION_SWEEP_BUDGET.workMs}ms work/5s snapshot/5s statements`);
+   assert.equal(result.after,expectedKey);assert.equal(result.outcome,'executed');assert.ok(purgeMs<RETENTION_SWEEP_BUDGET.workMs);
+   const completed=await journal.get(expectedKey);assert.equal(completed.purge.state,'EXECUTED');assert.equal(completed.purge.coreFinalized,true);
    for(const table of ['sdk_sessions','sdk_session_streams','sdk_session_entries','sdk_session_batches'])assert.equal(await count('meri_conversations.'+table,f),0,table);
    const ledgerRows=await sink.read();assert.ok(ledgerRows.every(row=>Buffer.byteLength(JSON.stringify(row))<8*1024*1024));assert.ok(Buffer.byteLength(JSON.stringify(ledgerRows))<64*1024*1024);
    const effects=rowEffects;assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(rowEffects,effects);

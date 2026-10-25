@@ -7,8 +7,17 @@ import {enumerateReferences} from '../inventory.mjs';
 import {subjectKey} from '../boundary.mjs';
 import {compose,subjectOf,snapshot} from './fixture.mjs';
 import {createConversationRetentionSweep} from '../sweep.mjs';
+import {createAgentCoreControlApplication} from '../../../runtime/agentcore-control-http.mjs';
+import {RETENTION_SWEEP_BUDGET} from '../../../../packages/runtime/retention-sweep-budget.mjs';
 
 const day=86400000;
+function privateSweep(sweep,now){
+ const control='synthetic-retention-control-credential',settled=Promise.withResolvers();
+ const owner=Object.fromEntries(['readiness','kickoff','status','stop','admitted','settle'].map(name=>[name,async()=>{throw Error('unexpected route');}]));
+ owner.retentionSweep=async input=>{try{return await sweep(input);}finally{settled.resolve();}};
+ const app=createAgentCoreControlApplication({owner,controlCredential:control,now});
+ return {settled:settled.promise,call:signal=>app.handle(new Request('https://control.invalid/v1/retention/sweep',{method:'POST',headers:{authorization:'Bearer '+control,'content-type':'application/json'},body:'{"after":null}',signal}))};
+}
 async function fixture(){
  const f=compose(),subject=subjectOf(),requestId=randomUUID(),suppressedAt=f.clock.now();
  await f.suppression.suppress({principal:f.principal,subject,reason:`conversation-trash:${requestId}`});
@@ -167,6 +176,52 @@ test('bounded sweep records an uncertain effect and starts no later delete after
   storage:{...f.storage,async deleteVersion(value){effects++;const r=await f.storage.deleteVersion(value);f.clock.advance(100);return r;}}});
  await assert.rejects(executor.sweepSubject(f.subject,{deadlineMs:f.clock.now()+50}),/RETENTION_DEADLINE/);
  assert.equal(effects,1);assert.equal(finalized,0);assert.equal((await f.current()).purge.state,'UNKNOWN');
+});
+
+test('direct and background sweep share the bounded allowance for work beyond the former deadline',async()=>{
+ for(const background of [false,true]){const f=await fixture();f.clock.advance(31*day);const p=await f.plan();for(const st of p.steps)f.store.put(f.keyFor(st),st.versionId);
+  const started=f.clock.now();let finalized=0;
+  const purge=createPurgeExecutor({...f,enabled:true,now:f.clock.now,finalize:async()=>{finalized++;},rows:{...f.rows,async purge(key,plan,options){
+   assert.equal(options.deadlineMs,started+RETENTION_SWEEP_BUDGET.workMs);const result=await f.rows.purge(key,plan);f.clock.advance(25000);return result;
+  }}});
+  const result=background?await createConversationRetentionSweep({startup:{ensureServing:async()=>{},ledger:f.ledger,purge},now:f.clock.now})():await purge.sweepSubject(f.subject);
+  assert.equal(background?result.outcome:result.state,background?'executed':'EXECUTED');assert.equal(finalized,1);assert.equal((await f.current()).purge.coreFinalized,true);
+ }
+});
+
+test('private route cancellation during late finalization preserves an unacknowledged outcome and safe replay',async()=>{
+ const f=await fixture();f.clock.advance(31*day);const p=await f.plan();for(const st of p.steps)f.store.put(f.keyFor(st),st.versionId);
+ const entered=Promise.withResolvers(),release=Promise.withResolvers(),abort=new AbortController();let attempts=0,coreCommits=0;
+ const purge=createPurgeExecutor({...f,enabled:true,now:f.clock.now,async finalize(){attempts++;if(attempts===1){entered.resolve();await release.promise;}if(!coreCommits)coreCommits++;}});
+ const sweep=createConversationRetentionSweep({startup:{ensureServing:async()=>{},ledger:f.ledger,purge},now:f.clock.now}),route=privateSweep(sweep,f.clock.now);
+ const response=route.call(abort.signal);await entered.promise;abort.abort();assert.equal((await response).status,408);
+ assert.equal((await f.current()).purge.coreFinalized,undefined);assert.equal(attempts,1);
+ release.resolve();await route.settled;assert.equal((await f.current()).purge.coreFinalized,undefined,'a late acknowledgement after cancellation cannot finalize the local proof');
+ assert.equal((await purge.sweepSubject(f.subject)).coreFinalized,true);assert.equal(attempts,2);assert.equal(coreCommits,1);
+});
+
+test('direct and background default work expiry records uncertainty and prevents Core finalization',async()=>{
+ for(const background of [false,true]){const f=await fixture();f.clock.advance(31*day);const p=await f.plan();for(const st of p.steps)f.store.put(f.keyFor(st),st.versionId);
+  let rowEffects=0,finalized=0;
+  const purge=createPurgeExecutor({...f,enabled:true,now:f.clock.now,finalize:async()=>{finalized++;},rows:{...f.rows,async purge(key,plan){
+   rowEffects++;const result=await f.rows.purge(key,plan);f.clock.advance(RETENTION_SWEEP_BUDGET.workMs+1);return result;
+  }}});
+  if(background){const sweep=createConversationRetentionSweep({startup:{ensureServing:async()=>{},ledger:f.ledger,purge},now:f.clock.now});assert.equal((await sweep()).outcome,'unknown');}
+  else await assert.rejects(purge.sweepSubject(f.subject),/RETENTION_DEADLINE/);
+  assert.equal(rowEffects,1);assert.equal(finalized,0);assert.equal((await f.current()).purge.state,'UNKNOWN');
+ }
+});
+
+test('private response cancellation does not abandon a pending uncertainty record or authorize another effect',async()=>{
+ const f=await fixture();f.clock.advance(31*day);const p=await f.plan();for(const st of p.steps)f.store.put(f.keyFor(st),st.versionId);
+ const entered=Promise.withResolvers(),release=Promise.withResolvers(),abort=new AbortController();let cleanupDone=false,deletes=0,rows=0,finalized=0;
+ const ledger={...f.ledger,async append(entry){if(entry.state==='PURGE_UNKNOWN'&&entry.reason!=='EFFECTS_STARTED'){entered.resolve();await release.promise;const saved=await f.ledger.append(entry);cleanupDone=true;return saved;}return f.ledger.append(entry);}};
+ const purge=createPurgeExecutor({...f,ledger,enabled:true,now:f.clock.now,finalize:async()=>{finalized++;},rows:{...f.rows,async purge(){rows++;}},storage:{...f.storage,async deleteVersion(...args){deletes++;await f.storage.deleteVersion(...args);throw Error('lost delete acknowledgement');}}});
+ const sweep=createConversationRetentionSweep({startup:{ensureServing:async()=>{},ledger,purge},now:f.clock.now}),route=privateSweep(sweep,f.clock.now);
+ const response=route.call(abort.signal);await entered.promise;abort.abort();assert.equal((await response).status,408);
+ assert.equal(cleanupDone,false,'response ceiling is not a cleanup receipt');assert.equal((await f.current()).purge.state,'UNKNOWN');
+ release.resolve();await route.settled;assert.equal(cleanupDone,true);assert.equal((await f.current()).purge.state,'UNKNOWN');
+ assert.deepEqual([deletes,rows,finalized],[1,0,0]);assert.ok(!(await f.sink.read()).some(e=>e.state==='PURGE_EXECUTED'));
 });
 
 test('sweep carries its abort and deadline through target validation, mutation and absence recovery',async()=>{

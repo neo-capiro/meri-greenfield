@@ -3,6 +3,7 @@
 import {Context} from '@temporalio/activity';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {fault} from './config.mjs';
+import {RETENTION_SWEEP_BUDGET} from '../../packages/runtime/retention-sweep-budget.mjs';
 
 /** @param {{taskQueue:string}} input @returns {import('@temporalio/client').ScheduleOptions} */
 export function conversationRetentionSchedule({taskQueue}){
@@ -16,7 +17,7 @@ export function createRetentionSweepActivity({native,context=()=>Context.current
  return async function sweepConversationRetention(input){
   own(input,['after']);if(input.after!==null&&(typeof input.after!=='string'||input.after.length>512))throw fault('RETENTION_INVALID_REQUEST');
   const activity=context(),signal=activity.cancellationSignal;signal.throwIfAborted();activity.heartbeat();
-  const result=own(await native.call('retention/sweep',input,{signal,deadlineMs:now()+23000,maxRequestMs:23000}),['after','more','outcome']);
+  const result=own(await native.call('retention/sweep',input,{signal,deadlineMs:now()+RETENTION_SWEEP_BUDGET.nativeMs,maxRequestMs:RETENTION_SWEEP_BUDGET.nativeMs}),['after','more','outcome']);
   if(result.after!==null&&(typeof result.after!=='string'||result.after.length>512)||typeof result.more!=='boolean'||
      !['empty','executed','blocked','unknown'].includes(result.outcome)||result.more&&result.after===null)throw fault('RETENTION_RECEIPT_REFUSED');
   signal.throwIfAborted();activity.heartbeat();return result;

@@ -8,6 +8,7 @@ import {purgeEligibility,requirePurgePolicy,conversationTrashEligibility} from '
 import {externalClasses,rowClasses,rowClassSubjectKind} from './inventory.mjs';
 import {externalRequestClasses} from './data-classes.mjs';
 import {projectionToken} from './memory-journal.mjs';
+import {RETENTION_SWEEP_BUDGET} from '../../../packages/runtime/retention-sweep-budget.mjs';
 export const workflowIdentity=({tenantId,classes,objectId,versionId,policyVersion})=>hash({tenantId,classes,objectId,versionId,policyVersion});
 export const rowWorkflowIdentity=({tenantId,subjectId,target,policyVersion})=>hash({tenantId,subjectId,target,policyVersion});
 const hold=value=>{const h=own(data(value),['objectLockRetainUntilMs','legalHold']);if(h.objectLockRetainUntilMs!==null&&!Number.isSafeInteger(h.objectLockRetainUntilMs)||typeof h.legalHold!=='boolean')fail('RETENTION_INVALID_REQUEST');return h;};
@@ -227,7 +228,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
  const recordBlocked=async plan=>locked(plan,recordBlockedLocked);
  /** Scheduled expiry uses the existing ledger's exact plan after an uncertain
   * effect. No recreated inventory/default can replace a consumed plan. */
- async function sweepSubject(raw,{signal,deadlineMs=tick()+20000}={}){
+ async function sweepSubject(raw,{signal,deadlineMs=tick()+RETENTION_SWEEP_BUDGET.workMs}={}){
   if(!enabled||!finalize)fail('RETENTION_PURGE_DISABLED');const s=subject(raw),key=subjectKey(s);
   const check=()=>{signal?.throwIfAborted();if(tick()>=deadlineMs)fail('RETENTION_DEADLINE');};
   const options={signal,deadlineMs,check};check();

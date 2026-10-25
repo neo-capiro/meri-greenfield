@@ -3,6 +3,7 @@ import {setTimeout as pause} from 'node:timers/promises';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {RUNNER_LOAD_MAX_MS,RUNNER_REPLAY_DELAYS_MS} from '../../packages/runtime/runner-load-budget.mjs';
+import {RETENTION_SWEEP_BUDGET} from '../../packages/runtime/retention-sweep-budget.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
 import {PINNED_NATIVE_UNANSWERED,PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedStatusRefusal,runnerTurnTelemetry} from './runner-runtime-diagnostics.mjs';
 import {fault} from './config.mjs';
@@ -13,7 +14,6 @@ const fileOperations=new Set(['runner/checkpoint/capture','runner/checkpoint/com
 // Each caller must also pass its absolute lease-derived deadline; other operations
 // retain the ordinary 3s default (or the factory's configured cap).
 const startupOperations=new Set([
- 'retention/sweep',
  'runner/execution','runner/execution/settle',
  'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
  'runner/native/verify','runner/native/start','runner/native/started',
@@ -53,7 +53,8 @@ export function createNativeCapabilityClient({configuration,credential,fetch:tra
   try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(parts)));}catch{throw fault('NATIVE_RESPONSE_INVALID');}
  }
  async function attempt(operation,input,{signal,deadlineMs,maxRequestMs:requestMaxMs}){
-  if(requestMaxMs!==undefined&&(!startupOperations.has(operation)||!Number.isSafeInteger(requestMaxMs)||requestMaxMs<1||requestMaxMs>STARTUP_REQUEST_MAX_MS||!Number.isSafeInteger(deadlineMs)))throw fault('NATIVE_CONFIGURATION');
+  const requestCap=operation==='retention/sweep'?RETENTION_SWEEP_BUDGET.nativeMs:startupOperations.has(operation)?STARTUP_REQUEST_MAX_MS:null;
+  if(requestMaxMs!==undefined&&(requestCap===null||!Number.isSafeInteger(requestMaxMs)||requestMaxMs<1||requestMaxMs>requestCap||!Number.isSafeInteger(deadlineMs)))throw fault('NATIVE_CONFIGURATION');
   const limitMs=operation==='runner/load'?loadMaxRequestMs:requestMaxMs??maxRequestMs;
   const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response,dispatched=false,transient=false,cause,observedError,startedAt,turnTelemetry;
   try{const payload=JSON.stringify(fileOperations.has(operation)?assertNativeFileRequest(operation,input):data(input));if(Buffer.byteLength(payload)>(fileOperations.has(operation)?NATIVE_FILE_LIMITS.requestBytes:2097152))throw fault('NATIVE_REQUEST_LIMIT');

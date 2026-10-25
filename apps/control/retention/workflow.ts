@@ -1,7 +1,8 @@
 import {proxyActivities,continueAsNew} from '@temporalio/workflow';
+import {RETENTION_SWEEP_BUDGET} from '../../../packages/runtime/retention-sweep-budget.mjs';
 interface Result {after:string|null;more:boolean;outcome:'empty'|'executed'|'blocked'|'unknown'}
 const {sweepConversationRetention}=proxyActivities<{sweepConversationRetention(input:{after:string|null}):Promise<Result>}>({
- startToCloseTimeout:'30 seconds',heartbeatTimeout:'30 seconds',retry:{maximumAttempts:3},
+ startToCloseTimeout:RETENTION_SWEEP_BUDGET.activityMs,heartbeatTimeout:RETENTION_SWEEP_BUDGET.activityMs,retry:{maximumAttempts:3},
 });
 /** A bounded pass, serial on the existing worker queue. Holds/unknown outcomes
  * remain retained and are reconsidered on the next fixed schedule. */

@@ -7,6 +7,7 @@ import {isAuthorityUnavailable} from '../../packages/runtime/authority-availabil
 import {productFailure} from '../control/product-access/errors.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {MAX_APPROVAL_METADATA_READBACK_BYTES} from '../control/commands/approval-metadata/readback.mjs';
+import {RETENTION_SWEEP_BUDGET} from '../../packages/runtime/retention-sweep-budget.mjs';
 
 export const APPROVAL_METADATA_READ_PATH='/v1/internal/approval-metadata/read';
 /** The existing Core service secret authenticates before bounded body allocation.
@@ -36,7 +37,7 @@ export function createApprovalMetadataReaderApplication(options={}){
 
 const routes=new Map([
  ['/v1/readiness',{method:'readiness',control:true,fields:[]}],
- ['/v1/retention/sweep',{method:'retentionSweep',control:true,fields:['after'],optional:true,maxRequestMs:23000}],
+ ['/v1/retention/sweep',{method:'retentionSweep',control:true,fields:['after'],optional:true,maxRequestMs:RETENTION_SWEEP_BUDGET.httpMs}],
  ['/v1/execution/kickoff',{method:'kickoff',control:true,fields:['binding','executionKey']}],
  ['/v1/execution/kickoff/status',{method:'status',control:true,fields:['binding','executionId']}],
  ['/v1/execution/kickoff/stop',{method:'stop',control:true,fields:['binding','executionId']}],
