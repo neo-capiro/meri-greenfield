@@ -9,10 +9,12 @@ export function promptLineages(runs){
    let lineage={kind:'submission',logicalRequestId:row.request.requestId,sourceBinding:null,sourceRequestId:null};
    if(row.continuation!==null&&row.continuation!==undefined){
     if(hash(row.continuation)!==row.continuation_sha256)throw Error('integrity');
-    const saved=own(row.continuation,['continuation','sourceRequest']),envelope=assertContinuationEnvelope(saved.continuation),sourceBinding=envelope.checkpoint.binding;uuid(saved.sourceRequest.requestId);
+    const saved=own(row.continuation,['continuation','sourceRequest']),envelope=assertContinuationEnvelope(saved.continuation);
+    const source=envelope.kind==='native-session'?{binding:envelope.sdkSession.binding,scopes:envelope.scopes,versions:envelope.versions}:envelope.checkpoint;
+    const sourceBinding=source.binding;uuid(saved.sourceRequest.requestId);
     if(hash(saved.sourceRequest)!==envelope.sourceRequestSha256||hash({window:saved.sourceRequest.window,skill:saved.sourceRequest.skill,scopes:row.projection.scopes})!==envelope.contextSha256||!same({...saved.sourceRequest,requestId:row.request.requestId},row.request)||
-     sourceBinding.tenantId!==binding.tenantId||sourceBinding.actorId!==binding.actorId||!same(envelope.checkpoint.scopes,row.projection.scopes)||
-     !same(envelope.checkpoint.versions,row.projection.versions))throw Error('integrity');
+     sourceBinding.tenantId!==binding.tenantId||sourceBinding.actorId!==binding.actorId||!same(source.scopes,row.projection.scopes)||
+     !same(source.versions,row.projection.versions))throw Error('integrity');
     let logicalRequestId=row.request.requestId;
     if(envelope.mode==='resume'){
      const source=runs.find(r=>r.run_id===sourceBinding.runId),prior=result.get(sourceBinding.runId);

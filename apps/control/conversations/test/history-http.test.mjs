@@ -15,6 +15,7 @@ import {createRetentionLedger,createMemoryLedgerSink} from '../../retention/ledg
 import {lifecycleFixture} from './lifecycle-fixture.mjs';
 import {allocateOriginal} from './terminal-settlement-harness.mjs';
 import {assertConversationHistoryResponse} from '../../../../packages/contracts/conversation-history/validate.mjs';
+import {assertContinuationEnvelope} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
 async function fixture({lifecycle=false,extraClient=false}={}){
  const f=await (lifecycle?lifecycleFixture({extraClient}):applicationFixture({initialInput:true})),state=f.state;let serial=1000;
  if(!lifecycle){const original=f.service;let initialAllocation;
@@ -284,9 +285,9 @@ for(const corrupt of ['conversation-shape','run-shape','request-hash','event-sha
 });
 
 async function continued(f,mode){await f.running();const pause=id(2300);await f.control({controlId:pause,intent:'pause'});await f.claim(pause);await f.checkpoint(pause);
- const proof=f.proofs.get(id(220));return f.control({controlId:id(2301),intent:mode,checkpointId:proof.checkpoint.checkpointId,checkpointSha256:proof.checkpointSha256});}
+ const proof=f.proofs.get(binding.runId);assert.equal(proof.kind,'native-session');return f.control({controlId:id(2301),intent:mode,checkpointId:proof.checkpointId,checkpointSha256:proof.checkpointSha256});}
 
-test('resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct',async()=>{
+test('native resume, lost receipt and reload retain one logical prompt; identical-text new turn remains distinct',async()=>{
  const f=await fixture({lifecycle:true});try{const result=await continued(f,'resume');assert.equal(result.state,'APPLIED');assert.equal(f.state.runs.size,2);
   const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,200);const first=await response.json();
   assert.equal(first.turns.length,2);assert.notEqual(first.turns[0].request.requestId,first.turns[1].request.requestId);assert.equal(new Set(first.turns.map(t=>t.promptLineage.logicalRequestId)).size,1);
@@ -302,7 +303,7 @@ test('resume, lost receipt and reload retain one logical prompt; identical-text 
  }finally{f.close();}
 });
 
-test('fork starts a conversation-local prompt identity while retaining exact external source lineage',async()=>{
+test('native fork starts a conversation-local prompt identity while retaining exact external source lineage',async()=>{
  const f=await fixture({lifecycle:true});try{const result=await continued(f,'fork'),response=await f.post('transcript',{conversationId:result.targetBinding.conversationId});assert.equal(response.status,200);const page=await response.json();
   assert.equal(page.turns.length,1);const t=page.turns[0];assert.deepEqual(t.promptLineage,{kind:'fork',logicalRequestId:t.request.requestId,sourceBinding:binding,sourceRequestId:f.input.requestId});assert.equal(t.sequenceBase,0);
  }finally{f.close();}
@@ -312,10 +313,23 @@ for(const corrupt of ['digest','request','source-binding','context'])test(`resum
  const f=await fixture({lifecycle:true});try{const result=await continued(f,'resume'),row=[...f.state.runs.values()].find(r=>r.run_id===result.targetBinding.runId);
   if(corrupt==='digest')row.continuation_sha256='0'.repeat(64);
   if(corrupt==='request')row.continuation.sourceRequest.prompt='substituted';
-  if(corrupt==='source-binding'){const envelope=row.continuation.continuation;envelope.checkpoint.binding.workerId=id(2399);envelope.checkpointSha256=hash(envelope.checkpoint);}
+  if(corrupt==='source-binding'){const envelope=row.continuation.continuation;delete envelope.files;envelope.sdkSession.binding.workerId=id(2399);}
   if(corrupt==='context')row.continuation.continuation.contextSha256='0'.repeat(64);
   if(corrupt!=='digest')row.continuation_sha256=hash(row.continuation);
   const response=await f.post('transcript',{conversationId:binding.conversationId});assert.equal(response.status,500);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_STORE_CORRUPT'}});
+ }finally{f.close();}
+});
+
+for(const mode of ['resume','fork'])for(const corrupt of ['actor','scope','versions'])test(`native ${mode} rehashed ${corrupt} substitution refuses prompt lineage`,async()=>{
+ const f=await fixture({lifecycle:true});try{const result=await continued(f,mode),row=[...f.state.runs.values()].find(r=>r.run_id===result.targetBinding.runId),envelope=row.continuation.continuation;
+  // File custody is optional in this contract. Remove it so the independently valid native envelope reaches the history join.
+  delete envelope.files;
+  if(corrupt==='actor')envelope.sdkSession.binding.actorId=id(2399);
+  if(corrupt==='scope')envelope.scopes[0].resourceId=id(2399);
+  if(corrupt==='versions')envelope.versions.imageDigest='sha256:'+'f'.repeat(64);
+  assertContinuationEnvelope(envelope);
+  row.continuation_sha256=hash(row.continuation);
+  const response=await f.post('transcript',{conversationId:result.targetBinding.conversationId});assert.equal(response.status,500);assert.deepEqual(await response.json(),{error:{code:'CONVERSATION_STORE_CORRUPT'}});
  }finally{f.close();}
 });
 
