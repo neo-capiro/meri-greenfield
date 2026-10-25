@@ -30,7 +30,8 @@ import {routinesReservedSecretFiles} from '../native-authority/routines-configur
 import {createRoutinesServiceSecret} from '../native-authority/routines-core-client.mjs';
 import {createCoreApprovalForwarder,createReservedCredentialDigests,registerApprovalSessionBinder} from '../native-authority/approval-forwarder.mjs';
 import {compilePreparedCandidateConfiguration} from '../prepared-candidate-config.mjs';
-import {documentApprovalOwnerFor} from '../artifacts/intent-binding.mjs';
+import {documentApprovalOwnerFor,filingApprovalOwnerFor} from '../artifacts/intent-binding.mjs';
+import {createCoreFilingClient} from '../artifacts/core-filing-client.mjs';
 import {currentNativeApprovalSession} from '../native-authority/approval-session.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** The runtime secret reader, loaded on first use: `../config.mjs` imports this module for its configuration validator. */
@@ -115,6 +116,8 @@ function compose(context,transport){
   revokeDecision:decisions?value=>decisions.revoke(value):null,
   /** Original proposal plus current attended session; Core owns task mutation and durable replay. */
   tasks:core?Object.freeze({execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)}):null,
+  filingSource:core?createCoreFilingClient({origin:core.forwarder.origin,credentials:{getCredentials:value=>core.forwarder.filingCredentials(value)},now,
+   maxRequestMs:Math.min(c.configuration.limits.requestMs,30000),...(transport.fetchImpl?{fetchImpl:transport.fetchImpl}:{})}):null,
   approvalSessions:()=>core?core.relay.state():'absent'};
  if(!intents.enabled)return Object.freeze({...shared,state:'disabled',reason:'INTENTS_DISABLED',application:null,owner:null});
  const limits=intentLimits(c.configuration),gate=ownedValue(c.canonicalProductPorts,'conversationMembership');
@@ -123,6 +126,7 @@ function compose(context,transport){
  if(!c.pool||typeof c.pool!=='object'||types.isProxy(c.pool)||typeof c.pool.connect!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  const composed=composeIntentApprovals({pool:c.pool,native:c.native,decisions,
   documents:{execute:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
+  filing:{execute:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
   ...(core?{tasks:{execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)}}:{}),
   gate,now,limits,enabled:true});
  return Object.freeze({...shared,state:'composed',reason:null,application:composed.app,owner:composed.owner});

@@ -2,7 +2,7 @@
  * Core must enable its existing native approval execute/read owners for artifact.file before this is mounted.
  * Upload carries the original approved filing context and preserves the ordinary response plus sha256/bytes.
  * Core must derive/reuse stable staged attachment identity from that context, verify bytes and own idempotency.
- * These receiver extensions are deliberately not simulated as available by production composition. */
+ * Product composition binds this transport to retained proposal custody and the current attended credential. */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';

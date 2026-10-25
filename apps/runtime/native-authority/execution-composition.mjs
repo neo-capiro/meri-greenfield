@@ -46,7 +46,9 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
   const first=await fresh(signal);
   // Availability is a description of composed preparers, but it still belongs to the same current authorized run.
   await currentRights({signal,policyRevision:first.policyRevision});
-  const preparers=[...documentIntentPreparersFor(context,{binding,clientResolution:{clientId:first.selectedClientId},signal}),
+  const preparers=[...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
+   async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};},
+   clientResolution:{clientId:first.selectedClientId},signal}),
    ...(configuration.intents.core?[...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,
     expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs,...(resolveClient?{async resolveClientReference(value){await fresh(value.signal);const result=await resolveClient({...value,binding,selectedClientId:first.selectedClientId});await fresh(value.signal);return result;}}:{})})]:[]),
    ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),

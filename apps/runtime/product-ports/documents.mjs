@@ -32,6 +32,9 @@ import {registerDocumentsSessionBinder,bindDocumentsSessions} from '../artifacts
 import {createRuntimeDocumentIntentPreparers} from '../artifacts/intent-preparers.mjs';
 import {registerDocumentIntentOwner} from '../artifacts/intent-binding.mjs';
 import {createSelectedDocumentExecution} from '../artifacts/selected-documents.mjs';
+import {createSelectedAttachmentFilingExecution} from '../artifacts/selected-filing.mjs';
+import {createRuntimeAttachmentFilingPreparer} from '../artifacts/filing-preparer.mjs';
+import {createFilingVersionResolver} from '../artifacts/filing-version-resolver.mjs';
 import {intentsComposition} from './intents.mjs';
 import {createS3RetentionLedgerSink} from '../../control/retention/s3-ledger.mjs';
 import {createRuntimeRetentionStorage} from '../artifacts/retention-storage.mjs';
@@ -87,14 +90,26 @@ export function documentsFamily(owners={}){
   if(Object.hasOwn(o.authority,'origin')&&o.authority.origin!==declared.authority.origin||Object.hasOwn(o.authority,'now')&&o.authority.now!==now)throw fault();
   const late=lateBoundOptionsOwner({authority:o.authority,compose:(sessions,store)=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,pool,sessions,store,now})});
   registerDocumentsSessionBinder(context,late.bind);
+  const limits={maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes};
+  const filingEnabled=retention&&configuration.intents?.enabled===true&&configuration.intents.core!==undefined;
+  const resolveVersion=value=>{
+   const bound=late.current(),clients=value.scopes.filter(scope=>scope.kind==='client');
+   if(!bound?.store||!bound.retention||clients.length!==1)throw fault();
+   return createFilingVersionResolver({versions:storage.versions,store:bound.store,selectedClientId:clients[0].resourceId,now})(value);
+  };
+  const readDecision=value=>{const reader=intentsComposition(context).readDecision;if(!reader)throw fault();return reader(value);};
+  const filing=filingEnabled?createSelectedAttachmentFilingExecution({bound:late.current,optionsOwner:late.owner,resolveVersion,readDecision,now,maxRequestMs:configuration.limits.requestMs,limits,
+   source:Object.fromEntries(['register','execute','read'].map(name=>[name,value=>{const source=intentsComposition(context).filingSource;if(!source)throw fault();return source[name](value);}]))}):undefined;
   if(o.nativeCredentials)registerDocumentIntentOwner(context,value=>{
    const bound=late.current(),selectedClientId=value.clientResolution?.clientId;
    if(!bound||retention&&!bound.retention||!(selectedClientId===null||typeof selectedClientId==='string'))return [];
-   return createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,
-    limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},
-    ...(bound.retention?{retention:bound.retention}:{})});
+   const documents=createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,
+    limits,...(bound.retention?{retention:bound.retention}:{})});
+   if(!filing||selectedClientId===null||typeof value.readCurrent!=='function')return documents;
+   return [...documents,createRuntimeAttachmentFilingPreparer({pool,binding:value.binding,scopes:value.scopes,selectedClientId,policyRevision:value.policyRevision,expiresAtMs:value.expiresAtMs,
+    readCurrent:value.readCurrent,bound,optionsOwner:late.owner,resolveVersion,now,limits})];
   },createSelectedDocumentExecution({bound:late.current,pool,optionsOwner:late.owner,now,maxRequestMs:configuration.limits.requestMs,maxOutputBytes:configuration.agentcore.maxOutputBytes,
-   readDecision:value=>{const reader=intentsComposition(context).readDecision;if(!reader)throw fault();return reader(value);}}));
+   readDecision}),filing);
   return {ports:{artifactStore:storage,artifactOptionsOwner:late.owner,...retentionPorts}};
  };
 }

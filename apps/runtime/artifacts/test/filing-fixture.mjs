@@ -43,5 +43,5 @@ export async function filingCustodyFixture(t,{native=false,sourceConversation=fa
  };
  const config={sessions:f.sessions,optionsOwner,now,limits,retention:documents.sql.retention,resolveVersion},custody=createRuntimeFilingCustody(config);
  const call={object,credential:f.credential,binding,scopes,deadlineMs:NOW+5000};
- return {f,documents,state,object,versionId,expectedBytes,config,custody,call};
+ return {f,documents,state,object,versionId,expectedBytes,config,custody,call,authority};
 }

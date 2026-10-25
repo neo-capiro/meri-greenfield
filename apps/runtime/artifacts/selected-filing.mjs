@@ -1,5 +1,5 @@
 /** Selected immutable attachments -> existing native approval -> Core filing.
- * The Core registration/execute/read extension is proposed and remains unmounted until its receiver is available.
+ * Product composition supplies Core's registration/execute/read owner together with current sessions and retention.
  * No local claim, retry or outcome ledger. Production mounting requires Core's existing attachment owner to recover
  * the same staged identity from the original approved context after a lost registration acknowledgement. A bare
  * Core-null cannot prove no upload effect; any later approved attempt must reuse that registration. */

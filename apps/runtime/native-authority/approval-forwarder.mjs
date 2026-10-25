@@ -262,6 +262,23 @@ export function createCoreApprovalForwarder(options){
    return data({...r,outcome:nativeTaskOutcome(r.outcome,p,v.decision)});
   }finally{life.close();}
  }
+ /** The multipart filing client borrows credentials only for a retained artifact.file proposal and the exact current selector. */
+ async function filingCredentials(value){
+  const {signal,deadlineMs,...raw}=own(value,['tenantId','actorId','purpose','proposal','binding'],['signal','deadlineMs']);nativeSignal(signal);
+  const v=data(raw),p=v.proposal;try{assertNativeApprovalProposal(p);validateShape('RunBinding',v.binding);}catch{refuse('INVALID_ARGUMENTS');}
+  if(v.purpose!=='approval.execution'||p.command.action!=='artifact.file'||v.tenantId!==p.command.binding.tenantId||v.actorId!==p.command.binding.actorId)refuse('ACCESS_DENIED');
+  const life=lifetime(signal,deadlineMs);
+  try{
+   const retained=await custody(life,p.command.binding,p.proposalId);if(!same(retained,p))refuse('ACCESS_DENIED');
+   const selected=await selection(life,p);if(!same(selected.binding,v.binding))refuse('ACCESS_DENIED');
+   const forbidden=await life.run(()=>reservedDigests());await selected.verify?.();
+   const first=bearer(selected,life.signal);if(forbidden.has(sha(first.credential)))refuse('ACCESS_DENIED');life.limitDeadline(first.expiresAtMs);
+   const serviceSecret=await life.run(()=>c.getServiceSecret());
+   if(typeof serviceSecret!=='string'||!TOKEN.test(serviceSecret)||serviceSecret===first.credential||forbidden.has(sha(serviceSecret)))refuse('UNAVAILABLE');
+   await selected.verify?.();const last=bearer(selected,life.signal);if(last.credential!==first.credential)refuse('ACCESS_DENIED');life.check();
+   return data({tenantId:v.tenantId,actorId:v.actorId,bearerToken:first.credential,serviceSecret,expiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)});
+  }finally{life.close();}
+ }
  /** The provider RPC seam `call(operation,input,{signal})` for `createNativeIntentApprovals`; other operations are UNAVAILABLE. */
  async function call(operation,input,options={}){
   const {signal,deadlineMs}=own(options,[],['signal','deadlineMs']);
@@ -272,7 +289,7 @@ export function createCoreApprovalForwarder(options){
   if(operation==='approval/revoke')return revoke({...own(input,['proposalId','commandSha256','approver','binding']),...extra});
   refuse('UNAVAILABLE');
  }
- return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,
+ return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,
   async executeTask(value){return taskEffect(value,false);},
   async readTaskExecution(value){return taskEffect(value,true);},
   /** The intents decision ports over Core (the shapes `approval.mjs` and the lifecycle read). */
