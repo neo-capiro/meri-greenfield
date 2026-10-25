@@ -21,7 +21,7 @@ export async function fixture(id='get_research_portfolio',{client=false,origin='
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
   readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>source.state.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family]};}},
+  capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[operation]};}},
   async fetchImpl(url,options){const parsed=new URL(url);calls.push(parsed.pathname+parsed.search);
    assert.equal(options.method,'GET');assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');assert.equal(options.headers['x-internal-service-secret'],undefined);
    assert.equal(options.redirect,'error');assert.equal(options.credentials,'omit');assert(parsed.pathname.startsWith(`/api/research-portfolios/${portfolioId}`));

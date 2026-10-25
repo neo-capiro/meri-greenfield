@@ -105,7 +105,8 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
    const role=initialJobRole??await readCapabilityRole?.({binding,signal:requestSignal??signal,deadlineMs});initialJobRole=undefined;
    const policy=await runCapabilityPolicy.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,
     ...(role?{actorRole:role.actorRole}:{}),signal:requestSignal??signal});
-   const visible=policy?.generalReads===true&&Array.isArray(policy.readFamilies)?operations.filter(op=>policy.readFamilies.includes(resolveOperationContract(op).binding.group)):[];
+   const active=new Set(policy?.activeReadOperations?.map(key)??[]);
+   const visible=policy?.generalReads===true&&Array.isArray(policy.readFamilies)?operations.filter(op=>active.has(key(op))&&policy.readFamilies.includes(resolveOperationContract(op).binding.group)):[];
    const at=now(),expiresAtMs=Math.min(observed.execution.expiresAtMs,role?.expiresAtMs??observed.execution.expiresAtMs);
    return {installation:{installationId,baseCatalogSha256,executionCatalogSha256,operations,checkedAtMs:at,expiresAtMs},
     discovery:{binding,policyRevision:observed.policyRevision,operations:visible,checkedAtMs:at,expiresAtMs}};

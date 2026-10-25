@@ -15,11 +15,17 @@ import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../product-ports/capability-
 import {billTextCase} from '../../gateway/sources/bill-text/test/fixture.mjs';
 
 const at=1800000000000,clientId=id(5),policyRevision='policy-v1',controlCredential='synthetic-control-secret-not-a-user-bearer';
+const readOperation={id:'read_bill_text',version:'0.2.0'},searchOperation={id:'search_congress_bills',version:'0.2.0'};
+function readPlatform(operations=[readOperation]){
+ const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);
+ for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])policy.activeReadOperations=structuredClone(operations);
+ return platform;
+}
 function fixture(options={}){
  const b=options.binding??binding,configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:false,limits:{requestMs:3000,requestBytes:131072,shutdownMs:30000}};
- if(options.reads)configuration.capabilityPlatform=options.platform??PROPOSED_PREVIEW_CAPABILITY_PLATFORM;
+ if(options.reads)configuration.capabilityPlatform=options.platform??readPlatform();
  if(options.readBudget||options.reads){if(options.readBudget)configuration.limits.requestMs=10;configuration.agentcore.approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,
-  operations:[{id:'read_bill_text',version:'0.2.0'}],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:8192};}
+  operations:options.approvedOperations??[readOperation],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:8192};}
  const run={binding:b,versions,scopes:[{kind:'client',tenantId:b.tenantId,resourceId:clientId,policyRevision}],policyRevision,state:'queued'};
  let record=null,invocations=0,coreCalls=0,stops=0,claimCalls=0,relayCalls=0,coreInput,invocation,schemaQueries=0,schemaRelations=[];
  const pending=Promise.withResolvers();
@@ -240,13 +246,35 @@ test('production composition honors persisted generalReads narrowing for discove
  const denied=await f.execute(available);assert.equal(denied.status,503);assert.equal(f.sourceCalls(),1,'old discovery cannot dispatch after tenant narrowing');
 });
 test('role ceiling uses actual admin vs standard role and later downgrade withholds the source result',async t=>{
- const platform=structuredClone(PROPOSED_PREVIEW_CAPABILITY_PLATFORM);platform.roleCeilings.standard_user.generalReads=false;
+ const platform=readPlatform();platform.roleCeilings.standard_user.generalReads=false;
  const options={platform,receipt:{role:'user_admin'}},f=await policyFixture(options);t.after(()=>f.finish());
  const r=await f.availability();assert.equal(r.status,200);const available=await r.json();assert.equal(available.discovery.operations.length,1,'all-role intersection would incorrectly hide admin reads');
  f.after(()=>{options.receipt={role:'standard_user'};});const response=await f.execute(available);
  assert.equal(response.status,503);assert.equal(f.sourceCalls(),1);assert.doesNotMatch(await response.text(),/resultJson/);
  const downgraded=await f.availability();assert.equal(downgraded.status,200);assert.deepEqual((await downgraded.json()).discovery.operations,[]);
 });
+test('canonical empty default active operations exposes no reads and never falls back to approved operations',async t=>{
+ const platform=readPlatform();platform.defaults.activeReadOperations=[];
+ const f=await policyFixture({platform});t.after(()=>f.finish());
+ const response=await f.availability();assert.equal(response.status,200);const available=await response.json();assert.deepEqual(available.discovery.operations,[]);
+ const denied=await f.execute(available);assert.equal(denied.status,503);assert.equal(f.sourceCalls(),0);assert.doesNotMatch(await denied.text(),/resultJson/);
+});
+for(const source of ['tenant','role'])for(const remaining of [[],[searchOperation]])for(const boundary of ['discovery','stale dispatch','after source']){
+ test(`${source} operation narrowing to ${remaining.length} reads fences ${boundary}`,async t=>{
+  const operations=[readOperation,searchOperation],platform=readPlatform(operations);
+  if(source==='role')platform.roleCeilings.standard_user.activeReadOperations=remaining;
+  const options={platform,approvedOperations:operations,receipt:{role:'user_admin'}},f=await policyFixture(options);t.after(()=>f.finish());
+  const narrow=()=>{if(source==='tenant')options.tenantPolicy={capabilities:{activeReadOperations:remaining}};else options.receipt={role:'standard_user'};};
+  const initial=await f.availability();assert.equal(initial.status,200);const available=await initial.json();assert.deepEqual(available.discovery.operations,operations);
+  if(boundary==='after source')f.after(narrow);else narrow();
+  if(boundary==='discovery'){
+   const response=await f.availability();assert.equal(response.status,200);assert.deepEqual((await response.json()).discovery.operations,remaining);assert.equal(f.sourceCalls(),0);
+  }else{
+   const response=await f.execute(available);assert.equal(response.status,503);assert.equal(f.sourceCalls(),boundary==='after source'?1:0);assert.doesNotMatch(await response.text(),/resultJson/);
+  }
+  assert.equal(f.counts().coreCalls,boundary==='stale dispatch'?4:5,'existing snapshots keep one role observation each');
+ });
+}
 for(const [name,change] of [
  ['saved tenant narrowing',o=>{o.tenantPolicy={capabilities:{generalReads:false}};}],
  ['revoked membership',o=>{o.status=403;}],['unavailable settings',o=>{o.settingsUnavailable=true;}],
