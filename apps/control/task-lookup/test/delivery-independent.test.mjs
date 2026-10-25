@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTaskLookupDelivery} from '../delivery.mjs';
-import {NOW,id,context,readContext,envelope,hash,validateShape,deferred} from '../../../../docs/qualification/candidates/task-slice-20261012/control-review/fixture.mjs';
+import {NOW,id,context,readContext,envelope,hash,validateShape,deferred} from './fixture.mjs';
 
 function harness(options={}){
  const c=context(),original=structuredClone(c),s={now:NOW,calls:[],record:null,claimed:false,state:null,events:null,auth:[]};

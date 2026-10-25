@@ -1,7 +1,7 @@
 import canonicalize from 'canonicalize';
 import {validateQuery,validateDraft,validatePrepare,validateExecute,validateError,validatePrepareRequest,validateTaskProposal,validateTaskArguments} from './generated-validator.mjs';
 import {snapshotExpected} from '../task-command-application/boundary.mjs';
-import {errorStatuses} from './generated-status.mjs';
+import {errorStatuses,errorOutcomeStatuses} from './generated-status.mjs';
 const routes=Object.freeze({query:validateQuery,draft:validateDraft,prepare:validatePrepare,execute:validateExecute});
 export class ActionResponseError extends Error {constructor(code){super(code);this.name='ActionResponseError';this.code=code;}}
 const fail=code=>{throw new ActionResponseError(code);};
@@ -59,7 +59,7 @@ export async function receiveActionResponse(route,httpStatus,jsonText,expected){
  let value;try{value=JSON.parse(jsonText);}catch{fail('ACTION_RESPONSE_JSON');}
  const freeze=inert(value);
  if(httpStatus===200){if(!routes[route](value))fail('ACTION_RESPONSE_SHAPE');await correlate(route,value,expected);}
- else {if(!validateError(value)||errorStatuses[value.error.code]!==httpStatus)fail('ACTION_RESPONSE_STATUS');}
+ else {if(!validateError(value)||(errorOutcomeStatuses[value.error.code]?.[value.error.outcome]??errorStatuses[value.error.code])!==httpStatus)fail('ACTION_RESPONSE_STATUS');}
  freeze();return value;
 }
 /** Exact immutable delivery identity for standalone preparation; validation grants no authority. */

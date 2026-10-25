@@ -32,6 +32,8 @@
  * an approved decision; its <=120 s token is handed to exactly one executor for exactly one proposal and is never retained,
  * returned to the runner or accepted by any other port. */
 import {types} from 'node:util';
+import {memoryIntentPreparersFor} from '../product-ports/memory.mjs';
+import {createNativeTaskClientResolver} from './task-client-reference.mjs';
 import {canonicalSha256 as hash,validateShape,assertProposalIntegrity} from '../../../packages/contracts/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {commandToolValidators,resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -215,9 +217,10 @@ export function createControlIntentExecution({readSecret,owners={}}={}){
 
 /** Native preparation uses the active AgentCore execution and the same fresh Core transition authority as
  * conversation continuation. It does not issue command grants or install the retired prepared-run allocation. */
-export function createAgentCoreIntentResolver({context,execution,transitionAuthority}){
+export function createAgentCoreIntentResolver({context,execution,transitionAuthority,nativeCredentials,fetchImpl}){
  const {configuration,pool,now}=context;
  if(!ordinary(execution?.authenticate)||!ordinary(transitionAuthority?.readCurrent))throw configurationFault();
+ const resolveClient=nativeCredentials&&configuration.intents?.core?createNativeTaskClientResolver({origin:configuration.intents.core.origin,nativeCredentials,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{})}):null;
  return async function resolveRun({binding,credential,signal,deadlineMs}){
   if(configuration.sourceEnabled!==true||configuration.intents?.enabled!==true)throw intentFault('UNAVAILABLE');
   validateShape('RunBinding',binding);let pinned;
@@ -245,7 +248,9 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
   await currentRights({signal,policyRevision:first.policyRevision});
   const preparers=[...documentIntentPreparersFor(context,{binding,clientResolution:{clientId:first.selectedClientId},signal}),
    ...(configuration.intents.core?[...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,
-    expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs})]:[])];
+    expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs,...(resolveClient?{async resolveClientReference(value){await fresh(value.signal);const result=await resolveClient({...value,binding,selectedClientId:first.selectedClientId});await fresh(value.signal);return result;}}:{})})]:[]),
+   ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),
+    async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};}}):[])];
   if(!preparers.length)throw intentFault('UNAVAILABLE');
   return createIntentMount({binding,preparers,journalStore:createPostgresIntentJournalStore({pool}),now,
    limits:{maxRequestMs:configuration.limits.requestMs},enabled:true,

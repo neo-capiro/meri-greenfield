@@ -26,7 +26,8 @@ test('due-day and nullable raw input retain canonical normalization',async()=>{
 });
 test('HTTP vocabulary/status and unavailable response are precise',async()=>{
  const c=await prepared(),expectation={binding:c.binding,request:c.admitted};assert.equal(taskCommandMetadata.schemaId,'urn:meri:task-command-application:0.1.0');assert.equal(taskCommandPaths.execute,'/api/task-commands/execute');
- for(const [code,status]of Object.entries(taskCommandMetadata.errorStatuses))assert.equal((await receive('prepare',status,json({error:{code,outcome:'NOT_DISPATCHED'}}),expectation)).error.code,code);
+ for(const [code,status]of Object.entries(taskCommandMetadata.errorStatuses))assert.equal((await receive('prepare',taskCommandMetadata.errorOutcomeStatuses[code]?.NOT_DISPATCHED??status,json({error:{code,outcome:'NOT_DISPATCHED'}}),expectation)).error.code,code);
+ for(const outcome of ['UNKNOWN','STORED_NOT_RELEASED']){const value={error:{code:'COMMAND_PREPARATION_REFUSED',outcome}};assert.deepEqual(await receive('prepare',502,json(value),expectation),value);await assert.rejects(receive('prepare',409,json(value),expectation),TaskCommandResponseError);}
  for(const outcome of taskCommandMetadata.errorOutcomes)assert.equal((await receive('prepare',502,json({error:{code:'REQUEST_FAILED',outcome}}),expectation)).error.outcome,outcome);
  for(const [status,value]of [[200,{error:{code:'REQUEST_FAILED',outcome:'UNKNOWN'}}],[503,{error:{code:'REQUEST_FAILED',outcome:'UNKNOWN'}}],[502,{error:{code:'UNKNOWN_CODE',outcome:'UNKNOWN'}}],[502,{error:{code:'REQUEST_FAILED',outcome:'SUCCESS'}}],[201,c.prepared]])await assert.rejects(receive('prepare',status,json(value),expectation),TaskCommandResponseError);
 });

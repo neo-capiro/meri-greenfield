@@ -253,6 +253,11 @@ export declare const taskCommandMetadata:{
     "NOT_STORED",
     "READ_UNAVAILABLE"
   ],
+  "errorOutcomeStatuses": {
+    "COMMAND_PREPARATION_REFUSED": {
+      "NOT_DISPATCHED": 409
+    }
+  },
   "semantics": {
     "preparation": "approval_required is an immutable proposal, never approval",
     "execution": "observed requires a succeeded receipt and matching task result; indeterminate is not success",

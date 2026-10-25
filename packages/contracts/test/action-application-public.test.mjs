@@ -18,6 +18,12 @@ test('archived query subject is refused by the current receiver without changing
  await assert.rejects(receiveActionResponse('query',200,JSON.stringify(archivedWire.steps[0].response)),ActionResponseError);
 });
 for(const item of wire.separateUncertaintyExamples)test(`preserve uncertainty ${item.scenario}`,async()=>{const value=await receiveActionResponse('prepare',item.httpStatus,JSON.stringify(item.body));assert.equal(value.error.outcome,item.scenario);});
+test('only a proven non-dispatched preparation refusal uses 409',async()=>{
+ const value={error:{code:'COMMAND_PREPARATION_REFUSED',outcome:'NOT_DISPATCHED'}};
+ assert.deepEqual(await receiveActionResponse('prepare',409,JSON.stringify(value)),value);
+ await assert.rejects(receiveActionResponse('prepare',502,JSON.stringify(value)),ActionResponseError);
+ for(const outcome of ['UNKNOWN','STORED_NOT_RELEASED'])await assert.rejects(receiveActionResponse('prepare',409,JSON.stringify({error:{code:'COMMAND_PREPARATION_REFUSED',outcome}})),ActionResponseError);
+});
 for(const route of ['query','draft','prepare','execute'])test(`reject success/error status interchange ${route}`,async()=>{await assert.rejects(receiveActionResponse(route,200,'{"error":{"code":"REQUEST_FAILED","outcome":"UNKNOWN"}}'),ActionResponseError);await assert.rejects(receiveActionResponse(route,201,JSON.stringify(wire.steps[0].response)),ActionResponseError);});
 const query=wire.steps[0].response,draft=wire.steps[1].response,prepare=wire.steps[2].response;
 const negatives=[

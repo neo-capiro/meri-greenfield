@@ -5472,6 +5472,7 @@ var validators = { TaskUpdateRaw: validateTaskUpdateRaw, TaskUpdateArguments: va
 // task-command-generated:./generated-status.mjs
 var errorStatuses = { "ACCESS_DENIED": 403, "APPLICATION_CLOCK": 500, "APPLICATION_CONFIGURATION": 500, "CANCELLED": 499, "COMMAND_APPROVAL_REFUSED": 409, "COMMAND_AUTHORITY_REFUSED": 502, "COMMAND_COMMIT_UNCERTAIN": 502, "COMMAND_OUTCOME_UNKNOWN": 502, "COMMAND_PREPARATION_REFUSED": 502, "COMMAND_REFUSED": 502, "DEADLINE": 408, "INVALID_BODY": 400, "INVALID_CONTENT_LENGTH": 400, "INVALID_JSON": 400, "INVALID_REQUEST": 400, "INVALID_UTF8": 400, "LOOKUP_REPLAY": 409, "LOOKUP_UNAVAILABLE": 502, "METHOD_NOT_ALLOWED": 405, "NOT_FOUND": 404, "REQUEST_FAILED": 502, "REQUEST_TOO_LARGE": 413, "RESPONSE_TOO_LARGE": 413, "SESSION_SCOPE_REFUSED": 403, "TASK_COMMAND_UNAVAILABLE": 503, "UNAUTHENTICATED": 401, "UNAVAILABLE": 502, "UNSUPPORTED_CONTENT_ENCODING": 415, "UNSUPPORTED_MEDIA_TYPE": 415 };
 var errorOutcomes = ["NOT_DISPATCHED", "UNKNOWN", "RESULT_NOT_RELEASED", "STORED_NOT_RELEASED", "NOT_STORED", "READ_UNAVAILABLE"];
+var errorOutcomeStatuses = { "COMMAND_PREPARATION_REFUSED": { "NOT_DISPATCHED": 409 } };
 
 // task-command-application/protocol.mjs
 var taskCommandVersion = "0.1.0";
@@ -5485,7 +5486,7 @@ var freeze = (value) => {
   }
   return value;
 };
-var createTaskCommandMetadata = (errorStatuses2, errorOutcomes2) => freeze({
+var createTaskCommandMetadata = (errorStatuses2, errorOutcomes2, errorOutcomeStatuses2 = {}) => freeze({
   contractVersion: taskCommandVersion,
   schemaId: taskCommandSchemaId,
   routes: { prepare: { method: "POST", path: taskCommandPaths.prepare, response: "json" }, execute: { method: "POST", path: taskCommandPaths.execute, response: "json" } },
@@ -5493,6 +5494,7 @@ var createTaskCommandMetadata = (errorStatuses2, errorOutcomes2) => freeze({
   limits: taskCommandLimits,
   errorStatuses: errorStatuses2,
   errorOutcomes: errorOutcomes2,
+  errorOutcomeStatuses: errorOutcomeStatuses2,
   semantics: { preparation: "approval_required is an immutable proposal, never approval", execution: "observed requires a succeeded receipt and matching task result; indeterminate is not success", expiry: "caller checks createdAt/expiresAt against a fresh clock before display and execution; server rechecks current authority", resume: "attemptId, workerId and writerFence may change within the same stable tenant/actor/conversation/run binding" }
 });
 
@@ -5895,7 +5897,7 @@ async function correlateExecute(value, expectation) {
 }
 
 // task-command-application/task-command-application-receiver.mjs
-var taskCommandMetadata = createTaskCommandMetadata(errorStatuses, errorOutcomes);
+var taskCommandMetadata = createTaskCommandMetadata(errorStatuses, errorOutcomes, errorOutcomeStatuses);
 var routes = Object.freeze({ prepare: { request: "TaskCommandPrepareRequest", response: "TaskCommandPrepareResponse" }, execute: { request: "TaskCommandExecuteRequest", response: "TaskCommandExecuteResponse" } });
 var routeInfo = (route) => {
   if (typeof route !== "string" || !Object.hasOwn(routes, route)) fail2("TASK_COMMAND_ROUTE");
@@ -5918,7 +5920,7 @@ async function receiveTaskCommandResponse(route, httpStatus, jsonText, expected)
   else await proposal(expectation.proposal);
   const value = parseText(jsonText, taskCommandLimits.responseBytes);
   if (httpStatus !== 200) {
-    if (!validators.TaskCommandErrorResponse(value) || errorStatuses[value.error.code] !== httpStatus) fail2("TASK_COMMAND_STATUS");
+    if (!validators.TaskCommandErrorResponse(value) || (errorOutcomeStatuses[value.error.code]?.[value.error.outcome] ?? errorStatuses[value.error.code]) !== httpStatus) fail2("TASK_COMMAND_STATUS");
     return value;
   }
   check(selected.response, value);

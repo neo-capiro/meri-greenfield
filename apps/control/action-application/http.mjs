@@ -49,5 +49,6 @@ export function errorResponse(error,state){
   if(['COMMAND_OUTCOME_UNKNOWN','COMMAND_COMMIT_UNCERTAIN'].includes(code))outcome='UNKNOWN';
  }
  if(code==='ACCESS_DENIED')status=403;else if(code==='COMMAND_APPROVAL_REFUSED')status=409;else if(code==='DEADLINE')status=408;else if(code==='CANCELLED')status=499;else if(code==='LOOKUP_REPLAY')status=409;
+ if(code==='COMMAND_PREPARATION_REFUSED'&&outcome==='NOT_DISPATCHED')status=409;
  return response({error:{code,outcome}},status);
 }

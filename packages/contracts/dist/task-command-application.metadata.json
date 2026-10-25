@@ -63,6 +63,11 @@
     "NOT_STORED",
     "READ_UNAVAILABLE"
   ],
+  "errorOutcomeStatuses": {
+    "COMMAND_PREPARATION_REFUSED": {
+      "NOT_DISPATCHED": 409
+    }
+  },
   "semantics": {
     "preparation": "approval_required is an immutable proposal, never approval",
     "execution": "observed requires a succeeded receipt and matching task result; indeterminate is not success",
@@ -74,8 +79,8 @@
   "sources": [
     {
       "path": "../../apps/control/action-application/http.mjs",
-      "sha256": "5cc1a6be3e5db1bd862f0c94d70bfbd0f7579dcd0ae2ed7241f15dc4aa488740",
-      "bytes": 4925
+      "sha256": "ee1e56894c97ca2148adf4a990e8a9ca5d5b71699e69441633e36b563b85c4a6",
+      "bytes": 5006
     },
     {
       "path": "../../apps/control/task-command-application/http.mjs",
@@ -94,8 +99,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "5c21f3568d229b391f718943cd8d14a5a3ee5f43976dc4ef8622ca77304d9279",
-      "bytes": 15153
+      "sha256": "5b6cdc2cfdb2a8ec39e7ca6570f6512b441ced6b80c5f9007b1e82e9c3072379",
+      "bytes": 15816
     },
     {
       "path": "commands-0.2/native-task-outcome-schema.mjs",
@@ -119,8 +124,8 @@
     },
     {
       "path": "generate-task-commands.mjs",
-      "sha256": "a94432ad9ee986730e5f8855cd16daae84eb47540239bf1511cb3fbb7968e285",
-      "bytes": 13682
+      "sha256": "180befc220444f458dae39cc8bb6af0362d4394a3d4c81ff37a2df772cc43cc1",
+      "bytes": 14045
     },
     {
       "path": "meri.schema.json",
@@ -144,8 +149,8 @@
     },
     {
       "path": "task-command-application/protocol.mjs",
-      "sha256": "48ba4719e7811977eba56fc6fb6a1a7dc1a159452ca6e462cd920d5bf37934c9",
-      "bytes": 1580
+      "sha256": "f91ec6ab638a4907ca8abc85febc1ad9e5d2daed6c641b5d317704e6a1ae2ffd",
+      "bytes": 1625
     },
     {
       "path": "task-command-application/README.md",
@@ -154,8 +159,8 @@
     },
     {
       "path": "task-command-application/receive.mjs",
-      "sha256": "1dfeee1eb33c129b4900d3a02481475671dec4d2897dfa5613751eb4ec2642cc",
-      "bytes": 2287
+      "sha256": "e9762501c1079a450f4b97acb899ba50b0f1871df857909c82eec37b159e161c",
+      "bytes": 2394
     },
     {
       "path": "task-command-application/schema.mjs",

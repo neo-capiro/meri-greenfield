@@ -24,7 +24,8 @@ export function standaloneFixture({general=false,maxResponseBytes=262144,retenti
  const effects=new Map(),decisions={async record({proposal,decision,approver}){state.decisions++;const d={proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision,approver,decidedAt:new Date(now()).toISOString(),expiresAt:proposal.expiresAt,policyRevision:scopes[0].policyRevision};return {decision:d,checkedAtMs:now(),revoked:false};}};
  const tasks={async read({proposal}){state.reads++;if(state.readDown)throw Error('unavailable');return state.unknown?{state:'UNKNOWN'}:effects.has(proposal.proposalId)?{state:'OUTCOME',outcome:structuredClone(effects.get(proposal.proposalId))}:null;},async execute({proposal,decision}){
   assert.equal(decision.decision,'approved');state.effects++;const c=proposal.command,completedAt=new Date(now()).toISOString();
-  const outcome={execution:{kind:'native-task',proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:c.idempotencyKey,binding:c.binding,completedAt,approvalDecisionSha256:hash(decision)},result:{id:c.arguments.taskId,title:'Original',status:'todo',dueDate:null,clientId:selectedClientId,...c.arguments.patch,updatedAt:completedAt}};
+  const result=c.action==='task.create'?{id:id(903),...c.arguments,status:'todo',createdAt:completedAt}:{id:c.arguments.taskId,title:'Original',status:'todo',dueDate:null,clientId:selectedClientId,...c.arguments.patch,updatedAt:completedAt};
+  const outcome={execution:{kind:'native-task',proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:c.idempotencyKey,binding:c.binding,completedAt,approvalDecisionSha256:hash(decision)},result};
   effects.set(proposal.proposalId,outcome);await state.afterExecute?.();return {status:'observed',outcome};
  }};
  const shared={tasks,owner:createIntentApprovalOwner({journal:createPostgresIntentJournalStore({pool}),decisions,tasks,now,limits:{maxRequestMs:3000},enabled:true})};

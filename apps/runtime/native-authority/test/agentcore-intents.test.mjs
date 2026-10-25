@@ -5,12 +5,13 @@ import {createAgentCoreIntentResolver} from '../execution-composition.mjs';
 import {createRunnerIntentsApplication} from '../intents-http.mjs';
 import {registerDocumentIntentOwner} from '../../artifacts/intent-binding.mjs';
 import {createPreparedSchedulePoolFixture} from '../../../control/intents/test/prepared-schedule-fixture.mjs';
-import {binding,scopes as clientScopes,id} from '../../../control/conversations/test/application-fixture.mjs';
+import {binding as seedBinding,scopes as seedScopes,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createMetadataPoolFixture} from '../../../control/commands/approval-metadata/test/fixture.mjs';
 
+const binding={...seedBinding,tenantId:id(80),actorId:id(81)},clientScopes=seedScopes.map(s=>({...s,tenantId:binding.tenantId}));
 const at=1800000000000,operation={id:'create_word',version:'0.2.0'},deliveryId='sdk:'+'a'.repeat(64);
-function fixture({enabled=true,documents=true,tasks=false,general=false,retention}={}){
+function fixture({enabled=true,documents=true,tasks=false,general=false,retention,resolveClients=false}={}){
  const scopes=general?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:clientScopes[0].policyRevision}]:clientScopes,selectedClientId=general?null:id(5);
  const sql=createPreparedSchedulePoolFixture(),state={auth:0,core:0,prepared:0,revoked:false,changed:false,afterPrepare:null};
  const metadata=createMetadataPoolFixture(),pool={options:{connectionTimeoutMillis:30000,query_timeout:30000},async connect(){const intent=await sql.pool.connect(),meta=await metadata.pool.connect();return {async query(q,args){
@@ -23,7 +24,16 @@ function fixture({enabled=true,documents=true,tasks=false,general=false,retentio
  const execution={async authenticate({binding:b,credential}){state.auth++;if(credential!=='actual-execution'||hash(b)!==hash(binding)||state.revoked)throw Error('refused');return structuredClone(state.changed?{...current,selectedClientId:id(6)}:current);}};
  const transitionAuthority={async readCurrent(value){state.core++;assert.deepEqual(value.binding,binding);if(state.revoked)throw Error('revoked');return {binding,scopes,selectedClientId,policyRevision:current.policyRevision,checkedAtMs:at,expiresAtMs:at+30000};}};
  if(documents)registerDocumentIntentOwner(context,value=>{assert.deepEqual(value.clientResolution,{clientId:selectedClientId});return [{operation,owner:'document',binding,async prepare(){state.prepared++;await state.afterPrepare?.();return {status:'draft',version:{binding,scopes}};}}];});
- const resolveRun=createAgentCoreIntentResolver({context,execution,transitionAuthority});
+ state.nativeCredential='synthetic-native';state.clientLookups=0;state.visibleClients=[id(5)];
+ const nativeCredentials={nativeCredentialFor(){if(!state.nativeCredential)throw Error('no session');return {credential:state.nativeCredential,expiresAtMs:at+30000};}};
+ async function fetchImpl(url,init){
+  const path=new URL(url).pathname;assert.equal(init.headers.authorization,'Bearer '+state.nativeCredential);
+  const identity={principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'a'.repeat(64),checkedAtMs:at,expiresAtMs:at+30000};
+  if(path.endsWith('/identity'))return Response.json(identity);
+  if(path.endsWith('/check-ref')){state.clientLookups++;await state.afterClientLookup?.();return Response.json({ok:true,clientId:id(5)},{status:201});}
+  assert(path.endsWith('/current'));return Response.json({...identity,role:'standard_user',permissions:[],clientIds:state.visibleClients,membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId});
+ }
+ const resolveRun=createAgentCoreIntentResolver({context,execution,transitionAuthority,...(resolveClients?{nativeCredentials,fetchImpl}:{})});
  const app=createRunnerIntentsApplication({resolveRun,enabled:true,now:()=>at,...(retention?{retention}:{}),limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:3000}});
  const post=(route='prepare',extra={},credential='actual-execution')=>app.handle(new Request('https://control.invalid/v1/runner/intents/'+route,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify({binding,...(route==='prepare'?{operation,deliveryId,arguments:{title:'reviewed'}}:{}),...extra})}));
  return {state,sql,metadata,post,resolveRun,context,scopes};
@@ -34,6 +44,19 @@ test('native document preparation uses current Core rights and existing durable 
  const core=f.state.core,replay=await f.post();assert.equal(replay.status,200);assert.equal(f.state.prepared,1);assert.ok(f.state.core>core);
  assert.equal(f.sql.state.rows.size,1);assert.ok(f.sql.state.queries.every(q=>!q.sql.includes('allocation')));
  const conflict=await f.post('prepare',{arguments:{title:'changed'}});assert.equal(conflict.status,409);assert.equal(f.state.prepared,1);
+});
+
+for(const general of [false,true])test(`mounted native ${general?'General':'client'} named task destination uses the current Core resolver twice`,async()=>{
+ const f=fixture({tasks:true,documents:false,general,resolveClients:true});
+ const response=await f.post('prepare',{operation:{id:'create_task',version:'0.2.0'},arguments:{title:'Reviewed task',clientId:'Reviewed client'}});
+ assert.equal(response.status,200,await response.clone().text());assert.equal((await response.json()).proposal.command.arguments.clientId,id(5));
+ assert.equal(f.state.clientLookups,2);assert.equal(f.metadata.rows.size,1);
+});
+for(const loss of ['wall','session'])test(`mounted native named destination refuses ${loss} loss before metadata`,async()=>{
+ const f=fixture({tasks:true,documents:false,general:true,resolveClients:true});
+ f.state.afterClientLookup=()=>{if(loss==='wall')f.state.visibleClients=[];else f.state.nativeCredential='replacement';};
+ assert.notEqual((await f.post('prepare',{operation:{id:'create_task',version:'0.2.0'},arguments:{title:'Reviewed task',clientId:'Reviewed client'}})).status,200);
+ assert.equal(f.metadata.rows.size,0);
 });
 test('another execution, binding, disabled source and absent document owner cannot prepare',async()=>{
  for(const options of [{enabled:false},{documents:false}]){const f=fixture(options);assert.equal((await f.post()).status,503);assert.equal(f.sql.state.connects,0);assert.equal(f.state.prepared,0);}

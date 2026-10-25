@@ -12,11 +12,18 @@ import {intentFault} from '../../control/intents/faults.mjs';
 import {fail} from '../../control/action-application/http.mjs';
 import {createTaskCommandApplication} from '../../control/task-command-application/index.mjs';
 import {intentsComposition} from '../product-ports/intents.mjs';
+import {createAttendedActionLookup} from './attended-action-lookup.mjs';
+import {createActionFollowthrough} from '../../control/action-followthrough/index.mjs';
+import {draft as admittedDraft} from '../../control/action-followthrough/selection.mjs';
+import {createActionApplication} from '../../control/action-application/index.mjs';
+import {createNativeTaskClientResolver} from './task-client-reference.mjs';
 const same=(a,b)=>hash(a)===hash(b),deny=()=>{throw intentFault('ACCESS_DENIED','none');};
 export const publicTaskDelivery=(operation,requestId)=>'sdk:'+hash({kind:'public-task-preparation',operation,requestId});
 
-export function createStandaloneTaskSessions({context,sessions,store,retention,shared=intentsComposition(context)}){
+export function createStandaloneTaskSessions({context,sessions,store,retention,shared=intentsComposition(context),action='task.update',actionReadTransport}){
  const {pool,now,configuration}=context,readCurrent=authenticatedCurrentState(sessions),journalStore=createPostgresIntentJournalStore({pool}),custody=createPostgresCommandProposalReader({pool});
+ if(!['task.create','task.update'].includes(action))throw intentFault('INVALID_ARGUMENTS');
+ const resolveClient=typeof sessions.nativeCredentialFor==='function'&&configuration.intents?.core?createNativeTaskClientResolver({origin:configuration.intents.core.origin,nativeCredentials:sessions,now,maxRequestMs:configuration.limits.requestMs,...(actionReadTransport?.fetchImpl?{fetchImpl:actionReadTransport.fetchImpl}:{})}):null;
  if(!shared.tasks||!shared.owner||!store.initialBindings||typeof retention?.assertServable!=='function'||typeof retention?.withRelease!=='function')throw intentFault('UNAVAILABLE');
  return async function resolveSession({credential,intent,signal,deadlineMs}){
   let pinned,expiresAtMs=Number.MAX_SAFE_INTEGER;
@@ -34,6 +41,9 @@ export function createStandaloneTaskSessions({context,sessions,store,retention,s
   }
   const first=await fresh(signal),{binding,scopes,selectedClientId}=first,policyRevision=scopes[0].policyRevision;
   const principal={tenantId:binding.tenantId,actorId:binding.actorId,clientIds:scopes.filter(s=>s.kind==='client').map(s=>s.resourceId.toLowerCase())};
+  const actions=action==='task.create'?createAttendedActionLookup({context,sessions,binding,scopes,selectedClientId,readCurrent:fresh,deadlineMs,transport:actionReadTransport}):null;
+  const commandContext={binding,...(selectedClientId===null?{}:{clientResolution:{reference:selectedClientId,clientId:selectedClientId}})};
+  const flow=actions?createActionFollowthrough({lookup:actions.lookup,readContext:actions.readContext,selectedClientId,commandContext,now,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:configuration.native.maxResponseBytes}}):null;
   let preparationDeadline;
   async function preparation(signal){
    await fresh(signal);
@@ -50,7 +60,9 @@ export function createStandaloneTaskSessions({context,sessions,store,retention,s
   }
   async function currentRights({signal,policyRevision:revision}){if(revision!==policyRevision)deny();const current=await fresh(signal);return {tenantId:binding.tenantId,actorId:binding.actorId,scopes,checkedAtMs:current.checkedAtMs,expiresAtMs:current.expiresAtMs};}
   async function prepare({requestId,arguments:args,signal}){
-   const operation={id:'update_task',version:'0.2.0'},deliveryId=publicTaskDelivery(operation,requestId);
+   if(flow)args=admittedDraft(args,commandContext);
+   const operation={id:action==='task.create'?'create_task':'update_task',version:'0.2.0'},deliveryId=publicTaskDelivery(operation,requestId);
+   const answer=result=>flow?{...result,draft:args}:result;
    const key={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId};
    const prior=await journalStore.read({key,signal});await fresh(signal);
    if(prior!==null){
@@ -63,19 +75,22 @@ export function createStandaloneTaskSessions({context,sessions,store,retention,s
     }
     const proposal=prior.outcome.result.proposal;
     const retained=await custody.readPreparedCommand({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,proposalId:proposal?.proposalId,signal});
-    if(retained===null||!same(retained.key,key)||!same(retained.record,prior.record)||!same(retained.outcome,prior.outcome)||proposal.command.action!=='task.update'||!same(proposal.command.scopes,scopes))deny();
+    if(retained===null||!same(retained.key,key)||!same(retained.record,prior.record)||!same(retained.outcome,prior.outcome)||proposal.command.action!==action||!same(proposal.command.scopes,scopes))deny();
     if(prior.record.argumentsSha256!==hash({binding:proposal.command.binding,arguments:args}))throw intentFault('CONFLICT');
-    await fresh(signal);return retained.outcome.result;
+    await fresh(signal);return answer(retained.outcome.result);
    }
+   if(flow&&['tenantId','actorId','conversationId','runId'].some(k=>args.source.originalBinding[k]!==binding[k]))throw Object.assign(intentFault('COMMAND_PREPARATION_REFUSED','none'),{outcome:'NOT_DISPATCHED'});
    await preparation(signal);
-   const native=createNativeTaskPreparers({pool,binding,scopes,selectedClientId,policyRevision,expiresAtMs:preparationDeadline,currentRights,now,maxRequestMs:configuration.limits.requestMs});
+   if(flow)await flow.validate(args,{signal});
+   const native=createNativeTaskPreparers({pool,binding,scopes,selectedClientId,policyRevision,expiresAtMs:preparationDeadline,currentRights,now,maxRequestMs:configuration.limits.requestMs,
+    ...(resolveClient?{async resolveClientReference(value){await fresh(value.signal);const result=await resolveClient({...value,binding,selectedClientId});await fresh(value.signal);return result;}}:{})});
    // The existing journal key is conversation-scoped. Include the full original binding in its immutable input hash.
-   const preparers=native.map(p=>({...p,prepare:({arguments:value,...options})=>{if(!same(value.binding,binding))deny();return p.prepare({...options,arguments:value.arguments});}}));
+   const preparers=native.map(p=>({...p,prepare:({arguments:value,...options})=>{if(!same(value.binding,binding))deny();return p.prepare({...options,arguments:flow?value.arguments.task:value.arguments});}}));
    const mount=createIntentMount({binding,preparers,journalStore,now,enabled:true,limits:{maxRequestMs:configuration.limits.requestMs},resultRelease:createIntentResultReleaseAuthority({binding,now,currentRights,currentRun:async(_b,{signal})=>JSON.stringify(await preparation(signal))})});
-   return mount.prepare({operation,arguments:{binding,arguments:args},deliveryId,signal});
+   return answer(await mount.prepare({operation,arguments:{binding,arguments:args},deliveryId,signal}));
   }
   async function execute({proposal,signal,deadlineMs}){
-   assertNativeApprovalProposal(proposal);if(proposal.command.action!=='task.update'||['tenantId','actorId','conversationId'].some(k=>proposal.command.binding[k]!==binding[k]))deny();
+   assertNativeApprovalProposal(proposal);if(proposal.command.action!==action||['tenantId','actorId','conversationId'].some(k=>proposal.command.binding[k]!==binding[k]))deny();
    await fresh(signal);
    const retained=await custody.readPreparedCommand({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,proposalId:proposal.proposalId,signal});
    if(retained===null||!same(retained.outcome.result.proposal,proposal))deny();
@@ -93,11 +108,15 @@ export function createStandaloneTaskSessions({context,sessions,store,retention,s
    if(!retention){check();return serialize();}
    return retention.withRelease([subject],async(fenceSignal,assertServable)=>{fenceSignal.throwIfAborted();check();await assertServable(subject);check();fenceSignal.throwIfAborted();return serialize();},{signal,deadlineMs});
   }
-  return {binding,checkedAtMs:now(),expiresAtMs,prepare,execute,release};
+  return {binding,checkedAtMs:now(),expiresAtMs,prepare,execute,release,...(actions?{query:actions.query,draft:({selection,edits,signal})=>flow.draft(selection,edits??{},{signal})}:{})};
  };
 }
 
 export function createStandaloneTaskApplication(options){
  const c=options.context.configuration;
  return createTaskCommandApplication({resolveSession:createStandaloneTaskSessions(options),now:options.context.now,limits:{maxRequestMs:c.limits.requestMs,maxRequestBytes:c.limits.requestBytes,maxResponseBytes:c.native.maxResponseBytes}});
+}
+export function createStandaloneActionApplication(options){
+ const c=options.context.configuration;
+ return createActionApplication({resolveSession:createStandaloneTaskSessions({...options,action:'task.create'}),now:options.context.now,limits:{maxRequestMs:c.limits.requestMs,maxRequestBytes:c.limits.requestBytes,maxResponseBytes:c.native.maxResponseBytes}});
 }

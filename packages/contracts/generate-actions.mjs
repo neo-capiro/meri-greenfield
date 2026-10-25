@@ -15,6 +15,7 @@ export async function generateActionContracts({check=false}={}){
  for(const match of list[1].matchAll(/'([^']+)'/gu))statuses[match[1]]=502;
  for(const match of http.matchAll(/fail\('([A-Z_]+)'(?:,(\d+))?\)/gu))statuses[match[1]]=Number(match[2]??400);
  for(const match of http.matchAll(/code==='([A-Z_]+)'\)status=(\d+)/gu))statuses[match[1]]=Number(match[2]);
+ const errorOutcomeStatuses={};for(const match of http.matchAll(/code==='([A-Z_]+)'&&outcome==='([A-Z_]+)'\)status=(\d+)/gu))(errorOutcomeStatuses[match[1]]??={})[match[2]]=Number(match[3]);
  const statusEntries=Object.fromEntries(Object.entries(statuses).sort(([a],[b])=>a.localeCompare(b)));
  const root=actionSchema(Object.keys(statusEntries)),defs={},seen=new Map();
  function transform(value,owner){if(Array.isArray(value))return value.map(v=>transform(v,owner));if(!value||typeof value!=='object')return value;
@@ -28,7 +29,7 @@ export async function generateActionContracts({check=false}={}){
  const names=['ActionQueryResponse','ActionDraftResponse','ActionPrepareResponse','ActionExecuteResponse','ActionErrorResponse','ActionPrepareRequest','ActionTaskProposal','ActionTaskArguments'];
  const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);
  const exportNames=['validateQuery','validateDraft','validatePrepare','validateExecute','validateError','validatePrepareRequest','validateTaskProposal','validateTaskArguments'];const exports={};names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});exports[exportNames[i]]=ref;});
- const generated=standalone(ajv,exports),statusSource='export const errorStatuses='+JSON.stringify(statusEntries)+';';
+ const generated=standalone(ajv,exports),statusSource='export const errorStatuses='+JSON.stringify(statusEntries)+';export const errorOutcomeStatuses='+JSON.stringify(errorOutcomeStatuses)+';';
  const bundled=await build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('action-application/receive.mjs',HERE),'utf8'),sourcefile:'action-application/receive.mjs',resolveDir:resolve(dir,'action-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'action-generated',setup(b){b.onResolve({filter:/^\.\/generated-(validator|status)\.mjs$/},a=>({path:a.path,namespace:'action-generated'}));b.onLoad({filter:/.*/,namespace:'action-generated'},a=>({contents:a.path.includes('validator')?generated:statusSource,resolveDir:dir,loader:'js'}));}}]});
  if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('Action browser external import');
  const declarations=await compile({title:'ActionApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'ActionApplicationEnvelope',{bannerComment:'// Generated from canonical action receiving schema. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
