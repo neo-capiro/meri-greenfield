@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {loadPlan,runPsqlScript,migrationBody} from './first-chat-migrate.mjs';
 
 test('schedule activation uses the existing phase interpreter without changing ordinary migration role restrictions',async()=>{
- const entry=loadPlan().at(-1),statements=[];
+ const entry=loadPlan().find(e=>e.kind==='phase:schedule_worker_grants'),statements=[];
  await runPsqlScript({text:entry.text,variables:{phase_schedule_worker_grants:'1'},connect:async()=>({
   async query(q){statements.push(q);return {rows:[]};},async end(){}
  })});

@@ -107,7 +107,9 @@ export const PLAN=Object.freeze([
  // Exact-key lookup supports bounded SDK erasure without changing the existing guard.
  ['migration',conversation('0025_retention_target_lookup.sql'),'f96c1d5345f7dbf9635a5b80426c40a353c67a317911428260368f9be4579110','integration'],
  // Separate installer phase: create the dedicated NOLOGIN schedule role, then grant only its existing owner accesses.
- ['phase:schedule_worker_grants','infra/product-preview/first-chat-schedule-worker-grants.sql','579adc6932878b0ed9985588f4cef1cedd669802efcf483080d56c7d093181b6','integration']
+ ['phase:schedule_worker_grants','infra/product-preview/first-chat-schedule-worker-grants.sql','579adc6932878b0ed9985588f4cef1cedd669802efcf483080d56c7d093181b6','integration'],
+ // Plan exact canonical targets independently of the legacy Memory alternative.
+ ['migration',conversation('0026_retention_target_dispatch.sql'),'611c78fd45af1e26e86d0b8ddfa73a9958f05697e725c858eeebfc71b12cda17','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

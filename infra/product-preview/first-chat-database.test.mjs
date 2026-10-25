@@ -368,7 +368,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -814,7 +814,7 @@ test('the superseding Temporal grants file pins the live 1.32.1 catalog, includi
 
 
 test('schedule grants append ordinal 56 through the existing installer phase and preserve all 55 entries',async()=>{
- const plan=loadPlan(),entry=plan.at(-1);
+ const plan=loadPlan().slice(0,56),entry=plan.at(-1);
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,55))).digest('hex'),'27299fdc73619f4a925995f2b864f67ea1b1a260fb12f5a5de8b209aae03e72f');
  assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[56,56,'phase:schedule_worker_grants','integration']);
  assert.equal(entry.path,'infra/product-preview/first-chat-schedule-worker-grants.sql');
@@ -829,6 +829,22 @@ test('schedule grants append ordinal 56 through the existing installer phase and
  const executed=structuredClone(db.state.executed);
  await runStage({stage:'integration',plan,variables,connect:db.connect});
  assert.deepEqual(db.state.executed,executed);assert.equal(db.state.phases.filter(p=>p==='schedule_worker_grants').length,1);
+ assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('exact target dispatch appends only ordinal 57 and preserves the first 56 entries',async()=>{
+ const plan=loadPlan(),entry=plan.at(-1);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,56))).digest('hex'),'c501cbf269fc1de1d03daa38f8a960ad0744ec03edf81f7600501e307a90a91c');
+ assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[57,57,'migration','integration']);
+ assert.equal(entry.path,'apps/control/conversations/migrations/0026_retention_target_dispatch.sql');
+ const db=databaseWithLedger(plan,56),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,56),prefix);assert.equal(db.state.ledger.length,57);
+ assert.deepEqual(db.state.executed,[migrationBody(entry.text).replace(/\s+/gu,' ').trim()]);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,1,'the forward guard is not reapplied');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
 });
 
