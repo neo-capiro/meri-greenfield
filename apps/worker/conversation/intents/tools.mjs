@@ -5,6 +5,7 @@
 import {tool} from '@anthropic-ai/claude-agent-sdk';
 import {z} from 'zod';
 import {intentDescriptor,intentToolName} from './catalog.mjs';
+import {intentToolArguments} from './schema.mjs';
 const MAX_DESCRIPTION=4096;
 export const INTENT_ANNOTATIONS=Object.freeze({readOnlyHint:false,destructiveHint:false,idempotentHint:true,openWorldHint:false});
 /** @param {readonly import('./catalog.mjs').IntentRow[]} rows */
@@ -21,8 +22,9 @@ function description(rows){
  * @param {(raw:any,extra:any)=>Promise<any>} handler */
 export function defineIntentTool(name,rows,handler){
  const ids=/** @type {[string,...string[]]} */(rows.map(r=>r.operation.id));
- const shape={operation:z.enum(ids),arguments:z.record(z.string(),z.unknown()).describe('The canonical request object for the selected operation'),
+ // The advertised arguments are the owner's canonical request schema (proof of the narrowing in `schema.mjs`),
+ // never an untyped object: an untyped object tells the model nothing and accepts calls the owner must refuse.
+ const shape={operation:z.enum(ids),arguments:intentToolArguments(rows).arguments.describe('The request object for the selected operation'),
   _meriInvocation:z.string().optional().describe('Reserved correlation supplied only by the trusted SDK hook')};
- z.toJSONSchema(z.object(shape),{io:'input'});
  return Object.freeze({name:intentToolName(name),definition:tool(name,description(rows),shape,handler,{annotations:INTENT_ANNOTATIONS,alwaysLoad:true})});
 }
