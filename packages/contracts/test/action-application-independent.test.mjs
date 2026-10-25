@@ -4,17 +4,18 @@ import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {receiveActionResponse,ActionResponseError} from '@capiro/meri-contracts/action-application';
-import {createLocalActionDemo} from '../../../apps/control/action-application/local/demo.mjs';
-import {runLocalActionFlow} from '../../../apps/control/action-application/local/flow.mjs';
 import {canonicalSha256} from '../validate.mjs';
-const root=fileURLToPath(new URL('../../../',import.meta.url));
+import {actionFixture,id as fixtureId} from '../../../apps/runtime/native-authority/test/standalone-actions-fixture.mjs';
 let fixture;
 async function wire(){
- if(!fixture)fixture=(async()=>{const old=process.env.MERI_REVIEW_SOURCE_ROOT;process.env.MERI_REVIEW_SOURCE_ROOT=root;let demo;try{demo=await createLocalActionDemo({mode:'synthetic-local',ttlMs:10000});return await runLocalActionFlow(demo);}finally{demo?.close();if(old===undefined)delete process.env.MERI_REVIEW_SOURCE_ROOT;else process.env.MERI_REVIEW_SOURCE_ROOT=old;}})();return fixture;
+ if(!fixture)fixture=(async()=>{const f=actionFixture(),read=await take(f,'query',{request:{limit:20}}),selection={resultReference:read.resultReference,resultSha256:read.resultSha256,actionId:read.observation.result.actions[0].id};
+  const draft=await take(f,'draft',{selection}),pending=await take(f,'prepare',{requestId:fixtureId(70),draft}),executed=await take(f,'execute',{proposal:pending.proposal}),replay=await take(f,'execute',{proposal:pending.proposal});
+  return {read,draft,pending,executed,replay,stats:{taskEffects:f.state.effects},unapproved:{status:409,body:{error:{code:'COMMAND_APPROVAL_REFUSED',outcome:'NOT_DISPATCHED'}}}};})();return fixture;
 }
+async function take(f,route,body){const r=await f.call(route,body);assert.equal(r.status,200,await r.clone().text());return r.json();}
 const encode=JSON.stringify;
-const bad=async(route,status,value)=>assert.rejects(()=>receiveActionResponse(route,status,typeof value==='string'?value:encode(value)),ActionResponseError);
-for(const [route,key]of [['query','read'],['draft','draft'],['prepare','pending'],['execute','executed'],['execute','replay']])test(`independent public receiver actual PR42 ${route}/${key}`,async()=>{const raw=(await wire())[key],out=await receiveActionResponse(route,200,encode(raw));assert.deepEqual(out,raw);assert.ok(Object.isFrozen(out));assert.notEqual(out,raw);if(route==='query'){assert.equal(out.acceptedTasks,false);assert.ok(Object.isFrozen(out.observation.result.actions));}if(route==='prepare')assert.equal(out.status,'approval_required');});
+const bad=async(route,status,value)=>assert.rejects(async()=>receiveActionResponse(route,status,typeof value==='string'?value:encode(value),route==='execute'?{proposal:(await wire()).pending.proposal}:undefined),ActionResponseError);
+for(const [route,key]of [['query','read'],['draft','draft'],['prepare','pending'],['execute','executed'],['execute','replay']])test(`independent public receiver current native ${route}/${key}`,async()=>{const raw=(await wire())[key],out=await receiveActionResponse(route,200,encode(raw),route==='execute'?{proposal:(await wire()).pending.proposal}:undefined);assert.deepEqual(out,raw);assert.ok(Object.isFrozen(out));assert.notEqual(out,raw);if(route==='query'){assert.equal(out.acceptedTasks,false);assert.ok(Object.isFrozen(out.observation.result.actions));}if(route==='prepare')assert.equal(out.status,'approval_required');});
 test('independent actual pending approval error and indeterminate accounting remain non-success',async()=>{const f=await wire();assert.notEqual(f.unapproved.status,200);assert.deepEqual(await receiveActionResponse('execute',f.unapproved.status,encode(f.unapproved.body)),f.unapproved.body);assert.deepEqual(await receiveActionResponse('execute',200,'{"status":"indeterminate","outcome":null}'),{status:'indeterminate',outcome:null});assert.equal(f.stats.taskEffects,1);});
 for(const [code,status]of [['UNAUTHENTICATED',401],['ACCESS_DENIED',403],['DEADLINE',408],['CANCELLED',499],['COMMAND_APPROVAL_REFUSED',409],['COMMAND_OUTCOME_UNKNOWN',502]])test(`independent public error ${code}/${status}`,async()=>{const value={error:{code,outcome:code==='COMMAND_OUTCOME_UNKNOWN'?'UNKNOWN':'NOT_DISPATCHED'}};assert.deepEqual(await receiveActionResponse('execute',status,encode(value)),value);});
 for(const outcome of ['UNKNOWN','RESULT_NOT_RELEASED','STORED_NOT_RELEASED','NOT_STORED','READ_UNAVAILABLE'])test(`independent receiver preserves ${outcome} without retry/approval fields`,async()=>{const value={error:{code:'REQUEST_FAILED',outcome}};assert.deepEqual(await receiveActionResponse('prepare',502,encode(value)),value);await bad('prepare',502,{error:{...value.error,retryable:true}});});
@@ -32,13 +33,13 @@ for(const [label,route,status,key,mutate]of [
  ['prepare client substitution','prepare',200,'pending',x=>{x.proposal.command.arguments.clientId='00000000-0000-4000-8000-000000000999';x.proposal.commandSha256=canonicalSha256(x.proposal.command);}],
  ['execute approval confusion','execute',200,'pending',()=>{}],
  ['execute unknown key','execute',200,'executed',x=>x.retry=true],
- ['execute tenant-scope mismatch','execute',200,'executed',x=>x.outcome.receipt.scopes[0].tenantId='other'],
+ ['execute tenant-scope mismatch','execute',200,'executed',x=>x.outcome.execution.binding.tenantId='other'],
 ])test(`independent receiving refusal ${label}`,async()=>{const value=structuredClone((await wire())[key]);mutate(value);await bad(route,status,value);});
 test('independent route and status cannot reclassify an actual payload',async()=>{const f=await wire();await bad('query',200,f.draft);await bad('execute',200,f.unapproved.body);await bad('query',403,f.read);await bad('execute',200,{error:{code:'ACCESS_DENIED',outcome:'NOT_DISPATCHED'}});await bad('execute',403,{error:{code:'COMMAND_APPROVAL_REFUSED',outcome:'NOT_DISPATCHED'}});});
 for(const raw of ['', 'null','[]','{}','{"error":','{"error":{}} trailing'])test(`independent malformed primitive JSON ${raw}`,async()=>{await bad('query',200,raw);});
 test('independent receiving refuses effectful objects without reading any traps',async()=>{let effects=0;const hostile=new Proxy({}, {get(){effects++;throw Error('secret');},getPrototypeOf(){effects++;throw Error('secret');},ownKeys(){effects++;throw Error('secret');}});const object={get toJSON(){effects++;return()=>({});}};for(const v of [undefined,null,{},object,hostile,new String('{}')])await assert.rejects(()=>receiveActionResponse('query',200,v),ActionResponseError);await assert.rejects(()=>receiveActionResponse(hostile,200,'{}'),ActionResponseError);await assert.rejects(()=>receiveActionResponse('query',hostile,'{}'),ActionResponseError);assert.equal(effects,0);});
 test('independent explicit byte and nesting bounds refuse safely',async()=>{await bad('query',200,' '.repeat(16*1024*1024+1));await bad('query',200,'['.repeat(70)+'0'+']'.repeat(70));});
-test('independent package has no public approval, credential or execution method',async()=>{const ns=await import('@capiro/meri-contracts/action-application');assert.deepEqual(Object.keys(ns).sort(),['ActionResponseError','receiveActionResponse']);});
+test('independent package has no public approval, credential or execution method',async()=>{const ns=await import('@capiro/meri-contracts/action-application');assert.deepEqual(Object.keys(ns).sort(),['ActionResponseError','receiveActionPrepareRequest','receiveActionResponse']);});
 test('independent generated browser receiver has no external/private/Node imports',async()=>{
  const url=import.meta.resolve('@capiro/meri-contracts/action-application');const text=readFileSync(fileURLToPath(url),'utf8');assert.equal(/from\s*["']node:|import\(["']node:/.test(text),false);
  const sample=(await wire()).pending;
@@ -47,21 +48,17 @@ test('independent generated browser receiver has no external/private/Node import
 });
 // Exact accepted producer permits interleaved event slots, and A -> B attempt recovery.
 import {prepare as prepareLookup,event as lookupEvent} from '../../../apps/control/task-lookup/binding.mjs';
-import {setup as followthroughSetup,id as fixtureId} from '../../../apps/control/action-followthrough/test/fixture.mjs';
-import {createActionFollowthrough} from '../../../apps/control/action-followthrough/index.mjs';
-import {createTaskLookupDelivery,assertTaskLookupStoredBinding} from '../../../apps/control/task-lookup/index.mjs';
-import {createLocalLookupAuthorizer} from '../../../apps/gateway/local-action/control-authorizer.mjs';
 test('independent receiving accepts canonical nonconsecutive reserved event sequence',async()=>{
  const value=structuredClone((await wire()).read),[a,b]=value.events,at=Date.parse(a.createdAt),binding=value.observation.binding;
  const context={lookupId:value.lookupId,resultReference:value.resultReference,requestId:a.data.requestId,binding,scopes:a.scopes,selectedClientId:value.observation.result.clientId,deliveryJson:JSON.stringify({context:{binding},producer:{namespace:'receiver-test',executionId:'gap'},deliveryId:'gap'}),slots:{started:{eventId:a.eventId,sequence:a.sequence},terminal:{eventId:b.eventId,sequence:a.sequence+5}},deadlineMs:at+1000};
  const canonical=prepareLookup({limit:20},context,at);value.events=[lookupEvent(canonical,'tool.started',at),lookupEvent(canonical,'tool.completed',at+1,value.resultReference)];
  assert.deepEqual(await receiveActionResponse('query',200,encode(value)),value);
 });
-test('independent receiving accepts actual original A recommendation prepared under current B',async()=>{
- const f=await followthroughSetup(),a=structuredClone(f.f.binding),b={...a,attemptId:fixtureId(990),workerId:fixtureId(991),writerFence:2};
- f.identity.replaceRun({expectedBinding:a,binding:b,policyRevision:'a'.repeat(64),deadlineMs:f.clock()+45000});const issued=f.identity.issueCredential({ttlMs:40000});Object.assign(f.f.binding,b);
- const lookup=createTaskLookupDelivery({store:f.store,authorize:createLocalLookupAuthorizer({identity:f.identity,credential:issued.credential,assertStoredBinding:assertTaskLookupStoredBinding,now:f.clock}),gateway:{executeOwned:async()=>{throw Error('No redispatch');}},clock:f.clock});
- const flow=createActionFollowthrough({...f.config,lookup,readContext:{...f.readContext,currentBinding:b}}),draft=await flow.draft(f.wanted),prepared=await flow.prepare(draft);
- assert.deepEqual(prepared.proposal.command.binding,b);assert.deepEqual(prepared.draft.source.originalBinding,a);assert.equal(f.f.state.fetches,0);
+test('independent receiving accepts retained source A in the same run with current attempt B',async()=>{
+ const f=actionFixture(),read=await take(f,'query',{request:{limit:20}}),a=structuredClone(f.binding),b={...a,attemptId:fixtureId(990),workerId:fixtureId(991),writerFence:2};
+ f.state.binding=b;
+ const draft=await take(f,'draft',{selection:{resultReference:read.resultReference,resultSha256:read.resultSha256,actionId:read.observation.result.actions[0].id}});
+ const prepared=await take(f,'prepare',{requestId:fixtureId(70),draft});
+ assert.deepEqual(prepared.proposal.command.binding,b);assert.deepEqual(prepared.draft.source.originalBinding,a);assert.equal(f.state.effects,0);
  assert.deepEqual(await receiveActionResponse('prepare',200,encode(prepared)),prepared);
 });

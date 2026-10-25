@@ -344,13 +344,13 @@ test('memory renders the control memory block at the Core origin with the reads 
  await assert.rejects(render(withFeatures({memory:{enabled:'yes'}})),/RENDER_INPUT_REFUSED/u);
 });
 
-test('intents.execution and routines.core render the Core origin, the reads service secret file and the Ed25519 pins; invalid pins and missing reads refuse',async()=>{
+test('routines.core retains its Core origin and grant pins; retired task execution trust is refused',async()=>{
  await baseline();
  const {generateKeyPairSync}=await import('node:crypto');const jwk=i=>({...generateKeyPairSync('ed25519').publicKey.export({format:'jwk'}),kid:'k'+i});
  const execution={issuer:'capiro-core:execution',keys:[jwk(1)]},core={cancellationProof:{issuer:'capiro-core:routines',kid:'cancel-1',publicKey:(({kty,crv,x})=>({kty,crv,x}))(jwk(2))},unattendedGrant:{issuer:'capiro-core:routines',kid:'grant-1',publicKey:(({kty,crv,x})=>({kty,crv,x}))(jwk(3))}};
- const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution},routines:{enabled:true,core}}),{featureSecrets:featureSecrets()});
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true},routines:{enabled:true,core}}),{featureSecrets:featureSecrets()});
  const control=config(rendered,'control'),origin=control.agentcore.identity.origin;
- assert.deepEqual(control.intents,{enabled:true,execution:{coreOrigin:origin,issuer:execution.issuer,keys:execution.keys,serviceSecretFile:PATHS.readsServiceSecret}});
+ assert.deepEqual(control.intents,{enabled:true});
  assert.deepEqual(control.routines,{enabled:true,core:{origin,serviceSecretFile:PATHS.readsServiceSecret,...core}});
  const task={taskId:'11111111-1111-4111-8111-000000000009',version:1},workflow={taskQueue:'meri-schedule-worker',workflowIdPrefix:'meri/routine/'};
  const targeted=await render(i=>{withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core,task,workflow}})(i);addScheduleBindings(i);},{featureSecrets:featureSecrets()});
@@ -358,13 +358,13 @@ test('intents.execution and routines.core render the Core origin, the reads serv
  await assert.rejects(render(withFeatures({routines:{enabled:false,task}})),/needs features.routines.enabled true/u);
  await assert.rejects(render(withFeatures({routines:{enabled:true,workflow:{...workflow,taskQueue:'bad queue'}}})),/features.routines.workflow target/u);
  assert.deepEqual(config(await render(withFeatures({intents:{enabled:true},routines:{enabled:false}})),'control').intents,{enabled:true});
- await assert.rejects(render(withFeatures({intents:{enabled:true,execution}})),/needs features.reads enabled/u);
+ await assert.rejects(render(withFeatures({intents:{enabled:true,execution}})),/features.intents/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:false,core}}),{featureSecrets:featureSecrets()}),/needs features.routines.enabled true/u);
- await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution:{issuer:'x',keys:[{kty:'RSA',kid:'k'}]}}}),{featureSecrets:featureSecrets()}),/compileExecutionTrust/u);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,execution:{issuer:'x',keys:[{kty:'RSA',kid:'k'}]}}}),{featureSecrets:featureSecrets()}),/features.intents/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,routines:{enabled:true,core:{cancellationProof:{...core.cancellationProof,kid:core.unattendedGrant.kid},unattendedGrant:core.unattendedGrant}}}),{featureSecrets:featureSecrets()}),/routines-configuration/u);
 });
 
-test('intents.core renders the Core approval forwarder block (origin and reads secret file) next to execution',async()=>{
+test('intents.core renders the Core approval forwarder block (origin and reads secret file) for native decisions and execution',async()=>{
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:true,core:{enabled:true}}}),{featureSecrets:featureSecrets()});
  const control=config(rendered,'control');

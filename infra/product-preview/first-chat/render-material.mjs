@@ -19,7 +19,6 @@ import {compileCapabilityPlatform,createConfiguredRunCapabilityPolicy} from '../
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
-import {compileIntentsConfiguration} from '../../../apps/runtime/product-ports/intents.mjs';
 import {compileRoutinesCoreConfiguration} from '../../../apps/runtime/native-authority/routines-configuration.mjs';
 
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
@@ -121,14 +120,11 @@ export function parseFeatures(raw,{secrets={}}={}){
  const toggle=key=>{const v=record(f[key],`features.${key}`,['enabled']);return {enabled:bool(v.enabled,`features.${key}.enabled`)};};
  if(f.sourceEnabled!==undefined)out.sourceEnabled=bool(f.sourceEnabled,'features.sourceEnabled');
  for(const key of ['userPreferences','tenantSettings'])if(f[key]!==undefined)out[key]=toggle(key);
- // Write-intent execution trust (lane E): the Core issuer and its Ed25519 public JWKs; validated by the control compiler against a
- // placeholder origin and secret path (the rendered values are the Core origin and the reads service secret file).
- if(f.intents!==undefined){const v=record(f.intents,'features.intents',['enabled'],['execution','core']);const enabled=bool(v.enabled,'features.intents.enabled');
+ // Native approval and execution share Core's existing receiver and current attended session.
+ if(f.intents!==undefined){const v=record(f.intents,'features.intents',['enabled'],['core']);const enabled=bool(v.enabled,'features.intents.enabled');
   // Approval forwarder (lane L): Core P-INT-10 record/decision at the Core origin with the reads service secret file.
   const core=v.core===undefined?undefined:bool(record(v.core,'features.intents.core',['enabled']).enabled,'features.intents.core.enabled');if(core&&!enabled)fail('RENDER_INPUT_REFUSED','features.intents.core needs features.intents.enabled true');
-  if(v.execution!==undefined){if(!enabled)fail('RENDER_INPUT_REFUSED','features.intents.execution needs features.intents.enabled true');const e=record(v.execution,'features.intents.execution',['issuer','keys']);
-   try{compileIntentsConfiguration({intents:{enabled:true,execution:{coreOrigin:'https://placeholder.invalid',issuer:e.issuer,keys:structuredClone(e.keys),serviceSecretFile:'/run/meri/placeholder'}}});}catch{fail('RENDER_INPUT_REFUSED','features.intents.execution (apps/runtime/native-authority/execution-capability.mjs compileExecutionTrust)');}
-   out.intents={enabled:true,execution:{issuer:e.issuer,keys:structuredClone(e.keys)},...(core?{core:true}:{})};}else out.intents={enabled,...(core?{core:true}:{})};}
+  out.intents={enabled,...(core?{core:true}:{})};}
  // Routines Core owners (lane B2): the policy-check origin and the Ed25519 pins for the cancellation proof and the unattended grant.
  if(f.routines!==undefined){const v=record(f.routines,'features.routines',['enabled'],['core','task','workflow']);const enabled=bool(v.enabled,'features.routines.enabled');
   let task,workflow;
@@ -197,7 +193,6 @@ export function parseFeatures(raw,{secrets={}}={}){
  }
  if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
  if(out.memory?.enabled===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.memory reuses the reads Core service secret: it needs features.reads enabled');
- if(out.intents?.execution!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.intents.execution reuses the reads Core service secret: it needs features.reads enabled');
  if(out.intents?.core===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.intents.core reuses the reads Core service secret: it needs features.reads enabled');
  if(out.routines?.core!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.routines.core reuses the reads Core service secret: it needs features.reads enabled');
  return out;
@@ -360,7 +355,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  const downloadLinkKey=features.downloadLinks?.enabled===true?Buffer.from(randomBytes(32).toString('base64url'),'utf8'):null;
  const featureKeys={};
  for(const key of ['userPreferences','tenantSettings','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
- if(features.intents!==undefined)featureKeys.intents={...(features.intents.execution===undefined?{enabled:features.intents.enabled}:{enabled:true,execution:{coreOrigin:k.coreOrigin,issuer:features.intents.execution.issuer,keys:structuredClone(features.intents.execution.keys),serviceSecretFile:PATHS.readsServiceSecret}}),...(features.intents.core===true?{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})};
+ if(features.intents!==undefined)featureKeys.intents={enabled:features.intents.enabled,...(features.intents.core===true?{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})};
  if(features.routines!==undefined)featureKeys.routines={enabled:features.routines.enabled,
   ...(features.routines.core===undefined?{}:{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret,...structuredClone(features.routines.core)}}),
   ...(features.routines.task===undefined?{}:{task:structuredClone(features.routines.task)}),
