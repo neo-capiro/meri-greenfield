@@ -97,7 +97,10 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   const entryFrom=proof=>{if(!proof.files)return null;const files=assertNativeFileState(proof.files,{binding:proof.sdkSession.binding,scopes});
    const matches=files.workspace.entries.filter(e=>e.object.objectId===versionId);if(matches.length>1)fail('STORE_CORRUPT');if(!matches.length)return null;
    const w=files.workspace;return {kind:'native-file',binding:w.binding,scopes:w.scopes,manifestId:w.manifestId,createdAt:w.createdAt,entry:matches[0]};};
-  const found=await tx(b,check,async c=>{await verifyRun(c,b,scopes);check();
+  const found=await tx(b,check,async c=>{const caller=await selectRun(c,b);
+   // A binding the conversation owner admitted for a not-yet-submitted turn has no run row of its own; the version's own
+   // run below still pins tenant/actor/conversation, scopes, writer fence and a published native capture.
+   if(caller)await verifyRun(c,b,scopes);check();
    const rows=(await c.query(`SELECT run_id FROM meri_conversations.completion_checkpoints
     WHERE tenant_id=$1 AND conversation_id=$2 AND state='PUBLISHED' AND proof->>'kind'='native-session'
      AND proof#>'{files,workspace,entries}' @> $3::jsonb
