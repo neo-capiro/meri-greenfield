@@ -49,10 +49,18 @@ async function fixture(t,{flushFails=false,closeFails=false,captureFails=false,r
   }});
  // Model policy comes from the canonical loaded run owner, never the local files.
  saved.model={...SDK_MODEL_CONFIGURATION,maxTurns:20,maxCostMicroUSD:2000000};
- return {run:()=>execute({binding}),order,events,counts:()=>({queries,upload}),cleanup:()=>execute.cleanupStatus()};
+ return {run:()=>execute({binding}),workspace,order,events,counts:()=>({queries,upload}),cleanup:()=>execute.cleanupStatus()};
 }
 test('assembled runner restores before one SDK query and uploads real Task/workspace bytes after close and flush',async t=>{const f=await fixture(t);assert.deepEqual(await f.run(),{state:'completed'});assert.equal(f.counts().queries,1);assert.equal(Buffer.from(f.counts().upload.files[0].base64,'base64').toString(),'exact native output');assert.equal(f.counts().upload.taskFiles[0].path,'1.json');assert.equal(f.events.some(e=>e.data?.state==='completed'),false);assert.equal(f.cleanup().closed,true);});
 test('assembled no-file SDK result completes after draining and capturing only empty local directories',async t=>{const f=await fixture(t,{emptyDirectoriesOnly:true});assert.deepEqual(await f.run(),{state:'completed'});assert.equal(f.counts().queries,1);assert.deepEqual(f.counts().upload.files,[]);assert.deepEqual(f.counts().upload.taskFiles,[]);assert.equal(f.order.filter(v=>v==='runner/checkpoint/complete').length,1);assert.equal(f.cleanup().closed,true);});
 for(const failure of ['restoreFails','closeFails','flushFails','captureFails'])test(`assembled ${failure} refuses completion without a second SDK query`,async t=>{const f=await fixture(t,{[failure]:true});await assert.rejects(f.run());assert.equal(f.counts().queries,failure==='restoreFails'?0:1);assert.equal(f.events.some(e=>e.data?.state==='completed'),false);if(['restoreFails','closeFails','flushFails'].includes(failure))assert.equal(f.counts().upload,undefined);assert.equal(f.cleanup().closed,true);});
+test('a run that never durably recorded its cwd retains those bytes beside the workspace and leaves the owned directory empty',async t=>{const f=await fixture(t,{captureFails:true});await assert.rejects(f.run());
+ assert.deepEqual(await fs.readdir(f.workspace),[],'the next invocation restores the durable state instead of refusing a stale warm tree');
+ assert.equal(await fs.readFile(join(f.workspace+'.uncommitted','answer.txt'),'utf8'),'exact native output','the uncommitted bytes are retained, never erased');
+ assert.deepEqual(await fs.readdir(join(f.workspace+'.uncommitted','scratch','empty')),[],'the empty directory the run created moves with its tree');
+ assert.equal(f.cleanup().closed,true);});
+test('a completed run keeps its recorded warm workspace and retains nothing',async t=>{const f=await fixture(t);assert.deepEqual(await f.run(),{state:'completed'});
+ assert.equal(await fs.readFile(join(f.workspace,'answer.txt'),'utf8'),'exact native output');
+ await assert.rejects(fs.readdir(f.workspace+'.uncommitted'),error=>error.code==='ENOENT','a recorded tree stays in place as the run\'s durable materialization');});
 
 test('assembled Objective uses one SDK query and captures the actual fixed typed file after SessionStore flush',async t=>{const f=await fixture(t,{objective:true});assert.deepEqual(await f.run(),{state:'completed'});const {queries,upload}=f.counts();assert.equal(queries,1);const file=upload.files.find(e=>e.path===upload.typedResult.path);assert.ok(file);assert.equal(file.sha256,upload.typedResult.fileSha256);assert.equal(file.bytes,upload.typedResult.bytes);const result=JSON.parse(Buffer.from(file.base64,'base64'));assert.equal(result.execution.model,SDK_MODEL_CONFIGURATION.model);assert.equal(result.resultRef,upload.binding.runId);assert.equal(result.payload.type,'authorization');assert.equal(f.order.filter(v=>v==='runner/runtime').length,2);assert.equal(f.cleanup().closed,true);});

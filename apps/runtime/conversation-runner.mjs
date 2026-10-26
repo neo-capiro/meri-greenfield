@@ -19,6 +19,7 @@ import {createNativeFiles,prepareNativeTaskDirectory} from './artifacts/native-f
 import {assertNativeFileRestore} from '../../packages/contracts/runtime-0.2/files.mjs';
 import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
 import {createObjectiveGenerationRuntime} from '../worker/conversation/objective-generation/runtime.mjs';
+import {attemptCleanup,CLEANUP_ATTEMPT_MS} from '../worker/conversation/cleanup.mjs';
 export function assertRunnerEnvironment(environment=process.env){assertProviderEnvironment(environment);if(environment.MERI_NATIVE_ADMIN_TOKEN)throw fault('RUNNER_AMBIENT_CREDENTIAL_REFUSED');}
 /** Private task-local SDK directories; provider TLS uses the ordinary Bedrock trust store. */
 export function sdkConfigurationDirectories(configuration){
@@ -66,7 +67,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
  const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:configuration.limits?.shutdownMs??1000});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
  let objectiveSelection=null,objectiveRead=false;const objectiveGeneration=createObjectiveGenerationRuntime({now,selection:{async read({binding:b,signal}){localBinding(b);if(!objectiveRead){objectiveRead=true;return objectiveSelection;}const r=await call('runner/runtime',{versions:configuration.versions},signal);if(canonicalSha256(r.binding)!==canonicalSha256(binding)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');return r.objective??null;}}});
- let nativeFiles,localCleanupFailed=false;let runOwner={recordUsage:({binding:b,input,signal})=>{localBinding(b);return call('runner/record-usage',{input},signal);},load:({binding:b,signal})=>{localBinding(b);return call('runner/load',{},signal);},append:({binding:b,event,signal})=>{localBinding(b);return call('runner/publish',{event},signal);}},lifecycle;
+ let nativeFiles,localCleanupFailed=false,workspaceRecorded=false;let runOwner={recordUsage:({binding:b,input,signal})=>{localBinding(b);return call('runner/record-usage',{input},signal);},load:({binding:b,signal})=>{localBinding(b);return call('runner/load',{},signal);},append:({binding:b,event,signal})=>{localBinding(b);return call('runner/publish',{event},signal);}},lifecycle;
  if(credentialForBinding!==undefined){
   if(typeof credentialForBinding!=='function')throw fault('RUNNER_CREDENTIAL_CONFIGURATION');
   const forward=operation=>({binding:b,credential,signal,...input})=>{localBinding(b);return call(operation,input,signal);};
@@ -77,7 +78,9 @@ export function assembleConversationRunner({configuration,native,query,credentia
    // The activity has closed and drained the query before this callback. Flush
    // the SDK mirror before reading either mutable local tree.
    await sdkSession.settle(signal);const upload=nativeFiles.capture({signal});
-   return call(operation,{sessionId,...upload,...(controlId===undefined?{}:{controlId}),...(typedResult===undefined?{}:{typedResult})},signal);};
+   const recorded=await call(operation,{sessionId,...upload,...(controlId===undefined?{}:{controlId}),...(typedResult===undefined?{}:{typedResult})},signal);
+   // The durable owner accepted exactly these local bytes: the warm tree is this run's recorded materialization.
+   workspaceRecorded=true;return recorded;};
   lifecycle={captureOwnsClose:true,captureCheckpoint:capture('runner/checkpoint/capture'),...(configuration.sdk===undefined?{}:{captureCompletion:capture('runner/checkpoint/complete')})};
  }
  const append=storageMethod(runOwner,'append');runOwner={...runOwner,async append(input){if(input.event.type==='run.status'&&input.event.data.state==='completed')await sdkSession?.settle(input.signal);return append(input);}};
@@ -105,7 +108,13 @@ export function assembleConversationRunner({configuration,native,query,credentia
    markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
  const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,objectiveGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
-  const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}}}),{binding,environment:configuration.telemetry?.environment});
+  const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');
+   try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}
+   // A run that never recorded its cwd bytes leaves a conversation-local tree the durable owner cannot account for:
+   // retain those bytes beside the workspace and leave the workspace empty, so the next run restores the durable state
+   // instead of refusing a stale tree. Nothing is erased; a failed retention is unknown local cleanup.
+   if(!workspaceRecorded&&nativeFiles&&!await attemptCleanup(()=>nativeFiles.retain(),{now,timeoutMs:CLEANUP_ATTEMPT_MS}))localCleanupFailed=true;
+  }}),{binding,environment:configuration.telemetry?.environment});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>{const status=sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false};return {...status,failures:[...status.failures,...(localCleanupFailed?['RUNNER_CLEANUP_UNKNOWN']:[])]};}});return execute;
 }
 export async function assertRunnerWorkspace(configuration){const workspace=await lstat(configuration.workspace);if(process.getuid()===0||!workspace.isDirectory()||workspace.isSymbolicLink()||workspace.uid!==process.getuid()||await realpath(configuration.workspace)!==configuration.workspace)throw fault('RUNNER_WORKSPACE_REFUSED');}
