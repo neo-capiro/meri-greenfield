@@ -3,13 +3,15 @@ import {applicationFixture,binding,scopes,versions,id} from './application-fixtu
 import {storeFixture} from './store-fixture.mjs';
 import {hash} from '../boundary.mjs';
 import {savedUsage} from '../usage-read/test/fixture.mjs';
+import pgUtils from 'pg/lib/utils.js';
 export {binding,scopes,id};
 export async function feedbackFixture(){
  const db=storeFixture(),pool={async connect(){const client=await db.pool.connect();return {release:error=>client.release(error),async query(sql,p=[]){
   if(sql==='SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 ORDER BY sequence LIMIT 10001')return client.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND sequence>$4 ORDER BY sequence LIMIT $5',[...p,0,10001]);
   if(sql.startsWith('UPDATE meri_conversations.runs SET feedback=')){
    db.state.calls.push(sql);const r=db.state.runs.get(p.slice(0,3).join(':'));
-   if(!r)return {rows:[]};r.feedback=structuredClone(p[3]);r.feedback_sha256=p[4];return {rows:[{feedback_sha256:p[4]}]};
+   // Exercise the installed driver's parameter serialization before the JSONB readback.
+   if(!r)return {rows:[]};r.feedback=JSON.parse(pgUtils.prepareValue(p[3]));r.feedback_sha256=p[4];return {rows:[{feedback_sha256:p[4]}]};
   }
   return client.query(sql,p);
  }}}};
