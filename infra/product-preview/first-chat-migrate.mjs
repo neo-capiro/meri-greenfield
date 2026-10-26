@@ -115,7 +115,9 @@ export const PLAN=Object.freeze([
  // Forward projection expansion preserves every authority predicate and prior pin.
  ['migration',conversation('0027_retention_target_projection.sql'),'75c1bfbda5491d7a3ac1c2ff943f5ba0f47b55f46cfb2c807de3fab90fbcba2c','integration'],
  // Build only the SDK entry identity; retain the complete current row guard.
- ['migration',conversation('0028_retention_sdk_identity.sql'),'3e2a8fc7b6a79e49887eb7a08f6d29bbd6ad013d5ae99c1967c01272eb42acad','integration']
+ ['migration',conversation('0028_retention_sdk_identity.sql'),'3e2a8fc7b6a79e49887eb7a08f6d29bbd6ad013d5ae99c1967c01272eb42acad','integration'],
+ // Native correction feedback uses the existing run owner; preserve the applied 60-entry prefix.
+ ['migration',conversation('0029_native_correction_feedback.sql'),'06116bdca41aab13d2adca2263b25f23f29c61255f95e2e87f997dffd88d3ec6','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

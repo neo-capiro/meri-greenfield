@@ -381,7 +381,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql']);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -909,7 +909,7 @@ test('projection expansion preserves the complete canonical guard and byte-ident
 });
 
 test('SDK identity construction appends only ordinal 60 and preserves the applied 59-entry prefix',async()=>{
- const plan=loadPlan(),entry=plan.at(-1);
+ const plan=loadPlan().slice(0,60),entry=plan.at(-1);
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,59))).digest('hex'),'2268948fce1943a29078bc2a2be23922c7c049b6fcdeb7d9af25b6053d80d7bf');
  assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[60,60,'migration','integration']);
  assert.equal(entry.path,'apps/control/conversations/migrations/0028_retention_sdk_identity.sql');
@@ -919,6 +919,23 @@ test('SDK identity construction appends only ordinal 60 and preserves the applie
  await runStage({stage:'integration',plan,variables,connect:db.connect});
  assert.deepEqual(db.state.ledger.slice(0,59),prefix);assert.equal(db.state.ledger.length,60);
  assert.deepEqual(db.state.executed,[migrationBody(entry.text).replace(/\s+/gu,' ').trim()]);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});assert.equal(db.state.executed.length,1);
+ assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('native feedback appends only ordinal 61 and preserves the applied 60-entry prefix',async()=>{
+ const plan=loadPlan(),entry=plan.at(-1);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,60))).digest('hex'),'a20d32aeee1b231456510249ec431e7d1e6494bff50c684212b8e04a916f1a95');
+ assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[61,61,'migration','integration']);
+ assert.equal(entry.path,'apps/control/conversations/migrations/0029_native_correction_feedback.sql');
+ assert.equal(entry.sha256,'06116bdca41aab13d2adca2263b25f23f29c61255f95e2e87f997dffd88d3ec6');
+ const db=databaseWithLedger(plan,60),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,60),prefix);assert.equal(db.state.ledger.length,61);
+ assert.deepEqual(db.state.executed,[migrationBody(entry.text).replace(/\s+/gu,' ').trim()]);
+ assert.equal(db.state.temporalLogin,false);assert.equal(db.state.memberships.size,0);
  await runStage({stage:'integration',plan,variables,connect:db.connect});assert.equal(db.state.executed.length,1);
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
 });
