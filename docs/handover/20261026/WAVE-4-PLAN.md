@@ -1,0 +1,95 @@
+## 1. Claude handles the harness
+
+The quality bar is Claude's own. Answer quality comes from the whole harness, not only the model: its system prompt, built-in tools, subagents, skills, context management and compaction, and session handling.
+
+- Run `@anthropic-ai/claude-agent-sdk` with its **full harness** and the Claude Code system-prompt preset, plus a short Capiro/Meri append. Don't replace the preset with our own prose.
+- Do not rebuild what the SDK or AWS already does: model calls, retries, streaming, the tool loop, context management and compaction, session resume/fork, per-run turn and spend limits, AWS credentials.
+- The real Claude SDK calls Bedrock directly using its narrowly scoped AgentCore runtime IAM role. Preserve the full preset, native tools, subagents and all 14 skills.
+- Capiro data reaches Claude as **tools** (rule 4), not as a custom retrieval layer around the model.
+
+Spec and plan: `phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`. It is **Wave 2 item 0**, and it comes before every other item that touches the runner, the proxy or authority.
+
+## 2. Simple, standard architecture
+
+```text
+browser -> control (current access, conversation/run ownership, durable events)
+        -> AgentCore Runtime V1 (isolated conversation session; actual Claude SDK) -> Bedrock
+                                      -> tool gateway -> Core
+control -> existing durable SDK SessionStore and artifact owners
+control -> Temporal for required durable runs, schedules and background work
+```
+
+- **Core is the gatekeeper for Capiro data.** Tenant, member, client and wall rules remain server-side in Core. Check current access at admission and actual tool/data/artifact access; revocation must also prevent use of previously loaded privileged context. Do not duplicate policy in the harness.
+- Reuse one isolated environment only for the same immutable tenant/actor/conversation and approved General/client scope. Serialize turns; stop idle compute and restore exact SDK transcripts and artifacts from their durable owners. A Runtime session ID is not authorization or durable storage.
+- Keep the SDK's per-run turn/spend limits and one canonical tenant cap/usage owner. Preserve required durable runs, schedules, consent, outcomes and uncertain-write fences; neither SDK Task tools nor a warm process replaces Temporal durability.
+- **No custom warm pool, per-turn ECS task requirement, model proxy, duplicated per-hop authority, credential-minting service or spend-reservation ledger.** Use standard Runtime V1; no V2 snapshot machinery or second SDK implementation.
+- Before adding a mechanism, identify the standard feature or existing owner it uses. Before deleting a wrapper, prove the retained lower-layer behavior with meaningful positive/negative tests. Do not remove canonical authorization, idempotency or durable outcomes as “extra security.”
+
+## 3. Leave no dead code behind
+
+A change is not done until what it replaced is gone.
+
+1. **Delete in the same PR** everything the change makes unused: code, tests, fixtures, docs, config keys, env vars, feature flags, IAM statements, ALB rules, secrets, task definitions, CloudFormation resources, kit steps, alarms and metric filters. Applied database migrations are history: never edit them. Drop tables only through a separately reviewed forward migration after a snapshot; this hosting migration does not itself authorize schema/data removal.
+2. **Temporary diagnostics come out before merge** of the fix they were added for. A log line stays only as named product telemetry that someone reads.
+3. **No code behind a flag nothing turns on.** The "source-complete, activation-held" status is retired for code we don't intend to ship. Dark features need an owner and a date, or they are deleted.
+4. **No** commented-out code, `legacy` or `_old` copies, compatibility shims for removed things, or "superseded" stubs.
+5. **Show proof in the PR:** list the identifiers, files and resources deleted, with a search proving no executable/active caller remains; label immutable historical references, and explain any drop in test count.
+6. **Old plan tickets for removed mechanisms are closed as superseded**, not implemented and left dormant. See `source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+7. **Reuse before write.** Use SDK, AWS and library features first. Custom code needs one line saying what the standard option couldn't do.
+
+## 4. Capiro data must keep working
+
+- Capiro data is served to Claude as tools. Core remains the source: today's read families call Core at `/api/clio/tools/<operation>`, and the new tools call the same endpoints.
+- Tools are hosted by **control** (the existing tool gateway) so the runner never holds the Core service secret (`x-internal-service-secret`). The runner gets only a short-lived per-run token for control, scoped to tenant, user, client, conversation and run.
+- Reuse the existing read handlers under `apps/gateway/sources/*` and their typed schemas. Delete the authority, relay and measurement wrappers around them.
+- Parity: every read family that works today must be reachable as a tool with the same results and the same permission outcomes. A parity checklist is part of the item 0 spec.
+- Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
+- The original read-only first cut is historical. Neo subsequently authorized preview client-record writes and autonomous Wave 2 completion. Activate accepted writes through their existing authenticated domain/intent owners and receipts, with the actual route/configuration and effect semantics verified. This does not authorize the assistant to send external mail without the user's specific send instruction.
+
+# Wave 4 implementation and acceptance plan
+
+26 October 2026. Initial plan requested by Neo; implementation has not started. This plan does not authorize external mail sends. Fable is the incoming coordinator under the latest user instruction; dated role assignments in the repository do not override that handover. Onboarding is excluded.
+
+Canonical basis: documentation checkout `8acb394cf10782d1a7703fa2d0b8c926f14ab508`. The [final phase table](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/plan/FINAL-PLAN-20261021.md#L175) assigns **S3, M4 and A4 implementation, plus bounded M7 groundwork**, to Wave 4. Its [historical schedule](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/plan/FINAL-PLAN-20261021.md#L241) schedules A4 shipment later and A3 completion alongside Wave 4; neither row moves unfinished Wave 3 work into new scope. These are dependencies, not a renewed weeks 8–10 promise. No separate detailed Wave 4 brief was found; this plan turns the canonical phase/ticket assignments into bounded work.
+
+## Workstreams and existing owners
+
+Fable allocates exact paths and records current accepted implementation before authoring. Use parallel sessions for independent slices, with one writer for each shared contract or package. Integration retains shared public exports, generated artifacts, package pins and composition; Release retains image/native/deployment work; Acceptance retains the finite live checks. Authors do not approve their own changes.
+
+| Stream | Canonical tickets and concrete result | Owner / first bounded slice |
+|---|---|---|
+| **D — actions through existing Core intents** | **MT-10 task.create, MT-11 task.update**; **MO-05 Research Portfolio**, **MO-06 LegiWatch/watch**, **MO-08 prospect/client/note actions**. Exact reviewed inputs, current Core permission, supported concurrency and durable effect receipt. | Existing Core domain owner + Meri action/SDK permission-callback owner. Start with the existing task.create chain and one missing task.update field/receipt path; do not rebuild task.create. Then allocate disjoint Portfolio, watch and client/note batches. |
+| **U — approval experience** | **MF-03/04/05/12/13**: clear restricted content on refusal; retain an immutable pending decision across reload; reconcile unknown decisions; resume current run observation; link canonical results; scoped approval inbox. | Existing frontend intents/action owners. Pair with D on the first task path. Reuse conversation intents and current query lifetimes; an inbox is a scoped read/list consumer, never a second authorization owner or “approve all.” |
+| **A — mail and connected-account completion** | **ML-04/05/06/19/20/21/22/23/25; ST-14; PF-25; MO-04 and MT-03**. One canonical send/reply/forward chain across Mail, Meri and Timeline; account/scope health and honest receipts. | Existing Core Mail/Engagement owner, with D for Meri commands and U for review. First reconcile the current durable sender, mailbox/thread binding and unknown-outcome handling; then provider-native reply/forward and consumers. |
+| **R — S3, then M7 groundwork** | **S3 / MX-06, MX-09**: measure standard AgentCore V1 conversation reuse, idle stop and exact durable restore. Prepare only the existing durable continuation/watch/schedule seams needed by M4. | Existing Runtime/Temporal owner + Release/Acceptance. Reuse current lifecycle evidence; address uncovered cold/warm/restore or cleanup behavior. Full M7 delivery remains its own phase, not permission for a new scheduler. |
+
+M4 and its [supersession](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md#L56) require SDK permission callbacks plus Core intents, **not per-operation grant minting**. General actions use existing per-client permissions or require a client-bound chat; no new General authority mechanism. The [Runtime migration](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/plan/AGENTCORE-RUNTIME-MIGRATION-20261024.md#L17) retains full SDK, direct Bedrock, all 14 skills, native SessionStore/artifacts and Temporal.
+
+## Small implementation batches
+
+1. **Task and approval vertical slice.** Inspect current MT-10 receipts and reuse accepted work; finish the real MT-11 execution/receipt gap, supported fields and expected-version behavior. Pair MF-03/04/05/12 with this exact command. Add MF-13 only through an actual scoped public inbox owner, preserving the ticket's conditional promised-surface priority. [Task owners](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L3315), [approval UI](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L2295), [inbox](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L2386).
+2. **Domain actions, separately reviewable.** MO-05 reconciles the specified 17-operation Research Portfolio set against current catalog/owners before filling gaps; separate reads/analysis from writes. MO-06 reuses canonical LegiWatch/watch subscriptions and reviewed relevance/suggestion operations, including unsubscribe/current access. MO-08 binds client creation/profile edits/notes and saved business-development briefs to current source versions and explicit approval; notes are not automatically governed memory. Reuse already accepted Wave 3 Watch/hearing work and player rather than creating duplicates. [MO-05/06](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L1278), [MO-08](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L1317).
+3. **Mail safety, then deliberate effects.** ML-04 reconciles a sent item to the same mailbox/provider identity; ML-05/06 bind real reply/thread/account identity, including Meri. ML-20 implements provider-native reply and forward; persisted drafts remain deferred by the settled plan decision. ML-21 enforces aggregate payload limits before dispatch. ML-19 exposes supported incoming attachments or a truthful original-mailbox handoff. ML-22/MT-03 preserve already accepted canonical mail reads; they are not write authorization. ML-23 completes only the actual legacy/versioned sender cutover; ML-25 closes existing OAuth-state/account/key-rotation gaps. ST-14 reuses Core connection health; PF-25 Timeline reply uses the same sender. [A4 definition](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/plan/FINAL-PLAN-20261021.md#L220), [mail tickets](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Portfolio-Workspace-Settings-Mail-Wiring-Closeout-Plan-20261021.md#L2868), [attachments/cutover/OAuth](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Portfolio-Workspace-Settings-Mail-Wiring-Closeout-Plan-20261021.md#L3033), [Meri send/reply](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L1265).
+
+## Dependency and acceptance order
+
+**Existing Core operation/receipt → typed Meri/public receiver → Figma 3.4 review/approval consumer → coherent package/image composition → bounded deployed acceptance.** A4 effects depend on the affected A1 sender safeguards and M4 approval path. Read-only frontend preparation and S3 measurement can proceed in parallel. Use existing Figma/Code Connect and confirmation/list/notice components; add a missing component only for an actual supported state. No campaign-template misrouting, alternate sender, generic mutation executor or new approval workflow for Workspace.
+
+Required proof is proportionate to changed behavior, reusing exact-source receipts:
+
+- **E13–E17:** allow/reject/expiry/revoke; persist the captured decision before dispatch; lost response/reload reconciles read-only without automatic repost; current-access denial clears content; a settled approval refreshes the actual run; committed task then revoked visibility produces one durable effect and a denied result read; unsupported mutations fail before write. Include changed hash, wrong reviewer/client, concurrency/CAS and post-write uncertainty through the affected real owner. [Exact scenarios](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L4302).
+- **E21–E22 / A4:** correct current account, tenant/client/thread and attachments; no read-to-send escalation; no effect before deliberate approval; one effect after a lost acknowledgement, no blind resend. Provider acceptance is not delivery. Reuse meaningful fixtures for denial/races; exercise actual Microsoft and Gmail test mailboxes only under a specific authorized send scope. This plan does **not** enable blanket external email. [Exact scenarios](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L4310).
+- **S3:** report cold, warm and restored samples separately against the retained median first-text target of 15 seconds and agreed simple-turn Core budget ≤30 calls / ≤3 seconds. Preserve cost, Stop/current-access refusal and cleanup evidence; no larger deadlines or retries of unknown effects to improve timing. Full M7 E32–E35, full M5 Office/editing and M6 governance are not silently included in this batch. [S3](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/plan/FINAL-PLAN-20261021.md#L177), [measurement owner](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/source-of-truth/Capiro-Meri-Wiring-Closeout-Plan-20261021.md#L4060).
+
+## Wave 3 closeout stays separate
+
+Use the final Fable handover and [Wave 3 continuation handover](WAVE-3-HANDOFF.md) as the transfer baseline; later verified receipts supersede it. It still records pending exact-image/public-package composition and native feedback qualification, runtime memory/mail readback and document/source-view acceptance, and connected-provider content qualification constrained by unavailable connections. Preserve original unknown submissions without replay. Any remaining A3 Workspace, M2 lifecycle, M3 read/current-source or previously allocated qualification defect stays **Wave 3 carryover**, with an owner and honest evidence state. Already accepted source is reused, not reopened wholesale. Native generated Office output qualification has passed; the later full M5 runtime preview/editing obligation is distinct. Onboarding is excluded rather than reassigned to Wave 4.
+
+## First actions for Fable
+
+1. Accept the exact Wave 3 handover: source/image/package pins, open defects, live unknowns and continuing owners. Finish those allocated blockers without calling Wave 3 complete prematurely.
+2. Assign the four streams above using existing owners and exclusive files. Produce one short current-implementation-to-ticket gap list for the task/approval slice and canonical mail sender; reuse closed work and its tests.
+3. Freeze the first task/approval command contract and its intended failure witnesses, then implement/receive/render that slice together. Queue disjoint Portfolio/watch/client actions behind their actual owner prerequisites.
+4. Have Release qualify the existing target and affected configuration, then build/deploy coherent accepted inputs once. Acceptance gets a finite scenario list, exact permitted test accounts/recipients and no-replay boundaries.
+
+No settled product decision needs reopening. Remaining execution prerequisites are concrete: current per-operation Core support/receipt gaps, an actual scoped inbox contract if absent, and specific mailbox/send authorization for live A4 acceptance. Unsupported attachment or provider behavior must remain explicit until its canonical owner supports it; do not draw or enable fictional capabilities.
