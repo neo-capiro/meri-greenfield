@@ -25,9 +25,11 @@ async function database(t){
  const host=process.env.MERI_INSPECTION_TEST_SOCKET,control=process.env.MERI_INSPECTION_TEST_DATABASE;
  if(host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||control!=='meri_inspection_final')throw Error('NEW_OWNED_GENERATIONS_DATABASE_REQUIRED');
  const admin=new pg.Client({host,database:control,user:'postgres'});await admin.connect();
- assert.equal((await admin.query("SELECT current_setting('listen_addresses') AS listen")).rows[0].listen,'','Unix socket only');
  const suffix=randomUUID().replaceAll('-',''),name='meri_c12_'+suffix,role='meri_c12_app_'+suffix;
- const pools=[];t.after(async()=>{for(const p of pools)await p.end().catch(()=>{});try{await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.query(`DROP ROLE IF EXISTS ${role}`);}finally{await admin.end();}});
+ const pools=[];let allocated=false;
+ t.after(async()=>{for(const p of pools)await p.end().catch(()=>{});try{if(allocated){await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.query(`DROP ROLE IF EXISTS ${role}`);}}finally{await admin.end();}});
+ assert.equal((await admin.query("SELECT current_setting('listen_addresses') AS listen")).rows[0].listen,'','Unix socket only');
+ allocated=true;
  await admin.query(`CREATE DATABASE ${name}`);
  await admin.query(`CREATE ROLE ${role} LOGIN NOSUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS`);
  // Privileged provisioning/migration remains separate from every candidate operation.
@@ -52,7 +54,16 @@ async function database(t){
  const ordinary=await pool().connect();try{
   await assert.rejects(ordinary.query('ALTER TABLE meri_conversations.initial_run_bindings ADD COLUMN forbidden_fixture_ddl text'),{code:'42501'});
  }finally{ordinary.release();}
- return {pool,main};
+ return {pool,main,role};
+}
+/** Only the two actual input-acceptance cases need current model-policy dependencies; never part of 0020 timing. */
+async function prepareAcceptancePolicy(main,role,principal){
+ for(const path of ['../../../gateway/budget/migrations/0001_product_budget.sql','../../../gateway/budget/migrations/0002_tenant_budgets.sql',
+  '../../settings/migrations/0001_settings.sql','../migrations/0021_sdk_run_usage.sql'])await main.query(await readFile(new URL(path,import.meta.url),'utf8'));
+ // Same synthetic tenant-cap seed convention as store-pg.test.mjs; no historical budget reservations are seeded.
+ await main.query('INSERT INTO meri_settings.tenant_settings(tenant_id,revision,document,document_sha256,updated_at,updated_by,monthly_cap_micro_usd) VALUES($1,1,$2,$3,clock_timestamp(),$4,100000000)',[principal.tenantId,{},hash({}),principal.actorId]);
+ // Canonical 0022 policy-read columns, adapted only to this fixture's generated ordinary role.
+ await main.query(`GRANT USAGE ON SCHEMA meri_settings TO ${role}; GRANT SELECT (tenant_id,monthly_cap_micro_usd,sdk_max_turns,sdk_max_budget_micro_usd) ON meri_settings.tenant_settings TO ${role}`);
 }
 /** `rows` conversations with a generation-1 original (0017 shape); every other one also has a RESERVED original input (0016 shape). */
 async function populate(main,rows){
@@ -159,7 +170,8 @@ function heldPool(pool,lockKey){let resume,entered,requested,armed=true;const he
   if(target){armed=false;entered();await gate;}return result;},release:error=>c.release(error)};}}};}
 
 for(const winner of ['accept','rebind'])test(`original input acceptance and supersession serialize across connections (${winner} holds the lock first)`,async t=>{
- const {pool,main}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
+ const {pool,main,role}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
+ await prepareAcceptancePolicy(main,role,principal);
  const proposal={principal,conversationId:randomUUID(),selectedClientId,policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000};
  const original=(await createInitialRunBindingJournal({pool:pool(),now:()=>now}).claim(proposal,check)).record,binding=original.binding;
  const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision:proposal.policyRevision}],createdAt=new Date(now).toISOString();
