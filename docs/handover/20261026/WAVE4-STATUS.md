@@ -50,7 +50,7 @@ A change is not done until what it replaced is gone.
 
 26 October 2026. IN PROGRESS. Codex is the Wave 4 orchestrator. Neo has now transferred the remaining Wave 3 document fix, acceptance, shipment and PR281 closeout to Wave 4, including the serialized release lock. This supersedes the coordinator wording in the initial Wave 4 plan and historical AGENTS role assignments. Onboarding remains excluded until the rest of the project is live.
 
-**Latest user scope decision — 26 October 2026:** Research Portfolio is deferred from Wave 4, including MO-05's 17-operation Meri integration and dedicated Research Portfolio follow-ups. It is excluded from Wave 4 completion requirements and must not block closeout. Existing public text-to-SQL and private client-objective/activity work continue, along with mail, tasks/approvals, LegiWatch, client/note actions and S3 runtime qualification. Historical Research Portfolio requirements below are retained as deferred scope, not active allocations.
+**Research Portfolio scope decision — 26 October 2026 (subsequent narrow shipping exception below):** Research Portfolio is deferred from Wave 4, including MO-05's 17-operation Meri integration and dedicated Research Portfolio follow-ups. It is excluded from Wave 4 completion requirements and must not block closeout. Existing public text-to-SQL and private client-objective/activity work continue, along with mail, tasks/approvals, LegiWatch, client/note actions and S3 runtime qualification. Historical Research Portfolio requirements below are retained as deferred scope, not active allocations.
 
 ## Allocation
 
@@ -195,7 +195,7 @@ Neo explicitly requested merge and shipment of frontend PR239 (District Nexus). 
 
 Q02's prospective union onto Meri10309b24 is verified at tree424c52ca: all31 reviewed Q02 postimages, all six later document-fix postimages and every other main blob are retained. The unpublished0.2 draft will receive Q03 private client_records support in place; no new0.3 operation or worker framework is planned. Shared package/catalog/migration/config and release remain serialized root work.
 
-## Current checkpoint — 26 October, 22:17 UTC
+## Earlier checkpoint — 26 October, 22:17 UTC
 
 Research Portfolio remains deferred and excluded from Wave 4 closeout. Wave 4 remains in progress. Neo directly transferred the remaining Wave 3 document-renewal fix, retained-DOCX acceptance, shipment and PR281 closeout to Wave 4; that human instruction was independently read in the Wave 3 chat. Wave 4 now owns the serialized release lock. No Hermes or Wave 3 writer/deployer is active.
 
@@ -210,3 +210,17 @@ MF12 task-create is independently SOURCE ACCEPT at5354c391/treec73cf13a:65combin
 The document-renewal author preserved Wave3's three-file WIP and has reproduced both Preview and Download early-renewal aborts with the actual mounted host. The bounded fix adds artifact pending-operation accounting to the existing host renewal busy predicate; hard expiry/refusal/identity change still abort. Focused70cases pass; mounted final checks, exact review and separate release are pending. No new model generation or reserved run is replayed.
 
 Current parallel assignments: a4_assessment authors the document-renewal fix; s3_assessment reviews the PR239 state follow-up after completing Q03 C; task_approval_author implements the Graph reply slice after freezing Gmail union proof. Root owns reviews, shared composition and service mutations. PR236 remains shipped and accepted; onboarding remains excluded.
+
+## Current checkpoint — 26 October, 22:45 UTC
+
+Wave 4 remains in progress. About nine substantial tracks remain: initial SQL activation; broader Q03 business records; Q05 saved records; Q06 Strategy/history; Q07 semantic sources; mail; tasks/approvals; LegiWatch/client-note actions; and S3 runtime qualification with bounded M7 groundwork. Q04 consumer migration is cross-cutting after proven replacement parity. These tracks include both accepted source awaiting shipment and unimplemented scope; no defensible completion percentage or ETA is available.
+
+PR236 remains shipped and narrowly live accepted. PR239 and its selected-state correction PR241 are now merged and shipped: final source1a47529f/tree89a5ea3b, frontend41, imageeb0a8738. CodeBuild, container smoke and exact-digest scan passed with no reported findings. At22:30:33UTC CloudFormation was UPDATE_COMPLETE, one task running, none pending, the exact image matched a healthy target and frontend40 was retained. Authenticated acceptance passed for433official boundary paths, GA-only evidence and totals, restoring All states, Firm nexus only, funding threshold, Coverage legend and selected-district highlight. No model, provider send or application data write was used.
+
+Transferred document renewal is independently accepted and composed in open PR242: head9df2e759/tree00c09d47. It preserves all seven reviewed source/test postimages and all prior registry entries with one reviewed addition. Merge, shipment, retained real-DOCX Preview/download/opening/refresh and PR281 closeout remain.
+
+Gmail source remains independently accepted and unshipped. Graph one-recipient reply is frozen at Core025f01d4/tree552d4617 and FEf4db31fd/tree4ed81289:273focused cases, five killed mutants and six exact Gmail MIME comparisons passed; API typing has79identical inherited diagnostics and zero affected/differential diagnostics. Independent review and the proposed finite native gate remain. MF12 update/create are source accepted; canonical task destination is now being implemented on the preserved document/reset/create composition. Q03 C source/proposal is accepted; final contracts/catalog, migration, ordinary credentials, release bindings and live acceptance remain.
+
+New direct user authorization: merge and ship Core185 and FE240, the bounded Research Portfolio client-sharing pair. This is an exception for those two PRs only; the rest of Research Portfolio (including the MO05 Meri integration), onboarding and rich Wave5 documents remain deferred/excluded. The pair is under independent backend/frontend review. Initial backend review raised concurrent PIN-counter/design-version concerns, public-token logging and required runtime-closure pin regeneration; no merge or deployment has occurred for the pair.
+
+All four available agent slots are active: a4_assessment implements MF12 task destinations; s3_assessment reviews Core185; task_approval_author reviews FE240 after freezing Graph; root owns integration, fixes and the serialized release lock. Completed helpers are reassigned to the next independent work item.
