@@ -9,7 +9,7 @@ for(const [family,id] of cases){
  if(family!=='dataset-metadata')for(const mode of ['deny','revoke'])test(`${id}: ${mode} withholds source content`,async()=>{const f=await fixture(family,id,{scene:familyCase(family,id)});if(mode==='deny')f.deny();else f.scene.state.afterSource=f.revoke;const r=await f.execute();assert.equal(r.status,403,await r.clone().text());});
 }
 test('finite family registration stays inert and rejects unknown fields and accessors',async()=>{
- assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,45);assert.equal((await createGeneralReadFamilyHandlers({families:{},now:Date.now,newId:()=>''})).size,0);
+ assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,48);assert.equal((await createGeneralReadFamilyHandlers({families:{},now:Date.now,newId:()=>''})).size,0);
  assert.throws(()=>createGeneralReadFamilyHandlers({families:{'florida-budget':{}},now:Date.now,newId:()=>''}));
  let touched=0;assert.throws(()=>createGeneralReadFamilyHandlers({families:{'operational-reads':{get origin(){touched++;return 'https://example.invalid';}}},now:Date.now,newId:()=>''}));assert.equal(touched,0);
 });
