@@ -280,4 +280,3 @@ test('a started original refuses an exact-source rebind and reserves no successo
   assert.equal(f.state.next.size,0,'an exact-source recovery never reserves a successor');
  }
 });
-

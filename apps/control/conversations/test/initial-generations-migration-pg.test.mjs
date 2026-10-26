@@ -101,6 +101,35 @@ test('after 0020: concurrent rebinds on two connections create exactly one gener
  await assert.rejects(main.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256,generation) VALUES($1,$2,$3,$4,$5,1)',[principal.tenantId,other,duplicate.binding.runId,duplicate,hash(duplicate)]),{code:'23505'},'one row per generation');
 });
 
+// C2 addendum: an exact expected source is required, and two connections racing the same expectedRunId under the
+// conversation lock produce exactly one supersession. Nothing here runs without Release's disposable PG slot.
+test('after 0020: a mismatched expected source never supersedes and concurrent same-source rebinds create exactly one generation',async t=>{
+ const {pool,main}=await database(t);await migrate(main);
+ const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},conversationId=randomUUID(),selectedClientId=randomUUID();
+ const proposal={principal,conversationId,selectedClientId,policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000};
+ const first=(await createInitialRunBindingJournal({pool:pool()}).claim(proposal,check)).record;
+ const generations=async()=>(await main.query('SELECT generation,run_id FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 ORDER BY generation',[principal.tenantId])).rows;
+ const journal=createInitialRunBindingJournal({pool:pool()});
+ await assert.rejects(journal.rebind({...proposal,runId:randomUUID(),configurationSha256:'d'.repeat(64)},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},'a foreign source is refused');
+ assert.deepEqual((await generations()).map(r=>r.generation),[1],'a mismatched expected source appends no generation');
+ assert.deepEqual(await journal.rebind({...proposal,runId:first.binding.runId,proposedExpiresAtMs:now+90000},check),{record:first,created:false,superseded:false},'naming the live original itself is a no-op replay');
+ // The stored original is now dead for this render; two independent connections carry the SAME expectedRunId.
+ const exact={...proposal,runId:first.binding.runId,configurationSha256:'d'.repeat(64),proposedExpiresAtMs:now+120000};
+ const settled=await Promise.allSettled([createInitialRunBindingJournal({pool:pool()}).rebind(exact,check),createInitialRunBindingJournal({pool:pool()}).rebind(exact,check)]);
+ const fulfilled=settled.filter(s=>s.status==='fulfilled'),rejected=settled.filter(s=>s.status==='rejected');
+ assert.equal(fulfilled.length,1,'exactly one connection supersedes the named source');
+ assert.equal(rejected.length,1,'the other refuses');
+ assert.equal(rejected[0].reason.code,'INITIAL_RUN_BINDING_CONFLICT','the loser names an original that is no longer latest');
+ assert.equal(fulfilled[0].value.created,true);assert.equal(fulfilled[0].value.superseded,true);
+ assert.deepEqual(fulfilled[0].value.source,first.binding,'the atomic result carries the exact superseded source');
+ assert.notEqual(fulfilled[0].value.record.binding.runId,first.binding.runId);
+ const rows=await generations();
+ assert.deepEqual(rows.map(r=>[r.generation,r.run_id]),[[1,first.binding.runId],[2,fulfilled[0].value.record.binding.runId]],'one source, one successor, generation 1 kept as history');
+ assert.deepEqual(await journal.readConversation({principal,conversationId,selectedClientId},check),fulfilled[0].value.record,'only the latest generation is served');
+ await assert.rejects(journal.rebind({...exact,proposedExpiresAtMs:now+180000},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},'the already-superseded source can never create a third generation');
+ assert.deepEqual((await generations()).map(r=>r.generation),[1,2]);
+});
+
 /** Observe a real PostgreSQL lock request, then pause only after it is held, to force serial orders across independent connections. */
 function heldPool(pool,lockKey){let resume,entered,requested,armed=true;const held=new Promise(resolve=>entered=resolve),requesting=new Promise(resolve=>requested=resolve),release=()=>resume?.(),gate=new Promise(resolve=>resume=resolve);
  return {held,requesting,release,pool:{async connect(){const c=await pool.connect();return {async query(sql,p){
@@ -120,7 +149,7 @@ for(const winner of ['accept','rebind'])test(`original input acceptance and supe
   event:{contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}};
  const first=heldPool(pool()),second=pool(),store=createPostgresConversationStore({pool:winner==='accept'?first.pool:second,now:()=>now});
  const journal=createInitialRunBindingJournal({pool:winner==='rebind'?first.pool:second,now:()=>now});
- const operations={accept:()=>store.initialInputs.accept(acceptance,check),rebind:()=>journal.rebind({...proposal,configurationSha256:'d'.repeat(64)},check)};
+ const operations={accept:()=>store.initialInputs.accept(acceptance,check),rebind:()=>journal.rebind({...proposal,runId:binding.runId,configurationSha256:'d'.repeat(64)},check)};
  let leading,trailing;
  try{leading=operations[winner]();await Promise.race([first.held,leading.then(()=>{throw Error('CONVERSATION_LOCK_NOT_OBSERVED');})]);
   trailing=operations[winner==='accept'?'rebind':'accept']();}finally{first.release();}
