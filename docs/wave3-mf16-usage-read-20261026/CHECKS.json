@@ -1,0 +1,119 @@
+{
+  "createdUtc": "2026-10-26T06:49:29.401245+00:00",
+  "base": "8807d8b786aabef9d656d0568785c6c0c25e0769",
+  "mergedBase": "592f332cdbd394414459f1401f98316af17e3221",
+  "versions": {
+    "node": "v24.22.1",
+    "typescript": "5.9.3",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "esbuild": "0.28.2",
+    "json-schema-to-typescript": "16.0.0",
+    "canonicalize": "5.1.0"
+  },
+  "distinctFocusedPassing": 17,
+  "projectionPassing": 5,
+  "httpFinalPassing": 7,
+  "publicFinalPassing": 5,
+  "initialRun": {
+    "pass": 16,
+    "fail": 1,
+    "cause": "test mutation of frozen result; corrected clone"
+  },
+  "nativeUsageGate": "not run; no new transaction behavior",
+  "artifacts": "not packed; Release holds coherent final source",
+  "receipts": [
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\diff-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\final-checks.json",
+      "bytes": 803,
+      "sha256": "f9d4a880560ae6ab2f4703f800fa1b1895947d82284e9ce6af89cc78adc9fe2c"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\focused-initial.json",
+      "bytes": 369,
+      "sha256": "9134ef7711f60774dabce16f5bb3957e21c6a84b1446d2c1812a9ef6b99ad894"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\focused-initial.log",
+      "bytes": 2901,
+      "sha256": "cf49f33b2c40a5b17e7f49babc97cfb19a373d97281d266e9182a25dfd95af86"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\history-generator-final.log",
+      "bytes": 526,
+      "sha256": "2fca7bb696c3e2f065a840c40c6677cf9f55b56b58e531f9d87cd0cf7e5188d2"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\http-final.json",
+      "bytes": 205,
+      "sha256": "fb68f429b1030379cff4e2a394a4b7ac0951d41d91b10a164146bf434e2d153b"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\http-final.log",
+      "bytes": 901,
+      "sha256": "510f354dafb54e1e7f1594c743668c128a6c41c8de8bd649bb751a1a8f1c92a6"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\protected-owners.json",
+      "bytes": 1171,
+      "sha256": "7d106a7bf60d655c5b37972d48b3f2059210d0e1789d7c40b6c9540fc87ddfcf"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\public-corrected.json",
+      "bytes": 207,
+      "sha256": "33e2e830aab0479e5df3ead7d61613a46875083efe58f0743be3ac803473aeee"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\public-corrected.log",
+      "bytes": 706,
+      "sha256": "c853de907b9ab51dd10bdbfaa81723c0cc202c90e36501704c8f12341c88218e"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\public-final.json",
+      "bytes": 207,
+      "sha256": "5db46fed98107d86c00a519c34904daf28caa0823077f09fccda7a7dc91dd092"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\public-final.log",
+      "bytes": 706,
+      "sha256": "fa97f4f1c453a0da904cad7ca8c817375f214d4c4a80d18e8cfe7233fcc2630d"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\task-generator-final.log",
+      "bytes": 540,
+      "sha256": "e621b07c13e46572a5e3145f43b1d4e85dae59404772b4fa661298794b876c85"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\task-metadata.json",
+      "bytes": 180,
+      "sha256": "1c8e90e1329e1ab94c6ead6b986405787d86e53880f2d7f643775457be1c27a9"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\task-metadata.log",
+      "bytes": 540,
+      "sha256": "e621b07c13e46572a5e3145f43b1d4e85dae59404772b4fa661298794b876c85"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\usage-generator-final.log",
+      "bytes": 515,
+      "sha256": "d5824703d2d9c19cb445db5141fdd5d4ecdc4001ee842ccfc14c8719d4ccf95e"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\usage-types.json",
+      "bytes": 409,
+      "sha256": "6d59f0f03364f095673b4e27318ee2a24ac2c7cfa502bd3a30f618c031d387b0"
+    },
+    {
+      "file": "C:\\Users\\Administrator\\Documents\\Codex\\2026-10-25\\wave2-visible-integration\\work\\mf16-usage\\checks\\usage-types.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "metadataIndexBindingsVerified": 55,
+  "indexProof": "C:/Users/Administrator/Documents/Codex/2026-10-25/wave2-visible-integration/work/mf16-usage/index-proof.json"
+}

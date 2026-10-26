@@ -1,0 +1,195 @@
+{
+  "version": "1.0.0",
+  "packageVersion": "0.1.15",
+  "schemaId": "urn:meri:conversation-usage:1.0.0",
+  "path": "/api/conversations/usage",
+  "method": "POST",
+  "requestBytes": 4096,
+  "responseBytes": 131072,
+  "maxModels": 32,
+  "maxTools": 128,
+  "authentication": "current native product bearer and Core access",
+  "currency": "USD",
+  "money": "recorded SDK estimate; provider billing unavailable",
+  "counters": "original token/cache-token counts and web-search request counts",
+  "durationUnit": "milliseconds; null means unknown",
+  "cumulativeScope": "SDK query pipeline including subagents/compaction and prior resumed/forked usage",
+  "runScope": "existing accounting run delta",
+  "tools": "recorded post-tool execution outcomes only; not external-effect confirmation",
+  "coverage": "recorded hooks only; omitted count is explicit",
+  "correlation": "none with UI tool.call requestId, source references or other rows",
+  "identifiers": "bounded inert text; never links, commands or authority",
+  "errorStatuses": {
+    "INVALID_REQUEST": [
+      400
+    ],
+    "UNAUTHENTICATED": [
+      401
+    ],
+    "ACCESS_DENIED": [
+      403
+    ],
+    "MEMBERSHIP_REVOKED": [
+      403
+    ],
+    "NOT_FOUND": [
+      404
+    ],
+    "METHOD_NOT_ALLOWED": [
+      405
+    ],
+    "DEADLINE": [
+      408
+    ],
+    "MEMBERSHIP_CHANGED": [
+      409
+    ],
+    "REQUEST_TOO_LARGE": [
+      413
+    ],
+    "UNSUPPORTED_MEDIA_TYPE": [
+      415
+    ],
+    "CANCELLED": [
+      499
+    ],
+    "PRODUCT_UNAVAILABLE": [
+      502
+    ],
+    "CONVERSATION_REQUEST_INVALID": [
+      400
+    ],
+    "CONVERSATION_CURSOR_INVALID": [
+      400
+    ],
+    "CONVERSATION_NOT_FOUND": [
+      404
+    ],
+    "CONVERSATION_TURN_CONFLICT": [
+      409
+    ],
+    "CONVERSATION_MANAGEMENT_CONFLICT": [
+      409
+    ],
+    "CONVERSATION_RESTORE_EXPIRED": [
+      410
+    ],
+    "CONVERSATION_STORE_CORRUPT": [
+      500
+    ],
+    "CONVERSATION_TURN_UNAVAILABLE": [
+      503
+    ],
+    "CONVERSATION_UNAVAILABLE": [
+      503
+    ],
+    "USAGE_REQUEST_INVALID": [
+      400
+    ],
+    "USAGE_RECORD_CORRUPT": [
+      500
+    ],
+    "USAGE_UNAVAILABLE": [
+      503
+    ]
+  },
+  "sources": [
+    {
+      "path": "../../apps/control/conversations/history/service.mjs",
+      "sha256": "d31c551acd2b322cb93139e877c9378d6668af2ad9e353337dccc533cdd61b13",
+      "bytes": 9039
+    },
+    {
+      "path": "../../apps/control/conversations/history/store.mjs",
+      "sha256": "f33d9a1212f27eb6937b6c33f3c216e537ab065fd22af3f4cf9707f7ce125c3a",
+      "bytes": 10616
+    },
+    {
+      "path": "../../apps/control/conversations/postgres-store.mjs",
+      "sha256": "388366edbfb7f75b28acd7f6354dee4d8edeee5827c8ebb4c4daa87fcaaf8a3d",
+      "bytes": 23163
+    },
+    {
+      "path": "../../apps/control/conversations/usage-read/http.mjs",
+      "sha256": "fd2bca5aa877d283da1d86b6369e478278847ecf8ca8ef248160679e99c8fed5",
+      "bytes": 2442
+    },
+    {
+      "path": "../../apps/control/conversations/usage-read/projection.mjs",
+      "sha256": "f2fe4100714d908693af80ebfcb111b3658be196c5827d2685b6e69464ddc0bc",
+      "bytes": 3384
+    },
+    {
+      "path": "../../apps/control/conversations/usage.mjs",
+      "sha256": "0439ce7bca74e0e2aaeb909f80f20ff1689a17f7e9ff6d13bea4f454a1b88a77",
+      "bytes": 7175
+    },
+    {
+      "path": "../../apps/runtime/product-applications.mjs",
+      "sha256": "1b7f8a0967214915d5bb2d17659f5b6072f75bc7d2fef2337423c5699c965267",
+      "bytes": 17931
+    },
+    {
+      "path": "conversation-history/protocol.mjs",
+      "sha256": "eb065617f91efeda0ab540b9b218abb6d8246b4faabdfdec5adcf01c42f7f69b",
+      "bytes": 2449
+    },
+    {
+      "path": "conversation-usage/protocol.mjs",
+      "sha256": "9e1ab3183e53d0e3fd0a7677f92a009cdeb3f5b608c982d5a94f9614fdda78e8",
+      "bytes": 1902
+    },
+    {
+      "path": "conversation-usage/receive.mjs",
+      "sha256": "87b4a3b8b381ab753ff18401f89ff9bba3f84c7f0f015541187f5736fe747689",
+      "bytes": 1445
+    },
+    {
+      "path": "conversation-usage/schema.mjs",
+      "sha256": "8034eebcc0f853c631181ef838b658c86963c2a5c5c141a82e5b006e0390d2c0",
+      "bytes": 2655
+    },
+    {
+      "path": "conversation-usage/semantics.mjs",
+      "sha256": "b0ebcb4a4ce2118caf8616a6377a23b4319756ec6575201f2eb70c1e125924a5",
+      "bytes": 1691
+    },
+    {
+      "path": "conversation-usage/validate.mjs",
+      "sha256": "72f1e20b273b37b217ee09f01c2d8bce7bcf7ad53cee1bb80a0754f10ea3746b",
+      "bytes": 855
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-usage.mjs",
+      "sha256": "831cbc4c0a0cbb576fd7cf50f4ad7665f7382cb12fafd422e91749e40202558e",
+      "bytes": 5902
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "runtime-0.2/usage.mjs",
+      "sha256": "8bcd8d7d82d3304cab0bcd5e7f83cbcace02b4f0a850986a09aba8da50a00fbe",
+      "bytes": 3950
+    }
+  ],
+  "schemaSha256": "c1a9a996ed483be4f4cbfde5aeee157b08a20cf61db820be9237b5c6b1b981ce",
+  "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
+    "conversation-history/protocol.mjs",
+    "conversation-usage/conversation-usage-receiver.mjs",
+    "conversation-usage/protocol.mjs",
+    "conversation-usage/semantics.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "usage-generated:./generated-validator.mjs"
+  ]
+}
