@@ -18,6 +18,7 @@ import { createOutreachQueryValidators } from './outreach-query-validation.mjs';
 import { createProgramElementValidators } from './program-elements-validation.mjs';
 import { createPublicWebValidators } from './public-web-validation.mjs';
 import { createSamOpportunitiesValidators } from './sam-opportunities-validation.mjs';
+import { createCapiroDataValidators } from './capiro-data-validation.mjs';
 import { createConnectedAppValidators } from './connected-apps-validation.mjs';
 import { createTeamsChannelValidators } from './teams-channels-validation.mjs';
 import { createFloridaBudgetValidators } from './florida-budget-validation.mjs';
@@ -62,7 +63,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['teams-channels', 'connected-apps', 'common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'research-portfolio-evidence', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records', ...executionSchemaSources.map(source => source.group)];
+const groups = ['capiro-data', 'teams-channels', 'connected-apps', 'common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'research-portfolio-evidence', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records', ...executionSchemaSources.map(source => source.group)];
 const schemaBytes = groups.map(group => readFileSync(new URL(
   executionSchemaSources.find(source => source.group === group)?.path ?? `./${group}${group === 'client-knowledge-profile' ? '-v03' : ''}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
@@ -287,6 +288,7 @@ const intelligenceSummaryValidators = createIntelligenceSummaryValidators({valid
 
 const publicWebValidators = createPublicWebValidators({validateShape, schema: schemas[groups.indexOf('public-web')]});
 const samOpportunitiesValidators = createSamOpportunitiesValidators({validateShape, schema: schemas[groups.indexOf('sam-opportunities')]});
+const capiroDataValidators = createCapiroDataValidators({validateShape});
 const connectedAppValidators = createConnectedAppValidators({validateShape});
 const teamsChannelValidators = createTeamsChannelValidators({validateShape});
 const floridaBudgetValidators = createFloridaBudgetValidators({validateShape, schema: schemas[groups.indexOf('florida-budget')]});
@@ -351,6 +353,6 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators,
     ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators,
     ...stateStatusVotesValidators, ...regulatoryDocketsValidators, ...tenantContactsValidators, ...entityCandidatesValidators, ...trackedBillsValidators, ...intelligenceSummaryValidators,
-    ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators, connectedAppValidators, teamsChannelValidators,
+    ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators, connectedAppValidators, teamsChannelValidators, capiroDataValidators,
     ...outreachQueryValidators, ...programElementValidators,
     clientKnowledgeSearchValidators, clientKnowledgeMondayValidators, clientKnowledgeAttachmentValidators, clientKnowledgeMemoryValidators, clientKnowledgeProfileValidators, ...researchLegalCandidatesValidators, ...publicDomainQueryValidators, ...researchLegalLegislationValidators, ...actionItemsCompleteValidators, ...researchLegalNewsValidators, ...publicDomainHearingsValidators})});

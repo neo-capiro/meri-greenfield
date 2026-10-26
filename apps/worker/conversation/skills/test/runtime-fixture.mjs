@@ -13,7 +13,7 @@ export function runtimeFixture(skillId='quick_skill.commitments_audit') {
  const request={requestId:domain.uid(61),prompt:'Original selected task',skill:selected.pin,window:selection.window,windowRequest:null},callPins={binding:context.binding,skill:selected.pin,requestSha256:canonicalSha256(request),selectionSha256:canonicalSha256(selection)};
  const stamp=()=>({checkedAtMs:now(),expiresAtMs:now()+5000});
  const installed=selected.manifest.allowedOperations.filter(o=>['resolve_entity','find_contacts','mail.search_messages','mail.read_thread'].includes(o.id));
- const install={...callPins,baseCatalogSha256:selected.pin.catalogSha256,installationId:domain.uid(62),executionCatalogSha256:'a'.repeat(64),operations:installed,...stamp()};
+ const install={...callPins,baseCatalogSha256:selected.installationCatalogSha256,installationId:domain.uid(62),executionCatalogSha256:'a'.repeat(64),operations:installed,...stamp()};
  const admission={...callPins,manifestSha256:selected.pin.manifestSha256,catalogSha256:selected.pin.catalogSha256,budgets:selected.manifest.budgets,policyRevision:context.scopes[0].policyRevision,...stamp()};
  const compileArtifact=async({readSource,input,selection,signal})=>{const compiler=(skillId==='quick_skill.commitments_audit'?createCommitmentsAuditCompiler:createRelationshipBriefCompiler)({readSource,now,defaultCongress:119});state.compiled=await compiler.prepare(input,context,{selection,signal});return state.compiled;};
  const configuration={binding:context.binding,versions,request,scopes:context.scopes,selection,now,

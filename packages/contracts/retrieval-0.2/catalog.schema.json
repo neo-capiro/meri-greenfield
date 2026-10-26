@@ -110,7 +110,9 @@
                 "list_connected_app_reads",
                 "read_connected_app",
                 "list_teams_channels",
-                "get_teams_channel_messages"
+                "get_teams_channel_messages",
+                "describe_capiro_data",
+                "query_capiro_data"
               ]
             },
             "disposition": {
@@ -551,15 +553,15 @@
           "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
         },
         "sourceRegistryCommit": {
-          "const": "fd8765ec01d292013758606204f2c9d886cd31c1"
+          "const": "1bcb847e7f344011522785969fb6528e7f809f55"
         },
         "originals": {
           "type": "array",
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 143,
-          "maxItems": 143,
+          "minItems": 145,
+          "maxItems": 145,
           "uniqueItems": true
         },
         "operations": {

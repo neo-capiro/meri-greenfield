@@ -15,7 +15,7 @@ const cache=new Map();
 
 function verifyCatalog(){
   assertCatalog(catalog);
-  if(assets.schema!=='meri-original-skill-assets/1'||index.size!==assets.assets.length||canonicalSha256(catalog)!==assets.catalogSha256)fail('SKILL_CATALOG_PIN');
+  if(assets.schema!=='meri-original-skill-assets/1'||index.size!==assets.assets.length||canonicalSha256(catalog)!==assets.installationCatalogSha256)fail('SKILL_CATALOG_PIN');
 }
 function readAsset(path){
   const bytes=readFileSync(new URL(path,import.meta.url));
@@ -35,7 +35,7 @@ function load(asset){
   const legal=operations.flatMap(row=>row.sourceRequirements),derived=[...new Set(legal.map(row=>`${row.sourceId}:${row.purpose}`))];
   if(new Set(declared).size!==required.length||declared.length!==derived.length||declared.some(id=>!derived.includes(id))||
     required.some(hash=>!legal.some(row=>canonicalSha256(row)===hash)))fail('SKILL_SOURCE_PIN');
-  return snapshotPreservationData({manifest,prose,pin:{skillId:asset.skillId,skillVersion:asset.skillVersion,
+  return snapshotPreservationData({manifest,prose,installationCatalogSha256:assets.installationCatalogSha256,pin:{skillId:asset.skillId,skillVersion:asset.skillVersion,
     manifestSha256:asset.manifestSha256,proseSha256:asset.proseSha256,catalogSha256:assets.catalogSha256}});
 }
 

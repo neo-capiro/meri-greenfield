@@ -8,7 +8,7 @@ function pins(r,input,started,now,life){if(!same(r.binding,input.binding)||!same
  !Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>now()||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=now())fault();life.limitDeadline(r.expiresAtMs);}
 export function assertSkillInstallation(raw,{input,selected,started,now,life,previous}) {
  const r=data(own(raw,['binding','skill','requestSha256','selectionSha256','baseCatalogSha256','installationId','executionCatalogSha256','operations','checkedAtMs','expiresAtMs']));pins(r,input,started,now,life);
- if(r.baseCatalogSha256!==selected.pin.catalogSha256||!uuid(r.installationId)||!digest(r.executionCatalogSha256)||!Array.isArray(r.operations)||r.operations.length>selected.manifest.allowedOperations.length)fault();
+ if(r.baseCatalogSha256!==selected.installationCatalogSha256||!uuid(r.installationId)||!digest(r.executionCatalogSha256)||!Array.isArray(r.operations)||r.operations.length>selected.manifest.allowedOperations.length)fault();
  const seen=new Set();for(const value of r.operations){const op=own(value,['id','version']),key=canonicalSha256(op);
   if(seen.has(key)||!selected.manifest.allowedOperations.some(ref=>same(ref,op)))fault();resolveOperationContract(op);seen.add(key);}
  if(previous&&!same({...r,checkedAtMs:0,expiresAtMs:0},{...previous,checkedAtMs:0,expiresAtMs:0}))fault();return r;
