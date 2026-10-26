@@ -58,3 +58,14 @@ test('existing selected PE skill remains narrowed and disabled policy exposes no
   assert.equal(await connect(t,f,{skill:selectSkill('quick_skill.pe_deep_dive','1.0.0').manifest}),null);
   assert.equal(await connect(t,f,{policy:{generalReads:false}}),null);assert.deepEqual(scene.wire,[]);
 });
+
+for(const id of ids)test(`${id}: private wire uses one existing SDK tool name and preserves exact scope and cells`,async t=>{
+  const request=id==='describe_capiro_data'?{source:'client_records',relations:['client_objectives']}:
+    {source:'client_records',sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2};
+  const scene=capiroDataCase(id,{request}),f=await fixture('capiro-data',id,{scene,privateUser:true}),m=await connect(t,f);
+  assert.ok(m);assert.deepEqual((await m.client.listTools()).tools.map(tool=>tool.name),[id]);
+  const out=await m.call();assert.equal(out.isError,undefined,JSON.stringify(out));
+  const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.page);assert.equal(envelope.operation.version,'0.2.0');
+  assert.equal(m.runtime.receipts().length,1);assert.equal(scene.wire.length,1);
+  assert.ok(scene.wire[0].options.headers['x-meri-read-correlation']);
+});

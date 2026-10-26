@@ -60,6 +60,18 @@ function visibleSelector(native,subject,id){
  assertNativeVisibleClients(native,[id]);
 }
 
+function privateDataContext(proof,native){
+ const request=proof.request,selected=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
+ if(selected===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'))refuse('ACCESS_DENIED');
+ if(Object.hasOwn(request,'clientId')&&(typeof request.clientId!=='string'||!UUID.test(request.clientId)))refuse('INVALID_ARGUMENTS');
+ const clientId=request.clientId??selected;
+ if(selected!==null&&clientId!==selected)refuse('ACCESS_DENIED');
+ assertNativeVisibleClients(native,clientId===null?[]:[clientId]);
+ // Saved jobs have no interactive native revisions. Never manufacture one from a role or UUID.
+ if(![native.identityRevision,native.membershipRevision].every(value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value)))refuse('UNAVAILABLE');
+ return {capiroDataScope:{clientId,identityRevision:native.identityRevision,membershipRevision:native.membershipRevision}};
+}
+
 /** Reject unsupported source fallback before observing or disclosing any native credential. */
 export function assertSourceReadRequest(contract,request,subject){
  if(contract.binding.group==='state-status-votes')assertStoredStateRequest(contract.descriptor.operation,request);
@@ -77,6 +89,8 @@ export function assertSourceReadRequest(contract,request,subject){
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
  const group=contract.binding.group;
+ // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
+ if(group==='capiro-data'&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){
   const selected=contract.normalizeInput(proof.request,{}).input.clientId??null;
   if(proof.subject.kind==='client'||proof.subject.entityType==='client'){
