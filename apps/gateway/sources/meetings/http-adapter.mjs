@@ -78,6 +78,12 @@ export function createMeetingHttpAdapter(options) {
         acquired=result;
         try {active();return result;}catch(error){try {cancelBody(responseBody(result));}catch{}throw error;}
       });
+      // A continued list can be refused after its source boundary changes or
+      // exceeds Core's bounded omitted prefix. Keep the existing argument
+      // refusal code; never copy source error text or retry this request.
+      responseBody(response);
+      if(response.status===400&&context.operation.id==='meeting.read_client_meetings'&&
+          context.input.meetingId===null&&context.metadata.cursor!==null)deny('INVALID_ARGUMENTS');
       const bounded={run:fn=>lifetime.run(signal=>{active();return fn(signal);}),check:active};
       result=frozenData(await readJsonResponse(response,{lifetime:bounded,
         maxResponseBytes:Math.min(maxResponseBytes,context.authority.maxOutputBytes)}));

@@ -9,7 +9,7 @@ import {meetingFixture,operations as meeting,NOW as meetingNow,meetingId,noteId}
 
 const cases=[['client-knowledge-profile','get_client_context'],['client-documents','read_client_documents'],
  ['meeting-source','meeting.read_client_meetings'],['client-knowledge-search','search_client_knowledge'],['tracked-bills','search_tracked_bills']];
-async function setup(family,id,{general=true,request}={}){
+async function setup(family,id,{general=true,request,sourceResponse}={}){
  let scene;
  if(family==='client-knowledge-profile'||family==='client-documents'){
   scene=clientEvidenceFixture(family==='client-documents'?evidence.documents:evidence.profile,request??{clientId});scene.now=()=>evidenceNow;
@@ -32,6 +32,7 @@ async function setup(family,id,{general=true,request}={}){
    scopes:[{tenantId:a.binding.tenantId,kind:'private-user',resourceId:a.binding.actorId,policyRevision:s.policyRevision}]});
   if(scene.page?.subject)scene.page.subject=s;
  }
+ if(sourceResponse)scene.transport.fetchImpl=sourceResponse;
  return fixture(family,id,{scene});
 }
 for(const [family,id] of cases){
@@ -82,4 +83,57 @@ test('General meeting body remains exact and substituted body is withheld',async
  const page=JSON.parse((await r.json()).resultJson);assert.equal(page.subject.kind,'personal');assert.equal(page.source.body.length,20);
  f.scene.state.resultMutator=page=>{page.source.body='substituted';};
  const bad=await f.execute();assert.notEqual(bad.status,200);
+});
+
+for(const general of [true,false])for(const message of [
+ 'Meeting page changed; restart the read',
+ 'Meeting continuation is too large; narrow the time window and restart',
+])test(`meeting continuation refusal reaches MCP with safe recovery: ${general?'General':'client'} / ${message}`,async t=>{
+ let cancelled=0;
+ const request={clientId,cursor:'synthetic-existing-cursor'};
+ const f=await setup('meeting-source','meeting.read_client_meetings',{general,request,
+  sourceResponse:async(_url,options)=>{
+   assert.equal(JSON.parse(options.body).metadata.cursor,request.cursor);
+   return new Response(new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode(
+    JSON.stringify({statusCode:400,message,privateDetail:'WITHHELD_SOURCE_DETAIL'})));},cancel(){cancelled++;}}),
+    {status:400,headers:{'content-type':'application/json'}});
+  }});
+ const m=await connect(t,f),out=await m.call();
+ assert.equal(out.isError,true);
+ const text=out.content.map(item=>item.text??'').join('\n');
+ assert.match(text,/INVALID_ARGUMENTS:/);
+ assert.match(text,/restart without the cursor/);
+ assert.match(text,/narrow the from\/to time range and restart/);
+ assert.match(text,/No evidence, absence or completeness is established/);
+ assert.doesNotMatch(text,/WITHHELD_SOURCE_DETAIL|synthetic-existing-cursor|Meeting page changed|Meeting continuation is too large/);
+ assert.equal(f.calls.filter(path=>path==='/api/clio/tools/meeting.read_client_meetings').length,1);
+ assert.equal(cancelled,1);
+ assert.equal(m.runtime.receipts().length,0);
+});
+
+test('meeting recovery classification preserves noncursor, body and permission failures',async()=>{
+ for(const [request,status,code] of [
+  [{clientId},400,'INVALID_RESULT'],
+  [{clientId,meetingId,sourceKind:'note',sourceId:noteId,cursor:'synthetic-body-cursor'},400,'INVALID_RESULT'],
+  [{clientId,cursor:'synthetic-list-cursor'},403,'ACCESS_DENIED'],
+  [{clientId,cursor:'synthetic-list-cursor'},500,'INVALID_RESULT'],
+ ]){
+  const f=await setup('meeting-source','meeting.read_client_meetings',{request,
+   sourceResponse:async()=>Response.json({message:'WITHHELD_SOURCE_DETAIL'},{status})});
+  const response=await f.execute(),failure=await response.json();
+  assert.notEqual(response.status,200);assert.deepEqual(failure,{error:{code}});
+  assert.equal(f.calls.filter(path=>path==='/api/clio/tools/meeting.read_client_meetings').length,1);
+ }
+ const other=await setup('client-documents','read_client_documents',{request:{clientId,cursor:'documents:synthetic-document-cursor'},
+  sourceResponse:async()=>Response.json({message:'WITHHELD_SOURCE_DETAIL'},{status:400})});
+ assert.deepEqual(await (await other.execute()).json(),{error:{code:'INVALID_RESULT'}});
+});
+
+test('original invalid meeting arguments still refuse before source dispatch',async t=>{
+ const f=await setup('meeting-source','meeting.read_client_meetings'),m=await connect(t,f);
+ const out=await m.call({clientId,limit:0});
+ assert.equal(out.isError,true);
+ assert.match(out.content[0].text,/Input validation error: Invalid arguments for tool meeting_read_client_meetings/);
+ assert.doesNotMatch(out.content[0].text,/restart without the cursor/);
+ assert.equal(f.calls.filter(path=>path==='/api/clio/tools/meeting.read_client_meetings').length,0);
 });
