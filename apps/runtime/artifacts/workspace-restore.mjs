@@ -20,3 +20,20 @@ export function verifyWorkspaceBytes({workspace,manifest,check}){
  if(rows.length!==manifest.entries.length)fail();for(const entry of manifest.entries){check();const row=found.get(entry.path);
   if(!row||row.bytes!==entry.object.bytes||row.sha256!==entry.object.sha256||row.executable!==entry.executable)fail();}
 }
+/** An uncommitted local tree is never erased: each entry moves to a retained directory beside the workspace, which is
+ * left empty so the next restore owns a quiesced tree again instead of refusing a stale one. The workspace keeps its
+ * own directory and inode, the identity the owned runtime session and the SDK project key are pinned to. */
+export function retainWorkspaceBytes({workspace,check}){
+ const before=directory(workspace);if(!fs.readdirSync(workspace).length)return Object.freeze({retained:false});
+ const retained=retainedDirectory(workspace);
+ for(const name of fs.readdirSync(workspace)){check();fs.renameSync(path.join(workspace,name),path.join(retained,name));}
+ check();if(fs.readdirSync(workspace).length)fail();const after=directory(workspace);if(after.dev!==before.dev||after.ino!==before.ino)fail();
+ return Object.freeze({retained:true,retainedPath:retained});
+}
+/** One directory per retained tree, beside the tree it holds, so an earlier retention is never overwritten. */
+function retainedDirectory(workspace){
+ for(let n=0;n<1000;n++){const candidate=n?`${workspace}.uncommitted.${n}`:`${workspace}.uncommitted`;
+  try{fs.mkdirSync(candidate,{mode:0o700});}catch(error){if(error?.code==='EEXIST')continue;fail();}
+  directory(candidate);return candidate;}
+ fail();
+}
