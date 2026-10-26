@@ -1,4 +1,4 @@
-import {assertConversationEvent,assertNativeSourceEvent} from '../../../packages/contracts/conversation-sources/validate.mjs';
+import {assertConversationEvent,assertNativeSourceEvent,isNativeSourceEventType} from '../../../packages/contracts/conversation-sources/validate.mjs';
 /** Product transcript/event persistence. Borrowed pg-compatible pool; no connection on import. */
 import {assertRun,rowRun,bounded,hash,same,fail,nextState,terminal,validateShape,uuid,own} from './boundary.mjs';
 import {createLifecycleJournal,HOLD_CHECKPOINT_FAILED} from './lifecycle/journal.mjs';
@@ -153,7 +153,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  }
  const read=(binding,cursor,check)=>readState(binding,cursor,check),readOptional=(binding,cursor,check)=>readState(binding,cursor,check,true);
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
- const appendSource=(binding,input,check,expectedScopes)=>{if(input?.type!=='source.native-bill-text'||!expectedScopes)fail('EVENT_TYPE_REFUSED');return appendEvent(binding,{...input,createdAt:new Date(now()).toISOString()},check,expectedScopes,false,true);};
+ const appendSource=(binding,input,check,expectedScopes)=>{if(!isNativeSourceEventType(input?.type)||!expectedScopes)fail('EVENT_TYPE_REFUSED');return appendEvent(binding,{...input,createdAt:new Date(now()).toISOString()},check,expectedScopes,false,true);};
  const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,assertConversationActive,now,onPublished,modelAdmission,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
  const preparation=createNativePreparationJournals({tx,rowRun});
  const initialInputs=createOriginalInputJournal({tx,rowRun,now,assertConversationActive}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});

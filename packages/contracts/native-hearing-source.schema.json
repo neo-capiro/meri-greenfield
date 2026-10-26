@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:native-hearing-source:1.0.0",
+  "$defs": {
+    "NativeHearingSource": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.native-hearing-source/1"
+        },
+        "deliveryId": {
+          "type": "string",
+          "pattern": "^[-A-Za-z0-9_.:@/]{1,255}$"
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "search_committee_hearings"
+            },
+            "version": {
+              "const": "0.2.0"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "argumentsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "resultSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "executionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "recordId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 600
+            },
+            "provenance": {
+              "$ref": "urn:meri:retrieval:public-domain-hearings:0.2.0#/$defs/HearingProvenance"
+            }
+          },
+          "required": [
+            "recordId",
+            "provenance"
+          ],
+          "additionalProperties": false
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "part": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "enum": [
+                "json",
+                "json_fragment"
+              ]
+            },
+            "characterStart": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "characterEnd": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalCharacters": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "contentComplete": {
+              "type": "boolean"
+            },
+            "payloadSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "part",
+            "format",
+            "characterStart",
+            "characterEnd",
+            "totalCharacters",
+            "contentComplete",
+            "payloadSha256"
+          ],
+          "additionalProperties": false
+        },
+        "selection": {
+          "type": "object",
+          "properties": {
+            "recordsView": {
+              "enum": [
+                "published",
+                "briefs",
+                "reconciliation"
+              ]
+            },
+            "hearingId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "recordId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "asOf": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "recordsView",
+            "hearingId",
+            "recordId",
+            "clientId",
+            "asOf",
+            "cursor"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "$ref": "urn:meri:retrieval:public-domain-hearings:0.2.0#/$defs/HearingCoverage"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deliveryId",
+        "operation",
+        "requestSha256",
+        "argumentsSha256",
+        "resultSha256",
+        "executionSha256",
+        "policyRevision",
+        "source",
+        "page",
+        "selection",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "NativeHearingSourceEvent": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": {
+          "const": "source.native-hearing-record"
+        },
+        "data": {
+          "$ref": "#/$defs/NativeHearingSource"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "eventId",
+        "binding",
+        "sequence",
+        "createdAt",
+        "scopes",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "HearingSourceReadRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.hearing-source-read/1"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "referenceId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "conversationId",
+        "runId",
+        "referenceId"
+      ],
+      "additionalProperties": false
+    },
+    "HearingSourceReadResponse": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.hearing-source-read/1"
+        },
+        "event": {
+          "$ref": "#/$defs/NativeHearingSourceEvent"
+        },
+        "current": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "$ref": "urn:meri:retrieval:public-domain-hearings:0.2.0#/$defs/PublicDomainHearingsOutput"
+            },
+            "sourceLocator": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "linkStatus": {
+              "enum": [
+                "available",
+                "unsafe"
+              ]
+            }
+          },
+          "required": [
+            "result",
+            "sourceLocator",
+            "linkStatus"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "event",
+        "current"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

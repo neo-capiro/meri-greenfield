@@ -1,4 +1,4 @@
-import {assertConversationEvent} from '../../../../packages/contracts/conversation-sources/validate.mjs';
+import {assertConversationEvent,isNativeSourceEventType} from '../../../../packages/contracts/conversation-sources/validate.mjs';
 /** Conversation read projection over the canonical store transaction and integrity decoder. No new schema or writer authority. */
 import {hash,same,validateShape} from '../boundary.mjs';
 import {refuse} from '../../product-access/errors.mjs';
@@ -75,7 +75,7 @@ export function createConversationHistoryStore({tx,rowRun,continuationCustody}){
   const row=(await c.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event_id=$4',[principal.tenantId,conversationId,runId,referenceId])).rows[0];check();
   if(!row)refuse('SOURCE_REFERENCE_NOT_FOUND');const event=decode(()=>assertConversationEvent(row.event));
   if(hash(event)!==row.event_sha256||row.event_id!==referenceId||event.eventId!==referenceId||Number(row.sequence)!==event.sequence||event.sequence>Number(run.last_sequence)||!same(event.binding,b)||!same(event.scopes,subject.scopes))refuse('CONVERSATION_STORE_CORRUPT');
-  if(event.type!=='source.native-bill-text')refuse('SOURCE_REFERENCE_NOT_FOUND');
+  if(!isNativeSourceEventType(event.type))refuse('SOURCE_REFERENCE_NOT_FOUND');
   return {conversation:subject,event};
  });}
  /** Resolve immutable owned run identity without selecting the stored usage record. */
