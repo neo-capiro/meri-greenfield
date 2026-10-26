@@ -77,6 +77,13 @@ export function assertSourceReadRequest(contract,request,subject){
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
  const group=contract.binding.group;
+ if(group==='connected-apps'||group==='teams-channels'){
+  const selected=contract.normalizeInput(proof.request,{}).input.clientId??null;
+  if(proof.subject.kind==='client'||proof.subject.entityType==='client'){
+   if(selected!==clientSubject(proof,native))refuse('ACCESS_DENIED');
+  }else if(selected!==null)refuse('ACCESS_DENIED');
+  return {};
+ }
  if(group==='certification-status')return priorContext??{comparisonLocale:Intl.getCanonicalLocales(new Intl.Collator().resolvedOptions().locale)[0]};
  if(group==='rule-status'||group==='sam-opportunities'){
   if(priorContext)return priorContext;

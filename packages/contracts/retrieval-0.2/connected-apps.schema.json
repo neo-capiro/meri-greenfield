@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:connected-apps:0.2.0",
+  "title": "Current approved connected-app read pages",
+  "$defs": {
+    "ConnectedAppsListRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientId"
+      ]
+    },
+    "ConnectedAppsReadRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "connectionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,127}$"
+        },
+        "schemaHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "arguments": {
+          "type": "object",
+          "maxProperties": 100
+        }
+      },
+      "required": [
+        "clientId",
+        "connectionId",
+        "provider",
+        "tool",
+        "schemaHash",
+        "arguments"
+      ]
+    },
+    "ConnectedAppsCapability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connectionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,127}$"
+        },
+        "schemaHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "inputSchema": {
+          "type": "object",
+          "maxProperties": 100
+        }
+      },
+      "required": [
+        "connectionId",
+        "provider",
+        "tool",
+        "schemaHash",
+        "inputSchema"
+      ]
+    },
+    "ConnectedAppsListOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "const": "list_connected_app_reads"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "unavailable"
+          ]
+        },
+        "untrusted": {
+          "const": true
+        },
+        "complete": {
+          "const": false
+        },
+        "scope": {
+          "const": "current_connection_catalog"
+        },
+        "managedAvailability": {
+          "enum": [
+            "ok",
+            "partial",
+            "unavailable",
+            "no_eligible"
+          ]
+        },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/ConnectedAppsCapability"
+          }
+        }
+      },
+      "required": [
+        "operation",
+        "clientId",
+        "observedAt",
+        "status",
+        "untrusted",
+        "complete",
+        "scope",
+        "managedAvailability",
+        "capabilities"
+      ]
+    },
+    "ConnectedAppsReadOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "const": "read_connected_app"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "connectionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,127}$"
+        },
+        "schemaHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "partial",
+            "unavailable",
+            "disconnected",
+            "permission_required"
+          ]
+        },
+        "untrusted": {
+          "const": true
+        },
+        "scope": {
+          "const": "connection_permissions"
+        },
+        "completeness": {
+          "const": "provider_page"
+        },
+        "content": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 12000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "providerResult": {},
+        "reason": {
+          "enum": [
+            null,
+            "current_read_schema_unavailable",
+            "provider_result_exceeds_safe_json_boundary",
+            "provider_reported_error",
+            "connection_disconnected",
+            "connection_permission_required",
+            "provider_result_unavailable"
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "clientId",
+        "connectionId",
+        "provider",
+        "tool",
+        "schemaHash",
+        "observedAt",
+        "status",
+        "untrusted",
+        "scope",
+        "completeness",
+        "content",
+        "providerResult",
+        "reason"
+      ]
+    }
+  }
+}

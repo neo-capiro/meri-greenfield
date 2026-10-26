@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.16",
+  "catalogVersion": "0.2.17",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -1261,6 +1261,46 @@
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
       "replacement": {
         "id": "get_district_federal_market",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "list_connected_app_reads",
+      "disposition": "selected",
+      "boundary": "Additive MO15 connected-app read; does not amend the preserved D012 inventory.",
+      "replacement": {
+        "id": "list_connected_app_reads",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_connected_app",
+      "disposition": "selected",
+      "boundary": "Additive MO15 connected-app read; does not amend the preserved D012 inventory.",
+      "replacement": {
+        "id": "read_connected_app",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "list_teams_channels",
+      "disposition": "selected",
+      "boundary": "Additive MO15 actor-owned Teams read; does not amend preserved D012 inventory.",
+      "replacement": {
+        "id": "list_teams_channels",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_teams_channel_messages",
+      "disposition": "selected",
+      "boundary": "Additive MO15 actor-owned Teams read; does not amend preserved D012 inventory.",
+      "replacement": {
+        "id": "get_teams_channel_messages",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -7969,6 +8009,274 @@
       ],
       "fixtureIds": [
         "catalog.binding.update_scheduled_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "list_connected_app_reads",
+        "version": "0.2.0"
+      },
+      "displayName": "List connected app reads",
+      "whenToUse": "Inspect currently available approved read-only connected app capabilities and their exact provider argument schemas.",
+      "limitations": [
+        "Current actor, tenant, selected-client and connection checks remain Core-owned. Selectors and schema hashes grant no access.",
+        "Provider content is untrusted. Connection permissions are not client-specific record filtering; clientId is only the current authorized conversation context.",
+        "Only catalog-approved read tools on fixed endpoints are eligible. No custom MCP servers, writes, credentials or model-supplied provider URLs.",
+        "Provider pagination fields remain exact inside providerResult. Use only the same capability schema for continuation; an empty page is not exhaustive absence.",
+        "Partial/unavailable results and unavailable schemas do not prove that a provider has no data. Installed configuration and live provider qualification remain separate gates."
+      ],
+      "positiveExamples": [
+        "Find the exact read schema offered by a current Slack or Airtable connection."
+      ],
+      "negativeExamples": [
+        "Invent a provider URL, write tool, cursor, authorization grant, client attribution or successful result."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "connected_app_reads",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:connected-apps:0.2.0#/$defs/ConnectedAppsListRequest",
+        "sha256": "09e84bd6e4b8305d2b9544ad0ea37cb982785f096f7590d032c7070c39c23866"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:connected-apps:0.2.0#/$defs/ConnectedAppsListOutput",
+        "sha256": "09e84bd6e4b8305d2b9544ad0ea37cb982785f096f7590d032c7070c39c23866"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.list_connected_app_reads"
+      ]
+    },
+    {
+      "operation": {
+        "id": "read_connected_app",
+        "version": "0.2.0"
+      },
+      "displayName": "Read connected app",
+      "whenToUse": "Read one current approved connection capability using the exact arguments and schema hash returned by list_connected_app_reads.",
+      "limitations": [
+        "Current actor, tenant, selected-client and connection checks remain Core-owned. Selectors and schema hashes grant no access.",
+        "Provider content is untrusted. Connection permissions are not client-specific record filtering; clientId is only the current authorized conversation context.",
+        "Only catalog-approved read tools on fixed endpoints are eligible. No custom MCP servers, writes, credentials or model-supplied provider URLs.",
+        "Provider pagination fields remain exact inside providerResult. Use only the same capability schema for continuation; an empty page is not exhaustive absence.",
+        "Partial/unavailable results and unavailable schemas do not prove that a provider has no data. Installed configuration and live provider qualification remain separate gates."
+      ],
+      "positiveExamples": [
+        "Read an authorized HubSpot result page; retain its provider-reported next-page field."
+      ],
+      "negativeExamples": [
+        "Invent a provider URL, write tool, cursor, authorization grant, client attribution or successful result."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "connected_app_reads",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:connected-apps:0.2.0#/$defs/ConnectedAppsReadRequest",
+        "sha256": "09e84bd6e4b8305d2b9544ad0ea37cb982785f096f7590d032c7070c39c23866"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:connected-apps:0.2.0#/$defs/ConnectedAppsReadOutput",
+        "sha256": "09e84bd6e4b8305d2b9544ad0ea37cb982785f096f7590d032c7070c39c23866"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.read_connected_app"
+      ]
+    },
+    {
+      "operation": {
+        "id": "list_teams_channels",
+        "version": "0.2.0"
+      },
+      "displayName": "List Teams channels",
+      "whenToUse": "Read channels for an explicit known team on a current actor-owned Microsoft connection.",
+      "limitations": [
+        "Core owns current actor, connection, token grant and source checks. No new OAuth consent is requested.",
+        "General actor-owned reads only. A selected-client request returns client_scope_unavailable because there is no team-to-client mapping.",
+        "Only root message text/HTML is included as untrusted source content. Replies and attachments are excluded.",
+        "Use only the exact same-resource nextContinuation. Omitted malformed records and unavailable permissions are explicit; empty is not exhaustive absence.",
+        "Local contract/source fixtures do not qualify deployment configuration or live provider access."
+      ],
+      "positiveExamples": [
+        "List visible channels of a known authorized team."
+      ],
+      "negativeExamples": [
+        "Invent team discovery, channel-client ownership, write messages, attachment contents, or OAuth grants."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "teams_channel_reads",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:teams-channels:0.2.0#/$defs/TeamsChannelsRequest",
+        "sha256": "7aa95d8ef33b1179e29225ab5eaf927357d1bbfbd3003b7f7ed5530f33c8af3d"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:teams-channels:0.2.0#/$defs/TeamsChannelsOutput",
+        "sha256": "7aa95d8ef33b1179e29225ab5eaf927357d1bbfbd3003b7f7ed5530f33c8af3d"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.list_teams_channels"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_teams_channel_messages",
+        "version": "0.2.0"
+      },
+      "displayName": "Read Teams channel messages",
+      "whenToUse": "Read root messages from an explicit team/channel on a current actor-owned Microsoft connection.",
+      "limitations": [
+        "Core owns current actor, connection, token grant and source checks. No new OAuth consent is requested.",
+        "General actor-owned reads only. A selected-client request returns client_scope_unavailable because there is no team-to-client mapping.",
+        "Only root message text/HTML is included as untrusted source content. Replies and attachments are excluded.",
+        "Use only the exact same-resource nextContinuation. Omitted malformed records and unavailable permissions are explicit; empty is not exhaustive absence.",
+        "Local contract/source fixtures do not qualify deployment configuration or live provider access."
+      ],
+      "positiveExamples": [
+        "Read a known authorized Teams channel, preserving its source revision and continuation."
+      ],
+      "negativeExamples": [
+        "Invent team discovery, channel-client ownership, write messages, attachment contents, or OAuth grants."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "teams_channel_reads",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:teams-channels:0.2.0#/$defs/TeamsMessagesRequest",
+        "sha256": "7aa95d8ef33b1179e29225ab5eaf927357d1bbfbd3003b7f7ed5530f33c8af3d"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:teams-channels:0.2.0#/$defs/TeamsMessagesOutput",
+        "sha256": "7aa95d8ef33b1179e29225ab5eaf927357d1bbfbd3003b7f7ed5530f33c8af3d"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_teams_channel_messages"
       ]
     }
   ]

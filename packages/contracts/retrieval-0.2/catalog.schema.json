@@ -106,7 +106,11 @@
                 "get_business_development_context",
                 "get_business_development_evidence",
                 "get_business_development_recent_changes",
-                "get_district_federal_market"
+                "get_district_federal_market",
+                "list_connected_app_reads",
+                "read_connected_app",
+                "list_teams_channels",
+                "get_teams_channel_messages"
               ]
             },
             "disposition": {
@@ -554,8 +558,8 @@
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 139,
-          "maxItems": 139,
+          "minItems": 143,
+          "maxItems": 143,
           "uniqueItems": true
         },
         "operations": {
