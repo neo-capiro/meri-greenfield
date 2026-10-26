@@ -1,3 +1,4 @@
+import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing-semantics.mjs';
 import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
 /** Shared post-schema correlation and request normalization; receives parsed/snapshotted JSON only. */
 import canonicalize from 'canonicalize';
@@ -71,7 +72,8 @@ export function assertHistoryResponseSemantics(route,request,result){
  }
  let sequence=request.after;const touched=new Set(),eventIds=new Set();
  for(const wrapped of result.events){const e=wrapped.event,t=turns.get(e.binding.runId);if(!t||!same(e.binding,t.run.binding)||!same(e.scopes,t.run.scopes)||wrapped.sequence!==++sequence||wrapped.sequence!==t.sequenceBase+e.sequence||e.sequence<1||e.sequence>t.lastSequence||eventIds.has(e.eventId))fail('EVENT_MISMATCH');
-  if(e.type==='source.native-bill-text'){try{assertNativeSourceEventSemantics(e);}catch{fail('INVALID_SOURCE_EVENT');}}
+  if(e.type==='source.native-hearing-record'){try{assertHearingSourceEventSemantics(e);}catch{fail('INVALID_SOURCE_EVENT');}}
+ if(e.type==='source.native-bill-text'){try{assertNativeSourceEventSemantics(e);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(e.type==='source.available'&&e.data.scopes.some(s=>!t.run.scopes.some(parent=>same(s,parent))))fail('SCOPE_MISMATCH');touched.add(t.run.binding.runId);eventIds.add(e.eventId);
  }
  if(touched.size!==turns.size||result.nextSequence!==sequence||result.nextSequence>result.lastSequence||result.hasMore!==(sequence<result.lastSequence)||result.hasMore&&result.events.length!==request.limit)fail('CURSOR_MISMATCH');

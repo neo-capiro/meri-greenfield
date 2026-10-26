@@ -11,7 +11,7 @@ import {fault} from './config.mjs';
 import {types} from 'node:util';
 import {createConversationHistoryService} from '../control/conversations/history/service.mjs';
 import {createConversationHistoryApplication} from '../control/conversations/history/http.mjs';
-import {createBillTextSourceApplication} from '../control/conversations/sources/http.mjs';
+import {createConversationSourceApplication} from '../control/conversations/sources/http.mjs';
 import {BILL_TEXT_SOURCE_PATH} from '../../packages/contracts/conversation-sources/protocol.mjs';
 import {createConversationUsageApplication} from '../control/conversations/usage-read/http.mjs';
 import {CONVERSATION_USAGE_PATH} from '../../packages/contracts/conversation-usage/protocol.mjs';
@@ -96,7 +96,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const history=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryApplication({
   service:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,turnCurrentness:ports.conversationCurrentness,management:ports.conversationManagement,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
- const sources=historyService&&ports.conversationSourceReader?createBillTextSourceApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,reader:ports.conversationSourceReader,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
+ const sources=historyService&&ports.conversationSourceReader?createConversationSourceApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,reader:ports.conversationSourceReader,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const usage=historyService&&typeof conversationStore.history?.usageContext==='function'&&typeof conversationStore.readUsage==='function'?createConversationUsageApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const canonicalDocuments=createRuntimeArtifactApplication({sessions,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},...(ports.artifactOptionsOwner?{optionsOwner:ports.artifactOptionsOwner}:{}),...(retention===undefined?{}:{retention})});
  // Signed download links mount over the canonical document routes behind a readiness gate that trusted startup opens (or leaves closed).

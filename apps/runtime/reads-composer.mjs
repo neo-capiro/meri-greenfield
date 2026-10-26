@@ -4,6 +4,7 @@ import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary
 import {nativeReadFault} from '../../packages/contracts/runtime-0.2/reads.mjs';
 import {retainedOrigin} from '../../packages/contracts/runtime-0.2/retained-reads.mjs';
 import {createBillTextSourceCapture} from '../control/conversations/sources/bill-text.mjs';
+import {createHearingSourceCapture} from '../control/conversations/sources/hearing-record.mjs';
 import {createReadsOwner} from './reads-owner.mjs';
 import {createReadsApplication} from './reads-http.mjs';
 import {prepareReadFamilies,GENERAL_READ_ADAPTER_FAMILIES} from './read-families.mjs';
@@ -34,7 +35,8 @@ export async function createControlReadsComposer(configuration){
  function createReadsRuntime({execution,binding,approvedReads,conversationStore,objectiveCore,routineCore,capabilityPolicy=c.capabilityPolicy,readCapabilityRole}){
   if(typeof capabilityPolicy?.forRun!=='function')deny('CONFIGURATION');
   const createGateway=value=>families.createGateway({...value,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{})});
-  return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now,...(conversationStore?{captureSource:createBillTextSourceCapture({store:conversationStore,defaultCongress:c.defaultCongress})}:{})}),approvedReads,now});
+  const captures=conversationStore?[createBillTextSourceCapture({store:conversationStore,defaultCongress:c.defaultCongress}),createHearingSourceCapture({store:conversationStore})]:[];
+  return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now,...(conversationStore?{async captureSource(call){for(const capture of captures)await capture(call);}}:{})}),approvedReads,now});
  }
  return Object.freeze({createReadsRuntime,familyIds,missing:families.missing.map(id=>`source-composition:${id}`)});
 }
