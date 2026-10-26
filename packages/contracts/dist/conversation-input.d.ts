@@ -183,7 +183,13 @@ export interface Canonical_ConversationErrorResponse_68Bab4E3 {
       | 'REQUEST_TOO_LARGE'
       | 'CONVERSATION_UNAVAILABLE'
       | 'MODEL_SELECTION_UNAVAILABLE'
-      | 'MODEL_SETTINGS_UNAVAILABLE';
+      | 'MODEL_SETTINGS_UNAVAILABLE'
+      | 'FEEDBACK_TARGET_REFUSED'
+      | 'FEEDBACK_SOURCE_REFUSED'
+      | 'FEEDBACK_REVISION_CHANGED'
+      | 'FEEDBACK_REPLAY_REFUSED'
+      | 'FEEDBACK_LIMIT'
+      | 'FEEDBACK_WRITE_UNKNOWN';
   };
 }
 
@@ -269,6 +275,24 @@ export declare const conversationInputMetadata: {
       409
     ],
     "MODEL_SETTINGS_UNAVAILABLE": [
+      503
+    ],
+    "FEEDBACK_TARGET_REFUSED": [
+      403
+    ],
+    "FEEDBACK_SOURCE_REFUSED": [
+      403
+    ],
+    "FEEDBACK_REVISION_CHANGED": [
+      409
+    ],
+    "FEEDBACK_REPLAY_REFUSED": [
+      409
+    ],
+    "FEEDBACK_LIMIT": [
+      409
+    ],
+    "FEEDBACK_WRITE_UNKNOWN": [
       503
     ]
   }
