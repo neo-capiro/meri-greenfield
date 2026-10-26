@@ -52,6 +52,10 @@ A change is not done until what it replaced is gone.
 
 ## Allocation
 
+Neo requested maximum useful parallelism on 26 October 2026. All four available agent slots are active: Core implementation (a4_assessment), Meri integration (s3_assessment), independent fixtures/review (task_approval_author), and root coordination/integration. Authors share small reviewable increments so review overlaps implementation. Shared paths retain one writer; completed slots will be reassigned to the next independent slice.
+
+The first hybrid increment's eight public relations and version 0.1.0 wire are agreed. Disjoint Core analytics and Meri family implementation is allocated. Shared dependency, contract/catalog, skill-pin, generated output and grant changes are prepared as concrete patch proposals for serialized integration; this allocation does not release Fable's reserved paths or authorize live operations.
+
 | Scope | Owner | Current work | Review and next step |
 | --- | --- | --- | --- |
 | MT-10 / MT-11 with MF-03/04/05/12/13 | task_approval_author | MF-03 PR228, MF-04 PR229 and MF-05 same-tab PR230 MERGED | Independent source/composition accepted; root integrated the exact reviewed registry entries. General manual/external-reviewer refresh and MF-12/13 remain open |
