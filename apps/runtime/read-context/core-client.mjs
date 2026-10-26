@@ -44,8 +44,10 @@ export function createNativeToolAuthorityClient(configuration={}){
  const readConversation=createConversationAuthorityReader({available,authorityClient:resourceIdentity,now,maxRequestMs});
  const readClientReference=createClientReferenceReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:resourceIdentity,now,maxRequestMs});
  const readModeObservation=createReadModeObservationReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:resourceIdentity,now,maxRequestMs});
- /** Ordinary actor-owned integration inventory, including disconnected stored mail.
-  * These IDs select data; every mail read still rechecks the Core connection owner. */
+ /** Ordinary actor-owned integration inventory, including disconnected stored mail. Core's `listIntegrations` already selects
+  * the caller's tenant and the connections the caller created, and its Settings projection carries neither identifier, so
+  * ownership is Core's statement and is not re-derived from the rows. These IDs only select data; every mail read still
+  * rechecks the Core connection owner. */
  async function readMailboxes(raw){let life,acquired;try{
   if(!available)refuse('UNAVAILABLE');const v=own(raw,['credential','deadlineMs'],['signal']);nativeSignal(v.signal);
   if(typeof v.credential!=='string'||!/^\S{1,8192}$/u.test(v.credential)||!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');
@@ -60,8 +62,7 @@ export function createNativeToolAuthorityClient(configuration={}){
   if(!Array.isArray(rows)||rows.length>4096)refuse('RESOURCE_LIMIT');
   const result=[],seen=new Set();
   for(const row of rows){
-   if(!row||typeof row!=='object'||Array.isArray(row)||!UUID.test(row.id)||seen.has(row.id)||
-    row.tenantId!==c.binding.tenantId||row.createdByUserId!==c.binding.actorId||typeof row.provider!=='string')refuse('ACCESS_DENIED');
+   if(!row||typeof row!=='object'||Array.isArray(row)||!UUID.test(row.id)||seen.has(row.id)||typeof row.provider!=='string')refuse('INVALID_RESULT');
    seen.add(row.id);
    if(!['microsoft_365','google_workspace'].includes(row.provider))continue;
    if(!['needs_configuration','connected','error','disabled'].includes(row.status))refuse('INVALID_RESULT');

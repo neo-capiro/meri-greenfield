@@ -9,8 +9,13 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 
 async function fixture({client=false,id='mail.list_messages',routine=false}={}){
  const source=createMailFixture(id,{client}),binding=source.binding,calls=[],records=new Map();
- let rows=[{id:source.mailboxId,tenantId:binding.tenantId,createdByUserId:binding.actorId,provider:'microsoft_365',status:'disabled'},
-  {id:uuid('7'),tenantId:binding.tenantId,createdByUserId:binding.actorId,provider:'zoom',status:'connected'}],revoked=false,afterPage,status=200;
+ // Core's actor-owned inventory (`GET /api/engagement/integrations`, routine `job.readMailboxes`) is the Settings projection
+ // `integrationStatusProjection` (capiro-backend apps/api/src/engagement/integration-health.ts): `listIntegrations` already
+ // selects the caller's own connections, and the projection carries NO tenantId or createdByUserId.
+ const inventory=(id,provider,status)=>({id,provider,accountEmail:null,displayName:null,status,scopes:[],lastSyncAt:null,lastError:null,nextSyncAt:null,
+  permissions:{requestedScopes:[],grantedScopes:null,lastVerifiedAt:null},health:{},mailCoverage:{lastMailSyncAt:null},
+  subscriptions:{configured:false,updatedAt:null,lastNotificationAt:null,lastLifecycleEvent:null,resources:[]}});
+ let rows=[inventory(source.mailboxId,'microsoft_365','disabled'),inventory(uuid('7'),'zoom','connected')],revoked=false,afterPage,status=200;
  const scopes=[{tenantId:binding.tenantId,kind:client?'client':'private-user',resourceId:client?source.clientId:binding.actorId,policyRevision:source.subject.policyRevision}];
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:source.state.now+10000,runtimeSessionId:'synthetic-runtime-session-00000000001'});
  const current={execution:identity,state:'running',scopes,selectedClientId:client?source.clientId:null,policyRevision:source.subject.policyRevision};
@@ -62,8 +67,8 @@ for(const client of [false,true])for(const id of ['mail.list_messages','mail.sea
  assert(f.calls.length>=2);assert(f.calls.every(path=>path==='/api/internal/routines/reads'));
  const page=JSON.parse((await r.json()).resultJson);assert.equal(page.subject.kind,client?'client':'personal');
 });
-for(const field of ['tenantId','createdByUserId'])test(`routine foreign mailbox ${field} refuses before source release`,async()=>{
- const f=await fixture({routine:true});f.rows(rows=>rows.map(row=>({...row,[field]:'foreign'})));const r=await f.execute();assert.equal(r.status,403,await r.clone().text());assert.equal(f.records.size,0);
+test('routine inventory row without a mailbox id refuses before source release',async()=>{
+ const f=await fixture({routine:true});f.rows(rows=>rows.map(({id,...row})=>row));const r=await f.execute();assert.notEqual(r.status,200,await r.clone().text());assert.equal(f.records.size,0);
 });
 test('routine revocation after source read withholds content and continuation',async()=>{
  const f=await fixture({routine:true});f.after(f.revoke);const r=await f.execute();assert.notEqual(r.status,200);assert.equal(f.records.size,0);assert.doesNotMatch(await r.text(),/Synthetic mail candidate/);
@@ -79,7 +84,7 @@ test('candidate continuation reloads exact stored page on a newly composed owner
  assert.equal(f.records.size,1);f.source.state.now+=1500;const r=await f.execute({...f.source.args,offset:page.nextOffset,asOf:page.queryScope.asOfInclusive});assert.equal(r.status,200,await r.clone().text());
  const next=JSON.parse((await r.json()).resultJson);assert.equal(next.messages.length,1);assert.notEqual(next.messages[0].messageId,page.messages[0].messageId);assert.equal(next.hasMore,false);
 });
-for(const field of ['tenantId','createdByUserId'])test(`foreign inventory ${field} refuses before reading mail`,async()=>{const f=await fixture();f.rows(rows=>rows.map(row=>({...row,[field]:'foreign'})));const r=await f.execute();assert.equal(r.status,403,await r.clone().text());assert(!f.calls.some(x=>x.startsWith('/api/clio/tools/')));});
+test('inventory row without a mailbox id refuses before reading mail',async()=>{const f=await fixture();f.rows(rows=>rows.map(({id,...row})=>row));const r=await f.execute();assert.notEqual(r.status,200,await r.clone().text());assert(!f.calls.some(x=>x.startsWith('/api/clio/tools/')));});
 test('mailbox removal after Core read withholds content and continuation',async()=>{const f=await fixture();f.after(()=>f.rows(()=>[]));const r=await f.execute();assert.notEqual(r.status,200);assert.equal(f.records.size,0);assert.doesNotMatch(await r.text(),/Synthetic mail candidate/);});
 test('execution revocation after Core read withholds content and continuation',async()=>{const f=await fixture();f.after(f.revoke);const r=await f.execute();assert.equal(r.status,403);assert.equal(f.records.size,0);});
 test('Core inventory denial is a refusal with no fallback',async()=>{const f=await fixture();f.status(403);const r=await f.execute();assert.equal(r.status,403);assert.equal(f.calls.length,1);});

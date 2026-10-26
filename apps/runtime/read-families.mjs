@@ -88,7 +88,8 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
     let mailboxes;
     if(readSource){
      const rows=await readSource({operation:'job.readMailboxes',input:{},context:{binding,subject,policyRevision:observed.policyRevision,normalizationContext:null},deadlineMs:cutoff,signal:requestSignal});
-     if(!Array.isArray(rows)||rows.length>4096||rows.some(row=>!row||row.tenantId!==binding.tenantId||row.createdByUserId!==binding.actorId||typeof row.id!=='string'))deny('ACCESS_DENIED');
+     // Core's `job.readMailboxes` is the same actor-owned `listIntegrations` projection: no tenantId/createdByUserId to re-derive.
+     if(!Array.isArray(rows)||rows.length>4096||rows.some(row=>!row||typeof row!=='object'||Array.isArray(row)||typeof row.id!=='string'||typeof row.provider!=='string'))deny('INVALID_RESULT');
      mailboxes=rows.filter(row=>['microsoft_365','google_workspace'].includes(row.provider));
     }else{
      const bearer=await nativeCredential({binding,operation:entry.descriptor.operation,signal:requestSignal,deadlineMs:cutoff});
