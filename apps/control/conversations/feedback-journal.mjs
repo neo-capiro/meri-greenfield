@@ -49,7 +49,7 @@ export function createFeedbackJournal({tx,rowRun,retentionGate,now=Date.now,newI
     disposition:{status:'recorded',review:'not_reviewed',effect:'none'},
    });
    const next=bounded([...receipts,receipt],2097152);
-   const updated=(await c.query('UPDATE meri_conversations.runs SET feedback=$4,feedback_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 RETURNING feedback_sha256',[b.tenantId,b.conversationId,b.runId,next,hash(next)])).rows;check();
+   const updated=(await c.query('UPDATE meri_conversations.runs SET feedback=$4,feedback_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 RETURNING feedback_sha256',[b.tenantId,b.conversationId,b.runId,JSON.stringify(next),hash(next)])).rows;check();
    if(updated.length!==1||updated[0].feedback_sha256!==hash(next))fail('STORE_CORRUPT');
    return {receipt,replayed:false};
   },options(context.binding));
