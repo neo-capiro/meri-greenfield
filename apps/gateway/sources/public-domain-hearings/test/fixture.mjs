@@ -2,7 +2,7 @@
 import {createHash} from 'node:crypto';
 import schema from '../../../../../packages/contracts/retrieval-0.2/public-domain-hearings.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {captureHearingClientSelection} from '../request-context.mjs';
 import {createPublicDomainHearingsHandlers} from '../handler.mjs';
 
@@ -26,7 +26,7 @@ export function record(value=payload(),tenantId){
  return {domain:'hearings',recordId:sourceKey,occurredAt:null,updatedAt:at,payload:value,provenance:{adapter:'hearings',sourceTable,sourceRecordId:value.id,hearingId:value.kind==='hearing'?value.id:value.hearingId,contentHash:jsonHash(value),sourceKey,...(value.kind==='client_hearing_relevance'?{tenantId}:{})}};
 }
 export function fragmentRecord(){
- const contentHash='a'.repeat(64),sourceKey='event:synthetic-hearing',value={kind:'hearing_evidence_json_chunk',originalKind:'hearing',id:'synthetic-hearing',title:'Synthetic hearing',sourceUrl:null,contentFormat:'json_fragment',text:'x'.repeat(1999)+'\ud83d',characterStart:0,characterEnd:2000,totalCharacters:7000,chunk:1,chunkCount:4,contentHash,note:schema.$defs.HearingJsonFragment.properties.note.const};
+ const contentHash='a'.repeat(64),sourceKey='event:synthetic-hearing',value={kind:'hearing_evidence_json_chunk',originalKind:'hearing',id:'synthetic-hearing',title:'Synthetic hearing',sourceUrl:null,contentFormat:'json_fragment',text:'x'.repeat(1998)+'😀',characterStart:0,characterEnd:2000,totalCharacters:7000,chunk:1,chunkCount:4,contentHash,note:schema.$defs.HearingJsonFragment.properties.note.const};
  return {domain:'hearings',recordId:`hearing:${createHash('sha256').update(sourceKey).digest('hex').slice(0,16)}:${contentHash.slice(0,12)}:0`,occurredAt:null,updatedAt:at,payload:value,provenance:{adapter:'hearings',sourceTable:'committee_hearing',sourceRecordId:value.id,hearingId:value.id,contentHash,sourceKey}};
 }
 export function storedPage(records=[],{sourceStatus='degraded',hasMore=false,requestedEntityCount=0,stopReason}={}){
@@ -47,6 +47,6 @@ export function storedCase(selected=id,options={}){
  const page=options.page??storedPage([record(payload(),authority.binding.tenantId)],{requestedEntityCount:resolution?1:0});
  const transport={...scene.transport,async fetchImpl(url,configuration){wire.push({url,options:configuration,body:JSON.parse(configuration.body)});const value=structuredClone(state.page??page);state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);}};
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});}};
- const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+ const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  return {...scene,family:'public-domain-hearings',operation,contract,arguments:request,normalizationContext,transport,page,call,visibleClientIds,nativeReadContextPorts,handler:(changes={})=>createPublicDomainHearingsHandlers({...transport,now,...changes},[operation])[0].execute};
 }
