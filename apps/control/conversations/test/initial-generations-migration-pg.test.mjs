@@ -26,10 +26,32 @@ async function database(t){
  if(host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||control!=='meri_inspection_final')throw Error('NEW_OWNED_GENERATIONS_DATABASE_REQUIRED');
  const admin=new pg.Client({host,database:control,user:'postgres'});await admin.connect();
  assert.equal((await admin.query("SELECT current_setting('listen_addresses') AS listen")).rows[0].listen,'','Unix socket only');
- const name='meri_c12_'+randomUUID().replaceAll('-','');await admin.query(`CREATE DATABASE ${name}`);
- const pools=[];t.after(async()=>{for(const p of pools)await p.end().catch(()=>{});await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.end();});
- const pool=()=>{const p=new pg.Pool({host,database:name,user:'postgres',max:4});pools.push(p);return p;};
- const main=pool();for(const file of manifest)await main.query(await readFile(new URL(file,migrations),'utf8'));
+ const suffix=randomUUID().replaceAll('-',''),name='meri_c12_'+suffix,role='meri_c12_app_'+suffix;
+ const pools=[];t.after(async()=>{for(const p of pools)await p.end().catch(()=>{});try{await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.query(`DROP ROLE IF EXISTS ${role}`);}finally{await admin.end();}});
+ await admin.query(`CREATE DATABASE ${name}`);
+ await admin.query(`CREATE ROLE ${role} LOGIN NOSUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS`);
+ // Privileged provisioning/migration remains separate from every candidate operation.
+ const main=new pg.Pool({host,database:name,user:'postgres',max:4});pools.push(main);
+ for(const file of manifest)await main.query(await readFile(new URL(file,migrations),'utf8'));
+ await main.query(`REVOKE CREATE ON SCHEMA public FROM PUBLIC; GRANT CONNECT ON DATABASE ${name} TO ${role};
+  GRANT USAGE ON SCHEMA meri_conversations TO ${role};
+  GRANT SELECT,INSERT,UPDATE ON meri_conversations.conversations,meri_conversations.runs,meri_conversations.events,
+   meri_conversations.initial_inputs,meri_conversations.initial_run_bindings,meri_conversations.next_runs TO ${role};
+  GRANT SELECT ON meri_conversations.native_allocations TO ${role}`);
+ const pool=()=>{const p=new pg.Pool({host,database:name,user:role,max:4});pools.push(p);return {async connect(){
+  const client=await p.connect();try{
+   const r=(await client.query(`SELECT current_user AS actor,session_user AS login,current_database() AS db,
+    rolsuper,rolinherit,rolcreatedb,rolcreaterole,rolreplication,rolbypassrls,
+    EXISTS(SELECT 1 FROM pg_auth_members WHERE member=ordinary_role.oid) AS membership,
+    EXISTS(SELECT 1 FROM pg_class WHERE relnamespace='meri_conversations'::regnamespace AND relowner=ordinary_role.oid) AS owns_tables
+    FROM pg_roles ordinary_role WHERE rolname=current_user`)).rows[0];
+   assert.deepEqual(r,{actor:role,login:role,db:name,rolsuper:false,rolinherit:false,rolcreatedb:false,rolcreaterole:false,rolreplication:false,rolbypassrls:false,membership:false,owns_tables:false});
+   return client;
+  }catch(error){client.release(error);throw error;}
+ }};};
+ const ordinary=await pool().connect();try{
+  await assert.rejects(ordinary.query('ALTER TABLE meri_conversations.initial_run_bindings ADD COLUMN forbidden_fixture_ddl text'),{code:'42501'});
+ }finally{ordinary.release();}
  return {pool,main};
 }
 /** `rows` conversations with a generation-1 original (0017 shape); every other one also has a RESERVED original input (0016 shape). */
@@ -56,13 +78,13 @@ async function populate(main,rows){
 async function migrate(main){const sql=await readFile(new URL('0020_initial_generations.sql',migrations),'utf8'),started=performance.now();await main.query(sql);return Math.round(performance.now()-started);}
 
 for(const rows of [1000,100000])test(`0020 applies up on populated 0016/0017 tables (${rows} originals): rows kept as generation 1, triggers intact`,async t=>{
- const {main}=await database(t),before=await populate(main,rows),ms=await migrate(main);
+ const {pool,main}=await database(t),before=await populate(main,rows),ms=await migrate(main);
  t.diagnostic(`0020 migration transaction elapsed (upper bound on PK-swap lock duration) on ${before.bindings} bindings + ${before.inputs} inputs: ${ms} ms`);
  const after=(await main.query('SELECT count(*)::int AS n,min(generation) AS lo,max(generation) AS hi FROM meri_conversations.initial_run_bindings')).rows[0];
  assert.deepEqual(after,{n:before.bindings,lo:1,hi:1});assert.equal((await main.query('SELECT count(*)::int AS n FROM meri_conversations.initial_inputs')).rows[0].n,before.inputs);
  const sample=(await main.query('SELECT record,record_sha256 FROM meri_conversations.initial_run_bindings LIMIT 1')).rows[0];
  assert.equal(hash(sample.record),sample.record_sha256,'the migration preserved valid canonical record bytes');
- assert.deepEqual(await createInitialRunBindingJournal({pool:main}).read({binding:sample.record.binding},check),sample.record);
+ assert.deepEqual(await createInitialRunBindingJournal({pool:pool()}).read({binding:sample.record.binding},check),sample.record);
  const keys=(await main.query(`SELECT conrelid::regclass::text AS t,contype,pg_get_constraintdef(oid) AS d FROM pg_constraint WHERE conrelid IN ('meri_conversations.initial_run_bindings'::regclass,'meri_conversations.initial_inputs'::regclass) AND contype IN ('p','u') ORDER BY 1,2,3`)).rows;
  assert.deepEqual(keys.map(k=>`${k.t} ${k.contype} ${k.d}`),[
   'meri_conversations.initial_inputs p PRIMARY KEY (tenant_id, conversation_id, run_id)','meri_conversations.initial_inputs u UNIQUE (request_id, tenant_id, run_id)',
@@ -139,11 +161,11 @@ function heldPool(pool,lockKey){let resume,entered,requested,armed=true;const he
 for(const winner of ['accept','rebind'])test(`original input acceptance and supersession serialize across connections (${winner} holds the lock first)`,async t=>{
  const {pool,main}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
  const proposal={principal,conversationId:randomUUID(),selectedClientId,policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000};
- const original=(await createInitialRunBindingJournal({pool:main,now:()=>now}).claim(proposal,check)).record,binding=original.binding;
+ const original=(await createInitialRunBindingJournal({pool:pool(),now:()=>now}).claim(proposal,check)).record,binding=original.binding;
  const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision:proposal.policyRevision}],createdAt=new Date(now).toISOString();
  const input={requestId:randomUUID(),prompt:'accepted exactly once'},request={...input,skill:null,window:null,windowRequest:null};
  const facts=await prepareOriginalInputFacts({binding,scopes,versions,selectedClientId,input,request,allocatedAtMs:now,expiresAtMs:now+60000});
- await createPostgresConversationStore({pool:main,now:()=>now}).initialInputs.claim(facts,check);
+ await createPostgresConversationStore({pool:pool(),now:()=>now}).initialInputs.claim(facts,check);
  const acceptance={conversation:{conversationId:binding.conversationId,owner:principal,scopes,createdAt,policyRevision:proposal.policyRevision},
   run:{binding,state:'queued',scopes,versions,createdAt,policyRevision:proposal.policyRevision},request,selectedClientId,
   event:{contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}};
@@ -164,7 +186,7 @@ test('0020 preserves one request owner across concurrent legacy INSERT and curre
  const {pool,main}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
  const input={requestId:randomUUID(),prompt:'one request owner'},request={...input,skill:null,window:null,windowRequest:null},facts=[];
  for(let i=0;i<2;i++){
-  const original=(await createInitialRunBindingJournal({pool:main,now:()=>now}).claim({principal,conversationId:randomUUID(),selectedClientId,
+  const original=(await createInitialRunBindingJournal({pool:pool(),now:()=>now}).claim({principal,conversationId:randomUUID(),selectedClientId,
    policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000},check)).record;
   facts.push(await prepareOriginalInputFacts({binding:original.binding,scopes:[{kind:'client',tenantId:principal.tenantId,resourceId:selectedClientId,policyRevision:'policy1'}],
    versions,selectedClientId,input,request,allocatedAtMs:now,expiresAtMs:now+60000}));

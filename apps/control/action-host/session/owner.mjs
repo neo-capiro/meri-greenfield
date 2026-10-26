@@ -40,10 +40,14 @@ export function createSessionRefusalDiagnostics({write=line=>process.stderr.writ
 }
 // One minimal issuance wire owner, reused at construction and HTTP release.
 export function assertActionSessionReceipt(value,at){
- const v=data(value);own(v,['credential','expiresAtMs','context']);own(v.context,['tenantId','actorId','conversationId','runId','selectedClientId']);
+ const v=data(value);own(v,['credential','expiresAtMs','context'],['initialRunRebind']);own(v.context,['tenantId','actorId','conversationId','runId','selectedClientId']);
  if(!validSessionReceipt(v,at,{general:true})||Buffer.byteLength(JSON.stringify(v))>4096)deny();
+ if(v.initialRunRebind){const {sourceRunId,targetRunId}=v.initialRunRebind;
+  if(targetRunId!==v.context.runId||sourceRunId===targetRunId)deny();
+ }
  return v;
 }
+const publicContext=(binding,selectedClientId)=>({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,selectedClientId});
 export function createActionSessionOwner(configuration){
  const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,withAuthority,refusals=createSessionRefusalDiagnostics()}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext','membership','withAuthority','refusals']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
@@ -124,20 +128,20 @@ export function createActionSessionOwner(configuration){
   // The initial owner's atomic exact-source supersession, already validated by the adapter against its own transaction.
   // It may accompany only a FRESH issuance whose named run is that proof's source; a recheck never rebinds.
   const proof=current.rebind;
-  if(proof!==undefined){if(record)deny();own(proof,['source','target']);validateShape('RunBinding',proof.source);if(!same(proof.target,current.binding)||proof.source.tenantId!==current.binding.tenantId||proof.source.actorId!==current.binding.actorId||proof.source.conversationId!==current.binding.conversationId||proof.source.runId===current.binding.runId)deny();}
+  if(proof!==undefined){if(record)deny();own(proof,['source','target']);validateShape('RunBinding',proof.source);if(!same(proof.target,current.binding)||proof.source.tenantId!==current.binding.tenantId||proof.source.actorId!==current.binding.actorId||proof.source.conversationId!==current.binding.conversationId||proof.source.runId===current.binding.runId||selected.runId!==undefined&&selected.runId!==proof.source.runId)deny();}
   for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==identity.principal.tenantId)deny();}
   try{assertNativeConversationScope(current);}catch{deny();}
   const provenRun=key=>key==='runId'&&proof!==undefined&&!record&&selected.runId===proof.source.runId&&same(proof.target,current.binding);
   for(const key of ['conversationId','runId'])if(selected[key]!==undefined&&selected[key]!==current.binding[key]&&!provenRun(key))deny();if(selected.clientId!==undefined&&selected.clientId!==current.selectedClientId)deny();
   progress.step='membership-recheck';if(member)await recheckMember(membershipPrincipal,nativeCredential,identity,t,current.selectedClientId,record);
   progress.step='context';const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();progress.step='release';
-  const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{})};
+  const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{}),...(proof&&selected.runId!==undefined?{initialRunRebind:{sourceRunId:proof.source.runId,targetRunId:proof.target.runId}}:{})};
  }
  async function issue(value,{relayEligible,withCurrent}){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal),progress={step:'capacity'};let record;
   try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs,progress);
    progress.step='capacity';active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');progress.step='release';const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,relayEligible,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
    credentials.set(record,credential);
-   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);
+   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:publicContext(b,record.context.selectedClientId),...(record.initialRunRebind?{initialRunRebind:record.initialRunRebind}:{})},active(t.signal));release(record,t);
    return withCurrent?data({receipt:out,current:{binding:b,scopes:record.context.scopes,selectedClientId:record.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:record.expiresAtMs}}):out;
   }catch(error){if(record)remove(record);if(!t.isRequestCancellation(error))refusals(progress.step,error);if(errors.has(error))throw error;
    // An owner that did not answer refuses only this issuance, as it does a recheck. The issuance route still answers 401

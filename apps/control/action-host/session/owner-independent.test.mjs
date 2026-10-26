@@ -59,6 +59,8 @@ test('independent verified initial supersession pins the target and a recheck ne
   const out=await f.issue({hints:{clientId:f.clientId,runId:source.runId}});
   assert.equal(out.context.runId,target.runId);
   assert.equal(out.context.conversationId,source.conversationId);
+  assert.deepEqual(out.initialRunRebind,{sourceRunId:source.runId,targetRunId:target.runId});
+  await assert.rejects(f.issue({hints:{clientId:f.clientId,runId:target.runId}}),refusedCode,'an unsolicited source transition cannot accompany exact target issuance');
   await assert.rejects(f.owner.authenticateSession({credential:out.credential}),refusedCode);
   assert.equal(f.owner.status().sessions,0,'a recheck that reports a supersession refuses and removes the session');
  }finally{f.owner.close();}});

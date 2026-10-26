@@ -49,7 +49,7 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
   // A verified rebind has already changed the binding under the journal's transaction: the target, not the named
   // source, is what this fresh issuance must pin. Every other call keeps the caller's exact selector.
   const {record,proof}=await original(principal,conversationId,selectedClientId,signal,runId);
-  const selected=await select(record,principal,conversationId,signal,proof?{}:runId===undefined?{}:{runId},recheckActive);
+  const selected=await select(record,principal,conversationId,signal,proof?{runId:proof.target.runId}:runId===undefined?{}:{runId},recheckActive);
   const value=fact(selected);
   return proof?JSON.stringify({...JSON.parse(value),rebind:proof}):value;
  },now,limits,enabled:true});
