@@ -65,3 +65,29 @@ test('missing explicit client selection, malformed bytes, byte excess and extra 
  assert.throws(()=>receive(bytes(receipt),new Uint8Array(2049),1000));
  void selectedClientId;
 });
+
+for(const selectedClientId of [null,id(3)])test(`fresh exact initial rebind is received only for its full source and target (${selectedClientId===null?'General':'client'})`,()=>{
+ const source={...context,selectedClientId},target={...source,runId:id(8)};
+ const value={...receipt,context:target,initialRunRebind:{sourceRunId:source.runId,targetRunId:target.runId}},expected={...source,scopeKind:selectedClientId===null?'general':'client'};
+ assert.deepEqual(receive(bytes(value),bytes(expected),1000),assertActionSessionReceipt(value,1000));
+ const {initialRunRebind,...ordinary}=value;
+ assert.throws(()=>receive(bytes(ordinary),bytes(expected),1000),'ordinary mismatches remain exact');
+ assert.deepEqual(receive(bytes(ordinary),bytes({...expected,runId:target.runId}),1000),ordinary);
+ for(const key of ['tenantId','actorId','conversationId','runId','selectedClientId']){
+  const missing={...expected};delete missing[key];assert.throws(()=>receive(bytes(value),bytes(missing),1000));
+ }
+ for(const changed of [
+  {...value,initialRunRebind:{sourceRunId:id(9),targetRunId:target.runId}},
+  {...value,initialRunRebind:{sourceRunId:source.runId,targetRunId:id(9)}},
+  {...value,initialRunRebind:{sourceRunId:target.runId,targetRunId:target.runId}},
+  ...['tenantId','actorId','conversationId','selectedClientId'].map(key=>({...value,context:{...target,[key]:key.endsWith('ClientId')?id(9):key==='conversationId'?id(9):'foreign'}})),
+  {...value,initialRunRebind:{...value.initialRunRebind,accepted:true}},
+  {...value,initialRunRebind:{sourceRunId:source.runId}},
+ ])assert.throws(()=>receive(bytes(changed),bytes(expected),1000));
+ assert.throws(()=>receive(bytes(value),bytes({...expected,runId:target.runId}),1000),'rebind receipt cannot stand in for an ordinary target recheck');
+ assert.throws(()=>receive(bytes(value),bytes({...expected,recovery:true}),1000),'no client recovery hint');
+ const longest={...source,tenantId:'界'.repeat(256),actorId:'界'.repeat(256)};
+ const bounded={...value,context:{...longest,runId:target.runId}};
+ assert.deepEqual(receive(bytes(bounded),bytes({...longest,scopeKind:expected.scopeKind}),1000),assertActionSessionReceipt(bounded,1000));
+ void initialRunRebind;
+});

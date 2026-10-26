@@ -10,12 +10,12 @@ const principal={tenantId:binding.tenantId,actorId:binding.actorId};
 const identity={principal,identityRevision:'native-1',checkedAtMs:at,expiresAtMs:at+1000};
 const runFact=()=>JSON.stringify({binding:next,policyRevision,checkedAtMs:at,deadlineMs:at+800});
 
-function fixture({denyContext=false,rotateContext=false}={}){
+function fixture({denyContext=false,rotateContext=false,admit=null}={}){
  const order=[],admitted=[];let contextReads=0;
  const adapters=createApplicationContextAdapters({now:()=>at,limits:{maxRequestMs:500,maxFactBytes:65536},
   client:{async readIdentity(){order.push('identity');return identity;},async readContext({conversationId,clientId:requested,identitySha256}){order.push('context');contextReads++;if(denyContext)throw Error('Core denied');return {...identity,identitySha256,conversationId,selectedClientId:requested,contextRevision:rotateContext&&contextReads===2?'changed':'stable'};}},
   async currentRun(request){order.push('current');assert.deepEqual(request,next);return runFact();},
-  async admitInitialConversation(request){order.push('admit');admitted.push(request);assert.deepEqual(request.principal,principal);assert.equal(request.conversationId,candidate);assert.equal(request.selectedClientId,clientId);return runFact();}});
+  async admitInitialConversation(request){order.push('admit');admitted.push(request);assert.deepEqual(request.principal,principal);assert.equal(request.conversationId,candidate);assert.equal(request.selectedClientId,clientId);return admit?admit(request):runFact();}});
  const resolve=async(hints={conversationId:candidate,clientId})=>{const proven=await adapters.verifyIdentity({credential:'native-bearer',deadlineMs:at+500});return adapters.resolveContext({identityCredential:'native-bearer',identity:proven,identitySha256:canonicalSha256(proven),hints,deadlineMs:at+500});};
  return {order,admitted,resolve};
 }
@@ -30,4 +30,21 @@ test('run hint cannot replace the admitted binding',async()=>{const f=fixture();
 test('an exact run hint reaches the trusted admission only as a constraint; no hint passes none',async()=>{
  const hinted=fixture();assert.deepEqual((await hinted.resolve({conversationId:candidate,clientId,runId:next.runId})).binding,next);assert.equal(hinted.admitted[0].runId,next.runId);
  const plain=fixture();await plain.resolve();assert.equal(Object.hasOwn(plain.admitted[0],'runId'),false);
+});
+// C1: the internal atomic supersession result is the only thing that lets a hinted runId differ from the binding
+// this admission returns. Every other mismatch, and every malformed proof, still refuses at the same boundary.
+const source={...next,runId:id(714),attemptId:id(715),workerId:id(716)};
+const withProof=proof=>async()=>JSON.stringify({binding:next,policyRevision,checkedAtMs:at,deadlineMs:at+800,rebind:proof});
+test('a verified exact-source supersession is carried with the fact and pins the returned binding',async()=>{
+ const f=fixture({admit:withProof({source,target:next})});
+ const result=await f.resolve({conversationId:candidate,clientId,runId:source.runId});
+ assert.deepEqual(result.binding,next);assert.deepEqual(result.rebind,{source,target:next});
+ assert.equal(f.admitted[0].runId,source.runId,'the exact source still reaches the owner as a constraint');
+ assert.deepEqual(f.order,['identity','context','admit','current','context','current']);
+});
+test('a mismatched, forged or foreign internal supersession still refuses',async()=>{
+ const noProof=fixture();await assert.rejects(noProof.resolve({conversationId:candidate,clientId,runId:source.runId}));assert.deepEqual(noProof.order,['identity','context','admit']);
+ const forged=fixture({admit:withProof({source,target:{...next,runId:id(799)}})});await assert.rejects(forged.resolve({conversationId:candidate,clientId,runId:source.runId}));assert.deepEqual(forged.order,['identity','context','admit']);
+ const foreign=fixture({admit:withProof({source:{...source,conversationId:id(701)},target:next})});await assert.rejects(foreign.resolve({conversationId:candidate,clientId,runId:source.runId}));assert.deepEqual(foreign.order,['identity','context','admit']);
+ const selfProof=fixture({admit:withProof({source:next,target:next})});await assert.rejects(selfProof.resolve({conversationId:candidate,clientId,runId:source.runId}));assert.deepEqual(selfProof.order,['identity','context','admit']);
 });

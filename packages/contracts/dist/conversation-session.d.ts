@@ -29,6 +29,10 @@ export interface ConversationSessionReceipt {
     runId: string;
     selectedClientId: string | null;
   };
+  initialRunRebind?: {
+    sourceRunId: string;
+    targetRunId: string;
+  };
 }
 
 export declare const conversationSessionVersion:'1.0.0';

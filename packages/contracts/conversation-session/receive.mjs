@@ -10,6 +10,14 @@ const refuse=()=>{throw new ConversationSessionResponseError();};
 export function receiveConversationSessionReceipt(utf8Bytes,expectedContextBytes,at){try{
  const receipt=parseBytes(utf8Bytes,4096),expected=parseBytes(expectedContextBytes,2048);
  if(!validSessionReceipt(receipt,at,{general:true})||!validateExpected(expected))refuse();
- for(const key of ['tenantId','actorId','conversationId','runId','selectedClientId'])if(Object.hasOwn(expected,key)&&receipt.context[key]!==expected[key])refuse();
+ const keys=['tenantId','actorId','conversationId','runId','selectedClientId'],rebind=receipt.initialRunRebind;
+ if(rebind){
+  // The authenticated response binds this exact requested source to this exact admitted target.
+  // No missing source selector, other principal/scope, or ordinary mismatch can use this exception.
+  if(keys.some(key=>!Object.hasOwn(expected,key))
+   ||keys.filter(key=>key!=='runId').some(key=>expected[key]!==receipt.context[key])
+   ||expected.runId!==rebind.sourceRunId||receipt.context.runId!==rebind.targetRunId
+   ||rebind.sourceRunId===rebind.targetRunId)refuse();
+ }else for(const key of keys)if(Object.hasOwn(expected,key)&&receipt.context[key]!==expected[key])refuse();
  return receipt;
  }catch{refuse();}}

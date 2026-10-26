@@ -7,9 +7,9 @@ var __commonJS = (cb, mod) => function __require() {
   }
 };
 
-// node_modules/ajv/dist/runtime/ucs2length.js
+// ../../node_modules/ajv/dist/runtime/ucs2length.js
 var require_ucs2length = __commonJS({
-  "node_modules/ajv/dist/runtime/ucs2length.js"(exports) {
+  "../../node_modules/ajv/dist/runtime/ucs2length.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function ucs2length(str) {
@@ -57,7 +57,7 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
       } else {
         const _errs1 = errors;
         for (const key0 in data) {
-          if (!(key0 === "credential" || key0 === "expiresAtMs" || key0 === "context")) {
+          if (!(key0 === "credential" || key0 === "expiresAtMs" || key0 === "context" || key0 === "initialRunRebind")) {
             validate23.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
             return false;
             break;
@@ -292,6 +292,76 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                 var valid0 = _errs6 === errors;
               } else {
                 var valid0 = true;
+              }
+              if (valid0) {
+                if (data.initialRunRebind !== void 0) {
+                  let data8 = data.initialRunRebind;
+                  const _errs23 = errors;
+                  if (errors === _errs23) {
+                    if (data8 && typeof data8 == "object" && !Array.isArray(data8)) {
+                      let missing2;
+                      if (data8.sourceRunId === void 0 && (missing2 = "sourceRunId") || data8.targetRunId === void 0 && (missing2 = "targetRunId")) {
+                        validate23.errors = [{ instancePath: instancePath + "/initialRunRebind", schemaPath: "#/properties/initialRunRebind/required", keyword: "required", params: { missingProperty: missing2 }, message: "must have required property '" + missing2 + "'" }];
+                        return false;
+                      } else {
+                        const _errs25 = errors;
+                        for (const key2 in data8) {
+                          if (!(key2 === "sourceRunId" || key2 === "targetRunId")) {
+                            validate23.errors = [{ instancePath: instancePath + "/initialRunRebind", schemaPath: "#/properties/initialRunRebind/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key2 }, message: "must NOT have additional properties" }];
+                            return false;
+                            break;
+                          }
+                        }
+                        if (_errs25 === errors) {
+                          if (data8.sourceRunId !== void 0) {
+                            let data9 = data8.sourceRunId;
+                            const _errs26 = errors;
+                            if (errors === _errs26) {
+                              if (typeof data9 === "string") {
+                                if (!pattern5.test(data9)) {
+                                  validate23.errors = [{ instancePath: instancePath + "/initialRunRebind/sourceRunId", schemaPath: "#/properties/initialRunRebind/properties/sourceRunId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
+                                  return false;
+                                }
+                              } else {
+                                validate23.errors = [{ instancePath: instancePath + "/initialRunRebind/sourceRunId", schemaPath: "#/properties/initialRunRebind/properties/sourceRunId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                return false;
+                              }
+                            }
+                            var valid3 = _errs26 === errors;
+                          } else {
+                            var valid3 = true;
+                          }
+                          if (valid3) {
+                            if (data8.targetRunId !== void 0) {
+                              let data10 = data8.targetRunId;
+                              const _errs28 = errors;
+                              if (errors === _errs28) {
+                                if (typeof data10 === "string") {
+                                  if (!pattern5.test(data10)) {
+                                    validate23.errors = [{ instancePath: instancePath + "/initialRunRebind/targetRunId", schemaPath: "#/properties/initialRunRebind/properties/targetRunId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
+                                    return false;
+                                  }
+                                } else {
+                                  validate23.errors = [{ instancePath: instancePath + "/initialRunRebind/targetRunId", schemaPath: "#/properties/initialRunRebind/properties/targetRunId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                  return false;
+                                }
+                              }
+                              var valid3 = _errs28 === errors;
+                            } else {
+                              var valid3 = true;
+                            }
+                          }
+                        }
+                      }
+                    } else {
+                      validate23.errors = [{ instancePath: instancePath + "/initialRunRebind", schemaPath: "#/properties/initialRunRebind/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                      return false;
+                    }
+                  }
+                  var valid0 = _errs23 === errors;
+                } else {
+                  var valid0 = true;
+                }
               }
             }
           }

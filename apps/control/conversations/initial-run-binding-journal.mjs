@@ -16,8 +16,8 @@ function assertRecord(raw){
  return record;
 }
 function proposed(raw,at){
- const v=own(bounded(raw),['principal','conversationId','selectedClientId','policyRevision','versions','configurationSha256','proposedExpiresAtMs']);
- const principal=own(v.principal,['tenantId','actorId']);uuid(v.conversationId);if(v.selectedClientId!==null)uuid(v.selectedClientId);
+ const v=own(bounded(raw),['principal','conversationId','selectedClientId','policyRevision','versions','configurationSha256','proposedExpiresAtMs'],['runId']);
+ const principal=own(v.principal,['tenantId','actorId']);uuid(v.conversationId);if(v.selectedClientId!==null)uuid(v.selectedClientId);if(v.runId!==undefined)uuid(v.runId);
  if(!text(principal.tenantId)||!text(principal.actorId)||!text(v.policyRevision)||!digest(v.configurationSha256)||!instant(v.proposedExpiresAtMs)||v.proposedExpiresAtMs<=at)refuse('INITIAL_RUN_BINDING_INPUT_REFUSED');
  validateShape('RuntimeVersions',v.versions);return {...v,principal};
 }
@@ -115,13 +115,18 @@ export function createInitialRunBindingJournal({pool,now=Date.now,newId=randomUU
   const at=clock(),v=proposed(raw,at),key={tenantId:v.principal.tenantId,conversationId:v.conversationId};
   return transaction(key,check,async client=>{
    const latest=await row(client,key,check);
-   if(!latest){await vacant(client,{...v.principal,conversationId:v.conversationId},check);return {record:await insert(client,key,v,at,1,check),created:true,superseded:false};}
+   // An exact-source selector names the one original this call may supersede. It cannot create a first generation:
+   // a conversation with no stored original has no source to prove, so the ordinary claim path owns that case.
+   if(!latest){if(v.runId!==undefined)refuse('INITIAL_RUN_BINDING_CONFLICT');await vacant(client,{...v.principal,conversationId:v.conversationId},check);return {record:await insert(client,key,v,at,1,check),created:true,superseded:false};}
    const old=latest.record;if(old.binding.actorId!==v.principal.actorId||old.selectedClientId!==v.selectedClientId||old.policyRevision!==v.policyRevision)refuse('INITIAL_RUN_BINDING_CONFLICT');
+   if(v.runId!==undefined&&v.runId!==old.binding.runId)refuse('INITIAL_RUN_BINDING_CONFLICT');
    const current=clock();if(current<at||current<old.createdAtMs)refuse('INITIAL_RUN_BINDING_CLOCK');
    const live=current<old.expiresAtMs,matches=matchesProposal(old,v),begun=await started(client,old,check);
    if(matches&&live)return {record:old,created:false,superseded:false};
    if(begun)refuse(matches?'INITIAL_RUN_BINDING_EXPIRED':'INITIAL_RUN_BINDING_CONFLICT');
-   return {record:await insert(client,key,v,at,latest.generation+1,check),created:true,superseded:true};
+   // The atomic result carries the exact superseded original so the caller can prove the source-to-target change
+   // without re-reading the table or trusting a client-supplied fact. Existing matching/live results keep their shape.
+   return {record:await insert(client,key,v,at,latest.generation+1,check),created:true,superseded:true,source:old.binding};
   });
  }
  async function read(raw,check){

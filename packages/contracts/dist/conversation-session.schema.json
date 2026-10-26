@@ -55,6 +55,24 @@
             "selectedClientId"
           ],
           "additionalProperties": false
+        },
+        "initialRunRebind": {
+          "type": "object",
+          "properties": {
+            "sourceRunId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "targetRunId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "sourceRunId",
+            "targetRunId"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

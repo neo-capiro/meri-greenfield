@@ -25,12 +25,47 @@ async function database(t){
  const host=process.env.MERI_INSPECTION_TEST_SOCKET,control=process.env.MERI_INSPECTION_TEST_DATABASE;
  if(host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||control!=='meri_inspection_final')throw Error('NEW_OWNED_GENERATIONS_DATABASE_REQUIRED');
  const admin=new pg.Client({host,database:control,user:'postgres'});await admin.connect();
+ const suffix=randomUUID().replaceAll('-',''),name='meri_c12_'+suffix,role='meri_c12_app_'+suffix;
+ const pools=[],closed=[];let allocated=false;
+ // pg-pool can resolve end() before its removed clients finish closing their sockets.
+ const trackPool=p=>{p.on('connect',client=>closed.push(new Promise(resolve=>client.once('end',resolve))));pools.push(p);return p;};
+ t.after(async()=>{try{for(const p of pools)await p.end();await Promise.all(closed);if(allocated){await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.query(`DROP ROLE IF EXISTS ${role}`);}}finally{await admin.end();}});
  assert.equal((await admin.query("SELECT current_setting('listen_addresses') AS listen")).rows[0].listen,'','Unix socket only');
- const name='meri_c12_'+randomUUID().replaceAll('-','');await admin.query(`CREATE DATABASE ${name}`);
- const pools=[];t.after(async()=>{for(const p of pools)await p.end().catch(()=>{});await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.end();});
- const pool=()=>{const p=new pg.Pool({host,database:name,user:'postgres',max:4});pools.push(p);return p;};
- const main=pool();for(const file of manifest)await main.query(await readFile(new URL(file,migrations),'utf8'));
- return {pool,main};
+ allocated=true;
+ await admin.query(`CREATE DATABASE ${name}`);
+ await admin.query(`CREATE ROLE ${role} LOGIN NOSUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS`);
+ // Privileged provisioning/migration remains separate from every candidate operation.
+ const main=trackPool(new pg.Pool({host,database:name,user:'postgres',max:4}));
+ for(const file of manifest)await main.query(await readFile(new URL(file,migrations),'utf8'));
+ await main.query(`REVOKE CREATE ON SCHEMA public FROM PUBLIC; GRANT CONNECT ON DATABASE ${name} TO ${role};
+  GRANT USAGE ON SCHEMA meri_conversations TO ${role};
+  GRANT SELECT,INSERT,UPDATE ON meri_conversations.conversations,meri_conversations.runs,meri_conversations.events,
+   meri_conversations.initial_inputs,meri_conversations.initial_run_bindings,meri_conversations.next_runs TO ${role};
+  GRANT SELECT ON meri_conversations.native_allocations TO ${role}`);
+ const pool=()=>{const p=trackPool(new pg.Pool({host,database:name,user:role,max:4}));return {async connect(){
+  const client=await p.connect();try{
+   const r=(await client.query(`SELECT current_user AS actor,session_user AS login,current_database() AS db,
+    rolsuper,rolinherit,rolcreatedb,rolcreaterole,rolreplication,rolbypassrls,
+    EXISTS(SELECT 1 FROM pg_auth_members WHERE member=ordinary_role.oid) AS membership,
+    EXISTS(SELECT 1 FROM pg_class WHERE relnamespace='meri_conversations'::regnamespace AND relowner=ordinary_role.oid) AS owns_tables
+    FROM pg_roles ordinary_role WHERE rolname=current_user`)).rows[0];
+   assert.deepEqual(r,{actor:role,login:role,db:name,rolsuper:false,rolinherit:false,rolcreatedb:false,rolcreaterole:false,rolreplication:false,rolbypassrls:false,membership:false,owns_tables:false});
+   return client;
+  }catch(error){client.release(error);throw error;}
+ }};};
+ const ordinary=await pool().connect();try{
+  await assert.rejects(ordinary.query('ALTER TABLE meri_conversations.initial_run_bindings ADD COLUMN forbidden_fixture_ddl text'),{code:'42501'});
+ }finally{ordinary.release();}
+ return {pool,main,role};
+}
+/** Only the two actual input-acceptance cases need current model-policy dependencies; never part of 0020 timing. */
+async function prepareAcceptancePolicy(main,role,principal){
+ for(const path of ['../../../gateway/budget/migrations/0001_product_budget.sql','../../../gateway/budget/migrations/0002_tenant_budgets.sql',
+  '../../settings/migrations/0001_settings.sql','../migrations/0021_sdk_run_usage.sql'])await main.query(await readFile(new URL(path,import.meta.url),'utf8'));
+ // Same synthetic tenant-cap seed convention as store-pg.test.mjs; no historical budget reservations are seeded.
+ await main.query('INSERT INTO meri_settings.tenant_settings(tenant_id,revision,document,document_sha256,updated_at,updated_by,monthly_cap_micro_usd) VALUES($1,1,$2,$3,clock_timestamp(),$4,100000000)',[principal.tenantId,{},hash({}),principal.actorId]);
+ // Canonical 0022 policy-read columns, adapted only to this fixture's generated ordinary role.
+ await main.query(`GRANT USAGE ON SCHEMA meri_settings TO ${role}; GRANT SELECT (tenant_id,monthly_cap_micro_usd,sdk_max_turns,sdk_max_budget_micro_usd) ON meri_settings.tenant_settings TO ${role}`);
 }
 /** `rows` conversations with a generation-1 original (0017 shape); every other one also has a RESERVED original input (0016 shape). */
 async function populate(main,rows){
@@ -56,13 +91,13 @@ async function populate(main,rows){
 async function migrate(main){const sql=await readFile(new URL('0020_initial_generations.sql',migrations),'utf8'),started=performance.now();await main.query(sql);return Math.round(performance.now()-started);}
 
 for(const rows of [1000,100000])test(`0020 applies up on populated 0016/0017 tables (${rows} originals): rows kept as generation 1, triggers intact`,async t=>{
- const {main}=await database(t),before=await populate(main,rows),ms=await migrate(main);
+ const {pool,main}=await database(t),before=await populate(main,rows),ms=await migrate(main);
  t.diagnostic(`0020 migration transaction elapsed (upper bound on PK-swap lock duration) on ${before.bindings} bindings + ${before.inputs} inputs: ${ms} ms`);
  const after=(await main.query('SELECT count(*)::int AS n,min(generation) AS lo,max(generation) AS hi FROM meri_conversations.initial_run_bindings')).rows[0];
  assert.deepEqual(after,{n:before.bindings,lo:1,hi:1});assert.equal((await main.query('SELECT count(*)::int AS n FROM meri_conversations.initial_inputs')).rows[0].n,before.inputs);
  const sample=(await main.query('SELECT record,record_sha256 FROM meri_conversations.initial_run_bindings LIMIT 1')).rows[0];
  assert.equal(hash(sample.record),sample.record_sha256,'the migration preserved valid canonical record bytes');
- assert.deepEqual(await createInitialRunBindingJournal({pool:main}).read({binding:sample.record.binding},check),sample.record);
+ assert.deepEqual(await createInitialRunBindingJournal({pool:pool()}).read({binding:sample.record.binding},check),sample.record);
  const keys=(await main.query(`SELECT conrelid::regclass::text AS t,contype,pg_get_constraintdef(oid) AS d FROM pg_constraint WHERE conrelid IN ('meri_conversations.initial_run_bindings'::regclass,'meri_conversations.initial_inputs'::regclass) AND contype IN ('p','u') ORDER BY 1,2,3`)).rows;
  assert.deepEqual(keys.map(k=>`${k.t} ${k.contype} ${k.d}`),[
   'meri_conversations.initial_inputs p PRIMARY KEY (tenant_id, conversation_id, run_id)','meri_conversations.initial_inputs u UNIQUE (request_id, tenant_id, run_id)',
@@ -101,6 +136,35 @@ test('after 0020: concurrent rebinds on two connections create exactly one gener
  await assert.rejects(main.query('INSERT INTO meri_conversations.initial_run_bindings(tenant_id,conversation_id,run_id,record,record_sha256,generation) VALUES($1,$2,$3,$4,$5,1)',[principal.tenantId,other,duplicate.binding.runId,duplicate,hash(duplicate)]),{code:'23505'},'one row per generation');
 });
 
+// C2 addendum: an exact expected source is required, and two connections racing the same expectedRunId under the
+// conversation lock produce exactly one supersession. Nothing here runs without Release's disposable PG slot.
+test('after 0020: a mismatched expected source never supersedes and concurrent same-source rebinds create exactly one generation',async t=>{
+ const {pool,main}=await database(t);await migrate(main);
+ const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},conversationId=randomUUID(),selectedClientId=randomUUID();
+ const proposal={principal,conversationId,selectedClientId,policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000};
+ const first=(await createInitialRunBindingJournal({pool:pool()}).claim(proposal,check)).record;
+ const generations=async()=>(await main.query('SELECT generation,run_id FROM meri_conversations.initial_run_bindings WHERE tenant_id=$1 ORDER BY generation',[principal.tenantId])).rows;
+ const journal=createInitialRunBindingJournal({pool:pool()});
+ await assert.rejects(journal.rebind({...proposal,runId:randomUUID(),configurationSha256:'d'.repeat(64)},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},'a foreign source is refused');
+ assert.deepEqual((await generations()).map(r=>r.generation),[1],'a mismatched expected source appends no generation');
+ assert.deepEqual(await journal.rebind({...proposal,runId:first.binding.runId,proposedExpiresAtMs:now+90000},check),{record:first,created:false,superseded:false},'naming the live original itself is a no-op replay');
+ // The stored original is now dead for this render; two independent connections carry the SAME expectedRunId.
+ const exact={...proposal,runId:first.binding.runId,configurationSha256:'d'.repeat(64),proposedExpiresAtMs:now+120000};
+ const settled=await Promise.allSettled([createInitialRunBindingJournal({pool:pool()}).rebind(exact,check),createInitialRunBindingJournal({pool:pool()}).rebind(exact,check)]);
+ const fulfilled=settled.filter(s=>s.status==='fulfilled'),rejected=settled.filter(s=>s.status==='rejected');
+ assert.equal(fulfilled.length,1,'exactly one connection supersedes the named source');
+ assert.equal(rejected.length,1,'the other refuses');
+ assert.equal(rejected[0].reason.code,'INITIAL_RUN_BINDING_CONFLICT','the loser names an original that is no longer latest');
+ assert.equal(fulfilled[0].value.created,true);assert.equal(fulfilled[0].value.superseded,true);
+ assert.deepEqual(fulfilled[0].value.source,first.binding,'the atomic result carries the exact superseded source');
+ assert.notEqual(fulfilled[0].value.record.binding.runId,first.binding.runId);
+ const rows=await generations();
+ assert.deepEqual(rows.map(r=>[r.generation,r.run_id]),[[1,first.binding.runId],[2,fulfilled[0].value.record.binding.runId]],'one source, one successor, generation 1 kept as history');
+ assert.deepEqual(await journal.readConversation({principal,conversationId,selectedClientId},check),fulfilled[0].value.record,'only the latest generation is served');
+ await assert.rejects(journal.rebind({...exact,proposedExpiresAtMs:now+180000},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},'the already-superseded source can never create a third generation');
+ assert.deepEqual((await generations()).map(r=>r.generation),[1,2]);
+});
+
 /** Observe a real PostgreSQL lock request, then pause only after it is held, to force serial orders across independent connections. */
 function heldPool(pool,lockKey){let resume,entered,requested,armed=true;const held=new Promise(resolve=>entered=resolve),requesting=new Promise(resolve=>requested=resolve),release=()=>resume?.(),gate=new Promise(resolve=>resume=resolve);
  return {held,requesting,release,pool:{async connect(){const c=await pool.connect();return {async query(sql,p){
@@ -108,19 +172,20 @@ function heldPool(pool,lockKey){let resume,entered,requested,armed=true;const he
   if(target){armed=false;entered();await gate;}return result;},release:error=>c.release(error)};}}};}
 
 for(const winner of ['accept','rebind'])test(`original input acceptance and supersession serialize across connections (${winner} holds the lock first)`,async t=>{
- const {pool,main}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
+ const {pool,main,role}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
+ await prepareAcceptancePolicy(main,role,principal);
  const proposal={principal,conversationId:randomUUID(),selectedClientId,policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000};
- const original=(await createInitialRunBindingJournal({pool:main,now:()=>now}).claim(proposal,check)).record,binding=original.binding;
+ const original=(await createInitialRunBindingJournal({pool:pool(),now:()=>now}).claim(proposal,check)).record,binding=original.binding;
  const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:selectedClientId,policyRevision:proposal.policyRevision}],createdAt=new Date(now).toISOString();
  const input={requestId:randomUUID(),prompt:'accepted exactly once'},request={...input,skill:null,window:null,windowRequest:null};
  const facts=await prepareOriginalInputFacts({binding,scopes,versions,selectedClientId,input,request,allocatedAtMs:now,expiresAtMs:now+60000});
- await createPostgresConversationStore({pool:main,now:()=>now}).initialInputs.claim(facts,check);
+ await createPostgresConversationStore({pool:pool(),now:()=>now}).initialInputs.claim(facts,check);
  const acceptance={conversation:{conversationId:binding.conversationId,owner:principal,scopes,createdAt,policyRevision:proposal.policyRevision},
   run:{binding,state:'queued',scopes,versions,createdAt,policyRevision:proposal.policyRevision},request,selectedClientId,
   event:{contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}};
  const first=heldPool(pool()),second=pool(),store=createPostgresConversationStore({pool:winner==='accept'?first.pool:second,now:()=>now});
  const journal=createInitialRunBindingJournal({pool:winner==='rebind'?first.pool:second,now:()=>now});
- const operations={accept:()=>store.initialInputs.accept(acceptance,check),rebind:()=>journal.rebind({...proposal,configurationSha256:'d'.repeat(64)},check)};
+ const operations={accept:()=>store.initialInputs.accept(acceptance,check),rebind:()=>journal.rebind({...proposal,runId:binding.runId,configurationSha256:'d'.repeat(64)},check)};
  let leading,trailing;
  try{leading=operations[winner]();await Promise.race([first.held,leading.then(()=>{throw Error('CONVERSATION_LOCK_NOT_OBSERVED');})]);
   trailing=operations[winner==='accept'?'rebind':'accept']();}finally{first.release();}
@@ -135,7 +200,7 @@ test('0020 preserves one request owner across concurrent legacy INSERT and curre
  const {pool,main}=await database(t);await migrate(main);const now=Date.now(),principal={tenantId:'tenant-'+randomUUID(),actorId:'actor-a'},selectedClientId=randomUUID();
  const input={requestId:randomUUID(),prompt:'one request owner'},request={...input,skill:null,window:null,windowRequest:null},facts=[];
  for(let i=0;i<2;i++){
-  const original=(await createInitialRunBindingJournal({pool:main,now:()=>now}).claim({principal,conversationId:randomUUID(),selectedClientId,
+  const original=(await createInitialRunBindingJournal({pool:pool(),now:()=>now}).claim({principal,conversationId:randomUUID(),selectedClientId,
    policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now+60000},check)).record;
   facts.push(await prepareOriginalInputFacts({binding:original.binding,scopes:[{kind:'client',tenantId:principal.tenantId,resourceId:selectedClientId,policyRevision:'policy1'}],
    versions,selectedClientId,input,request,allocatedAtMs:now,expiresAtMs:now+60000}));

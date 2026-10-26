@@ -22,9 +22,13 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
  async function original(principal,conversationId,selectedClientId,signal,runId){
   const query={principal,conversationId,selectedClientId};let record=await initialBindings.readConversation(query,check(signal));check(signal)();
   if(record)valid(record,principal,conversationId,selectedClientId);else if(runId!==undefined)refuseWith('INITIAL_BINDING_SUPERSEDED');
-  const rebind=record&&dead(record)&&runId===undefined&&!await store.readOptional(record.binding,{},check(signal));check(signal)();
-  if(!record||rebind){const claimed=await initialBindings[rebind?'rebind':'claim']({...query,policyRevision:qualification.policyRevision,versions,configurationSha256,proposedExpiresAtMs:proposeInitialExpiry({signal})},check(signal));record=claimed.record;check(signal)();}
-  return valid(record,principal,conversationId,selectedClientId);
+  // An exact source selector may name only the stored original's own run. A dead, never-started original is then
+  // superseded by the journal's existing atomic rebind, and its result proves the exact source-to-target change.
+  const exactSource=record&&runId!==undefined&&runId===record.binding.runId;
+  const rebind=record&&dead(record)&&(runId===undefined||exactSource)&&!await store.readOptional(record.binding,{},check(signal));check(signal)();
+  let proof;
+  if(!record||rebind){const claimed=await initialBindings[rebind?'rebind':'claim']({...query,...(rebind&&runId!==undefined?{runId}:{}),policyRevision:qualification.policyRevision,versions,configurationSha256,proposedExpiresAtMs:proposeInitialExpiry({signal})},check(signal));record=claimed.record;proof=claimed.source?{source:claimed.source,target:claimed.record.binding}:undefined;check(signal)();}
+  return {record:valid(record,principal,conversationId,selectedClientId),proof};
  }
  async function select(record,principal,conversationId,signal,exact={},assertActive){
   const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();
@@ -41,7 +45,14 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
   savedOriginal(saved,record);const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();
   if(!same(selected.binding,request)||selected.policyRevision!==record.policyRevision||!same(selected.scopes,saved.run.scopes))refuse();return fact(selected);
  }};
- const native=createNativeIdentityContext({...identity,currentOwner,admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId,recheckActive})=>fact(await select(await original(principal,conversationId,selectedClientId,signal,runId),principal,conversationId,signal,runId===undefined?{}:{runId},recheckActive)),now,limits,enabled:true});
+ const native=createNativeIdentityContext({...identity,currentOwner,admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId,recheckActive})=>{
+  // A verified rebind has already changed the binding under the journal's transaction: the target, not the named
+  // source, is what this fresh issuance must pin. Every other call keeps the caller's exact selector.
+  const {record,proof}=await original(principal,conversationId,selectedClientId,signal,runId);
+  const selected=await select(record,principal,conversationId,signal,proof?{runId:proof.target.runId}:runId===undefined?{}:{runId},recheckActive);
+  const value=fact(selected);
+  return proof?JSON.stringify({...JSON.parse(value),rebind:proof}):value;
+ },now,limits,enabled:true});
  if(scheduleOwner===undefined)return native;
  return createScheduledConversationIdentity({native,scheduleOwner,identity,now,limits,factWindowMs,
   async selectExisting({principal,conversationId,selectedClientId,signal,runId,origin}){

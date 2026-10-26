@@ -4,8 +4,8 @@
   "sources": [
     {
       "path": "session-receipt/schema.mjs",
-      "sha256": "d500dfd7900b4ea3b83a0df3b588a54ba0d3369a460ced291879cbf89a86c1c7",
-      "bytes": 1679
+      "sha256": "f9215a5b61a00fab4dfc2f1fb5665d808958291e748ef6194b3ff4971df185c5",
+      "bytes": 1975
     },
     {
       "path": "session-receipt/validate.mjs",
@@ -14,8 +14,8 @@
     },
     {
       "path": "conversation-session/receive.mjs",
-      "sha256": "8322f6e63696f7893df150dcad279455ba83f8f241b6e1e83936e0611228c9d8",
-      "bytes": 1495
+      "sha256": "f6475332dbe02ae332f704bf28d992958ec2e33c58aff2d24633a57ea19836ba",
+      "bytes": 2037
     },
     {
       "path": "document-application/boundary.mjs",
@@ -29,10 +29,10 @@
     }
   ],
   "browserInputs": [
+    "../../node_modules/canonicalize/lib/canonicalize.js",
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-session/receive.mjs",
     "document-application/boundary.mjs",
-    "node_modules/canonicalize/lib/canonicalize.js",
     "session-receipt/validate.mjs",
     "session:validator"
   ],

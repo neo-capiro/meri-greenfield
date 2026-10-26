@@ -49,3 +49,32 @@ for(const port of ['identity','current'])test(`independent ${port} owner that di
  f.state[port]=()=>{throw noAnswer();};await assert.rejects(f.issue(),unavailableCode);assert.equal(f.owner.status().sessions,0);
  f.state[port]=()=>{throw Error('denied');};await assert.rejects(f.issue(),refusedCode);assert.equal(f.owner.status().sessions,0);
  f.state[port]=null;await f.issue();assert.equal(f.owner.status().sessions,1);}finally{f.owner.close();}});
+
+// C1: only a fresh issuance may carry a verified exact-source supersession; it pins the target binding, and a later
+// recheck of that session must stay exact and can never rebind again.
+test('independent verified initial supersession pins the target and a recheck never rebinds',async()=>{
+ const f=fixture();try{
+  const source=f.binding,target={...f.binding,runId:uuid(97)};
+  f.state.current=v=>({...v,binding:target,rebind:{source,target}});
+  const out=await f.issue({hints:{clientId:f.clientId,runId:source.runId}});
+  assert.equal(out.context.runId,target.runId);
+  assert.equal(out.context.conversationId,source.conversationId);
+  assert.deepEqual(out.initialRunRebind,{sourceRunId:source.runId,targetRunId:target.runId});
+  await assert.rejects(f.issue({hints:{clientId:f.clientId,runId:target.runId}}),refusedCode,'an unsolicited source transition cannot accompany exact target issuance');
+  await assert.rejects(f.owner.authenticateSession({credential:out.credential}),refusedCode);
+  assert.equal(f.owner.status().sessions,0,'a recheck that reports a supersession refuses and removes the session');
+ }finally{f.owner.close();}});
+test('independent forged or mismatched internal supersession is refused before a session exists',async()=>{
+ const forged=fixture();try{
+  const target={...forged.binding,runId:uuid(96)};
+  forged.state.current=v=>({...v,binding:target,rebind:{source:forged.binding,target:forged.binding}});
+  await assert.rejects(forged.issue({hints:{clientId:forged.clientId,runId:forged.binding.runId}}),refusedCode);
+  assert.equal(forged.owner.status().sessions,0);
+ }finally{forged.owner.close();}
+ const foreign=fixture();try{
+ const target={...foreign.binding,runId:uuid(95)};
+ foreign.state.current=v=>({...v,binding:target,rebind:{source:{...foreign.binding,actorId:'other'},target}});
+ await assert.rejects(foreign.issue({hints:{clientId:foreign.clientId,runId:foreign.binding.runId}}),refusedCode);
+ assert.equal(foreign.owner.status().sessions,0);
+ }finally{foreign.owner.close();}
+});

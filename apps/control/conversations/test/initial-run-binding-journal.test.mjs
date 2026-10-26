@@ -247,3 +247,36 @@ test('concurrent rebinds of one dead original create exactly one new generation'
  const proposal={...f.input,proposedExpiresAtMs:f.now()+60000},[a,b]=await Promise.all([j.rebind(proposal,check),other.rebind(proposal,check)]);
  assert.deepEqual(a.record,b.record);assert.deepEqual([a.created,b.created].sort(),[false,true]);assert.equal(f.state.bindings.get(f.key()).length,2);
 });
+
+// C1: an exact source selector lets an ordinary issuance name the one original it may supersede, and the atomic
+// result carries that exact source so the caller never needs a second read or a client-supplied fact.
+test('exact-source rebind supersedes only the named original and proves the source-to-target change',async()=>{
+ const f=fixture(),j=f.journal(),first=(await j.claim(f.input,check)).record;f.advance(60000);
+ const next=await j.rebind({...f.input,runId:first.binding.runId,proposedExpiresAtMs:f.now()+60000},check);
+ assert.equal(next.created,true);assert.equal(next.superseded,true);assert.deepEqual(next.source,first.binding);
+ assert.notEqual(next.record.binding.runId,first.binding.runId);assert.equal(next.record.binding.conversationId,first.binding.conversationId);
+ assert.equal(f.state.bindings.get(f.key()).length,2,'insert-only generations');
+ assert.deepEqual(await readLatest(f,j),next.record,'only the latest generation is served');
+ assert.deepEqual(await j.rebind({...f.input,proposedExpiresAtMs:f.now()+60000},check),{record:next.record,created:false,superseded:false},'replay of the live target returns it unchanged');
+ await assert.rejects(j.rebind({...f.input,runId:first.binding.runId,proposedExpiresAtMs:f.now()+120000},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},'the already-superseded source can never create a third generation');
+ assert.deepEqual(await j.rebind({...f.input,runId:next.record.binding.runId,proposedExpiresAtMs:f.now()+120000},check),{record:next.record,created:false,superseded:false},'naming the live target itself is a no-op replay, never a new generation');
+ const foreign=fixture(),foreignJournal=foreign.journal();await foreignJournal.claim(foreign.input,check);foreign.advance(60000);
+ await assert.rejects(foreignJournal.rebind({...foreign.input,runId:id(77),proposedExpiresAtMs:foreign.now()+60000},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},'a foreign source is refused');
+ const virgin=fixture(),virginJournal=virgin.journal();
+ await assert.rejects(virginJournal.rebind({...virgin.input,runId:id(42)},check),{code:'INITIAL_RUN_BINDING_CONFLICT'},'an exact source can never create a first generation');
+ assert.equal(virgin.state.bindings.size,0);
+});
+
+test('a started original refuses an exact-source rebind and reserves no successor',async()=>{
+ for(const marker of ['run','allocation']){
+  const f=fixture(),j=f.journal(),first=(await j.claim(f.input,check)).record,b=first.binding,k=f.key();
+  const allocation={binding:b,scopes,versions,selectedClientId:id(5),requestId:id(50),inputSha256:'a'.repeat(64),requestSha256:'b'.repeat(64),allocatedAtMs:first.createdAtMs,expiresAtMs:first.expiresAtMs};
+  if(marker==='run'){const run={binding:b,state:'queued',scopes,versions,createdAt:new Date(first.createdAtMs).toISOString(),policyRevision:'policy1'};f.state.runs.set(k,{projection:run,projection_sha256:hash(run)});}
+  if(marker==='run'||marker==='accepted')f.state.inputs.set(k,{tenant_id:b.tenantId,conversation_id:b.conversationId,run_id:b.runId,request_id:allocation.requestId,allocation,allocation_sha256:hash(allocation),state:'ACCEPTED',accepted_request_sha256:allocation.requestSha256});
+  if(marker==='allocation')f.state.allocations.add([b.tenantId,b.conversationId,b.runId].join(':'));
+  f.advance(60000);
+  await assert.rejects(j.rebind({...f.input,runId:b.runId,proposedExpiresAtMs:f.now()+60000},check),{code:'INITIAL_RUN_BINDING_EXPIRED'},marker);
+  assert.equal(f.state.bindings.get(k).length,1,marker);
+  assert.equal(f.state.next.size,0,'an exact-source recovery never reserves a successor');
+ }
+});

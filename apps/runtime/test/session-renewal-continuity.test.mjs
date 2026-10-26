@@ -10,6 +10,7 @@ import {createConversationService} from '../../control/conversations/service.mjs
 import {createConversationEventSource} from '../../control/conversations/events.mjs';
 import {applicationFixture,binding,scopes,versions,id} from '../../control/conversations/test/application-fixture.mjs';
 import {isAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
+import {receiveConversationSessionReceipt} from '../../../packages/contracts/dist/conversation-session.mjs';
 
 const clientId=scopes[0].resourceId,exact={conversationId:binding.conversationId,runId:binding.runId,clientId};
 async function fixture(){
@@ -71,4 +72,56 @@ test('MR-08 transient Core503 withholds history and stream, then exact recovery 
  assert.deepEqual((await drain(process.stream(issued.receipt.credential,3))).map(e=>e.sequence),[4,5]);
  h.state.status=403;await assert.rejects(process.service.history({credential:issued.receipt.credential}),{code:'SESSION_REFUSED'});assert.equal(process.sessions.status().sessions,0);
  await assert.rejects(h.processOwner().issue(),{code:'SESSION_REFUSED'});h.assertReadOnly();
+});
+
+/** The actual identity/context/session/next-run and public receiver; only Core and journal persistence are synthetic. */
+function initialRecovery(race){
+ const at=1800000000000,now=()=>at,source=binding,target={...binding,runId:id(801),attemptId:id(802),workerId:id(803)};
+ const principal={tenantId:binding.tenantId,actorId:binding.actorId};
+ const common={schemaVersion:1,state:'ADMITTED',selectedClientId:clientId,policyRevision:scopes[0].policyRevision,versions,configurationSha256:'c'.repeat(64)};
+ const old={...common,binding:source,createdAtMs:at-2000,expiresAtMs:at-1},fresh={...common,binding:target,createdAtMs:at,expiresAtMs:at+60000};
+ let record=old,reservations=0,rebinds=0,serial=900;
+ const latest={binding:target,state:'cancelled',scopes,versions,policyRevision:common.policyRevision};
+ const newer={...latest,binding:{...target,runId:id(804),attemptId:id(805),workerId:id(806),writerFence:2},state:'running'};
+ const store={nextRuns:{
+  async listRuns(){return {runs:race==='advanced'?[latest,newer]:[latest],reservations:[]};},async readTarget(){return null;},
+  async latestCheckpoint(){return null;},async settlement(){return {};},
+  async current(){return race==='advanced'?newer:latest;},
+  async reserve(input){reservations++;return {target:input.target,replayed:false};},
+ },async readOptional(request){return race&&record===fresh&&request.runId===target.runId?{run:latest}:null;}};
+ const initialBindings={async readConversation(){return record;},async claim(){assert.fail('exact recovery cannot claim');},
+  async rebind(input){assert.equal(input.runId,source.runId);assert.equal(record,old);rebinds++;record=fresh;return {record:fresh,created:true,superseded:true,source};}};
+ const identity=createPreparedCandidateIdentity({store,initialBindings,nextRunOwner:createNextRunOwner({store,versions,now,newId:()=>id(serial++)}),
+  configurationSha256:common.configurationSha256,versions,proposeInitialExpiry:()=>at+60000,now,factWindowMs:10000,
+  qualification:{policyRevision:common.policyRevision},limits:{maxRequestMs:3000,maxFactBytes:131072},
+  identity:{origin:'https://authority.synthetic.invalid',async fetchImpl(url,options){
+   const input=JSON.parse(options.body),base={principal,identityRevision:'synthetic-identity',checkedAtMs:at,expiresAtMs:at+10000};
+   return Response.json(url.endsWith('/identity')?base:{...base,identitySha256:input.identitySha256,conversationId:source.conversationId,selectedClientId:clientId,contextRevision:'synthetic-context'});
+  }}});
+ const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,now,refusals(){},limits:{maxSessions:4,maxRequestMs:3000,maxTtlMs:10000,maxFactBytes:131072}});
+ const sourceContext={...principal,conversationId:source.conversationId,runId:source.runId,selectedClientId:clientId},targetContext={...sourceContext,runId:target.runId};
+ const bytes=value=>new TextEncoder().encode(JSON.stringify(value));
+ return {sessions,sourceContext,targetContext,
+  issue:(runId=source.runId)=>sessions.issue({identityCredential:'synthetic-bearer',hints:{conversationId:source.conversationId,runId,clientId}}),
+  receive:receipt=>receiveConversationSessionReceipt(bytes(receipt),bytes({...sourceContext,scopeKind:'client'}),at),
+  counts:()=>({rebinds,reservations})};
+}
+
+test('never-started exact recovery reaches the actual public receiver and subsequent issuance is proof-free',async t=>{
+ const h=initialRecovery();t.after(()=>h.sessions.close());const receipt=await h.issue();
+ assert.deepEqual(h.receive(receipt),receipt);assert.deepEqual(receipt.context,h.targetContext);
+ assert.deepEqual(receipt.initialRunRebind,{sourceRunId:h.sourceContext.runId,targetRunId:h.targetContext.runId});
+ await h.sessions.authenticateSession({credential:receipt.credential});
+ const ordinary=await h.issue(h.targetContext.runId);assert.equal(Object.hasOwn(ordinary,'initialRunRebind'),false);
+ await assert.rejects(h.issue(),{code:'SESSION_REFUSED'});assert.deepEqual(h.counts(),{rebinds:1,reservations:0});
+});
+
+test('post-commit target settlement or advancement never enters runless successor reservation',async t=>{
+ for(const race of ['settled','advanced']){
+  const h=initialRecovery(race);t.after(()=>h.sessions.close());
+  try{
+   if(race==='settled'){const receipt=await h.issue();assert.deepEqual(h.receive(receipt).context,h.targetContext);}
+   else await assert.rejects(h.issue(),{code:'SESSION_REFUSED'});
+  }finally{assert.deepEqual(h.counts(),{rebinds:1,reservations:0},race);}
+ }
 });
