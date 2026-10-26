@@ -60,6 +60,7 @@ Neo supplied Fable's completed acceptance, explicitly trusted its fixes and dire
 
 - Sole writer: `docs/handover/20261026/WAVE-2-HANDOFF.md`, this phase brief, and the next numbered decision in `docs/handover/20261022/decision-log/DECISION-LOG.md` after reading the actual last entry. O257 is the last entry at this exact base, so this update records O258.
 - User-facing copy: Root workspace `outputs/WAVE-2-REMAINING-ITEMS.md` and `outputs/WAVE-2-HANDOFF.md`.
+- Subsequent explicitly allocated preparation: `WAVE-3-ORCHESTRATOR-BRIEF.md` and `WAVE-3-PARALLEL-LANE-PLAN.md` beside this brief, mirrored to Root outputs. They remain UNDISPATCHED until the two current Hermes results, deployment result and old Root's transfer instruction. No new session/goal, Wave2 closure, merge or final deployment pin is created by preparing them. Historical Wave2 handoff stays IN PROGRESS while the final result facts are bundled.
 - No product code, test, dependency, configuration, AWS, provider or database mutation. No browser/model acceptance, external mail or external comments. Draft PR publication is authorized; Root merges. No additional agent delegation.
 - Historical `20261025/WAVE-2-HANDOFF.md` and sealed evidence stay unchanged. The new dated record explicitly supersedes old as-of state without erasing it. Integration confirmed no unpublished competing canonical work.
 

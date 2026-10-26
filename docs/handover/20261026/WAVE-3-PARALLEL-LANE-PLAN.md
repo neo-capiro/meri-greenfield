@@ -1,0 +1,121 @@
+## 1. Claude handles the harness
+
+The quality bar is Claude's own. Answer quality comes from the whole harness, not only the model: its system prompt, built-in tools, subagents, skills, context management and compaction, and session handling.
+
+- Run `@anthropic-ai/claude-agent-sdk` with its **full harness** and the Claude Code system-prompt preset, plus a short Capiro/Meri append. Don't replace the preset with our own prose.
+- Do not rebuild what the SDK or AWS already does: model calls, retries, streaming, the tool loop, context management and compaction, session resume/fork, per-run turn and spend limits, AWS credentials.
+- The real Claude SDK calls Bedrock directly using its narrowly scoped AgentCore runtime IAM role. Preserve the full preset, native tools, subagents and all 14 skills.
+- Capiro data reaches Claude as **tools** (rule 4), not as a custom retrieval layer around the model.
+
+Spec and plan: `phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNESS-SPEC.md`. It is **Wave 2 item 0**, and it comes before every other item that touches the runner, the proxy or authority.
+
+## 2. Simple, standard architecture
+
+```text
+browser -> control (current access, conversation/run ownership, durable events)
+        -> AgentCore Runtime V1 (isolated conversation session; actual Claude SDK) -> Bedrock
+                                      -> tool gateway -> Core
+control -> existing durable SDK SessionStore and artifact owners
+control -> Temporal for required durable runs, schedules and background work
+```
+
+- **Core is the gatekeeper for Capiro data.** Tenant, member, client and wall rules remain server-side in Core. Check current access at admission and actual tool/data/artifact access; revocation must also prevent use of previously loaded privileged context. Do not duplicate policy in the harness.
+- Reuse one isolated environment only for the same immutable tenant/actor/conversation and approved General/client scope. Serialize turns; stop idle compute and restore exact SDK transcripts and artifacts from their durable owners. A Runtime session ID is not authorization or durable storage.
+- Keep the SDK's per-run turn/spend limits and one canonical tenant cap/usage owner. Preserve required durable runs, schedules, consent, outcomes and uncertain-write fences; neither SDK Task tools nor a warm process replaces Temporal durability.
+- **No custom warm pool, per-turn ECS task requirement, model proxy, duplicated per-hop authority, credential-minting service or spend-reservation ledger.** Use standard Runtime V1; no V2 snapshot machinery or second SDK implementation.
+- Before adding a mechanism, identify the standard feature or existing owner it uses. Before deleting a wrapper, prove the retained lower-layer behavior with meaningful positive/negative tests. Do not remove canonical authorization, idempotency or durable outcomes as “extra security.”
+
+## 3. Leave no dead code behind
+
+A change is not done until what it replaced is gone.
+
+1. **Delete in the same PR** everything the change makes unused: code, tests, fixtures, docs, config keys, env vars, feature flags, IAM statements, ALB rules, secrets, task definitions, CloudFormation resources, kit steps, alarms and metric filters. Applied database migrations are history: never edit them. Drop tables only through a separately reviewed forward migration after a snapshot; this hosting migration does not itself authorize schema/data removal.
+2. **Temporary diagnostics come out before merge** of the fix they were added for. A log line stays only as named product telemetry that someone reads.
+3. **No code behind a flag nothing turns on.** The "source-complete, activation-held" status is retired for code we don't intend to ship. Dark features need an owner and a date, or they are deleted.
+4. **No** commented-out code, `legacy` or `_old` copies, compatibility shims for removed things, or "superseded" stubs.
+5. **Show proof in the PR:** list the identifiers, files and resources deleted, with a search proving no executable/active caller remains; label immutable historical references, and explain any drop in test count.
+6. **Old plan tickets for removed mechanisms are closed as superseded**, not implemented and left dormant. See `source-of-truth/SUPERSEDED-BY-ITEM-0.md`.
+7. **Reuse before write.** Use SDK, AWS and library features first. Custom code needs one line saying what the standard option couldn't do.
+
+## 4. Capiro data must keep working
+
+- Capiro data is served to Claude as tools. Core remains the source: today's read families call Core at `/api/clio/tools/<operation>`, and the new tools call the same endpoints.
+- Tools are hosted by **control** (the existing tool gateway) so the runner never holds the Core service secret (`x-internal-service-secret`). The runner gets only a short-lived per-run token for control, scoped to tenant, user, client, conversation and run.
+- Reuse the existing read handlers under `apps/gateway/sources/*` and their typed schemas. Delete the authority, relay and measurement wrappers around them.
+- Parity: every read family that works today must be reachable as a tool with the same results and the same permission outcomes. A parity checklist is part of the item 0 spec.
+- Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
+- The original read-only first cut is historical. Neo subsequently authorized preview client-record writes and autonomous Wave 2 completion. Activate accepted writes through their existing authenticated domain/intent owners and receipts, with the actual route/configuration and effect semantics verified. This does not authorize the assistant to send external mail without the user's specific send instruction.
+
+FROM: Root | TO: future fresh Wave 3 orchestrator | TYPE: parallel-lane plan | RE: actual M3/A3 tickets and retained ownership (UNDISPATCHED)
+
+# Wave 3 parallel lane plan — undispatched preparation
+
+**UNDISPATCHED, 26 October 2026, 00:27 UTC.** Read `WAVE-3-ORCHESTRATOR-BRIEF.md` first. Wait for both current Hermes results and the deployment result, then old Root's final handoff and dispatch. No rows below create a new owner, launch a session, authorize a second shipper or claim final live pins. The new orchestrator runs at Ultra, helpers/reviewers at xhigh; complex/stuck work goes to Hermes with separate Codex review. Existing active writers win over proposed new lanes.
+
+## Actual scope and bounded parallel checklist
+
+The ticket IDs below are from `docs/handover/20261022/plan/FINAL-PLAN-20261021.md` (phase/wave table and ticket index), with full bounded work/acceptance in the two master closeout plans and the current item0 supersession register. This is a map, not permission to implement historical defects again. Before authoring each phase, copy the actual ticket/scenario text into its PROCESS6.1 brief and identify what remains after accepted source/receipts.
+
+| Lane / first owner | Actual tickets | Concrete first work and acceptance boundary | Parallelism / frozen paths |
+|---|---|---|---|
+| **R carryover — existing General Chat and Email Repair / its Hermes author** | Retained M1/M2: MR06/MR08 as re-scoped; MF09, MG05, MG02, PF02, MF19 context; retained MT03/ML22 stored-mail reads | Consume current result; finish only unresolved admission/history/General read defect. Preserve SDK continuation/Stop/unknown allocation/current Core policy. Use affected lookup/follow-up and relevant lifecycle cases | Own actual allocated Control/runtime paths; no competing runtime author. Coordinate any shared read-context/dispatcher delta with M3 Data |
+| **Mail carryover — existing Outlook Hermes author through Schedule Worker launcher** | ML12–16, with preserved ML08–10/17/18 and current stored-read boundaries | Diagnose stale sync/expired Microsoft subscriptions from actual evidence; Gmail warning is not missing Microsoft configuration. Use existing provider/scheduler owner, then required real configuration/provider gate through Release | Preserve `C:/dev/hermes-outlook-repair-20261026`. No new sender/connector, secret inspection, provider mutation by other lanes or duplicate session |
+| **A3 ordinary save — existing Ordinary Atomic Save** | WS05; affected WS07; E45 receiver boundary | Publish local candidate, decide exact public `canonicalWorkspaceSnapshot` import owner/size review, independent review, then paired atomic-save producer/consumer integration. Reuse72unit/23browser, meaningful saved counterexamples and Core129 PG proof | Sole writer for `WorkspaceDraft.tsx`, `ordinary-save/**`, ordinary-save tests, `shared/capiro/http.ts`, `gateway-errors.ts`, `operations/workspace-documents.ts`, `workspace-ordinary-save-errors.ts`, `shared/session/recovery/journal.ts` and `journal-crypto.ts` under its granted exception. No parallel editor/save/shared recovery edits |
+| **A3 library — existing Workspace Library / Domain accepted slices** | WS06 | Integrate accepted Core134 filter/paging producer and FE158 consumer after base reconciliation. Close only remaining supported library semantics/navigation/actual access; retain accepted history | DocumentsLibrary/library-query methods and named DTO/tests; no ordinary draft or shared CSS changes without release of ownership |
+| **A3 ordinary lifecycle/collaboration — successor assigned after save publication** | Remaining WS07–09 | Exact saved-version history/compare and formatting/export already accepted. Allocate actual remaining create/tab/lifecycle/restore/collaboration/read-role gaps. O143 removes Workspace approval flows; sharing/access remains. Retain unsupported JSON/edits and no hidden hydration deletion | Wait for Ordinary Save release of shared editor files. Could assign read-only plan/contract analysis while waiting; no second implementation writer |
+| **A3 Hill Day domain + consumer** | WS10–12 | Preserve Core137 stable-key and FE166 known-ID recovery ACCEPTs. Remaining work includes durable job/resume/claims, supported edits and lost POST-ID export recovery if still absent; actual replica/restart/render fidelity distinct from source | Domain owns HillDay jobs/export service/controller/DTO; UI owns HillDay-specific views/tests. One agreed contract owner. Shared Workspace APIs coordinated with ordinary save |
+| **A3 basic newsletter** | WS05 newsletter part; WS13–14 | Existing ordinary save slice explicitly leaves basic Newsletter unchanged. Inspect canonical newsletter owner, then atomic save/version and exact staged subject/body; template/preview fidelity through existing library/assets | Separate basic-newsletter modules and producer methods; no duplicate atomic contract or template store. Coordinate shared DTO/schema/serializer before edits |
+| **A3 rich newsletter domain/recovery** | WS15; producer portions WS16–19 | Exact create/save/stage recovery, preview identity and authorized library/assets/Outreach handoff through existing owners. Preserve unknown state and immutable revision; no second sender | Sole owner of shared Newsletter service/schema/request contracts; split UI only after contract is fixed. Backend transaction/grant changes get actual affected PG checks |
+| **A3 rich newsletter UI** | WS16–19 consumers; supported parts WS17 under O143 | Existing typed content/library/brand/survey/assets, role/comment and explicit staged-Outreach navigation. Manual editing must survive optional-provider failure. Current source/receipt must match displayed content | Distinct UI modules from basic Newsletter and Template Studio; one writer for shared rich editor/state. Actual test/send needs explicit send authority and qualified A4 owner; no auto-send on save/navigation |
+| **A3 template catalog** | WS20–21 | Campaign Template Studio exact save/use recovery/list refresh/provenance; distinctly typed document blueprint/theme/asset consumers. No campaign/document ID confusion, fabricated templates or duplicate owners | Campaign/document template modules may run alongside ordinary editor if shared catalog/contracts/export barrels have one writer. Publication/role gates remain |
+| **A3 system mail** | ML24; WS08/17 notification boundary | Core129 pre-SES onboarding claim slice already accepted. Inspect remaining ordinary invitation/system-mail request/status/claim evidence; preserve correct newsletter workers. Configure/gate through Release, actual sends only to explicitly approved recipients | Existing mail delivery owner and named notification paths; coordinate Newsletter services. No OAuth campaign-sender replacement; no automatic retry of unknown acceptance |
+| **M3 source adapters/data parity** | MT01, MT04–09, MT16; MX03 dependency binding; E18–20/E31/E44 | Preserve accepted48-family/MCP/paging and current wall fixes. Reconcile each named actual tool family/positive/negative/paging semantics against current Core. Fix demonstrated gaps only; no global reimplementation | `apps/gateway/sources/**` and named Core read methods; no duplicate policies/indexer or runtime rewrite. Shared dispatcher/read-context/public contracts require R/contract owner coordination |
+| **M3 indexing/freshness** | MG06, MO14, MO15; MX03 | Current source revisions, dependency refresh, scoped feedback lineage and named connected-source completeness. Read existing schema/index owners before allocating missing revision-durable behavior | Distinct existing indexing/dependency owners; Core schema/migration single writer with A3 Domain. No per-family cache or replacement retrieval layer |
+| **M3 citations/evidence UI** | MF16; E18–20/E31/E44 plus exact source-viewer scenarios | Preserve FE141 saved reference/status ACCEPT. Remaining current-access source resolution, truthful tool/usage/outcome details and hearing timestamp viewer require real producer/contract/design/media prerequisites | Keep accepted citation head; do not start new consumer against invented DTOs. Own citations/viewer modules after contract readiness; no shared Workspace editor or blanket media dependency changes |
+| **Integration, independent review, Release/acceptance** | Current phases' real gates; MX13 whole-flow check where applicable | Compose once, review only changed integration risk, build exact ARM64 candidate once, qualify that digest, sole Release deploys, then bounded affected real paths. Record unrun fixtures/holds honestly | Existing Core and Frontend Integration and Hermes Independent Review retained. Release Execution Continued is sole cloud/deploy/rollback owner. Never overlap rollout with acceptance |
+
+Run as many independent bounded lanes as available capacity and real prerequisites allow. Queue work that shares a file/contract or scarce process; do not manufacture extra checkouts or reviewers for accepted work. Prefer one complete producer/consumer slice to half-implemented broad surfaces. New source phases retain deletion proof and meaningful negative checks for actual changed authority/data behavior.
+
+## Exact open source inventory and reused verdicts
+
+Remote metadata refreshed26 October around00:26 UTC; all below remain **OPEN DRAFT** at that observation. Base names are actual stacked targets. Refresh only when preparing integration/publication; these are not current-main deployment pins. Review evidence comes from existing final owner reports, not new checks here.
+
+| PR / head | Actual base target | Accepted slice / remaining stage |
+|---|---|---|
+| [Core128](https://github.com/neo-capiro/capiro-backend/pull/128) `68a7dae3043353ef03e98487bf4451c6080116bb` | `codex/wave2-core-025ae90-20261025` | Accepted meeting hidden-boundary pagination/research-wall source; research wall already backported into Wave2. Preserve paging limits; avoid duplicate patch |
+| [Core129](https://github.com/neo-capiro/capiro-backend/pull/129) `45eaba1b720849e914052fcf3d7003ac73ac27cd` | `codex/wave2-core-025ae90-20261025` | Accepted partial atomic save/CAS/receipt and ML24 claim, with actual PG evidence retained. Migration not inferred applied; full WS05/07/ML24 paired/live acceptance remains |
+| [Core134](https://github.com/neo-capiro/capiro-backend/pull/134) `b79a168cdb75aa021c48fe328f599c2788cdae07` | `codex/wave3-a3-domain-20261025` | ACCEPT library filters/paging; reviewer23PASS/3HTTP excluded, then timing/cross-instance1PASS/15unselected. Do not sum as a new comprehensive run |
+| [Core137](https://github.com/neo-capiro/capiro-backend/pull/137) `c739cdfd580b88d9ec131aff9dc17248a4b65eb6` | `codex/wave3-ws06-library-continue-20261025` | ACCEPT dedicated stable export key; reviewer19PASS, retained author71/typecheck/3 intended mutants with provenance limits. Deployed key/replica/E29 open |
+| [FE140](https://github.com/neo-capiro/capiro-frontend/pull/140) `6ea4af20ac539c6da7f31ed657754ca530143f99` | `codex/wave2-frontend-e478e4d-20261025` | ACCEPT navigation/receiver slice;59units,2 correction mutants +8 reused original mutants,5 synthetic browsers. Full workflow/live open |
+| [FE141](https://github.com/neo-capiro/capiro-frontend/pull/141) `7b613a8a3f8472e24296a01f7e8c2758e97f774e` | `codex/wave2-frontend-e478e4d-20261025` | ACCEPT saved references/truthful incomplete-history outcomes. Full MF16 source access/usage/hearing and live checks open; citation continuation held for actual prerequisites |
+| [FE153](https://github.com/neo-capiro/capiro-frontend/pull/153) `33283081866c25de9b71327cb8d7a457e1cf290d` | `codex/wave3-a3-workspace-ui-20261025` | ACCEPT read-only history; reviewer24/24,2 killed/restored author mutants,6/6 browsers with stated later-read limits |
+| [FE158](https://github.com/neo-capiro/capiro-frontend/pull/158) `e637ac02a8c5851f9a2cc3d20cc91f9b9717b3de` | `codex/wave3-ws07-history-continue-20261025` | ACCEPT library consumer preserved by existing owner; inspect its named author/reviewer records for exact count, no invented total |
+| [FE159](https://github.com/neo-capiro/capiro-frontend/pull/159) `f0cef941893d64e237cc3bef1dcddde54987cbf5` | `codex/wave3-ws07-history-continue-20261025` | ACCEPT formatting/preview/saved export; final reviewer6PASS/18unselected, prior29/29 and author7 mounted plus intended mutant retained. Base of active Ordinary Atomic Save and FE166 |
+| [FE166](https://github.com/neo-capiro/capiro-frontend/pull/166) `83806222558a9d0ab779152e5f8a1c5f890df657` | `codex/wave3-ws07-ordinary-export-20261025` | ACCEPT known-ID HillDay status/poll/renewal/expiry/lifetime;13/13 mounted and4 intended mutants reused without reviewer rerun. Lost POST-ID/full WS12/actual PDF still open |
+| [Meri247](https://github.com/neo-capiro/meri-greenfield/pull/247) `d772a6baff05f98e6f3cc3bbd3c47b5306e00c1b` | `codex/wave2-schedule-node-trust-20261025` | ACCEPT84/48 reconciliation and MCP meeting cursor recovery. Retain inherited tracked-bills/missing-ai failures; full M3/live open |
+| [Meri254](https://github.com/neo-capiro/meri-greenfield/pull/254) `4c2171fcca374cfca67b99e755f66793992a1624` | `codex/wave3-m3-data-20261025` | ACCEPT nine-file fixture correction; reviewer151PASS. Do not rerun accepted fixture delta |
+| [Meri255](https://github.com/neo-capiro/meri-greenfield/pull/255) `f11bd906b2289b11393ac8c02a64ef92f2694e8f` | `codex/wave3-mt09-reads-continue-20261025` | Historical CHANGES for missing roster-loss witness. Related final-release fix [Meri256](https://github.com/neo-capiro/meri-greenfield/pull/256) ACCEPT head `3592e40665cddf5d9ae6a0e804eefa784ae0d288` is now MERGED `e9e912a04c687ab27732f581b53f51ebbd045018`; reconcile replacement/current lineage before further work. Not a proved deployed Core disclosure |
+
+Separate documentation: Meri267 pre-execution Fable acceptance packet remains draft at `a9822777232580a5ddb63fee88478767337b0af7`. Meri269 is this handoff/preparation draft; its head changes with this update. Neither is a product fix or proof of live acceptance. FE167–170 are already merged at final main d285 and accepted by Fable; leave those fixes closed.
+
+## Active unpublished Ordinary Atomic Save
+
+Owner **Wave 3 — Ordinary Atomic Save**, checkout `C:/dev/wave3-ordinary-save-20261025`, branch `codex/wave3-ordinary-save-20261025`, exact base FE159 `f0cef941893d64e237cc3bef1dcddde54987cbf5`. Latest final author evidence: **72/72 unit and23/23 browser PASS**, scoped lint/format PASS, no final skips. Typecheck exits2 with the **same33 baseline Meri contract errors and zero added errors**. Five intended mutants were killed/restored; additional actual stale-closure/storage-reservation counterexamples were fixed. These are local synthetic results, not deployed acceptance.
+
+Publication is pending; no candidate commit/PR is invented. Architecture remains open: exact canonical snapshot public-export allowlist ownership and size assessment; raw-LF/CRLF review-record differences were identified rather than concealed. The author did not edit the shared registry, copy the canonical algorithm or import private source. Existing reviewer/registry owner must decide the concrete new-owner entry and changed cohesive functions, without a mass reapproval of unchanged fingerprints. No tests should be rerun merely to hand this work over.
+
+Reuse Core129 transaction/CAS/receipt/PG evidence and accepted history/export behavior. **NOT RUN:** independent final-head review, architecture/import disposition, authenticated paired FE+Core two-editor/timeout/revocation flow, image qualification/deployment/rollback. Preserve edited source and original evidence; do not reset its checkout or replace the writer while awaiting publication.
+
+## Integration order and readiness checklist
+
+- [ ] Receive final current Hermes and Release results and old Root's explicit dispatch; then successor goal/ownership acknowledgement. Keep this plan undispatched until then.
+- [ ] Reconcile accepted Core128 and Core129→134→137, FE140→153→159 plus FE158/166 and active Atomic Save, Meri247→254 with merged current-release corrections. Preserve per-PR provenance; integrate clean accepted deltas once onto the then-current defaults. No wholesale stale-stack replay.
+- [ ] Release each shared file/contract from its prior writer before a new lane edits it. Root/Integration owns shared registries/export barrels/lockfiles; Domain owns schema/migrations. Keep Source/Citation and Workspace editor changes disjoint.
+- [ ] Reuse accepted tests/verdicts; use targeted checks only for new source/dependency risk. A docs or locator change does not trigger product rebuild. Genuine changed transaction/grant/migration/deletion behavior retains affected real PG qualification.
+- [ ] Provide one coherent source/config candidate and one current rollback plan to the continuing Release owner; no parallel deployment. Build once, smoke/scan the resulting exact digest; only new contents/failure justify rebuild.
+- [ ] Accept affected real routes using normal sign-in and legitimate existing fixtures. Keep PASS/FAIL/NOT RUN/UNKNOWN, actual UTC/limits and current owner distinct. Missing fixture/held optional capability is explicit, not fabricated PASS or a reason for endless broad audit.
+- [ ] Publish actual Wave3 handoff, continued decisions and remaining scope; commit and push. A handoff alone does not satisfy the goal's product objective.
+
+Later phases remain later: M4/A4 broad actions and OAuth send, M5 all-format document/artifact work including WS22–24, M6 broader memory governance, M7 Cowork/skills and M8 advanced/browser/device work. Already accepted or enabled capabilities and explicit carryovers stay protected. The older plan's Wave3 production-data-path question must be checked against the final received decisions; raise only a still-missing real product/security choice, not a historical approval ritual.
+
+Preparation ran no tests/builds/browser/model/cloud/provider/database work and launched no sessions. New executable tests0; mutation N/A. It reused existing local receipts and read-only Git/PR metadata. Current full-SDK/RuntimeV1/Core/user/firm-memory architecture, exact outcomes and no external-send escalation remain binding.
