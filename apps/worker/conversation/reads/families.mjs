@@ -11,6 +11,8 @@
 /** @typedef {{clientScope:'required'|'optional',requiredClientOperations?:readonly string[],operationIds?:readonly string[]}} ReadFamily */
 /** @type {Readonly<Record<string,Readonly<ReadFamily>>>} */
 export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optional'}),
+ 'connected-apps':Object.freeze({clientScope:'optional'}),
+ 'teams-channels':Object.freeze({clientScope:'optional'}),
  'meeting-source':Object.freeze({clientScope:'optional'}),
  'action-items-complete':Object.freeze({clientScope:'required'}),
  'operational-reads':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['query_action_items'])}),

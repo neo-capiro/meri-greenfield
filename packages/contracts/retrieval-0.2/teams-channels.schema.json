@@ -1,0 +1,644 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:teams-channels:0.2.0",
+  "title": "Existing Core actor-owned Teams channel pages",
+  "$defs": {
+    "TeamsChannelsRequest": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "connectionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "teamId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "continuation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        }
+      },
+      "required": [
+        "connectionId",
+        "teamId"
+      ],
+      "additionalProperties": false
+    },
+    "TeamsMessagesRequest": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "connectionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "teamId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "continuation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "channelId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^/\\\\?#\\s\\u0000-\\u001f]+$"
+        }
+      },
+      "required": [
+        "connectionId",
+        "teamId",
+        "channelId"
+      ],
+      "additionalProperties": false
+    },
+    "TeamsChannelsOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "page"
+            },
+            "operation": {
+              "const": "list_teams_channels"
+            },
+            "connectionId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "teamId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "channelId": {
+              "type": "null"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "coverage": {
+              "const": "channels"
+            },
+            "attachmentsIncluded": {
+              "const": false
+            },
+            "repliesIncluded": {
+              "const": false
+            },
+            "items": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "data": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512
+                      },
+                      "displayName": {
+                        "type": "string",
+                        "maxLength": 65536
+                      },
+                      "description": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "membershipType": {
+                        "enum": [
+                          "standard",
+                          "private",
+                          "shared"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "displayName",
+                      "description",
+                      "membershipType"
+                    ]
+                  },
+                  "source": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "resource": {
+                        "type": "string",
+                        "maxLength": 4096
+                      },
+                      "revision": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      }
+                    },
+                    "required": [
+                      "resource",
+                      "revision",
+                      "contentSha256"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "data",
+                  "source"
+                ]
+              }
+            },
+            "nextContinuation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16384
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "incomplete": {
+              "type": "boolean"
+            },
+            "omittedItems": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            }
+          },
+          "required": [
+            "kind",
+            "operation",
+            "connectionId",
+            "teamId",
+            "channelId",
+            "observedAt",
+            "coverage",
+            "attachmentsIncluded",
+            "repliesIncluded",
+            "items",
+            "nextContinuation",
+            "incomplete",
+            "omittedItems"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "unavailable"
+            },
+            "operation": {
+              "enum": [
+                "list_teams_channels",
+                "get_teams_channel_messages"
+              ]
+            },
+            "reason": {
+              "enum": [
+                "client_scope_unavailable",
+                "disconnected",
+                "permission_required",
+                "reconnect_required",
+                "configuration_required",
+                "source_changed",
+                "provider_unavailable",
+                "invalid_provider_response"
+              ]
+            },
+            "requiredPermission": {
+              "enum": [
+                "Channel.ReadBasic.All",
+                "ChannelMessage.Read.All"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "operation",
+            "reason",
+            "requiredPermission"
+          ]
+        }
+      ]
+    },
+    "TeamsMessagesOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "page"
+            },
+            "operation": {
+              "const": "get_teams_channel_messages"
+            },
+            "connectionId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "teamId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "channelId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[^/\\\\?#\\s\\u0000-\\u001f]+$"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "coverage": {
+              "const": "root_messages_only"
+            },
+            "attachmentsIncluded": {
+              "const": false
+            },
+            "repliesIncluded": {
+              "const": false
+            },
+            "items": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "data": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512
+                      },
+                      "replyToId": {
+                        "type": "null"
+                      },
+                      "subject": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "createdDateTime": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "lastModifiedDateTime": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "deletedDateTime": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "etag": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "body": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "contentType": {
+                                "enum": [
+                                  "text",
+                                  "html"
+                                ]
+                              },
+                              "content": {
+                                "type": "string",
+                                "maxLength": 65536
+                              }
+                            },
+                            "required": [
+                              "contentType",
+                              "content"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "from": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "user": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "id": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "maxLength": 65536
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "displayName": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "maxLength": 65536
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "displayName"
+                                    ]
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "application": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "id": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "maxLength": 65536
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "displayName": {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "maxLength": 65536
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "displayName"
+                                    ]
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": []
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "subject",
+                      "createdDateTime",
+                      "lastModifiedDateTime",
+                      "deletedDateTime",
+                      "etag",
+                      "body"
+                    ]
+                  },
+                  "source": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "resource": {
+                        "type": "string",
+                        "maxLength": 4096
+                      },
+                      "revision": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      }
+                    },
+                    "required": [
+                      "resource",
+                      "revision",
+                      "contentSha256"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "data",
+                  "source"
+                ]
+              }
+            },
+            "nextContinuation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16384
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "incomplete": {
+              "type": "boolean"
+            },
+            "omittedItems": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            }
+          },
+          "required": [
+            "kind",
+            "operation",
+            "connectionId",
+            "teamId",
+            "channelId",
+            "observedAt",
+            "coverage",
+            "attachmentsIncluded",
+            "repliesIncluded",
+            "items",
+            "nextContinuation",
+            "incomplete",
+            "omittedItems"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "unavailable"
+            },
+            "operation": {
+              "enum": [
+                "list_teams_channels",
+                "get_teams_channel_messages"
+              ]
+            },
+            "reason": {
+              "enum": [
+                "client_scope_unavailable",
+                "disconnected",
+                "permission_required",
+                "reconnect_required",
+                "configuration_required",
+                "source_changed",
+                "provider_unavailable",
+                "invalid_provider_response"
+              ]
+            },
+            "requiredPermission": {
+              "enum": [
+                "Channel.ReadBasic.All",
+                "ChannelMessage.Read.All"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "operation",
+            "reason",
+            "requiredPermission"
+          ]
+        }
+      ]
+    }
+  },
+  "$comment": "Input shapes from Core f3d3e75101d39b7138c1dd76a53c465f6c634e12 microsoft-teams-contract.ts; output receiving validation does not confer source authority."
+}

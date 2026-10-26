@@ -12,6 +12,14 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  ...['list_teams_channels','get_teams_channel_messages'].map((id,index)=>Object.freeze({id,nativeId:id,group:'teams-channels',
+    input:index?'TeamsMessagesRequest':'TeamsChannelsRequest',output:index?'TeamsMessagesOutput':'TeamsChannelsOutput',version:'0.2.0',contextKeys:Object.freeze([]),
+    normalize:(v,request)=>v.teamsChannelValidators.normalizeInput(id,request),
+    outputAssert:(v,page,request)=>v.teamsChannelValidators.assertOutput(id,page,request)})),
+  ...['list_connected_app_reads','read_connected_app'].map((id,index)=>Object.freeze({id,nativeId:id,group:'connected-apps',
+    input:index?'ConnectedAppsReadRequest':'ConnectedAppsListRequest',output:index?'ConnectedAppsReadOutput':'ConnectedAppsListOutput',version:'0.2.0',contextKeys:Object.freeze([]),
+    normalize:(v,request)=>v.connectedAppValidators.normalizeInput(id,request),
+    outputAssert:(v,page,request)=>v.connectedAppValidators.assertOutput(id,page,request)})),
   Object.freeze({id:'schedule_task',nativeId:'schedule_task',group:'schedule-tools',input:'ScheduleTaskRequest',output:'ScheduleMutationOutput',version:'0.2.0',
     contextKeys:Object.freeze(['scheduleContext']),dispatchProfile:'schedule-execution/1',
     normalize:(v,request,context,binding)=>v.scheduleToolValidators.normalizeInput(binding.id,request,clock(context,binding.contextKeys)),
@@ -406,7 +414,8 @@ function assertCatalog(catalog) {
   validateShape('Catalog', catalog);
   unique(catalog.originals.map(row => row.id), 'native capability');
   const selected = catalog.originals.filter(row => row.disposition === 'selected');
-  if (selected.length !== 96 || catalog.originals.length - selected.length !== 43) fail('D012 disposition mismatch');
+  const additive = ['list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
+  if (selected.filter(row=>!additive.includes(row.id)).length !== 96 || catalog.originals.length - selected.length !== 43) fail('D012 disposition mismatch');
   const operations = new Map();
   const aliases = new Map();
   for (const operation of catalog.operations) {
