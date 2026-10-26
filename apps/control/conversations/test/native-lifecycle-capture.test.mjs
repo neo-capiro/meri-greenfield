@@ -50,7 +50,15 @@ test('published completion file is readable from an authorized later turn after 
  const input={binding,scopes,selectedClientId:id(5),completionId:binding.runId,checkpointId:binding.runId,kind:'native-session',sessionId:x.sessionKey.sessionId,filesRequestSha256:hash(files)};
  const capture=await x.f.store.completions.begin(input,check),event=(eventId,type,data)=>({contractVersion:'0.1.0',eventId,createdAt:new Date(at).toISOString(),type,data});
  await x.f.store.completions.publish({...input,files,events:[event(capture.verifiedEventId,'checkpoint.verified',{checkpointId:binding.runId}),event(capture.completedEventId,'run.status',{state:'completed',reasonCode:null})]},check);await x.settle(binding);
- const target=(await x.select()).binding;await x.accept(target,'Continue the same conversation.');
+ const target=(await x.select()).binding;
+ assert.equal(x.f.state.runs.has(rowKey(target)),false,'selection admits the next turn without accepting an input');
+ const admitted=await x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target}),check);
+ assert.deepEqual(admitted.entry,files.workspace.entries[0]);assert.deepEqual(admitted.binding,binding,'the published file retains its original run binding');
+ assert.equal(await x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target,versionId:id(7199)}),check),null,'an absent native entry can fall through to the separate generated-version owner before input acceptance');
+ x.f.state.artifactLookupFailure=true;
+ await assert.rejects(x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target,versionId:id(7199)}),check),{code:'STORE_UNAVAILABLE'},'unknown native lookup is never absence');
+ x.f.state.artifactLookupFailure=false;
+ await x.accept(target,'Continue the same conversation.');
  const result=await x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target}),check);assert.deepEqual(result.entry,files.workspace.entries[0]);assert.deepEqual(result.binding,binding);
  assert.notEqual(x.f.state.runs.get(rowKey(binding)).sequence_end,null);
 });
