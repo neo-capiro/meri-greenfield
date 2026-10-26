@@ -121,6 +121,20 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  // "no saved turns yet" (404), not corruption.
  async function readPage(c,life,after,limit){const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;}
  async function history({credential,after=0,limit=100,signal}){return operation(credential,signal,(c,life)=>readPage(c,life,after,limit));}
+ async function feedbackRead({credential,input,signal}){
+  if(typeof store.feedback?.read!=='function')fail('CONVERSATION_UNAVAILABLE');
+  return operation(credential,signal,(c,life)=>life.run(()=>store.feedback.read(c,input,life.check)));
+ }
+ async function feedback({credential,input,signal}){
+  if(typeof store.feedback?.record!=='function')fail('CONVERSATION_UNAVAILABLE');
+  let acknowledged=false,dispatched=false;
+  try{return await operation(credential,signal,async(c,life,fresh)=>{
+   await fresh();dispatched=true;const result=await life.run(()=>store.feedback.record(c,input,life.check));acknowledged=true;return result;
+  });}catch(error){
+   if(acknowledged||dispatched&&['STORE_COMMIT_UNKNOWN','STORE_RELEASE_UNKNOWN','DEADLINE','CANCELLED'].includes(error.code))fail('FEEDBACK_WRITE_UNKNOWN');
+   throw error;
+  }
+ }
  /** Event-stream window until untilMs. Polls read only the store. A page of new events is passed to deliver only after a complete
   * fresh recheck that started after the page was read, as history releases; an idle window also rechecks once idleRecheckMs has
   * passed since the last one, so revocation or suppression ends it. Latency bound: no event is released after a refusal; an idle
@@ -197,7 +211,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   own(value,['event','checkedAtMs','expiresAtMs']);const e=own(value.event,['eventId','createdAt','type','data']);if(!['approval.required','artifact.available'].includes(e.type)||!Number.isSafeInteger(value.checkedAtMs)||value.checkedAtMs<at||value.checkedAtMs>now()||!Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<=now())fail('OUTPUT_PUBLICATION_REFUSED');life.limitDeadline(value.expiresAtMs);
   await fresh();const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');await fresh();return result;
  });}
- return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,recordUsage,publishSelectedOutput},loadWithLifecycle,{value:loadForExecution}));
+ return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,feedback,feedbackRead,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,recordUsage,publishSelectedOutput},loadWithLifecycle,{value:loadForExecution}));
 }
 function failError(code){return Object.assign(new Error(code),{code});}
 /** Closed run budgets: positive integer calls and per-result bytes, and an optional run aggregate no smaller than one result. */

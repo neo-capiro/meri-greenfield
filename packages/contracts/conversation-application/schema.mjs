@@ -1,5 +1,6 @@
 import {conversationErrorStatuses} from './protocol.mjs';
 import {MODEL_SELECTION_SCHEMA} from '../model-selection.mjs';
+import {feedbackDefinitions} from './feedback-schema.mjs';
 const pub = name => ({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const common = name => ({$ref:'urn:meri:retrieval:common:0.2.0#/$defs/'+name});
 const skill = property => ({$ref:'urn:meri:retrieval:skill:0.2.0#/$defs/SkillInvocation/properties/'+property});
@@ -14,6 +15,7 @@ const sha256 = {type:'string',pattern:'^[a-f0-9]{64}$'};
 export function conversationSchema(){
  const selection=object({skillId:skill('skillId'),skillVersion:skill('skillVersion')});
  return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:conversation-application:0.1.0',$defs:{
+  ...feedbackDefinitions,
   ConversationSubmitRequest:object({requestId,prompt,windowRequest:common('WindowRequest'),skill:selection,modelSelection:MODEL_SELECTION_SCHEMA},['requestId','prompt']),
   ConversationHistoryRequest:object({after:sequence,limit:{type:'integer',minimum:1,maximum:100}},[]),
   ConversationCancelRequest:object({}),
