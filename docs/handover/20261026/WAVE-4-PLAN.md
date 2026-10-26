@@ -48,7 +48,7 @@ A change is not done until what it replaced is gone.
 
 # Wave 4 implementation and acceptance plan
 
-26 October 2026. Initial plan requested by Neo; implementation has not started. This plan does not authorize external mail sends. Fable is the incoming coordinator under the latest user instruction; dated role assignments in the repository do not override that handover. Onboarding is excluded.
+26 October 2026. Initial plan requested by Neo; implementation has not started. This plan does not authorize external mail sends. The initial coordinator wording below is historical. Neo subsequently assigned Wave 4 to Codex and transferred remaining Wave 3 document fix/acceptance/shipment/PR281 closeout and the release lock to Wave 4 on26October. The current WAVE4-STATUS.md checkpoint controls allocations. Onboarding is excluded.
 
 Canonical basis: documentation checkout `8acb394cf10782d1a7703fa2d0b8c926f14ab508`. The [final phase table](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/plan/FINAL-PLAN-20261021.md#L175) assigns **S3, M4 and A4 implementation, plus bounded M7 groundwork**, to Wave 4. Its [historical schedule](https://github.com/neo-capiro/meri-greenfield/blob/8acb394cf10782d1a7703fa2d0b8c926f14ab508/docs/handover/20261022/plan/FINAL-PLAN-20261021.md#L241) schedules A4 shipment later and A3 completion alongside Wave 4; neither row moves unfinished Wave 3 work into new scope. These are dependencies, not a renewed weeks 8–10 promise. No separate detailed Wave 4 brief was found; this plan turns the canonical phase/ticket assignments into bounded work.
 
@@ -87,7 +87,7 @@ Required proof is proportionate to changed behavior, reusing exact-source receip
 
 Use the final Fable handover and [Wave 3 continuation handover](WAVE-3-HANDOFF.md) as the transfer baseline; later verified receipts supersede it. It still records pending exact-image/public-package composition and native feedback qualification, runtime memory/mail readback and document/source-view acceptance, and connected-provider content qualification constrained by unavailable connections. Preserve original unknown submissions without replay. Any remaining A3 Workspace, M2 lifecycle, M3 read/current-source or previously allocated qualification defect stays **Wave 3 carryover**, with an owner and honest evidence state. Already accepted source is reused, not reopened wholesale. Native generated Office output qualification has passed; the later full M5 runtime preview/editing obligation is distinct. Onboarding is excluded rather than reassigned to Wave 4.
 
-## First actions for Fable
+## Historical first actions for Fable
 
 1. Accept the exact Wave 3 handover: source/image/package pins, open defects, live unknowns and continuing owners. Finish those allocated blockers without calling Wave 3 complete prematurely.
 2. Assign the four streams above using existing owners and exclusive files. Produce one short current-implementation-to-ticket gap list for the task/approval slice and canonical mail sender; reuse closed work and its tests.
