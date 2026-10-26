@@ -9,7 +9,7 @@ export async function generateSourceContracts({check=false}={}){
  const [{default:Ajv},{default:formats},{default:standalone},esbuild,{compile}]=await Promise.all([import('ajv/dist/2020.js'),import('ajv-formats'),import('ajv/dist/standalone/index.js'),import('esbuild'),import('json-schema-to-typescript')]);
  try{
   const sources=[],owners=new Map();
-  for(const path of ['meri.schema.json','native-bill-text-source.schema.json',"native-hearing-source.schema.json","retrieval-0.2/public-domain-hearings.schema.json","retrieval-0.2/public-domain-hearing-records.schema.json","retrieval-0.2/outreach-query.schema.json",'generate-sources.mjs','retrieval-0.2/hearing-fragments.mjs','conversation-history/protocol.mjs',...['protocol','semantics','hearing-semantics','validate','receive'].map(n=>'conversation-sources/'+n+'.mjs'),'document-application/boundary.mjs']){
+  for(const path of ['meri.schema.json','native-bill-text-source.schema.json',"native-hearing-source.schema.json","native-hearing-media.schema.json","retrieval-0.2/public-domain-hearings.schema.json","retrieval-0.2/public-domain-hearing-records.schema.json","retrieval-0.2/outreach-query.schema.json",'generate-sources.mjs','retrieval-0.2/hearing-fragments.mjs','conversation-history/protocol.mjs',...['protocol','semantics','hearing-semantics','hearing-media-semantics','validate','receive'].map(n=>'conversation-sources/'+n+'.mjs'),'document-application/boundary.mjs']){
    const bytes=await readFile(new URL(path,HERE));sources.push({path,sha256:hash(bytes),bytes:bytes.length});if(path.endsWith('.json')){const s=JSON.parse(bytes);owners.set(s.$id,s);}
   }
   const root=structuredClone(owners.get('urn:meri:native-bill-text-source:1.0.0')),defs={},seen=new Map();
@@ -19,9 +19,9 @@ export async function generateSourceContracts({check=false}={}){
     if(!seen.has(full)){const name='Canonical_'+fragment.split('/').at(-1)+'_'+hash(full).slice(0,8);seen.set(full,name);let target=owners.get(id);for(const token of fragment.split('/').slice(1))target=target?.[token.replaceAll('~1','/').replaceAll('~0','~')];if(!target)throw Error('Missing canonical pointer '+full);defs[name]=transform(target,id);}out[key]='#/$defs/'+seen.get(full);
    }return out;
   }
-  const hearing=owners.get('urn:meri:native-hearing-source:1.0.0');
-  root.$defs={...transform(root.$defs,root.$id),...transform(hearing.$defs,hearing.$id),...defs};
-  const names=['BillTextSourceReadRequest','BillTextSourceReadResponse','NativeBillTextSourceEvent','HearingSourceReadRequest','HearingSourceReadResponse','NativeHearingSourceEvent'],exports=['validateRequest','validateResponse','validateEvent','validateHearingRequest','validateHearingResponse','validateHearingEvent'];
+  const hearing=owners.get('urn:meri:native-hearing-source:1.0.0'),media=owners.get('urn:meri:native-hearing-media:1.0.0');
+  root.$defs={...transform(root.$defs,root.$id),...transform(hearing.$defs,hearing.$id),...transform(media.$defs,media.$id),...defs};
+  const names=['BillTextSourceReadRequest','BillTextSourceReadResponse','NativeBillTextSourceEvent','HearingSourceReadRequest','HearingSourceReadResponse','NativeHearingSourceEvent','HearingMediaReadRequest','HearingMediaReadResponse'],exports=['validateRequest','validateResponse','validateEvent','validateHearingRequest','validateHearingResponse','validateHearingEvent','validateHearingMediaRequest','validateHearingMediaResponse'];
   const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);const refs={};names.forEach((n,i)=>{const ref=root.$id+'#/$defs/'+n;ajv.compile({$ref:ref});refs[exports[i]]=ref;});const generated=standalone(ajv,refs);
   const bundled=await esbuild.build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-sources/receive.mjs',HERE),'utf8'),sourcefile:'conversation-sources-receiver.mjs',resolveDir:resolve(dir,'conversation-sources')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'sources-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'sources-generated'}));b.onLoad({filter:/.*/,namespace:'sources-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
   if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('Source browser external import');
@@ -30,6 +30,10 @@ export async function generateSourceContracts({check=false}={}){
 declare const admittedSourceRequest:unique symbol;
 export type AdmittedBillTextSourceRequest=Readonly<BillTextSourceReadRequest>&{readonly [admittedSourceRequest]:true};
 export type AdmittedHearingSourceRequest=Readonly<HearingSourceReadRequest>&{readonly [admittedSourceRequest]:true};
+export type AdmittedHearingMediaRequest=Readonly<HearingMediaReadRequest>&{readonly [admittedSourceRequest]:true};
+export declare const HEARING_MEDIA_READ_SCHEMA:'meri.hearing-media-read/1';
+export declare function receiveHearingMediaRequest(bytes:Uint8Array):AdmittedHearingMediaRequest;
+export declare function receiveHearingMediaResponse(status:number,bytes:Uint8Array,request:AdmittedHearingMediaRequest):Promise<HearingMediaReadResponse|BillTextSourceErrorResponse>;
 export declare const hearingSourceMetadata:${JSON.stringify(hearingSourceMetadata,null,2)};
 export declare const HEARING_SOURCE_SCHEMA:'meri.native-hearing-source/1',HEARING_SOURCE_READ_SCHEMA:'meri.hearing-source-read/1',HEARING_SOURCE_EVENT:'source.native-hearing-record';
 export declare function receiveHearingSourceRequest(bytes:Uint8Array):AdmittedHearingSourceRequest;
