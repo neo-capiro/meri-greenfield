@@ -11,21 +11,26 @@ export function createCoreConversationSourceReader({origin,getServiceSecret,fetc
  const url=new URL(origin);if(url.protocol!=='https:'||url.pathname!=='/'||url.search||url.hash||url.username||url.password||typeof getServiceSecret!=='function'||typeof fetchImpl!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  return Object.freeze({forRequest({credential,principal,signal,deadlineMs}){
   if(typeof credential!=='string'||!/^\S{1,8192}$/u.test(credential))refuse('UNAUTHENTICATED');
-  return Object.freeze({async read(raw){
+  async function read(raw,playback){
    const event=assertNativeSourceEvent(raw),b=event.binding;
    const hearing=event.type===HEARING_SOURCE_EVENT,operation=hearing?'search_committee_hearings':'read_bill_text',request=hearing?savedHearingRequest(event):savedBillTextRequest(event);
+   const media=playback!==undefined;if(media&&!hearing)refuse('SOURCE_REFERENCE_NOT_FOUND');
    if(b.tenantId!==principal.tenantId||b.actorId!==principal.actorId||event.scopes.some(s=>s.kind==='client'&&!principal.clientIds.includes(s.resourceId)))refuse('ACCESS_DENIED');
    if(hearing&&request.clientId!==null&&!principal.clientIds.includes(request.clientId))refuse('ACCESS_DENIED');
    const life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+maxRequestMs),errorFactory:()=>new ProductError('SOURCE_REFERENCE_UNAVAILABLE')});let response;
    try{const secret=await life.run(()=>getServiceSecret());if(typeof secret!=='string'||!/^\S{1,8192}$/u.test(secret))refuse();
-    response=await life.run(signal=>fetchImpl(new URL('/api/clio/tools/'+operation,origin),{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
-     headers:{authorization:`Bearer ${credential}`,'x-internal-service-secret':secret,'content-type':'application/json',accept:'application/json'},body:JSON.stringify(request)}));
-    if(response.status!==200)refuse(({401:'UNAUTHENTICATED',403:'ACCESS_DENIED',400:'SOURCE_REFERENCE_STALE',404:'SOURCE_REFERENCE_UNAVAILABLE'})[response.status]);
+    const body=media?{schemaVersion:'capiro.hearing-media-read/1',selection:request,source:{recordId:event.data.source.recordId,contentHash:event.data.source.provenance.contentHash},playback}:request;
+    response=await life.run(signal=>fetchImpl(new URL(media?'/api/clio/conversations/hearing-media':'/api/clio/tools/'+operation,origin),{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
+     headers:{authorization:`Bearer ${credential}`,'x-internal-service-secret':secret,'content-type':'application/json',accept:'application/json'},body:JSON.stringify(body)}));
+    if(response.status!==200)refuse(({401:'UNAUTHENTICATED',403:'ACCESS_DENIED',400:'SOURCE_REFERENCE_STALE',409:'SOURCE_REFERENCE_STALE',404:'SOURCE_REFERENCE_UNAVAILABLE'})[response.status]);
     if(response.redirected||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??''))refuse();
     const length=response.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))refuse();
-    const result=await jsonBody({body:response.body,length:length===null?null:Number(length)},131072,life,life.check);life.check();return hearing?releaseHearingPage(event,result):releaseBillTextPage(event,result);
+    const result=await jsonBody({body:response.body,length:length===null?null:Number(length)},131072,life,life.check);life.check();
+    if(media){if(!result||typeof result!=='object'||Object.keys(result).sort().join()!=='media,schemaVersion,source'||result.schemaVersion!=='capiro.hearing-media-read/1')refuse();return {source:result.source,media:result.media};}
+    return hearing?releaseHearingPage(event,result):releaseBillTextPage(event,result);
    }catch(error){if(productFailure(error))throw error;refuse();}
    finally{try{await response?.body?.cancel();}catch{}life.close();}
-  }});
+  }
+  return Object.freeze({read:raw=>read(raw),media:(raw,playback)=>read(raw,playback)});
  }});
 }

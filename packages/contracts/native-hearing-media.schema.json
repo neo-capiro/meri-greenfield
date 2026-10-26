@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:native-hearing-media:1.0.0",
+  "$defs": {
+    "HearingMediaPlaybackSelection": {
+      "type": "object",
+      "properties": {
+        "epochId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "positionMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        }
+      },
+      "required": [
+        "epochId",
+        "positionMs"
+      ],
+      "additionalProperties": false
+    },
+    "HearingMediaEpoch": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "startMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "durableEndMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "durableBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "transcriptState": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "maxLength": 4000
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "startMs",
+        "durableEndMs",
+        "durableBytes",
+        "state",
+        "transcriptState",
+        "expiresAt",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "HearingMediaManifest": {
+      "type": "object",
+      "properties": {
+        "hearingId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "mode": {
+          "const": "server"
+        },
+        "format": {
+          "const": "audio/wav"
+        },
+        "epochs": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/HearingMediaEpoch"
+          }
+        }
+      },
+      "required": [
+        "hearingId",
+        "mode",
+        "format",
+        "epochs"
+      ],
+      "additionalProperties": false
+    },
+    "HearingMediaPlayback": {
+      "type": "object",
+      "properties": {
+        "epochId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "partId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "startMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "endMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "epochId",
+        "partId",
+        "startMs",
+        "endMs",
+        "url",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "HearingMediaReadRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.hearing-media-read/1"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "referenceId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "playback": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/HearingMediaPlaybackSelection"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "conversationId",
+        "runId",
+        "referenceId",
+        "playback"
+      ],
+      "additionalProperties": false
+    },
+    "HearingMediaReadResponse": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.hearing-media-read/1"
+        },
+        "event": {
+          "$ref": "urn:meri:native-hearing-source:1.0.0#/$defs/NativeHearingSourceEvent"
+        },
+        "current": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "object",
+              "properties": {
+                "hearingId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "recordId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "contentHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "hearingId",
+                "recordId",
+                "contentHash"
+              ],
+              "additionalProperties": false
+            },
+            "media": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "manifest": {
+                      "$ref": "#/$defs/HearingMediaManifest"
+                    },
+                    "playback": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "manifest",
+                    "playback"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "manifest": {
+                      "type": "null"
+                    },
+                    "playback": {
+                      "$ref": "#/$defs/HearingMediaPlayback"
+                    }
+                  },
+                  "required": [
+                    "manifest",
+                    "playback"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "source",
+            "media"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "event",
+        "current"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
