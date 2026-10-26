@@ -3,6 +3,7 @@ import {randomUUID} from 'node:crypto';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {nativeReadFault} from '../../packages/contracts/runtime-0.2/reads.mjs';
 import {retainedOrigin} from '../../packages/contracts/runtime-0.2/retained-reads.mjs';
+import {createBillTextSourceCapture} from '../control/conversations/sources/bill-text.mjs';
 import {createReadsOwner} from './reads-owner.mjs';
 import {createReadsApplication} from './reads-http.mjs';
 import {prepareReadFamilies,GENERAL_READ_ADAPTER_FAMILIES} from './read-families.mjs';
@@ -30,10 +31,10 @@ export async function createControlReadsComposer(configuration){
  }
  const families=prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy:c.capabilityPolicy,getNativeCredential,getServiceSecret,
   ...(getReadModeServiceSecret?{getReadModeServiceSecret}:{}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress}),...(c.memoryContexts?{memoryContexts:c.memoryContexts}:{})});
- function createReadsRuntime({execution,binding,approvedReads,objectiveCore,routineCore,capabilityPolicy=c.capabilityPolicy,readCapabilityRole}){
+ function createReadsRuntime({execution,binding,approvedReads,conversationStore,objectiveCore,routineCore,capabilityPolicy=c.capabilityPolicy,readCapabilityRole}){
   if(typeof capabilityPolicy?.forRun!=='function')deny('CONFIGURATION');
   const createGateway=value=>families.createGateway({...value,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{})});
-  return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now}),approvedReads,now});
+  return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now,...(conversationStore?{captureSource:createBillTextSourceCapture({store:conversationStore,defaultCongress:c.defaultCongress})}:{})}),approvedReads,now});
  }
  return Object.freeze({createReadsRuntime,familyIds,missing:families.missing.map(id=>`source-composition:${id}`)});
 }

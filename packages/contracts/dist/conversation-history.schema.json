@@ -599,7 +599,14 @@
           "maximum": 9007199254740991
         },
         "event": {
-          "$ref": "#/$defs/Canonical_UIEvent_1691b714"
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Canonical_UIEvent_1691b714"
+            },
+            {
+              "$ref": "#/$defs/Canonical_NativeBillTextSourceEvent_8e4e610b"
+            }
+          ]
         }
       },
       "required": [
@@ -2177,6 +2184,222 @@
           "additionalProperties": false
         }
       ]
+    },
+    "Canonical_NativeBillTextSource_4d549cac": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.native-bill-text-source/1"
+        },
+        "deliveryId": {
+          "type": "string",
+          "pattern": "^[-A-Za-z0-9_.:@/]{1,255}$"
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "read_bill_text"
+            },
+            "version": {
+              "const": "0.2.0"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "argumentsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "resultSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "executionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "authoritativeOwner": {
+              "const": "federal_evidence_current"
+            },
+            "billId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "versionCode": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "revisionId": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            "packageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "provider": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "lineageKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "versionHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "textHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "authoritativeOwner",
+            "billId",
+            "versionCode",
+            "revisionId",
+            "packageId",
+            "provider",
+            "lineageKey",
+            "versionHash",
+            "textHash"
+          ],
+          "additionalProperties": false
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 30000000
+            },
+            "endOffset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 30000000
+            },
+            "totalCharacters": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 30000000
+            },
+            "textSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "pageComplete": {
+              "const": true
+            },
+            "contentComplete": {
+              "type": "boolean"
+            },
+            "paginationComplete": {
+              "type": "boolean"
+            },
+            "truncated": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "offset",
+            "endOffset",
+            "totalCharacters",
+            "textSha256",
+            "pageComplete",
+            "contentComplete",
+            "paginationComplete",
+            "truncated"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deliveryId",
+        "operation",
+        "requestSha256",
+        "argumentsSha256",
+        "resultSha256",
+        "executionSha256",
+        "policyRevision",
+        "source",
+        "page"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeBillTextSourceEvent_8e4e610b": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": {
+          "const": "source.native-bill-text"
+        },
+        "data": {
+          "$ref": "#/$defs/Canonical_NativeBillTextSource_4d549cac"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "eventId",
+        "binding",
+        "sequence",
+        "createdAt",
+        "scopes",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
     },
     "Canonical_Identity_aba0a4e9": {
       "type": "object",

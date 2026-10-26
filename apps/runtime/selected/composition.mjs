@@ -36,7 +36,7 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
  // construct their own current session/Core access callback in the document owner.
  const retained=createSelectedOutputRetention({journal:store.selectedOutputs,now,currentOutputAccess:async()=>{throw Error('SELECTED_OUTPUT_APPROVAL_REQUIRED');}});
  function gatewayForBinding(binding,{credential}){
-  const app=createReadsRuntime({execution,binding,approvedReads});
+  const app=createReadsRuntime({execution,binding,approvedReads,conversationStore:store});
   const client=createNativeReadsClient({origin:'https://meri-control.internal',binding,credential,approvedReads,now,
    fetchImpl:(url,init)=>app.handle(new Request(url,init))});
   return {execute:input=>client.execute(input),async readForSkill(input){

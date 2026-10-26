@@ -80,7 +80,7 @@ test('P3 local budgets are upper bounds that a skill can only narrow; the ledger
 test('every gateway code renders its own closed text; unknown failures are INTERNAL_ERROR',()=>{
  const texts=READ_FAILURE_CODES.map(code=>failureResult(code,'mcp__meri_reads__x').content[0].text);assert.equal(new Set(texts).size,READ_FAILURE_CODES.length);
  for(const [i,code] of READ_FAILURE_CODES.entries()){assert.ok(texts[i].startsWith(`${code}: mcp__meri_reads__x `));assert.equal(failureResult(code,'t').isError,true);}
- assert.deepEqual(READ_FAILURE_CODES.slice().sort(),['ACCESS_DENIED','BUDGET_UNCERTAIN','CANCELLED','DEADLINE','GATEWAY_CONFIGURATION','INTERNAL_ERROR','INVALID_ARGUMENTS','INVALID_RESULT','RESOURCE_LIMIT','UNAVAILABLE']);
+ assert.deepEqual(READ_FAILURE_CODES.slice().sort(),['ACCESS_DENIED','BUDGET_UNCERTAIN','CANCELLED','DEADLINE','GATEWAY_CONFIGURATION','INTERNAL_ERROR','INVALID_ARGUMENTS','INVALID_RESULT','RESOURCE_LIMIT','SOURCE_PUBLICATION_CONFLICT','SOURCE_PUBLICATION_UNKNOWN','UNAVAILABLE']);
  assert.equal(failureCode(Object.assign(Error('x'),{code:'DEADLINE'})),'DEADLINE');assert.equal(failureCode(Error('ACCESS_DENIED')),'ACCESS_DENIED');assert.equal(failureCode(Error('PRIVATE detail')),'INTERNAL_ERROR');assert.equal(failureCode(null),'INTERNAL_ERROR');
 });
 

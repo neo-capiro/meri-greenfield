@@ -1,3 +1,4 @@
+import {assertConversationEvent} from '../../../packages/contracts/conversation-sources/validate.mjs';
 /** Pure validation of one conversation owner's retained-row snapshot. The caller
  * supplies complete pages from one read-only repeatable-read transaction. This
  * decoder grants no retention or purge authority. */
@@ -214,7 +215,7 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
   const orderedEvents=rows(events).slice().sort((a,b)=>
    String(a.run_id).localeCompare(String(b.run_id))||Number(a.sequence)-Number(b.sequence));
   for(const row of orderedEvents){
-   inSubject(row,owner.subject);sameRow(row,row.event,'event_sha256');validateShape('UIEvent',row.event);
+   inSubject(row,owner.subject);sameRow(row,row.event,'event_sha256');assertConversationEvent(row.event);
    const run=byRun.get(row.run_id),sequence=number(row.sequence);
    requireFact(run&&sequence>=1&&same(row.event.binding,run.projection.binding)&&
     same(row.event.scopes,run.projection.scopes)&&row.event.eventId===row.event_id&&

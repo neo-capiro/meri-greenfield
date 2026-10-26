@@ -1,10 +1,10 @@
 import type { UIMessageChunk, UIMessageStreamOutcome } from 'ai';
-import type { UIEvent } from '@capiro/meri-contracts';
+import type { MeriUIEvent } from './protocol.js';
 export interface MeriStreamOptions {
     /** Stable id for the transport message envelope (not a frozen event field). */
     messageId: string;
     /** Frozen events, already authorized and ordered for this subscription. */
-    events: readonly UIEvent[];
+    events: readonly MeriUIEvent[];
     /** Operation-level outcome for the composed stream; defaults to completed. */
     outcome?: UIMessageStreamOutcome;
 }
@@ -20,7 +20,7 @@ export declare function meriEventStreamResponse(options: MeriStreamOptions): Res
 export interface MeriLiveStreamOptions {
     messageId: string;
     /** Ordered, freshly authorized durable events. Cancelling the response cancels this source. */
-    events: ReadableStream<UIEvent>;
+    events: ReadableStream<MeriUIEvent>;
 }
 /** Projects a live event source through upstream merge so cancellation reaches its reader. */
 export declare function createMeriLiveEventStream(options: MeriLiveStreamOptions): ReadableStream<UIMessageChunk>;

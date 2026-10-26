@@ -21,9 +21,9 @@ export function conversationSchema(){
   ConversationSkillAssetPin:object({skillId:skill('skillId'),skillVersion:skill('skillVersion'),manifestSha256:sha256,proseSha256:sha256,catalogSha256:sha256}),
   ConversationStoredRequest:object({requestId,prompt,skill:nullable(ref('ConversationSkillAssetPin')),window:nullable(common('NormalizedWindow')),windowRequest:nullable(common('WindowRequest')),modelSelection:MODEL_SELECTION_SCHEMA},['requestId','prompt','skill','window','windowRequest']),
   ConversationSubmittedResponse:object({run:pub('Run'),requestId,lastSequence:{...sequence,minimum:1},replayed:{type:'boolean'}}),
-  ConversationHistoryResponse:object({run:pub('Run'),request:ref('ConversationStoredRequest'),events:{type:'array',items:pub('UIEvent'),maxItems:100},nextSequence:sequence,hasMore:{type:'boolean'},lastSequence:{...sequence,minimum:1}}),
+  ConversationHistoryResponse:object({run:pub('Run'),request:ref('ConversationStoredRequest'),events:{type:'array',items:{oneOf:[pub('UIEvent'),{$ref:'urn:meri:native-bill-text-source:1.0.0#/$defs/NativeBillTextSourceEvent'}]},maxItems:100},nextSequence:sequence,hasMore:{type:'boolean'},lastSequence:{...sequence,minimum:1}}),
   ConversationCancelledResponse:object({state:{enum:['completed','failed','cancelled']}}),
-  ConversationEvent:pub('UIEvent'),
+  ConversationEvent:{oneOf:[pub('UIEvent'),{$ref:'urn:meri:native-bill-text-source:1.0.0#/$defs/NativeBillTextSourceEvent'}]},
   ConversationErrorResponse:object({error:object({code:{enum:Object.keys(conversationErrorStatuses)}})}),
  }};
 }

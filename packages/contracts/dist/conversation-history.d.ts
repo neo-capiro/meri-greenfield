@@ -404,7 +404,7 @@ export interface CanonicalModelSelectionC59B527F {
 }
 export interface ConversationHistoryEvent {
   sequence: number;
-  event: Canonical_UIEvent_1691B714;
+  event: Canonical_UIEvent_1691B714 | Canonical_NativeBillTextSourceEvent_8E4E610B;
 }
 export interface Canonical_SourceEvidenceD9008775 {
   sourceId: string;
@@ -419,6 +419,53 @@ export interface Canonical_SourceEvidenceD9008775 {
   scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
   contentSha256: string;
   authorizationDecisionId: string;
+}
+export interface Canonical_NativeBillTextSourceEvent_8E4E610B {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'source.native-bill-text';
+  data: Canonical_NativeBillTextSource_4D549Cac;
+}
+export interface Canonical_NativeBillTextSource_4D549Cac {
+  schemaVersion: 'meri.native-bill-text-source/1';
+  deliveryId: string;
+  operation: {
+    id: 'read_bill_text';
+    version: '0.2.0';
+  };
+  requestSha256: string;
+  argumentsSha256: string;
+  resultSha256: string;
+  executionSha256: string;
+  policyRevision: string;
+  source: {
+    authoritativeOwner: 'federal_evidence_current';
+    billId: string;
+    versionCode: string;
+    revisionId: string;
+    packageId: string;
+    provider: string;
+    lineageKey: string;
+    versionHash: string;
+    textHash: string;
+  };
+  page: {
+    offset: number;
+    endOffset: number;
+    totalCharacters: number;
+    textSha256: string;
+    pageComplete: true;
+    contentComplete: boolean;
+    paginationComplete: boolean;
+    truncated: boolean;
+  };
 }
 export interface ConversationHistoryPendingTurn {
   sourceBinding: Canonical_RunBinding_84F2304C;
@@ -749,7 +796,7 @@ export interface ConversationHistoryResponseMap {list:Readonly<ConversationHisto
 export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=ConversationHistoryResponseMap[R]|ConversationHistoryErrorResponse;
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
-  "packageVersion": "0.1.14",
+  "packageVersion": "0.1.15",
   "historyVersion": "1.1.0",
   "schemaId": "urn:meri:conversation-history:1.1.0",
   "routes": {
