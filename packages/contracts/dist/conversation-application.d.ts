@@ -9,7 +9,11 @@ export type ConversationApplicationEnvelope =
   | ConversationHistoryResponse
   | ConversationCancelledResponse
   | ConversationEvent
-  | ConversationErrorResponse;
+  | ConversationErrorResponse
+  | ConversationFeedbackRequest
+  | ConversationFeedbackReadRequest
+  | ConversationFeedbackResponse
+  | ConversationFeedbackReadResponse;
 export type Canonical_WindowRequestF314F340 =
   | {
       basis: 'calendar-week';
@@ -246,7 +250,38 @@ export type Canonical_UIEvent_1691B714 =
         message: string;
       };
     };
-export type ConversationEvent = Canonical_UIEvent_1691B714 | Canonical_NativeBillTextSourceEvent_8E4E610B;
+export type ConversationEvent =
+  | Canonical_UIEvent_1691B714
+  | Canonical_NativeBillTextSourceEvent_8E4E610B
+  | Canonical_NativeHearingSourceEvent_685F6175;
+export type ConversationFeedbackTarget =
+  | {
+      kind: 'message';
+      runId: string;
+      throughSequence: number;
+      messageId: string;
+    }
+  | {
+      kind: 'artifact';
+      runId: string;
+      throughSequence: number;
+      artifactId: string;
+      versionId: string;
+    };
+export type ConversationFeedbackSignal =
+  | {
+      kind: 'preference';
+      value: 'helpful' | 'not_helpful';
+      note: string | null;
+    }
+  | {
+      kind: 'factual_correction';
+      proposedCorrection: string;
+    }
+  | {
+      kind: 'recommendation';
+      recommendation: string;
+    };
 
 export interface ConversationSubmitRequest {
   requestId: string;
@@ -319,7 +354,11 @@ export interface ConversationHistoryResponse {
   /**
    * @maxItems 100
    */
-  events: (Canonical_UIEvent_1691B714 | Canonical_NativeBillTextSourceEvent_8E4E610B)[];
+  events: (
+    | Canonical_UIEvent_1691B714
+    | Canonical_NativeBillTextSourceEvent_8E4E610B
+    | Canonical_NativeHearingSourceEvent_685F6175
+  )[];
   nextSequence: number;
   hasMore: boolean;
   lastSequence: number;
@@ -404,6 +443,112 @@ export interface Canonical_NativeBillTextSource_4D549Cac {
     truncated: boolean;
   };
 }
+export interface Canonical_NativeHearingSourceEvent_685F6175 {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'source.native-hearing-record';
+  data: Canonical_NativeHearingSourceF31B5A94;
+}
+export interface Canonical_NativeHearingSourceF31B5A94 {
+  schemaVersion: 'meri.native-hearing-source/1';
+  deliveryId: string;
+  operation: {
+    id: 'search_committee_hearings';
+    version: '0.2.0';
+  };
+  requestSha256: string;
+  argumentsSha256: string;
+  resultSha256: string;
+  executionSha256: string;
+  policyRevision: string;
+  source: {
+    recordId: string;
+    provenance: Canonical_HearingProvenanceBf0528Dd;
+  };
+  page: {
+    part: number;
+    format: 'json' | 'json_fragment';
+    characterStart: number;
+    characterEnd: number;
+    totalCharacters: number;
+    contentComplete: boolean;
+    payloadSha256: string;
+  };
+  selection: {
+    recordsView: 'published' | 'briefs' | 'reconciliation';
+    hearingId: string;
+    recordId: string;
+    clientId: string | null;
+    asOf: string | null;
+    cursor: string | null;
+  };
+  coverage: Canonical_HearingCoverageCe9Cf8B6;
+}
+export interface Canonical_HearingProvenanceBf0528Dd {
+  adapter: 'hearings';
+  sourceTable:
+    | 'committee_hearing'
+    | 'official_hearing_transcript'
+    | 'public_hearing_transcript_segment'
+    | 'public_hearing_insight'
+    | 'tenant_hearing_relevance'
+    | 'published_legislative_record'
+    | 'intel_hearing_record_briefs'
+    | 'intel_hearing_record_reconciliation';
+  sourceRecordId: string;
+  hearingId: string | null;
+  contentHash: string;
+  sourceKey?: string;
+  tenantId?: string;
+  historical?: boolean;
+}
+export interface Canonical_HearingCoverageCe9Cf8B6 {
+  requestedDomains: ['hearings'];
+  /**
+   * @maxItems 1
+   */
+  searchedDomains: [] | ['hearings'];
+  requestedEntityCount: number;
+  searchedEntityCount: number;
+  recordsEvaluated: number;
+  recordsReturned: number;
+  paginationComplete: boolean;
+  /**
+   * @maxItems 1
+   */
+  unavailableSources: [] | ['hearings'];
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  sources: [Canonical_HearingSourceCoverage_0301Fc6C];
+  complete: false;
+  stopReason: string;
+}
+export interface Canonical_HearingSourceCoverage_0301Fc6C {
+  domain: 'hearings';
+  sourceStatus: 'healthy' | 'degraded' | 'unavailable' | 'unauthorized' | 'unsupported' | 'error';
+  total?: number;
+  returned: number;
+  recordsEvaluated: number;
+  requestedEntityCount: number;
+  searchedEntityCount: number;
+  pagesRead: number;
+  hasMore: boolean;
+  nextCursor?: string;
+  truncated: boolean;
+  paginationComplete: boolean;
+  coverageComplete: false;
+  lastSyncAt?: string;
+  stopReason: string;
+}
 export interface ConversationCancelledResponse {
   state: 'completed' | 'failed' | 'cancelled';
 }
@@ -426,21 +571,113 @@ export interface ConversationErrorResponse {
       | 'REQUEST_TOO_LARGE'
       | 'CONVERSATION_UNAVAILABLE'
       | 'MODEL_SELECTION_UNAVAILABLE'
-      | 'MODEL_SETTINGS_UNAVAILABLE';
+      | 'MODEL_SETTINGS_UNAVAILABLE'
+      | 'FEEDBACK_TARGET_REFUSED'
+      | 'FEEDBACK_SOURCE_REFUSED'
+      | 'FEEDBACK_REVISION_CHANGED'
+      | 'FEEDBACK_REPLAY_REFUSED'
+      | 'FEEDBACK_LIMIT'
+      | 'FEEDBACK_WRITE_UNKNOWN';
   };
 }
+export interface ConversationFeedbackRequest {
+  requestId: string;
+  target: ConversationFeedbackTarget;
+  sourceEventId: string | null;
+  signal: ConversationFeedbackSignal;
+}
+export interface ConversationFeedbackReadRequest {
+  runId: string;
+}
+export interface ConversationFeedbackResponse {
+  receipt: ConversationFeedbackReceipt;
+  replayed: boolean;
+}
+export interface ConversationFeedbackReceipt {
+  feedbackId: string;
+  requestId: string;
+  conversationId: string;
+  actorId: string;
+  recordedAt: string;
+  target: ConversationFeedbackTarget;
+  signal: ConversationFeedbackSignal;
+  revision: {
+    sha256: string;
+    artifact:
+      | {
+          status: 'bound';
+          artifactId: string;
+          versionId: string;
+        }
+      | {
+          status: 'not_applicable';
+          reason: 'message_target';
+        };
+  };
+  sourceRevision:
+    | {
+        status: 'bound';
+        eventId: string;
+        eventSha256: string;
+      }
+    | {
+        status: 'not_applicable';
+        reason: 'no_source_selected';
+      };
+  taskRevision: {
+    status: 'not_applicable';
+    reason: 'no_native_task_revision_on_target';
+  };
+  execution:
+    | {
+        status: 'recorded';
+        basis: 'run_sdk_usage';
+        usageSha256: string;
+        sessionId: string;
+        /**
+         * @minItems 1
+         * @maxItems 32
+         */
+        models: [string, ...string[]];
+        attribution: 'run_including_subagents';
+      }
+    | {
+        status: 'unavailable';
+        reason: 'usage_not_recorded' | 'run_model_delta_unavailable';
+      };
+  disposition: {
+    status: 'recorded';
+    review: 'not_reviewed';
+    effect: 'none';
+  };
+  /**
+   * @maxItems 100
+   */
+  linkedReceipts: {
+    kind: 'approval_request' | 'completion';
+    eventId: string;
+    eventSha256: string;
+  }[];
+}
+export interface ConversationFeedbackReadResponse {
+  runId: string;
+  /**
+   * @maxItems 50
+   */
+  receipts: ConversationFeedbackReceipt[];
+}
 
-export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events';
+export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events' | 'feedback' | 'feedback-read';
 /** Canonical immutable choices; runtime authorization and availability are decided by the server. */
 export interface ConversationSkillDescriptor {readonly skillId:NonNullable<ConversationSubmitRequest['skill']>['skillId'];readonly version:string;readonly displayName:string;readonly subjectKinds:readonly ('client'|'entity'|'personal'|'portfolio')[];readonly windowBases:readonly NonNullable<ConversationSubmitRequest['windowRequest']>['basis'][];readonly manifestSha256:string;readonly proseSha256:string;}
 export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;
-export interface ConversationRequestMap { submit:ConversationSubmitRequest; history:ConversationHistoryRequest; cancel:ConversationCancelRequest; events:ConversationEventsRequest; }
+export interface ConversationRequestMap { submit:ConversationSubmitRequest; history:ConversationHistoryRequest; cancel:ConversationCancelRequest; events:ConversationEventsRequest; feedback:ConversationFeedbackRequest; 'feedback-read':ConversationFeedbackReadRequest; }
 export type AdmittedConversationRequest<R extends ConversationRoute> = Readonly<ConversationRequestMap[R]> & {readonly [admittedRequest]:R};
 export type AdmittedConversationView = Readonly<ConversationSubmittedResponse | ConversationHistoryResponse> & {readonly [admittedView]:true};
-export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}; cancel:Readonly<ConversationCancelledResponse>; events:never;}
+export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}; cancel:Readonly<ConversationCancelledResponse>; events:never; feedback:ConversationFeedbackResponse; 'feedback-read':ConversationFeedbackReadResponse;}
 export type ConversationResponse<R extends ConversationRoute> = ConversationResponseMap[R] | ConversationErrorResponse;
 export interface ConversationCursor {readonly conversationId:string; readonly after:number; readonly [admittedCursor]:true;}
 export declare class ConversationResponseError extends Error {readonly code:string;}
@@ -465,6 +702,18 @@ export declare const conversationApplicationMetadata: {
       "response": "json",
       "body": {},
       "effect": "durable run cancellation"
+    },
+    "feedback": {
+      "method": "POST",
+      "path": "/api/conversations/feedback",
+      "response": "json",
+      "effect": "records feedback only"
+    },
+    "feedback-read": {
+      "method": "POST",
+      "path": "/api/conversations/feedback-read",
+      "response": "json",
+      "effect": "none"
     },
     "events": {
       "method": "POST",
@@ -556,6 +805,24 @@ export declare const conversationApplicationMetadata: {
       409
     ],
     "MODEL_SETTINGS_UNAVAILABLE": [
+      503
+    ],
+    "FEEDBACK_TARGET_REFUSED": [
+      403
+    ],
+    "FEEDBACK_SOURCE_REFUSED": [
+      403
+    ],
+    "FEEDBACK_REVISION_CHANGED": [
+      409
+    ],
+    "FEEDBACK_REPLAY_REFUSED": [
+      409
+    ],
+    "FEEDBACK_LIMIT": [
+      409
+    ],
+    "FEEDBACK_WRITE_UNKNOWN": [
       503
     ]
   }

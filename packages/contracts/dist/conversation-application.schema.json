@@ -2,6 +2,506 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:meri:conversation-application:0.1.0",
   "$defs": {
+    "ConversationFeedbackTarget": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "message"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "throughSequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "messageId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "kind",
+            "runId",
+            "throughSequence",
+            "messageId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "artifact"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "throughSequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "artifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "kind",
+            "runId",
+            "throughSequence",
+            "artifactId",
+            "versionId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ConversationFeedbackSignal": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "preference"
+            },
+            "value": {
+              "enum": [
+                "helpful",
+                "not_helpful"
+              ]
+            },
+            "note": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000,
+                  "pattern": "\\S"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "value",
+            "note"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "factual_correction"
+            },
+            "proposedCorrection": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "kind",
+            "proposedCorrection"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "recommendation"
+            },
+            "recommendation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "kind",
+            "recommendation"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ConversationFeedbackRequest": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "target": {
+          "$ref": "#/$defs/ConversationFeedbackTarget"
+        },
+        "sourceEventId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signal": {
+          "$ref": "#/$defs/ConversationFeedbackSignal"
+        }
+      },
+      "required": [
+        "requestId",
+        "target",
+        "sourceEventId",
+        "signal"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationFeedbackReadRequest": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationFeedbackReceipt": {
+      "type": "object",
+      "properties": {
+        "feedbackId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "target": {
+          "$ref": "#/$defs/ConversationFeedbackTarget"
+        },
+        "signal": {
+          "$ref": "#/$defs/ConversationFeedbackSignal"
+        },
+        "revision": {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "artifact": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "const": "bound"
+                    },
+                    "artifactId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                    },
+                    "versionId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "artifactId",
+                    "versionId"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "const": "not_applicable"
+                    },
+                    "reason": {
+                      "const": "message_target"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "sha256",
+            "artifact"
+          ],
+          "additionalProperties": false
+        },
+        "sourceRevision": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "bound"
+                },
+                "eventId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "eventSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "status",
+                "eventId",
+                "eventSha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "not_applicable"
+                },
+                "reason": {
+                  "const": "no_source_selected"
+                }
+              },
+              "required": [
+                "status",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "taskRevision": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "not_applicable"
+            },
+            "reason": {
+              "const": "no_native_task_revision_on_target"
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "execution": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "recorded"
+                },
+                "basis": {
+                  "const": "run_sdk_usage"
+                },
+                "usageSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "sessionId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "models": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 32,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "attribution": {
+                  "const": "run_including_subagents"
+                }
+              },
+              "required": [
+                "status",
+                "basis",
+                "usageSha256",
+                "sessionId",
+                "models",
+                "attribution"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "unavailable"
+                },
+                "reason": {
+                  "enum": [
+                    "usage_not_recorded",
+                    "run_model_delta_unavailable"
+                  ]
+                }
+              },
+              "required": [
+                "status",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "disposition": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "recorded"
+            },
+            "review": {
+              "const": "not_reviewed"
+            },
+            "effect": {
+              "const": "none"
+            }
+          },
+          "required": [
+            "status",
+            "review",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        "linkedReceipts": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "approval_request",
+                  "completion"
+                ]
+              },
+              "eventId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "eventSha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "kind",
+              "eventId",
+              "eventSha256"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "feedbackId",
+        "requestId",
+        "conversationId",
+        "actorId",
+        "recordedAt",
+        "target",
+        "signal",
+        "revision",
+        "sourceRevision",
+        "taskRevision",
+        "execution",
+        "disposition",
+        "linkedReceipts"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationFeedbackResponse": {
+      "type": "object",
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/ConversationFeedbackReceipt"
+        },
+        "replayed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "receipt",
+        "replayed"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationFeedbackReadResponse": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "receipts": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/ConversationFeedbackReceipt"
+          }
+        }
+      },
+      "required": [
+        "runId",
+        "receipts"
+      ],
+      "additionalProperties": false
+    },
     "ConversationSubmitRequest": {
       "type": "object",
       "properties": {
@@ -295,6 +795,9 @@
               },
               {
                 "$ref": "#/$defs/Canonical_NativeBillTextSourceEvent_8e4e610b"
+              },
+              {
+                "$ref": "#/$defs/Canonical_NativeHearingSourceEvent_685f6175"
               }
             ]
           },
@@ -347,6 +850,9 @@
         },
         {
           "$ref": "#/$defs/Canonical_NativeBillTextSourceEvent_8e4e610b"
+        },
+        {
+          "$ref": "#/$defs/Canonical_NativeHearingSourceEvent_685f6175"
         }
       ]
     },
@@ -374,7 +880,13 @@
                 "REQUEST_TOO_LARGE",
                 "CONVERSATION_UNAVAILABLE",
                 "MODEL_SELECTION_UNAVAILABLE",
-                "MODEL_SETTINGS_UNAVAILABLE"
+                "MODEL_SETTINGS_UNAVAILABLE",
+                "FEEDBACK_TARGET_REFUSED",
+                "FEEDBACK_SOURCE_REFUSED",
+                "FEEDBACK_REVISION_CHANGED",
+                "FEEDBACK_REPLAY_REFUSED",
+                "FEEDBACK_LIMIT",
+                "FEEDBACK_WRITE_UNKNOWN"
               ]
             }
           },
@@ -1847,6 +2359,455 @@
         },
         "data": {
           "$ref": "#/$defs/Canonical_NativeBillTextSource_4d549cac"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "eventId",
+        "binding",
+        "sequence",
+        "createdAt",
+        "scopes",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_HearingProvenance_bf0528dd": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "const": "hearings"
+        },
+        "sourceTable": {
+          "enum": [
+            "committee_hearing",
+            "official_hearing_transcript",
+            "public_hearing_transcript_segment",
+            "public_hearing_insight",
+            "tenant_hearing_relevance",
+            "published_legislative_record",
+            "intel_hearing_record_briefs",
+            "intel_hearing_record_reconciliation"
+          ]
+        },
+        "sourceRecordId": {
+          "type": "string"
+        },
+        "hearingId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceKey": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "historical": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "adapter",
+        "sourceTable",
+        "sourceRecordId",
+        "hearingId",
+        "contentHash"
+      ]
+    },
+    "Canonical_HearingSourceCoverage_0301fc6c": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "const": "hearings"
+        },
+        "sourceStatus": {
+          "enum": [
+            "healthy",
+            "degraded",
+            "unavailable",
+            "unauthorized",
+            "unsupported",
+            "error"
+          ]
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "returned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recordsEvaluated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "searchedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pagesRead": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextCursor": {
+          "type": "string"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "paginationComplete": {
+          "type": "boolean"
+        },
+        "coverageComplete": {
+          "const": false
+        },
+        "lastSyncAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "stopReason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "domain",
+        "sourceStatus",
+        "returned",
+        "recordsEvaluated",
+        "requestedEntityCount",
+        "searchedEntityCount",
+        "pagesRead",
+        "hasMore",
+        "truncated",
+        "paginationComplete",
+        "coverageComplete",
+        "stopReason"
+      ]
+    },
+    "Canonical_HearingCoverage_ce9cf8b6": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requestedDomains": {
+          "const": [
+            "hearings"
+          ]
+        },
+        "searchedDomains": {
+          "type": "array",
+          "items": {
+            "const": "hearings"
+          },
+          "maxItems": 1
+        },
+        "requestedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "searchedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recordsEvaluated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recordsReturned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "paginationComplete": {
+          "type": "boolean"
+        },
+        "unavailableSources": {
+          "type": "array",
+          "items": {
+            "const": "hearings"
+          },
+          "maxItems": 1
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_HearingSourceCoverage_0301fc6c"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "complete": {
+          "const": false
+        },
+        "stopReason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requestedDomains",
+        "searchedDomains",
+        "requestedEntityCount",
+        "searchedEntityCount",
+        "recordsEvaluated",
+        "recordsReturned",
+        "paginationComplete",
+        "unavailableSources",
+        "sources",
+        "complete",
+        "stopReason"
+      ]
+    },
+    "Canonical_NativeHearingSource_f31b5a94": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.native-hearing-source/1"
+        },
+        "deliveryId": {
+          "type": "string",
+          "pattern": "^[-A-Za-z0-9_.:@/]{1,255}$"
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "search_committee_hearings"
+            },
+            "version": {
+              "const": "0.2.0"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "argumentsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "resultSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "executionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "recordId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 600
+            },
+            "provenance": {
+              "$ref": "#/$defs/Canonical_HearingProvenance_bf0528dd"
+            }
+          },
+          "required": [
+            "recordId",
+            "provenance"
+          ],
+          "additionalProperties": false
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "part": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "enum": [
+                "json",
+                "json_fragment"
+              ]
+            },
+            "characterStart": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "characterEnd": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalCharacters": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "contentComplete": {
+              "type": "boolean"
+            },
+            "payloadSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "part",
+            "format",
+            "characterStart",
+            "characterEnd",
+            "totalCharacters",
+            "contentComplete",
+            "payloadSha256"
+          ],
+          "additionalProperties": false
+        },
+        "selection": {
+          "type": "object",
+          "properties": {
+            "recordsView": {
+              "enum": [
+                "published",
+                "briefs",
+                "reconciliation"
+              ]
+            },
+            "hearingId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "recordId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "asOf": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "recordsView",
+            "hearingId",
+            "recordId",
+            "clientId",
+            "asOf",
+            "cursor"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "$ref": "#/$defs/Canonical_HearingCoverage_ce9cf8b6"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deliveryId",
+        "operation",
+        "requestSha256",
+        "argumentsSha256",
+        "resultSha256",
+        "executionSha256",
+        "policyRevision",
+        "source",
+        "page",
+        "selection",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeHearingSourceEvent_685f6175": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": {
+          "const": "source.native-hearing-record"
+        },
+        "data": {
+          "$ref": "#/$defs/Canonical_NativeHearingSource_f31b5a94"
         }
       },
       "required": [
