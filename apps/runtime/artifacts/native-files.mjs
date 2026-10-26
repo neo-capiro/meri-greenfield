@@ -29,8 +29,11 @@ export function createNativeFiles(configuration){const c=own(configuration,['wor
   /** A run that never recorded its cwd bytes leaves a conversation-local tree the durable owner cannot account for.
    * Those bytes are retained beside the workspace and the workspace is left empty, so the next run restores the durable
    * state into a quiesced tree instead of refusing a stale one. The native task list is a per-run directory the next run
-   * replaces, so only the caller's own cwd is retired here. Nothing is erased, no durable state is read and no run
-   * lifetime bounds this local cleanup. */
-  retain({signal}={}){nativeSignal(signal);return retainWorkspaceBytes({workspace:c.workspace,check:()=>nativeSignal(signal)});}
+   * replaces, so only the caller's own cwd is retired here. Nothing is erased and no durable state is read. The caller
+   * supplies this local cleanup's own deadline (never the run's model deadline) and every step is checked against
+   * cancellation and that deadline. */
+  retain({signal,deadlineMs}={}){nativeSignal(signal);if(!Number.isSafeInteger(deadlineMs))fail();
+   const expired=()=>signal?.aborted||now()>=deadlineMs;if(expired())fail();
+   return retainWorkspaceBytes({workspace:c.workspace,check:()=>{nativeSignal(signal);if(expired())fail();}});}
  });
 }

@@ -33,21 +33,32 @@ test('nested empty directories survive warm verification while cold restore keep
 for(const mutation of ['workspace-hash','task-hash','task-count'])test(`restore ${mutation} refusal leaves both fresh trees empty`,async t=>{const f=await fixture(t),target=await f.tree('target'),captured={files:[raw('answer','hello')],taskFiles:[raw('1.json','{}')]},state=retained(captured),files=bytes(captured.files),taskFiles=bytes(captured.taskFiles);if(mutation==='workspace-hash')files[0]=Buffer.from('wrong');if(mutation==='task-hash')taskFiles[0]=Buffer.from('[]');if(mutation==='task-count')taskFiles.pop();await assert.rejects(target.owner.restore({state,files,taskFiles}));assert.deepEqual(await readdir(target.workspace),[]);assert.deepEqual(await readdir(target.taskDirectory),[]);});
 test('warm workspace divergence refuses without erasing unjournaled output',async t=>{const f=await fixture(t),target=await f.tree('target');await writeFile(join(target.workspace,'late-output'),'preserve');await assert.rejects(target.owner.restore({state:retained({files:[],taskFiles:[]}),files:[],taskFiles:[]}));assert.equal(await readFile(join(target.workspace,'late-output'),'utf8'),'preserve');});
 test('a run that never recorded its cwd retains those bytes beside the workspace, leaves the owned directory empty and keeps its identity',async t=>{
- const f=await fixture(t),target=await f.tree('target');await mkdir(join(target.workspace,'outputs'));await mkdir(join(target.workspace,'scratch','empty'),{recursive:true});await writeFile(join(target.workspace,'outputs','late-output'),'preserve');
+ const f=await fixture(t),target=await f.tree('target'),cleanup={deadlineMs:1500};await mkdir(join(target.workspace,'outputs'));await mkdir(join(target.workspace,'scratch','empty'),{recursive:true});await writeFile(join(target.workspace,'outputs','late-output'),'preserve');
  const before=fs.lstatSync(target.workspace),retainedDirectory=`${target.workspace}.uncommitted`;
- assert.deepEqual(target.owner.retain(),{retained:true,retainedPath:retainedDirectory});
+ assert.deepEqual(target.owner.retain(cleanup),{retained:true,retainedPath:retainedDirectory});
  assert.deepEqual(await readdir(target.workspace),[],'the next strict restore owns an empty directory, so no stale tree is verified');
  assert.equal(await readFile(join(retainedDirectory,'outputs','late-output'),'utf8'),'preserve','every uncommitted byte is retained, never erased');
  assert.deepEqual(await readdir(join(retainedDirectory,'scratch','empty')),[],'empty directories move with their tree');
  const after=fs.lstatSync(target.workspace);assert.equal(after.dev,before.dev);assert.equal(after.ino,before.ino,'the workspace keeps the directory identity the owned runtime session pinned');
- assert.deepEqual(target.owner.retain(),{retained:false},'an empty tree creates no second retained directory');
+ assert.deepEqual(target.owner.retain(cleanup),{retained:false},'an empty tree creates no second retained directory');
  assert.deepEqual((await readdir(f.root)).filter(name=>name.includes('.uncommitted')),['target-workspace.uncommitted']);
- await writeFile(join(target.workspace,'again'),'second');assert.deepEqual(target.owner.retain(),{retained:true,retainedPath:`${target.workspace}.uncommitted.1`});
+ await writeFile(join(target.workspace,'again'),'second');assert.deepEqual(target.owner.retain(cleanup),{retained:true,retainedPath:`${target.workspace}.uncommitted.1`});
  assert.equal(await readFile(join(retainedDirectory,'outputs','late-output'),'utf8'),'preserve','an earlier retention is never overwritten');
  const source=await f.tree('source');await writeFile(join(source.workspace,'notes.md'),'committed');const captured=source.owner.capture();
  await target.owner.restore({state:retained({files:captured.files,taskFiles:[]}),files:bytes(captured.files),taskFiles:[]});
  assert.equal(await readFile(join(target.workspace,'notes.md'),'utf8'),'committed','the next run restores the durable state into the quiesced tree instead of refusing the stale one');
  assert.deepEqual(await readdir(target.workspace),['notes.md']);
+});
+test('a cancelled or expired cleanup refuses before creating anything and leaves the uncommitted tree exactly as it found it',async t=>{
+ const f=await fixture(t),target=await f.tree('target');await writeFile(join(target.workspace,'pending.txt'),'synthetic');
+ const cancelled=new AbortController();cancelled.abort();
+ assert.throws(()=>target.owner.retain({signal:cancelled.signal,deadlineMs:1500}),/NATIVE_FILES_REFUSED/,'an already-cancelled cleanup never moves uncommitted bytes');
+ assert.throws(()=>target.owner.retain(),/NATIVE_FILES_REFUSED/,'the cleanup deadline is explicit: a caller without one is refused');
+ f.clock(1500);assert.throws(()=>target.owner.retain({deadlineMs:1500}),/NATIVE_FILES_REFUSED/,'an expired cleanup deadline refuses before any move');
+ assert.deepEqual(await readdir(target.workspace),['pending.txt'],'a refused cleanup leaves the uncommitted tree untouched');
+ assert.deepEqual((await readdir(f.root)).filter(name=>name.includes('.uncommitted')),[],'and creates no retained directory');
+ f.clock(1000);assert.deepEqual(target.owner.retain({deadlineMs:1500}),{retained:true,retainedPath:`${target.workspace}.uncommitted`},'the same tree is retained once the cleanup is live');
+ assert.equal(await readFile(join(target.workspace+'.uncommitted','pending.txt'),'utf8'),'synthetic');
 });
 test('warm executable mismatch refuses without changing the file',async t=>{const f=await fixture(t),target=await f.tree('target'),file=join(target.workspace,'answer');await writeFile(file,'retained',{mode:0o600});const captured=target.owner.capture(),state=retained(captured);await chmod(file,0o700);await assert.rejects(target.owner.restore({state,files:bytes(captured.files),taskFiles:[]}),/WORKSPACE_RESTORE_REFUSED/);assert.equal(await readFile(file,'utf8'),'retained');});
 test('warm empty manifest refuses an outside directory symlink without following it',async t=>{const f=await fixture(t),target=await f.tree('target'),outside=join(f.root,'outside');await mkdir(outside);await writeFile(join(outside,'secret'),'protected');await symlink(outside,join(target.workspace,'empty'),'dir');await assert.rejects(target.owner.restore({state:retained({files:[],taskFiles:[]}),files:[],taskFiles:[]}),/WORKSPACE_CAPTURE_REFUSED/);assert.equal(await readFile(join(outside,'secret'),'utf8'),'protected');});

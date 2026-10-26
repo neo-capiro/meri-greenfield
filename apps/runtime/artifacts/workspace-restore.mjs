@@ -22,9 +22,11 @@ export function verifyWorkspaceBytes({workspace,manifest,check}){
 }
 /** An uncommitted local tree is never erased: each entry moves to a retained directory beside the workspace, which is
  * left empty so the next restore owns a quiesced tree again instead of refusing a stale one. The workspace keeps its
- * own directory and inode, the identity the owned runtime session and the SDK project key are pinned to. */
+ * own directory and inode, the identity the owned runtime session and the SDK project key are pinned to. The caller's
+ * check runs before the retained directory is created and before every move, so a cancelled or expired cleanup leaves
+ * the tree exactly as it found it. */
 export function retainWorkspaceBytes({workspace,check}){
- const before=directory(workspace);if(!fs.readdirSync(workspace).length)return Object.freeze({retained:false});
+ const before=directory(workspace);check();if(!fs.readdirSync(workspace).length)return Object.freeze({retained:false});
  const retained=retainedDirectory(workspace);
  for(const name of fs.readdirSync(workspace)){check();fs.renameSync(path.join(workspace,name),path.join(retained,name));}
  check();if(fs.readdirSync(workspace).length)fail();const after=directory(workspace);if(after.dev!==before.dev||after.ino!==before.ino)fail();

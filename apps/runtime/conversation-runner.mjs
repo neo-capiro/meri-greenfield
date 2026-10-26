@@ -113,7 +113,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
    // A run that never recorded its cwd bytes leaves a conversation-local tree the durable owner cannot account for:
    // retain those bytes beside the workspace and leave the workspace empty, so the next run restores the durable state
    // instead of refusing a stale tree. Nothing is erased; a failed retention is unknown local cleanup.
-   if(!workspaceRecorded&&nativeFiles&&!await attemptCleanup(()=>nativeFiles.retain(),{now,timeoutMs:CLEANUP_ATTEMPT_MS}))localCleanupFailed=true;
+   if(!workspaceRecorded&&nativeFiles&&!await attemptCleanup(signal=>nativeFiles.retain({signal,deadlineMs:now()+CLEANUP_ATTEMPT_MS}),{now,timeoutMs:CLEANUP_ATTEMPT_MS}))localCleanupFailed=true;
   }}),{binding,environment:configuration.telemetry?.environment});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>{const status=sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false};return {...status,failures:[...status.failures,...(localCleanupFailed?['RUNNER_CLEANUP_UNKNOWN']:[])]};}});return execute;
 }
