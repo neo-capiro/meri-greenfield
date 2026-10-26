@@ -78,5 +78,13 @@ export function createConversationHistoryStore({tx,rowRun,continuationCustody}){
   if(event.type!=='source.native-bill-text')refuse('SOURCE_REFERENCE_NOT_FOUND');
   return {conversation:subject,event};
  });}
- return Object.freeze({list,transcript,source});
+ /** Resolve immutable owned run identity without selecting the stored usage record. */
+ async function usageContext({principal,conversationId,runId},check){return tx({tenantId:principal.tenantId,conversationId},check,async c=>{
+  const subject=conversation((await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[principal.tenantId,conversationId])).rows[0],principal);check();
+  const rows=(await c.query('SELECT tenant_id,conversation_id,run_id,request_id,request,request_sha256,projection,projection_sha256,last_sequence FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[principal.tenantId,conversationId,runId])).rows;check();
+  if(rows.length!==1)refuse('CONVERSATION_NOT_FOUND');const run=decode(()=>rowRun(rows[0])),binding=run.projection.binding;
+  if(binding.tenantId!==principal.tenantId||binding.actorId!==principal.actorId||binding.conversationId!==conversationId||binding.runId!==runId||!same(run.projection.scopes,subject.scopes))refuse('CONVERSATION_STORE_CORRUPT');
+  return {conversation:subject,binding};
+ });}
+ return Object.freeze({list,transcript,source,usageContext});
 }

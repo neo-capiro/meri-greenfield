@@ -101,17 +101,22 @@
       "types": "./dist/conversation-sources.d.ts",
       "default": "./dist/conversation-sources.mjs"
     },
-    "./conversation-sources/schema": "./dist/conversation-sources.schema.json"
+    "./conversation-sources/schema": "./dist/conversation-sources.schema.json",
+    "./conversation-usage": {
+      "types": "./dist/conversation-usage.d.ts",
+      "default": "./dist/conversation-usage.mjs"
+    },
+    "./conversation-usage/schema": "./dist/conversation-usage.schema.json"
   },
   "scripts": {
-    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs && node generate-lifecycle.mjs && node generate-history.mjs && node generate-input.mjs && node generate-user-preferences.mjs && node generate-task-commands.mjs && node generate-initial-input.mjs && node generate-intents.mjs && node generate-document-access.mjs && node generate-session.mjs && node generate-sources.mjs",
+    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs && node generate-lifecycle.mjs && node generate-history.mjs && node generate-input.mjs && node generate-user-preferences.mjs && node generate-task-commands.mjs && node generate-initial-input.mjs && node generate-intents.mjs && node generate-document-access.mjs && node generate-session.mjs && node generate-sources.mjs && node generate-usage.mjs",
     "build:input": "node generate-input.mjs",
     "build:history": "node generate-history.mjs",
-    "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check && node generate-lifecycle.mjs --check && node generate-history.mjs --check && node generate-input.mjs --check && node generate-user-preferences.mjs --check && node generate-task-commands.mjs --check && node generate-initial-input.mjs --check && node generate-intents.mjs --check && node generate-document-access.mjs --check && node generate-session.mjs --check && node generate-sources.mjs --check",
+    "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check && node generate-lifecycle.mjs --check && node generate-history.mjs --check && node generate-input.mjs --check && node generate-user-preferences.mjs --check && node generate-task-commands.mjs --check && node generate-initial-input.mjs --check && node generate-intents.mjs --check && node generate-document-access.mjs --check && node generate-session.mjs --check && node generate-sources.mjs --check && node generate-usage.mjs --check",
     "check:input": "node generate-input.mjs --check",
     "check:history": "node generate-history.mjs --check",
-    "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts test/conversation-lifecycle-public-types.ts test/conversation-history-public-types.ts test/conversation-input-public-types.ts test/user-preferences-application-public-types.ts test/task-command-application-public-types.ts test/conversation-initial-input-public-types.ts test/intents-application-public-types.ts test/document-access-application-public-types.ts test/conversation-session-public-types.ts test/objective-generation-public-types.ts test/routines-application-public-types.ts test/conversation-sources-public-types.ts",
-    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs test/conversation-history-source.test.mjs test/conversation-input-public.test.mjs test/user-preferences-application-public.test.mjs test/task-command-application-public.test.mjs test/conversation-initial-input-public.test.mjs test/intents-application-public.test.mjs test/document-access-application-public.test.mjs test/conversation-session-public.test.mjs test/document-native-file-public.test.mjs test/artifact-native-evidence.test.mjs test/document-draft-command.test.mjs test/objective-generation-public.test.mjs test/routines-application-public.test.mjs test/conversation-sources-public.test.mjs",
+    "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts test/conversation-lifecycle-public-types.ts test/conversation-history-public-types.ts test/conversation-input-public-types.ts test/user-preferences-application-public-types.ts test/task-command-application-public-types.ts test/conversation-initial-input-public-types.ts test/intents-application-public-types.ts test/document-access-application-public-types.ts test/conversation-session-public-types.ts test/objective-generation-public-types.ts test/routines-application-public-types.ts test/conversation-sources-public-types.ts test/conversation-usage-public-types.ts",
+    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs test/conversation-history-source.test.mjs test/conversation-input-public.test.mjs test/user-preferences-application-public.test.mjs test/task-command-application-public.test.mjs test/conversation-initial-input-public.test.mjs test/intents-application-public.test.mjs test/document-access-application-public.test.mjs test/conversation-session-public.test.mjs test/document-native-file-public.test.mjs test/artifact-native-evidence.test.mjs test/document-draft-command.test.mjs test/objective-generation-public.test.mjs test/routines-application-public.test.mjs test/conversation-sources-public.test.mjs test/conversation-usage-public.test.mjs",
     "check": "npm run check:generated && npm run typecheck && npm run test:public",
     "build:initial-input": "node generate-initial-input.mjs",
     "check:initial-input": "node generate-initial-input.mjs --check",
@@ -126,7 +131,9 @@
     "build:session": "node generate-session.mjs",
     "check:session": "node generate-session.mjs --check",
     "build:sources": "node generate-sources.mjs",
-    "check:sources": "node generate-sources.mjs --check"
+    "check:sources": "node generate-sources.mjs --check",
+    "build:usage": "node generate-usage.mjs",
+    "check:usage": "node generate-usage.mjs --check"
   },
   "dependencies": {
     "ajv": "8.20.0",

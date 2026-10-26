@@ -1,0 +1,413 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:conversation-usage:1.0.0",
+  "$defs": {
+    "ConversationUsageRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.conversation-usage/1"
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "conversationId",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "UsageModelCounters": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_:\\-./]{0,199}$"
+        },
+        "inputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "outputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cacheReadInputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cacheCreationInputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "webSearchRequests": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "model",
+        "inputTokens",
+        "outputTokens",
+        "cacheReadInputTokens",
+        "cacheCreationInputTokens",
+        "webSearchRequests"
+      ],
+      "additionalProperties": false
+    },
+    "UsageModelEstimate": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_:\\-./]{0,199}$"
+        },
+        "inputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "outputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cacheReadInputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cacheCreationInputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "webSearchRequests": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sdkEstimateUsd": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9007199254.740992
+        },
+        "provider": {
+          "enum": [
+            "bedrock",
+            "firstParty",
+            "unknown"
+          ]
+        },
+        "costBasis": {
+          "enum": [
+            "list",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "model",
+        "inputTokens",
+        "outputTokens",
+        "cacheReadInputTokens",
+        "cacheCreationInputTokens",
+        "webSearchRequests",
+        "sdkEstimateUsd",
+        "provider",
+        "costBasis"
+      ],
+      "additionalProperties": false
+    },
+    "UsageBasis": {
+      "type": "object",
+      "properties": {
+        "sdk": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "cli": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "provider": {
+          "enum": [
+            "bedrock",
+            "claude-api"
+          ]
+        },
+        "cacheWriteTtl": {
+          "enum": [
+            "5m",
+            "1h"
+          ]
+        },
+        "priceRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_:\\-./]{0,199}$"
+        }
+      },
+      "required": [
+        "sdk",
+        "cli",
+        "provider",
+        "cacheWriteTtl",
+        "priceRevision"
+      ],
+      "additionalProperties": false
+    },
+    "UsageRunDelta": {
+      "type": "object",
+      "properties": {
+        "sdkEstimateUsd": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9007199254.740992
+        },
+        "modelCounters": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/UsageModelCounters"
+          }
+        }
+      },
+      "required": [
+        "sdkEstimateUsd",
+        "modelCounters"
+      ],
+      "additionalProperties": false
+    },
+    "UsageCumulative": {
+      "type": "object",
+      "properties": {
+        "sdkEstimateUsd": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9007199254.740992
+        },
+        "basis": {
+          "$ref": "#/$defs/UsageBasis"
+        },
+        "models": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/UsageModelEstimate"
+          }
+        }
+      },
+      "required": [
+        "sdkEstimateUsd",
+        "basis",
+        "models"
+      ],
+      "additionalProperties": false
+    },
+    "RecordedUsage": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "recorded",
+            "unavailable"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "configuration_mismatch",
+                "result_unavailable",
+                "baseline_mismatch",
+                "baseline_unavailable",
+                "baseline_configuration_mismatch",
+                "lineage_unavailable",
+                "counters_reset",
+                "estimate_mismatch",
+                "rates_unavailable",
+                "amount_out_of_range"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currency": {
+          "const": "USD"
+        },
+        "runDelta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UsageRunDelta"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cumulative": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UsageCumulative"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "providerBilledUsd": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "status",
+        "reason",
+        "currency",
+        "runDelta",
+        "cumulative",
+        "providerBilledUsd"
+      ],
+      "additionalProperties": false
+    },
+    "RecordedToolOutcome": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_:\\-./]{0,199}$"
+        },
+        "executionOutcome": {
+          "enum": [
+            "completed",
+            "failed"
+          ]
+        },
+        "durationMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "executionOutcome",
+        "durationMs"
+      ],
+      "additionalProperties": false
+    },
+    "RecordedToolAudit": {
+      "type": "object",
+      "properties": {
+        "coverage": {
+          "const": "recorded-hooks-only"
+        },
+        "partial": {
+          "type": "boolean"
+        },
+        "omitted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "tools": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/RecordedToolOutcome"
+          }
+        }
+      },
+      "required": [
+        "coverage",
+        "partial",
+        "omitted",
+        "tools"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationUsageResponse": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.conversation-usage/1"
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "recording": {
+          "enum": [
+            "not-recorded",
+            "recorded"
+          ]
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedUsage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "toolAudit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordedToolAudit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "conversationId",
+        "runId",
+        "recording",
+        "usage",
+        "toolAudit"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

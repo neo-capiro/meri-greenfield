@@ -25,8 +25,8 @@
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",
-      "sha256": "4b57f955ebdf75bfa6732d5515480966419809ab610978191e9c03b912d6ab70",
-      "bytes": 9474
+      "sha256": "f33d9a1212f27eb6937b6c33f3c216e537ab065fd22af3f4cf9707f7ce125c3a",
+      "bytes": 10616
     },
     {
       "path": "../../apps/control/conversations/next-run-reservation.mjs",
