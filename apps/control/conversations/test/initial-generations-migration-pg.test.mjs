@@ -26,21 +26,23 @@ async function database(t){
  if(host!=='/tmp/meri-prepared-kickoff-pg-20261014/socket'||control!=='meri_inspection_final')throw Error('NEW_OWNED_GENERATIONS_DATABASE_REQUIRED');
  const admin=new pg.Client({host,database:control,user:'postgres'});await admin.connect();
  const suffix=randomUUID().replaceAll('-',''),name='meri_c12_'+suffix,role='meri_c12_app_'+suffix;
- const pools=[];let allocated=false;
- t.after(async()=>{for(const p of pools)await p.end().catch(()=>{});try{if(allocated){await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.query(`DROP ROLE IF EXISTS ${role}`);}}finally{await admin.end();}});
+ const pools=[],closed=[];let allocated=false;
+ // pg-pool can resolve end() before its removed clients finish closing their sockets.
+ const trackPool=p=>{p.on('connect',client=>closed.push(new Promise(resolve=>client.once('end',resolve))));pools.push(p);return p;};
+ t.after(async()=>{try{for(const p of pools)await p.end();await Promise.all(closed);if(allocated){await admin.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);await admin.query(`DROP ROLE IF EXISTS ${role}`);}}finally{await admin.end();}});
  assert.equal((await admin.query("SELECT current_setting('listen_addresses') AS listen")).rows[0].listen,'','Unix socket only');
  allocated=true;
  await admin.query(`CREATE DATABASE ${name}`);
  await admin.query(`CREATE ROLE ${role} LOGIN NOSUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS`);
  // Privileged provisioning/migration remains separate from every candidate operation.
- const main=new pg.Pool({host,database:name,user:'postgres',max:4});pools.push(main);
+ const main=trackPool(new pg.Pool({host,database:name,user:'postgres',max:4}));
  for(const file of manifest)await main.query(await readFile(new URL(file,migrations),'utf8'));
  await main.query(`REVOKE CREATE ON SCHEMA public FROM PUBLIC; GRANT CONNECT ON DATABASE ${name} TO ${role};
   GRANT USAGE ON SCHEMA meri_conversations TO ${role};
   GRANT SELECT,INSERT,UPDATE ON meri_conversations.conversations,meri_conversations.runs,meri_conversations.events,
    meri_conversations.initial_inputs,meri_conversations.initial_run_bindings,meri_conversations.next_runs TO ${role};
   GRANT SELECT ON meri_conversations.native_allocations TO ${role}`);
- const pool=()=>{const p=new pg.Pool({host,database:name,user:role,max:4});pools.push(p);return {async connect(){
+ const pool=()=>{const p=trackPool(new pg.Pool({host,database:name,user:role,max:4}));return {async connect(){
   const client=await p.connect();try{
    const r=(await client.query(`SELECT current_user AS actor,session_user AS login,current_database() AS db,
     rolsuper,rolinherit,rolcreatedb,rolcreaterole,rolreplication,rolbypassrls,
