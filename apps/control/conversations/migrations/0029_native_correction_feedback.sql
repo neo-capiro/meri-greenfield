@@ -1,4 +1,4 @@
--- MO14 forward migration source. Numeric slot awaits orchestrator allocation.
+-- 0029: Native correction feedback on the existing run owner.
 -- Existing run owner; no new feedback pipeline or approval/learning authority.
 BEGIN;
 ALTER TABLE meri_conversations.runs

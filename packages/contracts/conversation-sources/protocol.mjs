@@ -4,6 +4,7 @@ export const BILL_TEXT_SOURCE_SCHEMA='meri.native-bill-text-source/1';
 export const BILL_TEXT_SOURCE_READ_SCHEMA='meri.bill-text-source-read/1';
 export const HEARING_SOURCE_SCHEMA='meri.native-hearing-source/1';
 export const HEARING_SOURCE_READ_SCHEMA='meri.hearing-source-read/1';
+export const HEARING_MEDIA_READ_SCHEMA='meri.hearing-media-read/1';
 export {HEARING_SOURCE_EVENT} from './hearing-semantics.mjs';
 export {BILL_TEXT_SOURCE_EVENT} from './semantics.mjs';
 export const BILL_TEXT_SOURCE_PATH='/api/conversations/source-read';

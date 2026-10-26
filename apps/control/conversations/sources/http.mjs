@@ -2,7 +2,7 @@
 import {createProductApplication,PRODUCT_ERROR_STATUSES} from '../../product-access/http.mjs';
 import {ProductError,asProductError} from '../../product-access/errors.mjs';
 import {assertSourceReadRequest,assertSourceReadResponse} from '../../../../packages/contracts/conversation-sources/validate.mjs';
-import {BILL_TEXT_SOURCE_PATH,HEARING_SOURCE_EVENT,HEARING_SOURCE_READ_SCHEMA,billTextSourceErrors,billTextSourceMetadata} from '../../../../packages/contracts/conversation-sources/protocol.mjs';
+import {BILL_TEXT_SOURCE_PATH,HEARING_SOURCE_EVENT,HEARING_SOURCE_READ_SCHEMA,HEARING_MEDIA_READ_SCHEMA,billTextSourceErrors,billTextSourceMetadata} from '../../../../packages/contracts/conversation-sources/protocol.mjs';
 export function createConversationSourceApplication({store,history,gate,currentness,management,reader,retention,now,limits}){
  if(typeof store?.history?.source!=='function'||typeof history?.recheckRelease!=='function'||typeof currentness?.assertCurrent!=='function'||typeof reader?.forRequest!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const parse=body=>{try{return assertSourceReadRequest(body);}catch{throw new ProductError('SOURCE_REQUEST_INVALID');}};
@@ -12,10 +12,10 @@ export function createConversationSourceApplication({store,history,gate,currentn
   routes:{[BILL_TEXT_SOURCE_PATH]:{errors,async handle({body,principal,signal,recheckConversation,sourceReader}){
    const request=parse(body),check=()=>signal?.throwIfAborted();
    try{const saved=await store.history.source({principal,...request},check);check();
-    if((request.schemaVersion===HEARING_SOURCE_READ_SCHEMA)!==(saved.event.type===HEARING_SOURCE_EVENT))throw new ProductError('SOURCE_REFERENCE_NOT_FOUND');
+    if(([HEARING_SOURCE_READ_SCHEMA,HEARING_MEDIA_READ_SCHEMA].includes(request.schemaVersion))!==(saved.event.type===HEARING_SOURCE_EVENT))throw new ProductError('SOURCE_REFERENCE_NOT_FOUND');
     if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:request.conversationId});
     await recheckConversation(saved.conversation);check();
-    const current=await sourceReader.read(saved.event);check();
+    const current=await (request.schemaVersion===HEARING_MEDIA_READ_SCHEMA?sourceReader.media(saved.event,request.playback):sourceReader.read(saved.event));check();
     const response=assertSourceReadResponse({schemaVersion:request.schemaVersion,event:saved.event,current},request);
     return {conversation:saved.conversation,response};
    }catch(error){throw asProductError(error,'SOURCE_REFERENCE_UNAVAILABLE');}
