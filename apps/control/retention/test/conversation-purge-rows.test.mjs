@@ -26,6 +26,9 @@ test('run erasure preserves accounting, binding and consumed request identity; o
  r.verify(row);assert.equal(r.erased(row),false);assert.match(r.sql,/SET request=\$4::jsonb,continuation=NULL,continuation_sha256=NULL/);
  assert.doesNotMatch(r.sql,/sdk_usage|sdk_charge|projection=|request_sha256=|request_id=/);
  assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null}),true);
+ assert.match(r.sql,/feedback=NULL,feedback_sha256=NULL/);
+ assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null,feedback:[{note:'private correction'}],feedback_sha256:'d'.repeat(64)}),false);
+ assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null,feedback:null,feedback_sha256:null}),true);
  assert.equal(r.erased({...row,request:tombstone(id(9)),continuation:null,continuation_sha256:null}),false);
  assert.throws(()=>r.verify({...row,request:{prompt:'changed without digest'}}),/RETENTION_ROW_CHANGED/);
 });

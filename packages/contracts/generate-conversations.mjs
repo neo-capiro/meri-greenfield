@@ -21,7 +21,7 @@ export async function generateConversationContracts({check=false}={}){
  });
  for(const path of skillPaths){const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});}
  for(const folder of ['', 'retrieval-0.2/'])for(const name of await readdir(new URL(folder,HERE))){if(!name.endsWith('.schema.json'))continue;const path=folder+name,raw=await readFile(new URL(path,HERE)),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path,sha256:hash(raw),bytes:raw.length});}
- for(const path of ['retrieval-0.2/hearing-fragments.mjs','conversation-sources/semantics.mjs','conversation-sources/hearing-semantics.mjs','conversation-sources/protocol.mjs','../../apps/control/conversations/http.mjs','../../apps/control/conversations/service.mjs','../../apps/control/conversations/events.mjs','model-selection.mjs','conversation-application/protocol.mjs','conversation-application/schema.mjs','conversation-application/receive.mjs','document-application/boundary.mjs']){const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});}
+ for(const path of ['retrieval-0.2/hearing-fragments.mjs','conversation-sources/semantics.mjs','conversation-sources/hearing-semantics.mjs','conversation-sources/protocol.mjs','../../apps/control/conversations/http.mjs','../../apps/control/conversations/service.mjs','../../apps/control/conversations/events.mjs','model-selection.mjs','conversation-application/protocol.mjs','conversation-application/schema.mjs','conversation-application/feedback-schema.mjs','conversation-application/feedback-semantics.mjs','conversation-application/receive.mjs','document-application/boundary.mjs']){const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});}
  const root=conversationSchema(),defs={},seen=new Map();
  function transform(value,owner){if(Array.isArray(value))return value.map(v=>transform(v,owner));if(!value||typeof value!=='object')return value;
   const out={};for(const [key,v]of Object.entries(value)){if(key==='$ref'){
@@ -31,26 +31,26 @@ export async function generateConversationContracts({check=false}={}){
    out[key]='#/$defs/'+seen.get(full);
   }else out[key]=transform(v,owner);}return out;}
  root.$defs={...transform(root.$defs,root.$id),...defs};
- const names=['ConversationSubmitRequest','ConversationHistoryRequest','ConversationCancelRequest','ConversationEventsRequest','ConversationSubmittedResponse','ConversationHistoryResponse','ConversationCancelledResponse','ConversationEvent','ConversationErrorResponse'];
+ const names=['ConversationSubmitRequest','ConversationHistoryRequest','ConversationCancelRequest','ConversationEventsRequest','ConversationSubmittedResponse','ConversationHistoryResponse','ConversationCancelledResponse','ConversationEvent','ConversationErrorResponse','ConversationFeedbackRequest','ConversationFeedbackReadRequest','ConversationFeedbackResponse','ConversationFeedbackReadResponse'];
  const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);
- const exportNames=['validateSubmitRequest','validateHistoryRequest','validateCancelRequest','validateEventsRequest','validateSubmitted','validateHistory','validateCancelled','validateEvent','validateError'],exports={};
+ const exportNames=['validateSubmitRequest','validateHistoryRequest','validateCancelRequest','validateEventsRequest','validateSubmitted','validateHistory','validateCancelled','validateEvent','validateError','validateFeedbackRequest','validateFeedbackReadRequest','validateFeedback','validateFeedbackRead'],exports={};
  names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});exports[exportNames[i]]=ref;});
  const generated=standalone(ajv,exports);
  const bundled=await build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-application/receive.mjs',HERE),'utf8'),sourcefile:'conversation-application-receiver.mjs',resolveDir:resolve(dir,'conversation-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'conversation-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'conversation-generated'}));b.onLoad({filter:/.*/,namespace:'conversation-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
  if(Object.values(bundled.metafile.outputs).some(o=>o.imports.length))throw Error('Conversation browser external import');
  const declarations=await compile({title:'ConversationApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'ConversationApplicationEnvelope',{bannerComment:'// Generated from canonical conversation receiving schema. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
  const api=`
-export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events';
+export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events' | 'feedback' | 'feedback-read';
 /** Canonical immutable choices; runtime authorization and availability are decided by the server. */
 export interface ConversationSkillDescriptor {readonly skillId:NonNullable<ConversationSubmitRequest['skill']>['skillId'];readonly version:string;readonly displayName:string;readonly subjectKinds:readonly ('client'|'entity'|'personal'|'portfolio')[];readonly windowBases:readonly NonNullable<ConversationSubmitRequest['windowRequest']>['basis'][];readonly manifestSha256:string;readonly proseSha256:string;}
 export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;
-export interface ConversationRequestMap { submit:ConversationSubmitRequest; history:ConversationHistoryRequest; cancel:ConversationCancelRequest; events:ConversationEventsRequest; }
+export interface ConversationRequestMap { submit:ConversationSubmitRequest; history:ConversationHistoryRequest; cancel:ConversationCancelRequest; events:ConversationEventsRequest; feedback:ConversationFeedbackRequest; 'feedback-read':ConversationFeedbackReadRequest; }
 export type AdmittedConversationRequest<R extends ConversationRoute> = Readonly<ConversationRequestMap[R]> & {readonly [admittedRequest]:R};
 export type AdmittedConversationView = Readonly<ConversationSubmittedResponse | ConversationHistoryResponse> & {readonly [admittedView]:true};
-export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}; cancel:Readonly<ConversationCancelledResponse>; events:never;}
+export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}; cancel:Readonly<ConversationCancelledResponse>; events:never; feedback:ConversationFeedbackResponse; 'feedback-read':ConversationFeedbackReadResponse;}
 export type ConversationResponse<R extends ConversationRoute> = ConversationResponseMap[R] | ConversationErrorResponse;
 export interface ConversationCursor {readonly conversationId:string; readonly after:number; readonly [admittedCursor]:true;}
 export declare class ConversationResponseError extends Error {readonly code:string;}
