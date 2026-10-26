@@ -80,7 +80,7 @@ function fixedRow(k,step){
  const marker=JSON.stringify(tombstone(k.subjectId));
  const updates={
   objective:'record=$LAST::jsonb',
-  run:'request=$LAST::jsonb,continuation=NULL,continuation_sha256=NULL',
+  run:'request=$LAST::jsonb,continuation=NULL,continuation_sha256=NULL,feedback=NULL,feedback_sha256=NULL',
   approval:'payload=$LAST::jsonb',
   command:'payload=$LAST::jsonb,outcome=CASE WHEN outcome IS NULL THEN NULL ELSE $LAST::jsonb END',
   lookup:'payload=$LAST::jsonb,record=CASE WHEN record IS NULL THEN NULL ELSE $LAST::jsonb END',
@@ -96,7 +96,7 @@ function fixedRow(k,step){
   if(mode==='delete')return false;
   const body=mode==='run'?row.request:mode==='objective'?row.record:row.payload;
   return hash(body)===hash(tombstone(k.subjectId))&&
-   (mode!=='run'||row.continuation===null&&row.continuation_sha256===null)&&
+   (mode!=='run'||row.continuation===null&&row.continuation_sha256===null&&row.feedback==null&&row.feedback_sha256==null)&&
    (mode!=='command'||row.outcome===null||hash(row.outcome)===hash(tombstone(k.subjectId)))&&
    (mode!=='lookup'||row.record===null||hash(row.record)===hash(tombstone(k.subjectId)));
  };

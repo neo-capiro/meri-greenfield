@@ -6,6 +6,8 @@ export const conversationErrorStatuses = freeze({
   SCOPE_REFUSED:[403], SESSION_CHANGED:[403], STALE_WRITER:[403], CONVERSATION_SELECTOR_REFUSED:[403],
   DEADLINE:[408], CANCELLED:[408], REQUEST_TOO_LARGE:[413], CONVERSATION_UNAVAILABLE:[502],
   MODEL_SELECTION_UNAVAILABLE:[409],MODEL_SETTINGS_UNAVAILABLE:[503],
+  FEEDBACK_TARGET_REFUSED:[403],FEEDBACK_SOURCE_REFUSED:[403],FEEDBACK_REVISION_CHANGED:[409],
+  FEEDBACK_REPLAY_REFUSED:[409],FEEDBACK_LIMIT:[409],FEEDBACK_WRITE_UNKNOWN:[503],
 });
 export const conversationApplicationMetadata = freeze({
   packageVersion:'0.1.15', schemaId:'urn:meri:conversation-application:0.1.0', wireContractVersion:'0.1.0',
@@ -13,6 +15,8 @@ export const conversationApplicationMetadata = freeze({
     submit:{method:'POST',path:'/api/conversations/submit',response:'json'},
     history:{method:'POST',path:'/api/conversations/history',response:'json'},
     cancel:{method:'POST',path:'/api/conversations/cancel',response:'json',body:{},effect:'durable run cancellation'},
+    feedback:{method:'POST',path:'/api/conversations/feedback',response:'json',effect:'records feedback only'},
+    'feedback-read':{method:'POST',path:'/api/conversations/feedback-read',response:'json',effect:'none'},
     events:{method:'POST',path:'/api/conversations/events',response:'ai-sdk-ui-message-stream',intent:'view.subscribe'},
     reconnect:{method:'GET',path:'/api/conversations/events/{conversationId}/stream',response:'ai-sdk-ui-message-stream',cursorHeader:'x-meri-resume-sequence'},
   },

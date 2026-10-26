@@ -2,7 +2,8 @@ import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing
 import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
 import canonicalize from 'canonicalize';
 import {parseBytes} from '../document-application/boundary.mjs';
-import {validateSubmitRequest,validateHistoryRequest,validateCancelRequest,validateEventsRequest,validateSubmitted,validateHistory,validateCancelled,validateEvent,validateError} from './generated-validator.mjs';
+import {validateSubmitRequest,validateHistoryRequest,validateCancelRequest,validateEventsRequest,validateSubmitted,validateHistory,validateCancelled,validateEvent,validateError,validateFeedbackRequest,validateFeedbackReadRequest,validateFeedback,validateFeedbackRead} from './generated-validator.mjs';
+import {assertFeedbackResponse} from './feedback-semantics.mjs';
 import {conversationErrorStatuses,conversationApplicationMetadata} from './protocol.mjs';
 export {conversationApplicationMetadata} from './protocol.mjs';
 export class ConversationResponseError extends Error {constructor(code){super(code);this.name='ConversationResponseError';this.code=code;}}
@@ -10,7 +11,7 @@ const fail=code=>{throw new ConversationResponseError(code);};
 const parse=(bytes,cap)=>{try{return parseBytes(bytes,cap);}catch(error){fail(error.code??'INVALID_BYTES');}};
 const same=(a,b)=>canonicalize(a)===canonicalize(b);
 const requests=new WeakMap(),views=new WeakMap(),cursors=new WeakMap();
-const validators=Object.freeze({submit:validateSubmitRequest,history:validateHistoryRequest,cancel:validateCancelRequest,events:validateEventsRequest});
+const validators=Object.freeze({submit:validateSubmitRequest,history:validateHistoryRequest,cancel:validateCancelRequest,events:validateEventsRequest,feedback:validateFeedbackRequest,'feedback-read':validateFeedbackReadRequest});
 function routeValidator(route){if(typeof route!=='string'||!Object.hasOwn(validators,route))fail('INVALID_ROUTE');return validators[route];}
 function viewFacts(view){const facts=views.get(view);if(!facts)fail('UNADMITTED_VIEW');return facts;}
 function matches(run,facts){if(!same(run.binding,facts.binding)||!same(run.scopes,facts.scopes))fail('VIEW_MISMATCH');}
@@ -41,6 +42,10 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
  const selected=currentView===undefined?null:viewFacts(currentView),result=parse(utf8Bytes,conversationApplicationMetadata.limits.responseBytes);
  if(httpStatus!==200){if(!validateError(result)||!conversationErrorStatuses[result.error.code].includes(httpStatus))fail('INVALID_ERROR_RESPONSE');return result;}
  if(route==='events')fail('STREAM_RESPONSE_REQUIRED');
+ if(route==='feedback'||route==='feedback-read'){
+  if(!(route==='feedback'?validateFeedback:validateFeedbackRead)(result))fail('INVALID_RESPONSE');
+  return assertFeedbackResponse(route,result,request,selected,fail);
+ }
  if(!(route==='submit'?validateSubmitted:route==='history'?validateHistory:validateCancelled)(result))fail('INVALID_RESPONSE');
  if(route==='cancel')return result;
  const run=result.run;assertRun(run);if(selected)matches(run,selected);
