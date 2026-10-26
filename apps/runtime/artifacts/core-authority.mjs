@@ -89,10 +89,17 @@ export function createCoreArtifactAuthority(configuration){
   const life=lifetime(call.deadlineMs,call.signal);
   try{
    const first=await observe(ports,request,life);
-   const readRun=capture(call.store,'read');
+   const readRunOptional=capture(call.store,'readOptional');
+   /** The canonical accepted conversation run. A binding the conversation owner admitted for a turn that has not been
+    * submitted yet has no run row of its own; document *reads* (inspect, download, preview) are then pinned to the
+    * conversation by the fresh Core observation above and by the artifact owner's own version context (identical
+    * tenant/actor/conversation/scopes), exactly as a prior-run version read is. Generation and revision still require
+    * the session's own accepted run, and a stored run always keeps the exact binding/scope/cancellation check. */
+   const conversationRead=INTENT_OPERATIONS[call.intent].every(operation=>operation!=='artifact.generate'&&operation!=='artifact.revise');
    async function canonicalRun(observation,t){
-    const saved=await t.run(()=>readRun(observation.binding,{limit:1},t.check));
-    if(!saved||canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled')refuse('ACCESS_DENIED');
+    const saved=await t.run(()=>readRunOptional(observation.binding,{limit:1},t.check));
+    if(saved===null){if(!conversationRead)refuse('ACCESS_DENIED');return null;}
+    if(canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled')refuse('ACCESS_DENIED');
     return saved.run;
    }
    await canonicalRun(first,life);
