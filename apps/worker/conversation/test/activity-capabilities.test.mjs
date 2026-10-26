@@ -4,7 +4,7 @@ import {createConversationActivity} from '../activity.mjs';
 import {BASH_EGRESS_SCHEMA,bashEgressDomainsSha256} from '../egress/bash-egress.mjs';
 import {applicationFixture,binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
 const cwd=`/workspace/conversations/${binding.conversationId}`,SECRET='PRIVATE-TOKEN-9f8e',CONTENT='PRIVATE FILE CONTENT';
-const runtime=()=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
+const runtime=()=>({binding,versions,cwd,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
 const DEFAULT_KEYS=['cwd','abortController','settingSources','settings','skills','allowedTools','tools','permissionMode','canUseTool','includePartialMessages','systemPrompt','model','maxTurns','maxBudgetUsd','sessionStore','sessionStoreFlush','env','thinking'];
 const progress={type:'system',subtype:'task_progress',task_id:'task_1',subagent_type:'research',description:CONTENT,usage:{total_tokens:1,tool_uses:0,duration_ms:1},summary:'Reading sources'};
 const frames=[{type:'stream_event',parent_tool_use_id:null,event:{type:'message_start',message:{id:'msg_1'}}},{type:'stream_event',parent_tool_use_id:null,event:{type:'content_block_delta',index:0,delta:{type:'text_delta',text:'Hello'}}},progress,{type:'assistant',parent_tool_use_id:'toolu_agent',message:{id:'msg_sub',content:[{type:'text',text:CONTENT}]}},{type:'assistant',parent_tool_use_id:null,message:{id:'msg_1',content:[{type:'text',text:'Hello'}]}},{type:'result',subtype:'success',is_error:false}];
@@ -49,6 +49,11 @@ test('an invalid declared policy is refused before claim and before any SDK quer
  const f=await setup({capabilities:{subagents:true,permissionMode:'bypassPermissions'}});try{await assert.rejects(f.execute({binding}));assert.equal(f.calls(),0);assert.equal((await f.history()).run.state,'queued');}finally{f.close();}
 });
 
+test('a refused Agent call denies that call only: the run still completes instead of failing on a well-formed tool call',async()=>{
+ let decision;const f=await setup({capabilities:{subagents:true},during:async options=>{decision=await options.hooks.PreToolUse[0].hooks[0]({...hookInput,tool_name:'Agent',tool_input:{description:'d',prompt:'p',subagent_type:'general-purpose'}},hookInput.tool_use_id,signal());}});
+ try{assert.deepEqual(await f.execute({binding}),{state:'completed'});assert.equal(decision.hookSpecificOutput.permissionDecision,'deny');
+  const h=await f.history();assert.equal(h.run.state,'completed');assert.deepEqual(texts(h),['Hello'],'the denied subagent never replaced the parent answer');}finally{f.close();}
+});
 const signal=()=>({signal:new AbortController().signal});
 test('a malformed hook input latches: the tool is denied, no later output is published and the run fails instead of completing',async()=>{
  let decision;const f=await setup({capabilities:{auditHooks:true},duringAt:1,append:async(event,forward)=>event.type==='tool.audit'?{}:forward(),during:async options=>{decision=await options.hooks.PreToolUse[0].hooks[0]({...hookInput,tool_use_id:''},'x',signal());}});
@@ -62,7 +67,7 @@ test('a latched failure after the last output still prevents completion; post-to
   [{compactionHooks:true},o=>o.hooks.PreCompact[0].hooks[0]({...hookInput,hook_event_name:'PreCompact',trigger:'sometimes'},undefined,signal())],
   [{compactionHooks:true},o=>o.hooks.PostCompact[0].hooks[0]({...hookInput,hook_event_name:'PostCompact',trigger:'auto',compact_summary:'s'},undefined,signal()),true],
   [{subagents:true},o=>o.hooks.SubagentStart[0].hooks[0]({...hookInput,hook_event_name:'SubagentStart'},undefined,signal())],
-  [{subagents:true},o=>o.hooks.PreToolUse[0].hooks[0]({...hookInput,tool_name:'Agent',tool_input:{description:'d',prompt:'p',subagent_type:'general-purpose'}},'toolu_1',signal())],
+  [{subagents:true},o=>o.hooks.PreToolUse[0].hooks[0]({...hookInput,tool_name:'Agent',tool_input:{description:'d',prompt:'p',subagent_type:'research'},tool_use_id:''},'toolu_1',signal())],
   [{subagents:true},o=>o.hooks.PostToolUse[0].hooks[0]({hook_event_name:'PostToolUse',tool_name:'Agent'},undefined,signal())]];
  for(const [capabilities,fire,refuseEvent] of paths){
   const f=await setup({capabilities,append:async(event,forward)=>['tool.audit','compaction.boundary','subagent.lifecycle'].includes(event.type)?(refuseEvent?Promise.reject(Error('EVENT_TYPE_REFUSED')):{}):forward(),during:async options=>{await fire(options);}});

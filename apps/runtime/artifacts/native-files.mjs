@@ -4,7 +4,7 @@ import {join,isAbsolute,resolve,relative} from 'node:path';
 import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {NATIVE_TASK_LIST_ID,assertNativeFileUpload,assertNativeFileState,nativeFileSha256} from '../../../packages/contracts/runtime-0.2/files.mjs';
 import {createWorkspaceCapture} from './workspace-capture.mjs';
-import {restoreWorkspaceBytes,verifyWorkspaceBytes} from './workspace-restore.mjs';
+import {restoreWorkspaceBytes,verifyWorkspaceBytes,retainWorkspaceBytes} from './workspace-restore.mjs';
 const fail=()=>{throw Error('NATIVE_FILES_REFUSED');};
 export function nativeTaskDirectory(sdkConfigDirectory){if(typeof sdkConfigDirectory!=='string'||!isAbsolute(sdkConfigDirectory)||resolve(sdkConfigDirectory)!==sdkConfigDirectory)fail();return join(sdkConfigDirectory,'tasks',NATIVE_TASK_LIST_ID);}
 async function directory(path){const s=await lstat(path);if(!s.isDirectory()||s.isSymbolicLink()||await realpath(path)!==path||process.getuid&&s.uid!==process.getuid())fail();return s;}
@@ -25,5 +25,15 @@ export function createNativeFiles(configuration){const c=own(configuration,['wor
    await apply(c.workspace,saved.workspace,workspaceBytes);
    // This local view reuses the path/byte restorer; it is not a second persisted workspace or checkpoint.
    await apply(tasks,{...saved.workspace,entries:saved.tasks},taskBytes);check(signal);
-  }});
+  },
+  /** A run that never recorded its cwd bytes leaves a conversation-local tree the durable owner cannot account for.
+   * Those bytes are retained beside the workspace and the workspace is left empty, so the next run restores the durable
+   * state into a quiesced tree instead of refusing a stale one. The native task list is a per-run directory the next run
+   * replaces, so only the caller's own cwd is retired here. Nothing is erased and no durable state is read. The caller
+   * supplies this local cleanup's own deadline (never the run's model deadline) and every step is checked against
+   * cancellation and that deadline. */
+  retain({signal,deadlineMs}={}){nativeSignal(signal);if(!Number.isSafeInteger(deadlineMs))fail();
+   const expired=()=>signal?.aborted||now()>=deadlineMs;if(expired())fail();
+   return retainWorkspaceBytes({workspace:c.workspace,check:()=>{nativeSignal(signal);if(expired())fail();}});}
+ });
 }
