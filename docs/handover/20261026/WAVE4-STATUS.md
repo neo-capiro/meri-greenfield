@@ -211,7 +211,7 @@ The document-renewal author preserved Wave3's three-file WIP and has reproduced 
 
 Current parallel assignments: a4_assessment authors the document-renewal fix; s3_assessment reviews the PR239 state follow-up after completing Q03 C; task_approval_author implements the Graph reply slice after freezing Gmail union proof. Root owns reviews, shared composition and service mutations. PR236 remains shipped and accepted; onboarding remains excluded.
 
-## Current checkpoint — 26 October, 22:45 UTC
+## Earlier checkpoint — 26 October, 22:45 UTC
 
 Wave 4 remains in progress. About nine substantial tracks remain: initial SQL activation; broader Q03 business records; Q05 saved records; Q06 Strategy/history; Q07 semantic sources; mail; tasks/approvals; LegiWatch/client-note actions; and S3 runtime qualification with bounded M7 groundwork. Q04 consumer migration is cross-cutting after proven replacement parity. These tracks include both accepted source awaiting shipment and unimplemented scope; no defensible completion percentage or ETA is available.
 
@@ -224,3 +224,30 @@ Gmail source remains independently accepted and unshipped. Graph one-recipient r
 New direct user authorization: merge and ship Core185 and FE240, the bounded Research Portfolio client-sharing pair. This is an exception for those two PRs only; the rest of Research Portfolio (including the MO05 Meri integration), onboarding and rich Wave5 documents remain deferred/excluded. The pair is under independent backend/frontend review. Initial backend review raised concurrent PIN-counter/design-version concerns, public-token logging and required runtime-closure pin regeneration; no merge or deployment has occurred for the pair.
 
 All four available agent slots are active: a4_assessment implements MF12 task destinations; s3_assessment reviews Core185; task_approval_author reviews FE240 after freezing Graph; root owns integration, fixes and the serialized release lock. Completed helpers are reassigned to the next independent work item.
+
+## Current checkpoint — 26 October, 23:13 UTC
+
+Wave 4 remains in progress. Four of four sessions are active: root ships the explicitly requested sharing pair; task_approval_author prepares its Core image/migration operators; a4_assessment composes accepted mail/task sources on current merged baselines; s3_assessment prepares the initial SQL activation configuration. No completion percentage or reliable ETA is asserted.
+
+Completed shipments: calendar PR236; District Nexus PR239 plus state-filter correction PR241, with authenticated acceptance. Document renewal PR242 is merged as2693d5e4 and healthy on frontend42, image7543083f. The existing client-scoped synthetic DOCX now loads filename/MIME/size and structural inspection; Download delivers36669bytes with the exact stored SHA256 and valid17-entry OOXML/CRC plus expected text. The file card/inspection remained during action-list refresh and download. This is a successful real download, not a rendered-preview/native-open claim. The product still reports preview pending; local renderer is unavailable. Wave3 PR281 closeout remains open with that qualification limit.
+
+Sharing Core185 merged73c7a7a9/treef9eade49 and FE240 mergede791c466/tree31f3c644. Backend concurrency, replay, logging and FK corrections are independently accepted with29focused,33closure/helper and14actual-Prisma PostgreSQL checks. Frontend basis-label/phone-overlap corrections pass15focused and6mounted cases. Three preview route additions pass independent strict types,7construct checks and10positive/125negative route cases; all67old rules/78resources/outputs are preserved. Frontend ARM64 build and container smoke passed; imagefdb0107f scan COMPLETE with no findings. Preview snapshot is creating; edge/frontend changesets are prepared, not executed. Core image, exact singleton migration, paired deployment and authenticated sharing acceptance remain. This pair alone is the user's exception to Research Portfolio deferral.
+
+Gmail source/native qualification remains accepted. Graph substantive source is independently accepted; tiny unused-argument/comment cleanup6d438af5 has root acceptance and10focused passes. Graph native fixture and actual provider qualification remain. MF12 update/create reset and canonical task destination are independently accepted (Core1c92dcf3,FE41da8b5c;23Core synthetic,106FE,6mounted cases). Source union, reviewed registry/policy composition, required release gates and live task acceptance remain; MF13 is conditional on a real scoped inbox owner.
+
+Remaining scope, grouped without counting tests as separate projects:
+
+1. Finish the requested sharing185/240 release and live checks.
+2. Activate initial Q01/Q02 plus Q03 objectives/manual activity: final shared contracts/catalog/package generation and distribution, current-source union, constrained analytics/private credentials and role bootstrap, exact grants/private views migration, paired Core/Meri images/configuration and live read checks. Accepted source/native fixtures are reused.
+3. Complete broader Q03 business reads: team/ownership, targets/relationships, saved tasks/actions/outreach/tracking and complete existing client fields. Current tenant/client/wall visibility and paging remain required.
+4. Q05 saved records: authorized Workspace document/version/comment inventory, newsletter/HillDay saved state and nondeferred Portfolio/LegiWatch records; separately permitted usage/billing/settings projections and exact-version content handoff. Rich Office lifecycle stays outside this wave.
+5. Q06 Strategy planner/history: saved planner projects/tasks/events, objective/strategy versions and authorized activity/history, distinct from engagement tasks.
+6. Q07 semantic sources: connect accepted state/federal bill, grant and solicitation corpora through the existing indexing owner as ready; verify passages/versions, exact IDs, metadata filters and honest coverage. Do not duplicate ingestion or block initial SQL on unready corpora.
+7. Q04 consumer cutover, cross-cutting: migrate affected ordinary-chat/skill callers and retire only proven redundant model-facing tools/adapters after field, paging, evidence and visibility parity. Preserve all14skills and still-pinned consumers.
+8. Mail: compose/ship accepted Gmail and one-recipient Graph replies; complete the remaining native reply/forward and Mail/Meri/Timeline wiring/receipt cases, attachments or truthful handoff, payload/error behavior, actual legacy-sender cutover, account/OAuth health and relevant recovery gaps. Provider acceptance is not delivery. Live sends require a specific test mailbox/recipient/send authorization; none is inferred.
+9. Tasks/approvals: compose/ship accepted reset/create/destination work; run actual task-effect/result/current-access and external-reviewer/run-refresh acceptance. Complete only demonstrated remaining receipt/unknown/reload gaps. Scoped approval inbox remains conditional on an actual supported owner; no invented approval service or unsupported task fields.
+10. Remaining MO06/MO08 actions: LegiWatch subscriptions/relevance/suggestions/unsubscribe and client creation/profile/notes/saved business-development briefs through existing current-authority owners and explicit reviewed effects. Reuse already-shipped watch/hearing work.
+11. S3 and bounded M7 groundwork: cold/warm/restored standard AgentCore session qualification, exact durable restore/artifact evidence, latency/cost, Stop/current-access denial and cleanup; only necessary durable continuation/watch/schedule seams. Full M7 is outside this wave.
+12. Finish transferred document acceptance accounting/PR281 and final Wave4 deployment, evidence and handoff closeout, retaining unresolved/native/provider limits honestly.
+
+Excluded: broader Research Portfolio including MO05, onboarding, rich Wave5 document/Office editing, full M7 and M6 governance. The101-tool retirement matrix is a checklist, not101new projects.
