@@ -103,10 +103,10 @@ test('caller observations, authority fields, missing context and digest substitu
  assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
 });
 
-test('current tenant, actor, exact operation, source and grant decision remain mandatory',async()=>{
- for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.binding.tenantId='other',a=>a.decision.actor.actorId='other',
-  a=>a.decision.operation='other@0.2.0',a=>a.decision.decision='denied',a=>a.decision.scopes=[],a=>a.sourceIds=[]]){
-  const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call));
+test('current tenant, actor, policy revision, scope and source grant remain mandatory',async()=>{
+ for(const mutate of [a=>a.binding.tenantId='other',a=>a.binding.actorId='other',a=>a.subject.tenantId='other',
+  a=>a.subject.policyRevision='other',a=>a.policyRevision='other',a=>a.scopes=[],a=>a.sourceIds=[]]){
+  const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});
   assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
@@ -243,7 +243,7 @@ test('cancellation, deadline, missing credential owner and bounded bytes stop or
 });
 
 test('the current capability output budget bounds source bytes without truncation or a fallback request',async()=>{
- const f=storedCase();f.authority.claims.budgets.maxOutputBytes=256;
+ const f=storedCase();f.authority.maxOutputBytes=256;
  await assert.rejects(f.handler()(f.call()),{message:'RESOURCE_LIMIT'});
  assert.equal(f.wire.length,1);assert.equal(f.credentialCalls.length,1);
 });

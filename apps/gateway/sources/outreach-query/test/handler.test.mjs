@@ -60,12 +60,12 @@ test('client subject and matching resource are mandatory even with an otherwise 
  for(const change of ['personal','foreign-client','no-client-resource','multiple-clients']){
   const f=storedCase(),call=structuredClone(f.call()),a=call.authority;
   if(change==='personal')Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId]});
-  if(change==='foreign-client'){a.subject.entityIds=[otherClient];for(const scopes of [a.subject.scopes,a.claims.scopes,a.decision.scopes])scopes[0].resourceId=otherClient;}
-  if(change==='no-client-resource')for(const scopes of [a.subject.scopes,a.claims.scopes,a.decision.scopes])Object.assign(scopes[0],{kind:'tenant',resourceId:a.binding.tenantId});
+  if(change==='foreign-client'){a.subject.entityIds=[otherClient];for(const scopes of [a.subject.scopes,a.scopes])scopes[0].resourceId=otherClient;}
+  if(change==='no-client-resource')for(const scopes of [a.subject.scopes,a.scopes])Object.assign(scopes[0],{kind:'tenant',resourceId:a.binding.tenantId});
   if(change==='multiple-clients')a.subject.entityIds.push(otherClient);
-  await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   let factories=0;const execute=f.handler({getCredentials:undefined,credentialsForCall:()=>{factories++;return f.transport.getCredentials;}});
-  await assert.rejects(execute(call));assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+  await assert.rejects(execute(call),{message:'ACCESS_DENIED'});assert.equal(factories,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
 test('native list serializes dates and preserves scalar campaign metadata without private nested rows',async()=>{
@@ -85,12 +85,15 @@ test('receiving refuses cross-client/status rows, count substitution, duplicates
  }
 });
 test('native detail/foreign errors cannot become an accepted list response',async()=>{
- for(const response of [()=>Response.json({tool:id,generatedAt:'2026-10-12T01:00:00.000Z',record:{id:clientId}}),()=>Response.json({error:'PRIVATE'}),()=>Response.json({},{status:403})]){
+ for(const response of [()=>Response.json({tool:id,generatedAt:'2026-10-12T01:00:00.000Z',record:{id:clientId}}),()=>Response.json({error:'PRIVATE'})]){
   const f=storedCase();f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
  }
+ // A receiver 403 is the canonical current-client refusal, never a released campaign list.
+ const denied=storedCase();denied.state.responseFactory=()=>Response.json({},{status:403});
+ await assert.rejects(denied.handler()(denied.call()),{message:'ACCESS_DENIED'});
 });
 test('source decision/credential revocation, response ceiling and cancelled authority withhold campaign bytes',async()=>{
- const f=storedCase(),call=structuredClone(f.call());call.authority.decision.operation='search_tracked_bills@0.2.0';await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);
+ const f=storedCase(),call=structuredClone(f.call());call.authority.sourceIds=['synthetic-revoked-source'];await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);
  const g=storedCase();g.state.credentialMutator=p=>p.normalizationContext={clientResolution:null};await assert.rejects(g.handler()(g.call()),{message:'ACCESS_DENIED'});assert.equal(g.wire.length,0);
  const h=storedCase();await assert.rejects(h.handler({maxResponseBytes:16})(h.call()),{message:'RESOURCE_LIMIT'});
  const j=storedCase(),controller=new AbortController();j.state.afterSource=()=>controller.abort();await assert.rejects(j.handler()({...j.call(),signal:controller.signal}),{message:'CANCELLED'});
