@@ -42,9 +42,9 @@ test('opaque continuation remains native-owned with incomplete coverage and no c
  const out=JSON.parse(await f.handler()(f.call()));assert.equal(out.result.coverage.sources[0].nextCursor,continuation);assert.equal(out.result.coverage.stopReason,'pagination_incomplete');assert.deepEqual(f.wire[0].body,{cursor:continuation});
 });
 
-test('fragment continuation preserves UTF16 bounds and a split surrogate without pretending to be whole JSON',async()=>{
+test('fragment continuation preserves UTF16 bounds and complete scalars without pretending to be whole JSON',async()=>{
  const row=fragmentRecord(),page=storedPage([row],{hasMore:true}),f=storedCase(id,{page}),out=JSON.parse(await f.handler()(f.call()));
- assert.deepEqual(out.result,page);assert.equal(out.result.records[0].payload.text.length,2000);assert.equal(out.result.records[0].payload.text.charCodeAt(1999),0xd83d);assert.equal(out.result.coverage.paginationComplete,false);
+ assert.deepEqual(out.result,page);assert.equal(out.result.records[0].payload.text.length,2000);assert.equal(out.result.records[0].payload.text.isWellFormed(),true);assert.equal(out.result.coverage.paginationComplete,false);
 });
 
 for(const sourceStatus of ['unavailable','unauthorized','unsupported','error'])test(`${sourceStatus}: preserve native source-refusal rail without fabricating successful absence`,async()=>{
@@ -67,13 +67,13 @@ test('tenant substitution, invented complete coverage, payload mutation and curs
 });
 
 test('raw domain errors, foreign DTOs and HTTP failures cannot become successful hearing results',async()=>{
- for(const responseFactory of [()=>Response.json({error:'private backend failure'}),()=>Response.json({},{status:403}),()=>Response.json({tool:'explorer',hearings:[]})]){
-  const f=storedCase();f.state.responseFactory=responseFactory;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+ for(const [responseFactory,message] of [[()=>Response.json({error:'private backend failure'}),'INVALID_RESULT'],[()=>Response.json({},{status:403}),'ACCESS_DENIED'],[()=>Response.json({tool:'explorer',hearings:[]}),'INVALID_RESULT']]){
+  const f=storedCase();f.state.responseFactory=responseFactory;await assert.rejects(f.handler()(f.call()),{message});
  }
 });
 
 test('authority/model substitutions and absent current credentials prevent source access',async()=>{
- for(const mutate of [c=>c.authority.decision.decision='denied',c=>c.authority.sourceIds=['foreign'],c=>c.argumentsSha256='a'.repeat(64),c=>c.request={tenantId:'foreign'}]){
+ for(const mutate of [c=>c.authority.executionSha256='invalid',c=>c.authority.sourceIds=['foreign'],c=>c.argumentsSha256='a'.repeat(64),c=>c.request={tenantId:'foreign'}]){
   const f=storedCase(),call=structuredClone(f.call());mutate(call);await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
  const missing=storedCase();await assert.rejects(missing.handler({getCredentials:undefined})(missing.call()),{message:'UNAVAILABLE'});assert.equal(missing.wire.length,0);

@@ -64,7 +64,12 @@ test('unavailable source never manufactures retained records',()=>{assert.throws
 test('one evidence chunk per page is retained',()=>{assert.throws(()=>check(page([record(),record(payload('machine_transcript_segment'))])));});
 test('hasMore and final truncation differ through governed merge',()=>{check(page([record()],'degraded',true));const p=page([record()],'degraded',true);delete p.coverage.sources[0].nextCursor;assert.throws(()=>check(p));});
 test('JSON fragments retain UTF16 exact bounds and full-source hash declaration',()=>{const p=fragmentPage();check(p);p.records[0].payload.text='😀'.repeat(1000);check(p);p.records[0].payload.characterEnd=1999;assert.throws(()=>check(p));});
-test('split surrogates remain valid fragment data, never parsed as a complete record',()=>{const p=fragmentPage();p.records[0].payload.text='x'.repeat(1999)+'\ud83d';check(p);});
+test('split surrogates are refused before the unchanged native canonical-hash boundary',()=>{const p=fragmentPage();p.records[0].payload.text='x'.repeat(1999)+'\ud83d';assert.throws(()=>check(p));});
+test('scalar-safe grid cuts accept 1999/2001-unit pages without changing count or part identity',()=>{
+ const p=fragmentPage(),r=p.records[0];r.payload.text='x'.repeat(1999);r.payload.characterEnd=1999;check(p);
+ Object.assign(r.payload,{text:'😀'+'x'.repeat(1999),characterStart:1999,characterEnd:4000,chunk:2});r.recordId=r.recordId.slice(0,-1)+'1';check(p);
+ for(const change of [v=>v.characterStart=1998,v=>v.characterEnd=4001,v=>v.text='x'.repeat(2001),v=>v.chunkCount=5,v=>v.title='\ud83d']){const q=structuredClone(p);change(q.records[0].payload);assert.throws(()=>check(q));}
+});
 test('fragment attribution lengths and content hash agree without whole-record reconstruction',()=>{const p=fragmentPage();p.records[0].payload.speakerName='x'.repeat(241);assert.throws(()=>check(p));delete p.records[0].payload.speakerName;p.records[0].payload.contentHash='b'.repeat(64);assert.throws(()=>check(p));});
 test('published exact version retains source evidence and current/asOf distinction',()=>{const p=published();check(exact(p),exactRequest('published'));p.current=false;assert.throws(()=>check(exact(p),exactRequest('published')));p.historical=true;const q=exact(p);q.records[0].provenance.historical=true;check(q,{...exactRequest('published'),asOf:at});});
 test('published historical cutoff forbids newer observed version',()=>{const p=published();p.historical=true;const q=exact(p);q.records[0].provenance.historical=true;assert.throws(()=>check(q,{...exactRequest('published'),asOf:'2020-01-01'}));});

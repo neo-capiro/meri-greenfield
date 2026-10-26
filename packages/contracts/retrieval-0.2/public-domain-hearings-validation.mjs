@@ -3,6 +3,7 @@
 import {createHash} from 'node:crypto';
 import {snapshotOperationData} from './operation-contracts.mjs';
 import {assertPublicDataInstant} from './public-data-deadlines.mjs';
+import {hearingFragmentLocationMatches} from './hearing-fragments.mjs';
 const ID='search_committee_hearings',URN='urn:meri:retrieval:public-domain-hearings:0.2.0';
 export const PUBLIC_DOMAIN_HEARINGS_OPERATION_IDS=Object.freeze([ID]);
 const fail=m=>{throw Error(m);};
@@ -66,7 +67,7 @@ export function createPublicDomainHearingsValidators({validateShape,schema}){
    if(privateSource?prov.tenantId!==ctx.tenantId:Object.hasOwn(prov,'tenantId'))fail('Hearing declared tenant provenance differs');
    if(fragment){
     if(Object.hasOwn(p,'id')&&p.id!==prov.sourceRecordId)fail('Hearing fragment copied identity differs');
-    if(p.contentHash!==prov.contentHash||p.text.length!==p.characterEnd-p.characterStart||p.characterStart!==(p.chunk-1)*2000||p.characterEnd!==Math.min(p.characterStart+2000,p.totalCharacters)||p.chunkCount!==Math.ceil(p.totalCharacters/2000)||p.chunk>p.chunkCount||p.title.length>240||p.originalKind!==null&&p.originalKind.length>80||p.sourceUrl!==null&&p.sourceUrl.length>1000)fail('Hearing JSON fragment bounds differ');
+    if(p.contentHash!==prov.contentHash||!hearingFragmentLocationMatches({part:p.chunk-1,...p},p.text)||p.chunkCount!==Math.ceil(p.totalCharacters/2000)||p.chunk>p.chunkCount||p.title.length>240||p.originalKind!==null&&p.originalKind.length>80||p.sourceUrl!==null&&p.sourceUrl.length>1000||Object.values(p).some(v=>typeof v==='string'&&!v.isWellFormed()))fail('Hearing JSON fragment bounds differ');
     for(const key of attribution)if(typeof p[key]==='string'&&p[key].length>240)fail('Hearing fragment attribution exceeds source bound');
    }else if(JSON.stringify(p).length>6500||hash(JSON.stringify(p))!==prov.contentHash)fail('Whole hearing JSON/hash projection differs');
    if(input.recordsView===null){
