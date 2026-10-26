@@ -1,4 +1,5 @@
 import {fail,safeSourceLocator} from './semantics.mjs';
+import {hearingFragmentLocationMatches} from '../retrieval-0.2/hearing-fragments.mjs';
 export const HEARING_SOURCE_EVENT='source.native-hearing-record';
 // Compare JSON data without depending on JSONB object-key order.
 const same=(a,b)=>a===b||a!==null&&b!==null&&typeof a==='object'&&typeof b==='object'&&Array.isArray(a)===Array.isArray(b)&&Object.keys(a).length===Object.keys(b).length&&Object.keys(a).every(k=>Object.hasOwn(b,k)&&same(a[k],b[k]));
@@ -17,7 +18,7 @@ export function assertHearingSourceEventSemantics(event){
  if(selection.clientId!==null&&event.scopes.some(s=>s.kind==='client'&&s.resourceId!==selection.clientId))fail('INVALID_SOURCE_EVENT');
  if(page.characterStart>page.characterEnd||page.characterEnd>page.totalCharacters||page.contentComplete!==(page.format==='json')||
   (page.contentComplete?(page.part!==0||page.characterStart!==0||page.characterEnd!==page.totalCharacters||page.totalCharacters>6500):
-   (page.totalCharacters<=6500||page.characterStart!==page.part*2000||page.characterEnd!==Math.min(page.characterStart+2000,page.totalCharacters))))fail('INVALID_SOURCE_EVENT');
+   !hearingFragmentLocationMatches(page)))fail('INVALID_SOURCE_EVENT');
  // Validate the admitted Core cursor, never manufacture a continuation token.
  if(page.part===0){if(selection.cursor!==null)fail('INVALID_SOURCE_EVENT');}
  else {try{if(!selection.cursor?.startsWith('hearing:'))fail('INVALID_SOURCE_EVENT');
@@ -34,6 +35,7 @@ export function assertHearingSourceReadSemantics(response,request){
  if(request.schemaVersion!=='meri.hearing-source-read/1'||event.eventId!==request.referenceId||event.binding.conversationId!==request.conversationId||event.binding.runId!==request.runId)fail('SOURCE_REQUEST_MISMATCH');
  const {payloadSha256,...location}=d.page;
  if(result.records.length!==1||!same({recordId:record.recordId,provenance:record.provenance},d.source)||!same(hearingLocation(record.payload),location)||!same(result.coverage,d.coverage))fail('SOURCE_PAGE_MISMATCH');
+ if(!d.page.contentComplete&&!hearingFragmentLocationMatches(d.page,record.payload.text))fail('SOURCE_PAGE_MISMATCH');
  if(current.linkStatus==='available'?current.sourceLocator===null||safeSourceLocator(current.sourceLocator)!==current.sourceLocator:current.sourceLocator!==null)fail('UNSAFE_SOURCE_URL');
  return response;
 }

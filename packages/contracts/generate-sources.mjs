@@ -9,7 +9,7 @@ export async function generateSourceContracts({check=false}={}){
  const [{default:Ajv},{default:formats},{default:standalone},esbuild,{compile}]=await Promise.all([import('ajv/dist/2020.js'),import('ajv-formats'),import('ajv/dist/standalone/index.js'),import('esbuild'),import('json-schema-to-typescript')]);
  try{
   const sources=[],owners=new Map();
-  for(const path of ['meri.schema.json','native-bill-text-source.schema.json',"native-hearing-source.schema.json","retrieval-0.2/public-domain-hearings.schema.json","retrieval-0.2/public-domain-hearing-records.schema.json","retrieval-0.2/outreach-query.schema.json",'generate-sources.mjs','conversation-history/protocol.mjs',...['protocol','semantics','hearing-semantics','validate','receive'].map(n=>'conversation-sources/'+n+'.mjs'),'document-application/boundary.mjs']){
+  for(const path of ['meri.schema.json','native-bill-text-source.schema.json',"native-hearing-source.schema.json","retrieval-0.2/public-domain-hearings.schema.json","retrieval-0.2/public-domain-hearing-records.schema.json","retrieval-0.2/outreach-query.schema.json",'generate-sources.mjs','retrieval-0.2/hearing-fragments.mjs','conversation-history/protocol.mjs',...['protocol','semantics','hearing-semantics','validate','receive'].map(n=>'conversation-sources/'+n+'.mjs'),'document-application/boundary.mjs']){
    const bytes=await readFile(new URL(path,HERE));sources.push({path,sha256:hash(bytes),bytes:bytes.length});if(path.endsWith('.json')){const s=JSON.parse(bytes);owners.set(s.$id,s);}
   }
   const root=structuredClone(owners.get('urn:meri:native-bill-text-source:1.0.0')),defs={},seen=new Map();

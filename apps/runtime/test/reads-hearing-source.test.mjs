@@ -16,9 +16,16 @@ test('actual Core denial or revoked execution never publishes a hearing referenc
   if(revoke)scene.state.afterSource=f.revoke;else f.deny();const r=await f.execute();assert.notEqual(r.status,200);assert.equal(events.length,0);assert.doesNotMatch(await r.text(),/Synthetic public record/);
  }
 });
-test('existing native canonical-hash boundary refuses a Core fragment splitting a surrogate before capture',async()=>{
- const proof=hearingProof({large:true,part:1,text:'x',wireOnly:true});assert.equal(proof.result.records[0].payload.text.isWellFormed(),false);
+test('scalar-safe Core fragment passes unchanged native canonical hashing and source publication',async()=>{
+ const proof=hearingProof({large:true,part:1,text:'x',wireOnly:true});assert.equal(proof.result.records[0].payload.text.isWellFormed(),true);
+ assert.equal(proof.result.records[0].payload.characterStart,1999);assert.equal(proof.result.records[0].payload.characterEnd,3999);
+ assert.match(canonicalSha256(proof.result),/^[a-f0-9]{64}$/);
+ const events=[],scene=storedCase(undefined,{request:proof.request.arguments,page:proof.result}),f=await fixture('public-domain-hearings','search_committee_hearings',{scene,conversationStore:{async appendSource(...args){events.push(args);}}});
+ const response=await f.execute();assert.equal(response.status,200,await response.clone().text());assert.equal(events.length,1);assert.equal(events[0][1].data.page.characterStart,1999);
+});
+test('malformed fragments still fail the existing canonical hash and cannot publish',async()=>{
+ const proof=hearingProof({large:true,part:1,text:'x',wireOnly:true});proof.result.records[0].payload.text='\udc00'+proof.result.records[0].payload.text.slice(1);
  assert.throws(()=>canonicalSha256(proof.result),/Lone surrogate/);
  const events=[],scene=storedCase(undefined,{request:proof.request.arguments,page:proof.result}),f=await fixture('public-domain-hearings','search_committee_hearings',{scene,conversationStore:{async appendSource(...args){events.push(args);}}});
- const response=await f.execute();assert.notEqual(response.status,200);assert.equal(events.length,0);assert.doesNotMatch(await response.text(),/hearing_evidence_json_chunk|Synthetic public/);
+ const response=await f.execute();assert.notEqual(response.status,200);assert.equal(events.length,0);
 });
