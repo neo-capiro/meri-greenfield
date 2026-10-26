@@ -1,3 +1,4 @@
+import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
 import canonicalize from 'canonicalize';
 import {parseBytes} from '../document-application/boundary.mjs';
 import {validateSubmitRequest,validateHistoryRequest,validateCancelRequest,validateEventsRequest,validateSubmitted,validateHistory,validateCancelled,validateEvent,validateError} from './generated-validator.mjs';
@@ -15,6 +16,7 @@ function matches(run,facts){if(!same(run.binding,facts.binding)||!same(run.scope
 function assertRun(run){if(run.scopes.some(scope=>scope.tenantId!==run.binding.tenantId||scope.policyRevision!==run.policyRevision))fail('RUN_SCOPE_MISMATCH');}
 function assertEvent(event,run){
  if(!same(event.binding,run.binding)||!same(event.scopes,run.scopes))fail('EVENT_VIEW_MISMATCH');
+ if(event.type==='source.native-bill-text'){try{assertNativeSourceEventSemantics(event);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(event.type==='source.available'&&event.data.scopes.some(scope=>scope.tenantId!==run.binding.tenantId||!run.scopes.some(parent=>same(scope,parent))))fail('SOURCE_SCOPE_MISMATCH');
 }
 function assertWindowPair(request,window){

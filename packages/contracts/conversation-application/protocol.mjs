@@ -8,7 +8,7 @@ export const conversationErrorStatuses = freeze({
   MODEL_SELECTION_UNAVAILABLE:[409],MODEL_SETTINGS_UNAVAILABLE:[503],
 });
 export const conversationApplicationMetadata = freeze({
-  packageVersion:'0.1.3', schemaId:'urn:meri:conversation-application:0.1.0', wireContractVersion:'0.1.0',
+  packageVersion:'0.1.15', schemaId:'urn:meri:conversation-application:0.1.0', wireContractVersion:'0.1.0',
   routes:{
     submit:{method:'POST',path:'/api/conversations/submit',response:'json'},
     history:{method:'POST',path:'/api/conversations/history',response:'json'},

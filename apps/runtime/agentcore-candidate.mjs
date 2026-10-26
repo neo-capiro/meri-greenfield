@@ -17,6 +17,7 @@ import {createAgentCoreControlApplication} from './agentcore-control-http.mjs';
 import {createConversationIdentity} from './conversation-identity.mjs';
 import {createCoreConversationCurrentness} from './native-authority/conversation-currentness.mjs';
 import {createCoreConversationManagement} from './native-authority/conversation-management.mjs';
+import {createCoreBillTextSourceReader} from './native-authority/bill-text-source.mjs';
 import {createDurableSdkSessionOwner} from './sdk-session-owner.mjs';
 import {createNativeSessionContinuation} from './sdk-continuation-owner.mjs';
 import {createObjectiveSelectionOwner} from './objective-generation/selection-owner.mjs';
@@ -58,6 +59,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const objectiveCore=getCoreServiceSecret?createObjectiveCorePorts({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,runStarts,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):null;
  const core=createCapiroApplicationAuthorityClient({origin:config.identity.origin,fetchImpl:coreFetch,now,enabled:true,limits:{maxRequestMs:requestMs,maxResponseBytes:131072}});
  const conversationManagement=getCoreServiceSecret?createCoreConversationManagement({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,policyRevision:config.policyRevision,nativeCredentials,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
+ const conversationSourceReader=getCoreServiceSecret?createCoreBillTextSourceReader({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
  store??=createPostgresConversationStore({pool,modelCatalog:configuration.models,assertConversationActive:conversationManagement?.assertActiveBinding,
   onPublished:event=>{turnTelemetry?.bind(event.binding);turnTelemetry?.summary(event);}});
  const routinesTask=configuration.routines?.enabled===true&&configuration.routines.task?compileNativeRoutinesTask(configuration):null;
@@ -260,7 +262,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('INVALID_ARGUMENTS');
    const input=await jsonBody({body:request.body,length:length===null?null:Number(length)},config.approvedReads?.maxRequestBytes??configuration.limits.requestBytes,life,life.check);
    validateShape('RunBinding',input.binding);
-   const app=createReadsRuntime({execution,binding:input.binding,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{}),...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
+   const app=createReadsRuntime({execution,conversationStore:store,binding:input.binding,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{}),...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads})});
    if(typeof app?.handle!=='function')throw fault('READS_CONFIGURATION');
    const headers=new Headers(request.headers);headers.delete('content-length');
    return await life.run(signal=>app.handle(new Request(request.url,{method:'POST',headers,body:JSON.stringify(input),signal})));
@@ -291,7 +293,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
  return Object.freeze({execution,native,application,admitFork,readCapabilityRole,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
-  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
+  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),...(conversationSourceReader?{conversationSourceReader}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},
   async close(){closed=true;await execution.close();}});
 }

@@ -33,7 +33,7 @@ function fixture(options={}){
  const pending=Promise.withResolvers();
  const check=f=>f?.();
  const store={async read(request,_cursor,c){check(c);assert.deepEqual(request,b);return {run,events:[{type:'run.status',data:{state:run.state},createdAt:new Date(at-1).toISOString()}],lastSequence:1};},async readOptional(){return {run};},
-  async append(_binding,event){run.state=event.data.state;},async readModelPolicy(){assert.fail('Ordinary absent Objective selection never reads model policy');},
+  async append(_binding,event){run.state=event.data.state;},async appendSource(request,event,c,expectedScopes){check(c);assert.deepEqual(request,b);assert.deepEqual(expectedScopes,run.scopes);assert.equal(event.type,'source.native-bill-text');options.sourcePublications??=[];options.sourcePublications.push(structuredClone(event));},async readModelPolicy(){assert.fail('Ordinary absent Objective selection never reads model policy');},
   async readModelSelection(){assert.fail('Ordinary absent Objective selection never reads model selection');},
   lifecycle:{async execution(){return null;},async get(){throw Error('No lifecycle use in this control');},async readSessionCapture(){throw Error('No lifecycle use in this control');}},
   nextRuns:{...Object.fromEntries(['reserve','readTarget','listRuns','latestCheckpoint','settlement','current'].map(k=>[k,async()=>k==='readTarget'?null:{runs:[run],reservations:[]} ])),async execution(){return null;},async sessionSnapshot(){throw Error('No snapshot without lineage');}},
@@ -127,8 +127,8 @@ test('candidate routes admitted/settle and existing worker body without task/boo
 test('read factory receives canonical policy and private current-role owner; unopened business owners stay absent',async()=>{
  let passed;const f=fixture({createReadsRuntime(input){passed=input;return {async handle(request){assert.equal(request.headers.get('authorization'),'Bearer synthetic-execution');return Response.json({ok:true});}};}});
  const request=new Request('https://control.synthetic.invalid/v1/runner/reads/availability',{method:'POST',headers:{authorization:'Bearer synthetic-execution','content-type':'application/json'},body:JSON.stringify({binding})});
- assert.equal((await f.candidate.application.handle(request)).status,200);assert.equal(passed.execution,f.candidate.execution);assert.deepEqual(Object.keys(passed).sort(),['binding','capabilityPolicy','execution','readCapabilityRole']);
- assert.equal(passed.readCapabilityRole,f.candidate.readCapabilityRole);assert.equal(typeof passed.capabilityPolicy.forRun,'function');
+ assert.equal((await f.candidate.application.handle(request)).status,200);assert.equal(passed.execution,f.candidate.execution);assert.deepEqual(Object.keys(passed).sort(),['binding','capabilityPolicy','conversationStore','execution','readCapabilityRole']);
+ assert.equal(typeof passed.conversationStore.appendSource,'function');assert.equal(passed.readCapabilityRole,f.candidate.readCapabilityRole);assert.equal(typeof passed.capabilityPolicy.forRun,'function');
  assert.equal(typeof f.candidate.productPorts.sdkSessionSnapshot.readSnapshot,'function');assert.equal(f.candidate.productPorts.selectedController,undefined);await f.candidate.close();
 });
 
@@ -243,7 +243,7 @@ test('production composition honors persisted generalReads narrowing for discove
  const first=await f.availability();assert.equal(first.status,200,await first.clone().text());const available=await first.json();
  assert.equal(available.discovery.operations.length,1);assert.equal(available.expiresAtMs,at+120000);
  assert.equal(f.counts().coreCalls,3,'one kickoff plus two availability decisions, regardless of local polls');
- const result=await f.execute(available);assert.equal(result.status,200,await result.clone().text());assert.equal(f.sourceCalls(),1);
+ const result=await f.execute(available);assert.equal(result.status,200,await result.clone().text());assert.equal(f.sourceCalls(),1);assert.equal(f.options.sourcePublications.length,1);assert.equal(f.options.sourcePublications[0].data.operation.id,'read_bill_text');
  assert.equal(f.counts().coreCalls,5,'execute adds only its before/after decisions');
  f.options.tenantPolicy={capabilities:{generalReads:false}};
  const narrowed=await f.availability();assert.equal(narrowed.status,200);assert.deepEqual((await narrowed.json()).discovery.operations,[]);

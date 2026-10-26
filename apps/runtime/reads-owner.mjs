@@ -18,12 +18,12 @@ const unavailable=new Set(['STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN','STORE_REL
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(value);
 
 export function createReadsOwner(configuration){
- const c=own(configuration,['binding','execution','createGateway'],['approvedReads','now']);
+ const c=own(configuration,['binding','execution','createGateway'],['approvedReads','now','captureSource']);
  const binding=data(c.binding),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),now=c.now??Date.now;
  validateShape('RunBinding',binding);
- if(typeof now!=='function'||typeof c.createGateway!=='function')deny('CONFIGURATION');
+ if(typeof now!=='function'||typeof c.createGateway!=='function'||c.captureSource!==undefined&&typeof c.captureSource!=='function')deny('CONFIGURATION');
  const authenticate=storageMethod(c.execution,'authenticate');
- async function handle(operation,raw,credential,signal,operationDeadlineMs){let life;try{
+ async function handle(operation,raw,credential,signal,operationDeadlineMs,onPublicationStart){let life,publicationStarted=false,publicationSettled=false;try{
   if(!config?.enabled)deny('UNAVAILABLE');nativeSignal(signal);
   const op='runner/reads/'+operation,request=assertNativeReadRequest(op,raw),inputSha256=hash(request),started=now();
   if(!same(request.binding,binding))deny('ACCESS_DENIED');
@@ -78,7 +78,12 @@ export function createReadsOwner(configuration){
   const response=operation==='execute'?{...common,operation:request.operation,deliveryId:request.deliveryId,installationId:request.installationId,
    executionCatalogSha256:request.executionCatalogSha256,resultJson:result,resultSha256:hash(data(JSON.parse(result))),outputBytes:Buffer.byteLength(result,'utf8')}:
    {...common,installation:{...after.installation,operations:eligible(after)},discovery:{...after.discovery,operations:eligible(after)}};
-  return assertNativeReadResponse(op,response,{request,started,now,policyRevision:pinned.policyRevision,executionSha256:pinned.executionSha256,maxResponseBytes:config.maxResponseBytes});
- }catch(error){life?.check();const code=nativeReadFailureCode(error),gateway=safeFailure(error).message;throw nativeReadFault(code??(gateway!=='INTERNAL_ERROR'?gateway:'UNAVAILABLE'));}finally{life?.close();}}
+  const validated=assertNativeReadResponse(op,response,{request,started,now,policyRevision:pinned.policyRevision,executionSha256:pinned.executionSha256,maxResponseBytes:config.maxResponseBytes});
+  if(operation==='execute'&&c.captureSource){await life.run(signal=>c.captureSource({request,response:validated,scopes:pinned.scopes,signal,check:life.check,onPublicationStart:()=>{publicationStarted=true;onPublicationStart?.();}}));publicationSettled=true;if(publicationStarted)await current();life.check();}
+  return validated;
+ }catch(error){const code=nativeReadFailureCode(error);
+  // A deadline cannot turn a potentially committed reference into a definite failure.
+  if(code==='SOURCE_PUBLICATION_UNKNOWN'||publicationStarted&&!publicationSettled&&life?.signal.aborted)throw nativeReadFault('SOURCE_PUBLICATION_UNKNOWN');
+  life?.check();const gateway=safeFailure(error).message;throw nativeReadFault(code??(gateway!=='INTERNAL_ERROR'?gateway:'UNAVAILABLE'));}finally{life?.close();}}
  return Object.freeze({handle});
 }

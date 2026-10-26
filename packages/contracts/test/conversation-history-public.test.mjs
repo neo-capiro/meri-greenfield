@@ -7,7 +7,7 @@ import {PRODUCT_ERROR_STATUSES} from '../../../apps/control/product-access/http.
 import {id,bytes,binding,conversation,transcript,resumed} from './conversation-history-fixture.mjs';
 const input={conversationId:binding.conversationId};
 test('metadata supplies exact fixed transport limits, native auth, versions and statuses',()=>{
- assert.equal(metadata.packageVersion,'0.1.14');assert.equal(metadata.historyVersion,'1.1.0');assert.equal(metadata.limits.responseBytes,2097152);assert.equal(metadata.limits.requestBytes,131072);
+ assert.equal(metadata.packageVersion,'0.1.15');assert.equal(metadata.historyVersion,'1.1.0');assert.equal(metadata.limits.responseBytes,2097152);assert.equal(metadata.limits.requestBytes,131072);
  assert.deepEqual(Object.values(metadata.routes).map(v=>v.path),['/api/conversations/list','/api/conversations/transcript','/api/conversations/next-turn','/api/conversations/summaries','/api/conversations/manage']);assert.equal(metadata.authentication.serverSideCredentialOnly,true);assert.equal(metadata.authentication.validationGrantsAuthority,false);
  for(const[code,status]of Object.entries(PRODUCT_ERROR_STATUSES))assert.deepEqual(metadata.errorStatuses[code],[status]);assert.ok(Object.isFrozen(metadata.limits));
 });
@@ -75,7 +75,7 @@ test('request provenance, route/status/error outcome and response bounds fail cl
 test('browser distribution is self-contained and offline package resolves only public exports',async()=>{
  const source=await readFile(new URL('../dist/conversation-history.mjs',import.meta.url),'utf8'),browser=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));browser.receiveConversationHistoryRequest('list',bytes({}));
  const root=await mkdtemp(join(tmpdir(),'meri-history-consumer-'));try{const pkg=join(root,'node_modules/@capiro/meri-contracts');await mkdir(pkg,{recursive:true});for(const path of ['package.json','dist'])await cp(new URL('../'+path,import.meta.url),join(pkg,path),{recursive:true});
-  const resolver=createRequire(pathToFileURL(join(root,'consumer.cjs'))),resolved=resolver.resolve('@capiro/meri-contracts/conversation-history');const installed=await import(pathToFileURL(resolved));assert.equal(installed.conversationHistoryMetadata.packageVersion,'0.1.14');assert.throws(()=>resolver.resolve('@capiro/meri-contracts/conversation-history/validate.mjs'));
+  const resolver=createRequire(pathToFileURL(join(root,'consumer.cjs'))),resolved=resolver.resolve('@capiro/meri-contracts/conversation-history');const installed=await import(pathToFileURL(resolved));assert.equal(installed.conversationHistoryMetadata.packageVersion,'0.1.15');assert.throws(()=>resolver.resolve('@capiro/meri-contracts/conversation-history/validate.mjs'));
  }finally{if(!resolve(root).startsWith(resolve(tmpdir())+sep))throw Error('Unexpected cleanup target');await rm(root,{recursive:true,force:true});}
  const metadataFile=JSON.parse(await readFile(new URL('../dist/conversation-history.metadata.json',import.meta.url),'utf8'));for(const row of metadataFile.sources){const raw=await readFile(new URL('../'+row.path,import.meta.url));assert.equal(createHash('sha256').update(raw).digest('hex'),row.sha256,row.path);}
 });

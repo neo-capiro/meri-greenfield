@@ -7,15 +7,14 @@
 
 import { createUIMessageStream, createUIMessageStreamResponse } from 'ai';
 import type { UIMessageChunk, UIMessageStreamOutcome, InferUIMessageChunk } from 'ai';
-import type { UIEvent } from '@capiro/meri-contracts';
-import type { MeriUIMessage } from './protocol.js';
+import type { MeriUIMessage, MeriUIEvent } from './protocol.js';
 import { MERI_EVENT_DATA_PART } from './protocol.js';
 
 export interface MeriStreamOptions {
   /** Stable id for the transport message envelope (not a frozen event field). */
   messageId: string;
   /** Frozen events, already authorized and ordered for this subscription. */
-  events: readonly UIEvent[];
+  events: readonly MeriUIEvent[];
   /** Operation-level outcome for the composed stream; defaults to completed. */
   outcome?: UIMessageStreamOutcome;
 }
@@ -53,7 +52,7 @@ export function meriEventStreamResponse(options: MeriStreamOptions): Response {
 export interface MeriLiveStreamOptions {
   messageId: string;
   /** Ordered, freshly authorized durable events. Cancelling the response cancels this source. */
-  events: ReadableStream<UIEvent>;
+  events: ReadableStream<MeriUIEvent>;
 }
 
 /** Projects a live event source through upstream merge so cancellation reaches its reader. */
@@ -62,7 +61,7 @@ export function createMeriLiveEventStream(options: MeriLiveStreamOptions): Reada
     onError: () => 'Meri event subscription unavailable',
     execute({ writer }) {
       writer.write({ type: 'start', messageId: options.messageId });
-      writer.merge(options.events.pipeThrough(new TransformStream<UIEvent, InferUIMessageChunk<MeriUIMessage>>({
+      writer.merge(options.events.pipeThrough(new TransformStream<MeriUIEvent, InferUIMessageChunk<MeriUIMessage>>({
         transform(event, controller) {
           controller.enqueue({ type: MERI_EVENT_DATA_PART, id: event.eventId, data: event, transient: true });
         },

@@ -1,3 +1,4 @@
+import {assertConversationEvent} from '../../../../packages/contracts/conversation-sources/validate.mjs';
 /** Conversation read projection over the canonical store transaction and integrity decoder. No new schema or writer authority. */
 import {hash,same,validateShape} from '../boundary.mjs';
 import {refuse} from '../../product-access/errors.mjs';
@@ -48,7 +49,7 @@ export function createConversationHistoryStore({tx,rowRun,continuationCustody}){
    WHERE e.tenant_id=$1 AND e.conversation_id=$2 AND r.sequence_base+e.sequence>$3
    ORDER BY r.sequence_base+e.sequence LIMIT $4`,[key.tenantId,conversationId,after,limit+1])).rows;check();
   let cursor=after;const touched=new Set();
-  const events=records.map(e=>{const r=runs.find(r=>r.run_id===e.run_id);if(!r)refuse('CONVERSATION_STORE_CORRUPT');const event=e.event;shape('UIEvent',event);
+  const events=records.map(e=>{const r=runs.find(r=>r.run_id===e.run_id);if(!r)refuse('CONVERSATION_STORE_CORRUPT');const event=e.event;decode(()=>assertConversationEvent(event));
    const sequence=Number(r.sequence_base)+Number(e.sequence);if(e.tenant_id!==key.tenantId||e.conversation_id!==conversationId||e.event_id!==event.eventId||hash(event)!==e.event_sha256||
     event.sequence!==Number(e.sequence)||event.sequence<1||event.sequence>Number(r.last_sequence)||!same(event.binding,r.projection.binding)||!same(event.scopes,r.projection.scopes)||sequence!==++cursor)refuse('CONVERSATION_STORE_CORRUPT');
    return {sequence,event};
@@ -66,5 +67,16 @@ export function createConversationHistoryStore({tx,rowRun,continuationCustody}){
   return {schema:HISTORY_SCHEMA,conversation:subject,latestRun:runs.at(-1).projection,latestSequenceBase:Number(runs.at(-1).sequence_base),turns,events:selected,nextSequence:selected.at(-1)?.sequence??after,lastSequence:end,hasMore:events.length>limit,
    pendingTurn:p?{sourceBinding:p.reservation.source,targetBinding:p.reservation.target,state:p.state}:null};
  });}
- return Object.freeze({list,transcript});
+ async function source({principal,conversationId,runId,referenceId},check){return tx({tenantId:principal.tenantId,conversationId},check,async c=>{
+  const subject=conversation((await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[principal.tenantId,conversationId])).rows[0],principal);check();
+  const rows=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[principal.tenantId,conversationId,runId])).rows;check();
+  if(rows.length!==1)refuse('SOURCE_REFERENCE_NOT_FOUND');const run=decode(()=>rowRun(rows[0])),b=run.projection.binding;
+  if(b.tenantId!==principal.tenantId||b.actorId!==principal.actorId||b.conversationId!==conversationId||b.runId!==runId||!same(run.projection.scopes,subject.scopes))refuse('CONVERSATION_STORE_CORRUPT');
+  const row=(await c.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event_id=$4',[principal.tenantId,conversationId,runId,referenceId])).rows[0];check();
+  if(!row)refuse('SOURCE_REFERENCE_NOT_FOUND');const event=decode(()=>assertConversationEvent(row.event));
+  if(hash(event)!==row.event_sha256||row.event_id!==referenceId||event.eventId!==referenceId||Number(row.sequence)!==event.sequence||event.sequence>Number(run.last_sequence)||!same(event.binding,b)||!same(event.scopes,subject.scopes))refuse('CONVERSATION_STORE_CORRUPT');
+  if(event.type!=='source.native-bill-text')refuse('SOURCE_REFERENCE_NOT_FOUND');
+  return {conversation:subject,event};
+ });}
+ return Object.freeze({list,transcript,source});
 }

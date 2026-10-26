@@ -1,0 +1,75 @@
+{
+  "version": "1.0.0",
+  "packageVersion": "0.1.15",
+  "path": "/api/conversations/source-read",
+  "method": "POST",
+  "requestBytes": 4096,
+  "responseBytes": 131072,
+  "authentication": "current native product bearer and Core access",
+  "authority": false,
+  "claimMapping": false,
+  "offsetUnit": "UTF-16 code units",
+  "scope": "successful sequential read_bill_text@0.2.0 pages only",
+  "sources": [
+    {
+      "path": "conversation-history/protocol.mjs",
+      "sha256": "eb065617f91efeda0ab540b9b218abb6d8246b4faabdfdec5adcf01c42f7f69b",
+      "bytes": 2449
+    },
+    {
+      "path": "conversation-sources/protocol.mjs",
+      "sha256": "729d714c12512b70af46f49ab9fe2df56364ca75eb51049f10c212f95abc30d4",
+      "bytes": 1055
+    },
+    {
+      "path": "conversation-sources/receive.mjs",
+      "sha256": "c047d3d9e8e645e5a67c0d28d2a4691f60a7e91d2d8fd406369771e018a48dba",
+      "bytes": 1933
+    },
+    {
+      "path": "conversation-sources/semantics.mjs",
+      "sha256": "0749a263ce20d223b546782265f277fe8c12521e4f7b127bba1b48e336e37464",
+      "bytes": 2103
+    },
+    {
+      "path": "conversation-sources/validate.mjs",
+      "sha256": "fbfccb5e790f23b3aaad601014c35eee0cae02544386de81898cf13f55c21761",
+      "bytes": 1590
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-sources.mjs",
+      "sha256": "7cc8e47bd783b97eae0c4d614a53dc3cf903b0936679595e0067163d131a8903",
+      "bytes": 6354
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "native-bill-text-source.schema.json",
+      "sha256": "5f9a74897ca8783ca6caf4284509cb2646bdbd0394453ec8b3bbf20b25d34054",
+      "bytes": 10452
+    }
+  ],
+  "schemaSha256": "dc829b826be9966294718ef26eb995610c9b58176cb6f58cd0fda12bfe738cc3",
+  "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
+    "conversation-history/protocol.mjs",
+    "conversation-sources/conversation-sources-receiver.mjs",
+    "conversation-sources/protocol.mjs",
+    "conversation-sources/semantics.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
+    "node_modules/ajv/dist/runtime/equal.js",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "node_modules/fast-deep-equal/index.js",
+    "sources-generated:./generated-validator.mjs"
+  ]
+}
