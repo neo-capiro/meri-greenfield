@@ -52,6 +52,8 @@ A change is not done until what it replaced is gone.
 
 **Research Portfolio scope decision — 26 October 2026 (subsequent narrow shipping exception below):** Research Portfolio is deferred from Wave 4, including MO-05's 17-operation Meri integration and dedicated Research Portfolio follow-ups. It is excluded from Wave 4 completion requirements and must not block closeout. Existing public text-to-SQL and private client-objective/activity work continue, along with mail, tasks/approvals, LegiWatch, client/note actions and S3 runtime qualification. Historical Research Portfolio requirements below are retained as deferred scope, not active allocations.
 
+**Semantic-source scope decision — 26 October 2026:** Neo explicitly said "Skip 6 semantic", referring to remaining workstream 6 / Q07. Semantic integration of state/federal bill, grant and solicitation indexes is excluded from Wave 4 completion. Do not allocate Q07 work or let it block closeout. Structured public/private text-to-SQL, broader business reads and the other active workstreams continue. Historical Q07 references below are superseded for this wave.
+
 ## Allocation
 
 Neo requested maximum useful parallelism. Current helper assignments are document renewal, independent District Nexus follow-up review, and native Graph reply. Q03 native and production-binding source review are complete; shared integration and activation remain. MF12 task-update reset is independently reviewed draft PR238. Each implementation has an isolated checkout and a bounded source allocation. Two distinct local synthetic PostgreSQL gates are conditionally allocated as recorded in the latest checkpoint; no helper has cloud, provider-send or model-call authorization. Root owns independent review and serialized composition; the private projection migration, paired contracts and live activation remain reserved. Public SQL drafts await shared integration/release.
@@ -225,7 +227,7 @@ New direct user authorization: merge and ship Core185 and FE240, the bounded Res
 
 All four available agent slots are active: a4_assessment implements MF12 task destinations; s3_assessment reviews Core185; task_approval_author reviews FE240 after freezing Graph; root owns integration, fixes and the serialized release lock. Completed helpers are reassigned to the next independent work item.
 
-## Current checkpoint — 26 October, 23:13 UTC
+## Earlier checkpoint — 26 October, 23:13 UTC
 
 Wave 4 remains in progress. Four of four sessions are active: root ships the explicitly requested sharing pair; task_approval_author prepares its Core image/migration operators; a4_assessment composes accepted mail/task sources on current merged baselines; s3_assessment prepares the initial SQL activation configuration. No completion percentage or reliable ETA is asserted.
 
@@ -251,3 +253,13 @@ Remaining scope, grouped without counting tests as separate projects:
 12. Finish transferred document acceptance accounting/PR281 and final Wave4 deployment, evidence and handoff closeout, retaining unresolved/native/provider limits honestly.
 
 Excluded: broader Research Portfolio including MO05, onboarding, rich Wave5 document/Office editing, full M7 and M6 governance. The101-tool retirement matrix is a checklist, not101new projects.
+
+## Current checkpoint — 26 October, 23:30 UTC
+
+Neo excluded Q07 semantic-source integration. Eleven grouped workstreams remain: requested sharing release; initial SQL activation; broader business reads; saved records; Strategy/history; consumer cutover/retirement; mail; tasks/approvals; LegiWatch/client/note actions; S3/bounded M7 qualification; and transferred document/final closeout. Research Portfolio remains deferred except explicitly requested185/240; onboarding, rich Office editing, full M7 and M6 remain excluded. Historical larger counts above are superseded.
+
+Sharing routes are now applied and the exact live edge template is verified, preserving all old resources and rules. The clone snapshot is AVAILABLE. Core image build3cb2337d was submitted once at23:25:33UTC from merged73c7a7a9. The initial preflight stopped before writes on a stale project sourceVersion; read-only custody established that the last successful Core18 build used its correct explicit version. Root accepted a whole-project baseline correction, uploaded the exact source, verified only source-pin differences, and applied/read back matching new project/build/environment version pins. Build qualification, singleton migration and paired service deployment/live acceptance remain. Frontend imagefdb0107f and its image-only changeset are qualified/inspected but not executed. No provider send or model submission occurred.
+
+Mail/MF12 source union preserves current sharing source and every unrelated blob: Core9684c135/tree76cadad9; FE product530d57f0/tree0a41caef. Root independently accepted the exact task controller and disjoint readTask service insertion, then integrated the15 reviewed FE records and narrow three-caller task-destination policy at174bc5fe/tree50906004. Registry612→620 preserves605 unrelated records; changed Core12 and FE15 findings are reviewed with zero blocking/record errors. Graph native qualification and release/live acceptance remain.
+
+SQL shared composition now preserves fresh Meri main10309b24 and accepted Q03C47547ba5. Root applied the exact five-path private-contract proposal at86e1dab5e/tree1ecea25f. Final Core provenance/catalog/package generation, distribution, credentials, migrations and deployment are still pending; this is an intermediate source composition, not an activated SQL release. The Core closure author continues current-source schema10/credential-owner work. Parallel sessions also prepare Graph native qualification and bounded runtime qualification; root owns the sole release lock.

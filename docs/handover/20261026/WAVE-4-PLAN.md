@@ -54,6 +54,8 @@ Canonical basis: documentation checkout `8acb394cf10782d1a7703fa2d0b8c926f14ab50
 
 **Latest user scope decision — 26 October 2026:** Research Portfolio is deferred from Wave 4, including MO-05's 17-operation Meri integration and dedicated Research Portfolio follow-ups. It is excluded from Wave 4 completion requirements and must not block closeout. Existing public text-to-SQL and private client-objective/activity work continue, along with mail, tasks/approvals, LegiWatch, client/note actions and S3 runtime qualification. Historical Research Portfolio requirements below are retained as deferred scope, not active allocations.
 
+**Semantic-source scope decision — 26 October 2026:** Neo explicitly said "Skip 6 semantic", referring to remaining workstream 6 / Q07. Semantic integration of state/federal bill, grant and solicitation indexes is excluded from Wave 4 completion. Do not allocate Q07 work or let it block closeout. Structured public/private text-to-SQL, broader business reads and the other active workstreams continue. Historical Q07 references below are superseded for this wave.
+
 ## Workstreams and existing owners
 
 Fable allocates exact paths and records current accepted implementation before authoring. Use parallel sessions for independent slices, with one writer for each shared contract or package. Integration retains shared public exports, generated artifacts, package pins and composition; Release retains image/native/deployment work; Acceptance retains the finite live checks. Authors do not approve their own changes.
