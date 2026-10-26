@@ -12,7 +12,7 @@ import {applicationFixture} from '../../../control/conversations/test/applicatio
 import {nativeDocumentFixture,sha} from '../../../artifacts/test/native-document-fixture.mjs';
 import {NOW,id} from '../../../artifacts/storage/test/sql-fixture.mjs';
 const binding={tenantId:id(100),actorId:id(101),conversationId:id(102),runId:id(103),attemptId:id(104),workerId:id(105),writerFence:1},clientId=id(106),now=()=>Date.now();
-async function fixture(t,{general=false}={}){
+async function fixture(t,{general=false,nativeLookup=false}={}){
  t.mock.timers.enable({apis:['Date'],now:NOW});const selectedClientId=general?null:clientId,scopes=[{tenantId:binding.tenantId,kind:general?'private-user':'client',resourceId:general?binding.actorId:clientId,policyRevision:'policy1'}];
  const f=await applicationFixture({binding,scopes,selectedClientId,initialInput:true});t.after(()=>f.close());await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
  const documents=nativeDocumentFixture({binding,scopes}),state={coreCalls:[],coreStatus:200,mutate:null,onCore:null,file:null,fileCalls:0,fileFailure:false};
@@ -24,13 +24,27 @@ async function fixture(t,{general=false}={}){
  }});
  const credentials=await createArtifactAuthorityCredentials({serviceSecretFile:'/run/core-secret',readSecret:async()=>Buffer.from('synthetic-service-only')});
  const limits={maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:1048576},authority=createCoreArtifactAuthority({client:core,credentials,now,limits,maxOutputBytes:1048576});
- const store={...f.store,lifecycle:{...f.store.lifecycle,async readArtifactFile(value,check){check();state.fileCalls++;if(state.fileFailure)throw Error('NATIVE_FILE_STORE_UNKNOWN');return value.versionId===state.file?.entry.object.objectId?structuredClone(state.file):null;}}};
+ const store=nativeLookup?f.store:{...f.store,lifecycle:{...f.store.lifecycle,async readArtifactFile(value,check){check();state.fileCalls++;if(state.fileFailure)throw Error('NATIVE_FILE_STORE_UNKNOWN');return value.versionId===state.file?.entry.object.objectId?structuredClone(state.file):null;}}};
  const compose=createRuntimeDocumentOptionsComposer({storage:{versions:documents.options.versions,objects:documents.options.objects},executor:documents.options.executor,pool:documents.options.pool,sessions:f.sessions,store,now});
  const optionsOwner={async resolve(call){const result=await authority.resolve({...call,sessions:f.sessions,store});const {recheck,...options}=result;return {documentOptions:compose(options),recheck};}};
  const app=createRuntimeArtifactApplication({sessions:f.sessions,optionsOwner,retention:documents.sql.retention,now,limits});
  const post=(route,body,credential=f.credential)=>app.handle(new Request('https://meri.synthetic.invalid/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)}));
  return {f,documents,state,post,scopes,selectedClientId,body:{deliveryId:'http-native-document',request:documents.call.request}};
 }
+
+test('reserved current run reads the prior generated version through actual native lookup absence',async t=>{
+ const x=await fixture(t,{general:true,nativeLookup:true}),created=await x.post('create',x.body);
+ assert.equal(created.status,200,await created.clone().text());const prior=await created.json();
+ const reserved={...binding,runId:id(800),attemptId:id(801),workerId:id(802)};x.f.state.context.binding=reserved;
+ const session=await x.f.sessions.issue({identityCredential:'synthetic-native'}),read=route=>x.post(route,{versionId:prior.version.versionId},session.credential);
+ assert.equal(x.f.state.runs.size,1,'no input accepted for the current reservation');
+ const inspected=await read('inspect');assert.equal(inspected.status,200,await inspected.clone().text());
+ const inspection=await inspected.json();assert.deepEqual(inspection.version,prior.version);assert.equal(inspection.inspection.currentBytesVerified,true);
+ const downloaded=await read('download');assert.equal(downloaded.status,200,await downloaded.clone().text());assert.equal(await downloaded.text(),'First version\n');
+ assert.equal(x.documents.state.executions.length,1);assert.equal(x.f.state.runs.size,1,'reading never accepts an input');
+ x.f.state.artifactLookupFailure=true;const unknown=await read('inspect');assert.equal(unknown.status,502);assert.equal((await unknown.json()).error.code,'DOCUMENT_REFUSED');
+ x.f.state.artifactLookupFailure=false;x.state.coreStatus=403;assert.equal((await read('download')).status,403,'fresh Core denial still withholds bytes');
+});
 
 for(const general of [false,true])test(`actual native ${general?'General':'client'} public create/revise/inspect/download keeps current Core and immutable owners`,async t=>{
  const x=await fixture(t,{general}),created=await x.post('create',x.body);assert.equal(created.status,200,await created.clone().text());const first=await created.json();
