@@ -10,6 +10,19 @@
   "claimMapping": false,
   "offsetUnit": "UTF-16 code units",
   "scope": "successful sequential read_bill_text@0.2.0 pages only",
+  "hearing": {
+    "version": "1.0.0",
+    "path": "/api/conversations/source-read",
+    "method": "POST",
+    "requestBytes": 4096,
+    "responseBytes": 131072,
+    "authentication": "current native product bearer and Core access",
+    "authority": false,
+    "claimMapping": false,
+    "offsetUnit": "UTF-16 code units",
+    "scope": "exact search_committee_hearings@0.2.0 published/briefs/reconciliation pages with absent or UUID client selector",
+    "claims": "canonical owner packet only; JSON fragments are not complete claims collections"
+  },
   "sources": [
     {
       "path": "conversation-history/protocol.mjs",
@@ -17,14 +30,24 @@
       "bytes": 2449
     },
     {
+      "path": "conversation-sources/hearing-media-semantics.mjs",
+      "sha256": "ea4662c5496d4bce9ef087dd4f9409f9b4de3a686e9e03af7f5ecb256ffac1be",
+      "bytes": 1417
+    },
+    {
+      "path": "conversation-sources/hearing-semantics.mjs",
+      "sha256": "522a5859ad108ce09a1c514dbf15dd08bf10ca71ed727884a8f18619c69373f9",
+      "bytes": 4205
+    },
+    {
       "path": "conversation-sources/protocol.mjs",
-      "sha256": "729d714c12512b70af46f49ab9fe2df56364ca75eb51049f10c212f95abc30d4",
-      "bytes": 1055
+      "sha256": "160eaa367751d8c331105abdd0faf25bf109c8eb673da784550822a3415ca3c4",
+      "bytes": 1815
     },
     {
       "path": "conversation-sources/receive.mjs",
-      "sha256": "c047d3d9e8e645e5a67c0d28d2a4691f60a7e91d2d8fd406369771e018a48dba",
-      "bytes": 1933
+      "sha256": "99030a630953857bf4049678a2d9d0377a2cfe22aeb30210c77d79f750e95ec2",
+      "bytes": 4390
     },
     {
       "path": "conversation-sources/semantics.mjs",
@@ -33,8 +56,8 @@
     },
     {
       "path": "conversation-sources/validate.mjs",
-      "sha256": "fbfccb5e790f23b3aaad601014c35eee0cae02544386de81898cf13f55c21761",
-      "bytes": 1590
+      "sha256": "c0bc8d2f4d5ad6ba960fea0d21b26bf9bb08784e4da6412c2b819edef7ef05ce",
+      "bytes": 3086
     },
     {
       "path": "document-application/boundary.mjs",
@@ -43,8 +66,8 @@
     },
     {
       "path": "generate-sources.mjs",
-      "sha256": "7cc8e47bd783b97eae0c4d614a53dc3cf903b0936679595e0067163d131a8903",
-      "bytes": 6354
+      "sha256": "8bb33e05b8071458cae01ee8fbc8979d50099a854295a032d1bd65c4def00761",
+      "bytes": 8433
     },
     {
       "path": "meri.schema.json",
@@ -55,13 +78,45 @@
       "path": "native-bill-text-source.schema.json",
       "sha256": "5f9a74897ca8783ca6caf4284509cb2646bdbd0394453ec8b3bbf20b25d34054",
       "bytes": 10452
+    },
+    {
+      "path": "native-hearing-media.schema.json",
+      "sha256": "72cd78775ce13fead1cf7b1fa8701fedf01c6973739fb154134c7332cd71401d",
+      "bytes": 6914
+    },
+    {
+      "path": "native-hearing-source.schema.json",
+      "sha256": "0fed29b409bd3ec1eb6a2bfd5c5f77bf3bfdaeaef55765263b78ba8665644b1a",
+      "bytes": 8290
+    },
+    {
+      "path": "retrieval-0.2/hearing-fragments.mjs",
+      "sha256": "24e106caa79140d31feb65bc79c816197b38220b0c30a42ec86ba8c6deed6174",
+      "bytes": 787
+    },
+    {
+      "path": "retrieval-0.2/outreach-query.schema.json",
+      "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708",
+      "bytes": 20403
+    },
+    {
+      "path": "retrieval-0.2/public-domain-hearing-records.schema.json",
+      "sha256": "36d9653125f39e4a69fbf52cd4cd603b7229b8893c4b14c7195ca18ccb7455a3",
+      "bytes": 18745
+    },
+    {
+      "path": "retrieval-0.2/public-domain-hearings.schema.json",
+      "sha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca",
+      "bytes": 36999
     }
   ],
-  "schemaSha256": "dc829b826be9966294718ef26eb995610c9b58176cb6f58cd0fda12bfe738cc3",
+  "schemaSha256": "1f35b3490e41a043054f2a1869692a945a65fa598aa7ee7f7e7ed4310d68f085",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/protocol.mjs",
     "conversation-sources/conversation-sources-receiver.mjs",
+    "conversation-sources/hearing-media-semantics.mjs",
+    "conversation-sources/hearing-semantics.mjs",
     "conversation-sources/protocol.mjs",
     "conversation-sources/semantics.mjs",
     "document-application/boundary.mjs",
@@ -70,6 +125,7 @@
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
     "node_modules/fast-deep-equal/index.js",
+    "retrieval-0.2/hearing-fragments.mjs",
     "sources-generated:./generated-validator.mjs"
   ]
 }
