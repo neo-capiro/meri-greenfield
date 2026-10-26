@@ -37,7 +37,11 @@ export function createApplicationContextAdapters(configuration){
   const conversationId=hints.conversationId,selectedClientId=hints.clientId;
   if(call.identitySha256!==canonicalSha256(original)||typeof conversationId!=='string'||!uuid.test(conversationId)||selectedClientId!==null&&(typeof selectedClientId!=='string'||!uuid.test(selectedClientId)))refuse();
   const life=start(call),exact=Object.hasOwn(hints,'runId')?{runId:hints.runId}:{};let cutoff=Math.min(life.deadline(),original.expiresAtMs),binding,selected,preflight,step='input';
-  function runFact(raw,started){if(typeof raw!=='string')refuse();const r=snapshot(raw);own(r,['binding','policyRevision','deadlineMs','checkedAtMs']);validateShape('RunBinding',r.binding);const at=now();life.check();if(typeof r.policyRevision!=='string'||!r.policyRevision||r.policyRevision.length>256||!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.deadlineMs)||r.deadlineMs<=at)refuse();cutoff=Math.min(cutoff,r.deadlineMs);life.limitDeadline(cutoff);return r;}
+  function runFact(raw,started){if(typeof raw!=='string')refuse();const r=snapshot(raw);own(r,['binding','policyRevision','deadlineMs','checkedAtMs'],['rebind']);validateShape('RunBinding',r.binding);
+   // The initial owner's atomic supersession result. Only a well-formed source-to-target pair whose target is the
+   // binding this admission returns may accompany the fact; anything else is refused before any current-run read.
+   if(r.rebind!==undefined){own(r.rebind,['source','target']);validateShape('RunBinding',r.rebind.source);validateShape('RunBinding',r.rebind.target);if(!same(r.rebind.target,r.binding)||r.rebind.source.tenantId!==r.binding.tenantId||r.rebind.source.actorId!==r.binding.actorId||r.rebind.source.conversationId!==r.binding.conversationId||r.rebind.source.runId===r.binding.runId)refuse();}
+   const at=now();life.check();if(typeof r.policyRevision!=='string'||!r.policyRevision||r.policyRevision.length>256||!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>at||!Number.isSafeInteger(r.deadlineMs)||r.deadlineMs<=at)refuse();cutoff=Math.min(cutoff,r.deadlineMs);life.limitDeadline(cutoff);return r;}
   async function run(){const started=now(),r=runFact(await life.run(signal=>currentRun(binding,{signal,selectedClientId})),started);if(!same(r.binding,binding)||(selected&&r.policyRevision!==selected.policyRevision))refuse();return r;}
   // General is admitted only by Core's current-conversation receipt. The older
   // /context contract remains client-only; membership never substitutes for it.
@@ -57,7 +61,10 @@ export function createApplicationContextAdapters(configuration){
     if(!same(preflight.principal,principal)||preflight.identitySha256!==call.identitySha256||preflight.identityRevision!==original.identityRevision||preflight.conversationId!==conversationId||preflight.selectedClientId!==selectedClientId||typeof preflight.contextRevision!=='string'||!preflight.contextRevision||preflight.contextRevision.length>256)refuse();
     step='initial-binding';const selectedAt=now();selected=runFact(await life.run(signal=>admitInitialConversation({principal,conversationId,selectedClientId,signal,deadlineMs:cutoff,...exact})),selectedAt);binding=selected.binding;
    }
-   if(selected&&(binding.tenantId!==principal.tenantId||binding.actorId!==principal.actorId||binding.conversationId!==conversationId||Object.hasOwn(hints,'runId')&&hints.runId!==binding.runId))refuse();
+   // An exact run hint is a selector. It may name the returned binding itself, or — only on a verified initial
+   // supersession — the source binding the owner's transaction just replaced. A recheck (retained) never rebinds.
+   const provenRebind=selected&&selected.rebind&&!retained&&Object.hasOwn(hints,'runId')&&hints.runId===selected.rebind.source.runId&&same(selected.rebind.target,binding);
+   if(selected&&(binding.tenantId!==principal.tenantId||binding.actorId!==principal.actorId||binding.conversationId!==conversationId||Object.hasOwn(hints,'runId')&&hints.runId!==binding.runId&&!provenRebind))refuse();
    step='current-run';const before=await run();step='context';const native=await readContext(binding.conversationId);identity(native);
    if(!same(native.principal,principal)||native.identitySha256!==call.identitySha256||native.identityRevision!==original.identityRevision||native.conversationId!==binding.conversationId||native.selectedClientId!==selectedClientId||typeof native.contextRevision!=='string'||!native.contextRevision||native.contextRevision.length>256||preflight&&preflight.contextRevision!==native.contextRevision)refuse();cutoff=Math.min(cutoff,native.expiresAtMs);step='current-run';const after=await run();if(before.policyRevision!==after.policyRevision)refuse();
    const scopes=[{kind:selectedClientId===null?'private-user':'client',tenantId:principal.tenantId,resourceId:selectedClientId===null?principal.actorId:selectedClientId,policyRevision:after.policyRevision}];validateShape('Scope',scopes[0]);
@@ -65,7 +72,7 @@ export function createApplicationContextAdapters(configuration){
     const sourceRevision=canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding:sourceContext.binding,policyRevision:after.policyRevision});
     if(!same(binding,transition.targetBinding)||after.policyRevision!==transition.policyRevision||!same(scopes,sourceContext.scopes)||!same(scopes,transition.scopes)||sourceRevision!==sourceContext.contextRevision)refuse();
    }
-   const result=data({identitySha256:call.identitySha256,binding,scopes,selectedClientId:native.selectedClientId,contextRevision:canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding,policyRevision:after.policyRevision}),checkedAtMs:now(),expiresAtMs:Math.min(original.expiresAtMs,native.expiresAtMs,before.deadlineMs,after.deadlineMs,selected?.deadlineMs??Infinity)});life.check();if(call.signal?.aborted)refuse();return result;
+   const result=data({identitySha256:call.identitySha256,binding,scopes,selectedClientId:native.selectedClientId,contextRevision:canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding,policyRevision:after.policyRevision}),checkedAtMs:now(),expiresAtMs:Math.min(original.expiresAtMs,native.expiresAtMs,before.deadlineMs,after.deadlineMs,selected?.deadlineMs??Infinity),...(selected?.rebind?{rebind:selected.rebind}:{})});life.check();if(call.signal?.aborted)refuse();return result;
   }catch(error){refuseUnless(error,step);}finally{life.close();}
  }
  const resolveContext=value=>resolve(value);

@@ -79,7 +79,7 @@ export function createActionSessionOwner(configuration){
   if(isAuthorityUnavailable(error)){valid(record);throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));}
   remove(record);deny();
  }
- function fact(value,keys,started,t){const v=data(value);own(v,keys);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
+ function fact(value,keys,started,t,optional=[]){const v=data(value);own(v,keys,optional);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
  function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.entries(v).some(([k,x])=>!(k==='clientId'&&x===null)&&(typeof x!=='string'||!uuid.test(x))))deny();return v;}
  // The membership owner is independent of Core's native /identity and /context
  // receipt join. Keep the original identity bytes for that join and pin only the
@@ -119,11 +119,16 @@ export function createActionSessionOwner(configuration){
   progress.step='membership-admit';const membershipAdmission=member&&!record?await admitMember(nativeCredential,identity,t):undefined;
   const membershipPrincipal=member?(record?record.membershipPrincipal:membershipAdmission.principal):undefined;
   progress.step='membership-recheck';if(member&&record)await recheckMember(membershipPrincipal,nativeCredential,identity,t,record.context.selectedClientId,record);
-  progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>resolveContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t);
+  progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>resolveContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t,['rebind']);
   if(record)valid(record,t.signal);validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||current.binding.tenantId!==identity.principal.tenantId||current.binding.actorId!==identity.principal.actorId||current.selectedClientId!==null&&(typeof current.selectedClientId!=='string'||!uuid.test(current.selectedClientId))||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)deny();
+  // The initial owner's atomic exact-source supersession, already validated by the adapter against its own transaction.
+  // It may accompany only a FRESH issuance whose named run is that proof's source; a recheck never rebinds.
+  const proof=current.rebind;
+  if(proof!==undefined){if(record)deny();own(proof,['source','target']);validateShape('RunBinding',proof.source);if(!same(proof.target,current.binding)||proof.source.tenantId!==current.binding.tenantId||proof.source.actorId!==current.binding.actorId||proof.source.conversationId!==current.binding.conversationId||proof.source.runId===current.binding.runId)deny();}
   for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==identity.principal.tenantId)deny();}
   try{assertNativeConversationScope(current);}catch{deny();}
-  for(const key of ['conversationId','runId'])if(selected[key]!==undefined&&selected[key]!==current.binding[key])deny();if(selected.clientId!==undefined&&selected.clientId!==current.selectedClientId)deny();
+  const provenRun=key=>key==='runId'&&proof!==undefined&&!record&&selected.runId===proof.source.runId&&same(proof.target,current.binding);
+  for(const key of ['conversationId','runId'])if(selected[key]!==undefined&&selected[key]!==current.binding[key]&&!provenRun(key))deny();if(selected.clientId!==undefined&&selected.clientId!==current.selectedClientId)deny();
   progress.step='membership-recheck';if(member)await recheckMember(membershipPrincipal,nativeCredential,identity,t,current.selectedClientId,record);
   progress.step='context';const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();progress.step='release';
   const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{})};
