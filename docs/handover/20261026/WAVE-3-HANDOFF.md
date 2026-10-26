@@ -110,7 +110,7 @@ Review evidence for PR280's generated part: fresh checkout, root and `packages/c
 
 ### 0.6 Next actions (receiving lead, in order)
 
-1. Run the native feedback gate on the final Meri source (Release host, v4 fixture), then build/scan/deploy the Meri image for `4f6dd062` (control/worker/schedule + AgentCore runtime) with `CapiroPreviewMeriContractPackageVersion`/`CapiroPreviewMeriRuntimeSource` refreshed on the frontend stack.
+1. **Neo's decision (26 October 2026, 19:20 UTC): hold the Meri image until the Release host's native feedback gate can be run; do not build a second fixture.** When that gate passes on `4f6dd062`, build/scan/deploy the Meri image (control/worker/schedule + AgentCore runtime) with `CapiroPreviewMeriContractPackageVersion`/`CapiroPreviewMeriRuntimeSource` refreshed on the frontend stack.
 2. Decide with Neo whether the ML21 mail change that reached `backend-import` outside this continuation (`66c7503d`) is reviewed for the next Core image; Core :18 does not contain it.
 3. Re-run the §4/0.4 live rows on the complete tuple: follow-up turn, Stop, personal-memory readback, hearing viewer, feedback readback, prepared DOCX.
 4. Contracts dist/public-type repair (0.5.1) before the next package; then close Wave 3 with the completion disposition (all nine sections) and start the Wave 4 streams in `WAVE-4-PLAN.md`.
