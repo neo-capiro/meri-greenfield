@@ -54,6 +54,10 @@ test('published completion file is readable from an authorized later turn after 
  assert.equal(x.f.state.runs.has(rowKey(target)),false,'selection admits the next turn without accepting an input');
  const admitted=await x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target}),check);
  assert.deepEqual(admitted.entry,files.workspace.entries[0]);assert.deepEqual(admitted.binding,binding,'the published file retains its original run binding');
+ assert.equal(await x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target,versionId:id(7199)}),check),null,'an absent native entry can fall through to the separate generated-version owner before input acceptance');
+ x.f.state.artifactLookupFailure=true;
+ await assert.rejects(x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target,versionId:id(7199)}),check),{code:'STORE_UNAVAILABLE'},'unknown native lookup is never absence');
+ x.f.state.artifactLookupFailure=false;
  await x.accept(target,'Continue the same conversation.');
  const result=await x.f.store.lifecycle.readArtifactFile(artifactRequest({binding:target}),check);assert.deepEqual(result.entry,files.workspace.entries[0]);assert.deepEqual(result.binding,binding);
  assert.notEqual(x.f.state.runs.get(rowKey(binding)).sequence_end,null);
