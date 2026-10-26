@@ -254,7 +254,7 @@ Remaining scope, grouped without counting tests as separate projects:
 
 Excluded: broader Research Portfolio including MO05, onboarding, rich Wave5 document/Office editing, full M7 and M6 governance. The101-tool retirement matrix is a checklist, not101new projects.
 
-## Current checkpoint — 26 October, 23:30 UTC
+## Earlier checkpoint — 26 October, 23:30 UTC
 
 Neo excluded Q07 semantic-source integration. Eleven grouped workstreams remain: requested sharing release; initial SQL activation; broader business reads; saved records; Strategy/history; consumer cutover/retirement; mail; tasks/approvals; LegiWatch/client/note actions; S3/bounded M7 qualification; and transferred document/final closeout. Research Portfolio remains deferred except explicitly requested185/240; onboarding, rich Office editing, full M7 and M6 remain excluded. Historical larger counts above are superseded.
 
@@ -263,3 +263,20 @@ Sharing routes are now applied and the exact live edge template is verified, pre
 Mail/MF12 source union preserves current sharing source and every unrelated blob: Core9684c135/tree76cadad9; FE product530d57f0/tree0a41caef. Root independently accepted the exact task controller and disjoint readTask service insertion, then integrated the15 reviewed FE records and narrow three-caller task-destination policy at174bc5fe/tree50906004. Registry612→620 preserves605 unrelated records; changed Core12 and FE15 findings are reviewed with zero blocking/record errors. Graph native qualification and release/live acceptance remain.
 
 SQL shared composition now preserves fresh Meri main10309b24 and accepted Q03C47547ba5. Root applied the exact five-path private-contract proposal at86e1dab5e/tree1ecea25f. Final Core provenance/catalog/package generation, distribution, credentials, migrations and deployment are still pending; this is an intermediate source composition, not an activated SQL release. The Core closure author continues current-source schema10/credential-owner work. Parallel sessions also prepare Graph native qualification and bounded runtime qualification; root owns the sole release lock.
+
+## Current checkpoint — 26 October 2026, 23:57 UTC
+
+**Q07 semantic-source/index integration is excluded**, following “Skip 6 semantic.” Structured public/private SQL continues. Broader Research Portfolio remains deferred; the explicitly requested backend185/frontend240 sharing pair is the only exception. Onboarding, rich Office editing, full M7 and M6 remain outside this wave.
+
+Calendar PR236 and District Nexus PR239/241 are shipped and live checked. Document renewal PR242 is shipped; the retained synthetic DOCX downloads with its exact stored hash and valid document structure. Rendered preview/native opening remains unverified.
+
+The sharing pair is merged and deployed: backend185 on Core19 and frontend240 on FE43. Both exact images are healthy; the sharing migration and edge routes are verified. Live acceptance found a prerequisite routing gap: preview does not admit the existing create-portfolio POST, and snapshot creation also needs its route. A narrow two-route correction is being prepared. The single synthetic create request remains UNKNOWN and has not been blindly replayed. Sharing is deployed, but its end-to-end acceptance is still open.
+
+Mail recovery is now independently accepted: the corrected Graph path passes all8 PostgreSQL cases, including original-message deletion after accepted send, receipt/sync lock orderings and no duplicate dispatch. Gmail's10 native cases remain accepted. Real provider sends/delivery have not been tested.
+
+
+SQL target preflight read catalog only over strict TLS: the existing analytics role is ordinary, has no role memberships or database/public-schema CREATE; all six initial source tables retain FORCE RLS. New public-grant/private-projection migrations are unapplied, private roles/views absent, and no unfinished migration exists. Existing PUBLIC CONNECT is present, so no broad ACL or extra CONNECT change is proposed. Root prepared the two operation additions against the exact latest deployed84-entry input; all six lists become86 and every other JSON field is preserved. This is not activation.
+
+Root independently accepted Graph recovery87c16706/treea7fdd014 and fast-forwarded the combined SQL/mail checkout. The exact unchanged eight-case native fixture passed8/8 against4503 pinned source files and nine matching used Prisma models; no provider fetch, task resources absent, inventories preserved and owned Node process absent. Original7/8 failure and dependency/build limitations remain recorded. Two service responsibility findings have root acceptance. Final source must also preserve the incoming prerequisite-edge correction before catalog provenance is frozen.
+
+Current parallel assignments are root release/integration; a4 sharing prerequisite edge correction; s3 broader business projections; task_approval_author runtime native fixture preparation. Four slots active. Q07 is excluded; eleven grouped workstreams remain. No provider send or model submission occurred in this checkpoint.
