@@ -1,4 +1,4 @@
-/** Validate Core's bounded public SQL wire. Core alone parses SQL and selects relations. */
+/** Validate Core's bounded public/private SQL wire. Core alone parses SQL and admits private scope. */
 import {snapshotOperationData} from './operation-contracts.mjs';
 
 const fail=()=>{throw Error('Invalid Capiro data contract');};
@@ -8,6 +8,17 @@ const sameSet=(a,b)=>a.length===b.length&&a.every(value=>b.includes(value));
 const integer=/^-?(?:0|[1-9]\d*)$/u;
 const decimal=/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/u;
 const instant=value=>typeof value==='string'&&Number.isFinite(Date.parse(value));
+const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
+
+function privateScope(input,context){
+ const scope=context.capiroDataScope;
+ if(input.source!=='client_records'){if(scope!==undefined||Object.hasOwn(input,'clientId'))fail();return null;}
+ if(!scope||typeof scope!=='object'||Array.isArray(scope)||Object.keys(scope).sort().join(',')!=='clientId,identityRevision,membershipRevision'||
+  scope.clientId!==null&&(typeof scope.clientId!=='string'||!uuid.test(scope.clientId))||
+  ![scope.identityRevision,scope.membershipRevision].every(value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value))||
+  input.clientId!==undefined&&input.clientId!==scope.clientId)fail();
+ return scope;
+}
 
 function cell(column,value){
   if(value===null){if(!column.nullable)fail();return;}
@@ -54,14 +65,18 @@ export function createCapiroDataValidators({validateShape}){
     if(!['describe_capiro_data','query_capiro_data'].includes(id))fail();
     return `CapiroData${id==='describe_capiro_data'?'Describe':'Query'}${output?'Output':'Request'}`;
   };
-  function normalizeInput(id,raw){
+  function normalizeInput(id,raw,context={}){
     const input=snapshotOperationData(raw);validateShape(definition(id),input);
+    const scope=privateScope(input,context);
+    if(scope&&id==='describe_capiro_data'&&input.relations&&(input.relations.length>2||input.relations.some(name=>!['client_objectives','client_activity'].includes(name))))fail();
     if(id==='query_capiro_data'&&(Buffer.byteLength(input.sql,'utf8')>16384||bytes(input.parameters)>32768||
       input.parameters.some(value=>typeof value==='number'&&(!Number.isFinite(value)||Math.abs(value)>Number.MAX_SAFE_INTEGER))))fail();
-    return {input,metadata:{scope:'public_curated_relations',absenceEvidence:false}};
+    return {input,metadata:scope?{scope:'client_records',clientId:scope.clientId,absenceEvidence:false}:{scope:'public_curated_relations',absenceEvidence:false}};
   }
-  function assertOutput(id,raw,request){
-    const {input}=normalizeInput(id,request),page=snapshotOperationData(raw);validateShape(definition(id,true),page);
+  function assertOutput(id,raw,request,context={}){
+    const {input}=normalizeInput(id,request,context),page=snapshotOperationData(raw);validateShape(definition(id,true),page);
+    const scope=privateScope(input,context);
+    if(page.version!==(scope?'0.2.0':'0.1.0')||page.ok&&scope&&page.scope.clientId!==scope.clientId)fail();
     if(!instant(page.generatedAt)||bytes(page)>262144)fail();
     if(!page.ok)return page;
     if(id==='describe_capiro_data')describe(page,input);else query(page,input);

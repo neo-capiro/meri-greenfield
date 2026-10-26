@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolveOperationContract} from '../retrieval-0.2/validate.mjs';
-import {capiroDataPage,requests} from '../../../apps/gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataPage,privateCapiroDataPage,requests} from '../../../apps/gateway/sources/capiro-data/test/fixture.mjs';
 const query=resolveOperationContract({id:'query_capiro_data',version:'0.2.0'});
 const check=page=>query.assertOutput(page,{request:requests.query_capiro_data});
 test('SQL text is preserved exactly with separately bound finite scalar parameters',()=>{
@@ -38,5 +38,32 @@ test('describe validates selected relation identity and published field/key rela
   assert.deepEqual(contract.assertOutput(page,{request}),page);
   for(const mutate of [p=>p.relations[0].name='foreign',p=>p.relations[0].primaryKey=['missing'],p=>p.relations[0].freshness.field='missing',p=>p.relations[0].fields.push(p.relations[0].fields[0])]){
     const invalid=structuredClone(page);mutate(invalid);assert.throws(()=>contract.assertOutput(invalid,{request}));
+  }
+});
+
+const privateRequest={source:'client_records',sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2};
+const scope={clientId:null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)};
+const context={capiroDataScope:scope};
+test('private selectors require current native revision context and cannot label public input private',()=>{
+  assert.deepEqual(query.normalizeInput(privateRequest,context).input,privateRequest);
+  for(const options of [{},{capiroDataScope:{...scope,membershipRevision:'wrong'}},{capiroDataScope:{...scope,extra:true}}])assert.throws(()=>query.normalizeInput(privateRequest,options));
+  for(const request of [{...privateRequest,clientId:null},{...privateRequest,clientId:'name'},{...privateRequest,source:'other'},{...requests.query_capiro_data,clientId:'10000000-0000-4000-8000-000000000001'}])assert.throws(()=>query.normalizeInput(request,context));
+  assert.throws(()=>query.normalizeInput(requests.query_capiro_data,context));
+  assert.deepEqual(query.normalizeInput({...requests.query_capiro_data,source:'public'}).metadata,{scope:'public_curated_relations',absenceEvidence:false});
+});
+test('private output binds source version and effective scope for success and errors',()=>{
+  const page=privateCapiroDataPage(),check=value=>query.assertOutput(value,{request:privateRequest,...context});
+  assert.deepEqual(check(page),page);
+  for(const mutate of [p=>p.version='0.1.0',p=>p.scope.clientId='10000000-0000-4000-8000-000000000001',p=>p.relationsUsed=['program_elements'],p=>p.rows[0].count=0]){
+    const bad=structuredClone(page);mutate(bad);assert.throws(()=>check(bad));
+  }
+  const error={version:'0.2.0',generatedAt:page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Time budget exceeded.'}};
+  assert.deepEqual(check(error),error);assert.throws(()=>check({...error,version:'0.1.0'}));assert.throws(()=>query.assertOutput(error,{request:requests.query_capiro_data}));
+});
+test('private description admits the two owner projections with authorized-record coverage',()=>{
+  const describe=resolveOperationContract({id:'describe_capiro_data',version:'0.2.0'}),page=privateCapiroDataPage('describe_capiro_data'),request={source:'client_records',relations:['client_objectives']};
+  assert.deepEqual(describe.assertOutput(page,{request,...context}),page);
+  for(const mutate of [p=>p.relations[0].coverage.basis='ingested_public_records',p=>p.relations[0].name='program_elements',p=>p.relations[0].fields[0].parameterType='UUID']){
+    const bad=structuredClone(page);mutate(bad);assert.throws(()=>describe.assertOutput(bad,{request,...context}));
   }
 });

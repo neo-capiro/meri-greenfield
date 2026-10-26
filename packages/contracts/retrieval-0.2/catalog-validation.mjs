@@ -13,9 +13,9 @@ const federal = result => ({input: result.query, metadata: {queryScope: result.q
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
   ...['describe_capiro_data','query_capiro_data'].map((id,index)=>Object.freeze({id,nativeId:id,group:'capiro-data',
-    input:index?'CapiroDataQueryRequest':'CapiroDataDescribeRequest',output:index?'CapiroDataQueryOutput':'CapiroDataDescribeOutput',version:'0.2.0',contextKeys:Object.freeze([]),
-    normalize:(v,request)=>v.capiroDataValidators.normalizeInput(id,request),
-    outputAssert:(v,page,request)=>v.capiroDataValidators.assertOutput(id,page,request)})),
+    input:index?'CapiroDataQueryRequest':'CapiroDataDescribeRequest',output:index?'CapiroDataQueryOutput':'CapiroDataDescribeOutput',version:'0.2.0',contextKeys:Object.freeze(['capiroDataScope']),
+    normalize:(v,request,context)=>v.capiroDataValidators.normalizeInput(id,request,context),
+    outputAssert:(v,page,request,context)=>v.capiroDataValidators.assertOutput(id,page,request,context)})),
   ...['list_teams_channels','get_teams_channel_messages'].map((id,index)=>Object.freeze({id,nativeId:id,group:'teams-channels',
     input:index?'TeamsMessagesRequest':'TeamsChannelsRequest',output:index?'TeamsMessagesOutput':'TeamsChannelsOutput',version:'0.2.0',contextKeys:Object.freeze([]),
     normalize:(v,request)=>v.teamsChannelValidators.normalizeInput(id,request),
