@@ -46,133 +46,142 @@ A change is not done until what it replaced is gone.
 - Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
 - The original read-only first cut is historical. Neo subsequently authorized preview client-record writes and autonomous Wave 2 completion. Activate accepted writes through their existing authenticated domain/intent owners and receipts, with the actual route/configuration and effect semantics verified. This does not authorize the assistant to send external mail without the user's specific send instruction.
 
-# Wave 2 handoff — shipping checkpoint, 26 October 2026
+# Wave 2 handoff — administratively closed with carryovers, 26 October 2026
 
-**Status: IN PROGRESS. Accepted fixes are merged and shipping is authorized. Full Wave 2 closure is not claimed.** Neo's latest instruction is to trust Fable's fixed items, avoid repeating their validation, merge the PRs, provide the remaining list and ship. This record follows that instruction. Release is the sole shipper; the focused General Chat and Email Repair owner retains the active runtime defect.
+**Administrative status: CLOSED WITH CARRYOVERS. Functional acceptance: CHANGES.** Neo directed: give Fable the remaining Wave2 issues, close Wave2, continue with a fresh Wave3 orchestrator, and receive Fable's results in Wave3. This supersedes the earlier wait-for-results instruction. It does not convert FAIL, NOT RUN or UNKNOWN into PASS. No new Wave2 repair/acceptance cycle is allocated.
 
-This dated record supersedes the *current-state and next-action wording* of the [25 October checkpoint](../20261025/WAVE-2-HANDOFF.md). That file, its original evidence, failed attempts and unknown outcomes are unchanged. The latest Fable acceptance is supplied through Root's authoritative handback; it is not a new execution by this documentation author. Final coherent deployment and post-deploy results are pending their actual owner receipts.
+The accepted release is deployed. Fable now owns the residual Wave2 fixes listed below. Existing Hermes authors finish their current publication/review handbacks and stop; no competing authors are launched on Fable's paths. Root merges this documentation and dispatches the fresh orchestrator; no new chat or goal was created by the documentation author.
 
 ## 1. Stopping point and changes since the last handoff
 
-- Root merged frontend PRs **167, 168, 169 and 170 sequentially**, without repeating Fable's tests. Frontend main is `d285e659f2bfbc00bfbd464b8c6f07dfba898d5d`.
-- Meri memory/document corrections are merged at `87dc649e829779d5f47e1a0cc5b0e939e0c729d2`, tree `8e5083e9bed316fdd38015b92331d202dfc33020`. The once-built ARM64 image is qualified; rollout is in progress.
-- Fable's verdict remains **CHANGES for control history/admission 5xx after 2026-10-25 22:47 UTC**. Root's General stored-email lookup failed before any mail read; delivery/effect remains unknown. The new focused owner is working that existing boundary. Stored-mail reads remain Wave 2 MT03/ML22 scope.
-- The earlier native document-create and governed memory-save effects remain **UNKNOWN**, despite accepted source fixes. No new request may silently substitute for an uncertain original effect. The affected post-deploy workflow checks remain open.
-- Retirement has advanced beyond the old checkpoint: Release completed the six reviewed operations at **2026-10-25 21:59:13.047385 UTC**. Section 7 records the actual result and retained exceptions. Do not execute the superseded retirement proposal again.
-- Release now reports Runtime **9 READY / DEFAULT9** while named preview remains **8** pending coherent rollout. This intermediate state is not an accepted deployment tuple. The frontend build for exact `d285e659` has started; no resulting digest or health is inferred.
+The coherent Meri87dc / frontend d285 shipment is stable at **2026-10-26 00:34:47.377383 UTC**. Root then completed exactly **three new normal-browser submissions**, with no retry or original-unknown replay. General admission/history and client reads worked at the observed boundaries, but General stored-email lookup failed with model-reported ACCESS_DENIED, prepared actions stayed unavailable, and the Stop case raced completion. The canonical acceptance addendum retains **CHANGES**.
+
+Fable's FE167–170 fixes are merged, shipped and trusted. Their accepted checks were not repeated. Meri memory/document fixes are also live; fresh full workflow acceptance was not performed. Original M1 memory-save and D1 document-create effects remain UNKNOWN. Neither the new smoke nor infrastructure health establishes the historical control5xx cause or original request delivery.
+
+Two current Hermes handbacks are preserved: Outlook Core139 has **CHANGES for recovery documentation**, with no projection-code defect found and independent13/13 health checks passing; frontend172 has **CHANGES / DO NOT MERGE** because generic access-loss recovery can reserve an unintended successor for a previously started terminal conversation. Both are inputs for Fable, not accepted live repairs. Both old Hermes author processes have finished or their stop is confirmed; no further Wave2 source cycle is allocated. Remaining work and a copyable prompt are in Root outputs and the standalone `FABLE-WAVE2-CARRYOVER-BRIEF.md` beside this handoff.
+
+This final dated record supersedes current-state/next-action prose in the25 October checkpoint and the earlier26 October shipping checkpoint. Their evidence, failed attempts and original unknowns remain in the historical file/Git history. Administrative closure removes the Wave2 orchestration gate for Wave3; it does not assert full product acceptance.
 
 ## 2. Live components, candidate pins, database and snapshots
 
-The last complete pre-rollout tuple is preserved below from the **25 October 19:38:40.090581 UTC** actual Release receipt. The retirement receipt confirms the same product tuple at21:59. These are measured historical facts, not a fresh cloud read by docs. Runtime9 has since advanced separately as stated above; current coherent readiness is pending Release.
+Actual Release receipt: `LIVE-87DC-D285-ROLLOUT-HANDOFF.txt`, stable **00:34:47.377383 UTC**, SHA256 `7b64867fa1bff03962612279576c5b8b65a67a88f19b977baff3c9321ff2ac5b`.
 
-| Component | Exact pre-rollout source and image | Revision |
+| Component | Exact deployed source / image digest | Actual state |
 |---|---|---|
-| Core | `929acd023c29d9073cbf9d5c5105eba8c3252948`; `sha256:49722d1332083d97b0df9139a0eed063ba4516d987b67883ace1c819ba0540a4` | Core15 |
-| Meri | `09e89db9b57c8fcb5b1aa15a4d1479074c8bbe16`; `sha256:876a7267e9ab231769379800a7c487f3f45860d975b8da7349756484534cc6d0` | Control71 / Worker67 / Schedule4; Runtime8 / preview8 / DEFAULT8 |
-| Frontend | `1dfd5893525ad31b7e6622371b1d4e1ddb6bcbf1`; `sha256:8dc0eb6fcc58fcb7d6f651762d98afc2f966d1a9dc6bdde0fb4fe0fb17468bf2` | FE32 |
+| Core15 | `929acd023c29d9073cbf9d5c5105eba8c3252948`; `sha256:49722d1332083d97b0df9139a0eed063ba4516d987b67883ace1c819ba0540a4` | Unchanged, HEALTHY |
+| Meri Control72 / Worker68 / Schedule5 | `87dc649e829779d5f47e1a0cc5b0e939e0c729d2`, tree `8e5083e9bed316fdd38015b92331d202dfc33020`; `sha256:2e8d7c2f3bc7124d3c00e35ba0aa5196b84b35c4b04147025e29fb8d800dde3e` | HEALTHY; all material initializers exit0; matching Control targets healthy |
+| AgentCore standard RuntimeV1 | Same Meri source/image | Runtime9 / named preview9 / DEFAULT9 READY |
+| Frontend33 | `d285e659f2bfbc00bfbd464b8c6f07dfba898d5d`; `sha256:bbd949f8b32327b285c8b047b7041698102e9baccc8afabe034f37a4fe3327ac` | RUNNING / ALB healthy / TLS200; ECS task health UNKNOWN because there is no container healthcheck |
 
-The original five service deployments were completed with desired1/running1/pending0; Core/Meri and targets were healthy, initializers exited0. Frontend has no container health check: task health UNKNOWN, with RUNNING/ALB/HTTPS verified. Health is not functional acceptance.
+Both CloudFormation updates and drain completed; five services each desired/running1, pending0. Only source/image/version/material pins changed. No feature flag, provider, DB/PKI, schema, DNS, network, sizing or policy change. Meri reused its once-qualified image; frontend d285 was built once and production build/container smoke/exact-digest scan passed with zero reported findings. FE9070 image was superseded and never deployed. No broad source/acceptance suite repeated.
 
-| Current candidate | Achieved stage | Outstanding |
-|---|---|---|
-| Meri `87dc649e829779d5f47e1a0cc5b0e939e0c729d2`, tree `8e5083e9bed316fdd38015b92331d202dfc33020`; `sha256:2e8d7c2f3bc7124d3c00e35ba0aa5196b84b35c4b04147025e29fb8d800dde3e` | One ARM64 build completed25 October23:05:38.277 UTC; canonical probes, txt/docx/xlsx/pptx/zip generation smoke and cleanup PASS; scan COMPLETE with0 findings | Coherent service/runtime receipt and affected live outcomes |
-| FE `d285e659f2bfbc00bfbd464b8c6f07dfba898d5d` | Accepted Fable fixes merged; exact archive verified by Release; one build starting | Built digest, qualification and actual deploy receipt |
-| Earlier FE `90702180dfb6d529745d01601db85a7f09a81369`; `sha256:e0385b3f3321976355aa2387828189573d2a95fdad78ce1f42805836c0d52098` | Ready predecessor image | Superseded as the final Fable-fix source; do not call this the d285 image |
+Worker68 had two initial essential-container exit3 starts after material-init0; the first recorded RUNTIME_UNAVAILABLE. Native ECS scheduling produced the healthy third task without manual retry/configuration change. **Cause unproved**; preserve the failures without inventing another product diagnosis or automatically restarting a campaign.
 
-Database evidence remains historical: encrypted snapshot `capiro-newstack-preview-clone-pre-wave2-20261025t0541` was AVAILABLE at06:04:37 UTC; Core ledger **686** at10:13:16.544, Meri ledger **60** at10:15:33.711–10:15:35.478, and Schedule ordinary LOGIN/SCRAM/TLS at10:15:50.162. The last recorded product rollout applied no migration. No new database operation is performed or inferred here. Applied history and the persistent preview clone must remain intact.
+Release retains exact rollback Control71/Worker67/Schedule4/FE32 definitions/materials ACTIVE and unchanged, with Core15 and named preview8/Runtime8 retained. DEFAULT9 is not assumed to rewind automatically. Existing Release alone owns rollback; no data/effect replay or restoration of removed infrastructure. Keep canonical `UpdateReplacePolicy: Retain`. Two allocated obsolete staging-label associations were removed for capacity while current/rollback/reserved labels stayed protected; no explicit secret-value deletion.
 
-Release's prepared normal rollback target for the new candidate is the pre-rollout **Core15 / Control71 / Worker67 / Schedule4 / FE32 and Runtime8/preview8/DEFAULT8** cohort with its exact saved compatible bindings. Source comparison found no SQL/migration/public-contract change in the Meri candidate; that is compatibility evidence, not a rollback rehearsal or current live receipt. The older14/70/66/3/31 and named-runtime7 custody is historical. After retirement, never blindly restore deleted security-group identities. Release alone owns current rollback, retaining forward schema/data and reconciling CloudFormation. Canonical `UpdateReplacePolicy: Retain` stays in place.
+Historical database evidence is unchanged: snapshot `capiro-newstack-preview-clone-pre-wave2-20261025t0541` AVAILABLE25 October06:04:37; Core ledger686 at10:13:16.544; Meri ledger60 at10:15:33.711–10:15:35.478; Schedule ordinary LOGIN/SCRAM/TLS at10:15:50.162. These are not fresh queries. This shipment applies no migration. Preserve the one preview clone/applied history; Core139 and all open Wave3 changes are not implied deployed.
 
 ## 3. Source integration, open PRs, review and gates
 
-| PR | Merged result / accepted scope | Fable results reused without rerun |
+| PR | Exact merged result / scope | Fable evidence reused |
 |---|---|---|
-| [FE167](https://github.com/neo-capiro/capiro-frontend/pull/167) | `30c00d48118a7938c4a6884b71fb64f18080d3e2`; scope chooser, Home pill and triggers | Unit17/17 PASS; production-data11/11 PASS. Selected lifecycle10/10 FAIL, identical baseline |
-| [FE168](https://github.com/neo-capiro/capiro-frontend/pull/168) | `84ae41bbc37db88b241a478d3a8af573d71c45d4`; Conversations table, filters, rename and Trash | Unit6/6 PASS; browser management3/3 PASS; production-data11/11 PASS |
-| [FE169](https://github.com/neo-capiro/capiro-frontend/pull/169) | `861009f073084aa328ffe4a46c8dbc3b202a57a8`; Memory cards/search and receipt-flash fix | Unit2/2 PASS; owner-review browser3/3 PASS |
-| [FE170](https://github.com/neo-capiro/capiro-frontend/pull/170) | `d285e659f2bfbc00bfbd464b8c6f07dfba898d5d`; Routines list/connect gate | Unit34/34 PASS; Routines browser5/5 FAIL, identical baseline |
+| [FE167](https://github.com/neo-capiro/capiro-frontend/pull/167) | `30c00d48118a7938c4a6884b71fb64f18080d3e2`; chooser/Home pill/triggers | Unit17/17 and production-data11/11 PASS; lifecycle10/10 FAIL identical baseline |
+| [FE168](https://github.com/neo-capiro/capiro-frontend/pull/168) | `84ae41bbc37db88b241a478d3a8af573d71c45d4`; Conversations filters/table/rename/Trash | Unit6/6, management-browser3/3, production-data11/11 PASS |
+| [FE169](https://github.com/neo-capiro/capiro-frontend/pull/169) | `861009f073084aa328ffe4a46c8dbc3b202a57a8`; Memory cards/search/receipt flash | Unit2/2 and owner-review-browser3/3 PASS |
+| [FE170](https://github.com/neo-capiro/capiro-frontend/pull/170) | `d285e659f2bfbc00bfbd464b8c6f07dfba898d5d`; Routines list/connect gate | Unit34/34 PASS; Routines-browser5/5 FAIL identical baseline |
 
-Fable reported lint, formatting and TypeScript checks clean for all four. These results are authoritative under Neo's latest direction. The lifecycle and Routines failures remain inherited harness debt; they are not relabeled PASS and do not trigger another qualification cycle. Exact commands/run UTC not supplied in Root's handback are **NOT AVAILABLE to this author**, not invented or rerun. Counts across suites are not added as if unique.
+All four reported lint/format/TypeScript checks are clean. Fable's final report supplied by Neo is authoritative; no separate final-report file was found, and missing command/UTC details were not fabricated. Counts are per suite, not summed as unique tests. The10+5 baseline failures are harness debt, not new product defects or passed checks.
 
-[Meri268](https://github.com/neo-capiro/meri-greenfield/pull/268) is merged at87dc. Accepted donor265/266 are closed as incorporated; do not cherry-pick them again. Integration retained exact accepted code and reused the actual MCP/memory/document14/14 PASS and positive TXT publication/replay proof without rerunning them. The latter uses scripted authority/SQL/CAS/TXT execution and does not prove live PG/S3, native Office rendering or current customer authority. Earlier broad-intent failures/skips remain in their receipts. Corrected document-preparer full-file counts are base4 total/2 PASS/1 FAIL/1 SKIP and head7 total/5 PASS/1 FAIL/1 SKIP; historical parser interpretations are superseded, not deleted.
+[Meri268](https://github.com/neo-capiro/meri-greenfield/pull/268) is merged at87dc. Donors265/266 are closed as incorporated. Reuse accepted MCP/memory/document14/14 and positive TXT publication/replay proof; no duplicate donor replay or test run. Scripted authority/SQL/TXT proof is not native Office/live PG/S3/current customer authority. Corrected document-preparer counts remain base4 total/2PASS/1FAIL/1SKIP and head7 total/5PASS/1FAIL/1SKIP. Existing broad failures/skips remain in their owner receipts.
 
-The General Chat and Email Repair source work is active; **no new accepted head/PR is asserted** by this checkpoint. Fable's runtime CHANGES is not closed by merging UI changes or deploying the unrelated memory/document candidate. Prior source/review records remain in the25 October handoff and owner briefs. The pre-execution Fable packet PR267 is a separate as-of documentation draft, not this final result or product fix.
+| Current Fable input | Status / exact source | Required disposition |
+|---|---|---|
+| [Core139](https://github.com/neo-capiro/capiro-backend/pull/139) | OPEN DRAFT head `a2b827d75c59362d7595dece8bbcbedfd987180f`, base `722f094cf60e40b2fb270bb5c1e06bf66d795c42`, target backend-import | **CHANGES for recovery documentation**; no projection-code defect found, independent13/13 PASS. Author13/13 and adjacent116PASS/2 inherited FAIL; package build failed and typecheck reported1175 diagnostics, the same count as baseline but not proof of identical diagnostics. The author base-build comparison is not independently established. Correct overclaimed whole-sync/all-worker cause and unproved callback-routing/Send-consent prescription. Author-reported timestamps are not independently verified. Adopt after acceptance; not a live sync repair |
+| [FE172](https://github.com/neo-capiro/capiro-frontend/pull/172) | OPEN DRAFT head `71f6343993d60a3595417de1b9212b150e783557`, base d285 | **CHANGES / DO NOT MERGE.** Generic accessLost drops runId and actual next-run owner reserves a successor for a started terminal run. Exact selector reserves none. Correct through canonical proven-unstarted recovery; never infer it from401/403/missing history/accessLost |
+
+FE172 author reports55 focused PASS including5 new, two killed helper mutants, typecheck/format PASS, lint0errors/83warnings; broader1410PASS/3FAIL identical base. Architecture has inherited signals/no boundary errors, not full PASS. Candidate Linux/browser/container/live gates NOT RUN. These checks do not override the reproduced P1 reservation defect. The probe proves a reservation, **not** execution, duplicate delivery or data loss. Original broad5xx cause remains UNKNOWN.
+
+Existing Hermes authors finish only current publication/review handbacks then stop. Fable is the residual source owner; Wave3 validates results when Neo posts them, reviews only actual changed risk, and merges/ships accepted fixes through existing Release. No parallel Wave2 authors or new repair cycles.
 
 ## 4. Acceptance, failures and unrun checks
 
-| Result | Evidence and limit | Next owner/action |
+Root's actual normal-browser smoke on the exact deployed tuple: **3 submissions,0 retries,0 original-unknown replays; allowance exhausted**. Acceptance records the owner handback in `FABLE-REPORTED-CHECKS-ADDENDUM-20261026.txt`; Acceptance executed0 new model/browser cases.
+
+| Case / UTC | Observation | Result and limit |
 |---|---|---|
-| **PASS — Fable fixed frontend items** | Accepted results in§3; no repeat review/test by docs | Release deploys exact merged source |
-| **FAIL — control history/admission** | Fable 5xx after22:47 UTC; Root's General request showed unavailable history/initial input before stored-mail read | Focused General Chat and Email Repair owner; affected normal-sign-in lookup/follow-up after repair ships |
-| **UNKNOWN — original M1/D1 effects** | Earlier memory save result unreleased/own inbox0; native document create lost access without an artifact receipt | Existing memory/document owners reconcile original identity; no blind replay |
-| **FAIL, historical live boundary — Actions/Routines** | Earlier Actions uncertain then unavailable; routine form reset before Prepare. Newly accepted UI fixes remain closed | Only affected current behavior after deployment; no broad Fable rerun |
-| **PASS, bounded earlier live behavior** | Echo/history, same-conversation recall and permitted synthetic read; current-memory listing; ordinary95-byte file upload/download/move/deletion receipt; S3 streaming/one Stop/UI Cancelled | Preserve these passes at their original cohort/UTC; they are not whole-feature acceptance |
-| **NOT RUN / incomplete — governed workflows** | Routine execution/future pause, chosen task effect, memory approval/correction/fresh recall, native document publication/exact download/native rendering; M2/T1 were not executed in the earlier finite batch | Existing feature/Acceptance owners, using only required prerequisites and affected cases |
-| **NOT RUN / unverified — retained runtime/retention guarantees** | Bound physical idle restore, complete simple-turn Core≤30calls/≤3000ms, owner-bound provider/SDK/all-writer closure and remaining object/Core/restore/erasure crossings | Existing Runtime/Release owners; reuse accepted evidence, no new broad proof framework |
-| **NOT RUN — missing fixtures** | Eligible Objective/Strategy, converted-prospect file/contact/brief carry-over, reviewed hearing/source, restricted-role and allowed/denied/revoked research cases | Existing fixture owners. These do not delay the authorized deployment; do not manufacture customer/provider effects |
+| PS1 /00:35:50 | New General request Completed; current history loaded,9 Recent links. Model reported `mail_list_messages` ACCESS_DENIED and returned no records | Admission/history LIMITED PASS for this case; requested email read FAIL. Raw gateway receipt NOT INSPECTED. Model claim that General cannot read mail is **not canonical policy**; no empty-mailbox inference |
+| PS2 /00:37:34 | Authorized client profile Completed; active status/description matched Root's prior normal Portfolio UI observation | Client-profile UI read PASS at this comparator boundary. Tool attribution model-reported; no fresh raw receipt or public customer data |
+| PS3 /00:38:29 | Same conversation recalled marker and streamed fictional text. Stop clicked once after last observed Running; terminal Completed/story finished | Context follow-up PASS; streaming observed. Cancellation NOT PROVEN / race with completion, never Stop PASS or USER_CANCELLED |
 
-The earlier33-row matrix remains **12 PASS / 7 FAIL / 14 NOT RUN** for its original cohort. Later bounded deltas do not rewrite or recount it. Earlier finite model use was11/12 at20:23:30.7370001; Fable's later total is not supplied here, so11/12 is not the current cumulative allowance. Do not infer new model/effect authorization from an old unused slot. Acceptance could not verify a usable normal browser session. Root now owns a maximum three-prompt functional smoke after the exact deployed-ready receipt. It is NOT RUN at this checkpoint; no duplicate Acceptance batch is allocated.
+**Prepared actions remained unavailable in both scopes.** No conditional memory/document workflow check ran. Original M1/D1 effects stay UNKNOWN. New memory/document source is live, but fresh decision/publication/download/correction/recall flow is unverified. New successful General admission does not disprove the earlier22:47 control5xx or establish the original failed request's delivery/cause.
 
-Explicit unavailable capability limits remain: four legacy Intel generators; legacy Stage-G/Context Import generation; General-scope Objective generation; disabled PDF/visual previews. Existing hearing/evidence reads remain in scope. Broader later-scope work is not newly promoted into a Wave2 shipping blocker. Stored-mail provider coverage is separately stale/degraded. Neo has now authorized a fresh Hermes Outlook owner for Microsoft365 provider/configuration/sync and expired subscriptions, through the existing launcher. That follow-up is separate from admission/history/General email and is not complete. It does not authorize this documentation owner or the admission owner to mutate the provider.
+Fable's focused residual scope: (1) actual General stored-mail authorization/result boundary; (2) explicitly safe session recovery and historical admission/history diagnosis where evidence supports it; (3) Outlook read-sync configuration/status/renewal, adopting Core139 if accepted; (4) prepared-actions reads; (5) affected memory/document workflows with exact outcome preservation. Stop cancellation remains an unproved assertion, not a newly proven Stop defect.
 
-The accepted native PostgreSQL stale-database restore fence remains **15 named groups in one scenario**, with an independent in-memory ledger, not proof of real S3 ledger restart/fullE36/physical erasure. The935.916s untouched UI interval is not proof of physical retirement. S3's54Core calls/2188ms candidate is not a simple-turn performance verdict. No special new telemetry event becomes a product gate solely to replace missing evidence.
+Separate limitations, not an invented bug/rebuild campaign: NOT RUN fixture-dependent Objective/Strategy, converted-prospect file/contact/brief, reviewed hearing/source, restricted-role and research denial cases; incomplete task/routine occurrence/future pause, broader memory correction, all-format/renderer/provider workflows; physical idle restore/retention/erasure crossings; attributable simple-turn Core≤30calls/≤3000ms and backend cancellation/SDK/all-writer closure. Preserve earlier bounded passes and actual PG proof. Missing fixtures stay NOT RUN; no forced customer/provider mutation.
 
-Docs-only checks: no product tests/builds/browser/model/cloud/provider/database operations; no new executable tests; mutation **N/A**; executable test-count change **0**. Documentation receives only ordinary diff/whitespace/link/prefix/fact checks. Accepted owner evidence is reused.
+Unavailable capability limits: four legacy Intel generators; legacy Stage-G/Context Import generation; General-scope Objective generation; disabled PDF/visual previews. Broader later-phase work remains separately sequenced. Earlier33-row matrix12PASS/7FAIL/14NOTRUN and prior11/12 model packet retain original time/cohort; Root's new three calls are a separate allocation, not an invented combined counter. No extra checks follow from closure.
+
+Docs-only validation: no product tests/builds, browser/model/provider/AWS/database action. New executable tests0; mutation N/A; only ordinary documentation prefix/link/whitespace/source consistency checks. Existing evidence reused.
 
 ## 5. Decisions and pending Neo decisions
 
-[O258](../20261022/decision-log/DECISION-LOG.md#o258--recorded-2026-10-26-trust-fables-accepted-fixes-merge-ship-and-publish-the-remaining-work) continues the actual O257 sequence. Neo's latest direct instruction, relayed by Root for this task, is to trust Fable's accepted fixes, avoid overvalidation, merge the PRs, list remaining items and ship. Root completed the four FE merges. Existing Release is authorized to ship; the former Fable live-change hold has ended. No second reviewer, duplicate test campaign, new shipping operator or new approval ritual is introduced.
+The actual decision log was checked through O258 before this final update; **O259** records Neo's latest instruction to assign residual Wave2 fixes to Fable, close Wave2 administratively and continue with a fresh Wave3 orchestrator. This supersedes waiting for more results and the old requirement to hold all Wave3 integration behind a full-Wave2-PASS claim. Functional acceptance stays CHANGES; unresolved work transfers explicitly.
 
-This direction does not fabricate a PASS for Fable's remaining runtime CHANGES, unknown effects or unrun acceptance. Shipping the accepted fixes and closing all Wave2 scope are distinct. Root reports actual remaining work and controls any completion notice. No new scope/security decision is requested by this documentation task. Current auth, tenant/wall rules, durable outcomes, external-send boundaries and rollback constraints remain binding.
+No new product decision is required to start Fable's bounded repairs. Actual OAuth consent, if later proved necessary, is a normal human action for Neo, not something an agent performs on Neo's behalf. Do not preemptively demand reconnect or infer invalid credentials. Keep current Core gatekeeper/walls, authorized General mail access, no blanket General-mail ban, no auth bypass, no external send or new architecture. A real newly discovered scope/security tradeoff goes to Neo; ordinary in-scope work proceeds.
 
-O255–O257 remain historical engineering decisions with their original reasons and recovery bounds. Their earlier “no deployment allocated” status is superseded by the current shipping authorization; their retained evidence is unchanged. No invented retrospective O-number is assigned to intermediate owner activity.
+Outlook's retained screenshot correction is binding: provider-not-configured copy/disabled action belong to **Gmail**, not Microsoft365. Actual Microsoft symptoms are stale/degraded sync and expired subscriptions. Release observed only the serving Core15 task's shadow/background-owner-disabled/callbacks-false posture and absence of eight explicit Microsoft/OAuth bindings. This does not prove invalid credentials or absence of every possible background worker. Read-sync activation must use the correct existing owner and bounded configuration; do not enable unrelated outbound send behavior by guesswork.
+
+O258's interim Runtime9/preview8 state and pending smoke are superseded by§2/§4 actual results; original entries remain historical. Permanent Retain, forward-schema-compatible rollback, privacy and unknown-effect fences remain binding.
 
 ## 6. Traps for a fresh session
 
-- Read this checkpoint before the25 October current-state prose. Treat old tuples and holds by their stated UTC; a merge, ready image, Runtime9 update or health check is not the final coherent deployment or functional PASS.
-- Do not reopen accepted Fable fixes, rebuild an unchanged qualified candidate or run another broad regression/review census. Preserve identical-baseline failures explicitly as inherited harness debt.
-- General stored email fails before read admission. An unavailable or uncertain read is not an empty inbox; a client-filtered mail result is not a personal-mailbox completeness claim. Provider ingestion is a separate issue.
-- Unknown memory/document/Actions outcomes are not zero effects. Use existing exact-request reconciliation; do not replay with a new identity.
-- Preserve actual Claude SDK full harness, direct Bedrock, Control tools and Core authority. The [supersession register](../20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md) removes old mechanisms, not retained product acceptance. Do not recreate owner/proxy/issuer services or a custom warm pool.
-- File receipt/hash checks do not establish physical object/version erasure; unscanned/scanner_not_required does not mean clean. Schedule health does not mean a routine fired; UI Cancelled does not prove all writers or provider compute stopped.
-- Preserve the shared local environment and preview clone. No credential extraction, provider reconnect/send, live data edits or new customer-linked evidence publication follows from this handoff.
-- Core's default branch is `backend-import`, not `main`. Runtime and frontend source SHAs differ from deployment pins. Wave3 independent source work continues, but release-dependent integration awaits Root's explicit Wave2 completion decision.
+- Administrative CLOSED WITH CARRYOVERS is not all-PASS acceptance. Fable owns remaining Wave2 source; do not start competing Hermes/Codex authors or a new Wave2 cycle.
+- Do not merge FE172 as-is. Generic401/403/accessLost is not proof that an original never started; clearing runId can reserve a successor on the separate next-run path.
+- A model-reported mail denial is not a raw gateway receipt or policy. General may read actor-owned stored mail across already permitted clients while Core enforces walls; no blanket ban or authority bypass.
+- Gmail's unconfigured warning is not Microsoft evidence. Shadow task configuration is bounded to the observed serving owner, not a global worker/credential audit.
+- UNKNOWN original effects are not zero; reconcile exact identity using existing receipts, never silently replay. No new prompts are allocated by the exhausted smoke.
+- Reuse Fable167–170 and accepted Wave3 source/tests. Inherited10+5 browser failures remain harness debt; no broad regression/rebuild campaign.
+- Keep full Claude SDK/RuntimeV1/Core tools/durable user and firm memory. Removed owner/proxy/issuer services/custom pools stay removed. Core default is backend-import.
+- Preserve Ordinary Atomic Save's Workspace/session/shared-file ownership and all local environments. Fable must not overwrite Wave3 files to fix a separate chat/mail issue.
 
 ## 7. Temporary resources and diagnostics to delete
 
-Release's **RETIREMENT-V2-COMPLETE-STABLE-HANDOFF.txt** at21:59:13.047385 UTC supersedes the old “retirement proposal/not executed” state: six operations terminal; **66 managed declarations removed**,9 in-place changes,231 retained resources across those stacks. Eight foundation exceptions retain original physical identities. Old model/issuer task definitions are INACTIVE, not byte-erased. One separately allocated orphan egress rule was removed and the blocked security-group deletion then completed. Do not replay the retirement.
+Release completed reviewed retirement at25 October21:59:13.047385 UTC: six operations terminal,66 managed declarations removed,9 in-place changes,231 retained resources; eight foundation exceptions keep original identities. Old model/issuer task definitions INACTIVE, not byte-erased. The separately allocated orphan egress rule was removed and the blocked security-group deletion completed. Do not repeat retirement or restore deleted identifiers during rollback.
 
-Temporal's five services retained exact revision4/count1/native groups; five old tasks stopped. Standard SDK/native TLS checks before/after passed with one fresh workflow and one fresh activity poller each. Both owned diagnostics stopped/exit0; temporary diagnostic task definition INACTIVE. This is queue/TLS evidence, not every workflow's functional acceptance. Earlier failed operator connection evidence remains preserved.
+Temporal's five services retained revision4/count1/native groups; five old tasks stopped. Before/after SDK/native TLS queue probes passed with one workflow and one activity poller each. Two owned diagnostics stopped/exit0; diagnostic definition INACTIVE. This is not all-workflow acceptance. Historical worker failures and operator connection failures remain evidence.
 
-Docs creates no cloud, database or diagnostic process. Keep shared WSL/services/DB/auth/config/checkouts/caches, owner evidence, held histories and original unknown-effect fixtures. Release retains compatible rollback material and permanent Retain attributes; cleanup after the rollback window requires exact ownership/reference checks. No broad key/log/SQL/history deletion or forced fixture cleanup. Details and sensitive resource identities remain with Release.
+Docs created no cloud/process resources. Existing launchers close only their own completed Hermes processes and preserve checkouts/results; no new author loop. Preserve shared WSL/services/DB/auth/config/caches, rollback material, held histories and unknown-effect fixtures. No forced fixture deletion, broad SQL/log/key cleanup or shared-environment reset.
 
 ## 8. What is not in this public repository
 
-Private records are referenced by owner and filename only. Do not publish customer names/IDs/UUIDs, tenant/actor bindings, prompt bodies, screenshots, tokens, PKI, database URIs, private signed URLs or secret values.
+Private locations by owner/name only; no customer names/IDs/UUIDs, prompt contents, screenshots, credentials, signed URLs, tenant mappings, secret values or PKI are copied.
 
-| Owner / location name | Reused record |
+| Owner / location | Record |
 |---|---|
-| Root workspace outputs | `GENERAL-CHAT-EMAIL-REPAIR-BRIEF.md`; `WAVE-2-REMAINING-ITEMS.md`; Fable's completed acceptance as supplied in the current chat. Local `FABLE-WAVE-2-ACCEPTANCE-HANDOFF.md` is the earlier pre-execution packet |
-| `wave2-visible-release` outputs | `MERI-87DC-IMAGE-HANDOFF.txt`, `RETIREMENT-V2-COMPLETE-STABLE-HANDOFF.txt`, `LIVE-CORRECTIVE-ROLLOUT-HANDOFF.txt`; current coherent successor receipt pending |
-| `wave2-visible-integration` outputs | `WAVE2-MERI-MEMORY-DOCUMENT-COMPOSITION.txt`, `WAVE2-MERI-PUBLICATION.json`; accepted source composition and image facts |
-| `wave2-visible-acceptance` outputs | `combined-corrective-retest-packet.txt`, `wave2-live-acceptance-matrix.txt`, Root General/client read supplements; original observations and held unknowns |
-| `wave2-visible-runtime` outputs | `runtime-corrective-observation/RESULT.txt`, General-email triage/follow-on results; bounded runtime observations and metadata-only handback |
-| Focused General Chat and Email Repair owner | Existing source diagnosis/repair checkout and private incident mapping; no new accepted fix head is asserted here |
-| Release private work | Verified image, actual deployment, forward-schema-compatible rollback, exact sensitive resource/tenant/material bindings and snapshot custody |
+| Root outputs | `WAVE-2-REMAINING-ITEMS.md`, `FABLE-WAVE2-CARRYOVER-BRIEF.md`, `FABLE-WAVE2-REMAINING-FIXES-PROMPT.txt`, final handoff and Wave3 orchestration/parallel plan |
+| `wave2-visible-release/outputs` | `LIVE-87DC-D285-ROLLOUT-HANDOFF.txt`, `MERI-87DC-IMAGE-HANDOFF.txt`, `RETIREMENT-V2-COMPLETE-STABLE-HANDOFF.txt`, `OUTLOOK-CORE-RUNTIME-POSTURE.json` |
+| `wave2-visible-acceptance/outputs` | `FABLE-REPORTED-CHECKS-ADDENDUM-20261026.txt`; sealed historical matrix/finite packet and Root read supplements unchanged |
+| `wave2-general-chat-email-repair/outputs` | `FABLE-CARRYOVER.txt`, `HERMES-RESULT.txt`, `HERMES-REVIEW.txt`; exact FE172 CHANGES and original incident limits |
+| `wave2-visible-schedule-worker/outputs` | `HERMES-OUTLOOK-REPAIR-BRIEF.txt`, `HERMES-OUTLOOK-STATUS.txt`, `HERMES-OUTLOOK-RESULT.txt`; later committed PR139 head supersedes older head references |
+| `wave2-visible-integration/outputs` | Accepted memory/document/source composition and current source receipt history |
+| Release private work | `shipment87dc/live-handoff.json`, exact bindings/rollback/snapshot custody; SHA256 `ceee43a64b17b1d8ca454ffaf9acc65df25d4f97631454524406ce2288cdd512` |
+| `wave2-visible-mail/outputs` | `outlook-pr139-independent-review-20261026.txt`; SHA256 `4610996331a42d7b6e0cb25fcac767cd4a96f5c8e48d792cf1f9e2d76dd493a4` |
+| Existing Wave3 owner outputs | Final independent review evidence index, accepted PR records and active Ordinary Atomic Save README/brief |
 
-A final standalone Fable result file has not been located in the scoped local search. The current authoritative facts come from Root's supplied Fable handback; this provenance limit is explicit and does not justify revalidation. Raw command/UTC details absent from that handback remain unavailable.
+No separate final Fable report artifact was located; Neo's supplied report and Acceptance's attributed addendum remain authoritative. This provenance limit does not justify revalidation.
 
 ## 9. Next-wave briefs, bases, ownership and first actions
 
-| Owner | Preserved scope / next action |
-|---|---|
-| Root | Sole Ultra orchestrator/merger. Accepted FE merges are complete. Coordinate focused runtime repair, ship receipts and remaining outcomes; merge this docs PR; issue Wave2 completion only when actual closure is justified |
-| Release | Sole xhigh cloud/build/deployment/rollback operator. Finish coherent Meri87dc and FEd285 rollout; provide exact source/image/service/runtime/material/readiness and compatible rollback receipts. No repeated unchanged qualification |
-| General Chat and Email Repair | Existing fresh xhigh owner and isolated repair checkout; complete the control history/admission diagnosis/fix through existing owners, then affected review/merge/deploy and one normal-sign-in General stored-email lookup/follow-up |
-| Root / Acceptance | Root personally owns the maximum three-prompt post-deploy functional smoke after the exact ready receipt; Acceptance could not verify a usable normal browser session. Preserve Fable's accepted cases and original unknowns; no duplicate Acceptance batch or full-matrix rerun |
-| Fresh Hermes Outlook owner | Neo authorized the existing launcher to start one scoped author for Microsoft365 provider/configuration/sync and expired subscriptions. Work is separate from General admission/history; no fix or completion is asserted yet |
-| Memory/document and other feature owners | Reconcile original uncertain effects and close only concrete affected workflow gaps after matching deployment; carry unrun fixture-dependent obligations honestly |
-| Handoff owner | Sole new canonical26 October writer on `codex/wave2-final-handoff-20261026`, base87dc; [phase brief](PHASE-BRIEF.md). Commit/push and open/attach draft PR; Root merges. Do not modify the25 October record to erase evidence |
-| Existing Wave3 owners | Continue independently authorized source work on isolated branches. Ordinary Atomic Save retains its named Workspace/session/shared paths. No speculative Wave2 takeover; final release-dependent integration awaits Root's explicit completion notice |
+Fresh Wave3 source defaults at preparation: Meri main87dc, frontend main d285, Core backend-import `722f094cf60e40b2fb270bb5c1e06bf66d795c42`. These source defaults differ from deployed Core929acd. Refresh before new source work; preserve accepted stacked Wave3 bases and active writers.
 
-Fresh sessions begin from the current standing block, [PROCESS6.1–6.3](../20261022/PROCESS.md#6-current-templates), plans/supersession register and their bounded owner brief. Refresh actual repository heads before a new source branch: this docs base is Meri87dc; frontend's accepted head is d285; Core uses backend-import and must be refreshed by its owner. Existing authorization persists. This checkpoint is not a final whole-wave completion notice.
+| Owner | Next action |
+|---|---|
+| Old Root | Merge/publish this final docs handoff; dispatch one fresh visible Wave3 orchestrator. Cede orchestration only after successor acknowledges goal, final receipt, Fable ownership, shared-path freezes and sole Release |
+| Fresh Wave3 orchestrator | First create the user-requested goal to complete Wave3 including explicit carryovers, no token budget; Ultra. Read `WAVE-3-ORCHESTRATOR-BRIEF.md` and `WAVE-3-PARALLEL-LANE-PLAN.md`; preserve Fable's exclusive residual-Wave2 ownership. Receive Neo's Fable results there, review targeted changed risk, merge/ship accepted fixes |
+| Fable | Fix the five focused carryover groups, reuse available drafts safely, correct FE172 CHANGES before any acceptance, preserve Wave3-owned files. Return exact source/PR/check/outcome evidence to Neo for posting in Wave3 |
+| Existing Hermes owners/reviewers | Finish current publication/review handback only, then stop; no new Wave2 cycle. Handbacks remain available to Fable |
+| Wave 2 — Release Execution Continued | Remains sole AWS/build/deploy/rollback owner. Current deployment complete; await successor's concrete accepted candidate, no duplicate rollout |
+| Wave 3 — Ordinary Atomic Save | Continue existing publication/review; local72unit/23browser PASS, same33base TypeScript errors, architecture/import disposition pending. Preserve its named shared files |
+| Other existing Wave3 lanes | Parallel M3 and A3 actual plan work on distinct paths; helpersxhigh, Hermes for complex/stuck issues outside Fable-owned scope, separate Codex review. Accepted stacks/evidence reused; later phases not invented as blockers |
+
+No prior-chat memory is needed: standalone source/rules/owner paths, exact current PRs and test limits are in the adjacent briefs. No new session, goal, merge or deployment was performed by this docs author. This is the final Wave2 administrative handoff with explicit functional carryovers.

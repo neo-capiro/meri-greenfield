@@ -46,36 +46,20 @@ A change is not done until what it replaced is gone.
 - Negative tests are mandatory: another tenant's data, another client's data, and walled data must not be retrievable, through chat or through tools. A General chat reads across the clients the user can already see, with each client's wall enforced per result (FINAL-PLAN decision 2).
 - The original read-only first cut is historical. Neo subsequently authorized preview client-record writes and autonomous Wave 2 completion. Activate accepted writes through their existing authenticated domain/intent owners and receipts, with the actual route/configuration and effect semantics verified. This does not authorize the assistant to send external mail without the user's specific send instruction.
 
-FROM: Root | TO: Remaining Items and Handoff owner | TYPE: brief | RE: Wave 2 accepted fixes, shipping checkpoint and remaining work (lane D, docs only)
+FROM: Root | TO: Remaining Items and Handoff owner | TYPE: brief | RE: final Wave 2 administrative closure and Wave 3 transfer (lane D, docs only)
 
-# Phase brief — 26 October 2026
+# Phase brief — final update, 26 October 2026
 
-Repository: `neo-capiro/meri-greenfield`. Preserved checkout: `C:/dev/wave2-final-handoff-20261026`. Branch: `codex/wave2-final-handoff-20261026`. Exact fresh-main base: `87dc649e829779d5f47e1a0cc5b0e939e0c729d2`, tree `8e5083e9bed316fdd38015b92331d202dfc33020`. The initially stale remote-tracking ref was advanced in this new, clean checkout to the fetched exact main commit before editing.
+Repository `neo-capiro/meri-greenfield`; checkout `C:/dev/wave2-final-handoff-20261026`; branch `codex/wave2-final-handoff-20261026`; original fresh-main base `87dc649e829779d5f47e1a0cc5b0e939e0c729d2`, tree `8e5083e9bed316fdd38015b92331d202dfc33020`.
 
-## Outcome and authority
+Neo first directed trust in Fable's fixed UI/checks, merging and shipment without overvalidation. Latest direct instruction assigns residual Wave2 repairs to Fable, closes Wave2 administratively and continues with a fresh Wave3 orchestrator; Neo will post Fable results there. It supersedes the interim wait. Actual deployment and both current Hermes results are now received. Administrative status is CLOSED WITH CARRYOVERS; acceptance remains CHANGES.
 
-Neo supplied Fable's completed acceptance, explicitly trusted its fixes and directed Root to avoid overvalidation, merge the PRs, list the remaining items and ship. Reuse that accepted evidence. Do not repeat Fable's tests, acceptance or source review. Root is the Ultra orchestrator/merger; helpers are xhigh. Existing Release alone executes builds, AWS, migrations, deployment and rollback. Current user authorization supersedes historical Fable/dot coordination roles and obsolete holds.
+This author owns only this dated documentation folder, Root output copies, and continued decision O259 after reading actual last entry O258. Historical25 October handoff and evidence remain unchanged. Root merges the draft docs PR269 and dispatches the fresh visible chat; this author creates no session or goal. New orchestrator runs Ultra, helpers xhigh. Fable exclusively owns remaining Wave2 repairs; old Hermes authors stop at current handback. Existing Release alone owns deployment/rollback. No competing product writers are allocated.
 
-## Owned paths and boundaries
+Read [PROCESS6.1–6.3](../20261022/PROCESS.md#6-current-templates), [WORKFLOW](../20261022/WORKFLOW.md), current standing requirements/rules and [supersession register](../20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md), both master plans and existing Wave3 briefs. This docs allocation implements no product ticket or new acceptance scenario. It preserves actual plan tickets/owners in the adjacent parallel plan. Removed mechanisms remain superseded.
 
-- Sole writer: `docs/handover/20261026/WAVE-2-HANDOFF.md`, this phase brief, and the next numbered decision in `docs/handover/20261022/decision-log/DECISION-LOG.md` after reading the actual last entry. O257 is the last entry at this exact base, so this update records O258.
-- User-facing copy: Root workspace `outputs/WAVE-2-REMAINING-ITEMS.md` and `outputs/WAVE-2-HANDOFF.md`.
-- Subsequent explicitly allocated preparation: `WAVE-3-ORCHESTRATOR-BRIEF.md` and `WAVE-3-PARALLEL-LANE-PLAN.md` beside this brief, mirrored to Root outputs. They remain UNDISPATCHED until the two current Hermes results, deployment result and old Root's transfer instruction. No new session/goal, Wave2 closure, merge or final deployment pin is created by preparing them. Historical Wave2 handoff stays IN PROGRESS while the final result facts are bundled.
-- No product code, test, dependency, configuration, AWS, provider or database mutation. No browser/model acceptance, external mail or external comments. Draft PR publication is authorized; Root merges. No additional agent delegation.
-- Historical `20261025/WAVE-2-HANDOFF.md` and sealed evidence stay unchanged. The new dated record explicitly supersedes old as-of state without erasing it. Integration confirmed no unpublished competing canonical work.
+Deliver the nine-section final handoff, concise remaining list, complete Fable brief and unchanged already-delivered launch prompt, updated fresh Wave3 brief/parallel plan, and O259. Record exact Release receipt, three Root smoke outcomes and both repair CHANGES verdicts. Preserve PASS/FAIL/NOT RUN/UNKNOWN, unknown original effects and evidence provenance. No customer identifiers, screenshot or private payload enters the repository.
 
-## Sources and dependencies
+No product code, test, dependency, configuration, AWS, provider or database mutation; no browser/model check, external mail or external comment. Reuse accepted Fable and Wave3 evidence without reruns. Ordinary docs prefix/link/whitespace/source consistency only; new executable tests0, mutation N/A. No new framework or qualification expansion.
 
-Read current standing requirements/rules, [PROCESS 6.1–6.3](../20261022/PROCESS.md#6-current-templates), [WORKFLOW](../20261022/WORKFLOW.md), the [supersession register](../20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md), [previous handoff](../20261025/WAVE-2-HANDOFF.md), master plans and current scoped owner briefs as needed. Product tickets and E-scenarios retain their accepted meaning; this documentation allocation implements no product ticket and creates no new acceptance scenario. Removed mechanisms remain superseded.
-
-Root's supplied authoritative Fable handback covers FE167–170. Existing Acceptance/Runtime outputs preserve earlier FAIL/NOT RUN/UNKNOWN rows. Integration's memory/document composition and Release's image, retirement and rollout handoffs supply achieved stages. Do not expose customer-linked data. The locally available Fable acceptance handoff is a pre-execution packet; do not label it the final result. Final report command-level/UTC details are unavailable to this author unless supplied later.
-
-## Sequence and definition of done
-
-1. Publish the concise remaining list quickly: product blocker, unavailable/unexercised features, inherited harness debt, release/handoff tasks. Do not make unrelated later scope a Wave 2 shipping blocker.
-2. Record FE merges and ready Meri source/image separately from deployed facts. A partially advanced Runtime is not a coherent ready tuple. Await Release's actual receipt for final live pins; do not interrupt shipping for documentation.
-3. Write exactly the nine established handoff sections with the full standing prefix. Retain original unknown outcomes and the PASS/FAIL/NOT RUN distinctions; no invented test counts, timestamps, hashes, customer identifiers or readiness.
-4. Check only documentation diff/whitespace, relative links, exact standing prefix and source/state consistency. No new executable tests; mutation N/A; product test count change zero. No broad qualification or new evidence framework.
-5. Commit and push the docs branch, open/attach a draft PR, and hand Root the exact commit/tree/changed paths and validation. A local draft or merged checkpoint does not close Wave 2. Only actual remaining acceptance and Root's explicit closure permit the completion notice.
-
-In-scope choices proceed and are logged. Only direct Neo chat approves scope/security changes. No issue #202 post. Preserve shared WSL, services, data, authentication, checkouts, caches, held histories and private release material. Docs creates no cloud/process resources; Release retains rollback and cleanup ownership.
+Commit and push all final docs to existing PR269; report exact commit/tree and changed paths for Root's single final docs-delta review. Final docs publication is required for the handoff; it does not claim full product acceptance. Old Root cedes orchestration only after the successor acknowledges its created goal, continuing ownership, Fable/shared-path boundaries and sole Release. Preserve shared environment, private evidence and rollback materials; no #202 posts.

@@ -1,0 +1,54 @@
+Finish the remaining Wave 2 defects for Capiro/Meri. Neo has directed administrative closure of Wave 2 and assigned these unresolved repairs to Fable; results will be handed to the fresh Wave 3 Codex orchestrator. Do not repeat the Figma/parity acceptance work you already completed or rebuild the architecture.
+
+Read the current STANDING-REQUIREMENTS.md rules 1–4, PROCESS.md 6.1–6.3, and source-of-truth/SUPERSEDED-BY-ITEM-0.md under docs/handover/20261022 in neo-capiro/meri-greenfield. Apply the supersession register before using any old ticket. The four standing requirements are: preserve the full Claude Agent SDK harness; use the agreed simple AgentCore Runtime V1/Core architecture; delete replaced code instead of adding parallel mechanisms; keep Capiro data available through existing Core-authorized tools. Keep both user and firm memory. No authentication bypasses, duplicated policy, model proxies, custom retry framework, new connector, or weakened tenant/client/wall boundaries.
+
+Live preview: https://portfolio-preview.app.capiro.ai/meri
+Verified deployment completed 2026-10-26 at 00:34:47 UTC:
+- Frontend d285e659f2bfbc00bfbd464b8c6f07dfba898d5d, ECS33. Your PRs167–170 are merged and deployed.
+- Meri 87dc649e829779d5f47e1a0cc5b0e939e0c729d2, Control72 / Worker68 / Schedule5.
+- Core 929acd023c29d9073cbf9d5c5105eba8c3252948, ECS15.
+- AgentCore runtime9 / preview9 / DEFAULT9.
+Source Core backend-import is newer: 722f094cf60e40b2fb270bb5c1e06bf66d795c42. Refresh source heads before editing. A source commit is not evidence that it is deployed.
+
+Fix these concrete issues:
+
+1. GENERAL EMAIL AUTHORIZATION.
+A fresh General request submitted at 00:35:50 UTC completed and saved history loaded. Its response reported mail_list_messages ACCESS_DENIED and returned no records. The raw gateway refusal receipt has not been inspected, so the model's explanation is not a proved cause or policy. General mail reads are intended to work across the current actor's authorized sources with Core's mailbox/client/wall checks. Find and repair the actual denial through the existing owners; do not impose a blanket client-scope requirement or weaken access. Distinguish unavailable, denied, partial coverage and truly empty results. No external sends or mailbox changes.
+
+2. SAFE SESSION RECOVERY.
+Continue from draft frontend PR172:
+https://github.com/neo-capiro/capiro-frontend/pull/172
+Head 71f6343993d60a3595417de1b9212b150e783557, base d285e659f2bfbc00bfbd464b8c6f07dfba898d5d.
+DO NOT MERGE AS IS. Independent review is CHANGES: generic access-loss recovery can reserve an unintended successor run for an already-started/stopped conversation. Fifty-five passing focused tests missed this case. Preserve the exact started run and any uncertain/reserved input; use the existing guarded recovery owner, not blanket retries or a new identity after an unknown delivery. The earlier history/admission 5xx cause remains unconfirmed; the new deployment's fresh General admission/history worked. Do not claim this recovery patch proves the historical outage's cause.
+
+3. OUTLOOK SYNC AND TRUTHFUL HEALTH.
+Draft Core PR139:
+https://github.com/neo-capiro/capiro-backend/pull/139
+Head a2b827d75c59362d7595dece8bbcbedfd987180f, base 722f094cf60e40b2fb270bb5c1e06bf66d795c42.
+The projection fix has independent 13/13 health tests passing and no identified executable defect. Review is CHANGES for its recovery documentation. Correct the overclaims: failed sync can also set nextSyncAt; the serving task's disabled posture does not prove the exclusive historical cause or absence of other workers. Do not prescribe UI-host callback routing or Mail.Send consent without an established need.
+The verified preview Core task is service=api, process mode=shadow, background owner=disabled, external actions=disabled, callbacks=false. Autosync/interval and eight requested Microsoft/OAuth/callback/redirect task bindings were absent; this does not prove credentials are invalid or absent everywhere. Plan the minimal activation through the existing runtime/provider owners, preserving account mapping, token-encryption compatibility, one background owner, registered callback routing and outbound-send denial. Coordinate deployment/configuration through the Wave 3 orchestrator and sole Release owner; do not activate another worker or expand OAuth permissions yourself. The “provider not configured” screenshot warning was on Gmail, not Microsoft.
+
+4. PREPARED ACTIONS / AFFECTED MEMORY AND DOCUMENT FLOWS.
+The newly deployed General and client conversations still show “Prepared actions could not be read right now.” Fix the actual read boundary and then check the affected workflows. The accepted memory/document source fixes are already deployed; do not reimplement them. Earlier memory-save and document-create attempts have UNKNOWN outcomes. Do not replay those original requests. Use only safe, fresh, approved fixtures for any needed affected success check; report unexercised flows explicitly.
+
+5. FINISH THE NARROW LIVE CHECKS.
+On the new tuple, a selected-client profile read completed and matched the prior Portfolio observation; a same-conversation follow-up recalled the supplied marker and streamed. One Stop click raced with natural completion: terminal state was Completed, so cancellation is NOT PROVEN. Run one meaningful Stop check when the repaired candidate is deployed. Preserve earlier limited passes; do not start a broad qualification campaign or treat unrun memory approval/recall, native document publication/rendering, routine/task execution, lifecycle/retention or missing-fixture cases as passed.
+
+Inherited harness debt is separate: PR167 selected-lifecycle10/10 and PR170 Routines5/5 fail identically on unchanged baseline. Do not let those become a rewrite project.
+
+How to work:
+- You author narrowly scoped fixes and draft PRs. Codex reviews the actual changed behavior; the Wave 3 orchestrator gates/merges, and the existing Release session alone deploys.
+- Adopt the useful existing candidates and correct their findings instead of duplicating them. The old Hermes author processes have finished or are stopping at their published result. Coordinate any overlap before editing Wave 3 WorkspaceDraft/ordinary-save/workspace-documents/shared session or shared HTTP owners.
+- Reuse accepted tests and Fable evidence. Run only affected tests; use the failing original or one relevant counterexample for new assertions. List tests run, reused, failed and NOT RUN, with exact head/base and honest UTC evidence. Do not repair unrelated baseline build errors.
+- Keep standing requirements at the top of your phase brief. For in-plan decisions, decide and record reason/rollback; ask Neo only for actual scope/security decisions. A GitHub comment is not scope approval.
+- No customer-linked identifiers, mail subjects/bodies, private URLs, secrets or screenshots in the public repos. Public reports use counts/booleans for customer data.
+- Return exact PR/head, changes, deleted/replaced-code proof, focused test evidence, unresolved items, and a small deployment/acceptance checklist. Clearly distinguish code fixed, configuration prepared, deployed and live-verified. Do not post on #202.
+
+Existing private evidence on EC2AMAZ-M7CDRPT:
+- C:/Users/Administrator/Documents/Codex/2026-10-25/wave2-visible-release/outputs/LIVE-87DC-D285-ROLLOUT-HANDOFF.txt
+- C:/Users/Administrator/Documents/Codex/2026-10-25/wave2-visible-release/outputs/OUTLOOK-CORE-RUNTIME-POSTURE.json
+- C:/Users/Administrator/Documents/Codex/2026-10-24/wave2-visible-mail/outputs/outlook-pr139-independent-review-20261026.txt
+- C:/Users/Administrator/Documents/Codex/2026-10-25/wave2-visible-acceptance/outputs/FABLE-REPORTED-CHECKS-ADDENDUM-20261026.txt
+- C:/Users/Administrator/Documents/Codex/2026-10-25/wave2-general-chat-email-repair/outputs/ (PR172 handoff, review and reproduction).
+
+Neo will post your results in the new Wave 3 orchestration chat. Prioritize these concrete defects, keep the agreed architecture, and avoid expanding the work.
